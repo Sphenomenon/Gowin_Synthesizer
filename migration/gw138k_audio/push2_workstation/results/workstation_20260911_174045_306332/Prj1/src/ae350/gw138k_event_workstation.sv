@@ -182,10 +182,12 @@ module gw138k_event_workstation #(
             85: if(b<3) effect_order_o[3:2]<=b[1:0];
             86: if(b<3) effect_order_o[5:4]<=b[1:0];
             // A queue contains each effect at most once. After three distinct
-            // selections the next press starts a new queue, even for an ID
-            // already present. Before it is full, duplicates leave it unchanged.
+            // selections the next press clears the queue and all effect enables.
+            // A later press starts again; duplicates before full do nothing.
             87: if(b<3) begin
-              if(effect_count==3 || effect_count==0) begin
+              if(effect_count==3) begin
+                effect_order_o<=6'b11_11_11; effect_mask_o<=3'b000; effect_count<=0;
+              end else if(effect_count==0) begin
                 effect_order_o<={4'b1111,b[1:0]}; effect_mask_o<=3'b001<<b[1:0]; effect_count<=1;
               end else if(effect_order_o[1:0]!=b[1:0] &&
                           (effect_count!=2 || effect_order_o[3:2]!=b[1:0])) begin

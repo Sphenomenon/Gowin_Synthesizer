@@ -1,0 +1,73 @@
+{
+  "version": "P9 full effect queue next press clears all",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_175110_528097/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "757bfae6b43a2eba11b776ee82f1090d90f4b4665ff878ca9ad7ce13a456ba6c",
+  "usercode": "0x0000C2D3",
+  "flash_written": false,
+  "previous_accepted": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_172135_776685/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "3f8e3fa715e62455be37bc75c93646b050fb10e81b4ec32fbdb8bc6a59a3dd2f",
+    "usercode": "0x0000A64B",
+    "user_feedback": "没问题，继续做吧；要求选满三个后再按任一效果清零"
+  },
+  "protected_hotplug_baseline": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "0e5a3cd5d6641c76777d76e1b5f5feddf65d661586ef0de14587cf0e1f09c1af",
+    "usercode": "0x0000D50E"
+  },
+  "backup": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/workstation_backup_before_p9_clear_20260913_175110",
+  "changed_build_inputs": [
+    "src/ae350/gw138k_event_workstation.sv"
+  ],
+  "frozen_inputs_verified": true,
+  "behavior": [
+    "Three distinct effects selected -> next effect-key press clears mask=0, order=0x3f, count=0. The clearing press is not reused as a first selection.",
+    "Held clearing key cannot reinsert the effect. After release, a later press starts a new queue. Duplicate presses while one/two effects are selected still do not consume slots.",
+    "Existing card slide-out animation and wet-gain slew to zero are preserved; original dry synthesis remains available."
+  ],
+  "verification": {
+    "simulation": {
+      "passed": true,
+      "queue": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_175110_528097/p9_queue_175239/verification.json",
+      "coverage": "6 permutations x 3 clearing keys; 163 presses, held clear key, restart, duplicates, real wet gains zero and all three card coordinates parked",
+      "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_175110_528097/cpu_audio_sim_175240_727302/verification.json"
+    },
+    "synthesis_pnr": {
+      "passed": true,
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "tool_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_175110_528097/tool_result.json"
+    },
+    "legacy_routed_audit": {
+      "passed": false,
+      "error": "existing DDR/video audit failed: FAIL Gowin build:\n- stopped-clock reset VO/SDF audit failed: reset exception includes unaudited endpoints: ['u_managed/effect_mask_sync_0_s0/RESET', 'u_managed/effect_mask_sync_1_s0/RESET', 'u_managed/effect_mask_sync_2_s0/RESET']\n",
+      "hardware_tested": false
+    },
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_180144_600731/result.json",
+    "sram": {
+      "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_175110_528097/Prj1/impl/pnr/Prj1.fs",
+      "sha256": "757bfae6b43a2eba11b776ee82f1090d90f4b4665ff878ca9ad7ce13a456ba6c",
+      "from_code": "0x0000A64B",
+      "usercode": "0x0000C2D3",
+      "fpga_flash_written": false,
+      "operations": [
+        {
+          "name": "before",
+          "passed": true
+        },
+        {
+          "name": "sram",
+          "passed": true
+        },
+        {
+          "name": "after",
+          "passed": true
+        }
+      ]
+    },
+    "pre_download_telemetry": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260913_175345_252337/result.json",
+    "post_download_telemetry": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260913_180218_984908/runtime_summary.json",
+    "physical_hdmi_headphone_push_acceptance": "pending user acceptance"
+  },
+  "remaining_limitation": "Repeated selections previously changed the UI queue but enabled only one effect mask bit: no repeated audio cascade. Current stereo_effects receives no effect_order and sums wet contributions; custom serial audio ordering remains unimplemented. P8 does not claim P3 completion."
+}
