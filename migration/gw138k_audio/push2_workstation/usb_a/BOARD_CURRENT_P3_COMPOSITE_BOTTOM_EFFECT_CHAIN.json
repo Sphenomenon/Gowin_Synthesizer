@@ -1,0 +1,43 @@
+{
+  "record": "BOARD_CURRENT_P3_COMPOSITE_BOTTOM_EFFECT_CHAIN",
+  "date": "2026-09-13",
+  "status": "hardware_acceptance_pending",
+  "baseline": {
+    "label": "P3 UI effect-chain candidate before composite fix",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_114728_220811/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "37ffc6b41787a01ca5ca5621a146c766737241a9531b8486bcfec2131f59a77f",
+    "usercode": "0x00002EED"
+  },
+  "candidate": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_122057_806142/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "374ae70b34ac67f618e5b09fffe3573e45651031fe63b287d26655d8fa6b6a8f",
+    "usercode": "0x0000754C",
+    "build_dir": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_122057_806142"
+  },
+  "change": "Composite HDMI scanout now selects the RTL analysis page not only for waveform/spectrum/Lissajous rows 160-831 but also rows 832-967, covering the old DDR UI performance keyboard with the validated effect-chain area while retaining the AUDIO LAB UI above and footer below.",
+  "verification": {
+    "gowin_build": "PASS: exit_code 0; inputs_unchanged true",
+    "pnr_setup_violated_endpoints": 0,
+    "pnr_hold_violated_endpoints": 0,
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_122931_090071/result.json",
+    "sram_before_readback": true,
+    "sram_write_readback": true,
+    "sram_after_readback": true,
+    "flash_written": false,
+    "previous_download_guard_abort": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_122912_246627/result.json"
+  },
+  "hardware": {
+    "board": "NEO Dock 31005 / GW5AST-LV138PG484AC2/I1",
+    "push_path": "J18 USB-A",
+    "ch569_used": false,
+    "acceptance_pending": true,
+    "test_matrix": [
+      "AUDIO LAB remains at upper UI",
+      "performance keyboard is gone from HDMI bottom",
+      "bottom shows effect-chain tiles",
+      "toggle delay/chorus/reverb and verify status",
+      "waveform/Lissajous/spectrum remain visible",
+      "headphone and Push remain functional"
+    ]
+  }
+}

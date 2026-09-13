@@ -131,7 +131,10 @@ module video_ddr_scanout #(
     reg [8:0] issued,received;
     reg [28:0] line_base,front_base,analysis_base;
     reg composite_active;
-    wire graph_line=composite_active && request_word[10:0]>=GRAPH_FIRST_LINE && request_word[10:0]<GRAPH_END_LINE;
+    // In composite mode the UI owns the frame, while the RTL analysis page owns
+    // the waveform/spectrum/image band and the bottom effect-chain band.
+    wire graph_line=composite_active && ((request_word[10:0]>=GRAPH_FIRST_LINE && request_word[10:0]<GRAPH_END_LINE) ||
+                                         (request_word[10:0]>=11'd832 && request_word[10:0]<11'd968));
     wire [28:0] row_base=graph_line?analysis_base:front_base;
     reg [31:0] timer;
     assign req_valid=active && !fetch_fault && issued<LINE_BEATS;
