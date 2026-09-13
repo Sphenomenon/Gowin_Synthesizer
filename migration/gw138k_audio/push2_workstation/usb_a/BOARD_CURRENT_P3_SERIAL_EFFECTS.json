@@ -1,0 +1,45 @@
+{
+  "record": "BOARD_CURRENT_P3_SERIAL_EFFECTS",
+  "date": "2026-09-13",
+  "status": "hardware_acceptance_pending",
+  "baseline": {
+    "label": "P2 accepted low-bass trigger fix",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_101220_117700/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "795ceada81d9aa92fafe94642a8fd7d3b4d9fd4fc4e2a8a36b7949d9ef9af2be",
+    "usercode": "0x00008120"
+  },
+  "candidate": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_103610_459754/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "9004772d66d7bd9223acacbb4bdb36c49f41fcce6a6089cc9126d6c71fb22259",
+    "usercode": "0x0000A685",
+    "build_dir": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_103610_459754"
+  },
+  "change": "P3 minimal serial immediate wet path: delay -> chorus -> reverb; feedback memories and existing Push mapping/bypass retained.",
+  "verification": {
+    "cpu_rtl_sim": "PASS: cpu_audio_sim_20260913_103541_742355; 3696 frames, 3574 nonzero, ABC/5 sounds/FX7/vibrato/glide/bend/routes/release",
+    "gowin_build": "PASS: exit_code 0; inputs_unchanged true",
+    "pnr_setup_violated_endpoints": 0,
+    "pnr_hold_violated_endpoints": 0,
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_104500_601118/result.json",
+    "sram_before_readback": true,
+    "sram_write_readback": true,
+    "sram_after_readback": true,
+    "flash_written": false
+  },
+  "hardware": {
+    "board": "NEO Dock 31005 / GW5AST-LV138PG484AC2/I1",
+    "push_path": "J18 USB-A",
+    "ch569_used": false,
+    "acceptance_pending": true,
+    "test_matrix": [
+      "all effects off",
+      "delay only",
+      "chorus only",
+      "reverb only",
+      "serial combinations including FX7",
+      "verify HDMI chain/status",
+      "verify headphone audio",
+      "verify Push control"
+    ]
+  }
+}
