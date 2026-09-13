@@ -14,7 +14,10 @@ module gw138k_view_select (
  reg analysis_valid,analysis_eligible,ui_eligible;
  assign analysis_commit=frame_swap && analysis_eligible;
  assign ui_commit=frame_swap && ui_eligible;
- wire selected_ui=ui_pending?ui_next_visible:ui_visible;
+ // Unified HDMI page: the RTL analysis framebuffer is authoritative.
+ // The former AUDIO LAB UI DDR page remains allocated for future shared-data
+ // work, but it no longer covers the waveform/effect-chain display.
+ wire selected_ui=1'b0;
  wire [28:0] analysis_base=(analysis_pending ? !analysis_bank : analysis_bank)?29'd1048576:29'd0;
  assign selected_analysis_base=analysis_base;
  assign composite=selected_ui && (analysis_valid || analysis_pending);
