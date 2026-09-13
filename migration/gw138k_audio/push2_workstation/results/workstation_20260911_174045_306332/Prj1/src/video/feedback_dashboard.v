@@ -21,6 +21,7 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
     input wire [31:0] active_voices,
     input wire [31:0] status_data,
     input wire [2:0] effect_mask,
+    input wire [5:0] effect_order,
     input wire [31:0] sequence_data,
     input wire [31:0] skipped_data,
     input wire [31:0] memory_status,
@@ -36,7 +37,7 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
     localparam [255:0] SOURCE = "48000 HZ / HEADPHONE            ";
     localparam [255:0] DDR = "DDR FRAMEBUFFER                 ";
     localparam [255:0] VOICES = "32 VOICES / ACTIVE AND RELEASE  ";
-    localparam [255:0] EFFECT_TITLE = "EFFECT CHAIN / DELAY -> CHORUS -> REVERB";
+    localparam [255:0] EFFECT_TITLE = "EFFECT CHAIN / USER ORDER / ARROWS     ";
     localparam [255:0] FOOTER = "LIVE AUDIO / UART CONTROL       ";
     reg [255:0] text_line;
     reg [10:0] text_x, text_y;
@@ -72,6 +73,14 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
         (scaled_previous>127 ? 10'sd127 : scaled_previous < -127 ? -10'sd127 : scaled_previous[9:0]) : scaled_previous[9:0];
     wire signed [11:0] sample_extended = {{2{sample_height[9]}}, sample_height};
     wire signed [11:0] previous_extended = {{2{previous_height[9]}}, previous_height};
+    function automatic [255:0] effect_name(input [1:0] id);
+        begin case(id)
+            2'd0: effect_name="DELAY                           ";
+            2'd1: effect_name="CHORUS                          ";
+            default: effect_name="REVERB                          ";
+        endcase end
+    endfunction
+    wire [1:0] chain0=effect_order[1:0], chain1=effect_order[3:2], chain2=effect_order[5:4];
     wire [10:0] card_relative = pixel_x - 11'd64;
     // Two rows of sixteen 64-pixel slots share the waveform's 1024-pixel
     // width. Fixed bit slices avoid division/multiplication in tile lookup.
@@ -284,9 +293,9 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
             end
             // Bottom keyboard cards are intentionally replaced by the live serial effect chain.
             if(pixel_y>=880 && pixel_y<896) begin
-                if(pixel_x>=64 && pixel_x<384) begin text_line="DELAY                           ";text_x=64;text_y=880;text_enable=1;end
-                if(pixel_x>=400 && pixel_x<720) begin text_line="CHORUS                          ";text_x=400;text_y=880;text_enable=1;end
-                if(pixel_x>=736 && pixel_x<1056) begin text_line="REVERB                          ";text_x=736;text_y=880;text_enable=1;end
+                if(pixel_x>=64 && pixel_x<384) begin text_line=effect_name(chain0);text_x=64;text_y=880;text_enable=1;end
+                if(pixel_x>=400 && pixel_x<720) begin text_line=effect_name(chain1);text_x=400;text_y=880;text_enable=1;end
+                if(pixel_x>=736 && pixel_x<1056) begin text_line=effect_name(chain2);text_x=736;text_y=880;text_enable=1;end
             end
             if(pixel_y>=912 && pixel_y<928) begin
                 if(pixel_x>=64 && pixel_x<384) begin text_line=effect_mask[0] ? "ON                              " : "OFF                             ";text_x=64;text_y=912;text_enable=1;end
@@ -357,7 +366,18 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
             end
         end
         if (a_x >= 64 && a_x < 1088 && a_y >= 872 && a_y < 960) begin
-            if (a_x < 384) begin
+            // Narrow inter-card gaps carry an explicit right-pointing arrow.
+            // The arrow is rasterized here so every consumer of the DDR page
+            // sees the same chain direction without extra overlay logic.
+            if ((a_x >= 384 && a_x < 400) || (a_x >= 720 && a_x < 736)) begin
+                next_background = 32'h00101b2a;
+                if (a_y >= 917 && a_y <= 923 && a_x >= (a_x < 400 ? 386 : 722) && a_x <= (a_x < 400 ? 397 : 733))
+                    next_background = 32'h00e5f0fa;
+                if (a_y >= 913 && a_y <= 927 && a_x >= (a_x < 400 ? 394 : 730) && a_x <= (a_x < 400 ? 397 : 733) &&
+                    ((a_y <= 920 && a_x >= (a_x < 400 ? 394 + (920-a_y) : 730 + (920-a_y))) ||
+                     (a_y >= 920 && a_x >= (a_x < 400 ? 394 + (a_y-920) : 730 + (a_y-920)))))
+                    next_background = 32'h00e5f0fa;
+            end else if (a_x < 384) begin
                 next_background = effect_mask[0] ? 32'h00157d70 : 32'h00263a4f;
                 if(a_y==872 || a_y==959 || a_x==64 || a_x==383) next_background = effect_mask[0] ? 32'h003cdbab : 32'h0049627a;
             end else if (a_x >= 400 && a_x < 720) begin

@@ -1,0 +1,47 @@
+{
+  "record": "BOARD_CURRENT_P5_SHARED_DISPLAY_METADATA",
+  "date": "2026-09-13",
+  "status": "hardware_acceptance_pending",
+  "baseline": {
+    "label": "P4 unified FPGA analysis page",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_123854_451135/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "7097961c065d394e90fb032de83713580b1a4f7077f4480d7ff29493b91c08e0",
+    "usercode": "0x0000DB2E"
+  },
+  "candidate": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_141046_339366/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "1807c095cc2532cdd35d1d2320a8985abd9afde989cfe091e5421694988d6a16",
+    "usercode": "0x00006166",
+    "build_dir": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_141046_339366"
+  },
+  "change": [
+    "Unified display metadata packet written to DDR fixed byte address 0x01000000 (DDR word address 0x00200000).",
+    "Packet carries magic/version, effect mask, three effect-order slots, peak, voices, status, analysis sequence/skipped and frame status.",
+    "HDMI effect cards use the shared order fields and now show explicit right-pointing arrows between cards.",
+    "Effect order commands 84/85/86 are accepted through the existing event protocol; audio remains the previously accepted fixed serial path while dynamic audio reordering is held for a separate timing-safe change."
+  ],
+  "verification": {
+    "cpu_rtl_sim": "PASS: cpu_audio_sim_140857_701294; 3696 frames, 3574 nonzero, exact 48k, no audio fault",
+    "gowin_build": "PASS: exit_code 0; inputs_unchanged true",
+    "pnr_setup_violated_endpoints": 0,
+    "pnr_hold_violated_endpoints": 0,
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_142040_317236/result.json",
+    "sram_before_readback": true,
+    "sram_write_readback": true,
+    "sram_after_readback": true,
+    "flash_written": false
+  },
+  "hardware": {
+    "board": "NEO Dock 31005 / GW5AST-LV138PG484AC2/I1",
+    "push_path": "J18 USB-A",
+    "ch569_used": false,
+    "acceptance_pending": true,
+    "test_matrix": [
+      "HDMI waveform/Lissajous/spectrum unchanged",
+      "effect cards show explicit arrows",
+      "no performance keyboard",
+      "Push/audio remain functional",
+      "later use CC 84/85/86 to verify displayed slot order"
+    ]
+  }
+}

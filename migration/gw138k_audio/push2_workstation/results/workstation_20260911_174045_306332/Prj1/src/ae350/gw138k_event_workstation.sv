@@ -34,7 +34,8 @@ module gw138k_event_workstation #(
     output logic [15:0] synth_gain_o, pcm_gain_o,
     output logic [1:0] route_o,
     output wire [2:0] profile_o,
-    output logic [2:0] effect_mask_o
+    output logic [2:0] effect_mask_o,
+    output logic [5:0] effect_order_o
 );
   logic event_valid, event_ready;
   logic [17:0] event_data;
@@ -141,7 +142,7 @@ module gw138k_event_workstation #(
       applied_events_o<=0;pending<=0; frame_inflight<=0; deadline_miss_o<=0; note_drop_o<=0;
       held_pcm_l<=0; held_pcm_r<=0; profile<=0; requested_mode<=2;
       mode_pending<=0; volume<=32768; expression_gain<=32768; pcm_gain_o<=0;
-      route_o<=0; target_ratio<=1048576; glide_step<=0; vibrato_depth<=0; effect_mask_o<=0;
+      route_o<=0; target_ratio<=1048576; glide_step<=0; vibrato_depth<=0; effect_mask_o<=0; effect_order_o<=6'b10_01_00;
       glide_cc<=0; bend_index<=128; snapshot_request<=0;
       sustain<=0; held<=0; deferred<=0; releasing<=0; release_index<=0;
     end else begin
@@ -176,6 +177,9 @@ module gw138k_event_workstation #(
             end
             80: if(b<3) begin requested_mode<=b[1:0]; mode_pending<=1; end
             81: effect_mask_o<=b[2:0];
+            84: if(b<3) effect_order_o[1:0]<=b[1:0];
+            85: if(b<3) effect_order_o[3:2]<=b[1:0];
+            86: if(b<3) effect_order_o[5:4]<=b[1:0];
             82: if(b<4) route_o<=b[1:0];
             83: if(b==127) snapshot_request<=snapshot_request+1'b1;
             120,123: begin

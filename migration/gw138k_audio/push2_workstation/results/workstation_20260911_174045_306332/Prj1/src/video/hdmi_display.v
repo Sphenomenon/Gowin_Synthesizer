@@ -11,6 +11,7 @@ module hdmi_display (
     input wire [31:0] trigger_reference,
     input wire [31:0] active_voices, status_data,
     input wire [2:0] effect_mask,
+    input wire [5:0] effect_order,
     input wire memory_clk, memory_reset_n, memory_calibrated, memory_pll_locked,
     input wire ui_pending,ui_visible,ui_next_visible,
     input wire [28:0] ui_front_base,ui_next_base,
@@ -83,6 +84,7 @@ module hdmi_display (
     wire display_enabled=bist_done && !bist_failed && !fetch_fault && !arbiter_fault;
     wire renderer_ready,renderer_busy,renderer_done,renderer_start,pixel_valid,pixel_ready;
     wire [63:0] pixel_data;
+    wire [255:0] display_meta;
     wire [31:0] underruns,rendered_frames;
     video_runtime_diagnostics u_diagnostics (
         .clk_50m(clk_50m),.reset_n(reset_n),.pixel_clk(pixel_clk),
@@ -103,11 +105,11 @@ module hdmi_display (
     feedback_renderer #(.ENABLE_ANALYSIS(1)) u_renderer (
         .clk(memory_clk),.rst_n(ui_rst_n),.start(renderer_start),.frame_ready(renderer_ready),
         .busy(renderer_busy),.frame_done(renderer_done),.pixel_valid(pixel_valid),
-        .pixel_ready(pixel_ready),.pixel_data(pixel_data),.source_clk(clk_50m),
+        .pixel_ready(pixel_ready),.pixel_data(pixel_data),.display_meta(display_meta),.source_clk(clk_50m),
         .source_reset_n(source_reset_pipe[2]),.sample_data(sample_data),.sample_valid(sample_valid),
         .output_pcm(output_pcm),
         .trigger_reference(trigger_reference),
-        .active_voices(active_voices),.status_data(status_data),.effect_mask(effect_mask),.memory_status(memory_status),
+        .active_voices(active_voices),.status_data(status_data),.effect_mask(effect_mask),.effect_order(effect_order),.memory_status(memory_status),
         .underruns(underruns),.frame_count(rendered_frames)
     );
     wire write_req,write_ready,read_req,read_ready;
@@ -117,7 +119,7 @@ module hdmi_display (
         .clk(memory_clk),.rst_n(ui_rst_n),.enabled(display_enabled),
         .front_bank(analysis_bank),.frame_swap(analysis_commit),.renderer_ready(renderer_ready),
         .renderer_done(renderer_done),.renderer_start(renderer_start),.pixel_valid(pixel_valid),
-        .pixel_ready(pixel_ready),.pixel_data(pixel_data),.req_valid(write_req),
+        .pixel_ready(pixel_ready),.pixel_data(pixel_data),.display_meta(display_meta),.req_valid(write_req),
         .req_ready(write_ready),.req_addr(write_addr),.req_wdata(write_data),
         .frame_pending(frame_pending),.rendered_frames(rendered_frames)
     );

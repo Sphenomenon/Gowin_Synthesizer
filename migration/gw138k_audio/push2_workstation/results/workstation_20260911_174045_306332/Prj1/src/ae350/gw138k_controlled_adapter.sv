@@ -38,7 +38,8 @@ module gw138k_controlled_adapter (
     output wire display_valid_o,
     output wire [31:0] display_pcm_o, display_reference_o, display_voices_o,
     output wire [31:0] display_status_o,
-    output wire [2:0] effect_mask_o
+    output wire [2:0] effect_mask_o,
+    output wire [5:0] effect_order_o
 );
     // Permit a board-level asynchronous assertion; every functional domain
     // releases locally, including UART after an audio PLL restart.
@@ -86,7 +87,9 @@ module gw138k_controlled_adapter (
     wire [21:0] pitch;
     wire [15:0] synth_gain, pcm_gain;
     wire [2:0] effect_mask;
+    wire [5:0] effect_order;
     assign effect_mask_o=effect_mask;
+    assign effect_order_o=effect_order;
     wire synth_valid, clip;
     wire signed [31:0] synth;
     gw138k_event_workstation #(.SAMPLE_RATE_HZ(48000)) u_workstation(
@@ -99,7 +102,7 @@ module gw138k_controlled_adapter (
         .synth_valid_o(synth_valid),.synth_o(synth),.active_mask_o(active_mask_o),
         .active_voice_count_o(voice_count),.mode_o(mode),.route_o(route),.profile_o(profile),.pitch_q20_o(pitch),
         .deadline_miss_o(deadline_miss_o),.midi_overflow_o(midi_overflow_o),.note_drop_o(note_drop_o),
-        .clip_o(clip),.synth_gain_o(synth_gain),.pcm_gain_o(pcm_gain),.effect_mask_o(effect_mask));
+        .clip_o(clip),.synth_gain_o(synth_gain),.pcm_gain_o(pcm_gain),.effect_mask_o(effect_mask),.effect_order_o(effect_order));
     audio_visual_extensions u_extensions(
         .clk_i(audio_clk),.rst_ni(reset_audio_n),.sample_valid_i(sample_valid_o),
         .left_i(audio_left_o),.right_i(audio_right_o),

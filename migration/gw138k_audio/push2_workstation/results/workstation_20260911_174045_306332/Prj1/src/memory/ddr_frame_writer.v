@@ -9,6 +9,7 @@ module ddr_frame_writer #(
     input wire pixel_valid,
     output wire pixel_ready,
     input wire [63:0] pixel_data,
+    input wire [255:0] display_meta,
     output wire req_valid,
     input wire req_ready,
     output reg [28:0] req_addr,
@@ -18,16 +19,16 @@ module ddr_frame_writer #(
 );
     reg [255:0] packed_pixels;
     reg [2:0] pack_index;
-    reg full,rendering,finished;
+    reg full,rendering,finished,meta_pending;
     wire [15:0] p0={pixel_data[23:19],pixel_data[15:10],pixel_data[7:3]};
     wire [15:0] p1={pixel_data[55:51],pixel_data[47:42],pixel_data[39:35]};
     assign pixel_ready=enabled && rendering && !full;
-    assign req_valid=full && enabled;
-    assign req_wdata=packed_pixels;
+    assign req_valid=(full || meta_pending) && enabled;
+    assign req_wdata=full ? packed_pixels : display_meta;
     always @(posedge clk or negedge rst_n) begin
         if(!rst_n) begin
             packed_pixels<=0;pack_index<=0;full<=0;rendering<=0;finished<=0;
-            req_addr<=0;frame_pending<=0;renderer_start<=0;rendered_frames<=0;
+            req_addr<=0;frame_pending<=0;renderer_start<=0;rendered_frames<=0;meta_pending<=0;
         end else begin
             renderer_start<=0;
             if(frame_swap) frame_pending<=0;
@@ -41,11 +42,14 @@ module ddr_frame_writer #(
                 pack_index<=pack_index+1'b1;
                 if(pack_index==7) full<=1;
             end
-            if(req_valid && req_ready) begin full<=0;req_addr<=req_addr+29'd8;end
+            if(req_valid && req_ready) begin
+                if(full) begin full<=0; req_addr<=req_addr+29'd8; end
+                else begin meta_pending<=0; frame_pending<=1; rendered_frames<=rendered_frames+1'b1; end
+            end
             if(renderer_done) finished<=1;
             // Publishing requires both the renderer and final DDR write handshake.
-            if(rendering && finished && !full && pack_index==0) begin
-                rendering<=0;frame_pending<=1;rendered_frames<=rendered_frames+1'b1;
+            if(rendering && finished && !full && pack_index==0 && !meta_pending) begin
+                rendering<=0; meta_pending<=1; req_addr<=29'd2097152;
             end
         end
     end

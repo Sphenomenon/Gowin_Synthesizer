@@ -27,9 +27,6 @@ module stereo_effects #(
   logic [15:0] triangle, chorus_delay;
   logic [3:0] state;
   logic signed [63:0] mix_l, mix_r, wet_l, wet_r;
-  // Serial wet path stages: delay -> chorus -> reverb.
-  logic signed [63:0] serial_delay_l, serial_delay_r;
-  logic signed [63:0] serial_chorus_l, serial_chorus_r;
   logic signed [31:0] dry_l, dry_r, echo_l, echo_r, chorus_l, chorus_r;
   logic signed [31:0] rv_a, rv_b, damping_a, damping_b;
   logic signed [31:0] read_l, read_r, read_a, read_b;
@@ -64,7 +61,6 @@ module stereo_effects #(
       rv_a<=0; rv_b<=0; damping_a<=0; damping_b<=0; wet_l<=0; wet_r<=0;
       feedback_l<=0;feedback_r<=0;feedback_a<=0;feedback_b<=0;
       feedback_wide_l<=0;feedback_wide_r<=0;feedback_wide_a<=0;feedback_wide_b<=0;
-      serial_delay_l<=0; serial_delay_r<=0; serial_chorus_l<=0; serial_chorus_r<=0;
       input_s<=0;input_l<=0;input_r<=0;
       echo_product_l<=0;echo_product_r<=0;chorus_product_l<=0;chorus_product_r<=0;
       rv_product_l<=0;rv_product_r<=0;
@@ -118,21 +114,13 @@ module stereo_effects #(
         6: begin
           feedback_l<=sat31(feedback_wide_l);feedback_r<=sat31(feedback_wide_r);
           feedback_a<=sat31(feedback_wide_a);feedback_b<=sat31(feedback_wide_b);
-          // Commit the first stage before feeding the next one.  The
-          // feedback memories remain unchanged; only the audible wet path
-          // is made serial and therefore cannot act as three parallel taps.
-          serial_delay_l <= $signed(dry_l) + rshift(echo_product_l,15);
-          serial_delay_r <= $signed(dry_r) + rshift(echo_product_r,15);
+          wet_l<=echo_product_l+chorus_product_l+rv_product_l;
+          wet_r<=echo_product_r+chorus_product_r+rv_product_r;
           state<=10;
         end
         10:begin
-          serial_chorus_l <= serial_delay_l + rshift(chorus_product_l,15);
-          serial_chorus_r <= serial_delay_r + rshift(chorus_product_r,15);
-          state<=11;
-        end
-        11:begin
-          mix_l <= serial_chorus_l + rshift(rv_product_l,15);
-          mix_r <= serial_chorus_r + rshift(rv_product_r,15);
+          mix_l <= $signed(dry_l) + rshift(wet_l,15);
+          mix_r <= $signed(dry_r) + rshift(wet_r,15);
           state<=7;
         end
         7: begin
