@@ -177,21 +177,24 @@ module gw138k_event_workstation #(
               if(b<64 && sustain) begin releasing<=1; release_index<=0; end
             end
             80: if(b<3) begin requested_mode<=b[1:0]; mode_pending<=1; end
-            81: effect_mask_o<=b[2:0];
+            81: begin effect_mask_o<=b[2:0]; effect_count<=0; effect_order_o<=6'b10_01_00; end
             84: if(b<3) effect_order_o[1:0]<=b[1:0];
             85: if(b<3) effect_order_o[3:2]<=b[1:0];
             86: if(b<3) effect_order_o[5:4]<=b[1:0];
-            // Append one effect to the current serial chain. A fourth press
-            // starts a fresh chain with that effect as slot zero.
+            // A queue contains each effect at most once. After three distinct
+            // selections the next press starts a new queue, even for an ID
+            // already present. Before it is full, duplicates leave it unchanged.
             87: if(b<3) begin
-              if(effect_count==3) begin
-                effect_order_o<={4'd0,b[1:0]}; effect_mask_o<=7'd1<<b; effect_count<=1;
-              end else if(effect_count==0) begin
-                effect_order_o[1:0]<=b[1:0]; effect_mask_o<=7'd1<<b; effect_count<=1;
-              end else if(effect_count==1) begin
-                effect_order_o[3:2]<=b[1:0]; effect_mask_o<=effect_mask_o | (7'd1<<b); effect_count<=2;
-              end else begin
-                effect_order_o[5:4]<=b[1:0]; effect_mask_o<=effect_mask_o | (7'd1<<b); effect_count<=3;
+              if(effect_count==3 || effect_count==0) begin
+                effect_order_o<={4'b1111,b[1:0]}; effect_mask_o<=3'b001<<b[1:0]; effect_count<=1;
+              end else if(effect_order_o[1:0]!=b[1:0] &&
+                          (effect_count!=2 || effect_order_o[3:2]!=b[1:0])) begin
+                if(effect_count==1) begin
+                  effect_order_o[3:2]<=b[1:0]; effect_count<=2;
+                end else begin
+                  effect_order_o[5:4]<=b[1:0]; effect_count<=3;
+                end
+                effect_mask_o<=effect_mask_o | (3'b001<<b[1:0]);
               end
             end
             82: if(b<4) route_o<=b[1:0];

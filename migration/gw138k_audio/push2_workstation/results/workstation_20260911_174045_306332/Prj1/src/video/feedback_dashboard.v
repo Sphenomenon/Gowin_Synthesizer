@@ -7,6 +7,7 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
     input wire clk,
     input wire reset_n,
     input wire enable,
+    input wire frame_start,
     input wire [10:0] pixel_x,
     input wire [10:0] pixel_y,
     input wire [31:0] wave_sample,
@@ -37,18 +38,76 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
     localparam [255:0] SOURCE = "48000 HZ / HEADPHONE            ";
     localparam [255:0] DDR = "DDR FRAMEBUFFER                 ";
     localparam [255:0] VOICES = "32 VOICES / ACTIVE AND RELEASE  ";
-    localparam [255:0] EFFECT_TITLE = "EFFECT CHAIN / SLOTS 1 -> 2 -> 3          ";
+    localparam [255:0] EFFECT_TITLE = "EFFECT CHAIN / PRESS TO ORDER   ";
     localparam [255:0] FOOTER = "LIVE AUDIO / UART CONTROL       ";
     reg [255:0] text_line;
-    reg [5:0] visual_order;
-    reg [4:0] anim_timer;
+    // Coordinates belong to effect identities, not to numbered slots. Move
+    // once per rendered frame; DDR stalls cannot accelerate the animation.
+    reg [10:0] effect_x0, effect_x1, effect_x2;
+    reg [2:0] visible_mask;
+    reg [1:0] front_effect;
+    function [10:0] destination(input [1:0] id);
+        begin
+            if (!effect_mask[id]) destination=11'd1120;
+            else if (effect_order[1:0]==id) destination=11'd64;
+            else if (effect_order[3:2]==id) destination=11'd400;
+            else if (effect_order[5:4]==id) destination=11'd736;
+            else destination=11'd1120;
+        end
+    endfunction
+    function [10:0] slide(input [10:0] position, target);
+        reg [10:0] distance, step;
+        begin
+            distance=position<target ? target-position : position-target;
+            step=(distance+11'd3)>>2;
+            if(step>32) step=11'd32;
+            slide=position<target ? position+step : position-step;
+        end
+    endfunction
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
+            effect_x0<=11'd1120; effect_x1<=11'd1120; effect_x2<=11'd1120;
+            visible_mask<=0; front_effect<=0;
+        end else if (frame_start) begin
+            effect_x0<=slide(effect_x0,destination(0));
+            effect_x1<=slide(effect_x1,destination(1));
+            effect_x2<=slide(effect_x2,destination(2));
+            visible_mask<=effect_mask;
+            if(effect_mask[0] && !visible_mask[0]) front_effect<=0;
+            else if(effect_mask[1] && !visible_mask[1]) front_effect<=1;
+            else if(effect_mask[2] && !visible_mask[2]) front_effect<=2;
+        end
+    end
+    wire [10:0] effect_rel0=pixel_x-effect_x0;
+    wire [10:0] effect_rel1=pixel_x-effect_x1;
+    wire [10:0] effect_rel2=pixel_x-effect_x2;
+    wire effect_band=pixel_x>=64 && pixel_x<1088 && pixel_y>=872 && pixel_y<960;
+    wire hit0=effect_band && effect_rel0<288;
+    wire hit1=effect_band && effect_rel1<288;
+    wire hit2=effect_band && effect_rel2<288;
+    reg effect_hit;
+    reg [1:0] effect_id;
+    reg [10:0] effect_relative;
+    always @* begin
+        effect_hit=hit0 || hit1 || hit2;
+        effect_id=0; effect_relative=effect_rel0;
+        if(hit1) begin effect_id=1; effect_relative=effect_rel1; end
+        if(hit2) begin effect_id=2; effect_relative=effect_rel2; end
+        // A newly selected card crosses in front; text and fill use the same
+        // hit so another card's label cannot shine through its background.
+        if(front_effect==0 && hit0) begin effect_id=0; effect_relative=effect_rel0; end
+        if(front_effect==1 && hit1) begin effect_id=1; effect_relative=effect_rel1; end
+        if(front_effect==2 && hit2) begin effect_id=2; effect_relative=effect_rel2; end
+    end
+    reg a_effect_hit,a_effect_edge,a_effect_on;
+    reg [1:0] a_effect_id;
     reg [10:0] text_x, text_y;
     reg text_enable, large_text;
     reg [31:0] hex_word;
     reg hex_enable, voice_enable;
     reg [7:0] voice_character;
     reg [10:0] hex_x;
-    wire [10:0] relative_text_x = pixel_x - text_x;
+    wire [10:0] relative_text_x = effect_hit ? effect_relative-11'd16 : pixel_x-text_x;
     wire [10:0] relative_text_y = pixel_y - text_y;
     wire [4:0] text_index = large_text ? relative_text_x[9:5] : relative_text_x[8:4];
     wire [2:0] font_column = large_text ? relative_text_x[4:2] : relative_text_x[3:1];
@@ -82,12 +141,6 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
             default: effect_name="REVERB                          ";
         endcase end
     endfunction
-    wire [1:0] requested0=effect_order[1:0], requested1=effect_order[3:2], requested2=effect_order[5:4];
-    wire [1:0] target0=effect_mask[requested0] ? requested0 : 2'b11;
-    wire [1:0] target1=effect_mask[requested1] ? requested1 : 2'b11;
-    wire [1:0] target2=effect_mask[requested2] ? requested2 : 2'b11;
-    wire [1:0] slot0=visual_order[1:0], slot1=visual_order[3:2], slot2=visual_order[5:4];
-    wire slot_active0=slot0!=2'b11, slot_active1=slot1!=2'b11, slot_active2=slot2!=2'b11;
     wire [10:0] card_relative = pixel_x - 11'd64;
     // Two rows of sixteen 64-pixel slots share the waveform's 1024-pixel
     // width. Fixed bit slices avoid division/multiplication in tile lookup.
@@ -262,19 +315,34 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
                 text_x=1216;
                 if(pixel_y<800) begin text_line="L                               ";text_y=784;text_enable=1;end
                 if(pixel_y>=816) begin text_line="R                               ";text_y=816;text_enable=1;end
-            end else if(pixel_y>=840 && pixel_y<856 && pixel_x>=64 && pixel_x<1104) begin
+            end else if(pixel_y>=840 && pixel_y<856 && pixel_x>=64 && pixel_x<576) begin
                 text_line=EFFECT_TITLE;text_x=64;text_y=840;text_enable=1;
             end
-            // Bottom keyboard cards are intentionally replaced by the live serial effect chain.
-            if(pixel_y>=880 && pixel_y<896) begin
-                if(pixel_x>=64 && pixel_x<384) begin text_line=slot_active0 ? effect_name(slot0) : "EMPTY                           ";text_x=64;text_y=880;text_enable=1;end
-                if(pixel_x>=400 && pixel_x<720) begin text_line=slot_active1 ? effect_name(slot1) : "EMPTY                           ";text_x=400;text_y=880;text_enable=1;end
-                if(pixel_x>=736 && pixel_x<1056) begin text_line=slot_active2 ? effect_name(slot2) : "EMPTY                           ";text_x=736;text_y=880;text_enable=1;end
-            end
-            if(pixel_y>=912 && pixel_y<928) begin
-                if(pixel_x>=64 && pixel_x<384) begin text_line=slot_active0 ? "ON                              " : "OFF                             ";text_x=64;text_y=912;text_enable=1;end
-                if(pixel_x>=400 && pixel_x<720) begin text_line=slot_active1 ? "ON                              " : "OFF                             ";text_x=400;text_y=912;text_enable=1;end
-                if(pixel_x>=736 && pixel_x<1056) begin text_line=slot_active2 ? "ON                              " : "OFF                             ";text_x=736;text_y=912;text_enable=1;end
+        end
+        // Static numbered positions remain left-to-right 1, 2, 3. Effects
+        // entering/leaving the queue slide between these positions and the
+        // clipped right-hand parking position, carrying their labels.
+        if(pixel_y>=888 && pixel_y<904) begin
+            if(pixel_x>=80 && pixel_x<352) begin text_line="EMPTY                           ";text_x=80;text_y=888;text_enable=1;end
+            if(pixel_x>=416 && pixel_x<688) begin text_line="EMPTY                           ";text_x=416;text_y=888;text_enable=1;end
+            if(pixel_x>=752 && pixel_x<1024) begin text_line="EMPTY                           ";text_x=752;text_y=888;text_enable=1;end
+        end
+        if(pixel_y>=968 && pixel_y<984) begin
+            text_y=968;
+            if(pixel_x>=200 && pixel_x<216) begin text_line="1                               ";text_x=200;text_enable=1;end
+            if(pixel_x>=536 && pixel_x<552) begin text_line="2                               ";text_x=536;text_enable=1;end
+            if(pixel_x>=872 && pixel_x<888) begin text_line="3                               ";text_x=872;text_enable=1;end
+        end
+        if(effect_hit) begin
+            text_enable=0; hex_enable=0; voice_enable=0; large_text=0;
+            if(effect_relative>=16 && effect_relative<272) begin
+                if(pixel_y>=888 && pixel_y<904) begin
+                    text_line=effect_name(effect_id);text_y=888;text_enable=1;
+                end
+                if(pixel_y>=920 && pixel_y<936) begin
+                    text_line=visible_mask[effect_id] ? "ON                              " : "OFF                             ";
+                    text_y=920;text_enable=1;
+                end
             end
         end
         // Piano-key voice cards removed; this area is reserved for effect-chain status.
@@ -339,34 +407,33 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
                 if(a_x-11'd1248<a_right_width) next_background=32'h00f1c05a;
             end
         end
-        if (a_x >= 64 && a_x < 1088 && a_y >= 872 && a_y < 960) begin
-            // Narrow inter-card gaps carry an explicit right-pointing arrow.
-            // The arrow is rasterized here so every consumer of the DDR page
-            // sees the same chain direction without extra overlay logic.
-            if ((a_x >= 384 && a_x < 400) || (a_x >= 720 && a_x < 736)) begin
-                next_background = 32'h00101b2a;
-                if (a_y >= 917 && a_y <= 923 && a_x >= (a_x < 400 ? 386 : 722) && a_x <= (a_x < 400 ? 397 : 733))
-                    next_background = 32'h00e5f0fa;
-                if (a_y >= 913 && a_y <= 927 && a_x >= (a_x < 400 ? 394 : 730) && a_x <= (a_x < 400 ? 397 : 733) &&
-                    ((a_y <= 920 && a_x >= (a_x < 400 ? 394 + (920-a_y) : 730 + (920-a_y))) ||
-                     (a_y >= 920 && a_x >= (a_x < 400 ? 394 + (a_y-920) : 730 + (a_y-920)))))
-                    next_background = 32'h00e5f0fa;
-            end else if (a_x < 384) begin
-                next_background = slot_active0 ? 32'h00157d70 : 32'h00263a4f;
-                if(a_y==872 || a_y==959 || a_x==64 || a_x==383) next_background = anim_timer!=0 ? 32'h00f1c05a : (slot_active0 ? 32'h003cdbab : 32'h0049627a);
-            end else if (a_x >= 400 && a_x < 720) begin
-                next_background = slot_active1 ? 32'h00157d70 : 32'h00263a4f;
-                if(a_y==872 || a_y==959 || a_x==400 || a_x==719) next_background = anim_timer!=0 ? 32'h00f1c05a : (slot_active1 ? 32'h003cdbab : 32'h0049627a);
-            end else if (a_x >= 736 && a_x < 1056) begin
-                next_background = slot_active2 ? 32'h00157d70 : 32'h00263a4f;
-                if(a_y==872 || a_y==959 || a_x==736 || a_x==1055) next_background = anim_timer!=0 ? 32'h00f1c05a : (slot_active2 ? 32'h003cdbab : 32'h0049627a);
-            end else next_background = 32'h00101b2a;
+        if (a_y>=872 && a_y<960) begin
+            if((a_x>=64 && a_x<352) || (a_x>=400 && a_x<688) || (a_x>=736 && a_x<1024)) begin
+                next_background=32'h00172231;
+                if(a_y==872 || a_y==959 || a_x==64 || a_x==351 || a_x==400 || a_x==687 || a_x==736 || a_x==1023)
+                    next_background=32'h00314961;
+            end
+            // 48-pixel gaps leave enough room for a readable arrowhead.
+            if(a_y>=917 && a_y<=921 && ((a_x>=360 && a_x<=380) || (a_x>=696 && a_x<=716)))
+                next_background=32'h00e5f0fa;
+            if(a_y>=907 && a_y<=931 &&
+                (((a_x>=378 && a_x<=390) && (a_y>=919 ? a_y-11'd919 : 11'd919-a_y)<=11'd390-a_x) ||
+                 ((a_x>=714 && a_x<=726) && (a_y>=919 ? a_y-11'd919 : 11'd919-a_y)<=11'd726-a_x)))
+                next_background=32'h00e5f0fa;
+        end
+        if(a_effect_hit) begin
+            case(a_effect_id)
+                0:next_background=a_effect_edge ? 32'h003cdbab : 32'h00155b51;
+                1:next_background=a_effect_edge ? 32'h0066b9ef : 32'h001c4866;
+                default:next_background=a_effect_edge ? 32'h00f1c05a : 32'h00604720;
+            endcase
+            if(!a_effect_on) next_background=a_effect_edge ? 32'h006a7b8f : 32'h00263a4f;
         end
     end
 
     always @(posedge clk or negedge reset_n) begin
         if (!reset_n) begin
-            visual_order <= 6'b11_11_11; anim_timer <= 0;
+            a_effect_hit<=0; a_effect_edge<=0; a_effect_on<=0; a_effect_id<=0;
             a_text_line <= 0; a_text_index <= 0; a_font_column <= 0; a_font_row <= 0;
             a_text_enable <= 0; a_hex_enable <= 0; a_voice_enable <= 0;
             a_hex_word <= 0; a_hex_index <= 0; a_voice_character <= 0;
@@ -377,23 +444,9 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
             c_glyph <= 0; c_font_column <= 0; c_font_row <= 0; c_text_enable <= 0; c_background <= 0;
             pixel_data <= 0;
         end else if (enable) begin
-            // Advance one adjacent swap per video frame. This keeps the
-            // shuffle visible for humans while the card slots remain fixed
-            // left-to-right as 1, 2, 3.
-            if(pixel_x<11'd2 && pixel_y==11'd0) begin
-                if(slot0!=target0) begin
-                    anim_timer<=5'd15;
-                    if(slot1==target0) visual_order<={slot2,slot0,target0};
-                    else if(slot2==target0) visual_order<={slot0,slot1,target0};
-                    else visual_order<={slot2,slot1,target0};
-                end else if(slot1!=target1) begin
-                    anim_timer<=5'd15;
-                    if(slot2==target1) visual_order<={slot1,target1,slot0};
-                    else visual_order<={slot2,target1,slot0};
-                end else if(slot2!=target2) begin
-                    visual_order<={target2,slot1,slot0}; anim_timer<=5'd15;
-                end else if(anim_timer!=0) anim_timer<=anim_timer-1'b1;
-            end
+            a_effect_hit<=effect_hit; a_effect_id<=effect_id;
+            a_effect_on<=visible_mask[effect_id];
+            a_effect_edge<=effect_relative<2 || effect_relative>=286 || pixel_y<874 || pixel_y>=958;
             a_text_line <= text_line; a_text_index <= text_index;
             a_font_column <= font_column; a_font_row <= font_row; a_text_enable <= text_enable;
             a_hex_enable <= hex_enable; a_hex_word <= hex_word; a_hex_index <= hex_x[6:4];

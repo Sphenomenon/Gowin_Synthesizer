@@ -1,0 +1,76 @@
+{
+  "version": "P8 horizontal effect card motion and unique selection queue",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_172135_776685/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "3f8e3fa715e62455be37bc75c93646b050fb10e81b4ec32fbdb8bc6a59a3dd2f",
+  "usercode": "0x0000A64B",
+  "flash_written": false,
+  "previous_board": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_152219_472610/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "47c0217d09c31b9f6aa7fcf1668a662c5e5d2ffd43236556775ed5721f39a174",
+    "usercode": "0x00009893"
+  },
+  "protected_hotplug_baseline": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "0e5a3cd5d6641c76777d76e1b5f5feddf65d661586ef0de14587cf0e1f09c1af",
+    "usercode": "0x0000D50E"
+  },
+  "backup": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/workstation_backup_before_p8_slide_20260913_171147",
+  "changed_build_inputs": [
+    "src/video/feedback_dashboard.v",
+    "src/video/feedback_renderer.v",
+    "src/ae350/gw138k_event_workstation.sv"
+  ],
+  "frozen_inputs_verified": true,
+  "behavior": [
+    "Each effect retains its own x coordinate; one update per renderer frame-start, bounded at 32 pixels/frame and easing near target. Text, fill and border move together with shared occlusion. Fixed slot numbers 1/2/3 and arrows.",
+    "At one/two selected effects, repeated presses of an existing effect leave the queue unchanged. A full queue of three distinct effects restarts with the next press. Existing Push CC20-22 -> command87 -> unified arbiter path remains.",
+    "Unused slots are EMPTY; deselected cards slide to clipped parking position. One effect identity has one card. Effect title no longer wraps/repeats."
+  ],
+  "verification": {
+    "simulation": {
+      "passed": true,
+      "queue": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_172135_776685/p8_queue_172224/verification.json",
+      "motion": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_172135_776685/p8_slide_172224/verification.json",
+      "pixels": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_172135_776685/p8_slide_172224/pixel_verification.json",
+      "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_172135_776685/cpu_audio_sim_172224_823653/verification.json"
+    },
+    "synthesis_pnr": {
+      "passed": true,
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "tool_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_172135_776685/tool_result.json"
+    },
+    "legacy_routed_audit": {
+      "passed": false,
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_172135_776685/usb_a_audit.json",
+      "reason": "Existing effect-mask display CDC RESET exceptions are outside the legacy stopped-clock DDR/video reset audit inventory. Six DFFRE meta/sync registers and their reset source topology match P7. This is an unresolved audit coverage gap, not a passed reset timing proof."
+    },
+    "sram": {
+      "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_172135_776685/Prj1/impl/pnr/Prj1.fs",
+      "sha256": "3f8e3fa715e62455be37bc75c93646b050fb10e81b4ec32fbdb8bc6a59a3dd2f",
+      "from_code": "0x00009893",
+      "usercode": "0x0000A64B",
+      "fpga_flash_written": false,
+      "operations": [
+        {
+          "name": "before",
+          "passed": true
+        },
+        {
+          "name": "sram",
+          "passed": true
+        },
+        {
+          "name": "after",
+          "passed": true
+        }
+      ]
+    },
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_173548_448112/result.json",
+    "pre_download_telemetry": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260913_172529_515843/result.json",
+    "post_download_telemetry": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260913_173645_203850/runtime_summary.json",
+    "physical_hdmi_headphones_push_acceptance": "pending user acceptance; telemetry and RTL preview are not physical acceptance"
+  },
+  "audio_limitation": "Repeated selections previously changed the UI queue but enabled only one effect mask bit: no repeated audio cascade. Current stereo_effects receives no effect_order and sums wet contributions; custom serial audio ordering remains unimplemented. P8 does not claim P3 completion.",
+  "rtl_preview": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_172135_776685/p8_slide_172224/effect_slide_rtl.gif"
+}

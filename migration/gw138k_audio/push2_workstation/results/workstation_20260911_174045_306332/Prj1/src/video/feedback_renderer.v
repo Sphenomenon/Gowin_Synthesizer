@@ -104,6 +104,7 @@ module feedback_renderer #(
     );
     feedback_dashboard #(.ENABLE_ANALYSIS(ENABLE_ANALYSIS)) u_even (
         .clk(clk), .reset_n(rst_n), .enable(pipeline_enable),
+        .frame_start(advance && issue_x==0 && issue_y==0),
         .pixel_x(read_x), .pixel_y(read_y), .wave_sample(wave_data), .wave_previous(previous_wave_data),
         .peak_data(snapshot_peak), .active_voices(snapshot_voices), .status_data(snapshot_status), .effect_mask(frame_effect_mask), .effect_order(frame_effect_order),
         .waveform_held(waveform_held),
@@ -116,6 +117,7 @@ module feedback_renderer #(
     );
     feedback_dashboard #(.ENABLE_ANALYSIS(ENABLE_ANALYSIS)) u_odd (
         .clk(clk), .reset_n(rst_n), .enable(pipeline_enable),
+        .frame_start(advance && issue_x==0 && issue_y==0),
         .pixel_x(read_x+11'd1), .pixel_y(read_y), .wave_sample(wave_data), .wave_previous(previous_wave_data),
         .peak_data(snapshot_peak), .active_voices(snapshot_voices), .status_data(snapshot_status), .effect_mask(frame_effect_mask), .effect_order(frame_effect_order),
         .waveform_held(waveform_held),
