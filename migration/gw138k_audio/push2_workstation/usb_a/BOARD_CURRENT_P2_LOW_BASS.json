@@ -1,0 +1,23 @@
+{
+  "updated": "2026-09-13T10:23:38+08:00",
+  "version": "D50E P2 low-bass display trigger fix",
+  "baseline_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/impl/pnr/Prj1.fs",
+  "baseline_sha256": "0e5a3cd5d6641c76777d76e1b5f5feddf65d661586ef0de14587cf0e1f09c1af",
+  "candidate_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_101220_117700/Prj1/impl/pnr/Prj1.fs",
+  "candidate_sha256": "795ceada81d9aa92fafe94642a8fd7d3b4d9fd4fc4e2a8a36b7949d9ef9af2be",
+  "from_usercode": "0x0000D50E",
+  "to_usercode": "0x00008120",
+  "program_mode": "SRAM only",
+  "flash_written": false,
+  "program_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_102338_526652",
+  "physical_port": "J18 USB-A",
+  "ch569_used": false,
+  "change": "feedback_renderer feedback_capture TRIGGER_TIMEOUT_SAMPLES 256 -> 8192; no audio/DDS/HDMI/DDR/Push path changes",
+  "simulation": {
+    "status": "passed",
+    "test": "p2_trigger_timeout_tb",
+    "result": "256 timeout published at 768 samples; 8192 candidate waited to 5109 samples on MIDI-0-like low-bass phase step"
+  },
+  "pnr": {"status": "passed", "setup_violated_endpoints": 0, "hold_violated_endpoints": 0},
+  "hardware_acceptance": "pending user HDMI/earphone/Push验收"
+}
