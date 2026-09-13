@@ -26,6 +26,7 @@ module feedback_renderer #(
     input wire [31:0] trigger_reference,
     input wire [31:0] active_voices,
     input wire [31:0] status_data,
+    input wire [2:0] effect_mask,
     input wire [31:0] memory_status,
     input wire [31:0] underruns,
     input wire [31:0] frame_count
@@ -42,6 +43,7 @@ module feedback_renderer #(
     reg [4:0] valid_pipe, last_pipe;
     reg all_issued;
     reg [31:0] frame_memory_status, frame_underruns, frame_framecount;
+    reg [2:0] frame_effect_mask;
     reg [31:0] previous_wave_data;
     wire pipeline_enable = !pixel_valid || pixel_ready;
     wire advance = busy && !all_issued && pipeline_enable;
@@ -96,7 +98,7 @@ module feedback_renderer #(
     feedback_dashboard #(.ENABLE_ANALYSIS(ENABLE_ANALYSIS)) u_even (
         .clk(clk), .reset_n(rst_n), .enable(pipeline_enable),
         .pixel_x(read_x), .pixel_y(read_y), .wave_sample(wave_data), .wave_previous(previous_wave_data),
-        .peak_data(snapshot_peak), .active_voices(snapshot_voices), .status_data(snapshot_status),
+        .peak_data(snapshot_peak), .active_voices(snapshot_voices), .status_data(snapshot_status), .effect_mask(frame_effect_mask),
         .waveform_held(waveform_held),
         .spectrum_left(spectrum_left),.spectrum_right(spectrum_right),.image_hit(image_hit),
         .peak_left(peak_left),.peak_right(peak_right),.image_gain(image_gain),
@@ -108,7 +110,7 @@ module feedback_renderer #(
     feedback_dashboard #(.ENABLE_ANALYSIS(ENABLE_ANALYSIS)) u_odd (
         .clk(clk), .reset_n(rst_n), .enable(pipeline_enable),
         .pixel_x(read_x+11'd1), .pixel_y(read_y), .wave_sample(wave_data), .wave_previous(previous_wave_data),
-        .peak_data(snapshot_peak), .active_voices(snapshot_voices), .status_data(snapshot_status),
+        .peak_data(snapshot_peak), .active_voices(snapshot_voices), .status_data(snapshot_status), .effect_mask(frame_effect_mask),
         .waveform_held(waveform_held),
         .spectrum_left(spectrum_left),.spectrum_right(spectrum_right),.image_hit(image_hit),
         .peak_left(peak_left),.peak_right(peak_right),.image_gain(image_gain),
@@ -122,7 +124,7 @@ module feedback_renderer #(
             busy <= 0; frame_done <= 0; valid_pipe <= 0; last_pipe <= 0; all_issued <= 0;
             issue_x <= 0; issue_y <= 0; read_x <= 0; read_y <= 0;
             a_x <= 0; a_y <= 0; b_x <= 0; b_y <= 0; c_x <= 0; c_y <= 0; output_x <= 0; output_y <= 0;
-            frame_memory_status <= 0; frame_underruns <= 0; frame_framecount <= 0;
+            frame_memory_status <= 0; frame_underruns <= 0; frame_framecount <= 0; frame_effect_mask <= 0;
             previous_wave_data <= 0;
             aligned_ready <= 0;
         end else begin
@@ -135,6 +137,7 @@ module feedback_renderer #(
                 frame_memory_status <= memory_status;
                 frame_underruns <= underruns;
                 frame_framecount <= frame_count;
+                frame_effect_mask <= effect_mask;
             end
             // RAM read plus dashboard stages A/B/C/D move as a single stopped
             // pipeline. No beat can overtake a stalled output, including last.

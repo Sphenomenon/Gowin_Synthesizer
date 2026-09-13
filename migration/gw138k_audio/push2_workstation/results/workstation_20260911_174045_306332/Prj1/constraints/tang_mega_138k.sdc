@@ -115,6 +115,8 @@ set_false_path -hold -from [get_regs {u_managed/u_audio/u_midi_cdc/held_data*}] 
 set_max_delay 20.000 -from [get_regs {u_managed/u_audio/u_display_cdc/held_data*}] -to [get_regs {u_managed/u_audio/u_display_cdc/destination_data*}]
 set_false_path -hold -from [get_regs {u_managed/u_audio/u_display_cdc/held_data*}] -to [get_regs {u_managed/u_audio/u_display_cdc/destination_data*}]
 set_false_path -to [get_pins {u_managed/u_audio/u_midi_cdc/req_meta*/D u_managed/u_audio/u_midi_cdc/ack_meta*/D u_managed/u_audio/u_display_cdc/req_meta*/D u_managed/u_audio/u_display_cdc/ack_meta*/D}]
+set_false_path -to [get_pins {u_managed/effect_mask_meta*/D}]
+set_false_path -to [get_pins {u_managed/effect_mask_meta*/CLEAR u_managed/effect_mask_sync*/CLEAR}]
 # Identical mailbox release pipelines are merged into u_managed/u_audio/reset_50_pipe
 # and reset_audio_pipe by synthesis; the surviving entry points are above.
 report_timing -setup -from_clock [get_clocks {audio_76m8}] -to_clock [get_clocks {audio_76m8}] -max_paths 25

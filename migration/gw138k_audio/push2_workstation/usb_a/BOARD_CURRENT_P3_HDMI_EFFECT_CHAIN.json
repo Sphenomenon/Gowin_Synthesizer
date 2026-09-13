@@ -1,0 +1,45 @@
+{
+  "record": "BOARD_CURRENT_P3_HDMI_EFFECT_CHAIN",
+  "date": "2026-09-13",
+  "status": "hardware_acceptance_pending",
+  "baseline": {
+    "label": "P3 accepted serial effects candidate",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_103610_459754/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "9004772d66d7bd9223acacbb4bdb36c49f41fcce6a6089cc9126d6c71fb22259",
+    "usercode": "0x0000A685"
+  },
+  "candidate": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_113014_673528/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "09ec4d732dc3f68c8fcc5d2577b891c8c93fa70a9e9cbe37de230f843a89b6d8",
+    "usercode": "0x00002EED",
+    "build_dir": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_113014_673528"
+  },
+  "change": "HDMI analysis dashboard bottom keyboard cards removed and replaced by serial effect-chain tiles: DELAY -> CHORUS -> REVERB with per-stage ON/OFF status. Effect mask is synchronized into clk_50m and latched once per DDR frame; waveform, Lissajous image, spectrum and existing status panels retained.",
+  "verification": {
+    "dashboard_tb": "PASS: tb_feedback_dashboard; effect tiles, ON/OFF colors, glyph pipeline and stopped pipeline",
+    "cpu_rtl_sim": "PASS: cpu_audio_sim_20260913_110835_868529; 3696 frames, 3574 nonzero, ABC/5 sounds/FX7/vibrato/glide/bend/routes/release",
+    "gowin_build": "PASS: exit_code 0; inputs_unchanged true",
+    "pnr_setup_violated_endpoints": 0,
+    "pnr_hold_violated_endpoints": 0,
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_114004_556602/result.json",
+    "sram_before_readback": true,
+    "sram_write_readback": true,
+    "sram_after_readback": true,
+    "flash_written": false
+  },
+  "hardware": {
+    "board": "NEO Dock 31005 / GW5AST-LV138PG484AC2/I1",
+    "push_path": "J18 USB-A",
+    "ch569_used": false,
+    "acceptance_pending": true,
+    "test_matrix": [
+      "HDMI waveform remains visible",
+      "HDMI Lissajous image remains visible",
+      "HDMI spectrum remains visible",
+      "bottom area shows DELAY -> CHORUS -> REVERB",
+      "toggle each effect and verify ON/OFF tile status",
+      "verify serial combinations including FX7",
+      "headphone audio, Push lights/screen/MIDI remain functional"
+    ]
+  }
+}

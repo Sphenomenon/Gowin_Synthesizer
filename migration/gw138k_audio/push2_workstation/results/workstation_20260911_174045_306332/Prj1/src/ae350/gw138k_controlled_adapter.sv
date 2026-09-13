@@ -37,7 +37,8 @@ module gw138k_controlled_adapter (
     // Entire observation tuple is atomically delivered in clk_50m domain.
     output wire display_valid_o,
     output wire [31:0] display_pcm_o, display_reference_o, display_voices_o,
-    output wire [31:0] display_status_o
+    output wire [31:0] display_status_o,
+    output wire [2:0] effect_mask_o
 );
     // Permit a board-level asynchronous assertion; every functional domain
     // releases locally, including UART after an audio PLL restart.
@@ -85,6 +86,7 @@ module gw138k_controlled_adapter (
     wire [21:0] pitch;
     wire [15:0] synth_gain, pcm_gain;
     wire [2:0] effect_mask;
+    assign effect_mask_o=effect_mask;
     wire synth_valid, clip;
     wire signed [31:0] synth;
     gw138k_event_workstation #(.SAMPLE_RATE_HZ(48000)) u_workstation(

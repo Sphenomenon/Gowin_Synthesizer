@@ -4,11 +4,12 @@ module tb_feedback_dashboard;
     always #5 clk=~clk;
     reg [10:0] x=0,y=0;
     reg [31:0] sample_data=0,previous=0,peak=0,voices=0,status=0;
+    reg [2:0] effect_mask=0;
     reg waveform_held=0;
     wire [31:0] pixel;
     feedback_dashboard dut(.clk(clk),.reset_n(reset_n),.enable(enable),.pixel_x(x),.pixel_y(y),.wave_sample(sample_data),.wave_previous(previous),
         .waveform_held(waveform_held),
-        .peak_data(peak),.active_voices(voices),.status_data(32'h0),.sequence_data(32'h0),
+        .peak_data(peak),.active_voices(voices),.status_data(32'h0),.effect_mask(effect_mask),.sequence_data(32'h0),
         .skipped_data(32'h0),.memory_status(status),.underruns(32'h0),.framecount(32'h0),.pixel_data(pixel));
     reg [7:0] reference_character=8'hff;
     reg [2:0] reference_column=0,reference_row=0;
@@ -59,30 +60,13 @@ module tb_feedback_dashboard;
         status=1;at(1800,440,32'h00f1c05a);
         status=3;at(1800,440,32'h003cdbab);
         status=7;at(1800,440,32'h00ef6572);
-        // Every voice must light exactly its own tile, including high bits.
-        for(voice_index=0;voice_index<32;voice_index=voice_index+1) begin
-            voices=32'h1 << voice_index;
-            for(tile_index=0;tile_index<32;tile_index=tile_index+1) begin
-                tile_x=64+64*(tile_index%16); tile_y=880+48*(tile_index/16);
-                at(tile_x+4,tile_y+30,voice_index==tile_index ? 32'h00157d70 : 32'h00263a4f);
-                at(tile_x+4,tile_y+1,voice_index==tile_index ? 32'h003cdbab : 32'h0049627a);
-            end
-        end
-        voices=0;
-        for(voice_index=0;voice_index<32;voice_index=voice_index+1) begin
-            tile_x=64+64*(voice_index%16); tile_y=880+48*(voice_index/16);
-            at(tile_x+60,tile_y+30,32'h00101b2a); // Horizontal separation.
-            at(tile_x+4,tile_y+44,32'h00101b2a);  // Vertical separation.
-            for(digit_index=0;digit_index<2;digit_index=digit_index+1) begin
-                reference_character=8'h30+(digit_index==0 ? (voice_index+1)/10 : (voice_index+1)%10);
-                for(row_index=0;row_index<8;row_index=row_index+1)
-                    for(column_index=0;column_index<8;column_index=column_index+1) begin
-                        reference_row=row_index; reference_column=column_index; #1;
-                        at(tile_x+16+16*digit_index+2*column_index,tile_y+12+2*row_index,
-                           reference_ink ? 32'h00e5f0fa : 32'h00263a4f);
-                    end
-            end
-        end
+        // Effect-chain tiles replace the former piano-key cards.
+        effect_mask=3'b000;
+        at(68,900,32'h00263a4f); at(68,872,32'h0049627a);
+        effect_mask=3'b101;
+        at(68,900,32'h00157d70); at(68,872,32'h003cdbab);
+        at(404,900,32'h00263a4f); at(404,872,32'h0049627a);
+        at(740,900,32'h00157d70); at(740,872,32'h003cdbab);
         // The status word must retain all eight nibbles, not only voices 0..7.
         voices=32'h89abcdef;
         for(digit_index=0;digit_index<8;digit_index=digit_index+1) begin
@@ -95,7 +79,6 @@ module tb_feedback_dashboard;
                        reference_ink ? 32'h00e5f0fa : 32'h00101b2a);
                 end
         end
-        voices=1;at(70,910,32'h00157d70);at(134,910,32'h00263a4f);
         @(negedge clk); enable=0; x=64; y=48;
         repeat(5) @(posedge clk);
         #1; if(pixel!==32'h00263a4f) $fatal(1,"dashboard pipeline changed while stopped");

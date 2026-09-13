@@ -46,6 +46,7 @@ module gw138k_push_workstation_top (
         .usb_dp(usb1_dp),.usb_dm(usb1_dn),.mmio_select(mmio_select),.mmio_write(mmio_write),
         .mmio_address(mmio_address),.mmio_wdata(mmio_wdata),.mmio_ready(mmio_ready),.mmio_rdata(mmio_rdata));
     wire [31:0] output_pcm,output_reference,active_voices,display_status;
+    wire [2:0] effect_mask;
     wire output_sample_valid;
     wire audio_sample_valid;
     wire memory_clk,memory_reset_n,memory_calibrated,memory_pll_locked;
@@ -94,7 +95,7 @@ module gw138k_push_workstation_top (
         .hp_bck(hp_bck),.hp_ws(hp_ws),.hp_din(hp_din),.pa_en(pa_en),
         .sample_valid_o(audio_sample_valid),
         .display_valid_o(output_sample_valid),.display_pcm_o(output_pcm),.display_reference_o(output_reference),
-        .display_voices_o(active_voices),.display_status_o(display_status));
+        .display_voices_o(active_voices),.display_status_o(display_status),.effect_mask_o(effect_mask));
     wire signed [16:0] output_mid_pcm=$signed({output_pcm[31],output_pcm[31:16]})+
                                             $signed({output_pcm[15],output_pcm[15:0]});
     wire signed [31:0] output_mid={output_mid_pcm,15'd0};
@@ -143,7 +144,7 @@ module gw138k_push_workstation_top (
         .app_wrdy(app_wrdy),.app_rdata(app_rdata),.app_rvalid(app_rvalid),.memory_flags(memory_flags),
         .sample_data(output_mid), .sample_valid(output_sample_valid),.output_pcm(output_pcm),
         .trigger_reference(output_reference),
-        .active_voices(active_voices), .status_data(display_status),
+        .active_voices(active_voices), .status_data(display_status), .effect_mask(effect_mask),
         .tmds_clk_p(tmds_clk_p), .tmds_clk_n(tmds_clk_n),
         .tmds_data_p(tmds_data_p), .tmds_data_n(tmds_data_n)
     );

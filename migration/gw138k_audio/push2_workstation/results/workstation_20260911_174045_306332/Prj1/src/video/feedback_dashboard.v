@@ -20,6 +20,7 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
     input wire [31:0] peak_data,
     input wire [31:0] active_voices,
     input wire [31:0] status_data,
+    input wire [2:0] effect_mask,
     input wire [31:0] sequence_data,
     input wire [31:0] skipped_data,
     input wire [31:0] memory_status,
@@ -35,6 +36,7 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
     localparam [255:0] SOURCE = "48000 HZ / HEADPHONE            ";
     localparam [255:0] DDR = "DDR FRAMEBUFFER                 ";
     localparam [255:0] VOICES = "32 VOICES / ACTIVE AND RELEASE  ";
+    localparam [255:0] EFFECT_TITLE = "EFFECT CHAIN / DELAY -> CHORUS -> REVERB";
     localparam [255:0] FOOTER = "LIVE AUDIO / UART CONTROL       ";
     reg [255:0] text_line;
     reg [10:0] text_x, text_y;
@@ -263,8 +265,8 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
                 text_x=1216;
                 if(pixel_y<800) begin text_line="L                               ";text_y=784;text_enable=1;end
                 if(pixel_y>=816) begin text_line="R                               ";text_y=816;text_enable=1;end
-            end else if(pixel_y>=840 && pixel_y<856 && pixel_x>=64 && pixel_x<576) begin
-                text_line=VOICES;text_y=840;text_enable=1;
+            end else if(pixel_y>=840 && pixel_y<856 && pixel_x>=64 && pixel_x<1104) begin
+                text_line=EFFECT_TITLE;text_x=64;text_y=840;text_enable=1;
             end else if(pixel_y>=848 && pixel_y<960 && pixel_x>=1248 && pixel_x<1760) begin
                 text_x=1248;
                 if(pixel_y<864) begin text_line="MEM STATUS                      ";text_y=848;hex_word=memory_status;text_enable=1;end
@@ -280,15 +282,19 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
                 if(pixel_x>=1216 && pixel_x<1728) begin text_line="DROPPED                         ";text_x=1216;hex_word=analysis_skipped;text_enable=1;
                     if(pixel_x>=1536 && pixel_x<1664) begin hex_enable=1;hex_x=pixel_x-11'd1536;end end
             end
+            // Bottom keyboard cards are intentionally replaced by the live serial effect chain.
+            if(pixel_y>=880 && pixel_y<896) begin
+                if(pixel_x>=64 && pixel_x<384) begin text_line="DELAY                           ";text_x=64;text_y=880;text_enable=1;end
+                if(pixel_x>=400 && pixel_x<720) begin text_line="CHORUS                          ";text_x=400;text_y=880;text_enable=1;end
+                if(pixel_x>=736 && pixel_x<1056) begin text_line="REVERB                          ";text_x=736;text_y=880;text_enable=1;end
+            end
+            if(pixel_y>=912 && pixel_y<928) begin
+                if(pixel_x>=64 && pixel_x<384) begin text_line=effect_mask[0] ? "ON                              " : "OFF                             ";text_x=64;text_y=912;text_enable=1;end
+                if(pixel_x>=400 && pixel_x<720) begin text_line=effect_mask[1] ? "ON                              " : "OFF                             ";text_x=400;text_y=912;text_enable=1;end
+                if(pixel_x>=736 && pixel_x<1056) begin text_line=effect_mask[2] ? "ON                              " : "OFF                             ";text_x=736;text_y=912;text_enable=1;end
+            end
         end
-        if (pixel_y >= 880 && pixel_y < 968 && card_y >= 12 && card_y < 28 &&
-            pixel_x >= 64 && pixel_x < 1088 && card_relative[5:0] >= 16 && card_relative[5:0] < 48) begin
-            text_enable = 1;
-            text_x = 11'd80 + {1'b0,voice_index[3:0],6'b000000};
-            text_y = voice_row ? 11'd940 : 11'd892;
-            voice_enable = 1;
-            voice_character = 8'h30 + (card_relative[4] ? {4'd0,voice_tens} : {2'd0,voice_ones});
-        end
+        // Piano-key voice cards removed; this area is reserved for effect-chain status.
     end
 
     always @* begin
@@ -350,11 +356,17 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
                 if(a_x-11'd1248<a_right_width) next_background=32'h00f1c05a;
             end
         end
-        if (a_x >= 64 && a_x < 1088 && a_card_relative[5:0] < 56 &&
-            ((a_y >= 880 && a_y < 920) || (a_y >= 928 && a_y < 968))) begin
-            next_background = a_voice_active ? 32'h00157d70 : 32'h00263a4f;
-            if (a_y < 884 || (a_y >= 928 && a_y < 932))
-                next_background = a_voice_active ? 32'h003cdbab : 32'h0049627a;
+        if (a_x >= 64 && a_x < 1088 && a_y >= 872 && a_y < 960) begin
+            if (a_x < 384) begin
+                next_background = effect_mask[0] ? 32'h00157d70 : 32'h00263a4f;
+                if(a_y==872 || a_y==959 || a_x==64 || a_x==383) next_background = effect_mask[0] ? 32'h003cdbab : 32'h0049627a;
+            end else if (a_x >= 400 && a_x < 720) begin
+                next_background = effect_mask[1] ? 32'h00157d70 : 32'h00263a4f;
+                if(a_y==872 || a_y==959 || a_x==400 || a_x==719) next_background = effect_mask[1] ? 32'h003cdbab : 32'h0049627a;
+            end else if (a_x >= 736 && a_x < 1056) begin
+                next_background = effect_mask[2] ? 32'h00157d70 : 32'h00263a4f;
+                if(a_y==872 || a_y==959 || a_x==736 || a_x==1055) next_background = effect_mask[2] ? 32'h003cdbab : 32'h0049627a;
+            end else next_background = 32'h00101b2a;
         end
     end
 

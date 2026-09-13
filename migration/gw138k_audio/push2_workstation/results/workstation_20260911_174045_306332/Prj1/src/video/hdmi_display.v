@@ -10,6 +10,7 @@ module hdmi_display (
     input wire [31:0] output_pcm,
     input wire [31:0] trigger_reference,
     input wire [31:0] active_voices, status_data,
+    input wire [2:0] effect_mask,
     input wire memory_clk, memory_reset_n, memory_calibrated, memory_pll_locked,
     input wire ui_pending,ui_visible,ui_next_visible,
     input wire [28:0] ui_front_base,ui_next_base,
@@ -106,7 +107,7 @@ module hdmi_display (
         .source_reset_n(source_reset_pipe[2]),.sample_data(sample_data),.sample_valid(sample_valid),
         .output_pcm(output_pcm),
         .trigger_reference(trigger_reference),
-        .active_voices(active_voices),.status_data(status_data),.memory_status(memory_status),
+        .active_voices(active_voices),.status_data(status_data),.effect_mask(effect_mask),.memory_status(memory_status),
         .underruns(underruns),.frame_count(rendered_frames)
     );
     wire write_req,write_ready,read_req,read_ready;

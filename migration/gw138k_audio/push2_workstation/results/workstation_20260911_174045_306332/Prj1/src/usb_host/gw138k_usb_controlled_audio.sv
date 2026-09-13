@@ -24,7 +24,8 @@ module gw138k_usb_controlled_audio (
     output wire [31:0] record_drop_o, led_mask_o, score_frame_o,
     output wire score_running_o, score_done_o,
     output wire display_valid_o,
-    output wire [31:0] display_pcm_o, display_reference_o, display_voices_o, display_status_o
+    output wire [31:0] display_pcm_o, display_reference_o, display_voices_o, display_status_o,
+    output wire [2:0] effect_mask_o
 );
     wire command_reset_n,command_valid,command_ready,command_write,response_error;
     wire [11:0] command_address;
@@ -70,6 +71,14 @@ module gw138k_usb_controlled_audio (
         .score_running(score_running_o),.score_done(score_done_o),.led_mask(led_mask_o),.score_frame(score_frame_o));
     wire merged_valid,merged_ready;
     wire [17:0] merged_data;
+    // Cross the three-bit effect state into clk_50m before it reaches the DDR/video domain.
+    // This keeps the HDMI status path coherent without timing audio_clk directly against ddr_ui100.
+    wire [2:0] effect_mask_audio;
+    (* ASYNC_REG="TRUE" *) reg [2:0] effect_mask_meta, effect_mask_sync;
+    always @(posedge clk_50m or negedge reset_n)
+        if(!reset_n) begin effect_mask_meta<=0; effect_mask_sync<=0; end
+        else begin effect_mask_meta<=effect_mask_audio; effect_mask_sync<=effect_mask_meta; end
+    assign effect_mask_o=effect_mask_sync;
     // Fair registered merge; no CPU clock/reset dependency in USB -> audio.
     gw138k_three_event_arbiter u_usb_cpu_events(
         .clk(audio_clk),.reset_n(reset_n),
@@ -94,5 +103,5 @@ module gw138k_usb_controlled_audio (
         .score_length_i(score_length),.score_start_i(score_start),.score_stop_i(score_stop),
         .score_running_o(score_running_o),.score_done_o(score_done_o),.led_mask_o(led_mask_o),.score_frame_o(score_frame_o),
         .display_valid_o(display_valid_o),.display_pcm_o(display_pcm_o),.display_reference_o(display_reference_o),
-        .display_voices_o(display_voices_o),.display_status_o(display_status_o));
+        .display_voices_o(display_voices_o),.display_status_o(display_status_o),.effect_mask_o(effect_mask_audio));
 endmodule
