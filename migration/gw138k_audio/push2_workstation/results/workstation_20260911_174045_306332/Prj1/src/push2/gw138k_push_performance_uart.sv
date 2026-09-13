@@ -145,11 +145,11 @@ module gw138k_push_performance_uart #(
                     if(character==82) begin
                         if(record_kind==5)state<=IDLE;
                         else if(record_kind==4)begin
-                            record_kind<=5;payload<={usb_snapshot,sequence_count-32'd1};
+                            record_kind<=5;payload<={push_words,sequence_count-32'd1};
                             crc<=16'hffff;crc_index<=0;state<=CRC;
                         end
                         else if(record_kind==3)begin
-                            record_kind<=4;payload<={224'd0,sequence_count-32'd1};
+                            record_kind<=4;payload<={usb_snapshot,sequence_count-32'd1};
                             crc<=16'hffff;crc_index<=0;state<=CRC;
                         end
                         else if(record_kind==2)begin

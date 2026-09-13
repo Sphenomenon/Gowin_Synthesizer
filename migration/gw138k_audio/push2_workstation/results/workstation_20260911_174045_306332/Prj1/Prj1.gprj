@@ -75,24 +75,25 @@
         <File path="src/ae350/riscv_ae350_top.v" type="file.verilog" enable="1" />
         <File path="src/usb_host/gw138k_usb_controlled_audio.sv" type="file.verilog" enable="1" />
         <File path="src/usb_host/gw138k_usb_event_fifo.v" type="file.verilog" enable="1" />
+        <File path="src/usb_host/gw138k_usb_host_core.v" type="file.verilog" enable="1" />
+        <File path="src/usb_host/gw138k_usb_midi_host.sv" type="file.verilog" enable="1" />
+        <File path="src/usb_host/gw138k_usb_performance_uart.sv" type="file.verilog" enable="1" />
+        <File path="src/usb_host/gw138k_usb_workstation_top.v" type="file.verilog" enable="1" />
+        <File path="src/usb_host/usb_fs_phy.v" type="file.verilog" enable="1" />
+        <File path="src/usb_host/usb_midi_event_decoder.sv" type="file.verilog" enable="1" />
         <File path="src/push2/gw138k_push_performance_uart.sv" type="file.verilog" enable="1" />
         <File path="src/push2/gw138k_push_workstation_top.v" type="file.verilog" enable="1" />
         <File path="src/push2/push2_controls.sv" type="file.verilog" enable="1" />
+        <File path="src/push2/push2_display_tx.sv" type="file.verilog" enable="1" />
+        <File path="src/push2/push2_driver_core.sv" type="file.verilog" enable="1" />
+        <File path="src/push2/push2_host_gate.sv" type="file.verilog" enable="1" />
+        <File path="src/push2/push2_hspi_link.sv" type="file.verilog" enable="1" />
         <File path="src/push2/push2_led_tx.sv" type="file.verilog" enable="1" />
         <File path="src/push2/push2_lights.sv" type="file.verilog" enable="1" />
         <File path="src/push2/push2_midi_rx.sv" type="file.verilog" enable="1" />
+        <File path="src/push2/push2_out_scheduler.sv" type="file.verilog" enable="1" />
+        <File path="src/push2/push2_surface.sv" type="file.verilog" enable="1" />
         <File path="src/push2/push2_surface_pixels.sv" type="file.verilog" enable="1" />
-        <File path="src/usb_a/VexRiscv.v" type="file.verilog" enable="1" />
-        <File path="src/usb_a/iosys2.v" type="file.verilog" enable="1" />
-        <File path="src/usb_a/push2_usb_a_control.sv" type="file.verilog" enable="1" />
-        <File path="src/usb_a/simpleuart.v" type="file.verilog" enable="1" />
-        <File path="src/usb_a/usb_fs_phy.v" type="file.verilog" enable="1" />
-        <File path="src/usb_a/usb_transceiver.v" type="file.verilog" enable="1" />
-        <File path="src/usb_a/usbh_core.sv" type="file.verilog" enable="1" />
-        <File path="src/usb_a/usbh_crc16.sv" type="file.verilog" enable="1" />
-        <File path="src/usb_a/usbh_crc5.sv" type="file.verilog" enable="1" />
-        <File path="src/usb_a/usbh_fifo.sv" type="file.verilog" enable="1" />
-        <File path="src/usb_a/usbh_host_defs.v" type="file.verilog" enable="1" />
-        <File path="src/usb_a/usbh_sie.sv" type="file.verilog" enable="1" />
+        <File path="src/push2/push_hspi_phy.sv" type="file.verilog" enable="1" />
     </FileList>
 </Project>

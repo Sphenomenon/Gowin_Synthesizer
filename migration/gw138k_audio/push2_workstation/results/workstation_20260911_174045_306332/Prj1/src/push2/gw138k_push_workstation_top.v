@@ -2,6 +2,9 @@
 // Independent C-revision migration candidate. Original Prj1 top is retained.
 // G1 MIDI is on a separate expansion pin; BL616 V14 is not reused.
 module gw138k_push_workstation_top (
+    output wire push_htclk,push_htreq,push_htvld,
+    input wire push_htrdy,push_hrclk,push_hrreq,push_hrvld,
+    output wire push_hrack,inout wire [15:0] push_hd,
     inout wire usb1_dp,usb1_dn,
     input wire clk_50m,
     input wire button1_n,
@@ -39,12 +42,23 @@ module gw138k_push_workstation_top (
     always @(posedge usb_clk or negedge usb_qualified)
         if(!usb_qualified)usb_release<=0;else usb_release<={usb_release[2:0],1'b1};
     wire usb_reset_n=usb_release[3];
-    wire mmio_select,mmio_write,mmio_ready;
-    wire [7:0] mmio_address;wire [31:0] mmio_wdata,mmio_rdata;
-    wire [223:0] usb_words;
-    iosys2 u_usb_host(.clk(usb_clk),.resetn(usb_reset_n),.uart_rx(1'b1),.uart_tx(),
-        .usb_dp(usb1_dp),.usb_dm(usb1_dn),.mmio_select(mmio_select),.mmio_write(mmio_write),
-        .mmio_address(mmio_address),.mmio_wdata(mmio_wdata),.mmio_ready(mmio_ready),.mmio_rdata(mmio_rdata));
+    wire usb_event_valid,usb_event_ready,usb_ready,usb_failed;
+    wire [17:0] usb_event_data;
+    wire [31:0] usb_packets,usb_crc_errors,usb_duplicates,usb_malformed_packets,
+                usb_accepted,usb_malformed,usb_restarts;
+    wire [24:0] usb_endpoint;
+    wire [4:0] usb_phy_diagnostics;
+    gw138k_usb_midi_host u_usb_host(
+        .usb_clk(usb_clk),.audio_clk(audio_clk),.reset_n(usb_reset_n),
+        .usb_dp(usb1_dp),.usb_dn(usb1_dn),
+        .event_valid(usb_event_valid),.event_ready(usb_event_ready),.event_data(usb_event_data),
+        .ready(usb_ready),.failed(usb_failed),.packets(usb_packets),.duplicates(usb_duplicates),
+        .crc_errors(usb_crc_errors),.malformed_packets(usb_malformed_packets),
+        .accepted(usb_accepted),.malformed(usb_malformed),.restarts(usb_restarts),
+        .endpoint_status(usb_endpoint),.phy_diagnostics(usb_phy_diagnostics));
+    wire [31:0] usb_bad_packets=usb_malformed_packets+usb_malformed;
+    wire [223:0] usb_words={usb_restarts,usb_bad_packets,usb_duplicates,usb_crc_errors,
+                          usb_packets,usb_accepted,usb_phy_diagnostics,usb_endpoint,usb_failed,usb_ready};
     wire [31:0] output_pcm,output_reference,active_voices,display_status;
     wire [2:0] effect_mask;
     wire [5:0] effect_order;
@@ -80,12 +94,20 @@ module gw138k_push_workstation_top (
         .pending(ui_pending),.visible(ui_visible),.next_visible(ui_next_visible),.front_base(ui_front_base),.next_base(ui_next_base));
     wire service_select=psel && paddr[31:12]==20'hf8010;
     wire [447:0] performance_words;
-    wire all_usb_valid,all_usb_ready;wire [17:0] all_usb_event;
+    wire push_valid,push_ready,all_usb_valid,all_usb_ready;
+    wire [17:0] push_event,all_usb_event;
+    wire [223:0] push_words;
     wire [447:0] push_snapshot;
-    push2_usb_a_control u_push(.clk(usb_clk),.reset_n(usb_reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),
-        .feedback_clk(clk_50m),.feedback_reset_n(reset_n),.performance_words(push_snapshot),
-        .select(mmio_select),.write(mmio_write),.address(mmio_address),.wdata(mmio_wdata),.ready(mmio_ready),.rdata(mmio_rdata),
-        .audio_valid(all_usb_valid),.audio_ready(all_usb_ready),.audio_event(all_usb_event),.telemetry(usb_words));
+    push2_surface u_push(.clk(clk_50m),.rst(!reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),
+        .pc_rx(pc_uart_rx_i),.performance_words(push_snapshot),
+        .htclk(push_htclk),.htreq(push_htreq),.htvld(push_htvld),.htrdy(push_htrdy),
+        .hrclk(push_hrclk),.hrreq(push_hrreq),.hrvld(push_hrvld),.hrack(push_hrack),.hd(push_hd),
+        .audio_valid(push_valid),.audio_ready(push_ready),.audio_event(push_event),.telemetry(push_words));
+    gw138k_three_event_arbiter u_push_usb_events(.clk(audio_clk),.reset_n(audio_reset_n),
+        .g1_valid(usb_event_valid),.g1_data(usb_event_data),.g1_ready(usb_event_ready),
+        .pc_valid(push_valid),.pc_data(push_event),.pc_ready(push_ready),
+        .cpu_valid(1'b0),.cpu_data(18'd0),.cpu_ready(),
+        .event_valid(all_usb_valid),.event_ready(all_usb_ready),.event_data(all_usb_event));
     gw138k_usb_controlled_audio u_managed(
         .usb_event_valid(all_usb_valid),.usb_event_ready(all_usb_ready),.usb_event_data(all_usb_event),
         .pc_uart_rx_i(pc_uart_rx_i),.performance_words_o(performance_words),
@@ -103,7 +125,7 @@ module gw138k_push_workstation_top (
     wire [7:0] memory_flags;
     wire [127:0] video_diagnostics;
     gw138k_push_performance_uart u_runtime(
-        .push_words(224'd0),.performance_feedback(push_snapshot),
+        .push_words(push_words),.performance_feedback(push_snapshot),
         .usb_clk(usb_clk),.usb_reset_n(usb_reset_n),.usb_words(usb_words),
         .performance_words(performance_words),
         .clk_50m(clk_50m),.reset_n(reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),

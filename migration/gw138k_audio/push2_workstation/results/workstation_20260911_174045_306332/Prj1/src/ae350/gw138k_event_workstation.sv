@@ -136,7 +136,7 @@ module gw138k_event_workstation #(
   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
       .clk_i,.rst_ni,.valid_i(synth_valid_o),.synth_i(synth_o),
       .pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),
-      .synth_gain_i(synth_gain_o),.pcm_gain_i(pcm_gain_o),.effect_mask_i(effect_mask_o),
+      .synth_gain_i(synth_gain_o),.pcm_gain_i(pcm_gain_o),.effect_mask_i(effect_mask_o),.effect_order_i(effect_order_o),
       .ready_o(fx_ready),.valid_o(sample_valid_o),.left_o(effect_left),.right_o(effect_right),.clip_o);
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin

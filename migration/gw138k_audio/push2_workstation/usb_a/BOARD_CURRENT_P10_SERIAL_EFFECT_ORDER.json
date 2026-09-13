@@ -1,0 +1,86 @@
+{
+  "version": "P10 true dynamic serial effect order",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "dd80b9009241836b3266b6407aa1a36cf8973d0b660d239e2e0f1fe8e0e4f793",
+  "usercode": "0x0000ED8B",
+  "flash_written": false,
+  "previous_accepted": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_175110_528097/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "757bfae6b43a2eba11b776ee82f1090d90f4b4665ff878ca9ad7ce13a456ba6c",
+    "usercode": "0x0000C2D3",
+    "user_feedback": "没问题，继续"
+  },
+  "protected_hotplug_baseline": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "0e5a3cd5d6641c76777d76e1b5f5feddf65d661586ef0de14587cf0e1f09c1af",
+    "usercode": "0x0000D50E"
+  },
+  "backup": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/workstation_backup_before_p10_serial_audio_20260913_183725",
+  "changed_build_inputs": {
+    "legacy/rtl/audio/stereo_effects.sv": "9815b397ff2d962782c06816e029dfc06b7efc17fa73085be69de8cdad563edf",
+    "src/ae350/gw138k_event_workstation.sv": "f38573649f4fa0f3e44e5627b2836a43bc6aa1c0616a494a4d738b010a3e9f31",
+    "legacy/rtl/audio/audio_workstation.sv": "7cb8c46ec4ca0968f2a95eceb357ea11bb600315bf6f5aa4edffc11cc26ffe7f"
+  },
+  "frozen_inputs_verified": true,
+  "behavior": [
+    "The current one-to-three unique effect IDs are processed in effect_order order; each stage consumes the preceding stage output.",
+    "One selected effect is processed once. Unselected effect histories continue from dry input but are excluded from the output chain.",
+    "A fourth effect-key press after all three distinct effects are selected clears the queue and fades the existing wet gains to exact dry over the retained 64-frame slew.",
+    "The HDMI card order and actual audio scheduler use the same effect_order signal."
+  ],
+  "verification": {
+    "simulation": {
+      "passed": true,
+      "serial_effects": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/p10_serial_effects_184756_592533/verification.json",
+      "serial_effects_coverage": "656 frames: bypass exact; single effect once; all six three-effect orders have six deterministic audio signatures; clear fades then becomes exact dry",
+      "queue": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/p9_queue_184756/verification.json",
+      "queue_coverage": "6 permutations x 3 clearing keys; 163 presses; unified Push event path, duplicates, held clear, actual wet gains and card exits",
+      "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/cpu_audio_sim_184756_605502/verification.json"
+    },
+    "synthesis_pnr": {
+      "passed": true,
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.018,
+      "resources": {
+        "logic": "30019/138240",
+        "register": "21652/139095",
+        "bsram": "248/340",
+        "dsp": "42.5/298"
+      },
+      "tool_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/tool_result.json"
+    },
+    "audio_routed_audit": {
+      "passed": true,
+      "hardware_tested": false,
+      "record": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/p10_audio_routed_audit_summary.json"
+    },
+    "legacy_routed_audit": {
+      "passed": false,
+      "error": "existing DDR/video audit failed: stopped-clock reset VO/SDF audit has unaudited endpoints u_managed/effect_mask_sync_0_s0/RESET through effect_mask_sync_2_s0/RESET",
+      "inherited_from": "P8/P9",
+      "hardware_tested": false
+    },
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_185715_364329/result.json",
+    "sram": {
+      "from_code": "0x0000C2D3",
+      "usercode": "0x0000ED8B",
+      "before": true,
+      "write": true,
+      "after": true,
+      "fpga_flash_written": false
+    },
+    "pre_download_telemetry": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260913_185621_168785/result.json",
+    "post_download_telemetry": {
+      "record": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260913_185745_922013/result.json",
+      "audio_samples_per_second": 48000,
+      "hdmi_render_frames_per_second": 60,
+      "hdmi_scan_frames_per_second": 60,
+      "errors": 0,
+      "ae350": "PASS",
+      "push_configured": true,
+      "push_out_errors": 0
+    },
+    "physical_hdmi_headphone_push_acceptance": "pending user acceptance"
+  }
+}
