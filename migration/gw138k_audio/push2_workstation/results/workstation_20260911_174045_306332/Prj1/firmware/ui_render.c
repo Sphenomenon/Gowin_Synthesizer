@@ -40,6 +40,13 @@ static void effect(volatile uint32_t*f,const ui_model*m,unsigned k) {
  unsigned x=32+112*k,on=(m->sw>>k)&1u;rect(f,x,426,104,28,on?0x2650:0x1127);
  text(f,x+6,430,effects[k],1,0xffff);text(f,x+6,444,k==5?(on?"DONE":"READY"):(on?"ON":"OFF"),1,on?0x4e17:0x94b4);
 }
+static void chain_card(volatile uint32_t*f,const ui_model*m,unsigned k) {
+ static const char*const names[]={"DELAY","CHORUS","REVERB"};
+ unsigned x=32+256*k,on=(m->sw>>k)&1u;
+ rect(f,x,474,240,40,on?0x2650:0x1127);
+ text(f,x+8,480,names[k],2,0xffff);
+ text(f,x+8,500,on?"ON":"OFF",1,on?0x4e17:0x94b4);
+}
 static void white(volatile uint32_t*f,const ui_model*m,unsigned k) {
  unsigned x=ui_white_x(k),w=ui_white_x(k+1)-x,n=ui_notes[k],on=ui_active(m,n);
  rect(f,x+1,474,w-2,60,on?0x4e17:0xdf3c);rect(f,x+1,531,w-2,3,on?0x2650:0x94b4);
@@ -60,10 +67,10 @@ void ui_render(volatile uint32_t*f,const ui_model*m,unsigned touch) {
  // Live analysis rows 160..831 are composed by scanout from the current RTL
  // analysis page, including waveform, dual spectrum, image and level bars.
  for(unsigned k=0;k<8;k++)effect(f,m,k);
- text(f,32,463,"PERFORMANCE KEYBOARD   C4 TO C6",1,0x94b4);
- text(f,440,463,"GREEN KEYS FOLLOW ACCEPTED NOTES",1,0x4e17);
- for(unsigned k=0;k<15;k++)white(f,m,k);
- for(unsigned k=1;k<15;k++)if(ui_notes[k]-ui_notes[k-1]==2)black(f,m,k);
+ // The former performance keyboard occupied the HDMI bottom edge. Replace it
+ // with the three-stage serial audio chain and its live switch states.
+ text(f,32,463,"EFFECT CHAIN   DELAY -> CHORUS -> REVERB",1,0x94b4);
+ for(unsigned k=0;k<3;k++)chain_card(f,m,k);
 }
 void ui_patch(volatile uint32_t*f,const ui_model*old,const ui_model*next,unsigned ot,unsigned nt) {
  if(ot!=nt||old->voices!=next->voices||old->pc_faults!=next->pc_faults)headline(f,next,nt);
@@ -72,7 +79,6 @@ void ui_patch(volatile uint32_t*f,const ui_model*old,const ui_model*next,unsigne
  if(old->route!=next->route)card(f,next,2);
  if(old->gate!=next->gate)card(f,next,3);
  for(unsigned k=0;k<8;k++)if((old->sw^next->sw)&(1u<<k))effect(f,next,k);
- unsigned painted=0;
- for(unsigned k=0;k<15;k++)if(ui_active(old,ui_notes[k])!=ui_active(next,ui_notes[k])){white(f,next,k);painted=1;}
- for(unsigned k=1;k<15;k++)if(ui_notes[k]-ui_notes[k-1]==2 && (painted||ui_active(old,ui_notes[k]-1)!=ui_active(next,ui_notes[k]-1)))black(f,next,k);
+ for(unsigned k=0;k<3;k++)if((old->sw^next->sw)&(1u<<k))chain_card(f,next,k);
+ // Keyboard repaint is intentionally removed with the old performance panel.
 }

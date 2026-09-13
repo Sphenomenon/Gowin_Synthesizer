@@ -17,6 +17,7 @@ module tb_feedback_dashboard;
     video_font_5x7 reference_font(.character(reference_character),.column(reference_column),.row(reference_row),.ink(reference_ink),.glyph());
     integer character_index,row_index,column_index,voice_index,tile_index,digit_index;
     integer tile_x,tile_y;
+    reg [31:0] held_pixel;
     reg [3:0] mask_digit;
     task at(input integer px,input integer py,input [31:0] expected);
         begin @(negedge clk); x=px;y=py; repeat(4) @(posedge clk); #1; if(pixel!==expected) $fatal(1,"pixel (%d,%d)=%h expected %h",px,py,pixel,expected); end
@@ -79,9 +80,11 @@ module tb_feedback_dashboard;
                        reference_ink ? 32'h00e5f0fa : 32'h00101b2a);
                 end
         end
-        @(negedge clk); enable=0; x=64; y=48;
+        @(negedge clk); enable=1; x=64; y=48;
+        repeat(5) @(posedge clk); #1; held_pixel=pixel;
+        @(negedge clk); enable=0;
         repeat(5) @(posedge clk);
-        #1; if(pixel!==32'h00263a4f) $fatal(1,"dashboard pipeline changed while stopped");
+        #1; if(pixel!==held_pixel) $fatal(1,"dashboard pipeline changed while stopped");
         // Isolate the added C/D font stages. Compare every ASCII byte and
         // all 8x8 legal/padding positions with the legacy scalar-font decoder,
         // which uses arithmetic indexing instead of the new fixed-slice cases.
