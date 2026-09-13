@@ -37,10 +37,10 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
     localparam [255:0] SOURCE = "48000 HZ / HEADPHONE            ";
     localparam [255:0] DDR = "DDR FRAMEBUFFER                 ";
     localparam [255:0] VOICES = "32 VOICES / ACTIVE AND RELEASE  ";
-    localparam [255:0] EFFECT_TITLE = "EFFECT CHAIN / USER ORDER / ARROWS     ";
+    localparam [255:0] EFFECT_TITLE = "EFFECT CHAIN / SLOTS 1 -> 2 -> 3          ";
     localparam [255:0] FOOTER = "LIVE AUDIO / UART CONTROL       ";
     reg [255:0] text_line;
-    reg [5:0] anim_order;
+    reg [5:0] visual_order;
     reg [4:0] anim_timer;
     reg [10:0] text_x, text_y;
     reg text_enable, large_text;
@@ -82,8 +82,12 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
             default: effect_name="REVERB                          ";
         endcase end
     endfunction
-    wire [1:0] chain0=effect_order[1:0], chain1=effect_order[3:2], chain2=effect_order[5:4];
-    wire chain_active0=effect_mask[chain0], chain_active1=effect_mask[chain1], chain_active2=effect_mask[chain2];
+    wire [1:0] requested0=effect_order[1:0], requested1=effect_order[3:2], requested2=effect_order[5:4];
+    wire [1:0] target0=effect_mask[requested0] ? requested0 : 2'b11;
+    wire [1:0] target1=effect_mask[requested1] ? requested1 : 2'b11;
+    wire [1:0] target2=effect_mask[requested2] ? requested2 : 2'b11;
+    wire [1:0] slot0=visual_order[1:0], slot1=visual_order[3:2], slot2=visual_order[5:4];
+    wire slot_active0=slot0!=2'b11, slot_active1=slot1!=2'b11, slot_active2=slot2!=2'b11;
     wire [10:0] card_relative = pixel_x - 11'd64;
     // Two rows of sixteen 64-pixel slots share the waveform's 1024-pixel
     // width. Fixed bit slices avoid division/multiplication in tile lookup.
@@ -263,14 +267,14 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
             end
             // Bottom keyboard cards are intentionally replaced by the live serial effect chain.
             if(pixel_y>=880 && pixel_y<896) begin
-                if(pixel_x>=64 && pixel_x<384) begin text_line=chain_active0 ? effect_name(chain0) : "EMPTY                           ";text_x=64;text_y=880;text_enable=1;end
-                if(pixel_x>=400 && pixel_x<720) begin text_line=chain_active1 ? effect_name(chain1) : "EMPTY                           ";text_x=400;text_y=880;text_enable=1;end
-                if(pixel_x>=736 && pixel_x<1056) begin text_line=chain_active2 ? effect_name(chain2) : "EMPTY                           ";text_x=736;text_y=880;text_enable=1;end
+                if(pixel_x>=64 && pixel_x<384) begin text_line=slot_active0 ? effect_name(slot0) : "EMPTY                           ";text_x=64;text_y=880;text_enable=1;end
+                if(pixel_x>=400 && pixel_x<720) begin text_line=slot_active1 ? effect_name(slot1) : "EMPTY                           ";text_x=400;text_y=880;text_enable=1;end
+                if(pixel_x>=736 && pixel_x<1056) begin text_line=slot_active2 ? effect_name(slot2) : "EMPTY                           ";text_x=736;text_y=880;text_enable=1;end
             end
             if(pixel_y>=912 && pixel_y<928) begin
-                if(pixel_x>=64 && pixel_x<384) begin text_line=chain_active0 ? "ON                              " : "OFF                             ";text_x=64;text_y=912;text_enable=1;end
-                if(pixel_x>=400 && pixel_x<720) begin text_line=chain_active1 ? "ON                              " : "OFF                             ";text_x=400;text_y=912;text_enable=1;end
-                if(pixel_x>=736 && pixel_x<1056) begin text_line=chain_active2 ? "ON                              " : "OFF                             ";text_x=736;text_y=912;text_enable=1;end
+                if(pixel_x>=64 && pixel_x<384) begin text_line=slot_active0 ? "ON                              " : "OFF                             ";text_x=64;text_y=912;text_enable=1;end
+                if(pixel_x>=400 && pixel_x<720) begin text_line=slot_active1 ? "ON                              " : "OFF                             ";text_x=400;text_y=912;text_enable=1;end
+                if(pixel_x>=736 && pixel_x<1056) begin text_line=slot_active2 ? "ON                              " : "OFF                             ";text_x=736;text_y=912;text_enable=1;end
             end
         end
         // Piano-key voice cards removed; this area is reserved for effect-chain status.
@@ -348,21 +352,21 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
                      (a_y >= 920 && a_x >= (a_x < 400 ? 394 + (a_y-920) : 730 + (a_y-920)))))
                     next_background = 32'h00e5f0fa;
             end else if (a_x < 384) begin
-                next_background = effect_mask[0] ? 32'h00157d70 : 32'h00263a4f;
-                if(a_y==872 || a_y==959 || a_x==64 || a_x==383) next_background = anim_timer!=0 ? 32'h00f1c05a : (chain_active0 ? 32'h003cdbab : 32'h0049627a);
+                next_background = slot_active0 ? 32'h00157d70 : 32'h00263a4f;
+                if(a_y==872 || a_y==959 || a_x==64 || a_x==383) next_background = anim_timer!=0 ? 32'h00f1c05a : (slot_active0 ? 32'h003cdbab : 32'h0049627a);
             end else if (a_x >= 400 && a_x < 720) begin
-                next_background = effect_mask[1] ? 32'h00157d70 : 32'h00263a4f;
-                if(a_y==872 || a_y==959 || a_x==400 || a_x==719) next_background = anim_timer!=0 ? 32'h00f1c05a : (chain_active1 ? 32'h003cdbab : 32'h0049627a);
+                next_background = slot_active1 ? 32'h00157d70 : 32'h00263a4f;
+                if(a_y==872 || a_y==959 || a_x==400 || a_x==719) next_background = anim_timer!=0 ? 32'h00f1c05a : (slot_active1 ? 32'h003cdbab : 32'h0049627a);
             end else if (a_x >= 736 && a_x < 1056) begin
-                next_background = effect_mask[2] ? 32'h00157d70 : 32'h00263a4f;
-                if(a_y==872 || a_y==959 || a_x==736 || a_x==1055) next_background = anim_timer!=0 ? 32'h00f1c05a : (chain_active2 ? 32'h003cdbab : 32'h0049627a);
+                next_background = slot_active2 ? 32'h00157d70 : 32'h00263a4f;
+                if(a_y==872 || a_y==959 || a_x==736 || a_x==1055) next_background = anim_timer!=0 ? 32'h00f1c05a : (slot_active2 ? 32'h003cdbab : 32'h0049627a);
             end else next_background = 32'h00101b2a;
         end
     end
 
     always @(posedge clk or negedge reset_n) begin
         if (!reset_n) begin
-            anim_order <= 6'b10_01_00; anim_timer <= 0;
+            visual_order <= 6'b11_11_11; anim_timer <= 0;
             a_text_line <= 0; a_text_index <= 0; a_font_column <= 0; a_font_row <= 0;
             a_text_enable <= 0; a_hex_enable <= 0; a_voice_enable <= 0;
             a_hex_word <= 0; a_hex_index <= 0; a_voice_character <= 0;
@@ -373,8 +377,23 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
             c_glyph <= 0; c_font_column <= 0; c_font_row <= 0; c_text_enable <= 0; c_background <= 0;
             pixel_data <= 0;
         end else if (enable) begin
-            if(effect_order!=anim_order) begin anim_order<=effect_order; anim_timer<=5'd31; end
-            else if(anim_timer!=0) anim_timer<=anim_timer-1'b1;
+            // Advance one adjacent swap per video frame. This keeps the
+            // shuffle visible for humans while the card slots remain fixed
+            // left-to-right as 1, 2, 3.
+            if(pixel_x<11'd2 && pixel_y==11'd0) begin
+                if(slot0!=target0) begin
+                    anim_timer<=5'd15;
+                    if(slot1==target0) visual_order<={slot2,slot0,target0};
+                    else if(slot2==target0) visual_order<={slot0,slot1,target0};
+                    else visual_order<={slot2,slot1,target0};
+                end else if(slot1!=target1) begin
+                    anim_timer<=5'd15;
+                    if(slot2==target1) visual_order<={slot1,target1,slot0};
+                    else visual_order<={slot2,target1,slot0};
+                end else if(slot2!=target2) begin
+                    visual_order<={target2,slot1,slot0}; anim_timer<=5'd15;
+                end else if(anim_timer!=0) anim_timer<=anim_timer-1'b1;
+            end
             a_text_line <= text_line; a_text_index <= text_index;
             a_font_column <= font_column; a_font_row <= font_row; a_text_enable <= text_enable;
             a_hex_enable <= hex_enable; a_hex_word <= hex_word; a_hex_index <= hex_x[6:4];

@@ -1,0 +1,23 @@
+{
+  "version": "P7 shuffle animation",
+  "baseline": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_145037_727422/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "4c07725ff46e054f99975d3af59f1c217e753d93276afe5fc4e1c8431ac6872f",
+    "usercode": "0x0000D038"
+  },
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_152219_472610/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "47c0217d09c31b9f6aa7fcf1668a662c5e5d2ffd43236556775ed5721f39a174",
+  "usercode": "0x00009893",
+  "change": "HDMI effect cards use fixed physical slots 1-2-3 and visual_order state. At each video-frame boundary one adjacent swap moves the requested serial order into place, with 15-frame highlight timer; empty slots stay empty. Arrow pixels and slot title remain visible; diagnostics remain removed.",
+  "verification": {
+    "simulation": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_152219_472610/cpu_audio_sim_153056_027303/verification.json",
+    "pnr_setup_violations": 0,
+    "pnr_hold_violations": 0,
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_153132_884256/result.json",
+    "sram_before": true,
+    "sram_write": true,
+    "sram_after": true,
+    "flash_written": false,
+    "hardware_acceptance": "pending user HDMI/Push/audio verification"
+  }
+}
