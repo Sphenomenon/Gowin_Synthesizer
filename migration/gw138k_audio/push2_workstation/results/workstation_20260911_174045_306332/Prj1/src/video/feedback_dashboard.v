@@ -40,6 +40,8 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
     localparam [255:0] EFFECT_TITLE = "EFFECT CHAIN / USER ORDER / ARROWS     ";
     localparam [255:0] FOOTER = "LIVE AUDIO / UART CONTROL       ";
     reg [255:0] text_line;
+    reg [5:0] anim_order;
+    reg [4:0] anim_timer;
     reg [10:0] text_x, text_y;
     reg text_enable, large_text;
     reg [31:0] hex_word;
@@ -81,6 +83,7 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
         endcase end
     endfunction
     wire [1:0] chain0=effect_order[1:0], chain1=effect_order[3:2], chain2=effect_order[5:4];
+    wire chain_active0=effect_mask[chain0], chain_active1=effect_mask[chain1], chain_active2=effect_mask[chain2];
     wire [10:0] card_relative = pixel_x - 11'd64;
     // Two rows of sixteen 64-pixel slots share the waveform's 1024-pixel
     // width. Fixed bit slices avoid division/multiplication in tile lookup.
@@ -193,25 +196,6 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
         end else if (pixel_y >= 1024 && pixel_y < 1040 && pixel_x >= 64 && pixel_x < 576) begin
             text_line = FOOTER; text_y = 1024; text_enable = 1;
         end
-        if (pixel_x >= 1216 && pixel_x < 1728) begin
-            case (pixel_y[10:5])
-                9: begin text_line = "PEAK                            "; hex_word = peak_data; end
-                15: begin text_line = "MEM STATUS                      "; hex_word = memory_status; end
-                16: begin text_line = "UNDERRUNS                       "; hex_word = underruns; end
-                17: begin text_line = "FRAME                           "; hex_word = framecount; end
-                19: begin text_line = "IO ERRORS                       "; hex_word = status_data; end
-                20: begin text_line = "SAMPLE BLOCK                    "; hex_word = sequence_data; end
-                21: begin text_line = "OBS DROPPED                     "; hex_word = skipped_data; end
-                28: begin text_line = "ACTIVE MASK                     "; hex_word = active_voices; end
-                default: begin end
-            endcase
-            if ((pixel_y[10:5] == 9 || pixel_y[10:5] == 15 || pixel_y[10:5] == 16 || pixel_y[10:5] == 17 ||
-                 pixel_y[10:5] == 19 || pixel_y[10:5] == 20 || pixel_y[10:5] == 21 ||
-                 pixel_y[10:5] == 28) && pixel_y[4:0] < 16) begin
-                text_enable = 1; text_x = 1216; text_y = {pixel_y[10:5],5'b00000};
-                if (pixel_x >= 1536 && pixel_x < 1664) begin hex_enable = 1; hex_x = pixel_x - 11'd1536; end
-            end
-        end
         if(ENABLE_ANALYSIS) begin
             text_line=0; text_x=64; text_y=0; text_enable=0; large_text=0; hex_enable=0;
             if(pixel_y>=48 && pixel_y<80 && pixel_x>=64 && pixel_x<1088) begin
@@ -276,31 +260,17 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
                 if(pixel_y>=816) begin text_line="R                               ";text_y=816;text_enable=1;end
             end else if(pixel_y>=840 && pixel_y<856 && pixel_x>=64 && pixel_x<1104) begin
                 text_line=EFFECT_TITLE;text_x=64;text_y=840;text_enable=1;
-            end else if(pixel_y>=848 && pixel_y<960 && pixel_x>=1248 && pixel_x<1760) begin
-                text_x=1248;
-                if(pixel_y<864) begin text_line="MEM STATUS                      ";text_y=848;hex_word=memory_status;text_enable=1;end
-                if(pixel_y>=880 && pixel_y<896) begin text_line="UNDERRUNS                       ";text_y=880;hex_word=underruns;text_enable=1;end
-                if(pixel_y>=912 && pixel_y<928) begin text_line="FRAME                           ";text_y=912;hex_word=framecount;text_enable=1;end
-                if(pixel_y>=944) begin text_line="IO ERRORS                       ";text_y=944;hex_word=status_data;text_enable=1;end
-                if(text_enable && pixel_x>=1600 && pixel_x<1728) begin hex_enable=1;hex_x=pixel_x-11'd1600;end
-            end else if(pixel_y>=1024 && pixel_y<1040) begin
-                text_y=1024;
-                if(pixel_x>=64 && pixel_x<576) begin text_line="FINAL DAC PCM / 48000 HZ        ";text_enable=1;end
-                if(pixel_x>=640 && pixel_x<1152) begin text_line="BLOCK                           ";text_x=640;hex_word=analysis_sequence;text_enable=1;
-                    if(pixel_x>=800 && pixel_x<928) begin hex_enable=1;hex_x=pixel_x-11'd800;end end
-                if(pixel_x>=1216 && pixel_x<1728) begin text_line="DROPPED                         ";text_x=1216;hex_word=analysis_skipped;text_enable=1;
-                    if(pixel_x>=1536 && pixel_x<1664) begin hex_enable=1;hex_x=pixel_x-11'd1536;end end
             end
             // Bottom keyboard cards are intentionally replaced by the live serial effect chain.
             if(pixel_y>=880 && pixel_y<896) begin
-                if(pixel_x>=64 && pixel_x<384) begin text_line=effect_name(chain0);text_x=64;text_y=880;text_enable=1;end
-                if(pixel_x>=400 && pixel_x<720) begin text_line=effect_name(chain1);text_x=400;text_y=880;text_enable=1;end
-                if(pixel_x>=736 && pixel_x<1056) begin text_line=effect_name(chain2);text_x=736;text_y=880;text_enable=1;end
+                if(pixel_x>=64 && pixel_x<384) begin text_line=chain_active0 ? effect_name(chain0) : "EMPTY                           ";text_x=64;text_y=880;text_enable=1;end
+                if(pixel_x>=400 && pixel_x<720) begin text_line=chain_active1 ? effect_name(chain1) : "EMPTY                           ";text_x=400;text_y=880;text_enable=1;end
+                if(pixel_x>=736 && pixel_x<1056) begin text_line=chain_active2 ? effect_name(chain2) : "EMPTY                           ";text_x=736;text_y=880;text_enable=1;end
             end
             if(pixel_y>=912 && pixel_y<928) begin
-                if(pixel_x>=64 && pixel_x<384) begin text_line=effect_mask[0] ? "ON                              " : "OFF                             ";text_x=64;text_y=912;text_enable=1;end
-                if(pixel_x>=400 && pixel_x<720) begin text_line=effect_mask[1] ? "ON                              " : "OFF                             ";text_x=400;text_y=912;text_enable=1;end
-                if(pixel_x>=736 && pixel_x<1056) begin text_line=effect_mask[2] ? "ON                              " : "OFF                             ";text_x=736;text_y=912;text_enable=1;end
+                if(pixel_x>=64 && pixel_x<384) begin text_line=chain_active0 ? "ON                              " : "OFF                             ";text_x=64;text_y=912;text_enable=1;end
+                if(pixel_x>=400 && pixel_x<720) begin text_line=chain_active1 ? "ON                              " : "OFF                             ";text_x=400;text_y=912;text_enable=1;end
+                if(pixel_x>=736 && pixel_x<1056) begin text_line=chain_active2 ? "ON                              " : "OFF                             ";text_x=736;text_y=912;text_enable=1;end
             end
         end
         // Piano-key voice cards removed; this area is reserved for effect-chain status.
@@ -379,19 +349,20 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
                     next_background = 32'h00e5f0fa;
             end else if (a_x < 384) begin
                 next_background = effect_mask[0] ? 32'h00157d70 : 32'h00263a4f;
-                if(a_y==872 || a_y==959 || a_x==64 || a_x==383) next_background = effect_mask[0] ? 32'h003cdbab : 32'h0049627a;
+                if(a_y==872 || a_y==959 || a_x==64 || a_x==383) next_background = anim_timer!=0 ? 32'h00f1c05a : (chain_active0 ? 32'h003cdbab : 32'h0049627a);
             end else if (a_x >= 400 && a_x < 720) begin
                 next_background = effect_mask[1] ? 32'h00157d70 : 32'h00263a4f;
-                if(a_y==872 || a_y==959 || a_x==400 || a_x==719) next_background = effect_mask[1] ? 32'h003cdbab : 32'h0049627a;
+                if(a_y==872 || a_y==959 || a_x==400 || a_x==719) next_background = anim_timer!=0 ? 32'h00f1c05a : (chain_active1 ? 32'h003cdbab : 32'h0049627a);
             end else if (a_x >= 736 && a_x < 1056) begin
                 next_background = effect_mask[2] ? 32'h00157d70 : 32'h00263a4f;
-                if(a_y==872 || a_y==959 || a_x==736 || a_x==1055) next_background = effect_mask[2] ? 32'h003cdbab : 32'h0049627a;
+                if(a_y==872 || a_y==959 || a_x==736 || a_x==1055) next_background = anim_timer!=0 ? 32'h00f1c05a : (chain_active2 ? 32'h003cdbab : 32'h0049627a);
             end else next_background = 32'h00101b2a;
         end
     end
 
     always @(posedge clk or negedge reset_n) begin
         if (!reset_n) begin
+            anim_order <= 6'b10_01_00; anim_timer <= 0;
             a_text_line <= 0; a_text_index <= 0; a_font_column <= 0; a_font_row <= 0;
             a_text_enable <= 0; a_hex_enable <= 0; a_voice_enable <= 0;
             a_hex_word <= 0; a_hex_index <= 0; a_voice_character <= 0;
@@ -402,6 +373,8 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0) (
             c_glyph <= 0; c_font_column <= 0; c_font_row <= 0; c_text_enable <= 0; c_background <= 0;
             pixel_data <= 0;
         end else if (enable) begin
+            if(effect_order!=anim_order) begin anim_order<=effect_order; anim_timer<=5'd31; end
+            else if(anim_timer!=0) anim_timer<=anim_timer-1'b1;
             a_text_line <= text_line; a_text_index <= text_index;
             a_font_column <= font_column; a_font_row <= font_row; a_text_enable <= text_enable;
             a_hex_enable <= hex_enable; a_hex_word <= hex_word; a_hex_index <= hex_x[6:4];

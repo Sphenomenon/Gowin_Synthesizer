@@ -37,6 +37,7 @@ module gw138k_event_workstation #(
     output logic [2:0] effect_mask_o,
     output logic [5:0] effect_order_o
 );
+  logic [1:0] effect_count;
   logic event_valid, event_ready;
   logic [17:0] event_data;
   logic fifo_event_valid,fifo_event_ready;
@@ -142,7 +143,7 @@ module gw138k_event_workstation #(
       applied_events_o<=0;pending<=0; frame_inflight<=0; deadline_miss_o<=0; note_drop_o<=0;
       held_pcm_l<=0; held_pcm_r<=0; profile<=0; requested_mode<=2;
       mode_pending<=0; volume<=32768; expression_gain<=32768; pcm_gain_o<=0;
-      route_o<=0; target_ratio<=1048576; glide_step<=0; vibrato_depth<=0; effect_mask_o<=0; effect_order_o<=6'b10_01_00;
+      route_o<=0; target_ratio<=1048576; glide_step<=0; vibrato_depth<=0; effect_mask_o<=0; effect_order_o<=6'b10_01_00; effect_count<=0;
       glide_cc<=0; bend_index<=128; snapshot_request<=0;
       sustain<=0; held<=0; deferred<=0; releasing<=0; release_index<=0;
     end else begin
@@ -180,6 +181,19 @@ module gw138k_event_workstation #(
             84: if(b<3) effect_order_o[1:0]<=b[1:0];
             85: if(b<3) effect_order_o[3:2]<=b[1:0];
             86: if(b<3) effect_order_o[5:4]<=b[1:0];
+            // Append one effect to the current serial chain. A fourth press
+            // starts a fresh chain with that effect as slot zero.
+            87: if(b<3) begin
+              if(effect_count==3) begin
+                effect_order_o<={4'd0,b[1:0]}; effect_mask_o<=7'd1<<b; effect_count<=1;
+              end else if(effect_count==0) begin
+                effect_order_o[1:0]<=b[1:0]; effect_mask_o<=7'd1<<b; effect_count<=1;
+              end else if(effect_count==1) begin
+                effect_order_o[3:2]<=b[1:0]; effect_mask_o<=effect_mask_o | (7'd1<<b); effect_count<=2;
+              end else begin
+                effect_order_o[5:4]<=b[1:0]; effect_mask_o<=effect_mask_o | (7'd1<<b); effect_count<=3;
+              end
+            end
             82: if(b<4) route_o<=b[1:0];
             83: if(b==127) snapshot_request<=snapshot_request+1'b1;
             120,123: begin

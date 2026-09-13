@@ -1,0 +1,48 @@
+{
+  "record": "BOARD_CURRENT_P6_EFFECT_QUEUE_DIAGNOSTICS_REMOVED",
+  "date": "2026-09-13",
+  "status": "hardware_acceptance_pending",
+  "baseline": {
+    "label": "P5 shared display metadata and arrows",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_141046_339366/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "1807c095cc2532cdd35d1d2320a8985abd9afde989cfe091e5421694988d6a16",
+    "usercode": "0x00006166"
+  },
+  "candidate": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_145037_727422/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "4c07725ff46e054f99975d3af59f1c217e753d93276afe5fc4e1c8431ac6872f",
+    "usercode": "0x0000D038",
+    "build_dir": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_145037_727422"
+  },
+  "change": [
+    "Push effect keys 20/21/22 now emit unified append command 87.",
+    "Effect queue fills slot 0, slot 1, slot 2 in press order; a fourth press resets the queue and starts a new order.",
+    "Empty slots show EMPTY/OFF; card labels and active colors follow slot order; a short 31-cycle pulse highlights the reorder.",
+    "Removed HDMI analysis-page diagnostic text for memory status, underruns, frame, IO errors, sample block and dropped counters."
+  ],
+  "verification": {
+    "cpu_rtl_sim": "PASS: cpu_audio_sim_145821_832546; 3696 frames, 3574 nonzero, exact 48k, no audio fault",
+    "gowin_build": "PASS: exit_code 0; inputs_unchanged true",
+    "pnr_setup_violated_endpoints": 0,
+    "pnr_hold_violated_endpoints": 0,
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_145744_050997/result.json",
+    "sram_before_readback": true,
+    "sram_write_readback": true,
+    "sram_after_readback": true,
+    "flash_written": false
+  },
+  "hardware": {
+    "board": "NEO Dock 31005 / GW5AST-LV138PG484AC2/I1",
+    "push_path": "J18 USB-A",
+    "ch569_used": false,
+    "acceptance_pending": true,
+    "test_matrix": [
+      "press Delay then Chorus then Reverb and observe slot order",
+      "press one or two effects and verify only selected slots are active",
+      "press a fourth effect after three to verify reset/new sequence",
+      "observe short reorder highlight",
+      "verify removed diagnostics are absent",
+      "verify waveform/Lissajous/spectrum/audio/Push remain functional"
+    ]
+  }
+}

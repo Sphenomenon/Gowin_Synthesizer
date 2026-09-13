@@ -74,8 +74,9 @@ module push2_controls(
                             if(a>=102 && a<=104) begin event_valid<=1;event_data<={4'd2,7'd80,a-7'd102};mapped<=mapped+1'b1;end
                             else if(a>=105 && a<=109) begin event_valid<=1;event_data<={4'd3,program_for(a),7'd0};mapped<=mapped+1'b1;end
                             else if(a>=20 && a<=22) begin
-                                quiet<=0;effects<=effects^effect_bit;
-                                event_valid<=1;event_data<={4'd2,7'd81,4'd0,(effects^effect_bit)};mapped<=mapped+1'b1;
+                                // Effect keys append to the shared chain. The
+                                // audio core owns ordering and resets on press 4.
+                                quiet<=0; event_valid<=1; event_data<={4'd2,7'd87,a-7'd20}; mapped<=mapped+1'b1;
                             end else if(a>=23 && a<=26) begin event_valid<=1;event_data<={4'd2,7'd82,a-7'd23};mapped<=mapped+1'b1;end
                             else if(a==27 || a==29) begin event_valid<=1;event_data<={4'd2,7'd123,7'd0};held<=0;mapped<=mapped+1'b1;end
                             else ignored<=ignored+1'b1;

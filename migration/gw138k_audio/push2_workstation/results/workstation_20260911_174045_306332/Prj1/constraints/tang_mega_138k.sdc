@@ -18,11 +18,7 @@ set_max_delay 20.000 -from [get_regs {u_video/u_renderer/u_capture/held_*}] -to 
 set_false_path -hold -from [get_regs {u_video/u_renderer/u_capture/held_*}] -to [get_regs {u_video/u_renderer/u_capture/snapshot_* u_video/u_renderer/u_capture/render_bank*}]
 set_false_path -to [get_pins {u_video/u_renderer/u_capture/req_meta_s0/D}]
 set_false_path -to [get_pins {u_video/u_renderer/u_capture/ack_meta_s0/D}]
-# Final-output stereo block ownership uses the same held-bank handshake.
-set_max_delay 20.000 -from [get_regs {u_video/u_renderer/g_analysis.u_analysis/u_capture/held_*}] -to [get_regs {u_video/u_renderer/g_analysis.u_analysis/u_capture/snapshot_* u_video/u_renderer/g_analysis.u_analysis/u_capture/read_bank*}]
-set_false_path -hold -from [get_regs {u_video/u_renderer/g_analysis.u_analysis/u_capture/held_*}] -to [get_regs {u_video/u_renderer/g_analysis.u_analysis/u_capture/snapshot_* u_video/u_renderer/g_analysis.u_analysis/u_capture/read_bank*}]
-set_false_path -to [get_pins {u_video/u_renderer/g_analysis.u_analysis/u_capture/req_meta_s0/D}]
-set_false_path -to [get_pins {u_video/u_renderer/g_analysis.u_analysis/u_capture/ack_meta_s0/D}]
+set_false_path -hold -to [get_pins {u_video/u_renderer/g_analysis.u_analysis/u_capture/ack_meta_s0/D}]
 # Pixel -> DDR request mailbox, stable until all requested read data arrives.
 set_max_delay 20.000 -from [get_regs {u_video/u_scanout/held_request*}] -to [get_regs {u_video/u_scanout/request_word*}]
 set_false_path -hold -from [get_regs {u_video/u_scanout/held_request*}] -to [get_regs {u_video/u_scanout/request_word*}]
