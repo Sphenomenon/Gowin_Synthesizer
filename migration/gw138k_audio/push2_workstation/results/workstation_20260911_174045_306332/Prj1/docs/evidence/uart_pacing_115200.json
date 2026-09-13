@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "kind": "RTL simulation; no physical USB bridge modeled or opened",
+  "started_utc": "2026-09-08T14:42:27.981780+00:00",
+  "exit_code": 0,
+  "source_sha256": {
+    "src/control/uart_control.v": "a9737d688dc58766a961327f5b5f1d246d546ed385231f9dfdd137467744d623",
+    "src/control/uart_rx.v": "a01ef051d9fcf2acda4e4585952492b55afc1276697dc287a09137d35a1b7c47",
+    "src/control/uart_tx.v": "3513207cae9e529b0dabd45040a33012440ad4c1fc842571b4cb70ece5d09e8f",
+    "src/synth/synth_engine.v": "3a9477e6b171eed3e06417de919fbd84e2fc80c352c3673ebdb6cb4473f092a8",
+    "src/synth/synth_voice_bank.v": "c2831a74c9d702e84a5eedb5dbfea86e8b39a29ec11ffe48547447eeba138664",
+    "src/synth/synth_sine_rom.v": "f67ab36d344909a29098e867c4dac37813c41a8ab35f497d2f4ca0f280155f10",
+    "src/audio/pt8211_tx.v": "f0b72bcf77573f83769bd72d301fcf4fe2842707759f6b0618019c38717439c3",
+    "build/uart_pacing_probe.sv": "f37e0b765e083a38fa50c3a768c6f62f0eb0cab9a3714160f2a2b0fe58fc6de0"
+  },
+  "clock_hz": 50000000,
+  "baud": 115200,
+  "uart_bit_clocks": 434,
+  "request_bytes": 12,
+  "ack_bytes": 8,
+  "audio_frame_clocks": 1024,
+  "timeout_clocks": 13020,
+  "gap_injection_extra_idle_clocks": 20000,
+  "gap_packet_sequence": 4,
+  "gap_after_payload_byte": 4,
+  "cases": [
+    {
+      "requests": 8,
+      "injected_gap": false,
+      "expected_ack_mask": "00000000000000ff"
+    },
+    {
+      "requests": 12,
+      "injected_gap": false,
+      "expected_ack_mask": "0000000000000fff"
+    },
+    {
+      "requests": 64,
+      "injected_gap": false,
+      "expected_ack_mask": "ffffffffffffffff"
+    },
+    {
+      "requests": 12,
+      "injected_gap": true,
+      "expected_ack_mask": "0000000000000fef"
+    }
+  ],
+  "result_lines": [
+    "PASS real115200 count=8 gap=0 accepted=8 ACK=8 seen=00000000000000ff errors=0",
+    "PASS real115200 count=12 gap=0 accepted=12 ACK=12 seen=0000000000000fff errors=0",
+    "PASS real115200 count=64 gap=0 accepted=64 ACK=64 seen=ffffffffffffffff errors=0",
+    "PASS real115200 count=12 gap=1 accepted=11 ACK=11 seen=0000000000000fef errors=1"
+  ],
+  "limitations": [
+    "No proof of the COM26 drop mechanism: injected byte gaps only demonstrate one sufficient RTL cause.",
+    "No USB descriptors, bridge DMA behavior, host buffers, or Windows timing are simulated.",
+    "Burst mode is diagnostic only; this test does not validate physical host pacing or an asynchronous command window."
+  ]
+}

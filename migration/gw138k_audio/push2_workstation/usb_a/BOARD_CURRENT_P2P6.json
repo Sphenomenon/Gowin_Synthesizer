@@ -1,0 +1,10 @@
+{
+  "status":"SRAM downloaded and readback verified",
+  "device":"GW5AST-LV138PG484AC2/I1",
+  "bitstream_sha256":"2af340f160009db878789b140c46c9a22bbb4b1dd6953876e8d116c8bab62889",
+  "build":"results/build_20260913_025245_139548",
+  "program_result":"/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_035918_009208/result.json",
+  "flash_written":false,
+  "tests":{"gowin_pnr":"PASS","sram_readback":"PASS"},
+  "notes":"CH569 HSPI top plus retained J18 USB-A top; first six requested fixes integrated. BSRAM migration intentionally deferred."
+}

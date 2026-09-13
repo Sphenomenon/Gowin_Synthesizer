@@ -1,0 +1,22 @@
+{
+  "bitstream_sha256": "51afde21a55e76210df712c1533f897ed76e3c34fffe42eeae6977438d68fd89",
+  "resources": {
+    "Logic": {
+      "used": 14904.0,
+      "available": 138240.0
+    },
+    "Register": {
+      "used": 13226.0,
+      "available": 139095.0
+    },
+    "BSRAM": {
+      "used": 94.0,
+      "available": 340.0
+    },
+    "DSP": {
+      "used": 13.5,
+      "available": 298.0
+    }
+  },
+  "report_sha256": "051a0ee97df20c39b7040e72b51b821d0f35cecfc4702ce03bfe584ad21f9e8e"
+}

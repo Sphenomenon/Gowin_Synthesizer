@@ -1,0 +1,697 @@
+{
+  "source": "Doc\\tangMega-138K-example\\ddr_memory\\ddr_memory_test_uart\\src\\ddr3_memory_interface\\ddr3_memory_interface.vo",
+  "source_sha256": "0a21efa69eab7d8b9912bb6aaf880ad35de00d562cc451587c11bd3c002ed17b",
+  "encrypted_ip_sha256": "4a6e26d2ccb8d01221103df4cdf71f3517d2700614020e0c414aafec04a495bc",
+  "method": "Original LUT INIT tables; official DFFCE/DFFPE asynchronous clear/preset and DFFSE synchronous set semantics; no analog timing model.",
+  "cases": [
+    {
+      "case": "startup",
+      "cells": 108,
+      "clock_period_ns": 20,
+      "columns": [
+        "cycle",
+        "ddr_rst",
+        "pll_stop",
+        "\\gw3_top/u_ddr_phy_top/ddr_sync/ready",
+        "\\gw3_top/u_ddr_phy_top/cs_memsync [3]",
+        "\\gw3_top/u_ddr_phy_top/stop_d"
+      ],
+      "trace": [
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          12,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          16437,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          16440,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16441,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          16444,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          16445,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16448,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16449,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          16452,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          16461,
+          0,
+          1,
+          1,
+          0,
+          0
+        ]
+      ],
+      "reset_falls": [
+        {
+          "cycle": 12,
+          "pll_enabled": 1,
+          "stopped_cycles": null
+        },
+        {
+          "cycle": 16448,
+          "pll_enabled": 0,
+          "stopped_cycles": 8,
+          "cycles_to_restart": 4
+        }
+      ]
+    },
+    {
+      "case": "recalibration",
+      "cells": 108,
+      "clock_period_ns": 20,
+      "columns": [
+        "cycle",
+        "ddr_rst",
+        "pll_stop",
+        "\\gw3_top/u_ddr_phy_top/ddr_sync/ready",
+        "\\gw3_top/u_ddr_phy_top/cs_memsync [3]",
+        "\\gw3_top/u_ddr_phy_top/stop_d"
+      ],
+      "trace": [
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          12,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          16437,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          16440,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16441,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          16444,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          16445,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16448,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16449,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          16452,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          16461,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          33003,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          33033,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          33036,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          33037,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          33040,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          33041,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          33044,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          33045,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          33048,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          33057,
+          0,
+          1,
+          1,
+          0,
+          0
+        ]
+      ],
+      "reset_falls": [
+        {
+          "cycle": 12,
+          "pll_enabled": 1,
+          "stopped_cycles": null
+        },
+        {
+          "cycle": 16448,
+          "pll_enabled": 0,
+          "stopped_cycles": 8,
+          "cycles_to_restart": 4
+        },
+        {
+          "cycle": 33044,
+          "pll_enabled": 0,
+          "stopped_cycles": 8,
+          "cycles_to_restart": 4
+        }
+      ]
+    },
+    {
+      "case": "external_reset",
+      "cells": 108,
+      "clock_period_ns": 20,
+      "columns": [
+        "cycle",
+        "ddr_rst",
+        "pll_stop",
+        "\\gw3_top/u_ddr_phy_top/ddr_sync/ready",
+        "\\gw3_top/u_ddr_phy_top/cs_memsync [3]",
+        "\\gw3_top/u_ddr_phy_top/stop_d"
+      ],
+      "trace": [
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          12,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          16437,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          16440,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16441,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          16444,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          16445,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16448,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16449,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          16452,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          16461,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          33000,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          33003,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          33012,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          49425,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          49428,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          49429,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          49432,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          49433,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          49436,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          49437,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          49440,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          49449,
+          0,
+          1,
+          1,
+          0,
+          0
+        ]
+      ],
+      "reset_falls": [
+        {
+          "cycle": 12,
+          "pll_enabled": 1,
+          "stopped_cycles": null
+        },
+        {
+          "cycle": 16448,
+          "pll_enabled": 0,
+          "stopped_cycles": 8,
+          "cycles_to_restart": 4
+        },
+        {
+          "cycle": 33012,
+          "pll_enabled": 1,
+          "stopped_cycles": null
+        },
+        {
+          "cycle": 49436,
+          "pll_enabled": 0,
+          "stopped_cycles": 8,
+          "cycles_to_restart": 4
+        }
+      ]
+    },
+    {
+      "case": "lock_loss",
+      "cells": 108,
+      "clock_period_ns": 20,
+      "columns": [
+        "cycle",
+        "ddr_rst",
+        "pll_stop",
+        "\\gw3_top/u_ddr_phy_top/ddr_sync/ready",
+        "\\gw3_top/u_ddr_phy_top/cs_memsync [3]",
+        "\\gw3_top/u_ddr_phy_top/stop_d"
+      ],
+      "trace": [
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          12,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          16437,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          16440,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16441,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          16444,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          16445,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16448,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          16449,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          16452,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          16461,
+          0,
+          1,
+          1,
+          0,
+          0
+        ]
+      ],
+      "reset_falls": [
+        {
+          "cycle": 12,
+          "pll_enabled": 1,
+          "stopped_cycles": null
+        },
+        {
+          "cycle": 16448,
+          "pll_enabled": 0,
+          "stopped_cycles": 8,
+          "cycles_to_restart": 4
+        }
+      ]
+    }
+  ]
+}

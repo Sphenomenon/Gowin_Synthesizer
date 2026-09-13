@@ -1,0 +1,45 @@
+{
+  "updated": "2026-09-12T00:31:14.481843+08:00",
+  "version": "D50E 2026-09-12 hotplug firmware revision",
+  "fpga_usercode": "0x0000D50E",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "0e5a3cd5d6641c76777d76e1b5f5feddf65d661586ef0de14587cf0e1f09c1af",
+  "usercode_unchanged_from_d50e": true,
+  "firmware_sha256": "6d852161378f9d529005e68bfe799be25bd1e63649f7c19dcf488abe8ff65a6b",
+  "programmed_sram": true,
+  "fpga_flash_written": false,
+  "program": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260912_002903_455795",
+  "full_workstation": true,
+  "hdmi_three_graphs_retained": true,
+  "ddr_retained": true,
+  "ae350_ui_retained": true,
+  "all_rtl_constraints_identical_to_d50e": true,
+  "digital_runtime_pass": true,
+  "runtime_capture": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/results/ae350_workstation_uart_20260913_003250_425111",
+  "audio_samples_per_second": 48000,
+  "hdmi_scan_fps": 60,
+  "display_underruns": 0,
+  "push_note_observed": 95,
+  "physical_usb_port": "J18 USB-A",
+  "ch569_used": false,
+  "usb_host_cpu": "VexRiscv",
+  "hotplug_hardware_tested": false,
+  "hotplug_capture_pending": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260912_003029_556731",
+  "user_audiovisual_acceptance": false,
+  "flash_history": [
+    {
+      "attempt": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/flash_attempt_20260913_001826/attempt.json",
+      "written": false,
+      "reason": "programmer reported spi flash not found",
+      "target_sha256": "0e5a3cd5d6641c76777d76e1b5f5feddf65d661586ef0de14587cf0e1f09c1af"
+    }
+  ],
+  "current_programming": {
+    "mode": "SRAM",
+    "usercode": "0x0000D50E",
+    "bitstream_sha256": "0e5a3cd5d6641c76777d76e1b5f5feddf65d661586ef0de14587cf0e1f09c1af",
+    "evidence": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_restore_after_flash_probe_20260913_003208_016948996"
+  },
+  "runtime_status": "PASS full-system digital runtime",
+  "flash_status": "not written: Programmer reports no SPI flash ID (0x000000/0xFFFFFF)"
+}

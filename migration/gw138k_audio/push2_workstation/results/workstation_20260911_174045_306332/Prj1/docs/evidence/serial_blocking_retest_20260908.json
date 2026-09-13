@@ -1,0 +1,822 @@
+{
+  "scope": "PING/ACK only; not keyboard-to-audio latency",
+  "port": "COM26",
+  "baud": 115200,
+  "python": "3.11.15 (main, Apr 14 2026, 14:31:26) [MSC v.1944 64 bit (AMD64)]",
+  "profile": {
+    "backend": "pyserial",
+    "port": "COM26",
+    "clock": "QueryPerformanceCounter()",
+    "clock_resolution_s": 1e-07
+  },
+  "count": 100,
+  "summary_ms": {
+    "min": 16.88049999938812,
+    "median": 16.976299993984867,
+    "p95": 17.02869999280665,
+    "max": 18.875299996579997
+  },
+  "rtt_over_10ms_count": 100,
+  "samples": [
+    {
+      "sequence": 0,
+      "rtt_ms": 18.875299996579997,
+      "call_ms": 18.904199998360127,
+      "write_call_ms": 0.07179999374784529,
+      "read_calls_ms": 18.733399992925115,
+      "first_nonempty_read_completed_ms": 18.795299998600967
+    },
+    {
+      "sequence": 1,
+      "rtt_ms": 16.883299991604872,
+      "call_ms": 16.902599993045442,
+      "write_call_ms": 0.056500008213333786,
+      "read_calls_ms": 16.7760000040289,
+      "first_nonempty_read_completed_ms": 16.84670000395272
+    },
+    {
+      "sequence": 2,
+      "rtt_ms": 16.973500009044074,
+      "call_ms": 16.986799993901514,
+      "write_call_ms": 0.04780000017490238,
+      "read_calls_ms": 16.88080000167247,
+      "first_nonempty_read_completed_ms": 16.94209998822771
+    },
+    {
+      "sequence": 3,
+      "rtt_ms": 17.032699994160794,
+      "call_ms": 17.05229999788571,
+      "write_call_ms": 0.04050000279676169,
+      "read_calls_ms": 16.932300000917166,
+      "first_nonempty_read_completed_ms": 16.95399999152869
+    },
+    {
+      "sequence": 4,
+      "rtt_ms": 16.91190000565257,
+      "call_ms": 16.927799995755777,
+      "write_call_ms": 0.16039999900385737,
+      "read_calls_ms": 16.712399999960326,
+      "first_nonempty_read_completed_ms": 16.88280000234954
+    },
+    {
+      "sequence": 5,
+      "rtt_ms": 17.003899993142113,
+      "call_ms": 17.01939999475144,
+      "write_call_ms": 0.05420000525191426,
+      "read_calls_ms": 16.89970000006724,
+      "first_nonempty_read_completed_ms": 16.95179998932872
+    },
+    {
+      "sequence": 6,
+      "rtt_ms": 16.95340000151191,
+      "call_ms": 16.96740000625141,
+      "write_call_ms": 0.04919999628327787,
+      "read_calls_ms": 16.862500007846393,
+      "first_nonempty_read_completed_ms": 16.919600006076507
+    },
+    {
+      "sequence": 7,
+      "rtt_ms": 16.986300004646182,
+      "call_ms": 17.005999994580634,
+      "write_call_ms": 0.052400006097741425,
+      "read_calls_ms": 16.889999998966232,
+      "first_nonempty_read_completed_ms": 16.943199996603653
+    },
+    {
+      "sequence": 8,
+      "rtt_ms": 16.94500001030974,
+      "call_ms": 16.957300002104603,
+      "write_call_ms": 0.04990000161342323,
+      "read_calls_ms": 16.858299990417436,
+      "first_nonempty_read_completed_ms": 16.91700000083074
+    },
+    {
+      "sequence": 9,
+      "rtt_ms": 17.005899993819185,
+      "call_ms": 17.01850000245031,
+      "write_call_ms": 0.04030000127386302,
+      "read_calls_ms": 16.921100002946332,
+      "first_nonempty_read_completed_ms": 16.963300004135817
+    },
+    {
+      "sequence": 10,
+      "rtt_ms": 16.984499990940094,
+      "call_ms": 16.998899998725392,
+      "write_call_ms": 0.04669999179895967,
+      "read_calls_ms": 16.89710000937339,
+      "first_nonempty_read_completed_ms": 16.944899994996376
+    },
+    {
+      "sequence": 11,
+      "rtt_ms": 16.960099994321354,
+      "call_ms": 16.973599995253608,
+      "write_call_ms": 0.06570000550709665,
+      "read_calls_ms": 16.861900003277697,
+      "first_nonempty_read_completed_ms": 16.930899990256876
+    },
+    {
+      "sequence": 12,
+      "rtt_ms": 16.993099998217076,
+      "call_ms": 17.002599997795187,
+      "write_call_ms": 0.05669999518431723,
+      "read_calls_ms": 16.891399995074607,
+      "first_nonempty_read_completed_ms": 16.954499995335937
+    },
+    {
+      "sequence": 13,
+      "rtt_ms": 16.992199991364032,
+      "call_ms": 17.003999993903562,
+      "write_call_ms": 0.040700004319660366,
+      "read_calls_ms": 16.906399992876686,
+      "first_nonempty_read_completed_ms": 16.94889999635052
+    },
+    {
+      "sequence": 14,
+      "rtt_ms": 16.959500004304573,
+      "call_ms": 16.969699994660914,
+      "write_call_ms": 0.04980000085197389,
+      "read_calls_ms": 16.881100003956817,
+      "first_nonempty_read_completed_ms": 16.933000006247312
+    },
+    {
+      "sequence": 15,
+      "rtt_ms": 16.990200005238876,
+      "call_ms": 16.999600004055537,
+      "write_call_ms": 0.048300003982149065,
+      "read_calls_ms": 16.90709999820683,
+      "first_nonempty_read_completed_ms": 16.959999993559904
+    },
+    {
+      "sequence": 16,
+      "rtt_ms": 17.017200007103384,
+      "call_ms": 17.03109999652952,
+      "write_call_ms": 0.052099989261478186,
+      "read_calls_ms": 16.91340001707431,
+      "first_nonempty_read_completed_ms": 16.96940000692848
+    },
+    {
+      "sequence": 17,
+      "rtt_ms": 16.94090000819415,
+      "call_ms": 16.953800004557706,
+      "write_call_ms": 0.053499999921768904,
+      "read_calls_ms": 16.85390000056941,
+      "first_nonempty_read_completed_ms": 16.912500010221265
+    },
+    {
+      "sequence": 18,
+      "rtt_ms": 17.032799994922243,
+      "call_ms": 17.049100002623163,
+      "write_call_ms": 0.05160000000614673,
+      "read_calls_ms": 16.925699994317256,
+      "first_nonempty_read_completed_ms": 16.97539999440778
+    },
+    {
+      "sequence": 19,
+      "rtt_ms": 16.970600001513958,
+      "call_ms": 16.985499998554587,
+      "write_call_ms": 0.06120000034570694,
+      "read_calls_ms": 16.852600005222484,
+      "first_nonempty_read_completed_ms": 16.91749999008607
+    },
+    {
+      "sequence": 20,
+      "rtt_ms": 16.973700010566972,
+      "call_ms": 16.992200005915947,
+      "write_call_ms": 0.04400000034365803,
+      "read_calls_ms": 16.881200004718266,
+      "first_nonempty_read_completed_ms": 16.917900007683784
+    },
+    {
+      "sequence": 21,
+      "rtt_ms": 16.96589999482967,
+      "call_ms": 16.985900001600385,
+      "write_call_ms": 0.056199991377070546,
+      "read_calls_ms": 16.854300003615208,
+      "first_nonempty_read_completed_ms": 16.913500003283843
+    },
+    {
+      "sequence": 22,
+      "rtt_ms": 16.944400005741045,
+      "call_ms": 16.959300002781674,
+      "write_call_ms": 0.05319999763742089,
+      "read_calls_ms": 16.853299996000715,
+      "first_nonempty_read_completed_ms": 16.90789998974651
+    },
+    {
+      "sequence": 23,
+      "rtt_ms": 16.988500006846152,
+      "call_ms": 17.005100002279505,
+      "write_call_ms": 0.04820000322069973,
+      "read_calls_ms": 16.897199995582923,
+      "first_nonempty_read_completed_ms": 16.946799994912
+    },
+    {
+      "sequence": 24,
+      "rtt_ms": 16.958000007434748,
+      "call_ms": 16.970800003036857,
+      "write_call_ms": 0.04460000491235405,
+      "read_calls_ms": 16.877199988812208,
+      "first_nonempty_read_completed_ms": 16.925100004300475
+    },
+    {
+      "sequence": 25,
+      "rtt_ms": 16.994800011161715,
+      "call_ms": 17.00969999365043,
+      "write_call_ms": 0.04730001091957092,
+      "read_calls_ms": 16.90740000049118,
+      "first_nonempty_read_completed_ms": 16.950699995504692
+    },
+    {
+      "sequence": 26,
+      "rtt_ms": 16.997700004139915,
+      "call_ms": 17.01419999881182,
+      "write_call_ms": 0.07090000144671649,
+      "read_calls_ms": 16.865099998540245,
+      "first_nonempty_read_completed_ms": 16.948299991781823
+    },
+    {
+      "sequence": 27,
+      "rtt_ms": 16.970600001513958,
+      "call_ms": 16.98680000845343,
+      "write_call_ms": 0.057199998991563916,
+      "read_calls_ms": 16.867799989995547,
+      "first_nonempty_read_completed_ms": 16.922800001339056
+    },
+    {
+      "sequence": 28,
+      "rtt_ms": 16.977500010398217,
+      "call_ms": 16.994500008877367,
+      "write_call_ms": 0.055800002883188426,
+      "read_calls_ms": 16.868700011400506,
+      "first_nonempty_read_completed_ms": 16.9235000066692
+    },
+    {
+      "sequence": 29,
+      "rtt_ms": 16.995900004985742,
+      "call_ms": 17.01120000507217,
+      "write_call_ms": 0.051000009989365935,
+      "read_calls_ms": 16.88740000827238,
+      "first_nonempty_read_completed_ms": 16.935000006924383
+    },
+    {
+      "sequence": 30,
+      "rtt_ms": 16.96200000878889,
+      "call_ms": 16.976099999737926,
+      "write_call_ms": 0.05629999213851988,
+      "read_calls_ms": 16.855000008945353,
+      "first_nonempty_read_completed_ms": 16.909199999645352
+    },
+    {
+      "sequence": 31,
+      "rtt_ms": 16.97240000066813,
+      "call_ms": 16.990599993732758,
+      "write_call_ms": 0.05329999839887023,
+      "read_calls_ms": 16.86510001309216,
+      "first_nonempty_read_completed_ms": 16.918399996939115
+    },
+    {
+      "sequence": 32,
+      "rtt_ms": 16.97270000295248,
+      "call_ms": 16.990699994494207,
+      "write_call_ms": 0.07429999823216349,
+      "read_calls_ms": 16.846200014697388,
+      "first_nonempty_read_completed_ms": 16.923100003623404
+    },
+    {
+      "sequence": 33,
+      "rtt_ms": 16.981999986455776,
+      "call_ms": 17.001499989419244,
+      "write_call_ms": 0.06230000872164965,
+      "read_calls_ms": 16.860999996424653,
+      "first_nonempty_read_completed_ms": 16.92209999600891
+    },
+    {
+      "sequence": 34,
+      "rtt_ms": 16.968000010820106,
+      "call_ms": 16.985900001600385,
+      "write_call_ms": 0.05560000136028975,
+      "read_calls_ms": 16.855499998200685,
+      "first_nonempty_read_completed_ms": 16.90940000116825
+    },
+    {
+      "sequence": 35,
+      "rtt_ms": 16.977199993561953,
+      "call_ms": 16.995500001939945,
+      "write_call_ms": 0.06299999949987978,
+      "read_calls_ms": 16.857399998116307,
+      "first_nonempty_read_completed_ms": 16.916499997023493
+    },
+    {
+      "sequence": 36,
+      "rtt_ms": 16.963200003374368,
+      "call_ms": 16.980400003376417,
+      "write_call_ms": 0.05230000533629209,
+      "read_calls_ms": 16.862599994055927,
+      "first_nonempty_read_completed_ms": 16.906300006667152
+    },
+    {
+      "sequence": 37,
+      "rtt_ms": 16.97979999880772,
+      "call_ms": 16.997300001094118,
+      "write_call_ms": 0.06259999645408243,
+      "read_calls_ms": 16.862599994055927,
+      "first_nonempty_read_completed_ms": 16.923299990594387
+    },
+    {
+      "sequence": 38,
+      "rtt_ms": 17.00160000473261,
+      "call_ms": 17.024100001435727,
+      "write_call_ms": 0.05059999239165336,
+      "read_calls_ms": 16.88779999676626,
+      "first_nonempty_read_completed_ms": 16.92979999643285
+    },
+    {
+      "sequence": 39,
+      "rtt_ms": 16.94199998746626,
+      "call_ms": 16.96300000185147,
+      "write_call_ms": 0.050000002374872565,
+      "read_calls_ms": 16.83469999989029,
+      "first_nonempty_read_completed_ms": 16.889699996681884
+    },
+    {
+      "sequence": 40,
+      "rtt_ms": 16.95990000735037,
+      "call_ms": 16.9778999988921,
+      "write_call_ms": 0.05250000685919076,
+      "read_calls_ms": 16.854300003615208,
+      "first_nonempty_read_completed_ms": 16.906000004382804
+    },
+    {
+      "sequence": 41,
+      "rtt_ms": 16.978100000414997,
+      "call_ms": 16.996900012600236,
+      "write_call_ms": 0.06579999171663076,
+      "read_calls_ms": 16.855399997439235,
+      "first_nonempty_read_completed_ms": 16.91920000303071
+    },
+    {
+      "sequence": 42,
+      "rtt_ms": 16.9717000098899,
+      "call_ms": 16.99160000134725,
+      "write_call_ms": 0.05149999924469739,
+      "read_calls_ms": 16.86610000615474,
+      "first_nonempty_read_completed_ms": 16.90940000116825
+    },
+    {
+      "sequence": 43,
+      "rtt_ms": 16.954400009126402,
+      "call_ms": 16.97339999373071,
+      "write_call_ms": 0.06669999856967479,
+      "read_calls_ms": 16.824000005726703,
+      "first_nonempty_read_completed_ms": 16.905900003621355
+    },
+    {
+      "sequence": 44,
+      "rtt_ms": 16.944999995757826,
+      "call_ms": 16.959000000497326,
+      "write_call_ms": 0.0720999960321933,
+      "read_calls_ms": 16.82829999481328,
+      "first_nonempty_read_completed_ms": 16.91029999346938
+    },
+    {
+      "sequence": 45,
+      "rtt_ms": 16.983499997877516,
+      "call_ms": 16.997300001094118,
+      "write_call_ms": 0.05250000685919076,
+      "read_calls_ms": 16.89409998652991,
+      "first_nonempty_read_completed_ms": 16.94879999558907
+    },
+    {
+      "sequence": 46,
+      "rtt_ms": 16.99600000574719,
+      "call_ms": 17.010299998219125,
+      "write_call_ms": 0.05879999662283808,
+      "read_calls_ms": 16.89299999270588,
+      "first_nonempty_read_completed_ms": 16.951800003880635
+    },
+    {
+      "sequence": 47,
+      "rtt_ms": 16.963099988061003,
+      "call_ms": 16.979599997284822,
+      "write_call_ms": 0.05339999916031957,
+      "read_calls_ms": 16.871000014361925,
+      "first_nonempty_read_completed_ms": 16.92340000590775
+    },
+    {
+      "sequence": 48,
+      "rtt_ms": 16.979499996523373,
+      "call_ms": 16.995500001939945,
+      "write_call_ms": 0.05119999696034938,
+      "read_calls_ms": 16.882600000826642,
+      "first_nonempty_read_completed_ms": 16.935599996941164
+    },
+    {
+      "sequence": 49,
+      "rtt_ms": 16.97349999449216,
+      "call_ms": 16.98719999694731,
+      "write_call_ms": 0.05639999289996922,
+      "read_calls_ms": 16.879400005564094,
+      "first_nonempty_read_completed_ms": 16.93919999524951
+    },
+    {
+      "sequence": 50,
+      "rtt_ms": 16.99899999948684,
+      "call_ms": 17.014400000334717,
+      "write_call_ms": 0.08959999831859022,
+      "read_calls_ms": 16.836599999805912,
+      "first_nonempty_read_completed_ms": 16.945199997280724
+    },
+    {
+      "sequence": 51,
+      "rtt_ms": 16.953800004557706,
+      "call_ms": 16.969000003882684,
+      "write_call_ms": 0.05950000195298344,
+      "read_calls_ms": 16.856500005815178,
+      "first_nonempty_read_completed_ms": 16.90799999050796
+    },
+    {
+      "sequence": 52,
+      "rtt_ms": 16.977399995084852,
+      "call_ms": 16.99160000134725,
+      "write_call_ms": 0.06340000254567713,
+      "read_calls_ms": 16.865500001586042,
+      "first_nonempty_read_completed_ms": 16.93610000074841
+    },
+    {
+      "sequence": 53,
+      "rtt_ms": 16.981000007945113,
+      "call_ms": 16.994600009638816,
+      "write_call_ms": 0.05149999924469739,
+      "read_calls_ms": 16.885899982298724,
+      "first_nonempty_read_completed_ms": 16.94159999897238
+    },
+    {
+      "sequence": 54,
+      "rtt_ms": 17.02720001048874,
+      "call_ms": 17.04049999534618,
+      "write_call_ms": 0.04389999958220869,
+      "read_calls_ms": 16.928299985011108,
+      "first_nonempty_read_completed_ms": 16.976699989754707
+    },
+    {
+      "sequence": 55,
+      "rtt_ms": 16.97270000295248,
+      "call_ms": 16.98870000836905,
+      "write_call_ms": 0.08420000085607171,
+      "read_calls_ms": 16.832400011480786,
+      "first_nonempty_read_completed_ms": 16.910300008021295
+    },
+    {
+      "sequence": 56,
+      "rtt_ms": 16.93560001149308,
+      "call_ms": 16.95330000075046,
+      "write_call_ms": 0.062700011767447,
+      "read_calls_ms": 16.827600004035048,
+      "first_nonempty_read_completed_ms": 16.891200008103624
+    },
+    {
+      "sequence": 57,
+      "rtt_ms": 16.98890000989195,
+      "call_ms": 17.006400012178347,
+      "write_call_ms": 0.051099996198900044,
+      "read_calls_ms": 16.884700002265163,
+      "first_nonempty_read_completed_ms": 16.936900006840006
+    },
+    {
+      "sequence": 58,
+      "rtt_ms": 16.986999995424412,
+      "call_ms": 17.003999993903562,
+      "write_call_ms": 0.061700004152953625,
+      "read_calls_ms": 16.868900012923405,
+      "first_nonempty_read_completed_ms": 16.932900005485862
+    },
+    {
+      "sequence": 59,
+      "rtt_ms": 16.977999999653548,
+      "call_ms": 16.995500001939945,
+      "write_call_ms": 0.06049999501556158,
+      "read_calls_ms": 16.859700001077726,
+      "first_nonempty_read_completed_ms": 16.920699999900535
+    },
+    {
+      "sequence": 60,
+      "rtt_ms": 16.935199993895367,
+      "call_ms": 16.951300000073388,
+      "write_call_ms": 0.06340000254567713,
+      "read_calls_ms": 16.828899999381974,
+      "first_nonempty_read_completed_ms": 16.897299996344373
+    },
+    {
+      "sequence": 61,
+      "rtt_ms": 16.99420000659302,
+      "call_ms": 17.00959999288898,
+      "write_call_ms": 0.07090000144671649,
+      "read_calls_ms": 16.867400001501665,
+      "first_nonempty_read_completed_ms": 16.945899988058954
+    },
+    {
+      "sequence": 62,
+      "rtt_ms": 16.97539999440778,
+      "call_ms": 16.994800011161715,
+      "write_call_ms": 0.05149999924469739,
+      "read_calls_ms": 16.870000006747432,
+      "first_nonempty_read_completed_ms": 16.922200011322275
+    },
+    {
+      "sequence": 63,
+      "rtt_ms": 16.949700002442114,
+      "call_ms": 16.96500000252854,
+      "write_call_ms": 0.05919999966863543,
+      "read_calls_ms": 16.854800007422455,
+      "first_nonempty_read_completed_ms": 16.916399996262044
+    },
+    {
+      "sequence": 64,
+      "rtt_ms": 17.007300004479475,
+      "call_ms": 17.02559999830555,
+      "write_call_ms": 0.05190000229049474,
+      "read_calls_ms": 16.906000004382804,
+      "first_nonempty_read_completed_ms": 16.956300009042025
+    },
+    {
+      "sequence": 65,
+      "rtt_ms": 17.016700003296137,
+      "call_ms": 17.034200005582534,
+      "write_call_ms": 0.05140001303516328,
+      "read_calls_ms": 16.91400000709109,
+      "first_nonempty_read_completed_ms": 16.966100010904483
+    },
+    {
+      "sequence": 66,
+      "rtt_ms": 16.892100000404753,
+      "call_ms": 16.90750000125263,
+      "write_call_ms": 0.07520000508520752,
+      "read_calls_ms": 16.77919999929145,
+      "first_nonempty_read_completed_ms": 16.861000010976568
+    },
+    {
+      "sequence": 67,
+      "rtt_ms": 16.97930000955239,
+      "call_ms": 16.993199998978525,
+      "write_call_ms": 0.055500000598840415,
+      "read_calls_ms": 16.886999990674667,
+      "first_nonempty_read_completed_ms": 16.948199991020374
+    },
+    {
+      "sequence": 68,
+      "rtt_ms": 16.989300012937747,
+      "call_ms": 17.00270001310855,
+      "write_call_ms": 0.06739998934790492,
+      "read_calls_ms": 16.873900007340126,
+      "first_nonempty_read_completed_ms": 16.94710001174826
+    },
+    {
+      "sequence": 69,
+      "rtt_ms": 17.02869999280665,
+      "call_ms": 17.05160000710748,
+      "write_call_ms": 0.050099988584406674,
+      "read_calls_ms": 16.92739999270998,
+      "first_nonempty_read_completed_ms": 16.947399999480695
+    },
+    {
+      "sequence": 70,
+      "rtt_ms": 16.88049999938812,
+      "call_ms": 16.894399988814257,
+      "write_call_ms": 0.05230000533629209,
+      "read_calls_ms": 16.788199995062314,
+      "first_nonempty_read_completed_ms": 16.848299987032078
+    },
+    {
+      "sequence": 71,
+      "rtt_ms": 17.0287999935681,
+      "call_ms": 17.046599998138845,
+      "write_call_ms": 0.05250000685919076,
+      "read_calls_ms": 16.92229999753181,
+      "first_nonempty_read_completed_ms": 16.97569999669213
+    },
+    {
+      "sequence": 72,
+      "rtt_ms": 16.92860000184737,
+      "call_ms": 16.9437000004109,
+      "write_call_ms": 0.04429998807609081,
+      "read_calls_ms": 16.844799989485182,
+      "first_nonempty_read_completed_ms": 16.894399988814257
+    },
+    {
+      "sequence": 73,
+      "rtt_ms": 17.00870000058785,
+      "call_ms": 17.024899992975406,
+      "write_call_ms": 0.05609999061562121,
+      "read_calls_ms": 16.89990000159014,
+      "first_nonempty_read_completed_ms": 16.95419999305159
+    },
+    {
+      "sequence": 74,
+      "rtt_ms": 16.978600004222244,
+      "call_ms": 16.99699999880977,
+      "write_call_ms": 0.060699996538460255,
+      "read_calls_ms": 16.863699987879954,
+      "first_nonempty_read_completed_ms": 16.925200005061924
+    },
+    {
+      "sequence": 75,
+      "rtt_ms": 16.983699999400415,
+      "call_ms": 17.00209999398794,
+      "write_call_ms": 0.061399987316690385,
+      "read_calls_ms": 16.864899997017346,
+      "first_nonempty_read_completed_ms": 16.92439999897033
+    },
+    {
+      "sequence": 76,
+      "rtt_ms": 16.95919998746831,
+      "call_ms": 16.976500002783723,
+      "write_call_ms": 0.04890000855084509,
+      "read_calls_ms": 16.858499991940334,
+      "first_nonempty_read_completed_ms": 16.908000005059876
+    },
+    {
+      "sequence": 77,
+      "rtt_ms": 16.95030000701081,
+      "call_ms": 16.967000003205612,
+      "write_call_ms": 0.06659999780822545,
+      "read_calls_ms": 16.838799987453967,
+      "first_nonempty_read_completed_ms": 16.90740000049118
+    },
+    {
+      "sequence": 78,
+      "rtt_ms": 16.985599999316037,
+      "call_ms": 16.99899999948684,
+      "write_call_ms": 0.06859999848529696,
+      "read_calls_ms": 16.87270001275465,
+      "first_nonempty_read_completed_ms": 16.942400005063973
+    },
+    {
+      "sequence": 79,
+      "rtt_ms": 16.993499986710958,
+      "call_ms": 17.009700008202344,
+      "write_call_ms": 0.07239999831654131,
+      "read_calls_ms": 16.876499998033978,
+      "first_nonempty_read_completed_ms": 16.952399993897416
+    },
+    {
+      "sequence": 80,
+      "rtt_ms": 16.951300000073388,
+      "call_ms": 16.964800001005642,
+      "write_call_ms": 0.05160000000614673,
+      "read_calls_ms": 16.85719999659341,
+      "first_nonempty_read_completed_ms": 16.913100000238046
+    },
+    {
+      "sequence": 81,
+      "rtt_ms": 17.004900000756606,
+      "call_ms": 17.02139999542851,
+      "write_call_ms": 0.04980000085197389,
+      "read_calls_ms": 16.899299997021444,
+      "first_nonempty_read_completed_ms": 16.952099991613068
+    },
+    {
+      "sequence": 82,
+      "rtt_ms": 16.9463999918662,
+      "call_ms": 16.963300004135817,
+      "write_call_ms": 0.05420000525191426,
+      "read_calls_ms": 16.837099989061244,
+      "first_nonempty_read_completed_ms": 16.85169999836944
+    },
+    {
+      "sequence": 83,
+      "rtt_ms": 16.896500004804693,
+      "call_ms": 16.91469999786932,
+      "write_call_ms": 0.05950000195298344,
+      "read_calls_ms": 16.791700007161126,
+      "first_nonempty_read_completed_ms": 16.85899999574758
+    },
+    {
+      "sequence": 84,
+      "rtt_ms": 16.974800004391,
+      "call_ms": 16.990100004477426,
+      "write_call_ms": 0.05360000068321824,
+      "read_calls_ms": 16.88049999938812,
+      "first_nonempty_read_completed_ms": 16.938000000664033
+    },
+    {
+      "sequence": 85,
+      "rtt_ms": 16.97180001065135,
+      "call_ms": 16.98640000540763,
+      "write_call_ms": 0.045500011765398085,
+      "read_calls_ms": 16.88779999676626,
+      "first_nonempty_read_completed_ms": 16.942300004302524
+    },
+    {
+      "sequence": 86,
+      "rtt_ms": 17.029299997375347,
+      "call_ms": 17.045700005837716,
+      "write_call_ms": 0.06690000009257346,
+      "read_calls_ms": 16.906300006667152,
+      "first_nonempty_read_completed_ms": 16.968900003121234
+    },
+    {
+      "sequence": 87,
+      "rtt_ms": 16.969599993899465,
+      "call_ms": 16.989199997624382,
+      "write_call_ms": 0.06249999569263309,
+      "read_calls_ms": 16.850600004545413,
+      "first_nonempty_read_completed_ms": 16.911300001083873
+    },
+    {
+      "sequence": 88,
+      "rtt_ms": 16.97319999220781,
+      "call_ms": 16.99410000583157,
+      "write_call_ms": 0.07119998917914927,
+      "read_calls_ms": 16.849100007675588,
+      "first_nonempty_read_completed_ms": 16.910899998038076
+    },
+    {
+      "sequence": 89,
+      "rtt_ms": 16.95619999372866,
+      "call_ms": 16.974099999060854,
+      "write_call_ms": 0.048699992476031184,
+      "read_calls_ms": 16.859900002600625,
+      "first_nonempty_read_completed_ms": 16.90460000827443
+    },
+    {
+      "sequence": 90,
+      "rtt_ms": 16.957499989075586,
+      "call_ms": 16.977399995084852,
+      "write_call_ms": 0.07829999958630651,
+      "read_calls_ms": 16.835999995237216,
+      "first_nonempty_read_completed_ms": 16.908999998122454
+    },
+    {
+      "sequence": 91,
+      "rtt_ms": 16.95099999778904,
+      "call_ms": 16.96710000396706,
+      "write_call_ms": 0.07709999044891447,
+      "read_calls_ms": 16.832100009196438,
+      "first_nonempty_read_completed_ms": 16.91180000489112
+    },
+    {
+      "sequence": 92,
+      "rtt_ms": 17.003599990857765,
+      "call_ms": 17.020100000081584,
+      "write_call_ms": 0.05339999916031957,
+      "read_calls_ms": 16.90440000675153,
+      "first_nonempty_read_completed_ms": 16.949299999396317
+    },
+    {
+      "sequence": 93,
+      "rtt_ms": 16.959000000497326,
+      "call_ms": 16.97680000506807,
+      "write_call_ms": 0.07029999687802047,
+      "read_calls_ms": 16.830599997774698,
+      "first_nonempty_read_completed_ms": 16.91469999786932
+    },
+    {
+      "sequence": 94,
+      "rtt_ms": 16.99049999297131,
+      "call_ms": 17.007899994496256,
+      "write_call_ms": 0.06510000093840063,
+      "read_calls_ms": 16.872100008185953,
+      "first_nonempty_read_completed_ms": 16.937599997618236
+    },
+    {
+      "sequence": 95,
+      "rtt_ms": 16.95240000844933,
+      "call_ms": 16.96879998780787,
+      "write_call_ms": 0.05779998900834471,
+      "read_calls_ms": 16.853299996000715,
+      "first_nonempty_read_completed_ms": 16.909599988139234
+    },
+    {
+      "sequence": 96,
+      "rtt_ms": 16.988200004561804,
+      "call_ms": 17.005699992296286,
+      "write_call_ms": 0.06500000017695129,
+      "read_calls_ms": 16.871900006663054,
+      "first_nonempty_read_completed_ms": 16.937299995333888
+    },
+    {
+      "sequence": 97,
+      "rtt_ms": 16.97979999880772,
+      "call_ms": 16.997999991872348,
+      "write_call_ms": 0.0686999992467463,
+      "read_calls_ms": 16.856499991263263,
+      "first_nonempty_read_completed_ms": 16.925699994317256
+    },
+    {
+      "sequence": 98,
+      "rtt_ms": 16.96710000396706,
+      "call_ms": 16.98279999254737,
+      "write_call_ms": 0.06500000017695129,
+      "read_calls_ms": 16.85109997924883,
+      "first_nonempty_read_completed_ms": 16.91779999237042
+    },
+    {
+      "sequence": 99,
+      "rtt_ms": 16.98749999923166,
+      "call_ms": 17.002900000079535,
+      "write_call_ms": 0.06980000762268901,
+      "read_calls_ms": 16.866500009200536,
+      "first_nonempty_read_completed_ms": 16.935799998464063
+    }
+  ]
+}

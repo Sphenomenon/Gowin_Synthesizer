@@ -1,0 +1,14 @@
+{
+  "updated": "2026-09-13T09:51:34+08:00",
+  "version": "D50E initial USB-A workstation (pre-hotplug)",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260911_210232_835684/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "4d8648cbc1e059e2b0367fbd6537fe8ad2010426bf14bbffe7214e0855bc5a17",
+  "program_mode": "SRAM only",
+  "from_usercode": "0x0000D50E",
+  "to_usercode": "0x0000D50E",
+  "flash_written": false,
+  "program_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_095134_251691",
+  "physical_port": "J18 USB-A",
+  "ch569_used": false,
+  "reason": "首版D50E对应用户“完美”正常操作反馈；避免把仅数字验证的热插拔版当作声光验收版本。"
+}

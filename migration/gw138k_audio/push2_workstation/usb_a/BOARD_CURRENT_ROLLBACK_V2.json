@@ -1,0 +1,10 @@
+{
+  "bitstream": "/home/sphenicidition/Documents/fpga/Mega_138K/Dev/Prj1/build/video_pll_init_20260908.fs",
+  "sha256": "2ba120fe5d3d636859eb8ba593d7eea28b2a7e34aeb4c1c3ce0d69a62594d58d",
+  "usercode": "0x00007992",
+  "program_mode": "SRAM only",
+  "flash_written": false,
+  "program_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_094207_587347/result.json",
+  "selection_reason": "官方PLL初始化对照版；verification.md记录为用户实测1080p60稳定显示，并确认GUI正弦演奏时HDMI波形/峰值/声部指示变化。",
+  "note": "该版本不含当前CH569桥接改动；USB-A/J18路径保持原工程。"
+}

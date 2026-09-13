@@ -1,0 +1,34 @@
+{
+  "board_tested": false,
+  "reference": "Direct floating-point DFT with ideal periodic Hann",
+  "points_per_channel": 1024,
+  "sample_rate_hz": 48828.125,
+  "bin_spacing_hz": 47.6837158203125,
+  "fractional_guard_bits": 6,
+  "fixture": "Independent L/R fractional-bin and integer-bin multitone mixtures with deterministic noise",
+  "channels": {
+    "left": {
+      "bins_checked": 1024,
+      "maximum_complex_error_guard_units": 6.479975600891748,
+      "rms_complex_error_guard_units": 1.3304985116205856,
+      "error_limit_guard_units": 64
+    },
+    "right": {
+      "bins_checked": 1024,
+      "maximum_complex_error_guard_units": 6.090570078098104,
+      "rms_complex_error_guard_units": 1.3181846041624854,
+      "error_limit_guard_units": 64
+    }
+  },
+  "sha256": {
+    "src/video/output_audio_analysis.v": "91a11df2f3d631b7c1a9bef8db17181869485057bef29b5f8f14775d052acf0c",
+    "src/video/output_audio_capture.v": "9b4616b4fa1f33c141eedcfd6e2d3be36af479a8659a6db7abd6ac5b88fdd8d8",
+    "src/video/audio_analysis_rom.v": "e10f97eb6d8a00932b12b0cef737e6fd1cbe67cfa71d5b4affb4ff8cc8674450",
+    "scripts/check_output_fft.py": "e0d61a4e4cd39fab457e32d1a9cfdec0684d1837277cd97c4e40ff0e174f2afc",
+    "build/fft_reference/pcm.hex": "a09b494f640c65bba80e2c79c9d0223ab9c1ecca279ee8f72a66a558b0793d16",
+    "build/fft_reference/fft_reference.sv": "c797ffac1ae841fa517382c4097b1743ac64728f18742d5f0e3b06190b70d76a",
+    "build/fft_reference/left_fft.txt": "ce58b4e3f219a6585c5168a3eabe275a81e37c4eeafbafb993ac9779e2b67f9c",
+    "build/fft_reference/right_fft.txt": "d39af2c130279c2050cfb0b79199113e52ec46a36376e167252ad818eb9cccd0",
+    "build/fft_reference/simulation.log": "ad2e261ad32f207d32f03983905b8e1373a88d9fb0fa65465cc14651d9a77e55"
+  }
+}

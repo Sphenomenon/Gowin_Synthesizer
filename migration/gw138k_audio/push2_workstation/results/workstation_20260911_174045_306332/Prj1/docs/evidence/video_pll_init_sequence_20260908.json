@@ -1,0 +1,14 @@
+{
+  "source_sha256": {
+    "vendor/sipeed_dvi/video_pll_init.v": "ca1e667fe6f5e9c67e566a8acbd215039b027743bd105d32e1bf91ac380e0453",
+    "vendor/sipeed_dvi/video_pll_1080p_gw5a.v": "0807a7d45aa095e327a6da3ba119fac727d982cdb99b6da02bdf11f6858fdad3",
+    "sim/primitives/tb_video_pll_init.sv": "b12260e39c037eaccdd51c43f73b22059ee7e47fb8b6f0ca20ea1da9ccc1a6c9"
+  },
+  "official_primitive_declarations_sha256": "7db6e9953af24f1233dbc8f58352a1673e91d01bb69656a16ae893a68089f85d",
+  "test_only_clk_period_override": 250000,
+  "test_only_lock_stable_cycles": 4,
+  "runner_sha256": "caafb1b874682a4cd04a5626b3d57eeec2a531adc06408e4fa9231e8f20f407a",
+  "startup_and_recovery_cases": 4,
+  "raw_lock_bypass_rejected": true,
+  "limits": "PLL and CLKDIV are inert declaration-compatible stubs; raw LOCK is injected. Verifies actual helper/wrapper sequencing and analog control wiring, not physical clocks, jitter or analog stability."
+}

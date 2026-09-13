@@ -1,0 +1,14 @@
+{
+  "updated": "2026-09-13T09:45:56+08:00",
+  "version": "D50E 2026-09-12 USB-A hotplug firmware",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "0e5a3cd5d6641c76777d76e1b5f5feddf65d661586ef0de14587cf0e1f09c1af",
+  "program_mode": "SRAM only",
+  "program_from_usercode": "0x0000D980",
+  "program_to_usercode": "0x0000D50E",
+  "flash_written": false,
+  "program_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_094556_621208",
+  "physical_port": "J18 USB-A",
+  "ch569_used": false,
+  "note": "恢复用于 Push MIDI/LED/屏幕；HDMI、DDR、AE350、音频链保留。"
+}

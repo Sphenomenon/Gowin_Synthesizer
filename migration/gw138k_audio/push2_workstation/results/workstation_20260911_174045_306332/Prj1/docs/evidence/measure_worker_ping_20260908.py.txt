@@ -1,0 +1,102 @@
+"""Actual ControlWorker dispatch/ACK loop; open/close exclude all non-PING I/O."""
+import json
+import math
+from pathlib import Path
+import queue
+import statistics
+import sys
+import time
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+from instrument_backend.transport import SerialTransport
+from instrument_backend.worker import ControlWorker
+
+class OnlyPingTransport(SerialTransport):
+    def command(self, opcode, voice=255, value=0):
+        if opcode != 0:
+            raise AssertionError('probe forbids any non-PING wire command')
+        return super().command(opcode, voice, value)
+    def send_async(self, opcode, voice=255, value=0):
+        if opcode != 0:
+            raise AssertionError('probe forbids any non-PING wire command')
+        return super().send_async(opcode, voice, value)
+
+class PingProbeWorker(ControlWorker):
+    def _open(self, port, baud, simulated):
+        self.connection_id += 1
+        self._transport = OnlyPingTransport(port, baud, self.timeout, backend='pyserial')
+        self._ack((0,255,0), 'connect')
+        self.voice_count = 4  # Any heartbeat remains PING, never a diagnostic opcode.
+        self._async_next_ping = time.perf_counter() + 3600
+        with self._condition:
+            self._state = 'connected'
+        self._emit('connected', profile=self._transport.profile)
+    def _cleanup(self, reason):
+        # This diagnostic deliberately does not use musical-session PANIC cleanup.
+        with self._condition:
+            self._pending.clear()
+            self._background.clear()
+            self._state = 'disconnecting'
+        if self._transport is not None:
+            self._transport.close()
+            self._transport = None
+        self._inflight.clear()
+        self._async_snapshot = None
+        with self._condition:
+            self._state = 'disconnected'
+        self._emit('disconnected', reason=reason)
+
+def main():
+    worker = PingProbeWorker(ping_interval=3600)
+    rows, profile = [], None
+    count, interval = 200, 0.004
+    try:
+        worker.connect('COM26')
+        deadline = time.perf_counter() + 3
+        while time.perf_counter() < deadline:
+            event = worker.events.get(timeout=1)
+            if event['type'] == 'error':
+                raise RuntimeError(event['message'])
+            if event['type'] == 'connected':
+                profile = event['profile']
+                break
+        if profile is None:
+            raise TimeoutError('probe handshake did not finish')
+        next_input = time.perf_counter()
+        inputs = []
+        for index in range(count):
+            while time.perf_counter() < next_input:
+                time.sleep(max(0, min(.001, next_input-time.perf_counter())))
+            submitted = time.perf_counter()
+            if not worker.submit([(0,255,0)], tag=f'probe:{index}', submitted_at=submitted):
+                raise RuntimeError('probe command submission was rejected')
+            inputs.append(submitted)
+            next_input = submitted + interval
+        deadline = time.perf_counter() + 3
+        while len(rows) < count and time.perf_counter() < deadline:
+            event = worker.events.get(timeout=1)
+            if event['type'] == 'error':
+                raise RuntimeError(event['message'])
+            if event['type'] == 'ack' and event.get('tag','').startswith('probe:'):
+                rows.append(event)
+        if len(rows) != count:
+            raise RuntimeError(f'only {len(rows)}/{count} ACKs arrived')
+        def summary(values):
+            values = sorted(values)
+            return {'min':values[0], 'median':statistics.median(values),
+                    'p95':values[math.ceil(len(values)*.95)-1], 'max':values[-1]}
+        result = {'scope':'PING-only through production worker dispatcher; synthetic submission, not keyboard/audio',
+                  'excluded':'musical handshake/PANIC cleanup replaced by PING-only open/close',
+                  'count':count,'ack_count':len(rows),'requested_interval_ms':interval*1000,
+                  'actual_input_interval_ms':summary((b-a)*1000 for a,b in zip(inputs,inputs[1:])),
+                  'profile':profile,'queue_summary_ms':summary(row['queue_wait_ms'] for row in rows),
+                  'rtt_summary_ms':summary(row['rtt_ms'] for row in rows),'events':rows}
+        Path(__file__).with_name('serial_worker_200_20260908.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+        print(json.dumps({k:v for k,v in result.items() if k!='events'},indent=2))
+    finally:
+        worker.close()
+        worker._thread.join(2)
+        if worker.is_alive:
+            raise RuntimeError('probe worker did not close')
+
+if __name__ == '__main__':
+    main()

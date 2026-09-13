@@ -1,0 +1,66 @@
+[
+  {
+    "file": "ddr3_memory_interface.v",
+    "source": "Doc/tangMega-138K-example/ddr_memory/ddr_memory_test_uart/src/ddr3_memory_interface/ddr3_memory_interface.v",
+    "source_sha256": "4a6e26d2ccb8d01221103df4cdf71f3517d2700614020e0c414aafec04a495bc",
+    "sha256": "4a6e26d2ccb8d01221103df4cdf71f3517d2700614020e0c414aafec04a495bc",
+    "changes": {}
+  },
+  {
+    "file": "ddr3_memory_interface.ipc",
+    "source": "Doc/tangMega-138K-example/ddr_memory/ddr_memory_test_uart/src/ddr3_memory_interface/ddr3_memory_interface.ipc",
+    "source_sha256": "52a48fb03644c52b1885b719667cf71a1177b1589c57a3754d2eeba53df6aed1",
+    "sha256": "52a48fb03644c52b1885b719667cf71a1177b1589c57a3754d2eeba53df6aed1",
+    "changes": {}
+  },
+  {
+    "file": "generation_parameters.txt",
+    "source": "Doc/tangMega-138K-example/ddr_memory/ddr_memory_test_uart/src/ddr3_memory_interface/temp/DDR3/gwmc_param.v",
+    "source_sha256": "c0855ec5544ea9d1fe8502d78a7b956cf5e19ab1d9d635db9c5cd195f32b7b59",
+    "sha256": "c0855ec5544ea9d1fe8502d78a7b956cf5e19ab1d9d635db9c5cd195f32b7b59",
+    "changes": {}
+  },
+  {
+    "file": "ddr3_pll.v",
+    "source": "Doc/tangMega-138K-example/ddr_memory/ddr_memory_test_uart/src/gowin_pll/gowin_pll.v",
+    "source_sha256": "fe82f04118059091401422d619109f5bd8888428923e87ef491f15a8c9ec5de6",
+    "sha256": "07279cab90c43bfd60e73da82af5877358e8ebfdb744ca7262b12394a636449d",
+    "changes": {
+      "Gowin_PLL_MOD": "ddr3_pll_primitive",
+      "Gowin_PLL": "ddr3_pll",
+      "PLL_INIT": "ddr3_pll_init"
+    }
+  },
+  {
+    "file": "ddr3_pll_primitive.v",
+    "source": "Doc/tangMega-138K-example/ddr_memory/ddr_memory_test_uart/src/gowin_pll/gowin_pll_mod.v",
+    "source_sha256": "9a0a538f8101e2b18b0cf36e2e85ee88d8b12ef3ce8d586fa5e1db9881f96bb6",
+    "sha256": "2948417296392e0ba0306aa17e48b4332a38aa00e6c763b7ef53c5180652aef7",
+    "changes": {
+      "Gowin_PLL_MOD": "ddr3_pll_primitive"
+    }
+  },
+  {
+    "file": "ddr3_pll_init.v",
+    "source": "Doc/tangMega-138K-example/ddr_memory/ddr_memory_test_uart/src/pll_init.v",
+    "source_sha256": "98c3735c7432581b49f7a1a7496e766b5febb6a4455b61484e1c9a1ea072025d",
+    "sha256": "3e55b1cf5b4cbab9d88a9b7b0924f399ed9aaed469def761b7f73998ab69ea45",
+    "changes": {
+      "PLL_INIT": "ddr3_pll_init"
+    }
+  },
+  {
+    "file": "reference_demo.cst",
+    "source": "Doc/tangMega-138K-example/ddr_memory/ddr_memory_test_uart/src/ddr3_1v4_hs.cst",
+    "source_sha256": "46aaacaa92fe547460ffd5c87029f3536081900e3f029a5ea1517588f2b4ea4e",
+    "sha256": "46aaacaa92fe547460ffd5c87029f3536081900e3f029a5ea1517588f2b4ea4e",
+    "changes": {}
+  },
+  {
+    "file": "reference_demo.sdc",
+    "source": "Doc/tangMega-138K-example/ddr_memory/ddr_memory_test_uart/src/ddr3_1v4_hs.sdc",
+    "source_sha256": "195461165f1b71c41d103e40738fdf8cf555cfcb44f178f5f104bcea4375c211",
+    "sha256": "195461165f1b71c41d103e40738fdf8cf555cfcb44f178f5f104bcea4375c211",
+    "changes": {}
+  }
+]

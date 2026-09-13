@@ -1,0 +1,152 @@
+--- migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/src/video/feedback_renderer.v	2026-09-10 16:05:34.539106254 +0800
++++ migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_013900_508436/Prj1/src/video/feedback_renderer.v	2026-09-13 01:39:53.151999770 +0800
+@@ -71,7 +71,7 @@
+         assign spectrum_left=0; assign spectrum_right=0; assign image_hit=0;
+     end endgenerate
+     assign frame_ready = snapshot_ready && aligned_ready && !busy;
+-    feedback_capture #(.CAPTURE_SAMPLES(512),.TRIGGER_TIMEOUT_SAMPLES(256),.SMOOTH_TRIGGER(1)) u_capture (
++    feedback_capture #(.CAPTURE_SAMPLES(512),.TRIGGER_TIMEOUT_SAMPLES(2048),.SMOOTH_TRIGGER(0)) u_capture (
+         .source_clk(source_clk), .source_reset_n(source_reset_n),
+         .sample_data(sample_data), .sample_valid(sample_valid),
+         .trigger_reference(trigger_reference),
+--- migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/src/video/feedback_dashboard.v	2026-09-10 15:21:11.922072576 +0800
++++ migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_013900_508436/Prj1/src/video/feedback_dashboard.v	2026-09-13 01:40:53.908518713 +0800
+@@ -33,6 +33,7 @@
+     localparam [255:0] WINDOW = "512 SAMPLES / 10 MS / Q1 31     ";
+     localparam [255:0] LEVEL = "OUTPUT PEAK                     ";
+     localparam [255:0] SOURCE = "48000 HZ / HEADPHONE            ";
++    localparam [255:0] CHAIN = "CHAIN MIX>DLY>CHR>REV>ROUTE>DAC ";
+     localparam [255:0] DDR = "DDR FRAMEBUFFER                 ";
+     localparam [255:0] VOICES = "32 VOICES / ACTIVE AND RELEASE  ";
+     localparam [255:0] FOOTER = "LIVE AUDIO / UART CONTROL       ";
+@@ -171,6 +172,8 @@
+         end else if (pixel_y >= 768 && pixel_y < 784 && pixel_x >= 640 && pixel_x < 1152) begin
+             text_line = waveform_held ? "HOLD / WAITING FOR MATCH        " : "TRIGGERED                       ";
+             text_x = 640; text_y = 768; text_enable = 1;
++        end else if (pixel_y >= 200 && pixel_y < 216 && pixel_x >= 64 && pixel_x < 576) begin
++            text_line = CHAIN; text_y = 200; text_enable = 1;
+         end else if (pixel_y >= 168 && pixel_y < 184 && pixel_x >= 1216 && pixel_x < 1728) begin
+             text_line = LEVEL; text_x = 1216; text_y = 168; text_enable = 1;
+         end else if (pixel_y >= 352 && pixel_y < 368 && pixel_x >= 1216 && pixel_x < 1728) begin
+@@ -223,6 +226,7 @@
+                 if(pixel_x>=1248 && pixel_x<1760) begin text_line="STEREO IMAGE / FINAL DAC PCM    ";text_x=1248;text_y=168;text_enable=1;end
+             end else if(pixel_y>=200 && pixel_y<216) begin
+                 text_y=200;
++                if(pixel_x>=64 && pixel_x<576) begin text_line=CHAIN;text_x=64;text_enable=1;end
+                 if(pixel_x>=1280 && pixel_x<1312) begin text_line="L                               ";text_x=1280;text_enable=1;end
+                 if(pixel_x>=1472 && pixel_x<1536) begin text_line="MONO                            ";text_x=1472;text_enable=1;end
+                 if(pixel_x>=1712 && pixel_x<1744) begin text_line="R                               ";text_x=1712;text_enable=1;end
+--- migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/legacy/rtl/audio/stereo_effects.sv	2026-09-06 12:35:40.520735676 +0800
++++ migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_013900_508436/Prj1/legacy/rtl/audio/stereo_effects.sv	2026-09-13 01:40:53.909279505 +0800
+@@ -27,6 +27,7 @@
+   logic [15:0] triangle, chorus_delay;
+   logic [3:0] state;
+   logic signed [63:0] mix_l, mix_r, wet_l, wet_r;
++  logic signed [31:0] delay_stage_l, delay_stage_r, chorus_stage_l, chorus_stage_r, reverb_stage_l, reverb_stage_r;
+   logic signed [31:0] dry_l, dry_r, echo_l, echo_r, chorus_l, chorus_r;
+   logic signed [31:0] rv_a, rv_b, damping_a, damping_b;
+   logic signed [31:0] read_l, read_r, read_a, read_b;
+@@ -58,6 +59,7 @@
+       sg<=0; pg<=0; eg<=0; cg<=0; rg<=0; valid_o<=0; clip_o<=0;
+       left_o<=0; right_o<=0; dry_l<=0; dry_r<=0; mix_l<=0; mix_r<=0;
+       echo_l<=0; echo_r<=0; chorus_l<=0; chorus_r<=0;
++      delay_stage_l<=0; delay_stage_r<=0; chorus_stage_l<=0; chorus_stage_r<=0; reverb_stage_l<=0; reverb_stage_r<=0;
+       rv_a<=0; rv_b<=0; damping_a<=0; damping_b<=0; wet_l<=0; wet_r<=0;
+       feedback_l<=0;feedback_r<=0;feedback_a<=0;feedback_b<=0;
+       feedback_wide_l<=0;feedback_wide_r<=0;feedback_wide_a<=0;feedback_wide_b<=0;
+@@ -114,13 +116,26 @@
+         6: begin
+           feedback_l<=sat31(feedback_wide_l);feedback_r<=sat31(feedback_wide_r);
+           feedback_a<=sat31(feedback_wide_a);feedback_b<=sat31(feedback_wide_b);
++          // Fixed serial chain: dry -> delay -> chorus -> reverb.
++          delay_stage_l<=sat31($signed(dry_l)+($signed(echo_product_l) >>> 15));
++          delay_stage_r<=sat31($signed(dry_r)+($signed(echo_product_r) >>> 15));
+           wet_l<=echo_product_l+chorus_product_l+rv_product_l;
+           wet_r<=echo_product_r+chorus_product_r+rv_product_r;
+           state<=10;
+         end
+-        10:begin
+-          mix_l <= $signed(dry_l) + rshift(wet_l,15);
+-          mix_r <= $signed(dry_r) + rshift(wet_r,15);
++        10: begin
++          chorus_stage_l<=sat31($signed(delay_stage_l)+($signed(chorus_product_l) >>> 15));
++          chorus_stage_r<=sat31($signed(delay_stage_r)+($signed(chorus_product_r) >>> 15));
++          state<=11;
++        end
++        11: begin
++          reverb_stage_l<=sat31($signed(chorus_stage_l)+($signed(rv_product_l) >>> 15));
++          reverb_stage_r<=sat31($signed(chorus_stage_r)+($signed(rv_product_r) >>> 15));
++          state<=12;
++        end
++        12: begin
++          mix_l <= reverb_stage_l;
++          mix_r <= reverb_stage_r;
+           state<=7;
+         end
+         7: begin
+--- migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/src/push2/push2_lights.sv	2026-09-11 16:34:04.484143227 +0800
++++ migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_013900_508436/Prj1/src/push2/push2_lights.sv	2026-09-13 01:40:53.910203479 +0800
+@@ -1,4 +1,5 @@
+ module push2_lights(input wire clk,rst,input wire [63:0] held,input wire [31:0] control,
++    input wire [31:0] score_mask,input wire score_running,
+     output reg valid,input wire ready,output reg [1:0] kind,
+     output reg [6:0] index,output reg [7:0] value);
+     reg [2:0] startup;
+@@ -12,6 +13,7 @@
+                 0:color=126;1:color=15;2:color=125;3:color=22;
+                 4:color=25;5:color=3;6:color=8;default:color=127;
+             endcase
++            if(score_running && scan < 32 && score_mask[scan[4:0]])color=60;
+             if(held[scan])color=122;
+         end else if(scan<67)color=control[4:3]==scan-64?126:1;
+         else if(scan<72)color=control[9:7]==scan-67?15:1;
+--- migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/src/usb_a/push2_usb_a_control.sv	2026-09-11 20:56:01.956315374 +0800
++++ migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_013900_508436/Prj1/src/usb_a/push2_usb_a_control.sv	2026-09-13 01:40:53.910493395 +0800
+@@ -4,6 +4,7 @@
+     input wire clk,reset_n,audio_clk,audio_reset_n,
+     input wire feedback_clk,feedback_reset_n,
+     input wire [447:0] performance_words,
++    input wire [31:0] score_led_mask,input wire score_running,
+     input wire select,write,input wire [7:0] address,
+     input wire [31:0] wdata,output wire ready,output reg [31:0] rdata,
+     output wire audio_valid,input wire audio_ready,output wire [17:0] audio_event,
+@@ -54,6 +55,7 @@
+     wire [31:0] commands;reg [8:0] packet_index;
+     wire packet_ack=accepted && write && address==8'h44 && wdata==1;
+     push2_lights lights(.clk(clk),.rst(!reset_n || !connected),.held(actual_held),.control(control),
++        .score_mask(score_led_mask),.score_running(score_running),
+         .valid(cv),.ready(cr),.kind(ck),.index(ci),.value(cval));
+     push2_led_tx led(.clk(clk),.rst(!reset_n || !connected),
+         .cmd_valid(cv),.cmd_ready(cr),.cmd_kind(ck),.cmd_index(ci),.cmd_value(cval),.cmd_cable(4'd0),
+--- migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/src/push2/gw138k_push_workstation_top.v	2026-09-12 00:15:51.040294308 +0800
++++ migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_013900_508436/Prj1/src/push2/gw138k_push_workstation_top.v	2026-09-13 01:40:53.910891160 +0800
+@@ -78,10 +78,18 @@
+         .pending(ui_pending),.visible(ui_visible),.next_visible(ui_next_visible),.front_base(ui_front_base),.next_base(ui_next_base));
+     wire service_select=psel && paddr[31:12]==20'hf8010;
+     wire [447:0] performance_words;
++    wire [31:0] score_led_mask_audio,score_frame_audio; wire score_running_audio,score_done_audio;
++    (* ASYNC_REG="TRUE", syn_preserve=1 *) reg [31:0] score_mask_meta,score_mask_usb;
++    (* ASYNC_REG="TRUE", syn_preserve=1 *) reg score_run_meta,score_run_usb;
++    always @(posedge usb_clk or negedge usb_reset_n) begin
++        if(!usb_reset_n) begin score_mask_meta<=0;score_mask_usb<=0;score_run_meta<=0;score_run_usb<=0; end
++        else begin score_mask_meta<=score_led_mask_audio;score_mask_usb<=score_mask_meta;score_run_meta<=score_running_audio;score_run_usb<=score_run_meta; end
++    end
+     wire all_usb_valid,all_usb_ready;wire [17:0] all_usb_event;
+     wire [447:0] push_snapshot;
+     push2_usb_a_control u_push(.clk(usb_clk),.reset_n(usb_reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),
+         .feedback_clk(clk_50m),.feedback_reset_n(reset_n),.performance_words(push_snapshot),
++        .score_led_mask(score_mask_usb),.score_running(score_run_usb),
+         .select(mmio_select),.write(mmio_write),.address(mmio_address),.wdata(mmio_wdata),.ready(mmio_ready),.rdata(mmio_rdata),
+         .audio_valid(all_usb_valid),.audio_ready(all_usb_ready),.audio_event(all_usb_event),.telemetry(usb_words));
+     gw138k_usb_controlled_audio u_managed(
+@@ -94,7 +102,9 @@
+         .hp_bck(hp_bck),.hp_ws(hp_ws),.hp_din(hp_din),.pa_en(pa_en),
+         .sample_valid_o(audio_sample_valid),
+         .display_valid_o(output_sample_valid),.display_pcm_o(output_pcm),.display_reference_o(output_reference),
+-        .display_voices_o(active_voices),.display_status_o(display_status));
++        .display_voices_o(active_voices),.display_status_o(display_status),
++        .led_mask_o(score_led_mask_audio),.score_frame_o(score_frame_audio),
++        .score_running_o(score_running_audio),.score_done_o(score_done_audio));
+     wire signed [16:0] output_mid_pcm=$signed({output_pcm[31],output_pcm[31:16]})+
+                                             $signed({output_pcm[15],output_pcm[15:0]});
+     wire signed [31:0] output_mid={output_mid_pcm,15'd0};

@@ -1,0 +1,49 @@
+{
+  "reference_netlist_sha256": "0a21efa69eab7d8b9912bb6aaf880ad35de00d562cc451587c11bd3c002ed17b",
+  "encrypted_ip_sha256": "4a6e26d2ccb8d01221103df4cdf71f3517d2700614020e0c414aafec04a495bc",
+  "primitive_model_sha256": "7db6e9953af24f1233dbc8f58352a1673e91d01bb69656a16ae893a68089f85d",
+  "dqs_timing_models": [
+    {
+      "file": "DQS_tsim_M.vp",
+      "sha256": "23c6029bb67942bc85ec68f90ee46c5357cd7caa74d7f3c78cd743c2eea496b6",
+      "hold_checks": [
+        "$setuphold (posedge PCLK, posedge HOLD, 0:0:0, 0:0:0);",
+        "$setuphold (posedge PCLK, negedge HOLD, 0:0:0, 0:0:0);"
+      ]
+    },
+    {
+      "file": "DQS_tsim_V.vp",
+      "sha256": "3f71f442197045fc7ba7f988e1399e52acc613bfc4d29585d43e64b6f950014d",
+      "hold_checks": [
+        "$setuphold (posedge PCLK, posedge HOLD, 0:0:0, 0:0:0);",
+        "$setuphold (posedge PCLK, negedge HOLD, 0:0:0, 0:0:0);"
+      ]
+    }
+  ],
+  "dll_snapshot_enable": "!ddr_init_st_rrr && ddr_init_st_rr && dll_lock",
+  "dll_step_frozen_windows": [
+    {
+      "case": "startup",
+      "step_frozen_cycle": 16421,
+      "memory_restart_cycle": 16452,
+      "frozen_before_restart_ns": 620
+    },
+    {
+      "case": "recalibration",
+      "step_frozen_cycle": 16421,
+      "memory_restart_cycle": 16452,
+      "frozen_before_restart_ns": 620
+    },
+    {
+      "case": "recalibration",
+      "step_frozen_cycle": 33017,
+      "memory_restart_cycle": 33048,
+      "frozen_before_restart_ns": 620
+    }
+  ],
+  "hold_equation": "hold_i_next = WRLVL_ADJ_DQS || READ_CAL_HOLD_delayed_1 || OR(previous_7_cycles)",
+  "hold_output_equation": "HOLD[lane] = hold_i[lane] && !read_rclksel_conf[lane]",
+  "hold_equation_cases_checked": 512,
+  "wstep_post_update_ui_registers": 2,
+  "limits": "Logical/configuration audit, not analog DQS validation. Public HOLD timing models specify PCLK; keep real hold analysis and bounded propagation. WLOADN remains fully timed."
+}

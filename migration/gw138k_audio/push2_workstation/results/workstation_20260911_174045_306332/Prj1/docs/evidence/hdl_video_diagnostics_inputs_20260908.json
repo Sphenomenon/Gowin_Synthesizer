@@ -1,0 +1,17 @@
+{
+  "inputs_sha256": {
+    "src/synth/synth_engine.v": "6d6bed7b75993dfdee69123bd3ef1497b41ffa398a418142cad004f4f5c59957",
+    "src/video/video_runtime_diagnostics.v": "637e4ad4b391a54111f40d6a58b5f4e4a27d9379a44d8327dafb716db6f3b711",
+    "sim/tb_synth_engine.sv": "bf787be19c2c1586f61c313b22ebae40cb1b4c05e17559e29fc8777a15389d07",
+    "sim/tb_uart_control.sv": "4c32f19d0427dae2cd6c79aa077532d3740324cf5683587a3e7c7c03a34c9e4b",
+    "sim/tb_sine_voices.sv": "460ffa1866c9f72e5ff1a9254f0842ab839eb40214d201f044687ac13468a79b",
+    "sim/tb_video_runtime_diagnostics.sv": "07848a2e80af2c13054bb9e94cb2431f1cec3de75fc353ea847e616a7eadc983",
+    "tools/instrument_backend/protocol.py": "de099bd8109c8e603be1d81891533dd284b55ada7da6a952edd5b7af5f6e92c7",
+    "tools/instrument_backend/diagnostics.py": "b3306aa900a9888d5e7b2324d94f01fe1e00771ff2ad3a7bd787afd53a532bbe",
+    "tools/instrument_cli.py": "64eb1933b90c4bd01d3a1b5a9a89b16989c87c6f8780dca84cf3c74b39e89dac",
+    "sim/test_video_diagnostics.py": "013291a6ad480d1366c9cd2a51ed76ebdae5bdf1d644ef3c5209a576c68082d4"
+  },
+  "hdl_incremental_tests": 4,
+  "python_tests": 77,
+  "purpose": "Hashes of diagnostic-related sources and benches after the synchronous-domain reset correction. This is simulation evidence, not a board result."
+}

@@ -1,0 +1,262 @@
+{
+  "version": 2,
+  "name": "正弦 · 柔和长音",
+  "voices": [
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    },
+    {
+      "waveform": 2,
+      "velocity": 0.22,
+      "attack_ms": 18,
+      "decay_ms": 180,
+      "sustain": 0.6,
+      "release_ms": 250
+    }
+  ]
+}

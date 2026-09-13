@@ -1,0 +1,26 @@
+{
+  "primitive_model_sha256": "7db6e9953af24f1233dbc8f58352a1673e91d01bb69656a16ae893a68089f85d",
+  "source_sha256": {
+    "vendor/sipeed_dvi/video_pll_1080p_gw5a.v": "e2be676a4a529c81bde48c2f29898f076dae33a60c4d180a10f6398ec2db7554",
+    "vendor/sipeed_dvi/dvi_tx_clk_drv.v": "e92e748027967dbb2da3b03e6c802ad3a26fc8f4f46d7aa0e0b761801137fe8c",
+    "vendor/sipeed_dvi/dvi_tx_tmds_phy.v": "75ed94603e2a20d6303bb93a82594d0e8a8a4bfa6e26ca39cb1b131d9330f9db",
+    "vendor/sipeed_dvi/dvi_tx_top.v": "737b30bec9cea0c33a4cdda607954913e309445352b45c485e0580b67e34cec2",
+    "vendor/sipeed_dvi/dvi_tx_tmds_enc.v": "1be5a5e3fbb785ad03ba2e3de507af69edd1857b32d378347897fdc98f46dcbd",
+    "sim/primitives/tb_tmds_clock.sv": "a5cd7c78194094dcc6722d92d0ae232e52ae6eb177ac6aebace91cf4c9214467",
+    "scripts/check_tmds_clock.py": "33e1d672f7f992553009fa977f638f4d11ad88f5cc77d46d6d5aaee1949075df"
+  },
+  "phase_delays_ns": [
+    0.0,
+    2.041,
+    2.775
+  ],
+  "startup_cases_per_phase": 3,
+  "clock_word_d9_to_d0": "1111100000",
+  "raw_divider_duty_percent": 60,
+  "forwarded_clock_duty_percent": 50,
+  "clock_period_unit_intervals": 10,
+  "ordered_rgb_words_checked_per_case": 120,
+  "data_lanes_checked": 3,
+  "alignment": "one forwarded-clock falling edge marks D0 on all lanes; discard exactly seven startup words, no phase search",
+  "limits": "Official digital models and a PCLK phase sweep; not analog PLL, complete SDF, PCB or receiver validation."
+}

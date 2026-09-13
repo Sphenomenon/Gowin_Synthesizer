@@ -1,0 +1,1455 @@
+{
+  "scope": "PING only; pipelining experiment, not production transport",
+  "profile": {
+    "backend": "pyserial",
+    "port": "COM26",
+    "clock": "QueryPerformanceCounter()",
+    "clock_resolution_s": 1e-07
+  },
+  "batches": [
+    {
+      "count": 4,
+      "spacing_ms": 0,
+      "missing": [],
+      "writes": [
+        {
+          "sequence": 1,
+          "at_ms": 0.008700008038431406
+        },
+        {
+          "sequence": 2,
+          "at_ms": 0.008700008038431406
+        },
+        {
+          "sequence": 3,
+          "at_ms": 0.008700008038431406
+        },
+        {
+          "sequence": 4,
+          "at_ms": 0.008700008038431406
+        }
+      ],
+      "acks": [
+        {
+          "sequence": 1,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.923900009715
+        },
+        {
+          "sequence": 2,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.968900003121234
+        },
+        {
+          "sequence": 3,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.968900003121234
+        },
+        {
+          "sequence": 4,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.968900003121234
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "spacing_ms": 0,
+      "missing": [
+        9
+      ],
+      "writes": [
+        {
+          "sequence": 5,
+          "at_ms": 0.010400006431154907
+        },
+        {
+          "sequence": 6,
+          "at_ms": 0.010400006431154907
+        },
+        {
+          "sequence": 7,
+          "at_ms": 0.010400006431154907
+        },
+        {
+          "sequence": 8,
+          "at_ms": 0.010400006431154907
+        },
+        {
+          "sequence": 9,
+          "at_ms": 0.010400006431154907
+        },
+        {
+          "sequence": 10,
+          "at_ms": 0.010400006431154907
+        },
+        {
+          "sequence": 11,
+          "at_ms": 0.010400006431154907
+        },
+        {
+          "sequence": 12,
+          "at_ms": 0.010400006431154907
+        }
+      ],
+      "acks": [
+        {
+          "sequence": 5,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.882500000065193
+        },
+        {
+          "sequence": 6,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.882500000065193
+        },
+        {
+          "sequence": 7,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.882500000065193
+        },
+        {
+          "sequence": 8,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.882500000065193
+        },
+        {
+          "sequence": 10,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.882500000065193
+        },
+        {
+          "sequence": 11,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.882500000065193
+        },
+        {
+          "sequence": 12,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.882500000065193
+        }
+      ]
+    },
+    {
+      "count": 12,
+      "spacing_ms": 0,
+      "missing": [
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "writes": [
+        {
+          "sequence": 13,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 14,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 15,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 16,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 17,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 18,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 19,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 20,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 21,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 22,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 23,
+          "at_ms": 0.02139998832717538
+        },
+        {
+          "sequence": 24,
+          "at_ms": 0.02139998832717538
+        }
+      ],
+      "acks": [
+        {
+          "sequence": 13,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 9.831699993810616
+        },
+        {
+          "sequence": 14,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 9.831699993810616
+        },
+        {
+          "sequence": 15,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 9.831699993810616
+        },
+        {
+          "sequence": 16,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 9.831699993810616
+        },
+        {
+          "sequence": 22,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 26.777299994137138
+        },
+        {
+          "sequence": 23,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 26.777299994137138
+        },
+        {
+          "sequence": 24,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 26.777299994137138
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "spacing_ms": 1.5,
+      "missing": [],
+      "writes": [
+        {
+          "sequence": 25,
+          "at_ms": 0.006700007361359894
+        },
+        {
+          "sequence": 26,
+          "at_ms": 1.5112000110093504
+        },
+        {
+          "sequence": 27,
+          "at_ms": 3.014000001712702
+        },
+        {
+          "sequence": 28,
+          "at_ms": 4.517900000791997
+        },
+        {
+          "sequence": 29,
+          "at_ms": 6.02130001061596
+        },
+        {
+          "sequence": 30,
+          "at_ms": 7.523699998273514
+        },
+        {
+          "sequence": 31,
+          "at_ms": 9.026100000482984
+        },
+        {
+          "sequence": 32,
+          "at_ms": 10.530500003369525
+        }
+      ],
+      "acks": [
+        {
+          "sequence": 25,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 14.701699998113327
+        },
+        {
+          "sequence": 26,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 14.7685999982059
+        },
+        {
+          "sequence": 27,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 14.7685999982059
+        },
+        {
+          "sequence": 28,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 14.7685999982059
+        },
+        {
+          "sequence": 29,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 14.7685999982059
+        },
+        {
+          "sequence": 30,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 14.7685999982059
+        },
+        {
+          "sequence": 31,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 14.7685999982059
+        },
+        {
+          "sequence": 32,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 14.7685999982059
+        }
+      ]
+    },
+    {
+      "count": 12,
+      "spacing_ms": 1.5,
+      "missing": [],
+      "writes": [
+        {
+          "sequence": 33,
+          "at_ms": 0.002900007530115545
+        },
+        {
+          "sequence": 34,
+          "at_ms": 1.5087000065250322
+        },
+        {
+          "sequence": 35,
+          "at_ms": 3.013299996382557
+        },
+        {
+          "sequence": 36,
+          "at_ms": 4.5153999963076785
+        },
+        {
+          "sequence": 37,
+          "at_ms": 6.018900006893091
+        },
+        {
+          "sequence": 38,
+          "at_ms": 7.521599996834993
+        },
+        {
+          "sequence": 39,
+          "at_ms": 9.02660000429023
+        },
+        {
+          "sequence": 40,
+          "at_ms": 10.5321000010008
+        },
+        {
+          "sequence": 41,
+          "at_ms": 12.036700005410239
+        },
+        {
+          "sequence": 42,
+          "at_ms": 13.541499996790662
+        },
+        {
+          "sequence": 43,
+          "at_ms": 15.046600005007349
+        },
+        {
+          "sequence": 44,
+          "at_ms": 16.54890000645537
+        }
+      ],
+      "acks": [
+        {
+          "sequence": 33,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.891799998120405
+        },
+        {
+          "sequence": 34,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.891799998120405
+        },
+        {
+          "sequence": 35,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.891799998120405
+        },
+        {
+          "sequence": 36,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.891799998120405
+        },
+        {
+          "sequence": 37,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.891799998120405
+        },
+        {
+          "sequence": 38,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.891799998120405
+        },
+        {
+          "sequence": 39,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.891799998120405
+        },
+        {
+          "sequence": 40,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.891799998120405
+        },
+        {
+          "sequence": 41,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.891799998120405
+        },
+        {
+          "sequence": 42,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.891799998120405
+        },
+        {
+          "sequence": 43,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.87420000217389
+        },
+        {
+          "sequence": 44,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.87420000217389
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "spacing_ms": 1.5,
+      "missing": [],
+      "writes": [
+        {
+          "sequence": 45,
+          "at_ms": 0.002700006007216871
+        },
+        {
+          "sequence": 46,
+          "at_ms": 1.5071999951032922
+        },
+        {
+          "sequence": 47,
+          "at_ms": 3.00989999959711
+        },
+        {
+          "sequence": 48,
+          "at_ms": 4.512500003329478
+        },
+        {
+          "sequence": 49,
+          "at_ms": 6.0178999992785975
+        },
+        {
+          "sequence": 50,
+          "at_ms": 7.521100007579662
+        },
+        {
+          "sequence": 51,
+          "at_ms": 9.025499995914288
+        },
+        {
+          "sequence": 52,
+          "at_ms": 10.531799998716451
+        },
+        {
+          "sequence": 53,
+          "at_ms": 12.035199993988499
+        },
+        {
+          "sequence": 54,
+          "at_ms": 13.537899998482317
+        },
+        {
+          "sequence": 55,
+          "at_ms": 15.041699996800162
+        },
+        {
+          "sequence": 56,
+          "at_ms": 16.547899998840876
+        },
+        {
+          "sequence": 57,
+          "at_ms": 18.05100000638049
+        },
+        {
+          "sequence": 58,
+          "at_ms": 19.553499994799495
+        },
+        {
+          "sequence": 59,
+          "at_ms": 21.05680000386201
+        },
+        {
+          "sequence": 60,
+          "at_ms": 22.562400001334026
+        },
+        {
+          "sequence": 61,
+          "at_ms": 24.064500001259148
+        },
+        {
+          "sequence": 62,
+          "at_ms": 25.567400007275864
+        },
+        {
+          "sequence": 63,
+          "at_ms": 27.070099997217767
+        },
+        {
+          "sequence": 64,
+          "at_ms": 28.572499999427237
+        },
+        {
+          "sequence": 65,
+          "at_ms": 30.078099996899255
+        },
+        {
+          "sequence": 66,
+          "at_ms": 31.579999995301478
+        },
+        {
+          "sequence": 67,
+          "at_ms": 33.08399999514222
+        },
+        {
+          "sequence": 68,
+          "at_ms": 34.58639999735169
+        },
+        {
+          "sequence": 69,
+          "at_ms": 36.09009999490809
+        },
+        {
+          "sequence": 70,
+          "at_ms": 37.5938000070164
+        },
+        {
+          "sequence": 71,
+          "at_ms": 39.097100001527
+        },
+        {
+          "sequence": 72,
+          "at_ms": 40.60100000060629
+        },
+        {
+          "sequence": 73,
+          "at_ms": 42.10330000205431
+        },
+        {
+          "sequence": 74,
+          "at_ms": 43.60689999884926
+        },
+        {
+          "sequence": 75,
+          "at_ms": 45.109800004865974
+        },
+        {
+          "sequence": 76,
+          "at_ms": 46.61550000309944
+        }
+      ],
+      "acks": [
+        {
+          "sequence": 45,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.95829999516718
+        },
+        {
+          "sequence": 46,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.95829999516718
+        },
+        {
+          "sequence": 47,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 17.001100000925362
+        },
+        {
+          "sequence": 48,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 17.001100000925362
+        },
+        {
+          "sequence": 49,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 17.001100000925362
+        },
+        {
+          "sequence": 50,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 17.001100000925362
+        },
+        {
+          "sequence": 51,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 17.001100000925362
+        },
+        {
+          "sequence": 52,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 17.001100000925362
+        },
+        {
+          "sequence": 53,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 17.001100000925362
+        },
+        {
+          "sequence": 54,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 17.001100000925362
+        },
+        {
+          "sequence": 55,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 17.001100000925362
+        },
+        {
+          "sequence": 56,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.95029999956023
+        },
+        {
+          "sequence": 57,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.95029999956023
+        },
+        {
+          "sequence": 58,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.98760000709444
+        },
+        {
+          "sequence": 59,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.98760000709444
+        },
+        {
+          "sequence": 60,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.98760000709444
+        },
+        {
+          "sequence": 61,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.98760000709444
+        },
+        {
+          "sequence": 62,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.98760000709444
+        },
+        {
+          "sequence": 63,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.98760000709444
+        },
+        {
+          "sequence": 64,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.98760000709444
+        },
+        {
+          "sequence": 65,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.98760000709444
+        },
+        {
+          "sequence": 66,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.98760000709444
+        },
+        {
+          "sequence": 67,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.9273000061512
+        },
+        {
+          "sequence": 68,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.9273000061512
+        },
+        {
+          "sequence": 69,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.9273000061512
+        },
+        {
+          "sequence": 70,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.998999999137595
+        },
+        {
+          "sequence": 71,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.998999999137595
+        },
+        {
+          "sequence": 72,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.998999999137595
+        },
+        {
+          "sequence": 73,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.998999999137595
+        },
+        {
+          "sequence": 74,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.998999999137595
+        },
+        {
+          "sequence": 75,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.998999999137595
+        },
+        {
+          "sequence": 76,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.998999999137595
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "spacing_ms": 2.0,
+      "missing": [],
+      "writes": [
+        {
+          "sequence": 77,
+          "at_ms": 0.0029999937396496534
+        },
+        {
+          "sequence": 78,
+          "at_ms": 2.00829999812413
+        },
+        {
+          "sequence": 79,
+          "at_ms": 4.011600001831539
+        },
+        {
+          "sequence": 80,
+          "at_ms": 6.016799990902655
+        },
+        {
+          "sequence": 81,
+          "at_ms": 8.022099995287135
+        },
+        {
+          "sequence": 82,
+          "at_ms": 10.025199997471645
+        },
+        {
+          "sequence": 83,
+          "at_ms": 12.030400001094677
+        },
+        {
+          "sequence": 84,
+          "at_ms": 14.034299994818866
+        },
+        {
+          "sequence": 85,
+          "at_ms": 16.039800000726245
+        },
+        {
+          "sequence": 86,
+          "at_ms": 18.04289998835884
+        },
+        {
+          "sequence": 87,
+          "at_ms": 20.047699988936074
+        },
+        {
+          "sequence": 88,
+          "at_ms": 22.052000000257976
+        },
+        {
+          "sequence": 89,
+          "at_ms": 24.056299997027963
+        },
+        {
+          "sequence": 90,
+          "at_ms": 26.061099997605197
+        },
+        {
+          "sequence": 91,
+          "at_ms": 28.063499994459562
+        },
+        {
+          "sequence": 92,
+          "at_ms": 30.068299995036796
+        },
+        {
+          "sequence": 93,
+          "at_ms": 32.072099987999536
+        },
+        {
+          "sequence": 94,
+          "at_ms": 34.07429999788292
+        },
+        {
+          "sequence": 95,
+          "at_ms": 36.080699996091425
+        },
+        {
+          "sequence": 96,
+          "at_ms": 38.086100001237355
+        },
+        {
+          "sequence": 97,
+          "at_ms": 40.092399998684414
+        },
+        {
+          "sequence": 98,
+          "at_ms": 42.098299993085675
+        },
+        {
+          "sequence": 99,
+          "at_ms": 44.1041000012774
+        },
+        {
+          "sequence": 100,
+          "at_ms": 46.10829999728594
+        },
+        {
+          "sequence": 101,
+          "at_ms": 48.11429999244865
+        },
+        {
+          "sequence": 102,
+          "at_ms": 50.11799999920186
+        },
+        {
+          "sequence": 103,
+          "at_ms": 52.121999993687496
+        },
+        {
+          "sequence": 104,
+          "at_ms": 54.12689999502618
+        },
+        {
+          "sequence": 105,
+          "at_ms": 56.13240000093356
+        },
+        {
+          "sequence": 106,
+          "at_ms": 58.1353999878047
+        },
+        {
+          "sequence": 107,
+          "at_ms": 60.139699999126606
+        },
+        {
+          "sequence": 108,
+          "at_ms": 62.14329999056645
+        }
+      ],
+      "acks": [
+        {
+          "sequence": 77,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.884999989997596
+        },
+        {
+          "sequence": 78,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.884999989997596
+        },
+        {
+          "sequence": 79,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.884999989997596
+        },
+        {
+          "sequence": 80,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.884999989997596
+        },
+        {
+          "sequence": 81,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.884999989997596
+        },
+        {
+          "sequence": 82,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.884999989997596
+        },
+        {
+          "sequence": 83,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.930300000240095
+        },
+        {
+          "sequence": 84,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.930300000240095
+        },
+        {
+          "sequence": 85,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.89139998762403
+        },
+        {
+          "sequence": 86,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.89139998762403
+        },
+        {
+          "sequence": 87,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.89139998762403
+        },
+        {
+          "sequence": 88,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.89139998762403
+        },
+        {
+          "sequence": 89,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.89139998762403
+        },
+        {
+          "sequence": 90,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.89139998762403
+        },
+        {
+          "sequence": 91,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.89139998762403
+        },
+        {
+          "sequence": 92,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.89139998762403
+        },
+        {
+          "sequence": 93,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.8445000014035
+        },
+        {
+          "sequence": 94,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.8445000014035
+        },
+        {
+          "sequence": 95,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.8445000014035
+        },
+        {
+          "sequence": 96,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.8445000014035
+        },
+        {
+          "sequence": 97,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.8445000014035
+        },
+        {
+          "sequence": 98,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.8445000014035
+        },
+        {
+          "sequence": 99,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.8445000014035
+        },
+        {
+          "sequence": 100,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.87700000149198
+        },
+        {
+          "sequence": 101,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.87700000149198
+        },
+        {
+          "sequence": 102,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.88259999302682
+        },
+        {
+          "sequence": 103,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.88259999302682
+        },
+        {
+          "sequence": 104,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.91610000072978
+        },
+        {
+          "sequence": 105,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.91610000072978
+        },
+        {
+          "sequence": 106,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.91610000072978
+        },
+        {
+          "sequence": 107,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.91610000072978
+        },
+        {
+          "sequence": 108,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.91610000072978
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "spacing_ms": 4.0,
+      "missing": [],
+      "writes": [
+        {
+          "sequence": 109,
+          "at_ms": 0.0046000059228390455
+        },
+        {
+          "sequence": 110,
+          "at_ms": 4.011099998024292
+        },
+        {
+          "sequence": 111,
+          "at_ms": 8.015300001716241
+        },
+        {
+          "sequence": 112,
+          "at_ms": 12.020599999232218
+        },
+        {
+          "sequence": 113,
+          "at_ms": 16.026900004362687
+        },
+        {
+          "sequence": 114,
+          "at_ms": 20.029100007377565
+        },
+        {
+          "sequence": 115,
+          "at_ms": 24.033499998040497
+        },
+        {
+          "sequence": 116,
+          "at_ms": 28.03630000562407
+        },
+        {
+          "sequence": 117,
+          "at_ms": 32.03930000017863
+        },
+        {
+          "sequence": 118,
+          "at_ms": 36.04300000006333
+        },
+        {
+          "sequence": 119,
+          "at_ms": 40.04669999994803
+        },
+        {
+          "sequence": 120,
+          "at_ms": 44.05169999517966
+        },
+        {
+          "sequence": 121,
+          "at_ms": 48.05559999658726
+        },
+        {
+          "sequence": 122,
+          "at_ms": 52.06040000484791
+        },
+        {
+          "sequence": 123,
+          "at_ms": 56.06610000540968
+        },
+        {
+          "sequence": 124,
+          "at_ms": 60.07079999835696
+        },
+        {
+          "sequence": 125,
+          "at_ms": 64.07389999367297
+        },
+        {
+          "sequence": 126,
+          "at_ms": 68.07890000345651
+        },
+        {
+          "sequence": 127,
+          "at_ms": 72.08339999488089
+        },
+        {
+          "sequence": 128,
+          "at_ms": 76.0870999947656
+        },
+        {
+          "sequence": 129,
+          "at_ms": 80.09190000302624
+        },
+        {
+          "sequence": 130,
+          "at_ms": 84.09400000527967
+        },
+        {
+          "sequence": 131,
+          "at_ms": 88.09689999907278
+        },
+        {
+          "sequence": 132,
+          "at_ms": 92.10019999591168
+        },
+        {
+          "sequence": 133,
+          "at_ms": 96.10340000654105
+        },
+        {
+          "sequence": 134,
+          "at_ms": 100.10910000710282
+        },
+        {
+          "sequence": 135,
+          "at_ms": 104.11299999395851
+        },
+        {
+          "sequence": 136,
+          "at_ms": 108.11590000230353
+        },
+        {
+          "sequence": 137,
+          "at_ms": 112.11770000227261
+        },
+        {
+          "sequence": 138,
+          "at_ms": 116.12170000444166
+        },
+        {
+          "sequence": 139,
+          "at_ms": 120.12439999671187
+        },
+        {
+          "sequence": 140,
+          "at_ms": 124.12779999431223
+        }
+      ],
+      "acks": [
+        {
+          "sequence": 109,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.899399997782893
+        },
+        {
+          "sequence": 110,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.937000007601455
+        },
+        {
+          "sequence": 111,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.937000007601455
+        },
+        {
+          "sequence": 112,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 16.937000007601455
+        },
+        {
+          "sequence": 113,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.895600005052984
+        },
+        {
+          "sequence": 114,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.895600005052984
+        },
+        {
+          "sequence": 115,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.895600005052984
+        },
+        {
+          "sequence": 116,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.895600005052984
+        },
+        {
+          "sequence": 117,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 33.92889999668114
+        },
+        {
+          "sequence": 118,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.885699994978495
+        },
+        {
+          "sequence": 119,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.885699994978495
+        },
+        {
+          "sequence": 120,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.885699994978495
+        },
+        {
+          "sequence": 121,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 50.885699994978495
+        },
+        {
+          "sequence": 122,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.87959999928717
+        },
+        {
+          "sequence": 123,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.87959999928717
+        },
+        {
+          "sequence": 124,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.87959999928717
+        },
+        {
+          "sequence": 125,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 67.87959999928717
+        },
+        {
+          "sequence": 126,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 84.93539999471977
+        },
+        {
+          "sequence": 127,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 84.93539999471977
+        },
+        {
+          "sequence": 128,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 84.93539999471977
+        },
+        {
+          "sequence": 129,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 84.93539999471977
+        },
+        {
+          "sequence": 130,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 101.88440000638366
+        },
+        {
+          "sequence": 131,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 101.88440000638366
+        },
+        {
+          "sequence": 132,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 101.88440000638366
+        },
+        {
+          "sequence": 133,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 101.88440000638366
+        },
+        {
+          "sequence": 134,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 118.90630000561941
+        },
+        {
+          "sequence": 135,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 118.90630000561941
+        },
+        {
+          "sequence": 136,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 118.90630000561941
+        },
+        {
+          "sequence": 137,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 118.90630000561941
+        },
+        {
+          "sequence": 138,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 118.90630000561941
+        },
+        {
+          "sequence": 139,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 135.88060000620317
+        },
+        {
+          "sequence": 140,
+          "opcode": 0,
+          "status": 0,
+          "at_ms": 135.88060000620317
+        }
+      ]
+    }
+  ]
+}

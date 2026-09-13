@@ -1,0 +1,71 @@
+"""Bounded, PING-only diagnostic; no sound/control opcodes, no retransmission."""
+import json
+from pathlib import Path
+import sys
+import time
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+from instrument_backend.transport import SerialTransport
+from instrument_backend.protocol import AckParser, encode_packet
+
+def main():
+    transport = SerialTransport('COM26', backend='pyserial')
+    results = []
+    sequence = 0
+    try:
+        transport.command(0)
+        sequence = transport.sequence
+        stress = '--stress' in sys.argv
+        cases = [(32, 1.5)] * 32 if stress else [
+            (4, 0), (8, 0), (12, 0), (8, 1.5), (12, 1.5),
+            (32, 1.5), (32, 2.0), (32, 4.0)]
+        for count, spacing_ms in cases:
+            parser = AckParser()
+            expected = [(sequence + i) & 255 for i in range(count)]
+            sequence = (sequence + count) & 255
+            started = time.perf_counter()
+            writes, acks = [], []
+            index = 0
+            next_write = started
+            if spacing_ms == 0:
+                packet = b''.join(encode_packet(seq, 0, 255, 0) for seq in expected)
+                written_at = time.perf_counter()
+                if transport.serial.write(packet) != len(packet):
+                    raise OSError('partial write')
+                writes = [{'sequence': seq, 'at_ms': (written_at-started)*1000} for seq in expected]
+                index = count
+            deadline = started + count * spacing_ms / 1000 + 0.25
+            while time.perf_counter() < deadline:
+                now = time.perf_counter()
+                if index < count and now >= next_write:
+                    seq = expected[index]
+                    packet = encode_packet(seq, 0, 255, 0)
+                    written_at = time.perf_counter()
+                    if transport.serial.write(packet) != len(packet):
+                        raise OSError('partial write')
+                    writes.append({'sequence': seq, 'at_ms': (written_at-started)*1000})
+                    index += 1
+                    # No catch-up bursts after scheduler delay.
+                    next_write = written_at + spacing_ms / 1000
+                available = transport.serial.in_waiting
+                if available:
+                    data = transport.serial.read(available)
+                    received = time.perf_counter()
+                    acks.extend({'sequence': ack.sequence, 'opcode': ack.opcode,
+                                 'status': ack.status, 'at_ms': (received-started)*1000}
+                                for ack in parser.feed(data))
+                if index == count and len(acks) >= count:
+                    break
+                time.sleep(0)  # Yield only; actual send/receive timestamps are retained.
+            seen = {ack['sequence'] for ack in acks if ack['opcode'] == 0 and ack['status'] == 0}
+            results.append({'count': count, 'spacing_ms': spacing_ms,
+                            'missing': [seq for seq in expected if seq not in seen],
+                            'writes': writes, 'acks': acks})
+            print(json.dumps({k:v for k,v in results[-1].items() if k not in ('writes','acks')}), flush=True)
+    finally:
+        transport.close()
+    output = Path(__file__).with_name('serial_ping_pacing_stress_20260908.json' if stress else 'serial_ping_pacing_20260908.json')
+    output.write_text(json.dumps({'scope':'PING only; pipelining experiment, not production transport',
+                                 'profile':transport.profile, 'batches':results}, indent=2)+'\n', encoding='utf-8')
+
+if __name__ == '__main__':
+    main()

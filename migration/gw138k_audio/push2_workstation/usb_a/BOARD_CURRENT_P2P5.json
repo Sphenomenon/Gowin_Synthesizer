@@ -1,0 +1,13 @@
+{
+  "updated": "2026-09-13T02:07:46+08:00",
+  "mode": "SRAM",
+  "device": "GW5AST-138C",
+  "id_code": "0x0001081B",
+  "user_code": "0x00007992",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_013900_508436/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "b51a22b768ddd6cfb56984620f55f277cbc894434240fbf75969f3253f40a33d",
+  "program_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_020746_142482",
+  "flash_written": false,
+  "hdmi_audio_push_preserved": true,
+  "user_av_acceptance": "pending"
+}

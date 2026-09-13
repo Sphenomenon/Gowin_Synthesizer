@@ -1,0 +1,17 @@
+{
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260912_001551_009746/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "0e5a3cd5d6641c76777d76e1b5f5feddf65d661586ef0de14587cf0e1f09c1af",
+  "usercode": "0x0000D50E",
+  "usb_hotplug_firmware": true,
+  "simulation_pass": true,
+  "build_pass": true,
+  "routed_audit_pass": true,
+  "setup_hold": {
+    "Setup": "0",
+    "Hold": "0"
+  },
+  "program": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260912_002903_455795",
+  "runtime": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/results/ae350_workstation_uart_20260912_002941_961249",
+  "hotplug_test_pending": true
+}

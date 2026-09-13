@@ -1,0 +1,25 @@
+{
+  "started_at": "2026-09-08T14:53:22.576689+08:00",
+  "candidate_bitstream_sha256": "7fbf05f48b6822b843bc47291cb61ae4c024b495a4de495bd9b02a6509438ef9",
+  "port": "COM26",
+  "baud": 115200,
+  "queries": [
+    {
+      "opcode": 0,
+      "request": "a5 5a 00 00 ff 00 00 00 00 00 81 65",
+      "received": ""
+    },
+    {
+      "opcode": 11,
+      "request": "a5 5a 01 0b ff 00 00 00 00 00 7d 69",
+      "received": ""
+    },
+    {
+      "opcode": 12,
+      "request": "a5 5a 02 0c ff 00 00 00 00 00 4c b8",
+      "received": ""
+    }
+  ],
+  "initial_pending_bytes": "",
+  "completed_at": "2026-09-08T14:53:27.328507+08:00"
+}

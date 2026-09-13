@@ -1,0 +1,33 @@
+tb_audio_latency_monitor: PASS audio latency monitor: stage deltas, zero-valid, wrap/expiry, command and target association, diagnostics isolation, first-only endpoints and replacement count
+tb_audio_latency_tags: PASS tb_audio_latency_tags: 31 sample/30 DAC events, 226-clock pre-edge events, slot31 pulse/sine onset, old/new revision, PCM16 threshold, atomic 64-byte diagnostics, same-edge consume, valid zero PCM and underrun tag invalidation
+tb_ddr3_bist: PASS tb_ddr3_bist: random stalls/latency, complete inverted passes, both DRAM faults, read/command timeouts
+tb_ddr_bandwidth: PASS tb_ddr_bandwidth: three complete 1080p60 output frames, fresh back buffer per frame, zero underruns (behavioral budget model only)
+tb_ddr_framebuffer: PASS tb_ddr_framebuffer: RGB565 packing, DDR backpressure, completed frame swaps, all pixels, black underrun lines and epoch recovery (5 swaps, 7 black lines)
+tb_ddr_recovery_guard: PASS DDR recovery guard: initial search, sub-cycle lock loss, complete reset width, rearm, sustained loss and external reset
+tb_feedback_capture: PASS feedback capture: async clocks, complete 512-point blocks, double buffering, signed peak, dropped observations and reset
+tb_feedback_dashboard: PASS feedback dashboard: all 32 one-hot activity masks, decimal labels 01..32, full 32-bit mask, all 256 glyphs x 8x8 coordinates, stopped four-stage pipeline, text boundaries, Q1.31 endpoints, trace connection, peak and calibration/BIST state
+tb_feedback_polyphonic: PASS polyphonic feedback: 9012 aligned samples, 12 exact chord snapshots, 5 reference changes, 84/84 mixed zero crossings ignored; pitch, shapes, mute, release, retrigger, panic and reset
+tb_feedback_renderer: PASS feedback renderer: DDS reference connection, two pixels/beat, raster ordering, waveform alignment, all 32 captured activity tiles, random stalls, coherent full-width metadata and final handshake
+tb_feedback_stable_display: PASS stable chord display: 7 actual rasters, 1 HOLD frames unchanged, 6 new real windows, 6 sound-revision rearms, maximum accepted same-revision mean change 0.000000 pixels; live audio and full capture/matcher/renderer chain
+tb_feedback_trigger: PASS feedback trigger: rising phase across 18 sine/triangle/pulse snapshots, hysteresis, valid-only history/timeout, silence/DC, exact 512 samples, busy banks and reset
+tb_feedback_wave_align: PASS waveform match: all 513 windows/all 512 points, shifted real data, exact threshold, HOLD immutability, revision rearm, silence, signed extremes and bounded latency
+tb_note_transition: PASS note transition: 18 release-tail reuses, 3621 real mixed samples, maximum adjacent delta=62496151 (limit=134217728); zero-time reattack, direct pitch, pulse continuity, voice isolation, release cancellation, idle restart, panic and reset
+tb_pt8211_tx: PASS tb_pt8211_tx: serial PCM, period, rounding, underrun, amplifier
+tb_sine_rom: PASS tb_sine_rom: all 1024 coefficients, symmetry, endpoints, maximum phase-bin error 0.006136
+tb_sine_voices: PASS tb_sine_voices: 1417 reference samples, four independent DDS phases, pitch continuity, enum rejection, unchanged valid latency, panic
+tb_synth_32voices: PASS tb_synth_32voices: 254 responses, 276 exact 226-clock frames, 275 decoded stereo PCM frames, startup tick retained, full 32-voice mix/masks, atomic 0D snapshot, backpressure, zero DAC underruns
+tb_synth_engine: PASS tb_synth_engine: 4 voices, frame commits, independent pitch/ADSR/velocity, mixer, memory/video snapshots, rejection, ACK backpressure
+tb_uart_audio_latency: PASS UART audio latency integration: actual serial command/ACK CRC, engine32 old-state exclusion, independently decoded positive PCM16 stereo endpoint, complete atomic 64-byte 0E snapshot across PANIC, invalid-input/query isolation and zero DAC underruns; 826 PCM frames
+tb_uart_control: PASS tb_uart_control: UART CRC/recovery -> independent synth -> matched PT8211 stereo PCM; ACK CRC, panic, no underruns
+tb_uart_latency: PASS UART latency: exact synchronized start/CRC timestamps, A5 overlap, CRC/false-start/framing/timeout rejection, command backpressure, full-stop ACK completion with overlapping next response, serial CRC/data unchanged and 32-bit time wrap
+tb_video_clock_1080p: PASS tb_video_clock_1080p: 148.5/742.5 MHz, lock qualification, gated-clock reset/restart
+tb_video_dashboard: PASS tb_video_dashboard: level scale, four independent voice tiles, blanking
+tb_video_epoch_recovery: PASS video epoch recovery: real timeout, 256-frame wrap, no stale rows/no new reads, continuing underrun counts and reset recovery
+tb_video_monitor: PASS tb_video_monitor: coherent asynchronous snapshots, overload, reset recovery
+tb_video_peak_meter: PASS tb_video_peak_meter: signed magnitude, simultaneous frame/sample, monotonic decay
+tb_video_runtime_diagnostics: PASS tb_video_runtime_diagnostics: byte map, Gray CDC/rollover, full windows, clock stall, reset/lock recovery
+tb_video_timing: PASS tb_video_timing: complete 800x525 raster / 640x480 active
+tb_video_timing_1080p: PASS tb_video_timing_1080p: 2200x1125 raster, 1920x1080 active, positive sync, DDR markers
+tb_video_tmds: PASS tb_video_tmds: pipelined 148.5MHz interface, all 256 values, four controls, 5632 random words, disparity, active/control boundaries and in-flight reset
+tb_voice_bank_tdm: PASS tb_voice_bank_tdm: 1061 bit-exact 32-voice frames, state RAM/reset, command snapshot, retrigger/ADSR/all waves, reference, atomic mask, one valid per 225-clock frame
+32 HDL tests passed (31-test suite plus UART-to-PCM latency integration).

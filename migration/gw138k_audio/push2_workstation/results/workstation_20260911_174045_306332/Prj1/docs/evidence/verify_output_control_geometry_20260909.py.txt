@@ -1,0 +1,45 @@
+"""Measure the actual minimum-size Tk layout without showing or probing hardware."""
+import json
+import sys
+from pathlib import Path
+from unittest.mock import patch
+import tkinter as tk
+
+sys.path[:0] = ['tools', 'sim']
+from instrument_ui import app as ui
+from test_instrument_ui import FakeWorker
+
+root = tk.Tk()
+root.withdraw()
+root.attributes('-alpha', 0.0)
+with patch.object(ui, 'ControlWorker', return_value=FakeWorker()), patch.object(ui, 'list_ports', return_value=[]):
+    app = ui.InstrumentApp(root)
+root.update_idletasks()
+minimum = root.minsize()
+root.geometry(f'{minimum[0]}x{minimum[1]}+0+0')
+root.deiconify()
+root.update()
+widgets = {'master': app.master_scale, 'balance': app.balance_scale,
+           'center_button': app.balance_center_button, 'master_value': app.master_value,
+           'balance_value': app.balance_value, 'piano': app.piano, 'log': app.log,
+           'voice_pages': app.voice_pages, 'last_voice_card': app.voice_pills[3],
+           'envelope': app.envelope, 'connect': app.connect_button}
+footer = root.nametowidget(app.log.winfo_parent()).grid_slaves(row=6)[0]
+widgets.update({f'footer_{index}': child for index, child in enumerate(footer.winfo_children())})
+result = {'platform': sys.platform, 'tk_version': root.tk.call('info', 'patchlevel'),
+          'window': [root.winfo_width(), root.winfo_height()], 'minimum': list(minimum),
+          'requested_window': [root.winfo_reqwidth(), root.winfo_reqheight()],
+          'tk_scaling': float(root.tk.call('tk', 'scaling')), 'hardware_accessed': False,
+          'window_invisible_alpha': 0.0, 'widgets': {}}
+for name, widget in widgets.items():
+    x, y = widget.winfo_rootx()-root.winfo_rootx(), widget.winfo_rooty()-root.winfo_rooty()
+    w, h = widget.winfo_width(), widget.winfo_height()
+    result['widgets'][name] = {'bounds': [x,y,w,h], 'mapped': bool(widget.winfo_ismapped()),
+                              'inside_window': x>=0 and y>=0 and x+w<=root.winfo_width() and y+h<=root.winfo_height()}
+Path('build/output_controls_gui_geometry_20260909.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
+print(json.dumps(result, indent=2))
+try:
+    assert all(item['mapped'] and item['inside_window'] for item in result['widgets'].values()), 'clipped or hidden controls'
+finally:
+    for job in root.tk.call('after','info'): root.after_cancel(job)
+    root.destroy()

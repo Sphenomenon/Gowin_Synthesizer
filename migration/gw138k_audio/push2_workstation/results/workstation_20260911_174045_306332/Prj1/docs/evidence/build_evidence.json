@@ -1,0 +1,42 @@
+{
+  "bitstream_sha256": "0b32416e36b252ba14a1006f640df6797095eefc3b8f143763f23f6b486a72b8",
+  "inputs_sha256": {
+    "Prj1.gprj": "0c08fc5162706ec315d0b8216c7336a4723725b595f20b5bf558669251aa6f80",
+    "scripts/build.tcl": "ef620ced8518fd9013986590a4896aa73449b1a0362ee113c328c1500b8d3ba6",
+    "src/audio/pt8211_tx.v": "0927db45428a8e96c49f869b078c648fecb7ef450de2724c3f05f95c3e82f573",
+    "src/control/uart_control.v": "b14111a1475777e7b4cddd8d6423903731a002d45e97224d4b8075d3eb6d8241",
+    "src/control/uart_rx.v": "b94859a36f2472c9107ca8d9b4f07b23eabb3233d607fe91a98c149d11569dfb",
+    "src/control/uart_tx.v": "f4cc3b1880a19d539250cfe7702bffa12782b734db7d0599b3e0c89f7d377060",
+    "src/platform/reset_release.v": "b5d153b9b0660e3ea9db722d41662a4a7f6f151bc40275b81bfedb15c4e9eac1",
+    "src/platform/video_clock.v": "bcaad52da4a34a2bd0c2da64a4b13acc3e875c2751791a57ea676f05ac057d1c",
+    "src/synth/synth_engine.v": "22c543846f33bf1d16d8c666e15ca647846db07ba97804dedb64e09597978006",
+    "src/synth/synth_voice.v": "02ea974ddc09b83eb5d3aec50b7a59148d6c54fbc4673d6abed93aaf7647b860",
+    "src/top/prj1_top.v": "9f9c8bc231fa4ebc2f12a3a8006eb6926c930f95dea13d7294209e92220c5aee",
+    "src/video/hdmi_display.v": "de738c493dbcee3966098d0647a2a81edc9920ad5fd797cd4907464598b6f627",
+    "src/video/video_dashboard.v": "b4ca58d303976de59c6af4563563ef3c921255312e0dc1ff1210128a87c94c27",
+    "src/video/video_font_5x7.v": "1ff393a436a375a703db65368573e22789e60322ab6f81a442a7e840cf6f7df6",
+    "src/video/video_monitor_cdc.v": "18efe86ecb5448561aef8e1f09fb30263607d749a97b6ff889f1e3a27c6a198d",
+    "src/video/video_peak_meter.v": "db66b35168f38a984c82818d2c18c0fee3ae46c6ffc6f96beaa5c4d618de3447",
+    "src/video/video_timing_640x480.v": "e86ac5fcd4e371abb41297eb7efa46d8206beac0617f60d813840a71801ac0c0",
+    "vendor/sipeed_dvi/dvi_tx_clk_drv.v": "cf4d6b855cc291ca501fdc7faef9edfa990ce6459094ca73d2bd12d1503d5749",
+    "vendor/sipeed_dvi/dvi_tx_tmds_enc.v": "93b3e4229fadbd245add216e1340914411a3aaea8f53f91e7840d1684771051e",
+    "vendor/sipeed_dvi/dvi_tx_tmds_phy.v": "4da6fe1c706e7fd07e351ee035303cdf071cd6d23f0eb57931856d0f9af08ac4",
+    "vendor/sipeed_dvi/dvi_tx_top.v": "d3ed92ad656febf1a4f00457e98587734caa1d48b12d23d5e110259a8d6437a1",
+    "vendor/sipeed_dvi/video_pll_gw5a.v": "8df8166566169e97e16cd047f6f9318060eba8ecb1dcca23babccc3cd0db3d26",
+    "constraints/tang_mega_138k.cst": "b6a62c537f362c258150639cca3c2073776597f6e13529eb4db24c26d55863e0",
+    "constraints/tang_mega_138k.sdc": "3488fb0a02b9af713f4d572f3750c1a57c8bbb74614d7432db33dcef511190ed"
+  },
+  "setup_violated_endpoints": 0,
+  "hold_violated_endpoints": 0,
+  "minimum_reported_slack_ns": 0.247,
+  "warnings": [
+    "WARN  (EX3791) : Expression size 32 truncated to fit in target size 9(\"E:\\workspace_cloud\\Mega_138K\\Dev\\Prj1\\vendor\\sipeed_dvi\\dvi_tx_tmds_enc.v\":139)",
+    "WARN  (EX3791) : Expression size 32 truncated to fit in target size 9(\"E:\\workspace_cloud\\Mega_138K\\Dev\\Prj1\\vendor\\sipeed_dvi\\dvi_tx_tmds_enc.v\":141)",
+    "WARN  (EX3791) : Expression size 32 truncated to fit in target size 9(\"E:\\workspace_cloud\\Mega_138K\\Dev\\Prj1\\vendor\\sipeed_dvi\\dvi_tx_tmds_enc.v\":150)",
+    "WARN  (EX3791) : Expression size 32 truncated to fit in target size 9(\"E:\\workspace_cloud\\Mega_138K\\Dev\\Prj1\\vendor\\sipeed_dvi\\dvi_tx_tmds_enc.v\":152)",
+    "WARN  (EX3791) : Expression size 32 truncated to fit in target size 9(\"E:\\workspace_cloud\\Mega_138K\\Dev\\Prj1\\vendor\\sipeed_dvi\\dvi_tx_tmds_enc.v\":158)",
+    "WARN  (EX3791) : Expression size 32 truncated to fit in target size 9(\"E:\\workspace_cloud\\Mega_138K\\Dev\\Prj1\\vendor\\sipeed_dvi\\dvi_tx_tmds_enc.v\":160)",
+    "WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk_50m_d' by the specified constraint. And then it may lead to the excessive delay or skew"
+  ],
+  "board_tested": false
+}

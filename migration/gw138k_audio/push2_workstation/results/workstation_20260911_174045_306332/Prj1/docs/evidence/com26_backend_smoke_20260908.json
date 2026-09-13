@@ -1,0 +1,51 @@
+[
+  {
+    "type": "ack",
+    "sequence": 0,
+    "opcode": 0,
+    "status": 0,
+    "status_text": "OK",
+    "active_mask": 1,
+    "rtt_ms": 15.999999995983671,
+    "header": "a5 5a 00 00 01 00 f1 b7",
+    "simulated": false,
+    "tag": "connect"
+  },
+  {
+    "type": "ack",
+    "sequence": 1,
+    "opcode": 10,
+    "status": 0,
+    "status_text": "OK",
+    "active_mask": 0,
+    "rtt_ms": 16.00000000325963,
+    "header": "a5 5a 01 00 00 0a 3e 53",
+    "simulated": false,
+    "tag": "connect"
+  },
+  {
+    "type": "connected",
+    "port": "COM26",
+    "baud": 115200,
+    "simulated": false
+  },
+  {
+    "type": "ack",
+    "sequence": 2,
+    "opcode": 10,
+    "status": 0,
+    "status_text": "OK",
+    "active_mask": 0,
+    "rtt_ms": 14.999999999417923,
+    "header": "a5 5a 02 00 00 0a e2 c8",
+    "simulated": false,
+    "tag": "cleanup"
+  },
+  {
+    "type": "disconnected",
+    "reason": "closed"
+  },
+  {
+    "type": "closed"
+  }
+]

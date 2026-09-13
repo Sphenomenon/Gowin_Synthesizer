@@ -1,0 +1,54 @@
+# This workspace contains several historical/reference trees.  The Git
+# repository tracks the active Gowin Push 2 workstation and its source,
+# verification scripts, and version records; generated outputs stay local.
+/fpga/
+/Mega_138K/
+/migration/*
+!/migration/gw138k_audio/
+migration/gw138k_audio/*
+!/migration/gw138k_audio/README.md
+!/migration/gw138k_audio/scripts/
+!/migration/gw138k_audio/ae350/
+migration/gw138k_audio/ae350/*
+!/migration/gw138k_audio/ae350/scripts/
+!/migration/gw138k_audio/push2_workstation/
+
+# Build results, captures, and generated implementation databases.
+**/results/
+!migration/gw138k_audio/push2_workstation/results/
+migration/gw138k_audio/push2_workstation/results/*
+!migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/
+migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/*
+!migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/
+!migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/**
+migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/impl/
+migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/build/
+
+**/impl/
+**/build/
+**/__pycache__/
+*.pyc
+*.vcd
+*.fst
+*.wlf
+*.elf
+*.bin
+*.fs
+*.vo
+*.vg
+*.sdf
+*.pr
+*.db
+*.p
+*.rpt
+*.rpt.html
+*.tr
+*.timing_paths
+*.power.html
+*.pin.html
+*.log
+*.tmp
+
+# Tool-local files and editor metadata.
+*.gprj.user
+.DS_Store

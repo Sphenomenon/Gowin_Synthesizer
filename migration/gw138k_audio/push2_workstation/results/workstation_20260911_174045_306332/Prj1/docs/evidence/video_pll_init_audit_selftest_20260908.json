@@ -1,0 +1,50 @@
+{
+  "errors": [],
+  "self_test": {
+    "positive_maximum_propagation_ns": 4.4,
+    "negative_cases": [
+      {
+        "case": "dynamic_ICP_disabled",
+        "rejected": true,
+        "errors": [
+          "video PLL_INIT VO/SDF audit failed: u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst: DYN_ICP_SEL differs from audited \"TRUE\""
+        ]
+      },
+      {
+        "case": "wrong_ICP_source",
+        "rejected": true,
+        "errors": [
+          "video PLL_INIT VO/SDF audit failed: ICPSEL[0]: wrong helper ROM data bit source u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_1_s9"
+        ]
+      },
+      {
+        "case": "settings_route_over_budget",
+        "rejected": true,
+        "errors": [
+          "video PLL_INIT VO/SDF audit failed: u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/ICPSEL[0]: full propagation 13.900 ns exceeds 10.000 ns"
+        ]
+      },
+      {
+        "case": "reset_LUT_arc_over_budget",
+        "rejected": true,
+        "errors": [
+          "video PLL_INIT VO/SDF audit failed: u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/RESET: full propagation 15.700 ns exceeds 10.000 ns"
+        ]
+      },
+      {
+        "case": "helper_clock_changed",
+        "rejected": true,
+        "errors": [
+          "video PLL_INIT VO/SDF audit failed: PLL_INIT helper has a clock other than direct 50 MHz: u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init"
+        ]
+      },
+      {
+        "case": "settings_source_constant",
+        "rejected": true,
+        "errors": [
+          "video PLL_INIT VO/SDF audit failed: u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/ICPSEL[0]: dynamic helper output replaced by constant"
+        ]
+      }
+    ]
+  }
+}

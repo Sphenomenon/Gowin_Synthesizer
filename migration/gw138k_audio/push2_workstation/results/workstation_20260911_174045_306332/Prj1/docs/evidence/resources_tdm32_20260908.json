@@ -1,0 +1,37 @@
+{
+  "bitstream_sha256": "0f787ca29ef77c21e9cb501ab68944b4f5a3a3fdbebfd5b05a57d6bcad03b918",
+  "routed_netlist_sha256": "53c1b0a15fcfd842ccbf0661b31a652bc0a85b4145a2d475f702ea517e0c8a62",
+  "voice_count": 32,
+  "bank_latency_clocks": 225,
+  "engine_latency_clocks": 226,
+  "sample_period_clocks": 1024,
+  "clock_hz": 50000000,
+  "whole_design": {
+    "logic": 10142,
+    "fabric_ff": 10211,
+    "bsram": 73,
+    "dsp": 4.5
+  },
+  "previous_4_voice_design": {
+    "logic": 12898,
+    "fabric_ff": 10929,
+    "bsram": 63,
+    "dsp": 32.5
+  },
+  "bank_primitives_by_name": {
+    "ALU": 363,
+    "DFFCE": 369,
+    "DFFPE": 32,
+    "DFFRE": 327,
+    "DFFSE": 2,
+    "INV": 32,
+    "LUT2": 450,
+    "LUT3": 543,
+    "LUT4": 428,
+    "MULT27X36": 2,
+    "MUX2_LUT5": 32,
+    "SDPX9B": 16,
+    "pROM": 2
+  },
+  "method": "Whole design resources from final official PnR report. Bank primitives attributed by routed instance name; not an isolated synthesis."
+}

@@ -1,0 +1,29 @@
+{
+  "bitstream_sha256": "4e4981fc864ed9a195f6fd7670c15b7933e84c72a284c7bee9161729079ab376",
+  "source": "final official PnR report 2026-09-08 21:14:17",
+  "pnr_report_sha256": "60fcf28eab007f53cb018fc2958d1a6ac63a10995e5f662483019cdb9c82c179",
+  "whole_design": {
+    "logic": 13361.0,
+    "fabric_ff": 12669.0,
+    "bsram": 75.0,
+    "dsp": 4.5
+  },
+  "before_voice_onset": {
+    "logic": 11357,
+    "fabric_ff": 11792,
+    "bsram": 73,
+    "dsp": 4.5
+  },
+  "voice_onset_monitor": {
+    "lut": 988,
+    "alu": 252,
+    "fabric_ff": 664,
+    "bsram": 2,
+    "bsram_type": "SDPB, 16 bits each; synthesis uses one 32-bit SDPB macro",
+    "distributed_ram16sdp4": 65,
+    "dsp": 0,
+    "record_words": 256,
+    "record_word_bits": 32
+  },
+  "new_warning_review": "EX3791 at advance_pointer: EVENT_DEPTH=4 pointer takes values 0..3 and explicitly maps 3 to 0; truncated addition carry cannot contain a valid pointer bit. Checked queue wrap/full simultaneous push-pop and overflow fault. Other seven warnings predate this change."
+}

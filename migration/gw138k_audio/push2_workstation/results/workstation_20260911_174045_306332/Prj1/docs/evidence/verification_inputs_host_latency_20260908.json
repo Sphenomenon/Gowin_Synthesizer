@@ -1,0 +1,242 @@
+{
+  "generated_utc": "2026-09-08T15:13:50.787405+00:00",
+  "scope": "Host latency fixes; no production RTL change or bitstream download in this revision",
+  "python_tests": 233,
+  "python_result": "PASS",
+  "compileall": "PASS",
+  "git_diff_check": "PASS (line-ending conversion notices only)",
+  "measurements_scope": "PING only. Synthetic scheduled inputs and worker queue timing are not keyboard-to-audio measurements.",
+  "keyboard_to_audio_le_10ms": "unverified",
+  "driver_latency_registry_changed": false,
+  "bitstream": {
+    "path": "impl/pnr/Prj1.fs",
+    "bytes": 39579647,
+    "sha256": "4e4981fc864ed9a195f6fd7670c15b7933e84c72a284c7bee9161729079ab376"
+  },
+  "source_inputs": [
+    {
+      "path": "docs/gui_control.md",
+      "bytes": 14626,
+      "sha256": "ca82bb067a15b730ca677fa45240d6a8149425377fb9ac6619a3185c9c53b226"
+    },
+    {
+      "path": "docs/host_latency.md",
+      "bytes": 12166,
+      "sha256": "2e3b0d019bab1bbd6711fd90bf560f58c5c50ffcc29fab76225eb3aab198905d"
+    },
+    {
+      "path": "docs/latency.md",
+      "bytes": 7319,
+      "sha256": "3f2e90a8106597c5bcf53ed10150aaf9070badf927f651c777ed317be487f9b7"
+    },
+    {
+      "path": "docs/verification.md",
+      "bytes": 54937,
+      "sha256": "5db001ddcdcd0a8032e410bf5ab6b60086f42eddf53752ab05e729346142b8fb"
+    },
+    {
+      "path": "README.md",
+      "bytes": 16473,
+      "sha256": "85cdcd91fb057b98b45fc87e0f8a136d3c43fbe89acba0ded0adcbfcbd5b48f1"
+    },
+    {
+      "path": "sim/test_async_worker_review.py",
+      "bytes": 20788,
+      "sha256": "0c000a4b4beea00ce860892333dd311b73a44781e12181eec2b99483ece13319"
+    },
+    {
+      "path": "sim/test_ftdi_serial.py",
+      "bytes": 14835,
+      "sha256": "4471b9f677429b314b01ac91c7e602fb23464b2f0a06857fcd049ca2ffdcf779"
+    },
+    {
+      "path": "sim/test_instrument_backend.py",
+      "bytes": 38711,
+      "sha256": "0bb797339f0085ae609df469ac7827e20c561f3eebf1b3030ae0cb6e5c5ca226"
+    },
+    {
+      "path": "sim/test_instrument_cli.py",
+      "bytes": 10125,
+      "sha256": "e62b0f56e43f9241233ff038dd2116b246c4e9846fe6468654fc5fc124338a54"
+    },
+    {
+      "path": "sim/test_instrument_ui.py",
+      "bytes": 42158,
+      "sha256": "30e310ba09691f6241879c179279b9fb41408865fbed41935dcda33b4b86c58d"
+    },
+    {
+      "path": "sim/test_latency_diagnostics.py",
+      "bytes": 8765,
+      "sha256": "e4e8a692fdd1c2513e67f58711ffa2954c0806ea4345aaa1d1ee2094f6f962f0"
+    },
+    {
+      "path": "sim/test_serial_low_latency.py",
+      "bytes": 28149,
+      "sha256": "4f8e20445861b536bbea090a2b0129fbc310ff3256527eb8ed27d2d27e6e9cca"
+    },
+    {
+      "path": "sim/test_video_diagnostics.py",
+      "bytes": 12074,
+      "sha256": "013291a6ad480d1366c9cd2a51ed76ebdae5bdf1d644ef3c5209a576c68082d4"
+    },
+    {
+      "path": "sim/test_voice_onset_diagnostics.py",
+      "bytes": 8088,
+      "sha256": "6a471575639f2279861c18c879b45418c3474656fcc2b6380341192c57a20a33"
+    },
+    {
+      "path": "tools/configure_serial_latency.ps1",
+      "bytes": 3074,
+      "sha256": "c64666d6a233d44ba807dec07d5b407c65dece85a211891ed198a7a8bce37766"
+    },
+    {
+      "path": "tools/instrument_backend/__init__.py",
+      "bytes": 1213,
+      "sha256": "05438c6d85aa7f265c3975c148075ceab9003e60e98a40a5086a87b35970fba2"
+    },
+    {
+      "path": "tools/instrument_backend/diagnostics.py",
+      "bytes": 10628,
+      "sha256": "d5459ce7d20082ace9fb442053349419e0ca7bc41ca727753e5660e9546bafda"
+    },
+    {
+      "path": "tools/instrument_backend/ftdi_serial.py",
+      "bytes": 11234,
+      "sha256": "bceea5975fd4adf1f8a3f80655734eac7078d570f8e3ad1126762653600c7d10"
+    },
+    {
+      "path": "tools/instrument_backend/protocol.py",
+      "bytes": 7743,
+      "sha256": "a57863b3e20c9bd6cc90df117cdb0ae1b4d734147a9a27e4938d1a015d297059"
+    },
+    {
+      "path": "tools/instrument_backend/transport.py",
+      "bytes": 19442,
+      "sha256": "048e8d64ab80c670f434bd621fe571cae7a39146fcac0c937be9536cb68499f5"
+    },
+    {
+      "path": "tools/instrument_backend/worker.py",
+      "bytes": 41333,
+      "sha256": "e8b7e6b5970938baba749352875f17de10135cf56815d3ead74ddcabe67e815f"
+    },
+    {
+      "path": "tools/instrument_cli.py",
+      "bytes": 15171,
+      "sha256": "f026db51da1840e5fcf39f4db41185e7e931d97b0c188f28ebcb9b19667e22c2"
+    },
+    {
+      "path": "tools/instrument_gui.py",
+      "bytes": 151,
+      "sha256": "7fb63267fddd812c1a5eb5ddc4856383830c5f196d779ae8cfe89b1000ba20ee"
+    },
+    {
+      "path": "tools/instrument_ui/__init__.py",
+      "bytes": 60,
+      "sha256": "a842e71842de32dcaa947a2e2e84ea6e057e542ac1380ac3c182a63ada4c4aa9"
+    },
+    {
+      "path": "tools/instrument_ui/app.py",
+      "bytes": 36377,
+      "sha256": "5347ec14e02ab77a80aaed042822be6a734877b4162917aa96d4187fce4dbbe5"
+    },
+    {
+      "path": "tools/instrument_ui/latency.py",
+      "bytes": 19530,
+      "sha256": "d9e5cc8de75c54b63fe3b7db3ca792abdebee7a171b8cb6d027b58050b74dd65"
+    },
+    {
+      "path": "tools/instrument_ui/presets.py",
+      "bytes": 3986,
+      "sha256": "e2ce6044b9f7db72bbd28c1e119c0df0de89828e0cb0905892e95eb46e845bf7"
+    },
+    {
+      "path": "tools/instrument_ui/voice_model.py",
+      "bytes": 2197,
+      "sha256": "0e50186543972789955d3336de41f063002b1c632ba2c0d5c867a5cb8ae8c156"
+    },
+    {
+      "path": "tools/instrument_ui/widgets.py",
+      "bytes": 20815,
+      "sha256": "016ac4c78c6ea15e52884424bf0a17a7afcbd9a2a8f0890883b58c256aae1412"
+    },
+    {
+      "path": "tools/serial_latency_probe.py",
+      "bytes": 6729,
+      "sha256": "7757a6e8a34fc65008d14a53e0b413f87a496028bd7abba00f329992ae564eb6"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/evidence/python_host_latency_20260908.log",
+      "bytes": 40022,
+      "sha256": "eab9a1e1c612a0b434e7807bafce669799bd269111fdb423fa1982f6af028739"
+    },
+    {
+      "path": "docs/evidence/serial_latency_before_20260908.json",
+      "bytes": 5211,
+      "sha256": "2e6b68b08bf2fbc1c0af69560dbacb78841596c0a05e4dd3ead1874dee5e7f6c"
+    },
+    {
+      "path": "docs/evidence/serial_latency_d2xx_trial_20260908.json",
+      "bytes": 2945,
+      "sha256": "e25e7f14f229f3dd762fbcb0afa12d6e5e1574f432bb1e550fa2400d19b258d7"
+    },
+    {
+      "path": "docs/evidence/serial_latency_after_20260908.json",
+      "bytes": 11860,
+      "sha256": "4246a0fe68bcc73fdec0a31796770b93c978b3960a70dcbf65329b542c732009"
+    },
+    {
+      "path": "docs/evidence/serial_ping_pacing_20260908.json",
+      "bytes": 32196,
+      "sha256": "ae95df27703add6cbeadd5e2eb1ee7e2744768431d86a0a8d1e4979484cc467e"
+    },
+    {
+      "path": "docs/evidence/serial_ping_pacing_stress_20260908.json",
+      "bytes": 236033,
+      "sha256": "412b11221051572626d0f6a9bf6335fcde39167d3e969fb2b314931e80ac7675"
+    },
+    {
+      "path": "docs/evidence/serial_pipeline_1000_20260908.json",
+      "bytes": 272137,
+      "sha256": "5fbe4fd42845d193449b68f0d9ed82a383ad3545be9af30cbd10b3a5379efbc9"
+    },
+    {
+      "path": "docs/evidence/serial_blocking_retest_20260908.json",
+      "bytes": 26810,
+      "sha256": "1a7c79335868db303bdf5f1b3f8b92958e22892d5d260f64b3f0cc1d1d68bffe"
+    },
+    {
+      "path": "docs/evidence/serial_worker_200_20260908.json",
+      "bytes": 133306,
+      "sha256": "412931e62ee941d46d324907b8a044ea6df65fdedabb73560fea6b2fc83a696f"
+    },
+    {
+      "path": "docs/evidence/uart_pacing_115200.json",
+      "bytes": 2488,
+      "sha256": "a637df627fdb84478267afc39cd593086984b5a59423c5393cb53ff6246d8495"
+    },
+    {
+      "path": "docs/evidence/uart_pacing_115200.log",
+      "bytes": 321,
+      "sha256": "a73c2629a70718d2f8931b07a44d492e8c82e02adf2cfdbb2b5f45ec1b06b04c"
+    },
+    {
+      "path": "docs/evidence/measure_worker_ping_20260908.py.txt",
+      "bytes": 4832,
+      "sha256": "a9f69fdac2caf673e12a710a28bd58bdf43693b17a41764e7e62a7e0bc519d13"
+    },
+    {
+      "path": "docs/evidence/measure_ping_pacing_20260908.py.txt",
+      "bytes": 3643,
+      "sha256": "6338a520b66862096c3529a2e92323d743690a666993ee443595c8c4b61e3458"
+    },
+    {
+      "path": "docs/evidence/uart_pacing_probe_20260908.py.txt",
+      "bytes": 2833,
+      "sha256": "077a53af80f0d2a4fad9b096214aa0fa841caef7389648bdcb95f62d790e93a1"
+    }
+  ],
+  "source_inputs_scope": "Final delivered source snapshot used by the 233-test regression.",
+  "hardware_revision_scope": "Hardware measurements preceded the final fault-cleanup and reservation-edge fixes; the successful async send/poll mechanism was unchanged. No hardware session was reopened after requesting the user to restart the GUI."
+}

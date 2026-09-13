@@ -1,0 +1,14 @@
+{
+  "status": "SRAM downloaded and readback verified",
+  "device": "GW5AST-LV138PG484AC2/I1",
+  "bitstream_sha256": "f646258ad6575877241785e42c7153e224637719d940b5d1e57266466ef47fec",
+  "build": "results/build_20260913_025245_139548",
+  "program_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_031002_537069/result.json",
+  "usercode_after": "0x000069A8",
+  "flash_written": false,
+  "tests": {
+    "tb_feedback_trigger": "PASS",
+    "tb_feedback_renderer": "PASS",
+    "gowin_pnr": "PASS"
+  }
+}

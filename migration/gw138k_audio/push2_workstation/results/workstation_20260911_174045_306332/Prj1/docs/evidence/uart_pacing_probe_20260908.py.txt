@@ -1,0 +1,53 @@
+"""Reproduce the hardware-free UART burst probe with Icarus on PATH.
+
+From WSL in Prj1: python3 build/uart_pacing_probe.py
+Only build/ evidence is written; no FPGA source or physical device is changed.
+"""
+from pathlib import Path
+import datetime
+import hashlib
+import json
+import subprocess
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCES = [ROOT / "src" / name for name in (
+    "control/uart_control.v", "control/uart_rx.v", "control/uart_tx.v",
+    "synth/synth_engine.v", "synth/synth_voice_bank.v", "synth/synth_sine_rom.v",
+    "audio/pt8211_tx.v",
+)]
+BENCH = Path(__file__).with_suffix(".sv")
+started = datetime.datetime.now(datetime.timezone.utc).isoformat()
+hashes = {str(path.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(path.read_bytes()).hexdigest()
+          for path in [*SOURCES, BENCH]}
+with tempfile.TemporaryDirectory(prefix="uart_pacing_probe_") as directory:
+    output = Path(directory) / "probe.vvp"
+    compile_result = subprocess.run(
+        ["iverilog", "-g2012", "-s", "uart_pacing_probe", "-o", str(output), *map(str, SOURCES), str(BENCH)],
+        cwd=ROOT, text=True, capture_output=True, check=True, timeout=180)
+    run = subprocess.run(["vvp", str(output)], cwd=ROOT, text=True, capture_output=True, timeout=180)
+log = compile_result.stdout + compile_result.stderr + run.stdout + run.stderr
+(ROOT / "build/uart_pacing_115200.log").write_text(log, encoding="utf-8")
+evidence = {
+    "schema": 1, "kind": "RTL simulation; no physical USB bridge modeled or opened",
+    "started_utc": started, "exit_code": run.returncode, "source_sha256": hashes,
+    "clock_hz": 50000000, "baud": 115200, "uart_bit_clocks": 434,
+    "request_bytes": 12, "ack_bytes": 8, "audio_frame_clocks": 1024,
+    "timeout_clocks": 13020, "gap_injection_extra_idle_clocks": 20000,
+    "gap_packet_sequence": 4, "gap_after_payload_byte": 4,
+    "cases": [
+        {"requests": 8, "injected_gap": False, "expected_ack_mask": "00000000000000ff"},
+        {"requests": 12, "injected_gap": False, "expected_ack_mask": "0000000000000fff"},
+        {"requests": 64, "injected_gap": False, "expected_ack_mask": "ffffffffffffffff"},
+        {"requests": 12, "injected_gap": True, "expected_ack_mask": "0000000000000fef"},
+    ],
+    "result_lines": run.stdout.strip().splitlines(),
+    "limitations": [
+        "No proof of the COM26 drop mechanism: injected byte gaps only demonstrate one sufficient RTL cause.",
+        "No USB descriptors, bridge DMA behavior, host buffers, or Windows timing are simulated.",
+        "Burst mode is diagnostic only; this test does not validate physical host pacing or an asynchronous command window.",
+    ],
+}
+(ROOT / "build/uart_pacing_115200.json").write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
+print(log, end="")
+raise SystemExit(run.returncode)

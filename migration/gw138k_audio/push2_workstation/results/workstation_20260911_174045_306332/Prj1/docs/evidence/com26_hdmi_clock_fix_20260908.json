@@ -1,0 +1,231 @@
+{
+  "started_at": "2026-09-08T14:36:11.736173+08:00",
+  "port": "COM26",
+  "baud": 115200,
+  "candidate_bitstream_sha256": "7fc6c77eeb5a5e410b9f45dccf747f387a4bab7b552289f634536171f5842b46",
+  "download": "User reported manual SRAM download; no JTAG readback hash available.",
+  "user_display_observation": "Still No Signal after downloading the fourth-OSER10 clock fix.",
+  "queries": [
+    {
+      "time": "2026-09-08T14:36:11.844367+08:00",
+      "sequence": 0,
+      "opcode": 11,
+      "status": 0,
+      "status_text": "OK",
+      "active_mask": null,
+      "memory_flags": 203,
+      "rtt_ms": 31.000000002677552,
+      "header": "a5 5a 00 00 cb 0b 05 ff",
+      "simulated": false,
+      "decoded": {
+        "calibrated": true,
+        "bist_done": true,
+        "bist_failed": false,
+        "front_valid": true,
+        "fetch_fault": false,
+        "underrun_seen": false,
+        "ddr_pll_locked": true,
+        "video_pll_locked": true
+      }
+    },
+    {
+      "time": "2026-09-08T14:36:12.048151+08:00",
+      "sequence": 1,
+      "opcode": 11,
+      "status": 0,
+      "status_text": "OK",
+      "active_mask": null,
+      "memory_flags": 203,
+      "rtt_ms": 16.00000000325963,
+      "header": "a5 5a 01 00 cb 0b b1 89",
+      "simulated": false,
+      "decoded": {
+        "calibrated": true,
+        "bist_done": true,
+        "bist_failed": false,
+        "front_valid": true,
+        "fetch_fault": false,
+        "underrun_seen": false,
+        "ddr_pll_locked": true,
+        "video_pll_locked": true
+      }
+    },
+    {
+      "time": "2026-09-08T14:36:12.251621+08:00",
+      "sequence": 2,
+      "opcode": 11,
+      "status": 0,
+      "status_text": "OK",
+      "active_mask": null,
+      "memory_flags": 203,
+      "rtt_ms": 14.999999999417923,
+      "header": "a5 5a 02 00 cb 0b 6d 12",
+      "simulated": false,
+      "decoded": {
+        "calibrated": true,
+        "bist_done": true,
+        "bist_failed": false,
+        "front_valid": true,
+        "fetch_fault": false,
+        "underrun_seen": false,
+        "ddr_pll_locked": true,
+        "video_pll_locked": true
+      }
+    },
+    {
+      "time": "2026-09-08T14:36:12.455511+08:00",
+      "sequence": 3,
+      "opcode": 11,
+      "status": 0,
+      "status_text": "OK",
+      "active_mask": null,
+      "memory_flags": 203,
+      "rtt_ms": 14.999999999417923,
+      "header": "a5 5a 03 00 cb 0b d9 64",
+      "simulated": false,
+      "decoded": {
+        "calibrated": true,
+        "bist_done": true,
+        "bist_failed": false,
+        "front_valid": true,
+        "fetch_fault": false,
+        "underrun_seen": false,
+        "ddr_pll_locked": true,
+        "video_pll_locked": true
+      }
+    },
+    {
+      "time": "2026-09-08T14:36:12.659773+08:00",
+      "sequence": 4,
+      "opcode": 11,
+      "status": 0,
+      "status_text": "OK",
+      "active_mask": null,
+      "memory_flags": 203,
+      "rtt_ms": 0.0,
+      "header": "a5 5a 04 00 cb 0b f4 35",
+      "simulated": false,
+      "decoded": {
+        "calibrated": true,
+        "bist_done": true,
+        "bist_failed": false,
+        "front_valid": true,
+        "fetch_fault": false,
+        "underrun_seen": false,
+        "ddr_pll_locked": true,
+        "video_pll_locked": true
+      }
+    },
+    {
+      "time": "2026-09-08T14:36:12.863427+08:00",
+      "sequence": 5,
+      "opcode": 11,
+      "status": 0,
+      "status_text": "OK",
+      "active_mask": null,
+      "memory_flags": 203,
+      "rtt_ms": 0.0,
+      "header": "a5 5a 05 00 cb 0b 40 43",
+      "simulated": false,
+      "decoded": {
+        "calibrated": true,
+        "bist_done": true,
+        "bist_failed": false,
+        "front_valid": true,
+        "fetch_fault": false,
+        "underrun_seen": false,
+        "ddr_pll_locked": true,
+        "video_pll_locked": true
+      }
+    },
+    {
+      "time": "2026-09-08T14:36:13.067799+08:00",
+      "sequence": 6,
+      "opcode": 11,
+      "status": 0,
+      "status_text": "OK",
+      "active_mask": null,
+      "memory_flags": 203,
+      "rtt_ms": 0.0,
+      "header": "a5 5a 06 00 cb 0b 9c d8",
+      "simulated": false,
+      "decoded": {
+        "calibrated": true,
+        "bist_done": true,
+        "bist_failed": false,
+        "front_valid": true,
+        "fetch_fault": false,
+        "underrun_seen": false,
+        "ddr_pll_locked": true,
+        "video_pll_locked": true
+      }
+    },
+    {
+      "time": "2026-09-08T14:36:13.271758+08:00",
+      "sequence": 7,
+      "opcode": 11,
+      "status": 0,
+      "status_text": "OK",
+      "active_mask": null,
+      "memory_flags": 203,
+      "rtt_ms": 0.0,
+      "header": "a5 5a 07 00 cb 0b 28 ae",
+      "simulated": false,
+      "decoded": {
+        "calibrated": true,
+        "bist_done": true,
+        "bist_failed": false,
+        "front_valid": true,
+        "fetch_fault": false,
+        "underrun_seen": false,
+        "ddr_pll_locked": true,
+        "video_pll_locked": true
+      }
+    },
+    {
+      "time": "2026-09-08T14:36:13.475886+08:00",
+      "sequence": 8,
+      "opcode": 11,
+      "status": 0,
+      "status_text": "OK",
+      "active_mask": null,
+      "memory_flags": 203,
+      "rtt_ms": 0.0,
+      "header": "a5 5a 08 00 cb 0b c6 7a",
+      "simulated": false,
+      "decoded": {
+        "calibrated": true,
+        "bist_done": true,
+        "bist_failed": false,
+        "front_valid": true,
+        "fetch_fault": false,
+        "underrun_seen": false,
+        "ddr_pll_locked": true,
+        "video_pll_locked": true
+      }
+    },
+    {
+      "time": "2026-09-08T14:36:13.679862+08:00",
+      "sequence": 9,
+      "opcode": 11,
+      "status": 0,
+      "status_text": "OK",
+      "active_mask": null,
+      "memory_flags": 203,
+      "rtt_ms": 0.0,
+      "header": "a5 5a 09 00 cb 0b 72 0c",
+      "simulated": false,
+      "decoded": {
+        "calibrated": true,
+        "bist_done": true,
+        "bist_failed": false,
+        "front_valid": true,
+        "fetch_fault": false,
+        "underrun_seen": false,
+        "ddr_pll_locked": true,
+        "video_pll_locked": true
+      }
+    }
+  ],
+  "completed_at": "2026-09-08T14:36:13.989928+08:00"
+}

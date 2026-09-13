@@ -1,0 +1,16 @@
+{
+  "bitstream_sha256": "477a1cd093f41646d729b9ad9f84de1b52fcbca469c65ca3a8be575a0debdfed",
+  "whole_design": {
+    "logic": 11357,
+    "fabric_ff": 11792,
+    "bsram": 73,
+    "dsp": 4.5
+  },
+  "before_latency": {
+    "logic": 10142,
+    "fabric_ff": 10211,
+    "bsram": 73,
+    "dsp": 4.5
+  },
+  "source": "final official PnR report 2026-09-08 20:19:41"
+}

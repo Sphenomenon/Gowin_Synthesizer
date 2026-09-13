@@ -1,0 +1,24 @@
+{
+  "observed_at": "2026-09-08T13:52:48.762160+08:00",
+  "port": "COM26",
+  "baud": 115200,
+  "candidate_bitstream_sha256": "e1166ee52eeb46cf07b2c24572340b0c37dc7a14721247ff7819c5b54d807d66",
+  "candidate_downloaded_by_agent": false,
+  "probe": "memory-status",
+  "opcode": 11,
+  "voice": 255,
+  "value": 0,
+  "ack": {
+    "sequence": 0,
+    "opcode": 11,
+    "status": 1,
+    "status_text": "unknown opcode",
+    "active_mask": null,
+    "memory_flags": null,
+    "rtt_ms": 0.0,
+    "header": "a5 5a 00 01 00 0b 9b 02",
+    "simulated": false
+  },
+  "result": "memory-status rejected: unknown opcode",
+  "scope": "Valid UART ACK to a read-only query. Rejection does not verify DDR calibration, BIST or HDMI, and does not identify the loaded bitstream hash."
+}

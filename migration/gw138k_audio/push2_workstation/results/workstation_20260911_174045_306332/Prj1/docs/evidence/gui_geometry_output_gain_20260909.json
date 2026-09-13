@@ -1,0 +1,161 @@
+{
+  "platform": "win32",
+  "tk_version": "8.6.12",
+  "window": [
+    1100,
+    940
+  ],
+  "minimum": [
+    1100,
+    940
+  ],
+  "requested_window": [
+    938,
+    951
+  ],
+  "tk_scaling": 1.3339898243886428,
+  "hardware_accessed": false,
+  "window_invisible_alpha": 0.0,
+  "widgets": {
+    "master": {
+      "bounds": [
+        89,
+        144,
+        306,
+        14
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "balance": {
+      "bounds": [
+        559,
+        144,
+        307,
+        14
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "center_button": {
+      "bounds": [
+        960,
+        138,
+        104,
+        27
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "master_value": {
+      "bounds": [
+        403,
+        140,
+        44,
+        23
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "balance_value": {
+      "bounds": [
+        892,
+        140,
+        60,
+        23
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "piano": {
+      "bounds": [
+        24,
+        732,
+        1052,
+        110
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "log": {
+      "bounds": [
+        24,
+        887,
+        1052,
+        42
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "voice_pages": {
+      "bounds": [
+        24,
+        313,
+        569,
+        321
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "last_voice_card": {
+      "bounds": [
+        496,
+        567,
+        62,
+        24
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "envelope": {
+      "bounds": [
+        621,
+        500,
+        443,
+        114
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "connect": {
+      "bounds": [
+        952,
+        74,
+        116,
+        39
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "footer_0": {
+      "bounds": [
+        24,
+        856,
+        343,
+        23
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "footer_1": {
+      "bounds": [
+        1008,
+        857,
+        68,
+        21
+      ],
+      "mapped": true,
+      "inside_window": true
+    },
+    "footer_2": {
+      "bounds": [
+        892,
+        854,
+        104,
+        27
+      ],
+      "mapped": true,
+      "inside_window": true
+    }
+  }
+}
