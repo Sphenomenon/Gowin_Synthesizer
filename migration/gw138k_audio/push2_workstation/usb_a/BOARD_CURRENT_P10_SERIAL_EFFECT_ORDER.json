@@ -81,6 +81,6 @@
       "push_configured": true,
       "push_out_errors": 0
     },
-    "physical_hdmi_headphone_push_acceptance": "pending user acceptance"
+    "physical_hdmi_headphone_push_acceptance": "accepted by user as perfect; SRAM must be reloaded after power cycle"
   }
 }

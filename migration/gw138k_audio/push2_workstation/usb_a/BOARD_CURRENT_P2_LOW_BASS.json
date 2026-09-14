@@ -19,5 +19,5 @@
     "result": "256 timeout published at 768 samples; 8192 candidate waited to 5109 samples on MIDI-0-like low-bass phase step"
   },
   "pnr": {"status": "passed", "setup_violated_endpoints": 0, "hold_violated_endpoints": 0},
-  "hardware_acceptance": "pending user HDMI/earphone/Push验收"
+  "hardware_acceptance": "accepted by user: low-bass pitch/display behavior passed; SRAM must be reloaded after power cycle"
 }
