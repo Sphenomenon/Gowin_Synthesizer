@@ -9,16 +9,16 @@ The existing P5 compatibility metadata remains reserved at `0x00200000` (`0x0100
 
 | word bits | field | value/meaning |
 |---|---|---|
-| 31:0 | magic | `0x44535032` (`DSP2`) |
-| 39:32 | version_minor | `0` |
-| 47:40 | version_major | `1` |
-| 55:48 | descriptor_words | `32` (four 8-word descriptors) |
-| 63:56 | committed_bank | `0` or `1` |
-| 95:64 | frame_sequence | monotonically increasing display frame |
-| 127:96 | commit_sequence | even value means committed/stable |
-| 159:128 | descriptor_base_word | `0x00200008` or `0x00200048` |
-| 191:160 | flags | block-valid and source-status bits |
-| 255:192 | reserved | zero in v1 |
+| 255:224 | magic | `0x44535032` (`DSP2`) |
+| 223:216 | version_minor | `0` |
+| 215:208 | version_major | `1` |
+| 207:200 | descriptor_words | `32` (four 8-word descriptors) |
+| 199:192 | committed_bank | `0` or `1` |
+| 191:160 | frame_sequence | monotonically increasing display frame |
+| 159:128 | commit_sequence | even value means committed/stable |
+| 127:96 | descriptor_base_word | `0x00200008` or `0x00200048` |
+| 95:64 | flags | block-valid and source-status bits |
+| 63:0 | reserved | zero in v1 |
 
 The control record is written last. A consumer reads it, selects the indicated descriptor bank, then reads descriptors and payloads from that bank. The writer never modifies the committed bank.
 
