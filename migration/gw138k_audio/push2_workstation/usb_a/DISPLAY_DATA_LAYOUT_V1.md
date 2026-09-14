@@ -72,7 +72,7 @@ skipped 不是丢帧数量，也不包含音频 observer 邮箱自身的 drop �
 
 bitmap 线性地址 `y*256+x`，每 BL8 按 bit 0～255 打包；包含现有增益和 MID/SIDE 映射，**不是原始 I/Q 或 L/R 样本**。spectrum 每列低 8 位为 L、高 8 位为 R，每 word 两列、每 BL8 十六列；输入 FFT bin 2～853 经现有映射形成 512 个对数列，**不是线性 FFT bins**。先共享已有紧凑结果，后续若消费者需要原始 I/Q 或频谱复数值，再新增 format，不能改变现有字段含义。
 
-metadata word 0～7 与 P5 原 256 位快照一致：
+metadata word 0～7 的布局沿用 P5 原 256 位记录：
 
 | word | 内容 |
 |---:|---|
@@ -86,11 +86,11 @@ metadata word 0～7 与 P5 原 256 位快照一致：
 | 11 / 12 / 13 | image gain / 四块 valid flags / 48000 Hz |
 | 14 / 15 | 0 |
 
-status/voices/peak 属于波形捕获末尾；effect mask/order 和 memory status 在 renderer start 锁存。这些字段组成同一显示快照，但不是同一音频采样时刻的原子观测。
+status/voices/peak 属于波形捕获末尾；effect mask/order 和 memory status 在 renderer start 锁存。这些字段组成同一显示快照，但不是同一音频采样时刻的原子观测。P11 在导出开始锁存完整记录。旧 P5 固定地址仍由原 writer 在帧尾写入，长时间 DDR 背压下其 waveform 计数可能已更新；需要帧一致性的消费者应使用新 descriptor，不将旧 P5 固定地址当作本协议的提交头。
 
 ## 写入、提交与读接口
 
-writer 在 memory UI 100 MHz 域复用原有 DDR writer 槽位：`req_valid/req_ready, req_addr[28:0], req_wdata[255:0]`，阻塞时保持请求和数据。由单请求寄存桥保存请求，真实 DDR 接受时才 ACK 源 writer；原 scanout 优先级、CPU/writer 轮转及 read response tags 保留。初始化清零全局头和两个 bank 头，完成后才允许 renderer start。
+writer 在 memory UI 100 MHz 域复用原有 DDR writer 槽位：`req_valid/req_ready, req_addr[28:0], req_wdata[255:0]`，阻塞时保持请求和数据。由单请求寄存桥保存请求，真实 DDR 接受时 ACK 像素 writer，下一拍 ACK 共享 writer；原 scanout 优先级、CPU/writer 轮转及 read response tags 保留。初始化清零全局头和两个 bank 头，完成后才允许 renderer start。
 
 每帧依次执行：
 

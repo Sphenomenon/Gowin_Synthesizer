@@ -21,8 +21,22 @@ def main():
     stage=out/'Prj1'
     shutil.copytree(WORK/'Prj1',stage,ignore=shutil.ignore_patterns('impl','build','__pycache__','*.user'))
     shutil.copytree(WORK/'reference',out/'reference')
+    # Step-2 display-data overlays are kept outside the frozen workstation
+    # source tree. The P10 baseline remains hash-checked and untouched.
+    display_overlay={
+        'src/video/output_audio_analysis.v':'output_audio_analysis.v',
+        'src/video/feedback_renderer.v':'feedback_renderer.v',
+        'src/video/hdmi_display.v':'hdmi_display.v',
+        'src/memory/display_data_writer.v':'display_data_writer.v',
+    }
+    for rel,name in display_overlay.items():
+        shutil.copy2(ROOT/'rtl/display_data'/name,stage/rel)
+    shutil.copy2(ROOT/'rtl/display_data_layout_pkg.svh',stage/'src/memory/display_data_layout_pkg.sv')
     dest=stage/'src/usb_a';dest.mkdir()
     tree=ET.parse(stage/'Prj1.gprj');fl=tree.find('FileList')
+    fl.insert(0,ET.Element('File',path='src/memory/display_data_layout_pkg.sv',type='file.verilog',enable='1'))
+    shutil.copy2(ROOT/'p11.gsc',stage/'constraints/p11.gsc')
+    ET.SubElement(fl,'File',path='constraints/p11.gsc',type='file.gsc',enable='1')
     kept_push={'gw138k_push_performance_uart.sv','gw138k_push_workstation_top.v','push2_controls.sv',
                'push2_midi_rx.sv','push2_surface_pixels.sv','push2_led_tx.sv','push2_lights.sv'}
     kept_usb={'gw138k_usb_controlled_audio.sv','gw138k_usb_event_fifo.v'}
@@ -33,6 +47,7 @@ def main():
     for f in sorted((USB/'src').glob('*')):
         if f.suffix not in ['.v','.sv'] or f.name in ['reference_top.v','gw138k_cpu_pll_cell.v','reset_release.v','video_pll_init.v']:continue
         shutil.copy2(f,dest/f.name)
+    ET.SubElement(fl,'File',path='src/memory/display_data_writer.v',type='file.verilog',enable='1')
     shutil.copy2(ROOT/'rtl/push2_usb_a_control.sv',dest/'push2_usb_a_control.sv')
     for f in sorted(dest.iterdir()):ET.SubElement(fl,'File',path=f.relative_to(stage).as_posix(),type='file.verilog',enable='1')
     ET.indent(tree,space='    ');tree.write(stage/'Prj1.gprj',encoding='utf-8',xml_declaration=True)
@@ -78,7 +93,7 @@ end
     s=replace(s,'payload<={usb_snapshot,sequence_count-32\'d1};','payload<={224\'d0,sequence_count-32\'d1};')
     s=replace(s,'payload<={push_words,sequence_count-32\'d1};','payload<={usb_snapshot,sequence_count-32\'d1};');p.write_text(s)
     p=stage/'constraints/tang_mega_138k.cst';s=p.read_text()
-    p.write_text('\n'.join(line for line in s.splitlines() if '"push_' not in line)+'\n')
+    p.write_text('\n'.join(line for line in s.splitlines() if '"push_' not in line)+'\n'+(ROOT/'p11.cst').read_text())
     p=stage/'constraints/tang_mega_138k.sdc';s=p.read_text().split('# CH569 HSPI16')[0]
     s='\n'.join(line for line in s.splitlines() if 'u_usb_host/u_fifo' not in line)+'\n'
     # Same reset and opposite-direction mailbox can share local release FFs.

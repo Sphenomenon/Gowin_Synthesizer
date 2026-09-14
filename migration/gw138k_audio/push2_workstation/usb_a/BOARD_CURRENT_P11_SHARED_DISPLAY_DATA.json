@@ -1,0 +1,91 @@
+{
+  "version": "P11 shared DDR display data, phase 2",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_190033_599011/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "97d7a7a19809fce5bb9bb26dd3823f785d0e88b12d5614f3ff6eccfb39a73a82",
+  "usercode": "0x0000D767",
+  "flash_written": false,
+  "previous_accepted": {
+    "version": "P10",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "dd80b9009241836b3266b6407aa1a36cf8973d0b660d239e2e0f1fe8e0e4f793",
+    "usercode": "0x0000ED8B",
+    "physical_acceptance": "accepted by user"
+  },
+  "source_scope": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_190033_599011/p11_source_scope.json",
+  "behavior": [
+    "Export existing 512-sample Q1.31 waveform, 256x256 one-bit MID/SIDE image, 512 L8/R8 logarithmic spectrum columns, and effect/status metadata to versioned DDR blocks.",
+    "Alternate two banks, invalidate before writing and publish only after payloads/descriptors; seqlock contract detects reuse by future slow readers.",
+    "HDMI still renders from its existing local analysis RAM; Push still uses its existing USB-A protocol and snapshot path."
+  ],
+  "verification": {
+    "simulation": {
+      "display": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_181551_220839/p11_shared_181627_439803",
+      "write_path": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_175828_867938/p11_shared_181157_808638",
+      "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_170429_574392/cpu_audio_sim_171137_772490",
+      "passed": true,
+      "hardware_tested": false
+    },
+    "synthesis_pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_reported_slack_ns": 0.029,
+      "resources": {
+        "Logic": 31436.0,
+        "Register": 22807.0,
+        "BSRAM": 248.0,
+        "DSP": 42.5
+      },
+      "resource_delta_from_p10": {
+        "Logic": 1417,
+        "Register": 1155,
+        "BSRAM": 0,
+        "DSP": 0
+      },
+      "tool_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_190033_599011/tool_result.json"
+    },
+    "audio_and_new_display_routed_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_190033_599011/p11_routed_summary.json",
+    "usb_routed_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_190033_599011/p11_usb_routed_summary.json",
+    "pll_reset_path_evidence": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_190033_599011/p11_pll_reset_paths.json",
+    "legacy_routed_audit": {
+      "passed": false,
+      "error": "existing DDR/video audit failed: FAIL Gowin build:\n- stopped-clock reset VO/SDF audit failed: reset exception includes unaudited endpoints: ['u_managed/effect_mask_sync_0_s0/RESET', 'u_managed/effect_mask_sync_1_s0/RESET', 'u_managed/effect_mask_sync_2_s0/RESET']\n",
+      "record": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_190033_599011/usb_a_audit.json",
+      "inherited_gap": "effect_mask_sync_[0..2]_s0/RESET coverage; not waived"
+    },
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260914_191457_270893/result.json",
+    "sram": {
+      "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_190033_599011/Prj1/impl/pnr/Prj1.fs",
+      "sha256": "97d7a7a19809fce5bb9bb26dd3823f785d0e88b12d5614f3ff6eccfb39a73a82",
+      "from_code": "0x0000ED8B",
+      "usercode": "0x0000D767",
+      "fpga_flash_written": false,
+      "cable_location": 53,
+      "usb_device": "/sys/bus/usb/devices/3-5",
+      "operations": [
+        {
+          "name": "before",
+          "passed": true
+        },
+        {
+          "name": "sram",
+          "passed": true
+        },
+        {
+          "name": "after",
+          "passed": true
+        }
+      ]
+    },
+    "post_download_telemetry": {
+      "record": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260914_191542_317624/result.json",
+      "raw_bytes": 0,
+      "fresh_records": 0,
+      "rates_verified": false,
+      "note": "No bytes in the two-second warmup or formal eight-second window. Earlier P10 capture likewise had no fresh periodic records; it only drained old records during warmup."
+    },
+    "physical_hdmi_headphone_push_acceptance": "pending user acceptance",
+    "shared_ddr_payload_hardware_readback": false,
+    "hdmi_push_common_ddr_reader_implemented": false,
+    "physical_interaction_latency_measured": false
+  }
+}

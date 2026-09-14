@@ -33,8 +33,8 @@ P11 四个 descriptor 共有新增 display frame sequence，同时保留各 sour
 ## 阶段 2 最小改动
 
 - 在 renderer start 与第一对像素之间插入共享导出；源 front bank 保持到原 renderer 最后像素完成。
-- 复用 waveform/bitmap/columns 现有 RAM 读端口，三周期读一个元素，按 256 位顺序移位打包；不增加采样器、FFT 或多端口 RAM。
-- 新 writer 与原 frame writer 通过单请求寄存桥接入原 arbiter writer 槽位。桥接先保存请求，在真实 DDR 接受时 ACK 源 writer；切断显示使能/地址选择经 DDR ready 返回两 writer 的长组合路径。该桥无新时钟域，也不额外增加 ACK 周期。
+- 复用 waveform/bitmap/columns 现有 RAM 读端口，三周期读一个元素，按 256 位顺序移位打包；不增加采样器、FFT 或多端口 RAM。当前顶层 waveform=(DAC L16+R16)<<15，低 15 位恒零，HDMI 配置 SHARED_WAVE_ZERO_BITS=15 在导出时显式补零；导出的 Q1.31 数值不变，并允许工具裁剪恒零 RAM 位。其他实例默认 0，保持完整位宽。
+- 新 writer 与原 frame writer 通过单请求寄存桥接入原 arbiter writer 槽位。桥接先保存请求；像素 writer 在真实 DDR 接受时得到 ACK，共享 writer 在下一拍收到寄存后的 ACK，避免其复杂状态译码连接到 DDR ready。该桥无新时钟域，像素流不额外增加 ACK 周期。原 frame writer 的 renderer_ready 在旧写请求未完成时关断，避免上一帧 P5 commit 遇背压时提前启动下一帧。
 - 先使目标 bank 头为 odd，再写 payload、descriptor，最后提交 bank even 和全局记录。任意慢的读者必须前后校验 bank 头，不能只相信双 bank 不会被覆盖。
 - 保留原 framebuffer、scanout、DDR 仲裁、AE350、音频、Push 协议和事件通道；此阶段没有硬件共享 reader，也没有消除全帧光栅开支。
 
