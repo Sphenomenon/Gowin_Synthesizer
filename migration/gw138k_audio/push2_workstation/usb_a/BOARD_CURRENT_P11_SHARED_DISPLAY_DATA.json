@@ -83,7 +83,7 @@
       "rates_verified": false,
       "note": "No bytes in the two-second warmup or formal eight-second window. Earlier P10 capture likewise had no fresh periodic records; it only drained old records during warmup."
     },
-    "physical_hdmi_headphone_push_acceptance": "pending user acceptance",
+    "physical_hdmi_headphone_push_acceptance": "accepted by user on 2026-09-14: current P11 operation reported normal",
     "shared_ddr_payload_hardware_readback": false,
     "hdmi_push_common_ddr_reader_implemented": false,
     "physical_interaction_latency_measured": false

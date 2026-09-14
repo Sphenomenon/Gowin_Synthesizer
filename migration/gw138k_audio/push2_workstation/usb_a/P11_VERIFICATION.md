@@ -1,6 +1,6 @@
 # P11 共享 DDR 显示数据：阶段 2
 
-状态：阶段 2 已完成 RTL、必要仿真、综合/布局布线及 SRAM 下载；写后 UserCode 读回 **`0x0000D767`**。实体 HDMI、Push 和耳机验收待用户确认。阶段 3/4 的 DDR reader 尚未接入。
+状态：阶段 2 已完成 RTL、必要仿真、综合/布局布线、SRAM 下载及实体回归验收；写后 UserCode 读回 **`0x0000D767`**。用户于 2026-09-14 确认当前运行正常。阶段 3/4 的 DDR reader 尚未接入。
 
 本阶段把现有 waveform、李萨如位图、频谱列和效果元数据写入版本化双 bank DDR 数据块。HDMI 的原像素渲染与 scanout 保留；Push 尚未读取这些块。源码审计见 `DISPLAY_DATA_SOURCE_AUDIT.md`，字段/地址/快照规则见 `DISPLAY_DATA_LAYOUT_V1.md`。李萨如导出的是已有 MID/SIDE 位图，频谱导出的是对数列，不是原始 I/Q 或线性 FFT bins。
 
@@ -32,7 +32,7 @@
 | `build_20260914_183107_959144` | setup 0、hold 0；资源同 181551；9 ns SDC 显示 Actived，但无可计时路径，复位仍为 10.981 ns | 未下载；该 SDC 无效，已撤掉 |
 | `build_20260914_184304_661902` | setup 0、hold 0，最差 0.043 ns；Logic 31436、Register 22807、BSRAM 248、DSP 42.5；video RESET 降至 8.129 ns，USB 布线审计通过 | 未下载；audio RESET 全传播 10.181 ns 超过 10 ns |
 | `build_20260914_185619_135825` | 综合完成；多行 GROUP CST 在解析时 CT2000 失败，未进入布局布线 | 未下载；改为已有工程使用的单条 INS_LOC 语法 |
-| `build_20260914_190033_599011` | setup 0、hold 0，最差 0.029 ns；Logic 31436、Register 22807、BSRAM 248、DSP 42.5；audio/video PLL_INIT 及音频/USB 分项审计通过 | 已 SRAM 下载；实体验收待确认 |
+| `build_20260914_190033_599011` | setup 0、hold 0，最差 0.029 ns；Logic 31436、Register 22807、BSRAM 248、DSP 42.5；audio/video PLL_INIT 及音频/USB 分项审计通过 | 已 SRAM 下载；用户确认实体运行正常 |
 
 最终资源对照：
 
@@ -66,6 +66,6 @@ P11 位流 SHA256：`97d7a7a19809fce5bb9bb26dd3823f785d0e88b12d5614f3ff6eccfb39a
 
 下载后短时采集：`push2_workstation/results/capture_20260914_191542_317624`。两秒 warmup 和正式八秒窗口均没有收到字节，因此不能据此确认音频采样率、HDMI 帧率、Push 运行计数或零错误。此前 P10 的 `capture_20260914_173945_860685` 也没有新的周期记录，仅 warmup 排出了旧记录；本轮不推测原因、不将无数据记为通过。
 
-实体 HDMI 三图、卡片顺序/箭头/洗牌与滑动动画、三选满再清零，Push 屏幕/灯光，耳机/P10 串行效果/P2 低音均待新候选的用户验收。实体 DDR 新数据区尚无读回证明，新增区域也不在旧前 8 MiB BIST 内。数字计数和 RTL 像素比较不能替代实体观察或听感。
+用户于 2026-09-14 确认 P11 当前实体运行正常，覆盖本阶段回归清单：HDMI 三图、卡片顺序/箭头/洗牌与滑动动画、三选满再清零，Push 屏幕/灯光，以及耳机/P10 串行效果/P2 低音。本阶段尚无硬件 DDR reader，因此实体 DDR 新数据区仍无读回证明，新增区域也不在旧前 8 MiB BIST 内；该限制留给阶段 3 reader 验证。真实交互延迟仍未单独测量。
 
 显示导出 nominal 约 2 ms、额外 DDR 写约 0.701 MB/s（按 60 帧）；本阶段仍保留完整 framebuffer，未声称带宽或 BSRAM 已下降。真实按键/压力输入到耳机、HDMI、Push 的交互延迟单独列为待测。
