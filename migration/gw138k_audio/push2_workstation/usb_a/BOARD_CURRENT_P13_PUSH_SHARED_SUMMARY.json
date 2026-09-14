@@ -1,0 +1,66 @@
+{
+  "version": "P13 shared DDR display data, phase 4 Push summary",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_005824_693914/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "894c51d40336fe86213adfddb3b151bc2c5d019b3cbd2e46a62acc0aa696539c",
+  "usercode": "0x0000F002",
+  "flash_written": false,
+  "previous_accepted": {
+    "version": "P12 shared DDR display data, phase 3 HDMI reader",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_000749_501731/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "baa44a8e57072478d66847cdaef38dea7c754c47a5f45b3ebb43289c34f658e9",
+    "usercode": "0x0000C8A1",
+    "physical_acceptance": "pending user verification"
+  },
+  "behavior": [
+    "Keep the P12 HDMI reader and compact DDR cache unchanged.",
+    "Cross a 64-bit committed display summary to USB 48 MHz through a held-data CDC.",
+    "Let the existing Push screen use the shared effect mask for its effect-card state without changing USB-A framing or MIDI event handling."
+  ],
+  "verification": {
+    "simulation": {
+      "reader": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_005824_693914/p11_shared_011001_034385",
+      "hdmi_equivalence": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_005824_693914/p11_shared_011001_037222",
+      "integrated_ddr_path": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_005824_693914/p11_shared_010924_373244",
+      "push_summary": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_005824_693914/p11_shared_011515_397368",
+      "passed": true,
+      "hardware_tested": false
+    },
+    "synthesis_pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_reported_slack_ns": 0.024,
+      "resources": {
+        "Logic": 33413.0,
+        "Register": 24923.0,
+        "BSRAM": 254.0,
+        "DSP": 42.5
+      },
+      "resource_delta_from_p12": {
+        "Logic": -89,
+        "Register": 30,
+        "BSRAM": 0,
+        "DSP": 0
+      },
+      "tool_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_005824_693914/tool_result.json"
+    },
+    "audio_and_new_display_routed_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_005824_693914/p13_routed_summary.json",
+    "usb_routed_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_005824_693914/p13_usb_routed_summary.json",
+    "legacy_routed_audit": {
+      "passed": false,
+      "record": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_005824_693914/Prj1/check_existing.log",
+      "inherited_gaps": [
+        "Historical DDR reset evidence source path is absent from the staged build environment.",
+        "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete."
+      ]
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_011250_874114/result.json",
+      "from_code": "0x0000C8A1",
+      "usercode": "0x0000F002",
+      "fpga_flash_written": false,
+      "operations_passed": ["before", "sram", "after"]
+    },
+    "physical_hdmi_headphone_push_acceptance": "pending user verification",
+    "physical_interaction_latency_measured": false
+  }
+}

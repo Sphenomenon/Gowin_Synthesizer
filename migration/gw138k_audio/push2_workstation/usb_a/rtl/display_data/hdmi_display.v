@@ -32,6 +32,8 @@ module hdmi_display (
     input wire [255:0] app_rdata,
     input wire app_rvalid,
     output wire [7:0] memory_flags,
+    output wire [63:0] push_display_summary,
+    output wire push_display_summary_valid,
     output wire tmds_clk_p,tmds_clk_n,
     output wire [2:0] tmds_data_p,tmds_data_n
 );
@@ -122,6 +124,14 @@ module hdmi_display (
         else begin flags_meta<=memory_status[7:0];flags_sync<=flags_meta;end
     end
     assign memory_flags=flags_sync;
+    // One compact, versioned-display summary crosses to the Push USB clock
+    // only after the HDMI reader has published a complete cache.
+    reg push_summary_event;
+    always @(posedge memory_clk or negedge ui_rst_n)
+        if(!ui_rst_n) push_summary_event<=0; else push_summary_event<=shared_load_done;
+    assign push_display_summary={shared_render_meta[95:64],shared_render_meta[200:192],
+                                 shared_render_meta[175:160],shared_render_meta[30:24]};
+    assign push_display_summary_valid=push_summary_event;
     feedback_renderer #(.ENABLE_ANALYSIS(1),.SHARED_EXPORT(1),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15)) u_renderer (
         .clk(memory_clk),.rst_n(ui_rst_n),.start(renderer_start),.frame_ready(renderer_ready),
         .busy(renderer_busy),.frame_done(renderer_done),.pixel_valid(pixel_valid),

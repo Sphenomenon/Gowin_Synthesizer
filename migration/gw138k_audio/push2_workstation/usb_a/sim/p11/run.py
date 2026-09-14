@@ -4,7 +4,7 @@ import argparse
 from datetime import datetime
 import sys,subprocess,json,hashlib,shutil
 root=Path(__file__).resolve().parents[2]
-ap=argparse.ArgumentParser();ap.add_argument('build',type=Path);ap.add_argument('--write-path',action='store_true');ap.add_argument('--reader',action='store_true');args=ap.parse_args()
+ap=argparse.ArgumentParser();ap.add_argument('build',type=Path);ap.add_argument('--write-path',action='store_true');ap.add_argument('--reader',action='store_true');ap.add_argument('--push-summary',action='store_true');args=ap.parse_args()
 build=args.build.resolve();p=build/'Prj1'
 out=build/datetime.now().strftime('p11_shared_%H%M%S_%f');out.mkdir();print(out,flush=True)
 baseline=root/'results/build_20260913_184716_871458/Prj1'
@@ -18,9 +18,13 @@ if args.write_path:
  tb=out/(top+'.sv');shutil.copy2(Path(__file__).with_name(tb.name),tb)
  sources=[p/'src/memory/display_data_layout_pkg.sv',p/'src/memory/display_data_writer.v',p/'src/memory/display_data_reader.v',p/'src/memory/ddr_frame_writer.v',p/'src/ae350/gw138k_ddr_arbiter.sv',tb]
 elif args.reader:
- top='tb_display_data_reader'
- tb=out/(top+'.sv');shutil.copy2(Path(__file__).with_name(tb.name),tb)
- sources=[p/'src/memory/display_data_layout_pkg.sv',p/'src/memory/display_data_reader.v',tb]
+    top='tb_display_data_reader'
+    tb=out/(top+'.sv');shutil.copy2(Path(__file__).with_name(tb.name),tb)
+    sources=[p/'src/memory/display_data_layout_pkg.sv',p/'src/memory/display_data_reader.v',tb]
+elif args.push_summary:
+    top='tb_push_display_summary'
+    tb=out/(top+'.sv');shutil.copy2(Path(__file__).with_name(tb.name),tb)
+    sources=[p/'src/push2/push2_surface_pixels.sv',p/'src/video/video_font_5x7.v',tb]
 (out/'inputs.json').write_text(json.dumps({str(f):hashlib.sha256(f.read_bytes()).hexdigest() for f in sources},indent=2)+'\n')
 for label,cmd in [('compile',['verilator','--binary','--timing','-j','4','-Wno-fatal','--top-module',top,'--Mdir',str(out/'obj'),*map(str,sources)]),('simulation',[str(out/('obj/V'+top))])]:
  r=subprocess.run(cmd,cwd=out,capture_output=True,text=True);(out/(label+'.log')).write_text(r.stdout+r.stderr)

@@ -1,6 +1,6 @@
 # 共享显示数据布局 v1.0（P11/P12，阶段 2～3）
 
-以新结果目录中冻结的 `Prj1` 构建输入、`rtl/display_data_layout_pkg.svh`、`display_data_writer.v` 和 `display_data_reader.v` 为准。这是工程内部的 DDR 数据 ABI，采用版本化描述符、双缓冲和 seqlock，不增加 USB 或外部总线协议。阶段 2 导出现有分析结果；阶段 3 已让 HDMI 从共享紧凑块重绘原 dashboard，最终 RGB565 framebuffer 和 scanout 仍保留；Push 尚未读取本协议。
+以新结果目录中冻结的 `Prj1` 构建输入、`rtl/display_data_layout_pkg.svh`、`display_data_writer.v` 和 `display_data_reader.v` 为准。这是工程内部的 DDR 数据 ABI，采用版本化描述符、双缓冲和 seqlock，不增加 USB 或外部总线协议。阶段 2 导出现有分析结果；阶段 3 已让 HDMI 从共享紧凑块重绘原 dashboard，阶段 4 已让 Push 读取同一提交记录的 64 位摘要；最终 RGB565 framebuffer 和 scanout 仍保留，Push 不直接读取完整三图 payload。
 
 本文件取代此前阶段 1 草案中的错误地址和字段表。原生 DDR 地址单位是 **32 位 word**，byte address = word address × 4。P5 原生地址 `0x00200000` 对应物理 byte `0x00800000`，不是 `0x01000000`。既有结果目录中的旧草案仅作历史记录；此前没有发布本 ABI 的硬件消费者。
 
@@ -110,8 +110,8 @@ reader 接口沿用 `read_valid/read_ready/read_addr[28:0]` 与 `read_rsp_valid/
 4. 再读同一 bank 头，要求头字段/序号未变且仍为偶数；满足后才交换本地显示缓存。
 5. 不满足则丢弃这次工作缓存，继续显示上次通过校验的本地缓存。
 
-双 bank 本身不能保护任意慢的 Push 读者：第二次复用会覆盖旧 bank，前后 seqlock 校验负责检测。不要从尚未校验的 DDR 数据直接发送 Push USB 像素或绘制可见画面。读者不阻塞写者，也不为每个消费者复制完整 HDMI framebuffer。复位时丢弃旧快照；必须在计数回绕前完成一次快照读取。这里保证 DDR 数据帧一致性；阶段 2 的全局提交先于 HDMI framebuffer 完成，不能当作“已上屏”通知。
+双 bank 本身不能保护任意慢的 Push 读者：第二次复用会覆盖旧 bank，前后 seqlock 校验负责检测。P12 HDMI reader 只在完整校验后发布缓存；P13 Push 读取的是该提交事件携带的摘要，不从尚未校验的 DDR 数据发送 USB 像素。读者不阻塞写者，也不为每个消费者复制完整 HDMI framebuffer。复位时丢弃旧快照；必须在计数回绕前完成一次快照读取。这里保证 DDR 数据帧一致性；全局提交先于 HDMI framebuffer 完成，不能当作“已上屏”通知。
 
 ## 阶段边界
 
-目前 P12 HDMI 使用共享 DDR 数据块装载到本地显示缓存后重绘，逐像素仿真检查视觉内容与 P10 原本地 RAM 渲染一致。Push USB-A 屏幕协议和现有 448 位反馈邮箱未改；阶段 4 再接 Push 摘要 reader并验证 HDMI/Push 消费同一 frame sequence。未来自制屏可复用描述符，暂不添加传输层。现有完整 RGB565 framebuffer 仍生成并扫描，因此不宣称已经减少 framebuffer 带宽；P12 为 HDMI reader 缓存增加 6 个 BSRAM。实际刷新节奏、输入到声音/画面的延迟仍须实体测量。
+目前 P12/P13 HDMI 使用共享 DDR 数据块装载到本地显示缓存后重绘，逐像素仿真检查视觉内容与 P10 原本地 RAM 渲染一致。P13 已把 64 位 committed summary 跨到 USB 48 MHz，Push 屏幕在原 frame_capture 时锁存共享 effect mask；USB-A 线协议和现有 448 位反馈邮箱未改。未来自制屏可复用描述符，暂不添加传输层。现有完整 RGB565 framebuffer 仍生成并扫描，因此不宣称已经减少 framebuffer 带宽；P12 为 HDMI reader 缓存增加 6 个 BSRAM，P13 摘要 CDC 不增加 BSRAM。实际刷新节奏、输入到声音/画面的延迟仍须实体测量。

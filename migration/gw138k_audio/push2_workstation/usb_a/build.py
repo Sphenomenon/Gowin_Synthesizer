@@ -30,6 +30,7 @@ def main():
         'src/memory/display_data_writer.v':'display_data_writer.v',
         'src/memory/display_data_reader.v':'display_data_reader.v',
         'src/ae350/gw138k_ddr_arbiter.sv':'gw138k_ddr_arbiter.sv',
+        'src/push2/push2_surface_pixels.sv':'push2_surface_pixels.sv',
     }
     for rel,name in display_overlay.items():
         shutil.copy2(ROOT/'rtl/display_data'/name,stage/rel)
@@ -85,11 +86,19 @@ end
     start=s.index('    wire push_valid');end=s.index('    gw138k_usb_controlled_audio u_managed',start)
     s=s[:start]+'''    wire all_usb_valid,all_usb_ready;wire [17:0] all_usb_event;
     wire [447:0] push_snapshot;
+    wire [63:0] display_summary,display_summary_usb;wire display_summary_valid,display_summary_usb_valid;
+    gw138k_stream_cdc #(.WIDTH(64)) u_display_push_cdc(
+        .reset_n(reset_n && memory_reset_n && usb_reset_n),.source_clk(memory_clk),.destination_clk(usb_clk),
+        .source_valid(display_summary_valid),.source_data(display_summary),
+        .destination_valid(display_summary_usb_valid),.destination_data(display_summary_usb));
     push2_usb_a_control u_push(.clk(usb_clk),.reset_n(usb_reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),
         .feedback_clk(clk_50m),.feedback_reset_n(reset_n),.performance_words(push_snapshot),
+        .display_meta_data(display_summary_usb),.display_meta_valid(display_summary_usb_valid),
         .select(mmio_select),.write(mmio_write),.address(mmio_address),.wdata(mmio_wdata),.ready(mmio_ready),.rdata(mmio_rdata),
         .audio_valid(all_usb_valid),.audio_ready(all_usb_ready),.audio_event(all_usb_event),.telemetry(usb_words));
 '''+s[end:]
+    s=replace(s,'.app_wrdy(app_wrdy),.app_rdata(app_rdata),.app_rvalid(app_rvalid),.memory_flags(memory_flags),\n        .sample_data(output_mid)',
+             '.app_wrdy(app_wrdy),.app_rdata(app_rdata),.app_rvalid(app_rvalid),.memory_flags(memory_flags),\n        .push_display_summary(display_summary),.push_display_summary_valid(display_summary_valid),\n        .sample_data(output_mid)')
     s=replace(s,'.push_words(push_words),','.push_words(224\'d0),');p.write_text(s)
     # Reuse existing USB->50MHz telemetry snapshot for the new P138 record.
     p=stage/'src/push2/gw138k_push_performance_uart.sv';s=p.read_text()

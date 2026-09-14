@@ -4,6 +4,8 @@ module push2_usb_a_control(
     input wire clk,reset_n,audio_clk,audio_reset_n,
     input wire feedback_clk,feedback_reset_n,
     input wire [447:0] performance_words,
+    input wire [63:0] display_meta_data,
+    input wire display_meta_valid,
     input wire select,write,input wire [7:0] address,
     input wire [31:0] wdata,output wire ready,output reg [31:0] rdata,
     output wire audio_valid,input wire audio_ready,output wire [17:0] audio_event,
@@ -19,6 +21,11 @@ module push2_usb_a_control(
         .destination_valid(),.destination_data(snapshot));
     wire [31:0] control=snapshot[63:32],options=snapshot[255:224];
     wire [63:0] actual_held=snapshot[195:132];
+    reg [63:0] display_meta_q;
+    reg display_meta_seen;
+    always @(posedge clk or negedge reset_n)
+        if(!reset_n)begin display_meta_q<=0;display_meta_seen<=0;end
+        else if(display_meta_valid)begin display_meta_q<=display_meta_data;display_meta_seen<=1;end
     reg connected;
     reg [31:0] received,frames,out_errors;
     wire raw_ready,valid,map_ready;wire [3:0] kind,cable,channel;wire [6:0] a,b;
@@ -65,7 +72,7 @@ module push2_usb_a_control(
     push2_surface_pixels pixels(.clk(clk),.rst(!reset_n || !connected),
         .frame_ready(frame_capture),.frame_start(),.x(pixel_index[9:0]),.y(pixel_index[17:10]),
         .pixel_valid(),.pixel(pixel),.control(control),.options(options),.held(actual_held),
-        .note(note),.velocity(velocity));
+        .note(note),.velocity(velocity),.display_meta(display_meta_q),.display_meta_valid(display_meta_seen));
     // Read response is captured by the SoC in the accepting bus cycle.
     always @* begin
         rdata=0;

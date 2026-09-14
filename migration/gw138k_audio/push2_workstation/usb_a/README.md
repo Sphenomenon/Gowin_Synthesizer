@@ -1,5 +1,9 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-09-15 P13 阶段 4 候选（待 SRAM 下载与实体回归）
+
+P13 已完成共享 DDR → HDMI reader → Push 64 位摘要 mailbox 的 RTL、仿真、P&R 和 SRAM 下载；当前板上 UserCode `0x0000F002`，写前 P12 `0x0000C8A1`、写后 P13 均读回，Flash 未写。位流 SHA256 `894c51d40336fe86213adfddb3b151bc2c5d019b3cbd2e46a62acc0aa696539c`，setup/hold 0/0，最差 slack +0.024 ns。Push 仍走原 USB-A 协议，见 [版本记录](BOARD_CURRENT_P13_PUSH_SHARED_SUMMARY.json) 和 [阶段验证](P13_VERIFICATION.md)。
+
 ## 2026-09-15 P12 当前 SRAM 候选（待实体回归）
 
 当前板上 UserCode `0x0000C8A1`。HDMI 已从 P11 版本化双 bank DDR 紧凑块读取 waveform、李萨如位图、频谱列和效果元数据，并保持原 dashboard、RGB565 framebuffer 与 scanout。setup/hold 违例 0/0，最差 slack +0.002 ns；Logic 33502、Register 24893、BSRAM 254、DSP 42.5。写前 P11 `0x0000D767`、写后 P12 `0x0000C8A1` 均读回，Flash 未写。见 [版本记录](BOARD_CURRENT_P12_HDMI_SHARED_DISPLAY_READER.json)、[阶段验证](P12_VERIFICATION.md) 和 [数据布局](DISPLAY_DATA_LAYOUT_V1.md)。Push 读取同一 descriptor 留在阶段 4；当前等待用户检查 HDMI、Push、耳机和效果链实体运行。
