@@ -9,6 +9,7 @@ module feedback_renderer #(
     parameter integer HEIGHT = 1080,
     parameter integer ENABLE_ANALYSIS = 0,
     parameter integer SHARED_EXPORT = 0,
+    parameter integer SHARED_RENDER = 0,
     parameter integer SHARED_WAVE_ZERO_BITS = 0
 ) (
     input wire clk,
@@ -21,6 +22,7 @@ module feedback_renderer #(
     input wire pixel_ready,
     output wire [63:0] pixel_data,
     output wire [255:0] display_meta,
+    output wire [255:0] shared_export_meta,
     input wire source_clk,
     input wire source_reset_n,
     input wire [31:0] sample_data,
@@ -43,7 +45,19 @@ module feedback_renderer #(
     output wire [31:0] shared_analysis_sequence, shared_analysis_skipped,
     output wire shared_analysis_valid,
     output wire [2:0] shared_image_gain,
-    output wire [31:0] shared_stereo_peaks
+    output wire [31:0] shared_stereo_peaks,
+    output wire shared_render_read_enable,
+    output wire [8:0] shared_render_wave_addr,
+    output wire [15:0] shared_render_image_addr,
+    output wire [8:0] shared_render_spectrum_column,
+    input wire [31:0] shared_render_wave_data,
+    input wire shared_render_image_hit,
+    input wire [7:0] shared_render_spectrum_left,shared_render_spectrum_right,
+    input wire [255:0] shared_render_meta,
+    input wire [31:0] shared_render_analysis_sequence,shared_render_analysis_skipped,
+    input wire [31:0] shared_render_stereo_peaks,
+    input wire [2:0] shared_render_image_gain,
+    input wire shared_render_analysis_valid
 );
     wire snapshot_ready;
     wire [31:0] snapshot_peak, snapshot_voices, snapshot_status;
@@ -62,6 +76,7 @@ module feedback_renderer #(
     reg [2:0] frame_effect_mask;
     reg [5:0] frame_effect_order;
     reg [31:0] previous_wave_data;
+    wire use_shared_render=(SHARED_RENDER!=0);
     wire pipeline_enable = !pixel_valid || pixel_ready;
     wire advance = busy && !exporting && !all_issued && pipeline_enable;
     wire final_accept = pixel_valid && pixel_ready && last_pipe[4];
@@ -69,7 +84,9 @@ module feedback_renderer #(
     // Eight-word DDR record shared by HDMI, Push and future display adapters.
     // The raster remains the compatibility view; consumers can use this compact
     // packet without decoding the full framebuffer.
-    assign display_meta = {32'h44495350, {23'd0,frame_effect_order,frame_effect_mask}, snapshot_peak, snapshot_voices, snapshot_status, snapshot_sequence, snapshot_skipped, frame_memory_status};
+    wire [255:0] local_display_meta={32'h44495350, {23'd0,frame_effect_order,frame_effect_mask}, snapshot_peak, snapshot_voices, snapshot_status, snapshot_sequence, snapshot_skipped, frame_memory_status};
+    assign shared_export_meta=local_display_meta;
+    assign display_meta=use_shared_render ? shared_render_meta : local_display_meta;
     wire [10:0] wave_offset = issue_x-11'd64;
     wire [8:0] wave_addr = issue_x >= 64 && issue_x < 1088 ? wave_offset[9:1] : 9'b0;
     wire analysis_ready,image_hit;
@@ -78,12 +95,17 @@ module feedback_renderer #(
     wire [2:0] image_gain;
     wire [31:0] analysis_sequence,analysis_skipped;
     wire export_read=SHARED_EXPORT && exporting && shared_read_enable;
+    wire local_render_read=(SHARED_RENDER==0) && advance;
     wire [8:0] read_column=exporting ? shared_read_addr[8:0] : spectrum_column;
     wire [15:0] read_image=exporting ? shared_read_addr : {image_y[8:1],image_x[8:1]};
     assign shared_analysis_sequence=analysis_sequence;
     assign shared_analysis_skipped=analysis_skipped;
     assign shared_image_gain=image_gain;
     assign shared_stereo_peaks={peak_left,peak_right};
+    assign shared_render_read_enable=use_shared_render && advance;
+    assign shared_render_wave_addr=wave_addr;
+    assign shared_render_image_addr={image_y[8:1],image_x[8:1]};
+    assign shared_render_spectrum_column=spectrum_column;
     // The HDMI source is (DAC left16 + right16) << 15. Preserve its exact
     // Q1.31 value without making constant-zero RAM bits observable to synthesis.
     wire [31:0] shared_wave_data=(wave_data >> SHARED_WAVE_ZERO_BITS) << SHARED_WAVE_ZERO_BITS;
@@ -98,7 +120,7 @@ module feedback_renderer #(
             .source_clk(source_clk),.source_reset_n(source_reset_n),.pcm_pair(output_pcm),.sample_valid(sample_valid),
             .release_frame(start && frame_ready && analysis_ready),.ready(analysis_ready),.peak_left(peak_left),.peak_right(peak_right),
             .image_gain(image_gain),.sequence_data(analysis_sequence),.skipped_data(analysis_skipped),
-            .display_read_enable(advance || export_read),.spectrum_column(read_column),.image_addr(read_image),
+            .display_read_enable(local_render_read || export_read),.spectrum_column(read_column),.image_addr(read_image),
             .spectrum_left(spectrum_left),.spectrum_right(spectrum_right),.image_hit(image_hit),.display_valid(shared_analysis_valid));
     end else begin : g_no_analysis
         assign shared_analysis_valid=1'b0;
@@ -126,33 +148,51 @@ module feedback_renderer #(
         .snapshot_revision(snapshot_revision), .snapshot_peak(snapshot_peak),
         .busy(alignment_busy), .done(alignment_done), .waveform_held(waveform_held),
         .capture_read_enable(capture_read_enable), .capture_read_addr(capture_read_addr),
-        .capture_read_data(capture_data), .wave_read_enable(advance || export_read),
+        .capture_read_data(capture_data), .wave_read_enable(local_render_read || export_read),
         .wave_read_addr(exporting ? shared_read_addr[8:0] : wave_addr), .wave_read_data(wave_data)
     );
+    wire [31:0] render_wave_data=use_shared_render ? shared_render_wave_data : wave_data;
+    wire render_image_hit=use_shared_render ? shared_render_analysis_valid && shared_render_image_hit : image_hit;
+    wire [7:0] render_spectrum_left=use_shared_render ? (shared_render_analysis_valid ? shared_render_spectrum_left : 8'd0) : spectrum_left;
+    wire [7:0] render_spectrum_right=use_shared_render ? (shared_render_analysis_valid ? shared_render_spectrum_right : 8'd0) : spectrum_right;
+    wire [15:0] render_peak_left=use_shared_render ? shared_render_stereo_peaks[31:16] : peak_left;
+    wire [15:0] render_peak_right=use_shared_render ? shared_render_stereo_peaks[15:0] : peak_right;
+    wire [2:0] render_image_gain=use_shared_render ? shared_render_image_gain : image_gain;
+    wire [31:0] render_analysis_sequence=use_shared_render ? shared_render_analysis_sequence : analysis_sequence;
+    wire [31:0] render_analysis_skipped=use_shared_render ? shared_render_analysis_skipped : analysis_skipped;
+    wire [31:0] render_memory_status=use_shared_render ? shared_render_meta[31:0] : frame_memory_status;
+    wire [31:0] render_sequence=use_shared_render ? shared_render_meta[95:64] : snapshot_sequence;
+    wire [31:0] render_skipped=use_shared_render ? shared_render_meta[63:32] : snapshot_skipped;
+    wire [31:0] render_status=use_shared_render ? shared_render_meta[127:96] : snapshot_status;
+    wire [31:0] render_voices=use_shared_render ? shared_render_meta[159:128] : snapshot_voices;
+    wire [31:0] render_peak=use_shared_render ? shared_render_meta[191:160] : snapshot_peak;
+    wire [2:0] render_effect_mask=use_shared_render ? shared_render_meta[194:192] : frame_effect_mask;
+    wire [5:0] render_effect_order=use_shared_render ? shared_render_meta[200:195] : frame_effect_order;
+    wire render_waveform_held=use_shared_render ? 1'b0 : waveform_held;
     feedback_dashboard #(.ENABLE_ANALYSIS(ENABLE_ANALYSIS)) u_even (
         .clk(clk), .reset_n(rst_n), .enable(pipeline_enable),
         .frame_start(advance && issue_x==0 && issue_y==0),
-        .pixel_x(read_x), .pixel_y(read_y), .wave_sample(wave_data), .wave_previous(previous_wave_data),
-        .peak_data(snapshot_peak), .active_voices(snapshot_voices), .status_data(snapshot_status), .effect_mask(frame_effect_mask), .effect_order(frame_effect_order),
-        .waveform_held(waveform_held),
-        .spectrum_left(spectrum_left),.spectrum_right(spectrum_right),.image_hit(image_hit),
-        .peak_left(peak_left),.peak_right(peak_right),.image_gain(image_gain),
-        .analysis_sequence(analysis_sequence),.analysis_skipped(analysis_skipped),
-        .sequence_data(snapshot_sequence), .skipped_data(snapshot_skipped),
-        .memory_status(frame_memory_status), .underruns(frame_underruns),
+        .pixel_x(read_x), .pixel_y(read_y), .wave_sample(render_wave_data), .wave_previous(previous_wave_data),
+        .peak_data(render_peak), .active_voices(render_voices), .status_data(render_status), .effect_mask(render_effect_mask), .effect_order(render_effect_order),
+        .waveform_held(render_waveform_held),
+        .spectrum_left(render_spectrum_left),.spectrum_right(render_spectrum_right),.image_hit(render_image_hit),
+        .peak_left(render_peak_left),.peak_right(render_peak_right),.image_gain(render_image_gain),
+        .analysis_sequence(render_analysis_sequence),.analysis_skipped(render_analysis_skipped),
+        .sequence_data(render_sequence), .skipped_data(render_skipped),
+        .memory_status(render_memory_status), .underruns(frame_underruns),
         .framecount(frame_framecount), .pixel_data(pixel_data[31:0])
     );
     feedback_dashboard #(.ENABLE_ANALYSIS(ENABLE_ANALYSIS)) u_odd (
         .clk(clk), .reset_n(rst_n), .enable(pipeline_enable),
         .frame_start(advance && issue_x==0 && issue_y==0),
-        .pixel_x(read_x+11'd1), .pixel_y(read_y), .wave_sample(wave_data), .wave_previous(previous_wave_data),
-        .peak_data(snapshot_peak), .active_voices(snapshot_voices), .status_data(snapshot_status), .effect_mask(frame_effect_mask), .effect_order(frame_effect_order),
-        .waveform_held(waveform_held),
-        .spectrum_left(spectrum_left),.spectrum_right(spectrum_right),.image_hit(image_hit),
-        .peak_left(peak_left),.peak_right(peak_right),.image_gain(image_gain),
-        .analysis_sequence(analysis_sequence),.analysis_skipped(analysis_skipped),
-        .sequence_data(snapshot_sequence), .skipped_data(snapshot_skipped),
-        .memory_status(frame_memory_status), .underruns(frame_underruns),
+        .pixel_x(read_x+11'd1), .pixel_y(read_y), .wave_sample(render_wave_data), .wave_previous(previous_wave_data),
+        .peak_data(render_peak), .active_voices(render_voices), .status_data(render_status), .effect_mask(render_effect_mask), .effect_order(render_effect_order),
+        .waveform_held(render_waveform_held),
+        .spectrum_left(render_spectrum_left),.spectrum_right(render_spectrum_right),.image_hit(render_image_hit),
+        .peak_left(render_peak_left),.peak_right(render_peak_right),.image_gain(render_image_gain),
+        .analysis_sequence(render_analysis_sequence),.analysis_skipped(render_analysis_skipped),
+        .sequence_data(render_sequence), .skipped_data(render_skipped),
+        .memory_status(render_memory_status), .underruns(frame_underruns),
         .framecount(frame_framecount), .pixel_data(pixel_data[63:32])
     );
     always @(posedge clk or negedge rst_n) begin
@@ -188,7 +228,7 @@ module feedback_renderer #(
                 output_x <= c_x; output_y <= c_y;
             end
             if (advance) begin
-                previous_wave_data <= wave_data;
+                previous_wave_data <= render_wave_data;
                 read_x <= issue_x; read_y <= issue_y;
                 if (issue_x == WIDTH-2) begin
                     issue_x <= 0;

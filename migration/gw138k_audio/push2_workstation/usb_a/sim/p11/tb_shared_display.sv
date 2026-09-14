@@ -18,10 +18,15 @@ module tb_shared_display;
     reg start=0,ref_start=0;
     wire ready,render_busy,render_done,pv;reg pr=1;
     wire [63:0] pixels;
-    wire [255:0] meta;
-    wire ds,dd,db,initialized,re,req; wire [1:0] kind;wire [15:0] addr;
+    wire [255:0] meta,export_meta;
+    wire ds,dw,dd,db,initialized,re,req; wire [1:0] kind;wire [15:0] addr;
     wire [31:0] rd,aseq,askip,peaks;wire av;wire[2:0] gain;
     wire [28:0] wa;wire [255:0] wd;
+    wire load_req,load_ready,load_done,load_valid,load_fault,load_busy;
+    wire [28:0]load_addr;reg load_response=0;reg [255:0]load_response_data=0;
+    wire cache_read,cache_image_hit,cache_analysis_valid;wire [8:0]cache_wave_addr,cache_spectrum_column;
+    wire [15:0]cache_image_addr;wire [31:0]cache_wave_data,cache_aseq,cache_askip,cache_peaks,cache_frame_sequence;
+    wire [7:0]cache_spectrum_left,cache_spectrum_right;wire [2:0]cache_gain;wire [255:0]cache_meta;
     wire source_req,source_ready,frame_write_ready;
     wire [28:0] source_addr;
     wire [255:0] source_data;
@@ -35,17 +40,27 @@ module tb_shared_display;
     reg wrdy=1;
     reg [31:0] frame_count=0;
     reg [2:0] mask=3;reg [5:0] order=6'b10_00_01;
-    feedback_renderer #(.ENABLE_ANALYSIS(1),.SHARED_EXPORT(1),.SHARED_WAVE_ZERO_BITS(15)) render(
+    feedback_renderer #(.ENABLE_ANALYSIS(1),.SHARED_EXPORT(1),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15)) render(
         .clk,.rst_n(reset_n),.start,.frame_ready(ready),.busy(render_busy),.frame_done(render_done),
-        .pixel_valid(pv),.pixel_ready(pr),.pixel_data(pixels),.display_meta(meta),.source_clk,.source_reset_n(reset_n),
+        .pixel_valid(pv),.pixel_ready(pr),.pixel_data(pixels),.display_meta(meta),.shared_export_meta(export_meta),.source_clk,.source_reset_n(reset_n),
         .sample_data,.sample_valid,.output_pcm(pcm),.trigger_reference(32'd0),.active_voices(32'h17),.status_data(32'd0),
         .effect_mask(mask),.effect_order(order),.memory_status(32'hcb),.underruns(32'd0),.frame_count,
         .shared_start(ds),.shared_done(dd),.shared_read_enable(re),.shared_read_kind(kind),.shared_read_addr(addr),.shared_read_data(rd),
-        .shared_analysis_sequence(aseq),.shared_analysis_skipped(askip),.shared_analysis_valid(av),.shared_image_gain(gain),.shared_stereo_peaks(peaks));
-    display_data_writer writer(.clk,.rst_n(reset_n),.enabled(reset_n),.start(ds),.effect_meta(meta),
+        .shared_analysis_sequence(aseq),.shared_analysis_skipped(askip),.shared_analysis_valid(av),.shared_image_gain(gain),.shared_stereo_peaks(peaks),
+        .shared_render_read_enable(cache_read),.shared_render_wave_addr(cache_wave_addr),.shared_render_image_addr(cache_image_addr),.shared_render_spectrum_column(cache_spectrum_column),
+        .shared_render_wave_data(cache_wave_data),.shared_render_image_hit(cache_image_hit),.shared_render_spectrum_left(cache_spectrum_left),.shared_render_spectrum_right(cache_spectrum_right),
+        .shared_render_meta(cache_meta),.shared_render_analysis_sequence(cache_aseq),.shared_render_analysis_skipped(cache_askip),
+        .shared_render_stereo_peaks(cache_peaks),.shared_render_image_gain(cache_gain),.shared_render_analysis_valid(cache_analysis_valid));
+    display_data_writer writer(.clk,.rst_n(reset_n),.enabled(reset_n),.start(ds),.effect_meta(export_meta),
         .analysis_sequence(aseq),.analysis_skipped(askip),.stereo_peaks(peaks),.analysis_valid(av),.image_gain(gain),
-        .busy(db),.done(dd),.initialized,.req_valid(source_req),.req_ready(source_ready),.req_addr(source_addr),.req_wdata(source_data),
+        .busy(db),.done(dw),.initialized,.req_valid(source_req),.req_ready(source_ready),.req_addr(source_addr),.req_wdata(source_data),
         .read_enable(re),.read_kind(kind),.read_addr(addr),.read_data(rd));
+    display_data_reader reader(.clk,.rst_n(reset_n),.enabled(reset_n),.start(dw),.busy(load_busy),.done(dd),.valid(load_valid),.fault(load_fault),
+        .req_valid(load_req),.req_ready(load_ready),.req_addr(load_addr),.rsp_valid(load_response),.rsp_data(load_response_data),
+        .render_read_enable(cache_read),.render_wave_addr(cache_wave_addr),.render_image_addr(cache_image_addr),.render_spectrum_column(cache_spectrum_column),
+        .render_wave_data(cache_wave_data),.render_image_hit(cache_image_hit),.render_spectrum_left(cache_spectrum_left),.render_spectrum_right(cache_spectrum_right),
+        .render_meta(cache_meta),.render_analysis_sequence(cache_aseq),.render_analysis_skipped(cache_askip),.render_stereo_peaks(cache_peaks),
+        .render_image_gain(cache_gain),.render_analysis_valid(cache_analysis_valid),.render_frame_sequence(cache_frame_sequence));
     display_write_bridge bridge(.clk,.rst_n(reset_n),
         .shared_valid(source_req),.shared_addr(source_addr),.shared_data(source_data),.shared_ready(source_ready),
         .frame_valid(frame_write_index<16),.frame_addr({21'd0,frame_write_index,3'd0}),
@@ -61,6 +76,16 @@ module tb_shared_display;
     integer reference_count=0,pixel_count=0,frame_pixels=0;
     integer frames=0,writes=0,payloads=0,descriptors=0,commits=0;
     integer cycles=0,hold_cycles=0,i,j,offset,slot;
+    reg [28:0] ddr_address[0:1699];reg [255:0]ddr_data[0:1699],pending_read_data;integer ddr_count=0,read_delay=0,k;
+    reg read_pending=0;
+    function automatic [255:0] ddr_lookup(input [28:0] lookup_address);
+        integer n;
+        begin
+            ddr_lookup=0;
+            for(n=0;n<1700;n=n+1)if(n<ddr_count && ddr_address[n]==lookup_address)ddr_lookup=ddr_data[n];
+        end
+    endfunction
+    assign load_ready=reset_n && !read_pending && cycles%7!=0;
     reg [31:0] wave[0:511];reg image_bits[0:65535];reg[15:0] columns[0:511];
     reg [255:0] expected_meta;
     reg [31:0] expected_aseq,expected_askip,expected_peaks;reg expected_valid;
@@ -79,6 +104,13 @@ module tb_shared_display;
         pr=(cycles%13)>1;
     end
     always @(posedge clk)if(reset_n)begin
+        load_response<=0;
+        if(load_req && load_ready)begin read_pending<=1;read_delay<=2;pending_read_data=ddr_lookup(load_addr);end
+        if(read_pending)begin
+            if(read_delay==0)begin load_response<=1;load_response_data<=pending_read_data;read_pending<=0;end
+            else read_delay<=read_delay-1;
+        end
+        if(load_fault)$fatal(1,"HDMI reader rejected writer packet");
         if(ref_pv)begin reference_frame[reference_count]=ref_pixels;reference_count=reference_count+1;end
         if(pv && pr)begin
             if(frames==1)begin
@@ -99,7 +131,7 @@ module tb_shared_display;
             current_base=writer.bank ? PAYLOAD_BANK1_WORD : PAYLOAD_BANK0_WORD;
             current_desc=writer.bank ? DESC_BANK1_WORD : DESC_BANK0_WORD;
             current_header=writer.bank ? BANK1_HEADER_WORD : BANK0_HEADER_WORD;
-            expected_meta=meta;expected_aseq=aseq;expected_askip=askip;expected_valid=av;
+            expected_meta=export_meta;expected_aseq=aseq;expected_askip=askip;expected_valid=av;
             expected_peaks=peaks;expected_gain=gain;
             for(i=0;i<512;i=i+1)begin
                 wave[i]=render.u_align.trace_samples[i];
@@ -108,6 +140,7 @@ module tb_shared_display;
             for(i=0;i<65536;i=i+1)image_bits[i]=av && render.g_analysis.u_analysis.image_pixels[render.g_analysis.u_analysis.read_bank*65536+i];
         end
         if(req && wrdy)begin
+            if(wa>=DISPLAY_CONTROL_WORD)begin ddr_address[ddr_count]=wa;ddr_data[ddr_count]=wd;ddr_count=ddr_count+1;end
             if(wa<128)begin
                 if(wa!==29'((frame_write_accepted%16)*8) || wd!=={8{32'(frame_write_accepted%16)}})$fatal(1,"frame writer bridge ordering/data");
                 frame_write_accepted=frame_write_accepted+1;
@@ -190,7 +223,7 @@ module tb_shared_display;
         if(bank_headers[1]===old_header || !bank_headers[1][96])$fatal(1,"slow reader missed bank reuse");
         wait(render_done);@(negedge clk);
         if(commits!=3 || frame_write_accepted!=48)$fatal(1,"commit/bridge count");
-        $display("PASS shared DDR: 3 frames, every payload element + descriptors, backpressure/25ms stall, seqlock reuse, 1036800 P10 pixel pairs identical");
+        $display("PASS shared DDR HDMI source: 3 frames, every payload/descriptor, backpressure/25ms stall, coherent DDR reload, 1036800 P10 pixel pairs identical");
         // Startup may render a waveform before the first FFT: mark analysis invalid.
         reset_n=0;frames=0;prior_seq=0;commits=0;repeat(5)@(negedge clk);reset_n=1;
         wait(ready && initialized);@(negedge clk);start=1;

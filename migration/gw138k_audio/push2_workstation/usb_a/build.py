@@ -21,13 +21,15 @@ def main():
     stage=out/'Prj1'
     shutil.copytree(WORK/'Prj1',stage,ignore=shutil.ignore_patterns('impl','build','__pycache__','*.user'))
     shutil.copytree(WORK/'reference',out/'reference')
-    # Step-2 display-data overlays are kept outside the frozen workstation
+    # Display-data overlays are kept outside the frozen workstation
     # source tree. The P10 baseline remains hash-checked and untouched.
     display_overlay={
         'src/video/output_audio_analysis.v':'output_audio_analysis.v',
         'src/video/feedback_renderer.v':'feedback_renderer.v',
         'src/video/hdmi_display.v':'hdmi_display.v',
         'src/memory/display_data_writer.v':'display_data_writer.v',
+        'src/memory/display_data_reader.v':'display_data_reader.v',
+        'src/ae350/gw138k_ddr_arbiter.sv':'gw138k_ddr_arbiter.sv',
     }
     for rel,name in display_overlay.items():
         shutil.copy2(ROOT/'rtl/display_data'/name,stage/rel)
@@ -48,6 +50,7 @@ def main():
         if f.suffix not in ['.v','.sv'] or f.name in ['reference_top.v','gw138k_cpu_pll_cell.v','reset_release.v','video_pll_init.v']:continue
         shutil.copy2(f,dest/f.name)
     ET.SubElement(fl,'File',path='src/memory/display_data_writer.v',type='file.verilog',enable='1')
+    ET.SubElement(fl,'File',path='src/memory/display_data_reader.v',type='file.verilog',enable='1')
     shutil.copy2(ROOT/'rtl/push2_usb_a_control.sv',dest/'push2_usb_a_control.sv')
     for f in sorted(dest.iterdir()):ET.SubElement(fl,'File',path=f.relative_to(stage).as_posix(),type='file.verilog',enable='1')
     ET.indent(tree,space='    ');tree.write(stage/'Prj1.gprj',encoding='utf-8',xml_declaration=True)

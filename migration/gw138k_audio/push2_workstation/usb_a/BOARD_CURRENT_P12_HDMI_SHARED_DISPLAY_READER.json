@@ -1,0 +1,67 @@
+{
+  "version": "P12 shared DDR display data, phase 3 HDMI reader",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_000749_501731/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "baa44a8e57072478d66847cdaef38dea7c754c47a5f45b3ebb43289c34f658e9",
+  "usercode": "0x0000C8A1",
+  "flash_written": false,
+  "previous_accepted": {
+    "version": "P11 shared DDR display data, phase 2",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_190033_599011/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "97d7a7a19809fce5bb9bb26dd3823f785d0e88b12d5614f3ff6eccfb39a73a82",
+    "usercode": "0x0000D767",
+    "physical_acceptance": "accepted by user on 2026-09-14"
+  },
+  "behavior": [
+    "Read the P11 versioned double-bank waveform, MID/SIDE image, spectrum-column and effect metadata blocks back from DDR.",
+    "Validate global/header/descriptors and re-read the bank header before publishing a local HDMI cache.",
+    "Render the existing HDMI dashboard from the shared compact data while retaining the existing RGB565 framebuffer and scanout.",
+    "Keep the Push USB-A protocol and screen renderer unchanged for phase 4."
+  ],
+  "verification": {
+    "simulation": {
+      "reader": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_234733_721248/p11_shared_000712_696291",
+      "hdmi_equivalence": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260914_234733_721248/p11_shared_000712_700712",
+      "integrated_ddr_path": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_000749_501731/p11_shared_002340_187246",
+      "passed": true,
+      "hardware_tested": false
+    },
+    "synthesis_pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_reported_slack_ns": 0.002,
+      "resources": {
+        "Logic": 33502.0,
+        "Register": 24893.0,
+        "BSRAM": 254.0,
+        "DSP": 42.5
+      },
+      "resource_delta_from_p11": {
+        "Logic": 2066,
+        "Register": 2086,
+        "BSRAM": 6,
+        "DSP": 0
+      },
+      "tool_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_000749_501731/tool_result.json"
+    },
+    "audio_and_new_display_routed_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_000749_501731/p12_routed_summary.json",
+    "usb_routed_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_000749_501731/p12_usb_routed_summary.json",
+    "legacy_routed_audit": {
+      "passed": false,
+      "record": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_000749_501731/Prj1/check_existing.log",
+      "inherited_gaps": [
+        "Historical DDR reset evidence source path is absent from the staged build environment.",
+        "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete."
+      ]
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_002533_851798/result.json",
+      "from_code": "0x0000D767",
+      "usercode": "0x0000C8A1",
+      "fpga_flash_written": false,
+      "operations_passed": ["before", "sram", "after"]
+    },
+    "physical_hdmi_headphone_push_acceptance": "pending user verification",
+    "push_common_ddr_reader_implemented": false,
+    "physical_interaction_latency_measured": false
+  }
+}

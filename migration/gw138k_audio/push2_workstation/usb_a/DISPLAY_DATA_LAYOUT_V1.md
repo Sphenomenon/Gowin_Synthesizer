@@ -1,6 +1,6 @@
-# 共享显示数据布局 v1.0（P11，阶段 2）
+# 共享显示数据布局 v1.0（P11/P12，阶段 2～3）
 
-以新结果目录中冻结的 `Prj1` 构建输入、`rtl/display_data_layout_pkg.svh` 和 `rtl/display_data/display_data_writer.v` 为准。这是工程内部的 DDR 数据 ABI，采用版本化描述符、双缓冲和 seqlock，不增加 USB 或外部总线协议。阶段 2 导出现有分析结果，HDMI 仍通过原 framebuffer 扫描，Push 尚未读取本协议。
+以新结果目录中冻结的 `Prj1` 构建输入、`rtl/display_data_layout_pkg.svh`、`display_data_writer.v` 和 `display_data_reader.v` 为准。这是工程内部的 DDR 数据 ABI，采用版本化描述符、双缓冲和 seqlock，不增加 USB 或外部总线协议。阶段 2 导出现有分析结果；阶段 3 已让 HDMI 从共享紧凑块重绘原 dashboard，最终 RGB565 framebuffer 和 scanout 仍保留；Push 尚未读取本协议。
 
 本文件取代此前阶段 1 草案中的错误地址和字段表。原生 DDR 地址单位是 **32 位 word**，byte address = word address × 4。P5 原生地址 `0x00200000` 对应物理 byte `0x00800000`，不是 `0x01000000`。既有结果目录中的旧草案仅作历史记录；此前没有发布本 ABI 的硬件消费者。
 
@@ -102,7 +102,7 @@ writer 在 memory UI 100 MHz 域复用原有 DDR writer 槽位：`req_valid/req_
 
 bank 每次交替，数据端无新的 CDC、无 audio ready 信号。背压只延长显示保持时间，采样器沿用已有双缓冲/丢弃观察样本的逻辑。每帧 365 个 BL8 写请求，合计 11,680 B；冷启动另有 3 个 BL8 清零请求。66,560 个源元素各用三个 UI 周期读取，加写入约 2.00 ms，不含 DDR 背压和原 framebuffer 渲染；60 帧/秒约增加 0.701 MB/s。
 
-后续 reader 接口沿用 `read_valid/read_ready/read_addr[28:0]` 与 `read_rsp_valid/read_rsp_data[255:0]`。当前尚未实例化 DDR 分析 reader。消费者须遵循以下快照规则，不能仅锁存 bank 号后无限期读取：
+reader 接口沿用 `read_valid/read_ready/read_addr[28:0]` 与 `read_rsp_valid/read_rsp_data[255:0]`。P12 的 HDMI reader 已实例化，并遵循以下快照规则；后续 Push 或外部消费者也不能仅锁存 bank 号后无限期读取：
 
 1. 读取全局记录并检查 magic/版本/有效位，取得 frame sequence 和 bank。
 2. 读取 bank 头，要求 generation 为偶数且与全局 frame/descriptor 匹配。
@@ -114,4 +114,4 @@ bank 每次交替，数据端无新的 CDC、无 audio ready 信号。背压只�
 
 ## 阶段边界
 
-目前 HDMI 使用原本地 RAM 数据渲染，同一快照额外写入 DDR。逐像素仿真检查视觉内容不变，实际刷新节奏、输入到声音/画面的延迟仍须测量。Push USB-A 屏幕协议和现有 448 位反馈邮箱未改。后续阶段 3 接 HDMI reader，阶段 4 接 Push 摘要 reader，再验证消费者同帧与带宽/延迟；未来自制屏可复用描述符，暂不添加传输层。现有完整 RGB565 framebuffer 本阶段仍生成并扫描，不宣称已经减少其带宽或 BSRAM。
+目前 P12 HDMI 使用共享 DDR 数据块装载到本地显示缓存后重绘，逐像素仿真检查视觉内容与 P10 原本地 RAM 渲染一致。Push USB-A 屏幕协议和现有 448 位反馈邮箱未改；阶段 4 再接 Push 摘要 reader并验证 HDMI/Push 消费同一 frame sequence。未来自制屏可复用描述符，暂不添加传输层。现有完整 RGB565 framebuffer 仍生成并扫描，因此不宣称已经减少 framebuffer 带宽；P12 为 HDMI reader 缓存增加 6 个 BSRAM。实际刷新节奏、输入到声音/画面的延迟仍须实体测量。

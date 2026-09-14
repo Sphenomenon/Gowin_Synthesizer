@@ -84,9 +84,9 @@ module hdmi_display (
     wire display_enabled=bist_done && !bist_failed && !fetch_fault && !arbiter_fault;
     wire renderer_ready,renderer_busy,renderer_done,renderer_start,pixel_valid,pixel_ready;
     wire [63:0] pixel_data;
-    wire [255:0] display_meta;
+    wire [255:0] display_meta,shared_export_meta;
     wire [31:0] underruns,rendered_frames;
-    wire shared_start,shared_done,shared_busy,shared_initialized,shared_read_enable;
+    wire shared_start,shared_write_done,shared_busy,shared_initialized,shared_read_enable;
     wire [1:0] shared_read_kind;
     wire [15:0] shared_read_addr;
     wire [31:0] shared_read_data,shared_analysis_sequence,shared_analysis_skipped,shared_stereo_peaks;
@@ -95,6 +95,17 @@ module hdmi_display (
     wire shared_req,shared_ready;
     wire [28:0] shared_addr;
     wire [255:0] shared_data;
+    wire shared_load_req,shared_load_ready,shared_load_response;
+    wire [28:0] shared_load_addr;
+    wire shared_load_busy,shared_load_done,shared_load_valid,shared_load_fault;
+    wire shared_render_read_enable,shared_render_image_hit,shared_render_analysis_valid;
+    wire [8:0] shared_render_wave_addr,shared_render_spectrum_column;
+    wire [15:0] shared_render_image_addr;
+    wire [31:0] shared_render_wave_data,shared_render_analysis_sequence,shared_render_analysis_skipped;
+    wire [31:0] shared_render_stereo_peaks,shared_render_frame_sequence;
+    wire [7:0] shared_render_spectrum_left,shared_render_spectrum_right;
+    wire [2:0] shared_render_image_gain;
+    wire [255:0] shared_render_meta;
     video_runtime_diagnostics u_diagnostics (
         .clk_50m(clk_50m),.reset_n(reset_n),.pixel_clk(pixel_clk),
         .pixel_reset_n(pixel_reset_n),.ui_clk(memory_clk),.ui_reset_n(ui_rst_n),
@@ -103,7 +114,7 @@ module hdmi_display (
         .vblank_start(vblank_start),.rendered_frames(rendered_frames),
         .underruns(underruns),.diagnostics(video_diagnostics)
     );
-    wire [31:0] memory_status={24'd0,video_locked,memory_pll_locked,(underruns!=0),(fetch_fault || arbiter_fault),
+    wire [31:0] memory_status={24'd0,video_locked,memory_pll_locked,(underruns!=0),(fetch_fault || arbiter_fault || shared_load_fault),
                               front_valid,bist_failed,bist_done,memory_calibrated};
     reg [7:0] flags_meta,flags_sync;
     always @(posedge clk_50m or negedge reset_n) begin
@@ -111,21 +122,28 @@ module hdmi_display (
         else begin flags_meta<=memory_status[7:0];flags_sync<=flags_meta;end
     end
     assign memory_flags=flags_sync;
-    feedback_renderer #(.ENABLE_ANALYSIS(1),.SHARED_EXPORT(1),.SHARED_WAVE_ZERO_BITS(15)) u_renderer (
+    feedback_renderer #(.ENABLE_ANALYSIS(1),.SHARED_EXPORT(1),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15)) u_renderer (
         .clk(memory_clk),.rst_n(ui_rst_n),.start(renderer_start),.frame_ready(renderer_ready),
         .busy(renderer_busy),.frame_done(renderer_done),.pixel_valid(pixel_valid),
-        .pixel_ready(pixel_ready),.pixel_data(pixel_data),.display_meta(display_meta),.source_clk(clk_50m),
+        .pixel_ready(pixel_ready),.pixel_data(pixel_data),.display_meta(display_meta),.shared_export_meta(shared_export_meta),.source_clk(clk_50m),
         .source_reset_n(source_reset_pipe[2]),.sample_data(sample_data),.sample_valid(sample_valid),
         .output_pcm(output_pcm),
         .trigger_reference(trigger_reference),
         .active_voices(active_voices),.status_data(status_data),.effect_mask(effect_mask),.effect_order(effect_order),.memory_status(memory_status),
         .underruns(underruns),.frame_count(rendered_frames),
-        .shared_start(shared_start),.shared_done(shared_done),
+        .shared_start(shared_start),.shared_done(shared_load_done),
         .shared_read_enable(shared_read_enable),.shared_read_kind(shared_read_kind),
         .shared_read_addr(shared_read_addr),.shared_read_data(shared_read_data),
         .shared_analysis_sequence(shared_analysis_sequence),.shared_analysis_skipped(shared_analysis_skipped),
         .shared_analysis_valid(shared_analysis_valid),.shared_image_gain(shared_image_gain),
-        .shared_stereo_peaks(shared_stereo_peaks)
+        .shared_stereo_peaks(shared_stereo_peaks),
+        .shared_render_read_enable(shared_render_read_enable),.shared_render_wave_addr(shared_render_wave_addr),
+        .shared_render_image_addr(shared_render_image_addr),.shared_render_spectrum_column(shared_render_spectrum_column),
+        .shared_render_wave_data(shared_render_wave_data),.shared_render_image_hit(shared_render_image_hit),
+        .shared_render_spectrum_left(shared_render_spectrum_left),.shared_render_spectrum_right(shared_render_spectrum_right),
+        .shared_render_meta(shared_render_meta),.shared_render_analysis_sequence(shared_render_analysis_sequence),
+        .shared_render_analysis_skipped(shared_render_analysis_skipped),.shared_render_stereo_peaks(shared_render_stereo_peaks),
+        .shared_render_image_gain(shared_render_image_gain),.shared_render_analysis_valid(shared_render_analysis_valid)
     );
     wire write_req,write_ready,read_req,read_ready;
     wire [28:0] write_addr,read_addr;
@@ -142,17 +160,30 @@ module hdmi_display (
     );
     display_data_writer u_data_writer(
         .clk(memory_clk),.rst_n(ui_rst_n),.enabled(display_enabled),.start(shared_start),
-        .effect_meta(display_meta),.analysis_sequence(shared_analysis_sequence),
+        .effect_meta(shared_export_meta),.analysis_sequence(shared_analysis_sequence),
         .analysis_skipped(shared_analysis_skipped),.analysis_valid(shared_analysis_valid),
         .image_gain(shared_image_gain),.stereo_peaks(shared_stereo_peaks),
-        .busy(shared_busy),.done(shared_done),.initialized(shared_initialized),
+        .busy(shared_busy),.done(shared_write_done),.initialized(shared_initialized),
         .req_valid(shared_req),.req_ready(shared_ready),.req_addr(shared_addr),.req_wdata(shared_data),
         .read_enable(shared_read_enable),.read_kind(shared_read_kind),.read_addr(shared_read_addr),.read_data(shared_read_data));
+    display_data_reader u_data_reader(
+        .clk(memory_clk),.rst_n(ui_rst_n),.enabled(display_enabled),.start(shared_write_done),
+        .busy(shared_load_busy),.done(shared_load_done),.valid(shared_load_valid),.fault(shared_load_fault),
+        .req_valid(shared_load_req),.req_ready(shared_load_ready),.req_addr(shared_load_addr),
+        .rsp_valid(shared_load_response),.rsp_data(app_rdata),
+        .render_read_enable(shared_render_read_enable),.render_wave_addr(shared_render_wave_addr),
+        .render_image_addr(shared_render_image_addr),.render_spectrum_column(shared_render_spectrum_column),
+        .render_wave_data(shared_render_wave_data),.render_image_hit(shared_render_image_hit),
+        .render_spectrum_left(shared_render_spectrum_left),.render_spectrum_right(shared_render_spectrum_right),
+        .render_meta(shared_render_meta),.render_analysis_sequence(shared_render_analysis_sequence),
+        .render_analysis_skipped(shared_render_analysis_skipped),.render_stereo_peaks(shared_render_stereo_peaks),
+        .render_image_gain(shared_render_image_gain),.render_analysis_valid(shared_render_analysis_valid),
+        .render_frame_sequence(shared_render_frame_sequence));
     wire merged_req,merged_ready;
     wire [28:0] merged_addr;
     wire [255:0] merged_data;
-    // Export finishes before raster pixels issue. Keep the existing scan/CPU
-    // arbitration and response tagging; no new DDR or audio clock crossing.
+    // Export and coherent reload finish before raster pixels issue. The scanout
+    // remains first-priority and audio never enters this DDR clock domain.
     display_write_bridge u_write_bridge(
         .clk(memory_clk),.rst_n(ui_rst_n),
         .shared_valid(shared_req),.shared_addr(shared_addr),.shared_data(shared_data),.shared_ready(shared_ready),
@@ -174,6 +205,8 @@ module hdmi_display (
         .bist_valid(bist_req),.bist_write(bist_write),.bist_address(bist_addr),.bist_data(bist_data),
         .bist_ready(bist_ready),.bist_response(bist_response),
         .scan_valid(read_req),.scan_address(read_addr),.scan_ready(read_ready),.scan_response(scan_response),
+        .display_valid(shared_load_req),.display_address(shared_load_addr),
+        .display_ready(shared_load_ready),.display_response(shared_load_response),
         .writer_valid(merged_req),.writer_address(merged_addr),
         .writer_data(merged_data),.writer_ready(merged_ready),
         .cpu_valid(cpu_req),.cpu_write(cpu_write),.cpu_address(cpu_address),.cpu_data(cpu_data),.cpu_mask(cpu_mask),
