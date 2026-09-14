@@ -1,6 +1,10 @@
 # Push 2 USB-A 与完整音频工作站合并
 
-## 2026-09-15 P14 C 模式 32 声部候选（待实体回归）
+## 2026-09-15 P16 连续压力与 Push 屏幕刷新候选（待本轮实体验收）
+
+P16 在 P14 C 模式 32 声部基础上加入 Push USB-A poly-aftertouch 连续压力控制，并修复 Push 屏幕只显示首帧的问题：主机每次发起屏幕帧请求都会提交新的 control/options、pad held、note 和 velocity 快照。P&R setup/hold 0/0，Logic 33793、Register 25164、BSRAM 253、DSP 43.5。位流 SHA256 `85f6eba4b9db18468b300a58567bfb4a096123fbf699eea041ecc8f426450e82`，UserCode `0x0000C706`；已从 P14 `0x00005610` 单独 SRAM 下载并读回通过，Flash 未写。RTL 压力、声部和 Push 刷新回归通过；真实压力听感、Push 动态画面、HDMI 和耳机仍待用户验收，见 [版本记录](BOARD_CURRENT_P16_PRESSURE_PUSH_REFRESH.json) 和 [阶段验证](P16_PRESSURE_PUSH_REFRESH_VERIFICATION.md)。
+
+## 2026-09-15 P14 C 模式 32 声部候选（已保留，可回退）
 
 P14 在 P13 共享 DDR 显示数据基础上恢复 C 模式 32 声部：统一振荡器使用 1024×80 bit slot RAM，C 模式按 32 个 voice 映射，上层满载判断检查完整 32 位。RTL 满载扫描为 1024 slots、sample latency 1035/1600 个 76.8 MHz 周期；P&R setup/hold 0/0，Logic 33781、Register 24931、BSRAM 253、DSP 42.5。位流 SHA256 `5249dc938d6288e87a2e5ca2ae3ce21808a3c11671b3b47f38b767754a869a86`，UserCode `0x00005610`。已从 P13 `0x0000F002` 单独 SRAM 下载，写后读回通过，Flash 未写。实体 HDMI、Push、耳机、32 声部声音和交互延迟待确认，见 [版本记录](BOARD_CURRENT_P14_C_MODE_32.json) 和 [阶段验证](P14_C_MODE_32_VERIFICATION.md)。
 

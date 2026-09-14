@@ -40,6 +40,7 @@ def main():
     audio_overlay={
         'legacy/rtl/audio/unified_oscillator_engine.sv': ROOT/'rtl/audio/unified_oscillator_engine.sv',
         'src/ae350/gw138k_event_workstation.sv': ROOT/'rtl/audio/gw138k_event_workstation.sv',
+        'src/push2/push2_controls.sv': ROOT/'rtl/audio/push2_controls.sv',
     }
     for rel,src in audio_overlay.items():
         shutil.copy2(src,stage/rel)

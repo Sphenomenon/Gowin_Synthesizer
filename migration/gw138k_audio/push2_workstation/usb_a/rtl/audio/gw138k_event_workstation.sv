@@ -66,7 +66,9 @@ module gw138k_event_workstation #(
   logic [127:0] held, deferred;
   assign held_notes_o=held;
   logic core_event_valid, core_event_ready, core_note_on;
+  logic core_expression_valid, core_expression_ready;
   logic [6:0] core_note, core_velocity;
+  logic [6:0] core_expression_note, core_expression_value;
   logic core_sample_ready, core_ce, load_busy, mix_busy;
   logic pending, frame_inflight;
   logic [31:0] allocated;
@@ -92,6 +94,7 @@ module gw138k_event_workstation #(
   assign core_ce=(pending || sample_ce_i) && core_sample_ready;
   always_comb begin
     core_event_valid=0; core_note_on=0; core_note=a; core_velocity=b;
+    core_expression_valid=0; core_expression_note=a; core_expression_value=b;
     event_ready=0;
     if(releasing) begin
       core_note=release_index; core_velocity=0;
@@ -102,6 +105,9 @@ module gw138k_event_workstation #(
         core_note_on=kind==1;
         core_event_valid=dispatch && !(kind==1 && full);
         event_ready=dispatch && ((kind==1 && full) || core_event_ready);
+      end else if(kind==5) begin
+        core_expression_valid=dispatch && core_expression_ready;
+        event_ready=dispatch && core_expression_ready;
       end else event_ready=dispatch;
     end
   end
@@ -129,6 +135,8 @@ module gw138k_event_workstation #(
       .event_valid_i(core_event_valid),.event_ready_o(core_event_ready),
       .event_note_on_i(core_note_on),.event_profile_i(profile),
       .event_midi_note_i(core_note),.event_velocity_i(core_velocity),
+      .expression_valid_i(core_expression_valid),.expression_ready_o(core_expression_ready),
+      .expression_note_i(core_expression_note),.expression_value_i(core_expression_value),
       .pitch_ratio_q20_i(pitch_q20_o),.sample_ce_i(core_ce),
       .sample_ready_o(core_sample_ready),.sample_valid_o(synth_valid_o),.sample_o(synth_o),
       .allocated_mask_o(allocated),.active_mask_o,.active_voice_count_o,

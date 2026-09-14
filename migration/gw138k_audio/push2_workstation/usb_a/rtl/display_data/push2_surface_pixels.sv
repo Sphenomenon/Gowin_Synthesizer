@@ -7,12 +7,18 @@ module push2_surface_pixels(input wire clk,rst,frame_ready,output wire frame_sta
     reg [22:0] timer;
     reg [31:0] cs,op;reg [63:0] pads;reg [6:0] n,v;
     reg [2:0] display_effect_mask;reg display_meta_seen;
-    assign frame_start=!rst && timer==0 && frame_ready;
+    // The host frame request is the commit point.  The local timer is kept as
+    // a pacing counter for compatibility, but must not suppress a new
+    // snapshot or the Push UI will stay on its first frame.
+    assign frame_start=!rst && frame_ready;
     assign pixel_valid=!rst;
     always @(posedge clk or posedge rst)begin
         if(rst)begin timer<=0;cs<=0;op<=0;pads<=0;n<=60;v<=0;display_effect_mask<=0;display_meta_seen<=0;end
+        else if(frame_start)begin
+            timer<=23'd4999999;cs<=control;op<=options;pads<=held;n<=note;v<=velocity;
+            if(display_meta_valid)begin display_effect_mask<=display_meta[25:23];display_meta_seen<=1;end
+        end
         else if(display_meta_valid)begin display_effect_mask<=display_meta[25:23];display_meta_seen<=1;end
-        else if(frame_start)begin timer<=23'd4999999;cs<=control;op<=options;pads<=held;n<=note;v<=velocity;end
         else if(timer!=0)timer<=timer-1'b1;
     end
     wire [3:0] tile=x/10'd120;

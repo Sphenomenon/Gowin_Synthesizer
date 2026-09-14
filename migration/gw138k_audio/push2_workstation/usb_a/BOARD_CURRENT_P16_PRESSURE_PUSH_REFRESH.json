@@ -1,0 +1,48 @@
+{
+  "version": "P16 continuous pressure and Push screen refresh",
+  "status": "SRAM downloaded; physical acceptance pending user verification",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_022851_841406/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "85f6eba4b9db18468b300a58567bfb4a096123fbf699eea041ecc8f426450e82",
+  "usercode": "0x0000C706",
+  "previous": {
+    "version": "P14 C mode 32 voice overlay",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_013412_963961/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "5249dc938d6288e87a2e5ca2ae3ce21808a3c11671b3b47f38b767754a869a86",
+    "usercode": "0x00005610"
+  },
+  "scope": {
+    "continuous_pressure": "Push USB-A CIN A poly-aftertouch to per-voice expression gain; held pad is not retriggered",
+    "push_refresh": "Every host frame request commits a fresh control/options/held/note/velocity snapshot",
+    "display_data": "P13 shared DDR writer/reader and Push summary retained",
+    "audio": "P10 serial effect order, P2 bass path, and C-mode 32 voices retained",
+    "usb_protocol": "Existing Push USB-A frame and MIDI transport unchanged"
+  },
+  "verification": {
+    "rtl": {
+      "push_pressure": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/push_pressure_rtl_recheck_20260915_021104_854926952/simulation.log",
+      "unified_expression": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/unified_expression_recheck_20260915_021101_743817716/simulation.log",
+      "push_surface_refresh": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/push_surface_refresh_rtl_20260915_022817_045672204/simulation.log",
+      "c_mode_32_recheck": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/c_mode_32_recheck_20260915_021058_644339381/simulation.log",
+      "passed": true,
+      "hardware_tested": false
+    },
+    "pnr": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_022851_841406",
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "resources": {"Logic": 33793, "Register": 25164, "BSRAM": 253, "DSP": 43.5},
+      "known_legacy_audit_gaps": [
+        "Historical DDR reset evidence source path is absent from the staged build environment.",
+        "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete."
+      ]
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_023952_987997/result.json",
+      "from_code": "0x00005610",
+      "usercode": "0x0000C706",
+      "operations_passed": ["before", "sram", "after"],
+      "fpga_flash_written": false
+    },
+    "physical_acceptance": "pending user verification"
+  }
+}

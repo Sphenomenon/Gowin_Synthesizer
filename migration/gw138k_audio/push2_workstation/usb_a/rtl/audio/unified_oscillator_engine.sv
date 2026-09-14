@@ -34,6 +34,10 @@ module unified_oscillator_engine #(
     input  logic               event_valid_i,
     output logic               event_ready_o,
     input  logic               event_note_on_i,
+    input  logic               expression_valid_i,
+    output logic               expression_ready_o,
+    input  logic        [6:0]  expression_note_i,
+    input  logic        [6:0]  expression_value_i,
     input  logic        [2:0]  event_profile_i,
     input  logic        [6:0]  event_midi_note_i,
     input  logic        [6:0]  event_velocity_i,
@@ -77,6 +81,9 @@ module unified_oscillator_engine #(
   logic [17:0] sample_envelope_q18 [0:31];
   logic [2:0] envelope_state [0:31];
   logic [23:0] envelope_level_q24 [0:31];
+  // Per-voice pressure gain.  128 represents unity; 0 is silence.
+  logic [7:0] expression_gain_q8 [0:31];
+  logic [23:0] expression_scaled_gain;
   logic envelope_update_active;
   logic [4:0] envelope_update_index;
   logic envelope_update_valid;
@@ -123,9 +130,12 @@ module unified_oscillator_engine #(
   logic [4:0] allocation_index;
   logic release_found;
   logic [4:0] release_index;
+  logic expression_found;
+  logic [4:0] expression_index;
   logic [4:0] maximum_voice_index;
   logic [5:0] current_partial_count;
   logic accepted_event;
+  logic accepted_expression;
   logic accepted_sample;
 
   logic midi_read;
@@ -212,6 +222,7 @@ module unified_oscillator_engine #(
       (current_mode_o == 2'd1 ? 10'd127 : 10'd1023);
   assign load_busy_o = load_state != LOAD_IDLE;
   assign accepted_event = event_valid_i && event_ready_o;
+  assign accepted_expression = expression_valid_i && expression_ready_o;
   assign accepted_sample = sample_ce_i && sample_ready_o;
   assign midi_read = accepted_event && event_note_on_i;
   assign partial_start = load_state == LOAD_WAIT_MIDI && midi_valid && partial_ready;
@@ -239,6 +250,9 @@ module unified_oscillator_engine #(
   assign velocity_gain_rounded = velocity_gain_biased[30:15];
   assign scaled_gain_q15 = load_velocity_q15 == 16'h7fff
       ? gain_q15 : velocity_gain_rounded;
+  assign expression_scaled_gain =
+      {8'd0, slot_read_data[15:0]} *
+      {16'd0, expression_gain_q8[issued_voice_index]};
 
   // One ADSR arithmetic lane services all voices.  Array selection is
   // registered before the arithmetic so the vendor mapper does not build a
@@ -337,6 +351,8 @@ module unified_oscillator_engine #(
     allocation_index = '0;
     release_found = 1'b0;
     release_index = '0;
+    expression_found = 1'b0;
+    expression_index = '0;
 
     for (int index = 0; index < 32; index = index + 1) begin
       if (!allocation_found && index <= maximum_voice_index &&
@@ -353,6 +369,13 @@ module unified_oscillator_engine #(
           assigned_midi_note[index] == event_midi_note_i) begin
         release_found = 1'b1;
         release_index = index[4:0];
+      end
+      if (!expression_found && allocated_mask_o[index] &&
+          envelope_state[index] != ENVELOPE_RELEASE &&
+          envelope_state[index] != ENVELOPE_IDLE &&
+          assigned_midi_note[index] == expression_note_i) begin
+        expression_found = 1'b1;
+        expression_index = index[4:0];
       end
     end
 
@@ -386,6 +409,9 @@ module unified_oscillator_engine #(
   assign sample_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
       !envelope_update_active && !envelope_update_valid &&
       !(event_valid_i && event_ready_o) && !mode_set_valid_i;
+  assign expression_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
+      !envelope_update_active && !envelope_update_valid &&
+      !event_valid_i && !mode_set_valid_i;
 
   midi_step_rom #(
       .MEM_FILE(`UNIFIED_MIDI_STEP_MEM_FILE)
@@ -540,6 +566,7 @@ module unified_oscillator_engine #(
         envelope_level_q18[voice_index] <= '0;
         envelope_state[voice_index] <= ENVELOPE_IDLE;
         sample_envelope_q18[voice_index] <= '0;
+        expression_gain_q8[voice_index] <= 8'd128;
       end
       for (pipeline_index = 0; pipeline_index < 5;
           pipeline_index = pipeline_index + 1) begin
@@ -621,6 +648,12 @@ module unified_oscillator_engine #(
         load_partial_count <= current_partial_count;
         load_last_partial_index <= current_partial_count[4:0] - 5'd1;
         load_state <= LOAD_WAIT_MIDI;
+        expression_gain_q8[allocation_index] <= 8'd128;
+      end else if (accepted_expression) begin
+        if (expression_found) begin
+          expression_gain_q8[expression_index] <=
+              expression_value_i == 7'd127 ? 8'd128 : {1'b0, expression_value_i};
+        end
       end else begin
         case (load_state)
           LOAD_WAIT_MIDI: begin
@@ -657,7 +690,7 @@ module unified_oscillator_engine #(
       end
 
       gain_pipe[0] <= sample_envelope_q18[issued_voice_index] == 0
-          ? 16'd0 : slot_read_data[15:0];
+          ? 16'd0 : expression_scaled_gain[22:7];
       envelope_pipe[0] <= sample_envelope_q18[issued_voice_index];
       last_pipe[0] <= slot_read_valid && slot_read_last;
       for (pipeline_index = 1; pipeline_index < 5;
