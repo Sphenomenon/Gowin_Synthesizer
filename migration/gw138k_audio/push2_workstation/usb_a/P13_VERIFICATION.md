@@ -1,6 +1,6 @@
 # P13 共享 DDR 显示数据：阶段 4 Push 摘要读取
 
-状态：P13 已完成 HDMI 共享 reader 与 Push 摘要 reader 的 RTL、仿真、综合/布局布线和 SRAM 下载；实体 HDMI、Push、耳机和交互回归等待用户确认。Push 仍使用原 USB-A MMIO、帧请求和 512 B 屏幕包，未增加线协议或改变 MIDI 路径。
+状态：P13 已完成 HDMI 共享 reader 与 Push 摘要 reader 的 RTL、仿真、综合/布局布线和 SRAM 下载；现作为 P14 的直接回退版本保留。Push 仍使用原 USB-A MMIO、帧请求和 512 B 屏幕包，未增加线协议或改变 MIDI 路径。
 
 P13 在 P12 的 HDMI reader 基础上，把已提交显示快照压缩为 64 位摘要跨到 USB 48 MHz 域：frame sequence、effect mask/order、peak 摘要和 status 摘要。Push 屏幕在下一次既有 `frame_capture` 时锁存摘要；效果卡片状态使用共享 effect mask，其他模式/参数/灯光行为保持原实现。完整 waveform、李萨如和频谱数据仍由 HDMI reader 共享，Push 只取适合 960×160 屏幕的摘要，不复制 HDMI framebuffer。
 
@@ -59,6 +59,6 @@ P13 位流：
 - SRAM 记录：`../results/sram_20260915_011250_874114/result.json`
 - Flash：未写
 
-P13 已替换板上 SRAM：写前读回 P12 `0x0000C8A1`，写入和写后读回 P13 `0x0000F002` 均通过；Flash 未写。P12 位流仍保留在 `build_20260915_000749_501731`，P11/P10 也可回退。
+P13 曾替换板上 SRAM：写前读回 P12 `0x0000C8A1`，写入和写后读回 P13 `0x0000F002` 均通过；Flash 未写。当前板上是 P14 `0x00005610`，P12 位流仍保留在 `build_20260915_000749_501731`，P11/P10 也可回退。
 
 实体验收需要确认：HDMI waveform、李萨如图、频谱图和效果卡片顺序/箭头/动画；Push 屏幕与灯光；耳机声音、P10 串行效果链和 P2 低音；以及按键到声音/画面的响应延迟。阶段 4 不测量这些项目就不宣布硬件通过。

@@ -28,3 +28,7 @@ C 模式（`mode=2`）当前确实被限制为 4 个声部，而且限制来自�
 当前 C 模式每个样本遍历 128 个 slot；恢复 32 声部后为 1024 个 slot，混音扫描约增加 8 倍。48 kHz 音频时钟间隔为 76.8 MHz / 48 kHz = 1600 个 UI 周期，能否在该预算内完成还需用真实 `sample_ce_i`、声部全开和效果链输入测试确认，不能从 RTL 位宽推断通过。1024×80 slot RAM 也会明显增加 BSRAM，需在新构建中记录 Logic/Register/BSRAM/DSP 和 setup/hold；P13 的 +0.024 ns 余量不能直接沿用。
 
 验证顺序：先做 C 模式 32 个 NOTE_ON/NOTE_OFF、32 个独立相位与满载混音的 RTL 测试；再做真实 48 kHz sample_ce 的 deadline/欠载计数；最后在独立结果目录综合和布局布线。任一阶段失败都保留 P13 作为 SRAM 回退版本。
+
+## P14 实施结果
+
+P14 已按上述最小路径完成：`rtl/audio/unified_oscillator_engine.sv` 使用 10 bit slot 地址和 1024 项 RAM，C 模式的 voice tag 为 `slot_read_index[9:5]`；`gw138k_event_workstation.sv` 的满载判断检查完整 32 位 `allocated`。32 个 NOTE_ON 的 RTL 检查得到 `allocated=0xffffffff`、1024 项完整扫描，sample latency 为 1035/1600 个 76.8 MHz 周期。P&R setup/hold 为 0/0，BSRAM 253；结果和已知旧审计缺口记录在 [P14_C_MODE_32_VERIFICATION.md](P14_C_MODE_32_VERIFICATION.md)。

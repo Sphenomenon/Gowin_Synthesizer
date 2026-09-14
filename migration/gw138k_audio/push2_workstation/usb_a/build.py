@@ -34,6 +34,15 @@ def main():
     }
     for rel,name in display_overlay.items():
         shutil.copy2(ROOT/'rtl/display_data'/name,stage/rel)
+    # C-mode voice allocator/storage overlay.  The frozen P10/P13 workstation
+    # tree remains hash-checked; this local copy is the only source changed by
+    # the 32-voice experiment.
+    audio_overlay={
+        'legacy/rtl/audio/unified_oscillator_engine.sv': ROOT/'rtl/audio/unified_oscillator_engine.sv',
+        'src/ae350/gw138k_event_workstation.sv': ROOT/'rtl/audio/gw138k_event_workstation.sv',
+    }
+    for rel,src in audio_overlay.items():
+        shutil.copy2(src,stage/rel)
     shutil.copy2(ROOT/'rtl/display_data_layout_pkg.svh',stage/'src/memory/display_data_layout_pkg.sv')
     dest=stage/'src/usb_a';dest.mkdir()
     tree=ET.parse(stage/'Prj1.gprj');fl=tree.find('FileList')

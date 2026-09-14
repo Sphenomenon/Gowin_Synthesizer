@@ -1,0 +1,51 @@
+{
+  "version": "P14 C mode 32 voice overlay",
+  "status": "SRAM downloaded; physical acceptance pending",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_013412_963961/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "5249dc938d6288e87a2e5ca2ae3ce21808a3c11671b3b47f38b767754a869a86",
+  "usercode": "0x00005610",
+  "previous": {
+    "version": "P13 shared DDR display data and Push summary",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_005824_693914/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "894c51d40336fe86213adfddb3b151bc2c5d019b3cbd2e46a62acc0aa696539c",
+    "usercode": "0x0000F002"
+  },
+  "scope": {
+    "c_mode_voice_limit": "32 voices; 1024 80-bit slots",
+    "display_data": "P13 shared DDR writer/reader and Push summary retained",
+    "usb_protocol": "unchanged USB-A framing and MIDI event path",
+    "audio": "P10 serial effect order and P2 bass path retained"
+  },
+  "verification": {
+    "rtl": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/c_mode_rtl_20260915_015045_799805008/simulation.log",
+      "allocated_mask": "0xffffffff",
+      "active_voice_count": 32,
+      "issue_cycles": 1024,
+      "sample_latency_cycles": 1035,
+      "deadline_cycles": 1600,
+      "passed": true,
+      "hardware_tested": false
+    },
+    "pnr": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_013412_963961",
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_reported_slack_ns": 0.023,
+      "resources": {"Logic": 33781, "Register": 24931, "BSRAM": 253, "DSP": 42.5},
+      "known_legacy_audit_gaps": [
+        "Historical DDR reset evidence source path is absent from the staged build environment.",
+        "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete."
+      ]
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_014828_863405/result.json",
+      "from_code": "0x0000F002",
+      "usercode": "0x00005610",
+      "operations_passed": ["before", "sram", "after"],
+      "fpga_flash_written": false
+    },
+    "physical_hdmi_headphone_push_acceptance": "pending user verification",
+    "physical_interaction_latency_measured": false
+  }
+}

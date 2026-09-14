@@ -1,8 +1,12 @@
 # Push 2 USB-A 与完整音频工作站合并
 
-## 2026-09-15 P13 阶段 4 候选（待 SRAM 下载与实体回归）
+## 2026-09-15 P14 C 模式 32 声部候选（待实体回归）
 
-P13 已完成共享 DDR → HDMI reader → Push 64 位摘要 mailbox 的 RTL、仿真、P&R 和 SRAM 下载；当前板上 UserCode `0x0000F002`，写前 P12 `0x0000C8A1`、写后 P13 均读回，Flash 未写。位流 SHA256 `894c51d40336fe86213adfddb3b151bc2c5d019b3cbd2e46a62acc0aa696539c`，setup/hold 0/0，最差 slack +0.024 ns。Push 仍走原 USB-A 协议，见 [版本记录](BOARD_CURRENT_P13_PUSH_SHARED_SUMMARY.json) 和 [阶段验证](P13_VERIFICATION.md)。
+P14 在 P13 共享 DDR 显示数据基础上恢复 C 模式 32 声部：统一振荡器使用 1024×80 bit slot RAM，C 模式按 32 个 voice 映射，上层满载判断检查完整 32 位。RTL 满载扫描为 1024 slots、sample latency 1035/1600 个 76.8 MHz 周期；P&R setup/hold 0/0，Logic 33781、Register 24931、BSRAM 253、DSP 42.5。位流 SHA256 `5249dc938d6288e87a2e5ca2ae3ce21808a3c11671b3b47f38b767754a869a86`，UserCode `0x00005610`。已从 P13 `0x0000F002` 单独 SRAM 下载，写后读回通过，Flash 未写。实体 HDMI、Push、耳机、32 声部声音和交互延迟待确认，见 [版本记录](BOARD_CURRENT_P14_C_MODE_32.json) 和 [阶段验证](P14_C_MODE_32_VERIFICATION.md)。
+
+## 2026-09-15 P13 阶段 4（已保留，可回退）
+
+P13 已完成共享 DDR → HDMI reader → Push 64 位摘要 mailbox 的 RTL、仿真、P&R 和 SRAM 下载；它是 P14 的直接回退版本，UserCode `0x0000F002`，写前 P12 `0x0000C8A1`、写后 P13 均读回，Flash 未写。位流 SHA256 `894c51d40336fe86213adfddb3b151bc2c5d019b3cbd2e46a62acc0aa696539c`，setup/hold 0/0，最差 slack +0.024 ns。Push 仍走原 USB-A 协议，见 [版本记录](BOARD_CURRENT_P13_PUSH_SHARED_SUMMARY.json) 和 [阶段验证](P13_VERIFICATION.md)。
 
 ## 2026-09-15 P12 当前 SRAM 候选（待实体回归）
 
