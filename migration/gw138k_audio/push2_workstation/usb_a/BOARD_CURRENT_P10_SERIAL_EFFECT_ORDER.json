@@ -61,14 +61,15 @@
       "inherited_from": "P8/P9",
       "hardware_tested": false
     },
-    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260913_185715_364329/result.json",
+    "sram_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260914_151855_635169/result.json",
     "sram": {
-      "from_code": "0x0000C2D3",
+      "from_code": "0x000018D6",
       "usercode": "0x0000ED8B",
       "before": true,
       "write": true,
       "after": true,
-      "fpga_flash_written": false
+      "fpga_flash_written": false,
+      "reloaded_after_power_cycle": true
     },
     "pre_download_telemetry": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260913_185621_168785/result.json",
     "post_download_telemetry": {
