@@ -54,6 +54,14 @@ module push2_controls(
                     // already-held pad without allocating another voice.
                     event_valid<=1;event_data<={4'd5,a,b};mapped<=mapped+1'b1;
                     last_note<=a;last_velocity<=b;
+                end else if(kind==13 && last_note>=36 && last_note<=99 &&
+                            held[last_note-36]) begin
+                    // Some Push firmware/host combinations report pad
+                    // pressure as channel pressure (USB-MIDI CIN D), where
+                    // the note is implicit. Apply it to the most recently
+                    // held pad and leave the held mask unchanged.
+                    event_valid<=1;event_data<={4'd5,last_note,a};mapped<=mapped+1'b1;
+                    last_velocity<=a;
                 end else if((kind==8 || kind==9) && a>=36 && a<=99) begin
                     if((kind==9 && !held[a-36]) || (kind==8 && held[a-36])) begin
                         event_valid<=1;event_data<={kind==9?4'd1:4'd0,a,b};mapped<=mapped+1'b1;

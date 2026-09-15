@@ -1,5 +1,9 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-09-15 P17 连续压力兼容与 Push 屏幕调度候选（待本轮实体验收）
+
+P17 在 P16 基础上兼容 Push 的 CIN A poly-aftertouch 与 CIN D channel-pressure 两种压力包；按住同一 pad 时只更新已有声部的 expression，不重新分配音符。屏幕仍使用原 16 字节帧头和 640 个 512 字节包，固件改为每 16 包轮询 MIDI、每 32 包服务灯光，去掉每包空闲 IN 轮询造成的额外等待。P&R setup/hold 0/0，Logic 33820、Register 25164、BSRAM 253、DSP 43.5。位流 SHA256 `90a3d5563149a5ae40c431647fdb229730e8f3078812be4657e5d22f34fe9e02`，UserCode `0x0000F123`；已从 P16 `0x0000C706` 单独 SRAM 下载并读回通过，Flash 未写。RTL、CPU/USB 和生产固件回归通过；真实压力和 Push 屏幕延迟待本轮用户验收，见 [版本记录](BOARD_CURRENT_P17_PRESSURE_PUSH_LATENCY.json) 和 [阶段验证](P17_PRESSURE_PUSH_LATENCY_VERIFICATION.md)。
+
 ## 2026-09-15 P16 连续压力与 Push 屏幕刷新候选（待本轮实体验收）
 
 P16 在 P14 C 模式 32 声部基础上加入 Push USB-A poly-aftertouch 连续压力控制，并修复 Push 屏幕只显示首帧的问题：主机每次发起屏幕帧请求都会提交新的 control/options、pad held、note 和 velocity 快照。P&R setup/hold 0/0，Logic 33793、Register 25164、BSRAM 253、DSP 43.5。位流 SHA256 `85f6eba4b9db18468b300a58567bfb4a096123fbf699eea041ecc8f426450e82`，UserCode `0x0000C706`；已从 P14 `0x00005610` 单独 SRAM 下载并读回通过，Flash 未写。RTL 压力、声部和 Push 刷新回归通过；真实压力听感、Push 动态画面、HDMI 和耳机仍待用户验收，见 [版本记录](BOARD_CURRENT_P16_PRESSURE_PUSH_REFRESH.json) 和 [阶段验证](P16_PRESSURE_PUSH_REFRESH_VERIFICATION.md)。

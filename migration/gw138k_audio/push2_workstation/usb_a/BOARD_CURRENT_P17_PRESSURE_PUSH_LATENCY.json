@@ -1,0 +1,42 @@
+{
+  "version": "P17 channel-pressure compatibility and Push frame scheduling",
+  "status": "SRAM downloaded; physical acceptance pending user verification",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_095312_067431/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "90a3d5563149a5ae40c431647fdb229730e8f3078812be4657e5d22f34fe9e02",
+  "usercode": "0x0000F123",
+  "previous": {
+    "version": "P16 pressure and Push refresh",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_022851_841406/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "85f6eba4b9db18468b300a58567bfb4a096123fbf699eea041ecc8f426450e82",
+    "usercode": "0x0000C706"
+  },
+  "scope": {
+    "pressure": "Accept Push USB-MIDI CIN A poly-aftertouch and CIN D channel pressure; both update expression for a held pad without retriggering",
+    "push_frame_schedule": "Keep the existing 16-byte header plus 640 x 512-byte frame; poll MIDI every 16 packets and lights every 32 packets to remove idle IN waits",
+    "retained": "P10 serial effects, P14 C-mode 32 voices, P13 shared DDR display metadata, HDMI analysis, Push mapping and SRAM-only workflow"
+  },
+  "verification": {
+    "rtl_pressure": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/push_pressure_kind13_recheck_20260915_0916/simulation.log",
+    "push_summary": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_095312_067431/p11_shared_101854_755534/simulation.log",
+    "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_095312_067431/cpu_audio_sim_101958_720046/simulation.log",
+    "usb_firmware": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_095312_067431/production_usb_firmware_test.log",
+    "pnr": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_095312_067431",
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "resources": {"Logic": 33820, "Register": 25164, "BSRAM": 253, "DSP": 43.5},
+      "known_legacy_audit_gaps": [
+        "Historical DDR reset evidence source path is absent from the staged build environment.",
+        "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete."
+      ]
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_101625_758975/result.json",
+      "from_code": "0x0000C706",
+      "usercode": "0x0000F123",
+      "operations_passed": ["before", "sram", "after"],
+      "fpga_flash_written": false
+    },
+    "physical_acceptance": "pending user verification"
+  }
+}

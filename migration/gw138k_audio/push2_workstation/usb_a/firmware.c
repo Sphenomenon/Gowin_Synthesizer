@@ -70,10 +70,15 @@ static int frame(void) {
             txbuf[i*2]=(p&255)^0xe7;
             txbuf[i*2+1]=(p>>8)^((i&1)?0xff:0xf3);
         }
-        // Poll between every 512-byte screen packet, not just every 4 rows.
-        poll_midi();lights();
+        // Keep MIDI responsive without paying one idle IN transaction for
+        // every screen packet. Full-Speed Push framing remains 640 packets;
+        // polling in short batches removes the repeated ~1 ms idle wait while
+        // keeping held pressure latency bounded to a small batch.
+        if ((packet & 15u)==15u) poll_midi();
+        if ((packet & 31u)==31u) lights();
         if(!send(1,txbuf,512))return 0;
     }
+    lights();
     MMIO(0x30)=++frames;return 1;
 }
 static void connect(void) {
