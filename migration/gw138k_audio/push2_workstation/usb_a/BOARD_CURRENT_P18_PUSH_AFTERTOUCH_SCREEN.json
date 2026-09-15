@@ -1,0 +1,57 @@
+{
+  "version": "P18 documented poly-aftertouch and event-driven Push screen",
+  "status": "SRAM downloaded; physical pressure and screen acceptance pending user verification",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_150844_068302/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "b9ef014335aec28ac3f1272c128b710ca4cb8bfe87a93044c88d168eee5af72f",
+  "usercode": "0x0000D914",
+  "previous": {
+    "version": "P17 channel-pressure compatibility and Push frame scheduling",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_095312_067431/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "90a3d5563149a5ae40c431647fdb229730e8f3078812be4657e5d22f34fe9e02",
+    "usercode": "0x0000F123"
+  },
+  "scope": {
+    "pressure": "Send documented Push Set Aftertouch Mode command 0x1E with mode 1, then map CIN A poly key pressure to the matching held voice; retain CIN D channel pressure support",
+    "push_screen": "Send a full 16 + 640*512 byte frame only when UI state changes; poll MIDI every idle loop and every four display packets",
+    "retained": "P10 serial effects, P14 C-mode 32 voices, P13 shared DDR display metadata, HDMI analysis, Push USB-A mapping and SRAM-only workflow"
+  },
+  "protocol_sources": {
+    "ableton_push_interface_commit": "5eb352fe3da9d07891efb7447191c03a66d9fbdd",
+    "ableton_push2_display_juce_commit": "48e9be846bda686b97a0df7635d80e63a51a5e4b",
+    "local_reference": "/home/sphenicidition/Documents/fpga/migration/midi_device_reference/push2_usb_host/vendor/push2_display_tx.sv",
+    "local_measured_uart": "/home/sphenicidition/Documents/fpga/migration/midi_device_reference/push2_usb_host/results/fs_surface_board_20260911_200500_520078/uart.txt"
+  },
+  "screen_transport": {
+    "usb_speed_mbit_s": 12,
+    "bytes_per_frame": 327696,
+    "measured_steady_frame_ms": 450,
+    "full_frame_30fps_payload_bit_s": 78647040,
+    "full_frame_30fps_supported_on_current_path": false,
+    "state_and_input_polling_target_hz": ">30",
+    "physical_latency_measurement": "pending user verification"
+  },
+  "verification": {
+    "aftertouch_init": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_150844_068302/p18_aftertouch_init/simulation.log",
+    "rtl_pressure": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_150844_068302/p18_source_pressure/simulation.log",
+    "push_summary": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_150844_068302/p11_shared_152131_942809/simulation.log",
+    "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_150844_068302/cpu_audio_sim_152131_927170/simulation.log",
+    "usb_firmware": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_150844_068302/production_usb_firmware_test.log",
+    "pnr": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_150844_068302",
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.048,
+      "resources": {"Logic": 33760, "Register": 25165, "BSRAM": 253, "DSP": 43.5},
+      "audit_passed": false,
+      "known_audit_gap": "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete"
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_152806_287986/result.json",
+      "from_code": "0x0000F123",
+      "usercode": "0x0000D914",
+      "operations_passed": ["before", "sram", "after"],
+      "fpga_flash_written": false
+    },
+    "physical_acceptance": "pending user verification"
+  }
+}

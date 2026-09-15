@@ -89,6 +89,14 @@ int main(void){
     disconnect_on_block=0;rx_result=USB_RES_NAK;connect();
     headers=blocks=0;assert(frame());assert(headers==1 && blocks==640 && frames==2);
     assert(MMIO(0x30)==2 && reset_count==4);
-    puts("PASS production USB firmware: re-enumeration retry, idle NAK, brief timeout, wrap-safe disconnect, MIDI duplicate suppression, endpoint toggles, unplug mid-frame, reconnect MIDI/LED/screen header + 640 packets");
+    // The screen scheduler sends the first snapshot, suppresses an unchanged
+    // 327696-byte frame, and notices the next UI state change.
+    displayed_state_valid=0;
+    assert(screen_changed());
+    assert(!screen_changed());
+    MMIO(0x24)=0x00002244;
+    assert(screen_changed());
+    assert(!screen_changed());
+    puts("PASS production USB firmware: hotplug/toggles, MIDI during frame, 640-packet frame, event-driven screen state");
     return 0;
 }

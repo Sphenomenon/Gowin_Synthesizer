@@ -1,5 +1,9 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-09-15 P18 官方 poly-aftertouch 与事件驱动 Push 屏幕候选（待实体验收）
+
+P18 显式发送 Ableton 文档规定的 `Set Aftertouch Mode 0x1E, mode 1`，使按住 pad 的持续压力以带 note 的 poly key pressure 返回并只更新原声部 expression。Push 屏幕改为 UI 状态变化时才发送合法完整帧，空闲每轮轮询 MIDI，传帧中每 4 个包轮询；不再让无变化整帧持续占用 FS 链路。P&R setup/hold 0/0，Logic 33760、Register 25165、BSRAM 253、DSP 43.5。位流 SHA256 `b9ef014335aec28ac3f1272c128b710ca4cb8bfe87a93044c88d168eee5af72f`，UserCode `0x0000D914`；已从 P17 `0x0000F123` 单独 SRAM 下载并读回，Flash 未写。当前 12 Mbit/s 路径无法承载 30 个 327,696 字节完整帧每秒；P18 提高的是输入/状态调度并去除旧帧排队，实际压力和约 450 ms 整帧可见延迟待用户验收。见 [版本记录](BOARD_CURRENT_P18_PUSH_AFTERTOUCH_SCREEN.json) 和 [阶段验证](P18_PUSH_AFTERTOUCH_SCREEN_VERIFICATION.md)。
+
 ## 2026-09-15 P17 连续压力兼容与 Push 屏幕调度候选（待本轮实体验收）
 
 P17 在 P16 基础上兼容 Push 的 CIN A poly-aftertouch 与 CIN D channel-pressure 两种压力包；按住同一 pad 时只更新已有声部的 expression，不重新分配音符。屏幕仍使用原 16 字节帧头和 640 个 512 字节包，固件改为每 16 包轮询 MIDI、每 32 包服务灯光，去掉每包空闲 IN 轮询造成的额外等待。P&R setup/hold 0/0，Logic 33820、Register 25164、BSRAM 253、DSP 43.5。位流 SHA256 `90a3d5563149a5ae40c431647fdb229730e8f3078812be4657e5d22f34fe9e02`，UserCode `0x0000F123`；已从 P16 `0x0000C706` 单独 SRAM 下载并读回通过，Flash 未写。RTL、CPU/USB 和生产固件回归通过；真实压力和 Push 屏幕延迟待本轮用户验收，见 [版本记录](BOARD_CURRENT_P17_PRESSURE_PUSH_LATENCY.json) 和 [阶段验证](P17_PRESSURE_PUSH_LATENCY_VERIFICATION.md)。

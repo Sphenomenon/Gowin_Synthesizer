@@ -41,6 +41,8 @@ def main():
         'legacy/rtl/audio/unified_oscillator_engine.sv': ROOT/'rtl/audio/unified_oscillator_engine.sv',
         'src/ae350/gw138k_event_workstation.sv': ROOT/'rtl/audio/gw138k_event_workstation.sv',
         'src/push2/push2_controls.sv': ROOT/'rtl/audio/push2_controls.sv',
+        'src/push2/push2_lights.sv': ROOT/'rtl/push2/push2_lights.sv',
+        'src/push2/push2_led_tx.sv': ROOT/'rtl/push2/push2_led_tx.sv',
     }
     for rel,src in audio_overlay.items():
         shutil.copy2(src,stage/rel)

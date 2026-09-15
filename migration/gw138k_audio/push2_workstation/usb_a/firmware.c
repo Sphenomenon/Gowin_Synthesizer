@@ -15,8 +15,14 @@ static unsigned toggles[3],frames,errors;
 static uint8_t in_pid=PID_DATA0;
 static int connected;
 static uint32_t last_in_reply;
+struct screen_state {
+    uint32_t control,options,held_lo,held_hi,note_velocity;
+};
+static struct screen_state displayed_state;
+static int displayed_state_valid;
 static void disconnect(void) {
     connected=0;
+    displayed_state_valid=0;
     // Existing RTL releases held notes and resets LED/display initialization.
     // Audio, HDMI, DDR and AE350 continue running throughout reconnection.
     MMIO(0x00)=0;
@@ -60,6 +66,25 @@ static void lights(void) {
     for(unsigned i=0;i<n;i++)data[i]=MMIO(0x4c);
     if(send(2,data,n))MMIO(0x44)=1;
 }
+static int screen_changed(void) {
+    struct screen_state next;
+    next.control=MMIO(0x10);
+    next.options=MMIO(0x14);
+    next.held_lo=MMIO(0x1c);
+    next.held_hi=MMIO(0x20);
+    next.note_velocity=MMIO(0x24);
+    int changed=!displayed_state_valid ||
+        next.control!=displayed_state.control ||
+        next.options!=displayed_state.options ||
+        next.held_lo!=displayed_state.held_lo ||
+        next.held_hi!=displayed_state.held_hi ||
+        next.note_velocity!=displayed_state.note_velocity;
+    if(changed) {
+        displayed_state=next;
+        displayed_state_valid=1;
+    }
+    return changed;
+}
 static int frame(void) {
     uint8_t h[16]={0xff,0xcc,0xaa,0x88};
     MMIO(0x08)=1;
@@ -70,11 +95,10 @@ static int frame(void) {
             txbuf[i*2]=(p&255)^0xe7;
             txbuf[i*2+1]=(p>>8)^((i&1)?0xff:0xf3);
         }
-        // Keep MIDI responsive without paying one idle IN transaction for
-        // every screen packet. Full-Speed Push framing remains 640 packets;
-        // polling in short batches removes the repeated ~1 ms idle wait while
-        // keeping held pressure latency bounded to a small batch.
-        if ((packet & 15u)==15u) poll_midi();
+        // A complete FS display frame takes hundreds of milliseconds.  Poll
+        // MIDI every four packets so pad pressure is serviced throughout the
+        // transfer instead of waiting for the next frame boundary.
+        if ((packet & 3u)==3u) poll_midi();
         if ((packet & 31u)==31u) lights();
         if(!send(1,txbuf,512))return 0;
     }
@@ -104,7 +128,18 @@ int main(void) {
     usbhw_init(0x02000100);
     for(;;) {
         if(!connected){connect();continue;}
-        if(!frame())for(unsigned i=0;i<100 && connected;i++){poll_midi();lights();delay(1);}
-        else poll_midi();
+        // The exact Push display transport is a 327696-byte full frame.  Do
+        // not monopolize the FS bus by retransmitting an unchanged image.
+        // With a stable UI this loop polls MIDI at about 1 kHz; a state change
+        // schedules one fresh frame while the four-packet polls keep input
+        // responsive during that transfer.
+        poll_midi();
+        lights();
+        if(screen_changed()) {
+            if(!frame()) {
+                displayed_state_valid=0;
+                for(unsigned i=0;i<100 && connected;i++){poll_midi();lights();delay(1);}
+            }
+        } else delay(1);
     }
 }
