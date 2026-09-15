@@ -37,7 +37,7 @@ module tb_mmio;
         #200;rn=1;repeat(20)@(negedge clk);put(0,1);
         // Leave LED packet unacknowledged throughout MIDI tests.
         for(integer n=36;n<100;n++)begin
-            midi(9,7'(n),100,1,{4'd1,7'(n),7'd100});
+            midi(9,7'(n),100,1,{4'd1,7'(n),7'd127});
             midi(9,7'(n),100,0,0);
             midi(9,7'(n),0,1,{4'd0,7'(n),7'd0});
         end
@@ -56,12 +56,12 @@ module tb_mmio;
         @(negedge aclk);ar=0;
         fork
             begin for(integer n=0;n<150;n++)begin
-                midi(9,60,88,1,{4'd1,7'd60,7'd88});midi(8,60,0,1,{4'd0,7'd60,7'd0});
+                midi(9,60,88,1,{4'd1,7'd60,7'd116});midi(8,60,0,1,{4'd0,7'd60,7'd0});
             end end
             begin repeat(3000)@(negedge aclk);ar=1;end
         join
         wait(rp==wp);if(stalled<100)$fatal(1,"queue pressure not exercised");
-        midi(9,60,88,1,{4'd1,7'd60,7'd88});
+        midi(9,60,88,1,{4'd1,7'd60,7'd116});
         expected[wp]={4'd2,7'd123,7'd0};wp++;put(0,0);
         wait(rp==wp);repeat(20)@(negedge clk);if(dut.held)$fatal(1,"disconnect stuck notes");
         put(0,1);repeat(12)@(negedge clk);

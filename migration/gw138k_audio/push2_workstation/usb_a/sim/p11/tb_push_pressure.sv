@@ -39,6 +39,8 @@ module tb_push_pressure;
     connected = 1'b1;
     send(4'd9, 7'd36, 7'd64);
     if (!held[0]) $fatal(1, "note-on did not hold pad");
+    if (event_data !== {4'd1,7'd36,7'd92})
+      $fatal(1, "note-on force mapping mismatch: %h", event_data);
     send(4'd10, 7'd36, 7'd0);
     if (event_data !== {4'd5,7'd36,7'd0})
       $fatal(1, "pressure zero event mismatch: %h", event_data);
@@ -46,13 +48,16 @@ module tb_push_pressure;
     send(4'd10, 7'd36, 7'd127);
     if (event_data !== {4'd5,7'd36,7'd127})
       $fatal(1, "pressure full event mismatch: %h", event_data);
+    send(4'd10, 7'd36, 7'd2);
+    if (event_data !== {4'd5,7'd36,7'd30})
+      $fatal(1, "requested pressure 002->030 mapping mismatch: %h", event_data);
     // CIN D channel pressure carries no note; the mapper uses the most
     // recently held pad and must not release it.
     send(4'd13, 7'd23, 7'd0);
-    if (event_data !== {4'd5,7'd36,7'd23})
+    if (event_data !== {4'd5,7'd36,7'd51})
       $fatal(1, "channel pressure event mismatch: %h", event_data);
     if (!held[0]) $fatal(1, "channel pressure released pad");
-    if (mapped !== 32'd4) $fatal(1, "mapped count %0d", mapped);
+    if (mapped !== 32'd5) $fatal(1, "mapped count %0d", mapped);
     $display("PASS PUSH_PRESSURE held=%h mapped=%0d events=%h", held, mapped, event_data);
     $finish;
   end

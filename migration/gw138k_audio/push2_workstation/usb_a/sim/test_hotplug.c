@@ -17,6 +17,7 @@ static uint32_t midi_word=0x643c9009;
 static int out_naks,out_stall,out_calls,rx_calls,wire_toggle[3];
 static unsigned headers,blocks;
 static int disconnect_on_block;
+static int screen_change_on_rx_call;
 
 void delay(int ms){assert(ms>=0);now_ms+=(uint32_t)ms;if(appear_after && now_ms>=(uint32_t)appear_after)present=1;}
 t_time usbhw_timer_now(void){return now_ms;}
@@ -29,6 +30,7 @@ int usb_configure_device(struct usb_device *d,int address){
 }
 int usbhw_transfer_in(uint8_t token,int address,int ep,uint8_t *pid,uint8_t *buf,int size){
     assert(token==PID_IN && address==1 && ep==2 && size==512);rx_calls++;now_ms++;
+    if(screen_change_on_rx_call==rx_calls)MMIO(0x10)^=1;
     *pid=rx_pid;
     if(rx_result==4)for(int i=0;i<4;i++)buf[i]=midi_word>>(8*i);
     return rx_result;
@@ -103,6 +105,17 @@ int main(void){
     MMIO(0x24)=0x00002244;
     assert(screen_due());
     assert(!screen_due());
-    puts("PASS production USB firmware: hotplug/toggles, MIDI during frame, full-frame screen keepalive and immediate dirty scheduling");
+    // A discrete state change during a stale keepalive frame discards the
+    // unsent tail and restarts with a fresh, otherwise normal full frame.
+    headers=blocks=0;
+    screen_change_on_rx_call=rx_calls+1;
+    assert(frame()==2);
+    assert(headers==1 && blocks==3);
+    screen_change_on_rx_call=0;
+    displayed_state_valid=0;
+    assert(screen_changed());
+    headers=blocks=0;
+    assert(frame()==1 && headers==1 && blocks==640);
+    puts("PASS production USB firmware: full-frame keepalive, immediate dirty scheduling and stale partial-frame restart");
     return 0;
 }

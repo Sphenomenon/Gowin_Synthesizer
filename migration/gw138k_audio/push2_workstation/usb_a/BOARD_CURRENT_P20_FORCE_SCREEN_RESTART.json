@@ -1,0 +1,59 @@
+{
+  "version": "P20 pad force calibration and stale Push frame restart",
+  "status": "SRAM downloaded; physical force and screen-latency acceptance pending",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_173814_789761/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "50bbf9eeddbc2184c5deeecc89340041b28e09e09f8c07288da05e0cb56084cb",
+  "usercode": "0x0000F9B7",
+  "previous": {
+    "version": "P19 Push full-frame keepalive",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_171317_170590/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "08db9c8fd1c97e9a9bcad63e330eaaa43fe6158ed022ae13f3793d4b825adab9",
+    "usercode": "0x00005169",
+    "physical_result": "static screen keepalive and continuous pressure passed; UI interaction remained close to one second"
+  },
+  "force_mapping": {
+    "formula": "raw == 0 ? 0 : min(raw + 28, 127)",
+    "examples": {"0": 0, "1": 29, "2": 30, "64": 92, "99": 127, "127": 127},
+    "applied_to": ["note_on", "poly_aftertouch", "channel_pressure", "last_velocity_display"]
+  },
+  "display_transport": {
+    "public_protocol_region_commit": false,
+    "wire_format": "documented 16-byte header followed by 640 512-byte pixel transfers",
+    "behavior": "Poll MIDI every four pixel transfers; on a discrete UI-state change, abandon the unsent stale tail and immediately restart from a normal header using the latest state",
+    "urgent_state": ["control", "options", "held_lo", "held_hi"],
+    "continuous_velocity_is_urgent": false,
+    "reason": "Restarting for every pressure sample could prevent any complete frame from being committed",
+    "measured_full_frame_ms": 450,
+    "physical_expectation": "Remove the extra stale-frame wait; a discrete change should appear after approximately one new complete frame if Push accepts the documented header restart"
+  },
+  "verification": {
+    "pressure_rtl": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_173814_789761/p20_force_mapping/simulation.log",
+    "usb_firmware": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_173814_789761/production_usb_firmware_test.log",
+    "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_173814_789761/cpu_audio_sim_174755_203899/simulation.log",
+    "pnr": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_173814_789761",
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.247,
+      "resources": {"Logic": 34293, "Register": 25165, "BSRAM": 253, "DSP": 43.5},
+      "audit_passed": false,
+      "known_audit_gap": "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete"
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_174829_600225/result.json",
+      "from_code": "0x00005169",
+      "usercode": "0x0000F9B7",
+      "operations_passed": ["before", "sram", "after"],
+      "fpga_flash_written": false
+    },
+    "physical_acceptance": {
+      "result": "pending",
+      "checks": [
+        "A physical pressure formerly displayed as 002 is now displayed and heard as 030",
+        "Mode, timbre, effect, route and pad changes no longer wait for the stale frame tail before a new frame",
+        "Static UI stays visible without blacking or periodic flicker",
+        "Continuous pressure, Push lights, HDMI, headphones, P10 effects and P2 bass remain normal"
+      ]
+    }
+  }
+}

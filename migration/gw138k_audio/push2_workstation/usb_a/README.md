@@ -1,8 +1,14 @@
 # Push 2 USB-A 与完整音频工作站合并
 
-## 2026-09-15 P19 Push 屏幕完整帧保活（实体通过）
+## 2026-09-15 P20 力度校准与 Push 旧帧立即重启（已写 SRAM，待实体确认）
 
-P18 实体确认连续压力正常，但静止超过约 2 秒后 Push 按官方行为自动黑屏。P19 保留状态变化立即发帧，并在上一完整帧结束后 1000 ms 发送合法完整保活帧；不试验协议保留的短帧或局刷格式。P&R setup/hold 0/0，Logic 33760、Register 25165、BSRAM 253、DSP 43.5。位流 SHA256 `08db9c8fd1c97e9a9bcad63e330eaaa43fe6158ed022ae13f3793d4b825adab9`，UserCode `0x00005169`；已从 P18 `0x0000D914` 单独 SRAM 下载并读回，Flash 未写。用户实体确认屏幕保活、操作刷新和连续压力均正常；压力灵敏度未在本阶段改动。见 [版本记录](BOARD_CURRENT_P19_PUSH_SCREEN_KEEPALIVE.json) 和 [阶段验证](P19_PUSH_SCREEN_KEEPALIVE_VERIFICATION.md)。
+P20 将 Push pad 的每个非零原始力度增加 28 并饱和到 127，精确实现 `002` → `030`；映射同时用于 Note-On、poly-aftertouch、channel pressure、声音事件和 Push 状态显示，零值仍为零。屏幕保留官方 16 字节帧头和 640×512 字节完整帧格式；传输旧保活帧期间检测到模式、音色、效果、路由或持键变化时，丢弃尚未发送的旧帧尾部并立即从新帧头重启，避免先等旧帧完成再排一个新帧。连续压力数值不触发中止，以免压力不断变化导致永远没有完整帧提交。
+
+P&R setup/hold 0/0，最差 setup slack +0.247 ns，Logic 34293、Register 25165、BSRAM 253、DSP 43.5。位流 SHA256 `50bbf9eeddbc2184c5deeecc89340041b28e09e09f8c07288da05e0cb56084cb`，UserCode `0x0000F9B7`；已从 P19 `0x00005169` 单独写入 SRAM 并读回，Flash 未写。完整帧仍约需 450 ms，本次实体确认重点是 `002` → `030` 的声音/显示结果，以及离散操作不再承担旧帧尾部加新帧的近一秒等待。见 [版本记录](BOARD_CURRENT_P20_FORCE_SCREEN_RESTART.json) 和 [阶段验证](P20_FORCE_SCREEN_RESTART_VERIFICATION.md)。
+
+## 2026-09-15 P19 Push 屏幕完整帧保活（保活通过，交互延迟由 P20 取代）
+
+P18 实体确认连续压力正常，但静止超过约 2 秒后 Push 按官方行为自动黑屏。P19 保留状态变化立即发帧，并在上一完整帧结束后 1000 ms 发送合法完整保活帧；不试验协议保留的短帧或局刷格式。P&R setup/hold 0/0，Logic 33760、Register 25165、BSRAM 253、DSP 43.5。位流 SHA256 `08db9c8fd1c97e9a9bcad63e330eaaa43fe6158ed022ae13f3793d4b825adab9`，UserCode `0x00005169`；已从 P18 `0x0000D914` 单独 SRAM 下载并读回，Flash 未写。用户实体确认屏幕保活和连续压力正常，随后复测确认操作刷新仍接近一秒；压力灵敏度也未在本阶段改动。这两项由 P20 处理。见 [版本记录](BOARD_CURRENT_P19_PUSH_SCREEN_KEEPALIVE.json) 和 [阶段验证](P19_PUSH_SCREEN_KEEPALIVE_VERIFICATION.md)。
 
 ## 2026-09-15 P18 官方 poly-aftertouch 与事件驱动 Push 屏幕（压力通过，屏幕由 P19 取代）
 

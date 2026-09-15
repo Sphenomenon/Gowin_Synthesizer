@@ -87,12 +87,23 @@ static int screen_changed(void) {
     }
     return changed;
 }
+static int urgent_screen_changed(void) {
+    if(!displayed_state_valid)return 1;
+    return MMIO(0x10)!=displayed_state.control ||
+        MMIO(0x14)!=displayed_state.options ||
+        MMIO(0x1c)!=displayed_state.held_lo ||
+        MMIO(0x20)!=displayed_state.held_hi;
+}
 static int screen_due(void) {
     return screen_changed() ||
         (uint32_t)(usbhw_timer_now()-last_frame_complete)>=SCREEN_KEEPALIVE_MS;
 }
+// Return 2 when a discrete UI change makes the partially transmitted frame
+// stale. The caller starts again with the normal documented frame header;
+// incomplete pixels never become visible on Push's double-buffered display.
 static int frame(void) {
     uint8_t h[16]={0xff,0xcc,0xaa,0x88};
+    if(!displayed_state_valid)screen_changed();
     MMIO(0x08)=1;
     if(!send(1,h,16))return 0;
     for(unsigned packet=0;packet<640;packet++) {
@@ -104,7 +115,10 @@ static int frame(void) {
         // A complete FS display frame takes hundreds of milliseconds.  Poll
         // MIDI every four packets so pad pressure is serviced throughout the
         // transfer instead of waiting for the next frame boundary.
-        if ((packet & 3u)==3u) poll_midi();
+        if ((packet & 3u)==3u) {
+            poll_midi();
+            if(urgent_screen_changed())return 2;
+        }
         if ((packet & 31u)==31u) lights();
         if(!send(1,txbuf,512))return 0;
     }
@@ -146,7 +160,10 @@ int main(void) {
         // A one-second keepalive preserves a static UI while state changes
         // still schedule a frame immediately when the display link is idle.
         if(screen_due()) {
-            if(!frame()) {
+            int frame_result=frame();
+            if(frame_result==2) {
+                displayed_state_valid=0;
+            } else if(!frame_result) {
                 displayed_state_valid=0;
                 for(unsigned i=0;i<100 && connected;i++){poll_midi();lights();delay(1);}
             }

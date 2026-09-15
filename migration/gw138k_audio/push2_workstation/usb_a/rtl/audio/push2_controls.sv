@@ -30,6 +30,13 @@ module push2_controls(
             108:program_for=12;default:program_for=0;
         endcase
     endfunction
+    function [6:0] pad_force(input [6:0] raw);
+        begin
+            // Preserve a true zero, lift every non-zero pad value by 28, and
+            // saturate cleanly: the requested raw 002 is reported as 030.
+            pad_force=raw==0 ? 7'd0 : raw>=7'd99 ? 7'd127 : raw+7'd28;
+        end
+    endfunction
     always @(posedge clk or posedge rst) begin
         if(rst) begin
             event_valid<=0;event_data<=0;held<=0;buttons<=0;
@@ -52,21 +59,21 @@ module push2_controls(
                 else if(kind==10 && a>=36 && a<=99 && held[a-36]) begin
                     // Push poly-aftertouch (USB-MIDI CIN A) updates the
                     // already-held pad without allocating another voice.
-                    event_valid<=1;event_data<={4'd5,a,b};mapped<=mapped+1'b1;
-                    last_note<=a;last_velocity<=b;
+                    event_valid<=1;event_data<={4'd5,a,pad_force(b)};mapped<=mapped+1'b1;
+                    last_note<=a;last_velocity<=pad_force(b);
                 end else if(kind==13 && last_note>=36 && last_note<=99 &&
                             held[last_note-36]) begin
                     // Some Push firmware/host combinations report pad
                     // pressure as channel pressure (USB-MIDI CIN D), where
                     // the note is implicit. Apply it to the most recently
                     // held pad and leave the held mask unchanged.
-                    event_valid<=1;event_data<={4'd5,last_note,a};mapped<=mapped+1'b1;
-                    last_velocity<=a;
+                    event_valid<=1;event_data<={4'd5,last_note,pad_force(a)};mapped<=mapped+1'b1;
+                    last_velocity<=pad_force(a);
                 end else if((kind==8 || kind==9) && a>=36 && a<=99) begin
                     if((kind==9 && !held[a-36]) || (kind==8 && held[a-36])) begin
-                        event_valid<=1;event_data<={kind==9?4'd1:4'd0,a,b};mapped<=mapped+1'b1;
+                        event_valid<=1;event_data<={kind==9?4'd1:4'd0,a,kind==9?pad_force(b):b};mapped<=mapped+1'b1;
                         held[a-36]<=kind==9;
-                        if(kind==9) begin last_note<=a;last_velocity<=b;end
+                        if(kind==9) begin last_note<=a;last_velocity<=pad_force(b);end
                     end
                 end else if(kind==14 || (kind==8 && a==12)) begin
                     event_valid<=1;mapped<=mapped+1'b1;
