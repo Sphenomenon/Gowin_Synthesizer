@@ -72,7 +72,10 @@ module push2_usb_a_control(
     push2_surface_pixels pixels(.clk(clk),.rst(!reset_n || !connected),
         .frame_ready(frame_capture),.frame_start(),.x(pixel_index[9:0]),.y(pixel_index[17:10]),
         .pixel_valid(),.pixel(pixel),.control(control),.options(options),.held(actual_held),
-        .note(note),.velocity(velocity),.display_meta(display_meta_q),.display_meta_valid(display_meta_seen));
+        .note(note),.velocity(velocity),.display_meta(display_meta_q),
+        // Keep the rendered bytes identical when a packet is regenerated
+        // after NAK, just as the other UI fields are held for the whole frame.
+        .display_meta_valid(display_meta_seen && frame_capture));
     // Read response is captured by the SoC in the accepting bus cycle.
     always @* begin
         rdata=0;
@@ -102,6 +105,7 @@ module push2_usb_a_control(
                 8'h00:connected<=wdata[0];
                 8'h04:received<=received+1'b1;
                 8'h08:pixel_index<=0;
+                8'h28:pixel_index<=wdata[17:0]; // Rewind an unacknowledged screen packet.
                 8'h30:frames<=wdata;
                 8'h34:out_errors<=wdata;
                 8'h48:packet_index<=wdata[8:0];

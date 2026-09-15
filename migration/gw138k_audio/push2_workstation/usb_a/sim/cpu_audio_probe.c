@@ -19,5 +19,7 @@ int main(void){
     if((REG(0x10)&0x7f)!=7 || ((REG(0x10)>>7)&7)!=4 ||
        REG(0x1c)!=0 || REG(0x20)!=0 || REG(0x3c)<20)REG(0x34)=0xbad;
     else REG(0x34)=0x600d;
-    phase(21);for(;;);
+    phase(21);
+    REG(0x08)=1;REG(0x28)=768;REG(0x50)=1;
+    phase(22);for(;;);
 }

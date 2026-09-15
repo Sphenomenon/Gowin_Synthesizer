@@ -6,11 +6,13 @@ module tb_cpu_audio;
     always #10 clk_50m=~clk_50m;
     wire select,write,ready;wire [7:0] address;wire [31:0] wd,rd;
     wire av,ar;wire [17:0] ae;wire [223:0] telemetry;wire [447:0] performance;
+    reg [63:0] display_meta=64'h00000001_02800000;
     tri dp,dn;
     iosys2 host(.clk(usb_clk),.resetn(reset_n),.uart_rx(1'b1),.uart_tx(),.usb_dp(dp),.usb_dm(dn),
         .mmio_select(select),.mmio_write(write),.mmio_address(address),.mmio_wdata(wd),.mmio_ready(ready),.mmio_rdata(rd));
     push2_usb_a_control push(.clk(usb_clk),.reset_n(reset_n),.audio_clk(audio_clk),.audio_reset_n(reset_n),
         .feedback_clk(audio_clk),.feedback_reset_n(reset_n),.performance_words(performance),
+        .display_meta_data(display_meta),.display_meta_valid(1'b1),
         .select(select),.write(write),.address(address),.wdata(wd),.ready(ready),.rdata(rd),
         .audio_valid(av),.audio_ready(ar),.audio_event(ae),.telemetry(telemetry));
     wire tick,valid;wire signed [31:0] left,right;
@@ -50,6 +52,13 @@ module tb_cpu_audio;
         for(integer i=0;i<5;i++)begin phase(10+i);if(audio.control_state[9:7]!=i)$fatal(1,"timbre %0d",i);end
         phase(20);if(audio.held_notes)$fatal(1,"release/panic stuck notes");
         phase(21);if(push.out_errors!=32'h600d)$fatal(1,"Vex MMIO reads failed: %h",push.out_errors);
+        phase(22);
+        if(host.u_usb.u_fifo_tx.count!=512 || push.pixel_index!=1024)
+            $fatal(1,"blocking Vex packet load did not produce 512 bytes / 256 pixels");
+        display_meta=64'h00000002_01000000;
+        repeat(4)@(negedge usb_clk);
+        if(push.pixels.display_effect_mask!=3'b101)
+            $fatal(1,"effect summary changed the in-flight frame / retry bytes");
         $display("PASS Vex CPU/RAM/MMIO -> Push map/async FIFO -> original synth/effects/PCM: %0d frames, %0d nonzero, ABC/5 sounds/FX7/vibrato/glide/bend/routes/release; AE350 clock stopped; exact 48k, no audio fault",frames,nonzero);
         $finish;
     end

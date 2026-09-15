@@ -1,6 +1,6 @@
 {
   "version": "P20 pad force calibration and stale Push frame restart",
-  "status": "SRAM downloaded; physical force and screen-latency acceptance pending",
+  "status": "User accepted force; measured screen interaction about 600 ms, target 200 ms not met; superseded on SRAM by P21",
   "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_173814_789761/Prj1/impl/pnr/Prj1.fs",
   "sha256": "50bbf9eeddbc2184c5deeecc89340041b28e09e09f8c07288da05e0cb56084cb",
   "usercode": "0x0000F9B7",
@@ -47,7 +47,11 @@
       "fpga_flash_written": false
     },
     "physical_acceptance": {
-      "result": "pending",
+      "result": "partial",
+      "user_report": "力度没问题，目前测出来大概有0.6s左右的延迟，但是还是很明显，想办法降至0.2s",
+      "force": "passed",
+      "screen_interaction_ms_approx": 600,
+      "requested_screen_interaction_ms": 200,
       "checks": [
         "A physical pressure formerly displayed as 002 is now displayed and heard as 030",
         "Mode, timbre, effect, route and pad changes no longer wait for the stale frame tail before a new frame",

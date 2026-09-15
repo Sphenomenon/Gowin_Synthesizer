@@ -1,0 +1,54 @@
+{
+  "version": "P21 screen hardware packet loader",
+  "status": "Built and downloaded to SRAM; physical display latency acceptance pending",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_195400_727173/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "77a4a62e8e0323c94f4c58b73e9de0b1142a5fa612966c4c7f86de3a346fb039",
+  "usercode": "0x0000D14C",
+  "target_ms": 200,
+  "p20_user_measured_interaction_ms_approx": 600,
+  "payload_only_minimum_ms": 218.464,
+  "estimated_complete_frame_ms": [250, 300],
+  "estimate_is_physical_measurement": false,
+  "packet_loader": {
+    "clock_hz": 48000000,
+    "cycles_per_packet": 1793,
+    "packet_load_us": 37.354,
+    "full_frame_packet_loading_ms": 23.907,
+    "additional_framebuffer_bram": 0
+  },
+  "verification": {
+    "screen_loader": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_195400_727173/screen_loader_sim_200329_423575/verification.json",
+    "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_195400_727173/cpu_audio_sim_200329_446100/verification.json",
+    "audio_frames": 3818,
+    "nonzero_frames": 3696,
+    "sample_rate_hz": 48000,
+    "audio_fault": false,
+    "pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.010,
+      "resources": {"Logic": 33830, "Register": 25192, "BSRAM": 253, "DSP": 43.5},
+      "audit_passed": false,
+      "known_audit_gap": "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete"
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_200446_106517/result.json",
+      "from_code": "0x0000F9B7",
+      "usercode": "0x0000D14C",
+      "operations_passed": ["before", "sram", "after"],
+      "fpga_flash_written": false
+    },
+    "post_download_uart": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260915_200528_018431/result.json",
+      "valid_records": 0,
+      "crc_errors": 0,
+      "conclusion": "inconclusive; not counted as a pass or failure"
+    },
+    "physical_acceptance": "pending"
+  },
+  "retained": {
+    "p20_force_mapping": "user accepted",
+    "p10_sha256": "dd80b9009241836b3266b6407aa1a36cf8973d0b660d239e2e0f1fe8e0e4f793",
+    "flash_written": false
+  }
+}

@@ -18,6 +18,7 @@ static int out_naks,out_stall,out_calls,rx_calls,wire_toggle[3];
 static unsigned headers,blocks;
 static int disconnect_on_block;
 static int screen_change_on_rx_call;
+static unsigned preloaded_calls;
 
 void delay(int ms){assert(ms>=0);now_ms+=(uint32_t)ms;if(appear_after && now_ms>=(uint32_t)appear_after)present=1;}
 t_time usbhw_timer_now(void){return now_ms;}
@@ -46,6 +47,12 @@ int usbhw_transfer_out(uint8_t token,int address,int ep,int handshake,uint8_t pi
         else {assert(n==512);blocks++;}
     }
     wire_toggle[ep]^=1;return USB_RES_OK;
+}
+int usbhw_transfer_out_preloaded(uint8_t token,int address,int ep,int handshake,uint8_t pid,int n){
+    assert(ep==1 && n==512 && MMIO(0x50)==1);
+    assert(MMIO(0x28)<640*256 && !(MMIO(0x28)&255));
+    preloaded_calls++;
+    return usbhw_transfer_out(token,address,ep,handshake,pid,0,n);
 }
 int main(void){
     // Startup may wait for a device, then configure the observed zero-interface
@@ -116,6 +123,12 @@ int main(void){
     assert(screen_changed());
     headers=blocks=0;
     assert(frame()==1 && headers==1 && blocks==640);
-    puts("PASS production USB firmware: full-frame keepalive, immediate dirty scheduling and stale partial-frame restart");
+    // Reload the exact same pixel span on NAK; the hardware consumes the FIFO
+    // on each attempt, but the endpoint PID changes only after its ACK.
+    unsigned loaded_before=preloaded_calls;
+    out_naks=2;
+    assert(send_packet(1,0,512,639));
+    assert(preloaded_calls-loaded_before==3 && MMIO(0x28)==639*256);
+    puts("PASS production USB firmware: keepalive, stale-frame restart, direct FIFO load/reload and ACK-only toggles");
     return 0;
 }

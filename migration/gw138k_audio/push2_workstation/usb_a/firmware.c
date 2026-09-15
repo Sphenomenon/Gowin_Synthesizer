@@ -10,7 +10,7 @@
 #define MMIO(off) (*(volatile uint32_t *)(0x02000200u+(off)))
 #endif
 static struct usb_device dev;
-static uint8_t txbuf[512],rxbuf[512];
+static uint8_t rxbuf[512];
 static unsigned toggles[3],frames,errors;
 static uint8_t in_pid=PID_DATA0;
 static int connected;
@@ -44,11 +44,20 @@ static void poll_midi(void) {
         MMIO(0x04)=(uint32_t)rxbuf[i]|((uint32_t)rxbuf[i+1]<<8)|
                    ((uint32_t)rxbuf[i+2]<<16)|((uint32_t)rxbuf[i+3]<<24);
 }
-static int send(unsigned ep,uint8_t *data,unsigned n) {
+// screen_packet < 0 uses the ordinary byte buffer for headers and MIDI.
+static int send_packet(unsigned ep,uint8_t *data,unsigned n,int screen_packet) {
     int r=USB_RES_TIMEOUT;
     for(unsigned retry=0;retry<1000;retry++) {
         if(!connected)return 0;
-        r=usbhw_transfer_out(PID_OUT,dev.address,ep,1,toggles[ep]?PID_DATA1:PID_DATA0,data,n);
+        if(screen_packet>=0) {
+            MMIO(0x28)=(unsigned)screen_packet<<8;
+            // Blocking store: load 256 encoded pixels through the existing
+            // USB register handshake, then return with the TX FIFO full.
+            MMIO(0x50)=1;
+            r=usbhw_transfer_out_preloaded(PID_OUT,dev.address,ep,1,toggles[ep]?PID_DATA1:PID_DATA0,n);
+        } else {
+            r=usbhw_transfer_out(PID_OUT,dev.address,ep,1,toggles[ep]?PID_DATA1:PID_DATA0,data,n);
+        }
         if(r==USB_RES_OK) {toggles[ep]^=1;return 1;}
         if(r==USB_RES_STALL)break;
         if(r!=USB_RES_NAK && retry>=2)break;
@@ -56,6 +65,9 @@ static int send(unsigned ep,uint8_t *data,unsigned n) {
         poll_midi();delay(1);
     }
     MMIO(0x34)=++errors;return 0;
+}
+static int send(unsigned ep,uint8_t *data,unsigned n) {
+    return send_packet(ep,data,n,-1);
 }
 static void lights(void) {
     if(!connected)return;
@@ -107,11 +119,6 @@ static int frame(void) {
     MMIO(0x08)=1;
     if(!send(1,h,16))return 0;
     for(unsigned packet=0;packet<640;packet++) {
-        for(unsigned i=0;i<256;i++) {
-            uint16_t p=MMIO(0x2c);
-            txbuf[i*2]=(p&255)^0xe7;
-            txbuf[i*2+1]=(p>>8)^((i&1)?0xff:0xf3);
-        }
         // A complete FS display frame takes hundreds of milliseconds.  Poll
         // MIDI every four packets so pad pressure is serviced throughout the
         // transfer instead of waiting for the next frame boundary.
@@ -120,7 +127,7 @@ static int frame(void) {
             if(urgent_screen_changed())return 2;
         }
         if ((packet & 31u)==31u) lights();
-        if(!send(1,txbuf,512))return 0;
+        if(!send_packet(1,0,512,(int)packet))return 0;
     }
     lights();
     last_frame_complete=usbhw_timer_now();

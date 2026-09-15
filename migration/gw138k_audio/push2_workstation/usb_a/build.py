@@ -65,25 +65,39 @@ def main():
     ET.SubElement(fl,'File',path='src/memory/display_data_writer.v',type='file.verilog',enable='1')
     ET.SubElement(fl,'File',path='src/memory/display_data_reader.v',type='file.verilog',enable='1')
     shutil.copy2(ROOT/'rtl/push2_usb_a_control.sv',dest/'push2_usb_a_control.sv')
+    shutil.copy2(ROOT/'rtl/push2_screen_packet_loader.sv',dest/'push2_screen_packet_loader.sv')
     for f in sorted(dest.iterdir()):ET.SubElement(fl,'File',path=f.relative_to(stage).as_posix(),type='file.verilog',enable='1')
     ET.indent(tree,space='    ');tree.write(stage/'Prj1.gprj',encoding='utf-8',xml_declaration=True)
-    # Keep the accepted Host unchanged except its additional MMIO window.
+    # Add the Push MMIO window and a same-clock screen packet bus master.
     p=dest/'iosys2.v';s=p.read_text()
     s=replace(s,'inout             usb_dp        // USB D+','inout             usb_dp,       // USB D+\n    output mmio_select,mmio_write,output [7:0] mmio_address,\n    output [31:0] mmio_wdata,input mmio_ready,input [31:0] mmio_rdata')
     s=replace(s,'localparam string ROM_FILE = "firmware.hex";','localparam ROM_FILE = "push2_usb_a.hex";')
-    s=replace(s,'// Interface to USB host controller','''assign mmio_select=dbus_cmd_valid && dbus_cmd_a[31:8]==24'h020002;
-assign mmio_write=dbus_cmd_wr;
-assign mmio_address=dbus_cmd_a[7:0];
+    s=replace(s,'// Interface to USB host controller','''wire screen_load=dbus_cmd_valid && dbus_cmd_wr && dbus_cmd_a==32'h02000250;
+wire screen_active,screen_done,screen_read,screen_write;
+wire [7:0] screen_byte;
+push2_screen_packet_loader screen_loader(
+    .clk(clk),.reset_n(resetn),.start(screen_load),
+    .pixel_read(screen_read),.pixel_ready(mmio_ready),.pixel_data(mmio_rdata),
+    .usb_write(screen_write),.usb_data(screen_byte),.usb_ack(usb_ack),
+    .active(screen_active),.done(screen_done));
+assign mmio_select=screen_active?screen_read:
+    dbus_cmd_valid && dbus_cmd_a[31:8]==24'h020002 && !screen_load;
+assign mmio_write=screen_active?1'b0:dbus_cmd_wr;
+assign mmio_address=screen_active?8'h2c:dbus_cmd_a[7:0];
 assign mmio_wdata=dbus_cmd_data;
 reg mmio_response;
 reg [31:0] mmio_result;
 always @(posedge clk) begin
-    mmio_response<=mmio_select && mmio_ready && !dbus_cmd_wr;
-    if(mmio_select && mmio_ready && !dbus_cmd_wr)mmio_result<=mmio_rdata;
+    mmio_response<=mmio_select && mmio_ready && !dbus_cmd_wr && !screen_active;
+    if(mmio_select && mmio_ready && !dbus_cmd_wr && !screen_active)mmio_result<=mmio_rdata;
 end
 // Interface to USB host controller''')
-    s=replace(s,'usb_sel ? usb_ack :','mmio_select ? mmio_ready : usb_sel ? usb_ack :')
+    s=replace(s,'usb_sel ? usb_ack :','screen_load ? screen_done : mmio_select ? mmio_ready : usb_sel ? usb_ack :')
     s=replace(s,'wire [31:0] dbus_rdata = dbus_mem_ready ? mem_rdata :','wire [31:0] dbus_rdata = mmio_response ? mmio_result : dbus_mem_ready ? mem_rdata :')
+    s=replace(s,'.reg_cs(usb_sel), .reg_wr(usb_sel & dbus_cmd_wr), .reg_addr(dbus_cmd_a[7:0]),',
+        '.reg_cs(screen_active?screen_write:usb_sel), .reg_wr(screen_active?screen_write:(usb_sel & dbus_cmd_wr)), .reg_addr(screen_active?8\'h20:dbus_cmd_a[7:0]),')
+    s=replace(s,'.reg_wdata(dbus_cmd_data), .reg_be(mem_wstrb),',
+        '.reg_wdata(screen_active?{24\'d0,screen_byte}:dbus_cmd_data), .reg_be(screen_active?4\'hf:mem_wstrb),')
     p.write_text(s)
     p=stage/'src/push2/gw138k_push_workstation_top.v';s=p.read_text()
     start=s.index('    output wire push_htclk');end=s.index('    inout wire usb1_dp',start);s=s[:start]+s[end:]
@@ -126,6 +140,23 @@ end
     s+=(ROOT/'usb_a.sdc').read_text();p.write_text(s)
     fw=out/'firmware';shutil.copytree(USB/'firmware',fw,ignore=shutil.ignore_patterns('*.o','*.elf','*.bin'))
     shutil.copy2(ROOT/'firmware.c',fw/'firmware.c')
+    # Split the original driver's buffer loading from its unchanged token,
+    # response and PID handling. The screen loader supplies the same TX FIFO.
+    p=fw/'usb/usb_hw.c';s=p.read_text()
+    signature='int usbhw_transfer_out(uint8_t pid, int device_addr, int endpoint, int handshake, uint8_t request, uint8_t *tx, int tx_length)'
+    preloaded='int usbhw_transfer_out_preloaded(uint8_t pid, int device_addr, int endpoint, int handshake, uint8_t request, int tx_length)'
+    wrapper=signature+'''\n{
+    for (int l=0;l<tx_length;l++)usbhw_reg_write(USB_WR_DATA, tx[l]);
+    return usbhw_transfer_out_preloaded(pid,device_addr,endpoint,handshake,request,tx_length);
+}
+'''
+    s=replace(s,signature,wrapper+'\n'+preloaded)
+    s=replace(s,'    int l;\n    uint32_t ctrl = 0;','    uint32_t ctrl = 0;')
+    begin=s.index('    // Load DATAx transfer into address 0+')
+    end=s.index('    // Transfer data length',begin)
+    s=s[:begin]+s[end:];p.write_text(s)
+    p=fw/'usb/usb_hw.h';s=p.read_text()
+    s=replace(s,'void usbhw_init(uint32_t base);',preloaded+';\nvoid usbhw_init(uint32_t base);');p.write_text(s)
     prefix=str(Path.home()/'.local/opt/amd/2025.2.1/gnu/riscv/lin/bin/riscv64-unknown-elf')
     with (out/'firmware_build.log').open('w') as log:
         def run(cmd):subprocess.run(cmd,cwd=fw,stdout=log,stderr=subprocess.STDOUT,check=True)
