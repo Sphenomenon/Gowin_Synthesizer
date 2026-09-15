@@ -1,8 +1,8 @@
 # Push 2 USB-A 与完整音频工作站合并
 
-## 2026-09-15 P19 Push 屏幕完整帧保活候选（待实体验收）
+## 2026-09-15 P19 Push 屏幕完整帧保活（实体通过）
 
-P18 实体确认连续压力正常，但静止超过约 2 秒后 Push 按官方行为自动黑屏。P19 保留状态变化立即发帧，并在上一完整帧结束后 1000 ms 发送合法完整保活帧；不试验协议保留的短帧或局刷格式。P&R setup/hold 0/0，Logic 33760、Register 25165、BSRAM 253、DSP 43.5。位流 SHA256 `08db9c8fd1c97e9a9bcad63e330eaaa43fe6158ed022ae13f3793d4b825adab9`，UserCode `0x00005169`；已从 P18 `0x0000D914` 单独 SRAM 下载并读回，Flash 未写。压力灵敏度未在本阶段改动。见 [版本记录](BOARD_CURRENT_P19_PUSH_SCREEN_KEEPALIVE.json) 和 [阶段验证](P19_PUSH_SCREEN_KEEPALIVE_VERIFICATION.md)。
+P18 实体确认连续压力正常，但静止超过约 2 秒后 Push 按官方行为自动黑屏。P19 保留状态变化立即发帧，并在上一完整帧结束后 1000 ms 发送合法完整保活帧；不试验协议保留的短帧或局刷格式。P&R setup/hold 0/0，Logic 33760、Register 25165、BSRAM 253、DSP 43.5。位流 SHA256 `08db9c8fd1c97e9a9bcad63e330eaaa43fe6158ed022ae13f3793d4b825adab9`，UserCode `0x00005169`；已从 P18 `0x0000D914` 单独 SRAM 下载并读回，Flash 未写。用户实体确认屏幕保活、操作刷新和连续压力均正常；压力灵敏度未在本阶段改动。见 [版本记录](BOARD_CURRENT_P19_PUSH_SCREEN_KEEPALIVE.json) 和 [阶段验证](P19_PUSH_SCREEN_KEEPALIVE_VERIFICATION.md)。
 
 ## 2026-09-15 P18 官方 poly-aftertouch 与事件驱动 Push 屏幕（压力通过，屏幕由 P19 取代）
 

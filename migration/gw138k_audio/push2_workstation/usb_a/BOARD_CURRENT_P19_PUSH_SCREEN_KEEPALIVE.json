@@ -1,6 +1,6 @@
 {
   "version": "P19 Push full-frame keepalive",
-  "status": "SRAM downloaded; physical screen acceptance pending user verification",
+  "status": "SRAM downloaded and physically accepted by user",
   "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_171317_170590/Prj1/impl/pnr/Prj1.fs",
   "sha256": "08db9c8fd1c97e9a9bcad63e330eaaa43fe6158ed022ae13f3793d4b825adab9",
   "usercode": "0x00005169",
@@ -45,6 +45,12 @@
       "operations_passed": ["before", "sram", "after"],
       "fpga_flash_written": false
     },
-    "physical_acceptance": "pending static-screen and interaction verification"
+    "physical_acceptance": {
+      "result": "passed",
+      "user_report": "normal",
+      "screen_keepalive": "passed",
+      "screen_interaction": "passed",
+      "continuous_pressure": "retained from accepted P18 behavior"
+    }
   }
 }
