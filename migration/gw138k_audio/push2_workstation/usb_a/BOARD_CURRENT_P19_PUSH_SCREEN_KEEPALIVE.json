@@ -1,0 +1,50 @@
+{
+  "version": "P19 Push full-frame keepalive",
+  "status": "SRAM downloaded; physical screen acceptance pending user verification",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_171317_170590/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "08db9c8fd1c97e9a9bcad63e330eaaa43fe6158ed022ae13f3793d4b825adab9",
+  "usercode": "0x00005169",
+  "previous": {
+    "version": "P18 documented poly-aftertouch and event-driven Push screen",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_150844_068302/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "b9ef014335aec28ac3f1272c128b710ca4cb8bfe87a93044c88d168eee5af72f",
+    "usercode": "0x0000D914",
+    "physical_result": "continuous pressure passed; static Push UI blanked and recovered on activity"
+  },
+  "scope": {
+    "screen_keepalive": "Schedule one documented complete display frame 1000 ms after the previous frame completes when UI state remains unchanged",
+    "dirty_schedule": "UI state changes still schedule a complete frame immediately when the display link is idle",
+    "retained": "P18 documented poly-aftertouch, P10 serial effects, P14 C-mode 32 voices, P13 shared DDR display metadata, HDMI analysis and SRAM-only workflow"
+  },
+  "display_protocol": {
+    "partial_refresh_supported_by_public_protocol": false,
+    "reason": "The Ableton manual commits a frame only after all pixel data is received and reserves other data sizes",
+    "keepalive_ms_after_frame_complete": 1000,
+    "measured_full_frame_ms": 450,
+    "expected_complete_frame_interval_ms": 1450,
+    "push_black_timeout_ms": 2000,
+    "usb_speed_mbit_s": 12
+  },
+  "verification": {
+    "usb_firmware": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_171317_170590/production_usb_firmware_test.log",
+    "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_171317_170590/cpu_audio_sim_172408_225932/simulation.log",
+    "pressure": "P18 RTL unchanged; user confirmed continuous pressure works; sensitivity calibration remains separate",
+    "pnr": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_171317_170590",
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.017,
+      "resources": {"Logic": 33760, "Register": 25165, "BSRAM": 253, "DSP": 43.5},
+      "audit_passed": false,
+      "known_audit_gap": "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete"
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_172443_615477/result.json",
+      "from_code": "0x0000D914",
+      "usercode": "0x00005169",
+      "operations_passed": ["before", "sram", "after"],
+      "fpga_flash_written": false
+    },
+    "physical_acceptance": "pending static-screen and interaction verification"
+  }
+}

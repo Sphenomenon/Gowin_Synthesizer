@@ -20,6 +20,8 @@ struct screen_state {
 };
 static struct screen_state displayed_state;
 static int displayed_state_valid;
+static uint32_t last_frame_complete;
+#define SCREEN_KEEPALIVE_MS 1000u
 static void disconnect(void) {
     connected=0;
     displayed_state_valid=0;
@@ -85,6 +87,10 @@ static int screen_changed(void) {
     }
     return changed;
 }
+static int screen_due(void) {
+    return screen_changed() ||
+        (uint32_t)(usbhw_timer_now()-last_frame_complete)>=SCREEN_KEEPALIVE_MS;
+}
 static int frame(void) {
     uint8_t h[16]={0xff,0xcc,0xaa,0x88};
     MMIO(0x08)=1;
@@ -103,6 +109,7 @@ static int frame(void) {
         if(!send(1,txbuf,512))return 0;
     }
     lights();
+    last_frame_complete=usbhw_timer_now();
     MMIO(0x30)=++frames;return 1;
 }
 static void connect(void) {
@@ -135,7 +142,10 @@ int main(void) {
         // responsive during that transfer.
         poll_midi();
         lights();
-        if(screen_changed()) {
+        // Push blanks its display after two seconds without a complete frame.
+        // A one-second keepalive preserves a static UI while state changes
+        // still schedule a frame immediately when the display link is idle.
+        if(screen_due()) {
             if(!frame()) {
                 displayed_state_valid=0;
                 for(unsigned i=0;i<100 && connected;i++){poll_midi();lights();delay(1);}

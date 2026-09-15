@@ -90,13 +90,19 @@ int main(void){
     headers=blocks=0;assert(frame());assert(headers==1 && blocks==640 && frames==2);
     assert(MMIO(0x30)==2 && reset_count==4);
     // The screen scheduler sends the first snapshot, suppresses an unchanged
-    // 327696-byte frame, and notices the next UI state change.
+    // frame until the keepalive deadline, and notices a UI change immediately.
     displayed_state_valid=0;
-    assert(screen_changed());
-    assert(!screen_changed());
+    last_frame_complete=now_ms;
+    assert(screen_due());
+    assert(!screen_due());
+    now_ms+=SCREEN_KEEPALIVE_MS-1;
+    assert(!screen_due());
+    now_ms++;
+    assert(screen_due());
+    last_frame_complete=now_ms;
     MMIO(0x24)=0x00002244;
-    assert(screen_changed());
-    assert(!screen_changed());
-    puts("PASS production USB firmware: hotplug/toggles, MIDI during frame, 640-packet frame, event-driven screen state");
+    assert(screen_due());
+    assert(!screen_due());
+    puts("PASS production USB firmware: hotplug/toggles, MIDI during frame, full-frame screen keepalive and immediate dirty scheduling");
     return 0;
 }

@@ -1,6 +1,6 @@
 {
   "version": "P18 documented poly-aftertouch and event-driven Push screen",
-  "status": "SRAM downloaded; physical pressure and screen acceptance pending user verification",
+  "status": "Pressure accepted; static screen blanked after inactivity and was superseded by P19 keepalive",
   "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_150844_068302/Prj1/impl/pnr/Prj1.fs",
   "sha256": "b9ef014335aec28ac3f1272c128b710ca4cb8bfe87a93044c88d168eee5af72f",
   "usercode": "0x0000D914",
@@ -52,6 +52,9 @@
       "operations_passed": ["before", "sram", "after"],
       "fpga_flash_written": false
     },
-    "physical_acceptance": "pending user verification"
+    "physical_acceptance": {
+      "pressure": "passed; continuous response confirmed, sensitivity slightly high and 002/030 relationship retained for later calibration",
+      "screen": "failed static retention; blanked after inactivity and relit on activity"
+    }
   }
 }

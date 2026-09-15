@@ -1,8 +1,12 @@
 # Push 2 USB-A 与完整音频工作站合并
 
-## 2026-09-15 P18 官方 poly-aftertouch 与事件驱动 Push 屏幕候选（待实体验收）
+## 2026-09-15 P19 Push 屏幕完整帧保活候选（待实体验收）
 
-P18 显式发送 Ableton 文档规定的 `Set Aftertouch Mode 0x1E, mode 1`，使按住 pad 的持续压力以带 note 的 poly key pressure 返回并只更新原声部 expression。Push 屏幕改为 UI 状态变化时才发送合法完整帧，空闲每轮轮询 MIDI，传帧中每 4 个包轮询；不再让无变化整帧持续占用 FS 链路。P&R setup/hold 0/0，Logic 33760、Register 25165、BSRAM 253、DSP 43.5。位流 SHA256 `b9ef014335aec28ac3f1272c128b710ca4cb8bfe87a93044c88d168eee5af72f`，UserCode `0x0000D914`；已从 P17 `0x0000F123` 单独 SRAM 下载并读回，Flash 未写。当前 12 Mbit/s 路径无法承载 30 个 327,696 字节完整帧每秒；P18 提高的是输入/状态调度并去除旧帧排队，实际压力和约 450 ms 整帧可见延迟待用户验收。见 [版本记录](BOARD_CURRENT_P18_PUSH_AFTERTOUCH_SCREEN.json) 和 [阶段验证](P18_PUSH_AFTERTOUCH_SCREEN_VERIFICATION.md)。
+P18 实体确认连续压力正常，但静止超过约 2 秒后 Push 按官方行为自动黑屏。P19 保留状态变化立即发帧，并在上一完整帧结束后 1000 ms 发送合法完整保活帧；不试验协议保留的短帧或局刷格式。P&R setup/hold 0/0，Logic 33760、Register 25165、BSRAM 253、DSP 43.5。位流 SHA256 `08db9c8fd1c97e9a9bcad63e330eaaa43fe6158ed022ae13f3793d4b825adab9`，UserCode `0x00005169`；已从 P18 `0x0000D914` 单独 SRAM 下载并读回，Flash 未写。压力灵敏度未在本阶段改动。见 [版本记录](BOARD_CURRENT_P19_PUSH_SCREEN_KEEPALIVE.json) 和 [阶段验证](P19_PUSH_SCREEN_KEEPALIVE_VERIFICATION.md)。
+
+## 2026-09-15 P18 官方 poly-aftertouch 与事件驱动 Push 屏幕（压力通过，屏幕由 P19 取代）
+
+P18 显式发送 Ableton 文档规定的 `Set Aftertouch Mode 0x1E, mode 1`，使按住 pad 的持续压力以带 note 的 poly key pressure 返回并只更新原声部 expression。Push 屏幕改为 UI 状态变化时才发送合法完整帧，空闲每轮轮询 MIDI，传帧中每 4 个包轮询；不再让无变化整帧持续占用 FS 链路。P&R setup/hold 0/0，Logic 33760、Register 25165、BSRAM 253、DSP 43.5。位流 SHA256 `b9ef014335aec28ac3f1272c128b710ca4cb8bfe87a93044c88d168eee5af72f`，UserCode `0x0000D914`；已从 P17 `0x0000F123` 单独 SRAM 下载并读回，Flash 未写。用户实体确认连续压力正常，灵敏度略高；静止屏幕因 Push 的 2 秒无完整帧黑屏规则而未通过，由 P19 保活修复。见 [版本记录](BOARD_CURRENT_P18_PUSH_AFTERTOUCH_SCREEN.json) 和 [阶段验证](P18_PUSH_AFTERTOUCH_SCREEN_VERIFICATION.md)。
 
 ## 2026-09-15 P17 连续压力兼容与 Push 屏幕调度候选（待本轮实体验收）
 
