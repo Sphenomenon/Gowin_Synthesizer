@@ -176,6 +176,16 @@ static inline unsigned ui_active(const ui_model*m,unsigned note) {''')
     ET.SubElement(fl,'File',path='src/memory/display_data_reader.v',type='file.verilog',enable='1')
     shutil.copy2(ROOT/'rtl/push2_usb_a_control.sv',dest/'push2_usb_a_control.sv')
     shutil.copy2(ROOT/'rtl/push2_screen_packet_loader.sv',dest/'push2_screen_packet_loader.sv')
+    shutil.copy2(ROOT/'rtl/push2_screen_fifo_streamer.sv',dest/'push2_screen_fifo_streamer.sv')
+    # The screen streamer and USB FIFO share the 48 MHz host clock.  Give the
+    # staged USB core a direct byte input so the existing FIFO need not route
+    # every pixel byte through the CPU register acknowledge protocol.
+    p=dest/'usbh_core.sv';s=p.read_text()
+    s=replace(s,'    input logic [3:0]       reg_be,',
+        '    input logic [3:0]       reg_be,\n    input logic             screen_fifo_push_i,\n    input logic [7:0]       screen_fifo_data_i,')
+    s=replace(s,'    .data_i(usb_wr_data_data_out_w),\n    .push_i(usb_wr_data_wr_req_w),',
+        '    .data_i(screen_fifo_push_i ? screen_fifo_data_i : usb_wr_data_data_out_w),\n    .push_i(screen_fifo_push_i || usb_wr_data_wr_req_w),')
+    p.write_text(s)
     for f in sorted(dest.iterdir()):ET.SubElement(fl,'File',path=f.relative_to(stage).as_posix(),type='file.verilog',enable='1')
     ET.indent(tree,space='    ');tree.write(stage/'Prj1.gprj',encoding='utf-8',xml_declaration=True)
     # Add the Push MMIO window and a same-clock screen packet bus master.
@@ -185,10 +195,10 @@ static inline unsigned ui_active(const ui_model*m,unsigned note) {''')
     s=replace(s,'// Interface to USB host controller','''wire screen_load=dbus_cmd_valid && dbus_cmd_wr && dbus_cmd_a==32'h02000250;
 wire screen_active,screen_done,screen_read,screen_write;
 wire [7:0] screen_byte;
-push2_screen_packet_loader screen_loader(
+push2_screen_fifo_streamer screen_loader(
     .clk(clk),.reset_n(resetn),.start(screen_load),
     .pixel_read(screen_read),.pixel_ready(mmio_ready),.pixel_data(mmio_rdata),
-    .usb_write(screen_write),.usb_data(screen_byte),.usb_ack(usb_ack),
+    .fifo_push(screen_write),.fifo_data(screen_byte),
     .active(screen_active),.done(screen_done));
 assign mmio_select=screen_active?screen_read:
     dbus_cmd_valid && dbus_cmd_a[31:8]==24'h020002 && !screen_load;
@@ -204,10 +214,8 @@ end
 // Interface to USB host controller''')
     s=replace(s,'usb_sel ? usb_ack :','screen_load ? screen_done : mmio_select ? mmio_ready : usb_sel ? usb_ack :')
     s=replace(s,'wire [31:0] dbus_rdata = dbus_mem_ready ? mem_rdata :','wire [31:0] dbus_rdata = mmio_response ? mmio_result : dbus_mem_ready ? mem_rdata :')
-    s=replace(s,'.reg_cs(usb_sel), .reg_wr(usb_sel & dbus_cmd_wr), .reg_addr(dbus_cmd_a[7:0]),',
-        '.reg_cs(screen_active?screen_write:usb_sel), .reg_wr(screen_active?screen_write:(usb_sel & dbus_cmd_wr)), .reg_addr(screen_active?8\'h20:dbus_cmd_a[7:0]),')
     s=replace(s,'.reg_wdata(dbus_cmd_data), .reg_be(mem_wstrb),',
-        '.reg_wdata(screen_active?{24\'d0,screen_byte}:dbus_cmd_data), .reg_be(screen_active?4\'hf:mem_wstrb),')
+        '.reg_wdata(dbus_cmd_data), .reg_be(mem_wstrb),\n    .screen_fifo_push_i(screen_write),.screen_fifo_data_i(screen_byte),')
     p.write_text(s)
     p=stage/'src/push2/gw138k_push_workstation_top.v';s=p.read_text()
     start=s.index('    output wire push_htclk');end=s.index('    inout wire usb1_dp',start);s=s[:start]+s[end:]

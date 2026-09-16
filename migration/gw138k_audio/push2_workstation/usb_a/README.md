@@ -1,5 +1,11 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-09-16 P26 交互延迟测量与 Push 屏幕 FIFO 优化（实体通过）
+
+P26 量化了 Push、电脑 UART 和 DIN MIDI 到 core/PCM/DAC 的数字路径，并把 Push 每个 512 字节像素包从 CPU 寄存器逐字节握手改为同一 48 MHz 域直推现有 USB TX FIFO。每包装载由 1793 周期降到 769 周期，完整 640 包帧节省 13.653 ms；公开 16 字节帧头加 640 个 512 字节包、NAK 重装、每 4 包 MIDI 轮询、每 32 包灯光服务均保持不变。12 Mbit/s 纯载荷下限仍为 218.464 ms，没有把 0.2 秒写成达到。
+
+正式 P&R setup/hold 0/0，最差 setup slack +0.041 ns；Logic 34971、Register 25380、BSRAM 253、DSP 43.5。位流 SHA256 `b23c31c0b35776ce459a01ef62889845dd58025a2977f705826fa8b8e46c10ba`，UserCode `0x00000026`。已从 P24 `0x00000024` 仅写 SRAM并读回 P26，Flash 未写。完整 routed audit 仍只因旧三个 `effect_mask_sync` reset 端点失败。用户检查 Push 屏幕操作速度和画面、Push pad/连续压力/灯光、电脑键盘长按、HDMI、耳机及效果链后报告“没问题，继续”。见 [正式版本记录](BOARD_CURRENT_P26_INTERACTION_LATENCY.json)、[路径审计](P26_INTERACTION_LATENCY_AUDIT.md)、[验证记录](P26_INTERACTION_LATENCY_VERIFICATION.md) 和 [候选绑定](P26_INTERACTION_LATENCY_CANDIDATE.json)。
+
 ## 2026-09-16 P25 频谱泄露受控实验（分析完成，板上仍为 P24）
 
 P25 用同一个 MIDI 60 单正弦逐项改变窗函数、起始相位和 FFT 点数，并用 P24 十五组最终 DAC 采样核对真实谐波；另在完整音频/效果链中执行硬 PANIC。结果区分出：真实采样率为 48 kHz，改频率标签不会改变任何幅度 bin；周期 Hann 相对矩形窗把最大远端泄露从 −24.24 dBc 降到 −42.02 dBc；64 个起始相位的最大远端变化仅 0.022 dB；点数改变 Hz 分辨率，但因音符与 bin 非相干，相对泄露不会单调下降。十五组生产声音至少 99.9598% 功率落在已有 32 个谐波的 Hann 主瓣内。

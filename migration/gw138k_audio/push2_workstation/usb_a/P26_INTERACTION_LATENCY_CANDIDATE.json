@@ -1,0 +1,95 @@
+{
+  "version": "P26 interaction latency measurement and Push screen FIFO optimization",
+  "status": "built_sram_downloaded_and_physically_accepted",
+  "baseline_commit": "b20832a",
+  "git_committed": true,
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_191636_144481",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_191636_144481/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "b23c31c0b35776ce459a01ef62889845dd58025a2977f705826fa8b8e46c10ba",
+  "header_checksum": "0x4EA6",
+  "bitstream_usercode": "0x00000026",
+  "board_usercode_readback": "0x00000026",
+  "optimization": {
+    "clock_hz": 48000000,
+    "baseline_packet_load_cycles": 1793,
+    "candidate_packet_load_cycles": 769,
+    "saved_per_packet_cycles": 1024,
+    "saved_per_frame_cycles": 655360,
+    "saved_per_frame_ms": 13.653333333333332,
+    "frame_payload_floor_ms": 218.464,
+    "protocol": "unchanged 16-byte header plus 640 512-byte pixel blocks",
+    "scheduler": "unchanged MIDI poll every 4 pixel blocks, lights every 32 blocks, ACK-only PID toggles"
+  },
+  "digital_latency_us": {
+    "push_mmio_to_core": [0.141, 13.462],
+    "push_mmio_to_dac16": [104.784, 124.784],
+    "computer_first_start_bit_to_core": [256.232, 269.278],
+    "computer_first_start_bit_to_dac16": [385.596, 401.436],
+    "din_first_start_bit_to_core": [944.17, 956.734],
+    "din_first_start_bit_to_dac16": [1073.056, 1088.876],
+    "push_boundary_limitation": "starts after USB IN and firmware acceptance; physical pad and poll delay excluded"
+  },
+  "source_snapshot_hashes": {
+    "migration/gw138k_audio/push2_workstation/usb_a/build.py": "97e79517a43f136fa9beccf2d62131a4d608381a2058df84460e8516d94fe240",
+    "migration/gw138k_audio/push2_workstation/usb_a/p11.cst": "edfc623c5fb20c1487629870d72b6c4df12fd158653ee7b2a543b6c53d090ff6",
+    "migration/gw138k_audio/push2_workstation/usb_a/rtl/push2_screen_fifo_streamer.sv": "fecbb43b073d0d471fb5597613111e1909c81fdeacfb4e37d78818624799a265",
+    "migration/gw138k_audio/push2_workstation/usb_a/sim/p26/run.py": "49bd09e82c0e283c5bc1a9fc57849a54bc224688d783dd18815868cc810daed5",
+    "migration/gw138k_audio/push2_workstation/usb_a/sim/p26/tb_screen_fifo_streamer.sv": "55d8714a298a3022e1d5d9111bd6a109a1a007dbfb923550b5e43caa741cb4b4",
+    "migration/gw138k_audio/push2_workstation/usb_a/sim/p26/tb_interaction_latency.sv": "200535d0754e963242db81af4c27712640c1dbafc5694dc2cdd30491317965f5"
+  },
+  "verification": {
+    "p26_focused": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_191636_144481/p26_latency_192818_701320/verification.json",
+    "p23_panic_regression": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_191636_144481/p23_panic_192818_716604/verification.json",
+    "full_cpu_audio_regression": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_185143_142234/cpu_audio_sim_185626_176002",
+    "physical_acceptance": {
+      "result": "passed",
+      "date": "2026-09-16",
+      "user_report": "没问题，继续",
+      "push_screen_latency_and_image": "passed",
+      "push_pads": "passed",
+      "continuous_pressure": "passed",
+      "push_lights": "passed",
+      "computer_keyboard_repeat": "passed",
+      "hdmi": "passed",
+      "headphones": "passed",
+      "effect_chain": "passed"
+    },
+    "pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.041,
+      "resources": {"Logic": 34971, "Register": 25380, "BSRAM": 253, "DSP": 43.5},
+      "full_build": true,
+      "inputs_unchanged": true,
+      "audit_passed": false,
+      "full_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_191636_144481/usb_a_audit.json",
+      "audit_error": "inherited effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage gap",
+      "audio_routed_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_191636_144481/p26_audio_routed_audit.json",
+      "audio_pll_init_max_ns": 9.945,
+      "rejected_attempt": {
+        "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_185814_508399",
+        "reason": "audio PLL_INIT RESET propagation 10.011 ns exceeded unchanged 10 ns audit threshold",
+        "downloaded": false
+      }
+    }
+  },
+  "programming": {
+    "status": "sram_download_and_before_after_readback_passed",
+    "required_before_usercode": "0x00000024",
+    "required_after_usercode": "0x00000026",
+    "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260916_192918_415778/result.json",
+    "sram_written": true,
+    "fpga_flash_written": false,
+    "cable_location": 53,
+    "usb_device": "/sys/bus/usb/devices/3-5"
+  },
+  "retained": {
+    "last_physically_accepted": "P26",
+    "p24_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_181039_663260/Prj1/impl/pnr/Prj1.fs",
+    "p24_sha256": "7a37311de6df38ed1f0191bd2f07094904df826dd69c4b2007f2e0ec099c1c66",
+    "p24_usercode": "0x00000024",
+    "p10_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/Prj1/impl/pnr/Prj1.fs",
+    "flash_written": false,
+    "usb_in_error_diagnostic": null
+  }
+}

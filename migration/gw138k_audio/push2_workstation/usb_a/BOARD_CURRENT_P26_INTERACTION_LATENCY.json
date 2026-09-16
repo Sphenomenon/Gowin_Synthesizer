@@ -1,0 +1,58 @@
+{
+  "version": "P26 interaction latency measurement and Push screen FIFO optimization",
+  "status": "physically_accepted_sram",
+  "accepted_at": "2026-09-16",
+  "user_report": "没问题，继续",
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_191636_144481",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_191636_144481/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "b23c31c0b35776ce459a01ef62889845dd58025a2977f705826fa8b8e46c10ba",
+  "header_checksum": "0x4EA6",
+  "usercode": "0x00000026",
+  "programming": {
+    "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260916_192918_415778/result.json",
+    "before_usercode": "0x00000024",
+    "after_usercode": "0x00000026",
+    "sram_written": true,
+    "fpga_flash_written": false,
+    "post_acceptance_readback": {
+      "performed": false,
+      "reason": "debug cable was not enumerated at the additional read-only check; immediate post-download readback already passed"
+    }
+  },
+  "implementation": {
+    "packet_load_cycles_before": 1793,
+    "packet_load_cycles_after": 769,
+    "saved_per_frame_ms": 13.653333333333332,
+    "frame_payload_floor_ms": 218.464,
+    "protocol_changed": false,
+    "midi_poll_every_pixel_packets": 4,
+    "lights_every_pixel_packets": 32
+  },
+  "pnr": {
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "worst_setup_slack_ns": 0.041,
+    "resources": {"Logic": 34971, "Register": 25380, "BSRAM": 253, "DSP": 43.5},
+    "audio_pll_init_max_ns": 9.945,
+    "full_routed_audit_passed": false,
+    "known_audit_gap": "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete"
+  },
+  "physical_acceptance": {
+    "push_screen_latency_and_image": "passed",
+    "push_pads": "passed",
+    "continuous_pressure": "passed",
+    "push_lights": "passed",
+    "computer_keyboard_repeat": "passed",
+    "hdmi": "passed",
+    "headphones": "passed",
+    "effect_chain": "passed"
+  },
+  "retained": {
+    "p24_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_181039_663260/Prj1/impl/pnr/Prj1.fs",
+    "p24_sha256": "7a37311de6df38ed1f0191bd2f07094904df826dd69c4b2007f2e0ec099c1c66",
+    "p24_usercode": "0x00000024",
+    "p10_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/Prj1/impl/pnr/Prj1.fs",
+    "p10_sha256": "dd80b9009241836b3266b6407aa1a36cf8973d0b660d239e2e0f1fe8e0e4f793",
+    "usb_in_error_diagnostic": null
+  }
+}
