@@ -1,0 +1,91 @@
+{
+  "version": "P22 computer keyboard repeat",
+  "status": "Built, downloaded to SRAM and physically accepted",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "f88f2a1a97e629b30a381b2e84c29f08893f5a626e94eb0466dc57c535a95dbb",
+  "usercode": "0x00000022",
+  "host_source": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/ae350/scripts/keyboard_midi.py",
+  "host_source_sha256": "23687fd8f895466d878fbc31cc51c1974027120b88a51c5979f8c017a33ca674",
+  "behavior": {
+    "initial_repeat_delay_ms": 300,
+    "repeat_interval_ms": 80,
+    "short_press_events": 1,
+    "release_cancels_repeat_immediately": true,
+    "local_sustain_pauses_repeat": true,
+    "panic_scope_expanded": false
+  },
+  "verification": {
+    "keyboard": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/p22_keyboard_20260915_220702_621343/verification.json",
+    "audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/p22_audio_sim_214047_483818/verification.json",
+    "keyboard_checks_passed": 11,
+    "audio_frames": 226550,
+    "nonzero_frames": 226469,
+    "note_on_events": 128,
+    "note_off_events": 128,
+    "max_active_voices": 14,
+    "final_held_and_allocated_zero": true,
+    "max_pc_queue_depth": 1,
+    "pc_backpressure_cycles": 0,
+    "sample_rate_hz": 48000,
+    "audio_fault": false,
+    "pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.010,
+      "resources": {
+        "Logic": 33830,
+        "Register": 25192,
+        "BSRAM": 253,
+        "DSP": 43.5
+      },
+      "audit_passed": false,
+      "known_audit_gap": "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete"
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_215319_714349/result.json",
+      "from_code": "0x0000D14C",
+      "usercode": "0x00000022",
+      "operations_passed": [
+        "before",
+        "sram",
+        "after"
+      ],
+      "post_acceptance_usercode": "0x00000022",
+      "post_acceptance_readback_time": "2026-09-16T12:38:34+08:00",
+      "fpga_flash_written": false
+    },
+    "physical_acceptance": {
+      "result": "passed",
+      "computer_keyboard_user_report": "现在电脑控制没啥问题了",
+      "remaining_peripherals_user_report": "都正常，继续",
+      "computer_keyboard": "passed",
+      "push_screen": "passed",
+      "push_pads": "passed",
+      "continuous_pressure": "passed",
+      "push_lights": "passed",
+      "hdmi": "passed",
+      "headphones": "passed",
+      "effect_chain": "passed",
+      "keyboard_session": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/results/keyboard_session_20260915_221519_927988/events.jsonl",
+      "keyboard_note_on_events": 254,
+      "keyboard_note_off_events": 254,
+      "keyboard_note_counts_balanced": true
+    },
+    "post_download_uart": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260915_215533_259858/result.json",
+      "bytes_received": 0,
+      "valid_records": 0,
+      "crc_errors": 0,
+      "conclusion": "inconclusive; not counted as a pass or failure"
+    }
+  },
+  "retained": {
+    "p21_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_195400_727173/Prj1/impl/pnr/Prj1.fs",
+    "p21_sha256": "77a4a62e8e0323c94f4c58b73e9de0b1142a5fa612966c4c7f86de3a346fb039",
+    "p21_usercode": "0x0000D14C",
+    "p10_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/Prj1/impl/pnr/Prj1.fs",
+    "p10_sha256": "dd80b9009241836b3266b6407aa1a36cf8973d0b660d239e2e0f1fe8e0e4f793",
+    "flash_written": false,
+    "usb_in_error_diagnostic": null
+  }
+}

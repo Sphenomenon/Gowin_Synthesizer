@@ -22,6 +22,8 @@ SOUND_NAMES = dict(zip(["flute", "strings", "trumpet", "marimba", "piano"], [p[1
 EFFECTS = [(1, "延迟"), (2, "合唱"), (4, "混响")]
 WHITE_NOTES = [n for n in range(60, 85) if n % 12 not in (1, 3, 6, 8, 10)]
 BG, PANEL, TEXT, MUTED, GREEN = "#0a1420", "#172838", "#edf4fa", "#a5b6c5", "#39d8ac"
+REPEAT_DELAY_MS = 300
+REPEAT_INTERVAL_MS = 80
 
 
 class Notes:
@@ -45,6 +47,14 @@ class Notes:
         note = self.held.pop(token, None)
         if note is not None and note not in self.held.values():
             self.send(bytes((0x80, note, 0)))
+
+    def retrigger(self, token):
+        note = self.held.get(token)
+        # CC64 defers Note Off in the shared synth. Preserve pedal hold instead
+        # of accumulating unreleased voices while the pedal is down.
+        if note is not None and not self.pedal:
+            self.send(bytes((0x80, note, 0)))
+            self.send(bytes((0x90, note, self.velocity)))
 
     def sustain(self, down):
         if self.pedal != down:
@@ -71,6 +81,7 @@ class KeyboardWindow:
         self.cpu_sequence = None
         self.last_state = None
         self.last_expression = None
+        self.telemetry_seen = False
         self.requests = {}
         self.scale_timers = {}
         self.bend_owned = False
@@ -79,6 +90,8 @@ class KeyboardWindow:
         self.pressed = {}
         self.releases = {}
         self.release_times = {}
+        self.repeat_timers = {}
+        self.repeat_due = {}
         self.status = tk.StringVar(value="尚未连接")
         self.board = tk.StringVar(value="等待板端状态；按键立即发送，不等待每秒回报。")
         self.activity = tk.StringVar(value="切到英文输入法，点击本窗口后演奏。")
@@ -125,7 +138,7 @@ class KeyboardWindow:
         self.status_label.pack(fill="x", pady=(8, 0))
         self.label(body, variable=self.board, color=MUTED).pack(fill="x")
         self.label(body, "低音区 C4–B4： Z S X D C V G B H N J M     高音区 C5–C6： Q 2 W 3 E R 5 T 6 Y 7 U I").pack(fill="x", pady=(14, 2))
-        self.label(body, "按住发音 · 松开释放 · 多键和弦      空格：延音踏板      [ / ]：力度减 / 加", color=MUTED).pack(fill="x")
+        self.label(body, "短按一次 · 长按 300ms 后每 80ms 连击 · 松开停止      空格：延音（暂停连击）      [ / ]：力度减 / 加", color=MUTED).pack(fill="x")
         self.canvas = tk.Canvas(body, height=205, bg=BG, highlightthickness=0, takefocus=True)
         self.canvas.pack(fill="x", pady=(14, 8))
         self.canvas.bind("<Configure>", lambda event: self.draw_keys())
@@ -211,6 +224,7 @@ class KeyboardWindow:
         self.buffer.clear()
         self.cpu_sequence = None
         self.last_state = None
+        self.telemetry_seen = False
         self.effect_request = None
         self.last_expression = None
         self.requests.clear()
@@ -250,6 +264,7 @@ class KeyboardWindow:
             raise
 
     def fail(self, reason):
+        self.cancel_repeats()
         self.recovery += self.notes.drain()
         if self.bend_owned:
             self.recovery += bytes((0xe0, 0, 64))
@@ -292,9 +307,16 @@ class KeyboardWindow:
                             self.receive(*decoded)
                     if len(self.buffer) > 4096:
                         raise ValueError("串口数据格式不匹配")
-                if not self.ready and now - self.opened > 12:
-                    raise ValueError("未收到就绪的 C350/K138，请确认位流版本和串口未被其他程序占用")
-                if self.ready and now - self.last_live > 3.5:
+                # P21/P22 can have a silent U15 return path while V14 input
+                # remains usable. After draining old FTDI data, permit notes in
+                # an explicit one-way state; any later K138 upgrades it.
+                if not self.ready and now - self.opened > 2:
+                    self.ready = True
+                    self.status.set("单向演奏 · 未收到板端 C350/K138 回报")
+                    self.status_label.configure(fg="#edbd68")
+                    self.activity.set("可演奏；声音与板端状态需人工确认。")
+                    self.record("one_way_ready", reason="no C350/K138 telemetry after FTDI drain")
+                if self.telemetry_seen and self.ready and now - self.last_live > 3.5:
                     raise ValueError("板端回报超时，已停止本机演奏")
         except (OSError, serial.SerialException, ValueError) as error:
             self.fail(str(error))
@@ -312,6 +334,7 @@ class KeyboardWindow:
             if state["pc_input_errors"]:
                 raise ValueError("板端串口故障：" + str(state["pc_input_errors"]))
             self.last_live = time.monotonic()
+            self.telemetry_seen = True
             self.last_state = state
             if self.effect_request:
                 request = self.effect_request
@@ -340,7 +363,7 @@ class KeyboardWindow:
             self.update_controls()
             self.record("expression", **self.last_expression)
 
-    def operate(self, callback):
+    def operate(self, callback, redraw=True):
         if not self.ready:
             self.activity.set("等待 138K 连接就绪后再演奏。")
             return False
@@ -349,7 +372,8 @@ class KeyboardWindow:
         except (OSError, serial.SerialException) as error:
             self.fail(str(error))
             return False
-        self.draw_keys()
+        if redraw:
+            self.draw_keys()
         return True
 
     def key_press(self, event):
@@ -363,10 +387,13 @@ class KeyboardWindow:
             if released_at is not None and pressed_at is not None and pressed_at != released_at:
                 self.finish_release(code)
         if code in self.pressed:
+            self.schedule_repeat(code)
             return "break"
         self.pressed[code] = key
         if key in NOTE_KEYS:
-            self.operate(lambda: self.notes.press(code, NOTE_KEYS[key]))
+            if self.operate(lambda: self.notes.press(code, NOTE_KEYS[key])):
+                self.repeat_due[code] = time.monotonic() + REPEAT_DELAY_MS / 1000
+                self.schedule_repeat(code)
         elif key in ("left", "right"):
             if self.set_bend(-4096 if key == "left" else 4096):
                 self.bend_owned = True
@@ -391,6 +418,9 @@ class KeyboardWindow:
 
     def key_release(self, event):
         code = event.keycode
+        # Stop repeats on receipt of Release, before the X11 pairing window.
+        if code in self.repeat_timers:
+            self.root.after_cancel(self.repeat_timers.pop(code))
         if code in self.releases:
             self.root.after_cancel(self.releases[code])
         # Fedora/XWayland can deliver the repeat Press after Tk has become
@@ -401,6 +431,9 @@ class KeyboardWindow:
         return "break"
 
     def finish_release(self, code):
+        if code in self.repeat_timers:
+            self.root.after_cancel(self.repeat_timers.pop(code))
+        self.repeat_due.pop(code, None)
         self.releases.pop(code, None)
         self.release_times.pop(code, None)
         key = self.pressed.pop(code, None)
@@ -411,7 +444,32 @@ class KeyboardWindow:
         elif self.ready:
             self.operate(lambda: self.notes.sustain(False) if key == "space" else self.notes.release(code))
 
+    def schedule_repeat(self, code):
+        if (code not in self.repeat_due or code in self.repeat_timers or
+                code not in self.notes.held or not self.ready):
+            return
+        delay = max(1, int((self.repeat_due[code] - time.monotonic()) * 1000 + .999))
+        self.repeat_timers[code] = self.root.after(delay, lambda: self.repeat_note(code))
+
+    def repeat_note(self, code):
+        self.repeat_timers.pop(code, None)
+        if code in self.releases or code not in self.notes.held or not self.ready:
+            return
+        # Local held-key display is unchanged by a retrigger.
+        if self.operate(lambda: self.notes.retrigger(code), redraw=False):
+            # Schedule from now: a slow UI/serial write must not catch up by
+            # dumping a backlog of Note Ons into the board's finite FIFO.
+            self.repeat_due[code] = time.monotonic() + REPEAT_INTERVAL_MS / 1000
+            self.schedule_repeat(code)
+
+    def cancel_repeats(self):
+        for callback in self.repeat_timers.values():
+            self.root.after_cancel(callback)
+        self.repeat_timers.clear()
+        self.repeat_due.clear()
+
     def release_owned(self):
+        self.cancel_repeats()
         for callback in self.releases.values():
             self.root.after_cancel(callback)
         self.releases.clear()
@@ -442,6 +500,7 @@ class KeyboardWindow:
     def panic(self):
         # Keep physically held keycodes latched so repeat cannot undo panic.
         def release():
+            self.cancel_repeats()
             self.send(self.notes.drain())
             self.send(bytes((0xb0, 123, 0)))
         if self.operate(release):
@@ -449,6 +508,7 @@ class KeyboardWindow:
 
     def set_mode(self, mode):
         def change():
+            self.cancel_repeats()
             self.send(self.notes.drain())
             self.send(bytes((0xb0, 80, mode)))
         self.operate(change)

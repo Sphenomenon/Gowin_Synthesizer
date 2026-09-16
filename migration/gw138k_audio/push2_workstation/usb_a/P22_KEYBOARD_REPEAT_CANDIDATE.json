@@ -1,0 +1,168 @@
+{
+  "version": "P22 computer keyboard repeat",
+  "status": "built_downloaded_and_physically_accepted",
+  "baseline_commit": "4f40137",
+  "git_committed": true,
+  "release_bundle": null,
+  "release_bundle_note": "Earlier offline/downloaded snapshots predate one-way UART handling; current hashes and evidence are bound by this tracked candidate record.",
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "f88f2a1a97e629b30a381b2e84c29f08893f5a626e94eb0466dc57c535a95dbb",
+  "bitstream_usercode": "0x00000022",
+  "board_usercode_readback": "0x00000022",
+  "keyboard_source": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/ae350/scripts/keyboard_midi.py",
+  "keyboard_source_sha256": "23687fd8f895466d878fbc31cc51c1974027120b88a51c5979f8c017a33ca674",
+  "source_snapshot_hashes": {
+    "migration/gw138k_audio/ae350/scripts/keyboard_midi.py": "23687fd8f895466d878fbc31cc51c1974027120b88a51c5979f8c017a33ca674",
+    "migration/gw138k_audio/ae350/scripts/check_keyboard_repeat.py": "c5461462c408da9f36d0b3b6ed8db9c61f441b9016dac2f2ed7c82a0d391ffaa",
+    "migration/gw138k_audio/push2_workstation/usb_a/build.py": "2210699f78ff56cc40d1431288fcb1d5ae57185d6c7c1445493ffcc19b8346a8",
+    "migration/gw138k_audio/push2_workstation/usb_a/sim/p22/run.py": "bbe94d7165b0e866ee578e50182f1461b6a6fe8a2d1c3352cc588cd2d40779a7",
+    "migration/gw138k_audio/push2_workstation/usb_a/sim/p22/tb_keyboard_audio.sv": "4711de673e5e42d57f957786f94333cf9c5c6e658918812f561d8fa21390fa1d",
+    "migration/gw138k_audio/push2_workstation/usb_a/P22_KEYBOARD_REPEAT_AUDIT.md": "6dc491967c29f1fb55e0c16865f25125127091df719ecee1668f0a6d7701f9e3",
+    "migration/gw138k_audio/push2_workstation/usb_a/P22_KEYBOARD_REPEAT_VERIFICATION.md": "b4c543dd59620e6dd66da92bee915c74ffbd69f10df8b970475e570cd31c3574"
+  },
+  "repeat": {
+    "initial_delay_ms": 300,
+    "interval_ms": 80,
+    "tk_measured_interval_ms": [
+      80.156,
+      80.841
+    ],
+    "key_release_cancels_repeat_immediately": true,
+    "final_note_off_pairing_window_ms": 30,
+    "local_sustain_pauses_repeat": true,
+    "catch_up_bursts": false
+  },
+  "verification": {
+    "tk": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/p22_keyboard_20260915_220702_621343/verification.json",
+    "audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/p22_audio_sim_214047_483818/verification.json",
+    "audio_frames": 226550,
+    "nonzero_frames": 226469,
+    "applied_events": 301,
+    "note_on_events": 128,
+    "note_off_events": 128,
+    "max_active_voices": 14,
+    "final_held_and_allocated_zero": true,
+    "max_pc_queue_depth": 1,
+    "pc_backpressure_cycles": 0,
+    "sample_rate_hz": 48000,
+    "audio_fault": false,
+    "hardware_tested": true,
+    "computer_keyboard_hardware_tested": true,
+    "pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.01,
+      "resources": {
+        "Logic": 33830,
+        "Register": 25192,
+        "BSRAM": 253,
+        "DSP": 43.5
+      },
+      "full_build": true,
+      "inputs_unchanged": true,
+      "production_changes_vs_p21": [
+        "scripts/build.tcl"
+      ],
+      "audit_passed": false,
+      "full_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/usb_a_audit.json",
+      "audit_error": "existing DDR/video audit failed: FAIL Gowin build:\n- stopped-clock reset VO/SDF audit failed: reset exception includes unaudited endpoints: ['u_managed/effect_mask_sync_0_s0/RESET', 'u_managed/effect_mask_sync_1_s0/RESET', 'u_managed/effect_mask_sync_2_s0/RESET']\n",
+      "audio_routed_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/p22_audio_routed_audit_correct_hierarchy.json"
+    }
+  },
+  "programming": {
+    "status": "sram_download_and_before_after_readback_passed",
+    "probe": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/p22_hardware_probe_214251_384206/result.json",
+    "expected_debugger_serial": "2025030317",
+    "required_before_usercode": "0x0000D14C",
+    "required_after_usercode": "0x00000022",
+    "operations_completed": [
+      {
+        "name": "before",
+        "passed": true
+      },
+      {
+        "name": "sram",
+        "passed": true
+      },
+      {
+        "name": "after",
+        "passed": true
+      }
+    ],
+    "sram_written": true,
+    "fpga_flash_written": false,
+    "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260915_215319_714349/result.json",
+    "cable_location": 53,
+    "usb_device": "/sys/bus/usb/devices/3-5"
+  },
+  "physical_acceptance": {
+    "status": "passed",
+    "computer_keyboard": "passed",
+    "computer_keyboard_user_report": "现在电脑控制没啥问题了",
+    "computer_keyboard_report_date": "2026-09-16",
+    "computer_keyboard_evidence": {
+      "session": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/results/keyboard_session_20260915_221519_927988/events.jsonl",
+      "midi_tx_records": 510,
+      "note_on_events": 254,
+      "note_off_events": 254,
+      "distinct_notes": 18,
+      "all_note_counts_balanced": true,
+      "board_telemetry_received": false
+    },
+    "remaining_peripherals_user_report": "都正常，继续",
+    "remaining_peripherals_report_date": "2026-09-16",
+    "push": "passed",
+    "push_screen": "passed",
+    "push_lights": "passed",
+    "continuous_pressure": "passed",
+    "hdmi": "passed",
+    "headphones": "passed",
+    "effect_chain": "passed"
+  },
+  "retained": {
+    "last_physically_accepted": "P22",
+    "previous_physically_accepted": "P21",
+    "p21_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_195400_727173/Prj1/impl/pnr/Prj1.fs",
+    "p21_sha256": "77a4a62e8e0323c94f4c58b73e9de0b1142a5fa612966c4c7f86de3a346fb039",
+    "p21_usercode": "0x0000D14C",
+    "p10_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/Prj1/impl/pnr/Prj1.fs",
+    "p10_sha256": "dd80b9009241836b3266b6407aa1a36cf8973d0b660d239e2e0f1fe8e0e4f793",
+    "flash_written": false,
+    "usb_in_error_diagnostic": null
+  },
+  "offline_release_bundle": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/p22_keyboard_repeat_20260915_215231_963181",
+  "pc_window": {
+    "session": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/results/keyboard_session_20260915_221519_927988",
+    "launch": null,
+    "pid": 1743717,
+    "ready": false,
+    "ready_during_acceptance": true,
+    "telemetry_verified": false,
+    "one_way": true,
+    "reason": "No C350/K138 after the two-second FTDI drain; V14 input enabled for physical testing without fabricating board state",
+    "automatic_note_events_sent": false,
+    "current_connection": "disconnected_after_acceptance",
+    "disconnected_reason": "[Errno 5] Input/output error"
+  },
+  "post_acceptance_readback": {
+    "attempted": true,
+    "passed": true,
+    "time": "2026-09-16T12:38:34+08:00",
+    "debugger": "0403:6010 serial 2025030317",
+    "cable_location": 53,
+    "idcode": "0x0001081B",
+    "usercode": "0x00000022",
+    "status_code": "0x00026230",
+    "programming_operation_performed": false,
+    "fpga_flash_written": false,
+    "conclusion": "P22 remained in SRAM after computer-keyboard physical acceptance"
+  },
+  "post_download_uart": {
+    "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/capture_20260915_215533_259858/result.json",
+    "bytes_received": 0,
+    "valid_records": 0,
+    "crc_errors": 0,
+    "conclusion": "inconclusive for board functions; U15 return is silent, while the separate V14 input remains available for physical testing"
+  }
+}

@@ -13,13 +13,22 @@ def replace(s,a,b):
     assert s.count(a)==1,('ambiguous source edit',a)
     return s.replace(a,b)
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path);args=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path)
+    ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
+    args=ap.parse_args()
+    if args.user_code is not None:
+        if len(args.user_code)!=8 or any(c not in '0123456789abcdefABCDEF' for c in args.user_code):
+            ap.error('--user-code requires eight hexadecimal digits')
     for base,manifest,prefix in [(WORK,'workstation_inputs.json','Prj1'),(USB,'inputs.json','')]:
         hashes=json.loads((base/manifest).read_text())
         assert all(sha(base/prefix/p)==h for p,h in hashes.items()),'frozen inputs changed: '+str(base)
     out=ROOT/'results'/datetime.now().strftime('build_%Y%m%d_%H%M%S_%f');out.mkdir(parents=True)
     stage=out/'Prj1'
     shutil.copytree(WORK/'Prj1',stage,ignore=shutil.ignore_patterns('impl','build','__pycache__','*.user'))
+    if args.user_code is not None:
+        tcl=stage/'scripts/build.tcl'
+        tcl.write_text(replace(tcl.read_text(),'set flow all',
+            'set_option -user_code '+args.user_code.upper()+'\nset flow all'))
     shutil.copytree(WORK/'reference',out/'reference')
     # Display-data overlays are kept outside the frozen workstation
     # source tree. The P10 baseline remains hash-checked and untouched.
