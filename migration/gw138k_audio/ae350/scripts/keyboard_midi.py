@@ -69,6 +69,10 @@ class Notes:
         self.pedal = False
         return packet
 
+    def discard(self):
+        self.held.clear()
+        self.pedal = False
+
 
 class KeyboardWindow:
     def __init__(self, root, port=DEFAULT_PORT, log=None, connect=True):
@@ -81,6 +85,7 @@ class KeyboardWindow:
         self.cpu_sequence = None
         self.last_state = None
         self.last_expression = None
+        self.panic_epoch = None
         self.telemetry_seen = False
         self.requests = {}
         self.scale_timers = {}
@@ -227,6 +232,7 @@ class KeyboardWindow:
         self.telemetry_seen = False
         self.effect_request = None
         self.last_expression = None
+        self.panic_epoch = None
         self.requests.clear()
         self.update_controls()
         try:
@@ -359,6 +365,11 @@ class KeyboardWindow:
             self.record("state", **state)
         elif kind == "E138" and words[0] == self.cpu_sequence and self.last_state and words[0] == self.last_state["sequence"]:
             self.last_expression = expression(words)
+            epoch = self.last_expression["panic_epoch"]
+            if self.panic_epoch is None:
+                self.panic_epoch = epoch
+            elif epoch != self.panic_epoch:
+                self.synchronize_panic(epoch)
             self.confirm_requests(self.last_expression, ("vibrato", "glide", "bend_index", "snap_request"))
             self.update_controls()
             self.record("expression", **self.last_expression)
@@ -502,9 +513,23 @@ class KeyboardWindow:
         def release():
             self.cancel_repeats()
             self.send(self.notes.drain())
-            self.send(bytes((0xb0, 123, 0)))
+            self.send(bytes((0xb0, 120, 0)))
         if self.operate(release):
-            self.activity.set("全部音符已松开；原释放包络结束后静音。")
+            self.activity.set("PANIC 已清除全部音符、包络和效果尾音。")
+
+    def synchronize_panic(self, epoch):
+        # Keep physical keycodes latched until their real releases arrive, so
+        # board-originated PANIC cannot be undone by an OS repeat KeyPress.
+        self.cancel_repeats()
+        for callback in self.releases.values():
+            self.root.after_cancel(callback)
+        self.releases.clear()
+        self.release_times.clear()
+        self.notes.discard()
+        self.panic_epoch = epoch
+        self.activity.set("板端 PANIC：本机持键和重复状态已同步清除。")
+        self.draw_keys()
+        self.record("board_panic", panic_epoch=epoch)
 
     def set_mode(self, mode):
         def change():

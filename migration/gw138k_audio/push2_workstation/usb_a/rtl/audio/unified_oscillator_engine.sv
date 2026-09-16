@@ -31,6 +31,7 @@ module unified_oscillator_engine #(
     output logic               mode_set_ready_o,
     input  logic        [1:0]  mode_i,
     output logic        [1:0]  current_mode_o,
+    input  logic               panic_i,
     input  logic               event_valid_i,
     output logic               event_ready_o,
     input  logic               event_note_on_i,
@@ -385,7 +386,8 @@ module unified_oscillator_engine #(
     active_voice_count_o = '0;
     active_mask_o = '0;
     for (int index = 0; index < 32; index = index + 1) begin
-      if (envelope_state[index] != ENVELOPE_IDLE) begin
+      if (allocated_mask_o[index] &&
+          envelope_state[index] != ENVELOPE_IDLE) begin
         active_mask_o[index] = 1'b1;
         active_voice_count_o = active_voice_count_o + 6'd1;
       end
@@ -486,6 +488,10 @@ module unified_oscillator_engine #(
       pitch_write_valid <= 1'b0;
       pitch_write_index <= '0;
       pitch_write_data <= '0;
+    end else if (panic_i) begin
+      pitch_write_valid <= 1'b0;
+      pitch_write_index <= '0;
+      pitch_write_data <= '0;
     end else begin
       if (accepted_sample) sample_pitch_q20 <= pitch_ratio_q20_i;
       pitch_write_valid <= slot_read_valid;
@@ -499,6 +505,11 @@ module unified_oscillator_engine #(
 
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin
+      slot_read_valid <= 1'b0;
+      slot_read_last <= 1'b0;
+      slot_read_index <= '0;
+      slot_read_data <= '0;
+    end else if (panic_i) begin
       slot_read_valid <= 1'b0;
       slot_read_last <= 1'b0;
       slot_read_index <= '0;
@@ -746,6 +757,33 @@ module unified_oscillator_engine #(
         end else begin
           issue_index <= issue_index + 10'd1;
         end
+      end
+
+      // CC120 PANIC is a hard state boundary.  Clearing the allocation mask
+      // makes the old per-voice envelope arrays unreachable; a later voice
+      // load initializes its selected entry before samples can be accepted.
+      // Keep those arrays out of this branch so PANIC does not add a reset
+      // mux to every stored bit or disturb the slot-RAM inference.
+      if (panic_i) begin
+        load_state <= LOAD_IDLE;
+        allocated_mask_o <= '0;
+        voice_started_mask <= '0;
+        envelope_update_active <= 1'b0;
+        envelope_update_valid <= 1'b0;
+        issue_active <= 1'b0;
+        issued_slot_count_o <= '0;
+        gain_product_valid <= 1'b0;
+        gain_product_last <= 1'b0;
+        envelope_product_valid <= 1'b0;
+        envelope_product_last <= 1'b0;
+        accumulator <= '0;
+        final_accumulator <= '0;
+        finalize_valid <= 1'b0;
+        quantized_mix <= '0;
+        quantized_valid <= 1'b0;
+        sample_valid_o <= 1'b0;
+        sample_o <= '0;
+        mix_busy_o <= 1'b0;
       end
     end
   end

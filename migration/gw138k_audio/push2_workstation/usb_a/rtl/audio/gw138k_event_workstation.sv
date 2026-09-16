@@ -16,6 +16,7 @@ module gw138k_event_workstation #(
     output wire [127:0] held_notes_o,
     output logic [31:0] applied_events_o,
     output wire [31:0] pc_overflow_o,control_options_o,
+    output logic [9:0] panic_epoch_o,
     input logic cpu_event_valid_i,
     input logic [17:0] cpu_event_i,
     output wire cpu_event_ready_o,
@@ -75,6 +76,7 @@ module gw138k_event_workstation #(
   logic [7:0] issued;
   logic [31:0] held_pcm_l, held_pcm_r;
   logic fx_ready;
+  logic panic_muted;
   logic dispatch, full;
   assign fifo_event_ready=!event_valid || event_ready;
   // Register the FIFO output before MIDI routing and 32-way note matching.
@@ -91,6 +93,7 @@ module gw138k_event_workstation #(
   assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i;
   assign full = &allocated;
   assign dispatch=!pending && !sample_ce_i && !load_busy && !mix_busy && !mode_valid;
+  wire panic_accept=event_valid && event_ready && kind==2 && a==120;
   assign core_ce=(pending || sample_ce_i) && core_sample_ready;
   always_comb begin
     core_event_valid=0; core_note_on=0; core_note=a; core_velocity=b;
@@ -132,6 +135,7 @@ module gw138k_event_workstation #(
   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
       .clk_i,.rst_ni,.mode_set_valid_i(mode_valid),.mode_set_ready_o(mode_ready),
       .mode_i(requested_mode),.current_mode_o(mode_o),
+      .panic_i(panic_accept),
       .event_valid_i(core_event_valid),.event_ready_o(core_event_ready),
       .event_note_on_i(core_note_on),.event_profile_i(profile),
       .event_midi_note_i(core_note),.event_velocity_i(core_velocity),
@@ -142,7 +146,7 @@ module gw138k_event_workstation #(
       .allocated_mask_o(allocated),.active_mask_o,.active_voice_count_o,
       .load_busy_o(load_busy),.mix_busy_o(mix_busy),.issued_slot_count_o(issued));
   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
-      .clk_i,.rst_ni,.valid_i(synth_valid_o),.synth_i(synth_o),
+      .clk_i,.rst_ni,.clear_i(panic_accept),.valid_i(synth_valid_o),.synth_i(panic_muted?32'sd0:synth_o),
       .pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),
       .synth_gain_i(synth_gain_o),.pcm_gain_i(pcm_gain_o),.effect_mask_i(effect_mask_o),.effect_order_i(effect_order_o),
       .ready_o(fx_ready),.valid_o(sample_valid_o),.left_o(effect_left),.right_o(effect_right),.clip_o);
@@ -154,6 +158,7 @@ module gw138k_event_workstation #(
       route_o<=0; target_ratio<=1048576; glide_step<=0; vibrato_depth<=0; effect_mask_o<=0; effect_order_o<=6'b10_01_00; effect_count<=0;
       glide_cc<=0; bend_index<=128; snapshot_request<=0;
       sustain<=0; held<=0; deferred<=0; releasing<=0; release_index<=0;
+      panic_epoch_o<=0;panic_muted<=0;
     end else begin
       if(sample_valid_o) frame_inflight<=0;
       if(sample_ce_i) begin
@@ -173,7 +178,7 @@ module gw138k_event_workstation #(
         applied_events_o<=applied_events_o+1'b1;
         case(kind)
           0: begin held[a]<=0; if(sustain) deferred[a]<=1; end
-          1: if(full) note_drop_o<=note_drop_o+1; else begin held[a]<=1; deferred[a]<=0; end
+          1: if(full) note_drop_o<=note_drop_o+1; else begin held[a]<=1; deferred[a]<=0; panic_muted<=0; end
           2: case(a)
             1: vibrato_depth<=b;
             5: begin glide_cc<=b;glide_step<=b==0 ? 16'd0 : 16'd256-({9'd0,b}<<1);end
@@ -209,7 +214,11 @@ module gw138k_event_workstation #(
             end
             82: if(b<4) route_o<=b[1:0];
             83: if(b==127) snapshot_request<=snapshot_request+1'b1;
-            120,123: begin
+            120: begin
+              held<=0; deferred<=0; sustain<=0; releasing<=0; release_index<=0;
+              panic_epoch_o<=panic_epoch_o+1'b1; panic_muted<=1;
+            end
+            123: begin
               deferred<=held|deferred; held<=0; sustain<=0;
               releasing<=1; release_index<=0;
             end

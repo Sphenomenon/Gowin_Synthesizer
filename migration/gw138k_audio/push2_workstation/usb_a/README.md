@@ -1,5 +1,11 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-09-16 P23 PANIC 同步硬清理（实体通过）
+
+P23 将明确的 PANIC 改为 CC120：接受事件时立即清 held、延音/释放扫描、声部分配可达状态、处理流水线和效果尾音；CC123 继续作为正常 RELEASE。10 bit PANIC 世代沿现有状态快照清 Push mapper/画面、AE350 UI gate 和电脑窗口重复状态，不改变 pitch 低 22 bit、Push 连续压力、声部分配策略或效果选择/顺序。
+
+完整构建 setup/hold 为 0/0，最差 setup slack +0.087 ns；Logic 34848、Register 25381、BSRAM 253、DSP 43.5。位流 SHA256 `8bd54510c9e0637420a49c9e4235c27659a9e48417a97eec35137e322dda25b6`，UserCode `0x00000023`。已从 P22 `0x00000022` 仅写 SRAM 并读回，Flash 未写。用户确认电脑与 Push PANIC、持键防重触发、电脑长按、Push/连续压力/屏幕/灯光、HDMI、耳机和效果链均正常；验收后只读确认仍为 P23。完整 routed audit 仍只因原三个 `effect_mask_sync` reset 端点缺口失败。见 [正式版本记录](BOARD_CURRENT_P23_PANIC_SYNC.json)、[源码审计](P23_PANIC_SYNC_AUDIT.md)、[验证记录](P23_PANIC_SYNC_VERIFICATION.md) 和 [候选绑定](P23_PANIC_SYNC_CANDIDATE.json)。
+
 ## 2026-09-15 P22 电脑键盘连击（实体通过）
 
 修复现有电脑 Tk 串口入口的长按去重行为：短按一次，长按 300 ms 后每 80 ms 发送 Note Off/On，松键立即停止重复计时器；原 X11 松键窗口和声部释放包络保留。空格延音期间暂停连击。Tk 和 UART→音频定向仿真通过，完整构建 setup/hold 0/0、最差 setup slack +0.010 ns，资源与 P21 相同。完整 routed audit 仍因原三个 effect_mask reset 端点缺口失败。
@@ -108,7 +114,7 @@ P13 已完成共享 DDR → HDMI reader → Push 64 位摘要 mailbox 的 RTL、
 | 上排 CC 105–109 | 笛 / 弦 / 铜管 / 马林巴 / 钢琴 |
 | 下排 CC 20–22 | 延迟 / 合唱 / 混响开关 |
 | 下排 CC 23–26 | 立体声 / 左 / 右 / 静音 |
-| CC 27 或 29 | 全部松音 |
+| CC 27 或 29 | 硬 PANIC：立即清声部与效果尾音 |
 | 旋钮 CC 71 或 79 | 音量；有符号相对增量，范围钳位 |
 | 旋钮 CC 72 / 73 | 颤音 / 滑音 |
 
@@ -129,6 +135,7 @@ MIDI IN 保留 DATA0/DATA1 去重；EP1 OUT 屏幕与 EP2 OUT 灯光分别维护
 ```sh
 python3 migration/gw138k_audio/push2_workstation/usb_a/build.py
 python3 migration/gw138k_audio/push2_workstation/usb_a/sim/run.py <新构建目录>
+python3 migration/gw138k_audio/push2_workstation/usb_a/sim/p23/run.py <新构建目录>
 python3 migration/gw138k_audio/push2_workstation/usb_a/audit.py <新构建目录>
 ```
 

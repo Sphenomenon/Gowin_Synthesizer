@@ -12,6 +12,12 @@ def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def replace(s,a,b):
     assert s.count(a)==1,('ambiguous source edit',a)
     return s.replace(a,b)
+def replace_n(s,a,b,count):
+    assert s.count(a)==count,('unexpected source edit count',a,s.count(a),count)
+    return s.replace(a,b)
+def replace_between(s,start,end,a,b):
+    first=s.index(start);last=s.index(end,first) if end else len(s)
+    return s[:first]+replace(s[first:last],a,b)+s[last:]
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path)
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
@@ -55,6 +61,83 @@ def main():
     }
     for rel,src in audio_overlay.items():
         shutil.copy2(src,stage/rel)
+    # P23 PANIC carries a compact epoch in the previously-zero upper bits of
+    # control_pitch.  Pitch remains the unchanged low 22-bit Q20 value.
+    p=stage/'src/ae350/gw138k_controlled_adapter.sv';s=p.read_text()
+    s=replace(s,'assign control_pitch_o={10\'d0,pitch};',
+        'wire [9:0] panic_epoch;\n    assign control_pitch_o={panic_epoch,pitch};')
+    s=replace(s,'.held_notes_o(held_notes_o),.applied_events_o(applied_events_o),.pc_overflow_o(pc_overflow),.control_options_o(control_options_o),',
+        '.held_notes_o(held_notes_o),.applied_events_o(applied_events_o),.pc_overflow_o(pc_overflow),.control_options_o(control_options_o),.panic_epoch_o(panic_epoch),')
+    p.write_text(s)
+    # Clear effect state without resetting BSRAM contents.  Resetting each
+    # history length/pointer makes old RAM words unreachable until replaced.
+    p=stage/'legacy/rtl/audio/stereo_effects.sv';s=p.read_text()
+    s=replace_n(s,'input logic clk_i,rst_ni,valid_i,enabled_i,',
+        'input logic clk_i,rst_ni,clear_i,valid_i,enabled_i,',3)
+    s=replace(s,'input logic clk_i,rst_ni,valid_i,\n    input logic signed [31:0] synth_i,pcm_left_i,pcm_right_i,',
+        'input logic clk_i,rst_ni,clear_i,valid_i,\n    input logic signed [31:0] synth_i,pcm_left_i,pcm_right_i,')
+    s=replace_n(s,'if(state==1) begin','if(!clear_i && state==1) begin',3)
+    s=replace(s,'if(state==4) begin memory_l[pointer]<=feedback_l;memory_r[pointer]<=feedback_r;end',
+        'if(!clear_i && state==4) begin memory_l[pointer]<=feedback_l;memory_r[pointer]<=feedback_r;end')
+    s=replace(s,'if(state==3) begin memory_l[pointer]<=input_l;memory_r[pointer]<=input_r;end',
+        'if(!clear_i && state==3) begin memory_l[pointer]<=input_l;memory_r[pointer]<=input_r;end')
+    s=replace(s,'if(state==6) begin comb_a[pointer]<=feedback_a;comb_b[pointer]<=feedback_b;end',
+        'if(!clear_i && state==6) begin comb_a[pointer]<=feedback_a;comb_b[pointer]<=feedback_b;end')
+    s=replace_n(s,'.clk_i,.rst_ni,.valid_i(','.clk_i,.rst_ni,.clear_i,.valid_i(',3)
+    stage_body='''end else begin
+      valid_o<=0;clip_o<=0;
+      case(state)'''
+    stage_clear='''end else begin
+      valid_o<=0;clip_o<=0;
+      if(clear_i) begin
+        pointer<=0;frames<=0;state<=0;gain<=0;valid_o<=0;clip_o<=0;
+      end else case(state)'''
+    s=replace_between(s,'module serial_delay_effect','module serial_chorus_effect',stage_body,stage_clear)
+    s=replace_between(s,'module serial_chorus_effect','module serial_reverb_effect',stage_body,stage_clear)
+    reverb_clear=stage_clear.replace('valid_o<=0;clip_o<=0;\n      end else case(state)',
+        'valid_o<=0;clip_o<=0;damping_a<=0;damping_b<=0;\n      end else case(state)')
+    s=replace_between(s,'module serial_reverb_effect','module stereo_effects',stage_body,reverb_clear)
+    top_clear='''end else begin
+      valid_o<=0;clip_o<=0;
+      if(clear_i) begin
+        state<=IDLE;valid_o<=0;clip_o<=0;
+      end else case(state)'''
+    s=replace_between(s,'module stereo_effects',None,stage_body,top_clear)
+    p.write_text(s)
+    # Rebuild the existing AE350 UI ROM from a staged copy.  A new PANIC epoch
+    # clears its local gate and blocks an already-down touch until release.
+    p=stage/'firmware/ui_model.h';s=p.read_text()
+    s=replace(s,'unsigned mode,sound,route,gate,sw,note,keyboard,old_down;',
+        'unsigned mode,sound,route,gate,sw,note,keyboard,old_down,panic_epoch,panic_latched;')
+    s=replace(s,'static inline unsigned ui_touch(ui_model*m,unsigned x,unsigned y,unsigned down) {\n unsigned result=0;int hit=ui_hit(x,y);',
+        '''static inline unsigned ui_touch(ui_model*m,unsigned x,unsigned y,unsigned down) {
+ unsigned result=0;int hit=ui_hit(x,y);
+ if(m->panic_latched) {m->old_down=!!down;if(!down)m->panic_latched=0;return 0;}''')
+    s=replace(s,'static inline unsigned ui_active(const ui_model*m,unsigned note) {',
+        '''static inline unsigned ui_panic(ui_model*m,unsigned epoch) {
+ if(m->panic_epoch==epoch)return 0;
+ m->panic_epoch=epoch;m->gate=0;m->keyboard=0;m->panic_latched=m->old_down;
+ return UI_CHANGED;
+}
+static inline unsigned ui_active(const ui_model*m,unsigned note) {''')
+    p.write_text(s)
+    p=stage/'firmware/ui_main.c';s=p.read_text()
+    s=replace(s,'unsigned sequence=a138_read(AUDIO_BASE,0x1a0),state=a138_read(AUDIO_BASE,0x184),options=a138_read(AUDIO_BASE,0x18c);',
+        'unsigned sequence=a138_read(AUDIO_BASE,0x1a0),state=a138_read(AUDIO_BASE,0x184),pitch=a138_read(AUDIO_BASE,0x188),options=a138_read(AUDIO_BASE,0x18c);')
+    s=replace(s,'unsigned changed=m->pc_faults!=faults||m->mode!=((state>>3)&3u)||m->sound!=((state>>7)&7u)||m->route!=((state>>5)&3u)||m->sw!=sw||m->voices!=((state>>10)&63u);',
+        'unsigned changed=ui_panic(m,pitch>>22)|(m->pc_faults!=faults)||m->mode!=((state>>3)&3u)||m->sound!=((state>>7)&7u)||m->route!=((state>>5)&3u)||m->sw!=sw||m->voices!=((state>>10)&63u);')
+    p.write_text(s)
+    ui_cc=str(Path.home()/'.local/opt/amd/2025.2.1/gnu/riscv/lin/bin/riscv64-unknown-elf')
+    with (out/'ui_firmware_build.log').open('w') as log:
+        subprocess.run([ui_cc+'-gcc','-march=rv32im_zicsr','-mabi=ilp32','-msmall-data-limit=0','-O2','-ffreestanding',
+            '-Wall','-Wextra','-Werror','-Wno-unused-function','-nostdlib','-nostartfiles','-Wl,--build-id=none','-Wl,-T,firmware/boot.ld',
+            '-o','firmware/boot.elf','firmware/start.S','firmware/ui_main.c','firmware/ui_render.c','firmware/ui_runtime.c'],
+            cwd=stage,stdout=log,stderr=subprocess.STDOUT,check=True)
+        subprocess.run([ui_cc+'-objcopy','-O','binary','firmware/boot.elf','firmware/boot.bin'],cwd=stage,
+            stdout=log,stderr=subprocess.STDOUT,check=True)
+    ui_binary=(stage/'firmware/boot.bin').read_bytes();assert len(ui_binary)<=16384,'AE350 UI ROM overflow'
+    ui_binary=ui_binary.ljust(16384,b'\0')
+    (stage/'firmware/boot.mem').write_text(''.join(f'{int.from_bytes(ui_binary[i:i+4],"little"):08x}\n' for i in range(0,len(ui_binary),4)))
     shutil.copy2(ROOT/'rtl/display_data_layout_pkg.svh',stage/'src/memory/display_data_layout_pkg.sv')
     dest=stage/'src/usb_a';dest.mkdir()
     tree=ET.parse(stage/'Prj1.gprj');fl=tree.find('FileList')

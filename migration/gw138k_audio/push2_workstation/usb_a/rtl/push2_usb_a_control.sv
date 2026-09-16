@@ -20,6 +20,7 @@ module push2_usb_a_control(
         .source_valid(&feedback_divider),.source_data(performance_words),.drop_count(),
         .destination_valid(),.destination_data(snapshot));
     wire [31:0] control=snapshot[63:32],options=snapshot[255:224];
+    wire [9:0] panic_epoch=snapshot[287:278];
     wire [63:0] actual_held=snapshot[195:132];
     reg [63:0] display_meta_q;
     reg display_meta_seen;
@@ -48,7 +49,7 @@ module push2_usb_a_control(
     wire [63:0] held;wire [6:0] note,velocity;wire [31:0] mapped,ignored;
     push2_controls controls(.clk(clk),.rst(rst),.connected(connected),
         .valid(valid),.ready(map_ready),.kind(kind),.cable(cable),.channel(channel),.a(a),.b(b),
-        .actual_control(control),.actual_options(options),
+        .actual_control(control),.actual_options(options),.actual_panic_epoch(panic_epoch),
         .event_valid(mapped_valid),.event_ready(mapped_ready),.event_data(mapped_event),
         .held(held),.last_note(note),.last_velocity(velocity),.mapped(mapped),.ignored(ignored));
     gw138k_usb_event_fifo events(.usb_clk(clk),.audio_clk(audio_clk),.usb_rst(rst),

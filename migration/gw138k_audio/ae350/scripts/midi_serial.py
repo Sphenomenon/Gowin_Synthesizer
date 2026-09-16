@@ -26,7 +26,8 @@ def expression(words):
     signed = lambda value: value - (1 << 32) if value & 0x80000000 else value
     bend_index = (options >> 18) & 255
     return dict(sequence=words[0], vibrato=(options >> 4) & 127, glide=(options >> 11) & 127,
-        bend_index=bend_index, bend=(bend_index-128)*64, pitch_q20=words[2],
+        bend_index=bend_index, bend=(bend_index-128)*64, pitch_q20=words[2] & 0x3fffff,
+        panic_epoch=words[2] >> 22,
         sustain=bool(options & 8), snap_request=options >> 26, snap_token=snap & 63,
         snap_done=bool(snap & 64), snap_error=bool(snap & 128), snap_count=(snap >> 8) & 255,
         snap_completed=snap >> 16, snap_left=signed(words[4]), snap_right=signed(words[5]),
@@ -64,7 +65,7 @@ def payload(a):
     if a.command=='program':return bytes([0xc0,a.number])
     if a.command=='bend':
         value=a.value+8192;return bytes([0xe0,value&127,value>>7])
-    if a.command=='panic':return bytes([0xb0,123,0])
+    if a.command=='panic':return bytes([0xb0,120,0])
     return b''
 
 def fresh_status(port,timeout=4,after_sequence=None):

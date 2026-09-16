@@ -1,0 +1,78 @@
+{
+  "version": "P23 PANIC synchronized hard clear",
+  "status": "Built, downloaded to SRAM and physically accepted",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_143026_789005/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "8bd54510c9e0637420a49c9e4235c27659a9e48417a97eec35137e322dda25b6",
+  "usercode": "0x00000023",
+  "behavior": {
+    "hard_panic_cc": 120,
+    "graceful_all_notes_off_cc": 123,
+    "panic_epoch_bits": 10,
+    "pitch_low_bits_unchanged": 22,
+    "effect_selection_and_order_preserved": true,
+    "push_hold_and_poly_aftertouch_unchanged": true
+  },
+  "verification": {
+    "focused": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_143026_789005/p23_panic_143926_476411/verification.json",
+    "audio_routed_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_143026_789005/p23_audio_routed_audit.json",
+    "pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.087,
+      "resources": {
+        "Logic": 34848,
+        "Register": 25381,
+        "BSRAM": 253,
+        "DSP": 43.5
+      },
+      "audit_passed": false,
+      "known_audit_gap": "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete"
+    },
+    "sram": {
+      "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260916_144151_621500/result.json",
+      "from_code": "0x00000022",
+      "usercode": "0x00000023",
+      "operations_passed": [
+        "before",
+        "sram",
+        "after"
+      ],
+      "post_acceptance_usercode": "0x00000023",
+      "post_acceptance_idcode": "0x0001081B",
+      "post_acceptance_status_code": "0x00026230",
+      "fpga_flash_written": false
+    },
+    "physical_acceptance": {
+      "result": "passed",
+      "date": "2026-09-16",
+      "user_report": "没问题。继续下一个项目",
+      "computer_panic": "passed",
+      "push_panic": "passed",
+      "held_key_no_retrigger_until_release": "passed",
+      "post_panic_new_note": "passed",
+      "computer_keyboard_repeat": "passed",
+      "push_pads": "passed",
+      "continuous_pressure": "passed",
+      "push_screen": "passed",
+      "push_lights": "passed",
+      "hdmi": "passed",
+      "headphones": "passed",
+      "effect_chain": "passed"
+    },
+    "post_download_uart": {
+      "session": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/results/keyboard_session_20260916_144707_929753/events.jsonl",
+      "records": 2,
+      "valid_board_telemetry": 0,
+      "conclusion": "inconclusive; not counted as a pass or failure"
+    }
+  },
+  "retained": {
+    "p22_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/Prj1/impl/pnr/Prj1.fs",
+    "p22_sha256": "f88f2a1a97e629b30a381b2e84c29f08893f5a626e94eb0466dc57c535a95dbb",
+    "p22_usercode": "0x00000022",
+    "p21_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_195400_727173/Prj1/impl/pnr/Prj1.fs",
+    "p10_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/Prj1/impl/pnr/Prj1.fs",
+    "flash_written": false,
+    "usb_in_error_diagnostic": null
+  }
+}

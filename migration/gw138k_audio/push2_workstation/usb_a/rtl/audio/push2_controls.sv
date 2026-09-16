@@ -5,11 +5,13 @@ module push2_controls(
     input wire valid,output wire ready,input wire [3:0] kind,cable,channel,
     input wire [6:0] a,b,
     input wire [31:0] actual_control,actual_options,
+    input wire [9:0] actual_panic_epoch,
     output reg event_valid,input wire event_ready,output reg [17:0] event_data,
     output reg [63:0] held,output reg [6:0] last_note,last_velocity,
     output reg [31:0] mapped,ignored
 );
     reg was_connected,panic_pending;
+    reg [9:0] panic_epoch;
     reg [127:0] buttons;
     reg [2:0] effects;
     reg [6:0] volume,vibrato,glide;
@@ -40,11 +42,10 @@ module push2_controls(
     always @(posedge clk or posedge rst) begin
         if(rst) begin
             event_valid<=0;event_data<=0;held<=0;buttons<=0;
-            was_connected<=0;panic_pending<=0;last_note<=60;last_velocity<=0;
+            was_connected<=0;panic_pending<=0;panic_epoch<=0;last_note<=0;last_velocity<=0;
             mapped<=0;ignored<=0;effects<=0;volume<=100;vibrato<=0;glide<=0;quiet<=0;
         end else begin
             was_connected<=connected;
-            if(was_connected && !connected) begin panic_pending<=1;held<=0;buttons<=0;end
             if(event_valid && event_ready) event_valid<=0;
             if(quiet!=17'd100000) quiet<=quiet+1'b1;
             else begin
@@ -52,8 +53,15 @@ module push2_controls(
                 volume<=actual_control[31]?127:actual_control[30:24];
                 vibrato<=actual_options[10:4];glide<=actual_options[17:11];
             end
-            if(panic_pending && room) begin
-                event_valid<=1;event_data<={4'd2,7'd123,7'd0};panic_pending<=0;mapped<=mapped+1'b1;
+            if(actual_panic_epoch!=panic_epoch) begin
+                // Drop a not-yet-forwarded local event from before PANIC and
+                // align every Push-local latch with the accepted audio state.
+                panic_epoch<=actual_panic_epoch;event_valid<=0;panic_pending<=0;
+                held<=0;buttons<=0;last_note<=0;last_velocity<=0;
+            end else if(was_connected && !connected) begin
+                panic_pending<=1;held<=0;buttons<=0;last_note<=0;last_velocity<=0;
+            end else if(panic_pending && room) begin
+                event_valid<=1;event_data<={4'd2,7'd120,7'd0};panic_pending<=0;mapped<=mapped+1'b1;
             end else if(valid && ready) begin
                 if(cable!=0 || channel!=0) ignored<=ignored+1'b1;
                 else if(kind==10 && a>=36 && a<=99 && held[a-36]) begin
@@ -98,7 +106,10 @@ module push2_controls(
                                 // audio core owns ordering and resets on press 4.
                                 quiet<=0; event_valid<=1; event_data<={4'd2,7'd87,a-7'd20}; mapped<=mapped+1'b1;
                             end else if(a>=23 && a<=26) begin event_valid<=1;event_data<={4'd2,7'd82,a-7'd23};mapped<=mapped+1'b1;end
-                            else if(a==27 || a==29) begin event_valid<=1;event_data<={4'd2,7'd123,7'd0};held<=0;mapped<=mapped+1'b1;end
+                            else if(a==27 || a==29) begin
+                                event_valid<=1;event_data<={4'd2,7'd120,7'd0};
+                                held<=0;last_note<=0;last_velocity<=0;mapped<=mapped+1'b1;
+                            end
                             else ignored<=ignored+1'b1;
                         end
                     end
