@@ -1,0 +1,102 @@
+{
+  "version": "P24 A/B/C perceptual level calibration",
+  "status": "built_sram_downloaded_and_physically_accepted",
+  "baseline_commit": "7319d4b",
+  "git_committed": true,
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_181039_663260",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_181039_663260/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "7a37311de6df38ed1f0191bd2f07094904df826dd69c4b2007f2e0ec099c1c66",
+  "header_checksum": "0x01F6",
+  "bitstream_usercode": "0x00000024",
+  "board_usercode_readback": "0x00000024",
+  "calibration": {
+    "metric": "48 kHz FFT A-weighted spectral RMS",
+    "note": 60,
+    "velocity": 127,
+    "effects": 0,
+    "skip_frames": 1000,
+    "capture_frames": 8192,
+    "row_scale_q16": [
+      [65536, 65536, 65536, 65536, 65536],
+      [59974, 65935, 46687, 66124, 76648],
+      [9609, 10933, 9240, 8272, 10427]
+    ],
+    "profile_order": ["flute", "strings", "trumpet", "marimba", "piano"],
+    "harmonic_ratios_preserved": true,
+    "active_voice_normalization_used": false,
+    "c_piano_peak_guard_db": -0.3716
+  },
+  "source_snapshot_hashes": {
+    "migration/gw138k_audio/push2_workstation/usb_a/build.py": "96488a3c492806142980332700d58caf1c1f9232a5353cf1db967756a0262a7e",
+    "migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/p24_mode_gain_scale.json": "98ec69155a09fa0eff74e2a0950d5713fcd9ab2dc2ed4cf8bd04817406e8de6e",
+    "migration/gw138k_audio/push2_workstation/usb_a/sim/p24/measure.py": "6b7d421a6d19c5dd8a08dbbbbfa8e79e09abb8d4fc61d112489925e81072e8d5",
+    "migration/gw138k_audio/push2_workstation/usb_a/sim/p24/polyphony.py": "c14f92fdaeaef2c24916eda7f1ee25c4c38e719decffa4c9deb54d7b82422ab8",
+    "migration/gw138k_audio/push2_workstation/usb_a/sim/p24/tb_mode_levels.sv": "1397cd7e279b5198860bb8107046b4f709f1f77bb878f67cf5619fe5f7eb2df8"
+  },
+  "verification": {
+    "baseline": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/p24_level_measure_20260916_175613_658924/measurement.json",
+    "rejected_unweighted_rms_candidate": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/p24_level_measure_20260916_175955_090116/measurement.json",
+    "final_single_note": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/p24_level_measure_20260916_182045_725593/measurement.json",
+    "final_single_note_sha256": "aee041de677562422ebeba784bd0bb758a7b024fa1b1135711af6c90a1a0cf42",
+    "final_polyphony": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/p24_polyphony_20260916_182045_577897/verification.json",
+    "final_polyphony_sha256": "a1cf97ecb6e8fee1c98334a80aeee4c54307320bf47c07eea8c1ff121cc7bd98",
+    "single_note_clips": 0,
+    "polyphony_rail_frames": 0,
+    "polyphony_effect_clip_frames": 0,
+    "physical_acceptance": {
+      "result": "passed",
+      "date": "2026-09-16",
+      "user_report": "没问题，完美",
+      "five_timbres_mode_levels": "passed",
+      "high_velocity_chords": "passed",
+      "computer_keyboard_repeat": "passed",
+      "panic": "passed",
+      "push_pads": "passed",
+      "continuous_pressure": "passed",
+      "push_screen": "passed",
+      "push_lights": "passed",
+      "hdmi": "passed",
+      "headphones": "passed",
+      "effect_chain": "passed"
+    },
+    "pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.087,
+      "resources": {"Logic": 34848, "Register": 25381, "BSRAM": 253, "DSP": 43.5},
+      "full_build": true,
+      "inputs_unchanged": true,
+      "audit_passed": false,
+      "full_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_181039_663260/usb_a_audit.json",
+      "audit_error": "inherited effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage gap",
+      "audio_routed_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_181039_663260/p24_audio_routed_audit.json"
+    }
+  },
+  "programming": {
+    "status": "sram_download_and_before_after_readback_passed",
+    "required_before_usercode": "0x00000023",
+    "required_after_usercode": "0x00000024",
+    "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260916_182346_293937/result.json",
+    "sram_written": true,
+    "fpga_flash_written": false,
+    "cable_location": 53,
+    "usb_device": "/sys/bus/usb/devices/3-5",
+    "post_acceptance_readback": {
+      "idcode": "0x0001081B",
+      "usercode": "0x00000024",
+      "status_code": "0x00026230",
+      "programming_performed": false,
+      "fpga_flash_written": false
+    }
+  },
+  "retained": {
+    "last_physically_accepted": "P24",
+    "p23_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_143026_789005/Prj1/impl/pnr/Prj1.fs",
+    "p23_sha256": "8bd54510c9e0637420a49c9e4235c27659a9e48417a97eec35137e322dda25b6",
+    "p23_usercode": "0x00000023",
+    "p22_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260915_213126_710277/Prj1/impl/pnr/Prj1.fs",
+    "p10_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/Prj1/impl/pnr/Prj1.fs",
+    "flash_written": false,
+    "usb_in_error_diagnostic": null
+  }
+}

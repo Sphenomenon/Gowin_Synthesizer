@@ -61,6 +61,24 @@ def main():
     }
     for rel,src in audio_overlay.items():
         shutil.copy2(src,stage/rel)
+    # P24 preserves every profile's harmonic ratios and applies one fixed row
+    # scale while loading the existing gain ROM.  The scale is independent of
+    # active voice count, so notes do not pump when polyphony changes.
+    level_config=json.loads((ROOT/'rtl/audio/p24_mode_gain_scale.json').read_text())
+    level_scale=level_config['scale_q16']
+    assert len(level_scale)==3 and all(len(row)==5 for row in level_scale)
+    gain_mem=stage/'sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem'
+    gain_words=[int(word,16) for word in gain_mem.read_text().split()]
+    assert len(gain_words)==3*5*32
+    for mode in range(3):
+        for profile in range(5):
+            scale=level_scale[mode][profile]
+            assert 0<scale<2**18
+            base=(mode*5+profile)*32
+            for partial in range(32):
+                value=(gain_words[base+partial]*scale+32768)//65536
+                gain_words[base+partial]=min(value,32767)
+    gain_mem.write_text(''.join(f'{value:04X}\n' for value in gain_words))
     # P23 PANIC carries a compact epoch in the previously-zero upper bits of
     # control_pitch.  Pitch remains the unchanged low 22-bit Q20 value.
     p=stage/'src/ae350/gw138k_controlled_adapter.sv';s=p.read_text()

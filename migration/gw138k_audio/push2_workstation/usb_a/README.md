@@ -1,5 +1,11 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-09-16 P24 A/B/C 模式响度校准（实体通过）
+
+P24 用相同 MIDI 60、velocity 127、音色、包络年龄和效果关闭的最终 48 kHz PCM 测量，按 A 计权频谱能量对齐五种音色的 A/B/C 响度。A 保持不变，B/C 只对各自增益 ROM 行做固定缩放，谐波比例、包络、活动声部与效果链不变。十五组 32 音和弦及三个最高峰 32 同音极限均无饱和；C 钢琴为峰值余量保留约 0.37 dB。
+
+完整构建 setup/hold 0/0，最差 setup slack +0.087 ns；资源与 P23 相同。位流 SHA256 `7a37311de6df38ed1f0191bd2f07094904df826dd69c4b2007f2e0ec099c1c66`，UserCode `0x00000024`。已从 P23 `0x00000023` 仅写 SRAM并读回，Flash 未写。完整 routed audit 仍只因旧三个 `effect_mask_sync` reset 端点失败。用户完成五种音色、A/B/C 响度、高力度和弦以及既有功能回归后报告“没问题，完美”；验收后只读仍为 `0x00000024`。见 [正式版本记录](BOARD_CURRENT_P24_MODE_LEVEL.json)、[源码审计](P24_MODE_LEVEL_AUDIT.md)、[验证记录](P24_MODE_LEVEL_VERIFICATION.md) 和 [候选绑定](P24_MODE_LEVEL_CANDIDATE.json)。
+
 ## 2026-09-16 P23 PANIC 同步硬清理（实体通过）
 
 P23 将明确的 PANIC 改为 CC120：接受事件时立即清 held、延音/释放扫描、声部分配可达状态、处理流水线和效果尾音；CC123 继续作为正常 RELEASE。10 bit PANIC 世代沿现有状态快照清 Push mapper/画面、AE350 UI gate 和电脑窗口重复状态，不改变 pitch 低 22 bit、Push 连续压力、声部分配策略或效果选择/顺序。

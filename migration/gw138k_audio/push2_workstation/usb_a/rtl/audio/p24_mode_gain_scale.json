@@ -1,0 +1,28 @@
+{
+  "format": "Q16 unsigned row scale",
+  "profile_order": [
+    "flute",
+    "strings",
+    "trumpet",
+    "marimba",
+    "piano"
+  ],
+  "mode_order": [
+    "A",
+    "B",
+    "C"
+  ],
+  "scale_q16": [
+    [65536, 65536, 65536, 65536, 65536],
+    [59974, 65935, 46687, 66124, 76648],
+    [9609, 10933, 9240, 8272, 10427]
+  ],
+  "derivation": {
+    "baseline_build": "build_20260916_143026_789005",
+    "baseline_usercode": "0x00000023",
+    "measurement": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/p24_level_measure_20260916_175613_658924/measurement.json",
+    "measurement_sha256": "31d983e96fddbf0cd302b27992dabdced1025d64b54952beaa91acab0e2a9ed0",
+    "source_gain_rom_sha256": "bb54de3abbf21d0f194aad1bb91650d867585fa3d234d84c1bf77f3c9e8af8c4",
+    "target": "Match each B/C profile final-PCM A-weighted spectral RMS to the corresponding P23 A profile at 48 kHz, note 60, velocity 127, effects off, frame ages 1000 through 9191; cap a row at its A-profile peak when the 32-voice unison limit would saturate"
+  }
+}
