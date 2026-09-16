@@ -106,7 +106,19 @@ module push2_controls(
                                 // audio core owns ordering and resets on press 4.
                                 quiet<=0; event_valid<=1; event_data<={4'd2,7'd87,a-7'd20}; mapped<=mapped+1'b1;
                             end else if(a>=23 && a<=26) begin event_valid<=1;event_data<={4'd2,7'd82,a-7'd23};mapped<=mapped+1'b1;end
-                            else if(a==27 || a==29) begin
+                            else if(a==28) begin
+                                // Master gates the selected chain in the audio
+                                // owner; selection and serial order stay intact.
+                                event_valid<=1;event_data<={4'd2,7'd88,7'd0};mapped<=mapped+1'b1;
+                            end else if(a==62 || a==63) begin
+                                // Page arrows cycle the only active workstation
+                                // view state: the existing A/B/C synthesis mode.
+                                event_valid<=1;event_data<={4'd2,7'd89,6'd0,a==63};mapped<=mapped+1'b1;
+                            end else if(a==85 || a==86) begin
+                                // Non-note panel commands keep the same FIFO and
+                                // arbitration path as every other Push event.
+                                event_valid<=1;event_data<={4'd6,a-7'd85,7'd0};mapped<=mapped+1'b1;
+                            end else if(a==27 || a==29) begin
                                 event_valid<=1;event_data<={4'd2,7'd120,7'd0};
                                 held<=0;last_note<=0;last_velocity<=0;mapped<=mapped+1'b1;
                             end

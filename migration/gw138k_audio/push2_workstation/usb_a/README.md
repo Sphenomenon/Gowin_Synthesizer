@@ -1,5 +1,11 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-09-17 P27 Push 控制绑定（实体通过）
+
+P27 将 Push CC85/86 分别绑定到现有 LED-only 曲谱 start/stop 和有界 recorder enable，将 CC62/63 绑定到 A/B/C 左右循环，并用 CC28 控制效果总开关。效果关闭后仍保存选择 mask 和 P10 串行顺序，重新打开恢复；CC27/29 继续使用 P23 硬 PANIC。曲谱仍只使用既有 RAM、绝对 48 kHz sample 时间戳和 LED mask，不产生音符或预录音频。Push 公开屏幕协议、pad/连续压力、电脑键盘、MIDI、声部分配、HDMI、耳机和效果链保持原路径。
+
+正式 P&R setup/hold 0/0，最差 setup slack +0.258 ns；Logic 34966、Register 25605、BSRAM 253、DSP 43.5。位流 SHA256 `dcd14a32b18a947ba807ea86a6780762176bbe3fcba1c7c020490b615016c101`，UserCode `0x00000027`。已从 P26 `0x00000026` 只写 SRAM 并读回，Flash 未写；用户完成新增控制和既有功能实体检查后回复“没问题”，验收后再次只读仍为 P27。完整 routed audit 仍只因旧三个 `effect_mask_sync` reset 端点失败。见 [正式版本记录](BOARD_CURRENT_P27_CONTROL_BINDINGS.json)、[源码审计](P27_CONTROL_BINDINGS_AUDIT.md)、[验证记录](P27_CONTROL_BINDINGS_VERIFICATION.md) 和 [候选绑定](P27_CONTROL_BINDINGS_CANDIDATE.json)。
+
 ## 2026-09-16 P26 交互延迟测量与 Push 屏幕 FIFO 优化（实体通过）
 
 P26 量化了 Push、电脑 UART 和 DIN MIDI 到 core/PCM/DAC 的数字路径，并把 Push 每个 512 字节像素包从 CPU 寄存器逐字节握手改为同一 48 MHz 域直推现有 USB TX FIFO。每包装载由 1793 周期降到 769 周期，完整 640 包帧节省 13.653 ms；公开 16 字节帧头加 640 个 512 字节包、NAK 重装、每 4 包 MIDI 轮询、每 32 包灯光服务均保持不变。12 Mbit/s 纯载荷下限仍为 218.464 ms，没有把 0.2 秒写成达到。
@@ -133,6 +139,10 @@ P13 已完成共享 DDR → HDMI reader → Push 64 位摘要 mailbox 的 RTL、
 | 下排 CC 20–22 | 延迟 / 合唱 / 混响开关 |
 | 下排 CC 23–26 | 立体声 / 左 / 右 / 静音 |
 | CC 27 或 29 | 硬 PANIC：立即清声部与效果尾音 |
+| CC 28 | 效果总开关；重新打开恢复原选择与串行顺序 |
+| CC 62 / 63 | A/B/C 模式向前 / 向后循环 |
+| CC 85 Play | 启动 / 停止既有 LED-only 曲谱 |
+| CC 86 Record | 开启 / 关闭既有有界 recorder |
 | 旋钮 CC 71 或 79 | 音量；有符号相对增量，范围钳位 |
 | 旋钮 CC 72 / 73 | 颤音 / 滑音 |
 

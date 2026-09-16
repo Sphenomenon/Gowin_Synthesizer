@@ -35,10 +35,15 @@ module gw138k_event_workstation #(
     output logic [15:0] synth_gain_o, pcm_gain_o,
     output logic [1:0] route_o,
     output wire [2:0] profile_o,
-    output logic [2:0] effect_mask_o,
-    output logic [5:0] effect_order_o
+    output wire [2:0] effect_mask_o,
+    output logic [5:0] effect_order_o,
+    output logic panel_event_valid_o,
+    output logic [6:0] panel_command_o
 );
   logic [1:0] effect_count;
+  logic [2:0] effect_selected;
+  logic effect_master;
+  assign effect_mask_o=effect_master ? effect_selected : 3'b000;
   logic event_valid, event_ready;
   logic [17:0] event_data;
   logic fifo_event_valid,fifo_event_ready;
@@ -53,6 +58,7 @@ module gw138k_event_workstation #(
   assign right_o=(route_o==1 || route_o==3)?32'sd0:effect_right;
   logic [1:0] requested_mode;
   logic mode_pending, mode_ready, mode_valid;
+  wire [1:0] mode_cycle_base=mode_pending ? requested_mode : mode_o;
   logic [15:0] volume, expression_gain;
   logic [31:0] volume_product;
   logic [21:0] target_ratio;
@@ -155,11 +161,14 @@ module gw138k_event_workstation #(
       applied_events_o<=0;pending<=0; frame_inflight<=0; deadline_miss_o<=0; note_drop_o<=0;
       held_pcm_l<=0; held_pcm_r<=0; profile<=0; requested_mode<=2;
       mode_pending<=0; volume<=32768; expression_gain<=32768; pcm_gain_o<=0;
-      route_o<=0; target_ratio<=1048576; glide_step<=0; vibrato_depth<=0; effect_mask_o<=0; effect_order_o<=6'b10_01_00; effect_count<=0;
+      route_o<=0; target_ratio<=1048576; glide_step<=0; vibrato_depth<=0;
+      effect_selected<=0;effect_master<=1;effect_order_o<=6'b10_01_00;effect_count<=0;
       glide_cc<=0; bend_index<=128; snapshot_request<=0;
       sustain<=0; held<=0; deferred<=0; releasing<=0; release_index<=0;
       panic_epoch_o<=0;panic_muted<=0;
+      panel_event_valid_o<=0;panel_command_o<=0;
     end else begin
+      panel_event_valid_o<=0;
       if(sample_valid_o) frame_inflight<=0;
       if(sample_ce_i) begin
         pending<=1;
@@ -190,7 +199,7 @@ module gw138k_event_workstation #(
               if(b<64 && sustain) begin releasing<=1; release_index<=0; end
             end
             80: if(b<3) begin requested_mode<=b[1:0]; mode_pending<=1; end
-            81: begin effect_mask_o<=b[2:0]; effect_count<=0; effect_order_o<=6'b10_01_00; end
+            81: begin effect_selected<=b[2:0];effect_master<=1;effect_count<=0;effect_order_o<=6'b10_01_00;end
             84: if(b<3) effect_order_o[1:0]<=b[1:0];
             85: if(b<3) effect_order_o[3:2]<=b[1:0];
             86: if(b<3) effect_order_o[5:4]<=b[1:0];
@@ -199,9 +208,9 @@ module gw138k_event_workstation #(
             // A later press starts again; duplicates before full do nothing.
             87: if(b<3) begin
               if(effect_count==3) begin
-                effect_order_o<=6'b11_11_11; effect_mask_o<=3'b000; effect_count<=0;
+                effect_order_o<=6'b11_11_11;effect_selected<=3'b000;effect_count<=0;
               end else if(effect_count==0) begin
-                effect_order_o<={4'b1111,b[1:0]}; effect_mask_o<=3'b001<<b[1:0]; effect_count<=1;
+                effect_order_o<={4'b1111,b[1:0]};effect_selected<=3'b001<<b[1:0];effect_count<=1;effect_master<=1;
               end else if(effect_order_o[1:0]!=b[1:0] &&
                           (effect_count!=2 || effect_order_o[3:2]!=b[1:0])) begin
                 if(effect_count==1) begin
@@ -209,8 +218,14 @@ module gw138k_event_workstation #(
                 end else begin
                   effect_order_o[5:4]<=b[1:0]; effect_count<=3;
                 end
-                effect_mask_o<=effect_mask_o | (3'b001<<b[1:0]);
+                effect_selected<=effect_selected | (3'b001<<b[1:0]);effect_master<=1;
               end
+            end
+            88: effect_master<=~effect_master;
+            89: if(b<2) begin
+              if(b[0]) requested_mode<=mode_cycle_base==2 ? 0 : mode_cycle_base+1'b1;
+              else requested_mode<=mode_cycle_base==0 ? 2 : mode_cycle_base-1'b1;
+              mode_pending<=1;
             end
             82: if(b<4) route_o<=b[1:0];
             83: if(b==127) snapshot_request<=snapshot_request+1'b1;
@@ -232,6 +247,7 @@ module gw138k_event_workstation #(
             else profile<=0;
           end
           4: begin target_ratio<=bend_rom[{b,a[6]}];bend_index<={b,a[6]};end
+          6: begin panel_event_valid_o<=1;panel_command_o<=a;end
           default: begin end
         endcase
       end

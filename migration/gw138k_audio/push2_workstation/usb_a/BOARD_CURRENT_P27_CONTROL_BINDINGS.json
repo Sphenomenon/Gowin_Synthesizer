@@ -1,0 +1,49 @@
+{
+  "version": "P27 Push control bindings",
+  "status": "physically_accepted_sram",
+  "accepted_at": "2026-09-17",
+  "user_report": "没问题",
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260917_021137_154460",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260917_021137_154460/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "dcd14a32b18a947ba807ea86a6780762176bbe3fcba1c7c020490b615016c101",
+  "header_checksum": "0xFF04",
+  "usercode": "0x00000027",
+  "programming": {
+    "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260917_022557_608020/result.json",
+    "before_usercode": "0x00000026",
+    "after_usercode": "0x00000027",
+    "post_acceptance_readback": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/readback_p27_20260917_023328_460597/result.json",
+    "sram_written": true,
+    "fpga_flash_written": false
+  },
+  "pnr": {
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "worst_setup_slack_ns": 0.258,
+    "resources": {"Logic": 34966, "Register": 25605, "BSRAM": 253, "DSP": 43.5},
+    "full_routed_audit_passed": false,
+    "known_audit_gap": "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete"
+  },
+  "physical_acceptance": {
+    "score_play_stop_and_led_guide": "passed",
+    "record_toggle": "passed",
+    "abc_page_controls": "passed",
+    "effect_master_restore": "passed",
+    "panic": "passed",
+    "computer_keyboard_repeat": "passed",
+    "push_pads_and_continuous_pressure": "passed",
+    "push_screen_and_lights": "passed",
+    "midi": "passed",
+    "hdmi": "passed",
+    "headphones": "passed",
+    "effect_chain": "passed"
+  },
+  "retained": {
+    "p26_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260916_191636_144481/Prj1/impl/pnr/Prj1.fs",
+    "p26_sha256": "b23c31c0b35776ce459a01ef62889845dd58025a2977f705826fa8b8e46c10ba",
+    "p26_usercode": "0x00000026",
+    "p10_bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260913_184716_871458/Prj1/impl/pnr/Prj1.fs",
+    "p10_sha256": "dd80b9009241836b3266b6407aa1a36cf8973d0b660d239e2e0f1fe8e0e4f793",
+    "usb_in_error_diagnostic": null
+  }
+}

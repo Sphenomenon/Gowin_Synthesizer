@@ -45,7 +45,7 @@ try:
             flight=d.arc(src,'CLK','Q')+d.route(src+'/Q',n+'/D');req(flight<10,'Gray flight exceeds 10ns')
             crossings.append(dict(source=src,target=n,flight_ns=flight))
     payloads=[]
-    for root in ['u_push/feedback/','u_runtime/u_usb_cdc/']:
+    for root in ['u_push/feedback/','u_runtime/u_usb_cdc/','u_service_push_cdc/']:
         targets=regs(root+'destination_data_');req(targets,'missing held snapshot')
         for n,ff in targets.items():
             src,pin=d.drivers[ff['D']];req(src.startswith(root+'held_data_') and pin=='Q','held snapshot source')

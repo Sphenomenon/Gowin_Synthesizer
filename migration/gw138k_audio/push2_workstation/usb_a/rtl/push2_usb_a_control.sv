@@ -6,6 +6,8 @@ module push2_usb_a_control(
     input wire [447:0] performance_words,
     input wire [63:0] display_meta_data,
     input wire display_meta_valid,
+    input wire [33:0] service_state_data,
+    input wire service_state_valid,
     input wire select,write,input wire [7:0] address,
     input wire [31:0] wdata,output wire ready,output reg [31:0] rdata,
     output wire audio_valid,input wire audio_ready,output wire [17:0] audio_event,
@@ -24,9 +26,13 @@ module push2_usb_a_control(
     wire [63:0] actual_held=snapshot[195:132];
     reg [63:0] display_meta_q;
     reg display_meta_seen;
+    reg [33:0] service_state_q;
     always @(posedge clk or negedge reset_n)
-        if(!reset_n)begin display_meta_q<=0;display_meta_seen<=0;end
-        else if(display_meta_valid)begin display_meta_q<=display_meta_data;display_meta_seen<=1;end
+        if(!reset_n)begin display_meta_q<=0;display_meta_seen<=0;service_state_q<=0;end
+        else begin
+            if(display_meta_valid)begin display_meta_q<=display_meta_data;display_meta_seen<=1;end
+            if(service_state_valid)service_state_q<=service_state_data;
+        end
     reg connected;
     reg [31:0] received,frames,out_errors;
     wire raw_ready,valid,map_ready;wire [3:0] kind,cable,channel;wire [6:0] a,b;
@@ -62,6 +68,7 @@ module push2_usb_a_control(
     wire [31:0] commands;reg [8:0] packet_index;
     wire packet_ack=accepted && write && address==8'h44 && wdata==1;
     push2_lights lights(.clk(clk),.rst(!reset_n || !connected),.held(actual_held),.control(control),
+        .score_mask(service_state_q[31:0]),.score_running(service_state_q[32]),.record_enabled(service_state_q[33]),
         .valid(cv),.ready(cr),.kind(ck),.index(ci),.value(cval));
     push2_led_tx led(.clk(clk),.rst(!reset_n || !connected),
         .cmd_valid(cv),.cmd_ready(cr),.cmd_kind(ck),.cmd_index(ci),.cmd_value(cval),.cmd_cable(4'd0),
@@ -74,6 +81,7 @@ module push2_usb_a_control(
         .frame_ready(frame_capture),.frame_start(),.x(pixel_index[9:0]),.y(pixel_index[17:10]),
         .pixel_valid(),.pixel(pixel),.control(control),.options(options),.held(actual_held),
         .note(note),.velocity(velocity),.display_meta(display_meta_q),
+        .score_mask(service_state_q[31:0]),.score_running(service_state_q[32]),.record_enabled(service_state_q[33]),
         // Keep the rendered bytes identical when a packet is regenerated
         // after NAK, just as the other UI fields are held for the whole frame.
         .display_meta_valid(display_meta_seen && frame_capture));

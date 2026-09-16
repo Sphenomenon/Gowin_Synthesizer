@@ -3,9 +3,11 @@ module push2_surface_pixels(input wire clk,rst,frame_ready,output wire frame_sta
     input wire [9:0] x,input wire [7:0] y,output wire pixel_valid,
     output reg [15:0] pixel,input wire [31:0] control,options,
     input wire [63:0] held,input wire [6:0] note,velocity,
-    input wire [63:0] display_meta,input wire display_meta_valid);
+    input wire [63:0] display_meta,input wire display_meta_valid,
+    input wire [31:0] score_mask,input wire score_running,record_enabled);
     reg [22:0] timer;
-    reg [31:0] cs,op;reg [63:0] pads;reg [6:0] n,v;
+    reg [31:0] cs,op;reg [63:0] pads;reg [31:0] score_pads;
+    reg score_on,record_on;reg [6:0] n,v;
     reg [2:0] display_effect_mask;reg display_meta_seen;
     // The host frame request is the commit point.  The local timer is kept as
     // a pacing counter for compatibility, but must not suppress a new
@@ -13,9 +15,11 @@ module push2_surface_pixels(input wire clk,rst,frame_ready,output wire frame_sta
     assign frame_start=!rst && frame_ready;
     assign pixel_valid=!rst;
     always @(posedge clk or posedge rst)begin
-        if(rst)begin timer<=0;cs<=0;op<=0;pads<=0;n<=60;v<=0;display_effect_mask<=0;display_meta_seen<=0;end
+        if(rst)begin timer<=0;cs<=0;op<=0;pads<=0;score_pads<=0;score_on<=0;record_on<=0;
+            n<=60;v<=0;display_effect_mask<=0;display_meta_seen<=0;end
         else if(frame_start)begin
-            timer<=23'd4999999;cs<=control;op<=options;pads<=held;n<=note;v<=velocity;
+            timer<=23'd4999999;cs<=control;op<=options;pads<=held;score_pads<=score_mask;
+            score_on<=score_running;record_on<=record_enabled;n<=note;v<=velocity;
             if(display_meta_valid)begin display_effect_mask<=display_meta[25:23];display_meta_seen<=1;end
         end
         else if(display_meta_valid)begin display_effect_mask<=display_meta[25:23];display_meta_seen<=1;end
@@ -53,6 +57,11 @@ module push2_surface_pixels(input wire clk,rst,frame_ready,output wire frame_sta
         if(y>=8 && y<22)begin
             text=top_label(tile);row=(y-8)/2;draw=1;
             active=tile<3?cs[4:3]==tile:cs[9:7]==tile-3;
+        end else if(y>=26 && y<40 && tile<5)begin
+            case(tile)0:text=" SCORE    ";1:text=" RECORD   ";2:text=" FX MASTER";
+                3:text=" MODE <   ";default:text=" MODE >   ";endcase
+            row=(y-26)/2;draw=1;
+            active=tile==0?score_on:tile==1?record_on:tile==2?(|cs[2:0]):1'b1;
         end else if(y>=134 && y<148)begin
             text=bottom_label(tile);row=(y-134)/2;draw=1;
             active=tile<3?(display_meta_seen?display_effect_mask[tile]:cs[tile]):tile<7?cs[6:5]==tile-3:1;
@@ -71,6 +80,10 @@ module push2_surface_pixels(input wire clk,rst,frame_ready,output wire frame_sta
         if(draw && ink)pixel=active?16'h67ee:16'had13;
         if(y>=104 && y<111 && tile<3 && local_x>=12 && local_x<108)
             pixel=(local_x-12)<(number*96/127)?16'h67ee:16'h28c4;
-        if(grid && grid_ink)pixel=pads[(7-gy)*8+gx]?16'hffff:16'h5628;
+        if(grid && grid_ink)begin
+            if(pads[(7-gy)*8+gx])pixel=16'hffff;
+            else if(score_on && gy>=4 && score_pads[(7-gy)*8+gx])pixel=16'h67ee;
+            else pixel=16'h5628;
+        end
     end
 endmodule

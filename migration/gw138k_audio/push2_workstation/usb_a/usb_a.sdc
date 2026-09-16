@@ -16,3 +16,8 @@ set_false_path -to [get_pins {u_push/feedback/req_meta*/D u_push/feedback/ack_me
 set_max_delay 20.000 -from [get_regs {u_display_push_cdc/held_data*}] -to [get_regs {u_display_push_cdc/destination_data*}]
 set_false_path -hold -from [get_regs {u_display_push_cdc/held_data*}] -to [get_regs {u_display_push_cdc/destination_data*}]
 set_false_path -to [get_pins {u_display_push_cdc/req_meta*/D u_display_push_cdc/ack_meta*/D u_display_push_cdc/source_release*/CLEAR u_display_push_cdc/destination_release*/CLEAR}]
+# P27 audio service state: held score/record payload crosses audio_76m8 ->
+# usb_48m through the same acknowledged stream CDC primitive.
+set_max_delay 20.000 -from [get_regs {u_service_push_cdc/held_data*}] -to [get_regs {u_service_push_cdc/destination_data*}]
+set_false_path -hold -from [get_regs {u_service_push_cdc/held_data*}] -to [get_regs {u_service_push_cdc/destination_data*}]
+set_false_path -to [get_pins {u_service_push_cdc/req_meta*/D u_service_push_cdc/ack_meta*/D u_service_push_cdc/source_release*/CLEAR u_service_push_cdc/destination_release*/CLEAR}]

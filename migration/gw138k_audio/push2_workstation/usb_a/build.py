@@ -86,6 +86,53 @@ def main():
         'wire [9:0] panic_epoch;\n    assign control_pitch_o={panic_epoch,pitch};')
     s=replace(s,'.held_notes_o(held_notes_o),.applied_events_o(applied_events_o),.pc_overflow_o(pc_overflow),.control_options_o(control_options_o),',
         '.held_notes_o(held_notes_o),.applied_events_o(applied_events_o),.pc_overflow_o(pc_overflow),.control_options_o(control_options_o),.panic_epoch_o(panic_epoch),')
+    s=replace(s,'output wire [31:0] applied_events_o,pc_health_o,',
+        'output wire [31:0] applied_events_o,pc_health_o,\n    output wire panel_event_valid_o,output wire [6:0] panel_command_o,')
+    s=replace(s,'.control_options_o(control_options_o),.panic_epoch_o(panic_epoch),.cpu_event_valid_i(cpu_event_valid_i),',
+        '.control_options_o(control_options_o),.panic_epoch_o(panic_epoch),\n        .panel_event_valid_o(panel_event_valid_o),.panel_command_o(panel_command_o),.cpu_event_valid_i(cpu_event_valid_i),')
+    p.write_text(s)
+    # P27 keeps the Push panel commands inside the accepted event stream.  The
+    # workstation emits a one-cycle pulse only after kind 6 reaches dispatch;
+    # the existing audio-domain service remains the single score/record owner.
+    p=stage/'src/ae350/gw138k_controlled_services.sv';s=p.read_text()
+    s=replace(s,'input wire cpu_event_ready,',
+        'input wire cpu_event_ready,\n    input wire panel_event_valid,input wire [6:0] panel_command,output wire panel_event_ready,')
+    s=replace(s,'logic [8:0] loaded;\n    wire event_address=command_address==12\'h180;',
+        '''logic [8:0] loaded;
+    assign panel_event_ready=1'b1;
+    wire panel_score_toggle=panel_event_valid && panel_command==0;
+    wire panel_record_toggle=panel_event_valid && panel_command==1;
+    wire event_address=command_address==12'h180;''')
+    s=replace(s,'assign score_start=legal_write && command_address==SCORE_START;\n    assign score_stop=legal_write && command_address==SCORE_STOP;',
+        '''assign score_start=(legal_write && command_address==SCORE_START) ||
+        (panel_score_toggle && !score_running && score_length!=0 && score_length<=loaded);
+    assign score_stop=(legal_write && command_address==SCORE_STOP) ||
+        (panel_score_toggle && score_running);''')
+    s=replace(s,'12\'h180: response_error=command_data[31:18]!=0 || command_data[17:14]>4 ||\n                    (command_data[17:14]==1 && command_data[6:0]==0);',
+        '''12'h180: response_error=command_data[31:18]!=0 || command_data[17:14]>6 ||
+                    (command_data[17:14]==1 && command_data[6:0]==0) ||
+                    (command_data[17:14]==6 && command_data[13:7]>1);''')
+    s=replace(s,'if(score_done) done_sticky<=1;\n            if(legal_write) case(command_address)',
+        '''if(score_done) done_sticky<=1;
+            if(score_start) done_sticky<=0;
+            if(panel_record_toggle) record_enable<=~record_enable;
+            if(legal_write) case(command_address)''')
+    p.write_text(s)
+    p=stage/'src/ae350/gw138k_controlled_audio.sv';s=p.read_text()
+    s=replace(s,'.cpu_event_valid(cpu_event_valid),.cpu_event_ready(cpu_event_ready),.cpu_event(cpu_event),',
+        '.cpu_event_valid(cpu_event_valid),.cpu_event_ready(cpu_event_ready),.cpu_event(cpu_event),\n        .panel_event_valid(1\'b0),.panel_command(7\'d0),.panel_event_ready(),')
+    p.write_text(s)
+    p=stage/'src/usb_host/gw138k_usb_controlled_audio.sv';s=p.read_text()
+    s=replace(s,'output wire score_running_o, score_done_o,',
+        'output wire score_running_o, score_done_o,record_enabled_o,')
+    s=replace(s,'wire record_enable,record_valid,record_ready,score_write,score_start,score_stop;',
+        '''wire record_enable,record_valid,record_ready,score_write,score_start,score_stop;
+    wire panel_event_valid,panel_event_ready;wire [6:0] panel_command;
+    assign record_enabled_o=record_enable;''')
+    s=replace(s,'.cpu_event_valid(cpu_event_valid),.cpu_event_ready(cpu_event_ready),.cpu_event(cpu_event),',
+        '.cpu_event_valid(cpu_event_valid),.cpu_event_ready(cpu_event_ready),.cpu_event(cpu_event),\n        .panel_event_valid(panel_event_valid),.panel_command(panel_command),.panel_event_ready(panel_event_ready),')
+    s=replace(s,'.pc_uart_rx_i(pc_uart_rx_i),.held_notes_o(held_notes),.applied_events_o(applied_events),.pc_health_o(pc_health),',
+        '.pc_uart_rx_i(pc_uart_rx_i),.held_notes_o(held_notes),.applied_events_o(applied_events),.pc_health_o(pc_health),\n        .panel_event_valid_o(panel_event_valid),.panel_command_o(panel_command),')
     p.write_text(s)
     # Clear effect state without resetting BSRAM contents.  Resetting each
     # history length/pointer makes old RAM words unreachable until replaced.
@@ -144,6 +191,15 @@ static inline unsigned ui_active(const ui_model*m,unsigned note) {''')
         'unsigned sequence=a138_read(AUDIO_BASE,0x1a0),state=a138_read(AUDIO_BASE,0x184),pitch=a138_read(AUDIO_BASE,0x188),options=a138_read(AUDIO_BASE,0x18c);')
     s=replace(s,'unsigned changed=m->pc_faults!=faults||m->mode!=((state>>3)&3u)||m->sound!=((state>>7)&7u)||m->route!=((state>>5)&3u)||m->sw!=sw||m->voices!=((state>>10)&63u);',
         'unsigned changed=ui_panic(m,pitch>>22)|(m->pc_faults!=faults)||m->mode!=((state>>3)&3u)||m->sound!=((state>>7)&7u)||m->route!=((state>>5)&3u)||m->sw!=sw||m->voices!=((state>>10)&63u);')
+    s=replace(s,'ddr_checks();audio_checks();model_check();',
+        '''ddr_checks();audio_checks();model_check();
+    // Reload a visible LED-only guide after the short service self-test.  It
+    // remains stopped until Push Play (CC85) and never creates note/PCM data.
+    static const a138_cue guide[9]={{0,0x0000000f},{24000,0x000000f0},
+        {48000,0x00000f00},{72000,0x0000f000},{96000,0x000f0000},
+        {120000,0x00f00000},{144000,0x0f000000},{168000,0xf0000000},
+        {192000,0}};
+    if(!a138_score_load(AUDIO_BASE,guide,9))fail(0xbad03107);''')
     p.write_text(s)
     ui_cc=str(Path.home()/'.local/opt/amd/2025.2.1/gnu/riscv/lin/bin/riscv64-unknown-elf')
     with (out/'ui_firmware_build.log').open('w') as log:
@@ -230,6 +286,12 @@ end
     start=s.index('    wire push_valid');end=s.index('    gw138k_usb_controlled_audio u_managed',start)
     s=s[:start]+'''    wire all_usb_valid,all_usb_ready;wire [17:0] all_usb_event;
     wire [447:0] push_snapshot;
+    wire [31:0] score_led_mask;wire score_running,record_enabled;
+    wire [33:0] service_state_usb;wire service_state_usb_valid;
+    gw138k_stream_cdc #(.WIDTH(34)) u_service_push_cdc(
+        .reset_n(reset_n && audio_reset_n && usb_reset_n),.source_clk(audio_clk),.destination_clk(usb_clk),
+        .source_valid(audio_sample_valid),.source_data({record_enabled,score_running,score_led_mask}),
+        .destination_valid(service_state_usb_valid),.destination_data(service_state_usb));
     wire [63:0] display_summary,display_summary_usb;wire display_summary_valid,display_summary_usb_valid;
     gw138k_stream_cdc #(.WIDTH(64)) u_display_push_cdc(
         .reset_n(reset_n && memory_reset_n && usb_reset_n),.source_clk(memory_clk),.destination_clk(usb_clk),
@@ -238,11 +300,14 @@ end
     push2_usb_a_control u_push(.clk(usb_clk),.reset_n(usb_reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),
         .feedback_clk(clk_50m),.feedback_reset_n(reset_n),.performance_words(push_snapshot),
         .display_meta_data(display_summary_usb),.display_meta_valid(display_summary_usb_valid),
+        .service_state_data(service_state_usb),.service_state_valid(service_state_usb_valid),
         .select(mmio_select),.write(mmio_write),.address(mmio_address),.wdata(mmio_wdata),.ready(mmio_ready),.rdata(mmio_rdata),
         .audio_valid(all_usb_valid),.audio_ready(all_usb_ready),.audio_event(all_usb_event),.telemetry(usb_words));
 '''+s[end:]
     s=replace(s,'.app_wrdy(app_wrdy),.app_rdata(app_rdata),.app_rvalid(app_rvalid),.memory_flags(memory_flags),\n        .sample_data(output_mid)',
              '.app_wrdy(app_wrdy),.app_rdata(app_rdata),.app_rvalid(app_rvalid),.memory_flags(memory_flags),\n        .push_display_summary(display_summary),.push_display_summary_valid(display_summary_valid),\n        .sample_data(output_mid)')
+    s=replace(s,'.pc_uart_rx_i(pc_uart_rx_i),.performance_words_o(performance_words),',
+        '.pc_uart_rx_i(pc_uart_rx_i),.performance_words_o(performance_words),\n        .led_mask_o(score_led_mask),.score_running_o(score_running),.record_enabled_o(record_enabled),')
     s=replace(s,'.push_words(push_words),','.push_words(224\'d0),');p.write_text(s)
     # Reuse existing USB->50MHz telemetry snapshot for the new P138 record.
     p=stage/'src/push2/gw138k_push_performance_uart.sv';s=p.read_text()
