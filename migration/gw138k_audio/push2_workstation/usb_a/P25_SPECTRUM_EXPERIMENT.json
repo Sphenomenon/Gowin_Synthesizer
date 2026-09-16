@@ -1,0 +1,57 @@
+{
+  "version": "P25 controlled spectral leakage experiment",
+  "status": "complete; no production RTL or bitstream change required",
+  "date": "2026-09-16",
+  "baseline_commit": "7182dcc",
+  "hardware_tested": false,
+  "official_result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/p25_spectrum_leakage_20260916_184000_550894/experiment.json",
+  "official_result_sha256": "c568a75de38923e3ff4c84b5afb5ffa8f912e7595ccfece0fee66d2c237d8e8c",
+  "figure": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/p25_spectrum_leakage_20260916_184000_550894/spectrum_factors.png",
+  "figure_sha256": "fe7599cd50fb28d2c0f04c505a979aa7b2366bac7e34c14cedbd25261deec44f",
+  "panic_capture_sha256": "224eee04245f9e6a76f9877e25bccf2ace6f6601a3191229ef49125715ee9d76",
+  "source_snapshot_hashes": {
+    "migration/gw138k_audio/push2_workstation/usb_a/sim/p25/run.py": "5769b57d6be448185f0cb1c866dbf80279670b92c2d164a8faca8b113a8d99b5",
+    "migration/gw138k_audio/push2_workstation/usb_a/sim/p25/tb_panic_spectrum.sv": "253ed08b6f182ee0b83b29afb45a8041b2034273b8036bff99b314e5dc176bde",
+    "staged_output_audio_analysis.v": "20f32506cd0243fbc848090263b78b41c5076e187154ecf98f0336b3bc70eda3",
+    "staged_output_audio_capture.v": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+    "staged_audio_analysis_rom.v": "439ff9f00ff4d29740b296f2e264eabc19e6cb2ff2195dfb2bd815c9d1286946"
+  },
+  "findings": {
+    "actual_sample_rate_hz": 48000,
+    "current_fft_points": 2048,
+    "current_window": "periodic Hann",
+    "bin_spacing_hz": 23.4375,
+    "hann_main_lobe_null_to_null_hz": 93.75,
+    "rectangular_far_peak_dbc": -24.2387,
+    "hann_far_peak_dbc": -42.0224,
+    "trigger_phase_far_peak_span_db": 0.0216,
+    "minimum_expected_harmonic_power_fraction": 0.9995982187,
+    "post_panic_samples_per_channel": 4096,
+    "post_panic_nonzero_samples_left": 0,
+    "post_panic_nonzero_samples_right": 0,
+    "persistent_panic_residue": false,
+    "panic_straddling_block_transient": true,
+    "conclusion": "visible spectrum is dominated by intended harmonics plus finite non-coherent Hann lobes within an approximately 84.3 dB display range"
+  },
+  "rtl_fft_verification": {
+    "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/results/bar_analysis_20260916_184022_907051/verification.json",
+    "sha256": "30a14099c4ba3a40a00fba208059e7619b05403cc838552e6e5f453c5c096e1a",
+    "passed": true,
+    "complex_bins_checked": 4096,
+    "maximum_error_guard_units": 6.7569,
+    "error_limit_guard_units": 64
+  },
+  "release": {
+    "new_bitstream_built": false,
+    "sram_written": false,
+    "fpga_flash_written": false,
+    "board_remains": "P24",
+    "board_usercode": "0x00000024",
+    "board_bitstream_sha256": "7a37311de6df38ed1f0191bd2f07094904df826dd69c4b2007f2e0ec099c1c66"
+  },
+  "known_gaps": {
+    "full_routed_audit_passed": false,
+    "reason": "no P25 build; inherited effect_mask_sync_[0..2]_s0/RESET coverage gap remains open",
+    "usb_in_error_diagnostic": null
+  }
+}
