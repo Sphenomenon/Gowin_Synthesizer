@@ -2,7 +2,7 @@
 
 这是运行在 Gowin GW5AST-LV138PG484AC2/I1 和 NEO Dock 31005 上的 FPGA 音频工作站。主工程位于 [`migration/gw138k_audio`](migration/gw138k_audio)，Push 2 连接板载 J18 USB-A，不经过 CH569。
 
-当前稳定版本是 P27：UserCode `0x00000027`，位流 SHA256 为 `dcd14a32b18a947ba807ea86a6780762176bbe3fcba1c7c020490b615016c101`。P27 已在实体板上检查 Push 控制、屏幕、灯光、连续压力、电脑键盘、HDMI、耳机和串行效果链。下载只写 SRAM，Flash 没有写入。
+当前实体通过版本支持 Push 2 和通用 USB MIDI 1.0，UserCode `0x00006DE8`，位流 SHA256 为 `5ae02d9fac533df10f5921272b8243304acb7011d6bacd4877b6bbeb9dbf961f`。用户已确认通用 MIDI 与现有 Push、显示、音频和效果链工作正常；随后只读检查仍为该 UserCode。该次下载由用户自行完成，仓库没有可核对的写入记录，因此 SRAM/Flash 写入方式记为未知。P27 `0x00000027` 继续作为上一实体稳定回退版本。
 
 ## 目录
 
@@ -31,3 +31,5 @@ python3 migration/gw138k_audio/push2_workstation/usb_a/build.py
 完整 routed audit 仍会在 `effect_mask_sync_[0..2]_s0/RESET` 三个旧端点失败。USB IN error 诊断尚未实现，记录值仍为 `null`。这两项不能写成已通过。
 
 版本边界、忽略规则和提交范围见 [`GIT_SCOPE.md`](GIT_SCOPE.md)。
+
+后续工程收口、谱面引导、3D 空间混响、物理建模音色、录音和连接方向见 [`ROADMAP.md`](ROADMAP.md)。

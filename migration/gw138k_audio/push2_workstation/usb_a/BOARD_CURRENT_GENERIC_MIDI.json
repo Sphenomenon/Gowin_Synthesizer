@@ -1,0 +1,62 @@
+{
+  "version": "generic USB MIDI 1.0 auto-detection",
+  "status": "hardware_accepted",
+  "accepted_at": "2026-09-18",
+  "hardware_tested": true,
+  "user_report": {
+    "generic_midi": "我自己调通了",
+    "existing_chain_regression": "没问题"
+  },
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260917_022113_094799",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260917_022113_094799/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "5ae02d9fac533df10f5921272b8243304acb7011d6bacd4877b6bbeb9dbf961f",
+  "usercode": "0x00006DE8",
+  "programming": {
+    "performed_by_agent": false,
+    "download_record_available": false,
+    "before_usercode": null,
+    "sram_written": null,
+    "fpga_flash_written": null,
+    "note": "The user programmed and brought up the candidate independently. The agent did not observe the programming operation, so SRAM/Flash method is not inferred."
+  },
+  "post_acceptance_readback": {
+    "observed_at": "2026-09-18 Asia/Shanghai",
+    "operation": "read-only programmer_cli device/user-code/status readback",
+    "cable_location": 53,
+    "device": "GW5AST-138C",
+    "device_id": "0x0001081B",
+    "usercode": "0x00006DE8",
+    "status_code": "0x00026230",
+    "finished": true
+  },
+  "pnr": {
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "worst_setup_slack_ns": 0.017,
+    "resources": {
+      "Logic": 34897,
+      "Register": 25638,
+      "BSRAM": 253,
+      "DSP": 43.5
+    },
+    "full_routed_audit_passed": false,
+    "known_audit_gap": "effect_mask_sync_[0..2]_s0/RESET stopped-clock reset coverage remains incomplete"
+  },
+  "physical_acceptance": {
+    "generic_usb_midi": "passed_by_user_report",
+    "push_and_existing_audio_display_chain": "passed_by_user_report"
+  },
+  "known_limits": {
+    "channel_pressure": "not_mapped",
+    "sysex": "not_mapped",
+    "realtime_messages": "not_mapped",
+    "channels_and_cables": "share_existing_instrument",
+    "usb_in_error_diagnostic": null
+  },
+  "retained_previous_stable": {
+    "version": "P27 Push control bindings",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260917_021137_154460/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "dcd14a32b18a947ba807ea86a6780762176bbe3fcba1c7c020490b615016c101",
+    "usercode": "0x00000027"
+  }
+}

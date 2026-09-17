@@ -2,9 +2,9 @@
 
 这里是 Gowin Synthesizer 的 138K 主工程。芯片为 GW5AST-LV138PG484AC2/I1，底板为 NEO Dock 31005。Push 2 固定连接 J18 USB-A，D+ 为 H13，D− 为 G13；网口旁 USB-C 和 CH569 不在当前演奏或音频路径中。
 
-当前稳定版本是 P27，UserCode `0x00000027`，位流 SHA256 为 `dcd14a32b18a947ba807ea86a6780762176bbe3fcba1c7c020490b615016c101`。实体板已检查 Push pad、连续压力、屏幕、灯光、电脑键盘、HDMI、耳机和 P10 串行效果链。Flash 没有写入。
+当前实体通过版本支持 Push 2 和通用 USB MIDI 1.0，UserCode `0x00006DE8`，位流 SHA256 为 `5ae02d9fac533df10f5921272b8243304acb7011d6bacd4877b6bbeb9dbf961f`。用户已确认通用 MIDI 和现有链路正常，随后只读检查仍为该 UserCode。该次下载由用户自行完成，SRAM/Flash 写入方式没有可核对记录，不能写成 Flash 未写。P27 `0x00000027` 保留为上一实体稳定回退版本。
 
-P27 的完整说明、资源、时序和验收记录在 [`push2_workstation/usb_a/README.md`](push2_workstation/usb_a/README.md) 和 [`BOARD_CURRENT_P27_CONTROL_BINDINGS.json`](push2_workstation/usb_a/BOARD_CURRENT_P27_CONTROL_BINDINGS.json)。构建入口是 [`push2_workstation/usb_a/build.py`](push2_workstation/usb_a/build.py)。
+当前版本的说明、资源、时序和验收记录在 [`push2_workstation/usb_a/README.md`](push2_workstation/usb_a/README.md)、[`GENERIC_MIDI_VERIFICATION.md`](push2_workstation/usb_a/GENERIC_MIDI_VERIFICATION.md) 和 [`BOARD_CURRENT_GENERIC_MIDI.json`](push2_workstation/usb_a/BOARD_CURRENT_GENERIC_MIDI.json)。构建入口是 [`push2_workstation/usb_a/build.py`](push2_workstation/usb_a/build.py)。
 
 ```sh
 python3 migration/gw138k_audio/push2_workstation/usb_a/build.py --prepare-only

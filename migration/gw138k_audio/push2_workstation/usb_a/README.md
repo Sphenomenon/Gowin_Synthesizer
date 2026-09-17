@@ -1,12 +1,12 @@
 # Push 2 USB-A 与完整音频工作站合并
 
-## 2026-09-17 通用 USB MIDI 1.0 自动识别（离线候选，未上板）
+## 2026-09-18 通用 USB MIDI 1.0 自动识别（实体通过）
 
 在保留 Push 2 专用 MIDI、屏幕和灯光路径的同时，USB Host 可从设备描述符中寻找 MIDI 1.0 Bulk IN 端点，并把 Note On/Off、poly pressure、CC、Program Change 和 Pitch Bend 送入现有音频事件 FIFO。普通 MIDI 设备不经过 Push 的音域、力度曲线或面板映射；Channel Pressure、SysEx 和实时消息尚未映射。
 
 候选 UserCode 为 `0x00006DE8`，位流 SHA256 为 `5ae02d9fac533df10f5921272b8243304acb7011d6bacd4877b6bbeb9dbf961f`。完整构建 setup/hold 0/0，最差 setup 裕量 +0.017 ns；Logic 34897、Register 25638、BSRAM 253、DSP 43.5。固件、MMIO/CDC、音频、P27 控制和 P26 屏幕回归通过。完整 routed audit 仍停在原有三个 `effect_mask_sync` reset 端点，没有写成通过。
 
-该候选没有访问下载器、USB 设备或板端串口，也没有写 SRAM/Flash。P27 仍是当前已验收稳定版本。实现边界和复现方法见 [验证记录](GENERIC_MIDI_VERIFICATION.md)，精确哈希见 [候选记录](GENERIC_MIDI_CANDIDATE.json)。
+用户自行完成下载和通用 MIDI 调通，并确认现有 Push、显示、音频与效果链回归正常。随后通过 `programmer_cli` 只读检查到 GW5AST-138C 设备 ID `0x0001081B`、UserCode `0x00006DE8`、状态码 `0x00026230`。下载过程不是本代理执行，仓库也没有对应写入记录，因此 SRAM/Flash 写入方式保持未知，不据读回结果推断。P27 `0x00000027` 保留为上一实体稳定回退版本。实现边界和复现方法见 [验证记录](GENERIC_MIDI_VERIFICATION.md)，验收绑定见 [实体版本记录](BOARD_CURRENT_GENERIC_MIDI.json)，精确离线构建信息见 [候选记录](GENERIC_MIDI_CANDIDATE.json)。
 
 ## 2026-09-17 P27 Push 控制绑定（实体通过）
 
