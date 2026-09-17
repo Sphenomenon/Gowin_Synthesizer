@@ -29,6 +29,14 @@ int usbhw_reset(void){assert(!MMIO(0));reset_count++;wire_toggle[1]=wire_toggle[
 int usb_configure_device(struct usb_device *d,int address){
     assert(!MMIO(0));configure_count++;d->address=address;d->vid=0x2982;d->pid=0x9999;return enumeration_ok;
 }
+int usb_get_descriptor(struct usb_device *d,uint16_t value,uint16_t index,uint8_t *buf,uint16_t length){
+    (void)d;(void)value;(void)index;(void)buf;(void)length;
+    assert(!"Push must keep its descriptor-less fallback");return -1;
+}
+int usb_send_control_write(struct usb_device *d,uint8_t type,uint8_t request,uint16_t value,uint16_t index,uint16_t length,uint8_t *data){
+    (void)d;(void)type;(void)request;(void)value;(void)index;(void)length;(void)data;
+    assert(!"Push must not change its interface");return 0;
+}
 int usbhw_transfer_in(uint8_t token,int address,int ep,uint8_t *pid,uint8_t *buf,int size){
     assert(token==PID_IN && address==1 && ep==2 && size==512);rx_calls++;now_ms++;
     if(screen_change_on_rx_call==rx_calls)MMIO(0x10)^=1;

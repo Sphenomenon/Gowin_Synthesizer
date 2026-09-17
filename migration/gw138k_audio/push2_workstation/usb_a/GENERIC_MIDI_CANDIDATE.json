@@ -1,0 +1,28 @@
+{
+  "status": "offline_candidate_not_programmed",
+  "hardware_tested": false,
+  "hardware_accessed": false,
+  "build": "results/build_20260917_022113_094799",
+  "bitstream": "results/build_20260917_022113_094799/Prj1/impl/pnr/Prj1.fs",
+  "bitstream_sha256": "5ae02d9fac533df10f5921272b8243304acb7011d6bacd4877b6bbeb9dbf961f",
+  "user_code": "0x00006DE8",
+  "firmware_sha256": "802d9b78ebbffb26eb5f4b442ccb0c42b04c68a1deda6f4a8f50883e76bf323b",
+  "mmio_rtl_sha256": "9dfa32625f5ddec3cbb489e7df00eb7992772f0b013a07cb02d852e48c4c674f",
+  "paired_firmware_and_rtl_required": true,
+  "usb_speed_mbps": 12,
+  "build_exit_code": 0,
+  "build_inputs_unchanged": true,
+  "timing": {"setup_violations": 0, "hold_violations": 0, "worst_setup_slack_ns": 0.017},
+  "resources": {"logic": 34897, "register": 25638, "bsram": 253, "dsp": 43.5},
+  "functional_tests_passed": true,
+  "test_records_relative_to_build": [
+    "generic_midi_022642_294282/verification.json",
+    "cpu_audio_sim_022643_481116/verification.json",
+    "p27_controls_022624_433493/verification.json",
+    "p26_latency_022758_390202/verification.json"
+  ],
+  "routed_audit_passed": false,
+  "routed_audit_blocker": "Existing effect_mask_sync_0_s0/RESET, effect_mask_sync_1_s0/RESET, effect_mask_sync_2_s0/RESET exceptions are unaudited; same failure as pre-change build_20260917_021137_154460. Later audit checks did not run.",
+  "publication_pointers_updated": false,
+  "generic_scope": "First MIDI 1.0 Bulk IN in the Host-selected configuration (index 0), descriptor <=2048 bytes, FS MPS 8/16/32/64, alternate-setting selection supported. Channels/cables share the existing instrument; no Channel Pressure/SysEx/realtime mapping. Disconnect reuses global CC120 PANIC."
+}
