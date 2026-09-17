@@ -1,10 +1,10 @@
 # 开发路线
 
-这份路线区分已验收功能、近期工程收口和后续产品功能。板上当前版本是已实体通过的通用 USB MIDI 版本，UserCode `0x00006DE8`，位流 SHA256 `5ae02d9fac533df10f5921272b8243304acb7011d6bacd4877b6bbeb9dbf961f`。
+这份路线区分已验收功能、近期工程收口和后续产品功能。板上当前为待实体回归的 P28，UserCode `0x00000028`；上一个已实体通过版本是通用 USB MIDI `0x00006DE8`。
 
 ## 近期工程收口
 
-1. 补齐 `effect_mask_sync_[0..2]_s0/RESET` 的 routed audit 覆盖。这个缺口从旧版本延续至今，修复前不能把完整路由审计写成通过。
+1. P28 已补齐 `effect_mask_sync_[0..2]_s0/RESET` 的 routed audit 覆盖，完整 audit 通过；当前等待实体回归后封版。
 2. 实现 USB IN error 计数与回读，替换当前的 `null`。诊断要区分正常 NAK、重复 DATA、传输错误和断线，不能改变现有 Push 与通用 MIDI 的热插拔行为。
 3. 扩大通用 USB MIDI 覆盖。当前版本支持第一个 MIDI 1.0 Bulk IN，以及 Note On/Off、poly pressure、CC、Program Change、Pitch Bend。Channel Pressure、SysEx、实时消息、多端点、多配置和按 channel/cable 隔离仍未实现。
 

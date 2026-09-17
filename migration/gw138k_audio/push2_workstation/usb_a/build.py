@@ -145,6 +145,23 @@ def main():
         '.cpu_event_valid(cpu_event_valid),.cpu_event_ready(cpu_event_ready),.cpu_event(cpu_event),\n        .panel_event_valid(panel_event_valid),.panel_command(panel_command),.panel_event_ready(panel_event_ready),')
     s=replace(s,'.pc_uart_rx_i(pc_uart_rx_i),.held_notes_o(held_notes),.applied_events_o(applied_events),.pc_health_o(pc_health),',
         '.pc_uart_rx_i(pc_uart_rx_i),.held_notes_o(held_notes),.applied_events_o(applied_events),.pc_health_o(pc_health),\n        .panel_event_valid_o(panel_event_valid),.panel_command_o(panel_command),')
+    # The effect status enters the always-running 50 MHz display domain.  Its
+    # old reset came directly from the audio clock domain and left six
+    # synchronous RESET endpoints outside STA.  These registers are only a
+    # display mirror, so initialize both stages and let audio-domain reset
+    # state propagate through the ordinary two-stage data path.
+    s=replace(s,
+        '''    (* ASYNC_REG="TRUE" *) reg [2:0] effect_mask_meta, effect_mask_sync;
+    (* ASYNC_REG="TRUE" *) reg [5:0] effect_order_meta=6'b10_01_00, effect_order_sync=6'b10_01_00;
+    always @(posedge clk_50m) begin
+        if(!reset_n) begin effect_mask_meta<=0; effect_mask_sync<=0; end
+        else begin effect_mask_meta<=effect_mask_audio; effect_mask_sync<=effect_mask_meta; end''',
+        '''    wire [2:0] effect_mask_sample /* synthesis syn_keep=1 */;
+    assign effect_mask_sample=effect_mask_audio;
+    (* ASYNC_REG="TRUE", syn_preserve=1 *) reg [2:0] effect_mask_meta=0, effect_mask_sync=0;
+    (* ASYNC_REG="TRUE" *) reg [5:0] effect_order_meta=6'b10_01_00, effect_order_sync=6'b10_01_00;
+    always @(posedge clk_50m) begin
+        effect_mask_meta<=effect_mask_sample; effect_mask_sync<=effect_mask_meta;''')
     p.write_text(s)
     # Clear effect state without resetting BSRAM contents.  Resetting each
     # history length/pointer makes old RAM words unreachable until replaced.
@@ -329,6 +346,7 @@ end
     p.write_text('\n'.join(line for line in s.splitlines() if '"push_' not in line)+'\n'+(ROOT/'p11.cst').read_text())
     p=stage/'constraints/tang_mega_138k.sdc';s=p.read_text().split('# CH569 HSPI16')[0]
     s='\n'.join(line for line in s.splitlines() if 'u_usb_host/u_fifo' not in line)+'\n'
+    s=replace(s,'set_false_path -to [get_pins {u_managed/effect_mask_sync*/RESET u_managed/effect_mask_meta*/RESET}]\n','')
     # Same reset and opposite-direction mailbox can share local release FFs.
     s=s.replace('u_runtime/u_usb_cdc/source_release*/CLEAR u_runtime/u_usb_cdc/destination_release*/CLEAR',
         'u_runtime/u_usb_cdc/source_release*/CLEAR u_runtime/u_usb_cdc/destination_release*/CLEAR u_push/feedback/source_release*/CLEAR u_push/feedback/destination_release*/CLEAR')
@@ -378,7 +396,10 @@ end
     if args.prepare_only:return
     if args.reuse_synthesis:
         previous=args.reuse_synthesis.resolve();old=json.loads((previous/'workstation_inputs.json').read_text())
-        assert all(old.get(p)==h and sha(previous/'Prj1'/p)==h for p,h in hashes.items() if not p.startswith('constraints/')),'changed RTL/firmware cannot reuse synthesis'
+        # boot.elf carries linker metadata and is not a Gowin project input;
+        # boot.mem is the exact synthesized ROM image and remains compared.
+        assert all(old.get(p)==h and sha(previous/'Prj1'/p)==h for p,h in hashes.items()
+                   if not p.startswith('constraints/') and not p.endswith('.elf')),'changed RTL/firmware cannot reuse synthesis'
         shutil.copytree(previous/'Prj1/impl/gwsynthesis',stage/'impl/gwsynthesis')
         (out/'reused_synthesis.json').write_text(json.dumps(dict(source=str(previous),non_constraint_inputs_identical=True),indent=2)+'\n')
     with (out/'gowin.log').open('w') as log:

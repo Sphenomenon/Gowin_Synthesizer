@@ -1,5 +1,13 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-09-18 P28 效果状态 routed audit 修复（已下载，待实体回归）
+
+P28 关闭了从旧版本延续的 `effect_mask_sync_[0..2]_s0/RESET` 审计缺口。三位效果选择仍从 76.8 MHz 音频域经过两级同步进入 50 MHz 显示域；显示镜像改为初始化的无活动复位 DFFCE，旧 RESET false path 已删除。最终网表逐位证明 meta→sync 数据链、固定高 CE、固定低 CLEAR 和无 RESET/PRESET，负向变异检查也能拒绝断开的第二级。
+
+完整 routed audit 通过。P&R setup/hold 0/0，最差 setup slack +0.063 ns；Logic 34895、Register 25638、BSRAM 253、DSP 43.5。位流 SHA256 `a6544465c4aad1bb7a07abfb6158f1a787927442698eaf8193e9bad080f2fbb1`，UserCode `0x00000028`。通用 MIDI 与完整 CPU/audio 必要回归通过。已从已验收通用 MIDI版本 `0x00006DE8` 仅写 SRAM 并读回 P28，Flash 未写。
+
+P28 尚待 Push、连续压力、屏幕和灯光、通用 MIDI、电脑键盘、HDMI、耳机和效果链的实体检查，因此没有建立 `BOARD_CURRENT_P28`。USB IN error 诊断仍为 `null`。见 [源码审计](P28_EFFECT_MASK_AUDIT.md)、[验证记录](P28_EFFECT_MASK_AUDIT_VERIFICATION.md) 和 [候选绑定](P28_EFFECT_MASK_AUDIT_CANDIDATE.json)。
+
 ## 2026-09-18 通用 USB MIDI 1.0 自动识别（实体通过）
 
 在保留 Push 2 专用 MIDI、屏幕和灯光路径的同时，USB Host 可从设备描述符中寻找 MIDI 1.0 Bulk IN 端点，并把 Note On/Off、poly pressure、CC、Program Change 和 Pitch Bend 送入现有音频事件 FIFO。普通 MIDI 设备不经过 Push 的音域、力度曲线或面板映射；Channel Pressure、SysEx 和实时消息尚未映射。

@@ -96,8 +96,24 @@ def inspect(build, *, existing_audit_command=None, cpu_control_trace=trace_cpu_c
             first=[n for n,(kind,_) in d.cells.items() if n.startswith('u_managed/u_audio/pc_health_meta_'+str(bit)+'_') and kind.startswith('DFF')]
             second=[n for n,(kind,_) in d.cells.items() if n.startswith('u_managed/u_audio/pc_health_sync_'+str(bit)+'_') and kind.startswith('DFF')]
             require(len(first)==1 and len(second)==1 and d.cells[second[0]][1]['D']==d.cells[first[0]][1]['Q'],'PC health synchronizer')
-        require(any(n.startswith('u_video/u_scanout/composite_active') and kind.startswith('DFF') for n,(kind,_) in d.cells.items()),'simultaneous graph composition absent')
-        require(any(n.startswith('u_video/u_scanout/analysis_base') and kind.startswith('DFF') for n,(kind,_) in d.cells.items()),'analysis page not held for whole frame')
+        # P5 replaced the former split CPU/UI composition with one authoritative
+        # RTL analysis page.  Prove that policy from source, then prove in the
+        # routed netlist that the selected analysis bank is captured by the
+        # frame-held scanout base and all three analysis readers remain live.
+        view=(stage/'src/ae350/gw138k_view_select.sv').read_text()
+        require("wire selected_ui=1'b0;" in view and
+                'assign selected_base=selected_ui?(ui_pending?ui_next_base:ui_front_base):analysis_base;' in view,
+                'unified analysis page policy changed')
+        selected=[p for n,(kind,p) in d.cells.items()
+                  if n.startswith('u_video/u_view/selected_analysis_base') and kind.startswith('LUT')]
+        held=[p for n,(kind,p) in d.cells.items()
+              if n.startswith('u_video/u_scanout/front_base') and kind.startswith('DFF')]
+        require(selected and held and any(h['D']==s['F'] for h in held for s in selected),
+                'analysis bank is not held for the whole frame')
+        for prefix in ['u_video/u_renderer/shared_render_wave_addr',
+                       'u_video/u_renderer/shared_render_spectrum_column',
+                       'u_video/u_renderer/shared_render_image_addr']:
+            require(any(n.startswith(prefix) for n in d.cells),'analysis reader absent '+prefix)
     if cpu_ui:
         require(cpu_ddr,'UI without CPU DDR')
         groups += [('u_ui_control/','request_held','request_local',49),('u_ui_control/','response_held','response_local',33)]
@@ -150,7 +166,8 @@ def inspect(build, *, existing_audit_command=None, cpu_control_trace=trace_cpu_c
     require('//Device Version: C' in header and '//Part Number: GW5AST-LV138PG484AC2/I1' in header,'wrong target')
     return dict(passed=True,hardware_tested=False,bitstream_sha256=sha(pnr/'Prj1.fs'),usercode=re.search(r'//UserCode: (0x[0-9A-Fa-f]+)',header)[1],
         expression_controls=pc_midi and 'input wire [447:0] performance_words' in (stage/'src/ae350/gw138k_performance_uart.sv').read_text(),
-        frozen_inputs=len(inputs),audio=audio,ae350=cpus[0],cpu_external_ddr=cpu_ddr,cpu_ui=cpu_ui,pc_midi=pc_midi,simultaneous_graphs=pc_midi,cpu_pll_paths=paths,control_cdc=cdc,resource=resource.attrib,
+        frozen_inputs=len(inputs),audio=audio,ae350=cpus[0],cpu_external_ddr=cpu_ddr,cpu_ui=cpu_ui,pc_midi=pc_midi,
+        unified_analysis_page=pc_midi,simultaneous_graphs=False,cpu_pll_paths=paths,control_cdc=cdc,resource=resource.attrib,
         artifact_sha256={f.name:sha(f) for f in [pnr/'Prj1.fs',pnr/'Prj1.vo',pnr/'Prj1.sdf',pnr/'Prj1.tr']})
 
 def main():

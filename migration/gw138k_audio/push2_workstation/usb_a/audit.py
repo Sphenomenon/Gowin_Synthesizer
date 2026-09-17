@@ -54,6 +54,40 @@ try:
         for first,second in [('req_meta','req_sync'),('ack_meta','ack_sync')]:
             stages=regs(root+first+'_');req(len(stages)==1,'snapshot synchronizer '+first)
             q=next(iter(stages.values()))['Q'];req(sum(ff['D']==q for ff in regs(root+second+'_').values())==1,'snapshot second stage')
+    # The effect-mask display mirror uses initialized data flops whose control
+    # pins are tied inactive.  This removes the old cross-domain RESET
+    # endpoints while preserving the ordinary two-stage data synchronizer.
+    def effect_mask_cdc_proof():
+        meta=regs('u_managed/effect_mask_meta_');sync=regs('u_managed/effect_mask_sync_')
+        req(len(meta)==len(sync)==3,'effect mask two-stage width')
+        stages=[]
+        for i in range(3):
+            mn=next(n for n in meta if re.search(rf'effect_mask_meta_{i}_s\d+$',n))
+            sn=next(n for n in sync if re.search(rf'effect_mask_sync_{i}_s\d+$',n))
+            for n in (mn,sn):
+                kind,ff=d.cells[n]
+                req(kind=='DFFCE' and ff['CLK']==d.clock_net,'effect mask primitive/clock')
+                req(d.parameters[(n,'INIT')]=="1'b0",'effect mask INIT')
+                req(d.constants.get(ff['CE'])==1,'effect mask clock enable is not constant high')
+                req(d.constants.get(ff['CLEAR'])==0,'effect mask clear is not constant low')
+                req(not ({'RESET','PRESET'} & set(ff)),'effect mask has an active reset form')
+            req(sync[sn]['D']==meta[mn]['Q'],'effect mask synchronizer chain')
+            stages.append(dict(bit=i,meta=mn,sync=sn))
+        sdc=(p/'constraints/tang_mega_138k.sdc').read_text()
+        req(not re.search(r'set_false_path[^\n]+effect_mask_(?:meta|sync)[^\n]+/(?:RESET|CLEAR)',sdc),
+            'effect mask downstream reset timing is still excluded')
+        return dict(strategy='initialized two-stage display mirror with inactive control pins',stages=stages)
+    effect_mask_cdc=effect_mask_cdc_proof()
+    rejected=[]
+    sync0=next(n for n in regs('u_managed/effect_mask_sync_') if re.search(r'effect_mask_sync_0_s\d+$',n))
+    old=d.cells[sync0][1]['D'];d.cells[sync0][1]['D']="1'b0"
+    try:
+        try:effect_mask_cdc_proof()
+        except (ValueError,KeyError,StopIteration):rejected.append('second_stage_data')
+        else:raise ValueError('effect mask chain mutation was accepted')
+    finally:d.cells[sync0][1]['D']=old
+    req(rejected==['second_stage_data'],'effect mask negative mutation')
+    effect_mask_cdc['negative_cases_rejected']=rejected
     for first,second in [('rx_dp_ms','rx_dp0_q'),('rx_dp0_q','rx_dp1_q'),('rx_dn_ms','rx_dn0_q'),('rx_dn0_q','rx_dn1_q'),('rxd_ms','rxd0_q'),('rxd0_q','rxd1_q')]:
         a=regs('u_usb_host/u_phy/'+first+'_');bb=regs('u_usb_host/u_phy/'+second+'_');req(len(a)==len(bb)==1,'USB PHY input stages')
         x=next(iter(a.values()));y=next(iter(bb.values()));req(y['D']==x['Q'] and x['CLK']==y['CLK']==ports['CLKOUT0'],'USB PHY48 resampling')
@@ -68,6 +102,7 @@ try:
     req(counts=={'Setup':'0','Hold':'0'},'timing violations')
     result.update(passed=True,hardware_tested=False,usb_cpu='VexRiscv',ch569_used=False,
         usb_pll_paths=paths,event_cdc=crossings,feedback_cdc=payloads,setup_hold=counts,
+        effect_mask_cdc=effect_mask_cdc,
         bitstream_sha256=sha(p/'impl/pnr/Prj1.fs'),auditor_sha256=sha(Path(__file__)))
 except (ValueError,KeyError,OSError,AssertionError,SystemExit) as e:
     result=dict(passed=False,error=str(e),hardware_tested=False)

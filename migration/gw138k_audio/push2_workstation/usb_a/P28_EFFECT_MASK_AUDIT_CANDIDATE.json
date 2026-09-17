@@ -1,0 +1,57 @@
+{
+  "version": "P28 effect-mask routed audit closure",
+  "status": "sram_downloaded_physical_acceptance_pending",
+  "baseline_commit": "5778a85",
+  "git_committed": true,
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_031112_483932",
+  "synthesis_source": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_024612_204363",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_031112_483932/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "a6544465c4aad1bb7a07abfb6158f1a787927442698eaf8193e9bad080f2fbb1",
+  "bitstream_bytes": 42197761,
+  "bitstream_usercode": "0x00000028",
+  "board_usercode_readback": "0x00000028",
+  "verification": {
+    "full_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_031112_483932/usb_a_audit.json",
+    "full_audit_passed": true,
+    "effect_mask_reset_gap_closed": true,
+    "generic_midi": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_031112_483932/generic_midi_032137_549581/verification.json",
+    "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_031112_483932/cpu_audio_sim_032137_549287/verification.json",
+    "pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.063,
+      "minimum_pulse_width_slack_ns": 1.325,
+      "resources": {
+        "Logic": 34895,
+        "Register": 25638,
+        "BSRAM": 253,
+        "DSP": 43.5
+      },
+      "audio_pll_maximum_init_ns": 9.771,
+      "full_build": true,
+      "non_constraint_synthesis_inputs_identical": true
+    },
+    "physical_acceptance": {
+      "status": "pending",
+      "hardware_tested_by_audit": false
+    }
+  },
+  "programming": {
+    "status": "sram_download_and_before_after_readback_passed",
+    "required_before_usercode": "0x00006DE8",
+    "required_after_usercode": "0x00000028",
+    "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260918_032323_026486/result.json",
+    "sram_written": true,
+    "fpga_flash_written": false,
+    "cable_location": 53,
+    "usb_device": "/sys/bus/usb/devices/3-5"
+  },
+  "retained": {
+    "last_physically_accepted": "generic USB MIDI UserCode 0x00006DE8",
+    "p27_usercode": "0x00000027",
+    "p27_sha256": "dcd14a32b18a947ba807ea86a6780762176bbe3fcba1c7c020490b615016c101",
+    "p10_usercode": "0x0000ED8B",
+    "p10_sha256": "dd80b9009241836b3266b6407aa1a36cf8973d0b660d239e2e0f1fe8e0e4f793",
+    "usb_in_error_diagnostic": null
+  }
+}

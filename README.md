@@ -2,7 +2,7 @@
 
 这是运行在 Gowin GW5AST-LV138PG484AC2/I1 和 NEO Dock 31005 上的 FPGA 音频工作站。主工程位于 [`migration/gw138k_audio`](migration/gw138k_audio)，Push 2 连接板载 J18 USB-A，不经过 CH569。
 
-当前实体通过版本支持 Push 2 和通用 USB MIDI 1.0，UserCode `0x00006DE8`，位流 SHA256 为 `5ae02d9fac533df10f5921272b8243304acb7011d6bacd4877b6bbeb9dbf961f`。用户已确认通用 MIDI 与现有 Push、显示、音频和效果链工作正常；随后只读检查仍为该 UserCode。该次下载由用户自行完成，仓库没有可核对的写入记录，因此 SRAM/Flash 写入方式记为未知。P27 `0x00000027` 继续作为上一实体稳定回退版本。
+板上当前为待实体回归的 P28，UserCode `0x00000028`，位流 SHA256 为 `a6544465c4aad1bb7a07abfb6158f1a787927442698eaf8193e9bad080f2fbb1`。P28 已关闭旧 `effect_mask` reset 审计缺口，完整 routed audit、通用 MIDI 回归和音频回归通过；已从 `0x00006DE8` 只写 SRAM 并读回，Flash 未写。上一个已实体通过版本仍是通用 USB MIDI `0x00006DE8`，P27 `0x00000027` 和 P10 继续保留为回退版本。
 
 ## 目录
 
@@ -28,7 +28,7 @@ python3 migration/gw138k_audio/push2_workstation/usb_a/build.py
 
 ## 已知缺口
 
-完整 routed audit 仍会在 `effect_mask_sync_[0..2]_s0/RESET` 三个旧端点失败。USB IN error 诊断尚未实现，记录值仍为 `null`。这两项不能写成已通过。
+旧 `effect_mask_sync_[0..2]_s0/RESET` 缺口已在 P28 关闭，完整 routed audit 通过。当前工程缺口是 USB IN error 诊断尚未实现，记录值仍为 `null`；P28 的 Push、HDMI 和耳机实体回归也还未完成。
 
 版本边界、忽略规则和提交范围见 [`GIT_SCOPE.md`](GIT_SCOPE.md)。
 
