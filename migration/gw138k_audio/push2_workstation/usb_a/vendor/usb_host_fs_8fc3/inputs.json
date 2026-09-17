@@ -1,0 +1,22 @@
+{
+  "firmware/baremetal.ld": "782346f25a8dfffc5bfbb8198c2b12e5166b2d500aa00e626e8187f5a0473da8",
+  "firmware/minlibc.c": "67270201c156358943bf01df27fc81da2a97730668174426ee11584a60f607bf",
+  "firmware/minlibc.h": "6b69e720d83f1a50d1bb617116cab5a77be69f4bfacbc1bbca41c31889f13e86",
+  "firmware/start.S": "922d197b938e653b3a94ef6107303cb828a2be267629bd92899498d429cbb60e",
+  "firmware/usb/usb_core.c": "fbe2b0995c27bf3621e3b32993b2405ff3b018ffe751dfebad14611c2cc50fa5",
+  "firmware/usb/usb_core.h": "6b121c052986df83a612db01ade9a7e8524fec80fd8bd718e8b5722c985900c6",
+  "firmware/usb/usb_defs.h": "d492a33d57f93d939dac591b5c1f5a70ed71018b1f0310c9d3b51880a677a6f5",
+  "firmware/usb/usb_hw.c": "8cd4b52b3ca7bd75bd13d78b0208efd700150cfb46409eea21e79c3bc3d8816d",
+  "firmware/usb/usb_hw.h": "3e72e7c5821e5d965c646be4114b6bb691749679ad4eea35ab7149743cf9af08",
+  "src/VexRiscv.v": "b4befdee132dbd5d8cf88991f24b69f1eef97cbad8a5656a745f0d69a7a31226",
+  "src/iosys2.v": "ff45e55a2c27039a2d84b3304ae54bf8fecaa24a2ed8a6f03e9f9ddd9aa43e2f",
+  "src/simpleuart.v": "26bbed2ad964b75a40a6f7e72f3871cf2cc3457d8b7ac8136a947d5d65fd69fa",
+  "src/usb_fs_phy.v": "e22c64f2178c844e6155c01111e8f77518edc79f12e6947dce133996eb21ba61",
+  "src/usb_transceiver.v": "b88c2d96a9de53751211122593687de11a995226382e798e27d7444a38ea0d0b",
+  "src/usbh_core.sv": "7f4e578c5db25f5c0ccd7e32010b96f1f96f9406bfd64753eed8cbfe9c9620a0",
+  "src/usbh_crc16.sv": "5b8770f950ea350e4a2fd556a43cd4f6c931895441ded527ea1514d69eb3e3f9",
+  "src/usbh_crc5.sv": "b75ba0b1690ae6cea2c5932ced97a341c7bd7914223ec630ed35f4ebadc766ca",
+  "src/usbh_fifo.sv": "faa14201152df8adf4aac61deb97ac4432cc90b2770715f02b700f332b2688a8",
+  "src/usbh_host_defs.v": "e493984abfc3ca369b3251f0ff6840ceb9f233dba9029f6e1c796f613fe31c88",
+  "src/usbh_sie.sv": "1627b027f4f3788e456cfc736864f7db79dff4fd7308fb45a6560628a06699b8"
+}

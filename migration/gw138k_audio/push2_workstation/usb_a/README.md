@@ -84,11 +84,11 @@ P13 已完成共享 DDR → HDMI reader → Push 64 位摘要 mailbox 的 RTL、
 
 ## 2026-09-13 P9 当前 SRAM 候选（待人工验收）
 
-当前板上 UserCode `0x0000C2D3`，选满三个不同效果后再按任一效果键会全部清零，下一次按键才开始新一轮。去重与左右滑动保留。P8 已获用户“没问题”反馈。见 [版本记录](BOARD_CURRENT_P9_CLEAR_ALL_EFFECTS.json) 和 [分层验证](results/build_20260913_175110_528097/P9_VERIFICATION.md)。未写 Flash。实际音频串联和旧显示复位审计覆盖缺口仍待处理。
+当前板上 UserCode `0x0000C2D3`，选满三个不同效果后再按任一效果键会全部清零，下一次按键才开始新一轮。去重与左右滑动保留。P8 已获用户“没问题”反馈，版本记录见 [BOARD_CURRENT_P9_CLEAR_ALL_EFFECTS.json](BOARD_CURRENT_P9_CLEAR_ALL_EFFECTS.json)。分层验证保存在对应的本地构建目录，未写 Flash。实际音频串联和旧显示复位审计覆盖缺口仍待处理。
 
 ## 2026-09-13 P8 当前 SRAM 候选（待人工验收）
 
-当前板上 UserCode `0xA64B`，左右连续移动动画与队列去重已下载，未写 Flash。见 [版本记录](BOARD_CURRENT_P8_SLIDE_UNIQUE_QUEUE.json) 和 [分层验证](results/build_20260913_172135_776685/P8_VERIFICATION.md)。未选满时重复按同一种效果不占新槽；选满三种后下一次按键开始新一轮。
+当前板上 UserCode `0xA64B`，左右连续移动动画与队列去重已下载，未写 Flash。版本记录见 [BOARD_CURRENT_P8_SLIDE_UNIQUE_QUEUE.json](BOARD_CURRENT_P8_SLIDE_UNIQUE_QUEUE.json)，分层验证保存在对应的本地构建目录。未选满时重复按同一种效果不占新槽；选满三种后下一次按键开始新一轮。
 
 源码核对纠正：当前音频只接收 effect_mask，并叠加 wet 输出；UI 顺序尚未接入实际串联处理。旧文档的“固定串联”不能作为现版验收结论。综合/PNR、功能仿真、SRAM 下载通过；旧路由审计仍有六个显示复位例外的覆盖缺口，失败报告保留。硬件听感与实际 HDMI 动画待用户验收。
 
@@ -124,7 +124,7 @@ P13 已完成共享 DDR → HDMI reader → Push 64 位摘要 mailbox 的 RTL、
 ## 复用范围
 
 - 音频/HDMI/DDR/AE350：冻结的 `../results/workstation_20260911_174045_306332`（3BE2）。保留精确 48 kHz、三模式/五音色、力度/弯音/滑音/颤音、延迟/合唱/混响、PT8211、三种分析图和原有 PC/G1 控制入口。
-- USB：`migration/midi_device_reference/push2_usb_host/results/fs_surface_build_20260911_200312_216160`（8FC3，SHA256 `f3873e508df04b9caf0b3664a2b9c23d5bcae07d5bca0488b2b7234c5447c0c1`）。VexRiscv、USB Host、PHY、512 字节收发 FIFO 及 PLL helper 源码保持一致；仅给 SoC 增加控制寄存器接口。
+- USB：仓库内冻结的 [`vendor/usb_host_fs_8fc3`](vendor/usb_host_fs_8fc3)（来源版本 8FC3）。VexRiscv、USB Host、PHY 和 512 字节收发 FIFO 源码保持一致；构建时只给 SoC 增加控制寄存器接口。
 - Push 映射、状态灯和屏幕像素使用既有 `push2_controls`、`push2_midi_rx`、`push2_lights`、`push2_led_tx`、`push2_surface_pixels`。屏幕显示实际合成器状态，经应答握手快照传入；电脑改参数也能反馈到 Push。
 - 删除新顶层里的 CH569 HSPI 接口和旧 J18 Host 实例。原源码/旧位流/证据保留在原位置。
 
@@ -167,7 +167,7 @@ python3 migration/gw138k_audio/push2_workstation/usb_a/sim/p23/run.py <新构建
 python3 migration/gw138k_audio/push2_workstation/usb_a/audit.py <新构建目录>
 ```
 
-`LATEST_BUILD.txt` 指向最新构建尝试；必须结合该目录的 `tool_result.json` 和 `usb_a_audit.json` 判断是否通过，不能只看指针。所有结果带 `hardware_tested:false`。
+本地 `LATEST_BUILD.txt` 指向最新构建尝试，但不进入 Git。必须结合结果目录的 `tool_result.json` 和 `usb_a_audit.json` 判断是否通过，不能只看指针。所有新构建结果初始都带 `hardware_tested:false`。
 
 - MMIO/CDC 仿真：450 个事件按序通过，1746 个等待周期，覆盖 64 垫、零速度松键、通道/端口过滤、模式/音色/效果/声道/旋钮/触摸条；LED 不 ACK 时不阻塞音频事件；输出 960×160 像素并验证行填充。
 - Vex 实际执行测试固件 → 真正 SoC 寄存器总线 → 既有合成器：3696 帧 PCM，其中 3574 帧非零；A/B/C、五音色、三效果、表达/声道路由/松音通过，帧间隔始终 1600 周期，音频错误计数为 0。AE350 总线时钟全程停止。
@@ -179,7 +179,7 @@ USB-A 工作站版本的 P138 回读应使用 `../scripts/control.py --usb-a`。
 
 ## P2–P5 核对（2026-09-13）
 
-本轮未改 RTL、未删除 HDMI/DDR/AE350 或原音频旁路，核对结果保存在 [`P2_P5_STATUS.md`](../results/p2p5_regression_20260913_010545/P2_P5_STATUS.md) 和 `p2p5_status.json`：
+本轮未改 RTL、未删除 HDMI/DDR/AE350 或原音频旁路。补丁计划保存在 [`P2P5_PATCH_PLAN.md`](P2P5_PATCH_PLAN.md)，板上版本记录见 [`BOARD_CURRENT_P2P5_V3.json`](BOARD_CURRENT_P2P5_V3.json)：
 
 - P2：48 kHz 下沿用 192 kHz 频率表乘 4，MIDI 0–36 最大误差 0.00449 cents；32 位相位连续，滑音/颤音按帧更新，不加 PLL。
 - P3：固定链顺序为合成混音 → 延迟 → 合唱 → 混响 → 路由 → PT8211；mask 0=关闭、1/2/3 可单独或叠加、7=全开；映射仿真覆盖 1/3/7，关闭由复位/清零路径覆盖。

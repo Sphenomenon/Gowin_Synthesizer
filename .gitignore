@@ -35,6 +35,7 @@ migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306
 *.bin
 *.fs
 *.vo
+!migration/gw138k_audio/push2_workstation/usb_a/vendor/ddr3_reference/ddr3_memory_interface.vo
 *.vg
 *.sdf
 *.pr
@@ -48,6 +49,7 @@ migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306
 *.pin.html
 *.log
 *.tmp
+migration/gw138k_audio/push2_workstation/usb_a/LATEST_BUILD.txt
 
 # Tool-local files and editor metadata.
 *.gprj.user

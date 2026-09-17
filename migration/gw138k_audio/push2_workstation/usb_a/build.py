@@ -7,8 +7,14 @@ from datetime import datetime
 import argparse,hashlib,json,os,shutil,subprocess,xml.etree.ElementTree as ET
 ROOT=Path(__file__).resolve().parent
 WORK=ROOT.parent/'results/workstation_20260911_174045_306332'
-USB=ROOT.parents[2]/'midi_device_reference/push2_usb_host/results/fs_surface_build_20260911_200312_216160'
+USB=ROOT/'vendor/usb_host_fs_8fc3'
+WORKSTATION_MANIFEST=ROOT/'vendor/workstation_inputs.json'
+DDR_REFERENCE=ROOT/'vendor/ddr3_reference/ddr3_memory_interface.vo'
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def frozen_sha(p):
+    data=p.read_bytes()
+    if b'\0' not in data:data=data.replace(b'\r\n',b'\n')
+    return hashlib.sha256(data).hexdigest()
 def replace(s,a,b):
     assert s.count(a)==1,('ambiguous source edit',a)
     return s.replace(a,b)
@@ -20,22 +26,28 @@ def replace_between(s,start,end,a,b):
     return s[:first]+replace(s[first:last],a,b)+s[last:]
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path)
+    ap.add_argument('--no-update-latest',action='store_true',help='Keep the local latest-build pointer unchanged')
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     args=ap.parse_args()
     if args.user_code is not None:
         if len(args.user_code)!=8 or any(c not in '0123456789abcdefABCDEF' for c in args.user_code):
             ap.error('--user-code requires eight hexadecimal digits')
-    for base,manifest,prefix in [(WORK,'workstation_inputs.json','Prj1'),(USB,'inputs.json','')]:
-        hashes=json.loads((base/manifest).read_text())
-        assert all(sha(base/prefix/p)==h for p,h in hashes.items()),'frozen inputs changed: '+str(base)
+    for base,manifest in [(WORK/'Prj1',WORKSTATION_MANIFEST),(USB,USB/'inputs.json')]:
+        hashes=json.loads(manifest.read_text())
+        assert all(frozen_sha(base/p)==h for p,h in hashes.items()),'frozen inputs changed: '+str(base)
     out=ROOT/'results'/datetime.now().strftime('build_%Y%m%d_%H%M%S_%f');out.mkdir(parents=True)
     stage=out/'Prj1'
     shutil.copytree(WORK/'Prj1',stage,ignore=shutil.ignore_patterns('impl','build','__pycache__','*.user'))
+    ddr_ip=stage/'vendor/gowin_ddr3/ddr3_memory_interface.v'
+    ddr_ip.write_bytes(ddr_ip.read_bytes().replace(b'\r\n',b'\n').replace(b'\n',b'\r\n'))
+    assert sha(ddr_ip)=='4a6e26d2ccb8d01221103df4cdf71f3517d2700614020e0c414aafec04a495bc'
     if args.user_code is not None:
         tcl=stage/'scripts/build.tcl'
         tcl.write_text(replace(tcl.read_text(),'set flow all',
             'set_option -user_code '+args.user_code.upper()+'\nset flow all'))
-    shutil.copytree(WORK/'reference',out/'reference')
+    reference=out/'reference';reference.mkdir()
+    shutil.copy2(ddr_ip,reference/'ddr3_memory_interface.v')
+    shutil.copy2(DDR_REFERENCE,reference/'ddr3_memory_interface.vo')
     # Display-data overlays are kept outside the frozen workstation
     # source tree. The P10 baseline remains hash-checked and untouched.
     display_overlay={
@@ -355,11 +367,14 @@ end
     (stage/'push2_usb_a.hex').write_text(hexdata);(dest/'push2_usb_a.hex').write_text(hexdata)
     hashes={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
     (out/'workstation_inputs.json').write_text(json.dumps(hashes,indent=2)+'\n')
-    origins=dict(workstation=str(WORK),usb_host=str(USB),hardware_tested=False,
+    origins=dict(
+        workstation=WORK.relative_to(ROOT.parents[3]).as_posix(),
+        usb_host=USB.relative_to(ROOT.parents[3]).as_posix(),hardware_tested=False,
         usb_host_implementation='VexRiscv firmware + RTL PHY/Host; no CH569',
         sources={str(p.relative_to(ROOT)):sha(p) for p in ROOT.rglob('*') if p.is_file() and 'results' not in p.relative_to(ROOT).parts and '__pycache__' not in p.parts})
     (out/'origins.json').write_text(json.dumps(origins,indent=2)+'\n');print(out,flush=True)
-    (ROOT/'LATEST_BUILD.txt').write_text(str(out)+'\n')
+    if not args.no_update_latest:
+        (ROOT/'LATEST_BUILD.txt').write_text(out.relative_to(ROOT).as_posix()+'\n')
     if args.prepare_only:return
     if args.reuse_synthesis:
         previous=args.reuse_synthesis.resolve();old=json.loads((previous/'workstation_inputs.json').read_text())

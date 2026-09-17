@@ -5,6 +5,9 @@ USB-A audio workstation. The tracked construction source is the canonical
 `migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1`
 tree together with the Push USB-A build, simulation, programming, audit, and
 board-record files under `migration/gw138k_audio/push2_workstation/usb_a`.
+The small frozen USB Host source set, its input manifest, and the audited DDR
+reference netlist live under `usb_a/vendor`, so a fresh clone can prepare a
+build without another migration tree.
 
 The original Xilinx tree (`fpga/`), the separate Mega138K project
 (`Mega_138K/`), unrelated migration experiments, generated build/capture
