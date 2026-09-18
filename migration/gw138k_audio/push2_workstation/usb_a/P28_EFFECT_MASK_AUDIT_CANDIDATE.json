@@ -1,6 +1,6 @@
 {
   "version": "P28 effect-mask routed audit closure",
-  "status": "sram_downloaded_physical_acceptance_pending",
+  "status": "built_sram_downloaded_and_physically_accepted",
   "baseline_commit": "5778a85",
   "git_committed": true,
   "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_031112_483932",
@@ -32,7 +32,9 @@
       "non_constraint_synthesis_inputs_identical": true
     },
     "physical_acceptance": {
-      "status": "pending",
+      "status": "passed",
+      "date": "2026-09-18",
+      "user_report": "没问题，完美",
       "hardware_tested_by_audit": false
     }
   },
@@ -47,7 +49,7 @@
     "usb_device": "/sys/bus/usb/devices/3-5"
   },
   "retained": {
-    "last_physically_accepted": "generic USB MIDI UserCode 0x00006DE8",
+    "last_physically_accepted": "P28 UserCode 0x00000028",
     "p27_usercode": "0x00000027",
     "p27_sha256": "dcd14a32b18a947ba807ea86a6780762176bbe3fcba1c7c020490b615016c101",
     "p10_usercode": "0x0000ED8B",

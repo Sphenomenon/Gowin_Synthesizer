@@ -1,0 +1,49 @@
+{
+  "version": "P28 effect-mask routed audit closure",
+  "status": "hardware_accepted",
+  "accepted_at": "2026-09-18",
+  "hardware_tested": true,
+  "user_report": "没问题，完美",
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_031112_483932",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_031112_483932/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "a6544465c4aad1bb7a07abfb6158f1a787927442698eaf8193e9bad080f2fbb1",
+  "usercode": "0x00000028",
+  "programming": {
+    "before_usercode": "0x00006DE8",
+    "after_usercode": "0x00000028",
+    "result": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/results/sram_20260918_032323_026486/result.json",
+    "sram_written": true,
+    "fpga_flash_written": false
+  },
+  "pnr": {
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "worst_setup_slack_ns": 0.063,
+    "resources": {
+      "Logic": 34895,
+      "Register": 25638,
+      "BSRAM": 253,
+      "DSP": 43.5
+    },
+    "full_routed_audit_passed": true,
+    "effect_mask_reset_gap_closed": true
+  },
+  "physical_acceptance": {
+    "push_pads_and_continuous_pressure": "passed_by_user_report",
+    "push_screen_and_lights": "passed_by_user_report",
+    "generic_usb_midi": "passed_by_user_report",
+    "computer_keyboard": "passed_by_user_report",
+    "hdmi_analysis_views": "passed_by_user_report",
+    "headphones": "passed_by_user_report",
+    "serial_effect_chain": "passed_by_user_report",
+    "score_and_record_controls": "passed_by_user_report"
+  },
+  "known_limits": {
+    "usb_in_error_diagnostic": null
+  },
+  "retained_previous_stable": {
+    "version": "generic USB MIDI 1.0 auto-detection",
+    "sha256": "5ae02d9fac533df10f5921272b8243304acb7011d6bacd4877b6bbeb9dbf961f",
+    "usercode": "0x00006DE8"
+  }
+}
