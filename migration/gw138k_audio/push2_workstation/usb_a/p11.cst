@@ -6,4 +6,6 @@ INS_LOC "u_audio_clock/g_hardware.u_pll/u_pll_init/enable_r_1_s0" R39C72[0][A];
 INS_LOC "u_audio_clock/g_hardware.u_pll/u_pll_init/state_0_s0" R39C72[1][A];
 INS_LOC "u_audio_clock/g_hardware.u_pll/u_pll_init/state_1_s0" R39C72[1][B];
 INS_LOC "u_audio_clock/g_hardware.u_pll/u_pll_init/state_2_s0" R39C72[2][A];
-INS_LOC "u_audio_clock/g_hardware.u_pll/u_pll_init/pll_reset_s" R39C72[0][B];
+// Share the state_0 LUT/FF site so its RESET term cannot take a congested
+// general route before the helper's combinational reset output reaches PLL_B.
+INS_LOC "u_audio_clock/g_hardware.u_pll/u_pll_init/pll_reset_s" R39C72[1][A];

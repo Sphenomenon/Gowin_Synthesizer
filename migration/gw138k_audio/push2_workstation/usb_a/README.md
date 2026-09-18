@@ -1,12 +1,18 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-09-18 P29 USB IN 错误诊断（离线候选，未下载）
+
+P29 补齐 P138 word 6：四个独立的饱和 8 bit 计数分别记录 USB IN 传输/协议错误、重复 DATA toggle、正常 NAK 和 50 ms 失联。现有 USB 48 MHz → 50 MHz UART 快照、MIDI 事件 FIFO、背压、热插拔和 PANIC 路径保持不变；`control.py --usb-a` 不再返回 `usb_in_errors: null`。底层驱动仍会合并部分 CRC 与 timeout，因此错误总数不伪装成更细分类。
+
+完整 routed audit、通用 MIDI/诊断回归和 CPU/audio 回归通过。P&R setup/hold 0/0，最差 setup slack +0.085 ns；Logic 35112、Register 25734、BSRAM 253、DSP 43.5。候选 UserCode `0x00000029`，SHA256 `b43d9e981cde16d571caeeea1ca2ca7e2031c556202cab48fa95eed6e6940581`。按用户要求，本会话没有执行 programmer、SRAM 下载或读回，Flash 也未写；板上最后一次已知实体稳定版本仍是 P28。见 [源码审计](P29_USB_IN_DIAGNOSTICS_AUDIT.md)、[验证记录](P29_USB_IN_DIAGNOSTICS_VERIFICATION.md) 和 [候选绑定](P29_USB_IN_DIAGNOSTICS_CANDIDATE.json)。
+
 ## 2026-09-18 P28 效果状态 routed audit 修复（实体通过）
 
 P28 关闭了从旧版本延续的 `effect_mask_sync_[0..2]_s0/RESET` 审计缺口。三位效果选择仍从 76.8 MHz 音频域经过两级同步进入 50 MHz 显示域；显示镜像改为初始化的无活动复位 DFFCE，旧 RESET false path 已删除。最终网表逐位证明 meta→sync 数据链、固定高 CE、固定低 CLEAR 和无 RESET/PRESET，负向变异检查也能拒绝断开的第二级。
 
 完整 routed audit 通过。P&R setup/hold 0/0，最差 setup slack +0.063 ns；Logic 34895、Register 25638、BSRAM 253、DSP 43.5。位流 SHA256 `a6544465c4aad1bb7a07abfb6158f1a787927442698eaf8193e9bad080f2fbb1`，UserCode `0x00000028`。通用 MIDI 与完整 CPU/audio 必要回归通过。已从已验收通用 MIDI版本 `0x00006DE8` 仅写 SRAM 并读回 P28，Flash 未写。
 
-用户确认 Push、连续压力、屏幕和灯光、通用 MIDI、电脑键盘、HDMI、耳机、效果链、曲谱和录音控制均正常，并报告“没问题，完美”。USB IN error 诊断仍为 `null`。见 [正式版本记录](BOARD_CURRENT_P28_EFFECT_MASK_AUDIT.json)、[源码审计](P28_EFFECT_MASK_AUDIT.md)、[验证记录](P28_EFFECT_MASK_AUDIT_VERIFICATION.md) 和 [候选绑定](P28_EFFECT_MASK_AUDIT_CANDIDATE.json)。
+用户确认 Push、连续压力、屏幕和灯光、通用 MIDI、电脑键盘、HDMI、耳机、效果链、曲谱和录音控制均正常，并报告“没问题，完美”。该实体版本的 USB IN error 诊断仍为 `null`；P29 离线候选已实现诊断，但尚未下载。见 [正式版本记录](BOARD_CURRENT_P28_EFFECT_MASK_AUDIT.json)、[源码审计](P28_EFFECT_MASK_AUDIT.md)、[验证记录](P28_EFFECT_MASK_AUDIT_VERIFICATION.md) 和 [候选绑定](P28_EFFECT_MASK_AUDIT_CANDIDATE.json)。
 
 ## 2026-09-18 通用 USB MIDI 1.0 自动识别（实体通过）
 
@@ -189,7 +195,7 @@ python3 migration/gw138k_audio/push2_workstation/usb_a/audit.py <新构建目录
 - Vex 实际执行测试固件 → 真正 SoC 寄存器总线 → 既有合成器：3696 帧 PCM，其中 3574 帧非零；A/B/C、五音色、三效果、表达/声道路由/松音通过，帧间隔始终 1600 周期，音频错误计数为 0。AE350 总线时钟全程停止。
 - `sim/run.py` 的测试固件只用于仿真。实际位流嵌入的是 `firmware.c` USB Host 固件，不是测试程序。
 
-USB-A 工作站版本的 P138 回读应使用 `../scripts/control.py --usb-a`。它保留 A138/C350/K138/E138，P138 给出收到字数、映射数、灯光 ACK、屏幕帧数和 OUT 错误。USB IN 错误显示 `null`；不把旧 CH569 诊断字段套在这个版本上。此命令会打开串口；离线阶段未执行，后续经用户授权上板后已用于只读回读。
+USB-A 工作站版本的 P138 回读应使用 `../scripts/control.py --usb-a`。它保留 A138/C350/K138/E138，P138 给出收到字数、映射数、灯光 ACK、屏幕帧数、OUT 错误，以及 P29 起新增的 USB IN 错误、重复包、NAK 和失联计数。P28 及更早位流的 word 6 仍是旧占位值，不能当作有效 P29 诊断。此命令会打开串口；P29 离线阶段未执行。
 
 后续 30 秒交互窗口（序列 108–137）：新增 7 个映射事件、8 条灯光 ACK、58 帧 Push 屏幕，OUT 错误 0；实际核心回读观察到左右/立体声、钢琴、C 模式变化。该窗口未采到持键状态，不推断耳机发声或实际画面已由用户验收。记录：`../results/capture_20260911_212820_205862/interaction_summary.json`。
 

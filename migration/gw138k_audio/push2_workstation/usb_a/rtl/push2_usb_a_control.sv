@@ -35,7 +35,7 @@ module push2_usb_a_control(
         end
     reg connected,generic_midi;
     wire push_connected=connected && !generic_midi;
-    reg [31:0] received,frames,out_errors;
+    reg [31:0] received,frames,out_errors,in_diagnostics;
     wire raw_ready,valid,map_ready;wire [3:0] kind,cable,channel;wire [6:0] a,b;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] event_release;
     wire event_qualified=reset_n && audio_reset_n;
@@ -113,13 +113,14 @@ module push2_usb_a_control(
             8'h3c:rdata=total_mapped;
             8'h40:rdata={packet_valid,21'd0,packet_length};
             8'h4c:rdata={24'd0,packet_data};
+            8'h58:rdata=in_diagnostics;
             default:rdata=0;
         endcase
     end
     always @(posedge clk or negedge reset_n) begin
         if(!reset_n)begin
             connected<=0;generic_midi<=0;generic_received<=0;
-            received<=0;frames<=0;out_errors<=0;pixel_index<=0;packet_index<=0;
+            received<=0;frames<=0;out_errors<=0;in_diagnostics<=0;pixel_index<=0;packet_index<=0;
         end else if(accepted)begin
             if(write)case(address)
                 8'h00:begin connected<=wdata[0];generic_midi<=wdata[0] && wdata[1];end
@@ -129,6 +130,7 @@ module push2_usb_a_control(
                 8'h28:pixel_index<=wdata[17:0]; // Rewind an unacknowledged screen packet.
                 8'h30:frames<=wdata;
                 8'h34:out_errors<=wdata;
+                8'h58:in_diagnostics<=wdata;
                 8'h48:packet_index<=wdata[8:0];
                 default:begin end
             endcase
@@ -136,8 +138,9 @@ module push2_usb_a_control(
             else if(address==8'h4c)packet_index<=packet_index+1'b1;
         end
     end
-    // Existing P138 fields: errors, IN errors (unavailable), frames, LEDs,
-    // mapped events, received words, flags. Bit 8 identifies this USB-A route.
-    assign telemetry={out_errors,32'hffffffff,frames,commands,total_mapped,received,
+    // P138 word 6 carries four saturating USB IN counters: disconnects, normal
+    // NAKs, duplicate DATA, and transfer/protocol errors. Bit 8 identifies
+    // this USB-A route; the other established counters retain their positions.
+    assign telemetry={out_errors,in_diagnostics,frames,commands,total_mapped,received,
                       23'd0,1'b1,6'd0,connected,1'b1};
 endmodule

@@ -33,6 +33,22 @@ try:
             req(flight<=10 and upstream['total_ns']<=10,'USB PLL propagation exceeds 10ns')
             paths.append(dict(endpoint=role,flight_ns=flight))
     def regs(prefix):return {n:ports for n,(kind,ports) in d.cells.items() if n.startswith(prefix) and kind.startswith('DFF')}
+    in_diagnostics=regs('u_push/in_diagnostics_')
+    req(len(in_diagnostics)==32,'USB IN diagnostic register width')
+    diagnostic_bits=[]
+    for i in range(32):
+        n=next(n for n in in_diagnostics if re.search(rf'in_diagnostics_{i}_s\d+$',n))
+        ff=in_diagnostics[n]
+        req(ff['CLK']==ports['CLKOUT0'],'USB IN diagnostic clock')
+        req(ff['Q']==f'usb_words[{160+i}]','USB IN diagnostic P138 placement')
+        diagnostic_bits.append(n)
+    control_source=(p/'src/usb_a/push2_usb_a_control.sv').read_text()
+    req(re.search(r'assign\s+telemetry\s*=\s*\{out_errors\s*,\s*in_diagnostics\s*,\s*frames',control_source),
+        'USB IN diagnostic telemetry source')
+    firmware_source=(b/'firmware/firmware.c').read_text()
+    req('MMIO(0x58)=' in firmware_source and 'in_disconnects<<24' in firmware_source and
+        'in_naks<<16' in firmware_source and 'in_duplicates<<8' in firmware_source,
+        'USB IN diagnostic firmware publisher')
     crossings=[]
     root='u_push/events/fifo/unbuffered/'
     for branch,source in [('produce_cdc','produce_w_'),('consume_cdc','consume_r_')]:
@@ -103,6 +119,7 @@ try:
     result.update(passed=True,hardware_tested=False,usb_cpu='VexRiscv',ch569_used=False,
         usb_pll_paths=paths,event_cdc=crossings,feedback_cdc=payloads,setup_hold=counts,
         effect_mask_cdc=effect_mask_cdc,
+        usb_in_diagnostics=dict(width=32,p138_word=6,clock='USB 48 MHz',registers=diagnostic_bits),
         bitstream_sha256=sha(p/'impl/pnr/Prj1.fs'),auditor_sha256=sha(Path(__file__)))
 except (ValueError,KeyError,OSError,AssertionError,SystemExit) as e:
     result=dict(passed=False,error=str(e),hardware_tested=False)

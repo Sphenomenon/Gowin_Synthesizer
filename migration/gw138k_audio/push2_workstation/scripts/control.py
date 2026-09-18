@@ -19,10 +19,19 @@ def decode(line,usb_a=False):
         f=w[1]
         if usb_a:
             if (f & ~3)!=0x100:raise ValueError('not USB-A workstation telemetry')
+            in_diag=w[6]
+            in_diag_available=in_diag!=0xffffffff
             return kind,dict(sequence=w[0],transport='FPGA USB-A FS VexRiscv',
                 enabled=bool(f&1),configured=bool(f&2),high_speed=False,
                 received_words=w[2],mapped_events=w[3],commands_acked=w[4],
-                frames_acked=w[5],usb_in_errors=None,out_errors=w[7])
+                frames_acked=w[5],usb_in_diagnostics_available=in_diag_available,
+                usb_in_errors=(in_diag&255) if in_diag_available else None,
+                usb_in_duplicates=((in_diag>>8)&255) if in_diag_available else None,
+                usb_in_naks=((in_diag>>16)&255) if in_diag_available else None,
+                usb_disconnects=((in_diag>>24)&255) if in_diag_available else None,
+                usb_in_counter_saturated=(any(((in_diag>>shift)&255)==255 for shift in (0,8,16,24))
+                                          if in_diag_available else None),
+                usb_in_diagnostics_raw=f'{in_diag:08X}',out_errors=w[7])
         value=dict(sequence=w[0],enabled=bool(f&1),configured=bool(f&2),display_fault=bool(f&4),high_speed=bool(f&8),
             display_fault_code=(f>>4)&15,host_state=(f>>8)&255,enum_error=(f>>16)&255,hspi_errors=f>>24,
             replies=w[2],mapped_events=w[3],commands_acked=w[4],frames_acked=w[5],usb_in_errors=w[6],link_errors=w[7])

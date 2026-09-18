@@ -115,6 +115,7 @@ int main(int argc,char **argv){
     now_ms=0xfffffff0u;last_in_reply=now_ms;rx_result=USB_RES_TIMEOUT;
     for(int i=0;i<49;i++){poll_midi();assert(connected);}
     poll_midi();assert(!connected && !regs[0]);
+    assert(regs[0x58/4]==0x01ff0134u); // disconnect, saturated NAK, duplicate, errors
 
     // Different endpoint/size, alternate setting and interface number.
     fixture();descriptor[29]=6;descriptor[30]=1;descriptor[89]=0x87;descriptor[91]=32;

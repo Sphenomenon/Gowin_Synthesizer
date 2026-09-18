@@ -1,0 +1,60 @@
+{
+  "version": "P29 USB IN diagnostics",
+  "status": "built_not_downloaded_not_physically_accepted",
+  "baseline_commit": "ecc963b",
+  "git_committed": true,
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_120700_417729",
+  "synthesis_source": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_112747_221636",
+  "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_120700_417729/Prj1/impl/pnr/Prj1.fs",
+  "sha256": "b43d9e981cde16d571caeeea1ca2ca7e2031c556202cab48fa95eed6e6940581",
+  "bitstream_bytes": 42197761,
+  "bitstream_usercode": "0x00000029",
+  "diagnostics": {
+    "transport": "P138 word 6 over existing USB48-to-UART50 held snapshot",
+    "counter_width_bits": 8,
+    "saturating": true,
+    "p138_word_6": {
+      "bits_7_0": "USB IN transfer/protocol errors",
+      "bits_15_8": "duplicate DATA toggle packets",
+      "bits_23_16": "normal NAK replies",
+      "bits_31_24": "50 ms stale-reply disconnects"
+    },
+    "crc_timeout_limitation": "existing usbhw_transfer_in return values do not preserve separate CRC and response-timeout categories"
+  },
+  "verification": {
+    "full_audit": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_120700_417729/usb_a_audit.json",
+    "full_audit_passed": true,
+    "effect_mask_reset_gap_closed": true,
+    "generic_midi": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_120700_417729/generic_midi_122541_287010/verification.json",
+    "cpu_audio": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260918_120700_417729/cpu_audio_sim_122130_114898/verification.json",
+    "pnr": {
+      "setup_violations": 0,
+      "hold_violations": 0,
+      "worst_setup_slack_ns": 0.085,
+      "minimum_pulse_width_slack_ns": 1.325,
+      "resources": {
+        "Logic": 35112,
+        "Register": 25734,
+        "BSRAM": 253,
+        "DSP": 43.5
+      },
+      "audio_pll_maximum_init_ns": 9.756,
+      "full_build": true,
+      "non_constraint_synthesis_inputs_identical": true
+    },
+    "hardware_tested": false
+  },
+  "programming": {
+    "status": "not_performed_by_user_request",
+    "last_known_physically_accepted_usercode": "0x00000028",
+    "readback_performed_in_this_stage": false,
+    "sram_written_in_this_stage": false,
+    "fpga_flash_written_in_this_stage": false
+  },
+  "retained": {
+    "last_physically_accepted": "P28 UserCode 0x00000028",
+    "p28_sha256": "a6544465c4aad1bb7a07abfb6158f1a787927442698eaf8193e9bad080f2fbb1",
+    "p10_usercode": "0x0000ED8B",
+    "p10_sha256": "dd80b9009241836b3266b6407aa1a36cf8973d0b660d239e2e0f1fe8e0e4f793"
+  }
+}

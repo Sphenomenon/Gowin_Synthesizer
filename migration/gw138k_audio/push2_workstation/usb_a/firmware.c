@@ -11,13 +11,28 @@
 #endif
 static struct usb_device dev;
 static uint8_t rxbuf[512];
-static unsigned toggles[3],frames,errors;
+static unsigned toggles[3],frames,out_errors;
+// P138 has one 32-bit USB IN diagnostic word.  Keep four independent,
+// saturating byte counters so a long idle NAK stream cannot wrap into a
+// misleading zero: [31:24] disconnects, [23:16] NAKs,
+// [15:8] duplicate DATA packets, [7:0] transfer/protocol errors.
+static uint8_t in_naks,in_duplicates,in_errors,in_disconnects;
 static uint8_t in_pid=PID_DATA0;
 static int connected;
 enum device_mode { DEVICE_NONE, DEVICE_PUSH, DEVICE_MIDI };
 static enum device_mode mode;
 static unsigned midi_in_ep,midi_in_size;
 static uint32_t last_in_reply;
+static void publish_in_diagnostics(void) {
+    MMIO(0x58)=((uint32_t)in_disconnects<<24)|((uint32_t)in_naks<<16)|
+               ((uint32_t)in_duplicates<<8)|in_errors;
+}
+static void bump_in_diagnostic(uint8_t *counter) {
+    if(*counter!=255) {
+        ++*counter;
+        publish_in_diagnostics();
+    }
+}
 struct screen_state {
     uint32_t control,options,held_lo,held_hi,note_velocity;
 };
@@ -114,11 +129,37 @@ static void poll_midi(void) {
     uint32_t now=usbhw_timer_now();
     // NAK means a live device with no MIDI pending. Do not treat silence or a
     // brief USB EOP/SE0 as disconnection. Missing replies for 50 ms reconnect.
-    if(n==USB_RES_NAK || (n>=0 && (pid==PID_DATA0 || pid==PID_DATA1)))last_in_reply=now;
-    else if((uint32_t)(now-last_in_reply)>=50)disconnect();
-    if(n<0 || pid!=in_pid)return;
+    if(n==USB_RES_NAK) {
+        bump_in_diagnostic(&in_naks);
+        last_in_reply=now;
+        return;
+    }
+    if(n<0) {
+        bump_in_diagnostic(&in_errors);
+        if((uint32_t)(now-last_in_reply)>=50) {
+            bump_in_diagnostic(&in_disconnects);
+            disconnect();
+        }
+        return;
+    }
+    if(pid!=PID_DATA0 && pid!=PID_DATA1) {
+        bump_in_diagnostic(&in_errors);
+        if((uint32_t)(now-last_in_reply)>=50) {
+            bump_in_diagnostic(&in_disconnects);
+            disconnect();
+        }
+        return;
+    }
+    last_in_reply=now;
+    if(pid!=in_pid) {
+        bump_in_diagnostic(&in_duplicates);
+        return;
+    }
     in_pid=in_pid==PID_DATA0?PID_DATA1:PID_DATA0;
-    if(n>(int)midi_in_size || (mode==DEVICE_MIDI && (n&3)))return;
+    if(n>(int)midi_in_size || (mode==DEVICE_MIDI && (n&3))) {
+        bump_in_diagnostic(&in_errors);
+        return;
+    }
     for(int i=0;i+3<n;i+=4)forward_midi(rxbuf+i);
 }
 // screen_packet < 0 uses the ordinary byte buffer for headers and MIDI.
@@ -142,7 +183,7 @@ static int send_packet(unsigned ep,uint8_t *data,unsigned n,int screen_packet) {
         // No recursive OUT calls: RX words go directly to the audio queue.
         poll_midi();delay(1);
     }
-    MMIO(0x34)=++errors;return 0;
+    MMIO(0x34)=++out_errors;return 0;
 }
 static int send(unsigned ep,uint8_t *data,unsigned n) {
     return send_packet(ep,data,n,-1);

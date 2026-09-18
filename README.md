@@ -4,6 +4,8 @@
 
 当前实体通过版本为 P28，UserCode `0x00000028`，位流 SHA256 为 `a6544465c4aad1bb7a07abfb6158f1a787927442698eaf8193e9bad080f2fbb1`。P28 已关闭旧 `effect_mask` reset 审计缺口，完整 routed audit、通用 MIDI 和音频回归通过；从 `0x00006DE8` 只写 SRAM 并读回，Flash 未写。用户已确认 Push、连续压力、屏幕与灯光、MIDI、电脑键盘、HDMI、耳机、效果链、曲谱和录音控制正常。通用 MIDI `0x00006DE8`、P27 `0x00000027` 和 P10 继续保留为回退版本。
 
+P29 USB IN 诊断已完成离线构建和完整审计，能分别回读传输/协议错误、重复 DATA、正常 NAK 和失联次数。候选 UserCode 为 `0x00000029`，SHA256 为 `b43d9e981cde16d571caeeea1ca2ca7e2031c556202cab48fa95eed6e6940581`。本会话按用户要求没有下载或读回 P29，也没有写 Flash，因此当前实体稳定版本仍记为 P28。
+
 ## 目录
 
 - [`push2_workstation/usb_a`](migration/gw138k_audio/push2_workstation/usb_a)：当前 USB-A 工作站源码、仿真、审计和版本记录。
@@ -28,7 +30,7 @@ python3 migration/gw138k_audio/push2_workstation/usb_a/build.py
 
 ## 已知缺口
 
-旧 `effect_mask_sync_[0..2]_s0/RESET` 缺口已在 P28 关闭，完整 routed audit 通过。当前工程缺口是 USB IN error 诊断尚未实现，记录值仍为 `null`。
+旧 `effect_mask_sync_[0..2]_s0/RESET` 缺口已在 P28 关闭。USB IN error 诊断已在 P29 离线候选中实现并通过完整 routed audit，尚待以后单独 SRAM 下载和实体检查；P28 板端记录仍为 `null`。
 
 版本边界、忽略规则和提交范围见 [`GIT_SCOPE.md`](GIT_SCOPE.md)。
 

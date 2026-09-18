@@ -91,6 +91,7 @@ int main(void){
     now_ms=0xfffffff0u;last_in_reply=now_ms;rx_result=USB_RES_TIMEOUT;
     for(int i=0;i<49;i++){poll_midi();assert(connected);}
     poll_midi();assert(!connected && !MMIO(0));
+    assert(MMIO(0x58)==0x01ff0133u); // disconnect, saturated NAK, duplicate, errors
     before=rx_calls;poll_midi();assert(rx_calls==before);assert(!send(2,data,4));
     // Replug at any old PID state resets BOTH OUT endpoint toggles and MIDI IN.
     toggles[1]=toggles[2]=1;in_pid=PID_DATA1;rx_result=USB_RES_NAK;

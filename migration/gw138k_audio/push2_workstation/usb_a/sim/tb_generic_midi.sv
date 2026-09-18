@@ -61,6 +61,8 @@ module tb_generic_midi;
     initial begin
         $readmemh("generic_events.mem",vectors);
         #250;rn=1;repeat(20)@(negedge clk);put(0,3);
+        put('h58,32'h04030201);
+        if(telemetry[191:160]!==32'h04030201)$fatal(1,"USB IN diagnostics missing from P138 word 6");
         for(integer i=0;i<4;i++)generic_event(vectors[i]);
         wait_frames(32);
         if(starts!=4 || !held[0] || !held[24] || !held[100] || !held[127] || !nonzero)

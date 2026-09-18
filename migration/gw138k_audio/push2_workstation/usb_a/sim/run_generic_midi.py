@@ -11,15 +11,18 @@ assert (here.parent/'firmware.c').read_bytes()==(fw/'firmware.c').read_bytes()
 # Preserve the test and production firmware together so include paths bind to
 # this exact candidate, even if another session edits the working tree later.
 shutil.copy2(fw/'firmware.c',out/'firmware.c');(out/'sim').mkdir()
-for name in ['test_generic_midi.c','test_hotplug.c','tb_generic_midi.sv']:
+for name in ['test_generic_midi.c','test_hotplug.c','test_usb_in_decode.py','tb_generic_midi.sv']:
     shutil.copy2(here/name,out/'sim'/name)
 sources=[project/f.get('path') for f in ET.parse(project/'Prj1.gprj').find('FileList') if f.get('type')=='file.verilog']
 sources=[f for f in sources if not any(x in str(f.relative_to(project)) for x in
     ['vendor/','src/memory/','src/platform/','src/top/','src/ae350/riscv_',
      'workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
-inputs=[*sources,Path(__file__),out/'firmware.c',*sorted((out/'sim').iterdir())]
+control=here.parents[1]/'scripts/control.py'
+midi_serial=here.parents[2]/'ae350/scripts/midi_serial.py'
+inputs=[*sources,Path(__file__),control,midi_serial,out/'firmware.c',*sorted((out/'sim').iterdir())]
 (out/'inputs.json').write_text(json.dumps({str(f):hashlib.sha256(f.read_bytes()).hexdigest() for f in inputs},indent=2)+'\n')
 commands=[]
+commands.append(('decode_test',[sys.executable,str(out/'sim/test_usb_in_decode.py'),str(control)]))
 for name in ['generic_midi','hotplug']:
     commands += [(name+'_compile',['gcc','-std=c99','-O2','-fsanitize=address,undefined',
         '-fno-omit-frame-pointer','-I'+str(fw),'-I'+str(fw/'usb'),
@@ -43,4 +46,4 @@ try:
     passed=True
 finally:
     (out/'verification.json').write_text(json.dumps(dict(passed=passed,hardware_tested=False,
-        scope='production USB mode/descriptor/event C + MMIO/CDC/synth PCM, full FIFO, disconnect PANIC, Push hotplug/screen/LED'),indent=2)+'\n')
+        scope='production USB mode/descriptor/event C + USB IN diagnostics + MMIO/CDC/synth PCM, full FIFO, disconnect PANIC, Push hotplug/screen/LED'),indent=2)+'\n')
