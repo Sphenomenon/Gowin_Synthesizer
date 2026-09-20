@@ -6,6 +6,8 @@ P29 补齐 P138 word 6：四个独立的饱和 8 bit 计数分别记录 USB IN �
 
 完整 routed audit、通用 MIDI/诊断回归和 CPU/audio 回归通过。P&R setup/hold 0/0，最差 setup slack +0.085 ns；Logic 35112、Register 25734、BSRAM 253、DSP 43.5。候选 UserCode `0x00000029`，SHA256 `b43d9e981cde16d571caeeea1ca2ca7e2031c556202cab48fa95eed6e6940581`。按用户要求，本会话没有执行 programmer、SRAM 下载或读回，Flash 也未写；板上最后一次已知实体稳定版本仍是 P28。见 [源码审计](P29_USB_IN_DIAGNOSTICS_AUDIT.md)、[验证记录](P29_USB_IN_DIAGNOSTICS_VERIFICATION.md) 和 [候选绑定](P29_USB_IN_DIAGNOSTICS_CANDIDATE.json)。
 
+**UserCode 冲突：** 本候选的 `0x00000029` 与分支 `codex/post-p28-product-features` 上的 P29A 引导功能重号，而 P29A 已于 2026-09-18 实体验收并占用该号。本诊断候选从未下载，若要上板必须用新 UserCode（下一个可用 `0x0000002A`）重新构建。
+
 ## 2026-09-18 P28 效果状态 routed audit 修复（实体通过）
 
 P28 关闭了从旧版本延续的 `effect_mask_sync_[0..2]_s0/RESET` 审计缺口。三位效果选择仍从 76.8 MHz 音频域经过两级同步进入 50 MHz 显示域；显示镜像改为初始化的无活动复位 DFFCE，旧 RESET false path 已删除。最终网表逐位证明 meta→sync 数据链、固定高 CE、固定低 CLEAR 和无 RESET/PRESET，负向变异检查也能拒绝断开的第二级。

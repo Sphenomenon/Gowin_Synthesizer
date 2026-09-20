@@ -44,6 +44,12 @@
     },
     "hardware_tested": false
   },
+  "usercode_collision": {
+    "usercode": "0x00000029",
+    "also_claimed_by": "P29A deterministic score guidance (branch codex/post-p28-product-features, physically accepted on 2026-09-18)",
+    "resolution": "P29A owns 0x00000029 on the board. This P29 USB-IN diagnostic candidate was never downloaded and is offline-only; it must be rebuilt with a fresh UserCode (next free is 0x0000002A) before any SRAM download. The recorded usercode and the built bitstream are left unchanged.",
+    "bitstream_unchanged": true
+  },
   "programming": {
     "status": "not_performed_by_user_request",
     "last_known_physically_accepted_usercode": "0x00000028",
