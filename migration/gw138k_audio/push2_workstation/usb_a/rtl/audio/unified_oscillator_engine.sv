@@ -191,6 +191,10 @@ module unified_oscillator_engine #(
   logic signed [63:0] final_accumulator;
   logic finalize_valid;
   logic [63:0] accumulated_magnitude;
+  // P30 raises the already-calibrated A/B/C PCM level by exactly 3/2 before
+  // the existing signed 32-bit limiter.  Scaling here keeps each timbre's
+  // harmonic ratios and the P24 A-weighted mode balance unchanged.
+  logic [65:0] loudness_scaled_magnitude;
   logic [63:0] rounded_magnitude;
   logic signed [63:0] rounded_mix;
   logic signed [63:0] quantized_mix;
@@ -238,6 +242,8 @@ module unified_oscillator_engine #(
   assign accumulated_next = accumulator + product_extended;
   assign accumulated_magnitude = final_accumulator[63]
       ? $unsigned(-final_accumulator) : $unsigned(final_accumulator);
+  assign loudness_scaled_magnitude = {2'b0, accumulated_magnitude} +
+      ({2'b0, accumulated_magnitude} << 1);
   assign rounded_mix = final_accumulator[63]
       ? -$signed(rounded_magnitude) : $signed(rounded_magnitude);
   assign envelope_update_attack_sum =
@@ -397,10 +403,10 @@ module unified_oscillator_engine #(
   always @* begin
     if (current_mode_o == 2'd2) begin
       rounded_magnitude =
-          (accumulated_magnitude + 64'd67108864) >> 27;
+          (loudness_scaled_magnitude + 66'd134217728) >> 28;
     end else begin
       rounded_magnitude =
-          (accumulated_magnitude + 64'd536870912) >> 30;
+          (loudness_scaled_magnitude + 66'd1073741824) >> 31;
     end
   end
 

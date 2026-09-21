@@ -1,5 +1,9 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## P30 A/B/C 响度 1.5 倍（源码已改，等待用户 IDE 构建）
+
+A/B/C 的最终 PCM 统一乘以 `3/2`，保留音色谐波比例和 P24 的模式平衡，再沿用原有 32 位限幅。源码改动、准备工程命令和 Gowin IDE 综合、布局布线、位流生成、SRAM 下载步骤见 [P30 操作记录](P30_ABC_LOUDNESS_1_5X.md)。本阶段没有代做完整 Gowin 构建，也没有下载或写 Flash。
+
 ## 2026-09-18 P29 USB IN 错误诊断（离线候选，未下载）
 
 P29 补齐 P138 word 6：四个独立的饱和 8 bit 计数分别记录 USB IN 传输/协议错误、重复 DATA toggle、正常 NAK 和 50 ms 失联。现有 USB 48 MHz → 50 MHz UART 快照、MIDI 事件 FIFO、背压、热插拔和 PANIC 路径保持不变；`control.py --usb-a` 不再返回 `usb_in_errors: null`。底层驱动仍会合并部分 CRC 与 timeout，因此错误总数不伪装成更细分类。
