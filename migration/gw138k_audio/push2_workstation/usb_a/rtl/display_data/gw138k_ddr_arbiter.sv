@@ -16,6 +16,10 @@ module gw138k_ddr_arbiter #(
     input wire display_valid,
     input wire [28:0] display_address,
     output wire display_ready,display_response,
+    input wire audio_valid,audio_write,
+    input wire [28:0] audio_address,
+    input wire [255:0] audio_data,
+    output wire audio_ready,audio_response,
     input wire writer_valid,
     input wire [28:0] writer_address,
     input wire [255:0] writer_data,
@@ -34,12 +38,12 @@ module gw138k_ddr_arbiter #(
     output reg response_fault
 );
     localparam DEPTH=1<<TAG_BITS;
-    reg [1:0] tags[0:DEPTH-1];
+    reg [2:0] tags[0:DEPTH-1];
     reg [TAG_BITS-1:0] read_pointer,write_pointer;
     reg [TAG_BITS:0] count;
     reg prefer_cpu,cpu_read_pending;
     wire cpu_available=cpu_valid && !cpu_read_pending;
-    reg [1:0] owner;
+    reg [2:0] owner;
     reg valid,is_write;
     always @* begin
         owner=0;valid=0;is_write=0;app_address=0;app_data=0;app_mask=0;
@@ -47,6 +51,11 @@ module gw138k_ddr_arbiter #(
             valid=bist_valid;is_write=bist_write;app_address=bist_address;app_data=bist_data;
         end else if(scan_valid) begin
             owner=1;valid=1;app_address=scan_address;
+        end else if(audio_valid) begin
+            // Scanout keeps first priority; the streaming audio client is
+            // next so a full TF ring cannot be blocked by UI/CPU traffic.
+            owner=4;valid=1;is_write=audio_write;
+            app_address=audio_address;app_data=audio_data;
         end else if(display_valid) begin
             // Owner 0 is free after BIST; response routing below uses bist_done
             // to distinguish this post-BIST read epoch.
@@ -64,6 +73,7 @@ module gw138k_ddr_arbiter #(
     assign bist_ready=app_en && owner==0 && !bist_done;
     assign scan_ready=app_en && owner==1;
     assign display_ready=app_en && owner==0 && bist_done;
+    assign audio_ready=app_en && owner==4;
     assign cpu_ready=app_en && owner==2;
     assign writer_ready=app_en && owner==3;
     wire push=app_en && !is_write;
@@ -72,6 +82,7 @@ module gw138k_ddr_arbiter #(
     assign display_response=pop && tags[read_pointer]==0 && bist_done;
     assign scan_response=pop && tags[read_pointer]==1;
     assign cpu_response=pop && tags[read_pointer]==2;
+    assign audio_response=pop && tags[read_pointer]==4;
     always @(posedge clk or negedge reset_n) begin
         if(!reset_n) begin read_pointer<=0;write_pointer<=0;count<=0;prefer_cpu<=0;cpu_read_pending<=0;response_fault<=0;end
         else begin

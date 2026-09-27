@@ -21,7 +21,7 @@ data=(fw/'test.bin').read_bytes().ljust(65536,b'\0')
 sources=[p/f.get('path') for f in ET.parse(p/'Prj1.gprj').find('FileList') if f.get('type')=='file.verilog']
 # legacy_audio.sv already contains the source package and synthesis defines.
 # Remove unrelated encrypted physical DDR/AE350/PLL/HDMI top-level IP.
-sources=[f for f in sources if not any(x in str(f.relative_to(p)) for x in ['vendor/','src/memory/','src/platform/','src/top/','src/ae350/riscv_','workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
+sources=[f for f in sources if not any(x in str(f.relative_to(p)) for x in ['vendor/','src/memory/','src/storage/','src/platform/','src/top/','src/ae350/riscv_','workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
 sources+=[ROOT/'sim/tb_cpu_audio.sv']
 (out/'inputs.json').write_text(json.dumps({str(f):hashlib.sha256(f.read_bytes()).hexdigest() for f in sources+[ROOT/'sim/cpu_audio_probe.c']},indent=2)+'\n')
 commands=[['verilator','--binary','--timing','-j','4','-Wno-fatal','--top-module','tb_cpu_audio','--Mdir',str(out/'obj'),'-I'+str(p),'-I'+str(p/'src/usb_a'),*map(str,sources)],

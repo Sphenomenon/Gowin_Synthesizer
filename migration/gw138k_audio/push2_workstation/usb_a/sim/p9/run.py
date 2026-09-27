@@ -7,7 +7,7 @@ out=build/('p9_'+kind+'_'+datetime.now().strftime('%H%M%S'));out.mkdir();print(o
 if kind=='slide':sources=[p/'src/video/feedback_dashboard.v',p/'src/video/video_font_5x7.v']
 else:
  sources=[p/f.get('path') for f in ET.parse(p/'Prj1.gprj').find('FileList') if f.get('type')=='file.verilog']
- sources=[f for f in sources if not any(x in str(f.relative_to(p)) for x in ['vendor/','src/memory/','src/platform/','src/top/','src/ae350/riscv_','workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
+ sources=[f for f in sources if not any(x in str(f.relative_to(p)) for x in ['vendor/','src/memory/','src/storage/','src/platform/','src/top/','src/ae350/riscv_','workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
 sources+=[src/('tb_effect_'+kind+'.sv')]
 (out/'inputs.json').write_text(json.dumps({str(f):hashlib.sha256(f.read_bytes()).hexdigest() for f in sources},indent=2)+'\n')
 commands=[['verilator','--binary','--timing','-j','4','-Wno-fatal','--top-module','tb_effect_'+kind,'--Mdir',str(out/'obj'),'-I'+str(p),'-I'+str(p/'src/usb_a'),*map(str,sources)], [str(out/('obj/Vtb_effect_'+kind))]]

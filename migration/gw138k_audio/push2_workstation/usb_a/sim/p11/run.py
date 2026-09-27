@@ -26,7 +26,7 @@ elif args.push_summary:
     tb=out/(top+'.sv');shutil.copy2(Path(__file__).with_name(tb.name),tb)
     sources=[p/'src/push2/push2_surface_pixels.sv',p/'src/video/video_font_5x7.v',tb]
 (out/'inputs.json').write_text(json.dumps({str(f):hashlib.sha256(f.read_bytes()).hexdigest() for f in sources},indent=2)+'\n')
-for label,cmd in [('compile',['verilator','--binary','--timing','-j','4','-Wno-fatal','--top-module',top,'--Mdir',str(out/'obj'),*map(str,sources)]),('simulation',[str(out/('obj/V'+top))])]:
+for label,cmd in [('compile',['verilator','--binary','--timing','-j','4','-Wno-fatal','--top-module',top,'--Mdir',str(out/'obj'),'-I'+str(p),*map(str,sources)]),('simulation',[str(out/('obj/V'+top))])]:
  r=subprocess.run(cmd,cwd=out,capture_output=True,text=True);(out/(label+'.log')).write_text(r.stdout+r.stderr)
  print(label,r.returncode,flush=True)
  if r.returncode:print((r.stdout+r.stderr)[-8000:]);sys.exit(1)

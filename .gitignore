@@ -15,6 +15,7 @@ migration/gw138k_audio/ae350/*
 
 # Build results, captures, and generated implementation databases.
 **/results/
+migration/gw138k_audio/push2_workstation/usb_a/out/
 !migration/gw138k_audio/push2_workstation/results/
 migration/gw138k_audio/push2_workstation/results/*
 !migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/

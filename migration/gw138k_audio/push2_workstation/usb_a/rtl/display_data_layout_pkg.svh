@@ -1,14 +1,16 @@
 `ifndef DISPLAY_DATA_LAYOUT_PKG_SVH
 `define DISPLAY_DATA_LAYOUT_PKG_SVH
+`include "src/memory/ddr_address_map.vh"
 package display_data_layout_pkg;
     // Native address is a 32-bit DQ word; byte_address = word_address * 4.
     localparam logic [31:0] DISPLAY_MAGIC=32'h44535032, BLOCK_MAGIC=32'h44535042;
     localparam logic [7:0] VERSION_MAJOR=1, VERSION_MINOR=0;
-    localparam logic [28:0] LEGACY_META_WORD=29'h0200000;
-    localparam logic [28:0] DISPLAY_CONTROL_WORD=29'h0200008;
+    localparam logic [28:0] LEGACY_META_WORD=`PRJ1_DDR_DISPLAY_DATA_APP_BASE;
+    localparam logic [28:0] DISPLAY_CONTROL_WORD=`PRJ1_DDR_DISPLAY_CONTROL_APP;
     localparam logic [28:0] BANK0_HEADER_WORD=29'h0200010, BANK1_HEADER_WORD=29'h0200018;
     localparam logic [28:0] DESC_BANK0_WORD=29'h0200020, DESC_BANK1_WORD=29'h0200060;
-    localparam logic [28:0] PAYLOAD_BANK0_WORD=29'h0210000, PAYLOAD_BANK1_WORD=29'h0220000;
+    localparam logic [28:0] PAYLOAD_BANK0_WORD=`PRJ1_DDR_DISPLAY_PAYLOAD0_APP,
+        PAYLOAD_BANK1_WORD=`PRJ1_DDR_DISPLAY_PAYLOAD1_APP;
     localparam logic [28:0] PAYLOAD_BANK_STRIDE_WORDS=29'h0010000;
     localparam integer WORD_BYTES=4, BL8_WORDS=8, DESCRIPTOR_WORDS=16;
     localparam logic [31:0] SAMPLE_RATE_HZ=48000;

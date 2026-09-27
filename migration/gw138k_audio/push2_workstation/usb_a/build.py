@@ -6,6 +6,7 @@ from pathlib import Path
 from datetime import datetime
 import argparse,hashlib,json,os,shutil,subprocess,xml.etree.ElementTree as ET
 ROOT=Path(__file__).resolve().parent
+TF_AUDIO=ROOT/'rtl/tf_audio'
 WORK=ROOT.parent/'results/workstation_20260911_174045_306332'
 USB=ROOT/'vendor/usb_host_fs_8fc3'
 WORKSTATION_MANIFEST=ROOT/'vendor/workstation_inputs.json'
@@ -27,8 +28,11 @@ def replace_between(s,start,end,a,b):
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path)
     ap.add_argument('--no-update-latest',action='store_true',help='Keep the local latest-build pointer unchanged')
+    ap.add_argument('--tf-audio-kind',choices=['mp3','wav','flac'],default='wav',
+                    help='TF decoder profile to elaborate (default: wav)')
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     args=ap.parse_args()
+    tf_audio_kind={'mp3':1,'wav':2,'flac':3}[args.tf_audio_kind]
     if args.user_code is not None:
         if len(args.user_code)!=8 or any(c not in '0123456789abcdefABCDEF' for c in args.user_code):
             ap.error('--user-code requires eight hexadecimal digits')
@@ -73,6 +77,52 @@ def main():
     }
     for rel,src in audio_overlay.items():
         shutil.copy2(src,stage/rel)
+    # Self-contained TF/FAT audio subsystem.  Do not reach back into the
+    # separate Mega_138K/Dev working tree: the staged project and Git checkout
+    # must contain the exact same RTL, decoder tables and license records.
+    storage_dest=stage/'src/storage'
+    shutil.copytree(TF_AUDIO/'storage',storage_dest)
+    shutil.copy2(ROOT/'rtl/ddr_address_map.vh',stage/'src/memory/ddr_address_map.vh')
+    shutil.copy2(ROOT/'rtl/ddr_address_map_guard.v',stage/'src/memory/ddr_address_map_guard.v')
+    shutil.copy2(TF_AUDIO/'tf_async_pcm_fifo.v',stage/'src/storage/tf_async_pcm_fifo.v')
+    shutil.copy2(TF_AUDIO/'tf_workstation_audio_bridge.v',stage/'src/storage/tf_workstation_audio_bridge.v')
+    shutil.copy2(TF_AUDIO/'pt8211_tx.v',stage/'src/audio/tf_rate_pt8211_tx.v')
+    # Bind legacy workstation clients to the shared map without changing their
+    # protocols or page sizes.
+    p=stage/'src/memory/ddr3_bist.v';s=p.read_text()
+    s='`include "src/memory/ddr_address_map.vh"\n'+s
+    s=replace(s,'parameter integer BURSTS = 262144, // 8 MiB',
+        'parameter integer BURSTS = `PRJ1_DDR_BIST_BEATS, // 8 MiB')
+    p.write_text(s)
+    p=stage/'src/memory/ddr_frame_writer.v';s=p.read_text()
+    s='`include "src/memory/ddr_address_map.vh"\n'+s
+    s=replace(s,'parameter integer FRAME_STRIDE_WORDS=1048576',
+        'parameter integer FRAME_STRIDE_WORDS=`PRJ1_DDR_VIDEO_FRAME_APP_WORDS')
+    s=replace(s,'req_addr<=29\'d2097152;',
+        'req_addr<=`PRJ1_DDR_DISPLAY_DATA_APP_BASE;')
+    p.write_text(s)
+    p=stage/'src/video/video_ddr_scanout.v';s=p.read_text()
+    s='`include "src/memory/ddr_address_map.vh"\n'+s
+    s=replace(s,'parameter integer FRAME_STRIDE_WORDS = 1048576,',
+        'parameter integer FRAME_STRIDE_WORDS = `PRJ1_DDR_VIDEO_FRAME_APP_WORDS,')
+    p.write_text(s)
+    p=stage/'src/ae350/gw138k_view_select.sv';s=p.read_text()
+    s='`include "src/memory/ddr_address_map.vh"\n'+s
+    s=replace(s,'?29\'d1048576:29\'d0;',
+        '?`PRJ1_DDR_VIDEO_FRAME1_APP_BASE:`PRJ1_DDR_VIDEO_FRAME0_APP_BASE;')
+    p.write_text(s)
+    p=stage/'src/ae350/gw138k_ui_services.sv';s=p.read_text()
+    s='`include "src/memory/ddr_address_map.vh"\n'+s
+    s=replace(s,'front_address[22]?29\'h0500000:29\'h0400000',
+        'front_address[22]?`PRJ1_DDR_WORK_PAGE1_APP_BASE:`PRJ1_DDR_WORK_PAGE0_APP_BASE')
+    s=replace(s,'staged_address[22]?29\'h0500000:29\'h0400000',
+        'staged_address[22]?`PRJ1_DDR_WORK_PAGE1_APP_BASE:`PRJ1_DDR_WORK_PAGE0_APP_BASE')
+    p.write_text(s)
+    p=stage/'src/ae350/gw138k_ahb_ddr.sv';s=p.read_text()
+    s='`include "src/memory/ddr_address_map.vh"\n'+s
+    s=replace(s,'assign req_address=29\'d4194304+{8\'d0,byte_address[22:5],3\'b000};',
+        'assign req_address=`PRJ1_DDR_WORK_PAGE0_APP_BASE+{8\'d0,byte_address[22:5],3\'b000};')
+    p.write_text(s)
     # P24 preserves every profile's harmonic ratios and applies one fixed row
     # scale while loading the existing gain ROM.  The scale is independent of
     # active voice count, so notes do not pump when polyphony changes.
@@ -245,6 +295,10 @@ static inline unsigned ui_active(const ui_model*m,unsigned note) {''')
     dest=stage/'src/usb_a';dest.mkdir()
     tree=ET.parse(stage/'Prj1.gprj');fl=tree.find('FileList')
     fl.insert(0,ET.Element('File',path='src/memory/display_data_layout_pkg.sv',type='file.verilog',enable='1'))
+    tf_sources=[stage/'src/memory/ddr_address_map_guard.v',stage/'src/audio/tf_rate_pt8211_tx.v']
+    tf_sources+=sorted(storage_dest.rglob('*.v'))
+    for source in tf_sources:
+        ET.SubElement(fl,'File',path=source.relative_to(stage).as_posix(),type='file.verilog',enable='1')
     shutil.copy2(ROOT/'p11.gsc',stage/'constraints/p11.gsc')
     ET.SubElement(fl,'File',path='constraints/p11.gsc',type='file.gsc',enable='1')
     kept_push={'gw138k_push_performance_uart.sv','gw138k_push_workstation_top.v','push2_controls.sv',
@@ -337,7 +391,62 @@ end
              '.app_wrdy(app_wrdy),.app_rdata(app_rdata),.app_rvalid(app_rvalid),.memory_flags(memory_flags),\n        .push_display_summary(display_summary),.push_display_summary_valid(display_summary_valid),\n        .sample_data(output_mid)')
     s=replace(s,'.pc_uart_rx_i(pc_uart_rx_i),.performance_words_o(performance_words),',
         '.pc_uart_rx_i(pc_uart_rx_i),.performance_words_o(performance_words),\n        .led_mask_o(score_led_mask),.score_running_o(score_running),.record_enabled_o(record_enabled),')
-    s=replace(s,'.push_words(push_words),','.push_words(224\'d0),');p.write_text(s)
+    s=replace(s,'.push_words(push_words),','.push_words(224\'d0),')
+    s=replace(s,'module gw138k_push_workstation_top (',f'''module gw138k_push_workstation_top #(
+    parameter integer TF_AUDIO_KIND={tf_audio_kind}
+) (''')
+    s=replace(s,'    input wire pc_uart_rx_i,',
+        '''    input wire pc_uart_rx_i,
+    input wire sd_miso,
+    output wire sd_mosi,sd_sck,sd_cs_n,''')
+    s=replace(s,'    wire [31:0] output_pcm,output_reference,active_voices,display_status;',
+        '''    wire [31:0] output_pcm,output_reference,active_voices,display_status;
+    wire synth_hp_bck,synth_hp_ws,synth_hp_din,synth_pa_en;''')
+    s=replace(s,'.hp_bck(hp_bck),.hp_ws(hp_ws),.hp_din(hp_din),.pa_en(pa_en),',
+        '.hp_bck(synth_hp_bck),.hp_ws(synth_hp_ws),.hp_din(synth_hp_din),.pa_en(synth_pa_en),')
+    s=replace(s,'    wire [31:0] app_wmask;\n    ddr3_platform u_memory (',
+        '''    wire [31:0] app_wmask;
+    wire audio_ddr_req,audio_ddr_write,audio_ddr_ready,audio_ddr_response;
+    wire [28:0] audio_ddr_address;wire [255:0] audio_ddr_data;
+    wire signed [31:0] tf_pcm_left,tf_pcm_right;
+    wire tf_pcm_valid,tf_source_active,tf_format_ready,tf_unsupported,tf_ddr_error;
+    wire [19:0] tf_sample_rate;wire [31:0] tf_file_size;wire [4:0] tf_track_count;
+    wire tf_sample_ce,tf_hp_bck,tf_hp_ws,tf_hp_din,tf_pa_en;
+    tf_workstation_audio_bridge #(
+        .AUDIO_KIND(TF_AUDIO_KIND),
+        .FILE_EXT(TF_AUDIO_KIND==1 ? "MP3" : (TF_AUDIO_KIND==3 ? "FLA" : "WAV"))
+    ) u_tf_audio(
+        .clk_50m(clk_50m),.reset_n(reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),
+        .memory_clk(memory_clk),.memory_reset_n(memory_reset_n),
+        .memory_ready(memory_calibrated && memory_reset_n),.restart(1'b0),.track_index(4'd0),
+        .sd_miso(sd_miso),.sd_cs_n(sd_cs_n),.sd_sck(sd_sck),.sd_mosi(sd_mosi),
+        .sample_ce(tf_sample_ce),.pcm_left(tf_pcm_left),.pcm_right(tf_pcm_right),
+        .pcm_active(tf_pcm_valid),.source_active(tf_source_active),
+        .sample_rate_hz(tf_sample_rate),.format_ready(tf_format_ready),.unsupported(tf_unsupported),
+        .ddr_error(tf_ddr_error),.file_size(tf_file_size),.track_count(tf_track_count),
+        .ddr_valid(audio_ddr_req),.ddr_write(audio_ddr_write),.ddr_address(audio_ddr_address),
+        .ddr_data(audio_ddr_data),.ddr_ready(audio_ddr_ready),.ddr_response(audio_ddr_response),
+        .ddr_response_data(app_rdata));
+    wire [19:0] tf_dac_rate=(tf_format_ready && !tf_unsupported &&
+        tf_sample_rate>=20'd8000 && tf_sample_rate<=20'd96000) ? tf_sample_rate : 20'd0;
+    tf_rate_pt8211_tx #(.BCK_HALF_CYCLES(25),.STEREO_ENABLE(1),.RATE_MUL(916260)) u_tf_dac(
+        .clk(audio_clk),.reset_n(audio_reset_n),.sample_data(tf_pcm_left),.sample_right(tf_pcm_right),
+        .sample_valid(tf_pcm_valid),.rate_hz(tf_dac_rate),.sample_tick(tf_sample_ce),
+        .hp_bck(tf_hp_bck),.hp_ws(tf_hp_ws),.hp_din(tf_hp_din),.pa_en(tf_pa_en),
+        .underrun_count(),.frame_count(),.sample_revision(24'd0),.sample_nonzero_voices(32'd0),
+        .trace_dac_done(),.trace_dac_revision(),.trace_dac_nonzero_voices(),
+        .sample_trigger_reference(32'd0),.frame_trigger_reference());
+    assign hp_bck=tf_source_active ? tf_hp_bck : synth_hp_bck;
+    assign hp_ws=tf_source_active ? tf_hp_ws : synth_hp_ws;
+    assign hp_din=tf_source_active ? tf_hp_din : synth_hp_din;
+    assign pa_en=tf_source_active ? tf_pa_en : synth_pa_en;
+    ddr_address_map_guard u_ddr_address_map_guard();
+    ddr3_platform u_memory (''')
+    s=replace(s,'.cpu_data(cpu_mem_data),.cpu_mask(cpu_mem_mask),.cpu_ready(cpu_mem_ready),.cpu_response(cpu_mem_response),',
+        '''.cpu_data(cpu_mem_data),.cpu_mask(cpu_mem_mask),.cpu_ready(cpu_mem_ready),.cpu_response(cpu_mem_response),
+        .audio_req(audio_ddr_req),.audio_write(audio_ddr_write),.audio_address(audio_ddr_address),
+        .audio_data(audio_ddr_data),.audio_ready(audio_ddr_ready),.audio_response(audio_ddr_response),''')
+    p.write_text(s)
     # Reuse existing USB->50MHz telemetry snapshot for the new P138 record.
     p=stage/'src/push2/gw138k_push_performance_uart.sv';s=p.read_text()
     s=replace(s,'payload<={usb_snapshot,sequence_count-32\'d1};','payload<={224\'d0,sequence_count-32\'d1};')

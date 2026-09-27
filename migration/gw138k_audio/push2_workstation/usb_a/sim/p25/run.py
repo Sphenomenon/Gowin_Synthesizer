@@ -43,7 +43,7 @@ def run_panic_capture(project,out):
     all_sources=[project/f.get('path') for f in ET.parse(project/'Prj1.gprj').find('FileList')
         if f.get('type')=='file.verilog']
     audio_sources=[f for f in all_sources if not any(x in str(f.relative_to(project)) for x in
-        ['vendor/','src/memory/','src/platform/','src/top/','src/ae350/riscv_',
+        ['vendor/','src/memory/','src/storage/','src/platform/','src/top/','src/ae350/riscv_',
          'workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
     tb=out/'tb_panic_spectrum.sv';shutil.copy2(HERE/tb.name,tb)
     command=['verilator','--binary','--timing','-O3','-j','4','-Wno-fatal',

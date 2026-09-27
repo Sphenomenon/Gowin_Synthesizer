@@ -21,6 +21,10 @@ module hdmi_display (
     input wire [255:0] cpu_data,
     input wire [31:0] cpu_mask,
     output wire cpu_ready,cpu_response,
+    input wire audio_req,audio_write,
+    input wire [28:0] audio_address,
+    input wire [255:0] audio_data,
+    output wire audio_ready,audio_response,
     output wire [2:0] app_cmd,
     output wire app_en,
     output wire [28:0] app_addr,
@@ -192,8 +196,8 @@ module hdmi_display (
     wire merged_req,merged_ready;
     wire [28:0] merged_addr;
     wire [255:0] merged_data;
-    // Export and coherent reload finish before raster pixels issue. The scanout
-    // remains first-priority and audio never enters this DDR clock domain.
+    // Export and coherent reload finish before raster pixels issue. Scanout
+    // remains first-priority; TF audio is a tagged native-BL8 arbiter client.
     display_write_bridge u_write_bridge(
         .clk(memory_clk),.rst_n(ui_rst_n),
         .shared_valid(shared_req),.shared_addr(shared_addr),.shared_data(shared_data),.shared_ready(shared_ready),
@@ -217,6 +221,8 @@ module hdmi_display (
         .scan_valid(read_req),.scan_address(read_addr),.scan_ready(read_ready),.scan_response(scan_response),
         .display_valid(shared_load_req),.display_address(shared_load_addr),
         .display_ready(shared_load_ready),.display_response(shared_load_response),
+        .audio_valid(audio_req),.audio_write(audio_write),.audio_address(audio_address),
+        .audio_data(audio_data),.audio_ready(audio_ready),.audio_response(audio_response),
         .writer_valid(merged_req),.writer_address(merged_addr),
         .writer_data(merged_data),.writer_ready(merged_ready),
         .cpu_valid(cpu_req),.cpu_write(cpu_write),.cpu_address(cpu_address),.cpu_data(cpu_data),.cpu_mask(cpu_mask),

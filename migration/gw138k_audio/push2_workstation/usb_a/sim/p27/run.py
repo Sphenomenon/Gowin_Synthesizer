@@ -11,7 +11,7 @@ tests={name:out/name for name in ['tb_p27_push.sv','tb_p27_services.sv','tb_p27_
 for name,dest in tests.items():shutil.copy2(here/name,dest)
 all_sources=[project/f.get('path') for f in ET.parse(project/'Prj1.gprj').find('FileList') if f.get('type')=='file.verilog']
 audio_sources=[f for f in all_sources if not any(x in str(f.relative_to(project)) for x in
-    ['vendor/','src/memory/','src/platform/','src/top/','src/ae350/riscv_','workstation_top.v','workstation_top.sv',
+    ['vendor/','src/memory/','src/storage/','src/platform/','src/top/','src/ae350/riscv_','workstation_top.v','workstation_top.sv',
      'gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
 commands=[
  ('push_compile',['verilator','--binary','--timing','-j','4','-Wno-fatal','--top-module','tb_p27_push',

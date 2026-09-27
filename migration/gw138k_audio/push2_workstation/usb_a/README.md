@@ -1,5 +1,11 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-09-28 TF/FAT 音频、动态 DDR 双 bank 与地址表整合
+
+当前 workstation 已纳入自包含的 micro-SD FAT16/FAT32 reader、WAV/MP3/FLAC decoder 和两个 64 MiB 音频 DDR bank。超过 128 MiB 的文件采用读后释放、动态回收的环形流，不以 128 MiB 静默回绕；32-bit 文件计数达到极限会明确报错。TF 产生有效 PCM 时才接管耳机，断流后自动回到原合成器。构建一次只展开一种 decoder：`build.py --tf-audio-kind wav|mp3|flac`。
+
+视频、display-data、AE350 UI、音频、未来神经网络池和 BSRAM bulk 迁移池现由同一份 1 GiB DDR 地址表约束；完整地址、状态机、格式边界、验证命令和后续分配规则见 [TF 音频与 DDR 整合说明](TF_AUDIO_DDR_INTEGRATION.md)。本阶段不烧录上板。
+
 ## P30 A/B/C 响度 1.5 倍（源码已改，等待用户 IDE 构建）
 
 A/B/C 的最终 PCM 统一乘以 `3/2`，保留音色谐波比例和 P24 的模式平衡，再沿用原有 32 位限幅。源码改动、准备工程命令和 Gowin IDE 综合、布局布线、位流生成、SRAM 下载步骤见 [P30 操作记录](P30_ABC_LOUDNESS_1_5X.md)。本阶段没有代做完整 Gowin 构建，也没有下载或写 Flash。

@@ -1,4 +1,15 @@
 // Keep the audio PLL RESET cone compact at a site used by accepted P10.
+// NEO Dock 31005 J31 micro-SD in SPI mode: DAT0=MISO, CMD=MOSI,
+// CLK=SCK and DAT3=CS.  Socket pull-ups remain enabled during reset.
+IO_LOC "sd_miso" AA15;
+IO_PORT "sd_miso" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "sd_mosi" Y16;
+IO_PORT "sd_mosi" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC "sd_sck" V15;
+IO_PORT "sd_sck" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC "sd_cs_n" W15;
+IO_PORT "sd_cs_n" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+
 // P10 Prj1.tr places this helper's enable_r_1_s0 at R39C72[0][A]
 // with audio PLL at PLL_B[2]; its full PLL_INIT maximum was 9.808 ns.
 // No logic/clock change or timing exception: VO/SDF still must meet 10 ns.

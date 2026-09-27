@@ -18,7 +18,7 @@ project=build/'Prj1'
 all_sources=[project/f.get('path') for f in ET.parse(project/'Prj1.gprj').find('FileList')
     if f.get('type')=='file.verilog']
 audio_sources=[f for f in all_sources if not any(x in str(f.relative_to(project)) for x in
-    ['vendor/','src/memory/','src/platform/','src/top/','src/ae350/riscv_',
+    ['vendor/','src/memory/','src/storage/','src/platform/','src/top/','src/ae350/riscv_',
      'workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
 inputs=rtl+[latency_tb,*audio_sources,usb_a/'firmware.c',usb_a/'sim/test_hotplug.c',
     fw/'usb/usb_hw.h',Path(__file__)]

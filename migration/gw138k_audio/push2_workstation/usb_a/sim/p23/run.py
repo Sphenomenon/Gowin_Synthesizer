@@ -8,7 +8,7 @@ out=build/datetime.now().strftime('p23_panic_%H%M%S_%f');out.mkdir();print(out,f
 (out/'sim').symlink_to(project/'sim',target_is_directory=True)
 all_sources=[project/f.get('path') for f in ET.parse(project/'Prj1.gprj').find('FileList') if f.get('type')=='file.verilog']
 audio_sources=[f for f in all_sources if not any(x in str(f.relative_to(project)) for x in
-    ['vendor/','src/memory/','src/platform/','src/top/','src/ae350/riscv_','workstation_top.v','workstation_top.sv',
+    ['vendor/','src/memory/','src/storage/','src/platform/','src/top/','src/ae350/riscv_','workstation_top.v','workstation_top.sv',
      'gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
 tests={name:out/name for name in ['tb_panic_audio.sv','tb_panic_push.sv','test_ui_panic.c','test_keyboard_panic.py']}
 for name,dest in tests.items():shutil.copy2(here/name,dest)

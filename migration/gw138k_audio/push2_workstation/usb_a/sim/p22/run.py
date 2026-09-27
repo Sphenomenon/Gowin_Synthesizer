@@ -8,7 +8,7 @@ out=build/datetime.now().strftime('p22_audio_sim_%H%M%S_%f');out.mkdir();print(o
 (out/'sim').symlink_to(p/'sim',target_is_directory=True)
 tb=out/'tb_keyboard_audio.sv';shutil.copy2(Path(__file__).with_name(tb.name),tb)
 sources=[p/f.get('path') for f in ET.parse(p/'Prj1.gprj').find('FileList') if f.get('type')=='file.verilog']
-sources=[f for f in sources if not any(x in str(f.relative_to(p)) for x in ['vendor/','src/memory/','src/platform/','src/top/','src/ae350/riscv_','workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]+[tb]
+sources=[f for f in sources if not any(x in str(f.relative_to(p)) for x in ['vendor/','src/memory/','src/storage/','src/platform/','src/top/','src/ae350/riscv_','workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]+[tb]
 (out/'inputs.json').write_text(json.dumps({str(f):hashlib.sha256(f.read_bytes()).hexdigest() for f in sources},indent=2)+'\n')
 passed=False
 try:

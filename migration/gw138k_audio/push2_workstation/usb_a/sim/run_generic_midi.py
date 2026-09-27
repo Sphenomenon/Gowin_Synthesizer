@@ -15,7 +15,7 @@ for name in ['test_generic_midi.c','test_hotplug.c','test_usb_in_decode.py','tb_
     shutil.copy2(here/name,out/'sim'/name)
 sources=[project/f.get('path') for f in ET.parse(project/'Prj1.gprj').find('FileList') if f.get('type')=='file.verilog']
 sources=[f for f in sources if not any(x in str(f.relative_to(project)) for x in
-    ['vendor/','src/memory/','src/platform/','src/top/','src/ae350/riscv_',
+    ['vendor/','src/memory/','src/storage/','src/platform/','src/top/','src/ae350/riscv_',
      'workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
 control=here.parents[1]/'scripts/control.py'
 midi_serial=here.parents[2]/'ae350/scripts/midi_serial.py'
