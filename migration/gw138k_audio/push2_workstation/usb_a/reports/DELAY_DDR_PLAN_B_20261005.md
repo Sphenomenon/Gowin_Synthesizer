@@ -83,3 +83,48 @@
 RTL（wrapper+DMA+arbiter owner 6）+ TB 约一天；构建 + 板测一轮（约 1.5 小时）。
 改动文件：`rtl/audio/delay_ddr/`（新）、`gw138k_ddr_arbiter.sv`、
 `ddr_address_map.vh`（记录 granule）、构建脚本 0x80（含冻结文件补丁）。
+
+## 实现记录（2026-10-05，0x80 构建中）
+
+设计三点确认后已实现并验证：
+
+**新文件**
+- `rtl/audio/delay_ddr/serial_delay_effect_ddr.sv`：音频域 wrapper。5 状态 FSM
+  算术逐位保留；state1 从读 FIFO 出数（FWFT，时序位置与原 BRAM 同步读一致），
+  state4 推写 FIFO。clear_i 通过写 FIFO 带 flush 标记（65 位宽的第 65 位）。
+- `rtl/audio/delay_ddr/delay_ddr_dma.sv`：内存域 DMA（owner 6）。环
+  128KiB @ BULK_POOL 字节 0x3000_0000（app 字地址 0x0C00_0000，4 样本/256bit 块）；
+  单 outstanding 读 + 满 4 样本才发写（mask=0 全块写）；预取水位
+  `wptr-rptr >= ECHO_SAMPLES-448`（读 FIFO 永不满、写路径不停、启动零突发）。
+
+**流对齐协议（等价性的核心）**
+- 读 FIFO 条目 #m 服务音频样本 m+9600，与原 `pointer-9600` 严格对应。
+- clear→写 FIFO flush 标记→DMA 丢弃在途读响应→复位环指针→向读 FIFO 推
+  代际标记；音频侧丢弃标记前旧代条目（1/周期），标记后按 1 样本/次消费。
+  复位即隐含代际边界（FIFO 双侧同清为空），marker_seen 复位值为 1。
+- 欠载（DDR 停顿 >448 样本≈9.3ms）wet=0 + 粘滞标志（流会偏移一个样本，
+  病态场景才可达）；写 FIFO 满丢新样本 + 粘滞标志（不反压合成器）。
+
+**验证**
+- 逐位等价 TB（`sim/audio/run_delay_ddr_equivalence.py`，iverilog）：冻结
+  `serial_delay_effect` 作参考，45000 样本（覆盖 clear@12000、60µs DDR 停顿
+  @20000、中途复位@30000）valid/ready/left/right/clip 全等；长停顿场景
+  underrun/overflow 粘滞标志正确、无挂起。
+- 仲裁器 TB 扩 owner 6：满块写受理、优先级（高于 CPU/写者，低于
+  scanout/TF 音频/music turn）、标签响应路由。过程中修了测试自身的两个错
+  （标签队列未排空顶满 DEPTH=8、delay_valid 持续有效却期望 CPU 获服务）。
+- **教训（行为级 DDR 模型陷阱）**：模型停顿期间曾让 ready 继续翻转但不受理
+  ——仲裁协议里 ready=1 必须意味着受理，否则主设备以为完成而丢请求。第一轮
+  综合前的等价 TB 由此抓出 ~107 次丢写。真实仲裁器 `delay_ready=app_en&&owner==6`
+  只在真受理时脉冲，RTL 无此问题。
+- 0x80 构建：`tools/build_full_song_80.py`（基线 full79；冻结文件哈希断言后
+  补丁：stereo_effects 端口 + delay_stage 实例换名接线；穿线链
+  event_workstation→controlled_adapter→usb_controlled_audio→push_top；
+  gprj 新文件插在 music_async_fifo 之后保证包/FIFO 先编译）。
+  第一轮综合暴露 stereo_effects 端口名带 delay_ 前缀与实例裸名不一致——已改
+  为裸名 + 隐式同名连接。
+- 注意：live 树的 `hdmi_display.v` 曾落后于 staged 血统（缺 music 端口），
+  已同步后再加 delay 端口；`gw138k_event_workstation.sv` live 与 staged 双向
+  分叉（live 多 scope 控制与 PANIC 修复），构建只对 staged 打补丁，live 仅
+  镜像端口，禁止整文件拷贝。
+- 烧板前需与吞吐优化窗口同步（UserCode 0x80 归属本窗口）。

@@ -104,4 +104,12 @@
 `define PRJ1_DDR_BULK_POOL_BYTES         32'h1000_0000
 `define PRJ1_DDR_BULK_POOL_APP_BASE      29'h0c00_0000
 
+// First granule of the bulk pool: the P10 delay-effect ring (Plan B BSRAM
+// migration).  16384 stereo samples x 8 bytes = 128 KiB of the reserved 1 MiB;
+// owner 6 of the DDR arbiter streams it sequentially through delay_ddr_dma.
+`define PRJ1_DDR_DELAY_RING_BYTE_BASE    32'h3000_0000
+`define PRJ1_DDR_DELAY_RING_BYTE_LAST    32'h3001_ffff
+`define PRJ1_DDR_DELAY_RING_BYTES        32'h0002_0000
+`define PRJ1_DDR_DELAY_RING_APP_BASE     29'h0c00_0000
+
 `endif

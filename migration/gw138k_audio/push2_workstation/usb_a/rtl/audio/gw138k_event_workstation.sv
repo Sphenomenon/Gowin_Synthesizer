@@ -39,7 +39,15 @@ module gw138k_event_workstation #(
     output logic [5:0] effect_order_o,
     output logic panel_event_valid_o,
     output wire [31:0] scope_status_o,tf_scope_control_o,
-    output logic [6:0] panel_command_o
+    output logic [6:0] panel_command_o,
+    // P10 delay DDR ring bridge (memory-domain side, see delay_ddr_dma)
+    input logic delay_mem_clk_i, delay_mem_rst_ni,
+    output logic delay_dwr_valid_o,
+    output logic [64:0] delay_dwr_data_o,
+    input logic delay_dwr_pop_i,
+    input logic delay_drd_push_i,
+    input logic [64:0] delay_drd_data_i,
+    output logic delay_drd_ready_o
 );
   initial begin
     if(SAMPLE_RATE_HZ!=48000) $fatal(1,"scope integration requires exact 48 kHz");
@@ -228,7 +236,10 @@ module gw138k_event_workstation #(
       .vector_left_i(panic_muted?32'sd0:held_vec_l),.vector_right_i(panic_muted?32'sd0:held_vec_r),
       .pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),
       .synth_gain_i(synth_gain_o),.pcm_gain_i(pcm_gain_o),.effect_mask_i(effect_mask_o),.effect_order_i(effect_order_o),
-      .ready_o(fx_ready),.valid_o(sample_valid_o),.left_o(effect_left),.right_o(effect_right),.clip_o(fx_clip));
+      .ready_o(fx_ready),.valid_o(sample_valid_o),.left_o(effect_left),.right_o(effect_right),.clip_o(fx_clip),
+      .mem_clk_i(delay_mem_clk_i),.mem_rst_ni(delay_mem_rst_ni),
+      .dwr_valid_o(delay_dwr_valid_o),.dwr_data_o(delay_dwr_data_o),.dwr_pop_i(delay_dwr_pop_i),
+      .drd_push_i(delay_drd_push_i),.drd_data_i(delay_drd_data_i),.drd_ready_o(delay_drd_ready_o));
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin
       applied_events_o<=0;pending<=0; frame_inflight<=0; deadline_miss_o<=0; note_drop_o<=0;

@@ -25,6 +25,10 @@ module gw138k_ddr_arbiter #(
     input wire [255:0] music_data,
     input wire [31:0] music_mask,
     output wire music_ready,music_response,
+    input wire delay_valid,delay_write,
+    input wire [28:0] delay_address,
+    input wire [255:0] delay_data,
+    output wire delay_ready,delay_response,
     input wire writer_valid,
     input wire [28:0] writer_address,
     input wire [255:0] writer_data,
@@ -73,6 +77,13 @@ module gw138k_ddr_arbiter #(
         end else if(music_valid && (!prefer_music || (!cpu_available && !writer_valid))) begin
             owner=5;valid=1;is_write=music_write;
             app_address=music_address;app_data=music_data;app_mask=music_mask;
+        end else if(delay_valid) begin
+            // Delay-effect ring streaming (owner 6): below TF audio and the
+            // music turn, above CPU/writer.  Worst case ~24k 32B requests/s
+            // (<0.1% of slots), so it cannot perturb the existing latency
+            // guarantees while its 384 KB/s stays unstarved here.
+            owner=6;valid=1;is_write=delay_write;
+            app_address=delay_address;app_data=delay_data;
         end else if(cpu_available && (!writer_valid || prefer_cpu)) begin
             owner=2;valid=1;is_write=cpu_write;app_address=cpu_address;app_data=cpu_data;app_mask=cpu_mask;
         end else begin
@@ -92,6 +103,7 @@ module gw138k_ddr_arbiter #(
         app_ready && (!audio_write || app_write_ready) &&
         (audio_write || count<DEPTH);
     assign music_ready=app_en && owner==5;
+    assign delay_ready=app_en && owner==6;
     assign cpu_ready=app_en && owner==2;
     assign writer_ready=app_en && owner==3;
     wire push=app_en && !is_write;
@@ -102,6 +114,7 @@ module gw138k_ddr_arbiter #(
     assign cpu_response=pop && tags[read_pointer]==2;
     assign audio_response=pop && tags[read_pointer]==4;
     assign music_response=pop && tags[read_pointer]==5;
+    assign delay_response=pop && tags[read_pointer]==6;
     always @(posedge clk or negedge reset_n) begin
         if(!reset_n) begin read_pointer<=0;write_pointer<=0;count<=0;prefer_cpu<=0;prefer_music<=0;music_turn<=0;cpu_read_pending<=0;response_fault<=0;end
         else begin
