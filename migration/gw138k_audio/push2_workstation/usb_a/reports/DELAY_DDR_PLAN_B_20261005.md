@@ -128,3 +128,19 @@ RTL（wrapper+DMA+arbiter owner 6）+ TB 约一天；构建 + 板测一轮（约
   分叉（live 多 scope 控制与 PANIC 修复），构建只对 staged 打补丁，live 仅
   镜像端口，禁止整文件拷贝。
 - 烧板前需与吞吐优化窗口同步（UserCode 0x80 归属本窗口）。
+
+## 0x80 构建结果（2026-10-05 05:41，results/song_guide_full80_20261005_045703）
+
+- **构建成功**（gw_sh 全流程 exit 0，位流 `impl/pnr/Prj1.fs` 已生成，未烧板）。
+- **BSRAM：279 → 215（-64，SDPB 218→154）**，与设计预估一致——delay_stage 的
+  64 块全数迁出，SDPX9B/pROM/pROMX9 不动；两条 512×65 异步 FIFO 走分布式
+  RAM（BSRAM 计数零增长）。
+- 时序：audio_76m8 TNS -2123→-2419ns，但 0x80 榜首路径全部是 FIFO Gray 指针
+  →同步器的**跨时钟 CDC 路径**（audio_76m8↔ddr_ui100），与 0x79 榜上既有的
+  format_sync/ddr_rsp_cdc 同类——STA 按单周期悲观分析，Gray+2FF 同步本就为此
+  设计，基线实板数周无碍。真正的域内读出 mux 路径（read_binary→FIFO 存储读出）
+  不在违例榜。可选后续：在 SDC 给两组 FIFO 的 Gray 总线加 set_false_path/
+  set_max_delay 清报告（与现有 CDC 路径同处理）。
+- git：commit 7437dda（RTL+TB+构建脚本+报告），已推送 origin/main。
+- 下一步：与吞吐优化窗口同步后烧板（UserCode 0x80），P10 开延迟听感比对 +
+  长时间运行 telemetry；BSRAM 审计应显示 u_audio 122→58。
