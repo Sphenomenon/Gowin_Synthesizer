@@ -1,0 +1,22 @@
+{
+  "rtl/sampler/sampler_pkg.sv": "bbd59a7a5036afcd96bf3e4d90712964b719a341f6998676c2ef43b1f2904375",
+  "rtl/sampler/sampler_ddr.sv": "254e086e2741fd4a9666924235188c784c9ea695dc04dbd58e23a849cb9aef07",
+  "rtl/sampler/sampler_fx.sv": "d7e8db486b9c6c4896ac12f285a99cfe833cf4811187c02127a6fb520c1d6c41",
+  "rtl/sampler/sampler_grid.sv": "f3ef979f6d78f2fa9bbec895efa8ac4ac3516e365d6ad10ad4c2d62af086d514",
+  "rtl/sampler/sampler_import.sv": "fd1d01450cc0257825c7965a70f1cea384a60710e63520e0403dc5c47ae8cdce",
+  "rtl/sampler/sampler_mode_d.sv": "990a159c1f946a2d1ce5d73d11f29b4d9b5498f345a335372f527cef9931f687",
+  "rtl/sampler/sampler_pool.sv": "aaf0d24a8e216975afaf443429e4224884dec3a6df3d45031658ec27d3ffc53f",
+  "rtl/sampler/sampler_push.sv": "6cda6ea209e4b7dcbde0e058efba84de34189e8cd8015802a171118776be4124",
+  "rtl/sampler/sampler_resample.sv": "dc0bda6622ce560d782a6b8b285659dc629927e0cbd9d4de8d84060a196bcc10",
+  "rtl/sampler/sampler_sequencer.sv": "dae3dd97a00b2dbb0ae9cb93d571be3e65a41a802bdc93427b10d861341b3954",
+  "rtl/sampler/sampler_slice.sv": "daccc3259e29b531088ffbda0c27b3dacdee35f5e5757dc2c4888cd4b5415b4b",
+  "rtl/sampler/sampler_storage.sv": "eaded3c5d0e3a6be0a73eb8f0b7a24507be13efc42628bf8c1e8a667b71444ba",
+  "rtl/sampler/sampler_tf_source.sv": "eb2588c9e8ab2eb1587f75e6da8dd07f62bd553a60b0e36a39d7f72acaebfb73",
+  "rtl/sampler/sampler_voice.sv": "d8520c6f029f96e9b5ffc1f5ed1a3f6a2c9985124c0ac57802bc12beb630613c",
+  "rtl/tf_audio/storage/tf_wav_pcm_decoder.v": "ebf34a426e1bb53e1e002fc78723a8e501b5892c5b061b72fc46a14644c1e68a",
+  "rtl/tf_audio/storage/tf_wav_chunk_parser.v": "c71e9860c5e988d97f1dd9840f643a68f60e6efef74d96b216013e816fb86ee1",
+  "rtl/tf_audio/storage/third_party_sd_spi_file_reader.v": "e86577b2985bd8ec4750ca4cd317e14ded30a2dcc465e22aa4114dc82cd54660",
+  "rtl/tf_audio/storage/third_party_sd_spi_sector_reader.v": "c1f8755b0f202a86f92b5212f036f904098537066e80b5ef7420360622a40b73",
+  "rtl/tf_audio/storage/third_party_spi_session.v": "d64f0e41bdf785af517f30f6aa454c83a4e6a0cfc72d60650b45f99e6361288b",
+  "rtl/ddr_address_map.vh": "52ce6ce23794de3c0dcab9b0b83239df8be2c7b80b496a02ae5738a013202122"
+}

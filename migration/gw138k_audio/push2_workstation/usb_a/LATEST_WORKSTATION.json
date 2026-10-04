@@ -1,0 +1,11 @@
+{
+  "build": "results/build_20261002_172816_464963",
+  "build_mode": "full",
+  "memory_report": "results/build_20261002_172816_464963/workstation_memory.json",
+  "bsram": 234,
+  "bsram_measurement_stage": "synthesis",
+  "tf_decoder": "wav",
+  "basic_pitch_elaborated": true,
+  "timing_closed": null,
+  "hardware_tested": false
+}

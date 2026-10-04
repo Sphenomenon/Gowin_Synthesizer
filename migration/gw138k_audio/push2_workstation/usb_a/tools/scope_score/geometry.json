@@ -1,0 +1,13 @@
+{
+  "schema": "scope-geometry-v1",
+  "shapes": [
+    {"name": "circle", "x": "cos(t)", "y": "sin(t)"},
+    {"name": "figure-eight", "x": "sin(t)", "y": "sin(2*t)"},
+    {"name": "trefoil", "x": "cos(t)+0.35*cos(3*t)", "y": "sin(t)-0.35*sin(3*t)"},
+    {"name": "square", "vertices": [[-1,-1],[1,-1],[1,1],[-1,1]]},
+    {"name": "diamond", "vertices": [[0,-1],[1,0],[0,1],[-1,0]]},
+    {"name": "star", "x": "cos(t)*(0.7+0.3*cos(5*t))", "y": "sin(t)*(0.7+0.3*cos(5*t))"},
+    {"name": "heart", "x": "sin(t)**3", "y": "(13*cos(t)-5*cos(2*t)-2*cos(3*t)-cos(4*t))/16"},
+    {"name": "lissajous-3-2", "x": "sin(3*t)", "y": "sin(2*t)"}
+  ]
+}

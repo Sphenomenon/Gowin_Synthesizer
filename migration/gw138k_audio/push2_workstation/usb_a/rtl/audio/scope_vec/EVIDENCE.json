@@ -1,0 +1,323 @@
+{
+  "date": "2026-09-30",
+  "passed": true,
+  "hardware_tested": false,
+  "programmer_operations": 0,
+  "sram_flash_operations": 0,
+  "usercode_allocated": false,
+  "git_commit_performed": false,
+  "build": "results/build_20260930_194910_097096",
+  "simulation": "results/scope_vec_sim_20260930_195515_665324",
+  "synthesis": {
+    "exit_code": 0,
+    "inputs_unchanged": true,
+    "changed": [],
+    "hardware_tested": false
+  },
+  "resource": {
+    "T_Register": "30354(187)",
+    "T_Alu": "7237(33)",
+    "T_Lut": "38392(235)",
+    "T_MULTALU27X18": "26(0)",
+    "T_MULT12X12": "4(0)",
+    "T_MULT27X36": "28(0)",
+    "T_Bsram": "228(0)",
+    "T_Ssram": "213(0)"
+  },
+  "modules": {
+    "cue_player": {
+      "name": "cue_player",
+      "Register": "98",
+      "Alu": "69",
+      "Lut": "136",
+      "Bsram": "1",
+      "T_Register": "98(98)",
+      "T_Alu": "69(69)",
+      "T_Lut": "136(136)",
+      "T_Bsram": "1(1)"
+    },
+    "vector_engine": {
+      "name": "vector_engine",
+      "Register": "1686",
+      "Alu": "569",
+      "Lut": "3768",
+      "MULTALU27X18": "14",
+      "MULT12X12": "1",
+      "MULT27X36": "10",
+      "Bsram": "9",
+      "T_Register": "1686(1686)",
+      "T_Alu": "569(569)",
+      "T_Lut": "3768(3768)",
+      "T_MULTALU27X18": "14(14)",
+      "T_MULT12X12": "1(1)",
+      "T_MULT27X36": "10(10)",
+      "T_Bsram": "9(9)"
+    }
+  },
+  "synthesis_first_path": {
+    "slack_ns": "-7.141",
+    "arrival_ns": "20.710",
+    "required_ns": "13.569",
+    "from": "u_managed/u_audio/u_workstation/engine/final_accumulator_3_s1",
+    "to": "u_managed/u_audio/u_workstation/engine/quantized_mix_37_s1"
+  },
+  "verification_sha256": "295bd14615bdb4df2c030494a0d472c813771b14f92dc80f4a260d4281c99f27",
+  "source_sha256": {
+    "build.py": "e06260f2c19d2ff1a18a86d54a43c203fbc2436b59fb44eaefd7fa716906e324",
+    "rtl/audio/gw138k_event_workstation.sv": "47dc753e792ee2fe08e3930aa69f87726b21c53e481969bd9bdf1a4ebbc1560a",
+    "rtl/audio/push2_controls.sv": "8de353cac7d04cdda78491bfbef248df6bbd5cdda0c58fadb6ea1cca46f545ff",
+    "rtl/audio/scope_vec/scope_vec_engine.sv": "d33fb02e81013632da801e50c1d5f18fcefa97819cd1e25d0918b7e64ba8d540",
+    "rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+    "rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+    "rtl/audio/scope_vec/data/scene.json": "cc8d1f055ef8bd15797271a7b1c9ca8c0bcc3a6f0cca2bfe29766258f5890cfa",
+    "rtl/audio/scope_vec/data/scene_controls.mem": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c",
+    "rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+    "rtl/audio/scope_vec/data/manifest.json": "fdf0ed52a006c760e49ac0786d38cfc7e11476f310caebbbde1baf77c4443efc",
+    "rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc",
+    "tools/scope_score/compile_scope.py": "012269337db663610daafaac7b7740080588e9c31b0913d23335acbd11c72a51",
+    "tools/scope_score/geometry.json": "96de0064842a3adbb6dfb603f150349f89c10c0980492706fe55d1a5c379297d",
+    "tools/scope_score/demo_scene.json": "cc8d1f055ef8bd15797271a7b1c9ca8c0bcc3a6f0cca2bfe29766258f5890cfa",
+    "sim/scope_vec/run.py": "eaca9575b1bd361a11fdb52d81948941df06fbc17cdac29807629ef064a4941f",
+    "sim/scope_vec/tb_scope_vec.sv": "7918793585557264cc3a4f775dc5727eab28c58d343b59ab301d326c33d9b497",
+    "sim/scope_vec/tb_scope_injection.sv": "c0f2c0ffe1fa3c355f740e9f01db6bbaea108983d410bf8c6fb779209956b429",
+    "sim/scope_vec/tb_scope_workstation.sv": "30a542d27643793ece2caec5e0a56add63745cefb419141d98bc5c83780e1240",
+    "sim/scope_vec/tb_scope_controls.sv": "b50aaeadc1bba4c4dcc578ddd7f9b636a200132d5deb89b8ddf1292d5243e02f",
+    "sim/scope_vec/tb_scope_push.sv": "bc66d9bbc9f448c568c3c61c8fea9147878799292c920de92ae8c3cd3cbaf35d"
+  },
+  "simulation_metrics": {
+    "passed": true,
+    "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096",
+    "staged_rtl": true,
+    "hardware_tested": false,
+    "pcm_audio_files": 0,
+    "sampled_streams_persisted": 0,
+    "compiler": {
+      "rejected_cases": [
+        "9 shapes",
+        "1024 points",
+        "unsafe expression",
+        "nonfinite equation",
+        "unknown geometry field",
+        "unknown event/audio field",
+        "257 cues",
+        "descending timestamp",
+        "out of band note",
+        "bad shape",
+        "open SVG",
+        "unflattened SVG transform"
+      ],
+      "svg_closed_cubic_quadratic": true,
+      "production_path_bytes": 16384
+    },
+    "note_69": {
+      "target_hz": 440.0,
+      "phase_step_hz": 440.0000050663948,
+      "measured_hz": 440.0000040673053,
+      "error_hz": 4.067305326316273e-06,
+      "periodic_hann_n2048": {
+        "far_peak_dbc": -38.723713174960025,
+        "outside_power_db": -38.578835300693626
+      }
+    },
+    "note_60": {
+      "target_hz": 261.6255653005986,
+      "phase_step_hz": 261.625561863184,
+      "measured_hz": 261.6255616045176,
+      "error_hz": -3.6960810234631936e-06,
+      "periodic_hann_n2048": {
+        "far_peak_dbc": -42.02798036651053,
+        "outside_power_db": -41.35669316709836
+      }
+    },
+    "antialias": {
+      "69": {
+        "raw": {
+          "far_peak_dbc": -38.266921372045175,
+          "outside_power_db": -34.699304285695305,
+          "h13_fold_or_removed_peak_dbc": -44.75486361118698
+        },
+        "smooth": {
+          "far_peak_dbc": -47.38470407082869,
+          "outside_power_db": -45.60576684030877,
+          "h13_fold_or_removed_peak_dbc": -108.46065089940336
+        },
+        "h13_suppression_db": 63.705787288216385
+      },
+      "95": {
+        "raw": {
+          "far_peak_dbc": -39.028870911735225,
+          "outside_power_db": -34.145048618098855,
+          "h13_fold_or_removed_peak_dbc": -44.42539428548543
+        },
+        "smooth": {
+          "far_peak_dbc": -42.33652555653666,
+          "outside_power_db": -41.31258391546172,
+          "h13_fold_or_removed_peak_dbc": -107.32382616779117
+        },
+        "h13_suppression_db": 62.89843188230574
+      }
+    },
+    "morph_endpoint": {
+      "x_fundamental_hz": 440,
+      "y_fundamental_hz": 880,
+      "x": {
+        "far_peak_dbc": -47.3847329960124,
+        "outside_power_db": -46.110348545934954
+      },
+      "y": {
+        "far_peak_dbc": -40.66676809391632,
+        "outside_power_db": -40.19129425414854
+      }
+    },
+    "transitions": {
+      "morph": {
+        "max_sample_step_full_scale": 0.013164520263671875,
+        "limit_full_scale": 0.018
+      },
+      "rotation": {
+        "max_sample_step_full_scale": 0.014698028564453125,
+        "limit_full_scale": 0.018
+      },
+      "mute": {
+        "max_sample_step_full_scale": 0.012302100658416748,
+        "limit_full_scale": 0.018
+      },
+      "unmute": {
+        "max_sample_step_full_scale": 0.013164520263671875,
+        "limit_full_scale": 0.018
+      },
+      "release": {
+        "max_sample_step_full_scale": 0.01049041748046875,
+        "limit_full_scale": 0.018
+      }
+    },
+    "calibration": {
+      "measured_x_gain": 1.2499987645888906,
+      "measured_y_gain": 0.7500003579841197,
+      "offset_x_fit_fs": 0.0004821975543548296,
+      "offset_y_fit_fs": -0.0004918996106688771,
+      "expected_offset_fs": 0.00048828125
+    },
+    "scan_sweep": {
+      "start_hz": 220,
+      "end_hz": 659.5703125,
+      "frames": 1024,
+      "peak_full_scale": 0.11444091796875
+    },
+    "polyphony": {
+      "voices": 8,
+      "peak_full_scale": 0.3873863220214844,
+      "independent_rates": true
+    },
+    "cycles": {
+      "max_cycles": 115,
+      "workstation_max_cycles": 1067
+    },
+    "tests": {
+      "tb_scope_vec": [
+        "PASS scope_vec",
+        "- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_vec.sv:123: Verilog $finish",
+        "- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28",
+        "- Verilator: $finish at 820ms; walltime 24.292 s; speed 33.818 ms/s",
+        "- Verilator: cpu 24.235 s on 1 threads; allocated 7 MB"
+      ],
+      "tb_scope_injection": [
+        "PASS scope_injection DC impulse step signed ramp exact dry stereo",
+        "- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_injection.sv:39: Verilog $finish",
+        "- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28",
+        "- Verilator: $finish at 183us; walltime 0.006 s; speed 30.871 ms/s",
+        "- Verilator: cpu 0.006 s on 1 threads; allocated 7 MB"
+      ],
+      "tb_scope_controls": [
+        "PASS scope_controls live arm, absolute samples, equal timestamps, 2x speed, backpressure, stop, invalid speed",
+        "- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_controls.sv:44: Verilog $finish",
+        "- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28",
+        "- Verilator: $finish at 1us; walltime 0.000 s; speed 6.772 ms/s",
+        "- Verilator: cpu 0.000 s on 1 threads; allocated 7 MB"
+      ],
+      "tb_scope_push": [
+        "PASS scope_push pads, existing force curve, signed knobs, mute, scene arm, bend",
+        "- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_push.sv:34: Verilog $finish",
+        "- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28",
+        "- Verilator: $finish at 320ns; walltime 0.000 s; speed 6.238 ms/s",
+        "- Verilator: cpu 0.000 s on 1 threads; allocated 7 MB"
+      ],
+      "tb_scope_workstation": [
+        "PASS scope_workstation real MIDI, allocator, join, exact dry stereo, live controls, panic",
+        "- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_workstation.sv:92: Verilog $finish",
+        "- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28",
+        "- Verilator: $finish at 38ms; walltime 2.167 s; speed 17.765 ms/s",
+        "- Verilator: cpu 2.162 s on 1 threads; allocated 7 MB"
+      ]
+    },
+    "inputs": {
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/audio_capture_fifo.sv": "68caf75ba7e10c5ed0e2ca37878428e262b493f9a38a947d826d3b58b52e6565",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/audio_visual_extensions.sv": "0c441be0d63596acdba3d128ba8d8fe3a05fc1c6382cb6b2e98a6d13d0a55c0f",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/audio_workstation.sv": "8dea52209b5d9fd9df8a7e4bb79b712ed951509477f759b5bfedc0f4aedcf5ea",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/pitch_expression.sv": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/sine_interp.sv": "1085c7ebba307faa6ea7d10d99c6111a253d1f383e13fefef81c595a7d8b2b61",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/spectrum_fft256.sv": "304ad503ed053fc89cdde9372e9065fb13a0fb14f747d8db586ac3093932171a",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/stereo_effects.sv": "589cd255fb2643c7c7fc010246ecbb532176e4f9540735ed34ab6808fc325657",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv": "3819a618b0bbe39d2181e7e2801f1c7fdd4239e99a07bcab5a67510a750c63c1",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/legacy/rtl/input/midi_stream_decoder.sv": "8eefe9eba6bfb2b8df8842dea9c8948d576d04eeccc1a32cc3a3bf5bfa049fcd",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "d33fb02e81013632da801e50c1d5f18fcefa97819cd1e25d0918b7e64ba8d540",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/src/ae350/gw138k_event_workstation.sv": "47dc753e792ee2fe08e3930aa69f87726b21c53e481969bd9bdf1a4ebbc1560a",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/src/ae350/gw138k_three_event_arbiter.sv": "c3690947d2b9a0e75ba56cd73982c1291d2a452d4ae3a20adaf753c306f25b7a",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/build_20260930_194910_097096/Prj1/src/push2/push2_controls.sv": "8de353cac7d04cdda78491bfbef248df6bbd5cdda0c58fadb6ea1cca46f545ff",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/scope_vec_sim_20260930_195515_665324/raw_paths.mem": "8508fc3603e8fdb5568c00c10d573463be87e80864f8231953bc8f2c00b6c3ff",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/scope_vec_sim_20260930_195515_665324/scope_test_adsr.mem": "789b40f151e53e1d97fd2a9859b5fb75ae3ac314266c0d52c883abe9decf9fa3",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/scope_vec_sim_20260930_195515_665324/scope_test_cues.mem": "0c0df0e0efd8174e01ed5e43d77498f6d478bc1bedc5884eef16ee599fa8771c",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/scope_vec/data/manifest.json": "fdf0ed52a006c760e49ac0786d38cfc7e11476f310caebbbde1baf77c4443efc",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/scope_vec/data/scene.json": "cc8d1f055ef8bd15797271a7b1c9ca8c0bcc3a6f0cca2bfe29766258f5890cfa",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/scope_vec/data/scene_controls.mem": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/run.py": "eaca9575b1bd361a11fdb52d81948941df06fbc17cdac29807629ef064a4941f",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_controls.sv": "b50aaeadc1bba4c4dcc578ddd7f9b636a200132d5deb89b8ddf1292d5243e02f",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_injection.sv": "c0f2c0ffe1fa3c355f740e9f01db6bbaea108983d410bf8c6fb779209956b429",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_push.sv": "bc66d9bbc9f448c568c3c61c8fea9147878799292c920de92ae8c3cd3cbaf35d",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_vec.sv": "7918793585557264cc3a4f775dc5727eab28c58d343b59ab301d326c33d9b497",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_workstation.sv": "30a542d27643793ece2caec5e0a56add63745cefb419141d98bc5c83780e1240",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/tools/scope_score/compile_scope.py": "012269337db663610daafaac7b7740080588e9c31b0913d23335acbd11c72a51",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/tools/scope_score/demo_scene.json": "cc8d1f055ef8bd15797271a7b1c9ca8c0bcc3a6f0cca2bfe29766258f5890cfa",
+      "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/tools/scope_score/geometry.json": "96de0064842a3adbb6dfb603f150349f89c10c0980492706fe55d1a5c379297d"
+    }
+  },
+  "regressions": {
+    "results/build_20260930_194910_097096/p10_serial_effects_195341_586133/verification.json": {
+      "passed": true,
+      "sha256": "d58e2612a93012eac41c79b758b114f38b774c39b9e53ebb9990ca48734ce924"
+    },
+    "results/build_20260930_194910_097096/p27_controls_195341_627778/verification.json": {
+      "passed": true,
+      "sha256": "95d358f88ba99297f2b8b6f6c4831e7e88ed61f94fe83c7d60bc7f90229d93c4"
+    }
+  },
+  "audio_file_audit": {
+    "task_audio_files_found": 0,
+    "task_files_container_header_checked": 702,
+    "sample_stream_files": 0,
+    "preexisting_workspace_audio_extensions_found": 606,
+    "preexisting_workspace_audio_extensions": {
+      ".aif": 32,
+      ".aiff": 8,
+      ".mp3": 210,
+      ".wav": 356
+    },
+    "whole_existing_workspace_audio_free": false,
+    "historical_assets_modified": false,
+    "scope": "new scope sources, compiler, testbench, final simulation artifacts and final staged synthesis project; excludes historical and concurrent work"
+  },
+  "documentation_sha256": {
+    "rtl/audio/scope_vec/README.md": "74d0f18ea6f99c7fca80adcec6b5daea0ec4115ced35a4ad70cb19a036472e3f",
+    "rtl/audio/scope_vec/VERIFICATION.md": "3df08c2fe15d351e3009916d71e444b71e2ce91b63d270e47594a7d72415738d",
+    "tools/scope_score/README.md": "68a81834a006be48aeebac439ab1515272f2fed8554d26006096fb136187efaf"
+  },
+  "isolated_delivery_directory": "/home/sphenicidition/Documents/fpga_scope_vec_delivery_20260930"
+}

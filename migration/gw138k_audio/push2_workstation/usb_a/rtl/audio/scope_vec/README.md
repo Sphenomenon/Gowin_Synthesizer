@@ -1,0 +1,80 @@
+# 矢量示波器音乐引擎（离线候选）
+
+2026-10-02：已与 Basic Pitch 完整工作站共同展开，并补齐最终 DAC 所有权。示波器模式（含静音/idle/PANIC）优先实时 X/Y；TF→识别继续握手。完整新候选 SYN 234/340 BSRAM、7 项矢量/接入 TB 与 P10/P27/DDR 回归通过；尚未 P&R 或上板。操作边界和新证据见 [合并报告](../../../reports/SCOPE_VEC_BASIC_PITCH_MERGE_20261002.md)。下述原算法/频谱证据保留其 9 月 30 日日期，不混用板测结论。
+
+2026-09-30。此实现是几何波表的实时合成算法：ROM 按闭合路径的**相位**保存 X/Y 坐标，音符事件只决定扫描速率、图形引用和力度。在 48 kHz 下计为 8×48000=384000 次独立振荡器扫描/秒（X/Y 各一次输出）。8 个矢量 voice 各自拥有 32-bit 相位累加器、MIDI 基准扫描步进、独立 Q20 频率比例、Q24 ADSR、力度增益和两幅图形引用。ROM 和插值运算按 voice 分时共享。输出为 48 kHz、32-bit Q1.31 立体声。
+
+算法与提交形态符合本任务给定的“波表采样”白名单描述；比赛组织方的最终规则判定仍需提交源码和生成物溯源。此目录没有录音、PCM 资源、流式音频素材或音频解码器。**本阶段未操作硬件、未分配 UserCode、未生成发布位流、未提交 Git。**
+
+## 文件与工程接口
+
+- `scope_vec_engine.sv`：8 voice、单端口同步路径 ROM、跨路径末端线性插值、morph、旋转、校准、ADSR、输出限幅和显式错误输出。
+- `scope_control_player.sv`：256×64 的控制 cue ROM，由现场事件启动；按绝对样本时间与 Q8 速度推进；背压时保留事件并计数迟到。
+- `data/paths.mem`：8×512 个 `XXXXYYYY` 的 32-bit hex 字。高 16 bit 是 signed X，低 16 bit 是 signed Y。`X/32768,Y/32768` 是无量纲路径坐标；没有采样率、持续时间、声道录音或播放位置。
+- `data/note_steps.mem`：128 个音符到 48 kHz 相位步进的数学控制常量；`rotation.mem`：512 个 Q1.15 正余弦旋转系数；这些属于算法控制表。
+- `data/scene.json`、`scene_controls.mem`：45 秒控制事件样例，69 个有效 cue，余下位置补零。ROM 内容只有时间戳和 MIDI 控制字。
+- `data/manifest.json`：几何与场景输入、编译器、SVG 来源及输出 SHA256、预算与格式自证。
+
+`build.py` 在新的工程目录复制此目录、加入 `.sv`，并按 manifest 设置 cue 数量。它检查路径预算、ROM 长度和所有输出 SHA256，数据有改动时须重新编译。生产集成固定 8 图形×512 点；编译器的 128/256 点和较少图形选项供独立模块使用，须对应设置 `SHAPES/POINT_BITS`，生产构建会显式拒绝配置不一致。
+
+原 `unified_oscillator_engine` 产生单声道，原 `stereo_effects` 在输入混合处把它复制到 L/R。本实现只扩展该输入混合边界：新增 `vector_left_i/vector_right_i`，沿用 synth 音量渐变，将 X 注入 L、Y 注入 R，原单声道合成器内部不变。独立完成的矢量帧与原合成帧先汇合，再送一次 P10。矢量模式下音符路由到矢量引擎；原引擎继续完成空帧，因此不改变其调度结构。模式切换须无活动 voice；相同模式的重复请求允许，活动时跨模式切换明确拒绝。
+
+没有改 HDMI、display-data、DDR 仲裁或捕获路径。原显示仍分析最终 DAC 音频。PT8211 的实际模拟通道匹配和图形外观留待板上验收。
+
+## 包络、增益与操作边界
+
+ADSR 直接读取原 `stage13_adsr_q24.mem` 的五个 profile，复用原语义：attack 到 `0xffffff`，decay 到 sustain，release 线性减到零；步进为 0 表示立即到达对应目标。没有偷取活动 voice；第 9 个 note-on 计入拒绝/丢音计数。每个 note-on 从相位零、包络零开始；note-off 只释放一个仍 held 的同音 voice，尾音保留。原 sustain/deferred note-off 路径继续适用。
+
+每 voice 满力度约占整体满幅的 1/8；输出经过全局缩放和每通道校准。morph/scale 每帧最多变 256 个 Q15 单位，即满程 128 帧（2.667 ms）。旋转按最短圆周方向每帧 1/512 圈；90° 用 128 帧。偏移按活动最大包络渐入渐出，静音后无残留 DC。X/Y 校准增益默认 1，控制范围约 0.75…1.2461；通道偏移默认 0，范围约 −0.0078125…+0.0076904 满幅。
+
+morph 的两个 shape id 在 note-on 锁存，morph 量可现场连续改变；旋钮改变目标图形时对**后续 note-on**生效。已有 voice 不会因改变图形引用而硬切波表。旋转、morph 和缩放应用于实时计算结果，弯音和颤音经过已有 `pitch_expression` Q20 管线改变路径扫描速率。
+
+`scope_status_o`：`[7:0]` active、`[8]` enable、`[9]` 配置错误、`[10]` 超频错误、`[11]` 控制错误、`[12]` 有 cue 迟到、`[13]` cue 配置错误、`[14]` cue done、`[15]` cue running、`[31:16]` voice 拒绝计数低 16 bit。该专用输出当前在冻结适配器显式留空，通用 `note_drop_o` 仍报告 voice/控制拒绝和首次超频错误；需要逐项读回时可在后续板上阶段增加 MMIO 镜像。内部限幅脉冲与效果链 clip 合并并对齐最终帧。
+
+## 路径平滑与防混叠
+
+选择**路径平滑**，不使用没有低通抽取的伪过采样。编译器先闭合路径、按弧长重采样 SVG/顶点路径并移除 DC，对整个周期进行 Fourier 投影，只保留 1…8 次谐波，再归一化为 signed16 坐标。参数方程直接按均匀相位采样。端点不重复存放；最后一点与第一点参与同一线性插值，闭合点不存在硬跳变。HDL 使用 16-bit 小数的线性插值，每个 voice 每帧只推进一次相位。
+
+扫描率支持至 **2000 Hz**，8 次谐波最高为 16 kHz，距 20 kHz 分析带边缘与 24 kHz Nyquist 均有余量。440 Hz 每周期为 109.0909 个输出样本，与 ROM 的 512 个几何相位点不是同一个点数概念。MIDI 95（1975.53 Hz）是允许的最高整数音符；note 96 以上或弯音/独立比例使扫描率超过 2000 Hz 时明确拒绝或置超频标志、整帧静音。频率恢复有效范围后可恢复发声，错误标志保留至 reset。Push 顶行 note 96…99 因此受此边界限制，不会静默折叠到其他音高。
+
+这是有范围的防混叠措施。signed16 量化与线性插值仍有很小的插值镜像；动态包络和图形控制也会产生调制边带。频谱验证分别记录真实谐波、窗旁瓣和折叠分量，不把所有远端 bin 当成混叠。见 [离线验证报告](VERIFICATION.md)。
+
+## 现场映射与演示
+
+Push 物理控制编号依据 Ableton `push-interface` 官方 MIDI Mapping，relative encoder 使用 signed7 二补数。原 PANIC（CC27/29）、效果按键、播放/录制按键、A/B/C 模式映射保持原定义。
+
+| 现场输入 | 引擎控制 | 作用 |
+|---|---|---|
+| Select（物理 CC48） | CC90=64（toggle；0/127 可显式设定） | 切换矢量模式，须先放完尾音；默认关闭 |
+| pad note 36…99 | note-on/off | 图形 `(note-36) mod 8`；同列跨八度保持图形，扫描音高按 note |
+| pad 力度 | 原 `pad_force` 曲线→velocity | 同时改变音量与轨迹幅度；非零原始力度先提升 28，饱和 127 |
+| encoder CC74 | 逻辑 CC93 | 路径整体缩放／亮度 |
+| encoder CC75 | 逻辑 CC94 | 旋转，128 控制单位/圈，内部 512 步渐变 |
+| encoder CC76 | 逻辑 CC92 | 两条路径的 morph 量 |
+| encoder CC77 | 逻辑 CC91 | 后续 note-on 的 morph 目标 shape 0…7 |
+| encoder CC78 | 逻辑 CC103 | 辅助控制场景速度，64=1×，127=2×；1…126 为 value/64× |
+| Mute（物理 CC60） | 逻辑 CC95=64（toggle；0/127 可显式设定） | 现场静音／恢复，保留相位与包络推进 |
+| Layout（物理 CC31） | 逻辑 CC96=127 | 现场启动可选控制场景；不会上电自动开始 |
+| Touch strip | 原 pitch-bend | 扫描速率扭动；原颤音 CC1、glide CC5 仍适用 |
+| 原 PANIC CC27/29 | CC120 | 停止 cue、清空两引擎与效果历史 |
+
+通用 MIDI/CPU 也可发送上述逻辑 CC。CC97=0…7 固定后续音符图形，127 恢复 pad 列映射；CC98/100 设置 X/Y 校准增益，CC99/101 设置 X/Y 偏移；CC81=0…7 可选择艺术效果。进入矢量模式会关闭效果，采用 P10 精确干声。主动开启延迟/合唱/混响后，轨迹会受时间历史处理影响，这是可选艺术操作。
+
+辅助 cue 是 `timestamp[63:32] + zero[31:18] + {kind,a,b}[17:0]`，由新的控制播放器送入既有事件缓冲。实时 MIDI/CPU 事件优先，cue 背压迟到会计数；不承诺堵塞后仍精确及时执行。此格式**不能直接装入原 LED-only score RAM**，其低 32 bit 原本是 LED mask。原 Play 的 LED score 功能仍保留。逻辑 CC96=0 只停止调度；CC120/123 同时停止调度并清空／释放音符。
+
+推荐 45 秒演示：先用 Select 进入矢量模式，现场按圆／八字／心形 pad，变化力度和弯音；选 morph 目标后重新触发音符，转动缩放、旋转与 morph。Layout 可启动控制序列作辅助，继续现场叠加 pad。途中使用 Mute、encoder CC78 变速，再恢复，最后 PANIC。展示的轨迹与声音持续受控制输入影响；场景中没有音频载荷。场景为绝对样本控制序列，本机精确 48 kHz 无速度变化时定义时长 45 秒，最后事件在第 40 秒，尾部留 5 秒。
+
+## 复现（均不访问硬件）
+
+从 `usb_a` 运行：
+
+```sh
+python3 tools/scope_score/compile_scope.py tools/scope_score/geometry.json \
+  --scene tools/scope_score/demo_scene.json --out rtl/audio/scope_vec/data
+python3 build.py --synthesis-only --no-update-latest
+python3 sim/scope_vec/run.py results/<本次新的 build 目录>
+python3 sim/p10/run.py results/<本次新的 build 目录>
+python3 sim/p27/run.py results/<本次新的 build 目录>
+```
+
+`--synthesis-only` 仅执行 `PRJ1_FLOW=syn`，不执行 P&R、programmer、SRAM/Flash 写入或 UserCode 分配。最后的 `verification.json` 只保存指标、断言摘要与输入 hash；样本流只存在进程内存，未写 `.wav/.pcm/.raw`、文本样本 dump、VCD/FST 或 core dump。频谱图保存为 PNG，图中另一部分是 ROM 几何，不保存音频时域样本。

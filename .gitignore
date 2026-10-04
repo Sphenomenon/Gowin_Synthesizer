@@ -55,3 +55,8 @@ migration/gw138k_audio/push2_workstation/usb_a/LATEST_BUILD.txt
 # Tool-local files and editor metadata.
 *.gprj.user
 .DS_Store
+
+# Local tooling and stray artifacts.
+a.out
+.commandcode/
+.zcodeignore

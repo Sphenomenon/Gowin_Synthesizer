@@ -3,11 +3,15 @@
 // selects track 0, while restart/track_index are available for clean recapture.
 module tf_audio_ddr_path #(
     parameter [23:0] FILE_EXT = "WAV",
-    parameter integer AUDIO_KIND = 2       // 1=MP3, 2=WAV, 3=FLAC
+    parameter integer AUDIO_KIND = 2,      // 1=MP3, 2=WAV, 3=FLAC
+    parameter integer CAPTURE_ON_ANALYSIS = 0,
+    parameter [27:0] HOTPLUG_TIMEOUT_CYCLES = 28'd200_000_000,
+    parameter [27:0] HOTPLUG_STALL_TIMEOUT_CYCLES = 28'd250_000_000
 ) (
     input  wire        clk_50m,
     input  wire        reset_n,
     input  wire        restart,
+    input  wire        capture_enable_i,
     input  wire [3:0]  track_index,
     input  wire        memory_clk,
     input  wire        memory_reset_n,
@@ -22,10 +26,15 @@ module tf_audio_ddr_path #(
     output wire [1:0]  filesystem_type,
     output wire [2:0]  filesystem_stat,
     output wire        scan_done,
+    output wire        card_lost,
+    output wire [10:0] hotplug_debug,
     output wire        card_ready,
     output wire        playing,
     output wire        eof,
     output wire [4:0]  track_count,
+    output wire        playlist_ready,
+    input  wire [7:0]  playlist_name_addr,
+    output wire [7:0] playlist_name_data,
     output wire        format_ready,
     output wire        unsupported,
     output wire        audio_ddr_error,
@@ -36,6 +45,7 @@ module tf_audio_ddr_path #(
     output wire        stereo,
     output wire [5:0]  bits_per_sample,
     output wire        pcm_valid,
+    output wire        pcm_end,
     input  wire        pcm_ready,
     output wire signed [15:0] pcm_left,
     output wire signed [15:0] pcm_right,
@@ -67,6 +77,8 @@ module tf_audio_ddr_path #(
     wire raw_track_start;
     wire [7:0] reader_debug_cmdrsp, reader_debug_rwrsp;
     wire [3:0] reader_debug_cardstate;
+    wire reader_debug_rvalid_session;
+    wire reader_sector_busy;
     reg raw_started;
     reg raw_track_start_r;
     reg [31:0] captured_bytes;
@@ -78,7 +90,57 @@ module tf_audio_ddr_path #(
     reg capture_switch_hold;
     reg capture_switch_seen_low;
     wire track_change = (track_index != track_index_q);
-    wire soft_restart = (restart && !restart_q) | track_change;
+    reg [27:0] card_read_wait;
+    reg [27:0] card_stall_wait;
+    reg [3:0] reader_reset_count;
+    reg card_lost_seen;
+    wire reader_rst_n = reset_n && reader_reset_count == 0;
+    // Two transport-failure classes need different patience. A card that
+    // stops answering commands entirely (removed or floating MISO) answers
+    // every retry with an invalid R1 (bit7 set) and is declared lost after
+    // 4 s: consumer cards pause the SPI bus for hundreds of milliseconds of
+    // internal maintenance under sustained read load, and the earlier 0.5 s
+    // threshold misdetected those pauses as removal mid-analysis. A card
+    // that answers but withholds the data token — legitimate read recovery
+    // can outlast the SPI engine's 100-byte token window, so CMD17 retries
+    // keep the request outstanding — stays "present" until the absolute 5 s
+    // backstop. Reset only the TF reader, retaining DDR/CNN weights.
+    wire last_r1_invalid = reader_debug_cmdrsp[7];
+    wire reader_fault = card_read_wait == HOTPLUG_TIMEOUT_CYCLES ||
+                        card_stall_wait == HOTPLUG_STALL_TIMEOUT_CYCLES;
+    assign card_lost = reader_fault;
+    assign hotplug_debug = {filesystem_stat,card_stat,reader_sector_busy,
+                            raw_sector_allow,scan_done,card_lost_seen};
+    wire soft_restart = (restart && !restart_q) | track_change | reader_fault;
+    assign playlist_ready = scan_done;
+
+    // A removed card leaves CMD17 waiting for a data token. Normal sectors
+    // deliver bytes within milliseconds; the two thresholds above decide how
+    // long an outstanding request may persist per failure class. Reset only
+    // the TF reader, retaining DDR/CNN weights.
+    always @(posedge clk_50m or negedge reset_n) begin
+        if (!reset_n) begin
+            card_read_wait <= 0;
+            card_stall_wait <= 0;
+            reader_reset_count <= 0;
+            card_lost_seen <= 0;
+        end else begin
+            if (reader_fault) card_lost_seen <= 1'b1;
+            if (reader_reset_count != 0) reader_reset_count <= reader_reset_count - 1'b1;
+            else if (reader_fault) reader_reset_count <= 4'd8;
+            // A CMD17 request must finish as a whole. Data-byte activity is
+            // not completion: a floating/removed card can otherwise keep
+            // resetting this watchdog forever while `sector_busy` stays high.
+            if (!reader_rst_n || !reader_sector_busy || card_stat < 4'd8) begin
+                card_read_wait <= 0;
+                card_stall_wait <= 0;
+            end else if (!reader_fault) begin
+                if (last_r1_invalid) card_read_wait <= card_read_wait + 1'b1;
+                else card_read_wait <= 0;
+                card_stall_wait <= card_stall_wait + 1'b1;
+            end
+        end
+    end
 
     assign raw_track_start = raw_track_start_r;
     assign card_ready = (card_stat == 4'd8) || (card_stat == 4'd9);
@@ -88,7 +150,7 @@ module tf_audio_ddr_path #(
         .SPI_CLK_DIV      (100),
         .SPI_CLK_DIV_FAST (12)
     ) u_file_reader (
-        .rstn            (reset_n),
+        .rstn            (reader_rst_n),
         .clk             (clk_50m),
         .spi_ssn         (sd_cs_n),
         .spi_sck         (sd_sck),
@@ -99,6 +161,7 @@ module tf_audio_ddr_path #(
         .filesystem_type (filesystem_type),
         .filesystem_stat (filesystem_stat),
         .scan_done       (scan_done),
+        .sector_busy     (reader_sector_busy),
         .track_count     (track_count),
         .track_index     (track_index),
         .track_start     (raw_track_start),
@@ -107,13 +170,13 @@ module tf_audio_ddr_path #(
         .sector_allow    (raw_sector_allow),
         .outen           (file_valid),
         .outbyte         (file_byte),
-        .name_raddr      (8'd0),
-        .name_rdata      (),
+        .name_raddr      (playlist_name_addr),
+        .name_rdata      (playlist_name_data),
         .debug_cmdrsp    (reader_debug_cmdrsp),
         .debug_rwrsp     (reader_debug_rwrsp),
         .debug_cardstate (reader_debug_cardstate),
         .debug_spidone   (),
-        .debug_rvalid_session()
+        .debug_rvalid_session(reader_debug_rvalid_session)
     );
 
     always @(posedge clk_50m or negedge reset_n) begin
@@ -124,7 +187,7 @@ module tf_audio_ddr_path #(
             file_size_latched <= 32'd0;
             capture_done_toggle <= 1'b0;
             restart_toggle <= 1'b0;
-            track_index_q <= track_index;
+            track_index_q <= 4'd0;
             restart_q <= 1'b0;
             capture_switch_hold <= 1'b0;
             capture_switch_seen_low <= 1'b0;
@@ -184,7 +247,8 @@ module tf_audio_ddr_path #(
         .rd_empty     (in_empty),
         .rd_count     (in_rd_count)
     );
-    assign raw_sector_allow = in_space_ok;
+    assign raw_sector_allow = in_space_ok &&
+                              (!CAPTURE_ON_ANALYSIS || capture_enable_i);
 
     wire out_full, out_empty, out_rd_en, out_rd_valid;
     wire [12:0] out_wr_count, out_rd_count;
@@ -287,6 +351,9 @@ module tf_audio_ddr_path #(
     reg [15:0] decoder_first_word;
     wire decoder_ready;
     wire decoder_valid = playback_active && out_rd_valid;
+    assign pcm_end = file_size_latched != 0 &&
+                     decoder_byte_count >= file_size_latched &&
+                     !playback_active && !pcm_valid;
     wire [7:0] decoder_byte = out_rd_data;
     wire [12:0] playback_fill_target =
         (file_size_valid_sync && file_size_sync_ui < 32'd1024) ?

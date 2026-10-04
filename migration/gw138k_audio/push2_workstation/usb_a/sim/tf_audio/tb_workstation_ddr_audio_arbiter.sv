@@ -4,11 +4,16 @@ module tb_workstation_ddr_audio_arbiter;
     reg reset_n=0;
     reg scan_valid=0,display_valid=0,writer_valid=0,cpu_valid=0,cpu_write=0;
     reg audio_valid=0,audio_write=0;
+    reg music_valid=0,music_write=0;
     reg [28:0] scan_address=0,display_address=0,writer_address=0,cpu_address=0,audio_address=0;
     reg [255:0] writer_data=0,cpu_data=0,audio_data=0;
+    reg [28:0] music_address=0;
+    reg [255:0] music_data=0;
+    reg [31:0] music_mask=32'hffff_ffff;
     reg [31:0] cpu_mask=0;
     wire scan_ready,scan_response,display_ready,display_response,writer_ready;
     wire cpu_ready,cpu_response,audio_ready,audio_response;
+    wire music_ready,music_response;
     wire [2:0] app_cmd;wire app_en,app_wren,app_wend;
     wire [28:0] app_address;wire [255:0] app_data;wire [31:0] app_mask;
     reg app_response=0;wire fault;
@@ -22,6 +27,9 @@ module tb_workstation_ddr_audio_arbiter;
         .display_ready(display_ready),.display_response(display_response),
         .audio_valid(audio_valid),.audio_write(audio_write),.audio_address(audio_address),
         .audio_data(audio_data),.audio_ready(audio_ready),.audio_response(audio_response),
+        .music_valid(music_valid),.music_write(music_write),.music_address(music_address),
+        .music_data(music_data),.music_mask(music_mask),
+        .music_ready(music_ready),.music_response(music_response),
         .writer_valid(writer_valid),.writer_address(writer_address),.writer_data(writer_data),
         .writer_ready(writer_ready),.cpu_valid(cpu_valid),.cpu_write(cpu_write),
         .cpu_address(cpu_address),.cpu_data(cpu_data),.cpu_mask(cpu_mask),
@@ -34,7 +42,7 @@ module tb_workstation_ddr_audio_arbiter;
         input integer owner;
         begin
             #1;
-            if(audio_response!==(owner==4) || scan_response!==(owner==1) ||
+            if(audio_response!==(owner==4) || music_response!==(owner==5) || scan_response!==(owner==1) ||
                display_response!==(owner==0) || cpu_response!==(owner==2))
                 $fatal(1,"wrong response routing owner=%0d A/S/D/C=%b%b%b%b",
                        owner,audio_response,scan_response,display_response,cpu_response);
@@ -56,20 +64,31 @@ module tb_workstation_ddr_audio_arbiter;
             $fatal(1,"audio write not accepted");
         @(negedge clk);audio_valid=0;audio_write=0;
 
-        // Queue audio, scanout, display and CPU reads in that order.
+        // A halfword music write keeps all other DDR bytes masked.
+        music_valid=1;music_write=1;music_address=29'h04040000;
+        music_data[15:0]=16'hbeef;music_mask=32'hffff_fffc;
+        #1;if(!music_ready || !app_wren || app_address!=music_address ||
+              app_mask!=music_mask || app_data[15:0]!=16'hbeef)
+            $fatal(1,"music masked write not accepted");
+        @(negedge clk);music_valid=0;music_write=0;
+
+        // Queue audio, scanout, display, music and CPU reads in that order.
         audio_valid=1;audio_address=29'h0060008;
         #1;if(!audio_ready || app_address[2:0]!=0)$fatal(1,"audio read/alignment");
         @(negedge clk);audio_valid=0;scan_valid=1;scan_address=29'h0000008;
         #1;if(!scan_ready)$fatal(1,"scan read");
         @(negedge clk);scan_valid=0;display_valid=1;display_address=29'h0200008;
         #1;if(!display_ready)$fatal(1,"display read");
-        @(negedge clk);display_valid=0;cpu_valid=1;cpu_address=29'h0400000;
+        @(negedge clk);display_valid=0;music_valid=1;music_address=29'h04040008;
+        #1;if(!music_ready)$fatal(1,"music read");
+        @(negedge clk);music_valid=0;cpu_valid=1;cpu_address=29'h0400000;
         #1;if(!cpu_ready)$fatal(1,"cpu read");
         @(negedge clk);cpu_valid=0;
 
         pulse_response(4);
         pulse_response(1);
         pulse_response(0);
+        pulse_response(5);
         pulse_response(2);
 
         // Simultaneous requests prove scanout priority, then audio priority.
@@ -78,8 +97,23 @@ module tb_workstation_ddr_audio_arbiter;
         @(negedge clk);scan_valid=0;
         #1;if(!audio_ready)$fatal(1,"audio priority below scanout");
         @(negedge clk);audio_valid=0;
+        // Continuous audio requests must grant the waiting music client next.
+        @(negedge clk);audio_valid=1;music_valid=1;
+        #1;if(!audio_ready || music_ready)$fatal(1,"audio first turn");
+        @(negedge clk);
+        #1;if(!music_ready || audio_ready)$fatal(1,"music starved by audio");
+        @(negedge clk);music_valid=0;
+        #1;if(!audio_ready)$fatal(1,"audio did not resume");
+        @(negedge clk);audio_valid=0;
+        @(negedge clk);display_valid=1;music_valid=1;
+        #1;if(!display_ready || music_ready)$fatal(1,"display first turn");
+        @(negedge clk);
+        #1;if(!music_ready || display_ready)$fatal(1,"music starved by display");
+        @(negedge clk);music_valid=0;
+        #1;if(!display_ready)$fatal(1,"display did not resume");
+        @(negedge clk);display_valid=0;
         if(fault)$fatal(1,"unexpected response fault");
-        $display("PASS tb_workstation_ddr_audio_arbiter: tagged audio write/read and scan priority");
+        $display("PASS tb_workstation_ddr_audio_arbiter: audio/music masked writes, tagged responses, scan priority");
         $finish;
     end
 endmodule

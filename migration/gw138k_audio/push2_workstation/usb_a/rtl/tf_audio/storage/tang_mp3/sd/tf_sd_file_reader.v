@@ -42,7 +42,8 @@ module tf_sd_file_reader #(
                                       // source of an audible 2-3 Hz tick (see bringup log).
                                       // 2.25 MHz still moves ~281 KB/s, against 64 KB/s for
                                       // 32 kHz mono WAV and only 40 KB/s for 320 kbps MP3.
-    parameter MAX_TRACKS       = 16
+    parameter MAX_TRACKS       = 16,
+    parameter [25:0] PROBE_INTERVAL_CYCLES = 26'd50_000_000
 ) (
     input  wire        rstn,
     input  wire        clk,
@@ -57,6 +58,7 @@ module tf_sd_file_reader #(
     output wire [1:0]  filesystem_type,
     output wire [2:0]  filesystem_stat,   // = FSM state, see localparams
     output wire        scan_done,         // playlist valid, ready to play
+    output wire        sector_busy,
     output reg  [4:0]  track_count,
     // track control
     input  wire [3:0]  track_index,
@@ -98,7 +100,6 @@ reg [1:0] filesystem = UNASSIGNED;
 
 assign filesystem_type = filesystem;
 assign filesystem_stat = filesystem_state;
-assign scan_done       = (filesystem_state == READY) || (filesystem_state == READ_A_FILE);
 
 //----------------------------------------------------------------------------------------------------------------------
 // sector reader (vendor, dual-rate SPI mod)
@@ -362,6 +363,11 @@ end
 //----------------------------------------------------------------------------------------------------------------------
 reg       start_req = 1'b0;
 reg [3:0] req_idx   = 0;
+// Poll sector 0 while idle. The card socket has no detect pin; a missing
+// card leaves CMD17 without a data token, which the outer path times out.
+reg [25:0] probe_timer;
+reg probe_pending;
+reg [31:0] probe_resume_sector;
 
 //----------------------------------------------------------------------------------------------------------------------
 // main FSM (skeleton from vendor sd_spi_file_reader)
@@ -391,6 +397,9 @@ function [2:0] log2cs(input [7:0] v);
     endcase
 endfunction
 reg        inflight = 1'b0;
+assign scan_done       = ((filesystem_state == READY) ||
+                          (filesystem_state == READ_A_FILE)) && !ncopy_active;
+assign sector_busy     = inflight || probe_pending;
 reg        load_track;                // pulse: clear fptr
 
 wire [ 6:0] curr_cluster_fat_offset;        // FAT32: 128 entries/sector
@@ -427,6 +436,9 @@ always @(posedge clk or negedge rstn) begin
         load_track <= 1'b0;
         start_req  <= 1'b0;
         req_idx    <= 0;
+        probe_timer <= 0;
+        probe_pending <= 1'b0;
+        probe_resume_sector <= 0;
     end else begin
         read_start <= 1'b0;
         eof        <= 1'b0;
@@ -437,9 +449,17 @@ always @(posedge clk or negedge rstn) begin
             req_idx   <= track_index;
         end
 
+        if ((filesystem_state != READY && filesystem_state != READ_A_FILE) ||
+            probe_pending) probe_timer <= 0;
+        else if (probe_timer != PROBE_INTERVAL_CYCLES) probe_timer <= probe_timer + 1'b1;
+
         if (read_done) begin
             inflight <= 1'b0;
-            case (filesystem_state)
+            if (probe_pending) begin
+                probe_pending <= 1'b0;
+                read_sector_no <= probe_resume_sector;
+            end
+            else case (filesystem_state)
             SEARCH_MBR :    if (is_boot_sector) begin
                                 filesystem_state <= SEARCH_DBR;
                                 if (~is_dbr) read_sector_no <= dbr_sector_no;
@@ -556,12 +576,16 @@ always @(posedge clk or negedge rstn) begin
         end else begin
             case (filesystem_state)
                 RESET         : filesystem_state <= SEARCH_MBR;
-                SEARCH_MBR    : begin read_start <= 1'b1; inflight <= 1'b1; end
-                SEARCH_DBR    : begin read_start <= 1'b1; inflight <= 1'b1; end
-                LS_ROOT_FAT16 : begin read_start <= 1'b1; inflight <= 1'b1; end
-                LS_ROOT_FAT32 : begin read_start <= 1'b1; inflight <= 1'b1; end
-                READY         : if (start_req) begin
+                SEARCH_MBR    : if (!inflight && card_stat == 4'd8) begin read_start <= 1'b1; inflight <= 1'b1; end
+                SEARCH_DBR    : if (!inflight && card_stat == 4'd8) begin read_start <= 1'b1; inflight <= 1'b1; end
+                LS_ROOT_FAT16 : if (!inflight && card_stat == 4'd8) begin read_start <= 1'b1; inflight <= 1'b1; end
+                LS_ROOT_FAT32 : if (!inflight && card_stat == 4'd8) begin read_start <= 1'b1; inflight <= 1'b1; end
+                READY         : if (start_req && !probe_pending) begin
                                     start_req <= 1'b0;
+                                    // Never address an unpopulated playlist entry.
+                                    if ({1'b0,req_idx} >= track_count) begin
+                                        playing <= 1'b0; eof <= 1'b1; file_size <= 0;
+                                    end else begin
                                     curr_cluster = cluster_ram[req_idx];
                                     file_size <= size_ram[req_idx];
                                     cluster_sector_offset = 8'h0;
@@ -569,8 +593,35 @@ always @(posedge clk or negedge rstn) begin
                                     load_track <= 1'b1;
                                     playing    <= 1'b1;
                                     filesystem_state <= READ_A_FILE;
+                                    end
+                                end else if (!probe_pending && !track_start &&
+                                             probe_timer == PROBE_INTERVAL_CYCLES &&
+                                             card_stat == 4'd8) begin
+                                    probe_resume_sector <= read_sector_no;
+                                    read_sector_no <= 32'd0;
+                                    read_start <= 1'b1;
+                                    inflight <= 1'b1;
+                                    probe_pending <= 1'b1;
                                 end
-                READ_A_FILE   : if (inflight || search_fat || sector_allow) begin
+                READ_A_FILE   : if (!inflight && start_req) begin
+                                    playing <= 1'b0;
+                                    search_fat <= 1'b0;
+                                    filesystem_state <= READY;
+                                end else if (!inflight && !search_fat && !sector_allow &&
+                                   !start_req && !probe_pending &&
+                                   probe_timer == PROBE_INTERVAL_CYCLES &&
+                                   card_stat == 4'd8) begin
+                                    // The decoder may stop consuming after its
+                                    // bounded analysis window.  Keep checking
+                                    // the card while the file reader is paused.
+                                    probe_resume_sector <= read_sector_no;
+                                    read_sector_no <= 32'd0;
+                                    read_start <= 1'b1;
+                                    inflight <= 1'b1;
+                                    probe_pending <= 1'b1;
+                                end else if (!inflight && !probe_pending &&
+                                             card_stat == 4'd8 &&
+                                             (search_fat || sector_allow)) begin
                                     read_start <= 1'b1;
                                     inflight   <= 1'b1;
                                 end
@@ -611,7 +662,8 @@ always @(posedge clk or negedge rstn) begin
         if (load_track) begin
             fptr <= 0;
             {outen, outbyte} <= 0;
-        end else if (rvalid && filesystem_state == READ_A_FILE && ~search_fat && fptr < file_size) begin
+        end else if (rvalid && filesystem_state == READ_A_FILE &&
+                     !probe_pending && ~search_fat && fptr < file_size) begin
             fptr <= fptr + 1;
             {outen, outbyte} <= {1'b1, rdata};
         end else begin

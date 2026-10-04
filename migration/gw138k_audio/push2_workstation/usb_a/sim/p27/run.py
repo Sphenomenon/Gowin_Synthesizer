@@ -24,6 +24,7 @@ commands=[
  ('services_sim',[str(out/'services_obj/Vtb_p27_services')]),
  ('audio_compile',['verilator','--binary','--timing','-j','4','-Wno-fatal','--top-module','tb_p27_audio',
     '--Mdir',str(out/'audio_obj'),'-I'+str(project),'-I'+str(project/'src/usb_a'),
+    '-I'+str(project/'rtl/music'),
     *map(str,audio_sources),str(tests['tb_p27_audio.sv'])]),
  ('audio_sim',[str(out/'audio_obj/Vtb_p27_audio')])]
 inputs=set([Path(__file__),*tests.values(),*audio_sources,project/'src/push2/push2_controls.sv',

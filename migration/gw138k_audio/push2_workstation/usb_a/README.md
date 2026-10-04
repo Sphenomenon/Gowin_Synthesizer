@@ -1,5 +1,28 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-10-03 TF 曲目清单与 Push 2 指引
+
+TF 直读核已提取 FAT16/FAT32 根目录中的 8.3 短文件名（最多 16 首）。Play 打开 Push 2 歌曲清单，Left/Right 浏览，Select 选曲并启动 TF→CNN；演奏页显示曲名和进度，按对当前亮起的 pad 才推进。合成器发声与三种效果仍可用。0x58 已上板，模型和 Push USB/屏幕传输工作；实体选曲与进度效果仍待确认，模型上传也出现过一次 DDR 回读 CRC 失败。详见 [实现与板测边界](reports/TF_PUSH_SONG_SELECTION_20261003.md)。
+
+## 2026-10-02 TF 示波器音乐播放入口（离线候选）
+
+Session 切 TF 模式，New 暂停/继续，Duplicate 从头播放，Left/Right 切曲；Select 保留现场几何 voice 入口。HDMI 改为采集最终 DAC 左右声道并使用直接 X-Y 投影，覆盖 TF 和合成器两个输出源。TF 模式不受 Basic Pitch PCM 背压影响，退出不自动被 TF monitor 重新覆盖。完整综合仍为 **234/340 BSRAM**，接入、原控制与 WAV 回归通过；未 P&R/下载/板测。开源 MIT 曲目已在仓库外生成并校验，当前未检测到读卡器，因此尚未实际写入 TF。详见 [播放入口与验证](reports/TF_SCOPE_PLAYBACK_20261002.md) 和 [卡外素材/复制工具](tools/tf_scope_media/README.md)。
+
+## 2026-10-02 Basic Pitch 与示波器音乐引擎合并（离线候选）
+
+以 Basic Pitch 已合入的完整 workstation 为基线，补齐示波器模式的 DAC 输出优先权：现场 X→L/Y→R、静音和 PANIC 不再被 TF monitor 覆盖，TF→识别继续运行。帧边界切换使用功放 shutdown 保护；修复 PANIC 取消效果帧后遗留的 inflight 状态。完整综合 **234/340 BSRAM**，与识别合并基线相同；矢量原有 5 个 TB、新增 2 个并行/串行 TB、P10/P27 和 DDR 回归通过。新候选未 P&R、未上板且时序未闭合，不能沿用原 0x4D 板测结论。见 [本次合并及验证](reports/SCOPE_VEC_BASIC_PITCH_MERGE_20261002.md) 和 [原 Basic Pitch 接入记录](reports/WORKSTATION_BASIC_PITCH_INTEGRATION_20261002.md)。
+
+## 2026-10-01 BSRAM 优化汇总与最新离线工作站
+
+`git pull --ff-only` 已完成，远端 main 没有新提交。已检查另一会话 9 月 30 日的 CNN/CQT 全 DDR 优化：独立识别镜像 P&R 43 BSRAM（SYN 23），当时其识别核尚未接入完整工作站，不能作为工作站节省数。该次完整工作站综合为 **228/340 BSRAM**，包括 TF WAV/FAT/SPI、DDR 双 bank、矢量引擎、USB、HDMI、AE350 和 P10 效果；回归通过，尚未 P&R、闭合时序或上板。资源层级、适用范围与接入冲突见 [优化汇总](reports/WORKSTATION_BSRAM_REVIEW_20261001.md)。
+
+`build.py` 现于成功构建后强制生成 `workstation_memory.json`，只在完整顶层资源审计通过后更新 latest。`LATEST_WORKSTATION.json` 明确区分离线 SYN 候选与硬件验证状态。
+
+## 2026-09-30 矢量示波器音乐引擎（离线候选）
+
+8 voice 几何波表、默认 X→L/Y→R 精确干声、SVG/参数方程编译器与 45 秒控制场景已接入 `build.py`。5 个独立 TB、P10/P27 回归和 Gowin 综合通过；没有上板、P&R 或 UserCode 分配。扫描率限制 2000 Hz，SYN 时序仍待后续闭合。入口、映射、审计与定量证据见 [矢量引擎说明](rtl/audio/scope_vec/README.md) 和 [验证记录](rtl/audio/scope_vec/VERIFICATION.md)。
+
+
 ## 2026-09-28 TF/FAT 音频、动态 DDR 双 bank 与地址表整合
 
 当前 workstation 已纳入自包含的 micro-SD FAT16/FAT32 reader、WAV/MP3/FLAC decoder 和两个 64 MiB 音频 DDR bank。超过 128 MiB 的文件采用读后释放、动态回收的环形流，不以 128 MiB 静默回绕；32-bit 文件计数达到极限会明确报错。TF 产生有效 PCM 时才接管耳机，断流后自动回到原合成器。构建一次只展开一种 decoder：`build.py --tf-audio-kind wav|mp3|flac`。
@@ -164,7 +187,7 @@ P13 已完成共享 DDR → HDMI reader → Push 64 位摘要 mailbox 的 RTL、
 
 ## 操作映射
 
-| Push 操作 | 合成器功能 |
+| Push 操作 | 功能 |
 |---|---|
 | 64 垫，Note 36–99 | 音符/力度；按住不重复触发，松开或速度 0 释放 |
 | 触摸条 Pitch Bend | 弯音；触摸条松开 Note 12 Off 回中心 |
@@ -175,7 +198,9 @@ P13 已完成共享 DDR → HDMI reader → Push 64 位摘要 mailbox 的 RTL、
 | CC 27 或 29 | 硬 PANIC：立即清声部与效果尾音 |
 | CC 28 | 效果总开关；重新打开恢复原选择与串行顺序 |
 | CC 62 / 63 | A/B/C 模式向前 / 向后循环 |
-| CC 85 Play | 启动 / 停止既有 LED-only 曲谱 |
+| CC 85 Play | 进入 / 退出 TF 曲目指引模式 |
+| 指引模式下 CC 44 / 45 | 歌曲清单向前 / 向后浏览 |
+| 指引模式下 CC 48 Select | 选择歌曲；演奏页返回清单 |
 | CC 86 Record | 开启 / 关闭既有有界 recorder |
 | 旋钮 CC 71 或 79 | 音量；有符号相对增量，范围钳位 |
 | 旋钮 CC 72 / 73 | 颤音 / 滑音 |
@@ -201,7 +226,7 @@ python3 migration/gw138k_audio/push2_workstation/usb_a/sim/p23/run.py <新构建
 python3 migration/gw138k_audio/push2_workstation/usb_a/audit.py <新构建目录>
 ```
 
-本地 `LATEST_BUILD.txt` 指向最新构建尝试，但不进入 Git。必须结合结果目录的 `tool_result.json` 和 `usb_a_audit.json` 判断是否通过，不能只看指针。所有新构建结果初始都带 `hardware_tested:false`。
+本地 `LATEST_BUILD.txt` 指向最近成功构建且通过完整顶层资源审计的结果，不进入 Git；准备阶段和失败构建不覆盖它。`LATEST_WORKSTATION.json` 记录 build mode、BSRAM 统计阶段、TF profile 和硬件状态。仍须结合 `tool_result.json`、`workstation_memory.json` 及对应 routed audit 判断验证范围；SYN 成功不代表 P&R 时序或实体通过。所有新构建结果初始都带 `hardware_tested:false`。
 
 - MMIO/CDC 仿真：450 个事件按序通过，1746 个等待周期，覆盖 64 垫、零速度松键、通道/端口过滤、模式/音色/效果/声道/旋钮/触摸条；LED 不 ACK 时不阻塞音频事件；输出 960×160 像素并验证行填充。
 - Vex 实际执行测试固件 → 真正 SoC 寄存器总线 → 既有合成器：3696 帧 PCM，其中 3574 帧非零；A/B/C、五音色、三效果、表达/声道路由/松音通过，帧间隔始终 1600 周期，音频错误计数为 0。AE350 总线时钟全程停止。

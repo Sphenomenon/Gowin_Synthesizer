@@ -1,0 +1,157 @@
+{
+  "date": "2026-10-02",
+  "build": "results/build_20261002_112428_408291",
+  "baseline_build": "results/build_20261001_222442_709782",
+  "top": "gw138k_push_workstation_top",
+  "passed": true,
+  "build_mode": "synthesis_only",
+  "hardware_tested": false,
+  "pnr_performed": false,
+  "timing_closed": false,
+  "basic_pitch_elaborated": true,
+  "scope_vector_elaborated": true,
+  "tf_decoder": "wav",
+  "bsram_synthesis": 234,
+  "bsram_capacity": 340,
+  "remaining_at_synthesis": 106,
+  "scope_dac_selector_bsram": 0,
+  "basic_pitch_preserved_files": 70,
+  "source_equivalence": "results/build_20261002_112428_408291/merge_checks/preserved_inputs.json",
+  "metrics": {
+    "dac_synth_pairs": 4231,
+    "dac_tf_pairs": 152,
+    "dac_min_bck_pulse_cycles": 12,
+    "dac_max_handover_cycles": 28729,
+    "coexist_deadline_misses": 0,
+    "coexist_analysis_samples": 1683,
+    "coexist_vector_frames": 782,
+    "coexist_muted_frames": 200,
+    "coexist_xy_observation_frames": 775
+  },
+  "synthesis_clock_estimates": [
+    {
+      "clock": "clk_50m",
+      "required_mhz": 50.0,
+      "synthesis_estimated_mhz": 52.876,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 76.8,
+      "synthesis_estimated_mhz": 50.933,
+      "estimate_meets_requirement": false
+    },
+    {
+      "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 48.0,
+      "synthesis_estimated_mhz": 42.75,
+      "estimate_meets_requirement": false
+    },
+    {
+      "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+      "required_mhz": 400.0,
+      "synthesis_estimated_mhz": 1487.018,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 50.0,
+      "synthesis_estimated_mhz": 352.734,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+      "required_mhz": 100.0,
+      "synthesis_estimated_mhz": 1617.337,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+      "required_mhz": 100.0,
+      "synthesis_estimated_mhz": 223.924,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+      "required_mhz": 148.5,
+      "synthesis_estimated_mhz": 201.471,
+      "estimate_meets_requirement": true
+    }
+  ],
+  "vector_cycles": {
+    "max_cycles": 115,
+    "workstation_max_cycles": 1067
+  },
+  "note_69": {
+    "target_hz": 440.0,
+    "phase_step_hz": 440.0000050663948,
+    "measured_hz": 440.0000040673053,
+    "error_hz": 4.067305326316273e-06,
+    "periodic_hann_n2048": {
+      "far_peak_dbc": -38.723713174960025,
+      "outside_power_db": -38.578835300693626
+    }
+  },
+  "antialias": {
+    "69": {
+      "raw": {
+        "far_peak_dbc": -38.266921372045175,
+        "outside_power_db": -34.699304285695305,
+        "h13_fold_or_removed_peak_dbc": -44.75486361118698
+      },
+      "smooth": {
+        "far_peak_dbc": -47.38470407082869,
+        "outside_power_db": -45.60576684030877,
+        "h13_fold_or_removed_peak_dbc": -108.46065089940336
+      },
+      "h13_suppression_db": 63.705787288216385
+    },
+    "95": {
+      "raw": {
+        "far_peak_dbc": -39.028870911735225,
+        "outside_power_db": -34.145048618098855,
+        "h13_fold_or_removed_peak_dbc": -44.42539428548543
+      },
+      "smooth": {
+        "far_peak_dbc": -42.33652555653666,
+        "outside_power_db": -41.31258391546172,
+        "h13_fold_or_removed_peak_dbc": -107.32382616779117
+      },
+      "h13_suppression_db": 62.89843188230574
+    }
+  },
+  "verification": "results/build_20261002_112428_408291/merge_checks/final_verification.json",
+  "operations": {
+    "programmer": 0,
+    "sram_flash": 0,
+    "usercode_allocated": false,
+    "git_commit": false,
+    "pcm_audio_files_created": 0
+  },
+  "limits": [
+    "CNN arithmetic and 172-frame recognition not rerun",
+    "New physical DAC switching not measured",
+    "Prior shared-root audio files preserved",
+    "SYN clocks below required audio/USB frequency"
+  ],
+  "source_sha256": {
+    "build.py": "48ea0e1d4279429250a6858dd3152df1e87d6b3a14f21a22d7119aa653c61c00",
+    "tools/workstation_memory.py": "e8b91b656c8c235bc9f7e08eb87cdf1504ea7a20f094d16602baf58a455aef92",
+    "rtl/audio/gw138k_event_workstation.sv": "259afb4d35992c53200251f356f598d4d25a509cffebdec27846142dd2b8e3ae",
+    "rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+    "sim/scope_vec/run_merge.py": "a79172eb1152969aa493605e4d25e3ae705a01741dff4e9b70cf3231cd8d8753",
+    "sim/scope_vec/tb_scope_tf_coexist.sv": "b7de5037994b7581e1ed18d6fd79102b1c2f35f877550b41af701b4cd2ad6bb9",
+    "sim/scope_vec/tb_scope_dac_select.sv": "90e2d6c0b3d123fbffc71203c21c49611698cb5ca866c9cfa8392c15666a5f0c",
+    "sim/scope_vec/tf_decoder_endpoint.sv": "3bb5b71fec61f09da10750800687c3e6f70f1c79d186c4889b98ae0d8d1d3990",
+    "sim/p27/run.py": "9a0e997ff50b24586e11250f35a254dd87e88b78cf0e88239216a6ee9938e477",
+    "README.md": "1aea81a7ce36fc18c3d444846ac0f006cfbf21a3425d38c9447e6139d0b688c2",
+    "rtl/audio/scope_vec/README.md": "e117a4e015d8504106bdb90a2c547cb42c8c55eac02a33f01c9db781eec1e2ca"
+  },
+  "evidence_sha256": {
+    "reports/SCOPE_VEC_BASIC_PITCH_MERGE_20261002.md": "e616c8e53988e696d1c0d932883ebf09a2bae3bc8ee88898d37a86caa460d684",
+    "results/build_20261002_112428_408291/tool_result.json": "4a85458c8a40999de5351f0ba3901bd7bff8bc998f374d4fa54f12471f5406b9",
+    "results/build_20261002_112428_408291/workstation_memory.json": "f33e5d6f63cf6add8ed94bdb20289e4156f7dbf40ff98669ed24cd44bbc06e67",
+    "results/build_20261002_112428_408291/merge_checks/final_verification.json": "fa092affa2cd0424b46586b340b2717d3bd89ff00e404e1d0d839e3d69c1c035",
+    "results/build_20261002_112428_408291/merge_checks/preserved_inputs.json": "b9e9a0a194425ea22642223f5972279bfbe0ab986381f2eba9d734e3d7ae306b"
+  }
+}

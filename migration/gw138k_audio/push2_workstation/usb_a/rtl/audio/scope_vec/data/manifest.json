@@ -1,0 +1,26 @@
+{
+  "schema": "scope-geometry-rom-v1",
+  "coordinate_format": "signed16 X then signed16 Y; normalized closed phase contour",
+  "shape_count": 8,
+  "points_per_shape": 512,
+  "path_bytes": 16384,
+  "harmonics": 8,
+  "maximum_scan_hz": 2000,
+  "guard_hz": 20000,
+  "cue_count": 69,
+  "cue_format": "absolute sample timestamp[63:32], zero[31:18], MIDI control[17:0]",
+  "inputs": {
+    "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/tools/scope_score/geometry.json": "96de0064842a3adbb6dfb603f150349f89c10c0980492706fe55d1a5c379297d",
+    "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/tools/scope_score/demo_scene.json": "cc8d1f055ef8bd15797271a7b1c9ca8c0bcc3a6f0cca2bfe29766258f5890cfa",
+    "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/tools/scope_score/compile_scope.py": "012269337db663610daafaac7b7740080588e9c31b0913d23335acbd11c72a51"
+  },
+  "contains_pcm_audio": false,
+  "audio_payloads": 0,
+  "artifacts": {
+    "paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+    "scene.json": "cc8d1f055ef8bd15797271a7b1c9ca8c0bcc3a6f0cca2bfe29766258f5890cfa",
+    "scene_controls.mem": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c",
+    "note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+    "rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc"
+  }
+}

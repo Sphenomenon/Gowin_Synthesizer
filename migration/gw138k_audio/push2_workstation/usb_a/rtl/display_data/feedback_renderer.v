@@ -116,7 +116,7 @@ module feedback_renderer #(
     wire [8:0] spectrum_column=next_x>=64 && next_x<1088 ? spectrum_offset[9:1] : 9'd0;
     wire [10:0] image_x=issue_x-11'd1248, image_y=issue_y-11'd224;
     generate if(ENABLE_ANALYSIS) begin : g_analysis
-        output_audio_analysis #(.ASYNC_DISPLAY(1)) u_analysis(.clk(clk),.reset_n(rst_n),
+        output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1)) u_analysis(.clk(clk),.reset_n(rst_n),
             .source_clk(source_clk),.source_reset_n(source_reset_n),.pcm_pair(output_pcm),.sample_valid(sample_valid),
             .release_frame(start && frame_ready && analysis_ready),.ready(analysis_ready),.peak_left(peak_left),.peak_right(peak_right),
             .image_gain(image_gain),.sequence_data(analysis_sequence),.skipped_data(analysis_skipped),

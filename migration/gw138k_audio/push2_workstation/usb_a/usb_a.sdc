@@ -21,3 +21,13 @@ set_false_path -to [get_pins {u_display_push_cdc/req_meta*/D u_display_push_cdc/
 set_max_delay 20.000 -from [get_regs {u_service_push_cdc/held_data*}] -to [get_regs {u_service_push_cdc/destination_data*}]
 set_false_path -hold -from [get_regs {u_service_push_cdc/held_data*}] -to [get_regs {u_service_push_cdc/destination_data*}]
 set_false_path -to [get_pins {u_service_push_cdc/req_meta*/D u_service_push_cdc/ack_meta*/D u_service_push_cdc/source_release*/CLEAR u_service_push_cdc/destination_release*/CLEAR}]
+
+# TF transport state and exact final DAC pairs: acknowledged audio76m8 -> 50m.
+# Release FFs are shared and constrained at u_tf_control_cdc by build.py.
+set_max_delay 20.000 -from [get_regs {u_tf_control_cdc/held_data*}] -to [get_regs {u_tf_control_cdc/destination_data*}]
+set_false_path -hold -from [get_regs {u_tf_control_cdc/held_data*}] -to [get_regs {u_tf_control_cdc/destination_data*}]
+set_false_path -to [get_pins {u_tf_control_cdc/req_meta*/D u_tf_control_cdc/ack_meta*/D}]
+set_max_delay 20.000 -from [get_regs {u_final_output_cdc/held_data*}] -to [get_regs {u_final_output_cdc/destination_data*}]
+set_false_path -hold -from [get_regs {u_final_output_cdc/held_data*}] -to [get_regs {u_final_output_cdc/destination_data*}]
+set_false_path -to [get_pins {u_final_output_cdc/req_meta*/D u_final_output_cdc/ack_meta*/D}]
+set_false_path -to [get_pins {u_tf_audio/hold_meta*/D}]

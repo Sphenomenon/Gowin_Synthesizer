@@ -7,7 +7,8 @@
 // simultaneous BSRAM consumers.
 module tf_workstation_audio_bridge #(
     parameter integer AUDIO_KIND = 2,
-    parameter [23:0] FILE_EXT = "WAV"
+    parameter [23:0] FILE_EXT = "WAV",
+    parameter integer CAPTURE_ON_ANALYSIS = 0
 ) (
     input  wire               clk_50m,
     input  wire               reset_n,
@@ -34,6 +35,20 @@ module tf_workstation_audio_bridge #(
     output wire               ddr_error,
     output wire [31:0]        file_size,
     output wire [4:0]         track_count,
+    output wire               playlist_ready,
+    output wire               card_lost,
+    output wire [10:0]        hotplug_debug,
+    input  wire [7:0]         playlist_name_addr,
+    output wire [7:0]         playlist_name_data,
+    input  wire               playback_hold_i,
+    input  wire               analysis_hold_i,
+    input  wire               analysis_enable_i,
+    input  wire               analysis_pcm_ready_i,
+    output wire               analysis_pcm_valid,
+    output wire               analysis_pcm_end,
+    output wire signed [15:0] analysis_pcm_left,
+    output wire signed [15:0] analysis_pcm_right,
+    output wire [19:0]        analysis_sample_rate,
 
     output wire               ddr_valid,
     output wire               ddr_write,
@@ -43,8 +58,12 @@ module tf_workstation_audio_bridge #(
     input  wire               ddr_response,
     input  wire [255:0]       ddr_response_data
 );
-    wire path_pcm_valid,path_pcm_ready;
+    wire path_pcm_valid,path_pcm_ready,path_pcm_end;
     wire signed [15:0] path_pcm_left,path_pcm_right;
+    assign analysis_pcm_valid = path_pcm_valid && path_pcm_ready && analysis_enable_i;
+    assign analysis_pcm_end = path_pcm_end;
+    assign analysis_pcm_left = path_pcm_left;
+    assign analysis_pcm_right = path_pcm_right;
     wire path_app_wren,path_app_wend;
     wire [2:0] path_app_cmd;
     wire [1:0] card_type,filesystem_type;
@@ -53,6 +72,7 @@ module tf_workstation_audio_bridge #(
     wire scan_done,card_ready,playing,eof,stereo;
     wire [5:0] bits_per_sample;
     wire [19:0] path_sample_rate;
+    assign analysis_sample_rate = path_sample_rate;
     wire path_format_ready,path_unsupported;
     wire bank0_valid,bank1_valid;
     wire [15:0] frame_count,resync_count,skipped_frames,stuck_frames,parity_errors;
@@ -61,22 +81,27 @@ module tf_workstation_audio_bridge #(
     reg restart_q,pcm_clear_toggle;
     reg [3:0] track_index_q;
     always @(posedge clk_50m or negedge reset_n) begin
-        if(!reset_n) begin restart_q<=0;pcm_clear_toggle<=0;track_index_q<=track_index;end
+        if(!reset_n) begin restart_q<=0;pcm_clear_toggle<=0;track_index_q<=4'd0;end
         else begin
             restart_q<=restart;track_index_q<=track_index;
-            if((restart && !restart_q) || track_index!=track_index_q)
+            if((restart && !restart_q) || track_index!=track_index_q || card_lost)
                 pcm_clear_toggle<=~pcm_clear_toggle;
         end
     end
 
     wire pcm_fifo_full,pcm_fifo_empty,pcm_fifo_valid;
     wire signed [15:0] pcm_fifo_left,pcm_fifo_right;
-    assign path_pcm_ready=!pcm_fifo_full;
+    // The score analyzer must keep receiving decoded PCM while TF playback is
+    // hidden from the workstation audio output.
+    assign path_pcm_ready=(!playback_hold_i || analysis_enable_i) &&
+        (playback_hold_i || !pcm_fifo_full) &&
+        (!analysis_hold_i || (analysis_enable_i && analysis_pcm_ready_i));
+    reg hold_meta,hold_sync;
     tf_async_pcm_fifo #(.ADDR_WIDTH(4)) u_pcm_cdc(
         .wr_clk(clk_50m),.wr_rst_n(reset_n),.clear_toggle(pcm_clear_toggle),
-        .wr_en(path_pcm_valid && path_pcm_ready),.wr_left(path_pcm_left),
+        .wr_en(path_pcm_valid && path_pcm_ready && !playback_hold_i),.wr_left(path_pcm_left),
         .wr_right(path_pcm_right),.wr_full(pcm_fifo_full),
-        .rd_clk(audio_clk),.rd_rst_n(audio_reset_n),.rd_en(sample_ce && !pcm_fifo_empty),
+        .rd_clk(audio_clk),.rd_rst_n(audio_reset_n),.rd_en(sample_ce && !hold_sync && !pcm_fifo_empty),
         .rd_valid(pcm_fifo_valid),.rd_left(pcm_fifo_left),.rd_right(pcm_fifo_right),
         .rd_empty(pcm_fifo_empty));
 
@@ -92,13 +117,14 @@ module tf_workstation_audio_bridge #(
             pcm_left<=0;pcm_right<=0;pcm_active<=0;source_active<=0;
             rate_meta<=0;rate_sync<=0;format_meta<=0;format_sync<=0;
             unsupported_meta<=0;unsupported_sync<=0;idle_frames<=0;
-            clear_meta<=0;clear_sync<=0;clear_seen<=0;
+            clear_meta<=0;clear_sync<=0;clear_seen<=0;hold_meta<=0;hold_sync<=0;
         end
         else begin
             clear_meta<=pcm_clear_toggle;clear_sync<=clear_meta;
+            hold_meta<=playback_hold_i;hold_sync<=hold_meta;
             rate_meta<=path_sample_rate;rate_sync<=rate_meta;
             format_meta<=path_format_ready;format_sync<=format_meta;
-            unsupported_meta<=path_unsupported;unsupported_sync<=unsupported_meta;
+            unsupported_meta<=path_unsupported || (scan_done && {1'b0,track_index}>=track_count);unsupported_sync<=unsupported_meta;
             pcm_active<=0;
             if(clear_sync!=clear_seen) begin
                 clear_seen<=clear_sync;pcm_left<=0;pcm_right<=0;
@@ -118,16 +144,22 @@ module tf_workstation_audio_bridge #(
         end
     end
 
-    tf_audio_ddr_path #(.FILE_EXT(FILE_EXT),.AUDIO_KIND(AUDIO_KIND)) u_path(
+    tf_audio_ddr_path #(.FILE_EXT(FILE_EXT),.AUDIO_KIND(AUDIO_KIND),
+        .CAPTURE_ON_ANALYSIS(CAPTURE_ON_ANALYSIS)) u_path(
         .clk_50m(clk_50m),.reset_n(reset_n),.restart(restart),.track_index(track_index),
+        .capture_enable_i(analysis_enable_i),
         .memory_clk(memory_clk),.memory_reset_n(memory_reset_n),.memory_ready(memory_ready),
         .sample_tick(sample_ce),.sd_miso(sd_miso),.sd_cs_n(sd_cs_n),.sd_sck(sd_sck),.sd_mosi(sd_mosi),
         .card_type(card_type),.card_stat(card_stat),.filesystem_type(filesystem_type),
-        .filesystem_stat(filesystem_stat),.scan_done(scan_done),.card_ready(card_ready),
-        .playing(playing),.eof(eof),.track_count(track_count),.format_ready(path_format_ready),
+        .filesystem_stat(filesystem_stat),.scan_done(scan_done),.card_lost(card_lost),
+        .hotplug_debug(hotplug_debug),.card_ready(card_ready),
+        .playing(playing),.eof(eof),.track_count(track_count),
+        .playlist_ready(playlist_ready),.playlist_name_addr(playlist_name_addr),
+        .playlist_name_data(playlist_name_data),.format_ready(path_format_ready),
         .unsupported(path_unsupported),.audio_ddr_error(ddr_error),.audio_bank0_valid(bank0_valid),
         .audio_bank1_valid(bank1_valid),.audio_file_size(file_size),.sample_rate_hz(path_sample_rate),
         .stereo(stereo),.bits_per_sample(bits_per_sample),.pcm_valid(path_pcm_valid),
+        .pcm_end(path_pcm_end),
         .pcm_ready(path_pcm_ready),.pcm_left(path_pcm_left),.pcm_right(path_pcm_right),
         .frame_count(frame_count),.resync_count(resync_count),.skipped_frames(skipped_frames),
         .stuck_frames(stuck_frames),.pcm_fifo_parity_errors(parity_errors),

@@ -1,0 +1,15 @@
+{
+  "samples": [
+    {
+      "file": "reviewed_single_hit.wav",
+      "slot": 0,
+      "owner": 1,
+      "granularity": "single_hit",
+      "reviewed_single_sound": true,
+      "contains_rhythm": false,
+      "contains_melody": false,
+      "contains_arrangement": false,
+      "normalize": true
+    }
+  ]
+}

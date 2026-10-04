@@ -1,0 +1,113 @@
+{
+  "date": "2026-10-01",
+  "recorded_utc": "2026-10-01T06:11:26.638015+00:00",
+  "request": "git pull, review BSRAM optimizations, consolidate latest workstation",
+  "sync": {
+    "command": "git pull --ff-only",
+    "result": "Already up to date.",
+    "branch": "main",
+    "head": "29fd4c305537533b1467754032a2cbba7c8a87a6",
+    "origin_main": "29fd4c305537533b1467754032a2cbba7c8a87a6",
+    "origin_feature_branch": "dbc896bce344cb6a125719ce644cda53f03004b9",
+    "new_commits_pulled": 0
+  },
+  "optimization_source": {
+    "worktree": "/home/sphenicidition/.codex/worktrees/0979/fpga",
+    "branch": "codex/post-p28-product-features",
+    "head": "dbc896bce344cb6a125719ce644cda53f03004b9",
+    "optimization_changes_committed": false,
+    "other_agent_board_reports_only": true,
+    "top": "basic_pitch_tf_board_top",
+    "synthesis_bsram": 23,
+    "routed_bsram": 43,
+    "routed_breakdown": {
+      "ddr_controller": 32,
+      "viterbi": 9,
+      "tf_byte_fifo": 2,
+      "unclassified": 0
+    },
+    "model_16bit_words": 52239,
+    "model_bytes": 104478,
+    "model_crc32": "AF01A61B",
+    "reviewed_evidence_sha256": {
+      "rtl/music/basic_pitch_pcm_pipeline.sv": "41b0eb27cb100257b8386963941680d3dc774d3e5fcf5a2db776756549b839c4",
+      "rtl/music/basic_pitch_ddr_map.svh": "d9e9af1cbb3ef63995a0cfd02be3dd486d29db8cdb17d686e6ad2af41b0075be",
+      "rtl/music/basic_pitch_cqt_engine.sv": "c6f41714ef71f59df5f6cf62fb60fd18911f726c772caf3ee440270afce69ece",
+      "rtl/music/basic_pitch_cqt_frontend.sv": "c534db646aefa081befde8691e08ef19af4d0a3c4d6c4621aa6af5366fb3e847",
+      "rtl/music/basic_pitch_nn_ddr.sv": "f3ec8ec800f28bbd6ccd02ece29a6843635e81d0bd7cd280f59da50c653412a1",
+      "rtl/music/basic_pitch_feature_ddr.sv": "691cdefab79a6f1da81116f9712cf14cb2df76404ddbf17a9af5af919015784b",
+      "rtl/music/basic_pitch_normlog_ddr.sv": "d140dd83ae28b451d472a8f4892eac22eb952d55ea9385f9b14af4929fa46fd2",
+      "rtl/music/basic_pitch_ddr_coeff_pair.sv": "8f4310bf64a962dba8045cf966e2d4db3be1264cdf7550b9cb08237706452f05",
+      "rtl/music/basic_pitch_ddr16_port.sv": "6b0ce974e4081485f24a940e257e5a74daed3b1ce3e80f58b26f7304cae97785",
+      "rtl/music/basic_pitch_uart_model_loader.sv": "36f96581eebc9afb66fb121ae04693218f6520fe4b5a0565ce5bd9a69e8009d5",
+      "rtl/music/basic_pitch_tf_board_top.sv": "9678a174acfd4bde1d7e96cc4d6a999095026c0570c360bd7b7b69caf3ab211d",
+      "rtl/music/weights/cnn_ddr_blob.mem": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf",
+      "reports/BASIC_PITCH_ALL_DDR_BOARD_20260930.md": "36645d3147f98afabce14b16b014a421a90ab834532a30d2e8a944319df157ec",
+      "reports/BASIC_PITCH_43_BSRAM_DDR_BOARD_20260930.md": "9674103c34ef1dfe019acbdd31dc046c712b72d85507f554dc8c382c20dfc50c",
+      "results/link_build_20260930_232850_811615/Prj1/impl/pnr/Prj1.rpt.txt": "683cb77411131fe57d8c6a9fbb9bfb05d35c907c595c8e253d709446344434b9",
+      "results/link_build_20260930_232850_811615/Prj1/impl/pnr/Prj1.vo": "d6bf41be27efdaba6b7b848f59df1903f9611e76dcb8a5f6d72d65fccdbb6d37",
+      "results/link_build_20260930_232850_811615/Prj1/impl/gwsynthesis/Prj1_syn_rsc.xml": "1e8f26e37297c6f0b82aee62a869e03810340ef27cbdc868488b3f73839ac03a",
+      "reports/cqt_all_ddr_final_board_20260930.log": "a68864c9bd918165512fc53aa48eed7f906ab4064cb124d3ba3ff04f507031c3",
+      "reports/nn_all_ddr_final_board_20260930.log": "3e468094d11250c07063733e68065fb9934e2add0cd38f80216988f1035a3411"
+    },
+    "source_matches_final_staged_image": {
+      "rtl/music/basic_pitch_pcm_pipeline.sv": true,
+      "rtl/music/basic_pitch_ddr_map.svh": true,
+      "rtl/music/basic_pitch_cqt_engine.sv": true,
+      "rtl/music/basic_pitch_cqt_frontend.sv": true,
+      "rtl/music/basic_pitch_nn_ddr.sv": true,
+      "rtl/music/basic_pitch_feature_ddr.sv": true,
+      "rtl/music/basic_pitch_normlog_ddr.sv": true,
+      "rtl/music/basic_pitch_ddr_coeff_pair.sv": true,
+      "rtl/music/basic_pitch_ddr16_port.sv": true,
+      "rtl/music/basic_pitch_uart_model_loader.sv": true,
+      "rtl/music/basic_pitch_tf_board_top.sv": true
+    }
+  },
+  "latest_workstation": {
+    "build": "results/build_20261001_140130_744482",
+    "top": "gw138k_push_workstation_top",
+    "synthesis_bsram": 228,
+    "capacity": 340,
+    "remaining_at_synthesis": 112,
+    "tf_profile": "wav",
+    "basic_pitch_elaborated": false,
+    "memory_report": "results/build_20261001_140130_744482/workstation_memory.json",
+    "checks": "results/build_20261001_140130_744482/integration_checks/verification.json",
+    "stage": "synthesis_only",
+    "timing_closed": null,
+    "hardware_tested": false,
+    "memory_audit_tests": "results/build_20261001_140130_744482/integration_checks/memory_audit_verification.json"
+  },
+  "applied": [
+    "Current main already includes TF/FAT/DDR ring optimization; retained instead of older standalone player.",
+    "Added mandatory hierarchical full-workstation BSRAM audit after successful synthesis; capacity overrun and missing features fail explicitly.",
+    "Latest pointer is published only after successful immutable build and memory audit, with explicit synthesis-only metadata.",
+    "Consolidated other-worktree optimization evidence with source/report hashes and verified physical RAM instance counts."
+  ],
+  "not_imported": [
+    "Standalone Basic Pitch top and build_link.py: separate image, different DDR controller and UART ownership.",
+    "Older worktree build.py/DDR arbiter: owner 4 conflicts with TF client and omits current DDR TF ring integration.",
+    "CNN pipeline is not instantiated in current workstation; its storage savings are not workstation savings."
+  ],
+  "next_integration_requirements": [
+    "Share existing DDR controller; allocate a new requester owner without colliding with TF owner 4; preserve scanout/TF service.",
+    "Record NN/bulk per-client allocations and add bounded 16-bit masked accesses, CDC, and response/backpressure tests.",
+    "Add model upload UART isolation/CRC/ready gating and explicit 48kHz analysis input rate policy.",
+    "Retain CQT complex coefficient latch on signal-request acceptance and compare complete pipeline integer hashes.",
+    "Rerun full-workstation SYN/P&R and coexistence regression; do not add independent 43 to full 228 or subtract it as savings."
+  ],
+  "operations": {
+    "programmer": 0,
+    "sram_flash": 0,
+    "usercode_allocated": false,
+    "git_commit": false,
+    "audio_files_created": 0
+  },
+  "consolidation_source_sha256": {
+    "build.py": "eea3124bdefd47e546e802e15bebffcd810496845fef8eeda916aad12890c74f",
+    "tools/workstation_memory.py": "ede913b626783055637feb5b0e8d113e7616f7ca9d77706ecccb109cccadccc2",
+    "README.md": "32896ddb6d55bafbd5b5c65a2935421754bd1023011182ce1d0fc14431d90568",
+    "reports/WORKSTATION_BSRAM_REVIEW_20261001.md": "b0c04b7c781ca54b23d96b30c65db176f5a6e0b096c2cc29a84e59343a2dbf5e"
+  }
+}

@@ -6,6 +6,10 @@ module push2_controls(
     input wire [6:0] a,b,
     input wire [31:0] actual_control,actual_options,
     input wire [9:0] actual_panic_epoch,
+    input wire guide_enabled_i,
+    input wire guide_mode_i,
+    output reg guide_toggle_o,
+    output reg guide_prev_o,guide_next_o,guide_select_o,
     output reg event_valid,input wire event_ready,output reg [17:0] event_data,
     output reg [63:0] held,output reg [6:0] last_note,last_velocity,
     output reg [31:0] mapped,ignored
@@ -15,6 +19,7 @@ module push2_controls(
     reg [127:0] buttons;
     reg [2:0] effects;
     reg [6:0] volume,vibrato,glide;
+    reg [6:0] scope_scale,scope_rotation,scope_morph,scope_destination,scope_speed;
     reg [16:0] quiet;
     wire room=!event_valid || event_ready;
     wire [2:0] effect_bit=3'd1 << (a-7'd20);
@@ -42,9 +47,13 @@ module push2_controls(
     always @(posedge clk or posedge rst) begin
         if(rst) begin
             event_valid<=0;event_data<=0;held<=0;buttons<=0;
+            guide_toggle_o<=0;guide_prev_o<=0;guide_next_o<=0;guide_select_o<=0;
             was_connected<=0;panic_pending<=0;panic_epoch<=0;last_note<=0;last_velocity<=0;
             mapped<=0;ignored<=0;effects<=0;volume<=100;vibrato<=0;glide<=0;quiet<=0;
+            scope_scale<=127;scope_rotation<=0;scope_morph<=0;scope_destination<=0;scope_speed<=64;
         end else begin
+            guide_toggle_o<=0;
+            guide_prev_o<=0;guide_next_o<=0;guide_select_o<=0;
             was_connected<=connected;
             if(event_valid && event_ready) event_valid<=0;
             if(quiet!=17'd100000) quiet<=quiet+1'b1;
@@ -96,17 +105,44 @@ module push2_controls(
                         end else begin
                             glide<=adjust(glide,b);event_data<={4'd2,7'd5,adjust(glide,b)};
                         end
+                    end else if(a>=74 && a<=78) begin
+                        event_valid<=1;mapped<=mapped+1'b1;
+                        case(a)
+                          74:begin scope_scale<=adjust(scope_scale,b);event_data<={4'd2,7'd93,adjust(scope_scale,b)};end
+                          75:begin scope_rotation<=scope_rotation+b;event_data<={4'd2,7'd94,7'(scope_rotation+b)};end
+                          76:begin scope_morph<=adjust(scope_morph,b);event_data<={4'd2,7'd92,adjust(scope_morph,b)};end
+                          77:begin scope_destination<=(scope_destination+b)&7;event_data<={4'd2,7'd91,7'((scope_destination+b)&7)};end
+                          78:begin scope_speed<=adjust(scope_speed,b)==0 ? 7'd1 : adjust(scope_speed,b);event_data<={4'd2,7'd103,adjust(scope_speed,b)==0 ? 7'd1 : adjust(scope_speed,b)};end
+                        endcase
                     end else begin
                         buttons[a]<=b!=0;
                         if(b!=0 && !buttons[a]) begin
-                            if(a>=102 && a<=104) begin event_valid<=1;event_data<={4'd2,7'd80,a-7'd102};mapped<=mapped+1'b1;end
+                            if(a==85 && guide_enabled_i) begin guide_toggle_o<=1;mapped<=mapped+1'b1;end
+                            else if(guide_mode_i && a==44) begin guide_prev_o<=1;mapped<=mapped+1'b1;end
+                            else if(guide_mode_i && a==45) begin guide_next_o<=1;mapped<=mapped+1'b1;end
+                            else if(guide_mode_i && a==48) begin guide_select_o<=1;mapped<=mapped+1'b1;end
+                            else if(a>=102 && a<=104) begin event_valid<=1;event_data<={4'd2,7'd80,a-7'd102};mapped<=mapped+1'b1;end
                             else if(a>=105 && a<=109) begin event_valid<=1;event_data<={4'd3,program_for(a),7'd0};mapped<=mapped+1'b1;end
                             else if(a>=20 && a<=22) begin
                                 // Effect keys append to the shared chain. The
                                 // audio core owns ordering and resets on press 4.
                                 quiet<=0; event_valid<=1; event_data<={4'd2,7'd87,a-7'd20}; mapped<=mapped+1'b1;
                             end else if(a>=23 && a<=26) begin event_valid<=1;event_data<={4'd2,7'd82,a-7'd23};mapped<=mapped+1'b1;end
-                            else if(a==28) begin
+                            else if(a==51) begin
+                                event_valid<=1;event_data<={4'd2,7'd104,7'd64};mapped<=mapped+1'b1;
+                            end else if(a==87 || a==88) begin
+                                event_valid<=1;event_data<={4'd2,7'd105,a==87 ? 7'd64 : 7'd127};mapped<=mapped+1'b1;
+                            end else if(a==44 || a==45) begin
+                                event_valid<=1;event_data<={4'd2,7'd108,a==44 ? 7'd0 : 7'd127};mapped<=mapped+1'b1;
+                            end else if(a==48) begin
+                                event_valid<=1;
+                                event_data<={4'd2,7'd90,7'd64};mapped<=mapped+1'b1;
+                            end else if(a==60) begin
+                                event_valid<=1;
+                                event_data<={4'd2,7'd95,7'd64};mapped<=mapped+1'b1;
+                            end else if(a==31) begin
+                                event_valid<=1;event_data<={4'd2,7'd96,7'd127};mapped<=mapped+1'b1;
+                            end else if(a==28) begin
                                 // Master gates the selected chain in the audio
                                 // owner; selection and serial order stay intact.
                                 event_valid<=1;event_data<={4'd2,7'd88,7'd0};mapped<=mapped+1'b1;

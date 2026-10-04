@@ -28,7 +28,8 @@ module tf_spi_session (
     output wire         done,
     input  wire  [31:0] clkdiv, // next command spi_sck = clk / (2*(clkdiv+1)), for example clk=50MHz, clkdiv=124, spi_sck=50MHz/(2*125) = 200kHz
     input  wire  [47:0] cmd, acmd,
-    input  wire  [ 7:0] waitcycle, precycle, startcycle, cmdcycle, cmdrcycle, acmdcycle, acmdrcycle, midcycle, stopcycle, recycle, // dummy clock byte cycles
+    input  wire  [ 7:0] waitcycle, precycle, startcycle, cmdcycle, cmdrcycle, acmdcycle, acmdrcycle, stopcycle, recycle, // dummy clock byte cycles
+    input  wire [23:0] midcycle, // data-token wait window in SPI bytes; the SD spec allows up to ~100 ms (NAC) before the first data token, so this window must span it — aborting earlier re-issues CMD17 into a card that is still preparing the read and can wedge it entirely
     output reg   [ 7:0] cmdrsp, acmdrsp, rwrsp,
     output reg   [47:0] cmdres, acmdres,
     // data readout
@@ -51,7 +52,8 @@ wire  byteend, bytestart;
 reg   scken=1'b0, chipselect=1'b0;
 reg   [ 7:0] wbyte=8'hff, rbyte=8'h0;
 reg   [47:0] cmdr=48'h0, acmdr=48'h0;
-reg   [ 7:0] waitc=8'h0, prec=8'h0, startc=8'h0, cmdc=8'h0, cmdrwait=8'h0, cmdrc=8'h0, acmdc=8'h0, acmdrwait=8'h0, acmdrc=8'h0, midc=8'h0, stopc=8'h0, rec=8'h0, lastc=8'h0;
+reg   [ 7:0] waitc=8'h0, prec=8'h0, startc=8'h0, cmdc=8'h0, cmdrwait=8'h0, cmdrc=8'h0, acmdc=8'h0, acmdrwait=8'h0, acmdrc=8'h0, stopc=8'h0, rec=8'h0, lastc=8'h0;
+reg  [23:0] midc=24'h0;
 reg   [15:0] rwc = 16'h0;
 reg   iscmdr=1'b0, isacmdr=1'b0, iscmdres=1'b0, isacmdres=1'b0,ismidc=1'b0, isrwc=1'b0;
 
@@ -93,7 +95,8 @@ always @ (posedge clk or negedge rstn)
         {cmdr,acmdr} <= 0;
         {cmdrsp, acmdrsp, rwrsp} <= 0;
         {cmdres, acmdres} <= 0;
-        {waitc,prec,startc,cmdc,cmdrwait,cmdrc,acmdc,acmdrwait,acmdrc,midc,rwc,stopc,rec,lastc} <= 0;
+        {waitc,prec,startc,cmdc,cmdrwait,cmdrc,acmdc,acmdrwait,acmdrc,rwc,stopc,rec,lastc} <= 0;
+        midc <= 24'h0;
         {iscmdr, isacmdr,iscmdres,isacmdres,ismidc,isrwc} <= 0;
         {chipselect,scken,wbyte} <= {2'b00, 8'hff};
         {rvalid, rdata, rindex} <= 0;
@@ -105,7 +108,8 @@ always @ (posedge clk or negedge rstn)
             {cmdr,acmdr} <= 0;
             {cmdrsp, acmdrsp, rwrsp} <= 0;
             {cmdres, acmdres} <= 0;
-            {waitc,prec,startc,cmdc,cmdrwait,cmdrc,acmdc,acmdrwait,acmdrc,midc,rwc,stopc,rec,lastc} <= 0;
+            {waitc,prec,startc,cmdc,cmdrwait,cmdrc,acmdc,acmdrwait,acmdrc,rwc,stopc,rec,lastc} <= 0;
+            midc <= 24'h0;
             {iscmdr, isacmdr,iscmdres,isacmdres,ismidc,isrwc} <= 0;
             {chipselect,scken,wbyte} <= {2'b00, 8'hff};
         end else if(~start_last) begin
@@ -114,7 +118,8 @@ always @ (posedge clk or negedge rstn)
             {cmdr,acmdr} <= {cmd, acmd};
             {cmdrsp, acmdrsp, rwrsp} <= 0;
             {cmdres, acmdres} <= 0;
-            {waitc,prec,startc,cmdc,cmdrwait,cmdrc,acmdc,acmdrwait,acmdrc,midc,rwc,stopc,rec,lastc} <= {waitcycle,precycle,startcycle,cmdcycle,(cmdcycle>0)?8'h20:8'h0,cmdrcycle,acmdcycle,(acmdcycle>0)?8'h20:8'h0,acmdrcycle,midcycle,(midcycle>0)?16'd514:16'd0,stopcycle,recycle,8'h2};
+            {waitc,prec,startc,cmdc,cmdrwait,cmdrc,acmdc,acmdrwait,acmdrc,rwc,stopc,rec,lastc} <= {waitcycle,precycle,startcycle,cmdcycle,(cmdcycle>0)?8'h20:8'h0,cmdrcycle,acmdcycle,(acmdcycle>0)?8'h20:8'h0,acmdrcycle,(midcycle>0)?16'd514:16'd0,stopcycle,recycle,8'h2};
+            midc <= midcycle;
             {iscmdr, isacmdr,iscmdres,isacmdres,ismidc,isrwc} <= 0;
             {chipselect,scken,wbyte} <= {2'b00, 8'hff};
         end else if(bytestart) begin
@@ -146,7 +151,7 @@ always @ (posedge clk or negedge rstn)
                 acmdrc <= acmdrc - 8'd1;
                 {chipselect,scken,wbyte} <= {2'b11, 8'hff};
             end else if(midc>0) begin         ismidc <= 1'b1;
-                midc <= midc - 8'd1;
+                midc <= midc - 24'd1;
                 {chipselect,scken,wbyte} <= {2'b11, 8'hff};
             end else if(rwc>0) begin          isrwc  <= 1'b1;
                 rwc <= rwc - 16'd1;
@@ -176,7 +181,7 @@ always @ (posedge clk or negedge rstn)
             if(isacmdres) acmdres[acmdrc[2:0]*8+:8] <= rbyte;  // MODIFICATION: index bounded to 3 bits
             if(ismidc && rbyte==8'hFE) begin
                 rwrsp <= rbyte;
-                midc  <= 8'd0;
+                midc  <= 24'd0;
             end
             if(isrwc) begin
                 {rvalid, rdata} <= {1'b1, rbyte};

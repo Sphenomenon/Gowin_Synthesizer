@@ -5,6 +5,7 @@ No programming, UART, or board discovery operations are performed.
 from pathlib import Path
 from datetime import datetime
 import argparse,hashlib,json,os,shutil,subprocess,xml.etree.ElementTree as ET
+from tools.workstation_memory import audit as audit_workstation_memory
 ROOT=Path(__file__).resolve().parent
 TF_AUDIO=ROOT/'rtl/tf_audio'
 WORK=ROOT.parent/'results/workstation_20260911_174045_306332'
@@ -27,15 +28,19 @@ def replace_between(s,start,end,a,b):
     return s[:first]+replace(s[first:last],a,b)+s[last:]
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path)
+    ap.add_argument('--synthesis-only',action='store_true',help='Offline synthesis only; no place/route or programming')
     ap.add_argument('--no-update-latest',action='store_true',help='Keep the local latest-build pointer unchanged')
     ap.add_argument('--tf-audio-kind',choices=['mp3','wav','flac'],default='wav',
                     help='TF decoder profile to elaborate (default: wav)')
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     args=ap.parse_args()
     tf_audio_kind={'mp3':1,'wav':2,'flac':3}[args.tf_audio_kind]
+    build_mode='synthesis_only' if args.synthesis_only else 'place_route_reuse' if args.reuse_synthesis else 'full'
     if args.user_code is not None:
         if len(args.user_code)!=8 or any(c not in '0123456789abcdefABCDEF' for c in args.user_code):
             ap.error('--user-code requires eight hexadecimal digits')
+    if args.synthesis_only and args.reuse_synthesis:
+        ap.error('--synthesis-only cannot reuse synthesis')
     for base,manifest in [(WORK/'Prj1',WORKSTATION_MANIFEST),(USB,USB/'inputs.json')]:
         hashes=json.loads(manifest.read_text())
         assert all(frozen_sha(base/p)==h for p,h in hashes.items()),'frozen inputs changed: '+str(base)
@@ -77,6 +82,19 @@ def main():
     }
     for rel,src in audio_overlay.items():
         shutil.copy2(src,stage/rel)
+    # Geometry-only scope vector engine and its portable readmemh inputs.
+    scope_data=ROOT/'rtl/audio/scope_vec/data'
+    scope_manifest=json.loads((scope_data/'manifest.json').read_text())
+    assert scope_manifest['path_bytes']<=16384 and scope_manifest['shape_count']==8 and scope_manifest['points_per_shape']==512,'scope geometry budget/configuration mismatch'
+    assert scope_manifest['harmonics']==8 and scope_manifest['maximum_scan_hz']==2000 and not scope_manifest['contains_pcm_audio'],'unsupported scope geometry profile'
+    assert all(sha(scope_data/name)==digest for name,digest in scope_manifest['artifacts'].items()),'scope geometry/control artifacts changed: rerun compiler'
+    path_words=(scope_data/'paths.mem').read_text().split()
+    assert len(path_words)==4096 and all(len(word)==8 and all(c in '0123456789abcdefABCDEF' for c in word) for word in path_words),'scope path table requires exactly 4096 X/Y words'
+    scope_dest=stage/'rtl/audio/scope_vec'
+    shutil.copytree(ROOT/'rtl/audio/scope_vec',scope_dest)
+    cue_rtl=scope_dest/'scope_control_player.sv'
+    cue_rtl.write_text(replace(cue_rtl.read_text(),'parameter integer CUE_COUNT=69,',
+        'parameter integer CUE_COUNT='+str(scope_manifest['cue_count'])+','))
     # Self-contained TF/FAT audio subsystem.  Do not reach back into the
     # separate Mega_138K/Dev working tree: the staged project and Git checkout
     # must contain the exact same RTL, decoder tables and license records.
@@ -87,6 +105,9 @@ def main():
     shutil.copy2(TF_AUDIO/'tf_async_pcm_fifo.v',stage/'src/storage/tf_async_pcm_fifo.v')
     shutil.copy2(TF_AUDIO/'tf_workstation_audio_bridge.v',stage/'src/storage/tf_workstation_audio_bridge.v')
     shutil.copy2(TF_AUDIO/'pt8211_tx.v',stage/'src/audio/tf_rate_pt8211_tx.v')
+    # The verified Basic Pitch graph shares this workstation DDR controller.
+    music_dest=stage/'rtl/music'
+    shutil.copytree(ROOT/'rtl/music',music_dest)
     # Bind legacy workstation clients to the shared map without changing their
     # protocols or page sizes.
     p=stage/'src/memory/ddr3_bist.v';s=p.read_text()
@@ -149,9 +170,19 @@ def main():
     s=replace(s,'.held_notes_o(held_notes_o),.applied_events_o(applied_events_o),.pc_overflow_o(pc_overflow),.control_options_o(control_options_o),',
         '.held_notes_o(held_notes_o),.applied_events_o(applied_events_o),.pc_overflow_o(pc_overflow),.control_options_o(control_options_o),.panic_epoch_o(panic_epoch),')
     s=replace(s,'output wire [31:0] applied_events_o,pc_health_o,',
-        'output wire [31:0] applied_events_o,pc_health_o,\n    output wire panel_event_valid_o,output wire [6:0] panel_command_o,')
+        'output wire [31:0] applied_events_o,pc_health_o,\n    output wire [31:0] scope_status_o,tf_scope_control_o,\n    output wire panel_event_valid_o,output wire [6:0] panel_command_o,')
     s=replace(s,'.control_options_o(control_options_o),.panic_epoch_o(panic_epoch),.cpu_event_valid_i(cpu_event_valid_i),',
-        '.control_options_o(control_options_o),.panic_epoch_o(panic_epoch),\n        .panel_event_valid_o(panel_event_valid_o),.panel_command_o(panel_command_o),.cpu_event_valid_i(cpu_event_valid_i),')
+        '.control_options_o(control_options_o),.panic_epoch_o(panic_epoch),\n        .panel_event_valid_o(panel_event_valid_o),.panel_command_o(panel_command_o),.scope_status_o(scope_status_o),.tf_scope_control_o(tf_scope_control_o),.cpu_event_valid_i(cpu_event_valid_i),')
+    p.write_text(s)
+    p=stage/'src/ae350/gw138k_controlled_audio.sv';s=p.read_text()
+    s=replace(s,'.control_options_o(control_options),',
+        '.control_options_o(control_options),.scope_status_o(),.tf_scope_control_o(),')
+    p.write_text(s)
+    p=stage/'src/usb_host/gw138k_usb_controlled_audio.sv';s=p.read_text()
+    s=replace(s,'    output wire sample_ce_o, sample_valid_o,',
+        '    output wire sample_ce_o, sample_valid_o,\n    output wire [31:0] scope_status_o,tf_scope_control_o,')
+    s=replace(s,'.control_options_o(control_options),',
+        '.control_options_o(control_options),.scope_status_o(scope_status_o),.tf_scope_control_o(tf_scope_control_o),')
     p.write_text(s)
     # P27 keeps the Push panel commands inside the accepted event stream.  The
     # workstation emits a one-cycle pulse only after kind 6 reaches dispatch;
@@ -247,6 +278,23 @@ def main():
         state<=IDLE;valid_o<=0;clip_o<=0;
       end else case(state)'''
     s=replace_between(s,'module stereo_effects',None,stage_body,top_clear)
+    # Minimal stereo injection at the P10 mixer boundary. Legacy synth remains mono.
+    s=replace(s,'module stereo_effects #(\n',
+        'module stereo_effects #(\n    parameter integer VECTOR_ENABLE=0,\n')
+    s=replace(s,'input logic signed [31:0] synth_i,pcm_left_i,pcm_right_i,',
+        'input logic signed [31:0] synth_i,pcm_left_i,pcm_right_i,\n    input logic signed [31:0] vector_left_i,vector_right_i,')
+    s=replace(s,'logic signed [48:0] input_s,input_l,input_r;',
+        'logic signed [48:0] input_s,input_l,input_r,input_vl,input_vr;')
+    s=replace(s,'input_s<=0;input_l<=0;input_r<=0;',
+        'input_s<=0;input_l<=0;input_r<=0;input_vl<=0;input_vr<=0;')
+    s=replace(s,'input_s<=$signed(synth_i)*$signed({1\'b0,sg});',
+        'input_s<=$signed(synth_i)*$signed({1\'b0,sg});\n          input_vl<=$signed(VECTOR_ENABLE?vector_left_i:32\'sd0)*$signed({1\'b0,sg});\n          input_vr<=$signed(VECTOR_ENABLE?vector_right_i:32\'sd0)*$signed({1\'b0,sg});')
+    s=replace(s,'input_mix_l<=input_s+input_l;input_mix_r<=input_s+input_r;',
+        'input_mix_l<=input_s+input_l+input_vl;input_mix_r<=input_s+input_r+input_vr;')
+    p.write_text(s)
+    p=stage/'legacy/rtl/audio/audio_workstation.sv';s=p.read_text()
+    s=replace(s,'.pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),',
+        '.vector_left_i(32\'sd0),.vector_right_i(32\'sd0),\n      .pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),')
     p.write_text(s)
     # Rebuild the existing AE350 UI ROM from a staged copy.  A new PANIC epoch
     # clears its local gate and blocks an already-down touch until release.
@@ -295,10 +343,15 @@ static inline unsigned ui_active(const ui_model*m,unsigned note) {''')
     dest=stage/'src/usb_a';dest.mkdir()
     tree=ET.parse(stage/'Prj1.gprj');fl=tree.find('FileList')
     fl.insert(0,ET.Element('File',path='src/memory/display_data_layout_pkg.sv',type='file.verilog',enable='1'))
+    for source in sorted(scope_dest.glob('*.sv')):
+        ET.SubElement(fl,'File',path=source.relative_to(stage).as_posix(),type='file.verilog',enable='1')
     tf_sources=[stage/'src/memory/ddr_address_map_guard.v',stage/'src/audio/tf_rate_pt8211_tx.v']
     tf_sources+=sorted(storage_dest.rglob('*.v'))
     for source in tf_sources:
         ET.SubElement(fl,'File',path=source.relative_to(stage).as_posix(),type='file.verilog',enable='1')
+    for source in sorted(music_dest.glob('*.sv')):
+        if source.name != 'basic_pitch_tf_board_top.sv':
+            ET.SubElement(fl,'File',path=source.relative_to(stage).as_posix(),type='file.verilog',enable='1')
     shutil.copy2(ROOT/'p11.gsc',stage/'constraints/p11.gsc')
     ET.SubElement(fl,'File',path='constraints/p11.gsc',type='file.gsc',enable='1')
     kept_push={'gw138k_push_performance_uart.sv','gw138k_push_workstation_top.v','push2_controls.sv',
@@ -314,6 +367,8 @@ static inline unsigned ui_active(const ui_model*m,unsigned note) {''')
     ET.SubElement(fl,'File',path='src/memory/display_data_writer.v',type='file.verilog',enable='1')
     ET.SubElement(fl,'File',path='src/memory/display_data_reader.v',type='file.verilog',enable='1')
     shutil.copy2(ROOT/'rtl/push2_usb_a_control.sv',dest/'push2_usb_a_control.sv')
+    shutil.copy2(ROOT/'rtl/push2/push2_score_guide.sv',dest/'push2_score_guide.sv')
+    ET.SubElement(fl,'File',path='src/usb_a/push2_score_guide.sv',type='file.verilog',enable='1')
     shutil.copy2(ROOT/'rtl/push2_screen_packet_loader.sv',dest/'push2_screen_packet_loader.sv')
     shutil.copy2(ROOT/'rtl/push2_screen_fifo_streamer.sv',dest/'push2_screen_fifo_streamer.sv')
     # The screen streamer and USB FIFO share the 48 MHz host clock.  Give the
@@ -371,6 +426,15 @@ end
     wire [447:0] push_snapshot;
     wire [31:0] score_led_mask;wire score_running,record_enabled;
     wire [33:0] service_state_usb;wire service_state_usb_valid;
+    wire music_score_valid,music_score_ready,score_usb_valid,score_usb_ready;
+    wire [6:0] music_score_note,score_usb_note;
+    music_async_fifo #(.WIDTH(7),.ADDRESS_BITS(2)) u_score_push_cdc(
+        .write_clk_i(clk_50m),.write_rst_ni(reset_n),
+        .write_valid_i(music_score_valid),.write_ready_o(music_score_ready),
+        .write_data_i(music_score_note),
+        .read_clk_i(usb_clk),.read_rst_ni(usb_reset_n),
+        .read_valid_o(score_usb_valid),.read_ready_i(score_usb_ready),
+        .read_data_o(score_usb_note));
     gw138k_stream_cdc #(.WIDTH(34)) u_service_push_cdc(
         .reset_n(reset_n && audio_reset_n && usb_reset_n),.source_clk(audio_clk),.destination_clk(usb_clk),
         .source_valid(audio_sample_valid),.source_data({record_enabled,score_running,score_led_mask}),
@@ -384,13 +448,15 @@ end
         .feedback_clk(clk_50m),.feedback_reset_n(reset_n),.performance_words(push_snapshot),
         .display_meta_data(display_summary_usb),.display_meta_valid(display_summary_usb_valid),
         .service_state_data(service_state_usb),.service_state_valid(service_state_usb_valid),
+        .score_valid(score_usb_valid),.score_ready(score_usb_ready),.score_note(score_usb_note),
+        .analysis_done(music_analysis_done),
         .select(mmio_select),.write(mmio_write),.address(mmio_address),.wdata(mmio_wdata),.ready(mmio_ready),.rdata(mmio_rdata),
         .audio_valid(all_usb_valid),.audio_ready(all_usb_ready),.audio_event(all_usb_event),.telemetry(usb_words));
 '''+s[end:]
     s=replace(s,'.app_wrdy(app_wrdy),.app_rdata(app_rdata),.app_rvalid(app_rvalid),.memory_flags(memory_flags),\n        .sample_data(output_mid)',
              '.app_wrdy(app_wrdy),.app_rdata(app_rdata),.app_rvalid(app_rvalid),.memory_flags(memory_flags),\n        .push_display_summary(display_summary),.push_display_summary_valid(display_summary_valid),\n        .sample_data(output_mid)')
     s=replace(s,'.pc_uart_rx_i(pc_uart_rx_i),.performance_words_o(performance_words),',
-        '.pc_uart_rx_i(pc_uart_rx_i),.performance_words_o(performance_words),\n        .led_mask_o(score_led_mask),.score_running_o(score_running),.record_enabled_o(record_enabled),')
+        '.pc_uart_rx_i((music_model_status==4\'d14 || tf_scope_control_audio[12]) ? pc_uart_rx_i : 1\'b1),.performance_words_o(performance_words),\n        .led_mask_o(score_led_mask),.score_running_o(score_running),.record_enabled_o(record_enabled),\n        .scope_status_o(scope_status_audio),.tf_scope_control_o(tf_scope_control_audio),.sample_ce_o(synth_sample_ce),')
     s=replace(s,'.push_words(push_words),','.push_words(224\'d0),')
     s=replace(s,'module gw138k_push_workstation_top (',f'''module gw138k_push_workstation_top #(
     parameter integer TF_AUDIO_KIND={tf_audio_kind}
@@ -401,14 +467,85 @@ end
     output wire sd_mosi,sd_sck,sd_cs_n,''')
     s=replace(s,'    wire [31:0] output_pcm,output_reference,active_voices,display_status;',
         '''    wire [31:0] output_pcm,output_reference,active_voices,display_status;
-    wire synth_hp_bck,synth_hp_ws,synth_hp_din,synth_pa_en;''')
+    wire synth_hp_bck,synth_hp_ws,synth_hp_din,synth_pa_en,synth_sample_ce;
+    wire [31:0] scope_status_audio,tf_scope_control_audio;
+    wire tf_mode_audio=tf_scope_control_audio[12];
+    wire tf_run_audio=tf_scope_control_audio[13];
+    wire [31:0] tf_scope_control_50;
+    wire tf_control_valid;
+    reg [4:0] tf_control_divider;
+    always @(posedge audio_clk or negedge audio_reset_n)
+        if(!audio_reset_n) tf_control_divider<=0;else tf_control_divider<=tf_control_divider+1'b1;
+    // Periodic held-state publication retries changes; epoch differences alone
+    // at the destination restart playback. Audio is never backpressured.
+    gw138k_stream_cdc #(.WIDTH(32)) u_tf_control_cdc(
+        .reset_n(reset_n && audio_reset_n),.source_clk(audio_clk),.destination_clk(clk_50m),
+        .source_valid(tf_control_divider==31),.source_data(tf_scope_control_audio),
+        .drop_count(),.destination_valid(tf_control_valid),.destination_data(tf_scope_control_50));
+    reg [15:0] tf_epoch_50;
+    always @(posedge clk_50m or negedge reset_n)
+        if(!reset_n) tf_epoch_50<=0;else if(tf_control_valid) tf_epoch_50<=tf_scope_control_50[31:16];
+    wire tf_scope_restart=tf_control_valid && tf_scope_control_50[31:16]!=tf_epoch_50;
+    wire tf_mode_50=tf_scope_control_50[12];
+    wire tf_run_50=tf_scope_control_50[13];
+    wire synth_display_valid;
+    wire [31:0] synth_display_pcm,synth_display_reference,synth_display_voices,synth_display_status;
+    wire final_tf_selected,final_switching;
+    wire final_sample_valid;
+    wire [31:0] final_pcm;
+    pt8211_observer u_final_output_observer(
+        .clk(audio_clk),.reset_n(audio_reset_n && !final_switching),
+        .bck(hp_bck),.ws(hp_ws),.din(hp_din),.frame_reference(32'd0),
+        .pcm_pair(final_pcm),.sample_valid(final_sample_valid),.trigger_reference());
+    gw138k_stream_cdc #(.WIDTH(32)) u_final_output_cdc(
+        .reset_n(reset_n && audio_reset_n),.source_clk(audio_clk),.destination_clk(clk_50m),
+        .source_valid(final_sample_valid && !final_switching),.source_data(final_pcm),
+        .drop_count(),.destination_valid(output_sample_valid),.destination_data(output_pcm));
+    assign output_reference=tf_mode_50 ? 32'd0 : synth_display_reference;
+    assign active_voices=tf_mode_50 ? 32'd0 : synth_display_voices;
+    assign display_status=synth_display_status;
+    wire [3:0] music_model_status;
+    wire music_report_sending,music_report_serial,runtime_serial;
+    wire music_pcm_ready;
+    wire music_analysis_done;
+    reg music_model_ready_q;
+    reg [21:0] music_restart_delay;
+    wire music_model_ready=music_model_status==4'd14;
+    wire music_restart=music_model_ready && !music_model_ready_q;
+    wire tf_restart=tf_scope_restart || (music_restart && !tf_mode_50);
+    reg music_capture_interrupted;
+    // An incomplete NN capture cannot splice unrelated tracks together.
+    // A system reset/model upload rearms recognition after playback interrupts it.
+    always @(posedge clk_50m or negedge reset_n)
+        if(!reset_n) music_capture_interrupted<=0;
+        else if(tf_mode_50 && music_model_ready_q && !music_analysis_done) music_capture_interrupted<=1;
+    wire music_analysis_enable=music_model_ready_q && music_restart_delay==0 &&
+        !tf_mode_50 && !music_capture_interrupted;
+    always @(posedge clk_50m or negedge reset_n) begin
+        if(!reset_n) begin music_model_ready_q<=0;music_restart_delay<=0;end
+        else begin
+            music_model_ready_q<=music_model_ready;
+            if(music_restart) music_restart_delay<=22'd2_500_000;
+            else if(music_restart_delay!=0) music_restart_delay<=music_restart_delay-1'b1;
+        end
+    end
+    assign debug_uart_tx=music_report_sending ? music_report_serial : runtime_serial;''')
     s=replace(s,'.hp_bck(hp_bck),.hp_ws(hp_ws),.hp_din(hp_din),.pa_en(pa_en),',
         '.hp_bck(synth_hp_bck),.hp_ws(synth_hp_ws),.hp_din(synth_hp_din),.pa_en(synth_pa_en),')
+    s=replace(s,'.display_valid_o(output_sample_valid),.display_pcm_o(output_pcm),.display_reference_o(output_reference),',
+        '.display_valid_o(synth_display_valid),.display_pcm_o(synth_display_pcm),.display_reference_o(synth_display_reference),')
+    s=replace(s,'.display_voices_o(active_voices),.display_status_o(display_status),',
+        '.display_voices_o(synth_display_voices),.display_status_o(synth_display_status),')
+    s=replace(s,'.video_diagnostics(video_diagnostics),.serial_out(debug_uart_tx),',
+        '.video_diagnostics(video_diagnostics),.serial_out(runtime_serial),')
     s=replace(s,'    wire [31:0] app_wmask;\n    ddr3_platform u_memory (',
         '''    wire [31:0] app_wmask;
     wire audio_ddr_req,audio_ddr_write,audio_ddr_ready,audio_ddr_response;
     wire [28:0] audio_ddr_address;wire [255:0] audio_ddr_data;
     wire signed [31:0] tf_pcm_left,tf_pcm_right;
+    wire analysis_pcm_valid,analysis_pcm_end;
+    wire signed [15:0] analysis_pcm_left,analysis_pcm_right;
+    wire [19:0] analysis_sample_rate;
     wire tf_pcm_valid,tf_source_active,tf_format_ready,tf_unsupported,tf_ddr_error;
     wire [19:0] tf_sample_rate;wire [31:0] tf_file_size;wire [4:0] tf_track_count;
     wire tf_sample_ce,tf_hp_bck,tf_hp_ws,tf_hp_din,tf_pa_en;
@@ -418,47 +555,113 @@ end
     ) u_tf_audio(
         .clk_50m(clk_50m),.reset_n(reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),
         .memory_clk(memory_clk),.memory_reset_n(memory_reset_n),
-        .memory_ready(memory_calibrated && memory_reset_n),.restart(1'b0),.track_index(4'd0),
+        .memory_ready(memory_calibrated && memory_reset_n),.restart(tf_restart),.track_index(tf_scope_control_50[11:8]),
         .sd_miso(sd_miso),.sd_cs_n(sd_cs_n),.sd_sck(sd_sck),.sd_mosi(sd_mosi),
         .sample_ce(tf_sample_ce),.pcm_left(tf_pcm_left),.pcm_right(tf_pcm_right),
+        .analysis_pcm_valid(analysis_pcm_valid),.analysis_pcm_end(analysis_pcm_end),
+        .playback_hold_i(tf_scope_control_50[14] && (!tf_mode_50 || !tf_run_50)),
+        .analysis_hold_i(music_model_ready_q && !music_analysis_done && !tf_mode_50 && !music_capture_interrupted),
+        .analysis_enable_i(music_analysis_enable),
+        .analysis_pcm_ready_i(music_pcm_ready),
+        .analysis_pcm_left(analysis_pcm_left),.analysis_pcm_right(analysis_pcm_right),
+        .analysis_sample_rate(analysis_sample_rate),
         .pcm_active(tf_pcm_valid),.source_active(tf_source_active),
         .sample_rate_hz(tf_sample_rate),.format_ready(tf_format_ready),.unsupported(tf_unsupported),
         .ddr_error(tf_ddr_error),.file_size(tf_file_size),.track_count(tf_track_count),
         .ddr_valid(audio_ddr_req),.ddr_write(audio_ddr_write),.ddr_address(audio_ddr_address),
         .ddr_data(audio_ddr_data),.ddr_ready(audio_ddr_ready),.ddr_response(audio_ddr_response),
         .ddr_response_data(app_rdata));
+    wire music_ddr_req,music_ddr_write,music_ddr_ready,music_ddr_response;
+    wire [28:0] music_ddr_address;
+    wire [255:0] music_ddr_data;
+    wire [31:0] music_ddr_mask;
+    wire music_result_valid;
+    wire [6:0] music_result_note;
+    wire [15:0] music_result_frame;
+    basic_pitch_workstation_link u_music (
+        .clk_50m(clk_50m),.reset_n(reset_n),
+        .memory_clk(memory_clk),.memory_reset_n(memory_reset_n),
+        .memory_calibrated(memory_calibrated),.model_serial(pc_uart_rx_i),
+        .analysis_enable(music_analysis_enable),
+        .pcm_valid(analysis_pcm_valid),.pcm_end(analysis_pcm_end),
+        .pcm_left(analysis_pcm_left),
+        .pcm_right(analysis_pcm_right),.sample_rate(analysis_sample_rate),
+        .format_ready(tf_format_ready),.source_active(tf_source_active),
+        .pcm_ready(music_pcm_ready),
+        .model_status(music_model_status),.result_valid(music_result_valid),
+        .result_note(music_result_note),.result_frame(music_result_frame),
+        .score_valid(music_score_valid),.score_ready(music_score_ready),.score_note(music_score_note),
+        .analysis_done(music_analysis_done),
+        .report_sending(music_report_sending),.report_serial(music_report_serial),
+        .ddr_req(music_ddr_req),.ddr_write(music_ddr_write),
+        .ddr_address(music_ddr_address),.ddr_data(music_ddr_data),
+        .ddr_mask(music_ddr_mask),.ddr_ready(music_ddr_ready),
+        .ddr_response(music_ddr_response),.ddr_read_data(app_rdata));
     wire [19:0] tf_dac_rate=(tf_format_ready && !tf_unsupported &&
         tf_sample_rate>=20'd8000 && tf_sample_rate<=20'd96000) ? tf_sample_rate : 20'd0;
     tf_rate_pt8211_tx #(.BCK_HALF_CYCLES(25),.STEREO_ENABLE(1),.RATE_MUL(916260)) u_tf_dac(
-        .clk(audio_clk),.reset_n(audio_reset_n),.sample_data(tf_pcm_left),.sample_right(tf_pcm_right),
-        .sample_valid(tf_pcm_valid),.rate_hz(tf_dac_rate),.sample_tick(tf_sample_ce),
+        .clk(audio_clk),.reset_n(audio_reset_n),.sample_data(tf_mode_audio && !tf_run_audio ? 32'sd0 : tf_pcm_left),
+        .sample_right(tf_mode_audio && !tf_run_audio ? 32'sd0 : tf_pcm_right),
+        .sample_valid(tf_pcm_valid || (tf_mode_audio && !tf_run_audio)),.rate_hz(tf_dac_rate),.sample_tick(tf_sample_ce),
         .hp_bck(tf_hp_bck),.hp_ws(tf_hp_ws),.hp_din(tf_hp_din),.pa_en(tf_pa_en),
         .underrun_count(),.frame_count(),.sample_revision(24'd0),.sample_nonzero_voices(32'd0),
         .trace_dac_done(),.trace_dac_revision(),.trace_dac_nonzero_voices(),
         .sample_trigger_reference(32'd0),.frame_trigger_reference());
-    assign hp_bck=tf_source_active ? tf_hp_bck : synth_hp_bck;
-    assign hp_ws=tf_source_active ? tf_hp_ws : synth_hp_ws;
-    assign hp_din=tf_source_active ? tf_hp_din : synth_hp_din;
-    assign pa_en=tf_source_active ? tf_pa_en : synth_pa_en;
+    scope_dac_select u_scope_output(
+        .clk_i(audio_clk),.rst_ni(audio_reset_n),
+        .scope_enable_i(scope_status_audio[8]),.tf_source_active_i(tf_mode_audio || (!tf_scope_control_audio[14] && tf_source_active)),
+        .synth_frame_tick_i(synth_sample_ce),.tf_frame_tick_i(tf_sample_ce),
+        .synth_bck_i(synth_hp_bck),.synth_ws_i(synth_hp_ws),.synth_din_i(synth_hp_din),.synth_pa_i(synth_pa_en),
+        .tf_bck_i(tf_hp_bck),.tf_ws_i(tf_hp_ws),.tf_din_i(tf_hp_din),.tf_pa_i(tf_pa_en),
+        .hp_bck_o(hp_bck),.hp_ws_o(hp_ws),.hp_din_o(hp_din),.pa_en_o(pa_en),
+        .tf_selected_o(final_tf_selected),.switching_o(final_switching));
     ddr_address_map_guard u_ddr_address_map_guard();
     ddr3_platform u_memory (''')
     s=replace(s,'.cpu_data(cpu_mem_data),.cpu_mask(cpu_mem_mask),.cpu_ready(cpu_mem_ready),.cpu_response(cpu_mem_response),',
         '''.cpu_data(cpu_mem_data),.cpu_mask(cpu_mem_mask),.cpu_ready(cpu_mem_ready),.cpu_response(cpu_mem_response),
         .audio_req(audio_ddr_req),.audio_write(audio_ddr_write),.audio_address(audio_ddr_address),
-        .audio_data(audio_ddr_data),.audio_ready(audio_ddr_ready),.audio_response(audio_ddr_response),''')
+        .audio_data(audio_ddr_data),.audio_ready(audio_ddr_ready),.audio_response(audio_ddr_response),
+        .music_req(music_ddr_req),.music_write(music_ddr_write),.music_address(music_ddr_address),
+        .music_data(music_ddr_data),.music_mask(music_ddr_mask),
+        .music_ready(music_ddr_ready),.music_response(music_ddr_response),''')
+    p.write_text(s)
+    p=stage/'src/video/hdmi_display.v';s=p.read_text()
+    s=replace(s,'    output wire audio_ready,audio_response,',
+        '''    output wire audio_ready,audio_response,
+    input wire music_req,music_write,
+    input wire [28:0] music_address,
+    input wire [255:0] music_data,
+    input wire [31:0] music_mask,
+    output wire music_ready,music_response,''')
+    s=replace(s,'        .audio_data(audio_data),.audio_ready(audio_ready),.audio_response(audio_response),',
+        '''        .audio_data(audio_data),.audio_ready(audio_ready),.audio_response(audio_response),
+        .music_valid(music_req),.music_write(music_write),.music_address(music_address),
+        .music_data(music_data),.music_mask(music_mask),
+        .music_ready(music_ready),.music_response(music_response),''')
     p.write_text(s)
     # Reuse existing USB->50MHz telemetry snapshot for the new P138 record.
     p=stage/'src/push2/gw138k_push_performance_uart.sv';s=p.read_text()
     s=replace(s,'payload<={usb_snapshot,sequence_count-32\'d1};','payload<={224\'d0,sequence_count-32\'d1};')
     s=replace(s,'payload<={push_words,sequence_count-32\'d1};','payload<={usb_snapshot,sequence_count-32\'d1};');p.write_text(s)
     p=stage/'constraints/tang_mega_138k.cst';s=p.read_text()
-    p.write_text('\n'.join(line for line in s.splitlines() if '"push_' not in line)+'\n'+(ROOT/'p11.cst').read_text())
+    s='\n'.join(line for line in s.splitlines() if '"push_' not in line)+'\n'+(ROOT/'p11.cst').read_text()
+    # The merged netlist names this PLL helper output pll_reset_s1.
+    s=s.replace('u_audio_clock/g_hardware.u_pll/u_pll_init/pll_reset_s"',
+                'u_audio_clock/g_hardware.u_pll/u_pll_init/pll_reset_s1"')
+    p.write_text(s)
     p=stage/'constraints/tang_mega_138k.sdc';s=p.read_text().split('# CH569 HSPI16')[0]
     s='\n'.join(line for line in s.splitlines() if 'u_usb_host/u_fifo' not in line)+'\n'
     s=replace(s,'set_false_path -to [get_pins {u_managed/effect_mask_sync*/RESET u_managed/effect_mask_meta*/RESET}]\n','')
     # Same reset and opposite-direction mailbox can share local release FFs.
     s=s.replace('u_runtime/u_usb_cdc/source_release*/CLEAR u_runtime/u_usb_cdc/destination_release*/CLEAR',
         'u_runtime/u_usb_cdc/source_release*/CLEAR u_runtime/u_usb_cdc/destination_release*/CLEAR u_push/feedback/source_release*/CLEAR u_push/feedback/destination_release*/CLEAR')
+    # The merged netlist shares the performance mailbox release flops with
+    # another CDC instance. Keep the surviving synchronizer endpoints only.
+    s=s.replace('u_runtime/u_performance_cdc/source_release*/CLEAR u_runtime/u_performance_cdc/destination_release*/CLEAR ', '')
+    # Identical audio/50-MHz release chains are now retained in the TF
+    # mailbox; synthesized telemetry mailboxes reuse these exact reset nets.
+    s=s.replace('u_runtime/u_performance_cdc/source_release*/CLEAR u_runtime/u_performance_cdc/destination_release*/CLEAR',
+        'u_tf_control_cdc/source_release*/CLEAR u_tf_control_cdc/destination_release*/CLEAR')
     s+=(ROOT/'usb_a.sdc').read_text();p.write_text(s)
     fw=out/'firmware';shutil.copytree(USB/'firmware',fw,ignore=shutil.ignore_patterns('*.o','*.elf','*.bin'))
     shutil.copy2(ROOT/'firmware.c',fw/'firmware.c')
@@ -498,10 +701,10 @@ end
         workstation=WORK.relative_to(ROOT.parents[3]).as_posix(),
         usb_host=USB.relative_to(ROOT.parents[3]).as_posix(),hardware_tested=False,
         usb_host_implementation='VexRiscv firmware + RTL PHY/Host; no CH569',
+        build_mode=build_mode,tf_decoder=args.tf_audio_kind,
         sources={str(p.relative_to(ROOT)):sha(p) for p in ROOT.rglob('*') if p.is_file() and 'results' not in p.relative_to(ROOT).parts and '__pycache__' not in p.parts})
     (out/'origins.json').write_text(json.dumps(origins,indent=2)+'\n');print(out,flush=True)
-    if not args.no_update_latest:
-        (ROOT/'LATEST_BUILD.txt').write_text(out.relative_to(ROOT).as_posix()+'\n')
+    # A prepared or failed project must not become the latest workstation.
     if args.prepare_only:return
     if args.reuse_synthesis:
         previous=args.reuse_synthesis.resolve();old=json.loads((previous/'workstation_inputs.json').read_text())
@@ -512,9 +715,19 @@ end
         shutil.copytree(previous/'Prj1/impl/gwsynthesis',stage/'impl/gwsynthesis')
         (out/'reused_synthesis.json').write_text(json.dumps(dict(source=str(previous),non_constraint_inputs_identical=True),indent=2)+'\n')
     with (out/'gowin.log').open('w') as log:
-        r=subprocess.run([str(Path.home()/'.local/bin/gw_sh'),'scripts/build.tcl'],cwd=stage,env=dict(os.environ,PRJ1_FLOW='pnr' if args.reuse_synthesis else 'all'),stdout=log,stderr=subprocess.STDOUT)
+        r=subprocess.run([str(Path.home()/'.local/bin/gw_sh'),'scripts/build.tcl'],cwd=stage,env=dict(os.environ,PRJ1_FLOW='syn' if args.synthesis_only else 'pnr' if args.reuse_synthesis else 'all'),stdout=log,stderr=subprocess.STDOUT)
     changed=[p for p,h in hashes.items() if sha(stage/p)!=h]
     (out/'tool_result.json').write_text(json.dumps(dict(exit_code=r.returncode,inputs_unchanged=not changed,changed=changed,hardware_tested=False),indent=2)+'\n')
     print('Gowin exit',r.returncode,'changed inputs',changed,flush=True)
     if r.returncode or changed:raise SystemExit(1)
+    memory=audit_workstation_memory(out,build_mode)
+    print('Full workstation SYN BSRAM',memory['bsram'],'/',memory['bsram_capacity'],flush=True)
+    if not args.no_update_latest:
+        (ROOT/'LATEST_BUILD.txt').write_text(out.relative_to(ROOT).as_posix()+'\n')
+        latest=dict(build=out.relative_to(ROOT).as_posix(),build_mode=build_mode,
+                    memory_report=(out/'workstation_memory.json').relative_to(ROOT).as_posix(),
+                    bsram=memory['bsram'],bsram_measurement_stage='synthesis',
+                    tf_decoder=args.tf_audio_kind,basic_pitch_elaborated=memory['basic_pitch_elaborated'],
+                    timing_closed=None,hardware_tested=False)
+        (ROOT/'LATEST_WORKSTATION.json').write_text(json.dumps(latest,indent=2)+'\n')
 if __name__=='__main__':main()

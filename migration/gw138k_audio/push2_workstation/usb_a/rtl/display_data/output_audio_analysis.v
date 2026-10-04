@@ -2,7 +2,7 @@
 // Two independent 2048-point, periodic-Hann, radix-2 FFTs of the exact DAC
 // PCM channels. Stereo images use the same unwindowed immutable PCM block.
 // All displayed results stay fixed until release_frame, even under stalls.
-module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0) (
+module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0,parameter integer XY_DIRECT=0) (
     input wire clk, reset_n,
     input wire source_clk, source_reset_n,
     input wire [31:0] pcm_pair,
@@ -87,7 +87,9 @@ module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0) (
     reg signed [16:0] plot_mid,plot_side;
     reg plot_nonzero;
     always @(posedge clk) if(state==IMAGE_SUM) begin
-        plot_mid<=mid_sum;plot_side<=side_sum;plot_nonzero<=captured!=0;
+        plot_mid<=XY_DIRECT ? {right_pcm[15],right_pcm} : mid_sum;
+        plot_side<=XY_DIRECT ? {left_pcm[15],left_pcm} : side_sum;
+        plot_nonzero<=captured!=0;
     end
     wire [3:0] image_shift=4'd9-{1'b0,work_image_gain};
     wire signed [17:0] plot_x=18'sd128+($signed(plot_side) >>> image_shift);

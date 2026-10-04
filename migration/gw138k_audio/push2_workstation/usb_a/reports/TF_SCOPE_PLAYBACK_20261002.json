@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-02",
+  "build": "results/build_20261002_173227_640023",
+  "build_mode": "synthesis_only",
+  "bsram": 234,
+  "bsram_capacity": 340,
+  "hardware_tested": false,
+  "timing_closed": null,
+  "tf_card_written": false,
+  "card_blocker": "no mounted removable FAT device detected",
+  "source_checks": {
+    "rtl/audio/gw138k_event_workstation.sv": "src/ae350/gw138k_event_workstation.sv",
+    "rtl/audio/push2_controls.sv": "src/push2/push2_controls.sv",
+    "rtl/audio/scope_vec/scope_tf_control.sv": "rtl/audio/scope_vec/scope_tf_control.sv",
+    "rtl/display_data/feedback_renderer.v": "src/video/feedback_renderer.v",
+    "rtl/display_data/output_audio_analysis.v": "src/video/output_audio_analysis.v",
+    "rtl/tf_audio/tf_workstation_audio_bridge.v": "src/storage/tf_workstation_audio_bridge.v",
+    "rtl/tf_audio/storage/tf_audio_ddr_path.v": "src/storage/tf_audio_ddr_path.v",
+    "rtl/tf_audio/storage/tang_mp3/sd/tf_sd_file_reader.v": "src/storage/tang_mp3/sd/tf_sd_file_reader.v"
+  },
+  "verifications": [
+    "results/build_20261002_173227_640023/scope_merge_20261002_173443_694261/verification.json",
+    "results/build_20261002_173227_640023/scope_merge_20261002_174238_509020/verification.json",
+    "results/build_20261002_173227_640023/scope_merge_20261002_174438_257096/verification.json",
+    "results/scope_vec_sim_20261002_174019_783508/verification.json",
+    "results/build_20261002_173227_640023/p27_controls_173723_664382/verification.json",
+    "results/build_20261002_173227_640023/tf_wav_regression/verification.json"
+  ],
+  "external_assets": "/home/sphenicidition/Documents/oscilloscope_tf_assets_20261002",
+  "media": {
+    "rate_hz": 48000,
+    "channels": 2,
+    "bits": 16,
+    "frames": 5068800,
+    "duration_s": 105.6,
+    "bytes": 20275244,
+    "peak_lsb": [
+      31915,
+      32105
+    ],
+    "dc_lsb": [
+      45.07454407354798,
+      -168.69145063920453
+    ],
+    "sha256": "bc4f84b199bc4360249bc494113430192fa19ad4d92a02c105ccbc08c22e48e7"
+  }
+}

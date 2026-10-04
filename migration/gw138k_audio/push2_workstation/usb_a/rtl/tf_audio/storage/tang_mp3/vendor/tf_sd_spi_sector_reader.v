@@ -74,7 +74,9 @@ reg  req_hold=1'b0;   // latched request: a one-cycle `start` is enough to run a
 wire spidone;
 reg  [47:0] cmd=0, acmd=0;
 wire [47:0] cmdres;
-reg  [ 7:0] waitcycle=64, precycle=0, startcycle=0, cmdrcycle=0, acmdcycle=0, midcycle=0, recycle=0;
+reg  [ 7:0] waitcycle=64, precycle=0, startcycle=0, cmdrcycle=0, acmdcycle=0, recycle=0;
+reg [23:0] midcycle=0;   // SPI bytes to clock while waiting for the CMD17 data token
+localparam [23:0] TOKEN_WAIT_BYTES = 24'd40_000;  // ~166 ms at the 1.92 MHz read clock; the SD spec allows ~100 ms (NAC) before the first token, and aborting earlier re-issues CMD17 into a card that is still preparing the read
 wire [ 7:0] cmdrsp, acmdrsp, rwrsp;
 reg  [31:0] target_sector = 0;
 wire [31:0] target_sector_w = (cardtype==SDHCv2) ? sector_no : ( (cardtype==SDv2 || cardtype==SDv1) ? (sector_no*512) : 0 );
@@ -139,10 +141,10 @@ always @ (posedge clk or negedge rstn) begin
                 CMD16  : begin    spistart<=1'b1; cmd<=48'h50_00000200_FF ; acmd<=48'h00_00000000_00; waitcycle<= 16; precycle<= 0; startcycle<=1; cmdrcycle<=2; acmdcycle<=0; midcycle<= 0;recycle<=0; end
                 IDLE   : if(start || req_hold) begin
                            target_sector <= target_sector_w;
-                           spistart<=1'b1; cmd<={8'h51,target_sector_w,8'hFF}; acmd<=48'h00_00000000_00; waitcycle<=  6; precycle<= 0; startcycle<=0; cmdrcycle<=4; acmdcycle<=0; midcycle<=99;recycle<=2;
+                           spistart<=1'b1; cmd<={8'h51,target_sector_w,8'hFF}; acmd<=48'h00_00000000_00; waitcycle<=  6; precycle<= 0; startcycle<=0; cmdrcycle<=4; acmdcycle<=0; midcycle<=TOKEN_WAIT_BYTES;recycle<=2;
                          end
                 READING: begin
-                           spistart<=1'b1; cmd<={8'h51,target_sector  ,8'hFF}; acmd<=48'h00_00000000_00; waitcycle<=  6; precycle<= 0; startcycle<=0; cmdrcycle<=4; acmdcycle<=0; midcycle<=99;recycle<=2;
+                           spistart<=1'b1; cmd<={8'h51,target_sector  ,8'hFF}; acmd<=48'h00_00000000_00; waitcycle<=  6; precycle<= 0; startcycle<=0; cmdrcycle<=4; acmdcycle<=0; midcycle<=TOKEN_WAIT_BYTES;recycle<=2;
                          end
             endcase
         end

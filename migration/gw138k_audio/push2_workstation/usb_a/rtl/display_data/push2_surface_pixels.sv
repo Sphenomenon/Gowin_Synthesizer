@@ -4,7 +4,14 @@ module push2_surface_pixels(input wire clk,rst,frame_ready,output wire frame_sta
     output reg [15:0] pixel,input wire [31:0] control,options,
     input wire [63:0] held,input wire [6:0] note,velocity,
     input wire [63:0] display_meta,input wire display_meta_valid,
-    input wire [31:0] score_mask,input wire score_running,record_enabled);
+    input wire [31:0] score_mask,input wire score_running,record_enabled,
+    input wire guide_mode,guide_chosen,
+    input wire [3:0] guide_browse,guide_track,
+    input wire [4:0] guide_track_count,
+    input wire [15:0] guide_score_count,guide_cursor,
+    input wire guide_analysis_done,
+    input wire name_write_valid,
+    input wire [7:0] name_write_addr,name_write_data);
     reg [22:0] timer;
     reg [31:0] cs,op;reg [63:0] pads;reg [31:0] score_pads;
     reg score_on,record_on;reg [6:0] n,v;
@@ -46,6 +53,15 @@ module push2_surface_pixels(input wire clk,rst,frame_ready,output wire frame_sta
     endfunction
     wire ink;
     video_font_5x7 font(.character(character),.column(col),.row(row),.ink(ink),.glyph());
+    wire [15:0] song_pixel;
+    push2_song_screen song_screen(.clk(clk),.rst(rst),
+        .name_write_valid(name_write_valid),.name_write_addr(name_write_addr),
+        .name_write_data(name_write_data),.chosen(guide_chosen),
+        .browse_index(guide_browse),.track_index(guide_track),
+        .track_count(guide_track_count),.score_count(guide_score_count),
+        .cursor(guide_cursor),.analysis_done(guide_analysis_done),
+        .effect_mask(display_effect_mask),
+        .x(x),.y(y),.pixel(song_pixel));
     wire [3:0] gx=(x-10'd736)/10'd26;
     wire [3:0] gy=(y-8'd40)/8'd10;
     wire grid=x>=736 && x<944 && y>=40 && y<120;
@@ -85,5 +101,6 @@ module push2_surface_pixels(input wire clk,rst,frame_ready,output wire frame_sta
             else if(score_on && gy>=4 && score_pads[(7-gy)*8+gx])pixel=16'h67ee;
             else pixel=16'h5628;
         end
+        if(guide_mode) pixel=song_pixel;
     end
 endmodule
