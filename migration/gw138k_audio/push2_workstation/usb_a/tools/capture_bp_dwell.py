@@ -47,11 +47,14 @@ def main():
     began = None
     bad_status = 0
 
-    with open(args.label and f"dwell_{args.label}.log" or "dwell.log", "w") as log:
-        def emit(line):
-            print(line, flush=True)
-            log.write(line + "\n")
+    log = open(args.label and f"dwell_{args.label}.log" or "dwell.log", "w")
 
+    def emit(line):
+        print(line, flush=True)
+        log.write(line + "\n")
+        log.flush()
+
+    try:
         with __import__("serial").Serial(args.port, 115200, timeout=0.5) as port:
             emit(f"# capture begin {time.strftime('%F %T')} label={args.label!r}")
             while True:
@@ -92,6 +95,8 @@ def main():
                 else:
                     emit(f"{elapsed:7.1f}s wave={wave:3d} result_valid=1 "
                          f"(hash page {(nn & 7)}, dwell occluded)")
+    finally:
+        log.close()
 
     # ---- frame rate from the stream_wave slope between restarts ----
     emit("\n==== frame rate ====")
