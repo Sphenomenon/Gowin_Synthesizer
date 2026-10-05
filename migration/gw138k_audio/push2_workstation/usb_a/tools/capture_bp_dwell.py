@@ -51,8 +51,11 @@ def main():
 
     def emit(line):
         print(line, flush=True)
-        log.write(line + "\n")
-        log.flush()
+        try:
+            log.write(line + "\n")
+            log.flush()
+        except ValueError:
+            pass
 
     try:
         with __import__("serial").Serial(args.port, 115200, timeout=0.5) as port:
@@ -95,8 +98,8 @@ def main():
                 else:
                     emit(f"{elapsed:7.1f}s wave={wave:3d} result_valid=1 "
                          f"(hash page {(nn & 7)}, dwell occluded)")
-    finally:
-        log.close()
+    except KeyboardInterrupt:
+        pass
 
     # ---- frame rate from the stream_wave slope between restarts ----
     emit("\n==== frame rate ====")
@@ -139,6 +142,7 @@ def main():
     emit(f"  summed mean {total_ms:.1f} ms (expect ~500 ms if capture is clean)")
     if bad_status:
         emit(f"  ({bad_status} reports skipped for model_status != E)")
+    log.close()
 
 
 if __name__ == "__main__":
