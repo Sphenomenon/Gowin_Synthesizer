@@ -144,3 +144,13 @@ RTL（wrapper+DMA+arbiter owner 6）+ TB 约一天；构建 + 板测一轮（约
 - git：commit 7437dda（RTL+TB+构建脚本+报告），已推送 origin/main。
 - 下一步：与吞吐优化窗口同步后烧板（UserCode 0x80），P10 开延迟听感比对 +
   长时间运行 telemetry；BSRAM 审计应显示 u_audio 122→58。
+
+## 板测验收（2026-10-05，用户执行）
+
+0x80 板上实测通过：P10 延迟开启弹奏，尾音与 0x79 听感一致（逐位等价在
+sim 已证），无爆音/无 wet 丢失。方案 B 验收标准全部达成：
+- 片上等价：45000 样本逐位相等（clear/停顿/复位四场景）
+- 板上听感：用户验收通过
+- BSRAM：279 → 215（-64）
+遗留可选项：SDC 为两组 FIFO 的 Gray 总线加 set_false_path/set_max_delay
+清时序报告（与既有 CDC 路径同处理，纯报告整洁性，无功能影响）。
