@@ -1,11 +1,22 @@
 {
-  "build": "results/build_20261002_172816_464963",
+  "build": "results/song_guide_full80_20261005_045703",
   "build_mode": "full",
-  "memory_report": "results/build_20261002_172816_464963/workstation_memory.json",
-  "bsram": 234,
-  "bsram_measurement_stage": "synthesis",
+  "user_code": "0x00000080",
+  "flashed_at": "2026-10-05 12:48",
+  "flash_record": "../results/sram_20261005_124837_731230",
+  "baseline": "results/song_guide_full79_20261004_204059",
+  "change": "P10 delay line migrated to DDR ring (arbiter owner 6); serial_delay_effect_ddr + delay_ddr_dma",
+  "memory_report": null,
+  "bsram": 215,
+  "bsram_measurement_stage": "pnr",
+  "bsram_prev": 279,
   "tf_decoder": "wav",
   "basic_pitch_elaborated": true,
-  "timing_closed": null,
-  "hardware_tested": false
+  "timing_closed": false,
+  "timing_note": "audio_76m8 TNS -2419ns, worst paths are FIFO Gray CDC sync paths (pessimistic STA, same class as 0x79 baseline)",
+  "hardware_tested": true,
+  "equivalence_tb": "sim/audio/run_delay_ddr_equivalence.py: 45000 samples bit-exact",
+  "coordination": "UserCode 0x80 owned by delay-DDR window; throughput window takes 0x81+ and must re-read this file before flashing",
+  "commit": "dcd86f6",
+  "board_acceptance": "2026-10-05 user listening test passed: P10 delay wet identical to 0x79, no glitches"
 }
