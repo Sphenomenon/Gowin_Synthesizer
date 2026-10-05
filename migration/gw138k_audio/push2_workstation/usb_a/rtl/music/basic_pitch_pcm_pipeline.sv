@@ -42,6 +42,7 @@ module basic_pitch_pcm_pipeline #(
     output logic [6:0]         score_note_o,
     output logic [15:0]        debug_onset_o,
     output logic [15:0]        debug_progress_o,
+    output logic [15:0]        debug_dwell_o,
     output logic [8:0]         debug_stream_wave_o,
     output logic [191:0]       debug_layer_hashes_o,
     output logic               busy_o,
@@ -134,6 +135,56 @@ module basic_pitch_pcm_pipeline #(
                                (|nn_sample_req), (|nn_bias_req), nn_feed_valid,
                                nn_mem_req};
     assign debug_stream_wave_o = stream_wave;
+
+    // ------------------------------------------------------------------
+    // Per-state dwell telemetry for the B138 NN word.  Eight 25-bit cycle
+    // counters bucket the FSM states; a 25M-cycle divider matched to the
+    // 0.5 s report tick latches the just-finished window totals and advances
+    // the reported page.  debug_dwell_o = {page[1:0], cycles[24:11]} keeps
+    // debug_progress_o (and its FSM-state decode) untouched.
+    // ------------------------------------------------------------------
+    logic [1:0]  dwell_page;
+    logic [24:0] dwell_div;
+    logic [24:0] dwell_count [0:7];
+    logic [24:0] dwell_snap  [0:7];
+    function automatic [2:0] dwell_bucket(input logic [5:0] s);
+        case (s)
+            S_START_CQT, S_CQT: dwell_bucket = 3'd0;
+            S_START_NORM, S_NORM, S_CACHE, S_WAIT_CACHE: dwell_bucket = 3'd1;
+            S_PREP_CONTOUR, S_START_CONTOUR, S_CONTOUR, S_AFTER_CONTOUR:
+                dwell_bucket = 3'd2;
+            S_PREP_REDUCE, S_READY_REDUCE, S_START_REDUCE, S_REDUCE,
+            S_AFTER_REDUCE, S_PREP_NOTES, S_START_NOTES, S_NOTES, S_AFTER_NOTES:
+                dwell_bucket = 3'd3;
+            S_PREP_NOTE_OUT, S_READY_NOTE_OUT, S_START_NOTE_OUT, S_NOTE_OUT,
+            S_AFTER_NOTE_OUT, S_PREP_ONSET, S_START_ONSET, S_ONSET, S_AFTER_ONSET:
+                dwell_bucket = 3'd4;
+            S_PREP_ONSET_OUT, S_READY_ONSET_OUT, S_START_ONSET_OUT, S_ONSET_OUT,
+            S_STREAM_DISPATCH, S_STREAM_FEED, S_STREAM_NEXT, S_SETTLE:
+                dwell_bucket = 3'd5;
+            S_START_DP, S_DP, S_WAIT_RESULT, S_SCORE_DRAIN: dwell_bucket = 3'd6;
+            default: dwell_bucket = 3'd7;
+        endcase
+    endfunction
+    always_ff @(posedge clk_i or negedge run_rst_ni) begin
+        if (!run_rst_ni) begin
+            dwell_page <= 2'd0; dwell_div <= 25'd0;
+            for (integer i=0;i<8;i=i+1) begin
+                dwell_count[i] <= 25'd0; dwell_snap[i] <= 25'd0;
+            end
+        end else if (dwell_div == 25'd24_999_999) begin
+            dwell_div <= 25'd0;
+            dwell_page <= dwell_page + 1'b1;
+            for (integer i=0;i<8;i=i+1) begin
+                dwell_snap[i] <= dwell_count[i];
+                dwell_count[i] <= 25'd0;
+            end
+        end else begin
+            dwell_div <= dwell_div + 1'b1;
+            dwell_count[dwell_bucket(state)] <= dwell_count[dwell_bucket(state)] + 1'b1;
+        end
+    end
+    assign debug_dwell_o = {dwell_page, dwell_snap[dwell_page][24:11]};
 
     // ------------------------------------------------------------------
     // PCM resampler and analysis window

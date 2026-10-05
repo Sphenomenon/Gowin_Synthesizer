@@ -46,7 +46,7 @@ module basic_pitch_workstation_link (
         .ready_o(converted_ready),.left_i(pcm_left),.right_i(pcm_right),
         .valid_o(converted_valid),.ready_i(bp_pcm_ready),
         .left_o(converted_left),.right_o(converted_right));
-    wire [15:0] result_conf,debug_onset,debug_progress;
+    wire [15:0] result_conf,debug_onset,debug_progress,debug_dwell;
     wire [8:0] debug_stream_wave;
     wire [191:0] layer_hashes;
     wire [31:0] model_expected_crc,model_actual_crc;
@@ -76,6 +76,7 @@ module basic_pitch_workstation_link (
         .result_conf_o(result_conf),.result_frame_o(result_frame),
         .score_valid_o(score_valid),.score_ready_i(score_ready),.score_note_o(score_note),
         .debug_onset_o(debug_onset),.debug_progress_o(debug_progress),
+        .debug_dwell_o(debug_dwell),
         .debug_stream_wave_o(debug_stream_wave),
         .debug_layer_hashes_o(layer_hashes),
         .busy_o(bp_busy),.done_o(bp_done),.song_done_o(bp_song_done),
@@ -178,10 +179,13 @@ module basic_pitch_workstation_link (
         {sample_rate[15:0],model_path_trace,6'd0} :
         {sample_rate[15:0],tf_trace,
          seen_pcm,source_active,format_ready,pcm_ready,pcm_valid};
+    // Analysis-mode NN word: {debug_progress, per-state dwell page}.  The
+    // former sample_rate half is redundant (the TF word carries it) and now
+    // carries the CNN per-state dwell telemetry: {page[1:0], cycles[24:11]}.
     wire [31:0] nn_report = (model_status==4'd12 || model_status==4'd15) ?
         (hash_page[0] ? model_actual_crc : model_expected_crc) :
         result_valid ? {layer_hashes[hash_page*32+3 +: 29],hash_page} :
-        {debug_progress,sample_rate[15:0]};
+        {debug_progress,debug_dwell};
     // The model status remains in bits [5:2]. Upper bits make a completed
     // score observable on the board without altering the six CNN hash pages.
     wire [31:0] sd_report = {score_count,score_first,score_last,2'd0,model_error_stage,
