@@ -57,8 +57,9 @@ module basic_pitch_workstation_link (
     basic_pitch_pcm_pipeline #(
         .WIN_LEN(43844),.FRAME_LIMIT(172),.OCTAVE_LIMIT(9),
         .USE_EXTERNAL_STATE(1'b1),.USE_EXTERNAL_PLANE(1'b1),
-        .USE_ALL_DDR(1'b1),.USE_DDR_FRONT_COEFF(1'b1),
-        .USE_DDR_CQT_COEFF(1'b1)
+        .USE_EXTERNAL_WEIGHTS(1'b1),.USE_EXTERNAL_FEATURES(1'b1),
+        .USE_ALL_DDR(1'b0),.USE_DDR_SIGNAL(1'b1),
+        .USE_DDR_FRONT_COEFF(1'b1),.USE_DDR_CQT_COEFF(1'b1)
     ) u_basic_pitch (
         .clk_i(clk_50m),.rst_ni(reset_n),.analysis_restart_i(analysis_restart),
         .model_serial_i(model_serial),.model_status_o(model_status),

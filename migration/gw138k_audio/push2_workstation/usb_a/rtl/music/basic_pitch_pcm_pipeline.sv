@@ -17,6 +17,7 @@ module basic_pitch_pcm_pipeline #(
     parameter bit USE_EXTERNAL_WEIGHTS = 1'b0,
     parameter bit USE_EXTERNAL_FEATURES = 1'b0,
     parameter bit USE_ALL_DDR = 1'b0,
+    parameter bit USE_DDR_SIGNAL = USE_ALL_DDR,
     parameter bit USE_DDR_FRONT_COEFF = USE_ALL_DDR,
     parameter bit USE_DDR_CQT_COEFF = USE_ALL_DDR
 ) (
@@ -299,7 +300,7 @@ module basic_pitch_pcm_pipeline #(
     assign cqt_log_data = log_lut_rom[cqt_log_addr];
 
     basic_pitch_cqt_engine #(.WIN_LEN(WIN_LEN), .CQT_BINS(CQT_BINS),
-        .USE_DDR_SIGNAL(USE_ALL_DDR), .USE_DDR_COEFF(USE_DDR_CQT_COEFF)) u_cqt (
+        .USE_DDR_SIGNAL(USE_DDR_SIGNAL), .USE_DDR_COEFF(USE_DDR_CQT_COEFF)) u_cqt (
         .clk_i(clk_i), .rst_ni(run_rst_ni), .start_i(state == S_START_CQT),
         .octave_limit_i(OCTAVE_LIMIT[4:0]), .frame_limit_i(FRAME_COUNT),
         .win_we_i(front_win_we), .win_addr_i(front_win_addr), .win_data_i(front_win_data),
@@ -642,15 +643,18 @@ module basic_pitch_pcm_pipeline #(
             assign weight_mem_addr=32'd0;
             assign weight_mem_wdata=16'd0;
         end else if (USE_EXTERNAL_WEIGHTS) begin : g_ddr_weights
-            assign model_status_o = model_done ? 4'd14 : 4'd0;
-            assign debug_model_expected_crc_o=0;
-            assign debug_model_actual_crc_o=0;
-            assign debug_model_error_stage_o=0;
-            basic_pitch_model_loader u_model_loader (
-                .clk_i(clk_i), .rst_ni(rst_ni), .done_o(model_done),
+            // Board flow: the model image arrives over UART (BPN1 + CRC +
+            // DDR readback verification), never a bitstream ROM.
+            basic_pitch_uart_model_loader u_model_loader (
+                .clk_i(clk_i), .rst_ni(rst_ni), .serial_i(model_serial_i),
+                .done_o(model_done), .status_o(model_status_o),
+                .debug_expected_crc_o(debug_model_expected_crc_o),
+                .debug_actual_crc_o(debug_model_actual_crc_o),
+                .debug_error_stage_o(debug_model_error_stage_o),
                 .mem_req_o(model_mem_req), .mem_write_o(model_mem_write),
                 .mem_byte_addr_o(model_mem_addr), .mem_wdata_o(model_mem_wdata),
-                .mem_ready_i(model_mem_ready));
+                .mem_ready_i(model_mem_ready),
+                .mem_rsp_valid_i(model_mem_rsp_valid), .mem_rdata_i(mem_rdata_i));
             basic_pitch_weight_cache u_weight_cache (
                 .clk_i(clk_i), .rst_ni(run_rst_ni), .start_i(state == S_LOAD_WEIGHT),
                 .blob_word_base_i(weight_blob_base), .word_count_i(weight_word_count),
