@@ -69,7 +69,8 @@ module basic_pitch_cqt_engine #(
                            S_STORE = 5'd6, S_DEC_REQ = 5'd7, S_DEC = 5'd8,
                            S_NEXT = 5'd9, S_DONE = 5'd10, S_FLUSH = 5'd11,
                            S_MAC_WAIT = 5'd12, S_DEC_WAIT = 5'd13,
-                           S_COEFF_REQ = 5'd14;
+                           S_COEFF_REQ = 5'd14, S_DEC_ACC = 5'd15,
+                           S_DEC_STORE = 5'd16;
 
     logic [4:0]         state;
     // The decimator runs in place. Output i can overwrite source i once
@@ -102,6 +103,8 @@ module basic_pitch_cqt_engine #(
     logic [16:0]        dec_i;
     logic [7:0]         dec_k;
     logic signed [47:0] dec_acc;
+    logic dec_in_q;
+    logic signed [31:0] dec_product_q;
 
 
     assign win_ready_o = (state == S_IDLE);
@@ -123,12 +126,15 @@ module basic_pitch_cqt_engine #(
 
     wire signed [19:0] dec_raw = $signed({3'b0, dec_i} << 1) + $signed({12'd0, dec_k}) - 20'sd127;
     wire               dec_in  = (dec_raw >= 0) && (dec_raw < $signed({1'b0, sig_len}));
-    wire signed [15:0] dec_sample = dec_in ? sig_rdata : 16'sd0;
+    wire signed [15:0] dec_sample = dec_in_q ? sig_rdata : 16'sd0;
 
     // decimation tap sum including the current tap; >>24 is an arbitrary global
     // scale (it cancels in NormalizedLog), kept small enough to saturate rarely
+    // Signed 16x16 fits exactly in 32 bits; explicitly extend before the
+    // existing 48-bit accumulator. Split validity/multiply/add/saturation
+    // without adding or copying any signal/head RAM.
     wire signed [47:0] dec_sum = dec_acc +
-        $signed(klp_data_i) * $signed({{32{dec_sample[15]}}, dec_sample});
+        $signed({{16{dec_product_q[31]}}, dec_product_q});
 
     function automatic signed [15:0] sat15(input signed [47:0] v);
         logic signed [32:0] sh;
@@ -145,12 +151,12 @@ module basic_pitch_cqt_engine #(
     assign signal_rd_addr = (state == S_MAC_REQ) ? rd_idx :
                             ((state == S_DEC_REQ && dec_in) ? dec_raw[17:0] : 18'd0);
     assign sig_we    = win_we_i ||
-                       ((state == S_DEC) && (dec_k == 8'd255) && (dec_i >= 17'd128)) ||
+                       ((state == S_DEC_STORE) && (dec_i >= 17'd128)) ||
                        (state == S_FLUSH);
     assign sig_waddr = win_we_i ? {2'd0, win_addr_i} :
                        (state == S_FLUSH) ? {10'd0, flush_i} : {1'b0, dec_i};
     assign sig_wdata = win_we_i ? win_data_i :
-                       (state == S_FLUSH) ? dec_head[flush_i] : sat15(dec_sum);
+                       (state == S_FLUSH) ? dec_head[flush_i] : sat15(dec_acc);
 
     generate if (USE_DDR_SIGNAL) begin : g_ddr_signal
         assign sig_rdata = sig_ddr_rdata;
@@ -185,11 +191,11 @@ module basic_pitch_cqt_engine #(
                 sig_overflow_o <= 0;
             end else begin
                 if (sig_write_pending && sig_mem_ready_i) sig_write_pending <= 0;
-                if (win_we_i || ((state == S_DEC) && dec_k == 8'd255 && dec_i >= 17'd128)) begin
+                if (win_we_i || ((state == S_DEC_STORE) && dec_i >= 17'd128)) begin
                     if (sig_write_pending && !sig_mem_ready_i) sig_overflow_o <= 1;
                     sig_write_pending <= 1;
                     sig_pending_addr <= win_we_i ? {2'd0,win_addr_i} : {1'd0,dec_i};
-                    sig_pending_data <= win_we_i ? win_data_i : sat15(dec_sum);
+                    sig_pending_data <= win_we_i ? win_data_i : sat15(dec_acc);
                 end
                 if (sig_mem_rsp_valid_i && (state == S_MAC_WAIT || state == S_DEC_WAIT))
                     sig_ddr_rdata <= sig_mem_rdata_i;
@@ -241,6 +247,7 @@ module basic_pitch_cqt_engine #(
             mac_kre <= 16'sd0; mac_kim <= 16'sd0;
             srem <= '0; sbit <= 6'd31; sval <= '0;
             dec_i <= '0; dec_k <= '0; dec_acc <= '0; flush_i <= '0;
+            dec_in_q <= 1'b0; dec_product_q <= 32'sd0;
             done_o <= 1'b0; mag_we_o <= 1'b0;
         end else begin
             mag_we_o <= 1'b0;
@@ -337,28 +344,39 @@ module basic_pitch_cqt_engine #(
                 end
 
                 S_DEC_REQ: begin
+                    dec_in_q <= dec_in;
                     if (!USE_DDR_SIGNAL || !dec_in) state <= S_DEC;
                     else if (!sig_write_pending && sig_mem_ready_i) state <= S_DEC_WAIT;
                 end
                 S_DEC_WAIT: if (sig_mem_rsp_valid_i) state <= S_DEC;
 
                 S_DEC: begin
+                    dec_product_q <= $signed(klp_data_i) * $signed(dec_sample);
+                    state <= S_DEC_ACC;
+                end
+
+                S_DEC_ACC: begin
                     dec_acc <= dec_sum;
                     if (dec_k == 8'd255) begin
-                        if (dec_i < 17'd128)
-                            dec_head[dec_i[6:0]] <= sat15(dec_sum);
-                        dec_acc    <= '0;
-                        dec_k      <= '0;
-                        if (dec_i == next_len - 1) begin
-                            flush_i <= 8'd0;
-                            state <= S_FLUSH;
-                        end
-                        else begin
-                            dec_i <= dec_i + 1'b1;
-                            state <= S_DEC_REQ;
-                        end
+                        state <= S_DEC_STORE;
                     end else begin
                         dec_k <= dec_k + 1'b1;
+                        state <= S_DEC_REQ;
+                    end
+                end
+
+                S_DEC_STORE: begin
+                    // The final tap is already included in dec_acc. Keep the
+                    // first 128 outputs deferred until the source is consumed.
+                    if (dec_i < 17'd128)
+                        dec_head[dec_i[6:0]] <= sat15(dec_acc);
+                    dec_acc <= '0;
+                    dec_k <= '0;
+                    if (dec_i == next_len - 1) begin
+                        flush_i <= 8'd0;
+                        state <= S_FLUSH;
+                    end else begin
+                        dec_i <= dec_i + 1'b1;
                         state <= S_DEC_REQ;
                     end
                 end

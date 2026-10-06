@@ -55,12 +55,19 @@ def audit(build):
     parser.feed(path.read_text())
     result = {'build': str(build), 'report_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
               'same_clock_setup': [], 'same_clock_hold': [], 'to_clk50_setup': [],
-              'fmax_mhz': None, 'tns': {}}
+              'fmax_mhz': None, 'clock_period_ns': None, 'clock_required_mhz': None, 'tns': {}}
     required = {kind: False for kind in ('setup', 'hold')}
     for command, rows in parser.tables:
         if not rows:
             continue
         head = rows[0]
+        if 'Period' in head and 'Frequency(MHz)' in head:
+            for row in rows[1:]:
+                if len(row) >= 5 and row[1] == 'clk_50m':
+                    result['clock_period_ns'] = float(row[3])
+                    # Gowin 1.9.12 HTML omits the frequency td in this table;
+                    # use the physical period, not a shifted Rise/Fall column.
+                    result['clock_required_mhz'] = 1000.0 / result['clock_period_ns']
         if 'Actual Fmax' in head:
             for row in rows[1:]:
                 if len(row) >= 4 and row[1] == 'clk_50m':
@@ -96,7 +103,10 @@ def audit(build):
         all(result[k + '_wns_ns'] is not None and result[k + '_wns_ns'] >= 0 for k in required))
     result['clk50_endpoint_tns_closed'] = (len(result['tns']) == 2 and
         all(r['ns'] >= 0 and r['endpoints'] == 0 for r in result['tns'].values()))
-    result['clk50_closed'] = (result['same_clock_closed'] and result['clk50_endpoint_tns_closed'] and
+    result['clock_constraint_preserved'] = (result['clock_period_ns'] == 20 and
+                                             result['clock_required_mhz'] == 50)
+    result['clk50_closed'] = (result['clock_constraint_preserved'] and result['same_clock_closed'] and
+                             result['clk50_endpoint_tns_closed'] and
                              result['fmax_mhz'] is not None and result['fmax_mhz'] >= 50)
     return result
 

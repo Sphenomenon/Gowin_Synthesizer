@@ -32,8 +32,10 @@ P&R BSRAM 预算不高于 260。板上仍是 0x00000084；候选 0x00000085 尚�
   延迟/背压、并行 delay 写流、28 项出谱。旧地址负对照仍在 frame=1/state=0 捕获碰撞。
   证据 `results/clk50_fix_20261007/dp_oracle/`。
 - 新 full85 完整 staging 的 scope 8 项、菜单/playlist/guidance 7 项已 PASS；
-  TF 16 项、delay 等价与完整回归仍运行中。
-- 12 帧 CNN 双配置六层哈希与出谱等价性运行中。
+  完整回归 18/18 PASS（含 TF 16 项、delay 等价和回溯隔离）。
+  另三项 Viterbi 有序出谱、DDR 出谱和首音符对齐 TB 全部 PASS。
+- 12 帧 CNN 双配置 PASS：逐 wave 六层哈希、写出覆盖和 3 项出谱一致，最终六哈希
+  与迁址前后已验收参考完全相同。证据 `results/clk50_fix_20261007/cnn_ab_12frames.log`。
 
 ## 构建与检查工具
 
@@ -46,3 +48,31 @@ P&R BSRAM 预算不高于 260。板上仍是 0x00000084；候选 0x00000085 尚�
 - 五项冻结文件全部 SHA256 未变，BP 回溯地址继续保持 0x30400000。
 
 尚未宣告时序闭合或候选板级验收。最终结果将在取得 P&R 路径、资源和回归后补充。
+
+综合资源复核：基线/候选均为 SYN BSRAM=216，Viterbi 均为6。50MHz 综合估计
+从50.351提升到54.406MHz；最终资源与时序以尚在运行的 P&R 为准。
+
+## 专项报告确认后的 CQT 修复
+
+- 基线增量 P&R 已完成。该次路由 clk50 WNS=-4.114ns，Hold WNS=+0.160ns，
+  Fmax=41.469MHz，Setup TNS=-791.625ns/392 端点；与原部署的 41.813MHz 分别记录。
+  100 条内部路径的最差项为 `u_cqt/dec_i -> dec_head / sig_pending_data`；
+  Viterbi `p_cnt -> score` 同时存在约 -3.671ns 的长链。
+- CQT 降采样的 `dec_raw/valid -> sample mux -> multiply -> 48bit add -> saturation`
+  拆分为请求时锁存 valid、16x16 乘积寄存、累加、最后单独写回。16x16 的精确积
+  使用32bit并显式符号扩展到原48bit累加器，保留原移位/饱和语义。
+  第一128项仍延迟到源已消费后 flush；未改变原信号/头部缓存分配。
+- 额外标量为 valid 1bit 和 product 32bit。每降采样 tap 增1拍，每输出末尾增1拍；
+  43844样本、8次降采样的输出数共43671，理论额外 43671×257/50MHz=224.469ms/窗。
+  加上DP约54.48ms，理论总增量约279ms，相对约57s/窗约0.5%；实测仍待板级确认。
+- 第一项仅DP候选在确认上述 CQT 证据后取消 P&R，没有烧板，不写作闭合。
+  合并候选 `results/song_guide_full85_clk50_20261007_004457_617018/` 正在完整构建。
+- 新测试 `sim/music/run_cqt_pipeline_equivalence.py` 从已验收Git标签取原CQT RTL，
+  分别验证片内/DDR模式的三窗三octave，逐笔比较896次信号写与216个输出bin，
+  覆盖极值、伪随机、饱和、127/128边界及非等长DDR等待。初次DDR测试达到过短周期顶，
+  两窗已一致；提升到明确5M周期并补充片内写比较后，片内/DDR三窗全部 PASS。
+
+合并 CQT+DP 的12帧 CNN A/B 也已 PASS，六层哈希与此前参考相同，出谱3项一致。
+
+合并候选综合 clk50 估计61.890MHz，SYN BSRAM=216，CQT自身=0，Viterbi=6；
+与 full84 的RAM结构相同。尚以 P&R 实际 setup/hold 与资源数决定是否闭合。

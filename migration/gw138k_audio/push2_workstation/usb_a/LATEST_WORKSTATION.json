@@ -169,18 +169,25 @@
   "sram_record": "../results/sram_20261006_234504_538503",
   "downloaded_at": "2026-10-06T23:45:25+08:00",
   "timing_candidate": {
-    "build": "results/song_guide_full85_clk50_20261007_002805_594995",
+    "build": "results/song_guide_full85_clk50_20261007_004457_617018",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "building; unflashed",
-    "change": "Viterbi scalar read/sum/select/commit pipeline; score/history RAM and CNN caches retained",
+    "status": "building combined DP+CQT candidate; unflashed",
+    "change": "Viterbi scalar read/sum/select/commit and CQT decimation valid/multiply/accumulate/store pipelines; reuse all score/signal/cache RAM",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
     "hardware_tested": false,
     "validation": {
       "viterbi_oracle": "172x89 all scores/backpointers PASS; 28 notes; old-map negative control fails as intended",
-      "scope_menu": "first 15 scope/menu gates PASS; full regression running",
-      "cnn_ab": "12-frame two-config equivalence running"
-    }
+      "scope_menu": "complete staged regression 18/18 PASS, including TF 16/16 and delay equivalence",
+      "cnn_ab": "combined CQT+DP 12-frame A/B PASS; six hashes, coverage and 3 notes unchanged",
+      "guidance_score": "3/3 PASS",
+      "cqt_reference": "local and DDR modes PASS; each 3 windows x 3 octaves, all 896 signal writes and 216 bins/window bit-exact to accepted RTL"
+    },
+    "source_commit": "9c93f6c",
+    "synthesis_bsram": 216,
+    "viterbi_bsram": 6,
+    "synthesis_clk50_fmax_mhz": 61.89,
+    "cancelled_candidate": "results/song_guide_full85_clk50_20261007_002805_594995"
   }
 }

@@ -21,7 +21,7 @@ from build_full_song_83_bp_ddr_isolation import FROZEN
 from workstation_memory import audit
 
 BASE = ROOT / 'results/workstation_scope83_20261006_230626_011557'
-OVERLAYS = ['rtl/music/basic_pitch_viterbi.sv']
+OVERLAYS = ['rtl/music/basic_pitch_viterbi.sv', 'rtl/music/basic_pitch_cqt_engine.sv']
 REPORTS = '''
 # Diagnose clk50 without changing its 20ns constraint or any timing exceptions.
 report_timing -setup -from_clock [get_clocks {clk_50m}] -to_clock [get_clocks {clk_50m}] -max_paths 100
