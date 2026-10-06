@@ -1981,5 +1981,20 @@
     "video_pixel_fmax_mhz": 154.999,
     "required_mhz": 148.5,
     "correction": "Earlier151.305 was a transcription error; release checks read the original deployed report."
+  },
+  "final_auto_route2_comparator": {
+    "build": "results/song_guide_full85_clk50_20261007_065748_676097",
+    "logical_source_commit": "9f8a48c",
+    "source_build_commit": "7b5f993",
+    "synthesis_goal": "auto",
+    "route_option": 2,
+    "status": "running_unflashed",
+    "functional_equivalence_proof": "results/song_guide_full85_clk50_20261007_065748_676097/synthesis_goal_only_equivalence.json",
+    "identical_stage_inputs": 597,
+    "only_changed_input": "scripts/build.tcl; remove opt_goal timing",
+    "reason": "Earlier timing-goal route1/2 exceeded150/120min without reports, while auto pre-final route1 completed in77min; compare same final logic with fewer synthesis replications, no new RTL or repeated logic tests.",
+    "replaced_build": "results/song_guide_full85_clk50_20261007_042458_983585",
+    "cancel_record": "results/song_guide_full85_clk50_20261007_042458_983585/candidate_status.json",
+    "hardware_programmed": false
   }
 }

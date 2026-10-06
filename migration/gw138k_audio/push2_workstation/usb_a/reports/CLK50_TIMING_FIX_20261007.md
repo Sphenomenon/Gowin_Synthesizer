@@ -14,8 +14,8 @@ SSRAM=1607、寄存器40801；原板物理 PNR 为260，最终 PNR 用量与时�
 源/IP/模型/SDC/Tcl文件逐项等价（仅属性不同），功能测试可复用，物理审计不可复用。
 
 当前主候选：results/song_guide_full85_clk50_20261007_054102_250721，timing综合、
-系列默认route2，先过SYN资源门禁再PNR。735aaa3较少改动的timing/route1及route2
-对照也继续构建。选择结果必须满足clk50完整门禁、物理BSRAM≤260、冻结/输入/CDC
+系列默认route2，先过SYN资源门禁再PNR。735aaa3较少改动的timing/route2对照继续；旧route1因耗时过长且未含最后前端修复已取消，
+补充相同最终RTL的auto/route2对照065748_676097。选择结果必须满足clk50完整门禁、物理BSRAM≤260、冻结/输入/CDC
 检查，并保证原本达标的HDMI等时钟域不退化为新的负时序。
 
 已完成auto/route1对照040915：50MHz Fmax49.250、setup WNS=-0.304ns、TNS=-3.342ns/
@@ -325,3 +325,14 @@ Tcl输入逐项比较仅前端综合属性不同，剥离该属性后源码严�
 原板HDMI Fmax基线校正：实际部署full84的Prj1_tr_content.html为154.999MHz，
 此前报告151.305是转录错误，未用来放宽148.5MHz门禁。原始报告SHA256及此校正
 见JSON baseline_clock_qor_source；watch release checks读取原始报告，不依赖转录值。
+
+
+## 最终源码 auto/route2 对照
+
+较早735aaa3 timing/route1运行超过150分钟仍在路由第一阶段，timing/route2也超过
+120分钟仍未完成；此前auto/route1在77分钟完成。取消老route1（输入未漂移，
+无硬件操作，取消记录单列，不记作逻辑或STA失败），保留老route2与最终9f timing/route2。
+新增results/song_guide_full85_clk50_20261007_065748_676097：同最终9f RTL/IP/模型/SDC/
+UserCode/route2，597项输入只在Tcl去掉opt_goal timing，严格等价证明已保存。
+复用已有最终功能验证；SYN资源、PNR时序/用量、各域端点、CDC仍独立检查。
+这是对工具综合/布线选项的有界比较，不追加逻辑改动，不宣称auto会闭合。

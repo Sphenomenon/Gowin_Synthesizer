@@ -270,9 +270,14 @@
     "throughput_tool": "tools/analyze_bp_throughput.py",
     "throughput_baseline_reproduction": "exact full82/full83 accepted OLS values",
     "build_comparators": [
-      "results/song_guide_full85_clk50_20261007_042458_983585",
-      "results/song_guide_full85_clk50_20261007_045710_715943"
-    ]
+      "results/song_guide_full85_clk50_20261007_045710_715943",
+      "results/song_guide_full85_clk50_20261007_065748_676097"
+    ],
+    "cancelled_comparator": {
+      "build": "results/song_guide_full85_clk50_20261007_042458_983585",
+      "status": "cancelled_unflashed",
+      "record": "results/song_guide_full85_clk50_20261007_042458_983585/candidate_status.json"
+    }
   },
   "timing_candidate_progress_history": {
     "build": "results/song_guide_full85_clk50_20261007_054102_250721",
