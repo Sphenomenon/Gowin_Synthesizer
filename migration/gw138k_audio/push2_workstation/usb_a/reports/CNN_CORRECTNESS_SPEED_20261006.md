@@ -96,8 +96,17 @@ SIGINT 报告当前 time=1092227450000 ticks（约 1092.227ms，进入 reduce �
   日志 `base81/dwell_base81.log` 仅为 idle 证据，**不能判定 TRAVLER 基线 PASS/FAIL**。
 - 最终修复提交 `8bc80e9`；脚本 `tools/build_full_song_83_bp_ddr_isolation.py` 沿用 full82
   暂存树与 SHA256 断言，只替换 BP 分配头和 UserCode=00000083。
-- 完整构建：`results/song_guide_full83_20261006_203125_607466/`，当前布线中。
+- 完整构建：`results/song_guide_full83_20261006_203125_607466/`，全流程成功（49m22s），
+  `tool_result.json`: exit_code=0、inputs_unchanged=true；BSRAM **260/340**、DSP 160/298。
   暂存输入与 full82 逐文件对比**恰好两文件不同**（分配头、build.tcl）。
-- 烧板须 `--from-code 0x00000081`，成功即更 JSON；随后必须上传模型并等状态 E。
-- 物理选 TRAVLER 需要用户面板操作；验收为**首窗 36 项 + 帧速率不回退**，记录窗耗时、
+- 已烧板：`../results/sram_20261006_212129_384333/`，完整 `--from-code 0x00000081`，
+  before/SRAM/after **全部通过**，板上 UserCode=0x00000083。成功即更新权威 JSON。
+- 已重传模型：104478 字节、CRC32=AF01A61B，9.0s，**状态 E（DDR 回读 CRC 通过）**。
+  输出记录 `fix83/model_upload.log`。
+- 时序仍未闭合：50MHz Fmax 42.932MHz、TNS −378.941ns/217 端点；audio_76m8
+  TNS −4114.110ns；ddr_ui100 TNS −2552.336ns。报告 `full83_timing.txt`。
+  这不是新增硬件正确性证明，仍以实体首窗和帧速率验收兜底。
+- 0x83 采集已于 21:23:09 启动，1200s，cwd=`results/cnn_correctness83_20261006/fix83/`，
+  原始字落在 `dwell_fix83.log`；目前 CAPTURE/wave=0/score_count=0，等待选歌。
+- 物理选 TRAVLER 需要用户面板操作。验收为**首窗 36 项 + 帧速率不回退**，记录窗耗时、
   首末音符以及可捕获的哈希。未完成前不宣告板级修复验收。

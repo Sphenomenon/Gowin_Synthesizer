@@ -1,36 +1,45 @@
 {
-  "build": "results/song_guide_full81_20261005_133345",
+  "build": "results/song_guide_full83_20261006_203125_607466",
   "build_mode": "full",
-  "user_code": "0x00000081",
-  "flashed_at": "2026-10-06 16:38",
-  "flash_record": "../results/sram_20261006_163824_061544",
-  "baseline": "results/song_guide_full80_20261005_045703",
-  "change": "CNN throughput measurement build: per-state dwell counters in basic_pitch_pcm_pipeline; B138 NN word low half now carries {page[1:0], cycles[24:11]} instead of sample_rate (TF word still carries sample_rate). No behaviour change.",
-  "memory_report": null,
-  "bsram": 215,
+  "user_code": "0x00000083",
+  "flashed_at": "2026-10-06 21:22:16",
+  "flash_record": "../results/sram_20261006_212129_384333",
+  "baseline": "results/song_guide_full82_20261005_144933",
+  "change": "Isolate Basic Pitch Viterbi backpointer DDR history: 0x30000000 -> 0x30400000, outside the 0x80 owner-6 delay ring (0x30000000..0x3001ffff). Preserve 0x82 staged caches, arithmetic and MAC/DP cadence. Only BP DDR map header and UserCode differ in build; frozen files unchanged.",
+  "memory_report": "results/song_guide_full83_20261006_203125_607466/Prj1/impl/pnr/Prj1.rpt.txt",
+  "bsram": 260,
   "bsram_measurement_stage": "pnr",
-  "bsram_prev": 215,
+  "bsram_prev": 260,
   "tf_decoder": "wav",
   "basic_pitch_elaborated": true,
   "timing_closed": false,
-  "timing_note": "same class as 0x80: audio_76m8 FIFO Gray CDC pessimistic STA; telemetry adds only 50MHz-domain counters",
+  "timing_note": "50MHz Fmax 42.932MHz; setup TNS -378.941ns/217 endpoints (full82 -435.444ns/298). audio_76m8 -4114.110ns; ddr_ui100 -2552.336ns. Address-only fix; hardware correctness and throughput must be verified.",
   "hardware_tested": false,
-  "coordination": "Board running 0x00000081 (verified flash after.log); model status E read 2026-10-06. CNN correctness/throughput investigation reserves next UserCode 0x00000083. Physical TRAVLER selection required for baseline acceptance.",
-  "commit": "5583dc1",
-  "board_acceptance": null,
-  "candidate": {
-    "user_code": "0x00000083",
-    "build": "results/song_guide_full83_20261006_203125_607466",
-    "change": "Fix confirmed 0x80 DDR allocation collision: Basic Pitch backpointers 0x30000000 -> 0x30400000, outside owner-6 delay ring 0x30000000..0x3001ffff. Preserve full82 CNN/Viterbi arithmetic and cadence. Frozen files unchanged.",
-    "hardware_tested": false,
-    "acceptance": "12-frame CNN A/B with sustained delay writes PASS (six hashes and score sequence, same as no-delay reference); old-map negative control fails frame=1, new-map 172-frame Icarus isolation oracle PASS; guidance 5/5 and TF 16/16 PASS. Full build in progress; TRAVLER first-window 36 + throughput board acceptance pending.",
-    "superseded_build": "results/song_guide_full83_20261006_195842_758915 (cancelled, never flashed)",
-    "previous_candidate": {
-      "user_code": "0x00000082",
-      "build": "song_guide_full82_20261005_144933",
-      "acceptance": "throughput passed; correctness failed due to shared DDR-history allocation"
-    },
-    "source_commit": "8bc80e9",
-    "supplementary_iverilog_ab": "incomplete: vvp stopped advancing simulation time near 1092.227ms; archived separately, not treated as logic PASS/FAIL"
+  "coordination": "Board 0x00000083 verified and model uploaded, status E. Capture directory results/cnn_correctness83_20261006/fix83. Await physical TRAVLER selection; first-window 36-item and frame-rate acceptance pending.",
+  "commit": "7cfc976",
+  "source_commit": "8bc80e9",
+  "board_acceptance": {
+    "status": "pending",
+    "model_status": "E (DDR readback CRC passed; upload 9.0s)",
+    "required": "TRAVLER first-window score_count=36 and no frame-rate regression"
+  },
+  "validation": {
+    "cnn_ab": "12-frame Verilator A/B with sustained delay writes PASS; six hashes/coverage/score sequence unchanged",
+    "ddr_isolation": "172-frame Icarus mathematical oracle PASS, 28 notes; old-map negative control fails frame=1",
+    "tf_audio": "16/16 PASS; final input SHA256 unchanged",
+    "guidance": "5/5 final PASS",
+    "supplementary_iverilog_ab": "incomplete due simulation-time stall; not labeled logic PASS/FAIL"
+  },
+  "previous_board": {
+    "user_code": "0x00000081",
+    "flash_record": "../results/sram_20261006_163824_061544"
+  },
+  "cancelled_candidate_build": "results/song_guide_full83_20261006_195842_758915 (never flashed)",
+  "capture": {
+    "directory": "results/cnn_correctness83_20261006/fix83",
+    "log": "results/cnn_correctness83_20261006/fix83/dwell_fix83.log",
+    "started_at": "2026-10-06 21:23:09",
+    "seconds": 1200,
+    "status": "running; awaiting physical TRAVLER selection"
   }
 }
