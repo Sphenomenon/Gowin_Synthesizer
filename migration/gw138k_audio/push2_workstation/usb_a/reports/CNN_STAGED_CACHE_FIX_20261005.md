@@ -88,6 +88,13 @@ vs 基线 2.7 s/帧，≈18×。
 4. **驻留分布位移**：修复后页 2-5（CNN 各层）应大幅缩水，P0/P1（CQT/NORM，每窗一次）
    占比相对上升。
 
+## 回归底线（2026-10-06 复核）
+
+- `sim/tf_audio/run.py` **16/16 PASS**（`out/tf_audio_20261006_161840_743237`）；
+- `sim/guidance/tb_playlist_hold` PASS、`sim/guidance/tb_tf_hotplug_probe` PASS
+  （0x80 时段的 vendor SPI token 窗 166ms 修复未触碰）。
+  本窗口改动（basic_pitch 管线/link 参数）不被这些 TB 实例化，结果与预期一致。
+
 ## 状态与遗留
 
 - 0x81/0x82 镜像、构建脚本、遥测工具均已提交；`LATEST_WORKSTATION.json` 已更新。
