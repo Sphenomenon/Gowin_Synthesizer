@@ -65,7 +65,9 @@ module basic_pitch_viterbi #(
                            S_EXT_CMT_NOTE_WAIT = 5'd18,
                            S_SCORE = 5'd19, S_SCORE_ONSET_REQ = 5'd20,
                            S_SCORE_ONSET_WAIT = 5'd21, S_SCORE_EMIT = 5'd22,
-                           S_SCORE_FIRST = 5'd23;
+                           S_SCORE_FIRST = 5'd23,
+                           S_DP_SUM = 5'd24, S_DP_SELECT = 5'd25,
+                           S_DP_COMMIT = 5'd26;
 
     logic [4:0]         state;
     logic               last_frame_q;
@@ -75,6 +77,10 @@ module basic_pitch_viterbi #(
     logic signed [31:0] emission [0:STATES-1];
     logic signed [47:0] emit_note_product, emit_onset_product;
     logic signed [31:0] emit_one_comb;
+    // Scalar pipeline only: keep the existing score/history RAMs unchanged.
+    // p_cnt stays fixed through READ -> SUM -> SELECT, so the predecessor
+    // index and its candidate remain aligned even when DDR later stalls.
+    logic signed [31:0] dp_prev_q, dp_trans_q, dp_candidate_q;
     logic signed [31:0] best_val;
     logic signed [31:0] arg_val;
     logic [6:0]         best_idx;
@@ -153,7 +159,7 @@ module basic_pitch_viterbi #(
                                                     : (d_cnt[6:0] - p_cnt[6:0]));
     end
 
-    assign cand_comb     = prev_score[p_cnt] + trans_comb;
+    assign cand_comb     = dp_prev_q + dp_trans_q;
     assign frame_ready_o = (state == S_BINS);
     assign bt_next       = USE_EXTERNAL_STATE ? 7'd0 :
                            bptr_mem[bt_cnt*STATES + bt_state];
@@ -216,6 +222,8 @@ module basic_pitch_viterbi #(
             score_complete_o <= 1'b0;
             result_note_o <= 7'd0; result_conf_o <= 16'd0; result_frame_o <= 16'd0;
             frame_cnt <= 8'd0; peak_note <= 16'sd0;
+            dp_prev_q <= 32'sd0; dp_trans_q <= 32'sd0;
+            dp_candidate_q <= 32'sd0;
             score_scan <= 8'd0; score_previous <= 7'd0;
             score_previous_valid <= 1'b0;
             score_onset_hot <= 1'b0; score_onset_previous <= 1'b0;
@@ -312,32 +320,50 @@ module basic_pitch_viterbi #(
                 end
 
                 S_FRAME: begin
-                    if (cand_comb > best_val) begin
-                        best_val <= cand_comb;
+                    // Register the RAM/mux read and transition arithmetic.
+                    dp_prev_q <= prev_score[p_cnt];
+                    dp_trans_q <= trans_comb;
+                    state <= S_DP_SUM;
+                end
+
+                S_DP_SUM: begin
+                    dp_candidate_q <= cand_comb;
+                    state <= S_DP_SELECT;
+                end
+
+                S_DP_SELECT: begin
+                    // Strict > preserves the first predecessor on ties.
+                    if (dp_candidate_q > best_val) begin
+                        best_val <= dp_candidate_q;
                         best_idx <= p_cnt[6:0];
                     end
                     if (p_cnt == STATES-1) begin
-                        score[d_cnt] <= emission[d_cnt] +
-                            ((cand_comb > best_val) ? cand_comb : best_val);
-                        p_cnt    <= 8'd0;
-                        best_val <= 32'sh80000000;
-                        if (USE_EXTERNAL_STATE) begin
-                            ext_bptr <= (cand_comb > best_val) ? p_cnt[6:0] : best_idx;
-                            state <= S_EXT_BPTR;
-                        end else begin
-                            bptr_mem[frame_cnt*STATES + d_cnt] <=
-                                (cand_comb > best_val) ? p_cnt[6:0] : best_idx;
-                            if (d_cnt == STATES-1) begin
-                                d_cnt     <= 8'd0;
-                                arg_state <= 7'd0;
-                                arg_val   <= 32'sh80000000;
-                                state <= last_frame_q ? S_ARG : S_NEXT;
-                            end else begin
-                                d_cnt <= d_cnt + 8'd1;
-                            end
-                        end
+                        // Include the final candidate before the RAM write.
+                        state <= S_DP_COMMIT;
                     end else begin
                         p_cnt <= p_cnt + 8'd1;
+                        state <= S_FRAME;
+                    end
+                end
+
+                S_DP_COMMIT: begin
+                    score[d_cnt] <= emission[d_cnt] + best_val;
+                    p_cnt <= 8'd0;
+                    best_val <= 32'sh80000000;
+                    if (USE_EXTERNAL_STATE) begin
+                        ext_bptr <= best_idx;
+                        state <= S_EXT_BPTR;
+                    end else begin
+                        bptr_mem[frame_cnt*STATES + d_cnt] <= best_idx;
+                        if (d_cnt == STATES-1) begin
+                            d_cnt <= 8'd0;
+                            arg_state <= 7'd0;
+                            arg_val <= 32'sh80000000;
+                            state <= last_frame_q ? S_ARG : S_NEXT;
+                        end else begin
+                            d_cnt <= d_cnt + 8'd1;
+                            state <= S_FRAME;
+                        end
                     end
                 end
 

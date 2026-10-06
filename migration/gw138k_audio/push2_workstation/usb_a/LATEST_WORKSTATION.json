@@ -167,5 +167,20 @@
   "model_status": "E (DDR readback CRC passed; upload 9.0s)",
   "evidence_report": "reports/SCOPE84_BOARD_20261006.json",
   "sram_record": "../results/sram_20261006_234504_538503",
-  "downloaded_at": "2026-10-06T23:45:25+08:00"
+  "downloaded_at": "2026-10-06T23:45:25+08:00",
+  "timing_candidate": {
+    "build": "results/song_guide_full85_clk50_20261007_002805_594995",
+    "user_code": "0x00000085",
+    "baseline": "results/workstation_scope83_20261006_230626_011557",
+    "status": "building; unflashed",
+    "change": "Viterbi scalar read/sum/select/commit pipeline; score/history RAM and CNN caches retained",
+    "bsram_budget_pnr": 260,
+    "static_timing_closed": null,
+    "hardware_tested": false,
+    "validation": {
+      "viterbi_oracle": "172x89 all scores/backpointers PASS; 28 notes; old-map negative control fails as intended",
+      "scope_menu": "first 15 scope/menu gates PASS; full regression running",
+      "cnn_ab": "12-frame two-config equivalence running"
+    }
+  }
 }
