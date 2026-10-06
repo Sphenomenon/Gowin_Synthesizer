@@ -45,7 +45,12 @@ for _instance, _read, _write, _meta_read, _meta_write, _msb, _bound in [
 ]:
     for _gray, _meta, _binary in [(_read, _meta_read, 'rd_bin' if _read == 'rd_gray' else 'read_binary'),
                                 (_write, _meta_write, 'wr_bin' if _write == 'wr_gray' else 'write_binary')]:
-        _source = f'{_instance}/{_gray}* {_instance}/{_binary}_{_msb}*'
+        # In the inspected netlist only the read MSB aliases binary; write
+        # MSBs retain their Gray names and the binary cells are swept. Gowin
+        # rejects even a redundant unmatched pattern, so never name that cell.
+        _source = f'{_instance}/{_gray}*'
+        if _gray == _read:
+            _source += f' {_instance}/{_binary}_{_msb}*'
         _target = f'{_instance}/{_meta}*'
         CDC_CONSTRAINTS += (f'\nset_max_delay {_bound}.000 -from [get_regs {{{_source}}}] -to [get_regs {{{_target}}}]\n'
                             f'set_false_path -hold -from [get_regs {{{_source}}}] -to [get_regs {{{_target}}}]\n')
@@ -82,7 +87,11 @@ def main():
                        help='reuse completed full85 synthesis and P&R when only constraints differ')
     reuse.add_argument('--incremental-from', type=Path,
                        help='fresh synthesis with a completed full84/85 placement+route reference')
+    parser.add_argument('--synthesis-from', type=Path,
+                        help='reuse checked full85 synthesis after a constraint-only P&R failure')
     args = parser.parse_args()
+    if args.synthesis_from is not None and (args.reroute_from is not None or args.flow not in ('all', 'prepare')):
+        parser.error('--synthesis-from requires new all/prepare without --reroute-from')
     reuse_from = args.reroute_from or args.incremental_from
     if args.incremental_from is not None and args.flow not in ('all', 'prepare', 'syn'):
         parser.error('--incremental-from requires a new all/prepare/syn candidate')
@@ -178,26 +187,57 @@ def main():
                                    if args.reroute_from is not None else
                                    'all non-overlay RTL/IP/memory inputs and tool options identical; fresh synthesis for explicit overlays')
         metadata_path.write_text(json.dumps(metadata, indent=2) + '\n')
+    if args.synthesis_from is not None:
+        previous = args.synthesis_from.resolve()
+        old_inputs = json.loads((previous / 'workstation_inputs.json').read_text())
+        assert all(sha(previous / 'Prj1' / name) == digest for name, digest in old_inputs.items()), 'synthesis input drift'
+        exceptions = {'scripts/build.tcl', 'constraints/tang_mega_138k.sdc'}
+        assert {n: h for n, h in old_inputs.items() if n not in exceptions} == \
+               {n: h for n, h in inputs.items() if n not in exceptions}, 'reuse requires bit-identical RTL/IP/memory'
+        old_tcl = (previous / 'Prj1/scripts/build.tcl').read_text()
+        new_tcl = (stage / 'scripts/build.tcl').read_text()
+        def synthesis_options(text):
+            return [line for line in text.splitlines() if not line.startswith('set_option -inc_pnr')]
+        assert synthesis_options(old_tcl) == synthesis_options(new_tcl), 'synthesis/tool options differ'
+        assert 'set_option -user_code 00000085' in old_tcl, 'synthesis UserCode differs'
+        old_syn = previous / 'Prj1/impl/gwsynthesis'
+        old_log = '\n'.join(p.read_text(errors='replace') for p in previous.glob('gowin_*.log'))
+        assert 'GowinSynthesis finish' in old_log and (old_syn / 'Prj1.vg').stat().st_size > 0, 'synthesis incomplete'
+        assert (old_syn / 'Prj1_syn.rpt.html').read_text().rstrip().endswith('</html>'), 'synthesis report incomplete'
+        frozen(previous / 'Prj1')
+        shutil.copytree(old_syn, stage / 'impl/gwsynthesis')
+        reused = {str(p.relative_to(old_syn)): sha(p) for p in old_syn.rglob('*') if p.is_file()}
+        assert all(sha(stage / 'impl/gwsynthesis' / name) == digest for name, digest in reused.items()), 'netlist copy drift'
+        metadata_path = output / 'build_metadata.json'
+        metadata = json.loads(metadata_path.read_text())
+        metadata['synthesis_from'] = str(previous.relative_to(ROOT))
+        metadata['reused_synthesis_sha256'] = reused
+        metadata['synthesis_reuse_basis'] = 'completed synthesis; exact logic/IP/model/tool identity; corrected SDC only'
+        metadata_path.write_text(json.dumps(metadata, indent=2) + '\n')
     frozen(stage)
     print(output, flush=True)
     if args.flow == 'prepare':
         return
-    actual_flow = 'pnr' if args.reroute_from is not None else args.flow
+    actual_flow = 'pnr' if args.reroute_from is not None or args.synthesis_from is not None else args.flow
     with (output / ('gowin_' + actual_flow + '.log')).open('w') as log:
         result = subprocess.run([str(Path.home() / '.local/bin/gw_sh'), 'scripts/build.tcl'],
                                 cwd=stage, env=dict(os.environ, PRJ1_FLOW=actual_flow),
                                 stdout=log, stderr=subprocess.STDOUT)
     changes = [name for name, digest in inputs.items() if sha(stage / name) != digest]
     metadata = json.loads((output / 'build_metadata.json').read_text())
-    for name, digest in metadata.get('reused_synthesis_sha256', {}).items():
-        if sha(stage / 'impl/gwsynthesis' / name) != digest:
-            changes.append('reused synthesis:' + name)
+    regenerated = [name for name, digest in metadata.get('reused_synthesis_sha256', {}).items()
+                   if sha(stage / 'impl/gwsynthesis' / name) != digest]
+    # Gowin can rerun synthesis in a copied project even for run pnr. Generated
+    # reports/netlists are outputs, not source inputs; preserve original hashes,
+    # record regeneration, and still require every RTL/IP/model/tool input intact.
     if 'reused_point_file' in metadata and sha(stage / metadata['reused_point_file']) != metadata['reused_point_sha256']:
         changes.append('reused placement/route')
     frozen(stage)
     record = {
         'exit_code': result.returncode, 'inputs_unchanged': not changes,
         'changed': changes, 'flow': actual_flow, 'requested_flow': args.flow, 'hardware_tested': False,
+        'regenerated_synthesis_outputs': regenerated,
+        'synthesis_reused_bitwise': bool(metadata.get('reused_synthesis_sha256')) and not regenerated,
     }
     for name in ['tool_result.json', 'tool_result_' + actual_flow + '.json']:
         (output / name).write_text(json.dumps(record, indent=2) + '\n')

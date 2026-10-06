@@ -1472,6 +1472,25 @@
     "build": "results/song_guide_full85_clk50_20261007_021238_778346",
     "status": "running",
     "reference_equivalence": "results/clk50_fix_20261007/frontend_equivalence_final/result.json",
-    "hardware_programmed": false
+    "hardware_programmed": false,
+    "regression": {
+      "passed": true,
+      "gates": 18,
+      "path": "results/song_guide_full85_clk50_20261007_021238_778346/current_regression_20261007_021511_989953/verification.json"
+    }
+  },
+  "frontend_synthesis": {
+    "bsram": 216,
+    "ssram": 1607,
+    "registers": 40509,
+    "clk50_fmax_mhz": 62.233,
+    "register_delta_from_dp_cqt": 4116,
+    "ssram_delta": -64,
+    "note": "4096-bit dline now uses ordinary registers; no added BSRAM"
+  },
+  "corrected_sdc_candidate": {
+    "build": "results/song_guide_full85_clk50_20261007_022219_094886",
+    "status": "running; no hardware programming",
+    "previous_sdc_failure": "TA2003 on swept write binary MSB; corrected to retained Gray registers"
   }
 }
