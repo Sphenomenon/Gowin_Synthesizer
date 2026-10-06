@@ -54,3 +54,21 @@
 其额外每前驱 2 周期约 54ms/172帧窗，可保留卷积吞吐。
 
 板级验收尚未完成，当前不宣告修复或确认根因。冻结文件已记录开工 SHA256，禁止编辑。
+
+## 0x83 候选修复与回归
+
+- Viterbi 新增 `S_DP_READ` / `S_DP_CAND` 两态：寄存前驱分数和 transition，下一拍寄存
+  candidate，再执行原 best/score/backpointer 更新。保持 32 位算术、严格大于的平分选择、
+  前驱顺序、输出协议。卷积、权重缓存、特征缓存、前端参数未改。
+- `sim/music/tb_viterbi_dp_pipeline.sv` 的独立数学 oracle 以 172 帧 × 89 状态核对每个
+  score 和 backpointer；片内/外置历史同时测试，外置 DDR 有可变应答延迟与 ready 等待，
+  出谱带背压；静音、平分以及最终两路出谱序列覆盖。Icarus 四态仿真 **PASS**（28.7s）。
+- playlist_hold / tf_hotplug_probe / viterbi_score / viterbi_score_ddr /
+  viterbi_first_alignment **5/5 PASS**；证据 `results/cnn_correctness83_20261006/guidance/`。
+- 12 帧原实现 A 已完整跑完（6 层哈希 `e1e1c8e5 / 7539c275 / c2ca22ba / 92afdeec /
+  1ea6f727 / 5432e32a`，出谱 3 项）；B wave 0..10 均一致，随后撞到 400M 总周期顶。
+  这是 **测试超限，不是逻辑 FAIL**；保存于 `ab_12frames_pre_fix_cycle_limit/`。
+  修复后 12 帧以 800M 周期上限继续完整验证。
+- 新构建脚本 `tools/build_full_song_83_bp_dp_pipeline.py` 使用 full82 暂存树，断言
+  三个相关音乐 RTL 的基线 SHA256、五个冻结文件的 live/staged SHA256，并只替换
+  Viterbi 与 UserCode 00000083。dry-run 已通过。
