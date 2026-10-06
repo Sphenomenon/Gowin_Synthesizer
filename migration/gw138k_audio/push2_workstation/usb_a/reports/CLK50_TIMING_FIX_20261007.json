@@ -1450,5 +1450,11 @@
     "baseline_maximum_payload_flight_ns": 0.635,
     "evidence": "results/clk50_fix_20261007/baseline_song_cdc_routes.json",
     "change": "narrow mailbox and local reset-entry constraints only; no new RAM"
+  },
+  "incremental_candidate": {
+    "build": "results/song_guide_full85_clk50_20261007_020351_908656",
+    "reuse": "fresh synthesis; full84 placement+routing reference",
+    "reference_sha256": "4f9bb376a7b7729c72aa4971049ac9296bac14cb8fb15aa9e319a94f63fd407b",
+    "status": "running; not programmed"
   }
 }

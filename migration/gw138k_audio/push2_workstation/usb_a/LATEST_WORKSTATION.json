@@ -172,7 +172,7 @@
     "build": "results/song_guide_full85_clk50_20261007_004457_617018",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "building combined DP+CQT candidate; unflashed",
+    "status": "unflashed; full route and fresh-synthesis incremental route running",
     "change": "Viterbi scalar read/sum/select/commit and CQT decimation valid/multiply/accumulate/store pipelines; reuse all score/signal/cache RAM",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
@@ -188,6 +188,8 @@
     "synthesis_bsram": 216,
     "viterbi_bsram": 6,
     "synthesis_clk50_fmax_mhz": 61.89,
-    "cancelled_candidate": "results/song_guide_full85_clk50_20261007_002805_594995"
+    "cancelled_candidate": "results/song_guide_full85_clk50_20261007_002805_594995",
+    "incremental_build": "results/song_guide_full85_clk50_20261007_020351_908656",
+    "constraint_source_commit": "7f027f4"
   }
 }

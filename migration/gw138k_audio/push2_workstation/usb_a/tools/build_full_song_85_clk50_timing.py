@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -56,7 +57,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--flow', choices=['prepare', 'syn', 'all', 'pnr'], default='all')
     parser.add_argument('--output', type=Path)
+    reuse = parser.add_mutually_exclusive_group()
+    reuse.add_argument('--reroute-from', type=Path,
+                       help='reuse completed full85 synthesis and P&R when only constraints differ')
+    reuse.add_argument('--incremental-from', type=Path,
+                       help='fresh synthesis with a completed full84/85 placement+route reference')
     args = parser.parse_args()
+    reuse_from = args.reroute_from or args.incremental_from
+    if args.incremental_from is not None and args.flow not in ('all', 'prepare', 'syn'):
+        parser.error('--incremental-from requires a new all/prepare/syn candidate')
+    if args.reroute_from is not None and args.flow not in ('all', 'prepare'):
+        parser.error('--reroute-from requires a new all/prepare candidate')
     if args.flow == 'pnr' and args.output is None:
         parser.error('--flow pnr requires --output of a previously synthesized candidate')
     output = (args.output or ROOT / 'results' /
@@ -77,6 +88,12 @@ def main():
         tcl.write_text(text.replace('set_option -user_code 00000084', 'set_option -user_code 00000085'))
         sdc = stage / 'constraints/tang_mega_138k.sdc'
         sdc.write_text(sdc.read_text() + CDC_CONSTRAINTS + REPORTS)
+        if reuse_from is not None:
+            previous_pnr = reuse_from.resolve() / 'Prj1/impl/pnr'
+            reused_point = previous_pnr / ('Prj1.pr' if (previous_pnr / 'Prj1.pr').exists() else 'Prj1.p')
+            reuse_name = 'reused' + reused_point.suffix
+            tcl.write_text(tcl.read_text().replace(
+                'set flow all', f'set_option -inc_pnr [file join $root build {reuse_name}]\nset flow all'))
         inputs = {str(p.relative_to(stage)): sha(p) for p in stage.rglob('*') if p.is_file()}
         changed = sorted(name for name, digest in inputs.items() if originals.get(name) != digest)
         allowed = sorted(OVERLAYS + ['scripts/build.tcl', 'constraints/tang_mega_138k.sdc'])
@@ -93,21 +110,76 @@ def main():
     else:
         inputs = json.loads((output / 'workstation_inputs.json').read_text())
         assert all(sha(stage / name) == digest for name, digest in inputs.items()), 'candidate input drift'
+    if reuse_from is not None:
+        previous = reuse_from.resolve()
+        old_record = json.loads((previous / 'tool_result.json').read_text())
+        old_metadata = json.loads((previous / 'build_metadata.json').read_text())
+        assert old_record['exit_code'] == 0 and old_record['inputs_unchanged'], 'old build incomplete'
+        old_header = (previous / 'Prj1/impl/pnr/Prj1.fs').read_text()[:1000]
+        old_code = re.search(r'//UserCode: (0x[0-9A-Fa-f]{8})', old_header)[1].lower()
+        assert old_code in ('0x00000084', '0x00000085'), 'unexpected incremental reference identity'
+        if args.reroute_from is not None:
+            assert old_code == '0x00000085', 'reuse synthesis only for the same full85 identity'
+        old_inputs = json.loads((previous / 'workstation_inputs.json').read_text())
+        assert all(sha(previous / 'Prj1' / name) == digest for name, digest in old_inputs.items()), 'old input drift'
+        exceptions = {'scripts/build.tcl', 'constraints/tang_mega_138k.sdc'}
+        if args.incremental_from is not None:
+            exceptions.update(OVERLAYS)
+        old_logic = {name: digest for name, digest in old_inputs.items() if name not in exceptions}
+        new_logic = {name: digest for name, digest in inputs.items() if name not in exceptions}
+        assert old_logic == new_logic, 'RTL/IP/memory changed: fresh synthesis required'
+        def without_incremental(text):
+            return '\n'.join(line for line in text.splitlines() if not line.startswith(('set_option -inc_pnr', 'set_option -user_code')))
+        assert without_incremental((previous / 'Prj1/scripts/build.tcl').read_text()) == \
+               without_incremental((stage / 'scripts/build.tcl').read_text()), 'tool options changed'
+        old_pnr = previous / 'Prj1/impl/pnr'
+        assert all((old_pnr / name).is_file() for name in ['Prj1.p', 'Prj1.fs', 'Prj1.sdf']), 'old P&R incomplete'
+        frozen(previous / 'Prj1')
+        old_syn = previous / 'Prj1/impl/gwsynthesis'
+        reused = {}
+        if args.reroute_from is not None:
+            assert (old_syn / 'Prj1.vg').is_file(), 'old netlist missing'
+            shutil.copytree(old_syn, stage / 'impl/gwsynthesis')
+            reused = {str(p.relative_to(old_syn)): sha(p) for p in old_syn.rglob('*') if p.is_file()}
+            assert all(sha(stage / 'impl/gwsynthesis' / name) == digest for name, digest in reused.items()), 'copy drift'
+        (stage / 'build').mkdir(exist_ok=True)
+        shutil.copy2(reused_point, stage / 'build' / reuse_name)
+        assert sha(stage / 'build' / reuse_name) == sha(reused_point), 'placement/route copy drift'
+        metadata_path = output / 'build_metadata.json'
+        metadata = json.loads(metadata_path.read_text())
+        metadata['reuse_from'] = str(previous.relative_to(ROOT))
+        metadata['reuse_source_code'] = old_code
+        metadata['reuse_mode'] = 'constraints-only' if args.reroute_from is not None else 'fresh synthesis; incremental P&R'
+        metadata['reused_synthesis_sha256'] = reused
+        metadata['reused_point_file'] = 'build/' + reuse_name
+        metadata['reused_point_sha256'] = sha(stage / 'build' / reuse_name)
+        metadata['reuse_point_kind'] = 'placement+routing' if reused_point.suffix == '.pr' else 'placement'
+        metadata['reuse_basis'] = ('all RTL/IP/memory inputs identical; only SDC/report commands differ'
+                                   if args.reroute_from is not None else
+                                   'all non-overlay RTL/IP/memory inputs and tool options identical; fresh synthesis for explicit overlays')
+        metadata_path.write_text(json.dumps(metadata, indent=2) + '\n')
     frozen(stage)
     print(output, flush=True)
     if args.flow == 'prepare':
         return
-    with (output / ('gowin_' + args.flow + '.log')).open('w') as log:
+    actual_flow = 'pnr' if args.reroute_from is not None else args.flow
+    with (output / ('gowin_' + actual_flow + '.log')).open('w') as log:
         result = subprocess.run([str(Path.home() / '.local/bin/gw_sh'), 'scripts/build.tcl'],
-                                cwd=stage, env=dict(os.environ, PRJ1_FLOW=args.flow),
+                                cwd=stage, env=dict(os.environ, PRJ1_FLOW=actual_flow),
                                 stdout=log, stderr=subprocess.STDOUT)
     changes = [name for name, digest in inputs.items() if sha(stage / name) != digest]
+    metadata = json.loads((output / 'build_metadata.json').read_text())
+    for name, digest in metadata.get('reused_synthesis_sha256', {}).items():
+        if sha(stage / 'impl/gwsynthesis' / name) != digest:
+            changes.append('reused synthesis:' + name)
+    if 'reused_point_file' in metadata and sha(stage / metadata['reused_point_file']) != metadata['reused_point_sha256']:
+        changes.append('reused placement/route')
     frozen(stage)
     record = {
         'exit_code': result.returncode, 'inputs_unchanged': not changes,
-        'changed': changes, 'flow': args.flow, 'hardware_tested': False,
+        'changed': changes, 'flow': actual_flow, 'requested_flow': args.flow, 'hardware_tested': False,
     }
-    for name in ['tool_result.json', 'tool_result_' + args.flow + '.json']:
+    for name in ['tool_result.json', 'tool_result_' + actual_flow + '.json']:
         (output / name).write_text(json.dumps(record, indent=2) + '\n')
     if result.returncode or changes:
         raise SystemExit('Gowin/input check failed: ' + str(output))
