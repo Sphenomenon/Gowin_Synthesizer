@@ -1443,5 +1443,12 @@
     "baseline_recovery_ns": -6.053,
     "baseline_removal_ns": 0.253,
     "scope": "setup/hold plus recovery/removal; unknown or missing reset evidence cannot pass"
+  },
+  "song_cdc": {
+    "baseline_structure_passed": true,
+    "baseline_release_passed": false,
+    "baseline_maximum_payload_flight_ns": 0.635,
+    "evidence": "results/clk50_fix_20261007/baseline_song_cdc_routes.json",
+    "change": "narrow mailbox and local reset-entry constraints only; no new RAM"
   }
 }

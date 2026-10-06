@@ -2,7 +2,7 @@
 """Build a low-RAM clk50 timing candidate from the complete full84 staging tree.
 
 Preserve the deployed scope/TF integration and all frozen DDR/display sources.
-Only explicit overlays, the UserCode, and diagnostic report commands may differ.
+Only explicit overlays, the UserCode, and targeted CDC constraints/reports may differ.
 No board I/O and no changes to LATEST_WORKSTATION.json.
 """
 from pathlib import Path
@@ -22,11 +22,24 @@ from workstation_memory import audit
 
 BASE = ROOT / 'results/workstation_scope83_20261006_230626_011557'
 OVERLAYS = ['rtl/music/basic_pitch_viterbi.sv', 'rtl/music/basic_pitch_cqt_engine.sv']
+CDC_CONSTRAINTS = '''
+# USB song selection: gw138k_stream_cdc WIDTH=4 held-word/toggle mailbox.
+# Source holds payload until ACK; destination waits req_meta/req_sync/req_settled.
+# Bound payload flight; only the first metastability sampling stage is async.
+set_max_delay 20.000 -from [get_regs {u_song_command_cdc/held_data*}] -to [get_regs {u_song_command_cdc/destination_data*}]
+set_false_path -hold -from [get_regs {u_song_command_cdc/held_data*}] -to [get_regs {u_song_command_cdc/destination_data*}]
+set_false_path -to [get_pins {u_song_command_cdc/req_meta*/D u_song_command_cdc/ack_meta*/D}]
+# Async reset enters three-bit local release chains. Keep release-Q -> business
+# CLEAR recovery/removal and release-chain D paths under ordinary local STA.
+set_false_path -to [get_pins {u_song_command_cdc/source_release*/CLEAR u_song_command_cdc/destination_release*/CLEAR}]
+'''
 REPORTS = '''
 # Diagnose clk50 without changing its 20ns constraint or any timing exceptions.
 report_timing -setup -from_clock [get_clocks {clk_50m}] -to_clock [get_clocks {clk_50m}] -max_paths 100
 report_timing -hold -from_clock [get_clocks {clk_50m}] -to_clock [get_clocks {clk_50m}] -max_paths 25
 report_timing -setup -to_clock [get_clocks {clk_50m}] -max_paths 100
+report_timing -recovery -to_clock [get_clocks {clk_50m}] -max_paths 25
+report_timing -removal -to_clock [get_clocks {clk_50m}] -max_paths 25
 '''
 
 
@@ -63,7 +76,7 @@ def main():
         assert text.count('set_option -user_code 00000084') == 1
         tcl.write_text(text.replace('set_option -user_code 00000084', 'set_option -user_code 00000085'))
         sdc = stage / 'constraints/tang_mega_138k.sdc'
-        sdc.write_text(sdc.read_text() + REPORTS)
+        sdc.write_text(sdc.read_text() + CDC_CONSTRAINTS + REPORTS)
         inputs = {str(p.relative_to(stage)): sha(p) for p in stage.rglob('*') if p.is_file()}
         changed = sorted(name for name, digest in inputs.items() if originals.get(name) != digest)
         allowed = sorted(OVERLAYS + ['scripts/build.tcl', 'constraints/tang_mega_138k.sdc'])

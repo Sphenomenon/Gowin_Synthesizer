@@ -93,3 +93,14 @@ LUT +202、ALU +51；BSRAM/SSRAM/DSP净增均为0。机器记录见同名JSON。
 该链是跨时钟复位的三拍本域释放入口，后续若补约束须仅覆盖此入口，保留
 释放寄存器输出到本域业务寄存器 CLEAR 的检查。
 证据 `results/clk50_fix_20261007/baseline_clk50/clk50_reset_audit.json`。
+
+## 选歌命令 CDC 约束与路由证明
+
+构建工具对后续候选补充 `u_song_command_cdc` 的4bit保持数据20ns最大传播时间、
+保持总线hold例外、握手第一级采样D例外，以及两个三拍本域释放链的CLEAR入口例外。
+未屏蔽第二级同步器、额外settled拍或释放链输出到业务寄存器的复位时序。
+新工具 `tools/audit_clk50_cdc_routes.py` 从实际VO/SDF检查3拍释放链、双向2FF、
+req第三拍及4bit保持数据直连与传播时间，并要求上述具体约束确实存在。
+基线结构检查PASS，最大保持数据传播0.635ns；因基线缺上述约束，发布检查仍为FAIL。
+证据 `results/clk50_fix_20261007/baseline_song_cdc_routes.json`。
+当前仍运行的首个合并候选SDC不被中途修改；新约束将在下一次构建/路由中采用。
