@@ -301,6 +301,7 @@
       ],
       "pnr_bsram": null,
       "hardware_tested": false
-    }
+    },
+    "family_route2_comparator": "results/song_guide_full85_clk50_20261007_045710_715943"
   }
 }

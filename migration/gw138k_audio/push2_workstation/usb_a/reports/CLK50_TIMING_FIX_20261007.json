@@ -1697,6 +1697,75 @@
     ],
     "option": "set_option -opt_goal timing",
     "hardware_tested": false,
-    "status": "synthesis_in_progress"
+    "status": "synthesis_complete_pnr_running_unflashed",
+    "synthesis_resources": {
+      "bsram": 216,
+      "measurement_stage": "synthesis",
+      "registers": 40749,
+      "ssram": 1607,
+      "lut_hierarchy": 62896,
+      "clock_estimates": [
+        {
+          "clock": "clk_50m",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 71.541,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 76.8,
+          "synthesis_estimated_mhz": 61.828,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 48.0,
+          "synthesis_estimated_mhz": 37.186,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+          "required_mhz": 400.0,
+          "synthesis_estimated_mhz": 1487.018,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 352.734,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 1617.337,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 223.924,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+          "required_mhz": 148.5,
+          "synthesis_estimated_mhz": 257.5,
+          "estimate_meets_requirement": true
+        }
+      ],
+      "hardware_tested": false
+    }
+  },
+  "family_route2_comparator": {
+    "build": "results/song_guide_full85_clk50_20261007_045710_715943",
+    "source_commit": "735aaa3",
+    "source_inputs_except_tcl_identical_to": "results/song_guide_full85_clk50_20261007_042458_983585",
+    "synthesis_goal": "timing",
+    "route_option": 2,
+    "hardware_tested": false,
+    "status": "build_running",
+    "vendor_evidence": "Gowin Software User Guide SUG100, Place and Route Options: 2 is default for GW5A(S)(T)-138 and improves route speed",
+    "logic_tests_reused": "exact snapshot 18/18 + CNN12 frames + CQT4 configs/math2100; PNR/resource/CDC/QoR independent"
   }
 }

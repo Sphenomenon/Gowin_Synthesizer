@@ -260,3 +260,13 @@ SSRAM1607；相比请求/仲裁候选多82FF，Viterbi仍6BSRAM、CQT仍0BSRAM�
 最终幅值/地址RTL的12帧CNN A/B PASS，六层哈希保持已验收参考值，层写出覆盖
 25344/3168/33792/1056/33792/1056完全一致，3项出谱相同。主机walltime696.913s
 只用于仿真记录，不是板上处理窗耗时。证据cnn_ab_magnitude_12frames.log。
+
+
+## 系列默认路由对照
+
+官方SUG100 Place and Route Options明确：GW5A(S)(T)-138的默认route_option为2，
+用于提高路由速度；1以编译速度换更优路由搜索，0对本设计已有明显QoR退化证据。
+新增results/song_guide_full85_clk50_20261007_045710_715943，同735aaa3 RTL/模型/SDC、相同timing综合目标，只把route1改route2，
+逐文件SHA256证明仅Tcl改变，逻辑验证可复用，实际时序/资源/CDC/QoR仍独立审计。
+旧034837（未幅值分拍）耗时>60分钟的路由已因被新RTL取代取消，未烧板。
+最终auto/timing route1都继续完成，本次不宣称route2会闭合或等价于已验收的硬件。
