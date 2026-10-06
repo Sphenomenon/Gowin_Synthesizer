@@ -82,3 +82,14 @@ LUT +202、ALU +51；BSRAM/SSRAM/DSP净增均为0。机器记录见同名JSON。
 
 发布检查边界测试 `sim/music/test_clk50_audit.py` 4/4 PASS：复现 Gowin HTML缺频率
 单元格、缺hold报告、setup/hold微小负裕量、放宽24ns时钟，后3类都不能误判闭合。
+
+## 复位时序门禁补充
+
+`audit_clk50_timing.py` 现在区分 setup/hold 闭合与完整 clk50 门禁，后者还要求
+异步复位 recovery/removal 有非负的全局最差报告或显式 to-clk50 报告作为证据。
+缺复位报告、只有其他时钟域失败的全局报告、或已知 clk50 复位负 slack，均拒绝发布。
+六项门禁单测 PASS。基线复核 recovery=-6.053ns，目标为
+`u_song_command_cdc/destination_release*/CLEAR`；removal=+0.253ns。
+该链是跨时钟复位的三拍本域释放入口，后续若补约束须仅覆盖此入口，保留
+释放寄存器输出到本域业务寄存器 CLEAR 的检查。
+证据 `results/clk50_fix_20261007/baseline_clk50/clk50_reset_audit.json`。

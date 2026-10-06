@@ -1436,5 +1436,12 @@
       "T_MULT12X12": 0,
       "T_MULT27X36": 0
     }
+  },
+  "reset_gate": {
+    "unit_tests": "6/6 PASS",
+    "baseline_evidence": "results/clk50_fix_20261007/baseline_clk50/clk50_reset_audit.json",
+    "baseline_recovery_ns": -6.053,
+    "baseline_removal_ns": 0.253,
+    "scope": "setup/hold plus recovery/removal; unknown or missing reset evidence cannot pass"
   }
 }

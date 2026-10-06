@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract routed clk50 evidence; require explicit setup/hold path reports."""
+"""Extract routed clk50 evidence, including async-reset recovery/removal checks."""
 from pathlib import Path
 from html.parser import HTMLParser
 import argparse
@@ -57,6 +57,8 @@ def audit(build):
               'same_clock_setup': [], 'same_clock_hold': [], 'to_clk50_setup': [],
               'fmax_mhz': None, 'clock_period_ns': None, 'clock_required_mhz': None, 'tns': {}}
     required = {kind: False for kind in ('setup', 'hold')}
+    reset_reports = {kind: {'explicit': False, 'global': False, 'paths': [], 'global_paths': []}
+                     for kind in ('recovery', 'removal')}
     for command, rows in parser.tables:
         if not rows:
             continue
@@ -78,11 +80,15 @@ def audit(build):
                     result['tns'][row[1].lower()] = {'ns': float(row[2]), 'endpoints': int(row[3])}
         if not head or head[0] != 'Path Number' or 'Path Slack' not in head:
             continue
-        kind = 'setup' if '-setup' in command else 'hold' if '-hold' in command else None
+        kind = next((k for k in ('setup', 'hold', 'recovery', 'removal')
+                     if '-' + k in command), None)
         if kind is None:
             continue
         same_report = '-from_clock [get_clocks {clk_50m}] -to_clock [get_clocks {clk_50m}]' in command
-        if same_report:
+        if kind in reset_reports:
+            reset_reports[kind]['explicit'] |= '-to_clock [get_clocks {clk_50m}]' in command
+            reset_reports[kind]['global'] |= '-from_clock' not in command and '-to_clock' not in command
+        elif same_report:
             required[kind] = True
         for row in rows[1:]:
             if len(row) != 9:
@@ -91,7 +97,12 @@ def audit(build):
             data = {'slack_ns': float(row[1]), 'from': row[2], 'to': row[3],
                     'from_clock': source_clock, 'to_clock': dest_clock,
                     'relation_ns': float(row[6]), 'skew_ns': float(row[7]), 'data_delay_ns': float(row[8])}
-            if same_report and source_clock == dest_clock == 'clk_50m':
+            if kind in reset_reports:
+                if dest_clock == 'clk_50m':
+                    reset_reports[kind]['paths'].append(data)
+                if '-from_clock' not in command and '-to_clock' not in command:
+                    reset_reports[kind]['global_paths'].append(data)
+            elif same_report and source_clock == dest_clock == 'clk_50m':
                 result['same_clock_' + kind].append(data)
             elif kind == 'setup' and '-to_clock [get_clocks {clk_50m}]' in command and dest_clock == 'clk_50m':
                 result['to_clk50_setup'].append(data)
@@ -105,9 +116,30 @@ def audit(build):
         all(r['ns'] >= 0 and r['endpoints'] == 0 for r in result['tns'].values()))
     result['clock_constraint_preserved'] = (result['clock_period_ns'] == 20 and
                                              result['clock_required_mhz'] == 50)
-    result['clk50_closed'] = (result['clock_constraint_preserved'] and result['same_clock_closed'] and
-                             result['clk50_endpoint_tns_closed'] and
-                             result['fmax_mhz'] is not None and result['fmax_mhz'] >= 50)
+    result['clk50_setup_hold_closed'] = (result['clock_constraint_preserved'] and
+        result['same_clock_closed'] and result['clk50_endpoint_tns_closed'] and
+        result['fmax_mhz'] is not None and result['fmax_mhz'] >= 50)
+    result['reset_checks'] = {}
+    for kind, evidence in reset_reports.items():
+        paths = evidence['paths']
+        global_paths = evidence['global_paths']
+        # A nonnegative global worst-path report certifies all domains. When a
+        # different domain fails, require an explicit to-clk50 report instead.
+        global_pass = (evidence['global'] and bool(global_paths) and
+                       min(p['slack_ns'] for p in global_paths) >= 0)
+        explicit_pass = (evidence['explicit'] and bool(paths) and
+                         min(p['slack_ns'] for p in paths) >= 0)
+        known_fail = any(p['slack_ns'] < 0 for p in paths)
+        result['reset_checks'][kind] = {
+            'explicit_report_present': evidence['explicit'],
+            'global_report_present': evidence['global'],
+            'global_wns_ns': min((p['slack_ns'] for p in global_paths), default=None),
+            'to_clk50_wns_ns': min((p['slack_ns'] for p in paths), default=None),
+            'to_clk50_paths': paths,
+            'closed': (global_pass or explicit_pass) and not known_fail,
+        }
+    result['clk50_reset_closed'] = all(r['closed'] for r in result['reset_checks'].values())
+    result['clk50_closed'] = result['clk50_setup_hold_closed'] and result['clk50_reset_closed']
     return result
 
 
