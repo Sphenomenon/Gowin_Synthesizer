@@ -1961,5 +1961,18 @@
     },
     "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_frontend_final_12frames.log",
     "attribute_only_functional_equivalence": "results/song_guide_full85_clk50_20261007_054102_250721/attribute_only_functional_equivalence.json"
+  },
+  "throughput_analysis_tool": {
+    "path": "tools/analyze_bp_throughput.py",
+    "board_io": false,
+    "method": "accepted active-wave OLS; exact baseline reproduction",
+    "reference": "reports/CNN_83_ACCEPTANCE_20261006.json",
+    "baseline_replays": [
+      "results/clk50_fix_20261007/reproduced_full82_throughput.json",
+      "results/clk50_fix_20261007/reproduced_full83_throughput.json"
+    ],
+    "full82_mean_fps": 6.550435182138794,
+    "full83_mean_fps": 6.589691096958968,
+    "first_window_automatic_verification": false
   }
 }
