@@ -15,13 +15,35 @@
   "timing_closed": false,
   "timing_note": "50MHz Fmax 42.932MHz; setup TNS -378.941ns/217 endpoints (full82 -435.444ns/298). audio_76m8 -4114.110ns; ddr_ui100 -2552.336ns. Address-only fix; hardware correctness and throughput must be verified.",
   "hardware_tested": false,
-  "coordination": "Board 0x00000083 verified and model uploaded, status E. Capture directory results/cnn_correctness83_20261006/fix83. Await physical TRAVLER selection; first-window 36-item and frame-rate acceptance pending.",
-  "commit": "7cfc976",
+  "coordination": "0x83/model E, user selected analysis. 48kHz later-window score steps 69->103->139->171 (deltas 34/36/32), ~57s/window. Capture running; fresh physical TRAVLER restart required to directly observe first-window 36.",
+  "commit": "1d432a6",
   "source_commit": "8bc80e9",
   "board_acceptance": {
-    "status": "pending",
+    "status": "partial: active later windows restored; fresh first-window record pending",
     "model_status": "E (DDR readback CRC passed; upload 9.0s)",
-    "required": "TRAVLER first-window score_count=36 and no frame-rate regression"
+    "required": "TRAVLER first-window score_count=36 and no frame-rate regression",
+    "observed": {
+      "capture_started_at": "2026-10-06 21:54:12",
+      "sample_rate": 48000,
+      "cumulative_counts": [
+        69,
+        103,
+        139,
+        171
+      ],
+      "complete_window_deltas": [
+        34,
+        36,
+        32
+      ],
+      "complete_window_intervals_seconds": [
+        57.0,
+        56.8
+      ],
+      "cnn_fps": 6.5897,
+      "full82_same_method_fps": 6.5504,
+      "first_window": "not captured; entered mid-analysis"
+    }
   },
   "validation": {
     "cnn_ab": "12-frame Verilator A/B with sustained delay writes PASS; six hashes/coverage/score sequence unchanged",
@@ -35,11 +57,19 @@
     "flash_record": "../results/sram_20261006_163824_061544"
   },
   "cancelled_candidate_build": "results/song_guide_full83_20261006_195842_758915 (never flashed)",
-  "capture": {
+  "previous_capture": {
     "directory": "results/cnn_correctness83_20261006/fix83",
     "log": "results/cnn_correctness83_20261006/fix83/dwell_fix83.log",
     "started_at": "2026-10-06 21:23:09",
     "seconds": 1200,
-    "status": "running; awaiting physical TRAVLER selection"
-  }
+    "status": "ended after 1200s; idle only, no selected-song acceptance"
+  },
+  "capture": {
+    "directory": "results/cnn_correctness83_20261006/fix83_selected",
+    "log": "results/cnn_correctness83_20261006/fix83_selected/dwell_fix83_selected.log",
+    "started_at": "2026-10-06 21:54:12",
+    "seconds": 1200,
+    "status": "running; waiting for fresh TRAVLER restart to capture first window; later windows restored"
+  },
+  "bsram_note": "PNR full81=215, full82=260, full83=260; net +45 for caches: feature 32, weight 8, plane 2, pipeline buffers 3; Viterbi remains 6. 80/340 blocks free."
 }

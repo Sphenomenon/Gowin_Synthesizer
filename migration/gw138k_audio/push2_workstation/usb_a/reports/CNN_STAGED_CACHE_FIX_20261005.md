@@ -69,8 +69,10 @@ vs 基线 2.7 s/帧，≈18×。
 
 ## 0x82 资源与时序
 
-- P&R BSRAM **260/340**（0x80 为 215；增量：feature_ddr 32、weight_cache 8、
-  viterbi 6、plane_cache/reduce_mem/其他 ≈ 5 —— 低于 0x79 的 279）。
+- P&R BSRAM **260/340**（0x80/0x81 为 215；实际净增 45）。2026-10-06 按
+  full81/full82 综合层级资源表复核：feature_ddr +32、weight_cache +8、plane_cache +2、
+  basic_pitch 管线内部缓冲 +3。Viterbi 两版均为 6 块，不能计入增量。
+  full83 保持 260 块；低于 0x79 的 279，芯片还剩 80 块。
 - 时序未闭合，但与 0x80 同类：audio_76m8 最差路径仍是 engine final_accumulator→
   quantized_mix（-3.49ns vs 0x80 -3.23ns）与 delay FIFO Gray（-4576ns TNS vs 0x80
   -2419ns，布线压力加深）；ddr_ui100 仍为 CDC Gray 悲观类；clk_50m TNS -435ns/298
