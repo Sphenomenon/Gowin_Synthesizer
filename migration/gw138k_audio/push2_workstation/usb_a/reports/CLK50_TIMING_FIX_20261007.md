@@ -14,7 +14,10 @@ TNS=-28.863ns/52端点，hold+0.165ns、复位、CDC、scope、冻结/输入检�
 满足148.5，但DDR内部Fmax69.747<100（原板233.230），故不能部署。其各域原先零TNS组
 没有新增负组；DDR原已有跨域负TNS，仍须用同域Fmax识别这次新退化，不能仅看TNS。
 
-仍保留同9f逻辑auto/route2对照065748（综合BSRAM216、前端0），资源与物理门禁独立。
+同9f逻辑auto/route2对照065748已完成：SYN216/PNR260，clk50 Fmax47.733、
+WNS=-0.950ns、24负端点，hold+0.164、复位与路由检查通过；未闭合、未烧录。
+最差padding/kh→MAC链与52b7250寄存padding方向吻合。DDR198.341、HDMI164.377，
+原本达标域全部仍达标，无新增负TNS组。52新源码PNR仍在优化，不宣称已通过。
 旧735 timing/route1与route2因耗时过长及被实测路径驱动的修复替代而取消，记录为取消
 而非逻辑/STA失败。auto/route1旧对照040915 WNS=-0.304且HDMI121.599，亦未部署。
 
@@ -356,3 +359,8 @@ harmonic stacking、padding X和DDR/bias等待；控制、地址、输出拍及�
 52b7250的12帧CNN A/B完整PASS，六层最终哈希保持已验收参考、各层写出覆盖一致、
 3项出谱相同；旧参考日志全部40个逐帧检查点逐项相同，不仅比较最终哈希。
 主机walltime801.996s不是FPGA窗耗时；证据feature_mask_cnn_reference_comparison.json。
+
+
+修复前9f auto/route2的完整release_review、all_clock_endpoint_review已保存，未烧板。
+这次工具选项对照避免了timing综合导致的DDR同域69.747MHz退化，且音频63.747/USB42.655
+优于原板54.297/38.726，仍低于实际76.8/48要求，不能宣称这些域闭合。

@@ -194,7 +194,18 @@
     "report": "reports/CLK50_TIMING_FIX_20261007.json",
     "synthesis_bsram": 216,
     "frontend_synthesis_bsram": 0,
-    "synthesis_clk50_estimated_mhz": 61.89
+    "synthesis_clk50_estimated_mhz": 61.89,
+    "comparator_result": {
+      "build": "results/song_guide_full85_clk50_20261007_065748_676097",
+      "clk50_fmax_mhz": 47.733,
+      "setup_wns_ns": -0.95,
+      "setup_negative_endpoints": 24,
+      "bsram_pnr": 260,
+      "originally_positive_domains_remain_positive": true,
+      "deployable": false,
+      "hardware_programmed": false,
+      "review": "results/song_guide_full85_clk50_20261007_065748_676097/release_review.json"
+    }
   },
   "timing_candidate_progress_history": {
     "build": "results/song_guide_full85_clk50_20261007_054102_250721",

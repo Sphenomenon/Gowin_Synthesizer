@@ -1988,14 +1988,232 @@
     "source_build_commit": "7b5f993",
     "synthesis_goal": "auto",
     "route_option": 2,
-    "status": "running_unflashed",
+    "status": "complete_failed_clk50_unflashed",
     "functional_equivalence_proof": "results/song_guide_full85_clk50_20261007_065748_676097/synthesis_goal_only_equivalence.json",
     "identical_stage_inputs": 597,
     "only_changed_input": "scripts/build.tcl; remove opt_goal timing",
     "reason": "Earlier timing-goal route1/2 exceeded150/120min without reports, while auto pre-final route1 completed in77min; compare same final logic with fewer synthesis replications, no new RTL or repeated logic tests.",
     "replaced_build": "results/song_guide_full85_clk50_20261007_042458_983585",
     "cancel_record": "results/song_guide_full85_clk50_20261007_042458_983585/candidate_status.json",
-    "hardware_programmed": false
+    "hardware_programmed": false,
+    "release_review": {
+      "build": "results/song_guide_full85_clk50_20261007_065748_676097",
+      "hardware_programmed": false,
+      "clk50_closed": false,
+      "clk50_fmax": 47.733,
+      "setup_wns_ns": -0.95,
+      "hold_wns_ns": 0.164,
+      "tns": {
+        "setup": {
+          "ns": -7.731,
+          "endpoints": 24
+        },
+        "hold": {
+          "ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "synthesis_bsram": 216,
+      "physical_bsram": 260,
+      "bsram_budget_met": true,
+      "frozen_unchanged": true,
+      "inputs_unchanged": true,
+      "routed_audits": {
+        "clk50_cdc_routed_audit.json": true,
+        "scope_routed_audit.json": true
+      },
+      "all_clock_qor": {
+        "clk_50m": {
+          "baseline": {
+            "required_mhz": 50.0,
+            "actual_mhz": 41.813
+          },
+          "candidate": {
+            "required_mhz": 50.0,
+            "actual_mhz": 47.733
+          },
+          "previously_positive": false,
+          "candidate_meets": false,
+          "fmax_ratio": 1.141582761342166
+        },
+        "audio_76m8": {
+          "baseline": {
+            "required_mhz": 76.8,
+            "actual_mhz": 54.297
+          },
+          "candidate": {
+            "required_mhz": 76.8,
+            "actual_mhz": 63.747
+          },
+          "previously_positive": false,
+          "candidate_meets": false,
+          "fmax_ratio": 1.1740427647936351
+        },
+        "ddr_mem400": {
+          "baseline": {
+            "required_mhz": 400.0,
+            "actual_mhz": 2598.775
+          },
+          "candidate": {
+            "required_mhz": 400.0,
+            "actual_mhz": 2598.775
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 1.0
+        },
+        "ddr_ui100": {
+          "baseline": {
+            "required_mhz": 100.0,
+            "actual_mhz": 233.23
+          },
+          "candidate": {
+            "required_mhz": 100.0,
+            "actual_mhz": 198.341
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 0.8504094670496936
+        },
+        "video_pixel148": {
+          "baseline": {
+            "required_mhz": 148.5,
+            "actual_mhz": 154.999
+          },
+          "candidate": {
+            "required_mhz": 148.5,
+            "actual_mhz": 164.377
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 1.0605036161523624
+        },
+        "cpu_bus50": {
+          "baseline": {
+            "required_mhz": 50.0,
+            "actual_mhz": 73.538
+          },
+          "candidate": {
+            "required_mhz": 50.0,
+            "actual_mhz": 62.714
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 0.8528107916995296
+        },
+        "cpu_core100": {
+          "baseline": {
+            "required_mhz": 100.0,
+            "actual_mhz": 1526.253
+          },
+          "candidate": {
+            "required_mhz": 100.0,
+            "actual_mhz": 1526.251
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 0.9999986896012654
+        },
+        "usb_48m": {
+          "baseline": {
+            "required_mhz": 48.0,
+            "actual_mhz": 38.726
+          },
+          "candidate": {
+            "required_mhz": 48.0,
+            "actual_mhz": 42.655
+          },
+          "previously_positive": false,
+          "candidate_meets": false,
+          "fmax_ratio": 1.1014563858906161
+        }
+      },
+      "previously_positive_domains_remain_positive": true,
+      "worst_setup_paths": [
+        {
+          "slack_ns": -0.95,
+          "from": "u_music/u_basic_pitch/u_contour/kh_0_s0/Q",
+          "to": "u_music/u_basic_pitch/u_contour/acc_35_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.009,
+          "data_delay_ns": 20.913
+        },
+        {
+          "slack_ns": -0.818,
+          "from": "u_music/u_basic_pitch/u_contour/kh_0_s0/Q",
+          "to": "u_music/u_basic_pitch/u_contour/acc_41_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.013,
+          "data_delay_ns": 20.784
+        },
+        {
+          "slack_ns": -0.657,
+          "from": "u_music/u_basic_pitch/u_contour/kh_0_s0/Q",
+          "to": "u_music/u_basic_pitch/u_contour/mac_0_s/C[46]",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.001,
+          "data_delay_ns": 20.155
+        },
+        {
+          "slack_ns": -0.626,
+          "from": "u_music/u_basic_pitch/u_contour/kh_0_s0/Q",
+          "to": "u_music/u_basic_pitch/u_contour/mac_0_s/C[41]",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.001,
+          "data_delay_ns": 20.143
+        },
+        {
+          "slack_ns": -0.576,
+          "from": "u_music/u_basic_pitch/u_contour/kh_0_s0/Q",
+          "to": "u_music/u_basic_pitch/u_contour/acc_47_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.018,
+          "data_delay_ns": 20.548
+        },
+        {
+          "slack_ns": -0.518,
+          "from": "u_music/u_basic_pitch/u_contour/kh_0_s0/Q",
+          "to": "u_music/u_basic_pitch/u_contour/mac_0_s/C[35]",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.001,
+          "data_delay_ns": 20.106
+        },
+        {
+          "slack_ns": -0.492,
+          "from": "u_music/u_basic_pitch/u_contour/kh_0_s0/Q",
+          "to": "u_music/u_basic_pitch/u_contour/acc_44_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.013,
+          "data_delay_ns": 20.459
+        },
+        {
+          "slack_ns": -0.447,
+          "from": "u_music/u_basic_pitch/u_contour/kh_0_s0/Q",
+          "to": "u_music/u_basic_pitch/u_contour/mac_0_s/C[26]",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.001,
+          "data_delay_ns": 19.968
+        }
+      ],
+      "offboard_release_gates_pass": false
+    },
+    "endpoint_review": "results/song_guide_full85_clk50_20261007_065748_676097/all_clock_endpoint_review.json"
   },
   "frontend_final_timing_route2_result": {
     "build": "results/song_guide_full85_clk50_20261007_054102_250721",
