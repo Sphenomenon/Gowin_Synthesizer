@@ -2230,7 +2230,7 @@
     "feature_address_oracle": "results/clk50_fix_20261007/feature_address_field_oracle.json",
     "cnn_ab_status": "running12frames; must also retain accepted-reference six hashes",
     "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_feature_mask_12frames.log",
-    "staged_regression_status": "running18gates",
+    "staged_regression_status": "18/18 PASS",
     "mac_pipeline_cost_correction": {
       "handoff_claim": "extra MAC pipeline beat costs56ms/window",
       "actual_macs_per_frame": 2816088,
@@ -2238,13 +2238,22 @@
       "extra_seconds_per_frame_at50MHz": 0.05632176,
       "extra_seconds_per_window_at50MHz": 9.68734272,
       "remedy": "do not add a MAC beat; pipeline only existing request-beat padding and field arithmetic"
+    },
+    "staged_regression_report": "results/song_guide_full85_clk50_20261007_071024_977116/current_regression_20261007_071040_130961/verification.json",
+    "staged_regression_sha256": "6c9da8c9b589b951f867ef49fd1f0a88e6775e8e5a14889d2b8d93e1751dfaaa",
+    "synthesis": {
+      "bsram": 216,
+      "frontend_bsram": 0,
+      "clk50_estimated_mhz": 61.89,
+      "physical_bsram": null,
+      "status": "synthesis_done_placement_running"
     }
   },
   "current_validation": {
     "conv_mask_cycle_reference": "10/10 PASS",
     "feature_address_fields": "38720 valid addresses PASS",
     "cnn_12frames": "running",
-    "staged_regression18": "running",
+    "staged_regression18": "18/18 PASS",
     "unchanged_CQT_frontend_DP_math": "prior exact tests retained; source files unchanged by52b7250"
   }
 }

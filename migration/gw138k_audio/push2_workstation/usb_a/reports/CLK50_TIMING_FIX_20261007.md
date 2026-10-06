@@ -6,8 +6,7 @@
 主构建results/song_guide_full85_clk50_20261007_071024_977116，auto综合/系列默认route2。
 在既有DP/CQT/前端流水、局部DDR授权和诊断同步修复上，按实际负路径补充5bit通道
 借位隔离及卷积padding请求拍寄存，不增加MAC周期或RAM。卷积10种配置逐周期对照
-旧RTL全PASS（每种98输出），38720个合法缓存地址逐项PASS；12帧CNN A/B与最终18项
-集成回归在运行，不能复用成新源码已通过。原CQT/前端/DP源码未因此改变。
+旧RTL全PASS（每种98输出），38720个合法缓存地址逐项PASS；最终暂存树18/18回归PASS，12帧CNN A/B仍在运行。原CQT/前端/DP源码未因此改变。
 
 9f timing/route2（054102）完成：SYN216/PNR260，clk50 Fmax45.243MHz，setup WNS=-2.103ns，
 TNS=-28.863ns/52端点，hold+0.165ns、复位、CDC、scope、冻结/输入检查通过；未闭合。
@@ -346,4 +345,9 @@ contour/notes/onset缓存地址拆成cell/lane拼接，onset lane1..32在5bit内
 请求及input_in_range接口仍原样；无新增状态、请求等待或MAC拍。
 独立旧卷积参考逐周期测试10/10 PASS，覆盖signed extrema/bias、1/8/32/33通道、
 harmonic stacking、padding X和DDR/bias等待；控制、地址、输出拍及值全部一致。
-完整CNN A/B与新暂存树18项正在重跑；没有把两边同改后的A/B单独当数学正确性证据。
+新暂存树18/18已PASS，完整CNN A/B继续重跑；没有把两边同改后的A/B单独当数学正确性证据。
+
+
+52b7250最终暂存树18/18 PASS，证据current_regression_20261007_071040_130961/verification.json。
+新auto综合BSRAM216、前端0，clk50估计61.890MHz，已进入placement；这些不是PNR
+时序或物理用量通过证据。

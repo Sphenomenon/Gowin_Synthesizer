@@ -173,7 +173,7 @@
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
     "source_commit": "52b7250",
-    "status": "full_build_and_final_regression_running_unflashed",
+    "status": "synthesis216_passed_placement_running_unflashed",
     "hardware_programmed": false,
     "hardware_tested": false,
     "bsram_budget_pnr": 260,
@@ -184,12 +184,16 @@
       "conv_cycle_reference": "10/10 PASS",
       "feature_addresses": "38720 PASS",
       "cnn12": "running",
-      "regression18": "running"
+      "regression18": "18/18 PASS",
+      "regression_report": "results/song_guide_full85_clk50_20261007_071024_977116/current_regression_20261007_071040_130961/verification.json"
     },
     "rejected_timing_build": "results/song_guide_full85_clk50_20261007_054102_250721",
     "rejected_review": "results/song_guide_full85_clk50_20261007_054102_250721/release_review.json",
     "comparator": "results/song_guide_full85_clk50_20261007_065748_676097",
-    "report": "reports/CLK50_TIMING_FIX_20261007.json"
+    "report": "reports/CLK50_TIMING_FIX_20261007.json",
+    "synthesis_bsram": 216,
+    "frontend_synthesis_bsram": 0,
+    "synthesis_clk50_estimated_mhz": 61.89
   },
   "timing_candidate_progress_history": {
     "build": "results/song_guide_full85_clk50_20261007_054102_250721",
