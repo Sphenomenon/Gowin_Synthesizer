@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module frontend_pair #(parameter bit DDR=0)(output reg done=0);
+module frontend_pair #(parameter bit DDR=0, parameter bit SYNC=0)(output reg done=0);
     reg clk=0,rst=0,next_window=0,valid=0,finishing=0;
     reg signed [15:0] left=0,right=0;
     wire [1:0] ready,res_valid,we,full,drained,req;
@@ -7,15 +7,38 @@ module frontend_pair #(parameter bit DDR=0)(output reg done=0);
     wire [15:0] addr[0:1];
     wire [13:0] ca[0:1];
     wire signed [31:0] coefficient[0:1];
+    reg signed [31:0] coefficient_q[0:1];
+    reg coeff_loaded=0;
+    reg [13:0] coeff_index=0;
+    integer coeff_timer=0;
     wire cv;
     integer cycles=0,samples=0,writes=0,windows=0;
     always #10 clk=~clk;
     // Large signed coefficients exercise both saturation limits; independent
     // coefficient ports see the same function, with variable DDR backpressure.
     for(genvar g=0;g<2;g=g+1) begin
-        assign coefficient[g] = ca[g][0] ? -32'sd257031 : 32'sd194517;
+        if(SYNC && !DDR) begin
+            always @(posedge clk) coefficient_q[g] <= ca[g][0] ? -32'sd257031 : 32'sd194517;
+        end else if(SYNC && DDR) begin
+            always @(posedge clk) if(coeff_timer==1)
+                coefficient_q[g] <= coeff_index[0] ? -32'sd257031 : 32'sd194517;
+        end
+        assign coefficient[g] = SYNC ? coefficient_q[g] :
+                                     (ca[g][0] ? -32'sd257031 : 32'sd194517);
     end
-    assign cv=!DDR || cycles%7==0 || cycles%7==3;
+    assign cv=!DDR || (SYNC ? (coeff_loaded && coeff_index==ca[0] && req[0]) :
+                                      (cycles%7==0 || cycles%7==3));
+    // Registered DDR payload becomes valid only after it has been loaded;
+    // payload remains held throughout the consumer's existing MAC beat.
+    always @(posedge clk) if(SYNC && DDR) begin
+        if(!rst || !req[0]) begin coeff_loaded<=0;coeff_timer<=0;end
+        else if(!coeff_loaded && coeff_timer==0) begin
+            coeff_index<=ca[0];coeff_timer<=2+cycles%5;
+        end else if(coeff_timer>0) begin
+            coeff_timer<=coeff_timer-1;
+            if(coeff_timer==1) coeff_loaded<=1;
+        end
+    end
     basic_pitch_cqt_frontend_reference #(.WIN_LEN(128),.USE_DDR_COEFF(DDR)) a(
         .clk_i(clk),.rst_ni(rst),.next_window_i(next_window),.sample_valid_i(valid),
         .left_i(left),.right_i(right),.res_valid_o(res_valid[0]),.res_q_o(q[0]),
@@ -50,7 +73,7 @@ module frontend_pair #(parameter bit DDR=0)(output reg done=0);
             next_window=0;
             if(finishing) begin
                 if(writes!=512 || samples<1000) $fatal(1,"insufficient ring coverage writes=%0d samples=%0d",writes,samples);
-                $display("PASS frontend bit-exact DDR=%0d windows=%0d writes=%0d PCM=%0d cycles=%0d",DDR,windows,writes,samples,cycles);
+                $display("PASS frontend bit-exact DDR=%0d SYNC=%0d windows=%0d writes=%0d PCM=%0d cycles=%0d",DDR,SYNC,windows,writes,samples,cycles);
                 done=1;valid=0;
             end else if(full[0]) begin
                 windows=windows+1;
@@ -71,8 +94,10 @@ module frontend_pair #(parameter bit DDR=0)(output reg done=0);
     initial begin repeat(3) @(negedge clk);rst=1;end
 endmodule
 module tb_frontend_write_equivalence;
-    wire a,b;
+    wire a,b,c,d;
     frontend_pair #(.DDR(0)) local_pair(a);
     frontend_pair #(.DDR(1)) ddr_pair(b);
-    initial begin wait(a && b);$display("PASS frontend write-decode equivalence both coefficient modes");$finish;end
+    frontend_pair #(.DDR(0),.SYNC(1)) rom_sync_pair(c);
+    frontend_pair #(.DDR(1),.SYNC(1)) ddr_sync_pair(d);
+    initial begin wait(a && b && c && d);$display("PASS frontend write-decode equivalence both coefficient modes");$finish;end
 endmodule

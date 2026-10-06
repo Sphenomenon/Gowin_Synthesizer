@@ -23,4 +23,4 @@ run=subprocess.run(['vvp',str(image)],cwd=ROOT,text=True,stdout=subprocess.PIPE,
 (out/'run.log').write_text(run.stdout)
 print(run.stdout,end='');run.check_returncode()
 assert 'PASS frontend write-decode equivalence both coefficient modes' in run.stdout
-(out/'result.json').write_text(json.dumps({'passed':True,'reference':'cnn83-accepted-20261006','coefficient_modes':['local','DDR'],'windows_per_mode':4,'writes_per_mode':512,'comparison':'every control and sample cycle; signed saturation, ring wraps, backpressure and next-window commits'},indent=2)+'\n')
+(out/'result.json').write_text(json.dumps({'passed':True,'reference':'cnn83-accepted-20261006','coefficient_modes':['local_combinational','DDR_combinational','local_synchronous_ROM','DDR_registered_payload'],'windows_per_mode':4,'writes_per_mode':512,'comparison':'every control and sample cycle; signed saturation, ring wraps, backpressure and next-window commits'},indent=2)+'\n')

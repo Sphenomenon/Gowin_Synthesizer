@@ -57,12 +57,14 @@ module basic_pitch_cqt_frontend #(
     // address path back into each data bit. No new storage array is introduced.
     (* syn_keep = 1 *) logic [(1<<BUF_AW)-1:0] dline_we_q;
     logic signed [15:0] dline_data_q;
+    (* syn_keep = 1 *) logic dline_valid_q;
     logic [31:0]        n_recv;
     logic [16:0]        out_cnt;
     logic [31:0]        base_val;
     logic [13:0]        phase;
     logic [7:0]         tap_cnt;
     logic signed [47:0] acc;
+    logic signed [47:0] tap_product_q;
     logic               busy;
     logic               tap_wait;
     logic [31:0]        lag;
@@ -86,7 +88,12 @@ module basic_pitch_cqt_frontend #(
     wire signed [47:0] kx_f = $signed({{32{dline[rd_idx][15]}}, dline[rd_idx]});
     // out-of-range taps read slots that were never written, so they must not
     // contribute (they also must not propagate X)
-    wire signed [47:0] add_f = tap_in_range ? ($signed(coeff_data_i) * kx_f) : 48'sd0;
+    wire signed [47:0] tap_product = tap_in_range ? ($signed(coeff_data_i) * kx_f) : 48'sd0;
+    // DDR coefficients are stable when coeff_valid_i is observed. Reuse
+    // the existing coefficient-wait beat to register the multiply, without
+    // inserting a tap/output cycle. Local synchronous ROM retains its read
+    // latency and original arithmetic path.
+    wire signed [47:0] add_f = USE_DDR_COEFF ? tap_product_q : tap_product;
     wire signed [47:0] acc_f = acc + add_f;
     wire signed [24:0] sh = acc_f[39:15];
     wire signed [15:0] sat_q = (sh > 25'sd32767)  ? 16'sd32767 :
@@ -113,20 +120,22 @@ module basic_pitch_cqt_frontend #(
     // so even the newest sample has committed before the delay line is read.
     for (genvar slot = 0; slot < (1<<BUF_AW); slot = slot + 1) begin : g_dline_write
         always_ff @(posedge clk_i) begin
-            if (rst_ni && dline_we_q[slot]) dline[slot] <= dline_data_q;
+            if (rst_ni && dline_valid_q && dline_we_q[slot]) dline[slot] <= dline_data_q;
         end
     end
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin
             dline_we_q <= '0;
-            dline_data_q <= '0;
+            dline_data_q <= '0; dline_valid_q <= 1'b0;
         end else begin
-            dline_we_q <= '0;
-            if (!next_window_i && sample_valid_i) begin
-                for (integer slot = 0; slot < (1<<BUF_AW); slot = slot + 1)
-                    dline_we_q[slot] <= (wr_ptr == slot);
+            // Validity ends at one scalar FF rather than passing through
+            // all 256 address decoders. Data/address/valid still queue the
+            // same sample on the same beat and commit on the next edge.
+            dline_valid_q <= !next_window_i && sample_valid_i;
+            for (integer slot = 0; slot < (1<<BUF_AW); slot = slot + 1)
+                dline_we_q[slot] <= (wr_ptr == slot);
+            if (!next_window_i && sample_valid_i)
                 dline_data_q <= mono_sum[16:1];
-            end
         end
     end
 
@@ -134,7 +143,7 @@ module basic_pitch_cqt_frontend #(
         if (!rst_ni) begin
             wr_ptr <= '0; n_recv <= '0; out_cnt <= '0;
             base_val <= DELAY/PHASES; phase <= DELAY%PHASES; tap_cnt <= '0;
-            acc <= '0; busy <= 1'b0; tap_wait <= 1'b0;
+            acc <= '0; tap_product_q <= '0; busy <= 1'b0; tap_wait <= 1'b0;
             res_valid_o <= 1'b0; win_we_o <= 1'b0; win_full_o <= 1'b0;
             win_addr_o <= '0; win_data_o <= '0; res_q_o <= '0;
         end else if (next_window_i) begin
@@ -155,7 +164,10 @@ module basic_pitch_cqt_frontend #(
             end
 
             if (busy && tap_wait) begin
-                if (!USE_DDR_COEFF || coeff_valid_i) tap_wait <= 1'b0;
+                if (!USE_DDR_COEFF || coeff_valid_i) begin
+                    tap_wait <= 1'b0;
+                    if (USE_DDR_COEFF) tap_product_q <= tap_product;
+                end
             end else if (busy) begin
                 if (tap_in_range)
                     acc <= acc_f;
