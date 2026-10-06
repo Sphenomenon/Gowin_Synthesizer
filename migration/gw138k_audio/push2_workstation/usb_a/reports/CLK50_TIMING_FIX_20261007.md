@@ -183,3 +183,8 @@ CQT原RTL对照再次PASS（两种模式各3窗×3octave，896写和216bin/windo
 取消并记录 `results/song_guide_full85_clk50_20261007_032038_555505/candidate_status.json`。
 证据 `results/clk50_fix_20261007/local_arbiter_equivalence_pass/`、
 `results/clk50_fix_20261007/cqt_request_equivalence/`。
+
+最新请求/仲裁合并候选18/18回归PASS，综合BSRAM216、SSRAM1607、寄存器40527，
+比前端候选多18FF；LUT57239（前端候选57581），综合clk50估计61.890MHz。
+此时尚无本候选PNR报告。真实RTL snapshot已逐项核验匹配提交 `5cf13b2`，
+构建开始时HEAD较旧，metadata另记`rtl_snapshot_commit`，不混淆开始提交与源快照。
