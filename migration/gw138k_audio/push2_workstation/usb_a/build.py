@@ -31,19 +31,20 @@ def main():
     ap.add_argument('--synthesis-only',action='store_true',help='Offline synthesis only; no place/route or programming')
     ap.add_argument('--no-update-latest',action='store_true',help='Keep the local latest-build pointer unchanged')
     ap.add_argument('--current-workstation',action='store_true',
-                    help='Merge scope into accepted full83; prepare/SYN only, never changes board latest')
+                    help='Merge scope into accepted full83; full requires UserCode, never changes board latest')
     ap.add_argument('--tf-audio-kind',choices=['mp3','wav','flac'],default='wav',
                     help='TF decoder profile to elaborate (default: wav)')
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     args=ap.parse_args()
     if args.current_workstation:
-        if (not (args.prepare_only or args.synthesis_only) or
-            (args.prepare_only and args.synthesis_only) or args.reuse_synthesis or
-            args.user_code is not None or args.tf_audio_kind!='wav'):
-            ap.error('--current-workstation requires exactly one of --prepare-only/--synthesis-only; '
-                     'accepted WAV only, no reuse-synthesis/UserCode')
-        flag='--prepare-only' if args.prepare_only else '--synthesis-only'
-        subprocess.run([sys.executable,str(ROOT/'tools/build_current_workstation.py'),flag],check=True)
+        if ((args.prepare_only and args.synthesis_only) or args.reuse_synthesis or
+            args.tf_audio_kind!='wav'):
+            ap.error('--current-workstation supports accepted WAV only, no reuse-synthesis; '
+                     '--prepare-only and --synthesis-only are mutually exclusive')
+        flag='--prepare-only' if args.prepare_only else '--synthesis-only' if args.synthesis_only else '--full'
+        command=[sys.executable,str(ROOT/'tools/build_current_workstation.py'),flag]
+        if args.user_code is not None: command+=['--user-code',args.user_code]
+        subprocess.run(command,check=True)
         return
     tf_audio_kind={'mp3':1,'wav':2,'flac':3}[args.tf_audio_kind]
     build_mode='synthesis_only' if args.synthesis_only else 'place_route_reuse' if args.reuse_synthesis else 'full'

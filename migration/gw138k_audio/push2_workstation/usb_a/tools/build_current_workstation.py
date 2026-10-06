@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Merge scope playback into accepted full83; offline only, no UserCode/board I/O.
+"""Merge scope playback into accepted full83; build only, no board I/O.
 
 The accepted complete staging tree is immutable and supplies CNN staged caches,
 DDR delay, TF recovery and song guidance. This overlay fixes scope entry wiring.
-LATEST_WORKSTATION.json keeps the accepted board and gets only an offline_candidate.
+Prepare/SYN assign no UserCode. Full builds require an explicit release UserCode.
+LATEST_WORKSTATION.json is never changed by the builder.
 """
 from pathlib import Path
 from datetime import datetime
@@ -43,7 +44,16 @@ def main():
     mode=parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('--prepare-only',action='store_true')
     mode.add_argument('--synthesis-only',action='store_true')
+    mode.add_argument('--full',action='store_true',help='Synthesis, P&R and bitstream; no programming')
+    parser.add_argument('--user-code',help='Required eight hexadecimal digits for --full only')
     args=parser.parse_args()
+    if args.full:
+        if args.user_code is None or len(args.user_code)!=8 or any(c not in '0123456789abcdefABCDEF' for c in args.user_code):
+            parser.error('--full requires --user-code with eight hexadecimal digits')
+        if int(args.user_code,16) in (0,0x83):
+            parser.error('full release must use a nonzero UserCode distinct from accepted 0x83')
+    elif args.user_code is not None:
+        parser.error('--user-code is only supported with --full')
     acceptance=json.loads((ROOT/'reports/CNN_83_ACCEPTANCE_20261006.json').read_text())
     assert acceptance['status']=='accepted_by_user' and acceptance['board']['user_code']=='0x00000083'
     originals=json.loads((BASE/'workstation_inputs.json').read_text())
@@ -200,32 +210,37 @@ def main():
     s+='set_false_path -to [get_pins {tf_run_meta*/D}]\n'
     sdc.write_text(s)
     tcl=stage/'scripts/build.tcl'
-    tcl.write_text(once(tcl.read_text(),'set_option -user_code 00000083\n',''))
+    tcl.write_text(once(tcl.read_text(),'set_option -user_code 00000083\n',
+                        'set_option -user_code '+args.user_code.upper()+'\n' if args.full else ''))
     inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
     changed_from_base=sorted(name for name,digest in inputs.items() if originals.get(name)!=digest)
     metadata=dict(baseline=BASE.relative_to(ROOT).as_posix(),accepted_commit=ACCEPTED_COMMIT,
                   git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-                  build_mode='prepare_only' if args.prepare_only else 'synthesis_only',
+                  build_mode='prepare_only' if args.prepare_only else 'full' if args.full else 'synthesis_only',
                   changed_from_base=changed_from_base,music_sha256=music,
                   frozen_sha256={live:digest for live,(_,digest) in FROZEN.items()},
-                  user_code_assigned=False,hardware_tested=False)
+                  user_code_assigned=args.full,user_code='0x'+args.user_code.upper() if args.full else None,
+                  hardware_tested=False)
     (output/'workstation_inputs.json').write_text(json.dumps(inputs,indent=2)+'\n')
     (output/'build_metadata.json').write_text(json.dumps(metadata,indent=2)+'\n')
     print(output,flush=True)
     if args.prepare_only:return
     with (output/'gowin.log').open('w') as log:
         result=subprocess.run([str(Path.home()/'.local/bin/gw_sh'),'scripts/build.tcl'],cwd=stage,
-                              env=dict(os.environ,PRJ1_FLOW='syn'),stdout=log,stderr=subprocess.STDOUT)
+                              env=dict(os.environ,PRJ1_FLOW='all' if args.full else 'syn'),stdout=log,stderr=subprocess.STDOUT)
     changes=[name for name,digest in inputs.items() if sha(stage/name)!=digest]
     (output/'tool_result.json').write_text(json.dumps(dict(exit_code=result.returncode,inputs_unchanged=not changes,
                                                         changed=changes,hardware_tested=False),indent=2)+'\n')
     if result.returncode or changes:raise SystemExit('Gowin/input check failed; see '+str(output/'gowin.log'))
-    report=audit(output,'synthesis_only')
+    report=audit(output,'full' if args.full else 'synthesis_only')
     for instance in ['u_scope_output','u_final_output_observer','u_final_output_cdc',
                      'u_tf_control_cdc','u_tf_scope_transport','u_delay_ddr_dma']:
         assert instance in report['hierarchy'],'missing merged feature: '+instance
     print('Complete workstation SYN BSRAM',report['bsram'],'/',report['bsram_capacity'],flush=True)
-    print('Board acceptance unchanged; publish offline_candidate only after regressions pass.',flush=True)
+    if args.full:
+        assert report['pnr_available'],'full build missing P&R resource evidence'
+        print('Complete workstation P&R BSRAM',report['pnr_bsram'],'/',report['bsram_capacity'],flush=True)
+    print('Board state unchanged; programming and acceptance require separate recorded operations.',flush=True)
 
 
 if __name__=='__main__':main()
