@@ -85,8 +85,8 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--synthesis-goal', choices=['auto', 'timing'], default='auto',
                         help='Gowin synthesis goal; timing retains clocks/RTL and is audited for RAM/QoR')
-    parser.add_argument('--route-option', type=int, choices=[0, 1, 2], default=1,
-                        help='Gowin P&R algorithm; preserve timing-driven/hold correction and all clocks')
+    parser.add_argument('--route-option', type=int, choices=[0, 1, 2], default=2,
+                        help='Gowin P&R algorithm; 2 is documented GW5AST-138 family default; preserve all clocks/checks')
     reuse = parser.add_mutually_exclusive_group()
     reuse.add_argument('--reroute-from', type=Path,
                        help='reuse completed full85 synthesis and P&R when only constraints differ')
