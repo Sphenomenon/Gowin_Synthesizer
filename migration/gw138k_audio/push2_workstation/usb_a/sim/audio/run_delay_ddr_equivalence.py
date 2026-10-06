@@ -7,7 +7,7 @@ copy is generated into build/ with only that wire declaration moved above
 its first use - no logic text is touched.
 """
 from pathlib import Path
-import shutil
+import argparse
 import subprocess
 import sys
 
@@ -17,8 +17,12 @@ BUILD = Path(__file__).resolve().parent / 'delay_ddr_build'
 
 
 def main():
-    BUILD.mkdir(exist_ok=True)
-    ref = BUILD / 'stereo_effects_ref.sv'
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, default=BUILD)
+    args = parser.parse_args()
+    build = args.output.resolve()
+    build.mkdir(parents=True, exist_ok=True)
+    ref = build / 'stereo_effects_ref.sv'
     text = (STAGE / 'legacy/rtl/audio/stereo_effects.sv').read_text()
     decl = "  wire [1:0] selected_id=slot_index==0?frame_order[1:0]:slot_index==1?frame_order[3:2]:frame_order[5:4];\n"
     assert text.count(decl) == 1
@@ -28,7 +32,7 @@ def main():
     text = text.replace(anchor, anchor + decl)
     ref.write_text(text)
 
-    out = BUILD / 'tb_delay_ddr.vvp'
+    out = build / 'tb_delay_ddr.vvp'
     cmd = [
         'iverilog', '-g2012', '-o', str(out),
         str(STAGE / 'legacy/rtl/audio/audio_math_pkg.sv'),

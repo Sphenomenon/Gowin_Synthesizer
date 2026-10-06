@@ -8,7 +8,7 @@ module tb_scope_tf_play;
  wire tbck,tws,tdin,tpa,sbck,sws,sdin,spa,stick;
  wire [19:0] rate;
  wire analysis_valid,observed_valid,display_valid;
- wire [31:0] observed,display_pcm;
+ wire [31:0] observed,display_pcm,observed_reference,display_reference,display_voices,display_health;
  reg check_tf=0;
  integer samples=0,analysed=0,paused=0,after_pause,paused_index;
  always #6.5 aclk=~aclk;
@@ -19,7 +19,8 @@ module tb_scope_tf_play;
   .pcm_active(active),.source_active(source_active),.sample_rate_hz(rate),.format_ready(),.unsupported(),
   .ddr_error(),.file_size(),.track_count(),.playback_hold_i(manual && (!mode || !run)),
   .analysis_hold_i(!mode),.analysis_enable_i(!mode),.analysis_pcm_ready_i(1'b0),
-  .analysis_pcm_valid(analysis_valid),.analysis_pcm_left(),.analysis_pcm_right(),.analysis_sample_rate(),
+  .card_lost(),.hotplug_debug(),.playlist_ready(),.playlist_name_addr(8'd0),.playlist_name_data(),
+        .analysis_pcm_end(),.analysis_pcm_valid(analysis_valid),.analysis_pcm_left(),.analysis_pcm_right(),.analysis_sample_rate(),
   .ddr_valid(),.ddr_write(),.ddr_address(),.ddr_data(),.ddr_ready(1'b0),.ddr_response(1'b0),.ddr_response_data(256'd0));
  tf_rate_pt8211_tx #(.BCK_HALF_CYCLES(25),.STEREO_ENABLE(1),.RATE_MUL(916260)) tdac(
   .clk(aclk),.reset_n(rst_n),.sample_data(mode && !run ? 32'sd0 : left),
@@ -37,13 +38,23 @@ module tb_scope_tf_play;
   .tf_bck_i(tbck),.tf_ws_i(tws),.tf_din_i(tdin),.tf_pa_i(tpa),.hp_bck_o(bck),.hp_ws_o(ws),.hp_din_o(din),
   .pa_en_o(pa),.tf_selected_o(selected),.switching_o(switching));
  pt8211_observer observe(.clk(aclk),.reset_n(rst_n && !switching),.bck(bck),.ws(ws),.din(din),
-  .frame_reference(32'd0),.pcm_pair(observed),.sample_valid(observed_valid),.trigger_reference());
- gw138k_stream_cdc #(.WIDTH(32)) display_cdc(.reset_n(rst_n),.source_clk(aclk),.destination_clk(clk),
-  .source_valid(observed_valid && !switching),.source_data(observed),.drop_count(),.destination_valid(display_valid),.destination_data(display_pcm));
+  .frame_reference(selected ? 32'd0 : 32'h1234ab00),.pcm_pair(observed),
+  .sample_valid(observed_valid),.trigger_reference(observed_reference));
+ gw138k_stream_cdc #(.WIDTH(128)) display_cdc(.reset_n(rst_n),.source_clk(aclk),.destination_clk(clk),
+  .source_valid(observed_valid && !switching),
+  .source_data({observed,observed_reference,selected ? 32'd0 : 32'hfedc1234,32'h00120034}),
+  .drop_count(),.destination_valid(display_valid),
+  .destination_data({display_pcm,display_reference,display_voices,display_health}));
  always @(posedge clk) begin
   if(analysis_valid) analysed<=analysed+1;
   if(display_valid) begin
    samples<=samples+1;
+   if(display_health!=32'h00120034) $fatal(1,"health tuple corrupt");
+   if(display_pcm==32'h1234fedc) begin
+    if(display_reference!=32'h1234ab00 || display_voices!=32'hfedc1234)
+     $fatal(1,"synth frame metadata detached from physical PCM");
+   end else if(display_reference!=0 || display_voices!=0)
+    $fatal(1,"TF frame has stale synth metadata");
    if(check_tf && display_pcm[31:16]!=(~display_pcm[15:0])) $fatal(1,"TF stereo pair swapped/corrupt");
    if(paused) begin if(display_pcm!=0) $fatal(1,"paused DAC/display must be silent");paused_index<=paused_index+1;end
   end

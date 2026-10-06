@@ -21,7 +21,7 @@ HERE=Path(__file__).resolve().parent
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('build',type=Path)
-    parser.add_argument('--test',choices=('tb_scope_dac_select','tb_scope_tf_coexist','tb_scope_tf_control','tb_scope_tf_play','tb_scope_xy','tb_scope_tf_bounds','tb_scope_workstation'))
+    parser.add_argument('--test',choices=('tb_scope_dac_select','tb_scope_tf_coexist','tb_scope_tf_control','tb_scope_tf_play','tb_scope_xy','tb_scope_tf_bounds','tb_scope_workstation','tb_scope_tf_transport'))
     args=parser.parse_args()
     build=args.build.resolve();project=build/'Prj1'
     out=build/datetime.now().strftime('scope_merge_%Y%m%d_%H%M%S_%f')
@@ -35,10 +35,12 @@ def main():
     audio_sources=[p for p in sources if not any(x in p.relative_to(project).as_posix() for x in
         ['vendor/','src/memory/','src/storage/','src/platform/','src/top/','src/usb_a/','rtl/music/',
          'src/ae350/riscv_','workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
+    audio_sources += [project/'rtl/music/music_async_fifo.sv']
     tests={
         'tb_scope_dac_select':[project/'src/audio/pt8211_tx.v',project/'src/audio/tf_rate_pt8211_tx.v',
             project/'src/audio/pt8211_observer.v',scope/'scope_dac_select.sv'],
         'tb_scope_workstation':audio_sources,
+        'tb_scope_tf_transport':[scope/'scope_tf_transport.sv'],
         'tb_scope_tf_control':[scope/'scope_tf_control.sv'],
         'tb_scope_tf_play':[project/'src/audio/pt8211_tx.v',project/'src/audio/tf_rate_pt8211_tx.v',
             project/'src/audio/pt8211_observer.v',project/'src/migration/gw138k_stream_cdc.sv',

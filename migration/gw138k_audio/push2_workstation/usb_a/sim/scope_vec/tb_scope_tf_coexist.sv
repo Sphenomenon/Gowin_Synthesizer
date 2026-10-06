@@ -29,6 +29,8 @@ module tb_scope_tf_coexist;
     reg check_dry=0,check_muted=0;
     gw138k_usb_controlled_audio managed(
         .usb_event_valid(usb_valid),.usb_event_data(usb_event),.usb_event_ready(usb_ready),
+        .delay_mem_clk_i(memory_clk),.delay_mem_rst_ni(reset_n),.delay_dwr_valid_o(),.delay_dwr_data_o(),.delay_dwr_pop_i(1'b1),
+        .delay_drd_push_i(1'b0),.delay_drd_data_i(65'd0),.delay_drd_ready_o(),
         .clk_50m(clk_50m),.audio_clk(audio_clk),.reset_n(reset_n),.midi_rx_i(1'b1),.pc_uart_rx_i(1'b1),
         .performance_words_o(performance),.pclk(clk_50m),.preset_n(reset_n),.psel(1'b0),.penable(1'b0),.pwrite(1'b0),
         .paddr(12'd0),.pwdata(32'd0),.pstrb(4'd0),.pready(),.pslverr(),.prdata(),
@@ -47,7 +49,8 @@ module tb_scope_tf_coexist;
         .pcm_left(tf_left),.pcm_right(tf_right),.pcm_active(tf_valid),.source_active(tf_active),
         .sample_rate_hz(rate),.format_ready(format_ready),.unsupported(unsupported),.ddr_error(),.file_size(),.track_count(),
         .playback_hold_i(1'b0),.analysis_hold_i(1'b1),.analysis_enable_i(1'b1),.analysis_pcm_ready_i(analysis_ready),
-        .analysis_pcm_valid(analysis_valid),.analysis_pcm_left(analysis_left),.analysis_pcm_right(analysis_right),
+        .card_lost(),.hotplug_debug(),.playlist_ready(),.playlist_name_addr(8'd0),.playlist_name_data(),
+        .analysis_pcm_end(),.analysis_pcm_valid(analysis_valid),.analysis_pcm_left(analysis_left),.analysis_pcm_right(analysis_right),
         .analysis_sample_rate(analysis_rate),.ddr_valid(),.ddr_write(),.ddr_address(),.ddr_data(),
         .ddr_ready(1'b0),.ddr_response(1'b0),.ddr_response_data(256'd0));
     tf_rate_pt8211_tx #(.BCK_HALF_CYCLES(25),.STEREO_ENABLE(1),.RATE_MUL(916260)) tf_dac(

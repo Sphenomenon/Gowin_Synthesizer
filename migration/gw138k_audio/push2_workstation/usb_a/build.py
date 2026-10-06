@@ -4,7 +4,7 @@ No programming, UART, or board discovery operations are performed.
 """
 from pathlib import Path
 from datetime import datetime
-import argparse,hashlib,json,os,shutil,subprocess,xml.etree.ElementTree as ET
+import argparse,hashlib,json,os,shutil,subprocess,sys,xml.etree.ElementTree as ET
 from tools.workstation_memory import audit as audit_workstation_memory
 ROOT=Path(__file__).resolve().parent
 TF_AUDIO=ROOT/'rtl/tf_audio'
@@ -30,10 +30,21 @@ def main():
     ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path)
     ap.add_argument('--synthesis-only',action='store_true',help='Offline synthesis only; no place/route or programming')
     ap.add_argument('--no-update-latest',action='store_true',help='Keep the local latest-build pointer unchanged')
+    ap.add_argument('--current-workstation',action='store_true',
+                    help='Merge scope into accepted full83; prepare/SYN only, never changes board latest')
     ap.add_argument('--tf-audio-kind',choices=['mp3','wav','flac'],default='wav',
                     help='TF decoder profile to elaborate (default: wav)')
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     args=ap.parse_args()
+    if args.current_workstation:
+        if (not (args.prepare_only or args.synthesis_only) or
+            (args.prepare_only and args.synthesis_only) or args.reuse_synthesis or
+            args.user_code is not None or args.tf_audio_kind!='wav'):
+            ap.error('--current-workstation requires exactly one of --prepare-only/--synthesis-only; '
+                     'accepted WAV only, no reuse-synthesis/UserCode')
+        flag='--prepare-only' if args.prepare_only else '--synthesis-only'
+        subprocess.run([sys.executable,str(ROOT/'tools/build_current_workstation.py'),flag],check=True)
+        return
     tf_audio_kind={'mp3':1,'wav':2,'flac':3}[args.tf_audio_kind]
     build_mode='synthesis_only' if args.synthesis_only else 'place_route_reuse' if args.reuse_synthesis else 'full'
     if args.user_code is not None:

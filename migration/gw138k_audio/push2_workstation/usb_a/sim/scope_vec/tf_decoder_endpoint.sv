@@ -4,12 +4,18 @@
 // selects track 0, while restart/track_index are available for clean recapture.
 module tf_audio_ddr_path #(
     parameter [23:0] FILE_EXT = "WAV",
+    parameter integer CAPTURE_ON_ANALYSIS=0,
     parameter integer AUDIO_KIND = 2       // 1=MP3, 2=WAV, 3=FLAC
 ) (
     input  wire        clk_50m,
     input  wire        reset_n,
     input  wire        restart,
     input  wire [3:0]  track_index,
+    input wire capture_enable_i,
+    output wire pcm_end,card_lost,playlist_ready,
+    output wire [10:0] hotplug_debug,
+    input wire [7:0] playlist_name_addr,
+    output wire [7:0] playlist_name_data,
     input  wire        memory_clk,
     input  wire        memory_reset_n,
     input  wire        memory_ready,
@@ -62,6 +68,7 @@ module tf_audio_ddr_path #(
     input  wire [255:0] app_rdata
 );
 
+    assign pcm_end=0;assign card_lost=0;assign playlist_ready=1;assign hotplug_debug=0;assign playlist_name_data=0;
     reg [15:0] index;
     reg [7:0] gate;
     always @(posedge clk_50m or negedge reset_n) begin

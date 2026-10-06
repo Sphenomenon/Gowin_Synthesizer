@@ -8,6 +8,7 @@ module tb_scope_push;
     wire [17:0] event_data;
     wire [63:0] held;
     push2_controls dut(.clk(clk),.rst(rst),.connected(1'b1),.valid(valid),.ready(ready),.kind(kind),.cable(4'd0),.channel(4'd0),.a(a),.b(b),
+        .guide_enabled_i(1'b0),.guide_mode_i(1'b0),.guide_toggle_o(),.guide_prev_o(),.guide_next_o(),.guide_select_o(),
         .actual_control(32'd0),.actual_options(32'd0),.actual_panic_epoch(10'd0),.event_valid(event_valid),.event_ready(1'b1),.event_data(event_data),
         .held(held),.last_note(),.last_velocity(),.mapped(),.ignored());
     task automatic send(input integer k,aa,bb,expected);

@@ -9,13 +9,14 @@ HERE=Path(__file__).resolve().parent
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--test')
+    ap.add_argument('--output',type=Path,help='Results/fixtures directory; may be outside the checkout')
     ap.add_argument('--timeout',type=int,default=600);args=ap.parse_args()
     for tool in ('iverilog','vvp'):
         if not shutil.which(tool):ap.error(tool+' is required')
     tests=sorted(HERE.glob('tb_*.sv'))
     if args.test:tests=[p for p in tests if p.stem==args.test]
     if not tests:ap.error('no matching testbench')
-    out=ROOT/'out'/datetime.now().strftime('tf_audio_%Y%m%d_%H%M%S_%f')
+    out=args.output.resolve() if args.output else ROOT/'out'/datetime.now().strftime('tf_audio_%Y%m%d_%H%M%S_%f')
     build=out/'build';build.mkdir(parents=True)
     (out/'src/memory').mkdir(parents=True)
     shutil.copy2(ROOT/'rtl/ddr_address_map.vh',out/'src/memory/ddr_address_map.vh')

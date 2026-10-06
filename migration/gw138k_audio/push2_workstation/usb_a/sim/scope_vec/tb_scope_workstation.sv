@@ -14,6 +14,8 @@ module tb_scope_workstation;
     reg [31:0] previous_cue_time;
     reg signed [31:0] expected_x,expected_y;
     gw138k_event_workstation #(.DELAY_BITS(6),.ECHO_SAMPLES(17)) dut(
+        .delay_mem_clk_i(clk),.delay_mem_rst_ni(rst_n),.delay_dwr_valid_o(),.delay_dwr_data_o(),.delay_dwr_pop_i(1'b1),
+        .delay_drd_push_i(1'b0),.delay_drd_data_i(65'd0),.delay_drd_ready_o(),
         .clk_i(clk),.rst_ni(rst_n),.midi_byte_valid_i(midi_valid),.midi_byte_i(midi_byte),
         .pc_byte_valid_i(1'b0),.pc_byte_i(8'd0),.held_notes_o(),.applied_events_o(),.pc_overflow_o(),.control_options_o(),
         .panic_epoch_o(epoch),.cpu_event_valid_i(cpu_valid),.cpu_event_i(event_data),.cpu_event_ready_o(cpu_ready),
