@@ -82,6 +82,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--flow', choices=['prepare', 'syn', 'all', 'pnr'], default='all')
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--route-option', type=int, choices=[0, 1, 2], default=1,
+                        help='Gowin P&R algorithm; preserve timing-driven/hold correction and all clocks')
     reuse = parser.add_mutually_exclusive_group()
     reuse.add_argument('--reroute-from', type=Path,
                        help='reuse completed full85 synthesis and P&R when only constraints differ')
@@ -114,7 +116,8 @@ def main():
         tcl = stage / 'scripts/build.tcl'
         text = tcl.read_text()
         assert text.count('set_option -user_code 00000084') == 1
-        tcl.write_text(text.replace('set_option -user_code 00000084', 'set_option -user_code 00000085'))
+        tcl.write_text(text.replace('set_option -user_code 00000084', 'set_option -user_code 00000085')
+                       .replace('set_option -route_option 1', f'set_option -route_option {args.route_option}'))
         sdc = stage / 'constraints/tang_mega_138k.sdc'
         sdc.write_text(sdc.read_text() + CDC_CONSTRAINTS + REPORTS)
         if reuse_from is not None:
@@ -135,6 +138,7 @@ def main():
             'music_sha256': {str(p.relative_to(stage)): sha(p)
                              for p in (stage / 'rtl/music').rglob('*') if p.is_file()},
             'hardware_tested': False, 'goal': 'clk50 timing closure with BSRAM no greater than 260',
+            'route_option': args.route_option,
         }, indent=2) + '\n')
     else:
         inputs = json.loads((output / 'workstation_inputs.json').read_text())
@@ -158,7 +162,7 @@ def main():
         new_logic = {name: digest for name, digest in inputs.items() if name not in exceptions}
         assert old_logic == new_logic, 'RTL/IP/memory changed: fresh synthesis required'
         def without_incremental(text):
-            return '\n'.join(line for line in text.splitlines() if not line.startswith(('set_option -inc_pnr', 'set_option -user_code')))
+            return '\n'.join(line for line in text.splitlines() if not line.startswith(('set_option -inc_pnr', 'set_option -user_code', 'set_option -route_option')))
         assert without_incremental((previous / 'Prj1/scripts/build.tcl').read_text()) == \
                without_incremental((stage / 'scripts/build.tcl').read_text()), 'tool options changed'
         old_pnr = previous / 'Prj1/impl/pnr'
@@ -183,9 +187,9 @@ def main():
         metadata['reused_point_file'] = 'build/' + reuse_name
         metadata['reused_point_sha256'] = sha(stage / 'build' / reuse_name)
         metadata['reuse_point_kind'] = 'placement+routing' if reused_point.suffix == '.pr' else 'placement'
-        metadata['reuse_basis'] = ('all RTL/IP/memory inputs identical; only SDC/report commands differ'
+        metadata['reuse_basis'] = ('all RTL/IP/memory inputs identical; SDC/reports and P&R route algorithm may differ'
                                    if args.reroute_from is not None else
-                                   'all non-overlay RTL/IP/memory inputs and tool options identical; fresh synthesis for explicit overlays')
+                                   'all non-overlay RTL/IP/memory and synthesis options identical; fresh synthesis for explicit overlays; route algorithm separately recorded')
         metadata_path.write_text(json.dumps(metadata, indent=2) + '\n')
     if args.synthesis_from is not None:
         previous = args.synthesis_from.resolve()
@@ -197,7 +201,7 @@ def main():
         old_tcl = (previous / 'Prj1/scripts/build.tcl').read_text()
         new_tcl = (stage / 'scripts/build.tcl').read_text()
         def synthesis_options(text):
-            return [line for line in text.splitlines() if not line.startswith('set_option -inc_pnr')]
+            return [line for line in text.splitlines() if not line.startswith(('set_option -inc_pnr', 'set_option -route_option'))]
         assert synthesis_options(old_tcl) == synthesis_options(new_tcl), 'synthesis/tool options differ'
         assert 'set_option -user_code 00000085' in old_tcl, 'synthesis UserCode differs'
         old_syn = previous / 'Prj1/impl/gwsynthesis'
@@ -212,7 +216,7 @@ def main():
         metadata = json.loads(metadata_path.read_text())
         metadata['synthesis_from'] = str(previous.relative_to(ROOT))
         metadata['reused_synthesis_sha256'] = reused
-        metadata['synthesis_reuse_basis'] = 'completed synthesis; exact logic/IP/model/tool identity; corrected SDC only'
+        metadata['synthesis_reuse_basis'] = 'completed synthesis; exact logic/IP/model/synthesis-option identity; SDC or P&R route algorithm may differ'
         metadata_path.write_text(json.dumps(metadata, indent=2) + '\n')
     frozen(stage)
     print(output, flush=True)

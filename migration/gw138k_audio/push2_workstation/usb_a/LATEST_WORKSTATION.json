@@ -172,7 +172,7 @@
     "build": "results/song_guide_full85_clk50_20261007_022219_094886",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "unflashed; frontend pipeline synthesized, corrected SDC candidate compiling for P&R",
+    "status": "unflashed; same-RTL/SDC P&R algorithm1 and algorithm0 builds running",
     "change": "scalar DP and CQT pipelines; registered frontend write decode reusing RAM; 2FF audio diagnostic levels; targeted CDC constraints",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
@@ -203,6 +203,7 @@
     },
     "synthesis_registers": 40509,
     "synthesis_ssram": 1607,
-    "resource_tradeoff": "front-end word write enables trade 64 SSRAM primitives for registers; BSRAM remains216; final PNR still required"
+    "resource_tradeoff": "front-end word write enables trade 64 SSRAM primitives for registers; BSRAM remains216; final PNR still required",
+    "route0_build": "results/song_guide_full85_clk50_20261007_025509_105405"
   }
 }

@@ -149,3 +149,13 @@ write侧使用保留的Gray名；新候选 `results/song_guide_full85_clk50_2026
 耗时558.909秒，证据 `results/clk50_fix_20261007/cnn_ab_frontend_12frames.log`。
 修改后已验收原前端逐周期、CQT逐bin和DP逐分数各有独立对照，再加完整CNN A/B；
 这些逻辑验证不代替待完成的PNR和板上TRAVLER验收。
+
+## 相同逻辑/约束的路由算法对照
+
+最终候选route_option=1在最后优化阶段持续较久，另起
+`results/song_guide_full85_clk50_20261007_025509_105405/` 使用官方默认
+route_option=0，对照相同RTL/模型/SDC和20ns时钟。timing_driven=1、
+correct_hold_violation=1、place_option=2仍保持。变更仅为PNR路由算法，
+不降低时钟、不增RAM、不增加时序例外；两者均接受相同最终门禁。
+构建脚本将PNR算法单独记入metadata，复用综合的核对允许此PNR选项差异，
+其余综合选项仍完全匹配。

@@ -1501,5 +1501,15 @@
     "evidence": "results/clk50_fix_20261007/cnn_ab_frontend_12frames.log",
     "walltime_seconds": 558.909,
     "checks": "six layer hashes and write coverage identical; same accepted-reference hashes"
+  },
+  "route_algorithm_comparison": {
+    "route1": "results/song_guide_full85_clk50_20261007_022219_094886",
+    "route0": "results/song_guide_full85_clk50_20261007_025509_105405",
+    "same_rtl": true,
+    "same_sdc": true,
+    "clock_period_ns": 20,
+    "timing_driven": 1,
+    "correct_hold_violation": 1,
+    "status": "running; unflashed"
   }
 }
