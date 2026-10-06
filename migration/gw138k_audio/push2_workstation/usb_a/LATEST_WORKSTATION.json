@@ -16,14 +16,14 @@
   "timing_note": "same class as 0x80: audio_76m8 FIFO Gray CDC pessimistic STA; telemetry adds only 50MHz-domain counters",
   "hardware_tested": false,
   "coordination": "Board running 0x00000081 (verified flash after.log); model status E read 2026-10-06. CNN correctness/throughput investigation reserves next UserCode 0x00000083. Physical TRAVLER selection required for baseline acceptance.",
-  "commit": "e1f50f7",
+  "commit": "8bc80e9",
   "board_acceptance": null,
   "candidate": {
     "user_code": "0x00000083",
-    "build": null,
+    "build": "results/song_guide_full83_20261006_203125_607466",
     "change": "Fix confirmed 0x80 DDR allocation collision: Basic Pitch backpointers 0x30000000 -> 0x30400000, outside owner-6 delay ring 0x30000000..0x3001ffff. Preserve full82 CNN/Viterbi arithmetic and cadence. Frozen files unchanged.",
     "hardware_tested": false,
-    "acceptance": "Old-map concurrent-delay oracle fails at frame=1; new-map 172-frame Icarus oracle PASS (all scores/backpointers, 28 notes). New build and A/B with delay writes pending; TRAVLER first-window 36 items and frame rate pending.",
+    "acceptance": "12-frame CNN A/B with sustained delay writes PASS (six hashes and score sequence, same as no-delay reference); old-map negative control fails frame=1, new-map 172-frame Icarus isolation oracle PASS; guidance 5/5 and TF 16/16 PASS. Full build in progress; TRAVLER first-window 36 + throughput board acceptance pending.",
     "superseded_build": "results/song_guide_full83_20261006_195842_758915 (cancelled, never flashed)",
     "previous_candidate": {
       "user_code": "0x00000082",

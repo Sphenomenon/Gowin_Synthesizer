@@ -125,3 +125,24 @@ Icarus 四态复核最初约 25K 周期/s；为避免非活动 DUT 每拍运行�
 仿真 TB 对非活动 DUT 停钟，`run_a` 只在公共时钟低电平且全局复位时切换。
 重新启动后约 43K 周期/s。新增哈希/音符 unknown 检查，避免两路同时 X 被当成相等。
 旧的约 120ms 仿真片段归档到 `ab_iverilog_partial_before_clock_gating/`，不是失败证据。
+
+## 地址隔离版候选的构建与最终验证
+
+源码提交 `8bc80e9`。完整构建 `results/song_guide_full83_20261006_203125_607466/`。
+与 full82 对比，暂存输入**恰好两文件不同**：`basic_pitch_ddr_map.svh` 和 `build.tcl`
+（UserCode）。CNN、Viterbi、权重、所有其余输入字节相同，因此没有运算节拍代价。
+最终 guidance **5/5 PASS**：`results/cnn_correctness83_20261006/guidance_final/`。
+此前 TF **16/16 PASS** 的 inputs_sha256 与当前所有相关输入逐一复核无变化，结果仍有效。
+
+A/B TB 已加入完整 128KiB delay ring 的模拟写流（32B / 2000 个 50MHz 周期，约 25K 次/s，
+与设计量级一致），0x300 独立于新 0x304 进行地址解码；12 帧、8192 窗完整 A/B 在跑。
+
+地址隔离版 + 持续 delay 写流的 12 帧 A/B **PASS**（328.85s），逐 wave 六层哈希、
+覆盖计数与两路出谱 3 项全匹配。最终六层哈希仍为
+`e1e1c8e5 / 7539c275 / c2ca22ba / 92afdeec / 1ea6f727 / 5432e32a`，
+与此前完全无 delay 的参考一致。证据 `results/cnn_correctness83_20261006/ab_12frames_ddr_isolation/`。
+
+物理映射复核：DDR16 适配器以 byte_addr[30:5] 转 32B 对齐的原生 word address，
+0x30400000 对应 app_addr=0x0C100000，与 delay 0x0C000000 不同。
+父地址表注明两颗 4Gbit ×16 组成 1GiB 物理内存；新分配在该有效 BULK 池内。
+构建等待期间继续跑 3 帧四态 Icarus CNN A/B（含 delay 写流）检查 unknown 数值。
