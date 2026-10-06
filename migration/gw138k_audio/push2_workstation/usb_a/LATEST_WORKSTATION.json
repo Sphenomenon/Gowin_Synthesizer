@@ -169,10 +169,10 @@
   "sram_record": "../results/sram_20261006_234504_538503",
   "downloaded_at": "2026-10-06T23:45:25+08:00",
   "timing_candidate": {
-    "build": "results/song_guide_full85_clk50_20261007_032151_169144",
+    "build": "results/song_guide_full85_clk50_20261007_034837_423036",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "building registered CQT request and parallel local DDR grants; unflashed",
+    "status": "unflashed; final RTL fresh route1 build running; route0 diagnostic not suitable for deployment due audio/USB QoR degradation",
     "change": "DP/CQT pipelines and frontend decode; CQT registered DDR request; exact-priority parallel local grants; audio diagnostic 2FF and targeted CDC constraints",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
@@ -214,7 +214,11 @@
       "hold_wns_ns": 0.164,
       "recovery_wns_ns": 12.128,
       "removal_wns_ns": 0.277,
-      "closed": false
-    }
+      "closed": false,
+      "audio_fmax_mhz": 28.216,
+      "usb_fmax_mhz": 13.681,
+      "deployment_allowed": false
+    },
+    "fresh_route1_build": "results/song_guide_full85_clk50_20261007_034837_423036"
   }
 }

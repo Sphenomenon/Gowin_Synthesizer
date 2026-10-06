@@ -193,3 +193,14 @@ CQT原RTL对照再次PASS（两种模式各3窗×3octave，896写和216bin/windo
 `e1e1c8e5/7539c275/c2ca22ba/92afdeec/1ea6f727/5432e32a`，所有层写出覆盖及3项出谱
 一致。714.176秒walltime为主机并发构建负载影响的仿真耗时，不是FPGA窗耗时。
 证据 `results/clk50_fix_20261007/cnn_ab_arbiter_12frames.log`。
+
+## 发布前全板QoR复核
+
+默认route0对照虽更快出报告，但音频Fmax54.297->28.216MHz、USB38.726->13.681MHz，
+明显劣于已运行的full84；该候选不可部署。不能只看clk50门禁而忽略工具选项
+带来的其他域退化。最终新RTL另用route1全新P&R：
+`results/song_guide_full85_clk50_20261007_034837_423036/`，不复用不良route0路由参考，
+避免较大的仲裁改写造成长时间增量匹配。新RTL route0增量构建保留为定位对照，
+03:46启动的route1增量构建及时取消；所有候选均未烧录，板上仍full84。
+发布前需完整clk50门禁、BSRAM/冻结/输入/CDC检查、其他域QoR对比与板上冒烟。
+这不是宣称本轮会闭合音频/USB/DDR全设计时序；各域结果将如实记录。

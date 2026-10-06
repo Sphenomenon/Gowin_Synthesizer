@@ -1551,5 +1551,15 @@
       "evidence": "results/clk50_fix_20261007/cnn_ab_arbiter_12frames.log",
       "walltime_seconds": 714.176
     }
+  },
+  "deployment_qor_check": {
+    "baseline_audio_fmax_mhz": 54.297,
+    "baseline_usb_fmax_mhz": 38.726,
+    "route0_audio_fmax_mhz": 28.216,
+    "route0_usb_fmax_mhz": 13.681,
+    "route0_deployable": false,
+    "reason": "major unrelated-domain route degradation; clk50 gate alone does not authorize deployment",
+    "final_fresh_build": "results/song_guide_full85_clk50_20261007_034837_423036",
+    "status": "running; not programmed"
   }
 }
