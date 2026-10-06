@@ -180,7 +180,7 @@
     "validation": {
       "viterbi_oracle": "172x89 all scores/backpointers PASS; 28 notes; old-map negative control fails as intended",
       "scope_menu": "frontend/diagnostic candidate 18/18 PASS; same RTL in corrected-SDC staging",
-      "cnn_ab": "combined CQT+DP 12-frame A/B PASS; six hashes, coverage and 3 notes unchanged",
+      "cnn_ab": "frontend+DP+CQT 12-frame A/B PASS; six hashes/coverage and 3 notes unchanged",
       "guidance_score": "3/3 PASS",
       "cqt_reference": "local and DDR modes PASS; each 3 windows x 3 octaves, all 896 signal writes and 216 bins/window bit-exact to accepted RTL",
       "frontend_reference": "4 windows per local/DDR coefficient mode, 512 samples each and all controls cycle-exact to accepted frontend; ring wraps/backpressure/saturation PASS"

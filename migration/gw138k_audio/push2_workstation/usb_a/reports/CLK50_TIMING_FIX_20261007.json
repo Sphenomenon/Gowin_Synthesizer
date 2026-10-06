@@ -1492,5 +1492,14 @@
     "build": "results/song_guide_full85_clk50_20261007_022219_094886",
     "status": "running; no hardware programming",
     "previous_sdc_failure": "TA2003 on swept write binary MSB; corrected to retained Gray registers"
+  },
+  "frontend_cnn_ab": {
+    "passed": true,
+    "frames": 12,
+    "window_samples": 8192,
+    "notes": 3,
+    "evidence": "results/clk50_fix_20261007/cnn_ab_frontend_12frames.log",
+    "walltime_seconds": 558.909,
+    "checks": "six layer hashes and write coverage identical; same accepted-reference hashes"
   }
 }
