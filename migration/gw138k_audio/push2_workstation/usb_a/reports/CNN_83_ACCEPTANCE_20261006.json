@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-06T22:07:34+08:00",
+  "status": "accepted_by_user",
+  "user_confirmation": "验收没问题，做好git记录",
+  "board": {
+    "user_code": "0x00000083",
+    "build": "results/song_guide_full83_20261006_203125_607466",
+    "flash_record": "../results/sram_20261006_212129_384333",
+    "model_status": "E",
+    "model_crc32": "AF01A61B"
+  },
+  "acceptance_criteria": {
+    "song": "TRAVLER",
+    "first_window_score_count": 36,
+    "frame_rate": "no regression from 0x82 staged-cache configuration"
+  },
+  "verification_sources": {
+    "first_window": {
+      "status": "accepted_by_user",
+      "host_first_window_transition_captured": false,
+      "note": "User confirmed acceptance after the stated first-window criterion; host capture began after two windows at cumulative count 69. Do not present 36 as a host measurement."
+    },
+    "throughput": {
+      "status": "measured_no_regression",
+      "full82_mean_fps": 6.550435182138794,
+      "full83_mean_fps": 6.589691096958968,
+      "full82_segments": 21,
+      "full83_segments": 3,
+      "method": "ordinary-least-squares stream_wave vs timestamp, 48kHz/model E, waves 10..160, excluding capture/CQT/result-valid, >=100 frame span",
+      "full83_segments_data": [
+        {
+          "start": 40.9,
+          "end": 62.9,
+          "frames": [
+            12,
+            158
+          ],
+          "n": 32,
+          "ols_fps": 6.568854042851115
+        },
+        {
+          "start": 97.9,
+          "end": 119.7,
+          "frames": [
+            14,
+            160
+          ],
+          "n": 33,
+          "ols_fps": 6.622276829205425
+        },
+        {
+          "start": 153.9,
+          "end": 175.9,
+          "frames": [
+            13,
+            155
+          ],
+          "n": 34,
+          "ols_fps": 6.577942418820365
+        }
+      ]
+    },
+    "later_windows": {
+      "counts": [
+        69,
+        103,
+        139,
+        171
+      ],
+      "deltas": [
+        34,
+        36,
+        32
+      ],
+      "completion_intervals_seconds": [
+        57.0,
+        56.8
+      ]
+    }
+  },
+  "bsram": {
+    "full81": 215,
+    "full82": 260,
+    "full83": 260,
+    "device_total": 340,
+    "cache_delta": {
+      "feature": 32,
+      "weight": 8,
+      "plane": 2,
+      "pipeline_buffers": 3
+    },
+    "viterbi_both_versions": 6
+  },
+  "regressions": {
+    "cnn_ab": "12-frame Verilator A/B with sustained delay writes PASS; six hashes/coverage/score sequence unchanged",
+    "ddr_isolation": "172-frame Icarus mathematical oracle PASS, 28 notes; old-map negative control fails frame=1",
+    "tf_audio": "16/16 PASS; final input SHA256 unchanged",
+    "guidance": "5/5 final PASS",
+    "supplementary_iverilog_ab": "incomplete due simulation-time stall; not labeled logic PASS/FAIL"
+  },
+  "static_timing_closed": false,
+  "capture": {
+    "stopped_at": "2026-10-06T22:07:34+08:00",
+    "duration_seconds": 696.9,
+    "status": "stopped gracefully after user acceptance",
+    "score_transition_raw_words": [
+      {
+        "elapsed_seconds": 0.9,
+        "bp": "07E8DBAE",
+        "tf": "BB80B3D4",
+        "nn": "40000000",
+        "sd": "4593403B",
+        "score_count": 69,
+        "sample_rate": 48000
+      },
+      {
+        "elapsed_seconds": 8.9,
+        "bp": "0B45D9AE",
+        "tf": "BB80B1D4",
+        "nn": "0010C475",
+        "sd": "6792C43B",
+        "score_count": 103,
+        "sample_rate": 48000
+      },
+      {
+        "elapsed_seconds": 65.9,
+        "bp": "0B4EAB8E",
+        "tf": "BB80B1D4",
+        "nn": "0010400B",
+        "sd": "8B93783B",
+        "score_count": 139,
+        "sample_rate": 48000
+      },
+      {
+        "elapsed_seconds": 122.7,
+        "bp": "0B48A56E",
+        "tf": "BB80B1D4",
+        "nn": "0010C000",
+        "sd": "AB93803B",
+        "score_count": 171,
+        "sample_rate": 48000
+      },
+      {
+        "elapsed_seconds": 178.6,
+        "bp": "000F649E",
+        "tf": "BB80B3D4",
+        "nn": "A2150820",
+        "sd": "B092AC3B",
+        "score_count": 176,
+        "sample_rate": 48000
+      }
+    ],
+    "last_report": {
+      "elapsed_seconds": 696.9,
+      "bp": "000F649E",
+      "tf": "BB80F0D4",
+      "nn": "3A4B2A54",
+      "sd": "B092AC3B",
+      "score_count": 176,
+      "sample_rate": 48000
+    }
+  },
+  "artifacts": [
+    {
+      "path": "results/song_guide_full83_20261006_203125_607466/Prj1/impl/pnr/Prj1.fs",
+      "bytes": 42176353,
+      "sha256": "93b2ee808adeee5bf10ad6c1dd2c609ad95ac04fe7e77c8adcd2123fce19e26b"
+    },
+    {
+      "path": "results/cnn_correctness83_20261006/fix83_selected/dwell_fix83_selected.log",
+      "bytes": 116278,
+      "sha256": "eff7d01621a95797d9dbb5e902188f1205cbcb0a1139f71d5477dc325ca205f7"
+    },
+    {
+      "path": "results/cnn_correctness83_20261006/hardware_partial.json",
+      "bytes": 7584,
+      "sha256": "019da73c7576881026c3850050e75bd6e05ba1ef68a1bf9d2390ff81755e6ab7"
+    },
+    {
+      "path": "results/cnn_correctness83_20261006/bsram_comparison.json",
+      "bytes": 929,
+      "sha256": "4098a17f994decd1aba07d42760d102c14ca30a73dd21bffec9adca1eab28153"
+    },
+    {
+      "path": "results/cnn_correctness83_20261006/fix83/model_upload.log",
+      "bytes": 139,
+      "sha256": "0ccabda4b5b7f0a739849a32c9042888c6b9e03703c454625d430ed9605b3a14"
+    }
+  ],
+  "frozen_file_sha256": {
+    "rtl/display_data/gw138k_ddr_arbiter.sv": "61b0353f72419f0a719f693e121b1aa9ff8b07ed0dbfbdd33ec39f72172ef178",
+    "rtl/display_data/hdmi_display.v": "7421e472c9289b1cca0eefe1c428bc03d7f6ea1081e7f8f86a785d6d7ac42dcc",
+    "rtl/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+    "rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+    "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6"
+  },
+  "source_commit": "8bc80e9",
+  "prior_record_commit": "af2ff9a6f7c8d9e2c1d439b8596c3cfa25c2f0a0",
+  "history_note": "The experimental DP pipeline in e1f50f7 was reverted in 8bc80e9. Final full83 changes only the music DDR map and UserCode relative to full82; frozen files remain unchanged. The original handoff is archived without rewriting its historical hypotheses.",
+  "acceptance_tag": "cnn83-accepted-20261006"
+}

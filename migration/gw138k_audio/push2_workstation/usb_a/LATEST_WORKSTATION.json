@@ -13,13 +13,13 @@
   "tf_decoder": "wav",
   "basic_pitch_elaborated": true,
   "timing_closed": false,
-  "timing_note": "50MHz Fmax 42.932MHz; setup TNS -378.941ns/217 endpoints (full82 -435.444ns/298). audio_76m8 -4114.110ns; ddr_ui100 -2552.336ns. Address-only fix; hardware correctness and throughput must be verified.",
-  "hardware_tested": false,
-  "coordination": "0x83/model E, user selected analysis. 48kHz later-window score steps 69->103->139->171 (deltas 34/36/32), ~57s/window. Capture running; fresh physical TRAVLER restart required to directly observe first-window 36.",
-  "commit": "1d432a6",
+  "timing_note": "50MHz Fmax 42.932MHz; setup TNS -378.941ns/217 endpoints (full82 -435.444ns/298). audio_76m8 -4114.110ns; ddr_ui100 -2552.336ns. Address-only fix; board acceptance confirmed by user on 2026-10-06; static timing remains open.",
+  "hardware_tested": true,
+  "coordination": "0x83 acceptance confirmed by user on 2026-10-06. Model E; staged-cache throughput preserved; final serial capture stopped gracefully. No further physical restart requested.",
+  "commit": "af2ff9a",
   "source_commit": "8bc80e9",
   "board_acceptance": {
-    "status": "partial: active later windows restored; fresh first-window record pending",
+    "status": "accepted_by_user",
     "model_status": "E (DDR readback CRC passed; upload 9.0s)",
     "required": "TRAVLER first-window score_count=36 and no frame-rate regression",
     "observed": {
@@ -42,8 +42,12 @@
       ],
       "cnn_fps": 6.5897,
       "full82_same_method_fps": 6.5504,
-      "first_window": "not captured; entered mid-analysis"
-    }
+      "first_window": "accepted by user; not independently captured by host"
+    },
+    "recorded_at": "2026-10-06T22:07:34+08:00",
+    "confirmation": "验收没问题，做好git记录",
+    "evidence_report": "reports/CNN_83_ACCEPTANCE_20261006.json",
+    "first_window_verification_source": "user acceptance; host capture entered mid-analysis and did not record the first-window transition"
   },
   "validation": {
     "cnn_ab": "12-frame Verilator A/B with sustained delay writes PASS; six hashes/coverage/score sequence unchanged",
@@ -69,7 +73,10 @@
     "log": "results/cnn_correctness83_20261006/fix83_selected/dwell_fix83_selected.log",
     "started_at": "2026-10-06 21:54:12",
     "seconds": 1200,
-    "status": "running; waiting for fresh TRAVLER restart to capture first window; later windows restored"
+    "status": "stopped gracefully after user acceptance; summary written",
+    "stopped_at": "2026-10-06T22:07:34+08:00",
+    "actual_seconds": 696.9
   },
-  "bsram_note": "PNR full81=215, full82=260, full83=260; net +45 for caches: feature 32, weight 8, plane 2, pipeline buffers 3; Viterbi remains 6. 80/340 blocks free."
+  "bsram_note": "PNR full81=215, full82=260, full83=260; net +45 for caches: feature 32, weight 8, plane 2, pipeline buffers 3; Viterbi remains 6. 80/340 blocks free.",
+  "acceptance_tag": "cnn83-accepted-20261006"
 }
