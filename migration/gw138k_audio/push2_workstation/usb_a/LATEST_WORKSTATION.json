@@ -16,7 +16,7 @@
   "timing_note": "same class as 0x80: audio_76m8 FIFO Gray CDC pessimistic STA; telemetry adds only 50MHz-domain counters",
   "hardware_tested": false,
   "coordination": "Board running 0x00000081 (verified flash after.log); model status E read 2026-10-06. CNN correctness/throughput investigation reserves next UserCode 0x00000083. Physical TRAVLER selection required for baseline acceptance.",
-  "commit": "8bc80e9",
+  "commit": "5583dc1",
   "board_acceptance": null,
   "candidate": {
     "user_code": "0x00000083",
@@ -29,6 +29,8 @@
       "user_code": "0x00000082",
       "build": "song_guide_full82_20261005_144933",
       "acceptance": "throughput passed; correctness failed due to shared DDR-history allocation"
-    }
+    },
+    "source_commit": "8bc80e9",
+    "supplementary_iverilog_ab": "incomplete: vvp stopped advancing simulation time near 1092.227ms; archived separately, not treated as logic PASS/FAIL"
   }
 }
