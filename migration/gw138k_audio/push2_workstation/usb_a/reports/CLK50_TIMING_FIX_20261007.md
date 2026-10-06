@@ -270,3 +270,20 @@ SSRAM1607；相比请求/仲裁候选多82FF，Viterbi仍6BSRAM、CQT仍0BSRAM�
 逐文件SHA256证明仅Tcl改变，逻辑验证可复用，实际时序/资源/CDC/QoR仍独立审计。
 旧034837（未幅值分拍）耗时>60分钟的路由已因被新RTL取代取消，未烧板。
 最终auto/timing route1都继续完成，本次不宣称route2会闭合或等价于已验收的硬件。
+
+
+## 接近闭合后的前端最后两条链
+
+040915默认综合route1完整报告：SYN216/PNR260，50MHz Fmax49.250、setup WNS=-0.304ns、
+TNS=-3.342ns/22端点，hold+0.165ns/TNS0，recovery/removal通过，CDC与scope路由审计通过。
+不能把-0.304ns当通过；未烧录。音频55.416MHz、USB38.898MHz接近或优于full84，
+但HDMI pixel退到121.599MHz（<148.5，基线151.305），因此本候选也不宜部署。
+
+剩余负路径20条来自restart/sample_valid长控制链再串256路写译码，另2条tap_cnt→
+前端乘加/饱和输出为-0.015ns。a1b8537将dline_we_q每拍只保存wr_ptr onehot，
+有效位独立进dline_valid_q，数据/地址/valid仍同拍排队、下一拍提交。DDR系数路径
+在现有tap_wait&&coeff_valid拍保存48bit精确乘积，下一拍原MAC加法/饱和节拍不变；
+片内同步ROM原时序保留，不提前采样尚未更新的ROM数据。无新增RAM，无额外tap/输出拍。
+原两种前端系数端口逐拍等价PASS，扩展同步ROM与寄存DDR载荷模型在验证中。
+新候选053045_091636使用timing综合、系列默认route2，尚未烧录。旧735aaa3的
+timing route1/2仍运行，若也通过可作为少改动对照，最终选用源码必须与位流匹配。

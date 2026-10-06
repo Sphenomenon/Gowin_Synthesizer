@@ -19,8 +19,11 @@ cmd=['iverilog','-g2012','-I'+str(ROOT/'rtl/music'),'-s','tb_frontend_write_equi
 build=subprocess.run(cmd,cwd=ROOT,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 (out/'compile.log').write_text(build.stdout)
 build.check_returncode()
-run=subprocess.run(['vvp',str(image)],cwd=ROOT,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=120)
-(out/'run.log').write_text(run.stdout)
-print(run.stdout,end='');run.check_returncode()
-assert 'PASS frontend write-decode equivalence both coefficient modes' in run.stdout
+# Four coefficient-port models include long registered DDR stalls. Stream
+# Icarus output unbuffered so timeouts preserve progress instead of losing it.
+with (out/'run.log').open('w') as log:
+    run=subprocess.run(['vvp','-i',str(image)],cwd=ROOT,stdout=log,stderr=subprocess.STDOUT,timeout=600)
+text=(out/'run.log').read_text()
+print(text,end='');run.check_returncode()
+assert 'PASS frontend write-decode equivalence both coefficient modes' in text
 (out/'result.json').write_text(json.dumps({'passed':True,'reference':'cnn83-accepted-20261006','coefficient_modes':['local_combinational','DDR_combinational','local_synchronous_ROM','DDR_registered_payload'],'windows_per_mode':4,'writes_per_mode':512,'comparison':'every control and sample cycle; signed saturation, ring wraps, backpressure and next-window commits'},indent=2)+'\n')

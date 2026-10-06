@@ -2,8 +2,8 @@
   "status": "in_progress",
   "board_unchanged": "0x00000084",
   "candidate_user_code": "0x00000085",
-  "candidate_build": "results/song_guide_full85_clk50_20261007_040915_479309",
-  "source_commit": "735aaa3",
+  "candidate_build": "results/song_guide_full85_clk50_20261007_053045_091636",
+  "source_commit": "a1b8537",
   "baseline_build": "results/workstation_scope83_20261006_230626_011557",
   "bsram_budget_pnr": 260,
   "synthesis_resources": {
@@ -1562,7 +1562,7 @@
     "final_fresh_build": "results/song_guide_full85_clk50_20261007_034837_423036",
     "status": "running; not programmed"
   },
-  "candidate_status": "magnitude_and_address_pipeline_pnr_running_unflashed",
+  "candidate_status": "final_valid_and_product_pipeline_build_running_unflashed",
   "request_arbiter_route0_result": {
     "build": "results/song_guide_full85_clk50_20261007_032151_169144",
     "tool_passed": true,
@@ -1767,5 +1767,53 @@
     "status": "build_running",
     "vendor_evidence": "Gowin Software User Guide SUG100, Place and Route Options: 2 is default for GW5A(S)(T)-138 and improves route speed",
     "logic_tests_reused": "exact snapshot 18/18 + CNN12 frames + CQT4 configs/math2100; PNR/resource/CDC/QoR independent"
+  },
+  "magnitude_auto_route1_result": {
+    "build": "results/song_guide_full85_clk50_20261007_040915_479309",
+    "bsram_syn": 216,
+    "bsram_pnr": 260,
+    "fmax_mhz": 49.25,
+    "setup_wns_ns": -0.304,
+    "hold_wns_ns": 0.165,
+    "tns": {
+      "setup": {
+        "ns": -3.342,
+        "endpoints": 22
+      },
+      "hold": {
+        "ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "reset_closed": true,
+    "clk50_closed": false,
+    "cdc_and_scope": "PASS",
+    "tool_passed": true,
+    "inputs_unchanged": true,
+    "hardware_tested": false,
+    "deployable": false,
+    "audio_fmax_mhz": 55.416,
+    "usb_fmax_mhz": 38.898,
+    "video_pixel_fmax_mhz": 121.599,
+    "video_baseline_fmax_mhz": 151.305,
+    "remaining_paths": [
+      "music_restart_delay -> dline_we_q (-0.304ns)",
+      "frontend tap_cnt -> win_data (2 paths -0.015ns)"
+    ],
+    "reason_not_deployed": "clk50 negative setup; HDMI domain also degraded below148.5MHz"
+  },
+  "frontend_final_pipeline": {
+    "source_commit": "a1b8537",
+    "source_sha256": "ef7296f07fd824881b1f5e91c5ec671762291bc1aaf53a6d5281fb54ddb9803f",
+    "changes": [
+      "separate onehot address decode from one scalar queued valid",
+      "register DDR coefficient multiply on existing valid/wait beat; local synchronous coefficient timing unchanged"
+    ],
+    "new_ram_arrays": 0,
+    "added_tap_cycles": 0,
+    "added_output_cycles": 0,
+    "frontend_cycle_equivalence": "original combinational local and DDR ports PASS; extended synchronous local/registered DDR ports running",
+    "whole_cnn_12frames": "pending final snapshot",
+    "staged_regression18": "pending final snapshot"
   }
 }

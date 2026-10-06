@@ -169,10 +169,10 @@
   "sram_record": "../results/sram_20261006_234504_538503",
   "downloaded_at": "2026-10-06T23:45:25+08:00",
   "timing_candidate": {
-    "build": "results/song_guide_full85_clk50_20261007_040915_479309",
+    "build": "results/song_guide_full85_clk50_20261007_053045_091636",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "synthesis_complete_pnr_running_unflashed",
+    "status": "final_frontend_build_running_unflashed",
     "change": "DP/CQT pipelines and frontend decode; CQT registered DDR request; exact-priority parallel local grants; audio diagnostic 2FF and targeted CDC constraints",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
@@ -188,9 +188,12 @@
       "cqt_magnitude": "4 configs exact accepted-RTL equivalence + 2100 Python magnitude oracle PASS",
       "staged_regression": "18/18 PASS, exact magnitude/address source snapshot",
       "staged_regression_report": "results/song_guide_full85_clk50_20261007_040915_479309/current_regression_20261007_041219_870955/verification.json",
-      "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_magnitude_12frames.log"
+      "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_magnitude_12frames.log",
+      "final_frontend_cycle_equivalence": "2 coefficient modes PASS; synchronous ports extension running",
+      "final_snapshot_cnn_ab": "pending",
+      "final_snapshot_staged_regression": "pending"
     },
-    "source_commit": "735aaa3",
+    "source_commit": "a1b8537",
     "synthesis_bsram": 216,
     "viterbi_bsram": 6,
     "synthesis_clk50_fmax_mhz": 61.89,
@@ -225,7 +228,7 @@
     },
     "fresh_route1_build": "results/song_guide_full85_clk50_20261007_034837_423036",
     "clk50_closed": false,
-    "latest_changes": "CQT signed64 magnitude products/sum split; sqrt consumes fixed top bits by shifting; reflected MAC DDR address registered. No new RAM arrays.",
+    "latest_changes": "Queue valid separately from 256-way address decode; precompute frontend DDR coefficient product on existing wait beat. Zero extra tap/output cycles and zero new RAM arrays.",
     "request_arbiter_route0_result": {
       "build": "results/song_guide_full85_clk50_20261007_032151_169144",
       "pnr_bsram": 260,
@@ -235,7 +238,17 @@
       "deployable": false,
       "hardware_tested": false
     },
-    "synthesis_resources": {
+    "family_route2_comparator": "results/song_guide_full85_clk50_20261007_045710_715943",
+    "magnitude_route1_result": {
+      "build": "results/song_guide_full85_clk50_20261007_040915_479309",
+      "fmax_mhz": 49.25,
+      "setup_wns_ns": -0.304,
+      "bsram_pnr": 260,
+      "deployable": false,
+      "hardware_tested": false,
+      "video_fmax_mhz": 121.599
+    },
+    "synthesis_resources_previous": {
       "bsram": 216,
       "bsram_measurement_stage": "synthesis",
       "registers": 40609,
@@ -302,6 +315,6 @@
       "pnr_bsram": null,
       "hardware_tested": false
     },
-    "family_route2_comparator": "results/song_guide_full85_clk50_20261007_045710_715943"
+    "synthesis_resources": null
   }
 }
