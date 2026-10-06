@@ -189,7 +189,7 @@
       "staged_regression": "18/18 PASS, exact magnitude/address source snapshot",
       "staged_regression_report": "results/song_guide_full85_clk50_20261007_040915_479309/current_regression_20261007_041219_870955/verification.json",
       "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_magnitude_12frames.log",
-      "final_frontend_cycle_equivalence": "2 coefficient modes PASS; synchronous ports extension running",
+      "final_frontend_cycle_equivalence": "4 port models PASS (incl synchronous ROM and registered DDR payload); every control/output cycle exact",
       "final_snapshot_cnn_ab": "pending",
       "final_snapshot_staged_regression": "pending"
     },

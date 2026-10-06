@@ -287,3 +287,10 @@ TNS=-3.342ns/22端点，hold+0.165ns/TNS0，recovery/removal通过，CDC与scope
 原两种前端系数端口逐拍等价PASS，扩展同步ROM与寄存DDR载荷模型在验证中。
 新候选053045_091636使用timing综合、系列默认route2，尚未烧录。旧735aaa3的
 timing route1/2仍运行，若也通过可作为少改动对照，最终选用源码必须与位流匹配。
+
+
+最后前端两处修复的四种系数端口模型全部逐拍PASS：组合片内、组合DDR、同步ROM、
+寄存DDR载荷；各4窗、512次输出、1295 PCM输入，所有控制/地址/样本/输出拍均相同，
+最大168990周期。初次4端口扩展触及原120s主机时限而未取得完整结论，没有RTL断言
+失败证据；改为vvp -i实时保留日志、600s时限，1M周期硬顶保持，已完整PASS。
+证据frontend_final_all_ports_streamed/result.json。只读基线板上仍0x84/模型E。

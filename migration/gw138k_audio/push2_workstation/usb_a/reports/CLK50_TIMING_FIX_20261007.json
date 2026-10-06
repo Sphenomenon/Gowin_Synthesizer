@@ -1812,8 +1812,10 @@
     "new_ram_arrays": 0,
     "added_tap_cycles": 0,
     "added_output_cycles": 0,
-    "frontend_cycle_equivalence": "original combinational local and DDR ports PASS; extended synchronous local/registered DDR ports running",
+    "frontend_cycle_equivalence": "PASS all four port models, 4 windows x 512 writes, exact control/output cycle identity",
     "whole_cnn_12frames": "pending final snapshot",
-    "staged_regression18": "pending final snapshot"
+    "staged_regression18": "pending final snapshot",
+    "cycle_equivalence_evidence": "results/clk50_fix_20261007/frontend_final_all_ports_streamed/result.json",
+    "initial_test_timeout": "Extended 4-port test exceeded old120s walltime; no RTL assertion failure. Streamed -i log retained; 600s walltime rerun passed at168990 cycle max under1M hard cap."
   }
 }
