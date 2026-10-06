@@ -44,6 +44,7 @@ def main():
     model_statuses = set()
     crc_bad = 0
     sample_counts = []
+    screen_frames = []
     commands = []
     snapshot_pair=(0,0)
     try:
@@ -85,6 +86,7 @@ def main():
                         else:
                             result['last'][kind] = [f'{v:08X}' for v in words]
                             if kind == 'A138': sample_counts.append((words[0],words[2]))
+                            if kind == 'P138': screen_frames.append(words[5])
 
             def send(packet):
                 port.write(packet); port.flush()
@@ -121,6 +123,12 @@ def main():
             if model_statuses != {14}:
                 raise RuntimeError(f'CNN model readiness changed: {model_statuses}')
             result['tests']['startup_cpu_audio_ddr_model'] = 'passed'
+            usb=[int(v,16) for v in result['last']['P138']]
+            if usb[1]&2 and len(screen_frames)>1 and screen_frames[-1]>screen_frames[0]:
+                result['tests']['push_connected_screen_frames_advancing']='passed'
+            else:
+                result['tests']['push_connected_screen_frames_advancing']='not_observed'
+            result['push_connected']=bool(usb[1]&2)
             if args.exercise_live:
                 # Cancel any prior performance before selecting the live mode.
                 # A hardware microphone/listener is not assumed by this check.
@@ -157,6 +165,10 @@ def main():
                     result['tests']['live_note_release_and_panic'] = 'passed'
                 finally:
                     cc(120, 0); cc(95, 0); cc(90, 0); pump(1)
+            health=int(result['last']['A138'][3],16)
+            result['audio_health_word']=f'{health:08X}'
+            if health:raise RuntimeError('audio core/serializer health faults reported')
+            result['tests']['audio_health_zero']='passed'
             if result['last']['K138']['pc_input_errors'] or crc_bad:
                 raise RuntimeError('input/telemetry integrity fault observed')
             result['passed'] = True
@@ -170,6 +182,7 @@ def main():
         result['runtime_report_sequence_delta'] = ((sample_counts[-1][0] - sample_counts[0][0]) & 0xffffffff) if len(sample_counts) > 1 else 0
         if result['runtime_report_sequence_delta']:
             result['samples_per_runtime_report']=result['sample_counter_delta']/result['runtime_report_sequence_delta']
+        result['push_screen_frame_delta']=(screen_frames[-1]-screen_frames[0]) & 0xffffffff if len(screen_frames)>1 else 0
         result['midi_control_commands'] = commands
         result['finished_at'] = datetime.now().astimezone().isoformat(timespec='seconds')
         args.output.write_text(json.dumps(result, indent=2) + '\n')
