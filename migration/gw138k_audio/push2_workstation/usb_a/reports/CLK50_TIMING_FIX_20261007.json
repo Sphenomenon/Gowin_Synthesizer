@@ -1687,5 +1687,16 @@
     },
     "cnn_ab_evidence": "results/clk50_fix_20261007/cnn_ab_magnitude_12frames.log"
   },
-  "baseline_board_readonly_smoke": "results/clk50_fix_20261007/full84_before_timing_fix.json"
+  "baseline_board_readonly_smoke": "results/clk50_fix_20261007/full84_before_timing_fix.json",
+  "timing_goal_comparator": {
+    "build": "results/song_guide_full85_clk50_20261007_042458_983585",
+    "source_commit": "735aaa3",
+    "rtl_and_sdc_identical_to": "results/song_guide_full85_clk50_20261007_040915_479309",
+    "changed_from_primary": [
+      "scripts/build.tcl"
+    ],
+    "option": "set_option -opt_goal timing",
+    "hardware_tested": false,
+    "status": "synthesis_in_progress"
+  }
 }
