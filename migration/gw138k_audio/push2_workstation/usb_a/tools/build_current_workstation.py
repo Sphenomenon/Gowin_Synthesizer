@@ -230,7 +230,7 @@ def main():
                               env=dict(os.environ,PRJ1_FLOW='all' if args.full else 'syn'),stdout=log,stderr=subprocess.STDOUT)
     changes=[name for name,digest in inputs.items() if sha(stage/name)!=digest]
     (output/'tool_result.json').write_text(json.dumps(dict(exit_code=result.returncode,inputs_unchanged=not changes,
-                                                        changed=changes,hardware_tested=False),indent=2)+'\n')
+                                                        changed=changes,build_mode=metadata['build_mode'],hardware_tested=False),indent=2)+'\n')
     if result.returncode or changes:raise SystemExit('Gowin/input check failed; see '+str(output/'gowin.log'))
     report=audit(output,'full' if args.full else 'synthesis_only')
     for instance in ['u_scope_output','u_final_output_observer','u_final_output_cdc',
