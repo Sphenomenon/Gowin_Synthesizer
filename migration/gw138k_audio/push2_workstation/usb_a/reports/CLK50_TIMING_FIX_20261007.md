@@ -236,3 +236,8 @@ CDC结构检查初版只支持直接Gray寄存器连接，因此拒绝TF已有cl
 SSRAM1607；相比请求/仲裁候选多82FF，Viterbi仍6BSRAM、CQT仍0BSRAM。
 原板full84只读15秒冒烟3/3 PASS，模型E、UART CRC0、音频health0；没有控制命令、
 没有PCM文件，也没有把该次冒烟当作CNN36项验收。实际板仍0x84，候选均未烧录。
+
+
+最终幅值/地址RTL的12帧CNN A/B PASS，六层哈希保持已验收参考值，层写出覆盖
+25344/3168/33792/1056/33792/1056完全一致，3项出谱相同。主机walltime696.913s
+只用于仿真记录，不是板上处理窗耗时。证据cnn_ab_magnitude_12frames.log。
