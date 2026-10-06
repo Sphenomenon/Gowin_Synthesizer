@@ -2,8 +2,8 @@
   "status": "in_progress",
   "board_unchanged": "0x00000084",
   "candidate_user_code": "0x00000085",
-  "candidate_build": "results/song_guide_full85_clk50_20261007_053045_091636",
-  "source_commit": "a1b8537",
+  "candidate_build": "results/song_guide_full85_clk50_20261007_054102_250721",
+  "source_commit": "9f8a48c",
   "baseline_build": "results/workstation_scope83_20261006_230626_011557",
   "bsram_budget_pnr": 260,
   "synthesis_resources": {
@@ -1562,7 +1562,7 @@
     "final_fresh_build": "results/song_guide_full85_clk50_20261007_034837_423036",
     "status": "running; not programmed"
   },
-  "candidate_status": "final_valid_and_product_pipeline_build_running_unflashed",
+  "candidate_status": "logic_decoder_synthesis_only_resource_gate_running_unflashed",
   "request_arbiter_route0_result": {
     "build": "results/song_guide_full85_clk50_20261007_032151_169144",
     "tool_passed": true,
@@ -1814,8 +1814,87 @@
     "added_output_cycles": 0,
     "frontend_cycle_equivalence": "PASS all four port models, 4 windows x 512 writes, exact control/output cycle identity",
     "whole_cnn_12frames": "pending final snapshot",
-    "staged_regression18": "pending final snapshot",
+    "staged_regression18": "18/18 PASS",
     "cycle_equivalence_evidence": "results/clk50_fix_20261007/frontend_final_all_ports_streamed/result.json",
-    "initial_test_timeout": "Extended 4-port test exceeded old120s walltime; no RTL assertion failure. Streamed -i log retained; 600s walltime rerun passed at168990 cycle max under1M hard cap."
+    "initial_test_timeout": "Extended 4-port test exceeded old120s walltime; no RTL assertion failure. Streamed -i log retained; 600s walltime rerun passed at168990 cycle max under1M hard cap.",
+    "synthesis_resources": {
+      "bsram": 224,
+      "measurement_stage": "synthesis",
+      "registers": 40537,
+      "ssram": 1607,
+      "lut_hierarchy": 62913,
+      "clock_estimates": [
+        {
+          "clock": "clk_50m",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 66.769,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 76.8,
+          "synthesis_estimated_mhz": 59.313,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 48.0,
+          "synthesis_estimated_mhz": 37.573,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+          "required_mhz": 400.0,
+          "synthesis_estimated_mhz": 1487.018,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 352.734,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 1617.337,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 223.924,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+          "required_mhz": 148.5,
+          "synthesis_estimated_mhz": 257.5,
+          "estimate_meets_requirement": true
+        }
+      ],
+      "hardware_tested": false,
+      "pnr_bsram": null,
+      "cqt": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "viterbi": {
+        "self_bsram": 6,
+        "subtree_bsram": 6
+      }
+    },
+    "regression_report": "results/song_guide_full85_clk50_20261007_053045_091636/current_regression_20261007_053152_751848/verification.json",
+    "implementation_attribute_commit": "9f8a48c",
+    "unintended_rom_candidate": {
+      "build": "results/song_guide_full85_clk50_20261007_053045_091636",
+      "synthesis_bsram": 224,
+      "extra_pROM_blocks": 8,
+      "status": "cancelled_before_routing_completion",
+      "hardware_tested": false,
+      "cause": "Gowin inferred 256-bit unconditional onehot decoder as pROM dline_we_q_0_s*",
+      "remedy": "targeted syn_romstyle=logic on decoder reg; official SUG550 5.17 supports reg/signal objects",
+      "functional_attribute_equivalence": "Exact a1b8537 RTL when directive is stripped; no arithmetic/protocol change"
+    }
   }
 }

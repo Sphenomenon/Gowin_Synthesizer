@@ -169,10 +169,10 @@
   "sram_record": "../results/sram_20261006_234504_538503",
   "downloaded_at": "2026-10-06T23:45:25+08:00",
   "timing_candidate": {
-    "build": "results/song_guide_full85_clk50_20261007_053045_091636",
+    "build": "results/song_guide_full85_clk50_20261007_054102_250721",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "final_frontend_build_running_unflashed",
+    "status": "synthesis_only_resource_gate_running_unflashed",
     "change": "DP/CQT pipelines and frontend decode; CQT registered DDR request; exact-priority parallel local grants; audio diagnostic 2FF and targeted CDC constraints",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
@@ -190,10 +190,11 @@
       "staged_regression_report": "results/song_guide_full85_clk50_20261007_040915_479309/current_regression_20261007_041219_870955/verification.json",
       "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_magnitude_12frames.log",
       "final_frontend_cycle_equivalence": "4 port models PASS (incl synchronous ROM and registered DDR payload); every control/output cycle exact",
-      "final_snapshot_cnn_ab": "pending",
-      "final_snapshot_staged_regression": "pending"
+      "final_snapshot_cnn_ab": "a1b8537 final 12frames running; 9f8a48c attribute-only functional identity verified",
+      "final_snapshot_staged_regression": "18/18 PASS a1b8537; 9f8a48c differs only by explicit decoder synthesis attribute",
+      "final_snapshot_regression_report": "results/song_guide_full85_clk50_20261007_053045_091636/current_regression_20261007_053152_751848/verification.json"
     },
-    "source_commit": "a1b8537",
+    "source_commit": "9f8a48c",
     "synthesis_bsram": 216,
     "viterbi_bsram": 6,
     "synthesis_clk50_fmax_mhz": 61.89,
@@ -315,6 +316,13 @@
       "pnr_bsram": null,
       "hardware_tested": false
     },
-    "synthesis_resources": null
+    "synthesis_resources": null,
+    "unintended_rom_previous_candidate": {
+      "build": "results/song_guide_full85_clk50_20261007_053045_091636",
+      "synthesis_bsram": 224,
+      "extra_decoder_pROM": 8,
+      "cancelled": true,
+      "hardware_tested": false
+    }
   }
 }
