@@ -5,7 +5,7 @@ iverilog is single-pass and cannot bind the live pipeline's
 declaration-after-use style, so this runner emits a sim-only copy of
 basic_pitch_pcm_pipeline.sv with pure declaration statements hoisted above
 their first use.  The real RTL is never modified.  Config A (USE_ALL_DDR,
-the proven 0x80/0x81 datapath) and config B (the 0x82 staged-cache datapath)
+the 0x80/0x81 baseline datapath) and config B (the 0x82 staged-cache datapath)
 run the same PCM through one behavioural DDR preloaded with the model blob;
 per-frame layer hashes and score notes must match bit-exactly.
 """

@@ -4,7 +4,7 @@
 // Dual-config equivalence probe for the 0x82 staged-cache fix.
 //
 // The SAME PCM stream runs through
-//   dut_a: USE_ALL_DDR=1            (the proven 0x80/0x81 datapath)
+//   dut_a: USE_ALL_DDR=1            (the 0x80/0x81 baseline datapath)
 //   dut_b: USE_ALL_DDR=0 + staged   (the 0x82 datapath)
 // over one behavioural DDR preloaded with the model blob.  The UART loaders
 // are hierarchy-forced DONE (a real BPN1 upload does not fit in sim time).
@@ -14,6 +14,7 @@ module tb_bp_config_ab #(
     parameter integer FRAMES = 3,
     parameter integer WIN_LEN = 2048,
     parameter integer DDR_READ_CYCLES = 1,
+    parameter integer INJECT_DELAY = 1,
     parameter integer MAX_CYCLES = 400000000
 );
     localparam integer TOTAL_SAMPLES = WIN_LEN + FRAMES*255 + 4096;
@@ -24,7 +25,7 @@ module tb_bp_config_ab #(
     // ------------------------------------------------------------------
     // Behavioural 16-bit DDR.  Requests are serialized by the pipeline
     // (single outstanding read), so: writes accept immediately, reads
-    // respond after DDR_READ_CYCLES cycles. Index = {granule, addr[19:1]} with the 13
+    // respond after DDR_READ_CYCLES cycles. Index = {granule, addr[19:1]} with the 14
     // 1 MiB granules the BP map actually uses; unwritten space reads 0.
     // ------------------------------------------------------------------
     function automatic [3:0] gmap(input [11:0] g);
@@ -38,10 +39,11 @@ module tb_bp_config_ab #(
             12'h106: gmap = 4'd6;   // note post
             12'h107: gmap = 4'd7;   // onset post
             12'h108: gmap = 4'd8;   // CQT signal
-            12'h300: gmap = 4'd9;   // DP backpointers
+            12'h304: gmap = 4'd9;   // isolated DP backpointers
             12'h301: gmap = 4'd10;  // DP notes
             12'h302: gmap = 4'd11;  // DP onsets
             12'h303: gmap = 4'd12;  // analysis
+            12'h300: gmap = 4'd13;  // delay ring (separate from DP)
             default: gmap = 4'd13;
         endcase
     endfunction
@@ -55,6 +57,11 @@ module tb_bp_config_ab #(
     wire [31:0] a_addr, b_addr;
     wire [15:0] a_wdata, b_wdata;
     reg run_a = 1;
+    // Runs are sequential; stop the inactive DUT clock to avoid spending
+    // Icarus time resetting/evaluating a whole second pipeline every cycle.
+    // run_a changes only while clk is low and both DUTs are held in reset.
+    wire a_clk = clk && run_a;
+    wire b_clk = clk && !run_a;
     wire mem_req = run_a ? a_req : b_req;
     wire mem_wr = run_a ? a_wr : b_wr;
     wire [31:0] mem_addr = run_a ? a_addr : b_addr;
@@ -68,7 +75,7 @@ module tb_bp_config_ab #(
         end else begin
             rsp_valid <= 0;
             if (mem_req && mem_ready) begin
-                if (gmap(mem_addr[31:20]) == 13 || mem_addr[0])
+                if (mem_addr[31:20] != 12'h300 && gmap(mem_addr[31:20]) == 13 || mem_addr[0])
                     $fatal(1, "invalid DDR address %08h", mem_addr);
                 if ($isunknown(mem_addr) || (mem_wr && $isunknown(mem_wdata)))
                     $fatal(1, "unknown DDR transaction addr=%08h data=%04h", mem_addr, mem_wdata);
@@ -80,6 +87,22 @@ module tb_bp_config_ab #(
             end else if (rsp_timer != 0) begin
                 rsp_timer <= rsp_timer - 1;
                 if (rsp_timer == 1) rsp_valid <= 1;
+            end
+        end
+    end
+
+    // Realistic competing delay-ring traffic: one 32-byte write every
+    // 2000 50MHz cycles, wrapping the complete reserved 128KiB range.
+    integer delay_cycles=0, delay_word=0, delay_lane;
+    always @(posedge clk) begin
+        if (!rstn) begin delay_cycles=0; delay_word=0; end
+        else if (INJECT_DELAY) begin
+            delay_cycles=delay_cycles+1;
+            if (delay_cycles%2000==0) begin
+                for(delay_lane=0;delay_lane<16;delay_lane=delay_lane+1)
+                    mem[13*524288 + delay_word + delay_lane] <=
+                        16'h55aa ^ (16'(delay_word + delay_lane));
+                delay_word=(delay_word+16)%65536;
             end
         end
     end
@@ -127,7 +150,7 @@ module tb_bp_config_ab #(
         .USE_EXTERNAL_STATE(1'b1), .USE_EXTERNAL_PLANE(1'b1),
         .USE_ALL_DDR(1'b1), .USE_DDR_FRONT_COEFF(1'b1), .USE_DDR_CQT_COEFF(1'b1)
     ) dut_a (
-        .clk_i(clk), .rst_ni(rstn && run_a), .analysis_restart_i(1'b0),
+        .clk_i(a_clk), .rst_ni(rstn && run_a), .analysis_restart_i(1'b0),
         .model_serial_i(1'b1), .model_status_o(), .debug_model_expected_crc_o(),
         .debug_model_actual_crc_o(), .debug_model_error_stage_o(),
         .pcm_valid_i(pcm_valid && run_a), .pcm_end_i(pcm_end && run_a),
@@ -150,7 +173,7 @@ module tb_bp_config_ab #(
         .USE_ALL_DDR(1'b0), .USE_DDR_SIGNAL(1'b1),
         .USE_DDR_FRONT_COEFF(1'b1), .USE_DDR_CQT_COEFF(1'b1)
     ) dut_b (
-        .clk_i(clk), .rst_ni(rstn && !run_a), .analysis_restart_i(1'b0),
+        .clk_i(b_clk), .rst_ni(rstn && !run_a), .analysis_restart_i(1'b0),
         .model_serial_i(1'b1), .model_status_o(), .debug_model_expected_crc_o(),
         .debug_model_actual_crc_o(), .debug_model_error_stage_o(),
         .pcm_valid_i(pcm_valid && !run_a), .pcm_end_i(pcm_end && !run_a),
@@ -180,8 +203,14 @@ module tb_bp_config_ab #(
     reg [6:0] a_seq [0:4095];
     reg [6:0] b_seq [0:4095];
     always @(posedge clk) begin
-        if (run_a && a_score_valid) begin a_seq[a_notes] <= a_score_note; a_notes = a_notes + 1; end
-        if (!run_a && b_score_valid) begin b_seq[b_notes] <= b_score_note; b_notes = b_notes + 1; end
+        if (run_a && a_score_valid) begin
+            if ($isunknown(a_score_note)) $fatal(1, "unknown A score note");
+            a_seq[a_notes] <= a_score_note; a_notes = a_notes + 1;
+        end
+        if (!run_a && b_score_valid) begin
+            if ($isunknown(b_score_note)) $fatal(1, "unknown B score note");
+            b_seq[b_notes] <= b_score_note; b_notes = b_notes + 1;
+        end
     end
 
     reg [31:0] a_hash_snap [0:5];
@@ -196,6 +225,8 @@ module tb_bp_config_ab #(
     always @(negedge clk) begin
         if (!rstn) previous_wave = 0;
         else if ((run_a ? a_wave : b_wave) != previous_wave) begin
+            if ($isunknown(run_a ? a_hashes : b_hashes))
+                $fatal(1, "unknown layer hash at completed wave %0d", previous_wave);
             if (run_a) wave_hash_a[previous_wave] = a_hashes;
             else if (wave_hash_a[previous_wave] !== b_hashes) begin
                 if (first_bad_wave < 0) first_bad_wave = previous_wave;
@@ -251,10 +282,11 @@ module tb_bp_config_ab #(
         wait (model_loaded);
         repeat (8) @(negedge clk);
         rstn = 1;
-        // ---- run A: proven all-DDR datapath ----
+        // ---- run A: baseline all-DDR datapath ----
         run_a = 1;
         wait (a_done);
         step(20000);   // let the score drain finish
+        if ($isunknown(a_hashes)) $fatal(1, "unknown final A hash");
         for (i = 0; i < 6; i = i + 1) a_hash_snap[i] = a_hashes[i*32 +: 32];
         $display("RUN_A notes=%0d hashes=%08h_%08h_%08h_%08h_%08h_%08h",
                  a_notes, a_hash_snap[0], a_hash_snap[1], a_hash_snap[2],
@@ -269,6 +301,7 @@ module tb_bp_config_ab #(
         rstn = 1;
         wait (b_done);
         step(20000);
+        if ($isunknown(b_hashes)) $fatal(1, "unknown final B hash");
         for (i = 0; i < 6; i = i + 1) b_hash_snap[i] = b_hashes[i*32 +: 32];
         $display("RUN_B notes=%0d hashes=%08h_%08h_%08h_%08h_%08h_%08h",
                  b_notes, b_hash_snap[0], b_hash_snap[1], b_hash_snap[2],

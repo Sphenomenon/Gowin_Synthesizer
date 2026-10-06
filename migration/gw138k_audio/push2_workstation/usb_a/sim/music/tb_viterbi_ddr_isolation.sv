@@ -1,9 +1,10 @@
 `timescale 1ns/1ps
 `include "basic_pitch_fixed_pkg.svh"
 `include "basic_pitch_ddr_map.svh"
+`include "ddr_address_map.vh"
 // Independent recurrence oracle across a production-length window. Both
 // internal and stalled external history must preserve every score/backpointer.
-module tb_viterbi_dp_pipeline;
+module tb_viterbi_ddr_isolation;
     localparam integer FRAMES = 172, BINS = 88, STATES = 89;
     reg clk=0, rstn=0, start=0, nv=0, ov=0, fv=0, last=0;
     reg [6:0] idx=0;
@@ -20,7 +21,20 @@ module tb_viterbi_dp_pipeline;
     wire mem_ready = timer==0 && !rsp && cycles%7!=0;
     wire score_ready = cycles%11<8;
     reg [15:0] mem[0:65535];
-    wire [15:0] mi={addr[21:20],addr[14:1]};
+    function automatic [15:0] history_index(input [31:0] byte_addr);
+        reg [1:0] region;
+        begin
+            case(byte_addr[31:20])
+                12'h304: region=0;  // relocated backpointer table
+                12'h301: region=1;  // note history
+                12'h302: region=2;  // onset history
+                12'h300: region=3;  // delay ring, including the old BP alias
+                default: region=3;
+            endcase
+            history_index={region,byte_addr[14:1]};
+        end
+    endfunction
+    wire [15:0] mi=history_index(addr);
     basic_pitch_viterbi #(.FRAMES(FRAMES),.USE_EXTERNAL_STATE(0)) dut_a(
         .clk_i(clk),.rst_ni(rstn),.start_i(start),.active_i(1'b1),
         .note_valid_i(nv),.note_idx_i(idx),.note_q_i(nq),
@@ -44,8 +58,13 @@ module tb_viterbi_dp_pipeline;
     always @(posedge clk) if(rstn) begin
         cycles<=cycles+1;
         rsp<=0;
+        // Adversarial owner-6 traffic continuously overwrites the beginning
+        // of the real 0x30000000 delay ring. Old BP allocations must fail;
+        // the new 0x30400000 allocation must preserve every traceback word.
+        mem[history_index(`PRJ1_DDR_DELAY_RING_BYTE_BASE) + cycles%512] <= 16'h55aa ^ cycles[15:0];
         if(req && mem_ready) begin
-            if(addr[31:22]!=(`BP_DDR_BPTR_BYTE_BASE>>22) || addr[0])
+            if((addr[31:20] != (`BP_DDR_BPTR_BYTE_BASE >> 20) &&
+                addr[31:20] != 12'h301 && addr[31:20] != 12'h302) || addr[0] || addr[19:15]!=0)
                 $fatal(1,"invalid history address %h",addr);
             if(wr) mem[mi]<=wd;
             else begin rd<=mem[mi]; timer<=1+cycles%5; end
@@ -115,7 +134,7 @@ module tb_viterbi_dp_pipeline;
         if(dut_b.state==5 || (dut_b.state==6 && dut_b.d_cnt==0)) begin
             for(j=0;j<STATES;j=j+1) begin
                 if(dut_b.score[j]!==gold[j]) $fatal(1,"external score frame=%0d state=%0d got=%0d expected=%0d",f,j,dut_b.score[j],gold[j]);
-                if(f>0 && mem[f*STATES+j]!==16'(gold_bp[f*STATES+j]))
+                if(f>0 && mem[history_index(`BP_DDR_BPTR_BYTE_BASE + ((f*STATES+j)*2))]!==16'(gold_bp[f*STATES+j]))
                     $fatal(1,"external backpointer frame=%0d state=%0d",f,j);
             end
             checked_b=checked_b+1;
@@ -155,7 +174,7 @@ module tb_viterbi_dp_pipeline;
         if(checked_a!=FRAMES || checked_b!=FRAMES || na==0 || na!=nb)
             $fatal(1,"coverage frames=%0d/%0d notes=%0d/%0d",checked_a,checked_b,na,nb);
         for(j=0;j<na;j=j+1) if(seq_a[j]!==seq_b[j]) $fatal(1,"score sequence mismatch index=%0d",j);
-        $display("PASS Viterbi DP oracle: %0d frames x %0d states; all scores/backpointers, ties, silence, DDR stalls, %0d notes",FRAMES,STATES,na);
+        $display("PASS Viterbi DDR isolation oracle: %0d frames x %0d states; all scores/backpointers, ties, silence, DDR stalls, concurrent delay writes, %0d notes",FRAMES,STATES,na);
         $finish;
     end
     initial begin

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""0x83: preserve staged CNN throughput; pipeline the failing Viterbi path.
+"""0x83: preserve staged CNN throughput; isolate DP history from the delay ring.
 
 Copy the complete full82 staging tree, assert accepted and frozen hashes, then
-replace only Viterbi and UserCode. See CNN_CORRECTNESS_SPEED_20261006.md.
+replace only the BP DDR allocation header and UserCode. See CNN_CORRECTNESS_SPEED_20261006.md.
 """
 from datetime import datetime
 from pathlib import Path
@@ -16,6 +16,8 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / 'results/song_guide_full82_20261005_144933'
 BASELINE_SHA = {
+    'rtl/music/basic_pitch_ddr_map.svh':
+        'd9e9af1cbb3ef63995a0cfd02be3dd486d29db8cdb17d686e6ad2af41b0075be',
     'rtl/music/basic_pitch_viterbi.sv':
         '852d579b2a6e908b3e301b3dc6d38c4eb7b0ae39b4df7707d131bfc9fa173bcd',
     'rtl/music/basic_pitch_pcm_pipeline.sv':
@@ -55,12 +57,12 @@ def main():
         assert sha(BASE / 'Prj1' / staged) == digest, f'frozen baseline drifted: {staged}'
     for name, digest in BASELINE_SHA.items():
         assert sha(BASE / 'Prj1' / name) == digest, f'baseline drifted: {name}'
-        if name != 'rtl/music/basic_pitch_viterbi.sv':
+        if name != 'rtl/music/basic_pitch_ddr_map.svh':
             assert sha(ROOT / name) == digest, f'CNN configuration drifted: {name}'
     shutil.copytree(BASE / 'Prj1', stage,
                     ignore=shutil.ignore_patterns('impl', 'build', '*.user'))
-    shutil.copy2(ROOT / 'rtl/music/basic_pitch_viterbi.sv',
-                 stage / 'rtl/music/basic_pitch_viterbi.sv')
+    shutil.copy2(ROOT / 'rtl/music/basic_pitch_ddr_map.svh',
+                 stage / 'rtl/music/basic_pitch_ddr_map.svh')
     tcl = stage / 'scripts/build.tcl'
     text = tcl.read_text()
     assert text.count('set_option -user_code 00000082') == 1
@@ -71,7 +73,7 @@ def main():
     (output / 'workstation_inputs.json').write_text(json.dumps(inputs, indent=2) + '\n')
     (output / 'build_metadata.json').write_text(json.dumps({
         'baseline': str(BASE), 'user_code': '0x00000083',
-        'patches': ['rtl/music/basic_pitch_viterbi.sv', 'scripts/build.tcl'],
+        'patches': ['rtl/music/basic_pitch_ddr_map.svh', 'scripts/build.tcl'],
         'frozen_sha256': {live: digest for live, (_, digest) in FROZEN.items()},
         'git_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
         'hardware_tested': False}, indent=2) + '\n')

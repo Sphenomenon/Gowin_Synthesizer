@@ -16,18 +16,19 @@
   "timing_note": "same class as 0x80: audio_76m8 FIFO Gray CDC pessimistic STA; telemetry adds only 50MHz-domain counters",
   "hardware_tested": false,
   "coordination": "Board running 0x00000081 (verified flash after.log); model status E read 2026-10-06. CNN correctness/throughput investigation reserves next UserCode 0x00000083. Physical TRAVLER selection required for baseline acceptance.",
-  "commit": "c6f7243",
+  "commit": "e1f50f7",
   "board_acceptance": null,
   "candidate": {
     "user_code": "0x00000083",
     "build": null,
-    "change": "Pipeline the observed failing Viterbi p_cnt->score RAM path with DP_READ/DP_CAND operand/candidate registers; retain 0x82 staged-cache CNN and MAC cadence.",
+    "change": "Fix confirmed 0x80 DDR allocation collision: Basic Pitch backpointers 0x30000000 -> 0x30400000, outside owner-6 delay ring 0x30000000..0x3001ffff. Preserve full82 CNN/Viterbi arithmetic and cadence. Frozen files unchanged.",
     "hardware_tested": false,
-    "acceptance": "172-frame independent DP oracle + 5 guidance regressions PASS; full 12-frame A/B and TF regression in progress; TRAVLER 36-item acceptance pending",
+    "acceptance": "Old-map concurrent-delay oracle fails at frame=1; new-map 172-frame Icarus oracle PASS (all scores/backpointers, 28 notes). New build and A/B with delay writes pending; TRAVLER first-window 36 items and frame rate pending.",
+    "superseded_build": "results/song_guide_full83_20261006_195842_758915 (cancelled, never flashed)",
     "previous_candidate": {
       "user_code": "0x00000082",
       "build": "song_guide_full82_20261005_144933",
-      "acceptance": "throughput passed; first-window correctness failed (1 vs 36)"
+      "acceptance": "throughput passed; correctness failed due to shared DDR-history allocation"
     }
   }
 }

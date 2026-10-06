@@ -2,6 +2,39 @@
 
 目标：保留 0x82 分级缓存的解析速度，恢复 TRAVLER 首窗 36 项。交接结论均视为待验证假设。
 
+## 当前结论：确定的 DDR 地址重叠（20:29 更新）
+
+0x80 的提交 `7437dda` 新增 delay ring，占用 `0x30000000..0x3001FFFF`；既有 Basic Pitch
+回溯表仍从 `0x30000000` 开始。172 × 89 × 2 = **30616 字节**，旧回溯表的整个范围
+`0x30000000..0x30007797` 被 delay ring 覆盖。owner 6 的正常写流会破坏历史指针；仲裁
+tag/优先级本身的正确不能防止两个客户端分配同一片物理存储。
+
+这也是交接的“缓存逻辑 / 硅时序”二分之外的第三种原因；孤立 CNN A/B 不包含 delay 写流，
+因此可以 PASS，板上出谱仍回退。归属与“0x79→0x80 从未重跑 36 项”这一事实相吻合。
+
+**0x83 最终候选只改 BP 地址分配**：在允许编辑的 `rtl/music/basic_pitch_ddr_map.svh` 内
+将 BPTR 移到 `0x30400000` 独立 1MiB granule，LAST_BYTE 更新为 `0x304FFFFF`。
+保留 NOTE=0x301 / ONSET=0x302 / ANALYSIS=0x303；父 BULK 池边界到 0x3FFFFFFF，当前
+其他 RTL 无 0x304 占用。五个冻结文件不改。
+
+Viterbi 已恢复为 full82 的原始 SHA256，撤回先前的流水候选，以使 0x83 保持 0x82 的
+运算及节拍，只验证地址隔离的作用。旧构建 `song_guide_full83_20261006_195842_758915`
+在布线阶段主动取消，**从未烧板**；Icarus 孤立 A/B 补充实验也随旧候选停下。
+
+`run_bp_ddr_isolation.py` + `tb_viterbi_ddr_isolation.sv` 给出可复现实验：
+
+- 旧 map + 父地址表定义的 delay ring 连续写流：**预期失败**，第二帧（frame=1）、
+  state=0 回溯指针已被破坏，约 0.12s 即检出。
+- 新 map + 同样写流：**PASS**，172 帧 × 89 状态的全部 score/backpointer 正确，
+  片内与 DDR 历史出谱均 28 项；含 DDR 等待、变延迟、背压、平分与静音，约 12s。
+- 证据 `results/cnn_correctness83_20261006/ddr_isolation_reproducible/`，含源码哈希及
+  两种地址配置日志；这是四态 Icarus 测试，不依赖 Verilator 二态假设。
+
+新脚本 `tools/build_full_song_83_bp_ddr_isolation.py` 沿用 full82 暂存树，SHA256 断言，
+只替换音乐分配头和 UserCode=00000083。dry-run 通过，下一步完整构建与实板 36 项验收。
+
+以下记录保留前期排查过程，时序候选已由上述地址修复取代。
+
 ## 开工状态
 
 - 工作树 HEAD `c4ad063`，已有未跟踪交接文档和 `sim/music/`，已完整读取两份指定文档。
@@ -55,7 +88,7 @@
 
 板级验收尚未完成，当前不宣告修复或确认根因。冻结文件已记录开工 SHA256，禁止编辑。
 
-## 0x83 候选修复与回归
+## 已撤回的时序候选与前期回归
 
 - Viterbi 新增 `S_DP_READ` / `S_DP_CAND` 两态：寄存前驱分数和 transition，下一拍寄存
   candidate，再执行原 best/score/backpointer 更新。保持 32 位算术、严格大于的平分选择、
@@ -72,3 +105,23 @@
 - 新构建脚本 `tools/build_full_song_83_bp_dp_pipeline.py` 使用 full82 暂存树，断言
   三个相关音乐 RTL 的基线 SHA256、五个冻结文件的 live/staged SHA256，并只替换
   Viterbi 与 UserCode 00000083。dry-run 已通过。
+
+TF 音频回归 **16/16 PASS**：`out/tf_audio_20261006_195523_949026/`。
+候选源码提交 `e1f50f7`，完整构建 `results/song_guide_full83_20261006_195842_758915/` 已启动。
+0x81 采集至 19:59 仍 CAPTURE，尚未选歌，因此没有有效 TRAVLER 基线验收数据。
+
+修复后的 12 帧 A/B **完整 PASS**（800M 上限，实际约 419M 周期，469.25s）：
+wave 0..19 与最终六层哈希均一致；各层写出 25344 / 3168 / 33792 / 1056 / 33792 / 1056，
+两路出谱序列均 3 项。最终六层哈希与修复前原 A 的完整结果也完全相同。
+证据 `results/cnn_correctness83_20261006/ab_12frames_dp_pipeline/`。
+继续用 Icarus 四态后端复核 3 帧夹具，以检查 Verilator 二态执行可能掩盖的未初始化值。
+
+0x81 的 1200 秒采集已结束：全部 CAPTURE / wave=0 / score_count=0，未出现选歌计算。
+这份 idle 日志只证实模型 E 与遥测活跃，**不能作为 TRAVLER 基线 PASS/FAIL**。
+0x79 参考记录 `reports/fullsong_watch_20261004.log` 实际存在，包含 48kHz、count=36/69 的
+解码遥测；36 项口径有历史证据，但 0x80/0x81 至今仍缺重跑验收。
+
+Icarus 四态复核最初约 25K 周期/s；为避免非活动 DUT 每拍运行复位与组合逻辑，
+仿真 TB 对非活动 DUT 停钟，`run_a` 只在公共时钟低电平且全局复位时切换。
+重新启动后约 43K 周期/s。新增哈希/音符 unknown 检查，避免两路同时 X 被当成相等。
+旧的约 120ms 仿真片段归档到 `ab_iverilog_partial_before_clock_gating/`，不是失败证据。

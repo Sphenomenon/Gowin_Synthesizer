@@ -8,10 +8,9 @@
 //
 // Interface: while frame_ready_o is high the producer streams 88 note bins in
 // ascending index order, then 88 onset bins, then pulses frame_valid_i. The DP
-// evaluates one (destination, predecessor) cell in three cycles. Registering
-// the table read, transition and candidate sum keeps the score-RAM write path
-// short; a 172-frame window costs 3 * 172 * 89 * 89 cycles plus backtrace/commit.
-// The practice session is blocking, so that latency is legal.
+// pulls one (destination, predecessor) cell per cycle, so a 172-frame window
+// costs 172 * 89 * 89 cycles plus backtrace/commit. The practice session is
+// blocking, so that latency is legal.
 //
 // Status: RTL candidate. Lint-clean, unit-simulated, and included in the
 // standalone Gowin synthesis probe; no completed route/timing evidence yet.
@@ -66,7 +65,7 @@ module basic_pitch_viterbi #(
                            S_EXT_CMT_NOTE_WAIT = 5'd18,
                            S_SCORE = 5'd19, S_SCORE_ONSET_REQ = 5'd20,
                            S_SCORE_ONSET_WAIT = 5'd21, S_SCORE_EMIT = 5'd22,
-                           S_SCORE_FIRST = 5'd23, S_DP_READ = 5'd24, S_DP_CAND = 5'd25;
+                           S_SCORE_FIRST = 5'd23;
 
     logic [4:0]         state;
     logic               last_frame_q;
@@ -110,8 +109,7 @@ module basic_pitch_viterbi #(
     assign score_valid_o = state == S_SCORE_FIRST ||
                            (state == S_SCORE_EMIT && score_new);
 
-    logic signed [31:0] trans_comb;
-    logic signed [31:0] prev_score_q, transition_q, candidate_q;
+    logic signed [31:0] trans_comb, cand_comb;
     logic [6:0]         bt_state, bt_next, arg_state;
     logic [6:0]         ext_bin_idx, ext_bptr;
     logic signed [15:0] ext_note_q, ext_onset_q;
@@ -155,6 +153,7 @@ module basic_pitch_viterbi #(
                                                     : (d_cnt[6:0] - p_cnt[6:0]));
     end
 
+    assign cand_comb     = prev_score[p_cnt] + trans_comb;
     assign frame_ready_o = (state == S_BINS);
     assign bt_next       = USE_EXTERNAL_STATE ? 7'd0 :
                            bptr_mem[bt_cnt*STATES + bt_state];
@@ -217,7 +216,6 @@ module basic_pitch_viterbi #(
             score_complete_o <= 1'b0;
             result_note_o <= 7'd0; result_conf_o <= 16'd0; result_frame_o <= 16'd0;
             frame_cnt <= 8'd0; peak_note <= 16'sd0;
-            prev_score_q <= 32'sd0; transition_q <= 32'sd0; candidate_q <= 32'sd0;
             score_scan <= 8'd0; score_previous <= 7'd0;
             score_previous_valid <= 1'b0;
             score_onset_hot <= 1'b0; score_onset_previous <= 1'b0;
@@ -295,7 +293,7 @@ module basic_pitch_viterbi #(
                         d_cnt    <= 8'd0;
                         p_cnt    <= 8'd0;
                         best_val <= 32'sh80000000;
-                        state    <= (frame_cnt == 8'd0) ? S_SEED : S_DP_READ;
+                        state    <= (frame_cnt == 8'd0) ? S_SEED : S_FRAME;
                     end else begin
                         d_cnt <= d_cnt + 8'd1;
                     end
@@ -313,34 +311,22 @@ module basic_pitch_viterbi #(
                     end
                 end
 
-                // Keep p_cnt/d_cnt stable through the two operand stages.
-                // Strict '>' and ascending predecessors preserve tie breaking.
-                S_DP_READ: begin
-                    prev_score_q <= prev_score[p_cnt];
-                    transition_q <= trans_comb;
-                    state <= S_DP_CAND;
-                end
-                S_DP_CAND: begin
-                    candidate_q <= prev_score_q + transition_q;
-                    state <= S_FRAME;
-                end
                 S_FRAME: begin
-                    state <= S_DP_READ;
-                    if (candidate_q > best_val) begin
-                        best_val <= candidate_q;
+                    if (cand_comb > best_val) begin
+                        best_val <= cand_comb;
                         best_idx <= p_cnt[6:0];
                     end
                     if (p_cnt == STATES-1) begin
                         score[d_cnt] <= emission[d_cnt] +
-                            ((candidate_q > best_val) ? candidate_q : best_val);
+                            ((cand_comb > best_val) ? cand_comb : best_val);
                         p_cnt    <= 8'd0;
                         best_val <= 32'sh80000000;
                         if (USE_EXTERNAL_STATE) begin
-                            ext_bptr <= (candidate_q > best_val) ? p_cnt[6:0] : best_idx;
+                            ext_bptr <= (cand_comb > best_val) ? p_cnt[6:0] : best_idx;
                             state <= S_EXT_BPTR;
                         end else begin
                             bptr_mem[frame_cnt*STATES + d_cnt] <=
-                                (candidate_q > best_val) ? p_cnt[6:0] : best_idx;
+                                (cand_comb > best_val) ? p_cnt[6:0] : best_idx;
                             if (d_cnt == STATES-1) begin
                                 d_cnt     <= 8'd0;
                                 arg_state <= 7'd0;
@@ -363,7 +349,7 @@ module basic_pitch_viterbi #(
                         state <= last_frame_q ? S_ARG : S_NEXT;
                     end else begin
                         d_cnt <= d_cnt + 8'd1;
-                        state <= S_DP_READ;
+                        state <= S_FRAME;
                     end
                 end
 
