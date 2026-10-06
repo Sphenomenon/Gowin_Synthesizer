@@ -172,7 +172,7 @@
     "build": "results/song_guide_full85_clk50_20261007_054102_250721",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "synthesis_only_resource_gate_running_unflashed",
+    "status": "synthesis_resource_gate_passed_pnr_running_unflashed",
     "change": "DP/CQT pipelines and frontend decode; CQT registered DDR request; exact-priority parallel local grants; audio diagnostic 2FF and targeted CDC constraints",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
@@ -188,11 +188,12 @@
       "cqt_magnitude": "4 configs exact accepted-RTL equivalence + 2100 Python magnitude oracle PASS",
       "staged_regression": "18/18 PASS, exact magnitude/address source snapshot",
       "staged_regression_report": "results/song_guide_full85_clk50_20261007_040915_479309/current_regression_20261007_041219_870955/verification.json",
-      "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_magnitude_12frames.log",
+      "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_frontend_final_12frames.log",
       "final_frontend_cycle_equivalence": "4 port models PASS (incl synchronous ROM and registered DDR payload); every control/output cycle exact",
-      "final_snapshot_cnn_ab": "a1b8537 final 12frames running; 9f8a48c attribute-only functional identity verified",
+      "final_snapshot_cnn_ab": "12frames PASS on a1b8537 logic; 9f8a48c attribute-only functional identity proven across597 stage inputs",
       "final_snapshot_staged_regression": "18/18 PASS a1b8537; 9f8a48c differs only by explicit decoder synthesis attribute",
-      "final_snapshot_regression_report": "results/song_guide_full85_clk50_20261007_053045_091636/current_regression_20261007_053152_751848/verification.json"
+      "final_snapshot_regression_report": "results/song_guide_full85_clk50_20261007_053045_091636/current_regression_20261007_053152_751848/verification.json",
+      "implementation_attribute_proof": "results/song_guide_full85_clk50_20261007_054102_250721/attribute_only_functional_equivalence.json"
     },
     "source_commit": "9f8a48c",
     "synthesis_bsram": 216,
@@ -316,7 +317,69 @@
       "pnr_bsram": null,
       "hardware_tested": false
     },
-    "synthesis_resources": null,
+    "synthesis_resources": {
+      "bsram": 216,
+      "measurement_stage": "synthesis",
+      "registers": 40801,
+      "ssram": 1607,
+      "lut_hierarchy": 63360,
+      "clock_estimates": [
+        {
+          "clock": "clk_50m",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 72.145,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 76.8,
+          "synthesis_estimated_mhz": 58.21,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 48.0,
+          "synthesis_estimated_mhz": 36.682,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+          "required_mhz": 400.0,
+          "synthesis_estimated_mhz": 1487.018,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 352.734,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 1617.337,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 223.924,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+          "required_mhz": 148.5,
+          "synthesis_estimated_mhz": 257.5,
+          "estimate_meets_requirement": true
+        }
+      ],
+      "hardware_tested": false,
+      "pnr_bsram": null,
+      "frontend": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      }
+    },
     "unintended_rom_previous_candidate": {
       "build": "results/song_guide_full85_clk50_20261007_053045_091636",
       "synthesis_bsram": 224,

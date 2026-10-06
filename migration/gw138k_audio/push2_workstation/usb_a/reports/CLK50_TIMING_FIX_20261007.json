@@ -1562,7 +1562,7 @@
     "final_fresh_build": "results/song_guide_full85_clk50_20261007_034837_423036",
     "status": "running; not programmed"
   },
-  "candidate_status": "logic_decoder_synthesis_only_resource_gate_running_unflashed",
+  "candidate_status": "synthesis_resource_gate_passed_pnr_running_unflashed",
   "request_arbiter_route0_result": {
     "build": "results/song_guide_full85_clk50_20261007_032151_169144",
     "tool_passed": true,
@@ -1813,7 +1813,7 @@
     "added_tap_cycles": 0,
     "added_output_cycles": 0,
     "frontend_cycle_equivalence": "PASS all four port models, 4 windows x 512 writes, exact control/output cycle identity",
-    "whole_cnn_12frames": "pending final snapshot",
+    "whole_cnn_12frames": "PASS; six accepted final hashes, every-layer coverage and 3 notes",
     "staged_regression18": "18/18 PASS",
     "cycle_equivalence_evidence": "results/clk50_fix_20261007/frontend_final_all_ports_streamed/result.json",
     "initial_test_timeout": "Extended 4-port test exceeded old120s walltime; no RTL assertion failure. Streamed -i log retained; 600s walltime rerun passed at168990 cycle max under1M hard cap.",
@@ -1895,6 +1895,71 @@
       "cause": "Gowin inferred 256-bit unconditional onehot decoder as pROM dline_we_q_0_s*",
       "remedy": "targeted syn_romstyle=logic on decoder reg; official SUG550 5.17 supports reg/signal objects",
       "functional_attribute_equivalence": "Exact a1b8537 RTL when directive is stripped; no arithmetic/protocol change"
-    }
+    },
+    "logic_decoder_synthesis_resources": {
+      "bsram": 216,
+      "measurement_stage": "synthesis",
+      "registers": 40801,
+      "ssram": 1607,
+      "lut_hierarchy": 63360,
+      "clock_estimates": [
+        {
+          "clock": "clk_50m",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 72.145,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 76.8,
+          "synthesis_estimated_mhz": 58.21,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 48.0,
+          "synthesis_estimated_mhz": 36.682,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+          "required_mhz": 400.0,
+          "synthesis_estimated_mhz": 1487.018,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 352.734,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 1617.337,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 223.924,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+          "required_mhz": 148.5,
+          "synthesis_estimated_mhz": 257.5,
+          "estimate_meets_requirement": true
+        }
+      ],
+      "hardware_tested": false,
+      "pnr_bsram": null,
+      "frontend": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      }
+    },
+    "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_frontend_final_12frames.log",
+    "attribute_only_functional_equivalence": "results/song_guide_full85_clk50_20261007_054102_250721/attribute_only_functional_equivalence.json"
   }
 }
