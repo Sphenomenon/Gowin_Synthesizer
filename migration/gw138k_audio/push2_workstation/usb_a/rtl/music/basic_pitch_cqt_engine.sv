@@ -70,7 +70,7 @@ module basic_pitch_cqt_engine #(
                            S_NEXT = 5'd9, S_DONE = 5'd10, S_FLUSH = 5'd11,
                            S_MAC_WAIT = 5'd12, S_DEC_WAIT = 5'd13,
                            S_COEFF_REQ = 5'd14, S_DEC_ACC = 5'd15,
-                           S_DEC_STORE = 5'd16;
+                           S_DEC_STORE = 5'd16, S_DEC_ISSUE = 5'd17;
 
     logic [4:0]         state;
     // The decimator runs in place. Output i can overwrite source i once
@@ -104,6 +104,7 @@ module basic_pitch_cqt_engine #(
     logic [7:0]         dec_k;
     logic signed [47:0] dec_acc;
     logic dec_in_q;
+    logic [17:0] dec_request_addr_q;
     logic signed [31:0] dec_product_q;
 
 
@@ -162,12 +163,12 @@ module basic_pitch_cqt_engine #(
         assign sig_rdata = sig_ddr_rdata;
         assign sig_mem_req_o = sig_write_pending || (state == S_FLUSH) ||
                                (state == S_MAC_REQ) ||
-                               ((state == S_DEC_REQ) && dec_in);
+                               (state == S_DEC_ISSUE);
         assign sig_mem_write_o = sig_write_pending || (state == S_FLUSH);
         assign sig_mem_addr_o = `BP_DDR_CQT_SIGNAL_BYTE_BASE +
             ({14'd0, sig_write_pending ? sig_pending_addr :
               (state == S_FLUSH ? {10'd0,flush_i} :
-               (state == S_MAC_REQ ? rd_idx : dec_raw[17:0]))} << 1);
+               (state == S_MAC_REQ ? rd_idx : dec_request_addr_q))} << 1);
         assign sig_mem_wdata_o = sig_write_pending ? sig_pending_data : dec_head[flush_i];
     end else begin : g_local_signal
         basic_pitch_signal_ram #(.DEPTH(MAXLEN)) u_sig_ram (
@@ -248,6 +249,7 @@ module basic_pitch_cqt_engine #(
             srem <= '0; sbit <= 6'd31; sval <= '0;
             dec_i <= '0; dec_k <= '0; dec_acc <= '0; flush_i <= '0;
             dec_in_q <= 1'b0; dec_product_q <= 32'sd0;
+            dec_request_addr_q <= 18'd0;
             done_o <= 1'b0; mag_we_o <= 1'b0;
         end else begin
             mag_we_o <= 1'b0;
@@ -344,10 +346,15 @@ module basic_pitch_cqt_engine #(
                 end
 
                 S_DEC_REQ: begin
+                    // Keep raw-index addition/range comparison out of the
+                    // shared request/ready path. DDR sees only a registered
+                    // issue state and address; local RAM retains its old beat.
                     dec_in_q <= dec_in;
-                    if (!USE_DDR_SIGNAL || !dec_in) state <= S_DEC;
-                    else if (!sig_write_pending && sig_mem_ready_i) state <= S_DEC_WAIT;
+                    dec_request_addr_q <= dec_raw[17:0];
+                    state <= (!USE_DDR_SIGNAL || !dec_in) ? S_DEC : S_DEC_ISSUE;
                 end
+                S_DEC_ISSUE: if (!sig_write_pending && sig_mem_ready_i)
+                    state <= S_DEC_WAIT;
                 S_DEC_WAIT: if (sig_mem_rsp_valid_i) state <= S_DEC;
 
                 S_DEC: begin

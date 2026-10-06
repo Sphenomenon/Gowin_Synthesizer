@@ -1150,98 +1150,66 @@ module basic_pitch_pcm_pipeline #(
     // to the client whose request actually entered the command FIFO.
     logic read_outstanding;
     logic [3:0] request_owner, response_owner;
+    // Prefix-OR grants preserve the original sig/front/cqt/.../dp priority.
+    // Each client's ready has a balanced parallel qualification instead of an
+    // eleven-branch mux chain; no queue, extra request beat or RAM is introduced.
+    wire [10:0] client_requests = {dp_mem_req, nn_mem_req, lut_mem_req, weight_mem_req, feature_mem_req, cache_mem_req, model_mem_req, norm_mem_req, cqt_coeff_mem_req, front_coeff_mem_req, sig_mem_req};
+    wire [10:0] client_grants;
+    assign client_grants[0] = !read_outstanding && client_requests[0];
+    for (genvar client = 1; client < 11; client = client + 1) begin : g_ddr_grant
+        assign client_grants[client] = !read_outstanding && client_requests[client] &&
+                                      !(|client_requests[client-1:0]);
+    end
     always_comb begin
-        mem_req_o = 1'b0;
-        mem_write_o = 1'b0;
-        mem_byte_addr_o = 32'd0;
-        mem_wdata_o = 16'd0;
-        request_owner = 4'd0;
-        norm_mem_ready = 1'b0;
-        sig_mem_ready = 1'b0;
-        front_coeff_mem_ready = 1'b0;
-        cqt_coeff_mem_ready = 1'b0;
-        cache_mem_ready = 1'b0;
-        model_mem_ready = 1'b0;
-        feature_mem_ready = 1'b0;
-        weight_mem_ready = 1'b0;
-        lut_mem_ready = 1'b0;
-        nn_mem_ready = 1'b0;
-        dp_mem_ready = 1'b0;
-        if (read_outstanding) begin
-        end else if (sig_mem_req) begin
-            request_owner = 4'd9;
-            mem_req_o = 1'b1;
-            mem_write_o = sig_mem_write;
-            mem_byte_addr_o = sig_mem_addr;
-            mem_wdata_o = sig_mem_wdata;
-            sig_mem_ready = mem_ready_i;
-        end else if (front_coeff_mem_req) begin
-            request_owner = 4'd10;
-            mem_req_o = 1'b1;
-            mem_byte_addr_o = front_coeff_mem_addr;
-            front_coeff_mem_ready = mem_ready_i;
-        end else if (cqt_coeff_mem_req) begin
-            request_owner = 4'd11;
-            mem_req_o = 1'b1;
-            mem_byte_addr_o = cqt_coeff_mem_addr;
-            cqt_coeff_mem_ready = mem_ready_i;
-        end else if (norm_mem_req) begin
-            request_owner = 4'd1;
-            mem_req_o = 1'b1;
-            mem_write_o = norm_mem_write;
-            mem_byte_addr_o = norm_mem_addr;
-            mem_wdata_o = norm_mem_wdata;
-            norm_mem_ready = mem_ready_i;
-        end else if (model_mem_req) begin
-            request_owner = 4'd2;
-            mem_req_o = 1'b1;
-            mem_write_o = model_mem_write;
-            mem_byte_addr_o = model_mem_addr;
-            mem_wdata_o = model_mem_wdata;
-            model_mem_ready = mem_ready_i;
-        end else if (cache_mem_req) begin
-            request_owner = 4'd3;
-            mem_req_o = 1'b1;
-            mem_write_o = cache_mem_write;
-            mem_byte_addr_o = cache_mem_addr;
-            mem_wdata_o = cache_mem_wdata;
-            cache_mem_ready = mem_ready_i;
-        end else if (feature_mem_req) begin
-            request_owner = 4'd4;
-            mem_req_o = 1'b1;
-            mem_write_o = feature_mem_write;
-            mem_byte_addr_o = feature_mem_addr;
-            mem_wdata_o = feature_mem_wdata;
-            feature_mem_ready = mem_ready_i;
-        end else if (weight_mem_req) begin
-            request_owner = 4'd5;
-            mem_req_o = 1'b1;
-            mem_write_o = 1'b0;
-            mem_byte_addr_o = weight_mem_addr;
-            mem_wdata_o = weight_mem_wdata;
-            weight_mem_ready = mem_ready_i;
-        end else if (lut_mem_req) begin
-            request_owner = 4'd6;
-            mem_req_o = 1'b1;
-            mem_write_o = 1'b0;
-            mem_byte_addr_o = lut_mem_addr;
-            mem_wdata_o = 16'd0;
-            lut_mem_ready = mem_ready_i;
-        end else if (nn_mem_req) begin
-            request_owner = 4'd7;
-            mem_req_o = 1'b1;
-            mem_write_o = nn_mem_write;
-            mem_byte_addr_o = nn_mem_addr;
-            mem_wdata_o = nn_mem_wdata;
-            nn_mem_ready = mem_ready_i;
-        end else if (dp_mem_req) begin
-            request_owner = 4'd8;
-            mem_req_o = 1'b1;
-            mem_write_o = dp_mem_write;
-            mem_byte_addr_o = dp_mem_addr;
-            mem_wdata_o = dp_mem_wdata;
-            dp_mem_ready = mem_ready_i;
-        end
+        mem_req_o = |client_grants;
+        mem_write_o = (client_grants[0] && sig_mem_write) |
+                      (client_grants[3] && norm_mem_write) |
+                      (client_grants[4] && model_mem_write) |
+                      (client_grants[5] && cache_mem_write) |
+                      (client_grants[6] && feature_mem_write) |
+                      (client_grants[9] && nn_mem_write) |
+                      (client_grants[10] && dp_mem_write);
+        request_owner = (4'd9 & {4{client_grants[0]}}) |
+                        (4'd10 & {4{client_grants[1]}}) |
+                        (4'd11 & {4{client_grants[2]}}) |
+                        (4'd1 & {4{client_grants[3]}}) |
+                        (4'd2 & {4{client_grants[4]}}) |
+                        (4'd3 & {4{client_grants[5]}}) |
+                        (4'd4 & {4{client_grants[6]}}) |
+                        (4'd5 & {4{client_grants[7]}}) |
+                        (4'd6 & {4{client_grants[8]}}) |
+                        (4'd7 & {4{client_grants[9]}}) |
+                        (4'd8 & {4{client_grants[10]}});
+        mem_byte_addr_o = ({32{client_grants[0]}} & sig_mem_addr) |
+                          ({32{client_grants[1]}} & front_coeff_mem_addr) |
+                          ({32{client_grants[2]}} & cqt_coeff_mem_addr) |
+                          ({32{client_grants[3]}} & norm_mem_addr) |
+                          ({32{client_grants[4]}} & model_mem_addr) |
+                          ({32{client_grants[5]}} & cache_mem_addr) |
+                          ({32{client_grants[6]}} & feature_mem_addr) |
+                          ({32{client_grants[7]}} & weight_mem_addr) |
+                          ({32{client_grants[8]}} & lut_mem_addr) |
+                          ({32{client_grants[9]}} & nn_mem_addr) |
+                          ({32{client_grants[10]}} & dp_mem_addr);
+        mem_wdata_o = ({16{client_grants[0]}} & sig_mem_wdata) |
+                      ({16{client_grants[3]}} & norm_mem_wdata) |
+                      ({16{client_grants[4]}} & model_mem_wdata) |
+                      ({16{client_grants[5]}} & cache_mem_wdata) |
+                      ({16{client_grants[6]}} & feature_mem_wdata) |
+                      ({16{client_grants[7]}} & weight_mem_wdata) |
+                      ({16{client_grants[9]}} & nn_mem_wdata) |
+                      ({16{client_grants[10]}} & dp_mem_wdata);
+        sig_mem_ready = mem_ready_i && client_grants[0];
+        front_coeff_mem_ready = mem_ready_i && client_grants[1];
+        cqt_coeff_mem_ready = mem_ready_i && client_grants[2];
+        norm_mem_ready = mem_ready_i && client_grants[3];
+        model_mem_ready = mem_ready_i && client_grants[4];
+        cache_mem_ready = mem_ready_i && client_grants[5];
+        feature_mem_ready = mem_ready_i && client_grants[6];
+        weight_mem_ready = mem_ready_i && client_grants[7];
+        lut_mem_ready = mem_ready_i && client_grants[8];
+        nn_mem_ready = mem_ready_i && client_grants[9];
+        dp_mem_ready = mem_ready_i && client_grants[10];
     end
     always_ff @(posedge clk_i or negedge run_rst_ni) begin
         if (!run_rst_ni) begin

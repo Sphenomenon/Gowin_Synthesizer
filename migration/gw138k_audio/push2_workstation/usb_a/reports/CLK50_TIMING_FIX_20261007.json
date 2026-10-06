@@ -1510,6 +1510,27 @@
     "clock_period_ns": 20,
     "timing_driven": 1,
     "correct_hold_violation": 1,
-    "status": "running; unflashed"
+    "status": "running; unflashed",
+    "route0_result": {
+      "build": "results/song_guide_full85_clk50_20261007_025509_105405",
+      "pnr_bsram": 260,
+      "clk50_fmax_mhz": 36.471,
+      "setup_wns_ns": -7.419,
+      "hold_wns_ns": 0.164,
+      "recovery_wns_ns": 12.128,
+      "removal_wns_ns": 0.277,
+      "closed": false
+    }
+  },
+  "registered_request_parallel_arbiter": {
+    "build": "results/song_guide_full85_clk50_20261007_032151_169144",
+    "status": "building; unflashed",
+    "local_arbiter_test": "results/clk50_fix_20261007/local_arbiter_equivalence_pass/result.json",
+    "cqt_reference_test": "results/clk50_fix_20261007/cqt_request_equivalence",
+    "new_ram": 0,
+    "additional_window_cycles_upper_bound": 11179776,
+    "additional_seconds_at_50mhz_upper_bound": 0.22359552,
+    "priority_changed": false,
+    "global_frozen_arbiter_changed": false
   }
 }

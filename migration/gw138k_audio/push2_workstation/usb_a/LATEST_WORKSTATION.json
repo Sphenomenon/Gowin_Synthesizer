@@ -169,11 +169,11 @@
   "sram_record": "../results/sram_20261006_234504_538503",
   "downloaded_at": "2026-10-06T23:45:25+08:00",
   "timing_candidate": {
-    "build": "results/song_guide_full85_clk50_20261007_022219_094886",
+    "build": "results/song_guide_full85_clk50_20261007_032151_169144",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "unflashed; same-RTL/SDC P&R algorithm1 and algorithm0 builds running",
-    "change": "scalar DP and CQT pipelines; registered frontend write decode reusing RAM; 2FF audio diagnostic levels; targeted CDC constraints",
+    "status": "building registered CQT request and parallel local DDR grants; unflashed",
+    "change": "DP/CQT pipelines and frontend decode; CQT registered DDR request; exact-priority parallel local grants; audio diagnostic 2FF and targeted CDC constraints",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
     "hardware_tested": false,
@@ -182,8 +182,9 @@
       "scope_menu": "frontend/diagnostic candidate 18/18 PASS; same RTL in corrected-SDC staging",
       "cnn_ab": "frontend+DP+CQT 12-frame A/B PASS; six hashes/coverage and 3 notes unchanged",
       "guidance_score": "3/3 PASS",
-      "cqt_reference": "local and DDR modes PASS; each 3 windows x 3 octaves, all 896 signal writes and 216 bins/window bit-exact to accepted RTL",
-      "frontend_reference": "4 windows per local/DDR coefficient mode, 512 samples each and all controls cycle-exact to accepted frontend; ring wraps/backpressure/saturation PASS"
+      "cqt_reference": "including registered request: local/DDR 3 windows x3 octaves, every 896 signal writes and216 output bins/window bit-exact PASS",
+      "frontend_reference": "4 windows per local/DDR coefficient mode, 512 samples each and all controls cycle-exact to accepted frontend; ring wraps/backpressure/saturation PASS",
+      "local_arbiter": "16384 exhaustive cases PASS against accepted arbiter: all 2048 masks, ready/blocked, write patterns, payload and owner"
     },
     "source_commit": "73febc3",
     "synthesis_bsram": 216,
@@ -204,6 +205,16 @@
     "synthesis_registers": 40509,
     "synthesis_ssram": 1607,
     "resource_tradeoff": "front-end word write enables trade 64 SSRAM primitives for registers; BSRAM remains216; final PNR still required",
-    "route0_build": "results/song_guide_full85_clk50_20261007_025509_105405"
+    "route0_build": "results/song_guide_full85_clk50_20261007_025509_105405",
+    "route0_previous_result": {
+      "build": "results/song_guide_full85_clk50_20261007_025509_105405",
+      "pnr_bsram": 260,
+      "clk50_fmax_mhz": 36.471,
+      "setup_wns_ns": -7.419,
+      "hold_wns_ns": 0.164,
+      "recovery_wns_ns": 12.128,
+      "removal_wns_ns": 0.277,
+      "closed": false
+    }
   }
 }

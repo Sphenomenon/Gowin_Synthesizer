@@ -159,3 +159,27 @@ correct_hold_violation=1、place_option=2仍保持。变更仅为PNR路由算法
 不降低时钟、不增RAM、不增加时序例外；两者均接受相同最终门禁。
 构建脚本将PNR算法单独记入metadata，复用综合的核对允许此PNR选项差异，
 其余综合选项仍完全匹配。
+
+## 默认路由结果与本地DDR控制长链
+
+默认路由在约21分钟完成，但50MHz Fmax36.471MHz，内部WNS=-7.419ns、
+hold=+0.164ns、TNS=-849.353ns/315端点；BSRAM260。复位recovery=+12.128ns、
+removal=+0.277ns通过。未闭合，未烧录。
+完整最差路径经 `dec_i -> dec_raw/dec_in -> 本地DDR仲裁 -> dp_mem_ready ->
+Viterbi d_cnt/RAM地址`，并非CQT完成信号本身。
+CQT增加18bit标量请求地址，S_DEC_REQ先寄存，DDR有效tap由S_DEC_ISSUE再发出；
+无效tap与本地RAM维持原节拍，避免范围比较穿过共享ready。
+PCM pipeline内11客户端的else-if仲裁改成前缀OR授权、one-hot OR payload，
+原sig/front/cqt/norm/model/cache/feature/weight/lut/nn/dp优先级和owner编号完全保留。
+全局冻结DDR仲裁器没有编辑；本地仲裁不加队列，不增加事务拍数，不增加RAM。
+有效DDR降采样tap新增1拍，上限约43671×256/50MHz=223.60ms/窗；
+加前两项理论增量上限约503ms/57s窗（<0.9%），卷积帧循环MAC节拍仍不变。
+新候选 `results/song_guide_full85_clk50_20261007_032151_169144/` 使用默认路由。
+CQT原RTL对照再次PASS（两种模式各3窗×3octave，896写和216bin/window）；
+本地仲裁抽取真实新/旧RTL穷举16384例PASS，覆盖2048请求mask、ready/blocked、
+读写组合、数据/地址/owner与one-hot ready。TB生成器先出现声明语法与wire lvalue
+错误，修正后通过；真实RTL编译及CNN仿真正常。
+本轮编辑最初的enum替换断言没有匹配，导致启动了一份旧RTL重复构建，已立即
+取消并记录 `results/song_guide_full85_clk50_20261007_032038_555505/candidate_status.json`。
+证据 `results/clk50_fix_20261007/local_arbiter_equivalence_pass/`、
+`results/clk50_fix_20261007/cqt_request_equivalence/`。
