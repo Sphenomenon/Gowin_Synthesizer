@@ -1,0 +1,787 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-06T23:52:11+08:00",
+  "status": "sram_programmed_and_smoke_passed_manual_acceptance_pending",
+  "user_authorization": "构建，综合，上板",
+  "build": "results/workstation_scope83_20261006_230626_011557",
+  "source_commit": "962563b98f63c41ee36dc4198619dd17752262c5",
+  "verification_tools_commit": "1a6989113a0a122ef0c76a72d1c8dc17c2aecf56",
+  "baseline": "results/song_guide_full83_20261006_203125_607466",
+  "baseline_acceptance_tag": "cnn83-accepted-20261006",
+  "user_code": "0x00000084",
+  "build_mode": "full",
+  "tool_result": {
+    "exit_code": 0,
+    "inputs_unchanged": true,
+    "changed": [],
+    "hardware_tested": false
+  },
+  "programming": {
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_20261006_230626_011557/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "217f858a3170fe231a64dbce065df24d21559bdcf7ca00a8eb10e0e1d6a1719d",
+    "from_code": "0x00000083",
+    "usercode": "0x00000084",
+    "fpga_flash_written": false,
+    "cable_location": 54,
+    "usb_device": "/sys/bus/usb/devices/3-6",
+    "operations": [
+      {
+        "name": "before",
+        "passed": true
+      },
+      {
+        "name": "sram",
+        "passed": true
+      },
+      {
+        "name": "after",
+        "passed": true
+      }
+    ]
+  },
+  "download_medium": "SRAM",
+  "fpga_flash_written": false,
+  "programming_record": "../results/sram_20261006_234504_538503",
+  "resources": {
+    "synthesis_bsram": 216,
+    "pnr_bsram": 260,
+    "capacity": 340,
+    "physical_remaining": 80,
+    "comparison": "full83/full84 identical within each stage; SYN is not physical PNR usage",
+    "synthesis_top_level": {
+      "u_usb_host": 34,
+      "u_push": 1,
+      "u_managed": 45,
+      "u_tf_audio": 5,
+      "u_music": 51,
+      "u_memory": 16,
+      "u_video": 48,
+      "u_boot_memory": 16
+    }
+  },
+  "regression": {
+    "passed": true,
+    "gates": 18,
+    "tests": {
+      "tb_scope_dac_select": "passed",
+      "tb_scope_workstation": "passed",
+      "tb_scope_tf_transport": "passed",
+      "tb_scope_tf_control": "passed",
+      "tb_scope_tf_play": "passed",
+      "tb_scope_tf_bounds": "passed",
+      "tb_scope_xy": "passed",
+      "tb_scope_tf_coexist": "passed",
+      "tb_scope_push": "passed",
+      "tb_playlist_hold": "passed",
+      "tb_tf_hotplug_probe": "passed",
+      "tb_song_menu": "passed",
+      "tb_playlist_bridge": "passed",
+      "tb_guidance": "passed",
+      "tb_score_stream": "passed",
+      "tf_audio_16": "passed",
+      "delay_ddr_equivalence": "passed",
+      "bp_ddr_isolation": "passed"
+    },
+    "report": "results/workstation_scope83_20261006_230626_011557/current_regression_20261006_230655_391702/verification.json"
+  },
+  "routed_scope_crossings": {
+    "passed": true,
+    "overall_timing_closed": null,
+    "hardware_tested": false,
+    "sample_data_saved": false,
+    "crossings": {
+      "u_tf_control_cdc": {
+        "nominal_bits": 32,
+        "retained_destination_bits": 24,
+        "maximum_hold_flight_ns": 1.733,
+        "synchronizers": {
+          "req_meta": [
+            "u_tf_control_cdc/req_meta_s0",
+            "u_tf_control_cdc/req_sync_s0"
+          ],
+          "ack_meta": [
+            "u_tf_control_cdc/ack_meta_s0",
+            "u_tf_control_cdc/ack_sync_s0"
+          ]
+        }
+      },
+      "u_final_output_cdc": {
+        "nominal_bits": 128,
+        "retained_destination_bits": 96,
+        "maximum_hold_flight_ns": 2.824,
+        "synchronizers": {
+          "req_meta": [
+            "u_final_output_cdc/req_meta_s0",
+            "u_final_output_cdc/req_sync_s0"
+          ],
+          "ack_meta": [
+            "u_final_output_cdc/ack_meta_s0",
+            "u_final_output_cdc/ack_sync_s0"
+          ]
+        }
+      }
+    },
+    "errors": [],
+    "tf_run_synchronizer": [
+      "tf_run_meta_s0",
+      "tf_run_audio_s0"
+    ],
+    "evidence_sha256": {
+      "Prj1/impl/pnr/Prj1.sdf": "f795395e5b47bf91594a3aed9b3fb362616af2d8854165e4122d0779b19bdbae",
+      "Prj1/impl/pnr/Prj1.vo": "6cdd8429b67bb75d2ddddd0939650435d8e341e88da4d6fb7280cde3edb2dc0c",
+      "Prj1/constraints/tang_mega_138k.sdc": "a60bd0ad31a0eb8bedc58b1ae08d97eadad27f33417dc5a5c6df545afcd59bc5"
+    }
+  },
+  "overall_timing": {
+    "timing_closed": false,
+    "errors": [
+      "Setup timing violations: 5867",
+      "Hold timing violations: 114",
+      "negative detailed slack (including recovery/removal/pulse width): -7.220 ns"
+    ],
+    "metrics": {
+      "setup_violated_endpoints": 5867,
+      "hold_violated_endpoints": 114,
+      "minimum_reported_slack_ns": -7.22,
+      "minimum_pulse_width_slack_ns": 1.359,
+      "clocks": [
+        {
+          "name": "clk_50m",
+          "type": "Base",
+          "period_ns": 20.0,
+          "frequency_mhz": 50.0,
+          "object": "clk_50m"
+        },
+        {
+          "name": "audio_76m8",
+          "type": "Generated",
+          "period_ns": 13.021,
+          "frequency_mhz": 76.8,
+          "object": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0"
+        },
+        {
+          "name": "ddr_mem400",
+          "type": "Generated",
+          "period_ns": 2.5,
+          "frequency_mhz": 400.0,
+          "object": "u_memory/u_pll/u_pll_0/PLL_inst/CLKOUT2"
+        },
+        {
+          "name": "ddr_ui100",
+          "type": "Generated",
+          "period_ns": 10.0,
+          "frequency_mhz": 100.0,
+          "object": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT"
+        },
+        {
+          "name": "video_ref49",
+          "type": "Generated",
+          "period_ns": 20.202,
+          "frequency_mhz": 49.5,
+          "object": "u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/CLKOUT0"
+        },
+        {
+          "name": "video_serial742",
+          "type": "Generated",
+          "period_ns": 1.347,
+          "frequency_mhz": 742.5,
+          "object": "u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst/CLKOUT0"
+        },
+        {
+          "name": "video_pixel148",
+          "type": "Generated",
+          "period_ns": 6.734,
+          "frequency_mhz": 148.5,
+          "object": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT"
+        },
+        {
+          "name": "cpu_bus50",
+          "type": "Generated",
+          "period_ns": 20.0,
+          "frequency_mhz": 50.0,
+          "object": "u_cpu_pll/PLL_inst/CLKOUT0"
+        },
+        {
+          "name": "cpu_core100",
+          "type": "Generated",
+          "period_ns": 10.0,
+          "frequency_mhz": 100.0,
+          "object": "u_cpu_pll/PLL_inst/CLKOUT1"
+        },
+        {
+          "name": "usb_48m",
+          "type": "Generated",
+          "period_ns": 20.833,
+          "frequency_mhz": 48.0,
+          "object": "u_usb_pll/PLL_inst/CLKOUT0"
+        }
+      ],
+      "cdc_max_delay_reported_paths": {
+        "set_max_delay 20.000 -from [get_regs {u_video/u_renderer/u_capture/held_*}] -to [get_regs {u_video/u_renderer/u_capture/snapshot_* u_video/u_renderer/u_capture/render_bank*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_video/u_scanout/held_request*}] -to [get_regs {u_video/u_scanout/request_word*}]": 5,
+        "set_max_delay 12.000 -from [get_regs {u_video/u_scanout/done0_tag* u_video/u_scanout/done1_tag*}] -to [get_regs {u_video/u_scanout/tag0* u_video/u_scanout/tag1*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_video/u_scanout/under_gray*}] -to [get_regs {u_video/u_scanout/under_meta*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_video/u_diagnostics/pixel_block_gray*}] -to [get_regs {u_video/u_diagnostics/pixel_block_meta*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_video/u_diagnostics/pixel_frame_gray*}] -to [get_regs {u_video/u_diagnostics/pixel_frame_meta*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_video/u_diagnostics/memory_rendered_gray*}] -to [get_regs {u_video/u_diagnostics/memory_rendered_meta*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_video/u_diagnostics/memory_underrun_gray*}] -to [get_regs {u_video/u_diagnostics/memory_underrun_meta*}]": 5,
+        "set_max_delay 40.000 -to [get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/dll_step_base*/D}]": 5,
+        "set_max_delay 10.000 -from [get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/*/Q}] -to [get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*/u_dqs/HOLD}]": 4,
+        "set_max_delay 20.000 -from [get_regs {u_managed/u_audio/u_midi_cdc/held_data*}] -to [get_regs {u_managed/u_audio/u_midi_cdc/destination_data*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_managed/u_audio/u_display_cdc/held_data*}] -to [get_regs {u_managed/u_audio/u_display_cdc/destination_data*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_runtime/sample_gray*}] -to [get_regs {u_runtime/sample_meta*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_managed/u_control_cdc/request_held*}] -to [get_regs {u_managed/u_control_cdc/request_local*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_managed/u_control_cdc/response_held*}] -to [get_regs {u_managed/u_control_cdc/response_local*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_runtime/u_cpu_cdc/held_data*}] -to [get_regs {u_runtime/u_cpu_cdc/destination_data*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_managed/u_midi_drop_cdc/gray*}] -to [get_regs {u_managed/u_midi_drop_cdc/meta*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_cpu_ddr/request_held*}] -to [get_regs {u_cpu_ddr/request_local*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_cpu_ddr/response_held*}] -to [get_regs {u_cpu_ddr/response_local*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_ui_control/request_held*}] -to [get_regs {u_ui_control/request_local*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_ui_control/response_held*}] -to [get_regs {u_ui_control/response_local*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_managed/u_audio/u_pc_cdc/held_data*}] -to [get_regs {u_managed/u_audio/u_pc_cdc/destination_data*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_runtime/u_performance_cdc/held_data*}] -to [get_regs {u_runtime/u_performance_cdc/destination_data*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_runtime/u_usb_cdc/held_data*}] -to [get_regs {u_runtime/u_usb_cdc/destination_data*}]": 5,
+        "set_max_delay 10.000 -from [get_regs {u_push/events/fifo/unbuffered/produce_w_gry* u_push/events/fifo/unbuffered/produce_w_bin_6*}] -to [get_regs {u_push/events/fifo/unbuffered/produce_cdc/stage0*}]": 5,
+        "set_max_delay 10.000 -from [get_regs {u_push/events/fifo/unbuffered/consume_r_gry* u_push/events/fifo/unbuffered/consume_r_bin_6*}] -to [get_regs {u_push/events/fifo/unbuffered/consume_cdc/stage0*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_push/feedback/held_data*}] -to [get_regs {u_push/feedback/destination_data*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_display_push_cdc/held_data*}] -to [get_regs {u_display_push_cdc/destination_data*}]": 3,
+        "set_max_delay 20.000 -from [get_regs {u_service_push_cdc/held_data*}] -to [get_regs {u_service_push_cdc/destination_data*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_tf_control_cdc/held_data*}] -to [get_regs {u_tf_control_cdc/destination_data*}]": 5,
+        "set_max_delay 20.000 -from [get_regs {u_final_output_cdc/held_data*}] -to [get_regs {u_final_output_cdc/destination_data*}]": 5
+      }
+    },
+    "fmax": [
+      {
+        "clock": "clk_50m",
+        "required_mhz": 50.0,
+        "actual_fmax_mhz": 41.813
+      },
+      {
+        "clock": "audio_76m8",
+        "required_mhz": 76.8,
+        "actual_fmax_mhz": 54.298
+      },
+      {
+        "clock": "ddr_mem400",
+        "required_mhz": 400.0,
+        "actual_fmax_mhz": 2598.775
+      },
+      {
+        "clock": "ddr_ui100",
+        "required_mhz": 100.0,
+        "actual_fmax_mhz": 233.231
+      },
+      {
+        "clock": "video_pixel148",
+        "required_mhz": 148.5,
+        "actual_fmax_mhz": 154.999
+      },
+      {
+        "clock": "cpu_bus50",
+        "required_mhz": 50.0,
+        "actual_fmax_mhz": 73.539
+      },
+      {
+        "clock": "cpu_core100",
+        "required_mhz": 100.0,
+        "actual_fmax_mhz": 1526.254
+      },
+      {
+        "clock": "usb_48m",
+        "required_mhz": 48.0,
+        "actual_fmax_mhz": 38.727
+      }
+    ],
+    "evidence_sha256": "d7421632d2c8ed6ff7e8162f3d3fa0e9dda6ab8f39103bb0e2a9ffdd087809a6",
+    "tns": [
+      {
+        "clock": "clk_50m",
+        "analysis": "setup",
+        "tns_ns": -669.02,
+        "endpoints": 356
+      },
+      {
+        "clock": "clk_50m",
+        "analysis": "hold",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "audio_76m8",
+        "analysis": "setup",
+        "tns_ns": -6354.064,
+        "endpoints": 2971
+      },
+      {
+        "clock": "audio_76m8",
+        "analysis": "hold",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "ddr_mem400",
+        "analysis": "setup",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "ddr_mem400",
+        "analysis": "hold",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "ddr_ui100",
+        "analysis": "setup",
+        "tns_ns": -4585.176,
+        "endpoints": 2468
+      },
+      {
+        "clock": "ddr_ui100",
+        "analysis": "hold",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "video_ref49",
+        "analysis": "setup",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "video_ref49",
+        "analysis": "hold",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "video_serial742",
+        "analysis": "setup",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "video_serial742",
+        "analysis": "hold",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "video_pixel148",
+        "analysis": "setup",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "video_pixel148",
+        "analysis": "hold",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "cpu_bus50",
+        "analysis": "setup",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "cpu_bus50",
+        "analysis": "hold",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "cpu_core100",
+        "analysis": "setup",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "cpu_core100",
+        "analysis": "hold",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      {
+        "clock": "usb_48m",
+        "analysis": "setup",
+        "tns_ns": -51.727,
+        "endpoints": 13
+      },
+      {
+        "clock": "usb_48m",
+        "analysis": "hold",
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    ]
+  },
+  "board_smoke": {
+    "passed": true,
+    "started_at": "2026-10-06T23:45:36+08:00",
+    "exercise_live": true,
+    "sample_stream_saved": false,
+    "tests": {
+      "startup_cpu_audio_ddr_model": "passed",
+      "push_connected_screen_frames_advancing": "passed",
+      "live_three_voices": "passed",
+      "live_geometry_stereo_core_output": "passed",
+      "scope_mute_zero_core_output": "passed",
+      "live_note_release_and_panic": "passed",
+      "audio_health_zero": "passed"
+    },
+    "last": {
+      "B138": [
+        "00000004",
+        "AC44B042",
+        "00000000",
+        "0000003B"
+      ],
+      "A138": [
+        "0000002D",
+        "0000CB03",
+        "0021ADAD",
+        "00000000",
+        "05AA2E01",
+        "00000AC5",
+        "00000A14",
+        "00000000"
+      ],
+      "C350": [
+        "0000002D",
+        "55490E63",
+        "04A217CD",
+        "80001584",
+        "43505531",
+        "50415353",
+        "00031089",
+        "00000000"
+      ],
+      "K138": {
+        "sequence": 45,
+        "applied_events": 37,
+        "mode": "A",
+        "sound": "flute",
+        "route": "stereo",
+        "effects": 0,
+        "active_voices": 0,
+        "gain_q15": 25600,
+        "pc_input_errors": 0,
+        "held_notes": []
+      },
+      "E138": {
+        "sequence": 45,
+        "vibrato": 0,
+        "glide": 0,
+        "bend_index": 128,
+        "bend": 0,
+        "pitch_q20": 1048576,
+        "panic_epoch": 3,
+        "sustain": false,
+        "snap_request": 5,
+        "snap_token": 5,
+        "snap_done": true,
+        "snap_error": false,
+        "snap_count": 1,
+        "snap_completed": 5,
+        "snap_sequence": 2085337
+      },
+      "U138": [
+        "0000002D",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000"
+      ],
+      "P138": [
+        "0000002D",
+        "00000103",
+        "000001DB",
+        "00000000",
+        "0000006A",
+        "00000028",
+        "00FF0000",
+        "00000000"
+      ]
+    },
+    "limits": [
+      "UART smoke does not verify physical DAC waveform, HDMI reception, TF hotplug or CNN song-score correctness."
+    ],
+    "push_connected": true,
+    "live_note_state": {
+      "sequence": 29,
+      "applied_events": 23,
+      "mode": "A",
+      "sound": "flute",
+      "route": "stereo",
+      "effects": 0,
+      "active_voices": 3,
+      "gain_q15": 25600,
+      "pc_input_errors": 0,
+      "held_notes": [
+        60,
+        64,
+        67
+      ]
+    },
+    "live_core_snapshot_metrics": {
+      "snapshots": 3,
+      "distinct_axes": 3,
+      "nonzero": 3
+    },
+    "audio_health_word": "00000000",
+    "crc_valid_records": {
+      "B138": 58,
+      "A138": 31,
+      "C350": 31,
+      "K138": 31,
+      "E138": 31,
+      "U138": 31,
+      "P138": 31
+    },
+    "crc_bad": 0,
+    "model_statuses": [
+      14
+    ],
+    "sample_counter_delta": 1488000,
+    "runtime_report_sequence_delta": 31,
+    "samples_per_runtime_report": 48000.0,
+    "push_screen_frame_delta": 28,
+    "midi_control_commands": [
+      "b0 78 00",
+      "b0 68 00",
+      "b0 5a 00",
+      "b0 5a 7f",
+      "90 3c 48 90 40 48 90 43 48",
+      "b0 53 7f",
+      "b0 53 7f",
+      "b0 53 7f",
+      "b0 5f 7f",
+      "b0 53 7f",
+      "b0 5f 00",
+      "80 3c 00 80 40 00 80 43 00",
+      "b0 78 00",
+      "b0 53 7f",
+      "b0 78 00",
+      "b0 5f 00",
+      "b0 5a 00"
+    ],
+    "finished_at": "2026-10-06T23:46:10+08:00"
+  },
+  "final_idle_smoke": {
+    "passed": true,
+    "started_at": "2026-10-06T23:49:08+08:00",
+    "exercise_live": false,
+    "sample_stream_saved": false,
+    "tests": {
+      "startup_cpu_audio_ddr_model": "passed",
+      "push_connected_screen_frames_advancing": "passed",
+      "audio_health_zero": "passed"
+    },
+    "last": {
+      "B138": [
+        "00000007",
+        "BB80B046",
+        "0000C000",
+        "0000003B"
+      ],
+      "A138": [
+        "000000E6",
+        "0000CB03",
+        "00A92D2D",
+        "00000000",
+        "05AA2E01",
+        "00003621",
+        "00003570",
+        "00000000"
+      ],
+      "C350": [
+        "000000E6",
+        "55490F63",
+        "171E88FC",
+        "80001A24",
+        "43505531",
+        "50415353",
+        "000F6B7D",
+        "00000000"
+      ],
+      "K138": {
+        "sequence": 230,
+        "applied_events": 45,
+        "mode": "A",
+        "sound": "flute",
+        "route": "stereo",
+        "effects": 0,
+        "active_voices": 0,
+        "gain_q15": 25600,
+        "pc_input_errors": 0,
+        "held_notes": []
+      },
+      "E138": {
+        "sequence": 230,
+        "vibrato": 0,
+        "glide": 0,
+        "bend_index": 128,
+        "bend": 0,
+        "pitch_q20": 1048576,
+        "panic_epoch": 4,
+        "sustain": false,
+        "snap_request": 5,
+        "snap_token": 5,
+        "snap_done": true,
+        "snap_error": false,
+        "snap_count": 1,
+        "snap_completed": 5,
+        "snap_sequence": 2085337
+      },
+      "U138": [
+        "000000E6",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000"
+      ],
+      "P138": [
+        "000000E6",
+        "00000103",
+        "00000735",
+        "00000000",
+        "0000006A",
+        "000000BD",
+        "00FF0000",
+        "00000000"
+      ]
+    },
+    "limits": [
+      "UART smoke does not verify physical DAC waveform, HDMI reception, TF hotplug or CNN song-score correctness."
+    ],
+    "push_connected": true,
+    "audio_health_word": "00000000",
+    "crc_valid_records": {
+      "B138": 10,
+      "A138": 5,
+      "C350": 5,
+      "K138": 5,
+      "E138": 5,
+      "U138": 5,
+      "P138": 5
+    },
+    "crc_bad": 0,
+    "model_statuses": [
+      14
+    ],
+    "sample_counter_delta": 192000,
+    "runtime_report_sequence_delta": 4,
+    "samples_per_runtime_report": 48000.0,
+    "push_screen_frame_delta": 3,
+    "midi_control_commands": [],
+    "finished_at": "2026-10-06T23:49:15+08:00"
+  },
+  "tf_mode_smoke": {
+    "passed": true,
+    "card_track": 0,
+    "sample_rate_hz": 48000,
+    "running_source_active": true,
+    "pause_source_inactive": true,
+    "resumed_source_active": true,
+    "exit_source_inactive": true,
+    "nn_did_not_advance": true,
+    "model_status": "E",
+    "midi_commands": [
+      "b0 78 00",
+      "b0 5a 00",
+      "b0 68 7f",
+      "b0 69 00",
+      "b0 69 40",
+      "b0 69 00",
+      "b0 68 00",
+      "b0 5a 00"
+    ],
+    "record": "results/workstation_scope83_20261006_230626_011557/tf_mode_board_smoke.json",
+    "limits": [
+      "UART source/format/NN state only; no physical listening or HDMI validation",
+      "Uses existing card track 0; does not claim prepared OSCIMUS media is installed"
+    ]
+  },
+  "model": {
+    "words": 52239,
+    "bytes": 104478,
+    "crc32": "af01a61b",
+    "status": "E",
+    "upload_seconds": 9.0,
+    "ddr_readback_crc_passed": true
+  },
+  "preserved_inputs": {
+    "music_files": 73,
+    "frozen_sha256": {
+      "rtl/display_data/gw138k_ddr_arbiter.sv": "61b0353f72419f0a719f693e121b1aa9ff8b07ed0dbfbdd33ec39f72172ef178",
+      "rtl/display_data/hdmi_display.v": "7421e472c9289b1cca0eefe1c428bc03d7f6ea1081e7f8f86a785d6d7ac42dcc",
+      "rtl/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+      "rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+      "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6"
+    },
+    "scope_stage_manifest_files": 597
+  },
+  "manual_acceptance": {
+    "status": "pending_user_acceptance",
+    "remaining": [
+      "PT8211 analog/earphone listening and channel calibration",
+      "HDMI direct X-Y appearance",
+      "Push physical TF menu and relative selection/restart",
+      "TF card hotplug",
+      "TRAVLER first-window note count and CNN throughput"
+    ]
+  },
+  "media": {
+    "pcm_streams_saved": 0,
+    "tf_card_files_written": 0,
+    "prepared_OSCIMUS_install_claimed": false,
+    "note": "TF smoke uses pre-existing card track0; no card-reader copy was performed."
+  },
+  "evidence_sha256": {
+    "results/workstation_scope83_20261006_230626_011557/Prj1/impl/pnr/Prj1.fs": "217f858a3170fe231a64dbce065df24d21559bdcf7ca00a8eb10e0e1d6a1719d",
+    "results/workstation_scope83_20261006_230626_011557/Prj1/impl/pnr/Prj1.rpt.txt": "a83c837c3f255e77a1526c247bb7b8c7863cd8b7e251673fdc9a3ffdee67da64",
+    "results/workstation_scope83_20261006_230626_011557/Prj1/impl/pnr/Prj1.tr": "d7421632d2c8ed6ff7e8162f3d3fa0e9dda6ab8f39103bb0e2a9ffdd087809a6",
+    "results/workstation_scope83_20261006_230626_011557/workstation_inputs.json": "4f4e52b16a5f24769966c3d4ff3aee4d3033025c61858f61a9f5f1e5435c140d",
+    "results/workstation_scope83_20261006_230626_011557/build_metadata.json": "6ca51df8a1f0af68c34c793912047c53225c33980cf97302ac1a261da18e7267",
+    "results/workstation_scope83_20261006_230626_011557/tool_result.json": "4a85458c8a40999de5351f0ba3901bd7bff8bc998f374d4fa54f12471f5406b9",
+    "results/workstation_scope83_20261006_230626_011557/workstation_memory.json": "26789ecc8bc22c31e2d5408bc1dd12a5677dc8478c393e9a53a7c54b493072cf",
+    "results/workstation_scope83_20261006_230626_011557/scope_routed_audit.json": "c2faaa4c479220eb0fc7069b413017b058daacda635c86836fc6cd03ecb143f7",
+    "results/workstation_scope83_20261006_230626_011557/full_timing_audit.json": "88ab99b5d754d1581297e385520097d5c39cf2ee659aa8d4135c5017965ccec3",
+    "results/workstation_scope83_20261006_230626_011557/current_regression_20261006_230655_391702/verification.json": "5f593490d514d39e6d0a5585c5d66a028e58bcb9b2028603a616e0ff644b5161",
+    "results/workstation_scope83_20261006_230626_011557/scope_merge_20261006_230655_428652/verification.json": "ea91a2cc4d8991072a3b0b1cd89203ad9906428b434d9e537a1cfe2fb5c1d284",
+    "results/workstation_scope83_20261006_230626_011557/board_after_smoke.json": "dbd652476aeb63513fa212c5cb7ffa680b7616847068439502f14a6d6931a6ba",
+    "results/workstation_scope83_20261006_230626_011557/board_final_idle.json": "709af06755b8f45bdc0d94efa471dacd4ed4cab6f5576fe1cf0a4376c0e6046e",
+    "results/workstation_scope83_20261006_230626_011557/tf_mode_board_smoke.json": "a0d251d32d56d06b65586f393df73cd4762cf302324f5417d9f43c74b6284e31",
+    "results/workstation_scope83_20261006_230626_011557/model_reload.log": "1c99440f87e584ac8ebc3695357ea24ea2a87d8c082c82a5f206782fc710cb89",
+    "results/workstation_scope83_20261006_230626_011557/programming_result.json": "49914dc22d4b0919e9472925606cdea67590d1e25cd53e19a2847a9e72230934",
+    "results/workstation_scope83_20261006_230626_011557/sram_deployment.log": "a8e3e8f3e77337d1871b76d2efa0ac21836efec45763094dcffdcd54b5173823",
+    "results/workstation_scope83_20261006_230626_011557/route_audit_negative_control.json": "da949c02a7e0788260527cf32f79e6c3ce005143771307f5edc3a153c432af79",
+    "results/workstation_scope83_20261006_230626_011557/board_before_smoke_fresh.json": "b79a26d83acda10b13203ce1b9dcd3d7e147aba1e03cbfedec6a33e09ca651b5",
+    "results/workstation_scope83_20261006_230626_011557/deployment_plan.json": "4ec7df79a0ac293f6d233e57a23bf2a08e63fd43d328126c336d2a435ed29201"
+  },
+  "verification_source_sha256": {
+    "build.py": "3b3ddf5e3bf2fb9b4a04111eff309348d790e2c4d5568c8b61943ef9d3118a1d",
+    "tools/build_current_workstation.py": "1599b85fc3a445965ccd9f16ad39c8514a6a85cc91f4ad8f11eba6f5cef67116",
+    "tools/audit_scope_routes.py": "81c8572dd6dc86eb6ee849edcc0e71f87249a6a9402a1b2dd61fba20e736c1dc",
+    "tools/capture_scope_smoke.py": "69467192ee97510452035dadc90acd8140f97a54339c841a4070efcd15351855"
+  },
+  "final_state": {
+    "user_code": "0x00000084",
+    "model_status": "E",
+    "tf_scope_mode": false,
+    "scope_live_mode": false,
+    "active_voices": 0,
+    "held_notes": [],
+    "audio_health": "00000000",
+    "push_connected": true,
+    "serial_capture_active": false,
+    "debugger_reserved": false
+  }
+}

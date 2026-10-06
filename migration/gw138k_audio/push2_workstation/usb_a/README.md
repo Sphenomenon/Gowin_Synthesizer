@@ -1,5 +1,11 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-10-06 0x84 完整构建与 SRAM 上板
+
+当前板上为 **0x00000084**：完整 SYN/P&R/位流构建和 SRAM 下载读回通过，Flash 未写。CNN 模型已重新加载、DDR CRC通过，状态E。资源 **SYN216/340、PNR260/340**；18个回归门禁、scope布线路径审计、7项启动/现场几何板测及TF模式运行/暂停/恢复遥测检查通过。无活动声部，串口采集已结束。
+
+**时序未闭合，实体人工验收仍待完成。** 50MHz/audio/USB Fmax分别41.813/54.298/38.727MHz，setup5867/hold114个违例；短时板测通过不代表时序或长时稳定通过。见 [0x84构建与上板记录](reports/SCOPE84_BOARD_20261006.md)。最新板状态在 `LATEST_WORKSTATION.json`，0x83原验收记录保留在 `previous_accepted_board`。
+
 ## 2026-10-06 完整 0x83 工作站与示波器入口合并（离线候选）
 
 最新已验收镜像是 `cnn83-accepted-20261006` 的完整 0x83：Basic Pitch 分层缓存、TF 歌曲菜单/热插拔/整曲指引、P10 delay DDR 均已保留，**PNR BSRAM 260/340**。下面 10 月 1 日的 **228** 是旧完整工程的 SYN 数，包含 TF 直读，但当时没有展开 Basic Pitch，不能用作当前占用。
@@ -14,7 +20,7 @@ python3 build.py --current-workstation --synthesis-only
 python3 sim/scope_vec/run_current.py results/<本次 workstation_scope83 目录>
 ```
 
-该入口复用本机已经验收并有 SHA256 清单的 `results/song_guide_full83_20261006_203125_607466/Prj1`；缺失或漂移会明确失败。它仅允许 WAV profile 的准备/综合，拒绝 UserCode、P&R 和复用旧综合网表。下方不带 `--current-workstation` 的 `build.py` 命令保留为历史构建入口，不保证包含 0x83 缓存和地址隔离。
+该入口复用本机已经验收并有 SHA256 清单的 `results/song_guide_full83_20261006_203125_607466/Prj1`；缺失或漂移会明确失败。准备/综合模式仅允许 WAV profile，拒绝 UserCode 和复用旧综合网表。2026-10-06 后续已按用户上板授权增加完整 release 构建：`python3 build.py --current-workstation --user-code <八位新版本号>`；它执行 SYN/P&R/位流生成，但不调用 programmer。下方不带 `--current-workstation` 的 `build.py` 命令保留为历史构建入口，不保证包含 0x83 缓存和地址隔离。
 
 Session 切 TF 示波器模式；Play 打开/关闭原歌曲菜单，菜单内 Left/Right 浏览、Select 确认，菜单外 Left/Right 切实际播放曲目、Select 切现场几何。New 暂停/继续，Duplicate 重播当前曲目。外部预录 TF 播放与参赛现场几何实时合成分别使用，不计入实时矢量振荡器吞吐量。
 

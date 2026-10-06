@@ -1,84 +1,57 @@
 {
-  "build": "results/song_guide_full83_20261006_203125_607466",
+  "build": "results/workstation_scope83_20261006_230626_011557",
   "build_mode": "full",
-  "user_code": "0x00000083",
-  "flashed_at": "2026-10-06 21:22:16",
-  "flash_record": "../results/sram_20261006_212129_384333",
-  "baseline": "results/song_guide_full82_20261005_144933",
-  "change": "Isolate Basic Pitch Viterbi backpointer DDR history: 0x30000000 -> 0x30400000, outside the 0x80 owner-6 delay ring (0x30000000..0x3001ffff). Preserve 0x82 staged caches, arithmetic and MAC/DP cadence. Only BP DDR map header and UserCode differ in build; frozen files unchanged.",
-  "memory_report": "results/song_guide_full83_20261006_203125_607466/Prj1/impl/pnr/Prj1.rpt.txt",
+  "user_code": "0x00000084",
+  "flashed_at": "2026-10-06T23:45:25+08:00",
+  "flash_record": "../results/sram_20261006_234504_538503",
+  "baseline": "results/song_guide_full83_20261006_203125_607466",
+  "change": "Scope merge into full83: TF transport/menu/pause/restart, final-DAC direct X-Y and coherent metadata; preserve CNN caches and DDR delay/map.",
+  "memory_report": "results/workstation_scope83_20261006_230626_011557/Prj1/impl/pnr/Prj1.rpt.txt",
   "bsram": 260,
   "bsram_measurement_stage": "pnr",
   "bsram_prev": 260,
   "tf_decoder": "wav",
   "basic_pitch_elaborated": true,
   "timing_closed": false,
-  "timing_note": "50MHz Fmax 42.932MHz; setup TNS -378.941ns/217 endpoints (full82 -435.444ns/298). audio_76m8 -4114.110ns; ddr_ui100 -2552.336ns. Address-only fix; board acceptance confirmed by user on 2026-10-06; static timing remains open.",
+  "timing_note": "Full84 PNR clk50 Fmax41.813MHz, audio54.298MHz, USB38.727MHz; setup5867/hold114. Short board smoke passed; not timing-closed.",
   "hardware_tested": true,
-  "coordination": "0x83 acceptance confirmed by user on 2026-10-06. Model E; staged-cache throughput preserved; final serial capture stopped gracefully. No further physical restart requested.",
-  "commit": "af2ff9a",
-  "source_commit": "8bc80e9",
+  "coordination": "0x84 SRAM deployed/read back; model E, startup/live/TF-mode smoke passed. All host captures stopped, no held notes. Debugger/serial available; manual acceptance pending.",
+  "commit": "1a69891",
+  "source_commit": "962563b98f63c41ee36dc4198619dd17752262c5",
   "board_acceptance": {
-    "status": "accepted_by_user",
-    "model_status": "E (DDR readback CRC passed; upload 9.0s)",
-    "required": "TRAVLER first-window score_count=36 and no frame-rate regression",
-    "observed": {
-      "capture_started_at": "2026-10-06 21:54:12",
-      "sample_rate": 48000,
-      "cumulative_counts": [
-        69,
-        103,
-        139,
-        171
-      ],
-      "complete_window_deltas": [
-        34,
-        36,
-        32
-      ],
-      "complete_window_intervals_seconds": [
-        57.0,
-        56.8
-      ],
-      "cnn_fps": 6.5897,
-      "full82_same_method_fps": 6.5504,
-      "first_window": "accepted by user; not independently captured by host"
-    },
-    "recorded_at": "2026-10-06T22:07:34+08:00",
-    "confirmation": "验收没问题，做好git记录",
-    "evidence_report": "reports/CNN_83_ACCEPTANCE_20261006.json",
-    "first_window_verification_source": "user acceptance; host capture entered mid-analysis and did not record the first-window transition"
+    "status": "pending_user_acceptance",
+    "model_status": "E (DDR CRC passed)",
+    "observed_smoke": [
+      "CPU/audio/DDR ready",
+      "48000 samples/runtime report",
+      "Push connected and screen frames advancing",
+      "three live geometry voices; 3/3 snapshots nonzero and distinct L/R",
+      "mute and PANIC zero core output",
+      "TF track0 run/pause/resume/exit source states, CNN frame0"
+    ],
+    "evidence_report": "reports/SCOPE84_BOARD_20261006.json",
+    "remaining": [
+      "PT8211 analog/earphone listening and channel calibration",
+      "HDMI direct X-Y appearance",
+      "Push physical TF menu and relative selection/restart",
+      "TF card hotplug",
+      "TRAVLER first-window note count and CNN throughput"
+    ]
   },
   "validation": {
-    "cnn_ab": "12-frame Verilator A/B with sustained delay writes PASS; six hashes/coverage/score sequence unchanged",
-    "ddr_isolation": "172-frame Icarus mathematical oracle PASS, 28 notes; old-map negative control fails frame=1",
-    "tf_audio": "16/16 PASS; final input SHA256 unchanged",
-    "guidance": "5/5 final PASS",
-    "supplementary_iverilog_ab": "incomplete due simulation-time stall; not labeled logic PASS/FAIL"
+    "regression": "18/18 gates passed on full84 staging",
+    "scope_routed_crossings": "PASS, longest held flights 1.733ns/2.824ns",
+    "board_smoke": "7/7 startup/live smoke checks PASS; CRC errors0; audio health0",
+    "tf_mode_smoke": "48kHz track0 active/pause/resume/exit PASS; CNN not advanced; model E",
+    "overall_timing": "not_closed; setup5867, hold114; see full_timing_audit.json"
   },
   "previous_board": {
-    "user_code": "0x00000081",
-    "flash_record": "../results/sram_20261006_163824_061544"
+    "user_code": "0x00000083",
+    "build": "results/song_guide_full83_20261006_203125_607466",
+    "flash_record": "../results/sram_20261006_212129_384333",
+    "acceptance_tag": "cnn83-accepted-20261006"
   },
-  "cancelled_candidate_build": "results/song_guide_full83_20261006_195842_758915 (never flashed)",
-  "previous_capture": {
-    "directory": "results/cnn_correctness83_20261006/fix83",
-    "log": "results/cnn_correctness83_20261006/fix83/dwell_fix83.log",
-    "started_at": "2026-10-06 21:23:09",
-    "seconds": 1200,
-    "status": "ended after 1200s; idle only, no selected-song acceptance"
-  },
-  "capture": {
-    "directory": "results/cnn_correctness83_20261006/fix83_selected",
-    "log": "results/cnn_correctness83_20261006/fix83_selected/dwell_fix83_selected.log",
-    "started_at": "2026-10-06 21:54:12",
-    "seconds": 1200,
-    "status": "stopped gracefully after user acceptance; summary written",
-    "stopped_at": "2026-10-06T22:07:34+08:00",
-    "actual_seconds": 696.9
-  },
-  "bsram_note": "PNR full81=215, full82=260, full83=260; net +45 for caches: feature 32, weight 8, plane 2, pipeline buffers 3; Viterbi remains 6. 80/340 blocks free.",
-  "acceptance_tag": "cnn83-accepted-20261006",
+  "bsram_note": "Complete full84: SYN216, PNR260; identical to accepted full83 within each stage; 80 physical blocks free.",
   "offline_candidate": {
     "build": "results/workstation_scope83_20261006_223538_716443",
     "build_mode": "synthesis_only",
@@ -105,5 +78,94 @@
     "scope_report": "results/workstation_scope83_20261006_223538_716443/scope_merge_20261006_223547_610056/verification.json",
     "memory_report": "results/workstation_scope83_20261006_223538_716443/workstation_memory.json",
     "note": "Full83 caches/DDR delay/map retained; final DAC direct X-Y with coherent metadata. Board acceptance above unchanged."
-  }
+  },
+  "previous_accepted_board": {
+    "build": "results/song_guide_full83_20261006_203125_607466",
+    "build_mode": "full",
+    "user_code": "0x00000083",
+    "flashed_at": "2026-10-06 21:22:16",
+    "flash_record": "../results/sram_20261006_212129_384333",
+    "baseline": "results/song_guide_full82_20261005_144933",
+    "change": "Isolate Basic Pitch Viterbi backpointer DDR history: 0x30000000 -> 0x30400000, outside the 0x80 owner-6 delay ring (0x30000000..0x3001ffff). Preserve 0x82 staged caches, arithmetic and MAC/DP cadence. Only BP DDR map header and UserCode differ in build; frozen files unchanged.",
+    "memory_report": "results/song_guide_full83_20261006_203125_607466/Prj1/impl/pnr/Prj1.rpt.txt",
+    "bsram": 260,
+    "bsram_measurement_stage": "pnr",
+    "bsram_prev": 260,
+    "tf_decoder": "wav",
+    "basic_pitch_elaborated": true,
+    "timing_closed": false,
+    "timing_note": "50MHz Fmax 42.932MHz; setup TNS -378.941ns/217 endpoints (full82 -435.444ns/298). audio_76m8 -4114.110ns; ddr_ui100 -2552.336ns. Address-only fix; board acceptance confirmed by user on 2026-10-06; static timing remains open.",
+    "hardware_tested": true,
+    "coordination": "0x83 acceptance confirmed by user on 2026-10-06. Model E; staged-cache throughput preserved; final serial capture stopped gracefully. No further physical restart requested.",
+    "commit": "af2ff9a",
+    "source_commit": "8bc80e9",
+    "board_acceptance": {
+      "status": "accepted_by_user",
+      "model_status": "E (DDR readback CRC passed; upload 9.0s)",
+      "required": "TRAVLER first-window score_count=36 and no frame-rate regression",
+      "observed": {
+        "capture_started_at": "2026-10-06 21:54:12",
+        "sample_rate": 48000,
+        "cumulative_counts": [
+          69,
+          103,
+          139,
+          171
+        ],
+        "complete_window_deltas": [
+          34,
+          36,
+          32
+        ],
+        "complete_window_intervals_seconds": [
+          57.0,
+          56.8
+        ],
+        "cnn_fps": 6.5897,
+        "full82_same_method_fps": 6.5504,
+        "first_window": "accepted by user; not independently captured by host"
+      },
+      "recorded_at": "2026-10-06T22:07:34+08:00",
+      "confirmation": "验收没问题，做好git记录",
+      "evidence_report": "reports/CNN_83_ACCEPTANCE_20261006.json",
+      "first_window_verification_source": "user acceptance; host capture entered mid-analysis and did not record the first-window transition"
+    },
+    "validation": {
+      "cnn_ab": "12-frame Verilator A/B with sustained delay writes PASS; six hashes/coverage/score sequence unchanged",
+      "ddr_isolation": "172-frame Icarus mathematical oracle PASS, 28 notes; old-map negative control fails frame=1",
+      "tf_audio": "16/16 PASS; final input SHA256 unchanged",
+      "guidance": "5/5 final PASS",
+      "supplementary_iverilog_ab": "incomplete due simulation-time stall; not labeled logic PASS/FAIL"
+    },
+    "previous_board": {
+      "user_code": "0x00000081",
+      "flash_record": "../results/sram_20261006_163824_061544"
+    },
+    "cancelled_candidate_build": "results/song_guide_full83_20261006_195842_758915 (never flashed)",
+    "previous_capture": {
+      "directory": "results/cnn_correctness83_20261006/fix83",
+      "log": "results/cnn_correctness83_20261006/fix83/dwell_fix83.log",
+      "started_at": "2026-10-06 21:23:09",
+      "seconds": 1200,
+      "status": "ended after 1200s; idle only, no selected-song acceptance"
+    },
+    "capture": {
+      "directory": "results/cnn_correctness83_20261006/fix83_selected",
+      "log": "results/cnn_correctness83_20261006/fix83_selected/dwell_fix83_selected.log",
+      "started_at": "2026-10-06 21:54:12",
+      "seconds": 1200,
+      "status": "stopped gracefully after user acceptance; summary written",
+      "stopped_at": "2026-10-06T22:07:34+08:00",
+      "actual_seconds": 696.9
+    },
+    "bsram_note": "PNR full81=215, full82=260, full83=260; net +45 for caches: feature 32, weight 8, plane 2, pipeline buffers 3; Viterbi remains 6. 80/340 blocks free.",
+    "acceptance_tag": "cnn83-accepted-20261006"
+  },
+  "hardware_programmed": true,
+  "download_medium": "SRAM",
+  "fpga_flash_written": false,
+  "model_status": "E (DDR readback CRC passed; upload 9.0s)",
+  "evidence_report": "reports/SCOPE84_BOARD_20261006.json",
+  "sram_record": "../results/sram_20261006_234504_538503",
+  "downloaded_at": "2026-10-06T23:45:25+08:00"
 }
