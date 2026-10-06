@@ -1,5 +1,7 @@
 # 矢量示波器音乐引擎（离线候选）
 
+2026-10-06：当前完整工程接入见 [0x83 合并记录](../../../reports/SCOPE_WORKSTATION_MERGE_20261006.md)。构建使用 `python3 build.py --current-workstation --synthesis-only`，完整回归使用 `sim/scope_vec/run_current.py`。以下原始引擎频谱/包络说明仍适用；当前完整适配器已转发 scope 状态与 TF 控制。启用歌曲菜单时 Select/Left/Right 由菜单优先消费，关闭菜单后恢复现场几何/TF 传输映射。最终输出采样入口已接在 DAC 选择器之后，使用同帧 128-bit 发布并直接映射 L=X/R=Y。
+
 2026-10-02：已与 Basic Pitch 完整工作站共同展开，并补齐最终 DAC 所有权。示波器模式（含静音/idle/PANIC）优先实时 X/Y；TF→识别继续握手。完整新候选 SYN 234/340 BSRAM、7 项矢量/接入 TB 与 P10/P27/DDR 回归通过；尚未 P&R 或上板。操作边界和新证据见 [合并报告](../../../reports/SCOPE_VEC_BASIC_PITCH_MERGE_20261002.md)。下述原算法/频谱证据保留其 9 月 30 日日期，不混用板测结论。
 
 2026-09-30。此实现是几何波表的实时合成算法：ROM 按闭合路径的**相位**保存 X/Y 坐标，音符事件只决定扫描速率、图形引用和力度。在 48 kHz 下计为 8×48000=384000 次独立振荡器扫描/秒（X/Y 各一次输出）。8 个矢量 voice 各自拥有 32-bit 相位累加器、MIDI 基准扫描步进、独立 Q20 频率比例、Q24 ADSR、力度增益和两幅图形引用。ROM 和插值运算按 voice 分时共享。输出为 48 kHz、32-bit Q1.31 立体声。
@@ -29,7 +31,7 @@ ADSR 直接读取原 `stage13_adsr_q24.mem` 的五个 profile，复用原语义�
 
 morph 的两个 shape id 在 note-on 锁存，morph 量可现场连续改变；旋钮改变目标图形时对**后续 note-on**生效。已有 voice 不会因改变图形引用而硬切波表。旋转、morph 和缩放应用于实时计算结果，弯音和颤音经过已有 `pitch_expression` Q20 管线改变路径扫描速率。
 
-`scope_status_o`：`[7:0]` active、`[8]` enable、`[9]` 配置错误、`[10]` 超频错误、`[11]` 控制错误、`[12]` 有 cue 迟到、`[13]` cue 配置错误、`[14]` cue done、`[15]` cue running、`[31:16]` voice 拒绝计数低 16 bit。该专用输出当前在冻结适配器显式留空，通用 `note_drop_o` 仍报告 voice/控制拒绝和首次超频错误；需要逐项读回时可在后续板上阶段增加 MMIO 镜像。内部限幅脉冲与效果链 clip 合并并对齐最终帧。
+`scope_status_o`：`[7:0]` active、`[8]` enable、`[9]` 配置错误、`[10]` 超频错误、`[11]` 控制错误、`[12]` 有 cue 迟到、`[13]` cue 配置错误、`[14]` cue done、`[15]` cue running、`[31:16]` voice 拒绝计数低 16 bit。初始冻结适配器将该专用输出显式留空；当前完整 0x83 合并入口已转发它用于输出模式仲裁。通用 `note_drop_o` 仍报告 voice/控制拒绝和首次超频错误；逐项 MMIO 读回仍待后续增加镜像。内部限幅脉冲与效果链 clip 合并并对齐最终帧。
 
 ## 路径平滑与防混叠
 

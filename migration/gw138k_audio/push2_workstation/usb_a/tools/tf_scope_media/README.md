@@ -35,4 +35,4 @@ python3 tools/tf_scope_media/media.py install
 
 ## 使用
 
-完整操作、输入映射和互斥规则见 `../../reports/TF_SCOPE_PLAYBACK_20261002.md`。Push Session 切入 TF 示波器模式，New 暂停/继续，Duplicate 从头播放，Left/Right 切曲。Select 进入现场几何模式。TF 播放不经 P10 效果，李萨如显示采样最终 DAC 引脚，L→X、R→Y。
+当前完整 0x83 的操作和验证见 [2026-10-06 合并记录](../../reports/SCOPE_WORKSTATION_MERGE_20261006.md)，原素材准备记录见 `../../reports/TF_SCOPE_PLAYBACK_20261002.md`。Push Session 切入 TF 示波器模式；Play 打开/关闭歌曲菜单，菜单内 Left/Right 浏览、Select 确认播放，无需 Basic Pitch 模型。关闭菜单后 Left/Right 切实际播放曲目，Select 切现场几何模式。New 暂停/继续，Duplicate 重播当前曲目。TF 播放不经 P10 效果，李萨如显示采样最终 DAC 引脚，同一帧发布 L→X、R→Y。此次离线合并没有增加实体复制或板测结果。

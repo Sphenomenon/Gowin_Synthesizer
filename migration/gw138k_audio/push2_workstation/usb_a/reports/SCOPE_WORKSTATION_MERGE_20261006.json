@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-06T22:46:42+08:00",
+  "status": "offline_synthesis_and_regressions_passed",
+  "source_commit": "a8376bd1598482158146707d3af0b18b0dd7af01",
+  "build_head_before_uncommitted_merge": "d0c92a06a49d1bd2da0c402986db177c7243d0e7",
+  "git": {
+    "branch": "main",
+    "remote_head": "e966c01867d43fdac981dd4332f52b583c3d68e2",
+    "head_before_merge": "d0c92a06a49d1bd2da0c402986db177c7243d0e7",
+    "ahead_before_merge": 13,
+    "fetch_and_pull": "Already up to date.",
+    "accepted_tag": "cnn83-accepted-20261006",
+    "pushed": false
+  },
+  "baseline": {
+    "build": "results/song_guide_full83_20261006_203125_607466",
+    "accepted_commit": "d0c92a0",
+    "user_code": "0x00000083",
+    "hardware_tested": true,
+    "acceptance": "accepted_by_user",
+    "bsram_synthesis": 216,
+    "bsram_pnr": 260,
+    "timing_closed": false,
+    "music_files_preserved": 73,
+    "music_stage_hashes_preserved": true,
+    "frozen_sha256": {
+      "rtl/display_data/gw138k_ddr_arbiter.sv": "61b0353f72419f0a719f693e121b1aa9ff8b07ed0dbfbdd33ec39f72172ef178",
+      "rtl/display_data/hdmi_display.v": "7421e472c9289b1cca0eefe1c428bc03d7f6ea1081e7f8f86a785d6d7ac42dcc",
+      "rtl/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+      "rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+      "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6"
+    },
+    "standalone_unused_top_exception": "Live basic_pitch_tf_board_top.sv has a later pcm_end tie-off; accepted uninstantiated stage bytes retained.",
+    "accepted_input_manifest_sha256": "a8caece577521b28196175f25d468ec7845d12a2f0fe29c6cbadfa246e67de28"
+  },
+  "candidate": {
+    "build": "results/workstation_scope83_20261006_223538_716443",
+    "top": "gw138k_push_workstation_top",
+    "build_mode": "synthesis_only",
+    "bsram": 216,
+    "bsram_measurement_stage": "synthesis",
+    "bsram_capacity": 340,
+    "pnr_available": false,
+    "pnr_bsram": null,
+    "timing_closed": null,
+    "hardware_tested": false,
+    "user_code_assigned": false,
+    "tf_decoder": "wav",
+    "basic_pitch_elaborated": true,
+    "top_level_bsram": {
+      "u_usb_host": 34,
+      "u_push": 1,
+      "u_managed": 45,
+      "u_tf_audio": 5,
+      "u_music": 51,
+      "u_memory": 16,
+      "u_video": 48,
+      "u_boot_memory": 16
+    },
+    "features": {
+      "usb_host": {
+        "instance": "u_usb_host",
+        "self_bsram": 32,
+        "subtree_bsram": 34
+      },
+      "push_surface": {
+        "instance": "u_push",
+        "self_bsram": 0,
+        "subtree_bsram": 1
+      },
+      "synthesizer": {
+        "instance": "u_managed/u_audio/u_workstation/engine",
+        "self_bsram": 8,
+        "subtree_bsram": 17
+      },
+      "vector_voices": {
+        "instance": "u_managed/u_audio/u_workstation/vector_engine",
+        "self_bsram": 9,
+        "subtree_bsram": 9
+      },
+      "vector_control_events": {
+        "instance": "u_managed/u_audio/u_workstation/cue_player",
+        "self_bsram": 1,
+        "subtree_bsram": 1
+      },
+      "scope_dac_selection": {
+        "instance": "u_tf_dac",
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "basic_pitch_pipeline": {
+        "instance": "u_music/u_basic_pitch",
+        "self_bsram": 3,
+        "subtree_bsram": 51
+      },
+      "basic_pitch_ddr_port": {
+        "instance": "u_music/u_ddr16",
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "serial_effects": {
+        "instance": "u_managed/u_audio/u_workstation/effects",
+        "self_bsram": 0,
+        "subtree_bsram": 12
+      },
+      "tf_spi_fat_reader": {
+        "instance": "u_tf_audio/u_path/u_file_reader",
+        "self_bsram": 1,
+        "subtree_bsram": 1
+      },
+      "tf_capture_fifo": {
+        "instance": "u_tf_audio/u_path/u_capture_fifo",
+        "self_bsram": 2,
+        "subtree_bsram": 2
+      },
+      "tf_playback_fifo": {
+        "instance": "u_tf_audio/u_path/u_playback_fifo",
+        "self_bsram": 2,
+        "subtree_bsram": 2
+      },
+      "tf_ddr_dma": {
+        "instance": "u_tf_audio/u_path/u_dma",
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "shared_ddr_controller": {
+        "instance": "u_memory",
+        "self_bsram": 0,
+        "subtree_bsram": 16
+      },
+      "hdmi_display_analysis": {
+        "instance": "u_video",
+        "self_bsram": 0,
+        "subtree_bsram": 48
+      },
+      "ae350_boot_memory": {
+        "instance": "u_boot_memory",
+        "self_bsram": 16,
+        "subtree_bsram": 16
+      }
+    },
+    "extra_retained_instances": {
+      "u_scope_output": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "u_final_output_observer": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "u_final_output_cdc": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "u_tf_control_cdc": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "u_tf_scope_transport": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "u_delay_ddr_dma": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      }
+    },
+    "synthesis_clock_estimates": [
+      {
+        "clock": "clk_50m",
+        "required_mhz": 50.0,
+        "synthesis_estimated_mhz": 50.351,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 76.8,
+        "synthesis_estimated_mhz": 43.635,
+        "estimate_meets_requirement": false
+      },
+      {
+        "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 48.0,
+        "synthesis_estimated_mhz": 38.33,
+        "estimate_meets_requirement": false
+      },
+      {
+        "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+        "required_mhz": 400.0,
+        "synthesis_estimated_mhz": 1487.018,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 50.0,
+        "synthesis_estimated_mhz": 346.464,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 1617.337,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 223.924,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+        "required_mhz": 148.5,
+        "synthesis_estimated_mhz": 205.078,
+        "estimate_meets_requirement": true
+      }
+    ],
+    "timing_note": "No routed timing evidence; SYN estimates audio 43.635<76.8 MHz and USB 38.330<48 MHz. Not timing-closed.",
+    "final_pcm_metadata_cdc_bits": 128,
+    "xy_projection": "L->X,R->Y"
+  },
+  "verification": {
+    "passed": true,
+    "gates": 18,
+    "tests": {
+      "tb_scope_dac_select": "passed",
+      "tb_scope_workstation": "passed",
+      "tb_scope_tf_transport": "passed",
+      "tb_scope_tf_control": "passed",
+      "tb_scope_tf_play": "passed",
+      "tb_scope_tf_bounds": "passed",
+      "tb_scope_xy": "passed",
+      "tb_scope_tf_coexist": "passed",
+      "tb_scope_push": "passed",
+      "tb_playlist_hold": "passed",
+      "tb_tf_hotplug_probe": "passed",
+      "tb_song_menu": "passed",
+      "tb_playlist_bridge": "passed",
+      "tb_guidance": "passed",
+      "tb_score_stream": "passed",
+      "tf_audio_16": "passed",
+      "delay_ddr_equivalence": "passed",
+      "bp_ddr_isolation": "passed"
+    },
+    "scope_metrics": {
+      "dac_synth_pairs": 4231,
+      "dac_tf_pairs": 152,
+      "dac_min_bck_pulse_cycles": 12,
+      "dac_max_handover_cycles": 28729,
+      "workstation_max_cycles": 1067,
+      "scope_transport_assertions": 21,
+      "scope_transport_restarts": 10,
+      "tf_control_assertions": 13,
+      "tf_play_display_pairs": 722,
+      "tf_pause_zero_pairs": 77,
+      "tf_playlist_bound_checks": 3,
+      "xy_quadrants": 4,
+      "coexist_deadline_misses": 0,
+      "coexist_analysis_samples": 1683,
+      "coexist_vector_frames": 782,
+      "coexist_muted_frames": 200,
+      "coexist_xy_observation_frames": 775
+    },
+    "tf_suite": [
+      "tb_ddr_address_map: PASS (0.03s)",
+      "tb_tf_audio_ddr_dma: PASS (0.05s)",
+      "tb_tf_audio_ddr_path_flac: PASS (0.04s)",
+      "tb_tf_audio_ddr_path_mp3: PASS (0.06s)",
+      "tb_tf_audio_decoder_ip: PASS (0.03s)",
+      "tb_tf_audio_ip_unsupported: PASS (0.03s)",
+      "tb_tf_flac_pcm_decoder: PASS (0.04s)",
+      "tb_tf_flac_pcm_decoder_constant_stereo: PASS (0.04s)",
+      "tb_tf_flac_pcm_decoder_limits: PASS (0.03s)",
+      "tb_tf_flac_pcm_decoder_stereo: PASS (0.04s)",
+      "tb_tf_flac_pcm_decoder_verbatim: PASS (0.04s)",
+      "tb_tf_mp3_file: PASS (152.93s)",
+      "tb_tf_wav_chunk_parser: PASS (0.04s)",
+      "tb_tf_wav_formats: PASS (0.03s)",
+      "tb_tf_wav_pcm_decoder: PASS (0.03s)",
+      "tb_workstation_ddr_audio_arbiter: PASS (0.03s)"
+    ],
+    "delay_equivalence_samples": 45000,
+    "delay_stall_expected_underrun_observed": true,
+    "bp_ddr_oracle": {
+      "frames": 172,
+      "states": 89,
+      "notes": 28,
+      "passed": true,
+      "concurrent_delay_writes": true,
+      "old_map_negative_control_detected_collision": true,
+      "first_failure_frame": 1
+    },
+    "dispatcher_prepare_identical_input_files": 597,
+    "invalid_build_configurations_rejected": 5,
+    "pcm_files_created_in_checkout": 0,
+    "programmer_operations": 0,
+    "complete_cnn_ab_rerun": false,
+    "scope_spectral_measurement_rerun": false,
+    "limits": [
+      "Behavioral decoder/card/analysis endpoints in scope integration TBs; real reader/decoder separately covered by TF suite.",
+      "CNN RTL hashes preserved and Viterbi oracle rerun; complete CNN A/B not rerun.",
+      "No P&R, board programming, UserCode allocation, card copy or new physical acceptance."
+    ]
+  },
+  "inputs_sha256": {
+    "build.py": "5f1cce563a84799f1c51a33fc70d00ae0b732e573c18ba56aac7b0a3b63e187c",
+    "rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+    "rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+    "sim/audio/run_delay_ddr_equivalence.py": "99fbf199dc51c57fe6bbbdf10c06dc83b7b17119205faec661df601d6de76d2f",
+    "sim/scope_vec/run_current.py": "be5eb496c649c81b301b93d347120ed9879fcfd5f8c8190a9eb72a1091269b2e",
+    "sim/scope_vec/run_merge.py": "9478d8c74c6cf47b31f3449b4fe6e841358e22867fef7014b9ea6b632c0739e9",
+    "sim/scope_vec/tb_scope_push.sv": "638c0b85d5867c2135393f998281d664879fe39a172101d97d0ed9142fb9acb2",
+    "sim/scope_vec/tb_scope_tf_coexist.sv": "5d6de3e813c050df510d76a4ef88bd7aa22df4a79b0cc99444311209061ac675",
+    "sim/scope_vec/tb_scope_tf_control.sv": "bc892003afb59570bebb90798cfcf9935a3e70d7828e8cc11b60c78bdee4f2ee",
+    "sim/scope_vec/tb_scope_tf_play.sv": "7e35d3f43aa24a6ed03cacb04b26143f2ae62610d352334aab29259312cb1b1f",
+    "sim/scope_vec/tb_scope_tf_transport.sv": "2dbc339b846337ecd1b8bc6fae70437c1f5582367c1a2a321c57ac736b3f076c",
+    "sim/scope_vec/tb_scope_workstation.sv": "80ed1e3682062cb8a5622133da509613aa0bf874e3700f0073c14f19e6428c9f",
+    "sim/scope_vec/tf_decoder_endpoint.sv": "8227873fd47caa821a37b059bd19f22b7d87c71d31173256b0641b6ae7d2f993",
+    "sim/tf_audio/run.py": "0463729438d6c8383d4f1f0e519d45d67e7a701f3693a26d632d51866ca73ec7",
+    "tools/build_current_workstation.py": "dfe6d77ceb964eab48e9e24a5d6159fe465467fbc7e5cacdf4efe1825234d79e",
+    "rtl/audio/gw138k_event_workstation.sv": "05112fe5316a6b7c03a875676fd390a162b14e015d099909514e7c48ba7c4fa1",
+    "rtl/display_data/feedback_renderer.v": "cf2734b8be6cd198f92bcae5536e876475e57e0c0affedf05578ba93417208c4",
+    "rtl/display_data/output_audio_analysis.v": "5c4929314c548d0ab97d6274e6ceb3ef59a76be739c5fb0a1d48564aa011dbdc"
+  },
+  "evidence_sha256": {
+    "results/workstation_scope83_20261006_223538_716443/tool_result.json": "4a85458c8a40999de5351f0ba3901bd7bff8bc998f374d4fa54f12471f5406b9",
+    "results/workstation_scope83_20261006_223538_716443/workstation_inputs.json": "a8e6e957242b2f71a6af3962811c3baad4292f0b909082203d8c9cac86a95605",
+    "results/workstation_scope83_20261006_223538_716443/build_metadata.json": "2871e00a263cd6ce13ff8673c43915013abeba90ec43e5b0bca3299377dd7396",
+    "results/workstation_scope83_20261006_223538_716443/workstation_memory.json": "76cc40cb56c4d69204085b095ebe05d199e4b98fc0198d362dd47abdc921361b",
+    "results/workstation_scope83_20261006_223538_716443/gowin.log": "67b23ae47288de39f136fb3f3eab9e03d1dc4901c234e6709a5e66cff87c9918",
+    "results/workstation_scope83_20261006_223538_716443/scope_merge_20261006_223547_610056/verification.json": "0ec2041145ec8750284e68e4be9317883790ad625c8e274430e8dd399fff55ba",
+    "results/workstation_scope83_20261006_223538_716443/current_regression_20261006_223547_564765/verification.json": "4bed8b419679cbb40ea22e3aecae521d04768405407e3301dac7ec42ab4384c9",
+    "results/workstation_scope83_20261006_223538_716443/current_regression_20261006_223547_564765/tf_audio.log": "1f5ab28202add9ac2dc14711cc4ed01d45f305f1bd7458995f68cfd0038f3893",
+    "results/workstation_scope83_20261006_223538_716443/current_regression_20261006_223547_564765/tf_inputs_sha256.json": "e780d9d5a6304a15f3926f7cfc76655d784bd3b55904e537bed1c4c39b723650",
+    "results/workstation_scope83_20261006_223538_716443/current_regression_20261006_223547_564765/delay_ddr.log": "b730e4c60ecf6d72f2c9969e87bc350f7dc073d37f227ad6c57b0375b17fb306",
+    "results/workstation_scope83_20261006_223538_716443/current_regression_20261006_223547_564765/ddr_isolation/summary.json": "8ff75e89d6b12a3cd296e9d5e652a40ee5b91edeb3db76c8485fb52fcb6d4852",
+    "results/workstation_scope83_20261006_223538_716443/current_regression_20261006_223547_564765/ddr_isolation/old_map.log": "22ac451995f1b0886df2b8212c05067a3849c1166fcbfea325d9c769422dbc5d",
+    "results/workstation_scope83_20261006_223538_716443/current_regression_20261006_223547_564765/ddr_isolation/new_map.log": "a386bda8a6dac8a93a1779aab33ddfed6ff7fb556984cc3c69052dbf922ae4f8"
+  }
+}

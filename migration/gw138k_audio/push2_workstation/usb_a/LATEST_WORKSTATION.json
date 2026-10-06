@@ -78,5 +78,32 @@
     "actual_seconds": 696.9
   },
   "bsram_note": "PNR full81=215, full82=260, full83=260; net +45 for caches: feature 32, weight 8, plane 2, pipeline buffers 3; Viterbi remains 6. 80/340 blocks free.",
-  "acceptance_tag": "cnn83-accepted-20261006"
+  "acceptance_tag": "cnn83-accepted-20261006",
+  "offline_candidate": {
+    "build": "results/workstation_scope83_20261006_223538_716443",
+    "build_mode": "synthesis_only",
+    "source_commit": "a8376bd1598482158146707d3af0b18b0dd7af01",
+    "baseline": "results/song_guide_full83_20261006_203125_607466",
+    "baseline_acceptance_tag": "cnn83-accepted-20261006",
+    "recorded_at": "2026-10-06T22:46:42+08:00",
+    "bsram": 216,
+    "bsram_capacity": 340,
+    "bsram_measurement_stage": "synthesis",
+    "pnr_bsram": null,
+    "timing_closed": null,
+    "timing_note": "No routed timing evidence; SYN estimates audio 43.635<76.8 MHz and USB 38.330<48 MHz. Not timing-closed.",
+    "hardware_tested": false,
+    "user_code_assigned": false,
+    "tf_decoder": "wav",
+    "basic_pitch_elaborated": true,
+    "scope_vectors": 8,
+    "scope_tf_playback": true,
+    "verification_passed": true,
+    "verification_gates": 18,
+    "verification_report": "results/workstation_scope83_20261006_223538_716443/current_regression_20261006_223547_564765/verification.json",
+    "evidence_report": "reports/SCOPE_WORKSTATION_MERGE_20261006.json",
+    "scope_report": "results/workstation_scope83_20261006_223538_716443/scope_merge_20261006_223547_610056/verification.json",
+    "memory_report": "results/workstation_scope83_20261006_223538_716443/workstation_memory.json",
+    "note": "Full83 caches/DDR delay/map retained; final DAC direct X-Y with coherent metadata. Board acceptance above unchanged."
+  }
 }

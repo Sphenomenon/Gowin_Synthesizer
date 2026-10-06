@@ -1,5 +1,23 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-10-06 完整 0x83 工作站与示波器入口合并（离线候选）
+
+最新已验收镜像是 `cnn83-accepted-20261006` 的完整 0x83：Basic Pitch 分层缓存、TF 歌曲菜单/热插拔/整曲指引、P10 delay DDR 均已保留，**PNR BSRAM 260/340**。下面 10 月 1 日的 **228** 是旧完整工程的 SYN 数，包含 TF 直读，但当时没有展开 Basic Pitch，不能用作当前占用。
+
+本次在该完整工程上接回现场几何 voice 与 TF 示波器播放入口。TF 模式下歌曲菜单直接启动播放，无需 CNN 模型；左右键和重播作用于实际选中的曲目，暂停输出零并保持读取位置，拔卡后等待目录重扫、恢复同曲。最终 DAC 的 L/R、触发参考、voice 与健康状态作为同一帧发布给既有 display-data，李萨如用 L=X/R=Y。新候选的资源、验证及边界见 [合并记录](reports/SCOPE_WORKSTATION_MERGE_20261006.md)。板上已验收记录继续保留；新候选单独记在 `LATEST_WORKSTATION.json.offline_candidate`。
+
+从 `usb_a` 使用当前完整工程入口：
+
+```sh
+python3 build.py --current-workstation --prepare-only
+python3 build.py --current-workstation --synthesis-only
+python3 sim/scope_vec/run_current.py results/<本次 workstation_scope83 目录>
+```
+
+该入口复用本机已经验收并有 SHA256 清单的 `results/song_guide_full83_20261006_203125_607466/Prj1`；缺失或漂移会明确失败。它仅允许 WAV profile 的准备/综合，拒绝 UserCode、P&R 和复用旧综合网表。下方不带 `--current-workstation` 的 `build.py` 命令保留为历史构建入口，不保证包含 0x83 缓存和地址隔离。
+
+Session 切 TF 示波器模式；Play 打开/关闭原歌曲菜单，菜单内 Left/Right 浏览、Select 确认，菜单外 Left/Right 切实际播放曲目、Select 切现场几何。New 暂停/继续，Duplicate 重播当前曲目。外部预录 TF 播放与参赛现场几何实时合成分别使用，不计入实时矢量振荡器吞吐量。
+
 ## 2026-10-03 TF 曲目清单与 Push 2 指引
 
 TF 直读核已提取 FAT16/FAT32 根目录中的 8.3 短文件名（最多 16 首）。Play 打开 Push 2 歌曲清单，Left/Right 浏览，Select 选曲并启动 TF→CNN；演奏页显示曲名和进度，按对当前亮起的 pad 才推进。合成器发声与三种效果仍可用。0x58 已上板，模型和 Push USB/屏幕传输工作；实体选曲与进度效果仍待确认，模型上传也出现过一次 DDR 回读 CRC 失败。详见 [实现与板测边界](reports/TF_PUSH_SONG_SELECTION_20261003.md)。
