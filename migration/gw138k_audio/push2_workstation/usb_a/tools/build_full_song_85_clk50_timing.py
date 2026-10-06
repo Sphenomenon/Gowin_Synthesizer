@@ -83,6 +83,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--flow', choices=['prepare', 'syn', 'all', 'pnr'], default='all')
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--synthesis-goal', choices=['auto', 'timing'], default='auto',
+                        help='Gowin synthesis goal; timing retains clocks/RTL and is audited for RAM/QoR')
     parser.add_argument('--route-option', type=int, choices=[0, 1, 2], default=1,
                         help='Gowin P&R algorithm; preserve timing-driven/hold correction and all clocks')
     reuse = parser.add_mutually_exclusive_group()
@@ -119,6 +121,10 @@ def main():
         assert text.count('set_option -user_code 00000084') == 1
         tcl.write_text(text.replace('set_option -user_code 00000084', 'set_option -user_code 00000085')
                        .replace('set_option -route_option 1', f'set_option -route_option {args.route_option}'))
+        if args.synthesis_goal != 'auto':
+            tcl.write_text(tcl.read_text().replace(
+                'set_option -verilog_std sysv2017',
+                'set_option -verilog_std sysv2017\nset_option -opt_goal ' + args.synthesis_goal))
         sdc = stage / 'constraints/tang_mega_138k.sdc'
         sdc.write_text(sdc.read_text() + CDC_CONSTRAINTS + REPORTS)
         if reuse_from is not None:
@@ -139,7 +145,7 @@ def main():
             'music_sha256': {str(p.relative_to(stage)): sha(p)
                              for p in (stage / 'rtl/music').rglob('*') if p.is_file()},
             'hardware_tested': False, 'goal': 'clk50 timing closure with BSRAM no greater than 260',
-            'route_option': args.route_option,
+            'route_option': args.route_option, 'synthesis_goal': args.synthesis_goal,
         }, indent=2) + '\n')
     else:
         inputs = json.loads((output / 'workstation_inputs.json').read_text())
