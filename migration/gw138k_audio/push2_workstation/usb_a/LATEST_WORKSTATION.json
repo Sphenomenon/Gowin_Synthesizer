@@ -173,6 +173,112 @@
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
     "status": "synthesis_resource_gate_passed_pnr_running_unflashed",
+    "source_commit": "9f8a48c",
+    "measurement_tool_commit": "19c9431",
+    "change": "Scalar DP/CQT pipelines, registered frontend decode and DDR coefficient product, parallel local DDR grants, diagnostic 2FF and narrowly proved CDC constraints; decoder forced to logic.",
+    "hardware_programmed": false,
+    "hardware_tested": false,
+    "bsram_budget_pnr": 260,
+    "bsram_pnr": null,
+    "clk50_closed": null,
+    "synthesis_resources": {
+      "bsram": 216,
+      "measurement_stage": "synthesis",
+      "registers": 40801,
+      "ssram": 1607,
+      "lut_hierarchy": 63360,
+      "clock_estimates": [
+        {
+          "clock": "clk_50m",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 72.145,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 76.8,
+          "synthesis_estimated_mhz": 58.21,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 48.0,
+          "synthesis_estimated_mhz": 36.682,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+          "required_mhz": 400.0,
+          "synthesis_estimated_mhz": 1487.018,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 352.734,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 1617.337,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 223.924,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+          "required_mhz": 148.5,
+          "synthesis_estimated_mhz": 257.5,
+          "estimate_meets_requirement": true
+        }
+      ],
+      "hardware_tested": false,
+      "pnr_bsram": null,
+      "frontend": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      }
+    },
+    "resource_tradeoff": "Front-end 4096-bit delay line uses ordinary FF instead of 64 SSRAM primitives; no added BSRAM, decoder pROM inference explicitly disabled.",
+    "validation": {
+      "viterbi_oracle": "172x89 all scores/backpointers PASS; 28 notes; old-map negative control fails as intended",
+      "guidance_score": "3/3 PASS",
+      "local_arbiter": "16384 exhaustive cases PASS against accepted arbiter: all 2048 masks, ready/blocked, write patterns, payload and owner",
+      "cqt_magnitude": "4 configs exact accepted-RTL equivalence + 2100 Python magnitude oracle PASS",
+      "final_frontend_cycle_equivalence": "4 port models PASS (incl synchronous ROM and registered DDR payload); every control/output cycle exact",
+      "final_snapshot_cnn_ab": "12frames PASS on a1b8537 logic; 9f8a48c attribute-only functional identity proven across597 stage inputs",
+      "final_snapshot_staged_regression": "18/18 PASS a1b8537; 9f8a48c differs only by explicit decoder synthesis attribute",
+      "final_snapshot_regression_report": "results/song_guide_full85_clk50_20261007_053045_091636/current_regression_20261007_053152_751848/verification.json",
+      "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_frontend_final_12frames.log",
+      "implementation_attribute_proof": "results/song_guide_full85_clk50_20261007_054102_250721/attribute_only_functional_equivalence.json"
+    },
+    "release_requirements": [
+      "20ns clk50 setup/hold/endpoint TNS and recovery/removal pass",
+      "PNR BSRAM<=260",
+      "immutable stage and frozen file hashes pass",
+      "routed CDC/scope audits pass",
+      "originally positive clock domains remain positive",
+      "model reupload E after SRAM burn",
+      "TRAVLER first complete window 36 notes and no active-frame throughput regression"
+    ],
+    "report": "reports/CLK50_TIMING_FIX_20261007.json",
+    "throughput_tool": "tools/analyze_bp_throughput.py",
+    "throughput_baseline_reproduction": "exact full82/full83 accepted OLS values",
+    "build_comparators": [
+      "results/song_guide_full85_clk50_20261007_042458_983585",
+      "results/song_guide_full85_clk50_20261007_045710_715943"
+    ]
+  },
+  "timing_candidate_progress_history": {
+    "build": "results/song_guide_full85_clk50_20261007_054102_250721",
+    "user_code": "0x00000085",
+    "baseline": "results/workstation_scope83_20261006_230626_011557",
+    "status": "synthesis_resource_gate_passed_pnr_running_unflashed",
     "change": "DP/CQT pipelines and frontend decode; CQT registered DDR request; exact-priority parallel local grants; audio diagnostic 2FF and targeted CDC constraints",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
