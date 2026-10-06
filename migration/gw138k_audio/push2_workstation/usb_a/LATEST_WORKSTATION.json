@@ -1,21 +1,27 @@
 {
-  "build": "song_guide_full82_20261005_144933",
+  "build": "results/song_guide_full81_20261005_133345",
   "build_mode": "full",
-  "user_code": "0x00000082",
-  "flashed_at": "2026-10-05 15:48",
-  "flash_record": "../results/sram_20261005_154809_815290",
-  "baseline": "results/song_guide_full81_20261005_133345",
-  "change": "CNN throughput fix: USE_ALL_DDR 1->0, USE_EXTERNAL_WEIGHTS/FEATURES 1; per-frame staged caches (weight_cache 8blk + feature_ddr + plane_cache) replace per-MAC DDR fetches; g_ddr_weights takes uart_model_loader (BPN1+CRC); new USE_DDR_SIGNAL param keeps CQT signal in DDR. Dwell telemetry unchanged (0x81 format).",
+  "user_code": "0x00000081",
+  "flashed_at": "2026-10-06 16:38",
+  "flash_record": "../results/sram_20261006_163824_061544",
+  "baseline": "results/song_guide_full80_20261005_045703",
+  "change": "CNN throughput measurement build: per-state dwell counters in basic_pitch_pcm_pipeline; B138 NN word low half now carries {page[1:0], cycles[24:11]} instead of sample_rate (TF word still carries sample_rate). No behaviour change.",
   "memory_report": null,
-  "bsram": 260,
+  "bsram": 215,
   "bsram_measurement_stage": "pnr",
   "bsram_prev": 215,
   "tf_decoder": "wav",
   "basic_pitch_elaborated": true,
   "timing_closed": false,
-  "timing_note": "same failing classes as accepted 0x80 (audio_76m8 engine/final_accumulator + FIFO-gray CDC, ddr_ui100 CDC gray), slightly deeper from routing pressure; audio_76m8 TNS -4576ns vs 0x80 -2419ns; clk_50m TNS -435ns/298 eps (0x80: -186/126) - new BP 50MHz read paths gated on-board by layer hashes",
+  "timing_note": "same class as 0x80: audio_76m8 FIFO Gray CDC pessimistic STA; telemetry adds only 50MHz-domain counters",
   "hardware_tested": false,
-  "coordination": "UserCode 0x82 owned by CNN throughput window; dwell decode: state=(nn>>26)&0x3f, page=(nn>>14)&3, cycles=(nn&0x3fff)*2048; host tool tools/capture_bp_dwell.py",
-  "commit": "2402e37",
-  "board_acceptance": null
+  "coordination": "Board running 0x00000081 (verified flash after.log); model status E read 2026-10-06. CNN correctness/throughput investigation reserves next UserCode 0x00000083. Physical TRAVLER selection required for baseline acceptance.",
+  "commit": "c4ad063",
+  "board_acceptance": null,
+  "candidate": {
+    "user_code": "0x00000082",
+    "build": "song_guide_full82_20261005_144933",
+    "acceptance": "performance passed; TRAVLER first-window score_count=1 vs reference 36; correctness failed",
+    "next_user_code": "0x00000083"
+  }
 }
