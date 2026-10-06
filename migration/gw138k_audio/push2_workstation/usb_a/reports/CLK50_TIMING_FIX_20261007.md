@@ -19,7 +19,7 @@ SSRAM=1607、寄存器40801；原板物理 PNR 为260，最终 PNR 用量与时�
 检查，并保证原本达标的HDMI等时钟域不退化为新的负时序。
 
 已完成auto/route1对照040915：50MHz Fmax49.250、setup WNS=-0.304ns、TNS=-3.342ns/
-22端点，hold及复位通过；仍未闭合，且HDMI Fmax121.599<148.5（原板151.305），未烧录。
+22端点，hold及复位通过；仍未闭合，且HDMI Fmax121.599<148.5（原板154.999），未烧录。
 此前route0候选也有明显QoR退化，全部保留为定位证据，均未部署。
 本轮只宣称经证据证明的50MHz修复，不把既有音频/USB负时序改写为全设计已闭合。
 
@@ -285,7 +285,7 @@ SSRAM1607；相比请求/仲裁候选多82FF，Viterbi仍6BSRAM、CQT仍0BSRAM�
 040915默认综合route1完整报告：SYN216/PNR260，50MHz Fmax49.250、setup WNS=-0.304ns、
 TNS=-3.342ns/22端点，hold+0.165ns/TNS0，recovery/removal通过，CDC与scope路由审计通过。
 不能把-0.304ns当通过；未烧录。音频55.416MHz、USB38.898MHz接近或优于full84，
-但HDMI pixel退到121.599MHz（<148.5，基线151.305），因此本候选也不宜部署。
+但HDMI pixel退到121.599MHz（<148.5，基线154.999），因此本候选也不宜部署。
 
 剩余负路径20条来自restart/sample_valid长控制链再串256路写译码，另2条tap_cnt→
 前端乘加/饱和输出为-0.015ns。a1b8537将dline_we_q每拍只保存wr_ptr onehot，
@@ -320,3 +320,8 @@ Tcl输入逐项比较仅前端综合属性不同，剥离该属性后源码严�
 验证；物理布线结果不可复用。最终a1b8537 12帧CNN A/B PASS，六层最终哈希仍与
 已验收参考相同，各层写出覆盖及3项出谱一致。主机walltime916.094s不是FPGA窗耗时，
 本次前端队列/乘积改动的所有接口拍数已逐周期证明不变，实际板速率仍待验。
+
+
+原板HDMI Fmax基线校正：实际部署full84的Prj1_tr_content.html为154.999MHz，
+此前报告151.305是转录错误，未用来放宽148.5MHz门禁。原始报告SHA256及此校正
+见JSON baseline_clock_qor_source；watch release checks读取原始报告，不依赖转录值。

@@ -1795,7 +1795,7 @@
     "audio_fmax_mhz": 55.416,
     "usb_fmax_mhz": 38.898,
     "video_pixel_fmax_mhz": 121.599,
-    "video_baseline_fmax_mhz": 151.305,
+    "video_baseline_fmax_mhz": 154.999,
     "remaining_paths": [
       "music_restart_delay -> dline_we_q (-0.304ns)",
       "frontend tap_cnt -> win_data (2 paths -0.015ns)"
@@ -1974,5 +1974,12 @@
     "full82_mean_fps": 6.550435182138794,
     "full83_mean_fps": 6.589691096958968,
     "first_window_automatic_verification": false
+  },
+  "baseline_clock_qor_source": {
+    "report": "results/workstation_scope83_20261006_230626_011557/Prj1/impl/pnr/Prj1_tr_content.html",
+    "sha256": "1fabdfaf8f4847fbf7e52f7353cea16244e5164efc5a1b9ff726165ca71be884",
+    "video_pixel_fmax_mhz": 154.999,
+    "required_mhz": 148.5,
+    "correction": "Earlier151.305 was a transcription error; release checks read the original deployed report."
   }
 }
