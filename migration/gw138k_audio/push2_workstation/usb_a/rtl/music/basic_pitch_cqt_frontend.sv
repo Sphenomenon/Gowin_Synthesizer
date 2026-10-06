@@ -55,7 +55,7 @@ module basic_pitch_cqt_frontend #(
     // Register the one-hot write decode before driving the 256x16 delay line.
     // Keep the small decode registers so synthesis cannot fold the high-fanout
     // address path back into each data bit. No new storage array is introduced.
-    (* syn_keep = 1 *) logic [(1<<BUF_AW)-1:0] dline_we_q;
+    (* syn_keep = 1, syn_romstyle = "logic" *) logic [(1<<BUF_AW)-1:0] dline_we_q;
     logic signed [15:0] dline_data_q;
     (* syn_keep = 1 *) logic dline_valid_q;
     logic [31:0]        n_recv;
