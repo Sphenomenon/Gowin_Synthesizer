@@ -188,3 +188,8 @@ CQT原RTL对照再次PASS（两种模式各3窗×3octave，896写和216bin/windo
 比前端候选多18FF；LUT57239（前端候选57581），综合clk50估计61.890MHz。
 此时尚无本候选PNR报告。真实RTL snapshot已逐项核验匹配提交 `5cf13b2`，
 构建开始时HEAD较旧，metadata另记`rtl_snapshot_commit`，不混淆开始提交与源快照。
+
+请求/仲裁最终合并的12帧CNN A/B PASS；六层最终哈希仍为
+`e1e1c8e5/7539c275/c2ca22ba/92afdeec/1ea6f727/5432e32a`，所有层写出覆盖及3项出谱
+一致。714.176秒walltime为主机并发构建负载影响的仿真耗时，不是FPGA窗耗时。
+证据 `results/clk50_fix_20261007/cnn_ab_arbiter_12frames.log`。

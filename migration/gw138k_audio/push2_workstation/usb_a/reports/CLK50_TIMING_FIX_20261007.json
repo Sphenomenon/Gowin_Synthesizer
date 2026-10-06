@@ -1543,6 +1543,13 @@
       "passed": true,
       "gates": 18,
       "evidence": "results/clk50_fix_20261007/arbiter_staged_regression.log"
+    },
+    "cnn_ab": {
+      "passed": true,
+      "frames": 12,
+      "notes": 3,
+      "evidence": "results/clk50_fix_20261007/cnn_ab_arbiter_12frames.log",
+      "walltime_seconds": 714.176
     }
   }
 }

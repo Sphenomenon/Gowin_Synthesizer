@@ -180,7 +180,7 @@
     "validation": {
       "viterbi_oracle": "172x89 all scores/backpointers PASS; 28 notes; old-map negative control fails as intended",
       "scope_menu": "latest CQT-request/local-arbiter candidate final staged regression 18/18 PASS including TF16, delay equivalence, DP oracle",
-      "cnn_ab": "frontend+DP+CQT 12-frame A/B PASS; six hashes/coverage and 3 notes unchanged",
+      "cnn_ab": "registered-request/parallel-grant final 12-frame A/B PASS; same six accepted hashes, full write coverage and3 notes",
       "guidance_score": "3/3 PASS",
       "cqt_reference": "including registered request: local/DDR 3 windows x3 octaves, every 896 signal writes and216 output bins/window bit-exact PASS",
       "frontend_reference": "4 windows per local/DDR coefficient mode, 512 samples each and all controls cycle-exact to accepted frontend; ring wraps/backpressure/saturation PASS",
