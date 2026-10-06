@@ -1616,6 +1616,75 @@
       "results/clk50_fix_20261007/magnitude_math_oracle/result.json"
     ],
     "final_cnn_ab_12frames": "running",
-    "staged_regression_18": "running"
-  }
+    "staged_regression_18": "PASS",
+    "staged_regression_report": "results/song_guide_full85_clk50_20261007_040915_479309/current_regression_20261007_041219_870955/verification.json",
+    "synthesis_resources": {
+      "bsram": 216,
+      "bsram_measurement_stage": "synthesis",
+      "registers": 40609,
+      "lut_hierarchy": 57333,
+      "ssram": 1607,
+      "cqt": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "viterbi": {
+        "self_bsram": 6,
+        "subtree_bsram": 6
+      },
+      "clock_estimates": [
+        {
+          "clock": "clk_50m",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 61.89,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 76.8,
+          "synthesis_estimated_mhz": 48.052,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 48.0,
+          "synthesis_estimated_mhz": 37.431,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+          "required_mhz": 400.0,
+          "synthesis_estimated_mhz": 1487.018,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 352.734,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 1617.337,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 223.924,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+          "required_mhz": 148.5,
+          "synthesis_estimated_mhz": 205.078,
+          "estimate_meets_requirement": true
+        }
+      ],
+      "pnr_bsram": null,
+      "hardware_tested": false
+    }
+  },
+  "baseline_board_readonly_smoke": "results/clk50_fix_20261007/full84_before_timing_fix.json"
 }

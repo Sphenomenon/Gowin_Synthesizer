@@ -172,7 +172,7 @@
     "build": "results/song_guide_full85_clk50_20261007_040915_479309",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "synthesis_and_route_in_progress_unflashed",
+    "status": "synthesis_complete_pnr_running_unflashed",
     "change": "DP/CQT pipelines and frontend decode; CQT registered DDR request; exact-priority parallel local grants; audio diagnostic 2FF and targeted CDC constraints",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
@@ -185,7 +185,9 @@
       "cqt_reference": "including registered request: local/DDR 3 windows x3 octaves, every 896 signal writes and216 output bins/window bit-exact PASS",
       "frontend_reference": "4 windows per local/DDR coefficient mode, 512 samples each and all controls cycle-exact to accepted frontend; ring wraps/backpressure/saturation PASS",
       "local_arbiter": "16384 exhaustive cases PASS against accepted arbiter: all 2048 masks, ready/blocked, write patterns, payload and owner",
-      "cqt_magnitude": "4 configs exact accepted-RTL equivalence + 2100 Python magnitude oracle PASS"
+      "cqt_magnitude": "4 configs exact accepted-RTL equivalence + 2100 Python magnitude oracle PASS",
+      "staged_regression": "18/18 PASS, exact magnitude/address source snapshot",
+      "staged_regression_report": "results/song_guide_full85_clk50_20261007_040915_479309/current_regression_20261007_041219_870955/verification.json"
     },
     "source_commit": "735aaa3",
     "synthesis_bsram": 216,
@@ -230,6 +232,73 @@
       "setup_wns_ns": -17.961,
       "clk50_closed": false,
       "deployable": false,
+      "hardware_tested": false
+    },
+    "synthesis_resources": {
+      "bsram": 216,
+      "bsram_measurement_stage": "synthesis",
+      "registers": 40609,
+      "lut_hierarchy": 57333,
+      "ssram": 1607,
+      "cqt": {
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "viterbi": {
+        "self_bsram": 6,
+        "subtree_bsram": 6
+      },
+      "clock_estimates": [
+        {
+          "clock": "clk_50m",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 61.89,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 76.8,
+          "synthesis_estimated_mhz": 48.052,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 48.0,
+          "synthesis_estimated_mhz": 37.431,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+          "required_mhz": 400.0,
+          "synthesis_estimated_mhz": 1487.018,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 352.734,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 1617.337,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 223.924,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+          "required_mhz": 148.5,
+          "synthesis_estimated_mhz": 205.078,
+          "estimate_meets_requirement": true
+        }
+      ],
+      "pnr_bsram": null,
       "hardware_tested": false
     }
   }
