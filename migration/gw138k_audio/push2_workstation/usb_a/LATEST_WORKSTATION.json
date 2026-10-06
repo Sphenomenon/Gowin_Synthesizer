@@ -183,9 +183,10 @@
     "current_validation": {
       "conv_cycle_reference": "10/10 PASS",
       "feature_addresses": "38720 PASS",
-      "cnn12": "running",
+      "cnn12": "PASS, six hashes/coverage/3 notes, all40 per-frame prior-reference checkpoints identical",
       "regression18": "18/18 PASS",
-      "regression_report": "results/song_guide_full85_clk50_20261007_071024_977116/current_regression_20261007_071040_130961/verification.json"
+      "regression_report": "results/song_guide_full85_clk50_20261007_071024_977116/current_regression_20261007_071040_130961/verification.json",
+      "cnn_reference_report": "results/clk50_fix_20261007/feature_mask_cnn_reference_comparison.json"
     },
     "rejected_timing_build": "results/song_guide_full85_clk50_20261007_054102_250721",
     "rejected_review": "results/song_guide_full85_clk50_20261007_054102_250721/release_review.json",

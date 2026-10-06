@@ -2228,7 +2228,7 @@
     "conv_reference_report": "results/clk50_fix_20261007/conv_padding_mask_cycle_equivalence/result.json",
     "feature_address_valid_cases": 38720,
     "feature_address_oracle": "results/clk50_fix_20261007/feature_address_field_oracle.json",
-    "cnn_ab_status": "running12frames; must also retain accepted-reference six hashes",
+    "cnn_ab_status": "12frame PASS, accepted final six hashes and all40 per-frame checkpoints identical",
     "cnn_ab_log": "results/clk50_fix_20261007/cnn_ab_feature_mask_12frames.log",
     "staged_regression_status": "18/18 PASS",
     "mac_pipeline_cost_correction": {
@@ -2247,12 +2247,15 @@
       "clk50_estimated_mhz": 61.89,
       "physical_bsram": null,
       "status": "synthesis_done_placement_running"
-    }
+    },
+    "cnn_reference_comparison": "results/clk50_fix_20261007/feature_mask_cnn_reference_comparison.json",
+    "cnn_host_walltime_seconds": 801.996,
+    "cnn_host_walltime_note": "host simulation runtime, not FPGA inference window time"
   },
   "current_validation": {
     "conv_mask_cycle_reference": "10/10 PASS",
     "feature_address_fields": "38720 valid addresses PASS",
-    "cnn_12frames": "running",
+    "cnn_12frames": "PASS, six accepted hashes + 3 notes + all40 per-frame reference checkpoints",
     "staged_regression18": "18/18 PASS",
     "unchanged_CQT_frontend_DP_math": "prior exact tests retained; source files unchanged by52b7250"
   }
