@@ -22,7 +22,8 @@ from build_full_song_83_bp_ddr_isolation import FROZEN
 from workstation_memory import audit
 
 BASE = ROOT / 'results/workstation_scope83_20261006_230626_011557'
-OVERLAYS = ['rtl/music/basic_pitch_viterbi.sv', 'rtl/music/basic_pitch_cqt_engine.sv']
+OVERLAYS = ['rtl/music/basic_pitch_viterbi.sv', 'rtl/music/basic_pitch_cqt_engine.sv',
+            'rtl/music/basic_pitch_cqt_frontend.sv', 'rtl/music/basic_pitch_workstation_link.sv']
 CDC_CONSTRAINTS = '''
 # USB song selection: gw138k_stream_cdc WIDTH=4 held-word/toggle mailbox.
 # Source holds payload until ACK; destination waits req_meta/req_sync/req_settled.
@@ -33,6 +34,25 @@ set_false_path -to [get_pins {u_song_command_cdc/req_meta*/D u_song_command_cdc/
 # Async reset enters three-bit local release chains. Keep release-Q -> business
 # CLEAR recovery/removal and release-chain D paths under ordinary local STA.
 set_false_path -to [get_pins {u_song_command_cdc/source_release*/CLEAR u_song_command_cdc/destination_release*/CLEAR}]
+'''
+# Registered Gray pointers may change on every source edge, so constrain bus
+# flight below both source/destination periods. The final Gray bit aliases the
+# registered binary MSB after optimization; select that bit only, never all binary bits.
+for _instance, _read, _write, _meta_read, _meta_write, _msb, _bound in [
+    ('u_tf_audio/u_pcm_cdc', 'rd_gray', 'wr_gray', 'rd_gray_w1', 'wr_gray_r1', 4, 10),
+    ('u_score_push_cdc', 'read_gray', 'write_gray', 'read_gray_meta', 'write_gray_meta', 2, 10),
+    ('u_playlist_bridge/fifo', 'read_gray', 'write_gray', 'read_gray_meta', 'write_gray_meta', 2, 10),
+]:
+    for _gray, _meta, _binary in [(_read, _meta_read, 'rd_bin' if _read == 'rd_gray' else 'read_binary'),
+                                (_write, _meta_write, 'wr_bin' if _write == 'wr_gray' else 'write_binary')]:
+        _source = f'{_instance}/{_gray}* {_instance}/{_binary}_{_msb}*'
+        _target = f'{_instance}/{_meta}*'
+        CDC_CONSTRAINTS += (f'\nset_max_delay {_bound}.000 -from [get_regs {{{_source}}}] -to [get_regs {{{_target}}}]\n'
+                            f'set_false_path -hold -from [get_regs {{{_source}}}] -to [get_regs {{{_target}}}]\n')
+CDC_CONSTRAINTS += '''
+# Audio diagnostic levels now enter two explicit clk50 stages. Keep meta->sync
+# and all downstream CE/UART consumers under normal 20ns setup/hold checking.
+set_false_path -to [get_pins {u_music/format_meta*/D u_music/source_meta*/D}]
 '''
 REPORTS = '''
 # Diagnose clk50 without changing its 20ns constraint or any timing exceptions.

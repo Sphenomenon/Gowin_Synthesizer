@@ -131,6 +131,19 @@ module basic_pitch_workstation_link (
         .ddr_read_data_i(ddr_read_data)
     );
 
+    // These two diagnostic levels originate in the audio clock domain. Only
+    // the first sampling stage is asynchronous; all sticky/UART consumers use
+    // the second stage in clk_50m, rather than a raw level driving CE or data.
+    (* ASYNC_REG="TRUE" *) reg format_meta,format_sync,source_meta,source_sync;
+    always @(posedge clk_50m or negedge reset_n) begin
+        if (!reset_n) begin
+            format_meta <= 0; format_sync <= 0;
+            source_meta <= 0; source_sync <= 0;
+        end else begin
+            format_meta <= format_ready; format_sync <= format_meta;
+            source_meta <= source_active; source_sync <= source_meta;
+        end
+    end
     reg seen_pcm,seen_busy,seen_done,seen_format,seen_source;
     reg [2:0] hash_page;
     reg bp_done_q;
@@ -157,8 +170,8 @@ module basic_pitch_workstation_link (
             seen_pcm <= seen_pcm | pcm_valid;
             seen_busy <= seen_busy | bp_busy;
             seen_done <= seen_done | bp_done;
-            seen_format <= seen_format | format_ready;
-            seen_source <= seen_source | source_active;
+            seen_format <= seen_format | format_sync;
+            seen_source <= seen_source | source_sync;
             bp_done_q <= bp_done;
             if (bp_done && !bp_done_q) hash_page <= 0;
             else if ((result_valid || model_status==4'd15) && report_tick)
@@ -179,7 +192,7 @@ module basic_pitch_workstation_link (
     wire [31:0] tf_report = model_status==4'd5 ?
         {sample_rate[15:0],model_path_trace,6'd0} :
         {sample_rate[15:0],tf_trace,
-         seen_pcm,source_active,format_ready,pcm_ready,pcm_valid};
+         seen_pcm,source_sync,format_sync,pcm_ready,pcm_valid};
     // Analysis-mode NN word: {debug_progress, per-state dwell page}.  The
     // former sample_rate half is redundant (the TF word carries it) and now
     // carries the CNN per-state dwell telemetry: {page[1:0], cycles[24:11]}.

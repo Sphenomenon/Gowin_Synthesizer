@@ -113,3 +113,20 @@ req第三拍及4bit保持数据直连与传播时间，并要求上述具体约�
 构建工具校验其余全部RTL/IP/初始化数据与工具选项、冻结文件和参考 `.pr` SHA。
 对于只有SDC变化的同身份full85，也支持更严格的全部逻辑一致后复用综合。
 两个候选独立目录；最终都要通过实际PNR的时序/结构/资源门禁。
+
+## 首轮完整PNR结果与第三项修复
+
+完整PNR耗时约84分钟，SYN216/PNR260，clk50 Fmax46.083MHz，内部
+WNS=-1.700ns、hold=+0.164ns、Setup TNS=-115.919ns/190端点；未闭合、未烧录。
+最差内部路径已移到前端 `wr_ptr -> dline_RAMREG*/D`，原DP/CQT降采样不再占据最差位置。
+前端将256项写地址译码寄存为one-hot和16bit写数据，下一拍提交到原延迟线。
+采样计数/系数节拍不变；next_window_i时仍提交之前已接受的数据；无新增RAM数组。
+另外报告暴露format/source音频状态直接驱动clk50 sticky/UART：补2FF，再使用第二级。
+TF PCM、score和playlist的Gray指针第一采样级按10ns传播边界约束，保留后级STA，
+被优化成binary MSB的Gray最高位只匹配该位，未屏蔽全部二进制指针。
+新候选 `results/song_guide_full85_clk50_20261007_021238_778346/` 从首轮完整PNR
+结果增量路由并重新综合；02:03候选在新路径明确后取消，没有烧板。
+前端独立旧RTL对照：本地/DDR系数各4窗、512输出、1295PCM，所有控制/输出逐周期
+等价，覆盖极值/饱和、环回、背压和窗口换页PASS。首版TB在最后一次NBA输出
+计数前提前终止，修正采样时机后PASS；没有把该TB断言错误归为RTL失败。
+证据 `results/clk50_fix_20261007/frontend_equivalence_final/`。

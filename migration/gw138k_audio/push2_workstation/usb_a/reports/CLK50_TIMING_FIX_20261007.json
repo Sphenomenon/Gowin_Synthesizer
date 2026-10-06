@@ -1456,5 +1456,22 @@
     "reuse": "fresh synthesis; full84 placement+routing reference",
     "reference_sha256": "4f9bb376a7b7729c72aa4971049ac9296bac14cb8fb15aa9e319a94f63fd407b",
     "status": "running; not programmed"
+  },
+  "first_full_route": {
+    "build": "results/song_guide_full85_clk50_20261007_004457_617018",
+    "audit": "results/song_guide_full85_clk50_20261007_004457_617018/clk50_timing_audit.json",
+    "pnr_bsram": 260,
+    "fmax_mhz": 46.083,
+    "setup_wns_ns": -1.7,
+    "hold_wns_ns": 0.164,
+    "setup_tns_ns": -115.919,
+    "closed": false,
+    "programmed": false
+  },
+  "frontend_write_candidate": {
+    "build": "results/song_guide_full85_clk50_20261007_021238_778346",
+    "status": "running",
+    "reference_equivalence": "results/clk50_fix_20261007/frontend_equivalence_final/result.json",
+    "hardware_programmed": false
   }
 }

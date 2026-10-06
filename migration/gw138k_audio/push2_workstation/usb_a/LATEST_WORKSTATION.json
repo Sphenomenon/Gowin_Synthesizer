@@ -169,11 +169,11 @@
   "sram_record": "../results/sram_20261006_234504_538503",
   "downloaded_at": "2026-10-06T23:45:25+08:00",
   "timing_candidate": {
-    "build": "results/song_guide_full85_clk50_20261007_004457_617018",
+    "build": "results/song_guide_full85_clk50_20261007_021238_778346",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "unflashed; full route and fresh-synthesis incremental route running",
-    "change": "Viterbi scalar read/sum/select/commit and CQT decimation valid/multiply/accumulate/store pipelines; reuse all score/signal/cache RAM",
+    "status": "building DP+CQT+frontend-write/diagnostic-CDC candidate; unflashed",
+    "change": "scalar DP and CQT pipelines; registered frontend write decode reusing RAM; 2FF audio diagnostic levels; targeted CDC constraints",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
     "hardware_tested": false,
@@ -182,14 +182,24 @@
       "scope_menu": "combined candidate final staged regression 18/18 PASS including TF16, delay equivalence and DP oracle",
       "cnn_ab": "combined CQT+DP 12-frame A/B PASS; six hashes, coverage and 3 notes unchanged",
       "guidance_score": "3/3 PASS",
-      "cqt_reference": "local and DDR modes PASS; each 3 windows x 3 octaves, all 896 signal writes and 216 bins/window bit-exact to accepted RTL"
+      "cqt_reference": "local and DDR modes PASS; each 3 windows x 3 octaves, all 896 signal writes and 216 bins/window bit-exact to accepted RTL",
+      "frontend_reference": "4 windows per local/DDR coefficient mode, 512 samples each and all controls cycle-exact to accepted frontend; ring wraps/backpressure/saturation PASS"
     },
     "source_commit": "2de327f",
     "synthesis_bsram": 216,
     "viterbi_bsram": 6,
     "synthesis_clk50_fmax_mhz": 61.89,
     "cancelled_candidate": "results/song_guide_full85_clk50_20261007_002805_594995",
-    "incremental_build": "results/song_guide_full85_clk50_20261007_020351_908656",
-    "constraint_source_commit": "7f027f4"
+    "incremental_build": "results/song_guide_full85_clk50_20261007_021238_778346",
+    "constraint_source_commit": "7f027f4",
+    "full_route_result": {
+      "build": "results/song_guide_full85_clk50_20261007_004457_617018",
+      "pnr_bsram": 260,
+      "clk50_fmax_mhz": 46.083,
+      "setup_wns_ns": -1.7,
+      "hold_wns_ns": 0.164,
+      "tns_ns": -115.919,
+      "passed": false
+    }
   }
 }

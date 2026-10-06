@@ -52,6 +52,11 @@ module basic_pitch_cqt_frontend #(
 
     (* ram_style = "block" *) logic signed [15:0] dline [0:(1<<BUF_AW)-1];
     logic [BUF_AW-1:0]  wr_ptr;
+    // Register the one-hot write decode before driving the 256x16 delay line.
+    // Keep the small decode registers so synthesis cannot fold the high-fanout
+    // address path back into each data bit. No new storage array is introduced.
+    (* syn_keep = 1 *) logic [(1<<BUF_AW)-1:0] dline_we_q;
+    logic signed [15:0] dline_data_q;
     logic [31:0]        n_recv;
     logic [16:0]        out_cnt;
     logic [31:0]        base_val;
@@ -102,6 +107,29 @@ module basic_pitch_cqt_frontend #(
     // for any pair beyond +-16383 and silently corrupts loud audio.
     wire signed [16:0] mono_sum = $signed({left_i[15], left_i}) + $signed({right_i[15], right_i});
 
+    // A queued sample commits on the next edge, including next_window_i: the
+    // latter resets only output-window bookkeeping and must preserve PCM history.
+    // The first tap is consumed after sample_ready and the coefficient wait,
+    // so even the newest sample has committed before the delay line is read.
+    for (genvar slot = 0; slot < (1<<BUF_AW); slot = slot + 1) begin : g_dline_write
+        always_ff @(posedge clk_i) begin
+            if (rst_ni && dline_we_q[slot]) dline[slot] <= dline_data_q;
+        end
+    end
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+        if (!rst_ni) begin
+            dline_we_q <= '0;
+            dline_data_q <= '0;
+        end else begin
+            dline_we_q <= '0;
+            if (!next_window_i && sample_valid_i) begin
+                for (integer slot = 0; slot < (1<<BUF_AW); slot = slot + 1)
+                    dline_we_q[slot] <= (wr_ptr == slot);
+                dline_data_q <= mono_sum[16:1];
+            end
+        end
+    end
+
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin
             wr_ptr <= '0; n_recv <= '0; out_cnt <= '0;
@@ -122,7 +150,6 @@ module basic_pitch_cqt_frontend #(
             if (sample_valid_i) begin
                 // Widen before adding: (l+r) evaluated at 16 bits overflows for
                 // any pair beyond +-16383, which silently corrupts loud audio.
-                dline[wr_ptr] <= mono_sum[16:1];
                 wr_ptr      <= wr_ptr + 1'b1;
                 n_recv      <= n_recv + 1'b1;
             end
