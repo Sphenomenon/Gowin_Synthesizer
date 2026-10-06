@@ -70,7 +70,9 @@ module basic_pitch_cqt_engine #(
                            S_NEXT = 5'd9, S_DONE = 5'd10, S_FLUSH = 5'd11,
                            S_MAC_WAIT = 5'd12, S_DEC_WAIT = 5'd13,
                            S_COEFF_REQ = 5'd14, S_DEC_ACC = 5'd15,
-                           S_DEC_STORE = 5'd16, S_DEC_ISSUE = 5'd17;
+                           S_DEC_STORE = 5'd16, S_DEC_ISSUE = 5'd17,
+                           S_SQUARE = 5'd18, S_SQUARE_SUM = 5'd19,
+                           S_MAC_ISSUE = 5'd20;
 
     logic [4:0]         state;
     // The decimator runs in place. Output i can overwrite source i once
@@ -96,6 +98,7 @@ module basic_pitch_cqt_engine #(
     logic signed [47:0] acc_re, acc_im;
     logic signed [15:0] mac_kre, mac_kim;
     logic signed [63:0] sval;
+    logic signed [63:0] square_re_q, square_im_q;
     logic signed [31:0] root;
     logic signed [15:0] mag_q;
     logic [35:0]        srem;
@@ -105,6 +108,7 @@ module basic_pitch_cqt_engine #(
     logic signed [47:0] dec_acc;
     logic dec_in_q;
     logic [17:0] dec_request_addr_q;
+    logic [17:0] mac_request_addr_q;
     logic signed [31:0] dec_product_q;
 
 
@@ -162,13 +166,13 @@ module basic_pitch_cqt_engine #(
     generate if (USE_DDR_SIGNAL) begin : g_ddr_signal
         assign sig_rdata = sig_ddr_rdata;
         assign sig_mem_req_o = sig_write_pending || (state == S_FLUSH) ||
-                               (state == S_MAC_REQ) ||
+                               (state == S_MAC_ISSUE) ||
                                (state == S_DEC_ISSUE);
         assign sig_mem_write_o = sig_write_pending || (state == S_FLUSH);
         assign sig_mem_addr_o = `BP_DDR_CQT_SIGNAL_BYTE_BASE +
             ({14'd0, sig_write_pending ? sig_pending_addr :
               (state == S_FLUSH ? {10'd0,flush_i} :
-               (state == S_MAC_REQ ? rd_idx : dec_request_addr_q))} << 1);
+               (state == S_MAC_ISSUE ? mac_request_addr_q : dec_request_addr_q))} << 1);
         assign sig_mem_wdata_o = sig_write_pending ? sig_pending_data : dec_head[flush_i];
     end else begin : g_local_signal
         basic_pitch_signal_ram #(.DEPTH(MAXLEN)) u_sig_ram (
@@ -237,7 +241,9 @@ module basic_pitch_cqt_engine #(
     wire signed [47:0] acc_im_f = acc_im + $signed(USE_DDR_COEFF ? mac_kim : kim_data_i) * kx;
 
     // restoring square-root step
-    wire [35:0] trial_rem = {srem[33:0], sval[sbit*2 +: 2]};
+    // Consume the same two bits per iteration from a shift register. This
+    // removes a 32-way dynamic selector ahead of compare/subtract.
+    wire [35:0] trial_rem = {srem[33:0], sval[63:62]};
     wire [35:0] trial_sub = {{4{1'b0}}, root[31:0], 2'b01};
 
     always_ff @(posedge clk_i or negedge rst_ni) begin
@@ -247,9 +253,10 @@ module basic_pitch_cqt_engine #(
             acc_re <= '0; acc_im <= '0; root <= '0; mag_q <= '0;
             mac_kre <= 16'sd0; mac_kim <= 16'sd0;
             srem <= '0; sbit <= 6'd31; sval <= '0;
+            square_re_q <= '0; square_im_q <= '0;
             dec_i <= '0; dec_k <= '0; dec_acc <= '0; flush_i <= '0;
             dec_in_q <= 1'b0; dec_product_q <= 32'sd0;
-            dec_request_addr_q <= 18'd0;
+            dec_request_addr_q <= 18'd0; mac_request_addr_q <= 18'd0;
             done_o <= 1'b0; mag_we_o <= 1'b0;
         end else begin
             mag_we_o <= 1'b0;
@@ -278,36 +285,51 @@ module basic_pitch_cqt_engine #(
                 // clocked state lets Gowin infer the large signal buffers as
                 // dual-port BSRAM instead of expanding them into DFFs.
                 S_MAC_REQ: begin
-                    if (USE_DDR_COEFF && (!USE_DDR_SIGNAL ||
-                        (!sig_write_pending && sig_mem_ready_i))) begin
+                    if (USE_DDR_COEFF) begin
                         mac_kre <= kre_data_i;
                         mac_kim <= kim_data_i;
                     end
-                    if (!USE_DDR_SIGNAL) state <= S_MAC;
-                    else if (!sig_write_pending && sig_mem_ready_i) state <= S_MAC_WAIT;
+                    // Reflection/index arithmetic ends at this register;
+                    // only registered addresses enter the shared DDR mux.
+                    mac_request_addr_q <= rd_idx;
+                    state <= USE_DDR_SIGNAL ? S_MAC_ISSUE : S_MAC;
                 end
+                S_MAC_ISSUE: if (!sig_write_pending && sig_mem_ready_i)
+                    state <= S_MAC_WAIT;
                 S_MAC_WAIT: if (sig_mem_rsp_valid_i) state <= S_MAC;
 
                 S_MAC: begin
                     acc_re <= acc_re_f;
                     acc_im <= acc_im_f;
                     if (k_cnt == KTAPS - 1) begin
-                        // >>10 before squaring: acc^2 would otherwise exceed
-                        // 64 bits. A constant right shift is a pure global
-                        // scale, which NormalizedLog cancels.
-                        sval <= ((acc_re_f >>> 10) * (acc_re_f >>> 10)) +
-                                ((acc_im_f >>> 10) * (acc_im_f >>> 10));
-                        sbit <= 6'd31;
-                        srem <= '0;
-                        root <= '0;
-                        state <= S_SQRT;
+                        // The final tap is already included in acc_* above.
+                        // Register it before magnitude multiplication.
+                        state <= S_SQUARE;
                     end else begin
                         k_cnt <= k_cnt + 1'b1;
                         state <= USE_DDR_COEFF ? S_COEFF_REQ : S_MAC_REQ;
                     end
                 end
 
+                S_SQUARE: begin
+                    // Keep the accepted arithmetic: signed >>10, then the
+                    // low 64 bits of each square, then a wrapping 64-bit sum.
+                    // Scalar registers separate MAC, squares, sum and sqrt.
+                    square_re_q <= (acc_re >>> 10) * (acc_re >>> 10);
+                    square_im_q <= (acc_im >>> 10) * (acc_im >>> 10);
+                    state <= S_SQUARE_SUM;
+                end
+
+                S_SQUARE_SUM: begin
+                    sval <= square_re_q + square_im_q;
+                    sbit <= 6'd31;
+                    srem <= '0;
+                    root <= '0;
+                    state <= S_SQRT;
+                end
+
                 S_SQRT: begin
+                    sval <= {sval[61:0], 2'b00};
                     if (trial_rem >= trial_sub) begin
                         root <= {root[30:0], 1'b1};
                         srem <= trial_rem - trial_sub;
