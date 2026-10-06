@@ -2,8 +2,8 @@
   "status": "in_progress",
   "board_unchanged": "0x00000084",
   "candidate_user_code": "0x00000085",
-  "candidate_build": "results/song_guide_full85_clk50_20261007_004457_617018",
-  "source_commit": "2de327f",
+  "candidate_build": "results/song_guide_full85_clk50_20261007_040915_479309",
+  "source_commit": "735aaa3",
   "baseline_build": "results/workstation_scope83_20261006_230626_011557",
   "bsram_budget_pnr": 260,
   "synthesis_resources": {
@@ -1561,5 +1561,61 @@
     "reason": "major unrelated-domain route degradation; clk50 gate alone does not authorize deployment",
     "final_fresh_build": "results/song_guide_full85_clk50_20261007_034837_423036",
     "status": "running; not programmed"
+  },
+  "candidate_status": "magnitude_and_address_pipeline_pnr_running_unflashed",
+  "request_arbiter_route0_result": {
+    "build": "results/song_guide_full85_clk50_20261007_032151_169144",
+    "tool_passed": true,
+    "source_inputs_unchanged": true,
+    "pnr_bsram": 260,
+    "clk50_fmax_mhz": 26.342,
+    "setup_wns_ns": -17.961,
+    "hold_wns_ns": 0.164,
+    "tns": {
+      "setup": {
+        "ns": -1507.677,
+        "endpoints": 590
+      },
+      "hold": {
+        "ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "reset_closed": true,
+    "clk50_closed": false,
+    "deployable": false,
+    "worst_path": {
+      "slack_ns": -17.961,
+      "from": "u_music/u_basic_pitch/u_cqt/mult_12562_0_s/DOUT[35]",
+      "to": "u_music/u_basic_pitch/u_cqt/srem_6_s0/D",
+      "from_clock": "clk_50m",
+      "to_clock": "clk_50m",
+      "relation_ns": 20.0,
+      "skew_ns": 0.055,
+      "data_delay_ns": 37.697
+    },
+    "cdc_and_scope_audits": "PASS after proving pre-existing TF local clear LUT truth tables and merged clear sampler alias"
+  },
+  "magnitude_pipeline": {
+    "source_commit": "735aaa3",
+    "source_sha256": "8a3913c7def13ddff692f226ba1c623bb928d67be06af5f5f6f2380ee9eb6028",
+    "changes": [
+      "register final MAC before squaring",
+      "register both wrapping64 squares before sum",
+      "replace sqrt variable select by fixed top two bits and left shift",
+      "register reflected signal DDR address before request"
+    ],
+    "extra_cqt_mac_cycles_per_full_window_upper": 14183424,
+    "extra_cqt_magnitude_cycles_per_full_window_upper": 110808,
+    "extra_time_seconds_at50mhz_upper": 0.28588464,
+    "new_ram_arrays": 0,
+    "cqt_four_config_equivalence": "PASS, each configuration 3 windows x 3 octaves, 896 exact signal writes and 216 exact bins/window",
+    "magnitude_math_oracle": "PASS, 2100 signed48 input pairs vs Python math.isqrt(uint64 wrapping square sum)",
+    "evidence": [
+      "results/clk50_fix_20261007/cqt_magnitude_all_configs/summary.json",
+      "results/clk50_fix_20261007/magnitude_math_oracle/result.json"
+    ],
+    "final_cnn_ab_12frames": "running",
+    "staged_regression_18": "running"
   }
 }

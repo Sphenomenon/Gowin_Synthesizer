@@ -33,23 +33,26 @@ def main():
                              ROOT / 'rtl/music/basic_pitch_fixed_pkg.svh']},
     }, indent=2) + '\n')
 
-    def run(ddr):
-        binary = out / ('cqt_' + str(ddr) + '.vvp')
+    def run(config):
+        ddr, coeff = config
+        label = f'cqt_{ddr}_coeff_{coeff}'
+        binary = out / (label + '.vvp')
         command = ['iverilog', '-g2012', '-I', str(ROOT / 'rtl/music'), '-s', 'tb_cqt_pipeline_equivalence',
-                   '-Ptb_cqt_pipeline_equivalence.DDR=' + str(ddr), '-o', str(binary),
+                   '-Ptb_cqt_pipeline_equivalence.DDR=' + str(ddr),
+                   '-Ptb_cqt_pipeline_equivalence.COEFF=' + str(coeff), '-o', str(binary),
                    str(reference), str(src), str(tb)]
         result = subprocess.run(command, capture_output=True, text=True, timeout=120)
         text = result.stdout + result.stderr
         if result.returncode == 0:
             result = subprocess.run(['vvp', str(binary)], capture_output=True, text=True, timeout=180)
             text += result.stdout + result.stderr
-        (out / ('cqt_' + str(ddr) + '.log')).write_text(text)
+        (out / (label + '.log')).write_text(text)
         passed = result.returncode == 0 and 'PASS CQT pipeline/reference:' in text
-        print('DDR', ddr, 'PASS' if passed else 'FAIL', result.stdout.strip(), flush=True)
-        return {'ddr': ddr, 'passed': passed, 'exit_code': result.returncode}
+        print('DDR', ddr, 'COEFF', coeff, 'PASS' if passed else 'FAIL', result.stdout.strip(), flush=True)
+        return {'ddr': ddr, 'ddr_coeff': coeff, 'passed': passed, 'exit_code': result.returncode}
 
     with ThreadPoolExecutor(max_workers=2) as pool:
-        result = list(pool.map(run, [0, 1]))
+        result = list(pool.map(run, [(0,0), (1,0), (0,1), (1,1)]))
     (out / 'summary.json').write_text(json.dumps(result, indent=2) + '\n')
     if not all(r['passed'] for r in result):
         raise SystemExit(1)

@@ -2,6 +2,7 @@
 `include "basic_pitch_ddr_map.svh"
 module tb_cqt_pipeline_equivalence;
     parameter integer DDR = 1;
+    parameter integer COEFF = 0;
     localparam integer N = 512;
     reg clk=0,rstn=0,start=0,we=0;
     reg [15:0] wa=0;
@@ -19,6 +20,7 @@ module tb_cqt_pipeline_equivalence;
     reg [1:0] rsp=0;
     reg [15:0] rd[0:1];
     wire [1:0] mr;
+    wire [1:0] coeff_req, coeff_valid;
     wire [1:0] local_we;
     wire [17:0] local_addr[0:1];
     wire signed [15:0] local_data[0:1];
@@ -42,21 +44,21 @@ module tb_cqt_pipeline_equivalence;
             3: lowpass=16'sd2000;
         endcase
     endfunction
-    basic_pitch_cqt_engine_reference #(.WIN_LEN(N),.USE_DDR_SIGNAL(DDR),.USE_DDR_COEFF(0)) dut_0(
+    basic_pitch_cqt_engine_reference #(.WIN_LEN(N),.USE_DDR_SIGNAL(DDR),.USE_DDR_COEFF(COEFF)) dut_0(
         .clk_i(clk),.rst_ni(rstn),.start_i(start),.octave_limit_i(5'd3),.frame_limit_i(9'd2),
         .win_we_i(we),.win_addr_i(wa),.win_data_i(wd),.win_ready_o(ready[0]),
         .kre_addr_o(kr[0]),.kre_data_i(krd[0]),.kim_addr_o(ki[0]),.kim_data_i(kid[0]),
-        .coeff_req_o(),.coeff_valid_i(1'b1),.klp_addr_o(lp[0]),.klp_data_i(lpd[0]),
+        .coeff_req_o(coeff_req[0]),.coeff_valid_i(coeff_valid[0]),.klp_addr_o(lp[0]),.klp_data_i(lpd[0]),
         .norm_addr_o(),.norm_log_data_i(16'sd0),.loglut_addr_o(),.loglut_data_i(16'sd17),
         .mag_we_o(mw[0]),.mag_addr_o(ma[0]),.mag_data_o(md[0]),.done_o(done[0]),.busy_o(),
         .sig_mem_req_o(req[0]),.sig_mem_write_o(wr[0]),.sig_mem_addr_o(addr[0]),
         .sig_mem_wdata_o(wdata[0]),.sig_mem_ready_i(mr[0]),.sig_mem_rsp_valid_i(rsp[0]),
         .sig_mem_rdata_i(rd[0]),.sig_overflow_o(overflow[0]));
-    basic_pitch_cqt_engine #(.WIN_LEN(N),.USE_DDR_SIGNAL(DDR),.USE_DDR_COEFF(0)) dut_1(
+    basic_pitch_cqt_engine #(.WIN_LEN(N),.USE_DDR_SIGNAL(DDR),.USE_DDR_COEFF(COEFF)) dut_1(
         .clk_i(clk),.rst_ni(rstn),.start_i(start),.octave_limit_i(5'd3),.frame_limit_i(9'd2),
         .win_we_i(we),.win_addr_i(wa),.win_data_i(wd),.win_ready_o(ready[1]),
         .kre_addr_o(kr[1]),.kre_data_i(krd[1]),.kim_addr_o(ki[1]),.kim_data_i(kid[1]),
-        .coeff_req_o(),.coeff_valid_i(1'b1),.klp_addr_o(lp[1]),.klp_data_i(lpd[1]),
+        .coeff_req_o(coeff_req[1]),.coeff_valid_i(coeff_valid[1]),.klp_addr_o(lp[1]),.klp_data_i(lpd[1]),
         .norm_addr_o(),.norm_log_data_i(16'sd0),.loglut_addr_o(),.loglut_data_i(16'sd17),
         .mag_we_o(mw[1]),.mag_addr_o(ma[1]),.mag_data_o(md[1]),.done_o(done[1]),.busy_o(),
         .sig_mem_req_o(req[1]),.sig_mem_write_o(wr[1]),.sig_mem_addr_o(addr[1]),
@@ -74,6 +76,7 @@ module tb_cqt_pipeline_equivalence;
     end
     for(genvar g=0;g<2;g=g+1) begin: model
         assign mr[g]=timer[g]==0 && !rsp[g] && cycles%(5+g)!=0;
+        assign coeff_valid[g]=!COEFF || (coeff_req[g] && cycles%(7+g)==0);
         always @(posedge clk) begin
             krd[g] <= 16'((kr[g]*313) ^ 16'h7961);
             kid[g] <= 16'((ki[g]*229) ^ 16'hbc17);

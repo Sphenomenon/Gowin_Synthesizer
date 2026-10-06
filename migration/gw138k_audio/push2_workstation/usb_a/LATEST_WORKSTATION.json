@@ -126,7 +126,7 @@
         "first_window": "accepted by user; not independently captured by host"
       },
       "recorded_at": "2026-10-06T22:07:34+08:00",
-      "confirmation": "验收没问题，做好git记录",
+      "confirmation": "\u9a8c\u6536\u6ca1\u95ee\u9898\uff0c\u505a\u597dgit\u8bb0\u5f55",
       "evidence_report": "reports/CNN_83_ACCEPTANCE_20261006.json",
       "first_window_verification_source": "user acceptance; host capture entered mid-analysis and did not record the first-window transition"
     },
@@ -169,10 +169,10 @@
   "sram_record": "../results/sram_20261006_234504_538503",
   "downloaded_at": "2026-10-06T23:45:25+08:00",
   "timing_candidate": {
-    "build": "results/song_guide_full85_clk50_20261007_034837_423036",
+    "build": "results/song_guide_full85_clk50_20261007_040915_479309",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "unflashed; final RTL fresh route1 build running; route0 diagnostic not suitable for deployment due audio/USB QoR degradation",
+    "status": "synthesis_and_route_in_progress_unflashed",
     "change": "DP/CQT pipelines and frontend decode; CQT registered DDR request; exact-priority parallel local grants; audio diagnostic 2FF and targeted CDC constraints",
     "bsram_budget_pnr": 260,
     "static_timing_closed": null,
@@ -184,9 +184,10 @@
       "guidance_score": "3/3 PASS",
       "cqt_reference": "including registered request: local/DDR 3 windows x3 octaves, every 896 signal writes and216 output bins/window bit-exact PASS",
       "frontend_reference": "4 windows per local/DDR coefficient mode, 512 samples each and all controls cycle-exact to accepted frontend; ring wraps/backpressure/saturation PASS",
-      "local_arbiter": "16384 exhaustive cases PASS against accepted arbiter: all 2048 masks, ready/blocked, write patterns, payload and owner"
+      "local_arbiter": "16384 exhaustive cases PASS against accepted arbiter: all 2048 masks, ready/blocked, write patterns, payload and owner",
+      "cqt_magnitude": "4 configs exact accepted-RTL equivalence + 2100 Python magnitude oracle PASS"
     },
-    "source_commit": "5cf13b2",
+    "source_commit": "735aaa3",
     "synthesis_bsram": 216,
     "viterbi_bsram": 6,
     "synthesis_clk50_fmax_mhz": 61.89,
@@ -219,6 +220,17 @@
       "usb_fmax_mhz": 13.681,
       "deployment_allowed": false
     },
-    "fresh_route1_build": "results/song_guide_full85_clk50_20261007_034837_423036"
+    "fresh_route1_build": "results/song_guide_full85_clk50_20261007_034837_423036",
+    "clk50_closed": false,
+    "latest_changes": "CQT signed64 magnitude products/sum split; sqrt consumes fixed top bits by shifting; reflected MAC DDR address registered. No new RAM arrays.",
+    "request_arbiter_route0_result": {
+      "build": "results/song_guide_full85_clk50_20261007_032151_169144",
+      "pnr_bsram": 260,
+      "clk50_fmax_mhz": 26.342,
+      "setup_wns_ns": -17.961,
+      "clk50_closed": false,
+      "deployable": false,
+      "hardware_tested": false
+    }
   }
 }

@@ -204,3 +204,29 @@ CQT原RTL对照再次PASS（两种模式各3窗×3octave，896写和216bin/windo
 03:46启动的route1增量构建及时取消；所有候选均未烧录，板上仍full84。
 发布前需完整clk50门禁、BSRAM/冻结/输入/CDC检查、其他域QoR对比与板上冒烟。
 这不是宣称本轮会闭合音频/USB/DDR全设计时序；各域结果将如实记录。
+
+
+## 幅值及反射地址路径分拍
+
+请求/仲裁 route0 实测 SYN216/PNR260，clk50 Fmax26.342MHz、WNS=-17.961ns、
+TNS=-1507.677ns/590；hold+0.164ns、recovery/removal通过。工具及源输入检查通过，
+时序失败，未烧录。路径暴露CQT平方DSP输出→平方求和→动态位选择→开方比较/减法；
+另有sig_len→反射地址→共享DDR请求长链。route0其他域也显著恶化，仍不可部署。
+
+提交735aaa3使用已寄存的最后一tap累加器，分S_SQUARE/S_SQUARE_SUM保存两个64bit
+平方和总和；开方从sval[63:62]消费两位并左移，替换sbit动态位选择。保留所有符号、
+64bit截断、加法wrap及最终root位模式。反射地址另加18bit标量寄存器，经S_MAC_ISSUE
+再发DDR请求；系数在S_MAC_REQ保存，保持请求等待中的值。本地RAM原读时序不变。
+无新增RAM数组；卷积MAC节拍未动。该步完整窗的保守增量为285.887ms，累计上限约
+0.789s/57s（<1.4%），实际窗耗时仍需上板衡量。
+
+四种CQT信号/系数配置逐项对照已验收RTL均PASS，每种3窗×3octave、每窗896信号写
+和216bin。Python独立整数oracle对2100组signed48边界/随机值、平方uint64 wrap和
+math.isqrt结果均PASS。新完整route1候选040915_479309正在构建，12帧CNN A/B和18项
+暂存树回归在运行。老022219增量route1已因被多轮明确RTL修复替代而取消；未烧板。
+
+CDC结构检查初版只支持直接Gray寄存器连接，因此拒绝TF已有clear-to-zero LUT及
+合并到父级的clear_meta。修订检查严格证明LUT3 truth table为meta==seen时透传指针、
+否则清零，seen.D采样已核验meta.Q；Gray源仍要求跨域注册源，第二级同步链仍逐bit
+核对，并把LUT及两段路由计入10ns飞行时间。原始失败记录保留；修订检查5项正/负
+门禁测试通过，route0实体证据PASS，最长Gray飞行1.512ns。TF RTL与SDC均未因此修改。
