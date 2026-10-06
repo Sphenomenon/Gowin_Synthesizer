@@ -95,6 +95,7 @@ module basic_pitch_conv2d #(
     logic signed [15:0] xval;
     logic signed [17:0] it, ifc;
     logic               in_range;
+    logic               mac_in_range_q;
     logic [15:0]        plane_idx;
     logic [5:0]         sig_idx;
     logic signed [15:0] act_val;
@@ -135,8 +136,8 @@ module basic_pitch_conv2d #(
 
     // sigmoid on a Q4.12 accumulator around zero, via a 64-entry LUT window
     always_comb begin
-        if (USE_STACK) xval = in_range ? pl_data_i : 16'sd0;
-        else           xval = in_range ? x_data_i  : 16'sd0;
+        if (USE_STACK) xval = mac_in_range_q ? pl_data_i : 16'sd0;
+        else           xval = mac_in_range_q ? x_data_i  : 16'sd0;
     end
 
     wire signed [47:0] mac = $signed({{32{w_data_i[15]}}, w_data_i}) *
@@ -146,6 +147,7 @@ module basic_pitch_conv2d #(
         if (!rst_ni) begin
             state <= S_IDLE; ot <= '0; of <= '0; oc <= '0;
             kh <= '0; kw <= '0; ic <= '0; acc <= '0;
+            mac_in_range_q <= 1'b0;
             y_we_o <= 1'b0; y_acc_o <= '0; done_o <= 1'b0;
             y_row_o <= '0; y_col_o <= '0; y_channel_o <= '0;
         end else begin
@@ -187,7 +189,15 @@ module basic_pitch_conv2d #(
 
                 // Weight and feature memories are synchronous BSRAMs.  Hold
                 // their addresses for one clock before consuming the data.
-                S_REQ: if (!DDR_FETCH || sample_valid_i) state <= S_IC;
+                S_REQ: if (!DDR_FETCH || sample_valid_i) begin
+                    // Padding depends on counters held throughout REQ/IC.
+                    // Resolve it on the existing synchronous-memory wait beat
+                    // instead of feeding row/column carries into the MAC mux.
+                    // RAM outputs settle after this edge; the next IC edge
+                    // consumes them with this registered mask. No extra beat.
+                    mac_in_range_q <= in_range;
+                    state <= S_IC;
+                end
 
                 S_IC: begin
                     acc <= acc + mac;

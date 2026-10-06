@@ -24,7 +24,7 @@ from workstation_memory import audit
 BASE = ROOT / 'results/workstation_scope83_20261006_230626_011557'
 OVERLAYS = ['rtl/music/basic_pitch_viterbi.sv', 'rtl/music/basic_pitch_cqt_engine.sv',
             'rtl/music/basic_pitch_cqt_frontend.sv', 'rtl/music/basic_pitch_workstation_link.sv',
-            'rtl/music/basic_pitch_pcm_pipeline.sv']
+            'rtl/music/basic_pitch_pcm_pipeline.sv', 'rtl/music/basic_pitch_conv2d.sv']
 CDC_CONSTRAINTS = '''
 # USB song selection: gw138k_stream_cdc WIDTH=4 held-word/toggle mailbox.
 # Source holds payload until ACK; destination waits req_meta/req_sync/req_settled.

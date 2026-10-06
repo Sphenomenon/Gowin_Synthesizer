@@ -593,6 +593,8 @@ module basic_pitch_pcm_pipeline #(
     logic [14:0] feature_read_addr;
     logic signed [15:0] feature_read_data;
     logic signed [11:0] feature_read_rel;
+    logic [10:0] feature_contour_cell;
+    logic [9:0] feature_note_cell;
     logic onset_out_use_note_d;
     logic signed [15:0] onset_out_note_data;
     logic [8:0] contour_row_d1, contour_row_d2, contour_col_d1, contour_col_d2,
@@ -776,14 +778,17 @@ module basic_pitch_pcm_pipeline #(
                 feature_read_valid = 1'b0;
                 feature_read_addr = 15'd0;
                 feature_read_rel = 12'sd0;
+                feature_contour_cell = 11'd0;
+                feature_note_cell = 10'd0;
                 if ((state == S_START_REDUCE) || (state == S_REDUCE)) begin
                     feature_read_rel = reduce_x_row - feature_load_start_row;
                     if ((reduce_x_row >= 0) && (reduce_x_row < FRAME_LIMIT) &&
                         (reduce_x_col >= 0) && (reduce_x_col < CONTOUR_BINS) &&
                         (feature_read_rel >= 0) && (feature_read_rel < 5)) begin
                         feature_read_valid = 1'b1;
-                        feature_read_addr = (($unsigned(feature_read_rel) * CONTOUR_BINS +
-                                             reduce_x_col[8:0]) * 8) + reduce_x_channel[2:0];
+                        feature_contour_cell = $unsigned(feature_read_rel) * CONTOUR_BINS +
+                                               reduce_x_col[8:0];
+                        feature_read_addr = {1'b0, feature_contour_cell, reduce_x_channel[2:0]};
                     end
                 end else if ((state == S_START_NOTE_OUT) || (state == S_NOTE_OUT)) begin
                     feature_read_rel = note_out_x_row - feature_load_start_row;
@@ -791,8 +796,9 @@ module basic_pitch_pcm_pipeline #(
                         (note_out_x_col >= 0) && (note_out_x_col < NOTE_BINS) &&
                         (feature_read_rel >= 0) && (feature_read_rel < 7)) begin
                         feature_read_valid = 1'b1;
-                        feature_read_addr = (($unsigned(feature_read_rel) * NOTE_BINS +
-                                             note_out_x_col[6:0]) * 32) + note_out_x_channel[4:0];
+                        feature_note_cell = $unsigned(feature_read_rel) * NOTE_BINS +
+                                            note_out_x_col[6:0];
+                        feature_read_addr = {feature_note_cell, note_out_x_channel[4:0]};
                     end
                 end else if ((state == S_START_ONSET_OUT) || (state == S_ONSET_OUT)) begin
                     feature_read_rel = onset_out_x_row - feature_load_start_row;
@@ -801,8 +807,13 @@ module basic_pitch_pcm_pipeline #(
                         (onset_out_x_col < NOTE_BINS) && (feature_read_rel >= 0) &&
                         (feature_read_rel < 3)) begin
                         feature_read_valid = 1'b1;
-                        feature_read_addr = (($unsigned(feature_read_rel) * NOTE_BINS +
-                                             onset_out_x_col[6:0]) * 32) + onset_out_channel - 1'b1;
+                        feature_note_cell = $unsigned(feature_read_rel) * NOTE_BINS +
+                                            onset_out_x_col[6:0];
+                        // Channels 1..32 map to cache lanes 0..31. Subtract
+                        // within the five-bit lane, never through the cell
+                        // address and its high-fanout BSRAM address pins.
+                        feature_read_addr = {feature_note_cell,
+                                             (onset_out_channel[4:0] - 5'd1)};
                     end
                 end
             end
