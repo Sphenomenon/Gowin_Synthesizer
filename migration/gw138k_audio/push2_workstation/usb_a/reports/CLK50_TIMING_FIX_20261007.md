@@ -79,3 +79,6 @@ P&R BSRAM 预算不高于 260。板上仍是 0x00000084；候选 0x00000085 尚�
 
 合并候选最终暂存树的18/18门禁已重新通过。资源差分（SYN同口径）：Register +14、
 LUT +202、ALU +51；BSRAM/SSRAM/DSP净增均为0。机器记录见同名JSON。
+
+发布检查边界测试 `sim/music/test_clk50_audit.py` 4/4 PASS：复现 Gowin HTML缺频率
+单元格、缺hold报告、setup/hold微小负裕量、放宽24ns时钟，后3类都不能误判闭合。

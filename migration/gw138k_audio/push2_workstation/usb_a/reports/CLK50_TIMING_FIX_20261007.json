@@ -1389,7 +1389,8 @@
       "gates": 18,
       "report": "results/song_guide_full85_clk50_20261007_004457_617018/current_regression_20261007_005934_170134/verification.json",
       "sha256": "c428e972bc0bd947ad621596a4b03cfdc6c5b349ca597e4c5033e3a42c88946a"
-    }
+    },
+    "release_gate_tests": "4/4 PASS; missing hold / negative setup or hold / 24ns relaxed clock cannot pass"
   },
   "frozen_sha256": {
     "rtl/display_data/gw138k_ddr_arbiter.sv": "61b0353f72419f0a719f693e121b1aa9ff8b07ed0dbfbdd33ec39f72172ef178",
