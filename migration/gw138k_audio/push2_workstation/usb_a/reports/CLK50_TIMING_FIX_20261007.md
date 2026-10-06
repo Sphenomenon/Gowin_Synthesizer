@@ -76,3 +76,6 @@ P&R BSRAM 预算不高于 260。板上仍是 0x00000084；候选 0x00000085 尚�
 
 合并候选综合 clk50 估计61.890MHz，SYN BSRAM=216，CQT自身=0，Viterbi=6；
 与 full84 的RAM结构相同。尚以 P&R 实际 setup/hold 与资源数决定是否闭合。
+
+合并候选最终暂存树的18/18门禁已重新通过。资源差分（SYN同口径）：Register +14、
+LUT +202、ALU +51；BSRAM/SSRAM/DSP净增均为0。机器记录见同名JSON。

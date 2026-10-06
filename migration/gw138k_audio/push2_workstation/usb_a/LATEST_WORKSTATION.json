@@ -179,12 +179,12 @@
     "hardware_tested": false,
     "validation": {
       "viterbi_oracle": "172x89 all scores/backpointers PASS; 28 notes; old-map negative control fails as intended",
-      "scope_menu": "complete staged regression 18/18 PASS, including TF 16/16 and delay equivalence",
+      "scope_menu": "combined candidate final staged regression 18/18 PASS including TF16, delay equivalence and DP oracle",
       "cnn_ab": "combined CQT+DP 12-frame A/B PASS; six hashes, coverage and 3 notes unchanged",
       "guidance_score": "3/3 PASS",
       "cqt_reference": "local and DDR modes PASS; each 3 windows x 3 octaves, all 896 signal writes and 216 bins/window bit-exact to accepted RTL"
     },
-    "source_commit": "9c93f6c",
+    "source_commit": "2de327f",
     "synthesis_bsram": 216,
     "viterbi_bsram": 6,
     "synthesis_clk50_fmax_mhz": 61.89,
