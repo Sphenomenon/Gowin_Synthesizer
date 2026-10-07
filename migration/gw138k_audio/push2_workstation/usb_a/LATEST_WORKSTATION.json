@@ -126,7 +126,7 @@
         "first_window": "accepted by user; not independently captured by host"
       },
       "recorded_at": "2026-10-06T22:07:34+08:00",
-      "confirmation": "\u9a8c\u6536\u6ca1\u95ee\u9898\uff0c\u505a\u597dgit\u8bb0\u5f55",
+      "confirmation": "验收没问题，做好git记录",
       "evidence_report": "reports/CNN_83_ACCEPTANCE_20261006.json",
       "first_window_verification_source": "user acceptance; host capture entered mid-analysis and did not record the first-window transition"
     },
@@ -169,17 +169,17 @@
   "sram_record": "../results/sram_20261006_234504_538503",
   "downloaded_at": "2026-10-06T23:45:25+08:00",
   "timing_candidate": {
-    "build": "results/song_guide_full85_clk50_20261007_084539_884006",
+    "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
     "route1_comparator": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
     "user_code": "0x00000085",
-    "source_commit": "3f762f5",
+    "source_commit": "3f762f5ebabf78c28156d91a022d3a6c5547776b",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "synthesis216_passed_placement_running_unflashed",
+    "status": "offboard_release_gates_pass_ready_to_program",
     "hardware_programmed": false,
     "hardware_tested": false,
     "bsram_budget_pnr": 260,
     "bsram_pnr": null,
-    "clk50_closed": null,
+    "clk50_closed": true,
     "validation": {
       "conv_old_reference": "10/10 PASS; accum/activation/address exact; DDRsamecycles,local+1drain/output",
       "cnn12": "PASS six hashes/coverage/3notes + all40 prior-reference checkpoints",
@@ -197,7 +197,18 @@
       "frontend_bsram": 0,
       "clk50_estimate_mhz": 63.34,
       "pnr_bsram": null
-    }
+    },
+    "route_option": 1,
+    "synthesis_goal": "auto",
+    "clk50_fmax_mhz": 53.055,
+    "setup_wns_ns": 1.152,
+    "hold_wns_ns": 0.16,
+    "synthesis_bsram": 216,
+    "physical_bsram": 260,
+    "bitstream_sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444",
+    "release_review": "results/song_guide_full85_clk50_20261007_084539_884006_route1/release_review.json",
+    "source_audit": "results/song_guide_full85_clk50_20261007_084539_884006_route1/preflash_source_audit.json",
+    "candidate_note": "Selected same final RTL auto/route1; route2 rejected DDR73.926MHz despite clk50 closure. Extra responseFIFO experiment not selected; original interface preserved."
   },
   "timing_candidate_progress_history": {
     "build": "results/song_guide_full85_clk50_20261007_054102_250721",

@@ -1,9 +1,9 @@
 {
-  "status": "retimed_mac_final_verification_running_unflashed",
-  "board_unchanged": "0x00000084",
+  "status": "offboard_release_gates_pass_ready_to_program",
+  "board_unchanged": true,
   "candidate_user_code": "0x00000085",
-  "candidate_build": "results/song_guide_full85_clk50_20261007_084539_884006",
-  "source_commit": "3f762f5",
+  "candidate_build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+  "source_commit": "3f762f5ebabf78c28156d91a022d3a6c5547776b",
   "baseline_build": "results/workstation_scope83_20261006_230626_011557",
   "bsram_budget_pnr": 260,
   "synthesis_resources": {
@@ -2965,5 +2965,466 @@
       "pnr_bsram": null
     },
     "cnn_reference_comparison": "results/clk50_fix_20261007/retimed_mac_cnn_reference_comparison.json"
+  },
+  "selected_release": {
+    "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+    "route_option": 1,
+    "synthesis_goal": "auto",
+    "review": {
+      "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+      "hardware_programmed": false,
+      "clk50_closed": true,
+      "clk50_fmax": 53.055,
+      "setup_wns_ns": 1.152,
+      "hold_wns_ns": 0.16,
+      "tns": {
+        "setup": {
+          "ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "synthesis_bsram": 216,
+      "physical_bsram": 260,
+      "bsram_budget_met": true,
+      "frozen_unchanged": true,
+      "inputs_unchanged": true,
+      "routed_audits": {
+        "clk50_cdc_routed_audit.json": true,
+        "scope_routed_audit.json": true
+      },
+      "all_clock_qor": {
+        "clk_50m": {
+          "baseline": {
+            "required_mhz": 50.0,
+            "actual_mhz": 41.813
+          },
+          "candidate": {
+            "required_mhz": 50.0,
+            "actual_mhz": 53.055
+          },
+          "previously_positive": false,
+          "candidate_meets": true,
+          "fmax_ratio": 1.268863750508215
+        },
+        "audio_76m8": {
+          "baseline": {
+            "required_mhz": 76.8,
+            "actual_mhz": 54.297
+          },
+          "candidate": {
+            "required_mhz": 76.8,
+            "actual_mhz": 54.758
+          },
+          "previously_positive": false,
+          "candidate_meets": false,
+          "fmax_ratio": 1.0084903401661234
+        },
+        "ddr_mem400": {
+          "baseline": {
+            "required_mhz": 400.0,
+            "actual_mhz": 2598.775
+          },
+          "candidate": {
+            "required_mhz": 400.0,
+            "actual_mhz": 2598.775
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 1.0
+        },
+        "ddr_ui100": {
+          "baseline": {
+            "required_mhz": 100.0,
+            "actual_mhz": 233.23
+          },
+          "candidate": {
+            "required_mhz": 100.0,
+            "actual_mhz": 215.707
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 0.9248681558976118
+        },
+        "video_pixel148": {
+          "baseline": {
+            "required_mhz": 148.5,
+            "actual_mhz": 154.999
+          },
+          "candidate": {
+            "required_mhz": 148.5,
+            "actual_mhz": 165.732
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 1.069245608036181
+        },
+        "cpu_bus50": {
+          "baseline": {
+            "required_mhz": 50.0,
+            "actual_mhz": 73.538
+          },
+          "candidate": {
+            "required_mhz": 50.0,
+            "actual_mhz": 66.186
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 0.90002447714107
+        },
+        "cpu_core100": {
+          "baseline": {
+            "required_mhz": 100.0,
+            "actual_mhz": 1526.253
+          },
+          "candidate": {
+            "required_mhz": 100.0,
+            "actual_mhz": 1231.829
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 0.8070935814704377
+        },
+        "usb_48m": {
+          "baseline": {
+            "required_mhz": 48.0,
+            "actual_mhz": 38.726
+          },
+          "candidate": {
+            "required_mhz": 48.0,
+            "actual_mhz": 39.975
+          },
+          "previously_positive": false,
+          "candidate_meets": false,
+          "fmax_ratio": 1.0322522336414812
+        }
+      },
+      "previously_positive_domains_remain_positive": true,
+      "worst_setup_paths": [
+        {
+          "slack_ns": 1.152,
+          "from": "u_music/u_basic_pitch/u_frontend/base_val_0_s0/Q",
+          "to": "u_tf_audio/u_path/u_decoder/g_wav.u_wav/left_acc_1_s1/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.084,
+          "data_delay_ns": 18.54
+        },
+        {
+          "slack_ns": 1.152,
+          "from": "u_music/u_basic_pitch/u_frontend/base_val_0_s0/Q",
+          "to": "u_tf_audio/u_path/u_decoder/g_wav.u_wav/left_acc_2_s1/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.084,
+          "data_delay_ns": 18.54
+        },
+        {
+          "slack_ns": 1.152,
+          "from": "u_music/u_basic_pitch/u_frontend/base_val_0_s0/Q",
+          "to": "u_tf_audio/u_path/u_decoder/g_wav.u_wav/left_acc_5_s1/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.082,
+          "data_delay_ns": 18.542
+        },
+        {
+          "slack_ns": 1.152,
+          "from": "u_music/u_basic_pitch/u_frontend/base_val_0_s0/Q",
+          "to": "u_tf_audio/u_path/u_decoder/g_wav.u_wav/left_acc_6_s1/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.082,
+          "data_delay_ns": 18.542
+        },
+        {
+          "slack_ns": 1.152,
+          "from": "u_music/u_basic_pitch/u_frontend/base_val_0_s0/Q",
+          "to": "u_tf_audio/u_path/u_decoder/g_wav.u_wav/left_acc_17_s1/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.09,
+          "data_delay_ns": 18.534
+        },
+        {
+          "slack_ns": 1.152,
+          "from": "u_music/u_basic_pitch/u_frontend/base_val_0_s0/Q",
+          "to": "u_tf_audio/u_path/u_decoder/g_wav.u_wav/left_acc_18_s1/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.09,
+          "data_delay_ns": 18.534
+        },
+        {
+          "slack_ns": 1.152,
+          "from": "u_music/u_basic_pitch/u_frontend/base_val_0_s0/Q",
+          "to": "u_tf_audio/u_path/u_decoder/g_wav.u_wav/left_acc_19_s1/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.082,
+          "data_delay_ns": 18.542
+        },
+        {
+          "slack_ns": 1.152,
+          "from": "u_music/u_basic_pitch/u_frontend/base_val_0_s0/Q",
+          "to": "u_tf_audio/u_path/u_decoder/g_wav.u_wav/left_acc_20_s1/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.082,
+          "data_delay_ns": 18.542
+        }
+      ],
+      "offboard_release_gates_pass": true
+    },
+    "all_clock_endpoint_review": {
+      "baseline_build": "results/workstation_scope83_20261006_230626_011557",
+      "candidate_build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1",
+      "baseline_tns": {
+        "clk_50m": {
+          "setup": {
+            "ns": -669.02,
+            "endpoints": 356
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "audio_76m8": {
+          "setup": {
+            "ns": -6354.064,
+            "endpoints": 2971
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_mem400": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_ui100": {
+          "setup": {
+            "ns": -4585.176,
+            "endpoints": 2468
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_ref49": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_serial742": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_pixel148": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_bus50": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_core100": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "usb_48m": {
+          "setup": {
+            "ns": -51.727,
+            "endpoints": 13
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        }
+      },
+      "candidate_tns": {
+        "clk_50m": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "audio_76m8": {
+          "setup": {
+            "ns": -5624.169,
+            "endpoints": 2577
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_mem400": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_ui100": {
+          "setup": {
+            "ns": -964.779,
+            "endpoints": 908
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_ref49": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_serial742": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_pixel148": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_bus50": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_core100": {
+          "setup": {
+            "ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "usb_48m": {
+          "setup": {
+            "ns": -46.927,
+            "endpoints": 13
+          },
+          "hold": {
+            "ns": 0.0,
+            "endpoints": 0
+          }
+        }
+      },
+      "new_negative_endpoint_groups": [],
+      "unknown_groups": [],
+      "previously_zero_endpoint_groups_still_zero": true
+    },
+    "preflash_source_audit": {
+      "passed": true,
+      "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+      "source_commit": "3f762f5ebabf78c28156d91a022d3a6c5547776b",
+      "inputs_verified": 597,
+      "live_six_overlay_files_match_staged": true,
+      "frozen_live_and_staged_unchanged": true,
+      "bitstream_sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444",
+      "regression": "results/song_guide_full85_clk50_20261007_084539_884006/current_regression_20261007_084601_236097/verification.json",
+      "rtl_unchanged_from_regression_route2": true,
+      "route_difference_only": "scripts/build.tcl route_option2 ->1",
+      "experimental_fifo_selected": false,
+      "live_nonoverlay_baseline_difference": {
+        "rtl/music/basic_pitch_tf_board_top.sv": "Existing live pcm_end_i tieoff absent in archived full84 baseline; not a timing overlay. Exact original full84 baseline used by both 85 routes and full regression; live file left unchanged."
+      },
+      "hardware_programmed": false
+    },
+    "whole_board_timing_closed": false,
+    "manual_TRAVLER_36_and_throughput": "pending_after_program"
+  },
+  "unselected_response_fifo_experiment": {
+    "selected": false,
+    "reason": "Same original final RTL route1 passes all deployment QoR gates; no further RTL or RAM changes required.",
+    "stress_cases_passed": 4,
+    "bridge_commands": 2048,
+    "bridge_read_responses": 683,
+    "old_new_cycle_exact_normal_pipeline": true,
+    "evidence": "results/clk50_fix_20261007/registered_response_bridge/old_new_reference.json"
   }
 }

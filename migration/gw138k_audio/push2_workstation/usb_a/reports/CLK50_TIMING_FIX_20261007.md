@@ -1,30 +1,40 @@
-# 50MHz 低 BSRAM 时序修复（发布验证进行中）
+# 50MHz 低 BSRAM 时序修复（离板发布门禁通过）
 
-## 当前状态（随最终物理发布检查更新）
+## 最终选用实现
 
-板上仍full84（0x00000084）、模型E，所有0x85候选未烧录。当前源3f762f5，
-候选084539_884006（auto/route2）与同RTL的route1对照正在重新综合及验证。
-本轮保持原20ns时钟、物理BSRAM≤260与冻结文件不变，实际源码/模型/约束逐项哈希检查。
+选用 source3f762f5、auto/route1 完整位流：
+`results/song_guide_full85_clk50_20261007_084539_884006_route1/`。
+50MHz保持20ns约束，Fmax53.055MHz，最差setup+1.152ns/hold+0.160ns，
+setup/hold TNS均0，恢复/移除及clk50 CDC、scope CDC检查通过。
+SYN BSRAM216，PNR物理BSRAM260，较full84净增0；冻结文件哈希不变。
+原本达标的DDR UI100（215.707）、HDMI148.5（165.732）、CPU50/100及DDR400域
+保持达标，原本无负端点的时钟/检查组仍全部无负端点。
+audio76.8和USB48仍有基线已有违例，分别54.758和39.975MHz，均未恶化；
+不能把本次clk50闭合称为整板时序闭合。
 
-52b7250已有50MHz闭合证据：Fmax50.204、setup+0.081、hold+0.160、TNS0/0、复位/CDC
-通过，SYN216/PNR260；因DDR76.938<100及HDMI130.156<148.5未部署。
-5e7bad6前端移除16bit冗余CE、四端口逐拍PASS，最终18/18回归PASS；增量PNR虽然保留
-HDMI164.377，却导致clk50 WNS=-3.952/Fmax41.750、DDR37.855、audio41.602/USB19.348，
-不能部署。实际最差是片内RAM→乘法→48bit累加，不再用路由随机性掩盖这条链。
+source3f762f5将16x16精确32bit乘积在原S_IC拍保存，下一原REQ/KW/bias拍做48bit累加。
+每个MAC仍两拍，不新增RAM；DDR模式控制/输出周期与旧版完全一致，本地模式每个输出
+一个收尾拍：8184输出/帧×172帧，增加1407648cycles=28.15296ms/窗。
+交接中每MAC增加一拍实际上是9.687s/窗，不是56ms/窗，因此未采用该降速方案。
+前端/CQT/DP的长运算链也拆拍；小delayline从64个SSRAM换成普通FF，原BSRAM缓存保留。
+综合寄存器40665较full84的36379多4286；这是普通FF面积代价，不是新增BSRAM。
 
-3f762f5将16x16精确32bit乘积在原S_IC拍保存，下一原REQ/KW/bias拍做48bit累加。
-每个MAC仍两拍，不新增RAM；DDR模式无新增输出拍，本地模式每个输出一个收尾拍。
-完整窗8184输出/帧×172帧仅增加1407648cycles=28.15296ms，避免交接中每MAC多一拍
-实际9.687s/窗的降速。旧实现对照10配置全PASS：每种98个输出累加器/激活/地址精确，
-DDR所有控制/输出周期相同，本地总周期严格多98。signed边界、paddingX、1/8/32/33
-通道、harmonicstack及DDR/bias等待均覆盖。最终12帧六层/all40旧参考哈希和18项
-暂存树回归18/18及最终12帧CNN/all40旧参考逐帧哈希均PASS。
+旧卷积逐周期/逐输出数学参考10配置PASS，最终12帧六层hash与40个旧参考逐帧检查点
+全部一致，18/18完整TF/guidance/playlist/scope/DP/延迟回归PASS。
+597项暂存输入完整核对，六个live overlay与选用stage一致；route1/route2仅Tcl路由参数
+不同，逻辑回归复用有严格输入证明，物理时序/资源/CDC分别审计。
+完整full84 baseline中的非overlay TF板顶文件与live有历史pcm_end_i tieoff差异，保持
+原baseline不变，差异单独记录，没有把live整树宣称为逐字等于staging。
 
-auto/route2与route1仅Tcl路由参数不同，597个输入等价证明保存，逻辑测试可复用，
-时序/物理资源/CDC审计独立。最终必须同时达到clk50完整门禁并保留原本达标域，
-烧板后模型E、TRAVLER首窗36与帧速率尚未对新候选验证。
+同RTL auto/route2虽然clk50达到53.893MHz，却令DDR UI降到73.926MHz，已否决烧板。
+额外4×16响应FIFO满标志实验通过4组压力及2048命令旧/新周期对照，但最终route1
+已闭合，未选用该实验。实验源码/patch/证据留在results，不扩大本次发布改动。
 
-后文为阶段调查记录，最终选用位流及真实板状态以本节和LATEST_WORKSTATION.json为准。
+当前板仍0x00000084、模型E；以上是离板证据，尚未烧录0x85。
+烧录后须立即更新LATEST并重传模型至E；TRAVLER首窗36项和实际帧率尚待本位流板验。
+不得复用用户对0x83的验收结论作为0x85验收。
+
+后文保留阶段调查，当前发布结论以本节与LATEST_WORKSTATION.json为准。
 
 ## 基线与定位
 
