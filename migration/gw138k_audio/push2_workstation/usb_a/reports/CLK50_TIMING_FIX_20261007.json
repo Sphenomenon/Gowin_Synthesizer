@@ -1,6 +1,6 @@
 {
-  "status": "offboard_release_gates_pass_ready_to_program",
-  "board_unchanged": true,
+  "status": "sram85_modelE_smoke_pass_manual_TRAVLER_pending",
+  "board_unchanged": false,
   "candidate_user_code": "0x00000085",
   "candidate_build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
   "source_commit": "3f762f5ebabf78c28156d91a022d3a6c5547776b",
@@ -3426,5 +3426,23 @@
     "bridge_read_responses": 683,
     "old_new_cycle_exact_normal_pipeline": true,
     "evidence": "results/clk50_fix_20261007/registered_response_bridge/old_new_reference.json"
+  },
+  "deployment": {
+    "programmed_at": "2026-10-07T09:35:59+08:00",
+    "program_record": "../results/sram_20261007_093501_927916/result.json",
+    "user_code": "0x00000085",
+    "source_commit": "3f762f5ebabf78c28156d91a022d3a6c5547776b",
+    "bitstream_sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444",
+    "model_status": "E",
+    "manual_acceptance": "pending physical panel selection and cold restart; current first telemetry idle wave0 state0",
+    "model_upload_log": "results/clk50_fix_20261007/full85_model_upload.log",
+    "board_smoke_report": "results/clk50_fix_20261007/full85_board_smoke.json",
+    "board_smoke_passed": true,
+    "board_smoke_checks": 7,
+    "crc_errors": 0,
+    "audio_health_word": "00000000",
+    "TRAVLER_capture": "results/clk50_fix_20261007/full85_TRAVLER_board/dwell_clk50_85.log",
+    "first_window36_verified": false,
+    "throughput_verified": false
   }
 }
