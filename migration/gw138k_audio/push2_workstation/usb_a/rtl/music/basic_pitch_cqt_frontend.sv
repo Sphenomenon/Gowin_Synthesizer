@@ -134,8 +134,11 @@ module basic_pitch_cqt_frontend #(
             dline_valid_q <= !next_window_i && sample_valid_i;
             for (integer slot = 0; slot < (1<<BUF_AW); slot = slot + 1)
                 dline_we_q[slot] <= (wr_ptr == slot);
-            if (!next_window_i && sample_valid_i)
-                dline_data_q <= mono_sum[16:1];
+            // Only queued valid permits a write, so data may clock every
+            // edge. Avoid duplicating the long restart/sample-valid chain
+            // on all 16 data-register enables; accepted samples are still
+            // captured on the same edge and committed on the next one.
+            dline_data_q <= mono_sum[16:1];
         end
     end
 
