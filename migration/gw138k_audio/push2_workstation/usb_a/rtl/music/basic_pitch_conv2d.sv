@@ -72,7 +72,8 @@ module basic_pitch_conv2d #(
 );
     localparam logic [3:0] S_IDLE = 4'd0, S_T = 4'd1, S_F = 4'd2,
                            S_KH = 4'd3, S_KW = 4'd4, S_IC = 4'd5, S_STORE = 4'd6,
-                           S_DONE = 4'd7, S_REQ = 4'd8, S_BIAS_REQ = 4'd9;
+                           S_DONE = 4'd7, S_REQ = 4'd8, S_BIAS_REQ = 4'd9,
+                           S_ACC_DRAIN = 4'd10;
 
     // harmonic-stacking shifts, round(36 * log2(h)) for h = 0.5,1,2,3,4,5,6,7
     function automatic signed [15:0] shift_of(input logic [2:0] h);
@@ -92,6 +93,8 @@ module basic_pitch_conv2d #(
     logic [8:0]         ot, of, oc;
     logic [7:0]         kh, kw, ic;
     logic signed [47:0] acc;
+    logic signed [31:0] mac_q;
+    logic mac_pending;
     logic signed [15:0] xval;
     logic signed [17:0] it, ifc;
     logic               in_range;
@@ -140,19 +143,24 @@ module basic_pitch_conv2d #(
         else           xval = mac_in_range_q ? x_data_i  : 16'sd0;
     end
 
-    wire signed [47:0] mac = $signed({{32{w_data_i[15]}}, w_data_i}) *
-                             $signed({{32{xval[15]}}, xval});
+    // A signed16x16 product fits exactly in32 bits. Accumulate the registered
+    // product during the following existing REQ/KW/bias beat, while the next
+    // synchronous memory access proceeds. The two-beat MAC loop is unchanged.
+    wire signed [31:0] mac = $signed(w_data_i) * $signed(xval);
 
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin
             state <= S_IDLE; ot <= '0; of <= '0; oc <= '0;
             kh <= '0; kw <= '0; ic <= '0; acc <= '0;
-            mac_in_range_q <= 1'b0;
+            mac_in_range_q <= 1'b0; mac_q <= '0; mac_pending <= 1'b0;
             y_we_o <= 1'b0; y_acc_o <= '0; done_o <= 1'b0;
             y_row_o <= '0; y_col_o <= '0; y_channel_o <= '0;
         end else begin
             y_we_o <= 1'b0;
             done_o <= 1'b0;
+            mac_pending <= 1'b0;
+            if (mac_pending)
+                acc <= acc + $signed({{16{mac_q[31]}}, mac_q});
 
             case (state)
                 S_IDLE: if (start_i) begin
@@ -200,14 +208,15 @@ module basic_pitch_conv2d #(
                 end
 
                 S_IC: begin
-                    acc <= acc + mac;
+                    mac_q <= mac;
+                    mac_pending <= 1'b1;
                     if (ic == IN_C - 1) begin
                         ic <= '0;
                         if (kw == KW - 1) begin
                             kw <= '0;
                             if (kh == KH - 1) begin
                                 kh <= '0;
-                                state <= DDR_FETCH ? S_BIAS_REQ : S_STORE;
+                                state <= DDR_FETCH ? S_BIAS_REQ : S_ACC_DRAIN;
                             end else begin
                                 kh <= kh + 1'b1;
                                 state <= S_KW;
@@ -223,6 +232,11 @@ module basic_pitch_conv2d #(
                 end
 
                 S_BIAS_REQ: if (bias_valid_i) state <= S_STORE;
+
+                // Local weights need one output-only drain edge for the last
+                // registered product. DDR mode already has the bias-request
+                // beat. No extra edge per MAC and no RAM duplication.
+                S_ACC_DRAIN: state <= S_STORE;
 
                 S_STORE: begin
                     y_we_o   <= 1'b1;
