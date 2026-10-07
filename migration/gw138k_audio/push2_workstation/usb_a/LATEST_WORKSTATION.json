@@ -169,27 +169,24 @@
   "sram_record": "../results/sram_20261006_234504_538503",
   "downloaded_at": "2026-10-06T23:45:25+08:00",
   "timing_candidate": {
-    "build": "results/song_guide_full85_clk50_20261007_081245_534174",
+    "build": "results/song_guide_full85_clk50_20261007_084539_884006",
+    "route1_comparator": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
     "user_code": "0x00000085",
+    "source_commit": "3f762f5",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "source_commit": "5e7bad6",
-    "status": "fresh_synthesis_incremental_pnr_running_unflashed",
+    "status": "retimed_mac_final_synthesis_and_regression_running_unflashed",
     "hardware_programmed": false,
     "hardware_tested": false,
     "bsram_budget_pnr": 260,
     "bsram_pnr": null,
     "clk50_closed": null,
-    "incremental_reference": "results/song_guide_full85_clk50_20261007_065748_676097",
-    "change": "zero-cycle scalar timing changes; frontend queued data clocks every edge, only queuedvalid allows writes; reference route preserves prior-positive domain placement where possible",
     "validation": {
-      "frontend_cycle_reference": "4ports PASS, every control/sample/output cycle",
-      "whole_cnn": "52b7250 12frames + all40reference checkpoints PASS;5e7bad6 interface-cycle composition proof",
-      "composition_proof": "results/song_guide_full85_clk50_20261007_081245_534174/frontend_cycle_composition_proof.json",
-      "staged18": "18/18 PASS",
-      "staged_report": "results/song_guide_full85_clk50_20261007_081245_534174/current_regression_20261007_081305_817297/verification.json"
+      "conv_old_reference": "10/10 PASS; accum/activation/address exact; DDRsamecycles,local+1drain/output",
+      "cnn12": "running",
+      "staged18": "running"
     },
-    "report": "reports/CLK50_TIMING_FIX_20261007.json",
-    "previous_clk50_closed_but_qor_failed_build": "results/song_guide_full85_clk50_20261007_071024_977116"
+    "mac_cadence": "no added MAC beat; +28.15296ms/full172frame window from local output drains",
+    "report": "reports/CLK50_TIMING_FIX_20261007.json"
   },
   "timing_candidate_progress_history": {
     "build": "results/song_guide_full85_clk50_20261007_054102_250721",
@@ -566,5 +563,28 @@
     "deployment_allowed": false,
     "blocked_by": "DDR UI same-clock Fmax76.938<100; HDMI130.156<148.5",
     "release_review": "results/song_guide_full85_clk50_20261007_071024_977116/release_review.json"
+  },
+  "timing_candidate_before_retimed_mac": {
+    "build": "results/song_guide_full85_clk50_20261007_081245_534174",
+    "user_code": "0x00000085",
+    "baseline": "results/workstation_scope83_20261006_230626_011557",
+    "source_commit": "5e7bad6",
+    "status": "fresh_synthesis_incremental_pnr_running_unflashed",
+    "hardware_programmed": false,
+    "hardware_tested": false,
+    "bsram_budget_pnr": 260,
+    "bsram_pnr": null,
+    "clk50_closed": null,
+    "incremental_reference": "results/song_guide_full85_clk50_20261007_065748_676097",
+    "change": "zero-cycle scalar timing changes; frontend queued data clocks every edge, only queuedvalid allows writes; reference route preserves prior-positive domain placement where possible",
+    "validation": {
+      "frontend_cycle_reference": "4ports PASS, every control/sample/output cycle",
+      "whole_cnn": "52b7250 12frames + all40reference checkpoints PASS;5e7bad6 interface-cycle composition proof",
+      "composition_proof": "results/song_guide_full85_clk50_20261007_081245_534174/frontend_cycle_composition_proof.json",
+      "staged18": "18/18 PASS",
+      "staged_report": "results/song_guide_full85_clk50_20261007_081245_534174/current_regression_20261007_081305_817297/verification.json"
+    },
+    "report": "reports/CLK50_TIMING_FIX_20261007.json",
+    "previous_clk50_closed_but_qor_failed_build": "results/song_guide_full85_clk50_20261007_071024_977116"
   }
 }

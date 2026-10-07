@@ -1,9 +1,9 @@
 {
-  "status": "incremental_release_qor_validation_running_unflashed",
+  "status": "retimed_mac_final_verification_running_unflashed",
   "board_unchanged": "0x00000084",
   "candidate_user_code": "0x00000085",
-  "candidate_build": "results/song_guide_full85_clk50_20261007_081245_534174",
-  "source_commit": "5e7bad6",
+  "candidate_build": "results/song_guide_full85_clk50_20261007_084539_884006",
+  "source_commit": "3f762f5",
   "baseline_build": "results/workstation_scope83_20261006_230626_011557",
   "bsram_budget_pnr": 260,
   "synthesis_resources": {
@@ -2711,6 +2711,247 @@
     "logic_validation_reuse": "exact frontend interface cycle proof + unchanged other RTL and12frame/all40checkpoint CNN proof; physical gates never reused",
     "staged_regression18": "18/18 PASS",
     "regression_report": "results/song_guide_full85_clk50_20261007_081245_534174/current_regression_20261007_081305_817297/verification.json",
-    "regression_sha256": "7090992d4df003ce0513a765df11d5d76fff24357ff8e60d3b44d9694e389e81"
+    "regression_sha256": "7090992d4df003ce0513a765df11d5d76fff24357ff8e60d3b44d9694e389e81",
+    "incremental_routed_result": {
+      "build": "results/song_guide_full85_clk50_20261007_081245_534174",
+      "hardware_programmed": false,
+      "clk50_closed": false,
+      "clk50_fmax": 41.75,
+      "setup_wns_ns": -3.952,
+      "hold_wns_ns": 0.164,
+      "tns": {
+        "setup": {
+          "ns": -302.305,
+          "endpoints": 287
+        },
+        "hold": {
+          "ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "synthesis_bsram": 216,
+      "physical_bsram": 260,
+      "bsram_budget_met": true,
+      "frozen_unchanged": true,
+      "inputs_unchanged": true,
+      "routed_audits": {
+        "clk50_cdc_routed_audit.json": true,
+        "scope_routed_audit.json": true
+      },
+      "all_clock_qor": {
+        "clk_50m": {
+          "baseline": {
+            "required_mhz": 50.0,
+            "actual_mhz": 41.813
+          },
+          "candidate": {
+            "required_mhz": 50.0,
+            "actual_mhz": 41.75
+          },
+          "previously_positive": false,
+          "candidate_meets": false,
+          "fmax_ratio": 0.9984932915600411
+        },
+        "audio_76m8": {
+          "baseline": {
+            "required_mhz": 76.8,
+            "actual_mhz": 54.297
+          },
+          "candidate": {
+            "required_mhz": 76.8,
+            "actual_mhz": 41.602
+          },
+          "previously_positive": false,
+          "candidate_meets": false,
+          "fmax_ratio": 0.7661933440153231
+        },
+        "ddr_mem400": {
+          "baseline": {
+            "required_mhz": 400.0,
+            "actual_mhz": 2598.775
+          },
+          "candidate": {
+            "required_mhz": 400.0,
+            "actual_mhz": 2598.775
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 1.0
+        },
+        "ddr_ui100": {
+          "baseline": {
+            "required_mhz": 100.0,
+            "actual_mhz": 233.23
+          },
+          "candidate": {
+            "required_mhz": 100.0,
+            "actual_mhz": 37.855
+          },
+          "previously_positive": true,
+          "candidate_meets": false,
+          "fmax_ratio": 0.16230759336277495
+        },
+        "video_pixel148": {
+          "baseline": {
+            "required_mhz": 148.5,
+            "actual_mhz": 154.999
+          },
+          "candidate": {
+            "required_mhz": 148.5,
+            "actual_mhz": 164.377
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 1.0605036161523624
+        },
+        "cpu_bus50": {
+          "baseline": {
+            "required_mhz": 50.0,
+            "actual_mhz": 73.538
+          },
+          "candidate": {
+            "required_mhz": 50.0,
+            "actual_mhz": 66.765
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 0.9078979575185618
+        },
+        "cpu_core100": {
+          "baseline": {
+            "required_mhz": 100.0,
+            "actual_mhz": 1526.253
+          },
+          "candidate": {
+            "required_mhz": 100.0,
+            "actual_mhz": 1241.464
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 0.8134064273747538
+        },
+        "usb_48m": {
+          "baseline": {
+            "required_mhz": 48.0,
+            "actual_mhz": 38.726
+          },
+          "candidate": {
+            "required_mhz": 48.0,
+            "actual_mhz": 19.348
+          },
+          "previously_positive": false,
+          "candidate_meets": false,
+          "fmax_ratio": 0.4996126633269638
+        }
+      },
+      "previously_positive_domains_remain_positive": false,
+      "worst_setup_paths": [
+        {
+          "slack_ns": -3.952,
+          "from": "u_music/u_basic_pitch/u_onset/n45_s/DOUT[0]",
+          "to": "u_music/u_basic_pitch/u_onset/acc_41_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.022,
+          "data_delay_ns": 23.927
+        },
+        {
+          "slack_ns": -3.432,
+          "from": "u_music/u_basic_pitch/u_onset/n45_s/DOUT[0]",
+          "to": "u_music/u_basic_pitch/u_onset/acc_33_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.017,
+          "data_delay_ns": 23.403
+        },
+        {
+          "slack_ns": -3.399,
+          "from": "u_music/u_basic_pitch/u_onset/n45_s/DOUT[0]",
+          "to": "u_music/u_basic_pitch/u_onset/acc_28_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.006,
+          "data_delay_ns": 23.36
+        },
+        {
+          "slack_ns": -3.361,
+          "from": "u_music/u_basic_pitch/u_onset/n45_s/DOUT[0]",
+          "to": "u_music/u_basic_pitch/u_onset/acc_10_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.01,
+          "data_delay_ns": 23.325
+        },
+        {
+          "slack_ns": -3.189,
+          "from": "u_music/u_basic_pitch/u_onset/n45_s/DOUT[0]",
+          "to": "u_music/u_basic_pitch/u_onset/acc_40_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.017,
+          "data_delay_ns": 23.16
+        },
+        {
+          "slack_ns": -3.164,
+          "from": "u_music/u_basic_pitch/u_onset/n45_s/DOUT[0]",
+          "to": "u_music/u_basic_pitch/u_onset/acc_42_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.013,
+          "data_delay_ns": 23.131
+        },
+        {
+          "slack_ns": -3.131,
+          "from": "u_music/u_basic_pitch/u_onset/n45_s/DOUT[0]",
+          "to": "u_music/u_basic_pitch/u_onset/acc_34_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.013,
+          "data_delay_ns": 23.098
+        },
+        {
+          "slack_ns": -2.929,
+          "from": "u_music/u_basic_pitch/u_onset/n45_s/DOUT[0]",
+          "to": "u_music/u_basic_pitch/u_onset/acc_1_s0/D",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": -0.01,
+          "data_delay_ns": 22.893
+        }
+      ],
+      "offboard_release_gates_pass": false
+    }
+  },
+  "retimed_mac": {
+    "source_commit": "3f762f5",
+    "builds": {
+      "route2": "results/song_guide_full85_clk50_20261007_084539_884006",
+      "route1": "results/song_guide_full85_clk50_20261007_084539_884006_route1"
+    },
+    "change": "32bit signed product registered at originalS_IC,48bit accumulation on next existingREQ/KW/bias beat; one extra drain per local output, no extra MAC beat",
+    "new_ram_arrays": 0,
+    "extra_cycles_per_mac": 0,
+    "extra_cycles_per_local_output": 1,
+    "output_words_per_full_window": 1407648,
+    "extra_seconds_per_window_at50MHz": 0.02815296,
+    "reference_test": "results/clk50_fix_20261007/conv_retimed_mac_reference/result.json",
+    "reference_coverage": "10config PASS; each98 outputs exact accumulator/activation/address, DDRcontrol/output cycleexact; local+98cycles total per98outputs",
+    "synthesis_goal": "auto",
+    "route_options": [
+      2,
+      1
+    ],
+    "physical_gate_basis": "avoid failed incrementalQoR, use fresh finallogic and two boundedroute options; independent fullclock/CDC/RAM audits",
+    "cnn12_log": "results/clk50_fix_20261007/cnn_ab_retimed_mac_12frames.log",
+    "cnn12_status": "running",
+    "staged_regression18": "running"
   }
 }
