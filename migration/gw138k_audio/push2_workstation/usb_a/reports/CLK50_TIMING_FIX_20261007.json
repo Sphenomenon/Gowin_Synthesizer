@@ -2709,6 +2709,8 @@
     "frontend_test": "results/clk50_fix_20261007/frontend_unconditional_data_cycle_equivalence/result.json",
     "composition_proof": "results/song_guide_full85_clk50_20261007_081245_534174/frontend_cycle_composition_proof.json",
     "logic_validation_reuse": "exact frontend interface cycle proof + unchanged other RTL and12frame/all40checkpoint CNN proof; physical gates never reused",
-    "staged_regression18": "running"
+    "staged_regression18": "18/18 PASS",
+    "regression_report": "results/song_guide_full85_clk50_20261007_081245_534174/current_regression_20261007_081305_817297/verification.json",
+    "regression_sha256": "7090992d4df003ce0513a765df11d5d76fff24357ff8e60d3b44d9694e389e81"
   }
 }

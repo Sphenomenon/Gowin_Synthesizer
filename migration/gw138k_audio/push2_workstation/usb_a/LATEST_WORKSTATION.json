@@ -185,7 +185,8 @@
       "frontend_cycle_reference": "4ports PASS, every control/sample/output cycle",
       "whole_cnn": "52b7250 12frames + all40reference checkpoints PASS;5e7bad6 interface-cycle composition proof",
       "composition_proof": "results/song_guide_full85_clk50_20261007_081245_534174/frontend_cycle_composition_proof.json",
-      "staged18": "running"
+      "staged18": "18/18 PASS",
+      "staged_report": "results/song_guide_full85_clk50_20261007_081245_534174/current_regression_20261007_081305_817297/verification.json"
     },
     "report": "reports/CLK50_TIMING_FIX_20261007.json",
     "previous_clk50_closed_but_qor_failed_build": "results/song_guide_full85_clk50_20261007_071024_977116"
