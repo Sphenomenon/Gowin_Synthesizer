@@ -169,43 +169,26 @@
   "sram_record": "../results/sram_20261006_234504_538503",
   "downloaded_at": "2026-10-06T23:45:25+08:00",
   "timing_candidate": {
-    "build": "results/song_guide_full85_clk50_20261007_071024_977116",
+    "build": "results/song_guide_full85_clk50_20261007_081245_534174",
     "user_code": "0x00000085",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "source_commit": "52b7250",
-    "status": "synthesis216_passed_placement_running_unflashed",
+    "source_commit": "5e7bad6",
+    "status": "fresh_synthesis_incremental_pnr_running_unflashed",
     "hardware_programmed": false,
     "hardware_tested": false,
     "bsram_budget_pnr": 260,
     "bsram_pnr": null,
     "clk50_closed": null,
-    "change": "previous scalar/DDR/frontend fixes plus feature cell/lane concatenation and padding mask on existing request beat; zero added MAC cycles or RAM",
-    "current_validation": {
-      "conv_cycle_reference": "10/10 PASS",
-      "feature_addresses": "38720 PASS",
-      "cnn12": "PASS, six hashes/coverage/3 notes, all40 per-frame prior-reference checkpoints identical",
-      "regression18": "18/18 PASS",
-      "regression_report": "results/song_guide_full85_clk50_20261007_071024_977116/current_regression_20261007_071040_130961/verification.json",
-      "cnn_reference_report": "results/clk50_fix_20261007/feature_mask_cnn_reference_comparison.json"
+    "incremental_reference": "results/song_guide_full85_clk50_20261007_065748_676097",
+    "change": "zero-cycle scalar timing changes; frontend queued data clocks every edge, only queuedvalid allows writes; reference route preserves prior-positive domain placement where possible",
+    "validation": {
+      "frontend_cycle_reference": "4ports PASS, every control/sample/output cycle",
+      "whole_cnn": "52b7250 12frames + all40reference checkpoints PASS;5e7bad6 interface-cycle composition proof",
+      "composition_proof": "results/song_guide_full85_clk50_20261007_081245_534174/frontend_cycle_composition_proof.json",
+      "staged18": "running"
     },
-    "rejected_timing_build": "results/song_guide_full85_clk50_20261007_054102_250721",
-    "rejected_review": "results/song_guide_full85_clk50_20261007_054102_250721/release_review.json",
-    "comparator": "results/song_guide_full85_clk50_20261007_065748_676097",
     "report": "reports/CLK50_TIMING_FIX_20261007.json",
-    "synthesis_bsram": 216,
-    "frontend_synthesis_bsram": 0,
-    "synthesis_clk50_estimated_mhz": 61.89,
-    "comparator_result": {
-      "build": "results/song_guide_full85_clk50_20261007_065748_676097",
-      "clk50_fmax_mhz": 47.733,
-      "setup_wns_ns": -0.95,
-      "setup_negative_endpoints": 24,
-      "bsram_pnr": 260,
-      "originally_positive_domains_remain_positive": true,
-      "deployable": false,
-      "hardware_programmed": false,
-      "review": "results/song_guide_full85_clk50_20261007_065748_676097/release_review.json"
-    }
+    "previous_clk50_closed_but_qor_failed_build": "results/song_guide_full85_clk50_20261007_071024_977116"
   },
   "timing_candidate_progress_history": {
     "build": "results/song_guide_full85_clk50_20261007_054102_250721",
@@ -537,5 +520,50 @@
       "status": "cancelled_unflashed",
       "record": "results/song_guide_full85_clk50_20261007_042458_983585/candidate_status.json"
     }
+  },
+  "timing_candidate_before_frontend_data_enable": {
+    "build": "results/song_guide_full85_clk50_20261007_071024_977116",
+    "user_code": "0x00000085",
+    "baseline": "results/workstation_scope83_20261006_230626_011557",
+    "source_commit": "52b7250",
+    "status": "clk50_closed_other_domain_qor_failed_unflashed",
+    "hardware_programmed": false,
+    "hardware_tested": false,
+    "bsram_budget_pnr": 260,
+    "bsram_pnr": 260,
+    "clk50_closed": true,
+    "change": "previous scalar/DDR/frontend fixes plus feature cell/lane concatenation and padding mask on existing request beat; zero added MAC cycles or RAM",
+    "current_validation": {
+      "conv_cycle_reference": "10/10 PASS",
+      "feature_addresses": "38720 PASS",
+      "cnn12": "PASS, six hashes/coverage/3 notes, all40 per-frame prior-reference checkpoints identical",
+      "regression18": "18/18 PASS",
+      "regression_report": "results/song_guide_full85_clk50_20261007_071024_977116/current_regression_20261007_071040_130961/verification.json",
+      "cnn_reference_report": "results/clk50_fix_20261007/feature_mask_cnn_reference_comparison.json"
+    },
+    "rejected_timing_build": "results/song_guide_full85_clk50_20261007_054102_250721",
+    "rejected_review": "results/song_guide_full85_clk50_20261007_054102_250721/release_review.json",
+    "comparator": "results/song_guide_full85_clk50_20261007_065748_676097",
+    "report": "reports/CLK50_TIMING_FIX_20261007.json",
+    "synthesis_bsram": 216,
+    "frontend_synthesis_bsram": 0,
+    "synthesis_clk50_estimated_mhz": 61.89,
+    "comparator_result": {
+      "build": "results/song_guide_full85_clk50_20261007_065748_676097",
+      "clk50_fmax_mhz": 47.733,
+      "setup_wns_ns": -0.95,
+      "setup_negative_endpoints": 24,
+      "bsram_pnr": 260,
+      "originally_positive_domains_remain_positive": true,
+      "deployable": false,
+      "hardware_programmed": false,
+      "review": "results/song_guide_full85_clk50_20261007_065748_676097/release_review.json"
+    },
+    "clk50_fmax_mhz": 50.204,
+    "setup_wns_ns": 0.081,
+    "hold_wns_ns": 0.16,
+    "deployment_allowed": false,
+    "blocked_by": "DDR UI same-clock Fmax76.938<100; HDMI130.156<148.5",
+    "release_review": "results/song_guide_full85_clk50_20261007_071024_977116/release_review.json"
   }
 }

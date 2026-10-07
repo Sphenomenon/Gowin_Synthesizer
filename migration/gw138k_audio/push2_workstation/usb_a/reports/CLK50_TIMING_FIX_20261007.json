@@ -1,9 +1,9 @@
 {
-  "status": "in_progress",
+  "status": "incremental_release_qor_validation_running_unflashed",
   "board_unchanged": "0x00000084",
   "candidate_user_code": "0x00000085",
-  "candidate_build": "results/song_guide_full85_clk50_20261007_071024_977116",
-  "source_commit": "52b7250",
+  "candidate_build": "results/song_guide_full85_clk50_20261007_081245_534174",
+  "source_commit": "5e7bad6",
   "baseline_build": "results/workstation_scope83_20261006_230626_011557",
   "bsram_budget_pnr": 260,
   "synthesis_resources": {
@@ -1562,7 +1562,7 @@
     "final_fresh_build": "results/song_guide_full85_clk50_20261007_034837_423036",
     "status": "running; not programmed"
   },
-  "candidate_status": "full_build_and_final_regression_running_unflashed",
+  "candidate_status": "fresh_synthesis_incremental_pnr_from_qor_good_reference_running",
   "request_arbiter_route0_result": {
     "build": "results/song_guide_full85_clk50_20261007_032151_169144",
     "tool_passed": true,
@@ -2468,7 +2468,226 @@
     },
     "cnn_reference_comparison": "results/clk50_fix_20261007/feature_mask_cnn_reference_comparison.json",
     "cnn_host_walltime_seconds": 801.996,
-    "cnn_host_walltime_note": "host simulation runtime, not FPGA inference window time"
+    "cnn_host_walltime_note": "host simulation runtime, not FPGA inference window time",
+    "routed_result": {
+      "build": "results/song_guide_full85_clk50_20261007_071024_977116",
+      "hardware_programmed": false,
+      "clk50_closed": true,
+      "clk50_fmax": 50.204,
+      "setup_wns_ns": 0.081,
+      "hold_wns_ns": 0.16,
+      "tns": {
+        "setup": {
+          "ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "synthesis_bsram": 216,
+      "physical_bsram": 260,
+      "bsram_budget_met": true,
+      "frozen_unchanged": true,
+      "inputs_unchanged": true,
+      "routed_audits": {
+        "clk50_cdc_routed_audit.json": true,
+        "scope_routed_audit.json": true
+      },
+      "all_clock_qor": {
+        "clk_50m": {
+          "baseline": {
+            "required_mhz": 50.0,
+            "actual_mhz": 41.813
+          },
+          "candidate": {
+            "required_mhz": 50.0,
+            "actual_mhz": 50.204
+          },
+          "previously_positive": false,
+          "candidate_meets": true,
+          "fmax_ratio": 1.2006792145983307
+        },
+        "audio_76m8": {
+          "baseline": {
+            "required_mhz": 76.8,
+            "actual_mhz": 54.297
+          },
+          "candidate": {
+            "required_mhz": 76.8,
+            "actual_mhz": 62.39
+          },
+          "previously_positive": false,
+          "candidate_meets": false,
+          "fmax_ratio": 1.1490505921137448
+        },
+        "ddr_mem400": {
+          "baseline": {
+            "required_mhz": 400.0,
+            "actual_mhz": 2598.775
+          },
+          "candidate": {
+            "required_mhz": 400.0,
+            "actual_mhz": 2598.775
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 1.0
+        },
+        "ddr_ui100": {
+          "baseline": {
+            "required_mhz": 100.0,
+            "actual_mhz": 233.23
+          },
+          "candidate": {
+            "required_mhz": 100.0,
+            "actual_mhz": 76.938
+          },
+          "previously_positive": true,
+          "candidate_meets": false,
+          "fmax_ratio": 0.32988037559490635
+        },
+        "video_pixel148": {
+          "baseline": {
+            "required_mhz": 148.5,
+            "actual_mhz": 154.999
+          },
+          "candidate": {
+            "required_mhz": 148.5,
+            "actual_mhz": 130.156
+          },
+          "previously_positive": true,
+          "candidate_meets": false,
+          "fmax_ratio": 0.8397215465906233
+        },
+        "cpu_bus50": {
+          "baseline": {
+            "required_mhz": 50.0,
+            "actual_mhz": 73.538
+          },
+          "candidate": {
+            "required_mhz": 50.0,
+            "actual_mhz": 63.805
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 0.867646658870244
+        },
+        "cpu_core100": {
+          "baseline": {
+            "required_mhz": 100.0,
+            "actual_mhz": 1526.253
+          },
+          "candidate": {
+            "required_mhz": 100.0,
+            "actual_mhz": 826.103
+          },
+          "previously_positive": true,
+          "candidate_meets": true,
+          "fmax_ratio": 0.5412621629572555
+        },
+        "usb_48m": {
+          "baseline": {
+            "required_mhz": 48.0,
+            "actual_mhz": 38.726
+          },
+          "candidate": {
+            "required_mhz": 48.0,
+            "actual_mhz": 42.034
+          },
+          "previously_positive": false,
+          "candidate_meets": false,
+          "fmax_ratio": 1.0854206476269173
+        }
+      },
+      "previously_positive_domains_remain_positive": false,
+      "worst_setup_paths": [
+        {
+          "slack_ns": 0.081,
+          "from": "music_restart_delay_0_s3/Q",
+          "to": "u_music/u_basic_pitch/u_frontend/dline_data_q_11_s0/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.042,
+          "data_delay_ns": 19.652
+        },
+        {
+          "slack_ns": 0.081,
+          "from": "music_restart_delay_0_s3/Q",
+          "to": "u_music/u_basic_pitch/u_frontend/dline_data_q_12_s0/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.042,
+          "data_delay_ns": 19.652
+        },
+        {
+          "slack_ns": 0.081,
+          "from": "music_restart_delay_0_s3/Q",
+          "to": "u_music/u_basic_pitch/u_frontend/dline_data_q_13_s0/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.042,
+          "data_delay_ns": 19.652
+        },
+        {
+          "slack_ns": 0.081,
+          "from": "music_restart_delay_0_s3/Q",
+          "to": "u_music/u_basic_pitch/u_frontend/dline_data_q_14_s0/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.042,
+          "data_delay_ns": 19.652
+        },
+        {
+          "slack_ns": 0.081,
+          "from": "music_restart_delay_0_s3/Q",
+          "to": "u_music/u_basic_pitch/u_frontend/dline_data_q_15_s0/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.042,
+          "data_delay_ns": 19.652
+        },
+        {
+          "slack_ns": 0.095,
+          "from": "music_restart_delay_0_s3/Q",
+          "to": "u_music/u_basic_pitch/u_frontend/dline_data_q_0_s0/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.042,
+          "data_delay_ns": 19.639
+        },
+        {
+          "slack_ns": 0.095,
+          "from": "music_restart_delay_0_s3/Q",
+          "to": "u_music/u_basic_pitch/u_frontend/dline_data_q_1_s0/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.042,
+          "data_delay_ns": 19.639
+        },
+        {
+          "slack_ns": 0.095,
+          "from": "music_restart_delay_0_s3/Q",
+          "to": "u_music/u_basic_pitch/u_frontend/dline_data_q_2_s0/CE",
+          "from_clock": "clk_50m",
+          "to_clock": "clk_50m",
+          "relation_ns": 20.0,
+          "skew_ns": 0.042,
+          "data_delay_ns": 19.639
+        }
+      ],
+      "offboard_release_gates_pass": false
+    },
+    "all_clock_endpoint_review": "results/song_guide_full85_clk50_20261007_071024_977116/all_clock_endpoint_review.json",
+    "status": "clk50_closed_bsram260_other_domain_qor_failed_unflashed"
   },
   "current_validation": {
     "conv_mask_cycle_reference": "10/10 PASS",
@@ -2476,5 +2695,20 @@
     "cnn_12frames": "PASS, six accepted hashes + 3 notes + all40 per-frame reference checkpoints",
     "staged_regression18": "18/18 PASS",
     "unchanged_CQT_frontend_DP_math": "prior exact tests retained; source files unchanged by52b7250"
+  },
+  "frontend_data_enable_fix": {
+    "source_commit": "5e7bad6",
+    "build": "results/song_guide_full85_clk50_20261007_081245_534174",
+    "reference": "results/song_guide_full85_clk50_20261007_065748_676097",
+    "reference_selection": "auto9f has DDR198.341/HDMI164.377 and all originally-positive clocks pass; avoid preserving failed52 fresh DDR/video layout",
+    "change": "data_q clocks mono_sum each beat, queuedvalid prevents invalid commits; remove redundant16bit CE chain",
+    "extra_mac_cycles": 0,
+    "extra_output_cycles": 0,
+    "new_ram_arrays": 0,
+    "frontend_reference": "four coefficient ports exact all controls/samples/cycles,4windows x512writes,1295PCM per config PASS",
+    "frontend_test": "results/clk50_fix_20261007/frontend_unconditional_data_cycle_equivalence/result.json",
+    "composition_proof": "results/song_guide_full85_clk50_20261007_081245_534174/frontend_cycle_composition_proof.json",
+    "logic_validation_reuse": "exact frontend interface cycle proof + unchanged other RTL and12frame/all40checkpoint CNN proof; physical gates never reused",
+    "staged_regression18": "running"
   }
 }
