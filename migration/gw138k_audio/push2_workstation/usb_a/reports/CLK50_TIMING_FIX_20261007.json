@@ -1,5 +1,5 @@
 {
-  "status": "sram85_modelE_smoke_pass_manual_TRAVLER_pending",
+  "status": "clk50_fix_deployed_bsram_unchanged_manual_TRAVLER_pending",
   "board_unchanged": false,
   "candidate_user_code": "0x00000085",
   "candidate_build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
@@ -3416,7 +3416,17 @@
       "hardware_programmed": false
     },
     "whole_board_timing_closed": false,
-    "manual_TRAVLER_36_and_throughput": "pending_after_program"
+    "manual_TRAVLER_36_and_throughput": "pending_after_program",
+    "final_synthesis_resources": {
+      "Register": 40665,
+      "LUT": 57327,
+      "SSRAM": 1607,
+      "BSRAM": 216,
+      "frontend_bsram": 0,
+      "clk50_estimate_mhz": 63.34,
+      "pnr_bsram": 260
+    },
+    "source_basis": "Full84 archived597-input baseline plus exactly6liveRTL overlays and SDC/Tcl;3f762f5 source, strict manifests."
   },
   "unselected_response_fifo_experiment": {
     "selected": false,
@@ -3443,6 +3453,35 @@
     "audio_health_word": "00000000",
     "TRAVLER_capture": "results/clk50_fix_20261007/full85_TRAVLER_board/dwell_clk50_85.log",
     "first_window36_verified": false,
-    "throughput_verified": false
+    "throughput_verified": false,
+    "TRAVLER_capture_result": {
+      "status": "manual_panel_start_pending",
+      "hardware_user_code": "0x00000085",
+      "model_status": "E",
+      "planned_seconds": 300,
+      "captured_seconds": 181.5,
+      "captured_reports": 270,
+      "all_reports_idle": true,
+      "frames": [
+        0
+      ],
+      "states": [
+        0
+      ],
+      "score_counts": [
+        0
+      ],
+      "tf_sample_rates": [
+        44100
+      ],
+      "first_window36_verified": false,
+      "active_frame_rate_verified": false,
+      "stopped_by_host": "SIGINT after >120s continuously idle to release UART; no parser failure or throughput failure inferred",
+      "needed_action": "Physically choose TRAVLER and start/restart parsing; recapture cold first window and active frames.",
+      "raw_log": "results/clk50_fix_20261007/full85_TRAVLER_board/dwell_clk50_85.log"
+    },
+    "UART_released": true,
+    "hardware_smoke_tested": true,
+    "whole_board_timing_closed": false
   }
 }

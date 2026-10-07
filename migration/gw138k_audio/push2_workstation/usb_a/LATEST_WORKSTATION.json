@@ -15,8 +15,8 @@
   "timing_closed": false,
   "timing_note": "clk50 original20ns: Fmax53.055, setupWNS+1.152ns holdWNS+0.160ns TNS0/0; reset and CDC audits PASS. DDR UI215.707/100 and HDMI165.732/148.5 positive, all previously positive endpoint groups retained. Wholeboard still open due baseline audio76.8/USB48 and residual CDC checks.",
   "hardware_tested": true,
-  "coordination": "0x85 SRAM readback confirmed, modelE,7/7smokePASS.300sTRAVLER capture currently owns ttyUSB1; physical panel selection/restart pending.",
-  "commit": "7268adf",
+  "coordination": "0x85 SRAM deployed/readback, mandatory modelE,7/7smokePASS.181.5s/270reports continuously idle; stopped capture and released ttyUSB1, no held notes. Physical panel TRAVLER selection/start required for first36 and activeframe-rate acceptance.",
+  "commit": "a804ac4",
   "source_commit": "3f762f5ebabf78c28156d91a022d3a6c5547776b",
   "board_acceptance": {
     "status": "smoke_pass_manual_TRAVLER_acceptance_pending",
@@ -32,7 +32,10 @@
       "model E, postburn model DDR readbackCRC passed",
       "UART CRCerrors0, audiohealth0, noheldvoices/notes afterPANIC"
     ],
-    "evidence_report": "results/clk50_fix_20261007/full85_board_smoke.json"
+    "evidence_report": "results/clk50_fix_20261007/full85_board_smoke.json",
+    "capture_evidence": "results/clk50_fix_20261007/full85_TRAVLER_board/board_acceptance_pending.json",
+    "first_window36_verified": false,
+    "throughput_verified": false
   },
   "validation": {
     "regression": "18/18 final retimed MAC staging PASS; route1/route2 identical RTL/IP/model/SDC with597-input proof",
@@ -42,7 +45,8 @@
     "clk50_timing": "closed at20ns",
     "whole_board_timing": "not_closed",
     "board_smoke": "7/7PASS, modelE, CRCerrors0, audiohealth0, livegeometry/mute/PANIC clean",
-    "model_upload": "PASS mandatory postburn upload/readbackCRC"
+    "model_upload": "PASS mandatory postburn upload/readbackCRC",
+    "TRAVLER_capture": "181.5s/270reports allidle wave0/state0/score0. Not valid performance or note-count evidence; pending physical panel start."
   },
   "previous_board": {
     "build": "results/workstation_scope83_20261006_230626_011557",
@@ -263,7 +267,9 @@
     "bitstream_sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444",
     "release_review": "results/song_guide_full85_clk50_20261007_084539_884006_route1/release_review.json",
     "source_audit": "results/song_guide_full85_clk50_20261007_084539_884006_route1/preflash_source_audit.json",
-    "candidate_note": "Selected same final RTL auto/route1; route2 rejected DDR73.926MHz despite clk50 closure. Extra responseFIFO experiment not selected; original interface preserved."
+    "candidate_note": "Selected same final RTL auto/route1; route2 rejected DDR73.926MHz despite clk50 closure. Extra responseFIFO experiment not selected; original interface preserved.",
+    "clk50_setup_tns_ns": 0,
+    "clk50_hold_tns_ns": 0
   },
   "timing_candidate_progress_history": {
     "build": "results/song_guide_full85_clk50_20261007_054102_250721",

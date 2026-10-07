@@ -1,4 +1,4 @@
-# 50MHz 低 BSRAM 时序修复（已烧录0x85，板验进行中）
+# 50MHz 低 BSRAM 时序修复（已烧录0x85，物理BSRAM净增0）
 
 ## 最终选用实现
 
@@ -33,9 +33,13 @@ source3f762f5将16x16精确32bit乘积在原S_IC拍保存，下一原REQ/KW/bias
 2026-10-07已完成0x84→0x85 SRAM烧录与UserCode读回，LATEST立即更新。
 烧录后已重传52239words模型，CRCaf01a61b，DDR读回状态E；
 板上启动/live/scope烟测7/7 PASS，UART CRC错误0、音频健康字0、PANIC清理完成。
-TRAVLER首窗36项和实际帧率尚待本位流板验；启动抓取时wave0/state0处于待机，
+TRAVLER首窗36项和实际帧率尚待本位流板验。已抓取181.5s/270条遥测，
+全部wave0/state0/score0（待机），不是CNN性能或出谱证据；已停止抓取，串口释放。
 面板物理选歌/启动需用户配合，不能以待机遥测推断CNN验收通过。
 不得复用用户对0x83的验收结论作为0x85验收。
+
+发布记录提交a804ac4，主要MAC修复源3f762f5；最终文档提交由Git日志定位。
+标记cnn85-clk50-closed-20261007仅表示本次clk50闭合/部署，**不是TRAVLER验收标签**。
 
 后文保留阶段调查，当前发布结论以本节与LATEST_WORKSTATION.json为准。
 
