@@ -182,9 +182,10 @@
     "clk50_closed": null,
     "validation": {
       "conv_old_reference": "10/10 PASS; accum/activation/address exact; DDRsamecycles,local+1drain/output",
-      "cnn12": "running",
+      "cnn12": "PASS six hashes/coverage/3notes + all40 prior-reference checkpoints",
       "staged18": "18/18 PASS",
-      "staged_report": "results/song_guide_full85_clk50_20261007_084539_884006/current_regression_20261007_084601_236097/verification.json"
+      "staged_report": "results/song_guide_full85_clk50_20261007_084539_884006/current_regression_20261007_084601_236097/verification.json",
+      "cnn_reference_report": "results/clk50_fix_20261007/retimed_mac_cnn_reference_comparison.json"
     },
     "mac_cadence": "no added MAC beat; +28.15296ms/full172frame window from local output drains",
     "report": "reports/CLK50_TIMING_FIX_20261007.json",
