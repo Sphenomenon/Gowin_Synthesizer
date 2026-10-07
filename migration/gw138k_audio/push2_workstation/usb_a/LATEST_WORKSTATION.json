@@ -174,7 +174,7 @@
     "user_code": "0x00000085",
     "source_commit": "3f762f5",
     "baseline": "results/workstation_scope83_20261006_230626_011557",
-    "status": "retimed_mac_final_synthesis_and_regression_running_unflashed",
+    "status": "synthesis216_passed_placement_running_unflashed",
     "hardware_programmed": false,
     "hardware_tested": false,
     "bsram_budget_pnr": 260,
@@ -183,10 +183,20 @@
     "validation": {
       "conv_old_reference": "10/10 PASS; accum/activation/address exact; DDRsamecycles,local+1drain/output",
       "cnn12": "running",
-      "staged18": "running"
+      "staged18": "18/18 PASS",
+      "staged_report": "results/song_guide_full85_clk50_20261007_084539_884006/current_regression_20261007_084601_236097/verification.json"
     },
     "mac_cadence": "no added MAC beat; +28.15296ms/full172frame window from local output drains",
-    "report": "reports/CLK50_TIMING_FIX_20261007.json"
+    "report": "reports/CLK50_TIMING_FIX_20261007.json",
+    "synthesis_resources": {
+      "Register": 40665,
+      "LUT": 57327,
+      "SSRAM": 1607,
+      "BSRAM": 216,
+      "frontend_bsram": 0,
+      "clk50_estimate_mhz": 63.34,
+      "pnr_bsram": null
+    }
   },
   "timing_candidate_progress_history": {
     "build": "results/song_guide_full85_clk50_20261007_054102_250721",

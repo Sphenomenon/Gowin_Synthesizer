@@ -18,7 +18,7 @@ HDMI164.377，却导致clk50 WNS=-3.952/Fmax41.750、DDR37.855、audio41.602/USB
 实际9.687s/窗的降速。旧实现对照10配置全PASS：每种98个输出累加器/激活/地址精确，
 DDR所有控制/输出周期相同，本地总周期严格多98。signed边界、paddingX、1/8/32/33
 通道、harmonicstack及DDR/bias等待均覆盖。最终12帧六层/all40旧参考哈希和18项
-暂存树回归重新运行，不能复用成新算术流水已通过。
+暂存树回归18/18 PASS，最终12帧CNN仍运行，不能提前记算术流水已通过。
 
 auto/route2与route1仅Tcl路由参数不同，597个输入等价证明保存，逻辑测试可复用，
 时序/物理资源/CDC审计独立。最终必须同时达到clk50完整门禁并保留原本达标域，
@@ -385,3 +385,8 @@ release_review.offboard_release_gates_pass=false，未烧板。不以50MHz单域
 S_ACC_DRAIN收尾再原样STORE（含原48bitwrap、bias和y_data截断）。没有复制RAM，
 没有增加每MAC拍。10项旧参考oracle PASS，DDR拍完全不变，本地一输出多一拍。
 最终完整CNN及回归正在重跑；两种新鲜route选项用于独立检验各域QoR。
+
+
+3f762f5完整暂存树18/18 PASS；auto综合两种route对照BSRAM216/前端0，
+clk50估计63.340MHz，寄存器/LUT/SSRAM同口径见JSON。两种均已进入placement，
+物理资源、时序及板上性能尚待验证。

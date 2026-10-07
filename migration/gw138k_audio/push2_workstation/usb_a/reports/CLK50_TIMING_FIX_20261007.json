@@ -2952,6 +2952,17 @@
     "physical_gate_basis": "avoid failed incrementalQoR, use fresh finallogic and two boundedroute options; independent fullclock/CDC/RAM audits",
     "cnn12_log": "results/clk50_fix_20261007/cnn_ab_retimed_mac_12frames.log",
     "cnn12_status": "running",
-    "staged_regression18": "running"
+    "staged_regression18": "18/18 PASS",
+    "regression_report": "results/song_guide_full85_clk50_20261007_084539_884006/current_regression_20261007_084601_236097/verification.json",
+    "regression_sha256": "83d5a416aaaf7447efd28458499e18d18732c00f8aff4eb960cfa53471c7639d",
+    "synthesis_resources": {
+      "Register": 40665,
+      "LUT": 57327,
+      "SSRAM": 1607,
+      "BSRAM": 216,
+      "frontend_bsram": 0,
+      "clk50_estimate_mhz": 63.34,
+      "pnr_bsram": null
+    }
   }
 }
