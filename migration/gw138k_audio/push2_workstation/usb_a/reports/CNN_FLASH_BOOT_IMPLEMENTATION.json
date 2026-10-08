@@ -34,7 +34,8 @@
     "spi_physical_probe": "results/flash_pin_probe96_20261009/board/result.json",
     "full95_startup_diagnosis": "results/workstation_flash95_20261009_fresh/startup_diagnosis/result.json",
     "baseline85_live_smoke": "results/workstation_flash95_20261009_fresh/startup_diagnosis/restored85_live_smoke.json",
-    "serial_spi_physical_probe": "results/flash_serial_probe98_20261009/board/result.json"
+    "serial_spi_physical_probe": "results/flash_serial_probe98_20261009/board/result.json",
+    "serial97_source_compatibility": "results/workstation_flash97_20261009_serial/serial_compatibility_source_audit.json"
   },
   "incremental_candidate": "results/workstation_flash93_20261009_incremental",
   "incremental_target_user_code": "0x00000093",
