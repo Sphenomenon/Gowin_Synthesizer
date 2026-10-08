@@ -15,6 +15,7 @@ module basic_pitch_pcm_pipeline #(
     parameter bit USE_EXTERNAL_STATE = 1'b0,
     parameter bit USE_EXTERNAL_PLANE = 1'b0,
     parameter bit USE_EXTERNAL_WEIGHTS = 1'b0,
+    parameter bit USE_FLASH_WEIGHTS = 1'b0,
     parameter bit USE_EXTERNAL_FEATURES = 1'b0,
     parameter bit USE_ALL_DDR = 1'b0,
     parameter bit USE_DDR_SIGNAL = USE_ALL_DDR,
@@ -25,7 +26,14 @@ module basic_pitch_pcm_pipeline #(
     input  logic               rst_ni,
     input  logic               analysis_restart_i,
     input  logic               model_serial_i,
+    input  logic               model_boot_ready_i,
+    input  logic               flash_miso_i,
+    output logic               flash_cs_n_o,
+    output logic               flash_clk_o,
+    output logic               flash_mosi_o,
     output logic [3:0]         model_status_o,
+    output wire [1:0]          debug_model_source_o,
+    output wire [1:0]          debug_model_flash_error_o,
     output logic [31:0]        debug_model_expected_crc_o,
     output logic [31:0]        debug_model_actual_crc_o,
     output logic [1:0]         debug_model_error_stage_o,
@@ -622,17 +630,40 @@ module basic_pitch_pcm_pipeline #(
     end
 
     generate
+        if (USE_ALL_DDR || USE_EXTERNAL_WEIGHTS) begin : g_model_boot
+            if (USE_FLASH_WEIGHTS) begin : g_flash
+                basic_pitch_boot_model_loader u_model_loader (
+                    .clk_i(clk_i),.rst_ni(rst_ni),.boot_ready_i(model_boot_ready_i),
+                    .serial_i(model_serial_i),.flash_miso_i(flash_miso_i),
+                    .flash_cs_n_o(flash_cs_n_o),.flash_clk_o(flash_clk_o),.flash_mosi_o(flash_mosi_o),
+                    .done_o(model_done),.status_o(model_status_o),
+                    .source_o(debug_model_source_o),.flash_error_o(debug_model_flash_error_o),
+                    .debug_expected_crc_o(debug_model_expected_crc_o),
+                    .debug_actual_crc_o(debug_model_actual_crc_o),
+                    .debug_error_stage_o(debug_model_error_stage_o),
+                    .mem_req_o(model_mem_req),.mem_write_o(model_mem_write),
+                    .mem_byte_addr_o(model_mem_addr),.mem_wdata_o(model_mem_wdata),
+                    .mem_ready_i(model_mem_ready),.mem_rsp_valid_i(model_mem_rsp_valid),
+                    .mem_rdata_i(mem_rdata_i));
+            end else begin : g_uart
+                basic_pitch_uart_model_loader u_model_loader (
+                    .clk_i(clk_i),.rst_ni(rst_ni),.serial_i(model_serial_i),
+                    .done_o(model_done),.status_o(model_status_o),
+                    .debug_expected_crc_o(debug_model_expected_crc_o),
+                    .debug_actual_crc_o(debug_model_actual_crc_o),
+                    .debug_error_stage_o(debug_model_error_stage_o),
+                    .mem_req_o(model_mem_req),.mem_write_o(model_mem_write),
+                    .mem_byte_addr_o(model_mem_addr),.mem_wdata_o(model_mem_wdata),
+                    .mem_ready_i(model_mem_ready),.mem_rsp_valid_i(model_mem_rsp_valid),
+                    .mem_rdata_i(mem_rdata_i));
+                assign flash_cs_n_o=1'b1;
+                assign flash_clk_o=1'b0;
+                assign flash_mosi_o=1'b0;
+                assign debug_model_source_o=2'd2;
+                assign debug_model_flash_error_o=2'd0;
+            end
+        end
         if (USE_ALL_DDR) begin : g_all_ddr_weights
-            basic_pitch_uart_model_loader u_model_loader (
-                .clk_i(clk_i), .rst_ni(rst_ni), .serial_i(model_serial_i),
-                .done_o(model_done), .status_o(model_status_o),
-                .debug_expected_crc_o(debug_model_expected_crc_o),
-                .debug_actual_crc_o(debug_model_actual_crc_o),
-                .debug_error_stage_o(debug_model_error_stage_o),
-                .mem_req_o(model_mem_req), .mem_write_o(model_mem_write),
-                .mem_byte_addr_o(model_mem_addr), .mem_wdata_o(model_mem_wdata),
-                .mem_ready_i(model_mem_ready), .mem_rsp_valid_i(model_mem_rsp_valid),
-                .mem_rdata_i(mem_rdata_i));
             assign contour_w_data=nn_sample_w;
             assign reduce_w_data=nn_sample_w;
             assign notes_w_data=nn_sample_w;
@@ -645,18 +676,6 @@ module basic_pitch_pcm_pipeline #(
             assign weight_mem_addr=32'd0;
             assign weight_mem_wdata=16'd0;
         end else if (USE_EXTERNAL_WEIGHTS) begin : g_ddr_weights
-            // Board flow: the model image arrives over UART (BPN1 + CRC +
-            // DDR readback verification), never a bitstream ROM.
-            basic_pitch_uart_model_loader u_model_loader (
-                .clk_i(clk_i), .rst_ni(rst_ni), .serial_i(model_serial_i),
-                .done_o(model_done), .status_o(model_status_o),
-                .debug_expected_crc_o(debug_model_expected_crc_o),
-                .debug_actual_crc_o(debug_model_actual_crc_o),
-                .debug_error_stage_o(debug_model_error_stage_o),
-                .mem_req_o(model_mem_req), .mem_write_o(model_mem_write),
-                .mem_byte_addr_o(model_mem_addr), .mem_wdata_o(model_mem_wdata),
-                .mem_ready_i(model_mem_ready),
-                .mem_rsp_valid_i(model_mem_rsp_valid), .mem_rdata_i(mem_rdata_i));
             basic_pitch_weight_cache u_weight_cache (
                 .clk_i(clk_i), .rst_ni(run_rst_ni), .start_i(state == S_LOAD_WEIGHT),
                 .blob_word_base_i(weight_blob_base), .word_count_i(weight_word_count),
@@ -673,6 +692,11 @@ module basic_pitch_pcm_pipeline #(
             assign onset_w_data = weight_cache_read_data;
             assign onset_out_w_data = weight_cache_read_data;
         end else begin : g_rom_weights
+            assign flash_cs_n_o=1'b1;
+            assign flash_clk_o=1'b0;
+            assign flash_mosi_o=1'b0;
+            assign debug_model_source_o=2'd3;
+            assign debug_model_flash_error_o=2'd0;
             assign model_status_o = 4'd14;
             assign debug_model_expected_crc_o=0;
             assign debug_model_actual_crc_o=0;

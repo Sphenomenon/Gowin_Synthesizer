@@ -26,6 +26,7 @@ MUSIC_SOURCES = [
     'basic_pitch_pcm_pipeline.sv', 'basic_pitch_nn_ddr.sv',
     'basic_pitch_uart_model_loader.sv', 'basic_pitch_uart_rx.sv',
     'basic_pitch_model_loader.sv', 'basic_pitch_weight_cache.sv',
+    'basic_pitch_boot_model_loader.sv', 'basic_pitch_flash_model_loader.sv',
     'basic_pitch_feature_ddr.sv', 'basic_pitch_plane_cache.sv',
     'basic_pitch_normlog_ddr.sv', 'basic_pitch_normlog.sv',
     'basic_pitch_ddr_coeff_pair.sv', 'basic_pitch_cqt_engine.sv',

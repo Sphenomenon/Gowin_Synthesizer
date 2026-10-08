@@ -111,6 +111,9 @@ module basic_pitch_tf_board_top (
         .USE_DDR_CQT_COEFF(1'b1)
     ) u_basic_pitch (
         .clk_i(clk_50m), .rst_ni(reset_n),
+        .model_boot_ready_i(1'b1),.flash_miso_i(1'b1),
+        .flash_cs_n_o(),.flash_clk_o(),.flash_mosi_o(),
+        .debug_model_source_o(),.debug_model_flash_error_o(),
         .model_serial_i(debug_uart_rx), .model_status_o(bp_model_status),
         .pcm_valid_i(pcm_valid), .pcm_end_i(1'b0), .pcm_ready_o(pcm_ready),
         .pcm_left_i(pcm_left), .pcm_right_i(pcm_right),

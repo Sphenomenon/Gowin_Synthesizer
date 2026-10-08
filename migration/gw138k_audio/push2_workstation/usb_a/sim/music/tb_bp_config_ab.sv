@@ -151,6 +151,9 @@ module tb_bp_config_ab #(
         .USE_ALL_DDR(1'b1), .USE_DDR_FRONT_COEFF(1'b1), .USE_DDR_CQT_COEFF(1'b1)
     ) dut_a (
         .clk_i(a_clk), .rst_ni(rstn && run_a), .analysis_restart_i(1'b0),
+        .model_boot_ready_i(1'b1),.flash_miso_i(1'b1),
+        .flash_cs_n_o(),.flash_clk_o(),.flash_mosi_o(),
+        .debug_model_source_o(),.debug_model_flash_error_o(),
         .model_serial_i(1'b1), .model_status_o(), .debug_model_expected_crc_o(),
         .debug_model_actual_crc_o(), .debug_model_error_stage_o(),
         .pcm_valid_i(pcm_valid && run_a), .pcm_end_i(pcm_end && run_a),
@@ -174,6 +177,9 @@ module tb_bp_config_ab #(
         .USE_DDR_FRONT_COEFF(1'b1), .USE_DDR_CQT_COEFF(1'b1)
     ) dut_b (
         .clk_i(b_clk), .rst_ni(rstn && !run_a), .analysis_restart_i(1'b0),
+        .model_boot_ready_i(1'b1),.flash_miso_i(1'b1),
+        .flash_cs_n_o(),.flash_clk_o(),.flash_mosi_o(),
+        .debug_model_source_o(),.debug_model_flash_error_o(),
         .model_serial_i(1'b1), .model_status_o(), .debug_model_expected_crc_o(),
         .debug_model_actual_crc_o(), .debug_model_error_stage_o(),
         .pcm_valid_i(pcm_valid && !run_a), .pcm_end_i(pcm_end && !run_a),
@@ -194,8 +200,8 @@ module tb_bp_config_ab #(
     reg model_loaded = 0;
     always @(posedge clk) begin
         if (rstn && model_loaded) begin
-            if (run_a) dut_a.g_all_ddr_weights.u_model_loader.state = 4'd14;
-            else dut_b.g_ddr_weights.u_model_loader.state = 4'd14;
+            if (run_a) dut_a.g_model_boot.g_uart.u_model_loader.state = 4'd14;
+            else dut_b.g_model_boot.g_uart.u_model_loader.state = 4'd14;
         end
     end
 

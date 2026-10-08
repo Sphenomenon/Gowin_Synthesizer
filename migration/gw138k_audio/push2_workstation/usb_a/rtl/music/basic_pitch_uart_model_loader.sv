@@ -4,7 +4,9 @@
 // Receives BPN1 + 52239 little-endian words + CRC32 over UART. The bitstream
 // contains no CNN parameter ROM. A full DDR readback CRC gates model_done_o.
 module basic_pitch_uart_model_loader #(
-    parameter integer WORDS = 52239
+    parameter integer WORDS = 52239,
+    parameter integer CLK_HZ = 50_000_000,
+    parameter integer BAUD = 115200
 ) (
     input  logic        clk_i,
     input  logic        rst_ni,
@@ -45,7 +47,7 @@ module basic_pitch_uart_model_loader #(
         end
     endfunction
 
-    basic_pitch_uart_rx #(.CLK_HZ(50_000_000), .BAUD(115200)) u_rx (
+    basic_pitch_uart_rx #(.CLK_HZ(CLK_HZ), .BAUD(BAUD)) u_rx (
         .clk(clk_i), .rst_n(rst_ni), .serial_in(serial_i),
         .time_cycles(32'd0), .data(rx_data), .valid(rx_valid),
         .framing_error(rx_framing_error), .byte_start_time()

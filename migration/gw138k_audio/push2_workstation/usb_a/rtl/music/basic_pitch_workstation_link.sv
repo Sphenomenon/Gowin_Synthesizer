@@ -3,10 +3,14 @@
 // One Basic Pitch client of the workstation DDR arbiter.  Decoded PCM is
 // observed in the TF decoder clock domain; the audio playback path is never
 // stalled by model upload or analysis.
-module basic_pitch_workstation_link (
+module basic_pitch_workstation_link #(
+    parameter bit USE_FLASH_WEIGHTS = 1'b0
+) (
     input wire clk_50m, reset_n,
     input wire memory_clk, memory_reset_n, memory_calibrated,
     input wire model_serial,
+    input wire flash_miso,
+    output wire flash_cs_n, flash_clk, flash_mosi,
     input wire analysis_enable,
     input wire analysis_restart,
     input wire pcm_valid,
@@ -50,19 +54,31 @@ module basic_pitch_workstation_link (
     wire [8:0] debug_stream_wave;
     wire [191:0] layer_hashes;
     wire [31:0] model_expected_crc,model_actual_crc;
-    wire [1:0] model_error_stage;
+    wire [1:0] model_error_stage,model_source,model_flash_error;
+    (* ASYNC_REG="TRUE" *) reg model_memory_meta,model_memory_ready;
+    always @(posedge clk_50m or negedge reset_n) begin
+        if (!reset_n) begin model_memory_meta<=0; model_memory_ready<=0; end
+        else begin
+            model_memory_meta<=memory_calibrated && memory_reset_n;
+            model_memory_ready<=model_memory_meta;
+        end
+    end
     wire bp_mem_req,bp_mem_write,bp_mem_ready,bp_mem_rsp_valid;
     wire [31:0] bp_mem_byte_addr;
     wire [15:0] bp_mem_wdata,bp_mem_rdata;
     basic_pitch_pcm_pipeline #(
         .WIN_LEN(43844),.FRAME_LIMIT(172),.OCTAVE_LIMIT(9),
         .USE_EXTERNAL_STATE(1'b1),.USE_EXTERNAL_PLANE(1'b1),
-        .USE_EXTERNAL_WEIGHTS(1'b1),.USE_EXTERNAL_FEATURES(1'b1),
+        .USE_EXTERNAL_WEIGHTS(1'b1),.USE_FLASH_WEIGHTS(USE_FLASH_WEIGHTS),.USE_EXTERNAL_FEATURES(1'b1),
         .USE_ALL_DDR(1'b0),.USE_DDR_SIGNAL(1'b1),
         .USE_DDR_FRONT_COEFF(1'b1),.USE_DDR_CQT_COEFF(1'b1)
     ) u_basic_pitch (
         .clk_i(clk_50m),.rst_ni(reset_n),.analysis_restart_i(analysis_restart),
-        .model_serial_i(model_serial),.model_status_o(model_status),
+        .model_serial_i(model_serial),.model_boot_ready_i(model_memory_ready),
+        .flash_miso_i(flash_miso),
+        .flash_cs_n_o(flash_cs_n),.flash_clk_o(flash_clk),.flash_mosi_o(flash_mosi),
+        .model_status_o(model_status),
+        .debug_model_source_o(model_source),.debug_model_flash_error_o(model_flash_error),
         .debug_model_expected_crc_o(model_expected_crc),
         .debug_model_actual_crc_o(model_actual_crc),
         .debug_model_error_stage_o(model_error_stage),
@@ -202,7 +218,8 @@ module basic_pitch_workstation_link (
         {debug_progress,debug_dwell};
     // The model status remains in bits [5:2]. Upper bits make a completed
     // score observable on the board without altering the six CNN hash pages.
-    wire [31:0] sd_report = {score_count,score_first,score_last,2'd0,model_error_stage,
+    wire [31:0] sd_report = {score_count,score_first,score_last,model_source,
+                             (model_source==2'd2 && model_status==0 ? model_flash_error : model_error_stage),
                              model_status,memory_calibrated,1'b1};
     basic_pitch_link_uart u_report (
         .clk_i(clk_50m),.rst_ni(reset_n),

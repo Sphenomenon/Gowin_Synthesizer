@@ -1,0 +1,229 @@
+{
+  "passed": true,
+  "tests": [
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 0,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=0 words=31 clk_div=4 zero_rsp=0 cycles=7589 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 151780000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 0,
+      "zero_response": 1,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=0 words=31 clk_div=4 zero_rsp=1 cycles=7373 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 147460000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 1,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=1 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 2,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=2 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 3,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=3 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 4,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=4 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 5,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=5 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 6,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=6 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 7,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=7 words=31 clk_div=4 zero_rsp=0 cycles=18390 writes=62 reads=31 source=2 crc=dfc2733d flash_error=2\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 367800000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 8,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=8 words=31 clk_div=4 zero_rsp=0 cycles=18658 writes=62 reads=62 source=2 crc=dfc2733d flash_error=3\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 373160000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 9,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=9 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+    },
+    {
+      "words": 31,
+      "clk_div": 4,
+      "case": 10,
+      "zero_response": 0,
+      "payload_crc32": "DFC2733D",
+      "log": "PASS case=10 words=31 clk_div=4 zero_rsp=0 cycles=9924 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 198480000 (1ps)"
+    },
+    {
+      "words": 1,
+      "clk_div": 1,
+      "case": 0,
+      "zero_response": 0,
+      "payload_crc32": "94963C67",
+      "log": "PASS case=0 words=1 clk_div=1 zero_rsp=0 cycles=1531 writes=1 reads=1 source=1 crc=94963c67 flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 30620000 (1ps)"
+    },
+    {
+      "words": 1,
+      "clk_div": 1,
+      "case": 0,
+      "zero_response": 1,
+      "payload_crc32": "94963C67",
+      "log": "PASS case=0 words=1 clk_div=1 zero_rsp=1 cycles=1524 writes=1 reads=1 source=1 crc=94963c67 flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 30480000 (1ps)"
+    },
+    {
+      "words": 1,
+      "clk_div": 1,
+      "case": 1,
+      "zero_response": 0,
+      "payload_crc32": "94963C67",
+      "log": "PASS case=1 words=1 clk_div=1 zero_rsp=0 cycles=2392 writes=1 reads=1 source=2 crc=94963c67 flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 47840000 (1ps)"
+    },
+    {
+      "words": 1,
+      "clk_div": 1,
+      "case": 7,
+      "zero_response": 0,
+      "payload_crc32": "94963C67",
+      "log": "PASS case=7 words=1 clk_div=1 zero_rsp=0 cycles=2427 writes=2 reads=1 source=2 crc=94963c67 flash_error=2\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 48540000 (1ps)"
+    },
+    {
+      "words": 1,
+      "clk_div": 1,
+      "case": 8,
+      "zero_response": 0,
+      "payload_crc32": "94963C67",
+      "log": "PASS case=8 words=1 clk_div=1 zero_rsp=0 cycles=2440 writes=2 reads=2 source=2 crc=94963c67 flash_error=3\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 48800000 (1ps)"
+    },
+    {
+      "words": 65536,
+      "clk_div": 1,
+      "case": 0,
+      "zero_response": 0,
+      "payload_crc32": "D11403B1",
+      "log": "PASS case=0 words=65536 clk_div=1 zero_rsp=0 cycles=3038961 writes=65536 reads=65536 source=1 crc=d11403b1 flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 60779220000 (1ps)"
+    },
+    {
+      "words": 52239,
+      "clk_div": 4,
+      "case": 0,
+      "zero_response": 0,
+      "payload_crc32": "AF01A61B",
+      "log": "PASS case=0 words=52239 clk_div=4 zero_rsp=0 cycles=7386959 writes=52239 reads=52239 source=1 crc=af01a61b flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 147739180000 (1ps)"
+    }
+  ],
+  "full_model_manifest": {
+    "magic": "BPF1",
+    "version": 1,
+    "header_bytes": 32,
+    "word_count": 52239,
+    "payload_bytes": 104478,
+    "payload_crc32": "AF01A61B",
+    "flash_image_bytes": 104510,
+    "payload_byte_order": "little-endian 16-bit words",
+    "contains_pcm": false
+  },
+  "model_mem_sha256": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf",
+  "hardware_tested": false,
+  "host_invalid_cases_rejected": 7,
+  "pipeline_equivalence": {
+    "passed": true,
+    "frames": 3,
+    "window_samples": 2048,
+    "layers": 6,
+    "output_notes": 1,
+    "backend": "verilator",
+    "log_tail": [
+      "RUN_B notes=1 hashes=b3deebef_08dd57ba_878ffdf1_3f1526dd_950b5941_33f3e140",
+      "COVERAGE layer=0 writes_A=6336 writes_B=6336",
+      "COVERAGE layer=1 writes_A=792 writes_B=792",
+      "COVERAGE layer=2 writes_A=8448 writes_B=8448",
+      "COVERAGE layer=3 writes_A=264 writes_B=264",
+      "COVERAGE layer=4 writes_A=8448 writes_B=8448",
+      "COVERAGE layer=5 writes_A=264 writes_B=264",
+      "PASS dual-config equivalence (1 notes)",
+      "- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/music/tb_bp_config_ab.sv:343: Verilog $finish",
+      "- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28",
+      "- Verilator: $finish at 2s; walltime 165.829 s; speed 12.308 ms/s",
+      "- Verilator: cpu 165.447 s on 1 threads; allocated 21 MB"
+    ],
+    "metadata": {
+      "backend": "verilator",
+      "parameters": {
+        "FRAMES": 3,
+        "WIN_LEN": 2048,
+        "DDR_READ_CYCLES": 1,
+        "MAX_CYCLES": 400000000
+      },
+      "sources": {
+        "rtl/music/basic_pitch_nn_ddr.sv": "f3ec8ec800f28bbd6ccd02ece29a6843635e81d0bd7cd280f59da50c653412a1",
+        "sim/music/gen/basic_pitch_pcm_pipeline.sv": "07ed0fde421bc10bc45962a5780ef675a1dbdf5e91b5c1c496bc3ecde72d97ec",
+        "rtl/music/basic_pitch_uart_model_loader.sv": "929e4f9a702fe06731a651817ff9217f6ff7cd7e553b642d3dda7b2b53393fd5",
+        "rtl/music/basic_pitch_uart_rx.sv": "28f403ca014eadb6141beb6f293a52266962326de8e15d44f7115d1745310b7c",
+        "rtl/music/basic_pitch_model_loader.sv": "3543f943144627993d0f35aa39cf4e89605dcc934af9de835e6e372d09a3725b",
+        "rtl/music/basic_pitch_weight_cache.sv": "55b9e861729e65182f6e6ca347476e4812d911d7699eaa7a6378eabdc962a2d0",
+        "rtl/music/basic_pitch_boot_model_loader.sv": "52744252107954c913aebdacce73c3788901f899c544a1e61a55ddfa0a80c3e2",
+        "rtl/music/basic_pitch_flash_model_loader.sv": "3933a261e4b3cee19a83e06056368d09c658c2c6b903f540d9e23fc61e7f9c3d",
+        "rtl/music/basic_pitch_feature_ddr.sv": "691cdefab79a6f1da81116f9712cf14cb2df76404ddbf17a9af5af919015784b",
+        "rtl/music/basic_pitch_plane_cache.sv": "2c1d4936e3e3f0a400dad67096cad5a063a5e3a4c8f3f966d2cd8f263a8f7991",
+        "rtl/music/basic_pitch_normlog_ddr.sv": "d140dd83ae28b451d472a8f4892eac22eb952d55ea9385f9b14af4929fa46fd2",
+        "rtl/music/basic_pitch_normlog.sv": "45d599c8dafd47dc9c9c8bab321886a023ed35c39d3473883b8d1009dd3ac5ee",
+        "rtl/music/basic_pitch_ddr_coeff_pair.sv": "8f4310bf64a962dba8045cf966e2d4db3be1264cdf7550b9cb08237706452f05",
+        "rtl/music/basic_pitch_cqt_engine.sv": "8a3913c7def13ddff692f226ba1c623bb928d67be06af5f5f6f2380ee9eb6028",
+        "rtl/music/basic_pitch_cqt_frontend.sv": "0c92ab77430815c6edad91791479b1f81afe3121a710093f1681b63ed00ed6ae",
+        "rtl/music/basic_pitch_conv2d.sv": "086d159ee1737c6470481ffdd45b377e43351c8f495ed6dde6617c80f6404537",
+        "rtl/music/basic_pitch_activation.sv": "0fc5a3c6f9899234c9ea8404e02ba63388dab7bb820b45c04de2dc7892af9a49",
+        "rtl/music/basic_pitch_requant.sv": "6d18a173500d513e9f7c9771ae2edd4322575c72bde7a400cccd5b8e7eee25e2",
+        "rtl/music/basic_pitch_row_buffer.sv": "bc1c94dafa85f61b4f625642de10a00d748f4742dc6fb64c9383bf4447f5278c",
+        "rtl/music/basic_pitch_cnn_streaming.sv": "5aa2f1e9d568c4c4dd8ef65bc298f9005c7a64991d18c9d82dbcf749af0efabf",
+        "rtl/music/basic_pitch_viterbi.sv": "7891c1294aaa5f75a32a86e8fc5a1a7d1c95d8579238cb3e85700102482f0154",
+        "rtl/music/basic_pitch_shared_sigmoid.sv": "b42cfa2b37a29f4f99409a97619c0330fba124a843cbb3d235db5b8a335c4779",
+        "rtl/music/basic_pitch_44100_to_48000.sv": "cea1bb76b5e6fa18ed606899fc9d821195fb3d25c07a8a92b236de9c73844347",
+        "sim/music/tb_bp_config_ab.sv": "6cad0016e82cb2dbb3ba79a147fe4558c98d3478626748ed3c8d0d4fde20ee00"
+      },
+      "model_sha256": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf"
+    }
+  }
+}

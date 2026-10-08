@@ -594,6 +594,7 @@ end
         .clk_50m(clk_50m),.reset_n(reset_n),
         .memory_clk(memory_clk),.memory_reset_n(memory_reset_n),
         .memory_calibrated(memory_calibrated),.model_serial(pc_uart_rx_i),
+        .flash_miso(1'b1),.flash_cs_n(),.flash_clk(),.flash_mosi(),
         .analysis_enable(music_analysis_enable),
         .pcm_valid(analysis_pcm_valid),.pcm_end(analysis_pcm_end),
         .pcm_left(analysis_pcm_left),
