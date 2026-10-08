@@ -1,0 +1,448 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-08T20:47:15+08:00",
+  "request": "尝试固化到flash里",
+  "status": "flash_program_verify_and_reprogram_boot_passed",
+  "deployment": {
+    "started_at": "2026-10-08T20:01:48+08:00",
+    "status": "flash_program_verified_flash_boot85_modelE_smoke_passed",
+    "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+    "user_code": "0x00000085",
+    "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444",
+    "encoded_bitstream_bytes": 5283212,
+    "usb_device": "/sys/bus/usb/devices/3-5",
+    "cable_location": 53,
+    "serial": "2025030317",
+    "flash_write_attempted": true,
+    "flash_program_verified": true,
+    "fpga_flash_written": true,
+    "flash_boot_verified": true,
+    "power_cycle_tested": false,
+    "steps": [
+      {
+        "name": "scan",
+        "command": [
+          "/home/sphenicidition/.local/opt/gowin-programmer-1.9.12.02/bin/programmer_cli",
+          "--scan-cables",
+          "L"
+        ],
+        "exit_code": 0,
+        "duration_seconds": 0.161
+      },
+      {
+        "name": "before_codes",
+        "command": [
+          "/home/sphenicidition/.local/opt/gowin-programmer-1.9.12.02/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "5",
+          "--location",
+          "53",
+          "--frequency",
+          "0.9MHz",
+          "--operation_index",
+          "0"
+        ],
+        "exit_code": 0,
+        "duration_seconds": 0.158
+      },
+      {
+        "name": "flash_program_gao69_new_tool",
+        "command": [
+          "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "5",
+          "--location",
+          "53",
+          "--frequency",
+          "2.5MHz",
+          "--operation_index",
+          "69",
+          "--fsFile",
+          "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/impl/pnr/Prj1.fs",
+          "--spiaddr",
+          "0x000000"
+        ],
+        "exit_code": -9,
+        "timeout": false,
+        "duration_seconds": 145.515,
+        "passed": false
+      },
+      {
+        "name": "post_gao_codes",
+        "command": [
+          "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "5",
+          "--location",
+          "53",
+          "--frequency",
+          "0.9MHz",
+          "--operation_index",
+          "0"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "duration_seconds": 0.156
+      },
+      {
+        "name": "native_flash_verify66",
+        "command": [
+          "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "5",
+          "--location",
+          "53",
+          "--frequency",
+          "0.9MHz",
+          "--operation_index",
+          "66",
+          "--fsFile",
+          "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/impl/pnr/Prj1.fs",
+          "--spiaddr",
+          "0x000000"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "duration_seconds": 1.815
+      },
+      {
+        "name": "flash_program_native54",
+        "command": [
+          "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "5",
+          "--location",
+          "53",
+          "--frequency",
+          "0.9MHz",
+          "--operation_index",
+          "54",
+          "--fsFile",
+          "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/impl/pnr/Prj1.fs",
+          "--spiaddr",
+          "0x000000"
+        ],
+        "exit_code": 0,
+        "duration_seconds": 157.46,
+        "passed": true
+      },
+      {
+        "name": "flash_reprogram",
+        "command": [
+          "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "5",
+          "--location",
+          "53",
+          "--frequency",
+          "0.9MHz",
+          "--operation_index",
+          "1"
+        ],
+        "exit_code": 0,
+        "duration_seconds": 0.2
+      },
+      {
+        "name": "flash_boot_codes",
+        "command": [
+          "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "5",
+          "--location",
+          "53",
+          "--frequency",
+          "0.9MHz",
+          "--operation_index",
+          "0"
+        ],
+        "exit_code": 0,
+        "duration_seconds": 0.16
+      },
+      {
+        "name": "flash_boot_codes_delayed",
+        "command": [
+          "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "5",
+          "--location",
+          "53",
+          "--frequency",
+          "0.9MHz",
+          "--operation_index",
+          "0"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "model_reload",
+        "command": [
+          "/usr/bin/python3",
+          "tools/upload_cnn_ddr_uart.py",
+          "--port",
+          "/dev/serial/by-id/usb-SIPEED_USB_Debugger_2025030317-if01-port0"
+        ],
+        "exit_code": 0,
+        "duration_seconds": 9.542
+      },
+      {
+        "name": "board_idle_smoke",
+        "command": [
+          "/usr/bin/python3",
+          "tools/capture_scope_smoke.py",
+          "--port",
+          "/dev/serial/by-id/usb-SIPEED_USB_Debugger_2025030317-if01-port0",
+          "--seconds",
+          "5",
+          "--output",
+          "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/flash85_20261008_200148_911337/board_idle_smoke.json"
+        ],
+        "exit_code": 0,
+        "duration_seconds": 7.143
+      }
+    ],
+    "references": [
+      "Local Gowin SUG502-2.3E: operation54 native Arora V erase/program/verify; operation1 Flash reprogram; operation0 read codes.",
+      "Local Gowin UG704-1.0.4E: Reprogram command reloads bitstream from Flash to SRAM.",
+      "Sipeed Tang Mega 138K official documentation consulted; its recommended GAO path stalled on this setup."
+    ],
+    "previous_deployment": {
+      "sram_record": "../results/sram_20261008_185231_973548",
+      "downloaded_at": "2026-10-08T18:54:43+08:00",
+      "flash_record": "../results/sram_20261008_185231_973548",
+      "download_medium": "SRAM",
+      "fpga_flash_written": false
+    },
+    "before_user_code": "0x00000085",
+    "preflight_finished_at": "2026-10-08T20:04:49+08:00",
+    "preflight_pipe_attempt": {
+      "operation": 67,
+      "frequency": "0.9MHz",
+      "timeout_seconds": 180,
+      "outcome": "timeout; no flash write operation issued; partial stdout unavailable"
+    },
+    "gaobridge_verify_old_tool": {
+      "operation": 67,
+      "frequency": "0.9MHz",
+      "outcome": "GAO helper loaded, UserCode4404/status26230, then no Flash result; manually interrupted read-only verification",
+      "flash_write_issued": false,
+      "transcript_not_saved": true
+    },
+    "programmer_version": "V1.9.12.03 build2712",
+    "programmer_sha256": "2c5f29341e5f83a84c1ab7f5ad865eec8492c8e1fc2296cb79b2f8633dd35389",
+    "program_attempt_finished_at": "2026-10-08T20:27:54+08:00",
+    "gaobridge69_stop_reason": "Stalled after helper UserCode4404/status26230; no Flash ID or erase/write/verify progress. SIGINT/SIGTERM did not stop it; exact programmer was killed. Native Arora V path subsequently succeeded.",
+    "native_probe_complete": true,
+    "flash_id": "0x0B4018",
+    "native_preflight": "SPI Flash ID detected; verify at address0 mismatched old contents; no preflight Flash write.",
+    "flash_write_started_at": "2026-10-08T20:31:35+08:00",
+    "flash_operation_finished_at": "2026-10-08T20:34:12+08:00",
+    "finished_at": "2026-10-08T20:44:37+08:00",
+    "flash_boot_user_code": "0x00000085",
+    "flash_boot_method": "JTAG Reprogram operation1 followed by delayed Read Device Codes operation0; no fsFile supplied and no SRAM download",
+    "early_boot_read": {
+      "usercode": "0x00000000",
+      "status": "0x00004460",
+      "interpretation": "Immediate read was during configuration. Later read reached85/status26020; not a boot failure."
+    },
+    "post_flash_boot_preload": {
+      "model_statuses_before_upload": [
+        0,
+        14
+      ],
+      "idle_commands": [
+        "b0 78 00",
+        "b0 68 00",
+        "b0 5a 00",
+        "b0 69 00"
+      ]
+    },
+    "model_status": "E (DDR readback CRC passed)",
+    "model_crc32": "AF01A61B",
+    "board_smoke_passed": true,
+    "final_ftdi_state": {
+      "jtag_driver_bound": false,
+      "uart_driver_bound": true,
+      "user_process_owners": [],
+      "serial_capture_active": false,
+      "debugger_reserved": false
+    },
+    "finalized_at": "2026-10-08T20:47:15+08:00",
+    "cnn_model_stored_in_flash": false
+  },
+  "previous_deployment_fields": {
+    "download_medium": "SRAM",
+    "fpga_flash_written": false,
+    "flashed_at": "2026-10-08T18:54:43+08:00",
+    "downloaded_at": "2026-10-08T18:54:43+08:00",
+    "flash_record": "../results/sram_20261008_185231_973548",
+    "sram_record": "../results/sram_20261008_185231_973548",
+    "latest_reload": {
+      "recorded_at": "2026-10-08T18:54:43+08:00",
+      "evidence_report": "reports/FTDI_RELOAD85_20261008.json",
+      "sram_record": "../results/sram_20261008_185231_973548",
+      "from_code": "0x000018D6",
+      "model_status": "E",
+      "initial_model_crc_failure_recovered": true,
+      "startup_checks_passed": 3,
+      "ftdi_jtag_driver_bound": false,
+      "ftdi_uart_driver_bound": true,
+      "serial_capture_active": false
+    },
+    "coordination": "2026-10-08 full85 SRAM reloaded/readback after FTDI interface0 release. First model DDR CRC failed; SRAM reinitialization and paused-source retry recovered modelE. Final 3/3 idle checks PASS, no held voices/notes. All serial captures stopped; JTAG ftdi_sio detached, UART interface retained, debugger available. Previous manual TRAVLER/analog acceptance remains pending."
+  },
+  "idle_smoke": {
+    "passed": true,
+    "started_at": "2026-10-08T20:44:30+08:00",
+    "exercise_live": false,
+    "sample_stream_saved": false,
+    "tests": {
+      "startup_cpu_audio_ddr_model": "passed",
+      "push_connected_screen_frames_advancing": "passed",
+      "audio_health_zero": "passed"
+    },
+    "last": {
+      "B138": [
+        "00000004",
+        "AC44B042",
+        "00008000",
+        "0000003B"
+      ],
+      "A138": [
+        "0000017A",
+        "0000CB03",
+        "0115932D",
+        "00000000",
+        "05AA2E01",
+        "000058D1",
+        "000058C7",
+        "00000000"
+      ],
+      "C350": [
+        "0000017A",
+        "55490463",
+        "2637621A",
+        "800015B8",
+        "43505531",
+        "50415353",
+        "001966A8",
+        "00000000"
+      ],
+      "K138": {
+        "sequence": 378,
+        "applied_events": 16,
+        "mode": "A",
+        "sound": "flute",
+        "route": "stereo",
+        "effects": 0,
+        "active_voices": 0,
+        "gain_q15": 25600,
+        "pc_input_errors": 0,
+        "held_notes": []
+      },
+      "E138": {
+        "sequence": 378,
+        "vibrato": 0,
+        "glide": 0,
+        "bend_index": 128,
+        "bend": 0,
+        "pitch_q20": 1048576,
+        "panic_epoch": 0,
+        "sustain": false,
+        "snap_request": 0,
+        "snap_token": 0,
+        "snap_done": false,
+        "snap_error": false,
+        "snap_count": 0,
+        "snap_completed": 0,
+        "snap_sequence": 0
+      },
+      "U138": [
+        "0000017A",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000"
+      ],
+      "P138": [
+        "0000017A",
+        "00000103",
+        "00000B78",
+        "00000000",
+        "0000005A",
+        "00000131",
+        "00FF0000",
+        "00000000"
+      ]
+    },
+    "limits": [
+      "UART smoke does not verify physical DAC waveform, HDMI reception, TF hotplug or CNN song-score correctness."
+    ],
+    "push_connected": true,
+    "audio_health_word": "00000000",
+    "crc_valid_records": {
+      "B138": 10,
+      "A138": 5,
+      "C350": 5,
+      "K138": 5,
+      "E138": 5,
+      "U138": 5,
+      "P138": 5
+    },
+    "crc_bad": 0,
+    "model_statuses": [
+      14
+    ],
+    "sample_counter_delta": 192000,
+    "runtime_report_sequence_delta": 4,
+    "samples_per_runtime_report": 48000.0,
+    "push_screen_frame_delta": 3,
+    "midi_control_commands": [],
+    "finished_at": "2026-10-08T20:44:37+08:00"
+  },
+  "manual_acceptance_status": "smoke_pass_manual_TRAVLER_acceptance_pending",
+  "whole_board_timing_closed": false,
+  "limitations": [
+    "No physical power-off/on was performed. Boot was verified using the documented JTAG Reprogram command without an fsFile/SRAM download.",
+    "CNN weights remain in volatile DDR; postboot UART upload is still required. This Flash write stores the FPGA configuration, not the model.",
+    "No new HDL build was performed. Uncommitted BLE development is not included.",
+    "Short UART smoke does not validate physical audio/HDMI appearance, CNN song-score correctness, long-term stability or timing closure."
+  ],
+  "evidence_sha256": {
+    "results/flash85_20261008_200148_911337/flash_result.json": "ef15901d7d26465665e8de27236d9a7540ab9c31c1844669a1fa9161e3560c9a",
+    "results/flash85_20261008_200148_911337/scan.log": "850459116bc02a416d671af26ffe7d4dec31ac2b7de5e7bf4ec2e1ea8e77b623",
+    "results/flash85_20261008_200148_911337/before_codes.log": "eb0e239145947efc1ceb2f87a587885d13ff2c17fbc60c75f2174097356e9ad4",
+    "results/flash85_20261008_200148_911337/flash_program_gao69_new_tool.raw.log": "5eb01db5db972b67293d684a950061ff0fa55062b083151d1a695ba7de50cd18",
+    "results/flash85_20261008_200148_911337/flash_program_gao69_new_tool.log": "f0eb49af3226d21064137c57447c537c33f1cb36016f26500378577d8228bc02",
+    "results/flash85_20261008_200148_911337/post_gao_codes.log": "bd857cdb6a0db9033df085a9d8777fb047b795cc95cd802a9ca66204d2374ffc",
+    "results/flash85_20261008_200148_911337/native_flash_verify66.log": "f88b420cbe3a7db2c1fb9efa2a3bf80d67e2bb2970070fd3220c57516448669b",
+    "results/flash85_20261008_200148_911337/flash_program_native54.raw.log": "6597b7491fa079e81d73dcc8db8a0fce19a572f74e293899d52a02dd49bb0bcd",
+    "results/flash85_20261008_200148_911337/flash_program_native54.log": "2e27bf8b1666597f9e0a49ef20761fead1a67b00acee87a9ff8beedc2d147c1e",
+    "results/flash85_20261008_200148_911337/flash_reprogram.log": "09628aa5541b8bc8540d9f1ac79c9bd0af2c6c1e172855576854a80a94d745cf",
+    "results/flash85_20261008_200148_911337/flash_boot_codes.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "results/flash85_20261008_200148_911337/flash_boot_codes_delayed.log": "880fe0b3f99aff182e5808ff2b32010816f7ecb55055d59b104e8fb815ace05f",
+    "results/flash85_20261008_200148_911337/model_reload.log": "525e0555f6d3c92092b1f40ec787f669a687a35edd82ea9aa331a3312dca1bba",
+    "results/flash85_20261008_200148_911337/board_idle_smoke.json": "dac0e465e6ac0597ce20ed16ab1ed8e60a32dc62a5c89b667baf32535b0633f0",
+    "results/flash85_20261008_200148_911337/board_idle_smoke.log": "dac0e465e6ac0597ce20ed16ab1ed8e60a32dc62a5c89b667baf32535b0633f0",
+    "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/impl/pnr/Prj1.fs": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444"
+  }
+}
