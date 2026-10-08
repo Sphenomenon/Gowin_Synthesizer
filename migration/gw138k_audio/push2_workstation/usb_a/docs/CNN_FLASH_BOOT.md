@@ -96,7 +96,7 @@ python3 tools/build_cnn_flash_image.py \
 
 仿真覆盖完整部署模型和 1/31/65536 字边界、校准等待、0 延迟与可变延迟 DDR 响应、随机阶段反压、中途复位、空白分区、头字段错误、Flash 载荷损坏、DDR 回读损坏、真实串行 UART 回退。独立 NOR 端点检查 opcode/地址，独立 DDR 端点检查每个写入/回读地址和最终每个字，避免只比较状态机内部变量。
 
-Flash 写入必须把模型分区和位流一起记录。原生 Arora V operation54 用于 `.fs` 位流；operation56（C Bin）用于原始模型 `.bin`/整区打包镜像，CLI 文件参数同样使用 `--fsFile`（此模式忽略 `--mcuFile`）。首次采用 raw-data 操作后须用 RTL 双 CRC 实读确认字节序/偏移；不能仅以 Programmer 的退出码代替自动搬运验收。禁止用 Bulk Erase 操作更新单个分区。实体操作需持有 debugger `2025030317` 的独占锁，写前/重加载后读回确切 UserCode。
+Flash 写入必须把模型分区和位流一起记录。原生 Arora V operation54 用于 `.fs` 位流；operation56（C Bin）用于原始模型 `.bin`/整区打包镜像，CLI 必须同时传 `--fsFile cnn_model.bin --mcuFile cnn_model.bin`：前者满足 CLI 的文件检查，后者提供原始字节；单传任一参数会导致无数据/零长度。该调用已用 operation66 与等价的文本 `.data.fs` 交叉校验实际 Flash 字节。镜像工具还输出逐字节等价的 `.data.fs` 容器，官方 `--filestransform 1` 还原结果与原始镜像一致。首次采用 raw-data 操作后须用 RTL 双 CRC 实读确认字节序/偏移；不能仅以 Programmer 的退出码代替自动搬运验收。禁止用 Bulk Erase 操作更新单个分区。实体操作需持有 debugger `2025030317` 的独占锁，写前/重加载后读回确切 UserCode。
 
 验收时保留 UART 只读监听，执行 JTAG Reprogram（不提供 SRAM 位流），要求来源=1 且模型状态=E，再记录多次重加载结果。物理断电/上电与耳机/显示/整曲验收需分别注明是否实际执行。
 

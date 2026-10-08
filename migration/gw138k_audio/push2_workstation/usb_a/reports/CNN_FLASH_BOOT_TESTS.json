@@ -225,5 +225,23 @@
       },
       "model_sha256": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf"
     }
+  },
+  "programmer_transport": {
+    "ascii_data_container_roundtrip": true,
+    "gowin_filestransform_roundtrip": true,
+    "bytes": 104510,
+    "raw_program_arguments": [
+      "--operation_index",
+      "56",
+      "--fsFile",
+      "cnn_model.bin",
+      "--mcuFile",
+      "cnn_model.bin",
+      "--spiaddr",
+      "0x600000"
+    ],
+    "physical_data_partition_cross_verified": true,
+    "bitstream_partition_verified_intact": true,
+    "record": "results/workstation_flash92_20261009_cst/model_partition_cbin_both/"
   }
 }

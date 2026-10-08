@@ -67,6 +67,18 @@ def build_image(words: list[int]) -> tuple[bytes, dict[str, int | str]]:
     return header + payload, manifest
 
 
+def gowin_data_fs(image: bytes) -> str:
+    """Transparent programmer transport: each byte is MSB-first ASCII bits.
+
+    This is data for the nonzero Flash model partition, never an SRAM/FPGA
+    configuration. No FPGA sync/header words or byte padding are inserted.
+    Gowin filestransform=1 must reconstruct the original bytes exactly.
+    """
+    return ("//CNN model data partition; BPF1 bytes, not FPGA configuration.\n" +
+            "\n".join("".join(f"{b:08b}" for b in image[i:i+32])
+                       for i in range(0,len(image),32))+"\n")
+
+
 def validate_image(image: bytes, expected_words: int = DEFAULT_WORDS) -> dict:
     if len(image)<HEADER_BYTES:
         raise ValueError("truncated model header")
@@ -127,6 +139,7 @@ def main() -> None:
     manifest["source_mem"] = str(args.mem)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_bytes(image)
+    args.out.with_suffix(".data.fs").write_text(gowin_data_fs(image))
     manifest_path = args.manifest or args.out.with_suffix(args.out.suffix + ".json")
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
     if args.bitstream_bin:

@@ -15,7 +15,7 @@ from pathlib import Path
 import re
 import subprocess
 import time
-from build_cnn_flash_image import validate_image
+from build_cnn_flash_image import validate_image,gowin_data_fs
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
 BASE_SHA='7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444'
@@ -45,9 +45,11 @@ def main():
     assert re.search(r'//UserCode: (0x[0-9A-Fa-f]{8})',fs.read_text()[:1000])[1].lower()==code
     programmer=Path.home()/'.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli'
     common=[str(programmer),'--device','GW5AST-138C','--cable-index','5','--location',str(args.location),'--frequency','0.9MHz']
-    # Native Arora V C-Bin operations bind their raw .bin input to --fsFile;
-    # --mcuFile is ignored in this access mode (checked via offline SVF parsing).
-    model_args=['--operation_index','56','--fsFile',str(model),'--spiaddr','0x600000']
+    # Native Arora V C-Bin operation needs BOTH: --fsFile satisfies the CLI
+    # data-file check; --mcuFile supplies the raw bytes. Either one alone
+    # produced no data. Both were programmed and cross-verified via text .fs.
+    model_args=['--operation_index','56','--fsFile',str(model),
+                '--mcuFile',str(model),'--spiaddr','0x600000']
     fs_args=['--operation_index','54','--fsFile',str(fs),'--spiaddr','0x000000']
     print(json.dumps(dict(build=str(build),target_code=code,model_bytes=model.stat().st_size,
         program_model=common+model_args,program_bitstream=common+fs_args,programming_requested=args.program),indent=2),flush=True)
@@ -75,13 +77,15 @@ def main():
         assert '2025030317' in args.port and Path(args.port).exists(),'wrong/missing debugger UART'
         assert args.location==53 and Path('/sys/bus/usb/devices/3-5/serial').read_text().strip()=='2025030317','debugger USB location changed'
         text=run('before_code',['--operation_index','0'])
-        codes=re.findall(r'User\s*Code\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
+        codes=re.findall(r'User\s*Code(?:\s+is)?\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
         assert codes and int(codes[-1],16)==int(args.expected_code,16),'board version changed; no write allowed'
         try:
             text=run('flash_id',['--operation_index','51'])
             assert re.search(r'(?:0x)?0[Bb]4018',text),'unexpected Flash capacity/ID'
             wrote=True
             run('program_model',model_args,r'Program and Verify Flash successfully')
+            transport=output/'cnn_model.data.fs';transport.write_text(gowin_data_fs(model.read_bytes()))
+            run('verify_model_bytes',['--operation_index','66','--fsFile',str(transport),'--spiaddr','0x600000'],r'Verify Flash successfully')
             # Prove raw model programming did not erase address-zero configuration.
             run('verify_preserved_full85',['--operation_index','66','--fsFile',str(oldfs),'--spiaddr','0x000000'],r'Verify Flash successfully')
             run('program_workstation',fs_args,r'Program and Verify Flash successfully')
@@ -103,7 +107,7 @@ def main():
                     result['boots'].append(dict(index=index,passed=ok,model_observations=observed));save()
                     assert ok,'Flash->DDR CRC/auto boot not proven; UART fallback is not a pass'
                 text=run('after_code_'+str(index),['--operation_index','0'])
-                codes=re.findall(r'User\s*Code\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
+                codes=re.findall(r'User\s*Code(?:\s+is)?\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
                 assert codes and int(codes[-1],16)==int(code,16),'wrong post-Flash UserCode'
             result['passed']=True
         except Exception as exc:

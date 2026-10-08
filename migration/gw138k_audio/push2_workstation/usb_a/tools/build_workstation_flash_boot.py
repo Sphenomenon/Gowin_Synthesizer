@@ -17,7 +17,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from build_full_song_83_bp_ddr_isolation import FROZEN
 from workstation_memory import audit
-from build_cnn_flash_image import build_image,load_words,pack_flash
+from build_cnn_flash_image import build_image,load_words,pack_flash,gowin_data_fs
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
 BASE_FS_SHA='7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444'
@@ -128,7 +128,7 @@ def main():
             hardware_tested=False,flash_model_base='0x00600000',full_workstation=True))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
-        (output/'cnn_model.bin').write_bytes(image);write_json(output/'cnn_model.json',manifest)
+        (output/'cnn_model.bin').write_bytes(image);(output/'cnn_model.data.fs').write_text(gowin_data_fs(image));write_json(output/'cnn_model.json',manifest)
     else:
         inputs=json.loads((output/'workstation_inputs.json').read_text())
         assert json.loads((output/'build_metadata.json').read_text())['user_code'],'PNR release needs assigned code'

@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import subprocess
 import tempfile
-from build_cnn_flash_image import build_image, load_words,validate_image,pack_flash
+from build_cnn_flash_image import build_image, load_words,validate_image,pack_flash,gowin_data_fs
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / 'rtl/music'
 
@@ -41,6 +41,11 @@ def main():
         vals=load_words(SRC/'weights/cnn_ddr_blob.mem');image,manifest=build_image(vals)
         assert len(vals)==52239 and len(image)==104510 and manifest['payload_crc32']=='AF01A61B'
         validate_image(image)
+        transport=gowin_data_fs(image)
+        recovered=b''.join(int(line[i:i+8],2).to_bytes(1,'big')
+                           for line in transport.splitlines() if not line.startswith('//')
+                           for i in range(0,len(line),8))
+        assert recovered==image
         host_rejects=0
         for corrupt in [image[:-1],image+b'\x00',b'\x00'+image[1:],image[:32]+bytes([image[32]^1])+image[33:]]:
             try:validate_image(corrupt)
