@@ -72,7 +72,9 @@ def main():
     ap.add_argument('--output',type=Path)
     ap.add_argument('--user-code')
     ap.add_argument('--synthesis-from',type=Path,help='reuse identical successful RTL synthesis after a CST-only failure')
-    ap.add_argument('--incremental-baseline',action='store_true',help='fresh synthesis, then reuse the verified full85 routed design as a P&R reference')
+    ap.add_argument('--incremental-baseline',action='store_true',help='experimental reference reuse; rejected on any unrouted net')
+    ap.add_argument('--route-option',type=int,choices=(0,1,2),default=1,help='Gowin route search option, recorded per isolated candidate')
+    ap.add_argument('--tighten-cache-reset',action='store_true',help='tighten existing synchronous weight-cache RESET endpoint max delay to 18 ns')
     args=ap.parse_args()
     if args.synthesis_from and args.flow!='all':ap.error('--synthesis-from requires --flow all')
     if args.incremental_baseline and (args.flow!='all' or args.synthesis_from):
@@ -117,9 +119,16 @@ def main():
         assert cst_files==['constraints/tang_mega_138k.cst'],'baseline must have one complete pin CST'
         cst=stage/cst_files[0];cst.write_text(cst.read_text()+'\n'+CST)
         sdc=stage/'constraints/tang_mega_138k.sdc';sdc.write_text(sdc.read_text()+SDC)
+        if args.tighten_cache_reset:
+            sdc.write_text(sdc.read_text()+'''
+# Stricter budget for the existing synchronous cache RESET cone;
+# original 20-ns clocks, hold checks and all pre-existing paths retained.
+set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache*/RESET}]
+''')
         tcl=stage/'scripts/build.tcl';s=tcl.read_text()
         assert 'set_option -use_mspi_as_gpio 1' in s and 'set_option -use_cpu_as_gpio 1' in s
         s=re.sub(r'(?m)^set_option -(?:user_code|inc_pnr).*\n','',s)
+        s=re.sub(r'(?m)^set_option -route_option .*$',f'set_option -route_option {args.route_option}',s)
         if args.user_code:s=s.replace('set flow all','set_option -user_code '+args.user_code.upper()+'\nset flow all')
         if args.incremental_baseline:
             s=s.replace('set flow all','set_option -inc_pnr [file join $root build full85_reference.pr]\nset flow all')
@@ -133,7 +142,8 @@ def main():
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True))
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,
+            route_option=args.route_option,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
         (output/'cnn_model.bin').write_bytes(image);(output/'cnn_model.data.fs').write_text(gowin_data_fs(image));write_json(output/'cnn_model.json',manifest)

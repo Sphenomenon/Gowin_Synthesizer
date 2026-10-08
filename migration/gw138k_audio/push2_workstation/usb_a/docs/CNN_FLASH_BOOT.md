@@ -74,8 +74,11 @@ python3 tools/build_workstation_flash_boot.py --flow syn
 
 # 完整候选必须使用全仓库未占用的新 UserCode。
 python3 tools/build_workstation_flash_boot.py --flow all --user-code <八位新编号>
+# 当前修复候选采用标准路由，并收紧原缓存 RESET cone 的预算。
+python3 tools/build_workstation_flash_boot.py --flow all --user-code <另一新编号> --route-option 0 --tighten-cache-reset
 
-# 独立增量候选：仍重新综合，仅把已验证 full85 的路由作为 P&R 参考。
+# 实验性增量候选：实际 0x93 参考复用产生 12270 条未布通网络，当前发布使用全量 P&R。
+# 仍重新综合，仅把已验证 full85 的路由作为 P&R 参考。
 python3 tools/build_workstation_flash_boot.py --flow all --user-code <另一新编号> --incremental-baseline
 
 # SPI 物理端口模型、DDR 请求/响应反压、CRC 故障和 UART 回退测试。

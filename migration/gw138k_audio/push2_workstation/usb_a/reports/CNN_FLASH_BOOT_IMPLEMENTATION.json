@@ -1,8 +1,8 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "waiting_tristate94_and_incremental93",
-  "target_user_code": "0x00000094",
+  "status": "incremental93_unroutable_94_cancelled_fresh95_running",
+  "target_user_code": "0x00000095",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
   "model_partition_byte_verify_passed": true,
@@ -61,5 +61,15 @@
     "second_boot_failed": true,
     "direct_sram_done": true,
     "flash_boot_proven": false
+  },
+  "incremental93_error": "PR0004: 12270 unrouted nets; no bitstream generated",
+  "incremental94_cancelled": "same frozen reference already failed in candidate93; terminated before wasting duplicate route search",
+  "fresh_candidate": "results/workstation_flash95_20261009_fresh",
+  "incremental94_tool_result": {
+    "exit_code": -15,
+    "flow": "all",
+    "inputs_unchanged": true,
+    "changed": [],
+    "hardware_tested": false
   }
 }
