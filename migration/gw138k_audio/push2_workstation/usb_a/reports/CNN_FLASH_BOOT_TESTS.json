@@ -408,5 +408,35 @@
       "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/src/control/uart_tx.v": "3513207cae9e529b0dabd45040a33012440ad4c1fc842571b4cb70ece5d09e8f"
     },
     "notes": "Default fast simulation uses 16 clocks/bit; separate case uses actual 50MHz/115200 timing. Independent NOR and DDR address/content/order/backpressure oracle; precheck faults emit no DDR writes. Full model is 52239 words."
+  },
+  "cache_read_retime": {
+    "passed": true,
+    "cache_tests": [
+      {
+        "words": 1,
+        "log": "PASS cache read retiming words=1 exact read/control cycles, range, reset; reads=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_cache_read_retime.sv:56: $finish called at 20511000 (1ps)"
+      },
+      {
+        "words": 31,
+        "log": "PASS cache read retiming words=31 exact read/control cycles, range, reset; reads=31\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_cache_read_retime.sv:56: $finish called at 24111000 (1ps)"
+      },
+      {
+        "words": 7488,
+        "log": "PASS cache read retiming words=7488 exact read/control cycles, range, reset; reads=7488\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_cache_read_retime.sv:56: $finish called at 918931000 (1ps)"
+      }
+    ],
+    "dwell_update_equivalence_cycles": 10000,
+    "dwell_hdl_log": "PASS dwell HDL equivalence: all buckets, exact cycles/windows/resets, 10000 cycles\n/tmp/cnn_cache_read_29npqmfc/dwell.sv:149: $finish called at 200011 (1s)",
+    "original_cache_sha256": "55b9e861729e65182f6e6ca347476e4812d911d7699eaa7a6378eabdc962a2d0",
+    "new_cache_sha256": "0f363e94427a404a55e6ff2ba52ad7dd485f7313173b52ccf8688d02eeb2d0e6",
+    "hardware_tested": false
+  },
+  "cache_read_cnn_ab": {
+    "passed": true,
+    "frames": 3,
+    "win_len": 2048,
+    "notes": 1,
+    "log": "/tmp/cnn_cache_read_retime_ab.log",
+    "hash_coverage": "All six hashes and write counts match in original configs"
   }
 }

@@ -27,6 +27,9 @@ module basic_pitch_weight_cache #(
                            S_DONE=3'd3;
     (* ram_style = "block", syn_ramstyle = "block_ram" *)
     logic signed [15:0] cache [0:MAX_WORDS-1];
+    localparam integer READ_ADDR_BITS = MAX_WORDS <= 1 ? 1 : $clog2(MAX_WORDS);
+    logic signed [15:0] read_data_q;
+    logic read_valid_q;
     logic [2:0] state;
     logic [14:0] blob_base;
     logic [13:0] count;
@@ -40,9 +43,14 @@ module basic_pitch_weight_cache #(
     assign mem_wdata_o = 16'd0;
 
     always_ff @(posedge clk_i) begin
-        if (read_addr_i < MAX_WORDS) read_data_o <= cache[read_addr_i];
-        else                         read_data_o <= 16'sd0;
+        // Keep the variable address range check off the BSRAM synchronous
+        // RESET pin. Data and validity are captured together, preserving the
+        // original one-cycle output and invalid-address zero semantics.
+        read_data_q <= cache[read_addr_i[READ_ADDR_BITS-1:0]];
+        read_valid_q <= read_addr_i < MAX_WORDS;
     end
+
+    assign read_data_o = read_valid_q ? read_data_q : 16'sd0;
 
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin

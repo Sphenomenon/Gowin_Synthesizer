@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "serial97_full_build_running_baseline85_live_smoke_passed",
+  "status": "serial97_99_timing_open_ddr_calibration_failed_cache_read_retime_prepared",
   "target_user_code": "0x00000097",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -35,7 +35,10 @@
     "full95_startup_diagnosis": "results/workstation_flash95_20261009_fresh/startup_diagnosis/result.json",
     "baseline85_live_smoke": "results/workstation_flash95_20261009_fresh/startup_diagnosis/restored85_live_smoke.json",
     "serial_spi_physical_probe": "results/flash_serial_probe98_20261009/board/result.json",
-    "serial97_source_compatibility": "results/workstation_flash97_20261009_serial/serial_compatibility_source_audit.json"
+    "serial97_source_compatibility": "results/workstation_flash97_20261009_serial/serial_compatibility_source_audit.json",
+    "serial97_sram_diagnosis": "results/workstation_flash97_20261009_serial/sram_diagnosis/result.json",
+    "serial99_sram_diagnosis": "results/workstation_flash99_20261009_serial_route0/sram_diagnosis/result.json",
+    "serial99_flash_diagnosis": "results/workstation_flash99_20261009_serial_route0/flash_diagnosis/result.json"
   },
   "incremental_candidate": "results/workstation_flash93_20261009_incremental",
   "incremental_target_user_code": "0x00000093",
@@ -203,5 +206,37 @@
     "actual_baud": 115200,
     "payload_crc32": "AF01A61B"
   },
-  "serial97_synthesis_bsram": 216
+  "serial97_synthesis_bsram": 216,
+  "route0_serial_candidate": "results/workstation_flash99_20261009_serial_route0",
+  "route0_target_user_code": "0x00000099",
+  "route_comparison_same_rtl_constraints_models": true,
+  "route0_fresh_synthesis_completed": true,
+  "serial97_pnr_bsram": 260,
+  "serial99_pnr_bsram": 260,
+  "serial97_clk50": {
+    "fmax_mhz": 48.839,
+    "clock_period_ns": 20.0,
+    "clock_required_mhz": 50.0,
+    "setup_wns_ns": -2.475,
+    "hold_wns_ns": 0.165,
+    "same_clock_closed": false,
+    "clk50_endpoint_tns_closed": false,
+    "clock_constraint_preserved": true,
+    "clk50_setup_hold_closed": false,
+    "clk50_reset_closed": true,
+    "clk50_closed": false
+  },
+  "serial99_clk50": {
+    "fmax_mhz": 49.813,
+    "clock_period_ns": 20.0,
+    "clock_required_mhz": 50.0,
+    "setup_wns_ns": -0.788,
+    "hold_wns_ns": 0.165,
+    "same_clock_closed": false,
+    "clk50_endpoint_tns_closed": false,
+    "clock_constraint_preserved": true,
+    "clk50_setup_hold_closed": false,
+    "clk50_reset_closed": true,
+    "clk50_closed": false
+  }
 }

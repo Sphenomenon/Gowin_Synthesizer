@@ -74,6 +74,14 @@ def audit_serial_compatibility(output):
         'vendor/gowin_ddr3/ddr3_memory_interface.v']
     paths += [str(p.relative_to(BASE/'Prj1')) for p in (BASE/'Prj1').rglob('gw138k_ddr_arbiter.sv')]
     evidence={p:dict(unchanged=sha(BASE/'Prj1'/p)==sha(stage/p),sha256=sha(stage/p)) for p in paths}
+    if json.loads((output/'build_metadata.json').read_text()).get('retimed_cache_read'):
+        pipeline='rtl/music/basic_pitch_pcm_pipeline.sv'
+        text=(stage/pipeline).read_text().replace(
+            '            for (integer i=0;i<8;i=i+1)\n                if (dwell_bucket(state)==i) dwell_count[i] <= dwell_count[i] + 1\'b1;',
+            '            dwell_count[dwell_bucket(state)] <= dwell_count[dwell_bucket(state)] + 1\'b1;')
+        assert text==(BASE/'Prj1'/pipeline).read_text(),'CNN changed beyond dwell telemetry unrolling'
+        evidence[pipeline]['unchanged']=True;evidence[pipeline]['normalization']='Only equivalent parallel dwell-counter update; CNN datapath exact'
+        assert sha(stage/'rtl/music/basic_pitch_weight_cache.sv')==sha(ROOT/'rtl/music/basic_pitch_weight_cache.sv'),'cache retiming source drift'
     assert all(v['unchanged'] for v in evidence.values()),'serial transport changed proven CNN/DDR/firmware'
     original=(BASE/'Prj1/rtl/music/basic_pitch_workstation_link.sv').read_text()
     link=(stage/'rtl/music/basic_pitch_workstation_link.sv').read_text()
@@ -87,6 +95,7 @@ def audit_serial_compatibility(output):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--retime-cache-read',action='store_true',help='equivalent one-cycle cache range mask plus parallel dwell counters; no CNN arithmetic change')
     ap.add_argument('--transport',choices=('serial','direct'),default='serial',help='serial preserves the full85 CNN/native-DDR hierarchy; direct is the earlier diagnostic')
     ap.add_argument('--flow',choices=('prepare','syn','all','pnr'),default='syn')
     ap.add_argument('--output',type=Path)
@@ -96,6 +105,7 @@ def main():
     ap.add_argument('--route-option',type=int,choices=(0,1,2),default=1,help='Gowin route search option, recorded per isolated candidate')
     ap.add_argument('--tighten-cache-reset',action='store_true',help='tighten existing synchronous weight-cache RESET endpoint max delay to 18 ns')
     args=ap.parse_args()
+    if args.retime_cache_read and args.transport!='serial':ap.error('--retime-cache-read currently requires serial transport')
     if args.synthesis_from and args.flow!='all':ap.error('--synthesis-from requires --flow all')
     if args.incremental_baseline and (args.flow!='all' or args.synthesis_from):
         ap.error('--incremental-baseline requires a fresh --flow all, without --synthesis-from')
@@ -107,6 +117,7 @@ def main():
     output=(args.output or ROOT/'results'/datetime.now().strftime('workstation_flash_boot_%Y%m%d_%H%M%S_%f')).resolve()
     stage=output/'Prj1'
     overlays=OVERLAYS if args.transport=='direct' else [f'rtl/music/{n}' for n in ('basic_pitch_flash_model_loader.sv','basic_pitch_flash_map.svh','basic_pitch_flash_io_guard.sv','basic_pitch_flash_serial_boot.sv')]
+    if args.retime_cache_read:overlays += ['rtl/music/basic_pitch_weight_cache.sv']
     if args.flow!='pnr':
         assert sha(BASE/'Prj1/impl/pnr/Prj1.fs')==BASE_FS_SHA,'deployed bitstream drift'
         originals=json.loads((BASE/'workstation_inputs.json').read_text())
@@ -114,6 +125,12 @@ def main():
         assert not output.exists(),'refusing to overwrite candidate'
         shutil.copytree(BASE/'Prj1',stage,ignore=shutil.ignore_patterns('impl','build','*.user','__pycache__'))
         for rel in overlays:shutil.copy2(ROOT/rel,stage/rel)
+        if args.retime_cache_read:
+            pipeline=stage/'rtl/music/basic_pitch_pcm_pipeline.sv';text=pipeline.read_text()
+            original='            dwell_count[dwell_bucket(state)] <= dwell_count[dwell_bucket(state)] + 1\'b1;'
+            assert text.count(original)==1
+            text=text.replace(original,'            for (integer i=0;i<8;i=i+1)\n                if (dwell_bucket(state)==i) dwell_count[i] <= dwell_count[i] + 1\'b1;')
+            pipeline.write_text(text)
         top=stage/'src/push2/gw138k_push_workstation_top.v';s=top.read_text()
         assert s.count('    input wire sd_miso,')==1
         s=s.replace('    input wire sd_miso,','''    input wire flash_miso,
@@ -181,14 +198,14 @@ set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
-        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
+        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
                              'constraints/tang_mega_138k.cst','constraints/tang_mega_138k.sdc'])
         assert set(changed)==allowed,(changed,allowed)
         write_json(output/'workstation_inputs.json',inputs)
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,
             route_option=args.route_option,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
