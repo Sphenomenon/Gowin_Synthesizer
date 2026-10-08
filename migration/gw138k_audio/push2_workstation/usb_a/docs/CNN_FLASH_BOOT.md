@@ -81,6 +81,9 @@ python3 tools/build_workstation_flash_boot.py --flow all --user-code <另一新�
 # SPI 物理端口模型、DDR 请求/响应反压、CRC 故障和 UART 回退测试。
 python3 tools/test_cnn_flash_boot.py --output /tmp/cnn_flash_tests.json
 
+# 离线部署/回滚故障测试：使用已完成候选的真实 hash，所有硬件 I/O 用测试替身。
+python3 tools/test_cnn_flash_deploy.py --build <完整结果目录>
+
 # 原 CNN 两配置逐层哈希/谱面结果等价回归。
 python3 sim/music/run_bp_config_ab.py --simulator verilator --frames 3 --win-len 2048
 ```
@@ -108,4 +111,4 @@ Flash 写入必须把模型分区和位流一起记录。原生 Arora V operatio
 python3 tools/deploy_cnn_flash_boot.py <完整结果目录>
 ```
 
-部署工具先核对原 20 ns clk50 时序、板上版本、Flash ID、冻结工件与独占锁。clk50 未闭合时默认拒绝实体写入；`--allow-clk50-open` 仅用于临时的启动诊断，必须恢复基线且不得据此提升 LATEST。先写模型分区并校验地址零处旧位流仍完好，再写新配置位流；三次 SRAM Erase + JTAG Reprogram 后只读监听 UART，且先等待/核对目标 UserCode 和已配置状态；不在 FPGA 配置完成前解释 DDR/UART 报文，要求模型来源=Flash 且状态=E。失败时保存原始日志，并尝试恢复原 full85 配置位流。
+部署工具先核对原 20 ns clk50 时序、板上版本、Flash ID、冻结工件与独占锁。clk50 未闭合时默认拒绝实体写入；`--allow-clk50-open` 仅用于临时的启动诊断，必须恢复基线且不得据此提升 LATEST。先写模型分区并校验地址零处旧位流仍完好，再写新配置位流；三次 SRAM Erase + JTAG Reprogram 后只读监听 UART，且先等待/核对目标 UserCode 和已配置状态；不在 FPGA 配置完成前解释 DDR/UART 报文，要求模型来源=Flash 且状态=E。失败时保存原始日志，并尝试恢复原 full85 配置位流；等待其 UserCode/配置状态通过后，单独通过 UART 恢复原 full85 的易失模型并执行启动检查。回滚上传在独立证据字段里记录，不计入新功能 Flash→DDR 验收。

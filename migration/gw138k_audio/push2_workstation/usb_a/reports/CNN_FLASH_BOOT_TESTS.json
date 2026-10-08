@@ -247,5 +247,30 @@
   "io_guard_passed": true,
   "io_guard_log": "PASS Flash IO guard: idle release, other-master ownership, active SPI and release\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_io_guard.sv:37: $finish called at 12000 (1ps)",
   "io_guard_source_sha256": "be70cddf661fd231f4f187e8eecf8cf9a2ecbd1e2b0ad8d8041936c4938f5e58",
-  "pin_level_simulation": "All 19 SPI/DDR cases pass through physical tri-state IO guard; separate other-master/reset/idle/active/release test passes."
+  "pin_level_simulation": "All 19 SPI/DDR cases pass through physical tri-state IO guard; separate other-master/reset/idle/active/release test passes.",
+  "offline_deploy_rollback": {
+    "passed": true,
+    "tests": [
+      {
+        "case": "three_flash_boots",
+        "passed": true,
+        "commands": 15,
+        "hardware_io_used": false
+      },
+      {
+        "case": "uart_fallback",
+        "passed": true,
+        "commands": 16,
+        "hardware_io_used": false
+      },
+      {
+        "case": "auto_boot_fail",
+        "passed": true,
+        "commands": 105,
+        "hardware_io_used": false
+      }
+    ],
+    "build": "results/workstation_flash92_20261009_cst",
+    "notes": "Programmer, serial, board inventory, lock and waits are stubbed; all unknown external commands fail closed. Actual candidate input/hash/status logic is exercised."
+  }
 }
