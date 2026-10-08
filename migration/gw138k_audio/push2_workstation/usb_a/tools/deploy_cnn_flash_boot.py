@@ -46,6 +46,7 @@ def main():
     args=ap.parse_args()
     build=args.build.resolve();fs=build/'Prj1/impl/pnr/Prj1.fs';model=build/'cnn_model.bin'
     bundle=json.loads((build/'flash_bundle.json').read_text())
+    build_meta=json.loads((build/'build_metadata.json').read_text())
     inputs=json.loads((build/'workstation_inputs.json').read_text())
     assert all(sha(build/'Prj1'/p)==h for p,h in inputs.items()),'candidate source drift'
     assert sha(fs)==bundle['bitstream_fs_sha256'] and sha(model)==bundle['model_image_sha256'],'artifact drift'
@@ -75,7 +76,8 @@ def main():
     result=dict(started_at=datetime.now().astimezone().isoformat(),build=str(build),user_code=code,
                 commands=[],boots=[],passed=False,uart_model_upload_used=False,sram_download_used=False,sram_erased_before_each_boot=True,
                 physical_power_cycle_tested=False,board_serial='2025030317',
-                clk50_closed=clk50['clk50_closed'],diagnostic_timing_override=args.allow_clk50_open)
+                clk50_closed=clk50['clk50_closed'],diagnostic_timing_override=args.allow_clk50_open,
+                model_transport=build_meta.get('transport','direct'))
     def save():(output/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     def run(label,extra,require=None):
         print(label,flush=True)

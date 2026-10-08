@@ -2,7 +2,7 @@
 
 完整工作站把 FPGA 配置位流和 Basic Pitch 模型分别保存在板载外部 Flash。默认构建采用 `serial` 兼容传输：CPU 完成 DDR/音频/UI 启动自检后，片内 Flash 控制器先完整读取并校验模型，再重新读取、产生内部 `BPN1` 8N1 数据流，交给 full85 原封不动的模型解析器和 DDR 客户端。它使用片内连线，不经过 PC、USB 或外部串口；115200 波特率下模型装载约 9 秒，另加校验和 DDR 回读时间。
 
-此前 `direct` 方案仍保留为实验路径：直接 SPI→DDR、载荷 CRC、DDR 回读 CRC。0x95 完整工程虽然 clk50 收敛且正常从 Flash 配置，实体原有 UART 路径也停在 DDR 回读，CPU DDR/UI 自检出现失败；因此 0x95 没有提升为 LATEST。独立 0x96 SRAM 探针完整读出 Flash 模型并通过本地 RAM CRC，证明 Flash 接线、字节序和载荷有效；探针不代表完整工作站或 DDR 已验收。
+此前 `direct` 方案仍保留为实验路径：直接 SPI→DDR、载荷 CRC、DDR 回读 CRC。0x95 完整工程虽然 clk50 收敛且正常从 Flash 配置，实体原有 UART 路径也停在 DDR 回读，CPU DDR/UI 自检出现失败；因此 0x95 没有提升为 LATEST。独立 0x96 SRAM 探针完整读出 Flash 模型并通过本地 RAM CRC，证明 Flash 接线、字节序和载荷有效；探针不代表完整工作站或 DDR 已验收。0x98 SRAM 探针进一步验证实际 115200 波特率的内部 BPN1 传输和原解析器，完整模型本地 RAM 回读 CRC 同样通过。
 
 默认 `serial` 方案保留 CNN、原模型解析器、DDR16 端口、CDC FIFO、命令缓冲的完整源文件和实例层级。空白/非法头或首遍载荷 CRC 错误时，模型解析器尚未接收任何数据，自动切回外部 UART。第二遍发生变化或 DDR 校验错误则显式失败，需要全局复位后恢复；不会把部分模型当成成功。
 
@@ -90,6 +90,11 @@ python3 tools/test_cnn_flash_boot.py --output /tmp/cnn_flash_tests.json
 
 # 默认兼容传输：完整首遍校验、第二遍变化、实际波特率、UART 回退、DDR CRC。
 python3 tools/test_cnn_flash_serial_boot.py --output /tmp/cnn_flash_serial_tests.json
+
+# 小型 Flash/local-RAM 探针的离线综合；无 UserCode、无硬件操作。
+python3 tools/build_cnn_flash_probe.py --flow syn --transport serial --output <新目录>
+# 探针全构建需新编号，仅用于临时 SRAM；不允许作为完整工作站固化。
+python3 tools/build_cnn_flash_probe.py --flow all --transport serial --user-code <新编号> --output <新目录>
 
 # 离线部署/回滚故障测试：使用已完成候选的真实 hash，所有硬件 I/O 用测试替身。
 python3 tools/test_cnn_flash_deploy.py --build <完整结果目录>
