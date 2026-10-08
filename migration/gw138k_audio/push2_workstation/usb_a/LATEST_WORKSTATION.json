@@ -2,8 +2,8 @@
   "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
   "build_mode": "full",
   "user_code": "0x00000085",
-  "flashed_at": "2026-10-07T09:35:59+08:00",
-  "flash_record": "../results/sram_20261007_093501_927916",
+  "flashed_at": "2026-10-08T18:54:43+08:00",
+  "flash_record": "../results/sram_20261008_185231_973548",
   "baseline": "results/workstation_scope83_20261006_230626_011557",
   "change": "Close clk50 at original20ns through frontend/CQT/DP/MAC register retiming; same 0x82 caches and isolated BP DDR map, no added physical BSRAM. Auto/route1 final PNR selected.",
   "memory_report": "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/impl/pnr/Prj1.rpt.txt",
@@ -15,7 +15,7 @@
   "timing_closed": false,
   "timing_note": "clk50 original20ns: Fmax53.055, setupWNS+1.152ns holdWNS+0.160ns TNS0/0; reset and CDC audits PASS. DDR UI215.707/100 and HDMI165.732/148.5 positive, all previously positive endpoint groups retained. Wholeboard still open due baseline audio76.8/USB48 and residual CDC checks.",
   "hardware_tested": true,
-  "coordination": "0x85 SRAM deployed/readback, mandatory modelE,7/7smokePASS.181.5s/270reports continuously idle; stopped capture and released ttyUSB1, no held notes. Physical panel TRAVLER selection/start required for first36 and activeframe-rate acceptance.",
+  "coordination": "2026-10-08 full85 SRAM reloaded/readback after FTDI interface0 release. First model DDR CRC failed; SRAM reinitialization and paused-source retry recovered modelE. Final 3/3 idle checks PASS, no held voices/notes. All serial captures stopped; JTAG ftdi_sio detached, UART interface retained, debugger available. Previous manual TRAVLER/analog acceptance remains pending.",
   "commit": "a804ac4",
   "source_commit": "3f762f5ebabf78c28156d91a022d3a6c5547776b",
   "board_acceptance": {
@@ -35,7 +35,8 @@
     "evidence_report": "results/clk50_fix_20261007/full85_board_smoke.json",
     "capture_evidence": "results/clk50_fix_20261007/full85_TRAVLER_board/board_acceptance_pending.json",
     "first_window36_verified": false,
-    "throughput_verified": false
+    "throughput_verified": false,
+    "reload_evidence": "reports/FTDI_RELOAD85_20261008.json"
   },
   "validation": {
     "regression": "18/18 final retimed MAC staging PASS; route1/route2 identical RTL/IP/model/SDC with597-input proof",
@@ -223,10 +224,10 @@
   "hardware_programmed": true,
   "download_medium": "SRAM",
   "fpga_flash_written": false,
-  "model_status": "E (DDR readback CRC passed; model52239words CRCaf01a61b)",
+  "model_status": "E (DDR readback CRC passed)",
   "evidence_report": "reports/CLK50_TIMING_FIX_20261007.json",
-  "sram_record": "../results/sram_20261007_093501_927916",
-  "downloaded_at": "2026-10-07T09:35:59+08:00",
+  "sram_record": "../results/sram_20261008_185231_973548",
+  "downloaded_at": "2026-10-08T18:54:43+08:00",
   "timing_candidate": {
     "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
     "route1_comparator": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
@@ -671,5 +672,17 @@
     "previous_clk50_closed_but_qor_failed_build": "results/song_guide_full85_clk50_20261007_071024_977116"
   },
   "clk50_timing_closed": true,
-  "bitstream_sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444"
+  "bitstream_sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444",
+  "latest_reload": {
+    "recorded_at": "2026-10-08T18:54:43+08:00",
+    "evidence_report": "reports/FTDI_RELOAD85_20261008.json",
+    "sram_record": "../results/sram_20261008_185231_973548",
+    "from_code": "0x000018D6",
+    "model_status": "E",
+    "initial_model_crc_failure_recovered": true,
+    "startup_checks_passed": 3,
+    "ftdi_jtag_driver_bound": false,
+    "ftdi_uart_driver_bound": true,
+    "serial_capture_active": false
+  }
 }

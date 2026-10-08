@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-08T18:54:43+08:00",
+  "request": "解除FTDI占用并重烧当前程序",
+  "release": {
+    "started_at": "2026-10-08T18:49:49+08:00",
+    "status": "sram_downloaded_model_E_smoke_passed",
+    "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+    "user_code": "0x00000085",
+    "sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444",
+    "fpga_flash_written": false,
+    "download_medium": "SRAM",
+    "usb_device": "/sys/bus/usb/devices/3-5",
+    "serial_port": "/dev/serial/by-id/usb-SIPEED_USB_Debugger_2025030317-if01-port0",
+    "steps": [
+      {
+        "name": "scan_cables",
+        "exit_code": 0
+      },
+      {
+        "name": "initial_jtag",
+        "exit_code": 0
+      },
+      {
+        "name": "sram_download",
+        "exit_code": 0
+      },
+      {
+        "name": "model_reload",
+        "exit_code": 1
+      },
+      {
+        "name": "sram_download_retry",
+        "exit_code": 0
+      },
+      {
+        "name": "model_reload_retry",
+        "exit_code": 0
+      },
+      {
+        "name": "board_idle_smoke",
+        "exit_code": 0
+      }
+    ],
+    "ftdi_release": {
+      "interface": "3-5:1.0",
+      "driver_before": "ftdi_sio",
+      "driver_after": null,
+      "uart_interface_retained": true,
+      "jtag_driver_bound_after": false,
+      "uart_driver_bound_after": true,
+      "programmer_reattached_jtag_driver": false,
+      "user_process_owners_after": [],
+      "final_release_at": "2026-10-08T18:54:43+08:00"
+    },
+    "from_code": "0x000018D6",
+    "sram_record": "results/sram_20261008_185231_973548",
+    "programming": {
+      "bitstream": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/impl/pnr/Prj1.fs",
+      "sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444",
+      "from_code": "0x00000085",
+      "usercode": "0x00000085",
+      "fpga_flash_written": false,
+      "cable_location": 53,
+      "usb_device": "/sys/bus/usb/devices/3-5",
+      "operations": [
+        {
+          "name": "before",
+          "passed": true
+        },
+        {
+          "name": "sram",
+          "passed": true
+        },
+        {
+          "name": "after",
+          "passed": true
+        }
+      ]
+    },
+    "finished_at": "2026-10-08T18:54:43+08:00",
+    "first_attempt_failure": "model_reload failed",
+    "first_failure_model_diagnostics": [
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 AF01A61B 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 AF01A61B 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF",
+      "B138 00000004 AC44B042 AF01A61B 000000FF",
+      "B138 00000004 AC44B042 1E5EEF56 000000FF"
+    ],
+    "first_sram_record": "results/sram_20261008_184950_359371",
+    "preload_idle_commands": [
+      "b0 78 00",
+      "b0 68 00",
+      "b0 5a 00",
+      "b0 69 00"
+    ],
+    "model_status": "E (DDR readback CRC passed)",
+    "board_smoke_passed": true
+  },
+  "previous_deployment_fields": {
+    "flashed_at": "2026-10-07T09:35:59+08:00",
+    "downloaded_at": "2026-10-07T09:35:59+08:00",
+    "flash_record": "../results/sram_20261007_093501_927916",
+    "sram_record": "../results/sram_20261007_093501_927916",
+    "coordination": "0x85 SRAM deployed/readback, mandatory modelE,7/7smokePASS.181.5s/270reports continuously idle; stopped capture and released ttyUSB1, no held notes. Physical panel TRAVLER selection/start required for first36 and activeframe-rate acceptance."
+  },
+  "idle_smoke": {
+    "passed": true,
+    "started_at": "2026-10-08T18:53:09+08:00",
+    "exercise_live": false,
+    "sample_stream_saved": false,
+    "tests": {
+      "startup_cpu_audio_ddr_model": "passed",
+      "push_connected_screen_frames_advancing": "passed",
+      "audio_health_zero": "passed"
+    },
+    "last": {
+      "B138": [
+        "00000004",
+        "AC44B042",
+        "00000000",
+        "0000003B"
+      ],
+      "A138": [
+        "00000017",
+        "0000CB03",
+        "001190AD",
+        "00000000",
+        "05AA2E01",
+        "0000059D",
+        "00000593",
+        "00000000"
+      ],
+      "C350": [
+        "00000017",
+        "55490463",
+        "026CFF93",
+        "80001580",
+        "43505531",
+        "50415353",
+        "00016B6A",
+        "00000000"
+      ],
+      "K138": {
+        "sequence": 23,
+        "applied_events": 16,
+        "mode": "A",
+        "sound": "flute",
+        "route": "stereo",
+        "effects": 0,
+        "active_voices": 0,
+        "gain_q15": 25600,
+        "pc_input_errors": 0,
+        "held_notes": []
+      },
+      "E138": {
+        "sequence": 23,
+        "vibrato": 0,
+        "glide": 0,
+        "bend_index": 128,
+        "bend": 0,
+        "pitch_q20": 1048576,
+        "panic_epoch": 0,
+        "sustain": false,
+        "snap_request": 0,
+        "snap_token": 0,
+        "snap_done": false,
+        "snap_error": false,
+        "snap_count": 0,
+        "snap_completed": 0,
+        "snap_sequence": 0
+      },
+      "U138": [
+        "00000017",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000"
+      ],
+      "P138": [
+        "00000017",
+        "00000103",
+        "00000137",
+        "00000000",
+        "0000005A",
+        "00000013",
+        "00FF0000",
+        "00000000"
+      ]
+    },
+    "limits": [
+      "UART smoke does not verify physical DAC waveform, HDMI reception, TF hotplug or CNN song-score correctness."
+    ],
+    "push_connected": true,
+    "audio_health_word": "00000000",
+    "crc_valid_records": {
+      "B138": 10,
+      "A138": 5,
+      "C350": 5,
+      "K138": 5,
+      "E138": 5,
+      "U138": 5,
+      "P138": 5
+    },
+    "crc_bad": 0,
+    "model_statuses": [
+      14
+    ],
+    "sample_counter_delta": 192000,
+    "runtime_report_sequence_delta": 4,
+    "samples_per_runtime_report": 48000.0,
+    "push_screen_frame_delta": 3,
+    "midi_control_commands": [],
+    "finished_at": "2026-10-08T18:53:16+08:00"
+  },
+  "manual_acceptance_status": "smoke_pass_manual_TRAVLER_acceptance_pending",
+  "whole_board_timing_closed": false,
+  "limitations": [
+    "Only same existing full85 bitstream was reloaded; current uncommitted BLE work was not built or included.",
+    "The initial model DDR readback CRC failed (expected AF01A61B, observed 1E5EEF56). Full SRAM reinitialization, idle/pause controls and a second upload passed. The cause is not established.",
+    "Short UART smoke does not establish physical audio/HDMI correctness or long-term stability.",
+    "SRAM download only; FPGA Flash was not written."
+  ],
+  "evidence_sha256": {
+    "results/reload85_20261008_184949_887118/reload_result.json": "73cab52680141dc4d64dee0f056b223a2d5056a70fc13c75a6c13e063c4d8e89",
+    "results/reload85_20261008_184949_887118/scan_cables.log": "850459116bc02a416d671af26ffe7d4dec31ac2b7de5e7bf4ec2e1ea8e77b623",
+    "results/reload85_20261008_184949_887118/initial_jtag.log": "262d77ee7a62bc28d6160a0757a9df7aefaf638014e4f4673e5f3a4f02a37424",
+    "results/reload85_20261008_184949_887118/sram_download.log": "f2b494ecfdeb693106dead957a831121b7967a29a4cd2fec9bcf318385b0fce0",
+    "results/reload85_20261008_184949_887118/model_reload.log": "31e4f28bcde990b7acf6c2750caec9c89c8420bafaef7574b0e3e4d5fe1c47a4",
+    "results/reload85_20261008_184949_887118/sram_download_retry.log": "b883e7d0bc3f850f85b938e3e90dd26a2a2d7aa90c6d611a2b299a037d93b03f",
+    "results/reload85_20261008_184949_887118/model_reload_retry.log": "d6f582c05930b73dd91ce5599f551ad1f10b60e1f6515d5f7c1f5f195aaaa2af",
+    "results/reload85_20261008_184949_887118/board_idle_smoke.json": "ffaa584b81e0b6c92c9d5b1b09fdacb064f077ab49a35c723b434adf2c0f533b",
+    "results/reload85_20261008_184949_887118/board_idle_smoke.log": "ffaa584b81e0b6c92c9d5b1b09fdacb064f077ab49a35c723b434adf2c0f533b",
+    "../results/sram_20261008_185231_973548/result.json": "ce637edacce00426713a6ff619871713eb95c2692006e63fc155673bfb0e9939",
+    "../results/sram_20261008_185231_973548/before.log": "eb0e239145947efc1ceb2f87a587885d13ff2c17fbc60c75f2174097356e9ad4",
+    "../results/sram_20261008_185231_973548/sram.log": "ce932493bbc8b8efd949ac0966d67ad3034d659e222e8f04bee70d6b52ef4323",
+    "../results/sram_20261008_185231_973548/after.log": "eb0e239145947efc1ceb2f87a587885d13ff2c17fbc60c75f2174097356e9ad4"
+  }
+}
