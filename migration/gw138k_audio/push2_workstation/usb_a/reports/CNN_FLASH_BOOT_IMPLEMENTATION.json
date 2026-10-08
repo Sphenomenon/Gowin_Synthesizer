@@ -1,8 +1,8 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "full92_rejected_waiting_incremental93",
-  "target_user_code": "0x00000093",
+  "status": "waiting_tristate94_and_incremental93",
+  "target_user_code": "0x00000094",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
   "model_partition_byte_verify_passed": true,
@@ -48,5 +48,18 @@
   "full92_hardware_observations": "loader waited in state0; DDR ready not stable. Direct SRAM diagnostic confirms code92, so configuration-source ambiguity alone does not explain failure.",
   "baseline85_restored_from_flash": true,
   "baseline85_uart_model_restore_crc_passed": true,
-  "latest_workstation_promoted": false
+  "latest_workstation_promoted": false,
+  "tristate_candidate": "results/workstation_flash94_20261009_tristate",
+  "io_guard_commit": "bd0f8ac",
+  "io_guard_simulation_passed": true,
+  "baseline85_smoke_passed": true,
+  "full92_status_diagnosis": {
+    "status": "0x26230",
+    "normal_baseline_status": "0x26020",
+    "ug704_table": "5-1",
+    "first_boot_failed": true,
+    "second_boot_failed": true,
+    "direct_sram_done": true,
+    "flash_boot_proven": false
+  }
 }

@@ -22,6 +22,12 @@ BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
 BASE_SHA='7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444'
 B138=re.compile(rb'B138 ([0-9A-F]{8}) ([0-9A-F]{8}) ([0-9A-F]{8}) ([0-9A-F]{8})')
 
+def configured_clean(status):
+    # UG704 table 5-1: bit13 DONE; bits0..3 config errors; bit4
+    # Auto_Boot_2nd_Fail; bit9 Auto_Boot_1st_Fail. SRAM download can
+    # report DONE with these failures still latched: not Flash-boot proof.
+    return bool(status & (1<<13)) and not (status & 0x21f)
+
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
@@ -110,7 +116,7 @@ def main():
                         text=run('configuration_code_'+str(index)+'_'+str(attempt),['--operation_index','0'])
                         codes=re.findall(r'User\s*Code(?:\s+is)?\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
                         statuses=re.findall(r'Status\s*Code(?:\s+is)?\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
-                        if codes and int(codes[-1],16)==int(code,16) and statuses and int(statuses[-1],16) in (0x26020,0x26230):break
+                        if codes and int(codes[-1],16)==int(code,16) and statuses and configured_clean(int(statuses[-1],16)):break
                         assert time.monotonic()<code_deadline,'Flash configuration did not reach target UserCode/normal status'
                         attempt+=1;time.sleep(2)
                     port.reset_input_buffer()
