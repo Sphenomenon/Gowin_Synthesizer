@@ -62,7 +62,7 @@ def main():
     import serial
     output=(args.output or build/'flash_deploy').resolve();output.mkdir(parents=True,exist_ok=False)
     result=dict(started_at=datetime.now().astimezone().isoformat(),build=str(build),user_code=code,
-                commands=[],boots=[],passed=False,uart_model_upload_used=False,sram_download_used=False,
+                commands=[],boots=[],passed=False,uart_model_upload_used=False,sram_download_used=False,sram_erased_before_each_boot=True,
                 physical_power_cycle_tested=False,board_serial='2025030317',
                 clk50_closed=clk50['clk50_closed'],diagnostic_timing_override=args.allow_clk50_open)
     def save():(output/'result.json').write_text(json.dumps(result,indent=2)+'\n')
@@ -99,8 +99,10 @@ def main():
                 # UART is opened for receive only; no write()/model upload.
                 with serial.Serial(args.port,115200,timeout=.2) as port:
                     port.reset_input_buffer()
+                    run('erase_sram_'+str(index),['--operation_index','24'])
+                    port.reset_input_buffer()
                     run('reprogram_'+str(index),['--operation_index','1'])
-                    deadline=time.monotonic()+15;lines=[];observed=[]
+                    deadline=time.monotonic()+45;lines=[];observed=[]
                     while time.monotonic()<deadline:
                         line=port.readline();lines.append(line.decode(errors='replace'))
                         m=B138.search(line)
@@ -111,16 +113,22 @@ def main():
                     (output/f'boot_{index}_uart.log').write_text(''.join(lines))
                     ok=len([o for o in observed if o['status']==14 and o['source']==1])>=3
                     result['boots'].append(dict(index=index,passed=ok,model_observations=observed));save()
+                    if not ok:run('failed_boot_code_'+str(index),['--operation_index','0'])
                     assert ok,'Flash->DDR CRC/auto boot not proven; UART fallback is not a pass'
-                text=run('after_code_'+str(index),['--operation_index','0'])
-                codes=re.findall(r'User\s*Code(?:\s+is)?\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
-                assert codes and int(codes[-1],16)==int(code,16),'wrong post-Flash UserCode'
+                code_deadline=time.monotonic()+45;attempt=0
+                while True:
+                    text=run('after_code_'+str(index)+'_'+str(attempt),['--operation_index','0'])
+                    codes=re.findall(r'User\s*Code(?:\s+is)?\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
+                    if codes and int(codes[-1],16)==int(code,16):break
+                    assert time.monotonic()<code_deadline,'wrong post-Flash UserCode'
+                    attempt+=1;time.sleep(1)
             result['passed']=True
         except Exception as exc:
             result['error']=str(exc);save()
             if wrote:
                 try:
                     run('rollback_full85',['--operation_index','54','--fsFile',str(oldfs),'--spiaddr','0x000000'],r'Program and Verify Flash successfully')
+                    run('rollback_erase_sram',['--operation_index','24'])
                     run('rollback_reprogram',['--operation_index','1'])
                     result['rollback_bitstream_restored']=True
                 except Exception as restore:
