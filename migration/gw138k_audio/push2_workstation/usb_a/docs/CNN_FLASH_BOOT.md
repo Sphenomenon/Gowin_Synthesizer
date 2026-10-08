@@ -75,6 +75,9 @@ python3 tools/build_workstation_flash_boot.py --flow syn
 # 完整候选必须使用全仓库未占用的新 UserCode。
 python3 tools/build_workstation_flash_boot.py --flow all --user-code <八位新编号>
 
+# 独立增量候选：仍重新综合，仅把已验证 full85 的路由作为 P&R 参考。
+python3 tools/build_workstation_flash_boot.py --flow all --user-code <另一新编号> --incremental-baseline
+
 # SPI 物理端口模型、DDR 请求/响应反压、CRC 故障和 UART 回退测试。
 python3 tools/test_cnn_flash_boot.py --output /tmp/cnn_flash_tests.json
 
@@ -82,7 +85,7 @@ python3 tools/test_cnn_flash_boot.py --output /tmp/cnn_flash_tests.json
 python3 sim/music/run_bp_config_ab.py --simulator verilator --frames 3 --win-len 2048
 ```
 
-完整构建保留部署 full85 的源文件快照，叠加 Flash 启动模块、Basic Pitch 边界、顶层六个 Flash 引脚和相应约束。冻结的 DDR 仲裁、地址图、显示、延迟 DMA 文件逐一核对 SHA256；没有把工作区其他未提交的开发内容并入发布。
+完整构建保留部署 full85 的源文件快照，叠加 Flash 启动模块、Basic Pitch 边界、顶层六个 Flash 引脚和相应约束。可选增量 P&R 会复制并记录已验证 full85 `.pr` 的 SHA256，仍运行全新 RTL 综合；参考文件和所有输入在构建前后复核，不覆盖原候选。冻结的 DDR 仲裁、地址图、显示、延迟 DMA 文件逐一核对 SHA256；没有把工作区其他未提交的开发内容并入发布。
 
 每个结果目录包含 `cnn_model.bin`、模型 manifest、`workstation_inputs.json`、工具退出结果、资源审计。P&R 成功后才生成 `workstation_with_cnn.bin` 和带位流/模型 SHA256 的 `flash_bundle.json`。
 

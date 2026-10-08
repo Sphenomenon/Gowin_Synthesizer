@@ -72,8 +72,11 @@ def main():
     ap.add_argument('--output',type=Path)
     ap.add_argument('--user-code')
     ap.add_argument('--synthesis-from',type=Path,help='reuse identical successful RTL synthesis after a CST-only failure')
+    ap.add_argument('--incremental-baseline',action='store_true',help='fresh synthesis, then reuse the verified full85 routed design as a P&R reference')
     args=ap.parse_args()
     if args.synthesis_from and args.flow!='all':ap.error('--synthesis-from requires --flow all')
+    if args.incremental_baseline and (args.flow!='all' or args.synthesis_from):
+        ap.error('--incremental-baseline requires a fresh --flow all, without --synthesis-from')
     if args.flow=='all' and (not args.user_code or not re.fullmatch('[0-9A-Fa-f]{8}',args.user_code) or int(args.user_code,16)==0):
         ap.error('--flow all requires a fresh nonzero eight-hex-digit --user-code')
     if args.flow in ('prepare','syn') and args.user_code:ap.error('Prepare/SYN assign no UserCode')
@@ -115,6 +118,8 @@ def main():
         assert 'set_option -use_mspi_as_gpio 1' in s and 'set_option -use_cpu_as_gpio 1' in s
         s=re.sub(r'(?m)^set_option -(?:user_code|inc_pnr).*\n','',s)
         if args.user_code:s=s.replace('set flow all','set_option -user_code '+args.user_code.upper()+'\nset flow all')
+        if args.incremental_baseline:
+            s=s.replace('set flow all','set_option -inc_pnr [file join $root build full85_reference.pr]\nset flow all')
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
@@ -142,6 +147,23 @@ def main():
         assert not (previous/'Prj1/impl/pnr/Prj1.fs').exists(),'CST repair reuse is for unreleased failure only'
         shutil.copytree(oldsyn,stage/'impl/gwsynthesis')
         m=json.loads((output/'build_metadata.json').read_text());m['synthesis_from']=str(previous.relative_to(ROOT));m['cst_repair']='append Flash pins to the single original complete CST';write_json(output/'build_metadata.json',m)
+    reference=None;reference_sha=None
+    if args.incremental_baseline:
+        old_result=json.loads((BASE/'tool_result.json').read_text())
+        assert old_result['exit_code']==0 and old_result['inputs_unchanged'],'incremental baseline incomplete'
+        old_pr=BASE/'Prj1/impl/pnr/Prj1.pr';assert old_pr.is_file(),'missing routed reference'
+        reference=stage/'build/full85_reference.pr';reference.parent.mkdir(exist_ok=True)
+        shutil.copy2(old_pr,reference);reference_sha=sha(old_pr)
+        assert sha(reference)==reference_sha,'reference copy drift'
+        m=json.loads((output/'build_metadata.json').read_text())
+        m['incremental_reference']=dict(build=str(BASE.relative_to(ROOT)),routed_pr_sha256=reference_sha,
+            fresh_synthesis=True,routing_only=True)
+        write_json(output/'build_metadata.json',m)
+    elif args.flow=='pnr':
+        recorded_reference=json.loads((output/'build_metadata.json').read_text()).get('incremental_reference')
+        if recorded_reference:
+            reference=stage/'build/full85_reference.pr';reference_sha=recorded_reference['routed_pr_sha256']
+            assert sha(reference)==reference_sha,'incremental reference drift before reroute'
     for rel,(staged,h) in FROZEN.items():assert sha(ROOT/rel)==sha(stage/staged)==h,rel
     assert all(sha(stage/p)==h for p,h in inputs.items()),'candidate input drift'
     print(output,flush=True)
@@ -151,6 +173,7 @@ def main():
         run=subprocess.run([str(Path.home()/'.local/bin/gw_sh'),'scripts/build.tcl'],cwd=stage,
                            env=dict(os.environ,PRJ1_FLOW=actual_flow),stdout=log,stderr=subprocess.STDOUT)
     changed=[p for p,h in inputs.items() if sha(stage/p)!=h]
+    if reference and sha(reference)!=reference_sha:changed.append('build/full85_reference.pr')
     record=dict(exit_code=run.returncode,flow=args.flow,inputs_unchanged=not changed,changed=changed,hardware_tested=False)
     write_json(output/'tool_result.json',record)
     if run.returncode or changed:raise SystemExit('build/input check failed: '+str(output))
