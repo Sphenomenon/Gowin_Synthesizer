@@ -75,7 +75,7 @@ def main():
     output=(args.output or build/'flash_deploy').resolve();output.mkdir(parents=True,exist_ok=False)
     result=dict(started_at=datetime.now().astimezone().isoformat(),build=str(build),user_code=code,
                 commands=[],boots=[],passed=False,uart_model_upload_used=False,sram_download_used=False,sram_erased_before_each_boot=True,
-                physical_power_cycle_tested=False,board_serial='2025030317',
+                physical_power_cycle_tested=False,board_serial='2025030317',uart_hardware_drain_seconds=2,
                 clk50_closed=clk50['clk50_closed'],diagnostic_timing_override=args.allow_clk50_open,
                 model_transport=build_meta.get('transport','direct'))
     def save():(output/'result.json').write_text(json.dumps(result,indent=2)+'\n')
@@ -125,6 +125,11 @@ def main():
                         if codes and int(codes[-1],16)==int(code,16) and statuses and configured_clean(int(statuses[-1],16)):break
                         assert time.monotonic()<code_deadline,'Flash configuration did not reach target UserCode/normal status'
                         attempt+=1;time.sleep(2)
+                    port.reset_input_buffer()
+                    # FTDI can retain hardware packets after a driver purge.
+                    # Drain real traffic before accepting this boot's source/E.
+                    drain_deadline=time.monotonic()+2
+                    while time.monotonic()<drain_deadline:port.readline()
                     port.reset_input_buffer()
                     deadline=time.monotonic()+45;lines=[];observed=[]
                     while time.monotonic()<deadline:

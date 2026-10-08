@@ -119,7 +119,7 @@ python3 tools/build_cnn_flash_image.py \
 
 Flash 写入必须把模型分区和位流一起记录。原生 Arora V operation54 用于 `.fs` 位流；operation56（C Bin）用于原始模型 `.bin`/整区打包镜像，CLI 必须同时传 `--fsFile cnn_model.bin --mcuFile cnn_model.bin`：前者满足 CLI 的文件检查，后者提供原始字节；单传任一参数会导致无数据/零长度。该调用已用 operation66 与等价的文本 `.data.fs` 交叉校验实际 Flash 字节。镜像工具还输出逐字节等价的 `.data.fs` 容器，官方 `--filestransform 1` 还原结果与原始镜像一致。首次采用 raw-data 操作后须用 RTL 双 CRC 实读确认字节序/偏移；不能仅以 Programmer 的退出码代替自动搬运验收。禁止用 Bulk Erase 操作更新单个分区。实体操作需持有 debugger `2025030317` 的独占锁，写前/重加载后读回确切 UserCode。
 
-验收时保留 UART 只读监听，先执行 SRAM Erase 仅清除易失配置，再执行 JTAG Reprogram（不提供 SRAM 位流），先等待实际目标 UserCode 与正常已配置状态（DONE bit13=1，配置错误 bits0..3 和 Auto_Boot 失败 bits4/9 必须为 0；本板正常值 `0x26020`。直接 SRAM 下载曾出现 `0x26230`，其 DONE 为 1 但自动启动失败位仍置位，不能作为 Flash 启动成功证据），再清空 UART 缓冲并读模型状态，要求来源=1 且模型状态=E，再记录多次重加载结果。物理断电/上电与耳机/显示/整曲验收需分别注明是否实际执行。
+验收时保留 UART 只读监听，先执行 SRAM Erase 仅清除易失配置，再执行 JTAG Reprogram（不提供 SRAM 位流），先等待实际目标 UserCode 与正常已配置状态（DONE bit13=1，配置错误 bits0..3 和 Auto_Boot 失败 bits4/9 必须为 0；本板正常值 `0x26020`。直接 SRAM 下载曾出现 `0x26230`，其 DONE 为 1 但自动启动失败位仍置位，不能作为 Flash 启动成功证据），再清空 UART 缓冲、持续接收两秒排空 FTDI 硬件旧包后，重新清空缓冲并读模型状态，要求来源=1 且模型状态=E，再记录多次重加载结果。物理断电/上电与耳机/显示/整曲验收需分别注明是否实际执行。
 
 ```sh
 # 默认只校验工件与预览命令；实体写入显式加 --program。

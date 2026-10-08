@@ -14,19 +14,20 @@ mod=importlib.import_module('deploy_cnn_flash_boot')
 build=options.build.resolve()
 target_code=int(json.loads((build/'flash_bundle.json').read_text())['user_code'],16)
 results=[]
-for failure in (None,'uart_fallback','auto_boot_fail'):
+for failure in (None,'uart_fallback','auto_boot_fail','stale_flash_success'):
  with tempfile.TemporaryDirectory(prefix='cnn_deploy_host_') as tmp:
   out=Path(tmp)/'record';clock=[0.];state={'code':0x85,'status':0x26020,'reloads':0,'commands':[],'rolled_back':False}
   def now():clock[0]+=.02;return clock[0]
   def sleep(s):clock[0]+=s
   class Port:
-   def __init__(self,*a,**kw):pass
+   def __init__(self,*a,**kw):self.received=0
    def __enter__(self):return self
    def __exit__(self,*a):pass
    def reset_input_buffer(self):pass
    def readline(self):
-    clock[0]+=1
-    return b'B138 00000004 AC44B042 00000000 '+(b'00000243' if failure=='uart_fallback' else b'0000013B')+b'\r\n'
+    clock[0]+=1;self.received+=1
+    bad=failure=='uart_fallback' or failure=='stale_flash_success' and self.received>2
+    return b'B138 00000004 AC44B042 00000000 '+(b'00000243' if bad else b'0000013B')+b'\r\n'
   def fake_run(args,**kw):
    state['commands'].append(args)
    if '--operation_index' in args:
