@@ -35,7 +35,7 @@
 2. 拉低已注册的 CS；发送 `03 60 00 00`，用 SPI mode 0 读取头和载荷。50 MHz 时钟、半周期分频 4，SCK 为 6.25 MHz。
 3. 在完整字边界暂停 SCK、保持 CS 低，等待现有 DDR 请求 FIFO 接收写入。地址和数据在反压期间保持稳定。
 4. 校验 Flash 载荷 CRC；随后通过原有 DDR 端口逐字回读并独立计算 CRC。
-5. 成功锁定模型、释放 Flash 接口。`analysis_restart` 不会触发模型重载。模型更新后需要 FPGA 重加载或全局复位。
+5. 成功锁定模型。`basic_pitch_flash_io_guard` 仅在注册 CS 低时驱动共享 CLK/MOSI/CS/IO2/IO3；等待 DDR、复位、校验 DDR 和完成后均三态释放物理接口，由已有上拉/下拉维持闲置电平。`analysis_restart` 不会触发模型重载。模型更新后需要 FPGA 重加载或全局复位。
 6. 头错误、Flash CRC 错误、DDR CRC 错误分别记为阶段 1/2/3；此时自动释放原有 `BPN1` UART 装载器。UART 上传仍执行自己的载荷/DDR 双 CRC。
 
 UART 回退等待状态可继续运行原工具：
@@ -57,10 +57,10 @@ B138 最后一字的原字段 `[5:2]` 仍是模型状态（`E` 成功）。新�
 | `flash_cs_n` | T19 | MCS_N |
 | `flash_mosi` | P22 | D00/MOSI |
 | `flash_miso` | R22 | D01/DIN |
-| `flash_wp_n` | P21 | D02/IO2，用户态固定高 |
-| `flash_hold_n` | R21 | D03/IO3，用户态固定高 |
+| `flash_wp_n` | P21 | D02/IO2，事务内高、闲置三态 |
+| `flash_hold_n` | R21 | D03/IO3，事务内高、闲置三态 |
 
-完整工程保留 `-use_mspi_as_gpio 1`、`-use_cpu_as_gpio 1`。Flash CS/SCK 由触发器输出，避免状态译码毛刺形成伪 SPI 事务。Flash 上电配置由 Gowin 配置逻辑接管，用户态启动搬运使用同一组物理走线。实际 IO 放置和 Flash 启动验收以构建/实体报告为准。
+完整工程保留 `-use_mspi_as_gpio 1`、`-use_cpu_as_gpio 1`。内部 Flash CS/SCK 由触发器输出，物理输出使用 CS 作为总线所有权；IO2/3 闲置时不能固定驱动，以便配置/其他主机使用。避免状态译码毛刺形成伪 SPI 事务。Flash 上电配置由 Gowin 配置逻辑接管，用户态启动搬运使用同一组物理走线。实际 IO 放置和 Flash 启动验收以构建/实体报告为准。
 
 新增约束仅豁免校准同步器第一采样级，并给 MISO 增加相对 clk50 的 15 ns 输入延迟约束。既有音频、DDR、HDMI 时钟和时序检查没有放宽。当前完整工作站基线的整体时序未闭合；完成 Flash 功能验收不等于整个工程时序闭合。
 
@@ -97,7 +97,7 @@ python3 tools/build_cnn_flash_image.py \
   --bitstream-bin <Gowin生成的Prj1.bin> --bundle /tmp/workstation_with_cnn.bin
 ```
 
-仿真覆盖完整部署模型和 1/31/65536 字边界、校准等待、0 延迟与可变延迟 DDR 响应、随机阶段反压、中途复位、空白分区、头字段错误、Flash 载荷损坏、DDR 回读损坏、真实串行 UART 回退。独立 NOR 端点检查 opcode/地址，独立 DDR 端点检查每个写入/回读地址和最终每个字，避免只比较状态机内部变量。
+仿真覆盖完整部署模型和 1/31/65536 字边界、校准等待、0 延迟与可变延迟 DDR 响应、随机阶段反压、中途复位、空白分区、头字段错误、Flash 载荷损坏、DDR 回读损坏、真实串行 UART 回退；三态适配器的独立其他主机激励检查 CLK/MOSI/CS/IO2/IO3 闲置释放与无争用，全部 SPI/DDR 测试同时穿过物理三态适配器。独立 NOR 端点检查 opcode/地址，独立 DDR 端点检查每个写入/回读地址和最终每个字，避免只比较状态机内部变量。
 
 Flash 写入必须把模型分区和位流一起记录。原生 Arora V operation54 用于 `.fs` 位流；operation56（C Bin）用于原始模型 `.bin`/整区打包镜像，CLI 必须同时传 `--fsFile cnn_model.bin --mcuFile cnn_model.bin`：前者满足 CLI 的文件检查，后者提供原始字节；单传任一参数会导致无数据/零长度。该调用已用 operation66 与等价的文本 `.data.fs` 交叉校验实际 Flash 字节。镜像工具还输出逐字节等价的 `.data.fs` 容器，官方 `--filestransform 1` 还原结果与原始镜像一致。首次采用 raw-data 操作后须用 RTL 双 CRC 实读确认字节序/偏移；不能仅以 Programmer 的退出码代替自动搬运验收。禁止用 Bulk Erase 操作更新单个分区。实体操作需持有 debugger `2025030317` 的独占锁，写前/重加载后读回确切 UserCode。
 

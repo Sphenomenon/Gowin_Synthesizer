@@ -26,7 +26,7 @@ def main():
             cmd=['iverilog','-g2012','-I',str(SRC),'-s','tb_boot_model',
                  '-P',f'tb_boot_model.WORDS={words}','-P',f'tb_boot_model.CLK_DIV={divider}',
                  '-o',str(exe),str(ROOT/'sim/model_flash/tb_boot_model.sv')]+[str(SRC/f) for f in
-                 ('basic_pitch_boot_model_loader.sv','basic_pitch_flash_model_loader.sv','basic_pitch_uart_model_loader.sv','basic_pitch_uart_rx.sv')]
+                 ('basic_pitch_flash_io_guard.sv','basic_pitch_boot_model_loader.sv','basic_pitch_flash_model_loader.sv','basic_pitch_uart_model_loader.sv','basic_pitch_uart_rx.sv')]
             subprocess.run(cmd,check=True,capture_output=True,text=True)
             for case in cases:
                 modes=[0,1] if case==0 and words<100 else [0]
@@ -37,6 +37,12 @@ def main():
                         raise RuntimeError(run.stdout+run.stderr)
                     results.append(dict(words=words,clk_div=divider,case=case,zero_response=mode,
                                         payload_crc32=manifest['payload_crc32'],log=run.stdout.strip()))
+        guard_exe=out/'io_guard.vvp'
+        subprocess.run(['iverilog','-g2012','-s','tb_flash_io_guard','-o',str(guard_exe),
+            str(ROOT/'sim/model_flash/tb_flash_io_guard.sv'),str(SRC/'basic_pitch_flash_io_guard.sv')],check=True,capture_output=True,text=True)
+        guard_run=subprocess.run(['vvp',str(guard_exe)],check=True,capture_output=True,text=True)
+        assert 'PASS Flash IO guard' in guard_run.stdout
+        print(guard_run.stdout.strip(),flush=True)
         # Host format/range validation, independent of RTL parsing.
         vals=load_words(SRC/'weights/cnn_ddr_blob.mem');image,manifest=build_image(vals)
         assert len(vals)==52239 and len(image)==104510 and manifest['payload_crc32']=='AF01A61B'
@@ -59,7 +65,7 @@ def main():
         assert image[:4]==b'BPF1' and image[32:34]==bytes.fromhex('7305')
         result=dict(passed=True,tests=results,full_model_manifest=manifest,
                     model_mem_sha256=hashlib.sha256((SRC/'weights/cnn_ddr_blob.mem').read_bytes()).hexdigest(),
-                    hardware_tested=False,host_invalid_cases_rejected=host_rejects)
+                    hardware_tested=False,host_invalid_cases_rejected=host_rejects,io_guard_passed=True,io_guard_log=guard_run.stdout.strip())
         if args.output:
             args.output.parent.mkdir(parents=True,exist_ok=True)
             args.output.write_text(json.dumps(result,indent=2)+'\n')

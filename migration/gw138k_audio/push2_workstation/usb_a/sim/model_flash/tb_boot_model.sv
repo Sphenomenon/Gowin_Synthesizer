@@ -6,7 +6,9 @@ module tb_boot_model;
     localparam integer N=32+2*WORDS;
     reg clk=0,rst_n=0,boot_ready=0,serial=1,miso=1;
     always #10 clk=~clk;
-    wire cs,sclk,mosi,done,req,wr;
+    tri cs,sclk,mosi,wp_n,hold_n;
+    wire raw_cs,raw_sclk,raw_mosi,flash_owned,done,req,wr;
+    pullup(cs);pulldown(sclk);pullup(wp_n);pullup(hold_n);
     wire [3:0] status;
     wire [1:0] source,flash_error,error_stage;
     wire [31:0] expected,actual,addr;
@@ -25,22 +27,27 @@ module tb_boot_model;
     string image_file;
     basic_pitch_boot_model_loader #(.WORDS(WORDS),.CLK_DIV(CLK_DIV),.UART_BAUD(3125000)) dut (
         .clk_i(clk),.rst_ni(rst_n),.boot_ready_i(boot_ready),.serial_i(serial),.flash_miso_i(miso),
-        .flash_cs_n_o(cs),.flash_clk_o(sclk),.flash_mosi_o(mosi),.done_o(done),.status_o(status),
+        .flash_cs_n_o(raw_cs),.flash_clk_o(raw_sclk),.flash_mosi_o(raw_mosi),.done_o(done),.status_o(status),
         .source_o(source),.flash_error_o(flash_error),.debug_expected_crc_o(expected),
         .debug_actual_crc_o(actual),.debug_error_stage_o(error_stage),
         .mem_req_o(req),.mem_write_o(wr),.mem_byte_addr_o(addr),.mem_wdata_o(wdata),
         .mem_ready_i(ready),.mem_rsp_valid_i(rsp),.mem_rdata_i(rdata));
 
+    basic_pitch_flash_io_guard io_guard (
+        .spi_cs_n_i(raw_cs),.spi_clk_i(raw_sclk),.spi_mosi_i(raw_mosi),
+        .flash_cs_n_o(cs),.flash_clk_o(sclk),.flash_mosi_o(mosi),
+        .flash_wp_n_o(wp_n),.flash_hold_n_o(hold_n),.owned_o(flash_owned));
     // Independent behavioural NOR: check opcode and address rather than
     // driving internals. Return bytes on falling SCK edges (mode 0).
     integer sent_bits=0,rx_bit=7,rx_byte=0;
     reg [31:0] command=0;
     reg reading=0;
-    always @(negedge cs) begin
+    always @(negedge cs) if(rst_n) begin
         sent_bits=0;command=0;reading=0;rx_bit=7;rx_byte=0;miso=1;
         commands=commands+1;
     end
     always @(posedge sclk) if(!cs) begin
+        if(wp_n!==1 || hold_n!==1 || flash_owned!==1) $fatal(1,"SPI sideband/ownership incorrect");
         if(!reading) begin
             command={command[30:0],mosi};sent_bits=sent_bits+1;
             if(sent_bits==32) begin

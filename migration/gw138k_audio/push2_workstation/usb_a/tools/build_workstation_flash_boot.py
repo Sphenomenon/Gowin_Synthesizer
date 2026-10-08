@@ -24,7 +24,7 @@ BASE_FS_SHA='7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444'
 OVERLAYS=[f'rtl/music/{name}' for name in (
     'basic_pitch_pcm_pipeline.sv','basic_pitch_workstation_link.sv',
     'basic_pitch_uart_model_loader.sv','basic_pitch_flash_model_loader.sv',
-    'basic_pitch_boot_model_loader.sv','basic_pitch_flash_map.svh')]
+    'basic_pitch_boot_model_loader.sv','basic_pitch_flash_map.svh','basic_pitch_flash_io_guard.sv')]
 CST='''// SOM configuration Flash, x1 SPI after FPGA configuration (MSPI-as-GPIO).
 // GW5AST-LV138PG484AC2/I1; board PCB nets and UG986 PG484A agree.
 IO_LOC "flash_clk" L12;
@@ -97,12 +97,15 @@ def main():
     output wire flash_clk,flash_cs_n,flash_mosi,flash_wp_n,flash_hold_n,
     input wire sd_miso,''')
         assert s.count('    basic_pitch_workstation_link u_music (')==1
-        s=s.replace('    basic_pitch_workstation_link u_music (','''    assign flash_wp_n=1'b1;
-    assign flash_hold_n=1'b1;
+        s=s.replace('    basic_pitch_workstation_link u_music (','''    wire flash_spi_cs_n,flash_spi_clk,flash_spi_mosi;
+    basic_pitch_flash_io_guard u_model_flash_io (
+        .spi_cs_n_i(flash_spi_cs_n),.spi_clk_i(flash_spi_clk),.spi_mosi_i(flash_spi_mosi),
+        .flash_cs_n_o(flash_cs_n),.flash_clk_o(flash_clk),.flash_mosi_o(flash_mosi),
+        .flash_wp_n_o(flash_wp_n),.flash_hold_n_o(flash_hold_n),.owned_o());
     basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1'b1)) u_music (''')
         anchor='.memory_calibrated(memory_calibrated),.model_serial(pc_uart_rx_i),'
         assert s.count(anchor)==1
-        s=s.replace(anchor,anchor+'\n        .flash_miso(flash_miso),.flash_cs_n(flash_cs_n),.flash_clk(flash_clk),.flash_mosi(flash_mosi),')
+        s=s.replace(anchor,anchor+'\n        .flash_miso(flash_miso),.flash_cs_n(flash_spi_cs_n),.flash_clk(flash_spi_clk),.flash_mosi(flash_spi_mosi),')
         top.write_text(s)
         tree=ET.parse(stage/'Prj1.gprj');fl=tree.find('FileList');present={f.attrib['path'] for f in fl}
         for rel in OVERLAYS:

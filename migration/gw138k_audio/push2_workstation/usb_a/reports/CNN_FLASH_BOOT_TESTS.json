@@ -7,7 +7,7 @@
       "case": 0,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=0 words=31 clk_div=4 zero_rsp=0 cycles=7589 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 151780000 (1ps)"
+      "log": "PASS case=0 words=31 clk_div=4 zero_rsp=0 cycles=7589 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 151780000 (1ps)"
     },
     {
       "words": 31,
@@ -15,7 +15,7 @@
       "case": 0,
       "zero_response": 1,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=0 words=31 clk_div=4 zero_rsp=1 cycles=7373 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 147460000 (1ps)"
+      "log": "PASS case=0 words=31 clk_div=4 zero_rsp=1 cycles=7373 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 147460000 (1ps)"
     },
     {
       "words": 31,
@@ -23,7 +23,7 @@
       "case": 1,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=1 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+      "log": "PASS case=1 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 285500000 (1ps)"
     },
     {
       "words": 31,
@@ -31,7 +31,7 @@
       "case": 2,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=2 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+      "log": "PASS case=2 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 285500000 (1ps)"
     },
     {
       "words": 31,
@@ -39,7 +39,7 @@
       "case": 3,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=3 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+      "log": "PASS case=3 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 285500000 (1ps)"
     },
     {
       "words": 31,
@@ -47,7 +47,7 @@
       "case": 4,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=4 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+      "log": "PASS case=4 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 285500000 (1ps)"
     },
     {
       "words": 31,
@@ -55,7 +55,7 @@
       "case": 5,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=5 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+      "log": "PASS case=5 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 285500000 (1ps)"
     },
     {
       "words": 31,
@@ -63,7 +63,7 @@
       "case": 6,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=6 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+      "log": "PASS case=6 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 285500000 (1ps)"
     },
     {
       "words": 31,
@@ -71,7 +71,7 @@
       "case": 7,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=7 words=31 clk_div=4 zero_rsp=0 cycles=18390 writes=62 reads=31 source=2 crc=dfc2733d flash_error=2\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 367800000 (1ps)"
+      "log": "PASS case=7 words=31 clk_div=4 zero_rsp=0 cycles=18390 writes=62 reads=31 source=2 crc=dfc2733d flash_error=2\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 367800000 (1ps)"
     },
     {
       "words": 31,
@@ -79,7 +79,7 @@
       "case": 8,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=8 words=31 clk_div=4 zero_rsp=0 cycles=18658 writes=62 reads=62 source=2 crc=dfc2733d flash_error=3\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 373160000 (1ps)"
+      "log": "PASS case=8 words=31 clk_div=4 zero_rsp=0 cycles=18658 writes=62 reads=62 source=2 crc=dfc2733d flash_error=3\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 373160000 (1ps)"
     },
     {
       "words": 31,
@@ -87,7 +87,7 @@
       "case": 9,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=9 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 285500000 (1ps)"
+      "log": "PASS case=9 words=31 clk_div=4 zero_rsp=0 cycles=14275 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 285500000 (1ps)"
     },
     {
       "words": 31,
@@ -95,7 +95,7 @@
       "case": 10,
       "zero_response": 0,
       "payload_crc32": "DFC2733D",
-      "log": "PASS case=10 words=31 clk_div=4 zero_rsp=0 cycles=9924 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 198480000 (1ps)"
+      "log": "PASS case=10 words=31 clk_div=4 zero_rsp=0 cycles=9924 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 198480000 (1ps)"
     },
     {
       "words": 1,
@@ -103,7 +103,7 @@
       "case": 0,
       "zero_response": 0,
       "payload_crc32": "94963C67",
-      "log": "PASS case=0 words=1 clk_div=1 zero_rsp=0 cycles=1531 writes=1 reads=1 source=1 crc=94963c67 flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 30620000 (1ps)"
+      "log": "PASS case=0 words=1 clk_div=1 zero_rsp=0 cycles=1531 writes=1 reads=1 source=1 crc=94963c67 flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 30620000 (1ps)"
     },
     {
       "words": 1,
@@ -111,7 +111,7 @@
       "case": 0,
       "zero_response": 1,
       "payload_crc32": "94963C67",
-      "log": "PASS case=0 words=1 clk_div=1 zero_rsp=1 cycles=1524 writes=1 reads=1 source=1 crc=94963c67 flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 30480000 (1ps)"
+      "log": "PASS case=0 words=1 clk_div=1 zero_rsp=1 cycles=1524 writes=1 reads=1 source=1 crc=94963c67 flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 30480000 (1ps)"
     },
     {
       "words": 1,
@@ -119,7 +119,7 @@
       "case": 1,
       "zero_response": 0,
       "payload_crc32": "94963C67",
-      "log": "PASS case=1 words=1 clk_div=1 zero_rsp=0 cycles=2392 writes=1 reads=1 source=2 crc=94963c67 flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 47840000 (1ps)"
+      "log": "PASS case=1 words=1 clk_div=1 zero_rsp=0 cycles=2392 writes=1 reads=1 source=2 crc=94963c67 flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 47840000 (1ps)"
     },
     {
       "words": 1,
@@ -127,7 +127,7 @@
       "case": 7,
       "zero_response": 0,
       "payload_crc32": "94963C67",
-      "log": "PASS case=7 words=1 clk_div=1 zero_rsp=0 cycles=2427 writes=2 reads=1 source=2 crc=94963c67 flash_error=2\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 48540000 (1ps)"
+      "log": "PASS case=7 words=1 clk_div=1 zero_rsp=0 cycles=2427 writes=2 reads=1 source=2 crc=94963c67 flash_error=2\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 48540000 (1ps)"
     },
     {
       "words": 1,
@@ -135,7 +135,7 @@
       "case": 8,
       "zero_response": 0,
       "payload_crc32": "94963C67",
-      "log": "PASS case=8 words=1 clk_div=1 zero_rsp=0 cycles=2440 writes=2 reads=2 source=2 crc=94963c67 flash_error=3\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 48800000 (1ps)"
+      "log": "PASS case=8 words=1 clk_div=1 zero_rsp=0 cycles=2440 writes=2 reads=2 source=2 crc=94963c67 flash_error=3\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 48800000 (1ps)"
     },
     {
       "words": 65536,
@@ -143,7 +143,7 @@
       "case": 0,
       "zero_response": 0,
       "payload_crc32": "D11403B1",
-      "log": "PASS case=0 words=65536 clk_div=1 zero_rsp=0 cycles=3038961 writes=65536 reads=65536 source=1 crc=d11403b1 flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 60779220000 (1ps)"
+      "log": "PASS case=0 words=65536 clk_div=1 zero_rsp=0 cycles=3038961 writes=65536 reads=65536 source=1 crc=d11403b1 flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 60779220000 (1ps)"
     },
     {
       "words": 52239,
@@ -151,7 +151,7 @@
       "case": 0,
       "zero_response": 0,
       "payload_crc32": "AF01A61B",
-      "log": "PASS case=0 words=52239 clk_div=4 zero_rsp=0 cycles=7386959 writes=52239 reads=52239 source=1 crc=af01a61b flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:149: $finish called at 147739180000 (1ps)"
+      "log": "PASS case=0 words=52239 clk_div=4 zero_rsp=0 cycles=7386959 writes=52239 reads=52239 source=1 crc=af01a61b flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 147739180000 (1ps)"
     }
   ],
   "full_model_manifest": {
@@ -243,5 +243,9 @@
     "physical_data_partition_cross_verified": true,
     "bitstream_partition_verified_intact": true,
     "record": "results/workstation_flash92_20261009_cst/model_partition_cbin_both/"
-  }
+  },
+  "io_guard_passed": true,
+  "io_guard_log": "PASS Flash IO guard: idle release, other-master ownership, active SPI and release\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_io_guard.sv:37: $finish called at 12000 (1ps)",
+  "io_guard_source_sha256": "be70cddf661fd231f4f187e8eecf8cf9a2ecbd1e2b0ad8d8041936c4938f5e58",
+  "pin_level_simulation": "All 19 SPI/DDR cases pass through physical tri-state IO guard; separate other-master/reset/idle/active/release test passes."
 }
