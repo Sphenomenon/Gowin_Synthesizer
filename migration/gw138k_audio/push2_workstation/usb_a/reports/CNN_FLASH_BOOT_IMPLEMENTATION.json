@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "incremental93_unroutable_94_cancelled_fresh95_running",
+  "status": "full95_native_ddr_regression_restored85_serial_compatibility_prepared",
   "target_user_code": "0x00000095",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -17,7 +17,7 @@
   "full_model_sim_boot_seconds": 0.14773918,
   "model_auto_boot_hardware_verified": false,
   "physical_power_cycle_tested": false,
-  "build": "results/workstation_flash92_20261009_cst",
+  "build": "results/workstation_flash95_20261009_fresh",
   "initial_build_error": "second CST superseded original complete pin constraints; fixed by appending Flash pins to original CST",
   "evidence": {
     "sim_tests": "reports/CNN_FLASH_BOOT_TESTS.json",
@@ -28,7 +28,11 @@
     "direct_sram_diagnosis": "results/workstation_flash92_20261009_cst/sram_flash_loader_diagnosis/result.json",
     "first_flash_diagnosis": "results/workstation_flash92_20261009_cst/flash_deploy/result.json",
     "flash_diagnosis_with_sram_erase": "results/workstation_flash92_20261009_cst/flash_deploy_reset/result.json",
-    "restored85_smoke": "results/workstation_flash92_20261009_cst/restored85_smoke"
+    "restored85_smoke": "results/workstation_flash92_20261009_cst/restored85_smoke",
+    "full95_timing": "results/workstation_flash95_20261009_fresh/clk50_timing_audit.json",
+    "full95_deployment": "results/workstation_flash95_20261009_fresh/flash_deploy/result.json",
+    "spi_physical_probe": "results/flash_pin_probe96_20261009/board/result.json",
+    "full95_startup_diagnosis": "results/workstation_flash95_20261009_fresh/startup_diagnosis/result.json"
   },
   "incremental_candidate": "results/workstation_flash93_20261009_incremental",
   "incremental_target_user_code": "0x00000093",
@@ -71,5 +75,76 @@
     "inputs_unchanged": true,
     "changed": [],
     "hardware_tested": false
-  }
+  },
+  "full95_build_completed": true,
+  "full95_synthesis_bsram": 216,
+  "full95_physical_bsram": 260,
+  "full95_clk50": {
+    "clk50_closed": true,
+    "fmax_mhz": 51.051,
+    "setup_wns_ns": 0.412,
+    "hold_wns_ns": 0.165,
+    "tns": {
+      "setup": {
+        "ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "ns": 0.0,
+        "endpoints": 0
+      }
+    }
+  },
+  "full95_routed_audits": {
+    "clk50_cdc": true,
+    "scope_cdc": true,
+    "video_pll_init": true,
+    "all_clock_timing_closed": false
+  },
+  "spi_physical_probe": {
+    "build": "results/flash_pin_probe96_20261009",
+    "user_code": "0x00000096",
+    "full_workstation": false,
+    "sram_only": true,
+    "flash_configuration_programmed": false,
+    "uart_model_upload_for_probe": false,
+    "passed": true,
+    "observations": [
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B",
+      "B138 50524F42 AF01A61B AF01A61B 0000013B"
+    ],
+    "baseline85_restored_from_flash": true,
+    "baseline85_uart_model_restored": true,
+    "ddr_validation": false,
+    "full_model_words": 52239,
+    "expected_crc32": "AF01A61B",
+    "actual_crc32": "AF01A61B",
+    "source_sha256": "6becf53c2028b23438b5bfcebc4431868417749bb4af94e629519c861b0bee42"
+  },
+  "full95_hardware_auto_load_passed": false,
+  "default_transport": "serial",
+  "legacy_cnn_native_ddr_sources_unchanged": true,
+  "full95_deploy": {
+    "passed": false,
+    "error": "Flash->DDR CRC/auto boot not proven; UART fallback is not a pass",
+    "rollback_bitstream_restored": true,
+    "rollback_uart_model_restored": true,
+    "rollback_workstation_smoke_passed": true
+  },
+  "full95_hardware_observations": "Exact Flash UserCode95/status26020 passed; model state C never received DDR completion. Diagnostic invalid Flash header bypasses auto model writes; later UART model also remains state C. CPU observed DDD00001 or BAD03001. Startup delay alone is not established as a fix.",
+  "serial_transport_prepare": "results/workstation_flash_serial_prepare_20261009"
 }

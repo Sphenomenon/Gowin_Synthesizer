@@ -10,7 +10,8 @@ module basic_pitch_flash_model_loader #(
     parameter integer WORDS = `BP_FLASH_MODEL_WORDS,
     parameter logic [23:0] FLASH_BYTE_BASE = `BP_FLASH_MODEL_BYTE_BASE,
     parameter integer CLK_DIV = 4,
-    parameter integer STARTUP_CYCLES = 32
+    parameter integer STARTUP_CYCLES = 32,
+    parameter bit VERIFY_DDR = 1'b1
 ) (
     input wire clk_i, rst_ni, boot_ready_i,
     input wire flash_miso_i,
@@ -67,7 +68,7 @@ module basic_pitch_flash_model_loader #(
     assign done_o = state == DONE;
     assign status_o = state;
     assign debug_expected_crc_o = expected_crc;
-    assign debug_actual_crc_o = verify_phase ? ~verify_crc : ~payload_crc;
+    assign debug_actual_crc_o = VERIFY_DDR && verify_phase ? ~verify_crc : ~payload_crc;
     assign mem_req_o = state == WRITE || state == VERIFY_REQ;
     assign mem_write_o = state == WRITE;
     assign mem_byte_addr_o = `BP_DDR_NN_MODEL_BYTE_BASE + ({16'd0,word_index} << 1);
@@ -146,7 +147,7 @@ module basic_pitch_flash_model_loader #(
                 end
                 CHECK: begin
                     if (~payload_crc == expected_crc) begin
-                        word_index <= 0; state <= VERIFY_REQ;
+                        word_index <= 0; state <= VERIFY_DDR ? VERIFY_REQ : DONE;
                     end else begin state <= ERROR; debug_error_stage_o <= 2; end
                 end
                 VERIFY_REQ: if (mem_ready_i) begin

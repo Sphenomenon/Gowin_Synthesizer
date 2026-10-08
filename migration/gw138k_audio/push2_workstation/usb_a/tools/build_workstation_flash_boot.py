@@ -68,6 +68,7 @@ def used_codes():
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--transport',choices=('serial','direct'),default='serial',help='serial preserves the full85 CNN/native-DDR hierarchy; direct is the earlier diagnostic')
     ap.add_argument('--flow',choices=('prepare','syn','all','pnr'),default='syn')
     ap.add_argument('--output',type=Path)
     ap.add_argument('--user-code')
@@ -86,31 +87,57 @@ def main():
     if args.flow=='pnr' and (args.output is None or args.user_code):ap.error('PNR needs existing --output, keeps its original UserCode')
     output=(args.output or ROOT/'results'/datetime.now().strftime('workstation_flash_boot_%Y%m%d_%H%M%S_%f')).resolve()
     stage=output/'Prj1'
+    overlays=OVERLAYS if args.transport=='direct' else [f'rtl/music/{n}' for n in ('basic_pitch_flash_model_loader.sv','basic_pitch_flash_map.svh','basic_pitch_flash_io_guard.sv','basic_pitch_flash_serial_boot.sv')]
     if args.flow!='pnr':
         assert sha(BASE/'Prj1/impl/pnr/Prj1.fs')==BASE_FS_SHA,'deployed bitstream drift'
         originals=json.loads((BASE/'workstation_inputs.json').read_text())
         assert all(sha(BASE/'Prj1'/p)==h for p,h in originals.items()),'deployed source drift'
         assert not output.exists(),'refusing to overwrite candidate'
         shutil.copytree(BASE/'Prj1',stage,ignore=shutil.ignore_patterns('impl','build','*.user','__pycache__'))
-        for rel in OVERLAYS:shutil.copy2(ROOT/rel,stage/rel)
+        for rel in overlays:shutil.copy2(ROOT/rel,stage/rel)
         top=stage/'src/push2/gw138k_push_workstation_top.v';s=top.read_text()
         assert s.count('    input wire sd_miso,')==1
         s=s.replace('    input wire sd_miso,','''    input wire flash_miso,
     output wire flash_clk,flash_cs_n,flash_mosi,flash_wp_n,flash_hold_n,
     input wire sd_miso,''')
         assert s.count('    basic_pitch_workstation_link u_music (')==1
-        s=s.replace('    basic_pitch_workstation_link u_music (','''    wire flash_spi_cs_n,flash_spi_clk,flash_spi_mosi;
+        guard = '''    wire flash_spi_cs_n,flash_spi_clk,flash_spi_mosi;
     basic_pitch_flash_io_guard u_model_flash_io (
         .spi_cs_n_i(flash_spi_cs_n),.spi_clk_i(flash_spi_clk),.spi_mosi_i(flash_spi_mosi),
         .flash_cs_n_o(flash_cs_n),.flash_clk_o(flash_clk),.flash_mosi_o(flash_mosi),
         .flash_wp_n_o(flash_wp_n),.flash_hold_n_o(flash_hold_n),.owned_o());
-    basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1'b1)) u_music (''')
+'''
         anchor='.memory_calibrated(memory_calibrated),.model_serial(pc_uart_rx_i),'
         assert s.count(anchor)==1
-        s=s.replace(anchor,anchor+'\n        .flash_miso(flash_miso),.flash_cs_n(flash_spi_cs_n),.flash_clk(flash_spi_clk),.flash_mosi(flash_spi_mosi),')
+        if args.transport=='direct':
+            s=s.replace('    basic_pitch_workstation_link u_music (',guard+'    basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1\'b1)) u_music (')
+            s=s.replace(anchor,anchor+'\n        .flash_miso(flash_miso),.flash_cs_n(flash_spi_cs_n),.flash_clk(flash_spi_clk),.flash_mosi(flash_spi_mosi),')
+        else:
+            # Keep the proven parser, reset fanout, CNN and native DDR client.
+            # CPU UI marker is published only after DDR/audio/UI startup tests.
+            bridge = '''    wire model_boot_serial;
+    wire [1:0] model_boot_source,model_boot_error;
+    wire [3:0] model_boot_state;
+    wire model_system_ready=signature==32'h43505531 && ram_result==32'h50415353 &&
+        ui_report[31:16]==16'h5549 && memory_calibrated && memory_reset_n;
+    basic_pitch_flash_serial_boot u_model_flash_source (
+        .clk_i(clk_50m),.rst_ni(reset_n),.boot_ready_i(model_system_ready),
+        .serial_i(pc_uart_rx_i),.flash_miso_i(flash_miso),.model_status_i(music_model_status),
+        .serial_o(model_boot_serial),.flash_cs_n_o(flash_spi_cs_n),
+        .flash_clk_o(flash_spi_clk),.flash_mosi_o(flash_spi_mosi),
+        .source_o(model_boot_source),.error_stage_o(model_boot_error),.state_o(model_boot_state));
+'''
+            s=s.replace('    basic_pitch_workstation_link u_music (',guard+bridge+'    basic_pitch_workstation_link u_music (')
+            s=s.replace(anchor,'.memory_calibrated(memory_calibrated),.model_serial(model_boot_serial),\n        .model_boot_source(model_boot_source),.model_boot_error(model_boot_error),')
+            link=stage/'rtl/music/basic_pitch_workstation_link.sv';text=link.read_text()
+            text=text.replace('    input wire model_serial,','    input wire model_serial,\n    input wire [1:0] model_boot_source,model_boot_error,')
+            old="{score_count,score_first,score_last,2'd0,model_error_stage,"
+            assert text.count(old)==1
+            text=text.replace(old,"{score_count,score_first,score_last,model_boot_source,\n                             (model_status==0 && model_boot_source==2 ? model_boot_error : model_error_stage),")
+            link.write_text(text)
         top.write_text(s)
         tree=ET.parse(stage/'Prj1.gprj');fl=tree.find('FileList');present={f.attrib['path'] for f in fl}
-        for rel in OVERLAYS:
+        for rel in overlays:
             if rel not in present and not rel.endswith('.svh'):
                 ET.SubElement(fl,'File',path=rel,type='file.cst' if rel.endswith('.cst') else 'file.verilog',enable='1')
         tree.write(stage/'Prj1.gprj',encoding='UTF-8',xml_declaration=True)
@@ -118,7 +145,7 @@ def main():
         cst_files=[f.attrib['path'] for f in fl if f.attrib['type']=='file.cst' and f.attrib.get('enable')=='1']
         assert cst_files==['constraints/tang_mega_138k.cst'],'baseline must have one complete pin CST'
         cst=stage/cst_files[0];cst.write_text(cst.read_text()+'\n'+CST)
-        sdc=stage/'constraints/tang_mega_138k.sdc';sdc.write_text(sdc.read_text()+SDC)
+        sdc=stage/'constraints/tang_mega_138k.sdc';sdc.write_text(sdc.read_text()+(SDC if args.transport=='direct' else SDC.replace('u_music/model_memory_meta*/D','u_model_flash_source/ready_meta*/D')))
         if args.tighten_cache_reset:
             sdc.write_text(sdc.read_text()+'''
 # Stricter budget for the existing synchronous cache RESET cone;
@@ -135,14 +162,14 @@ set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
-        allowed=set(OVERLAYS+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
+        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
                              'constraints/tang_mega_138k.cst','constraints/tang_mega_138k.sdc'])
         assert set(changed)==allowed,(changed,allowed)
         write_json(output/'workstation_inputs.json',inputs)
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,
             route_option=args.route_option,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'

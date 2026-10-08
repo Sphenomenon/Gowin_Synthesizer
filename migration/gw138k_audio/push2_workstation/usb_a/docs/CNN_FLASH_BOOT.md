@@ -1,6 +1,10 @@
 # CNN 权重持久化与 Flash→DDR 启动
 
-完整工作站可把 FPGA 配置位流和 Basic Pitch 模型分别保存在板载外部 Flash。用户逻辑启动、DDR 校准完成后，`basic_pitch_boot_model_loader` 使用只读 SPI 从模型分区搬运权重，再完整回读 DDR 校验。两次 CRC 都通过才发布 `model_status=E`；CNN 原有等待模型就绪的条件保持有效。
+完整工作站把 FPGA 配置位流和 Basic Pitch 模型分别保存在板载外部 Flash。默认构建采用 `serial` 兼容传输：CPU 完成 DDR/音频/UI 启动自检后，片内 Flash 控制器先完整读取并校验模型，再重新读取、产生内部 `BPN1` 8N1 数据流，交给 full85 原封不动的模型解析器和 DDR 客户端。它使用片内连线，不经过 PC、USB 或外部串口；115200 波特率下模型装载约 9 秒，另加校验和 DDR 回读时间。
+
+此前 `direct` 方案仍保留为实验路径：直接 SPI→DDR、载荷 CRC、DDR 回读 CRC。0x95 完整工程虽然 clk50 收敛且正常从 Flash 配置，实体原有 UART 路径也停在 DDR 回读，CPU DDR/UI 自检出现失败；因此 0x95 没有提升为 LATEST。独立 0x96 SRAM 探针完整读出 Flash 模型并通过本地 RAM CRC，证明 Flash 接线、字节序和载荷有效；探针不代表完整工作站或 DDR 已验收。
+
+默认 `serial` 方案保留 CNN、原模型解析器、DDR16 端口、CDC FIFO、命令缓冲的完整源文件和实例层级。空白/非法头或首遍载荷 CRC 错误时，模型解析器尚未接收任何数据，自动切回外部 UART。第二遍发生变化或 DDR 校验错误则显式失败，需要全局复位后恢复；不会把部分模型当成成功。
 
 模型镜像是现有 `rtl/music/weights/cnn_ddr_blob.mem` 的 52,239 个 16-bit 系数，104,478 字节，CRC32 `AF01A61B`。它不含 PCM、音频文件头、演奏录音或推流内容。镜像构建工具只接受严格的 16-bit 十六进制字表并检查字数。该模型位于独立外部 Flash 分区，启动逻辑没有模型 ROM、没有新增 BSRAM。
 
@@ -29,7 +33,7 @@
 
 `basic_pitch_flash_map.svh` 是 RTL 地址常量。打包器默认地址与此一致；调整分区必须一起调整 RTL 和镜像构建参数。
 
-## 启动与回退
+## direct 路径的启动与回退
 
 1. 在 `clk_50m` 域同步 `memory_calibrated && memory_reset_n`，等待校准完成。
 2. 拉低已注册的 CS；发送 `03 60 00 00`，用 SPI mode 0 读取头和载荷。50 MHz 时钟、半周期分频 4，SCK 为 6.25 MHz。
@@ -62,7 +66,7 @@ B138 最后一字的原字段 `[5:2]` 仍是模型状态（`E` 成功）。新�
 
 完整工程保留 `-use_mspi_as_gpio 1`、`-use_cpu_as_gpio 1`。内部 Flash CS/SCK 由触发器输出，物理输出使用 CS 作为总线所有权；IO2/3 闲置时不能固定驱动，以便配置/其他主机使用。避免状态译码毛刺形成伪 SPI 事务。Flash 上电配置由 Gowin 配置逻辑接管，用户态启动搬运使用同一组物理走线。实际 IO 放置和 Flash 启动验收以构建/实体报告为准。
 
-新增约束仅豁免校准同步器第一采样级，并给 MISO 增加相对 clk50 的 15 ns 输入延迟约束。既有音频、DDR、HDMI 时钟和时序检查没有放宽。当前完整工作站基线的整体时序未闭合；完成 Flash 功能验收不等于整个工程时序闭合。
+新增约束仅豁免启动就绪同步器（direct 为校准同步器）的第一采样级，并给 MISO 增加相对 clk50 的 15 ns 输入延迟约束。既有音频、DDR、HDMI 时钟和时序检查没有放宽。当前完整工作站基线的整体时序未闭合；完成 Flash 功能验收不等于整个工程时序闭合。
 
 ## 构建与验证
 
@@ -73,7 +77,7 @@ B138 最后一字的原字段 `[5:2]` 仍是模型状态（`E` 成功）。新�
 python3 tools/build_workstation_flash_boot.py --flow syn
 
 # 完整候选必须使用全仓库未占用的新 UserCode。
-python3 tools/build_workstation_flash_boot.py --flow all --user-code <八位新编号>
+python3 tools/build_workstation_flash_boot.py --flow all --user-code <八位新编号> --transport serial
 # 当前修复候选采用标准路由，并收紧原缓存 RESET cone 的预算。
 python3 tools/build_workstation_flash_boot.py --flow all --user-code <另一新编号> --route-option 0 --tighten-cache-reset
 
@@ -84,6 +88,9 @@ python3 tools/build_workstation_flash_boot.py --flow all --user-code <另一新�
 # SPI 物理端口模型、DDR 请求/响应反压、CRC 故障和 UART 回退测试。
 python3 tools/test_cnn_flash_boot.py --output /tmp/cnn_flash_tests.json
 
+# 默认兼容传输：完整首遍校验、第二遍变化、实际波特率、UART 回退、DDR CRC。
+python3 tools/test_cnn_flash_serial_boot.py --output /tmp/cnn_flash_serial_tests.json
+
 # 离线部署/回滚故障测试：使用已完成候选的真实 hash，所有硬件 I/O 用测试替身。
 python3 tools/test_cnn_flash_deploy.py --build <完整结果目录>
 
@@ -91,7 +98,7 @@ python3 tools/test_cnn_flash_deploy.py --build <完整结果目录>
 python3 sim/music/run_bp_config_ab.py --simulator verilator --frames 3 --win-len 2048
 ```
 
-完整构建保留部署 full85 的源文件快照，叠加 Flash 启动模块、Basic Pitch 边界、顶层六个 Flash 引脚和相应约束。可选增量 P&R 会复制并记录已验证 full85 `.pr` 的 SHA256，仍运行全新 RTL 综合；参考文件和所有输入在构建前后复核，不覆盖原候选。冻结的 DDR 仲裁、地址图、显示、延迟 DMA 文件逐一核对 SHA256；没有把工作区其他未提交的开发内容并入发布。
+完整构建保留部署 full85 的源文件快照。默认 serial 只叠加 Flash 传输模块、模型输入连线、B138 来源/错误字段、顶层六个 Flash 引脚与约束；CNN/DDR 客户端源文件不变。`--transport direct` 才叠加此前的模型内存端口方案。可选增量 P&R 会复制并记录已验证 full85 `.pr` 的 SHA256，仍运行全新 RTL 综合；参考文件和所有输入在构建前后复核，不覆盖原候选。冻结的 DDR 仲裁、地址图、显示、延迟 DMA 文件逐一核对 SHA256；没有把工作区其他未提交的开发内容并入发布。
 
 每个结果目录包含 `cnn_model.bin`、模型 manifest、`workstation_inputs.json`、工具退出结果、资源审计。P&R 成功后才生成 `workstation_with_cnn.bin` 和带位流/模型 SHA256 的 `flash_bundle.json`。
 

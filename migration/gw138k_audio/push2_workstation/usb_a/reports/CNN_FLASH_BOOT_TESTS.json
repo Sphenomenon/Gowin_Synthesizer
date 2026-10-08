@@ -270,7 +270,137 @@
         "hardware_io_used": false
       }
     ],
-    "build": "results/workstation_flash92_20261009_cst",
+    "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_flash95_20261009_fresh",
     "notes": "Programmer, serial, board inventory, lock and waits are stubbed; all unknown external commands fail closed. Actual candidate input/hash/status logic is exercised."
+  },
+  "serial_transport": {
+    "passed": true,
+    "tests": [
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 0,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=0 words=31 clk_div=4 zero_rsp=0 cycles=25051 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 501020000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 1,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=1 words=31 clk_div=4 zero_rsp=0 cycles=14269 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 285380000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 2,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=2 words=31 clk_div=4 zero_rsp=0 cycles=14269 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 285380000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 3,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=3 words=31 clk_div=4 zero_rsp=0 cycles=14269 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 285380000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 4,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=4 words=31 clk_div=4 zero_rsp=0 cycles=14269 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 285380000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 5,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=5 words=31 clk_div=4 zero_rsp=0 cycles=14269 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 285380000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 6,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=6 words=31 clk_div=4 zero_rsp=0 cycles=14269 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 285380000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 7,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=7 words=31 clk_div=4 zero_rsp=0 cycles=18281 writes=31 reads=31 source=2 crc=dfc2733d flash_error=2\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 365620000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 8,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial DDR corruption rejected\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:149: $finish called at 485820000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 9,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=9 words=31 clk_div=4 zero_rsp=0 cycles=14269 writes=31 reads=31 source=2 crc=dfc2733d flash_error=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 285380000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 10,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=10 words=31 clk_div=4 zero_rsp=0 cycles=35976 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 719520000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 11,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial image changed between passes case=11 rejected\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:144: $finish called at 468060000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 3125000,
+        "case": 12,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial image changed between passes case=12 rejected\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:144: $finish called at 189040000 (1ps)"
+      },
+      {
+        "words": 1,
+        "baud": 3125000,
+        "case": 0,
+        "payload_crc32": "94963C67",
+        "log": "PASS serial case=0 words=1 clk_div=4 zero_rsp=0 cycles=7428 writes=1 reads=1 source=1 crc=94963c67 flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 148560000 (1ps)"
+      },
+      {
+        "words": 31,
+        "baud": 115200,
+        "case": 0,
+        "payload_crc32": "DFC2733D",
+        "log": "PASS serial case=0 words=31 clk_div=4 zero_rsp=0 cycles=317442 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 6348840000 (1ps)"
+      },
+      {
+        "words": 52239,
+        "baud": 3125000,
+        "case": 0,
+        "payload_crc32": "AF01A61B",
+        "log": "PASS serial case=0 words=52239 clk_div=4 zero_rsp=0 cycles=30689189 writes=52239 reads=52239 source=1 crc=af01a61b flash_error=0\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv:175: $finish called at 613783780000 (1ps)"
+      }
+    ],
+    "hardware_tested": false,
+    "pcm_saved": false,
+    "internal_protocol_only": true,
+    "source_sha256": {
+      "sim/model_flash/tb_flash_serial_boot.sv": "ec599fdf840c4e0d1aec9f61c8608eee5437af02dc484a7d2ee6377c18d35d13",
+      "rtl/music/basic_pitch_flash_serial_boot.sv": "ca350379673839ecc004878a7b99f051c27c77571231d514aeaf1a7fca57a416",
+      "rtl/music/basic_pitch_flash_model_loader.sv": "3f45c816e2bf5a994a9e336b839ccca35685b2e3f89db908f5f9ab8ad6488805",
+      "rtl/music/basic_pitch_flash_io_guard.sv": "be70cddf661fd231f4f187e8eecf8cf9a2ecbd1e2b0ad8d8041936c4938f5e58",
+      "rtl/music/basic_pitch_uart_model_loader.sv": "929e4f9a702fe06731a651817ff9217f6ff7cd7e553b642d3dda7b2b53393fd5",
+      "rtl/music/basic_pitch_uart_rx.sv": "28f403ca014eadb6141beb6f293a52266962326de8e15d44f7115d1745310b7c",
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/src/control/uart_tx.v": "3513207cae9e529b0dabd45040a33012440ad4c1fc842571b4cb70ece5d09e8f"
+    },
+    "notes": "Default fast simulation uses 16 clocks/bit; separate case uses actual 50MHz/115200 timing. Independent NOR and DDR address/content/order/backpressure oracle; precheck faults emit no DDR writes. Full model is 52239 words."
   }
 }
