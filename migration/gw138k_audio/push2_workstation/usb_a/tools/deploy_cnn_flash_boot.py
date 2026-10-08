@@ -16,6 +16,7 @@ import re
 import subprocess
 import time
 from build_cnn_flash_image import validate_image,gowin_data_fs
+from audit_clk50_timing import audit as audit_clk50
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
 BASE_SHA='7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444'
@@ -26,6 +27,7 @@ def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('build',type=Path)
     ap.add_argument('--program',action='store_true')
+    ap.add_argument('--allow-clk50-open',action='store_true',help='explicit temporary diagnostic only; do not promote a clk50 timing regression')
     ap.add_argument('--expected-code',default='0x00000085')
     ap.add_argument('--location',type=int,default=53)
     ap.add_argument('--port',default='/dev/serial/by-id/usb-SIPEED_USB_Debugger_2025030317-if01-port0')
@@ -43,6 +45,9 @@ def main():
     assert sha(oldfs)==BASE_SHA,'rollback artifact drift'
     code=bundle['user_code'].lower()
     assert re.search(r'//UserCode: (0x[0-9A-Fa-f]{8})',fs.read_text()[:1000])[1].lower()==code
+    clk50=audit_clk50(build)
+    if args.program and not clk50['clk50_closed'] and not args.allow_clk50_open:
+        ap.error('clk50 timing regressed/open; use a closed candidate, or --allow-clk50-open only for a temporary boot diagnostic')
     programmer=Path.home()/'.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli'
     common=[str(programmer),'--device','GW5AST-138C','--cable-index','5','--location',str(args.location),'--frequency','0.9MHz']
     # Native Arora V C-Bin operation needs BOTH: --fsFile satisfies the CLI
@@ -58,7 +63,8 @@ def main():
     output=(args.output or build/'flash_deploy').resolve();output.mkdir(parents=True,exist_ok=False)
     result=dict(started_at=datetime.now().astimezone().isoformat(),build=str(build),user_code=code,
                 commands=[],boots=[],passed=False,uart_model_upload_used=False,sram_download_used=False,
-                physical_power_cycle_tested=False,board_serial='2025030317')
+                physical_power_cycle_tested=False,board_serial='2025030317',
+                clk50_closed=clk50['clk50_closed'],diagnostic_timing_override=args.allow_clk50_open)
     def save():(output/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     def run(label,extra,require=None):
         print(label,flush=True)

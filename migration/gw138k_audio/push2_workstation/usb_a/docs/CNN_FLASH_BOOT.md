@@ -108,4 +108,4 @@ Flash 写入必须把模型分区和位流一起记录。原生 Arora V operatio
 python3 tools/deploy_cnn_flash_boot.py <完整结果目录>
 ```
 
-部署工具先核对板上版本、Flash ID、冻结工件与独占锁。先写模型分区并校验地址零处旧位流仍完好，再写新配置位流；三次 JTAG Reprogram 后只读监听 UART，要求模型来源=Flash 且状态=E。失败时保存原始日志，并尝试恢复原 full85 配置位流。
+部署工具先核对原 20 ns clk50 时序、板上版本、Flash ID、冻结工件与独占锁。clk50 未闭合时默认拒绝实体写入；`--allow-clk50-open` 仅用于临时的启动诊断，必须恢复基线且不得据此提升 LATEST。先写模型分区并校验地址零处旧位流仍完好，再写新配置位流；三次 JTAG Reprogram 后只读监听 UART，要求模型来源=Flash 且状态=E。失败时保存原始日志，并尝试恢复原 full85 配置位流。
