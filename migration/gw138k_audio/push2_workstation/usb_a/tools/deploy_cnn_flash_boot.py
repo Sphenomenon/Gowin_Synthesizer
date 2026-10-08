@@ -102,6 +102,18 @@ def main():
                     run('erase_sram_'+str(index),['--operation_index','24'])
                     port.reset_input_buffer()
                     run('reprogram_'+str(index),['--operation_index','1'])
+                    # Native Flash reload can outlast the command itself.
+                    # Do not interpret UART/DDR telemetry until the exact new
+                    # UserCode and the board's normal configured status appear.
+                    code_deadline=time.monotonic()+180;attempt=0
+                    while True:
+                        text=run('configuration_code_'+str(index)+'_'+str(attempt),['--operation_index','0'])
+                        codes=re.findall(r'User\s*Code(?:\s+is)?\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
+                        statuses=re.findall(r'Status\s*Code(?:\s+is)?\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
+                        if codes and int(codes[-1],16)==int(code,16) and statuses and int(statuses[-1],16) in (0x26020,0x26230):break
+                        assert time.monotonic()<code_deadline,'Flash configuration did not reach target UserCode/normal status'
+                        attempt+=1;time.sleep(2)
+                    port.reset_input_buffer()
                     deadline=time.monotonic()+45;lines=[];observed=[]
                     while time.monotonic()<deadline:
                         line=port.readline();lines.append(line.decode(errors='replace'))
@@ -115,13 +127,6 @@ def main():
                     result['boots'].append(dict(index=index,passed=ok,model_observations=observed));save()
                     if not ok:run('failed_boot_code_'+str(index),['--operation_index','0'])
                     assert ok,'Flash->DDR CRC/auto boot not proven; UART fallback is not a pass'
-                code_deadline=time.monotonic()+45;attempt=0
-                while True:
-                    text=run('after_code_'+str(index)+'_'+str(attempt),['--operation_index','0'])
-                    codes=re.findall(r'User\s*Code(?:\s+is)?\s*[:=]\s*(0x[0-9a-fA-F]+)',text,re.I)
-                    if codes and int(codes[-1],16)==int(code,16):break
-                    assert time.monotonic()<code_deadline,'wrong post-Flash UserCode'
-                    attempt+=1;time.sleep(1)
             result['passed']=True
         except Exception as exc:
             result['error']=str(exc);save()

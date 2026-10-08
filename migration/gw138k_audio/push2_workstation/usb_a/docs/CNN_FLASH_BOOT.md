@@ -101,11 +101,11 @@ python3 tools/build_cnn_flash_image.py \
 
 Flash 写入必须把模型分区和位流一起记录。原生 Arora V operation54 用于 `.fs` 位流；operation56（C Bin）用于原始模型 `.bin`/整区打包镜像，CLI 必须同时传 `--fsFile cnn_model.bin --mcuFile cnn_model.bin`：前者满足 CLI 的文件检查，后者提供原始字节；单传任一参数会导致无数据/零长度。该调用已用 operation66 与等价的文本 `.data.fs` 交叉校验实际 Flash 字节。镜像工具还输出逐字节等价的 `.data.fs` 容器，官方 `--filestransform 1` 还原结果与原始镜像一致。首次采用 raw-data 操作后须用 RTL 双 CRC 实读确认字节序/偏移；不能仅以 Programmer 的退出码代替自动搬运验收。禁止用 Bulk Erase 操作更新单个分区。实体操作需持有 debugger `2025030317` 的独占锁，写前/重加载后读回确切 UserCode。
 
-验收时保留 UART 只读监听，先执行 SRAM Erase 仅清除易失配置，再执行 JTAG Reprogram（不提供 SRAM 位流），等待实际 UserCode 更新，要求来源=1 且模型状态=E，再记录多次重加载结果。物理断电/上电与耳机/显示/整曲验收需分别注明是否实际执行。
+验收时保留 UART 只读监听，先执行 SRAM Erase 仅清除易失配置，再执行 JTAG Reprogram（不提供 SRAM 位流），先等待实际目标 UserCode 与正常已配置状态（本板已观察到的 `0x26020`/`0x26230`），再清空 UART 缓冲并读模型状态，要求来源=1 且模型状态=E，再记录多次重加载结果。物理断电/上电与耳机/显示/整曲验收需分别注明是否实际执行。
 
 ```sh
 # 默认只校验工件与预览命令；实体写入显式加 --program。
 python3 tools/deploy_cnn_flash_boot.py <完整结果目录>
 ```
 
-部署工具先核对原 20 ns clk50 时序、板上版本、Flash ID、冻结工件与独占锁。clk50 未闭合时默认拒绝实体写入；`--allow-clk50-open` 仅用于临时的启动诊断，必须恢复基线且不得据此提升 LATEST。先写模型分区并校验地址零处旧位流仍完好，再写新配置位流；三次 SRAM Erase + JTAG Reprogram 后只读监听 UART，并等待/核对目标 UserCode，要求模型来源=Flash 且状态=E。失败时保存原始日志，并尝试恢复原 full85 配置位流。
+部署工具先核对原 20 ns clk50 时序、板上版本、Flash ID、冻结工件与独占锁。clk50 未闭合时默认拒绝实体写入；`--allow-clk50-open` 仅用于临时的启动诊断，必须恢复基线且不得据此提升 LATEST。先写模型分区并校验地址零处旧位流仍完好，再写新配置位流；三次 SRAM Erase + JTAG Reprogram 后只读监听 UART，且先等待/核对目标 UserCode 和已配置状态；不在 FPGA 配置完成前解释 DDR/UART 报文，要求模型来源=Flash 且状态=E。失败时保存原始日志，并尝试恢复原 full85 配置位流。
