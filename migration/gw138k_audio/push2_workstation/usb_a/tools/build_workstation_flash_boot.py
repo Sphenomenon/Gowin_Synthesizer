@@ -66,6 +66,25 @@ def used_codes():
         except (OSError,UnicodeError):continue
     return codes
 
+def audit_serial_compatibility(output):
+    stage=output/'Prj1'
+    paths=['rtl/music/basic_pitch_pcm_pipeline.sv','rtl/music/basic_pitch_uart_model_loader.sv',
+        'rtl/music/basic_pitch_ddr16_port.sv','rtl/music/basic_pitch_ddr_command_buffer.sv',
+        'rtl/music/music_async_fifo.sv','src/video/hdmi_display.v','firmware/boot.mem',
+        'vendor/gowin_ddr3/ddr3_memory_interface.v']
+    paths += [str(p.relative_to(BASE/'Prj1')) for p in (BASE/'Prj1').rglob('gw138k_ddr_arbiter.sv')]
+    evidence={p:dict(unchanged=sha(BASE/'Prj1'/p)==sha(stage/p),sha256=sha(stage/p)) for p in paths}
+    assert all(v['unchanged'] for v in evidence.values()),'serial transport changed proven CNN/DDR/firmware'
+    original=(BASE/'Prj1/rtl/music/basic_pitch_workstation_link.sv').read_text()
+    link=(stage/'rtl/music/basic_pitch_workstation_link.sv').read_text()
+    link=link.replace('    input wire [1:0] model_boot_source,model_boot_error,\n','')
+    link=link.replace("{score_count,score_first,score_last,model_boot_source,\n                             (model_status==0 && model_boot_source==2 ? model_boot_error : model_error_stage),",
+                      "{score_count,score_first,score_last,2'd0,model_error_stage,")
+    assert link==original,'serial native-memory link changed beyond diagnostics'
+    write_json(output/'serial_compatibility_source_audit.json',dict(passed=True,
+        baseline=str(BASE.relative_to(ROOT)),candidate=str(output),unchanged_sources=evidence,
+        link_change_only='Two diagnostic inputs and B138 source/error fields; native memory and CDC source unchanged'))
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--transport',choices=('serial','direct'),default='serial',help='serial preserves the full85 CNN/native-DDR hierarchy; direct is the earlier diagnostic')
@@ -204,6 +223,7 @@ set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight
         if recorded_reference:
             reference=stage/'build/full85_reference.pr';reference_sha=recorded_reference['routed_pr_sha256']
             assert sha(reference)==reference_sha,'incremental reference drift before reroute'
+    if json.loads((output/'build_metadata.json').read_text()).get('transport')=='serial':audit_serial_compatibility(output)
     for rel,(staged,h) in FROZEN.items():assert sha(ROOT/rel)==sha(stage/staged)==h,rel
     assert all(sha(stage/p)==h for p,h in inputs.items()),'candidate input drift'
     print(output,flush=True)
