@@ -132,3 +132,5 @@ B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同�
 2026-10-10T02:10:54.308237+08:00：B7完成268/340物理BSRAM、clk50 54.700MHz、视频182.441MHz、PLL/CDC/所有绑定协议/SAT/完整分析帧/BIST故障测试通过；DDR UI TF write_total→read_total仍−5.551ns/hold+0.167ns，正式拒绝、无硬件IO。B8正在布线。
 
 2026-10-10T02:14:49.846268+08:00：B9开始完整构建，相对B8只新增TF grouped availability和卡片priority浅层组合选择；实际源码绑定42组TF协议、64bitavailability/65bitnextcount/68bitcard SAT及实际分析页完整帧PASS，额外0周期/0BSRAM。其模型链路11个实际测试源码及模型镜像与B8全模型执行逐哈希一致，已记录组合证明，不标为B9另一次执行。自动验收等待B8完成，任一成功硬件结果后续候选只做本地门禁。
+
+B9 TF协议回归进一步绑定实际构建内的注册tagflags仲裁器60aec35b和client queues，42组全部通过；缓冲模式使用候选构建源码，直接/同周期响应仍使用独立native memory oracle。不是仅TF模块的源码绑定。

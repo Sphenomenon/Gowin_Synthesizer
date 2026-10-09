@@ -126,6 +126,9 @@ def main():
         variants.append(('grouped_read_availability',fast_tf_read_availability(variants[-1][1])))
     if args.build:
         assert args.parallel_byte_counters and (args.build/'Prj1'/TF_DMA).read_text()==variants[-1][1],'frozen TF source differs from tested variant'
+    bus_root=args.build/'Prj1/rtl/music' if args.build else ROOT/'rtl/music'
+    arbiter_source=bus_root/'basic_pitch_ddr_arbiter_pipeline.sv'
+    client_queues_source=bus_root/'basic_pitch_ddr_client_queues.sv'
     cases = []
     with tempfile.TemporaryDirectory(prefix='cnn_tf_stage_retime_') as temp:
         folder = Path(temp)
@@ -146,7 +149,7 @@ def main():
                 compile_result = subprocess.run([
                     'iverilog', '-g2012', '-I', str(BASE), '-s',
                     'tb_tf_audio_ddr_dma', '-o', str(exe), str(src), str(test)
-                ] + ([str(ROOT/'rtl/music/basic_pitch_ddr_arbiter_pipeline.sv'),str(ROOT/'rtl/music/basic_pitch_ddr_client_queues.sv')] if buffered else []), capture_output=True, text=True)
+                ] + ([str(arbiter_source),str(client_queues_source)] if buffered else []), capture_output=True, text=True)
                 assert compile_result.returncode == 0, compile_result.stdout + compile_result.stderr
                 result = subprocess.run(['vvp', str(exe)], capture_output=True,
                                         text=True, timeout=30)
@@ -157,8 +160,8 @@ def main():
                   variant_source_sha256={label:hashlib.sha256(text.encode()).hexdigest() for label,text in variants},
                   staged_source_sha256=hashlib.sha256(patched.encode()).hexdigest(),
                   original_source_sha256=hashlib.sha256(original.encode()).hexdigest(),
-                  arbiter_sha256=hashlib.sha256((ROOT/'rtl/music/basic_pitch_ddr_arbiter_pipeline.sv').read_bytes()).hexdigest(),
-                  client_queues_sha256=hashlib.sha256((ROOT/'rtl/music/basic_pitch_ddr_client_queues.sv').read_bytes()).hexdigest())
+                  arbiter_source=str(arbiter_source),arbiter_sha256=hashlib.sha256(arbiter_source.read_bytes()).hexdigest(),
+                  client_queues_source=str(client_queues_source),client_queues_sha256=hashlib.sha256(client_queues_source.read_bytes()).hexdigest())
     if args.output:
         args.output.write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))
