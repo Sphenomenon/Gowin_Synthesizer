@@ -802,3 +802,28 @@ def registered_tf_read_response(text):
         assert text.count(old)==1,old
         text=text.replace(old,new,1)
     return text
+
+
+def pipeline_tf_read_return(text):
+    """Register qualified response/data together; consume exact pending fields next cycle."""
+    anchor='    wire read_response = app_rvalid && (read_pending || read_accept);'
+    assert text.count(anchor)==1
+    new="""    reg read_return_valid_q;
+    reg [255:0] read_return_data_q;
+    wire incoming_read_return=app_rvalid && (read_pending || read_accept);
+    always @(posedge clk or negedge rst_n)begin
+        if(!rst_n)read_return_valid_q<=0;
+        else read_return_valid_q<=incoming_read_return &&
+            !restart_event && !(state==S_DONE && capture_finished);
+    end
+    always @(posedge clk)read_return_data_q<=app_rdata;
+    wire read_response = read_return_valid_q;"""
+    text=text.replace(anchor,new,1)
+    for old,new in [
+        ('wire [5:0] read_response_bytes = read_accept ? read_chunk_bytes :\n                                                   read_pending_bytes;',
+         'wire [5:0] read_response_bytes = read_pending_bytes;'),
+        ('read_buf <= app_rdata;', 'read_buf <= read_return_data_q;'),
+        ('read_total_bytes <= read_accept ? read_total_after_accept : read_total_pending;',
+         'read_total_bytes <= read_total_pending;')]:
+        assert text.count(old)==1,old;text=text.replace(old,new,1)
+    return text

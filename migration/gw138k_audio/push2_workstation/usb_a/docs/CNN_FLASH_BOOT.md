@@ -253,3 +253,5 @@ TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合
 可选 `--mask-tf-write-epoch` 要求fast availability和registered capture limit，只用32个byte-valid位记录256bit写缓冲哪些字节已写，未写部分输出精确零；实际byte payload不做epoch wide clear。复位/epoch/原write_clear_pending优先级保持，额外0周期/0BSRAM。10万任意控制周期包含所有64index、复位、重启、接收/清空重叠，每拍256bit可见payload与原清空算法完全相同；48组完整TF协议比较通过。发布脚本绑定构建源码重跑。
 
 可选 `--registered-tf-response` 只用于显式buffered clients/registered native DDR/TF command buffer的完整构建，builder拒绝缺少这些条件。实际audio_response来自注册response_valid/owner，TF命令还先进入独立slot，因此本请求响应必然跨过接受边界；特殊化去掉TF本请求同拍response fallback、只取pending bytes/count。通用冻结TF源码继续支持同周期返回并由前8个variant测试。新variant仅以真实注册队列测试，加入response必须已有pending断言；50组协议PASS，其中2组为注册响应specialization（正常/背压）。源审计绑定actual core注册assign/tag owner、HDMI client queues和top TF命令/响应连接；额外0周期/0BSRAM。
+
+备用 `--pipeline-tf-read-return` 需要byte mask、与registered-response互斥。把原app_rvalid&&(pending||accept)合格响应及256bit数据在同一边界寄存，下一拍消费已保存的pending bytes/count，通用原生同周期响应也受支持。restart/新epoch抑制旧响应发布，每beat明确增加1个100MHz UI周期（10ns），0BSRAM。54组包括新variant6种直接/队列/背压/零周期响应的完整TF ring及输出字节oracle通过。此选项尚未用于BD，作为通用响应寄存替代。
