@@ -4,11 +4,12 @@ from pathlib import Path
 import argparse,subprocess,tempfile,json,hashlib,threading
 from build_cnn_flash_image import build_image,load_words
 ROOT=Path(__file__).resolve().parents[1];SRC=ROOT/'rtl/music'
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--build',type=Path,help='use the frozen full-workstation RTL; only RX baud is accelerated for the full-content case');p.add_argument('--output',type=Path);p.add_argument('--buffered-clients',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--build',type=Path,help='use the frozen full-workstation RTL; only RX baud is accelerated for the full-content case');p.add_argument('--output',type=Path);p.add_argument('--buffered-clients',action='store_true');p.add_argument('--registered-tag-flags',action='store_true');a=p.parse_args()
 if a.build:
  SRC=a.build.resolve()/'Prj1/rtl/music'
  meta=json.loads((a.build/'build_metadata.json').read_text())
  assert meta['full_workstation'] and meta['buffered_ddr_clients']==a.buffered_clients
+if a.registered_tag_flags and a.build:assert meta.get('registered_arbiter_tag_flags'), 'candidate lacks requestedtagflags'
 original=(ROOT/'sim/model_flash/tb_flash_serial_boot.sv').read_text()
 start=original.index('    wire ready=(cycles%19')
 end=original.index('    reg held=0;',start)
@@ -107,6 +108,16 @@ with tempfile.TemporaryDirectory(prefix='cnn_flash_native_pipeline_') as tmp:
   sources=[tb]+[SRC/n for n in ('basic_pitch_flash_serial_boot.sv','basic_pitch_flash_model_loader.sv','basic_pitch_flash_io_guard.sv','basic_pitch_uart_model_loader.sv','basic_pitch_uart_rx.sv','basic_pitch_ddr16_port.sv','basic_pitch_ddr_read_credit.sv','basic_pitch_ddr_arbiter_pipeline.sv')]+[ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/src/control/uart_tx.v']
   if a.buffered_clients:sources.append(SRC/'basic_pitch_ddr_client_queues.sv')
   original_sources=list(sources)
+  if a.registered_tag_flags and not a.build:
+   from cnn_ddr_pipeline_patch import register_arbiter_tag_flags
+   path=SRC/'basic_pitch_ddr_arbiter_pipeline.sv';original_arbiter=path.read_text()
+   patched_arbiter=register_arbiter_tag_flags(original_arbiter)
+   arbiter_temp=Path(tmp)/'registered_tag_arbiter.sv';arbiter_temp.write_text(patched_arbiter)
+   sources=[arbiter_temp if source==path else source for source in sources]
+   simulation_overrides.append(dict(words=words,kind='tested registered tag flags',
+    original_sha256=hashlib.sha256(original_arbiter.encode()).hexdigest(),
+    simulated_sha256=hashlib.sha256(patched_arbiter.encode()).hexdigest()))
+
   if frozen_parser:
    anchor='.CLK_HZ(50_000_000), .BAUD(115200)'
    assert parser_original.count(anchor)==1
@@ -128,6 +139,6 @@ with tempfile.TemporaryDirectory(prefix='cnn_flash_native_pipeline_') as tmp:
   log=''.join(lines)
   assert run.returncode==0 and 'PASS serial' in log,log
   cases.append(dict(words=words,baud=baud,payload_crc32=manifest['payload_crc32'],passed=True,log=log.strip()))
-report=dict(passed=True,frozen_build=str(a.build) if a.build else None,simulation_overrides=simulation_overrides,buffered_clients=a.buffered_clients,cases=cases,hardware_tested=False,pcm_saved=False,source_sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in original_sources if p.is_relative_to(ROOT)},scope='NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls')
+report=dict(passed=True,frozen_build=str(a.build) if a.build else None,simulation_overrides=simulation_overrides,buffered_clients=a.buffered_clients,registered_tag_flags=a.registered_tag_flags,cases=cases,hardware_tested=False,pcm_saved=False,source_sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in original_sources if p.is_relative_to(ROOT)},scope='NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls')
 if a.output:a.output.write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report,indent=2))

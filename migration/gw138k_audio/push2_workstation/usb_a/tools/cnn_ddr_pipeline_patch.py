@@ -422,3 +422,22 @@ def predecode_dashboard_background(text):
     sequential+='        end\n    end\n'
     declarations=f'    reg [{len(conditions)-1}:0] background_coordinate_q;\n'
     return text.replace('    reg a_effect_hit',declarations+'    reg a_effect_hit',1).replace('endmodule',sequential+'endmodule')
+
+def register_arbiter_tag_flags(text):
+    """Predict tag full/empty on original count edge, no transaction latency."""
+    anchor='    reg [TAG_BITS:0] count;';assert text.count(anchor)==1
+    text=text.replace(anchor,anchor+'\n    reg tag_full,tag_empty;')
+    assert text.count('wire read_room=count<DEPTH;')==1
+    text=text.replace('wire read_room=count<DEPTH;','wire read_room=!tag_full;')
+    text=text.replace('wire pop=app_response && count!=0;','wire pop=app_response && !tag_empty;')
+    text=text.replace('if(app_response && count==0)response_fault<=1;', 'if(app_response && tag_empty)response_fault<=1;')
+    anchor='            read_pointer<=0;write_pointer<=0;count<=0;';assert text.count(anchor)==1
+    text=text.replace(anchor,anchor+'tag_full<=0;tag_empty<=1;')
+    anchor="                2'b10:count<=count+1'b1;\n                2'b01:count<=count-1'b1;";assert text.count(anchor)==1
+    text=text.replace(anchor,"""                2'b10:begin
+                    count<=count+1'b1;tag_full<=count==DEPTH-1;tag_empty<=0;
+                end
+                2'b01:begin
+                    count<=count-1'b1;tag_full<=0;tag_empty<=count==1;
+                end""")
+    return text

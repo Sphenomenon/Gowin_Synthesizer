@@ -101,3 +101,5 @@ B1还暴露A坐标→B背景色的旧长优先链；趁B2布线准备背景坐�
 B2冻结源回归：CPU preset73全效果CC123在1189帧释放，干声和双音sustain在23887帧释放，均满足48000帧截止，三个场景PASS；11项离线部署故障测试再次PASS，Programmer/UART均替身，不能代替实体。完整31字模型以真实115200通过，52239字CRC仿真仍运行。
 
 B2冻结源全模型回归PASS：52239字NOR→双遍片内串行→原解析器→DDR16/credit→寄存共享仲裁→独立掩码内存，含scan/writer并发及native背压；52239写/52239读，CRC AF01A61B、source1。完整数据为3125000加速波特率仅修改仿真副本RX字面参数；31字真实115200验证原文件字节未变。工件frozen_full_model_simulation.json明确simulation_overrides，不以加速仿真称实体结果。
+
+2026-10-10 00:01针对B0的command_full→tag count反馈准备同拍full/empty预测，计数/命令/返回延迟均保留。direct和每客户端slot两种、TAG_BITS2/3/5共6组独立掩码内存队列测试PASS，强制检查每拍flags等于实际count，覆盖全部8客户端/满tag/背压/连续返回/BISTepoch及带在途请求复位；未加入B2。完整模型测试额外启动后再决定是否采用。背景准备模板已通过源哈希/冻结检查，无UserCode/PNR/硬件IO。

@@ -3,7 +3,7 @@
 from pathlib import Path
 import argparse,json,subprocess,tempfile,hashlib
 ROOT=Path(__file__).resolve().parents[1]
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--buffered-clients',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--buffered-clients',action='store_true');p.add_argument('--registered-tag-flags',action='store_true');a=p.parse_args()
 # Connections are generated mechanically; stimulus and scoreboard do not use
 # DUT owner/priority/tag state. All eight client interfaces are observed.
 clients=['bist','scan','cpu','writer','audio','music','delay','display']
@@ -158,17 +158,23 @@ if a.buffered_clients:
 module='basic_pitch_ddr_client_queues' if a.buffered_clients else 'basic_pitch_ddr_arbiter_pipeline'
 text=text.replace('__INSTANCE__',module+' #(.TAG_BITS(BITS)) dut('+','.join(connections)+');')
 
+from cnn_ddr_pipeline_patch import register_arbiter_tag_flags
+arbiter=(ROOT/'rtl/music/basic_pitch_ddr_arbiter_pipeline.sv').read_text()
+if a.registered_tag_flags:
+ arbiter=register_arbiter_tag_flags(arbiter)
+ core='dut.u_core' if a.buffered_clients else 'dut'
+ text=text.replace('  cycle=cycle+1;',f'  if({core}.tag_full!==({core}.count==(1<<BITS)) || {core}.tag_empty!==({core}.count==0))$fatal(1,"tag flag/count disagreement");\n  cycle=cycle+1;')
 cases=[]
 with tempfile.TemporaryDirectory(prefix='cnn_ddr_arbiter_') as tmp:
- tb=Path(tmp)/'tb.sv';tb.write_text(text)
+ tb=Path(tmp)/'tb.sv';tb.write_text(text);src=Path(tmp)/'arbiter.sv';src.write_text(arbiter)
  for bits,seed in [(2,7),(3,31),(5,127)]:
   exe=Path(tmp)/'sim'
-  c=subprocess.run(['iverilog','-g2012','-s','tb_arbiter_pipeline',f'-Ptb_arbiter_pipeline.BITS={bits}',f'-Ptb_arbiter_pipeline.SEED={seed}','-o',str(exe),str(tb),str(ROOT/'rtl/music/basic_pitch_ddr_arbiter_pipeline.sv')]+([str(ROOT/'rtl/music/basic_pitch_ddr_client_queues.sv')] if a.buffered_clients else []),capture_output=True,text=True)
+  c=subprocess.run(['iverilog','-g2012','-s','tb_arbiter_pipeline',f'-Ptb_arbiter_pipeline.BITS={bits}',f'-Ptb_arbiter_pipeline.SEED={seed}','-o',str(exe),str(tb),str(src)]+([str(ROOT/'rtl/music/basic_pitch_ddr_client_queues.sv')] if a.buffered_clients else []),capture_output=True,text=True)
   assert c.returncode==0,c.stdout+c.stderr
   v=subprocess.run(['vvp',str(exe)],capture_output=True,text=True,timeout=30)
   assert v.returncode==0 and 'PASS shared DDR pipeline' in v.stdout,v.stdout+v.stderr
   cases.append(dict(tag_bits=bits,seed=seed,passed=True,log=v.stdout.strip()))
-report=dict(passed=True,buffered_clients=a.buffered_clients,cases=cases,hardware_tested=False,pcm_saved=False,arbiter_sha256=hashlib.sha256((ROOT/'rtl/music/basic_pitch_ddr_arbiter_pipeline.sv').read_bytes()).hexdigest())
+report=dict(passed=True,registered_tag_flags=a.registered_tag_flags,buffered_clients=a.buffered_clients,cases=cases,hardware_tested=False,pcm_saved=False,arbiter_sha256=hashlib.sha256(arbiter.encode()).hexdigest())
 if a.buffered_clients:report['client_queues_sha256']=hashlib.sha256((ROOT/'rtl/music/basic_pitch_ddr_client_queues.sv').read_bytes()).hexdigest()
 if a.output:a.output.write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report,indent=2))
