@@ -39,6 +39,8 @@ def main():
     save()
     try:
         meta=json.loads((build/'build_metadata.json').read_text())
+        if meta.get('ddr_initial_aux_settle_ms'):
+            assert meta.get('startup_panic_aligns_delay_history'),'deferred DDR candidate lacks cold P10 history alignment; not eligible for release'
         status=json.loads((build/'tool_result.json').read_text())
         assert meta['full_workstation'] and status['exit_code']==0 and status['inputs_unchanged'],'incomplete build or source drift'
         memory=json.loads((build/'workstation_memory.json').read_text())

@@ -509,5 +509,42 @@
     "programming_started": false,
     "hardware_tested": false,
     "notes": "All four independent routed checks pass for9A; video clock regression blocks before DDR audit/deployment. full95 exercises source DDR/TMDS startup and full artifact preview, but its prior board failure remains unchanged."
+  },
+  "startup_panic_control": {
+    "passed": true,
+    "cases": [
+      {
+        "clocks_per_bit": 16,
+        "passed": true,
+        "log": "PASS startup Panic bits=16 two global resets,6 exact control bytes,short readiness rejected,stop timing,pass-through\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_startup_panic.sv:55: $finish called at 30711000 (1ps)"
+      },
+      {
+        "clocks_per_bit": 434,
+        "passed": true,
+        "log": "PASS startup Panic bits=434 two global resets,6 exact control bytes,short readiness rejected,stop timing,pass-through\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_startup_panic.sv:55: $finish called at 615911000 (1ps)"
+      }
+    ],
+    "audio_data_saved": false,
+    "notes": "Six decoded bytes per case are two cold-start MIDI Panic control events, not PCM. Existing P10 ordered flush remains unmodified; this is not a physical effect acceptance."
+  },
+  "startup_p10_history_alignment": {
+    "passed": true,
+    "cold_target_audio_frames": 4800,
+    "target_rate_hz": 48000,
+    "initial_delay_fifo_overflow_detected": true,
+    "ordered_panic_restores_history": true,
+    "post_flush_equivalence_samples": 45000,
+    "cycle_exact_valid_ready_left_right_clip": true,
+    "audio_data_saved": false,
+    "source_sha256": {
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/rtl/music/music_async_fifo.sv": "6d55458af075b01baebc22c81a856e98336a96ae82f061942a1511defc5a3ae6",
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/legacy/rtl/audio/stereo_effects.sv": "af214586edf225dbb98e781a4b2b20287764801b9a0ceda78d8110140e5fbbd4",
+      "sim/audio/tb_delay_ddr_equivalence.sv": "5f90f33ff1d7793b8fb42213dfd93601880906e071979ef3dbc65f5260919957"
+    },
+    "log": "PASS cold4800-frame full-FIFO dry path, ordered Panic marker and status reset\nEQUIVALENCE PASS: 45000 samples compared, underrun_flag=1 dut_status=00011100 dma_status=00000000",
+    "hardware_tested": false
   }
 }

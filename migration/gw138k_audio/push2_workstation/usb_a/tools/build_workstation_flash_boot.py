@@ -113,6 +113,7 @@ def main():
     if args.incremental_pnr_entry is not None and (not args.incremental_baseline or args.incremental_mode!='pnr'):
         ap.error('--incremental-pnr-entry requires --incremental-baseline --incremental-mode pnr')
     reference_suffix=(args.incremental_pnr_entry or 'pr') if args.incremental_mode=='pnr' else 'p'
+    if args.defer_ddr_startup and args.transport!='serial':ap.error('--defer-ddr-startup requires serial transport with startup history alignment')
     if args.retime_cache_read and args.transport!='serial':ap.error('--retime-cache-read currently requires serial transport')
     if args.synthesis_from and args.flow!='all':ap.error('--synthesis-from requires --flow all')
     if args.incremental_mode=='pnr' and not args.incremental_baseline:ap.error('--incremental-mode pnr requires --incremental-baseline')
@@ -127,7 +128,7 @@ def main():
     stage=output/'Prj1'
     overlays=OVERLAYS if args.transport=='direct' else [f'rtl/music/{n}' for n in ('basic_pitch_flash_model_loader.sv','basic_pitch_flash_map.svh','basic_pitch_flash_io_guard.sv','basic_pitch_flash_serial_boot.sv')]
     if args.retime_cache_read:overlays += ['rtl/music/basic_pitch_weight_cache.sv']
-    if args.defer_ddr_startup:overlays += ['rtl/music/basic_pitch_ddr_boot_gate.sv']
+    if args.defer_ddr_startup:overlays += ['rtl/music/basic_pitch_ddr_boot_gate.sv','rtl/music/basic_pitch_startup_panic.sv']
     if args.flow!='pnr':
         assert sha(BASE/'Prj1/impl/pnr/Prj1.fs')==BASE_FS_SHA,'deployed bitstream drift'
         originals=json.loads((BASE/'workstation_inputs.json').read_text())
@@ -182,6 +183,17 @@ def main():
         .flash_clk_o(flash_spi_clk),.flash_mosi_o(flash_spi_mosi),
         .source_o(model_boot_source),.error_stage_o(model_boot_error),.state_o(model_boot_state));
 '''
+            if args.defer_ddr_startup:
+                original_audio_input="(music_model_status==4'd14 || tf_scope_control_audio[12]) ? pc_uart_rx_i : 1'b1"
+                original='.pc_uart_rx_i('+original_audio_input+')';assert s.count(original)==1
+                s=s.replace(original,'.pc_uart_rx_i(startup_audio_serial)')
+                bridge=bridge.replace('    basic_pitch_flash_serial_boot u_model_flash_source (',
+                    '    wire startup_audio_serial,startup_panic_done;\n'
+                    '    basic_pitch_startup_panic u_startup_panic (\n'
+                    '        .clk_i(clk_50m),.rst_ni(reset_n),.system_ready_i(model_system_ready),\n'
+                    '        .serial_i('+original_audio_input+'),.serial_o(startup_audio_serial),.done_o(startup_panic_done));\n'
+                    '    basic_pitch_flash_serial_boot u_model_flash_source (')
+                bridge=bridge.replace('.boot_ready_i(model_system_ready)', '.boot_ready_i(model_system_ready && startup_panic_done)')
             s=s.replace('    basic_pitch_workstation_link u_music (',guard+bridge+'    basic_pitch_workstation_link u_music (')
             s=s.replace(anchor,'.memory_calibrated(memory_calibrated),.model_serial(model_boot_serial),\n        .model_boot_source(model_boot_source),.model_boot_error(model_boot_error),')
             link=stage/'rtl/music/basic_pitch_workstation_link.sv';text=link.read_text()
@@ -208,7 +220,7 @@ def main():
 set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache*/RESET}]
 ''')
         if args.defer_ddr_startup:
-            with sdc.open('a') as f:f.write('\n# Only the auxiliary-lock first synchronizer entry is asynchronous.\nset_false_path -to [get_pins {u_memory_boot_gate/ready_meta*/D}]\n')
+            with sdc.open('a') as f:f.write('\n# Only the auxiliary-lock first synchronizer entry is asynchronous.\nset_false_path -to [get_pins {u_memory_boot_gate/ready_meta*/D}]\nset_false_path -to [get_pins {u_startup_panic/ready_meta*/D}]\n')
         if args.tighten_video_control:
             with sdc.open('a') as f:f.write('''
 # Tighten known pixel-domain control routes; no display RTL/clock/hold change.
@@ -233,7 +245,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'

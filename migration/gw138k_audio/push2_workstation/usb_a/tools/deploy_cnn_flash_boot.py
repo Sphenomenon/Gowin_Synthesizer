@@ -68,6 +68,8 @@ def main():
     build=args.build.resolve();fs=build/'Prj1/impl/pnr/Prj1.fs';model=build/'cnn_model.bin'
     bundle=json.loads((build/'flash_bundle.json').read_text())
     build_meta=json.loads((build/'build_metadata.json').read_text())
+    if args.program and build_meta.get('ddr_initial_aux_settle_ms') and not build_meta.get('startup_panic_aligns_delay_history'):
+        ap.error('deferred DDR startup lacks cold P10 history alignment; use a fresh aligned candidate')
     inputs=json.loads((build/'workstation_inputs.json').read_text())
     assert all(sha(build/'Prj1'/p)==h for p,h in inputs.items()),'candidate source drift'
     assert sha(fs)==bundle['bitstream_fs_sha256'] and sha(model)==bundle['model_image_sha256'],'artifact drift'
@@ -99,7 +101,7 @@ def main():
                 commands=[],boots=[],passed=False,uart_model_upload_used=False,sram_download_used=False,sram_erased_before_each_boot=True,
                 physical_power_cycle_tested=False,board_serial='2025030317',uart_hardware_drain_seconds=2,
                 clk50_closed=clk50['clk50_closed'],previous_positive_clock_audit=previous_clocks,diagnostic_timing_override=args.allow_clk50_open,
-                model_transport=build_meta.get('transport','direct'),live_smoke_requested=args.exercise_live,live_smoke_passed=False)
+                model_transport=build_meta.get('transport','direct'),live_smoke_requested=args.exercise_live,live_smoke_passed=False,startup_panic_aligns_delay_history=build_meta.get('startup_panic_aligns_delay_history',False))
     def save():(output/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     def run(label,extra,require=None):
         print(label,flush=True)
@@ -173,6 +175,8 @@ def main():
                     capture_output=True,text=True,timeout=90)
                 (output/'live_smoke.log').write_text(smoke.stdout+smoke.stderr)
                 assert smoke.returncode==0 and json.loads(smoke_path.read_text())['passed'],'live workstation smoke failed'
+                if build_meta.get('startup_panic_aligns_delay_history'):
+                    assert json.loads(smoke_path.read_text())['startup_panic_epoch']>=1,'cold startup Panic not observed before host controls'
                 result['live_smoke_passed']=True;save()
             result['passed']=True
         except Exception as exc:

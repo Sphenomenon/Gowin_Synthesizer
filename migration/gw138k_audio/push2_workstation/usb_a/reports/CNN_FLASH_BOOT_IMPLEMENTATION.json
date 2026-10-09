@@ -479,5 +479,17 @@
   },
   "pr_entry_candidate": "results/workstation_flasha3_20261009_pr_entry",
   "pr_entry_user_code": "0x000000A3",
-  "pr_entry_control": "A1 original CNN/cache plus initial100ms DDR gate; inc_pnr .pr entry per SUG10042, paired .p/.pr hash-checked"
+  "pr_entry_control": "A1 original CNN/cache plus initial100ms DDR gate; inc_pnr .pr entry per SUG10042, paired .p/.pr hash-checked",
+  "deferred_ddr_history_review": {
+    "initial_wait_target_frames": 4800,
+    "existing_delay_fifo_capacity": 512,
+    "delay_effect_dma_fifo_unchanged": true,
+    "startup_control": "internal MIDI Panic once after CPU/DDR/UI before model boot",
+    "control_sim_passed": true,
+    "full_fifo_history_equivalence_passed": true,
+    "post_flush_samples": 45000,
+    "A1_A2_A3_frozen_without_alignment": true,
+    "A1_A2_A3_release_eligible": false,
+    "hardware_effect_acceptance": false
+  }
 }

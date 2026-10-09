@@ -156,3 +156,12 @@ python3 tools/verify_cnn_flash_workstation.py <完整结果目录> --program
 ```
 
 该入口拒绝隔离探针、未完成构建、物理BSRAM超过260、clk50未闭合及原通过时钟退化。每次使用独立证据目录，保留前次审计。只运行本地检查时，`hardware_tested=false`；原0x95本地门槛通过而板级失败的事实继续保留，不因本地PASS改变结论。默认不更新LATEST，也不把JTAG重加载计作物理断电试验。
+
+较长的DDR初始等待会让P10维护用的512项写FIFO装满。新`--defer-ddr-startup`构建在CPU/DDR/UI就绪后先通过片内串口发一次MIDI Panic（B0 78 00），调用原效果器的有序flush，再开始Flash模型装载；三字节期间暂停外部PC输入，其余时间直通，USB/DIN接口保持原样。该初始清理会释放启动阶段已按住的音符，现场演奏应等待启动完成。效果器、DMA、FIFO文件不改动。全局复位重新执行一次，PLL后续失锁不重复Panic。
+
+```sh
+python3 tools/test_cnn_startup_panic.py
+python3 tools/test_cnn_startup_history.py
+```
+
+前者以独立位中心解码校验16周期/位和真实50MHz/115200、短就绪脉冲拒绝、最终stop位完成与串口直通。后者模拟48kHz的4800帧DDR等待，先证明FIFO溢出，再调用原有序Panic并确认状态/代际marker恢复，继续45000样本原参考逐拍比较。故障注入末尾的长DDR停顿预期欠载，不作为正常运行成功。此前A1/A2/A3已冻结且没有该清理，不能静默改动工件；即使通过布线也仅是诊断，正式部署器拒绝其未对齐延迟历史的版本。

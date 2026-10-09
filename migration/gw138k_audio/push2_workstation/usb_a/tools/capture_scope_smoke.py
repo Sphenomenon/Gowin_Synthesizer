@@ -104,6 +104,7 @@ def main():
                 return snapshot_pair
 
             pump(args.seconds)
+            result['startup_panic_epoch']=result['last'].get('E138',{}).get('panic_epoch',0)
             for kind in ['A138', 'C350', 'K138', 'E138', 'P138', 'B138']:
                 if counts[kind] < 2: raise RuntimeError('insufficient valid records: ' + kind)
             cpu = [int(v, 16) for v in result['last']['C350']]
