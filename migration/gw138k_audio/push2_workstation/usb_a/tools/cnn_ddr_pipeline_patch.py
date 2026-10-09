@@ -683,3 +683,24 @@ def shallow_dashboard_card_select(text):
     end
 """
     return text[:start]+replacement+text[end:]
+
+
+def fast_tf_read_availability(text):
+    """Exact unsigned modulo32-bit delta<32 from grouped count comparisons."""
+    anchor='    wire read_has_full_beat = (available_bytes >= 32\'d32);'
+    assert text.count(anchor)==1
+    replacement="""    wire [31:0] read_plus32=add_byte_count(read_total_bytes,6'd32);
+    wire available_lt32=(write_total_bytes[4:0]>=read_total_bytes[4:0] &&
+                        write_total_bytes[31:5]==read_total_bytes[31:5]) ||
+                       (write_total_bytes[4:0]<read_total_bytes[4:0] &&
+                        write_total_bytes[31:5]==read_plus32[31:5]);
+    wire read_has_full_beat = !available_lt32;"""
+    text=text.replace(anchor,replacement,1)
+    anchor='wire read_has_partial_beat = eof_finalized && (available_bytes != 0);'
+    assert text.count(anchor)==1
+    text=text.replace(anchor,'wire read_has_partial_beat = eof_finalized && (write_total_bytes != read_total_bytes);',1)
+    for old,new in [('(eof_finalized && available_bytes < 32\'d32)','(eof_finalized && available_lt32)'),
+                    ('(eof_finalized && available_bytes<32)','(eof_finalized && available_lt32)')]:
+        assert text.count(old)==1
+        text=text.replace(old,new,1)
+    return text

@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_actual_Flash3boots_live_verified_B6_rejected_B7_B8_building",
+  "status": "AD_actual_Flash3boots_live_verified_B7_rejected_B8_routing",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1386,7 +1386,7 @@
   "B7_dynamic_ink_bist": {
     "build": "results/workstation_flashb7_20261010_dynamic_ink_bist",
     "user_code": "0x000000B7",
-    "status": "building",
+    "status": "routed_rejected",
     "changed_from_B6": [
       "scripts/build.tcl",
       "src/memory/ddr3_bist.v",
@@ -1395,12 +1395,20 @@
     "source_bound_tests": "reports/CNN_FLASH_BOOT_B7_DYNAMIC_BIST_TESTS.json",
     "all_tests_passed": true,
     "hardware_tested": false,
-    "physical_bsram_limit": 268
+    "physical_bsram_limit": 268,
+    "clk50_fmax_mhz": 54.7,
+    "video_fmax_mhz": 182.441,
+    "ddr_ui_setup_wns_ns": -5.551,
+    "ddr_ui_hold_wns_ns": 0.167,
+    "PLL_all_endpoints_passed": true,
+    "physical_bsram": 268,
+    "programming_started": false,
+    "release_gate_passed": false
   },
   "B8_tf_read_spectrum": {
     "build": "results/workstation_flashb8_20261010_tf_read_spectrum",
     "user_code": "0x000000B8",
-    "status": "synthesizing",
+    "status": "routing",
     "changed_from_B7": [
       "TF request-time exact post-read count; partial final beat equals write count; preserve zero-cycle response",
       "parallel current/next spectrum-column computation before advance select"
@@ -1423,6 +1431,15 @@
     "proof": "reports/CNN_FLASH_BOOT_CARD_SELECT_TESTS.json",
     "complete_random_dashboard": "reports/CNN_FLASH_BOOT_SHALLOW_CARD_DASHBOARD_TESTS.json",
     "actual_analysis_frame": "reports/CNN_FLASH_BOOT_SHALLOW_CARD_RENDERER_TESTS.json",
+    "hardware_tested": false
+  },
+  "prepared_grouped_read_availability": {
+    "applied_to_B8": false,
+    "added_cycles": 0,
+    "SAT_all_input_bits": 64,
+    "proof": "reports/CNN_FLASH_BOOT_TF_AVAILABILITY_TESTS.json",
+    "protocol": "reports/CNN_FLASH_BOOT_FAST_AVAILABILITY_PROTOCOL_TESTS.json",
+    "protocol_cases": 42,
     "hardware_tested": false
   }
 }

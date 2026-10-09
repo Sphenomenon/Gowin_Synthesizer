@@ -29,8 +29,12 @@ expression=re.search(r'wire \[31:0\] read_total_after_accept=(.*?);',patched,re.
 for old,new in [('eof_finalized','eof'),('available_bytes','available'),
                 ('write_total_bytes','write_count'),('read_total_bytes','read_count')]:
     expression=expression.replace(old,new)
+availability_block=''
+if 'wire available_lt32=' in patched:
+    availability_block=re.search(r'    wire \[31:0\] read_plus32=.*?    wire read_has_full_beat = !available_lt32;',patched,re.S)[0]
+    availability_block=availability_block.replace('write_total_bytes','write_count').replace('read_total_bytes','read_count')
 body="""module miter(input [31:0] read_count,write_count,input eof,output equal);
-"""+TF_BYTE_COUNT_HELPER+"""
+"""+TF_BYTE_COUNT_HELPER+availability_block+"""
 wire [31:0] available=write_count-read_count;
 wire [5:0] bytes=(eof && available<32) ? available[5:0] : 6'd32;
 wire [31:0] original=read_count+{26'd0,bytes};

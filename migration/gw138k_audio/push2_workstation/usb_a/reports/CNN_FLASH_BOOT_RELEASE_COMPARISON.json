@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T01:55:51.439167+08:00",
+  "generated_at": "2026-10-10T02:10:54.306246+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -243,16 +243,36 @@
     {
       "user_code": "B7",
       "build": "results/workstation_flashb7_20261010_dynamic_ink_bist",
-      "status": "placement_and_routing",
+      "status": "routed_rejected",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
-      "programming_started": false
+      "programming_started": false,
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0,
+        "feature_read_equivalence": 0,
+        "pixel_skid_protocol": 0,
+        "pixel_skid_full_renderer": 0,
+        "tf_byte_count_proof": 0,
+        "tf_byte_count_protocol": 0,
+        "bist_pattern_cycle_equivalence": 0
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "ddr_ui_setup_wns_ns": -5.551,
+      "ddr_ui_hold_wns_ns": 0.167,
+      "clk50_fmax_mhz": 54.7,
+      "video_fmax_mhz": 182.441,
+      "physical_bsram": 268,
+      "PLL_all_endpoints_passed": true
     },
     {
       "user_code": "B8",
       "build": "results/workstation_flashb8_20261010_tf_read_spectrum",
-      "status": "synthesizing",
+      "status": "routing",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,

@@ -7,7 +7,7 @@
 - AD实际配置Flash测试连续3次重载，精确UserCodeAD/status26020、每次至少3条fresh E/source1报告；三音/LR/静音/Panic健康测试通过。没有执行物理断电。
 - AD时序未过发布门禁，诊断完成后无条件写回并验证full85，恢复其易失模型及现场测试。当前默认及板上均为full85；2026-10-10 00:31只读核验UserCode85/status26020/modelE；01:18只读健康检查modelE/health0/CRC0/精确48000样本每秒/Push屏幕帧增长。
 - B1把官方参考PLL辅助逻辑放入邻近物理区域，所有独立PLL_INIT传播通过，最差7.964ns/预算10ns。DDR及视频仍未闭合，没有写板。
-- B2保留上述物理约束，加入逐位验证的卡片动画和TMDS统计优化，路由完成但clk50/DDR时序拒绝；B3针对实际路径增加本地DDR校准寄存、波形/背景预解码与同拍tagflags，已完成路由：clk50/视频/PLL/CDC通过，DDR UI full→renderer CE −2.049ns未过且未烧录；B4时序门禁也未过且未烧录；B5写背压缓冲已完成，clk50/视频/PLL/CDC/协议通过，DDR UI −0.995ns仍未过且未烧录；B6已完成路由：clk50/视频/PLL/CDC通过，DDR UI −4.714ns未过且未烧录。B7动态背景/BIST期望值寄存正在布线；B8 TF请求期预计算读计数/频谱地址并行化正在综合，两项都增加0周期、0 BSRAM且36组TF协议及完整分析页帧通过。真实资源与时序以最终automatic_acceptance/result.json为准。综合220BSRAM不是完整物理占用，已完成AD/B0/B1/B2均为268/340物理BSRAM。
+- B2保留上述物理约束，加入逐位验证的卡片动画和TMDS统计优化，路由完成但clk50/DDR时序拒绝；B3针对实际路径增加本地DDR校准寄存、波形/背景预解码与同拍tagflags，已完成路由：clk50/视频/PLL/CDC通过，DDR UI full→renderer CE −2.049ns未过且未烧录；B4时序门禁也未过且未烧录；B5写背压缓冲已完成，clk50/视频/PLL/CDC/协议通过，DDR UI −0.995ns仍未过且未烧录；B6已完成路由：clk50/视频/PLL/CDC通过，DDR UI −4.714ns未过且未烧录。B7已完成：clk50/视频/PLL/CDC通过，DDR UI TF读计数路径 −5.551ns未过且未烧录；B8 TF请求期预计算读计数/频谱地址并行化正在布线，两项都增加0周期、0 BSRAM且36组TF协议及完整分析页帧通过。真实资源与时序以最终automatic_acceptance/result.json为准。综合220BSRAM不是完整物理占用，已完成AD/B0/B1/B2均为268/340物理BSRAM。
 
 ## 已完成的验证
 

@@ -128,3 +128,5 @@ B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同�
 2026-10-10 01:57：B6布线完整268/340物理BSRAM，clk50 55.134MHz、视频164.640MHz、PLL/CDC通过，真实DDR UI setup −4.714ns/hold+0.169ns，拒绝且无硬件IO。TF write_total→read_total路径经available相减、末帧字数选择和增加计数形成14.692ns链；B8在请求期提前计算post-read count、尾帧直接使用write_total，保留同周期响应，65输入bit SAT全空间等价、36组协议比较通过。B8同时并行预计算当前/下一频谱列再选择，4种WIDTH每种12输入bit SAT及实际分析页完整1036800双像素/129601 DDR命令逐位通过。源码绑定证据见CNN_FLASH_BOOT_B8_TF_SPECTRUM_TESTS.json。
 
 2026-10-10T02:04:33.437369+08:00：B8完整Flash→内部UART→原解析器→DDR16/credit/注册仲裁流水线仿真通过52239写/52239读、CRC AF01A61B/source1，带并发显示写/扫描及原生背压；31字短模型保持真实115200，完整内容仅仿真接收实例3125000。权重和构建源码不变。备用卡片优先选择优化（未用于B8）68bit全输入SAT及2137105随机/完整像素、1036800双像素完整实际分析页/129601DDR命令通过。烧录/回滚11故障分支复测PASS，无硬件IO。
+
+2026-10-10T02:10:54.308237+08:00：B7完成268/340物理BSRAM、clk50 54.700MHz、视频182.441MHz、PLL/CDC/所有绑定协议/SAT/完整分析帧/BIST故障测试通过；DDR UI TF write_total→read_total仍−5.551ns/hold+0.167ns，正式拒绝、无硬件IO。B8正在布线。
