@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_actual_full_Flash3boots_and_live_PASS_restoring85_AE_placement",
+  "status": "AD_actual_full_Flash3boots_live_PASS_restored85_AE_placement",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -984,7 +984,11 @@
       "live_smoke_passed": true,
       "diagnostic_timing_override": true,
       "release_eligible": false,
-      "baseline_restore_pending": true
+      "baseline_restore_pending": false,
+      "baseline85_flash_restored": true,
+      "baseline85_UART_model_E_restored": true,
+      "baseline85_live_smoke_passed": true,
+      "finished_at": "2026-10-09T19:29:33.409921+08:00"
     }
   },
   "baseline85_readonly_1812": {
