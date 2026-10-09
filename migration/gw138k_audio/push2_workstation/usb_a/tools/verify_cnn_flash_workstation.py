@@ -10,6 +10,7 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import importlib
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -71,7 +72,7 @@ def main():
                 '--pixel-skid','--analysis-page','--build',str(build),'--output',str(output/'pixel_skid_full_renderer.json')]
             for key,flag in [('predecoded_text_coordinates','--text-coordinates'),
                     ('parallel_dashboard_cards','--parallel-cards'),('predecoded_background_coordinates','--background-coordinates'),
-                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates'),('predecoded_dynamic_background_ink','--dynamic-background-ink'),('parallel_renderer_spectrum_address','--parallel-spectrum-address'),('shallow_card_select','--shallow-card-select'),('quiet_shared_analysis_column','--quiet-shared-analysis')]:
+                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates'),('predecoded_dynamic_background_ink','--dynamic-background-ink'),('parallel_renderer_spectrum_address','--parallel-spectrum-address'),('shallow_card_select','--shallow-card-select'),('quiet_shared_analysis_column','--quiet-shared-analysis'),('registered_renderer_first_issue','--first-issue-token')]:
                 if meta.get(key):command.append(flag)
             label,code=run('pixel_skid_full_renderer',command)
             result['checks'][label]=code
@@ -88,6 +89,13 @@ def main():
             label,code=run('ddr_native_scoreboard',command)
             result['checks'][label]=code
         if meta.get('idle_client_payload_sampling'):
+            # This changes a model-side client queue. Require a newly executed
+            # full-content pipeline test, not an unchanged-source composition.
+            proof=json.loads((build/'frozen_full_model_pipeline.json').read_text())
+            assert proof['passed'] and not proof['small_model_only'] and Path(proof['frozen_build']).resolve()==build,'missing executed full-model evidence'
+            assert any(case['words']==52239 and case['payload_crc32']=='AF01A61B' and case['passed'] for case in proof['cases']),'full model word count/CRC not proved'
+            assert all(hashlib.sha256((ROOT/path).read_bytes()).hexdigest()==digest for path,digest in proof['source_sha256'].items()),'executed model source drift'
+            result['executed_full_model_proof']=str(build/'frozen_full_model_pipeline.json')
             label,code=run('idle_client_payload_induction',[sys.executable,
                 str(ROOT/'tools/test_cnn_idle_client_payload.py'),'--build',str(build),
                 '--output',str(output/'idle_client_payload_induction.json')])

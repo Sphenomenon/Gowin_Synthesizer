@@ -161,3 +161,8 @@ BF保留BE全部606个输入中的RTL/IP/模型逐字节一致，只变显式Use
 
 
 为BA中u_music_slot.full→queued_data/RESET的控制反馈准备空槽采样可选项；不改full/ready/valid状态机，full=0时采样总线，full=1持有到原仲裁消费。实际原/新槽模块SAT时序归纳证明所有输入序列下ready/valid和318位有效载荷等价。3个tag深度/随机种子独立八客户端记分板共15824条命令、10359次读响应通过，含掩码写、原生背压、连续返回、BIST epoch及顺序检查。此优化尚未用于新构建。发布门禁另增加所有缓冲仲裁器候选实际源码的全八客户端记分板。
+
+
+04:00前后BB/BC/BD全部完成门禁，DDR UI分别−2.461/−2.336/−1.463ns、hold均正，其他时钟/PLL/CDC及完整源码绑定功能门禁通过；均未烧录。BD最差为pixel_ready→frame_start→卡片front_effect/visible_mask CE，剩TF response_owner→emit_index、及槽位payload同步reset。
+
+C0以BE成对读响应寄存＋BF控制端点物理预算为基础，加入空槽payload采样和帧首first_issue_pending标志；frame_start边沿与原advance&&坐标原点逐拍一致，正常导出/停顿期间保留标志。尺寸显式约束偶数WIDTH2..2048/HEIGHT1..2048，越界例化报错。完整1080p对照1036800双像素/129601 DDR命令通过，C0实际源的完整共享显示3帧/25ms停顿/冷invalidanalysis、54组TF全链路含18组在途重启、全八客户端15824命令10359读响应、槽位时序归纳均通过。改变模型客户端队列后重新执行52239词完整Flash→DDR仿真，结果尚在运行；没有沿用B8源文件等价来代替此执行。门禁明确要求该新执行报告及源hash正确后才可写板。

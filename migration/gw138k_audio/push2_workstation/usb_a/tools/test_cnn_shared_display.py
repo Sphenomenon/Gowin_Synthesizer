@@ -27,6 +27,9 @@ for name in source_names:
     if name not in ['src/video/feedback_renderer.v','src/video/feedback_dashboard.v']:
         assert (stage/name).read_bytes()==(BASE/name).read_bytes(),'frozen source drift '+name
 fixture=(ROOT/'sim/p11/tb_shared_display.sv').read_text()
+if metadata.get('registered_renderer_first_issue'):
+    position=fixture.rfind('endmodule')
+    fixture=fixture[:position]+"\n    always @(posedge clk)if(reset_n && render.dashboard_frame_start !== (render.advance && render.issue_x==0 && render.issue_y==0))$fatal(1,\"shared frame-start eligibility changed\");\n"+fixture[position:]
 anchor='p10_feedback_renderer #(.ENABLE_ANALYSIS(1)) reference('
 assert fixture.count(anchor)==1
 fixture=fixture.replace(anchor,'renderer_original #(.ENABLE_ANALYSIS(1)) reference(',1)

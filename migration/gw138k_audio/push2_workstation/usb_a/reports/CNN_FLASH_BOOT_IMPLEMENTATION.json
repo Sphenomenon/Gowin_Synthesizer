@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_flash_function_verified_full85_restored_BA_timing_rejected_BB_to_BF_building",
+  "status": "AD_flash_function_verified_full85_restored_BA_to_BD_timing_rejected_BE_BF_C0_building",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1606,5 +1606,19 @@
     "hold_gate_unchanged": true,
     "basis_TF_source_bound_protocol_cases": 54,
     "basis_TF_inflight_epoch_cases": 18
+  },
+  "C0_frame_token_slot": {
+    "build": "results/workstation_flashc0_20261010_frame_token_slot",
+    "first_issue_cycle_equivalence": true,
+    "valid_payload_temporal_induction_passed": true,
+    "native_commands_checked": 15824,
+    "native_read_responses_checked": 10359,
+    "TF_protocol_cases": 54,
+    "complete_TF_inflight_epoch_cases": 18,
+    "shared_display_full_frames": 3,
+    "shared_display_cold_invalid_analysis_passed": true,
+    "full_model_execution": "running, not yet claimed",
+    "hardware_tested": false,
+    "evidence": "reports/CNN_FLASH_BOOT_C0_FRAME_SLOT_TESTS.json"
   }
 }

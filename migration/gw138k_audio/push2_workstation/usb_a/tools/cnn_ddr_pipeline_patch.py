@@ -835,3 +835,29 @@ def sample_idle_client_payload(text):
     assert text.count(old)==1
     new=old.replace('if(request_ready && request_valid)', 'if(!full)')
     return text.replace(old,new,1)
+
+
+def register_renderer_first_issue(text):
+    """Predict first-issue eligibility; preserve exact frame-start edge under stalls/export."""
+    anchor='    wire advance = busy && !exporting && !all_issued && pipeline_enable;'
+    assert text.count(anchor)==1
+    replacement=anchor+"""
+    // One first-issue token per frame, retained throughout snapshot export
+    // and output stalls. Removes wide issue_x/y/busy decoding from frame CE.
+    reg first_issue_pending;
+    wire dashboard_frame_start=first_issue_pending && !exporting && pipeline_enable;
+    always @(posedge clk or negedge rst_n)begin
+        if(!rst_n)first_issue_pending<=0;
+        else begin
+            if(start && frame_ready)first_issue_pending<=1;
+            if(advance)first_issue_pending<=0;
+        end
+    end
+    generate if(WIDTH<2 || WIDTH>2048 || (WIDTH%2)!=0 || HEIGHT<1 || HEIGHT>2048)begin:g_invalid_first_issue_size
+        cnn_renderer_first_issue_invalid_dimensions u_reject();
+    end endgenerate
+"""
+    text=text.replace(anchor,replacement,1)
+    old='.frame_start(advance && issue_x==0 && issue_y==0)'
+    assert text.count(old)==2
+    return text.replace(old,'.frame_start(dashboard_frame_start)')
