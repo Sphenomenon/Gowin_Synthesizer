@@ -861,3 +861,32 @@ def register_renderer_first_issue(text):
     old='.frame_start(advance && issue_x==0 && issue_y==0)'
     assert text.count(old)==2
     return text.replace(old,'.frame_start(dashboard_frame_start)')
+
+
+TF_NIBBLE_COUNT_HELPER="""    function [31:0] add_byte_count;
+        input [31:0] value;
+        input [5:0] increment;
+        reg [4:0] low_sum,second_sum;
+        reg carry8;
+        reg [31:0] result;
+        integer group_index;
+        begin
+            low_sum={1'b0,value[3:0]}+{1'b0,increment[3:0]};
+            second_sum={1'b0,value[7:4]}+{3'd0,increment[5:4]};
+            carry8=second_sum[4] || (second_sum[3:0]==4'hf && low_sum[4]);
+            result[3:0]=low_sum[3:0];
+            result[7:4]=second_sum[3:0]+low_sum[4];
+            for(group_index=2;group_index<8;group_index=group_index+1)
+                result[group_index*4+:4]=value[group_index*4+:4]+
+                    (carry8 && (((value>>8) & ((32'h1<<((group_index-2)*4))-1))==
+                                ((32'h1<<((group_index-2)*4))-1)));
+            add_byte_count=result;
+        end
+    endfunction
+"""
+
+
+def nibble_tf_byte_counters(text):
+    """Same modulo32-bit+6-bit sum with parallel4-bit high increments."""
+    assert text.count(TF_BYTE_COUNT_HELPER)==1
+    return text.replace(TF_BYTE_COUNT_HELPER,TF_NIBBLE_COUNT_HELPER,1)

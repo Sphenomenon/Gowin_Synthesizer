@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
-from cnn_ddr_pipeline_patch import TF_BUFFER,TF_DMA, retime_tf_write_buffer,retime_tf_capture_limit,power_two_tf_ring,parallel_tf_byte_counters,retime_tf_read_total,fast_tf_read_availability,mask_tf_write_epoch,registered_tf_read_response,pipeline_tf_read_return
+from cnn_ddr_pipeline_patch import TF_BUFFER,TF_DMA, retime_tf_write_buffer,retime_tf_capture_limit,power_two_tf_ring,parallel_tf_byte_counters,retime_tf_read_total,fast_tf_read_availability,mask_tf_write_epoch,registered_tf_read_response,pipeline_tf_read_return,nibble_tf_byte_counters
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / 'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
@@ -155,6 +155,7 @@ def main():
     parser.add_argument('--mask-write-epoch',action='store_true')
     parser.add_argument('--registered-response',action='store_true')
     parser.add_argument('--pipeline-read-return',action='store_true')
+    parser.add_argument('--nibble-counters',action='store_true')
     parser.add_argument('--full-buffered-topology',action='store_true',help='include frozen TF command buffer ahead of real client queues/native pipeline')
     args = parser.parse_args()
     original = (BASE / TF_DMA).read_text()
@@ -176,6 +177,9 @@ def main():
     if args.pipeline_read_return:
         assert args.mask_write_epoch and not args.registered_response
         variants.append(('pipelined_read_return',pipeline_tf_read_return(variants[-1][1])))
+    if args.nibble_counters:
+        assert args.parallel_byte_counters
+        variants.append(('nibble_counters',nibble_tf_byte_counters(variants[-1][1])))
     if args.build:
         assert args.parallel_byte_counters and (args.build/'Prj1'/TF_DMA).read_text()==variants[-1][1],'frozen TF source differs from tested variant'
     bus_root=args.build/'Prj1/rtl/music' if args.build else ROOT/'rtl/music'

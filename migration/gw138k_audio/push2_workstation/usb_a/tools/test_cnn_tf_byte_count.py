@@ -2,10 +2,11 @@
 """SAT proof of32bit+6bit parallel byte counters, all carries/wrap/increments."""
 import argparse,hashlib,json,re,subprocess,tempfile
 from pathlib import Path
-from cnn_ddr_pipeline_patch import TF_DMA,parallel_tf_byte_counters
+from cnn_ddr_pipeline_patch import TF_DMA,parallel_tf_byte_counters,nibble_tf_byte_counters
 ROOT=Path(__file__).resolve().parents[1];BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--build',type=Path);a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--nibble-counters',action='store_true');p.add_argument('--build',type=Path);a=p.parse_args()
 original=(BASE/TF_DMA).read_text();patched=parallel_tf_byte_counters(original)
+if a.nibble_counters:patched=nibble_tf_byte_counters(patched)
 if a.build:
  from build_workstation_flash_boot import expected_tf_dma
  metadata=json.loads((a.build/'build_metadata.json').read_text());assert metadata.get('parallel_tf_byte_counters')
