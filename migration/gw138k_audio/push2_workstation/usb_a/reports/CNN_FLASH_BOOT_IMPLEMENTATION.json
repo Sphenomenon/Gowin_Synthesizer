@@ -1118,6 +1118,13 @@
     "cpu_release_simulation_passed": true,
     "cpu_release_simulation": "results/workstation_flashb2_20261009_parallel_cards_tmds/cpu_release_230923_636432/result.json",
     "offline_deploy_fault_cases": 11,
-    "offline_deploy_fault_passed": true
+    "offline_deploy_fault_passed": true,
+    "frozen_full_model_simulation_passed": true,
+    "model_words_written": 52239,
+    "model_words_read": 52239,
+    "model_crc32": "AF01A61B",
+    "frozen_full_model_simulation": "results/workstation_flashb2_20261009_parallel_cards_tmds/frozen_full_model_simulation.json",
+    "full_model_simulation_baud": 3125000,
+    "small_model_simulation_baud": 115200
   }
 }

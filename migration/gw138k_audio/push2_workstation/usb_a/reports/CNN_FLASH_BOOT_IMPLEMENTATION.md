@@ -99,3 +99,5 @@ B2综合实测220BSRAM/505SSRAM/43555FF/56555LUT，所有完整工作站必需�
 B1还暴露A坐标→B背景色的旧长优先链；趁B2布线准备背景坐标预解码，只把纯a_x/a_y条件在原A寄存同一enable捕获，文本/动态波形和颜色选择时刻不变，不额外增添像素周期。包含分析页2137105像素、完整renderer1036800双像素beat的逐位比较通过，源哈希135a2507…；未修改B2输入，等待B2实际路径决定是否采用。见CNN_FLASH_BOOT_BACKGROUND_COORDINATE_TESTS.json。
 
 B2冻结源回归：CPU preset73全效果CC123在1189帧释放，干声和双音sustain在23887帧释放，均满足48000帧截止，三个场景PASS；11项离线部署故障测试再次PASS，Programmer/UART均替身，不能代替实体。完整31字模型以真实115200通过，52239字CRC仿真仍运行。
+
+B2冻结源全模型回归PASS：52239字NOR→双遍片内串行→原解析器→DDR16/credit→寄存共享仲裁→独立掩码内存，含scan/writer并发及native背压；52239写/52239读，CRC AF01A61B、source1。完整数据为3125000加速波特率仅修改仿真副本RX字面参数；31字真实115200验证原文件字节未变。工件frozen_full_model_simulation.json明确simulation_overrides，不以加速仿真称实体结果。
