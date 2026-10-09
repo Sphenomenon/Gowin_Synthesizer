@@ -17,19 +17,26 @@ assert a.timeout_minutes>0
 output=build/'automatic_acceptance'
 assert not output.exists(),'acceptance output already exists; never rerun hardware implicitly'
 deadline=time.monotonic()+a.timeout_minutes*60
+def read_completed_json(path):
+    try:return json.loads(path.read_text())
+    except (FileNotFoundError,json.JSONDecodeError):return None
+
 while time.monotonic()<deadline:
     status=build/'tool_result.json'
     prior=[]
-    ready=status.exists()
+    build_result=read_completed_json(status)
+    if build_result is not None:
+        assert build_result['exit_code']==0 and build_result['inputs_unchanged'],'build failed or source drift; no hardware IO'
+    # tool_result is published before memory audit and image packaging. Wait
+    # for these terminal artifacts too, rather than rejecting a valid build
+    # in that short window. Malformed in-progress reports cannot authorize IO.
+    ready=build_result is not None and all(read_completed_json(build/name) is not None for name in ('workstation_memory.json','flash_bundle.json'))
     for candidate in a.predecessor:
         report=candidate.resolve()/'automatic_acceptance/result.json'
-        if not report.exists():ready=False;break
-        result=json.loads(report.read_text())
-        if not result.get('finished_at'):ready=False;break
+        result=read_completed_json(report)
+        if result is None or not result.get('finished_at'):ready=False;break
         prior.append(result)
     if ready:
-        result=json.loads(status.read_text())
-        assert result['exit_code']==0 and result['inputs_unchanged'],'build failed or source drift; no hardware IO'
         for predecessor in prior:
             assert not predecessor.get('programming_started') or predecessor.get('hardware_tested'), 'prior attempted deployment did not verify hardware; inspect rollback before continuing'
         command=[sys.executable,str(ROOT/'tools/verify_cnn_flash_workstation.py'),str(build),'--output',str(output)]

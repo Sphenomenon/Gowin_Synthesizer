@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "hardware_io": false,
+  "pcm_saved": false,
+  "cases": [
+    {
+      "case": "terminal_artifacts_missing",
+      "passed": true,
+      "verifier_called": false,
+      "program_requested": false
+    },
+    {
+      "case": "partial_terminal_artifact",
+      "passed": true,
+      "verifier_called": false,
+      "program_requested": false
+    },
+    {
+      "case": "earlier_hardware_success",
+      "passed": true,
+      "verifier_called": true,
+      "program_requested": false
+    },
+    {
+      "case": "first_hardware_attempt",
+      "passed": true,
+      "verifier_called": true,
+      "program_requested": true
+    },
+    {
+      "case": "earlier_attempt_failed",
+      "passed": true,
+      "verifier_called": false,
+      "program_requested": false
+    },
+    {
+      "case": "build_failed",
+      "passed": true,
+      "verifier_called": false,
+      "program_requested": false
+    },
+    {
+      "case": "existing_output",
+      "passed": true,
+      "verifier_called": false,
+      "program_requested": false
+    },
+    {
+      "case": "unfinished_predecessor",
+      "passed": true,
+      "verifier_called": false,
+      "program_requested": false
+    },
+    {
+      "case": "partial_predecessor",
+      "passed": true,
+      "verifier_called": false,
+      "program_requested": false
+    }
+  ]
+}

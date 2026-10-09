@@ -1559,5 +1559,18 @@
     "added_bsram": 0,
     "hardware_tested": false,
     "evidence": "reports/CNN_FLASH_BOOT_BE_RETURN_PIPELINE_TESTS.json"
+  },
+  "acceptance_readiness_guard": {
+    "passed": true,
+    "host_only_cases": 9,
+    "hardware_io": false,
+    "evidence": "reports/CNN_FLASH_BOOT_WAITER_TESTS.json",
+    "requires_complete_terminal_artifacts": [
+      "tool_result.json",
+      "workstation_memory.json",
+      "flash_bundle.json"
+    ],
+    "partial_reports_authorize_io": false,
+    "earlier_verified_hardware_suppresses_following_programming": true
   }
 }
