@@ -309,6 +309,26 @@
     "baseline85_uart_model_restored": true,
     "model_words": 52239,
     "expected_crc32": "AF01A61B",
-    "actual_crc32": "AF01A61B"
+    "actual_crc32": "AF01A61B",
+    "timing": {
+      "passed": true,
+      "same_clock_and_reported_tns_all_zero": true,
+      "clocks_mhz": {
+        "clk_50m": {
+          "required": 50,
+          "fmax": 84.488
+        },
+        "ddr_mem400": {
+          "required": 400,
+          "fmax": 2598.775
+        },
+        "ddr_ui100": {
+          "required": 100,
+          "fmax": 290.638
+        }
+      },
+      "physical_bsram": 32,
+      "full_workstation": false
+    }
   }
 }

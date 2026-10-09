@@ -4,6 +4,8 @@
 
 此前 `direct` 方案仍保留为实验路径：直接 SPI→DDR、载荷 CRC、DDR 回读 CRC。0x95 完整工程虽然 clk50 收敛且正常从 Flash 配置，实体原有 UART 路径也停在 DDR 回读，CPU DDR/UI 自检出现失败；因此 0x95 没有提升为 LATEST。独立 0x96 SRAM 探针完整读出 Flash 模型并通过本地 RAM CRC，证明 Flash 接线、字节序和载荷有效；探针不代表完整工作站或 DDR 已验收。0x98 SRAM 探针进一步验证实际 115200 波特率的内部 BPN1 传输和原解析器，完整模型本地 RAM 回读 CRC 同样通过。
 
+独立 0x9E 临时 SRAM 探针把传输接到真实板载 DDR，复用 full85 的 DDR 平台/加密 PHY、原模型解析器和 DDR16/CDC 端口，完整 52,239 字写入及 DDR 回读 CRC `AF01A61B` 均通过，来源为 Flash、状态为 E，没有 PC 模型上传。探针三种时钟的 setup/hold TNS 都为零：clk50 Fmax84.488、DDR UI Fmax290.638 MHz；物理 BSRAM32属于DDR控制器等基础资源，没有52,239字模型ROM。探针无CPU/显示/音频DMA并发，不代表完整工作站或物理断电重启验收。测试后 full85 配置与其易失模型已恢复。
+
 默认 `serial` 方案保留 CNN、原模型解析器、DDR16 端口、CDC FIFO、命令缓冲的完整源文件和实例层级。空白/非法头或首遍载荷 CRC 错误时，模型解析器尚未接收任何数据，自动切回外部 UART。第二遍发生变化或 DDR 校验错误则显式失败，需要全局复位后恢复；不会把部分模型当成成功。
 
 模型镜像是现有 `rtl/music/weights/cnn_ddr_blob.mem` 的 52,239 个 16-bit 系数，104,478 字节，CRC32 `AF01A61B`。它不含 PCM、音频文件头、演奏录音或推流内容。镜像构建工具只接受严格的 16-bit 十六进制字表并检查字数。该模型位于独立外部 Flash 分区，启动逻辑没有模型 ROM、没有新增 BSRAM。
@@ -95,6 +97,11 @@ python3 tools/test_cnn_flash_serial_boot.py --output /tmp/cnn_flash_serial_tests
 python3 tools/build_cnn_flash_probe.py --flow syn --transport serial --output <新目录>
 # 探针全构建需新编号，仅用于临时 SRAM；不允许作为完整工作站固化。
 python3 tools/build_cnn_flash_probe.py --flow all --transport serial --user-code <新编号> --output <新目录>
+
+# 真实DDR隔离探针，prepare/SYN不分配UserCode；全构建必须新编号。
+# 该工件只用于临时SRAM诊断，不得作为workstation固化。
+python3 tools/build_cnn_flash_ddr_probe.py --flow syn --output <新目录>
+python3 tools/build_cnn_flash_ddr_probe.py --flow all --user-code <新编号> --output <新目录>
 
 # 离线部署/回滚故障测试：使用已完成候选的真实 hash，所有硬件 I/O 用测试替身。
 python3 tools/test_cnn_flash_deploy.py --build <完整结果目录>
