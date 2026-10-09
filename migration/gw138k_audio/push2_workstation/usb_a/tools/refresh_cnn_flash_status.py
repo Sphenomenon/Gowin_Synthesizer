@@ -41,4 +41,23 @@ for row in report['rows']:
         if evidence.get('pnr_available'):row['physical_bsram']=evidence['pnr_bsram']
 report['generated_at']=datetime.now().astimezone().isoformat()
 path.write_text(json.dumps(report,indent=2)+'\n')
-print('Updated actual local candidate statuses; no hardware/LATEST operations')
+current=ROOT/'reports/CNN_FLASH_BOOT_CURRENT.md'
+text=current.read_text()
+start=text.index('| 候选 |')
+end=text.index('\n\n',start)
+lines=['| 候选 | 实际状态 | clk50 MHz | 视频 MHz | DDR UI setup ns | 物理BSRAM | 写板 |',
+       '|---|---|---:|---:|---:|---:|---|']
+for row in report['rows']:
+    if row['user_code'] not in ['B3','B4','B5','B6','B7','B8','B9','BA','BB','BC','BD','BE']:continue
+    values=[str(row.get(key,'待报告')) for key in ['clk50_fmax_mhz','video_fmax_mhz','ddr_ui_setup_wns_ns','physical_bsram']]
+    hardware='已验收' if row.get('hardware_auto_boot_verified') else ('已尝试，见回滚证据' if row.get('programming_started') else '未烧录')
+    lines.append('| '+ ' | '.join([row['user_code'],row['status'],*values,hardware])+' |')
+text=text[:start]+'\n'.join(lines)+text[end:]
+marker='状态表从实际构建和验收工件生成：'
+if marker in text:
+    beginning=text.index(marker); ending=text.index('\n',beginning)
+    text=text[:beginning]+marker+report['generated_at']+'。'+text[ending:]
+else:
+    text=text.replace('\n\n## 已完成的验证','\n\n'+marker+report['generated_at']+'。\n\n## 已完成的验证')
+current.write_text(text)
+print('Updated actual local candidate statuses and current table; no hardware/LATEST operations')

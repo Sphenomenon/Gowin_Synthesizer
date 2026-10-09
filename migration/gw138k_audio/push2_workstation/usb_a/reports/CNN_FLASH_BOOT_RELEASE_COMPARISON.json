@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T03:01:28.556032+08:00",
+  "generated_at": "2026-10-10T03:18:47.126277+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -363,12 +363,38 @@
     {
       "user_code": "B9",
       "build": "results/workstation_flashb9_20261010_grouped_tf_card",
-      "status": "routing",
+      "status": "routed_rejected",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
       "programming_started": false,
-      "source_bound_TF_card_tests_passed": true
+      "source_bound_TF_card_tests_passed": true,
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0,
+        "feature_read_equivalence": 0,
+        "pixel_skid_protocol": 0,
+        "pixel_skid_full_renderer": 0,
+        "shared_display_integration": 0,
+        "tf_byte_count_proof": 0,
+        "tf_byte_count_protocol": 0,
+        "tf_read_total_proof": 0,
+        "spectrum_address_proof": 0,
+        "card_select_proof": 0,
+        "tf_availability_proof": 0,
+        "bist_pattern_cycle_equivalence": 0
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "clk50_fmax_mhz": 55.212,
+      "video_fmax_mhz": 174.628,
+      "PLL_all_endpoints_passed": true,
+      "ddr_ui_setup_wns_ns": -2.688,
+      "ddr_ui_hold_wns_ns": 0.165,
+      "synthesis_bsram": 220,
+      "physical_bsram": 268
     },
     {
       "user_code": "BA",
@@ -383,7 +409,7 @@
     {
       "user_code": "BB",
       "build": "results/workstation_flashbb_20261010_bist_lane_pipeline",
-      "status": "placement",
+      "status": "routing",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
@@ -393,12 +419,22 @@
     {
       "user_code": "BC",
       "build": "results/workstation_flashbc_20261010_tf_byte_mask",
-      "status": "synthesizing",
+      "status": "routing",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
       "programming_started": false,
       "source_bound_TF_mask_passed": true
+    },
+    {
+      "user_code": "BD",
+      "build": "results/workstation_flashbd_20261010_registered_tf_return",
+      "status": "placement",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "release_gate_passed": false,
+      "programming_started": false,
+      "source_bound_registered_TF_protocol_passed": true
     }
   ]
 }

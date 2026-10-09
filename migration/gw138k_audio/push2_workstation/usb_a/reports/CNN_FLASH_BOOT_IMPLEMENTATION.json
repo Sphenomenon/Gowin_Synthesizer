@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_actual_Flash3boots_live_verified_B8_rejected_B9_BA_BB_building",
+  "status": "AD_flash_function_verified_full85_restored_B8_B9_timing_rejected_BA_BB_BC_BD_building",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1535,5 +1535,17 @@
     "added_bsram": 0,
     "hardware_tested": false,
     "promoted": false
+  },
+  "BD_registered_tf_response": {
+    "build": "results/workstation_flashbd_20261010_registered_tf_return",
+    "source_bound_protocol_cases": 50,
+    "protocol_passed": true,
+    "contract": "Only buffered-client registered native return boundary; generic frozen TF keeps same-cycle support. Not a general app_rvalid implies pending assertion across restart.",
+    "added_cycles": 0,
+    "added_bsram": 0,
+    "model_pipeline_proof": "11 exact sources + image equal to executed full B8 model; composition, not new hardware execution",
+    "hardware_tested": false,
+    "programming_started": false,
+    "evidence": "reports/CNN_FLASH_BOOT_BD_REGISTERED_TF_TESTS.json"
   }
 }
