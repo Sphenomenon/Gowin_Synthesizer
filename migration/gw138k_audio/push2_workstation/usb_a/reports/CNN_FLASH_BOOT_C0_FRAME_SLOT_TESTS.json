@@ -648,6 +648,159 @@
       "invalid_slot_payload": "unobserved by core; may sample request bus while empty",
       "patched_source_sha256": "42159203c89926eaede706536c57735362c2349608e642ab36c30e9f78564d79",
       "miter_sha256": "68db681161456863f7745ec1fefc203a3cc6964ccc22a5f4b4684a31cf8d3d92"
+    },
+    "frozen_spectrum_address_sat.json": {
+      "passed": true,
+      "source_bound": true,
+      "build": "results/workstation_flashc0_20261010_frame_token_slot",
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "added_cycles": 0,
+      "checks": [
+        {
+          "width": 2,
+          "passed": true,
+          "proof": "SAT all12inputbits including wrap/range/advance",
+          "miter_sha256": "70305a15639fe15044935e6d3ad1d9c227822b09680074c9c5f3ac99fc7f0251"
+        },
+        {
+          "width": 64,
+          "passed": true,
+          "proof": "SAT all12inputbits including wrap/range/advance",
+          "miter_sha256": "dd82c5836338273812157ef7fbceb0f91ae0ea61dae27bb971298fb38c58d0bf"
+        },
+        {
+          "width": 1920,
+          "passed": true,
+          "proof": "SAT all12inputbits including wrap/range/advance",
+          "miter_sha256": "ec42caefb1a341aeaba6b9e69d7b5bec48d726bb2161995d6441cdc6cd04f5c6"
+        },
+        {
+          "width": 2048,
+          "passed": true,
+          "proof": "SAT all12inputbits including wrap/range/advance",
+          "miter_sha256": "96803c73c838d91ab8e869348e2d4fba4d963595bd0bf07109afe4c0f9a1063e"
+        }
+      ],
+      "original_sha256": "cf2734b8be6cd198f92bcae5536e876475e57e0c0affedf05578ba93417208c4",
+      "patched_sha256": "3632af887fe24b85a92571c03be1a200b37941907116f99ce3158cf1e1e5c36a"
+    },
+    "frozen_analysis_renderer.json": {
+      "passed": true,
+      "registered_first_issue_token": true,
+      "frame_start_cycle_assertion": true,
+      "quiet_shared_analysis": true,
+      "shallow_card_select": true,
+      "analysis_source_sha256": {
+        "output_audio_analysis.v": "5c4929314c548d0ab97d6274e6ceb3ef59a76be739c5fb0a1d48564aa011dbdc",
+        "output_audio_capture.v": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+        "audio_analysis_rom.v": "439ff9f00ff4d29740b296f2e264eabc19e6cb2ff2195dfb2bd815c9d1286946"
+      },
+      "parallel_spectrum_address": true,
+      "analysis_page": true,
+      "source_bound": true,
+      "build": "results/workstation_flashc0_20261010_frame_token_slot",
+      "pixel_skid": true,
+      "pixel_skid_sha256": "df766082448aa0adcc69202c64c66db3ddb3ac88076d0df4116bff4720180504",
+      "frame_writer_sha256": "84f231c085df1dbfc0931fa622c53d6937491888ee630cdd0865203ee737087a",
+      "predecoded_text_coordinates": true,
+      "parallel_cards": true,
+      "predecoded_background": true,
+      "complete_background_coordinates": true,
+      "predecoded_wave_heights": true,
+      "predecoded_dynamic_ink": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "dashboard_sha256": "3fd101ab84a34fc0e79df88e3ec40a4f2385fcbbac91fb819d343d7c89d9f017",
+      "renderer_sha256": "3632af887fe24b85a92571c03be1a200b37941907116f99ce3158cf1e1e5c36a",
+      "log": "PASS renderer1036800two-pixelbeats +129601native DDR commands,complete1920x1080,independent long/native stalls,RGB565/address/meta exact,skid completion after drain\n- /tmp/cnn_renderer_predecode_8afz0kco/tb.sv:73: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 13ms; walltime 1.523 s; speed 8.660 ms/s\n- Verilator: cpu 1.517 s on 1 threads; allocated 32 MB"
+    },
+    "frozen_renderer_dimension_guard.json": {
+      "passed": true,
+      "source_bound": true,
+      "build": "results/workstation_flashc0_20261010_frame_token_slot",
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "guard_sha256": "38ed788b3ab4dbf83b30658bd6867903547b38ec4172f6c66508e6593571944a",
+      "cases": [
+        {
+          "width": 2,
+          "height": 1,
+          "supported": true,
+          "explicit_compile_rejection": false,
+          "passed": true
+        },
+        {
+          "width": 64,
+          "height": 1,
+          "supported": true,
+          "explicit_compile_rejection": false,
+          "passed": true
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "supported": true,
+          "explicit_compile_rejection": false,
+          "passed": true
+        },
+        {
+          "width": 2048,
+          "height": 2048,
+          "supported": true,
+          "explicit_compile_rejection": false,
+          "passed": true
+        },
+        {
+          "width": 0,
+          "height": 1,
+          "supported": false,
+          "explicit_compile_rejection": true,
+          "passed": true
+        },
+        {
+          "width": 1,
+          "height": 1,
+          "supported": false,
+          "explicit_compile_rejection": true,
+          "passed": true
+        },
+        {
+          "width": 3,
+          "height": 1,
+          "supported": false,
+          "explicit_compile_rejection": true,
+          "passed": true
+        },
+        {
+          "width": 2050,
+          "height": 1080,
+          "supported": false,
+          "explicit_compile_rejection": true,
+          "passed": true
+        },
+        {
+          "width": 1920,
+          "height": 0,
+          "supported": false,
+          "explicit_compile_rejection": true,
+          "passed": true
+        },
+        {
+          "width": 1920,
+          "height": 2049,
+          "supported": false,
+          "explicit_compile_rejection": true,
+          "passed": true
+        },
+        {
+          "width": -2,
+          "height": 1080,
+          "supported": false,
+          "explicit_compile_rejection": true,
+          "passed": true
+        }
+      ]
     }
   }
 }

@@ -76,6 +76,11 @@ def main():
                 if meta.get(key):command.append(flag)
             label,code=run('pixel_skid_full_renderer',command)
             result['checks'][label]=code
+        if meta.get('registered_renderer_first_issue'):
+            label,code=run('renderer_dimension_guard',[sys.executable,
+                str(ROOT/'tools/test_cnn_renderer_dimensions.py'),'--build',str(build),
+                '--output',str(output/'renderer_dimension_guard.json')])
+            result['checks'][label]=code
         if meta.get('predecoded_dashboard'):
             label,code=run('shared_display_integration',[sys.executable,
                 str(ROOT/'tools/test_cnn_shared_display.py'),'--build',str(build),

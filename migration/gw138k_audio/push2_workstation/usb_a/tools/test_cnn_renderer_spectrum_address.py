@@ -2,7 +2,7 @@
 """Exact parallel next/current spectrum address SAT proof all2048x2inputs."""
 import argparse,hashlib,json,re,subprocess,tempfile
 from pathlib import Path
-from cnn_ddr_pipeline_patch import RENDERER,parallel_renderer_spectrum_address,align_renderer_predecode,quiet_shared_analysis_column
+from cnn_ddr_pipeline_patch import RENDERER,parallel_renderer_spectrum_address,align_renderer_predecode,quiet_shared_analysis_column,register_renderer_first_issue
 ROOT=Path(__file__).resolve().parents[1];BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--build',type=Path);a=p.parse_args()
 original=(BASE/RENDERER).read_text();patched=parallel_renderer_spectrum_address(original)
@@ -12,6 +12,7 @@ if a.build:
  patched=(build/'Prj1'/RENDERER).read_text()
  expected=parallel_renderer_spectrum_address(align_renderer_predecode(original))
  if metadata.get('quiet_shared_analysis_column'):expected=quiet_shared_analysis_column(expected)
+ if metadata.get('registered_renderer_first_issue'):expected=register_renderer_first_issue(expected)
  assert patched==expected,'renderer drift'
 def block(text):
  start=text.index('    wire [10:0] '+('spectrum_next_x=' if 'spectrum_next_x=' in text else 'next_x='))

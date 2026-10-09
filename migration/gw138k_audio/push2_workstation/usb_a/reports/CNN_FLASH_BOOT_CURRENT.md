@@ -6,7 +6,7 @@
 - FPGA配置后等待CPU DDR/音频/UI自检，通过SPI逐字节读取，首遍校验后重新读取，经片内BPN1串行线交给原模型解析器，写入已有CNN DDR区并回读CRC。过程无需PC模型上传。
 - AD实际配置Flash测试连续3次重载，精确UserCodeAD/status26020、每次至少3条fresh E/source1报告；三音/LR/静音/Panic健康测试通过。没有执行物理断电。
 - AD时序未过发布门禁，诊断完成后无条件写回并验证full85，恢复其易失模型及现场测试。当前默认及板上均为full85；2026-10-10 00:31只读核验UserCode85/status26020/modelE；01:18只读健康检查modelE/health0/CRC0/精确48000样本每秒/Push屏幕帧增长；02:40及03:44只读健康检查全部通过、模型E/health0/CRC0/48000样本每秒/Push帧+2。
-B1起官方PLL参考辅助逻辑邻近放置，PLL全传播独立10ns预算均已验证。B8修正后TF读计数旧−5.551ns路径消失，剩BIST比较−2.936ns和TF重启clear/card坐标；BB的BIST分级比较明确启动+5.24288ms/0BSRAM，BC的TF byte-valid clear额外0周期/0BSRAM；BE的成对TF读响应/数据寄存每块+10ns/0BSRAM。所有新候选保留完整工作站606个输入，paired FIFO物理上限268；综合220不能当作完整物理占用。最终以各目录automatic_acceptance/result.json为准。
+B1起官方PLL参考辅助逻辑邻近放置，PLL全传播独立10ns预算均已验证。B8消除旧TF读计数−5.551ns路径；BB的BIST分级比较启动+5.24288ms，BC的TF byte-valid清零+0周期，BE的成对读响应/数据寄存每块+10ns，均不增加BSRAM。BD实际DDR UI改善至−1.463ns，最差转为帧首显示控制，仍未烧录。C0用已测通过的帧首标志和空槽payload采样继续收敛这两类控制路径；完整模型仿真重新执行中。所有候选保留完整工作站606个输入，paired FIFO物理上限268；综合220不能当作完整物理占用。最终以各目录automatic_acceptance/result.json为准。
 
 | 候选 | 实际状态 | clk50 MHz | 视频 MHz | DDR UI setup ns | 物理BSRAM | 写板 |
 |---|---|---:|---:|---:|---:|---|

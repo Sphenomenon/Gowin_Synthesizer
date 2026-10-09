@@ -68,7 +68,7 @@ with tempfile.TemporaryDirectory(prefix='cnn_shared_display_') as tmp:
     assert compile.returncode==0,compile.stdout[-6000:]+compile.stderr[-6000:]
     run=subprocess.run([str(folder/'obj/Vtb_shared_display')],cwd=stage,capture_output=True,text=True,timeout=300)
     assert run.returncode==0 and 'PASS shared DDR HDMI source:' in run.stdout and 'PASS startup invalid analysis:' in run.stdout,run.stdout+run.stderr
-report=dict(passed=True,source_bound=not a.quiet_shared_analysis,quiet_shared_analysis=a.quiet_shared_analysis,tested_renderer_sha256=renderer_sha256,build=str(build),hardware_tested=False,pcm_saved=False,
+report=dict(passed=True,frame_start_cycle_assertion=bool(metadata.get('registered_renderer_first_issue')),source_bound=not a.quiet_shared_analysis,quiet_shared_analysis=a.quiet_shared_analysis,tested_renderer_sha256=renderer_sha256,build=str(build),hardware_tested=False,pcm_saved=False,
     front_ram_address_poisoned=True,scope='actual FFT/XY bank ownership with nonuniform front arrays -> DDR publication -> coherent cache reload -> complete raster against frozen original; 3frames + cold invalid-analysis reset',
     fixture_sha256=hashlib.sha256(fixture.encode()).hexdigest(),
     source_sha256={name:hashlib.sha256((stage/name).read_bytes()).hexdigest() for name in source_names},
