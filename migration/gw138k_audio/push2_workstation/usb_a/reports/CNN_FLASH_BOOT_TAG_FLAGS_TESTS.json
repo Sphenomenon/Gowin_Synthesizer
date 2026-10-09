@@ -62,5 +62,56 @@
       "pcm_saved": false,
       "arbiter_sha256": "60aec35bdcd2ee86f60464631838cd47c5577fee335c2ea2e6a1f0b647dbb2f3"
     }
+  },
+  "full_model_regression": {
+    "passed": true,
+    "frozen_build": null,
+    "simulation_overrides": [
+      {
+        "words": 31,
+        "kind": "tested registered tag flags",
+        "original_sha256": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+        "simulated_sha256": "60aec35bdcd2ee86f60464631838cd47c5577fee335c2ea2e6a1f0b647dbb2f3"
+      },
+      {
+        "words": 52239,
+        "kind": "tested registered tag flags",
+        "original_sha256": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+        "simulated_sha256": "60aec35bdcd2ee86f60464631838cd47c5577fee335c2ea2e6a1f0b647dbb2f3"
+      }
+    ],
+    "buffered_clients": true,
+    "registered_tag_flags": true,
+    "cases": [
+      {
+        "words": 31,
+        "baud": 115200,
+        "payload_crc32": "DFC2733D",
+        "passed": true,
+        "log": "PASS serial case=0 words=31 clk_div=4 zero_rsp=0 cycles=317523 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/tmp/cnn_flash_native_pipeline_omqtfz0u/tb.sv:213: $finish called at 6350460000 (1ps)"
+      },
+      {
+        "words": 52239,
+        "baud": 3125000,
+        "payload_crc32": "AF01A61B",
+        "passed": true,
+        "log": "progress cycles=4000000 status=0 bridge=1 writes=0 reads=0\nprogress cycles=8000000 status=4 bridge=3 writes=2790 reads=0\nprogress cycles=12000000 status=4 bridge=3 writes=11679 reads=0\nprogress cycles=16000000 status=4 bridge=3 writes=20568 reads=0\nprogress cycles=20000000 status=4 bridge=3 writes=29457 reads=0\nprogress cycles=24000000 status=4 bridge=3 writes=38346 reads=0\nprogress cycles=28000000 status=4 bridge=3 writes=47234 reads=0\nPASS serial case=0 words=52239 clk_div=4 zero_rsp=0 cycles=30831665 writes=52239 reads=52239 source=1 crc=af01a61b flash_error=0\n/tmp/cnn_flash_native_pipeline_omqtfz0u/tb.sv:213: $finish called at 616633300000 (1ps)"
+      }
+    ],
+    "hardware_tested": false,
+    "pcm_saved": false,
+    "source_sha256": {
+      "rtl/music/basic_pitch_flash_serial_boot.sv": "ca350379673839ecc004878a7b99f051c27c77571231d514aeaf1a7fca57a416",
+      "rtl/music/basic_pitch_flash_model_loader.sv": "3f45c816e2bf5a994a9e336b839ccca35685b2e3f89db908f5f9ab8ad6488805",
+      "rtl/music/basic_pitch_flash_io_guard.sv": "be70cddf661fd231f4f187e8eecf8cf9a2ecbd1e2b0ad8d8041936c4938f5e58",
+      "rtl/music/basic_pitch_uart_model_loader.sv": "929e4f9a702fe06731a651817ff9217f6ff7cd7e553b642d3dda7b2b53393fd5",
+      "rtl/music/basic_pitch_uart_rx.sv": "28f403ca014eadb6141beb6f293a52266962326de8e15d44f7115d1745310b7c",
+      "rtl/music/basic_pitch_ddr16_port.sv": "6b0ce974e4081485f24a940e257e5a74daed3b1ce3e80f58b26f7304cae97785",
+      "rtl/music/basic_pitch_ddr_read_credit.sv": "62233867c73142a3876b17f325e3568b0fbd8e38e5e6dbf32da4a484db38b2ae",
+      "rtl/music/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/src/control/uart_tx.v": "3513207cae9e529b0dabd45040a33012440ad4c1fc842571b4cb70ece5d09e8f",
+      "rtl/music/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c"
+    },
+    "scope": "NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls"
   }
 }

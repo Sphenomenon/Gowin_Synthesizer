@@ -225,3 +225,6 @@ B0可选`--predecode-dashboard --predecode-text-coordinates`在一个enable级�
 
 
 当前B2增加两个等价组合修正：`--parallel-dashboard-cards`并行算四个固定动画目标，再按原顺序和缺席回退规则选择，卡片文字几何用carry-save组合减少串行进位；`--lut-tmds-popcount`把8位population count改为两个4位完整真值表并行查找。7,340,032组动画/坐标穷举、完整像素/双渲染器和100,000周期TMDS全部通过。B1与B2的PLL源和物理区域相同。可选`--predecode-background-coordinates`进一步把纯背景坐标条件在前一级捕获，已经完整像素/渲染器对照通过，未加入B2。所有证据均绑定生成HDL的SHA256，实际是否发布取决于完整路由门禁和实体Flash/live测试。
+
+
+B2完成但时序发布拒绝：clk50 feature-cache地址-2.226ns、DDR UI校准→模型客户使能-1.800ns；没有实体写入。B3增加`--retime-model-memory-ready`同内存域本地calibration寄存，启动level延后1cycle（CPU/BIST/UI完成后才启动模型），全局memory_reset异步清零；该选项不承诺独立PHY复位新行为。`--predecode-wave-heights`把波形shift/clamp放入已有预解码级，`--predecode-background-coordinates`保留一个像素enable延迟；完整像素及renderer对照通过。`--register-arbiter-tag-flags`同拍预测计数full/empty，6组全部8客户端独立内存/背压/回绕/复位测试及52239系数写读CRC通过。`--tighten-feature-read-route`只是更严格19ns物理预算，原20ns、CNN算术/源/固件/PHY保持；不能用预算声明替代真实闭合。

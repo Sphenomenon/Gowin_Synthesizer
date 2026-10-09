@@ -4,12 +4,13 @@ from pathlib import Path
 import argparse,subprocess,tempfile,json,hashlib,threading
 from build_cnn_flash_image import build_image,load_words
 ROOT=Path(__file__).resolve().parents[1];SRC=ROOT/'rtl/music'
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--build',type=Path,help='use the frozen full-workstation RTL; only RX baud is accelerated for the full-content case');p.add_argument('--output',type=Path);p.add_argument('--buffered-clients',action='store_true');p.add_argument('--registered-tag-flags',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--build',type=Path,help='use the frozen full-workstation RTL; only RX baud is accelerated for the full-content case');p.add_argument('--output',type=Path);p.add_argument('--buffered-clients',action='store_true');p.add_argument('--registered-tag-flags',action='store_true');p.add_argument('--small-model-only',action='store_true');a=p.parse_args()
 if a.build:
  SRC=a.build.resolve()/'Prj1/rtl/music'
  meta=json.loads((a.build/'build_metadata.json').read_text())
  assert meta['full_workstation'] and meta['buffered_ddr_clients']==a.buffered_clients
 if a.registered_tag_flags and a.build:assert meta.get('registered_arbiter_tag_flags'), 'candidate lacks requestedtagflags'
+local_memory_ready=bool(a.build and meta.get('retimed_model_memory_ready'))
 original=(ROOT/'sim/model_flash/tb_flash_serial_boot.sv').read_text()
 start=original.index('    wire ready=(cycles%19')
 end=original.index('    reg held=0;',start)
@@ -88,6 +89,13 @@ text=text[:start]+'''    always @(posedge clk)begin
         end
     end
 '''+text[end:]
+if local_memory_ready:
+ from cnn_ddr_pipeline_patch import MODEL_MEMORY_READY_BLOCK
+ link=SRC/'basic_pitch_workstation_link.sv'
+ assert link.read_text().count(MODEL_MEMORY_READY_BLOCK)==1, 'frozen calibration wrapper drift'
+ anchor='    basic_pitch_ddr_read_credit credit_guard'
+ text=text.replace(anchor,'    wire memory_clk=clk,memory_reset_n=rst_n;\n    wire memory_calibrated=cycles>37;\n'+MODEL_MEMORY_READY_BLOCK+anchor)
+ text=text.replace('.req_valid_i(req && (wr || credit))','.req_valid_i(req && model_memory_ready && (wr || credit))')
 # Existing NOR/UART success oracle and full coefficient expected/actual CRC
 # checks remain exact, now driven by physical masked native-memory responses.
 if a.buffered_clients:text=text.replace('basic_pitch_ddr_arbiter_pipeline arbiter(', 'basic_pitch_ddr_client_queues arbiter(')
@@ -101,13 +109,13 @@ if frozen_parser:
 cases=[];simulation_overrides=[];original_sources=[]
 with tempfile.TemporaryDirectory(prefix='cnn_flash_native_pipeline_') as tmp:
  tb=Path(tmp)/'tb.sv';tb.write_text(text)
- for words,baud in [(31,115200),(52239,3125000)]:
+ for words,baud in ([(31,115200)] if a.small_model_only else [(31,115200),(52239,3125000)]):
   vals=load_words(SRC/'weights/cnn_ddr_blob.mem') if words==52239 else [(i*7919^0xa53c)&65535 for i in range(words)]
   image,manifest=build_image(vals);model=Path(tmp)/'geometry_coefficients.hex';model.write_text('\n'.join(f'{b:02x}' for b in image)+'\n')
   exe=Path(tmp)/'sim'
   sources=[tb]+[SRC/n for n in ('basic_pitch_flash_serial_boot.sv','basic_pitch_flash_model_loader.sv','basic_pitch_flash_io_guard.sv','basic_pitch_uart_model_loader.sv','basic_pitch_uart_rx.sv','basic_pitch_ddr16_port.sv','basic_pitch_ddr_read_credit.sv','basic_pitch_ddr_arbiter_pipeline.sv')]+[ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/src/control/uart_tx.v']
   if a.buffered_clients:sources.append(SRC/'basic_pitch_ddr_client_queues.sv')
-  original_sources=list(sources)
+  original_sources=list(sources)+([SRC/'basic_pitch_workstation_link.sv'] if local_memory_ready else [])
   if a.registered_tag_flags and not a.build:
    from cnn_ddr_pipeline_patch import register_arbiter_tag_flags
    path=SRC/'basic_pitch_ddr_arbiter_pipeline.sv';original_arbiter=path.read_text()
@@ -139,6 +147,6 @@ with tempfile.TemporaryDirectory(prefix='cnn_flash_native_pipeline_') as tmp:
   log=''.join(lines)
   assert run.returncode==0 and 'PASS serial' in log,log
   cases.append(dict(words=words,baud=baud,payload_crc32=manifest['payload_crc32'],passed=True,log=log.strip()))
-report=dict(passed=True,frozen_build=str(a.build) if a.build else None,simulation_overrides=simulation_overrides,buffered_clients=a.buffered_clients,registered_tag_flags=a.registered_tag_flags,cases=cases,hardware_tested=False,pcm_saved=False,source_sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in original_sources if p.is_relative_to(ROOT)},scope='NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls')
+report=dict(passed=True,frozen_build=str(a.build) if a.build else None,simulation_overrides=simulation_overrides,buffered_clients=a.buffered_clients,registered_tag_flags=a.registered_tag_flags,small_model_only=a.small_model_only,local_memory_ready_wrapper=local_memory_ready,cases=cases,hardware_tested=False,pcm_saved=False,source_sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in original_sources if p.is_relative_to(ROOT)},scope='NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls')
 if a.output:a.output.write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report,indent=2))
