@@ -567,10 +567,11 @@
   },
   "start_delay_retime": {
     "passed": true,
-    "cycles": 30000,
+    "transition_proof_cycles": 30000,
+    "natural_countdown_cycles": 2500012,
     "source_sha256": "c5e4a660d368e8609f28384a846005246d371011063a4bcc06fb6e8eb2c34682",
     "patched_top_sha256": "32bc79dc2716f3c50ccbe118bb2158bd751d670eb8393b6ddf35678124f8fe15",
-    "log": "PASS start-delay actual HDL,30000 cycles,all control registers,0/1/2/load/random boundaries,coincident controls,resets,no latency change\n/tmp/cnn_start_delay_f1skq2hq/tb.sv:155: $finish called at 600071000 (1ps)",
+    "log": "PASS start-delay actual HDL,30000 cycles,all control registers,0/1/2/load/random boundaries,coincident controls,resets,natural2500000-cycle song launch,no latency change\n/tmp/cnn_start_delay_fr9kdvpe/tb.sv:166: $finish called at 50600371000 (1ps)",
     "hardware_tested": false
   }
 }

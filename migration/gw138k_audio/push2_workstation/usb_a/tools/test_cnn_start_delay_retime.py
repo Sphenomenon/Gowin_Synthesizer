@@ -36,14 +36,25 @@ initial begin
   if({a.music_model_ready_q,a.music_restart_delay,a.music_run_reset_count,a.music_song_started,a.tf_song_restart,a.song_pending,a.tf_selected_track,a.pending_track,a.tf_recover,a.tf_recover_wait} !== {b.music_model_ready_q,b.music_restart_delay,b.music_run_reset_count,b.music_song_started,b.tf_song_restart,b.song_pending,b.tf_selected_track,b.pending_track,b.tf_recover,b.tf_recover_wait})$fatal(1,"control state changed");
   rst=1;
  end
- $display("PASS start-delay actual HDL,30000 cycles,all control registers,0/1/2/load/random boundaries,coincident controls,resets,no latency change");$finish;
+ // Now exercise a naturally evolving complete startup countdown without
+ // assigning either predicate or countdown, including a live new song command.
+ @(negedge clk);rst=0;status=0;cancel=0;lost=0;scan=0;tracks=1;cmd=0;mode=0;
+ @(negedge clk);rst=1;status=14;
+ @(negedge clk);cmd=1;
+ @(negedge clk);cmd=0;
+ for(integer i=0;i<2500012;i=i+1)begin
+  @(posedge clk);#1;
+  if(x!==y || b.music_delay_expired!==(a.music_restart_delay==0))$fatal(1,"continuous natural countdown mismatch%0d",i);
+ end
+ if(!x || !a.music_song_started)$fatal(1,"natural song launch failed");
+ $display("PASS start-delay actual HDL,30000 cycles,all control registers,0/1/2/load/random boundaries,coincident controls,resets,natural2500000-cycle song launch,no latency change");$finish;
 end
 endmodule
 '''
 with tempfile.TemporaryDirectory(prefix='cnn_start_delay_') as temp:
  temp=Path(temp);code=temp/'tb.sv';code.write_text('`timescale 1ns/1ps\n'+control(old,'original')+control(new,'retimed')+tb);exe=temp/'sim'
  c=subprocess.run(['iverilog','-g2012','-s','tb','-o',str(exe),str(code)],capture_output=True,text=True);assert c.returncode==0,c.stdout+c.stderr
- v=subprocess.run(['vvp',str(exe)],capture_output=True,text=True,timeout=15);assert v.returncode==0 and 'PASS start-delay actual HDL' in v.stdout,v.stdout+v.stderr
- d=dict(passed=True,cycles=30000,source_sha256=hashlib.sha256(old.encode()).hexdigest(),patched_top_sha256=hashlib.sha256(new.encode()).hexdigest(),log=v.stdout.strip(),hardware_tested=False)
+ v=subprocess.run(['vvp',str(exe)],capture_output=True,text=True,timeout=120);assert v.returncode==0 and 'PASS start-delay actual HDL' in v.stdout,v.stdout+v.stderr
+ d=dict(passed=True,transition_proof_cycles=30000,natural_countdown_cycles=2500012,source_sha256=hashlib.sha256(old.encode()).hexdigest(),patched_top_sha256=hashlib.sha256(new.encode()).hexdigest(),log=v.stdout.strip(),hardware_tested=False)
  if a.output:a.output.write_text(json.dumps(d,indent=2)+'\n')
  print(json.dumps(d,indent=2))

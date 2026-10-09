@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "isolated_flash_to_actual_ddr_passed_full_candidates_building_A4_history_aligned",
+  "status": "isolated_flash_to_actual_ddr_passed_A3_diagnostic_A5_aligned_start_timing_building",
   "target_user_code": "0x0000009A",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -498,11 +498,19 @@
   "cancelled_p_entry_candidates": {
     "A0": {
       "reason": "about110min build/no routing report; official doc conflict; superseded by pr-entry A3 and aligned fresh A4",
-      "hardware_tested": false
+      "hardware_tested": false,
+      "exit_code": -15,
+      "flow": "all",
+      "inputs_unchanged": true,
+      "changed": []
     },
     "A1": {
       "reason": "about90min/no report; superseded by paired pr-entry comparison and cold history-aligned A4",
-      "hardware_tested": false
+      "hardware_tested": false,
+      "exit_code": -15,
+      "flow": "all",
+      "inputs_unchanged": true,
+      "changed": []
     }
   },
   "A2_completed": {
@@ -517,6 +525,13 @@
   },
   "A4_cancelled": {
     "reason": "superseded before final PNR by cycle-exact registered startup countdown predicate from A2 critical paths",
-    "hardware_tested": false
-  }
+    "hardware_tested": false,
+    "exit_code": -15,
+    "flow": "all",
+    "inputs_unchanged": true,
+    "changed": []
+  },
+  "start_predicate_candidate": "results/workstation_flasha5_20261009_start_predicate",
+  "start_predicate_user_code": "0x000000A5",
+  "start_predicate_control": "A4 aligned startup plus cycle-exact registered countdown-zero predicate; original start latency and all control register cycles preserved"
 }

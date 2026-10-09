@@ -168,4 +168,4 @@ python3 tools/test_cnn_startup_history.py
 
 正式延迟启动验收读取宿主测试命令之前的`startup_panic_epoch`，至少为1；Panic缺失即使模型三次均E也回滚。相关离线测试同时检查缺少对齐的版本在硬件I/O前拒绝、启动Panic成功和Panic缺失后的完整恢复。
 
-可选`--retime-start-delay`仅把原22位歌曲启动倒计时的零值判断寄存，按原装载/取消/重插/歌曲命令优先级计算下一拍标志，启动与重启时刻不加延迟。`python3 tools/test_cnn_start_delay_retime.py`提取full85和补丁后的实际顶层控制HDL，对30000周期、所有控制寄存器、0/1/2/装载/随机边界、同时发生的控制与复位逐拍比较。该选项用于修复A2/9F计数器到CNN控制的慢路径，不改CNN算术或模型。
+可选`--retime-start-delay`仅把原22位歌曲启动倒计时的零值判断寄存，按原装载/取消/重插/歌曲命令优先级计算下一拍标志，启动与重启时刻不加延迟。`python3 tools/test_cnn_start_delay_retime.py`提取full85和补丁后的实际顶层控制HDL，对30000周期、所有控制寄存器、0/1/2/装载/随机边界、同时发生的控制与复位逐拍比较，并运行未强制赋值的2500012周期完整自然歌曲启动倒计时。该选项用于修复A2/9F计数器到CNN控制的慢路径，不改CNN算术或模型。
