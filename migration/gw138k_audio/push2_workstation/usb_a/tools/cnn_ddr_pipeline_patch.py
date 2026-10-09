@@ -744,3 +744,46 @@ def pipeline_bist_compare(text):
     assert text.count(old)==1
     text=text.replace(old,'                    READ_RESPONSE: state<=READ_CHECK;\n                    READ_CHECK: begin\n                        if (mismatch) begin',1)
     return text
+
+
+def mask_tf_write_epoch(text):
+    """Keep byte validity32-bit; wide payload RAM/registers need no epoch clear."""
+    old='    reg [255:0] write_buf, read_buf;'
+    assert text.count(old)==1
+    text=text.replace(old,"""    reg [255:0] read_buf,write_storage;
+    wire [255:0] write_buf;
+    reg [31:0] write_byte_valid;
+    genvar valid_byte;
+    generate for(valid_byte=0;valid_byte<32;valid_byte=valid_byte+1)begin : g_valid_byte
+        assign write_buf[valid_byte*8+:8]=write_byte_valid[valid_byte] ?
+            write_storage[valid_byte*8+:8] : 8'd0;
+    end endgenerate""",1)
+    old="""    always @(posedge clk or negedge rst_n) begin
+        if(!rst_n)begin write_buf<=0;write_clear_pending<=0;end
+        else if(epoch_clear)begin write_buf<=0;write_clear_pending<=0;end
+        else begin
+            write_clear_pending<=write_accept;
+            if(write_clear_pending)write_buf<=0;
+            else if(state==S_STREAM && fifo_in_rd_valid && !capture_limit_hit)
+                write_buf[write_count*8 +:8]<=fifo_in_rd_data;
+        end
+    end
+"""
+    assert text.count(old)==1
+    new="""    always @(posedge clk or negedge rst_n)begin
+        if(!rst_n)begin write_byte_valid<=0;write_clear_pending<=0;end
+        else if(epoch_clear)begin write_byte_valid<=0;write_clear_pending<=0;end
+        else begin
+            write_clear_pending<=write_accept;
+            if(write_clear_pending)write_byte_valid<=0;
+            else if(state==S_STREAM && fifo_in_rd_valid && !capture_limit_hit)
+                write_byte_valid[write_count]<=1;
+        end
+    end
+    always @(posedge clk)begin
+        if(!epoch_clear && !write_clear_pending &&
+           state==S_STREAM && fifo_in_rd_valid && !capture_limit_hit)
+            write_storage[write_count*8+:8]<=fifo_in_rd_data;
+    end
+"""
+    return text.replace(old,new,1)

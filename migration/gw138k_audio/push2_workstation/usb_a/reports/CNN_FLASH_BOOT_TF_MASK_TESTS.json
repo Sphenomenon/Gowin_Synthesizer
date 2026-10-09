@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "source_bound": false,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "added_cycles": 0,
+  "added_bsram": 0,
+  "oracle": "all256observable payload bits on100000 arbitrary control cycles,including all64indexvalues/reset/epoch/overlappingcapture and clear",
+  "original_source_sha256": "be80b540a91e2bb1d13b6d4ed545530db263ad7e1aa127221bae457f3efad6a5",
+  "patched_source_sha256": "389d0e6036c43136a5c1c8de9d2f5911041ba29cab3e44bbbc22aaa16538c3c1",
+  "fixture_sha256": "53f9774af2b5ac7be3b0279b1d1241fffb4d2edee5a63640a11d47525bb61cd9",
+  "log": "PASS TF write mask100000cycles arbitrary reset/epoch/accept/bytevalid/capturelimit/state/all64indexvalues,exactall256observablebits\n/tmp/cnn_tf_write_mask_7vpd4jhq/tb.sv:55: $finish called at 1000036000 (1ps)"
+}

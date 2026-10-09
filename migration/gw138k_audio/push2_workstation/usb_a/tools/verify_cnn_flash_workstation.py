@@ -84,6 +84,7 @@ def main():
             protocol_flags=['--parallel-byte-counters']
             if meta.get('retimed_tf_read_total'):protocol_flags.append('--retime-read-total')
             if meta.get('fast_tf_read_availability'):protocol_flags.append('--fast-read-availability')
+            if meta.get('masked_tf_write_epoch'):protocol_flags.append('--mask-write-epoch')
             for label,tool,flags in [('tf_byte_count_proof','test_cnn_tf_byte_count.py',[]),
                     ('tf_byte_count_protocol','test_cnn_tf_write_buffer_retime.py',protocol_flags)]:
                 label,code=run(label,[sys.executable,str(ROOT/'tools'/tool),'--build',str(build),
@@ -92,7 +93,8 @@ def main():
         for key,label,tool in [('retimed_tf_read_total','tf_read_total_proof','test_cnn_tf_read_total.py'),
                 ('parallel_renderer_spectrum_address','spectrum_address_proof','test_cnn_renderer_spectrum_address.py'),
                 ('shallow_card_select','card_select_proof','test_cnn_card_select.py'),
-                ('fast_tf_read_availability','tf_availability_proof','test_cnn_tf_read_availability.py')]:
+                ('fast_tf_read_availability','tf_availability_proof','test_cnn_tf_read_availability.py'),
+                ('masked_tf_write_epoch','tf_write_mask_equivalence','test_cnn_tf_write_mask.py')]:
             if meta.get(key):
                 label,code=run(label,[sys.executable,str(ROOT/'tools'/tool),'--build',str(build),
                     '--output',str(output/(label+'.json'))])
