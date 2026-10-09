@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_actual_Flash3boots_live_verified_AF_render_predecode_synthesis",
+  "status": "AD_actual_Flash3boots_live_verified_AF_rejected_B0_parallel_coordinates_building",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1035,26 +1035,34 @@
   "complete_workstation_flash_boot_verified": true,
   "complete_workstation_flash_boot_count": 3,
   "release_timing_closed": false,
-  "current_candidate": "0x000000AF",
+  "current_candidate": "results/workstation_flashb0_20261009_parallel_coordinates",
   "AF_render_predecode": {
     "build": "results/workstation_flashaf_20261009_render_predecode",
     "user_code": "0x000000AF",
-    "status": "placement",
-    "physical_bsram_limit": 268,
+    "synthesis_bsram": 220,
+    "physical_bsram": 268,
+    "clk50_fmax_mhz": 56.454,
+    "ddr_ui_fmax_mhz": 72.383,
+    "video_pixel_fmax_mhz": 187.19,
+    "ddr_ui_setup_wns_ns": -3.815,
+    "ddr_ui_hold_wns_ns": 0.168,
+    "PLL_first_fail_ns": 10.561,
+    "PLL_all_endpoint_worst_ns": 11.434,
+    "gate_passed": false,
+    "programming_started": false,
     "hardware_tested": false,
-    "additional_raster_enabled_cycles": 1,
-    "full_dashboard_pixel_comparison": 2137105,
-    "full_renderer_beat_comparison": 1036800,
-    "independent_stalls_order_last_pixel_exact": true,
-    "PLL_RomDreg_to_setting_route_budget_ns": 4.5,
-    "PLL_independent_full_distribution_budget_ns": 10.0,
-    "firmware_selftests_unchanged": true,
-    "synthesis_resources": {
-      "T_Register": "43438(262)",
-      "T_Lut": "55674(426)",
-      "T_Bsram": "220(0)",
-      "T_Ssram": "505(0)"
-    },
-    "implementation_git_commit": "f03290e"
+    "acceptance": "results/workstation_flashaf_20261009_render_predecode/automatic_acceptance/result.json"
+  },
+  "B0_parallel_coordinates": {
+    "build": "results/workstation_flashb0_20261009_parallel_coordinates",
+    "user_code": "0x000000B0",
+    "status": "building",
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_B0_COORDINATE_TESTS.json",
+    "source_bound_tests_passed": true,
+    "physical_bsram_limit": 268,
+    "place_option": 1,
+    "route_option": 1,
+    "hardware_tested": false,
+    "physical_power_cycle_tested": false
   }
 }

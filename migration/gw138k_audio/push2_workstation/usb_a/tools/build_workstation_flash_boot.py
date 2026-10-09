@@ -17,7 +17,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from build_full_song_83_bp_ddr_isolation import FROZEN
 from workstation_memory import audit
-from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO,TF_DMA,retime_tf_write_buffer,CLIENT_QUEUES,TF_BUFFER,TMDS,retime_tf_buffer_enable,retime_tf_capture_limit,retime_display_enable,retime_tmds_statistics,DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode
+from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO,TF_DMA,retime_tf_write_buffer,CLIENT_QUEUES,TF_BUFFER,TMDS,retime_tf_buffer_enable,retime_tf_capture_limit,retime_display_enable,retime_tmds_statistics,DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,DELAY_DMA,parallel_delay_rptr,power_two_tf_ring
 from build_cnn_flash_image import build_image,load_words,pack_flash,gowin_data_fs
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
@@ -73,7 +73,8 @@ def expected_hdmi(metadata):
 
 def expected_tf_dma(metadata):
     text=retime_tf_write_buffer((BASE/'Prj1'/TF_DMA).read_text())
-    return retime_tf_capture_limit(text) if metadata.get('retimed_tf_capture_limit') else text
+    if metadata.get('retimed_tf_capture_limit'):text=retime_tf_capture_limit(text)
+    return power_two_tf_ring(text) if metadata.get('power_two_tf_ring') else text
 
 def audit_serial_compatibility(output):
     stage=output/'Prj1'
@@ -95,10 +96,14 @@ def audit_serial_compatibility(output):
     if metadata.get('retimed_tmds_statistics'):
         assert (stage/TMDS).read_text()==retime_tmds_statistics((BASE/'Prj1'/TMDS).read_text()),'TMDS changed beyond reset-mask statistics'
     if metadata.get('predecoded_dashboard'):
-        assert (stage/DASHBOARD).read_text()==predecode_dashboard((BASE/'Prj1'/DASHBOARD).read_text()),'dashboard predecode source drift'
+        dashboard=predecode_dashboard((BASE/'Prj1'/DASHBOARD).read_text())
+        if metadata.get('predecoded_text_coordinates'):dashboard=predecode_dashboard_text_coordinates(dashboard)
+        assert (stage/DASHBOARD).read_text()==dashboard,'dashboard predecode source drift'
         assert (stage/RENDERER).read_text()==align_renderer_predecode((BASE/'Prj1'/RENDERER).read_text()),'renderer changed beyond1stage latency alignment'
     paths += [str(p.relative_to(BASE/'Prj1')) for p in (BASE/'Prj1').rglob('gw138k_ddr_arbiter.sv')]
     evidence={p:dict(unchanged=sha(BASE/'Prj1'/p)==sha(stage/p),sha256=sha(stage/p)) for p in paths}
+    if metadata.get('parallel_delay_pointer'):
+        assert (stage/DELAY_DMA).read_text()==parallel_delay_rptr((BASE/'Prj1'/DELAY_DMA).read_text()),'delay DMA changed beyond bit-exact read pointer increment'
     if metadata.get('synchronous_delay_write_fifo'):
         assert (stage/DELAY).read_text()==patch_delay_fifo((BASE/'Prj1'/DELAY).read_text(),metadata.get('synchronous_delay_read_fifo',False)),'delay changed beyond input FIFO type'
         assert sha(stage/SYNC_FIFO)==sha(ROOT/SYNC_FIFO),'sync FIFO source drift'
@@ -185,6 +190,9 @@ def register_response_credit(text):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--predecode-text-coordinates',action='store_true',help='refine one-stage raster predecode with parallel constant font arithmetic and animated-card hit')
+    ap.add_argument('--parallel-delay-pointer',action='store_true',help='bit-exact parallel byte-group rptr+4,all32-bit carry/wrap values')
+    ap.add_argument('--power-two-tf-ring',action='store_true',help='constant-mask ring increment for power-of-two capacity; preserve generic nonpower-of-two arithmetic')
     ap.add_argument('--predecode-dashboard',action='store_true',help='one stopped raster predecode stage,bit-exactpixel/ordering with1enabledcycle latency')
     ap.add_argument('--tighten-pll-setting-route',action='store_true',help='4.5ns exactRomDreg-Q toICPSEL/LPFRES route for independent full10nsPLL budget')
     ap.add_argument('--tighten-remaining-ddr-video',action='store_true',help='physical8ns budgets on observed DDR UI rendering/ring paths and6ns PLL control endpoint; all original clocks/hold checks remain')
@@ -220,6 +228,9 @@ def main():
         ap.error('--incremental-pnr-entry requires --incremental-baseline --incremental-mode pnr')
     reference_suffix=(args.incremental_pnr_entry or 'pr') if args.incremental_mode=='pnr' else 'p'
     if args.defer_ddr_startup and args.transport!='serial':ap.error('--defer-ddr-startup requires serial transport with startup history alignment')
+    if args.predecode_text_coordinates and not args.predecode_dashboard:ap.error('--predecode-text-coordinates requires --predecode-dashboard')
+    if args.parallel_delay_pointer and not args.pipeline_ddr_arbiter:ap.error('--parallel-delay-pointer requires --pipeline-ddr-arbiter')
+    if args.power_two_tf_ring and not args.retime_tf_write_buffer:ap.error('--power-two-tf-ring requires --retime-tf-write-buffer')
     if args.sync_delay_read_fifo and not args.sync_delay_write_fifo:ap.error('--sync-delay-read-fifo requires --sync-delay-write-fifo')
     if args.retime_tf_capture_limit and not args.retime_tf_write_buffer:ap.error('--retime-tf-capture-limit requires --retime-tf-write-buffer')
     if args.retime_display_enable and not args.pipeline_ddr_arbiter:ap.error('--retime-display-enable requires --pipeline-ddr-arbiter')
@@ -324,6 +335,10 @@ def main():
         if args.retime_start_delay:s=retime_start_delay(s)
         if args.retime_tf_write_buffer:
             tf=stage/TF_DMA;tf.write_text(retime_tf_capture_limit(retime_tf_write_buffer(tf.read_text())) if args.retime_tf_capture_limit else retime_tf_write_buffer(tf.read_text()))
+        if args.power_two_tf_ring:
+            tf=stage/TF_DMA;tf.write_text(power_two_tf_ring(tf.read_text()))
+        if args.parallel_delay_pointer:
+            dma=stage/DELAY_DMA;dma.write_text(parallel_delay_rptr(dma.read_text()))
         if args.sync_delay_write_fifo:
             delay=stage/DELAY;delay.write_text(patch_delay_fifo(delay.read_text(),args.sync_delay_read_fifo))
         if args.pipeline_ddr_arbiter:
@@ -334,7 +349,8 @@ def main():
         if args.retime_tmds_statistics:
             tmds=stage/TMDS;tmds.write_text(retime_tmds_statistics(tmds.read_text()))
         if args.predecode_dashboard:
-            dash=stage/DASHBOARD;dash.write_text(predecode_dashboard(dash.read_text()))
+            dash=stage/DASHBOARD;dashboard=predecode_dashboard(dash.read_text())
+            dash.write_text(predecode_dashboard_text_coordinates(dashboard) if args.predecode_text_coordinates else dashboard)
             renderer=stage/RENDERER;renderer.write_text(align_renderer_predecode(renderer.read_text()))
         top.write_text(s)
         if args.retime_video_telemetry:
@@ -393,14 +409,14 @@ set_max_delay 4.500 -from [get_pins {u_video/u_clock/g_hardware.u_pll/*/u_pll_in
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
-        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+(['src/video/video_runtime_diagnostics.v'] if args.retime_video_telemetry else [])+([DASHBOARD,RENDERER] if args.predecode_dashboard else [])+([TF_BUFFER] if args.retime_tf_buffer_enable else [])+([TMDS] if args.retime_tmds_statistics else [])+([TF_DMA] if args.retime_tf_write_buffer else [])+([HDMI] if args.pipeline_ddr_arbiter else [])+([DELAY] if args.sync_delay_write_fifo else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
+        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+(['src/video/video_runtime_diagnostics.v'] if args.retime_video_telemetry else [])+([DASHBOARD,RENDERER] if args.predecode_dashboard else [])+([TF_BUFFER] if args.retime_tf_buffer_enable else [])+([TMDS] if args.retime_tmds_statistics else [])+([TF_DMA] if args.retime_tf_write_buffer else [])+([HDMI] if args.pipeline_ddr_arbiter else [])+([DELAY] if args.sync_delay_write_fifo else [])+([DELAY_DMA] if args.parallel_delay_pointer else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
                              'constraints/tang_mega_138k.cst','constraints/tang_mega_138k.sdc'])
         assert set(changed)==allowed,(changed,allowed)
         write_json(output/'workstation_inputs.json',inputs)
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,predecoded_dashboard=args.predecode_dashboard,raster_enabled_latency_added=1 if args.predecode_dashboard else 0,PLL_settings_route_max_delay_ns=4.5 if args.tighten_pll_setting_route else None,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,predecoded_dashboard=args.predecode_dashboard,predecoded_text_coordinates=args.predecode_text_coordinates,parallel_delay_pointer=args.parallel_delay_pointer,power_two_tf_ring=args.power_two_tf_ring,raster_enabled_latency_added=1 if args.predecode_dashboard else 0,PLL_settings_route_max_delay_ns=4.5 if args.tighten_pll_setting_route else None,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
@@ -450,6 +466,8 @@ set_max_delay 4.500 -from [get_pins {u_video/u_clock/g_hardware.u_pll/*/u_pll_in
             (stage/staged).read_text()==expected_hdmi(frozen_meta)) or (
             frozen_meta.get('synchronous_delay_write_fifo') and staged==DELAY and
             (stage/staged).read_text()==patch_delay_fifo((BASE/'Prj1'/staged).read_text(),frozen_meta.get('synchronous_delay_read_fifo',False)))
+        normalized=normalized or (frozen_meta.get('parallel_delay_pointer') and staged==DELAY_DMA and
+            (stage/staged).read_text()==parallel_delay_rptr((BASE/'Prj1'/staged).read_text()))
         assert sha(ROOT/rel)==h and (sha(stage/staged)==h or normalized),rel
     assert all(sha(stage/p)==h for p,h in inputs.items()),'candidate input drift'
     print(output,flush=True)

@@ -221,3 +221,97 @@ def align_renderer_predecode(text):
     anchor='c_x <= 0; c_y <= 0;'
     assert text.count(anchor)==1
     return text.replace(anchor,anchor+' d_x <= 0; d_y <= 0;')
+
+DELAY_DMA='rtl/audio/delay_ddr/delay_ddr_dma.sv'
+
+def parallel_delay_rptr(text):
+    anchor='  localparam integer DEPTH='
+    assert text.count(anchor)==1
+    helper="""  // Parallel byte-group increment: exactly (rptr+4) modulo2^32,
+  // including low-bit input values and UINT32 wrap, with no serial32bit carry.
+  function automatic [31:0] increment_four(input [31:0] value);
+    increment_four[7:0]=value[7:0]+8'd4;
+    increment_four[15:8]=value[15:8]+{7'd0,&value[7:2]};
+    increment_four[23:16]=value[23:16]+{7'd0,&value[15:2]};
+    increment_four[31:24]=value[31:24]+{7'd0,&value[23:2]};
+  endfunction
+"""
+    text=text.replace(anchor,helper+anchor)
+    assert text.count('rptr<=rptr+4;')==1
+    return text.replace('rptr<=rptr+4;','rptr<=increment_four(rptr);')
+
+def power_two_tf_ring(text):
+    anchor="""            if (offset + 32'd32 >= AUDIO_TOTAL_BYTES)
+                advance_ring = offset + 32'd32 - AUDIO_TOTAL_BYTES;
+            else
+                advance_ring = offset + 32'd32;"""
+    assert text.count(anchor)==1
+    new="""            if(AUDIO_TOTAL_BYTES!=0 &&
+                (AUDIO_TOTAL_BYTES & (AUDIO_TOTAL_BYTES-1'b1))==0)
+                advance_ring=(offset+32'd32)&(AUDIO_TOTAL_BYTES-1'b1);
+            else if (offset + 32'd32 >= AUDIO_TOTAL_BYTES)
+                advance_ring = offset + 32'd32 - AUDIO_TOTAL_BYTES;
+            else
+                advance_ring = offset + 32'd32;"""
+    return text.replace(anchor,new)
+
+def predecode_dashboard_text_coordinates(text):
+    """Move text-relative arithmetic and animated-card hit into stage0.
+
+    This refines the existing one-enable predecode stage without adding latency.
+    All text anchors are constants; only bits used by character/row/column are
+    retained. The original text priority and animated-front-card priority stay
+    in their original order.
+    """
+    import re
+    start=text.index('    wire [10:0] effect_rel0=')
+    end=text.index('    reg a_effect_hit',start)
+    old=text[start:end]
+    raw=old
+    for name in ['effect_x0','effect_x1','effect_x2','pixel_x','pixel_y','front_effect']:
+        raw=re.sub(r'\b'+name+'_q'+r'\b',name,raw)
+    for name in ['effect_rel0','effect_rel1','effect_rel2','effect_band','hit0','hit1','hit2','effect_hit','effect_id','effect_relative']:
+        raw=re.sub(r'\b'+name+r'\b',name+'_pre',raw)
+    replacement=raw+'''    reg effect_hit;
+    reg [1:0] effect_id;
+    reg [10:0] effect_relative;
+    reg [9:0] effect_text_x;
+    always @(posedge clk or negedge reset_n)begin
+        if(!reset_n)begin
+            effect_hit<=0;effect_id<=0;effect_relative<=0;effect_text_x<=0;
+        end else if(enable)begin
+            effect_hit<=effect_hit_pre;effect_id<=effect_id_pre;
+            effect_relative<=effect_relative_pre;
+            effect_text_x<=effect_relative_pre-11'd16;
+        end
+    end
+'''
+    text=text[:start]+replacement+text[end:]
+    anchor='    wire [10:0] relative_text_x = effect_hit ? effect_relative-11\'d16 : pixel_x_q-text_x;'
+    assert text.count(anchor)==1
+    text=text.replace(anchor,"    reg [9:0] static_relative_text_x;\n    wire [9:0] relative_text_x = effect_hit ? effect_text_x : static_relative_text_x;")
+    anchor='    wire [10:0] relative_text_y = pixel_y_q - text_y;'
+    assert text.count(anchor)==1
+    text=text.replace(anchor,'    reg [4:0] relative_text_y;')
+    start=text.index('    always @* begin\n        text_line =')
+    end=text.index('    always @* begin\n        next_character',start)
+    block=text[start:end]
+    declarations='';reset='';updates=''
+    for axis,width,destination in [('x',10,'static_relative_text_x'),('y',5,'relative_text_y')]:
+        values=sorted({int(v) for v in re.findall(r'text_'+axis+r'\s*=\s*(\d+)\s*;',block)})
+        assert len(values)>15,values
+        for value in values:
+            name=f'text_{axis}_relative_{value}_q'
+            declarations+=f'    reg [{width-1}:0] {name};\n'
+            reset+=f'            {name}<=0;\n'
+            updates+=f"            {name}<=pixel_{axis}-11'd{value};\n"
+        block=re.sub(r'text_'+axis+r'\s*=\s*(\d+)\s*;',
+            lambda m:m[0]+f' {destination}=text_{axis}_relative_{m[1]}_q;',block)
+    text=text[:start]+block+text[end:]
+    sequential='''    always @(posedge clk or negedge reset_n)begin
+        if(!reset_n)begin
+'''+reset+'''        end else if(enable)begin
+'''+updates+'''        end
+    end
+'''
+    return text.replace('    reg a_effect_hit',declarations+'    reg a_effect_hit',1).replace('endmodule',sequential+'endmodule')

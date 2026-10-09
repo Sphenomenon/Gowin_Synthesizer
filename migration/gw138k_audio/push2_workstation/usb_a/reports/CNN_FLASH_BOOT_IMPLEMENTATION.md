@@ -1,6 +1,6 @@
 # CNN Flash→DDR 实施记录
 
-截至2026-10-09 19:29，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传；实时三音、立体声、静音、Panic及健康检查PASS。此前AD临时SRAM同样通过Flash自主加载。本阶段没有做物理断电，正式发布仍未完成。
+截至2026-10-09 21:09，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传，实时演奏检查PASS。AF布线完成但时序门禁失败，未进行硬件IO；B0正在构建。板上配置和LATEST均保留full85，正式发布及物理断电验收尚未完成。
 
 AD最终268/340物理BSRAM，clk50 55.362MHz、视频187.261MHz。严格时序门禁仍发现DDR UI setup −2.107ns（旧文字/分析渲染为主，hold+0.165ns）和视频PLL全传播10.757ns>10ns，因此AD只作为明确的临时诊断，**配置Flash已恢复full85、旧UART模型E及现场检查PASS，LATEST仍85**。AE保持AD全部RTL，仅增加严格8ns DDR路径/6ns PLL端点物理预算，正在P&R；原有时钟、hold、CRC、自检和独立PLL10ns门槛全部保留。
 
@@ -73,3 +73,9 @@ AD局部时序修改已提交6e8f104：TF payload CE改为本地idle，capture�
 2026-10-09 20:06：AE（AD全部RTL不变，严格8ns DDR与6ns PLL端点物理预算）完成P&R268BSRAM，clk50 55.536MHz/video172.962MHz/原先正时钟与CDC通过；DDR严格8ns路径slack−3.514ns，实际延迟11.468ns，最差仍文字渲染。PLL完整传播10.523ns=IBUF0.532+clockroute3.807+C2Q0.275+RomDreg到ICProute5.909，原10ns审计失败；需源到端点预算收紧，不能把PLL预算改大。AE未上板。原AD真实Flash三次模型E/source1与现场PASS实证保留，板上full85已完整恢复。
 
 AF开始完整构建：保留AD模型/DDR边界，增加51个坐标谓词预译码和一致stop的1拍renderer流水；Dashboard完整1920x1080加随机metadata/复位/stall共2137105像素逐bit同原版（仅额外1个enable周期），双renderer独立DDR背压下1036800双像素beat内容/地址/valid/last全部同原版，哈希与AF冻结源绑定。PLL以实际SDF分解为依据，对RomDreg/Q到ICPSEL/LPFRES直接设4.5ns物理预算，原官方helper及独立完整10ns审计不改。未修改显示算法/图形内容，纯流水延迟。AF仍综合中。
+
+2026-10-09 20:54 AF布线/验收：SYN220、PNR268/340 BSRAM，clk50 56.454MHz、视频187.190MHz；DDR UI文字路径为13.800ns/余量-3.815ns，Fmax72.383MHz，hold+0.168ns。PLL审计首条失败10.561ns；另外逐端点检查的完整最差传播为RESET11.434ns，不能只报告首条设置线。scope CDC和clk50 CDC通过，严格发布门禁失败，自动验收在任何programmer IO前停止，板上仍85。
+
+B0将文字锚点的常量减法和动态卡片命中移入现有预解码级，增加延迟仍为1个enable周期，停顿语义及全文本优先级保持；未触及模型、CPU固件、DDR PHY。完整1920×1080含分析页的2,137,105次像素比较PASS；两独立完整renderer在随机DDR停顿下1,036,800双像素beat内容/地址/valid/last一致。延迟读指针32位并行+4通过1,001,024组输入含进位/UINT32环绕/非对齐值，TF11种容量含非2幂退回原算法的1,100,022组合法offset检查通过；TF16种native/direct/backpressure组合通过，P10双同步FIFO含新指针在43,000正常样本上逐位一致，2,000长停顿及4,800冷启动/Panic场景按预期通过。全激励只在仿真内存，不保存音频文件。测试证据：CNN_FLASH_BOOT_B0_COORDINATE_TESTS.json。
+
+B0使用官方placement1/route1算法，候选冻结输入完整校验，资源上限仍268。指针DMA的新允许项仅接受确定性的、逐位验证过的+4转换，原源码哈希仍强制一致。准备阶段第一次被旧冻结白名单拒绝，未综合/未生成bitstream；拒绝产物另存prepare_rejected并修正精确规范化检查后，重新启动B0。实际时序/资源及烧录状态以最终automatic_acceptance为准。

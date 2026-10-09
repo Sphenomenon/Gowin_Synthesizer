@@ -7,7 +7,7 @@ reference. Only test stimuli change. No PCM files or sample streams are saved.
 from pathlib import Path
 import argparse,subprocess,tempfile,json,hashlib
 root=Path(__file__).resolve().parents[1];stage=root/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--sync-both-fifos',action='store_true');p.add_argument('--sync-write-fifo',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--parallel-delay-pointer',action='store_true');p.add_argument('--sync-both-fifos',action='store_true');p.add_argument('--sync-write-fifo',action='store_true');a=p.parse_args()
 sources=[stage/'legacy/rtl/audio/audio_math_pkg.sv',stage/'rtl/audio/delay_ddr/serial_delay_effect_ddr.sv',stage/'rtl/audio/delay_ddr/delay_ddr_dma.sv',stage/'rtl/music/music_async_fifo.sv',stage/'legacy/rtl/audio/stereo_effects.sv',root/'sim/audio/tb_delay_ddr_equivalence.sv']
 with tempfile.TemporaryDirectory(prefix='cnn_startup_history_') as t:
  t=Path(t)
@@ -15,6 +15,9 @@ with tempfile.TemporaryDirectory(prefix='cnn_startup_history_') as t:
   import sys
   sys.path.insert(0,str(root/'tools'));from cnn_ddr_pipeline_patch import patch_delay_fifo
   patched=t/'delay.sv';patched.write_text(patch_delay_fifo(sources[1].read_text(),a.sync_both_fifos));sources[1]=patched
+ if a.parallel_delay_pointer:
+  from cnn_ddr_pipeline_patch import parallel_delay_rptr
+  dma=t/'parallel_delay_dma.sv';dma.write_text(parallel_delay_rptr(sources[2].read_text()));sources[2]=dma
  reference=sources[-2].read_text();decl="  wire [1:0] selected_id=slot_index==0?frame_order[1:0]:slot_index==1?frame_order[3:2]:frame_order[5:4];\n";anchor="  logic [1:0] slot_index,maintenance_id,work_id;\n";assert reference.count(decl)==1 and reference.count(anchor)==1
  reference=reference.replace(decl,'').replace(anchor,anchor+decl);(t/'ref.sv').write_text(reference)
  tb=sources[-1].read_text().replace('always #7 aclk=~aclk;','always #6.510416667 aclk=~aclk;').replace('always #10 mclk=~mclk;','always #5 mclk=~mclk;')
@@ -41,6 +44,6 @@ with tempfile.TemporaryDirectory(prefix='cnn_startup_history_') as t:
  c=subprocess.run(['iverilog','-g2012','-s','tb_delay_ddr_equivalence','-o',str(exe),str(sources[0]),str(t/'tb.sv'),*[str(x) for x in sources[1:4]],*([str(root/'rtl/music/basic_pitch_ddr_sync_fifo.sv')] if (a.sync_write_fifo or a.sync_both_fifos) else []),str(t/'ref.sv')],capture_output=True,text=True);assert c.returncode==0,c.stdout+c.stderr
  v=subprocess.run(['vvp',str(exe)],capture_output=True,text=True,timeout=240)
  assert v.returncode==0 and 'EQUIVALENCE PASS' in v.stdout and 'PASS cold4800' in v.stdout,v.stdout[-5000:]+v.stderr
- report=dict(passed=True,cold_target_audio_frames=4800,target_rate_hz=48000,initial_delay_fifo_overflow_detected=True,ordered_panic_restores_history=True,post_flush_samples_driven=45000,post_flush_bit_exact_samples=43000,expected_long_stall_samples=2000,cycle_exact_valid_ready_left_right_clip=True,audio_data_saved=False,synchronous_write_fifo=a.sync_write_fifo or a.sync_both_fifos,synchronous_read_fifo=a.sync_both_fifos,synchronous_fifo_sha256=hashlib.sha256((root/'rtl/music/basic_pitch_ddr_sync_fifo.sv').read_bytes()).hexdigest() if (a.sync_write_fifo or a.sync_both_fifos) else None,source_sha256={(str(x.relative_to(root)) if x.is_relative_to(root) else 'derived_delay_fifo_instance_only'):hashlib.sha256(x.read_bytes()).hexdigest() for x in sources},log='\n'.join(line for line in v.stdout.splitlines() if 'PASS' in line),hardware_tested=False)
+ report=dict(passed=True,parallel_delay_pointer=a.parallel_delay_pointer,cold_target_audio_frames=4800,target_rate_hz=48000,initial_delay_fifo_overflow_detected=True,ordered_panic_restores_history=True,post_flush_samples_driven=45000,post_flush_bit_exact_samples=43000,expected_long_stall_samples=2000,cycle_exact_valid_ready_left_right_clip=True,audio_data_saved=False,synchronous_write_fifo=a.sync_write_fifo or a.sync_both_fifos,synchronous_read_fifo=a.sync_both_fifos,synchronous_fifo_sha256=hashlib.sha256((root/'rtl/music/basic_pitch_ddr_sync_fifo.sv').read_bytes()).hexdigest() if (a.sync_write_fifo or a.sync_both_fifos) else None,source_sha256={(str(x.relative_to(root)) if x.is_relative_to(root) else 'derived_delay_fifo_instance_only'):hashlib.sha256(x.read_bytes()).hexdigest() for x in sources},log='\n'.join(line for line in v.stdout.splitlines() if 'PASS' in line),hardware_tested=False)
  if a.output:a.output.write_text(json.dumps(report,indent=2)+'\n')
  print(json.dumps(report,indent=2))
