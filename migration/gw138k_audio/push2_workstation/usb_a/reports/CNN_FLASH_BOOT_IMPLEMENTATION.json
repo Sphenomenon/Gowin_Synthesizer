@@ -1617,7 +1617,22 @@
     "complete_TF_inflight_epoch_cases": 18,
     "shared_display_full_frames": 3,
     "shared_display_cold_invalid_analysis_passed": true,
-    "full_model_execution": "running, not yet claimed",
+    "full_model_execution": {
+      "passed": true,
+      "model_words": 52239,
+      "write_count": 52239,
+      "read_count": 52239,
+      "crc32": "AF01A61B",
+      "source": 1,
+      "bound_source_hashes": 11,
+      "real_baud_test": {
+        "words": 31,
+        "baud": 115200
+      },
+      "full_content_simulation_only_RX_baud": 3125000,
+      "executed_cycles": 30831665,
+      "hardware_tested": false
+    },
     "hardware_tested": false,
     "evidence": "reports/CNN_FLASH_BOOT_C0_FRAME_SLOT_TESTS.json"
   }

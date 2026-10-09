@@ -166,3 +166,6 @@ BF保留BE全部606个输入中的RTL/IP/模型逐字节一致，只变显式Use
 04:00前后BB/BC/BD全部完成门禁，DDR UI分别−2.461/−2.336/−1.463ns、hold均正，其他时钟/PLL/CDC及完整源码绑定功能门禁通过；均未烧录。BD最差为pixel_ready→frame_start→卡片front_effect/visible_mask CE，剩TF response_owner→emit_index、及槽位payload同步reset。
 
 C0以BE成对读响应寄存＋BF控制端点物理预算为基础，加入空槽payload采样和帧首first_issue_pending标志；frame_start边沿与原advance&&坐标原点逐拍一致，正常导出/停顿期间保留标志。尺寸显式约束偶数WIDTH2..2048/HEIGHT1..2048，越界例化报错。完整1080p对照1036800双像素/129601 DDR命令通过，C0实际源的完整共享显示3帧/25ms停顿/冷invalidanalysis、54组TF全链路含18组在途重启、全八客户端15824命令10359读响应、槽位时序归纳均通过。改变模型客户端队列后重新执行52239词完整Flash→DDR仿真，结果尚在运行；没有沿用B8源文件等价来代替此执行。门禁明确要求该新执行报告及源hash正确后才可写板。
+
+
+04:10 C0新执行完整模型仿真通过：52239写＋52239读、CRC AF01A61B/source1、30831665仿真周期，11源hash绑定真实C0（包含变更后的空槽采样队列）。独立native记分板包含并发扫描/写入及DDR背压；31词真实50MHz/115200用例也通过，全模型仅仿真RX副本加速到3125000，原工程115200未改。未据此声称时序闭合或实体执行。
