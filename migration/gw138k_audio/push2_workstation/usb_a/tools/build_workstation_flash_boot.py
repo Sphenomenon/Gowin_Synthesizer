@@ -102,6 +102,7 @@ def main():
     ap.add_argument('--user-code')
     ap.add_argument('--synthesis-from',type=Path,help='reuse identical successful RTL synthesis after a CST-only failure')
     ap.add_argument('--incremental-baseline',action='store_true',help='reuse verified full85 .p placement with fresh synthesis and fresh routing; reject any unrouted net')
+    ap.add_argument('--incremental-mode',choices=('place','pnr'),default='place',help='pnr uses the .p entry and copies the matching .pr route reference; fresh synthesis in both modes')
     ap.add_argument('--route-option',type=int,choices=(0,1,2),default=1,help='Gowin route search option, recorded per isolated candidate')
     ap.add_argument('--place-option',type=int,choices=(0,1,2,3),default=2,help='placement search; default retains full85 option2')
     ap.add_argument('--tighten-video-control',action='store_true',help='6ns physical max-delay for pixel reset and frame telemetry; keep original148.5MHz and hold checks')
@@ -109,6 +110,7 @@ def main():
     args=ap.parse_args()
     if args.retime_cache_read and args.transport!='serial':ap.error('--retime-cache-read currently requires serial transport')
     if args.synthesis_from and args.flow!='all':ap.error('--synthesis-from requires --flow all')
+    if args.incremental_mode=='pnr' and not args.incremental_baseline:ap.error('--incremental-mode pnr requires --incremental-baseline')
     if args.incremental_baseline and (args.flow!='all' or args.synthesis_from):
         ap.error('--incremental-baseline requires a fresh --flow all, without --synthesis-from')
     if args.flow=='all' and (not args.user_code or not re.fullmatch('[0-9A-Fa-f]{8}',args.user_code) or int(args.user_code,16)==0):
@@ -203,7 +205,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
         s=re.sub(r'(?m)^set_option -place_option .*$',f'set_option -place_option {args.place_option}',s)
         if args.user_code:s=s.replace('set flow all','set_option -user_code '+args.user_code.upper()+'\nset flow all')
         if args.incremental_baseline:
-            s=s.replace('set flow all','set_option -inc_place [file join $root build full85_reference.p]\nset flow all')
+            s=s.replace('set flow all',f'set_option -inc_{args.incremental_mode} [file join $root build full85_reference.p]\nset flow all')
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
@@ -232,7 +234,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
         assert not (previous/'Prj1/impl/pnr/Prj1.fs').exists(),'CST repair reuse is for unreleased failure only'
         shutil.copytree(oldsyn,stage/'impl/gwsynthesis')
         m=json.loads((output/'build_metadata.json').read_text());m['synthesis_from']=str(previous.relative_to(ROOT));m['cst_repair']='append Flash pins to the single original complete CST';write_json(output/'build_metadata.json',m)
-    reference=None;reference_sha=None
+    reference=None;reference_sha=None;route_reference=None;route_reference_sha=None
     if args.incremental_baseline:
         old_result=json.loads((BASE/'tool_result.json').read_text())
         assert old_result['exit_code']==0 and old_result['inputs_unchanged'],'incremental baseline incomplete'
@@ -242,14 +244,21 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
         assert sha(reference)==reference_sha,'reference copy drift'
         m=json.loads((output/'build_metadata.json').read_text())
         m['incremental_reference']=dict(build=str(BASE.relative_to(ROOT)),placement_p_sha256=reference_sha,
-            file='build/full85_reference.p',command='inc_place',fresh_synthesis=True,fresh_routing=True)
+            file='build/full85_reference.p',command='inc_'+args.incremental_mode,fresh_synthesis=True,fresh_routing=args.incremental_mode=='place')
+        if args.incremental_mode=='pnr':
+            old_pr=BASE/'Prj1/impl/pnr/Prj1.pr';route_reference=stage/'build/full85_reference.pr';route_reference_sha=sha(old_pr)
+            shutil.copy2(old_pr,route_reference);assert sha(route_reference)==route_reference_sha
+            m['incremental_reference'].update(route_file='build/full85_reference.pr',routed_pr_sha256=route_reference_sha)
         write_json(output/'build_metadata.json',m)
     elif args.flow=='pnr':
         recorded_reference=json.loads((output/'build_metadata.json').read_text()).get('incremental_reference')
         if recorded_reference:
-            assert recorded_reference.get('command')=='inc_place','legacy .pr incremental attempt is not eligible for reuse; prepare a fresh .p candidate'
+            assert recorded_reference.get('command') in ('inc_place','inc_pnr') and 'placement_p_sha256' in recorded_reference,'legacy .pr-only attempt is not eligible; prepare a fresh .p candidate'
             reference=stage/recorded_reference['file'];reference_sha=recorded_reference['placement_p_sha256']
             assert sha(reference)==reference_sha,'incremental reference drift before reroute'
+            if recorded_reference['command']=='inc_pnr':
+                route_reference=stage/recorded_reference['route_file'];route_reference_sha=recorded_reference['routed_pr_sha256']
+                assert sha(route_reference)==route_reference_sha,'incremental routed partner drift before reroute'
     if json.loads((output/'build_metadata.json').read_text()).get('transport')=='serial':audit_serial_compatibility(output)
     for rel,(staged,h) in FROZEN.items():assert sha(ROOT/rel)==sha(stage/staged)==h,rel
     assert all(sha(stage/p)==h for p,h in inputs.items()),'candidate input drift'
@@ -261,6 +270,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
                            env=dict(os.environ,PRJ1_FLOW=actual_flow),stdout=log,stderr=subprocess.STDOUT)
     changed=[p for p,h in inputs.items() if sha(stage/p)!=h]
     if reference and sha(reference)!=reference_sha:changed.append(str(reference.relative_to(stage)))
+    if route_reference and sha(route_reference)!=route_reference_sha:changed.append(str(route_reference.relative_to(stage)))
     record=dict(exit_code=run.returncode,flow=args.flow,inputs_unchanged=not changed,changed=changed,hardware_tested=False)
     write_json(output/'tool_result.json',record)
     if run.returncode or changed:raise SystemExit('build/input check failed: '+str(output))
