@@ -1317,5 +1317,15 @@
       "Register": 43685,
       "LUT": 56423
     }
+  },
+  "baseline85_readonly_health_20261010_0118": {
+    "passed": true,
+    "control_commands_sent": 0,
+    "model_E": true,
+    "audio_health_word": "00000000",
+    "uart_crc_errors": 0,
+    "samples_per_runtime_report": 48000.0,
+    "push_screen_frame_delta": 2,
+    "evidence": "results/workstation_flashb6_20261010_parallel_tf_background/baseline_readonly_health.json"
   }
 }

@@ -5,7 +5,7 @@
 - 外部Flash地址 `0x600000` 保留BPF1头+模型，104510字节；有效载荷为52239个16-bit系数，CRC32 `AF01A61B`。
 - FPGA配置后等待CPU DDR/音频/UI自检，通过SPI逐字节读取，首遍校验后重新读取，经片内BPN1串行线交给原模型解析器，写入已有CNN DDR区并回读CRC。过程无需PC模型上传。
 - AD实际配置Flash测试连续3次重载，精确UserCodeAD/status26020、每次至少3条fresh E/source1报告；三音/LR/静音/Panic健康测试通过。没有执行物理断电。
-- AD时序未过发布门禁，诊断完成后无条件写回并验证full85，恢复其易失模型及现场测试。当前默认及板上均为full85；2026-10-10 00:31只读核验UserCode85/status26020/modelE。
+- AD时序未过发布门禁，诊断完成后无条件写回并验证full85，恢复其易失模型及现场测试。当前默认及板上均为full85；2026-10-10 00:31只读核验UserCode85/status26020/modelE；01:18只读健康检查modelE/health0/CRC0/精确48000样本每秒/Push屏幕帧增长。
 - B1把官方参考PLL辅助逻辑放入邻近物理区域，所有独立PLL_INIT传播通过，最差7.964ns/预算10ns。DDR及视频仍未闭合，没有写板。
 - B2保留上述物理约束，加入逐位验证的卡片动画和TMDS统计优化，路由完成但clk50/DDR时序拒绝；B3针对实际路径增加本地DDR校准寄存、波形/背景预解码与同拍tagflags，已完成路由：clk50/视频/PLL/CDC通过，DDR UI full→renderer CE −2.049ns未过且未烧录；B4时序门禁也未过且未烧录；B5写背压寄存缓冲正在布局，B6 TF进位/背景几何等价修正在综合，均已通过完整帧提交测试；真实资源与时序以最终automatic_acceptance/result.json为准。综合220BSRAM不是完整物理占用，已完成AD/B0/B1/B2均为268/340物理BSRAM。
 

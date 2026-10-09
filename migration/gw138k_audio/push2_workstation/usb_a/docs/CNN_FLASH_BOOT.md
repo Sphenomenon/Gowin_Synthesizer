@@ -1,6 +1,6 @@
 # CNN 权重持久化与 Flash→DDR 启动
 
-2026-10-10 当前实体结果：完整工作站AD已连续三次通过实际配置Flash重加载，完整模型从Flash自主搬入DDR，CRC32 AF01A61B、状态E/source1；现场三音、立体声、静音及Panic检查通过。诊断结束后已回写并校验full85，板上及LATEST仍为85。B2最终时序门禁未过，B3正在布线；B3含本地DDR就绪寄存的完整模型仿真已通过52239写/52239读CRC。物理断电/上电尚未执行。逐项证据见reports/CNN_FLASH_BOOT_CURRENT.md及CNN_FLASH_BOOT_IMPLEMENTATION.md。
+2026-10-10 当前实体结果：完整工作站AD已连续三次通过实际配置Flash重加载，完整模型从Flash自主搬入DDR，CRC32 AF01A61B、状态E/source1；现场三音、立体声、静音及Panic检查通过。诊断结束后已回写并校验full85，板上及LATEST仍为85。B3/B4完成路由且clk50/视频/PLL/CDC均通过，DDR UI仍有负slack，未烧录；B5/B6针对显示背压/TF进位/背景几何继续布线。B3含本地DDR就绪寄存的完整模型仿真已通过52239写/52239读CRC。物理断电/上电尚未执行。逐项证据见reports/CNN_FLASH_BOOT_CURRENT.md及CNN_FLASH_BOOT_IMPLEMENTATION.md。
 
 
 完整工作站把 FPGA 配置位流和 Basic Pitch 模型分别保存在板载外部 Flash。默认构建采用 `serial` 兼容传输：CPU 完成 DDR/音频/UI 启动自检后，片内 Flash 控制器先完整读取并校验模型，再重新读取、产生内部 `BPN1` 8N1 数据流，交给 full85 原封不动的模型解析器和 DDR 客户端。它使用片内连线，不经过 PC、USB 或外部串口；115200 波特率下模型装载约 9 秒，另加校验和 DDR 回读时间。
