@@ -1441,5 +1441,21 @@
     "protocol": "reports/CNN_FLASH_BOOT_FAST_AVAILABILITY_PROTOCOL_TESTS.json",
     "protocol_cases": 42,
     "hardware_tested": false
+  },
+  "B9_grouped_tf_card": {
+    "user_code": "0x000000B9",
+    "build": "results/workstation_flashb9_20261010_grouped_tf_card",
+    "status": "synthesizing",
+    "changed_from_B8": [
+      "exact grouped modulo delta<32/nonzero availability",
+      "one front-card priority decode then parallel masked coordinate merge"
+    ],
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_B9_GROUPED_TF_CARD_TESTS.json",
+    "tests_passed": true,
+    "full_model_proof": "identical11 tested source hashes plus image to executed B8; composition, no separate B9 execution",
+    "added_cycles": 0,
+    "added_bsram": 0,
+    "hardware_tested": false,
+    "promoted": false
   }
 }
