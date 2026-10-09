@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "cache_read_retimed_9a_build_running_99_flash_diagnosis_failed_baseline85_restored",
+  "status": "retimed9a_clk50_closed_video_regressed_ddr_calibration_failed_9c_placement_reference_build_running",
   "target_user_code": "0x0000009A",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -39,7 +39,9 @@
     "serial97_sram_diagnosis": "results/workstation_flash97_20261009_serial/sram_diagnosis/result.json",
     "serial99_sram_diagnosis": "results/workstation_flash99_20261009_serial_route0/sram_diagnosis/result.json",
     "serial99_flash_diagnosis": "results/workstation_flash99_20261009_serial_route0/flash_diagnosis/result.json",
-    "cache_read_retimed_build": "results/workstation_flash9a_20261009_cache_read/build_metadata.json"
+    "cache_read_retimed_build": "results/workstation_flash9a_20261009_cache_read/build_metadata.json",
+    "retimed9a_timing": "results/workstation_flash9a_20261009_cache_read/clk50_timing_audit.json",
+    "retimed9a_flash_diagnosis": "results/workstation_flash9a_20261009_cache_read/flash_diagnosis/result.json"
   },
   "incremental_candidate": "results/workstation_flash93_20261009_incremental",
   "incremental_target_user_code": "0x00000093",
@@ -252,5 +254,29 @@
     "rollback_uart_model_restored": true,
     "rollback_workstation_smoke_passed": true,
     "finished_at": "2026-10-09T07:56:55.191455+08:00"
+  },
+  "placement_reference_fix_commit": "53401c5",
+  "placement_reference_candidate": "results/workstation_flash9c_20261009_placement_p",
+  "placement_reference_user_code": "0x0000009C",
+  "placement_reference_format": ".p / inc_place; fresh synthesis + fresh routing",
+  "legacy93_pr_reference_incorrect": true,
+  "cancelled9b": {
+    "exit_code": -15,
+    "hardware_tested": false,
+    "reason": "stopped the legacy .pr option before P&R; rebuilt corrected .p/inc_place as9C"
+  },
+  "retimed9a": {
+    "build_completed": true,
+    "synthesis_bsram": 216,
+    "pnr_bsram": 260,
+    "clk50_closed": true,
+    "clk50_fmax_mhz": 51.569,
+    "clk50_setup_wns_ns": 0.609,
+    "clk50_hold_wns_ns": 0.165,
+    "video_fmax_mhz": 134.229,
+    "release_gate_passed": false,
+    "temporary_flash_boot_passed": false,
+    "hardware_observation": "Exact UserCode9A normal configured status; DDR PLL locked but calibration0, CPU0, model0; full85 Flash/model/smoke restored",
+    "baseline85_rollback_verified": true
   }
 }
