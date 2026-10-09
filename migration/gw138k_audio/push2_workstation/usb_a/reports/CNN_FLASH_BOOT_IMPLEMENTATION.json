@@ -533,5 +533,13 @@
   },
   "start_predicate_candidate": "results/workstation_flasha5_20261009_start_predicate",
   "start_predicate_user_code": "0x000000A5",
-  "start_predicate_control": "A4 aligned startup plus cycle-exact registered countdown-zero predicate; original start latency and all control register cycles preserved"
+  "start_predicate_control": "A4 aligned startup plus cycle-exact registered countdown-zero predicate; original start latency and all control register cycles preserved",
+  "start_predicate_synthesis_bsram": 216,
+  "A5_hardware_gate_scheduled": {
+    "requires": "completed build, unchanged source hashes, resource limit, clk50/previous-positive clocks, CDC, PLL/DDR/TMDS startup, artifact hashes and expected board85",
+    "entry": "tools/verify_cnn_flash_workstation.py --program",
+    "latest_auto_promoted": false,
+    "on_deployment_failure": "rollback full85 Flash then restore its original UART model and startup smoke",
+    "programming_started": false
+  }
 }
