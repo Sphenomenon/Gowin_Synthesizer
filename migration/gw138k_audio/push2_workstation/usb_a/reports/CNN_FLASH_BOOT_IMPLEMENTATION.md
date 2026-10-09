@@ -1,5 +1,12 @@
 # CNN Flash→DDR 实施记录
 
+截至2026-10-09 19:29，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传；实时三音、立体声、静音、Panic及健康检查PASS。此前AD临时SRAM同样通过Flash自主加载。本阶段没有做物理断电，正式发布仍未完成。
+
+AD最终268/340物理BSRAM，clk50 55.362MHz、视频187.261MHz。严格时序门禁仍发现DDR UI setup −2.107ns（旧文字/分析渲染为主，hold+0.165ns）和视频PLL全传播10.757ns>10ns，因此AD只作为明确的临时诊断，**配置Flash已恢复full85、旧UART模型E及现场检查PASS，LATEST仍85**。AE保持AD全部RTL，仅增加严格8ns DDR路径/6ns PLL端点物理预算，正在P&R；原有时钟、hold、CRC、自检和独立PLL10ns门槛全部保留。
+
+实证工件：`results/workstation_flashad_20261009_local_payload/temporary_flash_diagnosis/result.json`（三次真实Flash与恢复）；`sram_diagnosis/result.json`（完整工作站SRAM诊断）；`automatic_acceptance/result.json`（正式时序拒绝）。以下为保留的分阶段历史，早期“正在构建/尚未验收”只描述当时状态。
+
+
 当前模型已写入外部 Flash 的 `0x600000` 分区，104,510 字节，载荷 CRC32 `AF01A61B`；Programmer 字节交叉校验通过。独立 SRAM 探针 0x96 完整读出 52,239 字并通过本地 RAM CRC；0x98 进一步通过实际 115200 波特率、内部 BPN1 串行连线和原模型解析器。这两项没有 PC 上传模型，均不代表完整工作站 DDR 验收。
 
 独立 0x9E SRAM 探针进一步使用真实板载 DDR、原 DDR 平台/PHY、原 UART 解析器和 DDR16/CDC 端口：完整 52,239 字从 Flash 自主写入 DDR，并回读 CRC `AF01A61B`，连续三条来源=Flash/状态=E/DDR就绪=7。未使用 PC 模型上传，证明 Flash→实际DDR单独链路可行；该探针无CPU/显示/DMA并发，因此不算完整工作站验收。探针后已恢复full85/modelE。

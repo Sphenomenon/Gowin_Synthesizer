@@ -15,7 +15,7 @@
   "host_invalid_inputs_rejected": 7,
   "cnn_pipeline_ab_passed": true,
   "full_model_sim_boot_seconds": 0.14773918,
-  "model_auto_boot_hardware_verified": false,
+  "model_auto_boot_hardware_verified": true,
   "physical_power_cycle_tested": false,
   "build": "results/workstation_flashad_20261009_local_payload",
   "initial_build_error": "second CST superseded original complete pin constraints; fixed by appending Flash pins to original CST",
@@ -1006,7 +1006,7 @@
   "AE_physical_budget": {
     "build": "results/workstation_flashae_20261009_physical_budgets",
     "user_code": "0x000000AE",
-    "status": "placement",
+    "status": "routing",
     "RTL_identical_to_AD": true,
     "changed_from_AD": [
       "constraints/tang_mega_138k.sdc",
@@ -1017,5 +1017,9 @@
     "PLL_independent_full_propagation_budget_ns": 10.0,
     "hardware_tested": false,
     "physical_bsram_limit": 268
-  }
+  },
+  "complete_workstation_flash_boot_verified": true,
+  "complete_workstation_flash_boot_count": 3,
+  "release_timing_closed": false,
+  "current_candidate": "0x000000AE"
 }
