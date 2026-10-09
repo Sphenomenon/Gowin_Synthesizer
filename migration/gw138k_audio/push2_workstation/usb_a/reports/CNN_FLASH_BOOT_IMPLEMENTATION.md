@@ -21,3 +21,5 @@
 板上仍为可用 full85，LATEST 未提升；物理断电重上电未执行。机器可读结果与各工件路径见 `CNN_FLASH_BOOT_IMPLEMENTATION.json` 和 `CNN_FLASH_BOOT_TESTS.json`。
 
 2026-10-09 10:43 的旧 full85 运行复查：CPU/DDR/模型E/三音/立体声/静音/Panic均通过，但健康字00010000表示累计序列化器欠载1次、核心故障0，因此整体烟雾测试判失败。原因未确定；10:46从已有Flash重载full85（没有重写配置、没有SRAM下载），恢复其旧易失模型后重新做完整实时测试通过，健康字00000000。失败与恢复记录分别位于`results/baseline85_flash_model_work_health_20261009_104311`和`results/baseline85_health_recover_20261009_104641`。此旧模型UART恢复不计入新Flash→DDR验收。
+
+0x9F已完成：SYN216/PNR260，视频172.654MHz，但clk50 Fmax46.813、setupWNS-1.362ns、TNS-82.433/103端点；DDR UI84.737<100MHz，视频PLL_INIT全传播10.232>10ns。路由CDC审计通过，正式时序/PLL门槛失败；未执行任何9F硬件编程。A0/A1仍在布线。

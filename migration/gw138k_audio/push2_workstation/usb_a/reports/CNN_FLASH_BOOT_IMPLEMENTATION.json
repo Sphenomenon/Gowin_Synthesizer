@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "isolated_flash_to_actual_ddr_passed_9f_a0_a1_builds_running_9c_cancelled",
+  "status": "isolated_flash_to_actual_ddr_passed_9f_rejected_a0_a1_builds_running",
   "target_user_code": "0x0000009A",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -43,7 +43,8 @@
     "retimed9a_timing": "results/workstation_flash9a_20261009_cache_read/clk50_timing_audit.json",
     "retimed9a_flash_diagnosis": "results/workstation_flash9a_20261009_cache_read/flash_diagnosis/result.json",
     "isolated_actual_ddr_flash_boot": "results/flash_ddr_probe9e_20261009/board/result.json",
-    "baseline85_health_recovery": "results/baseline85_health_recover_20261009_104641/result.json"
+    "baseline85_health_recovery": "results/baseline85_health_recover_20261009_104641/result.json",
+    "place3_9f_routed_rejection": "results/workstation_flash9f_20261009_place3/finish_verification/result.json"
   },
   "incremental_candidate": "results/workstation_flash93_20261009_incremental",
   "incremental_target_user_code": "0x00000093",
@@ -380,5 +381,89 @@
     "workstation_flash9f_20261009_place3": true,
     "workstation_flasha0_20261009_paired_reference": true,
     "workstation_flasha1_20261009_deferred_ddr": true
+  },
+  "place3_9f_completed": {
+    "synthesis_bsram": 216,
+    "physical_bsram": 260,
+    "clk50_fmax_mhz": 46.813,
+    "clk50_setup_wns_ns": -1.362,
+    "clk50_hold_wns_ns": 0.165,
+    "clk50_setup_tns": -82.433,
+    "clk50_setup_endpoints": 103,
+    "ddr_ui_fmax_mhz": 84.737,
+    "video_fmax_mhz": 172.654,
+    "video_pll_init_error": [
+      "video PLL_INIT VO/SDF audit failed: u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst/RESET: full propagation 10.232 ns exceeds 10.000 ns"
+    ],
+    "previous_positive_clock_audit": {
+      "passed": false,
+      "failed_clocks": [
+        "clk_50m",
+        "ddr_ui100"
+      ],
+      "baseline": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1",
+      "previous_positive_clocks": {
+        "clk_50m": [
+          50.0,
+          53.055
+        ],
+        "ddr_mem400": [
+          400.0,
+          2598.775
+        ],
+        "ddr_ui100": [
+          100.0,
+          215.708
+        ],
+        "video_pixel148": [
+          148.5,
+          165.732
+        ],
+        "cpu_bus50": [
+          50.0,
+          66.186
+        ],
+        "cpu_core100": [
+          100.0,
+          1231.829
+        ]
+      },
+      "candidate_clocks": {
+        "clk_50m": [
+          50.0,
+          46.813
+        ],
+        "audio_76m8": [
+          76.8,
+          67.43
+        ],
+        "ddr_mem400": [
+          400.0,
+          2598.775
+        ],
+        "ddr_ui100": [
+          100.0,
+          84.737
+        ],
+        "video_pixel148": [
+          148.5,
+          172.654
+        ],
+        "cpu_bus50": [
+          50.0,
+          100.768
+        ],
+        "cpu_core100": [
+          100.0,
+          1530.455
+        ],
+        "usb_48m": [
+          48.0,
+          44.133
+        ]
+      }
+    },
+    "release_gate_passed": false,
+    "programming_started": false
   }
 }
