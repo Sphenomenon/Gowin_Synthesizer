@@ -251,3 +251,5 @@ TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合
 可选 `--pipeline-bist-compare` 要求 `--retime-bist-expected-pattern`，在接受响应边界分别注册8个32-bit lane比较结果，再在新增READ_CHECK拍汇总并更新错误/结束状态。地址、正反两轮全测试、命令顺序、错误计数、首错地址和watchdog语义保留；每个读响应明确增加1个100MHz检查周期，完整8MiB两轮读共增加5.24288ms启动时间，0BSRAM。18组BURSTS=1/31/257×正常/最终bit错/每lane错/写超时/读超时/无背压，用独立命令内容oracle及原版终态对比，3复位epoch全PASS；不是原周期精确检查。
 
 可选 `--mask-tf-write-epoch` 要求fast availability和registered capture limit，只用32个byte-valid位记录256bit写缓冲哪些字节已写，未写部分输出精确零；实际byte payload不做epoch wide clear。复位/epoch/原write_clear_pending优先级保持，额外0周期/0BSRAM。10万任意控制周期包含所有64index、复位、重启、接收/清空重叠，每拍256bit可见payload与原清空算法完全相同；48组完整TF协议比较通过。发布脚本绑定构建源码重跑。
+
+可选 `--registered-tf-response` 只用于显式buffered clients/registered native DDR/TF command buffer的完整构建，builder拒绝缺少这些条件。实际audio_response来自注册response_valid/owner，TF命令还先进入独立slot，因此本请求响应必然跨过接受边界；特殊化去掉TF本请求同拍response fallback、只取pending bytes/count。通用冻结TF源码继续支持同周期返回并由前8个variant测试。新variant仅以真实注册队列测试，加入response必须已有pending断言；50组协议PASS，其中2组为注册响应specialization（正常/背压）。源审计绑定actual core注册assign/tag owner、HDMI client queues和top TF命令/响应连接；额外0周期/0BSRAM。

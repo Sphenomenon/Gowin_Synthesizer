@@ -787,3 +787,18 @@ def mask_tf_write_epoch(text):
     end
 """
     return text.replace(old,new,1)
+
+
+def registered_tf_read_response(text):
+    """Specialize only audited buffered-client build to registered read returns."""
+    substitutions=[
+        ('wire read_response = app_rvalid && (read_pending || read_accept);',
+         'wire read_response = app_rvalid && read_pending;'),
+        ('wire [5:0] read_response_bytes = read_accept ? read_chunk_bytes :\n                                                   read_pending_bytes;',
+         'wire [5:0] read_response_bytes = read_pending_bytes;'),
+        ('read_total_bytes <= read_accept ? read_total_after_accept : read_total_pending;',
+         'read_total_bytes <= read_total_pending;')]
+    for old,new in substitutions:
+        assert text.count(old)==1,old
+        text=text.replace(old,new,1)
+    return text

@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
-from cnn_ddr_pipeline_patch import TF_DMA, retime_tf_write_buffer,retime_tf_capture_limit,power_two_tf_ring,parallel_tf_byte_counters,retime_tf_read_total,fast_tf_read_availability,mask_tf_write_epoch
+from cnn_ddr_pipeline_patch import TF_DMA, retime_tf_write_buffer,retime_tf_capture_limit,power_two_tf_ring,parallel_tf_byte_counters,retime_tf_read_total,fast_tf_read_availability,mask_tf_write_epoch,registered_tf_read_response
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / 'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
@@ -114,6 +114,7 @@ def main():
     parser.add_argument('--retime-read-total',action='store_true')
     parser.add_argument('--fast-read-availability',action='store_true')
     parser.add_argument('--mask-write-epoch',action='store_true')
+    parser.add_argument('--registered-response',action='store_true')
     args = parser.parse_args()
     original = (BASE / TF_DMA).read_text()
     patched = retime_tf_write_buffer(original)
@@ -128,6 +129,9 @@ def main():
     if args.mask_write_epoch:
         assert args.fast_read_availability
         variants.append(('masked_write_epoch',mask_tf_write_epoch(variants[-1][1])))
+    if args.registered_response:
+        assert args.mask_write_epoch
+        variants.append(('registered_response',registered_tf_read_response(variants[-1][1])))
     if args.build:
         assert args.parallel_byte_counters and (args.build/'Prj1'/TF_DMA).read_text()==variants[-1][1],'frozen TF source differs from tested variant'
     bus_root=args.build/'Prj1/rtl/music' if args.build else ROOT/'rtl/music'
@@ -139,7 +143,8 @@ def main():
         for label, text in variants:
             src = folder / 'dma.v'
             src.write_text(text)
-            for buffered,stalled,zero in [(False,False,False),(False,True,False),(True,False,False),(True,True,False)]+([(False,False,True),(False,True,True)] if args.retime_read_total else []):
+            cases_for_source=[(True,False,False),(True,True,False)] if label=='registered_response' else [(False,False,False),(False,True,False),(True,False,False),(True,True,False)]+([(False,False,True),(False,True,True)] if args.retime_read_total else [])
+            for buffered,stalled,zero in cases_for_source:
                 tb = '`timescale 1ns/1ps\n' + (ROOT / 'sim/tf_audio/tb_tf_audio_ddr_dma.sv').read_text()
                 if zero:
                     tb = zero_response_tb(tb,stalled)
@@ -147,6 +152,8 @@ def main():
                     tb = buffered_native_tb(tb,stalled)
                 elif stalled:
                     tb = stalled_tb(tb)
+                if label=='registered_response':
+                    tb=tb.replace('    initial begin', '    always @(posedge clk)if(rst_n && app_rvalid && !dut.read_pending)$fatal(1,\"registered response lacked accepted pending read\");\n    initial begin',1)
                 test = folder / 'tb.sv'
                 test.write_text(tb)
                 exe = folder / 'sim'

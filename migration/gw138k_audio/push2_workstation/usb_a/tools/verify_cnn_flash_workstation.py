@@ -85,6 +85,7 @@ def main():
             if meta.get('retimed_tf_read_total'):protocol_flags.append('--retime-read-total')
             if meta.get('fast_tf_read_availability'):protocol_flags.append('--fast-read-availability')
             if meta.get('masked_tf_write_epoch'):protocol_flags.append('--mask-write-epoch')
+            if meta.get('registered_tf_response'):protocol_flags.append('--registered-response')
             for label,tool,flags in [('tf_byte_count_proof','test_cnn_tf_byte_count.py',[]),
                     ('tf_byte_count_protocol','test_cnn_tf_write_buffer_retime.py',protocol_flags)]:
                 label,code=run(label,[sys.executable,str(ROOT/'tools'/tool),'--build',str(build),
