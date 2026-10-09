@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AC_native_CRC_PASS_routing_frozen_baud_source_recheck_running",
+  "status": "AC_frozen_model_CRC_PASS_routing_CPU_release_sim_PASS",
   "target_user_code": "0x000000AC",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -870,11 +870,35 @@
     "native_full_model_simulation_source_difference": [
       "Only parser CLK_HZ/BAUD parameter declarations and RX literal vs parameter; default50MHz/115200 behavior exact"
     ],
-    "frozen_full_model_simulation_pending": true,
+    "frozen_full_model_simulation_pending": false,
     "word_count": 52239,
     "write_count": 52239,
     "read_count": 52239,
     "payload_crc32": "AF01A61B",
-    "model_source": "Flash"
+    "model_source": "Flash",
+    "frozen_full_model_simulation_passed": true,
+    "frozen_full_model_simulation_result": "results/workstation_flashac_20261009_client_queues/native_frozen_full_model_simulation.json",
+    "frozen_simulation_original_hashes_match_build": true,
+    "synthesis_bsram": 218,
+    "synthesis_registers": 43058,
+    "synthesis_luts": 56239,
+    "synthesis_distributed_ram": 1049,
+    "implementation_git_commit": "ff22feb",
+    "cpu_release_simulation": {
+      "passed": true,
+      "result": "results/workstation_flashac_20261009_client_queues/cpu_release_174917_903608/result.json",
+      "release_frames": [
+        1189,
+        23887,
+        23887
+      ],
+      "frame_limit": 48000,
+      "hardware_timing_proof": false
+    },
+    "panic_push_ui_regression": {
+      "passed": true,
+      "result": "results/workstation_flashac_20261009_client_queues/p23_panic_174939_191267/verification.json",
+      "ROM_loading_warnings": false
+    }
   }
 }
