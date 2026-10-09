@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_flash_function_verified_full85_restored_B8_B9_timing_rejected_BA_BB_BC_BD_building",
+  "status": "AD_flash_function_verified_full85_restored_B8_B9_timing_rejected_BA_to_BE_building",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1546,6 +1546,18 @@
     "model_pipeline_proof": "11 exact sources + image equal to executed full B8 model; composition, not new hardware execution",
     "hardware_tested": false,
     "programming_started": false,
-    "evidence": "reports/CNN_FLASH_BOOT_BD_REGISTERED_TF_TESTS.json"
+    "evidence": "reports/CNN_FLASH_BOOT_BD_REGISTERED_TF_TESTS.json",
+    "complete_native_epoch_restart_cases": 18
+  },
+  "BE_tf_return_pipeline": {
+    "build": "results/workstation_flashbe_20261010_tf_return_pipeline",
+    "source_bound_protocol_cases": 54,
+    "protocol_passed": true,
+    "complete_native_epoch_restart_cases": 18,
+    "added_ui_cycles_per_read_beat": 1,
+    "added_time_ns_per_read_beat": 10,
+    "added_bsram": 0,
+    "hardware_tested": false,
+    "evidence": "reports/CNN_FLASH_BOOT_BE_RETURN_PIPELINE_TESTS.json"
   }
 }

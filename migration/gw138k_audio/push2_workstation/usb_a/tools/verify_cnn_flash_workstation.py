@@ -82,6 +82,7 @@ def main():
             result['checks'][label]=code
         if meta.get('parallel_tf_byte_counters'):
             protocol_flags=['--parallel-byte-counters']
+            if meta.get('buffered_ddr_clients') and meta.get('retimed_tf_buffer_enable'):protocol_flags.append('--full-buffered-topology')
             if meta.get('retimed_tf_read_total'):protocol_flags.append('--retime-read-total')
             if meta.get('fast_tf_read_availability'):protocol_flags.append('--fast-read-availability')
             if meta.get('masked_tf_write_epoch'):protocol_flags.append('--mask-write-epoch')

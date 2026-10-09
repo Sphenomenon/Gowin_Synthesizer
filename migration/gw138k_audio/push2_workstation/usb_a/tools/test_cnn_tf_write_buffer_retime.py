@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
-from cnn_ddr_pipeline_patch import TF_DMA, retime_tf_write_buffer,retime_tf_capture_limit,power_two_tf_ring,parallel_tf_byte_counters,retime_tf_read_total,fast_tf_read_availability,mask_tf_write_epoch,registered_tf_read_response,pipeline_tf_read_return
+from cnn_ddr_pipeline_patch import TF_BUFFER,TF_DMA, retime_tf_write_buffer,retime_tf_capture_limit,power_two_tf_ring,parallel_tf_byte_counters,retime_tf_read_total,fast_tf_read_availability,mask_tf_write_epoch,registered_tf_read_response,pipeline_tf_read_return
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / 'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
@@ -46,7 +46,7 @@ def stalled_tb(tb):
 
 
 
-def buffered_native_tb(tb, stalled):
+def buffered_native_tb(tb, stalled, full_buffered=False):
     # Keep the real client interface and memory oracle separate: the TF FSM
     # sees its local request slot, while the memory accepts native commands
     # after stable selection, physical backpressure and response tagging.
@@ -60,16 +60,29 @@ def buffered_native_tb(tb, stalled):
               "    always @(posedge clk)cycles<=cycles+1;"]
     native += ["    wire native_ready=" + ("cycles%11>3" if stalled else "1'b1") + ";",
                "    wire native_wrdy=" + ("cycles%17>5" if stalled else "1'b1") + ";"]
+    if full_buffered:
+        native += ['    wire queue_valid,queue_write,queue_ready;',
+                   '    wire [28:0] queue_address;wire [255:0] queue_data;',
+                   '    tf_audio_ddr_command_buffer command_buffer(',
+                   '        .clk(clk),.rst_n(rst_n),.in_valid(app_en),.in_write(app_wren),',
+                   '        .in_address(app_addr),.in_data(app_wdata),.in_ready(audio_accept),',
+                   '        .out_valid(queue_valid),.out_write(queue_write),',
+                   '        .out_address(queue_address),.out_data(queue_data),.out_ready(queue_ready));']
+    live_valid='queue_valid' if full_buffered else 'app_en'
+    live_address='queue_address' if full_buffered else 'app_addr'
+    live_ready='queue_ready' if full_buffered else 'audio_accept'
+    live_write='queue_write' if full_buffered else 'app_wren'
+    live_data='queue_data' if full_buffered else 'app_wdata'
     ports = ['.clk(clk)', '.reset_n(rst_n)', ".bist_done(1'b1)"]
     for client in ['bist','scan','display','audio','music','delay','writer','cpu']:
         live = client == 'audio'
-        ports += [f'.{client}_valid(' + ('app_en' if live else "1'b0") + ')',
-                  f'.{client}_address(' + ('app_addr' if live else "29'd0") + ')',
-                  f'.{client}_ready(' + ('audio_accept' if live else '') + ')']
+        ports += [f'.{client}_valid(' + (live_valid if live else "1'b0") + ')',
+                  f'.{client}_address(' + (live_address if live else "29'd0") + ')',
+                  f'.{client}_ready(' + (live_ready if live else '') + ')']
         if client not in ['scan','display','writer']:
-            ports += [f'.{client}_write(' + ('app_wren' if live else "1'b0") + ')']
+            ports += [f'.{client}_write(' + (live_write if live else "1'b0") + ')']
         if client not in ['scan','display']:
-            ports += [f'.{client}_data(' + ('app_wdata' if live else "256'd0") + ')']
+            ports += [f'.{client}_data(' + (live_data if live else "256'd0") + ')']
         if client in ['music','cpu']:
             ports += [f".{client}_mask(32'd0)"]
         if client != 'writer':
@@ -91,6 +104,32 @@ def buffered_native_tb(tb, stalled):
                          ('app_en','native_en'),('app_wren','native_wren')]:
         memory = memory.replace(source,dest)
     return tb[:start] + memory
+
+
+def inflight_restart_tb(tb):
+    # Restart after the TF command has entered its local slot, before its
+    # tagged registered response returns. New input starts only after drain;
+    # do not assert app_rvalid implies pending across an epoch cancellation.
+    anchor='        $display("PASS tb_tf_audio_ddr_dma:'
+    assert tb.count(anchor)==1
+    scenario="""        restart_epoch;
+        fork
+            start_capture(32,8'h35);
+            begin
+                wait(dut.read_accept);
+                @(negedge clk);restart_toggle=~restart_toggle;
+            end
+        join
+        repeat(32)@(posedge clk);
+        if(dut.read_pending || dut.read_buf_valid || output_count!=0)
+            $fatal(1,"canceled read leaked old epoch bytes pending=%b valid=%b out=%0d",
+                   dut.read_pending,dut.read_buf_valid,output_count);
+        restart_epoch;
+        start_capture(65,8'h93);
+        wait_done_and_check(65,8'h93);
+        check_ring_addresses(3);
+"""
+    return tb.replace(anchor,scenario+anchor,1)
 
 
 def zero_response_tb(tb,stalled):
@@ -116,6 +155,7 @@ def main():
     parser.add_argument('--mask-write-epoch',action='store_true')
     parser.add_argument('--registered-response',action='store_true')
     parser.add_argument('--pipeline-read-return',action='store_true')
+    parser.add_argument('--full-buffered-topology',action='store_true',help='include frozen TF command buffer ahead of real client queues/native pipeline')
     args = parser.parse_args()
     original = (BASE / TF_DMA).read_text()
     patched = retime_tf_write_buffer(original)
@@ -141,6 +181,7 @@ def main():
     bus_root=args.build/'Prj1/rtl/music' if args.build else ROOT/'rtl/music'
     arbiter_source=bus_root/'basic_pitch_ddr_arbiter_pipeline.sv'
     client_queues_source=bus_root/'basic_pitch_ddr_client_queues.sv'
+    tf_buffer_source=args.build/'Prj1'/TF_BUFFER if args.build else ROOT/'rtl/display_data/tf_audio_ddr_command_buffer.sv'
     cases = []
     with tempfile.TemporaryDirectory(prefix='cnn_tf_stage_retime_') as temp:
         folder = Path(temp)
@@ -153,30 +194,33 @@ def main():
                 if zero:
                     tb = zero_response_tb(tb,stalled)
                 elif buffered:
-                    tb = buffered_native_tb(tb,stalled)
+                    tb = buffered_native_tb(tb,stalled,args.full_buffered_topology)
+                    if args.full_buffered_topology:tb=inflight_restart_tb(tb)
                 elif stalled:
                     tb = stalled_tb(tb)
                 if label=='registered_response':
-                    tb=tb.replace('    initial begin', '    always @(posedge clk)if(rst_n && app_rvalid && !dut.read_pending)$fatal(1,\"registered response lacked accepted pending read\");\n    initial begin',1)
+                    tb=tb.replace('    initial begin', '    always @(posedge clk)if(rst_n && app_rvalid && dut.read_accept && !dut.read_pending)$fatal(1,\"new read got impossible same-cycle registered return\");\n    initial begin',1)
                 test = folder / 'tb.sv'
                 test.write_text(tb)
                 exe = folder / 'sim'
                 compile_result = subprocess.run([
                     'iverilog', '-g2012', '-I', str(BASE), '-s',
                     'tb_tf_audio_ddr_dma', '-o', str(exe), str(src), str(test)
-                ] + ([str(arbiter_source),str(client_queues_source)] if buffered else []), capture_output=True, text=True)
+                ] + ([str(arbiter_source),str(client_queues_source)]+([str(tf_buffer_source)] if args.full_buffered_topology else []) if buffered else []), capture_output=True, text=True)
                 assert compile_result.returncode == 0, compile_result.stdout + compile_result.stderr
                 result = subprocess.run(['vvp', str(exe)], capture_output=True,
                                         text=True, timeout=30)
                 assert result.returncode == 0 and 'PASS' in result.stdout, result.stdout + result.stderr
                 cases.append(dict(source=label, buffered_native=buffered,native_backpressure=stalled,
-                                  zero_cycle_response=zero,passed=True, log=result.stdout.strip()))
+                                  zero_cycle_response=zero,full_buffered_topology=buffered and args.full_buffered_topology,inflight_restart=buffered and args.full_buffered_topology,passed=True, log=result.stdout.strip()))
     report = dict(passed=True,source_bound=bool(args.build),build=str(args.build) if args.build else None, hardware_tested=False, pcm_saved=False, cases=cases,
                   variant_source_sha256={label:hashlib.sha256(text.encode()).hexdigest() for label,text in variants},
                   staged_source_sha256=hashlib.sha256(patched.encode()).hexdigest(),
                   original_source_sha256=hashlib.sha256(original.encode()).hexdigest(),
                   arbiter_source=str(arbiter_source),arbiter_sha256=hashlib.sha256(arbiter_source.read_bytes()).hexdigest(),
-                  client_queues_source=str(client_queues_source),client_queues_sha256=hashlib.sha256(client_queues_source.read_bytes()).hexdigest())
+                  client_queues_source=str(client_queues_source),client_queues_sha256=hashlib.sha256(client_queues_source.read_bytes()).hexdigest(),
+                  tf_command_buffer_source=str(tf_buffer_source) if args.full_buffered_topology else None,
+                  tf_command_buffer_sha256=hashlib.sha256(tf_buffer_source.read_bytes()).hexdigest() if args.full_buffered_topology else None)
     if args.output:
         args.output.write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))
