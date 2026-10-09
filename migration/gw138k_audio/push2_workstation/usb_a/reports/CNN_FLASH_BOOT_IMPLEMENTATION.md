@@ -142,3 +142,5 @@ B9 TF协议回归进一步绑定实际构建内的注册tagflags仲裁器60aec35
 2026-10-10T02:54:13.700197+08:00：B8完整路由268/340，clk50 58.176MHz/setup+2.811/hold+.165，视频167.823，所有PLL/CDC/地址SAT/TF36/实际共享整链路/BIST功能通过，前正时钟摘要全部通过；真实DDR UI仍BIST expected_pattern→failed CE−2.936ns/hold+.169，拒绝烧录。TF旧读总量−5.551ns路径消失，剩BIST+TF重启clear/card相对坐标。BB加入已独立18case验证的lane比较pipeline，8MiB正反两轮读明确+5.24288ms启动、0BSRAM，actual-source tests通过。
 
 2026-10-10T02:58:26.528114+08:00：BC开始完整构建（BB+TF byte validity），实际源码绑定100000任意控制周期256bit逐拍比较和48组TF ring/背压/同周期响应PASS，无额外周期/BSRAM。验收等待器现在遍历全部前序，前序实体成功则全部后续候选只做本地门禁；前序尝试烧录而未成功时显式停止要求检查回滚，避免后续默认85假设。
+
+BC最终源码绑定BIST18故障/正常case、65bit读nextcount/64bit可用量SAT已补充通过；模型链路11源码及镜像相同的组合证明附到BC报告。
