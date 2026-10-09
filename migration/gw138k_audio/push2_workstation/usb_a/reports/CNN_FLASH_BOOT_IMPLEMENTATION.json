@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_actual_Flash3boots_live_verified_AF_rejected_B0_parallel_coordinates_building",
+  "status": "AD_actual_Flash3boots_live_verified_B1_PLL_closed_B2_building",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1035,7 +1035,7 @@
   "complete_workstation_flash_boot_verified": true,
   "complete_workstation_flash_boot_count": 3,
   "release_timing_closed": false,
-  "current_candidate": "results/workstation_flashb0_20261009_parallel_coordinates",
+  "current_candidate": "results/workstation_flashb2_20261009_parallel_cards_tmds",
   "AF_render_predecode": {
     "build": "results/workstation_flashaf_20261009_render_predecode",
     "user_code": "0x000000AF",
@@ -1056,7 +1056,7 @@
   "B0_parallel_coordinates": {
     "build": "results/workstation_flashb0_20261009_parallel_coordinates",
     "user_code": "0x000000B0",
-    "status": "synthesis_complete_routing_in_progress",
+    "status": "routed_release_gate_failed",
     "source_bound_tests": "reports/CNN_FLASH_BOOT_B0_COORDINATE_TESTS.json",
     "source_bound_tests_passed": true,
     "physical_bsram_limit": 268,
@@ -1067,10 +1067,47 @@
     "synthesis_bsram": 220,
     "synthesis_ssram": 505,
     "synthesis_registers": 43533,
-    "synthesis_lut": 55398
+    "synthesis_lut": 55398,
+    "physical_bsram": 268,
+    "clk50_fmax_mhz": 54.326,
+    "video_pixel_fmax_mhz": 183.837,
+    "ddr_ui_fmax_mhz": 227.082,
+    "ddr_ui_setup_wns_ns": -1.799,
+    "ddr_ui_hold_wns_ns": 0.167,
+    "PLL_first_fail_ns": 10.36,
+    "gate_passed": false,
+    "programming_started": false,
+    "acceptance": "results/workstation_flashb0_20261009_parallel_coordinates/automatic_acceptance/result.json"
   },
   "board_current_status_last_checked_at": "2026-10-09T21:39:42.262168+08:00",
   "board_current_model_E_verified": true,
   "board_current_config_status": "0x00026020",
-  "board_current_read_only_status": "results/workstation_flashb0_20261009_parallel_coordinates/baseline_readonly_status.json"
+  "board_current_read_only_status": "results/workstation_flashb0_20261009_parallel_coordinates/baseline_readonly_status.json",
+  "B1_PLL_locality": {
+    "build": "results/workstation_flashb1_20261009_pll_locality",
+    "status": "routed_release_gate_failed",
+    "user_code": "0x000000B1",
+    "reference_helper_region": "R[100:108]C[24:44]",
+    "hardware_tested": false,
+    "synthesis_bsram": 220,
+    "physical_bsram": 268,
+    "ddr_ui_setup_wns_ns": -1.718,
+    "ddr_ui_hold_wns_ns": 0.172,
+    "clk50_fmax_mhz": 56.981,
+    "video_pixel_fmax_mhz": 134.533,
+    "ddr_ui_fmax_mhz": 234.288,
+    "PLL_all_endpoints_passed": true,
+    "PLL_worst_ns": 7.964,
+    "gate_passed": false,
+    "programming_started": false
+  },
+  "B2_parallel_cards_tmds": {
+    "build": "results/workstation_flashb2_20261009_parallel_cards_tmds",
+    "user_code": "0x000000B2",
+    "status": "building",
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_B2_CARD_TMDS_TESTS.json",
+    "source_bound_tests_passed": true,
+    "physical_bsram_limit": 268,
+    "hardware_tested": false
+  }
 }

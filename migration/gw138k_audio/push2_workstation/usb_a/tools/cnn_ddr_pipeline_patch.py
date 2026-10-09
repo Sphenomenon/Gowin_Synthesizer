@@ -315,3 +315,79 @@ def predecode_dashboard_text_coordinates(text):
     end
 '''
     return text.replace('    reg a_effect_hit',declarations+'    reg a_effect_hit',1).replace('endmodule',sequential+'endmodule')
+
+def parallel_dashboard_cards(text):
+    """Same animation and hit priority, move late selects behind parallel math."""
+    helper='''    // Destination is one of four constants. Evaluate their next positions
+    // in parallel so frame metadata selects only the completed result.
+    function [10:0] slide_destinations(input [10:0] position,input [1:0] id);
+        reg [10:0] parked,first,second,third;
+        begin
+            parked=slide(position,11'd1120);
+            first=slide(position,11'd64);
+            second=slide(position,11'd400);
+            third=slide(position,11'd736);
+            if(!effect_mask[id])slide_destinations=parked;
+            else if(effect_order[1:0]==id)slide_destinations=first;
+            else if(effect_order[3:2]==id)slide_destinations=second;
+            else if(effect_order[5:4]==id)slide_destinations=third;
+            else slide_destinations=parked;
+        end
+    endfunction
+    // (x-position-16) mod2^10 through a three-input carry-save front
+    // and one final carry chain; the geometry select follows the arithmetic.
+    function [9:0] card_text_relative(input [10:0] x,input [10:0] position);
+        reg [9:0] a,b,c,sum,carry;
+        begin
+            a=x[9:0];b=~position[9:0];c=10'h3f1;
+            sum=a^b^c;carry=((a&b)|(a&c)|(b&c))<<1;
+            card_text_relative=sum+carry;
+        end
+    endfunction
+'''
+    anchor='    always @(posedge clk or negedge reset_n) begin'
+    assert text.count(anchor)>=1
+    text=text.replace(anchor,helper+anchor,1)
+    for i in range(3):
+        old=f'effect_x{i}<=slide(effect_x{i},destination({i}));'
+        assert text.count(old)==1
+        text=text.replace(old,f'effect_x{i}<=slide_destinations(effect_x{i},2\'d{i});')
+    anchor='    reg effect_relative_pre;'
+    # The original register declaration has a width.
+    anchor='    reg [10:0] effect_relative_pre;';assert text.count(anchor)==1
+    text=text.replace(anchor,anchor+'''
+    wire [9:0] effect_text0_pre=card_text_relative(pixel_x,effect_x0);
+    wire [9:0] effect_text1_pre=card_text_relative(pixel_x,effect_x1);
+    wire [9:0] effect_text2_pre=card_text_relative(pixel_x,effect_x2);
+    reg [9:0] effect_text_pre;
+''')
+    start=text.index('    always @* begin\n        effect_hit_pre=');end=text.index('    reg effect_hit;',start)
+    block=text[start:end]
+    for i in range(3):
+        old=f'effect_relative_pre=effect_rel{i}_pre;';assert old in block
+        block=block.replace(old,old+f' effect_text_pre=effect_text{i}_pre;')
+    text=text[:start]+block+text[end:]
+    old="effect_text_x<=effect_relative_pre-11'd16;";assert text.count(old)==1
+    return text.replace(old,'effect_text_x<=effect_text_pre;')
+
+def lut_tmds_popcount(text):
+    """Exact8-bit population count with parallel4-bit LUT truth tables."""
+    import re
+    match=re.search(r'    function \[3:0\] count_ones;.*?    endfunction',text,re.S)
+    assert match
+    lookup='''    function [2:0] nibble_ones(input [3:0] bits_in);
+        begin
+            case(bits_in)
+'''
+    lookup+=''.join(f"                4'd{i}:nibble_ones=3'd{i.bit_count()};\n" for i in range(16))
+    lookup+='''                default:nibble_ones=3'bxxx;
+            endcase
+        end
+    endfunction
+    function [3:0] count_ones;
+        input [7:0] bits_in;
+        begin
+            count_ones={1'b0,nibble_ones(bits_in[3:0])}+{1'b0,nibble_ones(bits_in[7:4])};
+        end
+    endfunction'''
+    return text[:match.start()]+lookup+text[match.end():]

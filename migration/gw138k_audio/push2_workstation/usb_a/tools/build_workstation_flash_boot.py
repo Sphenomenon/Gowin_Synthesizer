@@ -17,7 +17,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from build_full_song_83_bp_ddr_isolation import FROZEN
 from workstation_memory import audit
-from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO,TF_DMA,retime_tf_write_buffer,CLIENT_QUEUES,TF_BUFFER,TMDS,retime_tf_buffer_enable,retime_tf_capture_limit,retime_display_enable,retime_tmds_statistics,DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,DELAY_DMA,parallel_delay_rptr,power_two_tf_ring
+from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO,TF_DMA,retime_tf_write_buffer,CLIENT_QUEUES,TF_BUFFER,TMDS,retime_tf_buffer_enable,retime_tf_capture_limit,retime_display_enable,retime_tmds_statistics,DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,DELAY_DMA,parallel_delay_rptr,power_two_tf_ring,parallel_dashboard_cards,lut_tmds_popcount
 from build_cnn_flash_image import build_image,load_words,pack_flash,gowin_data_fs
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
@@ -94,10 +94,13 @@ def audit_serial_compatibility(output):
     if metadata.get('retimed_tf_buffer_enable'):
         assert (stage/TF_BUFFER).read_text()==retime_tf_buffer_enable((BASE/'Prj1'/TF_BUFFER).read_text()),'TF buffer retime drift'
     if metadata.get('retimed_tmds_statistics'):
-        assert (stage/TMDS).read_text()==retime_tmds_statistics((BASE/'Prj1'/TMDS).read_text()),'TMDS changed beyond reset-mask statistics'
+        tmds=retime_tmds_statistics((BASE/'Prj1'/TMDS).read_text())
+        if metadata.get('lut_tmds_popcount'):tmds=lut_tmds_popcount(tmds)
+        assert (stage/TMDS).read_text()==tmds,'TMDS changed beyond equivalent statistics'
     if metadata.get('predecoded_dashboard'):
         dashboard=predecode_dashboard((BASE/'Prj1'/DASHBOARD).read_text())
         if metadata.get('predecoded_text_coordinates'):dashboard=predecode_dashboard_text_coordinates(dashboard)
+        if metadata.get('parallel_dashboard_cards'):dashboard=parallel_dashboard_cards(dashboard)
         assert (stage/DASHBOARD).read_text()==dashboard,'dashboard predecode source drift'
         assert (stage/RENDERER).read_text()==align_renderer_predecode((BASE/'Prj1'/RENDERER).read_text()),'renderer changed beyond1stage latency alignment'
     paths += [str(p.relative_to(BASE/'Prj1')) for p in (BASE/'Prj1').rglob('gw138k_ddr_arbiter.sv')]
@@ -190,6 +193,8 @@ def register_response_credit(text):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--lut-tmds-popcount',action='store_true',help='parallel4-bit LUT population counters; identical10-bitTMDS every cycle')
+    ap.add_argument('--parallel-dashboard-cards',action='store_true',help='parallel constant animation targets and carry-save card text geometry; frame/cycle-exact')
     ap.add_argument('--locate-reference-pll-helper',action='store_true',help='physical-only primitive group near reference PLL bottom-left; unchanged official helper RTL/clock/10ns audit')
     ap.add_argument('--predecode-text-coordinates',action='store_true',help='refine one-stage raster predecode with parallel constant font arithmetic and animated-card hit')
     ap.add_argument('--parallel-delay-pointer',action='store_true',help='bit-exact parallel byte-group rptr+4,all32-bit carry/wrap values')
@@ -229,6 +234,8 @@ def main():
         ap.error('--incremental-pnr-entry requires --incremental-baseline --incremental-mode pnr')
     reference_suffix=(args.incremental_pnr_entry or 'pr') if args.incremental_mode=='pnr' else 'p'
     if args.defer_ddr_startup and args.transport!='serial':ap.error('--defer-ddr-startup requires serial transport with startup history alignment')
+    if args.lut_tmds_popcount and not args.retime_tmds_statistics:ap.error('--lut-tmds-popcount requires --retime-tmds-statistics')
+    if args.parallel_dashboard_cards and not args.predecode_text_coordinates:ap.error('--parallel-dashboard-cards requires --predecode-text-coordinates')
     if args.predecode_text_coordinates and not args.predecode_dashboard:ap.error('--predecode-text-coordinates requires --predecode-dashboard')
     if args.parallel_delay_pointer and not args.pipeline_ddr_arbiter:ap.error('--parallel-delay-pointer requires --pipeline-ddr-arbiter')
     if args.power_two_tf_ring and not args.retime_tf_write_buffer:ap.error('--power-two-tf-ring requires --retime-tf-write-buffer')
@@ -348,10 +355,13 @@ def main():
         if args.retime_tf_buffer_enable:
             tfbuffer=stage/TF_BUFFER;tfbuffer.write_text(retime_tf_buffer_enable(tfbuffer.read_text()))
         if args.retime_tmds_statistics:
-            tmds=stage/TMDS;tmds.write_text(retime_tmds_statistics(tmds.read_text()))
+            tmds=stage/TMDS;text=retime_tmds_statistics(tmds.read_text())
+            tmds.write_text(lut_tmds_popcount(text) if args.lut_tmds_popcount else text)
         if args.predecode_dashboard:
             dash=stage/DASHBOARD;dashboard=predecode_dashboard(dash.read_text())
-            dash.write_text(predecode_dashboard_text_coordinates(dashboard) if args.predecode_text_coordinates else dashboard)
+            if args.predecode_text_coordinates:dashboard=predecode_dashboard_text_coordinates(dashboard)
+            if args.parallel_dashboard_cards:dashboard=parallel_dashboard_cards(dashboard)
+            dash.write_text(dashboard)
             renderer=stage/RENDERER;renderer.write_text(align_renderer_predecode(renderer.read_text()))
         top.write_text(s)
         if args.retime_video_telemetry:
@@ -424,7 +434,7 @@ set_max_delay 4.500 -from [get_pins {u_video/u_clock/g_hardware.u_pll/*/u_pll_in
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,reference_pll_helper_region="R[100:108]C[24:44]" if args.locate_reference_pll_helper else None,predecoded_dashboard=args.predecode_dashboard,predecoded_text_coordinates=args.predecode_text_coordinates,parallel_delay_pointer=args.parallel_delay_pointer,power_two_tf_ring=args.power_two_tf_ring,raster_enabled_latency_added=1 if args.predecode_dashboard else 0,PLL_settings_route_max_delay_ns=4.5 if args.tighten_pll_setting_route else None,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,reference_pll_helper_region="R[100:108]C[24:44]" if args.locate_reference_pll_helper else None,predecoded_dashboard=args.predecode_dashboard,predecoded_text_coordinates=args.predecode_text_coordinates,parallel_dashboard_cards=args.parallel_dashboard_cards,parallel_delay_pointer=args.parallel_delay_pointer,power_two_tf_ring=args.power_two_tf_ring,raster_enabled_latency_added=1 if args.predecode_dashboard else 0,PLL_settings_route_max_delay_ns=4.5 if args.tighten_pll_setting_route else None,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,lut_tmds_popcount=args.lut_tmds_popcount,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'

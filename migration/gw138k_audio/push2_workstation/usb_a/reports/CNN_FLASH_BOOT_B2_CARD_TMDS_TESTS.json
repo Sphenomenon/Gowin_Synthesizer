@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "source_bound": true,
+  "source_bound_B0_TF_FIFO_DMA_tests_reused": true,
+  "generated_at": "2026-10-09T22:45:35.930191+08:00",
+  "build": "results/workstation_flashb2_20261009_parallel_cards_tmds",
+  "hardware_tested": false,
+  "physical_power_cycle_tested": false,
+  "pcm_saved": false,
+  "additional_raster_enabled_latency": 1,
+  "changed_from_B1": [
+    "scripts/build.tcl",
+    "vendor/sipeed_dvi/dvi_tx_tmds_enc.v",
+    "src/video/feedback_dashboard.v"
+  ],
+  "checks": {
+    "dashboard": {
+      "passed": true,
+      "predecoded_text_coordinates": true,
+      "parallel_cards": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "additional_enabled_cycles": 1,
+      "original_sha256": "617981568d42349e67a8bf0f3883a1c6a65dfe9be998ba7d8c4cfe685ad99c45",
+      "patched_sha256": "da292b601c1d5b589cffd1fbfd6897c1e4beef1fee113e7a180f9a95a686deda",
+      "log": "PASS dashboard complete1920x1080 raster,2137105compared pixels,randommetadata/stalls/frameanimation/reset,oneenabledcycle latency\n- /tmp/cnn_dashboard_predecode_4d95no3r/tb.sv:72: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 22ms; walltime 1.332 s; speed 16.539 ms/s\n- Verilator: cpu 1.330 s on 1 threads; allocated 7 MB"
+    },
+    "renderer": {
+      "passed": true,
+      "predecoded_text_coordinates": true,
+      "parallel_cards": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "dashboard_sha256": "da292b601c1d5b589cffd1fbfd6897c1e4beef1fee113e7a180f9a95a686deda",
+      "renderer_sha256": "88cb6bb0f98864fc775e72068bab5c2acbe0fc37eb8425a33cab11455732d44f",
+      "log": "PASS renderer1036800two-pixelbeats,complete1920x1080,independentDDRstalls,orderedvalid/last/address,bitexactpixelcontent\n- /tmp/cnn_renderer_predecode_getygrue/tb.sv:41: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 14ms; walltime 0.875 s; speed 15.855 ms/s\n- Verilator: cpu 0.873 s on 1 threads; allocated 23 MB"
+    },
+    "cards_geometry": {
+      "passed": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "dashboard_sha256": "da292b601c1d5b589cffd1fbfd6897c1e4beef1fee113e7a180f9a95a686deda",
+      "animation_checks": 3145728,
+      "geometry_checks": 4194304,
+      "log": "PASS card animation all8masks/64orders/3ids/2048positions and all2048x2048 geometry; 7340032checks\n/tmp/cnn_card_geometry_i1aw24mb/tb.sv:54: $finish called at 0 (1s)"
+    },
+    "TMDS": {
+      "passed": true,
+      "lut_popcount": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "original_sha256": "043382bf710b9dffb1d9a4581d60d98ccc44ac3ce69254eddb44d3ebd672ee88",
+      "patched_sha256": "dcd09e1544fac3e1738a4a7c23775493220a3b1e2136f3ad592ae3fa66695085",
+      "log": "PASS TMDS100000cycles all256data repeated,randomcontrols/blanking,325resetcycles,bitexact10bitcodes\n/tmp/cnn_tmds_statistics_zccc5qr8/tb.sv:17: $finish called at 673467340 (1ps)"
+    }
+  }
+}
