@@ -664,5 +664,16 @@
     "changed_source": "new arbiter module; bounded shared response-data wiring at hdmi/top only",
     "simulation_passed": true,
     "physical_timing_verified": false
+  },
+  "baseline85_during_AA_build_health": {
+    "result": "results/baseline85_during_ddr_pipeline_20261009_155927/result.json",
+    "passed": true,
+    "board_code": "0x00000085",
+    "flash_written": false,
+    "sram_programmed": false,
+    "startup_cpu_ddr_model": true,
+    "live_three_voices": true,
+    "stereo_geometry_mute_panic": true,
+    "audio_health_zero": true
   }
 }

@@ -34,7 +34,7 @@ reg [28:0] eq_addr[0:100000];reg [255:0] eq_data[0:100000];reg [31:0] eq_mask[0:
 reg [255:0] er_data[0:100000];integer er_owner[0:100000];
 reg [255:0] nr_data[0:100000];integer nr_cycle[0:100000];
 integer accept_count=0,issue_count=0,read_count=0,returned=0,nr_in=0,nr_out=0,cycle=0;
-integer per_client[0:7],sequence_no[0:7];integer max_tags=0,blocked=0;
+integer per_client[0:7],sequence_no[0:7];integer max_tags=0,blocked=0,consecutive_returns=0;reg prior_return=0;
 reg [31:0] random_state=SEED;
 reg stalled=0;reg [319:0] held;
 function [255:0] pattern(input integer owner,input integer seq);
@@ -46,6 +46,8 @@ always @(posedge clk)begin
   if(stalled && held !== {cmd,native_address,native_data,native_mask})$fatal(1,"command changed under native stall");
   stalled=dut.command_full && !en;held={cmd,native_address,native_data,native_mask};
   if($countones(ready)>1 || $countones(response)>1)$fatal(1,"nonexclusive handshake/response");
+  if(|response && prior_return)consecutive_returns=consecutive_returns+1;
+  prior_return=|response;
   for(integer i=0;i<8;i=i+1)if(response[i])begin
    if(returned>=read_count || er_owner[returned]!=i || er_data[returned]!==client_rddata)$fatal(1,"response lost/reordered/memory mismatch at%0d owner%0d wanted%0d",returned,i,er_owner[returned]);
    returned=returned+1;
@@ -77,7 +79,7 @@ end
 task zero_state;
  begin
   rst=0;bd=0;valid=0;native_rsp=0;stalled=0;
-  accept_count=0;issue_count=0;read_count=0;returned=0;nr_in=0;nr_out=0;cycle=0;max_tags=0;blocked=0;
+  accept_count=0;issue_count=0;read_count=0;returned=0;nr_in=0;nr_out=0;cycle=0;max_tags=0;blocked=0;consecutive_returns=0;prior_return=0;
   for(integer i=0;i<8;i=i+1)begin per_client[i]=0;sequence_no[i]=0;end
   for(integer i=0;i<4096;i=i+1)begin model[i]=pattern(9,i);physical[i]=pattern(9,i);end
   repeat(4)@(negedge clk);rst=1;
@@ -118,12 +120,20 @@ initial begin
  end
  @(negedge clk);valid=0;native_drive(0);
  for(integer k=0;k<5000;k=k+1)begin @(negedge clk);native_drive(0);end
- if(accept_count!=issue_count || read_count!=returned || nr_in!=nr_out || blocked==0)$fatal(1,"drain/tag-full mismatch accepted%0d issue%0d read%0d returned%0d blocked%0d",accept_count,issue_count,read_count,returned,blocked);
+ if(accept_count!=issue_count || read_count!=returned || nr_in!=nr_out || blocked==0 || consecutive_returns==0)$fatal(1,"drain/tag-full mismatch accepted%0d issue%0d read%0d returned%0d blocked%0d",accept_count,issue_count,read_count,returned,blocked);
  for(integer i=0;i<8;i=i+1)if(per_client[i]<8)$fatal(1,"client%0d unexercised count%0d",i,per_client[i]);
  $display("PASS shared DDR pipeline seed=%0d tags=%0d commands=%0d reads=%0d full_tag_cycles=%0d all8clients masked memory/native stalls/consecutive returns/BIST epoch/order",SEED,1<<BITS,accept_count,returned,blocked);
  // A full global reset discards pending command/tags/data and rearms fault.
  @(negedge clk);offer(1);native_ready=0;repeat(3)@(negedge clk);zero_state();
  if(dut.command_full || dut.count || dut.response_valid || fault)$fatal(1,"global reset retained traffic");
+ // Reset with native reads already issued and response tags outstanding.
+ bd=1;
+ for(integer k=0;k<40;k=k+1)begin
+  @(negedge clk);native_drive(1);offer(1);
+ end
+ if(dut.count==0)$fatal(1,"in-flight reset fixture had no tags");
+ zero_state();
+ if(dut.command_full || dut.count || dut.response_valid || fault)$fatal(1,"in-flight reset retained traffic");
  @(negedge clk);native_rsp=1;@(posedge clk);#1;if(!fault)$fatal(1,"unexpected untagged response not explicit");
  @(negedge clk);rst=0;native_rsp=0;repeat(3)@(negedge clk);rst=1;repeat(3)@(negedge clk);if(fault)$fatal(1,"fault did not reset");
  $finish;

@@ -689,19 +689,19 @@
         "tag_bits": 2,
         "seed": 7,
         "passed": true,
-        "log": "PASS shared DDR pipeline seed=7 tags=4 commands=4692 reads=3164 full_tag_cycles=334 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_0cv424jc/tb.sv:112: $finish called at 362210000 (1ps)"
+        "log": "PASS shared DDR pipeline seed=7 tags=4 commands=4692 reads=3164 full_tag_cycles=334 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_atm8jmnv/tb.sv:122: $finish called at 362650000 (1ps)"
       },
       {
         "tag_bits": 3,
         "seed": 31,
         "passed": true,
-        "log": "PASS shared DDR pipeline seed=31 tags=8 commands=4562 reads=3104 full_tag_cycles=283 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_0cv424jc/tb.sv:112: $finish called at 362210000 (1ps)"
+        "log": "PASS shared DDR pipeline seed=31 tags=8 commands=4562 reads=3104 full_tag_cycles=283 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_atm8jmnv/tb.sv:122: $finish called at 362650000 (1ps)"
       },
       {
         "tag_bits": 5,
         "seed": 127,
         "passed": true,
-        "log": "PASS shared DDR pipeline seed=127 tags=32 commands=4738 reads=3186 full_tag_cycles=230 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_0cv424jc/tb.sv:112: $finish called at 362210000 (1ps)"
+        "log": "PASS shared DDR pipeline seed=127 tags=32 commands=4738 reads=3186 full_tag_cycles=230 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_atm8jmnv/tb.sv:122: $finish called at 362650000 (1ps)"
       }
     ],
     "hardware_tested": false,
