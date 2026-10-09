@@ -1035,7 +1035,7 @@
   "complete_workstation_flash_boot_verified": true,
   "complete_workstation_flash_boot_count": 3,
   "release_timing_closed": false,
-  "current_candidate": "results/workstation_flashb4_20261010_narrow_feature_slot",
+  "current_candidate": "results/workstation_flashb5_20261010_registered_pixel_ready",
   "AF_render_predecode": {
     "build": "results/workstation_flashaf_20261009_render_predecode",
     "user_code": "0x000000AF",
@@ -1238,5 +1238,35 @@
     "unit_tests": "reports/CNN_FLASH_BOOT_PIXEL_SKID_TESTS.json",
     "full_renderer_test": "reports/CNN_FLASH_BOOT_PIXEL_SKID_FULL_RENDERER_TESTS.json",
     "hardware_tested": false
+  },
+  "B5_registered_pixel_ready": {
+    "status": "building",
+    "build": "results/workstation_flashb5_20261010_registered_pixel_ready",
+    "user_code": "0x000000B5",
+    "changed_from_B4": [
+      "Prj1.gprj",
+      "scripts/build.tcl",
+      "src/video/hdmi_display.v",
+      "src/video/feedback_pixel_skid.v"
+    ],
+    "other_source_inputs_unchanged": 602,
+    "bsram_added": 0,
+    "physical_bsram_limit": 268,
+    "hardware_tested": false,
+    "unit_tests": "reports/CNN_FLASH_BOOT_PIXEL_SKID_TESTS.json",
+    "full_renderer_tests": "reports/CNN_FLASH_BOOT_PIXEL_SKID_FULL_RENDERER_TESTS.json",
+    "source_bound_full_renderer_passed": true,
+    "source_bound_full_renderer": "results/workstation_flashb5_20261010_registered_pixel_ready/frozen_full_renderer_skid_simulation.json"
+  },
+  "prepared_parallel_tf_and_complete_background": {
+    "tf_counter_proof": "reports/CNN_FLASH_BOOT_TF_BYTE_COUNT_TESTS.json",
+    "tf_control_cases": 20,
+    "tf_control_proof": "reports/CNN_FLASH_BOOT_PARALLEL_TF_CONTROL_TESTS.json",
+    "pixel_proof": "reports/CNN_FLASH_BOOT_COMPLETE_BACKGROUND_TESTS.json",
+    "native_frame_proof": "reports/CNN_FLASH_BOOT_COMPLETE_BACKGROUND_RENDERER_TESTS.json",
+    "added_cycles": 0,
+    "bsram_added": 0,
+    "hardware_tested": false,
+    "all_tests_passed": true
   }
 }

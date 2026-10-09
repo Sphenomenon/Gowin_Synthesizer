@@ -392,12 +392,23 @@ def lut_tmds_popcount(text):
     endfunction'''
     return text[:match.start()]+lookup+text[match.end():]
 
-def predecode_dashboard_background(text):
+def predecode_dashboard_background(text,complete=False):
     """Evaluate pure background coordinate tests on the preceding A edge."""
     import re
     start=text.index("        next_background = 32'h00101b2a;")
     end=text.index('\n    end\n',start)
     block=text[start:end];conditions=[];result='';cursor=0
+    aliases=['a_image_x','a_image_y','full_distance_x','full_distance_y','distance_x','distance_y','diamond_distance']
+    coordinate_wires=''
+    if complete:
+        begin=text.index('    wire [10:0] a_image_x=');stop=text.index('    wire spectrum_l_ink=',begin)
+        coordinate_wires=text[begin:stop]
+        for name in aliases:coordinate_wires=re.sub(r'\b'+name+r'\b','background_'+name+'_pre',coordinate_wires)
+        coordinate_wires=re.sub(r'\ba_x\b','pixel_x_q',coordinate_wires)
+        coordinate_wires=re.sub(r'\ba_y\b','pixel_y_q',coordinate_wires)
+        anchor='next_background=a_y<128 ?';assert block.count(anchor)==1
+        block=block.replace(anchor,'next_background=background_coordinate_q[0] ?')
+        conditions.append('a_y<128')
     for match in list(re.finditer(r'\bif\s*\(',block)):
         if match.start()<cursor:continue
         pos=match.end();depth=1
@@ -406,21 +417,27 @@ def predecode_dashboard_background(text):
             if block[pos]=='(':depth+=1
             elif block[pos]==')':depth-=1
             pos+=1
-        expr=block[match.end():pos-1];names=set(re.findall(r'\b[A-Za-z_]\w*\b',expr))
-        if names & {'a_x','a_y'} and names <= {'a_x','a_y','d'}:
+        expr=block[match.end():pos-1]
+        identifiers=re.sub(r"\d+'[sS]?[bBoOdDhH][0-9a-fA-F_xXzZ?]+",'',expr) if complete else expr
+        names=set(re.findall(r'\b[A-Za-z_]\w*\b',identifiers))
+        allowed={'a_x','a_y','d'} | (set(aliases) if complete else set())
+        coordinates={'a_x','a_y'} | (set(aliases) if complete else set())
+        if names & coordinates and names <= allowed:
             result+=block[cursor:match.start()]+f'if(background_coordinate_q[{len(conditions)}])'
             conditions.append(expr);cursor=pos
     result+=block[cursor:];assert len(conditions)>=20,len(conditions)
     text=text[:start]+result+text[end:]
-    sequential='''    always @(posedge clk or negedge reset_n)begin
+    sequential="""    always @(posedge clk or negedge reset_n)begin
         if(!reset_n)background_coordinate_q<=0;
         else if(enable)begin
-'''
+"""
     for i,expr in enumerate(conditions):
         expr=re.sub(r'\ba_x\b','pixel_x_q',expr);expr=re.sub(r'\ba_y\b','pixel_y_q',expr)
+        if complete:
+            for name in aliases:expr=re.sub(r'\b'+name+r'\b','background_'+name+'_pre',expr)
         sequential+=f'            background_coordinate_q[{i}]<=({expr});\n'
     sequential+='        end\n    end\n'
-    declarations=f'    reg [{len(conditions)-1}:0] background_coordinate_q;\n'
+    declarations=coordinate_wires+f'    reg [{len(conditions)-1}:0] background_coordinate_q;\n'
     return text.replace('    reg a_effect_hit',declarations+'    reg a_effect_hit',1).replace('endmodule',sequential+'endmodule')
 
 def register_arbiter_tag_flags(text):
@@ -520,3 +537,33 @@ def patch_hdmi_pixel_skid(text):
         .sink_valid(writer_pixel_valid),.sink_ready(writer_pixel_ready),
         .sink_data(writer_pixel_data),.sink_done(writer_pixel_done));
 """+anchor,1)
+
+
+TF_BYTE_COUNT_HELPER="""    function [31:0] add_byte_count;
+        input [31:0] value;
+        input [5:0] increment;
+        reg [8:0] low_sum;
+        reg carry8,carry16,carry24;
+        reg [7:0] b1,b2,b3;
+        begin
+            low_sum={1'b0,value[7:0]}+{3'd0,increment};
+            carry8=low_sum[8];
+            carry16=carry8 && value[15:8]==8'hff;
+            carry24=carry8 && value[23:8]==16'hffff;
+            b1=value[15:8]+carry8;
+            b2=value[23:16]+carry16;
+            b3=value[31:24]+carry24;
+            add_byte_count={b3,b2,b1,low_sum[7:0]};
+        end
+    endfunction
+"""
+
+def parallel_tf_byte_counters(text):
+    """Exact32-bit modulo sums, independent byte carries; no control latency."""
+    substitutions=[("capture_byte_count + 32'd1","add_byte_count(capture_byte_count,6'd1)"),
+        ("write_total_bytes + {26'd0, pending_bytes}",'add_byte_count(write_total_bytes,pending_bytes)'),
+        ("read_total_bytes +\n                                        {26'd0, read_response_bytes}",'add_byte_count(read_total_bytes,read_response_bytes)')]
+    for old,new in substitutions:
+        assert text.count(old)==1,(old,text.count(old));text=text.replace(old,new)
+    anchor='    function [31:0] advance_ring;';assert text.count(anchor)==1
+    return text.replace(anchor,TF_BYTE_COUNT_HELPER+anchor,1)

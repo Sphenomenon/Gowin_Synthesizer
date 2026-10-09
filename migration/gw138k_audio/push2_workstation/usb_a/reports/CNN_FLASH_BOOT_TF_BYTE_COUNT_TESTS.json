@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "proof": "SAT all38inputbits,exactmodulo32bits includingcarryat8/16/24/32,zero/1..63increments",
+  "added_cycles": 0,
+  "helper_sha256": "01cd4801142f276c8066aa4d9aafd0e553b6d93ef08c253ae73701f25d670f3a",
+  "miter_sha256": "d151b1d982f1cb6c1b4c4cf69e4b92efe48a0ac1e59b71c2d0c6fd268bd24d49",
+  "original_sha256": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+  "patched_sha256": "a2bb3b255ad7cd451283bc86e42654e69682119f2ff36e9c33c04b32a741b3e9",
+  "solver_version": "Yosys 0.67+post (git sha1 22c15a7ecd53437f18f67c72572bd693f78357ca, GNU /usr/bin/g++ 16.1.1)"
+}

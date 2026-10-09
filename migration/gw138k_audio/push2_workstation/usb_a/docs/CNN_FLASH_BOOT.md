@@ -232,3 +232,5 @@ B2完成但时序发布拒绝：clk50 feature-cache地址-2.226ns、DDR UI校准
 特征缓存读地址备选优化：`--narrow-feature-read-slot` 必须配合 `--retime-cache-read`。保留原完整有符号边界检查，只在合法0..4/0..6/0..2窗口内把乘常数的相对slot限制到3位；无新增周期、BSRAM或CNN算术改动。`tools/test_cnn_feature_read_address.py` 对实际原/新解码HDL的149位输入进行SAT等价证明，FRAME_LIMIT=1/172/512全部成立，并证明三个最大合法地址10559/19711/8447可达。未应用到B3；B4已开始构建，实际源码绑定SAT通过，统一发布门禁在任何硬件操作前重复该绑定检查，均尚未写板。证据为`reports/CNN_FLASH_BOOT_FEATURE_READ_ADDRESS_TESTS.json`。
 
 `--register-pixel-ready` 在原renderer与原ddr_frame_writer之间加入两拍64-bit寄存缓冲，同DDR UI时钟，无BSRAM。输入ready是精确下一占用寄存，完成事件要等全部已接收像素送至writer；原writer仍执行最后DDR数据与元数据握手后发布帧。新增接口的背压/复位/完成测试和完整1920x1080、129601个原生DDR命令逐项比较已通过。发布门禁对实际冻结缓冲/renderer/dashboard/writer源码再次运行协议和完整帧测试；通过不替代真实路由时序。
+
+TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合，三个业务计数器只改为逐字节并行进位。全部32-bit数值和6-bit增量的模32-bit结果经SAT证明（含0..63、所有进位及溢出），控制/容量错误/播放字节序保持。`--complete-background-coordinates` 需要背景预解码，把剩余纯坐标/菱形/箭头条件搬到已经增加的同一拍，无进一步像素延迟；完整RGB565和DDR命令比较通过。两个功能都为显式选项，尚未板级验证。

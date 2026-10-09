@@ -115,3 +115,5 @@ B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同�
 2026-10-10 B4已启动，新增实际特征读地址slot位宽约束；与B3仅两份输入不同：UserCode脚本、basic_pitch_pcm_pipeline.sv中的三个有边界保护的slot乘法输入。其余603份冻结输入相同。实际B4源码与已经证明的变换完全相符，SAT149位等价证据绑定到CNN_FLASH_BOOT_B4_FEATURE_SLOT_TESTS.json，零新增周期。B3仍继续独立布线/验收，B4未写板。
 
 2026-10-10 B3路由完成：SYN220、物理268/340。clk50 51.197MHz/setup+0.468/hold+0.160，视频156.577MHz，独立PLL全传播与两组CDC通过；真实DDR UI setup−2.049/hold+0.169，最差u_writer/full→renderer/front_effect CE、11.802ns，正式门禁拒绝且programming_started=false。B4正在布线。针对剩余背压路径新增两拍64-bit像素寄存缓冲，source-ready按精确下一占用注册，done延迟到全部像素送达writer。原frame_writer和renderer未改。三种seed各99984周期、25复位epoch检查通过；完整1920x1080/1036800双像素输出与129601原生DDR地址/RGB565/meta在独立长停顿下逐项相同，frame_pending必须晚于最后DDR数据及meta提交。新增BSRAM为0；统一门禁重新绑定实际冻结源运行这些测试。
+
+2026-10-10 B5已启动综合/路由，新增原writer之前的寄存两拍像素ready；与B4只有HDMI连接、新skid文件、gprj和UserCode脚本不同，其余源保持冻结，实际冻结副本完整1036800像素/129601DDR命令比较PASS。根据B3另两类次要路径，准备TF32bit+6bit分段进位（Yosys SAT对全部38位输入证明相同、20组原/新TF直连/队列/背压实例回归PASS）和完整背景坐标预解码（含sized literal、菱形、箭头，保持已有1启用拍；2137105像素和完整DDR帧比较PASS）。上述修正不增加周期或BSRAM，不放宽时钟门禁。

@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
-from cnn_ddr_pipeline_patch import TF_DMA, retime_tf_write_buffer,retime_tf_capture_limit,power_two_tf_ring
+from cnn_ddr_pipeline_patch import TF_DMA, retime_tf_write_buffer,retime_tf_capture_limit,power_two_tf_ring,parallel_tf_byte_counters
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / 'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
@@ -96,10 +96,15 @@ def buffered_native_tb(tb, stalled):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--parallel-byte-counters',action='store_true')
+    parser.add_argument('--build',type=Path)
     args = parser.parse_args()
     original = (BASE / TF_DMA).read_text()
     patched = retime_tf_write_buffer(original)
     variants=[('original_control', original), ('retimed', patched),('registered_limit',retime_tf_capture_limit(patched)),('power_two_ring',power_two_tf_ring(retime_tf_capture_limit(patched)))]
+    if args.parallel_byte_counters:variants.append(('parallel_byte_counters',parallel_tf_byte_counters(variants[-1][1])))
+    if args.build:
+        assert args.parallel_byte_counters and (args.build/'Prj1'/TF_DMA).read_text()==variants[-1][1],'frozen TF source differs from tested variant'
     cases = []
     with tempfile.TemporaryDirectory(prefix='cnn_tf_stage_retime_') as temp:
         folder = Path(temp)
@@ -125,7 +130,7 @@ def main():
                 assert result.returncode == 0 and 'PASS' in result.stdout, result.stdout + result.stderr
                 cases.append(dict(source=label, buffered_native=buffered,native_backpressure=stalled,
                                   passed=True, log=result.stdout.strip()))
-    report = dict(passed=True, hardware_tested=False, pcm_saved=False, cases=cases,
+    report = dict(passed=True,source_bound=bool(args.build),build=str(args.build) if args.build else None, hardware_tested=False, pcm_saved=False, cases=cases,
                   variant_source_sha256={label:hashlib.sha256(text.encode()).hexdigest() for label,text in variants},
                   staged_source_sha256=hashlib.sha256(patched.encode()).hexdigest(),
                   original_source_sha256=hashlib.sha256(original.encode()).hexdigest(),

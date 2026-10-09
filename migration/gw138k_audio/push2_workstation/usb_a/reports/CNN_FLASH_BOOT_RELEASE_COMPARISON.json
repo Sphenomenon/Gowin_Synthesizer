@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T00:54:35.642144+08:00",
+  "generated_at": "2026-10-10T00:55:56.502210+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -166,6 +166,17 @@
       "release_gate_passed": false,
       "programming_started": false,
       "formal_address_proof_passed": true
+    },
+    {
+      "user_code": "B5",
+      "build": "results/workstation_flashb5_20261010_registered_pixel_ready",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "status": "synthesizing",
+      "release_gate_passed": false,
+      "programming_started": false,
+      "registered_two_beat_pixel_ready": true,
+      "bsram_added": 0
     }
   ]
 }

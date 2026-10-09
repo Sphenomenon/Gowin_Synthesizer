@@ -71,10 +71,16 @@ def main():
                 '--pixel-skid','--build',str(build),'--output',str(output/'pixel_skid_full_renderer.json')]
             for key,flag in [('predecoded_text_coordinates','--text-coordinates'),
                     ('parallel_dashboard_cards','--parallel-cards'),('predecoded_background_coordinates','--background-coordinates'),
-                    ('predecoded_wave_heights','--wave-heights')]:
+                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates')]:
                 if meta.get(key):command.append(flag)
             label,code=run('pixel_skid_full_renderer',command)
             result['checks'][label]=code
+        if meta.get('parallel_tf_byte_counters'):
+            for label,tool,flags in [('tf_byte_count_proof','test_cnn_tf_byte_count.py',[]),
+                    ('tf_byte_count_protocol','test_cnn_tf_write_buffer_retime.py',['--parallel-byte-counters'])]:
+                label,code=run(label,[sys.executable,str(ROOT/'tools'/tool),'--build',str(build),
+                    '--output',str(output/(label+'.json'))]+flags)
+                result['checks'][label]=code
         # Keep all evidence even if one independent routed check fails.
         sys.path.insert(0,str(ROOT/'tools'))
         deploy=importlib.import_module('deploy_cnn_flash_boot')
