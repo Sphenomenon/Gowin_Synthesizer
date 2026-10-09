@@ -103,7 +103,7 @@ python3 tools/test_cnn_flash_deploy.py --build <完整结果目录>
 python3 sim/music/run_bp_config_ab.py --simulator verilator --frames 3 --win-len 2048
 ```
 
-完整构建保留部署 full85 的源文件快照。默认 serial 只叠加 Flash 传输模块、模型输入连线、B138 来源/错误字段、顶层六个 Flash 引脚与约束；CNN/DDR 客户端源文件不变。`--transport direct` 才叠加此前的模型内存端口方案。可选增量 P&R 会复制并记录已验证 full85 `.pr` 的 SHA256，仍运行全新 RTL 综合；参考文件和所有输入在构建前后复核，不覆盖原候选。冻结的 DDR 仲裁、地址图、显示、延迟 DMA 文件逐一核对 SHA256；没有把工作区其他未提交的开发内容并入发布。
+完整构建保留部署 full85 的源文件快照。默认 serial 只叠加 Flash 传输模块、模型输入连线、B138 来源/错误字段、顶层六个 Flash 引脚与约束；CNN/DDR 客户端源文件不变。`--transport direct` 才叠加此前的模型内存端口方案。可选 `--incremental-baseline` 会复制并记录已验证 full85 `.p` 的 SHA256，按官方 SUG1220 使用 `inc_place` 保留布局参考，仍运行全新 RTL 综合和全新布线。此前 0x93 错用 `.pr` 的增量尝试已记录失败，不再复用；参考文件和所有输入在构建前后复核，不覆盖原候选。冻结的 DDR 仲裁、地址图、显示、延迟 DMA 文件逐一核对 SHA256；没有把工作区其他未提交的开发内容并入发布。
 
 可选 `--retime-cache-read` 把权重缓存的地址有效性掩码与 BSRAM 数据同拍寄存，再组合选择有效输出，维持原来一拍读取延迟和越界读零。统计用八路固定索引计数代替动态数组索引，CNN 算术和计数语义保持一致。独立测试与冻结 full85 逐周期比较 1/31/7488 字缓存、随机反压/复位/越界地址，以及 10,000 周期统计计数；CNN 三帧回归的六层哈希和谱面结果一致。构建命令可加 `--retime-cache-read`，回归命令为 `python3 tools/test_cnn_cache_read_retime.py`。
 

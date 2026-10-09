@@ -101,7 +101,7 @@ def main():
     ap.add_argument('--output',type=Path)
     ap.add_argument('--user-code')
     ap.add_argument('--synthesis-from',type=Path,help='reuse identical successful RTL synthesis after a CST-only failure')
-    ap.add_argument('--incremental-baseline',action='store_true',help='experimental reference reuse; rejected on any unrouted net')
+    ap.add_argument('--incremental-baseline',action='store_true',help='reuse verified full85 .p placement with fresh synthesis and fresh routing; reject any unrouted net')
     ap.add_argument('--route-option',type=int,choices=(0,1,2),default=1,help='Gowin route search option, recorded per isolated candidate')
     ap.add_argument('--tighten-cache-reset',action='store_true',help='tighten existing synchronous weight-cache RESET endpoint max delay to 18 ns')
     args=ap.parse_args()
@@ -190,11 +190,11 @@ set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight
 ''')
         tcl=stage/'scripts/build.tcl';s=tcl.read_text()
         assert 'set_option -use_mspi_as_gpio 1' in s and 'set_option -use_cpu_as_gpio 1' in s
-        s=re.sub(r'(?m)^set_option -(?:user_code|inc_pnr).*\n','',s)
+        s=re.sub(r'(?m)^set_option -(?:user_code|inc_pnr|inc_place).*\n','',s)
         s=re.sub(r'(?m)^set_option -route_option .*$',f'set_option -route_option {args.route_option}',s)
         if args.user_code:s=s.replace('set flow all','set_option -user_code '+args.user_code.upper()+'\nset flow all')
         if args.incremental_baseline:
-            s=s.replace('set flow all','set_option -inc_pnr [file join $root build full85_reference.pr]\nset flow all')
+            s=s.replace('set flow all','set_option -inc_place [file join $root build full85_reference.p]\nset flow all')
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
@@ -227,18 +227,19 @@ set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight
     if args.incremental_baseline:
         old_result=json.loads((BASE/'tool_result.json').read_text())
         assert old_result['exit_code']==0 and old_result['inputs_unchanged'],'incremental baseline incomplete'
-        old_pr=BASE/'Prj1/impl/pnr/Prj1.pr';assert old_pr.is_file(),'missing routed reference'
-        reference=stage/'build/full85_reference.pr';reference.parent.mkdir(exist_ok=True)
-        shutil.copy2(old_pr,reference);reference_sha=sha(old_pr)
+        old_p=BASE/'Prj1/impl/pnr/Prj1.p';assert old_p.is_file(),'missing verified placement .p reference'
+        reference=stage/'build/full85_reference.p';reference.parent.mkdir(exist_ok=True)
+        shutil.copy2(old_p,reference);reference_sha=sha(old_p)
         assert sha(reference)==reference_sha,'reference copy drift'
         m=json.loads((output/'build_metadata.json').read_text())
-        m['incremental_reference']=dict(build=str(BASE.relative_to(ROOT)),routed_pr_sha256=reference_sha,
-            fresh_synthesis=True,routing_only=True)
+        m['incremental_reference']=dict(build=str(BASE.relative_to(ROOT)),placement_p_sha256=reference_sha,
+            file='build/full85_reference.p',command='inc_place',fresh_synthesis=True,fresh_routing=True)
         write_json(output/'build_metadata.json',m)
     elif args.flow=='pnr':
         recorded_reference=json.loads((output/'build_metadata.json').read_text()).get('incremental_reference')
         if recorded_reference:
-            reference=stage/'build/full85_reference.pr';reference_sha=recorded_reference['routed_pr_sha256']
+            assert recorded_reference.get('command')=='inc_place','legacy .pr incremental attempt is not eligible for reuse; prepare a fresh .p candidate'
+            reference=stage/recorded_reference['file'];reference_sha=recorded_reference['placement_p_sha256']
             assert sha(reference)==reference_sha,'incremental reference drift before reroute'
     if json.loads((output/'build_metadata.json').read_text()).get('transport')=='serial':audit_serial_compatibility(output)
     for rel,(staged,h) in FROZEN.items():assert sha(ROOT/rel)==sha(stage/staged)==h,rel
@@ -250,7 +251,7 @@ set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight
         run=subprocess.run([str(Path.home()/'.local/bin/gw_sh'),'scripts/build.tcl'],cwd=stage,
                            env=dict(os.environ,PRJ1_FLOW=actual_flow),stdout=log,stderr=subprocess.STDOUT)
     changed=[p for p,h in inputs.items() if sha(stage/p)!=h]
-    if reference and sha(reference)!=reference_sha:changed.append('build/full85_reference.pr')
+    if reference and sha(reference)!=reference_sha:changed.append(str(reference.relative_to(stage)))
     record=dict(exit_code=run.returncode,flow=args.flow,inputs_unchanged=not changed,changed=changed,hardware_tested=False)
     write_json(output/'tool_result.json',record)
     if run.returncode or changed:raise SystemExit('build/input check failed: '+str(output))
