@@ -137,6 +137,10 @@ Flash 写入必须把模型分区和位流一起记录。原生 Arora V operatio
 ```sh
 # 默认只校验工件与预览命令；实体写入显式加 --program。
 python3 tools/deploy_cnn_flash_boot.py <完整结果目录>
+# 正式板级验收：三次自主搬运成功后，在同一独占锁下执行实时演奏烟雾测试。
+python3 tools/deploy_cnn_flash_boot.py <完整结果目录> --program --exercise-live
 ```
 
 部署工具先核对原 20 ns clk50 时序、full85 原本满足频率要求的 DDR/CPU/视频各时钟是否出现新退化、板上版本、Flash ID、冻结工件与独占锁。clk50 未闭合或原本通过的时钟退化时默认拒绝实体写入；`--allow-clock-regression`（旧名 `--allow-clk50-open`）仅用于临时的启动诊断，必须恢复基线且不得据此提升 LATEST。先写模型分区并校验地址零处旧位流仍完好，再写新配置位流；三次 SRAM Erase + JTAG Reprogram 后只读监听 UART，且先等待/核对目标 UserCode 和已配置状态；不在 FPGA 配置完成前解释 DDR/UART 报文，要求模型来源=Flash 且状态=E。失败时保存原始日志，并尝试恢复原 full85 配置位流；等待其 UserCode/配置状态通过后，单独通过 UART 恢复原 full85 的易失模型并执行启动检查。回滚上传在独立证据字段里记录，不计入新功能 Flash→DDR 验收。
+
+`--exercise-live` 的三音并发/立体声/静音/Panic 验证属于部署事务：即使三次模型 Flash 启动已通过，只要实时烟雾测试失败，也自动恢复 full85、重新上传其旧易失模型并检查启动。七项离线部署故障测试包含此失败分支，所有 Programmer/UART 操作均使用替身。实体结果仍单独记录，不能以离线测试替代。

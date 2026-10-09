@@ -280,9 +280,21 @@
         "passed": true,
         "commands": 16,
         "hardware_io_used": false
+      },
+      {
+        "case": "live_success",
+        "passed": true,
+        "commands": 16,
+        "hardware_io_used": false
+      },
+      {
+        "case": "live_failure",
+        "passed": true,
+        "commands": 22,
+        "hardware_io_used": false
       }
     ],
-    "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_flash99_20261009_serial_route0",
+    "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_flash9a_20261009_cache_read",
     "notes": "Programmer, serial, board inventory, lock and waits are stubbed; all unknown external commands fail closed. Actual candidate input/hash/status logic is exercised."
   },
   "serial_transport": {

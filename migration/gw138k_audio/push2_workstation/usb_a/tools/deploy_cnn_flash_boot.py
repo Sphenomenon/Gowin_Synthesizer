@@ -58,6 +58,7 @@ def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('build',type=Path)
     ap.add_argument('--program',action='store_true')
+    ap.add_argument('--exercise-live',action='store_true',help='after three Flash boots test live scope under the same lock; failure rolls back full85 and its model')
     ap.add_argument('--allow-clk50-open','--allow-clock-regression',dest='allow_clk50_open',action='store_true',help='explicit temporary diagnostic only; bypass clk50/previous-positive-clock gate and never promote')
     ap.add_argument('--expected-code',default='0x00000085')
     ap.add_argument('--location',type=int,default=53)
@@ -98,7 +99,7 @@ def main():
                 commands=[],boots=[],passed=False,uart_model_upload_used=False,sram_download_used=False,sram_erased_before_each_boot=True,
                 physical_power_cycle_tested=False,board_serial='2025030317',uart_hardware_drain_seconds=2,
                 clk50_closed=clk50['clk50_closed'],previous_positive_clock_audit=previous_clocks,diagnostic_timing_override=args.allow_clk50_open,
-                model_transport=build_meta.get('transport','direct'))
+                model_transport=build_meta.get('transport','direct'),live_smoke_requested=args.exercise_live,live_smoke_passed=False)
     def save():(output/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     def run(label,extra,require=None):
         print(label,flush=True)
@@ -165,6 +166,14 @@ def main():
                     result['boots'].append(dict(index=index,passed=ok,model_observations=observed));save()
                     if not ok:run('failed_boot_code_'+str(index),['--operation_index','0'])
                     assert ok,'Flash->DDR CRC/auto boot not proven; UART fallback is not a pass'
+            if args.exercise_live:
+                smoke_path=output/'live_smoke.json'
+                smoke=subprocess.run([sys.executable,str(ROOT/'tools/capture_scope_smoke.py'),
+                    '--port',args.port,'--seconds','8','--exercise-live','--output',str(smoke_path)],
+                    capture_output=True,text=True,timeout=90)
+                (output/'live_smoke.log').write_text(smoke.stdout+smoke.stderr)
+                assert smoke.returncode==0 and json.loads(smoke_path.read_text())['passed'],'live workstation smoke failed'
+                result['live_smoke_passed']=True;save()
             result['passed']=True
         except Exception as exc:
             result['error']=str(exc);save()
