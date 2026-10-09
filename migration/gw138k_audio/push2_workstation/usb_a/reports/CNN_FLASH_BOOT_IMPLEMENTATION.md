@@ -69,3 +69,5 @@ AD局部时序修改已提交6e8f104：TF payload CE改为本地idle，capture�
 2026-10-09 19:05首次完整工作站硬件成功：AD临时SRAM下载后自动读既有NOR权重，B138模型E/source1连续通过，未从PC上传模型；candidate_live_smoke全部PASS，三音/立体声/静音/Panic及CPU/DDR健康均通过。随后按诊断策略从原Flash恢复full85，其旧模型E和现场烟雾PASS。正式配置Flash未改，LATEST仍85，物理断电未验证。AD最终268/340BSRAM，clk50 55.362MHz、video187.261MHz及原先正时钟全部PASS；DDR同钟setup−2.107ns（最差旧文字渲染读X→textline），hold+0.165ns，video PLL ICPSEL传播10.757ns>10ns。正式发布门禁仍拒绝；模型持久化/自动装载已在完整工作站证明，时序发布尚未完成。
 
 2026-10-09 19:29真正配置Flash验收诊断完成：AD配置与600000权重分区均Program/Verify PASS，逐字节model复验且保留原地址0配置证明通过；连续三次SRAM擦除→Flash重载，准确UserCodeAD/状态26020，每次模型E/source1至少3条新UART报告，无SRAM下载、无模型PC上传。全实时scope三音/LR/静音/Panic PASS。该次明确使用临时时序诊断override，release_eligible=false，物理断电未测；无条件回写/校验/重载full85，恢复其旧UART模型E并live PASS。AE只比AD改变更严格SDC和UserCode脚本，所有RTL逐字一致，仍布局中。LATEST仍85。
+
+2026-10-09 20:06：AE（AD全部RTL不变，严格8ns DDR与6ns PLL端点物理预算）完成P&R268BSRAM，clk50 55.536MHz/video172.962MHz/原先正时钟与CDC通过；DDR严格8ns路径slack−3.514ns，实际延迟11.468ns，最差仍文字渲染。PLL完整传播10.523ns=IBUF0.532+clockroute3.807+C2Q0.275+RomDreg到ICProute5.909，原10ns审计失败；需源到端点预算收紧，不能把PLL预算改大。AE未上板。原AD真实Flash三次模型E/source1与现场PASS实证保留，板上full85已完整恢复。

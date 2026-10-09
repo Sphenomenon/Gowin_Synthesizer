@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_actual_full_Flash3boots_live_PASS_restored85_AE_placement",
+  "status": "AD_full_Flash3boots_live_verified_AE_legacy_STA_and_PLL_still_open",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1006,7 +1006,7 @@
   "AE_physical_budget": {
     "build": "results/workstation_flashae_20261009_physical_budgets",
     "user_code": "0x000000AE",
-    "status": "routing",
+    "status": "routed_release_gate_failed",
     "RTL_identical_to_AD": true,
     "changed_from_AD": [
       "constraints/tang_mega_138k.sdc",
@@ -1016,7 +1016,21 @@
     "PLL_control_physical_max_delay_ns": 6.0,
     "PLL_independent_full_propagation_budget_ns": 10.0,
     "hardware_tested": false,
-    "physical_bsram_limit": 268
+    "physical_bsram_limit": 268,
+    "physical_bsram": 268,
+    "clk50_fmax_mhz": 55.536,
+    "video_fmax_mhz": 172.962,
+    "DDR_UI_physical8ns_budget_setup_wns_ns": -3.514,
+    "DDR_UI_hold_wns_ns": 0.166,
+    "PLL_full_propagation_ns": 10.523,
+    "checks": {
+      "clk50": 0,
+      "ddr_ui": 1,
+      "scope_cdc": 0,
+      "clk50_cdc": 0,
+      "video_pll": 1
+    },
+    "release_eligible": false
   },
   "complete_workstation_flash_boot_verified": true,
   "complete_workstation_flash_boot_count": 3,
