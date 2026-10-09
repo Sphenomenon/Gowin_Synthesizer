@@ -1035,7 +1035,7 @@
   "complete_workstation_flash_boot_verified": true,
   "complete_workstation_flash_boot_count": 3,
   "release_timing_closed": false,
-  "current_candidate": "results/workstation_flashb3_20261010_local_ready_wave",
+  "current_candidate": "results/workstation_flashb4_20261010_narrow_feature_slot",
   "AF_render_predecode": {
     "build": "results/workstation_flashaf_20261009_render_predecode",
     "user_code": "0x000000AF",
@@ -1142,7 +1142,7 @@
   "B3_local_ready_wave": {
     "build": "results/workstation_flashb3_20261010_local_ready_wave",
     "user_code": "0x000000B3",
-    "status": "building",
+    "status": "routed_release_rejected",
     "source_bound_tests": "reports/CNN_FLASH_BOOT_B3_LOCAL_PATH_TESTS.json",
     "source_bound_tests_passed": true,
     "physical_bsram_limit": 268,
@@ -1170,7 +1170,26 @@
       "lut": 56494,
       "physical_bsram": null
     },
-    "baseline_readonly_verified": true
+    "baseline_readonly_verified": true,
+    "build_completed": true,
+    "synthesis_bsram": 220,
+    "physical_bsram": 268,
+    "release_gate_passed": false,
+    "programming_started": false,
+    "clk50_fmax_mhz": 51.197,
+    "clk50_setup_wns_ns": 0.468,
+    "clk50_hold_wns_ns": 0.16,
+    "ddr_ui_setup_wns_ns": -2.049,
+    "ddr_ui_hold_wns_ns": 0.169,
+    "remaining_critical_path": {
+      "slack_ns": -2.049,
+      "source": "u_video/u_writer/full_s1/Q",
+      "destination": "u_video/u_renderer/u_even/front_effect_0_s0/CE",
+      "data_delay_ns": 11.802
+    },
+    "video_fmax_mhz": 156.577,
+    "pll_max_propagation_ns": 7.621,
+    "evidence": "results/workstation_flashb3_20261010_local_ready_wave/automatic_acceptance/result.json"
   },
   "prepared_feature_read_address_optimization": {
     "applied_to_B3": false,
@@ -1199,6 +1218,25 @@
     "added_cycles": 0,
     "physical_bsram_limit": 268,
     "source_bound_tests": "reports/CNN_FLASH_BOOT_B4_FEATURE_SLOT_TESTS.json",
+    "hardware_tested": false,
+    "synthesis_resources": {
+      "BSRAM": 220,
+      "SSRAM": 505,
+      "Register": 43607,
+      "LUT": 56494
+    },
+    "synthesis_all_pcm_constant_multiply_inputs_at_most_3_bits": true,
+    "synthesis_evidence": "results/workstation_flashb4_20261010_narrow_feature_slot/feature_slot_synthesis_evidence.json"
+  },
+  "prepared_registered_pixel_ready": {
+    "bsram_added": 0,
+    "storage_data_bits": 128,
+    "ordered_pixel_stream_passed": true,
+    "ddr_native_commands_compared": 129601,
+    "double_pixel_beats_compared": 1036800,
+    "source": "src/video/feedback_pixel_skid.v",
+    "unit_tests": "reports/CNN_FLASH_BOOT_PIXEL_SKID_TESTS.json",
+    "full_renderer_test": "reports/CNN_FLASH_BOOT_PIXEL_SKID_FULL_RENDERER_TESTS.json",
     "hardware_tested": false
   }
 }

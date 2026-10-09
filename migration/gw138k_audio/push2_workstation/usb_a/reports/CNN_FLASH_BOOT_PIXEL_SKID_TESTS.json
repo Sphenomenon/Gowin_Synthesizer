@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "bsram_added": 0,
+  "source_sha256": "df766082448aa0adcc69202c64c66db3ddb3ac88076d0df4116bff4720180504",
+  "checks": [
+    {
+      "seed": 7,
+      "passed": true,
+      "log": "PASS pixel skid seed=7 cycles=99984 resetepochs=25 sequence64bits,longstalls,full,pop/push,completion after drain\n/tmp/cnn_pixel_skid__dhuoraj/tb.sv:45: $finish called at 1000100000 (1ps)"
+    },
+    {
+      "seed": 31,
+      "passed": true,
+      "log": "PASS pixel skid seed=31 cycles=99984 resetepochs=25 sequence64bits,longstalls,full,pop/push,completion after drain\n/tmp/cnn_pixel_skid__dhuoraj/tb.sv:45: $finish called at 1000100000 (1ps)"
+    },
+    {
+      "seed": 127,
+      "passed": true,
+      "log": "PASS pixel skid seed=127 cycles=99984 resetepochs=25 sequence64bits,longstalls,full,pop/push,completion after drain\n/tmp/cnn_pixel_skid__dhuoraj/tb.sv:45: $finish called at 1000100000 (1ps)"
+    }
+  ]
+}

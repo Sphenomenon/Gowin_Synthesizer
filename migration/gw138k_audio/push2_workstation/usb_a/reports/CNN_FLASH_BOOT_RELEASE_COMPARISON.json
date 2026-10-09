@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T00:36:44.380534+08:00",
+  "generated_at": "2026-10-10T00:54:35.642144+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -138,18 +138,31 @@
       "build": "results/workstation_flashb3_20261010_local_ready_wave",
       "hardware_auto_boot_verified": false,
       "default_released": false,
-      "status": "routing",
+      "status": "routed_release_rejected",
       "release_gate_passed": false,
       "programming_started": false,
       "synthesis_bsram": 220,
-      "full_model_local_ready_simulation_passed": true
+      "full_model_local_ready_simulation_passed": true,
+      "physical_bsram": 268,
+      "clk50_mhz": 51.197,
+      "video_mhz": 156.577,
+      "ddr_ui_setup_wns_ns": -2.049,
+      "ddr_ui_hold_wns_ns": 0.169,
+      "pll_max_ns": 7.621,
+      "release_checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0
+      }
     },
     {
       "user_code": "B4",
       "build": "results/workstation_flashb4_20261010_narrow_feature_slot",
       "hardware_auto_boot_verified": false,
       "default_released": false,
-      "status": "synthesizing",
+      "status": "routing",
       "release_gate_passed": false,
       "programming_started": false,
       "formal_address_proof_passed": true

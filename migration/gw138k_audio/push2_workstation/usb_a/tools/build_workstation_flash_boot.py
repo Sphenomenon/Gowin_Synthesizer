@@ -17,7 +17,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from build_full_song_83_bp_ddr_isolation import FROZEN
 from workstation_memory import audit
-from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO,TF_DMA,retime_tf_write_buffer,CLIENT_QUEUES,TF_BUFFER,TMDS,retime_tf_buffer_enable,retime_tf_capture_limit,retime_display_enable,retime_tmds_statistics,DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,DELAY_DMA,parallel_delay_rptr,power_two_tf_ring,parallel_dashboard_cards,lut_tmds_popcount,predecode_dashboard_background,register_arbiter_tag_flags,MODEL_MEMORY_READY_BLOCK,retime_model_memory_ready,predecode_dashboard_wave_heights,narrow_feature_read_slot
+from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO,TF_DMA,retime_tf_write_buffer,CLIENT_QUEUES,TF_BUFFER,TMDS,retime_tf_buffer_enable,retime_tf_capture_limit,retime_display_enable,retime_tmds_statistics,DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,DELAY_DMA,parallel_delay_rptr,power_two_tf_ring,parallel_dashboard_cards,lut_tmds_popcount,predecode_dashboard_background,register_arbiter_tag_flags,MODEL_MEMORY_READY_BLOCK,retime_model_memory_ready,predecode_dashboard_wave_heights,narrow_feature_read_slot,PIXEL_SKID,patch_hdmi_pixel_skid
 from build_cnn_flash_image import build_image,load_words,pack_flash,gowin_data_fs
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
@@ -69,7 +69,8 @@ def used_codes():
 
 def expected_hdmi(metadata):
     text=patch_hdmi((BASE/'Prj1'/HDMI).read_text(),metadata.get('buffered_ddr_clients',False))
-    return retime_display_enable(text) if metadata.get('retimed_display_enable') else text
+    if metadata.get('retimed_display_enable'):text=retime_display_enable(text)
+    return patch_hdmi_pixel_skid(text) if metadata.get('registered_pixel_ready') else text
 
 def expected_tf_dma(metadata):
     text=retime_tf_write_buffer((BASE/'Prj1'/TF_DMA).read_text())
@@ -89,6 +90,7 @@ def audit_serial_compatibility(output):
         pipeline=(ROOT/PIPELINE).read_text()
         if metadata.get('registered_arbiter_tag_flags'):pipeline=register_arbiter_tag_flags(pipeline)
         assert (stage/PIPELINE).read_text()==pipeline,'shared pipeline source drift'
+    if metadata.get('registered_pixel_ready'):assert sha(stage/PIXEL_SKID)==sha(ROOT/PIXEL_SKID),'pixel skid source drift'
     if metadata.get('buffered_ddr_clients'):
         assert sha(stage/CLIENT_QUEUES)==sha(ROOT/CLIENT_QUEUES),'client queue source drift'
     if metadata.get('retimed_tf_write_buffer'):
@@ -203,6 +205,7 @@ def register_response_credit(text):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--register-pixel-ready',action='store_true',help='two-beat register skid before frozen frame writer; same ordered pixels/metadata, done after drain')
     ap.add_argument('--retime-model-memory-ready',action='store_true',help='local1memory-clockcalibrationlevel capture before provenDDR16 request gate')
     ap.add_argument('--predecode-wave-heights',action='store_true',help='wave shift/clamp in existing predecode stage, bit-exact raster')
     ap.add_argument('--narrow-feature-read-slot',action='store_true',help='formally identical feature-cache address decoder, zero extra cycles; bounded relative slots use3bits')
@@ -251,6 +254,7 @@ def main():
     reference_suffix=(args.incremental_pnr_entry or 'pr') if args.incremental_mode=='pnr' else 'p'
     if args.defer_ddr_startup and args.transport!='serial':ap.error('--defer-ddr-startup requires serial transport with startup history alignment')
     if args.retime_model_memory_ready and args.transport!='serial':ap.error('--retime-model-memory-ready requires serial')
+    if args.register_pixel_ready and not args.pipeline_ddr_arbiter:ap.error('--register-pixel-ready requires --pipeline-ddr-arbiter')
     if args.narrow_feature_read_slot and not args.retime_cache_read:ap.error('--narrow-feature-read-slot requires --retime-cache-read')
     if args.predecode_wave_heights and not args.predecode_text_coordinates:ap.error('--predecode-wave-heights requires --predecode-text-coordinates')
     if args.register_arbiter_tag_flags and not args.pipeline_ddr_arbiter:ap.error('--register-arbiter-tag-flags requires --pipeline-ddr-arbiter')
@@ -282,6 +286,7 @@ def main():
     stage=output/'Prj1'
     overlays=OVERLAYS if args.transport=='direct' else [f'rtl/music/{n}' for n in ('basic_pitch_flash_model_loader.sv','basic_pitch_flash_map.svh','basic_pitch_flash_io_guard.sv','basic_pitch_flash_serial_boot.sv')]
     if args.buffer_ddr_clients:overlays += [CLIENT_QUEUES]
+    if args.register_pixel_ready:overlays += [PIXEL_SKID]
     if args.sync_delay_write_fifo:overlays += [SYNC_FIFO]
     if args.pipeline_ddr_arbiter:overlays += [PIPELINE]
     if args.register_response_credit:overlays += ['rtl/music/basic_pitch_ddr_read_credit.sv']
@@ -377,6 +382,8 @@ def main():
         if args.pipeline_ddr_arbiter:
             s=patch_top(s)
             display=stage/HDMI;display.write_text(retime_display_enable(patch_hdmi(display.read_text(),args.buffer_ddr_clients)) if args.retime_display_enable else patch_hdmi(display.read_text(),args.buffer_ddr_clients))
+        if args.register_pixel_ready:
+            display=stage/HDMI;display.write_text(patch_hdmi_pixel_skid(display.read_text()))
         if args.retime_tf_buffer_enable:
             tfbuffer=stage/TF_BUFFER;tfbuffer.write_text(retime_tf_buffer_enable(tfbuffer.read_text()))
         if args.retime_tmds_statistics:
@@ -467,7 +474,7 @@ set_max_delay 4.500 -from [get_pins {u_video/u_clock/g_hardware.u_pll/*/u_pll_in
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,reference_pll_helper_region="R[100:108]C[24:44]" if args.locate_reference_pll_helper else None,predecoded_dashboard=args.predecode_dashboard,predecoded_text_coordinates=args.predecode_text_coordinates,parallel_dashboard_cards=args.parallel_dashboard_cards,predecoded_background_coordinates=args.predecode_background_coordinates,parallel_delay_pointer=args.parallel_delay_pointer,power_two_tf_ring=args.power_two_tf_ring,raster_enabled_latency_added=1 if args.predecode_dashboard else 0,PLL_settings_route_max_delay_ns=4.5 if args.tighten_pll_setting_route else None,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,lut_tmds_popcount=args.lut_tmds_popcount,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_arbiter_tag_flags=args.register_arbiter_tag_flags,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,retimed_model_memory_ready=args.retime_model_memory_ready,predecoded_wave_heights=args.predecode_wave_heights,narrowed_feature_read_slot=args.narrow_feature_read_slot,feature_read_route_max_delay_ns=19.0 if args.tighten_feature_read_route else None,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,reference_pll_helper_region="R[100:108]C[24:44]" if args.locate_reference_pll_helper else None,predecoded_dashboard=args.predecode_dashboard,predecoded_text_coordinates=args.predecode_text_coordinates,parallel_dashboard_cards=args.parallel_dashboard_cards,predecoded_background_coordinates=args.predecode_background_coordinates,parallel_delay_pointer=args.parallel_delay_pointer,power_two_tf_ring=args.power_two_tf_ring,raster_enabled_latency_added=1 if args.predecode_dashboard else 0,PLL_settings_route_max_delay_ns=4.5 if args.tighten_pll_setting_route else None,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,lut_tmds_popcount=args.lut_tmds_popcount,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),registered_pixel_ready=args.register_pixel_ready,pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_arbiter_tag_flags=args.register_arbiter_tag_flags,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,retimed_model_memory_ready=args.retime_model_memory_ready,predecoded_wave_heights=args.predecode_wave_heights,narrowed_feature_read_slot=args.narrow_feature_read_slot,feature_read_route_max_delay_ns=19.0 if args.tighten_feature_read_route else None,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'

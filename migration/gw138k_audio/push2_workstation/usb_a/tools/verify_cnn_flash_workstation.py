@@ -62,6 +62,19 @@ def main():
                 str(ROOT/'tools/test_cnn_feature_read_address.py'),'--build',str(build),
                 '--output',str(output/'feature_read_equivalence.json')])
             result['checks'][label]=code
+        if meta.get('registered_pixel_ready'):
+            label,code=run('pixel_skid_protocol',[sys.executable,
+                str(ROOT/'tools/test_cnn_pixel_skid.py'),'--source',str(build/'Prj1/src/video/feedback_pixel_skid.v'),
+                '--output',str(output/'pixel_skid_protocol.json')])
+            result['checks'][label]=code
+            command=[sys.executable,str(ROOT/'tools/test_cnn_renderer_predecode.py'),
+                '--pixel-skid','--build',str(build),'--output',str(output/'pixel_skid_full_renderer.json')]
+            for key,flag in [('predecoded_text_coordinates','--text-coordinates'),
+                    ('parallel_dashboard_cards','--parallel-cards'),('predecoded_background_coordinates','--background-coordinates'),
+                    ('predecoded_wave_heights','--wave-heights')]:
+                if meta.get(key):command.append(flag)
+            label,code=run('pixel_skid_full_renderer',command)
+            result['checks'][label]=code
         # Keep all evidence even if one independent routed check fails.
         sys.path.insert(0,str(ROOT/'tools'))
         deploy=importlib.import_module('deploy_cnn_flash_boot')

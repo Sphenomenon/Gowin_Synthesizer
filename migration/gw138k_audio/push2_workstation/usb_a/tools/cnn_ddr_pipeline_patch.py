@@ -496,3 +496,27 @@ def narrow_feature_read_slot(text):
         assert f'(feature_read_rel < {bound})' in block
     block=block.replace('$unsigned(feature_read_rel)','$unsigned(feature_read_rel[2:0])')
     return text[:a]+block+text[b:]
+
+
+PIXEL_SKID='src/video/feedback_pixel_skid.v'
+
+def patch_hdmi_pixel_skid(text):
+    """Registered two-beat raster ready, deferred done after drain, same stream."""
+    anchor='    ddr_frame_writer u_writer ('
+    assert text.count(anchor)==1
+    block_start=text.index(anchor);block_end=text.index('    );',block_start)
+    block=text[block_start:block_end]
+    for before,after in [('renderer_done(renderer_done)','renderer_done(writer_pixel_done)'),
+                         ('pixel_valid(pixel_valid)','pixel_valid(writer_pixel_valid)'),
+                         ('pixel_ready(pixel_ready)','pixel_ready(writer_pixel_ready)'),
+                         ('pixel_data(pixel_data)','pixel_data(writer_pixel_data)')]:
+        assert block.count(before)==1;block=block.replace(before,after)
+    text=text[:block_start]+block+text[block_end:]
+    return text.replace(anchor,"""    wire writer_pixel_valid,writer_pixel_ready,writer_pixel_done;
+    wire [63:0] writer_pixel_data;
+    feedback_pixel_skid u_pixel_skid (
+        .clk(memory_clk),.rst_n(ui_rst_n),.source_valid(pixel_valid),
+        .source_ready(pixel_ready),.source_data(pixel_data),.source_done(renderer_done),
+        .sink_valid(writer_pixel_valid),.sink_ready(writer_pixel_ready),
+        .sink_data(writer_pixel_data),.sink_done(writer_pixel_done));
+"""+anchor,1)

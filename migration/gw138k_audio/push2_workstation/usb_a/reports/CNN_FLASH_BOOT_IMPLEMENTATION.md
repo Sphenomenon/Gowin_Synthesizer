@@ -1,6 +1,6 @@
 # CNN Flash→DDR 实施记录
 
-截至2026-10-10 00:26，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传，实时演奏检查PASS。AF/B0/B1/B2发布时序未通过，均未烧录；B1/B2全部PLL全传播已通过，B3本地ready/背景波形/tag修正已综合，正在布线。板上配置和LATEST均保留已核验的full85，正式发布及物理断电验收尚未完成。
+截至2026-10-10 00:57，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传，实时演奏检查PASS。AF/B0/B1/B2发布时序未通过，均未烧录；B1/B2全部PLL全传播已通过，B3clk50/视频/PLL/CDC均通过，DDR UI写FIFO full→renderer CE −2.049ns未过，未烧录。板上配置和LATEST均保留已核验的full85，正式发布及物理断电验收尚未完成。
 
 AD最终268/340物理BSRAM，clk50 55.362MHz、视频187.261MHz。严格时序门禁仍发现DDR UI setup −2.107ns（旧文字/分析渲染为主，hold+0.165ns）和视频PLL全传播10.757ns>10ns，因此AD只作为明确的临时诊断，**配置Flash已恢复full85、旧UART模型E及现场检查PASS，LATEST仍85**。AE保持AD全部RTL，仅增加严格8ns DDR路径/6ns PLL端点物理预算；其已完成结果仍未闭合。原有时钟、hold、CRC、自检和独立PLL10ns门槛全部保留。
 
@@ -113,3 +113,5 @@ B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同�
 2026-10-10 B3完整模型回归已把实际本地memory-ready寄存片段接入冻结原解析器/DDR16及共享arbiter/客户端队列：31字真实115200、52239字仅仿真RX加速到3125000，完整52239写/52239读CRC AF01A61B/source1均PASS，含并发扫描/写入与原生背压。B3综合220BSRAM、505SSRAM、43607寄存器、56494LUT；物理占用和时序尚待最终路由。源码绑定证据已加入CNN_FLASH_BOOT_B3_LOCAL_PATH_TESTS.json。另针对B2 kh→feature缓存地址路径准备零延迟3位slot算术，Yosys SAT对实际原/新解码器149位所有输入、FRAME_LIMIT=1/172/512证明全部观测输出相同，包含三条合法最大地址可达性；只做prepare，未修改B3，也未分配UserCode或操作硬件。
 
 2026-10-10 B4已启动，新增实际特征读地址slot位宽约束；与B3仅两份输入不同：UserCode脚本、basic_pitch_pcm_pipeline.sv中的三个有边界保护的slot乘法输入。其余603份冻结输入相同。实际B4源码与已经证明的变换完全相符，SAT149位等价证据绑定到CNN_FLASH_BOOT_B4_FEATURE_SLOT_TESTS.json，零新增周期。B3仍继续独立布线/验收，B4未写板。
+
+2026-10-10 B3路由完成：SYN220、物理268/340。clk50 51.197MHz/setup+0.468/hold+0.160，视频156.577MHz，独立PLL全传播与两组CDC通过；真实DDR UI setup−2.049/hold+0.169，最差u_writer/full→renderer/front_effect CE、11.802ns，正式门禁拒绝且programming_started=false。B4正在布线。针对剩余背压路径新增两拍64-bit像素寄存缓冲，source-ready按精确下一占用注册，done延迟到全部像素送达writer。原frame_writer和renderer未改。三种seed各99984周期、25复位epoch检查通过；完整1920x1080/1036800双像素输出与129601原生DDR地址/RGB565/meta在独立长停顿下逐项相同，frame_pending必须晚于最后DDR数据及meta提交。新增BSRAM为0；统一门禁重新绑定实际冻结源运行这些测试。

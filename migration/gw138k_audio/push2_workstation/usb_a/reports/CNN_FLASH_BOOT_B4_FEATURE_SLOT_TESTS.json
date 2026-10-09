@@ -146,5 +146,87 @@
   "reference_B3_tests": "reports/CNN_FLASH_BOOT_B3_LOCAL_PATH_TESTS.json",
   "generated_at": "2026-10-10T00:36:29.503309+08:00",
   "nonoverlay_build_rejected": true,
-  "release_gate_requires_source_bound_equivalence": true
+  "release_gate_requires_source_bound_equivalence": true,
+  "synthesis_evidence": {
+    "generated_at": "2026-10-10T00:43:57.850983+08:00",
+    "passed": true,
+    "hardware_tested": false,
+    "scope": "synthesis input width evidence, not timing closure",
+    "units": {
+      "workstation_flashb3_20261010_local_ready_wave": {
+        "netlist_sha256": "bdce21701c0db513c1ce062c92c5ea23bdbd929304e6249b43a1d5d8cf03de4f",
+        "pcm_pipeline_multipliers": [
+          {
+            "name": "n5434_s",
+            "nonconstant_A_bits": 2
+          },
+          {
+            "name": "n7652_s",
+            "nonconstant_A_bits": 3
+          },
+          {
+            "name": "n7680_s",
+            "nonconstant_A_bits": 2
+          },
+          {
+            "name": "n8058_s",
+            "nonconstant_A_bits": 2
+          },
+          {
+            "name": "n4983_s",
+            "nonconstant_A_bits": 11
+          },
+          {
+            "name": "n5106_s",
+            "nonconstant_A_bits": 10
+          },
+          {
+            "name": "n5229_s",
+            "nonconstant_A_bits": 10
+          },
+          {
+            "name": "n5564_s",
+            "nonconstant_A_bits": 3
+          }
+        ]
+      },
+      "workstation_flashb4_20261010_narrow_feature_slot": {
+        "netlist_sha256": "03728aa584c5807d6951ef71dd7437a5c8d1e115813336d79e18526add2d2e51",
+        "pcm_pipeline_multipliers": [
+          {
+            "name": "n5079_s",
+            "nonconstant_A_bits": 3
+          },
+          {
+            "name": "n5184_s",
+            "nonconstant_A_bits": 3
+          },
+          {
+            "name": "n5380_s",
+            "nonconstant_A_bits": 2
+          },
+          {
+            "name": "n7598_s",
+            "nonconstant_A_bits": 3
+          },
+          {
+            "name": "n7626_s",
+            "nonconstant_A_bits": 2
+          },
+          {
+            "name": "n8004_s",
+            "nonconstant_A_bits": 2
+          },
+          {
+            "name": "n4974_s",
+            "nonconstant_A_bits": 3
+          },
+          {
+            "name": "n5510_s",
+            "nonconstant_A_bits": 3
+          }
+        ]
+      }
+    }
+  }
 }
