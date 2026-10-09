@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "source_bound": false,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "added_cycles": 0,
+  "proof": "SAT all68inputbits,including all8overlaps/4frontIDs and independent11bitrelative/10bittextpayloads",
+  "miter_sha256": "ae4c5c34c8892b6e779a389ab9c60c35f1a8de6d4ad83d461180c511ac94802f",
+  "original_sha256": "da292b601c1d5b589cffd1fbfd6897c1e4beef1fee113e7a180f9a95a686deda",
+  "patched_sha256": "c689b3bbfb684ffe3b0e6b410d7c8d3b159a3771dab6a9ac63e8e7e3ff487883"
+}

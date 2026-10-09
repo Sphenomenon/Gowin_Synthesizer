@@ -658,3 +658,28 @@ def parallel_renderer_spectrum_address(text):
     wire [8:0] spectrum_column=advance ? spectrum_column_next : spectrum_column_current;
 """
     return text.replace(old,new,1)
+
+
+def shallow_dashboard_card_select(text):
+    """Resolve original front-card priority once, then mask parallel payloads."""
+    start=text.index('    always @* begin\n        effect_hit_pre=hit0_pre')
+    end=text.index('    reg effect_hit;',start)
+    original=text[start:end]
+    assert original.count('if(front_effect==')==3
+    replacement="""    wire card_front0=front_effect==0 && hit0_pre;
+    wire card_front1=front_effect==1 && hit1_pre;
+    wire card_pick2=hit2_pre && !card_front0 && !card_front1;
+    wire card_pick1=hit1_pre && !card_front0 && (!hit2_pre || card_front1);
+    wire card_pick0=!card_pick1 && !card_pick2;
+    always @* begin
+        effect_hit_pre=hit0_pre || hit1_pre || hit2_pre;
+        effect_id_pre={card_pick2,card_pick1};
+        effect_relative_pre=({11{card_pick0}} & effect_rel0_pre) |
+                            ({11{card_pick1}} & effect_rel1_pre) |
+                            ({11{card_pick2}} & effect_rel2_pre);
+        effect_text_pre=({10{card_pick0}} & effect_text0_pre) |
+                        ({10{card_pick1}} & effect_text1_pre) |
+                        ({10{card_pick2}} & effect_text2_pre);
+    end
+"""
+    return text[:start]+replacement+text[end:]

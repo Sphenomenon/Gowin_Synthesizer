@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "tests": [
+    {
+      "case": "cpu_video_timing_gate_before_hardware_io",
+      "passed": true,
+      "commands": 0,
+      "hardware_io_used": false
+    },
+    {
+      "case": "ddr_ui_path_gate_before_hardware_io",
+      "passed": true,
+      "commands": 0,
+      "hardware_io_used": false
+    },
+    {
+      "case": "unaligned_cold_ddr_before_hardware_io",
+      "passed": true,
+      "commands": 0,
+      "hardware_io_used": false
+    },
+    {
+      "case": "three_flash_boots",
+      "passed": true,
+      "commands": 15,
+      "hardware_io_used": false
+    },
+    {
+      "case": "uart_fallback",
+      "passed": true,
+      "commands": 16,
+      "hardware_io_used": false
+    },
+    {
+      "case": "auto_boot_fail",
+      "passed": true,
+      "commands": 105,
+      "hardware_io_used": false
+    },
+    {
+      "case": "stale_flash_success",
+      "passed": true,
+      "commands": 16,
+      "hardware_io_used": false
+    },
+    {
+      "case": "live_success",
+      "passed": true,
+      "commands": 16,
+      "hardware_io_used": false
+    },
+    {
+      "case": "live_failure",
+      "passed": true,
+      "commands": 22,
+      "hardware_io_used": false
+    },
+    {
+      "case": "live_cold_success",
+      "passed": true,
+      "commands": 16,
+      "hardware_io_used": false
+    },
+    {
+      "case": "live_cold_missing",
+      "passed": true,
+      "commands": 22,
+      "hardware_io_used": false
+    }
+  ],
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_flashb6_20261010_parallel_tf_background",
+  "notes": "Programmer, serial, board inventory, lock and waits are stubbed; all unknown external commands fail closed. Actual candidate input/hash/status logic is exercised."
+}

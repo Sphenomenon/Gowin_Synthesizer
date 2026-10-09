@@ -1409,6 +1409,20 @@
     "tests_passed": true,
     "hardware_tested": false,
     "promoted": false,
-    "added_cycles": 0
+    "added_cycles": 0,
+    "full_model_simulation_passed": true,
+    "full_model_words": 52239,
+    "full_model_crc32": "AF01A61B",
+    "full_content_simulation_baud_override": 3125000,
+    "real_115200_short_model_words": 31
+  },
+  "prepared_card_priority": {
+    "applied_to_B8": false,
+    "added_cycles": 0,
+    "SAT_all_input_bits": 68,
+    "proof": "reports/CNN_FLASH_BOOT_CARD_SELECT_TESTS.json",
+    "complete_random_dashboard": "reports/CNN_FLASH_BOOT_SHALLOW_CARD_DASHBOARD_TESTS.json",
+    "actual_analysis_frame": "reports/CNN_FLASH_BOOT_SHALLOW_CARD_RENDERER_TESTS.json",
+    "hardware_tested": false
   }
 }
