@@ -1,0 +1,146 @@
+{
+  "passed": true,
+  "source_bound": true,
+  "build": "results/workstation_flashb7_20261010_dynamic_ink_bist",
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "changed_from_B6": [
+    "scripts/build.tcl",
+    "src/memory/ddr3_bist.v",
+    "src/video/feedback_dashboard.v"
+  ],
+  "unchanged_B6_inputs": 603,
+  "additional_enabled_cycles": 0,
+  "bsram_added": 0,
+  "checks": {
+    "actual_analysis_page": {
+      "passed": true,
+      "analysis_source_sha256": {
+        "output_audio_analysis.v": "5c4929314c548d0ab97d6274e6ceb3ef59a76be739c5fb0a1d48564aa011dbdc",
+        "output_audio_capture.v": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+        "audio_analysis_rom.v": "439ff9f00ff4d29740b296f2e264eabc19e6cb2ff2195dfb2bd815c9d1286946"
+      },
+      "analysis_page": true,
+      "source_bound": true,
+      "build": "results/workstation_flashb7_20261010_dynamic_ink_bist",
+      "pixel_skid": true,
+      "pixel_skid_sha256": "df766082448aa0adcc69202c64c66db3ddb3ac88076d0df4116bff4720180504",
+      "frame_writer_sha256": "84f231c085df1dbfc0931fa622c53d6937491888ee630cdd0865203ee737087a",
+      "predecoded_text_coordinates": true,
+      "parallel_cards": true,
+      "predecoded_background": true,
+      "complete_background_coordinates": true,
+      "predecoded_wave_heights": true,
+      "predecoded_dynamic_ink": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "dashboard_sha256": "4cca331c96f4b6b584332adadb09ae2d8fbb438aa4bab50a654e7b8eb62e4bac",
+      "renderer_sha256": "88cb6bb0f98864fc775e72068bab5c2acbe0fc37eb8425a33cab11455732d44f",
+      "log": "PASS renderer1036800two-pixelbeats +129601native DDR commands,complete1920x1080,independent long/native stalls,RGB565/address/meta exact,skid completion after drain\n- /tmp/cnn_renderer_predecode_ji2tkdi3/tb.sv:73: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 13ms; walltime 1.169 s; speed 11.259 ms/s\n- Verilator: cpu 1.167 s on 1 threads; allocated 32 MB"
+    },
+    "bist_cycle_equivalence": {
+      "passed": true,
+      "source_bound": true,
+      "build": "results/workstation_flashb7_20261010_dynamic_ink_bist",
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "bsram_added": 0,
+      "added_cycles": 0,
+      "checks": [
+        {
+          "bursts": 1,
+          "case": 0,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=1 case=0 cycleexact36,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 490000 (1ps)"
+        },
+        {
+          "bursts": 1,
+          "case": 1,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=1 case=1 cycleexact36,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 490000 (1ps)"
+        },
+        {
+          "bursts": 1,
+          "case": 2,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=1 case=2 cycleexact36,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 490000 (1ps)"
+        },
+        {
+          "bursts": 1,
+          "case": 3,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=1 case=3 cycleexact113,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 1260000 (1ps)"
+        },
+        {
+          "bursts": 1,
+          "case": 4,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=1 case=4 cycleexact125,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 1380000 (1ps)"
+        },
+        {
+          "bursts": 31,
+          "case": 0,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=31 case=0 cycleexact1086,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 10990000 (1ps)"
+        },
+        {
+          "bursts": 31,
+          "case": 1,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=31 case=1 cycleexact1086,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 10990000 (1ps)"
+        },
+        {
+          "bursts": 31,
+          "case": 2,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=31 case=2 cycleexact1086,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 10990000 (1ps)"
+        },
+        {
+          "bursts": 31,
+          "case": 3,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=31 case=3 cycleexact113,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 1260000 (1ps)"
+        },
+        {
+          "bursts": 31,
+          "case": 4,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=31 case=4 cycleexact255,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 2680000 (1ps)"
+        },
+        {
+          "bursts": 257,
+          "case": 0,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=257 case=0 cycleexact8954,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 89670000 (1ps)"
+        },
+        {
+          "bursts": 257,
+          "case": 1,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=257 case=1 cycleexact8954,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 89670000 (1ps)"
+        },
+        {
+          "bursts": 257,
+          "case": 2,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=257 case=2 cycleexact8954,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 89670000 (1ps)"
+        },
+        {
+          "bursts": 257,
+          "case": 3,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=257 case=3 cycleexact113,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 1260000 (1ps)"
+        },
+        {
+          "bursts": 257,
+          "case": 4,
+          "passed": true,
+          "log": "PASS frozen/newBIST bursts=257 case=4 cycleexact1157,3resetepochs,maskedfaultlanes/finalbit/readandwritetimeouts/native stalls\n/tmp/cnn_bist_expected_2btcw3as/tb.sv:46: $finish called at 11700000 (1ps)"
+        }
+      ],
+      "original_sha256": "f536837bdd2a5ce706e332b02c81834d9d33219c45b4e0e301e1bfe5d2361ee0",
+      "patched_sha256": "fa29a8e7e8a2a3096b98d1435ec2c6164e722f30fb1ceddc2d2226e1b49dd01d"
+    }
+  },
+  "generated_at": "2026-10-10T01:43:59.906783+08:00"
+}

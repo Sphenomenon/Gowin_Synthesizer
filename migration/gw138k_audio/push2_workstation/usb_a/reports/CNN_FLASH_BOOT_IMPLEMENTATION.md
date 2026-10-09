@@ -121,3 +121,5 @@ B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同�
 2026-10-10 B4完成物理路由268BSRAM，clk50 50.790MHz、视频180.112MHz、PLL/CDC/源绑定地址证明通过；DDR UI −2.362/hold+0.168，最差spectrum_left→background颜色，正式拒绝且未烧录。B6已开始构建，较B5只增加TF三个计数器并行进位和完整背景预解码，实际冻结源绑定的SAT/20组TF控制/完整帧提交全部PASS。B5/B6综合分别43678/43685寄存器、56442/56423 LUT、220BSRAM，物理结果待定。
 
 2026-10-10 B5已完成路由268/340BSRAM。clk50 57.536MHz、视频163.513MHz、PLL/CDC/地址SAT/像素缓冲协议/完整帧提交通过；DDR UI−0.995/hold+0.169，较B3的−2.049ns有改善，但最差read_x→odd effect_relative和skidready→analysis列地址等未过。正式门禁仍拒绝、programming_started=false；B6继续路由。
+
+2026-10-10 B7已启动，较B6只有动态背景判定与BIST期望值预生成（另UserCode脚本）不同，其他输入全部冻结。实际冻结原FFT/分析/capture/renderer/writer在ENABLE_ANALYSIS=1/SHARED_EXPORT=1的完整1036800双像素和129601原生DDR命令比较PASS；BIST15组正常、最终错误位、全通道错误、读/写超时各3复位epochs逐周期相同。源绑定证据CNN_FLASH_BOOT_B7_DYNAMIC_BIST_TESTS.json；B6继续独立路由和严格验收。

@@ -1035,7 +1035,7 @@
   "complete_workstation_flash_boot_verified": true,
   "complete_workstation_flash_boot_count": 3,
   "release_timing_closed": false,
-  "current_candidate": "results/workstation_flashb6_20261010_parallel_tf_background",
+  "current_candidate": "results/workstation_flashb7_20261010_dynamic_ink_bist",
   "AF_render_predecode": {
     "build": "results/workstation_flashaf_20261009_render_predecode",
     "user_code": "0x000000AF",
@@ -1373,5 +1373,19 @@
     "passed": true,
     "evidence": "reports/CNN_FLASH_BOOT_BIST_PATTERN_TESTS.json",
     "hardware_tested": false
+  },
+  "B7_dynamic_ink_bist": {
+    "build": "results/workstation_flashb7_20261010_dynamic_ink_bist",
+    "user_code": "0x000000B7",
+    "status": "building",
+    "changed_from_B6": [
+      "scripts/build.tcl",
+      "src/memory/ddr3_bist.v",
+      "src/video/feedback_dashboard.v"
+    ],
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_B7_DYNAMIC_BIST_TESTS.json",
+    "all_tests_passed": true,
+    "hardware_tested": false,
+    "physical_bsram_limit": 268
   }
 }
