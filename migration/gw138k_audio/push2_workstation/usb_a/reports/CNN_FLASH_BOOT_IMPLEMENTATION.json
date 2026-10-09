@@ -721,11 +721,17 @@
     "synchronous_maintenance_fifo": true,
     "default_ddr_startup": true,
     "high_fanout_replication": false,
-    "status": "synthesis",
+    "status": "placement",
     "hardware_tested": false,
     "full_effect_equivalence_pending": false,
     "bit_exact_effect_samples": 43000,
     "expected_underrun_injected_samples": 2000,
-    "full_model_native_sim_crc_passed": true
+    "full_model_native_sim_crc_passed": true,
+    "synthesis_bsram": 218,
+    "maintenance_fifo_synthesis_bsram": 2,
+    "synthesis_distributed_ram": 1049,
+    "previous_distributed_ram": 1593,
+    "synthesis_luts": 56817,
+    "synthesis_registers": 41654
   }
 }
