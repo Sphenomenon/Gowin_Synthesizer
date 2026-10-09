@@ -441,3 +441,42 @@ def register_arbiter_tag_flags(text):
                     count<=count-1'b1;tag_full<=0;tag_empty<=count==1;
                 end""")
     return text
+
+MODEL_MEMORY_READY_BLOCK='''    // Calibration is a same-memory-clock level. Local capture reduces the
+    // high-fanout PHY level to a short client enable. Global memory reset
+    // clears it asynchronously; boot waits for CPU/BIST/UI before any model.
+    reg model_memory_ready;
+    always @(posedge memory_clk or negedge memory_reset_n)begin
+        if(!memory_reset_n)model_memory_ready<=0;
+        else model_memory_ready<=memory_calibrated;
+    end
+'''
+
+def retime_model_memory_ready(text):
+    anchor='    wire ddr_rsp_valid,ddr_rsp_fifo_valid,ddr_rsp_fifo_ready;'
+    assert text.count(anchor)==1
+    assert text.count('req_valid_i(ddr_cmd_valid && memory_calibrated &&')==1
+    return text.replace(anchor,MODEL_MEMORY_READY_BLOCK+anchor).replace(
+        'req_valid_i(ddr_cmd_valid && memory_calibrated &&',
+        'req_valid_i(ddr_cmd_valid && model_memory_ready &&')
+
+def predecode_dashboard_wave_heights(text):
+    """Shift/clamp in the existing predecode stage; A receives identical heights."""
+    import re
+    a=text.index('    wire [4:0] wave_shift=');b=text.index('    wire signed [11:0] sample_extended',a)
+    block=text[a:b]
+    assert 'wave_gain_q' in block and 'wave_sample_q' in block
+    raw=block
+    for name in ['wave_gain','wave_sample','wave_previous']:
+        raw=re.sub(r'\b'+name+'_q'+r'\b',name,raw)
+    for name in ['wave_shift','scaled_sample','scaled_previous','sample_height','previous_height']:
+        raw=re.sub(r'\b'+name+r'\b',name+'_pre',raw)
+    sequential='''    reg signed [9:0] sample_height,previous_height;
+    always @(posedge clk or negedge reset_n)begin
+        if(!reset_n)begin sample_height<=0;previous_height<=0;end
+        else if(enable)begin
+            sample_height<=sample_height_pre;previous_height<=previous_height_pre;
+        end
+    end
+'''
+    return text[:a]+raw+sequential+text[b:]

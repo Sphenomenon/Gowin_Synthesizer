@@ -1,0 +1,112 @@
+{
+  "passed": true,
+  "source_bound": true,
+  "generated_at": "2026-10-10T00:08:24.669246+08:00",
+  "build": "results/workstation_flashb3_20261010_local_ready_wave",
+  "hardware_tested": false,
+  "physical_power_cycle_tested": false,
+  "pcm_saved": false,
+  "protected_model_firmware_ddr_sources_unchanged": 91,
+  "changed_from_B2": [
+    "constraints/tang_mega_138k.sdc",
+    "scripts/build.tcl",
+    "rtl/music/basic_pitch_workstation_link.sv",
+    "rtl/music/basic_pitch_ddr_arbiter_pipeline.sv",
+    "src/video/feedback_dashboard.v"
+  ],
+  "additional_raster_enabled_cycles": 1,
+  "model_calibration_level_latency_memory_cycles": 1,
+  "checks": {
+    "dashboard": {
+      "passed": true,
+      "predecoded_text_coordinates": true,
+      "parallel_cards": true,
+      "predecoded_background": true,
+      "predecoded_wave_heights": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "additional_enabled_cycles": 1,
+      "original_sha256": "617981568d42349e67a8bf0f3883a1c6a65dfe9be998ba7d8c4cfe685ad99c45",
+      "patched_sha256": "53fa13e47cccfbd60f863c6b59416fb6ee5dbc2f08511d65af607ea256658bd7",
+      "log": "PASS dashboard complete1920x1080 raster,2137105compared pixels,randommetadata/stalls/frameanimation/reset,oneenabledcycle latency\n- /tmp/cnn_dashboard_predecode_y4kzanjq/tb.sv:72: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 22ms; walltime 1.401 s; speed 15.730 ms/s\n- Verilator: cpu 1.399 s on 1 threads; allocated 7 MB"
+    },
+    "renderer": {
+      "passed": true,
+      "predecoded_text_coordinates": true,
+      "parallel_cards": true,
+      "predecoded_background": true,
+      "predecoded_wave_heights": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "dashboard_sha256": "53fa13e47cccfbd60f863c6b59416fb6ee5dbc2f08511d65af607ea256658bd7",
+      "renderer_sha256": "88cb6bb0f98864fc775e72068bab5c2acbe0fc37eb8425a33cab11455732d44f",
+      "log": "PASS renderer1036800two-pixelbeats,complete1920x1080,independentDDRstalls,orderedvalid/last/address,bitexactpixelcontent\n- /tmp/cnn_renderer_predecode_ni1yovy2/tb.sv:41: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 14ms; walltime 0.940 s; speed 14.783 ms/s\n- Verilator: cpu 0.937 s on 1 threads; allocated 23 MB"
+    },
+    "tag_flags": {
+      "passed": true,
+      "registered_tag_flags": true,
+      "buffered_clients": true,
+      "cases": [
+        {
+          "tag_bits": 2,
+          "seed": 7,
+          "passed": true,
+          "log": "PASS shared DDR pipeline seed=7 tags=4 commands=5275 reads=3441 full_tag_cycles=322 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_fp8il4uy/tb.sv:129: $finish called at 362650000 (1ps)"
+        },
+        {
+          "tag_bits": 3,
+          "seed": 31,
+          "passed": true,
+          "log": "PASS shared DDR pipeline seed=31 tags=8 commands=5156 reads=3412 full_tag_cycles=273 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_fp8il4uy/tb.sv:129: $finish called at 362650000 (1ps)"
+        },
+        {
+          "tag_bits": 5,
+          "seed": 127,
+          "passed": true,
+          "log": "PASS shared DDR pipeline seed=127 tags=32 commands=5393 reads=3506 full_tag_cycles=207 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_fp8il4uy/tb.sv:129: $finish called at 362650000 (1ps)"
+        }
+      ],
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "arbiter_sha256": "60aec35bdcd2ee86f60464631838cd47c5577fee335c2ea2e6a1f0b647dbb2f3",
+      "client_queues_sha256": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c"
+    },
+    "tag_flags_direct": {
+      "passed": true,
+      "registered_tag_flags": true,
+      "buffered_clients": false,
+      "cases": [
+        {
+          "tag_bits": 2,
+          "seed": 7,
+          "passed": true,
+          "log": "PASS shared DDR pipeline seed=7 tags=4 commands=4692 reads=3164 full_tag_cycles=334 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_705eeawz/tb.sv:123: $finish called at 362650000 (1ps)"
+        },
+        {
+          "tag_bits": 3,
+          "seed": 31,
+          "passed": true,
+          "log": "PASS shared DDR pipeline seed=31 tags=8 commands=4562 reads=3104 full_tag_cycles=283 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_705eeawz/tb.sv:123: $finish called at 362650000 (1ps)"
+        },
+        {
+          "tag_bits": 5,
+          "seed": 127,
+          "passed": true,
+          "log": "PASS shared DDR pipeline seed=127 tags=32 commands=4738 reads=3186 full_tag_cycles=230 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_705eeawz/tb.sv:123: $finish called at 362650000 (1ps)"
+        }
+      ],
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "arbiter_sha256": "60aec35bdcd2ee86f60464631838cd47c5577fee335c2ea2e6a1f0b647dbb2f3"
+    },
+    "local_memory_ready": {
+      "passed": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "scope": "actual calibration wrapper/request expression; one memory-clock startup/level delay, global memory reset immediate; not DDR-PHY recovery proof",
+      "link_sha256": "ab17a38dff186a42140aad63de733c4e01e43d94ea312e5caff00b1d416f56c1",
+      "wrapper_sha256": "f6a31efab0c41c53f7bbaa5f7e419cc68a15337abc2a21a442909609218a10ba",
+      "log": "PASS localcalibration100000level/write/readcredit combinations andasynchronousreset,one-memory-edge contract\n/tmp/cnn_local_memory_ready_g5apvus4/tb.sv:33: $finish called at 1000110000 (1ps)"
+    }
+  }
+}

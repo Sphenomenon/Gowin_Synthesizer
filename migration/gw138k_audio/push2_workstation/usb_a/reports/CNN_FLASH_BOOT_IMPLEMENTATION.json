@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_actual_Flash3boots_live_verified_B1_PLL_closed_B2_building",
+  "status": "AD_actual_Flash3boots_live_verified_B2_rejected_B3_local_paths_building",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1035,7 +1035,7 @@
   "complete_workstation_flash_boot_verified": true,
   "complete_workstation_flash_boot_count": 3,
   "release_timing_closed": false,
-  "current_candidate": "results/workstation_flashb2_20261009_parallel_cards_tmds",
+  "current_candidate": "results/workstation_flashb3_20261010_local_ready_wave",
   "AF_render_predecode": {
     "build": "results/workstation_flashaf_20261009_render_predecode",
     "user_code": "0x000000AF",
@@ -1104,7 +1104,7 @@
   "B2_parallel_cards_tmds": {
     "build": "results/workstation_flashb2_20261009_parallel_cards_tmds",
     "user_code": "0x000000B2",
-    "status": "synthesis_complete_placing",
+    "status": "routed_release_gate_failed",
     "source_bound_tests": "reports/CNN_FLASH_BOOT_B2_CARD_TMDS_TESTS.json",
     "source_bound_tests_passed": true,
     "physical_bsram_limit": 268,
@@ -1125,6 +1125,29 @@
     "model_crc32": "AF01A61B",
     "frozen_full_model_simulation": "results/workstation_flashb2_20261009_parallel_cards_tmds/frozen_full_model_simulation.json",
     "full_model_simulation_baud": 3125000,
-    "small_model_simulation_baud": 115200
+    "small_model_simulation_baud": 115200,
+    "physical_bsram": 268,
+    "clk50_fmax_mhz": 44.993,
+    "ddr_ui_fmax_mhz": 204.061,
+    "video_pixel_fmax_mhz": 157.907,
+    "ddr_ui_setup_wns_ns": -1.8,
+    "ddr_ui_hold_wns_ns": 0.179,
+    "clk50_setup_wns_ns": -2.226,
+    "PLL_all_endpoints_passed": true,
+    "PLL_worst_ns": 7.79,
+    "gate_passed": false,
+    "programming_started": false,
+    "acceptance": "results/workstation_flashb2_20261009_parallel_cards_tmds/automatic_acceptance/result.json"
+  },
+  "B3_local_ready_wave": {
+    "build": "results/workstation_flashb3_20261010_local_ready_wave",
+    "user_code": "0x000000B3",
+    "status": "building",
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_B3_LOCAL_PATH_TESTS.json",
+    "source_bound_tests_passed": true,
+    "physical_bsram_limit": 268,
+    "feature_cache_route_budget_ns": 19,
+    "model_memory_calibration_level_latency_cycles": 1,
+    "hardware_tested": false
   }
 }

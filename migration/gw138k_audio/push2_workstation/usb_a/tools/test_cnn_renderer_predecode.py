@@ -2,14 +2,15 @@
 """Two complete raster streams compare under independent random DDR stalls."""
 import argparse,hashlib,json,re,subprocess,tempfile
 from pathlib import Path
-from cnn_ddr_pipeline_patch import DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,parallel_dashboard_cards,predecode_dashboard_background
+from cnn_ddr_pipeline_patch import DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,parallel_dashboard_cards,predecode_dashboard_background,predecode_dashboard_wave_heights
 ROOT=Path(__file__).resolve().parents[1];BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--text-coordinates',action='store_true');p.add_argument('--parallel-cards',action='store_true');p.add_argument('--background-coordinates',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--text-coordinates',action='store_true');p.add_argument('--parallel-cards',action='store_true');p.add_argument('--background-coordinates',action='store_true');p.add_argument('--wave-heights',action='store_true');a=p.parse_args()
 if (a.parallel_cards or a.background_coordinates) and not a.text_coordinates:p.error('--parallel-cards requires --text-coordinates')
 renderer=(BASE/RENDERER).read_text();dashboard=(BASE/DASHBOARD).read_text();new_renderer=align_renderer_predecode(renderer);new_dashboard=predecode_dashboard(dashboard)
 if a.text_coordinates:new_dashboard=predecode_dashboard_text_coordinates(new_dashboard)
 if a.parallel_cards:new_dashboard=parallel_dashboard_cards(new_dashboard)
 if a.background_coordinates:new_dashboard=predecode_dashboard_background(new_dashboard)
+if a.wave_heights:new_dashboard=predecode_dashboard_wave_heights(new_dashboard)
 ports=[]
 for kind,declaration in re.findall(r'(input|output)\s+(?:wire|reg)\s+([^\n]+)',renderer[:renderer.index('    wire snapshot_ready')]):
  width=re.search(r'\[[^]]+\]',declaration);width=width[0] if width else ''
@@ -79,6 +80,6 @@ with tempfile.TemporaryDirectory(prefix='cnn_renderer_predecode_') as tmp:
  sources += [BASE/'src/video'/n for n in ['feedback_capture.v','feedback_wave_align.v','video_font_5x7.v']]
  c=subprocess.run(['verilator','--binary','--timing','-j','4','-Wno-fatal','--top-module','tb','--Mdir',str(t/'obj'),*map(str,sources)],capture_output=True,text=True,timeout=120);assert c.returncode==0,c.stdout[-6000:]+c.stderr[-6000:]
  v=subprocess.run([str(t/'obj/Vtb')],capture_output=True,text=True,timeout=120);assert v.returncode==0 and 'PASS renderer' in v.stdout,v.stdout+v.stderr
- report=dict(passed=True,predecoded_text_coordinates=a.text_coordinates,parallel_cards=a.parallel_cards,predecoded_background=a.background_coordinates,hardware_tested=False,pcm_saved=False,dashboard_sha256=hashlib.sha256(new_dashboard.encode()).hexdigest(),renderer_sha256=hashlib.sha256(new_renderer.encode()).hexdigest(),log=v.stdout.strip())
+ report=dict(passed=True,predecoded_text_coordinates=a.text_coordinates,parallel_cards=a.parallel_cards,predecoded_background=a.background_coordinates,predecoded_wave_heights=a.wave_heights,hardware_tested=False,pcm_saved=False,dashboard_sha256=hashlib.sha256(new_dashboard.encode()).hexdigest(),renderer_sha256=hashlib.sha256(new_renderer.encode()).hexdigest(),log=v.stdout.strip())
  if a.output:a.output.write_text(json.dumps(report,indent=2)+'\n')
  print(json.dumps(report,indent=2))
