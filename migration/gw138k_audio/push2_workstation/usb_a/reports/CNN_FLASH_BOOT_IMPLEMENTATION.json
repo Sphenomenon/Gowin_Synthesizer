@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_local_payload_controls_and_both_FIFO_synthesis",
+  "status": "AD_full_workstation_SRAM_Flash_to_DDR_and_live_PASS_release_STA_OPEN",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -919,10 +919,10 @@
   "AD_local_payload": {
     "build": "results/workstation_flashad_20261009_local_payload",
     "user_code": "0x000000AD",
-    "status": "placement",
+    "status": "full_hardware_SRAM_Flash_model_and_live_PASS_release_timing_failed",
     "physical_bsram_limit": 268,
     "board_capacity": 340,
-    "hardware_tested": false,
+    "hardware_tested": true,
     "flash_config_written": false,
     "physical_power_cycle_tested": false,
     "tests": [
@@ -946,7 +946,31 @@
       "T_Ssram": "505(0)"
     },
     "implementation_git_commit": "6e8f104",
-    "fifo_scope": "Synchronous read/write maintenance boundary only; P10 algorithm/native DMA unchanged"
+    "fifo_scope": "Synchronous read/write maintenance boundary only; P10 algorithm/native DMA unchanged",
+    "physical_bsram": 268,
+    "release_eligible": false,
+    "clk50_fmax_mhz": 55.362,
+    "video_fmax_mhz": 187.261,
+    "ddr_ui_sameclock_setup_wns_ns": -2.107,
+    "ddr_ui_hold_wns_ns": 0.165,
+    "video_PLL_ICPSEL_max_propagation_ns": 10.757,
+    "video_PLL_propagation_budget_ns": 10.0,
+    "routed_checks": {
+      "clk50": 0,
+      "ddr_ui": 1,
+      "scope_cdc": 0,
+      "clk50_cdc": 0,
+      "video_pll": 1
+    },
+    "model_source": "Flash",
+    "model_status": "E",
+    "model_UART_upload_used_candidate": false,
+    "sram_download_used": true,
+    "full_hardware_diagnostic": "results/workstation_flashad_20261009_local_payload/sram_diagnosis/result.json",
+    "candidate_live_smoke_passed": true,
+    "baseline85_flash_restored": true,
+    "baseline85_uart_model_E_restored": true,
+    "baseline85_live_smoke_passed": true
   },
   "baseline85_readonly_1812": {
     "read_only": true,

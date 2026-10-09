@@ -58,3 +58,5 @@ AC冻结源码模型复验PASS：31词原115200解析器未修改；52239词仅�
 2026-10-09 18:00：AC完成P&R，264/340物理BSRAM，clk50 52.014MHz/setup+0.775ns；CDC/PLL PASS。DDR UI真实setup仍−3.183ns（hold+0.179ns），最差路径转为TF可用字节计算到旧command_buffer地址CE；video143.101MHz，pixel_reset到TMDS input_ones仍负。严格自动门禁在任何硬件操作前拒绝发布。继续有依据的局部retime，full85板上状态保持。
 
 AD局部时序修改已提交6e8f104：TF payload CE改为本地idle，capture终值提前寄存；P10写/读FIFO均同步BSRAM且满标志寄存，物理预算268/340；显示启用/故障门寄存1个UI周期，TMDS只取消被den掩码覆盖的统计值复位。TMDS100000周期/325复位周期10-bit输出逐bit同原版；TF独立队列20000周期/4复位PASS、十二组流式/背压与UINT32终值拒绝/重启PASS；4800冷启动溢出后Panic恢复、43000正常效果样本逐周期同原版。Flash/UART/DDR16/credit/仲裁源码逐字同AC完整权重CRC测试版，单独记录复用哈希。AD仍综合中。18:12只读UART检查原full85模型E保持、控制/故障计数无异常；没有重写或模型PC传输。
+
+2026-10-09 19:05首次完整工作站硬件成功：AD临时SRAM下载后自动读既有NOR权重，B138模型E/source1连续通过，未从PC上传模型；candidate_live_smoke全部PASS，三音/立体声/静音/Panic及CPU/DDR健康均通过。随后按诊断策略从原Flash恢复full85，其旧模型E和现场烟雾PASS。正式配置Flash未改，LATEST仍85，物理断电未验证。AD最终268/340BSRAM，clk50 55.362MHz、video187.261MHz及原先正时钟全部PASS；DDR同钟setup−2.107ns（最差旧文字渲染读X→textline），hold+0.165ns，video PLL ICPSEL传播10.757ns>10ns。正式发布门禁仍拒绝；模型持久化/自动装载已在完整工作站证明，时序发布尚未完成。
