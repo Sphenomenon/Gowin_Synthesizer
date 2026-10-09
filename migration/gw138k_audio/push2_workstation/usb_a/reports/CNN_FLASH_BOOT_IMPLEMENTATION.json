@@ -1,8 +1,8 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "isolated_flash_to_actual_ddr_passed_A5_aligned_candidate_routing_prior_experiments_cancelled",
-  "target_user_code": "0x000000A5",
+  "status": "full_workstation_boot_not_verified_A5_shared_DDR_fault_A6_video_rejected_response_credit_A9_building",
+  "target_user_code": "0x000000A9",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
   "model_partition_byte_verify_passed": true,
@@ -17,7 +17,7 @@
   "full_model_sim_boot_seconds": 0.14773918,
   "model_auto_boot_hardware_verified": false,
   "physical_power_cycle_tested": false,
-  "build": "results/workstation_flasha5_20261009_start_predicate",
+  "build": "results/workstation_flasha9_20261009_response_credit",
   "initial_build_error": "second CST superseded original complete pin constraints; fixed by appending Flash pins to original CST",
   "evidence": {
     "sim_tests": "reports/CNN_FLASH_BOOT_TESTS.json",
@@ -569,6 +569,72 @@
     "release_gate_passed": false,
     "four_routed_audits_passed": true,
     "programming_started": false,
-    "reason": "only previous-positive video clock Fmax regressed; diagnostics frame CE path"
+    "reason": "only previous-positive video clock Fmax regressed; diagnostics frame CE path",
+    "hardware_diagnostic_tested": true,
+    "diagnostic_timing_override": true,
+    "flash_auto_boot_passed": false,
+    "ddr_ui_setup_wns_ns": -5.47,
+    "ddr_ui_fmax_is_not_path_closure": true
+  },
+  "A5_flash_diagnosis": {
+    "result": "results/workstation_flasha5_20261009_start_predicate/flash_diagnosis/result.json",
+    "configuration_user_code": "0x000000A5",
+    "configuration_status": "0x26020",
+    "cpu_signature": "CPU1",
+    "cpu_self_test_state": "UIBY",
+    "cpu_last_fetch": "0x80000A5C",
+    "memory_flags": "0xD3",
+    "calibration_and_bist_passed": true,
+    "shared_ddr_fault_bit_set": true,
+    "model_status": 0,
+    "model_source": 0,
+    "startup_panic_epoch": 0,
+    "auto_loader_started": false,
+    "baseline85_flash_and_uart_model_restored": true,
+    "restored85_live_smoke_passed": true
+  },
+  "A6_completed": {
+    "synthesis_bsram": 216,
+    "physical_bsram": 260,
+    "clk50_fmax_mhz": 51.905,
+    "video_fmax_mhz": 139.745,
+    "ddr_ui_fmax_mhz": 197.215,
+    "ddr_ui_setup_wns_ns": -4.314,
+    "release_gate_passed": false,
+    "hardware_tested": false,
+    "reason": "pixel reset to TMDS input_ones fails; same-clock DDR arbitration paths also negative despite positive Fmax"
+  },
+  "ddr_ui_feedback_diagnosis": {
+    "physical_root_cause_proven": false,
+    "actual_same_clock_setup_failure": true,
+    "source": "u_music/u_ddr_rsp_cdc/read_gray_sync_2_s0/Q",
+    "cone": "return-FIFO space -> DDR16 request -> shared arbiter -> client-ready/response control",
+    "baseline85_setup_wns_ns": -3.648,
+    "A5_setup_wns_ns": -5.47,
+    "A6_setup_wns_ns": -4.314,
+    "fix": "reserve one return FIFO slot with registered credit; original DDR16, arbiter, FIFO, parser and CNN arithmetic source unchanged",
+    "simulation_passed": true,
+    "hardware_fix_verified": false
+  },
+  "A7_control_rebuild": {
+    "build": "results/workstation_rebuilda7_20261009_control",
+    "user_code": "0x000000A7",
+    "only_change": "UserCode; original full85 RTL/IP/ROM/CST/SDC/options exact",
+    "status": "routing",
+    "hardware_tested": false
+  },
+  "A8_cancelled": {
+    "build": "results/workstation_flasha8_20261009_response_credit",
+    "reason": "stopped own synthesis before full PNR to freeze explicit DDR UI setup+hold reports in fresh A9",
+    "hardware_tested": false
+  },
+  "A9_response_credit_candidate": {
+    "build": "results/workstation_flasha9_20261009_response_credit",
+    "user_code": "0x000000A9",
+    "registered_read_credit": true,
+    "replicate_resources": true,
+    "initial_ddr_defer": false,
+    "status": "routing",
+    "hardware_tested": false
   }
 }

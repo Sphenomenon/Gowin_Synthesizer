@@ -49,10 +49,11 @@ def main():
             assert json.loads((build/'serial_compatibility_source_audit.json').read_text())['passed'],'original parser/native DDR compatibility failed'
         checks=[
             ('clk50',[sys.executable,str(ROOT/'tools/audit_clk50_timing.py'),str(build),'--require-closed']),
+            ('ddr_ui',[sys.executable,str(ROOT/'tools/audit_ddr_ui_timing.py'),str(build),'--output',str(output/'ddr_ui_timing.json'),'--require-closed']),
             ('scope_cdc',[sys.executable,str(ROOT/'tools/audit_scope_routes.py'),str(build),'--output',str(output/'scope_cdc.json')]),
             ('clk50_cdc',[sys.executable,str(ROOT/'tools/audit_clk50_cdc_routes.py'),str(build),'--output',str(output/'clk50_cdc.json')]),
             ('video_pll',[sys.executable,str(build/'Prj1/scripts/check_video_pll_init.py'),'--root',str(build/'Prj1'),'--output',str(output/'video_pll.json')])]
-        with ThreadPoolExecutor(max_workers=4) as pool:
+        with ThreadPoolExecutor(max_workers=5) as pool:
             result['checks']=dict(pool.map(lambda check:run(*check),checks))
         # Keep all evidence even if one independent routed check fails.
         sys.path.insert(0,str(ROOT/'tools'))

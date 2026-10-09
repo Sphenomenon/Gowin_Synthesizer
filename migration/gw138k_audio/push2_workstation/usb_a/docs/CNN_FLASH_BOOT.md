@@ -173,3 +173,14 @@ python3 tools/test_cnn_startup_history.py
 验收UART在打开前显式置DTR/RTS为低，与实时采集工具一致；监听过程不发BPN1或模型字节。十项部署替身测试也断言这两个控制输出保持低。
 
 可选`--retime-video-telemetry`只将UART观察用的vblank帧计数事件寄存一拍像素时钟（约6.734ns），解除原消隐判定到32位诊断计数器的使能路径。图像、扫描时序、DDR显示读取均未改动。`python3 tools/test_cnn_video_telemetry.py`比较实际旧/新诊断HDL的30000像素周期，计数/Gray输出恰好延后一拍，覆盖连续脉冲、低16位进位及异步复位，其它测频和DDR诊断寄存器同拍一致。
+
+
+2026-10-09 的A5实体诊断中，Flash配置身份A5/status26020正确、DDR校准及BIST完成，但CPU停在UIBY/0x80000A5C，共享DDR访问故障位为1，模型自动装载尚未开始。100ms延迟没有解决完整工程启动；已恢复full85配置、UART模型E及实时烟雾PASS。A6视频Fmax139.745MHz未通过，未烧录。
+
+逐路径DDR UI报告揭示另一门槛：Fmax摘要对额外受约束的CE/D路径不能代表全部建立时间闭合。full85、A5、A6的同一100MHz DDR UI路径分别出现-3.648/-5.470/-4.314ns违例，从CNN返回FIFO的可写比较穿过共享仲裁，影响各客户端。该违例是已观察事实；是否解释实体启动故障仍是待验证假设。
+
+新可选`--register-response-credit`在原DDR16读入口预留一个返回FIFO槽，以寄存信用切断上述反馈。原DDR16单在途访问、FIFO、仲裁器、模型解析、CNN算术文件均保持原样；额外只有两个状态FF，无BSRAM。读返回提交后空出一拍，观察更新后的写指针再授予下一读信用；写请求不受信用限制。`python3 tools/test_cnn_ddr_read_credit.py`以三种随机种子覆盖每组3204个读/816个掩码写、FIFO满阻止读但允许写、异步消费暂停、1..47周期响应及在途全局复位。它证明访问安全，不能替代实体DDR或CNN音高验收。
+
+`--replicate-resources`启用官方SUG1220所列的`set_option -replicate_resources 1`（默认0），让PNR复制高扇出资源改善物理时序；不改变原时钟和hold要求。A9使用上述信用、缓存/启动谓词/帧诊断补丁、精确full85原DDR启动，无100ms等待。A7则是原版full85除UserCode外完全一致的重构建，用作定位布局变化影响的对照。
+
+正式部署器及统一入口增加`tools/audit_ddr_ui_timing.py`，要求显式100MHz同域setup和hold逐路径报告均存在且WNS非负；正Fmax不能绕过。旧候选缺少hold报告或实际setup为负，默认不满足该新门槛；临时诊断override仍必须保留日志和恢复基线。LATEST保留full85，完整工作站Flash模型自动启动与物理断电均未验收。

@@ -85,13 +85,22 @@ def audit_serial_compatibility(output):
     assert all(v['unchanged'] for v in evidence.values()),'serial transport changed proven CNN/DDR/firmware'
     original=(BASE/'Prj1/rtl/music/basic_pitch_workstation_link.sv').read_text()
     link=(stage/'rtl/music/basic_pitch_workstation_link.sv').read_text()
+    credit_enabled=json.loads((output/'build_metadata.json').read_text()).get('registered_response_credit',False)
+    if credit_enabled:
+        guarded=register_response_credit(original)
+        start=guarded.index('    wire ddr_read_credit;')
+        stop=guarded.index('    basic_pitch_ddr16_port u_ddr16 (',start)
+        wrapper=guarded[start:stop]
+        assert link.count(wrapper)==1,'credit reservation wrapper drift'
+        link=link.replace(wrapper,'').replace('(ddr_cmd_data[48] || ddr_read_credit)','(ddr_cmd_data[48] || ddr_rsp_fifo_ready)')
+        assert sha(stage/'rtl/music/basic_pitch_ddr_read_credit.sv')==sha(ROOT/'rtl/music/basic_pitch_ddr_read_credit.sv'),'credit source drift'
     link=link.replace('    input wire [1:0] model_boot_source,model_boot_error,\n','')
     link=link.replace("{score_count,score_first,score_last,model_boot_source,\n                             (model_status==0 && model_boot_source==2 ? model_boot_error : model_error_stage),",
                       "{score_count,score_first,score_last,2'd0,model_error_stage,")
     assert link==original,'serial native-memory link changed beyond diagnostics'
     write_json(output/'serial_compatibility_source_audit.json',dict(passed=True,
         baseline=str(BASE.relative_to(ROOT)),candidate=str(output),unchanged_sources=evidence,
-        link_change_only='Two diagnostic inputs and B138 source/error fields; native memory and CDC source unchanged'))
+        registered_response_credit=credit_enabled,link_change_only='Diagnostic fields plus explicit read-slot reservation wrapper when enabled; native DDR16/FIFO/parser source unchanged'))
 
 def retime_start_delay(text):
     """Register the zero predicate of the existing countdown with exact next-state priority."""
@@ -131,8 +140,24 @@ def retime_video_frame_telemetry(text):
     end""")
     return text.replace('            if (vblank_start) begin','            if (frame_advance_q) begin')
 
+def register_response_credit(text):
+    anchor="    basic_pitch_ddr16_port u_ddr16 ("
+    assert text.count(anchor)==1
+    text=text.replace(anchor,"""    wire ddr_read_credit;
+    basic_pitch_ddr_read_credit u_ddr_read_credit (
+        .clk_i(memory_clk),.rst_ni(memory_reset_n),
+        .fifo_ready_i(ddr_rsp_fifo_ready),
+        .read_accept_i(ddr_cmd_ready && !ddr_cmd_data[48]),
+        .response_valid_i(ddr_rsp_valid),.credit_o(ddr_read_credit));
+"""+anchor)
+    old="(ddr_cmd_data[48] || ddr_rsp_fifo_ready)"
+    assert text.count(old)==1
+    return text.replace(old,"(ddr_cmd_data[48] || ddr_read_credit)")
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--register-response-credit',action='store_true',help='reserve return FIFO slot with registered read credit; break DDR arbitration feedback')
+    ap.add_argument('--replicate-resources',action='store_true',help='enable documented timing-driven high-fanout register replication during PNR')
     ap.add_argument('--retime-cache-read',action='store_true',help='equivalent one-cycle cache range mask plus parallel dwell counters; no CNN arithmetic change')
     ap.add_argument('--retime-video-telemetry',action='store_true',help='pipeline diagnostic-only vblank count by one pixel cycle; unchanged image and DDR path')
     ap.add_argument('--retime-start-delay',action='store_true',help='cycle-exact registered countdown-zero predicate; no start latency change')
@@ -154,6 +179,7 @@ def main():
         ap.error('--incremental-pnr-entry requires --incremental-baseline --incremental-mode pnr')
     reference_suffix=(args.incremental_pnr_entry or 'pr') if args.incremental_mode=='pnr' else 'p'
     if args.defer_ddr_startup and args.transport!='serial':ap.error('--defer-ddr-startup requires serial transport with startup history alignment')
+    if args.register_response_credit and args.transport!='serial':ap.error('--register-response-credit requires serial transport')
     if args.retime_cache_read and args.transport!='serial':ap.error('--retime-cache-read currently requires serial transport')
     if args.synthesis_from and args.flow!='all':ap.error('--synthesis-from requires --flow all')
     if args.incremental_mode=='pnr' and not args.incremental_baseline:ap.error('--incremental-mode pnr requires --incremental-baseline')
@@ -167,6 +193,7 @@ def main():
     output=(args.output or ROOT/'results'/datetime.now().strftime('workstation_flash_boot_%Y%m%d_%H%M%S_%f')).resolve()
     stage=output/'Prj1'
     overlays=OVERLAYS if args.transport=='direct' else [f'rtl/music/{n}' for n in ('basic_pitch_flash_model_loader.sv','basic_pitch_flash_map.svh','basic_pitch_flash_io_guard.sv','basic_pitch_flash_serial_boot.sv')]
+    if args.register_response_credit:overlays += ['rtl/music/basic_pitch_ddr_read_credit.sv']
     if args.retime_cache_read:overlays += ['rtl/music/basic_pitch_weight_cache.sv']
     if args.defer_ddr_startup:overlays += ['rtl/music/basic_pitch_ddr_boot_gate.sv','rtl/music/basic_pitch_startup_panic.sv']
     if args.flow!='pnr':
@@ -241,6 +268,7 @@ def main():
             old="{score_count,score_first,score_last,2'd0,model_error_stage,"
             assert text.count(old)==1
             text=text.replace(old,"{score_count,score_first,score_last,model_boot_source,\n                             (model_status==0 && model_boot_source==2 ? model_boot_error : model_error_stage),")
+            if args.register_response_credit:text=register_response_credit(text)
             link.write_text(text)
         if args.retime_start_delay:s=retime_start_delay(s)
         top.write_text(s)
@@ -257,6 +285,8 @@ def main():
         assert cst_files==['constraints/tang_mega_138k.cst'],'baseline must have one complete pin CST'
         cst=stage/cst_files[0];cst.write_text(cst.read_text()+'\n'+CST)
         sdc=stage/'constraints/tang_mega_138k.sdc';sdc.write_text(sdc.read_text()+(SDC if args.transport=='direct' else SDC.replace('u_music/model_memory_meta*/D','u_model_flash_source/ready_meta*/D')))
+        if args.register_response_credit:
+            with sdc.open('a') as f:f.write('\n# Audit real same-clock DDR UI setup/hold, independently of Fmax summary.\nreport_timing -setup -from_clock [get_clocks {ddr_ui100}] -to_clock [get_clocks {ddr_ui100}] -max_paths 100\nreport_timing -hold -from_clock [get_clocks {ddr_ui100}] -to_clock [get_clocks {ddr_ui100}] -max_paths 100\n')
         if args.tighten_cache_reset:
             sdc.write_text(sdc.read_text()+'''
 # Stricter budget for the existing synchronous cache RESET cone;
@@ -269,13 +299,14 @@ set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight
             with sdc.open('a') as f:f.write('''
 # Tighten known pixel-domain control routes; no display RTL/clock/hold change.
 set_max_delay 6.000 -from [get_pins {u_video/pixel_reset_pipe_2_s0/Q}] -to [get_regs {u_video/u_dvi/*/input_ones*}]
-set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs {u_video/u_diagnostics/pixel_frame_count*}]
+set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing/horizontal*}] -to [get_regs {u_video/u_diagnostics/frame_advance_q* u_video/u_diagnostics/pixel_frame_count*}]
 ''')
         tcl=stage/'scripts/build.tcl';s=tcl.read_text()
         assert 'set_option -use_mspi_as_gpio 1' in s and 'set_option -use_cpu_as_gpio 1' in s
         s=re.sub(r'(?m)^set_option -(?:user_code|inc_pnr|inc_place).*\n','',s)
         s=re.sub(r'(?m)^set_option -route_option .*$',f'set_option -route_option {args.route_option}',s)
         s=re.sub(r'(?m)^set_option -place_option .*$',f'set_option -place_option {args.place_option}',s)
+        if args.replicate_resources:s=s.replace('set flow all','set_option -replicate_resources 1\nset flow all')
         if args.user_code:s=s.replace('set flow all','set_option -user_code '+args.user_code.upper()+'\nset flow all')
         if args.incremental_baseline:
             s=s.replace('set flow all',f'set_option -inc_{args.incremental_mode} [file join $root build full85_reference.{reference_suffix}]\nset flow all')
@@ -289,7 +320,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'

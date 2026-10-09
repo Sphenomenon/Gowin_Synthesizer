@@ -18,6 +18,7 @@ import sys
 import time
 from build_cnn_flash_image import validate_image,gowin_data_fs
 from audit_clk50_timing import audit as audit_clk50
+from audit_ddr_ui_timing import audit as audit_ddr_ui
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
 BASE_SHA='7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444'
@@ -82,8 +83,9 @@ def main():
     assert re.search(r'//UserCode: (0x[0-9A-Fa-f]{8})',fs.read_text()[:1000])[1].lower()==code
     clk50=audit_clk50(build)
     previous_clocks=audit_previous_positive_clocks(build)
-    if args.program and (not clk50['clk50_closed'] or not previous_clocks['passed']) and not args.allow_clk50_open:
-        ap.error('routed clock timing regressed/open: '+','.join(previous_clocks['failed_clocks'])+'; --allow-clock-regression is only for a temporary boot diagnostic')
+    ddr_ui=audit_ddr_ui(build)
+    if args.program and (not clk50['clk50_closed'] or not previous_clocks['passed'] or not ddr_ui['passed']) and not args.allow_clk50_open:
+        ap.error('routed clock/DDR UI setup-hold timing regressed/open: '+','.join(previous_clocks['failed_clocks'])+'; --allow-clock-regression is only for a temporary boot diagnostic')
     programmer=Path.home()/'.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli'
     common=[str(programmer),'--device','GW5AST-138C','--cable-index','5','--location',str(args.location),'--frequency','0.9MHz']
     # Native Arora V C-Bin operation needs BOTH: --fsFile satisfies the CLI
@@ -93,14 +95,14 @@ def main():
                 '--mcuFile',str(model),'--spiaddr','0x600000']
     fs_args=['--operation_index','54','--fsFile',str(fs),'--spiaddr','0x000000']
     print(json.dumps(dict(build=str(build),target_code=code,model_bytes=model.stat().st_size,
-        program_model=common+model_args,program_bitstream=common+fs_args,programming_requested=args.program,previous_positive_clock_audit=previous_clocks),indent=2),flush=True)
+        program_model=common+model_args,program_bitstream=common+fs_args,programming_requested=args.program,previous_positive_clock_audit=previous_clocks,ddr_ui_path_audit=ddr_ui),indent=2),flush=True)
     if not args.program:return
     import serial
     output=(args.output or build/'flash_deploy').resolve();output.mkdir(parents=True,exist_ok=False)
     result=dict(started_at=datetime.now().astimezone().isoformat(),build=str(build),user_code=code,
                 commands=[],boots=[],passed=False,uart_model_upload_used=False,sram_download_used=False,sram_erased_before_each_boot=True,
                 physical_power_cycle_tested=False,board_serial='2025030317',uart_hardware_drain_seconds=2,uart_dtr_rts_asserted=False,
-                clk50_closed=clk50['clk50_closed'],previous_positive_clock_audit=previous_clocks,diagnostic_timing_override=args.allow_clk50_open,
+                clk50_closed=clk50['clk50_closed'],previous_positive_clock_audit=previous_clocks,ddr_ui_path_audit=ddr_ui,diagnostic_timing_override=args.allow_clk50_open,
                 model_transport=build_meta.get('transport','direct'),live_smoke_requested=args.exercise_live,live_smoke_passed=False,startup_panic_aligns_delay_history=build_meta.get('startup_panic_aligns_delay_history',False))
     def save():(output/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     def run(label,extra,require=None):

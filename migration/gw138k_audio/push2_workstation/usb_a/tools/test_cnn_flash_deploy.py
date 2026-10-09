@@ -25,6 +25,17 @@ with patch.object(sys,'argv',['deploy_cnn_flash_boot.py',str(build),'--program']
  except SystemExit as e:assert e.code==2
  else:raise AssertionError('CPU/video regression was not rejected')
 results.append(dict(case='cpu_video_timing_gate_before_hardware_io',passed=True,commands=0,hardware_io_used=False))
+# A positive Fmax summary cannot waive actual same-clock CE/D paths.
+with patch.object(sys,'argv',['deploy_cnn_flash_boot.py',str(build),'--program']), \
+     patch.object(mod,'audit_clk50',return_value={'clk50_closed':True}), \
+     patch.object(mod,'audit_previous_positive_clocks',return_value={'passed':True,'failed_clocks':[]}), \
+     patch.object(mod,'audit_ddr_ui',return_value={'passed':False}), \
+     patch.object(mod.subprocess,'run',side_effect=AssertionError('DDR UI path rejection performed hardware IO')), \
+     contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):
+ try:mod.main()
+ except SystemExit as e:assert e.code==2
+ else:raise AssertionError('DDR UI setup/hold path failure was not rejected')
+results.append(dict(case='ddr_ui_path_gate_before_hardware_io',passed=True,commands=0,hardware_io_used=False))
 original_json_loads=json.loads
 def metadata_with_cold_start(text,*args,**kwargs):
  value=original_json_loads(text,*args,**kwargs)
@@ -92,6 +103,8 @@ for failure in (None,'uart_fallback','auto_boot_fail','stale_flash_success','liv
   if failure in ('live_success','live_failure','live_cold_success','live_cold_missing'):argv.append('--exercise-live')
   def case_metadata(text,*args,**kwargs):
    value=original_json_loads(text,*args,**kwargs)
+   if isinstance(value,dict) and 'baseline_fs_sha256' in value and 'changed_from_base' in value and failure not in ('live_cold_success','live_cold_missing'):
+    value=dict(value,ddr_initial_aux_settle_ms=None,startup_panic_aligns_delay_history=False)
    if failure in ('live_cold_success','live_cold_missing') and isinstance(value,dict) and 'baseline_fs_sha256' in value and 'changed_from_base' in value:
     value=dict(value,ddr_initial_aux_settle_ms=100,startup_panic_aligns_delay_history=True)
    return value
