@@ -1056,13 +1056,21 @@
   "B0_parallel_coordinates": {
     "build": "results/workstation_flashb0_20261009_parallel_coordinates",
     "user_code": "0x000000B0",
-    "status": "building",
+    "status": "synthesis_complete_routing_in_progress",
     "source_bound_tests": "reports/CNN_FLASH_BOOT_B0_COORDINATE_TESTS.json",
     "source_bound_tests_passed": true,
     "physical_bsram_limit": 268,
     "place_option": 1,
     "route_option": 1,
     "hardware_tested": false,
-    "physical_power_cycle_tested": false
-  }
+    "physical_power_cycle_tested": false,
+    "synthesis_bsram": 220,
+    "synthesis_ssram": 505,
+    "synthesis_registers": 43533,
+    "synthesis_lut": 55398
+  },
+  "board_current_status_last_checked_at": "2026-10-09T21:39:42.262168+08:00",
+  "board_current_model_E_verified": true,
+  "board_current_config_status": "0x00026020",
+  "board_current_read_only_status": "results/workstation_flashb0_20261009_parallel_coordinates/baseline_readonly_status.json"
 }

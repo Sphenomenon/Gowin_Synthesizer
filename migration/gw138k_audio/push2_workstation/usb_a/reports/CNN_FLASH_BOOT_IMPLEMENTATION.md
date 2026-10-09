@@ -80,6 +80,10 @@ B0将文字锚点的常量减法和动态卡片命中移入现有预解码级，
 
 B0使用官方placement1/route1算法，候选冻结输入完整校验，资源上限仍268。指针DMA的新允许项仅接受确定性的、逐位验证过的+4转换，原源码哈希仍强制一致。准备阶段第一次被旧冻结白名单拒绝，未综合/未生成bitstream；拒绝产物另存prepare_rejected并修正精确规范化检查后，重新启动B0。实际时序/资源及烧录状态以最终automatic_acceptance为准。
 
-21:40补充修正测试证据的键名：P10新FIFO实例和新DMA同时派生时原单一键会覆盖前者，改为唯一derived文件名并重新执行整套冷启动/43000样本逐位测试PASS；TF16组合增加每个变体的独立源哈希，实际B0的power_two_ring和FIFO/DMA各文件哈希已逐项匹配。功能未改，不能用单一变体哈希代表所有变体。
+21:38补充修正测试证据的键名：P10新FIFO实例和新DMA同时派生时原单一键会覆盖前者，改为唯一derived文件名并重新执行整套冷启动/43000样本逐位测试PASS；TF16组合增加每个变体的独立源哈希，实际B0的power_two_ring和FIFO/DMA各文件哈希已逐项匹配。功能未改，不能用单一变体哈希代表所有变体。
 
 物理修正准备：AF参考PLL长连线已定位，设置线单独5.916ns、RESET组合加最后一段5.776ns；full传播RESET11.434ns。新增可选locate-reference-pll-helper使用官方SUG935 GROUP/GRP_LOC将初始化helper区域置于R[100:108]C[24:44]，所有官方源/时钟/审计门槛保持，非exclusive。准备/冻结源码检验PASS；不添加到在运行的B0，是否采用取决于B0实测。准备阶段不分配UserCode，无hardware IO。
+
+2026-10-09 21:39只读核验当前板卡：UserCode85/status26020，三条fresh B138均模型E（旧85未实现source字段，值0）。没有UART写数据，没有配置/模型写操作；结果保存B0/baseline_readonly_status.json。
+
+B0综合实测：220 BSRAM、505 SSRAM、43533 FF、55398 LUT；相对AF（43438 FF、55674 LUT）为FF+95/LUT−276，BSRAM不增加。PNR物理占用仍待最终结果，不将综合220当成完整物理用量。
