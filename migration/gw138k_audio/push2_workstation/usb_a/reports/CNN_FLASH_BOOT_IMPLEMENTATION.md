@@ -2,6 +2,8 @@
 
 当前模型已写入外部 Flash 的 `0x600000` 分区，104,510 字节，载荷 CRC32 `AF01A61B`；Programmer 字节交叉校验通过。独立 SRAM 探针 0x96 完整读出 52,239 字并通过本地 RAM CRC；0x98 进一步通过实际 115200 波特率、内部 BPN1 串行连线和原模型解析器。这两项没有 PC 上传模型，均不代表完整工作站 DDR 验收。
 
+独立 0x9E SRAM 探针进一步使用真实板载 DDR、原 DDR 平台/PHY、原 UART 解析器和 DDR16/CDC 端口：完整 52,239 字从 Flash 自主写入 DDR，并回读 CRC `AF01A61B`，连续三条来源=Flash/状态=E/DDR就绪=7。未使用 PC 模型上传，证明 Flash→实际DDR单独链路可行；该探针无CPU/显示/DMA并发，因此不算完整工作站验收。探针后已恢复full85/modelE。
+
 完整工作站 0x95 的 clk50 闭合、Flash 配置状态正常，但模型 DDR 回读与 CPU 内存/UI 自检失败。兼容方案 0x97/0x99 保留 full85 原解析器、DDR16/CDC、CNN 和固件；两次布局 clk50 均未闭合。0x99 的临时 Flash 诊断确认真实配置 UserCode=99、状态=26020，但 CPU 自检未通过、自动搬运未启动；已经自动恢复 full85，重新上传其易失模型，完整启动及实时 scope smoke 通过。
 
 0x9A 缓存修正构建已完成，SYN216、P&R260，clk50 Fmax51.569、setup+0.609ns、hold+0.165ns、TNS0。CPU bus满足要求，但视频134.229<148.5MHz，正式发布门槛拒绝。临时 Flash 启动诊断仍出现 DDR校准0、CPU0、模型0，已恢复 full85/modelE/smoke。缓存与 full85 逐周期等价、10,000周期统计比较和三帧 CNN 六层哈希回归均通过；这些仿真不替代完整板级DDR验收。

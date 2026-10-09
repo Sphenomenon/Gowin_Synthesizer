@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "retimed9a_clk50_closed_video_regressed_ddr_calibration_failed_9c_placement_reference_build_running",
+  "status": "isolated_flash_to_actual_ddr_passed_full9c_placement_reference_build_running",
   "target_user_code": "0x0000009A",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -41,7 +41,8 @@
     "serial99_flash_diagnosis": "results/workstation_flash99_20261009_serial_route0/flash_diagnosis/result.json",
     "cache_read_retimed_build": "results/workstation_flash9a_20261009_cache_read/build_metadata.json",
     "retimed9a_timing": "results/workstation_flash9a_20261009_cache_read/clk50_timing_audit.json",
-    "retimed9a_flash_diagnosis": "results/workstation_flash9a_20261009_cache_read/flash_diagnosis/result.json"
+    "retimed9a_flash_diagnosis": "results/workstation_flash9a_20261009_cache_read/flash_diagnosis/result.json",
+    "isolated_actual_ddr_flash_boot": "results/flash_ddr_probe9e_20261009/board/result.json"
   },
   "incremental_candidate": "results/workstation_flash93_20261009_incremental",
   "incremental_target_user_code": "0x00000093",
@@ -278,5 +279,36 @@
     "temporary_flash_boot_passed": false,
     "hardware_observation": "Exact UserCode9A normal configured status; DDR PLL locked but calibration0, CPU0, model0; full85 Flash/model/smoke restored",
     "baseline85_rollback_verified": true
+  },
+  "isolated_actual_ddr_flash_boot": {
+    "full_workstation": false,
+    "sram_only": true,
+    "flash_configuration_programmed": false,
+    "uart_model_upload_for_probe": false,
+    "transport": "internal_serial_actual_ddr",
+    "actual_external_ddr": true,
+    "passed": true,
+    "observations": [
+      "B138 44445250 00000000 E49E2BED 00001C13",
+      "B138 44445250 00000000 09A6E659 00001C13",
+      "B138 44445250 00000000 712E2148 00001C13",
+      "B138 44445250 00000000 4CFDB01A 00001C13",
+      "B138 44445250 00000000 1732506C 00001C13",
+      "B138 44445250 00000000 AC234598 00001C13",
+      "B138 44445250 00000000 FB2568EF 00001C13",
+      "B138 44445250 00000000 CF78A3CA 00001C13",
+      "B138 44445250 00000000 36B874BA 00001C13",
+      "B138 44445250 00000000 2D2BAE3E 00001C13",
+      "B138 44445250 00000000 E4B3FA30 00001C13",
+      "B138 44445250 00000000 A6E1CB7C 00001C13",
+      "B138 44445250 AF01A61B AF01A61B 00001D3B",
+      "B138 44445250 AF01A61B AF01A61B 00001D3B",
+      "B138 44445250 AF01A61B AF01A61B 00001D3B"
+    ],
+    "baseline85_restored_from_flash": true,
+    "baseline85_uart_model_restored": true,
+    "model_words": 52239,
+    "expected_crc32": "AF01A61B",
+    "actual_crc32": "AF01A61B"
   }
 }
