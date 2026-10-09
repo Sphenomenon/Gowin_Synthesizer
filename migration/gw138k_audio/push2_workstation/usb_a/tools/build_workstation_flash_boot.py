@@ -103,6 +103,8 @@ def main():
     ap.add_argument('--synthesis-from',type=Path,help='reuse identical successful RTL synthesis after a CST-only failure')
     ap.add_argument('--incremental-baseline',action='store_true',help='reuse verified full85 .p placement with fresh synthesis and fresh routing; reject any unrouted net')
     ap.add_argument('--route-option',type=int,choices=(0,1,2),default=1,help='Gowin route search option, recorded per isolated candidate')
+    ap.add_argument('--place-option',type=int,choices=(0,1,2,3),default=2,help='placement search; default retains full85 option2')
+    ap.add_argument('--tighten-video-control',action='store_true',help='6ns physical max-delay for pixel reset and frame telemetry; keep original148.5MHz and hold checks')
     ap.add_argument('--tighten-cache-reset',action='store_true',help='tighten existing synchronous weight-cache RESET endpoint max delay to 18 ns')
     args=ap.parse_args()
     if args.retime_cache_read and args.transport!='serial':ap.error('--retime-cache-read currently requires serial transport')
@@ -188,10 +190,17 @@ def main():
 # original 20-ns clocks, hold checks and all pre-existing paths retained.
 set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache*/RESET}]
 ''')
+        if args.tighten_video_control:
+            with sdc.open('a') as f:f.write('''
+# Tighten known pixel-domain control routes; no display RTL/clock/hold change.
+set_max_delay 6.000 -from [get_pins {u_video/pixel_reset_pipe_2_s0/Q}] -to [get_regs {u_video/u_dvi/*/input_ones*}]
+set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs {u_video/u_diagnostics/pixel_frame_count*}]
+''')
         tcl=stage/'scripts/build.tcl';s=tcl.read_text()
         assert 'set_option -use_mspi_as_gpio 1' in s and 'set_option -use_cpu_as_gpio 1' in s
         s=re.sub(r'(?m)^set_option -(?:user_code|inc_pnr|inc_place).*\n','',s)
         s=re.sub(r'(?m)^set_option -route_option .*$',f'set_option -route_option {args.route_option}',s)
+        s=re.sub(r'(?m)^set_option -place_option .*$',f'set_option -place_option {args.place_option}',s)
         if args.user_code:s=s.replace('set flow all','set_option -user_code '+args.user_code.upper()+'\nset flow all')
         if args.incremental_baseline:
             s=s.replace('set flow all','set_option -inc_place [file join $root build full85_reference.p]\nset flow all')
@@ -206,7 +215,7 @@ set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
             hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,
-            route_option=args.route_option,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
+            route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
         (output/'cnn_model.bin').write_bytes(image);(output/'cnn_model.data.fs').write_text(gowin_data_fs(image));write_json(output/'cnn_model.json',manifest)
