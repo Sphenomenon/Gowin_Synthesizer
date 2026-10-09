@@ -1,0 +1,105 @@
+{
+  "passed": false,
+  "scope": "explicit same-clock DDR UI setup and hold reports; not wholeboard STA closure",
+  "report_sha256": "8b9364d350e7a92e957e9a18d0476e57898bf13121d69a1a2505741bb47d4c40",
+  "checks": {
+    "setup": {
+      "explicit_report_available": true,
+      "reported_paths": 125,
+      "wns_ns": -1.319,
+      "negative_paths": 86,
+      "worst_paths": [
+        {
+          "slack_ns": -1.319,
+          "source": "u_music/u_ddr_command_buffer/data_q_19_s0/Q",
+          "destination": "u_video/u_arbiter/u_music_slot/queued_data_192_s0/RESET",
+          "constraint_relation_ns": 8.0,
+          "data_delay_ns": 8.951
+        },
+        {
+          "slack_ns": -1.319,
+          "source": "u_music/u_ddr_command_buffer/data_q_19_s0/Q",
+          "destination": "u_video/u_arbiter/u_music_slot/queued_data_192_s0/RESET",
+          "constraint_relation_ns": 8.0,
+          "data_delay_ns": 8.951
+        },
+        {
+          "slack_ns": -1.062,
+          "source": "u_music/u_ddr_command_buffer/data_q_19_s0/Q",
+          "destination": "u_video/u_arbiter/u_music_slot/queued_data_194_s0/RESET",
+          "constraint_relation_ns": 8.0,
+          "data_delay_ns": 8.694
+        },
+        {
+          "slack_ns": -1.062,
+          "source": "u_music/u_ddr_command_buffer/data_q_19_s0/Q",
+          "destination": "u_video/u_arbiter/u_music_slot/queued_data_194_s0/RESET",
+          "constraint_relation_ns": 8.0,
+          "data_delay_ns": 8.694
+        },
+        {
+          "slack_ns": -1.013,
+          "source": "u_tf_audio/u_path/u_dma/write_total_bytes_5_s1/Q",
+          "destination": "u_tf_audio/u_path/u_dma/write_total_bytes_30_s1/D",
+          "constraint_relation_ns": 10.0,
+          "data_delay_ns": 10.967
+        }
+      ]
+    },
+    "hold": {
+      "explicit_report_available": true,
+      "reported_paths": 100,
+      "wns_ns": 0.171,
+      "negative_paths": 0,
+      "worst_paths": [
+        {
+          "slack_ns": 0.171,
+          "source": "u_video/u_arbiter/u_core/write_pointer_3_s0/Q",
+          "destination": "u_video/u_arbiter/u_core/tags_tags_0_0_s/WAD[3]",
+          "constraint_relation_ns": 0.0,
+          "data_delay_ns": 0.218
+        },
+        {
+          "slack_ns": 0.171,
+          "source": "u_video/u_arbiter/u_core/write_pointer_2_s0/Q",
+          "destination": "u_video/u_arbiter/u_core/tags_tags_0_0_s/WAD[2]",
+          "constraint_relation_ns": 0.0,
+          "data_delay_ns": 0.218
+        },
+        {
+          "slack_ns": 0.171,
+          "source": "u_video/u_arbiter/u_core/write_pointer_1_s0/Q",
+          "destination": "u_video/u_arbiter/u_core/tags_tags_0_0_s/WAD[1]",
+          "constraint_relation_ns": 0.0,
+          "data_delay_ns": 0.218
+        },
+        {
+          "slack_ns": 0.178,
+          "source": "u_video/u_arbiter/u_core/write_pointer_0_s2/Q",
+          "destination": "u_video/u_arbiter/u_core/tags_tags_0_0_s/WAD[0]",
+          "constraint_relation_ns": 0.0,
+          "data_delay_ns": 0.22
+        },
+        {
+          "slack_ns": 0.181,
+          "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/iserdes_dq_11_s0/Q",
+          "destination": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_in_fifo/mem0_mem0_0_0_s/DI[11]",
+          "constraint_relation_ns": 0.0,
+          "data_delay_ns": 0.213
+        }
+      ]
+    }
+  },
+  "setup_constraint_groups": {
+    "original_10ns_clock": {
+      "reported_paths": 85,
+      "wns_ns": -1.013,
+      "negative_paths": 52
+    },
+    "stricter_physical_budget": {
+      "reported_paths": 40,
+      "wns_ns": -1.319,
+      "negative_paths": 34
+    }
+  }
+}

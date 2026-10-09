@@ -15,10 +15,17 @@ def audit(build):
         if kind is None:continue
         for row in rows[1:]:
             if len(row)==9 and row[4].split(':')[0]==row[5].split(':')[0]=='ddr_ui100':
-                reports[kind].append(dict(slack_ns=float(row[1]),source=row[2],destination=row[3],data_delay_ns=float(row[8])))
+                reports[kind].append(dict(slack_ns=float(row[1]),source=row[2],destination=row[3],constraint_relation_ns=float(row[6]),data_delay_ns=float(row[8])))
     result=dict(passed=False,scope='explicit same-clock DDR UI setup and hold reports; not wholeboard STA closure',report_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),checks={})
     for kind,paths in reports.items():
         result['checks'][kind]=dict(explicit_report_available=bool(paths),reported_paths=len(paths),wns_ns=min((p['slack_ns'] for p in paths),default=None),negative_paths=sum(p['slack_ns']<0 for p in paths),worst_paths=sorted(paths,key=lambda p:p['slack_ns'])[:5])
+    setup=reports['setup']
+    original=[path for path in setup if abs(path['constraint_relation_ns']-10.0)<1e-6]
+    tighter=[path for path in setup if path['constraint_relation_ns']<10.0-1e-6]
+    result['setup_constraint_groups']=dict(
+        original_10ns_clock=dict(reported_paths=len(original),wns_ns=min((path['slack_ns']for path in original),default=None),negative_paths=sum(path['slack_ns']<0 for path in original)),
+        stricter_physical_budget=dict(reported_paths=len(tighter),wns_ns=min((path['slack_ns']for path in tighter),default=None),negative_paths=sum(path['slack_ns']<0 for path in tighter)))
+    # Both groups remain mandatory; presentation does not waive tighter paths.
     result['passed']=all(c['explicit_report_available'] and c['wns_ns']>=0 for c in result['checks'].values())
     return result
 
