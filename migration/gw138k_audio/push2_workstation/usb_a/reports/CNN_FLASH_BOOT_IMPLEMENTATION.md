@@ -1,6 +1,6 @@
 # CNN Flash→DDR 实施记录
 
-截至2026-10-09 23:12，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传，实时演奏检查PASS。AF/B0/B1发布时序未通过，均未烧录；B1的全部PLL全传播已通过（最差7.964ns），B2等价动画/TMDS修正正在布线。板上配置和LATEST均保留已核验的full85，正式发布及物理断电验收尚未完成。
+截至2026-10-10 00:12，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传，实时演奏检查PASS。AF/B0/B1/B2发布时序未通过，均未烧录；B1/B2全部PLL全传播已通过，B3本地ready/背景波形/tag修正正在构建。板上配置和LATEST均保留已核验的full85，正式发布及物理断电验收尚未完成。
 
 AD最终268/340物理BSRAM，clk50 55.362MHz、视频187.261MHz。严格时序门禁仍发现DDR UI setup −2.107ns（旧文字/分析渲染为主，hold+0.165ns）和视频PLL全传播10.757ns>10ns，因此AD只作为明确的临时诊断，**配置Flash已恢复full85、旧UART模型E及现场检查PASS，LATEST仍85**。AE保持AD全部RTL，仅增加严格8ns DDR路径/6ns PLL端点物理预算；其已完成结果仍未闭合。原有时钟、hold、CRC、自检和独立PLL10ns门槛全部保留。
 
@@ -107,3 +107,5 @@ B2冻结源全模型回归PASS：52239字NOR→双遍片内串行→原解析器
 2026-10-10 00:03 B2约80分钟路由后正常完成：PNR268BSRAM，video157.907MHz、PLL全部通过、两CDC通过；clk50 feature-cache地址最差-2.226ns/Fmax44.993MHz，DDR UI校准Q→原DDR16使能-1.800ns（hold+0.179ns）。门禁停止programming_started=false，无板卡改写。B3保留所有CNN/缓存算术/官方DDR PHY/固件，对已观测feature-cache地址加严格19ns物理预算（原20ns仍不变）、模型客户端本地寄存同域calibration（1memorycycle初始level延迟，reset立即清）、现有预解码级内波形shift/clamp、背景谓词和tagflags预测。实际wrapper100000组合/异步reset和全部像素/双renderer测试PASS，tagflags六组独立队列PASS；完整模型候选源回归与B3构建同时启动。B3相对B2仅SDC、UserCode脚本、模型边界link、仲裁模块、dashboard5文件变化，原模型/固件/PHY及CNN算术源哈希全部保留。
 
 同拍tagflags完整52239系数NOR/串行/原DDR客户端/仲裁独立内存回归PASS，52239写/读CRC AF01A61B；未作实体 IO。B3采用冻结解析器的全模型测试另跑，新增本地ready真实115200小模型链路单独检查。
+
+B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同，actual frozen link wrapper与请求谓词进入TB，测试源哈希记录。该结果只覆盖初始校准等待，独立PHY单域恢复仍不作扩展承诺。

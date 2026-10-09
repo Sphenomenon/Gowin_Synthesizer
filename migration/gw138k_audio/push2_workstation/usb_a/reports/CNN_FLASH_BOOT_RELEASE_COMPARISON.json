@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-09T23:31:41.122229+08:00",
+  "generated_at": "2026-10-10T00:11:40.218417+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -116,7 +116,29 @@
       "build": "results/workstation_flashb2_20261009_parallel_cards_tmds",
       "hardware_auto_boot_verified": false,
       "default_released": false,
-      "status": "routing_in_progress",
+      "status": "routed_release_gate_failed",
+      "release_gate_passed": false,
+      "programming_started": false,
+      "checks": {
+        "clk50": 1,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0
+      },
+      "clk50_fmax_mhz": 44.993,
+      "video_fmax_mhz": 157.907,
+      "ddr_ui_setup_wns_ns": -1.8,
+      "ddr_ui_hold_wns_ns": 0.179,
+      "PLL_all_endpoints_passed": true,
+      "PLL_worst_ns": 7.79
+    },
+    {
+      "user_code": "B3",
+      "build": "results/workstation_flashb3_20261010_local_ready_wave",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "status": "synthesizing",
       "release_gate_passed": false,
       "programming_started": false
     }

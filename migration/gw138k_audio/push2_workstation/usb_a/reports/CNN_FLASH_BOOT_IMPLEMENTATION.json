@@ -1148,6 +1148,8 @@
     "physical_bsram_limit": 268,
     "feature_cache_route_budget_ns": 19,
     "model_memory_calibration_level_latency_cycles": 1,
-    "hardware_tested": false
+    "hardware_tested": false,
+    "local_ready_actual_baud_simulation_passed": true,
+    "local_ready_actual_baud_simulation": "results/workstation_flashb3_20261010_local_ready_wave/local_ready_actual_baud_simulation.json"
   }
 }
