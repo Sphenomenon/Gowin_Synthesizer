@@ -704,3 +704,14 @@ def fast_tf_read_availability(text):
         assert text.count(old)==1
         text=text.replace(old,new,1)
     return text
+
+
+def quiet_shared_analysis_column(text):
+    """Shared rendering reads local analysis only via the snapshot exporter."""
+    old='    wire [8:0] read_column=exporting ? shared_read_addr[8:0] : spectrum_column;'
+    assert text.count(old)==1
+    new="""    // In shared-render mode the snapshot writer owns analysis readback.
+    // The raster consumes the coherent external cache, never local FFT RAM.
+    wire [8:0] read_column=(SHARED_RENDER!=0) ? shared_read_addr[8:0] :
+        (exporting ? shared_read_addr[8:0] : spectrum_column);"""
+    return text.replace(old,new,1)

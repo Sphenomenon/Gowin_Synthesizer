@@ -245,3 +245,5 @@ TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合
 备用 `--shallow-card-select` 要求 `--parallel-dashboard-cards`，把原顺序front-card优先选择解析成互斥选择位，再并行掩码合并11-bit相对坐标/10-bit文字坐标。全68bit输入SAT包含全部8重叠组合、4frontIDs及独立坐标值，完整随机像素和实际分析页帧相同，增加0周期、0 BSRAM。尚未应用于B8；有该元数据的后续构建会绑定实际源码重跑SAT及完整帧。
 
 备用 `--fast-tf-read-availability` 要求 `--retime-tf-read-total`，用低5bit借位与高27bit一致/加1后比较替代读可用量的完整32bit相减→小于32判定。保留原available_bytes用于状态/银行边界计算，无额外周期、无容量限制；64bit全输入SAT覆盖全部借位/32bit回绕，42组协议（含同周期响应）通过。尚未用于B8，有该元数据的后续构建会绑定实际源码重跑。
+
+备用 `--quiet-shared-analysis-column` 仅在 `SHARED_RENDER!=0` 时令本地FFT读地址跟随快照导出器shared_read_addr。该模式实际像素来自DD R display-data cache，本地FFT在非导出期没有读有效信号，因此去掉背压→本地column的无效依赖；直接模式的原地址表达式保持。不改FFT/XY分析算法或analysis RAM，增加0周期/0BSRAM。非均匀全front-RAM激励、真实快照writer/cache、3帧全部数据包/描述符、25ms停顿及冷启动无FFT状态测试PASS，首帧1036800像素对与冻结源完全相同。发布脚本新增实际共享整链路测试。

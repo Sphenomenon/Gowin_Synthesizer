@@ -1457,5 +1457,21 @@
     "added_bsram": 0,
     "hardware_tested": false,
     "promoted": false
+  },
+  "prepared_quiet_shared_analysis": {
+    "applied_to_B8": false,
+    "applied_to_B9": false,
+    "added_cycles": 0,
+    "added_bsram": 0,
+    "actual_parameter": "SHARED_RENDER!=0",
+    "direct_mode_unchanged": true,
+    "evidence": "reports/CNN_FLASH_BOOT_QUIET_SHARED_ANALYSIS_TESTS.json",
+    "shared_protocol_frames": 3,
+    "all_payloads_descriptors_checked": true,
+    "stalled_ddr_ms": 25,
+    "nonuniform_front_ram": true,
+    "pixel_pairs_compared_to_frozen": 1036800,
+    "cold_invalid_analysis_checked": true,
+    "hardware_tested": false
   }
 }

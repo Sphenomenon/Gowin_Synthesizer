@@ -428,6 +428,32 @@
       "dashboard_sha256": "3fd101ab84a34fc0e79df88e3ec40a4f2385fcbbac91fb819d343d7c89d9f017",
       "renderer_sha256": "a9734ce31b6558a3980c3bbc2096d63308b50b5019151287057f09a797cf01fd",
       "log": "PASS renderer1036800two-pixelbeats +129601native DDR commands,complete1920x1080,independent long/native stalls,RGB565/address/meta exact,skid completion after drain\n- /tmp/cnn_renderer_predecode_1daxf88j/tb.sv:73: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 13ms; walltime 1.126 s; speed 11.745 ms/s\n- Verilator: cpu 1.119 s on 1 threads; allocated 32 MB"
+    },
+    "frozen_shared_display_integration.json": {
+      "passed": true,
+      "source_bound": true,
+      "quiet_shared_analysis": false,
+      "tested_renderer_sha256": "a9734ce31b6558a3980c3bbc2096d63308b50b5019151287057f09a797cf01fd",
+      "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_flashb9_20261010_grouped_tf_card",
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "front_ram_address_poisoned": true,
+      "scope": "actual FFT/XY bank ownership with nonuniform front arrays -> DDR publication -> coherent cache reload -> complete raster against frozen original; 3frames + cold invalid-analysis reset",
+      "fixture_sha256": "c54d726303e5cb4bf9dabc5d9132bfb45848b40e946bcaacd5cbb6d3a65b0738",
+      "source_sha256": {
+        "src/memory/display_data_layout_pkg.sv": "ba53d96edd01ed1fca72dc8ec4377e66afccd4a8a79e8f113aba3f53151d233b",
+        "src/video/feedback_renderer.v": "a9734ce31b6558a3980c3bbc2096d63308b50b5019151287057f09a797cf01fd",
+        "src/video/feedback_dashboard.v": "3fd101ab84a34fc0e79df88e3ec40a4f2385fcbbac91fb819d343d7c89d9f017",
+        "src/video/feedback_capture.v": "ae1c33731921949bb4111d9c8aa2d0f788d373e088310f47dc7fb3f86fb4d530",
+        "src/video/feedback_wave_align.v": "4cc6e5bb6c065266185236ee6dcb6acf9403872096d912cf096ce07b66848d4a",
+        "src/video/video_font_5x7.v": "f8db5962cd395d8f6d13727a853d4bf2a6994a2ec8b9ac8d880ab11449ee896b",
+        "src/video/output_audio_analysis.v": "5c4929314c548d0ab97d6274e6ceb3ef59a76be739c5fb0a1d48564aa011dbdc",
+        "src/video/output_audio_capture.v": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+        "src/video/audio_analysis_rom.v": "439ff9f00ff4d29740b296f2e264eabc19e6cb2ff2195dfb2bd815c9d1286946",
+        "src/memory/display_data_writer.v": "d04be5254fa9ee07e497ff9c92a26a959eb394f3c68366faf71de16543e9d8b8",
+        "src/memory/display_data_reader.v": "3079ea0aa9108ec476fbb52ae0814faa41a039c98fba5a486c1ad136c617dd20"
+      },
+      "log": "PASS shared DDR HDMI source: 3 frames, every payload/descriptor, backpressure/25ms stall, coherent DDR reload, 1036800 P10 pixel pairs identical\nPASS startup invalid analysis: zero bitmap/columns, lengths zero; waveform and metadata valid\n- /tmp/cnn_shared_display_6fznwx1f/tb.sv:246: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 76ms; walltime 9.715 s; speed 7.875 ms/s\n- Verilator: cpu 9.683 s on 1 threads; allocated 15 MB"
     }
   },
   "full_model_composition": {

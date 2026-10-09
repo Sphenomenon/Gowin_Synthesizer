@@ -2,7 +2,7 @@
 """Exact parallel next/current spectrum address SAT proof all2048x2inputs."""
 import argparse,hashlib,json,re,subprocess,tempfile
 from pathlib import Path
-from cnn_ddr_pipeline_patch import RENDERER,parallel_renderer_spectrum_address,align_renderer_predecode
+from cnn_ddr_pipeline_patch import RENDERER,parallel_renderer_spectrum_address,align_renderer_predecode,quiet_shared_analysis_column
 ROOT=Path(__file__).resolve().parents[1];BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--build',type=Path);a=p.parse_args()
 original=(BASE/RENDERER).read_text();patched=parallel_renderer_spectrum_address(original)
@@ -10,7 +10,9 @@ if a.build:
  build=a.build.resolve();metadata=json.loads((build/'build_metadata.json').read_text())
  assert metadata.get('parallel_renderer_spectrum_address') and metadata.get('predecoded_dashboard')
  patched=(build/'Prj1'/RENDERER).read_text()
- assert patched==parallel_renderer_spectrum_address(align_renderer_predecode(original)),'renderer drift'
+ expected=parallel_renderer_spectrum_address(align_renderer_predecode(original))
+ if metadata.get('quiet_shared_analysis_column'):expected=quiet_shared_analysis_column(expected)
+ assert patched==expected,'renderer drift'
 def block(text):
  start=text.index('    wire [10:0] '+('spectrum_next_x=' if 'spectrum_next_x=' in text else 'next_x='))
  end=text.index('    wire [10:0] image_x=',start)

@@ -71,9 +71,14 @@ def main():
                 '--pixel-skid','--analysis-page','--build',str(build),'--output',str(output/'pixel_skid_full_renderer.json')]
             for key,flag in [('predecoded_text_coordinates','--text-coordinates'),
                     ('parallel_dashboard_cards','--parallel-cards'),('predecoded_background_coordinates','--background-coordinates'),
-                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates'),('predecoded_dynamic_background_ink','--dynamic-background-ink'),('parallel_renderer_spectrum_address','--parallel-spectrum-address'),('shallow_card_select','--shallow-card-select')]:
+                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates'),('predecoded_dynamic_background_ink','--dynamic-background-ink'),('parallel_renderer_spectrum_address','--parallel-spectrum-address'),('shallow_card_select','--shallow-card-select'),('quiet_shared_analysis_column','--quiet-shared-analysis')]:
                 if meta.get(key):command.append(flag)
             label,code=run('pixel_skid_full_renderer',command)
+            result['checks'][label]=code
+        if meta.get('predecoded_dashboard'):
+            label,code=run('shared_display_integration',[sys.executable,
+                str(ROOT/'tools/test_cnn_shared_display.py'),'--build',str(build),
+                '--output',str(output/'shared_display_integration.json')])
             result['checks'][label]=code
         if meta.get('parallel_tf_byte_counters'):
             protocol_flags=['--parallel-byte-counters']
