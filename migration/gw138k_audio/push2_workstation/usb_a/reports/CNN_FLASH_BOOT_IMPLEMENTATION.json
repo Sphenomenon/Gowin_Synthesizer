@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "isolated_flash_to_actual_ddr_passed_A3_diagnostic_A5_aligned_start_timing_building",
+  "status": "isolated_flash_to_actual_ddr_passed_A5_aligned_candidate_routing_prior_experiments_cancelled",
   "target_user_code": "0x000000A5",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -545,5 +545,11 @@
     "on_deployment_failure": "rollback full85 Flash then restore its original UART model and startup smoke",
     "programming_started": false
   },
-  "full_model_sim_boot_seconds_transport": "direct; serial compatibility transport uses actual115200 and about9s payload transfer plus checks"
+  "full_model_sim_boot_seconds_transport": "direct; serial compatibility transport uses actual115200 and about9s payload transfer plus checks",
+  "A3_cancelled": {
+    "reason": "about65min/no final routing result, source lacks subsequently required cold history alignment, superseded by release-eligible A5",
+    "hardware_tested": false,
+    "incremental_pr_format_validated": false,
+    "document_conflict_not_resolved": true
+  }
 }
