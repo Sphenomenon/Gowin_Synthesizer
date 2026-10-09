@@ -1114,6 +1114,10 @@
     "synthesis_registers": 43555,
     "synthesis_lut": 56555,
     "synthesis_alu": 10528,
-    "synthesis_full_workstation_feature_audit_passed": true
+    "synthesis_full_workstation_feature_audit_passed": true,
+    "cpu_release_simulation_passed": true,
+    "cpu_release_simulation": "results/workstation_flashb2_20261009_parallel_cards_tmds/cpu_release_230923_636432/result.json",
+    "offline_deploy_fault_cases": 11,
+    "offline_deploy_fault_passed": true
   }
 }

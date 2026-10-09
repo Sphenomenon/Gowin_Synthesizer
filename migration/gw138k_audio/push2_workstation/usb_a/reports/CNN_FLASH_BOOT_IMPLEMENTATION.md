@@ -97,3 +97,5 @@ B2冻结并启动：保留B1参考PLL区域，只变dashboard动画/文本坐标
 B2综合实测220BSRAM/505SSRAM/43555FF/56555LUT，所有完整工作站必需模块审计通过（USB/Push/合成/矢量cue/TF FAT-SPI-DDR播放/BasicPitch/DDR/CPU/HDMI/串联效果）。新增并行卡片运算的LUT成本已明报，PNR物理计量尚待结果。
 
 B1还暴露A坐标→B背景色的旧长优先链；趁B2布线准备背景坐标预解码，只把纯a_x/a_y条件在原A寄存同一enable捕获，文本/动态波形和颜色选择时刻不变，不额外增添像素周期。包含分析页2137105像素、完整renderer1036800双像素beat的逐位比较通过，源哈希135a2507…；未修改B2输入，等待B2实际路径决定是否采用。见CNN_FLASH_BOOT_BACKGROUND_COORDINATE_TESTS.json。
+
+B2冻结源回归：CPU preset73全效果CC123在1189帧释放，干声和双音sustain在23887帧释放，均满足48000帧截止，三个场景PASS；11项离线部署故障测试再次PASS，Programmer/UART均替身，不能代替实体。完整31字模型以真实115200通过，52239字CRC仿真仍运行。
