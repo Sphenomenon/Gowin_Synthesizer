@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T04:11:13.341326+08:00",
+  "generated_at": "2026-10-10T04:46:34.834070+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -571,13 +571,20 @@
     {
       "user_code": "C0",
       "build": "results/workstation_flashc0_20261010_frame_token_slot",
-      "status": "placement",
+      "status": "routed_waiting_gate",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
       "programming_started": false,
       "source_bound_frame_token_and_idle_slot_passed": true,
-      "ddr_ui_control_physical_budget_ns": 8
+      "ddr_ui_control_physical_budget_ns": 8,
+      "preliminary_routed_ddr_ui_passed": false,
+      "ddr_ui_setup_wns_ns": -1.319,
+      "ddr_ui_hold_wns_ns": 0.171,
+      "clk50_fmax_mhz": 51.951,
+      "video_fmax_mhz": 168.759,
+      "synthesis_bsram": 220,
+      "physical_bsram": 268
     }
   ]
 }

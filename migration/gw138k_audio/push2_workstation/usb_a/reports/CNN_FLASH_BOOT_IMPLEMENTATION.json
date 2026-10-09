@@ -1634,6 +1634,15 @@
       "hardware_tested": false
     },
     "hardware_tested": false,
-    "evidence": "reports/CNN_FLASH_BOOT_C0_FRAME_SLOT_TESTS.json"
+    "evidence": "reports/CNN_FLASH_BOOT_C0_FRAME_SLOT_TESTS.json",
+    "routed_preliminary": {
+      "passed": false,
+      "ddr_ui_setup_wns_ns": -1.319,
+      "ddr_ui_hold_wns_ns": 0.171,
+      "physical_bsram": 268,
+      "worst_path": "music data\u2192queued_data RESET,8ns strict budget",
+      "original_10ns_path_remaining": "TFwrite_total byte increment\u22121.013ns",
+      "formal_acceptance": "waiting BE/BF predecessors; not hardware eligible"
+    }
   }
 }

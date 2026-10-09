@@ -35,6 +35,18 @@ for row in report['rows']:
         log=build/'gowin_all.log'
         if log.exists():
             text=log.read_text();row['status']='routing' if 'Running routing' in text else 'placement' if 'Running placement' in text else 'synthesizing'
+    # A later candidate may finish routing before its predecessor. Surface
+    # its real measured result while keeping serialized acceptance pending.
+    timing=build/'Prj1/impl/pnr/Prj1_tr_content.html'
+    if tool.exists() and not acceptance.exists() and timing.exists():
+        from audit_ddr_ui_timing import audit as audit_ddr
+        from deploy_cnn_flash_boot import audit_previous_positive_clocks
+        evidence=audit_ddr(build)
+        row['preliminary_routed_ddr_ui_passed']=evidence['passed']
+        for kind in ('setup','hold'):row[f'ddr_ui_{kind}_wns_ns']=evidence['checks'][kind]['wns_ns']
+        clocks=audit_previous_positive_clocks(build)['candidate_clocks']
+        for name,key in [('clk_50m','clk50_fmax_mhz'),('video_pixel148','video_fmax_mhz')]:
+            if name in clocks:row[key]=clocks[name][1]
     memory=build/'workstation_memory.json'
     if memory.exists():
         evidence=json.loads(memory.read_text());row['synthesis_bsram']=evidence['bsram']
