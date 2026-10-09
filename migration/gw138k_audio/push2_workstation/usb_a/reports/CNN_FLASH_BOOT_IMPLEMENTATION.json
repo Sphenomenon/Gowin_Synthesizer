@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_flash_function_verified_full85_restored_BA_to_BD_timing_rejected_BE_BF_C0_building",
+  "status": "AD_flash_function_verified_full85_restored_BE_BF_C0_C1_pending",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1644,5 +1644,17 @@
       "original_10ns_path_remaining": "TFwrite_total byte increment\u22121.013ns",
       "formal_acceptance": "waiting BE/BF predecessors; not hardware eligible"
     }
+  },
+  "C1_nibble_tf_count": {
+    "build": "results/workstation_flashc1_20261010_nibble_tf_count",
+    "protocol_cases": 60,
+    "full_native_inflight_restart_cases": 20,
+    "addition_SAT_input_bits": 38,
+    "read_total_SAT_input_bits": 65,
+    "added_cycles": 0,
+    "added_bsram": 0,
+    "model_pipeline": "running separately",
+    "hardware_tested": false,
+    "evidence": "reports/CNN_FLASH_BOOT_C1_NIBBLE_TESTS.json"
   }
 }

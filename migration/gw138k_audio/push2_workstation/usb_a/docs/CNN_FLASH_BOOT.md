@@ -261,3 +261,6 @@ TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合
 
 
 `--register-renderer-first-issue` 将每帧首个raster issue标记保留到原先实际接收首像素的同一拍，减少frame_start到卡片寄存器CE的组合路径；snapshot导出和输出停顿不消耗标记。需要`--predecode-dashboard`，不增加帧或像素延迟。实际renderer对照原式的逐拍断言、完整1080p输出/原生DDR命令比较和共享分析页冷启动/多帧比较作为验收。偶数WIDTH2..2048、高度1..2048；不支持尺寸明确拒绝。C0同时改变模型客户端槽位，部署前强制要求该构建新执行的完整52239词模型CRC证据及原源hash，不能只用模块仿真代替。
+
+
+`--nibble-tf-byte-counters` 是`--parallel-tf-byte-counters`的精确四位高进位组实现，全部32位计数＋6位增量（含0..63及回绕）的SAT证明仍必需。无接口周期或BSRAM增加，最终物理延迟由独立布线报告确定。

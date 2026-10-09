@@ -172,3 +172,6 @@ C0以BE成对读响应寄存＋BF控制端点物理预算为基础，加入空�
 
 
 04:45 C0布线完成SYN220/PNR268；最差−1.319ns（新增8ns预算的musicpayload数据到槽位RESET），TFwrite_total+pending_bytes仍有原10ns路径−1.013ns，hold+0.171ns。帧首标志及TF读响应已不再是全局最慢路径；仍有read_pending接收控制/卡片text/清屏FFT/显示写桥负路径，不能据主路径消失宣称闭合。正式验收等待BE/BF前驱完成，确保不会并行硬件IO。状态表已展示该提前结束候选的真实路由指标。
+
+
+04:52 BE完成SYN220/PNR268，DDR UI−1.615ns、hold+0.169ns，主要卡片relative坐标和帧首CE，正式门禁进行中，未写板。C1保留C0变更，仅将字节加法高位进位改为并行4位组；实际源码38bit加法全空间SAT、65bit读计数SAT、60组TF协议（20组完整前级缓冲＋native链路在途重启）通过。全模型NOR→DDR执行单独启动，原50/100/148.5MHz时钟和发布门禁不变。
