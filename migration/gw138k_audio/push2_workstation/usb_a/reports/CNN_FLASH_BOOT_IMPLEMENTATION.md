@@ -111,3 +111,5 @@ B2冻结源全模型回归PASS：52239字NOR→双遍片内串行→原解析器
 B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同，actual frozen link wrapper与请求谓词进入TB，测试源哈希记录。该结果只覆盖初始校准等待，独立PHY单域恢复仍不作扩展承诺。
 
 2026-10-10 B3完整模型回归已把实际本地memory-ready寄存片段接入冻结原解析器/DDR16及共享arbiter/客户端队列：31字真实115200、52239字仅仿真RX加速到3125000，完整52239写/52239读CRC AF01A61B/source1均PASS，含并发扫描/写入与原生背压。B3综合220BSRAM、505SSRAM、43607寄存器、56494LUT；物理占用和时序尚待最终路由。源码绑定证据已加入CNN_FLASH_BOOT_B3_LOCAL_PATH_TESTS.json。另针对B2 kh→feature缓存地址路径准备零延迟3位slot算术，Yosys SAT对实际原/新解码器149位所有输入、FRAME_LIMIT=1/172/512证明全部观测输出相同，包含三条合法最大地址可达性；只做prepare，未修改B3，也未分配UserCode或操作硬件。
+
+2026-10-10 B4已启动，新增实际特征读地址slot位宽约束；与B3仅两份输入不同：UserCode脚本、basic_pitch_pcm_pipeline.sv中的三个有边界保护的slot乘法输入。其余603份冻结输入相同。实际B4源码与已经证明的变换完全相符，SAT149位等价证据绑定到CNN_FLASH_BOOT_B4_FEATURE_SLOT_TESTS.json，零新增周期。B3仍继续独立布线/验收，B4未写板。

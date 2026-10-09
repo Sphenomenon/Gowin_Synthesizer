@@ -1079,10 +1079,10 @@
     "programming_started": false,
     "acceptance": "results/workstation_flashb0_20261009_parallel_coordinates/automatic_acceptance/result.json"
   },
-  "board_current_status_last_checked_at": "2026-10-09T21:39:42.262168+08:00",
+  "board_current_status_last_checked_at": "2026-10-10T00:31:07.046130+08:00",
   "board_current_model_E_verified": true,
   "board_current_config_status": "0x00026020",
-  "board_current_read_only_status": "results/workstation_flashb0_20261009_parallel_coordinates/baseline_readonly_status.json",
+  "board_current_read_only_status": "results/workstation_flashb3_20261010_local_ready_wave/baseline_readonly_status.json",
   "B1_PLL_locality": {
     "build": "results/workstation_flashb1_20261009_pll_locality",
     "status": "routed_release_gate_failed",
@@ -1169,7 +1169,8 @@
       "registers": 43607,
       "lut": 56494,
       "physical_bsram": null
-    }
+    },
+    "baseline_readonly_verified": true
   },
   "prepared_feature_read_address_optimization": {
     "applied_to_B3": false,
@@ -1183,6 +1184,21 @@
     ],
     "evidence": "reports/CNN_FLASH_BOOT_FEATURE_READ_ADDRESS_TESTS.json",
     "prepare": "results/workstation_feature_read_prepare_20261010",
+    "hardware_tested": false
+  },
+  "B4_narrow_feature_slot": {
+    "build": "results/workstation_flashb4_20261010_narrow_feature_slot",
+    "user_code": "0x000000B4",
+    "status": "building",
+    "changed_from_B3": [
+      "scripts/build.tcl",
+      "rtl/music/basic_pitch_pcm_pipeline.sv"
+    ],
+    "formal_proof_passed": true,
+    "formal_input_bits": 149,
+    "added_cycles": 0,
+    "physical_bsram_limit": 268,
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_B4_FEATURE_SLOT_TESTS.json",
     "hardware_tested": false
   }
 }
