@@ -1364,5 +1364,14 @@
       "reports/CNN_FLASH_BOOT_DYNAMIC_BACKGROUND_ANALYSIS_PAGE_TESTS.json"
     ],
     "hardware_tested": false
+  },
+  "prepared_bist_expected_pattern": {
+    "applied_to_B6": false,
+    "added_cycles": 0,
+    "bsram_added": 0,
+    "test_cases": 15,
+    "passed": true,
+    "evidence": "reports/CNN_FLASH_BOOT_BIST_PATTERN_TESTS.json",
+    "hardware_tested": false
   }
 }

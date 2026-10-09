@@ -81,6 +81,11 @@ def main():
                 label,code=run(label,[sys.executable,str(ROOT/'tools'/tool),'--build',str(build),
                     '--output',str(output/(label+'.json'))]+flags)
                 result['checks'][label]=code
+        if meta.get('retimed_bist_expected_pattern'):
+            label,code=run('bist_pattern_cycle_equivalence',[sys.executable,
+                str(ROOT/'tools/test_cnn_bist_expected_pattern.py'),'--build',str(build),
+                '--output',str(output/'bist_pattern_cycle_equivalence.json')])
+            result['checks'][label]=code
         # Keep all evidence even if one independent routed check fails.
         sys.path.insert(0,str(ROOT/'tools'))
         deploy=importlib.import_module('deploy_cnn_flash_boot')

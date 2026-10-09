@@ -610,3 +610,17 @@ def predecode_dashboard_dynamic_ink(text):
     text=text[:start]+block+text[end:]
     anchor='    reg a_effect_hit';assert text.count(anchor)==1
     return text.replace(anchor,declarations+wires+anchor,1)
+
+
+BIST='src/memory/ddr3_bist.v'
+
+def retime_bist_expected_pattern(text):
+    """Expected pattern in the existing request wait beat; same BIST cycles."""
+    old='    wire mismatch = (rsp_data != test_pattern(address, inverted));'
+    assert text.count(old)==1
+    return text.replace(old,"""    // address/inverted are stable through READ_REQUEST before READ_RESPONSE;
+    // the expected value is current before the earliest accepted response.
+    reg [255:0] expected_pattern_q;
+    always @(posedge clk)expected_pattern_q<=test_pattern(address,inverted);
+    wire mismatch = (rsp_data != expected_pattern_q);
+""",1)
