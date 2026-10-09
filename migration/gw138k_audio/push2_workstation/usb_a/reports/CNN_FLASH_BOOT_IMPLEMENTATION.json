@@ -504,5 +504,19 @@
       "reason": "about90min/no report; superseded by paired pr-entry comparison and cold history-aligned A4",
       "hardware_tested": false
     }
+  },
+  "A2_completed": {
+    "synthesis_bsram": 216,
+    "physical_bsram": 260,
+    "clk50_fmax_mhz": 44.792,
+    "clk50_setup_wns_ns": -2.325,
+    "video_fmax_mhz": 147.676,
+    "ddr_ui_fmax_mhz": 192.167,
+    "release_gate_passed": false,
+    "hardware_tested": false
+  },
+  "A4_cancelled": {
+    "reason": "superseded before final PNR by cycle-exact registered startup countdown predicate from A2 critical paths",
+    "hardware_tested": false
   }
 }

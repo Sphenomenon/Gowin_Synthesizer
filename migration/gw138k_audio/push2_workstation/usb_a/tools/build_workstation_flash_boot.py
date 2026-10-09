@@ -93,9 +93,36 @@ def audit_serial_compatibility(output):
         baseline=str(BASE.relative_to(ROOT)),candidate=str(output),unchanged_sources=evidence,
         link_change_only='Two diagnostic inputs and B138 source/error fields; native memory and CDC source unchanged'))
 
+def retime_start_delay(text):
+    """Register the zero predicate of the existing countdown with exact next-state priority."""
+    declaration='    reg [21:0] music_restart_delay;'
+    assert text.count(declaration)==1
+    text=text.replace(declaration,declaration+'\n    reg music_delay_expired;')
+    expression='music_restart_delay==0 && !music_analysis_restart'
+    assert text.count(expression)==1
+    text=text.replace(expression,'music_delay_expired && !music_analysis_restart')
+    anchor='    assign debug_uart_tx=music_report_sending ? music_report_serial : runtime_serial;'
+    assert text.count(anchor)==1
+    predicate="""    // Predicate equals the post-edge countdown value, including all original
+    // load/cancel priorities. No added start latency or CNN arithmetic change.
+    always @(posedge clk_50m or negedge reset_n) begin
+        if(!reset_n) music_delay_expired<=1'b1;
+        else if(tf_scope_cancel || tf_card_lost) music_delay_expired<=1'b1;
+        else if(tf_recover && playlist_scan_done && tf_track_count!=0)
+            music_delay_expired<=1'b0;
+        else if(!tf_recover && !(song_cmd_valid && !tf_mode_50) &&
+                song_pending && music_model_ready && !tf_mode_50)
+            music_delay_expired<=1'b0;
+        else if(tf_restart) music_delay_expired<=1'b0;
+        else if(music_restart_delay==1) music_delay_expired<=1'b1;
+    end
+"""
+    return text.replace(anchor,predicate+anchor)
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--retime-cache-read',action='store_true',help='equivalent one-cycle cache range mask plus parallel dwell counters; no CNN arithmetic change')
+    ap.add_argument('--retime-start-delay',action='store_true',help='cycle-exact registered countdown-zero predicate; no start latency change')
     ap.add_argument('--defer-ddr-startup',action='store_true',help='experimental100ms settling after audio/video lock before initial DDR reset release; no PHY/data/recovery changes')
     ap.add_argument('--transport',choices=('serial','direct'),default='serial',help='serial preserves the full85 CNN/native-DDR hierarchy; direct is the earlier diagnostic')
     ap.add_argument('--flow',choices=('prepare','syn','all','pnr'),default='syn')
@@ -202,6 +229,7 @@ def main():
             assert text.count(old)==1
             text=text.replace(old,"{score_count,score_first,score_last,model_boot_source,\n                             (model_status==0 && model_boot_source==2 ? model_boot_error : model_error_stage),")
             link.write_text(text)
+        if args.retime_start_delay:s=retime_start_delay(s)
         top.write_text(s)
         tree=ET.parse(stage/'Prj1.gprj');fl=tree.find('FileList');present={f.attrib['path'] for f in fl}
         for rel in overlays:
@@ -245,7 +273,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
