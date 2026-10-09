@@ -1039,7 +1039,7 @@
   "AF_render_predecode": {
     "build": "results/workstation_flashaf_20261009_render_predecode",
     "user_code": "0x000000AF",
-    "status": "synthesis",
+    "status": "placement",
     "physical_bsram_limit": 268,
     "hardware_tested": false,
     "additional_raster_enabled_cycles": 1,
@@ -1048,6 +1048,13 @@
     "independent_stalls_order_last_pixel_exact": true,
     "PLL_RomDreg_to_setting_route_budget_ns": 4.5,
     "PLL_independent_full_distribution_budget_ns": 10.0,
-    "firmware_selftests_unchanged": true
+    "firmware_selftests_unchanged": true,
+    "synthesis_resources": {
+      "T_Register": "43438(262)",
+      "T_Lut": "55674(426)",
+      "T_Bsram": "220(0)",
+      "T_Ssram": "505(0)"
+    },
+    "implementation_git_commit": "f03290e"
   }
 }
