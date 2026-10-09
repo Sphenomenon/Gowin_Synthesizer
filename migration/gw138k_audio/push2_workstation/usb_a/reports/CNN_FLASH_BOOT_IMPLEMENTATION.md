@@ -48,3 +48,7 @@ A9实际完成后仍未通过DDR UI（setup -4.368ns）/clk50（-0.108ns）/视�
 
 
 AA临时SRAM实验中CPU/UI终于PASS，但Flash模型状态F/stage3，DDR读回CRC202C97F0与AF01A61B不符；已恢复full85及模型E/现场PASS，Flash配置未改。AA物理260BSRAM，DDR UI -6.783ns、video143.397MHz、clk50 setup+1.053ns但复位recovery -1.184ns，不具备发布条件。后续AB为one-hot ready+同步P10维护写FIFO，原效果算法/DMA保持；为这个FIFO明确配置264物理BSRAM上限，设备340。队列/仲裁独立测试PASS，完整效果器等价性仍在运行，AB尚未实体验收。
+
+2026-10-09 16:58：AB最终P&R为264/340 BSRAM，clk50 56.016MHz、video151.651MHz及CDC/PLL检查通过，DDR UI真正同钟setup仍−3.773ns（hold+0.167ns），严格发布门禁失败。临时SRAM诊断的CPU/DDR已PASS，但音频自检BAD00008（CC123后48000样本仍1个voice），模型搬运未启动。已从既有Flash重载full85并恢复其旧UART模型E、实时三音/立体声/静音/Panic全部PASS；未写候选配置Flash，未做物理断电。AC将验证独立客户端请求槽和寄存仲裁选择，加局部TF写缓冲时序修改，不降低原自检或时序门禁。
+
+AC请求边界验证：八路局部请求槽+寄存仲裁选择，三个tag深度/随机种子分别完成5275/5156/5393条独立参考命令，逐客户端有序、返回归属、带mask内存、tag满/连续返回/全复位均PASS；八组TF原版/修改版与直连/新仲裁、背压组合均PASS。完整52239权重NOR→内部UART→解析器→DDR16/credit→新仲裁→独立masked内存在竞争/背压下完成52239写/读、CRC AF01A61B、source=1，小规模31词为实际115200波特率。源对照发现根目录解析器增加CLK_HZ/BAUD参数，而冻结full85保留常量；默认语义完全相同。另以AC冻结源码补做测试，31词保持115200源码逐字相同，完整内容仅把RX实例波特率加速并显式记录原/测试哈希。AC尚在P&R，无板上/Flash启动验收。

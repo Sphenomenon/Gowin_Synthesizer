@@ -3,7 +3,7 @@
 from pathlib import Path
 import argparse,json,subprocess,tempfile,hashlib
 ROOT=Path(__file__).resolve().parents[1]
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--buffered-clients',action='store_true');a=p.parse_args()
 # Connections are generated mechanically; stimulus and scoreboard do not use
 # DUT owner/priority/tag state. All eight client interfaces are observed.
 clients=['bist','scan','cpu','writer','audio','music','delay','display']
@@ -140,17 +140,35 @@ initial begin
 end
 endmodule
 '''
-text=text.replace('__INSTANCE__','basic_pitch_ddr_arbiter_pipeline #(.TAG_BITS(BITS)) dut('+','.join(connections)+');')
+if a.buffered_clients:
+ # Simultaneous local acceptance may be reordered BETWEEN clients by the
+ # native priority arbiter. Independent per-client queues verify exact FIFO
+ # order; response ownership/snapshots are recorded at native read issue.
+ text=text.replace('integer per_client[0:7],sequence_no[0:7];',
+  'integer per_client[0:7],sequence_no[0:7],take_index[0:7];integer eq_slot[0:7][0:20000];integer native_owner,wanted;')
+ text=text.replace('dut.command_full','dut.u_core.command_full').replace('dut.count','dut.u_core.count').replace('dut.response_valid','dut.u_core.response_valid')
+ text=text.replace('if($countones(ready)>1 || $countones(response)>1)', 'if($countones(response)>1)')
+ old='   if(issue_count>=accept_count || native_address!==eq_addr[issue_count] || native_mask!==eq_mask[issue_count] || native_data!==eq_data[issue_count] || (cmd==0)!==eq_write[issue_count])$fatal(1,"native command order/data changed at%0d",issue_count);'
+ new='   native_owner=native_address[14:11];\n   if(take_index[native_owner]>=per_client[native_owner])$fatal(1,"native command without client acceptance");\n   wanted=eq_slot[native_owner][take_index[native_owner]];\n   if(!bd && native_owner!=0)$fatal(1,"non-BIST native issue before BIST completion");\n   if(native_address!==eq_addr[wanted] || native_mask!==eq_mask[wanted] || native_data!==eq_data[wanted] || (cmd==0)!==eq_write[wanted])$fatal(1,"per-client native command order/data changed owner%0d at%0d",native_owner,take_index[native_owner]);\n   take_index[native_owner]=take_index[native_owner]+1;\n   if(eq_write[wanted])begin\n    for(integer k=0;k<32;k=k+1)if(!eq_mask[wanted][k])model[eq_addr[wanted][14:3]][k*8+:8]=eq_data[wanted][k*8+:8];\n   end else begin er_data[read_count]=model[eq_addr[wanted][14:3]];er_owner[read_count]=native_owner;read_count=read_count+1;end'
+ assert text.count(old)==1;text=text.replace(old,new)
+ old='   if(eq_write[accept_count])begin\n    for(integer k=0;k<32;k=k+1)if(!eq_mask[accept_count][k])model[address[i][14:3]][k*8+:8]=data[i][k*8+:8];\n   end else begin er_data[read_count]=model[address[i][14:3]];er_owner[read_count]=i;read_count=read_count+1;end'
+ assert text.count(old)==1;text=text.replace(old,'eq_slot[i][per_client[i]]=accept_count;')
+ text=text.replace('per_client[i]=0;sequence_no[i]=0;', 'per_client[i]=0;sequence_no[i]=0;take_index[i]=0;')
+ text=text.replace('per_client[1]!=0 || per_client[5]!=0','per_client[1]>1 || per_client[5]>1')
+module='basic_pitch_ddr_client_queues' if a.buffered_clients else 'basic_pitch_ddr_arbiter_pipeline'
+text=text.replace('__INSTANCE__',module+' #(.TAG_BITS(BITS)) dut('+','.join(connections)+');')
+
 cases=[]
 with tempfile.TemporaryDirectory(prefix='cnn_ddr_arbiter_') as tmp:
  tb=Path(tmp)/'tb.sv';tb.write_text(text)
  for bits,seed in [(2,7),(3,31),(5,127)]:
   exe=Path(tmp)/'sim'
-  c=subprocess.run(['iverilog','-g2012','-s','tb_arbiter_pipeline',f'-Ptb_arbiter_pipeline.BITS={bits}',f'-Ptb_arbiter_pipeline.SEED={seed}','-o',str(exe),str(tb),str(ROOT/'rtl/music/basic_pitch_ddr_arbiter_pipeline.sv')],capture_output=True,text=True)
+  c=subprocess.run(['iverilog','-g2012','-s','tb_arbiter_pipeline',f'-Ptb_arbiter_pipeline.BITS={bits}',f'-Ptb_arbiter_pipeline.SEED={seed}','-o',str(exe),str(tb),str(ROOT/'rtl/music/basic_pitch_ddr_arbiter_pipeline.sv')]+([str(ROOT/'rtl/music/basic_pitch_ddr_client_queues.sv')] if a.buffered_clients else []),capture_output=True,text=True)
   assert c.returncode==0,c.stdout+c.stderr
   v=subprocess.run(['vvp',str(exe)],capture_output=True,text=True,timeout=30)
   assert v.returncode==0 and 'PASS shared DDR pipeline' in v.stdout,v.stdout+v.stderr
   cases.append(dict(tag_bits=bits,seed=seed,passed=True,log=v.stdout.strip()))
-report=dict(passed=True,cases=cases,hardware_tested=False,pcm_saved=False,arbiter_sha256=hashlib.sha256((ROOT/'rtl/music/basic_pitch_ddr_arbiter_pipeline.sv').read_bytes()).hexdigest())
+report=dict(passed=True,buffered_clients=a.buffered_clients,cases=cases,hardware_tested=False,pcm_saved=False,arbiter_sha256=hashlib.sha256((ROOT/'rtl/music/basic_pitch_ddr_arbiter_pipeline.sv').read_bytes()).hexdigest())
+if a.buffered_clients:report['client_queues_sha256']=hashlib.sha256((ROOT/'rtl/music/basic_pitch_ddr_client_queues.sv').read_bytes()).hexdigest()
 if a.output:a.output.write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report,indent=2))

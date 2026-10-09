@@ -1,8 +1,8 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AA_full_CPU_UI_PASS_model_DDR_CRC_failed_AB_onehot_sync_fifo_building",
-  "target_user_code": "0x000000AB",
+  "status": "AC_native_CRC_PASS_routing_frozen_baud_source_recheck_running",
+  "target_user_code": "0x000000AC",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
   "model_partition_byte_verify_passed": true,
@@ -17,7 +17,7 @@
   "full_model_sim_boot_seconds": 0.14773918,
   "model_auto_boot_hardware_verified": false,
   "physical_power_cycle_tested": false,
-  "build": "results/workstation_flashab_20261009_onehot_sync_fifo",
+  "build": "results/workstation_flashac_20261009_client_queues",
   "initial_build_error": "second CST superseded original complete pin constraints; fixed by appending Flash pins to original CST",
   "evidence": {
     "sim_tests": "reports/CNN_FLASH_BOOT_TESTS.json",
@@ -721,8 +721,8 @@
     "synchronous_maintenance_fifo": true,
     "default_ddr_startup": true,
     "high_fanout_replication": false,
-    "status": "placement",
-    "hardware_tested": false,
+    "status": "routed_gate_failed_SRAM_audio_selftest_failed_baseline_restored",
+    "hardware_tested": true,
     "full_effect_equivalence_pending": false,
     "bit_exact_effect_samples": 43000,
     "expected_underrun_injected_samples": 2000,
@@ -732,6 +732,149 @@
     "synthesis_distributed_ram": 1049,
     "previous_distributed_ram": 1593,
     "synthesis_luts": 56817,
-    "synthesis_registers": 41654
+    "synthesis_registers": 41654,
+    "physical_bsram": 264,
+    "clk50_fmax_mhz": 56.016,
+    "video_fmax_mhz": 151.651,
+    "ddr_ui_sameclock_setup_wns_ns": -3.773,
+    "ddr_ui_sameclock_hold_wns_ns": 0.167,
+    "routed_gate_checks": {
+      "clk50": 0,
+      "ddr_ui": 1,
+      "scope_cdc": 0,
+      "clk50_cdc": 0,
+      "video_pll": 0
+    },
+    "release_eligible": false,
+    "diagnostic_result": "results/workstation_flashab_20261009_onehot_sync_fifo/sram_diagnosis/result.json",
+    "CPU_DDR_selftest_passed": true,
+    "CPU_audio_selftest": "BAD00008: CC123 all-notes-off timeout, active1 after48000samples",
+    "model_loading_started": false,
+    "flash_config_written": false,
+    "baseline85_flash_restored": true,
+    "baseline85_uart_model_E_restored": true,
+    "baseline85_live_smoke_passed": true,
+    "physical_power_cycle_tested": false
+  },
+  "AC_client_queues": {
+    "build": "results/workstation_flashac_20261009_client_queues",
+    "status": "routing",
+    "user_code": "0x000000AC",
+    "registered_client_request_slots": 8,
+    "registered_native_selection": true,
+    "retimed_TF_staging_only": true,
+    "physical_bsram_limit": 264,
+    "DDR_startup_unchanged": true,
+    "firmware_selftest_unchanged": true,
+    "routed_gate_not_waived": true,
+    "native_full_model_simulation_pending": false,
+    "hardware_tested": false,
+    "physical_power_cycle_tested": false,
+    "client_queues_simulation": {
+      "passed": true,
+      "buffered_clients": true,
+      "cases": [
+        {
+          "tag_bits": 2,
+          "seed": 7,
+          "passed": true,
+          "log": "PASS shared DDR pipeline seed=7 tags=4 commands=5275 reads=3441 full_tag_cycles=322 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_k66g8sff/tb.sv:128: $finish called at 362650000 (1ps)"
+        },
+        {
+          "tag_bits": 3,
+          "seed": 31,
+          "passed": true,
+          "log": "PASS shared DDR pipeline seed=31 tags=8 commands=5156 reads=3412 full_tag_cycles=273 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_k66g8sff/tb.sv:128: $finish called at 362650000 (1ps)"
+        },
+        {
+          "tag_bits": 5,
+          "seed": 127,
+          "passed": true,
+          "log": "PASS shared DDR pipeline seed=127 tags=32 commands=5393 reads=3506 full_tag_cycles=207 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_k66g8sff/tb.sv:128: $finish called at 362650000 (1ps)"
+        }
+      ],
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "arbiter_sha256": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+      "client_queues_sha256": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c"
+    },
+    "TF_staging_simulation": {
+      "passed": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "cases": [
+        {
+          "source": "original_control",
+          "buffered_native": false,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_h8_oz812/tb.sv:311: $finish called at 26285000 (1ps)"
+        },
+        {
+          "source": "original_control",
+          "buffered_native": false,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_h8_oz812/tb.sv:327: $finish called at 27075000 (1ps)"
+        },
+        {
+          "source": "original_control",
+          "buffered_native": true,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_h8_oz812/tb.sv:322: $finish called at 26885000 (1ps)"
+        },
+        {
+          "source": "original_control",
+          "buffered_native": true,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_h8_oz812/tb.sv:322: $finish called at 27065000 (1ps)"
+        },
+        {
+          "source": "retimed",
+          "buffered_native": false,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_h8_oz812/tb.sv:311: $finish called at 26285000 (1ps)"
+        },
+        {
+          "source": "retimed",
+          "buffered_native": false,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_h8_oz812/tb.sv:327: $finish called at 27075000 (1ps)"
+        },
+        {
+          "source": "retimed",
+          "buffered_native": true,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_h8_oz812/tb.sv:322: $finish called at 26885000 (1ps)"
+        },
+        {
+          "source": "retimed",
+          "buffered_native": true,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_h8_oz812/tb.sv:322: $finish called at 27065000 (1ps)"
+        }
+      ],
+      "staged_source_sha256": "c749e67fb5b73d9b6678719c98c8e2573cd44f46f51ab7d6004d47ce6611abc7",
+      "original_source_sha256": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+      "arbiter_sha256": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+      "client_queues_sha256": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c"
+    },
+    "native_full_model_simulation_passed": true,
+    "native_full_model_simulation_result": "results/workstation_flashac_20261009_client_queues/native_full_model_simulation.json",
+    "native_full_model_simulation_source_difference": [
+      "Only parser CLK_HZ/BAUD parameter declarations and RX literal vs parameter; default50MHz/115200 behavior exact"
+    ],
+    "frozen_full_model_simulation_pending": true,
+    "word_count": 52239,
+    "write_count": 52239,
+    "read_count": 52239,
+    "payload_crc32": "AF01A61B",
+    "model_source": "Flash"
   }
 }

@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """Full coefficient CRC through NOR/internal UART/native DDR pipeline with contention."""
 from pathlib import Path
-import argparse,subprocess,tempfile,json,hashlib
+import argparse,subprocess,tempfile,json,hashlib,threading
 from build_cnn_flash_image import build_image,load_words
 ROOT=Path(__file__).resolve().parents[1];SRC=ROOT/'rtl/music'
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--build',type=Path,help='use the frozen full-workstation RTL; only RX baud is accelerated for the full-content case');p.add_argument('--output',type=Path);p.add_argument('--buffered-clients',action='store_true');a=p.parse_args()
+if a.build:
+ SRC=a.build.resolve()/'Prj1/rtl/music'
+ meta=json.loads((a.build/'build_metadata.json').read_text())
+ assert meta['full_workstation'] and meta['buffered_ddr_clients']==a.buffered_clients
 original=(ROOT/'sim/model_flash/tb_flash_serial_boot.sv').read_text()
 start=original.index('    wire ready=(cycles%19')
 end=original.index('    reg held=0;',start)
@@ -85,7 +89,15 @@ text=text[:start]+'''    always @(posedge clk)begin
 '''+text[end:]
 # Existing NOR/UART success oracle and full coefficient expected/actual CRC
 # checks remain exact, now driven by physical masked native-memory responses.
-cases=[]
+if a.buffered_clients:text=text.replace('basic_pitch_ddr_arbiter_pipeline arbiter(', 'basic_pitch_ddr_client_queues arbiter(')
+text=text.replace('    initial begin #1500000000;', '    always @(posedge clk) if(WORDS>100 && cycles!=0 && cycles%4000000==0) begin $display("progress cycles=%0d status=%h bridge=%0d writes=%0d reads=%0d",cycles,status,bridge_state,writes,reads);$fflush();end\n    initial begin #1500000000;')
+parser_original=(SRC/'basic_pitch_uart_model_loader.sv').read_text()
+frozen_parser='parameter integer BAUD' not in parser_original
+if frozen_parser:
+ anchor='basic_pitch_uart_model_loader #(.WORDS(WORDS),.BAUD(BAUD)) parser ('
+ assert text.count(anchor)==1
+ text=text.replace(anchor,'basic_pitch_uart_model_loader #(.WORDS(WORDS)) parser (')
+cases=[];simulation_overrides=[];original_sources=[]
 with tempfile.TemporaryDirectory(prefix='cnn_flash_native_pipeline_') as tmp:
  tb=Path(tmp)/'tb.sv';tb.write_text(text)
  for words,baud in [(31,115200),(52239,3125000)]:
@@ -93,11 +105,29 @@ with tempfile.TemporaryDirectory(prefix='cnn_flash_native_pipeline_') as tmp:
   image,manifest=build_image(vals);model=Path(tmp)/'geometry_coefficients.hex';model.write_text('\n'.join(f'{b:02x}' for b in image)+'\n')
   exe=Path(tmp)/'sim'
   sources=[tb]+[SRC/n for n in ('basic_pitch_flash_serial_boot.sv','basic_pitch_flash_model_loader.sv','basic_pitch_flash_io_guard.sv','basic_pitch_uart_model_loader.sv','basic_pitch_uart_rx.sv','basic_pitch_ddr16_port.sv','basic_pitch_ddr_read_credit.sv','basic_pitch_ddr_arbiter_pipeline.sv')]+[ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/src/control/uart_tx.v']
-  c=subprocess.run(['iverilog','-g2012','-I',str(SRC),'-s','tb_flash_serial_boot',f'-Ptb_flash_serial_boot.WORDS={words}',f'-Ptb_flash_serial_boot.BAUD={baud}','-o',str(exe)]+list(map(str,sources)),capture_output=True,text=True)
+  if a.buffered_clients:sources.append(SRC/'basic_pitch_ddr_client_queues.sv')
+  original_sources=list(sources)
+  if frozen_parser:
+   anchor='.CLK_HZ(50_000_000), .BAUD(115200)'
+   assert parser_original.count(anchor)==1
+   parser_text=parser_original.replace(anchor,f'.CLK_HZ(50_000_000), .BAUD({baud})')
+   parser_temp=Path(tmp)/'frozen_parser.sv';parser_temp.write_text(parser_text)
+   sources=[parser_temp if path==SRC/'basic_pitch_uart_model_loader.sv' else path for path in sources]
+   simulation_overrides.append(dict(words=words,baud=baud,kind='UART RX instance baud only',
+    original_sha256=hashlib.sha256(parser_original.encode()).hexdigest(),
+    simulated_sha256=hashlib.sha256(parser_text.encode()).hexdigest(),
+    unchanged=parser_text==parser_original))
+  c=subprocess.run(['iverilog' ,'-g2012','-I',str(SRC),'-s','tb_flash_serial_boot',f'-Ptb_flash_serial_boot.WORDS={words}',f'-Ptb_flash_serial_boot.BAUD={baud}','-o',str(exe)]+list(map(str,sources)),capture_output=True,text=True)
   assert c.returncode==0,c.stdout+c.stderr
-  v=subprocess.run(['vvp',str(exe),f'+IMAGE={model}','+CASE=0'],capture_output=True,text=True,timeout=240)
-  assert v.returncode==0 and 'PASS serial' in v.stdout,v.stdout+v.stderr
-  print(v.stdout.strip(),flush=True);cases.append(dict(words=words,baud=baud,payload_crc32=manifest['payload_crc32'],passed=True,log=v.stdout.strip()))
-report=dict(passed=True,cases=cases,hardware_tested=False,pcm_saved=False,source_sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources if p.is_relative_to(ROOT)},scope='NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls')
+  run=subprocess.Popen(['vvp',str(exe),f'+IMAGE={model}','+CASE=0'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+  timer=threading.Timer(1200,run.kill);timer.start();lines=[]
+  try:
+   for line in run.stdout:lines.append(line);print(line.strip(),flush=True)
+   run.wait()
+  finally:timer.cancel()
+  log=''.join(lines)
+  assert run.returncode==0 and 'PASS serial' in log,log
+  cases.append(dict(words=words,baud=baud,payload_crc32=manifest['payload_crc32'],passed=True,log=log.strip()))
+report=dict(passed=True,frozen_build=str(a.build) if a.build else None,simulation_overrides=simulation_overrides,buffered_clients=a.buffered_clients,cases=cases,hardware_tested=False,pcm_saved=False,source_sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in original_sources if p.is_relative_to(ROOT)},scope='NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls')
 if a.output:a.output.write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report,indent=2))
