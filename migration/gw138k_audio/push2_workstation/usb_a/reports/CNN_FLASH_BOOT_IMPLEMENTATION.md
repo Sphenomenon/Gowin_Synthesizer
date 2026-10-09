@@ -71,3 +71,5 @@ AD局部时序修改已提交6e8f104：TF payload CE改为本地idle，capture�
 2026-10-09 19:29真正配置Flash验收诊断完成：AD配置与600000权重分区均Program/Verify PASS，逐字节model复验且保留原地址0配置证明通过；连续三次SRAM擦除→Flash重载，准确UserCodeAD/状态26020，每次模型E/source1至少3条新UART报告，无SRAM下载、无模型PC上传。全实时scope三音/LR/静音/Panic PASS。该次明确使用临时时序诊断override，release_eligible=false，物理断电未测；无条件回写/校验/重载full85，恢复其旧UART模型E并live PASS。AE只比AD改变更严格SDC和UserCode脚本，所有RTL逐字一致，仍布局中。LATEST仍85。
 
 2026-10-09 20:06：AE（AD全部RTL不变，严格8ns DDR与6ns PLL端点物理预算）完成P&R268BSRAM，clk50 55.536MHz/video172.962MHz/原先正时钟与CDC通过；DDR严格8ns路径slack−3.514ns，实际延迟11.468ns，最差仍文字渲染。PLL完整传播10.523ns=IBUF0.532+clockroute3.807+C2Q0.275+RomDreg到ICProute5.909，原10ns审计失败；需源到端点预算收紧，不能把PLL预算改大。AE未上板。原AD真实Flash三次模型E/source1与现场PASS实证保留，板上full85已完整恢复。
+
+AF开始完整构建：保留AD模型/DDR边界，增加51个坐标谓词预译码和一致stop的1拍renderer流水；Dashboard完整1920x1080加随机metadata/复位/stall共2137105像素逐bit同原版（仅额外1个enable周期），双renderer独立DDR背压下1036800双像素beat内容/地址/valid/last全部同原版，哈希与AF冻结源绑定。PLL以实际SDF分解为依据，对RomDreg/Q到ICPSEL/LPFRES直接设4.5ns物理预算，原官方helper及独立完整10ns审计不改。未修改显示算法/图形内容，纯流水延迟。AF仍综合中。

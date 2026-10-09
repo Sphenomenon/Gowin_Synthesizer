@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_full_Flash3boots_live_verified_AE_legacy_STA_and_PLL_still_open",
+  "status": "AD_actual_Flash3boots_live_verified_AF_render_predecode_synthesis",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1035,5 +1035,19 @@
   "complete_workstation_flash_boot_verified": true,
   "complete_workstation_flash_boot_count": 3,
   "release_timing_closed": false,
-  "current_candidate": "0x000000AE"
+  "current_candidate": "0x000000AF",
+  "AF_render_predecode": {
+    "build": "results/workstation_flashaf_20261009_render_predecode",
+    "user_code": "0x000000AF",
+    "status": "synthesis",
+    "physical_bsram_limit": 268,
+    "hardware_tested": false,
+    "additional_raster_enabled_cycles": 1,
+    "full_dashboard_pixel_comparison": 2137105,
+    "full_renderer_beat_comparison": 1036800,
+    "independent_stalls_order_last_pixel_exact": true,
+    "PLL_RomDreg_to_setting_route_budget_ns": 4.5,
+    "PLL_independent_full_distribution_budget_ns": 10.0,
+    "firmware_selftests_unchanged": true
+  }
 }
