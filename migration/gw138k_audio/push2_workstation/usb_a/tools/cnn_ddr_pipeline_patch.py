@@ -624,3 +624,37 @@ def retime_bist_expected_pattern(text):
     always @(posedge clk)expected_pattern_q<=test_pattern(address,inverted);
     wire mismatch = (rsp_data != expected_pattern_q);
 """,1)
+
+
+def retime_tf_read_total(text):
+    """Precompute exact post-read count at request; retain zero-cycle response."""
+    anchor='    wire emit_byte =';assert text.count(anchor)==1
+    helper="""    // Partial final beat consumes exactly all committed bytes. The full
+    // beat advances32; avoid feeding available-byte subtraction into addition.
+    wire [31:0] read_total_after_accept=(eof_finalized && available_bytes<32) ?
+        write_total_bytes : add_byte_count(read_total_bytes,6'd32);
+    reg [31:0] read_total_pending;
+"""
+    text=text.replace(anchor,helper+anchor,1)
+    anchor='                    read_pending_bytes <= read_chunk_bytes;';assert text.count(anchor)==1
+    text=text.replace(anchor,anchor+'\n                    read_total_pending <= read_total_after_accept;',1)
+    anchor='read_total_bytes <= add_byte_count(read_total_bytes,read_response_bytes);';assert text.count(anchor)==1
+    text=text.replace(anchor,'read_total_bytes <= read_accept ? read_total_after_accept : read_total_pending;',1)
+    return text
+
+
+def parallel_renderer_spectrum_address(text):
+    """Resolve both candidate spectrum addresses before final advance select."""
+    old="""    wire [10:0] next_x=advance ? (issue_x==WIDTH-2 ? 11'd0 : issue_x+11'd2) : issue_x;
+    wire [10:0] spectrum_offset=next_x-11'd64;
+    wire [8:0] spectrum_column=next_x>=64 && next_x<1088 ? spectrum_offset[9:1] : 9'd0;
+"""
+    assert text.count(old)==1
+    new="""    wire [10:0] spectrum_next_x=issue_x==WIDTH-2 ? 11'd0 : issue_x+11'd2;
+    wire [10:0] spectrum_offset_current=issue_x-11'd64;
+    wire [10:0] spectrum_offset_next=spectrum_next_x-11'd64;
+    wire [8:0] spectrum_column_current=issue_x>=64 && issue_x<1088 ? spectrum_offset_current[9:1] : 9'd0;
+    wire [8:0] spectrum_column_next=spectrum_next_x>=64 && spectrum_next_x<1088 ? spectrum_offset_next[9:1] : 9'd0;
+    wire [8:0] spectrum_column=advance ? spectrum_column_next : spectrum_column_current;
+"""
+    return text.replace(old,new,1)

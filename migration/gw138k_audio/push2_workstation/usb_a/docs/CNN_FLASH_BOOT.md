@@ -1,6 +1,6 @@
 # CNN 权重持久化与 Flash→DDR 启动
 
-2026-10-10 当前实体结果：完整工作站AD已连续三次通过实际配置Flash重加载，完整模型从Flash自主搬入DDR，CRC32 AF01A61B、状态E/source1；现场三音、立体声、静音及Panic检查通过。诊断结束后已回写并校验full85，板上及LATEST仍为85。B3/B4完成路由且clk50/视频/PLL/CDC均通过，DDR UI仍有负slack，未烧录；B5/B6针对显示背压/TF进位/背景几何继续布线。B3含本地DDR就绪寄存的完整模型仿真已通过52239写/52239读CRC。物理断电/上电尚未执行。逐项证据见reports/CNN_FLASH_BOOT_CURRENT.md及CNN_FLASH_BOOT_IMPLEMENTATION.md。
+2026-10-10 当前实体结果：完整工作站AD已连续三次通过实际配置Flash重加载，完整模型从Flash自主搬入DDR，CRC32 AF01A61B、状态E/source1；现场三音、立体声、静音及Panic检查通过。诊断结束后已回写并校验full85，板上及LATEST仍为85。B3/B4完成路由且clk50/视频/PLL/CDC均通过，DDR UI仍有负slack，未烧录；B5/B6也因DDR UI负slack被拒绝且均未烧录；B7动态背景/BIST期望寄存正在布线，B8 TF读计数/并行频谱地址正在综合。B3含本地DDR就绪寄存的完整模型仿真已通过52239写/52239读CRC。物理断电/上电尚未执行。逐项证据见reports/CNN_FLASH_BOOT_CURRENT.md及CNN_FLASH_BOOT_IMPLEMENTATION.md。
 
 
 完整工作站把 FPGA 配置位流和 Basic Pitch 模型分别保存在板载外部 Flash。默认构建采用 `serial` 兼容传输：CPU 完成 DDR/音频/UI 启动自检后，片内 Flash 控制器先完整读取并校验模型，再重新读取、产生内部 `BPN1` 8N1 数据流，交给 full85 原封不动的模型解析器和 DDR 客户端。它使用片内连线，不经过 PC、USB 或外部串口；115200 波特率下模型装载约 9 秒，另加校验和 DDR 回读时间。
@@ -238,3 +238,6 @@ TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合
 已补强完整renderer测试的实际分析页参数：ENABLE_ANALYSIS=1、SHARED_EXPORT=1、SHARED_RENDER=1、SHARED_WAVE_ZERO_BITS=15，并包含原output_audio_analysis/capture/FFT-ROM源码；全帧RGB565/地址/meta在独立停顿下相同。统一发布脚本使用该参数组合。可选 `--predecode-dynamic-background-ink` 需要完整背景坐标预解码，把原A输入的波形/频谱/峰值判定在原A边界注册；只替换B组合使用，元数据/样本对应及周期保持，完整动态随机像素和实际分析页完整帧测试通过，尚未应用B6。
 
 `--retime-bist-expected-pattern` 只在原BIST READ_REQUEST等待拍捕获当前地址/反码模式，READ_RESPONSE仍原拍比较和统计，没有减少测试地址/轮次，也不改变timeout或完成行为。BURSTS=1/31/257、正常/最终bit故障/所有通道故障/读超时/写超时共15组，含3复位epochs、最早响应/随机等待逐周期等价。统一发布门禁绑定冻结BIST源码重新执行该回归。DDR PHY/原厂IP保持冻结。
+
+
+可选 `--retime-tf-read-total` 要求 `--parallel-tf-byte-counters`，在接受读请求时保存响应后的精确字节计数，零周期响应仍取本拍计算值。最终不足32-byte的EOF读直接使用committed write_total，其他情况精确加32，包含32-bit回绕。实际变换表达式65-bit输入SAT及36组直接/缓冲/背压/同周期响应协议测试通过。`--parallel-renderer-spectrum-address` 要求 `--predecode-dashboard`，并行计算当前/下一列后由advance选择；新增0周期/0 BSRAM，WIDTH=2/64/1920/2048全部SAT等价且实际分析页完整帧相同。发布门禁分别绑定实际构建源码重跑这些检查。

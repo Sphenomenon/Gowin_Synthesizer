@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_actual_Flash3boots_live_verified_B2_rejected_B3_local_paths_building",
+  "status": "AD_actual_Flash3boots_live_verified_B6_rejected_B7_B8_building",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1324,7 +1324,7 @@
   "B6_parallel_tf_background": {
     "build": "results/workstation_flashb6_20261010_parallel_tf_background",
     "user_code": "0x000000B6",
-    "status": "placing",
+    "status": "routed_rejected",
     "changed_from_B5": [
       "scripts/build.tcl",
       "src/video/feedback_dashboard.v",
@@ -1341,7 +1341,16 @@
       "Register": 43685,
       "LUT": 56423
     },
-    "actual_analysis_page_full_frame_passed": true
+    "actual_analysis_page_full_frame_passed": true,
+    "programming_started": false,
+    "clk50_fmax_mhz": 55.134,
+    "video_fmax_mhz": 164.64,
+    "ddr_ui_setup_wns_ns": -4.714,
+    "ddr_ui_hold_wns_ns": 0.169,
+    "PLL_all_endpoints_passed": true,
+    "release_gate_passed": false,
+    "physical_bsram": 268,
+    "rejection": "TF read-response available-byte subtract plus add; ready/analysis-column and background geometry; no hardware IO"
   },
   "baseline85_readonly_health_20261010_0118": {
     "passed": true,
@@ -1387,5 +1396,19 @@
     "all_tests_passed": true,
     "hardware_tested": false,
     "physical_bsram_limit": 268
+  },
+  "B8_tf_read_spectrum": {
+    "build": "results/workstation_flashb8_20261010_tf_read_spectrum",
+    "user_code": "0x000000B8",
+    "status": "synthesizing",
+    "changed_from_B7": [
+      "TF request-time exact post-read count; partial final beat equals write count; preserve zero-cycle response",
+      "parallel current/next spectrum-column computation before advance select"
+    ],
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_B8_TF_SPECTRUM_TESTS.json",
+    "tests_passed": true,
+    "hardware_tested": false,
+    "promoted": false,
+    "added_cycles": 0
   }
 }

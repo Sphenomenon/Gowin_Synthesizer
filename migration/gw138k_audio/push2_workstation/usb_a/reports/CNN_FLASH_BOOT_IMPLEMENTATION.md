@@ -1,6 +1,6 @@
 # CNN Flash→DDR 实施记录
 
-截至2026-10-10 00:57，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传，实时演奏检查PASS。AF/B0/B1/B2发布时序未通过，均未烧录；B1/B2全部PLL全传播已通过，B3clk50/视频/PLL/CDC均通过，DDR UI写FIFO full→renderer CE −2.049ns未过，未烧录。板上配置和LATEST均保留已核验的full85，正式发布及物理断电验收尚未完成。
+截至2026-10-10 01:57，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，无PC模型上传，现场演奏PASS。B5 DDR UI −0.995ns、B6 −4.714ns未过发布门禁，均未烧录；B7正在布线，B8正在综合，已绑定实际源码通过36组TF协议、读计数/频谱地址SAT及完整分析页帧比较。板上配置和LATEST保留已核验的full85，正式发布及物理断电验收尚未完成。
 
 AD最终268/340物理BSRAM，clk50 55.362MHz、视频187.261MHz。严格时序门禁仍发现DDR UI setup −2.107ns（旧文字/分析渲染为主，hold+0.165ns）和视频PLL全传播10.757ns>10ns，因此AD只作为明确的临时诊断，**配置Flash已恢复full85、旧UART模型E及现场检查PASS，LATEST仍85**。AE保持AD全部RTL，仅增加严格8ns DDR路径/6ns PLL端点物理预算；其已完成结果仍未闭合。原有时钟、hold、CRC、自检和独立PLL10ns门槛全部保留。
 
@@ -123,3 +123,6 @@ B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同�
 2026-10-10 B5已完成路由268/340BSRAM。clk50 57.536MHz、视频163.513MHz、PLL/CDC/地址SAT/像素缓冲协议/完整帧提交通过；DDR UI−0.995/hold+0.169，较B3的−2.049ns有改善，但最差read_x→odd effect_relative和skidready→analysis列地址等未过。正式门禁仍拒绝、programming_started=false；B6继续路由。
 
 2026-10-10 B7已启动，较B6只有动态背景判定与BIST期望值预生成（另UserCode脚本）不同，其他输入全部冻结。实际冻结原FFT/分析/capture/renderer/writer在ENABLE_ANALYSIS=1/SHARED_EXPORT=1的完整1036800双像素和129601原生DDR命令比较PASS；BIST15组正常、最终错误位、全通道错误、读/写超时各3复位epochs逐周期相同。源绑定证据CNN_FLASH_BOOT_B7_DYNAMIC_BIST_TESTS.json；B6继续独立路由和严格验收。
+
+
+2026-10-10 01:57：B6布线完整268/340物理BSRAM，clk50 55.134MHz、视频164.640MHz、PLL/CDC通过，真实DDR UI setup −4.714ns/hold+0.169ns，拒绝且无硬件IO。TF write_total→read_total路径经available相减、末帧字数选择和增加计数形成14.692ns链；B8在请求期提前计算post-read count、尾帧直接使用write_total，保留同周期响应，65输入bit SAT全空间等价、36组协议比较通过。B8同时并行预计算当前/下一频谱列再选择，4种WIDTH每种12输入bit SAT及实际分析页完整1036800双像素/129601 DDR命令逐位通过。源码绑定证据见CNN_FLASH_BOOT_B8_TF_SPECTRUM_TESTS.json。

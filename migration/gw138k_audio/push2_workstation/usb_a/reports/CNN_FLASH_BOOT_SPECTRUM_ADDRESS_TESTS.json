@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "source_bound": false,
+  "build": null,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "added_cycles": 0,
+  "checks": [
+    {
+      "width": 2,
+      "passed": true,
+      "proof": "SAT all12inputbits including wrap/range/advance",
+      "miter_sha256": "70305a15639fe15044935e6d3ad1d9c227822b09680074c9c5f3ac99fc7f0251"
+    },
+    {
+      "width": 64,
+      "passed": true,
+      "proof": "SAT all12inputbits including wrap/range/advance",
+      "miter_sha256": "dd82c5836338273812157ef7fbceb0f91ae0ea61dae27bb971298fb38c58d0bf"
+    },
+    {
+      "width": 1920,
+      "passed": true,
+      "proof": "SAT all12inputbits including wrap/range/advance",
+      "miter_sha256": "ec42caefb1a341aeaba6b9e69d7b5bec48d726bb2161995d6441cdc6cd04f5c6"
+    },
+    {
+      "width": 2048,
+      "passed": true,
+      "proof": "SAT all12inputbits including wrap/range/advance",
+      "miter_sha256": "96803c73c838d91ab8e869348e2d4fba4d963595bd0bf07109afe4c0f9a1063e"
+    }
+  ],
+  "original_sha256": "cf2734b8be6cd198f92bcae5536e876475e57e0c0affedf05578ba93417208c4",
+  "patched_sha256": "11d735bb7bfefd997e57f3756e684ce463db0f26e414b2d3dfa9f737e29dd532"
+}

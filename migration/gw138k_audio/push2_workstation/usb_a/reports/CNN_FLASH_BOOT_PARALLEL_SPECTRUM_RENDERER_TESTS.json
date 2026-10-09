@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "analysis_source_sha256": {
+    "output_audio_analysis.v": "5c4929314c548d0ab97d6274e6ceb3ef59a76be739c5fb0a1d48564aa011dbdc",
+    "output_audio_capture.v": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+    "audio_analysis_rom.v": "439ff9f00ff4d29740b296f2e264eabc19e6cb2ff2195dfb2bd815c9d1286946"
+  },
+  "parallel_spectrum_address": true,
+  "analysis_page": true,
+  "source_bound": false,
+  "build": null,
+  "pixel_skid": true,
+  "pixel_skid_sha256": "df766082448aa0adcc69202c64c66db3ddb3ac88076d0df4116bff4720180504",
+  "frame_writer_sha256": "84f231c085df1dbfc0931fa622c53d6937491888ee630cdd0865203ee737087a",
+  "predecoded_text_coordinates": true,
+  "parallel_cards": true,
+  "predecoded_background": true,
+  "complete_background_coordinates": true,
+  "predecoded_wave_heights": true,
+  "predecoded_dynamic_ink": true,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "dashboard_sha256": "4cca331c96f4b6b584332adadb09ae2d8fbb438aa4bab50a654e7b8eb62e4bac",
+  "renderer_sha256": "a9734ce31b6558a3980c3bbc2096d63308b50b5019151287057f09a797cf01fd",
+  "log": "PASS renderer1036800two-pixelbeats +129601native DDR commands,complete1920x1080,independent long/native stalls,RGB565/address/meta exact,skid completion after drain\n- /tmp/cnn_renderer_predecode_61jgzn8v/tb.sv:73: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 13ms; walltime 1.166 s; speed 11.303 ms/s\n- Verilator: cpu 1.163 s on 1 threads; allocated 32 MB"
+}

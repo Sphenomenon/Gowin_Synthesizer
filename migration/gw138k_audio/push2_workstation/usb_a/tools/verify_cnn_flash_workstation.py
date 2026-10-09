@@ -71,15 +71,23 @@ def main():
                 '--pixel-skid','--analysis-page','--build',str(build),'--output',str(output/'pixel_skid_full_renderer.json')]
             for key,flag in [('predecoded_text_coordinates','--text-coordinates'),
                     ('parallel_dashboard_cards','--parallel-cards'),('predecoded_background_coordinates','--background-coordinates'),
-                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates'),('predecoded_dynamic_background_ink','--dynamic-background-ink')]:
+                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates'),('predecoded_dynamic_background_ink','--dynamic-background-ink'),('parallel_renderer_spectrum_address','--parallel-spectrum-address')]:
                 if meta.get(key):command.append(flag)
             label,code=run('pixel_skid_full_renderer',command)
             result['checks'][label]=code
         if meta.get('parallel_tf_byte_counters'):
+            protocol_flags=['--parallel-byte-counters']
+            if meta.get('retimed_tf_read_total'):protocol_flags.append('--retime-read-total')
             for label,tool,flags in [('tf_byte_count_proof','test_cnn_tf_byte_count.py',[]),
-                    ('tf_byte_count_protocol','test_cnn_tf_write_buffer_retime.py',['--parallel-byte-counters'])]:
+                    ('tf_byte_count_protocol','test_cnn_tf_write_buffer_retime.py',protocol_flags)]:
                 label,code=run(label,[sys.executable,str(ROOT/'tools'/tool),'--build',str(build),
                     '--output',str(output/(label+'.json'))]+flags)
+                result['checks'][label]=code
+        for key,label,tool in [('retimed_tf_read_total','tf_read_total_proof','test_cnn_tf_read_total.py'),
+                ('parallel_renderer_spectrum_address','spectrum_address_proof','test_cnn_renderer_spectrum_address.py')]:
+            if meta.get(key):
+                label,code=run(label,[sys.executable,str(ROOT/'tools'/tool),'--build',str(build),
+                    '--output',str(output/(label+'.json'))])
                 result['checks'][label]=code
         if meta.get('retimed_bist_expected_pattern'):
             label,code=run('bist_pattern_cycle_equivalence',[sys.executable,

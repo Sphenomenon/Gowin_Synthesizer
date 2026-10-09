@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "source_bound": false,
+  "build": null,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "added_cycles": 0,
+  "proof": "SAT all65inputbits from actual next-count expression; full/partial/eof/32bitwrap",
+  "miter_sha256": "582476c239e1bf4ee963774587e0a93a36b8d5f207831f37776e91ad2dcd09ab",
+  "original_source_sha256": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+  "patched_source_sha256": "b8ce16d42b3b2785db4b57df4269347ab0c9d9f1a32bc7ac3ef334d2084d8c94"
+}
