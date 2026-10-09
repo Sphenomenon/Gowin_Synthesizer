@@ -29,6 +29,26 @@ def configured_clean(status):
     # report DONE with these failures still latched: not Flash-boot proof.
     return bool(status & (1<<13)) and not (status & 0x21f)
 
+def audit_previous_positive_clocks(build):
+    # Parse the routed summary, not nominal PLL settings. Do not silently
+    # accept a new CPU/video failure merely because clk50 passed.
+    def clocks(directory):
+        text=(directory/'Prj1/impl/pnr/Prj1.tr').read_text()
+        matches=list(re.finditer(r'2\.3 Max Frequency Summary(.*?)2\.4 Total Negative Slack Summary',text,re.S))
+        assert matches,'missing routed frequency summary'
+        values={n:(float(required),float(actual)) for n,required,actual in re.findall(
+            r'^\s*\d+\s+(\w+)\s+([\d.]+)\(MHz\)\s+([\d.]+)\(MHz\)',matches[-1][1],re.M)}
+        assert values,'empty routed clock summary'
+        return values
+    baseline=clocks(BASE);candidate=clocks(build)
+    previous={name:value for name,value in baseline.items() if value[1]>=value[0]}
+    failures=[]
+    for name,(required,_) in previous.items():
+        if name not in candidate or candidate[name][0]!=required or candidate[name][1]<required:
+            failures.append(name)
+    return dict(passed=not failures,failed_clocks=failures,baseline=str(BASE),
+                previous_positive_clocks=previous,candidate_clocks=candidate)
+
 def verify_debugger_identity(port,location):
     assert '2025030317' in port and Path(port).exists(),'wrong/missing debugger UART'
     assert location==53 and Path('/sys/bus/usb/devices/3-5/serial').read_text().strip()=='2025030317','debugger USB location changed'
@@ -38,7 +58,7 @@ def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('build',type=Path)
     ap.add_argument('--program',action='store_true')
-    ap.add_argument('--allow-clk50-open',action='store_true',help='explicit temporary diagnostic only; do not promote a clk50 timing regression')
+    ap.add_argument('--allow-clk50-open','--allow-clock-regression',dest='allow_clk50_open',action='store_true',help='explicit temporary diagnostic only; bypass clk50/previous-positive-clock gate and never promote')
     ap.add_argument('--expected-code',default='0x00000085')
     ap.add_argument('--location',type=int,default=53)
     ap.add_argument('--port',default='/dev/serial/by-id/usb-SIPEED_USB_Debugger_2025030317-if01-port0')
@@ -58,8 +78,9 @@ def main():
     code=bundle['user_code'].lower()
     assert re.search(r'//UserCode: (0x[0-9A-Fa-f]{8})',fs.read_text()[:1000])[1].lower()==code
     clk50=audit_clk50(build)
-    if args.program and not clk50['clk50_closed'] and not args.allow_clk50_open:
-        ap.error('clk50 timing regressed/open; use a closed candidate, or --allow-clk50-open only for a temporary boot diagnostic')
+    previous_clocks=audit_previous_positive_clocks(build)
+    if args.program and (not clk50['clk50_closed'] or not previous_clocks['passed']) and not args.allow_clk50_open:
+        ap.error('routed clock timing regressed/open: '+','.join(previous_clocks['failed_clocks'])+'; --allow-clock-regression is only for a temporary boot diagnostic')
     programmer=Path.home()/'.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli'
     common=[str(programmer),'--device','GW5AST-138C','--cable-index','5','--location',str(args.location),'--frequency','0.9MHz']
     # Native Arora V C-Bin operation needs BOTH: --fsFile satisfies the CLI
@@ -69,14 +90,14 @@ def main():
                 '--mcuFile',str(model),'--spiaddr','0x600000']
     fs_args=['--operation_index','54','--fsFile',str(fs),'--spiaddr','0x000000']
     print(json.dumps(dict(build=str(build),target_code=code,model_bytes=model.stat().st_size,
-        program_model=common+model_args,program_bitstream=common+fs_args,programming_requested=args.program),indent=2),flush=True)
+        program_model=common+model_args,program_bitstream=common+fs_args,programming_requested=args.program,previous_positive_clock_audit=previous_clocks),indent=2),flush=True)
     if not args.program:return
     import serial
     output=(args.output or build/'flash_deploy').resolve();output.mkdir(parents=True,exist_ok=False)
     result=dict(started_at=datetime.now().astimezone().isoformat(),build=str(build),user_code=code,
                 commands=[],boots=[],passed=False,uart_model_upload_used=False,sram_download_used=False,sram_erased_before_each_boot=True,
                 physical_power_cycle_tested=False,board_serial='2025030317',uart_hardware_drain_seconds=2,
-                clk50_closed=clk50['clk50_closed'],diagnostic_timing_override=args.allow_clk50_open,
+                clk50_closed=clk50['clk50_closed'],previous_positive_clock_audit=previous_clocks,diagnostic_timing_override=args.allow_clk50_open,
                 model_transport=build_meta.get('transport','direct'))
     def save():(output/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     def run(label,extra,require=None):

@@ -252,6 +252,12 @@
     "passed": true,
     "tests": [
       {
+        "case": "cpu_video_timing_gate_before_hardware_io",
+        "passed": true,
+        "commands": 0,
+        "hardware_io_used": false
+      },
+      {
         "case": "three_flash_boots",
         "passed": true,
         "commands": 15,
@@ -276,7 +282,7 @@
         "hardware_io_used": false
       }
     ],
-    "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_flash95_20261009_fresh",
+    "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_flash99_20261009_serial_route0",
     "notes": "Programmer, serial, board inventory, lock and waits are stubbed; all unknown external commands fail closed. Actual candidate input/hash/status logic is exercised."
   },
   "serial_transport": {
@@ -438,5 +444,13 @@
     "notes": 1,
     "log": "/tmp/cnn_cache_read_retime_ab.log",
     "hash_coverage": "All six hashes and write counts match in original configs"
+  },
+  "clock_gate_real_reports": {
+    "full95_previous_positive_clocks_passed": true,
+    "full99_rejected_clocks": [
+      "clk_50m",
+      "video_pixel148",
+      "cpu_bus50"
+    ]
   }
 }

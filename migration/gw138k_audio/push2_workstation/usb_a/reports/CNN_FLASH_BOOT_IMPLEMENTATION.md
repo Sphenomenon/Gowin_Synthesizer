@@ -1,22 +1,13 @@
-# CNN Flash 启动实现记录
+# CNN Flash→DDR 实施记录
 
-模型分区已在实体板写入并逐字节验证。完整工作站自动装载验收尚在进行；当前板上和 LATEST 仍为已验证 full85。
+当前模型已写入外部 Flash 的 `0x600000` 分区，104,510 字节，载荷 CRC32 `AF01A61B`；Programmer 字节交叉校验通过。独立 SRAM 探针 0x96 完整读出 52,239 字并通过本地 RAM CRC；0x98 进一步通过实际 115200 波特率、内部 BPN1 串行连线和原模型解析器。这两项没有 PC 上传模型，均不代表完整工作站 DDR 验收。
 
-| 项目 | 结果 |
-|---|---|
-| 模型 | 52,239×16 bit；载荷 104,478 字节；CRC32 AF01A61B |
-| Flash 分区 | 0x600000；BPF1 头 32 字节；总长 104,510 字节 |
-| direct 独立仿真 | 19 SPI/DDR + 7 主机拒绝用例 PASS |
-| 兼容输入独立仿真 | 16 用例 PASS，含完整模型、实际115200时序、第二遍内容变化 |
-| 原 CNN A/B | 3 帧、六层哈希和谱面结果 PASS |
-| 0x96 临时 SRAM 探针 | 实际 Flash 全模型读取、本地 RAM CRC PASS；非 DDR 证明 |
-| 0x98 临时 SRAM 探针 | 实际 Flash→内部115200→原解析器、本地 RAM CRC PASS；非 DDR 证明 |
-| 完整 0x95 | 配置从 Flash 正常加载，clk50 PASS，DDR 模型回读停滞；已恢复 full85 |
-| 完整 0x97 | CNN/解析器/DDR/固件源文件与 full85 相同；SYN BSRAM216；P&R 进行中 |
-| 回退 full85 | CPU/audio/DDR/modelE、Push屏幕帧、三音并发、矢量立体声、静音、松键/Panic PASS |
+完整工作站 0x95 的 clk50 闭合、Flash 配置状态正常，但模型 DDR 回读与 CPU 内存/UI 自检失败。兼容方案 0x97/0x99 保留 full85 原解析器、DDR16/CDC、CNN 和固件；两次布局 clk50 均未闭合。0x99 的临时 Flash 诊断确认真实配置 UserCode=99、状态=26020，但 CPU 自检未通过、自动搬运未启动；已经自动恢复 full85，重新上传其易失模型，完整启动及实时 scope smoke 通过。
 
-默认 serial 传输由 HDL 从 Flash 读取，片内产生 BPN1 数据；无需 PC 上传、TF 模型文件或参数 ROM。模型先完整预校验，随后逐字读取并通过原模型装载器写入 DDR，原装载器完成独立 DDR 回读 CRC 才就绪。
+0x9A 正在独立目录构建：缓存范围判断改成同拍寄存掩码，八路统计改成固定索引并行更新，不放宽原时钟约束。与 full85 缓存逐周期等价测试、10,000 周期统计比较以及三帧 CNN 六层哈希回归均通过。尚未完成该候选的完整工作站验收。
 
-完整工作站整体静态时序仍有原有音频/USB/跨域欠账；clk50 收敛不能代表全板时序收敛。没有执行物理断电/上电或模拟 DAC、HDMI、整曲 CNN 人工验收。
+资源基线 SYN 216、P&R 260/340 BSRAM；Flash 启动模块没有模型 ROM。默认 serial 方案在 CPU/DDR 自检通过后先校验 Flash，再交给原模型装载器，启动耗时约 9 秒串行传输加 Flash/DDR 校验。非法/空白头和首遍载荷错误可回退 UART，第二遍模型变化或 DDR 错误显式失败。
 
-详细分区、重建、回退命令见 `docs/CNN_FLASH_BOOT.md`；原始证据路径、版本、失败尝试见 `reports/CNN_FLASH_BOOT_IMPLEMENTATION.json`。
+部署工具先验证原 clk50 与 full85 原本通过的各时钟；CPU/视频退化在任何硬件命令前拒绝。五项离线部署/回滚测试通过，包括坏模型来源、自动启动失败位、FTDI 陈旧成功报文、CPU/视频时序退化。
+
+板上仍为可用 full85，LATEST 未提升；物理断电重上电未执行。机器可读结果与各工件路径见 `CNN_FLASH_BOOT_IMPLEMENTATION.json` 和 `CNN_FLASH_BOOT_TESTS.json`。

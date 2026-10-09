@@ -1,8 +1,8 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "serial97_99_timing_open_ddr_calibration_failed_cache_read_retime_prepared",
-  "target_user_code": "0x00000097",
+  "status": "cache_read_retimed_9a_build_running_99_flash_diagnosis_failed_baseline85_restored",
+  "target_user_code": "0x0000009A",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
   "model_partition_byte_verify_passed": true,
@@ -17,7 +17,7 @@
   "full_model_sim_boot_seconds": 0.14773918,
   "model_auto_boot_hardware_verified": false,
   "physical_power_cycle_tested": false,
-  "build": "results/workstation_flash95_20261009_fresh",
+  "build": "results/workstation_flash9a_20261009_cache_read",
   "initial_build_error": "second CST superseded original complete pin constraints; fixed by appending Flash pins to original CST",
   "evidence": {
     "sim_tests": "reports/CNN_FLASH_BOOT_TESTS.json",
@@ -38,7 +38,8 @@
     "serial97_source_compatibility": "results/workstation_flash97_20261009_serial/serial_compatibility_source_audit.json",
     "serial97_sram_diagnosis": "results/workstation_flash97_20261009_serial/sram_diagnosis/result.json",
     "serial99_sram_diagnosis": "results/workstation_flash99_20261009_serial_route0/sram_diagnosis/result.json",
-    "serial99_flash_diagnosis": "results/workstation_flash99_20261009_serial_route0/flash_diagnosis/result.json"
+    "serial99_flash_diagnosis": "results/workstation_flash99_20261009_serial_route0/flash_diagnosis/result.json",
+    "cache_read_retimed_build": "results/workstation_flash9a_20261009_cache_read/build_metadata.json"
   },
   "incremental_candidate": "results/workstation_flash93_20261009_incremental",
   "incremental_target_user_code": "0x00000093",
@@ -74,7 +75,7 @@
   },
   "incremental93_error": "PR0004: 12270 unrouted nets; no bitstream generated",
   "incremental94_cancelled": "same frozen reference already failed in candidate93; terminated before wasting duplicate route search",
-  "fresh_candidate": "results/workstation_flash97_20261009_serial",
+  "fresh_candidate": "results/workstation_flash9a_20261009_cache_read",
   "incremental94_tool_result": {
     "exit_code": -15,
     "flow": "all",
@@ -238,5 +239,18 @@
     "clk50_setup_hold_closed": false,
     "clk50_reset_closed": true,
     "clk50_closed": false
+  },
+  "cache_read_retime_commit": "0aa3278",
+  "cache_read_retime_regression_passed": true,
+  "serial99_flash_auto_load_passed": false,
+  "serial99_flash_diagnosis": {
+    "passed": false,
+    "error": "Flash->DDR CRC/auto boot not proven; UART fallback is not a pass",
+    "clk50_closed": false,
+    "diagnostic_timing_override": true,
+    "rollback_bitstream_restored": true,
+    "rollback_uart_model_restored": true,
+    "rollback_workstation_smoke_passed": true,
+    "finished_at": "2026-10-09T07:56:55.191455+08:00"
   }
 }

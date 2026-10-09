@@ -105,6 +105,8 @@ python3 sim/music/run_bp_config_ab.py --simulator verilator --frames 3 --win-len
 
 完整构建保留部署 full85 的源文件快照。默认 serial 只叠加 Flash 传输模块、模型输入连线、B138 来源/错误字段、顶层六个 Flash 引脚与约束；CNN/DDR 客户端源文件不变。`--transport direct` 才叠加此前的模型内存端口方案。可选增量 P&R 会复制并记录已验证 full85 `.pr` 的 SHA256，仍运行全新 RTL 综合；参考文件和所有输入在构建前后复核，不覆盖原候选。冻结的 DDR 仲裁、地址图、显示、延迟 DMA 文件逐一核对 SHA256；没有把工作区其他未提交的开发内容并入发布。
 
+可选 `--retime-cache-read` 把权重缓存的地址有效性掩码与 BSRAM 数据同拍寄存，再组合选择有效输出，维持原来一拍读取延迟和越界读零。统计用八路固定索引计数代替动态数组索引，CNN 算术和计数语义保持一致。独立测试与冻结 full85 逐周期比较 1/31/7488 字缓存、随机反压/复位/越界地址，以及 10,000 周期统计计数；CNN 三帧回归的六层哈希和谱面结果一致。构建命令可加 `--retime-cache-read`，回归命令为 `python3 tools/test_cnn_cache_read_retime.py`。
+
 每个结果目录包含 `cnn_model.bin`、模型 manifest、`workstation_inputs.json`、工具退出结果、资源审计。P&R 成功后才生成 `workstation_with_cnn.bin` 和带位流/模型 SHA256 的 `flash_bundle.json`。
 
 可单独构建模型或打包已有位流：
@@ -126,4 +128,4 @@ Flash 写入必须把模型分区和位流一起记录。原生 Arora V operatio
 python3 tools/deploy_cnn_flash_boot.py <完整结果目录>
 ```
 
-部署工具先核对原 20 ns clk50 时序、板上版本、Flash ID、冻结工件与独占锁。clk50 未闭合时默认拒绝实体写入；`--allow-clk50-open` 仅用于临时的启动诊断，必须恢复基线且不得据此提升 LATEST。先写模型分区并校验地址零处旧位流仍完好，再写新配置位流；三次 SRAM Erase + JTAG Reprogram 后只读监听 UART，且先等待/核对目标 UserCode 和已配置状态；不在 FPGA 配置完成前解释 DDR/UART 报文，要求模型来源=Flash 且状态=E。失败时保存原始日志，并尝试恢复原 full85 配置位流；等待其 UserCode/配置状态通过后，单独通过 UART 恢复原 full85 的易失模型并执行启动检查。回滚上传在独立证据字段里记录，不计入新功能 Flash→DDR 验收。
+部署工具先核对原 20 ns clk50 时序、full85 原本满足频率要求的 DDR/CPU/视频各时钟是否出现新退化、板上版本、Flash ID、冻结工件与独占锁。clk50 未闭合或原本通过的时钟退化时默认拒绝实体写入；`--allow-clock-regression`（旧名 `--allow-clk50-open`）仅用于临时的启动诊断，必须恢复基线且不得据此提升 LATEST。先写模型分区并校验地址零处旧位流仍完好，再写新配置位流；三次 SRAM Erase + JTAG Reprogram 后只读监听 UART，且先等待/核对目标 UserCode 和已配置状态；不在 FPGA 配置完成前解释 DDR/UART 报文，要求模型来源=Flash 且状态=E。失败时保存原始日志，并尝试恢复原 full85 配置位流；等待其 UserCode/配置状态通过后，单独通过 UART 恢复原 full85 的易失模型并执行启动检查。回滚上传在独立证据字段里记录，不计入新功能 Flash→DDR 验收。

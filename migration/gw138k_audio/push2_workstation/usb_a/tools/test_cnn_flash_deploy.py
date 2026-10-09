@@ -14,6 +14,17 @@ mod=importlib.import_module('deploy_cnn_flash_boot')
 build=options.build.resolve()
 target_code=int(json.loads((build/'flash_bundle.json').read_text())['user_code'],16)
 results=[]
+# A CPU/video regression must stop before any programmer or UART command,
+# even when clk50 itself is closed. Use real artifact/hash validation above.
+with patch.object(sys,'argv',['deploy_cnn_flash_boot.py',str(build),'--program']), \
+     patch.object(mod,'audit_clk50',return_value={'clk50_closed':True}), \
+     patch.object(mod,'audit_previous_positive_clocks',return_value={'passed':False,'failed_clocks':['cpu_bus50','video_pixel148']}), \
+     patch.object(mod.subprocess,'run',side_effect=AssertionError('timing rejection performed hardware IO')), \
+     contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):
+ try:mod.main()
+ except SystemExit as e:assert e.code==2
+ else:raise AssertionError('CPU/video regression was not rejected')
+results.append(dict(case='cpu_video_timing_gate_before_hardware_io',passed=True,commands=0,hardware_io_used=False))
 for failure in (None,'uart_fallback','auto_boot_fail','stale_flash_success'):
  with tempfile.TemporaryDirectory(prefix='cnn_deploy_host_') as tmp:
   out=Path(tmp)/'record';clock=[0.];state={'code':0x85,'status':0x26020,'reloads':0,'commands':[],'rolled_back':False}
