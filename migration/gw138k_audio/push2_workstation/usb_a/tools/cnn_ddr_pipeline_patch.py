@@ -480,3 +480,19 @@ def predecode_dashboard_wave_heights(text):
     end
 '''
     return text[:a]+raw+sequential+text[b:]
+
+
+def narrow_feature_read_slot(text):
+    """Use only three slot bits after existing 0..4/6/2 validity checks.
+
+    Address/data/valid and their cycles are identical for all input bit
+    patterns. MAC arithmetic and the shared cache/DDR interfaces are untouched.
+    """
+    a=text.index('            always_comb begin\n                feature_read_valid = 1\'b0;')
+    b=text.index('            always_ff @(posedge clk_i) begin',a)
+    block=text[a:b]
+    assert block.count('$unsigned(feature_read_rel)')==3
+    for bound in (3,5,7):
+        assert f'(feature_read_rel < {bound})' in block
+    block=block.replace('$unsigned(feature_read_rel)','$unsigned(feature_read_rel[2:0])')
+    return text[:a]+block+text[b:]

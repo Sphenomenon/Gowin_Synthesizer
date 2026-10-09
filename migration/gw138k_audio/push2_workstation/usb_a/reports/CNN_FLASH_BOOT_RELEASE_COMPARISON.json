@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T00:11:40.218417+08:00",
+  "generated_at": "2026-10-10T00:25:32.422296+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -138,9 +138,11 @@
       "build": "results/workstation_flashb3_20261010_local_ready_wave",
       "hardware_auto_boot_verified": false,
       "default_released": false,
-      "status": "synthesizing",
+      "status": "routing",
       "release_gate_passed": false,
-      "programming_started": false
+      "programming_started": false,
+      "synthesis_bsram": 220,
+      "full_model_local_ready_simulation_passed": true
     }
   ]
 }

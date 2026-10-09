@@ -1,6 +1,6 @@
 # CNN 权重持久化与 Flash→DDR 启动
 
-2026-10-09 当前实体结果：完整工作站AD已经连续三次通过实际配置Flash重加载，完整模型均从Flash自主搬入实际DDR，CRC32 AF01A61B、状态E/source1；没有PC模型上传或SRAM下载。现场三音、立体声、静音及Panic检查通过。该版DDR UI与PLL时序尚未满足发布门槛，因此诊断后已回写并校验full85、恢复其UART模型和现场检查，板上及LATEST仍为85。AF/B0/B1的发布时序验收未通过，均未烧录；B1的独立PLL全传播已收敛到7.964ns以内，B2动画和TMDS等价修正正在构建。物理断电/上电尚未执行。逐项结果见reports/CNN_FLASH_BOOT_IMPLEMENTATION.md。
+2026-10-10 当前实体结果：完整工作站AD已连续三次通过实际配置Flash重加载，完整模型从Flash自主搬入DDR，CRC32 AF01A61B、状态E/source1；现场三音、立体声、静音及Panic检查通过。诊断结束后已回写并校验full85，板上及LATEST仍为85。B2最终时序门禁未过，B3正在布线；B3含本地DDR就绪寄存的完整模型仿真已通过52239写/52239读CRC。物理断电/上电尚未执行。逐项证据见reports/CNN_FLASH_BOOT_CURRENT.md及CNN_FLASH_BOOT_IMPLEMENTATION.md。
 
 
 完整工作站把 FPGA 配置位流和 Basic Pitch 模型分别保存在板载外部 Flash。默认构建采用 `serial` 兼容传输：CPU 完成 DDR/音频/UI 启动自检后，片内 Flash 控制器先完整读取并校验模型，再重新读取、产生内部 `BPN1` 8N1 数据流，交给 full85 原封不动的模型解析器和 DDR 客户端。它使用片内连线，不经过 PC、USB 或外部串口；115200 波特率下模型装载约 9 秒，另加校验和 DDR 回读时间。
@@ -228,3 +228,5 @@ B0可选`--predecode-dashboard --predecode-text-coordinates`在一个enable级�
 
 
 B2完成但时序发布拒绝：clk50 feature-cache地址-2.226ns、DDR UI校准→模型客户使能-1.800ns；没有实体写入。B3增加`--retime-model-memory-ready`同内存域本地calibration寄存，启动level延后1cycle（CPU/BIST/UI完成后才启动模型），全局memory_reset异步清零；该选项不承诺独立PHY复位新行为。`--predecode-wave-heights`把波形shift/clamp放入已有预解码级，`--predecode-background-coordinates`保留一个像素enable延迟；完整像素及renderer对照通过。`--register-arbiter-tag-flags`同拍预测计数full/empty，6组全部8客户端独立内存/背压/回绕/复位测试及52239系数写读CRC通过。`--tighten-feature-read-route`只是更严格19ns物理预算，原20ns、CNN算术/源/固件/PHY保持；不能用预算声明替代真实闭合。
+
+特征缓存读地址备选优化：`--narrow-feature-read-slot` 必须配合 `--retime-cache-read`。保留原完整有符号边界检查，只在合法0..4/0..6/0..2窗口内把乘常数的相对slot限制到3位；无新增周期、BSRAM或CNN算术改动。`tools/test_cnn_feature_read_address.py` 对实际原/新解码HDL的149位输入进行SAT等价证明，FRAME_LIMIT=1/172/512全部成立，并证明三个最大合法地址10559/19711/8447可达。当前只完成prepare，未应用到B3，也未构建或写板；证据为`reports/CNN_FLASH_BOOT_FEATURE_READ_ADDRESS_TESTS.json`。

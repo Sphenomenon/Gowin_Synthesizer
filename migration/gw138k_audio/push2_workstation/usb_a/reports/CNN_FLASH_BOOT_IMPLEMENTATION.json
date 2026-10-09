@@ -1150,6 +1150,39 @@
     "model_memory_calibration_level_latency_cycles": 1,
     "hardware_tested": false,
     "local_ready_actual_baud_simulation_passed": true,
-    "local_ready_actual_baud_simulation": "results/workstation_flashb3_20261010_local_ready_wave/local_ready_actual_baud_simulation.json"
+    "local_ready_actual_baud_simulation": "results/workstation_flashb3_20261010_local_ready_wave/local_ready_actual_baud_simulation.json",
+    "full_model_with_local_memory_ready": {
+      "passed": true,
+      "writes": 52239,
+      "reads": 52239,
+      "crc32": "AF01A61B",
+      "source_bound": true,
+      "evidence": "results/workstation_flashb3_20261010_local_ready_wave/frozen_full_model_local_ready_simulation.json",
+      "local_memory_ready_wrapper": true,
+      "small_model_baud": 115200,
+      "full_model_simulation_rx_baud_override": 3125000,
+      "hardware_tested": false
+    },
+    "synthesis_resources": {
+      "bsram": 220,
+      "ssram": 505,
+      "registers": 43607,
+      "lut": 56494,
+      "physical_bsram": null
+    }
+  },
+  "prepared_feature_read_address_optimization": {
+    "applied_to_B3": false,
+    "prepared_only": true,
+    "added_cycles": 0,
+    "all_input_bits": 149,
+    "frame_limits_proved": [
+      1,
+      172,
+      512
+    ],
+    "evidence": "reports/CNN_FLASH_BOOT_FEATURE_READ_ADDRESS_TESTS.json",
+    "prepare": "results/workstation_feature_read_prepare_20261010",
+    "hardware_tested": false
   }
 }

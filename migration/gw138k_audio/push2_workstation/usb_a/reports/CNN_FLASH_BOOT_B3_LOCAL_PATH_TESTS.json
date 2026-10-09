@@ -107,6 +107,65 @@
       "link_sha256": "ab17a38dff186a42140aad63de733c4e01e43d94ea312e5caff00b1d416f56c1",
       "wrapper_sha256": "f6a31efab0c41c53f7bbaa5f7e419cc68a15337abc2a21a442909609218a10ba",
       "log": "PASS localcalibration100000level/write/readcredit combinations andasynchronousreset,one-memory-edge contract\n/tmp/cnn_local_memory_ready_g5apvus4/tb.sv:33: $finish called at 1000110000 (1ps)"
+    },
+    "frozen_full_model_with_local_memory_ready": {
+      "passed": true,
+      "frozen_build": "results/workstation_flashb3_20261010_local_ready_wave",
+      "simulation_overrides": [
+        {
+          "words": 31,
+          "baud": 115200,
+          "kind": "UART RX instance baud only",
+          "original_sha256": "d1826c33c2b3dbcf3656ac80a271f523392482f94d2b6c7eb1c3aa79b0643e58",
+          "simulated_sha256": "d1826c33c2b3dbcf3656ac80a271f523392482f94d2b6c7eb1c3aa79b0643e58",
+          "unchanged": true
+        },
+        {
+          "words": 52239,
+          "baud": 3125000,
+          "kind": "UART RX instance baud only",
+          "original_sha256": "d1826c33c2b3dbcf3656ac80a271f523392482f94d2b6c7eb1c3aa79b0643e58",
+          "simulated_sha256": "9e1c942d2a585d897c29794311392a4e5d90f291d7768d855477aa26eadf68b8",
+          "unchanged": false
+        }
+      ],
+      "buffered_clients": true,
+      "registered_tag_flags": true,
+      "small_model_only": false,
+      "local_memory_ready_wrapper": true,
+      "cases": [
+        {
+          "words": 31,
+          "baud": 115200,
+          "payload_crc32": "DFC2733D",
+          "passed": true,
+          "log": "PASS serial case=0 words=31 clk_div=4 zero_rsp=0 cycles=317523 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/tmp/cnn_flash_native_pipeline_dp1x5cp3/tb.sv:223: $finish called at 6350460000 (1ps)"
+        },
+        {
+          "words": 52239,
+          "baud": 3125000,
+          "payload_crc32": "AF01A61B",
+          "passed": true,
+          "log": "progress cycles=4000000 status=0 bridge=1 writes=0 reads=0\nprogress cycles=8000000 status=4 bridge=3 writes=2790 reads=0\nprogress cycles=12000000 status=4 bridge=3 writes=11679 reads=0\nprogress cycles=16000000 status=4 bridge=3 writes=20568 reads=0\nprogress cycles=20000000 status=4 bridge=3 writes=29457 reads=0\nprogress cycles=24000000 status=4 bridge=3 writes=38346 reads=0\nprogress cycles=28000000 status=4 bridge=3 writes=47234 reads=0\nPASS serial case=0 words=52239 clk_div=4 zero_rsp=0 cycles=30831665 writes=52239 reads=52239 source=1 crc=af01a61b flash_error=0\n/tmp/cnn_flash_native_pipeline_dp1x5cp3/tb.sv:223: $finish called at 616633300000 (1ps)"
+        }
+      ],
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "source_sha256": {
+        "results/workstation_flashb3_20261010_local_ready_wave/Prj1/rtl/music/basic_pitch_flash_serial_boot.sv": "ca350379673839ecc004878a7b99f051c27c77571231d514aeaf1a7fca57a416",
+        "results/workstation_flashb3_20261010_local_ready_wave/Prj1/rtl/music/basic_pitch_flash_model_loader.sv": "3f45c816e2bf5a994a9e336b839ccca35685b2e3f89db908f5f9ab8ad6488805",
+        "results/workstation_flashb3_20261010_local_ready_wave/Prj1/rtl/music/basic_pitch_flash_io_guard.sv": "be70cddf661fd231f4f187e8eecf8cf9a2ecbd1e2b0ad8d8041936c4938f5e58",
+        "results/workstation_flashb3_20261010_local_ready_wave/Prj1/rtl/music/basic_pitch_uart_model_loader.sv": "d1826c33c2b3dbcf3656ac80a271f523392482f94d2b6c7eb1c3aa79b0643e58",
+        "results/workstation_flashb3_20261010_local_ready_wave/Prj1/rtl/music/basic_pitch_uart_rx.sv": "28f403ca014eadb6141beb6f293a52266962326de8e15d44f7115d1745310b7c",
+        "results/workstation_flashb3_20261010_local_ready_wave/Prj1/rtl/music/basic_pitch_ddr16_port.sv": "6b0ce974e4081485f24a940e257e5a74daed3b1ce3e80f58b26f7304cae97785",
+        "results/workstation_flashb3_20261010_local_ready_wave/Prj1/rtl/music/basic_pitch_ddr_read_credit.sv": "62233867c73142a3876b17f325e3568b0fbd8e38e5e6dbf32da4a484db38b2ae",
+        "results/workstation_flashb3_20261010_local_ready_wave/Prj1/rtl/music/basic_pitch_ddr_arbiter_pipeline.sv": "60aec35bdcd2ee86f60464631838cd47c5577fee335c2ea2e6a1f0b647dbb2f3",
+        "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/src/control/uart_tx.v": "3513207cae9e529b0dabd45040a33012440ad4c1fc842571b4cb70ece5d09e8f",
+        "results/workstation_flashb3_20261010_local_ready_wave/Prj1/rtl/music/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+        "results/workstation_flashb3_20261010_local_ready_wave/Prj1/rtl/music/basic_pitch_workstation_link.sv": "e8970c358f4ee7d5f6ce4f167d238e05e47ecba4d80b8eaf5005c3abce53f8bc"
+      },
+      "scope": "NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls"
     }
-  }
+  },
+  "updated_at": "2026-10-10T00:25:00.104803+08:00"
 }

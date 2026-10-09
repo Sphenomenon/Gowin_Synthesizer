@@ -1,0 +1,129 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "applied_to_B3": false,
+  "pcm_saved": false,
+  "solver_version": "Yosys 0.67+post (git sha1 22c15a7ecd53437f18f67c72572bd693f78357ca, GNU /usr/bin/g++ 16.1.1)",
+  "original_sha256": "294f9cbd3bd4890ee01b140a649cdfcdb13411d76042c5defe9a9a8415235a75",
+  "patched_sha256": "19b4417ee833e718d10ae95a7a9c293001071ef8566bce95eb45e3863bd71520",
+  "added_cycles": 0,
+  "checks": [
+    {
+      "frame_limit": 1,
+      "passed": true,
+      "all_input_bits": 149,
+      "nonvacuous_boundary_witnesses": [
+        {
+          "state": 8,
+          "row": 0,
+          "relative_slot": 4,
+          "column": 263,
+          "channel": 7,
+          "expected_address": 10559,
+          "valid": true,
+          "passed": true
+        },
+        {
+          "state": 12,
+          "row": 0,
+          "relative_slot": 6,
+          "column": 87,
+          "channel": 31,
+          "expected_address": 19711,
+          "valid": true,
+          "passed": true
+        },
+        {
+          "state": 16,
+          "row": 0,
+          "relative_slot": 2,
+          "column": 87,
+          "channel": 32,
+          "expected_address": 8447,
+          "valid": true,
+          "passed": true
+        }
+      ],
+      "proof": "combinational SAT,all input bit patterns",
+      "extracted_miter_sha256": "2d4fc4c08ec74424983d1a88b3b85ea4845cf89ccb0c16d8912dfcf8e778dbb7"
+    },
+    {
+      "frame_limit": 172,
+      "passed": true,
+      "all_input_bits": 149,
+      "nonvacuous_boundary_witnesses": [
+        {
+          "state": 8,
+          "row": 171,
+          "relative_slot": 4,
+          "column": 263,
+          "channel": 7,
+          "expected_address": 10559,
+          "valid": true,
+          "passed": true
+        },
+        {
+          "state": 12,
+          "row": 171,
+          "relative_slot": 6,
+          "column": 87,
+          "channel": 31,
+          "expected_address": 19711,
+          "valid": true,
+          "passed": true
+        },
+        {
+          "state": 16,
+          "row": 171,
+          "relative_slot": 2,
+          "column": 87,
+          "channel": 32,
+          "expected_address": 8447,
+          "valid": true,
+          "passed": true
+        }
+      ],
+      "proof": "combinational SAT,all input bit patterns",
+      "extracted_miter_sha256": "b86fa5227eaceaa12b578dde5b23c9dfe264067781afb01bbcd6bf5d943ce1d7"
+    },
+    {
+      "frame_limit": 512,
+      "passed": true,
+      "all_input_bits": 149,
+      "nonvacuous_boundary_witnesses": [
+        {
+          "state": 8,
+          "row": 511,
+          "relative_slot": 4,
+          "column": 263,
+          "channel": 7,
+          "expected_address": 10559,
+          "valid": true,
+          "passed": true
+        },
+        {
+          "state": 12,
+          "row": 511,
+          "relative_slot": 6,
+          "column": 87,
+          "channel": 31,
+          "expected_address": 19711,
+          "valid": true,
+          "passed": true
+        },
+        {
+          "state": 16,
+          "row": 511,
+          "relative_slot": 2,
+          "column": 87,
+          "channel": 32,
+          "expected_address": 8447,
+          "valid": true,
+          "passed": true
+        }
+      ],
+      "proof": "combinational SAT,all input bit patterns",
+      "extracted_miter_sha256": "eb93e2cc80a1222b0181c040a64a92ffc799815651ff3beeae7709d9059696d8"
+    }
+  ]
+}

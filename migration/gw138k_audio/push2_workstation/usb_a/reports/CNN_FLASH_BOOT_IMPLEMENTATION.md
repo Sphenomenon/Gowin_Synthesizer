@@ -1,6 +1,6 @@
 # CNN Flash→DDR 实施记录
 
-截至2026-10-10 00:12，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传，实时演奏检查PASS。AF/B0/B1/B2发布时序未通过，均未烧录；B1/B2全部PLL全传播已通过，B3本地ready/背景波形/tag修正正在构建。板上配置和LATEST均保留已核验的full85，正式发布及物理断电验收尚未完成。
+截至2026-10-10 00:26，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传，实时演奏检查PASS。AF/B0/B1/B2发布时序未通过，均未烧录；B1/B2全部PLL全传播已通过，B3本地ready/背景波形/tag修正已综合，正在布线。板上配置和LATEST均保留已核验的full85，正式发布及物理断电验收尚未完成。
 
 AD最终268/340物理BSRAM，clk50 55.362MHz、视频187.261MHz。严格时序门禁仍发现DDR UI setup −2.107ns（旧文字/分析渲染为主，hold+0.165ns）和视频PLL全传播10.757ns>10ns，因此AD只作为明确的临时诊断，**配置Flash已恢复full85、旧UART模型E及现场检查PASS，LATEST仍85**。AE保持AD全部RTL，仅增加严格8ns DDR路径/6ns PLL端点物理预算；其已完成结果仍未闭合。原有时钟、hold、CRC、自检和独立PLL10ns门槛全部保留。
 
@@ -109,3 +109,5 @@ B2冻结源全模型回归PASS：52239字NOR→双遍片内串行→原解析器
 同拍tagflags完整52239系数NOR/串行/原DDR客户端/仲裁独立内存回归PASS，52239写/读CRC AF01A61B；未作实体 IO。B3采用冻结解析器的全模型测试另跑，新增本地ready真实115200小模型链路单独检查。
 
 B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同，actual frozen link wrapper与请求谓词进入TB，测试源哈希记录。该结果只覆盖初始校准等待，独立PHY单域恢复仍不作扩展承诺。
+
+2026-10-10 B3完整模型回归已把实际本地memory-ready寄存片段接入冻结原解析器/DDR16及共享arbiter/客户端队列：31字真实115200、52239字仅仿真RX加速到3125000，完整52239写/52239读CRC AF01A61B/source1均PASS，含并发扫描/写入与原生背压。B3综合220BSRAM、505SSRAM、43607寄存器、56494LUT；物理占用和时序尚待最终路由。源码绑定证据已加入CNN_FLASH_BOOT_B3_LOCAL_PATH_TESTS.json。另针对B2 kh→feature缓存地址路径准备零延迟3位slot算术，Yosys SAT对实际原/新解码器149位所有输入、FRAME_LIMIT=1/172/512证明全部观测输出相同，包含三条合法最大地址可达性；只做prepare，未修改B3，也未分配UserCode或操作硬件。

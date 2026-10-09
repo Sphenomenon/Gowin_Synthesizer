@@ -17,7 +17,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from build_full_song_83_bp_ddr_isolation import FROZEN
 from workstation_memory import audit
-from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO,TF_DMA,retime_tf_write_buffer,CLIENT_QUEUES,TF_BUFFER,TMDS,retime_tf_buffer_enable,retime_tf_capture_limit,retime_display_enable,retime_tmds_statistics,DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,DELAY_DMA,parallel_delay_rptr,power_two_tf_ring,parallel_dashboard_cards,lut_tmds_popcount,predecode_dashboard_background,register_arbiter_tag_flags,MODEL_MEMORY_READY_BLOCK,retime_model_memory_ready,predecode_dashboard_wave_heights
+from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO,TF_DMA,retime_tf_write_buffer,CLIENT_QUEUES,TF_BUFFER,TMDS,retime_tf_buffer_enable,retime_tf_capture_limit,retime_display_enable,retime_tmds_statistics,DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,DELAY_DMA,parallel_delay_rptr,power_two_tf_ring,parallel_dashboard_cards,lut_tmds_popcount,predecode_dashboard_background,register_arbiter_tag_flags,MODEL_MEMORY_READY_BLOCK,retime_model_memory_ready,predecode_dashboard_wave_heights,narrow_feature_read_slot
 from build_cnn_flash_image import build_image,load_words,pack_flash,gowin_data_fs
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
@@ -120,8 +120,11 @@ def audit_serial_compatibility(output):
         text=(stage/pipeline).read_text().replace(
             '            for (integer i=0;i<8;i=i+1)\n                if (dwell_bucket(state)==i) dwell_count[i] <= dwell_count[i] + 1\'b1;',
             '            dwell_count[dwell_bucket(state)] <= dwell_count[dwell_bucket(state)] + 1\'b1;')
+        if metadata.get('narrowed_feature_read_slot'):
+            assert text.count('$unsigned(feature_read_rel[2:0])')==3,'feature slot overlay drift'
+            text=text.replace('$unsigned(feature_read_rel[2:0])','$unsigned(feature_read_rel)')
         assert text==(BASE/'Prj1'/pipeline).read_text(),'CNN changed beyond dwell telemetry unrolling'
-        evidence[pipeline]['unchanged']=True;evidence[pipeline]['normalization']='Only equivalent parallel dwell-counter update; CNN datapath exact'
+        evidence[pipeline]['unchanged']=True;evidence[pipeline]['normalization']='Equivalent parallel dwell-counter update'+('; formally equal bounded slot address decoder' if metadata.get('narrowed_feature_read_slot') else '')+'; CNN data/arithmetic/cycles exact'
         assert sha(stage/'rtl/music/basic_pitch_weight_cache.sv')==sha(ROOT/'rtl/music/basic_pitch_weight_cache.sv'),'cache retiming source drift'
     assert all(v['unchanged'] for v in evidence.values()),'serial transport changed proven CNN/DDR/firmware'
     original=(BASE/'Prj1/rtl/music/basic_pitch_workstation_link.sv').read_text()
@@ -202,6 +205,7 @@ def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--retime-model-memory-ready',action='store_true',help='local1memory-clockcalibrationlevel capture before provenDDR16 request gate')
     ap.add_argument('--predecode-wave-heights',action='store_true',help='wave shift/clamp in existing predecode stage, bit-exact raster')
+    ap.add_argument('--narrow-feature-read-slot',action='store_true',help='formally identical feature-cache address decoder, zero extra cycles; bounded relative slots use3bits')
     ap.add_argument('--tighten-feature-read-route',action='store_true',help='physical19ns bound on observed conv-kh to feature-cache address; originalCNN/clock unchanged')
     ap.add_argument('--register-arbiter-tag-flags',action='store_true',help='same-edge predicted tag full/empty avoids native-en/count ready feedback')
     ap.add_argument('--predecode-background-coordinates',action='store_true',help='pure background coordinate predicates computed on precedingA edge; no extra pixel latency')
@@ -247,6 +251,7 @@ def main():
     reference_suffix=(args.incremental_pnr_entry or 'pr') if args.incremental_mode=='pnr' else 'p'
     if args.defer_ddr_startup and args.transport!='serial':ap.error('--defer-ddr-startup requires serial transport with startup history alignment')
     if args.retime_model_memory_ready and args.transport!='serial':ap.error('--retime-model-memory-ready requires serial')
+    if args.narrow_feature_read_slot and not args.retime_cache_read:ap.error('--narrow-feature-read-slot requires --retime-cache-read')
     if args.predecode_wave_heights and not args.predecode_text_coordinates:ap.error('--predecode-wave-heights requires --predecode-text-coordinates')
     if args.register_arbiter_tag_flags and not args.pipeline_ddr_arbiter:ap.error('--register-arbiter-tag-flags requires --pipeline-ddr-arbiter')
     if args.predecode_background_coordinates and not args.predecode_text_coordinates:ap.error('--predecode-background-coordinates requires --predecode-text-coordinates')
@@ -296,6 +301,7 @@ def main():
             original='            dwell_count[dwell_bucket(state)] <= dwell_count[dwell_bucket(state)] + 1\'b1;'
             assert text.count(original)==1
             text=text.replace(original,'            for (integer i=0;i<8;i=i+1)\n                if (dwell_bucket(state)==i) dwell_count[i] <= dwell_count[i] + 1\'b1;')
+            if args.narrow_feature_read_slot:text=narrow_feature_read_slot(text)
             pipeline.write_text(text)
         top=stage/'src/push2/gw138k_push_workstation_top.v';s=top.read_text()
         if args.defer_ddr_startup:
@@ -461,7 +467,7 @@ set_max_delay 4.500 -from [get_pins {u_video/u_clock/g_hardware.u_pll/*/u_pll_in
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,reference_pll_helper_region="R[100:108]C[24:44]" if args.locate_reference_pll_helper else None,predecoded_dashboard=args.predecode_dashboard,predecoded_text_coordinates=args.predecode_text_coordinates,parallel_dashboard_cards=args.parallel_dashboard_cards,predecoded_background_coordinates=args.predecode_background_coordinates,parallel_delay_pointer=args.parallel_delay_pointer,power_two_tf_ring=args.power_two_tf_ring,raster_enabled_latency_added=1 if args.predecode_dashboard else 0,PLL_settings_route_max_delay_ns=4.5 if args.tighten_pll_setting_route else None,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,lut_tmds_popcount=args.lut_tmds_popcount,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_arbiter_tag_flags=args.register_arbiter_tag_flags,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,retimed_model_memory_ready=args.retime_model_memory_ready,predecoded_wave_heights=args.predecode_wave_heights,feature_read_route_max_delay_ns=19.0 if args.tighten_feature_read_route else None,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,reference_pll_helper_region="R[100:108]C[24:44]" if args.locate_reference_pll_helper else None,predecoded_dashboard=args.predecode_dashboard,predecoded_text_coordinates=args.predecode_text_coordinates,parallel_dashboard_cards=args.parallel_dashboard_cards,predecoded_background_coordinates=args.predecode_background_coordinates,parallel_delay_pointer=args.parallel_delay_pointer,power_two_tf_ring=args.power_two_tf_ring,raster_enabled_latency_added=1 if args.predecode_dashboard else 0,PLL_settings_route_max_delay_ns=4.5 if args.tighten_pll_setting_route else None,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,lut_tmds_popcount=args.lut_tmds_popcount,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_arbiter_tag_flags=args.register_arbiter_tag_flags,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,retimed_model_memory_ready=args.retime_model_memory_ready,predecoded_wave_heights=args.predecode_wave_heights,narrowed_feature_read_slot=args.narrow_feature_read_slot,feature_read_route_max_delay_ns=19.0 if args.tighten_feature_read_route else None,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
