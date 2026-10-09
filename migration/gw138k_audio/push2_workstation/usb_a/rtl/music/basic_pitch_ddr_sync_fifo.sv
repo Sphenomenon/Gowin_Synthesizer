@@ -20,10 +20,13 @@ module basic_pitch_ddr_sync_fifo #(
     (* ASYNC_REG="TRUE" *) reg [POINTER_BITS-1:0] write_gray_meta,write_gray_sync;
     reg [WIDTH-1:0] ram_q,output_data;
     reg fetch_pending,output_valid;
-    wire full=write_gray=={~read_gray_sync[POINTER_BITS-1:POINTER_BITS-2],read_gray_sync[POINTER_BITS-3:0]};
+    reg full;
     wire write_fire=write_valid_i && !full;
     wire [POINTER_BITS-1:0] write_next=write_binary+1'b1;
     wire [POINTER_BITS-1:0] read_next=read_binary+1'b1;
+    wire [POINTER_BITS-1:0] write_after=write_fire?write_next:write_binary;
+    wire [POINTER_BITS-1:0] gray_after=write_after^(write_after>>1);
+    wire full_after=gray_after=={~read_gray_sync[POINTER_BITS-1:POINTER_BITS-2],read_gray_sync[POINTER_BITS-3:0]};
     wire output_pop=output_valid && read_ready_i;
     wire fetch=!fetch_pending && (!output_valid || output_pop) && read_gray!=write_gray_sync;
     assign write_ready_o=!full;
@@ -36,8 +39,9 @@ module basic_pitch_ddr_sync_fifo #(
         memory[write_binary[ADDRESS_BITS-1:0]]<=write_data_i;
     always @(posedge read_clk_i)ram_q<=memory[read_binary[ADDRESS_BITS-1:0]];
     always @(posedge write_clk_i or negedge write_rst_ni)begin
-        if(!write_rst_ni)begin write_binary<=0;write_gray<=0;read_gray_meta<=0;read_gray_sync<=0;end
+        if(!write_rst_ni)begin write_binary<=0;write_gray<=0;read_gray_meta<=0;read_gray_sync<=0;full<=0;end
         else begin
+            full<=full_after;
             read_gray_meta<=read_gray;read_gray_sync<=read_gray_meta;
             if(write_fire)begin write_binary<=write_next;write_gray<=write_next^(write_next>>1);end
         end

@@ -44,7 +44,8 @@ def main():
         status=json.loads((build/'tool_result.json').read_text())
         assert meta['full_workstation'] and status['exit_code']==0 and status['inputs_unchanged'],'incomplete build or source drift'
         memory=json.loads((build/'workstation_memory.json').read_text())
-        limit=264 if meta.get('synchronous_delay_write_fifo') else 260
+        assert not meta.get('synchronous_delay_read_fifo') or meta.get('synchronous_delay_write_fifo'),'read FIFO budget requires matching write FIFO'
+        limit=268 if meta.get('synchronous_delay_read_fifo') else (264 if meta.get('synchronous_delay_write_fifo') else 260)
         assert meta.get('physical_bsram_limit',260)==limit and 0<memory['pnr_bsram']<=limit,'physical BSRAM exceeded explicit candidate budget'
         if meta.get('transport','direct')=='serial':
             assert json.loads((build/'serial_compatibility_source_audit.json').read_text())['passed'],'original parser/native DDR compatibility failed'

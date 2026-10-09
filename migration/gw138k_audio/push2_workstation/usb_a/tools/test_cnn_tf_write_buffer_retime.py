@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
-from cnn_ddr_pipeline_patch import TF_DMA, retime_tf_write_buffer
+from cnn_ddr_pipeline_patch import TF_DMA, retime_tf_write_buffer,retime_tf_capture_limit
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / 'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
@@ -102,7 +102,7 @@ def main():
     cases = []
     with tempfile.TemporaryDirectory(prefix='cnn_tf_stage_retime_') as temp:
         folder = Path(temp)
-        for label, text in [('original_control', original), ('retimed', patched)]:
+        for label, text in [('original_control', original), ('retimed', patched),('registered_limit',retime_tf_capture_limit(patched))]:
             src = folder / 'dma.v'
             src.write_text(text)
             for buffered,stalled in [(False,False),(False,True),(True,False),(True,True)]:

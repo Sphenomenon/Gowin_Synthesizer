@@ -17,7 +17,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from build_full_song_83_bp_ddr_isolation import FROZEN
 from workstation_memory import audit
-from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO,TF_DMA,retime_tf_write_buffer,CLIENT_QUEUES
+from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO,TF_DMA,retime_tf_write_buffer,CLIENT_QUEUES,TF_BUFFER,TMDS,retime_tf_buffer_enable,retime_tf_capture_limit,retime_display_enable,retime_tmds_statistics
 from build_cnn_flash_image import build_image,load_words,pack_flash,gowin_data_fs
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
@@ -67,6 +67,14 @@ def used_codes():
         except (OSError,UnicodeError):continue
     return codes
 
+def expected_hdmi(metadata):
+    text=patch_hdmi((BASE/'Prj1'/HDMI).read_text(),metadata.get('buffered_ddr_clients',False))
+    return retime_display_enable(text) if metadata.get('retimed_display_enable') else text
+
+def expected_tf_dma(metadata):
+    text=retime_tf_write_buffer((BASE/'Prj1'/TF_DMA).read_text())
+    return retime_tf_capture_limit(text) if metadata.get('retimed_tf_capture_limit') else text
+
 def audit_serial_compatibility(output):
     stage=output/'Prj1'
     paths=['rtl/music/basic_pitch_pcm_pipeline.sv','rtl/music/basic_pitch_uart_model_loader.sv',
@@ -76,16 +84,20 @@ def audit_serial_compatibility(output):
     metadata=json.loads((output/'build_metadata.json').read_text())
     pipelined=metadata.get('pipelined_ddr_arbiter',False)
     if pipelined:
-        assert (stage/HDMI).read_text()==patch_hdmi((BASE/'Prj1'/HDMI).read_text(),metadata.get('buffered_ddr_clients',False)),'display changed beyond registered DDR bus boundary'
+        assert (stage/HDMI).read_text()==expected_hdmi(metadata),'display changed beyond registered DDR bus boundary'
         assert sha(stage/PIPELINE)==sha(ROOT/PIPELINE),'shared pipeline source drift'
     if metadata.get('buffered_ddr_clients'):
         assert sha(stage/CLIENT_QUEUES)==sha(ROOT/CLIENT_QUEUES),'client queue source drift'
     if metadata.get('retimed_tf_write_buffer'):
-        assert (stage/TF_DMA).read_text()==retime_tf_write_buffer((BASE/'Prj1'/TF_DMA).read_text()),'TF changed beyond local staging register update'
+        assert (stage/TF_DMA).read_text()==expected_tf_dma(metadata),'TF changed beyond local staging register update'
+    if metadata.get('retimed_tf_buffer_enable'):
+        assert (stage/TF_BUFFER).read_text()==retime_tf_buffer_enable((BASE/'Prj1'/TF_BUFFER).read_text()),'TF buffer retime drift'
+    if metadata.get('retimed_tmds_statistics'):
+        assert (stage/TMDS).read_text()==retime_tmds_statistics((BASE/'Prj1'/TMDS).read_text()),'TMDS changed beyond reset-mask statistics'
     paths += [str(p.relative_to(BASE/'Prj1')) for p in (BASE/'Prj1').rglob('gw138k_ddr_arbiter.sv')]
     evidence={p:dict(unchanged=sha(BASE/'Prj1'/p)==sha(stage/p),sha256=sha(stage/p)) for p in paths}
     if metadata.get('synchronous_delay_write_fifo'):
-        assert (stage/DELAY).read_text()==patch_delay_fifo((BASE/'Prj1'/DELAY).read_text()),'delay changed beyond input FIFO type'
+        assert (stage/DELAY).read_text()==patch_delay_fifo((BASE/'Prj1'/DELAY).read_text(),metadata.get('synchronous_delay_read_fifo',False)),'delay changed beyond input FIFO type'
         assert sha(stage/SYNC_FIFO)==sha(ROOT/SYNC_FIFO),'sync FIFO source drift'
     if pipelined:evidence[HDMI].update(unchanged=True,normalization='Only native DDR boundary and paired registered consumer bus; image/raster code unchanged')
     if json.loads((output/'build_metadata.json').read_text()).get('retimed_cache_read'):
@@ -170,6 +182,11 @@ def register_response_credit(text):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--sync-delay-read-fifo',action='store_true',help='use synchronous FIFO for return history too; explicit physical budget268')
+    ap.add_argument('--retime-tf-buffer-enable',action='store_true',help='keep TF command payload CE local to idle occupancy; valid data/commands exact')
+    ap.add_argument('--retime-tf-capture-limit',action='store_true',help='register terminal capture-count predicate ahead of TF byte staging')
+    ap.add_argument('--retime-display-enable',action='store_true',help='register startup/fault display permission one memory cycle; raster/data algorithm unchanged')
+    ap.add_argument('--retime-tmds-statistics',action='store_true',help='unconditionally compute masked input ones; encoded10-bit codes cycle-exact')
     ap.add_argument('--buffer-ddr-clients',action='store_true',help='per-client one-entry stable request slots with registered arbitration selection; no BSRAM')
     ap.add_argument('--retime-tf-write-buffer',action='store_true',help='equivalent local TF byte staging with delayed clearing after accepted DDR beat')
     ap.add_argument('--sync-delay-write-fifo',action='store_true',help='replace only delay maintenance write FIFO with synchronous65x512 BSRAM read; physical budget264')
@@ -197,6 +214,9 @@ def main():
         ap.error('--incremental-pnr-entry requires --incremental-baseline --incremental-mode pnr')
     reference_suffix=(args.incremental_pnr_entry or 'pr') if args.incremental_mode=='pnr' else 'p'
     if args.defer_ddr_startup and args.transport!='serial':ap.error('--defer-ddr-startup requires serial transport with startup history alignment')
+    if args.sync_delay_read_fifo and not args.sync_delay_write_fifo:ap.error('--sync-delay-read-fifo requires --sync-delay-write-fifo')
+    if args.retime_tf_capture_limit and not args.retime_tf_write_buffer:ap.error('--retime-tf-capture-limit requires --retime-tf-write-buffer')
+    if args.retime_display_enable and not args.pipeline_ddr_arbiter:ap.error('--retime-display-enable requires --pipeline-ddr-arbiter')
     if args.buffer_ddr_clients and not args.pipeline_ddr_arbiter:ap.error('--buffer-ddr-clients requires --pipeline-ddr-arbiter')
     if args.retime_tf_write_buffer and not args.pipeline_ddr_arbiter:ap.error('--retime-tf-write-buffer requires --pipeline-ddr-arbiter')
     if args.sync_delay_write_fifo and not args.pipeline_ddr_arbiter:ap.error('--sync-delay-write-fifo requires --pipeline-ddr-arbiter')
@@ -297,12 +317,16 @@ def main():
             link.write_text(text)
         if args.retime_start_delay:s=retime_start_delay(s)
         if args.retime_tf_write_buffer:
-            tf=stage/TF_DMA;tf.write_text(retime_tf_write_buffer(tf.read_text()))
+            tf=stage/TF_DMA;tf.write_text(retime_tf_capture_limit(retime_tf_write_buffer(tf.read_text())) if args.retime_tf_capture_limit else retime_tf_write_buffer(tf.read_text()))
         if args.sync_delay_write_fifo:
-            delay=stage/DELAY;delay.write_text(patch_delay_fifo(delay.read_text()))
+            delay=stage/DELAY;delay.write_text(patch_delay_fifo(delay.read_text(),args.sync_delay_read_fifo))
         if args.pipeline_ddr_arbiter:
             s=patch_top(s)
-            display=stage/HDMI;display.write_text(patch_hdmi(display.read_text(),args.buffer_ddr_clients))
+            display=stage/HDMI;display.write_text(retime_display_enable(patch_hdmi(display.read_text(),args.buffer_ddr_clients)) if args.retime_display_enable else patch_hdmi(display.read_text(),args.buffer_ddr_clients))
+        if args.retime_tf_buffer_enable:
+            tfbuffer=stage/TF_BUFFER;tfbuffer.write_text(retime_tf_buffer_enable(tfbuffer.read_text()))
+        if args.retime_tmds_statistics:
+            tmds=stage/TMDS;tmds.write_text(retime_tmds_statistics(tmds.read_text()))
         top.write_text(s)
         if args.retime_video_telemetry:
             diagnostics=stage/'src/video/video_runtime_diagnostics.v'
@@ -345,14 +369,14 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
-        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+(['src/video/video_runtime_diagnostics.v'] if args.retime_video_telemetry else [])+([TF_DMA] if args.retime_tf_write_buffer else [])+([HDMI] if args.pipeline_ddr_arbiter else [])+([DELAY] if args.sync_delay_write_fifo else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
+        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+(['src/video/video_runtime_diagnostics.v'] if args.retime_video_telemetry else [])+([TF_BUFFER] if args.retime_tf_buffer_enable else [])+([TMDS] if args.retime_tmds_statistics else [])+([TF_DMA] if args.retime_tf_write_buffer else [])+([HDMI] if args.pipeline_ddr_arbiter else [])+([DELAY] if args.sync_delay_write_fifo else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
                              'constraints/tang_mega_138k.cst','constraints/tang_mega_138k.sdc'])
         assert set(changed)==allowed,(changed,allowed)
         write_json(output/'workstation_inputs.json',inputs)
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=264 if args.sync_delay_write_fifo else 260,pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
@@ -399,9 +423,9 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing
     frozen_meta=json.loads((output/'build_metadata.json').read_text())
     for rel,(staged,h) in FROZEN.items():
         normalized=(frozen_meta.get('pipelined_ddr_arbiter') and staged==HDMI and
-            (stage/staged).read_text()==patch_hdmi((BASE/'Prj1'/staged).read_text(),frozen_meta.get('buffered_ddr_clients',False))) or (
+            (stage/staged).read_text()==expected_hdmi(frozen_meta)) or (
             frozen_meta.get('synchronous_delay_write_fifo') and staged==DELAY and
-            (stage/staged).read_text()==patch_delay_fifo((BASE/'Prj1'/staged).read_text()))
+            (stage/staged).read_text()==patch_delay_fifo((BASE/'Prj1'/staged).read_text(),frozen_meta.get('synchronous_delay_read_fifo',False)))
         assert sha(ROOT/rel)==h and (sha(stage/staged)==h or normalized),rel
     assert all(sha(stage/p)==h for p,h in inputs.items()),'candidate input drift'
     print(output,flush=True)
@@ -420,7 +444,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing
     print('SYN BSRAM',report['bsram'],'PNR BSRAM',report.get('pnr_bsram'),flush=True)
     if args.flow in ('all','pnr'):
         physical_limit=json.loads((output/'build_metadata.json').read_text()).get('physical_bsram_limit',260)
-        assert physical_limit in (260,264) and report['pnr_available'] and report['pnr_bsram']<=physical_limit,'explicit BSRAM budget exceeded'
+        assert physical_limit in (260,264,268) and report['pnr_available'] and report['pnr_bsram']<=physical_limit,'explicit BSRAM budget exceeded'
         fs=stage/'impl/pnr/Prj1.fs';binary=stage/'impl/pnr/Prj1.bin'
         code=json.loads((output/'build_metadata.json').read_text())['user_code']
         assert re.search(r'//UserCode: (0x[0-9A-Fa-f]{8})',fs.read_text()[:1000])[1].lower()==code.lower()

@@ -36,10 +36,15 @@ def patch_top(text):
 DELAY='rtl/audio/delay_ddr/serial_delay_effect_ddr.sv'
 SYNC_FIFO='rtl/music/basic_pitch_ddr_sync_fifo.sv'
 
-def patch_delay_fifo(text):
+def patch_delay_fifo(text,both=False):
     anchor='  music_async_fifo #(.WIDTH(65),.ADDRESS_BITS(FIFO_ADDRESS_BITS)) u_write_fifo('
     assert text.count(anchor)==1
-    return text.replace(anchor,anchor.replace('music_async_fifo','basic_pitch_ddr_sync_fifo'))
+    text=text.replace(anchor,anchor.replace('music_async_fifo','basic_pitch_ddr_sync_fifo'))
+    if both:
+        read=anchor.replace('u_write_fifo','u_read_fifo')
+        assert text.count(read)==1
+        text=text.replace(read,read.replace('music_async_fifo','basic_pitch_ddr_sync_fifo'))
+    return text
 
 TF_DMA='src/storage/tf_audio_ddr_dma.v'
 
@@ -74,3 +79,66 @@ def retime_tf_write_buffer(text):
     end
 '''
     return text.replace(anchor,data+anchor,1)
+
+TF_BUFFER='src/memory/tf_audio_ddr_command_buffer.sv'
+TMDS='vendor/sipeed_dvi/dvi_tx_tmds_enc.v'
+
+def retime_tf_buffer_enable(text):
+    old="""        end else if(full && out_ready) full<=0;
+        else if(!full && in_valid) begin
+            full<=1;
+            write_q<=in_write;
+            address_q<=in_address;
+            data_q<=in_data;
+        end"""
+    new="""        end else begin
+            if(full)begin if(out_ready)full<=0;end
+            else begin
+                full<=in_valid;
+                write_q<=in_write;
+                address_q<=in_address;
+                data_q<=in_data;
+            end
+        end"""
+    assert text.count(old)==1
+    return text.replace(old,new)
+
+def retime_tf_capture_limit(text):
+    declaration='    reg capture_overflow;'
+    assert text.count(declaration)==1
+    text=text.replace(declaration,declaration+'\n    reg capture_limit_hit;')
+    anchor='    wire epoch_clear='
+    assert text.count(anchor)==1
+    text=text.replace(anchor,"""    // The saturating byte count changes only at a capture acceptance. Predict
+    // its terminal value on the same edge, so the wide buffer never decodes
+    // the 32-bit count in its per-byte write-enable cones.
+    always @(posedge clk or negedge rst_n)begin
+        if(!rst_n)capture_limit_hit<=0;
+        else if(restart_event || (state==S_DONE && capture_finished))capture_limit_hit<=0;
+        else if(state==S_STREAM && fifo_in_rd_valid && capture_byte_count==32'hffff_fffe)
+            capture_limit_hit<=1;
+    end
+"""+anchor)
+    return text.replace("state==S_STREAM && fifo_in_rd_valid && capture_byte_count!=32'hffff_ffff",
+                        'state==S_STREAM && fifo_in_rd_valid && !capture_limit_hit')
+
+def retime_display_enable(text):
+    anchor='    wire display_enabled=bist_done && !bist_failed && !fetch_fault && !arbiter_fault;'
+    assert text.count(anchor)==1
+    return text.replace(anchor,"""    reg display_enabled;
+    always @(posedge memory_clk or negedge ui_rst_n)begin
+        if(!ui_rst_n)display_enabled<=0;
+        else display_enabled<=bist_done && !bist_failed && !fetch_fault && !arbiter_fault;
+    end""")
+
+def retime_tmds_statistics(text):
+    assert text.count('data_reg<=0;input_ones<=0;den_reg<=0;ctrl_reg<=0;')==1
+    assert text.count('data_reg<=data;input_ones<=count_ones(data);den_reg<=den;ctrl_reg<=ctrl;')==1
+    text=text.replace('data_reg<=0;input_ones<=0;den_reg<=0;ctrl_reg<=0;',
+                      'data_reg<=0;den_reg<=0;ctrl_reg<=0;')
+    text=text.replace('data_reg<=data;input_ones<=count_ones(data);den_reg<=den;ctrl_reg<=ctrl;',
+                      'data_reg<=data;den_reg<=den;ctrl_reg<=ctrl;')
+    anchor='    always @(posedge clock) begin'
+    assert text.count(anchor)==1
+    # Statistics are masked by den_reg/den_stats during reset pipeline drain.
+    return text.replace(anchor,'    always @(posedge clock) input_ones<=count_ones(data);\n'+anchor)
