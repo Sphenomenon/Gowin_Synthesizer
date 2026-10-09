@@ -255,3 +255,6 @@ TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合
 可选 `--registered-tf-response` 只用于显式buffered clients/registered native DDR/TF command buffer的完整构建，builder拒绝缺少这些条件。实际audio_response来自注册response_valid/owner，TF命令还先进入独立slot，因此本请求响应必然跨过接受边界；特殊化去掉TF本请求同拍response fallback、只取pending bytes/count。通用冻结TF源码继续支持同周期返回并由前8个variant测试。新variant仅以真实注册队列测试，加入response必须已有pending断言；50组协议PASS，其中2组为注册响应specialization（正常/背压）。源审计绑定actual core注册assign/tag owner、HDMI client queues和top TF命令/响应连接；额外0周期/0BSRAM。
 
 备用 `--pipeline-tf-read-return` 需要byte mask、与registered-response互斥。把原app_rvalid&&(pending||accept)合格响应及256bit数据在同一边界寄存，下一拍消费已保存的pending bytes/count，通用原生同周期响应也受支持。restart/新epoch抑制旧响应发布，每beat明确增加1个100MHz UI周期（10ns），0BSRAM。54组包括新variant6种直接/队列/背压/零周期响应的完整TF ring及输出字节oracle通过。此选项尚未用于BD，作为通用响应寄存替代。
+
+
+`--tighten-ddr-ui-controls` 将已观察到的TF/BIST/客户端槽位CE及同步reset端点设为8ns物理预算，原DDR UI10ns及hold门禁仍保留。`--sample-idle-client-payload` 是单独可选的空槽采样优化：空槽时采样请求总线，有效槽期间保持到消费，ready/valid周期及318位有效载荷不变；需`--buffer-ddr-clients`，由实际模块时序归纳和全八客户端独立命令/掩码/响应记分板检验。无附加BSRAM或接口周期；不得用无效槽总线的变化作为有效输出。

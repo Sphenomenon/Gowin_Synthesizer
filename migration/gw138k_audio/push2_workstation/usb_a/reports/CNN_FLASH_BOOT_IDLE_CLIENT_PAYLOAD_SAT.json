@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "source_bound": false,
+  "build": null,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "added_cycles": 0,
+  "added_bsram": 0,
+  "proof": "Temporal induction of actual old/new slot modules: ready/valid every cycle and all318payload bits whenever queued_valid; arbitrary reset/valid/ready/write/address/data/mask sequences.",
+  "invalid_slot_payload": "unobserved by core; may sample request bus while empty",
+  "patched_source_sha256": "42159203c89926eaede706536c57735362c2349608e642ab36c30e9f78564d79",
+  "miter_sha256": "68db681161456863f7745ec1fefc203a3cc6964ccc22a5f4b4684a31cf8d3d92"
+}

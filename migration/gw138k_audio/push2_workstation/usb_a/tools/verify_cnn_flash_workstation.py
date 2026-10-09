@@ -80,6 +80,18 @@ def main():
                 str(ROOT/'tools/test_cnn_shared_display.py'),'--build',str(build),
                 '--output',str(output/'shared_display_integration.json')])
             result['checks'][label]=code
+        if meta.get('buffered_ddr_clients'):
+            command=[sys.executable,str(ROOT/'tools/test_cnn_ddr_arbiter_pipeline.py'),
+                '--build',str(build),'--buffered-clients','--output',str(output/'ddr_native_scoreboard.json')]
+            if meta.get('registered_arbiter_tag_flags'):command.append('--registered-tag-flags')
+            if meta.get('idle_client_payload_sampling'):command.append('--sample-idle-client-payload')
+            label,code=run('ddr_native_scoreboard',command)
+            result['checks'][label]=code
+        if meta.get('idle_client_payload_sampling'):
+            label,code=run('idle_client_payload_induction',[sys.executable,
+                str(ROOT/'tools/test_cnn_idle_client_payload.py'),'--build',str(build),
+                '--output',str(output/'idle_client_payload_induction.json')])
+            result['checks'][label]=code
         if meta.get('parallel_tf_byte_counters'):
             protocol_flags=['--parallel-byte-counters']
             if meta.get('buffered_ddr_clients') and meta.get('retimed_tf_buffer_enable'):protocol_flags.append('--full-buffered-topology')

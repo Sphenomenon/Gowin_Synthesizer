@@ -827,3 +827,11 @@ def pipeline_tf_read_return(text):
          'read_total_bytes <= read_total_pending;')]:
         assert text.count(old)==1,old;text=text.replace(old,new,1)
     return text
+
+
+def sample_idle_client_payload(text):
+    """Load invalid slot payload while empty; accepted/held transactions unchanged."""
+    old='    always @(posedge clk)begin\n        if(request_ready && request_valid)begin\n            queued_write<=request_write;queued_address<=request_address;\n            queued_data<=request_data;queued_mask<=request_mask;\n        end\n    end'
+    assert text.count(old)==1
+    new=old.replace('if(request_ready && request_valid)', 'if(!full)')
+    return text.replace(old,new,1)

@@ -158,3 +158,6 @@ BE在BC基础上对完整限定后的读响应和256位数据成对寄存，明�
 03:45 BA完成：SYN220、物理268BSRAM；所有源码绑定像素、完整共享显示、TF全链路、地址/计数SAT、clk50/video/PLL/CDC均通过；真实DDR UI最差−2.254ns、hold+0.166ns，拒绝且未写板。主要端点是TF emit_index/read_buf CE和未分级的BIST failed CE。03:44锁内被动健康读取modelE/CRC0/health0/精确48000样本每秒/Push帧+2，没有控制命令。
 
 BF保留BE全部606个输入中的RTL/IP/模型逐字节一致，只变显式UserCode与观察到的DDR UI控制端点8ns物理预算。预算比原10ns更严格，未增加false_path、未改时钟或hold要求；本地官方SUG940-2.0.4E §5.4.2定义get_clocks/get_pins max-delay端点语义。该分支是针对CE/同步reset端点的物理实现约束，没有宣称其时序通过。
+
+
+为BA中u_music_slot.full→queued_data/RESET的控制反馈准备空槽采样可选项；不改full/ready/valid状态机，full=0时采样总线，full=1持有到原仲裁消费。实际原/新槽模块SAT时序归纳证明所有输入序列下ready/valid和318位有效载荷等价。3个tag深度/随机种子独立八客户端记分板共15824条命令、10359次读响应通过，含掩码写、原生背压、连续返回、BIST epoch及顺序检查。此优化尚未用于新构建。发布门禁另增加所有缓冲仲裁器候选实际源码的全八客户端记分板。
