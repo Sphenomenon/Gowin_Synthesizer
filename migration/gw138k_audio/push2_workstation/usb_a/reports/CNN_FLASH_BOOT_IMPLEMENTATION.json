@@ -1,8 +1,8 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "full_workstation_auto_boot_unverified_A9_timing_rejected_shared_DDR_pipeline_AA_building",
-  "target_user_code": "0x000000AA",
+  "status": "AA_full_CPU_UI_PASS_model_DDR_CRC_failed_AB_onehot_sync_fifo_building",
+  "target_user_code": "0x000000AB",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
   "model_partition_byte_verify_passed": true,
@@ -17,7 +17,7 @@
   "full_model_sim_boot_seconds": 0.14773918,
   "model_auto_boot_hardware_verified": false,
   "physical_power_cycle_tested": false,
-  "build": "results/workstation_flashaa_20261009_ddr_pipeline",
+  "build": "results/workstation_flashab_20261009_onehot_sync_fifo",
   "initial_build_error": "second CST superseded original complete pin constraints; fixed by appending Flash pins to original CST",
   "evidence": {
     "sim_tests": "reports/CNN_FLASH_BOOT_TESTS.json",
@@ -654,7 +654,7 @@
   "AA_shared_DDR_pipeline": {
     "build": "results/workstation_flashaa_20261009_ddr_pipeline",
     "user_code": "0x000000AA",
-    "status": "placement",
+    "status": "completed_rejected",
     "hardware_tested": false,
     "command_boundary_registered": true,
     "return_data_and_tag_registered": true,
@@ -671,7 +671,16 @@
     "full_model_sim_uart_baud": 3125000,
     "small_model_actual_uart_baud": 115200,
     "synthesis_bsram": 216,
-    "synthesis_registers": 41588
+    "synthesis_registers": 41588,
+    "physical_bsram": 260,
+    "ddr_ui_setup_wns_ns": -6.783,
+    "ddr_ui_hold_wns_ns": 0.168,
+    "clk50_setup_wns_ns": 1.053,
+    "clk50_fmax_mhz": 52.78,
+    "ddr_ui_fmax_mhz": 59.585,
+    "video_fmax_mhz": 143.397,
+    "clk50_recovery_wns_ns": -1.184,
+    "release_gate_passed": false
   },
   "baseline85_during_AA_build_health": {
     "result": "results/baseline85_during_ddr_pipeline_20261009_155927/result.json",
@@ -683,5 +692,40 @@
     "live_three_voices": true,
     "stereo_geometry_mute_panic": true,
     "audio_health_zero": true
+  },
+  "AA_temporary_sram_diagnosis": {
+    "result": "results/workstation_flashaa_20261009_ddr_pipeline/sram_diagnosis/result.json",
+    "full_workstation_cpu_UI_PASS": true,
+    "initial_UIBY_hang_not_observed": true,
+    "Flash_model_parser_started": true,
+    "model_status": 15,
+    "model_error_stage": 3,
+    "expected_crc32": "AF01A61B",
+    "actual_ddr_crc32": "202C97F0",
+    "full_workstation_model_auto_boot_passed": false,
+    "flash_configuration_written": false,
+    "diagnostic_only": true,
+    "baseline85_flash_model_and_live_restored": true
+  },
+  "remaining_ddr_fix": {
+    "onehot_client_ready_and_local_wide_register_enables": "three independent eight-client scoreboards passed",
+    "delay_write_fifo_sync_bram": "FIFO scoreboard and actual 43000-sample effect equivalence passed; physical synthesis/PNR pending",
+    "physical_fix_verified": false
+  },
+  "AB_onehot_sync_fifo": {
+    "build": "results/workstation_flashab_20261009_onehot_sync_fifo",
+    "user_code": "0x000000AB",
+    "physical_bsram_limit": 264,
+    "board_resource_capacity": 340,
+    "onehot_ready": true,
+    "synchronous_maintenance_fifo": true,
+    "default_ddr_startup": true,
+    "high_fanout_replication": false,
+    "status": "synthesis",
+    "hardware_tested": false,
+    "full_effect_equivalence_pending": false,
+    "bit_exact_effect_samples": 43000,
+    "expected_underrun_injected_samples": 2000,
+    "full_model_native_sim_crc_passed": true
   }
 }

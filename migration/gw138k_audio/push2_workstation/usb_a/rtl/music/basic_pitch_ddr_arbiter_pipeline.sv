@@ -56,42 +56,43 @@ module basic_pitch_ddr_arbiter_pipeline #(
     wire cpu_available=cpu_valid && !cpu_read_pending;
     reg [2:0] owner;
     reg valid,is_write;
+    reg [7:0] grant;
     reg [28:0] selected_address;
     reg [255:0] selected_data;
     reg [31:0] selected_mask;
     always @* begin
-        owner=0;valid=0;is_write=0;selected_address=0;selected_data=0;selected_mask=0;
+        owner=0;valid=0;is_write=0;grant=0;selected_address=0;selected_data=0;selected_mask=0;
         if(!bist_done) begin
-            valid=bist_valid;is_write=bist_write;selected_address=bist_address;selected_data=bist_data;
+            valid=bist_valid;grant[0]=bist_valid;is_write=bist_write;selected_address=bist_address;selected_data=bist_data;
         end else if(scan_valid) begin
-            owner=1;valid=1;selected_address=scan_address;
+            owner=1;valid=1;grant[1]=1;selected_address=scan_address;
         end else if(music_turn) begin
             // Give a waiting model upload/analysis request one full DDR slot
             // after audio.  A stalled music request retains the turn.
-            owner=5;valid=music_valid;is_write=music_write;
+            owner=5;valid=music_valid;grant[5]=music_valid;is_write=music_write;
             selected_address=music_address;selected_data=music_data;selected_mask=music_mask;
         end else if(audio_valid) begin
             // Scanout keeps first priority; the streaming audio client is
             // next so a full TF ring cannot be blocked by UI/CPU traffic.
-            owner=4;valid=1;is_write=audio_write;
+            owner=4;valid=1;grant[4]=1;is_write=audio_write;
             selected_address=audio_address;selected_data=audio_data;
         end else if(display_valid) begin
             // Distinct tag avoids changing response ownership at BIST completion.
-            owner=7;valid=1;selected_address=display_address;
+            owner=7;valid=1;grant[7]=1;selected_address=display_address;
         end else if(music_valid && (!prefer_music || (!cpu_available && !writer_valid))) begin
-            owner=5;valid=1;is_write=music_write;
+            owner=5;valid=1;grant[5]=1;is_write=music_write;
             selected_address=music_address;selected_data=music_data;selected_mask=music_mask;
         end else if(delay_valid) begin
             // Delay-effect ring streaming (owner 6): below TF audio and the
             // music turn, above CPU/writer.  Worst case ~24k 32B requests/s
             // (<0.1% of slots), so it cannot perturb the existing latency
             // guarantees while its 384 KB/s stays unstarved here.
-            owner=6;valid=1;is_write=delay_write;
+            owner=6;valid=1;grant[6]=1;is_write=delay_write;
             selected_address=delay_address;selected_data=delay_data;
         end else if(cpu_available && (!writer_valid || prefer_cpu)) begin
-            owner=2;valid=1;is_write=cpu_write;selected_address=cpu_address;selected_data=cpu_data;selected_mask=cpu_mask;
+            owner=2;valid=1;grant[2]=1;is_write=cpu_write;selected_address=cpu_address;selected_data=cpu_data;selected_mask=cpu_mask;
         end else begin
-            owner=3;valid=writer_valid;is_write=1;selected_address=writer_address;selected_data=writer_data;
+            owner=3;valid=writer_valid;grant[3]=writer_valid;is_write=1;selected_address=writer_address;selected_data=writer_data;
         end
     end
     reg command_full,command_write;
@@ -100,19 +101,24 @@ module basic_pitch_ddr_arbiter_pipeline #(
     // Client acceptance means a complete command has entered this one-entry
     // buffer. Leave one empty cycle on drain: no PHY-ready feedback into
     // arbitration or the client request/ready logic.
-    wire accept=reset_n && !command_full && valid && (is_write || count<DEPTH);
+    wire can_buffer=reset_n && !command_full;
+    wire read_room=count<DEPTH;
+    // One-hot selections bypass binary owner decode and selected-write mux in
+    // each client's ready cone. Priority/fairness are still the policy above.
+    assign bist_ready=can_buffer && grant[0] && (bist_write || read_room);
+    assign scan_ready=can_buffer && grant[1] && read_room;
+    assign cpu_ready=can_buffer && grant[2] && (cpu_write || read_room);
+    assign writer_ready=can_buffer && grant[3];
+    assign audio_ready=can_buffer && grant[4] && (audio_write || read_room);
+    assign music_ready=can_buffer && grant[5] && (music_write || read_room);
+    assign delay_ready=can_buffer && grant[6] && (delay_write || read_room);
+    assign display_ready=can_buffer && grant[7] && read_room;
+    wire accept=bist_ready || scan_ready || cpu_ready || writer_ready ||
+        audio_ready || music_ready || delay_ready || display_ready;
     assign app_en=reset_n && command_full && app_ready &&
-        (!command_write || app_write_ready) && (command_write || count<DEPTH);
+        (!command_write || app_write_ready) && (command_write || read_room);
     assign app_wren=app_en && command_write;
     assign app_wend=app_wren;
-    assign bist_ready=accept && owner==0;
-    assign scan_ready=accept && owner==1;
-    assign display_ready=accept && owner==7;
-    assign audio_ready=accept && owner==4;
-    assign music_ready=accept && owner==5;
-    assign delay_ready=accept && owner==6;
-    assign cpu_ready=accept && owner==2;
-    assign writer_ready=accept && owner==3;
     wire push=app_en && !command_write;
     wire pop=app_response && count!=0;
     assign bist_response=response_valid && response_owner==0;
@@ -130,6 +136,11 @@ module basic_pitch_ddr_arbiter_pipeline #(
             if(app_en)command_full<=0;
             if(accept)begin
                 command_full<=1;command_write<=is_write;command_owner<=owner;
+            end
+            // Wide data/address/mask registers need only local idle enables.
+            // Their values are committed by command_full at the acceptance
+            // edge and held throughout every native stall.
+            if(!command_full)begin
                 app_cmd<=is_write?3'b000:3'b001;
                 app_address<=selected_address;app_data<=selected_data;app_mask<=selected_mask;
             end

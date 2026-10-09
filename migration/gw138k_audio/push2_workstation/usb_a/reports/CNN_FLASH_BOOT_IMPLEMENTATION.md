@@ -45,3 +45,6 @@ A3`.pr`对照持续约65分钟没有最终布线结果，且没有后续启动�
 
 
 A9实际完成后仍未通过DDR UI（setup -4.368ns）/clk50（-0.108ns）/视频PLL_INIT（10.594ns>10ns），禁止正式烧录；视频自身180.580MHz已通过。对照A7配置二进制仅UserCode一字节变化。接着实现共享DDR命令/返回边界寄存并启动AA；八客户端独立内存模型的3组仲裁、掩码、返回顺序、tag满和复位测试PASS。32项tag、两拍命令发起/一拍返回；尚未核验AA物理资源/时序/实体，LATEST85。
+
+
+AA临时SRAM实验中CPU/UI终于PASS，但Flash模型状态F/stage3，DDR读回CRC202C97F0与AF01A61B不符；已恢复full85及模型E/现场PASS，Flash配置未改。AA物理260BSRAM，DDR UI -6.783ns、video143.397MHz、clk50 setup+1.053ns但复位recovery -1.184ns，不具备发布条件。后续AB为one-hot ready+同步P10维护写FIFO，原效果算法/DMA保持；为这个FIFO明确配置264物理BSRAM上限，设备340。队列/仲裁独立测试PASS，完整效果器等价性仍在运行，AB尚未实体验收。

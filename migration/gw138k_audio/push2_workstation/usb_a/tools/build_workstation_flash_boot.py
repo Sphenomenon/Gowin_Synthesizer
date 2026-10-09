@@ -17,7 +17,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from build_full_song_83_bp_ddr_isolation import FROZEN
 from workstation_memory import audit
-from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE
+from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE,patch_delay_fifo,DELAY,SYNC_FIFO
 from build_cnn_flash_image import build_image,load_words,pack_flash,gowin_data_fs
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
@@ -80,6 +80,9 @@ def audit_serial_compatibility(output):
         assert sha(stage/PIPELINE)==sha(ROOT/PIPELINE),'shared pipeline source drift'
     paths += [str(p.relative_to(BASE/'Prj1')) for p in (BASE/'Prj1').rglob('gw138k_ddr_arbiter.sv')]
     evidence={p:dict(unchanged=sha(BASE/'Prj1'/p)==sha(stage/p),sha256=sha(stage/p)) for p in paths}
+    if metadata.get('synchronous_delay_write_fifo'):
+        assert (stage/DELAY).read_text()==patch_delay_fifo((BASE/'Prj1'/DELAY).read_text()),'delay changed beyond input FIFO type'
+        assert sha(stage/SYNC_FIFO)==sha(ROOT/SYNC_FIFO),'sync FIFO source drift'
     if pipelined:evidence[HDMI].update(unchanged=True,normalization='Only native DDR boundary and paired registered consumer bus; image/raster code unchanged')
     if json.loads((output/'build_metadata.json').read_text()).get('retimed_cache_read'):
         pipeline='rtl/music/basic_pitch_pcm_pipeline.sv'
@@ -163,6 +166,7 @@ def register_response_credit(text):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--sync-delay-write-fifo',action='store_true',help='replace only delay maintenance write FIFO with synchronous65x512 BSRAM read; physical budget264')
     ap.add_argument('--pipeline-ddr-arbiter',action='store_true',help='register shared native DDR command and return-data boundaries;32 read tags')
     ap.add_argument('--register-response-credit',action='store_true',help='reserve return FIFO slot with registered read credit; break DDR arbitration feedback')
     ap.add_argument('--replicate-resources',action='store_true',help='enable documented timing-driven high-fanout register replication during PNR')
@@ -187,6 +191,7 @@ def main():
         ap.error('--incremental-pnr-entry requires --incremental-baseline --incremental-mode pnr')
     reference_suffix=(args.incremental_pnr_entry or 'pr') if args.incremental_mode=='pnr' else 'p'
     if args.defer_ddr_startup and args.transport!='serial':ap.error('--defer-ddr-startup requires serial transport with startup history alignment')
+    if args.sync_delay_write_fifo and not args.pipeline_ddr_arbiter:ap.error('--sync-delay-write-fifo requires --pipeline-ddr-arbiter')
     if args.pipeline_ddr_arbiter and args.transport!='serial':ap.error('--pipeline-ddr-arbiter requires serial transport')
     if args.register_response_credit and args.transport!='serial':ap.error('--register-response-credit requires serial transport')
     if args.retime_cache_read and args.transport!='serial':ap.error('--retime-cache-read currently requires serial transport')
@@ -202,6 +207,7 @@ def main():
     output=(args.output or ROOT/'results'/datetime.now().strftime('workstation_flash_boot_%Y%m%d_%H%M%S_%f')).resolve()
     stage=output/'Prj1'
     overlays=OVERLAYS if args.transport=='direct' else [f'rtl/music/{n}' for n in ('basic_pitch_flash_model_loader.sv','basic_pitch_flash_map.svh','basic_pitch_flash_io_guard.sv','basic_pitch_flash_serial_boot.sv')]
+    if args.sync_delay_write_fifo:overlays += [SYNC_FIFO]
     if args.pipeline_ddr_arbiter:overlays += [PIPELINE]
     if args.register_response_credit:overlays += ['rtl/music/basic_pitch_ddr_read_credit.sv']
     if args.retime_cache_read:overlays += ['rtl/music/basic_pitch_weight_cache.sv']
@@ -281,6 +287,8 @@ def main():
             if args.register_response_credit:text=register_response_credit(text)
             link.write_text(text)
         if args.retime_start_delay:s=retime_start_delay(s)
+        if args.sync_delay_write_fifo:
+            delay=stage/DELAY;delay.write_text(patch_delay_fifo(delay.read_text()))
         if args.pipeline_ddr_arbiter:
             s=patch_top(s)
             display=stage/HDMI;display.write_text(patch_hdmi(display.read_text()))
@@ -312,7 +320,7 @@ set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight
             with sdc.open('a') as f:f.write('''
 # Tighten known pixel-domain control routes; no display RTL/clock/hold change.
 set_max_delay 6.000 -from [get_pins {u_video/pixel_reset_pipe_2_s0/Q}] -to [get_regs {u_video/u_dvi/*/input_ones*}]
-set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing/horizontal*}] -to [get_regs {u_video/u_diagnostics/frame_advance_q* u_video/u_diagnostics/pixel_frame_count*}]
+set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing/horizontal*}] -to [get_regs {u_video/u_diagnostics/frame_advance_q* u_video/u_diagnostics/pixel_frame_count* u_video/u_scanout/under_count*}]
 ''')
         tcl=stage/'scripts/build.tcl';s=tcl.read_text()
         assert 'set_option -use_mspi_as_gpio 1' in s and 'set_option -use_cpu_as_gpio 1' in s
@@ -326,14 +334,14 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
-        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+(['src/video/video_runtime_diagnostics.v'] if args.retime_video_telemetry else [])+([HDMI] if args.pipeline_ddr_arbiter else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
+        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+(['src/video/video_runtime_diagnostics.v'] if args.retime_video_telemetry else [])+([HDMI] if args.pipeline_ddr_arbiter else [])+([DELAY] if args.sync_delay_write_fifo else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
                              'constraints/tang_mega_138k.cst','constraints/tang_mega_138k.sdc'])
         assert set(changed)==allowed,(changed,allowed)
         write_json(output/'workstation_inputs.json',inputs)
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=264 if args.sync_delay_write_fifo else 260,pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
@@ -377,7 +385,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing
                 route_reference=stage/recorded_reference['route_file'];route_reference_sha=recorded_reference['routed_pr_sha256']
                 assert sha(route_reference)==route_reference_sha,'incremental routed partner drift before reroute'
     if json.loads((output/'build_metadata.json').read_text()).get('transport')=='serial':audit_serial_compatibility(output)
-    for rel,(staged,h) in FROZEN.items():assert sha(ROOT/rel)==h and (sha(stage/staged)==h or (args.pipeline_ddr_arbiter and staged==HDMI and (stage/staged).read_text()==patch_hdmi((BASE/'Prj1'/staged).read_text()))),rel
+    for rel,(staged,h) in FROZEN.items():assert sha(ROOT/rel)==h and (sha(stage/staged)==h or (args.pipeline_ddr_arbiter and staged==HDMI and (stage/staged).read_text()==patch_hdmi((BASE/'Prj1'/staged).read_text())) or (args.sync_delay_write_fifo and staged==DELAY and (stage/staged).read_text()==patch_delay_fifo((BASE/'Prj1'/staged).read_text()))),rel
     assert all(sha(stage/p)==h for p,h in inputs.items()),'candidate input drift'
     print(output,flush=True)
     if args.flow=='prepare':return
@@ -394,7 +402,8 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing
     report=audit(output,'full' if args.flow in ('all','pnr') else 'synthesis_only')
     print('SYN BSRAM',report['bsram'],'PNR BSRAM',report.get('pnr_bsram'),flush=True)
     if args.flow in ('all','pnr'):
-        assert report['pnr_available'] and report['pnr_bsram']<=260,'Flash boot added BSRAM'
+        physical_limit=json.loads((output/'build_metadata.json').read_text()).get('physical_bsram_limit',260)
+        assert physical_limit in (260,264) and report['pnr_available'] and report['pnr_bsram']<=physical_limit,'explicit BSRAM budget exceeded'
         fs=stage/'impl/pnr/Prj1.fs';binary=stage/'impl/pnr/Prj1.bin'
         code=json.loads((output/'build_metadata.json').read_text())['user_code']
         assert re.search(r'//UserCode: (0x[0-9A-Fa-f]{8})',fs.read_text()[:1000])[1].lower()==code.lower()

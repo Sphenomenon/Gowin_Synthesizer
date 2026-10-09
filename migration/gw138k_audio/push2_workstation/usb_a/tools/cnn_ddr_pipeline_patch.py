@@ -29,3 +29,11 @@ def patch_top(text):
     block=text[start:end];assert block.count('.app_rdata(client_rdata)')==1
     text=text[:start]+block.replace('.app_rdata(client_rdata)','.app_rdata(app_rdata),.client_rdata(client_rdata)')+text[end:]
     return text
+
+DELAY='rtl/audio/delay_ddr/serial_delay_effect_ddr.sv'
+SYNC_FIFO='rtl/music/basic_pitch_ddr_sync_fifo.sv'
+
+def patch_delay_fifo(text):
+    anchor='  music_async_fifo #(.WIDTH(65),.ADDRESS_BITS(FIFO_ADDRESS_BITS)) u_write_fifo('
+    assert text.count(anchor)==1
+    return text.replace(anchor,anchor.replace('music_async_fifo','basic_pitch_ddr_sync_fifo'))

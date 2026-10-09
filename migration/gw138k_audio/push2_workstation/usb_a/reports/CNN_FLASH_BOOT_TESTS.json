@@ -728,5 +728,97 @@
     "hardware_tested": false,
     "pcm_saved": false,
     "scope": "NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls"
+  },
+  "shared_ddr_onehot_pipeline": {
+    "passed": true,
+    "cases": [
+      {
+        "tag_bits": 2,
+        "seed": 7,
+        "passed": true,
+        "log": "PASS shared DDR pipeline seed=7 tags=4 commands=4692 reads=3164 full_tag_cycles=334 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_9kl042by/tb.sv:122: $finish called at 362650000 (1ps)"
+      },
+      {
+        "tag_bits": 3,
+        "seed": 31,
+        "passed": true,
+        "log": "PASS shared DDR pipeline seed=31 tags=8 commands=4562 reads=3104 full_tag_cycles=283 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_9kl042by/tb.sv:122: $finish called at 362650000 (1ps)"
+      },
+      {
+        "tag_bits": 5,
+        "seed": 127,
+        "passed": true,
+        "log": "PASS shared DDR pipeline seed=127 tags=32 commands=4738 reads=3186 full_tag_cycles=230 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_9kl042by/tb.sv:122: $finish called at 362650000 (1ps)"
+      }
+    ],
+    "hardware_tested": false,
+    "pcm_saved": false
+  },
+  "synchronous_delay_maintenance_fifo": {
+    "passed": true,
+    "cases": [
+      {
+        "address_bits": 2,
+        "passed": true,
+        "log": "PASS synchronous DDR FIFO bits=2 commits=5001,full/empty/wrap,output stalls,65-bit markers,independent clocks\n/tmp/cnn_ddr_sync_fifo_4fbfmr68/tb.sv:37: $finish called at 173350000 (1ps)"
+      },
+      {
+        "address_bits": 4,
+        "passed": true,
+        "log": "PASS synchronous DDR FIFO bits=4 commits=5652,full/empty/wrap,output stalls,65-bit markers,independent clocks\n/tmp/cnn_ddr_sync_fifo_4fbfmr68/tb.sv:37: $finish called at 174470000 (1ps)"
+      },
+      {
+        "address_bits": 9,
+        "passed": true,
+        "log": "PASS synchronous DDR FIFO bits=9 commits=6644,full/empty/wrap,output stalls,65-bit markers,independent clocks\n/tmp/cnn_ddr_sync_fifo_4fbfmr68/tb.sv:37: $finish called at 221090000 (1ps)"
+      }
+    ],
+    "hardware_tested": false,
+    "pcm_saved": false
+  },
+  "synchronous_fifo_effect_history": {
+    "passed": true,
+    "cold_target_audio_frames": 4800,
+    "target_rate_hz": 48000,
+    "initial_delay_fifo_overflow_detected": true,
+    "ordered_panic_restores_history": true,
+    "post_flush_samples_driven": 45000,
+    "post_flush_bit_exact_samples": 43000,
+    "expected_long_stall_samples": 2000,
+    "cycle_exact_valid_ready_left_right_clip": true,
+    "audio_data_saved": false,
+    "synchronous_write_fifo": true,
+    "source_sha256": {
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+      "derived_delay_fifo_instance_only": "afc0b2265b0009b59031c94fb8763e37761de64f630073e232e0c0d8ed88b2d2",
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/rtl/music/music_async_fifo.sv": "6d55458af075b01baebc22c81a856e98336a96ae82f061942a1511defc5a3ae6",
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/legacy/rtl/audio/stereo_effects.sv": "af214586edf225dbb98e781a4b2b20287764801b9a0ceda78d8110140e5fbbd4",
+      "sim/audio/tb_delay_ddr_equivalence.sv": "5f90f33ff1d7793b8fb42213dfd93601880906e071979ef3dbc65f5260919957"
+    },
+    "log": "PASS cold4800-frame full-FIFO dry path, ordered Panic marker and status reset\nEQUIVALENCE PASS: 45000 samples compared, underrun_flag=1 dut_status=00011100 dma_status=00000000",
+    "hardware_tested": false
+  },
+  "onehot_flash_native_pipeline": {
+    "passed": true,
+    "cases": [
+      {
+        "words": 31,
+        "baud": 115200,
+        "payload_crc32": "DFC2733D",
+        "passed": true,
+        "log": "PASS serial case=0 words=31 clk_div=4 zero_rsp=0 cycles=317455 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/tmp/cnn_flash_native_pipeline_4yfdfpib/tb.sv:213: $finish called at 6349100000 (1ps)"
+      },
+      {
+        "words": 52239,
+        "baud": 3125000,
+        "payload_crc32": "AF01A61B",
+        "passed": true,
+        "log": "PASS serial case=0 words=52239 clk_div=4 zero_rsp=0 cycles=30698058 writes=52239 reads=52239 source=1 crc=af01a61b flash_error=0\n/tmp/cnn_flash_native_pipeline_4yfdfpib/tb.sv:213: $finish called at 613961160000 (1ps)"
+      }
+    ],
+    "hardware_tested": false,
+    "pcm_saved": false,
+    "scope": "NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls"
   }
 }
