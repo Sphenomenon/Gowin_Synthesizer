@@ -103,12 +103,16 @@ def main():
     ap.add_argument('--user-code')
     ap.add_argument('--synthesis-from',type=Path,help='reuse identical successful RTL synthesis after a CST-only failure')
     ap.add_argument('--incremental-baseline',action='store_true',help='reuse verified full85 .p placement with fresh synthesis and fresh routing; reject any unrouted net')
-    ap.add_argument('--incremental-mode',choices=('place','pnr'),default='place',help='pnr uses the .p entry and copies the matching .pr route reference; fresh synthesis in both modes')
+    ap.add_argument('--incremental-mode',choices=('place','pnr'),default='place',help='fresh synthesis; place uses .p, pnr defaults to .pr per SUG100; both paired references are hash-checked')
+    ap.add_argument('--incremental-pnr-entry',choices=('p','pr'),help='explicit pnr entry format; SUG100 says pr while SUG1220 says p; experimental comparison')
     ap.add_argument('--route-option',type=int,choices=(0,1,2),default=1,help='Gowin route search option, recorded per isolated candidate')
     ap.add_argument('--place-option',type=int,choices=(0,1,2,3),default=2,help='placement search; default retains full85 option2')
     ap.add_argument('--tighten-video-control',action='store_true',help='6ns physical max-delay for pixel reset and frame telemetry; keep original148.5MHz and hold checks')
     ap.add_argument('--tighten-cache-reset',action='store_true',help='tighten existing synchronous weight-cache RESET endpoint max delay to 18 ns')
     args=ap.parse_args()
+    if args.incremental_pnr_entry is not None and (not args.incremental_baseline or args.incremental_mode!='pnr'):
+        ap.error('--incremental-pnr-entry requires --incremental-baseline --incremental-mode pnr')
+    reference_suffix=(args.incremental_pnr_entry or 'pr') if args.incremental_mode=='pnr' else 'p'
     if args.retime_cache_read and args.transport!='serial':ap.error('--retime-cache-read currently requires serial transport')
     if args.synthesis_from and args.flow!='all':ap.error('--synthesis-from requires --flow all')
     if args.incremental_mode=='pnr' and not args.incremental_baseline:ap.error('--incremental-mode pnr requires --incremental-baseline')
@@ -218,7 +222,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
         s=re.sub(r'(?m)^set_option -place_option .*$',f'set_option -place_option {args.place_option}',s)
         if args.user_code:s=s.replace('set flow all','set_option -user_code '+args.user_code.upper()+'\nset flow all')
         if args.incremental_baseline:
-            s=s.replace('set flow all',f'set_option -inc_{args.incremental_mode} [file join $root build full85_reference.p]\nset flow all')
+            s=s.replace('set flow all',f'set_option -inc_{args.incremental_mode} [file join $root build full85_reference.{reference_suffix}]\nset flow all')
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
@@ -257,7 +261,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
         assert sha(reference)==reference_sha,'reference copy drift'
         m=json.loads((output/'build_metadata.json').read_text())
         m['incremental_reference']=dict(build=str(BASE.relative_to(ROOT)),placement_p_sha256=reference_sha,
-            file='build/full85_reference.p',command='inc_'+args.incremental_mode,fresh_synthesis=True,fresh_routing=args.incremental_mode=='place')
+            file='build/full85_reference.p',entry_file='build/full85_reference.'+reference_suffix,command='inc_'+args.incremental_mode,fresh_synthesis=True,fresh_routing=args.incremental_mode=='place')
         if args.incremental_mode=='pnr':
             old_pr=BASE/'Prj1/impl/pnr/Prj1.pr';route_reference=stage/'build/full85_reference.pr';route_reference_sha=sha(old_pr)
             shutil.copy2(old_pr,route_reference);assert sha(route_reference)==route_reference_sha
@@ -266,7 +270,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
     elif args.flow=='pnr':
         recorded_reference=json.loads((output/'build_metadata.json').read_text()).get('incremental_reference')
         if recorded_reference:
-            assert recorded_reference.get('command') in ('inc_place','inc_pnr') and 'placement_p_sha256' in recorded_reference,'legacy .pr-only attempt is not eligible; prepare a fresh .p candidate'
+            assert recorded_reference.get('command') in ('inc_place','inc_pnr') and 'placement_p_sha256' in recorded_reference,'unpaired legacy reference is not eligible; prepare a fresh hash-checked reference pair'
             reference=stage/recorded_reference['file'];reference_sha=recorded_reference['placement_p_sha256']
             assert sha(reference)==reference_sha,'incremental reference drift before reroute'
             if recorded_reference['command']=='inc_pnr':

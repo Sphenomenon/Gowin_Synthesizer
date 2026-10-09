@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "isolated_flash_to_actual_ddr_passed_9f_rejected_a0_a1_builds_running",
+  "status": "isolated_flash_to_actual_ddr_passed_9f_rejected_a0_a1_a2_builds_running",
   "target_user_code": "0x0000009A",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -262,7 +262,7 @@
   "placement_reference_candidate": "results/workstation_flash9c_20261009_placement_p",
   "placement_reference_user_code": "0x0000009C",
   "placement_reference_format": ".p / inc_place; fresh synthesis + fresh routing",
-  "legacy93_pr_reference_incorrect": true,
+  "legacy93_pr_reference_incorrect": null,
   "cancelled9b": {
     "exit_code": -15,
     "hardware_tested": false,
@@ -465,5 +465,16 @@
     },
     "release_gate_passed": false,
     "programming_started": false
+  },
+  "backup_place2_candidate": "results/workstation_flasha2_20261009_settle_video_place2",
+  "backup_place2_user_code": "0x000000A2",
+  "backup_place2_control": "9A clk50-positive place2/route0 + equivalent cache retime + stricter6ns known video controls +100ms initial DDR wait; no board programming yet",
+  "incremental_reference_documentation_conflict": {
+    "tcl_SUG1220_2_0E_page44": "inc_pnr .p",
+    "software_SUG100_4_4_6E_page42": "incremental placement and routing .pr",
+    "early_extension_root_cause_claim_retracted": true,
+    "A0_A1_p_entry_validated": false,
+    "pnr_default_entry_now": "pr",
+    "both_reference_files_hash_checked": true
   }
 }
