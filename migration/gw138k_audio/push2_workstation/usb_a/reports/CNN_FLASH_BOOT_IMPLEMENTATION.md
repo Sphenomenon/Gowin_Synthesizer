@@ -140,3 +140,5 @@ B9 TF协议回归进一步绑定实际构建内的注册tagflags仲裁器60aec35
 2026-10-10T02:40:56.289940+08:00：BA开始构建，加入SHARED_RENDER local FFT exporter-only地址。实际源码绑定共享display3帧/全payload+descriptor/25ms停顿/冷启动、非均匀front array、完整1036800双像素及129601 DDR命令、4WIDTH地址SAT通过。02:40板上baseline只读健康检查PASS：E/health0/CRC0/每报告48000样本/Push帧+2、0控制字节。BA模型链路11源码及镜像与执行B8逐哈希相同（组合证明）。
 
 2026-10-10T02:54:13.700197+08:00：B8完整路由268/340，clk50 58.176MHz/setup+2.811/hold+.165，视频167.823，所有PLL/CDC/地址SAT/TF36/实际共享整链路/BIST功能通过，前正时钟摘要全部通过；真实DDR UI仍BIST expected_pattern→failed CE−2.936ns/hold+.169，拒绝烧录。TF旧读总量−5.551ns路径消失，剩BIST+TF重启clear/card相对坐标。BB加入已独立18case验证的lane比较pipeline，8MiB正反两轮读明确+5.24288ms启动、0BSRAM，actual-source tests通过。
+
+2026-10-10T02:58:26.528114+08:00：BC开始完整构建（BB+TF byte validity），实际源码绑定100000任意控制周期256bit逐拍比较和48组TF ring/背压/同周期响应PASS，无额外周期/BSRAM。验收等待器现在遍历全部前序，前序实体成功则全部后续候选只做本地门禁；前序尝试烧录而未成功时显式停止要求检查回滚，避免后续默认85假设。

@@ -1521,5 +1521,19 @@
     "added_bsram": 0,
     "hardware_tested": false,
     "promoted": false
+  },
+  "BC_tf_byte_mask": {
+    "build": "results/workstation_flashbc_20261010_tf_byte_mask",
+    "user_code": "0x000000BC",
+    "status": "synthesizing",
+    "changed_from_BB": [
+      "32byte validity bits instead of256bit payload epoch reset; identical payload every clock"
+    ],
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_BC_TF_MASK_TESTS.json",
+    "tests_passed": true,
+    "extra_cycles": 0,
+    "added_bsram": 0,
+    "hardware_tested": false,
+    "promoted": false
   }
 }
