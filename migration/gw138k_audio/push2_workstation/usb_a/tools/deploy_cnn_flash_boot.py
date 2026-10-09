@@ -99,7 +99,7 @@ def main():
     output=(args.output or build/'flash_deploy').resolve();output.mkdir(parents=True,exist_ok=False)
     result=dict(started_at=datetime.now().astimezone().isoformat(),build=str(build),user_code=code,
                 commands=[],boots=[],passed=False,uart_model_upload_used=False,sram_download_used=False,sram_erased_before_each_boot=True,
-                physical_power_cycle_tested=False,board_serial='2025030317',uart_hardware_drain_seconds=2,
+                physical_power_cycle_tested=False,board_serial='2025030317',uart_hardware_drain_seconds=2,uart_dtr_rts_asserted=False,
                 clk50_closed=clk50['clk50_closed'],previous_positive_clock_audit=previous_clocks,diagnostic_timing_override=args.allow_clk50_open,
                 model_transport=build_meta.get('transport','direct'),live_smoke_requested=args.exercise_live,live_smoke_passed=False,startup_panic_aligns_delay_history=build_meta.get('startup_panic_aligns_delay_history',False))
     def save():(output/'result.json').write_text(json.dumps(result,indent=2)+'\n')
@@ -133,7 +133,9 @@ def main():
             run('program_workstation',fs_args,r'Program and Verify Flash successfully')
             for index in range(3):
                 # UART is opened for receive only; no write()/model upload.
-                with serial.Serial(args.port,115200,timeout=.2) as port:
+                port=serial.Serial(port=None,baudrate=115200,timeout=.2)
+                port.dtr=False;port.rts=False;port.port=args.port
+                with port:
                     port.reset_input_buffer()
                     run('erase_sram_'+str(index),['--operation_index','24'])
                     port.reset_input_buffer()

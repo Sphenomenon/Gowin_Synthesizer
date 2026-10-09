@@ -47,7 +47,9 @@ for failure in (None,'uart_fallback','auto_boot_fail','stale_flash_success','liv
   def sleep(s):clock[0]+=s
   class Port:
    def __init__(self,*a,**kw):self.received=0
-   def __enter__(self):return self
+   def __enter__(self):
+    assert self.dtr is False and self.rts is False;assert '2025030317' in self.port
+    return self
    def __exit__(self,*a):pass
    def reset_input_buffer(self):pass
    def readline(self):
