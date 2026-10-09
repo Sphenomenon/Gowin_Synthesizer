@@ -1,8 +1,8 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "full_workstation_boot_not_verified_A5_shared_DDR_fault_A6_video_rejected_response_credit_A9_building",
-  "target_user_code": "0x000000A9",
+  "status": "full_workstation_auto_boot_unverified_A9_timing_rejected_shared_DDR_pipeline_AA_building",
+  "target_user_code": "0x000000AA",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
   "model_partition_byte_verify_passed": true,
@@ -17,7 +17,7 @@
   "full_model_sim_boot_seconds": 0.14773918,
   "model_auto_boot_hardware_verified": false,
   "physical_power_cycle_tested": false,
-  "build": "results/workstation_flasha9_20261009_response_credit",
+  "build": "results/workstation_flashaa_20261009_ddr_pipeline",
   "initial_build_error": "second CST superseded original complete pin constraints; fixed by appending Flash pins to original CST",
   "evidence": {
     "sim_tests": "reports/CNN_FLASH_BOOT_TESTS.json",
@@ -620,8 +620,13 @@
     "build": "results/workstation_rebuilda7_20261009_control",
     "user_code": "0x000000A7",
     "only_change": "UserCode; original full85 RTL/IP/ROM/CST/SDC/options exact",
-    "status": "routing",
-    "hardware_tested": false
+    "status": "completed",
+    "hardware_tested": false,
+    "bitstream_byte_differences": 1,
+    "difference_offset": 5283189,
+    "old_byte": 133,
+    "new_byte": 167,
+    "key_clock_timing_identical": true
   },
   "A8_cancelled": {
     "build": "results/workstation_flasha8_20261009_response_credit",
@@ -634,7 +639,30 @@
     "registered_read_credit": true,
     "replicate_resources": true,
     "initial_ddr_defer": false,
-    "status": "routing",
-    "hardware_tested": false
+    "status": "completed_rejected",
+    "hardware_tested": false,
+    "synthesis_bsram": 216,
+    "physical_bsram": 260,
+    "clk50_fmax_mhz": 49.731,
+    "ddr_ui_fmax_mhz": 69.6,
+    "video_fmax_mhz": 180.58,
+    "ddr_ui_setup_wns_ns": -4.368,
+    "ddr_ui_hold_wns_ns": 0.167,
+    "video_pll_init_max_ns": 10.594,
+    "release_gate_passed": false
+  },
+  "AA_shared_DDR_pipeline": {
+    "build": "results/workstation_flashaa_20261009_ddr_pipeline",
+    "user_code": "0x000000AA",
+    "status": "building",
+    "hardware_tested": false,
+    "command_boundary_registered": true,
+    "return_data_and_tag_registered": true,
+    "read_tag_slots": 32,
+    "native_initiation_interval_cycles": 2,
+    "existing_client_algorithms_preserved": true,
+    "changed_source": "new arbiter module; bounded shared response-data wiring at hdmi/top only",
+    "simulation_passed": true,
+    "physical_timing_verified": false
   }
 }

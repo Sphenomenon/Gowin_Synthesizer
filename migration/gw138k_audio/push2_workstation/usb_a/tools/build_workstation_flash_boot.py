@@ -17,6 +17,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from build_full_song_83_bp_ddr_isolation import FROZEN
 from workstation_memory import audit
+from cnn_ddr_pipeline_patch import patch_hdmi,patch_top,HDMI,PIPELINE
 from build_cnn_flash_image import build_image,load_words,pack_flash,gowin_data_fs
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1'
@@ -72,8 +73,14 @@ def audit_serial_compatibility(output):
         'rtl/music/basic_pitch_ddr16_port.sv','rtl/music/basic_pitch_ddr_command_buffer.sv',
         'rtl/music/music_async_fifo.sv','src/video/hdmi_display.v','firmware/boot.mem',
         'vendor/gowin_ddr3/ddr3_memory_interface.v']
+    metadata=json.loads((output/'build_metadata.json').read_text())
+    pipelined=metadata.get('pipelined_ddr_arbiter',False)
+    if pipelined:
+        assert (stage/HDMI).read_text()==patch_hdmi((BASE/'Prj1'/HDMI).read_text()),'display changed beyond registered DDR bus boundary'
+        assert sha(stage/PIPELINE)==sha(ROOT/PIPELINE),'shared pipeline source drift'
     paths += [str(p.relative_to(BASE/'Prj1')) for p in (BASE/'Prj1').rglob('gw138k_ddr_arbiter.sv')]
     evidence={p:dict(unchanged=sha(BASE/'Prj1'/p)==sha(stage/p),sha256=sha(stage/p)) for p in paths}
+    if pipelined:evidence[HDMI].update(unchanged=True,normalization='Only native DDR boundary and paired registered consumer bus; image/raster code unchanged')
     if json.loads((output/'build_metadata.json').read_text()).get('retimed_cache_read'):
         pipeline='rtl/music/basic_pitch_pcm_pipeline.sv'
         text=(stage/pipeline).read_text().replace(
@@ -100,7 +107,7 @@ def audit_serial_compatibility(output):
     assert link==original,'serial native-memory link changed beyond diagnostics'
     write_json(output/'serial_compatibility_source_audit.json',dict(passed=True,
         baseline=str(BASE.relative_to(ROOT)),candidate=str(output),unchanged_sources=evidence,
-        registered_response_credit=credit_enabled,link_change_only='Diagnostic fields plus explicit read-slot reservation wrapper when enabled; native DDR16/FIFO/parser source unchanged'))
+        registered_response_credit=credit_enabled,pipelined_ddr_arbiter=pipelined,link_change_only='Diagnostic fields plus explicit read-slot reservation wrapper when enabled; native DDR16/FIFO/parser source unchanged'))
 
 def retime_start_delay(text):
     """Register the zero predicate of the existing countdown with exact next-state priority."""
@@ -156,6 +163,7 @@ def register_response_credit(text):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--pipeline-ddr-arbiter',action='store_true',help='register shared native DDR command and return-data boundaries;32 read tags')
     ap.add_argument('--register-response-credit',action='store_true',help='reserve return FIFO slot with registered read credit; break DDR arbitration feedback')
     ap.add_argument('--replicate-resources',action='store_true',help='enable documented timing-driven high-fanout register replication during PNR')
     ap.add_argument('--retime-cache-read',action='store_true',help='equivalent one-cycle cache range mask plus parallel dwell counters; no CNN arithmetic change')
@@ -179,6 +187,7 @@ def main():
         ap.error('--incremental-pnr-entry requires --incremental-baseline --incremental-mode pnr')
     reference_suffix=(args.incremental_pnr_entry or 'pr') if args.incremental_mode=='pnr' else 'p'
     if args.defer_ddr_startup and args.transport!='serial':ap.error('--defer-ddr-startup requires serial transport with startup history alignment')
+    if args.pipeline_ddr_arbiter and args.transport!='serial':ap.error('--pipeline-ddr-arbiter requires serial transport')
     if args.register_response_credit and args.transport!='serial':ap.error('--register-response-credit requires serial transport')
     if args.retime_cache_read and args.transport!='serial':ap.error('--retime-cache-read currently requires serial transport')
     if args.synthesis_from and args.flow!='all':ap.error('--synthesis-from requires --flow all')
@@ -193,6 +202,7 @@ def main():
     output=(args.output or ROOT/'results'/datetime.now().strftime('workstation_flash_boot_%Y%m%d_%H%M%S_%f')).resolve()
     stage=output/'Prj1'
     overlays=OVERLAYS if args.transport=='direct' else [f'rtl/music/{n}' for n in ('basic_pitch_flash_model_loader.sv','basic_pitch_flash_map.svh','basic_pitch_flash_io_guard.sv','basic_pitch_flash_serial_boot.sv')]
+    if args.pipeline_ddr_arbiter:overlays += [PIPELINE]
     if args.register_response_credit:overlays += ['rtl/music/basic_pitch_ddr_read_credit.sv']
     if args.retime_cache_read:overlays += ['rtl/music/basic_pitch_weight_cache.sv']
     if args.defer_ddr_startup:overlays += ['rtl/music/basic_pitch_ddr_boot_gate.sv','rtl/music/basic_pitch_startup_panic.sv']
@@ -271,6 +281,9 @@ def main():
             if args.register_response_credit:text=register_response_credit(text)
             link.write_text(text)
         if args.retime_start_delay:s=retime_start_delay(s)
+        if args.pipeline_ddr_arbiter:
+            s=patch_top(s)
+            display=stage/HDMI;display.write_text(patch_hdmi(display.read_text()))
         top.write_text(s)
         if args.retime_video_telemetry:
             diagnostics=stage/'src/video/video_runtime_diagnostics.v'
@@ -285,7 +298,7 @@ def main():
         assert cst_files==['constraints/tang_mega_138k.cst'],'baseline must have one complete pin CST'
         cst=stage/cst_files[0];cst.write_text(cst.read_text()+'\n'+CST)
         sdc=stage/'constraints/tang_mega_138k.sdc';sdc.write_text(sdc.read_text()+(SDC if args.transport=='direct' else SDC.replace('u_music/model_memory_meta*/D','u_model_flash_source/ready_meta*/D')))
-        if args.register_response_credit:
+        if args.register_response_credit or args.pipeline_ddr_arbiter:
             with sdc.open('a') as f:f.write('\n# Audit real same-clock DDR UI setup/hold, independently of Fmax summary.\nreport_timing -setup -from_clock [get_clocks {ddr_ui100}] -to_clock [get_clocks {ddr_ui100}] -max_paths 100\nreport_timing -hold -from_clock [get_clocks {ddr_ui100}] -to_clock [get_clocks {ddr_ui100}] -max_paths 100\n')
         if args.tighten_cache_reset:
             sdc.write_text(sdc.read_text()+'''
@@ -313,14 +326,14 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
-        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+(['src/video/video_runtime_diagnostics.v'] if args.retime_video_telemetry else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
+        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+(['src/video/video_runtime_diagnostics.v'] if args.retime_video_telemetry else [])+([HDMI] if args.pipeline_ddr_arbiter else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
                              'constraints/tang_mega_138k.cst','constraints/tang_mega_138k.sdc'])
         assert set(changed)==allowed,(changed,allowed)
         write_json(output/'workstation_inputs.json',inputs)
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
@@ -364,7 +377,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing
                 route_reference=stage/recorded_reference['route_file'];route_reference_sha=recorded_reference['routed_pr_sha256']
                 assert sha(route_reference)==route_reference_sha,'incremental routed partner drift before reroute'
     if json.loads((output/'build_metadata.json').read_text()).get('transport')=='serial':audit_serial_compatibility(output)
-    for rel,(staged,h) in FROZEN.items():assert sha(ROOT/rel)==sha(stage/staged)==h,rel
+    for rel,(staged,h) in FROZEN.items():assert sha(ROOT/rel)==h and (sha(stage/staged)==h or (args.pipeline_ddr_arbiter and staged==HDMI and (stage/staged).read_text()==patch_hdmi((BASE/'Prj1'/staged).read_text()))),rel
     assert all(sha(stage/p)==h for p,h in inputs.items()),'candidate input drift'
     print(output,flush=True)
     if args.flow=='prepare':return

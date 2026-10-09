@@ -184,3 +184,10 @@ python3 tools/test_cnn_startup_history.py
 `--replicate-resources`启用官方SUG1220所列的`set_option -replicate_resources 1`（默认0），让PNR复制高扇出资源改善物理时序；不改变原时钟和hold要求。A9使用上述信用、缓存/启动谓词/帧诊断补丁、精确full85原DDR启动，无100ms等待。A7则是原版full85除UserCode外完全一致的重构建，用作定位布局变化影响的对照。
 
 正式部署器及统一入口增加`tools/audit_ddr_ui_timing.py`，要求显式100MHz同域setup和hold逐路径报告均存在且WNS非负；正Fmax不能绕过。旧候选缺少hold报告或实际setup为负，默认不满足该新门槛；临时诊断override仍必须保留日志和恢复基线。LATEST保留full85，完整工作站Flash模型自动启动与物理断电均未验收。
+
+
+A9完成后视频180.580MHz通过，但DDR UI逐路径仍-4.368ns（信用FF到共享仲裁），clk50 -0.108ns，视频PLL_INIT10.594ns超过原10ns预算。未上板；单独的FIFO信用不足以修复整个共享仲裁反馈。A7原full85重构建的配置.bin只有偏移5283189的UserCode字节85→A7变化，其余5283211字节完全一致，关键时序数值完全一致；SDF/VO存在时间戳及等价合并节点命名差异，不声称其字节一致。
+
+新`--pipeline-ddr-arbiter`使用`basic_pitch_ddr_arbiter_pipeline`保留原优先级/公平策略，在原生DDR入口缓存整条命令，在返回口一起寄存256位数据和tag。客户端ready表示进入片内一项命令缓存，原生命令仍按接受顺序发出；缓存排空后再接下一条，最短发起间隔2个100MHz周期。返回延后一UI周期，所有客户端配对消费同一寄存数据总线，不使用上一拍控制配当前原生数据。读tag改为32项，满后背压；BIST与显示读取使用不同tag，避免BIST完成边沿的归属改变。PHY、仲裁之外的DDR16/FIFO、CNN、图像/扫描及效果器算法不改；图像顶层仅将共用返回数据接到新的寄存边界。额外FF和物理BSRAM必须由综合/PNR再核验，不预先声称资源或时序通过。
+
+`python3 tools/test_cnn_ddr_arbiter_pipeline.py`的独立内存模型覆盖全部8客户端，3组4/8/32项tag、各4500余命令/3100余读、masked write及读回内容、原生背压、连续返回、BIST隔离、tag满/排空、全局复位及未带tag返回的显式故障。尚未完成完整实体或显示/效果负载验收。AA使用该补丁，无初始100ms延迟；LATEST保持85。
