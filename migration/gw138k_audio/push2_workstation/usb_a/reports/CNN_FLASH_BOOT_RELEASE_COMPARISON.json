@@ -1,0 +1,124 @@
+{
+  "generated_at": "2026-10-09T23:31:41.122229+08:00",
+  "physical_power_cycle_tested": false,
+  "board_current_user_code": "0x00000085",
+  "current_default": "full85",
+  "wholeboard_timing_closed": false,
+  "rows": [
+    {
+      "user_code": "AD",
+      "build": "results/workstation_flashad_20261009_local_payload",
+      "hardware_auto_boot_verified": true,
+      "default_released": false,
+      "release_gate_passed": false,
+      "programming_started": false,
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 1
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "ddr_ui_setup_wns_ns": -2.107,
+      "ddr_ui_hold_wns_ns": 0.165,
+      "clk50_fmax_mhz": 55.362,
+      "video_fmax_mhz": 187.261,
+      "PLL_all_endpoints_passed": false
+    },
+    {
+      "user_code": "AE",
+      "build": "results/workstation_flashae_20261009_physical_budgets",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "release_gate_passed": false,
+      "programming_started": false,
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 1
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "ddr_ui_setup_wns_ns": -3.514,
+      "ddr_ui_hold_wns_ns": 0.166,
+      "clk50_fmax_mhz": 55.536,
+      "video_fmax_mhz": 172.962,
+      "PLL_all_endpoints_passed": false
+    },
+    {
+      "user_code": "AF",
+      "build": "results/workstation_flashaf_20261009_render_predecode",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "release_gate_passed": false,
+      "programming_started": false,
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 1
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "ddr_ui_setup_wns_ns": -3.815,
+      "ddr_ui_hold_wns_ns": 0.168,
+      "clk50_fmax_mhz": 56.454,
+      "video_fmax_mhz": 187.19,
+      "PLL_all_endpoints_passed": false
+    },
+    {
+      "user_code": "B0",
+      "build": "results/workstation_flashb0_20261009_parallel_coordinates",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "release_gate_passed": false,
+      "programming_started": false,
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 1
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "ddr_ui_setup_wns_ns": -1.799,
+      "ddr_ui_hold_wns_ns": 0.167,
+      "clk50_fmax_mhz": 54.326,
+      "video_fmax_mhz": 183.837,
+      "PLL_all_endpoints_passed": false
+    },
+    {
+      "user_code": "B1",
+      "build": "results/workstation_flashb1_20261009_pll_locality",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "release_gate_passed": false,
+      "programming_started": false,
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "ddr_ui_setup_wns_ns": -1.718,
+      "ddr_ui_hold_wns_ns": 0.172,
+      "clk50_fmax_mhz": 56.981,
+      "video_fmax_mhz": 134.533,
+      "PLL_all_endpoints_passed": true,
+      "PLL_worst_ns": 7.964
+    },
+    {
+      "user_code": "B2",
+      "build": "results/workstation_flashb2_20261009_parallel_cards_tmds",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "status": "routing_in_progress",
+      "release_gate_passed": false,
+      "programming_started": false
+    }
+  ]
+}
