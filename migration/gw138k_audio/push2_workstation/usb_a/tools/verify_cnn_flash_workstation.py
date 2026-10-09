@@ -71,7 +71,7 @@ def main():
                 '--pixel-skid','--analysis-page','--build',str(build),'--output',str(output/'pixel_skid_full_renderer.json')]
             for key,flag in [('predecoded_text_coordinates','--text-coordinates'),
                     ('parallel_dashboard_cards','--parallel-cards'),('predecoded_background_coordinates','--background-coordinates'),
-                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates'),('predecoded_dynamic_background_ink','--dynamic-background-ink'),('parallel_renderer_spectrum_address','--parallel-spectrum-address')]:
+                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates'),('predecoded_dynamic_background_ink','--dynamic-background-ink'),('parallel_renderer_spectrum_address','--parallel-spectrum-address'),('shallow_card_select','--shallow-card-select')]:
                 if meta.get(key):command.append(flag)
             label,code=run('pixel_skid_full_renderer',command)
             result['checks'][label]=code
@@ -84,7 +84,8 @@ def main():
                     '--output',str(output/(label+'.json'))]+flags)
                 result['checks'][label]=code
         for key,label,tool in [('retimed_tf_read_total','tf_read_total_proof','test_cnn_tf_read_total.py'),
-                ('parallel_renderer_spectrum_address','spectrum_address_proof','test_cnn_renderer_spectrum_address.py')]:
+                ('parallel_renderer_spectrum_address','spectrum_address_proof','test_cnn_renderer_spectrum_address.py'),
+                ('shallow_card_select','card_select_proof','test_cnn_card_select.py')]:
             if meta.get(key):
                 label,code=run(label,[sys.executable,str(ROOT/'tools'/tool),'--build',str(build),
                     '--output',str(output/(label+'.json'))])

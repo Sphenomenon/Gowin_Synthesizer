@@ -241,3 +241,5 @@ TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合
 
 
 可选 `--retime-tf-read-total` 要求 `--parallel-tf-byte-counters`，在接受读请求时保存响应后的精确字节计数，零周期响应仍取本拍计算值。最终不足32-byte的EOF读直接使用committed write_total，其他情况精确加32，包含32-bit回绕。实际变换表达式65-bit输入SAT及36组直接/缓冲/背压/同周期响应协议测试通过。`--parallel-renderer-spectrum-address` 要求 `--predecode-dashboard`，并行计算当前/下一列后由advance选择；新增0周期/0 BSRAM，WIDTH=2/64/1920/2048全部SAT等价且实际分析页完整帧相同。发布门禁分别绑定实际构建源码重跑这些检查。
+
+备用 `--shallow-card-select` 要求 `--parallel-dashboard-cards`，把原顺序front-card优先选择解析成互斥选择位，再并行掩码合并11-bit相对坐标/10-bit文字坐标。全68bit输入SAT包含全部8重叠组合、4frontIDs及独立坐标值，完整随机像素和实际分析页帧相同，增加0周期、0 BSRAM。尚未应用于B8；有该元数据的后续构建会绑定实际源码重跑SAT及完整帧。

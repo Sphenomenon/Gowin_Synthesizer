@@ -1,6 +1,7 @@
 {
   "passed": true,
   "source_bound": false,
+  "build": null,
   "hardware_tested": false,
   "pcm_saved": false,
   "added_cycles": 0,
