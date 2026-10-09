@@ -1,0 +1,70 @@
+{
+  "passed_for_current_candidate_deliverables": true,
+  "checked_at": "2026-10-10T03:41:22.516062+08:00",
+  "scope": "Five current candidate trees including ignored results. This is an artifact inventory/typed-model audit, not an assertion that arbitrary bytes cannot encode audio.",
+  "hardware_io": false,
+  "pcm_saved_by_this_task": false,
+  "candidate_artifacts": [
+    {
+      "build": "results/workstation_flashba_20261010_exporter_analysis",
+      "audio_file_extensions_found": [],
+      "model_header": "BPF1",
+      "model_bytes": 104510,
+      "sha256": "b02e5d33473fd0e8ee10fe74125ccd0cf5bb3c2467505912dee90abe60e0bbc6",
+      "content": "32-byte model header + 52239 little-endian16-bit coefficients"
+    },
+    {
+      "build": "results/workstation_flashbb_20261010_bist_lane_pipeline",
+      "audio_file_extensions_found": [],
+      "model_header": "BPF1",
+      "model_bytes": 104510,
+      "sha256": "b02e5d33473fd0e8ee10fe74125ccd0cf5bb3c2467505912dee90abe60e0bbc6",
+      "content": "32-byte model header + 52239 little-endian16-bit coefficients"
+    },
+    {
+      "build": "results/workstation_flashbc_20261010_tf_byte_mask",
+      "audio_file_extensions_found": [],
+      "model_header": "BPF1",
+      "model_bytes": 104510,
+      "sha256": "b02e5d33473fd0e8ee10fe74125ccd0cf5bb3c2467505912dee90abe60e0bbc6",
+      "content": "32-byte model header + 52239 little-endian16-bit coefficients"
+    },
+    {
+      "build": "results/workstation_flashbd_20261010_registered_tf_return",
+      "audio_file_extensions_found": [],
+      "model_header": "BPF1",
+      "model_bytes": 104510,
+      "sha256": "b02e5d33473fd0e8ee10fe74125ccd0cf5bb3c2467505912dee90abe60e0bbc6",
+      "content": "32-byte model header + 52239 little-endian16-bit coefficients"
+    },
+    {
+      "build": "results/workstation_flashbe_20261010_tf_return_pipeline",
+      "audio_file_extensions_found": [],
+      "model_header": "BPF1",
+      "model_bytes": 104510,
+      "sha256": "b02e5d33473fd0e8ee10fe74125ccd0cf5bb3c2467505912dee90abe60e0bbc6",
+      "content": "32-byte model header + 52239 little-endian16-bit coefficients"
+    }
+  ],
+  "preexisting_workstation_encoded_tf_test_fixtures": [
+    {
+      "path": "./out/tf_audio_20261006_195523_949026/sim/data/tf_mp3.mp3",
+      "bytes": 5037,
+      "mtime": "2026-10-06T19:55:23.950816+08:00",
+      "sha256": "2700c7f05e2e85b03de9c71750ee34e027fe0e9e8f251c1c54945144cc92ba7b",
+      "format": "ID3/MPEG LayerIII encoded TF regression fixture",
+      "created_by_this_task": false,
+      "modified_by_this_task": false
+    },
+    {
+      "path": "./out/tf_audio_20261006_161840_743237/sim/data/tf_mp3.mp3",
+      "bytes": 5037,
+      "mtime": "2026-10-06T16:18:40.745927+08:00",
+      "sha256": "2700c7f05e2e85b03de9c71750ee34e027fe0e9e8f251c1c54945144cc92ba7b",
+      "format": "ID3/MPEG LayerIII encoded TF regression fixture",
+      "created_by_this_task": false,
+      "modified_by_this_task": false
+    }
+  ],
+  "preexisting_pcm_file_extensions_found": []
+}
