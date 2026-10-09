@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T02:58:26.525528+08:00",
+  "generated_at": "2026-10-10T03:01:28.556032+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -24,7 +24,10 @@
       "ddr_ui_hold_wns_ns": 0.165,
       "clk50_fmax_mhz": 55.362,
       "video_fmax_mhz": 187.261,
-      "PLL_all_endpoints_passed": false
+      "PLL_all_endpoints_passed": false,
+      "status": "routed_rejected",
+      "synthesis_bsram": 220,
+      "physical_bsram": 268
     },
     {
       "user_code": "AE",
@@ -45,7 +48,10 @@
       "ddr_ui_hold_wns_ns": 0.166,
       "clk50_fmax_mhz": 55.536,
       "video_fmax_mhz": 172.962,
-      "PLL_all_endpoints_passed": false
+      "PLL_all_endpoints_passed": false,
+      "status": "routed_rejected",
+      "synthesis_bsram": 220,
+      "physical_bsram": 268
     },
     {
       "user_code": "AF",
@@ -66,7 +72,10 @@
       "ddr_ui_hold_wns_ns": 0.168,
       "clk50_fmax_mhz": 56.454,
       "video_fmax_mhz": 187.19,
-      "PLL_all_endpoints_passed": false
+      "PLL_all_endpoints_passed": false,
+      "status": "routed_rejected",
+      "synthesis_bsram": 220,
+      "physical_bsram": 268
     },
     {
       "user_code": "B0",
@@ -87,7 +96,10 @@
       "ddr_ui_hold_wns_ns": 0.167,
       "clk50_fmax_mhz": 54.326,
       "video_fmax_mhz": 183.837,
-      "PLL_all_endpoints_passed": false
+      "PLL_all_endpoints_passed": false,
+      "status": "routed_rejected",
+      "synthesis_bsram": 220,
+      "physical_bsram": 268
     },
     {
       "user_code": "B1",
@@ -109,14 +121,17 @@
       "clk50_fmax_mhz": 56.981,
       "video_fmax_mhz": 134.533,
       "PLL_all_endpoints_passed": true,
-      "PLL_worst_ns": 7.964
+      "PLL_worst_ns": 7.964,
+      "status": "routed_rejected",
+      "synthesis_bsram": 220,
+      "physical_bsram": 268
     },
     {
       "user_code": "B2",
       "build": "results/workstation_flashb2_20261009_parallel_cards_tmds",
       "hardware_auto_boot_verified": false,
       "default_released": false,
-      "status": "routed_release_gate_failed",
+      "status": "routed_rejected",
       "release_gate_passed": false,
       "programming_started": false,
       "checks": {
@@ -131,14 +146,17 @@
       "ddr_ui_setup_wns_ns": -1.8,
       "ddr_ui_hold_wns_ns": 0.179,
       "PLL_all_endpoints_passed": true,
-      "PLL_worst_ns": 7.79
+      "PLL_worst_ns": 7.79,
+      "error": "routed timing/CDC/PLL check failed",
+      "synthesis_bsram": 220,
+      "physical_bsram": 268
     },
     {
       "user_code": "B3",
       "build": "results/workstation_flashb3_20261010_local_ready_wave",
       "hardware_auto_boot_verified": false,
       "default_released": false,
-      "status": "routed_release_rejected",
+      "status": "routed_rejected",
       "release_gate_passed": false,
       "programming_started": false,
       "synthesis_bsram": 220,
@@ -155,14 +173,25 @@
         "scope_cdc": 0,
         "clk50_cdc": 0,
         "video_pll": 0
-      }
+      },
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "clk50_fmax_mhz": 51.197,
+      "video_fmax_mhz": 156.577,
+      "PLL_all_endpoints_passed": true
     },
     {
       "user_code": "B4",
       "build": "results/workstation_flashb4_20261010_narrow_feature_slot",
       "hardware_auto_boot_verified": false,
       "default_released": false,
-      "status": "routed_release_rejected",
+      "status": "routed_rejected",
       "release_gate_passed": false,
       "programming_started": false,
       "formal_address_proof_passed": true,
@@ -180,14 +209,26 @@
         "clk50_cdc": 0,
         "video_pll": 0,
         "feature_read_equivalence": 0
-      }
+      },
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0,
+        "feature_read_equivalence": 0
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "clk50_fmax_mhz": 50.79,
+      "video_fmax_mhz": 180.112,
+      "PLL_all_endpoints_passed": true
     },
     {
       "user_code": "B5",
       "build": "results/workstation_flashb5_20261010_registered_pixel_ready",
       "hardware_auto_boot_verified": false,
       "default_released": false,
-      "status": "routed_release_rejected",
+      "status": "routed_rejected",
       "release_gate_passed": false,
       "programming_started": false,
       "registered_two_beat_pixel_ready": true,
@@ -208,7 +249,21 @@
         "feature_read_equivalence": 0,
         "pixel_skid_protocol": 0,
         "pixel_skid_full_renderer": 0
-      }
+      },
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0,
+        "feature_read_equivalence": 0,
+        "pixel_skid_protocol": 0,
+        "pixel_skid_full_renderer": 0
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "clk50_fmax_mhz": 57.536,
+      "video_fmax_mhz": 163.513,
+      "PLL_all_endpoints_passed": true
     },
     {
       "user_code": "B6",
@@ -267,7 +322,8 @@
       "clk50_fmax_mhz": 54.7,
       "video_fmax_mhz": 182.441,
       "physical_bsram": 268,
-      "PLL_all_endpoints_passed": true
+      "PLL_all_endpoints_passed": true,
+      "synthesis_bsram": 220
     },
     {
       "user_code": "B8",
@@ -301,12 +357,13 @@
       "video_fmax_mhz": 167.823,
       "physical_bsram": 268,
       "PLL_all_endpoints_passed": true,
-      "previous_positive_clock_summary_passed": true
+      "previous_positive_clock_summary_passed": true,
+      "synthesis_bsram": 220
     },
     {
       "user_code": "B9",
       "build": "results/workstation_flashb9_20261010_grouped_tf_card",
-      "status": "synthesizing",
+      "status": "routing",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
@@ -316,7 +373,7 @@
     {
       "user_code": "BA",
       "build": "results/workstation_flashba_20261010_exporter_analysis",
-      "status": "synthesizing",
+      "status": "routing",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
@@ -326,7 +383,7 @@
     {
       "user_code": "BB",
       "build": "results/workstation_flashbb_20261010_bist_lane_pipeline",
-      "status": "synthesizing",
+      "status": "placement",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
