@@ -385,7 +385,13 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing
                 route_reference=stage/recorded_reference['route_file'];route_reference_sha=recorded_reference['routed_pr_sha256']
                 assert sha(route_reference)==route_reference_sha,'incremental routed partner drift before reroute'
     if json.loads((output/'build_metadata.json').read_text()).get('transport')=='serial':audit_serial_compatibility(output)
-    for rel,(staged,h) in FROZEN.items():assert sha(ROOT/rel)==h and (sha(stage/staged)==h or (args.pipeline_ddr_arbiter and staged==HDMI and (stage/staged).read_text()==patch_hdmi((BASE/'Prj1'/staged).read_text())) or (args.sync_delay_write_fifo and staged==DELAY and (stage/staged).read_text()==patch_delay_fifo((BASE/'Prj1'/staged).read_text()))),rel
+    frozen_meta=json.loads((output/'build_metadata.json').read_text())
+    for rel,(staged,h) in FROZEN.items():
+        normalized=(frozen_meta.get('pipelined_ddr_arbiter') and staged==HDMI and
+            (stage/staged).read_text()==patch_hdmi((BASE/'Prj1'/staged).read_text())) or (
+            frozen_meta.get('synchronous_delay_write_fifo') and staged==DELAY and
+            (stage/staged).read_text()==patch_delay_fifo((BASE/'Prj1'/staged).read_text()))
+        assert sha(ROOT/rel)==h and (sha(stage/staged)==h or normalized),rel
     assert all(sha(stage/p)==h for p,h in inputs.items()),'candidate input drift'
     print(output,flush=True)
     if args.flow=='prepare':return
