@@ -501,5 +501,13 @@
     ],
     "hardware_root_cause_proven": false,
     "notes": "Gate only staggers initial DDR reset; does not replace PHY/calibration or normal recovery."
+  },
+  "unified_workstation_local_gate": {
+    "passed": true,
+    "retimed9a_video_regression_rejected": true,
+    "full95_local_audits_passed": true,
+    "programming_started": false,
+    "hardware_tested": false,
+    "notes": "All four independent routed checks pass for9A; video clock regression blocks before DDR audit/deployment. full95 exercises source DDR/TMDS startup and full artifact preview, but its prior board failure remains unchanged."
   }
 }

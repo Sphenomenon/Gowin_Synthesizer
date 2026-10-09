@@ -16,10 +16,11 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('build', type=Path)
+    parser.add_argument('--output', type=Path, help='new evidence path; never overwrite prior audits')
     args = parser.parse_args()
     build = args.build.resolve()
     stage = build / 'Prj1'
-    out = build / 'scope_routed_audit.json'
+    out = args.output or build / 'scope_routed_audit.json'
     if out.exists():
         parser.error('preserve previous routed audit; use a new build')
     sys.path.insert(0, str(stage / 'scripts'))
