@@ -322,6 +322,7 @@ def main():
     if args.retime_display_enable and not args.pipeline_ddr_arbiter:ap.error('--retime-display-enable requires --pipeline-ddr-arbiter')
     if args.buffer_ddr_clients and not args.pipeline_ddr_arbiter:ap.error('--buffer-ddr-clients requires --pipeline-ddr-arbiter')
     if args.sample_idle_client_payload and not args.buffer_ddr_clients:ap.error('--sample-idle-client-payload requires --buffer-ddr-clients')
+    if args.tighten_ddr_ui_controls and not args.buffer_ddr_clients:ap.error('--tighten-ddr-ui-controls requires --buffer-ddr-clients')
     if args.register_renderer_first_issue and not args.predecode_dashboard:ap.error('--register-renderer-first-issue requires --predecode-dashboard')
     if args.retime_tf_write_buffer and not args.pipeline_ddr_arbiter:ap.error('--retime-tf-write-buffer requires --pipeline-ddr-arbiter')
     if args.sync_delay_write_fifo and not args.pipeline_ddr_arbiter:ap.error('--sync-delay-write-fifo requires --pipeline-ddr-arbiter')

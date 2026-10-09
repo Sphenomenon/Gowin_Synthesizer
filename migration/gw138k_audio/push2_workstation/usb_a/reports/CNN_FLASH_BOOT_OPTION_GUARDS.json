@@ -32,6 +32,13 @@
       ],
       "passed": true,
       "explicit_error": "build_workstation_flash_boot.py: error: --pipeline-tf-read-return requires --mask-tf-write-epoch and is exclusive with --registered-tf-response"
+    },
+    {
+      "flags": [
+        "--tighten-ddr-ui-controls"
+      ],
+      "passed": true,
+      "explicit_error": "build_workstation_flash_boot.py: error: --tighten-ddr-ui-controls requires --buffer-ddr-clients"
     }
   ]
 }
