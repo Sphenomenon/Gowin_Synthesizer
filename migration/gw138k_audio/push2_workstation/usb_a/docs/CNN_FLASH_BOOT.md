@@ -114,6 +114,8 @@ python3 sim/music/run_bp_config_ab.py --simulator verilator --frames 3 --win-len
 
 可选 `--retime-cache-read` 把权重缓存的地址有效性掩码与 BSRAM 数据同拍寄存，再组合选择有效输出，维持原来一拍读取延迟和越界读零。统计用八路固定索引计数代替动态数组索引，CNN 算术和计数语义保持一致。独立测试与冻结 full85 逐周期比较 1/31/7488 字缓存、随机反压/复位/越界地址，以及 10,000 周期统计计数；CNN 三帧回归的六层哈希和谱面结果一致。构建命令可加 `--retime-cache-read`，回归命令为 `python3 tools/test_cnn_cache_read_retime.py`。
 
+可选 `--place-option 3 --tighten-video-control` 使用另一布局搜索并把已发现的像素复位/帧统计控制路径限定到 6 ns；原始 148.5 MHz 时钟、全部保持时间及其他时序约束保留，不更改显示RTL。该选项的存在不代表所得候选已通过时序或板级验收。
+
 每个结果目录包含 `cnn_model.bin`、模型 manifest、`workstation_inputs.json`、工具退出结果、资源审计。P&R 成功后才生成 `workstation_with_cnn.bin` 和带位流/模型 SHA256 的 `flash_bundle.json`。
 
 可单独构建模型或打包已有位流：

@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "isolated_flash_to_actual_ddr_passed_full9c_placement_reference_build_running",
+  "status": "isolated_flash_to_actual_ddr_passed_full9c_reference_and9f_fresh_builds_running",
   "target_user_code": "0x0000009A",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -330,5 +330,8 @@
       "physical_bsram": 32,
       "full_workstation": false
     }
-  }
+  },
+  "alternate_place3_candidate": "results/workstation_flash9f_20261009_place3",
+  "alternate_place3_user_code": "0x0000009F",
+  "alternate_place3_control": "place3/route0, stricter6ns known pixel control paths; original SDC prefix preserved"
 }
