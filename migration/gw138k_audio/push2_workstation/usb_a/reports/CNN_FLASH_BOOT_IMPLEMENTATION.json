@@ -1262,7 +1262,7 @@
     "hardware_tested": false
   },
   "B5_registered_pixel_ready": {
-    "status": "routing",
+    "status": "routed_release_rejected",
     "build": "results/workstation_flashb5_20261010_registered_pixel_ready",
     "user_code": "0x000000B5",
     "changed_from_B4": [
@@ -1284,7 +1284,31 @@
       "SSRAM": 505,
       "Register": 43678,
       "LUT": 56442
-    }
+    },
+    "physical_bsram": 268,
+    "release_gate_passed": false,
+    "programming_started": false,
+    "release_checks": {
+      "clk50": 0,
+      "ddr_ui": 1,
+      "scope_cdc": 0,
+      "clk50_cdc": 0,
+      "video_pll": 0,
+      "feature_read_equivalence": 0,
+      "pixel_skid_protocol": 0,
+      "pixel_skid_full_renderer": 0
+    },
+    "clk50_mhz": 57.536,
+    "video_mhz": 163.513,
+    "ddr_ui_setup_wns_ns": -0.995,
+    "ddr_ui_hold_wns_ns": 0.169,
+    "remaining_critical_path": {
+      "slack_ns": -0.995,
+      "source": "u_video/u_renderer/read_x_8_s0/Q",
+      "destination": "u_video/u_renderer/u_odd/effect_relative_1_s0/D",
+      "data_delay_ns": 10.974
+    },
+    "evidence": "results/workstation_flashb5_20261010_registered_pixel_ready/automatic_acceptance/result.json"
   },
   "prepared_parallel_tf_and_complete_background": {
     "tf_counter_proof": "reports/CNN_FLASH_BOOT_TF_BYTE_COUNT_TESTS.json",
