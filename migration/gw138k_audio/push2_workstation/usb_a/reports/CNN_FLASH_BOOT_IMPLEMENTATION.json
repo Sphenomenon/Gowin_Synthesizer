@@ -370,5 +370,15 @@
     "9F": 216,
     "A0": 216,
     "A1": 216
+  },
+  "unified_acceptance_tool": "tools/verify_cnn_flash_workstation.py",
+  "unified_acceptance_commit": "25faf72",
+  "live_smoke_transaction_commit": "8f5983f",
+  "deferred_ddr_gate_commit": "94dc3c1",
+  "baseline85_health_recovery_commit": "d13ec11",
+  "candidate_input_hashes_still_match": {
+    "workstation_flash9f_20261009_place3": true,
+    "workstation_flasha0_20261009_paired_reference": true,
+    "workstation_flasha1_20261009_deferred_ddr": true
   }
 }
