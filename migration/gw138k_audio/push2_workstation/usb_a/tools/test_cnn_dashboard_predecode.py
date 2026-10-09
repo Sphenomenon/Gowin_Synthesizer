@@ -2,13 +2,14 @@
 """Compare every raster pixel to frozen dashboard after exactly one enabled stage."""
 import argparse,hashlib,json,subprocess,tempfile,re
 from pathlib import Path
-from cnn_ddr_pipeline_patch import DASHBOARD,predecode_dashboard,predecode_dashboard_text_coordinates,parallel_dashboard_cards
+from cnn_ddr_pipeline_patch import DASHBOARD,predecode_dashboard,predecode_dashboard_text_coordinates,parallel_dashboard_cards,predecode_dashboard_background
 ROOT=Path(__file__).resolve().parents[1];BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--text-coordinates',action='store_true');p.add_argument('--parallel-cards',action='store_true');a=p.parse_args()
-if a.parallel_cards and not a.text_coordinates:p.error('--parallel-cards requires --text-coordinates')
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--text-coordinates',action='store_true');p.add_argument('--parallel-cards',action='store_true');p.add_argument('--background-coordinates',action='store_true');a=p.parse_args()
+if (a.parallel_cards or a.background_coordinates) and not a.text_coordinates:p.error('--parallel-cards requires --text-coordinates')
 original=(BASE/DASHBOARD).read_text();patched=predecode_dashboard(original)
 if a.text_coordinates:patched=predecode_dashboard_text_coordinates(patched)
 if a.parallel_cards:patched=parallel_dashboard_cards(patched)
+if a.background_coordinates:patched=predecode_dashboard_background(patched)
 header=original[:original.index('    localparam')];signals=[]
 for declaration in re.findall(r'input wire\s+([^\n]+)',header):
  width=re.search(r'\[[^]]+\]',declaration);width=width[0] if width else ''
@@ -56,6 +57,6 @@ with tempfile.TemporaryDirectory(prefix='cnn_dashboard_predecode_') as tmp:
  t=Path(tmp);(t/'before.v').write_text(original.replace('module feedback_dashboard #','module feedback_original #'));(t/'after.v').write_text(patched);(t/'tb.sv').write_text(tb);exe=t/'sim'
  c=subprocess.run(['verilator','--binary','--timing','-j','4','-Wno-fatal','--top-module','tb','--Mdir',str(t/'obj'),str(t/'tb.sv'),str(t/'before.v'),str(t/'after.v'),str(BASE/'src/video/video_font_5x7.v')],capture_output=True,text=True,timeout=120);assert c.returncode==0,c.stdout+c.stderr
  v=subprocess.run([str(t/'obj/Vtb')],capture_output=True,text=True,timeout=300);assert v.returncode==0 and 'PASS dashboard' in v.stdout,v.stdout+v.stderr
- r=dict(passed=True,predecoded_text_coordinates=a.text_coordinates,parallel_cards=a.parallel_cards,hardware_tested=False,pcm_saved=False,additional_enabled_cycles=1,original_sha256=hashlib.sha256(original.encode()).hexdigest(),patched_sha256=hashlib.sha256(patched.encode()).hexdigest(),log=v.stdout.strip())
+ r=dict(passed=True,predecoded_text_coordinates=a.text_coordinates,parallel_cards=a.parallel_cards,predecoded_background=a.background_coordinates,hardware_tested=False,pcm_saved=False,additional_enabled_cycles=1,original_sha256=hashlib.sha256(original.encode()).hexdigest(),patched_sha256=hashlib.sha256(patched.encode()).hexdigest(),log=v.stdout.strip())
  if a.output:a.output.write_text(json.dumps(r,indent=2)+'\n')
  print(json.dumps(r,indent=2))

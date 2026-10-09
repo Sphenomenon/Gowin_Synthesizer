@@ -391,3 +391,34 @@ def lut_tmds_popcount(text):
         end
     endfunction'''
     return text[:match.start()]+lookup+text[match.end():]
+
+def predecode_dashboard_background(text):
+    """Evaluate pure background coordinate tests on the preceding A edge."""
+    import re
+    start=text.index("        next_background = 32'h00101b2a;")
+    end=text.index('\n    end\n',start)
+    block=text[start:end];conditions=[];result='';cursor=0
+    for match in list(re.finditer(r'\bif\s*\(',block)):
+        if match.start()<cursor:continue
+        pos=match.end();depth=1
+        while depth:
+            assert pos<len(block),'unbalanced background condition'
+            if block[pos]=='(':depth+=1
+            elif block[pos]==')':depth-=1
+            pos+=1
+        expr=block[match.end():pos-1];names=set(re.findall(r'\b[A-Za-z_]\w*\b',expr))
+        if names & {'a_x','a_y'} and names <= {'a_x','a_y','d'}:
+            result+=block[cursor:match.start()]+f'if(background_coordinate_q[{len(conditions)}])'
+            conditions.append(expr);cursor=pos
+    result+=block[cursor:];assert len(conditions)>=20,len(conditions)
+    text=text[:start]+result+text[end:]
+    sequential='''    always @(posedge clk or negedge reset_n)begin
+        if(!reset_n)background_coordinate_q<=0;
+        else if(enable)begin
+'''
+    for i,expr in enumerate(conditions):
+        expr=re.sub(r'\ba_x\b','pixel_x_q',expr);expr=re.sub(r'\ba_y\b','pixel_y_q',expr)
+        sequential+=f'            background_coordinate_q[{i}]<=({expr});\n'
+    sequential+='        end\n    end\n'
+    declarations=f'    reg [{len(conditions)-1}:0] background_coordinate_q;\n'
+    return text.replace('    reg a_effect_hit',declarations+'    reg a_effect_hit',1).replace('endmodule',sequential+'endmodule')

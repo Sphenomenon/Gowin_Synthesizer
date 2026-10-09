@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "additional_enabled_latency": 1,
+  "applied_to_B2": false,
+  "generated_at": "2026-10-09T23:08:14.434972+08:00",
+  "checks": {
+    "dashboard": {
+      "passed": true,
+      "predecoded_text_coordinates": true,
+      "parallel_cards": true,
+      "predecoded_background": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "additional_enabled_cycles": 1,
+      "original_sha256": "617981568d42349e67a8bf0f3883a1c6a65dfe9be998ba7d8c4cfe685ad99c45",
+      "patched_sha256": "135a25078db48dd26ecf3a3f33b91963352935f23d7ab4489a3e7ac361e0a129",
+      "log": "PASS dashboard complete1920x1080 raster,2137105compared pixels,randommetadata/stalls/frameanimation/reset,oneenabledcycle latency\n- /tmp/cnn_dashboard_predecode_8h78uuir/tb.sv:72: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 22ms; walltime 1.432 s; speed 15.446 ms/s\n- Verilator: cpu 1.424 s on 1 threads; allocated 7 MB"
+    },
+    "renderer": {
+      "passed": true,
+      "predecoded_text_coordinates": true,
+      "parallel_cards": true,
+      "predecoded_background": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "dashboard_sha256": "135a25078db48dd26ecf3a3f33b91963352935f23d7ab4489a3e7ac361e0a129",
+      "renderer_sha256": "88cb6bb0f98864fc775e72068bab5c2acbe0fc37eb8425a33cab11455732d44f",
+      "log": "PASS renderer1036800two-pixelbeats,complete1920x1080,independentDDRstalls,orderedvalid/last/address,bitexactpixelcontent\n- /tmp/cnn_renderer_predecode_70k5d6wo/tb.sv:41: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 14ms; walltime 0.929 s; speed 14.995 ms/s\n- Verilator: cpu 0.923 s on 1 threads; allocated 23 MB"
+    }
+  }
+}
