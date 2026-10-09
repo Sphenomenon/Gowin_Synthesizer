@@ -490,7 +490,10 @@
     "post_flush_samples": 45000,
     "A1_A2_A3_frozen_without_alignment": true,
     "A1_A2_A3_release_eligible": false,
-    "hardware_effect_acceptance": false
+    "hardware_effect_acceptance": false,
+    "post_flush_samples_driven": 45000,
+    "post_flush_bit_exact_samples": 43000,
+    "expected_long_stall_samples": 2000
   },
   "aligned_startup_candidate": "results/workstation_flasha4_20261009_aligned_startup",
   "aligned_startup_user_code": "0x000000A4",

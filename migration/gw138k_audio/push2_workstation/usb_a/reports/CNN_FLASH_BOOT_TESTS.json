@@ -551,7 +551,6 @@
     "target_rate_hz": 48000,
     "initial_delay_fifo_overflow_detected": true,
     "ordered_panic_restores_history": true,
-    "post_flush_equivalence_samples": 45000,
     "cycle_exact_valid_ready_left_right_clip": true,
     "audio_data_saved": false,
     "source_sha256": {
@@ -563,7 +562,10 @@
       "sim/audio/tb_delay_ddr_equivalence.sv": "5f90f33ff1d7793b8fb42213dfd93601880906e071979ef3dbc65f5260919957"
     },
     "log": "PASS cold4800-frame full-FIFO dry path, ordered Panic marker and status reset\nEQUIVALENCE PASS: 45000 samples compared, underrun_flag=1 dut_status=00011100 dma_status=00000000",
-    "hardware_tested": false
+    "hardware_tested": false,
+    "post_flush_samples_driven": 45000,
+    "post_flush_bit_exact_samples": 43000,
+    "expected_long_stall_samples": 2000
   },
   "start_delay_retime": {
     "passed": true,
