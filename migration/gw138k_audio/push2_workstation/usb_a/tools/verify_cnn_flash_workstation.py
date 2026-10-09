@@ -57,6 +57,11 @@ def main():
             ('video_pll',[sys.executable,str(build/'Prj1/scripts/check_video_pll_init.py'),'--root',str(build/'Prj1'),'--output',str(output/'video_pll.json')])]
         with ThreadPoolExecutor(max_workers=5) as pool:
             result['checks']=dict(pool.map(lambda check:run(*check),checks))
+        if meta.get('narrowed_feature_read_slot'):
+            label,code=run('feature_read_equivalence',[sys.executable,
+                str(ROOT/'tools/test_cnn_feature_read_address.py'),'--build',str(build),
+                '--output',str(output/'feature_read_equivalence.json')])
+            result['checks'][label]=code
         # Keep all evidence even if one independent routed check fails.
         sys.path.insert(0,str(ROOT/'tools'))
         deploy=importlib.import_module('deploy_cnn_flash_boot')

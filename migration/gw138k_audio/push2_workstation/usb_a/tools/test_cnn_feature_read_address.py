@@ -13,9 +13,25 @@ ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output',type=Path)
+parser.add_argument('--build',type=Path,help='bind proof to exact frozen narrowed-slot build; rejects drift')
 args=parser.parse_args()
 original=(BASE/'rtl/music/basic_pitch_pcm_pipeline.sv').read_text()
 patched=narrow_feature_read_slot(original)
+build=None
+if args.build:
+ build=args.build.resolve()
+ metadata=json.loads((build/'build_metadata.json').read_text())
+ assert metadata.get('narrowed_feature_read_slot') and metadata.get('retimed_cache_read'),'build has no supported narrow-slot overlay'
+ stage=build/'Prj1/rtl/music/basic_pitch_pcm_pipeline.sv'
+ candidate=stage.read_text()
+ dwell_old="            dwell_count[dwell_bucket(state)] <= dwell_count[dwell_bucket(state)] + 1'b1;"
+ dwell_new="            for (integer i=0;i<8;i=i+1)\n                if (dwell_bucket(state)==i) dwell_count[i] <= dwell_count[i] + 1'b1;"
+ expected=patched.replace(dwell_old,dwell_new)
+ assert candidate==expected,'candidate pipeline changed beyond proven decoder/parallel telemetry'
+ inputs_map=json.loads((build/'workstation_inputs.json').read_text())
+ assert hashlib.sha256(stage.read_bytes()).hexdigest()==inputs_map['rtl/music/basic_pitch_pcm_pipeline.sv'],'frozen source hash drift'
+ patched=candidate
+
 constants="\n".join(re.findall(r"localparam logic \[5:0\] S_.*?;",original,re.S))
 assert 'S_START_REDUCE' in constants and 'S_START_ONSET_OUT' in constants
 ports=[('state',6,False),('feature_load_start_row',11,True),
@@ -70,6 +86,6 @@ result=dict(passed=True,hardware_tested=False,applied_to_B3=False,pcm_saved=Fals
  solver_version=subprocess.check_output(['yosys','-V'],text=True).strip(),
  original_sha256=hashlib.sha256(original.encode()).hexdigest(),
  patched_sha256=hashlib.sha256(patched.encode()).hexdigest(),
- added_cycles=0,checks=checks)
+ added_cycles=0,checks=checks,build=str(build) if build else None,source_bound=bool(build))
 if args.output:args.output.write_text(json.dumps(result,indent=2)+'\n')
 print(json.dumps(result,indent=2))

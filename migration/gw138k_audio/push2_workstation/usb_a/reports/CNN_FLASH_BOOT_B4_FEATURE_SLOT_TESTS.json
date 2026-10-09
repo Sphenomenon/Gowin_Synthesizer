@@ -17,7 +17,7 @@
     "pcm_saved": false,
     "solver_version": "Yosys 0.67+post (git sha1 22c15a7ecd53437f18f67c72572bd693f78357ca, GNU /usr/bin/g++ 16.1.1)",
     "original_sha256": "294f9cbd3bd4890ee01b140a649cdfcdb13411d76042c5defe9a9a8415235a75",
-    "patched_sha256": "19b4417ee833e718d10ae95a7a9c293001071ef8566bce95eb45e3863bd71520",
+    "patched_sha256": "e7385d732c61599506c06950de446de2ad8dc7844ae868268a890784e38e2d28",
     "added_cycles": 0,
     "checks": [
       {
@@ -137,10 +137,14 @@
         "proof": "combinational SAT,all input bit patterns",
         "extracted_miter_sha256": "eb93e2cc80a1222b0181c040a64a92ffc799815651ff3beeae7709d9059696d8"
       }
-    ]
+    ],
+    "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_flashb4_20261010_narrow_feature_slot",
+    "source_bound": true
   },
   "actual_pipeline_sha256": "e7385d732c61599506c06950de446de2ad8dc7844ae868268a890784e38e2d28",
   "unchanged_B3_sources": 603,
   "reference_B3_tests": "reports/CNN_FLASH_BOOT_B3_LOCAL_PATH_TESTS.json",
-  "generated_at": "2026-10-10T00:36:29.503309+08:00"
+  "generated_at": "2026-10-10T00:36:29.503309+08:00",
+  "nonoverlay_build_rejected": true,
+  "release_gate_requires_source_bound_equivalence": true
 }
