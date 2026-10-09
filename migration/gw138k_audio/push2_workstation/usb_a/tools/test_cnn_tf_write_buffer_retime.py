@@ -99,10 +99,11 @@ def main():
     args = parser.parse_args()
     original = (BASE / TF_DMA).read_text()
     patched = retime_tf_write_buffer(original)
+    variants=[('original_control', original), ('retimed', patched),('registered_limit',retime_tf_capture_limit(patched)),('power_two_ring',power_two_tf_ring(retime_tf_capture_limit(patched)))]
     cases = []
     with tempfile.TemporaryDirectory(prefix='cnn_tf_stage_retime_') as temp:
         folder = Path(temp)
-        for label, text in [('original_control', original), ('retimed', patched),('registered_limit',retime_tf_capture_limit(patched)),('power_two_ring',power_two_tf_ring(retime_tf_capture_limit(patched)))]:
+        for label, text in variants:
             src = folder / 'dma.v'
             src.write_text(text)
             for buffered,stalled in [(False,False),(False,True),(True,False),(True,True)]:
@@ -125,6 +126,7 @@ def main():
                 cases.append(dict(source=label, buffered_native=buffered,native_backpressure=stalled,
                                   passed=True, log=result.stdout.strip()))
     report = dict(passed=True, hardware_tested=False, pcm_saved=False, cases=cases,
+                  variant_source_sha256={label:hashlib.sha256(text.encode()).hexdigest() for label,text in variants},
                   staged_source_sha256=hashlib.sha256(patched.encode()).hexdigest(),
                   original_source_sha256=hashlib.sha256(original.encode()).hexdigest(),
                   arbiter_sha256=hashlib.sha256((ROOT/'rtl/music/basic_pitch_ddr_arbiter_pipeline.sv').read_bytes()).hexdigest(),

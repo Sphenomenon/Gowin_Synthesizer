@@ -1,5 +1,8 @@
 # CNN 权重持久化与 Flash→DDR 启动
 
+2026-10-09 当前实体结果：完整工作站AD已经连续三次通过实际配置Flash重加载，完整模型均从Flash自主搬入实际DDR，CRC32 AF01A61B、状态E/source1；没有PC模型上传或SRAM下载。现场三音、立体声、静音及Panic检查通过。该版DDR UI与PLL时序尚未满足发布门槛，因此诊断后已回写并校验full85、恢复其UART模型和现场检查，板上及LATEST仍为85。AF的时序验收同样失败，未烧录；B0文字坐标和指针修正正在构建。物理断电/上电尚未执行。逐项结果见reports/CNN_FLASH_BOOT_IMPLEMENTATION.md。
+
+
 完整工作站把 FPGA 配置位流和 Basic Pitch 模型分别保存在板载外部 Flash。默认构建采用 `serial` 兼容传输：CPU 完成 DDR/音频/UI 启动自检后，片内 Flash 控制器先完整读取并校验模型，再重新读取、产生内部 `BPN1` 8N1 数据流，交给 full85 原封不动的模型解析器和 DDR 客户端。它使用片内连线，不经过 PC、USB 或外部串口；115200 波特率下模型装载约 9 秒，另加校验和 DDR 回读时间。
 
 此前 `direct` 方案仍保留为实验路径：直接 SPI→DDR、载荷 CRC、DDR 回读 CRC。0x95 完整工程虽然 clk50 收敛且正常从 Flash 配置，实体原有 UART 路径也停在 DDR 回读，CPU DDR/UI 自检出现失败；因此 0x95 没有提升为 LATEST。独立 0x96 SRAM 探针完整读出 Flash 模型并通过本地 RAM CRC，证明 Flash 接线、字节序和载荷有效；探针不代表完整工作站或 DDR 已验收。0x98 SRAM 探针进一步验证实际 115200 波特率的内部 BPN1 传输和原解析器，完整模型本地 RAM 回读 CRC 同样通过。
@@ -212,3 +215,10 @@ AA仅作临时SRAM诊断：完整CPU从UIBY走到PASS、UI自检/发布开始正
 
 
 AB综合实测218BSRAM（原216），其中新维护FIFO2BSRAM；SSRAM单元1049（AA1593），LUT56817（AA57814），FF41654。PNR计量单独核验，不能把综合218误报为完整物理占用。同步FIFO仅要求正常启动的全局复位清空；DDR单域复位恢复并未另行验收，不据此扩展复位功能承诺。
+
+
+B0可选`--predecode-dashboard --predecode-text-coordinates`在一个enable级内并行计算文字锚点减法、字模索引和卡片命中。渲染器有效/末尾标记增加同样一拍；所有停顿均保持，frame_start动画逻辑保留原时刻。完整1920×1080含分析页和随机元数据/停顿/复位的2,137,105次像素对照通过，独立DDR停顿下的1,036,800双像素渲染器beat内容/地址/valid/last通过。
+
+`--parallel-delay-pointer`只改变DMA读指针+4的组合表达式，32位回绕、非对齐输入和各级进位逐位等价；`--power-two-tf-ring`只对2幂TF环形容量使用掩码，非2幂容量保持原加/比较/减。两项分别通过1,001,024和1,100,022组输入，TF16组合及P10完整效果回归通过；测试输出记录与候选HDL匹配的哈希。CNN算术、CPU固件和DDR PHY仍被冻结。双同步P10 FIFO明确物理上限268/340，任何候选超过即报错；仿真不保存PCM或音频文件。
+
+`--locate-reference-pll-helper`是可选的物理区域约束：采用官方SUG935的GROUP/GRP_LOC，使参考PLL的官方初始化辅助逻辑位于底部左侧R[100:108]C[24:44]。它不更改官方helper/PLL参数、50MHz输入、源哈希或独立10ns全传播验收。区域只作为实际长连线的修正候选，准备验证通过不等于最终布线达标；本选项未加入B0。

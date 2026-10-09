@@ -151,114 +151,120 @@
           "buffered_native": false,
           "native_backpressure": false,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:311: $finish called at 26285000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:311: $finish called at 26285000 (1ps)"
         },
         {
           "source": "original_control",
           "buffered_native": false,
           "native_backpressure": true,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:327: $finish called at 27075000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:327: $finish called at 27075000 (1ps)"
         },
         {
           "source": "original_control",
           "buffered_native": true,
           "native_backpressure": false,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:322: $finish called at 26885000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:322: $finish called at 26885000 (1ps)"
         },
         {
           "source": "original_control",
           "buffered_native": true,
           "native_backpressure": true,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:322: $finish called at 27065000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:322: $finish called at 27065000 (1ps)"
         },
         {
           "source": "retimed",
           "buffered_native": false,
           "native_backpressure": false,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:311: $finish called at 26285000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:311: $finish called at 26285000 (1ps)"
         },
         {
           "source": "retimed",
           "buffered_native": false,
           "native_backpressure": true,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:327: $finish called at 27075000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:327: $finish called at 27075000 (1ps)"
         },
         {
           "source": "retimed",
           "buffered_native": true,
           "native_backpressure": false,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:322: $finish called at 26885000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:322: $finish called at 26885000 (1ps)"
         },
         {
           "source": "retimed",
           "buffered_native": true,
           "native_backpressure": true,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:322: $finish called at 27065000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:322: $finish called at 27065000 (1ps)"
         },
         {
           "source": "registered_limit",
           "buffered_native": false,
           "native_backpressure": false,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:311: $finish called at 26285000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:311: $finish called at 26285000 (1ps)"
         },
         {
           "source": "registered_limit",
           "buffered_native": false,
           "native_backpressure": true,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:327: $finish called at 27075000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:327: $finish called at 27075000 (1ps)"
         },
         {
           "source": "registered_limit",
           "buffered_native": true,
           "native_backpressure": false,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:322: $finish called at 26885000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:322: $finish called at 26885000 (1ps)"
         },
         {
           "source": "registered_limit",
           "buffered_native": true,
           "native_backpressure": true,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:322: $finish called at 27065000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:322: $finish called at 27065000 (1ps)"
         },
         {
           "source": "power_two_ring",
           "buffered_native": false,
           "native_backpressure": false,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:311: $finish called at 26285000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:311: $finish called at 26285000 (1ps)"
         },
         {
           "source": "power_two_ring",
           "buffered_native": false,
           "native_backpressure": true,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:327: $finish called at 27075000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:327: $finish called at 27075000 (1ps)"
         },
         {
           "source": "power_two_ring",
           "buffered_native": true,
           "native_backpressure": false,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:322: $finish called at 26885000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:322: $finish called at 26885000 (1ps)"
         },
         {
           "source": "power_two_ring",
           "buffered_native": true,
           "native_backpressure": true,
           "passed": true,
-          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_1e6fmt0c/tb.sv:322: $finish called at 27065000 (1ps)"
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_wpbi9z4_/tb.sv:322: $finish called at 27065000 (1ps)"
         }
       ],
+      "variant_source_sha256": {
+        "original_control": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+        "retimed": "c749e67fb5b73d9b6678719c98c8e2573cd44f46f51ab7d6004d47ce6611abc7",
+        "registered_limit": "be80b540a91e2bb1d13b6d4ed545530db263ad7e1aa127221bae457f3efad6a5",
+        "power_two_ring": "6dd1327c3c586df6be9b17e618c2d3cb64225c3d780533a863947deaa022b3fc"
+      },
       "staged_source_sha256": "c749e67fb5b73d9b6678719c98c8e2573cd44f46f51ab7d6004d47ce6611abc7",
       "original_source_sha256": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
       "arbiter_sha256": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
@@ -281,7 +287,8 @@
       "synchronous_fifo_sha256": "82c48950e25c3879620ed2143930d56065756e4e5cdd0875218cfd7879997c15",
       "source_sha256": {
         "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
-        "derived_delay_fifo_instance_only": "361717232097687cf15015fad9eddba346348e34dd0b5652a0c1ac828b0f46ff",
+        "derived/delay.sv": "a2109ca19556b3e14c652460d361a02081aa4d7d220bac75aec2a156713ff3ee",
+        "derived/parallel_delay_dma.sv": "361717232097687cf15015fad9eddba346348e34dd0b5652a0c1ac828b0f46ff",
         "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/rtl/music/music_async_fifo.sv": "6d55458af075b01baebc22c81a856e98336a96ae82f061942a1511defc5a3ae6",
         "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/legacy/rtl/audio/stereo_effects.sv": "af214586edf225dbb98e781a4b2b20287764801b9a0ceda78d8110140e5fbbd4",
         "sim/audio/tb_delay_ddr_equivalence.sv": "5f90f33ff1d7793b8fb42213dfd93601880906e071979ef3dbc65f5260919957"
@@ -289,5 +296,6 @@
       "log": "PASS cold4800-frame full-FIFO dry path, ordered Panic marker and status reset\nEQUIVALENCE PASS: 45000 samples compared, underrun_flag=1 dut_status=00011100 dma_status=00000000",
       "hardware_tested": false
     }
-  }
+  },
+  "source_bound_delay_and_all_tf_variants": true
 }

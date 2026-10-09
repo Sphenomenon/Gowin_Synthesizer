@@ -2,7 +2,7 @@
 
 截至2026-10-09 21:09，**完整工作站AD已通过实际Flash启动诊断**：连续三次SRAM擦除→Flash重载，精确UserCodeAD/状态26020，模型均E/source1，未用SRAM下载或PC模型上传，实时演奏检查PASS。AF布线完成但时序门禁失败，未进行硬件IO；B0正在构建。板上配置和LATEST均保留full85，正式发布及物理断电验收尚未完成。
 
-AD最终268/340物理BSRAM，clk50 55.362MHz、视频187.261MHz。严格时序门禁仍发现DDR UI setup −2.107ns（旧文字/分析渲染为主，hold+0.165ns）和视频PLL全传播10.757ns>10ns，因此AD只作为明确的临时诊断，**配置Flash已恢复full85、旧UART模型E及现场检查PASS，LATEST仍85**。AE保持AD全部RTL，仅增加严格8ns DDR路径/6ns PLL端点物理预算，正在P&R；原有时钟、hold、CRC、自检和独立PLL10ns门槛全部保留。
+AD最终268/340物理BSRAM，clk50 55.362MHz、视频187.261MHz。严格时序门禁仍发现DDR UI setup −2.107ns（旧文字/分析渲染为主，hold+0.165ns）和视频PLL全传播10.757ns>10ns，因此AD只作为明确的临时诊断，**配置Flash已恢复full85、旧UART模型E及现场检查PASS，LATEST仍85**。AE保持AD全部RTL，仅增加严格8ns DDR路径/6ns PLL端点物理预算；其已完成结果仍未闭合。原有时钟、hold、CRC、自检和独立PLL10ns门槛全部保留。
 
 实证工件：`results/workstation_flashad_20261009_local_payload/temporary_flash_diagnosis/result.json`（三次真实Flash与恢复）；`sram_diagnosis/result.json`（完整工作站SRAM诊断）；`automatic_acceptance/result.json`（正式时序拒绝）。以下为保留的分阶段历史，早期“正在构建/尚未验收”只描述当时状态。
 
@@ -79,3 +79,7 @@ AF开始完整构建：保留AD模型/DDR边界，增加51个坐标谓词预译�
 B0将文字锚点的常量减法和动态卡片命中移入现有预解码级，增加延迟仍为1个enable周期，停顿语义及全文本优先级保持；未触及模型、CPU固件、DDR PHY。完整1920×1080含分析页的2,137,105次像素比较PASS；两独立完整renderer在随机DDR停顿下1,036,800双像素beat内容/地址/valid/last一致。延迟读指针32位并行+4通过1,001,024组输入含进位/UINT32环绕/非对齐值，TF11种容量含非2幂退回原算法的1,100,022组合法offset检查通过；TF16种native/direct/backpressure组合通过，P10双同步FIFO含新指针在43,000正常样本上逐位一致，2,000长停顿及4,800冷启动/Panic场景按预期通过。全激励只在仿真内存，不保存音频文件。测试证据：CNN_FLASH_BOOT_B0_COORDINATE_TESTS.json。
 
 B0使用官方placement1/route1算法，候选冻结输入完整校验，资源上限仍268。指针DMA的新允许项仅接受确定性的、逐位验证过的+4转换，原源码哈希仍强制一致。准备阶段第一次被旧冻结白名单拒绝，未综合/未生成bitstream；拒绝产物另存prepare_rejected并修正精确规范化检查后，重新启动B0。实际时序/资源及烧录状态以最终automatic_acceptance为准。
+
+21:40补充修正测试证据的键名：P10新FIFO实例和新DMA同时派生时原单一键会覆盖前者，改为唯一derived文件名并重新执行整套冷启动/43000样本逐位测试PASS；TF16组合增加每个变体的独立源哈希，实际B0的power_two_ring和FIFO/DMA各文件哈希已逐项匹配。功能未改，不能用单一变体哈希代表所有变体。
+
+物理修正准备：AF参考PLL长连线已定位，设置线单独5.916ns、RESET组合加最后一段5.776ns；full传播RESET11.434ns。新增可选locate-reference-pll-helper使用官方SUG935 GROUP/GRP_LOC将初始化helper区域置于R[100:108]C[24:44]，所有官方源/时钟/审计门槛保持，非exclusive。准备/冻结源码检验PASS；不添加到在运行的B0，是否采用取决于B0实测。准备阶段不分配UserCode，无hardware IO。

@@ -190,6 +190,7 @@ def register_response_credit(text):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--locate-reference-pll-helper',action='store_true',help='physical-only primitive group near reference PLL bottom-left; unchanged official helper RTL/clock/10ns audit')
     ap.add_argument('--predecode-text-coordinates',action='store_true',help='refine one-stage raster predecode with parallel constant font arithmetic and animated-card hit')
     ap.add_argument('--parallel-delay-pointer',action='store_true',help='bit-exact parallel byte-group rptr+4,all32-bit carry/wrap values')
     ap.add_argument('--power-two-tf-ring',action='store_true',help='constant-mask ring increment for power-of-two capacity; preserve generic nonpower-of-two arithmetic')
@@ -365,6 +366,13 @@ def main():
         cst_files=[f.attrib['path'] for f in fl if f.attrib['type']=='file.cst' and f.attrib.get('enable')=='1']
         assert cst_files==['constraints/tang_mega_138k.cst'],'baseline must have one complete pin CST'
         cst=stage/cst_files[0];cst.write_text(cst.read_text()+'\n'+CST)
+        if args.locate_reference_pll_helper:
+            cst.write_text(cst.read_text()+"""
+// Physical-only locality after AF routed SDF showed5.9ns helper-toPLL route.
+// SUG935 primitive GROUP+GRP_LOC, nonexclusive; official helper unchanged.
+GROUP cnn_reference_pll_helper = { "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/*" };
+GRP_LOC cnn_reference_pll_helper R[100:108]C[24:44];
+""")
         sdc=stage/'constraints/tang_mega_138k.sdc';sdc.write_text(sdc.read_text()+(SDC if args.transport=='direct' else SDC.replace('u_music/model_memory_meta*/D','u_model_flash_source/ready_meta*/D')))
         if args.register_response_credit or args.pipeline_ddr_arbiter:
             with sdc.open('a') as f:f.write('\n# Audit real same-clock DDR UI setup/hold, independently of Fmax summary.\nreport_timing -setup -from_clock [get_clocks {ddr_ui100}] -to_clock [get_clocks {ddr_ui100}] -max_paths 100\nreport_timing -hold -from_clock [get_clocks {ddr_ui100}] -to_clock [get_clocks {ddr_ui100}] -max_paths 100\n')
@@ -416,7 +424,7 @@ set_max_delay 4.500 -from [get_pins {u_video/u_clock/g_hardware.u_pll/*/u_pll_in
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,predecoded_dashboard=args.predecode_dashboard,predecoded_text_coordinates=args.predecode_text_coordinates,parallel_delay_pointer=args.parallel_delay_pointer,power_two_tf_ring=args.power_two_tf_ring,raster_enabled_latency_added=1 if args.predecode_dashboard else 0,PLL_settings_route_max_delay_ns=4.5 if args.tighten_pll_setting_route else None,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,reference_pll_helper_region="R[100:108]C[24:44]" if args.locate_reference_pll_helper else None,predecoded_dashboard=args.predecode_dashboard,predecoded_text_coordinates=args.predecode_text_coordinates,parallel_delay_pointer=args.parallel_delay_pointer,power_two_tf_ring=args.power_two_tf_ring,raster_enabled_latency_added=1 if args.predecode_dashboard else 0,PLL_settings_route_max_delay_ns=4.5 if args.tighten_pll_setting_route else None,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'

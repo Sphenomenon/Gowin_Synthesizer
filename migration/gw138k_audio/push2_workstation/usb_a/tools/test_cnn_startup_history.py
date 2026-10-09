@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Cold DDR wait fills delay FIFO; existing Panic flush must restore exact wet history.
 
-The unmodified, frozen P10 DDR delay/DMA/FIFO are used, alongside frozen BRAM
-reference. Only test stimuli change. No PCM files or sample streams are saved.
+The frozen P10 arithmetic is compared against the frozen BRAM reference.
+Optional equivalent FIFO/pointer transformations are source-hash recorded. No PCM files or sample streams are saved.
 """
 from pathlib import Path
 import argparse,subprocess,tempfile,json,hashlib
@@ -44,6 +44,6 @@ with tempfile.TemporaryDirectory(prefix='cnn_startup_history_') as t:
  c=subprocess.run(['iverilog','-g2012','-s','tb_delay_ddr_equivalence','-o',str(exe),str(sources[0]),str(t/'tb.sv'),*[str(x) for x in sources[1:4]],*([str(root/'rtl/music/basic_pitch_ddr_sync_fifo.sv')] if (a.sync_write_fifo or a.sync_both_fifos) else []),str(t/'ref.sv')],capture_output=True,text=True);assert c.returncode==0,c.stdout+c.stderr
  v=subprocess.run(['vvp',str(exe)],capture_output=True,text=True,timeout=240)
  assert v.returncode==0 and 'EQUIVALENCE PASS' in v.stdout and 'PASS cold4800' in v.stdout,v.stdout[-5000:]+v.stderr
- report=dict(passed=True,parallel_delay_pointer=a.parallel_delay_pointer,cold_target_audio_frames=4800,target_rate_hz=48000,initial_delay_fifo_overflow_detected=True,ordered_panic_restores_history=True,post_flush_samples_driven=45000,post_flush_bit_exact_samples=43000,expected_long_stall_samples=2000,cycle_exact_valid_ready_left_right_clip=True,audio_data_saved=False,synchronous_write_fifo=a.sync_write_fifo or a.sync_both_fifos,synchronous_read_fifo=a.sync_both_fifos,synchronous_fifo_sha256=hashlib.sha256((root/'rtl/music/basic_pitch_ddr_sync_fifo.sv').read_bytes()).hexdigest() if (a.sync_write_fifo or a.sync_both_fifos) else None,source_sha256={(str(x.relative_to(root)) if x.is_relative_to(root) else 'derived_delay_fifo_instance_only'):hashlib.sha256(x.read_bytes()).hexdigest() for x in sources},log='\n'.join(line for line in v.stdout.splitlines() if 'PASS' in line),hardware_tested=False)
+ report=dict(passed=True,parallel_delay_pointer=a.parallel_delay_pointer,cold_target_audio_frames=4800,target_rate_hz=48000,initial_delay_fifo_overflow_detected=True,ordered_panic_restores_history=True,post_flush_samples_driven=45000,post_flush_bit_exact_samples=43000,expected_long_stall_samples=2000,cycle_exact_valid_ready_left_right_clip=True,audio_data_saved=False,synchronous_write_fifo=a.sync_write_fifo or a.sync_both_fifos,synchronous_read_fifo=a.sync_both_fifos,synchronous_fifo_sha256=hashlib.sha256((root/'rtl/music/basic_pitch_ddr_sync_fifo.sv').read_bytes()).hexdigest() if (a.sync_write_fifo or a.sync_both_fifos) else None,source_sha256={(str(x.relative_to(root)) if x.is_relative_to(root) else 'derived/'+x.name):hashlib.sha256(x.read_bytes()).hexdigest() for x in sources},log='\n'.join(line for line in v.stdout.splitlines() if 'PASS' in line),hardware_tested=False)
  if a.output:a.output.write_text(json.dumps(report,indent=2)+'\n')
  print(json.dumps(report,indent=2))
