@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T02:40:56.288113+08:00",
+  "generated_at": "2026-10-10T02:54:13.697532+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -272,12 +272,36 @@
     {
       "user_code": "B8",
       "build": "results/workstation_flashb8_20261010_tf_read_spectrum",
-      "status": "routing",
+      "status": "routed_rejected",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
       "programming_started": false,
-      "source_bound_TF_spectrum_tests_passed": true
+      "source_bound_TF_spectrum_tests_passed": true,
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0,
+        "feature_read_equivalence": 0,
+        "pixel_skid_protocol": 0,
+        "pixel_skid_full_renderer": 0,
+        "shared_display_integration": 0,
+        "tf_byte_count_proof": 0,
+        "tf_byte_count_protocol": 0,
+        "tf_read_total_proof": 0,
+        "spectrum_address_proof": 0,
+        "bist_pattern_cycle_equivalence": 0
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "ddr_ui_setup_wns_ns": -2.936,
+      "ddr_ui_hold_wns_ns": 0.169,
+      "clk50_fmax_mhz": 58.176,
+      "video_fmax_mhz": 167.823,
+      "physical_bsram": 268,
+      "PLL_all_endpoints_passed": true,
+      "previous_positive_clock_summary_passed": true
     },
     {
       "user_code": "B9",
@@ -298,6 +322,16 @@
       "release_gate_passed": false,
       "programming_started": false,
       "source_bound_shared_display_passed": true
+    },
+    {
+      "user_code": "BB",
+      "build": "results/workstation_flashbb_20261010_bist_lane_pipeline",
+      "status": "synthesizing",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "release_gate_passed": false,
+      "programming_started": false,
+      "source_bound_BIST_pipeline_passed": true
     }
   ]
 }

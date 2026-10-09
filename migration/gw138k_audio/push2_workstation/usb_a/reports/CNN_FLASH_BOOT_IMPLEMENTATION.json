@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_actual_Flash3boots_live_verified_B7_rejected_B8_routing",
+  "status": "AD_actual_Flash3boots_live_verified_B8_rejected_B9_BA_BB_building",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1408,7 +1408,7 @@
   "B8_tf_read_spectrum": {
     "build": "results/workstation_flashb8_20261010_tf_read_spectrum",
     "user_code": "0x000000B8",
-    "status": "routing",
+    "status": "routed_rejected",
     "changed_from_B7": [
       "TF request-time exact post-read count; partial final beat equals write count; preserve zero-cycle response",
       "parallel current/next spectrum-column computation before advance select"
@@ -1422,7 +1422,17 @@
     "full_model_words": 52239,
     "full_model_crc32": "AF01A61B",
     "full_content_simulation_baud_override": 3125000,
-    "real_115200_short_model_words": 31
+    "real_115200_short_model_words": 31,
+    "ddr_ui_setup_wns_ns": -2.936,
+    "ddr_ui_hold_wns_ns": 0.169,
+    "clk50_fmax_mhz": 58.176,
+    "video_fmax_mhz": 167.823,
+    "PLL_all_endpoints_passed": true,
+    "physical_bsram": 268,
+    "previous_positive_clock_summary_passed": true,
+    "programming_started": false,
+    "release_gate_passed": false,
+    "new_critical_path": "BIST expected_pattern_q->failed CE12.693ns; TF read-total path removed"
   },
   "prepared_card_priority": {
     "applied_to_B8": false,
@@ -1497,5 +1507,19 @@
     "crc_bad": 0,
     "samples_per_report": 48000,
     "push_frames_delta": 2
+  },
+  "BB_bist_lane_pipeline": {
+    "build": "results/workstation_flashbb_20261010_bist_lane_pipeline",
+    "user_code": "0x000000BB",
+    "status": "synthesizing",
+    "changed_from_BA": [
+      "8 registered32-bit lane comparisons then READ_CHECK aggregation"
+    ],
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_BB_BIST_TESTS.json",
+    "tests_passed": true,
+    "extra_startup_ms": 5.24288,
+    "added_bsram": 0,
+    "hardware_tested": false,
+    "promoted": false
   }
 }
