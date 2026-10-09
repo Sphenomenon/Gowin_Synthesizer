@@ -919,7 +919,7 @@
   "AD_local_payload": {
     "build": "results/workstation_flashad_20261009_local_payload",
     "user_code": "0x000000AD",
-    "status": "synthesis",
+    "status": "placement",
     "physical_bsram_limit": 268,
     "board_capacity": 340,
     "hardware_tested": false,
@@ -937,7 +937,16 @@
     "tmds_output_cycle_exact": true,
     "effect_algorithm_cycle_exact": true,
     "firmware_selftest_unchanged": true,
-    "native_full_model_reference": "results/workstation_flashad_20261009_local_payload/native_model_simulation_reuse.json"
+    "native_full_model_reference": "results/workstation_flashad_20261009_local_payload/native_model_simulation_reuse.json",
+    "synthesis_resources": {
+      "T_Register": "43130(262)",
+      "T_Alu": "10347(37)",
+      "T_Lut": "55136(418)",
+      "T_Bsram": "220(0)",
+      "T_Ssram": "505(0)"
+    },
+    "implementation_git_commit": "6e8f104",
+    "fifo_scope": "Synchronous read/write maintenance boundary only; P10 algorithm/native DMA unchanged"
   },
   "baseline85_readonly_1812": {
     "read_only": true,
