@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Full coefficient CRC through NOR/internal UART/native DDR pipeline with contention."""
 from pathlib import Path
-import argparse,subprocess,tempfile,json
+import argparse,subprocess,tempfile,json,hashlib
 from build_cnn_flash_image import build_image,load_words
 ROOT=Path(__file__).resolve().parents[1];SRC=ROOT/'rtl/music'
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);a=p.parse_args()
@@ -98,6 +98,6 @@ with tempfile.TemporaryDirectory(prefix='cnn_flash_native_pipeline_') as tmp:
   v=subprocess.run(['vvp',str(exe),f'+IMAGE={model}','+CASE=0'],capture_output=True,text=True,timeout=240)
   assert v.returncode==0 and 'PASS serial' in v.stdout,v.stdout+v.stderr
   print(v.stdout.strip(),flush=True);cases.append(dict(words=words,baud=baud,payload_crc32=manifest['payload_crc32'],passed=True,log=v.stdout.strip()))
-report=dict(passed=True,cases=cases,hardware_tested=False,pcm_saved=False,scope='NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls')
+report=dict(passed=True,cases=cases,hardware_tested=False,pcm_saved=False,source_sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources if p.is_relative_to(ROOT)},scope='NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls')
 if a.output:a.output.write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report,indent=2))

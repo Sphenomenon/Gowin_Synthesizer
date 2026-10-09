@@ -752,7 +752,8 @@
       }
     ],
     "hardware_tested": false,
-    "pcm_saved": false
+    "pcm_saved": false,
+    "arbiter_sha256": "e37569db1298888174e4969afb17b24edb33c50719b8e5fe20c7c218fe99d3ef"
   },
   "synchronous_delay_maintenance_fifo": {
     "passed": true,
@@ -774,7 +775,8 @@
       }
     ],
     "hardware_tested": false,
-    "pcm_saved": false
+    "pcm_saved": false,
+    "fifo_sha256": "dc78cde13eccfcb857139dcce48e47fcdcb14d5b621d42bef6c5a74ae6f742c2"
   },
   "synchronous_fifo_effect_history": {
     "passed": true,
@@ -797,7 +799,8 @@
       "sim/audio/tb_delay_ddr_equivalence.sv": "5f90f33ff1d7793b8fb42213dfd93601880906e071979ef3dbc65f5260919957"
     },
     "log": "PASS cold4800-frame full-FIFO dry path, ordered Panic marker and status reset\nEQUIVALENCE PASS: 45000 samples compared, underrun_flag=1 dut_status=00011100 dma_status=00000000",
-    "hardware_tested": false
+    "hardware_tested": false,
+    "synchronous_fifo_sha256": "dc78cde13eccfcb857139dcce48e47fcdcb14d5b621d42bef6c5a74ae6f742c2"
   },
   "onehot_flash_native_pipeline": {
     "passed": true,
@@ -819,6 +822,7 @@
     ],
     "hardware_tested": false,
     "pcm_saved": false,
-    "scope": "NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls"
+    "scope": "NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls",
+    "tested_arbiter_sha256": "e37569db1298888174e4969afb17b24edb33c50719b8e5fe20c7c218fe99d3ef"
   }
 }

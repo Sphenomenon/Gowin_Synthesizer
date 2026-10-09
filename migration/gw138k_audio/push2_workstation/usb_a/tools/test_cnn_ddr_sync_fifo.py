@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Independent async FIFO scoreboard including flush marker, stalls and reset."""
 from pathlib import Path
-import argparse,subprocess,tempfile,json
+import argparse,subprocess,tempfile,json,hashlib
 ROOT=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);a=p.parse_args()
 tb=r'''
@@ -52,6 +52,6 @@ with tempfile.TemporaryDirectory(prefix='cnn_ddr_sync_fifo_') as tmp:
   assert c.returncode==0,c.stdout+c.stderr
   v=subprocess.run(['vvp',str(exe)],capture_output=True,text=True,timeout=20);assert v.returncode==0 and 'PASS synchronous' in v.stdout,v.stdout+v.stderr
   cases.append(dict(address_bits=bits,passed=True,log=v.stdout.strip()))
-r=dict(passed=True,cases=cases,hardware_tested=False,pcm_saved=False)
+r=dict(passed=True,cases=cases,hardware_tested=False,pcm_saved=False,fifo_sha256=hashlib.sha256((ROOT/'rtl/music/basic_pitch_ddr_sync_fifo.sv').read_bytes()).hexdigest())
 if a.output:a.output.write_text(json.dumps(r,indent=2)+'\n')
 print(json.dumps(r,indent=2))
