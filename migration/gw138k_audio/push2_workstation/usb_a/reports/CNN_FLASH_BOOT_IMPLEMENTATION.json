@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_flash_function_verified_full85_restored_BE_BF_C0_C1_pending",
+  "status": "AD_flash_function_verified_full85_restored_BE_C0_timing_rejected_BF_C1_routing",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -1665,5 +1665,8 @@
     },
     "hardware_tested": false,
     "evidence": "reports/CNN_FLASH_BOOT_C1_NIBBLE_TESTS.json"
-  }
+  },
+  "latest_progress_at": "2026-10-10T05:26:58.815775+08:00",
+  "latest_functionally_verified_candidate": "results/workstation_flashc1_20261010_nibble_tf_count",
+  "new_default_flash_release_completed": false
 }
