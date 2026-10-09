@@ -42,7 +42,8 @@
     "cache_read_retimed_build": "results/workstation_flash9a_20261009_cache_read/build_metadata.json",
     "retimed9a_timing": "results/workstation_flash9a_20261009_cache_read/clk50_timing_audit.json",
     "retimed9a_flash_diagnosis": "results/workstation_flash9a_20261009_cache_read/flash_diagnosis/result.json",
-    "isolated_actual_ddr_flash_boot": "results/flash_ddr_probe9e_20261009/board/result.json"
+    "isolated_actual_ddr_flash_boot": "results/flash_ddr_probe9e_20261009/board/result.json",
+    "baseline85_health_recovery": "results/baseline85_health_recover_20261009_104641/result.json"
   },
   "incremental_candidate": "results/workstation_flash93_20261009_incremental",
   "incremental_target_user_code": "0x00000093",
@@ -349,5 +350,25 @@
   "deferred_ddr_candidate": "results/workstation_flasha1_20261009_deferred_ddr",
   "deferred_ddr_user_code": "0x000000A1",
   "deferred_ddr_hypothesis": "initial100ms audio/video lock settling before DDR; root cause unproven; original PHY/data/recovery/CNN/cache unchanged",
-  "deferred_ddr_gate_simulation_passed": true
+  "deferred_ddr_gate_simulation_passed": true,
+  "baseline85_long_run_health_observation": {
+    "failed_capture": "results/baseline85_flash_model_work_health_20261009_104311/smoke.json",
+    "audio_health_word": "00010000",
+    "core_faults": 0,
+    "serializer_underrun_count": 1,
+    "cpu_ddr_model_live_geometry_mute_panic_passed": true,
+    "smoke_passed": false,
+    "cause_proven": false,
+    "recovery_capture": "results/baseline85_health_recover_20261009_104641/smoke.json",
+    "recovery_passed": true,
+    "recovery_audio_health_word": "00000000",
+    "flash_bitstream_rewritten": false,
+    "sram_download_used": false,
+    "legacy_uart_model_restored": true
+  },
+  "candidate_synthesis_bsram": {
+    "9F": 216,
+    "A0": 216,
+    "A1": 216
+  }
 }

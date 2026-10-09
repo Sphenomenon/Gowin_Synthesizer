@@ -19,3 +19,5 @@
 部署工具先验证原 clk50 与 full85 原本通过的各时钟；CPU/视频退化在任何硬件命令前拒绝。七项离线部署/回滚测试通过，包括坏模型来源、自动启动失败位、FTDI 陈旧成功报文、CPU/视频时序退化，以及三次模型启动通过后实时演奏测试失败的自动回滚。
 
 板上仍为可用 full85，LATEST 未提升；物理断电重上电未执行。机器可读结果与各工件路径见 `CNN_FLASH_BOOT_IMPLEMENTATION.json` 和 `CNN_FLASH_BOOT_TESTS.json`。
+
+2026-10-09 10:43 的旧 full85 运行复查：CPU/DDR/模型E/三音/立体声/静音/Panic均通过，但健康字00010000表示累计序列化器欠载1次、核心故障0，因此整体烟雾测试判失败。原因未确定；10:46从已有Flash重载full85（没有重写配置、没有SRAM下载），恢复其旧易失模型后重新做完整实时测试通过，健康字00000000。失败与恢复记录分别位于`results/baseline85_flash_model_work_health_20261009_104311`和`results/baseline85_health_recover_20261009_104641`。此旧模型UART恢复不计入新Flash→DDR验收。
