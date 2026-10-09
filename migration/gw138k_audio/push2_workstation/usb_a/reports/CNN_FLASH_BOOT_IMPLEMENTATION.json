@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "isolated_flash_to_actual_ddr_passed_9f_rejected_a0_a1_a2_builds_running",
+  "status": "isolated_flash_to_actual_ddr_passed_9f_rejected_a0_a1_a2_a3_builds_running",
   "target_user_code": "0x0000009A",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -338,7 +338,7 @@
   "alternate_place3_control": "place3/route0, stricter6ns known pixel control paths; original SDC prefix preserved",
   "paired_route_candidate": "results/workstation_flasha0_20261009_paired_reference",
   "paired_route_user_code": "0x000000A0",
-  "paired_route_mode": "inc_pnr through .p entry, matching .pr partner; original full85 CNN/cache/parser/native DDR unchanged",
+  "paired_route_mode": "Experimental inc_pnr through .p entry plus matching .pr partner; doc conflict discovered; not validated as correct",
   "reference9c_cancelled": {
     "reason": "inc_place rerouting remained at phase0 nearly2hours; superseded by paired .p/.pr inc_pnr A0/A1 and fresh place3/route0 9F",
     "hardware_tested": false,
@@ -476,5 +476,8 @@
     "A0_A1_p_entry_validated": false,
     "pnr_default_entry_now": "pr",
     "both_reference_files_hash_checked": true
-  }
+  },
+  "pr_entry_candidate": "results/workstation_flasha3_20261009_pr_entry",
+  "pr_entry_user_code": "0x000000A3",
+  "pr_entry_control": "A1 original CNN/cache plus initial100ms DDR gate; inc_pnr .pr entry per SUG10042, paired .p/.pr hash-checked"
 }
