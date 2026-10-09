@@ -2,7 +2,7 @@
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
   "status": "isolated_flash_to_actual_ddr_passed_A3_diagnostic_A5_aligned_start_timing_building",
-  "target_user_code": "0x0000009A",
+  "target_user_code": "0x000000A5",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
   "model_partition_byte_verify_passed": true,
@@ -17,7 +17,7 @@
   "full_model_sim_boot_seconds": 0.14773918,
   "model_auto_boot_hardware_verified": false,
   "physical_power_cycle_tested": false,
-  "build": "results/workstation_flash9a_20261009_cache_read",
+  "build": "results/workstation_flasha5_20261009_start_predicate",
   "initial_build_error": "second CST superseded original complete pin constraints; fixed by appending Flash pins to original CST",
   "evidence": {
     "sim_tests": "reports/CNN_FLASH_BOOT_TESTS.json",
@@ -544,5 +544,6 @@
     "latest_auto_promoted": false,
     "on_deployment_failure": "rollback full85 Flash then restore its original UART model and startup smoke",
     "programming_started": false
-  }
+  },
+  "full_model_sim_boot_seconds_transport": "direct; serial compatibility transport uses actual115200 and about9s payload transfer plus checks"
 }
