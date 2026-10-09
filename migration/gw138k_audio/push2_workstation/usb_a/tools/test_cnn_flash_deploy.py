@@ -25,7 +25,22 @@ with patch.object(sys,'argv',['deploy_cnn_flash_boot.py',str(build),'--program']
  except SystemExit as e:assert e.code==2
  else:raise AssertionError('CPU/video regression was not rejected')
 results.append(dict(case='cpu_video_timing_gate_before_hardware_io',passed=True,commands=0,hardware_io_used=False))
-for failure in (None,'uart_fallback','auto_boot_fail','stale_flash_success','live_success','live_failure'):
+original_json_loads=json.loads
+def metadata_with_cold_start(text,*args,**kwargs):
+ value=original_json_loads(text,*args,**kwargs)
+ if isinstance(value,dict) and 'baseline_fs_sha256' in value and 'changed_from_base' in value:
+  value=dict(value,ddr_initial_aux_settle_ms=100,startup_panic_aligns_delay_history=False)
+ return value
+with patch.object(sys,'argv',['deploy_cnn_flash_boot.py',str(build),'--program']), \
+     patch.object(mod.json,'loads',metadata_with_cold_start), \
+     patch.object(mod.subprocess,'run',side_effect=AssertionError('unaligned startup performed hardware IO')), \
+     contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):
+ try:mod.main()
+ except SystemExit as e:assert e.code==2
+ else:raise AssertionError('cold DDR startup without P10 alignment was not rejected')
+results.append(dict(case='unaligned_cold_ddr_before_hardware_io',passed=True,commands=0,hardware_io_used=False))
+for failure in (None,'uart_fallback','auto_boot_fail','stale_flash_success','live_success','live_failure','live_cold_success','live_cold_missing'):
+
  with tempfile.TemporaryDirectory(prefix='cnn_deploy_host_') as tmp:
   out=Path(tmp)/'record';clock=[0.];state={'code':0x85,'status':0x26020,'reloads':0,'commands':[],'rolled_back':False}
   def now():clock[0]+=.02;return clock[0]
@@ -65,28 +80,33 @@ for failure in (None,'uart_fallback','auto_boot_fail','stale_flash_success','liv
     if state['rolled_back']:
      assert state.get('uart_recovered');passed=True
     else:
-     assert failure in ('live_success','live_failure') and state['reloads']==3
-     assert '--exercise-live' in args;passed=failure=='live_success'
-    Path(args[args.index('--output')+1]).write_text(json.dumps({'passed':passed})+'\n');text='PASS' if passed else 'FAIL live smoke'
+     assert failure in ('live_success','live_failure','live_cold_success','live_cold_missing') and state['reloads']==3
+     assert '--exercise-live' in args;passed=failure!='live_failure'
+    Path(args[args.index('--output')+1]).write_text(json.dumps({'passed':passed,'startup_panic_epoch':1 if failure=='live_cold_success' else 0})+'\n');text='PASS' if passed else 'FAIL live smoke'
     if not passed:return CompletedProcess(args,1,text,'')
    else:raise AssertionError('external process not stubbed '+str(args))
    return CompletedProcess(args,0,text,'')
   argv=['deploy_cnn_flash_boot.py',str(build),'--program','--allow-clk50-open','--output',str(out)]
-  if failure in ('live_success','live_failure'):argv.append('--exercise-live')
+  if failure in ('live_success','live_failure','live_cold_success','live_cold_missing'):argv.append('--exercise-live')
+  def case_metadata(text,*args,**kwargs):
+   value=original_json_loads(text,*args,**kwargs)
+   if failure in ('live_cold_success','live_cold_missing') and isinstance(value,dict) and 'baseline_fs_sha256' in value and 'changed_from_base' in value:
+    value=dict(value,ddr_initial_aux_settle_ms=100,startup_panic_aligns_delay_history=True)
+   return value
   raised=False
-  with patch.object(sys,'argv',argv),patch.dict(sys.modules,{'serial':types.SimpleNamespace(Serial=Port)}),patch.object(mod.subprocess,'run',fake_run),patch.object(mod.fcntl,'flock',lambda *a:None),patch.object(mod,'verify_debugger_identity',lambda *a:None),patch.object(mod.time,'monotonic',now),patch.object(mod.time,'sleep',sleep),contextlib.redirect_stdout(io.StringIO()):
+  with patch.object(sys,'argv',argv),patch.object(mod.json,'loads',case_metadata),patch.dict(sys.modules,{'serial':types.SimpleNamespace(Serial=Port)}),patch.object(mod.subprocess,'run',fake_run),patch.object(mod.fcntl,'flock',lambda *a:None),patch.object(mod,'verify_debugger_identity',lambda *a:None),patch.object(mod.time,'monotonic',now),patch.object(mod.time,'sleep',sleep),contextlib.redirect_stdout(io.StringIO()):
    try:mod.main()
    except AssertionError:raised=True
   d=json.loads((out/'result.json').read_text())
-  if failure and failure!='live_success':
+  if failure and failure not in ('live_success','live_cold_success'):
    assert raised and not d['passed']
    assert d['rollback_bitstream_restored'] and d['rollback_uart_model_restored'] and d['rollback_workstation_smoke_passed']
    assert state['code']==0x85 and state['rolled_back']
   else:
    assert not raised and d['passed'] and len(d['boots'])==3 and state['reloads']==3
    assert not state.get('uart_recovered') and not d['uart_model_upload_used'] and not d['sram_download_used']
-   if failure=='live_success':assert d['live_smoke_passed']
-  if failure=='live_failure':assert len(d['boots'])==3 and not d['live_smoke_passed']
+   if failure in ('live_success','live_cold_success'):assert d['live_smoke_passed']
+  if failure in ('live_failure','live_cold_missing'):assert len(d['boots'])==3 and not d['live_smoke_passed']
   results.append(dict(case=failure or 'three_flash_boots',passed=True,commands=len(state['commands']),hardware_io_used=False))
 report={'passed':True,'tests':results,'build':str(build),'notes':'Programmer, serial, board inventory, lock and waits are stubbed; all unknown external commands fail closed. Actual candidate input/hash/status logic is exercised.'}
 if options.output:options.output.write_text(json.dumps(report,indent=2)+'\n')

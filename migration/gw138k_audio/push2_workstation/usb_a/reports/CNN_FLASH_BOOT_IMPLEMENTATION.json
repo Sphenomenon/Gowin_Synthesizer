@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "isolated_flash_to_actual_ddr_passed_9f_rejected_a0_a1_a2_a3_builds_running",
+  "status": "isolated_flash_to_actual_ddr_passed_full_candidates_building_A4_history_aligned",
   "target_user_code": "0x0000009A",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -491,5 +491,18 @@
     "A1_A2_A3_frozen_without_alignment": true,
     "A1_A2_A3_release_eligible": false,
     "hardware_effect_acceptance": false
+  },
+  "aligned_startup_candidate": "results/workstation_flasha4_20261009_aligned_startup",
+  "aligned_startup_user_code": "0x000000A4",
+  "aligned_startup_control": "A2 place2/cache/video target + initial100ms DDR settle + one cold internal Panic before model boot; original effects/DMA/FIFOs unchanged",
+  "cancelled_p_entry_candidates": {
+    "A0": {
+      "reason": "about110min build/no routing report; official doc conflict; superseded by pr-entry A3 and aligned fresh A4",
+      "hardware_tested": false
+    },
+    "A1": {
+      "reason": "about90min/no report; superseded by paired pr-entry comparison and cold history-aligned A4",
+      "hardware_tested": false
+    }
   }
 }

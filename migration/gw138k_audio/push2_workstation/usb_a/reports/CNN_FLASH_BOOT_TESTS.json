@@ -258,6 +258,12 @@
         "hardware_io_used": false
       },
       {
+        "case": "unaligned_cold_ddr_before_hardware_io",
+        "passed": true,
+        "commands": 0,
+        "hardware_io_used": false
+      },
+      {
         "case": "three_flash_boots",
         "passed": true,
         "commands": 15,
@@ -289,6 +295,18 @@
       },
       {
         "case": "live_failure",
+        "passed": true,
+        "commands": 22,
+        "hardware_io_used": false
+      },
+      {
+        "case": "live_cold_success",
+        "passed": true,
+        "commands": 16,
+        "hardware_io_used": false
+      },
+      {
+        "case": "live_cold_missing",
         "passed": true,
         "commands": 22,
         "hardware_io_used": false
