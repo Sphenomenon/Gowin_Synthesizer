@@ -93,3 +93,5 @@ B0综合实测：220 BSRAM、505 SSRAM、43533 FF、55398 LUT；相对AF（43438
 22:26 B1完成：物理BSRAM268，clk50 56.981MHz、DDR UI摘要234.288MHz；参考PLL区域合法并且全部独立PLL_INIT路径通过，最差全传播7.964ns<10ns，ICPSEL0为5.366ns（B0为10.360ns），官方helper/参数未变。DDR UI仍setup-1.718ns/hold+0.172ns，视频134.533MHz未满足148.5MHz，最差pixel_reset→TMDS输入统计7.421ns。两CDC通过但发布门禁失败，programming_started=false，board/LATEST85。后续精确修正仅针对报表指出的动画晚选择、卡片双减法和TMDS输入popcount，保留原时序/优先级/参数，所有等价测试先通过再冻结下一候选。
 
 B2冻结并启动：保留B1参考PLL区域，只变dashboard动画/文本坐标并行组合、TMDS4-bit LUT popcount、UserCodeTcl。动画穷举8mask×64order×3id×2048位置3,145,728组和2048×2048文字相对坐标4,194,304组共7,340,032组PASS。最初的动画else错误把“有效mask但id缺席所有order”的情况定位到第三位，完整随机元数据像素测试明确失败；修复为原停车位后重新执行像素/双渲染器/独立穷举全部PASS，只有修复后的源进入B2。TMDS100000周期含所有256数据及325reset周期10bit逐拍一致。source-bound哈希匹配，原B0的TF/P10/FIFO/DMA测试逐项哈希复用。具体见CNN_FLASH_BOOT_B2_CARD_TMDS_TESTS.json，不将未测候选写板或更新LATEST。
+
+B2综合实测220BSRAM/505SSRAM/43555FF/56555LUT，所有完整工作站必需模块审计通过（USB/Push/合成/矢量cue/TF FAT-SPI-DDR播放/BasicPitch/DDR/CPU/HDMI/串联效果）。新增并行卡片运算的LUT成本已明报，PNR物理计量尚待结果。

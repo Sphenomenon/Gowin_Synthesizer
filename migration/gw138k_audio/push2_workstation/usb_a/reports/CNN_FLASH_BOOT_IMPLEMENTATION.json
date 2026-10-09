@@ -1104,10 +1104,16 @@
   "B2_parallel_cards_tmds": {
     "build": "results/workstation_flashb2_20261009_parallel_cards_tmds",
     "user_code": "0x000000B2",
-    "status": "building",
+    "status": "synthesis_complete_placing",
     "source_bound_tests": "reports/CNN_FLASH_BOOT_B2_CARD_TMDS_TESTS.json",
     "source_bound_tests_passed": true,
     "physical_bsram_limit": 268,
-    "hardware_tested": false
+    "hardware_tested": false,
+    "synthesis_bsram": 220,
+    "synthesis_ssram": 505,
+    "synthesis_registers": 43555,
+    "synthesis_lut": 56555,
+    "synthesis_alu": 10528,
+    "synthesis_full_workstation_feature_audit_passed": true
   }
 }
