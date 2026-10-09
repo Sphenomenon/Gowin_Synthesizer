@@ -246,4 +246,6 @@ TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合
 
 备用 `--fast-tf-read-availability` 要求 `--retime-tf-read-total`，用低5bit借位与高27bit一致/加1后比较替代读可用量的完整32bit相减→小于32判定。保留原available_bytes用于状态/银行边界计算，无额外周期、无容量限制；64bit全输入SAT覆盖全部借位/32bit回绕，42组协议（含同周期响应）通过。尚未用于B8，有该元数据的后续构建会绑定实际源码重跑。
 
-备用 `--quiet-shared-analysis-column` 仅在 `SHARED_RENDER!=0` 时令本地FFT读地址跟随快照导出器shared_read_addr。该模式实际像素来自DD R display-data cache，本地FFT在非导出期没有读有效信号，因此去掉背压→本地column的无效依赖；直接模式的原地址表达式保持。不改FFT/XY分析算法或analysis RAM，增加0周期/0BSRAM。非均匀全front-RAM激励、真实快照writer/cache、3帧全部数据包/描述符、25ms停顿及冷启动无FFT状态测试PASS，首帧1036800像素对与冻结源完全相同。发布脚本新增实际共享整链路测试。
+备用 `--quiet-shared-analysis-column` 仅在 `SHARED_RENDER!=0` 时令本地FFT读地址跟随快照导出器shared_read_addr。该模式实际像素来自DDR display-data cache，本地FFT在非导出期没有读有效信号，因此去掉背压→本地column的无效依赖；直接模式的原地址表达式保持。不改FFT/XY分析算法或analysis RAM，增加0周期/0BSRAM。非均匀全front-RAM激励、真实快照writer/cache、3帧全部数据包/描述符、25ms停顿及冷启动无FFT状态测试PASS，首帧1036800像素对与冻结源完全相同。发布脚本新增实际共享整链路测试。
+
+可选 `--pipeline-bist-compare` 要求 `--retime-bist-expected-pattern`，在接受响应边界分别注册8个32-bit lane比较结果，再在新增READ_CHECK拍汇总并更新错误/结束状态。地址、正反两轮全测试、命令顺序、错误计数、首错地址和watchdog语义保留；每个读响应明确增加1个100MHz检查周期，完整8MiB两轮读共增加5.24288ms启动时间，0BSRAM。18组BURSTS=1/31/257×正常/最终bit错/每lane错/写超时/读超时/无背压，用独立命令内容oracle及原版终态对比，3复位epoch全PASS；不是原周期精确检查。

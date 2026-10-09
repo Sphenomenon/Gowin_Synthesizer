@@ -98,9 +98,10 @@ def main():
                     '--output',str(output/(label+'.json'))])
                 result['checks'][label]=code
         if meta.get('retimed_bist_expected_pattern'):
-            label,code=run('bist_pattern_cycle_equivalence',[sys.executable,
-                str(ROOT/'tools/test_cnn_bist_expected_pattern.py'),'--build',str(build),
-                '--output',str(output/'bist_pattern_cycle_equivalence.json')])
+            label='bist_pipeline_protocol' if meta.get('pipelined_bist_compare') else 'bist_pattern_cycle_equivalence'
+            tool='test_cnn_bist_pipeline.py' if meta.get('pipelined_bist_compare') else 'test_cnn_bist_expected_pattern.py'
+            label,code=run(label,[sys.executable,str(ROOT/'tools'/tool),'--build',str(build),
+                '--output',str(output/(label+'.json'))])
             result['checks'][label]=code
         # Keep all evidence even if one independent routed check fails.
         sys.path.insert(0,str(ROOT/'tools'))

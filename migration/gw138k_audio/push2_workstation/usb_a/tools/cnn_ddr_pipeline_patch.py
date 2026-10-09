@@ -715,3 +715,32 @@ def quiet_shared_analysis_column(text):
     wire [8:0] read_column=(SHARED_RENDER!=0) ? shared_read_addr[8:0] :
         (exporting ? shared_read_addr[8:0] : spectrum_column);"""
     return text.replace(old,new,1)
+
+
+def pipeline_bist_compare(text):
+    """Capture eight32-bit lane comparisons at response, account next cycle."""
+    old="""    localparam [1:0] WRITE = 2'd0, READ_REQUEST = 2'd1,
+                     READ_RESPONSE = 2'd2, FINISHED = 2'd3;"""
+    new="""    localparam [2:0] WRITE = 3'd0, READ_REQUEST = 3'd1,
+                     READ_RESPONSE = 3'd2, FINISHED = 3'd3, READ_CHECK = 3'd4;"""
+    assert text.count(old)==1;text=text.replace(old,new,1)
+    assert text.count('    reg [1:0] state;')==1
+    text=text.replace('    reg [1:0] state;','    reg [2:0] state;',1)
+    old='    wire mismatch = (rsp_data != expected_pattern_q);'
+    assert text.count(old)==1
+    new="""    reg [7:0] mismatch_lanes_q;
+    genvar check_lane;
+    generate for(check_lane=0;check_lane<8;check_lane=check_lane+1)begin : g_compare
+        always @(posedge clk)
+            mismatch_lanes_q[check_lane]<=rsp_data[check_lane*32+:32] !=
+                expected_pattern_q[check_lane*32+:32];
+    end endgenerate
+    wire mismatch = |mismatch_lanes_q;"""
+    text=text.replace(old,new,1)
+    old='            if (request_accepted || response_accepted) begin'
+    assert text.count(old)==1
+    text=text.replace(old,'            if (request_accepted || response_accepted || state==READ_CHECK) begin',1)
+    old='                    READ_RESPONSE: begin\n                        if (mismatch) begin'
+    assert text.count(old)==1
+    text=text.replace(old,'                    READ_RESPONSE: state<=READ_CHECK;\n                    READ_CHECK: begin\n                        if (mismatch) begin',1)
+    return text

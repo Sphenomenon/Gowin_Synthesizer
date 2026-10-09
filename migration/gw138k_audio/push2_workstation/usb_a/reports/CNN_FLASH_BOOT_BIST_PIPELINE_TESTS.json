@@ -1,0 +1,122 @@
+{
+  "passed": true,
+  "source_bound": false,
+  "build": null,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "bsram_added": 0,
+  "check_cycles_per_read_added": 1,
+  "full8MiB_startup_extra_ms": 5.24288,
+  "checks": [
+    {
+      "bursts": 1,
+      "case": 0,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=1 case=0 orderedcommand checks=24 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 521000 (1ps)"
+    },
+    {
+      "bursts": 1,
+      "case": 1,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=1 case=1 orderedcommand checks=24 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 521000 (1ps)"
+    },
+    {
+      "bursts": 1,
+      "case": 2,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=1 case=2 orderedcommand checks=24 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 521000 (1ps)"
+    },
+    {
+      "bursts": 1,
+      "case": 3,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=1 case=3 orderedcommand checks=0 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 1261000 (1ps)"
+    },
+    {
+      "bursts": 1,
+      "case": 4,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=1 case=4 orderedcommand checks=12 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 1421000 (1ps)"
+    },
+    {
+      "bursts": 1,
+      "case": 5,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=1 case=5 orderedcommand checks=24 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 451000 (1ps)"
+    },
+    {
+      "bursts": 31,
+      "case": 0,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=31 case=0 orderedcommand checks=744 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 12551000 (1ps)"
+    },
+    {
+      "bursts": 31,
+      "case": 1,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=31 case=1 orderedcommand checks=744 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 12551000 (1ps)"
+    },
+    {
+      "bursts": 31,
+      "case": 2,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=31 case=2 orderedcommand checks=744 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 12551000 (1ps)"
+    },
+    {
+      "bursts": 31,
+      "case": 3,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=31 case=3 orderedcommand checks=0 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 1261000 (1ps)"
+    },
+    {
+      "bursts": 31,
+      "case": 4,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=31 case=4 orderedcommand checks=192 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 2641000 (1ps)"
+    },
+    {
+      "bursts": 31,
+      "case": 5,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=31 case=5 orderedcommand checks=744 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 11251000 (1ps)"
+    },
+    {
+      "bursts": 257,
+      "case": 0,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=257 case=0 orderedcommand checks=6168 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 103021000 (1ps)"
+    },
+    {
+      "bursts": 257,
+      "case": 1,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=257 case=1 orderedcommand checks=6168 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 103021000 (1ps)"
+    },
+    {
+      "bursts": 257,
+      "case": 2,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=257 case=2 orderedcommand checks=6168 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 103021000 (1ps)"
+    },
+    {
+      "bursts": 257,
+      "case": 3,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=257 case=3 orderedcommand checks=0 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 1261000 (1ps)"
+    },
+    {
+      "bursts": 257,
+      "case": 4,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=257 case=4 orderedcommand checks=1548 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 11871000 (1ps)"
+    },
+    {
+      "bursts": 257,
+      "case": 5,
+      "passed": true,
+      "log": "PASS pipelined BIST bursts=257 case=5 orderedcommand checks=6168 3resetepochs final-bit/all-lane faults,timeouts,one-check-cycle-per-response\n/tmp/cnn_bist_pipeline_1ctnepbo/tb.sv:61: $finish called at 92641000 (1ps)"
+    }
+  ],
+  "original_sha256": "f536837bdd2a5ce706e332b02c81834d9d33219c45b4e0e301e1bfe5d2361ee0",
+  "patched_sha256": "0766f7fd0d742b92785e3ee279b76f977faec4a7664b2f3cb7cfec10665d2c09"
+}
