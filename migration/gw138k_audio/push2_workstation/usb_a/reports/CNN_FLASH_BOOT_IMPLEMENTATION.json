@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_full_workstation_SRAM_Flash_to_DDR_and_live_PASS_release_STA_OPEN",
+  "status": "AD_actual_Flash_three_boot_diagnostic_running_AE_physical_budget_build",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -983,5 +983,20 @@
       "A138": "A138 000011B1 0000CB03 0CF5DBAD 00000000 05AA2E01 000425B5 00042504 00000000 6CB5",
       "U138": "U138 000011B1 00000000 00000000 00000000 00000000 00000000 00000000 00000000 5E3B"
     }
+  },
+  "AE_physical_budget": {
+    "build": "results/workstation_flashae_20261009_physical_budgets",
+    "user_code": "0x000000AE",
+    "status": "synthesis",
+    "RTL_identical_to_AD": true,
+    "changed_from_AD": [
+      "constraints/tang_mega_138k.sdc",
+      "scripts/build.tcl"
+    ],
+    "legacy_DDR_UI_physical_max_delay_ns": 8.0,
+    "PLL_control_physical_max_delay_ns": 6.0,
+    "PLL_independent_full_propagation_budget_ns": 10.0,
+    "hardware_tested": false,
+    "physical_bsram_limit": 268
   }
 }

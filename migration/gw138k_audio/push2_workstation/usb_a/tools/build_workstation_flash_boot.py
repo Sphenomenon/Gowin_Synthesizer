@@ -182,6 +182,7 @@ def register_response_credit(text):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--tighten-remaining-ddr-video',action='store_true',help='physical8ns budgets on observed DDR UI rendering/ring paths and6ns PLL control endpoint; all original clocks/hold checks remain')
     ap.add_argument('--sync-delay-read-fifo',action='store_true',help='use synchronous FIFO for return history too; explicit physical budget268')
     ap.add_argument('--retime-tf-buffer-enable',action='store_true',help='keep TF command payload CE local to idle occupancy; valid data/commands exact')
     ap.add_argument('--retime-tf-capture-limit',action='store_true',help='register terminal capture-count predicate ahead of TF byte staging')
@@ -357,6 +358,15 @@ set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight
 set_max_delay 6.000 -from [get_pins {u_video/pixel_reset_pipe_2_s0/Q}] -to [get_regs {u_video/u_dvi/*/input_ones*}]
 set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing/horizontal*}] -to [get_regs {u_video/u_diagnostics/frame_advance_q* u_video/u_diagnostics/pixel_frame_count* u_video/u_scanout/under_count*}]
 ''')
+        if args.tighten_remaining_ddr_video:
+            with sdc.open('a') as f:f.write("""
+# Physical optimization of observed legacy paths; no false/multicycle waiver.
+# These bounds are STRICTER than the original DDR UI10ns clock.
+set_max_delay 8.000 -to [get_pins {u_video/u_renderer/u_*/a_text_line*/D u_video/u_renderer/u_*/a_font_row*/D u_video/u_renderer/u_*/a_text_index*/D u_video/u_renderer/g_analysis.u_analysis/column_registered*/D u_video/u_data_reader/spectrum_address_q*/D u_tf_audio/u_path/u_dma/read_ring_offset*/D u_delay_ddr_dma/rptr*/D}]
+# Include the full helper clock/cell/net distribution in the independent SDF
+# PLL10ns audit; constrain the endpoint budget more tightly for physical PNR.
+set_max_delay 6.000 -to [get_pins {u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/ICPSEL* u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/LPFRES* u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/RESET u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst/ICPSEL* u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst/LPFRES* u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst/RESET}]
+""")
         tcl=stage/'scripts/build.tcl';s=tcl.read_text()
         assert 'set_option -use_mspi_as_gpio 1' in s and 'set_option -use_cpu_as_gpio 1' in s
         s=re.sub(r'(?m)^set_option -(?:user_code|inc_pnr|inc_place).*\n','',s)
@@ -376,7 +386,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical* u_video/u_timing
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,remaining_ddr_video_physical_budgets=args.tighten_remaining_ddr_video,retimed_tf_buffer_enable=args.retime_tf_buffer_enable,retimed_tf_capture_limit=args.retime_tf_capture_limit,retimed_tmds_statistics=args.retime_tmds_statistics,retimed_display_enable=args.retime_display_enable,synchronous_delay_read_fifo=args.sync_delay_read_fifo,buffered_ddr_clients=args.buffer_ddr_clients,retimed_tf_write_buffer=args.retime_tf_write_buffer,synchronous_delay_write_fifo=args.sync_delay_write_fifo,physical_bsram_limit=268 if args.sync_delay_read_fifo else (264 if args.sync_delay_write_fifo else 260),pipelined_ddr_arbiter=args.pipeline_ddr_arbiter,registered_response_credit=args.register_response_credit,replicate_resources=args.replicate_resources,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
