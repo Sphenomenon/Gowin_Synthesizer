@@ -117,3 +117,5 @@ B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同�
 2026-10-10 B3路由完成：SYN220、物理268/340。clk50 51.197MHz/setup+0.468/hold+0.160，视频156.577MHz，独立PLL全传播与两组CDC通过；真实DDR UI setup−2.049/hold+0.169，最差u_writer/full→renderer/front_effect CE、11.802ns，正式门禁拒绝且programming_started=false。B4正在布线。针对剩余背压路径新增两拍64-bit像素寄存缓冲，source-ready按精确下一占用注册，done延迟到全部像素送达writer。原frame_writer和renderer未改。三种seed各99984周期、25复位epoch检查通过；完整1920x1080/1036800双像素输出与129601原生DDR地址/RGB565/meta在独立长停顿下逐项相同，frame_pending必须晚于最后DDR数据及meta提交。新增BSRAM为0；统一门禁重新绑定实际冻结源运行这些测试。
 
 2026-10-10 B5已启动综合/路由，新增原writer之前的寄存两拍像素ready；与B4只有HDMI连接、新skid文件、gprj和UserCode脚本不同，其余源保持冻结，实际冻结副本完整1036800像素/129601DDR命令比较PASS。根据B3另两类次要路径，准备TF32bit+6bit分段进位（Yosys SAT对全部38位输入证明相同、20组原/新TF直连/队列/背压实例回归PASS）和完整背景坐标预解码（含sized literal、菱形、箭头，保持已有1启用拍；2137105像素和完整DDR帧比较PASS）。上述修正不增加周期或BSRAM，不放宽时钟门禁。
+
+2026-10-10 B4完成物理路由268BSRAM，clk50 50.790MHz、视频180.112MHz、PLL/CDC/源绑定地址证明通过；DDR UI −2.362/hold+0.168，最差spectrum_left→background颜色，正式拒绝且未烧录。B6已开始构建，较B5只增加TF三个计数器并行进位和完整背景预解码，实际冻结源绑定的SAT/20组TF控制/完整帧提交全部PASS。B5/B6综合分别43678/43685寄存器、56442/56423 LUT、220BSRAM，物理结果待定。

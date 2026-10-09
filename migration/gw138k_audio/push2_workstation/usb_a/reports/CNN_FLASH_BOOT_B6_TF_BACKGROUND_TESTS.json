@@ -1,0 +1,211 @@
+{
+  "passed": true,
+  "source_bound": true,
+  "build": "results/workstation_flashb6_20261010_parallel_tf_background",
+  "hardware_tested": false,
+  "physical_power_cycle_tested": false,
+  "pcm_saved": false,
+  "changed_from_B5": [
+    "scripts/build.tcl",
+    "src/video/feedback_dashboard.v",
+    "src/storage/tf_audio_ddr_dma.v"
+  ],
+  "unchanged_B5_inputs": 603,
+  "bsram_added": 0,
+  "additional_enabled_cycles": 0,
+  "checks": {
+    "renderer": {
+      "passed": true,
+      "source_bound": true,
+      "build": "results/workstation_flashb6_20261010_parallel_tf_background",
+      "pixel_skid": true,
+      "pixel_skid_sha256": "df766082448aa0adcc69202c64c66db3ddb3ac88076d0df4116bff4720180504",
+      "frame_writer_sha256": "84f231c085df1dbfc0931fa622c53d6937491888ee630cdd0865203ee737087a",
+      "predecoded_text_coordinates": true,
+      "parallel_cards": true,
+      "predecoded_background": true,
+      "complete_background_coordinates": true,
+      "predecoded_wave_heights": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "dashboard_sha256": "25b4a7e6899c79653b3d9cffd2bf1685b0954c168f1fea00384e81d81e71bf9a",
+      "renderer_sha256": "88cb6bb0f98864fc775e72068bab5c2acbe0fc37eb8425a33cab11455732d44f",
+      "log": "PASS renderer1036800two-pixelbeats +129601native DDR commands,complete1920x1080,independent long/native stalls,RGB565/address/meta exact,skid completion after drain\n- /tmp/cnn_renderer_predecode_g53rtawd/tb.sv:73: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 13ms; walltime 1.237 s; speed 10.685 ms/s\n- Verilator: cpu 1.230 s on 1 threads; allocated 32 MB"
+    },
+    "tf_formal": {
+      "passed": true,
+      "source_bound": true,
+      "build": "results/workstation_flashb6_20261010_parallel_tf_background",
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "proof": "SAT all38inputbits,exactmodulo32bits includingcarryat8/16/24/32,zero/1..63increments",
+      "added_cycles": 0,
+      "helper_sha256": "01cd4801142f276c8066aa4d9aafd0e553b6d93ef08c253ae73701f25d670f3a",
+      "miter_sha256": "d151b1d982f1cb6c1b4c4cf69e4b92efe48a0ac1e59b71c2d0c6fd268bd24d49",
+      "original_sha256": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+      "patched_sha256": "6606f2a974cef17e2f76b9dee9e64059aab65a6364be146366a96b16e106cb4a",
+      "solver_version": "Yosys 0.67+post (git sha1 22c15a7ecd53437f18f67c72572bd693f78357ca, GNU /usr/bin/g++ 16.1.1)"
+    },
+    "tf_protocol": {
+      "passed": true,
+      "source_bound": true,
+      "build": "results/workstation_flashb6_20261010_parallel_tf_background",
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "cases": [
+        {
+          "source": "original_control",
+          "buffered_native": false,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:311: $finish called at 26285000 (1ps)"
+        },
+        {
+          "source": "original_control",
+          "buffered_native": false,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:327: $finish called at 27075000 (1ps)"
+        },
+        {
+          "source": "original_control",
+          "buffered_native": true,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:322: $finish called at 26885000 (1ps)"
+        },
+        {
+          "source": "original_control",
+          "buffered_native": true,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:322: $finish called at 27065000 (1ps)"
+        },
+        {
+          "source": "retimed",
+          "buffered_native": false,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:311: $finish called at 26285000 (1ps)"
+        },
+        {
+          "source": "retimed",
+          "buffered_native": false,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:327: $finish called at 27075000 (1ps)"
+        },
+        {
+          "source": "retimed",
+          "buffered_native": true,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:322: $finish called at 26885000 (1ps)"
+        },
+        {
+          "source": "retimed",
+          "buffered_native": true,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:322: $finish called at 27065000 (1ps)"
+        },
+        {
+          "source": "registered_limit",
+          "buffered_native": false,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:311: $finish called at 26285000 (1ps)"
+        },
+        {
+          "source": "registered_limit",
+          "buffered_native": false,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:327: $finish called at 27075000 (1ps)"
+        },
+        {
+          "source": "registered_limit",
+          "buffered_native": true,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:322: $finish called at 26885000 (1ps)"
+        },
+        {
+          "source": "registered_limit",
+          "buffered_native": true,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:322: $finish called at 27065000 (1ps)"
+        },
+        {
+          "source": "power_two_ring",
+          "buffered_native": false,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:311: $finish called at 26285000 (1ps)"
+        },
+        {
+          "source": "power_two_ring",
+          "buffered_native": false,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:327: $finish called at 27075000 (1ps)"
+        },
+        {
+          "source": "power_two_ring",
+          "buffered_native": true,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:322: $finish called at 26885000 (1ps)"
+        },
+        {
+          "source": "power_two_ring",
+          "buffered_native": true,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:322: $finish called at 27065000 (1ps)"
+        },
+        {
+          "source": "parallel_byte_counters",
+          "buffered_native": false,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:311: $finish called at 26285000 (1ps)"
+        },
+        {
+          "source": "parallel_byte_counters",
+          "buffered_native": false,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:327: $finish called at 27075000 (1ps)"
+        },
+        {
+          "source": "parallel_byte_counters",
+          "buffered_native": true,
+          "native_backpressure": false,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:322: $finish called at 26885000 (1ps)"
+        },
+        {
+          "source": "parallel_byte_counters",
+          "buffered_native": true,
+          "native_backpressure": true,
+          "passed": true,
+          "log": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/tmp/cnn_tf_stage_retime_3fq8dhuo/tb.sv:322: $finish called at 27065000 (1ps)"
+        }
+      ],
+      "variant_source_sha256": {
+        "original_control": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+        "retimed": "c749e67fb5b73d9b6678719c98c8e2573cd44f46f51ab7d6004d47ce6611abc7",
+        "registered_limit": "be80b540a91e2bb1d13b6d4ed545530db263ad7e1aa127221bae457f3efad6a5",
+        "power_two_ring": "6dd1327c3c586df6be9b17e618c2d3cb64225c3d780533a863947deaa022b3fc",
+        "parallel_byte_counters": "6606f2a974cef17e2f76b9dee9e64059aab65a6364be146366a96b16e106cb4a"
+      },
+      "staged_source_sha256": "c749e67fb5b73d9b6678719c98c8e2573cd44f46f51ab7d6004d47ce6611abc7",
+      "original_source_sha256": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+      "arbiter_sha256": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+      "client_queues_sha256": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c"
+    }
+  },
+  "generated_at": "2026-10-10T01:13:23.397765+08:00"
+}

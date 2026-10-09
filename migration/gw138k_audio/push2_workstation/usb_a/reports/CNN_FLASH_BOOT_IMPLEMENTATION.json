@@ -1035,7 +1035,7 @@
   "complete_workstation_flash_boot_verified": true,
   "complete_workstation_flash_boot_count": 3,
   "release_timing_closed": false,
-  "current_candidate": "results/workstation_flashb5_20261010_registered_pixel_ready",
+  "current_candidate": "results/workstation_flashb6_20261010_parallel_tf_background",
   "AF_render_predecode": {
     "build": "results/workstation_flashaf_20261009_render_predecode",
     "user_code": "0x000000AF",
@@ -1208,7 +1208,7 @@
   "B4_narrow_feature_slot": {
     "build": "results/workstation_flashb4_20261010_narrow_feature_slot",
     "user_code": "0x000000B4",
-    "status": "building",
+    "status": "routed_release_rejected",
     "changed_from_B3": [
       "scripts/build.tcl",
       "rtl/music/basic_pitch_pcm_pipeline.sv"
@@ -1226,7 +1226,29 @@
       "LUT": 56494
     },
     "synthesis_all_pcm_constant_multiply_inputs_at_most_3_bits": true,
-    "synthesis_evidence": "results/workstation_flashb4_20261010_narrow_feature_slot/feature_slot_synthesis_evidence.json"
+    "synthesis_evidence": "results/workstation_flashb4_20261010_narrow_feature_slot/feature_slot_synthesis_evidence.json",
+    "physical_bsram": 268,
+    "release_gate_passed": false,
+    "programming_started": false,
+    "clk50_mhz": 50.79,
+    "video_mhz": 180.112,
+    "ddr_ui_setup_wns_ns": -2.362,
+    "ddr_ui_hold_wns_ns": 0.168,
+    "release_checks": {
+      "clk50": 0,
+      "ddr_ui": 1,
+      "scope_cdc": 0,
+      "clk50_cdc": 0,
+      "video_pll": 0,
+      "feature_read_equivalence": 0
+    },
+    "remaining_critical_path": {
+      "slack_ns": -2.362,
+      "source": "u_video/u_renderer/u_even/a_spectrum_left_1_s0/Q",
+      "destination": "u_video/u_renderer/u_odd/b_background_14_s0/D",
+      "data_delay_ns": 12.365
+    },
+    "evidence": "results/workstation_flashb4_20261010_narrow_feature_slot/automatic_acceptance/result.json"
   },
   "prepared_registered_pixel_ready": {
     "bsram_added": 0,
@@ -1240,7 +1262,7 @@
     "hardware_tested": false
   },
   "B5_registered_pixel_ready": {
-    "status": "building",
+    "status": "routing",
     "build": "results/workstation_flashb5_20261010_registered_pixel_ready",
     "user_code": "0x000000B5",
     "changed_from_B4": [
@@ -1256,7 +1278,13 @@
     "unit_tests": "reports/CNN_FLASH_BOOT_PIXEL_SKID_TESTS.json",
     "full_renderer_tests": "reports/CNN_FLASH_BOOT_PIXEL_SKID_FULL_RENDERER_TESTS.json",
     "source_bound_full_renderer_passed": true,
-    "source_bound_full_renderer": "results/workstation_flashb5_20261010_registered_pixel_ready/frozen_full_renderer_skid_simulation.json"
+    "source_bound_full_renderer": "results/workstation_flashb5_20261010_registered_pixel_ready/frozen_full_renderer_skid_simulation.json",
+    "synthesis_resources": {
+      "BSRAM": 220,
+      "SSRAM": 505,
+      "Register": 43678,
+      "LUT": 56442
+    }
   },
   "prepared_parallel_tf_and_complete_background": {
     "tf_counter_proof": "reports/CNN_FLASH_BOOT_TF_BYTE_COUNT_TESTS.json",
@@ -1268,5 +1296,26 @@
     "bsram_added": 0,
     "hardware_tested": false,
     "all_tests_passed": true
+  },
+  "B6_parallel_tf_background": {
+    "build": "results/workstation_flashb6_20261010_parallel_tf_background",
+    "user_code": "0x000000B6",
+    "status": "placing",
+    "changed_from_B5": [
+      "scripts/build.tcl",
+      "src/video/feedback_dashboard.v",
+      "src/storage/tf_audio_ddr_dma.v"
+    ],
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_B6_TF_BACKGROUND_TESTS.json",
+    "all_source_bound_tests_passed": true,
+    "hardware_tested": false,
+    "bsram_added": 0,
+    "physical_bsram_limit": 268,
+    "synthesis_resources": {
+      "BSRAM": 220,
+      "SSRAM": 505,
+      "Register": 43685,
+      "LUT": 56423
+    }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T00:55:56.502210+08:00",
+  "generated_at": "2026-10-10T01:13:23.399393+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -162,21 +162,48 @@
       "build": "results/workstation_flashb4_20261010_narrow_feature_slot",
       "hardware_auto_boot_verified": false,
       "default_released": false,
-      "status": "routing",
+      "status": "routed_release_rejected",
       "release_gate_passed": false,
       "programming_started": false,
-      "formal_address_proof_passed": true
+      "formal_address_proof_passed": true,
+      "physical_bsram": 268,
+      "synthesis_bsram": 220,
+      "clk50_mhz": 50.79,
+      "video_mhz": 180.112,
+      "ddr_ui_setup_wns_ns": -2.362,
+      "ddr_ui_hold_wns_ns": 0.168,
+      "pll_max_ns": 7.626000000000001,
+      "release_checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0,
+        "feature_read_equivalence": 0
+      }
     },
     {
       "user_code": "B5",
       "build": "results/workstation_flashb5_20261010_registered_pixel_ready",
       "hardware_auto_boot_verified": false,
       "default_released": false,
-      "status": "synthesizing",
+      "status": "routing",
       "release_gate_passed": false,
       "programming_started": false,
       "registered_two_beat_pixel_ready": true,
-      "bsram_added": 0
+      "bsram_added": 0,
+      "synthesis_bsram": 220
+    },
+    {
+      "user_code": "B6",
+      "build": "results/workstation_flashb6_20261010_parallel_tf_background",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "status": "placing",
+      "release_gate_passed": false,
+      "programming_started": false,
+      "source_bound_TF_background_tests_passed": true,
+      "synthesis_bsram": 220
     }
   ]
 }
