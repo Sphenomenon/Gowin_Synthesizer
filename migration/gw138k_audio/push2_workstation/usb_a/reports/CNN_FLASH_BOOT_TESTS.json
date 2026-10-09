@@ -706,5 +706,27 @@
     ],
     "hardware_tested": false,
     "pcm_saved": false
+  },
+  "flash_native_pipeline": {
+    "passed": true,
+    "cases": [
+      {
+        "words": 31,
+        "baud": 115200,
+        "payload_crc32": "DFC2733D",
+        "passed": true,
+        "log": "PASS serial case=0 words=31 clk_div=4 zero_rsp=0 cycles=317455 writes=31 reads=31 source=1 crc=dfc2733d flash_error=0\n/tmp/cnn_flash_native_pipeline_hgh_o3qz/tb.sv:213: $finish called at 6349100000 (1ps)"
+      },
+      {
+        "words": 52239,
+        "baud": 3125000,
+        "payload_crc32": "AF01A61B",
+        "passed": true,
+        "log": "PASS serial case=0 words=52239 clk_div=4 zero_rsp=0 cycles=30698058 writes=52239 reads=52239 source=1 crc=af01a61b flash_error=0\n/tmp/cnn_flash_native_pipeline_hgh_o3qz/tb.sv:213: $finish called at 613961160000 (1ps)"
+      }
+    ],
+    "hardware_tested": false,
+    "pcm_saved": false,
+    "scope": "NOR -> two-pass internal UART -> original parser -> DDR16/credit -> registered shared arbiter -> independent masked native memory; concurrent scan/writer and native stalls"
   }
 }

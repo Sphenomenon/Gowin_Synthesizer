@@ -663,7 +663,13 @@
     "existing_client_algorithms_preserved": true,
     "changed_source": "new arbiter module; bounded shared response-data wiring at hdmi/top only",
     "simulation_passed": true,
-    "physical_timing_verified": false
+    "physical_timing_verified": false,
+    "full_model_native_memory_sim_passed": true,
+    "full_model_sim_write_count": 52239,
+    "full_model_sim_read_count": 52239,
+    "full_model_sim_crc32": "AF01A61B",
+    "full_model_sim_uart_baud": 3125000,
+    "small_model_actual_uart_baud": 115200
   },
   "baseline85_during_AA_build_health": {
     "result": "results/baseline85_during_ddr_pipeline_20261009_155927/result.json",
