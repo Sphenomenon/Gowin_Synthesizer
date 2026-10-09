@@ -234,3 +234,5 @@ B2完成但时序发布拒绝：clk50 feature-cache地址-2.226ns、DDR UI校准
 `--register-pixel-ready` 在原renderer与原ddr_frame_writer之间加入两拍64-bit寄存缓冲，同DDR UI时钟，无BSRAM。输入ready是精确下一占用寄存，完成事件要等全部已接收像素送至writer；原writer仍执行最后DDR数据与元数据握手后发布帧。新增接口的背压/复位/完成测试和完整1920x1080、129601个原生DDR命令逐项比较已通过。发布门禁对实际冻结缓冲/renderer/dashboard/writer源码再次运行协议和完整帧测试；通过不替代真实路由时序。
 
 TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合，三个业务计数器只改为逐字节并行进位。全部32-bit数值和6-bit增量的模32-bit结果经SAT证明（含0..63、所有进位及溢出），控制/容量错误/播放字节序保持。`--complete-background-coordinates` 需要背景预解码，把剩余纯坐标/菱形/箭头条件搬到已经增加的同一拍，无进一步像素延迟；完整RGB565和DDR命令比较通过。两个功能都为显式选项，尚未板级验证。
+
+已补强完整renderer测试的实际分析页参数：ENABLE_ANALYSIS=1、SHARED_EXPORT=1、SHARED_RENDER=1、SHARED_WAVE_ZERO_BITS=15，并包含原output_audio_analysis/capture/FFT-ROM源码；全帧RGB565/地址/meta在独立停顿下相同。统一发布脚本使用该参数组合。可选 `--predecode-dynamic-background-ink` 需要完整背景坐标预解码，把原A输入的波形/频谱/峰值判定在原A边界注册；只替换B组合使用，元数据/样本对应及周期保持，完整动态随机像素和实际分析页完整帧测试通过，尚未应用B6。

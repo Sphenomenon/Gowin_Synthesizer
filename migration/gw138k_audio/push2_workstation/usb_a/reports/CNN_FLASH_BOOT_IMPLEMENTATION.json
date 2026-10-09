@@ -1316,7 +1316,8 @@
       "SSRAM": 505,
       "Register": 43685,
       "LUT": 56423
-    }
+    },
+    "actual_analysis_page_full_frame_passed": true
   },
   "baseline85_readonly_health_20261010_0118": {
     "passed": true,
@@ -1327,5 +1328,17 @@
     "samples_per_runtime_report": 48000.0,
     "push_screen_frame_delta": 2,
     "evidence": "results/workstation_flashb6_20261010_parallel_tf_background/baseline_readonly_health.json"
+  },
+  "prepared_dynamic_background_ink": {
+    "applied_to_B6": false,
+    "additional_cycles": 0,
+    "background_source_sha256": "4cca331c96f4b6b584332adadb09ae2d8fbb438aa4bab50a654e7b8eb62e4bac",
+    "all_pixels_passed": true,
+    "renderer_analysis_page_passed": true,
+    "evidence": [
+      "reports/CNN_FLASH_BOOT_DYNAMIC_BACKGROUND_TESTS.json",
+      "reports/CNN_FLASH_BOOT_DYNAMIC_BACKGROUND_ANALYSIS_PAGE_TESTS.json"
+    ],
+    "hardware_tested": false
   }
 }

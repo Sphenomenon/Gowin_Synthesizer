@@ -567,3 +567,46 @@ def parallel_tf_byte_counters(text):
         assert text.count(old)==1,(old,text.count(old));text=text.replace(old,new)
     anchor='    function [31:0] advance_ring;';assert text.count(anchor)==1
     return text.replace(anchor,TF_BYTE_COUNT_HELPER+anchor,1)
+
+
+def predecode_dashboard_dynamic_ink(text):
+    """A-edge ink predicates replace identical combinational B-edge predicates."""
+    import re
+    declarations="    wire signed [11:0] background_y_pre=$signed({1'b0,pixel_y_q});\n"
+    for name in ['sample_top','sample_bottom','previous_top','previous_bottom']:
+        expressions=re.findall(r'\ba_'+name+r'\s*<=\s*(.*?);',text,re.S)
+        assert len(expressions)==2,(name,expressions)
+        declarations+=f'    wire signed [11:0] background_{name}_pre='+expressions[-1]+';\n'
+    wires="""    wire [10:0] background_peak_x_pre=pixel_x_q-11'd1248;
+    wire background_trace_pre=
+        ((background_y_pre>=background_sample_top_pre && background_y_pre<=background_previous_bottom_pre) ||
+         (background_y_pre>=background_previous_top_pre && background_y_pre<=background_sample_bottom_pre));
+    wire background_spectrum_l_pre=spectrum_left_q!=0 && pixel_y_q>=11'd792-{3'd0,spectrum_left_q};
+    wire background_spectrum_r_pre=spectrum_right_q!=0 && pixel_y_q>=11'd792-{3'd0,spectrum_right_q};
+    reg background_trace_q,background_spectrum_l_q,background_spectrum_r_q;
+    reg background_peak_l_q,background_peak_r_q;
+    always @(posedge clk or negedge reset_n)begin
+        if(!reset_n)begin
+            background_trace_q<=1; background_spectrum_l_q<=0; background_spectrum_r_q<=0;
+            background_peak_l_q<=0;background_peak_r_q<=0;
+        end else if(enable)begin
+            background_trace_q<=background_trace_pre;
+            background_spectrum_l_q<=background_spectrum_l_pre;
+            background_spectrum_r_q<=background_spectrum_r_pre;
+            background_peak_l_q<=background_peak_x_pre<peak_left_q[15:6];
+            background_peak_r_q<=background_peak_x_pre<peak_right_q[15:6];
+        end
+    end
+"""
+    start=text.index("        next_background = 32'h00101b2a;")
+    end=text.index('\n    end\n',start)
+    block=text[start:end]
+    for old,new in [('trace_ink','background_trace_q'),('spectrum_l_ink','background_spectrum_l_q'),
+                    ('spectrum_r_ink','background_spectrum_r_q')]:
+        assert old in block;block=re.sub(r'\b'+old+r'\b',new,block)
+    for old,new in [("a_x-11'd1248<a_left_width",'background_peak_l_q'),
+                    ("a_x-11'd1248<a_right_width",'background_peak_r_q')]:
+        assert block.count(old)==1;block=block.replace(old,new)
+    text=text[:start]+block+text[end:]
+    anchor='    reg a_effect_hit';assert text.count(anchor)==1
+    return text.replace(anchor,declarations+wires+anchor,1)

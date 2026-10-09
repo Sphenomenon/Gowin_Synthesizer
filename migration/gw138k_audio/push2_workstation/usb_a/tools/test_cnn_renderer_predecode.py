@@ -2,15 +2,16 @@
 """Two complete raster streams compare under independent random DDR stalls."""
 import argparse,hashlib,json,re,subprocess,tempfile
 from pathlib import Path
-from cnn_ddr_pipeline_patch import DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,parallel_dashboard_cards,predecode_dashboard_background,predecode_dashboard_wave_heights
+from cnn_ddr_pipeline_patch import DASHBOARD,RENDERER,predecode_dashboard,align_renderer_predecode,predecode_dashboard_text_coordinates,parallel_dashboard_cards,predecode_dashboard_background,predecode_dashboard_wave_heights,predecode_dashboard_dynamic_ink
 ROOT=Path(__file__).resolve().parents[1];BASE=ROOT/'results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1'
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--text-coordinates',action='store_true');p.add_argument('--parallel-cards',action='store_true');p.add_argument('--background-coordinates',action='store_true');p.add_argument('--complete-background-coordinates',action='store_true');p.add_argument('--wave-heights',action='store_true');p.add_argument('--pixel-skid',action='store_true');p.add_argument('--build',type=Path);a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);p.add_argument('--text-coordinates',action='store_true');p.add_argument('--parallel-cards',action='store_true');p.add_argument('--background-coordinates',action='store_true');p.add_argument('--complete-background-coordinates',action='store_true');p.add_argument('--wave-heights',action='store_true');p.add_argument('--dynamic-background-ink',action='store_true');p.add_argument('--pixel-skid',action='store_true');p.add_argument('--analysis-page',action='store_true');p.add_argument('--build',type=Path);a=p.parse_args()
 if (a.parallel_cards or a.background_coordinates) and not a.text_coordinates:p.error('--parallel-cards requires --text-coordinates')
 renderer=(BASE/RENDERER).read_text();dashboard=(BASE/DASHBOARD).read_text();new_renderer=align_renderer_predecode(renderer);new_dashboard=predecode_dashboard(dashboard)
 if a.text_coordinates:new_dashboard=predecode_dashboard_text_coordinates(new_dashboard)
 if a.parallel_cards:new_dashboard=parallel_dashboard_cards(new_dashboard)
 if a.background_coordinates:new_dashboard=predecode_dashboard_background(new_dashboard,a.complete_background_coordinates)
 if a.wave_heights:new_dashboard=predecode_dashboard_wave_heights(new_dashboard)
+if a.dynamic_background_ink:new_dashboard=predecode_dashboard_dynamic_ink(new_dashboard)
 skid_source=ROOT/'src/video/feedback_pixel_skid.v'
 if a.build:
  assert a.pixel_skid,'source binding requires --pixel-skid'
@@ -37,7 +38,7 @@ for i,module in enumerate(['renderer_original','feedback_renderer']):
      'active_voices':"32'h55aa55aa",'effect_mask':"3'd7",'effect_order':"6'b100100"}.get(name,"'0")
   else:value={'frame_ready':f'frame_ready[{i}]','frame_done':f'done[{i}]','pixel_valid':f'valid[{i}]','pixel_data':f'pixel[{i}]','display_meta':f'meta[{i}]' if a.pixel_skid else '', 'shared_render_read_enable':f'read_enable[{i}]','shared_render_wave_addr':f'wave_addr[{i}]','shared_render_image_addr':f'image_addr[{i}]'}.get(name,'')
   connections.append('.'+name+'('+value+')')
- instances.append(module+' #(.WIDTH(1920),.HEIGHT(1080),.ENABLE_ANALYSIS(0),.SHARED_RENDER(1)) r'+str(i)+'('+','.join(connections)+');')
+ instances.append(module+f' #(.WIDTH(1920),.HEIGHT(1080),.ENABLE_ANALYSIS({int(a.analysis_page)}),.SHARED_EXPORT({int(a.analysis_page)}),.SHARED_WAVE_ZERO_BITS(15),.SHARED_RENDER(1)) r'+str(i)+'('+','.join(connections)+');')
 tb=r'''`timescale 1ns/1ps
 module tb;
 reg clk=0,source_clk=0,rst=0,start=0,sample_valid=0;reg [31:0] trigger=1;
@@ -130,8 +131,14 @@ with tempfile.TemporaryDirectory(prefix='cnn_renderer_predecode_') as tmp:
   file=t/name;file.write_text(text);sources.append(file)
  sources += [BASE/'src/video'/n for n in ['feedback_capture.v','feedback_wave_align.v','video_font_5x7.v']]
  if a.pixel_skid:sources += [skid_source,BASE/'src/memory/ddr_frame_writer.v']
+ analysis_names=['output_audio_analysis.v','output_audio_capture.v','audio_analysis_rom.v']
+ if a.analysis_page:
+  if a.build:
+   for name in analysis_names:
+    assert (stage/'src/video'/name).read_bytes()==(BASE/'src/video'/name).read_bytes(),'frozen analysis source drift'
+  sources += [BASE/'src/video'/n for n in analysis_names]
  c=subprocess.run(['verilator','--binary','--timing','-j','4','-Wno-fatal','-I'+str(BASE),'--top-module','tb','--Mdir',str(t/'obj'),*map(str,sources)],capture_output=True,text=True,timeout=120);assert c.returncode==0,c.stdout[-6000:]+c.stderr[-6000:]
  v=subprocess.run([str(t/'obj/Vtb')],capture_output=True,text=True,timeout=120);assert v.returncode==0 and 'PASS renderer' in v.stdout,v.stdout+v.stderr
- report=dict(passed=True,source_bound=bool(a.build),build=str(a.build) if a.build else None,pixel_skid=a.pixel_skid,pixel_skid_sha256=hashlib.sha256(skid_source.read_bytes()).hexdigest() if a.pixel_skid else None,frame_writer_sha256=hashlib.sha256((BASE/'src/memory/ddr_frame_writer.v').read_bytes()).hexdigest() if a.pixel_skid else None,predecoded_text_coordinates=a.text_coordinates,parallel_cards=a.parallel_cards,predecoded_background=a.background_coordinates,complete_background_coordinates=a.complete_background_coordinates,predecoded_wave_heights=a.wave_heights,hardware_tested=False,pcm_saved=False,dashboard_sha256=hashlib.sha256(new_dashboard.encode()).hexdigest(),renderer_sha256=hashlib.sha256(new_renderer.encode()).hexdigest(),log=v.stdout.strip())
+ report=dict(passed=True,analysis_source_sha256={n:hashlib.sha256((BASE/'src/video'/n).read_bytes()).hexdigest() for n in analysis_names} if a.analysis_page else {},analysis_page=a.analysis_page,source_bound=bool(a.build),build=str(a.build) if a.build else None,pixel_skid=a.pixel_skid,pixel_skid_sha256=hashlib.sha256(skid_source.read_bytes()).hexdigest() if a.pixel_skid else None,frame_writer_sha256=hashlib.sha256((BASE/'src/memory/ddr_frame_writer.v').read_bytes()).hexdigest() if a.pixel_skid else None,predecoded_text_coordinates=a.text_coordinates,parallel_cards=a.parallel_cards,predecoded_background=a.background_coordinates,complete_background_coordinates=a.complete_background_coordinates,predecoded_wave_heights=a.wave_heights,predecoded_dynamic_ink=a.dynamic_background_ink,hardware_tested=False,pcm_saved=False,dashboard_sha256=hashlib.sha256(new_dashboard.encode()).hexdigest(),renderer_sha256=hashlib.sha256(new_renderer.encode()).hexdigest(),log=v.stdout.strip())
  if a.output:a.output.write_text(json.dumps(report,indent=2)+'\n')
  print(json.dumps(report,indent=2))

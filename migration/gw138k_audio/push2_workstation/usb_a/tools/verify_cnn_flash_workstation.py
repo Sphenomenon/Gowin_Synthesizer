@@ -68,10 +68,10 @@ def main():
                 '--output',str(output/'pixel_skid_protocol.json')])
             result['checks'][label]=code
             command=[sys.executable,str(ROOT/'tools/test_cnn_renderer_predecode.py'),
-                '--pixel-skid','--build',str(build),'--output',str(output/'pixel_skid_full_renderer.json')]
+                '--pixel-skid','--analysis-page','--build',str(build),'--output',str(output/'pixel_skid_full_renderer.json')]
             for key,flag in [('predecoded_text_coordinates','--text-coordinates'),
                     ('parallel_dashboard_cards','--parallel-cards'),('predecoded_background_coordinates','--background-coordinates'),
-                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates')]:
+                    ('predecoded_wave_heights','--wave-heights'),('complete_background_coordinates','--complete-background-coordinates'),('predecoded_dynamic_background_ink','--dynamic-background-ink')]:
                 if meta.get(key):command.append(flag)
             label,code=run('pixel_skid_full_renderer',command)
             result['checks'][label]=code

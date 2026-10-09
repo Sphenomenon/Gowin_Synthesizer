@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "predecoded_text_coordinates": true,
+  "parallel_cards": true,
+  "predecoded_background": true,
+  "complete_background_coordinates": true,
+  "predecoded_wave_heights": true,
+  "predecoded_dynamic_ink": true,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "additional_enabled_cycles": 1,
+  "original_sha256": "617981568d42349e67a8bf0f3883a1c6a65dfe9be998ba7d8c4cfe685ad99c45",
+  "patched_sha256": "4cca331c96f4b6b584332adadb09ae2d8fbb438aa4bab50a654e7b8eb62e4bac",
+  "log": "PASS dashboard complete1920x1080 raster,2137105compared pixels,randommetadata/stalls/frameanimation/reset,oneenabledcycle latency\n- /tmp/cnn_dashboard_predecode_srfctgzk/tb.sv:72: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 22ms; walltime 1.689 s; speed 13.080 ms/s\n- Verilator: cpu 1.682 s on 1 threads; allocated 7 MB"
+}
