@@ -1473,5 +1473,29 @@
     "pixel_pairs_compared_to_frozen": 1036800,
     "cold_invalid_analysis_checked": true,
     "hardware_tested": false
+  },
+  "BA_exporter_analysis": {
+    "build": "results/workstation_flashba_20261010_exporter_analysis",
+    "user_code": "0x000000BA",
+    "status": "synthesizing",
+    "changed_from_B9": [
+      "SHARED_RENDER local FFT column follows actual snapshot exporter; direct mode same"
+    ],
+    "source_bound_tests": "reports/CNN_FLASH_BOOT_BA_EXPORTER_TESTS.json",
+    "tests_passed": true,
+    "hardware_tested": false,
+    "promoted": false,
+    "added_cycles": 0,
+    "added_bsram": 0
+  },
+  "baseline_readonly_health_0240": {
+    "report": "results/workstation_flashba_20261010_exporter_analysis/baseline_readonly_health.json",
+    "passed": true,
+    "control_bytes_sent": 0,
+    "model_status": "E",
+    "health": 0,
+    "crc_bad": 0,
+    "samples_per_report": 48000,
+    "push_frames_delta": 2
   }
 }

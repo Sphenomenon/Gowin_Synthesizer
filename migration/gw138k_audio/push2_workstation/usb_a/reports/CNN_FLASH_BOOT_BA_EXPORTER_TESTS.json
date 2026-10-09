@@ -1,0 +1,263 @@
+{
+  "passed": true,
+  "source_bound": true,
+  "build": "results/workstation_flashba_20261010_exporter_analysis",
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "added_cycles": 0,
+  "checks": {
+    "frozen_shared_display_integration.json": {
+      "passed": true,
+      "source_bound": true,
+      "quiet_shared_analysis": false,
+      "tested_renderer_sha256": "f93d1be113a8cd393d824a1b257825660d96378ade1f3e14d940a3b68bb63069",
+      "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_flashba_20261010_exporter_analysis",
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "front_ram_address_poisoned": true,
+      "scope": "actual FFT/XY bank ownership with nonuniform front arrays -> DDR publication -> coherent cache reload -> complete raster against frozen original; 3frames + cold invalid-analysis reset",
+      "fixture_sha256": "c54d726303e5cb4bf9dabc5d9132bfb45848b40e946bcaacd5cbb6d3a65b0738",
+      "source_sha256": {
+        "src/memory/display_data_layout_pkg.sv": "ba53d96edd01ed1fca72dc8ec4377e66afccd4a8a79e8f113aba3f53151d233b",
+        "src/video/feedback_renderer.v": "f93d1be113a8cd393d824a1b257825660d96378ade1f3e14d940a3b68bb63069",
+        "src/video/feedback_dashboard.v": "3fd101ab84a34fc0e79df88e3ec40a4f2385fcbbac91fb819d343d7c89d9f017",
+        "src/video/feedback_capture.v": "ae1c33731921949bb4111d9c8aa2d0f788d373e088310f47dc7fb3f86fb4d530",
+        "src/video/feedback_wave_align.v": "4cc6e5bb6c065266185236ee6dcb6acf9403872096d912cf096ce07b66848d4a",
+        "src/video/video_font_5x7.v": "f8db5962cd395d8f6d13727a853d4bf2a6994a2ec8b9ac8d880ab11449ee896b",
+        "src/video/output_audio_analysis.v": "5c4929314c548d0ab97d6274e6ceb3ef59a76be739c5fb0a1d48564aa011dbdc",
+        "src/video/output_audio_capture.v": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+        "src/video/audio_analysis_rom.v": "439ff9f00ff4d29740b296f2e264eabc19e6cb2ff2195dfb2bd815c9d1286946",
+        "src/memory/display_data_writer.v": "d04be5254fa9ee07e497ff9c92a26a959eb394f3c68366faf71de16543e9d8b8",
+        "src/memory/display_data_reader.v": "3079ea0aa9108ec476fbb52ae0814faa41a039c98fba5a486c1ad136c617dd20"
+      },
+      "log": "PASS shared DDR HDMI source: 3 frames, every payload/descriptor, backpressure/25ms stall, coherent DDR reload, 1036800 P10 pixel pairs identical\nPASS startup invalid analysis: zero bitmap/columns, lengths zero; waveform and metadata valid\n- /tmp/cnn_shared_display_777p0nz4/tb.sv:246: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 76ms; walltime 10.607 s; speed 7.227 ms/s\n- Verilator: cpu 10.551 s on 1 threads; allocated 15 MB"
+    },
+    "frozen_analysis_renderer.json": {
+      "passed": true,
+      "quiet_shared_analysis": true,
+      "shallow_card_select": true,
+      "analysis_source_sha256": {
+        "output_audio_analysis.v": "5c4929314c548d0ab97d6274e6ceb3ef59a76be739c5fb0a1d48564aa011dbdc",
+        "output_audio_capture.v": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+        "audio_analysis_rom.v": "439ff9f00ff4d29740b296f2e264eabc19e6cb2ff2195dfb2bd815c9d1286946"
+      },
+      "parallel_spectrum_address": true,
+      "analysis_page": true,
+      "source_bound": true,
+      "build": "results/workstation_flashba_20261010_exporter_analysis",
+      "pixel_skid": true,
+      "pixel_skid_sha256": "df766082448aa0adcc69202c64c66db3ddb3ac88076d0df4116bff4720180504",
+      "frame_writer_sha256": "84f231c085df1dbfc0931fa622c53d6937491888ee630cdd0865203ee737087a",
+      "predecoded_text_coordinates": true,
+      "parallel_cards": true,
+      "predecoded_background": true,
+      "complete_background_coordinates": true,
+      "predecoded_wave_heights": true,
+      "predecoded_dynamic_ink": true,
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "dashboard_sha256": "3fd101ab84a34fc0e79df88e3ec40a4f2385fcbbac91fb819d343d7c89d9f017",
+      "renderer_sha256": "f93d1be113a8cd393d824a1b257825660d96378ade1f3e14d940a3b68bb63069",
+      "log": "PASS renderer1036800two-pixelbeats +129601native DDR commands,complete1920x1080,independent long/native stalls,RGB565/address/meta exact,skid completion after drain\n- /tmp/cnn_renderer_predecode_bx0zfewc/tb.sv:73: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 13ms; walltime 1.460 s; speed 9.029 ms/s\n- Verilator: cpu 1.455 s on 1 threads; allocated 32 MB"
+    },
+    "frozen_spectrum_address_sat.json": {
+      "passed": true,
+      "source_bound": true,
+      "build": "results/workstation_flashba_20261010_exporter_analysis",
+      "hardware_tested": false,
+      "pcm_saved": false,
+      "added_cycles": 0,
+      "checks": [
+        {
+          "width": 2,
+          "passed": true,
+          "proof": "SAT all12inputbits including wrap/range/advance",
+          "miter_sha256": "70305a15639fe15044935e6d3ad1d9c227822b09680074c9c5f3ac99fc7f0251"
+        },
+        {
+          "width": 64,
+          "passed": true,
+          "proof": "SAT all12inputbits including wrap/range/advance",
+          "miter_sha256": "dd82c5836338273812157ef7fbceb0f91ae0ea61dae27bb971298fb38c58d0bf"
+        },
+        {
+          "width": 1920,
+          "passed": true,
+          "proof": "SAT all12inputbits including wrap/range/advance",
+          "miter_sha256": "ec42caefb1a341aeaba6b9e69d7b5bec48d726bb2161995d6441cdc6cd04f5c6"
+        },
+        {
+          "width": 2048,
+          "passed": true,
+          "proof": "SAT all12inputbits including wrap/range/advance",
+          "miter_sha256": "96803c73c838d91ab8e869348e2d4fba4d963595bd0bf07109afe4c0f9a1063e"
+        }
+      ],
+      "original_sha256": "cf2734b8be6cd198f92bcae5536e876475e57e0c0affedf05578ba93417208c4",
+      "patched_sha256": "f93d1be113a8cd393d824a1b257825660d96378ade1f3e14d940a3b68bb63069"
+    }
+  },
+  "model_pipeline_composition": {
+    "passed": true,
+    "claim": "identical11 source hashes/model to executed B8; not another BA full-model execution",
+    "checks": {
+      "results/workstation_flashba_20261010_exporter_analysis/Prj1/rtl/music/basic_pitch_flash_serial_boot.sv": {
+        "sha256": "ca350379673839ecc004878a7b99f051c27c77571231d514aeaf1a7fca57a416",
+        "equal_to_executed_B8": true
+      },
+      "results/workstation_flashba_20261010_exporter_analysis/Prj1/rtl/music/basic_pitch_flash_model_loader.sv": {
+        "sha256": "3f45c816e2bf5a994a9e336b839ccca35685b2e3f89db908f5f9ab8ad6488805",
+        "equal_to_executed_B8": true
+      },
+      "results/workstation_flashba_20261010_exporter_analysis/Prj1/rtl/music/basic_pitch_flash_io_guard.sv": {
+        "sha256": "be70cddf661fd231f4f187e8eecf8cf9a2ecbd1e2b0ad8d8041936c4938f5e58",
+        "equal_to_executed_B8": true
+      },
+      "results/workstation_flashba_20261010_exporter_analysis/Prj1/rtl/music/basic_pitch_uart_model_loader.sv": {
+        "sha256": "d1826c33c2b3dbcf3656ac80a271f523392482f94d2b6c7eb1c3aa79b0643e58",
+        "equal_to_executed_B8": true
+      },
+      "results/workstation_flashba_20261010_exporter_analysis/Prj1/rtl/music/basic_pitch_uart_rx.sv": {
+        "sha256": "28f403ca014eadb6141beb6f293a52266962326de8e15d44f7115d1745310b7c",
+        "equal_to_executed_B8": true
+      },
+      "results/workstation_flashba_20261010_exporter_analysis/Prj1/rtl/music/basic_pitch_ddr16_port.sv": {
+        "sha256": "6b0ce974e4081485f24a940e257e5a74daed3b1ce3e80f58b26f7304cae97785",
+        "equal_to_executed_B8": true
+      },
+      "results/workstation_flashba_20261010_exporter_analysis/Prj1/rtl/music/basic_pitch_ddr_read_credit.sv": {
+        "sha256": "62233867c73142a3876b17f325e3568b0fbd8e38e5e6dbf32da4a484db38b2ae",
+        "equal_to_executed_B8": true
+      },
+      "results/workstation_flashba_20261010_exporter_analysis/Prj1/rtl/music/basic_pitch_ddr_arbiter_pipeline.sv": {
+        "sha256": "60aec35bdcd2ee86f60464631838cd47c5577fee335c2ea2e6a1f0b647dbb2f3",
+        "equal_to_executed_B8": true
+      },
+      "results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/src/control/uart_tx.v": {
+        "sha256": "3513207cae9e529b0dabd45040a33012440ad4c1fc842571b4cb70ece5d09e8f",
+        "equal_to_executed_B8": true
+      },
+      "results/workstation_flashba_20261010_exporter_analysis/Prj1/rtl/music/basic_pitch_ddr_client_queues.sv": {
+        "sha256": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+        "equal_to_executed_B8": true
+      },
+      "results/workstation_flashba_20261010_exporter_analysis/Prj1/rtl/music/basic_pitch_workstation_link.sv": {
+        "sha256": "e8970c358f4ee7d5f6ce4f167d238e05e47ecba4d80b8eaf5005c3abce53f8bc",
+        "equal_to_executed_B8": true
+      }
+    }
+  },
+  "baseline_readonly_health": {
+    "passed": true,
+    "started_at": "2026-10-10T02:40:12+08:00",
+    "exercise_live": false,
+    "sample_stream_saved": false,
+    "tests": {
+      "startup_cpu_audio_ddr_model": "passed",
+      "push_connected_screen_frames_advancing": "passed",
+      "audio_health_zero": "passed"
+    },
+    "last": {
+      "A138": [
+        "0000651F",
+        "0000CB03",
+        "4A10ECAD",
+        "00000000",
+        "05AA2E01",
+        "0017B37D",
+        "0017B2CF",
+        "00000000"
+      ],
+      "C350": [
+        "0000651F",
+        "55491063",
+        "185F7075",
+        "80001758",
+        "43505531",
+        "50415353",
+        "06BF6F1F",
+        "00000000"
+      ],
+      "K138": {
+        "sequence": 25887,
+        "applied_events": 37,
+        "mode": "A",
+        "sound": "flute",
+        "route": "stereo",
+        "effects": 0,
+        "active_voices": 0,
+        "gain_q15": 25600,
+        "pc_input_errors": 0,
+        "held_notes": []
+      },
+      "E138": {
+        "sequence": 25887,
+        "vibrato": 0,
+        "glide": 0,
+        "bend_index": 128,
+        "bend": 0,
+        "pitch_q20": 1048576,
+        "panic_epoch": 3,
+        "sustain": false,
+        "snap_request": 5,
+        "snap_token": 5,
+        "snap_done": true,
+        "snap_error": false,
+        "snap_count": 1,
+        "snap_completed": 5,
+        "snap_sequence": 1950072
+      },
+      "U138": [
+        "0000651F",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000",
+        "00000000"
+      ],
+      "P138": [
+        "0000651F",
+        "00000103",
+        "0002ED91",
+        "00000000",
+        "0000006A",
+        "00005180",
+        "00FF0000",
+        "00000000"
+      ],
+      "B138": [
+        "00000004",
+        "AC44B042",
+        "00004000",
+        "0000003B"
+      ]
+    },
+    "limits": [
+      "UART smoke does not verify physical DAC waveform, HDMI reception, TF hotplug or CNN song-score correctness."
+    ],
+    "startup_panic_epoch": 3,
+    "push_connected": true,
+    "audio_health_word": "00000000",
+    "crc_valid_records": {
+      "A138": 4,
+      "C350": 4,
+      "K138": 4,
+      "E138": 4,
+      "U138": 4,
+      "P138": 4,
+      "B138": 8
+    },
+    "crc_bad": 0,
+    "model_statuses": [
+      14
+    ],
+    "sample_counter_delta": 144000,
+    "runtime_report_sequence_delta": 3,
+    "samples_per_runtime_report": 48000.0,
+    "push_screen_frame_delta": 2,
+    "midi_control_commands": [],
+    "finished_at": "2026-10-10T02:40:18+08:00"
+  }
+}

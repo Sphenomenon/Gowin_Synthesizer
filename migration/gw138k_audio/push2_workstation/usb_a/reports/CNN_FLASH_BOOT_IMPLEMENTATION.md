@@ -136,3 +136,5 @@ B3本地ready完整链路31字/真实115200已通过，原RX文件完全相同�
 B9 TF协议回归进一步绑定实际构建内的注册tagflags仲裁器60aec35b和client queues，42组全部通过；缓冲模式使用候选构建源码，直接/同周期响应仍使用独立native memory oracle。不是仅TF模块的源码绑定。
 
 共享显示整链路补强：B9实际FFT/XY银行所有权、非均匀front RAM→原snapshot writer→DDR packet→原display cache→完整渲染，3帧全部payload/descriptor、25ms停顿、冷启动无FFT状态PASS，首帧1036800像素对与冻结源相同。备用quiet-shared-analysis变换（尚未用于B8/B9）同样通过，0周期/0BSRAM；共享模式本地column只依赖实际导出地址，直接模式原式不变。
+
+2026-10-10T02:40:56.289940+08:00：BA开始构建，加入SHARED_RENDER local FFT exporter-only地址。实际源码绑定共享display3帧/全payload+descriptor/25ms停顿/冷启动、非均匀front array、完整1036800双像素及129601 DDR命令、4WIDTH地址SAT通过。02:40板上baseline只读健康检查PASS：E/health0/CRC0/每报告48000样本/Push帧+2、0控制字节。BA模型链路11源码及镜像与执行B8逐哈希相同（组合证明）。
