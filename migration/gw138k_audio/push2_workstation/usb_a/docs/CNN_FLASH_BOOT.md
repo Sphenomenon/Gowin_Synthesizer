@@ -171,3 +171,5 @@ python3 tools/test_cnn_startup_history.py
 可选`--retime-start-delay`仅把原22位歌曲启动倒计时的零值判断寄存，按原装载/取消/重插/歌曲命令优先级计算下一拍标志，启动与重启时刻不加延迟。`python3 tools/test_cnn_start_delay_retime.py`提取full85和补丁后的实际顶层控制HDL，对30000周期、所有控制寄存器、0/1/2/装载/随机边界、同时发生的控制与复位逐拍比较，并运行未强制赋值的2500012周期完整自然歌曲启动倒计时。该选项用于修复A2/9F计数器到CNN控制的慢路径，不改CNN算术或模型。
 
 验收UART在打开前显式置DTR/RTS为低，与实时采集工具一致；监听过程不发BPN1或模型字节。十项部署替身测试也断言这两个控制输出保持低。
+
+可选`--retime-video-telemetry`只将UART观察用的vblank帧计数事件寄存一拍像素时钟（约6.734ns），解除原消隐判定到32位诊断计数器的使能路径。图像、扫描时序、DDR显示读取均未改动。`python3 tools/test_cnn_video_telemetry.py`比较实际旧/新诊断HDL的30000像素周期，计数/Gray输出恰好延后一拍，覆盖连续脉冲、低16位进位及异步复位，其它测频和DDR诊断寄存器同拍一致。

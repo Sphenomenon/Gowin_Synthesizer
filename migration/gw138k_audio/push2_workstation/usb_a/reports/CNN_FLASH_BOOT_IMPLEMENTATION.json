@@ -550,6 +550,25 @@
     "reason": "about65min/no final routing result, source lacks subsequently required cold history alignment, superseded by release-eligible A5",
     "hardware_tested": false,
     "incremental_pr_format_validated": false,
-    "document_conflict_not_resolved": true
+    "document_conflict_not_resolved": true,
+    "exit_code": -15,
+    "flow": "all",
+    "inputs_unchanged": true,
+    "changed": []
+  },
+  "A5_completed": {
+    "synthesis_bsram": 216,
+    "physical_bsram": 260,
+    "clk50_closed": true,
+    "clk50_fmax_mhz": 51.991,
+    "clk50_setup_wns_ns": 0.766,
+    "clk50_hold_wns_ns": 0.165,
+    "clk50_setup_hold_tns": 0,
+    "video_fmax_mhz": 147.133,
+    "ddr_ui_fmax_mhz": 180.669,
+    "release_gate_passed": false,
+    "four_routed_audits_passed": true,
+    "programming_started": false,
+    "reason": "only previous-positive video clock Fmax regressed; diagnostics frame CE path"
   }
 }

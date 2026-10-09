@@ -575,5 +575,15 @@
     "patched_top_sha256": "32bc79dc2716f3c50ccbe118bb2158bd751d670eb8393b6ddf35678124f8fe15",
     "log": "PASS start-delay actual HDL,30000 cycles,all control registers,0/1/2/load/random boundaries,coincident controls,resets,natural2500000-cycle song launch,no latency change\n/tmp/cnn_start_delay_fr9kdvpe/tb.sv:166: $finish called at 50600371000 (1ps)",
     "hardware_tested": false
+  },
+  "video_frame_telemetry_retime": {
+    "passed": true,
+    "pixel_cycles": 30000,
+    "added_diagnostic_latency_pixel_cycles": 1,
+    "image_path_changed": false,
+    "original_source_sha256": "637e4ad4b391a54111f40d6a58b5f4e4a27d9379a44d8327dafb716db6f3b711",
+    "patched_source_sha256": "6399dfdccb2a4806998a4f84c43a959108d1a4549d725607dc2ef624abeddeb3",
+    "log": "PASS video diagnostics30000pixel cycles,exact1cycle frame/count/Gray delay,dense pulses,low16rollover,async reset; other counters unchanged\n/tmp/cnn_video_count_0ig64ijw/test.sv:392: $finish called at 202151413 (1ps)",
+    "hardware_tested": false
   }
 }

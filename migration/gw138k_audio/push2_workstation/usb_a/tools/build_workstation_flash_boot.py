@@ -119,9 +119,22 @@ def retime_start_delay(text):
 """
     return text.replace(anchor,predicate+anchor)
 
+def retime_video_frame_telemetry(text):
+    """One pixel-cycle telemetry event pipeline; no scanout/pixel/DDR changes."""
+    anchor='    wire pixel_frame_reset_n = pixel_reset_n;'
+    assert text.count(anchor)==1 and text.count('            if (vblank_start) begin')==1
+    text=text.replace(anchor,anchor+"""
+    reg frame_advance_q;
+    always @(posedge pixel_clk or negedge pixel_frame_reset_n) begin
+        if(!pixel_frame_reset_n) frame_advance_q<=1'b0;
+        else frame_advance_q<=vblank_start;
+    end""")
+    return text.replace('            if (vblank_start) begin','            if (frame_advance_q) begin')
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--retime-cache-read',action='store_true',help='equivalent one-cycle cache range mask plus parallel dwell counters; no CNN arithmetic change')
+    ap.add_argument('--retime-video-telemetry',action='store_true',help='pipeline diagnostic-only vblank count by one pixel cycle; unchanged image and DDR path')
     ap.add_argument('--retime-start-delay',action='store_true',help='cycle-exact registered countdown-zero predicate; no start latency change')
     ap.add_argument('--defer-ddr-startup',action='store_true',help='experimental100ms settling after audio/video lock before initial DDR reset release; no PHY/data/recovery changes')
     ap.add_argument('--transport',choices=('serial','direct'),default='serial',help='serial preserves the full85 CNN/native-DDR hierarchy; direct is the earlier diagnostic')
@@ -231,6 +244,9 @@ def main():
             link.write_text(text)
         if args.retime_start_delay:s=retime_start_delay(s)
         top.write_text(s)
+        if args.retime_video_telemetry:
+            diagnostics=stage/'src/video/video_runtime_diagnostics.v'
+            diagnostics.write_text(retime_video_frame_telemetry(diagnostics.read_text()))
         tree=ET.parse(stage/'Prj1.gprj');fl=tree.find('FileList');present={f.attrib['path'] for f in fl}
         for rel in overlays:
             if rel not in present and not rel.endswith('.svh'):
@@ -266,14 +282,14 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
         tcl.write_text(s)
         inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
         changed=sorted(p for p,h in inputs.items() if originals.get(p)!=h)
-        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
+        allowed=set(overlays+(['rtl/music/basic_pitch_workstation_link.sv'] if args.transport=='serial' else [])+(['rtl/music/basic_pitch_pcm_pipeline.sv'] if args.retime_cache_read else [])+(['src/video/video_runtime_diagnostics.v'] if args.retime_video_telemetry else [])+['src/push2/gw138k_push_workstation_top.v','Prj1.gprj','scripts/build.tcl',
                              'constraints/tang_mega_138k.cst','constraints/tang_mega_138k.sdc'])
         assert set(changed)==allowed,(changed,allowed)
         write_json(output/'workstation_inputs.json',inputs)
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,retimed_start_delay=args.retime_start_delay,video_diagnostic_pixel_latency_added=1 if args.retime_video_telemetry else 0,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,startup_panic_aligns_delay_history=args.defer_ddr_startup,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
