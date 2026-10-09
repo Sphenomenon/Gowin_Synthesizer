@@ -452,5 +452,42 @@
       "video_pixel148",
       "cpu_bus50"
     ]
+  },
+  "initial_ddr_boot_gate": {
+    "passed": true,
+    "cases": [
+      {
+        "hold_cycles": 1,
+        "invalid_config_rejected": false,
+        "passed": true,
+        "log": "PASS DDR boot gate HOLD=1\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_ddr_boot_gate.sv:24: $finish called at 711000 (1ps)"
+      },
+      {
+        "hold_cycles": 8,
+        "invalid_config_rejected": false,
+        "passed": true,
+        "log": "PASS DDR boot gate HOLD=8\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_ddr_boot_gate.sv:24: $finish called at 1291000 (1ps)"
+      },
+      {
+        "hold_cycles": 31,
+        "invalid_config_rejected": false,
+        "passed": true,
+        "log": "PASS DDR boot gate HOLD=31\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/model_flash/tb_ddr_boot_gate.sv:24: $finish called at 3131000 (1ps)"
+      },
+      {
+        "hold_cycles": 0,
+        "invalid_config_rejected": true,
+        "passed": true,
+        "log": "FATAL: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_boot_gate.sv:16: DDR boot hold cycles must be1..50000000\n       Time: 0  Scope: tb_ddr_boot_gate.dut"
+      },
+      {
+        "hold_cycles": 50000001,
+        "invalid_config_rejected": true,
+        "passed": true,
+        "log": "FATAL: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_boot_gate.sv:16: DDR boot hold cycles must be1..50000000\n       Time: 0  Scope: tb_ddr_boot_gate.dut"
+      }
+    ],
+    "hardware_root_cause_proven": false,
+    "notes": "Gate only staggers initial DDR reset; does not replace PHY/calibration or normal recovery."
   }
 }

@@ -96,6 +96,7 @@ def audit_serial_compatibility(output):
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--retime-cache-read',action='store_true',help='equivalent one-cycle cache range mask plus parallel dwell counters; no CNN arithmetic change')
+    ap.add_argument('--defer-ddr-startup',action='store_true',help='experimental100ms settling after audio/video lock before initial DDR reset release; no PHY/data/recovery changes')
     ap.add_argument('--transport',choices=('serial','direct'),default='serial',help='serial preserves the full85 CNN/native-DDR hierarchy; direct is the earlier diagnostic')
     ap.add_argument('--flow',choices=('prepare','syn','all','pnr'),default='syn')
     ap.add_argument('--output',type=Path)
@@ -122,6 +123,7 @@ def main():
     stage=output/'Prj1'
     overlays=OVERLAYS if args.transport=='direct' else [f'rtl/music/{n}' for n in ('basic_pitch_flash_model_loader.sv','basic_pitch_flash_map.svh','basic_pitch_flash_io_guard.sv','basic_pitch_flash_serial_boot.sv')]
     if args.retime_cache_read:overlays += ['rtl/music/basic_pitch_weight_cache.sv']
+    if args.defer_ddr_startup:overlays += ['rtl/music/basic_pitch_ddr_boot_gate.sv']
     if args.flow!='pnr':
         assert sha(BASE/'Prj1/impl/pnr/Prj1.fs')==BASE_FS_SHA,'deployed bitstream drift'
         originals=json.loads((BASE/'workstation_inputs.json').read_text())
@@ -136,6 +138,15 @@ def main():
             text=text.replace(original,'            for (integer i=0;i<8;i=i+1)\n                if (dwell_bucket(state)==i) dwell_count[i] <= dwell_count[i] + 1\'b1;')
             pipeline.write_text(text)
         top=stage/'src/push2/gw138k_push_workstation_top.v';s=top.read_text()
+        if args.defer_ddr_startup:
+            anchor='    ddr3_platform u_memory (';assert s.count(anchor)==1
+            s=s.replace(anchor,'''    wire memory_boot_reset_n;
+    basic_pitch_ddr_boot_gate u_memory_boot_gate (
+        .clk_i(clk_50m),.rst_ni(reset_n),.aux_ready_i(audio_locked && memory_flags[7]),
+        .memory_rst_no(memory_boot_reset_n));
+'''+anchor)
+            anchor='.clk_50m(clk_50m),.rst_n(reset_n),.ui_clk(memory_clk)';assert s.count(anchor)==1
+            s=s.replace(anchor,'.clk_50m(clk_50m),.rst_n(memory_boot_reset_n),.ui_clk(memory_clk)')
         assert s.count('    input wire sd_miso,')==1
         s=s.replace('    input wire sd_miso,','''    input wire flash_miso,
     output wire flash_clk,flash_cs_n,flash_mosi,flash_wp_n,flash_hold_n,
@@ -192,6 +203,8 @@ def main():
 # original 20-ns clocks, hold checks and all pre-existing paths retained.
 set_max_delay 18.000 -to [get_pins {u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache*/RESET}]
 ''')
+        if args.defer_ddr_startup:
+            with sdc.open('a') as f:f.write('\n# Only the auxiliary-lock first synchronizer entry is asynchronous.\nset_false_path -to [get_pins {u_memory_boot_gate/ready_meta*/D}]\n')
         if args.tighten_video_control:
             with sdc.open('a') as f:f.write('''
 # Tighten known pixel-domain control routes; no display RTL/clock/hold change.
@@ -216,7 +229,7 @@ set_max_delay 6.000 -from [get_regs {u_video/u_timing/vertical*}] -to [get_regs 
         write_json(output/'build_metadata.json',dict(baseline=str(BASE.relative_to(ROOT)),baseline_fs_sha256=BASE_FS_SHA,
             user_code=('0x'+args.user_code.upper()) if args.user_code else None,changed_from_base=changed,
             git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,
+            hardware_tested=False,flash_model_base='0x00600000',full_workstation=True,transport=args.transport,retimed_cache_read=args.retime_cache_read,ddr_initial_aux_settle_ms=100 if args.defer_ddr_startup else None,
             route_option=args.route_option,place_option=args.place_option,video_control_max_delay_ns=6.0 if args.tighten_video_control else None,cache_reset_max_delay_ns=18.0 if args.tighten_cache_reset else None))
         image,manifest=build_image(load_words(stage/'rtl/music/weights/cnn_ddr_blob.mem'))
         assert manifest['word_count']==52239 and manifest['payload_crc32']=='AF01A61B'
