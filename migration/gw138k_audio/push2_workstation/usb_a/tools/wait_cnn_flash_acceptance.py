@@ -42,6 +42,11 @@ while time.monotonic()<deadline:
         command=[sys.executable,str(ROOT/'tools/verify_cnn_flash_workstation.py'),str(build),'--output',str(output)]
         if a.program and not any(result.get('hardware_tested') for result in prior):command.append('--program')
         elif a.program:print('A predecessor passed hardware verification; this candidate gets local gate only',flush=True)
-        raise SystemExit(subprocess.call(command,cwd=ROOT))
+        exit_code=subprocess.call(command,cwd=ROOT)
+        refresh=ROOT/'tools/refresh_cnn_flash_status.py'
+        if refresh.is_file():
+            refreshed=subprocess.run([sys.executable,str(refresh)],cwd=ROOT)
+            if refreshed.returncode:print('Acceptance completed; status refresh failed, read its result.json directly',file=sys.stderr,flush=True)
+        raise SystemExit(exit_code)
     time.sleep(min(15,max(0,deadline-time.monotonic())))
 raise SystemExit('build/predecessors not ready within timeout; no hardware IO')

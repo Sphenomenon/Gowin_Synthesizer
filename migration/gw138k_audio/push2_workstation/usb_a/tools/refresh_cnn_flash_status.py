@@ -17,7 +17,13 @@ for row in report['rows']:
                 release_gate_passed=gate['passed'],programming_started=gate['programming_started'],
                 checks=gate['checks'],error=gate.get('error'))
             # Preserve explicitly recorded historical temporary AD diagnosis.
-            if gate.get('hardware_tested'):row['hardware_auto_boot_verified']=True
+            if gate.get('hardware_tested'):
+                row['hardware_auto_boot_verified']=True
+                # Deployment has verified actual configuration Flash and
+                # source1/E; this does not promote the separate default file.
+                report['board_current_user_code']='0x'+row['user_code'].zfill(8)
+                report['board_current_source_evidence']=str(acceptance.relative_to(ROOT))
+                report['board_flash_auto_boot_hardware_verified']=True
             summary=gate.get('previous_positive_clock_audit',{}).get('candidate_clocks',{})
             if 'clk_50m' in summary:row['clk50_fmax_mhz']=summary['clk_50m'][1]
             if 'video_pixel148' in summary:row['video_fmax_mhz']=summary['video_pixel148'][1]
@@ -65,6 +71,12 @@ for row in report['rows']:
     hardware='已验收' if row.get('hardware_auto_boot_verified') else ('已尝试，见回滚证据' if row.get('programming_started') else '未烧录')
     lines.append('| '+ ' | '.join([row['user_code'],row['status'],*values,hardware])+' |')
 text=text[:start]+'\n'.join(lines)+text[end:]
+if report.get('board_flash_auto_boot_hardware_verified'):
+    marker='自动实体验收后板上版本：'
+    line=marker+report['board_current_user_code']+'；证据 '+report['board_current_source_evidence']+'；默认LATEST保持'+report['current_default']+'。'
+    if marker in text:
+        begin=text.index(marker);finish=text.index('\n',begin);text=text[:begin]+line+text[finish:]
+    else:text=text.replace('\n\n## 已完成的验证','\n\n'+line+'\n\n## 已完成的验证')
 marker='状态表从实际构建和验收工件生成：'
 if marker in text:
     beginning=text.index(marker); ending=text.index('\n',beginning)
