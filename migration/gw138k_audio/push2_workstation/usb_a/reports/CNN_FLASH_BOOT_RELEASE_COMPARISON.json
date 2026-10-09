@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T03:28:34.057928+08:00",
+  "generated_at": "2026-10-10T03:48:21.964700+08:00",
   "physical_power_cycle_tested": false,
   "board_current_user_code": "0x00000085",
   "current_default": "full85",
@@ -399,12 +399,38 @@
     {
       "user_code": "BA",
       "build": "results/workstation_flashba_20261010_exporter_analysis",
-      "status": "routing",
+      "status": "routed_rejected",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
       "programming_started": false,
-      "source_bound_shared_display_passed": true
+      "source_bound_shared_display_passed": true,
+      "checks": {
+        "clk50": 0,
+        "ddr_ui": 1,
+        "scope_cdc": 0,
+        "clk50_cdc": 0,
+        "video_pll": 0,
+        "feature_read_equivalence": 0,
+        "pixel_skid_protocol": 0,
+        "pixel_skid_full_renderer": 0,
+        "shared_display_integration": 0,
+        "tf_byte_count_proof": 0,
+        "tf_byte_count_protocol": 0,
+        "tf_read_total_proof": 0,
+        "spectrum_address_proof": 0,
+        "card_select_proof": 0,
+        "tf_availability_proof": 0,
+        "bist_pattern_cycle_equivalence": 0
+      },
+      "error": "routed timing/CDC/PLL check failed",
+      "clk50_fmax_mhz": 51.52,
+      "video_fmax_mhz": 188.468,
+      "PLL_all_endpoints_passed": true,
+      "ddr_ui_setup_wns_ns": -2.254,
+      "ddr_ui_hold_wns_ns": 0.166,
+      "synthesis_bsram": 220,
+      "physical_bsram": 268
     },
     {
       "user_code": "BB",
@@ -439,7 +465,7 @@
     {
       "user_code": "BE",
       "build": "results/workstation_flashbe_20261010_tf_return_pipeline",
-      "status": "synthesizing",
+      "status": "routing",
       "hardware_auto_boot_verified": false,
       "default_released": false,
       "release_gate_passed": false,
@@ -447,6 +473,17 @@
       "source_bound_full_TF_return_pipeline_passed": true,
       "tf_read_return_cycles_added": 1,
       "complete_native_epoch_restart_cases": 18
+    },
+    {
+      "user_code": "BF",
+      "build": "results/workstation_flashbf_20261010_ui_control_budget",
+      "status": "synthesizing",
+      "hardware_auto_boot_verified": false,
+      "default_released": false,
+      "release_gate_passed": false,
+      "programming_started": false,
+      "RTL_identical_to_BE": true,
+      "ddr_ui_control_physical_budget_ns": 8
     }
   ]
 }

@@ -48,7 +48,7 @@ end=text.index('\n\n',start)
 lines=['| 候选 | 实际状态 | clk50 MHz | 视频 MHz | DDR UI setup ns | 物理BSRAM | 写板 |',
        '|---|---|---:|---:|---:|---:|---|']
 for row in report['rows']:
-    if row['user_code'] not in ['B3','B4','B5','B6','B7','B8','B9','BA','BB','BC','BD','BE']:continue
+    if row['user_code'] not in ['B3','B4','B5','B6','B7','B8','B9','BA','BB','BC','BD','BE','BF']:continue
     values=[str(row.get(key,'待报告')) for key in ['clk50_fmax_mhz','video_fmax_mhz','ddr_ui_setup_wns_ns','physical_bsram']]
     hardware='已验收' if row.get('hardware_auto_boot_verified') else ('已尝试，见回滚证据' if row.get('programming_started') else '未烧录')
     lines.append('| '+ ' | '.join([row['user_code'],row['status'],*values,hardware])+' |')

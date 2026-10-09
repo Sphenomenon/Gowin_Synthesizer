@@ -1,0 +1,113 @@
+{
+  "passed": true,
+  "started_at": "2026-10-10T03:44:54+08:00",
+  "exercise_live": false,
+  "sample_stream_saved": false,
+  "tests": {
+    "startup_cpu_audio_ddr_model": "passed",
+    "push_connected_screen_frames_advancing": "passed",
+    "audio_health_zero": "passed"
+  },
+  "last": {
+    "B138": [
+      "00000004",
+      "AC44B042",
+      "00000000",
+      "0000003B"
+    ],
+    "A138": [
+      "00007449",
+      "0000CB03",
+      "552C2FAD",
+      "00000000",
+      "05AA2E01",
+      "001B4155",
+      "001B40A7",
+      "00000000"
+    ],
+    "C350": [
+      "00007449",
+      "55491063",
+      "9BE7535E",
+      "8000157C",
+      "43505531",
+      "50415353",
+      "07C27665",
+      "00000000"
+    ],
+    "K138": {
+      "sequence": 29769,
+      "applied_events": 37,
+      "mode": "A",
+      "sound": "flute",
+      "route": "stereo",
+      "effects": 0,
+      "active_voices": 0,
+      "gain_q15": 25600,
+      "pc_input_errors": 0,
+      "held_notes": []
+    },
+    "E138": {
+      "sequence": 29769,
+      "vibrato": 0,
+      "glide": 0,
+      "bend_index": 128,
+      "bend": 0,
+      "pitch_q20": 1048576,
+      "panic_epoch": 3,
+      "sustain": false,
+      "snap_request": 5,
+      "snap_token": 5,
+      "snap_done": true,
+      "snap_error": false,
+      "snap_count": 1,
+      "snap_completed": 5,
+      "snap_sequence": 1950072
+    },
+    "U138": [
+      "00007449",
+      "00000000",
+      "00000000",
+      "00000000",
+      "00000000",
+      "00000000",
+      "00000000",
+      "00000000"
+    ],
+    "P138": [
+      "00007449",
+      "00000103",
+      "00035DE3",
+      "00000000",
+      "0000006A",
+      "00005DB8",
+      "00FF0000",
+      "00000000"
+    ]
+  },
+  "limits": [
+    "UART smoke does not verify physical DAC waveform, HDMI reception, TF hotplug or CNN song-score correctness."
+  ],
+  "startup_panic_epoch": 3,
+  "push_connected": true,
+  "audio_health_word": "00000000",
+  "crc_valid_records": {
+    "B138": 8,
+    "A138": 4,
+    "C350": 4,
+    "K138": 4,
+    "E138": 4,
+    "U138": 4,
+    "P138": 4
+  },
+  "crc_bad": 0,
+  "model_statuses": [
+    14
+  ],
+  "sample_counter_delta": 144000,
+  "runtime_report_sequence_delta": 3,
+  "samples_per_runtime_report": 48000.0,
+  "push_screen_frame_delta": 2,
+  "midi_control_commands": [],
+  "finished_at": "2026-10-10T03:45:00+08:00"
+}

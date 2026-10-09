@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "candidate_build": "results/workstation_flashbf_20261010_ui_control_budget",
+  "basis_build": "results/workstation_flashbe_20261010_tf_return_pipeline",
+  "rtl_ip_memory_identical": true,
+  "all_input_count": 606,
+  "changed_inputs": [
+    "constraints/tang_mega_138k.sdc",
+    "scripts/build.tcl"
+  ],
+  "build_script_change": "fresh explicit UserCodeBE\u2192BF only",
+  "constraint_addition": "\n# Target actual observed synchronous DDR UI CE/reset endpoints, which Fmax\n# omits. This8ns physical budget is stricter than the original10ns clock;\n# it never waives a control path or changes a clock or minimum-delay check.\nset_max_delay 8.000 -from [get_clocks {ddr_ui100}] -to [get_pins {u_tf_audio/u_path/u_dma/read_buf*/CE u_tf_audio/u_path/u_dma/read_buf*/RESET u_tf_audio/u_path/u_dma/emit_index*/CE u_tf_audio/u_path/u_dma/emit_index*/RESET u_tf_audio/u_path/u_dma/emit_bytes_left*/CE u_video/u_bist/failed*/CE u_video/u_bist/error_count*/CE u_video/u_arbiter/u_*_slot/queued_data*/RESET u_video/u_arbiter/u_*_slot/queued_data*/CE}]\n",
+  "constraint_source": "Local official SUG940-2.0.4E section5.4.2; get_clocks/get_pins start/end selectors, max-delay changes setup/recovery only",
+  "physical_budget_ns": 8,
+  "original_ddr_ui_period_ns": 10,
+  "hold_gate_unchanged": true,
+  "basis_TF_source_bound_protocol_cases": 54,
+  "basis_TF_inflight_epoch_cases": 18
+}

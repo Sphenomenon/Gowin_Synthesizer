@@ -153,3 +153,8 @@ BE在BC基础上对完整限定后的读响应和256位数据成对寄存，明�
 
 
 验收等待器补齐构建结束的发布竞态：tool_result.json可能先于workstation_memory.json和flash_bundle.json生成，必须三者完整后才能调用验收；半写入/未完成的前驱报告不授权硬件IO。9组纯主机测试通过，覆盖终端工件缺失/半写入、前驱实体成功/首次尝试/尝试失败、构建失败、重复输出、前驱未结束/半写入。已重新加载BA～BE等待器，没有停止任何构建、验收或programmer进程。
+
+
+03:45 BA完成：SYN220、物理268BSRAM；所有源码绑定像素、完整共享显示、TF全链路、地址/计数SAT、clk50/video/PLL/CDC均通过；真实DDR UI最差−2.254ns、hold+0.166ns，拒绝且未写板。主要端点是TF emit_index/read_buf CE和未分级的BIST failed CE。03:44锁内被动健康读取modelE/CRC0/health0/精确48000样本每秒/Push帧+2，没有控制命令。
+
+BF保留BE全部606个输入中的RTL/IP/模型逐字节一致，只变显式UserCode与观察到的DDR UI控制端点8ns物理预算。预算比原10ns更严格，未增加false_path、未改时钟或hold要求；本地官方SUG940-2.0.4E §5.4.2定义get_clocks/get_pins max-delay端点语义。该分支是针对CE/同步reset端点的物理实现约束，没有宣称其时序通过。
