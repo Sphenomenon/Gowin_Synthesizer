@@ -654,7 +654,7 @@
   "AA_shared_DDR_pipeline": {
     "build": "results/workstation_flashaa_20261009_ddr_pipeline",
     "user_code": "0x000000AA",
-    "status": "building",
+    "status": "placement",
     "hardware_tested": false,
     "command_boundary_registered": true,
     "return_data_and_tag_registered": true,
@@ -669,7 +669,9 @@
     "full_model_sim_read_count": 52239,
     "full_model_sim_crc32": "AF01A61B",
     "full_model_sim_uart_baud": 3125000,
-    "small_model_actual_uart_baud": 115200
+    "small_model_actual_uart_baud": 115200,
+    "synthesis_bsram": 216,
+    "synthesis_registers": 41588
   },
   "baseline85_during_AA_build_health": {
     "result": "results/baseline85_during_ddr_pipeline_20261009_155927/result.json",
