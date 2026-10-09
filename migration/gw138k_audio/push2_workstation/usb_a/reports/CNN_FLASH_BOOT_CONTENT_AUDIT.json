@@ -1,7 +1,7 @@
 {
   "passed_for_current_candidate_deliverables": true,
   "checked_at": "2026-10-10T03:41:22.516062+08:00",
-  "scope": "Five current candidate trees including ignored results. This is an artifact inventory/typed-model audit, not an assertion that arbitrary bytes cannot encode audio.",
+  "scope": "Seven current candidate trees including ignored results; typed-model and extension artifact inventory.",
   "hardware_io": false,
   "pcm_saved_by_this_task": false,
   "candidate_artifacts": [
@@ -44,6 +44,22 @@
       "model_bytes": 104510,
       "sha256": "b02e5d33473fd0e8ee10fe74125ccd0cf5bb3c2467505912dee90abe60e0bbc6",
       "content": "32-byte model header + 52239 little-endian16-bit coefficients"
+    },
+    {
+      "build": "results/workstation_flashbf_20261010_ui_control_budget",
+      "audio_file_extensions_found": [],
+      "model_header": "BPF1",
+      "model_bytes": 104510,
+      "sha256": "b02e5d33473fd0e8ee10fe74125ccd0cf5bb3c2467505912dee90abe60e0bbc6",
+      "content": "32-byte model header +52239 little-endian16-bitcoefficients"
+    },
+    {
+      "build": "results/workstation_flashc0_20261010_frame_token_slot",
+      "audio_file_extensions_found": [],
+      "model_header": "BPF1",
+      "model_bytes": 104510,
+      "sha256": "b02e5d33473fd0e8ee10fe74125ccd0cf5bb3c2467505912dee90abe60e0bbc6",
+      "content": "32-byte model header +52239 little-endian16-bitcoefficients"
     }
   ],
   "preexisting_workstation_encoded_tf_test_fixtures": [

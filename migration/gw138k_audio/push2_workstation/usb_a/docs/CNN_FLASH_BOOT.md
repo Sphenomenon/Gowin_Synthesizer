@@ -258,3 +258,6 @@ TF可选 `--parallel-tf-byte-counters` 需要现有 `--power-two-tf-ring` 组合
 
 
 `--tighten-ddr-ui-controls` 将已观察到的TF/BIST/客户端槽位CE及同步reset端点设为8ns物理预算，原DDR UI10ns及hold门禁仍保留。`--sample-idle-client-payload` 是单独可选的空槽采样优化：空槽时采样请求总线，有效槽期间保持到消费，ready/valid周期及318位有效载荷不变；需`--buffer-ddr-clients`，由实际模块时序归纳和全八客户端独立命令/掩码/响应记分板检验。无附加BSRAM或接口周期；不得用无效槽总线的变化作为有效输出。
+
+
+`--register-renderer-first-issue` 将每帧首个raster issue标记保留到原先实际接收首像素的同一拍，减少frame_start到卡片寄存器CE的组合路径；snapshot导出和输出停顿不消耗标记。需要`--predecode-dashboard`，不增加帧或像素延迟。实际renderer对照原式的逐拍断言、完整1080p输出/原生DDR命令比较和共享分析页冷启动/多帧比较作为验收。偶数WIDTH2..2048、高度1..2048；不支持尺寸明确拒绝。C0同时改变模型客户端槽位，部署前强制要求该构建新执行的完整52239词模型CRC证据及原源hash，不能只用模块仿真代替。

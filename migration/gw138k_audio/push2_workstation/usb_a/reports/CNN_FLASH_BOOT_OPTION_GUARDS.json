@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "hardware_io": false,
+  "build_launched": false,
+  "user_code_allocated": false,
+  "cases": [
+    {
+      "flags": [
+        "--sample-idle-client-payload"
+      ],
+      "passed": true,
+      "explicit_error": "build_workstation_flash_boot.py: error: --sample-idle-client-payload requires --buffer-ddr-clients"
+    },
+    {
+      "flags": [
+        "--register-renderer-first-issue"
+      ],
+      "passed": true,
+      "explicit_error": "build_workstation_flash_boot.py: error: --register-renderer-first-issue requires --predecode-dashboard"
+    },
+    {
+      "flags": [
+        "--registered-tf-response",
+        "--pipeline-tf-read-return"
+      ],
+      "passed": true,
+      "explicit_error": "build_workstation_flash_boot.py: error: --registered-tf-response requires --mask-tf-write-epoch --buffer-ddr-clients --retime-tf-buffer-enable"
+    },
+    {
+      "flags": [
+        "--pipeline-tf-read-return"
+      ],
+      "passed": true,
+      "explicit_error": "build_workstation_flash_boot.py: error: --pipeline-tf-read-return requires --mask-tf-write-epoch and is exclusive with --registered-tf-response"
+    }
+  ]
+}
