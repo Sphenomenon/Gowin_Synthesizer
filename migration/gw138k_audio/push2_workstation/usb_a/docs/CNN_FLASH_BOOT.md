@@ -1,5 +1,7 @@
 # CNN 权重持久化与 Flash→DDR 启动
 
+2026-10-12 当前固化版本仍是 full85，配置 Flash 独立校验及三次重载通过，`0x600000` 权重分区字节校验通过；full85 在复位后仍需 UART 加载模型。BF/C1 新候选均被实际 DDR 时序门禁拒绝。当前 CPU/DDR/模型/音频及现场示波器检查正常，但重载后 Push USB 未连接，额外重载未恢复，现场重连验收待完成；没有物理断电验证。详见 `reports/FLASH85_20261012.md`。
+
 2026-10-10 当前实体结果：完整工作站AD连续三次通过配置Flash重加载，模型从Flash自主搬入DDR，CRC32 AF01A61B、状态E/source1；现场三音、立体声、静音及Panic检查通过。AD实际DDR时序未过发布门禁，诊断后回写并校验full85，板上及LATEST仍为85。后续候选的实际时序、源码绑定回归及构建阶段统一记录在reports/CNN_FLASH_BOOT_CURRENT.md；完整历史在CNN_FLASH_BOOT_IMPLEMENTATION.md。C0/C1均重新执行52239字写入及回读CRC并通过，时序闭合与实体部署分别验收。物理断电/上电尚未执行。
 
 

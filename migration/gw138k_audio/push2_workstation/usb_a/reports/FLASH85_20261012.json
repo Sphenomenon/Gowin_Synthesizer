@@ -1,0 +1,955 @@
+{
+  "passed": true,
+  "started_at": "2026-10-12T02:12:49.514272+08:00",
+  "build": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1",
+  "user_code": "0x00000085",
+  "fs_sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444",
+  "baseline_input_count": 597,
+  "model_image_sha256": "b02e5d33473fd0e8ee10fe74125ccd0cf5bb3c2467505912dee90abe60e0bbc6",
+  "model_base": "0x00600000",
+  "model_payload_crc32": "AF01A61B",
+  "board_serial": "2025030317",
+  "commands": [
+    {
+      "label": "before_code",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:12:49.514445+08:00",
+      "finished_at": "2026-10-12T02:12:49.670025+08:00"
+    },
+    {
+      "label": "flash_id",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "51"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:12:49.670364+08:00",
+      "finished_at": "2026-10-12T02:12:51.073330+08:00"
+    },
+    {
+      "label": "verify_model_before",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "66",
+        "--fsFile",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/full85_flash_20261012_0209/cnn_model.data.fs",
+        "--spiaddr",
+        "0x600000"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:12:51.073567+08:00",
+      "finished_at": "2026-10-12T02:12:53.752825+08:00"
+    },
+    {
+      "label": "program_full85",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "54",
+        "--fsFile",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/impl/pnr/Prj1.fs",
+        "--spiaddr",
+        "0x000000"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:12:53.753203+08:00",
+      "finished_at": "2026-10-12T02:15:45.266392+08:00"
+    },
+    {
+      "label": "verify_full85_independent",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "66",
+        "--fsFile",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/impl/pnr/Prj1.fs",
+        "--spiaddr",
+        "0x000000"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:15:45.273332+08:00",
+      "finished_at": "2026-10-12T02:17:29.080258+08:00"
+    },
+    {
+      "label": "verify_model_after",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "66",
+        "--fsFile",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/full85_flash_20261012_0209/cnn_model.data.fs",
+        "--spiaddr",
+        "0x600000"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:29.086792+08:00",
+      "finished_at": "2026-10-12T02:17:32.969528+08:00"
+    },
+    {
+      "label": "boot_0_erase_sram",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "24"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:32.971197+08:00",
+      "finished_at": "2026-10-12T02:17:33.582814+08:00"
+    },
+    {
+      "label": "boot_0_reload_flash",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "1"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:33.583015+08:00",
+      "finished_at": "2026-10-12T02:17:33.777857+08:00"
+    },
+    {
+      "label": "boot_0_code_0",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:33.778074+08:00",
+      "finished_at": "2026-10-12T02:17:33.937948+08:00"
+    },
+    {
+      "label": "boot_0_code_1",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:35.938371+08:00",
+      "finished_at": "2026-10-12T02:17:36.099569+08:00"
+    },
+    {
+      "label": "boot_0_code_2",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:38.100087+08:00",
+      "finished_at": "2026-10-12T02:17:38.259791+08:00"
+    },
+    {
+      "label": "boot_0_code_3",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:40.260170+08:00",
+      "finished_at": "2026-10-12T02:17:40.418827+08:00"
+    },
+    {
+      "label": "boot_0_code_4",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:42.419364+08:00",
+      "finished_at": "2026-10-12T02:17:42.574963+08:00"
+    },
+    {
+      "label": "boot_0_code_5",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:44.575354+08:00",
+      "finished_at": "2026-10-12T02:17:44.736350+08:00"
+    },
+    {
+      "label": "boot_0_code_6",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:46.736829+08:00",
+      "finished_at": "2026-10-12T02:17:46.895314+08:00"
+    },
+    {
+      "label": "boot_0_code_7",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:48.895656+08:00",
+      "finished_at": "2026-10-12T02:17:49.056984+08:00"
+    },
+    {
+      "label": "boot_0_code_8",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:51.057429+08:00",
+      "finished_at": "2026-10-12T02:17:51.219506+08:00"
+    },
+    {
+      "label": "boot_1_erase_sram",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "24"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:51.238835+08:00",
+      "finished_at": "2026-10-12T02:17:51.844558+08:00"
+    },
+    {
+      "label": "boot_1_reload_flash",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "1"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:51.844988+08:00",
+      "finished_at": "2026-10-12T02:17:52.040179+08:00"
+    },
+    {
+      "label": "boot_1_code_0",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:52.040413+08:00",
+      "finished_at": "2026-10-12T02:17:52.198079+08:00"
+    },
+    {
+      "label": "boot_1_code_1",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:54.198478+08:00",
+      "finished_at": "2026-10-12T02:17:54.357664+08:00"
+    },
+    {
+      "label": "boot_1_code_2",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:56.358229+08:00",
+      "finished_at": "2026-10-12T02:17:56.520294+08:00"
+    },
+    {
+      "label": "boot_1_code_3",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:17:58.520637+08:00",
+      "finished_at": "2026-10-12T02:17:58.682827+08:00"
+    },
+    {
+      "label": "boot_1_code_4",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:00.683183+08:00",
+      "finished_at": "2026-10-12T02:18:00.844004+08:00"
+    },
+    {
+      "label": "boot_1_code_5",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:02.844449+08:00",
+      "finished_at": "2026-10-12T02:18:03.008986+08:00"
+    },
+    {
+      "label": "boot_1_code_6",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:05.009338+08:00",
+      "finished_at": "2026-10-12T02:18:05.170289+08:00"
+    },
+    {
+      "label": "boot_1_code_7",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:07.170647+08:00",
+      "finished_at": "2026-10-12T02:18:07.333933+08:00"
+    },
+    {
+      "label": "boot_1_code_8",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:09.334377+08:00",
+      "finished_at": "2026-10-12T02:18:09.491031+08:00"
+    },
+    {
+      "label": "boot_2_erase_sram",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "24"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:09.493046+08:00",
+      "finished_at": "2026-10-12T02:18:10.109797+08:00"
+    },
+    {
+      "label": "boot_2_reload_flash",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "1"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:10.110197+08:00",
+      "finished_at": "2026-10-12T02:18:10.307738+08:00"
+    },
+    {
+      "label": "boot_2_code_0",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:10.308184+08:00",
+      "finished_at": "2026-10-12T02:18:10.465863+08:00"
+    },
+    {
+      "label": "boot_2_code_1",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:12.466293+08:00",
+      "finished_at": "2026-10-12T02:18:12.633851+08:00"
+    },
+    {
+      "label": "boot_2_code_2",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:14.634554+08:00",
+      "finished_at": "2026-10-12T02:18:14.793213+08:00"
+    },
+    {
+      "label": "boot_2_code_3",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:16.793733+08:00",
+      "finished_at": "2026-10-12T02:18:16.959253+08:00"
+    },
+    {
+      "label": "boot_2_code_4",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:18.959801+08:00",
+      "finished_at": "2026-10-12T02:18:19.122058+08:00"
+    },
+    {
+      "label": "boot_2_code_5",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:21.122423+08:00",
+      "finished_at": "2026-10-12T02:18:21.280095+08:00"
+    },
+    {
+      "label": "boot_2_code_6",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:23.280639+08:00",
+      "finished_at": "2026-10-12T02:18:23.439724+08:00"
+    },
+    {
+      "label": "boot_2_code_7",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:25.440091+08:00",
+      "finished_at": "2026-10-12T02:18:25.601095+08:00"
+    },
+    {
+      "label": "boot_2_code_8",
+      "args": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "53",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-10-12T02:18:27.601578+08:00",
+      "finished_at": "2026-10-12T02:18:27.763629+08:00"
+    }
+  ],
+  "boots": [
+    {
+      "passed": true,
+      "user_code": "0x00000085",
+      "status_code": "0x00026020",
+      "source": "configuration_flash",
+      "sram_erased": true
+    },
+    {
+      "passed": true,
+      "user_code": "0x00000085",
+      "status_code": "0x00026020",
+      "source": "configuration_flash",
+      "sram_erased": true
+    },
+    {
+      "passed": true,
+      "user_code": "0x00000085",
+      "status_code": "0x00026020",
+      "source": "configuration_flash",
+      "sram_erased": true
+    }
+  ],
+  "configuration_flash_written": true,
+  "configuration_flash_verified": true,
+  "model_partition_preserved": true,
+  "model_automatic_flash_to_ddr_boot": false,
+  "model_uart_upload_used": true,
+  "sram_download_used": false,
+  "physical_power_cycle_tested": false,
+  "wholeboard_timing_closed": false,
+  "baseline_known_timing_limitations": [
+    "audio76.8 and USB48 timing open",
+    "actual DDR UI setup -3.648 ns"
+  ],
+  "newer_flash_auto_boot_candidates_rejected": [
+    "BF DDR UI setup -1.959 ns",
+    "C1 DDR UI setup -1.055 ns"
+  ],
+  "uart_dtr_rts_asserted": false,
+  "sample_stream_saved": false,
+  "live_smoke_evidence": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/full85_flash_20261012_0209/live_smoke.json",
+  "finished_at": "2026-10-12T02:19:10.174504+08:00",
+  "recorded_at": "2026-10-12T02:24:20.776980+08:00",
+  "configuration_flash_persistence_passed": true,
+  "full_workstation_acceptance_passed": false,
+  "push_connected_before_flash": true,
+  "push_connected_after_flash": false,
+  "push_recovery_attempt_passed": false,
+  "model_coefficients_stored_in_flash": true,
+  "model_ddr_requires_uart_reload_after_reset": true,
+  "physical_configuration_flash_boot_count": 4,
+  "physical_power_cycle_note": "Four configuration Flash reloads are not physical power-cycle tests.",
+  "live_smoke_tests": {
+    "startup_cpu_audio_ddr_model": "passed",
+    "push_connected_screen_frames_advancing": "not_observed",
+    "live_three_voices": "passed",
+    "live_geometry_stereo_core_output": "passed",
+    "scope_mute_zero_core_output": "passed",
+    "live_note_release_and_panic": "passed",
+    "audio_health_zero": "passed"
+  },
+  "live_metrics": {
+    "live_core_snapshot_metrics": {
+      "snapshots": 3,
+      "distinct_axes": 3,
+      "nonzero": 3
+    },
+    "audio_health_word": "00000000",
+    "crc_bad": 0,
+    "samples_per_runtime_report": 48000.0,
+    "model_statuses": [
+      14
+    ]
+  },
+  "final_core_smoke_metrics": {
+    "audio_health_word": "00000000",
+    "crc_bad": 0,
+    "samples_per_runtime_report": 48000.0,
+    "model_statuses": [
+      14
+    ],
+    "push_connected": false,
+    "push_screen_frame_delta": 0
+  },
+  "final_user_code": "0x00000085",
+  "final_status_code": "0x00026020",
+  "final_held_notes": [],
+  "flash_write_seconds": 171.29,
+  "independent_configuration_verify_seconds": 103.57,
+  "bsram_pnr": 260,
+  "bsram_capacity": 340,
+  "tf_decoder": "wav",
+  "basic_pitch_elaborated": true,
+  "includes": [
+    "Push USB host",
+    "8 vector voices",
+    "TF WAV playback",
+    "P10 serial effects",
+    "shared-DDR HDMI analysis",
+    "Basic Pitch"
+  ],
+  "source_commit": "3f762f5ebabf78c28156d91a022d3a6c5547776b",
+  "evidence_root": "results/full85_flash_20261012_0209",
+  "content_audit": {
+    "audio_files": [],
+    "sample_stream_saved": false,
+    "model_is_coefficients": true
+  },
+  "limitations": [
+    "BF/C1 auto-boot candidates rejected by actual DDR timing; not flashed.",
+    "full85 does not automatically load its existing Flash model partition; UART reload required after reset.",
+    "Push connected before this operation; not observed after reload, including one additional reload attempt. Physical reconnection is pending.",
+    "No physical power-cycle, physical DAC/HDMI/TF or CNN song-score acceptance performed."
+  ],
+  "archive_file_sha256": {
+    "before_smoke.json": "60f3253f1c30a111eaaf7220fe0926fe0abfb055b82f482592c39f05c638b6f8",
+    "solidify_full85.py": "91b1e3241543d21314056dc82714fa8b478b5ad280c6503bda4bb8abd52665a6",
+    "cnn_model.data.fs": "735efeb410eb43427cb319bbf4b78697cd87a7e79b1d2c8579d8c0ef5530522a",
+    "before_code.log": "880fe0b3f99aff182e5808ff2b32010816f7ecb55055d59b104e8fb815ace05f",
+    "result.json": "bc3fdd15c53c6492ff4df2539bc96fc4740b6bc3307d2f2718b4c9a82980118e",
+    "flash_id.log": "07eb789f0cdddcadd087eef56ea51dd68965472d2de2813de2823b3d050644f0",
+    "verify_model_before.log": "75dace003dc686ab13b3efe8814ead719f4f52f80960dec796a72e0134b2f2c1",
+    "program_full85.log": "7f9034bfaf9c834a233e7b2a076f164734eee8353d2bcf9f8b7d53610730dcf9",
+    "verify_full85_independent.log": "33d8130933dfb36c2e105d0b7fea8973a3ff2eae846f892806df40745241730f",
+    "verify_model_after.log": "a9edcd76be79002feaab05464ebc86e84197ff98dbafc796ac4bd7cb9372ea34",
+    "boot_0_erase_sram.log": "d562a70429747276a24cd2e8fb2d74efb7f26c2f25854cce5a64ef68f3e58e6a",
+    "boot_0_reload_flash.log": "09628aa5541b8bc8540d9f1ac79c9bd0af2c6c1e172855576854a80a94d745cf",
+    "boot_0_code_0.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_0_code_1.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_0_code_2.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_0_code_3.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_0_code_4.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_0_code_5.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "README.md": "be8a507db323efd7d4120a1e12c840e424135aebebf3303d88ea2953c4a14c3c",
+    "boot_0_code_6.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_0_code_7.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_0_code_8.log": "880fe0b3f99aff182e5808ff2b32010816f7ecb55055d59b104e8fb815ace05f",
+    "boot_1_erase_sram.log": "d562a70429747276a24cd2e8fb2d74efb7f26c2f25854cce5a64ef68f3e58e6a",
+    "boot_1_reload_flash.log": "09628aa5541b8bc8540d9f1ac79c9bd0af2c6c1e172855576854a80a94d745cf",
+    "boot_1_code_0.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_1_code_1.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_1_code_2.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_1_code_3.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_1_code_4.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_1_code_5.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_1_code_6.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_1_code_7.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_1_code_8.log": "880fe0b3f99aff182e5808ff2b32010816f7ecb55055d59b104e8fb815ace05f",
+    "boot_2_erase_sram.log": "d562a70429747276a24cd2e8fb2d74efb7f26c2f25854cce5a64ef68f3e58e6a",
+    "boot_2_reload_flash.log": "09628aa5541b8bc8540d9f1ac79c9bd0af2c6c1e172855576854a80a94d745cf",
+    "boot_2_code_0.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_2_code_1.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_2_code_2.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_2_code_3.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_2_code_4.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_2_code_5.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_2_code_6.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_2_code_7.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "boot_2_code_8.log": "880fe0b3f99aff182e5808ff2b32010816f7ecb55055d59b104e8fb815ace05f",
+    "restore_full85_model_uart.log": "7e8abe9962ab1f7f9834b01ef6ea0a1a13cdbe8659e33c9f74bd57302290f830",
+    "live_smoke.json": "3bee8800b17a959dfaaced47a95d01b528205a3dcd9962b40e158bfb7620a635",
+    "live_smoke.log": "3bee8800b17a959dfaaced47a95d01b528205a3dcd9962b40e158bfb7620a635",
+    "after_settle_smoke.json": "12c402e298f0c19f37bc2349b7c5f064642f3f32bc17af85e35392a4198c1270",
+    "check_push_reload.py": "71581712769a0cfff9db481d08b7d5836f1576fa0c975b39b5ac3d7f9e47e0fa",
+    "push_before_code.log": "880fe0b3f99aff182e5808ff2b32010816f7ecb55055d59b104e8fb815ace05f",
+    "push_recovery.json": "40b5c9a3029d431e9b5879b098485ea3608515fdd50d5689e9a0f0a508e9e80e",
+    "push_erase_sram.log": "d562a70429747276a24cd2e8fb2d74efb7f26c2f25854cce5a64ef68f3e58e6a",
+    "push_reload_flash.log": "09628aa5541b8bc8540d9f1ac79c9bd0af2c6c1e172855576854a80a94d745cf",
+    "push_boot_code_0.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "push_boot_code_1.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "push_boot_code_2.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "push_boot_code_3.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "push_boot_code_4.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "push_boot_code_5.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "push_boot_code_6.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "push_boot_code_7.log": "0bf39e8d12224eb39ffb6d4b37211314178d2a025ddc6aaef754e9dc277c571f",
+    "push_boot_code_8.log": "880fe0b3f99aff182e5808ff2b32010816f7ecb55055d59b104e8fb815ace05f",
+    "push_restore_model.log": "7e8abe9962ab1f7f9834b01ef6ea0a1a13cdbe8659e33c9f74bd57302290f830",
+    "push_followup_smoke.json": "8141c96e4743906c1fc728e57deb4cf80e2cbd5550a93a4f8a7913ee4a38b28f",
+    "push_followup_smoke.log": "8141c96e4743906c1fc728e57deb4cf80e2cbd5550a93a4f8a7913ee4a38b28f",
+    "final_code.log": "880fe0b3f99aff182e5808ff2b32010816f7ecb55055d59b104e8fb815ace05f"
+  },
+  "uploader_source_sha256": "61b89927d4fe35a02a1ca7f21f98b62e1b4b2dc053eb5f91334838ea5bf2bda2"
+}

@@ -1,7 +1,7 @@
 {
   "implementation_commit": "1f5f854",
   "transport_fix_commit": "4868c13",
-  "status": "AD_flash_function_verified_full85_restored_BE_C0_timing_rejected_BF_C1_routing",
+  "status": "AD_flash_function_verified_BF_C1_timing_rejected_full85_reflashed_push_reconnection_pending",
   "target_user_code": "0x000000AD",
   "board_current_user_code": "0x00000085",
   "model_partition_programmed": true,
@@ -44,7 +44,8 @@
     "retimed9a_flash_diagnosis": "results/workstation_flash9a_20261009_cache_read/flash_diagnosis/result.json",
     "isolated_actual_ddr_flash_boot": "results/flash_ddr_probe9e_20261009/board/result.json",
     "baseline85_health_recovery": "results/baseline85_health_recover_20261009_104641/result.json",
-    "place3_9f_routed_rejection": "results/workstation_flash9f_20261009_place3/finish_verification/result.json"
+    "place3_9f_routed_rejection": "results/workstation_flash9f_20261009_place3/finish_verification/result.json",
+    "full85_flash_20261012": "reports/FLASH85_20261012.json"
   },
   "incremental_candidate": "results/workstation_flash93_20261009_incremental",
   "incremental_target_user_code": "0x00000093",
@@ -1079,10 +1080,10 @@
     "programming_started": false,
     "acceptance": "results/workstation_flashb0_20261009_parallel_coordinates/automatic_acceptance/result.json"
   },
-  "board_current_status_last_checked_at": "2026-10-10T00:31:07.046130+08:00",
+  "board_current_status_last_checked_at": "2026-10-12T02:24:20.776980+08:00",
   "board_current_model_E_verified": true,
   "board_current_config_status": "0x00026020",
-  "board_current_read_only_status": "results/workstation_flashb3_20261010_local_ready_wave/baseline_readonly_status.json",
+  "board_current_read_only_status": "results/full85_flash_20261012_0209/final_code.log",
   "B1_PLL_locality": {
     "build": "results/workstation_flashb1_20261009_pll_locality",
     "status": "routed_release_gate_failed",
@@ -1666,7 +1667,9 @@
     "hardware_tested": false,
     "evidence": "reports/CNN_FLASH_BOOT_C1_NIBBLE_TESTS.json"
   },
-  "latest_progress_at": "2026-10-10T05:26:58.815775+08:00",
+  "latest_progress_at": "2026-10-12T02:24:20.776980+08:00",
   "latest_functionally_verified_candidate": "results/workstation_flashc1_20261010_nibble_tf_count",
-  "new_default_flash_release_completed": false
+  "new_default_flash_release_completed": false,
+  "board_current_flash_auto_loads_model": false,
+  "board_push_connected_after_reload": false
 }

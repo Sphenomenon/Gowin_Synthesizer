@@ -33,7 +33,11 @@ def main():
     crc = binascii.crc32(data) & 0xffffffff
     packet = b"BPN1" + data + struct.pack("<I", crc)
     print(f"model={len(data)} bytes crc32={crc:08x} port={args.port}", flush=True)
-    with serial.Serial(args.port, 115200, timeout=0.2, write_timeout=10) as port:
+    port = serial.Serial(port=None, baudrate=115200, timeout=0.2, write_timeout=10, exclusive=True)
+    port.dtr = False
+    port.rts = False
+    port.port = args.port
+    with port:
         port.reset_input_buffer()
         drain_deadline = time.monotonic() + 3
         while time.monotonic() < drain_deadline and port.read(4096):
