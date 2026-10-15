@@ -1,0 +1,292 @@
+{
+  "schema_version": 1,
+  "date_local": "2026-10-07",
+  "device": "GW5AST-LV138PG484AC2/I1",
+  "board": "NEO Dock-138K 31005",
+  "upstream_package": "fpga_scope_vec_delivery_20260930/rtl8723ds_ble_verilog/rtl8723ds_ble",
+  "upstream_inputs_manifest": "vendor/rtl8723ds_ble/inputs.json",
+  "regression": {
+    "passed": true,
+    "cases": 8,
+    "record": "results/ble_regression_20261007_231317_692807/result.json",
+    "scope": "H5, GATT, full UART controller model, wrong ROM rejection, GW138K board/OE and status snapshot, real 50 MHz 8E1 UART"
+  },
+  "standalone": {
+    "status": "routed_bitstream_ready_hardware_pending",
+    "user_code": "0x00000086",
+    "build": "results/ble_standalone_20261007_231650_271452",
+    "bitstream": "Prj1/impl/pnr/ble138k.fs",
+    "bitstream_sha256": "3b3e24eef6bb58970c9262989b36f62da86dfa9eb1272b56e435e9d9b45a7f10",
+    "bsram_physical": 16,
+    "device_bsram_total": 340,
+    "lut": 11405,
+    "registers": 9189,
+    "logic_utilization": 12623,
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "fmax_mhz": 55.529,
+      "wns_ns": {
+        "setup": 1.991,
+        "hold": 0.161,
+        "recovery": 17.097,
+        "removal": 1.392
+      },
+      "uart_stage0_exception_active": true,
+      "rx_reset_sync_registers_preserved": true
+    },
+    "inputs_unchanged": true,
+    "hardware_tested": false
+  },
+  "workstation": {
+    "status": "joint_compact_routed_experimental_timing_not_closed",
+    "synthesis_build": "results/ble_workstation_20261008_010628_324000",
+    "candidate_build": "results/ble_workstation_20261008_010628_324000",
+    "candidate_user_code": "0x00000090",
+    "baseline": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+    "bsram_synthesis": 232,
+    "baseline_bsram_synthesis": 216,
+    "lut_synthesis": 66386,
+    "registers_synthesis": 45573,
+    "bsram_physical": 276,
+    "timing_closed": false,
+    "hardware_tested": false,
+    "changed_baseline_inputs": [
+      "Prj1.gprj",
+      "constraints/tang_mega_138k.cst",
+      "constraints/tang_mega_138k.sdc",
+      "scripts/build.tcl",
+      "src/push2/gw138k_push_workstation_top.v"
+    ],
+    "routing_attempts": [
+      {
+        "build": "results/ble_workstation_20261007_232742_721890",
+        "user_code": "0x00000087",
+        "route_option": 1,
+        "status": "failed",
+        "error": "PR0004",
+        "unrouted_nets": 10713,
+        "bsram_mapped": 276,
+        "bitstream": null
+      },
+      {
+        "build": "results/ble_workstation_20261008_003117_890857",
+        "user_code": "0x00000088",
+        "route_option": 2,
+        "status": "superseded_and_stopped",
+        "bitstream": null
+      }
+    ],
+    "bitstream": "Prj1/impl/pnr/Prj1.fs",
+    "bitstream_sha256": "9b20bb271d12a485ec550d3ddf7fc06b8c5b6623c3da6838eed689195a7091c1",
+    "baseline_bsram_physical": 260,
+    "lut_physical": 66321,
+    "registers_physical": 45573,
+    "cls_physical": 58954,
+    "clock_fmax_mhz": {
+      "clk_50m": 45.134,
+      "audio_76m8": 58.161,
+      "ddr_mem400": 2598.775,
+      "ddr_ui100": 71.563,
+      "video_pixel148": 154.589,
+      "cpu_bus50": 72.997,
+      "cpu_core100": 1530.457,
+      "usb_48m": 40.011
+    },
+    "clk50_setup_wns_ns": -2.156,
+    "clk50_worst_path": "u_ble/u_driver/core/application/packet[10]_7_s1/Q -> response[22]_6_s0/D",
+    "overall_setup_violated_endpoints": 5587,
+    "overall_hold_violated_endpoints": 116,
+    "regressions_from_baseline": [
+      "clk50: 53.055 -> 45.134 MHz; worst listed path is BLE GATT reply",
+      "DDR UI100: 215.707 -> 71.563 MHz"
+    ],
+    "clock_warning": "PR1014 clk_50m_d generic routing also occurs in the accepted baseline; not a newly introduced warning",
+    "inputs_unchanged": true,
+    "release_eligible": false,
+    "original_variant_synthesis": {
+      "build": "results/ble_workstation_20261007_231515_347100",
+      "lut": 69303,
+      "registers": 49902,
+      "bsram": 232
+    }
+  },
+  "hardware_programmed": false,
+  "latest_workstation_changed": false,
+  "pin_mapping": {
+    "module_uart_tx": {
+      "pmod": "J8.7",
+      "ball": "AA20"
+    },
+    "module_uart_rx": {
+      "pmod": "J8.8",
+      "ball": "AA21"
+    },
+    "module_bt_dis": {
+      "pmod": "J8.5",
+      "ball": "AA19"
+    },
+    "module_wl_dis": {
+      "pmod": "J8.6",
+      "ball": "AB20"
+    },
+    "workstation_status_tx": {
+      "pmod": "J8.9",
+      "ball": "AB21"
+    },
+    "standalone_status_tx": {
+      "ball": "U15"
+    },
+    "gnd": {
+      "pmod": "J8.3/J8.4"
+    },
+    "bank4_voltage": 3.3
+  },
+  "pending_hardware": [
+    "Confirm module UART voltage, supply and ROM-v2 hardware",
+    "Wire external RTL8723DS to J8",
+    "Standalone 0x91 SRAM candidate readback and BLE scan/connect/FFF1 notification/CRC test",
+    "Before deploying a full-workstation BLE build: fix BLE GATT/clk50 and DDR timing regressions, then re-run Push/audio/TF/HDMI/model acceptance"
+  ],
+  "feature_scope": {
+    "service": "FFF0",
+    "characteristic": "FFF1",
+    "advertising_name": "RTL8723-BLE",
+    "session_ms": 180000,
+    "notification_ms": 500,
+    "application_payload": "Original 20-byte BTST test stream",
+    "user_payload_port": false,
+    "ble_midi": false,
+    "bluetooth_audio": false,
+    "wifi": false
+  },
+  "passive_notification_verifier": {
+    "reference_platform": "teammate original board",
+    "valid_packets": 40,
+    "crc_sequence_checks_passed": true,
+    "negative_cases_passed": [
+      "CRC corruption",
+      "duplicate",
+      "sequence gap",
+      "too few packets"
+    ],
+    "is_gw138k_rf_acceptance": false
+  },
+  "compact_hci": {
+    "enabled_by_default": false,
+    "implementation": "single-write 256-byte async-read parameter RAM; HCI header held in existing opcode/length registers; prepare 32 parameter bytes sequentially",
+    "experiment": "results/ble_compact_hci_experiment_20261008_004209_144875",
+    "regression": "results/ble_compact_regression_20261008_004448_005737/result.json",
+    "standalone_synthesis": {
+      "lut": 10225,
+      "registers": 7116,
+      "ssram_ram16": 104,
+      "bsram": 16
+    },
+    "reduction_from_original_synthesis": {
+      "lut": 1184,
+      "registers": 2073
+    },
+    "workstation_full_candidate": "results/ble_workstation_20261008_004513_616338",
+    "user_code": "0x00000089",
+    "route_option": 2,
+    "status": "hci_only_full_variant_superseded_and_stopped",
+    "hardware_tested": false,
+    "regression_passed": true,
+    "regression_cases": 8,
+    "workstation_synthesis": {
+      "lut": 68244,
+      "registers": 47828,
+      "logic": 89597,
+      "ssram_ram16": 1711,
+      "bsram": 232
+    }
+  },
+  "compact_h5": {
+    "enabled_by_default": false,
+    "implementation": "mirror H5 payload bytes 4/5/6 while capturing to remove constant-address memory read ports",
+    "experiment": "results/ble_compact_h5_experiment_20261008_010159_415270",
+    "combined_with_compact_hci_standalone_synthesis": {
+      "lut": 8152,
+      "registers": 4860,
+      "logic": 9771,
+      "ssram_ram16": 140,
+      "bsram": 16
+    },
+    "reduction_from_original_synthesis": {
+      "lut": 3257,
+      "registers": 4329
+    },
+    "regression": "results/ble_compact_all_regression_20261008_010554_904969/result.json",
+    "regression_passed": true,
+    "regression_cases": 8,
+    "workstation_candidate": "results/ble_workstation_20261008_010628_324000",
+    "workstation_user_code": "0x00000090",
+    "standalone_candidate": "results/ble_standalone_20261008_010636_258601",
+    "standalone_user_code": "0x00000091",
+    "route_option": 2,
+    "status": "standalone_routed_timing_pass_workstation_routed_timing_open",
+    "hardware_tested": false,
+    "standalone_routed": {
+      "status": "bitstream_ready_hardware_pending",
+      "lut": 8148,
+      "registers": 4860,
+      "ssram_ram16": 140,
+      "bsram": 16,
+      "cls": 6658,
+      "bitstream": "Prj1/impl/pnr/ble138k.fs",
+      "bitstream_sha256": "df0bee20abb6facc8935b4d7630eb4a848f491370f433aaf20283a32a22c037f",
+      "timing": {
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0,
+        "fmax_mhz": 61.075,
+        "wns_ns": {
+          "setup": 3.627,
+          "hold": 0.18,
+          "recovery": 16.957,
+          "removal": 1.389
+        },
+        "uart_stage0_exception_active": true,
+        "rx_reset_sync_registers_preserved": true
+      },
+      "compact_memory": {
+        "parameter_mem_ram16_cells": 32,
+        "wire_ram_ram16_cells": 36
+      },
+      "inputs_unchanged": true,
+      "hardware_tested": false
+    },
+    "workstation_synthesis": {
+      "lut": 66386,
+      "registers": 45573,
+      "logic": 87957,
+      "ssram_ram16": 1747,
+      "bsram": 232
+    },
+    "workstation_reduction_from_original_synthesis": {
+      "lut": 2917,
+      "registers": 4329
+    },
+    "workstation_routed": {
+      "bitstream": "Prj1/impl/pnr/Prj1.fs",
+      "bitstream_sha256": "9b20bb271d12a485ec550d3ddf7fc06b8c5b6623c3da6838eed689195a7091c1",
+      "bsram_physical": 276,
+      "lut_physical": 66321,
+      "registers_physical": 45573,
+      "cls_physical": 58954,
+      "clock_fmax_mhz": {
+        "clk_50m": 45.134,
+        "audio_76m8": 58.161,
+        "ddr_mem400": 2598.775,
+        "ddr_ui100": 71.563,
+        "video_pixel148": 154.589,
+        "cpu_bus50": 72.997,
+        "cpu_core100": 1530.457,
+        "usb_48m": 40.011
+      },
+      "clk50_setup_wns_ns": -2.156,
+      "timing_closed": false,
+      "release_eligible": false
+    }
+  }
+}

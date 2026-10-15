@@ -1,0 +1,5 @@
+  1  APU
+     2* ARM Cortex-A9 MPCore #0 (Suspended)
+     3  ARM Cortex-A9 MPCore #1 (Suspended)
+  4  xc7z020
+     5  Legacy Debug Hub

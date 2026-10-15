@@ -1,0 +1,10 @@
+// NEO Dock-138K 31005, J8 PMOD1, Bank4 externally selected to 3.3 V.
+// J8 pins 7/8/5/6; module names are from the module's point of view.
+IO_LOC "ble_module_uart_tx" AA20;
+IO_PORT "ble_module_uart_tx" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "ble_module_uart_rx" AA21;
+IO_PORT "ble_module_uart_rx" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8 BANK_VCCIO=3.3;
+IO_LOC "ble_module_bt_dis" AA19;
+IO_PORT "ble_module_bt_dis" IO_TYPE=LVCMOS33 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=3.3;
+IO_LOC "ble_module_wl_dis" AB20;
+IO_PORT "ble_module_wl_dis" IO_TYPE=LVCMOS33 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=3.3;

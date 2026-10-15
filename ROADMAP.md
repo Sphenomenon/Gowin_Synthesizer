@@ -43,6 +43,7 @@
 - 继续测量真实按键或 pad 到耳机输出的端到端延迟；数字内部延迟和人的实际交互感受分开记录。
 - 增加可编辑的 Push/电脑/MIDI 映射和页面导航，但不恢复已经删除的 performance keyboard 页面。
 - 评估 MPE 或更完整的逐通道表达。它需要先解决通用 MIDI 的 channel/cable 状态归属。
-- 原始架构文档提到蓝牙、外部 App、FLAC/MP3 和更完整的录音。这些保留为远期方向，进入开发前再确定接口与硬件，不据此改动当前 J18 USB-A 路径。
+- RTL8723DS BLE 已迁移至 138K 候选：独立 50 MHz 工程布局布线通过，FFF0/FFF1 测试通知回归通过；完整工作站集成候选已布通，但 BLE/DDR 时序退化尚待修复，外部模组接线和 138K 实体扫描/连接/通知验收待完成。见 [迁移说明](migration/gw138k_audio/push2_workstation/usb_a/rtl/bluetooth/README.md)。业务数据接口、BLE MIDI、蓝牙音频与 App 仍需单独开发。
+- 原始架构文档中的外部 App、FLAC/MP3 和更完整录音继续作为后续方向，进入开发前确定接口与硬件。
 
 每个功能继续使用独立结果目录、独立 UserCode、完整构建和 SRAM 实体验收。旧位流与结果目录不覆盖，Flash 是否写入必须以当次可核对记录为准。

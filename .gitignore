@@ -60,3 +60,10 @@ migration/gw138k_audio/push2_workstation/usb_a/LATEST_BUILD.txt
 a.out
 .commandcode/
 .zcodeignore
+
+# Original RTL8723DS firmware inputs for independent controller-model regression.
+!migration/gw138k_audio/push2_workstation/usb_a/vendor/rtl8723ds_ble/firmware/*.bin
+
+# Frozen upstream evidence is required by the BLE input manifest.
+!migration/gw138k_audio/push2_workstation/usb_a/vendor/rtl8723ds_ble/reports/utilization*.rpt
+!migration/gw138k_audio/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/portable/*.log

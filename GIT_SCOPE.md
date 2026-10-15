@@ -57,3 +57,28 @@ Rules for the split:
 
 The archived evidence trees, the relocation of the frozen baseline out of
 `results/`, and the consolidation of dead-end routes are deliberately deferred.
+
+## RTL8723DS BLE migration (2026-10-07)
+
+The teammate's portable BLE export is frozen under
+`usb_a/vendor/rtl8723ds_ble/` with its original manifest, notice, firmware and
+regressions. The GW138K adapter, J8/PMOD1 constraints and diagnostic UART live
+under `usb_a/rtl/bluetooth/`; `tools/build_rtl8723ds_ble.py` creates isolated
+standalone or full-workstation candidates. Target synthesis attributes are
+applied only to staged vendor copies.
+
+UserCode `0x00000086` belongs to the independently routed BLE candidate;
+`0x00000087` records its failed route-option-1 integration attempt;
+`0x00000088` is reserved for the route-option-2 integration retry;
+`0x00000089` is reserved for the optional compact-HCI integration candidate;
+`0x00000090`/`0x00000091` are reserved for joint HCI+H5 compact integration/standalone candidates. These
+are offline candidates, with 138K module hardware acceptance pending. The
+joint compact standalone 0x91 closes 50 MHz timing; full integration 0x90 is
+routed but has BLE/DDR timing regressions and is not release eligible. Their
+records are in `usb_a/reports/RTL8723DS_BLE_MIGRATION_20261007.*`. The build does
+not update `LATEST_WORKSTATION.json`; full-workstation acceptance remains
+separate from standalone BLE validation.
+
+The frozen BLE export is stored without Git newline conversion. Its original
+firmware, utilization reports and portable regression logs are manifest inputs
+and are tracked explicitly; newly generated build outputs still stay local.

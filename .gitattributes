@@ -6,3 +6,6 @@ migration/gw138k_audio/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/** lingui
 # worktree produce byte-identical input; without this rule the worktree can
 # check it out as LF and the raw-SHA audit diverges.
 migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/video_pll_init.v text eol=crlf
+
+# The frozen BLE export manifest hashes raw bytes, including original CRLF.
+migration/gw138k_audio/push2_workstation/usb_a/vendor/rtl8723ds_ble/** -text linguist-vendored

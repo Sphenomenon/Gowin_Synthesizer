@@ -1,0 +1,147 @@
+{
+  "audit": "Independent read-only BLE data and VIO record audit",
+  "passed": true,
+  "packet_count": 40,
+  "total_payload_bytes": 800,
+  "sequence_first": 0,
+  "sequence_last": 39,
+  "device_uptime_first_ms": 55413,
+  "device_uptime_last_ms": 74913,
+  "device_uptime_span_ms": 19500,
+  "device_packet_interval_ms": 500,
+  "PC_receive_span_s": 19.547,
+  "PC_run_elapsed_s": 22.484,
+  "final_notification_submissions": 40,
+  "final_ATT_requests": 16,
+  "final_completed_packets": 56,
+  "H5_retransmissions": 1,
+  "ARM_cores_suspended": [
+    0,
+    1
+  ],
+  "all_FPGA_pin_outputs_released": true,
+  "checks": [
+    {
+      "check": "packet_count",
+      "passed": true,
+      "detail": 40
+    },
+    {
+      "check": "all_payloads_20_bytes",
+      "passed": true
+    },
+    {
+      "check": "all_BTST_headers",
+      "passed": true
+    },
+    {
+      "check": "all_fixed_payload_00_to_05",
+      "passed": true
+    },
+    {
+      "check": "independent_bitwise_CRC16_CCITT_FFFF_little_endian",
+      "passed": true
+    },
+    {
+      "check": "sequence_0_to_39_no_gaps",
+      "passed": true
+    },
+    {
+      "check": "device_uptime_exact_500ms_steps",
+      "passed": true
+    },
+    {
+      "check": "decoded_fields_match_raw",
+      "passed": true
+    },
+    {
+      "check": "PC_record_summary_agrees",
+      "passed": true
+    },
+    {
+      "check": "device_address_and_name",
+      "passed": true
+    },
+    {
+      "check": "initialized_H5_and_HCI",
+      "passed": true
+    },
+    {
+      "check": "initial_patch_command_ROM_counts",
+      "passed": true
+    },
+    {
+      "check": "both_ARM_cores_suspended",
+      "passed": true
+    },
+    {
+      "check": "state_ARM_application_flags_false",
+      "passed": true
+    },
+    {
+      "check": "final_PC_and_device_notification_counts_match",
+      "passed": true
+    },
+    {
+      "check": "final_controller_completed_packets_equal_ATT_plus_notifications",
+      "passed": true
+    },
+    {
+      "check": "final_patch_counts_preserved",
+      "passed": true
+    },
+    {
+      "check": "final_error_counters_zero",
+      "passed": true
+    },
+    {
+      "check": "final_PC_disconnected_and_unsubscribed",
+      "passed": true
+    },
+    {
+      "check": "stopped_VIO_output_flag_clear",
+      "passed": true
+    },
+    {
+      "check": "bt_verilog_initialized_words.txt_header_and_fields",
+      "passed": true
+    },
+    {
+      "check": "bt_verilog_final_words.txt_header_and_fields",
+      "passed": true
+    },
+    {
+      "check": "bt_verilog_stop_words.txt_header_and_fields",
+      "passed": true
+    },
+    {
+      "check": "compiled_top_matches_archived_manifest",
+      "passed": true
+    },
+    {
+      "check": "all_15_pins_tristated_when_outputs_inactive",
+      "passed": true
+    },
+    {
+      "check": "captured_programmed_bitstream_matches_manifest",
+      "passed": true
+    },
+    {
+      "check": "captured_LTX_matches_manifest",
+      "passed": true
+    }
+  ],
+  "input_sha256": {
+    "pc_receive.json": "a35877d61082b0c90563c5db148ecde8a13cd9af5467bc59f01a40b523d57381",
+    "initialized_state.json": "272c48b6c1fe688daa1b21a1b7014c6ba5c492950a553972712729ae442ed6be",
+    "final_state.json": "8aee2c635dce8c10b94d335e1a999512a78a7b1bc3208231898a45cc3e1cdb17",
+    "stopped_state.json": "cac794879f79c326facd24eaf6c78327b7d0d7509d3e8a5c3d079b3a60c6e550",
+    "arm_stopped_state.txt": "a14113bcd7c27705e015ef3dc3f94eed0f208bf940e7756060b9aec3637a05f0",
+    "bt_verilog_initialized_words.txt": "53dff2ff7b89cefc68f03b0ee23041894c759df65cf96c170900e3418b5fbc80",
+    "bt_verilog_final_words.txt": "3488b21c2379a100f32a612ae21e7484f8206ce6c5f6279bf9ac3d9841a51e34",
+    "bt_verilog_stop_words.txt": "da5156c3c0d226c215da6df6c527b8d56a1c2fe0024712bc89511ebddfefb963",
+    "artifacts.json": "81e24567e6e5e5b2499e2ec5bce1fac980c374072335c17412706b6f8094a311",
+    "firmware_manifest.json": "acb4358578446bca1febdb0476e4c17ac0af16e482cdf2e686b54256e0f3f774"
+  },
+  "scope": "CRC and sequence were recomputed from raw packet bytes using an independent bitwise CRC. Pin release follows captured VIO outputs_active=false and the manifest-matched compiled top tri-state assignment, not a separate electrical measurement. Output release alone does not prove module RF stopped. ARM suspended status confirms no ARM application executed during the captured observation."
+}

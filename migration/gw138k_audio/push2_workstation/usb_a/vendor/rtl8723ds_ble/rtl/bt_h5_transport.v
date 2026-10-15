@@ -1,0 +1,332 @@
+// RTL8723DS H5 three-wire UART transport, transmit window one, CRC disabled.
+// Packet data is copied on tx_start; keep the source RAM valid until tx_ready
+// returns. RX valid stays high until consumed. A full RX mailbox is not ACKed
+// as accepted: the peer can retransmit after the application frees the buffer.
+module bt_h5_transport #(
+    parameter integer CLK_HZ = 50000000,
+    parameter integer BAUD = 115200,
+    parameter integer RETRY_MS = 150,
+    parameter integer MAX_RETRIES = 8
+) (
+    input wire clk, input wire resetn, input wire enable,
+    input wire uart_rx, output wire uart_tx,
+    input wire tx_start, input wire [3:0] tx_type,
+    input wire [8:0] tx_length, output wire [8:0] tx_payload_addr,
+    input wire [7:0] tx_payload_data,
+    output wire tx_ready, output reg tx_done, output reg tx_error,
+    output reg rx_valid, output reg [3:0] rx_type,
+    output reg [8:0] rx_length, input wire [8:0] rx_payload_addr,
+    output wire [7:0] rx_payload_data, input wire rx_consume,
+    output reg link_up, output wire [7:0] debug_state,
+    output reg [31:0] rx_frames, output reg [31:0] tx_frames,
+    output reg [31:0] retries, output reg [31:0] uart_errors,
+    output reg [31:0] protocol_errors
+);
+    localparam integer MAX_PAYLOAD = 280;
+    localparam integer RETRY_CYCLES = (CLK_HZ/1000) * RETRY_MS;
+    localparam [3:0] W_IDLE=0, W_OPEN=1, W_RAW=2, W_ESCAPE=3,
+                     W_CLOSE=4, W_FINISH=5;
+    reg [7:0] uart_tx_data;
+    reg uart_tx_valid;
+    wire uart_tx_ready, uart_tx_done, uart_rx_valid, uart_rx_error;
+    wire [7:0] uart_rx_data;
+    bt_uart #(.CLK_HZ(CLK_HZ), .BAUD(BAUD)) uart (
+        .clk(clk), .resetn(resetn), .enable(enable),
+        .rx(uart_rx), .tx(uart_tx), .tx_data(uart_tx_data),
+        .tx_valid(uart_tx_valid), .tx_ready(uart_tx_ready),
+        .tx_done(uart_tx_done), .rx_data(uart_rx_data),
+        .rx_valid(uart_rx_valid), .rx_error(uart_rx_error)
+    );
+
+    reg [7:0] pending_ram [0:MAX_PAYLOAD-1];
+    reg [7:0] delivered_ram [0:MAX_PAYLOAD-1];
+    reg [7:0] wire_ram [0:MAX_PAYLOAD+3];
+    reg [8:0] copy_index, deliver_index;
+    reg host_copy, deliver_copy, host_pending, host_sent;
+    reg host_reliable;
+    reg [3:0] host_type;
+    reg [8:0] host_length;
+    reg [2:0] tx_seq, rx_seq, host_seq;
+    reg [31:0] retry_timer, link_timer;
+    reg [7:0] retry_count;
+    reg synced;
+    reg sync_rsp_pending, conf_rsp_pending, conf_req_pending;
+    reg wake_rsp_pending, ack_pending;
+
+    reg collecting, escaped, dropped;
+    reg [8:0] wire_count;
+    reg [7:0] header0, header1, header2, header3;
+    wire [11:0] received_length = {header2, header1[7:4]};
+    wire [7:0] header_sum = header0 + header1 + header2 + header3;
+    wire delimiter = uart_rx_valid && uart_rx_data == 8'hc0;
+    wire complete_frame = delimiter && collecting &&
+                          (wire_count != 0 || escaped || dropped);
+    wire frame_good = complete_frame && !escaped && !dropped &&
+                      wire_count >= 4 && header_sum == 8'hff &&
+                      !header0[6] && received_length <= MAX_PAYLOAD &&
+                      wire_count == received_length + 4;
+    wire [2:0] expected_ack = host_seq + 3'd1;
+    wire peer_restart = frame_good && link_up && header1[3:0] == 15 &&
+                        received_length >= 2 && wire_ram[4] == 8'h01 &&
+                        wire_ram[5] == 8'h7e;
+    wire ack_received = frame_good && !peer_restart && host_pending && host_sent &&
+                        header0[5:3] == expected_ack;
+    wire [7:0] decoded_byte = escaped ?
+                              (uart_rx_data == 8'hdc ? 8'hc0 : 8'hdb) :
+                              uart_rx_data;
+
+    reg [3:0] wire_state;
+    reg wire_host;
+    reg [3:0] wire_type;
+    reg [8:0] wire_length, wire_index;
+    reg [2:0] wire_ack, wire_seq;
+    reg wire_reliable;
+    reg [7:0] link_byte0, link_byte1;
+    reg [7:0] escape_tail;
+    reg [7:0] raw_byte;
+    reg [7:0] tx_header0, tx_header1, tx_header2;
+    assign tx_payload_addr = copy_index;
+    assign rx_payload_data = (rx_payload_addr < MAX_PAYLOAD) ?
+                             delivered_ram[rx_payload_addr] : 8'h00;
+    // An ACK can arrive in the middle of a retransmission. Finish that wire
+    // frame before allowing a new packet to overwrite its payload RAM.
+    assign tx_ready = enable && link_up && !host_pending && !host_copy &&
+                      !(wire_host && wire_state != W_IDLE);
+    assign debug_state = {link_up, host_pending, host_sent, rx_valid, wire_state};
+
+    always @* begin
+        tx_header0 = {wire_reliable, 1'b0, wire_ack, wire_seq};
+        tx_header1 = {wire_length[3:0], wire_type};
+        tx_header2 = {3'b000, wire_length[8:4]};
+        case (wire_index)
+            0: raw_byte = tx_header0;
+            1: raw_byte = tx_header1;
+            2: raw_byte = tx_header2;
+            3: raw_byte = ~(tx_header0 + tx_header1 + tx_header2);
+            default: begin
+                if (wire_host) raw_byte = pending_ram[wire_index-4];
+                else if (wire_index == 4) raw_byte = link_byte0;
+                else if (wire_index == 5) raw_byte = link_byte1;
+                else raw_byte = 8'h01;
+            end
+        endcase
+        uart_tx_valid = 0; uart_tx_data = 8'hc0;
+        case (wire_state)
+            W_OPEN, W_CLOSE: uart_tx_valid = 1;
+            W_RAW: begin
+                uart_tx_valid = 1;
+                uart_tx_data = (raw_byte == 8'hc0 || raw_byte == 8'hdb) ?
+                               8'hdb : raw_byte;
+            end
+            W_ESCAPE: begin uart_tx_valid = 1; uart_tx_data = escape_tail; end
+            default: begin uart_tx_valid = 0; uart_tx_data = 8'hc0; end
+        endcase
+    end
+
+    always @(posedge clk or negedge resetn) begin
+        if (!resetn) begin
+            tx_done <= 0; tx_error <= 0; rx_valid <= 0; rx_type <= 0;
+            rx_length <= 0; link_up <= 0;
+            rx_frames <= 0; tx_frames <= 0; retries <= 0;
+            uart_errors <= 0; protocol_errors <= 0;
+            copy_index <= 0; deliver_index <= 0;
+            host_copy <= 0; deliver_copy <= 0;
+            host_pending <= 0; host_sent <= 0; host_reliable <= 0;
+            host_type <= 0; host_length <= 0; host_seq <= 0;
+            tx_seq <= 0; rx_seq <= 0; retry_timer <= 0; retry_count <= 0;
+            synced <= 0; link_timer <= 0;
+            sync_rsp_pending <= 0; conf_rsp_pending <= 0;
+            conf_req_pending <= 0; wake_rsp_pending <= 0; ack_pending <= 0;
+            collecting <= 0; escaped <= 0; dropped <= 0; wire_count <= 0;
+            header0 <= 0; header1 <= 0; header2 <= 0; header3 <= 0;
+            wire_state <= W_IDLE; wire_host <= 0; wire_type <= 0;
+            wire_length <= 0; wire_index <= 0;
+            wire_ack <= 0; wire_seq <= 0; wire_reliable <= 0;
+            link_byte0 <= 0; link_byte1 <= 0; escape_tail <= 0;
+        end else if (!enable) begin
+            tx_done <= 0; tx_error <= 0; rx_valid <= 0; link_up <= 0;
+            host_pending <= 0; host_sent <= 0; host_copy <= 0;
+            deliver_copy <= 0; synced <= 0; tx_seq <= 0; rx_seq <= 0;
+            retry_timer <= 0; retry_count <= 0; link_timer <= 0;
+            sync_rsp_pending <= 0; conf_rsp_pending <= 0;
+            conf_req_pending <= 0; wake_rsp_pending <= 0; ack_pending <= 0;
+            collecting <= 0; escaped <= 0; dropped <= 0; wire_count <= 0;
+            wire_state <= W_IDLE;
+        end else begin
+            tx_done <= 0; tx_error <= 0;
+            if (rx_valid && rx_consume) rx_valid <= 0;
+            if (host_copy) begin
+                pending_ram[copy_index] <= tx_payload_data;
+                if (copy_index + 1 == host_length) host_copy <= 0;
+                else copy_index <= copy_index + 1;
+            end
+            if (deliver_copy) begin
+                delivered_ram[deliver_index] <= wire_ram[deliver_index+4];
+                if (deliver_index + 1 == rx_length) begin
+                    deliver_copy <= 0; rx_valid <= 1;
+                end else deliver_index <= deliver_index + 1;
+            end
+            if (tx_start && tx_ready) begin
+                if (tx_length > MAX_PAYLOAD || tx_type == 0 || tx_type == 15)
+                    tx_error <= 1;
+                else begin
+                    host_pending <= 1; host_sent <= 0;
+                    host_type <= tx_type; host_length <= tx_length;
+                    host_reliable <= tx_type == 1 || tx_type == 2;
+                    host_seq <= tx_seq; retry_count <= 0; retry_timer <= 0;
+                    copy_index <= 0; host_copy <= tx_length != 0;
+                end
+            end
+            if (!link_up && link_timer != 0) link_timer <= link_timer - 1;
+            if (host_pending && host_sent && !ack_received &&
+                retry_timer < RETRY_CYCLES) retry_timer <= retry_timer + 1;
+            if (ack_received) begin
+                host_pending <= 0; host_sent <= 0;
+                tx_seq <= expected_ack; tx_done <= 1;
+            end
+
+            // The serial receiver runs independently of the transmitting FSM.
+            if (uart_rx_error) begin
+                uart_errors <= uart_errors + 1;
+                collecting <= 0; escaped <= 0; dropped <= 0; wire_count <= 0;
+            end else if (uart_rx_valid) begin
+                if (uart_rx_data == 8'hc0) begin
+                    collecting <= 1; escaped <= 0; dropped <= 0; wire_count <= 0;
+                    if (complete_frame) begin
+                        if (!frame_good) protocol_errors <= protocol_errors + 1;
+                        else begin
+                            rx_frames <= rx_frames + 1;
+                            if (header1[3:0] == 15) begin
+                                if (header0[7] || received_length < 2)
+                                    protocol_errors <= protocol_errors + 1;
+                                else if (wire_ram[4] == 8'h01 && wire_ram[5] == 8'h7e) begin
+                                    sync_rsp_pending <= 1;
+                                    if (link_up) begin
+                                        link_up <= 0; synced <= 0; tx_seq <= 0; rx_seq <= 0;
+                                        link_timer <= 0; rx_valid <= 0; deliver_copy <= 0;
+                                        if (host_pending) tx_error <= 1;
+                                        host_pending <= 0; host_sent <= 0; host_copy <= 0;
+                                    end
+                                end else if (wire_ram[4] == 8'h02 && wire_ram[5] == 8'h7d) begin
+                                    if (!link_up) begin synced <= 1; conf_req_pending <= 1; end
+                                end else if (wire_ram[4] == 8'h03 && wire_ram[5] == 8'hfc) begin
+                                    conf_rsp_pending <= 1;
+                                    if (!link_up) begin synced <= 1; conf_req_pending <= 1; end
+                                end else if (wire_ram[4] == 8'h04 && wire_ram[5] == 8'h7b) begin
+                                    if (synced && !link_up) begin
+                                        if (received_length > 2 && wire_ram[6][4])
+                                            protocol_errors <= protocol_errors + 1;
+                                        else begin link_up <= 1; conf_req_pending <= 0; end
+                                    end
+                                end else if (wire_ram[4] == 8'h05 && wire_ram[5] == 8'hfa)
+                                    wake_rsp_pending <= 1;
+                            end else if (link_up && header1[3:0] != 0) begin
+                                if (header0[7]) begin
+                                    ack_pending <= 1;
+                                    if (header0[2:0] != rx_seq) begin
+                                        if (header0[2:0] != (rx_seq - 3'd1))
+                                            protocol_errors <= protocol_errors + 1;
+                                    end else if (deliver_copy || (rx_valid && !rx_consume))
+                                        protocol_errors <= protocol_errors + 1;
+                                    else begin
+                                        rx_seq <= rx_seq + 1;
+                                        rx_type <= header1[3:0]; rx_length <= received_length[8:0];
+                                        deliver_index <= 0;
+                                        if (received_length == 0) rx_valid <= 1;
+                                        else deliver_copy <= 1;
+                                    end
+                                end else if (deliver_copy || (rx_valid && !rx_consume))
+                                    protocol_errors <= protocol_errors + 1;
+                                else begin
+                                    rx_type <= header1[3:0]; rx_length <= received_length[8:0];
+                                    deliver_index <= 0;
+                                    if (received_length == 0) rx_valid <= 1;
+                                    else deliver_copy <= 1;
+                                end
+                            end
+                        end
+                    end
+                end else if (collecting && !dropped) begin
+                    if (!escaped && uart_rx_data == 8'hdb) escaped <= 1;
+                    else if (escaped && uart_rx_data != 8'hdc && uart_rx_data != 8'hdd) begin
+                        dropped <= 1; escaped <= 0;
+                    end else begin
+                        escaped <= 0;
+                        if (wire_count >= MAX_PAYLOAD+4 || deliver_copy) dropped <= 1;
+                        else begin
+                            wire_ram[wire_count] <= decoded_byte;
+                            case (wire_count)
+                                0: header0 <= decoded_byte;
+                                1: header1 <= decoded_byte;
+                                2: header2 <= decoded_byte;
+                                3: header3 <= decoded_byte;
+                            endcase
+                            wire_count <= wire_count + 1;
+                        end
+                    end
+                end
+            end
+
+            case (wire_state)
+                W_IDLE: if (!frame_good) begin
+                    wire_host <= 0; wire_reliable <= 0; wire_seq <= 0;
+                    wire_ack <= rx_seq; wire_index <= 0;
+                    if (sync_rsp_pending) begin
+                        sync_rsp_pending <= 0; wire_type <= 15; wire_length <= 2;
+                        link_byte0 <= 8'h02; link_byte1 <= 8'h7d; wire_state <= W_OPEN;
+                    end else if (conf_rsp_pending) begin
+                        conf_rsp_pending <= 0; wire_type <= 15; wire_length <= 3;
+                        link_byte0 <= 8'h04; link_byte1 <= 8'h7b; wire_state <= W_OPEN;
+                    end else if (wake_rsp_pending) begin
+                        wake_rsp_pending <= 0; wire_type <= 15; wire_length <= 2;
+                        link_byte0 <= 8'h06; link_byte1 <= 8'hf9; wire_state <= W_OPEN;
+                    end else if (ack_pending) begin
+                        ack_pending <= 0; wire_type <= 0; wire_length <= 0;
+                        wire_state <= W_OPEN;
+                    end else if (!link_up && (conf_req_pending || link_timer == 0)) begin
+                        conf_req_pending <= 0; wire_type <= 15;
+                        wire_length <= synced ? 3 : 2;
+                        link_byte0 <= synced ? 8'h03 : 8'h01;
+                        link_byte1 <= synced ? 8'hfc : 8'h7e;
+                        wire_state <= W_OPEN; link_timer <= RETRY_CYCLES;
+                    end else if (link_up && host_pending && !host_copy && !ack_received &&
+                                 (!host_sent || retry_timer >= RETRY_CYCLES)) begin
+                        if (host_sent && retry_count >= MAX_RETRIES) begin
+                            tx_error <= 1; host_pending <= 0; host_sent <= 0;
+                            link_up <= 0; synced <= 0; link_timer <= 0;
+                            tx_seq <= 0; rx_seq <= 0;
+                        end else begin
+                            wire_host <= 1; wire_type <= host_type; wire_length <= host_length;
+                            wire_reliable <= host_reliable; wire_seq <= host_seq;
+                            wire_state <= W_OPEN;
+                            if (host_sent) begin
+                                retries <= retries + 1; retry_count <= retry_count + 1;
+                            end
+                        end
+                    end
+                end
+                W_OPEN: if (uart_tx_ready) wire_state <= W_RAW;
+                W_RAW: if (uart_tx_ready) begin
+                    if (raw_byte == 8'hc0 || raw_byte == 8'hdb) begin
+                        escape_tail <= raw_byte == 8'hc0 ? 8'hdc : 8'hdd;
+                        wire_state <= W_ESCAPE;
+                    end else if (wire_index + 1 == wire_length + 4) wire_state <= W_CLOSE;
+                    else wire_index <= wire_index + 1;
+                end
+                W_ESCAPE: if (uart_tx_ready) begin
+                    if (wire_index + 1 == wire_length + 4) wire_state <= W_CLOSE;
+                    else begin wire_index <= wire_index + 1; wire_state <= W_RAW; end
+                end
+                W_CLOSE: if (uart_tx_ready) wire_state <= W_FINISH;
+                W_FINISH: if (uart_tx_done) begin
+                    tx_frames <= tx_frames + 1; wire_state <= W_IDLE;
+                    if (wire_host && host_pending && !ack_received) begin
+                        if (host_reliable) begin host_sent <= 1; retry_timer <= 0; end
+                        else begin host_pending <= 0; tx_done <= 1; end
+                    end
+                end
+                default: wire_state <= W_IDLE;
+            endcase
+        end
+    end
+endmodule
