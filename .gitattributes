@@ -9,3 +9,7 @@ migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306
 
 # The frozen BLE export manifest hashes raw bytes, including original CRLF.
 migration/gw138k_audio/push2_workstation/usb_a/vendor/rtl8723ds_ble/** -text linguist-vendored
+
+# Preserve original touchboard input bytes and treat PDFs as binary documents.
+migration/gw138k_audio/push2_workstation/touchboard_test/input_netlist.tel -text
+migration/gw138k_audio/push2_workstation/touchboard_test/**/*.pdf binary

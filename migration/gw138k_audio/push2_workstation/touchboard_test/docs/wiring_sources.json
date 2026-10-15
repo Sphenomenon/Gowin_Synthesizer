@@ -1,0 +1,33 @@
+{
+  "created_at": "2026-10-13T01:02:33.033620+08:00",
+  "board_location_reference": "NEO Dock 31004 front-side iBOM",
+  "pin_number_reference": "NEO Dock 31005 schematic page 19",
+  "j8_view": "component-side PCB pad top view; not connector opening face",
+  "u4_view": "electrical pin number grouping; physical footprint orientation unknown",
+  "firmware_user_code": "0x54420104",
+  "wiring": {
+    "3": 12,
+    "4": 11,
+    "5": 10,
+    "6": 9,
+    "7": 8,
+    "8": 7,
+    "9": 6,
+    "10": 5,
+    "11": 4,
+    "12": 3,
+    "13": 2,
+    "14": 1
+  },
+  "u4_unconnected": [
+    1,
+    2
+  ],
+  "inputs": {
+    "/home/sphenicidition/Documents/fpga/Mega_138K/Doc/Mega_138K_60K/03_Designator_drawing/ibom_Tang_Mega_NEO_Dock_31004.html": "a239de4ac398adaeb426e991d6afeceba8708223cc1a208b126ff869bd08b53a",
+    "/home/sphenicidition/Documents/fpga/Mega_138K/Doc/Mega_138K_60K/02_Schematic/DOCK/Tang_Mega_NEO_Dock-138K_31005_Schematics.pdf": "ade025e2c30b23d9fa820346cabd5ee3f90e6b9bfbc083d48bc691e1d3977d1e",
+    "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/touchboard_test/input_netlist.tel": "23cecaf74fd66268d0ad7021fa42cbac23ec246bef65ba751bf55ffad99c5230",
+    "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/touchboard_test/results/build_20261013_002643_989320/touchboard.cst": "8c8db86fec8dc10609dbac3b58e4ad41ae4ea4d8cda09d38c1ec534d0fb3fa4a",
+    "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/touchboard_test/docs/draw_wiring.py": "069e988db70e8374e82ea708f8172c07187586ade599242b484a2068dc9502bf"
+  }
+}

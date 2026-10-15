@@ -12,6 +12,7 @@ P29 USB IN 诊断已完成离线构建和完整审计，能分别回读传输/�
 - [`Prj1`](migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1)：冻结的 Gowin 工程源码基线。该目录名保留了来源，但 `impl`、`build` 和位流不进入 Git。
 - [`ae350/scripts`](migration/gw138k_audio/ae350/scripts)：AE350 辅助脚本。
 - [`RTL8723DS BLE`](migration/gw138k_audio/push2_workstation/usb_a/rtl/bluetooth/README.md)：138K 蓝牙驱动、J8 接线、独立/工作站集成构建和验证记录；模组实体测试待完成。
+- [`touchboard_test`](migration/gw138k_audio/push2_workstation/touchboard_test)：QT2160 触摸板独立信号测试、接线资料、仿真和调试记录；采样异常仍待解决，实板触摸尚未验收。
 
 ## 构建
 

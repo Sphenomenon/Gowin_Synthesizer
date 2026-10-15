@@ -1,0 +1,113 @@
+{
+  "updated_at": "2026-10-13T00:45:34.700021+08:00",
+  "target": "GW5AST-LV138PG484AC2/I1",
+  "connector": "J8 PMOD1",
+  "user_code": "0x54420104",
+  "bitstream_sha256": "be3aecc897bafb89779fde8720d58cad5bcc74ffc5893d9065881e13ebba4b32",
+  "build": "results/build_20261013_002643_989320",
+  "simulation": "results/sim_20261013_002609_309104",
+  "simulation_frames": 382,
+  "simulation_passed": true,
+  "routed_timing_passed": true,
+  "timing_violated_endpoints": {
+    "Setup": 0,
+    "Hold": 0
+  },
+  "monitor_verification": "results/monitor_test_20261013_004136",
+  "monitor_passed": true,
+  "monitor_sha256": "f9d2229352ce6b5c45ddaf03f2fb9b93679329d7032819123cb3a21f757f0f5f",
+  "programming": "results/sram_20261013_004032_502052/result.json",
+  "sram_programmed": true,
+  "flash_written": false,
+  "touch_hardware_verified": false,
+  "gui": "results/gui_20261013_004255",
+  "gui_pid": 208771,
+  "raw_capture": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/touchboard_test/results/gui_20261013_004255/capture.jsonl",
+  "hardware_evidence": "results/rewired_20261013_004428",
+  "sample_frames": 600,
+  "sample_start": "2026-10-13T00:45:22.703406+08:00",
+  "sample_end": "2026-10-13T00:45:34.687994+08:00",
+  "uart_frame_rate_hz": 49.981,
+  "crc_errors": 0,
+  "dropped": 0,
+  "key_states": [
+    {
+      "online": false,
+      "configured": false,
+      "error": 1,
+      "address": 13,
+      "count": 150
+    },
+    {
+      "online": false,
+      "configured": false,
+      "error": 1,
+      "address": 23,
+      "count": 150
+    },
+    {
+      "online": false,
+      "configured": false,
+      "error": 1,
+      "address": 68,
+      "count": 150
+    },
+    {
+      "online": false,
+      "configured": false,
+      "error": 1,
+      "address": 107,
+      "count": 150
+    }
+  ],
+  "slider_states": [
+    {
+      "online": true,
+      "configured": true,
+      "error": 0,
+      "address": 13,
+      "count": 600
+    }
+  ],
+  "slider_zero_reference_frames": 460,
+  "slider_detect_frames": 24,
+  "scan_ack": [],
+  "post_pnr_functional_passed": true,
+  "post_pnr_accelerated_waits": true,
+  "blocker": "After user rewiring and fresh SRAM reset/init: U1 still address NACK on all legal addresses; U2 responds but signals/references are zero and spurious SDET remains. Physical wiring and actual part need inspection.",
+  "latest_idle_diagnostic": {
+    "recorded_at": "2026-10-13T01:36:41.496481+08:00",
+    "user_code": "0x54420106",
+    "evidence": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/touchboard_test/results/idle_diagnostic_20261013_012003",
+    "programming_evidence": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/touchboard_test/results/sram_20261013_013103_822348",
+    "profile": {
+      "LP": 1,
+      "BREP": 1,
+      "NDIL": 3,
+      "threshold": 10,
+      "burst": 2,
+      "wait_after_calibration_ms": 1000
+    },
+    "hardware_touch_verified": false,
+    "u1_ready_frames": 2930,
+    "u1_any_key_fraction": 0.9774744027303754,
+    "u1_scl_timeout_frames": 25,
+    "u2_ready_frames": 0
+  },
+  "hardware_touch_verified": false,
+  "latest_active_diagnostic": {
+    "recorded_at": "2026-10-13T02:29:10.730241+08:00",
+    "user_code": "0x54420109",
+    "gui_pid": 219218,
+    "gui": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/touchboard_test/results/gui_20261013_022717",
+    "programming_evidence": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/touchboard_test/results/sram_20261013_022700_376908",
+    "frames": 600,
+    "first_timestamp": "2026-10-13T02:28:58.722412+08:00",
+    "last_timestamp": "2026-10-13T02:29:10.706360+08:00",
+    "crc_errors_end": 1,
+    "dropped_end": 0,
+    "flash_written": false,
+    "hardware_touch_verified": false
+  },
+  "active_diagnostic_evidence": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/touchboard_test/results/active_diag_20261013_014257"
+}

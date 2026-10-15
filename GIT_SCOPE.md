@@ -82,3 +82,15 @@ separate from standalone BLE validation.
 The frozen BLE export is stored without Git newline conversion. Its original
 firmware, utilization reports and portable regression logs are manifest inputs
 and are tracked explicitly; newly generated build outputs still stay local.
+
+## Standalone touchboard signal test
+
+`migration/gw138k_audio/push2_workstation/touchboard_test/` contains the
+independent QT2160 signal probe, its frozen netlist and schematic, wiring
+references, RTL and host tools, simulation models, and dated debug records.
+It is a standalone SRAM test project; hardware touch acceptance is still
+pending because the recorded raw sampling anomalies remain unresolved.
+
+Source, input documents and debug summaries are tracked. Generated builds,
+captures and verification output stay in its ignored `results/` directory.
+The `LATEST_*.txt` files are local pointers into that directory and are ignored.
