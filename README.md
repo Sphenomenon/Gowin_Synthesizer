@@ -8,6 +8,7 @@ P29 USB IN 诊断已完成离线构建和完整审计，能分别回读传输/�
 
 ## 目录
 
+- [整机接口规划](整机接口规划.md)：138K／Push／25K分工、已确认MIDI映射与默认值、现有协议差异及待确认项。
 - [`push2_workstation/usb_a`](migration/gw138k_audio/push2_workstation/usb_a)：当前 USB-A 工作站源码、仿真、审计和版本记录。
 - [`Prj1`](migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1)：冻结的 Gowin 工程源码基线。该目录名保留了来源，但 `impl`、`build` 和位流不进入 Git。
 - [`ae350/scripts`](migration/gw138k_audio/ae350/scripts)：AE350 辅助脚本。
