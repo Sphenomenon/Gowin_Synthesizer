@@ -8,9 +8,11 @@ here=Path(__file__).resolve().parent
 build=Path(sys.argv[1]).resolve();project=build/'Prj1';fw=build/'firmware'
 out=build/datetime.now().strftime('generic_midi_%H%M%S_%f');out.mkdir();print(out,flush=True)
 assert (here.parent/'firmware.c').read_bytes()==(fw/'firmware.c').read_bytes()
+assert (here.parent/'gw25k_panel.h').read_bytes()==(fw/'gw25k_panel.h').read_bytes()
 # Preserve the test and production firmware together so include paths bind to
 # this exact candidate, even if another session edits the working tree later.
 shutil.copy2(fw/'firmware.c',out/'firmware.c');(out/'sim').mkdir()
+shutil.copy2(fw/'gw25k_panel.h',out/'gw25k_panel.h')
 for name in ['test_generic_midi.c','test_hotplug.c','test_usb_in_decode.py','tb_generic_midi.sv']:
     shutil.copy2(here/name,out/'sim'/name)
 sources=[project/f.get('path') for f in ET.parse(project/'Prj1.gprj').find('FileList') if f.get('type')=='file.verilog']
@@ -19,7 +21,7 @@ sources=[f for f in sources if not any(x in str(f.relative_to(project)) for x in
      'workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
 control=here.parents[1]/'scripts/control.py'
 midi_serial=here.parents[2]/'ae350/scripts/midi_serial.py'
-inputs=[*sources,Path(__file__),control,midi_serial,out/'firmware.c',*sorted((out/'sim').iterdir())]
+inputs=[*sources,Path(__file__),control,midi_serial,out/'firmware.c',out/'gw25k_panel.h',*sorted((out/'sim').iterdir())]
 (out/'inputs.json').write_text(json.dumps({str(f):hashlib.sha256(f.read_bytes()).hexdigest() for f in inputs},indent=2)+'\n')
 commands=[]
 commands.append(('decode_test',[sys.executable,str(out/'sim/test_usb_in_decode.py'),str(control)]))

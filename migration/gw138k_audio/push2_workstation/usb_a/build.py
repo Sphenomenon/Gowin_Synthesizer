@@ -6,6 +6,7 @@ from pathlib import Path
 from datetime import datetime
 import argparse,hashlib,json,os,shutil,subprocess,sys,xml.etree.ElementTree as ET
 from tools.workstation_memory import audit as audit_workstation_memory
+from tools.stage_usb_firmware import compiler_prefix, stage_usb_firmware
 ROOT=Path(__file__).resolve().parent
 TF_AUDIO=ROOT/'rtl/tf_audio'
 WORK=ROOT.parent/'results/workstation_20260911_174045_306332'
@@ -35,6 +36,7 @@ def main():
     ap.add_argument('--tf-audio-kind',choices=['mp3','wav','flac'],default='wav',
                     help='TF decoder profile to elaborate (default: wav)')
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
+    ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=ap.parse_args()
     if args.current_workstation:
         if ((args.prepare_only and args.synthesis_only) or args.reuse_synthesis or
@@ -44,8 +46,8 @@ def main():
         flag='--prepare-only' if args.prepare_only else '--synthesis-only' if args.synthesis_only else '--full'
         command=[sys.executable,str(ROOT/'tools/build_current_workstation.py'),flag]
         if args.user_code is not None: command+=['--user-code',args.user_code]
-        subprocess.run(command,check=True)
-        return
+        if args.riscv_prefix is not None: command+=['--riscv-prefix',args.riscv_prefix]
+        raise SystemExit(subprocess.run(command).returncode)
     tf_audio_kind={'mp3':1,'wav':2,'flac':3}[args.tf_audio_kind]
     build_mode='synthesis_only' if args.synthesis_only else 'place_route_reuse' if args.reuse_synthesis else 'full'
     if args.user_code is not None:
@@ -340,7 +342,7 @@ static inline unsigned ui_active(const ui_model*m,unsigned note) {''')
         {192000,0}};
     if(!a138_score_load(AUDIO_BASE,guide,9))fail(0xbad03107);''')
     p.write_text(s)
-    ui_cc=str(Path.home()/'.local/opt/amd/2025.2.1/gnu/riscv/lin/bin/riscv64-unknown-elf')
+    ui_cc=compiler_prefix(args.riscv_prefix)
     with (out/'ui_firmware_build.log').open('w') as log:
         subprocess.run([ui_cc+'-gcc','-march=rv32im_zicsr','-mabi=ilp32','-msmall-data-limit=0','-O2','-ffreestanding',
             '-Wall','-Wextra','-Werror','-Wno-unused-function','-nostdlib','-nostartfiles','-Wl,--build-id=none','-Wl,-T,firmware/boot.ld',
@@ -676,45 +678,15 @@ end
     s=s.replace('u_runtime/u_performance_cdc/source_release*/CLEAR u_runtime/u_performance_cdc/destination_release*/CLEAR',
         'u_tf_control_cdc/source_release*/CLEAR u_tf_control_cdc/destination_release*/CLEAR')
     s+=(ROOT/'usb_a.sdc').read_text();p.write_text(s)
-    fw=out/'firmware';shutil.copytree(USB/'firmware',fw,ignore=shutil.ignore_patterns('*.o','*.elf','*.bin'))
-    shutil.copy2(ROOT/'firmware.c',fw/'firmware.c')
-    # Split the original driver's buffer loading from its unchanged token,
-    # response and PID handling. The screen loader supplies the same TX FIFO.
-    p=fw/'usb/usb_hw.c';s=p.read_text()
-    signature='int usbhw_transfer_out(uint8_t pid, int device_addr, int endpoint, int handshake, uint8_t request, uint8_t *tx, int tx_length)'
-    preloaded='int usbhw_transfer_out_preloaded(uint8_t pid, int device_addr, int endpoint, int handshake, uint8_t request, int tx_length)'
-    wrapper=signature+'''\n{
-    for (int l=0;l<tx_length;l++)usbhw_reg_write(USB_WR_DATA, tx[l]);
-    return usbhw_transfer_out_preloaded(pid,device_addr,endpoint,handshake,request,tx_length);
-}
-'''
-    s=replace(s,signature,wrapper+'\n'+preloaded)
-    s=replace(s,'    int l;\n    uint32_t ctrl = 0;','    uint32_t ctrl = 0;')
-    begin=s.index('    // Load DATAx transfer into address 0+')
-    end=s.index('    // Transfer data length',begin)
-    s=s[:begin]+s[end:];p.write_text(s)
-    p=fw/'usb/usb_hw.h';s=p.read_text()
-    s=replace(s,'void usbhw_init(uint32_t base);',preloaded+';\nvoid usbhw_init(uint32_t base);');p.write_text(s)
-    prefix=str(Path.home()/'.local/opt/amd/2025.2.1/gnu/riscv/lin/bin/riscv64-unknown-elf')
-    with (out/'firmware_build.log').open('w') as log:
-        def run(cmd):subprocess.run(cmd,cwd=fw,stdout=log,stderr=subprocess.STDOUT,check=True)
-        objects=[]
-        for name in ['start.S','firmware.c','minlibc.c','usb/usb_core.c','usb/usb_hw.c']:
-            obj=str(Path(name).with_suffix('.o'));objects.append(obj)
-            run([prefix+'-gcc','-Wall','-O2','-g','-mabi=ilp32','-march=rv32i','-ffreestanding','-Iusb','-I.','-c',name,'-o',obj])
-        run([prefix+'-gcc','-mabi=ilp32','-march=rv32i','-Wl,--build-id=none,-Bstatic,-T,baremetal.ld','-nostdlib',*objects,'-lgcc','-o','firmware.elf'])
-        run([prefix+'-objcopy','-O','binary','firmware.elf','firmware.bin'])
-        run([prefix+'-size','firmware.elf'])
-    binary=(fw/'firmware.bin').read_bytes();assert len(binary)<60000,'leave stack space in 64 KiB RAM'
-    binary=binary.ljust(65536,b'\0');hexdata=''.join(f'{int.from_bytes(binary[i:i+4],"little"):08x}\n' for i in range(0,len(binary),4))
-    (stage/'push2_usb_a.hex').write_text(hexdata);(dest/'push2_usb_a.hex').write_text(hexdata)
+    usb_firmware=stage_usb_firmware(ROOT,stage,out,args.riscv_prefix)
+    (out/'usb_firmware_metadata.json').write_text(json.dumps(usb_firmware,indent=2)+'\n')
     hashes={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
     (out/'workstation_inputs.json').write_text(json.dumps(hashes,indent=2)+'\n')
     origins=dict(
         workstation=WORK.relative_to(ROOT.parents[3]).as_posix(),
         usb_host=USB.relative_to(ROOT.parents[3]).as_posix(),hardware_tested=False,
         usb_host_implementation='VexRiscv firmware + RTL PHY/Host; no CH569',
-        build_mode=build_mode,tf_decoder=args.tf_audio_kind,
+        build_mode=build_mode,tf_decoder=args.tf_audio_kind,usb_firmware=usb_firmware,
         sources={str(p.relative_to(ROOT)):sha(p) for p in ROOT.rglob('*') if p.is_file() and 'results' not in p.relative_to(ROOT).parts and '__pycache__' not in p.parts})
     (out/'origins.json').write_text(json.dumps(origins,indent=2)+'\n');print(out,flush=True)
     # A prepared or failed project must not become the latest workstation.

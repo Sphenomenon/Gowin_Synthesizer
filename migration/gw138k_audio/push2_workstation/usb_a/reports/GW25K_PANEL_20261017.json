@@ -1,0 +1,150 @@
+{
+  "generated_at": "2026-10-17T11:29:56.271206+08:00",
+  "status": "offline_adapter_tests_passed",
+  "hardware_tested": false,
+  "flashed": false,
+  "full_workstation_built": false,
+  "base_git_commit": "8c998bacc54d0a60c30a194a7ee54a37c2a838c0",
+  "scope": "GW25K PL local-v1 host, MIDI guidance return, generic played-note guide ingress, live ROM build integration",
+  "source_sha256": {
+    "README.md": "557919f755d1338037b4055c62c7e5760f586813e95eff28e46939757b729914",
+    "GW25K_PANEL.md": "6be622ff8a99813ca89a4674341bbe38fde7f19758307e99d5a556808a16dd06",
+    "firmware.c": "f5b91e467a100abd9da106f470741c3ed73975de11fd28d951091f1f2be4c23e",
+    "gw25k_panel.h": "f32d8292f81e3304e38dc60cef111f15a06cdcb48e6f804380c5ae41732ede60",
+    "rtl/push2_usb_a_control.sv": "b3e5d2dfb3f6670456268b29199eaf00f8b2bd413c72e76a941a40fa2b2bd1e4",
+    "build.py": "10b466b8b32d06d3c17bf3785a8134f1ea57db60c97da870616cc509ac165aee",
+    "tools/build_current_workstation.py": "3b7ac9a5573c57c1638cf20228494e55424b8054e79174aaea38acd347343683",
+    "tools/stage_usb_firmware.py": "76f15a00e2440ed598eb3f41020e2998661e8971ff51e7f6a4c5945fa8728210",
+    "sim/run_generic_midi.py": "d22efab9fd46fe72d888416b0ea7dc28384c29f2fcceece502ff9df26576bbe0",
+    "sim/test_generic_midi.c": "e75667de958c60e80eebfbc2d0d2752180837f9dbaa576f2d6d942d027b5d790",
+    "sim/test_hotplug.c": "ca447b06a45f5ed3072430948bf8e0ae4e97e60f3527407fbcce2b3f00784c09",
+    "sim/run_gw25k_panel.py": "6ad06670505a4788d21ed433aadcaf4d6aaf114610c44b41a1525e7dfc01c3c7",
+    "sim/test_gw25k_panel.c": "8c3002ddf372b3116f1dfa70ccb3e624bb23b9c0e5cb4d08980183457524a625",
+    "sim/tb_gw25k_panel_endpoint.v": "16997326d0c8b0cb947bf7af9522b4e5a33123aa5ed06fe6e1d6dd1342f95c45",
+    "sim/run_pl_guide.py": "152a067d1c10c3e88d5f4ec95169c9f5091fcd0a8ab4e4060584201ba5dbe178",
+    "sim/tb_pl_guide.sv": "bb5dc323b2c26adf90b3618eca9c47d595e83f9ebe96cb89b7b7c11347d2df00",
+    "sim/test_stage_usb_firmware.py": "015b9243810bb6421a477322a8009fc48751b14ed4bb1efbe345bfd3ba45f16a"
+  },
+  "production_host": {
+    "passed": true,
+    "hardware_tested": false,
+    "scope": "production firmware PL screen/MIDI output against streaming USB mock",
+    "inputs": {
+      "firmware.c": "f5b91e467a100abd9da106f470741c3ed73975de11fd28d951091f1f2be4c23e",
+      "gw25k_panel.h": "f32d8292f81e3304e38dc60cef111f15a06cdcb48e6f804380c5ae41732ede60",
+      "sim/test_gw25k_panel.c": "8c3002ddf372b3116f1dfa70ccb3e624bb23b9c0e5cb4d08980183457524a625",
+      "sim/test_generic_midi.c": "e75667de958c60e80eebfbc2d0d2752180837f9dbaa576f2d6d942d027b5d790",
+      "sim/test_hotplug.c": "ca447b06a45f5ed3072430948bf8e0ae4e97e60f3527407fbcce2b3f00784c09",
+      "sim/run_gw25k_panel.py": "6ad06670505a4788d21ed433aadcaf4d6aaf114610c44b41a1525e7dfc01c3c7",
+      "sim/tb_gw25k_panel_endpoint.v": "16997326d0c8b0cb947bf7af9522b4e5a33123aa5ed06fe6e1d6dd1342f95c45",
+      "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/MIDI_KEYBOARD/rtl/control/panel_display_endpoint.v": "cba754e6d16bb9c998c7e23d23039b60e7ef03867244192f2ac8943b2f7135e8",
+      "vendor/usb_host_fs_8fc3/firmware/minlibc.h": "6b69e720d83f1a50d1bb617116cab5a77be69f4bfacbc1bbca41c31889f13e86",
+      "vendor/usb_host_fs_8fc3/firmware/usb/usb_core.h": "6b121c052986df83a612db01ade9a7e8524fec80fd8bd718e8b5722c985900c6",
+      "vendor/usb_host_fs_8fc3/firmware/usb/usb_defs.h": "d492a33d57f93d939dac591b5c1f5a70ed71018b1f0310c9d3b51880a677a6f5",
+      "vendor/usb_host_fs_8fc3/firmware/usb/usb_hw.h": "3e72e7c5821e5d965c646be4114b6bb691749679ad4eea35ab7149743cf9af08"
+    },
+    "compile_command": [
+      "cc",
+      "-std=c99",
+      "-O1",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-I/private/tmp/gw25k-host-push-final/source/headers",
+      "/private/tmp/gw25k-host-push-final/source/sim/test_gw25k_panel.c",
+      "-o",
+      "/private/tmp/gw25k-host-push-final/test_gw25k_panel"
+    ],
+    "actual_endpoint_rtl": true,
+    "rtl_request_counts": {
+      "01": 1,
+      "20": 504,
+      "02": 512,
+      "21": 2
+    },
+    "existing_generic_and_push_hotplug": true
+  },
+  "host_test_summary": "PASS GW25K production host: actual composite descriptor, PL FS fragmentation, independent DATA toggles, duplicate IN/OUT NAK, full RGB565 coverage, BUSY retry, MIDI interleave/output, manual/redraw, static heartbeat, 11 response faults (19 frames, 4808 tiles, 164351 MIDI polls)",
+  "actual_endpoint_summary": "PASS production host + actual GW25K RTL endpoint: 1019 requests, 2 full frames, HELLO/TILE/END/DRAWN/manual/resume",
+  "existing_regression_output": [
+    "PASS generic firmware: both Push IDs, G1 descriptors, dynamic endpoint/MPS/alt, rejection bounds, 128x128 notes/velocity, channels/cables, no Push OUT, toggles/hotplug",
+    "PASS production USB firmware: keepalive, stale-frame restart, direct FIFO load/reload and ACK-only toggles"
+  ],
+  "guide_rtl": {
+    "passed": true,
+    "hardware_tested": false,
+    "inputs": {
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/sim/run_pl_guide.py": "152a067d1c10c3e88d5f4ec95169c9f5091fcd0a8ab4e4060584201ba5dbe178",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2_usb_a_control.sv": "b3e5d2dfb3f6670456268b29199eaf00f8b2bd413c72e76a941a40fa2b2bd1e4",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/push2_controls.sv": "579a646b045ac55f5ac34f7dd4dd4302509d285048cf722dacd6f3bd11cb2ed3",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv": "9b30a33294b7781490b9f49b95ac7204929020a7d4a09b83bb7520e9376a29e2",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_playlist_hold.sv": "f8b4e79c34440c5c5ea0dafea5ed0e767c25c72c2c23bfa1c09437bf381016e5",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_menu.sv": "34bdf2edc0cfa53a1fb7d8b7b4ea83666fb54d5de8f4452f3757c18ec179e025",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_score_guide.sv": "aedd96d346a1c3567781c3df54b9e53e464389c5fdde730df127056e69bbbb16",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_lights.sv": "b686f65d6e3fd67237861da95624bc3685de8bb691533b73c82503ee431d955d",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_led_tx.sv": "add27dec44bb355c748850e5f66b9f04b4908093d8a30c6b16fdd8eb42812cb8",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv": "e4c699c553ce1f88990fb55097c717707be556824b214d9e2ca13686bba3dcb2",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_stream_cdc.sv": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/gw138k_usb_event_fifo.v": "517b0ccbddd48fc0a13a99dfc05dac584b03184f7502f40abad88c3992d82145",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_midi_rx.sv": "4588f7c614351b113f89f4e967c95657c1f216b0a0328e96f669ced31f55d3e3",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/video_font_5x7.v": "f8db5962cd395d8f6d13727a853d4bf2a6994a2ec8b9ac8d880ab11449ee896b",
+      "/private/tmp/gw138k-pl-midi-20261017/migration/gw138k_audio/push2_workstation/usb_a/sim/tb_pl_guide.sv": "bb5dc323b2c26adf90b3618eca9c47d595e83f9ebe96cb89b7b7c11347d2df00"
+    }
+  },
+  "staging_tests": {
+    "passed": true,
+    "count": 6,
+    "method": "mock toolchain verifies exact sources/driver patch/dual ROM paths and rejects binary/BSS/alignment overflow; actual compile recorded separately"
+  },
+  "real_rv32i_firmware": {
+    "compiler_prefix": "/private/tmp/gw138k-riscv-toolchain/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf",
+    "firmware_bytes": 20988,
+    "static_ram_bytes": 26847,
+    "static_ram_end": 26848,
+    "stack_margin_bytes": 38688,
+    "live_sha256": {
+      "firmware.c": "f5b91e467a100abd9da106f470741c3ed73975de11fd28d951091f1f2be4c23e",
+      "gw25k_panel.h": "f32d8292f81e3304e38dc60cef111f15a06cdcb48e6f804380c5ae41732ede60"
+    },
+    "staged_source_sha256": {
+      "baremetal.ld": "782346f25a8dfffc5bfbb8198c2b12e5166b2d500aa00e626e8187f5a0473da8",
+      "firmware.c": "f5b91e467a100abd9da106f470741c3ed73975de11fd28d951091f1f2be4c23e",
+      "minlibc.h": "6b69e720d83f1a50d1bb617116cab5a77be69f4bfacbc1bbca41c31889f13e86",
+      "start.S": "922d197b938e653b3a94ef6107303cb828a2be267629bd92899498d429cbb60e",
+      "gw25k_panel.h": "f32d8292f81e3304e38dc60cef111f15a06cdcb48e6f804380c5ae41732ede60",
+      "minlibc.c": "67270201c156358943bf01df27fc81da2a97730668174426ee11584a60f607bf",
+      "usb/usb_hw.h": "2644a4bafe138954a871b69730e9edc472099c438a06fc4e071625367deae954",
+      "usb/usb_defs.h": "d492a33d57f93d939dac591b5c1f5a70ed71018b1f0310c9d3b51880a677a6f5",
+      "usb/usb_core.h": "6b121c052986df83a612db01ade9a7e8524fec80fd8bd718e8b5722c985900c6",
+      "usb/usb_hw.c": "e86373c34b7fce1cb544d9514b0f510a5948515aa0d8ee825fd33ce724d83f50",
+      "usb/usb_core.c": "fbe2b0995c27bf3621e3b32993b2405ff3b018ffe751dfebad14611c2cc50fa5"
+    },
+    "firmware_elf_sha256": "66c776dd81081a507bfe8e9d40b63306eae8b64e494d70300e8e8ffa0c061c95",
+    "firmware_binary_sha256": "c84484c596dad089cd4feb417490528d75698e456e7110ca79364343cac7438b",
+    "rom_sha256": {
+      "push2_usb_a.hex": "8fd50ada9b705f067abbbf7440540aa0157ff2c5fad44dccb0e75d0b42dd5bca",
+      "src/usb_a/push2_usb_a.hex": "8fd50ada9b705f067abbbf7440540aa0157ff2c5fad44dccb0e75d0b42dd5bca"
+    },
+    "hardware_tested": false,
+    "undefined_symbols": "",
+    "elf_attributes": "Attribute Section: riscv\nFile Attributes\n  Tag_RISCV_stack_align: 16-bytes\n  Tag_RISCV_arch: \"rv32i2p1\"\n"
+  },
+  "toolchain_provenance": {
+    "tag": "v15.2.0-1",
+    "url": "https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/download/v15.2.0-1/xpack-riscv-none-elf-gcc-15.2.0-1-darwin-arm64.tar.gz",
+    "archive_bytes": 401163559,
+    "sha256": "6588e8351455fad8aca37551f0e5a5543f3346bfa9a837cf03cbd3bdd4989f8f",
+    "release_digest": "sha256:6588e8351455fad8aca37551f0e5a5543f3346bfa9a837cf03cbd3bdd4989f8f",
+    "published_sha256": "6588e8351455fad8aca37551f0e5a5543f3346bfa9a837cf03cbd3bdd4989f8f",
+    "release_api": "https://api.github.com/repos/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/latest"
+  },
+  "limitations": [
+    "No full SYN/P&R/timing or board-to-board USB/power/audio/LCD validation",
+    "Accepted full83 staging dependency missing; current-workstation fails explicitly until restored",
+    "C/RTL loop models LCD tile acceptance/completion and USB transport; not physical SPI/USB PHY",
+    "Host rendered key grid uses default MIDI48..63; feedback retains guide target and receiver-selected transpose/channel",
+    "GW25K board must run PL-capable candidate; this task does not program either board"
+  ]
+}

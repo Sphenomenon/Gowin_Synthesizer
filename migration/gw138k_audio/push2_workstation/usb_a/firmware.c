@@ -19,9 +19,11 @@ static unsigned toggles[3],frames,out_errors;
 static uint8_t in_naks,in_duplicates,in_errors,in_disconnects;
 static uint8_t in_pid=PID_DATA0;
 static int connected;
-enum device_mode { DEVICE_NONE, DEVICE_PUSH, DEVICE_MIDI };
+enum device_mode { DEVICE_NONE, DEVICE_PUSH, DEVICE_MIDI, DEVICE_GW25K };
 static enum device_mode mode;
 static unsigned midi_in_ep,midi_in_size;
+static unsigned midi_out_ep,midi_out_size,panel_out_ep,panel_in_ep,panel_out_size,panel_in_size;
+static void gw25k_reset(void);
 static uint32_t last_in_reply;
 static void publish_in_diagnostics(void) {
     MMIO(0x58)=((uint32_t)in_disconnects<<24)|((uint32_t)in_naks<<16)|
@@ -43,6 +45,7 @@ static uint32_t last_frame_complete;
 static void disconnect(void) {
     connected=0;
     mode=DEVICE_NONE;
+    gw25k_reset();
     displayed_state_valid=0;
     // Existing RTL releases held notes and resets LED/display initialization.
     // Audio, HDMI, DDR and AE350 continue running throughout reconnection.
@@ -64,6 +67,8 @@ static int find_midi_in(void) {
     if(n!=(int)total || configuration[0]!=9 || configuration[1]!=DESC_CONFIGURATION ||
        le16(configuration+2)!=total)return 0;
     unsigned midi=0,version=0,number=0,alt=0,ep=0,size=0,chosen_number=0,chosen_alt=0;
+    unsigned vendor=0;
+    midi_out_ep=midi_out_size=panel_out_ep=panel_in_ep=panel_out_size=panel_in_size=0;
     for(unsigned off=9;off<total;) {
         if(total-off<2)return 0;
         const uint8_t *d=configuration+off;
@@ -74,6 +79,7 @@ static int find_midi_in(void) {
             // Audio / MIDIStreaming / MIDI 1.0, not HID or MIDI 2.0.
             midi=d[5]==1 && d[6]==3 && d[7]==0;
             version=0;number=d[2];alt=d[3];
+            vendor=d[5]==0xff && d[6]==0 && d[7]==0 && d[2]==2 && d[3]==0;
         } else if(d[1]==0x24 && midi) {
             if(len<3)return 0;
             if(d[2]==1) {
@@ -83,6 +89,15 @@ static int find_midi_in(void) {
         } else if(d[1]==DESC_ENDPOINT) {
             if(len<7)return 0;
             unsigned packet=le16(d+4);
+            unsigned bulk=(d[3]&3)==ENDPOINT_TYPE_BULK && !(d[2]&0x70) && (d[2]&15) &&
+                          (packet==8 || packet==16 || packet==32 || packet==64);
+            if(bulk && midi && version && !alt && !(d[2]&0x80) && !midi_out_ep) {
+                midi_out_ep=d[2]&15;midi_out_size=packet;
+            }
+            if(bulk && vendor) {
+                if(d[2]&0x80){panel_in_ep=d[2]&15;panel_in_size=packet;}
+                else{panel_out_ep=d[2]&15;panel_out_size=packet;}
+            }
             if(!ep && midi && version && (d[2]&0x80) && !(d[2]&0x70) &&
                (d[2]&15) && (d[3]&3)==ENDPOINT_TYPE_BULK &&
                (packet==8 || packet==16 || packet==32 || packet==64)) {
@@ -156,7 +171,7 @@ static void poll_midi(void) {
         return;
     }
     in_pid=in_pid==PID_DATA0?PID_DATA1:PID_DATA0;
-    if(n>(int)midi_in_size || (mode==DEVICE_MIDI && (n&3))) {
+    if(n>(int)midi_in_size || (mode!=DEVICE_PUSH && (n&3))) {
         bump_in_diagnostic(&in_errors);
         return;
     }
@@ -253,6 +268,8 @@ static int frame(void) {
     last_frame_complete=usbhw_timer_now();
     MMIO(0x30)=++frames;return 1;
 }
+#include "gw25k_panel.h"
+
 static void connect(void) {
     disconnect();
     usbhw_hub_enable(1,0);
@@ -268,10 +285,14 @@ static void connect(void) {
     } else {
         if(!find_midi_in()){delay(250);return;}
         mode=DEVICE_MIDI;
+        if(dev.vid==0xfb9a && dev.pid==0xfb9b && midi_out_ep && panel_out_ep && panel_in_ep &&
+           midi_out_ep!=panel_out_ep && midi_in_ep!=panel_in_ep && midi_out_size>=4)
+            mode=DEVICE_GW25K;
     }
     toggles[1]=toggles[2]=0;
     in_pid=PID_DATA0;
     last_in_reply=usbhw_timer_now();connected=1;
+    if(mode==DEVICE_GW25K)gw25k_reset();
     MMIO(0x00)=mode==DEVICE_PUSH?1:3; // bit 0 connected; bit 1 generic MIDI
     // Let the existing RTL scheduler send Live/brightness/strip setup first.
     if(mode==DEVICE_PUSH)
@@ -288,6 +309,7 @@ int main(void) {
         // schedules one fresh frame while the four-packet polls keep input
         // responsive during that transfer.
         poll_midi();
+        if(mode==DEVICE_GW25K){gw25k_service();delay(1);continue;}
         if(mode!=DEVICE_PUSH){delay(1);continue;}
         lights();
         // Push blanks its display after two seconds without a complete frame.

@@ -2,7 +2,8 @@
 """Merge scope playback into accepted full83; build only, no board I/O.
 
 The accepted complete staging tree is immutable and supplies CNN staged caches,
-DDR delay, TF recovery and song guidance. This overlay fixes scope entry wiring.
+DDR delay, TF recovery and song guidance. Overlays fix scope entry wiring and
+bind the live USB-A PL display/MIDI feedback adapter to its rebuilt ROM.
 Prepare/SYN assign no UserCode. Full builds require an explicit release UserCode.
 LATEST_WORKSTATION.json is never changed by the builder.
 """
@@ -20,6 +21,7 @@ import xml.etree.ElementTree as ET
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
 from workstation_memory import audit
+from stage_usb_firmware import stage_usb_firmware
 from build_full_song_83_bp_ddr_isolation import FROZEN
 BASE=ROOT/'results/song_guide_full83_20261006_203125_607466'
 ACCEPTED_COMMIT='d0c92a0'
@@ -46,6 +48,7 @@ def main():
     mode.add_argument('--synthesis-only',action='store_true')
     mode.add_argument('--full',action='store_true',help='Synthesis, P&R and bitstream; no programming')
     parser.add_argument('--user-code',help='Required eight hexadecimal digits for --full only')
+    parser.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=parser.parse_args()
     if args.full:
         if args.user_code is None or len(args.user_code)!=8 or any(c not in '0123456789abcdefABCDEF' for c in args.user_code):
@@ -54,6 +57,9 @@ def main():
             parser.error('full release must use a nonzero UserCode distinct from accepted 0x83')
     elif args.user_code is not None:
         parser.error('--user-code is only supported with --full')
+    if not (BASE/'Prj1/Prj1.gprj').is_file() or not (BASE/'workstation_inputs.json').is_file():
+        parser.error('accepted full83 staging tree is missing: '+str(BASE)+
+                     '; restore the accepted baseline before preparing or building')
     acceptance=json.loads((ROOT/'reports/CNN_83_ACCEPTANCE_20261006.json').read_text())
     assert acceptance['status']=='accepted_by_user' and acceptance['board']['user_code']=='0x00000083'
     originals=json.loads((BASE/'workstation_inputs.json').read_text())
@@ -73,6 +79,8 @@ def main():
         'rtl/audio/gw138k_event_workstation.sv':'src/ae350/gw138k_event_workstation.sv',
         'rtl/display_data/feedback_renderer.v':'src/video/feedback_renderer.v',
         'rtl/display_data/output_audio_analysis.v':'src/video/output_audio_analysis.v',
+        # Explicit live adapter overlay; all accepted DDR/CNN checks above remain.
+        'rtl/push2_usb_a_control.sv':'src/usb_a/push2_usb_a_control.sv',
     }
     for live,dest in overlays.items():shutil.copy2(ROOT/live,stage/dest)
     scope=stage/'rtl/audio/scope_vec'
@@ -212,12 +220,15 @@ def main():
     tcl=stage/'scripts/build.tcl'
     tcl.write_text(once(tcl.read_text(),'set_option -user_code 00000083\n',
                         'set_option -user_code '+args.user_code.upper()+'\n' if args.full else ''))
+    usb_firmware=stage_usb_firmware(ROOT,stage,output,args.riscv_prefix)
+    (output/'usb_firmware_metadata.json').write_text(json.dumps(usb_firmware,indent=2)+'\n')
     inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
     changed_from_base=sorted(name for name,digest in inputs.items() if originals.get(name)!=digest)
     metadata=dict(baseline=BASE.relative_to(ROOT).as_posix(),accepted_commit=ACCEPTED_COMMIT,
                   git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
                   build_mode='prepare_only' if args.prepare_only else 'full' if args.full else 'synthesis_only',
-                  changed_from_base=changed_from_base,music_sha256=music,
+                  changed_from_base=changed_from_base,music_sha256=music,usb_firmware=usb_firmware,
+                  live_usb_control_sha256=sha(ROOT/'rtl/push2_usb_a_control.sv'),
                   frozen_sha256={live:digest for live,(_,digest) in FROZEN.items()},
                   user_code_assigned=args.full,user_code='0x'+args.user_code.upper() if args.full else None,
                   hardware_tested=False)

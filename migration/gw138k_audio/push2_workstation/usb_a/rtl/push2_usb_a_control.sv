@@ -55,6 +55,11 @@ module push2_usb_a_control(
     // Full event FIFO stalls the USB CPU, never the audio sample clock.
     wire raw_store=select && write && address==8'h04;
     wire generic_store=select && write && address==8'h54;
+    // Reserved generic-MIDI controls: CC110 is absolute guide enable,
+    // CC111 (0/127) browses, and CC112 (rising >=64) selects/returns.
+    // Consume these locally; normal CC/program data retain their audio path.
+    wire generic_guide_command=wdata[17:14]==4'd2 &&
+        (wdata[13:7]==7'd110 || wdata[13:7]==7'd111 || wdata[13:7]==7'd112);
     wire pixel_read=select && !write && address==8'h2c;
     reg pixel_loaded;
     reg [15:0] pixel_q;
@@ -63,7 +68,8 @@ module push2_usb_a_control(
     // Both routes share the existing audio FIFO. Push/disconnect PANIC has
     // priority over a generic store; the USB CPU waits if the FIFO is full.
     assign ready=select && (raw_store ? (raw_ready && !rst && push_connected) :
-        generic_store ? (fifo_ready && !mapped_valid && !rst && connected && generic_midi) :
+        generic_store ? ((generic_guide_command || (fifo_ready && !mapped_valid)) &&
+                         !rst && connected && generic_midi) :
         pixel_read ? pixel_loaded : 1'b1);
     wire accepted=select && ready;
     push2_midi_rx midi(.clk(clk),.rst(rst || !connected),
@@ -74,6 +80,19 @@ module push2_usb_a_control(
     wire [63:0] held;wire [6:0] note,velocity;wire [31:0] mapped,ignored;
     wire guide_toggle,guide_mode,guide_target_valid;
     wire guide_prev,guide_next,guide_select;
+    wire push_guide_toggle,push_guide_prev,push_guide_next,push_guide_select;
+    reg generic_select_down;
+    wire generic_accepted=generic_store && accepted;
+    wire generic_played=generic_accepted && wdata[17:14]==4'd1 && wdata[6:0]!=7'd0;
+    wire generic_guide_accepted=generic_accepted && generic_guide_command;
+    assign guide_toggle=push_guide_toggle || (generic_guide_accepted &&
+        wdata[13:7]==7'd110 && wdata[6]!=guide_mode);
+    assign guide_prev=push_guide_prev || (generic_guide_accepted &&
+        wdata[13:7]==7'd111 && wdata[6:0]==7'd0);
+    assign guide_next=push_guide_next || (generic_guide_accepted &&
+        wdata[13:7]==7'd111 && wdata[6:0]==7'd127);
+    assign guide_select=push_guide_select || (generic_guide_accepted &&
+        wdata[13:7]==7'd112 && wdata[6] && !generic_select_down);
     wire guide_chosen;
     wire [3:0] guide_browse;
     reg [4:0] guide_track_count;
@@ -99,8 +118,8 @@ module push2_usb_a_control(
         .valid(valid && !generic_midi),.ready(map_ready),.kind(kind),.cable(cable),.channel(channel),.a(a),.b(b),
         .actual_control(control),.actual_options(options),.actual_panic_epoch(panic_epoch),
         .guide_enabled_i(1'b1),.guide_mode_i(guide_mode),
-        .guide_toggle_o(guide_toggle),.guide_prev_o(guide_prev),
-        .guide_next_o(guide_next),.guide_select_o(guide_select),
+        .guide_toggle_o(push_guide_toggle),.guide_prev_o(push_guide_prev),
+        .guide_next_o(push_guide_next),.guide_select_o(push_guide_select),
         .event_valid(mapped_valid),.event_ready(mapped_ready),.event_data(mapped_event),
         .held(held),.last_note(note),.last_velocity(velocity),.mapped(mapped),.ignored(ignored));
     push2_song_menu u_song_menu(.clk(clk),.rst(!reset_n),
@@ -120,18 +139,21 @@ module push2_usb_a_control(
         .score_valid(score_valid && !score_flushing && !track_launch),
         .score_ready(guide_score_ready),.score_note(score_note),
         .toggle(guide_toggle),.selected_i(guide_chosen),.clear_i(track_launch || playlist_invalid),
-        .played_valid(mapped_valid && mapped_ready &&
-                      mapped_event[17:14]==4'd1 && mapped_event[6:0]!=7'd0),
-        .played_note(mapped_event[13:7]),.mode(guide_mode),
+        .played_valid((mapped_valid && mapped_ready &&
+                       mapped_event[17:14]==4'd1 && mapped_event[6:0]!=7'd0) ||
+                      generic_played),
+        .played_note(generic_played ? wdata[13:7] : mapped_event[13:7]),.mode(guide_mode),
         .target_valid(guide_target_valid),.target_note(guide_target_note),
         .score_count(guide_score_count),.cursor(guide_cursor),
         .wrong_count(guide_wrong_count),.guide_mask(guide_mask));
     assign mapped_ready=fifo_ready;
     reg [31:0] generic_received;
+    reg [6:0] generic_note,generic_velocity;
     wire [31:0] total_mapped=mapped+generic_received;
     gw138k_usb_event_fifo events(.usb_clk(clk),.audio_clk(audio_clk),.usb_rst(rst),
         .w_data(mapped_valid ? mapped_event : wdata[17:0]),
-        .w_en((mapped_valid && mapped_ready) || (generic_store && accepted)),.w_rdy(fifo_ready),
+        .w_en((mapped_valid && mapped_ready) ||
+              (generic_accepted && !generic_guide_command)),.w_rdy(fifo_ready),
         .r_data(audio_event),.r_en(audio_valid && audio_ready),.r_rdy(audio_valid));
 
     // Reuse the workstation's existing state-driven LED and display renderers.
@@ -174,7 +196,8 @@ module push2_usb_a_control(
             8'h18:rdata=snapshot[287:256];
             8'h1c:rdata=actual_held[31:0];
             8'h20:rdata=actual_held[63:32];
-            8'h24:rdata={18'd0,velocity,note};
+            8'h24:rdata=generic_midi ? {18'd0,generic_velocity,generic_note} :
+                                     {18'd0,velocity,note};
             8'h2c:rdata=pixel_index[9:0]<960?{16'd0,pixel_q}:32'd0;
             8'h30:rdata=frames;
             8'h34:rdata=out_errors;
@@ -185,19 +208,46 @@ module push2_usb_a_control(
             8'h58:rdata=in_diagnostics;
             8'h5c:rdata={guide_mode,guide_target_valid,guide_score_count[7:0],
                          guide_cursor[7:0],guide_chosen,guide_target_note,6'd0};
+            // Unpacked feedback for a non-Push host. The service score mask
+            // uses MIDI notes 36..67; guide_target_note is a raw MIDI pitch.
+            8'h60:rdata={6'd0,track_index,guide_track_count,guide_browse,
+                         service_state_q[33:32],analysis_done_sync,guide_chosen,
+                         guide_mode,guide_target_valid,guide_target_note};
+            8'h64:rdata=service_state_q[31:0];
+            8'h68:rdata={guide_score_count,guide_cursor};
+            8'h6c:rdata={16'd0,guide_wrong_count};
             default:rdata=0;
         endcase
     end
     always @(posedge clk or negedge reset_n) begin
         if(!reset_n)begin
             connected<=0;generic_midi<=0;generic_received<=0;
+            generic_note<=0;generic_velocity<=0;generic_select_down<=0;
             received<=0;frames<=0;out_errors<=0;in_diagnostics<=0;pixel_index<=0;packet_index<=0;
             pixel_loaded<=0;pixel_q<=0;
         end else if(accepted)begin
             if(write)case(address)
-                8'h00:begin connected<=wdata[0];generic_midi<=wdata[0] && wdata[1];end
+                8'h00:begin
+                    connected<=wdata[0];generic_midi<=wdata[0] && wdata[1];
+                    if(!wdata[0] || !wdata[1])begin
+                        generic_note<=0;generic_velocity<=0;generic_select_down<=0;
+                    end
+                end
                 8'h04:received<=received+1'b1;
-                8'h54:begin received<=received+1'b1;generic_received<=generic_received+1'b1;end
+                8'h54:begin
+                    received<=received+1'b1;generic_received<=generic_received+1'b1;
+                    if(generic_guide_command && wdata[13:7]==7'd112)
+                        generic_select_down<=wdata[6];
+                    else if((wdata[17:14]==4'd1 && wdata[6:0]!=0) || wdata[17:14]==4'd5)begin
+                        generic_note<=wdata[13:7];generic_velocity<=wdata[6:0];
+                    end else if((wdata[17:14]==4'd0 ||
+                                 (wdata[17:14]==4'd1 && wdata[6:0]==0)) &&
+                                wdata[13:7]==generic_note)generic_velocity<=0;
+                    else if(wdata[17:14]==4'd2 &&
+                            (wdata[13:7]==7'd120 || wdata[13:7]==7'd123))begin
+                        generic_note<=0;generic_velocity<=0;
+                    end
+                end
                 8'h08:begin pixel_index<=0;pixel_loaded<=0;end
                 8'h28:begin pixel_index<=wdata[17:0];pixel_loaded<=0;end // Rewind an unacknowledged screen packet.
                 8'h30:frames<=wdata;

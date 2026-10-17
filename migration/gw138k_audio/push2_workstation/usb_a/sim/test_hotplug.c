@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
+int usbhw_transfer_out_preloaded(uint8_t,int,int,int,uint8_t,int);
 static volatile uint32_t regs[32];
 #define MMIO(off) regs[(off)/4]
 #define main production_main

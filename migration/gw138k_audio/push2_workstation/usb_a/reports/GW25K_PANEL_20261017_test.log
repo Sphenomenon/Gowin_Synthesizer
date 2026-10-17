@@ -1,0 +1,1 @@
+PASS GW25K production host: actual composite descriptor, PL FS fragmentation, independent DATA toggles, duplicate IN/OUT NAK, full RGB565 coverage, BUSY retry, MIDI interleave/output, manual/redraw, static heartbeat, 11 response faults (19 frames, 4808 tiles, 164351 MIDI polls)

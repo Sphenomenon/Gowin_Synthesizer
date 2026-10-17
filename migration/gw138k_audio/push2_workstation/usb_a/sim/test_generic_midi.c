@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+int usbhw_transfer_out_preloaded(uint8_t,int,int,int,uint8_t,int);
 static volatile uint32_t regs[32];
 static unsigned generic_writes,push_writes;
 static volatile uint32_t *reg_at(unsigned off) {
