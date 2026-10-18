@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GAO_CONFIG>
+    <Version>3.0</Version>
+    <Mode>Standard</Mode>
+    <AoCore index="0" sample_clock="clk_50mhz" trig_type="0" storage_depth="128" window_num="1" capture_amount="128" implementation="0" trigger_pos="0" module_name="ble_bringup_top" force_trigger_by_falling_edge="false" capture_init_data_enabled="false">
+        <SignalList>
+            <Bus capture_enable="true" name="status[70:64]">
+                <Signal>status[70]</Signal>
+                <Signal>status[69]</Signal>
+                <Signal>status[68]</Signal>
+                <Signal>status[67]</Signal>
+                <Signal>status[66]</Signal>
+                <Signal>status[65]</Signal>
+                <Signal>status[64]</Signal>
+            </Bus>
+            <Bus capture_enable="true" name="status[135:128]">
+                <Signal>status[135]</Signal>
+                <Signal>status[134]</Signal>
+                <Signal>status[133]</Signal>
+                <Signal>status[132]</Signal>
+                <Signal>status[131]</Signal>
+                <Signal>status[130]</Signal>
+                <Signal>status[129]</Signal>
+                <Signal>status[128]</Signal>
+            </Bus>
+            <Bus capture_enable="true" name="status[143:136]">
+                <Signal>status[143]</Signal>
+                <Signal>status[142]</Signal>
+                <Signal>status[141]</Signal>
+                <Signal>status[140]</Signal>
+                <Signal>status[139]</Signal>
+                <Signal>status[138]</Signal>
+                <Signal>status[137]</Signal>
+                <Signal>status[136]</Signal>
+            </Bus>
+            <Bus capture_enable="true" name="status[191:184]">
+                <Signal>status[191]</Signal>
+                <Signal>status[190]</Signal>
+                <Signal>status[189]</Signal>
+                <Signal>status[188]</Signal>
+                <Signal>status[187]</Signal>
+                <Signal>status[186]</Signal>
+                <Signal>status[185]</Signal>
+                <Signal>status[184]</Signal>
+            </Bus>
+            <Bus capture_enable="true" name="status[231:224]">
+                <Signal>status[231]</Signal>
+                <Signal>status[230]</Signal>
+                <Signal>status[229]</Signal>
+                <Signal>status[228]</Signal>
+                <Signal>status[227]</Signal>
+                <Signal>status[226]</Signal>
+                <Signal>status[225]</Signal>
+                <Signal>status[224]</Signal>
+            </Bus>
+            <Bus capture_enable="true" name="status[199:192]">
+                <Signal>status[199]</Signal>
+                <Signal>status[198]</Signal>
+                <Signal>status[197]</Signal>
+                <Signal>status[196]</Signal>
+                <Signal>status[195]</Signal>
+                <Signal>status[194]</Signal>
+                <Signal>status[193]</Signal>
+                <Signal>status[192]</Signal>
+            </Bus>
+            <Bus capture_enable="true" name="status[647:640]">
+                <Signal>status[647]</Signal>
+                <Signal>status[646]</Signal>
+                <Signal>status[645]</Signal>
+                <Signal>status[644]</Signal>
+                <Signal>status[643]</Signal>
+                <Signal>status[642]</Signal>
+                <Signal>status[641]</Signal>
+                <Signal>status[640]</Signal>
+            </Bus>
+            <Bus capture_enable="true" name="usb1_line_state[1:0]">
+                <Signal>usb1_line_state[1]</Signal>
+                <Signal>usb1_line_state[0]</Signal>
+            </Bus>
+            <Signal capture_enable="true">usb1_activity_seen</Signal>
+            <Signal capture_enable="true">usb1_se0_long_seen</Signal>
+            <Signal capture_enable="true">usb1_se1_long_seen</Signal>
+            <Signal capture_enable="true">module_uart_tx</Signal>
+            <Signal capture_enable="true">tx</Signal>
+            <Signal capture_enable="true">bt_enable</Signal>
+            <Signal capture_enable="true">drive_pins</Signal>
+        </SignalList>
+        <Triggers>
+            <Trigger index="0">
+                <SignalList>
+                    <Signal>status[69]</Signal>
+                </SignalList>
+            </Trigger>
+            <Trigger index="1" />
+            <Trigger index="2" />
+            <Trigger index="3" />
+            <Trigger index="4" />
+            <Trigger index="5" />
+            <Trigger index="6" />
+            <Trigger index="7" />
+            <Trigger index="8" />
+            <Trigger index="9" />
+            <Trigger index="10" />
+            <Trigger index="11" />
+            <Trigger index="12" />
+            <Trigger index="13" />
+            <Trigger index="14" />
+            <Trigger index="15" />
+        </Triggers>
+        <MatchUnits>
+            <MatchUnit index="0" enabled="1" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="1" value1="0" trigger="0" />
+            <MatchUnit index="1" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="2" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="3" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="4" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="5" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="6" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="7" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="8" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="9" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="10" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="11" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="12" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="13" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="14" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="15" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+        </MatchUnits>
+        <Expressions type="Static">
+            <Expression>M0|!M0</Expression>
+        </Expressions>
+    </AoCore>
+    <GAO_ID>0100110001100100</GAO_ID>
+</GAO_CONFIG>

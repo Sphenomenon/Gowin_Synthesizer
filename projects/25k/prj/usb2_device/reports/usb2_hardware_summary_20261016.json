@@ -1,0 +1,2490 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-16T18:59:58.909356+08:00",
+  "hardware_observation_as_of": "2026-10-16T18:56:40.695715+08:00",
+  "result": "hs_cdc_loopback_passed",
+  "passed": true,
+  "scope": "USB2 / USB3300 480Mbps High Speed CDC enumeration and 21,248-byte physical binary echo verified; prior 12Mbps FS/1,848-byte evidence retained; SRAM only, no Flash writes. Link rate is not measured throughput.",
+  "summary_zh": "USB2独立hs镜像已SRAM Program+Verify，主机确认480Mbps High Speed CDC，21,248字节/56块跨512字节包边界二进制回环全部匹配且无额外字节。回环后GAO boot_done/hs_active/configured均1，RX/echo_consumed均21248、overflow=0、boot_error/utmi_rxerror_seen均0。当前最后确认hs185336 SRAM运行；此前12Mbps FS/1848字节实测证据保留。480Mbps为链路速率，未测吞吐率；未写Flash。具体短点、修法及修后电阻仍未知。",
+  "phy_probe": {
+    "result": "phy_probe_passed",
+    "report": "reports/usb2_probe_hardware_20261016.json",
+    "build_manifest": "reports/build_20261016_013729_422944.json",
+    "sram_program_verify_passed": true,
+    "vendor_id_hex": "0424",
+    "product_id_hex": "0004",
+    "scratch_patterns_hex": [
+      "55",
+      "AA"
+    ],
+    "function_control_hex": "45",
+    "interface_control_hex": "00",
+    "otg_control_hex": "00",
+    "clock_count_per_10ms": [
+      600047
+    ],
+    "clock_estimate_hz": 60004700,
+    "limit": "PHY probe has no EP0/CDC implementation and does not demonstrate host enumeration."
+  },
+  "serial_polarity_comparison": [
+    {
+      "build_manifest": "reports/build_20261016_093824_666534.json",
+      "build_passed": true,
+      "fs": "builds/20261016_093824_666534/impl/pnr/ao_0.fs",
+      "fs_sha256": "2f340250e04118951c7f5d541cb918af1c6170b8c5a1afde9f6ef96d1975a62c",
+      "program_report": "reports/sram_usb2_serial_20261016_093859_184942.json",
+      "sram_program_verify_passed": true,
+      "programmed_at": "2026-10-16T09:38:59.184969+08:00",
+      "user_code": [
+        "0x00003FC2"
+      ],
+      "status_code": [
+        "0x70022020"
+      ],
+      "timing": {
+        "report": "builds/20261016_093824_666534/impl/pnr/usb2_serial_cdc.tr",
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0,
+        "worst_setup_slack_ns": 0.371,
+        "clocks": [
+          "clk_50mhz",
+          "clk_ulpi60",
+          "tck_pad_i"
+        ]
+      },
+      "serial_d1_invert": 0,
+      "capture": {
+        "capture_report": "reports/usb2_serial_status_20261016_093918_854937.json",
+        "captured_at": "2026-10-16T09:39:18.855201+08:00",
+        "capture_passed": true,
+        "gao_id_hex": "D2A7",
+        "csv": "reports/usb2_serial_status_20261016_093918_854937_core0_window0.csv",
+        "csv_sha256": "cafe9262cb918a8f8a5cee1c849603e15a5899efca5f5e5620519ba7af31879d",
+        "decoded": "reports/usb2_serial_status_20261016_093918_854937_core0_window0_decoded.json",
+        "sample_count": 128,
+        "sample_clock_hz": 50000000,
+        "heartbeat50_alternates_each_sample": true,
+        "pages": {
+          "0": {
+            "hex": "04240004",
+            "decoded": {
+              "vendor_id": 1060,
+              "product_id": 4
+            }
+          },
+          "1": {
+            "hex": "450A00C8",
+            "decoded": {
+              "function_control_written": 69,
+              "interface_control_written": 10,
+              "otg_control_written": 0,
+              "line_flags_byte": 200,
+              "line_flags": {
+                "attach_request": true,
+                "init_done": true,
+                "usb_oe": false,
+                "dp_rx": false,
+                "dn_rx": true,
+                "ulpi_data2": false,
+                "ulpi_data1": false,
+                "ulpi_data0": false
+              }
+            }
+          },
+          "2": {
+            "hex": "147C0000",
+            "decoded": {
+              "initialization_stage": 20,
+              "snapshot_flags_byte": 124,
+              "pre_serial_phy_status_packed_low4": 7,
+              "pre_serial_phy_line_state": 3,
+              "pre_serial_session_valid": true,
+              "pre_serial_session_end": false,
+              "init_done": true,
+              "usb_reset_released": true,
+              "received_seen": false,
+              "error_or_overflow": false,
+              "received_count16": 0
+            }
+          },
+          "3": {
+            "hex": "00000000",
+            "decoded": {
+              "echo_queued_count16": 0,
+              "overflow_count16": 0
+            }
+          }
+        }
+      },
+      "host_check": "reports/usb2_serial_host_20261016_0942.json",
+      "host_result": {
+        "matching_devices": 0,
+        "target": {
+          "vid": "FB9A",
+          "pid": "FB9A",
+          "product": "FPGA-USB-Serial"
+        },
+        "enumeration_observed": false,
+        "serial_opened": false,
+        "binary_loopback": "not_run_target_absent",
+        "descriptor_scope": "registry descriptor fields only; no raw GET_DESCRIPTOR transfer is issued"
+      }
+    },
+    {
+      "build_manifest": "reports/build_20261016_095100_930160.json",
+      "build_passed": true,
+      "fs": "builds/20261016_095100_930160/impl/pnr/ao_0.fs",
+      "fs_sha256": "962b84ece5d0d30a42e4f1bdeea5b7f924112b4bfba08ea781398d38a9d82ab3",
+      "program_report": "reports/sram_usb2_serial_20261016_095124_419863.json",
+      "sram_program_verify_passed": true,
+      "programmed_at": "2026-10-16T09:51:24.419880+08:00",
+      "user_code": [
+        "0x0000BFBC"
+      ],
+      "status_code": [
+        "0x70022020"
+      ],
+      "timing": {
+        "report": "builds/20261016_095100_930160/impl/pnr/usb2_serial_cdc.tr",
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0,
+        "worst_setup_slack_ns": 0.667,
+        "clocks": [
+          "clk_50mhz",
+          "clk_ulpi60",
+          "tck_pad_i"
+        ]
+      },
+      "serial_d1_invert": 1,
+      "capture": {
+        "capture_report": "reports/usb2_serial_status_20261016_095142_465326.json",
+        "captured_at": "2026-10-16T09:51:42.465633+08:00",
+        "capture_passed": true,
+        "gao_id_hex": "D2A7",
+        "csv": "reports/usb2_serial_status_20261016_095142_465326_core0_window0.csv",
+        "csv_sha256": "fc65c29c77b1ab9f3fe733f43f0a6c67a55a3cd3d4d9e8757a659a4a3f6f5eb9",
+        "decoded": "reports/usb2_serial_status_20261016_095142_465326_core0_window0_decoded.json",
+        "sample_count": 128,
+        "sample_clock_hz": 50000000,
+        "heartbeat50_alternates_each_sample": true,
+        "pages": {
+          "0": {
+            "hex": "04240004",
+            "decoded": {
+              "vendor_id": 1060,
+              "product_id": 4
+            }
+          },
+          "1": {
+            "hex": "450A00D0",
+            "decoded": {
+              "function_control_written": 69,
+              "interface_control_written": 10,
+              "otg_control_written": 0,
+              "line_flags_byte": 208,
+              "line_flags": {
+                "attach_request": true,
+                "init_done": true,
+                "usb_oe": false,
+                "dp_rx": true,
+                "dn_rx": false,
+                "ulpi_data2": false,
+                "ulpi_data1": false,
+                "ulpi_data0": false
+              }
+            }
+          },
+          "2": {
+            "hex": "147C0000",
+            "decoded": {
+              "initialization_stage": 20,
+              "snapshot_flags_byte": 124,
+              "pre_serial_phy_status_packed_low4": 7,
+              "pre_serial_phy_line_state": 3,
+              "pre_serial_session_valid": true,
+              "pre_serial_session_end": false,
+              "init_done": true,
+              "usb_reset_released": true,
+              "received_seen": false,
+              "error_or_overflow": false,
+              "received_count16": 0
+            }
+          },
+          "3": {
+            "hex": "00000000",
+            "decoded": {
+              "echo_queued_count16": 0,
+              "overflow_count16": 0
+            }
+          }
+        }
+      },
+      "host_check": "reports/usb2_serial_host_inverse_20261016_0952.json",
+      "host_result": {
+        "matching_devices": 0,
+        "target": {
+          "vid": "FB9A",
+          "pid": "FB9A",
+          "product": "FPGA-USB-Serial"
+        },
+        "enumeration_observed": false,
+        "serial_opened": false,
+        "binary_loopback": "not_run_target_absent",
+        "descriptor_scope": "registry descriptor fields only; no raw GET_DESCRIPTOR transfer is issued"
+      }
+    }
+  ],
+  "serial_activity": {
+    "build_manifest": "reports/build_20261016_095603_986495.json",
+    "build_passed": true,
+    "fs": "builds/20261016_095603_986495/impl/pnr/ao_0.fs",
+    "fs_sha256": "5d6b7795cd22974419a913e0724c7c1de8d0da2a6caccc67e2026a50dd2b0a4d",
+    "program_report": "reports/sram_usb2_activity_20261016_095630_846553.json",
+    "sram_program_verify_passed": true,
+    "programmed_at": "2026-10-16T09:56:30.846570+08:00",
+    "user_code": [
+      "0x00003AE9"
+    ],
+    "status_code": [
+      "0x70022020"
+    ],
+    "timing": {
+      "report": "builds/20261016_095603_986495/impl/pnr/usb2_serial_activity.tr",
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "worst_setup_slack_ns": 0.124,
+      "clocks": [
+        "clk_50mhz",
+        "clk_ulpi60",
+        "tck_pad_i"
+      ]
+    },
+    "serial_d1_invert": 1,
+    "serial_activity_diag": 1,
+    "captures": [
+      {
+        "capture_report": "reports/usb2_activity_status_20261016_095651_963296.json",
+        "captured_at": "2026-10-16T09:56:51.963601+08:00",
+        "capture_passed": true,
+        "gao_id_hex": "D2A8",
+        "csv": "reports/usb2_activity_status_20261016_095651_963296_core0_window0.csv",
+        "csv_sha256": "fb5b3160163d8d9190909b781e1cdee65ecc94f86b7dad2e95ee1fd41d51e2d3",
+        "decoded": "reports/usb2_activity_status_20261016_095651_963296_core0_window0_decoded.json",
+        "sample_count": 128,
+        "sample_clock_hz": 50000000,
+        "heartbeat50_alternates_each_sample": true,
+        "pages": {
+          "0": {
+            "hex": "04240004",
+            "decoded": {
+              "vendor_id": 1060,
+              "product_id": 4
+            }
+          },
+          "1": {
+            "hex": "450A00D0",
+            "decoded": {
+              "function_control_written": 69,
+              "interface_control_written": 10,
+              "otg_control_written": 0,
+              "line_flags_byte": 208,
+              "line_flags": {
+                "attach_request": true,
+                "init_done": true,
+                "usb_oe": false,
+                "dp_rx": true,
+                "dn_rx": false,
+                "ulpi_data2": false,
+                "ulpi_data1": false,
+                "ulpi_data0": false
+              }
+            }
+          },
+          "2": {
+            "hex": "147C0000",
+            "decoded": {
+              "initialization_stage": 20,
+              "snapshot_flags_byte": 124,
+              "pre_serial_phy_status_packed_low4": 7,
+              "pre_serial_phy_line_state": 3,
+              "pre_serial_session_valid": true,
+              "pre_serial_session_end": false,
+              "init_done": true,
+              "usb_reset_released": true,
+              "received_seen": false,
+              "error_or_overflow": false,
+              "received_count16": 0
+            }
+          },
+          "3": {
+            "hex": "004E0311",
+            "decoded": {
+              "raw_transition_count16": 78,
+              "activity_event_flags_byte": 3,
+              "serial_tx_seen": false,
+              "serial_usb_reset_asserted_seen": true,
+              "serial_usb_reset_released_seen": true,
+              "raw_data_seen_mask8": 17,
+              "raw_data_values_seen": [
+                "000",
+                "100"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "capture_report": "reports/usb2_activity_status_20261016_095814_131532.json",
+        "captured_at": "2026-10-16T09:58:14.131853+08:00",
+        "capture_passed": true,
+        "gao_id_hex": "D2A8",
+        "csv": "reports/usb2_activity_status_20261016_095814_131532_core0_window0.csv",
+        "csv_sha256": "6f256f186265f06feb6df2101c856b43847a050b9667faba6896469e2e979920",
+        "decoded": "reports/usb2_activity_status_20261016_095814_131532_core0_window0_decoded.json",
+        "sample_count": 128,
+        "sample_clock_hz": 50000000,
+        "heartbeat50_alternates_each_sample": true,
+        "pages": {
+          "0": {
+            "hex": "04240004",
+            "decoded": {
+              "vendor_id": 1060,
+              "product_id": 4
+            }
+          },
+          "1": {
+            "hex": "450A00D0",
+            "decoded": {
+              "function_control_written": 69,
+              "interface_control_written": 10,
+              "otg_control_written": 0,
+              "line_flags_byte": 208,
+              "line_flags": {
+                "attach_request": true,
+                "init_done": true,
+                "usb_oe": false,
+                "dp_rx": true,
+                "dn_rx": false,
+                "ulpi_data2": false,
+                "ulpi_data1": false,
+                "ulpi_data0": false
+              }
+            }
+          },
+          "2": {
+            "hex": "147C0000",
+            "decoded": {
+              "initialization_stage": 20,
+              "snapshot_flags_byte": 124,
+              "pre_serial_phy_status_packed_low4": 7,
+              "pre_serial_phy_line_state": 3,
+              "pre_serial_session_valid": true,
+              "pre_serial_session_end": false,
+              "init_done": true,
+              "usb_reset_released": true,
+              "received_seen": false,
+              "error_or_overflow": false,
+              "received_count16": 0
+            }
+          },
+          "3": {
+            "hex": "01DA0311",
+            "decoded": {
+              "raw_transition_count16": 474,
+              "activity_event_flags_byte": 3,
+              "serial_tx_seen": false,
+              "serial_usb_reset_asserted_seen": true,
+              "serial_usb_reset_released_seen": true,
+              "raw_data_seen_mask8": 17,
+              "raw_data_values_seen": [
+                "000",
+                "100"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "observation": "Only raw DATA[2:0] values 000 and 100 were recorded after init_done; transition counts were 78 and 474. No serial TX or received bytes were observed.",
+    "counter_scope": "History starts at init_done, excludes the first sample transition, saturates at 16 bits, and survives USB reset. Reset asserted/released flags are protocol decode events, not independent proof of host physical reset."
+  },
+  "host_connection_observation": {
+    "baseline": "reports/usb2_bus_baseline_20261016_0953.json",
+    "baseline_device_count": 13,
+    "before": "reports/usb2_host_ports_20261016_0950.json",
+    "after": "reports/usb2_host_ports_20261016_0958.json",
+    "changed_ports": [
+      {
+        "location": "0x1114000",
+        "before": {
+          "name": "AppleUSB20HubPort",
+          "location": "0x1114000",
+          "status": 0,
+          "stats": {
+            "kPortStatAddressFailureCount": 0,
+            "kPortStatConnectCount": 8,
+            "kPortStatEOF2ViolationCurrentConnectCount": 0,
+            "kPortStatEnumerationFailureCount": 0,
+            "kPortStatOverCurrentCount": 0,
+            "kPortStatUSB3LinkFailureCount": 0,
+            "kPortStatUSB3LinkFailureCountForDevice": 0
+          }
+        },
+        "after": {
+          "name": "AppleUSB20HubPort",
+          "location": "0x1114000",
+          "status": 512,
+          "stats": {
+            "kPortStatAddressFailureCount": 0,
+            "kPortStatConnectCount": 13,
+            "kPortStatEOF2ViolationCurrentConnectCount": 0,
+            "kPortStatEnumerationFailureCount": 0,
+            "kPortStatOverCurrentCount": 0,
+            "kPortStatUSB3LinkFailureCount": 0,
+            "kPortStatUSB3LinkFailureCountForDevice": 0
+          }
+        }
+      }
+    ],
+    "interpretation": "Connection count changed without address/enumeration failure count increments. This is not evidence of descriptor exchange or enumeration."
+  },
+  "ulpi_termination_comparison": {
+    "short_window": {
+      "build_manifest": "reports/build_20261016_100552_875557.json",
+      "build_passed": true,
+      "fs": "builds/20261016_100552_875557/impl/pnr/ao_0.fs",
+      "fs_sha256": "4d1dad10a642b495383d222ff399823d814565d180fc738ce436628851392db6",
+      "program_report": "reports/sram_usb2_termination_20261016_100613_813060.json",
+      "sram_program_verify_passed": true,
+      "programmed_at": "2026-10-16T10:06:13.813079+08:00",
+      "user_code": [
+        "0x000003A3"
+      ],
+      "status_code": [
+        "0x70022020"
+      ],
+      "timing": {
+        "report": "builds/20261016_100552_875557/impl/pnr/usb2_termination_probe.tr",
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0,
+        "worst_setup_slack_ns": 0.261,
+        "clocks": [
+          "clk_50mhz",
+          "clk_ulpi60",
+          "tck_pad_i"
+        ]
+      },
+      "settle_ms": 10,
+      "sample_gap_ms": 1,
+      "samples_per_phase": 16,
+      "capture": {
+        "capture_report": "reports/usb2_termination_status_20261016_100633_876073.json",
+        "captured_at": "2026-10-16T10:06:33.876388+08:00",
+        "capture_passed": true,
+        "gao_id_hex": "D2A9",
+        "csv": "reports/usb2_termination_status_20261016_100633_876073_core0_window0.csv",
+        "csv_sha256": "adf21e31d0d94514ab5d33a0c5cde27b48405fc623d1c0428f65d5f20d1bf8b4",
+        "decoded": "reports/usb2_termination_status_20261016_100633_876073_core0_window0_decoded.json",
+        "sample_count": 128,
+        "sample_clock_hz": 50000000,
+        "heartbeat50_alternates_each_sample": true,
+        "pages": {
+          "0": {
+            "hex": "04240004",
+            "decoded": {
+              "vendor_id": 1060,
+              "product_id": 4
+            }
+          },
+          "1": {
+            "hex": "41080600",
+            "decoded": {
+              "function_control": 65,
+              "interface_control": 8,
+              "otg_control": 6,
+              "ulpi_dir": false,
+              "ulpi_nxt": false,
+              "ulpi_stp": false
+            }
+          },
+          "2": {
+            "hex": "600C1881",
+            "decoded": {
+              "termination_stage": 96,
+              "error_code": 0,
+              "done": true,
+              "id_ok": true,
+              "error": false,
+              "line_seen_masks16": 6273,
+              "phase_line_states_seen": {
+                "0": [
+                  0
+                ],
+                "1": [
+                  3
+                ],
+                "2": [
+                  3
+                ],
+                "3": [
+                  0
+                ]
+              }
+            }
+          },
+          "3": {
+            "hex": "47740400",
+            "decoded": {
+              "phase_last_status16": 18292,
+              "phase_last_status": {
+                "0": {
+                  "line_state": 0,
+                  "session_valid": true,
+                  "session_end": false
+                },
+                "1": {
+                  "line_state": 3,
+                  "session_valid": true,
+                  "session_end": false
+                },
+                "2": {
+                  "line_state": 3,
+                  "session_valid": true,
+                  "session_end": false
+                },
+                "3": {
+                  "line_state": 0,
+                  "session_valid": true,
+                  "session_end": false
+                }
+              },
+              "rxcmd_count_saturated8": 4,
+              "rxdata_count_saturated8": 0
+            }
+          }
+        }
+      }
+    },
+    "long_window": {
+      "build_manifest": "reports/build_20261016_100723_028045.json",
+      "build_passed": true,
+      "fs": "builds/20261016_100723_028045/impl/pnr/ao_0.fs",
+      "fs_sha256": "e00493cc51feef32014eb25abd2c42f5db5794168aa00d317ca62fd6af0a3668",
+      "program_report": "reports/sram_usb2_termination_20261016_100745_349193.json",
+      "sram_program_verify_passed": true,
+      "programmed_at": "2026-10-16T10:07:45.349210+08:00",
+      "user_code": [
+        "0x0000108B"
+      ],
+      "status_code": [
+        "0x70022020"
+      ],
+      "timing": {
+        "report": "builds/20261016_100723_028045/impl/pnr/usb2_termination_probe.tr",
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0,
+        "worst_setup_slack_ns": 0.316,
+        "clocks": [
+          "clk_50mhz",
+          "clk_ulpi60",
+          "tck_pad_i"
+        ]
+      },
+      "settle_ms": 100,
+      "sample_gap_ms": 10,
+      "samples_per_phase": 16,
+      "capture": {
+        "capture_report": "reports/usb2_termination_status_20261016_100805_026410.json",
+        "captured_at": "2026-10-16T10:08:05.026706+08:00",
+        "capture_passed": true,
+        "gao_id_hex": "D2A9",
+        "csv": "reports/usb2_termination_status_20261016_100805_026410_core0_window0.csv",
+        "csv_sha256": "5ce8a2ca6a5a4a4c092968e0e723d045ca3bbbf1d8a70b6010bfe78ad42e929d",
+        "decoded": "reports/usb2_termination_status_20261016_100805_026410_core0_window0_decoded.json",
+        "sample_count": 128,
+        "sample_clock_hz": 50000000,
+        "heartbeat50_alternates_each_sample": true,
+        "pages": {
+          "0": {
+            "hex": "04240004",
+            "decoded": {
+              "vendor_id": 1060,
+              "product_id": 4
+            }
+          },
+          "1": {
+            "hex": "41080600",
+            "decoded": {
+              "function_control": 65,
+              "interface_control": 8,
+              "otg_control": 6,
+              "ulpi_dir": false,
+              "ulpi_nxt": false,
+              "ulpi_stp": false
+            }
+          },
+          "2": {
+            "hex": "600C1881",
+            "decoded": {
+              "termination_stage": 96,
+              "error_code": 0,
+              "done": true,
+              "id_ok": true,
+              "error": false,
+              "line_seen_masks16": 6273,
+              "phase_line_states_seen": {
+                "0": [
+                  0
+                ],
+                "1": [
+                  3
+                ],
+                "2": [
+                  3
+                ],
+                "3": [
+                  0
+                ]
+              }
+            }
+          },
+          "3": {
+            "hex": "47740500",
+            "decoded": {
+              "phase_last_status16": 18292,
+              "phase_last_status": {
+                "0": {
+                  "line_state": 0,
+                  "session_valid": true,
+                  "session_end": false
+                },
+                "1": {
+                  "line_state": 3,
+                  "session_valid": true,
+                  "session_end": false
+                },
+                "2": {
+                  "line_state": 3,
+                  "session_valid": true,
+                  "session_end": false
+                },
+                "3": {
+                  "line_state": 0,
+                  "session_valid": true,
+                  "session_end": false
+                }
+              },
+              "rxcmd_count_saturated8": 5,
+              "rxdata_count_saturated8": 0
+            }
+          }
+        }
+      }
+    },
+    "phase_results_equal": true,
+    "phases": [
+      {
+        "phase": 0,
+        "configuration": "detached_dual_pulldown",
+        "function_control_hex": "41",
+        "interface_control_hex": "08",
+        "otg_control_hex": "06",
+        "line_states_seen_binary": [
+          "00"
+        ],
+        "line_state": 0,
+        "session_valid": true,
+        "session_end": false
+      },
+      {
+        "phase": 1,
+        "configuration": "full_speed_dp_pullup",
+        "function_control_hex": "45",
+        "interface_control_hex": "08",
+        "otg_control_hex": "00",
+        "line_states_seen_binary": [
+          "11"
+        ],
+        "line_state": 3,
+        "session_valid": true,
+        "session_end": false
+      },
+      {
+        "phase": 2,
+        "configuration": "low_speed_dm_pullup",
+        "function_control_hex": "46",
+        "interface_control_hex": "08",
+        "otg_control_hex": "00",
+        "line_states_seen_binary": [
+          "11"
+        ],
+        "line_state": 3,
+        "session_valid": true,
+        "session_end": false
+      },
+      {
+        "phase": 3,
+        "configuration": "detached_dual_pulldown",
+        "function_control_hex": "41",
+        "interface_control_hex": "08",
+        "otg_control_hex": "06",
+        "line_states_seen_binary": [
+          "00"
+        ],
+        "line_state": 0,
+        "session_valid": true,
+        "session_end": false
+      }
+    ],
+    "line_seen_masks_hex": "1881",
+    "phase_last_status_hex": "4774",
+    "interpretation": "FS and LS pull-up phases both reported SE1 in synchronous ULPI before serial mode. The result persists with longer settle/sample windows and is not explained solely by CDC protocol or DATA1 polarity. The specific physical cause is not established."
+  },
+  "last_known_loaded": {
+    "as_of": "2026-10-16T18:56:40.695715+08:00",
+    "image": "hs",
+    "build_manifest": "reports/build_20261016_185336_363191.json",
+    "fs": "builds/20261016_185336_363191/impl/pnr/ao_0.fs",
+    "fs_sha256": "edaa6d5df4630249dc126de835f70e0d31b174a61cc4862fa82c9a4d8dead557",
+    "program_report": "reports/sram_usb2_hs_20261016_185403_506384.json",
+    "capture_report": "reports/usb2_hs_status_20261016_185639_529325.json",
+    "sram_program_verify_passed": true,
+    "user_code": [
+      "0x00006E78"
+    ],
+    "status_code": [
+      "0x70022020"
+    ],
+    "gao_id_hex": "D2B0",
+    "cdc_protocol_enabled": true,
+    "serial_mode_enabled": false,
+    "high_speed_active": true,
+    "configured": true,
+    "done_led_meaning": "boot_done && hs_active && configured && !boot_error; host report independently proves data echo.",
+    "identity_evidence": "Ordered successful SRAM program/verify, unique 480Mbps host enumeration/physical echo, and matching post-loopback GAO counts.",
+    "last_verified_running_at": "2026-10-16T18:56:40.695715+08:00",
+    "current_running_state": "HS SRAM image verified at this timestamp; no continuous liveness claim after this observation.",
+    "requires_reload_after_power_loss": true,
+    "flash_written": false
+  },
+  "simulation": {
+    "serial_report": "reports/serial_protocol_sim_20261016_101213.json",
+    "serial_report_status": "PASS",
+    "simulation_only": true,
+    "serial_combinations": [
+      {
+        "d1_invert": 0,
+        "activity_diag": 0
+      },
+      {
+        "d1_invert": 0,
+        "activity_diag": 1
+      },
+      {
+        "d1_invert": 1,
+        "activity_diag": 0
+      },
+      {
+        "d1_invert": 1,
+        "activity_diag": 1
+      }
+    ],
+    "termination_probe_testbench": "sim/tb_usb2_termination_probe.sv",
+    "termination_pad_testbench": "sim/tb_usb2_termination_pads.sv",
+    "scope_note": "Behavioral and primitive-model checks validate RTL behavior. They do not establish analog PHY behavior, hardware enumeration, or physical loopback.",
+    "termination_report": "reports/termination_sim_20261016_101558.json",
+    "termination_report_status": "PASS",
+    "termination_scenarios": {
+      "phy_soft_reset_0": 15,
+      "phy_soft_reset_1": 17,
+      "physical_pad_truth_table": true
+    },
+    "buscheck_report": "reports/buscheck_sim_20261016_103606.json",
+    "buscheck_report_status": "PASS",
+    "buscheck_combinations": [
+      {
+        "phy_soft_reset": 0,
+        "full_scratch_test": 0,
+        "scenarios": 15
+      },
+      {
+        "phy_soft_reset": 0,
+        "full_scratch_test": 1,
+        "scenarios": 19
+      },
+      {
+        "phy_soft_reset": 1,
+        "full_scratch_test": 0,
+        "scenarios": 17
+      },
+      {
+        "phy_soft_reset": 1,
+        "full_scratch_test": 1,
+        "scenarios": 21
+      }
+    ],
+    "buscheck_total_scenarios": 72,
+    "buscheck_physical_pads_check": true,
+    "lowpower_report": "reports/lowpower_sim_20261016_105200.json",
+    "lowpower_report_status": "PASS",
+    "lowpower_parameter_combinations": [
+      {
+        "fs_otg_ctrl": "00",
+        "scenarios": 17
+      },
+      {
+        "fs_otg_ctrl": "04",
+        "scenarios": 17
+      }
+    ],
+    "lowpower_total_scenarios": 34,
+    "lowpower_physical_pads_check": true,
+    "lowpower_stopped_clock_snapshot_check": true,
+    "lowpower_model_note": "Independent pin-level BFM really stops CLK60, but does not model USB analog loading or resistor behavior. Both FS_OTG_CTRL values validate the requested register sequence; physical LineState expectations are not inferred from the BFM.",
+    "lowpower_simulation_scope": "Both FS_OTG_CTRL00 and04 configurations now have separate hardware records (lowpower_direct_linestate and lowpower_pulldown_comparison). The 34-scene model report validates digital request sequences and observer behavior, not analog loading or resistor action.",
+    "measure_report": "reports/measure_sim_20261016_110548.json",
+    "measure_report_status": "PASS",
+    "measure_scenario_count": 10,
+    "measure_official_primitive_models": true,
+    "measure_four_page_status_cycles_checked": 10401,
+    "measure_scope": "Digital model/pad/snapshot validation only, not an external voltage measurement or USB enumeration result."
+  },
+  "limits": [
+    "480Mbps High Speed CDC enumeration and a finite 21248-byte/56-chunk physical binary echo were verified, alongside prior 12Mbps FS/1848-byte success. 480Mbps is the negotiated link rate; sustained throughput and long-term reliability were not tested.",
+    "The user reported hardware repair but did not provide the exact fault site, rework method or post-repair resistance. The original 0.42ohm disconnected/unpowered user reading remains historical; lead resistance and independent meter verification remain unknown.",
+    "The first host success reports used a temporary exact sanitized display-name argument. After fixing canonical kUSBProductString matching, default product-name enumeration was independently reverified against the same unique registry ID and port; original reports were preserved.",
+    "Current SRAM identity is established by successful HS program/verify, host echo and matching GAO counts at the latest timestamp. Power loss clears SRAM and requires reload.",
+    "D1 inversion0 is now physically verified for this FS serial image. The 16-clock mode-entry guard worked in this run; worst-case device variation was not separately characterized.",
+    "FC/IF/OTG in serial captures are successful initialization write shadows, not synchronous readbacks taken while serial mode is active.",
+    "RxCmd/RxData counters in historical diagnostic images count ULPI bytes, not USB packets. Phase histories can include detach/configuration transitions; global counters can continue after the phase histories freeze.",
+    "Historical lowpower flags validate stop/sample/wake/readback sequencing, not expected analog line states. The post-repair measure mask3 includes initial observations and is not an independent stable-window mask.",
+    "60MHz frequency estimates use the nominal board 50MHz reference. Source simulation hashes refer to their own reports and are not asserted as historical build-time source hashes.",
+    "C15/C13/C11 supply feedback remains qualitative with no numerical voltages. Missing digital VDD18 4.7uF is a reviewed design deviation; its correction was not reported and current FS/HS success does not verify that deviation or prove its causal role in the original short.",
+    "IN ACK-loss retransmission, RX CRC rollback and suspend/resume are incomplete in the upstream stream core; this finite clean-link test does not establish USB compliance or robust operation under injected protocol faults.",
+    "No sustained throughput, endurance or power-cycle persistence test was performed."
+  ],
+  "rxcmd_crosscheck": {
+    "build_manifest": "reports/build_20261016_101244_771058.json",
+    "build_passed": true,
+    "fs": "builds/20261016_101244_771058/impl/pnr/ao_0.fs",
+    "fs_sha256": "ced020dbd427cb7c24d35bdb9c7a0d10728a130229b6050b4b7cea828924ee1b",
+    "program_report": "reports/sram_usb2_rxcmd_20261016_101310_697977.json",
+    "sram_program_verify_passed": true,
+    "programmed_at": "2026-10-16T10:13:10.697994+08:00",
+    "user_code": [
+      "0x00006F85"
+    ],
+    "status_code": [
+      "0x70022020"
+    ],
+    "timing": {
+      "report": "builds/20261016_101244_771058/impl/pnr/usb2_rxcmd_probe.tr",
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "worst_setup_slack_ns": 0.07,
+      "clocks": [
+        "clk_50mhz",
+        "clk_ulpi60",
+        "tck_pad_i"
+      ]
+    },
+    "rxcmd_diag": 1,
+    "settle_ms": 100,
+    "sample_gap_ms": 10,
+    "samples_per_phase": 16,
+    "capture": {
+      "capture_report": "reports/usb2_rxcmd_status_20261016_101332_293787.json",
+      "captured_at": "2026-10-16T10:13:32.294197+08:00",
+      "capture_passed": true,
+      "gao_id_hex": "D2AA",
+      "csv": "reports/usb2_rxcmd_status_20261016_101332_293787_core0_window0.csv",
+      "csv_sha256": "5c79d7f2f81503b5bb78b31d70a1e169eb4533f2da9798d17a74a6b1680cf40a",
+      "decoded": "reports/usb2_rxcmd_status_20261016_101332_293787_core0_window0_decoded.json",
+      "sample_count": 128,
+      "sample_clock_hz": 50000000,
+      "heartbeat50_alternates_each_sample": true,
+      "pages": {
+        "0": {
+          "hex": "4C4F4F00",
+          "decoded": {
+            "phase_last_rxcmd32": 1280265984,
+            "phase_last_rxcmd_bytes": {
+              "0": 0,
+              "1": 79,
+              "2": 79,
+              "3": 76
+            }
+          }
+        },
+        "1": {
+          "hex": "41080600",
+          "decoded": {
+            "function_control": 65,
+            "interface_control": 8,
+            "otg_control": 6,
+            "ulpi_dir": false,
+            "ulpi_nxt": false,
+            "ulpi_stp": false
+          }
+        },
+        "2": {
+          "hex": "600C1881",
+          "decoded": {
+            "termination_stage": 96,
+            "error_code": 0,
+            "done": true,
+            "id_ok": true,
+            "error": false,
+            "line_seen_masks16": 6273,
+            "phase_line_states_seen": {
+              "0": [
+                0
+              ],
+              "1": [
+                3
+              ],
+              "2": [
+                3
+              ],
+              "3": [
+                0
+              ]
+            }
+          }
+        },
+        "3": {
+          "hex": "19800500",
+          "decoded": {
+            "rxcmd_seen_masks16": 6528,
+            "phase_rxcmd_line_states_seen": {
+              "0": [],
+              "1": [
+                3
+              ],
+              "2": [
+                0,
+                3
+              ],
+              "3": [
+                0
+              ]
+            },
+            "rxcmd_count_saturated8": 5,
+            "rxdata_count_saturated8": 0
+          }
+        }
+      }
+    },
+    "phase_last_rxcmd_hex": [
+      "00",
+      "4F",
+      "4F",
+      "4C"
+    ],
+    "phase_rxcmd_line_states_seen_binary": [
+      [],
+      [
+        "11"
+      ],
+      [
+        "00",
+        "11"
+      ],
+      [
+        "00"
+      ]
+    ],
+    "rxcmd_line_seen_masks_hex": "1980",
+    "debug15_line_seen_masks_hex": "1881",
+    "rxdata_count": 0,
+    "event_scope": "RxCmd phase history starts at the x0 configuration step and includes intermediate FC41 detach, target configuration, settle and gaps; it is not restricted to the post-settle Debug15 sample window. Register responses and turnaround cycles are excluded. Zero mask means no event, not SE0. Last bytes have no event timestamp or freshness marker. Global byte counters include other eligible cycles and are not packet counts. Phase histories freeze after stage 60, while global RxCmd/RxData counters may continue increasing in S_DONE because link_active remains set. The captured totals are neither phase-exclusive nor frozen at diagnostic completion.",
+    "interpretation": "RxCmd cross-check recorded SE1 in pull-up phases and phase 2 also includes SE0 from a history spanning configuration transitions; this is not proof of repeated SE0 under stable LS termination. The specific hardware cause is not established."
+  },
+  "phy_soft_reset_comparison": {
+    "before_reference": "rxcmd_crosscheck",
+    "after": {
+      "build_manifest": "reports/build_20261016_101616_160185.json",
+      "build_passed": true,
+      "fs": "builds/20261016_101616_160185/impl/pnr/ao_0.fs",
+      "fs_sha256": "0f22228f58ecde921e3a0532e6509ebddeb5ce7a1b9eb243d05c7f357590e3e1",
+      "program_report": "reports/sram_usb2_reset_20261016_101645_855742.json",
+      "sram_program_verify_passed": true,
+      "programmed_at": "2026-10-16T10:16:45.855759+08:00",
+      "user_code": [
+        "0x00009545"
+      ],
+      "status_code": [
+        "0x70022020"
+      ],
+      "timing": {
+        "report": "builds/20261016_101616_160185/impl/pnr/usb2_reset_probe.tr",
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0,
+        "worst_setup_slack_ns": 0.001,
+        "clocks": [
+          "clk_50mhz",
+          "clk_ulpi60",
+          "tck_pad_i"
+        ]
+      },
+      "rxcmd_diag": 1,
+      "phy_soft_reset": 1,
+      "soft_reset_sequence": {
+        "function_control_write_hex": "61",
+        "wait_cycles_at_60mhz": 60000,
+        "wait_ms_nominal": 1,
+        "function_control_read_required_hex": "41",
+        "reset_bit_required_clear": true,
+        "check_passed_before_phase_completion": true,
+        "check_evidence": "Reached stage 60 with done/id_ok=1 and error=0; state machine exits with error if reset bit remains set or FC differs from 41."
+      },
+      "settle_ms": 100,
+      "sample_gap_ms": 10,
+      "samples_per_phase": 16,
+      "capture": {
+        "capture_report": "reports/usb2_reset_status_20261016_101700_453622.json",
+        "captured_at": "2026-10-16T10:17:00.453957+08:00",
+        "capture_passed": true,
+        "gao_id_hex": "D2AB",
+        "csv": "reports/usb2_reset_status_20261016_101700_453622_core0_window0.csv",
+        "csv_sha256": "5ab8a849adb0efc694881da629aaca33ee86afa44f5dbcfc7e53481c216fd2ee",
+        "decoded": "reports/usb2_reset_status_20261016_101700_453622_core0_window0_decoded.json",
+        "sample_count": 128,
+        "sample_clock_hz": 50000000,
+        "heartbeat50_alternates_each_sample": true,
+        "pages": {
+          "0": {
+            "hex": "4C4F4F00",
+            "decoded": {
+              "phase_last_rxcmd32": 1280265984,
+              "phase_last_rxcmd_bytes": {
+                "0": 0,
+                "1": 79,
+                "2": 79,
+                "3": 76
+              }
+            }
+          },
+          "1": {
+            "hex": "41080600",
+            "decoded": {
+              "function_control": 65,
+              "interface_control": 8,
+              "otg_control": 6,
+              "ulpi_dir": false,
+              "ulpi_nxt": false,
+              "ulpi_stp": false
+            }
+          },
+          "2": {
+            "hex": "600C1981",
+            "decoded": {
+              "termination_stage": 96,
+              "error_code": 0,
+              "done": true,
+              "id_ok": true,
+              "error": false,
+              "line_seen_masks16": 6529,
+              "phase_line_states_seen": {
+                "0": [
+                  0
+                ],
+                "1": [
+                  3
+                ],
+                "2": [
+                  0,
+                  3
+                ],
+                "3": [
+                  0
+                ]
+              }
+            }
+          },
+          "3": {
+            "hex": "19800900",
+            "decoded": {
+              "rxcmd_seen_masks16": 6528,
+              "phase_rxcmd_line_states_seen": {
+                "0": [],
+                "1": [
+                  3
+                ],
+                "2": [
+                  0,
+                  3
+                ],
+                "3": [
+                  0
+                ]
+              },
+              "rxcmd_count_saturated8": 9,
+              "rxdata_count_saturated8": 0
+            }
+          }
+        }
+      },
+      "phase_debug15_line_states_seen_binary": [
+        [
+          "00"
+        ],
+        [
+          "11"
+        ],
+        [
+          "00",
+          "11"
+        ],
+        [
+          "00"
+        ]
+      ],
+      "phase_last_rxcmd_hex": [
+        "00",
+        "4F",
+        "4F",
+        "4C"
+      ],
+      "phase_rxcmd_line_states_seen_binary": [
+        [],
+        [
+          "11"
+        ],
+        [
+          "00",
+          "11"
+        ],
+        [
+          "00"
+        ]
+      ],
+      "rxcmd_line_seen_masks_hex": "1980",
+      "debug15_line_seen_masks_hex": "1981",
+      "rxcmd_count": 9,
+      "rxdata_count": 0,
+      "event_scope": "RxCmd phase history starts at the x0 configuration step and includes intermediate FC41 detach, target configuration, settle and gaps; it is not restricted to the post-settle Debug15 sample window. Register responses and turnaround cycles are excluded. Zero mask means no event, not SE0. Last bytes have no event timestamp or freshness marker. Global byte counters include other eligible cycles and are not packet counts. Phase histories freeze after stage 60, while global RxCmd/RxData counters may continue increasing in S_DONE because link_active remains set. The captured totals are neither phase-exclusive nor frozen at diagnostic completion.",
+      "interpretation": "After the checked software-reset sequence, the LS post-settle Debug15 samples additionally recorded SE0 as well as SE1. Neither FS nor LS recorded single-line-high 01 or 10. RxCmd histories remain 1980 but include configuration transitions and cannot establish stable-phase repetition. Software reset did not restore normal termination line states in the observation window; the specific hardware cause is not established.",
+      "debug15_sample_scope": "16 Debug15 reads per phase after the configured settle interval, separated by sample gaps; distinct from the longer RxCmd phase history.",
+      "global_counter_values_at_capture": {
+        "rxcmd": 9,
+        "rxdata": 0,
+        "scope": "Global eligible ULPI observations as of the captured snapshot; may grow after stage 60; not four-phase-exclusive or completion-frozen values."
+      }
+    },
+    "rxcmd_line_seen_masks_equal": true,
+    "debug15_line_seen_masks_equal": false,
+    "changed_observation": "LS Debug15 phase changed from only 11 to 00 and 11; no FS/LS 01 or 10 was recorded."
+  },
+  "full_scratch_buscheck": {
+    "build_manifest": "reports/build_20261016_103555_918776.json",
+    "build_passed": true,
+    "fs": "builds/20261016_103555_918776/impl/pnr/ao_0.fs",
+    "fs_sha256": "85cd88587f65f9e8e3f648febcc33dee377647af2704c3efd21453d7d2372461",
+    "program_report": "reports/sram_usb2_buscheck_20261016_103627_285505.json",
+    "sram_program_verify_passed": true,
+    "programmed_at": "2026-10-16T10:36:27.285523+08:00",
+    "user_code": [
+      "0x00004032"
+    ],
+    "status_code": [
+      "0x70022020"
+    ],
+    "timing": {
+      "report": "builds/20261016_103555_918776/impl/pnr/usb2_buscheck_probe.tr",
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "worst_setup_slack_ns": 0.348,
+      "clocks": [
+        "clk_50mhz",
+        "clk_ulpi60",
+        "tck_pad_i"
+      ]
+    },
+    "rxcmd_diag": 1,
+    "phy_soft_reset": 1,
+    "full_scratch_test": 1,
+    "scratch_register_hex": "16",
+    "scratch_test_values_hex": "00..FF",
+    "scratch_verified_count": 256,
+    "scratch_mismatch_expected": 0,
+    "scratch_mismatch_actual": 0,
+    "scratch_mismatch_field_scope": "Fields latch the first mismatch. Both remain at their initial zero value when all 256 comparisons pass; they are not the final FF readback.",
+    "sequence": "ID check; immediate Scratch16 write/read comparison for each value 00..FF; original 55/AA; IF08; FC61 reset, 1 ms fixed wait and required FC41 readback; four long-window termination phases.",
+    "page0_layout": "{7zero,scratch_verified_count9,first_mismatch_expected8,first_mismatch_actual8}",
+    "settle_ms": 100,
+    "sample_gap_ms": 10,
+    "samples_per_phase": 16,
+    "capture": {
+      "capture_report": "reports/usb2_buscheck_status_20261016_103646_478172.json",
+      "captured_at": "2026-10-16T10:36:46.478519+08:00",
+      "capture_passed": true,
+      "gao_id_hex": "D2AC",
+      "csv": "reports/usb2_buscheck_status_20261016_103646_478172_core0_window0.csv",
+      "csv_sha256": "4476eef46fe4cc48ddcc24c43ebd2da3b83570c9eef5f19b6b103607d2975f58",
+      "decoded": "reports/usb2_buscheck_status_20261016_103646_478172_core0_window0_decoded.json",
+      "sample_count": 128,
+      "sample_clock_hz": 50000000,
+      "heartbeat50_alternates_each_sample": true,
+      "pages": {
+        "0": {
+          "hex": "01000000",
+          "decoded": {
+            "scratch_verified_count": 256,
+            "scratch_mismatch_expected": 0,
+            "scratch_mismatch_actual": 0
+          }
+        },
+        "1": {
+          "hex": "41080600",
+          "decoded": {
+            "function_control": 65,
+            "interface_control": 8,
+            "otg_control": 6,
+            "ulpi_dir": false,
+            "ulpi_nxt": false,
+            "ulpi_stp": false
+          }
+        },
+        "2": {
+          "hex": "600C1891",
+          "decoded": {
+            "termination_stage": 96,
+            "error_code": 0,
+            "done": true,
+            "id_ok": true,
+            "error": false,
+            "line_seen_masks16": 6289,
+            "phase_line_states_seen": {
+              "0": [
+                0
+              ],
+              "1": [
+                0,
+                3
+              ],
+              "2": [
+                3
+              ],
+              "3": [
+                0
+              ]
+            }
+          }
+        },
+        "3": {
+          "hex": "10900800",
+          "decoded": {
+            "rxcmd_seen_masks16": 4240,
+            "phase_rxcmd_line_states_seen": {
+              "0": [],
+              "1": [
+                0,
+                3
+              ],
+              "2": [],
+              "3": [
+                0
+              ]
+            },
+            "rxcmd_count_saturated8": 8,
+            "rxdata_count_saturated8": 0
+          }
+        }
+      }
+    },
+    "phase_debug15_line_states_seen_binary": [
+      [
+        "00"
+      ],
+      [
+        "00",
+        "11"
+      ],
+      [
+        "11"
+      ],
+      [
+        "00"
+      ]
+    ],
+    "debug15_line_seen_masks_hex": "1891",
+    "rxcmd_line_seen_masks_hex": "1090",
+    "phase_rxcmd_line_states_seen_binary": [
+      [],
+      [
+        "00",
+        "11"
+      ],
+      [],
+      [
+        "00"
+      ]
+    ],
+    "global_counter_values_at_capture": {
+      "rxcmd": 8,
+      "rxdata": 0,
+      "scope": "Global eligible ULPI observations as of the captured snapshot; may grow after stage 60; not four-phase-exclusive or completion-frozen values."
+    },
+    "event_scope": "RxCmd phase history starts at x0 configuration and includes intermediate FC41 detach, target configuration, settle and gaps; it is not restricted to post-settle Debug15 reads. Register responses and turnaround cycles are excluded. Zero mask means no event, not SE0. These phase histories have no timestamps or freshness markers; buscheck page0 does not expose last RxCmd bytes. Histories freeze at stage60, while global RxCmd/RxData counters can continue increasing in S_DONE because link_active remains set. Captured 8/0 totals are neither phase-exclusive nor frozen at completion.",
+    "debug15_sample_scope": "16 Debug15 reads per phase after the configured 100 ms settle interval, separated by 10 ms gaps; distinct from the longer RxCmd phase history.",
+    "interpretation": "All 256 Scratch values passed immediate digital register round-trip comparison. This is not proof of three-wire transmission, analog signal quality or enumeration. In post-settle samples FS included SE0 and SE1, LS included SE1, and neither included 01 or 10. Zero phase RxCmd masks denote no recorded event. The specific physical cause remains unproven."
+  },
+  "driver_audit": {
+    "report": "../../docs/USB3300_DRIVER_AUDIT_20261016.md",
+    "report_sha256": "38f6a1f285dff1f1afdadb5404ebdb6f9c4d70fc0f54d423bf79626bfbeb931f",
+    "basis": "Two independent reviews against USB3300 DS00001783C, RTL and observed digital register traffic.",
+    "result": "No definitive driver violation explaining the current line-state anomaly was found. This is not complete proof of driver correctness.",
+    "unverified_hardware_assumptions": [
+      "Whether the 16-clock guard covers worst-case physical entry latency for serial mode.",
+      "DATA1 polarity established by successful physical three-wire transfer."
+    ],
+    "limits": [
+      "All-byte write/read agreement alone cannot eliminate every symmetric mapping error, shared model assumption or timing-margin issue.",
+      "Buscheck runs no USB device protocol and must not be used to evaluate device enumeration."
+    ]
+  },
+  "lowpower_direct_linestate": {
+    "build_manifest": "reports/build_20261016_104925_911273.json",
+    "build_passed": true,
+    "fs": "builds/20261016_104925_911273/impl/pnr/ao_0.fs",
+    "fs_sha256": "51fa21675314cdc0c05eb4c5078099293acc077e04b39c4e084ba6c0b77b62a0",
+    "program_report": "reports/sram_usb2_lowpower_20261016_104951_948417.json",
+    "sram_program_verify_passed": true,
+    "programmed_at": "2026-10-16T10:49:51.948433+08:00",
+    "user_code": [
+      "0x00001585"
+    ],
+    "status_code": [
+      "0x70022020"
+    ],
+    "timing": {
+      "report": "builds/20261016_104925_911273/impl/pnr/usb2_lowpower_diag.tr",
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "worst_setup_slack_ns": 0.32,
+      "clocks": [
+        "clk_50mhz",
+        "clk_ulpi60",
+        "tck_pad_i"
+      ]
+    },
+    "capture": {
+      "capture_report": "reports/usb2_lowpower_status_20261016_105008_081620.json",
+      "captured_at": "2026-10-16T10:50:08.082020+08:00",
+      "capture_passed": true,
+      "gao_id_hex": "D2AD",
+      "csv": "reports/usb2_lowpower_status_20261016_105008_081620_core0_window0.csv",
+      "csv_sha256": "9ac3822f5fadfe7109c0d6eade6853c54ea55536e80ae3282c0a484a50cbddc8",
+      "decoded": "reports/usb2_lowpower_status_20261016_105008_081620_core0_window0_decoded.json",
+      "sample_count": 128,
+      "sample_clock_hz": 50000000,
+      "heartbeat50_alternates_each_sample": true,
+      "pages": {
+        "0": {
+          "hex": "04240004",
+          "decoded": {
+            "vendor_id": 1060,
+            "product_id": 4,
+            "diagnostic_stage": 96,
+            "done": true,
+            "id_ok": true,
+            "error": false,
+            "clock_stop_seen": true,
+            "clock_alive": true
+          }
+        },
+        "1": {
+          "hex": "41000600",
+          "decoded": {
+            "function_control": 65,
+            "interface_control": 0,
+            "otg_control": 6,
+            "error_code": 0,
+            "diagnostic_stage": 96,
+            "done": true,
+            "id_ok": true,
+            "error": false,
+            "clock_stop_seen": true,
+            "clock_alive": true
+          }
+        },
+        "2": {
+          "hex": "1881FFFF",
+          "decoded": {
+            "direct_line_seen_masks16": 6273,
+            "phase_direct_line_states_seen": {
+              "0": [
+                0
+              ],
+              "1": [
+                3
+              ],
+              "2": [
+                3
+              ],
+              "3": [
+                0
+              ]
+            },
+            "phase_flags16": 65535,
+            "phase_validations": {
+              "0": {
+                "sample_valid": true,
+                "clock_stop_seen": true,
+                "wake_completed": true,
+                "register_readback_verified": true
+              },
+              "1": {
+                "sample_valid": true,
+                "clock_stop_seen": true,
+                "wake_completed": true,
+                "register_readback_verified": true
+              },
+              "2": {
+                "sample_valid": true,
+                "clock_stop_seen": true,
+                "wake_completed": true,
+                "register_readback_verified": true
+              },
+              "3": {
+                "sample_valid": true,
+                "clock_stop_seen": true,
+                "wake_completed": true,
+                "register_readback_verified": true
+              }
+            },
+            "diagnostic_stage": 96,
+            "done": true,
+            "id_ok": true,
+            "error": false,
+            "clock_stop_seen": true,
+            "clock_alive": true
+          }
+        },
+        "3": {
+          "hex": "10101010",
+          "decoded": {
+            "phase_sample_counts32": 269488144,
+            "phase_sample_counts": {
+              "0": 16,
+              "1": 16,
+              "2": 16,
+              "3": 16
+            },
+            "diagnostic_stage": 96,
+            "done": true,
+            "id_ok": true,
+            "error": false,
+            "clock_stop_seen": true,
+            "clock_alive": true
+          }
+        }
+      }
+    },
+    "method": "USB3300 DS00001783C section6.1.9 / Table6-6 direct low-power DATA[1:0] LineState output. An independent 50MHz domain verifies stopped CLKOUT and DIR high, synchronizes DATA[1:0], samples after settling, wakes with STP, and verifies restored Function/Interface registers after each phase. It does not decode Debug15 or RxCmd for line samples.",
+    "clock_quiet_confirmation_ms": 1,
+    "settle_ms_after_clock_stop": 10,
+    "sample_gap_ms": 1,
+    "samples_per_phase": 16,
+    "phase_direct_line_states_seen_binary": [
+      [
+        "00"
+      ],
+      [
+        "11"
+      ],
+      [
+        "11"
+      ],
+      [
+        "00"
+      ]
+    ],
+    "direct_line_seen_masks_hex": "1881",
+    "phase_validation_flags_hex": "FFFF",
+    "phase_validations": {
+      "0": {
+        "sample_valid": true,
+        "clock_stop_seen": true,
+        "wake_completed": true,
+        "register_readback_verified": true
+      },
+      "1": {
+        "sample_valid": true,
+        "clock_stop_seen": true,
+        "wake_completed": true,
+        "register_readback_verified": true
+      },
+      "2": {
+        "sample_valid": true,
+        "clock_stop_seen": true,
+        "wake_completed": true,
+        "register_readback_verified": true
+      },
+      "3": {
+        "sample_valid": true,
+        "clock_stop_seen": true,
+        "wake_completed": true,
+        "register_readback_verified": true
+      }
+    },
+    "phase_sample_counts": {
+      "0": 16,
+      "1": 16,
+      "2": 16,
+      "3": 16
+    },
+    "diagnostic_flow_completed": true,
+    "expected_usb_line_states_passed": false,
+    "metadata_layout": "Independent 50MHz status: low32 contains stage[15:8], flags[7:3], page[2:1] and heartbeat[0], not a PHY frequency count. All payloads and metadata commit together before page0.",
+    "interpretation": "Direct DATA[1:0] samples reproduce 00/11/11/00, reducing the plausibility of Debug15/RxCmd reading or decoding alone explaining the anomaly. Flow flags validate stop/sample/wake/readback completion, not normal USB line values or enumeration. This does not exclude all driver issues or establish a short circuit or failed PHY.",
+    "phase_otg_controls_hex": [
+      "06",
+      "00",
+      "00",
+      "06"
+    ]
+  },
+  "latest_observation_zh": "USB2独立hs镜像已SRAM Program+Verify，主机确认480Mbps High Speed CDC，21,248字节/56块跨512字节包边界二进制回环全部匹配且无额外字节。回环后GAO boot_done/hs_active/configured均1，RX/echo_consumed均21248、overflow=0、boot_error/utmi_rxerror_seen均0。当前最后确认hs185336 SRAM运行；此前12Mbps FS/1848字节实测证据保留。480Mbps为链路速率，未测吞吐率；未写Flash。具体短点、修法及修后电阻仍未知。",
+  "lowpower_pulldown_comparison": {
+    "before_reference": "lowpower_direct_linestate",
+    "after": {
+      "build_manifest": "reports/build_20261016_105341_951862.json",
+      "build_passed": true,
+      "fs": "builds/20261016_105341_951862/impl/pnr/ao_0.fs",
+      "fs_sha256": "b43b7a719e1bfbd28f1402388efb2bcc1a18474d17c01cf551813260897f2b74",
+      "program_report": "reports/sram_usb2_lowpower_pd_20261016_105409_157050.json",
+      "sram_program_verify_passed": true,
+      "programmed_at": "2026-10-16T10:54:09.157066+08:00",
+      "user_code": [
+        "0x000042D5"
+      ],
+      "status_code": [
+        "0x70022020"
+      ],
+      "timing": {
+        "report": "builds/20261016_105341_951862/impl/pnr/usb2_lowpower_pd_diag.tr",
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0,
+        "worst_setup_slack_ns": 0.128,
+        "clocks": [
+          "clk_50mhz",
+          "clk_ulpi60",
+          "tck_pad_i"
+        ]
+      },
+      "capture": {
+        "capture_report": "reports/usb2_lowpower_pd_status_20261016_105426_066407.json",
+        "captured_at": "2026-10-16T10:54:26.066766+08:00",
+        "capture_passed": true,
+        "gao_id_hex": "D2AE",
+        "csv": "reports/usb2_lowpower_pd_status_20261016_105426_066407_core0_window0.csv",
+        "csv_sha256": "5ec508dbb44a96e6b3f2049fc7d0dd9dc71faca087f9190d005c1f19652af7b7",
+        "decoded": "reports/usb2_lowpower_pd_status_20261016_105426_066407_core0_window0_decoded.json",
+        "sample_count": 128,
+        "sample_clock_hz": 50000000,
+        "heartbeat50_alternates_each_sample": true,
+        "pages": {
+          "0": {
+            "hex": "04240004",
+            "decoded": {
+              "vendor_id": 1060,
+              "product_id": 4,
+              "diagnostic_stage": 96,
+              "done": true,
+              "id_ok": true,
+              "error": false,
+              "clock_stop_seen": true,
+              "clock_alive": true
+            }
+          },
+          "1": {
+            "hex": "41000600",
+            "decoded": {
+              "function_control": 65,
+              "interface_control": 0,
+              "otg_control": 6,
+              "error_code": 0,
+              "diagnostic_stage": 96,
+              "done": true,
+              "id_ok": true,
+              "error": false,
+              "clock_stop_seen": true,
+              "clock_alive": true
+            }
+          },
+          "2": {
+            "hex": "1881FFFF",
+            "decoded": {
+              "direct_line_seen_masks16": 6273,
+              "phase_direct_line_states_seen": {
+                "0": [
+                  0
+                ],
+                "1": [
+                  3
+                ],
+                "2": [
+                  3
+                ],
+                "3": [
+                  0
+                ]
+              },
+              "phase_flags16": 65535,
+              "phase_validations": {
+                "0": {
+                  "sample_valid": true,
+                  "clock_stop_seen": true,
+                  "wake_completed": true,
+                  "register_readback_verified": true
+                },
+                "1": {
+                  "sample_valid": true,
+                  "clock_stop_seen": true,
+                  "wake_completed": true,
+                  "register_readback_verified": true
+                },
+                "2": {
+                  "sample_valid": true,
+                  "clock_stop_seen": true,
+                  "wake_completed": true,
+                  "register_readback_verified": true
+                },
+                "3": {
+                  "sample_valid": true,
+                  "clock_stop_seen": true,
+                  "wake_completed": true,
+                  "register_readback_verified": true
+                }
+              },
+              "diagnostic_stage": 96,
+              "done": true,
+              "id_ok": true,
+              "error": false,
+              "clock_stop_seen": true,
+              "clock_alive": true
+            }
+          },
+          "3": {
+            "hex": "10101010",
+            "decoded": {
+              "phase_sample_counts32": 269488144,
+              "phase_sample_counts": {
+                "0": 16,
+                "1": 16,
+                "2": 16,
+                "3": 16
+              },
+              "diagnostic_stage": 96,
+              "done": true,
+              "id_ok": true,
+              "error": false,
+              "clock_stop_seen": true,
+              "clock_alive": true
+            }
+          }
+        }
+      },
+      "experimental_configuration_change": "FS phase only: FS_OTG_CTRL 00 -> 04, enabling the Table6-8 DM pulldown while DP pullup remains enabled. LS remains OTG00.",
+      "fs_phase": {
+        "otg_control_hex": "04",
+        "interface_control_hex": "00",
+        "awake_function_control_hex": "45",
+        "lowpower_function_control_hex": "05",
+        "wake_function_control_readback_required_hex": "45",
+        "datasheet_basis": "USB3300 DS00001783C Table6-8 DP pullup plus DM15k pulldown combination"
+      },
+      "phase_otg_controls_hex": [
+        "06",
+        "04",
+        "00",
+        "06"
+      ],
+      "clock_quiet_confirmation_ms": 1,
+      "settle_ms_after_clock_stop": 10,
+      "sample_gap_ms": 1,
+      "samples_per_phase": 16,
+      "phase_direct_line_states_seen_binary": [
+        [
+          "00"
+        ],
+        [
+          "11"
+        ],
+        [
+          "11"
+        ],
+        [
+          "00"
+        ]
+      ],
+      "direct_line_seen_masks_hex": "1881",
+      "phase_validation_flags_hex": "FFFF",
+      "phase_validations": {
+        "0": {
+          "sample_valid": true,
+          "clock_stop_seen": true,
+          "wake_completed": true,
+          "register_readback_verified": true
+        },
+        "1": {
+          "sample_valid": true,
+          "clock_stop_seen": true,
+          "wake_completed": true,
+          "register_readback_verified": true
+        },
+        "2": {
+          "sample_valid": true,
+          "clock_stop_seen": true,
+          "wake_completed": true,
+          "register_readback_verified": true
+        },
+        "3": {
+          "sample_valid": true,
+          "clock_stop_seen": true,
+          "wake_completed": true,
+          "register_readback_verified": true
+        }
+      },
+      "phase_sample_counts": {
+        "0": 16,
+        "1": 16,
+        "2": 16,
+        "3": 16
+      },
+      "diagnostic_flow_completed": true,
+      "expected_usb_line_states_passed": false,
+      "metadata_layout": "Independent 50MHz status: low32 contains stage[15:8], flags[7:3], page[2:1] and heartbeat[0], not a PHY frequency count. All payloads and metadata commit together before page0.",
+      "register_shadow_scope": "Displayed FC/IF/OTG are last-read shadow values, not instantaneous register samples during low-power sleep. Stage60/flagsFFFF show per-phase completion including required register readbacks.",
+      "interpretation": "With the Table6-8 DM pulldown-enable setting during FS, direct receiver DATA[1:0] remained 11. This comparison did not produce a low DM read value. It cannot independently establish a short circuit, failed PHY, physical resistor behavior, or the presence/absence of host pulldowns. No enumeration or CDC loopback success is demonstrated."
+    },
+    "raw_line_masks_equal": true,
+    "phase_sample_counts_equal": true,
+    "observation": "Both physically tested FS_OTG_CTRL00 and04 configurations reported direct phase masks1881 with all four phase-validation nibblesF and16 samples per phase.",
+    "constraint_object_validation": {
+      "report": "reports/lowpower_constraint_objects_20261016.json",
+      "status": "PASS",
+      "matched_pin_pattern_count": 26,
+      "gray_source_bits": 16,
+      "gray_first_stage_bits": 16,
+      "scope": "Checks constraint object existence in the synthesized hierarchy. Timing closure is established separately by the successful build timing report, not this name check."
+    },
+    "complete_page_cycles_per_capture": {
+      "lowpower": 3,
+      "lowpower_pd": 3,
+      "all_payload_cycles_consistent": true
+    }
+  },
+  "fixed_fs_voltage_measurement": {
+    "build_manifest": "reports/build_20261016_110634_656420.json",
+    "build_passed": true,
+    "fs": "builds/20261016_110634_656420/impl/pnr/ao_0.fs",
+    "fs_sha256": "e68f7a5ae74924116a32e0a4513b73701327e2e03026ec6c119eeef63679f148",
+    "program_report": "reports/sram_usb2_measure_20261016_110704_205357.json",
+    "sram_program_verify_passed": true,
+    "programmed_at": "2026-10-16T11:07:04.205375+08:00",
+    "user_code": [
+      "0x0000B07F"
+    ],
+    "status_code": [
+      "0x70022020"
+    ],
+    "timing": {
+      "report": "builds/20261016_110634_656420/impl/pnr/usb2_measure.tr",
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "worst_setup_slack_ns": 0.115,
+      "clocks": [
+        "clk_50mhz",
+        "clk_ulpi60",
+        "tck_pad_i"
+      ]
+    },
+    "capture": {
+      "capture_report": "reports/usb2_measure_status_20261016_110729_115936.json",
+      "captured_at": "2026-10-16T11:07:29.116295+08:00",
+      "capture_passed": true,
+      "gao_id_hex": "D2AF",
+      "csv": "reports/usb2_measure_status_20261016_110729_115936_core0_window0.csv",
+      "csv_sha256": "2e11afffbad9938d2b4329f2c203a042e2c4e85974dd89b3177c83c10e6726da",
+      "decoded": "reports/usb2_measure_status_20261016_110729_115936_core0_window0_decoded.json",
+      "sample_count": 128,
+      "sample_clock_hz": 50000000,
+      "heartbeat50_alternates_each_sample": true,
+      "pages": {
+        "0": {
+          "hex": "04240004",
+          "decoded": {
+            "vendor_id": 1060,
+            "product_id": 4,
+            "measurement_stage": 32,
+            "ready": true,
+            "id_ok": true,
+            "error": false,
+            "clock_alive": true
+          }
+        },
+        "1": {
+          "hex": "45000400",
+          "decoded": {
+            "function_control": 69,
+            "interface_control": 0,
+            "otg_control": 4,
+            "error_code": 0,
+            "measurement_stage": 32,
+            "ready": true,
+            "id_ok": true,
+            "error": false,
+            "clock_alive": true
+          }
+        },
+        "2": {
+          "hex": "03905388",
+          "decoded": {
+            "debug_last": 3,
+            "line_state_last": 3,
+            "debug_line_seen_mask": 9,
+            "debug_read_count": 21384,
+            "measurement_stage": 32,
+            "ready": true,
+            "id_ok": true,
+            "error": false,
+            "clock_alive": true
+          }
+        },
+        "3": {
+          "hex": "00000000",
+          "decoded": {
+            "reserved": 0,
+            "measurement_stage": 32,
+            "ready": true,
+            "id_ok": true,
+            "error": false,
+            "clock_alive": true
+          }
+        }
+      }
+    },
+    "held_configuration": {
+      "function_control_hex": "45",
+      "interface_control_hex": "00",
+      "otg_control_hex": "04",
+      "description": "Persistent FS DP pullup and DM pulldown with CLKOUT running, for external DC measurement"
+    },
+    "automatic_detach": false,
+    "cdc_enabled": false,
+    "suspends_phy_clock": false,
+    "measurement_stage_hex": "20",
+    "ready": true,
+    "id_ok": true,
+    "error": false,
+    "debug_last_hex": "03",
+    "line_state_last_binary": "11",
+    "debug_line_seen_mask_hex": "9",
+    "debug_line_states_seen_binary": [
+      "00",
+      "11"
+    ],
+    "debug_read_count_at_capture": 21384,
+    "debug_count_bits": 20,
+    "debug_count_saturates": true,
+    "debug_poll_gap_ms_nominal": 1,
+    "debug_mask_scope": "Accumulates from the first Debug15 read without a separate settle interval. It includes initial/transitional observations and is not a post-settle stable-window mask. Last read and count continue to update.",
+    "ready_meaning": "ID, Scratch55/AA, configuration readbacks and at least one Debug15 read succeeded; not normal LineState or enumeration.",
+    "page_layout": {
+      "0": "VID16/PID16",
+      "1": "FC8/IF8/OTG8/4zero/error_code4",
+      "2": "Debug8/line_seen_mask4/debug_read_count20",
+      "3": "reserved0"
+    },
+    "metadata_layout": "Independent50MHz coherent snapshots; low32 stage/flags/page/heartbeat, not PHY frequency. FC/IF/OTG are last-read values.",
+    "physical_voltage_measurements": {
+      "reference": "board GND as requested",
+      "configuration_during_user_report": "FC45/IF00/OTG04 fixed measure image",
+      "requested_points": [
+        {
+          "point": "R7",
+          "signal": "D+",
+          "approx_voltage_v": 2.6,
+          "voltage_v": null,
+          "min_voltage_v": null,
+          "max_voltage_v": null
+        },
+        {
+          "point": "R8",
+          "signal": "D-",
+          "approx_voltage_v": 2.6,
+          "voltage_v": null,
+          "min_voltage_v": null,
+          "max_voltage_v": null
+        }
+      ],
+      "status": "user_approximate_readings_received",
+      "user_reply_zh": "都在2.6V附近跳动",
+      "measurement_type": "user multimeter qualitative approximate DC observations",
+      "precise_range_provided": false,
+      "waveform_provided": false,
+      "interpretation": "Supports both physical lines being near a high voltage under the fixed configuration, rather than solely a Debug decoding artifact. Does not independently prove a short circuit or failed PHY."
+    }
+  },
+  "supply_and_design_checks": {
+    "user_confirmed_usb2_powered": true,
+    "user_confirmed_multimeter_available": true,
+    "c15_c13_c11_dc_checks": {
+      "points": [
+        "C15",
+        "C13",
+        "C11"
+      ],
+      "user_reply_zh": "没问题都",
+      "result": "User qualitatively reported normal. No numerical voltages were supplied.",
+      "voltage_values_v": {
+        "C15": null,
+        "C13": null,
+        "C11": null
+      }
+    },
+    "digital_vdd18_capacitance_deviation": {
+      "confirmed_design_deviation": true,
+      "required_capacitance_uf": 4.7,
+      "finding": "Digital VDD18 4.7uF capacitor is missing in the reviewed design/PCB.",
+      "evidence_type": "design_and_PCB_review",
+      "causal_link_to_line_state_11": "unproven"
+    }
+  },
+  "pending_poweroff_resistance_check": {
+    "requested_actions": [
+      "Unplug all USB connections and programmer",
+      "Remove board power",
+      "Measure resistance between R7 and R8"
+    ],
+    "resistance_ohms": 0.42,
+    "status": "user_result_received",
+    "actual_poweroff_verified": false,
+    "current_power_state": "unverified_after_poweroff_test_request",
+    "current_sram_retention": "unverified_after_poweroff_test_request",
+    "assistant_hardware_actions": "none",
+    "measurement_report": "reports/usb2_multimeter_20261016.json",
+    "lead_resistance_ohms": null,
+    "user_reply_zh": "0.42欧",
+    "independent_meter_or_probe_verification": false
+  },
+  "dp_dm_low_resistance_fault": {
+    "measurement_report": "reports/usb2_multimeter_20261016.json",
+    "source": "User response in this chat to the explicit disconnected/unpowered R7-R8 resistance request",
+    "requested_state": "All board USB and programmer connections removed, power LED off",
+    "points": "R7 either end to R8 either end",
+    "user_reply_zh": "0.42欧",
+    "reported_resistance_ohm": 0.42,
+    "lead_resistance_ohm": null,
+    "lead_compensated_board_resistance_ohm": null,
+    "reverse_polarity_reading_ohm": null,
+    "independent_meter_or_probe_verification": false,
+    "near_short_low_resistance_connection_confirmed": true,
+    "direct_electrical_fault_identified": true,
+    "physical_location_isolated": false,
+    "phy_internal_failure_confirmed": false,
+    "repair_performed": false,
+    "enumeration_after_repair_verified": false,
+    "inference": "The reported disconnected/unpowered0.42ohm resistance identifies a near-short low-resistance DP-DM connection as a direct electrical fault. Both approximate signal voltages near2.6V and PHY LineState11 correspond to this. The exact location is unisolated; this does not determine whether the PHY is damaged. Lead resistance is unknown, so no compensated board resistance is claimed.",
+    "separate_design_deviation": "Missing digital VDD18 4.7uF remains confirmed independently, not the proven origin of the measured low resistance."
+  },
+  "physical_isolation_plan": {
+    "status": "not_executed",
+    "first_step": "Magnified inspection of USB2 data pads, R7/R8, and U2 pins7/8 for a bridge or abnormal physical connection.",
+    "conditional_next_step": "If no visible bridge, keep all power disconnected, lift one end of R7, and measure each isolated R7 PCB pad to the common DM/R8 net to divide connector-side versus PHY-side fault.",
+    "rework_performed": false,
+    "repair_performed": false,
+    "current_supply_and_sram_state": "not reverified; last successful measure programming/capture association remains historical"
+  },
+  "diagnostic_status": {
+    "direct_electrical_fault": "Historical user-reported DP-DM near-short; user subsequently reported hardware repair.",
+    "physical_location": "not supplied by user",
+    "repair_status": "user_reported_repaired; exact work and post-repair ohms unknown",
+    "cdc_enumeration": "passed_high_speed_480mbps; prior_full_speed_12mbps_retained",
+    "cdc_binary_loopback": "passed_hs_21248_bytes_56_chunks; prior_fs_1848_bytes_retained",
+    "hardware_verified_d1_invert": 0,
+    "current_fpga_running_state": "hs185336 SRAM verified at 2026-10-16T18:56:40.695715+08:00",
+    "high_speed_480mbps": "enumeration_and_finite_binary_loopback_passed"
+  },
+  "historical_records_scope": {
+    "note": "Earlier diagnostic samples, zero-target host checks, supply readings, the reported 0.42ohm measurement and not-yet-repaired flags are retained as snapshots from before the user-reported repair. Their historical conclusions are superseded for current FS CDC operation by post_repair; their raw observations are not rewritten. FS post_repair remains the 18:21-18:25 historical success snapshot; subsequent high_speed results establish the latest current operation without rewriting earlier raw records.",
+    "repair_details_reported": false,
+    "post_repair_resistance_reported_ohm": null,
+    "prior_last_known_loaded": {
+      "as_of": "2026-10-16T11:07:29.116295+08:00",
+      "image": "measure",
+      "build_manifest": "reports/build_20261016_110634_656420.json",
+      "fs": "builds/20261016_110634_656420/impl/pnr/ao_0.fs",
+      "fs_sha256": "e68f7a5ae74924116a32e0a4513b73701327e2e03026ec6c119eeef63679f148",
+      "program_report": "reports/sram_usb2_measure_20261016_110704_205357.json",
+      "capture_report": "reports/usb2_measure_status_20261016_110729_115936.json",
+      "sram_program_verify_passed": true,
+      "user_code": [
+        "0x0000B07F"
+      ],
+      "status_code": [
+        "0x70022020"
+      ],
+      "gao_id_hex": "D2AF",
+      "cdc_protocol_enabled": false,
+      "serial_mode_enabled": false,
+      "done_led_meaning": "ID, Scratch55/AA, configuration readbacks and at least one Debug15 read succeeded; not normal LineState or enumeration.",
+      "final_configuration": {
+        "function_control_hex": "45",
+        "interface_control_hex": "00",
+        "otg_control_hex": "04",
+        "description": "Continuously held FS DP pullup / DM pulldown, CLKOUT running, for voltage measurement; does not auto-detach"
+      },
+      "identity_evidence": "Ordered successful SRAM program/verify followed by matching GAO capture. Capture manifest compatibility alone does not prove loaded FPGA identity.",
+      "automatic_detach": false,
+      "identity_scope": "Last successful SRAM program and GAO capture association only. The subsequent unpowered resistance measurement may have removed power and SRAM state; present power and SRAM retention are not independently reverified.",
+      "last_verified_running_at": "2026-10-16T11:07:29.116295+08:00",
+      "current_power_verified_after_resistance_request": false,
+      "current_sram_retention_verified": false,
+      "continuous_monitoring_when_powered_and_loaded": true,
+      "current_running_state": "unverified after user-reported unpowered resistance measurement",
+      "final_configuration_scope": "Behavior of the last successfully verified measure image while powered and loaded; not a verification of the present power or retained SRAM state after the requested power-off test."
+    },
+    "diagnostics_before_repair": [
+      "phy_probe",
+      "serial_polarity_comparison",
+      "serial_activity",
+      "host_connection_observation",
+      "ulpi_termination_comparison",
+      "rxcmd_crosscheck",
+      "phy_soft_reset_comparison",
+      "full_scratch_buscheck",
+      "driver_audit",
+      "lowpower_direct_linestate",
+      "lowpower_pulldown_comparison",
+      "fixed_fs_voltage_measurement",
+      "pending_poweroff_resistance_check",
+      "dp_dm_low_resistance_fault",
+      "physical_isolation_plan"
+    ],
+    "prior_fs_last_known_loaded": {
+      "as_of": "2026-10-16T18:25:30.523005+08:00",
+      "image": "serial",
+      "build_manifest": "reports/build_20261016_093824_666534.json",
+      "fs": "builds/20261016_093824_666534/impl/pnr/ao_0.fs",
+      "fs_sha256": "2f340250e04118951c7f5d541cb918af1c6170b8c5a1afde9f6ef96d1975a62c",
+      "program_report": "reports/sram_usb2_serial_20261016_182233_995777.json",
+      "capture_report": "reports/usb2_serial_status_20261016_182529_459220.json",
+      "sram_program_verify_passed": true,
+      "user_code": [
+        "0x00003FC2"
+      ],
+      "status_code": [
+        "0x70022020"
+      ],
+      "gao_id_hex": "D2A7",
+      "serial_d1_invert": 0,
+      "cdc_protocol_enabled": true,
+      "serial_mode_enabled": true,
+      "done_led_meaning": "received_seen: at least one CDC payload byte was received; physical loopback is independently established by the host report.",
+      "final_configuration": {
+        "function_control_hex": "45",
+        "interface_control_hex": "0A",
+        "otg_control_hex": "00",
+        "scope": "Successfully written initialization shadows; no synchronous ULPI readback after serial mode entry."
+      },
+      "identity_evidence": "Ordered successful SRAM program/verify, physical host enumeration/loopback and matching GAO counts.",
+      "last_verified_running_at": "2026-10-16T18:25:30.523005+08:00",
+      "current_running_state": "serial SRAM image verified after repair at this timestamp; no continuous liveness claim after this observation.",
+      "requires_reload_after_power_loss": true,
+      "flash_written": false
+    }
+  },
+  "post_repair": {
+    "report": "reports/usb2_postrepair_20261016.json",
+    "repair_source": "User said hardware was repaired; exact short location, rework and post-repair resistance were not supplied.",
+    "measure": {
+      "build_manifest": "reports/build_20261016_110634_656420.json",
+      "program_report": "reports/sram_usb2_measure_20261016_182147_264121.json",
+      "capture_report": "reports/usb2_measure_status_20261016_182203_115320.json",
+      "decoded": "reports/usb2_measure_status_20261016_182203_115320_core0_window0_decoded.json",
+      "sram_program_verify_passed": true,
+      "capture_passed": true,
+      "page_payloads_hex": {
+        "0": "04240004",
+        "1": "45000400",
+        "2": "0130304A",
+        "3": "00000000"
+      },
+      "fields": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true,
+        "function_control": 69,
+        "interface_control": 0,
+        "otg_control": 4,
+        "error_code": 0,
+        "debug_last": 1,
+        "line_state_last": 1,
+        "debug_line_seen_mask": 3,
+        "debug_read_count": 12362,
+        "reserved": 0
+      },
+      "line_state_last_binary": "01",
+      "mask_scope": "From first Debug15 read, including initial transitions; not a distinct post-settle window."
+    },
+    "serial": {
+      "build_manifest": "reports/build_20261016_093824_666534.json",
+      "fs_sha256": "2f340250e04118951c7f5d541cb918af1c6170b8c5a1afde9f6ef96d1975a62c",
+      "program_report": "reports/sram_usb2_serial_20261016_182233_995777.json",
+      "sram_program_verify_passed": true,
+      "user_code": [
+        "0x00003FC2"
+      ],
+      "status_code": [
+        "0x70022020"
+      ],
+      "gao_id_hex": "D2A7",
+      "serial_d1_invert": 0,
+      "capture_report": "reports/usb2_serial_status_20261016_182529_459220.json",
+      "decoded": "reports/usb2_serial_status_20261016_182529_459220_core0_window0_decoded.json",
+      "capture_passed": true,
+      "sample_count": 128,
+      "complete_page_cycles": 3,
+      "page_payloads_hex": {
+        "0": "04240004",
+        "1": "450A00D2",
+        "2": "145E0738",
+        "3": "07380000"
+      },
+      "fields": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "function_control_written": 69,
+        "interface_control_written": 10,
+        "otg_control_written": 0,
+        "line_flags_byte": 210,
+        "line_flags": {
+          "attach_request": true,
+          "init_done": true,
+          "usb_oe": false,
+          "dp_rx": true,
+          "dn_rx": false,
+          "ulpi_data2": false,
+          "ulpi_data1": true,
+          "ulpi_data0": false
+        },
+        "initialization_stage": 20,
+        "snapshot_flags_byte": 94,
+        "pre_serial_phy_status_packed_low4": 5,
+        "pre_serial_phy_line_state": 1,
+        "pre_serial_session_valid": true,
+        "pre_serial_session_end": false,
+        "init_done": true,
+        "usb_reset_released": true,
+        "received_seen": true,
+        "error_or_overflow": false,
+        "received_count16": 1848,
+        "echo_queued_count16": 1848,
+        "overflow_count16": 0
+      }
+    },
+    "host_enumeration": {
+      "report": "reports/usb2_postrepair_enumeration_20261016_1825.json",
+      "passed": true,
+      "matching_devices": 1,
+      "vid_hex": "FB9A",
+      "pid_hex": "FB9A",
+      "product_canonical": "FPGA-USB-Serial",
+      "product_display": "FPGA_USB_Serial",
+      "temporary_explicit_display_name_used_in_original_report": true,
+      "registry_id": 4295057606,
+      "speed_bps": 12000000,
+      "configuration": 1,
+      "interfaces": [
+        {
+          "bInterfaceNumber": 0,
+          "bAlternateSetting": 0,
+          "bInterfaceClass": 2,
+          "bInterfaceSubClass": 2,
+          "bInterfaceProtocol": 1,
+          "bNumEndpoints": 1
+        },
+        {
+          "bInterfaceNumber": 1,
+          "bAlternateSetting": 0,
+          "bInterfaceClass": 10,
+          "bInterfaceSubClass": 0,
+          "bInterfaceProtocol": 0,
+          "bNumEndpoints": 2
+        }
+      ],
+      "serial_ports": [
+        {
+          "callout": "/dev/cu.usbmodem1113201",
+          "dialin": "/dev/tty.usbmodem1113201",
+          "registry_id": 4295057622
+        }
+      ],
+      "canonical_default_report": "reports/usb2_postrepair_canonical_enumeration_20261016_1827.json",
+      "canonical_default_passed": true,
+      "canonical_default_verified_at": "2026-10-16T18:26:22.805317+08:00",
+      "canonical_default_registry_id": 4295057606,
+      "canonical_default_serial_ports": [
+        {
+          "callout": "/dev/cu.usbmodem1113201",
+          "dialin": "/dev/tty.usbmodem1113201",
+          "registry_id": 4295057622
+        }
+      ]
+    },
+    "binary_loopback": {
+      "report": "reports/usb2_postrepair_loopback_20261016_1826.json",
+      "passed": true,
+      "bytes_sent": 1848,
+      "bytes_received": 1848,
+      "chunks": 56,
+      "all_chunks_passed": true,
+      "extra_hex": "",
+      "payload_sha256": "e25decd5d7f178829f3e8bca33f4a9337ff0387b9efb6095876ae1ec33f3194f",
+      "rounds": 8,
+      "chunk_sizes": [
+        1,
+        7,
+        31,
+        32,
+        33,
+        63,
+        64
+      ],
+      "scope": "Finite binary echo, not a throughput or endurance test."
+    },
+    "host_tool_fix": {
+      "file": "../tools/usb_check.py",
+      "product_match": "Prefer exact canonical kUSBProductString; fall back to USB Product Name only when canonical key is absent. Preserve both report fields.",
+      "offline_test": "../tools/test_usb_check.py",
+      "offline_tests_passed": 9
+    },
+    "hardware_verified_d1_invert": 0,
+    "high_speed_480mbps_tested": false,
+    "flash_written": false
+  },
+  "high_speed_480mbps_tested": true,
+  "high_speed": {
+    "report": "reports/usb2_hs_20261016.json",
+    "result": "hs_cdc_loopback_passed",
+    "passed": true,
+    "build_manifest": "reports/build_20261016_185336_363191.json",
+    "fs": "builds/20261016_185336_363191/impl/pnr/ao_0.fs",
+    "fs_sha256": "edaa6d5df4630249dc126de835f70e0d31b174a61cc4862fa82c9a4d8dead557",
+    "program_report": "reports/sram_usb2_hs_20261016_185403_506384.json",
+    "sram_program_verify_passed": true,
+    "user_code": [
+      "0x00006E78"
+    ],
+    "status_code": [
+      "0x70022020"
+    ],
+    "gao_id_hex": "D2B0",
+    "timing": {
+      "report": "builds/20261016_185336_363191/impl/pnr/usb2_hs_cdc.tr",
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "clocks": [
+        "clk_50mhz",
+        "clk_ulpi60",
+        "tck_pad_i"
+      ],
+      "worst_listed_setup_slack_ns": 0.744,
+      "worst_listed_hold_slack_ns": 0.185
+    },
+    "implementation": {
+      "mode": "synchronous 8-bit ULPI / UTMI high-speed CDC",
+      "phy_clkout_hz": 60000000,
+      "phy_clkout_fpga_pin": "L4 input",
+      "bulk_max_packet_bytes": 512,
+      "echo_fifo_bytes": 2048,
+      "out_admission": "Reserve one complete 512-byte packet before accepting a new OUT packet.",
+      "boot_readback_hex": {
+        "function_control": "41",
+        "interface_control": "00",
+        "otg_control": "00"
+      },
+      "running_function_control": "Controlled by the ULPI wrapper and HS negotiation; boot readbacks are not asserted as current values.",
+      "vendor_manifest": "../vendor/ultraembedded_usb_hs/UPSTREAM.json",
+      "local_changes": "hs/PATCHES.md",
+      "upstreams": [
+        {
+          "repository": "https://github.com/ultraembedded/core_usb_cdc.git",
+          "commit": "d61b43fbd97fcb333fde203d7b885da315e3c2d4",
+          "license": "LGPL-2.1-or-later"
+        },
+        {
+          "repository": "https://github.com/ultraembedded/core_ulpi_wrapper.git",
+          "commit": "3c202963ac4b4ae50cadb44ce79c11463d3c6484",
+          "license": "GPL-2.0-or-later"
+        }
+      ]
+    },
+    "host_enumeration": {
+      "report": "reports/usb2_hs_enumeration_20261016_1854.json",
+      "passed": true,
+      "matching_devices": 1,
+      "vid_hex": "FB9A",
+      "pid_hex": "FB9B",
+      "product_canonical": "GW25K-USB-HS",
+      "product_display": "GW25K_USB_HS",
+      "registry_id": 4295058843,
+      "speed_bps": 480000000,
+      "speed_check": {
+        "expected_speed_mbps": 480,
+        "observed_speed_mbps": 480.0,
+        "registry_evidence": {
+          "UsbLinkSpeed": 480000000,
+          "Device Speed": 2
+        },
+        "passed": true
+      },
+      "configuration": 1,
+      "interfaces": [
+        {
+          "bInterfaceNumber": 0,
+          "bAlternateSetting": 0,
+          "bInterfaceClass": 2,
+          "bInterfaceSubClass": 2,
+          "bInterfaceProtocol": 1,
+          "bNumEndpoints": 1
+        },
+        {
+          "bInterfaceNumber": 1,
+          "bAlternateSetting": 0,
+          "bInterfaceClass": 10,
+          "bInterfaceSubClass": 0,
+          "bInterfaceProtocol": 0,
+          "bNumEndpoints": 2
+        }
+      ],
+      "serial_ports": [
+        {
+          "callout": "/dev/cu.usbmodemGW25KHS011",
+          "dialin": "/dev/tty.usbmodemGW25KHS011",
+          "registry_id": 4295058860
+        }
+      ]
+    },
+    "binary_loopback": {
+      "report": "reports/usb2_hs_loopback_20261016_1855.json",
+      "passed": true,
+      "bytes_sent": 21248,
+      "bytes_received": 21248,
+      "chunks": 56,
+      "all_chunks_passed": true,
+      "extra_hex": "",
+      "payload_sha256": "10151b68ac0c144145ece39e65866fe93b1b97e7ab128778fadf56cd5ae856f1",
+      "rounds": 8,
+      "chunk_sizes": [
+        1,
+        31,
+        64,
+        511,
+        512,
+        513,
+        1024
+      ],
+      "port": "/dev/cu.usbmodemGW25KHS011",
+      "pre_open_registry_id": 4295058843,
+      "pre_open_speed_check": {
+        "expected_speed_mbps": 480,
+        "observed_speed_mbps": 480.0,
+        "registry_evidence": {
+          "UsbLinkSpeed": 480000000,
+          "Device Speed": 2
+        },
+        "passed": true
+      },
+      "scope": "Finite binary echo spanning 512-byte bulk boundaries; not a throughput or endurance test. CDC 115200 line coding does not specify USB link rate."
+    },
+    "post_loopback_gao": {
+      "capture_report": "reports/usb2_hs_status_20261016_185639_529325.json",
+      "decoded": "reports/usb2_hs_status_20261016_185639_529325_core0_window0_decoded.json",
+      "capture_passed": true,
+      "sample_count": 128,
+      "complete_page_cycles": 3,
+      "all_complete_cycles_identical": true,
+      "page_payloads_hex": {
+        "0": "04240004",
+        "1": "000D02CE",
+        "2": "12AE5300",
+        "3": "53000000"
+      },
+      "fields": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "utmi_opmode": 0,
+        "utmi_xcvrselect": 0,
+        "utmi_termselect": false,
+        "utmi_linestate": 0,
+        "chirp_active": false,
+        "device_address": 13,
+        "usb_reset_count8": 2,
+        "hs_seen": true,
+        "chirp_seen": true,
+        "utmi_rxerror_seen": false,
+        "boot_error": false,
+        "boot_done": true,
+        "hs_active": true,
+        "configured": true,
+        "overflow_seen": false,
+        "boot_stage": 18,
+        "hs_state": 5,
+        "received_count16": 21248,
+        "echo_consumed_count16": 21248,
+        "overflow_count16": 0
+      },
+      "clock_count_per_10ms": [
+        600046
+      ]
+    },
+    "simulation": {
+      "boot_scenarios_passed": 23,
+      "control_script": "run_hs_control_sim.sh",
+      "control_scope": "UTMI packet BFM: filtered HS chirp, descriptors and lengths, qualifier/other-speed, status/configuration/interface, unsupported descriptor STALL and recovery, SET_ADDRESS commit after status ACK, CDC control, 512-byte binary bulk OUT/FIFO/IN and TX CRC.",
+      "echo_testbench": "sim/tb_usb2_hs_echo.sv",
+      "echo_scope": "6000 ordered bytes, packet-space reservation, burst backpressure, clear and USB reset.",
+      "host_offline_tests_passed": 16,
+      "simulation_only": true,
+      "control_log": "reports/usb2_hs_control_sim_20261016.log"
+    },
+    "build_history": [
+      {
+        "manifest": "reports/build_20261016_183851_216091.json",
+        "setup_violated_endpoints": 8,
+        "downloaded": false,
+        "reason": "DIR-to-pad-OE setup violations."
+      },
+      {
+        "manifest": "reports/build_20261016_184102_826131.json",
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0,
+        "downloaded": false,
+        "reason": "Superseded by final control/STALL correction before SRAM testing."
+      },
+      {
+        "manifest": "reports/build_20261016_185336_363191.json",
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 0,
+        "downloaded": true
+      }
+    ],
+    "high_speed_480mbps_tested": true,
+    "measured_throughput_mbps": null,
+    "flash_written": false,
+    "limits": [
+      "IN ACK-loss retransmission, RX CRC rollback and suspend/resume are incomplete in the upstream stream core; this finite clean-link test does not establish USB compliance or robust operation under injected protocol faults.",
+      "No sustained throughput, endurance or power-cycle persistence test was performed.",
+      "GAO RX/TX payload counters expose only the low 16 bits; this 21248-byte test does not wrap them."
+    ]
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "time": "2026-10-16T09:48:05.249265+08:00",
+  "query_returncode": 0,
+  "devices": [
+    {
+      "IORegistryEntryName": "USB2.1 Hub",
+      "USB Product Name": "USB2.1 Hub",
+      "idVendor": 1507,
+      "idProduct": 1552,
+      "locationID": 1048576
+    },
+    {
+      "IORegistryEntryName": "LDR2001",
+      "USB Product Name": "LDR2001",
+      "idVendor": 11641,
+      "idProduct": 3,
+      "locationID": 1179648
+    },
+    {
+      "IORegistryEntryName": "USB3.1 Hub",
+      "USB Product Name": "USB3.1 Hub",
+      "idVendor": 8457,
+      "idProduct": 2082,
+      "locationID": 18874368
+    },
+    {
+      "IORegistryEntryName": "USB3.1 Hub",
+      "USB Product Name": "USB3.1 Hub",
+      "idVendor": 1507,
+      "idProduct": 1574,
+      "locationID": 18939904
+    },
+    {
+      "IORegistryEntryName": "USB 10/100/1000 LAN",
+      "USB Product Name": "USB 10_100_1000 LAN",
+      "idVendor": 3034,
+      "idProduct": 33107,
+      "locationID": 18944000
+    },
+    {
+      "IORegistryEntryName": "USB Storage",
+      "USB Product Name": "USB Storage",
+      "idVendor": 1507,
+      "idProduct": 1892,
+      "locationID": 18948096
+    },
+    {
+      "IORegistryEntryName": "USB2.0 Hub",
+      "USB Product Name": "USB2.0 Hub",
+      "idVendor": 8457,
+      "idProduct": 10274,
+      "locationID": 17825792
+    },
+    {
+      "IORegistryEntryName": "USB2.1 Hub",
+      "USB Product Name": "USB2.1 Hub",
+      "idVendor": 1507,
+      "idProduct": 1552,
+      "locationID": 17891328
+    },
+    {
+      "IORegistryEntryName": "USB 2.0 Hub",
+      "USB Product Name": "USB 2.0 Hub",
+      "idVendor": 6720,
+      "idProduct": 2049,
+      "locationID": 17903616
+    },
+    {
+      "IORegistryEntryName": "Magic Trackpad",
+      "USB Product Name": "Magic Trackpad",
+      "idVendor": 1452,
+      "idProduct": 804,
+      "locationID": 17904640
+    },
+    {
+      "IORegistryEntryName": "Dual RS232-HS",
+      "USB Product Name": "Dual RS232-HS",
+      "idVendor": 1027,
+      "idProduct": 24592,
+      "locationID": 17904128
+    },
+    {
+      "IORegistryEntryName": "USB Billboard Device",
+      "USB Product Name": "USB Billboard Device",
+      "idVendor": 8457,
+      "idProduct": 34850,
+      "locationID": 18153472
+    },
+    {
+      "IORegistryEntryName": "FIIO QX11",
+      "USB Product Name": "FIIO QX11",
+      "idVendor": 10610,
+      "idProduct": 304,
+      "locationID": 18087936
+    }
+  ]
+}

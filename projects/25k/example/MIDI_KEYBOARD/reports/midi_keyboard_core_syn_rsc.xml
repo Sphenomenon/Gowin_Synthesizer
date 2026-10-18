@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="midi_keyboard_core" Register="31" Alu="27" Lut="57" T_Register="1609(31)" T_Alu="168(27)" T_Lut="1406(57)" T_Bsram="1(0)">
+ <SubModule name="key_mapper" Register="200" Alu="31" Lut="285" Bsram="1" T_Register="200(200)" T_Alu="31(31)" T_Lut="285(285)" T_Bsram="1(1)"/>
+ <SubModule name="router" Register="16" Alu="15" Lut="9" T_Register="890(16)" T_Alu="15(15)" T_Lut="552(9)">
+  <SubModule name="usb_queue" Register="333" Lut="210" T_Register="333(333)" T_Lut="210(210)"/>
+  <SubModule name="ble_queue" Register="541" Lut="333" T_Register="541(541)" T_Lut="333(333)"/>
+ </SubModule>
+ <SubModule name="usb_codec" Register="81" Alu="34" Lut="56" T_Register="81(81)" T_Alu="34(34)" T_Lut="56(56)"/>
+ <SubModule name="ble_codec" Register="108" Alu="30" Lut="62" T_Register="108(108)" T_Alu="30(30)" T_Lut="62(62)"/>
+ <SubModule name="control_endpoint" Register="299" Alu="31" Lut="394" T_Register="299(299)" T_Alu="31(31)" T_Lut="394(394)"/>
+</Module>

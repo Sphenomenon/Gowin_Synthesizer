@@ -1,0 +1,3809 @@
+{
+  "source": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/usb2_measure_status_20261016_182203_115320_core0_window0.csv",
+  "image": "measure",
+  "sample_count": 128,
+  "sample_clock_hz": 50000000,
+  "heartbeat50_alternates_each_sample": true,
+  "page_runs": [
+    {
+      "page": 1,
+      "payload_hex": "45000400",
+      "payload": {
+        "function_control": 69,
+        "interface_control": 0,
+        "otg_control": 4,
+        "error_code": 0,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 0,
+      "last_sample": 0,
+      "sample_count": 1
+    },
+    {
+      "page": 2,
+      "payload_hex": "0130304A",
+      "payload": {
+        "debug_last": 1,
+        "line_state_last": 1,
+        "debug_line_seen_mask": 3,
+        "debug_read_count": 12362,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 1,
+      "last_sample": 8,
+      "sample_count": 8
+    },
+    {
+      "page": 3,
+      "payload_hex": "00000000",
+      "payload": {
+        "reserved": 0,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 9,
+      "last_sample": 16,
+      "sample_count": 8
+    },
+    {
+      "page": 0,
+      "payload_hex": "04240004",
+      "payload": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 17,
+      "last_sample": 24,
+      "sample_count": 8
+    },
+    {
+      "page": 1,
+      "payload_hex": "45000400",
+      "payload": {
+        "function_control": 69,
+        "interface_control": 0,
+        "otg_control": 4,
+        "error_code": 0,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 25,
+      "last_sample": 32,
+      "sample_count": 8
+    },
+    {
+      "page": 2,
+      "payload_hex": "0130304A",
+      "payload": {
+        "debug_last": 1,
+        "line_state_last": 1,
+        "debug_line_seen_mask": 3,
+        "debug_read_count": 12362,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 33,
+      "last_sample": 40,
+      "sample_count": 8
+    },
+    {
+      "page": 3,
+      "payload_hex": "00000000",
+      "payload": {
+        "reserved": 0,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 41,
+      "last_sample": 48,
+      "sample_count": 8
+    },
+    {
+      "page": 0,
+      "payload_hex": "04240004",
+      "payload": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 49,
+      "last_sample": 56,
+      "sample_count": 8
+    },
+    {
+      "page": 1,
+      "payload_hex": "45000400",
+      "payload": {
+        "function_control": 69,
+        "interface_control": 0,
+        "otg_control": 4,
+        "error_code": 0,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 57,
+      "last_sample": 64,
+      "sample_count": 8
+    },
+    {
+      "page": 2,
+      "payload_hex": "0130304A",
+      "payload": {
+        "debug_last": 1,
+        "line_state_last": 1,
+        "debug_line_seen_mask": 3,
+        "debug_read_count": 12362,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 65,
+      "last_sample": 72,
+      "sample_count": 8
+    },
+    {
+      "page": 3,
+      "payload_hex": "00000000",
+      "payload": {
+        "reserved": 0,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 73,
+      "last_sample": 80,
+      "sample_count": 8
+    },
+    {
+      "page": 0,
+      "payload_hex": "04240004",
+      "payload": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 81,
+      "last_sample": 88,
+      "sample_count": 8
+    },
+    {
+      "page": 1,
+      "payload_hex": "45000400",
+      "payload": {
+        "function_control": 69,
+        "interface_control": 0,
+        "otg_control": 4,
+        "error_code": 0,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 89,
+      "last_sample": 96,
+      "sample_count": 8
+    },
+    {
+      "page": 2,
+      "payload_hex": "0130304A",
+      "payload": {
+        "debug_last": 1,
+        "line_state_last": 1,
+        "debug_line_seen_mask": 3,
+        "debug_read_count": 12362,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 97,
+      "last_sample": 104,
+      "sample_count": 8
+    },
+    {
+      "page": 3,
+      "payload_hex": "00000000",
+      "payload": {
+        "reserved": 0,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 105,
+      "last_sample": 112,
+      "sample_count": 8
+    },
+    {
+      "page": 0,
+      "payload_hex": "04240004",
+      "payload": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 113,
+      "last_sample": 120,
+      "sample_count": 8
+    },
+    {
+      "page": 1,
+      "payload_hex": "45000400",
+      "payload": {
+        "function_control": 69,
+        "interface_control": 0,
+        "otg_control": 4,
+        "error_code": 0,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true
+      },
+      "first_sample": 121,
+      "last_sample": 127,
+      "sample_count": 7
+    }
+  ],
+  "complete_page_cycles": [
+    {
+      "first_sample": 17,
+      "last_sample": 48,
+      "page_payloads_hex": {
+        "0": "04240004",
+        "1": "45000400",
+        "2": "0130304A",
+        "3": "00000000"
+      },
+      "fields": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true,
+        "function_control": 69,
+        "interface_control": 0,
+        "otg_control": 4,
+        "error_code": 0,
+        "debug_last": 1,
+        "line_state_last": 1,
+        "debug_line_seen_mask": 3,
+        "debug_read_count": 12362,
+        "reserved": 0
+      }
+    },
+    {
+      "first_sample": 49,
+      "last_sample": 80,
+      "page_payloads_hex": {
+        "0": "04240004",
+        "1": "45000400",
+        "2": "0130304A",
+        "3": "00000000"
+      },
+      "fields": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true,
+        "function_control": 69,
+        "interface_control": 0,
+        "otg_control": 4,
+        "error_code": 0,
+        "debug_last": 1,
+        "line_state_last": 1,
+        "debug_line_seen_mask": 3,
+        "debug_read_count": 12362,
+        "reserved": 0
+      }
+    },
+    {
+      "first_sample": 81,
+      "last_sample": 112,
+      "page_payloads_hex": {
+        "0": "04240004",
+        "1": "45000400",
+        "2": "0130304A",
+        "3": "00000000"
+      },
+      "fields": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "measurement_stage": 32,
+        "ready": true,
+        "id_ok": true,
+        "error": false,
+        "clock_alive": true,
+        "function_control": 69,
+        "interface_control": 0,
+        "otg_control": 4,
+        "error_code": 0,
+        "debug_last": 1,
+        "line_state_last": 1,
+        "debug_line_seen_mask": 3,
+        "debug_read_count": 12362,
+        "reserved": 0
+      }
+    }
+  ],
+  "image_note": "Voltage-measurement image: FC45/IF00/OTG04 remains active, DP pullup plus DM pulldown. Debug15 is polled continuously. READY means ID/Scratch/configuration and at least one Debug read succeeded, not enumeration or normal LineState. FC/IF/OTG are last-read values. This image never suspends CLKOUT.",
+  "note": "Measure uses independent 50MHz snapshots; low32 contains stage and flags, not PHY frequency. Match CSV to the D2AF capture manifest. Time labels do not establish USB bit timing.",
+  "samples": [
+    {
+      "sample": 0,
+      "export_time_label": "0",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 1,
+      "export_time_label": "1",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 2,
+      "export_time_label": "2",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 3,
+      "export_time_label": "3",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 4,
+      "export_time_label": "4",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 5,
+      "export_time_label": "5",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 6,
+      "export_time_label": "6",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 7,
+      "export_time_label": "7",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 8,
+      "export_time_label": "8",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 9,
+      "export_time_label": "9",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 10,
+      "export_time_label": "10",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 11,
+      "export_time_label": "11",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 12,
+      "export_time_label": "12",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 13,
+      "export_time_label": "13",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 14,
+      "export_time_label": "14",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 15,
+      "export_time_label": "15",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 16,
+      "export_time_label": "16",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 17,
+      "export_time_label": "17",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 18,
+      "export_time_label": "18",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 19,
+      "export_time_label": "19",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 20,
+      "export_time_label": "20",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 21,
+      "export_time_label": "21",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 22,
+      "export_time_label": "22",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 23,
+      "export_time_label": "23",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 24,
+      "export_time_label": "24",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 25,
+      "export_time_label": "25",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 26,
+      "export_time_label": "26",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 27,
+      "export_time_label": "27",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 28,
+      "export_time_label": "28",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 29,
+      "export_time_label": "29",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 30,
+      "export_time_label": "30",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 31,
+      "export_time_label": "31",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 32,
+      "export_time_label": "32",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 33,
+      "export_time_label": "33",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 34,
+      "export_time_label": "34",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 35,
+      "export_time_label": "35",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 36,
+      "export_time_label": "36",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 37,
+      "export_time_label": "37",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 38,
+      "export_time_label": "38",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 39,
+      "export_time_label": "39",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 40,
+      "export_time_label": "40",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 41,
+      "export_time_label": "41",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 42,
+      "export_time_label": "42",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 43,
+      "export_time_label": "43",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 44,
+      "export_time_label": "44",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 45,
+      "export_time_label": "45",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 46,
+      "export_time_label": "46",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 47,
+      "export_time_label": "47",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 48,
+      "export_time_label": "48",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 49,
+      "export_time_label": "49",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 50,
+      "export_time_label": "50",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 51,
+      "export_time_label": "51",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 52,
+      "export_time_label": "52",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 53,
+      "export_time_label": "53",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 54,
+      "export_time_label": "54",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 55,
+      "export_time_label": "55",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 56,
+      "export_time_label": "56",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 57,
+      "export_time_label": "57",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 58,
+      "export_time_label": "58",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 59,
+      "export_time_label": "59",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 60,
+      "export_time_label": "60",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 61,
+      "export_time_label": "61",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 62,
+      "export_time_label": "62",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 63,
+      "export_time_label": "63",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 64,
+      "export_time_label": "64",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 65,
+      "export_time_label": "65",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 66,
+      "export_time_label": "66",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 67,
+      "export_time_label": "67",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 68,
+      "export_time_label": "68",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 69,
+      "export_time_label": "69",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 70,
+      "export_time_label": "70",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 71,
+      "export_time_label": "71",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 72,
+      "export_time_label": "72",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 73,
+      "export_time_label": "73",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 74,
+      "export_time_label": "74",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 75,
+      "export_time_label": "75",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 76,
+      "export_time_label": "76",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 77,
+      "export_time_label": "77",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 78,
+      "export_time_label": "78",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 79,
+      "export_time_label": "79",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 80,
+      "export_time_label": "80",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 81,
+      "export_time_label": "81",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 82,
+      "export_time_label": "82",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 83,
+      "export_time_label": "83",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 84,
+      "export_time_label": "84",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 85,
+      "export_time_label": "85",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 86,
+      "export_time_label": "86",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 87,
+      "export_time_label": "87",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 88,
+      "export_time_label": "88",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 89,
+      "export_time_label": "89",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 90,
+      "export_time_label": "90",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 91,
+      "export_time_label": "91",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 92,
+      "export_time_label": "92",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 93,
+      "export_time_label": "93",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 94,
+      "export_time_label": "94",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 95,
+      "export_time_label": "95",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 96,
+      "export_time_label": "96",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 97,
+      "export_time_label": "97",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 98,
+      "export_time_label": "98",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 99,
+      "export_time_label": "99",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 100,
+      "export_time_label": "100",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 101,
+      "export_time_label": "101",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 102,
+      "export_time_label": "102",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 103,
+      "export_time_label": "103",
+      "status": {
+        "raw_hex": "0130304A0000206C",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 104,
+      "export_time_label": "104",
+      "status": {
+        "raw_hex": "0130304A0000206D",
+        "page": 2,
+        "payload_hex": "0130304A",
+        "payload": {
+          "debug_last": 1,
+          "line_state_last": 1,
+          "debug_line_seen_mask": 3,
+          "debug_read_count": 12362,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 105,
+      "export_time_label": "105",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 106,
+      "export_time_label": "106",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 107,
+      "export_time_label": "107",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 108,
+      "export_time_label": "108",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 109,
+      "export_time_label": "109",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 110,
+      "export_time_label": "110",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 111,
+      "export_time_label": "111",
+      "status": {
+        "raw_hex": "000000000000206E",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 112,
+      "export_time_label": "112",
+      "status": {
+        "raw_hex": "000000000000206F",
+        "page": 3,
+        "payload_hex": "00000000",
+        "payload": {
+          "reserved": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 113,
+      "export_time_label": "113",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 114,
+      "export_time_label": "114",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 115,
+      "export_time_label": "115",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 116,
+      "export_time_label": "116",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 117,
+      "export_time_label": "117",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 118,
+      "export_time_label": "118",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 119,
+      "export_time_label": "119",
+      "status": {
+        "raw_hex": "0424000400002068",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 120,
+      "export_time_label": "120",
+      "status": {
+        "raw_hex": "0424000400002069",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 121,
+      "export_time_label": "121",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 122,
+      "export_time_label": "122",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 123,
+      "export_time_label": "123",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 124,
+      "export_time_label": "124",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 125,
+      "export_time_label": "125",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 126,
+      "export_time_label": "126",
+      "status": {
+        "raw_hex": "450004000000206B",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 127,
+      "export_time_label": "127",
+      "status": {
+        "raw_hex": "450004000000206A",
+        "page": 1,
+        "payload_hex": "45000400",
+        "payload": {
+          "function_control": 69,
+          "interface_control": 0,
+          "otg_control": 4,
+          "error_code": 0,
+          "measurement_stage": 32,
+          "ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true
+        },
+        "measurement_stage": 32,
+        "flags": {
+          "measurement_ready": true,
+          "id_ok": true,
+          "error": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    }
+  ]
+}

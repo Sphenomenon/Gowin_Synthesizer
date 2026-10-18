@@ -1,0 +1,38 @@
+{
+  "time": "2026-10-16T10:53:53.430876+08:00",
+  "status": "PASS",
+  "simulation_only": true,
+  "command": "sh prj/usb2_device/run_lowpower_sim.sh",
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/lowpower_sim_20261016_105200.log",
+  "returncode": 0,
+  "parameter_combinations": [
+    {
+      "fs_otg_ctrl": "00",
+      "scenarios": 17
+    },
+    {
+      "fs_otg_ctrl": "04",
+      "scenarios": 17
+    }
+  ],
+  "scenario_count": 34,
+  "physical_pads_check": true,
+  "stopped_clock_snapshot_check": true,
+  "model_note": "Independent pin-level BFM really stops CLK60, but does not model USB analog loading or resistor behavior. Both FS_OTG_CTRL values validate the requested register sequence; physical LineState expectations are not inferred from the BFM.",
+  "sha256": {
+    "rtl/usb2_lowpower_diag.v": "f18cc1fb4347ca84b3163faf4b0256730fc49f7030fed3c5421f5e9b2c841466",
+    "rtl/usb2_lowpower_top.v": "1bc02a5e4c6d0408df6221c30400733262a0a54fe1d5f47a337c04e89e665787",
+    "sim/tb_usb2_lowpower_diag.sv": "ec35cfba85cc1ed3886d087a4ba18d0c525a2cfc75f5e516ee39dcb4a7395ae6",
+    "sim/tb_usb2_lowpower_pads.sv": "a76214d8293cd95c3bf2bc69ceca21fed18bc3ce3aef104a3f9d8c3e12e889f1",
+    "run_lowpower_sim.sh": "864961345c3e8715225bff92df74e1525ada767546b18e51bbb34b1604a74bd6",
+    "constraints/usb2_lowpower.sdc": "34bc73ae0ef92a3ea1cc9d660d40aa60ea6873a5b826cf90137d310ffec4d273",
+    "debug/decode_status.py": "99be2c9639072c9746b5d9bbc61f67b77fad614cd5354837894a3bdd3a46bddb",
+    "debug/capture_status.py": "8a617c97a2dfd897e00fb7694d7c131d4718f6a8602eb7c9dfce5c869459ddb3",
+    "program_sram.py": "623b433df3e7d94484e0676f870d5102b36d4a15f87913475958fb01b439828c",
+    "build_lowpower_gao.tcl": "6b43dbe5f599c2a5db7c6fec089c3dbaf421081e65ab3af96fd5cf87f93415fe",
+    "build_lowpower_pd_gao.tcl": "a3484d20407c46abdae27687e2cd4608e753959d3df6f4db5a3725eaf5e21589",
+    "prepare_lowpower_pd_sources.tcl": "b1541c1f88cd7e87d1b1bc2e063c1467bc5a8219f104d64a3fa95e8945da7d75",
+    "debug/usb2_lowpower_status.gao": "e85ecc2042e4b1bad0176567d77023b6868f2b61c0b9a7f0fc631d1b6b3faf4d",
+    "debug/usb2_lowpower_pd_status.gao": "a70ca682df91416cb89937a4198077f1687e724048931f51ea8fe2de52546160"
+  }
+}

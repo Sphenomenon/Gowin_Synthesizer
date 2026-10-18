@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "utc": "2026-10-15T17:57:30.309617+00:00",
+  "commands": [
+    "sh prj/usb2_device/run_serial_sim.sh",
+    "sh prj/usb2_device/run_serial_integration_sim.sh"
+  ],
+  "upstream_commit": "ebf0696f0b1dc604a4ed8eedee4c3eae1643e66f",
+  "usb1_host_source_sha256": "f1cc78001bb83ff86f3870e4e1751930876b748c0613ece23b3bf2ca3716fe9e",
+  "direct_sim_end_ps": 2829970130,
+  "integration_sim_end_ps": 3016912652,
+  "integration_init": {
+    "register_reads": 12,
+    "register_writes": 7,
+    "checks": [
+      "Exact safe write sequence",
+      "No physical attach before attach_request",
+      "All DATA released during mode guard",
+      "Actual DATA0 controls DATA1/2 direction",
+      "Actual DATA2 transports SE0",
+      "Actual root top TX loopback",
+      "At least 6000 PHY clocks (100us) from physical attach write to Debug read"
+    ],
+    "debug_readback": "05 packed: SessEnd=0, SessValid=1, LineState=01 (FS J); model status13=06 and debug15=01"
+  },
+  "protocol_checks": [
+    "Physical independent NRZI/bitstuff/CRC5/CRC16 host BFM",
+    "Device and configuration descriptors",
+    "Delayed SET_ADDRESS after status ACK",
+    "Foreign and old address silence",
+    "Malformed and split SETUP rejection",
+    "CDC class control",
+    "256 binary bytes exact echo",
+    "Empty IN NAK",
+    "Exactly one drop at 1025 bytes without IN",
+    "Physical bus reset restores address0 and session state"
+  ],
+  "sha256": {
+    "generate_serial_core.py": "52351f07b2c8ef33937dc5d85b547b7b1212d3028ff53a0d139e0724f49f857e",
+    "rtl/usb2_cdc_loopback.v": "11059ba06fec4e7edc616d5a86988740ae919dbaf8b30b445adfa5d74bec5500",
+    "generated/usbfs_core_top.v": "6cf05a211dbaf6b544e1e2d1e56400c32e0d5043282764c03ce5f81be47ca76f",
+    "generated/usb_serial_top.v": "68be94ba990201ace7153e9ae56f0c585d22efaaa1bb82ab92bdd864b110e651",
+    "generated/usb2_address_filter.v": "47b09c2b8977eee0b1e3b86d1ec07ba7fc76bc9a552578767a6c5cb0d472c218",
+    "sim/tb_usb2_cdc_loopback.sv": "efd2a527326c6236c451463965d682e09b664d406feeeb7b5a91520bf8e95a4f",
+    "run_serial_sim.sh": "2493d8a4115eb1d2e68d731eb865f938ac2cdb6aaadf40f65bc0aa4cfa9caf8a",
+    "prepare_serial_sources.tcl": "ebd686279453d83ab16a848b718bda23020afd378685702739238bba873592fb",
+    "sim/usb3300_serial_phy_model.sv": "67431af285895c81ad014c256f4b86d02d08458cc54ee39df93cded8152b3adf",
+    "sim/tb_usb2_serial_integration.sv": "5ee2b35e37540c3d2b0770c597a444f2ef264b457bc55b7e66497eb443cf2d22",
+    "run_serial_integration_sim.sh": "7c5b513485775df3a836904a29d9019f5df4a6338d6279e4f14d9f4ce31beb9a",
+    "rtl/usb2_serial_top.v": "70652e4f7ad374a65cd6d72d9dbba1838c7e23a61add6a60907ae72170078d04",
+    "rtl/usb2_serial_init.v": "dff70ba26ee091fce3a057cb54ae3862ad18cada4253784b248360d7b7c89bba"
+  },
+  "limitations": [
+    "Two-second attach counter accelerated in simulation",
+    "Behavioral PHY is not an analog USB signal-margin test",
+    "Separate hardware enumeration and binary echo required"
+  ],
+  "integration_version": "Single FPGA IOB driver; explicit init RX/TX/OE; link_active; 100us attach settling; Debug15h plus InterruptStatus13h before serial entry"
+}

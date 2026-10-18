@@ -1,0 +1,54 @@
+{
+  "result": "PASS",
+  "wire_packets": 2052,
+  "host_forwarded_packets": 1978,
+  "host_ignored_packets": 74,
+  "source_counts": {
+    "startup": 48,
+    "channel_configuration": 85,
+    "keys_A_P_on": 256,
+    "keys_A_P_off": 256,
+    "slider_CC1": 255,
+    "slider_mode_cleanup": 8,
+    "slider_CC11": 255,
+    "slider_pitchbend": 255,
+    "slider_pitch_release": 1,
+    "encoder_program": 127,
+    "panic": 48,
+    "codec_channel_voice": 448,
+    "codec_system": 10
+  },
+  "host_kind_counts": {
+    "-1": 74,
+    "0": 352,
+    "1": 288,
+    "2": 694,
+    "3": 208,
+    "4": 372,
+    "5": 64
+  },
+  "production_sources": {
+    "rtl/instrument/midi_performance.v": "35e54d95b86a002a86379392671ef6907dd444eaf519fbfe5c6d3f637425dce6",
+    "rtl/transport/usb_midi_codec.v": "e9e4cccfd7a0559fdf21aa75edccff3290a456d3431a976c506ab71090efd5e6"
+  },
+  "testbench_sha256": "cdba4377d66aae2fed6176fb23d9c55585b5b824536553a89e997317be6d6ac9",
+  "csv_sha256": "0ea3cbe3fb406ad1d3f11a34084d661f7c24d441bd90cc69811f79a60bd45f73",
+  "compile_command": [
+    "/opt/homebrew/bin/iverilog",
+    "-g2012",
+    "-s",
+    "tb_packet_vectors",
+    "-o",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/MIDI_KEYBOARD/compatibility/gowin_synthesizer/generated/packet_vectors.vvp",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/MIDI_KEYBOARD/compatibility/gowin_synthesizer/tb_packet_vectors.v",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/MIDI_KEYBOARD/rtl/instrument/midi_performance.v",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/MIDI_KEYBOARD/rtl/transport/usb_midi_codec.v"
+  ],
+  "simulation_command": [
+    "/opt/homebrew/bin/vvp",
+    "packet_vectors.vvp",
+    "+output=usb_midi_vectors_raw.csv"
+  ],
+  "simulation_working_directory": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/MIDI_KEYBOARD/compatibility/gowin_synthesizer/generated",
+  "scope": "Production GW25K performance/codec RTL; expected generic synth event contract. No hardware test."
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-fpga-project>
+<Project>
+    <Template>FPGA</Template>
+    <Version>5</Version>
+    <Device name="GW5A-25A" pn="GW5A-LV25MG121NC1/I0">gw5a25a-002</Device>
+    <!-- Build with build.tcl so E2's CPU/SSPI multiplexers are released as GPIO.
+         A bare IDE import also needs Use CPU as GPIO and Use SSPI as GPIO. -->
+    <FileList>
+        <File path="rtl/usb1_passive_monitor.v" type="file.verilog" enable="1"/>
+        <File path="rtl/usb1_monitor_top.v" type="file.verilog" enable="1"/>
+        <File path="usb1_monitor.cst" type="file.cst" enable="1"/>
+        <File path="usb1_monitor.sdc" type="file.sdc" enable="1"/>
+    </FileList>
+</Project>

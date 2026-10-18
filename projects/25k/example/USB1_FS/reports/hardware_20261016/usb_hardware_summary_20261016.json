@@ -1,0 +1,71 @@
+{
+  "timestamp": "2026-10-16T01:19:58.908018+08:00",
+  "result": "not_enumerated_bus_se0",
+  "sram_program_verified": true,
+  "normal_build": "build_20261016_010036_373789.json",
+  "normal_program": "sram_usb1_program_20261016.json",
+  "gao_build": "build_20261016_011545_836351.json",
+  "gao_program": "sram_usb1_gao_program_20261016.json",
+  "protocol_simulation": "protocol_sim_20261016.json",
+  "host_reports": [
+    "usb_hardware_20261016.json",
+    "usb_gao_hardware_20261016.json"
+  ],
+  "host_registry_query_succeeded": true,
+  "target_matching_devices": 0,
+  "all_usb_device_lists_added": [],
+  "all_usb_device_lists_removed": [],
+  "captures": [
+    {
+      "source": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/prj/usb1_device/reports/usb1_status_20261016_011711_115814_core0_window0.csv",
+      "sample_count": 128,
+      "unique_status": [
+        "0001FFFF0000D0B4",
+        "0001FFFF0000D0B5"
+      ]
+    },
+    {
+      "source": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/prj/usb1_device/reports/usb1_status_20261016_011751_357451_core0_window0.csv",
+      "sample_count": 128,
+      "unique_status": [
+        "0001FFFF0000D0B4",
+        "0001FFFF0000D0B5"
+      ]
+    }
+  ],
+  "observed_flags": {
+    "raw_hex": "0001FFFF0000D0B4",
+    "line_transitions_saturated16": 1,
+    "se0_consecutive_cycles_saturated16": 65535,
+    "j_consecutive_cycles_saturated16": 0,
+    "line_state": 0,
+    "line_name": "SE0",
+    "flags": {
+      "pll_locked": true,
+      "reset60n": true,
+      "usb_bus_reset_released": false,
+      "attach_intent_unconnected": true,
+      "overflow_seen": false,
+      "received_seen": false,
+      "heartbeat50": true,
+      "heartbeat60": false,
+      "line_activity_seen": true,
+      "se0_long_seen": true,
+      "se1_long_seen": false,
+      "monitor_settled": true,
+      "j_long_seen": false
+    }
+  },
+  "interpretation": "PLL is locked, 60 MHz domain reset released and the 2-second attach wait completed. The USB core still sees sustained SE0 and holds its USB protocol engine in bus reset. Enumeration and real CDC echo have not succeeded.",
+  "scope_limits": [
+    "Only short digital snapshots; one historical transition was counted and is not identified as a packet.",
+    "No waveform/analogue electrical measurement and no hardware-connection diagnosis in this request.",
+    "Internal attach intent is not proof of host attach detection.",
+    "Simulated echo success is not a hardware echo result."
+  ],
+  "later_hardware_change_followup": {
+    "report": "usb1_postchange_20261016.json",
+    "passed": true,
+    "result": "USB1 12 Mbps CDC enumeration and 1848-byte binary echo passed after user-added pull-up and host re-enumeration. Original pre-change SE0 observations above remain historical."
+  }
+}

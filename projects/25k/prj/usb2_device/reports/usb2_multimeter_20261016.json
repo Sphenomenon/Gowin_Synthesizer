@@ -1,0 +1,52 @@
+{
+  "recorded_at": "2026-10-16T11:11:04.936431+08:00",
+  "source": "User-reported multimeter observations in this chat",
+  "measurement_image": {
+    "image": "measure",
+    "manifest": "build_20261016_110634_656420.json",
+    "program_report": "sram_usb2_measure_20261016_110704_205357.json",
+    "capture_report": "usb2_measure_status_20261016_110729_115936.json",
+    "configuration_last_read": {
+      "function_control_hex": "45",
+      "interface_control_hex": "00",
+      "otg_control_hex": "04"
+    },
+    "debug_last_hex": "03",
+    "purpose": "Hold DP pullup plus DM pulldown for DC measurements; no device protocol."
+  },
+  "power_rails": {
+    "requested_points": [
+      "C15 USB_3V3",
+      "C13 digital VDD18",
+      "C11 analog VDDA1.8"
+    ],
+    "user_reply_zh": "没问题都",
+    "interpretation": "User reports all three DC supply checks are normal; no numeric voltages or ripple measurements supplied."
+  },
+  "usb_signal_voltages": {
+    "requested_points": {
+      "DP": "R7 either end",
+      "DM": "R8 either end"
+    },
+    "user_reply_zh": "都在2.6V附近跳动",
+    "DP_approx_v": 2.6,
+    "DM_approx_v": 2.6,
+    "fluctuation_reported": true,
+    "minimum_v": null,
+    "maximum_v": null,
+    "waveform_available": false
+  },
+  "inference": "The reported 0.42 ohm DP-DM resistance is a near-short and, together with both signal voltages around 2.6V and PHY LineState11 under FC45/IF00/OTG04, identifies a low-resistance connection between USB2 DP and DM as a direct electrical fault preventing valid USB signaling. The exact physical origin (connector-side solder/footprint/PCB versus PHY-side solder or internal failure) is not yet isolated. Missing digital VDD18 4.7uF remains a separate confirmed design deviation, not the proven cause of this low resistance.",
+  "next_requested_measurement": "Pending physical isolation plan: inspect USB2 data pads, R7/R8 and U2 pins7/8; if no visible bridge, disconnect one end of R7 and measure each isolated R7 PCB pad to the common DM/R8 net to separate connector-side from PHY-side fault.",
+  "next_measurement_status": "The 0.42 ohm result has been received. Short location has not yet been isolated; no rework or repair is claimed.",
+  "updated_at": "2026-10-16T11:14:36.415209+08:00",
+  "unpowered_dp_dm_resistance": {
+    "requested_state": "All board USB and programmer connections removed, power LED off",
+    "points": "R7 either end to R8 either end",
+    "user_reply_zh": "0.42欧",
+    "reported_ohm": 0.42,
+    "lead_resistance_ohm": null,
+    "reverse_polarity_reading_ohm": null,
+    "note": "User response to the explicit unpowered resistance-measurement request; no independent probe-placement or meter verification."
+  }
+}

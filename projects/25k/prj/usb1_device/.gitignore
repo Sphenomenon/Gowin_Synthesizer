@@ -1,0 +1,5 @@
+builds/
+impl/
+sim/build/
+reports/*.vvp
+__pycache__/

@@ -1,0 +1,21 @@
+{
+  "time": "2026-10-16T10:15:58.781227+08:00",
+  "status": "PASS",
+  "command": "sh prj/usb2_device/run_termination_sim.sh",
+  "returncode": 0,
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/termination_sim_20261016_101558.log",
+  "scenarios": {
+    "phy_soft_reset_0": 15,
+    "phy_soft_reset_1": 17,
+    "physical_pad_truth_table": true
+  },
+  "simulation_only": true,
+  "sha256": {
+    "run_termination_sim.sh": "c4c93aedd3d4e51bb7c593e73c862d7765265258ca7dc13841ec2948f442fbc2",
+    "rtl/usb2_termination_probe.v": "1584e88d83444ab226a84c18b0e75e7702c4a54a1055c87fdbf5dd39193364a9",
+    "rtl/usb2_termination_top.v": "2b4156dfc7e04f99f4cec475874031a9c00d1df6b4910e7aa8b95086626ba790",
+    "sim/tb_usb2_termination_probe.sv": "e20498ecef9f7c7cde2b548c0618821a16064457f9566f7c39180f74e56c056b",
+    "sim/tb_usb2_termination_pads.sv": "b19ed4c619678c9fad2bd5d526104eed4cf268348888f5b9bf6b0d46c6228be6",
+    "debug/usb2_status_50mhz.v": "a41bf94f8e0a78a6b93895f83ba7ea596dad0359022adf7b43bcbc1596779dd0"
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-16T18:27:09.240369+08:00",
+  "result": "fs_cdc_loopback_passed",
+  "passed": true,
+  "scope": "USB2 / USB3300 12 Mbps Full Speed CDC, SRAM Program+Verify only; no Flash write and no 480 Mbps High Speed validation.",
+  "repair": {
+    "user_report": "硬件修复了，测试",
+    "specific_short_location": null,
+    "repair_method": null,
+    "postrepair_unpowered_resistance_ohm": null,
+    "note": "User-reported repair. No post-repair resistance value or exact rework location was provided. Functional evidence below independently verifies normal idle LineState and CDC transfers."
+  },
+  "measure": {
+    "program_report": "reports/sram_usb2_measure_20261016_182147_264121.json",
+    "build_manifest": "reports/build_20261016_110634_656420.json",
+    "capture_report": "reports/usb2_measure_status_20261016_182203_115320.json",
+    "decoded": "reports/usb2_measure_status_20261016_182203_115320_core0_window0_decoded.json",
+    "pages": {
+      "0": "04240004",
+      "1": "45000400",
+      "2": "0130304A",
+      "3": "00000000"
+    },
+    "fields": {
+      "vendor_id": 1060,
+      "product_id": 4,
+      "measurement_stage": 32,
+      "ready": true,
+      "id_ok": true,
+      "error": false,
+      "clock_alive": true,
+      "function_control": 69,
+      "interface_control": 0,
+      "otg_control": 4,
+      "error_code": 0,
+      "debug_last": 1,
+      "line_state_last": 1,
+      "debug_line_seen_mask": 3,
+      "debug_read_count": 12362,
+      "reserved": 0
+    }
+  },
+  "serial": {
+    "serial_d1_invert": 0,
+    "build_manifest": "reports/build_20261016_093824_666534.json",
+    "program_report": "reports/sram_usb2_serial_20261016_182233_995777.json",
+    "fs_sha256": "2f340250e04118951c7f5d541cb918af1c6170b8c5a1afde9f6ef96d1975a62c",
+    "user_code": [
+      "0x00003FC2"
+    ],
+    "status_code": [
+      "0x70022020"
+    ],
+    "enumeration_report": "reports/usb2_postrepair_canonical_enumeration_20261016_1827.json",
+    "usb_product_name": "FPGA_USB_Serial",
+    "canonical_product_string": "FPGA-USB-Serial",
+    "vid_hex": "FB9A",
+    "pid_hex": "FB9A",
+    "speed_mbps": 12,
+    "location_id": 17904128,
+    "port": "/dev/cu.usbmodem1113201",
+    "loopback_report": "reports/usb2_postrepair_loopback_20261016_1826.json",
+    "loopback": {
+      "port": "/dev/cu.usbmodem1113201",
+      "baudrate": 115200,
+      "dtr": true,
+      "timeout_seconds_per_chunk": 3.0,
+      "passed": true,
+      "bytes_sent": 1848,
+      "bytes_received": 1848,
+      "sha256": "e25decd5d7f178829f3e8bca33f4a9337ff0387b9efb6095876ae1ec33f3194f",
+      "extra_hex": "",
+      "status": "pass"
+    },
+    "chunk_count": 56,
+    "all_chunks_passed": true,
+    "post_loopback_capture": "reports/usb2_serial_status_20261016_182529_459220.json",
+    "post_loopback_decoded": "reports/usb2_serial_status_20261016_182529_459220_core0_window0_decoded.json",
+    "pages": {
+      "0": "04240004",
+      "1": "450A00D2",
+      "2": "145E0738",
+      "3": "07380000"
+    },
+    "fields": {
+      "vendor_id": 1060,
+      "product_id": 4,
+      "function_control_written": 69,
+      "interface_control_written": 10,
+      "otg_control_written": 0,
+      "line_flags_byte": 210,
+      "line_flags": {
+        "attach_request": true,
+        "init_done": true,
+        "usb_oe": false,
+        "dp_rx": true,
+        "dn_rx": false,
+        "ulpi_data2": false,
+        "ulpi_data1": true,
+        "ulpi_data0": false
+      },
+      "initialization_stage": 20,
+      "snapshot_flags_byte": 94,
+      "pre_serial_phy_status_packed_low4": 5,
+      "pre_serial_phy_line_state": 1,
+      "pre_serial_session_valid": true,
+      "pre_serial_session_end": false,
+      "init_done": true,
+      "usb_reset_released": true,
+      "received_seen": true,
+      "error_or_overflow": false,
+      "received_count16": 1848,
+      "echo_queued_count16": 1848,
+      "overflow_count16": 0
+    }
+  },
+  "host_query_correction": {
+    "cause": "macOS sanitizes USB Product Name to FPGA_USB_Serial while kUSBProductString remains FPGA-USB-Serial. Old exact product match returned false negatives after successful enumeration.",
+    "implementation": "prj/tools/usb_check.py now prefers kUSBProductString and falls back to USB Product Name only if the canonical field is absent.",
+    "unittest_command": "python3 -m unittest discover -s prj/tools -p test_usb_check.py",
+    "unittest_passed": true,
+    "unittest_count": 9,
+    "initial_false_negative_reports": [
+      "reports/usb2_postrepair_host_20261016_1823.json",
+      "reports/usb2_postrepair_host_20261016_1824.json",
+      "reports/usb2_postrepair_hostlog_20261016_1824.json",
+      "reports/usb2_postrepair_host_verified_20261016_1825.json"
+    ],
+    "note": "First real loopback used the explicitly observed sanitized product name before the matching fix. Canonical enumeration subsequently passed with the same registry ID and serial port. Loopback counts were independently checked in FPGA GAO."
+  },
+  "source_default": {
+    "path": "rtl/usb2_serial_top.v",
+    "serial_d1_invert": 0,
+    "note": "Default aligned to the physically verified non-inverted image. The loaded image is the existing verified build, not a newly rebuilt image.",
+    "regression_command": "sh prj/usb2_device/run_serial_integration_sim.sh",
+    "regression_passed": true,
+    "configurations": [
+      "invert0_activity0",
+      "invert0_activity1",
+      "invert1_activity0",
+      "invert1_activity1"
+    ]
+  },
+  "current_loaded_image": {
+    "image": "serial",
+    "manifest": "reports/build_20261016_093824_666534.json",
+    "sram_only": true,
+    "last_verified_capture": "reports/usb2_serial_status_20261016_182529_459220.json"
+  },
+  "limits": [
+    "No post-repair D+/D− ohmmeter reading or physical short location was reported.",
+    "This test does not verify 480 Mbps, long-duration operation, USB1, or changes to the separately noted VDD18 capacitance."
+  ],
+  "verification_sources_sha256": {
+    "prj/usb2_device/rtl/usb2_serial_top.v": "03062098285d10a60329035c2e67131357ab7b04c2e2aff756bbf4579f0e80c0",
+    "prj/tools/usb_check.py": "800581f730655137538c28b2e968eccfe4692821b2dfb4f42bd682e4e21ea8a2",
+    "prj/tools/test_usb_check.py": "af3e72d1cdb9bda011013d87e4979e5ad882ae59e2ce6f24efb04dec974c8aa0"
+  }
+}

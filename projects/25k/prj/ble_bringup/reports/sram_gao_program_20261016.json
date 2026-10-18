@@ -1,0 +1,21 @@
+{
+  "time": "2026-10-16T00:13:55.844257+08:00",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5A-25A",
+    "--operation_index",
+    "4",
+    "--fsFile",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/ble_bringup/impl/pnr/ao_0.fs",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "15MHz"
+  ],
+  "file_sha256": "d77d8d990ab3afcef082396464d59717b6053e025dee82acbb3dfb36a0526592",
+  "returncode": 0,
+  "error_in_output": false
+}

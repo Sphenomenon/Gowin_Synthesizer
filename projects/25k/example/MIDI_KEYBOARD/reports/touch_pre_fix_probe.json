@@ -1,0 +1,30 @@
+{
+  "scope": "Pre-fix RTL simulation; no hardware access or physical noise conclusion",
+  "method": "Current midi_qt2160_client plus the existing open-drain pin-level slave model; temporary /dev/stdin testbench",
+  "parameters": {
+    "is_slider": 1,
+    "clock_hz": 50000000,
+    "poll_cycles": 250000,
+    "i2c_half_cycles": 250,
+    "bus_free_cycles": 5000,
+    "startup_cycles": 20,
+    "calibration_cycles": 20000
+  },
+  "polling": {
+    "shared_change_high_interval_ms": 5.96452,
+    "shared_change_low_interval_ms": 0.96454,
+    "repetitions_per_condition": 3,
+    "interpretation": "A held shared CHANGE bypassed the configured polling wait. Both intervals were shorter than the QT2160 16 ms minimum matrix cycle."
+  },
+  "post_configuration_reset": {
+    "injection": "During CAL_WAIT after configuration readback, set general status to 0x81 and restore slider control register 20 to its reset value 0x00.",
+    "observed_first_publication": {
+      "ready": true,
+      "error_code": 0,
+      "touched": true,
+      "register_20": "0x00"
+    },
+    "interpretation": "The former first-status RESET mask accepted a sample after the verified slider configuration had been lost."
+  },
+  "limits": "These reproductions establish software scheduling and reset-window defects. They do not prove that either defect is the sole cause of the board's reported false touches or position jitter."
+}

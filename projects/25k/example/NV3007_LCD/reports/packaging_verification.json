@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-10-16T21:23:40.677957+08:00",
+  "passed": true,
+  "checks": {
+    "tested_hardware_sources_unchanged": true,
+    "relocated_program_check_only": true,
+    "relocated_init_generator_check": true,
+    "tested_bitstream_unchanged": true,
+    "new_build_download_preflight": true,
+    "spi_byte_simulation": true,
+    "full_frame_simulation": true
+  },
+  "independent_build": {
+    "manifest": "reports/build_20261016_212245_476061.json",
+    "artifact": "builds/20261016_212245_476061/impl/pnr/lcd_bringup.fs",
+    "sha256": "6e1fc65cd28af19eefa451a890544c79be980066d2cb160954a5e0fbdc6e094c",
+    "user_code": "0x294d",
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "worst_listed_setup_slack_ns": 5.447,
+    "worst_listed_hold_slack_ns": 0.247,
+    "hardware_programmed": false
+  },
+  "preserved_hardware_verified_build": {
+    "manifest": "reports/verified_build.json",
+    "sha256": "54577ddec2d4a9d1003c77a43fa9b199a1ff7f91b2b72ae251e17784d5fa7923",
+    "user_code": "0x294d"
+  },
+  "simulation": {
+    "log": "reports/packaging_sim.log",
+    "init_commands": 119,
+    "init_spi_bytes": 250,
+    "init_delay_ms": 120,
+    "default_spi_hz": 1000000,
+    "spi_byte_values_tested": 256,
+    "width": 142,
+    "height": 428,
+    "frame_bytes": 121552,
+    "row_labels_tested": true,
+    "next_frame_window_tested": true,
+    "disabled_safe_state_tested": true
+  },
+  "note": "Packaging, independent build and offline validation only; no FPGA programming or new physical-screen observation during this organization."
+}

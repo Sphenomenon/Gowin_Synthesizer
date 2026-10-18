@@ -1,0 +1,106 @@
+{
+  "recorded_at": "2026-10-17T03:38:49.251249+08:00",
+  "scope": "60Hz scene snapshots and changed-region UI updates; arbitrary full-screen 60fps and panel scan rate are not claimed",
+  "regional_ui_60hz_verified_in_rtl": true,
+  "panel_scan_rate_measured": false,
+  "board_spi_waveform_measured": false,
+  "scene_hz": 60,
+  "spi_hz": 50000000,
+  "pixel_format": "RGB565",
+  "logical_size": [
+    428,
+    142
+  ],
+  "dynamic_regions": 26,
+  "dynamic_pixels": 35860,
+  "full_pixels": 60776,
+  "pin_simulation": {
+    "all_dynamic_regions_ms": 11.53922,
+    "full_repaint_ms": 19.45084,
+    "snapshot_interval_ms": [
+      16.66666,
+      16.66668
+    ],
+    "windows_checked": 55,
+    "pixels_checked": 194172,
+    "static_scene_pixel_transfers": 0,
+    "source": "reports/simulation.log",
+    "result": "PASS display: 60Hz scene cadence; all26 dynamic regions within 11.539220ms; full repaint 19.450840ms; 55 windows/194172 exact RGB565 pixels, FIFO prefetch, four-stage snapshot coherence, no traffic for unchanged scene, physical50MHz SPI setup/hold"
+  },
+  "bandwidth": {
+    "full_screen_60fps_pixel_bps": 58344960,
+    "spi_pixel_bps": 50000000,
+    "full_screen_payload_limit_fps": 51.41832302224562
+  },
+  "regression": {
+    "manifest": "reports/validation.json",
+    "passed": true,
+    "hdl_testbenches": 31,
+    "python_tests": 9,
+    "checks": 73,
+    "finished_at": "2026-10-17T03:36:15.306362+08:00",
+    "input_hashes": 126
+  },
+  "build": {
+    "manifest": "reports/last_build.json",
+    "passed": true,
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "setup_worst_slack_ns": 1.107,
+      "hold_worst_slack_ns": 0.184,
+      "recovery_worst_slack_ns": 6.189,
+      "removal_worst_slack_ns": 0.864,
+      "clocks": [
+        {
+          "name": "clk_50mhz",
+          "constraint_mhz": 50.0,
+          "actual_fmax_mhz": 52.929
+        },
+        {
+          "name": "clk_ulpi60",
+          "constraint_mhz": 60.002,
+          "actual_fmax_mhz": 68.841
+        }
+      ],
+      "passed": true
+    },
+    "finished_at": "2026-10-17T03:36:19.773156+08:00",
+    "input_hashes": 65
+  },
+  "artifact": {
+    "path": "builds/20261017_033415_116117/impl/pnr/midi_keyboard.fs",
+    "sha256": "91819e9d4c7971c9fb1b53144c3d5822e6ca0b7c100cbed4b9fe6b377e5aa73e",
+    "bytes": 7178789,
+    "user_code": "0x00005A52"
+  },
+  "flash": {
+    "summary": "reports/hardware_20261017/flash_20261017_033701_135721/summary.json",
+    "program_and_verify": true,
+    "reload": true,
+    "user_code": "0x00005A52",
+    "status": "0x70022020",
+    "physical_power_cycle_tested": false,
+    "usb_observation": {
+      "name": "GW25K MIDI Screen",
+      "detected": true,
+      "vid": "0xfb9a",
+      "pid": "0xfb9b",
+      "link_speed_bps": 480000000,
+      "configuration": 1
+    },
+    "finished_at": "2026-10-17T03:37:24.707700+08:00"
+  },
+  "limitations": [
+    "Initial/theme/background full repaint exceeds one 60Hz tick; scene remains coherent until completion.",
+    "No TE synchronization or physical panel frame-rate measurement.",
+    "50MHz nominal MOSI setup/hold is 10ns/10ns; external board timing and signal integrity remain unmeasured."
+  ],
+  "restoration": {
+    "user_request": "还原展示不管该问题",
+    "diagnostic_archived": "archive/touch_diagnostics_0x0000B301",
+    "original_build_inputs_match": true,
+    "restored_at": "2026-10-17T03:14:21.147825+08:00"
+  },
+  "current_revision_note": "Android Legacy Just Works and reversed half-speed encoders; display RTL unchanged from restored F054"
+}

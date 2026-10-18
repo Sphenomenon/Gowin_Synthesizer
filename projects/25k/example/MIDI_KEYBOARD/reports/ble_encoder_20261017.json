@@ -1,0 +1,86 @@
+{
+  "recorded_at": "2026-10-17T03:38:49.251249+08:00",
+  "user_request": {
+    "bluetooth": "Android system pairing reports PIN or device configuration error",
+    "encoders": "Reverse both directions and halve adjustment speed"
+  },
+  "firmware_user_code": "0x00005A52",
+  "changes": {
+    "ble": "Legacy Just Works SMP, HCI Rand/Encrypt, STK encryption, single volatile RAM bond, independent HCI command credit and timeout recovery",
+    "encoders": "Both reversed; one application step per two mechanical detents; signed cancellation; existing 20us AB / 1ms key filtering"
+  },
+  "limitations": {
+    "persistent_bond_storage": false,
+    "mitm": false,
+    "secure_connections": false,
+    "android_phone_acceptance": "user_confirmed_system_pairing_and_midi_app_connection",
+    "instruction": "Forget old GWK-MIDI bond after FPGA reset/power loss; pair again, then connect from a BLE MIDI application"
+  },
+  "regression": {
+    "manifest": "reports/validation.json",
+    "passed": true,
+    "testbenches": 31,
+    "python_tests": 9,
+    "checks": 73,
+    "input_hashes": 126,
+    "finished_at": "2026-10-17T03:36:15.306362+08:00",
+    "smp_unit_checks": 560,
+    "encoder_unit_checks": 400
+  },
+  "build": {
+    "manifest": "reports/last_build.json",
+    "passed": true,
+    "input_hashes": 65,
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "setup_worst_slack_ns": 1.107,
+      "hold_worst_slack_ns": 0.184,
+      "recovery_worst_slack_ns": 6.189,
+      "removal_worst_slack_ns": 0.864,
+      "clocks": [
+        {
+          "name": "clk_50mhz",
+          "constraint_mhz": 50.0,
+          "actual_fmax_mhz": 52.929
+        },
+        {
+          "name": "clk_ulpi60",
+          "constraint_mhz": 60.002,
+          "actual_fmax_mhz": 68.841
+        }
+      ],
+      "passed": true
+    },
+    "artifact": {
+      "path": "builds/20261017_033415_116117/impl/pnr/midi_keyboard.fs",
+      "sha256": "91819e9d4c7971c9fb1b53144c3d5822e6ca0b7c100cbed4b9fe6b377e5aa73e"
+    }
+  },
+  "flash": {
+    "summary": "reports/hardware_20261017/flash_20261017_033701_135721/summary.json",
+    "program_and_verify": true,
+    "reload": true,
+    "user_code": "0x00005A52",
+    "status": "0x70022020",
+    "usb": {
+      "name": "GW25K MIDI Screen",
+      "detected": true,
+      "vid": "0xfb9a",
+      "pid": "0xfb9b",
+      "link_speed_bps": 480000000,
+      "configuration": 1
+    },
+    "physical_power_cycle_tested": false
+  },
+  "touch_diagnosis": "Remains stopped at user request; touch and display RTL unchanged from F054",
+  "android_acceptance": {
+    "recorded_at": "2026-10-17T03:40:12.833199+08:00",
+    "source": "user_report",
+    "system_pairing": true,
+    "midi_application_connection": true,
+    "user_response": "系统配对成功，MIDI 应用也能连接",
+    "midi_note_exchange_verified": false,
+    "power_cycle_bond_retention_verified": false
+  }
+}

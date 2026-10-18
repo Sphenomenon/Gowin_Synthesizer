@@ -1,0 +1,23 @@
+{
+  "started_at": "2026-10-16T22:36:29.870504+08:00",
+  "script": "build.tcl",
+  "stage_directory": "/private/tmp/gw25k-build-4efwg1ta",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "reports/build_20261016_223629_867064_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "reports/build_20261016_223629_867064_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "builds/20261016_223629_867064/impl/pnr/encoder_lcd.fs",
+      "sha256": "24a917b753dab21b4c517828700eac649fbb9436bd208e65d782f00302241852"
+    }
+  ],
+  "finished_at": "2026-10-16T22:36:46.387595+08:00"
+}

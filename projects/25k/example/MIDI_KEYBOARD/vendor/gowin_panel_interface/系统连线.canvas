@@ -1,0 +1,124 @@
+{
+  "nodes": [
+    {
+      "id": "push",
+      "type": "file",
+      "file": "FPGA工作站/模块/Push 2.md",
+      "x": 0,
+      "y": 100,
+      "width": 260,
+      "height": 220,
+      "color": "5"
+    },
+    {
+      "id": "core",
+      "type": "file",
+      "file": "FPGA工作站/模块/138K主机.md",
+      "x": 400,
+      "y": 80,
+      "width": 340,
+      "height": 320,
+      "color": "5"
+    },
+    {
+      "id": "highspeed",
+      "type": "file",
+      "file": "FPGA工作站/接口/HighSpeed接口.md",
+      "x": 820,
+      "y": -200,
+      "width": 700,
+      "height": 220,
+      "color": "3"
+    },
+    {
+      "id": "panel",
+      "type": "file",
+      "file": "FPGA工作站/模块/25K面板.md",
+      "x": 1040,
+      "y": 80,
+      "width": 340,
+      "height": 320,
+      "color": "4"
+    },
+    {
+      "id": "touch",
+      "type": "file",
+      "file": "FPGA工作站/模块/触摸板.md",
+      "x": 820,
+      "y": 540,
+      "width": 300,
+      "height": 280,
+      "color": "4"
+    },
+    {
+      "id": "lcd",
+      "type": "file",
+      "file": "FPGA工作站/模块/SPI屏.md",
+      "x": 1240,
+      "y": 540,
+      "width": 300,
+      "height": 280,
+      "color": "4"
+    },
+    {
+      "id": "pending",
+      "type": "file",
+      "file": "FPGA工作站/待确认.md",
+      "x": 0,
+      "y": 540,
+      "width": 600,
+      "height": 280,
+      "color": "2"
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "text": "# FPGA 工作站：整机连接\n\n**Push 2 直连 138K；触摸板与 SPI 屏接 25K。**\n138K 保留业务状态，25K 处理采集与输出。\n\n双击模块卡片查看笔记，滚轮缩放画布。",
+      "x": 0,
+      "y": -200,
+      "width": 620,
+      "height": 220
+    }
+  ],
+  "edges": [
+    {
+      "id": "usb",
+      "fromNode": "push",
+      "fromSide": "right",
+      "toNode": "core",
+      "toSide": "left",
+      "fromEnd": "arrow",
+      "toEnd": "arrow",
+      "label": "USB"
+    },
+    {
+      "id": "highspeed-link",
+      "fromNode": "core",
+      "fromSide": "right",
+      "toNode": "panel",
+      "toSide": "left",
+      "fromEnd": "arrow",
+      "toEnd": "arrow",
+      "label": "HighSpeed"
+    },
+    {
+      "id": "touch-link",
+      "fromNode": "panel",
+      "fromSide": "bottom",
+      "toNode": "touch",
+      "toSide": "top",
+      "fromEnd": "arrow",
+      "toEnd": "arrow",
+      "label": "I²C / GPIO"
+    },
+    {
+      "id": "lcd-link",
+      "fromNode": "panel",
+      "fromSide": "bottom",
+      "toNode": "lcd",
+      "toSide": "top",
+      "toEnd": "arrow",
+      "label": "SPI"
+    }
+  ]
+}

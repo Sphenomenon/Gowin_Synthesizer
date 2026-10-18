@@ -1,0 +1,29 @@
+{
+  "started_at": "2026-10-16T21:27:42.027059+08:00",
+  "script": "build.tcl",
+  "stage_directory": null,
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "reports/build_20261016_212742_017482_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "reports/build_20261016_212742_017482_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "builds/20261016_212742_017482/impl/pnr/ble_bringup.fs",
+      "sha256": "4a83570933221b472cf8eecae6818cea1919ab93db555f2cf18833ef6ff6c117"
+    }
+  ],
+  "finished_at": "2026-10-16T21:28:34.779938+08:00",
+  "packaging": {
+    "kind": "relocated_independent_build",
+    "source_manifest": "reports/build_20261016_212742_017482.json",
+    "hardware_tested": false,
+    "note": "Plain BLE build, no GAO. Paths relocated for portability; no new hardware programming is claimed."
+  }
+}

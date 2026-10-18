@@ -1,0 +1,28 @@
+{
+  "started_at": "2026-10-16T21:44:20.851761+08:00",
+  "script": "build.tcl",
+  "stage_directory": "/private/tmp/gw25k-build-yfydrg4e",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "reports/build_20261016_214420_844215_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "reports/build_20261016_214420_844215_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "builds/20261016_214420_844215/impl/pnr/usb1_cdc.fs",
+      "sha256": "30f01f98ee1c397ef96e150d560f0598107cac3f51d329a3bda34ba889efabfc"
+    }
+  ],
+  "finished_at": "2026-10-16T21:44:26.960943+08:00",
+  "packaging": {
+    "kind": "portable_build_metadata",
+    "original_manifest": "reports/original_build_manifests/build_20261016_214420_844215.json",
+    "note": "Build input/output files are unchanged; only script, log, artifact and GAO paths were made relative to this example."
+  }
+}

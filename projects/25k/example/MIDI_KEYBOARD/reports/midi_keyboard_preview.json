@@ -1,0 +1,53 @@
+{
+  "source": "Icarus pixel-by-pixel sampling of midi_landscape_view RTL; no mock graphics",
+  "size": [
+    428,
+    142
+  ],
+  "orientation": "reverse landscape: logical_x=427-native_y, logical_y=native_x",
+  "layout": {
+    "strip": "right-side vertical; fills bottom to top",
+    "strip_panel": [
+      384,
+      29,
+      419,
+      126
+    ],
+    "strip_track": [
+      392,
+      43,
+      411,
+      112
+    ],
+    "main_content_right": 375
+  },
+  "inputs": {
+    "keys_hex": "0125",
+    "channel": 3,
+    "transpose": -12,
+    "velocity": 100,
+    "program": 24,
+    "strip_mode": "BEND",
+    "brightness": 192,
+    "strip_value": 166,
+    "focus": "STRIP",
+    "usb": true,
+    "ble": true,
+    "touch": true,
+    "slider_chip": {
+      "ready": true,
+      "touched": true,
+      "raw_position": 174,
+      "filtered_position": 166,
+      "general_status_hex": "02",
+      "error_hex": "00",
+      "overrun": false,
+      "sample_count_hex": "7F"
+    }
+  },
+  "sha256": {
+    "rtl/display/midi_landscape_view.v": "789a8bbb3c05d51f90a8aa6be0097ef4b34a317f93c277877f802c4a70cb18f4",
+    "sim/tb_midi_landscape_view.v": "ca0250de2473c7602eecee80cf6cafc9f91a4ee087baea7893d4cf871953c9b6"
+  },
+  "png_sha256": "e00c2d422140831330cc9617e79ed88f71a9eb92b094bf4e04522731d0e8c2a1"
+}

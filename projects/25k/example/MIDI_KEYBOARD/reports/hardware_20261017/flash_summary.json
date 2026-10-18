@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "time": "2026-10-17T00:08:38.891296+08:00",
+  "device": "GW5A-25A",
+  "jtag_id": "0x0001281B",
+  "cable": "FT2CH",
+  "channel": 0,
+  "frequency": "15MHz",
+  "flash_id": "0x0B4017",
+  "flash_capacity_bytes": 8388608,
+  "flash_start_address": "0x000000",
+  "file_sha256": "17292b440e0070d2605d8bca6d9d8ace2b97812c63a3882288fc6d5e1e380737",
+  "artifact": "builds/20261017_000007_402332/impl/pnr/midi_keyboard.fs",
+  "flash_program_and_verify": true,
+  "flash_reload": true,
+  "user_code": "0x0000DF05",
+  "status_code": "0x70022020",
+  "usb": {
+    "name": "GW25K MIDI Screen",
+    "vid": "0xFB9A",
+    "pid": "0xFB9B",
+    "serial": "GW25K-MIDI-0001",
+    "link_speed_bps": 480000000,
+    "configuration": 1
+  },
+  "physical_power_cycle_tested": false,
+  "functional_touch_display_ble_midi_tested": false,
+  "evidence": [
+    "flash_program_20261017.json",
+    "flash_program_20261017.log",
+    "reload_flash.json",
+    "device_after.json",
+    "usb_after.log"
+  ]
+}

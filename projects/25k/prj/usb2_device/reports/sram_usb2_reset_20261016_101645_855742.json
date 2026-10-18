@@ -1,0 +1,32 @@
+{
+  "time": "2026-10-16T10:16:45.855759+08:00",
+  "image": "reset",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5A-25A",
+    "--operation_index",
+    "4",
+    "--fsFile",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/builds/20261016_101616_160185/impl/pnr/ao_0.fs",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "15MHz"
+  ],
+  "manifest": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/build_20261016_101616_160185.json",
+  "file_sha256": "0f22228f58ecde921e3a0532e6509ebddeb5ce7a1b9eb243d05c7f357590e3e1",
+  "passed": true,
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/sram_usb2_reset_20261016_101645_855742.log",
+  "returncode": 0,
+  "user_code": [
+    "0x00009545"
+  ],
+  "status_code": [
+    "0x70022020"
+  ],
+  "error_in_output": false,
+  "finished": true
+}

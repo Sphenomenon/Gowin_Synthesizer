@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-16T18:58:58.594002+08:00",
+  "result": "hs_cdc_loopback_passed",
+  "passed": true,
+  "scope": "USB2 / USB3300 High Speed CDC at a host-confirmed 480 Mbps link rate. SRAM Program+Verify only.",
+  "prior_fs_baseline": "reports/usb2_postrepair_20261016.json",
+  "implementation": {
+    "architecture": "USB3300 60 MHz synchronous ULPI, UTMI-to-ULPI wrapper, HS CDC core, 2048-byte echo FIFO",
+    "clock_direction": "USB3300 CLKOUT -> FPGA L4 input; FPGA does not drive CLKOUT",
+    "upstream_manifest": "../vendor/ultraembedded_usb_hs/UPSTREAM.json",
+    "cdc_commit": "d61b43fbd97fcb333fde203d7b885da315e3c2d4",
+    "cdc_license": "LGPL-2.1-or-later",
+    "ulpi_commit": "3c202963ac4b4ae50cadb44ce79c11463d3c6484",
+    "ulpi_license": "GPL-2.0-or-later",
+    "local_changes": "hs/PATCHES.md",
+    "endpoint_packet_sizes": {
+      "control": 64,
+      "bulk_out_0x01": 512,
+      "bulk_in_0x82": 512
+    }
+  },
+  "build": {
+    "manifest": "reports/build_20261016_185336_363191.json",
+    "fs": "builds/20261016_185336_363191/impl/pnr/ao_0.fs",
+    "fs_sha256": "edaa6d5df4630249dc126de835f70e0d31b174a61cc4862fa82c9a4d8dead557",
+    "gao_id_hex": "D2B0",
+    "timing_report": "builds/20261016_185336_363191/impl/pnr/usb2_hs_cdc.tr",
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "worst_listed_setup_slack_ns": 0.744,
+    "worst_listed_hold_slack_ns": 0.185,
+    "hardware_sources_match_staged_build": {
+      "hs/usb2_hs_top.v": true,
+      "hs/usb2_hs_boot.v": true,
+      "hs/usb2_hs_echo.v": true,
+      "hs/usb_cdc_core.v": true,
+      "hs/usb_desc_rom.v": true,
+      "prepare_hs_sources.py": true,
+      "build_hs_gao.tcl": true,
+      "debug/usb2_hs_status.gao": true
+    },
+    "superseded_not_programmed": [
+      "reports/build_20261016_183851_216091.json",
+      "reports/build_20261016_184102_826131.json"
+    ]
+  },
+  "program": {
+    "report": "reports/sram_usb2_hs_20261016_185403_506384.json",
+    "passed": true,
+    "sram_only": true,
+    "user_code": [
+      "0x00006E78"
+    ],
+    "status_code": [
+      "0x70022020"
+    ]
+  },
+  "host": {
+    "enumeration_report": "reports/usb2_hs_enumeration_20261016_1854.json",
+    "loopback_report": "reports/usb2_hs_loopback_20261016_1855.json",
+    "vid_hex": "FB9A",
+    "pid_hex": "FB9B",
+    "product": "GW25K-USB-HS",
+    "speed_check": {
+      "expected_speed_mbps": 480,
+      "observed_speed_mbps": 480.0,
+      "registry_evidence": {
+        "UsbLinkSpeed": 480000000,
+        "Device Speed": 2
+      },
+      "passed": true
+    },
+    "pre_open_speed_check": {
+      "expected_speed_mbps": 480,
+      "observed_speed_mbps": 480.0,
+      "registry_evidence": {
+        "UsbLinkSpeed": 480000000,
+        "Device Speed": 2
+      },
+      "passed": true
+    },
+    "registry_id": 4295058843,
+    "port": "/dev/cu.usbmodemGW25KHS011",
+    "chunk_count": 56,
+    "all_chunks_passed": true,
+    "loopback": {
+      "port": "/dev/cu.usbmodemGW25KHS011",
+      "baudrate": 115200,
+      "dtr": true,
+      "chunk_sizes": [
+        1,
+        31,
+        64,
+        511,
+        512,
+        513,
+        1024
+      ],
+      "rounds": 8,
+      "timeout_seconds_per_chunk": 3.0,
+      "passed": true,
+      "bytes_sent": 21248,
+      "bytes_received": 21248,
+      "sha256": "10151b68ac0c144145ece39e65866fe93b1b97e7ab128778fadf56cd5ae856f1",
+      "extra_hex": "",
+      "status": "pass"
+    },
+    "note": "480 Mbps is the negotiated USB link rate, not measured application throughput. CDC baudrate is line-coding metadata and does not set the USB link rate."
+  },
+  "gao": {
+    "capture_report": "reports/usb2_hs_status_20261016_185639_529325.json",
+    "decoded": "reports/usb2_hs_status_20261016_185639_529325_core0_window0_decoded.json",
+    "sample_count": 128,
+    "complete_consistent_cycles": 3,
+    "pages": {
+      "0": "04240004",
+      "1": "000D02CE",
+      "2": "12AE5300",
+      "3": "53000000"
+    },
+    "fields": {
+      "vendor_id": 1060,
+      "product_id": 4,
+      "utmi_opmode": 0,
+      "utmi_xcvrselect": 0,
+      "utmi_termselect": false,
+      "utmi_linestate": 0,
+      "chirp_active": false,
+      "device_address": 13,
+      "usb_reset_count8": 2,
+      "hs_seen": true,
+      "chirp_seen": true,
+      "utmi_rxerror_seen": false,
+      "boot_error": false,
+      "boot_done": true,
+      "hs_active": true,
+      "configured": true,
+      "overflow_seen": false,
+      "boot_stage": 18,
+      "hs_state": 5,
+      "received_count16": 21248,
+      "echo_consumed_count16": 21248,
+      "overflow_count16": 0
+    },
+    "note": "GAO echo count means stream bytes consumed by the USB core. Host byte-for-byte loopback independently proves reception. Counts shown here are low 16 bits; this run did not wrap."
+  },
+  "validation": {
+    "boot_bfm": {
+      "passed": true,
+      "scenario_count": 23,
+      "command": "sh prj/usb2_device/run_hs_boot_sim.sh"
+    },
+    "control_packet_bfm": {
+      "passed": true,
+      "log": "reports/usb2_hs_control_sim_20261016.log",
+      "command": "sh prj/usb2_device/run_hs_control_sim.sh"
+    },
+    "echo_fifo_bfm": {
+      "passed": true,
+      "ordered_bytes": 6000,
+      "testbench": "sim/tb_usb2_hs_echo.sv"
+    },
+    "host_tool_offline_tests": {
+      "passed": true,
+      "test_count": 16,
+      "command": "python3 -m unittest discover -s prj/tools -p test_usb_check.py"
+    }
+  },
+  "current_loaded_image": {
+    "image": "hs",
+    "manifest": "reports/build_20261016_185336_363191.json",
+    "sram_only": true,
+    "last_verified_capture": "reports/usb2_hs_status_20261016_185639_529325.json"
+  },
+  "limits": [
+    "This is a short functional HS bring-up test, not a sustained throughput measurement or USB compliance certification.",
+    "Upstream stream interfaces do not implement robust IN retransmission after lost ACK or RX CRC rollback; suspend/resume remains incomplete.",
+    "No post-repair D+/D- resistance, exact short location or rework method was reported. Separate VDD18 capacitance concern was not retested.",
+    "USB1, BLE and LCD were not exercised in this HS test."
+  ],
+  "verification_sources_sha256": {
+    "prj/usb2_device/hs/usb2_hs_top.v": "ec657d719c1a49aa272abee10334b4b28d79ac2cee7c0c5e7bbe9487c3edb87a",
+    "prj/usb2_device/hs/usb2_hs_boot.v": "97d4a7ca91002e9b1f15e3f1a46bce47dc9413029516b816d2a8d2be6ab87f96",
+    "prj/usb2_device/hs/usb2_hs_echo.v": "14fafd323adac2999aa73b058151eef06a1d439bc1c37b61b1e7594004702af3",
+    "prj/usb2_device/hs/usb_cdc_core.v": "a6260bcbeb7418142a82aaa066b8c2030f0f7d7a3f42cadc8b4fdca054f16b21",
+    "prj/usb2_device/hs/usb_desc_rom.v": "0dd5db3ca174ff8ed3a5862071ebee3ddd21653b77428eb55db4198475bcbaf8",
+    "prj/usb2_device/prepare_hs_sources.py": "8e8c658050098835619bb3ae32a005928ebf51c8a39751bcd36d04428066a90e",
+    "prj/usb2_device/build_hs_gao.tcl": "8b2aa23473a04132b0fa7d77d867ca72a5f5bdaacb0a5cd91bfdacb3c59623c8",
+    "prj/usb2_device/debug/usb2_hs_status.gao": "b84c9ae9170768efd89d5c5ba111bb992bcbba797f4831b64671c1aeb966d5ad",
+    "prj/usb2_device/debug/decode_status.py": "d9f888bd272840b9e73b74ed5db0396710a1c5679bffcb34fc863e0a04697bd7"
+  }
+}

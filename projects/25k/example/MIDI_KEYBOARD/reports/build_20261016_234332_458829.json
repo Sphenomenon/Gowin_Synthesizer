@@ -1,0 +1,18 @@
+{
+  "started_at": "2026-10-16T23:43:32.477554+08:00",
+  "script": "build.tcl",
+  "stage_directory": "/private/tmp/gw25k-build-9crjf5pi",
+  "passed": false,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "reports/build_20261016_234332_458829_syn.log"
+    },
+    "pnr": {
+      "returncode": 1,
+      "log": "reports/build_20261016_234332_458829_pnr.log"
+    }
+  },
+  "artifacts": [],
+  "error": "pnr failed; existing successful artifacts were preserved."
+}

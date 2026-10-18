@@ -1,0 +1,31 @@
+{
+  "time": "2026-10-16T22:37:45.873219+08:00",
+  "passed": true,
+  "rtl_and_constraints_unchanged": true,
+  "source_files_checked": 8,
+  "lcd_init_generator_check_passed": true,
+  "independent_build_passed": true,
+  "build_manifest": "reports/build_20261016_223629_867064.json",
+  "simulations_passed": 5,
+  "simulation_log": "reports/packaging_simulation.log",
+  "relocated_directory_has_spaces": true,
+  "relocated_outside_repository": true,
+  "manifest_checks": {
+    "verified_build": {
+      "manifest": "reports/verified_build.json",
+      "sha256": "2456abb48e1d5bd01a453531338bd7bb5c53acbd382ae5118582dfc0ffb15f39",
+      "relocated_check_only_passed": true,
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0
+    },
+    "last_build": {
+      "manifest": "reports/last_build.json",
+      "sha256": "24a917b753dab21b4c517828700eac649fbb9436bd208e65d782f00302241852",
+      "relocated_check_only_passed": true,
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0
+    }
+  },
+  "hardware_programming_performed_during_packaging": false,
+  "hardware_image_manifest": "reports/verified_build.json"
+}

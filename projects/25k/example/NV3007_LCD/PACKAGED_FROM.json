@@ -1,0 +1,30 @@
+{
+  "source_project": "prj/lcd_bringup",
+  "source_build": "20261016_003736_574229",
+  "fs_sha256": "54577ddec2d4a9d1003c77a43fa9b199a1ff7f91b2b72ae251e17784d5fa7923",
+  "verified_parameters": {
+    "width": 142,
+    "height": 428,
+    "col_offset": 12,
+    "row_offset": 0,
+    "madctl_hex": "00",
+    "invert_display": false,
+    "enable_row_labels": true,
+    "spi_hz": 1000000
+  },
+  "hardware_observation": {
+    "user_report": "正常了。都正常了",
+    "context": "Third calibration image: colored bars, row labels and top/bottom borders normal; bottom artifacts gone.",
+    "sram_program_verify_passed": true,
+    "user_code_hex": "294D",
+    "status_code_hex": "70022020"
+  },
+  "hardware_source_sha256": {
+    "src/lcd_bringup_top.v": "a3617acc1194bccc6834d864853386f3307b3b9eaf9287d9dd84b6bd60d8f5db",
+    "src/lcd_spi_byte.v": "3a3f1f3d6a065aae955fdd3b7b24df179330c94a405d7c17db8466df580f45a1",
+    "src/lcd_init_rom.v": "3c1cc72ca98a2f4e0cea6911e8ac438989eb15846f4a84bcb659dbdc4a7fedb6",
+    "src/lcd_bringup.cst": "b7c2c377a253e51f72878de7e5d094107ff06240cf14b53067ce12bc59b9d3e4",
+    "src/lcd_bringup.sdc": "10eacbef3c3aaeb35526d26b1390d79d02ed09410aebe2e52f6faca47f4819b1"
+  },
+  "note": "Original project retained. Original evidence paths remain in reports/hardware_20261016; use reports/verified_build.json for this copy."
+}

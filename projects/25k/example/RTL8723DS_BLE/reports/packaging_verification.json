@@ -1,0 +1,102 @@
+{
+  "generated_at": "2026-10-16T21:30:21.911842+08:00",
+  "passed": true,
+  "checks": {
+    "vendor_manifest_40_files": true,
+    "protocol_logic_and_board_constraints_preserved": true,
+    "ordinary_build_preflight": true,
+    "staged_firmware_rom_byte_identical": true,
+    "historical_gao_image_unchanged": true,
+    "relocated_build_manifest_preflight": true,
+    "relocated_vendor_verification": true,
+    "relocated_source_adaptation": true,
+    "archived_gao_not_accepted_for_programming": true,
+    "original_and_adapted_simulations_10_cases": true,
+    "historical_ble_evidence_preserved": true,
+    "historical_gao_decode": true
+  },
+  "independent_build": {
+    "manifest": "reports/build_20261016_212742_017482.json",
+    "portable_manifest": "reports/ready_build.json",
+    "artifact": "builds/20261016_212742_017482/impl/pnr/ble_bringup.fs",
+    "sha256": "4a83570933221b472cf8eecae6818cea1919ab93db555f2cf18833ef6ff6c117",
+    "user_code": "0x3d1",
+    "gao": false,
+    "clock_hz": 50000000,
+    "fmax_mhz": 54.486,
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "hardware_programmed": false
+  },
+  "simulation": {
+    "simulation_results.json": {
+      "board": {
+        "pass": true,
+        "seconds": 0.274
+      },
+      "h5": {
+        "pass": true,
+        "seconds": 0.521
+      },
+      "gatt": {
+        "pass": true,
+        "seconds": 0.027
+      },
+      "system": {
+        "pass": true,
+        "seconds": 12.201
+      },
+      "wrong_rom": {
+        "pass": true,
+        "seconds": 0.08
+      }
+    },
+    "adapted_simulation_results.json": {
+      "board": {
+        "pass": true,
+        "seconds": 0.285
+      },
+      "h5": {
+        "pass": true,
+        "seconds": 0.58
+      },
+      "gatt": {
+        "pass": true,
+        "seconds": 0.028
+      },
+      "system": {
+        "pass": true,
+        "seconds": 13.302
+      },
+      "wrong_rom": {
+        "pass": true,
+        "seconds": 0.085
+      }
+    }
+  },
+  "host_parser_check": {
+    "script": "tools/ble_check.py",
+    "historical_read_and_notifications_crc_checked": true,
+    "sample_count": 4,
+    "live_scan_performed": false
+  },
+  "historical_hardware_result": {
+    "report": "reports/hardware_20261016/ble_hardware_20261016.json",
+    "passed": true,
+    "read_bytes": 20,
+    "valid_notifications": 3,
+    "notification_intervals_ms": [
+      500,
+      500
+    ]
+  },
+  "legacy_gao_limits": {
+    "artifact": "archive/gao_20261016/pnr/ao_0.fs",
+    "sha256": "d77d8d990ab3afcef082396464d59717b6053e025dee82acbb3dfb36a0526592",
+    "hold_violated_endpoints": 1,
+    "hold_slack_ns": -0.606,
+    "included_in_default_build": false,
+    "note": "Archived as historical hardware evidence; no timing exception, disabled checking or unsafe legacy build was introduced."
+  },
+  "note": "Packaging, independent ordinary build and offline validation only. No FPGA programming or live BLE scan/connect test was performed during organization."
+}

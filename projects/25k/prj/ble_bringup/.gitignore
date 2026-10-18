@@ -1,0 +1,5 @@
+generated/
+impl/
+builds/
+reports/*.vvp
+__pycache__/

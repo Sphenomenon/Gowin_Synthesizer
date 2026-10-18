@@ -1,0 +1,310 @@
+{
+  "passed": true,
+  "address": "34:75:63:46:D1:C5",
+  "packets": [
+    {
+      "elapsed_s": 2.719,
+      "raw": "425453540000000075d8000000010203040537d6",
+      "valid": true,
+      "sequence": 0,
+      "device_uptime_ms": 55413
+    },
+    {
+      "elapsed_s": 3.219,
+      "raw": "425453540100000069da0000000102030405d918",
+      "valid": true,
+      "sequence": 1,
+      "device_uptime_ms": 55913
+    },
+    {
+      "elapsed_s": 3.719,
+      "raw": "42545354020000005ddc00000001020304055ccf",
+      "valid": true,
+      "sequence": 2,
+      "device_uptime_ms": 56413
+    },
+    {
+      "elapsed_s": 4.266,
+      "raw": "425453540300000051de00000001020304052495",
+      "valid": true,
+      "sequence": 3,
+      "device_uptime_ms": 56913
+    },
+    {
+      "elapsed_s": 4.734,
+      "raw": "425453540400000045e00000000102030405f45b",
+      "valid": true,
+      "sequence": 4,
+      "device_uptime_ms": 57413
+    },
+    {
+      "elapsed_s": 5.219,
+      "raw": "425453540500000039e200000001020304050dde",
+      "valid": true,
+      "sequence": 5,
+      "device_uptime_ms": 57913
+    },
+    {
+      "elapsed_s": 5.766,
+      "raw": "42545354060000002de400000001020304058530",
+      "valid": true,
+      "sequence": 6,
+      "device_uptime_ms": 58413
+    },
+    {
+      "elapsed_s": 6.234,
+      "raw": "425453540700000021e60000000102030405fd6a",
+      "valid": true,
+      "sequence": 7,
+      "device_uptime_ms": 58913
+    },
+    {
+      "elapsed_s": 6.719,
+      "raw": "425453540800000015e800000001020304054982",
+      "valid": true,
+      "sequence": 8,
+      "device_uptime_ms": 59413
+    },
+    {
+      "elapsed_s": 7.328,
+      "raw": "425453540900000009ea0000000102030405a74c",
+      "valid": true,
+      "sequence": 9,
+      "device_uptime_ms": 59913
+    },
+    {
+      "elapsed_s": 7.734,
+      "raw": "425453540a000000fdeb0000000102030405a7bc",
+      "valid": true,
+      "sequence": 10,
+      "device_uptime_ms": 60413
+    },
+    {
+      "elapsed_s": 8.281,
+      "raw": "425453540b000000f1ed0000000102030405307a",
+      "valid": true,
+      "sequence": 11,
+      "device_uptime_ms": 60913
+    },
+    {
+      "elapsed_s": 8.766,
+      "raw": "425453540c000000e5ef0000000102030405f2f5",
+      "valid": true,
+      "sequence": 12,
+      "device_uptime_ms": 61413
+    },
+    {
+      "elapsed_s": 9.359,
+      "raw": "425453540d000000d9f10000000102030405ffe4",
+      "valid": true,
+      "sequence": 13,
+      "device_uptime_ms": 61913
+    },
+    {
+      "elapsed_s": 9.719,
+      "raw": "425453540e000000cdf300000001020304059896",
+      "valid": true,
+      "sequence": 14,
+      "device_uptime_ms": 62413
+    },
+    {
+      "elapsed_s": 10.266,
+      "raw": "425453540f000000c1f500000001020304050f50",
+      "valid": true,
+      "sequence": 15,
+      "device_uptime_ms": 62913
+    },
+    {
+      "elapsed_s": 10.734,
+      "raw": "4254535410000000b5f7000000010203040546b9",
+      "valid": true,
+      "sequence": 16,
+      "device_uptime_ms": 63413
+    },
+    {
+      "elapsed_s": 11.219,
+      "raw": "4254535411000000a9f90000000102030405b8c2",
+      "valid": true,
+      "sequence": 17,
+      "device_uptime_ms": 63913
+    },
+    {
+      "elapsed_s": 11.828,
+      "raw": "42545354120000009dfb0000000102030405d289",
+      "valid": true,
+      "sequence": 18,
+      "device_uptime_ms": 64413
+    },
+    {
+      "elapsed_s": 12.422,
+      "raw": "425453541300000091fd0000000102030405454f",
+      "valid": true,
+      "sequence": 19,
+      "device_uptime_ms": 64913
+    },
+    {
+      "elapsed_s": 12.719,
+      "raw": "425453541400000085ff000000010203040587c0",
+      "valid": true,
+      "sequence": 20,
+      "device_uptime_ms": 65413
+    },
+    {
+      "elapsed_s": 13.266,
+      "raw": "425453541500000079010100000102030405e047",
+      "valid": true,
+      "sequence": 21,
+      "device_uptime_ms": 65913
+    },
+    {
+      "elapsed_s": 13.734,
+      "raw": "42545354160000006d0301000001020304058735",
+      "valid": true,
+      "sequence": 22,
+      "device_uptime_ms": 66413
+    },
+    {
+      "elapsed_s": 14.344,
+      "raw": "42545354170000006105010000010203040510f3",
+      "valid": true,
+      "sequence": 23,
+      "device_uptime_ms": 66913
+    },
+    {
+      "elapsed_s": 14.766,
+      "raw": "425453541800000055070100000102030405b4ae",
+      "valid": true,
+      "sequence": 24,
+      "device_uptime_ms": 67413
+    },
+    {
+      "elapsed_s": 15.297,
+      "raw": "4254535419000000490901000001020304054ad5",
+      "valid": true,
+      "sequence": 25,
+      "device_uptime_ms": 67913
+    },
+    {
+      "elapsed_s": 15.719,
+      "raw": "425453541a0000003d0b01000001020304053aec",
+      "valid": true,
+      "sequence": 26,
+      "device_uptime_ms": 68413
+    },
+    {
+      "elapsed_s": 16.328,
+      "raw": "425453541b000000310d0100000102030405ad2a",
+      "valid": true,
+      "sequence": 27,
+      "device_uptime_ms": 68913
+    },
+    {
+      "elapsed_s": 16.734,
+      "raw": "425453541c000000250f01000001020304056fa5",
+      "valid": true,
+      "sequence": 28,
+      "device_uptime_ms": 69413
+    },
+    {
+      "elapsed_s": 17.281,
+      "raw": "425453541d0000001911010000010203040562b4",
+      "valid": true,
+      "sequence": 29,
+      "device_uptime_ms": 69913
+    },
+    {
+      "elapsed_s": 17.766,
+      "raw": "425453541e0000000d13010000010203040505c6",
+      "valid": true,
+      "sequence": 30,
+      "device_uptime_ms": 70413
+    },
+    {
+      "elapsed_s": 18.234,
+      "raw": "425453541f000000011501000001020304059200",
+      "valid": true,
+      "sequence": 31,
+      "device_uptime_ms": 70913
+    },
+    {
+      "elapsed_s": 18.719,
+      "raw": "4254535420000000f5160100000102030405037b",
+      "valid": true,
+      "sequence": 32,
+      "device_uptime_ms": 71413
+    },
+    {
+      "elapsed_s": 19.266,
+      "raw": "4254535421000000e9180100000102030405fd00",
+      "valid": true,
+      "sequence": 33,
+      "device_uptime_ms": 71913
+    },
+    {
+      "elapsed_s": 19.859,
+      "raw": "4254535422000000dd1a0100000102030405974b",
+      "valid": true,
+      "sequence": 34,
+      "device_uptime_ms": 72413
+    },
+    {
+      "elapsed_s": 20.219,
+      "raw": "4254535423000000d11c0100000102030405008d",
+      "valid": true,
+      "sequence": 35,
+      "device_uptime_ms": 72913
+    },
+    {
+      "elapsed_s": 20.828,
+      "raw": "4254535424000000c51e0100000102030405c202",
+      "valid": true,
+      "sequence": 36,
+      "device_uptime_ms": 73413
+    },
+    {
+      "elapsed_s": 21.234,
+      "raw": "4254535425000000b920010000010203040529c6",
+      "valid": true,
+      "sequence": 37,
+      "device_uptime_ms": 73913
+    },
+    {
+      "elapsed_s": 21.719,
+      "raw": "4254535426000000ad2201000001020304054eb4",
+      "valid": true,
+      "sequence": 38,
+      "device_uptime_ms": 74413
+    },
+    {
+      "elapsed_s": 22.266,
+      "raw": "4254535427000000a1240100000102030405d972",
+      "valid": true,
+      "sequence": 39,
+      "device_uptime_ms": 74913
+    }
+  ],
+  "error": null,
+  "device_name": "RTL8723-BLE",
+  "services": [
+    {
+      "uuid": "00001800-0000-1000-8000-00805f9b34fb",
+      "characteristics": [
+        "00002a00-0000-1000-8000-00805f9b34fb"
+      ]
+    },
+    {
+      "uuid": "00001801-0000-1000-8000-00805f9b34fb",
+      "characteristics": []
+    },
+    {
+      "uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
+      "characteristics": [
+        "0000fff1-0000-1000-8000-00805f9b34fb"
+      ]
+    }
+  ],
+  "connected_at_end": true,
+  "valid_count": 40,
+  "sequence_gaps": 0,
+  "elapsed_s": 22.484
+}

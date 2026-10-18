@@ -1,0 +1,377 @@
+{
+  "time": "2026-10-16T18:23:45.122076+08:00",
+  "ports": [
+    {
+      "name": "usb-drd0-port-hs@00100000",
+      "class": "AppleUSB20XHCIARMPort",
+      "locationID": "1048576",
+      "port_status": "4869",
+      "stats": {
+        "kPortStatConnectCount": 6,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@00120000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "1179648",
+      "port_status": "4353",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@00110000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "1114112",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@00130000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "1245184",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@00140000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "1310720",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "usb-drd0-port-ss@00200000",
+      "class": "AppleUSB30XHCIARMPort",
+      "locationID": "2097152",
+      "port_status": "5",
+      "stats": {
+        "kPortStatConnectCount": 2,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "usb-drd1-port-hs@01100000",
+      "class": "AppleUSB20XHCIARMPort",
+      "locationID": "17825792",
+      "port_status": "4869",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01150000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "18153472",
+      "port_status": "4865",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01110000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "17891328",
+      "port_status": "4864",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01111000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "17895424",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01112000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "17899520",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01113000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "17903616",
+      "port_status": "4864",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01113100",
+      "class": "AppleUSB20HubPort",
+      "locationID": "17903872",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01113200",
+      "class": "AppleUSB20HubPort",
+      "locationID": "17904128",
+      "port_status": "4352",
+      "stats": {
+        "kPortStatConnectCount": 13,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 8,
+        "kPortStatEnumerationFailureCount": 8
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01113300",
+      "class": "AppleUSB20HubPort",
+      "locationID": "17904384",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01113400",
+      "class": "AppleUSB20HubPort",
+      "locationID": "17904640",
+      "port_status": "4352",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01114000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "17907712",
+      "port_status": "4864",
+      "stats": {
+        "kPortStatConnectCount": 20,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01120000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "17956864",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01130000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "18022400",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort@01140000",
+      "class": "AppleUSB20HubPort",
+      "locationID": "18087936",
+      "port_status": "4864",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "usb-drd1-port-ss@01200000",
+      "class": "AppleUSB30XHCIARMPort",
+      "locationID": "18874368",
+      "port_status": "5381",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort@01210000",
+      "class": "AppleUSB30HubPort",
+      "locationID": "18939904",
+      "port_status": "5120",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort@01211000",
+      "class": "AppleUSB30HubPort",
+      "locationID": "18944000",
+      "port_status": "5120",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort@01212000",
+      "class": "AppleUSB30HubPort",
+      "locationID": "18948096",
+      "port_status": "5120",
+      "stats": {
+        "kPortStatConnectCount": 1,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort@01213000",
+      "class": "AppleUSB30HubPort",
+      "locationID": "18952192",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort@01214000",
+      "class": "AppleUSB30HubPort",
+      "locationID": "18956288",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort@01220000",
+      "class": "AppleUSB30HubPort",
+      "locationID": "19005440",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort@01230000",
+      "class": "AppleUSB30HubPort",
+      "locationID": "19070976",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort@01240000",
+      "class": "AppleUSB30HubPort",
+      "locationID": "19136512",
+      "port_status": "0",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "usb-drd3-port-hs@03100000",
+      "class": "AppleUSB20XHCIARMPort",
+      "locationID": "51380224",
+      "port_status": "5",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    },
+    {
+      "name": "usb-drd3-port-ss@03200000",
+      "class": "AppleUSB30XHCIARMPort",
+      "locationID": "52428800",
+      "port_status": "5",
+      "stats": {
+        "kPortStatConnectCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatEnumerationFailureCount": 0
+      }
+    }
+  ]
+}

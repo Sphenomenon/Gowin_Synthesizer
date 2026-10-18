@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "utc": "2026-10-15T17:38:31.850587+00:00",
+  "command": "sh prj/usb2_device/run_probe_sim.sh",
+  "phy": "USB3300",
+  "vendor_id": "0424",
+  "product_id": "0004",
+  "normal": {
+    "cycles": 258,
+    "register_operations": 17,
+    "reads": 12,
+    "writes": 5,
+    "checks": [
+      "NXT command stalls",
+      "NXT write-data stalls",
+      "RxCmd and RX-data preemption",
+      "turnaround on both DIR edges",
+      "exact safe write order",
+      "results stable after completion",
+      "post-completion RX monitoring"
+    ]
+  },
+  "failure_scenarios": {
+    "scratch_mismatch": "a9",
+    "product_id_mismatch": "84",
+    "no_command_ack": "21",
+    "short_read": "61",
+    "invalid_read_nxt": "61",
+    "preemption_limit": "41",
+    "write_data_preempted": "e8",
+    "config_mismatch": "cf",
+    "no_read_dir": "21",
+    "no_write_data_ack": "28",
+    "read_bus_never_released": "21"
+  },
+  "sha256": {
+    "rtl/usb2_ulpi_probe.v": "7227b885d3df0c819f09d154991271d0d23da4e5e857db6e2faa1e69d8b3a3fb",
+    "sim/tb_usb2_ulpi_probe.sv": "1961f90ef7e32983ba003de113c280bac44ff7233232ffc614c744f18f6d18a2",
+    "run_probe_sim.sh": "f946d9e769a8f9c92ea78bea99af2f87169f7970f9da2dbf3e71c20022edb173",
+    "PROBE.md": "b2156b6e0e416010ce2e465b31db5b76dd51c8f2f2ad29dbb0c5e159031a4285"
+  },
+  "limitations": [
+    "Register probe does not implement USB enumeration",
+    "Behavioral PHY model does not replace board measurements"
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "generated_at": "2026-10-17T11:02:45.646336+08:00",
+  "scope": "Offline current-source interface compatibility detection; no hardware access, no flashing",
+  "detection_checks_passed": true,
+  "fully_compatible": false,
+  "keyboard_to_synth_midi": "source-level and production-firmware/RTL-vector cross-test compatible at FS",
+  "synth_to_keyboard_guidance": "not implemented in target generic mode",
+  "synth_to_keyboard_panel": "not compatible; target PL adapter absent",
+  "synth_root": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/Dev/Gowin_Synthesizer",
+  "synth_git_head": "8c998bacc54d0a60c30a194a7ee54a37c2a838c0",
+  "synth_latest_record": {
+    "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+    "user_code": "0x00000085",
+    "flashed_at": "2026-10-12T02:19:10.174504+08:00",
+    "bitstream_sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444",
+    "timing_closed": false,
+    "coordination": "2026-10-12 same accepted full85 reprogrammed into config Flash; op54 and independent op66 PASS; 3 clean SRAM-erased Flash boots plus one USB recovery reload read85/status26020. Model partition0x600000 byte-verified before/after; UART model restored/E. Core smoke PASS; Push connection not observed after reload. Physical reconnection and power-cycle acceptance pending. Debugger/UART released."
+  },
+  "recorded_full85_build_exists": false,
+  "current_workstation_required_base": "results/song_guide_full83_20261006_203125_607466",
+  "current_workstation_required_base_exists": false,
+  "synth_source_sha256": {
+    "firmware.c": "33dd32a74266000618e72fa52b0a144ef3b77c2c037ba6b2ee6f3c82c8794746",
+    "sim/test_generic_midi.c": "132236386f6fdff60a3216e0886157cdbb537a65fd906b3906ff123f16dd2996",
+    "LATEST_WORKSTATION.json": "8afb5f65b343064d0600d242c994ba8f9eaf5e1faca3f4d7ef6603c365f91fa7",
+    "tools/build_current_workstation.py": "1599b85fc3a445965ccd9f16ad39c8514a6a85cc91f4ad8f11eba6f5cef67116",
+    "build.py": "d28d94141a4445361c6a9dd63cc3c271c8130f03b5bb8647079e953eb0e0cea6",
+    "rtl/push2_usb_a_control.sv": "e34a65b610f3ace1617307591e7b1218137082cc3f1b5b1d15c560a316c31c37",
+    "rtl/push2_screen_fifo_streamer.sv": "fecbb43b073d0d471fb5597613111e1909c81fdeacfb4e37d78818624799a265",
+    "rtl/display_data/push2_surface_pixels.sv": "9b30a33294b7781490b9f49b95ac7204929020a7d4a09b83bb7520e9376a29e2",
+    "rtl/audio/gw138k_event_workstation.sv": "05112fe5316a6b7c03a875676fd390a162b14e015d099909514e7c48ba7c4fa1",
+    "vendor/usb_host_fs_8fc3/firmware/minlibc.h": "6b69e720d83f1a50d1bb617116cab5a77be69f4bfacbc1bbca41c31889f13e86",
+    "vendor/usb_host_fs_8fc3/firmware/usb/usb_core.h": "6b121c052986df83a612db01ade9a7e8524fec80fd8bd718e8b5722c985900c6",
+    "vendor/usb_host_fs_8fc3/firmware/usb/usb_defs.h": "d492a33d57f93d939dac591b5c1f5a70ed71018b1f0310c9d3b51880a677a6f5",
+    "vendor/usb_host_fs_8fc3/firmware/usb/usb_hw.h": "3e72e7c5821e5d965c646be4114b6bb691749679ad4eea35ab7149743cf9af08"
+  },
+  "board_descriptor_sha256": "903a10c35bd904df76a55254fe3ea6e455a979e92f43ca3d78acc53f2d9fdf7c",
+  "board_descriptor_rom_sha256": "e022f0c6f52a97483914c1d2b6a30a4e51b73de8c51a68e8f94791dd848133ee",
+  "vectors_sha256": "0ea3cbe3fb406ad1d3f11a34084d661f7c24d441bd90cc69811f79a60bd45f73",
+  "runner_sha256": "f335e4b2087ce47b12d9aae1f039aff51d8f651f24618855b3898c1a16f15a0d",
+  "vector_generation": {
+    "result": "PASS",
+    "wire_packets": 2052,
+    "host_forwarded_packets": 1978,
+    "host_ignored_packets": 74,
+    "source_counts": {
+      "startup": 48,
+      "channel_configuration": 85,
+      "keys_A_P_on": 256,
+      "keys_A_P_off": 256,
+      "slider_CC1": 255,
+      "slider_mode_cleanup": 8,
+      "slider_CC11": 255,
+      "slider_pitchbend": 255,
+      "slider_pitch_release": 1,
+      "encoder_program": 127,
+      "panic": 48,
+      "codec_channel_voice": 448,
+      "codec_system": 10
+    },
+    "host_kind_counts": {
+      "-1": 74,
+      "0": 352,
+      "1": 288,
+      "2": 694,
+      "3": 208,
+      "4": 372,
+      "5": 64
+    },
+    "production_sources": {
+      "rtl/instrument/midi_performance.v": "35e54d95b86a002a86379392671ef6907dd444eaf519fbfe5c6d3f637425dce6",
+      "rtl/transport/usb_midi_codec.v": "e9e4cccfd7a0559fdf21aa75edccff3290a456d3431a976c506ab71090efd5e6"
+    },
+    "testbench_sha256": "cdba4377d66aae2fed6176fb23d9c55585b5b824536553a89e997317be6d6ac9",
+    "csv_sha256": "0ea3cbe3fb406ad1d3f11a34084d661f7c24d441bd90cc69811f79a60bd45f73",
+    "compile_command": [
+      "/opt/homebrew/bin/iverilog",
+      "-g2012",
+      "-s",
+      "tb_packet_vectors",
+      "-o",
+      "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/MIDI_KEYBOARD/compatibility/gowin_synthesizer/generated/packet_vectors.vvp",
+      "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/MIDI_KEYBOARD/compatibility/gowin_synthesizer/tb_packet_vectors.v",
+      "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/MIDI_KEYBOARD/rtl/instrument/midi_performance.v",
+      "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/MIDI_KEYBOARD/rtl/transport/usb_midi_codec.v"
+    ],
+    "simulation_command": [
+      "/opt/homebrew/bin/vvp",
+      "packet_vectors.vvp",
+      "+output=usb_midi_vectors_raw.csv"
+    ],
+    "simulation_working_directory": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/MIDI_KEYBOARD/compatibility/gowin_synthesizer/generated",
+    "scope": "Production GW25K performance/codec RTL; expected generic synth event contract. No hardware test."
+  },
+  "vector_runner_sha256": "10fb754808cbdb38734dab69806ab3546ba86687dc1caafecfe040d4aef2e1ca",
+  "board_build_input_binding": {
+    "count": 69,
+    "stable": true,
+    "mismatches": []
+  },
+  "board_regression_input_binding": {
+    "count": 149,
+    "stable": true,
+    "mismatches": []
+  },
+  "board_build_artifacts_hash_verified": true,
+  "board_build_artifacts": [
+    {
+      "path": "builds/20261017_040922_367174/impl/pnr/midi_keyboard.fs",
+      "sha256": "4a92abead4898f11b5347950cca35735ef196fee8893979e58360364fb16b3e5"
+    }
+  ],
+  "native_cross_test": {
+    "passed": true,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "vector_count": 2052,
+    "supported": 1978,
+    "ignored": 74,
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "production_push_header": "ffccaa88000000000000000000000000",
+    "output": "PASS cross vectors: 1978 supported, 74 intentionally ignored; direct, poll, duplicate PID, FS packet batching; generic OUT=0; HS descriptor rejected\nCAPTURE_PUSH_HEADER ffccaa88000000000000000000000000\nPASS generic firmware: both Push IDs, actual GW25K 124-byte FS descriptors, dynamic endpoint/MPS/alt, rejection bounds, 128x128 notes/velocity, channels/cables, no Push OUT, toggles/hotplug\n",
+    "method": "Production firmware included verbatim; USB/MMIO mocked. Upstream mock regression retained with actual FS config and additional RTL vectors. Enumeration transport/PHY are not emulated."
+  },
+  "panel_checks": {
+    "checks_passed": true,
+    "interfaces_compatible": false,
+    "actual_push_header_rejection": "invalid PL magic",
+    "pl_rgb565le": "00f8e0071f00",
+    "push_formula_pixels": "e70b07f8f8f3",
+    "pixel_check_method": "PL production Python; Push source-derived XOR formula",
+    "full_frame_tiles": 252,
+    "full_frame_pixels_bytes": 121552,
+    "full_frame_out_bytes_excluding_handshake_heartbeat_replies": 129640,
+    "fs_raw_payload_only_max_fps_upper_bound": 12.34039752533895,
+    "full_frame_60fps_pixel_bits_per_second": 58344960
+  },
+  "limitations": [
+    "USB enumeration transport/PHY, actual cabling, power and audio hardware are not exercised",
+    "Target recorded full85 image and current-workstation full83 base missing; findings cannot be bound to flashed 0x85",
+    "All channels/cables merged; realtime, SysEx and channel pressure not forwarded",
+    "Existing generic note path does not feed Push score-guide played_valid"
+  ]
+}

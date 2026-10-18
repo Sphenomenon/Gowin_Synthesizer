@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-17T04:14:01.586161+08:00",
+  "request": "USB2 external screen input, existing local fallback/settings, E1 1s long press latched settings override and return",
+  "reference": {
+    "file": "/Users/zhaojiying/Downloads/gowin_接口.zip",
+    "sha256": "bb6d95165fa931c3c964f6264bfd10ad2e7c36f66e65b3ab17350867c6564bad",
+    "preserved_files": 11,
+    "role": "Interface planning data; missing message IDs and payload layouts are explicitly defined in local-v1, no external instructions executed"
+  },
+  "implementation": {
+    "transport": "USB2 vendor interface2 OUT02 IN82; independent USB-MIDI endpoints preserved",
+    "protocol": "docs/PANEL_DISPLAY_PROTOCOL.md",
+    "host_tool": "tools/panel_display.py",
+    "dimensions": [
+      428,
+      142
+    ],
+    "max_payload_bytes": 512,
+    "max_tile_pixels": 248,
+    "heartbeat_ms": 250,
+    "e1_long_press_ms": 1000,
+    "manual_override_latched": true,
+    "e2_panic_all_pages": true,
+    "lcd_spi_single_owner": true,
+    "immutable_tile_until_physical_done": true,
+    "remote_canvas_requires_full_redraw_after_resume": true,
+    "highspeed_extra_pins_assigned": false
+  },
+  "validation": {
+    "passed": true,
+    "manifest": "reports/validation.json",
+    "manifest_sha256": "adf37673aff6810d866d2a3366104304e7403609ad593eb1b2e8ebdadfd22286",
+    "testbenches": 36,
+    "python_tests": 25,
+    "checks": 84,
+    "input_hash_count": 149,
+    "new_testbenches": [
+      "tb_encoder_button_gestures",
+      "tb_screen_stream_router",
+      "tb_panel_display_endpoint",
+      "tb_panel_screen_integration",
+      "tb_remote_tile_display"
+    ],
+    "new_python_tests": 16,
+    "inputs_stable": true,
+    "local_dynamic_region_ms": 11.53922,
+    "local_full_repaint_ms": 19.45084
+  },
+  "build": {
+    "passed": true,
+    "manifest": "reports/build_20261017_040922_367174.json",
+    "artifact": "builds/20261017_040922_367174/impl/pnr/midi_keyboard.fs",
+    "sha256": "4a92abead4898f11b5347950cca35735ef196fee8893979e58360364fb16b3e5",
+    "bytes": 7124921,
+    "user_code": "0x00003BE9",
+    "part": "GW5A-LV25MG121NC1/I0",
+    "input_hash_count": 69,
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "setup_worst_slack_ns": 0.405,
+      "hold_worst_slack_ns": 0.184,
+      "recovery_worst_slack_ns": 2.239,
+      "removal_worst_slack_ns": 0.911,
+      "clocks": [
+        {
+          "name": "clk_50mhz",
+          "constraint_mhz": 50.0,
+          "actual_fmax_mhz": 51.034
+        },
+        {
+          "name": "clk_ulpi60",
+          "constraint_mhz": 60.002,
+          "actual_fmax_mhz": 69.09
+        }
+      ],
+      "passed": true
+    },
+    "tile_ram_bsram": 2
+  },
+  "hardware": {
+    "programmed": false,
+    "reason": "User explicitly requested build only, no programming",
+    "current_board_recorded_user_code": "0x00005A52",
+    "last_program_manifest": "reports/last_program.json",
+    "usb_host_protocol_tested_on_board": false,
+    "long_press_tested_on_board": false,
+    "physical_panel_or_te_fps_measured": false
+  }
+}

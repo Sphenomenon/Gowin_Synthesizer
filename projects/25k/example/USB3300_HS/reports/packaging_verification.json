@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-10-16T21:20:38.362240+08:00",
+  "passed": true,
+  "checks": {
+    "relocated_program_check_only": true,
+    "relocated_capture_manifest_checked_without_hardware": true,
+    "relocated_vendor_generation": true,
+    "relocated_historical_gao_decode": true,
+    "new_build_check_only": true,
+    "tested_hardware_sources_unchanged": true,
+    "tested_bitstream_unchanged": true
+  },
+  "independent_build": {
+    "manifest": "reports/build_20261016_211949_606050.json",
+    "passed": true,
+    "artifact": "builds/20261016_211949_606050/impl/pnr/ao_0.fs",
+    "sha256": "9fced500648a5fb72db44221df13446d14ba0b1cd87bfb8bc7785bfdaeb5a6bf",
+    "user_code": "0x6e78",
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "hardware_programmed": false
+  },
+  "preserved_hardware_verified_build": {
+    "manifest": "reports/verified_build.json",
+    "sha256": "edaa6d5df4630249dc126de835f70e0d31b174a61cc4862fa82c9a4d8dead557"
+  },
+  "simulation": {
+    "boot_scenarios_passed": 23,
+    "control_packet_bfm_passed": true,
+    "echo_ordered_bytes": 6000,
+    "echo_bfm_passed": true,
+    "host_offline_tests_passed": 16
+  },
+  "note": "Packaging and build validation only. No FPGA programming or new live USB test was performed for this directory organization."
+}

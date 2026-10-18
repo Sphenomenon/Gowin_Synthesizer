@@ -1,0 +1,92 @@
+{
+  "recorded_at": "2026-10-17T01:05:49.481227+08:00",
+  "scope": "Continued diagnosis against the complete just_paly_FULL_20261017 archive and QT2160/NV3007 datasheets; fixes built and Flash verified, physical touch response pending observation.",
+  "pre_fix_reproduction": "touch_pre_fix_probe.json",
+  "reference_comparison": "touch_full_reference_compare.json",
+  "confirmed_defects": [
+    {
+      "name": "Shared CHANGE bypassed polling delay",
+      "before_change_low_sample_interval_ms": 0.96454,
+      "before_change_high_sample_interval_ms": 5.96452,
+      "fix": "16 ms minimum STATUS_BEFORE start spacing, including held-low CHANGE; 20 ms fallback start spacing; start-based counter saturation",
+      "verification": "tb_touch_scan_guard: low/high/frequent CHANGE, production parameter checks and controlled one-epoch spike"
+    },
+    {
+      "name": "First status RESET exemption hid configuration loss during CAL_WAIT",
+      "before": "ready=1 and no error after reg20 reverted to 0 and RESET asserted",
+      "fix": "Consume previous RESET before configuration in RESET_BASELINE; all subsequent sample RESET flags release inputs, set error07, and trigger full reconfiguration",
+      "verification": "tb_touch_scan_guard: startup RESET, CAL_WAIT RESET and reg20 loss, mode rewrite before ready"
+    }
+  ],
+  "slider_mode": {
+    "configured": true,
+    "board_device": "U2",
+    "register20": "0x28",
+    "register21": "0x00",
+    "electrodes": 8,
+    "note": "Do not swap board buses based on reference Zynq chip numbering."
+  },
+  "diagnostics": {
+    "row": "S2 R<ready> T<touched> RAW<position> POS<filtered position>",
+    "footer": "G<actual reg2> E<error> OV<sticky bit6> N<successful sample count>",
+    "note": "G02 CC can be normal. OV retained until FPGA reset; N wraps at 256. No per-ASIC-scan epoch identifier is available."
+  },
+  "display": {
+    "spi_hz": 12500000,
+    "frame_ms": 91.17448,
+    "snapshot_interval_ms": 93.1745,
+    "fps": 10.73255,
+    "previous_fps": 4.764676,
+    "scope": "RTL pin-level simulation with production gap correction; actual panel FPS unmeasured"
+  },
+  "validation": {
+    "passed": true,
+    "testbenches": 25,
+    "checks": 61,
+    "python_tests": 9,
+    "unchanged_inputs": true,
+    "manifest": "validation.json"
+  },
+  "build": {
+    "passed": true,
+    "artifact": {
+      "path": "builds/20261017_010056_274646/impl/pnr/midi_keyboard.fs",
+      "sha256": "4e8a93557693e76a241cdf70a23e5a1dcc5afd2f6ff743eb8fe22ca49f2812a3"
+    },
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "setup_worst_slack_ns": 0.934,
+      "hold_worst_slack_ns": 0.215,
+      "recovery_worst_slack_ns": 5.585,
+      "removal_worst_slack_ns": 1.068,
+      "clocks": [
+        {
+          "name": "clk_50mhz",
+          "constraint_mhz": 50.0,
+          "actual_fmax_mhz": 59.293
+        },
+        {
+          "name": "clk_ulpi60",
+          "constraint_mhz": 60.002,
+          "actual_fmax_mhz": 63.564
+        }
+      ],
+      "passed": true
+    },
+    "manifest": "last_build.json"
+  },
+  "programming": {
+    "user_code": "0x0000856D",
+    "flash_program_and_verify": true,
+    "flash_reload": true,
+    "status_code": "0x70022020",
+    "usb_verification_passed": false,
+    "summary": "reports/hardware_20261017/flash_20261017_010237_271287/summary.json"
+  },
+  "limits": [
+    "No physical touch noise/latency, active BLE MIDI session, LED direction or panel FPS measurement.",
+    "Minimum nominal scan spacing does not prove atomic signal/reference data or distinct ASIC scans when acquisition slows.",
+    "USB data device is not currently detected; connection check requested from user."
+  ]
+}

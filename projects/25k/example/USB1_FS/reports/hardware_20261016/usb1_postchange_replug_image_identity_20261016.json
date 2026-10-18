@@ -1,0 +1,10 @@
+{
+  "time_context": "After the user-confirmed physical USB1 replug and before the second SRAM load (2026-10-16 approximately 21:36 Asia/Shanghai).",
+  "operation": "Read User Code (73)",
+  "observed_user_code": "0x0000944E",
+  "previous_test_user_code": "0x00004322",
+  "result": "SRAM USB1 test image no longer loaded",
+  "host_report": "usb1_postchange_replug_devices_20261016_2137.json",
+  "invalid_capture": "usb1_postchange_replug_status_20261016_2137_decoded.json",
+  "invalid_capture_reason": "All-zero GAO output belongs to an incompatible loaded image; it is not valid USB1 line-state evidence."
+}

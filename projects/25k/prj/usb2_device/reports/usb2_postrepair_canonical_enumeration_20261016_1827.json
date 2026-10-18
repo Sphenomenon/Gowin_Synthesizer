@@ -1,0 +1,83 @@
+{
+  "started_at": "2026-10-16T18:26:22.696330+08:00",
+  "passed": true,
+  "mode": "enumeration_only",
+  "target": {
+    "vid": "FB9A",
+    "pid": "FB9A",
+    "product": "FPGA-USB-Serial"
+  },
+  "descriptor_scope": "registry descriptor fields only; no raw GET_DESCRIPTOR transfer is issued",
+  "query_attempts": [
+    {
+      "command": [
+        "/usr/sbin/ioreg",
+        "-p",
+        "IOService",
+        "-r",
+        "-c",
+        "IOUSBHostDevice",
+        "-l",
+        "-w",
+        "0",
+        "-a"
+      ],
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "provider": "ioreg_plist",
+  "devices": [
+    {
+      "registry_id": 4295057606,
+      "registry_name": "FPGA-USB-Serial",
+      "properties": {
+        "idVendor": 64410,
+        "idProduct": 64410,
+        "bcdUSB": 272,
+        "bcdDevice": 256,
+        "bDeviceClass": 2,
+        "bDeviceSubClass": 0,
+        "bDeviceProtocol": 0,
+        "bMaxPacketSize0": 32,
+        "bNumConfigurations": 1,
+        "USB Product Name": "FPGA_USB_Serial",
+        "kUSBProductString": "FPGA-USB-Serial",
+        "USB Vendor Name": "github.com/WangXuan95",
+        "USB Address": 12,
+        "locationID": 17904128,
+        "USBSpeed": 1,
+        "kUSBCurrentConfiguration": 1
+      },
+      "interfaces": [
+        {
+          "bInterfaceNumber": 0,
+          "bAlternateSetting": 0,
+          "bInterfaceClass": 2,
+          "bInterfaceSubClass": 2,
+          "bInterfaceProtocol": 1,
+          "bNumEndpoints": 1
+        },
+        {
+          "bInterfaceNumber": 1,
+          "bAlternateSetting": 0,
+          "bInterfaceClass": 10,
+          "bInterfaceSubClass": 0,
+          "bInterfaceProtocol": 0,
+          "bNumEndpoints": 2
+        }
+      ],
+      "serial_ports": [
+        {
+          "callout": "/dev/cu.usbmodem1113201",
+          "dialin": "/dev/tty.usbmodem1113201",
+          "registry_id": 4295057622
+        }
+      ],
+      "descriptor_properties": {}
+    }
+  ],
+  "matching_devices": 1,
+  "status": "unique_target_enumerated",
+  "finished_at": "2026-10-16T18:26:22.805317+08:00"
+}

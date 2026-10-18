@@ -1,0 +1,29 @@
+{
+  "started_at": "2026-10-16T01:35:36.798046+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/build_gao.tcl",
+  "stage_directory": "/private/tmp/gw25k-build-2b21ca7u",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/build_20261016_013536_765049_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/build_20261016_013536_765049_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/builds/20261016_013536_765049/impl/pnr/ao_0.fs",
+      "sha256": "dca226db7875c60a22391dffad275f4e33baa01d2d73aaf24a414296ffac39fb"
+    }
+  ],
+  "gao": [
+    {
+      "definition": "/private/tmp/gw25k-build-2b21ca7u/prj/usb2_device/debug/usb2_status.gao",
+      "sha256": "da56f7dc47d0ed38a715d79e45453ae1f4e305a09b2c4753a150b4d404099fa1"
+    }
+  ],
+  "finished_at": "2026-10-16T01:35:45.712459+08:00"
+}

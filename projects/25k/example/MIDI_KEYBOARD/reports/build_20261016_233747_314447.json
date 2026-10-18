@@ -1,0 +1,14 @@
+{
+  "started_at": "2026-10-16T23:37:47.334000+08:00",
+  "script": "build.tcl",
+  "stage_directory": "/private/tmp/gw25k-build-fa0vet8d",
+  "passed": false,
+  "phases": {
+    "syn": {
+      "returncode": 1,
+      "log": "reports/build_20261016_233747_314447_syn.log"
+    }
+  },
+  "artifacts": [],
+  "error": "syn failed; existing successful artifacts were preserved."
+}

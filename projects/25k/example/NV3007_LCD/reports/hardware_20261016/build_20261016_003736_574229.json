@@ -1,0 +1,23 @@
+{
+  "started_at": "2026-10-16T00:37:36.587243+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/lcd_bringup/build.tcl",
+  "stage_directory": "/private/tmp/gw25k-build-z_4qdrst",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/lcd_bringup/reports/build_20261016_003736_574229_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/lcd_bringup/reports/build_20261016_003736_574229_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/lcd_bringup/builds/20261016_003736_574229/impl/pnr/lcd_bringup.fs",
+      "sha256": "54577ddec2d4a9d1003c77a43fa9b199a1ff7f91b2b72ae251e17784d5fa7923"
+    }
+  ],
+  "finished_at": "2026-10-16T00:37:43.835522+08:00"
+}

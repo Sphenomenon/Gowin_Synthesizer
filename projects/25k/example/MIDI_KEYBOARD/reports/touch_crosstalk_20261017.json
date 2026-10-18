@@ -1,0 +1,132 @@
+{
+  "recorded_at": "2026-10-17T03:04:37.822476+08:00",
+  "status": "stopped_by_user_display_F054_restored",
+  "physical_root_cause_confirmed": false,
+  "observations": [
+    {
+      "source": "user",
+      "detail": "Only moving slider causes stable unintended G/H MIDI notes"
+    },
+    {
+      "source": "user",
+      "detail": "Still occurs with LAMP=0 and both LED banks off"
+    }
+  ],
+  "mapping": {
+    "G": {
+      "raw_channel": 9,
+      "x": 1,
+      "y": 1,
+      "status_register": 4,
+      "status_bit": 1,
+      "signal_register": 118,
+      "reference_register": 150
+    },
+    "H": {
+      "raw_channel": 15,
+      "x": 7,
+      "y": 1,
+      "status_register": 4,
+      "status_bit": 7,
+      "signal_register": 130,
+      "reference_register": 162
+    }
+  },
+  "software_audit": {
+    "u1_u2_independent_buses": true,
+    "slider_bitmap_unused": true,
+    "no_direct_slider_to_note_path": true,
+    "key_press_requires_u1_before_after_and_delta": true
+  },
+  "tests": {
+    "bus_isolation": {
+      "passed": true,
+      "quiet_key_samples": 38,
+      "held_gh_samples": 17,
+      "slider_samples": 57
+    },
+    "diagnostics_pause": {
+      "passed": true,
+      "coherent_frames": 12,
+      "verified_pause_resume_cycles": 3,
+      "injected_failures": [
+        "LP write NACK",
+        "LP readback mismatch"
+      ]
+    },
+    "vendor_bulk_read_preflight": {
+      "passed": true,
+      "existing_firmware_usercode": "0x0000F054",
+      "status_flags": 101
+    }
+  },
+  "diagnostic_build": {
+    "manifest": "reports/build_20261017_030218_654822.json",
+    "artifact": {
+      "path": "builds/20261017_030218_654822/impl/pnr/midi_keyboard.fs",
+      "sha256": "94a588b5135d231ff50f0b045f8ac67d0fe25025b2c6ffc1d4a77319dd3bc1d2"
+    },
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "setup_worst_slack_ns": 1.334,
+      "hold_worst_slack_ns": 0.181,
+      "recovery_worst_slack_ns": 1.344,
+      "removal_worst_slack_ns": 0.965,
+      "clocks": [
+        {
+          "name": "clk_50mhz",
+          "constraint_mhz": 50.0,
+          "actual_fmax_mhz": 58.448
+        },
+        {
+          "name": "clk_ulpi60",
+          "constraint_mhz": 60.002,
+          "actual_fmax_mhz": 65.225
+        }
+      ],
+      "passed": true
+    },
+    "usercode": "0x0000B301"
+  },
+  "pending": [],
+  "regression": {
+    "passed": true,
+    "testbenches": 29,
+    "checks": 69,
+    "manifest": "archive/touch_diagnostics_0x0000B301/validation.json"
+  },
+  "flash": {
+    "summary": "reports/hardware_20261017/flash_20261017_030504_479065/summary.json",
+    "passed": true,
+    "artifact": "builds/20261017_030218_654822/impl/pnr/midi_keyboard.fs",
+    "sha256": "94a588b5135d231ff50f0b045f8ac67d0fe25025b2c6ffc1d4a77319dd3bc1d2",
+    "user_code": "0x0000B301",
+    "status": "0x70022020"
+  },
+  "baseline_status": {
+    "g_signal": 119,
+    "g_reference": 120,
+    "g_delta": 1,
+    "h_signal": 118,
+    "h_reference": 119,
+    "h_delta": 1,
+    "raw_before": 0,
+    "raw_after": 0,
+    "accepted": 0,
+    "flags": 3,
+    "word6": 1030,
+    "note": "Single real hardware observation before instructed sweep; not touch acceptance"
+  },
+  "stopped_at": "2026-10-17T03:10:49.089385+08:00",
+  "user_request": "还原展示不管该问题",
+  "archived_diagnostics": "archive/touch_diagnostics_0x0000B301",
+  "restored_at": "2026-10-17T03:14:21.147825+08:00",
+  "display_restoration": {
+    "summary": "reports/hardware_20261017/flash_20261017_031320_034194/summary.json",
+    "passed": true,
+    "user_code": "0x0000F054",
+    "status": "0x70022020",
+    "artifact": "builds/20261017_015947_664453/impl/pnr/midi_keyboard.fs"
+  }
+}

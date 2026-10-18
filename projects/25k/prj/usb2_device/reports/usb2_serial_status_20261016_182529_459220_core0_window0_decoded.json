@@ -1,0 +1,4025 @@
+{
+  "source": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/usb2_serial_status_20261016_182529_459220_core0_window0.csv",
+  "image": "serial",
+  "sample_count": 128,
+  "sample_clock_hz": 50000000,
+  "heartbeat50_alternates_each_sample": true,
+  "page_runs": [
+    {
+      "page": 0,
+      "payload_hex": "04240004",
+      "payload": {
+        "vendor_id": 1060,
+        "product_id": 4
+      },
+      "first_sample": 0,
+      "last_sample": 3,
+      "sample_count": 4
+    },
+    {
+      "page": 1,
+      "payload_hex": "450A00D2",
+      "payload": {
+        "function_control_written": 69,
+        "interface_control_written": 10,
+        "otg_control_written": 0,
+        "line_flags_byte": 210,
+        "line_flags": {
+          "attach_request": true,
+          "init_done": true,
+          "usb_oe": false,
+          "dp_rx": true,
+          "dn_rx": false,
+          "ulpi_data2": false,
+          "ulpi_data1": true,
+          "ulpi_data0": false
+        }
+      },
+      "first_sample": 4,
+      "last_sample": 11,
+      "sample_count": 8
+    },
+    {
+      "page": 2,
+      "payload_hex": "145E0738",
+      "payload": {
+        "initialization_stage": 20,
+        "snapshot_flags_byte": 94,
+        "pre_serial_phy_status_packed_low4": 5,
+        "pre_serial_phy_line_state": 1,
+        "pre_serial_session_valid": true,
+        "pre_serial_session_end": false,
+        "init_done": true,
+        "usb_reset_released": true,
+        "received_seen": true,
+        "error_or_overflow": false,
+        "received_count16": 1848
+      },
+      "first_sample": 12,
+      "last_sample": 19,
+      "sample_count": 8
+    },
+    {
+      "page": 3,
+      "payload_hex": "07380000",
+      "payload": {
+        "echo_queued_count16": 1848,
+        "overflow_count16": 0
+      },
+      "first_sample": 20,
+      "last_sample": 27,
+      "sample_count": 8
+    },
+    {
+      "page": 0,
+      "payload_hex": "04240004",
+      "payload": {
+        "vendor_id": 1060,
+        "product_id": 4
+      },
+      "first_sample": 28,
+      "last_sample": 35,
+      "sample_count": 8
+    },
+    {
+      "page": 1,
+      "payload_hex": "450A00D2",
+      "payload": {
+        "function_control_written": 69,
+        "interface_control_written": 10,
+        "otg_control_written": 0,
+        "line_flags_byte": 210,
+        "line_flags": {
+          "attach_request": true,
+          "init_done": true,
+          "usb_oe": false,
+          "dp_rx": true,
+          "dn_rx": false,
+          "ulpi_data2": false,
+          "ulpi_data1": true,
+          "ulpi_data0": false
+        }
+      },
+      "first_sample": 36,
+      "last_sample": 43,
+      "sample_count": 8
+    },
+    {
+      "page": 2,
+      "payload_hex": "145E0738",
+      "payload": {
+        "initialization_stage": 20,
+        "snapshot_flags_byte": 94,
+        "pre_serial_phy_status_packed_low4": 5,
+        "pre_serial_phy_line_state": 1,
+        "pre_serial_session_valid": true,
+        "pre_serial_session_end": false,
+        "init_done": true,
+        "usb_reset_released": true,
+        "received_seen": true,
+        "error_or_overflow": false,
+        "received_count16": 1848
+      },
+      "first_sample": 44,
+      "last_sample": 51,
+      "sample_count": 8
+    },
+    {
+      "page": 3,
+      "payload_hex": "07380000",
+      "payload": {
+        "echo_queued_count16": 1848,
+        "overflow_count16": 0
+      },
+      "first_sample": 52,
+      "last_sample": 59,
+      "sample_count": 8
+    },
+    {
+      "page": 0,
+      "payload_hex": "04240004",
+      "payload": {
+        "vendor_id": 1060,
+        "product_id": 4
+      },
+      "first_sample": 60,
+      "last_sample": 67,
+      "sample_count": 8
+    },
+    {
+      "page": 1,
+      "payload_hex": "450A00D2",
+      "payload": {
+        "function_control_written": 69,
+        "interface_control_written": 10,
+        "otg_control_written": 0,
+        "line_flags_byte": 210,
+        "line_flags": {
+          "attach_request": true,
+          "init_done": true,
+          "usb_oe": false,
+          "dp_rx": true,
+          "dn_rx": false,
+          "ulpi_data2": false,
+          "ulpi_data1": true,
+          "ulpi_data0": false
+        }
+      },
+      "first_sample": 68,
+      "last_sample": 75,
+      "sample_count": 8
+    },
+    {
+      "page": 2,
+      "payload_hex": "145E0738",
+      "payload": {
+        "initialization_stage": 20,
+        "snapshot_flags_byte": 94,
+        "pre_serial_phy_status_packed_low4": 5,
+        "pre_serial_phy_line_state": 1,
+        "pre_serial_session_valid": true,
+        "pre_serial_session_end": false,
+        "init_done": true,
+        "usb_reset_released": true,
+        "received_seen": true,
+        "error_or_overflow": false,
+        "received_count16": 1848
+      },
+      "first_sample": 76,
+      "last_sample": 83,
+      "sample_count": 8
+    },
+    {
+      "page": 3,
+      "payload_hex": "07380000",
+      "payload": {
+        "echo_queued_count16": 1848,
+        "overflow_count16": 0
+      },
+      "first_sample": 84,
+      "last_sample": 91,
+      "sample_count": 8
+    },
+    {
+      "page": 0,
+      "payload_hex": "04240004",
+      "payload": {
+        "vendor_id": 1060,
+        "product_id": 4
+      },
+      "first_sample": 92,
+      "last_sample": 99,
+      "sample_count": 8
+    },
+    {
+      "page": 1,
+      "payload_hex": "450A00D2",
+      "payload": {
+        "function_control_written": 69,
+        "interface_control_written": 10,
+        "otg_control_written": 0,
+        "line_flags_byte": 210,
+        "line_flags": {
+          "attach_request": true,
+          "init_done": true,
+          "usb_oe": false,
+          "dp_rx": true,
+          "dn_rx": false,
+          "ulpi_data2": false,
+          "ulpi_data1": true,
+          "ulpi_data0": false
+        }
+      },
+      "first_sample": 100,
+      "last_sample": 107,
+      "sample_count": 8
+    },
+    {
+      "page": 2,
+      "payload_hex": "145E0738",
+      "payload": {
+        "initialization_stage": 20,
+        "snapshot_flags_byte": 94,
+        "pre_serial_phy_status_packed_low4": 5,
+        "pre_serial_phy_line_state": 1,
+        "pre_serial_session_valid": true,
+        "pre_serial_session_end": false,
+        "init_done": true,
+        "usb_reset_released": true,
+        "received_seen": true,
+        "error_or_overflow": false,
+        "received_count16": 1848
+      },
+      "first_sample": 108,
+      "last_sample": 115,
+      "sample_count": 8
+    },
+    {
+      "page": 3,
+      "payload_hex": "07380000",
+      "payload": {
+        "echo_queued_count16": 1848,
+        "overflow_count16": 0
+      },
+      "first_sample": 116,
+      "last_sample": 123,
+      "sample_count": 8
+    },
+    {
+      "page": 0,
+      "payload_hex": "04240004",
+      "payload": {
+        "vendor_id": 1060,
+        "product_id": 4
+      },
+      "first_sample": 124,
+      "last_sample": 127,
+      "sample_count": 4
+    }
+  ],
+  "complete_page_cycles": [
+    {
+      "first_sample": 28,
+      "last_sample": 59,
+      "page_payloads_hex": {
+        "0": "04240004",
+        "1": "450A00D2",
+        "2": "145E0738",
+        "3": "07380000"
+      },
+      "fields": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "function_control_written": 69,
+        "interface_control_written": 10,
+        "otg_control_written": 0,
+        "line_flags_byte": 210,
+        "line_flags": {
+          "attach_request": true,
+          "init_done": true,
+          "usb_oe": false,
+          "dp_rx": true,
+          "dn_rx": false,
+          "ulpi_data2": false,
+          "ulpi_data1": true,
+          "ulpi_data0": false
+        },
+        "initialization_stage": 20,
+        "snapshot_flags_byte": 94,
+        "pre_serial_phy_status_packed_low4": 5,
+        "pre_serial_phy_line_state": 1,
+        "pre_serial_session_valid": true,
+        "pre_serial_session_end": false,
+        "init_done": true,
+        "usb_reset_released": true,
+        "received_seen": true,
+        "error_or_overflow": false,
+        "received_count16": 1848,
+        "echo_queued_count16": 1848,
+        "overflow_count16": 0
+      }
+    },
+    {
+      "first_sample": 60,
+      "last_sample": 91,
+      "page_payloads_hex": {
+        "0": "04240004",
+        "1": "450A00D2",
+        "2": "145E0738",
+        "3": "07380000"
+      },
+      "fields": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "function_control_written": 69,
+        "interface_control_written": 10,
+        "otg_control_written": 0,
+        "line_flags_byte": 210,
+        "line_flags": {
+          "attach_request": true,
+          "init_done": true,
+          "usb_oe": false,
+          "dp_rx": true,
+          "dn_rx": false,
+          "ulpi_data2": false,
+          "ulpi_data1": true,
+          "ulpi_data0": false
+        },
+        "initialization_stage": 20,
+        "snapshot_flags_byte": 94,
+        "pre_serial_phy_status_packed_low4": 5,
+        "pre_serial_phy_line_state": 1,
+        "pre_serial_session_valid": true,
+        "pre_serial_session_end": false,
+        "init_done": true,
+        "usb_reset_released": true,
+        "received_seen": true,
+        "error_or_overflow": false,
+        "received_count16": 1848,
+        "echo_queued_count16": 1848,
+        "overflow_count16": 0
+      }
+    },
+    {
+      "first_sample": 92,
+      "last_sample": 123,
+      "page_payloads_hex": {
+        "0": "04240004",
+        "1": "450A00D2",
+        "2": "145E0738",
+        "3": "07380000"
+      },
+      "fields": {
+        "vendor_id": 1060,
+        "product_id": 4,
+        "function_control_written": 69,
+        "interface_control_written": 10,
+        "otg_control_written": 0,
+        "line_flags_byte": 210,
+        "line_flags": {
+          "attach_request": true,
+          "init_done": true,
+          "usb_oe": false,
+          "dp_rx": true,
+          "dn_rx": false,
+          "ulpi_data2": false,
+          "ulpi_data1": true,
+          "ulpi_data0": false
+        },
+        "initialization_stage": 20,
+        "snapshot_flags_byte": 94,
+        "pre_serial_phy_status_packed_low4": 5,
+        "pre_serial_phy_line_state": 1,
+        "pre_serial_session_valid": true,
+        "pre_serial_session_end": false,
+        "init_done": true,
+        "usb_reset_released": true,
+        "received_seen": true,
+        "error_or_overflow": false,
+        "received_count16": 1848,
+        "echo_queued_count16": 1848,
+        "overflow_count16": 0
+      }
+    }
+  ],
+  "image_note": "Control values are the initialization sequence's successfully written shadow values, not PHY register readbacks. Serial flags describe initialization/USB reset/reception/error, not PHY probe ID/scratch tests. The pre-serial packed PHY status is {SessionEnd, SessionValid, LineState[1:0]}, not the raw Debug register. After a 100 us settling delay following Function Control 0x45 readback, synchronous ULPI reads capture Debug 0x15 LineState[1:0] and then Interrupt Status 0x13 SessionEnd/SessionValid before entering serial mode. These sequential snapshots alone do not identify a connection fault.",
+  "note": "CSV time labels are retained as exported; they do not establish USB bit timing. CSV contains no GAO ID; select the image layout matching the capture record. Each complete 0,1,2,3 cycle contains eight samples per page and is coherent because the observer commits its 128-bit mailbox only before page 0. There is no snapshot sequence or freshness flag: a capture need not contain a newly acknowledged snapshot, and repeated page cycles may show the same previous snapshot. Before any 60 MHz acknowledgement, payload pages are zero. The clock count is a separate 10 ms measurement; zero persists after a full stopped-clock window. This is not a complete ULPI or USB protocol trace.",
+  "samples": [
+    {
+      "sample": 0,
+      "export_time_label": "0",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 1,
+      "export_time_label": "1",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 2,
+      "export_time_label": "2",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 3,
+      "export_time_label": "3",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 4,
+      "export_time_label": "4",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 5,
+      "export_time_label": "5",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 6,
+      "export_time_label": "6",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 7,
+      "export_time_label": "7",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 8,
+      "export_time_label": "8",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 9,
+      "export_time_label": "9",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 10,
+      "export_time_label": "10",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 11,
+      "export_time_label": "11",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 12,
+      "export_time_label": "12",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 13,
+      "export_time_label": "13",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 14,
+      "export_time_label": "14",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 15,
+      "export_time_label": "15",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 16,
+      "export_time_label": "16",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 17,
+      "export_time_label": "17",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 18,
+      "export_time_label": "18",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 19,
+      "export_time_label": "19",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 20,
+      "export_time_label": "20",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 21,
+      "export_time_label": "21",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 22,
+      "export_time_label": "22",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 23,
+      "export_time_label": "23",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 24,
+      "export_time_label": "24",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 25,
+      "export_time_label": "25",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 26,
+      "export_time_label": "26",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 27,
+      "export_time_label": "27",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 28,
+      "export_time_label": "28",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 29,
+      "export_time_label": "29",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 30,
+      "export_time_label": "30",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 31,
+      "export_time_label": "31",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 32,
+      "export_time_label": "32",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 33,
+      "export_time_label": "33",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 34,
+      "export_time_label": "34",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 35,
+      "export_time_label": "35",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 36,
+      "export_time_label": "36",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 37,
+      "export_time_label": "37",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 38,
+      "export_time_label": "38",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 39,
+      "export_time_label": "39",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 40,
+      "export_time_label": "40",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 41,
+      "export_time_label": "41",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 42,
+      "export_time_label": "42",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 43,
+      "export_time_label": "43",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 44,
+      "export_time_label": "44",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 45,
+      "export_time_label": "45",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 46,
+      "export_time_label": "46",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 47,
+      "export_time_label": "47",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 48,
+      "export_time_label": "48",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 49,
+      "export_time_label": "49",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 50,
+      "export_time_label": "50",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 51,
+      "export_time_label": "51",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 52,
+      "export_time_label": "52",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 53,
+      "export_time_label": "53",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 54,
+      "export_time_label": "54",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 55,
+      "export_time_label": "55",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 56,
+      "export_time_label": "56",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 57,
+      "export_time_label": "57",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 58,
+      "export_time_label": "58",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 59,
+      "export_time_label": "59",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 60,
+      "export_time_label": "60",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 61,
+      "export_time_label": "61",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 62,
+      "export_time_label": "62",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 63,
+      "export_time_label": "63",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 64,
+      "export_time_label": "64",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 65,
+      "export_time_label": "65",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 66,
+      "export_time_label": "66",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 67,
+      "export_time_label": "67",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 68,
+      "export_time_label": "68",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 69,
+      "export_time_label": "69",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 70,
+      "export_time_label": "70",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 71,
+      "export_time_label": "71",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 72,
+      "export_time_label": "72",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 73,
+      "export_time_label": "73",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 74,
+      "export_time_label": "74",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 75,
+      "export_time_label": "75",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 76,
+      "export_time_label": "76",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 77,
+      "export_time_label": "77",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 78,
+      "export_time_label": "78",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 79,
+      "export_time_label": "79",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 80,
+      "export_time_label": "80",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 81,
+      "export_time_label": "81",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 82,
+      "export_time_label": "82",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 83,
+      "export_time_label": "83",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 84,
+      "export_time_label": "84",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 85,
+      "export_time_label": "85",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 86,
+      "export_time_label": "86",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 87,
+      "export_time_label": "87",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 88,
+      "export_time_label": "88",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 89,
+      "export_time_label": "89",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 90,
+      "export_time_label": "90",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 91,
+      "export_time_label": "91",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 92,
+      "export_time_label": "92",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 93,
+      "export_time_label": "93",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 94,
+      "export_time_label": "94",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 95,
+      "export_time_label": "95",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 96,
+      "export_time_label": "96",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 97,
+      "export_time_label": "97",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 98,
+      "export_time_label": "98",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 99,
+      "export_time_label": "99",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 100,
+      "export_time_label": "100",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 101,
+      "export_time_label": "101",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 102,
+      "export_time_label": "102",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 103,
+      "export_time_label": "103",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 104,
+      "export_time_label": "104",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 105,
+      "export_time_label": "105",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 106,
+      "export_time_label": "106",
+      "status": {
+        "raw_hex": "450A00D2927EE4EA",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 107,
+      "export_time_label": "107",
+      "status": {
+        "raw_hex": "450A00D2927EE4EB",
+        "page": 1,
+        "payload_hex": "450A00D2",
+        "payload": {
+          "function_control_written": 69,
+          "interface_control_written": 10,
+          "otg_control_written": 0,
+          "line_flags_byte": 210,
+          "line_flags": {
+            "attach_request": true,
+            "init_done": true,
+            "usb_oe": false,
+            "dp_rx": true,
+            "dn_rx": false,
+            "ulpi_data2": false,
+            "ulpi_data1": true,
+            "ulpi_data0": false
+          }
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 108,
+      "export_time_label": "108",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 109,
+      "export_time_label": "109",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 110,
+      "export_time_label": "110",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 111,
+      "export_time_label": "111",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 112,
+      "export_time_label": "112",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 113,
+      "export_time_label": "113",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 114,
+      "export_time_label": "114",
+      "status": {
+        "raw_hex": "145E0738927EE4EC",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 115,
+      "export_time_label": "115",
+      "status": {
+        "raw_hex": "145E0738927EE4ED",
+        "page": 2,
+        "payload_hex": "145E0738",
+        "payload": {
+          "initialization_stage": 20,
+          "snapshot_flags_byte": 94,
+          "pre_serial_phy_status_packed_low4": 5,
+          "pre_serial_phy_line_state": 1,
+          "pre_serial_session_valid": true,
+          "pre_serial_session_end": false,
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "received_count16": 1848
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 116,
+      "export_time_label": "116",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 117,
+      "export_time_label": "117",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 118,
+      "export_time_label": "118",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 119,
+      "export_time_label": "119",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 120,
+      "export_time_label": "120",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 121,
+      "export_time_label": "121",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 122,
+      "export_time_label": "122",
+      "status": {
+        "raw_hex": "07380000927EE4EE",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 123,
+      "export_time_label": "123",
+      "status": {
+        "raw_hex": "07380000927EE4EF",
+        "page": 3,
+        "payload_hex": "07380000",
+        "payload": {
+          "echo_queued_count16": 1848,
+          "overflow_count16": 0
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 124,
+      "export_time_label": "124",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 125,
+      "export_time_label": "125",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 126,
+      "export_time_label": "126",
+      "status": {
+        "raw_hex": "04240004927EE4E8",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 127,
+      "export_time_label": "127",
+      "status": {
+        "raw_hex": "04240004927EE4E9",
+        "page": 0,
+        "payload_hex": "04240004",
+        "payload": {
+          "vendor_id": 1060,
+          "product_id": 4
+        },
+        "phy_clock_count_10ms": 600046,
+        "init_stage_low4": 4,
+        "flags": {
+          "init_done": true,
+          "usb_reset_released": true,
+          "received_seen": true,
+          "error_or_overflow": false,
+          "clock_alive": true,
+          "heartbeat50_fast": true
+        }
+      }
+    }
+  ]
+}

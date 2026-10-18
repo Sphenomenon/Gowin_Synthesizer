@@ -1,0 +1,124 @@
+# Candidate only: Arduino_GFX nv3007_279_init_operations, fixed commit
+# 33869265f21d1aaa8ecc61d2f43de40cf1fe31c8 src/display/Arduino_NV3007.h
+# Each line: command byte followed by zero or more data bytes; @delay is ms.
+# No guessed panel analog register values are added here.
+ff a5
+9a 08
+9b 08
+9c b0
+9d 16
+9e c4
+8f 55 04
+84 90
+83 7b
+85 33
+60 00
+70 00
+61 02
+71 02
+62 04
+72 04
+6c 29
+7c 29
+6d 31
+7d 31
+6e 0f
+7e 0f
+66 21
+76 21
+68 3a
+78 3a
+63 07
+73 07
+64 05
+74 05
+65 02
+75 02
+67 23
+77 23
+69 08
+79 08
+6a 13
+7a 13
+6b 13
+7b 13
+6f 00
+7f 00
+50 00
+52 d6
+53 08
+54 08
+55 1e
+56 1c
+a0 2b 24 00
+a1 87
+a2 86
+a5 00
+a6 00
+a7 00
+a8 36
+a9 7e
+aa 7e
+b9 85
+ba 84
+bb 83
+bc 82
+bd 81
+be 80
+bf 01
+c0 02
+c1 00
+c2 00
+c3 00
+c4 33
+c5 7e
+c6 7e
+c8 33 33
+c9 68
+ca 69
+cb 6a
+cc 6b
+cd 33 33
+ce 6c
+cf 6d
+d0 6e
+d1 6f
+ab 03 67
+ac 03 6b
+ad 03 68
+ae 03 6c
+b3 00
+b4 00
+b5 00
+b6 32
+b7 7e
+b8 7e
+e0 00
+e1 03 0f
+e2 04
+e3 01
+e4 0e
+e5 01
+e6 19
+e7 10
+e8 10
+ea 12
+eb d0
+ec 04
+ed 07
+ee 07
+ef 09
+f0 d0
+f1 0e
+f9 17
+f2 2c 1b 0b 20
+e9 29
+ec 04
+35 00
+44 00 10
+46 10
+ff 00
+3a 05
+11
+@delay 120
+29

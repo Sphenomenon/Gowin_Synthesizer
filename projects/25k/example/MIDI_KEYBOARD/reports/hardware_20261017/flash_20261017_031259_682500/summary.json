@@ -1,0 +1,46 @@
+{
+  "started_at": "2026-10-17T03:12:59.682618+08:00",
+  "passed": false,
+  "artifact": "builds/20261017_015947_664453/impl/pnr/midi_keyboard.fs",
+  "file_sha256": "07f2c363b463982f3ea7ed300603267951c2e03225a4d0bb105e285faa87d1c4",
+  "file_bytes": 7232301,
+  "expected_user_code": "0x0000F054",
+  "device": "GW5A-25A",
+  "jtag_id": "0x0001281B",
+  "flash_id": "0x0B4017",
+  "cable": "FT2CH",
+  "channel": 0,
+  "frequency": "2.5MHz",
+  "start_address": "0x000000",
+  "physical_power_cycle_tested": false,
+  "notes": "User-requested restoration of the validated 0x0000F054 display baseline. All 64 original build inputs restored to matching hashes; G/H investigation stopped and diagnostic files archived. Retains 60Hz regional UI updates. No assertion that the touch issue is fixed.",
+  "preflight": {
+    "source_hashes_match": true,
+    "simulation_passed": true,
+    "testbenches": 27,
+    "build_passed": true,
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "setup_worst_slack_ns": 0.746,
+      "hold_worst_slack_ns": 0.186,
+      "recovery_worst_slack_ns": 3.356,
+      "removal_worst_slack_ns": 0.892,
+      "clocks": [
+        {
+          "name": "clk_50mhz",
+          "constraint_mhz": 50.0,
+          "actual_fmax_mhz": 58.646
+        },
+        {
+          "name": "clk_ulpi60",
+          "constraint_mhz": 60.002,
+          "actual_fmax_mhz": 62.815
+        }
+      ],
+      "passed": true
+    }
+  },
+  "error": "flash_id failed; see /Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/MIDI_KEYBOARD/reports/hardware_20261017/flash_20261017_031259_682500/flash_id.log",
+  "finished_at": "2026-10-17T03:13:00.543011+08:00"
+}

@@ -1,0 +1,11 @@
+{
+  "time": "2026-10-16T21:38:11.839192+08:00",
+  "command": [
+    "/private/tmp/gw25k_usb1_reenumerate",
+    "--reenumerate"
+  ],
+  "returncode": 0,
+  "stdout": "Target Primer 25K MIDI 1209:0001 location=0x01113200 registry_id=4295068985\nUSBDeviceOpen: 0x00000000\nUSBDeviceReEnumerate options=0: 0x00000000\n",
+  "stderr": "",
+  "passed": true
+}

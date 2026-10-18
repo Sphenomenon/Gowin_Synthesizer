@@ -1,0 +1,7 @@
+{
+  "time": "2026-10-17T00:27:00.821644+08:00",
+  "ftdi_vendor_0x0403_present": false,
+  "dual_rs232_hs_present": false,
+  "midi_usb_device_present": true,
+  "flash_written_this_attempt": false
+}

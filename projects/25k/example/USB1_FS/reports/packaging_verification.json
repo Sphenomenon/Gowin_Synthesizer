@@ -1,0 +1,79 @@
+{
+  "timestamp": "2026-10-16T21:46:24.507745+08:00",
+  "passed": true,
+  "checks": {
+    "python_sources_parse": true,
+    "pinned_vendor_hashes": true,
+    "vendor_file_count": 10,
+    "protocol_simulation": true,
+    "official_pll_simulation": true,
+    "host_tool_16_tests": true,
+    "artifacts": [
+      {
+        "manifest": "reports/verified_build.json",
+        "passed": true,
+        "sha256": "bed38e61a1c0b21c738f5ad56d43ea2dc2abe0b1a53ac236fdde674ad4cdc253"
+      },
+      {
+        "manifest": "reports/build_20261016_214351_988386.json",
+        "passed": true,
+        "sha256": "929bd01ca1e55a686fc988ff8078aa32bdbf6833f618ad84224accbd8842fa05"
+      },
+      {
+        "manifest": "reports/build_20261016_214420_844215.json",
+        "passed": true,
+        "sha256": "30f01f98ee1c397ef96e150d560f0598107cac3f51d329a3bda34ba889efabfc"
+      }
+    ],
+    "relocation": {
+      "location": "a temporary path containing Chinese text and spaces; commands run from /",
+      "program_check_only": [
+        {
+          "manifest": "verified_build.json",
+          "returncode": 0,
+          "image": "gao"
+        },
+        {
+          "manifest": "build_20261016_214351_988386.json",
+          "returncode": 0,
+          "image": "gao"
+        },
+        {
+          "manifest": "build_20261016_214420_844215.json",
+          "returncode": 0,
+          "image": "ordinary"
+        }
+      ],
+      "gao_capture_artifact_checks": [
+        true,
+        true
+      ],
+      "passed": true
+    }
+  },
+  "source_audit": {
+    "passed": true,
+    "scope": "RTL, clock RTL/SDC/testbench, IO constraints, vendor and GAO logic unchanged. Generated core differs only in the license comment relative path. Independent read-only audit confirmed archived bitstream/timing/GAO hashes and relocated capture validation."
+  },
+  "host_helpers_offline_validation": {
+    "program_sram_guardrail_cases": 13,
+    "reenumeration_argument_cases": 16,
+    "reenumeration_c_compilation": "xcrun clang -std=c11 -Wall -Wextra -Werror passed",
+    "hardware_access_during_packaging": false
+  },
+  "new_builds": {
+    "gao": "reports/build_20261016_214351_988386.json",
+    "normal": "reports/build_20261016_214420_844215.json",
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "downloaded_to_hardware": false
+  },
+  "historical_hardware_result": {
+    "report": "reports/hardware_20261016/usb1_postchange_20261016.json",
+    "negotiated_link_mbps": 12,
+    "loopback_bytes": 1848,
+    "loopback_chunks": 56,
+    "passed": true
+  },
+  "build_note": "Initial sandboxed invocation failed at license verification; rerun with license access completed both build phases successfully. Successful bitstream files were not altered when making their manifest paths relative."
+}

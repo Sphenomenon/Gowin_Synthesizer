@@ -1,0 +1,19 @@
+{
+  "csv": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/MIDI_KEYBOARD/reports/hardware_20261017/touch_gh_normal_20261017_0310.csv",
+  "requested_seconds": 60.0,
+  "requested_period_ms": 20.0,
+  "samples": 1603,
+  "error": "interrupted",
+  "g_accepted_samples": 0,
+  "h_accepted_samples": 0,
+  "g_detect_samples": 0,
+  "h_detect_samples": 0,
+  "slider_touched_samples": 0,
+  "coherence_retries": 125,
+  "note": "Word 0/1/2/3 share a U1 frame; word 4/5 are independently sampled. Delta is reference minus signal. No automatic threshold or calibration writes.",
+  "g_delta_min": -4,
+  "g_delta_max": 5,
+  "h_delta_min": -5,
+  "h_delta_max": 5,
+  "elapsed_seconds": 32.049679
+}

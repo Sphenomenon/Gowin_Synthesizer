@@ -14,17 +14,17 @@ P29 USB IN 诊断已完成离线构建和完整审计，能分别回读传输/�
 fpga/                         Git 根目录
 ├── projects/                 板级工程的共同父目录
 │   ├── 138k/                 138K 主机，现有完整源码与本地构建资料
-│   └── 25k/                  25K 面板，完整设备工程待导入
+│   └── 25k/                  25K 面板，设备端源码、独立例程与硬件资料
 ├── 整机接口规划.md            跨板职责、消息与待定接口
 └── migration/gw138k_audio -> ../projects/138k
                               旧路径兼容链接
 ```
 
-新代码和文档使用 `projects/138k/`、`projects/25k/`。旧路径链接用于历史命令、绝对路径和验收记录；实际源码只有一份。25K 目录当前只有接入说明，不能据此认为设备端工程已经完成。各目录职责见 [projects/README.md](projects/README.md)。
+新代码和文档使用 `projects/138k/`、`projects/25k/`。旧路径链接用于历史命令、绝对路径和验收记录；实际源码只有一份。25K 目录已导入设备端源码、独立例程、硬件资料和已有验证摘要；138K 联调状态仍以各工程记录为准。各目录职责见 [projects/README.md](projects/README.md)。
 
 ## 入口
 
-- [25K 面板工程](projects/25k/README.md)：设备端源码导入位置、现有协议依据与资料缺口。
+- [25K 面板工程](projects/25k/README.md)：设备端源码、构建入口、独立例程与对接边界。
 - [整机接口规划](整机接口规划.md)：138K／Push／25K分工、已确认MIDI映射与默认值、现有协议差异及待确认项。
 - [`push2_workstation/usb_a`](projects/138k/push2_workstation/usb_a)：当前 USB-A 工作站源码、仿真、审计和版本记录。
 - [`Prj1`](projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1)：冻结的 Gowin 工程源码基线。该目录名保留了来源，但 `impl`、`build` 和位流不进入 Git。

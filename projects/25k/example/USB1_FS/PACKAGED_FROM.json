@@ -1,0 +1,43 @@
+{
+  "packaged_at": "2026-10-16T21:45:54.921920+08:00",
+  "source_project": "prj/usb1_device",
+  "source_build": "20261016_011545_836351",
+  "fs_sha256": "bed38e61a1c0b21c738f5ad56d43ea2dc2abe0b1a53ac236fdde674ad4cdc253",
+  "timing_sha256": "4951f8648369d66d0fc0fc767ef855ef4b1de5c7981e4952f3077b0953b11bb5",
+  "gao_sha256": "a0140b7735fc931442e07e334b0e5ac2993d29cef1ccd21d201e5661f8a8d547",
+  "source_hardware_report": "reports/hardware_20261016/usb1_postchange_20261016.json",
+  "hardware_result": {
+    "link_mbps": 12,
+    "loopback_bytes": 1848,
+    "loopback_chunks": 56,
+    "overflow_seen": false,
+    "new_hardware_run_during_packaging": false
+  },
+  "hardware_source_sha256": {
+    "rtl/usb1_address_filter.v": "89276d66a3044e60b627f7ba04cdcd09568cdfa5543d47a7f13a45344e39c552",
+    "rtl/usb1_cdc_loopback.v": "d980d247bb55f1f9ae7aa4ad0f7f4ef67ea65cc5b0cb468172f9d1ca39ad8739",
+    "rtl/usb1_device_top.v": "939a2eb670591b5ebcd7987620e63335d06721e525c82fba4d94dee492acb0a7",
+    "clock/pll_init.v": "3fc6bef9a7086f0920bfa47265b1766854a53f6ca1c0f75084eaf6b6ef4d6258",
+    "clock/sim/tb_usb1_clock.v": "94db66074b80cfb7b38ee8c145c195f144cb1a8370ed9737fbefe3736f7c5f18",
+    "clock/usb1_clock.sdc": "b82bea47ba456355ce5dd7d318998ad763c96843bb1c4f842e2331b7dc873702",
+    "clock/usb1_clock_60m.v": "55b07f337a9f9324813c671686234b6ae79ed43eeb167d60bb2f2960cfa928a0",
+    "constraints/usb1_device.cst": "899bfaeb81f6e06c40464c38c6d4ce509afcc721fa77ff69f19ddb69fb01b68d",
+    "sim/tb_usb1_cdc_loopback.sv": "f1cc78001bb83ff86f3870e4e1751930876b748c0613ece23b3bf2ca3716fe9e",
+    "debug/usb1_gao.sdc": "895bfda141481a490b11763e2f91f4d6f945c21b3d4f9e3311911bfb312cf964",
+    "debug/usb1_status.gao": "a0140b7735fc931442e07e334b0e5ac2993d29cef1ccd21d201e5661f8a8d547",
+    "debug/usb1_status.rao": "a0140b7735fc931442e07e334b0e5ac2993d29cef1ccd21d201e5661f8a8d547",
+    "debug/usb1_status_50mhz.v": "35cf09a5e235f968ab8b9d004526d1926796b85a96a7d93294314063acfd59fc",
+    "generated/usb1_device_gao_top.v": "1c43dd11839c5331b34ff9a3f1f484c798ee015134339cf3bbd6a24c3cf15878",
+    "generated/usb1_gao.sdc": "2b5448472f1fac0f7c95e7444f6a298cfbed229a1e8361d62ffc8e3ea50b45ea",
+    "generated/usbfs_core_top.v": "1c1c59d0eddf771b43b984f6b71912224109bd47ce62c474ee249ebd7acdcc5a"
+  },
+  "local_adaptations": [
+    "Build, simulation and core generator use vendor sources inside this directory; all pinned vendor file hashes are verified.",
+    "Generated core license comment points to the local vendor license.",
+    "The safe build wrapper publishes project-relative manifest paths and records the matching GAO XML.",
+    "Portable SRAM programming validates file SHA256, local builds path, device, security, timing and GAO identity before operation 4.",
+    "Capture shares the SRAM artifact validator and accepts portable manifests.",
+    "The macOS re-enumeration helper requires an explicit location and exact stale MIDI identity; inspect is the default."
+  ],
+  "source_note": "Historical hardware reports retain their original paths. Use reports/verified_build.json for the unchanged hardware-verified bitstream, or a new local build manifest."
+}

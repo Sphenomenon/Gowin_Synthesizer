@@ -1,0 +1,106 @@
+{
+  "timestamp": "2026-10-16T21:39:18.769607+08:00",
+  "passed": true,
+  "result": "usb1_full_speed_cdc_enumeration_and_binary_loopback_passed",
+  "user_hardware_change": {
+    "verbatim": "补上上拉了",
+    "interpretation": "User confirms adding a pull-up; its resistance and exact wiring were not separately reported."
+  },
+  "rtl_changed": false,
+  "flash_written": false,
+  "sram_programs": [
+    "usb1_postchange_program_20261016_213448_176010.json",
+    "usb1_postchange_reload_20261016_213803_924838.json"
+  ],
+  "build_manifest": "build_20261016_011545_836351.json",
+  "bitstream": "../builds/20261016_011545_836351/impl/pnr/ao_0.fs",
+  "bitstream_sha256": "bed38e61a1c0b21c738f5ad56d43ea2dc2abe0b1a53ac236fdde674ad4cdc253",
+  "user_code": "0x00004322",
+  "status_code": "0x70022020",
+  "gao_id": "AA53",
+  "timing_violated_endpoints": {
+    "setup": 0,
+    "hold": 0
+  },
+  "host_transition": {
+    "before": "Primer 25K MIDI 1209:0001 at location 0x01113200",
+    "physical_replug": "FPGA UserCode became 0x944E; MIDI returned with a new registry ID, so the USB1 test SRAM image was lost.",
+    "image_readback_report": "usb1_postchange_replug_image_identity_20261016.json",
+    "resolution": "Reloaded the USB1 SRAM image, waited 3 seconds, then requested USBDeviceReEnumerate(options=0) on the uniquely identified MIDI device at the same location. No hub reset or power switching was used.",
+    "reenumeration_report": "usb1_postchange_reload_20261016_213803_924838_host_reenumerate.json",
+    "reenumeration_source": "usb1_postchange_reenumerate_20261016.c",
+    "reenumeration_source_sha256": "37bb47f6e9d8add7ea22f51487a9ba79e7a338c607b4819d3916deedb38194ed"
+  },
+  "host_report": "usb1_postchange_hostreset_loopback_20261016_2138.json",
+  "host_device": {
+    "vid": "FB9A",
+    "pid": "FB9A",
+    "product": "FPGA-USB-Serial",
+    "registry_id": 4295069140,
+    "location_id": "0x01113200",
+    "configuration": 1,
+    "speed_check": {
+      "expected_speed_mbps": 12,
+      "observed_speed_mbps": 12.0,
+      "registry_evidence": {
+        "UsbLinkSpeed": 12000000,
+        "Device Speed": 1
+      },
+      "passed": true
+    },
+    "port": "/dev/cu.usbmodem1113201"
+  },
+  "loopback": {
+    "port": "/dev/cu.usbmodem1113201",
+    "baudrate": 115200,
+    "dtr": true,
+    "chunk_sizes": [
+      1,
+      7,
+      31,
+      32,
+      33,
+      63,
+      64
+    ],
+    "rounds": 8,
+    "timeout_seconds_per_chunk": 3.0,
+    "passed": true,
+    "bytes_sent": 1848,
+    "bytes_received": 1848,
+    "sha256": "45366e8626cf4b69da2713d8647ba35567a42bebb583486a7cd7b17387ed033b",
+    "extra_hex": "",
+    "status": "pass"
+  },
+  "gao": {
+    "capture_report": "usb1_postchange_pass_status_20261016_2138.json",
+    "decoded_report": "usb1_postchange_pass_status_20261016_2138_decoded.json",
+    "sample_count": 128,
+    "line_state_samples": {
+      "FS_J": 128
+    },
+    "flags_constant": {
+      "pll_locked": true,
+      "reset60n": true,
+      "usb_bus_reset_released": true,
+      "attach_intent_unconnected": true,
+      "overflow_seen": false,
+      "received_seen": true,
+      "heartbeat50": true,
+      "heartbeat60": true,
+      "line_activity_seen": true,
+      "se0_long_seen": true,
+      "se1_long_seen": false,
+      "monitor_settled": true,
+      "j_long_seen": true
+    },
+    "note": "The 50 MHz GAO bus records line state and sticky flags; byte totals come from the real host loopback. Long SE0 is reset history, not a current continuous-SE0 failure."
+  },
+  "scope_limits": [
+    "12 Mbps is the negotiated USB link speed; no throughput measurement was performed.",
+    "56 bounded write/read chunks totaling 1848 bytes were tested; long-duration or continuous high-volume reliability was not tested.",
+    "The currently verified USB1 image is in SRAM; a power cycle can reload the existing Flash MIDI image.",
+    "The all-zero capture after the physical replug was invalid for USB1 diagnosis because the image had changed."
+  ],
+  "prior_history": "usb_hardware_summary_20261016.json"
+}

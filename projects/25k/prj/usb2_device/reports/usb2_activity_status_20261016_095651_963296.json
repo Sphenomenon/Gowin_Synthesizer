@@ -1,0 +1,35 @@
+{
+  "started_at": "2026-10-16T09:56:51.963601+08:00",
+  "image": "activity",
+  "gao_id": "1101001010101000",
+  "manifest": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/build_20261016_095603_986495.json",
+  "gao_config": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/debug/usb2_activity_status.gao",
+  "gao_config_sha256": "d14fd11c314be91e3766bb0826fbd150b130a1b22a22d3b5083025581aea5ff7",
+  "matching_artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/builds/20261016_095603_986495/impl/pnr/ao_0.fs",
+      "sha256": "5d6b7795cd22974419a913e0724c7c1de8d0da2a6caccc67e2026a50dd2b0a4d"
+    }
+  ],
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gao_sh",
+    "-gao",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/debug/usb2_activity_status.gao",
+    "-device",
+    "GW5A-25A",
+    "-cable",
+    "FT2CH",
+    "-out",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/usb2_activity_status_20261016_095651_963296",
+    "-location",
+    "4273"
+  ],
+  "passed": true,
+  "note": "Local manifest proves file compatibility, not the identity of the loaded FPGA image.",
+  "returncode": 0,
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/usb2_activity_status_20261016_095651_963296.log",
+  "csv": [
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/usb2_activity_status_20261016_095651_963296_core0_window0.csv"
+  ],
+  "finished_at": "2026-10-16T09:56:53.121750+08:00"
+}

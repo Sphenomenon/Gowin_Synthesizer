@@ -1,0 +1,194 @@
+{
+  "archive": "/Users/zhaojiying/Downloads/just_paly_FULL_20261017.zip",
+  "archive_sha256": "ef575fc3c3572e8546d097ae640a504b0e94640b710e033d8cf0d31016260f8a",
+  "manifest_files_verified": 3847,
+  "manifest_failures": [],
+  "archive_unindexed_files": [
+    "MANIFEST_SHA256.json"
+  ],
+  "manifest_missing_files": [],
+  "old_reference_comparison": [
+    {
+      "old_path": "constraints/led_breath.xdc",
+      "new_archive_path": "just_paly/constraints/led_breath.xdc",
+      "same": true,
+      "new_sha256": "fff5cd80c3989d80ef0ad1acd5c784f2639ad2b3f100faa17d8818615850fffd"
+    },
+    {
+      "old_path": "constraints/qt2160.xdc",
+      "new_archive_path": "just_paly/constraints/qt2160.xdc",
+      "same": true,
+      "new_sha256": "e998966b5893466a0647b497717d52ffb25effc71ddf68171de5d3ce6c88f1ac"
+    },
+    {
+      "old_path": "constraints/qt2160_keypad.xdc",
+      "new_archive_path": "just_paly/constraints/qt2160_keypad.xdc",
+      "same": true,
+      "new_sha256": "4179c752397a607eb360bda85565dac379daf29e9fa33e13787d6835642496f3"
+    },
+    {
+      "old_path": "constraints/uart_led.xdc",
+      "new_archive_path": "just_paly/constraints/uart_led.xdc",
+      "same": true,
+      "new_sha256": "ffe20e32d2d4478a8dda0da5f38c7343a015bc6b4902dda4cb3b81a66891ba7f"
+    },
+    {
+      "old_path": "docs/keypad_retest_20261016_2302.md",
+      "new_archive_path": "just_paly/verification/keypad_retest_20261016_2302.md",
+      "same": true,
+      "new_sha256": "4aa82f8ff543c857a9892e9db89e719e3931a55678a7500a4d9a3b7526d26107"
+    },
+    {
+      "old_path": "docs/README_QT2160_KEYPAD.md",
+      "new_archive_path": "just_paly/README_QT2160_KEYPAD.md",
+      "same": true,
+      "new_sha256": "bfe2a733c678195dd9f26940b45f0d83ab7a2afb9aa2a4b4ebad45bfa95eab4e"
+    },
+    {
+      "old_path": "docs/README_QT2160_KEYPAD_STABILITY.md",
+      "new_archive_path": "just_paly/README_QT2160_KEYPAD_STABILITY.md",
+      "same": true,
+      "new_sha256": "2194d7d60bef47ec7a695133d9fbfae5c6da90623c03ffdd4a50617ebfb8e2c1"
+    },
+    {
+      "old_path": "docs/README_QT2160_SLIDER.md",
+      "new_archive_path": "just_paly/README_QT2160_SLIDER.md",
+      "same": true,
+      "new_sha256": "62fd2ef12a08e79cde6da7dc7208b0eae737a1cabe697271afc3ffee3f5aa7f5"
+    },
+    {
+      "old_path": "README.md",
+      "new_archive_path": "just_paly/README.md",
+      "status": "local packaging README; not a source file of the original project"
+    },
+    {
+      "old_path": "reference/sd_boot_top.v",
+      "new_archive_path": "just_paly/rtl/sd_boot_top.v",
+      "same": true,
+      "new_sha256": "29bc8150da827b479eabac8df300e902a9f0b41e90b99e81320831916c336206"
+    },
+    {
+      "old_path": "rtl/led_breath_channel.v",
+      "new_archive_path": "just_paly/rtl/led_breath_channel.v",
+      "same": true,
+      "new_sha256": "665941d02f44eb03199f1de0eecce0ba87c2c38267d5a8abf369331b95ae03a9"
+    },
+    {
+      "old_path": "rtl/qt2160_i2c_master.v",
+      "new_archive_path": "just_paly/rtl/qt2160_i2c_master.v",
+      "same": true,
+      "new_sha256": "0cf485e1503af6a6b82f7e35836886c907d44393f8c091f95a19aa698c02f03c"
+    },
+    {
+      "old_path": "rtl/qt2160_keypad_reader.v",
+      "new_archive_path": "just_paly/rtl/qt2160_keypad_reader.v",
+      "same": true,
+      "new_sha256": "12c1266e6f94ced57b9df47fb708708eb2199a068d32aea35803446b56626e74"
+    },
+    {
+      "old_path": "rtl/qt2160_keypad_uart.v",
+      "new_archive_path": "just_paly/rtl/qt2160_keypad_uart.v",
+      "same": true,
+      "new_sha256": "b0d5e54338d03fc81912e5b7f4fc0ffd0092883416ae8280f042a04a1d57945a"
+    },
+    {
+      "old_path": "rtl/qt2160_slider_reader.v",
+      "new_archive_path": "just_paly/rtl/qt2160_slider_reader.v",
+      "same": true,
+      "new_sha256": "bbbb5382f2f57e5f6ed5d084a96df971325164095c96e60919bbba35f73ef649"
+    },
+    {
+      "old_path": "rtl/uart_led_controller.v",
+      "new_archive_path": "just_paly/rtl/uart_led_controller.v",
+      "same": true,
+      "new_sha256": "01737f90ea27fffa3ce1165df6440be85932b77c0c3e860a5e3540565fd1c69d"
+    },
+    {
+      "old_path": "rtl/uart_rx.v",
+      "new_archive_path": "just_paly/rtl/uart_rx.v",
+      "same": true,
+      "new_sha256": "8042b0d9b9c1f2d51b64029454977474b0d0bd49214cd0212b8d4039813cf031"
+    },
+    {
+      "old_path": "rtl/uart_tx.v",
+      "new_archive_path": "just_paly/rtl/uart_tx.v",
+      "same": true,
+      "new_sha256": "59389caf24cd8f15225d6861ff5c136276f17285797237da931005ac714c0108"
+    },
+    {
+      "old_path": "scripts/test_qt2160_keypad.ps1",
+      "new_archive_path": "just_paly/scripts/test_qt2160_keypad.ps1",
+      "same": true,
+      "new_sha256": "4f6c14cbd991b1a6d126c817d186d5df928ca366a9dba3463bbe9babbaf3f7ba"
+    },
+    {
+      "old_path": "scripts/test_qt2160_slider.ps1",
+      "new_archive_path": "just_paly/scripts/test_qt2160_slider.ps1",
+      "same": true,
+      "new_sha256": "cb32250047e36d50cda47ef1b4cdc06df988febad38b1f3e73a17198ffca974b"
+    },
+    {
+      "old_path": "sim/tb_qt2160_keypad.sv",
+      "new_archive_path": "just_paly/sim/tb_qt2160_keypad.sv",
+      "same": true,
+      "new_sha256": "37c48c9e1dfc03e88b12892178506a5f1e34340988ef7f28ead8ba90e02054be"
+    },
+    {
+      "old_path": "sim/tb_qt2160_slider.sv",
+      "new_archive_path": "just_paly/sim/tb_qt2160_slider.sv",
+      "same": true,
+      "new_sha256": "3ea9fc9197a13f11c0f224d8b173941a1c8da7161c3604bd782a3f57ff17f5c1"
+    }
+  ],
+  "schema_version": 1,
+  "compared_at": "2026-10-17T00:50:50.678404+08:00",
+  "same_imported_reference_files": 21,
+  "keypad_raw_csv_recomputed": [
+    {
+      "archive_path": "just_paly/verification/keypad_retest_20261016_2301_round1/qt2160_keypad_scan.csv",
+      "key_records": 1024,
+      "frames": 64,
+      "signal_min": 121,
+      "signal_max": 166,
+      "delta_min": -1,
+      "delta_max": 1,
+      "raw_before": 0,
+      "raw_after": 0,
+      "reported_candidates": 0,
+      "zero_signals": 0,
+      "cycle_overruns": 0
+    },
+    {
+      "archive_path": "just_paly/verification/keypad_retest_20261016_2302_round2/qt2160_keypad_scan.csv",
+      "key_records": 1024,
+      "frames": 64,
+      "signal_min": 120,
+      "signal_max": 166,
+      "delta_min": -1,
+      "delta_max": 1,
+      "raw_before": 0,
+      "raw_after": 0,
+      "reported_candidates": 0,
+      "zero_signals": 0,
+      "cycle_overruns": 0
+    }
+  ],
+  "slider_historical_evidence": {
+    "status": "PASS",
+    "source": "Board JTAG ILA, UART TX byte-accept events",
+    "complete_lines": 51,
+    "positions": [
+      0
+    ],
+    "touch_seen": false,
+    "physical_usb_serial_verified": false
+  },
+  "current_source_modified": false,
+  "hardware_accessed": false,
+  "current_baseline": {
+    "programmed_user_code": "0x00006712",
+    "artifact": "builds/20261017_004004_496655/impl/pnr/midi_keyboard.fs",
+    "file_sha256": "8f44c00003edfa9969a21a4071d3198bc746752ccf23134fd854eeeb1456c5ec",
+    "build_inputs_changed": []
+  }
+}

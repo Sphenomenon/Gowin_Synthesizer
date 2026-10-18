@@ -1,0 +1,60 @@
+{
+  "started_at": "2026-10-17T01:02:37.271414+08:00",
+  "passed": false,
+  "artifact": "builds/20261017_010056_274646/impl/pnr/midi_keyboard.fs",
+  "file_sha256": "4e8a93557693e76a241cdf70a23e5a1dcc5afd2f6ff743eb8fe22ca49f2812a3",
+  "file_bytes": 7018285,
+  "expected_user_code": "0x0000856D",
+  "device": "GW5A-25A",
+  "jtag_id": "0x0001281B",
+  "flash_id": "0x0B4017",
+  "cable": "FT2CH",
+  "channel": 0,
+  "frequency": "2.5MHz",
+  "start_address": "0x000000",
+  "physical_power_cycle_tested": false,
+  "notes": "Full reference/manual audit; 16ms minimum and 20ms fallback status start spacing, pre-configuration RESET baseline and post-config reset recovery, independent S2 diagnostics and 12.5MHz LCD. User-confirmed key and LED maps retained. Physical touch-noise improvement still requires observation.",
+  "preflight": {
+    "source_hashes_match": true,
+    "simulation_passed": true,
+    "testbenches": 25,
+    "build_passed": true,
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "setup_worst_slack_ns": 0.934,
+      "hold_worst_slack_ns": 0.215,
+      "recovery_worst_slack_ns": 5.585,
+      "removal_worst_slack_ns": 1.068,
+      "clocks": [
+        {
+          "name": "clk_50mhz",
+          "constraint_mhz": 50.0,
+          "actual_fmax_mhz": 59.293
+        },
+        {
+          "name": "clk_ulpi60",
+          "constraint_mhz": 60.002,
+          "actual_fmax_mhz": 63.564
+        }
+      ],
+      "passed": true
+    }
+  },
+  "device_identification": true,
+  "flash_program_and_verify": true,
+  "flash_reload": true,
+  "user_code": "0x0000856D",
+  "status_code": "0x70022020",
+  "error": "USB re-enumeration not confirmed",
+  "finished_at": "2026-10-17T01:03:05.533582+08:00",
+  "verification_state": "flash_verified_usb_not_detected",
+  "usb_verification_passed": false,
+  "usb": {
+    "detected": false,
+    "configuration_verified": false,
+    "link_speed_verified": false
+  },
+  "usb_recheck": "reload_usb_retry.json",
+  "end_address_reported": "0x00D5B00"
+}

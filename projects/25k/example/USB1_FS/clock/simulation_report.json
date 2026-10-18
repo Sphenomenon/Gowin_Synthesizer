@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-10-16T21:43:27.609221+08:00",
+  "passed": true,
+  "simulator": "Icarus Verilog, official GW5A PLLA functional model",
+  "pll_init_sim_macro": false,
+  "source_sha256": {
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/USB1_FS/clock/sim/tb_usb1_clock.v": "94db66074b80cfb7b38ee8c145c195f144cb1a8370ed9737fbefe3736f7c5f18",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/USB1_FS/clock/usb1_clock_60m.v": "55b07f337a9f9324813c671686234b6ae79ed43eeb167d60bb2f2960cfa928a0",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/USB1_FS/clock/pll_init.v": "3fc6bef9a7086f0920bfa47265b1766854a53f6ca1c0f75084eaf6b6ef4d6258",
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "7db6e9953af24f1233dbc8f58352a1673e91d01bb69656a16ae893a68089f85d"
+  },
+  "compile_returncode": 0,
+  "compile_stderr": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v:16221: warning: @* found no sensitivities so it will never trigger.\n/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v:16457: warning: @* found no sensitivities so it will never trigger.\n/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v:16552: warning: @* found no sensitivities so it will never trigger.\n/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v:16647: warning: @* found no sensitivities so it will never trigger.\n/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v:16742: warning: @* found no sensitivities so it will never trigger.\n/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v:16828: warning: @* found no sensitivities so it will never trigger.\n/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v:16914: warning: @* found no sensitivities so it will never trigger.\n",
+  "simulation_returncode": 0,
+  "simulation_stdout": "PASS power-up calibration and 3-edge reset release at 1758546.988 ns\nPASS frequency 60.002400 MHz, period 16.666000 ns, high pulse 8.333000 ns\nPASS asynchronous LOCK-loss reset and synchronized relock release\nPASS usb1_clock_60m (official GW5A PLLA model, full PLL_INIT timing)\n/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/USB1_FS/clock/sim/tb_usb1_clock.v:61: $finish called at 1969688542 (1ps)\n",
+  "simulation_stderr": "",
+  "limits": [
+    "The functional PLL model does not model the analogue mDRP calibration effects.",
+    "The nominal 60 MHz waveform is quantized to the model time precision.",
+    "Physical timing closure and USB enumeration require the root build and board test."
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "started_at": "2026-10-16T22:18:09.285944+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/ENCODER_LCD/build.tcl",
+  "stage_directory": "/private/tmp/gw25k-build-0o5219xn",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/ENCODER_LCD/reports/build_20261016_221809_282658_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/ENCODER_LCD/reports/build_20261016_221809_282658_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/ENCODER_LCD/builds/20261016_221809_282658/impl/pnr/encoder_lcd.fs",
+      "sha256": "2456abb48e1d5bd01a453531338bd7bb5c53acbd382ae5118582dfc0ffb15f39"
+    }
+  ],
+  "finished_at": "2026-10-16T22:18:25.645776+08:00"
+}

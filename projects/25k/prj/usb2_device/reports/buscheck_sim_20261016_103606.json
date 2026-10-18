@@ -1,0 +1,44 @@
+{
+  "time": "2026-10-16T10:36:07.427514+08:00",
+  "status": "PASS",
+  "simulation_only": true,
+  "command": "sh prj/usb2_device/run_termination_sim.sh",
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/buscheck_sim_20261016_103606.log",
+  "returncode": 0,
+  "parameter_combinations": [
+    {
+      "phy_soft_reset": 0,
+      "full_scratch_test": 0,
+      "scenarios": 15
+    },
+    {
+      "phy_soft_reset": 0,
+      "full_scratch_test": 1,
+      "scenarios": 19
+    },
+    {
+      "phy_soft_reset": 1,
+      "full_scratch_test": 0,
+      "scenarios": 17
+    },
+    {
+      "phy_soft_reset": 1,
+      "full_scratch_test": 1,
+      "scenarios": 21
+    }
+  ],
+  "physical_pads_check": true,
+  "sha256": {
+    "rtl/usb2_termination_probe.v": "557685a5692b0b37f5eff01a8747bad2f1936cb1eab8587ec70e55f0f85b1754",
+    "rtl/usb2_termination_top.v": "41b6dea6300166dbb1ac3b0521164e90aa46da0c1ba9cc5afcf5fc564851c2eb",
+    "sim/tb_usb2_termination_probe.sv": "dd528f90dccbfb533fa67a261bd7191b566fe58d04a49359a1b5e1685739fd2b",
+    "sim/tb_usb2_termination_pads.sv": "b19ed4c619678c9fad2bd5d526104eed4cf268348888f5b9bf6b0d46c6228be6",
+    "run_termination_sim.sh": "395144825f23472be3ad45d44c81b1eb6aab3d2d1653037a273d382e32e5c5cf",
+    "debug/decode_status.py": "9b5872f6564fb82eb7bd14005b97d1554388ecbe7690c4553214fffd2da8d4bd",
+    "debug/capture_status.py": "e55e85461a017c34b1532e99d4c720c3eeb5966311f7a0e90568278af1d79902",
+    "program_sram.py": "eca012e954d8e6b9c4a8c096964b5e6992f785c598480cf46a63434f66b2a674",
+    "build_buscheck_gao.tcl": "fa1c50bee5cdb1922ceeca00417f87282040e9a7363a21f50fe4dabde808b1d7",
+    "prepare_buscheck_sources.tcl": "e274bce79f7c2a3f7153a023f95db117ef13ce728d14fd165066eebc7abffd20",
+    "debug/usb2_buscheck_status.gao": "eb4b8999c2527a04b2810c2dc1b8ec5a99529a27fe5407f3d6a65938bec9f844"
+  }
+}

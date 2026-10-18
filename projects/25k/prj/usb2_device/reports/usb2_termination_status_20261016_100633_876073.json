@@ -1,0 +1,35 @@
+{
+  "started_at": "2026-10-16T10:06:33.876388+08:00",
+  "image": "termination",
+  "gao_id": "1101001010101001",
+  "manifest": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/build_20261016_100552_875557.json",
+  "gao_config": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/debug/usb2_termination_status.gao",
+  "gao_config_sha256": "50a0094b7728dc6f4a34ed6f786d8b34051f7c3b9db719bc017b8a043e1bd1eb",
+  "matching_artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/builds/20261016_100552_875557/impl/pnr/ao_0.fs",
+      "sha256": "4d1dad10a642b495383d222ff399823d814565d180fc738ce436628851392db6"
+    }
+  ],
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gao_sh",
+    "-gao",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/debug/usb2_termination_status.gao",
+    "-device",
+    "GW5A-25A",
+    "-cable",
+    "FT2CH",
+    "-out",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/usb2_termination_status_20261016_100633_876073",
+    "-location",
+    "4273"
+  ],
+  "passed": true,
+  "note": "Local manifest proves file compatibility, not the identity of the loaded FPGA image.",
+  "returncode": 0,
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/usb2_termination_status_20261016_100633_876073.log",
+  "csv": [
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/usb2_termination_status_20261016_100633_876073_core0_window0.csv"
+  ],
+  "finished_at": "2026-10-16T10:06:34.955094+08:00"
+}

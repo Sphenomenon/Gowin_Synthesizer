@@ -1,0 +1,20 @@
+{
+  "started_at": "2026-10-17T00:24:32.663739+08:00",
+  "finished_at": "2026-10-17T00:24:32.851728+08:00",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5A-25A",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "15MHz",
+    "--operation_index",
+    "0"
+  ],
+  "returncode": 0,
+  "passed": false,
+  "log": "device_before.log"
+}

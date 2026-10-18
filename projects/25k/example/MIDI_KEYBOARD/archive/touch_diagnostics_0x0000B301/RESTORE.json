@@ -1,0 +1,31 @@
+{
+  "restored_at": "2026-10-17T03:10:16.401067+08:00",
+  "user_request": "还原展示不管该问题",
+  "restored_baseline": "0x0000F054",
+  "previous_diagnostic": "0x0000B301",
+  "restored_files": [
+    "rtl/midi_keyboard_top.v",
+    "rtl/midi_keyboard_core.v",
+    "rtl/instrument/midi_keyboard_application.v",
+    "rtl/peripheral/midi_touch_frontend.v",
+    "rtl/control/screen_control_endpoint.v",
+    "tools/screen_control.py",
+    "sim/tb_screen_control_endpoint.v",
+    "sim/test_screen_control.py",
+    "sim/tb_midi_keyboard_application.v"
+  ],
+  "extra_files_archived": true,
+  "source_hashes_match_original_build": true,
+  "regression": {
+    "manifest": "reports/validation_restore_0x0000F054.json",
+    "passed": true,
+    "finished_at": "2026-10-17T03:12:27.149581+08:00"
+  },
+  "flash": {
+    "summary": "reports/hardware_20261017/flash_20261017_031320_034194/summary.json",
+    "passed": true,
+    "user_code": "0x0000F054",
+    "status": "0x70022020",
+    "finished_at": "2026-10-17T03:13:43.689883+08:00"
+  }
+}

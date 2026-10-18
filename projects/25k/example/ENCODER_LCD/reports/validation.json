@@ -1,0 +1,53 @@
+{
+  "time": "2026-10-16T22:21:39.315190+08:00",
+  "source_matches_programmed_build": true,
+  "sources": [
+    {
+      "path": "src/encoder_input.v",
+      "sha256": "59b78d115f05cb980af831865d0f7b9f8887a83d0c0e6bba8e0a423e02238ce4"
+    },
+    {
+      "path": "src/encoder_lcd.cst",
+      "sha256": "a23c19df494932ade992d8330547ca84b3930bd9e8737336a2ed9a54bf95c0b5"
+    },
+    {
+      "path": "src/encoder_lcd.sdc",
+      "sha256": "debb71ed344fedf48a59e4d84eed6d0370f2a05ee94f0e1b2af7ae4eb9278bec"
+    },
+    {
+      "path": "src/encoder_lcd_display.v",
+      "sha256": "852e5f82dc3c71154d5f0a84ae1d87736b9f2352b7f9e9cc798aea7f09085b19"
+    },
+    {
+      "path": "src/encoder_lcd_top.v",
+      "sha256": "12a8849b1941337e7b8e3fd351af11a39815dea96d8ec957f1d3a2d6c7311fe8"
+    },
+    {
+      "path": "src/encoder_lcd_view.v",
+      "sha256": "31eba1f78cf0b7de038364d2739def90e50eef6c953a80a94fb008695d90e3cc"
+    },
+    {
+      "path": "src/lcd_init_rom.v",
+      "sha256": "3c1cc72ca98a2f4e0cea6911e8ac438989eb15846f4a84bcb659dbdc4a7fedb6"
+    },
+    {
+      "path": "src/lcd_spi_byte.v",
+      "sha256": "3a3f1f3d6a065aae955fdd3b7b24df179330c94a405d7c17db8466df580f45a1"
+    }
+  ],
+  "simulations_passed": [
+    "tb_encoder_input: 275 checks",
+    "tb_encoder_response: 40 checks at real 50 MHz defaults (AB 20 us / key 1 ms)",
+    "tb_encoder_lcd_view: BCD 0..65535 boundaries, signed counters, six conversions, snapshot isolation, full 142x428 scan",
+    "tb_encoder_lcd_display: SPI init and 220336 exact pixel bytes, full frame and two partial pairs, 5 MHz audit, timing",
+    "tb_encoder_lcd_top: independent encoders while SPI5/gap2ms active, reversals, key hold/release, three snapshots"
+  ],
+  "setup_violated_endpoints": 0,
+  "hold_violated_endpoints": 0,
+  "setup_slack_ns": 0.016,
+  "fmax_mhz": 50.04,
+  "programming_report": "hardware_20261016/sram_encoder_lcd_20261016_221844_506162.json",
+  "bitstream_sha256": "2456abb48e1d5bd01a453531338bd7bb5c53acbd382ae5118582dfc0ffb15f39",
+  "physical_rotation_and_display_observation": "pending_user_observation",
+  "preview_is": "RTL simulation, not board photograph"
+}

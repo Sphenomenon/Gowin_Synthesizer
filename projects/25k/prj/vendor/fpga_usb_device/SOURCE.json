@@ -1,0 +1,48 @@
+{
+  "upstream": "https://github.com/WangXuan95/FPGA-USB-Device",
+  "commit": "ebf0696f0b1dc604a4ed8eedee4c3eae1643e66f",
+  "license": "LGPL-2.1",
+  "modifications": [],
+  "files": [
+    {
+      "path": "LICENSE",
+      "sha256": "994d84ffb7627042609cd4c91f2246e69fc3ba6c2f55429ac60d560bd8d263cb"
+    },
+    {
+      "path": "README.md",
+      "sha256": "b32ba4fcf9f806729f494979dfb25b302c114b000b63299e1bab864672b97def"
+    },
+    {
+      "path": "RTL/usb_class/usb_serial_top.v",
+      "sha256": "cf631416c4148ecab8a713ff3d08c62b1b346ba19353505addd0bba73962f7e3"
+    },
+    {
+      "path": "RTL/usbfs_core/usbfs_bitlevel.v",
+      "sha256": "7e4e11c4441747497d013fda510498a54b76746c3d9c7f1695c1e2578924b803"
+    },
+    {
+      "path": "RTL/usbfs_core/usbfs_core_top.v",
+      "sha256": "fbdd03c0231e00c088414096d33520bad83d2c4b808a2dedb3154e6f29cd4960"
+    },
+    {
+      "path": "RTL/usbfs_core/usbfs_debug_monitor.v",
+      "sha256": "75acbc25f4a4b6f586cbec6ff645955989d779960a5e2a36784a8f9376d09807"
+    },
+    {
+      "path": "RTL/usbfs_core/usbfs_debug_uart_tx.v",
+      "sha256": "06302e3ec7bd6d33db8e866499e65753fef7f69d8fb8387dcaff7bbf6df68315"
+    },
+    {
+      "path": "RTL/usbfs_core/usbfs_packet_rx.v",
+      "sha256": "d09aef927d349298bdede039d30a375be4e533e2c32dc307ef96f90a80526114"
+    },
+    {
+      "path": "RTL/usbfs_core/usbfs_packet_tx.v",
+      "sha256": "ba7eecb975458c1f83985010c09b8f1198113cffb5ccc72cffd6c6875402f5e6"
+    },
+    {
+      "path": "RTL/usbfs_core/usbfs_transaction.v",
+      "sha256": "e0cd5cdc6b17dd69e6d15fe08afe3c4ee3a941a31d46fe9868365268449ce388"
+    }
+  ]
+}

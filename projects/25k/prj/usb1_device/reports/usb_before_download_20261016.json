@@ -1,0 +1,119 @@
+[
+  {
+    "USB Product Name": "USB2.1 Hub",
+    "USB Vendor Name": "GenesysLogic",
+    "idVendor": 1507,
+    "idProduct": 1552,
+    "locationID": 1048576,
+    "USB Address": 1,
+    "IORegistryEntryName": "USB2.1 Hub"
+  },
+  {
+    "USB Product Name": "LDR2001",
+    "USB Vendor Name": "深圳乐得瑞",
+    "idVendor": 11641,
+    "idProduct": 3,
+    "locationID": 1179648,
+    "USB Address": 2,
+    "IORegistryEntryName": "LDR2001"
+  },
+  {
+    "USB Product Name": "USB2.0 Hub",
+    "USB Vendor Name": "VIA Labs, Inc.",
+    "idVendor": 8457,
+    "idProduct": 10274,
+    "locationID": 17825792,
+    "USB Address": 2,
+    "IORegistryEntryName": "USB2.0 Hub"
+  },
+  {
+    "USB Product Name": "USB Billboard Device",
+    "USB Vendor Name": "VIA Labs, Inc.",
+    "idVendor": 8457,
+    "idProduct": 34850,
+    "locationID": 18153472,
+    "USB Address": 9,
+    "IORegistryEntryName": "USB Billboard Device"
+  },
+  {
+    "USB Product Name": "USB2.1 Hub",
+    "USB Vendor Name": "GenesysLogic",
+    "idVendor": 1507,
+    "idProduct": 1552,
+    "locationID": 17891328,
+    "USB Address": 4,
+    "IORegistryEntryName": "USB2.1 Hub"
+  },
+  {
+    "USB Product Name": "USB 2.0 Hub",
+    "USB Vendor Name": null,
+    "idVendor": 6720,
+    "idProduct": 2049,
+    "locationID": 17903616,
+    "USB Address": 7,
+    "IORegistryEntryName": "USB 2.0 Hub"
+  },
+  {
+    "USB Product Name": "Dual RS232-HS",
+    "USB Vendor Name": "FTDI",
+    "idVendor": 1027,
+    "idProduct": 24592,
+    "locationID": 17904128,
+    "USB Address": 11,
+    "IORegistryEntryName": "Dual RS232-HS"
+  },
+  {
+    "USB Product Name": "Magic Trackpad",
+    "USB Vendor Name": "Apple Inc.",
+    "idVendor": 1452,
+    "idProduct": 804,
+    "locationID": 17904640,
+    "USB Address": 8,
+    "IORegistryEntryName": "Magic Trackpad"
+  },
+  {
+    "USB Product Name": "FIIO QX11",
+    "USB Vendor Name": "FIIO",
+    "idVendor": 10610,
+    "idProduct": 304,
+    "locationID": 18087936,
+    "USB Address": 10,
+    "IORegistryEntryName": "FIIO QX11"
+  },
+  {
+    "USB Product Name": "USB3.1 Hub",
+    "USB Vendor Name": "VIA Labs, Inc.",
+    "idVendor": 8457,
+    "idProduct": 2082,
+    "locationID": 18874368,
+    "USB Address": 1,
+    "IORegistryEntryName": "USB3.1 Hub"
+  },
+  {
+    "USB Product Name": "USB3.1 Hub",
+    "USB Vendor Name": "GenesysLogic",
+    "idVendor": 1507,
+    "idProduct": 1574,
+    "locationID": 18939904,
+    "USB Address": 3,
+    "IORegistryEntryName": "USB3.1 Hub"
+  },
+  {
+    "USB Product Name": "USB 10_100_1000 LAN",
+    "USB Vendor Name": "Realtek",
+    "idVendor": 3034,
+    "idProduct": 33107,
+    "locationID": 18944000,
+    "USB Address": 5,
+    "IORegistryEntryName": "USB 10/100/1000 LAN"
+  },
+  {
+    "USB Product Name": "USB Storage",
+    "USB Vendor Name": "Generic",
+    "idVendor": 1507,
+    "idProduct": 1892,
+    "locationID": 18948096,
+    "USB Address": 6,
+    "IORegistryEntryName": "USB Storage"
+  }
+]

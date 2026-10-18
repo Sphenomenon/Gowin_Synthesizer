@@ -1,0 +1,48 @@
+{
+  "source": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/prj/ble_bringup/reports/ble_status_20261016_001418_174723_core0_window0.csv",
+  "sample_count": 128,
+  "all_signals_constant": true,
+  "csv_time_axis": {
+    "header": "time unit: us",
+    "first_label": "0",
+    "last_label": "127",
+    "note": "Export labels only; do not infer UART timing or elapsed hardware time."
+  },
+  "runs": [
+    {
+      "first_sample": 0,
+      "last_sample": 127,
+      "status": {
+        "flags_hex": "0F",
+        "flags": {
+          "outputs_active": true,
+          "h5_link_up": true,
+          "initialized": true,
+          "connected": true,
+          "subscribed": false,
+          "failed": false,
+          "session_ended": false
+        },
+        "h5_state": 128,
+        "init_state": 11,
+        "error_code": 0,
+        "patch_fragments_low8": 120,
+        "hci_commands_low8": 132,
+        "rom_version": 2,
+        "usb1": {
+          "line_state": 0,
+          "line_state_name": "SE0",
+          "activity_seen": false,
+          "se0_long_seen": true,
+          "se1_long_seen": false
+        },
+        "pins": {
+          "module_uart_tx": 1,
+          "tx": 1,
+          "bt_enable": 1,
+          "drive_pins": 1
+        }
+      }
+    }
+  ]
+}

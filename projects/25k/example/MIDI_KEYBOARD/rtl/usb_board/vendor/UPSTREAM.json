@@ -1,0 +1,38 @@
+[
+  {
+    "source": "example/USB3300_HS/vendor/ultraembedded_usb_hs/cdc/usbf_sie_rx.v",
+    "sha256": "8b357ce23dfa2ad8ce418289be7056f6a1fd2af41afa0e088f7846cff7638464",
+    "local": "usbf_sie_rx.v",
+    "changes": "Module names prefixed midi_; token CRC5 fix applied separately."
+  },
+  {
+    "source": "example/USB3300_HS/vendor/ultraembedded_usb_hs/cdc/usbf_sie_tx.v",
+    "sha256": "e0e7acb454d59894fc2c6e871b30ddeaa441207dc7171d8c787b56f3e4424c49",
+    "local": "usbf_sie_tx.v",
+    "changes": "Module names prefixed midi_; token CRC5 fix applied separately."
+  },
+  {
+    "source": "example/USB3300_HS/vendor/ultraembedded_usb_hs/cdc/usbf_crc16.v",
+    "sha256": "ad478724e9e71c724788274c237a8324d27deb17724b39d0681740eda92f18d9",
+    "local": "usbf_crc16.v",
+    "changes": "Module names prefixed midi_; token CRC5 fix applied separately."
+  },
+  {
+    "source": "example/USB3300_HS/vendor/ultraembedded_usb_hs/cdc/usbf_defs.v",
+    "sha256": "5ea9871d316cea1a9b7f5faf33c0f9b3bb513594aacb33288638c2a64a28f484",
+    "local": "usbf_defs.v",
+    "changes": "Module names prefixed midi_; token CRC5 fix applied separately."
+  },
+  {
+    "source": "example/USB3300_HS/hs/usb2_hs_boot.v",
+    "sha256": "97d4a7ca91002e9b1f15e3f1a46bce47dc9413029516b816d2a8d2be6ab87f96",
+    "local": "midi_usb2_boot.v",
+    "changes": "Module name prefix; bounded cooldown and complete initialization retry after failure, retaining immediate DIR drive inhibit."
+  },
+  {
+    "source": "example/USB3300_HS/vendor/ultraembedded_usb_hs/ulpi/ulpi_wrapper.v",
+    "sha256": "2a3d0ecacd8aa3b8329294d59b561e16bc9c9141d877cc19041434767ffba005",
+    "local": "midi_ulpi_wrapper.v",
+    "changes": "Module name prefix only."
+  }
+]

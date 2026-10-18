@@ -1,0 +1,439 @@
+{
+  "time": "2026-10-16T09:57:44.477801+08:00",
+  "ports": [
+    {
+      "name": "usb-drd0-port-hs",
+      "location": "0x100000",
+      "status": 4869,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 4,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x120000",
+      "status": 4353,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x110000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x130000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x140000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "usb-drd0-port-ss",
+      "location": "0x200000",
+      "status": 5,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "usb-drd1-port-hs",
+      "location": "0x1100000",
+      "status": 4869,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1150000",
+      "status": 4865,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1110000",
+      "status": 4864,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1111000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1112000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1113000",
+      "status": 4864,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1113100",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1113200",
+      "status": 4864,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1113300",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1113400",
+      "status": 4352,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1114000",
+      "status": 512,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 13,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1120000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1130000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB20HubPort",
+      "location": "0x1140000",
+      "status": 4864,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "usb-drd1-port-ss",
+      "location": "0x1200000",
+      "status": 5381,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort",
+      "location": "0x1210000",
+      "status": 5120,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort",
+      "location": "0x1211000",
+      "status": 5120,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort",
+      "location": "0x1212000",
+      "status": 5120,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 1,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort",
+      "location": "0x1213000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort",
+      "location": "0x1214000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort",
+      "location": "0x1220000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort",
+      "location": "0x1230000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "AppleUSB30HubPort",
+      "location": "0x1240000",
+      "status": 0,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "usb-drd3-port-hs",
+      "location": "0x3100000",
+      "status": 5,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    },
+    {
+      "name": "usb-drd3-port-ss",
+      "location": "0x3200000",
+      "status": 5,
+      "stats": {
+        "kPortStatAddressFailureCount": 0,
+        "kPortStatConnectCount": 0,
+        "kPortStatEOF2ViolationCurrentConnectCount": 0,
+        "kPortStatEnumerationFailureCount": 0,
+        "kPortStatOverCurrentCount": 0,
+        "kPortStatUSB3LinkFailureCount": 0,
+        "kPortStatUSB3LinkFailureCountForDevice": 0
+      }
+    }
+  ]
+}

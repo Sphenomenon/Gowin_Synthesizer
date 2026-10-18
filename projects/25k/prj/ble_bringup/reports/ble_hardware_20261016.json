@@ -1,0 +1,39 @@
+{
+  "started_at": "2026-10-16T00:14:16.689945+08:00",
+  "passed": true,
+  "device_name": "RTL8723-BLE",
+  "device_id": "E68ACFCC-DAA1-52FF-CFD0-BAFB96C56609",
+  "connected": true,
+  "properties": [
+    "read",
+    "notify"
+  ],
+  "read": {
+    "hex": "42545354000000002a46000000010203040531f9",
+    "valid": true,
+    "sequence": 0,
+    "milliseconds": 17962
+  },
+  "notifications": [
+    {
+      "hex": "42545354000000005a480000000102030405c755",
+      "valid": true,
+      "sequence": 0,
+      "milliseconds": 18522
+    },
+    {
+      "hex": "42545354010000004e4a000000010203040562d1",
+      "valid": true,
+      "sequence": 1,
+      "milliseconds": 19022
+    },
+    {
+      "hex": "4254535402000000424c000000010203040537e1",
+      "valid": true,
+      "sequence": 2,
+      "milliseconds": 19522
+    }
+  ],
+  "status": "pass",
+  "finished_at": "2026-10-16T00:14:20.082431+08:00"
+}

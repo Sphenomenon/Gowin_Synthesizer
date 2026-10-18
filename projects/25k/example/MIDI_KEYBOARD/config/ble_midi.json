@@ -1,0 +1,62 @@
+{
+  "profile": "BLE MIDI",
+  "framework_only": false,
+  "service_uuid": "03B80E5A-EDE8-4B33-A751-6CE34EC4C700",
+  "characteristic_uuid": "7772E5DB-3868-4112-A1A9-F2669D106BF3",
+  "characteristic_properties": [
+    "read",
+    "write_without_response",
+    "notify"
+  ],
+  "cccd_uuid": "2902",
+  "att_mtu": 23,
+  "max_att_value_bytes": 20,
+  "codec_max_value_bytes": 5,
+  "events_per_value": 1,
+  "timestamp_bits": 13,
+  "timestamp_unit": "milliseconds",
+  "timestamp_modulus": 8192,
+  "running_status": false,
+  "sysex": false,
+  "ignore_input_bytes_beyond_declared_length": true,
+  "controller_candidate": "RTL8723DS via UART115200 8E1 H5/HCI",
+  "controller_integration_status": "implemented_in_midi_ble_link",
+  "required_before_wireless_ready": [
+    "Successful H5/HCI/ROM-v2 patch initialization",
+    "Successful LE connection",
+    "MIDI CCCD notifications enabled"
+  ],
+  "schema_version": 2,
+  "wireless_midi_implemented": true,
+  "hardware_verified": false,
+  "state": "implemented_rtl_pending_board_and_host_validation",
+  "advertising_name": "GWK-MIDI",
+  "implemented_adapter": "../rtl/ble_board/midi_ble_link.v",
+  "online_condition": "Connected and MIDI characteristic CCCD notifications enabled; MIDI transmission pauses during pairing or a security failure",
+  "session_limit_ms": null,
+  "normal_disconnect": "HCI LE Set Advertising Enable restarts connectable advertising",
+  "board_failure_recovery": "After failed is continuously high for five seconds, board top pulses reset and repeats disable, H5, HCI and full ROM-v2 patch initialization",
+  "remaining_hardware_validation": [
+    "Board synthesis/place-and-route, timing and CDC review",
+    "Physical BLE MIDI host discovery and bidirectional note/controller traffic",
+    "Disconnect/reconnect, long-running sessions, end-to-end latency and no stuck notes",
+    "Android system pairing, encryption and BLE MIDI application connection; remove phone bond after board reset"
+  ],
+  "security": {
+    "protocol": "LE Legacy Just Works SMP responder",
+    "io_capability": "NoInputNoOutput",
+    "mitm": false,
+    "secure_connections": false,
+    "pairing_random_source": "HCI LE Rand",
+    "aes_source": "HCI LE Encrypt",
+    "bond_storage": "one controller-session RAM record; lost on FPGA reset or power loss",
+    "peer_key_distribution": "Encryption Information and Master Identification only; no identity/signing keys",
+    "validation": "RTL protocol tests; Android phone acceptance pending",
+    "min_key_size_bytes": 7,
+    "max_key_size_bytes": 16,
+    "mitm_request_handling": "Respond NoInputNoOutput without MITM; central policy decides whether Just Works is acceptable",
+    "command_timeout_ms": 2000,
+    "pairing_timeout_ms": 30000,
+    "command_timeout_recovery": "transport_failed -> existing board 5-second BLE reset/reinitialization"
+  }
+}

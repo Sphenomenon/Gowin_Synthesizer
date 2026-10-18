@@ -1,0 +1,17 @@
+{
+  "started_at": "2026-10-17T00:24:32.663579+08:00",
+  "passed": false,
+  "artifact": "builds/20261017_002202_037686/impl/pnr/midi_keyboard.fs",
+  "file_sha256": "d8583b1f128d2b18a8508525cb0cfb43244e7109e286fd93a2e5ff0808e16944",
+  "expected_user_code": "0x00003D0B",
+  "device": "GW5A-25A",
+  "jtag_id": "0x0001281B",
+  "cable": "FT2CH",
+  "channel": 0,
+  "frequency": "15MHz",
+  "start_address": "0x000000",
+  "physical_power_cycle_tested": false,
+  "notes": "PCA slider bar; WS ABCDHGFEIJKLPONM; reverse landscape/right strip. QT physical mapping pending H-P; raw channels retained.",
+  "error": "device_before failed:  Target Cable: Gowin USB Cable(FT2CH)/0/None/null@15MHz\n Target Device: GW5A-25A(0x0001281B)\n Operation \"Read Device Codes\" for device#1...\n Cost 0.0 second(s)\n  \n",
+  "finished_at": "2026-10-17T00:24:32.852055+08:00"
+}

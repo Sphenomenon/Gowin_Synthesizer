@@ -1,0 +1,9 @@
+{
+  "time": "2026-10-17T00:06:41.339139+08:00",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--scan-cables",
+    "F"
+  ],
+  "returncode": 0
+}

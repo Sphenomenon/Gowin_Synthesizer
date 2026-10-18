@@ -1,0 +1,28 @@
+{
+  "started_at": "2026-10-16T00:37:36.587243+08:00",
+  "script": "build.tcl",
+  "stage_directory": null,
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "reports/hardware_20261016/build_20261016_003736_574229_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "reports/hardware_20261016/build_20261016_003736_574229_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "builds/20261016_003736_574229/impl/pnr/lcd_bringup.fs",
+      "sha256": "54577ddec2d4a9d1003c77a43fa9b199a1ff7f91b2b72ae251e17784d5fa7923"
+    }
+  ],
+  "finished_at": "2026-10-16T00:37:43.835522+08:00",
+  "packaging": {
+    "kind": "relocated_verified_build",
+    "source_manifest": "reports/hardware_20261016/build_20261016_003736_574229.json",
+    "note": "Only paths relocated. Bitstream and timing report unchanged; no new hardware run claimed."
+  }
+}

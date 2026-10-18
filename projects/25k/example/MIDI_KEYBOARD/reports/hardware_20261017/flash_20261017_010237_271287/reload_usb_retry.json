@@ -1,0 +1,39 @@
+{
+  "started_at": "2026-10-17T01:04:09.361962+08:00",
+  "reason": "Readback already confirms 0x856D. One non-writing Flash reload to check USB re-enumeration.",
+  "steps": [
+    {
+      "name": "reload_retry",
+      "operation": 1,
+      "passed": true
+    },
+    {
+      "name": "device_after_retry",
+      "operation": 0,
+      "passed": true
+    }
+  ],
+  "usb_observations": [
+    {
+      "attempt": 1,
+      "targets": []
+    },
+    {
+      "attempt": 2,
+      "targets": []
+    },
+    {
+      "attempt": 3,
+      "targets": []
+    },
+    {
+      "attempt": 4,
+      "targets": []
+    },
+    {
+      "attempt": 5,
+      "targets": []
+    }
+  ],
+  "finished_at": "2026-10-17T01:04:15.260901+08:00"
+}

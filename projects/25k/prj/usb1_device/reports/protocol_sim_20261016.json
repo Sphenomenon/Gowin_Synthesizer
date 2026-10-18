@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-16",
+  "command": "sh prj/usb1_device/run_sim.sh",
+  "passed": true,
+  "upstream_commit": "ebf0696f0b1dc604a4ed8eedee4c3eae1643e66f",
+  "test": "sim/tb_usb1_cdc_loopback.sv",
+  "simulation_time_ns": 2829970.13,
+  "scope": [
+    "physical NRZI/stuffing and CRC checks",
+    "EP0 device/config/product descriptors and legal control exchanges",
+    "SET_ADDRESS status-ACK commit, address isolation, reset zero and aborted/malformed address requests",
+    "256 binary byte CDC echo and empty IN NAK",
+    "1025 bytes without IN cause exactly one FIFO overflow"
+  ],
+  "limitations": [
+    "Simulation models external D+ pull-up; physical resistor presence not established",
+    "Only upstream 2 second attach counter is accelerated",
+    "No Gowin/hardware/host enumeration performed by this subtask"
+  ],
+  "rtl_sha256": {
+    "prj/usb1_device/rtl/usb1_address_filter.v": "89276d66a3044e60b627f7ba04cdcd09568cdfa5543d47a7f13a45344e39c552",
+    "prj/usb1_device/rtl/usb1_cdc_loopback.v": "d980d247bb55f1f9ae7aa4ad0f7f4ef67ea65cc5b0cb468172f9d1ca39ad8739",
+    "prj/usb1_device/rtl/usb1_device_top.v": "939a2eb670591b5ebcd7987620e63335d06721e525c82fba4d94dee492acb0a7",
+    "prj/usb1_device/generated/usbfs_core_top.v": "1c1c59d0eddf771b43b984f6b71912224109bd47ce62c474ee249ebd7acdcc5a",
+    "prj/usb1_device/sim/tb_usb1_cdc_loopback.sv": "f1cc78001bb83ff86f3870e4e1751930876b748c0613ece23b3bf2ca3716fe9e"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "time": "2026-10-16T00:39:16.689951+08:00",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5A-25A",
+    "--operation_index",
+    "4",
+    "--fsFile",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/lcd_bringup/builds/20261016_003736_574229/impl/pnr/lcd_bringup.fs",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "15MHz"
+  ],
+  "file_sha256": "54577ddec2d4a9d1003c77a43fa9b199a1ff7f91b2b72ae251e17784d5fa7923",
+  "returncode": 0,
+  "error_in_output": false
+}

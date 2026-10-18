@@ -1,0 +1,26 @@
+{
+  "time": "2026-10-16T11:08:43.019092+08:00",
+  "status": "PASS",
+  "simulation_only": true,
+  "command": "sh prj/usb2_device/run_measure_sim.sh",
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/measure_sim_20261016_110548.log",
+  "returncode": 0,
+  "scenario_count": 10,
+  "four_page_status_cycles_checked": 10401,
+  "fixed_configuration": "FC45/IF00/OTG04",
+  "normal_debug_reads": 25,
+  "normal_writes": 5,
+  "official_primitive_models": true,
+  "sha256": {
+    "rtl/usb2_measure_top.v": "382c0421b77bd13d7c189a268cee36455a2ba5f0d8b8292bdbe845abad5e31da",
+    "rtl/usb2_lowpower_diag.v": "f18cc1fb4347ca84b3163faf4b0256730fc49f7030fed3c5421f5e9b2c841466",
+    "sim/tb_usb2_measure.sv": "408ce712ef7836172d4560984144327cd05728be3392c1d7df36889fd613b4d3",
+    "run_measure_sim.sh": "f1bc2228eeec23d00b56fde368770ff3b75ec28259f3c2c3e9cfbc40ecda478a",
+    "constraints/usb2_measure.sdc": "e821be5c5151555b800d9d4814a09328e1f9d56221e77f3a19aef41482abd7ea",
+    "build_measure_gao.tcl": "3fc32285c3689bbcc14b0f2fc8d87a07adcdb13a74b958f9fcd065d2edaca236",
+    "debug/usb2_measure_status.gao": "43bec86d57049c30bb1a04af5edd489ba3dd6f83ae65a92df02385af31b6c4c3",
+    "debug/decode_status.py": "c28236504c5ee74297e054d72cd04476a58ef67add26a3ee5a2718bc7bb218a7",
+    "debug/capture_status.py": "34bfc7010f0c915c1738864b01e0c68ed5d896a15bcbabe9e6d4d8e730124474",
+    "program_sram.py": "390ff19493ba827043e1b1db05b80cb41bcfb2067a9ea5a76df912b01e3f74c6"
+  }
+}

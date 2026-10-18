@@ -1,0 +1,23 @@
+{
+  "started_at": "2026-10-16T21:22:45.479541+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/NV3007_LCD/build.tcl",
+  "stage_directory": "/private/tmp/gw25k-build-ncrb1m_7",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/NV3007_LCD/reports/build_20261016_212245_476061_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/NV3007_LCD/reports/build_20261016_212245_476061_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/NV3007_LCD/builds/20261016_212245_476061/impl/pnr/lcd_bringup.fs",
+      "sha256": "6e1fc65cd28af19eefa451a890544c79be980066d2cb160954a5e0fbdc6e094c"
+    }
+  ],
+  "finished_at": "2026-10-16T21:22:53.522627+08:00"
+}

@@ -1,0 +1,22 @@
+{
+  "started_at": "2026-10-15T23:59:07.156342+08:00",
+  "passed": false,
+  "device_name": "W96D",
+  "device_id": "3A235A05-A978-04AD-5207-CAA8DD0723A9",
+  "connected": true,
+  "properties": [
+    "read",
+    "write-without-response",
+    "write",
+    "notify"
+  ],
+  "read": {
+    "hex": "00",
+    "valid": false,
+    "sequence": null,
+    "milliseconds": null
+  },
+  "notifications": [],
+  "status": "data_validation_failed",
+  "finished_at": "2026-10-15T23:59:27.253784+08:00"
+}

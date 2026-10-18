@@ -1,0 +1,8 @@
+{
+  "name": "GW25K MIDI Screen",
+  "detected": true,
+  "vid": "0xfb9a",
+  "pid": "0xfb9b",
+  "link_speed_bps": 480000000,
+  "configuration": 1
+}

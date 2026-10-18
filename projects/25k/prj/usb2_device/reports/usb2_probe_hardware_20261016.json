@@ -1,0 +1,38 @@
+{
+  "time": "2026-10-16T01:40:08.102978+08:00",
+  "result": "phy_probe_passed",
+  "sram_verified": true,
+  "program_report": "sram_usb2_probe_20261016_013800.json",
+  "build_manifest": "build_20261016_013729_422944.json",
+  "capture": "usb2_status_20261016_013816_decoded.json",
+  "observed": {
+    "vendor_id": 1060,
+    "product_id": 4,
+    "function_control": 69,
+    "interface_control": 0,
+    "otg_control": 0,
+    "last_read": 69,
+    "probe_stage": 18,
+    "snapshot_flags_byte": 14,
+    "probe_done": true,
+    "id_ok": true,
+    "scratch_ok": true,
+    "error": false,
+    "rxcmd_count16": 71,
+    "rxdata_count16": 0,
+    "ulpi_data": 0,
+    "ulpi_dir": false,
+    "ulpi_nxt": false,
+    "ulpi_stp": false
+  },
+  "clock_count_per_10ms": [
+    600047
+  ],
+  "clock_estimate_hz": 60004700,
+  "heartbeat50_verified": true,
+  "limits": [
+    "60MHz frequency is relative to the board nominal 50MHz clock.",
+    "PHY register/RAM tests do not demonstrate USB enumeration or host packet exchange.",
+    "RxCmd count denotes ULPI status bytes, not USB packets."
+  ]
+}

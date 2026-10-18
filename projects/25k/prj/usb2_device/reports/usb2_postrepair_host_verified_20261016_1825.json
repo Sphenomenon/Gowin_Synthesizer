@@ -1,0 +1,34 @@
+{
+  "started_at": "2026-10-16T18:24:06.959877+08:00",
+  "passed": false,
+  "mode": "enumeration_only",
+  "target": {
+    "vid": "FB9A",
+    "pid": "FB9A",
+    "product": "FPGA-USB-Serial"
+  },
+  "descriptor_scope": "registry descriptor fields only; no raw GET_DESCRIPTOR transfer is issued",
+  "query_attempts": [
+    {
+      "command": [
+        "/usr/sbin/ioreg",
+        "-p",
+        "IOService",
+        "-r",
+        "-c",
+        "IOUSBHostDevice",
+        "-l",
+        "-w",
+        "0",
+        "-a"
+      ],
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "provider": "ioreg_plist",
+  "devices": [],
+  "matching_devices": 0,
+  "status": "target_not_enumerated",
+  "finished_at": "2026-10-16T18:24:07.073093+08:00"
+}

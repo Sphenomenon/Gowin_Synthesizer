@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-10-16T15:01:45.466433+00:00",
+  "phase": "synthesis_only",
+  "top_module": "midi_keyboard_core",
+  "device": "GW5A-LV25MG121NC1/I0",
+  "target_clock_hz": 50000000,
+  "io_insertion_disabled": true,
+  "passed": true,
+  "tool_returncode": 0,
+  "synthesis_confirmed": true,
+  "place_and_route_run": false,
+  "timing_signed_off": false,
+  "bitstream_generated": false,
+  "downloadable": false,
+  "tool": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+  "log": "reports/synthesis.log",
+  "inputs": [
+    {
+      "path": "build.tcl",
+      "sha256": "ae1f0fe905082ed36ce32c8efb05f185f5351a613c6fb1024afd175f6f2ef396"
+    },
+    {
+      "path": "build.sh",
+      "sha256": "df5ea04940314b7a9bcba0cc7641db36bb84d5038ab2f0955dca64b8f3c6c42d"
+    },
+    {
+      "path": "tools/synthesize.py",
+      "sha256": "a745bd50948e48502ecd82b30e68b548cf109b6fe56bfc5d6841423e889fcb8d"
+    },
+    {
+      "path": "rtl/core/midi_event_fifo.v",
+      "sha256": "582a27007e94171bb825ec6add9160505f74bce3a738622c993548205d8873ea"
+    },
+    {
+      "path": "rtl/core/midi_event_router.v",
+      "sha256": "849d7713b4a9f82e40e960c590a4aa227e58ba6d2e7f08f652376c8746914852"
+    },
+    {
+      "path": "rtl/input/keyboard_event_mapper.v",
+      "sha256": "1313d01a00af9a0db03068d1dea06c83872564688144fedfed66849c52ecbc40"
+    },
+    {
+      "path": "rtl/transport/usb_midi_codec.v",
+      "sha256": "e9e4cccfd7a0559fdf21aa75edccff3290a456d3431a976c506ab71090efd5e6"
+    },
+    {
+      "path": "rtl/transport/ble_midi_codec.v",
+      "sha256": "cbe435abf19accb408929ad59b0ed2b89d9173c8dc1dab6c4ef4f34f87e3e2e9"
+    },
+    {
+      "path": "rtl/control/screen_control_endpoint.v",
+      "sha256": "af3cb877541fc7487c7ba5dea3cda5f18f14b9822d429668b55169aa80c3a013"
+    },
+    {
+      "path": "rtl/midi_keyboard_core.v",
+      "sha256": "50361a7028c7ecf7acb8259df6ce235a2e7e302d387734dfd7b6b7000aa78b67"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/midi_keyboard_core.vg",
+      "sha256": "a669e94fbd3999af87246e7567deb8238dbbc67875dd1ffc1064bb9e5ffcefa3",
+      "kind": "synthesis_netlist",
+      "downloadable": false
+    },
+    {
+      "path": "reports/midi_keyboard_core_syn.rpt.html",
+      "sha256": "19e1ad37cc475121ffc05c254675793ae247d4c5f78494cc45f37de39f0c2f41",
+      "kind": "synthesis_report",
+      "downloadable": false
+    },
+    {
+      "path": "reports/midi_keyboard_core_syn_resource.html",
+      "sha256": "c37abd2049d001a1e8e92b6bd22eb92aaee5d99d8996863f02b543488913bf03",
+      "kind": "synthesis_report",
+      "downloadable": false
+    },
+    {
+      "path": "reports/midi_keyboard_core_syn_rsc.xml",
+      "sha256": "2e055c81d1d7e4a379238218616e3e92aaf28547c7aea06b3612736c9afb2cdf",
+      "kind": "synthesis_report",
+      "downloadable": false
+    }
+  ],
+  "limitations": "Abstract core synthesis only: no board top, physical constraints, PnR, timing sign-off, USB/BLE hardware integration or bitstream.",
+  "stage_directory": "/private/tmp/gw25k-midi-syn-juvrbaeg",
+  "tool_sha256": "9ccd793d77f6586052ef9d53a139e36ebb4cbb2f9a36bc82a90f0f375c9e95a5",
+  "synthesis_completion_marker": true,
+  "warning_count": 0,
+  "finished_at": "2026-10-16T15:01:48.133052+00:00",
+  "log_sha256": "1f9101e931145c9a07ab9018060ad4b57fe415524f515c00283454322528ca4c"
+}

@@ -1,0 +1,50 @@
+{
+  "source_project": "example/ENCODER_LCD (board bring-up in this chat)",
+  "packaged_example": "example/ENCODER_LCD",
+  "source_build": "20261016_221809_282658",
+  "verified_manifest": "reports/verified_build.json",
+  "fs_sha256": "2456abb48e1d5bd01a453531338bd7bb5c53acbd382ae5118582dfc0ffb15f39",
+  "parameters": {
+    "clock_hz": 50000000,
+    "ab_filter_us": 20,
+    "key_filter_ms": 1,
+    "spi_hz": 5000000,
+    "refresh_gap_ms": 2,
+    "width": 142,
+    "height": 428,
+    "col_offset": 12,
+    "row_offset": 0,
+    "detents_per_revolution": 30
+  },
+  "hardware_result": {
+    "sram_program_verify_passed": true,
+    "user_code_hex": "06D1",
+    "status_code_hex": "70022020",
+    "report": "reports/hardware_20261016/sram_encoder_lcd_20261016_221844_506162.json",
+    "physical_rotation_and_display_observation": "pending_user_observation"
+  },
+  "hardware_source_sha256": {
+    "src/encoder_input.v": "59b78d115f05cb980af831865d0f7b9f8887a83d0c0e6bba8e0a423e02238ce4",
+    "src/encoder_lcd.cst": "a23c19df494932ade992d8330547ca84b3930bd9e8737336a2ed9a54bf95c0b5",
+    "src/encoder_lcd.sdc": "debb71ed344fedf48a59e4d84eed6d0370f2a05ee94f0e1b2af7ae4eb9278bec",
+    "src/encoder_lcd_display.v": "852e5f82dc3c71154d5f0a84ae1d87736b9f2352b7f9e9cc798aea7f09085b19",
+    "src/encoder_lcd_top.v": "12a8849b1941337e7b8e3fd351af11a39815dea96d8ec957f1d3a2d6c7311fe8",
+    "src/encoder_lcd_view.v": "31eba1f78cf0b7de038364d2739def90e50eef6c953a80a94fb008695d90e3cc",
+    "src/lcd_init_rom.v": "3c1cc72ca98a2f4e0cea6911e8ac438989eb15846f4a84bcb659dbdc4a7fedb6",
+    "src/lcd_spi_byte.v": "3a3f1f3d6a065aae955fdd3b7b24df179330c94a405d7c17db8466df580f45a1"
+  },
+  "lcd_source": {
+    "project": "example/NV3007_LCD",
+    "copied_files": [
+      "src/lcd_spi_byte.v",
+      "src/lcd_init_rom.v",
+      "sim/init_expected.mem",
+      "generate_init.py",
+      "nv3007_279_init.txt",
+      "THIRD_PARTY_LICENSE.txt"
+    ],
+    "note": "All required copies are local; the sibling example is not a runtime or build dependency."
+  },
+  "archive": "archive/debug_20261016",
+  "note": "The packaged default is the existing fast-debounce image. Historical reports retain their original absolute paths; use reports/verified_build.json for portable programming."
+}

@@ -1,0 +1,31 @@
+{
+  "time": "2026-10-16T22:18:44.506198+08:00",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5A-25A",
+    "--operation_index",
+    "4",
+    "--fsFile",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/ENCODER_LCD/builds/20261016_221809_282658/impl/pnr/encoder_lcd.fs",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "15MHz"
+  ],
+  "manifest": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/ENCODER_LCD/reports/last_build.json",
+  "file_sha256": "2456abb48e1d5bd01a453531338bd7bb5c53acbd382ae5118582dfc0ffb15f39",
+  "passed": true,
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/ENCODER_LCD/reports/sram_encoder_lcd_20261016_221844_506162.log",
+  "returncode": 0,
+  "user_code": [
+    "0x000006D1"
+  ],
+  "status_code": [
+    "0x70022020"
+  ],
+  "error_in_output": false,
+  "finished": true
+}

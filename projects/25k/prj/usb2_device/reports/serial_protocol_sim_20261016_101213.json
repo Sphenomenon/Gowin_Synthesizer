@@ -1,0 +1,62 @@
+{
+  "time": "2026-10-16T10:12:13.302796+08:00",
+  "status": "PASS",
+  "simulation_only": true,
+  "checks": [
+    {
+      "command": "sh prj/usb2_device/run_serial_sim.sh",
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/serial_sim_20261016_101213_run_serial_sim.log"
+    },
+    {
+      "command": "sh prj/usb2_device/run_serial_integration_sim.sh",
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/serial_sim_20261016_101213_run_serial_integration_sim.log"
+    },
+    {
+      "command": "sh prj/usb2_device/run_serial_init_sim.sh",
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb2_device/reports/serial_sim_20261016_101213_run_serial_init_sim.log"
+    }
+  ],
+  "integration_combinations": [
+    {
+      "d1_invert": 0,
+      "activity_diag": 0
+    },
+    {
+      "d1_invert": 0,
+      "activity_diag": 1
+    },
+    {
+      "d1_invert": 1,
+      "activity_diag": 0
+    },
+    {
+      "d1_invert": 1,
+      "activity_diag": 1
+    }
+  ],
+  "sha256": {
+    "rtl/usb2_serial_activity.v": "efd1122023150d0982f7ee895ccc110d4e975f02c7971291727feb4621874f1f",
+    "rtl/usb2_serial_top.v": "b5a8c55cf5e8f77083d16c8385bf4766133888904e9c029ab692a0b1c25cce1c",
+    "rtl/usb2_serial_init.v": "fda597915637c50b36f7f4f0536e6543e3f5ceb3c4884dbf48ba2beb2ab6b17e",
+    "sim/tb_usb2_serial_init.sv": "2c60b8b6c2d04c630af1b634f0de3754d9da4ac19a528b9382e0f8b1b723ea69",
+    "sim/tb_usb2_serial_integration.sv": "bcf9cb995069fa4436bc76b39c462701ad426b9e929d65592374c5631e0b3eb9",
+    "sim/usb3300_serial_phy_model.sv": "81bc569b3d637fb2f9d36878f7d3be5e6b66ac5c9f7f0479e0fd953f11965673",
+    "sim/tb_usb2_serial_activity.sv": "ec970f9d5a5b516b1cf2847369554fb34c3651007b7259baecac00db4211c31e",
+    "rtl/usb2_cdc_loopback.v": "11059ba06fec4e7edc616d5a86988740ae919dbaf8b30b445adfa5d74bec5500",
+    "generate_serial_core.py": "52351f07b2c8ef33937dc5d85b547b7b1212d3028ff53a0d139e0724f49f857e",
+    "generated/usbfs_core_top.v": "6cf05a211dbaf6b544e1e2d1e56400c32e0d5043282764c03ce5f81be47ca76f",
+    "generated/usb2_address_filter.v": "47b09c2b8977eee0b1e3b86d1ec07ba7fc76bc9a552578767a6c5cb0d472c218",
+    "generated/usb_serial_top.v": "68be94ba990201ace7153e9ae56f0c585d22efaaa1bb82ab92bdd864b110e651",
+    "run_serial_sim.sh": "2493d8a4115eb1d2e68d731eb865f938ac2cdb6aaadf40f65bc0aa4cfa9caf8a",
+    "run_serial_integration_sim.sh": "9395af50a9785aace3e2ab97607ff9dfe209c7e063f5551ace67b5bdddc4e7ec",
+    "run_serial_init_sim.sh": "eb05fbfa86c7a762100688bfefa4bfd71ea701023cfc6324c4bff3edf5387935"
+  },
+  "limitations": [
+    "Behavioral PHY does not verify analog signal quality.",
+    "Hardware enumeration and binary loopback have not passed.",
+    "Both D1 polarities tested in matched DUT/PHY models; hardware polarity remains unproven."
+  ]
+}

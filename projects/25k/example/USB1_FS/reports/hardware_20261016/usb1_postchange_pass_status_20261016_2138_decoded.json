@@ -1,0 +1,3592 @@
+{
+  "source": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb1_device/reports/usb1_postchange_pass_status_20261016_2138_core0_window0.csv",
+  "sample_count": 128,
+  "sample_clock_hz": 50000000,
+  "note": "CSV time labels are retained as exported; they do not establish USB bit timing. Two-flop line samples are diagnostic observations, not a USB protocol trace.",
+  "samples": [
+    {
+      "sample": 0,
+      "export_time_label": "0",
+      "status": {
+        "raw_hex": "FFFF0000121CF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4636,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 1,
+      "export_time_label": "1",
+      "status": {
+        "raw_hex": "FFFF0000121DF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4637,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 2,
+      "export_time_label": "2",
+      "status": {
+        "raw_hex": "FFFF0000121EF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4638,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 3,
+      "export_time_label": "3",
+      "status": {
+        "raw_hex": "FFFF0000121FF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4639,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 4,
+      "export_time_label": "4",
+      "status": {
+        "raw_hex": "FFFF00001220F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4640,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 5,
+      "export_time_label": "5",
+      "status": {
+        "raw_hex": "FFFF00001221F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4641,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 6,
+      "export_time_label": "6",
+      "status": {
+        "raw_hex": "FFFF00001222F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4642,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 7,
+      "export_time_label": "7",
+      "status": {
+        "raw_hex": "FFFF00001223F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4643,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 8,
+      "export_time_label": "8",
+      "status": {
+        "raw_hex": "FFFF00001224F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4644,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 9,
+      "export_time_label": "9",
+      "status": {
+        "raw_hex": "FFFF00001225F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4645,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 10,
+      "export_time_label": "10",
+      "status": {
+        "raw_hex": "FFFF00001226F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4646,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 11,
+      "export_time_label": "11",
+      "status": {
+        "raw_hex": "FFFF00001227F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4647,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 12,
+      "export_time_label": "12",
+      "status": {
+        "raw_hex": "FFFF00001228F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4648,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 13,
+      "export_time_label": "13",
+      "status": {
+        "raw_hex": "FFFF00001229F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4649,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 14,
+      "export_time_label": "14",
+      "status": {
+        "raw_hex": "FFFF0000122AF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4650,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 15,
+      "export_time_label": "15",
+      "status": {
+        "raw_hex": "FFFF0000122BF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4651,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 16,
+      "export_time_label": "16",
+      "status": {
+        "raw_hex": "FFFF0000122CF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4652,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 17,
+      "export_time_label": "17",
+      "status": {
+        "raw_hex": "FFFF0000122DF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4653,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 18,
+      "export_time_label": "18",
+      "status": {
+        "raw_hex": "FFFF0000122EF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4654,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 19,
+      "export_time_label": "19",
+      "status": {
+        "raw_hex": "FFFF0000122FF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4655,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 20,
+      "export_time_label": "20",
+      "status": {
+        "raw_hex": "FFFF00001230F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4656,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 21,
+      "export_time_label": "21",
+      "status": {
+        "raw_hex": "FFFF00001231F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4657,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 22,
+      "export_time_label": "22",
+      "status": {
+        "raw_hex": "FFFF00001232F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4658,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 23,
+      "export_time_label": "23",
+      "status": {
+        "raw_hex": "FFFF00001233F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4659,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 24,
+      "export_time_label": "24",
+      "status": {
+        "raw_hex": "FFFF00001234F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4660,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 25,
+      "export_time_label": "25",
+      "status": {
+        "raw_hex": "FFFF00001235F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4661,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 26,
+      "export_time_label": "26",
+      "status": {
+        "raw_hex": "FFFF00001236F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4662,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 27,
+      "export_time_label": "27",
+      "status": {
+        "raw_hex": "FFFF00001237F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4663,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 28,
+      "export_time_label": "28",
+      "status": {
+        "raw_hex": "FFFF00001238F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4664,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 29,
+      "export_time_label": "29",
+      "status": {
+        "raw_hex": "FFFF00001239F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4665,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 30,
+      "export_time_label": "30",
+      "status": {
+        "raw_hex": "FFFF0000123AF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4666,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 31,
+      "export_time_label": "31",
+      "status": {
+        "raw_hex": "FFFF0000123BF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4667,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 32,
+      "export_time_label": "32",
+      "status": {
+        "raw_hex": "FFFF0000123CF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4668,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 33,
+      "export_time_label": "33",
+      "status": {
+        "raw_hex": "FFFF0000123DF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4669,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 34,
+      "export_time_label": "34",
+      "status": {
+        "raw_hex": "FFFF0000123EF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4670,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 35,
+      "export_time_label": "35",
+      "status": {
+        "raw_hex": "FFFF0000123FF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4671,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 36,
+      "export_time_label": "36",
+      "status": {
+        "raw_hex": "FFFF00001240F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4672,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 37,
+      "export_time_label": "37",
+      "status": {
+        "raw_hex": "FFFF00001241F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4673,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 38,
+      "export_time_label": "38",
+      "status": {
+        "raw_hex": "FFFF00001242F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4674,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 39,
+      "export_time_label": "39",
+      "status": {
+        "raw_hex": "FFFF00001243F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4675,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 40,
+      "export_time_label": "40",
+      "status": {
+        "raw_hex": "FFFF00001244F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4676,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 41,
+      "export_time_label": "41",
+      "status": {
+        "raw_hex": "FFFF00001245F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4677,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 42,
+      "export_time_label": "42",
+      "status": {
+        "raw_hex": "FFFF00001246F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4678,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 43,
+      "export_time_label": "43",
+      "status": {
+        "raw_hex": "FFFF00001247F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4679,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 44,
+      "export_time_label": "44",
+      "status": {
+        "raw_hex": "FFFF00001248F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4680,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 45,
+      "export_time_label": "45",
+      "status": {
+        "raw_hex": "FFFF00001249F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4681,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 46,
+      "export_time_label": "46",
+      "status": {
+        "raw_hex": "FFFF0000124AF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4682,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 47,
+      "export_time_label": "47",
+      "status": {
+        "raw_hex": "FFFF0000124BF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4683,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 48,
+      "export_time_label": "48",
+      "status": {
+        "raw_hex": "FFFF0000124CF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4684,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 49,
+      "export_time_label": "49",
+      "status": {
+        "raw_hex": "FFFF0000124DF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4685,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 50,
+      "export_time_label": "50",
+      "status": {
+        "raw_hex": "FFFF0000124EF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4686,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 51,
+      "export_time_label": "51",
+      "status": {
+        "raw_hex": "FFFF0000124FF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4687,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 52,
+      "export_time_label": "52",
+      "status": {
+        "raw_hex": "FFFF00001250F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4688,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 53,
+      "export_time_label": "53",
+      "status": {
+        "raw_hex": "FFFF00001251F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4689,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 54,
+      "export_time_label": "54",
+      "status": {
+        "raw_hex": "FFFF00001252F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4690,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 55,
+      "export_time_label": "55",
+      "status": {
+        "raw_hex": "FFFF00001253F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4691,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 56,
+      "export_time_label": "56",
+      "status": {
+        "raw_hex": "FFFF00001254F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4692,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 57,
+      "export_time_label": "57",
+      "status": {
+        "raw_hex": "FFFF00001255F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4693,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 58,
+      "export_time_label": "58",
+      "status": {
+        "raw_hex": "FFFF00001256F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4694,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 59,
+      "export_time_label": "59",
+      "status": {
+        "raw_hex": "FFFF00001257F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4695,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 60,
+      "export_time_label": "60",
+      "status": {
+        "raw_hex": "FFFF00001258F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4696,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 61,
+      "export_time_label": "61",
+      "status": {
+        "raw_hex": "FFFF00001259F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4697,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 62,
+      "export_time_label": "62",
+      "status": {
+        "raw_hex": "FFFF0000125AF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4698,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 63,
+      "export_time_label": "63",
+      "status": {
+        "raw_hex": "FFFF0000125BF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4699,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 64,
+      "export_time_label": "64",
+      "status": {
+        "raw_hex": "FFFF0000125CF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4700,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 65,
+      "export_time_label": "65",
+      "status": {
+        "raw_hex": "FFFF0000125DF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4701,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 66,
+      "export_time_label": "66",
+      "status": {
+        "raw_hex": "FFFF0000125EF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4702,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 67,
+      "export_time_label": "67",
+      "status": {
+        "raw_hex": "FFFF0000125FF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4703,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 68,
+      "export_time_label": "68",
+      "status": {
+        "raw_hex": "FFFF00001260F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4704,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 69,
+      "export_time_label": "69",
+      "status": {
+        "raw_hex": "FFFF00001261F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4705,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 70,
+      "export_time_label": "70",
+      "status": {
+        "raw_hex": "FFFF00001262F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4706,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 71,
+      "export_time_label": "71",
+      "status": {
+        "raw_hex": "FFFF00001263F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4707,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 72,
+      "export_time_label": "72",
+      "status": {
+        "raw_hex": "FFFF00001264F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4708,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 73,
+      "export_time_label": "73",
+      "status": {
+        "raw_hex": "FFFF00001265F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4709,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 74,
+      "export_time_label": "74",
+      "status": {
+        "raw_hex": "FFFF00001266F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4710,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 75,
+      "export_time_label": "75",
+      "status": {
+        "raw_hex": "FFFF00001267F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4711,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 76,
+      "export_time_label": "76",
+      "status": {
+        "raw_hex": "FFFF00001268F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4712,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 77,
+      "export_time_label": "77",
+      "status": {
+        "raw_hex": "FFFF00001269F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4713,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 78,
+      "export_time_label": "78",
+      "status": {
+        "raw_hex": "FFFF0000126AF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4714,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 79,
+      "export_time_label": "79",
+      "status": {
+        "raw_hex": "FFFF0000126BF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4715,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 80,
+      "export_time_label": "80",
+      "status": {
+        "raw_hex": "FFFF0000126CF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4716,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 81,
+      "export_time_label": "81",
+      "status": {
+        "raw_hex": "FFFF0000126DF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4717,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 82,
+      "export_time_label": "82",
+      "status": {
+        "raw_hex": "FFFF0000126EF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4718,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 83,
+      "export_time_label": "83",
+      "status": {
+        "raw_hex": "FFFF0000126FF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4719,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 84,
+      "export_time_label": "84",
+      "status": {
+        "raw_hex": "FFFF00001270F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4720,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 85,
+      "export_time_label": "85",
+      "status": {
+        "raw_hex": "FFFF00001271F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4721,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 86,
+      "export_time_label": "86",
+      "status": {
+        "raw_hex": "FFFF00001272F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4722,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 87,
+      "export_time_label": "87",
+      "status": {
+        "raw_hex": "FFFF00001273F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4723,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 88,
+      "export_time_label": "88",
+      "status": {
+        "raw_hex": "FFFF00001274F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4724,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 89,
+      "export_time_label": "89",
+      "status": {
+        "raw_hex": "FFFF00001275F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4725,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 90,
+      "export_time_label": "90",
+      "status": {
+        "raw_hex": "FFFF00001276F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4726,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 91,
+      "export_time_label": "91",
+      "status": {
+        "raw_hex": "FFFF00001277F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4727,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 92,
+      "export_time_label": "92",
+      "status": {
+        "raw_hex": "FFFF00001278F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4728,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 93,
+      "export_time_label": "93",
+      "status": {
+        "raw_hex": "FFFF00001279F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4729,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 94,
+      "export_time_label": "94",
+      "status": {
+        "raw_hex": "FFFF0000127AF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4730,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 95,
+      "export_time_label": "95",
+      "status": {
+        "raw_hex": "FFFF0000127BF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4731,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 96,
+      "export_time_label": "96",
+      "status": {
+        "raw_hex": "FFFF0000127CF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4732,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 97,
+      "export_time_label": "97",
+      "status": {
+        "raw_hex": "FFFF0000127DF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4733,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 98,
+      "export_time_label": "98",
+      "status": {
+        "raw_hex": "FFFF0000127EF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4734,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 99,
+      "export_time_label": "99",
+      "status": {
+        "raw_hex": "FFFF0000127FF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4735,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 100,
+      "export_time_label": "100",
+      "status": {
+        "raw_hex": "FFFF00001280F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4736,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 101,
+      "export_time_label": "101",
+      "status": {
+        "raw_hex": "FFFF00001281F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4737,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 102,
+      "export_time_label": "102",
+      "status": {
+        "raw_hex": "FFFF00001282F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4738,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 103,
+      "export_time_label": "103",
+      "status": {
+        "raw_hex": "FFFF00001283F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4739,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 104,
+      "export_time_label": "104",
+      "status": {
+        "raw_hex": "FFFF00001284F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4740,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 105,
+      "export_time_label": "105",
+      "status": {
+        "raw_hex": "FFFF00001285F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4741,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 106,
+      "export_time_label": "106",
+      "status": {
+        "raw_hex": "FFFF00001286F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4742,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 107,
+      "export_time_label": "107",
+      "status": {
+        "raw_hex": "FFFF00001287F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4743,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 108,
+      "export_time_label": "108",
+      "status": {
+        "raw_hex": "FFFF00001288F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4744,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 109,
+      "export_time_label": "109",
+      "status": {
+        "raw_hex": "FFFF00001289F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4745,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 110,
+      "export_time_label": "110",
+      "status": {
+        "raw_hex": "FFFF0000128AF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4746,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 111,
+      "export_time_label": "111",
+      "status": {
+        "raw_hex": "FFFF0000128BF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4747,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 112,
+      "export_time_label": "112",
+      "status": {
+        "raw_hex": "FFFF0000128CF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4748,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 113,
+      "export_time_label": "113",
+      "status": {
+        "raw_hex": "FFFF0000128DF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4749,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 114,
+      "export_time_label": "114",
+      "status": {
+        "raw_hex": "FFFF0000128EF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4750,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 115,
+      "export_time_label": "115",
+      "status": {
+        "raw_hex": "FFFF0000128FF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4751,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 116,
+      "export_time_label": "116",
+      "status": {
+        "raw_hex": "FFFF00001290F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4752,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 117,
+      "export_time_label": "117",
+      "status": {
+        "raw_hex": "FFFF00001291F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4753,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 118,
+      "export_time_label": "118",
+      "status": {
+        "raw_hex": "FFFF00001292F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4754,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 119,
+      "export_time_label": "119",
+      "status": {
+        "raw_hex": "FFFF00001293F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4755,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 120,
+      "export_time_label": "120",
+      "status": {
+        "raw_hex": "FFFF00001294F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4756,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 121,
+      "export_time_label": "121",
+      "status": {
+        "raw_hex": "FFFF00001295F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4757,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 122,
+      "export_time_label": "122",
+      "status": {
+        "raw_hex": "FFFF00001296F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4758,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 123,
+      "export_time_label": "123",
+      "status": {
+        "raw_hex": "FFFF00001297F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4759,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 124,
+      "export_time_label": "124",
+      "status": {
+        "raw_hex": "FFFF00001298F9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4760,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 125,
+      "export_time_label": "125",
+      "status": {
+        "raw_hex": "FFFF00001299F9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4761,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    },
+    {
+      "sample": 126,
+      "export_time_label": "126",
+      "status": {
+        "raw_hex": "FFFF0000121AF9F6",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4634,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": false
+        }
+      }
+    },
+    {
+      "sample": 127,
+      "export_time_label": "127",
+      "status": {
+        "raw_hex": "FFFF0000121BF9F7",
+        "line_transitions_saturated16": 65535,
+        "se0_consecutive_cycles_saturated16": 0,
+        "j_consecutive_cycles_saturated16": 4635,
+        "line_state": 2,
+        "line_name": "FS_J",
+        "flags": {
+          "pll_locked": true,
+          "reset60n": true,
+          "usb_bus_reset_released": true,
+          "attach_intent_unconnected": true,
+          "overflow_seen": false,
+          "received_seen": true,
+          "heartbeat50": true,
+          "heartbeat60": true,
+          "line_activity_seen": true,
+          "se0_long_seen": true,
+          "se1_long_seen": false,
+          "monitor_settled": true,
+          "j_long_seen": true,
+          "heartbeat50_fast": true
+        }
+      }
+    }
+  ]
+}

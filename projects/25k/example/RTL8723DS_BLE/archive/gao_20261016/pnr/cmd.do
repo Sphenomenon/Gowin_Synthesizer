@@ -1,0 +1,23 @@
+-d /Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/prj/ble_bringup/impl/gwsynthesis/ble_bringup_gao.vg
+-p GW5A-25A-MBGA121N-1
+-pn GW5A-LV25MG121NC1/I0
+-cst /Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/prj/ble_bringup/constraints/ble_bringup.cst
+-cfg /Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/prj/ble_bringup/impl/pnr/device.cfg
+-sdc /Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/prj/ble_bringup/constraints/ble_bringup_gao.sdc
+-gao_crc 0100110001100100
+-bit
+-tr
+-ph
+-oc
+-tt
+-timing
+-cst_error
+-convert_sdp32_36_to_sdp16_18
+-place_option 0
+-route_option 0
+-clock_route_order 0
+-correct_hold 1
+-route_maxfan 23
+-global_freq 100.000
+-enable_dsrm 0
+-rtl_gao

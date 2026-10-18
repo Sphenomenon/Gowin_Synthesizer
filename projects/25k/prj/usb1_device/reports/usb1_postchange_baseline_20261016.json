@@ -1,0 +1,36 @@
+{
+  "started_at": "2026-10-16T21:34:00.672135+08:00",
+  "passed": false,
+  "mode": "enumeration_only",
+  "target": {
+    "vid": "FB9A",
+    "pid": "FB9A",
+    "product": "FPGA-USB-Serial"
+  },
+  "expected_speed_mbps": 12,
+  "descriptor_scope": "registry descriptor fields only; no raw GET_DESCRIPTOR transfer is issued",
+  "query_attempts": [
+    {
+      "command": [
+        "/usr/sbin/ioreg",
+        "-p",
+        "IOService",
+        "-r",
+        "-c",
+        "IOUSBHostDevice",
+        "-l",
+        "-w",
+        "0",
+        "-a"
+      ],
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "provider": "ioreg_plist",
+  "devices": [],
+  "matching_devices": 0,
+  "status": "check_failed",
+  "error": "ValueError: refusing speed check: expected one target device, found 0",
+  "finished_at": "2026-10-16T21:34:00.781345+08:00"
+}

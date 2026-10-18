@@ -1,0 +1,24 @@
+{
+  "source_project": "prj/usb2_device",
+  "source_build": "20261016_185336_363191",
+  "fs_sha256": "edaa6d5df4630249dc126de835f70e0d31b174a61cc4862fa82c9a4d8dead557",
+  "hardware_result": {
+    "link_mbps": 480,
+    "loopback_bytes": 21248,
+    "loopback_chunks": 56,
+    "overflow_count": 0,
+    "utmi_rxerror_seen": false
+  },
+  "source_hardware_report": "reports/hardware_20261016/usb2_hs_20261016.json",
+  "hardware_source_sha256": {
+    "hs/usb2_hs_top.v": "ec657d719c1a49aa272abee10334b4b28d79ac2cee7c0c5e7bbe9487c3edb87a",
+    "hs/usb2_hs_boot.v": "97d4a7ca91002e9b1f15e3f1a46bce47dc9413029516b816d2a8d2be6ab87f96",
+    "hs/usb2_hs_echo.v": "14fafd323adac2999aa73b058151eef06a1d439bc1c37b61b1e7594004702af3",
+    "hs/usb_cdc_core.v": "a6260bcbeb7418142a82aaa066b8c2030f0f7d7a3f42cadc8b4fdca054f16b21",
+    "hs/usb_desc_rom.v": "0dd5db3ca174ff8ed3a5862071ebee3ddd21653b77428eb55db4198475bcbaf8",
+    "constraints/usb2_device.cst": "4c9a2f7e2f3e89addd5322d2e803aba1b70f9506df05d5acd8d651cad37ccccb",
+    "constraints/usb2_device.sdc": "8ee78708da2e667a5878d455cdc7686a1d5419f29f9e890d3503f3ecd1be8a0a",
+    "debug/usb2_hs_status.gao": "b84c9ae9170768efd89d5c5ba111bb992bcbba797f4831b64671c1aeb966d5ad",
+    "debug/usb2_status_50mhz.v": "a41bf94f8e0a78a6b93895f83ba7ea596dad0359022adf7b43bcbc1596779dd0"
+  }
+}

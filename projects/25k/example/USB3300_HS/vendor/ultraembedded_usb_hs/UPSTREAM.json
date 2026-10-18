@@ -1,0 +1,26 @@
+{
+  "cdc": {
+    "url": "https://github.com/ultraembedded/core_usb_cdc.git",
+    "commit": "d61b43fbd97fcb333fde203d7b885da315e3c2d4",
+    "files": {
+      "usb_desc_rom.v": "88ca70d23a44d25230723226e1c8a2a84de5b0f9cf85e65db13c60afb41f3c69",
+      "LICENSE": "20c17d8b8c48a600800dfd14f95d5cb9ff47066a9641ddeab48dc54aec96e331",
+      "usbf_device_core.v": "a5283b58e6df54a3d9149ed139f34f4a9d190f7b1a20b10d87149f6b3ee5262d",
+      "usbf_sie_rx.v": "8b357ce23dfa2ad8ce418289be7056f6a1fd2af41afa0e088f7846cff7638464",
+      "usb_cdc_core.v": "e8c8082f39f8436740207d7e840955d9841b96482f7c3704ff01b246ef86a575",
+      "usbf_sie_tx.v": "e0e7acb454d59894fc2c6e871b30ddeaa441207dc7171d8c787b56f3e4424c49",
+      "README.md": "5a00315b141ea74cf28dd92e9a30ff79f8b6e4a618017aecbc8bb6f8432d2f5e",
+      "usbf_crc16.v": "ad478724e9e71c724788274c237a8324d27deb17724b39d0681740eda92f18d9",
+      "usbf_defs.v": "5ea9871d316cea1a9b7f5faf33c0f9b3bb513594aacb33288638c2a64a28f484"
+    }
+  },
+  "ulpi": {
+    "url": "https://github.com/ultraembedded/core_ulpi_wrapper.git",
+    "commit": "3c202963ac4b4ae50cadb44ce79c11463d3c6484",
+    "files": {
+      "ulpi_wrapper.v": "2a3d0ecacd8aa3b8329294d59b561e16bc9c9141d877cc19041434767ffba005",
+      "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "README.md": "361775bedf4108b66e322023952fbc2bf591b46720f9ba371e48c53c3e014806"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "started_at": "2026-10-16T01:15:45.854818+08:00",
+  "script": "build_gao.tcl",
+  "stage_directory": null,
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "reports/hardware_20261016/build_20261016_011545_836351_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "reports/hardware_20261016/build_20261016_011545_836351_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "builds/20261016_011545_836351/impl/pnr/ao_0.fs",
+      "sha256": "bed38e61a1c0b21c738f5ad56d43ea2dc2abe0b1a53ac236fdde674ad4cdc253"
+    }
+  ],
+  "finished_at": "2026-10-16T01:15:54.298183+08:00",
+  "gao": [
+    {
+      "definition": "debug/usb1_status.gao",
+      "sha256": "a0140b7735fc931442e07e334b0e5ac2993d29cef1ccd21d201e5661f8a8d547"
+    }
+  ],
+  "packaging": {
+    "kind": "relocated_verified_build",
+    "source_manifest": "reports/hardware_20261016/build_20261016_011545_836351.json",
+    "note": "Bitstream, timing and GAO XML are unchanged. Paths relocated and the verified GAO XML hash added; no new hardware run is claimed."
+  }
+}

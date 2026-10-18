@@ -1,0 +1,592 @@
+{
+  "started_at": "2026-10-16T18:56:22.688882+08:00",
+  "passed": true,
+  "mode": "loopback",
+  "target": {
+    "vid": "FB9A",
+    "pid": "FB9B",
+    "product": "GW25K-USB-HS"
+  },
+  "expected_speed_mbps": 480,
+  "descriptor_scope": "registry descriptor fields only; no raw GET_DESCRIPTOR transfer is issued",
+  "query_attempts": [
+    {
+      "command": [
+        "/usr/sbin/ioreg",
+        "-p",
+        "IOService",
+        "-r",
+        "-c",
+        "IOUSBHostDevice",
+        "-l",
+        "-w",
+        "0",
+        "-a"
+      ],
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "provider": "ioreg_plist",
+  "devices": [
+    {
+      "registry_id": 4295058843,
+      "registry_name": "GW25K-USB-HS",
+      "properties": {
+        "idVendor": 64410,
+        "idProduct": 64411,
+        "bcdUSB": 512,
+        "bcdDevice": 256,
+        "bDeviceClass": 2,
+        "bDeviceSubClass": 0,
+        "bDeviceProtocol": 0,
+        "bMaxPacketSize0": 64,
+        "bNumConfigurations": 1,
+        "USB Product Name": "GW25K_USB_HS",
+        "kUSBProductString": "GW25K-USB-HS",
+        "USB Vendor Name": "GW25K",
+        "USB Serial Number": "GW25KHS01",
+        "USB Address": 13,
+        "locationID": 17904128,
+        "USBSpeed": 3,
+        "UsbLinkSpeed": 480000000,
+        "Device Speed": 2,
+        "kUSBCurrentConfiguration": 1
+      },
+      "interfaces": [
+        {
+          "bInterfaceNumber": 0,
+          "bAlternateSetting": 0,
+          "bInterfaceClass": 2,
+          "bInterfaceSubClass": 2,
+          "bInterfaceProtocol": 1,
+          "bNumEndpoints": 1
+        },
+        {
+          "bInterfaceNumber": 1,
+          "bAlternateSetting": 0,
+          "bInterfaceClass": 10,
+          "bInterfaceSubClass": 0,
+          "bInterfaceProtocol": 0,
+          "bNumEndpoints": 2
+        }
+      ],
+      "serial_ports": [
+        {
+          "callout": "/dev/cu.usbmodemGW25KHS011",
+          "dialin": "/dev/tty.usbmodemGW25KHS011",
+          "registry_id": 4295058860
+        }
+      ],
+      "descriptor_properties": {}
+    }
+  ],
+  "matching_devices": 1,
+  "speed_check": {
+    "expected_speed_mbps": 480,
+    "observed_speed_mbps": 480.0,
+    "registry_evidence": {
+      "UsbLinkSpeed": 480000000,
+      "Device Speed": 2
+    },
+    "passed": true
+  },
+  "pre_open_query_attempts": [
+    {
+      "command": [
+        "/usr/sbin/ioreg",
+        "-p",
+        "IOService",
+        "-r",
+        "-c",
+        "IOUSBHostDevice",
+        "-l",
+        "-w",
+        "0",
+        "-a"
+      ],
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "pre_open_devices": [
+    {
+      "registry_id": 4295058843,
+      "registry_name": "GW25K-USB-HS",
+      "properties": {
+        "idVendor": 64410,
+        "idProduct": 64411,
+        "bcdUSB": 512,
+        "bcdDevice": 256,
+        "bDeviceClass": 2,
+        "bDeviceSubClass": 0,
+        "bDeviceProtocol": 0,
+        "bMaxPacketSize0": 64,
+        "bNumConfigurations": 1,
+        "USB Product Name": "GW25K_USB_HS",
+        "kUSBProductString": "GW25K-USB-HS",
+        "USB Vendor Name": "GW25K",
+        "USB Serial Number": "GW25KHS01",
+        "USB Address": 13,
+        "locationID": 17904128,
+        "USBSpeed": 3,
+        "UsbLinkSpeed": 480000000,
+        "Device Speed": 2,
+        "kUSBCurrentConfiguration": 1
+      },
+      "interfaces": [
+        {
+          "bInterfaceNumber": 0,
+          "bAlternateSetting": 0,
+          "bInterfaceClass": 2,
+          "bInterfaceSubClass": 2,
+          "bInterfaceProtocol": 1,
+          "bNumEndpoints": 1
+        },
+        {
+          "bInterfaceNumber": 1,
+          "bAlternateSetting": 0,
+          "bInterfaceClass": 10,
+          "bInterfaceSubClass": 0,
+          "bInterfaceProtocol": 0,
+          "bNumEndpoints": 2
+        }
+      ],
+      "serial_ports": [
+        {
+          "callout": "/dev/cu.usbmodemGW25KHS011",
+          "dialin": "/dev/tty.usbmodemGW25KHS011",
+          "registry_id": 4295058860
+        }
+      ],
+      "descriptor_properties": {}
+    }
+  ],
+  "pre_open_speed_check": {
+    "expected_speed_mbps": 480,
+    "observed_speed_mbps": 480.0,
+    "registry_evidence": {
+      "UsbLinkSpeed": 480000000,
+      "Device Speed": 2
+    },
+    "passed": true
+  },
+  "loopback": {
+    "port": "/dev/cu.usbmodemGW25KHS011",
+    "baudrate": 115200,
+    "dtr": true,
+    "chunk_sizes": [
+      1,
+      31,
+      64,
+      511,
+      512,
+      513,
+      1024
+    ],
+    "rounds": 8,
+    "timeout_seconds_per_chunk": 3.0,
+    "chunks": [
+      {
+        "offset": 0,
+        "size": 1,
+        "written": 1,
+        "received": 1,
+        "passed": true
+      },
+      {
+        "offset": 1,
+        "size": 31,
+        "written": 31,
+        "received": 31,
+        "passed": true
+      },
+      {
+        "offset": 32,
+        "size": 64,
+        "written": 64,
+        "received": 64,
+        "passed": true
+      },
+      {
+        "offset": 96,
+        "size": 511,
+        "written": 511,
+        "received": 511,
+        "passed": true
+      },
+      {
+        "offset": 607,
+        "size": 512,
+        "written": 512,
+        "received": 512,
+        "passed": true
+      },
+      {
+        "offset": 1119,
+        "size": 513,
+        "written": 513,
+        "received": 513,
+        "passed": true
+      },
+      {
+        "offset": 1632,
+        "size": 1024,
+        "written": 1024,
+        "received": 1024,
+        "passed": true
+      },
+      {
+        "offset": 2656,
+        "size": 1,
+        "written": 1,
+        "received": 1,
+        "passed": true
+      },
+      {
+        "offset": 2657,
+        "size": 31,
+        "written": 31,
+        "received": 31,
+        "passed": true
+      },
+      {
+        "offset": 2688,
+        "size": 64,
+        "written": 64,
+        "received": 64,
+        "passed": true
+      },
+      {
+        "offset": 2752,
+        "size": 511,
+        "written": 511,
+        "received": 511,
+        "passed": true
+      },
+      {
+        "offset": 3263,
+        "size": 512,
+        "written": 512,
+        "received": 512,
+        "passed": true
+      },
+      {
+        "offset": 3775,
+        "size": 513,
+        "written": 513,
+        "received": 513,
+        "passed": true
+      },
+      {
+        "offset": 4288,
+        "size": 1024,
+        "written": 1024,
+        "received": 1024,
+        "passed": true
+      },
+      {
+        "offset": 5312,
+        "size": 1,
+        "written": 1,
+        "received": 1,
+        "passed": true
+      },
+      {
+        "offset": 5313,
+        "size": 31,
+        "written": 31,
+        "received": 31,
+        "passed": true
+      },
+      {
+        "offset": 5344,
+        "size": 64,
+        "written": 64,
+        "received": 64,
+        "passed": true
+      },
+      {
+        "offset": 5408,
+        "size": 511,
+        "written": 511,
+        "received": 511,
+        "passed": true
+      },
+      {
+        "offset": 5919,
+        "size": 512,
+        "written": 512,
+        "received": 512,
+        "passed": true
+      },
+      {
+        "offset": 6431,
+        "size": 513,
+        "written": 513,
+        "received": 513,
+        "passed": true
+      },
+      {
+        "offset": 6944,
+        "size": 1024,
+        "written": 1024,
+        "received": 1024,
+        "passed": true
+      },
+      {
+        "offset": 7968,
+        "size": 1,
+        "written": 1,
+        "received": 1,
+        "passed": true
+      },
+      {
+        "offset": 7969,
+        "size": 31,
+        "written": 31,
+        "received": 31,
+        "passed": true
+      },
+      {
+        "offset": 8000,
+        "size": 64,
+        "written": 64,
+        "received": 64,
+        "passed": true
+      },
+      {
+        "offset": 8064,
+        "size": 511,
+        "written": 511,
+        "received": 511,
+        "passed": true
+      },
+      {
+        "offset": 8575,
+        "size": 512,
+        "written": 512,
+        "received": 512,
+        "passed": true
+      },
+      {
+        "offset": 9087,
+        "size": 513,
+        "written": 513,
+        "received": 513,
+        "passed": true
+      },
+      {
+        "offset": 9600,
+        "size": 1024,
+        "written": 1024,
+        "received": 1024,
+        "passed": true
+      },
+      {
+        "offset": 10624,
+        "size": 1,
+        "written": 1,
+        "received": 1,
+        "passed": true
+      },
+      {
+        "offset": 10625,
+        "size": 31,
+        "written": 31,
+        "received": 31,
+        "passed": true
+      },
+      {
+        "offset": 10656,
+        "size": 64,
+        "written": 64,
+        "received": 64,
+        "passed": true
+      },
+      {
+        "offset": 10720,
+        "size": 511,
+        "written": 511,
+        "received": 511,
+        "passed": true
+      },
+      {
+        "offset": 11231,
+        "size": 512,
+        "written": 512,
+        "received": 512,
+        "passed": true
+      },
+      {
+        "offset": 11743,
+        "size": 513,
+        "written": 513,
+        "received": 513,
+        "passed": true
+      },
+      {
+        "offset": 12256,
+        "size": 1024,
+        "written": 1024,
+        "received": 1024,
+        "passed": true
+      },
+      {
+        "offset": 13280,
+        "size": 1,
+        "written": 1,
+        "received": 1,
+        "passed": true
+      },
+      {
+        "offset": 13281,
+        "size": 31,
+        "written": 31,
+        "received": 31,
+        "passed": true
+      },
+      {
+        "offset": 13312,
+        "size": 64,
+        "written": 64,
+        "received": 64,
+        "passed": true
+      },
+      {
+        "offset": 13376,
+        "size": 511,
+        "written": 511,
+        "received": 511,
+        "passed": true
+      },
+      {
+        "offset": 13887,
+        "size": 512,
+        "written": 512,
+        "received": 512,
+        "passed": true
+      },
+      {
+        "offset": 14399,
+        "size": 513,
+        "written": 513,
+        "received": 513,
+        "passed": true
+      },
+      {
+        "offset": 14912,
+        "size": 1024,
+        "written": 1024,
+        "received": 1024,
+        "passed": true
+      },
+      {
+        "offset": 15936,
+        "size": 1,
+        "written": 1,
+        "received": 1,
+        "passed": true
+      },
+      {
+        "offset": 15937,
+        "size": 31,
+        "written": 31,
+        "received": 31,
+        "passed": true
+      },
+      {
+        "offset": 15968,
+        "size": 64,
+        "written": 64,
+        "received": 64,
+        "passed": true
+      },
+      {
+        "offset": 16032,
+        "size": 511,
+        "written": 511,
+        "received": 511,
+        "passed": true
+      },
+      {
+        "offset": 16543,
+        "size": 512,
+        "written": 512,
+        "received": 512,
+        "passed": true
+      },
+      {
+        "offset": 17055,
+        "size": 513,
+        "written": 513,
+        "received": 513,
+        "passed": true
+      },
+      {
+        "offset": 17568,
+        "size": 1024,
+        "written": 1024,
+        "received": 1024,
+        "passed": true
+      },
+      {
+        "offset": 18592,
+        "size": 1,
+        "written": 1,
+        "received": 1,
+        "passed": true
+      },
+      {
+        "offset": 18593,
+        "size": 31,
+        "written": 31,
+        "received": 31,
+        "passed": true
+      },
+      {
+        "offset": 18624,
+        "size": 64,
+        "written": 64,
+        "received": 64,
+        "passed": true
+      },
+      {
+        "offset": 18688,
+        "size": 511,
+        "written": 511,
+        "received": 511,
+        "passed": true
+      },
+      {
+        "offset": 19199,
+        "size": 512,
+        "written": 512,
+        "received": 512,
+        "passed": true
+      },
+      {
+        "offset": 19711,
+        "size": 513,
+        "written": 513,
+        "received": 513,
+        "passed": true
+      },
+      {
+        "offset": 20224,
+        "size": 1024,
+        "written": 1024,
+        "received": 1024,
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "bytes_sent": 21248,
+    "bytes_received": 21248,
+    "sha256": "10151b68ac0c144145ece39e65866fe93b1b97e7ab128778fadf56cd5ae856f1",
+    "extra_hex": "",
+    "status": "pass"
+  },
+  "status": "pass",
+  "finished_at": "2026-10-16T18:56:23.232047+08:00"
+}

@@ -13,3 +13,8 @@ projects/138k/push2_workstation/usb_a/vendor/rtl8723ds_ble/** -text linguist-ven
 # Preserve original touchboard input bytes and treat PDFs as binary documents.
 projects/138k/push2_workstation/touchboard_test/input_netlist.tel -text
 projects/138k/push2_workstation/touchboard_test/**/*.pdf binary
+
+# Imported 25K source and frozen manifests bind original file bytes.
+projects/25k/** -text
+projects/25k/prj/vendor/** linguist-vendored
+projects/25k/example/**/vendor/** linguist-vendored

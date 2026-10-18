@@ -1,0 +1,33 @@
+{
+  "started_at": "2026-10-17T00:27:37.484891+08:00",
+  "passed": true,
+  "artifact": "builds/20261017_002202_037686/impl/pnr/midi_keyboard.fs",
+  "file_sha256": "d8583b1f128d2b18a8508525cb0cfb43244e7109e286fd93a2e5ff0808e16944",
+  "expected_user_code": "0x00003D0B",
+  "device": "GW5A-25A",
+  "jtag_id": "0x0001281B",
+  "cable": "FT2CH",
+  "channel": 0,
+  "frequency": "2.5MHz",
+  "start_address": "0x000000",
+  "physical_power_cycle_tested": false,
+  "notes": "PCA slider bar; WS ABCDHGFEIJKLPONM; reverse landscape/right strip. QT physical mapping pending H-P; raw channels retained.",
+  "flash_id": "0x0B4017",
+  "retry_started_at": "2026-10-17T00:28:32.010399+08:00",
+  "previous_probe_error": "flash_id failed:  Target Cable: Gowin USB Cable(FT2CH)/0/None/null@15MHz\n Target Device: GW5A-25A(0x0001281B)\n Operation \"exFlash Detect ID\" for device#1...\n\nError: Error found!\n  \n",
+  "flash_id_retry_passed": true,
+  "flash_program_and_verify": true,
+  "end_address_reported": "0x00D7600",
+  "flash_reload": true,
+  "user_code": "0x00003D0B",
+  "status_code": "0x70022020",
+  "usb": {
+    "name": "GW25K MIDI Screen",
+    "detected": true,
+    "vid": "0xFB9A",
+    "pid": "0xFB9B",
+    "link_speed_bps": 480000000,
+    "configuration": 1
+  },
+  "finished_at": "2026-10-17T00:28:54.578409+08:00"
+}

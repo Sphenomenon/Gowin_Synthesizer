@@ -1,0 +1,29 @@
+{
+  "started_at": "2026-10-16T22:18:09.285944+08:00",
+  "script": "build.tcl",
+  "stage_directory": null,
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "reports/hardware_20261016/build_20261016_221809_282658_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "reports/hardware_20261016/build_20261016_221809_282658_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "builds/20261016_221809_282658/impl/pnr/encoder_lcd.fs",
+      "sha256": "2456abb48e1d5bd01a453531338bd7bb5c53acbd382ae5118582dfc0ffb15f39"
+    }
+  ],
+  "finished_at": "2026-10-16T22:18:25.645776+08:00",
+  "packaging": {
+    "kind": "relocated_verified_build",
+    "source_manifest": "reports/hardware_20261016/build_20261016_221809_282658.json",
+    "programming_report": "reports/hardware_20261016/sram_encoder_lcd_20261016_221844_506162.json",
+    "note": "Bitstream, timing, and RTL are unchanged. Paths are relative to this example; SRAM verification is the existing 22:18 hardware run."
+  }
+}

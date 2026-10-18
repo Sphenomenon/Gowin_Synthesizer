@@ -1,0 +1,128 @@
+{
+  "started_at": "2026-10-17T01:53:52.608929+08:00",
+  "script": "build.tcl",
+  "stage_directory": "/private/tmp/gw25k-build-y69wqpym",
+  "passed": false,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "reports/build_20261017_015352_589474_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "reports/build_20261017_015352_589474_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "builds/20261017_015352_589474/impl/pnr/midi_keyboard.fs",
+      "sha256": "1cde957303845f951b8936ae4500b8f9d84a2b5b530f2db2a2de5a0cbeeeee3a"
+    }
+  ],
+  "sha256": {
+    "rtl/midi_keyboard_top.v": "854d46027e0c757de3f257f8e46b58345fd2b6518b0048f8e0731e9284ba8f91",
+    "rtl/midi_keyboard_core.v": "50361a7028c7ecf7acb8259df6ce235a2e7e302d387734dfd7b6b7000aa78b67",
+    "rtl/transport/usb_midi_codec.v": "e9e4cccfd7a0559fdf21aa75edccff3290a456d3431a976c506ab71090efd5e6",
+    "rtl/transport/ble_midi_codec.v": "cbe435abf19accb408929ad59b0ed2b89d9173c8dc1dab6c4ef4f34f87e3e2e9",
+    "rtl/core/midi_event_router.v": "849d7713b4a9f82e40e960c590a4aa227e58ba6d2e7f08f652376c8746914852",
+    "rtl/core/midi_event_fifo.v": "582a27007e94171bb825ec6add9160505f74bce3a738622c993548205d8873ea",
+    "rtl/instrument/encoder_input.v": "59b78d115f05cb980af831865d0f7b9f8887a83d0c0e6bba8e0a423e02238ce4",
+    "rtl/instrument/midi_performance.v": "35e54d95b86a002a86379392671ef6907dd444eaf519fbfe5c6d3f637425dce6",
+    "rtl/instrument/midi_keyboard_application.v": "ccafe598f7cfcd8dd653ca4635bb60286ef327ff930961d9924c82b386790b7d",
+    "rtl/ble_board/midi_ble_uart.v": "8004677c8749289d651673a38872a39787125c4cb93f63b97430c857a97dfe96",
+    "rtl/ble_board/midi_ble_h5.v": "3e540a8ac937042a8563ebcadc497a48a72ab07fd9c8608d3f815761c5dd3079",
+    "rtl/ble_board/midi_ble_hci_init.v": "24cb5d1c1e6c9d300a873e82dccd530e4902e086bfc75fa08ba3c13b85c7ecba",
+    "rtl/ble_board/midi_ble_link.v": "ff57a3bd24a08b342db4dce17090970d44eadf93c8b3dde073a005c92f1497bd",
+    "rtl/ble_board/rtl8723ds_patch.mem": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30",
+    "rtl/ble_board/midi_ble_gatt.v": "19075fcde1b5cb976ffd38e566c8a35409c0aac71fbd9ff29508c7dfb706f9d4",
+    "rtl/ble_board/NOTICE.md": "f6cf52a12a0ed668848ef79ad3784d1e65e487ac7e057cab00631aa36f6eaf57",
+    "rtl/ble_board/firmware_manifest.json": "acb4358578446bca1febdb0476e4c17ac0af16e482cdf2e686b54256e0f3f774",
+    "rtl/input/midi_key_layout.v": "70b471ed4b195e179ff938d9bd5e62fbebcddb24b26a2239e31371bd10dfe0df",
+    "rtl/input/keyboard_event_mapper.v": "1313d01a00af9a0db03068d1dea06c83872564688144fedfed66849c52ecbc40",
+    "rtl/display/midi_landscape_view.v": "789a8bbb3c05d51f90a8aa6be0097ef4b34a317f93c277877f802c4a70cb18f4",
+    "rtl/display/lcd_init_rom.v": "3c1cc72ca98a2f4e0cea6911e8ac438989eb15846f4a84bcb659dbdc4a7fedb6",
+    "rtl/display/THIRD_PARTY_LICENSE.txt": "88e1cba040d75ec8d24d511ea60897e608969b7e4ec4efb1e8114a2db9bf62ba",
+    "rtl/display/midi_landscape_display.v": "023aa5cf83b47fd61a9e3edb54b3e39f790601f8fc778363c296e4e7f798edb9",
+    "rtl/display/lcd_spi_byte.v": "3a3f1f3d6a065aae955fdd3b7b24df179330c94a405d7c17db8466df580f45a1",
+    "rtl/display/lcd_spi_stream.v": "77b7f0ce849e3ba81faab7594495bfd8a3dc162d52b17ca086c07f692e4e52dd",
+    "rtl/display/midi_display_regions.v": "4dca85da70605f246f87e0b7bf52227ed38eebbc51ef31b189f368754f237354",
+    "rtl/peripheral/midi_slider_filter.v": "263f0cb2a41d2990d192e4b169f977bf7ad7ad4047bcb312bd250f5cd363f4d8",
+    "rtl/peripheral/midi_slider_led_map.v": "3b34fd2119369025b6fcc9ddef5a8fa92ee60305eea476b9754c056ece55ee17",
+    "rtl/peripheral/pca9685_led_driver.v": "144faee85bae75e3193ec36fd0bee635fd714af1994463a14769338c9be56c94",
+    "rtl/peripheral/midi_ws2812.v": "4423365c9eaed255372d87102bc89ee01569c2feb49a6ddc54c0e21eca0b8721",
+    "rtl/peripheral/midi_touch_frontend.v": "a088b5f75f59b2aad855d9d36fc40475e48e2660e283b2dfb99c6fc0c00b13bd",
+    "rtl/peripheral/midi_i2c_register_master.v": "61dff6eb16848fb5b9c21728e2f102b33d702019a64f73490eafbf2dc11a4b6b",
+    "rtl/usb_board/midi_usb_bridge.v": "9a7b8f56febc72fcaeb70d9e47cd023c479ddbe48a7bfc54e84ee188171ebc06",
+    "rtl/usb_board/midi_usb_device.v": "486badebe6df2fc8faecc5d616987caaea631cac9bbf00fabbb7503beb8f54cd",
+    "rtl/usb_board/midi_usb2_link.v": "fcf16129eedfc9da23e30c8bc522f50f28c75206db575e2fefb97f5f386fe73f",
+    "rtl/usb_board/midi_usb_hs_phy.v": "00ac7e281990c0fe18e4b2b4d5c590fa6cbaa5b6896c56fe8bfdec0df94e0445",
+    "rtl/usb_board/midi_usb_async_fifo.v": "895eda52772844734f803c7c3ff274d9fb22d47ca80ac29f002f917f9e182188",
+    "rtl/usb_board/NOTICE.md": "8c1afa2f59c02a726c450b459b4dff5f6edde5811fd8ebec1555aa2f79242516",
+    "rtl/control/screen_control_endpoint.v": "b723627d0e1d79cf7ff3e9434991e3edf7dfe68888bfc71ccbd0e37e0d6440a2",
+    "rtl/usb_board/generated/usb_composite_desc_rom.v": "e022f0c6f52a97483914c1d2b6a30a4e51b73de8c51a68e8f94791dd848133ee",
+    "rtl/usb_board/vendor/LICENSE-GPL-2.0": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "rtl/usb_board/vendor/usbf_sie_rx.v": "7731842eefa2d5f2513fd240ba70403362ad01033195594cc7699645f641ce87",
+    "rtl/usb_board/vendor/LICENSE-LGPL-2.1": "20c17d8b8c48a600800dfd14f95d5cb9ff47066a9641ddeab48dc54aec96e331",
+    "rtl/usb_board/vendor/usbf_sie_tx.v": "36d6e5c3f926a6aed36ced5f21664635bd5120f5b7d753ad08915a45c3da7621",
+    "rtl/usb_board/vendor/midi_usb2_boot.v": "6da19851912ce2d165e2909baf9182c5908ad0ea75e0d9857b116c28d664484d",
+    "rtl/usb_board/vendor/usbf_crc16.v": "fbdf75fc7a24342db71ea9de8c7332b4b4e6074db88e9e41b3e908da133a2033",
+    "rtl/usb_board/vendor/usbf_defs.v": "5ea9871d316cea1a9b7f5faf33c0f9b3bb513594aacb33288638c2a64a28f484",
+    "rtl/usb_board/vendor/midi_ulpi_wrapper.v": "05cc38328df75dfa376c099b5f5394b156710836a27d750faf3f2f482c6a13bd",
+    "rtl/usb_board/vendor/UPSTREAM.json": "a67b3e349623d0e9b7daf3bea5b420e80d6b5b90028a60d928c88423a679ad2c",
+    "constraints/midi_keyboard.cst": "93afcdb5ac9cb2bbc13132b23e565a2480f8b8424ad73cee71374dc73a78abae",
+    "constraints/midi_keyboard.sdc": "c054a7924f6d30aec85514835fb6a9369f0a011ae1af0b7c984a4996ce105343",
+    "config/ble_midi.json": "2990df0b087378b0c5030e5dd4f1dc8de918a3358e2dbf536102390d2e46847d",
+    "config/board.json": "33bf8cac4e5f0ebf199f66750b76ebf0880e1b7fad63b3e6fd212d02ae87231d",
+    "config/usb_descriptors.json": "903a10c35bd904df76a55254fe3ea6e455a979e92f43ca3d78acc53f2d9fdf7c",
+    "config/usb_composite.json": "f61e3fc25276367d689daeaccd752245e539431860e6fde8675ea5aa61aa3b10",
+    "tools/screen_control.py": "2de381ae2942420340c9146ff50efb74fa80d3fd2a98136ae4f213955f9d0566",
+    "tools/gowin_build.py": "8db8cead6a610316cd2bc50ff333afa1ce9d0e9f45bfc28d4604d7c82c5ad49c",
+    "tools/generate_usb_descriptors.py": "dbccf641fe55918bbfd52c445e6176f43dca1190580c42f21604b6730fd2accb",
+    "tools/render_preview.py": "c754623c6c89283bad9055031b292814a02a311dde9e953b08d6ed9254d2183d",
+    "tools/synthesize.py": "751c929b82e04b8b4c75f3b8d4588d2307d1f7dc1e439380cf92baa9d270273a",
+    "tools/run_checks.py": "cf272693244c94659447b71ee2e3ea3d8da7dacac89c157a6bf631130602e6e4",
+    "sources.f": "57d45441db9c72a0fb343766a58131cab3e84b42a5fb59c051caa5f0f6d14a25",
+    "build.tcl": "8ad146d1a0035c15eaf9d79c73134f17f8d3cc424a43d632b7742286f9a17c68",
+    "build.sh": "1388b321c6851fec37de074b58ee60142b8b55f681991ae263d7c4ea0cdc2b6e"
+  },
+  "staging_transform": {
+    "file": "rtl/ble_board/midi_ble_link.v",
+    "parameter": "PATCH_FILE",
+    "absolute_ascii_path": "/private/tmp/gw25k-build-y69wqpym/prj/rtl/ble_board/rtl8723ds_patch.mem",
+    "rom_sha256": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30"
+  },
+  "synthesis_resources": {
+    "name": "midi_keyboard_top",
+    "Register": "49",
+    "Alu": "46",
+    "Lut": "25",
+    "T_Register": "9147(49)",
+    "T_Alu": "1342(46)",
+    "T_Lut": "14768(25)",
+    "T_MULTALU27X18": "1(0)",
+    "T_MULT12X12": "3(0)",
+    "T_Bsram": "29(0)"
+  },
+  "timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "setup_worst_slack_ns": 0.746,
+    "hold_worst_slack_ns": 0.186,
+    "recovery_worst_slack_ns": 3.356,
+    "removal_worst_slack_ns": 0.892,
+    "clocks": [
+      {
+        "name": "clk_50mhz",
+        "constraint_mhz": 50.0,
+        "actual_fmax_mhz": 58.523
+      },
+      {
+        "name": "clk_ulpi60",
+        "constraint_mhz": 60.002,
+        "actual_fmax_mhz": 62.815
+      }
+    ],
+    "passed": true
+  },
+  "error": "Inputs changed during build: rtl/display/lcd_spi_stream.v"
+}

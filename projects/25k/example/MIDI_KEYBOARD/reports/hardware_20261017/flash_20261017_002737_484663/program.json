@@ -1,0 +1,24 @@
+{
+  "started_at": "2026-10-17T00:28:32.010748+08:00",
+  "finished_at": "2026-10-17T00:28:52.788540+08:00",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5A-25A",
+    "--operation_index",
+    "54",
+    "--fsFile",
+    "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/MIDI_KEYBOARD/builds/20261017_002202_037686/impl/pnr/midi_keyboard.fs",
+    "--spiaddr",
+    "0x000000",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "2.5MHz"
+  ],
+  "returncode": 0,
+  "passed": true,
+  "log": "program.log"
+}

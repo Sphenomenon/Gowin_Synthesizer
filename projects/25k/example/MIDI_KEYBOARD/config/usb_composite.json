@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "profile": "GW25K MIDI keyboard + vendor screen control",
+  "state": "implemented_rtl_pending_board_validation",
+  "descriptor_rom_implemented": true,
+  "enumeration_verified": false,
+  "usb_version": "2.0",
+  "supported_speed_targets": [
+    "high_speed",
+    "full_speed"
+  ],
+  "host_suspend_resume": "implemented_and_UTMI_tested_at_both_speeds_pending_physical_validation",
+  "remote_wakeup_supported": false,
+  "phy_boot_error_recovery": "complete_initialization_retry_after_10ms_cooldown",
+  "vid": "0xfb9a",
+  "pid": "0xfb9b",
+  "identity_note": "FB9A:FB9B are inherited local laboratory identifiers only, not an allocated product VID/PID. Regenerate descriptors with authorized IDs for distribution.",
+  "device_class": "0x00",
+  "device_subclass": "0x00",
+  "device_protocol": "0x00",
+  "configuration_value": 1,
+  "interface_count": 3,
+  "interfaces": [
+    {
+      "number": 0,
+      "name": "AudioControl",
+      "class": "0x01",
+      "subclass": "0x01",
+      "protocol": "0x00",
+      "audio_class_version": "1.0",
+      "associated_midi_streaming_interface": 1,
+      "endpoints": []
+    },
+    {
+      "number": 1,
+      "name": "MIDIStreaming",
+      "class": "0x01",
+      "subclass": "0x03",
+      "protocol": "0x00",
+      "midi_class_version": "1.0",
+      "virtual_cables": 1,
+      "embedded_jacks": [
+        {
+          "id": 1,
+          "type": "IN",
+          "direction": "host_to_keyboard",
+          "endpoint": "0x01"
+        },
+        {
+          "id": 3,
+          "type": "OUT",
+          "direction": "keyboard_to_host",
+          "source_jack_id": 4,
+          "endpoint": "0x81"
+        }
+      ],
+      "external_jacks": [
+        {
+          "id": 2,
+          "type": "OUT",
+          "direction": "host_to_keyboard",
+          "source_jack_id": 1
+        },
+        {
+          "id": 4,
+          "type": "IN",
+          "direction": "keyboard_to_host"
+        }
+      ],
+      "endpoints": [
+        {
+          "address": "0x01",
+          "direction": "OUT",
+          "transfer_type": "bulk",
+          "max_packet_size": {
+            "high_speed": 512,
+            "full_speed": 64
+          },
+          "associated_embedded_jack_ids": [
+            1
+          ]
+        },
+        {
+          "address": "0x81",
+          "direction": "IN",
+          "transfer_type": "bulk",
+          "max_packet_size": {
+            "high_speed": 512,
+            "full_speed": 64
+          },
+          "associated_embedded_jack_ids": [
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "name": "ScreenControl",
+      "class": "0xff",
+      "subclass": "0x00",
+      "protocol": "0x00",
+      "protocol_definition": "../docs/SCREEN_PROTOCOL.md",
+      "endpoints": [
+        {
+          "address": "0x02",
+          "direction": "OUT",
+          "transfer_type": "bulk",
+          "max_packet_size": {
+            "high_speed": 512,
+            "full_speed": 64
+          }
+        },
+        {
+          "address": "0x82",
+          "direction": "IN",
+          "transfer_type": "bulk",
+          "max_packet_size": {
+            "high_speed": 512,
+            "full_speed": 64
+          }
+        }
+      ]
+    }
+  ],
+  "midi_event_packet": {
+    "version": "USB-MIDI 1.0",
+    "cable_number": 0,
+    "bytes": [
+      "cable[3:0] + CIN[3:0]",
+      "status",
+      "data1_or_zero",
+      "data2_or_zero"
+    ],
+    "rtl_word_order": "byte 0 in bits 7:0, byte 3 in bits 31:24",
+    "sysex_supported": false,
+    "running_status_supported": false,
+    "decoder_padding": "unused MIDI bytes must be zero"
+  },
+  "integration": {
+    "reference_project": "../../USB3300_HS",
+    "reusable_layers": [
+      "USB3300 boot",
+      "ULPI wrapper",
+      "UTMI packet transport",
+      "board pin and clock constraints after review"
+    ],
+    "required_new_work": [
+      "board synthesis/place-and-route and CDC/timing review",
+      "USB3300 physical enumeration and MIDI/screen host tests",
+      "USB physical suspend/resume, suspend-current and electrical/compliance validation"
+    ],
+    "existing_cdc_core_compatible": false,
+    "existing_cdc_core_limitation": "USB3300_HS exposes one CDC byte-stream pair at OUT 0x01 / IN 0x82; changing descriptors alone cannot create independent MIDI and screen endpoint pairs.",
+    "implemented_adapter": "../rtl/usb_board/midi_usb2_link.v"
+  }
+}

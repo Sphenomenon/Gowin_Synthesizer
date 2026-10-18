@@ -1,0 +1,15 @@
+# Reproducible Gowin outputs, simulation scratch, and local caches.
+builds/
+impl/
+sim/build/
+__pycache__/
+*.py[cod]
+*.vvp
+*.gprj.user
+.DS_Store
+/tmp/
+
+# Frozen BLE package inputs are required by MANIFEST.json.
+!**/firmware/*.bin
+!**/rtl8723ds_ble/reports/utilization*.rpt
+!**/rtl8723ds_ble/validation/portable/*.log

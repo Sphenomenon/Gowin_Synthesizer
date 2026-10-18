@@ -1,0 +1,4 @@
+sim/build/
+impl/
+builds/
+*.gprj.user

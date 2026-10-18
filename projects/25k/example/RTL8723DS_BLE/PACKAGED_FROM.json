@@ -1,0 +1,50 @@
+{
+  "source_project": "prj/ble_bringup",
+  "vendor_manifest": "vendor/rtl8723ds_ble/MANIFEST.json",
+  "path_changes": [
+    "Vendor sources and firmware ROM are inside this example.",
+    "USB1 passive monitor is copied into local rtl/.",
+    "PATCH_FILE default and preparation/test paths updated to the local layout; protocol logic unchanged."
+  ],
+  "hardware_parameters": {
+    "clock_hz": 50000000,
+    "uart_baud": 115200,
+    "uart_framing": "8E1",
+    "session_ms": 180000,
+    "notify_ms": 500,
+    "firmware_patch_bytes": 30147,
+    "patch_fragments": 120,
+    "rom_version": 2
+  },
+  "historical_hardware_result": {
+    "report": "reports/hardware_20261016/ble_hardware_20261016.json",
+    "passed": true,
+    "read_bytes": 20,
+    "valid_notifications": 3,
+    "notification_sequences": [
+      0,
+      1,
+      2
+    ]
+  },
+  "historical_gao_image": {
+    "path": "archive/gao_20261016/pnr/ao_0.fs",
+    "sha256": "d77d8d990ab3afcef082396464d59717b6053e025dee82acbb3dfb36a0526592",
+    "user_code_hex": "EEDB",
+    "status_code_hex": "70022020",
+    "gao_id_hex": "4C64",
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 1,
+    "hold_slack_ns": -0.606,
+    "role": "Historical evidence only; not a timing-approved default image or a new safe-build artifact."
+  },
+  "source_sha256": {
+    "rtl/ble_bringup_top.v": "8f9d286b6c53b703f8d2981548cbf97ced876f821d48e733f0e28bea769f2123",
+    "rtl/usb1_passive_monitor.v": "31a1e7ce848b0ab4ad73cc85c37156f99f594d49323ec6811e5b28d1ce1ffe13",
+    "constraints/ble_bringup.cst": "49e7ac8bef16fe7f19f2637b958664e82db52f76acb2e1176a2b77dc77176d4c",
+    "constraints/ble_bringup.sdc": "1d3799e17822ee4ce2cc7365700d4ee7de267249872163f2762d428e366cfa55",
+    "prepare_adapted.py": "1944e8b637799f622258d984f181ef8c58ad9677cbf4e5c4c8cdd00f2426f8de",
+    "prepare_sources.tcl": "d8c3dc2a6f8db86360063b40423d4e2db2851b485d0e4850b91ab909c4dcb416"
+  },
+  "note": "The independent default build uses no GAO. Original project and immutable vendor files are retained. No new hardware programming is part of packaging."
+}

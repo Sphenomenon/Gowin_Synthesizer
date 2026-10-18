@@ -1,0 +1,40 @@
+{
+  "started_at": "2026-10-16T21:34:48.176026+08:00",
+  "manifest": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb1_device/reports/build_20261016_011545_836351.json",
+  "bitstream": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb1_device/builds/20261016_011545_836351/impl/pnr/ao_0.fs",
+  "sha256": "bed38e61a1c0b21c738f5ad56d43ea2dc2abe0b1a53ac236fdde674ad4cdc253",
+  "gao_id": "1010101001010011",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5A-25A",
+    "--operation_index",
+    "4",
+    "--fsFile",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb1_device/builds/20261016_011545_836351/impl/pnr/ao_0.fs",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "15MHz"
+  ],
+  "operation": "SRAM Program and Verify",
+  "passed": true,
+  "returncode": 0,
+  "user_codes": [
+    "0x00004322"
+  ],
+  "status_codes": [
+    "0x70022020"
+  ],
+  "checks": {
+    "returncode_zero": true,
+    "finished": true,
+    "no_error": true,
+    "usercode_4322": true,
+    "status_70022020": true
+  },
+  "finished_at": "2026-10-16T21:34:53.100222+08:00",
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/prj/usb1_device/reports/usb1_postchange_program_20261016_213448_176010.log"
+}

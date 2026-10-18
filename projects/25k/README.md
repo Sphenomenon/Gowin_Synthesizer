@@ -1,15 +1,39 @@
-# 25K 面板工程
+# GW25K 面板工程
 
-这是与 [138K 主机](../138k/README.md) 同级的设备端工程目录。目前本机仓库只有 138K Host 适配、PL 规范和历史验证记录，尚未导入完整 25K 工程。本目录不提供可综合顶层或板级构建入口。
+本目录于 2026-10-19 从本地 `GW_25K` 导入，保留 `example/`、`prj/`、`docs/` 及硬件资料的原始相对结构。主控为 GW5A-LV25MG121NC1/I0，显示屏为 NV3007 142×428 SPI。
 
-25K 连接触摸板和 SPI 屏，将触摸转为 MIDI，处理本地移调并驱动外围。现阶段通过 138K 板载 USB-A 与 Push 轮流接入，自动识别。Push 直接连接 138K；曲谱跟奏为 Push 专有。
+屏幕 NV3007 142*428 SPI
 
-对接依据：
+主控芯片[GW5A-LV25MG121NC1/I0](http://www.gowinsemi.com.cn/prod_view.aspx?TypeId=74&FId=t3:10:3&Id=188)
 
-- [整机接口规划](../../整机接口规划.md)：已确认的触摸键、滑条、编码器映射，初始化和功能边界。
-- [现有 PL 规范](../138k/push2_workstation/usb_a/GW25K_PANEL.md)：USB 端点、包格式、会话、序号、重试、心跳和 MMIO。该历史规范中的 25K 跟奏候选与当前产品范围存在差异，以整机规划的差异说明对接。
-- [138K Host 固件](../138k/push2_workstation/usb_a/firmware.c)与 [PL 显示服务](../138k/push2_workstation/usb_a/gw25k_panel.h)：当前主机侧实现，不是 25K 设备端源码。
+芯片例程 https://github.com/sipeed/TangPrimer-25K-example
 
-导入完整工程前需核对原始工程路径、版本和许可，以及板型、时钟、SPI 屏控制器与连线、实际电极键序。设备端音量／音色同步和已确认控件映射仍待在实际源码中接入；移调入口、范围与越界行为另行确定。当前不新增菜单、长按功能或 25K 专有入口。
+USB3300 480 Mbps CDC 回环例程：[example/USB3300_HS](example/USB3300_HS/README.md)
 
-收到源码后在本目录保留原始相对结构，并补充来源清单和实际构建命令。板级构建产物放在本目录的 `results/`，由统一忽略规则排除。未经实际验收，不把接口规划写成设备端实现或板测结果。
+USB1 12 Mbps CDC 回环例程：[example/USB1_FS](example/USB1_FS/README.md)
+
+NV3007 142×428 SPI 屏幕例程：[example/NV3007_LCD](example/NV3007_LCD/README.md)
+
+双编码器与屏幕调试例程：[example/ENCODER_LCD](example/ENCODER_LCD/README.md)
+
+RTL8723DS BLE 广播、读取与通知例程：[example/RTL8723DS_BLE](example/RTL8723DS_BLE/README.md)
+
+完整16键触摸 MIDI 键盘（USB2 MIDI/独立屏幕接口、BLE MIDI、触摸条、双编码器、PCA9685/WS2812与428×142横屏）：[example/MIDI_KEYBOARD](example/MIDI_KEYBOARD/README.md)
+
+
+## 构建与仿真
+
+从本仓库根目录执行完整 MIDI 键盘工程：
+
+```sh
+sh projects/25k/example/MIDI_KEYBOARD/run_sim.sh
+sh projects/25k/example/MIDI_KEYBOARD/build.sh
+```
+
+构建需要 Gowin EDA，仿真需要 Python 3、Icarus Verilog 与 vvp。各独立例程的具体依赖与入口见对应 README。旧文档中的 `example/...` 命令以本目录 `projects/25k` 为工作目录。
+
+## 导入范围与整机对接
+
+来源与文件校验清单见 [SOURCE_IMPORT.json](SOURCE_IMPORT.json)。源码、测试、约束、构建工具、冻结依赖、硬件设计资料和已有验证摘要进入 Git；`builds/`、`impl/`、仿真缓存、波形、生成位流和普通工具日志留在原本地目录。BLE 原始固件和上游清单要求的报告／日志作为冻结输入保留。源码清单中的旧位流路径及历史绝对路径保留原样，克隆后应重新构建；已有 `verified_build.json` 仅记录历史证据，其指向的位流未随本次导入上传。
+
+公共职责与产品范围以仓库根目录的 [整机接口规划](../../整机接口规划.md) 为对接依据；主机侧 [PL 规范](../138k/push2_workstation/usb_a/GW25K_PANEL.md) 与本工程的 [设备端显示协议](example/MIDI_KEYBOARD/docs/PANEL_DISPLAY_PROTOCOL.md) 应逐项核对。导入保留当前独立工程的本地功能和历史验证记录，不代表已完成 138K 联调或已将公共规划全部接入。原始第三方许可、NOTICE 与来源清单随代码保留；未重新授权。

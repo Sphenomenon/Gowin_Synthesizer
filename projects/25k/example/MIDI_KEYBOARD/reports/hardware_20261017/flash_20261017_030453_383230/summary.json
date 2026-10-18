@@ -1,0 +1,46 @@
+{
+  "started_at": "2026-10-17T03:04:53.383340+08:00",
+  "passed": false,
+  "artifact": "builds/20261017_030218_654822/impl/pnr/midi_keyboard.fs",
+  "file_sha256": "94a588b5135d231ff50f0b045f8ac67d0fe25025b2c6ffc1d4a77319dd3bc1d2",
+  "file_bytes": 7339285,
+  "expected_user_code": "0x0000B301",
+  "device": "GW5A-25A",
+  "jtag_id": "0x0001281B",
+  "flash_id": "0x0B4017",
+  "cable": "FT2CH",
+  "channel": 0,
+  "frequency": "2.5MHz",
+  "start_address": "0x000000",
+  "physical_power_cycle_tested": false,
+  "notes": "G/H-slider interference diagnostic firmware: atomically published U1 before/after detect, raw9/raw15 SIGNAL/REF and frame sequence; USB read-only query and verified U2 LP0 sleep/LP1 resume test. Musical key mapping/thresholds and 60Hz changed-region display retained. No masking or claim of physical crosstalk fix; board A/B capture pending.",
+  "preflight": {
+    "source_hashes_match": true,
+    "simulation_passed": true,
+    "testbenches": 29,
+    "build_passed": true,
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "setup_worst_slack_ns": 1.334,
+      "hold_worst_slack_ns": 0.181,
+      "recovery_worst_slack_ns": 1.344,
+      "removal_worst_slack_ns": 0.965,
+      "clocks": [
+        {
+          "name": "clk_50mhz",
+          "constraint_mhz": 50.0,
+          "actual_fmax_mhz": 58.448
+        },
+        {
+          "name": "clk_ulpi60",
+          "constraint_mhz": 60.002,
+          "actual_fmax_mhz": 65.225
+        }
+      ],
+      "passed": true
+    }
+  },
+  "error": "flash_id failed; see /Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/MIDI_KEYBOARD/reports/hardware_20261017/flash_20261017_030453_383230/flash_id.log",
+  "finished_at": "2026-10-17T03:04:54.454184+08:00"
+}

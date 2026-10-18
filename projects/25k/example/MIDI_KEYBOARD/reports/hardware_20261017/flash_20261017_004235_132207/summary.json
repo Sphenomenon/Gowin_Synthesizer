@@ -1,0 +1,59 @@
+{
+  "started_at": "2026-10-17T00:42:35.132348+08:00",
+  "passed": true,
+  "artifact": "builds/20261017_004004_496655/impl/pnr/midi_keyboard.fs",
+  "file_sha256": "8f44c00003edfa9969a21a4071d3198bc746752ccf23134fd854eeeb1456c5ec",
+  "file_bytes": 7125673,
+  "expected_user_code": "0x00006712",
+  "device": "GW5A-25A",
+  "jtag_id": "0x0001281B",
+  "flash_id": "0x0B4017",
+  "cable": "FT2CH",
+  "channel": 0,
+  "frequency": "2.5MHz",
+  "start_address": "0x000000",
+  "physical_power_cycle_tested": false,
+  "notes": "Complete user-confirmed A-P zero-based key map; NTHR12 key/slider, key NDIL7, slider NDIL3, stateful key12/10 hysteresis and slider jitter/spike filter. Physical touch-noise improvement still requires observation.",
+  "preflight": {
+    "source_hashes_match": true,
+    "simulation_passed": true,
+    "testbenches": 24,
+    "build_passed": true,
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "setup_worst_slack_ns": 1.782,
+      "hold_worst_slack_ns": 0.185,
+      "recovery_worst_slack_ns": 6.407,
+      "removal_worst_slack_ns": 1.006,
+      "clocks": [
+        {
+          "name": "clk_50mhz",
+          "constraint_mhz": 50.0,
+          "actual_fmax_mhz": 62.597
+        },
+        {
+          "name": "clk_ulpi60",
+          "constraint_mhz": 60.002,
+          "actual_fmax_mhz": 67.187
+        }
+      ],
+      "passed": true
+    }
+  },
+  "device_identification": true,
+  "flash_program_and_verify": true,
+  "flash_reload": true,
+  "user_code": "0x00006712",
+  "status_code": "0x70022020",
+  "finished_at": "2026-10-17T00:43:39.580380+08:00",
+  "reporting_error_recovered": "'str' object has no attribute 'get'; corrected plist root traversal and completed read-only USB verification without reprogramming.",
+  "usb": {
+    "name": "GW25K MIDI Screen",
+    "detected": true,
+    "vid": "0xfb9a",
+    "pid": "0xfb9b",
+    "link_speed_bps": 480000000,
+    "configuration": 1
+  }
+}

@@ -1,0 +1,565 @@
+{
+  "schema_version": 2,
+  "board": "GW25K 16-key touch MIDI keyboard with USB3300, RTL8723DS, NV3007, QT2160, PCA9685 and WS2812",
+  "fpga_device": "GW5A-LV25MG121NC1/I0",
+  "state": "implemented_rtl_pending_board_validation",
+  "is_downloadable_constraint": false,
+  "note": "Wiring and integrated RTL feature record. This JSON is not a Gowin CST/SDC. Board synthesis, timing/CDC and physical keyboard/USB/BLE/display/LED validation must be assessed separately.",
+  "io_standard": "LVCMOS33",
+  "current_bank_voltage_volts": 3.3,
+  "pin_direction_reference": "FPGA viewpoint unless a module-relative name is explicitly identified",
+  "clocks": {
+    "system": {
+      "frequency_hz": 50000000,
+      "pin": "E2",
+      "direction": "input",
+      "source": "core board oscillator",
+      "application_core_clock": true
+    },
+    "ulpi": {
+      "frequency_hz": 60000000,
+      "pin": "L4",
+      "direction": "input",
+      "source": "USB3300 CLKOUT",
+      "application_core_clock": false
+    }
+  },
+  "usb2": {
+    "role_target": "USB device",
+    "phy": "USB3300-EZK",
+    "interface": "ULPI 8-bit",
+    "clock": "ulpi",
+    "data_bit_order": "index 0 is DATA[0]",
+    "data_pins": [
+      "L2",
+      "L1",
+      "K1",
+      "K2",
+      "J4",
+      "K4",
+      "G2",
+      "G1"
+    ],
+    "data_direction": "bidirectional",
+    "dir": {
+      "pin": "J1",
+      "direction": "input"
+    },
+    "nxt": {
+      "pin": "J2",
+      "direction": "input"
+    },
+    "stp": {
+      "pin": "L3",
+      "direction": "output"
+    },
+    "fpga_reset_gpio": null,
+    "physical_reset_note": "USB3300 RESET is wired to ground in the board schematic; no FPGA-controlled PHY reset pin is assigned here.",
+    "cdc_requirement": "Use asynchronous FIFOs or acknowledged complete-event transfers between 60 MHz ULPI and the 50 MHz core. Do not synchronize packet/event payload bits individually.",
+    "reference_constraints": "../../USB3300_HS/constraints/usb2_device.cst",
+    "reference_readme": "../../USB3300_HS/README.md",
+    "role": "USB device",
+    "implemented_adapter": "../rtl/usb_board/midi_usb2_link.v",
+    "profile": "USB-MIDI 1.0 plus independent vendor screen control",
+    "midi_endpoints": [
+      "0x01",
+      "0x81"
+    ],
+    "screen_endpoints": [
+      "0x02",
+      "0x82"
+    ],
+    "diagnostic_vid": "0xfb9a",
+    "diagnostic_pid": "0xfb9b",
+    "identity_note": "Local inherited laboratory identifiers only; obtain authorized product identifiers before distribution.",
+    "hardware_enumeration_verified": false
+  },
+  "ble": {
+    "module": "RTL8723DS",
+    "transport": "UART H5/HCI",
+    "uart": {
+      "baud": 115200,
+      "data_bits": 8,
+      "parity": "even",
+      "stop_bits": 1
+    },
+    "module_tx": {
+      "pin": "J8",
+      "direction": "input",
+      "note": "Module UART_OUT / BT_TX to FPGA RX"
+    },
+    "module_rx": {
+      "pin": "K9",
+      "direction": "output",
+      "note": "FPGA TX to module UART_IN / BT_RX"
+    },
+    "bt_dis_n": {
+      "pin": "K8",
+      "direction": "output",
+      "active_level": "low",
+      "external_pullup_ohms": 10000
+    },
+    "module_rom_version_required_by_reference_driver": 2,
+    "reference_constraints": "../../RTL8723DS_BLE/constraints/ble_bringup.cst",
+    "reference_readme": "../../RTL8723DS_BLE/README.md",
+    "session_limit_ms": null,
+    "profile": "standard BLE MIDI",
+    "service_uuid": "03B80E5A-EDE8-4B33-A751-6CE34EC4C700",
+    "characteristic_uuid": "7772E5DB-3868-4112-A1A9-F2669D106BF3",
+    "online_condition": "Connected and MIDI characteristic CCCD notifications enabled",
+    "normal_disconnect": "HCI LE Set Advertising Enable command restarts connectable advertising",
+    "implemented_adapter": "../rtl/ble_board/midi_ble_link.v",
+    "hardware_midi_verified": false,
+    "board_failure_recovery": "After failed is continuously high for five seconds, pulse reset and repeat module disable/H5/HCI/full ROM-v2 patch initialization"
+  },
+  "lcd": {
+    "controller": "NV3007",
+    "pixel_format": "RGB565",
+    "gram_column_offset": 12,
+    "gram_row_offset": 0,
+    "spi_mode": 0,
+    "spi_bit_order": "MSB first",
+    "pixel_byte_order": "high byte first",
+    "mosi": {
+      "pin": "H8",
+      "direction": "output"
+    },
+    "sck": {
+      "pin": "K5",
+      "direction": "output"
+    },
+    "dc": {
+      "pin": "L5",
+      "direction": "output"
+    },
+    "ncs": {
+      "pin": "J5",
+      "direction": "output",
+      "active_level": "low"
+    },
+    "te": {
+      "pin": "H5",
+      "direction": "input",
+      "used_by_reference_display": false,
+      "used_by_integrated_display": false
+    },
+    "reset_gpio": null,
+    "reset_note": "LCD RST is fixed at 3.3 V, so FPGA reconfiguration does not power-reset the display.",
+    "backlight_gpio": null,
+    "reference_spi_hz": {
+      "NV3007_LCD": 1000000,
+      "ENCODER_LCD": 5000000
+    },
+    "reference_constraints": "../../ENCODER_LCD/src/encoder_lcd.cst",
+    "reference_readmes": [
+      "../../ENCODER_LCD/README.md",
+      "../../NV3007_LCD/README.md"
+    ],
+    "native_width": 142,
+    "native_height": 428,
+    "logical_width": 428,
+    "logical_height": 142,
+    "orientation": "reverse_landscape",
+    "madctl": "0x00",
+    "rotate_cw": false,
+    "coordinate_mapping": "logical_x=427-native_y; logical_y=native_x",
+    "spi_hz": 50000000,
+    "approximate_refresh_fps": 60,
+    "frame_snapshot": true,
+    "implemented_renderer": "../rtl/display/midi_landscape_view.v",
+    "implemented_transport": "../rtl/display/midi_landscape_display.v",
+    "strip_visualization": "right-side vertical bar; fills bottom to top",
+    "spi_timing_source": "NV3007 V1.0 section 8.3.2; GW5A ODDRC forwarded 50 MHz mode-0 clock, nominal MOSI setup/hold 10 ns each. Physical board timing unmeasured.",
+    "slider_diagnostics": {
+      "row": "S2 R<ready> T<touched> RAW<0..255> POS<0..255>",
+      "footer": "G<general status hex> E<error hex> OV<sticky cycle overrun> N<successful sample counter hex>",
+      "general_status": "Actual QT2160 register 2. Bit7 RESET, bit6 CYCLE OVERRUN, bit1 CC, bit0 SDET; CC can normally be set.",
+      "overrun_latch": "Set after any successful status read with bit6=1; cleared by FPGA reset only",
+      "sample_counter": "8-bit wrapping counter; only successful complete slider acquisitions count, no baseline/fault samples",
+      "coherence": "All display fields captured once per frame; raw position is before FPGA jitter/jump filter"
+    },
+    "rtl_simulation_refresh": {
+      "target_hz": 60,
+      "scope": "Pin-level tests use actual 50 MHz clock and DDR SPI, only initialization waits are accelerated. Measured results are in reports/simulation.log; no physical panel/TE FPS claim."
+    },
+    "refresh_scope": "60 Hz coherent scene updates with exact changed-region RGB565 transfers; arbitrary full-screen changes do not sustain 60 fps",
+    "implemented_serializer": "../rtl/display/lcd_spi_stream.v",
+    "implemented_change_detector": "../rtl/display/midi_display_regions.v",
+    "pixel_prefetch_fifo_depth": 4,
+    "dynamic_region_count": 26,
+    "all_dynamic_regions_pixels": 35860,
+    "full_frame_pixels": 60776,
+    "full_frame_payload_ms": 19.44832,
+    "scene_consistency": "Freeze until all selected regions complete. Full repaint supersedes partial regions and can miss a 60 Hz tick; no snapshot replacement during transfer.",
+    "unchanged_scene": "No SPI pixel transfer",
+    "remote_input": {
+      "implementation": "../rtl/control/panel_display_endpoint.v",
+      "stream_router": "../rtl/control/screen_stream_router.v",
+      "protocol": "PL local-v1 adaptation of user-supplied interface planning documents",
+      "documentation": "../docs/PANEL_DISPLAY_PROTOCOL.md",
+      "transport": "USB2 vendor interface 2, OUT 0x02 / IN 0x82; MK control remains available",
+      "highspeed_physical_bus": "Unspecified by supplied reference; no new pins assigned",
+      "pixel_format": "RGB565 little-endian logical row-major tiles, LCD sends high byte first",
+      "max_payload_bytes": 512,
+      "max_tile_pixels": 248,
+      "heartbeat_timeout_ms": 250,
+      "input_trigger": "Only an accepted DISPLAY_TILE enters input view; enumeration/MIDI/HELLO/HEALTH alone do not",
+      "fallback": "Existing instrument/settings view; complete repaint after remote view",
+      "settings_override": "E1 hold 1000 ms enters latched local settings; hold again requests fresh remote redraw",
+      "remote_canvas": "Black clear on entry; no full framebuffer; host must resend complete scene after reset/timeout/settings",
+      "draw_completion": "FRAME_END succeeds only after the matching last tile is physically complete with LCD CS released",
+      "link_reset": "Invalidate session and remote canvas; keep any already accepted tile RAM immutable until physical completion"
+    }
+  },
+  "encoders": {
+    "type": "EC11E15244B2",
+    "external_pullup_ohms": 10000,
+    "key_active_level": "low",
+    "sw1": {
+      "a": "K10",
+      "b": "L8",
+      "key_n": "L10"
+    },
+    "sw2": {
+      "a": "L7",
+      "b": "K7",
+      "key_n": "J7"
+    },
+    "reference_ab_filter_us": 20,
+    "reference_key_filter_us": 1000,
+    "direction_reversed_from_initial_version": true,
+    "mechanical_detents_per_output_step": 2,
+    "output_steps_per_revolution": 15,
+    "rotation_decoder": "A/B pair filtering; two legal transitions per mechanical detent; signed two-detent accumulator cancels opposite motion and resets on an invalid phase jump",
+    "note": "E1 short release cycles strip mode in settings; E1 hold toggles remote/settings. E2 press always requests panic.",
+    "reference_constraints": "../../ENCODER_LCD/src/encoder_lcd.cst",
+    "reference_readme": "../../ENCODER_LCD/README.md",
+    "e1_rotation": "Cycle focus: SHIFT, CH, VEL, STRIP, PROG, LAMP",
+    "e1_press": "Short release in local view: MOD -> EXPR -> BEND; no short action after long hold",
+    "e2_rotation": "Adjust selected parameter",
+    "e2_press": "All-channel CC120, CC123, pitch center; held keys blocked until released",
+    "e1_hold_ms": 1000,
+    "local_parameter_gate": "E1/E2 rotation and E1 short press adjust settings only while local view; E2 panic remains active in both views"
+  },
+  "keyboard_input": {
+    "state": "implemented_touch_keypad_and_slider_user_confirmed_logical_mapping",
+    "key_matrix": null,
+    "scanner_implemented": true,
+    "touch_protocol": {
+      "state": "implemented_and_register_bus_simulated_pending_hardware_validation",
+      "review": "../docs/TOUCH_INTERFACE.md",
+      "reference_schematics": [
+        "../../../SCH_Schematic1_2026-10-15.pdf",
+        "../../../SCH_Schematic1_2026-10-16.pdf"
+      ],
+      "connector": "U4, HC-JN254-2-07-Z, 14 pins, same numbered pins on both boards",
+      "address_format": "7-bit I2C addresses",
+      "buses": [
+        {
+          "bus": 1,
+          "device": "AT42QT2160-MMUR",
+          "daughterboard_ref": "U1",
+          "function": "KEY",
+          "address": "0x0D",
+          "schematic_clock_hz": [
+            100000
+          ],
+          "sda": {
+            "pin": "B11",
+            "baseboard_j1_pin": 33,
+            "u4_pin": 3
+          },
+          "scl": {
+            "pin": "C11",
+            "baseboard_j1_pin": 35,
+            "u4_pin": 5
+          },
+          "daughterboard_pullup_ohms": 4700,
+          "pullup_refs": [
+            "R1 SCL1",
+            "R2 SDA1"
+          ]
+        },
+        {
+          "bus": 2,
+          "device": "AT42QT2160-MMUR",
+          "daughterboard_ref": "U2",
+          "function": "SLIDER",
+          "address": "0x0D",
+          "schematic_clock_hz": [
+            100000
+          ],
+          "sda": {
+            "pin": "B10",
+            "baseboard_j1_pin": 32,
+            "u4_pin": 4
+          },
+          "scl": {
+            "pin": "C10",
+            "baseboard_j1_pin": 34,
+            "u4_pin": 6
+          },
+          "daughterboard_pullup_ohms": 4700,
+          "pullup_refs": [
+            "R34 SCL2",
+            "R35 SDA2"
+          ]
+        },
+        {
+          "bus": 3,
+          "device": "PCA9685PW,118",
+          "daughterboard_ref": "U3",
+          "function": "16 PWM slider-region LEDs",
+          "address": "0x40",
+          "schematic_clock_hz": [
+            100000,
+            400000
+          ],
+          "sda": {
+            "pin": "A10",
+            "baseboard_j1_pin": 29,
+            "u4_pin": 10
+          },
+          "scl": {
+            "pin": "D10",
+            "baseboard_j1_pin": 36,
+            "u4_pin": 8
+          },
+          "daughterboard_pullup_ohms": 4700,
+          "pullup_refs": [
+            "R20 SDA3",
+            "R21 SCL3"
+          ]
+        }
+      ],
+      "i2c_drive": "open drain: drive low or release; the three buses remain separate",
+      "shared_change": {
+        "pin": "A11",
+        "baseboard_j1_pin": 28,
+        "u4_pin": 9,
+        "direction": "input",
+        "baseboard_net": "CS",
+        "daughterboard_net": "CHANGE12",
+        "devices": [
+          "U1.7",
+          "U2.7"
+        ],
+        "daughterboard_pullups": [
+          {
+            "ref": "R3",
+            "ohms": 100000
+          },
+          {
+            "ref": "R36",
+            "ohms": 100000
+          }
+        ],
+        "effective_pullup_ohms": 50000,
+        "note": "Shared notification input, not chip select. Synchronized and serviced by status reads plus periodic polling.",
+        "active_level": "low"
+      },
+      "ws2812": {
+        "pin": "D11",
+        "baseboard_j1_pin": 37,
+        "u4_pin": 7,
+        "direction": "output",
+        "baseboard_net": "WS_DIN",
+        "daughterboard_net": "WS2812_DIN",
+        "part": "WS2812B-2427-V6",
+        "count": 16,
+        "chain": "U5 through U20",
+        "schematic_supply_volts": 3.3,
+        "note": "RTL waveform tested; exact populated V6 3.3 V supply/logic thresholds and physical signal integrity remain unverified.",
+        "implemented_driver": "../rtl/peripheral/midi_ws2812.v",
+        "bit_rate_hz": 800000,
+        "data_order": "GRB, MSB first",
+        "reset_low_us": 300,
+        "chain_key_order": "ABCDHGFEIJKLPONM",
+        "chain_key_order_source": "user confirmed 2026-10-17; starts at DIN first pixel",
+        "input_bitmap_order": "logical A=bit0 through P=bit15; independent from physical chain order"
+      },
+      "signal_series_ohms": 100,
+      "series_refs": [
+        "RN1",
+        "RN2"
+      ],
+      "u4_ground_pins": [
+        11,
+        12
+      ],
+      "u4_power_pins": [
+        13,
+        14
+      ],
+      "u4_nc_pins": [
+        1,
+        2
+      ],
+      "power_source": "baseboard U1 ME6217C33M5G TC_3V3; daughterboard 3V3",
+      "touch_reset_gpio": null,
+      "reset_note": "Daughterboard U1/U2 RST pin 25 is fixed to 3V3.",
+      "register_driver_verified": true,
+      "physical_key_mapping_verified": false,
+      "hardware_verified": false,
+      "reference_archive": {
+        "name": "QT2160_Keypad16_Slider_Source_20261016.zip",
+        "sha256": "5f0e37cfe9e83efed4fd6b5b993215b369ed635660f2048b83b84f524abc990d",
+        "unmodified_copy": "../vendor/qt2160_reference"
+      },
+      "register_driver_verification_scope": "Pin-level I2C simulation with slave model, configuration readback, stable key snapshots, slider and fault recovery; no hardware test",
+      "pca9685": {
+        "implemented_driver": "../rtl/peripheral/pca9685_led_driver.v",
+        "address": "0x40",
+        "clock_hz": 100000,
+        "output_mode": "noninverted push-pull, OCH=0",
+        "pwm_target_hz": 200,
+        "frame_data_bytes": 64,
+        "idle_brightness": 0,
+        "brightness_range": [
+          0,
+          255
+        ],
+        "brightness_default": 96,
+        "function": "slider_region_led_bar",
+        "bitmap_input": "led_bitmap",
+        "position_mapper": "../rtl/peripheral/midi_slider_led_map.v",
+        "position_source": "application strip_value[7:0], gated by slider_ready",
+        "mapping": "position 0: off; otherwise ceil(position/16) channels lit from channel 0",
+        "release_behavior": "MOD/EXPR hold; BEND returns to 128 (8 channels)",
+        "physical_led_direction_verified": false
+      },
+      "physical_key_mapping": {
+        "state": "complete_user_confirmed_zero_based_map",
+        "source": "user physical key measurements 2026-10-17",
+        "reported_numbers": "QT2160 raw key bitmap bit indices, zero based (0..15)",
+        "logical_key_order": "ABCDEFGHIJKLMNOP",
+        "raw_bit_for_logical_key": {
+          "A": 5,
+          "B": 3,
+          "C": 1,
+          "D": 7,
+          "E": 13,
+          "F": 11,
+          "G": 9,
+          "H": 15,
+          "I": 4,
+          "J": 2,
+          "K": 0,
+          "L": 6,
+          "M": 12,
+          "N": 10,
+          "O": 8,
+          "P": 14
+        },
+        "rtl_applied": true,
+        "implemented_mapper": "../rtl/input/midi_key_layout.v",
+        "logical_bitmap": "A=bit0 through P=bit15 for MIDI, screen and WS2812; remap applied exactly once at board top",
+        "verification": "all 65536 raw bitmaps plus MIDI NoteOn/NoteOff simulation; physical behavior after programming still to be observed"
+      },
+      "touch_tuning": {
+        "symptom": "user reports oversensitivity, accidental touches and slider jitter",
+        "keypad": {
+          "negative_threshold": 12,
+          "release_threshold": 10,
+          "detect_integrator": 7,
+          "consecutive_detections": 8,
+          "burst_length": 4
+        },
+        "slider": {
+          "negative_threshold": 12,
+          "detect_integrator": 3,
+          "consecutive_detections": 4,
+          "burst_length": 8,
+          "chip_position_hysteresis": 2,
+          "fpga_deadband_counts": 3,
+          "fpga_jump_threshold_counts": 32,
+          "fpga_jump_confirm_tolerance_counts": 3,
+          "fpga_jump_consecutive_samples": 2,
+          "filter_scan_limit": "Confirmation reads are at least one nominal LP1 period apart; QT2160 has no exposed scan epoch, so distinct ASIC scans are not guaranteed under acquisition slowdown."
+        },
+        "common": {
+          "low_power_mode": 1,
+          "scan_interval_ms": 16,
+          "burst_repeat": 1,
+          "configuration_readback": true,
+          "poll_fallback_interval_ms": 20,
+          "minimum_status_start_interval_ms": 16,
+          "shared_change_policy": "CHANGE requests a scan only after the minimum interval; counter measures STATUS_BEFORE start to start",
+          "reset_policy": "Read old RESET status before configuring; any RESET afterward invalidates data, releases input, and triggers full reconfiguration"
+        },
+        "parameter_interface": "separate compile-time KEY_* and SLIDER_* midi_touch_frontend parameters",
+        "hardware_effect_verified": false
+      }
+    },
+    "pluck_protocol": null,
+    "note": "QT2160 scans feed raw 16-key snapshots, remapped once to user-confirmed A..P order at top, and filtered 8-bit slider values. No velocity sensing; Note On uses adjustable fixed velocity. Hardware touch noise and physical LED direction remain to be validated.",
+    "reference_hardware_notes": [
+      "../../../原理图信息汇总.md",
+      "../../../原理图汇总复核.md"
+    ],
+    "key_count": 16,
+    "base_midi_notes": {
+      "first": 48,
+      "last": 63
+    },
+    "fixed_velocity": {
+      "default": 100,
+      "minimum": 1,
+      "maximum": 127,
+      "touch_velocity_sensor": false
+    },
+    "transpose": {
+      "default_semitones": 0,
+      "minimum_semitones": -48,
+      "maximum_semitones": 48,
+      "encoder_step_semitones": 12
+    },
+    "midi_channel": {
+      "default_display": 1,
+      "display_range": [
+        1,
+        16
+      ]
+    },
+    "slider_modes": {
+      "MOD": {
+        "controller": 1,
+        "range": [
+          0,
+          127
+        ],
+        "release": "hold"
+      },
+      "EXPR": {
+        "controller": 11,
+        "range": [
+          0,
+          127
+        ],
+        "release": "hold"
+      },
+      "BEND": {
+        "center": 8192,
+        "range": [
+          0,
+          16320
+        ],
+        "step": 64,
+        "release": "center"
+      }
+    }
+  },
+  "hardware_verified": false,
+  "status_leds": {
+    "ready": {
+      "pin": "E8",
+      "direction": "output",
+      "condition": "Keypad, slider and PCA9685 ready"
+    },
+    "done": {
+      "pin": "D7",
+      "direction": "output",
+      "condition": "USB or BLE MIDI online"
+    }
+  }
+}

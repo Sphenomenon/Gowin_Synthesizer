@@ -4,8 +4,8 @@
 
 The Git root remains `fpga/`, with the common parent `projects/` containing
 peer directories `138k/` and `25k/`. The existing 138K tree was moved intact to
-`projects/138k/`; `projects/25k/` currently documents the pending import of the
-complete panel source. Shared interface planning stays at the Git root.
+`projects/138k/`; `projects/25k/` contains the panel source imported from
+the local `GW_25K` project on 2026-10-19. Shared interface planning stays at the Git root.
 There are no nested repositories for these board projects.
 
 `migration/gw138k_audio` is a compatibility symlink to `../projects/138k`.
@@ -108,3 +108,18 @@ pending because the recorded raw sampling anomalies remain unresolved.
 Source, input documents and debug summaries are tracked. Generated builds,
 captures and verification output stay in its ignored `results/` directory.
 The `LATEST_*.txt` files are local pointers into that directory and are ignored.
+
+## 25K panel source import (2026-10-19)
+
+`projects/25k/` preserves the original `GW_25K` source layout, with the
+complete MIDI keyboard under `example/MIDI_KEYBOARD`, standalone peripheral
+examples, bring-up projects, constraints, tests, hardware inputs, and existing
+verification summaries. `SOURCE_IMPORT.json` records the imported file hashes.
+The import preserves existing behavior and historical acceptance boundaries;
+it does not establish new 138K/25K integration or board acceptance.
+
+`builds/`, `impl/`, simulation scratch, generated bitstreams and normal tool
+logs remain untracked. Original BLE firmware and manifest-bound upstream
+reports/logs are explicit source-input exceptions. Existing manifests keep
+their historical paths and hashes; their bitstreams require a local rebuild.
+Imported files disable Git newline conversion to preserve frozen input bytes.

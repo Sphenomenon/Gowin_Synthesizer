@@ -1,0 +1,169 @@
+{
+  "format": 1,
+  "controller": "RTL8723DS ROM version 2",
+  "top": "rtl8723ds_ble",
+  "rtl_language": "Verilog-2001",
+  "source_equivalence": "Six core/reset RTL files are byte-identical to the tested board sources.",
+  "files": {
+    "rtl/bt_uart.v": {
+      "bytes": 3499,
+      "sha256": "004babc4c97502af75d6715a489cf20f31e3003f569fab57504967b1aafa88dc"
+    },
+    "rtl/bt_h5_transport.v": {
+      "bytes": 17825,
+      "sha256": "2eab823619e9de0b6b4cc4a631e0295f631261eebc292aef9486724ed62f7fdc"
+    },
+    "rtl/bt_hci_init.v": {
+      "bytes": 11238,
+      "sha256": "0963e4d95210ecd28887d8fe6ea5e7e5b102c90c244125782aff1d5ddeac0c12"
+    },
+    "rtl/bt_gatt.v": {
+      "bytes": 20709,
+      "sha256": "4c7b4dcd486a85e94e00c1daff1a66ff81d94071bbd597f11aa95b7311818465"
+    },
+    "rtl/bt_verilog_core.v": {
+      "bytes": 6314,
+      "sha256": "5c596ca839e7bf1a7ebe18ee72ca74b6e6de5ce81e19ce77a7bc961fcd99cc3a"
+    },
+    "rtl/reset_release_sync.v": {
+      "bytes": 424,
+      "sha256": "d5311e4a6141261abe6c699572b3c0053b39c0e631d9d2c1b18b21f87048489d"
+    },
+    "rtl/rtl8723ds_ble.v": {
+      "bytes": 1600,
+      "sha256": "db12a57311df8cf1af5c2ddf94f7fefc71c7c51b9d3b5506b52830f9b16a4bb9"
+    },
+    "sources.f": {
+      "bytes": 135,
+      "sha256": "0c10eb32d276dd7e4bfca953d094649533ce59e9fa6dd1bb24ff338d26ec4e55"
+    },
+    "constraints/vivado_example.xdc": {
+      "bytes": 446,
+      "sha256": "8adfa86413272590b1803f2824a2abcd8cb6227eaa04959570542be2351ebf45"
+    },
+    "examples/rtl8723ds_ble_board_top.v": {
+      "bytes": 1177,
+      "sha256": "a279389904b6ed8875581f49ed333732a3c53d4b9282bbc6df3053a559bda9d9"
+    },
+    "NOTICE.md": {
+      "bytes": 576,
+      "sha256": "63db7876b02ebebb330740ce4a819d0d930087bc3261d22202179024e101310c"
+    },
+    "README.md": {
+      "bytes": 6882,
+      "sha256": "ca8ab9c882bf07471eb1cb37d611d6050b48eb1445bf7e731744c70ea7c1fe7c"
+    },
+    "scripts/simulate.ps1": {
+      "bytes": 2878,
+      "sha256": "d57230228d44fcfe6ce1a04be6a6336a85fff18fbfe7c2a414eec7222ba1d1b0"
+    },
+    "scripts/verify_package.py": {
+      "bytes": 566,
+      "sha256": "d81b79b11b4e5075ab8686efbd8bf98c111ba730b5c6efe16a9cae2da592d253"
+    },
+    "rtl8723ds_patch.mem": {
+      "bytes": 131072,
+      "sha256": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30"
+    },
+    "firmware_manifest.json": {
+      "bytes": 636,
+      "sha256": "acb4358578446bca1febdb0476e4c17ac0af16e482cdf2e686b54256e0f3f774"
+    },
+    "firmware/rtl8723ds_fw.bin": {
+      "bytes": 48988,
+      "sha256": "19c1bed7a9359b1a021c20f81b525bdebf5067f9021716991d94be9101f76e63"
+    },
+    "firmware/rtl8723ds_config.bin": {
+      "bytes": 47,
+      "sha256": "7d1e18df7654da8f6382520841bb535f2d1246fc8495e3ae652f7b23e820168d"
+    },
+    "tests/tb_bt_h5.v": {
+      "bytes": 16990,
+      "sha256": "4830eaefc26a21493b52ad94c43fb670df83915ca6e98fff7dd04ca2324b41d4"
+    },
+    "scripts/sim_bt_h5.tcl": {
+      "bytes": 195,
+      "sha256": "e71ff04606fd03ec7ba779431bc954ab50987ff131bc83240ca2783d6eafd07b"
+    },
+    "tests/tb_bt_gatt.v": {
+      "bytes": 12461,
+      "sha256": "25f16810d0568ec58669e95b749965096908f5f90dcd623903687fd187e7b98f"
+    },
+    "scripts/sim_bt_gatt.tcl": {
+      "bytes": 274,
+      "sha256": "0243e4a318d43dab5af0556b7a4e524b6873abc643a90d5be99acf4d78dbafaf"
+    },
+    "scripts/sim_bt_system.tcl": {
+      "bytes": 202,
+      "sha256": "57bf73152d2b29525b129cdeaa9e6817922a327786ef823e0d0857bb12960fb2"
+    },
+    "tests/tb_bt_verilog_system.v": {
+      "bytes": 24954,
+      "sha256": "12bb89368fe231db2206641d2c556c365b19f061e77023ac8e910c30ae4ae321"
+    },
+    "reports/resource_summary.json": {
+      "bytes": 3161,
+      "sha256": "e382e1771e505840da2a8c453a105d6b4d5102aac30cafeaf89866405b9229ae"
+    },
+    "reports/utilization_core.rpt": {
+      "bytes": 9720,
+      "sha256": "f4c00bbe568d14275a2e2cb973074ad3c51c7342c6cdb4de3d31825988567086"
+    },
+    "reports/utilization.rpt": {
+      "bytes": 12178,
+      "sha256": "f7fdec1a0aad8c193ed4eb821446f594a753a68c6b95bd28459129585caa5f9e"
+    },
+    "reports/utilization_hierarchical.rpt": {
+      "bytes": 13413,
+      "sha256": "746a13c3f25765501d9c3e3335f64e0fd8674090a95fb839fd9fe423302a0c42"
+    },
+    "reports/CDC_ROM_AUDIT.md": {
+      "bytes": 3478,
+      "sha256": "85908decd4708d0af7f813e93a16e97668548cc93b290ec2c558650c1aef563a"
+    },
+    "validation/pc_receive.json": {
+      "bytes": 7793,
+      "sha256": "a35877d61082b0c90563c5db148ecde8a13cd9af5467bc59f01a40b523d57381"
+    },
+    "validation/initialized_state.json": {
+      "bytes": 966,
+      "sha256": "272c48b6c1fe688daa1b21a1b7014c6ba5c492950a553972712729ae442ed6be"
+    },
+    "validation/final_state.json": {
+      "bytes": 973,
+      "sha256": "8aee2c635dce8c10b94d335e1a999512a78a7b1bc3208231898a45cc3e1cdb17"
+    },
+    "validation/stopped_state.json": {
+      "bytes": 952,
+      "sha256": "cac794879f79c326facd24eaf6c78327b7d0d7509d3e8a5c3d079b3a60c6e550"
+    },
+    "validation/arm_stopped_state.txt": {
+      "bytes": 140,
+      "sha256": "a14113bcd7c27705e015ef3dc3f94eed0f208bf940e7756060b9aec3637a05f0"
+    },
+    "validation/independent_audit.json": {
+      "bytes": 4495,
+      "sha256": "f1970843ba537d8d32ba31f33259e308cb9e5ed3c6ad678481c7d717e5ad4203"
+    },
+    "validation/portable/gatt_normal.log": {
+      "bytes": 1855,
+      "sha256": "c2cc504c47c3409c1174e73cc6cdbf07c8e782cce1ef4759d96dd229a3ba2204"
+    },
+    "validation/portable/h5_normal.log": {
+      "bytes": 1815,
+      "sha256": "6b6acf440612dba69ddfc50db96deb8836d7e6e6db9f4ec59317b918263d16d4"
+    },
+    "validation/portable/result.json": {
+      "bytes": 2204,
+      "sha256": "2bc10d4bdb9467f7a89357f53f66169574330b22e3c52b3edae243dc3c374a02"
+    },
+    "validation/portable/system_normal.log": {
+      "bytes": 1917,
+      "sha256": "af85d3bd8f67e7304fbd805c44f201508c6aed34b38c060fcf4e0ba2a40acff3"
+    },
+    "validation/portable/system_wrong_rom.log": {
+      "bytes": 1849,
+      "sha256": "e2391d25d2ecb2817002c22b56d3981f180c9c3d658dc36cdaa2ad7e1f5e4339"
+    }
+  }
+}
