@@ -1,0 +1,80 @@
+{
+  "git_root": "/home/sphenicidition/Documents/fpga",
+  "shared_parent": "projects",
+  "boards": [
+    "projects/138k",
+    "projects/25k"
+  ],
+  "compatibility_link": {
+    "path": "migration/gw138k_audio",
+    "target": "../projects/138k",
+    "same_directory": true
+  },
+  "preexisting_files_checked": 1546,
+  "missing_files": [],
+  "unexpected_byte_changes": [],
+  "newly_ignored_sources": [],
+  "preview_index_entries": 1549,
+  "rename_entries": 1210,
+  "identical_content_renames": 1178,
+  "git_index_unchanged": true,
+  "ignore_checks": {
+    "138k_results_ignored": true,
+    "25k_results_ignored": true,
+    "25k_build_ignored": true,
+    "25k_rtl_trackable": true,
+    "ddr_reference_trackable": true,
+    "compatibility_link_trackable": true
+  },
+  "vendor_pll_newline_attribute": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/video_pll_init.v: text: set\nprojects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/video_pll_init.v: eol: crlf\n",
+  "25k_complete_source_imported": false,
+  "rtl_or_firmware_changed_by_reorganization": false,
+  "hardware_tested": false,
+  "entrypoint_checks": {
+    "date": "2026-10-18T23:43:43.969731+08:00",
+    "hardware_tested": false,
+    "jobs": {
+      "cnn_source_boundary": {
+        "passed": true,
+        "returncode": 0,
+        "command": [
+          "/usr/bin/python3",
+          "projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py"
+        ],
+        "log": "projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/cnn_source_boundary.log"
+      },
+      "new_path_prepare": {
+        "passed": true,
+        "returncode": 0,
+        "command": [
+          "/usr/bin/python3",
+          "projects/138k/push2_workstation/usb_a/tools/build_current_workstation.py",
+          "--prepare-only"
+        ],
+        "log": "projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/new_path_prepare.log"
+      },
+      "compatibility_path_prepare": {
+        "passed": true,
+        "returncode": 0,
+        "command": [
+          "/usr/bin/python3",
+          "migration/gw138k_audio/push2_workstation/usb_a/tools/build_current_workstation.py",
+          "--prepare-only"
+        ],
+        "log": "projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/compatibility_path_prepare.log"
+      }
+    },
+    "passed": true
+  },
+  "backup": "/tmp/gowin-repository-layout-20261018_234100",
+  "passed": true,
+  "preview_uses_repository_git_settings": true,
+  "git_blob_preview_unexpected_changes": [],
+  "git_blob_preview_missing_files": [],
+  "markdown_links_checked_before_audit_link": 46,
+  "broken_markdown_links": [],
+  "obsidian_synchronized": true,
+  "programmed": false,
+  "publication_status_at_verification": "not_committed_or_pushed",
+  "publication_scope": "directory_layout_and_documentation_only"
+}

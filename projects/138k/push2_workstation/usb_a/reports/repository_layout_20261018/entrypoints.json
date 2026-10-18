@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-18T23:43:43.969731+08:00",
+  "hardware_tested": false,
+  "jobs": {
+    "cnn_source_boundary": {
+      "passed": true,
+      "returncode": 0,
+      "command": [
+        "/usr/bin/python3",
+        "projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py"
+      ],
+      "log": "projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/cnn_source_boundary.log"
+    },
+    "new_path_prepare": {
+      "passed": true,
+      "returncode": 0,
+      "command": [
+        "/usr/bin/python3",
+        "projects/138k/push2_workstation/usb_a/tools/build_current_workstation.py",
+        "--prepare-only"
+      ],
+      "log": "projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/new_path_prepare.log"
+    },
+    "compatibility_path_prepare": {
+      "passed": true,
+      "returncode": 0,
+      "command": [
+        "/usr/bin/python3",
+        "migration/gw138k_audio/push2_workstation/usb_a/tools/build_current_workstation.py",
+        "--prepare-only"
+      ],
+      "log": "projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/compatibility_path_prepare.log"
+    }
+  },
+  "passed": true
+}

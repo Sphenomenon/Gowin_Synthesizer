@@ -1,15 +1,15 @@
-migration/gw138k_audio/push2_workstation/usb_a/vendor/ddr3_reference/ddr3_memory_interface.vo -text linguist-vendored
-migration/gw138k_audio/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/** linguist-vendored
+projects/138k/push2_workstation/usb_a/vendor/ddr3_reference/ddr3_memory_interface.vo -text linguist-vendored
+projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/** linguist-vendored
 
 # The accepted P28 PLL_INIT routed audit binds the raw CRLF bytes of this
 # vendor helper.  Force CRLF on checkout so the main checkout and any git
 # worktree produce byte-identical input; without this rule the worktree can
 # check it out as LF and the raw-SHA audit diverges.
-migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/video_pll_init.v text eol=crlf
+projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/video_pll_init.v text eol=crlf
 
 # The frozen BLE export manifest hashes raw bytes, including original CRLF.
-migration/gw138k_audio/push2_workstation/usb_a/vendor/rtl8723ds_ble/** -text linguist-vendored
+projects/138k/push2_workstation/usb_a/vendor/rtl8723ds_ble/** -text linguist-vendored
 
 # Preserve original touchboard input bytes and treat PDFs as binary documents.
-migration/gw138k_audio/push2_workstation/touchboard_test/input_netlist.tel -text
-migration/gw138k_audio/push2_workstation/touchboard_test/**/*.pdf binary
+projects/138k/push2_workstation/touchboard_test/input_netlist.tel -text
+projects/138k/push2_workstation/touchboard_test/**/*.pdf binary

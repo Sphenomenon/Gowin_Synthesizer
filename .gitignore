@@ -1,29 +1,31 @@
 # This workspace contains several historical/reference trees.  The Git
-# repository tracks the active Gowin Push 2 workstation and its source,
-# verification scripts, and version records; generated outputs stay local.
+# repository tracks the 138K host and 25K panel under projects/, plus shared
+# planning documents. Generated outputs stay local. The old migration path
+# is a tracked compatibility symlink, not a second source tree.
 /fpga/
 /Mega_138K/
 /migration/*
-!/migration/gw138k_audio/
-migration/gw138k_audio/*
-!/migration/gw138k_audio/README.md
-!/migration/gw138k_audio/scripts/
-!/migration/gw138k_audio/ae350/
-migration/gw138k_audio/ae350/*
-!/migration/gw138k_audio/ae350/scripts/
-!/migration/gw138k_audio/push2_workstation/
+!/migration/gw138k_audio
+!/projects/138k/
+projects/138k/*
+!/projects/138k/README.md
+!/projects/138k/scripts/
+!/projects/138k/ae350/
+projects/138k/ae350/*
+!/projects/138k/ae350/scripts/
+!/projects/138k/push2_workstation/
 
 # Build results, captures, and generated implementation databases.
 **/results/
-migration/gw138k_audio/push2_workstation/usb_a/out/
-!migration/gw138k_audio/push2_workstation/results/
-migration/gw138k_audio/push2_workstation/results/*
-!migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/
-migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/*
-!migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/
-!migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/**
-migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/impl/
-migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1/build/
+projects/138k/push2_workstation/usb_a/out/
+!projects/138k/push2_workstation/results/
+projects/138k/push2_workstation/results/*
+!projects/138k/push2_workstation/results/workstation_20260911_174045_306332/
+projects/138k/push2_workstation/results/workstation_20260911_174045_306332/*
+!projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/
+!projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/**
+projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/impl/
+projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/build/
 
 **/impl/
 **/build/
@@ -36,7 +38,7 @@ migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306
 *.bin
 *.fs
 *.vo
-!migration/gw138k_audio/push2_workstation/usb_a/vendor/ddr3_reference/ddr3_memory_interface.vo
+!projects/138k/push2_workstation/usb_a/vendor/ddr3_reference/ddr3_memory_interface.vo
 *.vg
 *.sdf
 *.pr
@@ -50,7 +52,7 @@ migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306
 *.pin.html
 *.log
 *.tmp
-migration/gw138k_audio/push2_workstation/usb_a/LATEST_BUILD.txt
+projects/138k/push2_workstation/usb_a/LATEST_BUILD.txt
 
 # Tool-local files and editor metadata.
 *.gprj.user
@@ -62,8 +64,19 @@ a.out
 .zcodeignore
 
 # Original RTL8723DS firmware inputs for independent controller-model regression.
-!migration/gw138k_audio/push2_workstation/usb_a/vendor/rtl8723ds_ble/firmware/*.bin
+!projects/138k/push2_workstation/usb_a/vendor/rtl8723ds_ble/firmware/*.bin
 
 # Frozen upstream evidence is required by the BLE input manifest.
-!migration/gw138k_audio/push2_workstation/usb_a/vendor/rtl8723ds_ble/reports/utilization*.rpt
-!migration/gw138k_audio/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/portable/*.log
+!projects/138k/push2_workstation/usb_a/vendor/rtl8723ds_ble/reports/utilization*.rpt
+!projects/138k/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/portable/*.log
+
+# Previously tracked PL acceptance logs move with the 138K source tree.
+!projects/138k/push2_workstation/usb_a/reports/GW25K_PANEL_20261017_test.log
+!projects/138k/push2_workstation/usb_a/reports/GW25K_PANEL_20261017_rtl_exchange.log
+!projects/138k/push2_workstation/usb_a/reports/GW25K_PANEL_20261017_hotplug_test.log
+!projects/138k/push2_workstation/usb_a/reports/GW25K_PANEL_20261017_generic_midi_test.log
+
+# Native simulation scratch from the local functional pass.
+projects/138k/push2_workstation/usb_a/reports/function_first_*/attach/
+projects/138k/push2_workstation/usb_a/reports/function_first_*/gw25k_host/
+projects/138k/push2_workstation/usb_a/reports/function_first_*/guide/

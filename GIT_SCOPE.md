@@ -1,10 +1,24 @@
 # FPGA workspace Git scope
 
+## Board project layout (2026-10-18)
+
+The Git root remains `fpga/`, with the common parent `projects/` containing
+peer directories `138k/` and `25k/`. The existing 138K tree was moved intact to
+`projects/138k/`; `projects/25k/` currently documents the pending import of the
+complete panel source. Shared interface planning stays at the Git root.
+There are no nested repositories for these board projects.
+
+`migration/gw138k_audio` is a compatibility symlink to `../projects/138k`.
+New references use `projects/138k`; historical evidence and pinned manifests
+retain their original paths and bytes. Local results moved with the project
+and remain ignored. The previously frozen source exceptions and vendor
+newline attributes apply at the new paths. Other worktrees are unchanged.
+
 This repository was initialized on 2026-09-13 for the active Gowin Push 2
 USB-A audio workstation. The tracked construction source is the canonical
-`migration/gw138k_audio/push2_workstation/results/workstation_20260911_174045_306332/Prj1`
+`projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1`
 tree together with the Push USB-A build, simulation, programming, audit, and
-board-record files under `migration/gw138k_audio/push2_workstation/usb_a`.
+board-record files under `projects/138k/push2_workstation/usb_a`.
 The small frozen USB Host source set, its input manifest, and the audited DDR
 reference netlist live under `usb_a/vendor`, so a fresh clone can prepare a
 build without another migration tree.
@@ -85,7 +99,7 @@ and are tracked explicitly; newly generated build outputs still stay local.
 
 ## Standalone touchboard signal test
 
-`migration/gw138k_audio/push2_workstation/touchboard_test/` contains the
+`projects/138k/push2_workstation/touchboard_test/` contains the
 independent QT2160 signal probe, its frozen netlist and schematic, wiring
 references, RTL and host tools, simulation models, and dated debug records.
 It is a standalone SRAM test project; hardware touch acceptance is still
