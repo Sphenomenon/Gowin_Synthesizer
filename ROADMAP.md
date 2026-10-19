@@ -40,6 +40,10 @@
 
 ## 后续交互与连接
 
+蓝牙控制的准备范围已整理为[功能与实施方案](BLUETOOTH_CONTROL_PLAN.md)和[业务协议 v1.0](BLUETOOTH_PROTOCOL_V1.md)：功能设置、内置录音控制与下载、实时状态回传，包含现有底层缺口、字段与命令、录音存储与带宽预算和分阶段验收。两份文档为待开发接口定义与方案，不代表业务功能或实板验收已经完成。
+
+客户端选用安卓方向，见[安卓端实现方案](ANDROID_IMPLEMENTATION_PLAN.md)。首版工程已落地于 [`clients/android`](clients/android/README.md)，实现设置、BLE 会话、状态、录音与作品管理、前台下载及校验/续传，提供协议级模拟模式和调试 APK。真实模组与工作站业务固件联调、高速协议和手机兼容矩阵仍待验收，验证范围见[安卓验证记录](clients/android/docs/VALIDATION.md)。
+
 - 继续测量真实按键或 pad 到耳机输出的端到端延迟；数字内部延迟和人的实际交互感受分开记录。
 - 增加可编辑的 Push/电脑/MIDI 映射和页面导航，但不恢复已经删除的 performance keyboard 页面。
 - 评估 MPE 或更完整的逐通道表达。它需要先解决通用 MIDI 的 channel/cable 状态归属。

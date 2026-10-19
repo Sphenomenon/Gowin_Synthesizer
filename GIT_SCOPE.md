@@ -1,5 +1,19 @@
 # FPGA workspace Git scope
 
+## Android control client (2026-10-20)
+
+`clients/android/` is the independently buildable Kotlin/Compose mobile client
+for workstation settings, recording control/download and live status. Its
+source, pinned Gradle wrapper, protocol/file tests and validation records are
+tracked alongside the board projects. It does not enter the FPGA `usb_a/`
+build path. Shared Bluetooth protocol and implementation plans remain at the
+Git root; new board references use `projects/138k/`.
+
+Android SDK paths, dependency caches, build outputs, debug APK artifacts and
+signing keys remain local and ignored. The validation record identifies the
+tested debug APK by SHA256. Simulated protocol validation does not establish
+real BLE or FPGA business-firmware acceptance.
+
 ## Board project layout (2026-10-18)
 
 The Git root remains `fpga/`, with the common parent `projects/` containing
