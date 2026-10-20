@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-20",
+  "passed": true,
+  "scope": "FPGA runtime UART speed upgrade; existing Android 0.2.1 unchanged",
+  "firmware": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_042935_886410/impl/pnr/ble_protocol.fs",
+    "sha256": "b8ba81e260538269e79512227734cac21a88ce74c5a9aca5f466863b181b9010"
+  },
+  "apk": {
+    "path": "artifacts/gowin-control-0.2.1-gw25k-fast-debug.apk",
+    "version_name": "0.2.1",
+    "version_code": 4,
+    "bytes": 9737009,
+    "sha256": "042d2653ea7bf8a3e704966884a04c5358c01a5ebbc4f5c904881dbabca9b1f1",
+    "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca"
+  },
+  "flash_report": "reports/flash_20261020_043811_340487/summary.json",
+  "user_code": [
+    "0x000002AD"
+  ],
+  "status_code": [
+    "0x70022020"
+  ],
+  "transport": {
+    "boot_uart_baud": 115200,
+    "runtime_uart_baud": 921600,
+    "uart_format": "8E1",
+    "att_mtu": 23,
+    "value_bytes": 20,
+    "pcm_chunk": 256,
+    "window": 1,
+    "capability_flags": 104,
+    "h5_reliable_tx_window": 1
+  },
+  "performance": {
+    "baseline_pcm_bytes": 8192,
+    "baseline_seconds": 8.039155707985628,
+    "baseline_bytes_per_second": 1019.0124806094432,
+    "sram_pcm_bytes": 8192,
+    "sram_seconds": 6.898685500025749,
+    "sram_bytes_per_second": 1187.4725989421352,
+    "sram_speedup": 1.1653170314773187,
+    "flash_pcm_bytes": 32768,
+    "flash_seconds": 29.281290041981265,
+    "flash_bytes_per_second": 1119.0763778856656,
+    "flash_speedup": 1.098196930047782,
+    "full_pcm_bytes": 192000,
+    "full_download_seconds_with_resume_and_wav": 176.792441667,
+    "previous_full_download_seconds": 196.180852833,
+    "full_download_time_reduction_percent": 9.882927353009563,
+    "native_phone_tested": false
+  },
+  "timing": {
+    "constraint_mhz": 50,
+    "fmax_mhz": 50.314,
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "resources": {
+    "lut": 16003,
+    "register": 8783,
+    "cls_used": 10856,
+    "cls_total": 11520,
+    "bsram_used": 30,
+    "bsram_total": 56
+  },
+  "simulation_report": "reports/simulations/20261020_043519_715862/result.json",
+  "regression_groups_passed": 14,
+  "uart_model_scope": "uart_system checks all 30147 patch bytes and switch; other UART variants use 253 bytes covering first/final fragments",
+  "physical_kotlin_recording_test_passed": true,
+  "injected_fragment_loss_recovered": true,
+  "cancel_and_disconnect_resume_verified": true,
+  "complete_wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+  "previous_boot_object_rejected": true,
+  "checks": {
+    "baseline": true,
+    "fast_sram": true,
+    "kotlin_fast_sram": true,
+    "complete_wav_check": true,
+    "recording_sram": true,
+    "protocol_sram": true,
+    "speed_flash": true,
+    "recording_flash": true,
+    "protocol_flash": true,
+    "firmware_inputs": true,
+    "android_unchanged": true
+  },
+  "evidence": {
+    "baseline": "reports/speed2_20261020/baseline.json",
+    "fast_sram": "reports/speed2_20261020/fast_sram.json",
+    "kotlin_fast_sram": "reports/speed2_20261020/kotlin_fast_sram.json",
+    "complete_wav_check": "reports/speed2_20261020/complete_wav_check.json",
+    "recording_sram": "reports/speed2_20261020/recording_sram.json",
+    "protocol_sram": "reports/speed2_20261020/protocol_sram.json",
+    "speed_flash": "reports/speed2_20261020/speed_flash.json",
+    "recording_flash": "reports/speed2_20261020/recording_flash.json",
+    "protocol_flash": "reports/speed2_20261020/protocol_flash.json",
+    "firmware_inputs": "reports/speed2_20261020/firmware_inputs.json",
+    "android_unchanged": "reports/speed2_20261020/android_unchanged.json"
+  },
+  "power_cycle_performed": false,
+  "flash_load_method": "Program and Verify, then Reprogram reload",
+  "earlier_diagnostics": "Timeout at 120 seconds and interrupted repeated full-patch simulations retained, not acceptance. Final regression passed. Network lookup attempts failed; FC17 runtime baud was validated on real controller."
+}

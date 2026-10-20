@@ -1,0 +1,23 @@
+{
+  "started_at": "2026-10-20T09:57:47.255553+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/build.tcl",
+  "stage_directory": "/private/tmp/gw25k-build-00_z19sn",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/build_20261020_095747_100259_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/build_20261020_095747_100259_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_095747_100259/impl/pnr/ble_protocol.fs",
+      "sha256": "18c34c97a7bbe233f12096818310bbd689cc6d688c0a1b8adc8c19818693248d"
+    }
+  ],
+  "finished_at": "2026-10-20T09:59:30.645526+08:00"
+}

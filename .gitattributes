@@ -18,3 +18,8 @@ projects/138k/push2_workstation/touchboard_test/**/*.pdf binary
 projects/25k/** -text
 projects/25k/prj/vendor/** linguist-vendored
 projects/25k/example/**/vendor/** linguist-vendored
+
+# Frozen 25K BLE inputs and acceptance logs preserve their original CRLF and
+# tool whitespace; their SHA256 manifests, rather than formatting, bind bytes.
+projects/25k/example/RTL8723DS_PROTOCOL/vendor/** -whitespace
+projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/** -whitespace

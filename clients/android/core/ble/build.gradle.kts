@@ -8,6 +8,8 @@ android {
     kotlinOptions { jvmTarget = "17" }
 }
 dependencies {
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
     api(project(":core:protocol"))
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 }

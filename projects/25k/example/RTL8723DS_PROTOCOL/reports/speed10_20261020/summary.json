@@ -1,0 +1,109 @@
+{
+  "experiment_completed": true,
+  "adopted": false,
+  "decision": "Reject OPEN_FAST/B4: no stable throughput benefit; restore round9 SRAM, sources, and APP version. Flash and release index unchanged.",
+  "comparison": {
+    "passed": true,
+    "runs": [
+      {
+        "profile": "direct",
+        "round": 1,
+        "bytes_per_second": 6368.639787787256,
+        "transfer_seconds": 5.14521170797525
+      },
+      {
+        "profile": "fast",
+        "round": 1,
+        "bytes_per_second": 6424.9556293835685,
+        "transfer_seconds": 5.100113042048179
+      },
+      {
+        "profile": "direct",
+        "round": 2,
+        "bytes_per_second": 6620.6907150321385,
+        "transfer_seconds": 4.949332541029435
+      },
+      {
+        "profile": "fast",
+        "round": 2,
+        "bytes_per_second": 6352.404731603126,
+        "transfer_seconds": 5.158361500012688
+      },
+      {
+        "profile": "direct",
+        "round": 3,
+        "bytes_per_second": 6521.579588156944,
+        "transfer_seconds": 5.024549582973123
+      },
+      {
+        "profile": "fast",
+        "round": 3,
+        "bytes_per_second": 6332.206331637496,
+        "transfer_seconds": 5.1748155830428
+      }
+    ],
+    "median_bytes_per_second": {
+      "direct": 6521.579588156944,
+      "fast": 6352.404731603126
+    },
+    "improvement_percent": -2.594077926474081
+  },
+  "baseline_before_candidate_bytes_per_second": 6171.958199153724,
+  "restored_release_bytes_per_second": 6332.566004876035,
+  "candidate": {
+    "manifest": "candidate_build.json",
+    "sha256": "7ec83eb91b7f92087b879279bb5d7c6eb9999574212f672412a7f9eac7357b91",
+    "user_code": "4F15",
+    "sram_only": true,
+    "flash_programmed": false,
+    "fmax_mhz": 50.312,
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "minimum_setup_slack_ns": 0.124,
+    "lut": 17409,
+    "register": 9393,
+    "cls_used": 10975,
+    "cls_total": 11520,
+    "bsram": 34
+  },
+  "checks": {
+    "rtl_and_host_groups": 25,
+    "ordinary_android_tests": 36,
+    "lint_issues": 0,
+    "raw_notification_captures": 8,
+    "restored_firmware_inputs": 30,
+    "restored_android_inputs": 41,
+    "restored_protocol_reconnect": true,
+    "new_app_physical_recording_tested": false,
+    "new_app_phone_tested": false
+  },
+  "final_release": {
+    "manifest": "reports/ready_build.json",
+    "user_code": "EC9B",
+    "status": "70022020",
+    "firmware_sha256": "c772c4b9783ccba175a0a8ec231cd4465019cc4415b17f3398409c891ad9b6f6",
+    "apk": "artifacts/gowin-control-0.2.6-gw25k-direct-debug.apk",
+    "version": "0.2.6",
+    "flash_unchanged": true,
+    "sram_restored": true,
+    "new_apk_released": false
+  },
+  "timing_observation": {
+    "write_call_counts_per_72_blocks": {
+      "direct": 224,
+      "fast": 80
+    },
+    "median_host_write_total_seconds": {
+      "direct": 0.023467120190616697,
+      "fast": 0.014144963875878602
+    },
+    "scope": "GATT callbacks and host API return times; no external air trace; ~15ms notification spacing is an observation, not proof of the sole bottleneck."
+  },
+  "remaining_limits": [
+    "Android phone GATT/UI/background/throughput untested",
+    "Physical power-cycle of current release not newly qualified",
+    "Same-image JTAG reload boot_id repetition remains; discard unfinished downloads after reset/reconfiguration",
+    "Audio remains built-in uncompressed PCM test tone"
+  ],
+  "goal_status": "active"
+}

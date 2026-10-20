@@ -48,16 +48,18 @@ class Reader(private val bytes: ByteArray) {
 }
 
 data class Message(val opcode: Int, val status: Int, val requestId: Long, val nonce: ULong, val payload: ByteArray = byteArrayOf()) {
-    fun encode(): ByteArray {
-        require(payload.size <= 492)
+    fun encode(maximum:Int=512): ByteArray {
+        require(maximum in setOf(512,1020,8160) && payload.size <= maximum-20 && (payload.size<=492 || opcode==Op.DATA && status==0))
         val body = Writer().u8(opcode).u8(status).u16(payload.size).u32(requestId).u64(nonce).bytes(payload).build()
         return body + Writer().u32(crc32(body)).build()
     }
     companion object {
-        fun decode(raw: ByteArray): Message {
-            checkWire(raw.size in 20..512, "逻辑报文大小无效")
+        fun decode(raw: ByteArray,maximum:Int=512): Message {
+            checkWire(maximum in setOf(512,1020,8160),"逻辑报文上限无效")
+            checkWire(raw.size in 20..maximum, "逻辑报文大小无效")
             val r = Reader(raw)
             val op = r.u8(); val status = r.u8(); val length = r.u16()
+            checkWire(raw.size<=512 || op==Op.DATA && status==0,"仅允许协商后的长音频块")
             val id = r.u32(); val nonce = r.u64()
             checkWire(length == raw.size - 20, "逻辑报文长度不符")
             val payload = r.bytes(length)
@@ -76,27 +78,41 @@ fun fragment(raw: ByteArray, token: Int): List<ByteArray> {
 }
 
 /** One instance per notification characteristic; duplicate FIRST must not reset a received prefix. */
-class Reassembler {
+class Reassembler(private val allowCompact: Boolean = false,private val bulkValueLimit:Int?=null,private val longData:Boolean=false,private val extendedData:Boolean=false) {
     private var token = -1
+    init { require((bulkValueLimit==null || bulkValueLimit in 20..244) && (!(longData || extendedData) || bulkValueLimit!=null)) }
+    private var marker = -1
     private var next = 0
     private var lastTime = 0L
     private var previous: ByteArray? = null
     private val buffer = java.io.ByteArrayOutputStream()
-    fun clear() { token = -1; next = 0; buffer.reset(); previous = null }
+    fun clear() { token = -1; marker = -1; next = 0; buffer.reset(); previous = null }
     fun accept(value: ByteArray, nowMs: Long): ByteArray? {
         try {
-            checkWire(value.size in 7..20, "分片长度错误")
+            checkWire(value.size in 5..(bulkValueLimit?:20), "分片长度错误")
             val r = Reader(value)
-            checkWire(r.u8() == 0xb1, "未知分片版本")
-            val t = r.u16(); val index = r.u8(); val flags = r.u8(); val length = r.u8()
-            checkWire(flags and 0xfc == 0 && length in 1..14 && r.remaining == length, "分片字段错误")
+            val version = r.u8()
+            val bulk = version == 0xb3
+            val compact = version == 0xb2 || bulk
+            checkWire(version == 0xb1 || version == 0xb2 && allowCompact || bulk && bulkValueLimit!=null, "未协商的分片版本")
+            val t = r.u16()
+            val tag = r.u8()
+            val index = if (compact) tag and 63 else tag
+            val flags = if (compact) tag ushr 6 else r.u8()
+            val length = if (compact) r.remaining else r.u8()
+            checkWire(value.size <= if(bulk)bulkValueLimit!! else 20,"分片超过协商通知长度")
+            val capacity = if(bulk)bulkValueLimit!!-4 else if (compact) 16 else 14
+            val maxIndex = if(bulk && (longData || extendedData))63 else if (compact) 31 else 36
+            checkWire(flags and 0xfc == 0 && length in 1..capacity && r.remaining == length, "分片字段错误")
             checkWire((flags and 1 != 0) == (index == 0), "FIRST 标志错误")
-            checkWire(flags and 2 != 0 || length == 14, "中间分片过短")
+            checkWire(flags and 2 != 0 || length == capacity, "中间分片过短")
+            checkWire(index <= maxIndex, "分片编号超出上限")
             if (token != -1 && nowMs - lastTime > 2000) clear()
             if (t == token && index == next - 1 && previous?.contentEquals(value) == true) return null
-            if (flags and 1 != 0) { clear(); token = t }
-            checkWire(t == token && index == next && index < 37, "分片顺序错误")
-            buffer.write(r.bytes(length)); checkWire(buffer.size() <= 512, "重组超出上限")
+            if (t == token && index == next - 1) checkWire(previous?.contentEquals(value) == true, "重复分片内容冲突")
+            if (flags and 1 != 0) { clear(); token = t; marker = version }
+            checkWire(t == token && index == next && marker == version, "分片顺序错误")
+            buffer.write(r.bytes(length)); checkWire(buffer.size() <= if(bulk && extendedData)minOf(8160,(bulkValueLimit!!-4)*64) else if(bulk && longData)1020 else 512, "重组超出上限")
             previous = value.copyOf(); next++; lastTime = nowMs
             if (flags and 2 != 0) return buffer.toByteArray().also { clear() }
             return null
@@ -111,6 +127,17 @@ object Op {
     const val GET_PARAM = 0x10; const val SET_PARAM = 0x11; const val GET_EFFECTS = 0x12; const val SET_EFFECTS = 0x13
     const val START = 0x20; const val STOP = 0x21; const val INFO = 0x22; const val CLEAR = 0x23
     const val OPEN = 0x30; const val READ = 0x31; const val ACK = 0x32; const val CLOSE = 0x33; const val CANCEL = 0x34
+    const val ACK_READ = 0x35 // Optional extension; UNSUPPORTED falls back to ACK + READ.
+    const val OPEN_WIDE = 0x36 // Optional 460-byte transfer; legacy OPEN remains 256.
+    const val OPEN_COMPACT = 0x37 // Optional B2 DATA framing, 460-byte blocks.
+    const val OPEN_SECOND = 0x40 // Opt-in codec0/10/11; best per-block predictor.
+    const val READ_SECOND = 0x41; const val ACK_READ_SECOND = 0x42
+    const val OPEN_LOSSLESS = 0x3d // Explicit DATA codec0/10; same PCM limits as3c.
+    const val READ_LOSSLESS = 0x3e; const val ACK_READ_LOSSLESS = 0x3f
+    const val OPEN_EXTENDED = 0x3c // Explicit MTU-bound DATA, PCM up to8112.
+    const val OPEN_LONG = 0x3b // Optional B3 DATA-only logical1020 / PCM972.
+    const val OPEN_DIRECT = 0x39 // Optional B3 DATA as successful READ/ACK_READ receipt.
+    const val OPEN_BULK = 0x38 // Optional B3 DATA using negotiated ATT value length.
     const val DATA = 0xd0; const val TASK_EVENT = 0xe0; const val STATUS_EVENT = 0xe1
 }
 

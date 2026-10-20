@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "cached_long_read_rejected_in_legacy": true,
+  "no_long_data_on_legacy": true,
+  "legacy_cursor_unchanged": true,
+  "legacy_read_matches": true,
+  "original_cache_success_preserved": true,
+  "encoded_replay_identical": true,
+  "old_read_keeps_raw_in_second": true,
+  "first_read_keeps_codec10_in_second": true,
+  "long_replay_did_not_move_current_cursor": true
+}

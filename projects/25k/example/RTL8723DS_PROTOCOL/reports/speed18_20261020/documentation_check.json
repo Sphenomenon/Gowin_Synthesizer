@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "ready_manifest_matches": true,
+  "files": [
+    {
+      "file": "README.md",
+      "links": 15,
+      "missing": []
+    },
+    {
+      "file": "clients/android/README.md",
+      "links": 5,
+      "missing": []
+    },
+    {
+      "file": "docs/APP_INTEGRATION.md",
+      "links": 7,
+      "missing": []
+    },
+    {
+      "file": "docs/SECOND_TRANSFER_EXTENSION.md",
+      "links": 1,
+      "missing": []
+    },
+    {
+      "file": "reports/speed18_20261020/README.md",
+      "links": 35,
+      "missing": []
+    }
+  ]
+}

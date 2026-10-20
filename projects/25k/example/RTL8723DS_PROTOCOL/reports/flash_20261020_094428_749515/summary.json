@@ -1,0 +1,115 @@
+{
+  "started_at": "2026-10-20T09:44:28.749607+08:00",
+  "passed": true,
+  "artifact": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_093455_977383/impl/pnr/ble_protocol.fs",
+    "sha256": "ea2a59dac6df327f1cde88d332d8f1374138de8f7733de45c2a04bffa33daef2"
+  },
+  "expected_user_code": "0xc678",
+  "manifest": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/speed17_20261020/candidate_initial.json",
+  "steps": {
+    "device_before": {
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "0",
+        "--cable-index",
+        "1",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/flash_20261020_094428_749515/device_before.log",
+      "passed": true,
+      "returncode": 0
+    },
+    "flash_id_1": {
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "51",
+        "--cable-index",
+        "1",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/flash_20261020_094428_749515/flash_id_1.log",
+      "passed": true,
+      "returncode": 0
+    },
+    "program_verify": {
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "54",
+        "--fsFile",
+        "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_093455_977383/impl/pnr/ble_protocol.fs",
+        "--spiaddr",
+        "0x000000",
+        "--cable-index",
+        "1",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/flash_20261020_094428_749515/program_verify.log",
+      "passed": true,
+      "returncode": 0
+    },
+    "reload_flash": {
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "1",
+        "--cable-index",
+        "1",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/flash_20261020_094428_749515/reload_flash.log",
+      "passed": true,
+      "returncode": 0
+    },
+    "device_after": {
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "0",
+        "--cable-index",
+        "1",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/flash_20261020_094428_749515/device_after.log",
+      "passed": true,
+      "returncode": 0
+    }
+  },
+  "flash_programmed_verified": true,
+  "user_code": [
+    "0x0000C678"
+  ],
+  "status_code": [
+    "0x70022020"
+  ],
+  "finished_at": "2026-10-20T09:44:52.968283+08:00",
+  "power_cycle_performed": false
+}

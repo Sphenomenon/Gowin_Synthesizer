@@ -18,6 +18,8 @@ NV3007 142×428 SPI 屏幕例程：[example/NV3007_LCD](example/NV3007_LCD/READM
 
 RTL8723DS BLE 广播、读取与通知例程：[example/RTL8723DS_BLE](example/RTL8723DS_BLE/README.md)
 
+RTL8723DS 业务命令、内置音频录音与二阶无损下载（A25D / Android0.2.10）：[example/RTL8723DS_PROTOCOL](example/RTL8723DS_PROTOCOL/README.md)，含25K实板验收；APP源码位于仓库根`clients/android`。
+
 完整16键触摸 MIDI 键盘（USB2 MIDI/独立屏幕接口、BLE MIDI、触摸条、双编码器、PCA9685/WS2812与428×142横屏）：[example/MIDI_KEYBOARD](example/MIDI_KEYBOARD/README.md)
 
 

@@ -21,7 +21,9 @@ data class WorkstationState(
     val capability: Capability?=null,val snapshot: Snapshot=Snapshot(),val record: RecordingInfo?=null,
     val parameters: Map<Int,Long> = emptyMap(),val updatedAt: Long=0,val error: String?=null,
     val busy: Boolean=false,val download: DownloadState=DownloadState(),val library: List<SavedRecording> = emptyList()
-)
+) {
+    val builtInAudioTest get() = !demo && name=="GW25K-PROTO" && capability?.flags==0x68L
+}
 
 class Workstation(context: Context,private val scope: CoroutineScope) {
     val scanner=AndroidBleTransport(context.applicationContext)
@@ -50,7 +52,7 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
         if(!recovery) { downloadJob?.cancelAndJoin();downloadJob=null }
         closeSession()
         lastAddress=address;lastDemo=demo
-        _state.update{it.copy(ready=false,busy=true,connection="连接并发现服务…",demo=demo,name=if(demo)"模拟工作站"else"GW138K · $address",error=null,parameters=emptyMap(),snapshot=Snapshot(),updatedAt=0,record=null)}
+        _state.update{it.copy(ready=false,busy=true,connection="连接并发现服务…",demo=demo,name=if(demo)"模拟工作站"else scanner.devices.value.firstOrNull{it.address==address}?.name ?: "GOWIN · $address",error=null,capability=null,parameters=emptyMap(),snapshot=Snapshot(),updatedAt=0,record=null)}
         try {
             val t=if(demo) demoPeripheral ?: DemoTransport(scope).also{demoPeripheral=it} else AndroidBleTransport(appContext)
             transport=t;t.connect(address)
@@ -68,10 +70,10 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
             }
             _state.update{it.copy(parameters=params)}
             if(cap.has(2)) subscribe(200)
-            _state.update{it.copy(ready=true,connection="已连接 · 可控制")}
+            _state.update{it.copy(ready=true,connection=if(_state.value.builtInAudioTest)"已连接 · 内置音频录音测试"else if(cap.protocolTestOnly)"已连接 · 最小协议测试"else"已连接 · 可控制")}
             watcher=scope.launch {
                 t.connected.filter{!it}.first()
-                _state.update{it.copy(ready=false,connection="连接已断开，设备录音默认继续")}
+                _state.update{it.copy(ready=false,connection=if(cap.protocolTestOnly)"连接已断开，可重新扫描连接"else"连接已断开，设备录音默认继续")}
             }
             poll=scope.launch {
                 while(isActive) {
@@ -137,6 +139,7 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
         } catch(e:DeviceError){if(e.code==0x84)refreshStatus();throw e}
     }
     suspend fun setEffects(enabled: Boolean,chain: List<Int>)=mutation.withLock {
+        check(_state.value.ready && _state.value.capability?.has(1)==true){"设备尚未开放效果设置"}
         check(chain.size<=3 && chain.distinct().size==chain.size)
         try {
             val p=Writer().u32(_state.value.snapshot.revision).u8(if(enabled&&chain.isNotEmpty())1 else 0).u8(chain.size)
@@ -216,35 +219,38 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
             withContext(Dispatchers.IO){check(files.part(info).parentFile!!.usableSpace>info.bytes*2+1048576){"手机存储空间不足"}}
             val cp=withContext(Dispatchers.IO){files.recover(info)}
             _state.update{it.copy(download=DownloadState("正在打开录音",cp.offset,cp.offset,cp.offset,info.bytes,active=true),error=null)}
-            val open=s.request(Op.OPEN,Writer().u64(info.boot).u32(info.id).u32(cp.offset).build()).message.payload
-            checkWire(open.size==20,"下载会话长度错误")
-            val r=Reader(open);transfer=r.u32();val length=r.u32();val crc=r.u32();val accepted=r.u32();val max=r.u16();val window=r.u8();r.zero(1)
-            checkWire(length==info.bytes&&crc==info.crc&&accepted==cp.offset&&max in 4..256&&max%4==0&&window==1,"下载对象或能力改变")
+            val opened=s.openTransfer(info.boot,info.id,cp.offset).message
+            val open=TransferOpen.decode(opened);transfer=open.transfer
+            val max=open.maxChunk
+            checkWire(open.bytes==info.bytes&&open.crc==info.crc&&open.offset==cp.offset,"下载对象或能力改变")
             val checksum=CRC32()
             withContext(Dispatchers.IO) {
                 files.part(info).inputStream().use{input->val buf=ByteArray(32768);var remaining=cp.offset;while(remaining>0){val n=input.read(buf,0,minOf(buf.size.toLong(),remaining).toInt());check(n>0);checksum.update(buf,0,n);remaining-=n}}
             }
             var offset=cp.offset
+            var previousCrc:Long?=null
             var windowStart=SystemClock.elapsedRealtime();var windowBytes=offset;var speed=0.0
             RandomAccessFile(files.part(info),"rw").use { output ->
                 while(offset<info.bytes) {
                     currentCoroutineContext().ensureActive()
                     val n=minOf(max.toLong(),info.bytes-offset).toInt()
-                    val reply=s.request(Op.READ,Writer().u32(transfer).u32(offset).u16(n).u16(0).build(),data=true)
+                    val reply=s.readBlock(transfer,offset,n,previousCrc)
                     val response=Reader(reply.message.payload)
                     checkWire(reply.message.payload.size==12&&response.u32()==transfer&&response.u32()==offset&&response.u16()==n,"READ 响应不匹配");response.zero(2)
-                    val block=PcmBlock.decode(reply.data!!.payload)
+                    val block=PcmBlock.decode(reply.data!!.payload,max)
                     checkWire(block.transfer==transfer&&block.boot==info.boot&&block.recording==info.id&&block.offset==offset&&block.data.size==n,"下载块对象或偏移不匹配")
+                    if(previousCrc!=null)_state.update{it.copy(download=it.download.copy(confirmed=offset))}
                     val next=offset+n
                     _state.update{it.copy(download=it.download.copy(phase="下载中",received=next))}
                     withContext(Dispatchers.IO) { output.seek(offset);output.write(block.data);checksum.update(block.data);files.persist(info,output,next,checksum.value) }
                     _state.update{it.copy(download=it.download.copy(durable=next))}
-                    val ack=s.request(Op.ACK,Writer().u32(transfer).u32(next).u32(block.crc).build()).message.payload
-                    val a=Reader(ack);checkWire(ack.size==8&&a.u32()==transfer&&a.u32()==next,"ACK 响应不匹配")
+                    previousCrc=block.crc
                     offset=next
                     val now=SystemClock.elapsedRealtime();if(now-windowStart>=1000){val sample=(offset-windowBytes)*1000.0/(now-windowStart);speed=if(speed==0.0)sample else speed*0.8+sample*0.2;windowStart=now;windowBytes=offset}
-                    _state.update{it.copy(download=it.download.copy(confirmed=offset,speed=speed))}
+                    _state.update{it.copy(download=it.download.copy(speed=speed))}
                 }
+                previousCrc?.let{s.acknowledgeBlock(transfer,offset,it)}
+                _state.update{it.copy(download=it.download.copy(confirmed=offset))}
             }
             _state.update{it.copy(download=it.download.copy(phase="校验完整录音"))}
             withContext(Dispatchers.IO){check(RecordingFiles.fileCrc(files.part(info))==info.crc){"完整录音 CRC32 不匹配"}}
@@ -260,7 +266,7 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
             }
             transfer=0
             _state.update{it.copy(download=it.download.copy(phase="生成 WAV 文件"))}
-            withContext(Dispatchers.IO){files.packageWav(info,_state.value.demo)}
+            withContext(Dispatchers.IO){files.packageWav(info,_state.value.demo,if(_state.value.builtInAudioTest)"builtin"else if(_state.value.demo)"demo"else"workstation")}
             _state.update{it.copy(download=it.download.copy(phase="下载完成",active=false),library=files.library(),error=closeWarning)}
         } finally {
             if(transfer!=0L && t.connected.value)withContext(NonCancellable){withTimeoutOrNull(3000){runCatching{s.request(Op.CANCEL,Writer().u32(transfer).build())}}}

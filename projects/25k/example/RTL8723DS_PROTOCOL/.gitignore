@@ -1,0 +1,16 @@
+# New outputs stay local; the frozen round18 evidence is the import baseline.
+/builds/
+/generated/
+/artifacts/*
+!/artifacts/README.md
+/reports/simulations/
+/reports/build_*
+/reports/last_*
+/reports/sram_*
+/reports/flash_*
+!/reports/flash_20261020_*/
+# Small frozen acceptance logs are needed to inspect the imported report.
+!/reports/speed18_20261020/*.log
+!/reports/speed18_20261020/encoder_second/*.log
+!/reports/speed18_20261020/encoder_legacy/*.log
+!/reports/speed18_20261020/clean_replay_61/*.log

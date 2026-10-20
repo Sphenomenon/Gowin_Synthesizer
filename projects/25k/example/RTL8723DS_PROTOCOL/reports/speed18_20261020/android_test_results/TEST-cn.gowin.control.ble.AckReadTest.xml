@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.ble.AckReadTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-20T01:58:20" hostname="Mac.ts.net lan" time="0.064">
+  <properties/>
+  <testcase name="oldFirmwareFallsBackOncePerConnection" classname="cn.gowin.control.ble.AckReadTest" time="0.06"/>
+  <testcase name="combinedTimeoutRetriesIdenticalIdAndPayload" classname="cn.gowin.control.ble.AckReadTest" time="0.002"/>
+  <testcase name="crcConflictNeverFallsBackAndFirstReadNeedsNoAck" classname="cn.gowin.control.ble.AckReadTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

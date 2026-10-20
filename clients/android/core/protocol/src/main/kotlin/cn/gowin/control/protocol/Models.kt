@@ -1,6 +1,27 @@
 package cn.gowin.control.protocol
 
-data class Capability(val boot: ULong, val flags: Long, val maxChunk: Int, val window: Int) {
+/** OPEN_BULK adds an explicit DATA-only ATT value limit after the original fields. */
+data class TransferOpen(val transfer:Long,val bytes:Long,val crc:Long,val offset:Long,
+                        val maxChunk:Int,val valueLimit:Int) {
+    companion object {
+        fun decode(message:Message):TransferOpen {
+            val bulk=message.opcode in setOf(Op.OPEN_BULK,Op.OPEN_DIRECT,Op.OPEN_LONG,Op.OPEN_EXTENDED,Op.OPEN_LOSSLESS,Op.OPEN_SECOND)
+            checkWire(message.opcode in setOf(Op.OPEN,Op.OPEN_WIDE,Op.OPEN_COMPACT,Op.OPEN_BULK,Op.OPEN_DIRECT,Op.OPEN_LONG,Op.OPEN_EXTENDED,Op.OPEN_LOSSLESS,Op.OPEN_SECOND),"下载打开响应类型错误")
+            checkWire(message.payload.size==if(bulk)24 else 20,"下载会话长度错误")
+            val r=Reader(message.payload)
+            val id=r.u32();val bytes=r.u32();val crc=r.u32();val offset=r.u32();val chunk=r.u16();val window=r.u8();r.zero(1)
+            val value=if(bulk)r.u16() else 20
+            if(bulk)r.zero(2)
+            r.end()
+            checkWire(id!=0L && chunk in 4..(if(message.opcode in setOf(Op.OPEN_EXTENDED,Op.OPEN_LOSSLESS,Op.OPEN_SECOND))minOf(8112,(value-4)*64-48) else if(message.opcode==Op.OPEN_LONG)972 else if(message.opcode==Op.OPEN)256 else 460) && chunk%4==0 && window==1,"下载能力错误")
+            checkWire(value in 20..244,"下载通知长度无效")
+            return TransferOpen(id,bytes,crc,offset,chunk,value)
+        }
+    }
+}
+
+data class Capability(val boot: ULong, val flags: Long, val maxChunk: Int, val window: Int, val recordingSlots: Int = 1) {
+    val protocolTestOnly get() = flags == 0L && maxChunk == 0 && recordingSlots == 0
     fun has(bit: Int) = flags and (1L shl bit) != 0L
     companion object {
         fun decode(raw: ByteArray): Capability {
@@ -8,8 +29,13 @@ data class Capability(val boot: ULong, val flags: Long, val maxChunk: Int, val w
             val r = Reader(raw)
             checkWire(r.u8() == 1 && r.u8() == 20 && r.u16() == 512, "设备协议版本不兼容")
             val boot = r.u64(); val flags = r.u32(); val chunk = r.u16(); val window = r.u8(); val slots = r.u8()
-            checkWire(boot != 0uL && chunk in 4..256 && chunk % 4 == 0 && window == 1 && slots == 1, "设备能力字段无效")
-            return Capability(boot, flags, chunk, window)
+            val records = flags and 0x18L != 0L
+            val downloads = flags and 0x20L != 0L
+            checkWire(boot != 0uL && flags and 0xffffff00L == 0L && window == 1, "设备能力字段无效")
+            checkWire(slots in 0..1 && (!records || slots == 1), "录音槽能力无效")
+            checkWire((chunk == 0 && !downloads) || (chunk in 4..256 && chunk % 4 == 0), "PCM 块能力无效")
+            checkWire(!downloads || slots == 1, "下载能力缺少录音槽")
+            return Capability(boot, flags, chunk, window, slots)
         }
     }
 }
@@ -65,10 +91,12 @@ data class RecordingInfo(
 }
 data class PcmBlock(val transfer: Long, val boot: ULong, val recording: Long, val offset: Long, val crc: Long, val data: ByteArray) {
     companion object {
-        fun decode(raw: ByteArray): PcmBlock {
-            val r=Reader(raw); val transfer=r.u32(); val boot=r.u64(); val rec=r.u32(); val offset=r.u32(); val n=r.u16(); r.zero(2); val crc=r.u32()
-            checkWire(n in 4..256 && n%4==0 && offset%4==0L && r.remaining==n, "PCM 数据块长度错误")
-            val data=r.bytes(n); checkWire(crc32(data)==crc,"PCM 块校验失败")
+        fun decode(raw: ByteArray,maxChunk: Int=256,allowLossless:Boolean=false,allowSecond:Boolean=false): PcmBlock {
+            checkWire(maxChunk in 4..8112 && maxChunk%4==0,"PCM 块上限无效")
+            val r=Reader(raw); val transfer=r.u32(); val boot=r.u64(); val rec=r.u32(); val offset=r.u32(); val n=r.u16(); val codec=r.u8(); r.zero(1); val crc=r.u32()
+            checkWire(n in 4..maxChunk && n%4==0 && offset%4==0L, "PCM 数据块长度错误")
+            checkWire(codec==0 || allowLossless && codec==10 || allowLossless && allowSecond && codec==11,"未协商 PCM 编码")
+            val data=PcmRice.decode(r.bytes(r.remaining),n,codec,allowSecond); checkWire(crc32(data)==crc,"PCM 块校验失败")
             return PcmBlock(transfer,boot,rec,offset,crc,data)
         }
     }

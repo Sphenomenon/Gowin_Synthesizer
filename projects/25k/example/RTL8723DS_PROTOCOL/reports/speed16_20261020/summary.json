@@ -1,0 +1,71 @@
+{
+  "passed": true,
+  "goal_status": "active",
+  "round": 16,
+  "previous_turn_classification": "progress",
+  "outcome": "MTU158/6-ACL full notification trial rejected; generic lossless delta/Rice codec feasibility verified offline",
+  "groups": {
+    "mtu185_before": {
+      "rates": [
+        9980.39738846548,
+        9893.48855247065,
+        9980.984865420543
+      ],
+      "median_bytes_per_second": 9980.39738846548
+    },
+    "mtu158": {
+      "rates": [
+        9627.011334940516,
+        9301.315590551583,
+        9978.116916003553
+      ],
+      "median_bytes_per_second": 9627.011334940516
+    },
+    "mtu185_after": {
+      "rates": [
+        9848.64695657631,
+        9713.633865468071,
+        9757.34989442334
+      ],
+      "median_bytes_per_second": 9757.34989442334
+    }
+  },
+  "capture_count": 9,
+  "physical_data_acl_inferred": {
+    "mtu185": 1299,
+    "mtu158": 1315
+  },
+  "decision": "No throughput gain forMTU158; production unchanged",
+  "lossless": {
+    "deployed": false,
+    "pcm_bytes": 192000,
+    "encoded_bytes": 130153,
+    "reduction_percent": 32.21197916666667,
+    "reference_pcm_sha256": "3c42476a276269189432da893676a23ead1af624a260f95e1d0b319dbf02844c",
+    "decoded_pcm_sha256": "3c42476a276269189432da893676a23ead1af624a260f95e1d0b319dbf02844c",
+    "max_encoded_overhead_bytes": 1,
+    "malformed_cases_rejected": 8,
+    "random_roundtrips": 56
+  },
+  "next_step": "Explicit negotiated lossless DATA profile; resource/timing, raw fallback, PCM identities/CRC, retransmission and resume, APP decoder then physical WAV validation required before adoption",
+  "restore": {
+    "firmware_inputs": 30,
+    "android_inputs": 43,
+    "ready_manifest_unchanged": true,
+    "apk_unchanged": true,
+    "flash_programmed_this_round": false,
+    "final_sram": "22B4",
+    "status": "70022020",
+    "complete_pcm_bytes": 192000,
+    "recording_checks_passed": true,
+    "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+  },
+  "limitations": [
+    "Lossless prototype is offline only, not a throughput claim; current wire bound must account for mode metadata",
+    "Sequential MTU groups plus baseline-after, not paired alternating test",
+    "Physical ACL counts are inferred, not air trace",
+    "Phone GATT/UI/background/throughput and power-cycle acceptance not newly verified",
+    "Cross-reset boot_id repeat remains; clear unfinished phone downloads after board reconfiguration",
+    "Built-in1second stereo48kPCM16; no microphone"
+  ]
+}

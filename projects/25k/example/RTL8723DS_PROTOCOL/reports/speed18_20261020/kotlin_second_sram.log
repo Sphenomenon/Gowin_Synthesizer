@@ -1,0 +1,16 @@
+{
+  "started_at": "2026-10-20T10:02:48.313296+08:00",
+  "passed": true,
+  "scope": "APP Kotlin session + codec over macOS BLE; not Android phone GATT/UI",
+  "android_source": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/clients/android",
+  "gradle_command": [
+    "/tmp/gw-android-tools/gradle-8.10.2/bin/gradle",
+    ":core:data:testDebugUnitTest",
+    "--tests",
+    "cn.gowin.control.data.RealRecordingTest",
+    "--rerun-tasks",
+    "--offline"
+  ],
+  "returncode": 0,
+  "finished_at": "2026-10-20T10:03:09.351182+08:00"
+}

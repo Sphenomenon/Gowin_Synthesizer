@@ -1,0 +1,56 @@
+> Task :core:protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:protocol:compileKotlin UP-TO-DATE
+> Task :core:protocol:compileJava NO-SOURCE
+> Task :core:protocol:processResources NO-SOURCE
+> Task :core:protocol:classes UP-TO-DATE
+> Task :core:protocol:jar UP-TO-DATE
+> Task :core:protocol:processTestResources
+> Task :core:ble:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:ble:preBuild UP-TO-DATE
+> Task :core:ble:preDebugBuild UP-TO-DATE
+> Task :core:ble:generateDebugResValues UP-TO-DATE
+> Task :core:ble:generateDebugResources UP-TO-DATE
+> Task :core:ble:packageDebugResources UP-TO-DATE
+> Task :core:ble:parseDebugLocalResources UP-TO-DATE
+> Task :core:ble:generateDebugRFile UP-TO-DATE
+> Task :core:ble:compileDebugKotlin UP-TO-DATE
+> Task :core:ble:javaPreCompileDebug UP-TO-DATE
+> Task :core:ble:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:ble:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :core:ble:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :core:ble:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:ble:generateDebugUnitTestStubRFile UP-TO-DATE
+> Task :core:ble:compileDebugUnitTestKotlin UP-TO-DATE
+> Task :core:ble:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :core:ble:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :core:ble:processDebugJavaRes UP-TO-DATE
+> Task :core:ble:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :core:ble:testDebugUnitTest UP-TO-DATE
+> Task :core:data:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:data:preBuild UP-TO-DATE
+> Task :core:data:preDebugBuild UP-TO-DATE
+> Task :core:data:generateDebugResValues UP-TO-DATE
+> Task :core:data:generateDebugResources UP-TO-DATE
+> Task :core:data:packageDebugResources UP-TO-DATE
+> Task :core:data:parseDebugLocalResources UP-TO-DATE
+> Task :core:data:generateDebugRFile UP-TO-DATE
+> Task :core:data:compileDebugKotlin UP-TO-DATE
+> Task :core:data:javaPreCompileDebug UP-TO-DATE
+> Task :core:data:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:data:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :core:data:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :core:data:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:data:generateDebugUnitTestStubRFile UP-TO-DATE
+> Task :core:data:compileDebugUnitTestKotlin UP-TO-DATE
+> Task :core:data:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :core:data:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :core:data:processDebugJavaRes UP-TO-DATE
+> Task :core:data:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :core:protocol:compileTestKotlin
+> Task :core:data:testDebugUnitTest
+> Task :core:protocol:compileTestJava NO-SOURCE
+> Task :core:protocol:testClasses
+> Task :core:protocol:test
+
+BUILD SUCCESSFUL in 802ms
+35 actionable tasks: 4 executed, 31 up-to-date

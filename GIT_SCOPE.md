@@ -1,3 +1,7 @@
+## 25K BLE protocol and shared Android update (2026-10-20)
+
+`projects/25k/example/RTL8723DS_PROTOCOL/` contains the accepted 25K business-GATT/recording/lossless source, frozen vendor inputs, tests and round18 hardware evidence. `clients/android/` is the only Android source; the standalone project's relative symlink preserves its existing tool interface. SOURCE_IMPORT.json binds imported file bytes and documents relocated documentation. Earlier raw captures/source snapshots remain at the original project; historical summaries and current evidence are retained. APKs, bitstreams, build databases, new captures and signing material remain ignored. Historical firmware manifests retain their original paths/hashes and require a local rebuild on a new clone. This import does not alter the 138K hardware top or establish its physical BLE acceptance.
+
 # FPGA workspace Git scope
 
 ## Android control client (2026-10-20)

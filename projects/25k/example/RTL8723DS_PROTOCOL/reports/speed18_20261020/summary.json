@@ -1,0 +1,131 @@
+{
+  "passed": true,
+  "release": "0.2.10 / A25D",
+  "task_objective": "持续优化蓝牙传输速率",
+  "more_optimization_requested": true,
+  "paired_speed": {
+    "passed": true,
+    "rows": [
+      {
+        "mode": "lossless",
+        "run": 1,
+        "bps": 14105.451248034024,
+        "file": "reports/speed18_20261020/lossless_1.json"
+      },
+      {
+        "mode": "second",
+        "run": 1,
+        "bps": 22091.517523282622,
+        "file": "reports/speed18_20261020/second_1.json"
+      },
+      {
+        "mode": "lossless",
+        "run": 2,
+        "bps": 14106.4582398864,
+        "file": "reports/speed18_20261020/lossless_2.json"
+      },
+      {
+        "mode": "second",
+        "run": 2,
+        "bps": 21874.259007571534,
+        "file": "reports/speed18_20261020/second_2.json"
+      },
+      {
+        "mode": "lossless",
+        "run": 3,
+        "bps": 14010.093307607729,
+        "file": "reports/speed18_20261020/lossless_3.json"
+      },
+      {
+        "mode": "second",
+        "run": 3,
+        "bps": 22092.53345041704,
+        "file": "reports/speed18_20261020/second_3.json"
+      }
+    ],
+    "median_bps": {
+      "lossless": 14105.451248034024,
+      "second": 22091.517523282622
+    },
+    "gain_percent": 56.61687906908808
+  },
+  "complete_wav": {
+    "passed": true,
+    "old_wav_exact": true,
+    "reference_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+    "wav_bytes": 192044,
+    "old_seconds": 18.647345791,
+    "same_app_core": true,
+    "second_wav_exact": true,
+    "second_seconds": 14.145913334,
+    "seconds_reduction_percent": 24.139802561995616,
+    "cancel_offset": 14720,
+    "reconnect_offset": 29440,
+    "retry_offset": 22832,
+    "flash_wav_exact": true,
+    "flash_seconds": 13.716049833,
+    "flash_wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+  },
+  "flash_bps": 20847.580858106903,
+  "compression": {
+    "passed": true,
+    "pcm_bytes": 192000,
+    "encoded_bytes": 80002,
+    "codecs": [
+      11
+    ],
+    "reduction_percent": 58.33229166666667
+  },
+  "firmware": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_095747_100259/impl/pnr/ble_protocol.fs",
+    "sha256": "18c34c97a7bbe233f12096818310bbd689cc6d688c0a1b8adc8c19818693248d"
+  },
+  "user_code": "A25D",
+  "status_code": "70022020",
+  "timing": {
+    "constraint_mhz": 50,
+    "fmax_mhz": 50.018,
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "minimum_setup_slack_ns": 0.007
+  },
+  "resources": {
+    "LUT": 17557,
+    "registers": 9480,
+    "CLS": 11140,
+    "CLS_total": 11520,
+    "BSRAM": 37,
+    "BSRAM_total": 56
+  },
+  "apk": {
+    "path": "artifacts/gowin-control-0.2.10-gw25k-second-debug.apk",
+    "bytes": 9685370,
+    "sha256": "e94f8731787ad04435762ad26e9ba5f918f3240a296ea8cb1f29c535be785a3b",
+    "versionName": "0.2.10",
+    "versionCode": 13,
+    "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca",
+    "signature_v2_verified": true
+  },
+  "verification": {
+    "rtl_groups_passed": 50,
+    "encoder_vectors_each_profile": 38,
+    "reference_fuzz_roundtrips": 144,
+    "android_tests_passed": 63,
+    "android_physical_tests_skipped_in_ordinary_suite": 2,
+    "lint_errors": 0,
+    "lint_dependency_warnings": 5,
+    "raw_notification_captures_audited": 12,
+    "firmware_inputs_unchanged": 30,
+    "android_inputs_unchanged": 48,
+    "simulation_sources_unchanged": 31
+  },
+  "flash_program_verify_reload": true,
+  "ready_manifest_updated": true,
+  "limits": [
+    "音源仍为内置1秒双声道48kHz PCM16",
+    "电脑BLE与生产APP核心测试，手机原生GATT/UI/权限/后台及速率尚未实测",
+    "本镜像未物理断电上电验收",
+    "历史boot_id重复尚未修复，重启/重新配置后先删除旧未完成下载",
+    "当前50MHz时序余量0.007ns，CLS使用97%"
+  ]
+}

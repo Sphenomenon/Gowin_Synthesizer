@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "round": 12,
+  "goal_remains_active": true,
+  "firmware_user_code": "22B4",
+  "firmware_sha256": "558e7897b46277bb8a5ff0f94fa61c6a94b76cdcde980aa7e03c26781cb64d3d",
+  "apk": {
+    "passed": true,
+    "path": "artifacts/gowin-control-0.2.8-gw25k-extended-debug.apk",
+    "versionName": "0.2.8",
+    "versionCode": 11,
+    "bytes": 9668978,
+    "sha256": "ec4b1e1b561870e60b75488fc47ca6deba6aa8d4621954f44ec17ff2dda40ef0",
+    "signature_verified": true,
+    "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca"
+  },
+  "throughput_improvement_percent": 33.32386554091335,
+  "complete_download_time_reduction_percent": 17.690402662921134,
+  "flash_bytes_per_second": 9539.597765508124,
+  "checks": {
+    "speed_flash": true,
+    "recording_flash": true,
+    "profile_resume_flash": true,
+    "extended_replay_flash": true,
+    "protocol_flash": true,
+    "simulation": true,
+    "android_checks": true,
+    "extended_speed": true,
+    "flash": true,
+    "kotlin_extended_sram": true,
+    "kotlin_old_sram": true,
+    "firmware_inputs": true,
+    "apk": true
+  },
+  "phone_native_tested": false,
+  "physical_power_cycle_tested": false,
+  "boot_id_repetition_fixed": false
+}

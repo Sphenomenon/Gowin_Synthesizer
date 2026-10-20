@@ -151,7 +151,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     }
     if(showDevices)AlertDialog(onDismissRequest={showDevices=false;vm.repo.stopScan()},title={Text("连接工作站")},text={
         Column(Modifier.heightIn(max=400.dp).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(10.dp)){
-            Text("扫描提供 GW138K 业务服务的设备。只有 BTST 测试固件的模组不会出现在业务列表。")
+            Text("扫描提供 GOWIN 业务服务的设备，包括 GW25K-PROTO。")
             Row{TextButton(onClick=scan){Text("扫描 10 秒")};TextButton(onClick={runCatching{enableBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))}.onFailure{vm.repo.error(it.message)}}){Text("开启蓝牙")}}
             devices.forEach{d->OutlinedButton(modifier=Modifier.fillMaxWidth(),onClick={vm.repo.stopScan();showDevices=false;connect(d.address)}){
                 Column{Text(d.name);Text("${d.address} · ${d.rssi} dBm",style=MaterialTheme.typography.labelSmall)}
@@ -181,6 +181,18 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
         onValueChangeFinished={vm.action{vm.repo.setParameter(id,value.toLong())}})
 }
 @Composable private fun Controls(s:WorkstationState,vm:ControlViewModel){
+    val capability=s.capability
+    if(capability?.protocolTestOnly==true || s.builtInAudioTest) {
+        Section(if(s.builtInAudioTest)"25K 内置音频测试"else"25K 最小协议联调") {
+            Text("已完成 Capability → Response 订阅 → HELLO → GET_STATUS")
+            Text(if(s.builtInAudioTest)"切换到录音页，可录制 FPGA 内置的 1 秒双声道提示音，下载后在作品页播放。音源为内置测试信号。"else"此固件仅验证命令收发，声音控制、录音和下载尚未接入。")
+            Text("boot_id：${capability!!.boot.toString(16).padStart(16,'0')}")
+            Text("快照 ${s.snapshot.id} · 设备时间 ${s.snapshot.time} ms")
+            Text("有效组 0x${s.snapshot.valid.toString(16)} · 控制窗口${if(s.snapshot.flags and 8L!=0L)"开启"else"关闭"}")
+            OutlinedButton(enabled=s.ready&&!s.busy,onClick={vm.action{vm.repo.refreshStatus()}}){Text("发送 GET_STATUS")}
+        }
+        return
+    }
     val enabled=s.ready&&!s.busy&&s.capability?.has(1)==true&&s.snapshot.valid(0)
     Section("声音"){
         Choices("合成模式",listOf("A · 单分音","B · 4 分音","C · 32 分音"),s.snapshot.mode,enabled&&2 in s.parameters){vm.action{vm.repo.setParameter(2,it.toLong())}}
@@ -214,11 +226,16 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     }
 }
 @Composable private fun Recording(s:WorkstationState,vm:ControlViewModel,download:()->Unit){
+    val capability=s.capability
+    if(capability!=null && !capability.has(3) && !capability.has(4)) {
+        Section("设备录音") { Text("当前设备未提供录音能力。25K 最小测试请在控制页发送 GET_STATUS。") }
+        return
+    }
     val rec=s.record
-    var seconds by rememberSaveable{mutableStateOf("10")}
+    var seconds by rememberSaveable{mutableStateOf("0")}
     var clear by remember{mutableStateOf(false)}
     var cancel by remember{mutableStateOf(false)}
-    Section("设备录音槽"){
+    Section(if(s.builtInAudioTest)"内置测试音频录音槽"else"设备录音槽"){
         Text("48 kHz · 双声道 · PCM16",color=MaterialTheme.colorScheme.secondary)
         Text("状态：${listOf("空闲","正在启动","正在录音","正在封存","可下载","错误").getOrElse(rec?.state ?: -1){"等待读取"}}")
         Text("${duration(rec?.frames ?: 0)} / 容量 ${duration(rec?.capacity ?: 0)}")
@@ -232,6 +249,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
             OutlinedButton(enabled=s.ready&&!s.busy,onClick={vm.action{vm.repo.refreshRecord()}}){Text("读取录音信息")}
             TextButton(enabled=s.ready&&!s.busy&&rec?.state in listOf(4,5)&&!s.download.active,onClick={clear=true}){Text("清除设备录音")}
         }
+        if(s.builtInAudioTest)Text("FPGA 内置左右不同频率的提示音，容量 1 秒；0 表示录满。支持提前停止。",style=MaterialTheme.typography.bodySmall)
         if(s.demo)Text("模拟录音容量 10 秒，生成左右不同频率的测试 WAV。",style=MaterialTheme.typography.bodySmall)
     }
     Section("下载到手机"){
@@ -258,6 +276,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     s.library.forEach{entry->Section(entry.name){
         Text("${duration(entry.bytes/4)} · ${entry.bytes/1024} KiB · WAV")
         Text(SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.getDefault()).format(Date(entry.savedAt))+" 保存",style=MaterialTheme.typography.bodySmall)
+        if(entry.source=="builtin")Text("FPGA 内置测试音频",color=MaterialTheme.colorScheme.secondary)
         if(entry.demo)Text("模拟测试音频",color=MaterialTheme.colorScheme.secondary)
         if(entry.incomplete)Text("录音曾中断",color=MaterialTheme.colorScheme.error)
         Row{TextButton(onClick={play(entry.file)}){Text("试听")};TextButton(onClick={export(entry)}){Text("导出")};TextButton(onClick={share(entry)}){Text("分享")}}

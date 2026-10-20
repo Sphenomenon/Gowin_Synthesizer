@@ -1,0 +1,132 @@
+{
+  "passed": true,
+  "artifact": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_095747_100259/impl/pnr/ble_protocol.fs",
+  "files": {
+    "adaptations/bt_gatt.v": {
+      "sha256": "69cba84a11dd7418ca2cada0226b1fbdbd123755ae75e4460c49fa488b5e48bd",
+      "matches_build_input": true
+    },
+    "adaptations/bt_h5_transport.v": {
+      "sha256": "1e09fb2149d008785ab8b6b203413b6c2dc94f981e3cfb1260c6c1b1f9ccd52f",
+      "matches_build_input": true
+    },
+    "adaptations/bt_hci_init.v": {
+      "sha256": "8dcc5b4cf0da9d2da5dde0ad5c1f35ca44a44a661a2b2f936d10be7e566c48ad",
+      "matches_build_input": true
+    },
+    "adaptations/bt_uart_fast.v": {
+      "sha256": "ddc50dfb0f074c60cff8132821c236caee4d1523b486ba0ca391d43aeb0acdfd",
+      "matches_build_input": true
+    },
+    "adaptations/bt_verilog_core.v": {
+      "sha256": "b3a27cebcd954259bcb8b82b7f1c606a3870f0eafc6e3eaabb920694c69662d3",
+      "matches_build_input": true
+    },
+    "audio/manifest.json": {
+      "sha256": "73cbd869ff4b0960c4cccb52ea977d766180593bdc2fc18e158ddfcced26c11d",
+      "matches_build_input": true
+    },
+    "audio/test_tone.mem": {
+      "sha256": "c1de24f2277603f348e23eca90eff9b444a68cfd88e432f7c68068fe10f58917",
+      "matches_build_input": true
+    },
+    "audio/test_tone_1s.wav": {
+      "sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+      "matches_build_input": true
+    },
+    "build.sh": {
+      "sha256": "37fcca93b3eaa932447ee9a60498f4f7c364682a278f5a17421ea90263fc2d6d",
+      "matches_build_input": true
+    },
+    "build.tcl": {
+      "sha256": "9735539ac59639ea449977c468119b91ae25bf1416acf1e12c1f9bb3c4b42cee",
+      "matches_build_input": true
+    },
+    "constraints/ble_bringup.cst": {
+      "sha256": "49e7ac8bef16fe7f19f2637b958664e82db52f76acb2e1176a2b77dc77176d4c",
+      "matches_build_input": true
+    },
+    "constraints/ble_bringup.sdc": {
+      "sha256": "1d3799e17822ee4ce2cc7365700d4ee7de267249872163f2762d428e366cfa55",
+      "matches_build_input": true
+    },
+    "prepare_adapted.py": {
+      "sha256": "4da1fb9c050a5b7ea03af58236426c67c071b00bf83c9f66dd9043e231fa57de",
+      "matches_build_input": true
+    },
+    "prepare_sources.tcl": {
+      "sha256": "a9587a14714306da59ded0afef7ccca09bb4a8464df2e1220892c8793e4bad10",
+      "matches_build_input": true
+    },
+    "rtl/ble_bringup_top.v": {
+      "sha256": "a6ee8817b62c0b082643d0ac12d5b6a8cec4a1ef7d991394e74c4a372c73c7be",
+      "matches_build_input": true
+    },
+    "rtl/ble_protocol_command.v": {
+      "sha256": "65e9fe8b2241248940c82c3bb657af5f11399acfd75e5de87c5d8cf08511bb28",
+      "matches_build_input": true
+    },
+    "rtl/ble_recording.v": {
+      "sha256": "5ac93c77f8f902b960946e36cad087465180c8e8cb8079fd7c97c362c978039c",
+      "matches_build_input": true
+    },
+    "rtl/usb1_passive_monitor.v": {
+      "sha256": "31a1e7ce848b0ab4ad73cc85c37156f99f594d49323ec6811e5b28d1ce1ffe13",
+      "matches_build_input": true
+    },
+    "tools/gowin_build.py": {
+      "sha256": "2204baaa1abe20b5f57323d1255bf046359b7f370c5cae425e65e5b743a9685f",
+      "matches_build_input": true
+    },
+    "vendor/rtl8723ds_ble/rtl/bt_gatt.v": {
+      "sha256": "4c7b4dcd486a85e94e00c1daff1a66ff81d94071bbd597f11aa95b7311818465",
+      "matches_build_input": true
+    },
+    "vendor/rtl8723ds_ble/rtl/bt_h5_transport.v": {
+      "sha256": "2eab823619e9de0b6b4cc4a631e0295f631261eebc292aef9486724ed62f7fdc",
+      "matches_build_input": true
+    },
+    "vendor/rtl8723ds_ble/rtl/bt_hci_init.v": {
+      "sha256": "0963e4d95210ecd28887d8fe6ea5e7e5b102c90c244125782aff1d5ddeac0c12",
+      "matches_build_input": true
+    },
+    "vendor/rtl8723ds_ble/rtl/bt_uart.v": {
+      "sha256": "004babc4c97502af75d6715a489cf20f31e3003f569fab57504967b1aafa88dc",
+      "matches_build_input": true
+    },
+    "vendor/rtl8723ds_ble/rtl/bt_verilog_core.v": {
+      "sha256": "5c596ca839e7bf1a7ebe18ee72ca74b6e6de5ce81e19ce77a7bc961fcd99cc3a",
+      "matches_build_input": true
+    },
+    "vendor/rtl8723ds_ble/rtl/reset_release_sync.v": {
+      "sha256": "d5311e4a6141261abe6c699572b3c0053b39c0e631d9d2c1b18b21f87048489d",
+      "matches_build_input": true
+    },
+    "vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v": {
+      "sha256": "db12a57311df8cf1af5c2ddf94f7fefc71c7c51b9d3b5506b52830f9b16a4bb9",
+      "matches_build_input": true
+    },
+    "vendor/rtl8723ds_ble/rtl8723ds_patch.mem": {
+      "sha256": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30",
+      "matches_build_input": true
+    },
+    "generated/rtl/bt_gatt.v": {
+      "sha256": "9fe47e9629ef99cd8828cc954a6fa840072ffb441c7837890252d67a5f5f88c0",
+      "matches_build_input": true
+    },
+    "generated/rtl/bt_h5_transport.v": {
+      "sha256": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+      "matches_build_input": true
+    },
+    "adaptations/bt_acl_bridge.v": {
+      "sha256": "4444fdaf4258076b8edf4d0f46624062a1cd9dc75198f17c7e281ba5d385db9a",
+      "matches_build_input": true
+    }
+  },
+  "full_address_banks": {
+    "0": true,
+    "1": true,
+    "2": true,
+    "3": true
+  }
+}

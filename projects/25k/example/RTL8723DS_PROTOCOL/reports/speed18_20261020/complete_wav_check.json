@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "old_wav_exact": true,
+  "reference_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+  "wav_bytes": 192044,
+  "old_seconds": 18.647345791,
+  "same_app_core": true,
+  "second_wav_exact": true,
+  "second_seconds": 14.145913334,
+  "seconds_reduction_percent": 24.139802561995616,
+  "cancel_offset": 14720,
+  "reconnect_offset": 29440,
+  "retry_offset": 22832,
+  "flash_wav_exact": true,
+  "flash_seconds": 13.716049833,
+  "flash_wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+}

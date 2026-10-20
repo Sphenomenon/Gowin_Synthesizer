@@ -1,0 +1,164 @@
+{
+  "date": "2026-10-20",
+  "passed": true,
+  "qualification": "download_qualified_with_existing_boot_identity_limitation",
+  "scope": "OPEN_BULK / B3, ATT MTU negotiation, ACL fragmentation/reassembly with physical credits, legacy compatibility, APP Kotlin complete WAV, Flash verify/reload and real macOS BLE. Native Android phone and physical power-cycle not qualified.",
+  "firmware": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_061852_003425/impl/pnr/ble_protocol.fs",
+    "sha256": "4f9c56ecdf04959360953516883367a86147d3c30345c65c57afa5185bde59ba"
+  },
+  "apk": {
+    "path": "artifacts/gowin-control-0.2.5-gw25k-bulk-debug.apk",
+    "version_name": "0.2.5",
+    "version_code": 8,
+    "bytes": 9668978,
+    "sha256": "4ed6e088bb50e5c1f2dbda9780f3ad24d6e770c601901d38a4d7cfddfc0ed055",
+    "native_android_phone_tested": false,
+    "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca"
+  },
+  "flash_report": "reports/flash_20261020_063508_238766/summary.json",
+  "user_code": "079C",
+  "status_code": "70022020",
+  "performance": {
+    "passed": true,
+    "same_flash_firmware": true,
+    "pcm_bytes_per_trial": 32768,
+    "trial_order": [
+      "compact_flash_1",
+      "bulk_flash_1",
+      "compact_flash_2",
+      "bulk_flash_2",
+      "compact_flash_3",
+      "bulk_flash_3"
+    ],
+    "compact": {
+      "samples_bps": [
+        4361.423490076095,
+        4317.625327141449,
+        4422.618483308967
+      ],
+      "median_bps": 4361.423490076095
+    },
+    "bulk": {
+      "samples_bps": [
+        5780.531046671389,
+        5617.006283652087,
+        5460.907420739736
+      ],
+      "median_bps": 5617.006283652087
+    },
+    "median_improvement_percent": 28.788371421232604
+  },
+  "full_app_comparison": {
+    "bulk": {
+      "passed": true,
+      "download_seconds": 42.422597708,
+      "chunk": 460,
+      "ack_read_blocks": 414,
+      "pcm_bytes": 192000,
+      "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+    },
+    "old_wide_firmware": {
+      "passed": true,
+      "download_seconds": 57.220182583,
+      "chunk": 460,
+      "ack_read_blocks": 414,
+      "pcm_bytes": 192000,
+      "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+    },
+    "passed": true,
+    "time_reduction_percent": 25.860778849378118
+  },
+  "transport": {
+    "runtime_uart_baud": 921600,
+    "uart_format": "8E1",
+    "server_max_att_mtu": 247,
+    "observed_att_mtu": 185,
+    "observed_bulk_value_bytes": 182,
+    "default_att_mtu": 23,
+    "logical_maximum": 512,
+    "maximum_data_logical_bytes": 508,
+    "full_data_notifications_compact": 32,
+    "full_data_notifications_bulk": 3,
+    "capability_flags": 104,
+    "legacy_chunk": 256,
+    "bulk_wide_compact_chunk": 460,
+    "window": 1,
+    "h5_window": 1,
+    "requested_connection_interval_ms": 15,
+    "acl_data_bytes_per_physical_packet": 27,
+    "open_bulk_opcode": 56
+  },
+  "timing": {
+    "constraint_mhz": 50,
+    "fmax_mhz": 50.037,
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "margin": "Small; timing must be requalified after RTL changes."
+  },
+  "resources": {
+    "lut": 16866,
+    "register": 9229,
+    "cls_used": 11013,
+    "cls_total": 11520,
+    "bsram_used": 34,
+    "bsram_total": 56
+  },
+  "regression_groups_passed": 21,
+  "python_codec_tests_passed": 8,
+  "android_tests_passed": 27,
+  "lint_issues": 0,
+  "checks": {
+    "simulation": true,
+    "android_checks": true,
+    "firmware_inputs": true,
+    "kotlin_bulk_sram2": true,
+    "kotlin_old_firmware_current_app": true,
+    "app_wire_check": true,
+    "complete_wav_check": true,
+    "notification_wire_check": true,
+    "alternating_speed": true,
+    "recording_bulk_sram": true,
+    "recording_flash": true,
+    "recording_compact_flash": true,
+    "recording_legacy_flash": true,
+    "profile_resume_flash": true,
+    "protocol_flash": true,
+    "protocol_restored_flash": true,
+    "flash": true,
+    "speed_flash": true,
+    "final_identity_check": true
+  },
+  "evidence": {
+    "simulation": "simulation.json",
+    "android_checks": "android_checks.json",
+    "firmware_inputs": "firmware_inputs.json",
+    "kotlin_bulk_sram2": "kotlin_bulk_sram2.json",
+    "kotlin_old_firmware_current_app": "kotlin_old_firmware_current_app.json",
+    "app_wire_check": "app_wire_check.json",
+    "complete_wav_check": "complete_wav_check.json",
+    "notification_wire_check": "notification_wire_check.json",
+    "alternating_speed": "alternating_speed.json",
+    "recording_bulk_sram": "recording_bulk_sram.json",
+    "recording_flash": "recording_flash.json",
+    "recording_compact_flash": "recording_compact_flash.json",
+    "recording_legacy_flash": "recording_legacy_flash.json",
+    "profile_resume_flash": "profile_resume_flash.json",
+    "protocol_flash": "protocol_flash.json",
+    "protocol_restored_flash": "protocol_restored_flash.json",
+    "flash": "flash.json",
+    "speed_flash": "speed_flash.json",
+    "final_identity_check": "final_identity_check.json"
+  },
+  "diagnostics_retained": {
+    "legacy_task_retention_diagnostic.json": "Existing eight task slots retained for 60 seconds; legacy retry passed after retention expired.",
+    "kotlin_bulk_sram.json": "Test-only stale chunk-size assertion; corrected and full rerun kotlin_bulk_sram2.json passed."
+  },
+  "limitations": {
+    "historical_same_image_boot_id_repeat_unresolved": "reports/speed3_20261020/boot_identity_limitation.json",
+    "workaround": "After board reset/reconfiguration discard unfinished phone downloads before starting a new recording.",
+    "native_android_phone_gatt_ui_tested": false,
+    "new_firmware_physical_power_cycle_performed": false
+  },
+  "offline_audit_script": "audit_captures.py"
+}

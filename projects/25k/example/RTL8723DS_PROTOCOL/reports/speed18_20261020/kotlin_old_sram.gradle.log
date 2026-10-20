@@ -1,0 +1,44 @@
+> Task :core:protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:protocol:processResources NO-SOURCE
+> Task :core:ble:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:ble:preBuild UP-TO-DATE
+> Task :core:ble:preDebugBuild UP-TO-DATE
+> Task :core:ble:generateDebugResValues
+> Task :core:ble:generateDebugResources
+> Task :core:ble:packageDebugResources
+> Task :core:data:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:data:preBuild UP-TO-DATE
+> Task :core:data:preDebugBuild UP-TO-DATE
+> Task :core:ble:javaPreCompileDebug
+> Task :core:data:generateDebugResValues
+> Task :core:ble:parseDebugLocalResources
+> Task :core:data:generateDebugResources
+> Task :core:ble:generateDebugRFile
+> Task :core:data:packageDebugResources
+> Task :core:data:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:data:javaPreCompileDebug
+> Task :core:data:parseDebugLocalResources
+> Task :core:data:javaPreCompileDebugUnitTest
+> Task :core:data:generateDebugRFile
+> Task :core:data:generateDebugUnitTestStubRFile
+> Task :core:protocol:compileKotlin
+> Task :core:protocol:compileJava NO-SOURCE
+> Task :core:protocol:classes UP-TO-DATE
+> Task :core:protocol:jar
+> Task :core:ble:compileDebugKotlin
+> Task :core:ble:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:ble:bundleLibRuntimeToJarDebug
+> Task :core:ble:processDebugJavaRes
+> Task :core:ble:bundleLibCompileToJarDebug
+> Task :core:data:compileDebugKotlin
+> Task :core:data:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:data:processDebugJavaRes
+> Task :core:data:bundleLibRuntimeToJarDebug
+> Task :core:data:bundleLibCompileToJarDebug
+> Task :core:data:compileDebugUnitTestKotlin
+> Task :core:data:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :core:data:processDebugUnitTestJavaRes
+> Task :core:data:testDebugUnitTest
+
+BUILD SUCCESSFUL in 26s
+27 actionable tasks: 27 executed

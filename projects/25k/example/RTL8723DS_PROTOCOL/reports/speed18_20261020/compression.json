@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "pcm_bytes": 192000,
+  "encoded_bytes": 80002,
+  "blocks": 24,
+  "codecs": [
+    11
+  ],
+  "reduction_percent": 58.33229166666667
+}

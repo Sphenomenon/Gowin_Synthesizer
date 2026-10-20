@@ -1,0 +1,160 @@
+{
+  "date": "2026-10-20",
+  "passed": true,
+  "qualification": "download_qualified_with_existing_boot_identity_limitation",
+  "scope": "Optional OPEN_COMPACT DATA framing, backward fallback, exact retry, cross-profile resume, APP Kotlin full WAV, Flash verify/reload and wireless qualification. Not native Android phone or boot-identity uniqueness qualification.",
+  "firmware": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_055737_599510/impl/pnr/ble_protocol.fs",
+    "sha256": "a9e3ab08b40f56c5d648dbc48daf24d69cc1d24947bb212d393368f3c7c42882"
+  },
+  "apk": {
+    "path": "artifacts/gowin-control-0.2.4-gw25k-compact-debug.apk",
+    "version": "0.2.4",
+    "version_code": 7,
+    "bytes": 9668978,
+    "sha256": "f06a73a92f4893d6dd84166cc8d19cacc14f3e5ce00f2004c50fc84f0ac2aff6",
+    "native_phone_tested": false,
+    "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca"
+  },
+  "flash_report": "reports/flash_20261020_060735_415406/summary.json",
+  "user_code": [
+    "0x00009F4C"
+  ],
+  "status_code": [
+    "0x70022020"
+  ],
+  "performance": {
+    "pcm_bytes": 32768,
+    "alternating_same_firmware_trials": {
+      "wide": {
+        "samples_bps": [
+          3586.5699710494796,
+          3581.4650711989025,
+          3690.9010246819958
+        ],
+        "median_bps": 3586.5699710494796
+      },
+      "compact": {
+        "samples_bps": [
+          4177.281566648103,
+          4114.615894008027,
+          4308.865897729745
+        ],
+        "median_bps": 4177.281566648103
+      },
+      "median_improvement_percent": 16.47009818201799
+    },
+    "flash_bytes_per_second": 4360.469927503211,
+    "flash_measurements": 1,
+    "full_pcm_bytes": 192000,
+    "previous_full_seconds": 59.373615416,
+    "current_full_seconds": 55.314091166,
+    "full_time_reduction_percent": 6.837252913700864,
+    "both_full_runs_include_cancel_disconnect_resume_and_executed_response_loss_retry": true,
+    "both_full_runs_chunk_bytes": 460,
+    "cancel_disconnect_offsets": [
+      14720,
+      29440
+    ],
+    "native_phone_tested": false
+  },
+  "transport": {
+    "runtime_uart_baud": 921600,
+    "uart_format": "8E1",
+    "att_mtu": 23,
+    "att_value_bytes": 20,
+    "default_fragment": "B1",
+    "compact_data_fragment": "B2",
+    "compact_header_bytes": 4,
+    "compact_payload_bytes": 16,
+    "logical_maximum": 512,
+    "maximum_data_logical_bytes": 508,
+    "full_data_fragment_count_before": 37,
+    "full_data_fragment_count_after": 32,
+    "capability_flags": 104,
+    "legacy_chunk": 256,
+    "wide_and_compact_chunk": 460,
+    "window": 1,
+    "h5_window": 1,
+    "requested_connection_interval_ms": 15,
+    "open_compact_opcode": 55
+  },
+  "timing": {
+    "constraint_mhz": 50,
+    "fmax_mhz": 51.649,
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "resources": {
+    "lut": 15716,
+    "register": 8788,
+    "cls_used": 10799,
+    "cls_total": 11520,
+    "bsram_used": 30,
+    "bsram_total": 56
+  },
+  "regression_groups_passed": 16,
+  "android_tests_passed": 22,
+  "lint_issues": 0,
+  "full_ack_read_blocks": 414,
+  "complete_wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+  "pcm_crc32": "A54A47B0",
+  "checks": {
+    "simulation": true,
+    "android_checks": true,
+    "firmware_inputs": true,
+    "kotlin_old_firmware": true,
+    "kotlin_compact_sram": true,
+    "notification_wire_check": true,
+    "app_wire_check": true,
+    "recording_compact_sram": true,
+    "profile_resume_sram": true,
+    "recording_wide_sram": true,
+    "recording_256_sram": true,
+    "recording_legacy_sram": true,
+    "protocol_sram": true,
+    "flash": true,
+    "speed_flash": true,
+    "recording_flash": true,
+    "protocol_flash": true
+  },
+  "evidence": {
+    "simulation": "simulation.json",
+    "android_checks": "android_checks.json",
+    "firmware_inputs": "firmware_inputs.json",
+    "kotlin_old_firmware": "kotlin_old_firmware.json",
+    "kotlin_compact_sram": "kotlin_compact_sram.json",
+    "notification_wire_check": "notification_wire_check.json",
+    "app_wire_check": "app_wire_check.json",
+    "recording_compact_sram": "recording_compact_sram.json",
+    "profile_resume_sram": "profile_resume_sram.json",
+    "recording_wide_sram": "recording_wide_sram.json",
+    "recording_256_sram": "recording_256_sram.json",
+    "recording_legacy_sram": "recording_legacy_sram.json",
+    "protocol_sram": "protocol_sram.json",
+    "flash": "flash.json",
+    "speed_flash": "speed_flash.json",
+    "recording_flash": "recording_flash.json",
+    "protocol_flash": "protocol_flash.json"
+  },
+  "tuning_rejected": {
+    "interval_7p5": "interval_experiment/summary.json",
+    "reason": "Physical throughput decreased to 1851 B/s; restored and retained 15ms. Callback gaps alone do not prove negotiated connection parameters."
+  },
+  "diagnostic_retained": {
+    "file": "recording_256_task_retention_diagnostic.json",
+    "reason": "PCM verification completed; subsequent START returned existing task-slot BUSY during rapid tests. Passed rerun after the 60-second retention window."
+  },
+  "boot_observation": {
+    "sram_boot_id": "0xf608413ae4108273",
+    "flash_boot_id": "0xe8608411d8c10825",
+    "different_this_time": true,
+    "identity_uniqueness_proven": false
+  },
+  "limitations": {
+    "historical_same_image_boot_id_repeat_unresolved": "reports/speed3_20261020/boot_identity_limitation.json",
+    "workaround": "After board reset/reconfiguration discard unfinished phone downloads before starting a new recording.",
+    "native_android_phone_gatt_ui_tested": false,
+    "new_firmware_physical_power_cycle_performed": false
+  }
+}

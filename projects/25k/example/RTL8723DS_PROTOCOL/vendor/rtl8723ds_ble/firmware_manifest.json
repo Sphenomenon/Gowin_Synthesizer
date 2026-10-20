@@ -1,0 +1,16 @@
+{
+  "source": "https://github.com/armbian/firmware/tree/master/rtl_bt",
+  "source_hashes": {
+    "rtl8723ds_fw.bin": "19c1bed7a9359b1a021c20f81b525bdebf5067f9021716991d94be9101f76e63",
+    "rtl8723ds_config.bin": "7d1e18df7654da8f6382520841bb535f2d1246fc8495e3ae652f7b23e820168d"
+  },
+  "expected_rom_version": 2,
+  "chip_id": 3,
+  "patch_bytes": 30100,
+  "config_bytes": 47,
+  "payload_bytes": 30147,
+  "payload_sha256": "584ea2c6eae75020f4be40275293f0457aa7915985c96851923623ecaf8feb05",
+  "image_sha256": "827718bbda291c2b74ca4ccae3b6892cec6305cbb39d83c0c4c211d21d044bdd",
+  "baud": 115200,
+  "flow_control": false
+}

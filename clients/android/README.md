@@ -1,13 +1,17 @@
-# Gowin Control Android
+# GOWIN Control Android
 
-Kotlin / Compose 安卓控制端，最低 Android 8.0（API 26），编译与目标 API 35。真实连接使用项目自定义 GATT 业务协议 v1.0；还提供明确标注的模拟工作站，能验证设置、录音、下载、WAV 和作品管理。
+当前25K联调版为 **0.2.10 / versionCode13**，[APK](artifacts/gowin-control-0.2.10-gw25k-second-debug.apk)。优先协商OPEN_SECOND0x40，每个最多8112字节PCM块选择RAW、一阶/k9或二阶/k5的更短结果；逐字节无损恢复。APP完成逻辑/PCM CRC、对象与范围校验后交付PCM，可靠落盘后确认。仅明确UNSUPPORTED才40→3d→3c→3b→39→38→37→36→30回退。协议见[二阶扩展](../../projects/25k/example/RTL8723DS_PROTOCOL/docs/SECOND_TRANSFER_EXTENSION.md)，验收见[第十八轮](../../projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/README.md)。
+
+电脑同一固件三组一阶/二阶交替，中位有效PCM吞吐14.11→22.09 KB/s（+56.6%）；同一APP核心完整音频流程18.65→14.15秒（耗时−24.1%），含固定检查点取消重开、重连续传、执行后DATA丢失重试和WAV保存。Flash固化后完整下载13.72秒，三份WAV均精确匹配参考。详见[APP联调](../../projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION.md)及[第十八轮](../../projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/README.md)。手机原生GATT/UI/后台和实际速率待测；板卡重启或重配置后先删除未完成下载，历史boot_id重复问题仍保留。
+
+APK与签名密钥按仓库规则不进入Git；`artifacts/`链接指本机归档文件。克隆后可按下面命令构建，在`app/build/outputs/apk/debug/app-debug.apk`取得APK。25K测试不代表138K业务固件已部署。
 
 ## 构建
 
 使用 JDK 17、Android SDK Platform 35、Build Tools 35.0.0。Android Studio 中打开本目录，或在本目录执行：
 
 ```sh
-./gradlew :core:protocol:test :core:data:testDebugUnitTest :app:assembleDebug :app:lintDebug
+./gradlew :core:protocol:test :core:ble:testDebugUnitTest :core:data:testDebugUnitTest :app:assembleDebug :app:lintDebug
 ```
 
 `local.properties` 中设置本机 `sdk.dir`（Android Studio 通常自动生成）。首次需要联网下载固定版本依赖。Wrapper 为 Gradle 8.10.2，发行包 SHA256 已锁定。APK 输出为 `app/build/outputs/apk/debug/app-debug.apk`。调试 APK 用于联调，发布签名不进入源码。
@@ -19,7 +23,7 @@ Kotlin / Compose 安卓控制端，最低 Android 8.0（API 26），编译与目
 3. 真实设备在“连接设备”中扫描业务服务并连接。授予附近设备权限；Android 8–11 还需满足系统 BLE 扫描的位置权限/位置服务要求。长连接使用可暂停/断开的前台通知。
 4. 下载可以暂停或断线恢复。连接设备重启、录音清除或身份改变后，旧临时文件不能拼接到新录音。App 进程结束后，重新连接原对象并点击“下载 / 继续”可从可靠检查点恢复。
 
-真实控制需要 FPGA 提供业务服务 `9b6d0000-4c2a-4f87-9a31-138000000001`。仓库现有 FFF0/FFF1 BTST 底层测试固件尚无此业务服务，不能用本 App 的业务页面直接控制；模拟验证不代表已完成实际模组/工作站联调。
+真实连接使用业务服务 `9b6d0000-4c2a-4f87-9a31-138000000001`。25K 本例已提供命令与内置音频录音子集；旧 FFF0/FFF1 BTST 底层固件不提供业务服务。
 
 ## 代码入口
 
@@ -34,11 +38,11 @@ Kotlin / Compose 安卓控制端，最低 Android 8.0（API 26），编译与目
 
 ## 已实现边界
 
-- 协议 v1.0：MTU 23、20 字节特征值、512 字节逻辑消息、最多 256 字节 PCM 块、窗口 1。
-- 首版下载为原始 PCM16，经校验后本地封装 WAV；高速窗口模式、ADPCM、Wi-Fi/USB 文件通道尚无已定义设备契约，本 App 不宣告支持。
+- 协议v1.0默认MTU23、20字节特征值、256字节PCM块、窗口1；可选OPEN_WIDE/COMPACT/BULK/DIRECT使用460字节PCM块，OPEN_LONG使用972字节，OPEN_EXTENDED按协商MTU最多8112字节。B3 DATA最多64片；显式LONG/EXTENDED Transfer分别允许逻辑1020/8160字节，其他路径仍512。
+- OPEN_LOSSLESS3d允许RAW/一阶codec10，OPEN_SECOND40允许RAW/一阶codec10/二阶codec11；旧READ31/35始终RAW，3e/3f始终只允许RAW/10。解码后原PCM16通过校验，再本地封装WAV。高速窗口、ADPCM、Wi-Fi/USB文件通道尚无已定义设备契约。
 - 模拟模式使用同样的编解码和下载链，但不启动真实蓝牙前台服务，不承诺模拟模式在系统杀进程后自动继续。
 - 活跃真实下载可在断连后最多退避重连 5 次；用户停止/权限撤销/对象失效等仍需处理。仅控制且无下载时断线会显示状态，需要用户重新连接。
-- v1.0 逐块可靠保存后 ACK，持久化开销需要真机测量。进度分别记录 received/durable/confirmed；未校验数据不会显示为完成作品。
+- 逐块可靠保存后才 ACK 或 ACK_READ，持久化开销需要真机测量。进度分别记录 received/durable/confirmed；未校验数据不会显示为完成作品。
 - 试听是前台手机播放，进入系统后台暂停，不是设备实时音频流。无麦克风、所有文件访问或媒体库读取权限。
 - 当前没有稳定设备 ID、固件版本、RTC 录制时间字段，不以 MAC/名称冒充设备身份；作品显示的是手机保存时间。
 

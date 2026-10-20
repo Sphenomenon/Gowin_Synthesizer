@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-20",
+  "passed": true,
+  "adopted": false,
+  "scope": "Two measured optimizations rejected; final release firmware and APK remain round7/0.2.5.",
+  "uart_2m": {
+    "baseline_921600": {
+      "samples_bps": [
+        5474.872007446074,
+        5560.452177301139,
+        5705.819372436209
+      ],
+      "median_bps": 5560.452177301139
+    },
+    "candidate_2m": {
+      "samples_bps": [
+        5532.243828457515,
+        5559.616858219599,
+        5676.164901017104
+      ],
+      "median_bps": 5559.616858219599
+    },
+    "candidate_artifact": {
+      "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_065006_040671/impl/pnr/ble_protocol.fs",
+      "sha256": "943674e1a311c9f04ea23fd7b7e1c09daa753538baaafc5b45f624a32b1126ad"
+    },
+    "simulations_passed": 25,
+    "fmax_mhz": 50.17,
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "baseline_medium": "Flash round7",
+    "candidate_medium": "SRAM experimental",
+    "comparison_limit": "Three sequential trials per image rather than alternating firmware. No measurable gain; rejected.",
+    "improvement_percent": -0.015022502755268619
+  },
+  "chunk_456": {
+    "control_460": {
+      "samples_bps": [
+        5632.215333194754,
+        5547.020704576298,
+        5587.908383041506
+      ],
+      "median_bps": 5587.908383041506
+    },
+    "candidate_456": {
+      "samples_bps": [
+        5632.1937530076175,
+        5750.003683506718,
+        5631.986232359556
+      ],
+      "median_bps": 5632.1937530076175
+    },
+    "same_921600_firmware": true,
+    "alternating_trials": 3,
+    "observed_value_limit": 182,
+    "full_data_acl_packets_460": 21,
+    "full_data_acl_packets_456": 20,
+    "comparison_limit": "0.8 percent observed gain is too small versus run variation; no default changed.",
+    "improvement_percent": 0.7925214039033124
+  },
+  "wire_check": "notification_wire_check.json",
+  "active_release_manifest": "reports/ready_build.json",
+  "active_apk": "artifacts/gowin-control-0.2.5-gw25k-bulk-debug.apk",
+  "flash_modified": false,
+  "sram_restored": true,
+  "all_30_release_firmware_input_hashes_restored": true,
+  "next_focus": "Reduce per-block command/response round trips with explicit protocol negotiation; preserve CRC, durable ACK, exact request retries and legacy fallback.",
+  "restored_protocol_passed": true,
+  "restored_protocol_report": "protocol_restored.json",
+  "production_and_apk_inputs_restored_or_unchanged": true
+}

@@ -1,0 +1,4 @@
+WARNING: reports/speed18_20261020/encoder_second/random_972.sv:18: $readmemh(/private/tmp/gw25k-rice-vectors/pcm.mem): Not enough words in the file for the requested range [0:8111].
+WARNING: reports/speed18_20261020/encoder_second/random_972.sv:18: $readmemh(/private/tmp/gw25k-rice-vectors/expected.mem): Not enough words in the file for the requested range [0:8111].
+PASS encoder bytes=972 cycles=1464
+reports/speed18_20261020/encoder_second/random_972.sv:23: $finish called at 14650000 (1ps)

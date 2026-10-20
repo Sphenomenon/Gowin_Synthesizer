@@ -14,5 +14,6 @@ interface BleTransport {
     suspend fun subscribe(uuid: UUID)
     suspend fun write(value: ByteArray)
     fun priority(high: Boolean) {}
+    fun useAcknowledgedWrites() {}
     fun close()
 }

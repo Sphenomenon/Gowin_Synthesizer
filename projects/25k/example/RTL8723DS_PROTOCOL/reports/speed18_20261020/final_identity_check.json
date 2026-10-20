@@ -1,0 +1,22 @@
+{
+  "firmware_inputs.json": {
+    "count": 30,
+    "mismatches": []
+  },
+  "android_inputs.json": {
+    "count": 48,
+    "mismatches": []
+  },
+  "simulation.json": {
+    "count": 31,
+    "mismatches": []
+  },
+  "bitstream_sha256": "18c34c97a7bbe233f12096818310bbd689cc6d688c0a1b8adc8c19818693248d",
+  "apk_sha256": "e94f8731787ad04435762ad26e9ba5f918f3240a296ea8cb1f29c535be785a3b",
+  "apk_bytes": 9685370,
+  "accepted_evidence": true,
+  "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+  "user_code": "A25D",
+  "status_code": "70022020",
+  "passed": true
+}

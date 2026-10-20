@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-20",
+  "passed": true,
+  "source": "FPGA built-in stereo sine ROM; not microphone or external real-time recording",
+  "apk": {
+    "path": "artifacts/gowin-control-0.2.0-gw25k-recording-debug.apk",
+    "version_name": "0.2.0",
+    "version_code": 3,
+    "bytes": 9668978,
+    "sha256": "028dc64c5774ddb79bfe35cdb77ca79042ec15f14950fad5104faf5060b57985",
+    "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca"
+  },
+  "firmware": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_033519_045081/impl/pnr/ble_protocol.fs",
+    "sha256": "674a142df4f5b4efe0ed0c5285fe83aae59e23e77c019573e5355a0e51cc1f3d"
+  },
+  "flash_report": "reports/flash_20261020_034804_337672/summary.json",
+  "user_code": [
+    "0x00007379"
+  ],
+  "status_code": [
+    "0x70022020"
+  ],
+  "timing": {
+    "constraint_mhz": 50,
+    "fmax_mhz": 50.43,
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "resources": {
+    "lut": 15700,
+    "register": 8782,
+    "cls_used": 10826,
+    "cls_total": 11520,
+    "bsram_used": 30,
+    "bsram_total": 56
+  },
+  "capability": {
+    "flags": 104,
+    "pcm_chunk": 256,
+    "window": 1,
+    "slots": 1
+  },
+  "audio": {
+    "source": "Generated original stereo sine test signal; no external recording",
+    "sample_rate": 48000,
+    "channels": 2,
+    "bits": 16,
+    "loop_frames": 1024,
+    "capacity_frames": 48000,
+    "pcm_bytes": 192000,
+    "pcm_crc32": 2773108656,
+    "left_hz": 515.625,
+    "right_hz": 328.125,
+    "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+    "rom_sha256": "c1de24f2277603f348e23eca90eff9b444a68cfd88e432f7c68068fe10f58917"
+  },
+  "checks": {
+    "independent_sram": true,
+    "kotlin_complete_sram": true,
+    "complete_wav": true,
+    "flash_recording": true,
+    "protocol_flash": true
+  },
+  "evidence": {
+    "independent_sram": "reports/recording_20261020/credits_sram_short_v2.json",
+    "kotlin_complete_sram": "reports/recording_20261020/kotlin_credits_sram.json",
+    "complete_wav": "reports/recording_20261020/complete_wav_check.json",
+    "flash_recording": "reports/recording_20261020/flash_recording.json",
+    "protocol_flash": "reports/recording_20261020/protocol_flash.json"
+  },
+  "simulation_report": "reports/simulations/20261020_033919_084196/result.json",
+  "regression_groups_passed": 11,
+  "ordinary_android_tests_passed": 10,
+  "physical_kotlin_recording_test_passed": true,
+  "android_lint": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "complete_flow_elapsed_seconds": 374.627003,
+  "phone_test": "User will install APK; Android radio, permissions, UI and background behavior not yet verified",
+  "power_cycle_performed": false,
+  "flash_load_method": "Program and Verify, then Reprogram reload",
+  "firmware_input_hashes": "firmware_inputs.json",
+  "android_source_hashes": "android_sources.json",
+  "android_review_patch": "android_vs_37c8913.patch",
+  "earlier_diagnostics": "Earlier single-credit slow runs were interrupted; credits_sram_short.json failed because the checker expected OK instead of ACCEPTED. These are not acceptance evidence."
+}

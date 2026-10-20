@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.protocol.PcmSecondTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-20T02:00:22" hostname="Mac.ts.net lan" time="0.015">
+  <properties/>
+  <testcase name="secondRequiresSeparateProfilePermission" classname="cn.gowin.control.protocol.PcmSecondTest" time="0.001"/>
+  <testcase name="modularPredictorsAndFirstOrderRawFallbackVectors" classname="cn.gowin.control.protocol.PcmSecondTest" time="0.013"/>
+  <testcase name="independentZeroAndUnitVectors" classname="cn.gowin.control.protocol.PcmSecondTest" time="0.001"/>
+  <testcase name="strictCanonicalCodesAndPadding" classname="cn.gowin.control.protocol.PcmSecondTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

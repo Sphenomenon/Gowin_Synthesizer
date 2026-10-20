@@ -1,0 +1,4 @@
+tests/tb_second_profile_replay.sv:30: warning: Port 5 (att_value_limit) of module ble_protocol_command expects 9 bit(s), given 32.
+tests/tb_second_profile_replay.sv:30:        : Pruning (signed) 23 high bits of the expression.
+PASS 10 raw/encoded exact PCM blocks
+PASS clean replay61:10 actual raw/encoded transfers

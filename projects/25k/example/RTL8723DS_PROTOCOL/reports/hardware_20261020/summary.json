@@ -1,0 +1,50 @@
+{
+  "recorded_at": "2026-10-20T02:51:07.517131+08:00",
+  "passed": true,
+  "scope": "138K v1 minimum HELLO/GET_STATUS profile on physical GW5A-25K, no synthesizer/recording capabilities",
+  "build_manifest": "build_20261020_024629_137760.json",
+  "bitstream_sha256": "72d6d72f81312f58ac47dba95e647fc85898d8a80f2db94d6bbde368a11b44fc",
+  "user_code": "00002764",
+  "status_code": "70022020",
+  "clock_mhz": 50,
+  "fmax_mhz": 55.529,
+  "setup_violations": 0,
+  "hold_violations": 0,
+  "simulation_groups_passed": 9,
+  "physical_connection_count": 3,
+  "validated_business_responses": 20,
+  "automatic_reconnect_passed": true,
+  "boot_id_restart_passed": true,
+  "boot_ids": [
+    "3ea7756a7d4eead4",
+    "7d4eead4fa9dd5a8"
+  ],
+  "checks": [
+    "128-bit service advertisement/discovery",
+    "Capability and consistent Status Read",
+    "HELLO/GET_STATUS fragmented command and notification CRC32",
+    "byte-identical cached responses",
+    "duplicate fragment ignored",
+    "REQUEST_CONFLICT 0x86",
+    "UNSUPPORTED 0x80 without consuming ID",
+    "bad CRC silently rejected without consuming ID 99",
+    "out-of-order ATT 0x80 and recovery",
+    "disconnect/re-advertise/new nonce session",
+    "nonzero boot_id differs across SRAM starts"
+  ],
+  "limitations": [
+    "180-second test sessions including initialization",
+    "capabilities=0, max_pcm_chunk=0, recording_slots=0",
+    "No parameter/audio/recording integration; unsupported commands rejected",
+    "No GAO added; internal controller state checked in independent UART simulation, radio behavior checked on board",
+    "SRAM only, existing Flash not changed"
+  ],
+  "evidence": [
+    "protocol_random_address.json",
+    "protocol_after_restart.json",
+    "boot_id_restart.json",
+    "simulation.json",
+    "tested_inputs.json",
+    "tested_tools.json"
+  ]
+}

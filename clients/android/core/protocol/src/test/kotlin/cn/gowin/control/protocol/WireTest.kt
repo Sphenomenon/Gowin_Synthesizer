@@ -5,6 +5,17 @@ import org.junit.Test
 
 class WireTest {
     private val hello=hexBytes("01 00 04 00 01 00 00 00 08 07 06 05 04 03 02 01 01 00 00 00 90 4b 7a da")
+    @Test fun minimumCapabilityAndContradictoryClaims() {
+        val raw=hexBytes("01140002a8d59dfad4ea4e7d0000000000000100")
+        val minimal=Capability.decode(raw)
+        assertTrue(minimal.protocolTestOnly);assertEquals(0,minimal.recordingSlots)
+        assertThrows(ProtocolException::class.java){Capability.decode(raw.copyOf().apply{this[12]=32})}
+        assertThrows(ProtocolException::class.java){Capability.decode(raw.copyOf().apply{this[12]=8})}
+        assertThrows(ProtocolException::class.java){Capability.decode(raw.copyOf().apply{this[13]=1})}
+        val full=raw.copyOf().apply{this[12]=0x3f;this[17]=1;this[19]=1}
+        assertEquals(256,Capability.decode(full).maxChunk)
+        assertFalse(Capability.decode(full).protocolTestOnly)
+    }
     @Test fun normativeHelloAndFragments() {
         assertArrayEquals(hello,Message(1,0,1,0x0102030405060708uL,Writer().u16(1).u16(0).build()).encode())
         assertEquals(0xcbf43926L,crc32("123456789".toByteArray()))

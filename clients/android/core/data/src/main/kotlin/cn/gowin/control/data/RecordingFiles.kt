@@ -8,7 +8,7 @@ import java.nio.file.StandardCopyOption
 import java.util.Properties
 import java.util.zip.CRC32
 
-data class SavedRecording(val key: String,val name: String,val file: File,val bytes: Long,val savedAt: Long,val incomplete: Boolean,val demo: Boolean)
+data class SavedRecording(val key: String,val name: String,val file: File,val bytes: Long,val savedAt: Long,val incomplete: Boolean,val demo: Boolean,val source: String=if(demo)"demo"else"workstation")
 data class DownloadCheckpoint(val offset: Long,val prefixCrc: Long)
 
 /** File bytes are synced before checkpoint publication; checkpoint is authoritative, not UI state. */
@@ -48,7 +48,7 @@ class RecordingFiles(private val root: File) {
         atomicProperties(checkpoint(info),p)
     }
     fun discard(info: RecordingInfo) { taskDir(info).deleteRecursively() }
-    fun packageWav(info: RecordingInfo,demo: Boolean): SavedRecording {
+    fun packageWav(info: RecordingInfo,demo: Boolean,source: String=if(demo)"demo"else"workstation"): SavedRecording {
         val pcm=part(info)
         check(pcm.length()==info.bytes && fileCrc(pcm)==info.crc){"完整 PCM 校验失败"}
         check(info.bytes<=0xffffffffL-36 && info.format==1 && info.channels==2 && info.sampleRate==48000L && info.bytes==info.frames*4)
@@ -60,9 +60,9 @@ class RecordingFiles(private val root: File) {
         atomicMove(tmp,target)
         val saved=System.currentTimeMillis()
         atomicProperties(File(recordings,"$key.properties"),Properties().apply {
-            setProperty("name",(if(demo)"模拟录音 " else "工作站录音 ")+info.id)
+            setProperty("name",(if(source=="builtin")"内置测试录音 "else if(demo)"模拟录音 " else "工作站录音 ")+info.id)
             setProperty("saved",saved.toString());setProperty("bytes",info.bytes.toString())
-            setProperty("incomplete",info.incomplete.toString());setProperty("demo",demo.toString())
+            setProperty("incomplete",info.incomplete.toString());setProperty("demo",demo.toString());setProperty("source",source)
         })
         return library().first{it.key==key}
     }
@@ -70,7 +70,7 @@ class RecordingFiles(private val root: File) {
         runCatching {
             val p=load(meta);val wav=File(recordings,"${meta.nameWithoutExtension}.wav")
             val size=p.getProperty("bytes").toLong();check(wav.length()==size+44)
-            SavedRecording(meta.nameWithoutExtension,p.getProperty("name"),wav,size,p.getProperty("saved").toLong(),p.getProperty("incomplete").toBoolean(),p.getProperty("demo").toBoolean())
+            SavedRecording(meta.nameWithoutExtension,p.getProperty("name"),wav,size,p.getProperty("saved").toLong(),p.getProperty("incomplete").toBoolean(),p.getProperty("demo").toBoolean(),p.getProperty("source",if(p.getProperty("demo").toBoolean())"demo"else"workstation"))
         }.getOrNull()
     }.sortedByDescending{it.savedAt}
     fun rename(entry: SavedRecording,name: String) {

@@ -1,0 +1,240 @@
+{
+  "started_at": "2026-10-20T09:58:14.387971+08:00",
+  "source_sha256": {
+    "adaptations/bt_acl_bridge.v": "4444fdaf4258076b8edf4d0f46624062a1cd9dc75198f17c7e281ba5d385db9a",
+    "adaptations/bt_hci_init.v": "8dcc5b4cf0da9d2da5dde0ad5c1f35ca44a44a661a2b2f936d10be7e566c48ad",
+    "adaptations/bt_uart_fast.v": "ddc50dfb0f074c60cff8132821c236caee4d1523b486ba0ca391d43aeb0acdfd",
+    "adaptations/bt_verilog_core.v": "b3a27cebcd954259bcb8b82b7f1c606a3870f0eafc6e3eaabb920694c69662d3",
+    "generated/rtl/bt_gatt.v": "9fe47e9629ef99cd8828cc954a6fa840072ffb441c7837890252d67a5f5f88c0",
+    "generated/rtl/bt_h5_transport.v": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+    "rtl/ble_bringup_top.v": "a6ee8817b62c0b082643d0ac12d5b6a8cec4a1ef7d991394e74c4a372c73c7be",
+    "rtl/ble_protocol_command.v": "65e9fe8b2241248940c82c3bb657af5f11399acfd75e5de87c5d8cf08511bb28",
+    "rtl/ble_recording.v": "5ac93c77f8f902b960946e36cad087465180c8e8cb8079fd7c97c362c978039c",
+    "rtl/usb1_passive_monitor.v": "31a1e7ce848b0ab4ad73cc85c37156f99f594d49323ec6811e5b28d1ce1ffe13",
+    "tests/tb_acl_bridge.sv": "77d58610f0c2951209350a79d5ba3488a2cbcfce0ba2022c1854f89d0c4bf36d",
+    "tests/tb_ble_bringup.v": "66fa2e18e0b4464de1ad4fac66af343f4dffae27b204212240a17d8d6322bcbb",
+    "tests/tb_compact_gatt.sv": "ac8adcdef421fb6926ebc6efc96c9454da16edd0d67a428c1550039406643939",
+    "tests/tb_direct_gatt.sv": "8b328180b5019a33e6fc3b783b7349bf059dd6b242967c7c244ede68f277ed42",
+    "tests/tb_extended_gatt.sv": "f31041b8eb79c96800eefcd32eec498d8aeb5274a99ae0ce5fa597acc4636900",
+    "tests/tb_extended_profile_replay.sv": "54510a9e6d4170eb4e95f983de8616c1bd6136b85778365f17520770b6516da4",
+    "tests/tb_extended_recording.sv": "fe5669793f5843d38a73889d909d7978805d57076e2fca886ee32b35b2e90ad0",
+    "tests/tb_gatt_credits.sv": "6ba64b3a3c4c4ae82024430af021072f40aafa71995f3203bebb936f3af28f1e",
+    "tests/tb_gatt_legacy.sv": "28dc3a8dc88f2a860bebf3a68d45202b1f24d77d4d23dced93336b09f40a784b",
+    "tests/tb_h5_sync.sv": "d71b4e31e9fd0cab15dc7563a32d5d402b8c260aeab156a8241cbb32b7f0834c",
+    "tests/tb_long_profile_replay.sv": "7a581b60a5bdafb17d786a28acad8e4cb2c146a3b40f662cd00379a21d13e31a",
+    "tests/tb_lossless_profile_replay.sv": "cf5144466cf9f6a153b94f9b9d26475fca23c1c81f359a74edde4b5c08a11c98",
+    "tests/tb_lossless_recording.sv": "dad35a763fd47712ae8df8a367bcd5bcebbcb9ba4ffc361ac890b55dc1524094",
+    "tests/tb_protocol_command.sv": "7a90ed387a2f3926a15d16461772108124547ab8474bca10c979f6aa269c5e4f",
+    "tests/tb_protocol_recording.sv": "767e8aead9c4be53afb977fb191b862d745a9eb8304a7faa7aedcd9866e539d6",
+    "tests/tb_protocol_system.sv": "69cdb741938d744dbf6a6ad009e8355cb1908eb2bc2256b8f64204a2cbad7db8",
+    "tests/tb_second_profile_replay.sv": "1bea12144ac6ba6ba085afad6069baf0dc08b189a241ea309b5833d0dc2d9ac8",
+    "tests/tb_second_recording.sv": "79d9d7c6eb62eb0886b555a9332dea5b06af45df9ea75ec69ed9633281fbc42c",
+    "vendor/rtl8723ds_ble/rtl/bt_uart.v": "004babc4c97502af75d6715a489cf20f31e3003f569fab57504967b1aafa88dc",
+    "vendor/rtl8723ds_ble/rtl/reset_release_sync.v": "d5311e4a6141261abe6c699572b3c0053b39c0e631d9d2c1b18b21f87048489d",
+    "vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v": "db12a57311df8cf1af5c2ddf94f7fefc71c7c51b9d3b5506b52830f9b16a4bb9"
+  },
+  "passed": true,
+  "cases": {
+    "second_replay_61": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/second_replay_61.log"
+    },
+    "second_replay_60": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/second_replay_60.log"
+    },
+    "second_replay_59": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/second_replay_59.log"
+    },
+    "second_replay_48": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/second_replay_48.log"
+    },
+    "second_recording_244": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/second_recording_244.log"
+    },
+    "second_recording_182": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/second_recording_182.log"
+    },
+    "second_recording_61": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/second_recording_61.log"
+    },
+    "second_recording_20": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/second_recording_20.log"
+    },
+    "lossless_replay_60": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/lossless_replay_60.log"
+    },
+    "lossless_replay_59": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/lossless_replay_59.log"
+    },
+    "lossless_replay_48": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/lossless_replay_48.log"
+    },
+    "lossless_recording_244": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/lossless_recording_244.log"
+    },
+    "lossless_recording_182": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/lossless_recording_182.log"
+    },
+    "lossless_recording_61": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/lossless_recording_61.log"
+    },
+    "lossless_recording_20": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/lossless_recording_20.log"
+    },
+    "extended_replay_59": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/extended_replay_59.log"
+    },
+    "extended_replay_48": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/extended_replay_48.log"
+    },
+    "extended_gatt_247": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/extended_gatt_247.log"
+    },
+    "extended_gatt_185": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/extended_gatt_185.log"
+    },
+    "extended_gatt_64": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/extended_gatt_64.log"
+    },
+    "extended_gatt_23": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/extended_gatt_23.log"
+    },
+    "extended_recording_244": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/extended_recording_244.log"
+    },
+    "extended_recording_182": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/extended_recording_182.log"
+    },
+    "extended_recording_61": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/extended_recording_61.log"
+    },
+    "extended_recording_20": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/extended_recording_20.log"
+    },
+    "acl_bridge": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/acl_bridge.log"
+    },
+    "long_profile_replay": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/long_profile_replay.log"
+    },
+    "long_recording": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/long_recording.log"
+    },
+    "recording": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/recording.log"
+    },
+    "compact_recording": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/compact_recording.log"
+    },
+    "compact_gatt": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/compact_gatt.log"
+    },
+    "direct_recording": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/direct_recording.log"
+    },
+    "direct_gatt": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/direct_gatt.log"
+    },
+    "bulk_recording": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/bulk_recording.log"
+    },
+    "bulk_gatt_23": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/bulk_gatt_23.log"
+    },
+    "bulk_gatt_64": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/bulk_gatt_64.log"
+    },
+    "bulk_gatt_247": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/bulk_gatt_247.log"
+    },
+    "command": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/command.log"
+    },
+    "board": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/board.log"
+    },
+    "h5": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/h5.log"
+    },
+    "credits": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/credits.log"
+    },
+    "legacy_gatt": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/legacy_gatt.log"
+    },
+    "uart_system": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/uart_system.log"
+    },
+    "uart_write_command": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/uart_write_command.log"
+    },
+    "uart_slow": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/uart_slow.log"
+    },
+    "bad_fast": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/bad_fast.log"
+    },
+    "wrong_rom": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/wrong_rom.log"
+    },
+    "bad_rand": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/bad_rand.log"
+    },
+    "zero_rand": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/zero_rand.log"
+    },
+    "codec": {
+      "passed": true,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/GW_25K/example/RTL8723DS_PROTOCOL/reports/simulations/20261020_095814_386315/codec.log"
+    }
+  },
+  "finished_at": "2026-10-20T10:05:38.568826+08:00"
+}

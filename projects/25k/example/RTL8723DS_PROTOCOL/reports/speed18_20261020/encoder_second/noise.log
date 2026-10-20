@@ -1,0 +1,2 @@
+PASS encoder bytes=8112 cycles=12174
+reports/speed18_20261020/encoder_second/noise.sv:23: $finish called at 121750000 (1ps)

@@ -1,3 +1,4 @@
+> 2026-10-20实现进展：基础v1及显式协商下载扩展已在25K独立工程验证，配套APP0.2.10。实现/兼容规则见[25K协议工程](projects/25k/example/RTL8723DS_PROTOCOL/README.md)及[二阶无损扩展](projects/25k/example/RTL8723DS_PROTOCOL/docs/SECOND_TRANSFER_EXTENSION.md)，实测见[第十八轮](projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/README.md)。这些可选扩展不改变默认v1上限；未声明138K工作站已实现业务GATT、外部实时录音或手机硬件验收。
 # GW138K 蓝牙业务协议 v1.0
 
 日期：2026-10-20。状态：供 FPGA 与客户端共同评审的接口定义；尚无对应业务实现和实测兼容性声明。需求、资源预算和实施顺序见 [准备方案](BLUETOOTH_CONTROL_PLAN.md)。

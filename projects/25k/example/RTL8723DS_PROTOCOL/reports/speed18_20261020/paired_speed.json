@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "mode": "lossless",
+      "run": 1,
+      "bps": 14105.451248034024,
+      "file": "reports/speed18_20261020/lossless_1.json"
+    },
+    {
+      "mode": "second",
+      "run": 1,
+      "bps": 22091.517523282622,
+      "file": "reports/speed18_20261020/second_1.json"
+    },
+    {
+      "mode": "lossless",
+      "run": 2,
+      "bps": 14106.4582398864,
+      "file": "reports/speed18_20261020/lossless_2.json"
+    },
+    {
+      "mode": "second",
+      "run": 2,
+      "bps": 21874.259007571534,
+      "file": "reports/speed18_20261020/second_2.json"
+    },
+    {
+      "mode": "lossless",
+      "run": 3,
+      "bps": 14010.093307607729,
+      "file": "reports/speed18_20261020/lossless_3.json"
+    },
+    {
+      "mode": "second",
+      "run": 3,
+      "bps": 22092.53345041704,
+      "file": "reports/speed18_20261020/second_3.json"
+    }
+  ],
+  "median_bps": {
+    "lossless": 14105.451248034024,
+    "second": 22091.517523282622
+  },
+  "gain_percent": 56.61687906908808
+}
