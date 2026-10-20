@@ -24,7 +24,7 @@ module tb_midi_keyboard_application;
     wire [15:0] active_keys,lamp_keys,theme_rgb565,clear_rgb565;
     wire panic_busy,screen_update;
     wire [31:0] status_flags,emitted_events;
-    midi_keyboard_application #(.CLK_HZ(4000),.FIFO_DEPTH(2)) dut(.*);
+    midi_keyboard_application #(.CLK_HZ(4000),.FIFO_DEPTH(2),.HOST_PANEL_CONTROLS(0)) dut(.*);
     reg [23:0] usb_messages[0:4095],ble_messages[0:4095];
     reg [1:0] usb_lengths[0:4095],ble_lengths[0:4095];
     reg [12:0] ble_timestamps[0:4095];

@@ -1,5 +1,7 @@
 # 外部输入画面与本地设置
 
+2026-10-19面板接入更新：USB端点、PL包和下述消息语义保持；默认顶层`HOST_PANEL_CONTROLS=1`使用已确认CC7／Program／Pitch Bend及CC89／CC88短按，不分配长按，也不在远端页屏蔽旋转。下述E1长按设置、MOD/EXPR切换及E2 PANIC页面操作仅描述保留的`HOST_PANEL_CONTROLS=0`独立兼容分支；端点仍支持既有manual状态和设置toggle输入，但默认顶层不将其绑定到长按。详见[设备控件落地报告](../../../../138k/push2_workstation/usb_a/reports/GW25K_CONTROLS_20261019.md)。
+
 本实现参考用户提供的 `gowin_接口.zip`。原件共11个规划文件，原始字节和校验清单保存在 [vendor/gowin_panel_interface](../vendor/gowin_panel_interface/)。ZIP SHA256 为 `bb6d95165fa931c3c964f6264bfd10ad2e7c36f66e65b3ab17350867c6564bad`。附件没有可直接调用的RTL，也没有HighSpeed物理信号、时钟、引脚和消息编号；以下编号、载荷和请求响应规则是本板明确补充的 **PL local-v1**，主机需按本文适配。
 
 按用户确认，MIDI与屏幕数据均通过USB2完成。屏幕承载为厂商接口2，OUT `0x02` / IN `0x82`，与原有`MK`命令共用字节流；MIDI使用自己的端点。`panel_display_endpoint`本身不依赖USB。本轮没有分配额外HighSpeed引脚。

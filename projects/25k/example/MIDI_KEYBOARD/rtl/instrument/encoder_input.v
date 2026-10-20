@@ -2,9 +2,12 @@
 // EC11E15244B2: 30 detents / 15 pulses per revolution.
 // A detent occurs at 00 or 11. Two detents make one application count,
 // halving adjustment speed without lengthening the contact filters.
+// The confirmed 138K panel sets DETENTS_PER_STEP=1: every physical detent
+// emits one step, with the same contact filtering and no acceleration.
 // Positive output sequence: 11 -> 10 -> 00 -> 01 -> 11 (board direction).
 module encoder_input #(
     parameter integer CLK_HZ = 50000000,
+    parameter integer DETENTS_PER_STEP = 2,
     // At 50 MHz these defaults are 20 us for A/B and 1 ms for the key.
     // They are short enough for responsive hand turning while still
     // rejecting ordinary contact bounce; applications can override them.
@@ -149,7 +152,7 @@ module encoder_input #(
                     if (next_phase == 4'sd2) begin
                         // Reverse the former board direction. Keep a signed
                         // half count, so one detent each way cancels exactly.
-                        if (pending_detent == -2'sd1) begin
+                        if (DETENTS_PER_STEP == 1 || pending_detent == -2'sd1) begin
                             pending_detent <= 0;
                             if (position > -16'sd32767)
                                 position <= position - 16'sd1;
@@ -159,7 +162,7 @@ module encoder_input #(
                             pending_detent <= pending_detent - 2'sd1;
                         end
                     end else if (next_phase == -4'sd2) begin
-                        if (pending_detent == 2'sd1) begin
+                        if (DETENTS_PER_STEP == 1 || pending_detent == 2'sd1) begin
                             pending_detent <= 0;
                             if (position < 16'sd32767)
                                 position <= position + 16'sd1;

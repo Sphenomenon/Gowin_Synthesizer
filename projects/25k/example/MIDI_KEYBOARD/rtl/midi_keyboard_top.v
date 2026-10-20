@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 `default_nettype none
 // GW25K complete instrument. All board I/O banks are powered at 3.3 V.
-module midi_keyboard_top(
+module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
  input wire clk_50mhz,clk_ulpi60,
  inout wire[7:0]ulpi_data,input wire ulpi_dir,ulpi_nxt,output wire ulpi_stp,
  input wire sw1_a,sw1_b,sw1_key_n,sw2_a,sw2_b,sw2_key_n,
@@ -25,13 +25,17 @@ module midi_keyboard_top(
   .slider_raw_position(slider_raw_position),.slider_general_status(slider_general_status),
   .slider_overrun(slider_overrun),.slider_sample_count(slider_sample_count));
  midi_key_layout key_layout(.raw_keys(raw_keys),.key_bitmap(keys));
- wire e1step,e1press,e1pressed,e1long,e2step,e2press;wire signed[1:0]e1dir,e2dir;
- encoder_input e1(.clk(clk_50mhz),.reset(reset),.a(sw1_a),.b(sw1_b),.key_n(sw1_key_n),
+ wire e1step,e1press,e1pressed,e1long,e2step,e2press,e2pressed,e2rawpress;wire signed[1:0]e1dir,e2dir;
+ encoder_input #(.DETENTS_PER_STEP(HOST_PANEL_CONTROLS ? 1 : 2)) e1(.clk(clk_50mhz),.reset(reset),.a(sw1_a),.b(sw1_b),.key_n(sw1_key_n),
   .position(),.press_count(),.invalid_count(),.ab_state(),.key_pressed(e1pressed),.direction(e1dir),.step_pulse(e1step),.press_pulse());
  encoder_button_gestures #(.CLK_HZ(CLK_HZ)) e1_button(
   .clk(clk_50mhz),.reset(reset),.pressed(e1pressed),.short_press(e1press),.long_press(e1long));
- encoder_input e2(.clk(clk_50mhz),.reset(reset),.a(sw2_a),.b(sw2_b),.key_n(sw2_key_n),
-  .position(),.press_count(),.invalid_count(),.ab_state(),.key_pressed(),.direction(e2dir),.step_pulse(e2step),.press_pulse(e2press));
+ encoder_input #(.DETENTS_PER_STEP(HOST_PANEL_CONTROLS ? 1 : 2)) e2(.clk(clk_50mhz),.reset(reset),.a(sw2_a),.b(sw2_b),.key_n(sw2_key_n),
+  .position(),.press_count(),.invalid_count(),.ab_state(),.key_pressed(e2pressed),.direction(e2dir),.step_pulse(e2step),.press_pulse(e2rawpress));
+ wire e2short;
+ encoder_button_gestures #(.CLK_HZ(CLK_HZ)) e2_button(
+  .clk(clk_50mhz),.reset(reset),.pressed(e2pressed),.short_press(e2short),.long_press());
+ assign e2press=HOST_PANEL_CONTROLS ? e2short : e2rawpress;
  wire uv,ur,urv,urr,cv,cr,crv,crr,usb_online,control_reset,hs_active;
  wire[31:0]ud,urd;wire[7:0]cd,crd;
  midi_usb2_link usb(.clk_50mhz(clk_50mhz),.reset(reset),.clk_ulpi60(clk_ulpi60),
@@ -54,7 +58,7 @@ module midi_keyboard_top(
  wire[8:0]tile_x,tile_width;wire[7:0]tile_y,tile_height,tile_read_addr;
  wire[15:0]tile_read_data,display_errors;
  panel_display_endpoint #(.CLK_HZ(CLK_HZ)) panel_input(
-  .clk(clk_50mhz),.reset(reset),.link_reset(control_reset||pl_reset),.settings_toggle(e1long),
+  .clk(clk_50mhz),.reset(reset),.link_reset(control_reset||pl_reset),.settings_toggle(HOST_PANEL_CONTROLS ? 1'b0 : e1long),
   .rx_valid(pl_rv),.rx_ready(pl_rr),.rx_data(pl_rd),.tx_valid(pl_tv),.tx_ready(pl_tr),.tx_data(pl_td),
   .remote_enable(remote_enable),.manual_settings(manual_settings),.redraw_required(redraw_required),
   .protocol_errors(display_errors),.tile_valid(tile_valid),.tile_ready(tile_ready),
@@ -80,10 +84,10 @@ module midi_keyboard_top(
  wire[1:0]slider_mode;wire[7:0]brightness,strip_value;wire[2:0]focus;
  wire[15:0]active_keys,lamp_keys,theme,background;wire panic_busy,screen_update;
  wire[31:0]status_flags,events;
- midi_keyboard_application app(.clk(clk_50mhz),.reset(reset),.control_reset(control_reset||mk_reset),.usb_online(usb_online),.ble_online(ble_online),
+ midi_keyboard_application #(.HOST_PANEL_CONTROLS(HOST_PANEL_CONTROLS)) app(.clk(clk_50mhz),.reset(reset),.control_reset(control_reset||mk_reset),.usb_online(usb_online),.ble_online(ble_online),
   .key_bitmap(keys),.keypad_ready(keypad_ready),.slider_valid(slider_valid),.slider_touch(slider_touch),.slider_position(slider_position),
-  .enc1_step(e1step&&!remote_enable),.enc1_press(e1press&&!remote_enable),.enc1_direction(e1dir),
-  .enc2_step(e2step&&!remote_enable),.enc2_press(e2press),.enc2_direction(e2dir),
+  .enc1_step(e1step&&(HOST_PANEL_CONTROLS || !remote_enable)),.enc1_press(e1press&&(HOST_PANEL_CONTROLS || !remote_enable)),.enc1_direction(e1dir),
+  .enc2_step(e2step&&(HOST_PANEL_CONTROLS || !remote_enable)),.enc2_press(e2press),.enc2_direction(e2dir),
   .usb_packet_tx_valid(uv),.usb_packet_tx_ready(ur),.usb_packet_tx_data(ud),.usb_packet_rx_valid(urv),.usb_packet_rx_ready(urr),.usb_packet_rx_data(urd),
   .ble_value_tx_valid(bv),.ble_value_tx_ready(br),.ble_value_tx_data(bd),.ble_value_tx_length(bl),.ble_value_rx_valid(brv),.ble_value_rx_ready(brr),.ble_value_rx_data(brd),.ble_value_rx_length(brl),
   .control_rx_valid(mk_rv),.control_rx_ready(mk_rr),.control_rx_data(mk_rd),.control_tx_valid(mk_tv),.control_tx_ready(mk_tr),.control_tx_data(mk_td),

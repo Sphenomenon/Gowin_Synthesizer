@@ -2,11 +2,12 @@
 """Validate the complete MIDI board sources, protocols and behavioral tests.
 
 All HDL paths are relative and every process runs from this project root.
-Executables live in an ASCII /private/tmp directory: this avoids Icarus source
-path issues while preserving relative $readmemh/$fopen firmware locations.
+Executables live in a temporary directory while firmware paths stay relative
+to the project. New reports go to results/ by default, preserving imported evidence.
 Gowin I/O models are simulation-only. This runner performs no FPGA download.
 """
 from pathlib import Path
+import argparse
 import datetime
 import hashlib
 import json
@@ -106,9 +107,13 @@ def verify_reference(reference=REFERENCE):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, help='New evidence directory; default results/checks_TIMESTAMP')
+    args = parser.parse_args()
+    reports = args.output.resolve() if args.output else PROJECT / 'results' / datetime.datetime.now().strftime('checks_%Y%m%d_%H%M%S_%f')
+    reports.mkdir(parents=True, exist_ok=True)
+    print(reports, flush=True)
     os.chdir(PROJECT)
-    reports = PROJECT / "reports"
-    reports.mkdir(exist_ok=True)
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
     manifest = {
         "schema_version": 2,
@@ -190,7 +195,7 @@ def main():
         run("USB descriptor generator --check", [sys.executable, "tools/generate_usb_descriptors.py", "--check"], require_pass=True)
         tests = discover_tests()
         manifest["testbenches"] = tests
-        with tempfile.TemporaryDirectory(prefix="gw25k-midi-sim-", dir="/private/tmp") as temporary:
+        with tempfile.TemporaryDirectory(prefix="gw25k-midi-sim-") as temporary:
             manifest["temporary_executables"] = temporary
             run("Board top elaboration (Verilog-2005)",
                 ["iverilog", "-g2005", "-Wall", *INCLUDE_FLAGS, "-s", "midi_keyboard_top",

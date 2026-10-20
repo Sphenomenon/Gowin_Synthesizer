@@ -20,6 +20,7 @@ rtl/input/midi_key_layout.v
 rtl/instrument/encoder_button_gestures.v
 rtl/instrument/encoder_input.v
 rtl/instrument/midi_keyboard_application.v
+rtl/instrument/gw138k_panel_performance.v
 rtl/instrument/midi_performance.v
 rtl/midi_keyboard_core.v
 rtl/midi_keyboard_top.v

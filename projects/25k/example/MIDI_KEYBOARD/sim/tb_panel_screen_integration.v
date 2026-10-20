@@ -1,4 +1,6 @@
 `timescale 1ns/1ps
+// Imported legacy control policy integration; 138K panel controls have a
+// separate production application test in tb_gw138k_panel_controls.
 // Integration of the actual shared USB control path and musical application.
 // The renderer handshake/RAM consumer is bounded here; physical SPI and both
 // rotations are independently decoded in tb_remote_tile_display.
@@ -43,7 +45,7 @@ module tb_panel_screen_integration;
  wire [1:0] slider_mode;
  wire [15:0] active_keys;
  wire panic_busy;
- midi_keyboard_application #(.CLK_HZ(1000)) app(
+ midi_keyboard_application #(.CLK_HZ(1000),.HOST_PANEL_CONTROLS(0)) app(
   .clk(clk),.reset(reset),.control_reset(control_reset||mk_reset),.usb_online(1'b1),.ble_online(1'b0),
   .key_bitmap(keys),.keypad_ready(1'b1),.slider_valid(1'b0),.slider_touch(1'b0),.slider_position(8'd0),
   .enc1_step(1'b0),.enc1_press(e1_short&&!remote_enable),.enc1_direction(2'sd1),

@@ -2,7 +2,8 @@
 `default_nettype none
 module midi_keyboard_application #(
  parameter integer CLK_HZ=50000000,
- parameter integer FIFO_DEPTH=32
+ parameter integer FIFO_DEPTH=32,
+ parameter integer HOST_PANEL_CONTROLS=1
 )(
  input wire clk,reset,control_reset,
  input wire usb_online,ble_online,
@@ -42,6 +43,20 @@ module midi_keyboard_application #(
   .screen_update(screen_update),.protocol_errors(control_errors),
   .config_write(cfg_write),.config_opcode(cfg_opcode),.config_value(cfg_value));
  wire event_valid,event_ready;wire[23:0]event_message;wire[1:0]event_length,event_targets;wire[12:0]event_timestamp;
+ generate if(HOST_PANEL_CONTROLS)begin:host_panel
+ gw138k_panel_performance performance(
+  .clk(clk),.reset(reset),.key_bitmap(key_bitmap),.keypad_ready(keypad_ready),
+  .slider_valid(slider_valid),.slider_touch(slider_touch),.slider_position(slider_position),
+  .enc1_step(enc1_step),.enc1_press(enc1_press),.enc2_step(enc2_step),.enc2_press(enc2_press),
+  .enc1_direction(enc1_direction),.enc2_direction(enc2_direction),
+  .config_write(cfg_write),.config_opcode(cfg_opcode),.config_value(cfg_value),
+  .online({ble_online,usb_online}),.timestamp_ms(timestamp_ms),
+  .event_valid(event_valid),.event_ready(event_ready),.event_message(event_message),
+  .event_length(event_length),.event_timestamp(event_timestamp),.event_targets(event_targets),
+  .midi_channel(midi_channel),.transpose(transpose),.velocity(velocity),.slider_mode(slider_mode),
+  .program_number(program_number),.brightness(brightness),.focus(focus),.active_keys(active_keys),
+  .strip_value(strip_value),.panic_busy(panic_busy),.emitted_events(emitted_events));
+ end else begin:legacy_controls
  midi_performance performance(
   .clk(clk),.reset(reset),.key_bitmap(key_bitmap),.keypad_ready(keypad_ready),
   .slider_valid(slider_valid),.slider_touch(slider_touch),.slider_position(slider_position),
@@ -54,6 +69,7 @@ module midi_keyboard_application #(
   .midi_channel(midi_channel),.transpose(transpose),.velocity(velocity),.slider_mode(slider_mode),
   .program_number(program_number),.brightness(brightness),.focus(focus),.active_keys(active_keys),
   .strip_value(strip_value),.panic_busy(panic_busy),.emitted_events(emitted_events));
+ end endgenerate
  wire u_valid,u_ready,b_valid,b_ready,u_full,b_full;
  wire[23:0]u_message,b_message;wire[1:0]u_length,b_length;wire[12:0]u_timestamp,b_timestamp;
  wire[15:0]unrouted;
