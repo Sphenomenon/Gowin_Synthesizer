@@ -1,0 +1,145 @@
+{
+  "passed": true,
+  "adopted": true,
+  "objective": "持续优化蓝牙传输速率",
+  "goal_status": "active",
+  "implementation": "Explicit OPEN_LONG0x3b: PCM972, DATA-only logical1020, B3, positive DATA receipt. B1 commands unchanged, complete CRC and durable checkpoint before ACK preserved.",
+  "comparison": {
+    "passed": true,
+    "runs": [
+      {
+        "profile": "direct",
+        "round": 1,
+        "bytes_per_second": 6407.605537401757,
+        "transfer_seconds": 5.113922792021185
+      },
+      {
+        "profile": "long",
+        "round": 1,
+        "bytes_per_second": 7916.343757087597,
+        "transfer_seconds": 4.139284625009168
+      },
+      {
+        "profile": "direct",
+        "round": 2,
+        "bytes_per_second": 6368.637879084941,
+        "transfer_seconds": 5.145213250012603
+      },
+      {
+        "profile": "long",
+        "round": 2,
+        "bytes_per_second": 8035.390982958742,
+        "transfer_seconds": 4.0779596250504255
+      },
+      {
+        "profile": "direct",
+        "round": 3,
+        "bytes_per_second": 6445.228741896724,
+        "transfer_seconds": 5.084070916986093
+      },
+      {
+        "profile": "long",
+        "round": 3,
+        "bytes_per_second": 8065.224168773038,
+        "transfer_seconds": 4.062875292031094
+      }
+    ],
+    "median_bytes_per_second": {
+      "direct": 6407.605537401757,
+      "long": 8035.390982958742
+    },
+    "improvement_percent": 25.403958406232373
+  },
+  "flash_bytes_per_second": 7746.3135107743265,
+  "full_recording_comparison": {
+    "passed": true,
+    "long_seconds": 31.24470375,
+    "old_direct_seconds": 34.631003708,
+    "time_reduction_percent": 9.778232206471515,
+    "both_wavs_match_reference": true,
+    "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+    "timed_scope": "First successful OPEN to WAV save, including one executed DATA receipt-loss retry, cancel/reopen at14720 and reconnect at29440. Initial INFO fragment-loss check occurs before timing."
+  },
+  "firmware": {
+    "artifact": {
+      "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_074629_026662/impl/pnr/ble_protocol.fs",
+      "sha256": "155ac0f71ad9ae3ee3de265e682d7477c39ca486d551c462bbc5beb3d06b6ea2"
+    },
+    "user_code": "96FB",
+    "status_code": "70022020",
+    "flash_programmed_verified_reloaded": true,
+    "physical_power_cycle_performed": false,
+    "fmax_mhz": 50.506,
+    "clock_constraint_mhz": 50,
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "minimum_setup_slack_ns": 0.201,
+    "lut": 17080,
+    "register": 9237,
+    "cls_used": 11034,
+    "cls_total": 11520,
+    "bsram": 34
+  },
+  "apk": {
+    "path": "artifacts/gowin-control-0.2.7-gw25k-long-debug.apk",
+    "version_name": "0.2.7",
+    "version_code": 10,
+    "bytes": 9668978,
+    "sha256": "085a6c22b65c026a9eb83d0dd6a4183b24fd4d9c297d3fcdaa7ab94ab9b4970d",
+    "signature_verified": true,
+    "same_debug_certificate": true,
+    "native_android_phone_tested": false
+  },
+  "checks": {
+    "rtl_host_groups": 25,
+    "android_ordinary_tests": 36,
+    "lint_issues": 0,
+    "firmware_actual_build_inputs": 30,
+    "android_inputs": 42,
+    "raw_speed_captures": 7,
+    "full_wav_reference_matches": true,
+    "new_app_old_firmware_fallback_verified": true,
+    "lost_executed_data_exact_retry_verified": true,
+    "cancel_reopen_offset": 14720,
+    "reconnect_resume_offset": 29440,
+    "six_profiles_resume_verified": true,
+    "cross_profile_replay_error_and_original_cache_preservation_verified": true
+  },
+  "diagnostic": {
+    "sram_only": true,
+    "profile": "transport_profile.json",
+    "acl_data_bytes_reported": 27,
+    "effective_acl_packet_count": 8,
+    "uncapped_reported_acl_packet_count_collected": false,
+    "acl_count_note": "Initializer caps packet count at8; actual unbounded reported count is unknown. Do not treat effective8 as proof the controller reports exactly8.",
+    "transfer_seconds": 5.069766415981576,
+    "h5_ack_wait_seconds": 0.21767424,
+    "credit_stall_seconds": 1.86049052,
+    "diagnostic_overrides_removed_from_production": true
+  },
+  "evidence": {
+    "simulation": "simulation.json",
+    "android_checks": "android_checks.json",
+    "firmware_inputs": "firmware_inputs.json",
+    "kotlin_long_sram_final": "kotlin_long_sram_final.json",
+    "kotlin_old_firmware": "kotlin_old_firmware.json",
+    "notification_wire_check": "notification_wire_check.json",
+    "app_wire_check": "app_wire_check.json",
+    "complete_wav_check": "complete_wav_check.json",
+    "alternating_speed": "alternating_speed.json",
+    "flash": "flash.json",
+    "speed_flash": "speed_flash.json",
+    "recording_flash": "recording_flash.json",
+    "profile_resume_flash": "profile_resume_flash.json",
+    "profile_replay_flash": "profile_replay_flash.json",
+    "protocol_flash": "protocol_flash.json"
+  },
+  "limitations": {
+    "same_image_jtag_reload_boot_id_repeat_unresolved": true,
+    "workaround": "Discard unfinished phone downloads after board reset/reconfiguration.",
+    "native_android_phone_gatt_ui_background_and_speed_tested": false,
+    "physical_power_cycle_tested": false,
+    "audio": "Built-in uncompressed stereo48kHz PCM16 test tone; no live microphone input."
+  },
+  "next_optimization_evidence_needed": "Read the controller uncapped ACL packet count; if above8, test using the reported quota with correct completed-packet accounting. H5 wait alone was only~0.22s of~5.07s."
+}

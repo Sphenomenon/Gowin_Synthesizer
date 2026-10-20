@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.protocol.WireTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-20T11:56:26" hostname="ic-lab" time="0.007">
+  <properties/>
+  <testcase name="rejectsGapTimeoutBadFlagsAndCrc" classname="cn.gowin.control.protocol.WireTest" time="0.003"/>
+  <testcase name="minimumCapabilityAndContradictoryClaims" classname="cn.gowin.control.protocol.WireTest" time="0.001"/>
+  <testcase name="snapshotAndRecordingLayouts" classname="cn.gowin.control.protocol.WireTest" time="0.001"/>
+  <testcase name="unsignedFieldsAndSequenceWrap" classname="cn.gowin.control.protocol.WireTest" time="0.0"/>
+  <testcase name="normativeHelloAndFragments" classname="cn.gowin.control.protocol.WireTest" time="0.0"/>
+  <testcase name="maximumMessageAndDuplicateFirst" classname="cn.gowin.control.protocol.WireTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

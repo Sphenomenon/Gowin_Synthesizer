@@ -1,0 +1,1184 @@
+{
+  "passed": true,
+  "captures": [
+    {
+      "file": "baseline_speed.json",
+      "blocks": [
+        {
+          "request": 14,
+          "nonce": 14805788624013452813,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 5492,
+          "codec": 10,
+          "wire_sha256": "d99747206c5b512060c2ffd1f1ce9f36f17b34ec213c76fed392f6cae5cdc470"
+        },
+        {
+          "request": 15,
+          "nonce": 14805788624013452813,
+          "offset": 8112,
+          "pcm": 8112,
+          "encoded": 5501,
+          "codec": 10,
+          "wire_sha256": "d2be923c2d50aaa2da097a08720367e90625e8cf739a136bdbafcd28e93a62e8"
+        },
+        {
+          "request": 16,
+          "nonce": 14805788624013452813,
+          "offset": 16224,
+          "pcm": 8112,
+          "encoded": 5498,
+          "codec": 10,
+          "wire_sha256": "898fe68e9ca3f692d10137a6130361faf12fe4d3082a0fd2a5423addae6c8c02"
+        },
+        {
+          "request": 17,
+          "nonce": 14805788624013452813,
+          "offset": 24336,
+          "pcm": 8112,
+          "encoded": 5499,
+          "codec": 10,
+          "wire_sha256": "5a87c73417362bb3ec6d610f3dd9c64cd977936401d8854a50647e7b2a05ad5c"
+        },
+        {
+          "request": 18,
+          "nonce": 14805788624013452813,
+          "offset": 32448,
+          "pcm": 320,
+          "encoded": 220,
+          "codec": 10,
+          "wire_sha256": "c77bf1de50157b1c7b8cd904545e816ca188f732c9c5cebcdd909c0491a79b75"
+        }
+      ],
+      "encoded_bytes": 22210
+    },
+    {
+      "file": "speed_initial.json",
+      "blocks": [
+        {
+          "request": 13,
+          "nonce": 7324970499786549384,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 3374,
+          "codec": 11,
+          "wire_sha256": "649d85d0f6c11272504fe9e3b5904faf39978cb3b5dda466cdff6b2b2c5a3954"
+        },
+        {
+          "request": 14,
+          "nonce": 7324970499786549384,
+          "offset": 8112,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "eb0116b23a3d17158f0cdb940585b311b03f6207cddcd0ff82f01c5cc803e037"
+        },
+        {
+          "request": 15,
+          "nonce": 7324970499786549384,
+          "offset": 16224,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "e29ee5250c522c2135db35458074545321250b9c0396fb1db67a87850bc54d7a"
+        },
+        {
+          "request": 16,
+          "nonce": 7324970499786549384,
+          "offset": 24336,
+          "pcm": 8112,
+          "encoded": 3378,
+          "codec": 11,
+          "wire_sha256": "c33c2d7ca5564099b26782cf772db73a76b5cad867db8e7c20d0fad5bebcc7a7"
+        },
+        {
+          "request": 17,
+          "nonce": 7324970499786549384,
+          "offset": 32448,
+          "pcm": 320,
+          "encoded": 147,
+          "codec": 11,
+          "wire_sha256": "82fb87d9bc906b7123f42975575f6c4807b77d58ba8e9f8466ef70194652f0c0"
+        }
+      ],
+      "encoded_bytes": 13660
+    },
+    {
+      "file": "lossless_1.json",
+      "blocks": [
+        {
+          "request": 13,
+          "nonce": 5041387308166014863,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 5492,
+          "codec": 10,
+          "wire_sha256": "4fa4a9285f55077d409ad157da0639ccee008501ca2c898680d51d9adfded9c2"
+        },
+        {
+          "request": 14,
+          "nonce": 5041387308166014863,
+          "offset": 8112,
+          "pcm": 8112,
+          "encoded": 5501,
+          "codec": 10,
+          "wire_sha256": "0e247eec32a3eabbec5b8fa4cee90c1251c4557d164a272150cbd969ccf3a87e"
+        },
+        {
+          "request": 15,
+          "nonce": 5041387308166014863,
+          "offset": 16224,
+          "pcm": 8112,
+          "encoded": 5498,
+          "codec": 10,
+          "wire_sha256": "8de1be888239f9ebee894d5487c1fc33b4eba10dde0df172349ed751eebac9f6"
+        },
+        {
+          "request": 16,
+          "nonce": 5041387308166014863,
+          "offset": 24336,
+          "pcm": 8112,
+          "encoded": 5499,
+          "codec": 10,
+          "wire_sha256": "7b6f9ca1f378d1549e8dad857c1f8f35aaf508efdce233b276de5b0eb3f37cea"
+        },
+        {
+          "request": 17,
+          "nonce": 5041387308166014863,
+          "offset": 32448,
+          "pcm": 320,
+          "encoded": 220,
+          "codec": 10,
+          "wire_sha256": "b8b1ddeea9ef712f1a99bc8540f6e21d7d9a7ce94824175aaf08eeb1907a244d"
+        }
+      ],
+      "encoded_bytes": 22210
+    },
+    {
+      "file": "second_1.json",
+      "blocks": [
+        {
+          "request": 13,
+          "nonce": 10803090817704740815,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 3374,
+          "codec": 11,
+          "wire_sha256": "c0e7e309d773fc93aff481bc82f06563a42a7166cec0fbe0c4a0c95b2c892eb7"
+        },
+        {
+          "request": 14,
+          "nonce": 10803090817704740815,
+          "offset": 8112,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "c0f6d4be45ec647e928d0417705ac954137c954ddf790668fa396600581b5284"
+        },
+        {
+          "request": 15,
+          "nonce": 10803090817704740815,
+          "offset": 16224,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "48f0c601f63564219b42a6b0d28d7b9527b2189570f3cf30e261ec12e44b2c60"
+        },
+        {
+          "request": 16,
+          "nonce": 10803090817704740815,
+          "offset": 24336,
+          "pcm": 8112,
+          "encoded": 3378,
+          "codec": 11,
+          "wire_sha256": "aa17f415f0065887f37bd2db10f9634cc76c2ff3a4810689469c1b8609f37e56"
+        },
+        {
+          "request": 17,
+          "nonce": 10803090817704740815,
+          "offset": 32448,
+          "pcm": 320,
+          "encoded": 147,
+          "codec": 11,
+          "wire_sha256": "805fd2a6966ec2360691b000c3185e7b951a1c727e2bbc166c360dd9c15cdcef"
+        }
+      ],
+      "encoded_bytes": 13660
+    },
+    {
+      "file": "lossless_2.json",
+      "blocks": [
+        {
+          "request": 13,
+          "nonce": 17666934836222859484,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 5492,
+          "codec": 10,
+          "wire_sha256": "121db493c36dcee784e3d032495367381eb44e95f02db5b5ae3edd0733c0bed4"
+        },
+        {
+          "request": 14,
+          "nonce": 17666934836222859484,
+          "offset": 8112,
+          "pcm": 8112,
+          "encoded": 5501,
+          "codec": 10,
+          "wire_sha256": "dfd790ef738ba82a1b16effedab1561f3b17faf27b300954952097c3edf20b1a"
+        },
+        {
+          "request": 15,
+          "nonce": 17666934836222859484,
+          "offset": 16224,
+          "pcm": 8112,
+          "encoded": 5498,
+          "codec": 10,
+          "wire_sha256": "e4ae461dc121d7ea3886d993819e15fead0d4fb6dade8bc67cdce0bf9e640ddd"
+        },
+        {
+          "request": 16,
+          "nonce": 17666934836222859484,
+          "offset": 24336,
+          "pcm": 8112,
+          "encoded": 5499,
+          "codec": 10,
+          "wire_sha256": "580417929d66f84de93eb6ae0522bd8a18ed4bf666661f93bfe402ea44ab4d34"
+        },
+        {
+          "request": 17,
+          "nonce": 17666934836222859484,
+          "offset": 32448,
+          "pcm": 320,
+          "encoded": 220,
+          "codec": 10,
+          "wire_sha256": "72056edb1a7409eb59369246fd78184bcfaf948b685ac9259f7a719ea3085261"
+        }
+      ],
+      "encoded_bytes": 22210
+    },
+    {
+      "file": "second_2.json",
+      "blocks": [
+        {
+          "request": 13,
+          "nonce": 3561424677931259931,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 3374,
+          "codec": 11,
+          "wire_sha256": "d51770c9cc9fa5e9c49b1f10291450a3c95c29921fe6d1432b1e67ebf68af0ae"
+        },
+        {
+          "request": 14,
+          "nonce": 3561424677931259931,
+          "offset": 8112,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "5239df61afe986ebc028349d1540337f97640dcea0b9739fc0116c323f3d1f7e"
+        },
+        {
+          "request": 15,
+          "nonce": 3561424677931259931,
+          "offset": 16224,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "3c54bbcbeac600eeb24197ac8582c9608743397d2f6033f8e1e29e6675df2c9b"
+        },
+        {
+          "request": 16,
+          "nonce": 3561424677931259931,
+          "offset": 24336,
+          "pcm": 8112,
+          "encoded": 3378,
+          "codec": 11,
+          "wire_sha256": "8651e4222dc65c02236d5de67ef7de39b9c7fa3e6eb99b960cdffd02733977f2"
+        },
+        {
+          "request": 17,
+          "nonce": 3561424677931259931,
+          "offset": 32448,
+          "pcm": 320,
+          "encoded": 147,
+          "codec": 11,
+          "wire_sha256": "5147a821ec3cceca9cd1062ce81497667513944e9efe9ed381d47bf62437d3ea"
+        }
+      ],
+      "encoded_bytes": 13660
+    },
+    {
+      "file": "lossless_3.json",
+      "blocks": [
+        {
+          "request": 13,
+          "nonce": 8733581111844284804,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 5492,
+          "codec": 10,
+          "wire_sha256": "c48c2e07a74acd0aca739a84a9e0a01b3e853a150bacac7ae7e22b8221cbe077"
+        },
+        {
+          "request": 14,
+          "nonce": 8733581111844284804,
+          "offset": 8112,
+          "pcm": 8112,
+          "encoded": 5501,
+          "codec": 10,
+          "wire_sha256": "4d381eeee321a51e5e7a896df00978fc16afda14ac72dd53648c5945bdd456b7"
+        },
+        {
+          "request": 15,
+          "nonce": 8733581111844284804,
+          "offset": 16224,
+          "pcm": 8112,
+          "encoded": 5498,
+          "codec": 10,
+          "wire_sha256": "22e2be641e930066f88814de5f9bddf6b8392f968412f12951af57f7ffdda7b6"
+        },
+        {
+          "request": 16,
+          "nonce": 8733581111844284804,
+          "offset": 24336,
+          "pcm": 8112,
+          "encoded": 5499,
+          "codec": 10,
+          "wire_sha256": "08637a7d647cb5cc71b5b7f06507c4d9cd2f56aca5c5f2bbbeadc8e76ecdc585"
+        },
+        {
+          "request": 17,
+          "nonce": 8733581111844284804,
+          "offset": 32448,
+          "pcm": 320,
+          "encoded": 220,
+          "codec": 10,
+          "wire_sha256": "75e9e6a6d72b4fbf1240f4b2232c69a87f72cd7715ef73a1bb8abdb77d9f834e"
+        }
+      ],
+      "encoded_bytes": 22210
+    },
+    {
+      "file": "second_3.json",
+      "blocks": [
+        {
+          "request": 13,
+          "nonce": 14502040235036297275,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 3374,
+          "codec": 11,
+          "wire_sha256": "8a9c12cd9c946381a73e1ef13ca584d1b71d7aa29afd1509066545b1a2cc8aa5"
+        },
+        {
+          "request": 14,
+          "nonce": 14502040235036297275,
+          "offset": 8112,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "959bb119c5f2a97f4dd6518526ba8af680f244bfce2dd7c25651d217d4983bdb"
+        },
+        {
+          "request": 15,
+          "nonce": 14502040235036297275,
+          "offset": 16224,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "16212252b07f1a9b514e3fe7c6716f9021866cb787d59467ef3e7d2fa8ffd624"
+        },
+        {
+          "request": 16,
+          "nonce": 14502040235036297275,
+          "offset": 24336,
+          "pcm": 8112,
+          "encoded": 3378,
+          "codec": 11,
+          "wire_sha256": "a4ef1f472e2722adda41c3c1ccdbb0842af65629eb1aa69dc8210311ffb9ce4d"
+        },
+        {
+          "request": 17,
+          "nonce": 14502040235036297275,
+          "offset": 32448,
+          "pcm": 320,
+          "encoded": 147,
+          "codec": 11,
+          "wire_sha256": "8f7682e94bb5460549fde39b0f836c628970956546bfb68f809d3df486a0c29f"
+        }
+      ],
+      "encoded_bytes": 13660
+    },
+    {
+      "file": "speed_flash.json",
+      "blocks": [
+        {
+          "request": 13,
+          "nonce": 13771011611792600662,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 3374,
+          "codec": 11,
+          "wire_sha256": "81cc98885bc4437d0dc9761f7eefae47ef2ed1c8f8b34d53963c033010e4fccf"
+        },
+        {
+          "request": 14,
+          "nonce": 13771011611792600662,
+          "offset": 8112,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "e83bfe872ad9b7bb2f52b84ed6dba7b56f22f5761f3467ae0078d7092e31b24a"
+        },
+        {
+          "request": 15,
+          "nonce": 13771011611792600662,
+          "offset": 16224,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "91b62d3a258538aef1a4486a7b05ebda391a6b4d6e8c9e41c3788f90e7915e81"
+        },
+        {
+          "request": 16,
+          "nonce": 13771011611792600662,
+          "offset": 24336,
+          "pcm": 8112,
+          "encoded": 3378,
+          "codec": 11,
+          "wire_sha256": "e37ccdb108bc196cab1838afbeb8e0f3a18a91aa4b0cf56f3a3ea322d164128d"
+        },
+        {
+          "request": 17,
+          "nonce": 13771011611792600662,
+          "offset": 32448,
+          "pcm": 320,
+          "encoded": 147,
+          "codec": 11,
+          "wire_sha256": "25c0531feb0039dd1358d932eec949736d2cab9d2df065677b9877a07174a44b"
+        }
+      ],
+      "encoded_bytes": 13660
+    },
+    {
+      "file": "kotlin_second_sram.json",
+      "blocks": [
+        {
+          "request": 14,
+          "nonce": 16099287524862510976,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 3374,
+          "codec": 11,
+          "wire_sha256": "a9b3846e4bf2b573da0824b1e49b4875c9540896dbbc08505eb0b9d58865cc40"
+        },
+        {
+          "request": 17,
+          "nonce": 16099287524862510976,
+          "offset": 8112,
+          "pcm": 6608,
+          "encoded": 2755,
+          "codec": 11,
+          "wire_sha256": "f49894f3075fd584870ae673c1df74ee2085f1df035aaddaa9f6edddc2184155"
+        },
+        {
+          "request": 21,
+          "nonce": 16099287524862510976,
+          "offset": 14720,
+          "pcm": 8112,
+          "encoded": 3381,
+          "codec": 11,
+          "wire_sha256": "884712d2f6e58e04eb73a029fa9a77532f42c0fa529d96a462a12704941dc9d0"
+        },
+        {
+          "request": 22,
+          "nonce": 16099287524862510976,
+          "offset": 22832,
+          "pcm": 6608,
+          "encoded": 2755,
+          "codec": 11,
+          "wire_sha256": "9f827697de2211ba82fb7838b9e460ca01afb2ad8cdee9a277c3f7732f80c9c6"
+        },
+        {
+          "request": 22,
+          "nonce": 16099287524862510976,
+          "offset": 22832,
+          "pcm": 6608,
+          "encoded": 2755,
+          "codec": 11,
+          "wire_sha256": "9f827697de2211ba82fb7838b9e460ca01afb2ad8cdee9a277c3f7732f80c9c6"
+        },
+        {
+          "request": 4,
+          "nonce": 3108547060484403998,
+          "offset": 29440,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "271fbc33025b23701e610112b8f6f8ae7e5a958a89d77c125a256a58bcd414f4"
+        },
+        {
+          "request": 5,
+          "nonce": 3108547060484403998,
+          "offset": 37552,
+          "pcm": 8112,
+          "encoded": 3378,
+          "codec": 11,
+          "wire_sha256": "1be2491990a7e536efd4d10ba6889c85a86a709562c32a081540f5eb7ed0f1df"
+        },
+        {
+          "request": 6,
+          "nonce": 3108547060484403998,
+          "offset": 45664,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "9e21801007846bfae613640493b37dae6b4e3373915409319e211b88d406d582"
+        },
+        {
+          "request": 7,
+          "nonce": 3108547060484403998,
+          "offset": 53776,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "1cc78b2af9dd013e94ace608d46ebb420e85eb9823786c6d58c7a2b204eefd8e"
+        },
+        {
+          "request": 8,
+          "nonce": 3108547060484403998,
+          "offset": 61888,
+          "pcm": 8112,
+          "encoded": 3381,
+          "codec": 11,
+          "wire_sha256": "8cf1c6e691bacf27f02a804efc9c8e2a49fd46868740fb52ab62537324aa8c2d"
+        },
+        {
+          "request": 9,
+          "nonce": 3108547060484403998,
+          "offset": 70000,
+          "pcm": 8112,
+          "encoded": 3380,
+          "codec": 11,
+          "wire_sha256": "a8c0df19e30f2dbc66e758b410f16f11507da02fecfef413d7f8e4be74f679ef"
+        },
+        {
+          "request": 10,
+          "nonce": 3108547060484403998,
+          "offset": 78112,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "2b3c012882965623253718d3fa8658a8c39cfe36bd25e0351efe6d74b0adffcd"
+        },
+        {
+          "request": 11,
+          "nonce": 3108547060484403998,
+          "offset": 86224,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "f6d628a493da4e83ca347f5b3bd859d2628a3947f1df1325fe259b9f59cfda4d"
+        },
+        {
+          "request": 12,
+          "nonce": 3108547060484403998,
+          "offset": 94336,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "22d29863a0a77fc9c646166a0e81eb3708b7b447f848baf344cb1904ba37ec7b"
+        },
+        {
+          "request": 13,
+          "nonce": 3108547060484403998,
+          "offset": 102448,
+          "pcm": 8112,
+          "encoded": 3383,
+          "codec": 11,
+          "wire_sha256": "1104a9172c3d54bf73a0d035d1f170bc87121f3943f10253cf29199c994575db"
+        },
+        {
+          "request": 14,
+          "nonce": 3108547060484403998,
+          "offset": 110560,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "b4c6bc79afd2a737b6795097a2c9d48d5a67503e224cf02154b14d981e08d56d"
+        },
+        {
+          "request": 15,
+          "nonce": 3108547060484403998,
+          "offset": 118672,
+          "pcm": 8112,
+          "encoded": 3381,
+          "codec": 11,
+          "wire_sha256": "8ff56a3e2cb2cc5b72861e6a7e48ece9b634e3ea1110b7568996bab51c9aee69"
+        },
+        {
+          "request": 16,
+          "nonce": 3108547060484403998,
+          "offset": 126784,
+          "pcm": 8112,
+          "encoded": 3380,
+          "codec": 11,
+          "wire_sha256": "21454acffaa374a5c0e2bdbe3c7ff5f61ddb4062a1cb6c60be68eabed5bf8f11"
+        },
+        {
+          "request": 17,
+          "nonce": 3108547060484403998,
+          "offset": 134896,
+          "pcm": 8112,
+          "encoded": 3380,
+          "codec": 11,
+          "wire_sha256": "a8a758ab15b8f4e9ba701f4aabe07dc185deeef2f2c295b5d4124cc1ace85ff9"
+        },
+        {
+          "request": 18,
+          "nonce": 3108547060484403998,
+          "offset": 143008,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "59f2df96531cd59c7b5e5e92ff50fad1536dc3c893c330f1d26c5e7b4fe2edf6"
+        },
+        {
+          "request": 19,
+          "nonce": 3108547060484403998,
+          "offset": 151120,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "99ea2e32404034747ac260011bfd9c3292e61f432d16c8e036ff35a9a0f7d92e"
+        },
+        {
+          "request": 20,
+          "nonce": 3108547060484403998,
+          "offset": 159232,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "a29b02125b592369dc269ede7663e41abe7cc5801762a76bf0fc78ea8197a635"
+        },
+        {
+          "request": 21,
+          "nonce": 3108547060484403998,
+          "offset": 167344,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "ecd1c18d5050c8a448d00bba1ac53f4714a40600be7cb78c7f4e4ef54ab3903c"
+        },
+        {
+          "request": 22,
+          "nonce": 3108547060484403998,
+          "offset": 175456,
+          "pcm": 8112,
+          "encoded": 3381,
+          "codec": 11,
+          "wire_sha256": "8fd1ac3d516424e44076e7520033579328bea08bcd751b835a259578740b2236"
+        },
+        {
+          "request": 23,
+          "nonce": 3108547060484403998,
+          "offset": 183568,
+          "pcm": 8112,
+          "encoded": 3380,
+          "codec": 11,
+          "wire_sha256": "704ddfdc37da039c4d8f0c5a51c33ce128f347aaaf1fed5bfcb1f092e48a4b82"
+        },
+        {
+          "request": 24,
+          "nonce": 3108547060484403998,
+          "offset": 191680,
+          "pcm": 320,
+          "encoded": 144,
+          "codec": 11,
+          "wire_sha256": "37807bf5c35f472f4262197de6923ba8a93776a6ffa7973e2b40187b03dd669c"
+        }
+      ],
+      "identical_replays": 1
+    },
+    {
+      "file": "kotlin_second_flash.json",
+      "blocks": [
+        {
+          "request": 14,
+          "nonce": 14592727984758216410,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 3374,
+          "codec": 11,
+          "wire_sha256": "49405974c827f486fa121540a993d6e062922402dd3afd0f0fc8c96854d5b38d"
+        },
+        {
+          "request": 17,
+          "nonce": 14592727984758216410,
+          "offset": 8112,
+          "pcm": 6608,
+          "encoded": 2755,
+          "codec": 11,
+          "wire_sha256": "a99d7b70f12aaaa0ccbb480b6e7ddda0139807f504be4ed6e81cf801247b708f"
+        },
+        {
+          "request": 21,
+          "nonce": 14592727984758216410,
+          "offset": 14720,
+          "pcm": 8112,
+          "encoded": 3381,
+          "codec": 11,
+          "wire_sha256": "0705a44c11c067f52382d689a1caefa737eab6f9073324a9e210007f5443f9cb"
+        },
+        {
+          "request": 22,
+          "nonce": 14592727984758216410,
+          "offset": 22832,
+          "pcm": 6608,
+          "encoded": 2755,
+          "codec": 11,
+          "wire_sha256": "4543440097387750e3d86bd95989789cb15fae89245490d5a9900748c054cf50"
+        },
+        {
+          "request": 22,
+          "nonce": 14592727984758216410,
+          "offset": 22832,
+          "pcm": 6608,
+          "encoded": 2755,
+          "codec": 11,
+          "wire_sha256": "4543440097387750e3d86bd95989789cb15fae89245490d5a9900748c054cf50"
+        },
+        {
+          "request": 4,
+          "nonce": 9066693741340718146,
+          "offset": 29440,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "96f980aae57c0af1907d80e136708b49856c505f57ffc38d653c7903996c0062"
+        },
+        {
+          "request": 5,
+          "nonce": 9066693741340718146,
+          "offset": 37552,
+          "pcm": 8112,
+          "encoded": 3378,
+          "codec": 11,
+          "wire_sha256": "4110440d4731abac32711dc005ede25115070fe8bb58e2c35805b2e3ee167570"
+        },
+        {
+          "request": 6,
+          "nonce": 9066693741340718146,
+          "offset": 45664,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "476c42a5cf7f9ae516825e79b07b2f2a20b41e472d5ae8012092a918f67defd7"
+        },
+        {
+          "request": 7,
+          "nonce": 9066693741340718146,
+          "offset": 53776,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "f2b01406c4df9f174fa197f81ce27e19c3505c6e1c2aa9717ad3c5aced12d4a1"
+        },
+        {
+          "request": 8,
+          "nonce": 9066693741340718146,
+          "offset": 61888,
+          "pcm": 8112,
+          "encoded": 3381,
+          "codec": 11,
+          "wire_sha256": "410552e270aae27ee06224f9448c07b075f4551daf3c628916c75972c5a2a519"
+        },
+        {
+          "request": 9,
+          "nonce": 9066693741340718146,
+          "offset": 70000,
+          "pcm": 8112,
+          "encoded": 3380,
+          "codec": 11,
+          "wire_sha256": "0524d57b54fe981ca5c9eeb8e7232e323fc93a0a06775d4f38e2036a208b7420"
+        },
+        {
+          "request": 10,
+          "nonce": 9066693741340718146,
+          "offset": 78112,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "e5dc4dcfcd8a24e0bbb99409acdd91419d9c9e284e5195399ea6903283386ed0"
+        },
+        {
+          "request": 11,
+          "nonce": 9066693741340718146,
+          "offset": 86224,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "90c4cf7933915a5e79b464368a197f7a1d9bf31b9c4747748c0a544795434912"
+        },
+        {
+          "request": 12,
+          "nonce": 9066693741340718146,
+          "offset": 94336,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "c5e22c975113daa519ad6f62347df4fdb321ad63697edd3b509a0c0a167c3255"
+        },
+        {
+          "request": 13,
+          "nonce": 9066693741340718146,
+          "offset": 102448,
+          "pcm": 8112,
+          "encoded": 3383,
+          "codec": 11,
+          "wire_sha256": "a23f5233f940e10878653497180204b9790e8288f15e39b230dfb6f20b082683"
+        },
+        {
+          "request": 14,
+          "nonce": 9066693741340718146,
+          "offset": 110560,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "29c93cecbe4c44f4d92c016ffd09c50587d82a71900eba7c22f3b290ed80ca92"
+        },
+        {
+          "request": 15,
+          "nonce": 9066693741340718146,
+          "offset": 118672,
+          "pcm": 8112,
+          "encoded": 3381,
+          "codec": 11,
+          "wire_sha256": "dcd0b367b3ecd1451c10dfb93d84f585c09d897eff85aa820ec7b38a9285cb0b"
+        },
+        {
+          "request": 16,
+          "nonce": 9066693741340718146,
+          "offset": 126784,
+          "pcm": 8112,
+          "encoded": 3380,
+          "codec": 11,
+          "wire_sha256": "2be5d1aa9cce8cff015fefc29663a52470d96051bb17c62789bdc9f5f6ae85c5"
+        },
+        {
+          "request": 17,
+          "nonce": 9066693741340718146,
+          "offset": 134896,
+          "pcm": 8112,
+          "encoded": 3380,
+          "codec": 11,
+          "wire_sha256": "d8a5f8cf0ba5d055c35293f6d92b585c3c6311859828ab9bb966c36f48b80dff"
+        },
+        {
+          "request": 18,
+          "nonce": 9066693741340718146,
+          "offset": 143008,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "5b7ad4aad6bbd2f6ec2a05401e6c34173fb818f2fa53604cebb4c691fa3b985e"
+        },
+        {
+          "request": 19,
+          "nonce": 9066693741340718146,
+          "offset": 151120,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "d1578f4365e50d2032a10a895ffa6f50bcd61241de0fffa6f6daa80ff238476f"
+        },
+        {
+          "request": 20,
+          "nonce": 9066693741340718146,
+          "offset": 159232,
+          "pcm": 8112,
+          "encoded": 3382,
+          "codec": 11,
+          "wire_sha256": "3b68a47f8614def45086624f15ddae98a1f18ed9c3b9742d9c85d8162e32ca8c"
+        },
+        {
+          "request": 21,
+          "nonce": 9066693741340718146,
+          "offset": 167344,
+          "pcm": 8112,
+          "encoded": 3379,
+          "codec": 11,
+          "wire_sha256": "09bfe49f560155cc29e774d419f45cfdc1b10c8a6eee9d2016e8389f98df0178"
+        },
+        {
+          "request": 22,
+          "nonce": 9066693741340718146,
+          "offset": 175456,
+          "pcm": 8112,
+          "encoded": 3381,
+          "codec": 11,
+          "wire_sha256": "77fd72662442e125e6c1bfd553db4abce5db6d3aff0a3f12b021403c826e8a0f"
+        },
+        {
+          "request": 23,
+          "nonce": 9066693741340718146,
+          "offset": 183568,
+          "pcm": 8112,
+          "encoded": 3380,
+          "codec": 11,
+          "wire_sha256": "284a7acfde5519dfb6706375804648620f9593f47f751fab75922d1ddc942acf"
+        },
+        {
+          "request": 24,
+          "nonce": 9066693741340718146,
+          "offset": 191680,
+          "pcm": 320,
+          "encoded": 144,
+          "codec": 11,
+          "wire_sha256": "2c7caae12cd34b4230cf50b8933959498cac9b495f98361c93a8bdf1d0eea765"
+        }
+      ],
+      "identical_replays": 1
+    },
+    {
+      "file": "kotlin_old_sram.json",
+      "blocks": [
+        {
+          "request": 15,
+          "nonce": 15667607130251070666,
+          "offset": 0,
+          "pcm": 8112,
+          "encoded": 5492,
+          "codec": 10,
+          "wire_sha256": "db8aa51712fd9b525431a8a010d9f19d7cec43da750b16183a46405357f85003"
+        },
+        {
+          "request": 18,
+          "nonce": 15667607130251070666,
+          "offset": 8112,
+          "pcm": 6608,
+          "encoded": 4483,
+          "codec": 10,
+          "wire_sha256": "06212c4febeddf72fdbc490c2684e912c2eaf050157115475c1eceb98f2e6cd5"
+        },
+        {
+          "request": 22,
+          "nonce": 15667607130251070666,
+          "offset": 14720,
+          "pcm": 8112,
+          "encoded": 5495,
+          "codec": 10,
+          "wire_sha256": "a365cd6813812e103cc30c7a6a9e29a759afeb242bd7d3c242f8adb369eb9abc"
+        },
+        {
+          "request": 23,
+          "nonce": 15667607130251070666,
+          "offset": 22832,
+          "pcm": 6608,
+          "encoded": 4479,
+          "codec": 10,
+          "wire_sha256": "2545c9e92d7a76d3b5067b4e09123f8c1e85b52b893e33c5e1eb52f4e3bbebf9"
+        },
+        {
+          "request": 23,
+          "nonce": 15667607130251070666,
+          "offset": 22832,
+          "pcm": 6608,
+          "encoded": 4479,
+          "codec": 10,
+          "wire_sha256": "2545c9e92d7a76d3b5067b4e09123f8c1e85b52b893e33c5e1eb52f4e3bbebf9"
+        },
+        {
+          "request": 5,
+          "nonce": 4254257353414858141,
+          "offset": 29440,
+          "pcm": 8112,
+          "encoded": 5498,
+          "codec": 10,
+          "wire_sha256": "2c6117547b6ca15e7fc8ac805ffb88a8cdf1b123fb0aa433ea5f3bf04dfaaf28"
+        },
+        {
+          "request": 6,
+          "nonce": 4254257353414858141,
+          "offset": 37552,
+          "pcm": 8112,
+          "encoded": 5501,
+          "codec": 10,
+          "wire_sha256": "356d9574b868969449d58a4abd9f731fabd190ad0714ea7711fdffb4d724bbd6"
+        },
+        {
+          "request": 7,
+          "nonce": 4254257353414858141,
+          "offset": 45664,
+          "pcm": 8112,
+          "encoded": 5494,
+          "codec": 10,
+          "wire_sha256": "e727eeb9d8818b6c80418ad94c3cf92220157cb2a872ff4bbbaa0f2715820bb0"
+        },
+        {
+          "request": 8,
+          "nonce": 4254257353414858141,
+          "offset": 53776,
+          "pcm": 8112,
+          "encoded": 5501,
+          "codec": 10,
+          "wire_sha256": "be9eca0791f506474a0313c1e888cdc80048f9183abf22744bd824c3ac2c15d8"
+        },
+        {
+          "request": 9,
+          "nonce": 4254257353414858141,
+          "offset": 61888,
+          "pcm": 8112,
+          "encoded": 5499,
+          "codec": 10,
+          "wire_sha256": "c557656458a866de051a3bf2df5112868e20aa0ae2563ae796faedef55984419"
+        },
+        {
+          "request": 10,
+          "nonce": 4254257353414858141,
+          "offset": 70000,
+          "pcm": 8112,
+          "encoded": 5495,
+          "codec": 10,
+          "wire_sha256": "0321209ee255dda506a63817a10f322204aac2a0e2bc830b69a3b5d31bfdb2bb"
+        },
+        {
+          "request": 11,
+          "nonce": 4254257353414858141,
+          "offset": 78112,
+          "pcm": 8112,
+          "encoded": 5496,
+          "codec": 10,
+          "wire_sha256": "a25c1e5e83251157f2f4a484ca9e6f1e15b70a34401e462e4f6d1df678cb3d15"
+        },
+        {
+          "request": 12,
+          "nonce": 4254257353414858141,
+          "offset": 86224,
+          "pcm": 8112,
+          "encoded": 5498,
+          "codec": 10,
+          "wire_sha256": "d34d0dcbcc982347c388d6184d284e0059ebe841f7dbd04674d3cad84b216d31"
+        },
+        {
+          "request": 13,
+          "nonce": 4254257353414858141,
+          "offset": 94336,
+          "pcm": 8112,
+          "encoded": 5501,
+          "codec": 10,
+          "wire_sha256": "b437fbdc2bec13bdd204376a70ea36e3e9178548190e2ef42b7a969610714257"
+        },
+        {
+          "request": 14,
+          "nonce": 4254257353414858141,
+          "offset": 102448,
+          "pcm": 8112,
+          "encoded": 5495,
+          "codec": 10,
+          "wire_sha256": "4ee875958b079e65f952823c84a86e5689b1a1046ded9cfd1a1ff7e391ab0099"
+        },
+        {
+          "request": 15,
+          "nonce": 4254257353414858141,
+          "offset": 110560,
+          "pcm": 8112,
+          "encoded": 5499,
+          "codec": 10,
+          "wire_sha256": "94e1b73a3fe8881afd81c0781d68ce2542ed0ae593184e84c87dff9aefd4ee1d"
+        },
+        {
+          "request": 16,
+          "nonce": 4254257353414858141,
+          "offset": 118672,
+          "pcm": 8112,
+          "encoded": 5499,
+          "codec": 10,
+          "wire_sha256": "c92218b4175445a973f28be8ce19f66e7ec254b5292499b041cff088d0087345"
+        },
+        {
+          "request": 17,
+          "nonce": 4254257353414858141,
+          "offset": 126784,
+          "pcm": 8112,
+          "encoded": 5496,
+          "codec": 10,
+          "wire_sha256": "35bf651c5368308037603ec845211dd8da39cab252eba8e98da7b29e590c3a5f"
+        },
+        {
+          "request": 18,
+          "nonce": 4254257353414858141,
+          "offset": 134896,
+          "pcm": 8112,
+          "encoded": 5496,
+          "codec": 10,
+          "wire_sha256": "a6594f00d385f91f49af1577c6b2a47eafad4f38852ade92196beb8c2f60a993"
+        },
+        {
+          "request": 19,
+          "nonce": 4254257353414858141,
+          "offset": 143008,
+          "pcm": 8112,
+          "encoded": 5497,
+          "codec": 10,
+          "wire_sha256": "13f74c382b8960d7d201d4826a65c81b610a66c46d09c67d4b8770ca3b143073"
+        },
+        {
+          "request": 20,
+          "nonce": 4254257353414858141,
+          "offset": 151120,
+          "pcm": 8112,
+          "encoded": 5502,
+          "codec": 10,
+          "wire_sha256": "d1e1a9b382717815bf7f9d8374e4047b224e73034478734698299739249a0ae1"
+        },
+        {
+          "request": 21,
+          "nonce": 4254257353414858141,
+          "offset": 159232,
+          "pcm": 8112,
+          "encoded": 5496,
+          "codec": 10,
+          "wire_sha256": "20b2099d0a5ea7c94f985cd3bfec4f5f118a1411674bb13118a28980ef2fbdcf"
+        },
+        {
+          "request": 22,
+          "nonce": 4254257353414858141,
+          "offset": 167344,
+          "pcm": 8112,
+          "encoded": 5498,
+          "codec": 10,
+          "wire_sha256": "ddfea575162cf0e76591d2a5acff184b5212ef9adc51936e67e0c8b505a1605b"
+        },
+        {
+          "request": 23,
+          "nonce": 4254257353414858141,
+          "offset": 175456,
+          "pcm": 8112,
+          "encoded": 5499,
+          "codec": 10,
+          "wire_sha256": "2370e016362b78056bf74e08728c00bbec88c764810dc5512401c0e4b764943e"
+        },
+        {
+          "request": 24,
+          "nonce": 4254257353414858141,
+          "offset": 183568,
+          "pcm": 8112,
+          "encoded": 5497,
+          "codec": 10,
+          "wire_sha256": "2971f6ab2e61fad3f4419813adea2882b4ea4691322f3473e0e4bcbe071ac6e2"
+        },
+        {
+          "request": 25,
+          "nonce": 4254257353414858141,
+          "offset": 191680,
+          "pcm": 320,
+          "encoded": 223,
+          "codec": 10,
+          "wire_sha256": "a6674f19be72ae6d830f60aaa685985ed6066a173c27b01f98c6d45617da54ea"
+        }
+      ],
+      "identical_replays": 1
+    }
+  ]
+}

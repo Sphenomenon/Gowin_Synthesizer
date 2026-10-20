@@ -1,0 +1,147 @@
+{
+  "date": "2026-10-20",
+  "passed": true,
+  "scope": "Optional OPEN_WIDE throughput, backward fallback, cross-profile byte-offset resume, within-boot durable transfer/retry, full WAV and Flash qualification. Historical boot-ID uniqueness and native phone tests remain outside passing scope.",
+  "qualification": "download_qualified_with_existing_boot_identity_limitation",
+  "firmware": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_052940_831068/impl/pnr/ble_protocol.fs",
+    "sha256": "c9dc3838c7be7e9358f4a8b5d306534a554d1f8811f6b827b3935b720e37a5f5"
+  },
+  "apk": {
+    "path": "artifacts/gowin-control-0.2.3-gw25k-wide-debug.apk",
+    "version_name": "0.2.3",
+    "version_code": 6,
+    "bytes": 9668978,
+    "sha256": "62001b2cc03538da331cf4113afa97db7a1cab14d71ac52cba4bbdaa30fd4947",
+    "physical_qualification_pending": false,
+    "physical_qualification_scope": "APP Kotlin protocol + durable files over macOS BLE bridge; native Android phone not tested",
+    "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca"
+  },
+  "flash_report": "reports/flash_20261020_054024_091526/summary.json",
+  "user_code": [
+    "0x0000D769"
+  ],
+  "status_code": [
+    "0x70022020"
+  ],
+  "performance": {
+    "pcm_bytes": 32768,
+    "baseline_seconds": 11.101490125001874,
+    "baseline_bytes_per_second": 2951.675822888188,
+    "sram_seconds": 8.804171041003428,
+    "sram_bytes_per_second": 3721.8722634295127,
+    "sram_speedup_percent": 26.093530819644496,
+    "flash_seconds": 9.270692458027042,
+    "flash_bytes_per_second": 3534.579552536853,
+    "flash_speedup_percent": 19.748229975956466,
+    "full_pcm_bytes": 192000,
+    "previous_full_seconds": 72.317879042,
+    "current_full_seconds": 58.267090125,
+    "full_time_reduction_percent": 19.429204925713783,
+    "both_full_runs_include_cancel_disconnect_resume_and_executed_response_loss_retry": true,
+    "cancel_and_reconnect_boundaries": "32 and 64 blocks of the selected profile (256 or 460), not identical absolute offsets",
+    "native_phone_tested": false
+  },
+  "transport": {
+    "boot_uart_baud": 115200,
+    "runtime_uart_baud": 921600,
+    "uart_format": "8E1",
+    "att_mtu": 23,
+    "value_bytes": 20,
+    "logical_message_maximum": 512,
+    "capability_flags": 104,
+    "capability_and_legacy_chunk": 256,
+    "optional_wide_chunk": 460,
+    "window": 1,
+    "h5_window": 1,
+    "requested_connection_interval_ms": 15,
+    "ack_read_opcode": 53,
+    "open_wide_opcode": 54,
+    "largest_wide_data_logical_bytes": 508,
+    "largest_wide_fragment_count": 37
+  },
+  "timing": {
+    "constraint_mhz": 50,
+    "fmax_mhz": 52.562,
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "resources": {
+    "lut": 15809,
+    "register": 8789,
+    "cls_used": 10758,
+    "cls_total": 11520,
+    "bsram_used": 30,
+    "bsram_total": 56
+  },
+  "simulation_report": "reports/simulations/20261020_052935_544584/result.json",
+  "regression_groups_passed": 14,
+  "android_tests_passed": 18,
+  "lint_issues": 0,
+  "app_full_ack_read_blocks": 414,
+  "complete_wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+  "pcm_crc32": "A54A47B0",
+  "checks": {
+    "baseline": true,
+    "wide_sram": true,
+    "aligned_sram": true,
+    "simulation": true,
+    "android_checks": true,
+    "kotlin_old_firmware": true,
+    "old_firmware_fallback_wire_check": true,
+    "profile_resume_sram": true,
+    "recording_wide_sram": true,
+    "kotlin_wide_sram": true,
+    "complete_wav_check": true,
+    "executed_response_loss_wire_check": true,
+    "recording_256_sram": true,
+    "recording_legacy_sram": true,
+    "protocol_sram": true,
+    "firmware_inputs": true,
+    "flash": true,
+    "speed_flash": true,
+    "recording_flash": true,
+    "protocol_flash": true
+  },
+  "evidence": {
+    "baseline": "reports/speed5_20261020/baseline.json",
+    "wide_sram": "reports/speed5_20261020/wide_sram.json",
+    "aligned_sram": "reports/speed5_20261020/aligned_sram.json",
+    "simulation": "reports/speed5_20261020/simulation.json",
+    "android_checks": "reports/speed5_20261020/android_checks.json",
+    "kotlin_old_firmware": "reports/speed5_20261020/kotlin_old_firmware.json",
+    "old_firmware_fallback_wire_check": "reports/speed5_20261020/old_firmware_fallback_wire_check.json",
+    "profile_resume_sram": "reports/speed5_20261020/profile_resume_sram.json",
+    "recording_wide_sram": "reports/speed5_20261020/recording_wide_sram.json",
+    "kotlin_wide_sram": "reports/speed5_20261020/kotlin_wide_sram.json",
+    "complete_wav_check": "reports/speed5_20261020/complete_wav_check.json",
+    "executed_response_loss_wire_check": "reports/speed5_20261020/executed_response_loss_wire_check.json",
+    "recording_256_sram": "reports/speed5_20261020/recording_256_sram.json",
+    "recording_legacy_sram": "reports/speed5_20261020/recording_legacy_sram.json",
+    "protocol_sram": "reports/speed5_20261020/protocol_sram.json",
+    "firmware_inputs": "reports/speed5_20261020/firmware_inputs.json",
+    "flash": "reports/speed5_20261020/flash.json",
+    "speed_flash": "reports/speed5_20261020/speed_flash.json",
+    "recording_flash": "reports/speed5_20261020/recording_flash.json",
+    "protocol_flash": "reports/speed5_20261020/protocol_flash.json"
+  },
+  "tuning": {
+    "exploratory_456_chunk_bytes_per_second": 3709.353980871486,
+    "retained_chunk": 460,
+    "reason": "One exploratory 456-byte alignment run did not improve measured throughput; no equivalence or significance claim."
+  },
+  "boot_observation": {
+    "sram_boot_id": "0xf030420be8608411",
+    "flash_boot_id": "0x7e0c1083fc182106",
+    "different_this_time": true,
+    "identity_uniqueness_proven": false,
+    "historical_repeat_limitation": "reports/speed3_20261020/boot_identity_limitation.json"
+  },
+  "limitations": {
+    "historical_same_image_boot_id_repeat_unresolved": "reports/speed3_20261020/boot_identity_limitation.json",
+    "workaround": "After board reset/reconfiguration discard unfinished phone downloads before starting a new recording.",
+    "native_android_phone_gatt_ui_tested": false,
+    "new_firmware_physical_power_cycle_performed": false
+  },
+  "earlier_diagnostics": "recording_flash_wrong_python.log was a missing bleak import from the system interpreter and did not reach hardware; the venv invocation subsequently passed."
+}

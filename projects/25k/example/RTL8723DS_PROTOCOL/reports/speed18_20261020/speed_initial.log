@@ -1,0 +1,40 @@
+{
+  "started_at": "2026-10-20T10:00:16.475113+08:00",
+  "passed": true,
+  "recording": {
+    "boot": 13476468016628371587,
+    "id": 1,
+    "state": 4,
+    "format": 1,
+    "channels": 2,
+    "flags": 2,
+    "rate": 48000,
+    "frames": 48000,
+    "bytes": 192000,
+    "capacity": 48000,
+    "crc": 2773108656,
+    "reason": 2,
+    "detail": 0,
+    "operation": 1,
+    "reserved": 0
+  },
+  "long": true,
+  "direct": true,
+  "bulk": true,
+  "bulk_value_limit": 182,
+  "lossless": true,
+  "second": true,
+  "chunk": 8112,
+  "compact": false,
+  "write_command": true,
+  "ack_read": true,
+  "command_properties": [
+    "write-without-response",
+    "write"
+  ],
+  "pcm_bytes": 32768,
+  "transfer_seconds": 1.5140917079988867,
+  "bytes_per_second": 21642.0180012135,
+  "reference_matches": true,
+  "finished_at": "2026-10-20T10:00:20.546717+08:00"
+}

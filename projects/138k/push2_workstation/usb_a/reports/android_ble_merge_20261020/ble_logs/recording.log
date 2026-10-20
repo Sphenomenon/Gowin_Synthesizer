@@ -1,0 +1,2 @@
+PASS: recording START/STOP/tasks, full PCM CRC, READ/ACK_READ replay, atomic ACK_READ rejection, ACK conflict/duplicate, CCCD, disconnect continuation/resume, EOF, CLOSE/CLEAR
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_protocol_recording.sv:272: $finish called at 5096940000 (1ps)

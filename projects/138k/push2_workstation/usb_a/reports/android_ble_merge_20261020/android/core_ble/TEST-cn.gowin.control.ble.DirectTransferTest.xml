@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.ble.DirectTransferTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-20T11:56:41" hostname="ic-lab" time="0.039">
+  <properties/>
+  <testcase name="lostOpenRetriesSameIdAndErrorsRemainExplicit" classname="cn.gowin.control.ble.DirectTransferTest" time="0.005"/>
+  <testcase name="mismatchedDirectOpenMetadataNeverEnablesReceiptsOrDowngrades" classname="cn.gowin.control.ble.DirectTransferTest" time="0.005"/>
+  <testcase name="directDataCompletesReadAndAckReadWithoutResponse" classname="cn.gowin.control.ble.DirectTransferTest" time="0.003"/>
+  <testcase name="missingOrInvalidDataRetriesIdenticalRequestRatherThanConfirmingIt" classname="cn.gowin.control.ble.DirectTransferTest" time="0.02"/>
+  <testcase name="unsupportedProbesOnceAndBusyDoesNotDowngrade" classname="cn.gowin.control.ble.DirectTransferTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

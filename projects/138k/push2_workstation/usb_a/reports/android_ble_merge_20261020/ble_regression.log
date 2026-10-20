@@ -1,0 +1,71 @@
+PORTABLE_BT_MANIFEST=PASS FILES=40
+Gowin storage adaptations: H5 pending payload synchronous RAM; GATT 2x32-byte slots +32-byte active TX
+second_replay_61: PASS
+PASS 10 raw/encoded exact PCM blocks
+second_replay_60: PASS
+PASS 10 raw/encoded exact PCM blocks
+second_replay_59: PASS
+PASS 10 raw/encoded exact PCM blocks
+second_replay_48: PASS
+PASS 10 raw/encoded exact PCM blocks
+second_recording_244: PASS
+PASS 11 raw/encoded exact PCM blocks
+second_recording_182: PASS
+PASS 11 raw/encoded exact PCM blocks
+second_recording_61: PASS
+PASS 11 raw/encoded exact PCM blocks
+second_recording_20: PASS
+PASS 11 raw/encoded exact PCM blocks
+lossless_replay_60: PASS
+PASS 10 raw/encoded exact PCM blocks
+lossless_replay_59: PASS
+PASS 10 raw/encoded exact PCM blocks
+lossless_replay_48: PASS
+PASS 10 raw/encoded exact PCM blocks
+lossless_recording_244: PASS
+PASS 11 raw/encoded exact PCM blocks
+lossless_recording_182: PASS
+PASS 11 raw/encoded exact PCM blocks
+lossless_recording_61: PASS
+PASS 11 raw/encoded exact PCM blocks
+lossless_recording_20: PASS
+PASS 11 raw/encoded exact PCM blocks
+extended_replay_59: PASS
+extended_replay_48: PASS
+extended_gatt_247: PASS
+extended_gatt_185: PASS
+extended_gatt_64: PASS
+extended_gatt_23: PASS
+extended_recording_244: PASS
+extended_recording_182: PASS
+extended_recording_61: PASS
+extended_recording_20: PASS
+acl_bridge: PASS
+long_profile_replay: PASS
+long_recording: PASS
+recording: PASS
+compact_recording: PASS
+compact_gatt: PASS
+direct_recording: PASS
+direct_gatt: PASS
+bulk_recording: PASS
+bulk_gatt_23: PASS
+bulk_gatt_64: PASS
+bulk_gatt_247: PASS
+command: PASS
+board: PASS
+h5: PASS
+credits: PASS
+legacy_gatt: PASS
+uart_system: PASS
+uart_write_command: PASS
+uart_slow: PASS
+bad_fast: PASS
+wrong_rom: PASS
+bad_rand: PASS
+zero_rand: PASS
+{
+  "passed": true,
+  "report": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/reports/simulations/20261020_195127_949510/result.json",
+  "error": null
+}

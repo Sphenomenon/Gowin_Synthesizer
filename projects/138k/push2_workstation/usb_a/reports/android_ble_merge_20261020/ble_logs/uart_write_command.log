@@ -1,0 +1,4 @@
+UART_FAST_COMMAND: after full patch/reset at 9404135000
+INIT_PASS: all 253 patch bytes and 2 fragment echoes checked
+PASS: protocol UART8E1/H5 checked patch, LE Rand, 128-bit service, HELLO/GET_STATUS fragmented responses, disconnect advertising/reconnect; legacy 3 notifications
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_protocol_system.sv:681: $finish called at 19883166000 (1ps)

@@ -1,0 +1,2 @@
+PASS: ACL 27-byte TX segmentation, physical credit exhaustion/replenishment and foreign handle, 247-byte RX with interleaved event, orphan/timeout/disconnect, synchronous RAM, HCI passthrough
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_acl_bridge.sv:129: $finish called at 52120000 (1ps)

@@ -1,0 +1,2 @@
+PASS encoder bytes=8112 cycles=12174
+/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/noise.sv:23: $finish called at 121750000 (1ps)

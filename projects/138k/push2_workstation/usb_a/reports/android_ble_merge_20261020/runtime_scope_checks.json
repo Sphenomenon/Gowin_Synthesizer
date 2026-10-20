@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "production_and_untransformed_rtl_hashes_match": true,
+  "temporary_path_only_test_files": [
+    "tests/tb_lossless_profile_replay.sv",
+    "tests/tb_lossless_recording.sv",
+    "tests/tb_second_profile_replay.sv",
+    "tests/tb_second_recording.sv"
+  ],
+  "new_python_syntax_files": 26,
+  "original_import_check": "repository_import.log"
+}

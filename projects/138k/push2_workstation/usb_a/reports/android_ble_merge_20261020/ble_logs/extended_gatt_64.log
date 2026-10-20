@@ -1,0 +1,2 @@
+PASS: negotiated B2/B3 DATA 508/64/52 byte RAM payload, flags, token, exact fragment count; B1 profile restored
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_extended_gatt.sv:77: $finish called at 318500000 (1ps)

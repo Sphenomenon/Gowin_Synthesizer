@@ -1,0 +1,10 @@
+{
+  "command": [
+    "python3",
+    "projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py"
+  ],
+  "returncode": 0,
+  "started": "2026-10-20T19:52:24.590746+08:00",
+  "finished": "2026-10-20T19:52:24.662867+08:00",
+  "log": "source_boundary.log"
+}

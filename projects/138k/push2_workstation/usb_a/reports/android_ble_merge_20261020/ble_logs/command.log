@@ -1,0 +1,2 @@
+PASS: protocol HELLO/GET_STATUS, 512-byte streaming CRC, fragment errors/timeout/retry, nonce, conflict, 32-entry exact replay, expiry/eviction, disconnect
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_protocol_command.sv:185: $finish called at 151110000 (1ps)

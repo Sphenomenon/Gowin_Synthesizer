@@ -1,0 +1,2 @@
+BT_H5_PASS handshake, full duplex 8E1, ACK, duplicate, retry, SLIP, 280-byte limit, backpressure, checksum, parity
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_h5_sync.sv:371: $finish called at 113955000000 (1ps)

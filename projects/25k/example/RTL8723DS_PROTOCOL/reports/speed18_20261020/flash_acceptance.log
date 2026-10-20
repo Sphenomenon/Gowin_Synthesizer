@@ -1,0 +1,357 @@
+{
+  "started_at": "2026-10-20T10:06:43.780200+08:00",
+  "passed": true,
+  "recording": {
+    "boot": 12706959406113251461,
+    "id": 1,
+    "state": 4,
+    "format": 1,
+    "channels": 2,
+    "flags": 2,
+    "rate": 48000,
+    "frames": 48000,
+    "bytes": 192000,
+    "capacity": 48000,
+    "crc": 2773108656,
+    "reason": 2,
+    "detail": 0,
+    "operation": 1,
+    "reserved": 0
+  },
+  "long": true,
+  "direct": true,
+  "bulk": true,
+  "bulk_value_limit": 182,
+  "lossless": true,
+  "second": true,
+  "chunk": 8112,
+  "compact": false,
+  "write_command": true,
+  "ack_read": true,
+  "command_properties": [
+    "write-without-response",
+    "write"
+  ],
+  "pcm_bytes": 32768,
+  "transfer_seconds": 1.5717890830128454,
+  "bytes_per_second": 20847.580858106903,
+  "reference_matches": true,
+  "finished_at": "2026-10-20T10:06:48.244141+08:00"
+}
+{
+  "passed": true,
+  "started_at": "2026-10-20T10:06:48.336739+08:00",
+  "transfers": [
+    {
+      "opcode": 48,
+      "max_chunk": 256,
+      "offset": 0,
+      "bytes": 256,
+      "notifications": 22
+    },
+    {
+      "opcode": 64,
+      "max_chunk": 8112,
+      "offset": 256,
+      "bytes": 8112,
+      "notifications": 20
+    },
+    {
+      "opcode": 61,
+      "max_chunk": 8112,
+      "offset": 8368,
+      "bytes": 8112,
+      "notifications": 32
+    },
+    {
+      "opcode": 60,
+      "max_chunk": 8112,
+      "offset": 16480,
+      "bytes": 8112,
+      "notifications": 46
+    },
+    {
+      "opcode": 59,
+      "max_chunk": 972,
+      "offset": 24592,
+      "bytes": 972,
+      "notifications": 6
+    },
+    {
+      "opcode": 57,
+      "max_chunk": 460,
+      "offset": 25564,
+      "bytes": 460,
+      "notifications": 3
+    },
+    {
+      "opcode": 56,
+      "max_chunk": 460,
+      "offset": 26024,
+      "bytes": 460,
+      "notifications": 3
+    },
+    {
+      "opcode": 55,
+      "max_chunk": 460,
+      "offset": 26484,
+      "bytes": 460,
+      "notifications": 32
+    },
+    {
+      "opcode": 54,
+      "max_chunk": 460,
+      "offset": 26944,
+      "bytes": 460,
+      "notifications": 37
+    },
+    {
+      "opcode": 64,
+      "max_chunk": 8112,
+      "offset": 27404,
+      "bytes": 8112,
+      "notifications": 20
+    },
+    {
+      "opcode": 61,
+      "max_chunk": 8112,
+      "offset": 35516,
+      "bytes": 8112,
+      "notifications": 32
+    },
+    {
+      "opcode": 60,
+      "max_chunk": 8112,
+      "offset": 43628,
+      "bytes": 8112,
+      "notifications": 46
+    },
+    {
+      "opcode": 59,
+      "max_chunk": 972,
+      "offset": 51740,
+      "bytes": 972,
+      "notifications": 6
+    },
+    {
+      "opcode": 48,
+      "max_chunk": 256,
+      "offset": 52712,
+      "bytes": 256,
+      "notifications": 22
+    }
+  ],
+  "pcm_bytes": 52968,
+  "reference_matches": true,
+  "old_checkpoint_resumed_with_wide": true,
+  "wide_checkpoint_resumed_with_legacy": true,
+  "compact_profile_switched_both_directions": true,
+  "bulk_profile_switched_both_directions": true,
+  "lossless_profile_switched_both_directions": true,
+  "second_profile_switched_both_directions": true,
+  "finished_at": "2026-10-20T10:06:55.714916+08:00"
+}
+{
+  "passed": true,
+  "cached_long_read_rejected_in_legacy": true,
+  "no_long_data_on_legacy": true,
+  "legacy_cursor_unchanged": true,
+  "legacy_read_matches": true,
+  "original_cache_success_preserved": true,
+  "encoded_replay_identical": true,
+  "old_read_keeps_raw_in_second": true,
+  "first_read_keeps_codec10_in_second": true,
+  "long_replay_did_not_move_current_cursor": true
+}
+{
+  "passed": true,
+  "cached_long_read_rejected_in_legacy": true,
+  "no_long_data_on_legacy": true,
+  "legacy_cursor_unchanged": true,
+  "legacy_read_matches": true,
+  "original_cache_success_preserved": true,
+  "encoded_replay_identical": true,
+  "long_replay_did_not_move_current_cursor": true
+}
+{
+  "passed": true,
+  "cached_long_read_rejected_in_legacy": true,
+  "no_long_data_on_legacy": true,
+  "legacy_cursor_unchanged": true,
+  "legacy_read_matches": true,
+  "original_cache_success_preserved": true,
+  "long_replay_did_not_move_current_cursor": true
+}
+command=01 id=1 status=00 bytes=40
+command=01 id=1 status=00 bytes=40
+command=02 id=2 status=00 bytes=84
+command=02 id=2 status=00 bytes=84
+command=7f id=2 status=86 bytes=28
+command=7f id=3 status=80 bytes=28
+command=02 id=3 status=00 bytes=84
+command=02 id=4 status=00 bytes=84
+command=01 id=1 status=00 bytes=40
+command=01 id=1 status=00 bytes=40
+command=02 id=2 status=00 bytes=84
+command=02 id=2 status=00 bytes=84
+{
+  "started_at": "2026-10-20T10:07:10.538169+08:00",
+  "passed": true,
+  "connections": [
+    {
+      "advertisement": {
+        "name": "GW25K-PROTO",
+        "service_uuids": [
+          "9b6d0000-4c2a-4f87-9a31-138000000001"
+        ],
+        "device_id": "37218E4C-EE27-A8FF-8797-AA07C6ABC352"
+      },
+      "passed": true,
+      "session_nonce": "8abf7cb1a5bbfda6",
+      "commands": [
+        {
+          "opcode": 1,
+          "request_id": 1,
+          "request": "0100040001000000a6fdbba5b17cbf8a010000003268295b",
+          "response": "0100140001000000a6fdbba5b17cbf8a8560b068413058b06800000001000000d7900000b9670ce2",
+          "status": 0,
+          "response_payload": "8560b068413058b06800000001000000d7900000"
+        },
+        {
+          "opcode": 1,
+          "request_id": 1,
+          "request": "0100040001000000a6fdbba5b17cbf8a010000003268295b",
+          "response": "0100140001000000a6fdbba5b17cbf8a8560b068413058b06800000001000000d7900000b9670ce2",
+          "status": 0,
+          "response_payload": "8560b068413058b06800000001000000d7900000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 2,
+          "request": "0200000002000000a6fdbba5b17cbf8a69d674b0",
+          "response": "0200400002000000a6fdbba5b17cbf8a02000000029200000400000000000000000000000000000000000000000000000000000080bb000000000000080000000000000000000000000000000000000002bbd918",
+          "status": 0,
+          "response_payload": "02000000029200000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 2,
+          "request": "0200000002000000a6fdbba5b17cbf8a69d674b0",
+          "response": "0200400002000000a6fdbba5b17cbf8a02000000029200000400000000000000000000000000000000000000000000000000000080bb000000000000080000000000000000000000000000000000000002bbd918",
+          "status": 0,
+          "response_payload": "02000000029200000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        },
+        {
+          "opcode": 127,
+          "request_id": 2,
+          "request": "7f00000002000000a6fdbba5b17cbf8a29275866",
+          "response": "7f86080002000000a6fdbba5b17cbf8a00000000010000000ea80f98",
+          "status": 134,
+          "response_payload": "0000000001000000"
+        },
+        {
+          "opcode": 127,
+          "request_id": 3,
+          "request": "7f00000003000000a6fdbba5b17cbf8a466bfdfd",
+          "response": "7f80080003000000a6fdbba5b17cbf8a000000000100000032e1a210",
+          "status": 128,
+          "response_payload": "0000000001000000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 3,
+          "request": "0200000003000000a6fdbba5b17cbf8a069ad12b",
+          "response": "0200400003000000a6fdbba5b17cbf8a03000000e29300000400000000000000000000000000000000000000000000000000000080bb00000000000008000000000000000000000000000000000000001a4334f3",
+          "status": 0,
+          "response_payload": "03000000e29300000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 4,
+          "request": "0200000004000000a6fdbba5b17cbf8a8973495f",
+          "response": "0200400004000000a6fdbba5b17cbf8a04000000589600000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000c801fab8",
+          "status": 0,
+          "response_payload": "04000000589600000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        }
+      ],
+      "capability": {
+        "raw": "011400028560b068413058b06800000000010101",
+        "major": 1,
+        "value_limit": 20,
+        "max_logical_message": 512,
+        "boot_id": "b058304168b06085",
+        "capabilities": 104,
+        "max_pcm_chunk": 256,
+        "max_transfer_window": 1,
+        "recording_slots": 1
+      },
+      "status_summary": "0100000022900000010000000000000000ffff08",
+      "status_snapshot_id": 2,
+      "bad_crc_silently_rejected": true,
+      "out_of_order_att_rejected": "(128, 'GATT Protocol Error: Application-specific Error 0x80')",
+      "disconnected": true
+    },
+    {
+      "advertisement": {
+        "name": "GW25K-PROTO",
+        "service_uuids": [
+          "9b6d0000-4c2a-4f87-9a31-138000000001"
+        ],
+        "device_id": "37218E4C-EE27-A8FF-8797-AA07C6ABC352"
+      },
+      "passed": true,
+      "session_nonce": "7bf0c8cc3fbb78b4",
+      "commands": [
+        {
+          "opcode": 1,
+          "request_id": 1,
+          "request": "0100040001000000b478bb3fccc8f07b010000008a64328a",
+          "response": "0100140001000000b478bb3fccc8f07b8560b068413058b06800000001000000419f000022cc84b7",
+          "status": 0,
+          "response_payload": "8560b068413058b06800000001000000419f0000"
+        },
+        {
+          "opcode": 1,
+          "request_id": 1,
+          "request": "0100040001000000b478bb3fccc8f07b010000008a64328a",
+          "response": "0100140001000000b478bb3fccc8f07b8560b068413058b06800000001000000419f000022cc84b7",
+          "status": 0,
+          "response_payload": "8560b068413058b06800000001000000419f0000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 2,
+          "request": "0200000002000000b478bb3fccc8f07b16a52b29",
+          "response": "0200400002000000b478bb3fccc8f07b020000008aa000000400000000000000000000000000000000000000000000000000000080bb00000000000008000000000000000000000000000000000000006ec6c8a6",
+          "status": 0,
+          "response_payload": "020000008aa000000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 2,
+          "request": "0200000002000000b478bb3fccc8f07b16a52b29",
+          "response": "0200400002000000b478bb3fccc8f07b020000008aa000000400000000000000000000000000000000000000000000000000000080bb00000000000008000000000000000000000000000000000000006ec6c8a6",
+          "status": 0,
+          "response_payload": "020000008aa000000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        }
+      ],
+      "capability": {
+        "raw": "011400028560b068413058b06800000000010101",
+        "major": 1,
+        "value_limit": 20,
+        "max_logical_message": 512,
+        "boot_id": "b058304168b06085",
+        "capabilities": 104,
+        "max_pcm_chunk": 256,
+        "max_transfer_window": 1,
+        "recording_slots": 1
+      },
+      "status_summary": "010000008c9e0000010000000000000000ffff08",
+      "status_snapshot_id": 2,
+      "disconnected": true
+    }
+  ],
+  "boot_id": "b058304168b06085",
+  "automatic_reconnect_passed": true,
+  "finished_at": "2026-10-20T10:07:15.643031+08:00"
+}

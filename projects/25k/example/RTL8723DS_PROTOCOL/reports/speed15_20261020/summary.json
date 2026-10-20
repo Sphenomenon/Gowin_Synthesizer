@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "goal_status": "active",
+  "round": 15,
+  "previous_turn_classification": "progress",
+  "outcome": "Actual H5 ACK/frame and UART-character budgets measured;2Mbps with extended8112 blocks not adopted",
+  "groups": {
+    "serial_baseline": {
+      "rates": [
+        10160.833872697667,
+        9502.08043558786,
+        9498.126103626573
+      ],
+      "median_bytes_per_second": 9502.08043558786
+    },
+    "serial_2m": {
+      "rates": [
+        9578.804205382103,
+        9495.02961944606,
+        9709.20736662435
+      ],
+      "median_bytes_per_second": 9578.804205382103
+    },
+    "serial_baseline_after": {
+      "rates": [
+        9752.39038560903,
+        9758.168211246266,
+        9215.608444663992
+      ],
+      "median_bytes_per_second": 9752.39038560903
+    }
+  },
+  "serial_samples_audited": 9,
+  "data": "32768 PCM per sample, five DATA blocks, exact reference/CRC; actual connection interval15ms throughout",
+  "counter_observation": {
+    "fpga_standalone_acks": 1321,
+    "fpga_host_frames": 1302,
+    "serial_characters_range": [
+      56339,
+      56340
+    ],
+    "retry_uart_protocol_error_deltas": 0,
+    "serial_character_seconds_921600_rounded": 0.66930732,
+    "serial_character_seconds_2m": 0.3098645
+  },
+  "decision": "No demonstrated repeatable throughput gain;921600 retained",
+  "simulations": "component_simulations.json and baud_simulations.json;253-byte patch2Mbps system smoke, rejected/unknown rate, H5 actual counter monitor, GATT fields/CRC/interval",
+  "timing": "Both diagnostic50MHz setup/hold0/0, D31850.505MHz/D1C350.018MHz",
+  "restore": {
+    "production_inputs": 30,
+    "android_inputs": 43,
+    "ready_manifest_unchanged": true,
+    "apk_unchanged": true,
+    "flash_programmed_this_round": false,
+    "final_sram": "22B4",
+    "status": "70022020",
+    "complete_pcm_bytes": 192000,
+    "complete_recording_checks_passed": true,
+    "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+  },
+  "next_route": "Controller queue/radio event scheduling; UART speed alone not a demonstrated lever for current profile",
+  "limitations": [
+    "Counter sampling includes FFF1 metadata, not exclusive elapsed timing or air capture",
+    "Sequential groups with baseline-after, not paired alternating experiment",
+    "First2Mbps model run expected BTST despite U5 diagnostic; retained failure log, corrected fields and independent CRC passed",
+    "Native phone throughput/UI/GATT/background and physical power-cycle acceptance not newly verified",
+    "Cross-reset boot_id repeat remains; clear unfinished phone downloads after board reconfiguration",
+    "Built-in1-second stereoPCM test source; no microphone/compression"
+  ]
+}

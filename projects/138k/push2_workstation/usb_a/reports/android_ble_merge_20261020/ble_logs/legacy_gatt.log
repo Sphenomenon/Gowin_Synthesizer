@@ -1,0 +1,2 @@
+PASS: bt_gatt connection, discovery, ATT errors, CCCD, controller credit, two response slots, PB00, CRC16 and notification sequence
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_gatt_legacy.sv:271: $finish called at 40327000 (1ps)

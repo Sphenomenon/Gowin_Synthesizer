@@ -1,0 +1,69 @@
+{
+  "passed": true,
+  "round": "13",
+  "checked_at": "2026-10-20T08:46:37.841331+08:00",
+  "goal_status": "active",
+  "outcome": "diagnostic progress; no throughput candidate adopted",
+  "capabilities": {
+    "local_le_features_low32": "0x1",
+    "dle": false,
+    "phy_2m": false,
+    "max_tx_rx_octets": 27,
+    "max_tx_rx_time_us": 328,
+    "validated_samples": 3
+  },
+  "actual_interval_before_and_after_ms": 15,
+  "groups": {
+    "baseline_before": {
+      "rates": [
+        9295.634137074672,
+        9461.95399599032,
+        9578.666887920352
+      ],
+      "median": 9461.95399599032
+    },
+    "range": {
+      "rates": [
+        9754.39582162283,
+        9880.345020645931,
+        9492.775555183418
+      ],
+      "median": 9754.39582162283
+    },
+    "baseline_after": {
+      "rates": [
+        9796.003658745634,
+        9979.091835391984,
+        9975.193932001768
+      ],
+      "median": 9975.193932001768
+    }
+  },
+  "decision": "candidate request 7.5–15ms still negotiates 15ms on macOS; original after median exceeds candidate; restore original15ms",
+  "profile_baseline_credit_wait_fraction_range": [
+    0.6947952436567955,
+    0.7085473947024526
+  ],
+  "capture_audit": "capture_audit.json",
+  "release_restore": {
+    "sram_user_code": "22B4",
+    "status_code": "70022020",
+    "flash_changed_this_round": false,
+    "ready_manifest_unchanged": true,
+    "firmware_inputs": 30,
+    "android_inputs": 43,
+    "apk": "0.2.8 unchanged",
+    "full_recording_passed": true,
+    "pcm_bytes": 192000,
+    "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+    "reconnect_resume": true,
+    "recording_report": "release_recording.json"
+  },
+  "limitations": [
+    "macOS results; phone native GATT/UI/permissions/background/throughput not tested",
+    "No automated physical power-cycle identity and BLE acceptance before diagnostic reconfiguration",
+    "Wait counters may overlap, include final FFF1 read and are not an air trace",
+    "Cross-reset boot_id repeat remains; clear unfinished phone downloads after reconfiguration",
+    "Built-in 1-second test audio; no microphone or compression"
+  ]
+}

@@ -1,0 +1,2 @@
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_extended_profile_replay.sv:30: warning: Port 5 (att_value_limit) of module ble_protocol_command expects 9 bit(s), given 32.
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_extended_profile_replay.sv:30:        : Pruning (signed) 23 high bits of the expression.

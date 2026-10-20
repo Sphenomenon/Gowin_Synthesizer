@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.ble.MinimumProfileTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-20T11:56:41" hostname="ic-lab" time="0.005">
+  <properties/>
+  <testcase name="minimalBoardAcceptsOnlyResponseSubscriptionAndStatus" classname="cn.gowin.control.ble.MinimumProfileTest" time="0.003"/>
+  <testcase name="missingFastWriteResponsesFallBackWithoutChangingRequestIdentity" classname="cn.gowin.control.ble.MinimumProfileTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

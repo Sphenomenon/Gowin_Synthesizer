@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.data.RealRecordingTest" tests="1" skipped="1" failures="0" errors="0" timestamp="2026-10-20T11:56:46" hostname="ic-lab" time="0.006">
+  <properties/>
+  <testcase name="builtInRecordingDownloadAndReconnectToWav" classname="cn.gowin.control.data.RealRecordingTest" time="0.006">
+    <skipped/>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

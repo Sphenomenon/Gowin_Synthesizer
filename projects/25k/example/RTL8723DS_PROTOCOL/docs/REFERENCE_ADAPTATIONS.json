@@ -1,0 +1,8 @@
+{
+  "reference_directory": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/Dev/Gowin_Synthesizer/migration/gw138k_audio/push2_workstation/usb_a/rtl/bluetooth/adaptations",
+  "files": {
+    "bt_hci_init.v": "c5a0ae270b23b19830ad9464766311b666abdc3c3a3c08bdad47dc997c95f585",
+    "bt_h5_transport.v": "d575e811a57ee684e69d777b631a1e481845799cc70ae39b5f2245ad72d7c832"
+  },
+  "changes": "Compact HCI extended with 128-bit service advertisement, scan response and mandatory nonzero LE Rand boot_id. Compact H5 receives the existing 25K synchronous pending-RAM adaptation."
+}

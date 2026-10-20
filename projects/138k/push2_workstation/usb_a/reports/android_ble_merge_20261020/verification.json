@@ -1,0 +1,235 @@
+{
+  "passed": true,
+  "date": "2026-10-20",
+  "verified_at": "2026-10-20T20:02:10.489104+08:00",
+  "main_before_merge": "fb7e302e4d87cf7ae739666b2666a5200afbda5e",
+  "branch": "origin/codex/android-bluetooth-control",
+  "branch_commit": "f2bae2dab3fbeb0ce5f55bbd555a3a29c76bb9c8",
+  "merged_branch_commits": [
+    "37c8913",
+    "f2bae2d"
+  ],
+  "conflict_resolution": {
+    "file": ".gitattributes",
+    "strategy": "retain both main 138K raw-evidence attributes and branch 25K frozen-input attributes",
+    "automatic_merge": "projects/25k/README.md"
+  },
+  "import_files": 672,
+  "ble_test_groups": 50,
+  "ble_passed": true,
+  "ble_runtime_path_transforms": "ble_runtime_transforms.json",
+  "ble_source_unchanged": true,
+  "android": {
+    "command": [
+      "sh",
+      "gradlew",
+      "--no-daemon",
+      ":core:protocol:test",
+      ":core:ble:testDebugUnitTest",
+      ":core:data:testDebugUnitTest",
+      ":app:assembleDebug",
+      ":app:lintDebug"
+    ],
+    "passed": true,
+    "registered_tests": 65,
+    "unit_tests": 63,
+    "skip_reason": "Existing opt-in hardware/radio tests require a live radio bridge; not enabled during this offline merge",
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2,
+    "suites": [
+      {
+        "module": "core/protocol",
+        "suite": "cn.gowin.control.protocol.PcmSecondTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/protocol/build/test-results/test/TEST-cn.gowin.control.protocol.PcmSecondTest.xml",
+        "sha256": "4346a7c5d56f783130055b660813c7d83a5fb9c605594a6be7c78c4bab5cb53f"
+      },
+      {
+        "module": "core/protocol",
+        "suite": "cn.gowin.control.protocol.PcmRiceTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/protocol/build/test-results/test/TEST-cn.gowin.control.protocol.PcmRiceTest.xml",
+        "sha256": "418355e4925f72b63c61e2f3313196442cb074b7f189b13b4f372cb02a885ef0"
+      },
+      {
+        "module": "core/protocol",
+        "suite": "cn.gowin.control.protocol.WireTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/protocol/build/test-results/test/TEST-cn.gowin.control.protocol.WireTest.xml",
+        "sha256": "01901b5cd9036712474bee730463c9bbea33b85d14deeebb95fbc25d987bffff"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.SecondTransferTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.SecondTransferTest.xml",
+        "sha256": "f8bad33ac8b17b82aac401f70c638418a6017f636fa0fc1b0a3760f6f06e13c6"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.LongTransferTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.LongTransferTest.xml",
+        "sha256": "0f6ebf2b04f3d968a9f369124142368f7b0b9b48740ef019cde4d4e7d53030d9"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.AckReadTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.AckReadTest.xml",
+        "sha256": "78e945bef2031e080a531a1cf8b2d404ce3dee4a71178fa598cf2e56503e46c1"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.LosslessTransferTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.LosslessTransferTest.xml",
+        "sha256": "8437d92f24bc4b8721d5f3a4348191bcc501f15e3c5bcd8a4debc5484b6b1a63"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.RealBoardSessionTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.RealBoardSessionTest.xml",
+        "sha256": "d3c10ffb4265cf78df92d20447461774a5113a0468b953b8627dc40a4f907b4e"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.CompactTransferTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.CompactTransferTest.xml",
+        "sha256": "acab96bdfa0c3526b956ef352a39ec3cb7adaaac0956fef1dff4c0b4d9e5f673"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.DirectTransferTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.DirectTransferTest.xml",
+        "sha256": "5a4059021957be3b9d051d6facf042e52768334348ff6eda0747a6d4a184ec50"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.BulkTransferTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.BulkTransferTest.xml",
+        "sha256": "874d4b830245cbc1b5eea88e1e6d06f958ff9a2a321d6352ea9f9566a72d0422"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.MinimumProfileTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.MinimumProfileTest.xml",
+        "sha256": "1612360d19655ea580b5781a07442dc235bc80bb2c9ba935d38d82c3272742b6"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.ExtendedTransferTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.ExtendedTransferTest.xml",
+        "sha256": "9bfd9a39877e815c733e1275c4318700b5d10c4943b5f71f356f44ff0a778832"
+      },
+      {
+        "module": "core/ble",
+        "suite": "cn.gowin.control.ble.OpenWideTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/ble/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.ble.OpenWideTest.xml",
+        "sha256": "621fb0382e5c4f15ba9d49b2c46d3f70d174abcce5618ed2e9d00bf2e8401526"
+      },
+      {
+        "module": "core/data",
+        "suite": "cn.gowin.control.data.DemoProtocolTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/data/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.data.DemoProtocolTest.xml",
+        "sha256": "b404012e911e6ce46a669b51059728866e9adf0c9352ef0ccd0bb49c8fe67fca"
+      },
+      {
+        "module": "core/data",
+        "suite": "cn.gowin.control.data.RealRecordingTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "source": "clients/android/core/data/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.data.RealRecordingTest.xml",
+        "sha256": "9533a002fea333b88a2e73d3c10189eb8acf103ecac7f849a75c3eb6c4e8f555"
+      },
+      {
+        "module": "core/data",
+        "suite": "cn.gowin.control.data.RecordingFilesTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "source": "clients/android/core/data/build/test-results/testDebugUnitTest/TEST-cn.gowin.control.data.RecordingFilesTest.xml",
+        "sha256": "14b7b57dc4925766e31cd32c1a5ebb73be415ff2dc0da41b79573d6fa10cb3be"
+      }
+    ],
+    "assemble_debug_passed": true,
+    "lint_debug_passed": true,
+    "lint_errors": [],
+    "lint_warnings": [
+      "GradleDependency"
+    ],
+    "apk": "/home/sphenicidition/Documents/fpga/clients/android/app/build/outputs/apk/debug/app-debug.apk",
+    "apk_sha256": "beb540889ac02d9fd82dc648019fe22ffcfc9a61a1b3a24da60b43050a7eb9ed",
+    "apk_bytes": 9685370,
+    "android_environment": "android_environment.json"
+  },
+  "source_boundary_tests": 10,
+  "protected138k_and_keyboard_files": 2075,
+  "protected_files_changed": [],
+  "other_architecture_report_sha256": "7dc5b97ac7746d231cc544584766fee625295ac0d1c1270df09ab812728cf6bc",
+  "other_architecture_report_unchanged": true,
+  "source_manifest_check": "repository_import.log",
+  "raw_results": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027",
+  "production_source_changes_for_merge": false,
+  "new_hardware_access": false,
+  "new_programming": false,
+  "new_pnr_or_timing_runs": false,
+  "main_business_ble_integration_complete": false
+}

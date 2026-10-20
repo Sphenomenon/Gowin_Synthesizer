@@ -1,0 +1,104 @@
+{
+  "passed": true,
+  "deployed": false,
+  "pcm_bytes": 192000,
+  "sha256": "3c42476a276269189432da893676a23ead1af624a260f95e1d0b319dbf02844c",
+  "rows": [
+    {
+      "order": 1,
+      "k": 3,
+      "encoded": 192000,
+      "reduction_percent": 0.0
+    },
+    {
+      "order": 1,
+      "k": 4,
+      "encoded": 192000,
+      "reduction_percent": 0.0
+    },
+    {
+      "order": 1,
+      "k": 5,
+      "encoded": 192000,
+      "reduction_percent": 0.0
+    },
+    {
+      "order": 1,
+      "k": 6,
+      "encoded": 192000,
+      "reduction_percent": 0.0
+    },
+    {
+      "order": 1,
+      "k": 7,
+      "encoded": 151271,
+      "reduction_percent": 21.213020833333328
+    },
+    {
+      "order": 1,
+      "k": 8,
+      "encoded": 132867,
+      "reduction_percent": 30.7984375
+    },
+    {
+      "order": 1,
+      "k": 9,
+      "encoded": 130129,
+      "reduction_percent": 32.22447916666666
+    },
+    {
+      "order": 1,
+      "k": 10,
+      "encoded": 134785,
+      "reduction_percent": 29.799479166666664
+    },
+    {
+      "order": 2,
+      "k": 3,
+      "encoded": 100042,
+      "reduction_percent": 47.89479166666667
+    },
+    {
+      "order": 2,
+      "k": 4,
+      "encoded": 82966,
+      "reduction_percent": 56.78854166666667
+    },
+    {
+      "order": 2,
+      "k": 5,
+      "encoded": 80002,
+      "reduction_percent": 58.33229166666667
+    },
+    {
+      "order": 2,
+      "k": 6,
+      "encoded": 87279,
+      "reduction_percent": 54.5421875
+    },
+    {
+      "order": 2,
+      "k": 7,
+      "encoded": 96262,
+      "reduction_percent": 49.86354166666666
+    },
+    {
+      "order": 2,
+      "k": 8,
+      "encoded": 108233,
+      "reduction_percent": 43.62864583333334
+    },
+    {
+      "order": 2,
+      "k": 9,
+      "encoded": 120210,
+      "reduction_percent": 37.390625
+    },
+    {
+      "order": 2,
+      "k": 10,
+      "encoded": 132147,
+      "reduction_percent": 31.173437500000002
+    }
+  ]
+}

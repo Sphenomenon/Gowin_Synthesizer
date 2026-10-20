@@ -1,0 +1,2 @@
+PASS: pure Verilog system rejects incompatible ROM before download
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_protocol_system.sv:577: $finish called at 1098275000 (1ps)

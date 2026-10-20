@@ -27,3 +27,8 @@ projects/138k/push2_workstation/usb_a/reports/**/*.patch -whitespace
 projects/138k/push2_workstation/usb_a/reports/**/*.csv whitespace=cr-at-eol
 # This recorded timing input is preserved byte-for-byte with its candidate hash.
 projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv -text -whitespace
+
+# Frozen 25K BLE inputs and acceptance logs preserve their original CRLF and
+# tool whitespace; their SHA256 manifests, rather than formatting, bind bytes.
+projects/25k/example/RTL8723DS_PROTOCOL/vendor/** -whitespace
+projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/** -whitespace

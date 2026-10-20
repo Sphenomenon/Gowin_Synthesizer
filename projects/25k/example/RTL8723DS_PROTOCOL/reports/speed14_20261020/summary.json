@@ -1,0 +1,74 @@
+{
+  "passed": true,
+  "goal_status": "active",
+  "round": 14,
+  "previous_turn_classification": "progress",
+  "outcome": "Physical ACL credit timeline established; bounded H5 ACK piggyback candidate not adopted",
+  "captured_trace_records": [
+    2727,
+    2731
+  ],
+  "grant_burst_period_median_us": [
+    15000.0,
+    15000.0
+  ],
+  "zero_credit_grant_to_issue_median_us": [
+    98.0,
+    98.0
+  ],
+  "paired_speed": {
+    "passed": true,
+    "pairs": [
+      {
+        "paired_candidate": 9669.361261214004,
+        "paired_baseline": 9844.590609117116
+      },
+      {
+        "paired_candidate": 9540.172334558238,
+        "paired_baseline": 9502.639815705366
+      },
+      {
+        "paired_candidate": 9713.663858100199,
+        "paired_baseline": 9631.641565955782
+      }
+    ],
+    "final_sram": "22B4",
+    "candidate_median": 9669.361261214004,
+    "baseline_median": 9631.641565955782,
+    "paired_percent_changes": [
+      -1.7799556615470835,
+      0.3949693935662024,
+      0.8515920321862325
+    ],
+    "median_paired_percent_change": 0.3949693935662024,
+    "decision": "No consistent gain; effects small relative to drift; candidate not adopted"
+  },
+  "speed_samples_audited": 15,
+  "trace_samples_audited": 2,
+  "simulations": "simulation_checks.json",
+  "timing_gate": "trace8AF4 50.049MHz and clean candidateD340 50.481MHz setup/hold0/0; combined trace+candidate setup18 rejected before programming",
+  "production_restored": true,
+  "flash_changed": false,
+  "ready_manifest_changed": false,
+  "apk_changed": false,
+  "final_sram_user_code": "22B4",
+  "final_status_code": "70022020",
+  "firmware_inputs_match_release": 30,
+  "android_inputs_match_release": 43,
+  "complete_recording": {
+    "passed": true,
+    "pcm_bytes": 192000,
+    "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+    "reconnect_resume": true,
+    "replay": true,
+    "invalid_crc_range_atomic_rejection": true
+  },
+  "next_evidence_needed": "Correlate actual UART ACK frame count and controller queue scheduling; native phone interval/throughput remains untested",
+  "limits": [
+    "FPGA/HCI timestamps, not air trace; 2ms burst grouping descriptive",
+    "First trace runner post-capture CLOSE expected success after30s expiry; capture audit valid, second runner corrected and passes",
+    "Cross-reset boot_id repeat remains; clear unfinished phone downloads after reconfiguration",
+    "Phone native GATT/UI/background/throughput and physical power-cycle acceptance not newly tested",
+    "Built-in1second stereo48kPCM16 audio; no microphone/compression"
+  ]
+}

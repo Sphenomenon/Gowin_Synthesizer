@@ -1,0 +1,286 @@
+{
+  "started_at": "2026-10-20T10:00:49.127914+08:00",
+  "passed": true,
+  "recording": {
+    "boot": 13476468016628371587,
+    "id": 2,
+    "state": 4,
+    "format": 1,
+    "channels": 2,
+    "flags": 2,
+    "rate": 48000,
+    "frames": 48000,
+    "bytes": 192000,
+    "capacity": 48000,
+    "crc": 2773108656,
+    "reason": 2,
+    "detail": 0,
+    "operation": 2,
+    "reserved": 0
+  },
+  "long": true,
+  "direct": true,
+  "bulk": true,
+  "bulk_value_limit": 182,
+  "lossless": true,
+  "second": false,
+  "chunk": 8112,
+  "compact": false,
+  "write_command": true,
+  "ack_read": true,
+  "command_properties": [
+    "write",
+    "write-without-response"
+  ],
+  "pcm_bytes": 32768,
+  "transfer_seconds": 2.3230735000106506,
+  "bytes_per_second": 14105.451248034024,
+  "reference_matches": true,
+  "finished_at": "2026-10-20T10:00:57.296939+08:00"
+}
+{
+  "started_at": "2026-10-20T10:00:57.349841+08:00",
+  "passed": true,
+  "recording": {
+    "boot": 13476468016628371587,
+    "id": 3,
+    "state": 4,
+    "format": 1,
+    "channels": 2,
+    "flags": 2,
+    "rate": 48000,
+    "frames": 48000,
+    "bytes": 192000,
+    "capacity": 48000,
+    "crc": 2773108656,
+    "reason": 2,
+    "detail": 0,
+    "operation": 3,
+    "reserved": 0
+  },
+  "long": true,
+  "direct": true,
+  "bulk": true,
+  "bulk_value_limit": 182,
+  "lossless": true,
+  "second": true,
+  "chunk": 8112,
+  "compact": false,
+  "write_command": true,
+  "ack_read": true,
+  "command_properties": [
+    "write",
+    "write-without-response"
+  ],
+  "pcm_bytes": 32768,
+  "transfer_seconds": 1.4832842499599792,
+  "bytes_per_second": 22091.517523282622,
+  "reference_matches": true,
+  "finished_at": "2026-10-20T10:01:01.346859+08:00"
+}
+{
+  "started_at": "2026-10-20T10:01:01.403229+08:00",
+  "passed": true,
+  "recording": {
+    "boot": 13476468016628371587,
+    "id": 4,
+    "state": 4,
+    "format": 1,
+    "channels": 2,
+    "flags": 2,
+    "rate": 48000,
+    "frames": 48000,
+    "bytes": 192000,
+    "capacity": 48000,
+    "crc": 2773108656,
+    "reason": 2,
+    "detail": 0,
+    "operation": 4,
+    "reserved": 0
+  },
+  "long": true,
+  "direct": true,
+  "bulk": true,
+  "bulk_value_limit": 182,
+  "lossless": true,
+  "second": false,
+  "chunk": 8112,
+  "compact": false,
+  "write_command": true,
+  "ack_read": true,
+  "command_properties": [
+    "write",
+    "write-without-response"
+  ],
+  "pcm_bytes": 32768,
+  "transfer_seconds": 2.3229076670249924,
+  "bytes_per_second": 14106.4582398864,
+  "reference_matches": true,
+  "finished_at": "2026-10-20T10:01:08.082045+08:00"
+}
+{
+  "started_at": "2026-10-20T10:01:08.135677+08:00",
+  "passed": true,
+  "recording": {
+    "boot": 13476468016628371587,
+    "id": 5,
+    "state": 4,
+    "format": 1,
+    "channels": 2,
+    "flags": 2,
+    "rate": 48000,
+    "frames": 48000,
+    "bytes": 192000,
+    "capacity": 48000,
+    "crc": 2773108656,
+    "reason": 2,
+    "detail": 0,
+    "operation": 5,
+    "reserved": 0
+  },
+  "long": true,
+  "direct": true,
+  "bulk": true,
+  "bulk_value_limit": 182,
+  "lossless": true,
+  "second": true,
+  "chunk": 8112,
+  "compact": false,
+  "write_command": true,
+  "ack_read": true,
+  "command_properties": [
+    "write-without-response",
+    "write"
+  ],
+  "pcm_bytes": 32768,
+  "transfer_seconds": 1.498016458004713,
+  "bytes_per_second": 21874.259007571534,
+  "reference_matches": true,
+  "finished_at": "2026-10-20T10:01:13.617461+08:00"
+}
+{
+  "started_at": "2026-10-20T10:01:13.671407+08:00",
+  "passed": true,
+  "recording": {
+    "boot": 13476468016628371587,
+    "id": 6,
+    "state": 4,
+    "format": 1,
+    "channels": 2,
+    "flags": 2,
+    "rate": 48000,
+    "frames": 48000,
+    "bytes": 192000,
+    "capacity": 48000,
+    "crc": 2773108656,
+    "reason": 2,
+    "detail": 0,
+    "operation": 6,
+    "reserved": 0
+  },
+  "long": true,
+  "direct": true,
+  "bulk": true,
+  "bulk_value_limit": 182,
+  "lossless": true,
+  "second": false,
+  "chunk": 8112,
+  "compact": false,
+  "write_command": true,
+  "ack_read": true,
+  "command_properties": [
+    "write",
+    "write-without-response"
+  ],
+  "pcm_bytes": 32768,
+  "transfer_seconds": 2.338885208009742,
+  "bytes_per_second": 14010.093307607729,
+  "reference_matches": true,
+  "finished_at": "2026-10-20T10:01:19.152204+08:00"
+}
+{
+  "started_at": "2026-10-20T10:01:19.208279+08:00",
+  "passed": true,
+  "recording": {
+    "boot": 13476468016628371587,
+    "id": 7,
+    "state": 4,
+    "format": 1,
+    "channels": 2,
+    "flags": 2,
+    "rate": 48000,
+    "frames": 48000,
+    "bytes": 192000,
+    "capacity": 48000,
+    "crc": 2773108656,
+    "reason": 2,
+    "detail": 0,
+    "operation": 7,
+    "reserved": 0
+  },
+  "long": true,
+  "direct": true,
+  "bulk": true,
+  "bulk_value_limit": 182,
+  "lossless": true,
+  "second": true,
+  "chunk": 8112,
+  "compact": false,
+  "write_command": true,
+  "ack_read": true,
+  "command_properties": [
+    "write-without-response",
+    "write"
+  ],
+  "pcm_bytes": 32768,
+  "transfer_seconds": 1.48321604100056,
+  "bytes_per_second": 22092.53345041704,
+  "reference_matches": true,
+  "finished_at": "2026-10-20T10:01:23.218200+08:00"
+}
+{
+  "passed": true,
+  "rows": [
+    {
+      "mode": "lossless",
+      "run": 1,
+      "bps": 14105.451248034024,
+      "file": "reports/speed18_20261020/lossless_1.json"
+    },
+    {
+      "mode": "second",
+      "run": 1,
+      "bps": 22091.517523282622,
+      "file": "reports/speed18_20261020/second_1.json"
+    },
+    {
+      "mode": "lossless",
+      "run": 2,
+      "bps": 14106.4582398864,
+      "file": "reports/speed18_20261020/lossless_2.json"
+    },
+    {
+      "mode": "second",
+      "run": 2,
+      "bps": 21874.259007571534,
+      "file": "reports/speed18_20261020/second_2.json"
+    },
+    {
+      "mode": "lossless",
+      "run": 3,
+      "bps": 14010.093307607729,
+      "file": "reports/speed18_20261020/lossless_3.json"
+    },
+    {
+      "mode": "second",
+      "run": 3,
+      "bps": 22092.53345041704,
+      "file": "reports/speed18_20261020/second_3.json"
+    }
+  ],
+  "median_bps": {
+    "lossless": 14105.451248034024,
+    "second": 22091.517523282622
+  },
+  "gain_percent": 56.61687906908808
+}

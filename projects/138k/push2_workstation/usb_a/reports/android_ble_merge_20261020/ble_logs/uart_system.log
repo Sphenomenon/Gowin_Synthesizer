@@ -1,0 +1,8 @@
+PATCH_PROGRESS: 30 fragments at 76621515000
+PATCH_PROGRESS: 60 fragments at 151169635000
+PATCH_PROGRESS: 90 fragments at 225982055000
+PATCH_PROGRESS: 120 fragments at 299922285000
+UART_FAST_COMMAND: after full patch/reset at 304997805000
+INIT_PASS: all 30147 patch bytes and 120 fragment echoes checked
+PASS: protocol UART8E1/H5 checked patch, LE Rand, 128-bit service, HELLO/GET_STATUS fragmented responses, disconnect advertising/reconnect; legacy 3 notifications
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_protocol_system.sv:681: $finish called at 315702856000 (1ps)

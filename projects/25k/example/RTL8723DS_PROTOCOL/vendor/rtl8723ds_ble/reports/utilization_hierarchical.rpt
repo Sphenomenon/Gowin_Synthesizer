@@ -1,0 +1,77 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (win64) Build 6511674 Tue Jun 16 11:02:23 MDT 2026
+| Date         : Sat Oct  3 05:02:31 2026
+| Host         : Z-7950X running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -hierarchical_depth 10 -file E:/workspace/ble_test/build/bt_verilog/reports/utilization_hierarchical.rpt
+| Design       : bt_verilog_top
+| Device       : xc7z020clg400-2
+| Speed File   : -2
+| Design State : Routed
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------------------------------------------------------------------+----------------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|                                  Instance                                 |                                Module                                | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++---------------------------------------------------------------------------+----------------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| bt_verilog_top                                                            |                                                                (top) |      11714 |      11551 |      24 |  139 | 19048 |     10 |      1 |          0 |
+|   (bt_verilog_top)                                                        |                                                                (top) |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|   core                                                                    |                                                      bt_verilog_core |       7925 |       7925 |       0 |    0 | 12525 |      8 |      0 |          0 |
+|     transport                                                             |                                                      bt_h5_transport |       4304 |       4304 |       0 |    0 |  7309 |      0 |      0 |          0 |
+|       (transport)                                                         |                                                      bt_h5_transport |       2243 |       2243 |       0 |    0 |  7202 |      0 |      0 |          0 |
+|       uart                                                                |                                                              bt_uart |       2066 |       2066 |       0 |    0 |   107 |      0 |      0 |          0 |
+|     application                                                           |                                                              bt_gatt |       2264 |       2264 |       0 |    0 |  2715 |      0 |      0 |          0 |
+|     initializer                                                           |                                                          bt_hci_init |       1348 |       1348 |       0 |    0 |  2464 |      8 |      0 |          0 |
+|   dbg_hub                                                                 |                                                              dbg_hub |        473 |        449 |      24 |    0 |   753 |      0 |      0 |          0 |
+|     inst                                                                  |                                                   xsdbm_v3_0_6_xsdbm |        473 |        449 |      24 |    0 |   753 |      0 |      0 |          0 |
+|       BSCANID.u_xsdbm_id                                                  |                                                xsdbm_v3_0_6_xsdbm_id |        473 |        449 |      24 |    0 |   753 |      0 |      0 |          0 |
+|         SWITCH_N_EXT_BSCAN.bscan_switch                                   |                                            xsdbm_v3_0_6_bscan_switch |        124 |        124 |       0 |    0 |   125 |      0 |      0 |          0 |
+|         CORE_XSDB.UUT_MASTER                                              |                                               xsdbm_v3_0_6_icon2xsdb |        297 |        273 |      24 |    0 |   566 |      0 |      0 |          0 |
+|           U_ICON_INTERFACE                                                |                                                      xsdbm_v3_0_6_if |        165 |        141 |      24 |    0 |   456 |      0 |      0 |          0 |
+|             U_CMD6_WR                                                     |                                                   xsdbm_v3_0_6_wrreg |         45 |         33 |      12 |    0 |   110 |      0 |      0 |          0 |
+|               U_WR_FIFO                                                   |                                                  xsdbm_v3_0_6_wrfifo |         43 |         31 |      12 |    0 |    90 |      0 |      0 |          0 |
+|                 SUBCORE_FIFO.xsdbm_v3_0_6_wrfifo_inst                     |                                               fifo_generator_v13_1_6 |         42 |         30 |      12 |    0 |    90 |      0 |      0 |          0 |
+|                   inst_fifo_gen                                           |                                         fifo_generator_v13_1_6_synth |         42 |         30 |      12 |    0 |    90 |      0 |      0 |          0 |
+|                     gconvfifo.rf                                          |                                                   fifo_generator_top |         42 |         30 |      12 |    0 |    90 |      0 |      0 |          0 |
+|             U_CMD4                                                        |                                 xsdbm_v3_0_6_ctl_reg__parameterized0 |         12 |         12 |       0 |    0 |    62 |      0 |      0 |          0 |
+|             U_CMD6_RD                                                     |                                                   xsdbm_v3_0_6_rdreg |         69 |         57 |      12 |    0 |   134 |      0 |      0 |          0 |
+|               U_RD_FIFO                                                   |                                                  xsdbm_v3_0_6_rdfifo |         67 |         55 |      12 |    0 |   114 |      0 |      0 |          0 |
+|                 SUBCORE_FIFO.xsdbm_v3_0_6_rdfifo_inst                     |                               fifo_generator_v13_1_6__parameterized0 |         47 |         35 |      12 |    0 |   114 |      0 |      0 |          0 |
+|                   inst_fifo_gen                                           |                         fifo_generator_v13_1_6_synth__parameterized0 |         47 |         35 |      12 |    0 |   114 |      0 |      0 |          0 |
+|                     gconvfifo.rf                                          |                                   fifo_generator_top__parameterized0 |         47 |         35 |      12 |    0 |   114 |      0 |      0 |          0 |
+|           U_XSDB_BUS_CONTROLLER                                           |                                                 xsdbm_v3_0_6_bus_ctl |         84 |         84 |       0 |    0 |    54 |      0 |      0 |          0 |
+|   system_i                                                                |                                                    bt_verilog_system |       3313 |       3174 |       0 |  139 |  5768 |      2 |      1 |          0 |
+|     (system_i)                                                            |                                                    bt_verilog_system |        213 |        213 |       0 |    0 |     0 |      0 |      0 |          0 |
+|     ila_gpio                                                              |                                         bt_verilog_system_ila_gpio_0 |        824 |        685 |       0 |  139 |  1478 |      2 |      1 |          0 |
+|       inst                                                                |                         bt_verilog_system_ila_gpio_0_ila_v6_2_20_ila |        824 |        685 |       0 |  139 |  1478 |      2 |      1 |          0 |
+|         ila_core_inst                                                     |                    bt_verilog_system_ila_gpio_0_ila_v6_2_20_ila_core |        823 |        684 |       0 |  139 |  1472 |      2 |      1 |          0 |
+|           (ila_core_inst)                                                 |                    bt_verilog_system_ila_gpio_0_ila_v6_2_20_ila_core |         40 |          0 |       0 |   40 |   120 |      0 |      0 |          0 |
+|           u_ila_cap_ctrl                                                  |         bt_verilog_system_ila_gpio_0_ila_v6_2_20_ila_cap_ctrl_legacy |         78 |         31 |       0 |   47 |   127 |      0 |      0 |          0 |
+|             u_cap_addrgen                                                 |             bt_verilog_system_ila_gpio_0_ila_v6_2_20_ila_cap_addrgen |         63 |         26 |       0 |   37 |   121 |      0 |      0 |          0 |
+|               (u_cap_addrgen)                                             |             bt_verilog_system_ila_gpio_0_ila_v6_2_20_ila_cap_addrgen |          1 |          0 |       0 |    1 |    68 |      0 |      0 |          0 |
+|           u_ila_regs                                                      |                bt_verilog_system_ila_gpio_0_ila_v6_2_20_ila_register |        547 |        546 |       0 |    1 |   921 |      0 |      0 |          0 |
+|             (u_ila_regs)                                                  |                bt_verilog_system_ila_gpio_0_ila_v6_2_20_ila_register |        267 |        266 |       0 |    1 |   160 |      0 |      0 |          0 |
+|             U_XSDB_SLAVE                                                  |                      bt_verilog_system_ila_gpio_0_xsdbs_v1_0_6_xsdbs |         76 |         76 |       0 |    0 |   213 |      0 |      0 |          0 |
+|           u_trig                                                          |                 bt_verilog_system_ila_gpio_0_ila_v6_2_20_ila_trigger |         89 |         40 |       0 |   49 |   169 |      0 |      0 |          0 |
+|             U_TM                                                          |              bt_verilog_system_ila_gpio_0_ila_v6_2_20_ila_trig_match |         83 |         39 |       0 |   44 |   162 |      0 |      0 |          0 |
+|               N_DDR_MODE.G_NMU[3].U_M                                     |      bt_verilog_system_ila_gpio_0_ltlib_v1_0_4_match__parameterized1 |         17 |          0 |       0 |   17 |    66 |      0 |      0 |          0 |
+|                 (allx_typeA_match_detection.ltlib_v1_0_4_allx_typeA_inst) | bt_verilog_system_ila_gpio_0_ltlib_v1_0_4_allx_typeA__parameterized1 |          0 |          0 |       0 |    0 |    64 |      0 |      0 |          0 |
+|           xsdb_memory_read_inst                                           |              bt_verilog_system_ila_gpio_0_ltlib_v1_0_4_generic_memrd |         60 |         58 |       0 |    2 |   101 |      0 |      0 |          0 |
+|     monitor                                                               |                                          bt_verilog_system_monitor_0 |          2 |          2 |       0 |    0 |   167 |      0 |      0 |          0 |
+|       inst                                                                |                            bt_verilog_system_monitor_0_probe_monitor |          2 |          2 |       0 |    0 |   167 |      0 |      0 |          0 |
+|     vio_bt                                                                |                                           bt_verilog_system_vio_bt_0 |       2274 |       2274 |       0 |    0 |  4121 |      0 |      0 |          0 |
+|       inst                                                                |                           bt_verilog_system_vio_bt_0_vio_v3_0_28_vio |       2274 |       2274 |       0 |    0 |  4121 |      0 |      0 |          0 |
+|         U_XSDB_SLAVE                                                      |                        bt_verilog_system_vio_bt_0_xsdbs_v1_0_6_xsdbs |         77 |         77 |       0 |    0 |   161 |      0 |      0 |          0 |
+|         PROBE_IN_INST                                                     |                  bt_verilog_system_vio_bt_0_vio_v3_0_28_probe_in_one |       2170 |       2170 |       0 |    0 |  3889 |      0 |      0 |          0 |
++---------------------------------------------------------------------------+----------------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

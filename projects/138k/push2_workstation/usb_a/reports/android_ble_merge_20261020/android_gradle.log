@@ -1,0 +1,200 @@
+Downloading https://services.gradle.org/distributions/gradle-8.10.2-bin.zip
+.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 8.10.2!
+
+Here are the highlights of this release:
+ - Support for Java 23
+ - Faster configuration cache
+ - Better configuration cache reports
+
+For more details see https://docs.gradle.org/8.10.2/release-notes.html
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :core:protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:protocol:processResources NO-SOURCE
+> Task :core:protocol:processTestResources
+> Task :core:ble:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:ble:preBuild UP-TO-DATE
+> Task :core:ble:preDebugBuild UP-TO-DATE
+> Task :core:ble:generateDebugResValues
+> Task :core:ble:generateDebugResources
+> Task :core:ble:packageDebugResources
+> Task :core:ble:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:data:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:data:preBuild UP-TO-DATE
+> Task :core:data:preDebugBuild UP-TO-DATE
+> Task :core:ble:javaPreCompileDebugUnitTest
+> Task :core:ble:javaPreCompileDebug
+> Task :core:data:generateDebugResValues
+> Task :core:data:generateDebugResources
+> Task :core:data:packageDebugResources
+> Task :core:ble:parseDebugLocalResources
+> Task :core:data:parseDebugLocalResources
+> Task :core:data:javaPreCompileDebug
+> Task :core:data:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :core:data:javaPreCompileDebugUnitTest
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generateDebugResValues
+> Task :core:data:generateDebugRFile
+> Task :core:ble:generateDebugRFile
+> Task :core:ble:writeDebugAarMetadata
+> Task :core:data:writeDebugAarMetadata
+> Task :core:protocol:compileKotlin
+> Task :app:mapDebugSourceSetPaths
+> Task :core:protocol:compileJava NO-SOURCE
+> Task :core:protocol:classes UP-TO-DATE
+> Task :core:protocol:jar
+> Task :core:protocol:compileTestKotlin
+> Task :core:protocol:compileTestJava NO-SOURCE
+> Task :core:protocol:testClasses
+> Task :core:protocol:test
+> Task :core:ble:compileDebugKotlin
+> Task :core:ble:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:ble:generateDebugUnitTestStubRFile
+> Task :core:ble:processDebugJavaRes
+> Task :core:ble:bundleLibRuntimeToJarDebug
+> Task :core:ble:bundleLibCompileToJarDebug
+> Task :core:data:generateDebugUnitTestStubRFile
+> Task :app:generateDebugResources
+> Task :app:checkDebugAarMetadata
+> Task :app:packageDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:parseDebugLocalResources
+> Task :app:extractDeepLinksDebug
+> Task :core:ble:extractDeepLinksDebug
+> Task :core:data:extractDeepLinksDebug
+> Task :app:mergeDebugResources
+> Task :core:data:processDebugManifest
+> Task :core:ble:processDebugManifest
+> Task :core:ble:compileDebugLibraryResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :core:data:compileDebugLibraryResources
+> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :core:ble:mergeDebugShaders
+> Task :core:ble:compileDebugShaders NO-SOURCE
+> Task :core:ble:generateDebugAssets UP-TO-DATE
+> Task :core:ble:packageDebugAssets
+> Task :core:data:mergeDebugShaders
+> Task :core:data:compileDebugShaders NO-SOURCE
+> Task :core:data:generateDebugAssets UP-TO-DATE
+> Task :core:data:packageDebugAssets
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:processDebugResources
+> Task :core:data:compileDebugKotlin
+> Task :core:ble:compileDebugUnitTestKotlin
+> Task :core:ble:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :core:ble:processDebugUnitTestJavaRes
+> Task :app:checkDebugDuplicateClasses
+> Task :core:ble:testDebugUnitTest
+> Task :core:data:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:data:bundleLibRuntimeToJarDebug
+> Task :core:data:processDebugJavaRes
+> Task :core:data:bundleLibCompileToJarDebug
+> Task :core:data:compileDebugUnitTestKotlin
+> Task :core:data:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :core:data:processDebugUnitTestJavaRes
+> Task :core:data:testDebugUnitTest
+> Task :app:compileDebugKotlin
+> Task :app:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics
+> Task :app:processDebugJavaRes
+> Task :core:data:bundleLibRuntimeToDirDebug
+> Task :app:mergeDebugJniLibFolders
+> Task :core:ble:bundleLibRuntimeToDirDebug
+> Task :core:ble:mergeDebugJniLibFolders
+> Task :core:ble:mergeDebugNativeLibs NO-SOURCE
+> Task :core:ble:copyDebugJniLibsProjectOnly
+> Task :core:data:mergeDebugJniLibFolders
+> Task :core:data:mergeDebugNativeLibs NO-SOURCE
+> Task :core:data:copyDebugJniLibsProjectOnly
+> Task :app:validateSigningDebug
+> Task :app:mergeProjectDexDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:mergeDebugNativeLibs
+> Task :app:writeDebugSigningConfigVersions
+> Task :core:data:stripDebugDebugSymbols NO-SOURCE
+> Task :core:data:copyDebugJniLibsProjectAndLocalJars
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
+
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :core:data:extractDebugAnnotations
+> Task :core:data:extractDeepLinksForAarDebug
+> Task :core:data:mergeDebugGeneratedProguardFiles
+> Task :core:data:mergeDebugConsumerProguardFiles
+> Task :core:data:prepareDebugArtProfile
+> Task :core:data:prepareLintJarForPublish
+> Task :core:ble:stripDebugDebugSymbols NO-SOURCE
+> Task :app:mergeLibDexDebug
+> Task :core:data:mergeDebugJavaResource
+> Task :core:ble:copyDebugJniLibsProjectAndLocalJars
+> Task :core:data:syncDebugLibJars
+> Task :core:data:bundleDebugLocalLintAar
+> Task :core:ble:extractDebugAnnotations
+> Task :core:ble:extractDeepLinksForAarDebug
+> Task :core:ble:mergeDebugGeneratedProguardFiles
+> Task :core:ble:mergeDebugConsumerProguardFiles
+> Task :core:ble:prepareDebugArtProfile
+> Task :core:ble:prepareLintJarForPublish
+> Task :core:ble:mergeDebugJavaResource
+> Task :core:ble:syncDebugLibJars
+> Task :app:bundleDebugClassesToCompileJar
+> Task :core:ble:bundleDebugLocalLintAar
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:generateDebugAndroidTestResValues
+> Task :core:ble:createFullJarDebug
+> Task :core:ble:writeDebugLintModelMetadata
+> Task :core:data:createFullJarDebug
+> Task :core:data:writeDebugLintModelMetadata
+> Task :app:generateDebugAndroidTestLintModel
+> Task :app:extractProguardFiles
+> Task :core:ble:extractProguardFiles
+> Task :core:ble:generateDebugLintModel
+> Task :core:data:extractProguardFiles
+> Task :core:data:generateDebugLintModel
+> Task :app:generateDebugLintReportModel
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:generateDebugUnitTestLintModel
+> Task :core:ble:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:ble:generateDebugAndroidTestResValues
+> Task :core:ble:generateDebugAndroidTestLintModel
+> Task :core:ble:generateDebugUnitTestLintModel
+> Task :core:data:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:data:generateDebugAndroidTestResValues
+> Task :core:data:generateDebugAndroidTestLintModel
+> Task :core:data:generateDebugUnitTestLintModel
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+> Task :core:ble:lintAnalyzeDebugAndroidTest
+> Task :app:lintAnalyzeDebugAndroidTest
+> Task :app:lintAnalyzeDebugUnitTest
+> Task :core:data:lintAnalyzeDebugAndroidTest
+> Task :core:data:lintAnalyzeDebugUnitTest
+> Task :core:ble:lintAnalyzeDebugUnitTest
+> Task :core:ble:lintAnalyzeDebug
+> Task :core:data:lintAnalyzeDebug
+> Task :app:lintAnalyzeDebug
+
+> Task :app:lintReportDebug
+Wrote HTML report to file:///home/sphenicidition/Documents/fpga/clients/android/app/build/reports/lint-results-debug.html
+
+> Task :app:lintDebug
+
+BUILD SUCCESSFUL in 6m 1s
+139 actionable tasks: 139 executed

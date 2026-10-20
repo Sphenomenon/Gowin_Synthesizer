@@ -15,6 +15,7 @@ fpga/                         Git 根目录
 ├── projects/                 板级工程的共同父目录
 │   ├── 138k/                 138K 主机，现有完整源码与本地构建资料
 │   └── 25k/                  25K 面板，设备端源码、独立例程与硬件资料
+├── clients/android/          安卓控制端、协议与可靠录音下载
 ├── 整机接口规划.md            跨板职责、消息与待定接口
 └── migration/gw138k_audio -> ../projects/138k
                               旧路径兼容链接
@@ -30,6 +31,8 @@ fpga/                         Git 根目录
 - [`Prj1`](projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1)：冻结的 Gowin 工程源码基线。该目录名保留了来源，但 `impl`、`build` 和位流不进入 Git。
 - [`ae350/scripts`](projects/138k/ae350/scripts)：AE350 辅助脚本。
 - [`RTL8723DS BLE`](projects/138k/push2_workstation/usb_a/rtl/bluetooth/README.md)：138K 蓝牙驱动、J8 接线、独立/工作站集成构建和验证记录；模组实体测试待完成。
+- [`Android 控制端`](clients/android/README.md)：0.2.10，支持25K业务协议、内置音频录音、可靠PCM/WAV下载及显式协商的二阶无损传输。
+- [`25K蓝牙协议实测工程`](projects/25k/example/RTL8723DS_PROTOCOL/README.md)：已固化A25D，电脑有效PCM吞吐14.1→22.1 KB/s；含协议、RTL、APP适配及验收证据。该结果来自25K，138K主机业务顶层与硬件验收仍独立。
 - [`touchboard_test`](projects/138k/push2_workstation/touchboard_test)：QT2160 触摸板独立信号测试、接线资料、仿真和调试记录；采样异常仍待解决，实板触摸尚未验收。
 
 ## 构建

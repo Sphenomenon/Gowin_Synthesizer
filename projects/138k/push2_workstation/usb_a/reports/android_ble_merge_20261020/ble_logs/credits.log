@@ -1,0 +1,2 @@
+PASS: negotiated ACL credits, exhaustion, foreign handle, multi-completion, saturation; peripheral L2CAP link request and terminal rejection
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_gatt_credits.sv:186: $finish called at 7685000 (1ps)

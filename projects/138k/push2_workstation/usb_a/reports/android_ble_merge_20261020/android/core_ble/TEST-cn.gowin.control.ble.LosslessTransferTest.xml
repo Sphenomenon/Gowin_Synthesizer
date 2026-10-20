@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.ble.LosslessTransferTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-20T11:56:41" hostname="ic-lab" time="0.029">
+  <properties/>
+  <testcase name="longDataOnlyAfterExplicitOpenAtMinimumAndLargeMtu" classname="cn.gowin.control.ble.LosslessTransferTest" time="0.011"/>
+  <testcase name="promisedLosslessReadsNeverSilentlyDowngrade" classname="cn.gowin.control.ble.LosslessTransferTest" time="0.001"/>
+  <testcase name="rawFallbackNormalizesAndNegotiatedReadsAreRequired" classname="cn.gowin.control.ble.LosslessTransferTest" time="0.002"/>
+  <testcase name="unsupportedProbesOnceButBusyAndBadMetadataNeverDowngrade" classname="cn.gowin.control.ble.LosslessTransferTest" time="0.003"/>
+  <testcase name="lostOrCorruptLongDataRetriesExactlyWithoutPrematureAck" classname="cn.gowin.control.ble.LosslessTransferTest" time="0.009"/>
+  <testcase name="negotiatedMtuBoundsChunkAndMinimumMtuUsesExactly64Fragments" classname="cn.gowin.control.ble.LosslessTransferTest" time="0.001"/>
+  <testcase name="longFrameLimitsRemainDataOnlyAndOptIn" classname="cn.gowin.control.ble.LosslessTransferTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

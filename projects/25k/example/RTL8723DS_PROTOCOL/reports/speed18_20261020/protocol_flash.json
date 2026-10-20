@@ -1,0 +1,161 @@
+{
+  "started_at": "2026-10-20T10:07:10.538169+08:00",
+  "passed": true,
+  "connections": [
+    {
+      "advertisement": {
+        "name": "GW25K-PROTO",
+        "service_uuids": [
+          "9b6d0000-4c2a-4f87-9a31-138000000001"
+        ],
+        "device_id": "37218E4C-EE27-A8FF-8797-AA07C6ABC352"
+      },
+      "passed": true,
+      "session_nonce": "8abf7cb1a5bbfda6",
+      "commands": [
+        {
+          "opcode": 1,
+          "request_id": 1,
+          "request": "0100040001000000a6fdbba5b17cbf8a010000003268295b",
+          "response": "0100140001000000a6fdbba5b17cbf8a8560b068413058b06800000001000000d7900000b9670ce2",
+          "status": 0,
+          "response_payload": "8560b068413058b06800000001000000d7900000"
+        },
+        {
+          "opcode": 1,
+          "request_id": 1,
+          "request": "0100040001000000a6fdbba5b17cbf8a010000003268295b",
+          "response": "0100140001000000a6fdbba5b17cbf8a8560b068413058b06800000001000000d7900000b9670ce2",
+          "status": 0,
+          "response_payload": "8560b068413058b06800000001000000d7900000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 2,
+          "request": "0200000002000000a6fdbba5b17cbf8a69d674b0",
+          "response": "0200400002000000a6fdbba5b17cbf8a02000000029200000400000000000000000000000000000000000000000000000000000080bb000000000000080000000000000000000000000000000000000002bbd918",
+          "status": 0,
+          "response_payload": "02000000029200000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 2,
+          "request": "0200000002000000a6fdbba5b17cbf8a69d674b0",
+          "response": "0200400002000000a6fdbba5b17cbf8a02000000029200000400000000000000000000000000000000000000000000000000000080bb000000000000080000000000000000000000000000000000000002bbd918",
+          "status": 0,
+          "response_payload": "02000000029200000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        },
+        {
+          "opcode": 127,
+          "request_id": 2,
+          "request": "7f00000002000000a6fdbba5b17cbf8a29275866",
+          "response": "7f86080002000000a6fdbba5b17cbf8a00000000010000000ea80f98",
+          "status": 134,
+          "response_payload": "0000000001000000"
+        },
+        {
+          "opcode": 127,
+          "request_id": 3,
+          "request": "7f00000003000000a6fdbba5b17cbf8a466bfdfd",
+          "response": "7f80080003000000a6fdbba5b17cbf8a000000000100000032e1a210",
+          "status": 128,
+          "response_payload": "0000000001000000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 3,
+          "request": "0200000003000000a6fdbba5b17cbf8a069ad12b",
+          "response": "0200400003000000a6fdbba5b17cbf8a03000000e29300000400000000000000000000000000000000000000000000000000000080bb00000000000008000000000000000000000000000000000000001a4334f3",
+          "status": 0,
+          "response_payload": "03000000e29300000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 4,
+          "request": "0200000004000000a6fdbba5b17cbf8a8973495f",
+          "response": "0200400004000000a6fdbba5b17cbf8a04000000589600000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000c801fab8",
+          "status": 0,
+          "response_payload": "04000000589600000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        }
+      ],
+      "capability": {
+        "raw": "011400028560b068413058b06800000000010101",
+        "major": 1,
+        "value_limit": 20,
+        "max_logical_message": 512,
+        "boot_id": "b058304168b06085",
+        "capabilities": 104,
+        "max_pcm_chunk": 256,
+        "max_transfer_window": 1,
+        "recording_slots": 1
+      },
+      "status_summary": "0100000022900000010000000000000000ffff08",
+      "status_snapshot_id": 2,
+      "bad_crc_silently_rejected": true,
+      "out_of_order_att_rejected": "(128, 'GATT Protocol Error: Application-specific Error 0x80')",
+      "disconnected": true
+    },
+    {
+      "advertisement": {
+        "name": "GW25K-PROTO",
+        "service_uuids": [
+          "9b6d0000-4c2a-4f87-9a31-138000000001"
+        ],
+        "device_id": "37218E4C-EE27-A8FF-8797-AA07C6ABC352"
+      },
+      "passed": true,
+      "session_nonce": "7bf0c8cc3fbb78b4",
+      "commands": [
+        {
+          "opcode": 1,
+          "request_id": 1,
+          "request": "0100040001000000b478bb3fccc8f07b010000008a64328a",
+          "response": "0100140001000000b478bb3fccc8f07b8560b068413058b06800000001000000419f000022cc84b7",
+          "status": 0,
+          "response_payload": "8560b068413058b06800000001000000419f0000"
+        },
+        {
+          "opcode": 1,
+          "request_id": 1,
+          "request": "0100040001000000b478bb3fccc8f07b010000008a64328a",
+          "response": "0100140001000000b478bb3fccc8f07b8560b068413058b06800000001000000419f000022cc84b7",
+          "status": 0,
+          "response_payload": "8560b068413058b06800000001000000419f0000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 2,
+          "request": "0200000002000000b478bb3fccc8f07b16a52b29",
+          "response": "0200400002000000b478bb3fccc8f07b020000008aa000000400000000000000000000000000000000000000000000000000000080bb00000000000008000000000000000000000000000000000000006ec6c8a6",
+          "status": 0,
+          "response_payload": "020000008aa000000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        },
+        {
+          "opcode": 2,
+          "request_id": 2,
+          "request": "0200000002000000b478bb3fccc8f07b16a52b29",
+          "response": "0200400002000000b478bb3fccc8f07b020000008aa000000400000000000000000000000000000000000000000000000000000080bb00000000000008000000000000000000000000000000000000006ec6c8a6",
+          "status": 0,
+          "response_payload": "020000008aa000000400000000000000000000000000000000000000000000000000000080bb0000000000000800000000000000000000000000000000000000"
+        }
+      ],
+      "capability": {
+        "raw": "011400028560b068413058b06800000000010101",
+        "major": 1,
+        "value_limit": 20,
+        "max_logical_message": 512,
+        "boot_id": "b058304168b06085",
+        "capabilities": 104,
+        "max_pcm_chunk": 256,
+        "max_transfer_window": 1,
+        "recording_slots": 1
+      },
+      "status_summary": "010000008c9e0000010000000000000000ffff08",
+      "status_snapshot_id": 2,
+      "disconnected": true
+    }
+  ],
+  "boot_id": "b058304168b06085",
+  "automatic_reconnect_passed": true,
+  "finished_at": "2026-10-20T10:07:15.643031+08:00"
+}

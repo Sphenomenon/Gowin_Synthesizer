@@ -1,0 +1,3 @@
+WARNING: /Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_16224.sv:18: $readmemh(/private/tmp/gw25k-rice-vectors/expected.mem): Not enough words in the file for the requested range [0:8111].
+PASS encoder bytes=5498 cycles=68321
+/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_16224.sv:23: $finish called at 683220000 (1ps)

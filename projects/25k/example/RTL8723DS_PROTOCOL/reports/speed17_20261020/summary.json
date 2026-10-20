@@ -1,0 +1,143 @@
+{
+  "passed": true,
+  "firmware": "C678",
+  "build": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_093455_977383/impl/pnr/ble_protocol.fs",
+    "sha256": "ea2a59dac6df327f1cde88d332d8f1374138de8f7733de45c2a04bffa33daef2"
+  },
+  "timing": {
+    "clock_mhz": 50,
+    "fmax_mhz": 50.586,
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "minimum_setup_slack_ns": 0.232
+  },
+  "resources": {
+    "lut": 16848,
+    "registers": 9427,
+    "cls": 11024,
+    "cls_available": 11520,
+    "bsram": 37,
+    "bsram_available": 56
+  },
+  "speed": {
+    "passed": true,
+    "rows": [
+      {
+        "mode": "extended",
+        "run": 1,
+        "bps": 9340.051276585316,
+        "file": "reports/speed17_20261020/extended_1.json"
+      },
+      {
+        "mode": "lossless",
+        "run": 1,
+        "bps": 13252.498629607357,
+        "file": "reports/speed17_20261020/lossless_1.json"
+      },
+      {
+        "mode": "extended",
+        "run": 2,
+        "bps": 8957.290669029118,
+        "file": "reports/speed17_20261020/extended_2.json"
+      },
+      {
+        "mode": "lossless",
+        "run": 2,
+        "bps": 13928.322674241832,
+        "file": "reports/speed17_20261020/lossless_2.json"
+      },
+      {
+        "mode": "extended",
+        "run": 3,
+        "bps": 9107.113605015234,
+        "file": "reports/speed17_20261020/extended_3.json"
+      },
+      {
+        "mode": "lossless",
+        "run": 3,
+        "bps": 13483.997267266468,
+        "file": "reports/speed17_20261020/lossless_3.json"
+      }
+    ],
+    "median_bps": {
+      "extended": 9107.113605015234,
+      "lossless": 13483.997267266468
+    },
+    "gain_percent": 48.060053405295264
+  },
+  "compression": {
+    "pcm_bytes": 192000,
+    "encoded_bytes": 130129,
+    "blocks": 24,
+    "codecs": [
+      10
+    ],
+    "reduction_percent": 32.22447916666666
+  },
+  "complete_wav": {
+    "passed": true,
+    "reference_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+    "wav_bytes": 192044,
+    "same_app_source": true,
+    "old_seconds": 27.170513458,
+    "lossless_seconds": 18.601016584,
+    "seconds_reduction_percent": 31.53969426174691,
+    "loss_retry_offset": 22832,
+    "cancel_offset": 14720,
+    "reconnect_offset": 29440,
+    "flash_wav_exact": true,
+    "flash_download_seconds": 19.851031792
+  },
+  "flash_passed": true,
+  "flash_bps": 13330.225333905024,
+  "apk": {
+    "path": "artifacts/gowin-control-0.2.9-gw25k-lossless-debug.apk",
+    "bytes": 9668978,
+    "sha256": "304618feb70694a5529bec31ab7ae8e8f9425bd0ada6ddb9709335cece467659",
+    "versionName": "0.2.9",
+    "versionCode": 12,
+    "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca",
+    "signature_v2_verified": true
+  },
+  "android_checks": {
+    "passed": true,
+    "modules": {
+      "protocol": {
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "ble": {
+        "tests": 40,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "data": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      }
+    },
+    "lint": {
+      "Fatal": 0,
+      "Error": 0,
+      "Warning": 5
+    },
+    "lint_warning_ids": [
+      "GradleDependency",
+      "GradleDependency",
+      "GradleDependency",
+      "GradleDependency",
+      "GradleDependency"
+    ]
+  },
+  "rtl_legacy_groups": 35,
+  "rtl_new_component_groups": 7,
+  "encoder_vectors": 35,
+  "scope": "Actual macOS BLE and APP Kotlin session; Android phone GATT/UI/performance and new-image physical power-cycle not verified",
+  "goal_status": "active"
+}

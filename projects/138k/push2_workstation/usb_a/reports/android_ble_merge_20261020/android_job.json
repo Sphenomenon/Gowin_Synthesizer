@@ -1,0 +1,17 @@
+{
+  "command": [
+    "sh",
+    "gradlew",
+    "--no-daemon",
+    ":core:protocol:test",
+    ":core:ble:testDebugUnitTest",
+    ":core:data:testDebugUnitTest",
+    ":app:assembleDebug",
+    ":app:lintDebug"
+  ],
+  "returncode": 0,
+  "started": "2026-10-20T19:53:30.089407+08:00",
+  "finished": "2026-10-20T19:59:32.112485+08:00",
+  "log": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/android_gradle.log",
+  "environment": "android_environment.json"
+}

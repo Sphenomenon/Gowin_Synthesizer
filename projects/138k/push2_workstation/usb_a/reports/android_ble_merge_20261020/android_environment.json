@@ -1,0 +1,7 @@
+{
+  "java_home": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/android_tools/jdk/jdk-17.0.20.1+1",
+  "android_home": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/android_tools/sdk",
+  "java_release": "17.0.20+101",
+  "jdk_archive_sha256": "3808d1d15e3ec6bd5b84057fb5d84c33d8a1536a258146bcea2e603fc726e08e",
+  "commandline_archive_sha256": "2d2d50857e4eb553af5a6dc3ad507a17adf43d115264b1afc116f95c92e5e258"
+}

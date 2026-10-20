@@ -1,0 +1,183 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :core:protocol:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:protocol:compileKotlin UP-TO-DATE
+> Task :core:protocol:compileJava NO-SOURCE
+> Task :core:protocol:processResources NO-SOURCE
+> Task :core:protocol:classes UP-TO-DATE
+> Task :core:protocol:jar UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:ble:preBuild UP-TO-DATE
+> Task :core:ble:preDebugBuild UP-TO-DATE
+> Task :core:ble:writeDebugAarMetadata UP-TO-DATE
+> Task :core:data:preBuild UP-TO-DATE
+> Task :core:data:preDebugBuild UP-TO-DATE
+> Task :core:data:writeDebugAarMetadata UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :core:ble:generateDebugResValues UP-TO-DATE
+> Task :core:ble:generateDebugResources UP-TO-DATE
+> Task :core:ble:packageDebugResources UP-TO-DATE
+> Task :core:data:generateDebugResValues UP-TO-DATE
+> Task :core:data:generateDebugResources UP-TO-DATE
+> Task :core:data:packageDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :core:ble:extractDeepLinksDebug UP-TO-DATE
+> Task :core:ble:processDebugManifest UP-TO-DATE
+> Task :core:data:extractDeepLinksDebug UP-TO-DATE
+> Task :core:data:processDebugManifest UP-TO-DATE
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :core:ble:compileDebugLibraryResources UP-TO-DATE
+> Task :core:ble:parseDebugLocalResources UP-TO-DATE
+> Task :core:ble:generateDebugRFile UP-TO-DATE
+> Task :core:data:compileDebugLibraryResources UP-TO-DATE
+> Task :core:data:parseDebugLocalResources UP-TO-DATE
+> Task :core:data:generateDebugRFile UP-TO-DATE
+> Task :core:ble:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:ble:compileDebugKotlin UP-TO-DATE
+> Task :core:ble:javaPreCompileDebug UP-TO-DATE
+> Task :core:ble:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:ble:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :core:data:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:data:compileDebugKotlin UP-TO-DATE
+> Task :core:data:javaPreCompileDebug UP-TO-DATE
+> Task :core:data:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:data:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :core:ble:mergeDebugShaders UP-TO-DATE
+> Task :core:ble:compileDebugShaders NO-SOURCE
+> Task :core:ble:generateDebugAssets UP-TO-DATE
+> Task :core:ble:packageDebugAssets UP-TO-DATE
+> Task :core:data:mergeDebugShaders UP-TO-DATE
+> Task :core:data:compileDebugShaders NO-SOURCE
+> Task :core:data:generateDebugAssets UP-TO-DATE
+> Task :core:data:packageDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :core:data:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :core:ble:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :core:ble:processDebugJavaRes UP-TO-DATE
+> Task :core:data:processDebugJavaRes UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:ble:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:data:bundleLibRuntimeToDirDebug
+> Task :core:ble:mergeDebugNativeLibs NO-SOURCE
+> Task :core:ble:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :core:data:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:data:mergeDebugNativeLibs NO-SOURCE
+> Task :core:data:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :core:ble:bundleLibRuntimeToDirDebug
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :core:data:stripDebugDebugSymbols NO-SOURCE
+> Task :core:data:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :core:data:extractDebugAnnotations
+> Task :core:data:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :core:data:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :core:data:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :core:data:prepareDebugArtProfile UP-TO-DATE
+> Task :core:data:prepareLintJarForPublish UP-TO-DATE
+> Task :core:data:mergeDebugJavaResource UP-TO-DATE
+> Task :core:data:syncDebugLibJars
+> Task :core:data:bundleDebugLocalLintAar
+> Task :core:ble:stripDebugDebugSymbols NO-SOURCE
+> Task :core:ble:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :core:ble:extractDebugAnnotations
+> Task :core:ble:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :core:ble:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :core:ble:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :core:ble:prepareDebugArtProfile UP-TO-DATE
+> Task :core:ble:prepareLintJarForPublish UP-TO-DATE
+> Task :core:ble:mergeDebugJavaResource UP-TO-DATE
+> Task :core:ble:syncDebugLibJars
+> Task :core:ble:bundleDebugLocalLintAar
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:generateDebugAndroidTestResValues UP-TO-DATE
+> Task :core:ble:createFullJarDebug
+> Task :core:ble:writeDebugLintModelMetadata UP-TO-DATE
+> Task :core:data:createFullJarDebug
+> Task :core:data:writeDebugLintModelMetadata UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :core:ble:extractProguardFiles UP-TO-DATE
+> Task :core:ble:generateDebugLintModel
+> Task :core:data:extractProguardFiles UP-TO-DATE
+> Task :core:data:generateDebugLintModel
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:ble:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:ble:generateDebugAndroidTestResValues UP-TO-DATE
+> Task :core:ble:generateDebugAndroidTestLintModel
+> Task :core:ble:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:ble:generateDebugUnitTestLintModel
+> Task :core:data:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:data:generateDebugAndroidTestResValues UP-TO-DATE
+> Task :core:data:generateDebugAndroidTestLintModel
+> Task :core:data:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:data:generateDebugUnitTestLintModel
+> Task :core:protocol:compileTestKotlin UP-TO-DATE
+> Task :core:protocol:compileTestJava NO-SOURCE
+> Task :core:protocol:processTestResources UP-TO-DATE
+> Task :core:protocol:testClasses UP-TO-DATE
+> Task :core:protocol:test UP-TO-DATE
+> Task :core:ble:generateDebugUnitTestStubRFile UP-TO-DATE
+> Task :core:ble:compileDebugUnitTestKotlin UP-TO-DATE
+> Task :core:ble:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :core:ble:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :core:ble:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :core:ble:testDebugUnitTest UP-TO-DATE
+> Task :core:data:generateDebugUnitTestStubRFile UP-TO-DATE
+> Task :core:data:compileDebugUnitTestKotlin UP-TO-DATE
+> Task :core:data:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :core:data:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :core:data:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :core:data:lintAnalyzeDebugAndroidTest
+> Task :core:ble:lintAnalyzeDebugAndroidTest
+> Task :core:data:testDebugUnitTest
+> Task :app:processDebugManifestForPackage
+> Task :app:mergeLibDexDebug
+> Task :app:processDebugResources
+> Task :app:compileDebugKotlin
+> Task :app:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:dexBuilderDebug UP-TO-DATE
+> Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeProjectDexDebug UP-TO-DATE
+> Task :app:bundleDebugClassesToCompileJar UP-TO-DATE
+> Task :app:generateDebugAndroidTestLintModel
+> Task :app:generateDebugLintReportModel
+> Task :app:generateDebugUnitTestLintModel
+> Task :app:mergeDebugJavaResource
+> Task :app:lintAnalyzeDebugAndroidTest
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+> Task :core:data:lintAnalyzeDebugUnitTest
+> Task :app:lintAnalyzeDebugUnitTest
+> Task :core:ble:lintAnalyzeDebug
+> Task :core:ble:lintAnalyzeDebugUnitTest
+> Task :core:data:lintAnalyzeDebug
+> Task :app:lintAnalyzeDebug
+
+> Task :app:lintReportDebug
+Wrote HTML report to file:///Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/clients/android/app/build/reports/lint-results-debug.html
+
+> Task :app:lintDebug
+
+BUILD SUCCESSFUL in 5s
+139 actionable tasks: 41 executed, 98 up-to-date

@@ -1,0 +1,9 @@
+{
+  "path": "artifacts/gowin-control-0.2.10-gw25k-second-debug.apk",
+  "bytes": 9685370,
+  "sha256": "e94f8731787ad04435762ad26e9ba5f918f3240a296ea8cb1f29c535be785a3b",
+  "versionName": "0.2.10",
+  "versionCode": 13,
+  "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca",
+  "signature_v2_verified": true
+}

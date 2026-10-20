@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "blocks": [
+    {
+      "file": "gw25k-lossless-block-0.hex",
+      "offset": 0,
+      "pcm": 256,
+      "encoded": 256,
+      "mode": 0
+    },
+    {
+      "file": "gw25k-lossless-block-1.hex",
+      "offset": 0,
+      "pcm": 256,
+      "encoded": 256,
+      "mode": 0
+    },
+    {
+      "file": "gw25k-lossless-block-10.hex",
+      "offset": 104,
+      "pcm": 4,
+      "encoded": 4,
+      "mode": 0
+    },
+    {
+      "file": "gw25k-lossless-block-2.hex",
+      "offset": 256,
+      "pcm": 256,
+      "encoded": 256,
+      "mode": 0
+    },
+    {
+      "file": "gw25k-lossless-block-3.hex",
+      "offset": 256,
+      "pcm": 256,
+      "encoded": 256,
+      "mode": 0
+    },
+    {
+      "file": "gw25k-lossless-block-4.hex",
+      "offset": 0,
+      "pcm": 3600,
+      "encoded": 1500,
+      "mode": 11
+    },
+    {
+      "file": "gw25k-lossless-block-5.hex",
+      "offset": 3600,
+      "pcm": 3600,
+      "encoded": 1508,
+      "mode": 11
+    },
+    {
+      "file": "gw25k-lossless-block-6.hex",
+      "offset": 3600,
+      "pcm": 3600,
+      "encoded": 1508,
+      "mode": 11
+    },
+    {
+      "file": "gw25k-lossless-block-7.hex",
+      "offset": 920,
+      "pcm": 256,
+      "encoded": 256,
+      "mode": 0
+    },
+    {
+      "file": "gw25k-lossless-block-8.hex",
+      "offset": 191996,
+      "pcm": 4,
+      "encoded": 4,
+      "mode": 0
+    },
+    {
+      "file": "gw25k-lossless-block-9.hex",
+      "offset": 100,
+      "pcm": 4,
+      "encoded": 4,
+      "mode": 0
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+PASS: recording START/STOP/tasks, full PCM CRC, READ/ACK_READ replay, atomic ACK_READ rejection, ACK conflict/duplicate, CCCD, disconnect continuation/resume, EOF, CLOSE/CLEAR
+tests/tb_second_recording.sv:286: $finish called at 7552880000 (1ps)

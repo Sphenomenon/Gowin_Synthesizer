@@ -1,0 +1,26 @@
+{
+  "repository_import_final": {
+    "command": [
+      "python3",
+      "projects/25k/example/RTL8723DS_PROTOCOL/tools/check_repository_import.py"
+    ],
+    "returncode": 0,
+    "log": "repository_import_final.log"
+  },
+  "source_boundary_final": {
+    "command": [
+      "python3",
+      "projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py"
+    ],
+    "returncode": 0,
+    "log": "source_boundary_final.log"
+  },
+  "passed": true,
+  "protected_file_changes": [
+    "projects/138k/push2_workstation/usb_a/README.md"
+  ],
+  "protected_change_scope": "README status update only; all preexisting production and acceptance sources unchanged",
+  "other_architecture_report_unchanged": true,
+  "unmerged_files": [],
+  "staged_diff_check": true
+}

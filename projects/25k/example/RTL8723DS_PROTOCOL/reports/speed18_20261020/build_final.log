@@ -1,0 +1,5 @@
+ASCII build directory: /private/tmp/gw25k-build-00_z19sn
+Starting syn in a fresh gw_sh process.
+Starting pnr in a fresh gw_sh process.
+Build completed in separate synthesis/PnR processes.
+/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_095747_100259/impl/pnr/ble_protocol.fs sha256=18c34c97a7bbe233f12096818310bbd689cc6d688c0a1b8adc8c19818693248d

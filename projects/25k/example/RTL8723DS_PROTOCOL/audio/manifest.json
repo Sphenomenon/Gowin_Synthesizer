@@ -1,0 +1,14 @@
+{
+  "source": "Generated original stereo sine test signal; no external recording",
+  "sample_rate": 48000,
+  "channels": 2,
+  "bits": 16,
+  "loop_frames": 1024,
+  "capacity_frames": 48000,
+  "pcm_bytes": 192000,
+  "pcm_crc32": 2773108656,
+  "left_hz": 515.625,
+  "right_hz": 328.125,
+  "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+  "rom_sha256": "c1de24f2277603f348e23eca90eff9b444a68cfd88e432f7c68068fe10f58917"
+}

@@ -1,0 +1,137 @@
+{
+  "date": "2026-10-20",
+  "passed": true,
+  "qualification": "download_qualified_with_existing_boot_identity_limitation",
+  "scope": "Explicit OPEN_DIRECT DATA receipt, legacy fallback, same-ID retry, raw-wire audit, full APP Kotlin WAV, five-profile resume and Flash verify/reload + wireless checks. Native Android phone and physical power-cycle not qualified.",
+  "firmware": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_070638_494400/impl/pnr/ble_protocol.fs",
+    "sha256": "c772c4b9783ccba175a0a8ec231cd4465019cc4415b17f3398409c891ad9b6f6"
+  },
+  "apk": {
+    "path": "artifacts/gowin-control-0.2.6-gw25k-direct-debug.apk",
+    "version_name": "0.2.6",
+    "version_code": 9,
+    "bytes": 9703423,
+    "sha256": "3b6bc5b6978a9df6e25d6d0d0eb6b443b9a87b6d01557e369843cd3910185250",
+    "native_android_phone_tested": false,
+    "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca"
+  },
+  "flash_report": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/reports/flash_20261020_071344_623201/summary.json",
+  "user_code": "EC9B",
+  "status_code": "70022020",
+  "performance": {
+    "passed": true,
+    "same_sram_firmware": true,
+    "pcm_bytes_per_trial": 32768,
+    "bulk": {
+      "samples_bps": [
+        5410.538818890234,
+        5436.299175658639,
+        5588.891832678613
+      ],
+      "median_bps": 5436.299175658639
+    },
+    "direct": {
+      "samples_bps": [
+        6444.243232555639,
+        6278.37588362862,
+        6407.226171069636
+      ],
+      "median_bps": 6407.226171069636
+    },
+    "median_improvement_percent": 17.86007289220546
+  },
+  "flash_bytes_per_second": 6278.149136082978,
+  "full_app_comparison": {
+    "passed": true,
+    "direct_seconds": 35.334421292,
+    "old_bulk_seconds": 42.864306709,
+    "time_reduction_percent": 17.56679623473062,
+    "both_wavs_match_reference": true,
+    "wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+    "timed_scope": "From successful first OPEN through download, cancel/reopen, reconnect, one executed receipt-loss retry and WAV save. Initial INFO fragment-loss test occurs before the timed download."
+  },
+  "transport": {
+    "runtime_uart_baud": 921600,
+    "uart_format": "8E1",
+    "server_max_att_mtu": 247,
+    "observed_att_mtu": 185,
+    "observed_bulk_value_bytes": 182,
+    "logical_maximum": 512,
+    "maximum_data_logical_bytes": 508,
+    "full_data_notifications": 3,
+    "default_fragment": "B1",
+    "data_fragment": "B3",
+    "capability_flags": 104,
+    "legacy_chunk": 256,
+    "wide_compact_bulk_direct_chunk": 460,
+    "window": 1,
+    "h5_window": 1,
+    "requested_connection_interval_ms": 15,
+    "acl_data_bytes_per_packet": 27,
+    "open_direct_opcode": 57,
+    "positive_read_response_notifications_before": 3,
+    "positive_read_response_notifications_after": 0,
+    "errors_and_other_commands_keep_response": true
+  },
+  "timing": {
+    "constraint_mhz": 50,
+    "fmax_mhz": 50.016,
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "minimum_setup_slack_ns": 0.006,
+    "margin": "Very small; RTL changes require a fresh timing qualification."
+  },
+  "resources": {
+    "lut": 17015,
+    "register": 9230,
+    "cls_used": 11020,
+    "cls_total": 11520,
+    "bsram_used": 34,
+    "bsram_total": 56
+  },
+  "regression_groups_passed": 23,
+  "android_tests_passed": 32,
+  "lint_issues": 0,
+  "checks": {
+    "simulation": true,
+    "android_checks": true,
+    "firmware_inputs": true,
+    "kotlin_direct_sram": true,
+    "kotlin_old_firmware": true,
+    "notification_wire_check": true,
+    "app_wire_check": true,
+    "complete_wav_check": true,
+    "alternating_speed": true,
+    "flash": true,
+    "speed_flash": true,
+    "recording_flash": true,
+    "profile_resume_flash": true,
+    "protocol_flash": true,
+    "final_identity_check": true
+  },
+  "evidence": {
+    "simulation": "simulation.json",
+    "android_checks": "android_checks.json",
+    "firmware_inputs": "firmware_inputs.json",
+    "kotlin_direct_sram": "kotlin_direct_sram.json",
+    "kotlin_old_firmware": "kotlin_old_firmware.json",
+    "notification_wire_check": "notification_wire_check.json",
+    "app_wire_check": "app_wire_check.json",
+    "complete_wav_check": "complete_wav_check.json",
+    "alternating_speed": "alternating_speed.json",
+    "flash": "flash.json",
+    "speed_flash": "speed_flash.json",
+    "recording_flash": "recording_flash.json",
+    "profile_resume_flash": "profile_resume_flash.json",
+    "protocol_flash": "protocol_flash.json",
+    "final_identity_check": "final_identity_check.json"
+  },
+  "limitations": {
+    "historical_same_image_boot_id_repeat_unresolved": "reports/speed3_20261020/boot_identity_limitation.json",
+    "workaround": "After board reset/reconfiguration discard unfinished phone downloads before starting a new recording.",
+    "native_android_phone_gatt_ui_tested": false,
+    "new_firmware_physical_power_cycle_performed": false
+  },
+  "previous_rejected_tuning": "reports/speed8_20261020/summary.json"
+}

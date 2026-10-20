@@ -1,4 +1,22 @@
+## 25K BLE protocol and shared Android update (2026-10-20)
+
+`projects/25k/example/RTL8723DS_PROTOCOL/` contains the accepted 25K business-GATT/recording/lossless source, frozen vendor inputs, tests and round18 hardware evidence. `clients/android/` is the only Android source; the standalone project's relative symlink preserves its existing tool interface. SOURCE_IMPORT.json binds imported file bytes and documents relocated documentation. Earlier raw captures/source snapshots remain at the original project; historical summaries and current evidence are retained. APKs, bitstreams, build databases, new captures and signing material remain ignored. Historical firmware manifests retain their original paths/hashes and require a local rebuild on a new clone. This import does not alter the 138K hardware top or establish its physical BLE acceptance.
+
 # FPGA workspace Git scope
+
+## Android control client (2026-10-20)
+
+`clients/android/` is the independently buildable Kotlin/Compose mobile client
+for workstation settings, recording control/download and live status. Its
+source, pinned Gradle wrapper, protocol/file tests and validation records are
+tracked alongside the board projects. It does not enter the FPGA `usb_a/`
+build path. Shared Bluetooth protocol and implementation plans remain at the
+Git root; new board references use `projects/138k/`.
+
+Android SDK paths, dependency caches, build outputs, debug APK artifacts and
+signing keys remain local and ignored. The validation record identifies the
+tested debug APK by SHA256. Simulated protocol validation does not establish
+real BLE or FPGA business-firmware acceptance.
 
 ## Board project layout (2026-10-18)
 

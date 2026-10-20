@@ -1,0 +1,3 @@
+WARNING: reports/speed18_20261020/encoder_second/tone_129792.sv:18: $readmemh(/private/tmp/gw25k-rice-vectors/expected.mem): Not enough words in the file for the requested range [0:8111].
+PASS encoder bytes=3382 cycles=51393
+reports/speed18_20261020/encoder_second/tone_129792.sv:23: $finish called at 513940000 (1ps)

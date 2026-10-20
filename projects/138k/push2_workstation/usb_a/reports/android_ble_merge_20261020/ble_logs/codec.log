@@ -1,0 +1,13 @@
+test_bulk_loss_conflict_and_negotiated_length (test_codec.Codec.test_bulk_loss_conflict_and_negotiated_length) ... ok
+test_bulk_sizes_and_opt_in_limits (test_codec.Codec.test_bulk_sizes_and_opt_in_limits) ... ok
+test_compact_all_sizes_require_opt_in_and_preserve_duplicates (test_codec.Codec.test_compact_all_sizes_require_opt_in_and_preserve_duplicates) ... ok
+test_compact_loss_conflict_mixed_versions_and_bounds (test_codec.Codec.test_compact_loss_conflict_mixed_versions_and_bounds) ... ok
+test_crc_reference_and_hello (test_codec.Codec.test_crc_reference_and_hello) ... ok
+test_invalid_crc_and_declared_length (test_codec.Codec.test_invalid_crc_and_declared_length) ... ok
+test_maximum_and_duplicate_fragment (test_codec.Codec.test_maximum_and_duplicate_fragment) ... ok
+test_order_conflict_flags_and_recovery (test_codec.Codec.test_order_conflict_flags_and_recovery) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.068s
+
+OK

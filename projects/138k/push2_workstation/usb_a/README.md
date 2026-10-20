@@ -5,7 +5,7 @@
 
 最新离线候选为 **T24／0xC1102024**：完整时序、CDC、PLL及功能绑定通过，物理BSRAM234/340，setup最小余量0.022ns；候选未板测或烧录，板上旧版本记录保持。构建入口为`python3 build.py --resource-rework --resource-timing`，输入策略与原`--current-workstation`分开记录，不将活动CNN候选冒充full83验收输入。完整构建依赖本机清单绑定的既有暂存目录，克隆后缺少这些历史输入时应按门禁明确失败，不复制生成数据库冒充源码。
 
-已落地接入初始化／消息保留／断开取消／PANIC、25K曲谱隔离和实际音源状态PL基础页；D独立效果保留，尚未接整机。远端Android／25K蓝牙录音下载仍在独立分支，未合入main。最新状态、pull核对及验证见[工作区同步记录](reports/WORKSPACE_SYNC_20261020.md)；物理结果见[候选清单](RESOURCE_TIMING_CANDIDATE.json)和[时序报告](reports/RESOURCE_TIMING_REPAIR_20261020.md)。下方各日期及板上数字保留其历史适用范围。
+已落地接入初始化／消息保留／断开取消／PANIC、25K曲谱隔离和实际音源状态PL基础页；D独立效果保留，尚未接整机。Android／25K蓝牙录音下载源码已合入main，仍独立构建；138K业务接入与实物验收尚未因此完成，见[合并记录](reports/ANDROID_BLE_MERGE_20261020.md)。最新状态、pull核对及验证见[工作区同步记录](reports/WORKSPACE_SYNC_20261020.md)；物理结果见[候选清单](RESOURCE_TIMING_CANDIDATE.json)和[时序报告](reports/RESOURCE_TIMING_REPAIR_20261020.md)。下方各日期及板上数字保留其历史适用范围。
 
 
 保留功能的资源优化已通过完整离线验收：BSRAM **262 → 234/340**，全局 setup/hold/recovery/removal 均非负，CDC／PLL／功能回归通过。复现入口：`python3 build.py --resource-rework --resource-timing --user-code C1102024`。最终候选与位流哈希见 [RESOURCE_TIMING_CANDIDATE.json](RESOURCE_TIMING_CANDIDATE.json)，详情见 [时序修复报告](reports/RESOURCE_TIMING_REPAIR_20261020.md)。尚未烧录；音频最小 setup 余量为 0.022 ns。

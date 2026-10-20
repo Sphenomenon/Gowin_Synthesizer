@@ -1,0 +1,2707 @@
+{
+  "imported_at": "2026-10-20T10:56:51.532302+08:00",
+  "source": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL",
+  "source_release": "A25D / Android 0.2.10",
+  "target_branch": "codex/android-bluetooth-control",
+  "scope": "25K protocol source, shared Android app and 25K hardware evidence; no 138K hardware acceptance",
+  "excluded": "builds, FPGA implementation databases, old raw captures/source snapshots, caches, APK/signing outputs; historical summaries retained",
+  "app_symlink": "../../../../../clients/android",
+  "files": {
+    "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_acl_bridge.v": {
+      "source": "adaptations/bt_acl_bridge.v",
+      "sha256": "4444fdaf4258076b8edf4d0f46624062a1cd9dc75198f17c7e281ba5d385db9a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_gatt.v": {
+      "source": "adaptations/bt_gatt.v",
+      "sha256": "69cba84a11dd7418ca2cada0226b1fbdbd123755ae75e4460c49fa488b5e48bd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_h5_transport.v": {
+      "source": "adaptations/bt_h5_transport.v",
+      "sha256": "1e09fb2149d008785ab8b6b203413b6c2dc94f981e3cfb1260c6c1b1f9ccd52f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_hci_init.v": {
+      "source": "adaptations/bt_hci_init.v",
+      "sha256": "8dcc5b4cf0da9d2da5dde0ad5c1f35ca44a44a661a2b2f936d10be7e566c48ad"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_uart_fast.v": {
+      "source": "adaptations/bt_uart_fast.v",
+      "sha256": "ddc50dfb0f074c60cff8132821c236caee4d1523b486ba0ca391d43aeb0acdfd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_verilog_core.v": {
+      "source": "adaptations/bt_verilog_core.v",
+      "sha256": "b3a27cebcd954259bcb8b82b7f1c606a3870f0eafc6e3eaabb920694c69662d3"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/audio/manifest.json": {
+      "source": "audio/manifest.json",
+      "sha256": "73cbd869ff4b0960c4cccb52ea977d766180593bdc2fc18e158ddfcced26c11d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/audio/test_tone.mem": {
+      "source": "audio/test_tone.mem",
+      "sha256": "c1de24f2277603f348e23eca90eff9b444a68cfd88e432f7c68068fe10f58917"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/audio/test_tone_1s.wav": {
+      "source": "audio/test_tone_1s.wav",
+      "sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/constraints/ble_bringup.cst": {
+      "source": "constraints/ble_bringup.cst",
+      "sha256": "49e7ac8bef16fe7f19f2637b958664e82db52f76acb2e1176a2b77dc77176d4c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/constraints/ble_bringup.sdc": {
+      "source": "constraints/ble_bringup.sdc",
+      "sha256": "1d3799e17822ee4ce2cc7365700d4ee7de267249872163f2762d428e366cfa55"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/ACK_READ_EXTENSION.md": {
+      "source": "docs/ACK_READ_EXTENSION.md",
+      "sha256": "cc68f4f162b58a1c23a40387d9f9fdcb83e41d1fa142aaba3542c6105d6ef1df"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION.md": {
+      "source": "docs/APP_INTEGRATION.md",
+      "sha256": "2fad09cc141a53a50bc64ceb36a02e70d81d49450760a9fc74d222abffd28e54"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_1_1.md": {
+      "source": "docs/APP_INTEGRATION_0_1_1.md",
+      "sha256": "65ff5e61a5d25886445e2dd6b0578f413f4cbab1717bea763d36e699f1c047da"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_2_0.md": {
+      "source": "docs/APP_INTEGRATION_0_2_0.md",
+      "sha256": "1cdb025ae20b3b8a512ef6f3a23e6d8b2a1bfb09ada0dfebc8d64b05aa34c5ad"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_2_1_UART115200.md": {
+      "source": "docs/APP_INTEGRATION_0_2_1_UART115200.md",
+      "sha256": "d55c6863324eddc8fb244eda21daffa1b700ca4ad774b9042c43e2ad10e50992"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_2_1_UART921600.md": {
+      "source": "docs/APP_INTEGRATION_0_2_1_UART921600.md",
+      "sha256": "2d2e5f2acf4546a9865bbbae4a4e5543fbe895acd6b0d4b4344913e23ca56b21"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_2_2_ACK_READ.md": {
+      "source": "docs/APP_INTEGRATION_0_2_2_ACK_READ.md",
+      "sha256": "a62f66505ab3c053252207008127695e2cd00b9890217f75e2b42c08c4da65d1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_2_2_L2CAP.md": {
+      "source": "docs/APP_INTEGRATION_0_2_2_L2CAP.md",
+      "sha256": "b118c26fd7d1a443e67cb956e7b37e8519e8e73cb73f119ae4be842848b4994f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_2_3_WIDE.md": {
+      "source": "docs/APP_INTEGRATION_0_2_3_WIDE.md",
+      "sha256": "b9360abfb93b414721ea9258ff513f9c0ba6c2270d56e82a971d820c476f5725"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_2_4_COMPACT.md": {
+      "source": "docs/APP_INTEGRATION_0_2_4_COMPACT.md",
+      "sha256": "9db93ae8694c2e7e099d110ddb11503eb2d90bdf6ddcb2840ab649188c28a9da"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_2_5_BULK.md": {
+      "source": "docs/APP_INTEGRATION_0_2_5_BULK.md",
+      "sha256": "eac569e1e6409ab950deaf9c017adb163e26a94d478966cd43dffe41dd082dea"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_2_6_DIRECT.md": {
+      "source": "docs/APP_INTEGRATION_0_2_6_DIRECT.md",
+      "sha256": "d67ce8a06726b6c4d97fa5f78e8d248c2cc3118d5f80c045a5eea90864e2e1f5"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION_0_2_7_LONG.md": {
+      "source": "docs/APP_INTEGRATION_0_2_7_LONG.md",
+      "sha256": "45d3bcc1085418971f245eb4614d5ef4e885ef5ae30b47b9fb8300def11e1e22"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/BLUETOOTH_PROTOCOL_V1_REFERENCE.md": {
+      "source": "docs/BLUETOOTH_PROTOCOL_V1_REFERENCE.md",
+      "sha256": "4adcf5afab92f1e20592700aa0e7b949648eb3c786cbb1dbf1394b50b1e6da68"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/BULK_TRANSFER_EXTENSION.md": {
+      "source": "docs/BULK_TRANSFER_EXTENSION.md",
+      "sha256": "dd35af60e7325da5a48d95877a0e9f3d0285513191728317ab9e6fb5046e4be9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/COMPACT_TRANSFER_EXTENSION.md": {
+      "source": "docs/COMPACT_TRANSFER_EXTENSION.md",
+      "sha256": "892ca140f651c1865791496de9c46ec8f947afb102e45a1f47e872c1c1d88381"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/DIRECT_TRANSFER_EXTENSION.md": {
+      "source": "docs/DIRECT_TRANSFER_EXTENSION.md",
+      "sha256": "93ad1d2fb4235dfd5b49086eb2fafaddbe171f826f0255cd3d1258aa206b726c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/EXTENDED_TRANSFER_EXTENSION.md": {
+      "source": "docs/EXTENDED_TRANSFER_EXTENSION.md",
+      "sha256": "e32a48d5e8205738857dab68ac4d2d51633d6532c73a07f791426ba445d1f353"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/L2CAP_SPEED_OPTIMIZATION.md": {
+      "source": "docs/L2CAP_SPEED_OPTIMIZATION.md",
+      "sha256": "538f97d444db4baa0ed866d9a8157152e4340045b6ff4b98ae1005ef9e35ccce"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/LONG_TRANSFER_EXTENSION.md": {
+      "source": "docs/LONG_TRANSFER_EXTENSION.md",
+      "sha256": "17fbbfd753d59d9e288f63c4e1f4d64cfa6e25644c4b94329f972811d428b5e3"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/LOSSLESS_TRANSFER_EXTENSION.md": {
+      "source": "docs/LOSSLESS_TRANSFER_EXTENSION.md",
+      "sha256": "7f8acc6c8c9da3c67221d2ddbcff15fa0018eba0768f2efa4fe296fab9622c4f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/MINIMUM_PROFILE.md": {
+      "source": "docs/MINIMUM_PROFILE.md",
+      "sha256": "835274fc618344c4e7cc5e9dddcd0f18f13b6f5bdafa5b124f805aedacadcabf"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/OPEN_WIDE_EXTENSION.md": {
+      "source": "docs/OPEN_WIDE_EXTENSION.md",
+      "sha256": "8a28ffaa56bc6467bd42c4a29e11ef170002cae38f40d5820920d40a4b51d257"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/RECORDING_PROFILE.md": {
+      "source": "docs/RECORDING_PROFILE.md",
+      "sha256": "d7ceb0f85414fb5ddae4084228a708e5bced4467e3d51889e22eb2aa689cc9aa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/REFERENCE_ADAPTATIONS.json": {
+      "source": "docs/REFERENCE_ADAPTATIONS.json",
+      "sha256": "1698ef7746ac8cb60557eba45602e10276f68f61f7e3f2c5d1ea973bcb2d938b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/SECOND_TRANSFER_EXTENSION.md": {
+      "source": "docs/SECOND_TRANSFER_EXTENSION.md",
+      "sha256": "ad809ef0261284cf116d7c2807088fe23029fe8a00e225bf3d7b599f4d27c44e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/SPEED_OPTIMIZATION.md": {
+      "source": "docs/SPEED_OPTIMIZATION.md",
+      "sha256": "e01e9959b75f1ced50c657d0973c16ada9d846a08bbf7956d3b4e6c2c44df6ce"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/docs/UART_SPEED_OPTIMIZATION.md": {
+      "source": "docs/UART_SPEED_OPTIMIZATION.md",
+      "sha256": "2e00a1af4f666694e481cad777eb8d15c2bb8b9a32fe47b8f644136d2591dc19"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_bringup_top.v": {
+      "source": "rtl/ble_bringup_top.v",
+      "sha256": "a6ee8817b62c0b082643d0ac12d5b6a8cec4a1ef7d991394e74c4a372c73c7be"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_protocol_command.v": {
+      "source": "rtl/ble_protocol_command.v",
+      "sha256": "65e9fe8b2241248940c82c3bb657af5f11399acfd75e5de87c5d8cf08511bb28"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": {
+      "source": "rtl/ble_recording.v",
+      "sha256": "5ac93c77f8f902b960946e36cad087465180c8e8cb8079fd7c97c362c978039c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/rtl/usb1_passive_monitor.v": {
+      "source": "rtl/usb1_passive_monitor.v",
+      "sha256": "31a1e7ce848b0ab4ad73cc85c37156f99f594d49323ec6811e5b28d1ce1ffe13"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/audit_lossless_vectors.py": {
+      "source": "tests/audit_lossless_vectors.py",
+      "sha256": "805dc2f297bcd15ad4f1dad253bec3c326b58bfb5aa71cea8fb9be1295a410c6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/check_rice_rtl.py": {
+      "source": "tests/check_rice_rtl.py",
+      "sha256": "5813eae8a30770d39a14586a30655e7e30ff288a1649c9a08879ac0c4157f0c1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/run.py": {
+      "source": "tests/run.py",
+      "sha256": "b5b468086afb0fedcfbf0966f2975da9912c58f8f86b6fba36dda12b35df54b0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_acl_bridge.sv": {
+      "source": "tests/tb_acl_bridge.sv",
+      "sha256": "77d58610f0c2951209350a79d5ba3488a2cbcfce0ba2022c1854f89d0c4bf36d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_ble_bringup.v": {
+      "source": "tests/tb_ble_bringup.v",
+      "sha256": "66fa2e18e0b4464de1ad4fac66af343f4dffae27b204212240a17d8d6322bcbb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_compact_gatt.sv": {
+      "source": "tests/tb_compact_gatt.sv",
+      "sha256": "ac8adcdef421fb6926ebc6efc96c9454da16edd0d67a428c1550039406643939"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_direct_gatt.sv": {
+      "source": "tests/tb_direct_gatt.sv",
+      "sha256": "8b328180b5019a33e6fc3b783b7349bf059dd6b242967c7c244ede68f277ed42"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_extended_gatt.sv": {
+      "source": "tests/tb_extended_gatt.sv",
+      "sha256": "f31041b8eb79c96800eefcd32eec498d8aeb5274a99ae0ce5fa597acc4636900"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_extended_profile_replay.sv": {
+      "source": "tests/tb_extended_profile_replay.sv",
+      "sha256": "54510a9e6d4170eb4e95f983de8616c1bd6136b85778365f17520770b6516da4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_extended_recording.sv": {
+      "source": "tests/tb_extended_recording.sv",
+      "sha256": "fe5669793f5843d38a73889d909d7978805d57076e2fca886ee32b35b2e90ad0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_gatt_credits.sv": {
+      "source": "tests/tb_gatt_credits.sv",
+      "sha256": "6ba64b3a3c4c4ae82024430af021072f40aafa71995f3203bebb936f3af28f1e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_gatt_legacy.sv": {
+      "source": "tests/tb_gatt_legacy.sv",
+      "sha256": "28dc3a8dc88f2a860bebf3a68d45202b1f24d77d4d23dced93336b09f40a784b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_h5_sync.sv": {
+      "source": "tests/tb_h5_sync.sv",
+      "sha256": "d71b4e31e9fd0cab15dc7563a32d5d402b8c260aeab156a8241cbb32b7f0834c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_long_profile_replay.sv": {
+      "source": "tests/tb_long_profile_replay.sv",
+      "sha256": "7a581b60a5bdafb17d786a28acad8e4cb2c146a3b40f662cd00379a21d13e31a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_lossless_profile_replay.sv": {
+      "source": "tests/tb_lossless_profile_replay.sv",
+      "sha256": "cf5144466cf9f6a153b94f9b9d26475fca23c1c81f359a74edde4b5c08a11c98"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_lossless_recording.sv": {
+      "source": "tests/tb_lossless_recording.sv",
+      "sha256": "dad35a763fd47712ae8df8a367bcd5bcebbcb9ba4ffc361ac890b55dc1524094"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_protocol_command.sv": {
+      "source": "tests/tb_protocol_command.sv",
+      "sha256": "7a90ed387a2f3926a15d16461772108124547ab8474bca10c979f6aa269c5e4f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_protocol_recording.sv": {
+      "source": "tests/tb_protocol_recording.sv",
+      "sha256": "767e8aead9c4be53afb977fb191b862d745a9eb8304a7faa7aedcd9866e539d6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_protocol_system.sv": {
+      "source": "tests/tb_protocol_system.sv",
+      "sha256": "69cdb741938d744dbf6a6ad009e8355cb1908eb2bc2256b8f64204a2cbad7db8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_second_profile_replay.sv": {
+      "source": "tests/tb_second_profile_replay.sv",
+      "sha256": "1bea12144ac6ba6ba085afad6069baf0dc08b189a241ea309b5833d0dc2d9ac8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_second_recording.sv": {
+      "source": "tests/tb_second_recording.sv",
+      "sha256": "79d9d7c6eb62eb0886b555a9332dea5b06af45df9ea75ec69ed9633281fbc42c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tests/test_codec.py": {
+      "source": "tests/test_codec.py",
+      "sha256": "66e3843959a3efccde5bfc9f0627183cb470aa0b7a7aad96eb326a09b579a584"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/analyze_speed.py": {
+      "source": "tools/analyze_speed.py",
+      "sha256": "b4705b2ebbebed5b0609f8bb75358e362bc7e92c3b191af5829b14615b62497a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/app_session_check.py": {
+      "source": "tools/app_session_check.py",
+      "sha256": "1be7306a9d2397b652ac3459398a155be112e20c4bd4ba0cb00aa2f2f339dfa4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/extended_profile_replay_check.py": {
+      "source": "tools/extended_profile_replay_check.py",
+      "sha256": "2f07f1511ec59e978fb008aa85a9f423c88727f6788b4859ffc55d514207e9a5"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/generate_test_audio.py": {
+      "source": "tools/generate_test_audio.py",
+      "sha256": "3400023b76ddcd1390e5178ece07eaf6c62280d893739f631dcdfbfe9af086fd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/gowin_build.py": {
+      "source": "tools/gowin_build.py",
+      "sha256": "2204baaa1abe20b5f57323d1255bf046359b7f370c5cae425e65e5b743a9685f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/long_profile_replay_check.py": {
+      "source": "tools/long_profile_replay_check.py",
+      "sha256": "13985a7e5e6f64e3ec9e4a3b8945d7aeebe4fdad3cfb9a9c5d4111a41a1d7378"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/lossless_profile_replay_check.py": {
+      "source": "tools/lossless_profile_replay_check.py",
+      "sha256": "5e5874f920acb314ee9b7c7530da783a5711f72c6571b293a166c3c2211daa4a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/pcm_lossless.py": {
+      "source": "tools/pcm_lossless.py",
+      "sha256": "071daaedd9bef93a3ca29a8fd0154ed706394868f324398a99f4ea8b347ce0ab"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/profile_resume_check.py": {
+      "source": "tools/profile_resume_check.py",
+      "sha256": "6772b5854e31b46dffdc8fecaa6dc47892de50d8d5d668078782c023c63c0a2b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/protocol_check.py": {
+      "source": "tools/protocol_check.py",
+      "sha256": "c86430249cfd6a638e4afee6eb27426c846a46ddeb1c9604cb264227d57950d2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/protocol_v1.py": {
+      "source": "tools/protocol_v1.py",
+      "sha256": "298d1eddd75dbd3cafa5eb200e64897bfaf5a553e792e5830377081b48096a32"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/recording_check.py": {
+      "source": "tools/recording_check.py",
+      "sha256": "91154f8c42af71d9bde5b12acedee600b19474790d1e82863b5dcfbcad6a76a1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/requirements-ble.txt": {
+      "source": "tools/requirements-ble.txt",
+      "sha256": "4488312d3351b6791fdd2de268cf96f4407a7a8acb5dbc627f46362f46139b6e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/second_profile_replay_check.py": {
+      "source": "tools/second_profile_replay_check.py",
+      "sha256": "90134980f89b9e932b55094acd5586554c5737c51dfebf41156c042a018356f8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/speed_check.py": {
+      "source": "tools/speed_check.py",
+      "sha256": "776214fcc4ec1721b71e81d70a26717ca008eb7f63c0371a269c763f186062ea"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/MANIFEST.json": {
+      "source": "vendor/rtl8723ds_ble/MANIFEST.json",
+      "sha256": "7151a2ebbc4c1c983b14f233182109c886a7753461b47fa584a9429f1665b3b1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/NOTICE.md": {
+      "source": "vendor/rtl8723ds_ble/NOTICE.md",
+      "sha256": "63db7876b02ebebb330740ce4a819d0d930087bc3261d22202179024e101310c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/README.md": {
+      "source": "vendor/rtl8723ds_ble/README.md",
+      "sha256": "ca8ab9c882bf07471eb1cb37d611d6050b48eb1445bf7e731744c70ea7c1fe7c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/constraints/vivado_example.xdc": {
+      "source": "vendor/rtl8723ds_ble/constraints/vivado_example.xdc",
+      "sha256": "8adfa86413272590b1803f2824a2abcd8cb6227eaa04959570542be2351ebf45"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/examples/rtl8723ds_ble_board_top.v": {
+      "source": "vendor/rtl8723ds_ble/examples/rtl8723ds_ble_board_top.v",
+      "sha256": "a279389904b6ed8875581f49ed333732a3c53d4b9282bbc6df3053a559bda9d9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/firmware/rtl8723ds_config.bin": {
+      "source": "vendor/rtl8723ds_ble/firmware/rtl8723ds_config.bin",
+      "sha256": "7d1e18df7654da8f6382520841bb535f2d1246fc8495e3ae652f7b23e820168d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/firmware/rtl8723ds_fw.bin": {
+      "source": "vendor/rtl8723ds_ble/firmware/rtl8723ds_fw.bin",
+      "sha256": "19c1bed7a9359b1a021c20f81b525bdebf5067f9021716991d94be9101f76e63"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/firmware_manifest.json": {
+      "source": "vendor/rtl8723ds_ble/firmware_manifest.json",
+      "sha256": "acb4358578446bca1febdb0476e4c17ac0af16e482cdf2e686b54256e0f3f774"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/reports/CDC_ROM_AUDIT.md": {
+      "source": "vendor/rtl8723ds_ble/reports/CDC_ROM_AUDIT.md",
+      "sha256": "85908decd4708d0af7f813e93a16e97668548cc93b290ec2c558650c1aef563a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/reports/resource_summary.json": {
+      "source": "vendor/rtl8723ds_ble/reports/resource_summary.json",
+      "sha256": "e382e1771e505840da2a8c453a105d6b4d5102aac30cafeaf89866405b9229ae"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/reports/utilization.rpt": {
+      "source": "vendor/rtl8723ds_ble/reports/utilization.rpt",
+      "sha256": "f7fdec1a0aad8c193ed4eb821446f594a753a68c6b95bd28459129585caa5f9e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/reports/utilization_core.rpt": {
+      "source": "vendor/rtl8723ds_ble/reports/utilization_core.rpt",
+      "sha256": "f4c00bbe568d14275a2e2cb973074ad3c51c7342c6cdb4de3d31825988567086"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/reports/utilization_hierarchical.rpt": {
+      "source": "vendor/rtl8723ds_ble/reports/utilization_hierarchical.rpt",
+      "sha256": "746a13c3f25765501d9c3e3335f64e0fd8674090a95fb839fd9fe423302a0c42"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/rtl/bt_gatt.v": {
+      "source": "vendor/rtl8723ds_ble/rtl/bt_gatt.v",
+      "sha256": "4c7b4dcd486a85e94e00c1daff1a66ff81d94071bbd597f11aa95b7311818465"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/rtl/bt_h5_transport.v": {
+      "source": "vendor/rtl8723ds_ble/rtl/bt_h5_transport.v",
+      "sha256": "2eab823619e9de0b6b4cc4a631e0295f631261eebc292aef9486724ed62f7fdc"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/rtl/bt_hci_init.v": {
+      "source": "vendor/rtl8723ds_ble/rtl/bt_hci_init.v",
+      "sha256": "0963e4d95210ecd28887d8fe6ea5e7e5b102c90c244125782aff1d5ddeac0c12"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/rtl/bt_uart.v": {
+      "source": "vendor/rtl8723ds_ble/rtl/bt_uart.v",
+      "sha256": "004babc4c97502af75d6715a489cf20f31e3003f569fab57504967b1aafa88dc"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/rtl/bt_verilog_core.v": {
+      "source": "vendor/rtl8723ds_ble/rtl/bt_verilog_core.v",
+      "sha256": "5c596ca839e7bf1a7ebe18ee72ca74b6e6de5ce81e19ce77a7bc961fcd99cc3a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/rtl/reset_release_sync.v": {
+      "source": "vendor/rtl8723ds_ble/rtl/reset_release_sync.v",
+      "sha256": "d5311e4a6141261abe6c699572b3c0053b39c0e631d9d2c1b18b21f87048489d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v": {
+      "source": "vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v",
+      "sha256": "db12a57311df8cf1af5c2ddf94f7fefc71c7c51b9d3b5506b52830f9b16a4bb9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/rtl8723ds_patch.mem": {
+      "source": "vendor/rtl8723ds_ble/rtl8723ds_patch.mem",
+      "sha256": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/scripts/sim_bt_gatt.tcl": {
+      "source": "vendor/rtl8723ds_ble/scripts/sim_bt_gatt.tcl",
+      "sha256": "0243e4a318d43dab5af0556b7a4e524b6873abc643a90d5be99acf4d78dbafaf"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/scripts/sim_bt_h5.tcl": {
+      "source": "vendor/rtl8723ds_ble/scripts/sim_bt_h5.tcl",
+      "sha256": "e71ff04606fd03ec7ba779431bc954ab50987ff131bc83240ca2783d6eafd07b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/scripts/sim_bt_system.tcl": {
+      "source": "vendor/rtl8723ds_ble/scripts/sim_bt_system.tcl",
+      "sha256": "57bf73152d2b29525b129cdeaa9e6817922a327786ef823e0d0857bb12960fb2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/scripts/simulate.ps1": {
+      "source": "vendor/rtl8723ds_ble/scripts/simulate.ps1",
+      "sha256": "d57230228d44fcfe6ce1a04be6a6336a85fff18fbfe7c2a414eec7222ba1d1b0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/scripts/verify_package.py": {
+      "source": "vendor/rtl8723ds_ble/scripts/verify_package.py",
+      "sha256": "d81b79b11b4e5075ab8686efbd8bf98c111ba730b5c6efe16a9cae2da592d253"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/sources.f": {
+      "source": "vendor/rtl8723ds_ble/sources.f",
+      "sha256": "0c10eb32d276dd7e4bfca953d094649533ce59e9fa6dd1bb24ff338d26ec4e55"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/tests/tb_bt_gatt.v": {
+      "source": "vendor/rtl8723ds_ble/tests/tb_bt_gatt.v",
+      "sha256": "25f16810d0568ec58669e95b749965096908f5f90dcd623903687fd187e7b98f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/tests/tb_bt_h5.v": {
+      "source": "vendor/rtl8723ds_ble/tests/tb_bt_h5.v",
+      "sha256": "4830eaefc26a21493b52ad94c43fb670df83915ca6e98fff7dd04ca2324b41d4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/tests/tb_bt_verilog_system.v": {
+      "source": "vendor/rtl8723ds_ble/tests/tb_bt_verilog_system.v",
+      "sha256": "12bb89368fe231db2206641d2c556c365b19f061e77023ac8e910c30ae4ae321"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/arm_stopped_state.txt": {
+      "source": "vendor/rtl8723ds_ble/validation/arm_stopped_state.txt",
+      "sha256": "a14113bcd7c27705e015ef3dc3f94eed0f208bf940e7756060b9aec3637a05f0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/final_state.json": {
+      "source": "vendor/rtl8723ds_ble/validation/final_state.json",
+      "sha256": "8aee2c635dce8c10b94d335e1a999512a78a7b1bc3208231898a45cc3e1cdb17"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/independent_audit.json": {
+      "source": "vendor/rtl8723ds_ble/validation/independent_audit.json",
+      "sha256": "f1970843ba537d8d32ba31f33259e308cb9e5ed3c6ad678481c7d717e5ad4203"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/initialized_state.json": {
+      "source": "vendor/rtl8723ds_ble/validation/initialized_state.json",
+      "sha256": "272c48b6c1fe688daa1b21a1b7014c6ba5c492950a553972712729ae442ed6be"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/pc_receive.json": {
+      "source": "vendor/rtl8723ds_ble/validation/pc_receive.json",
+      "sha256": "a35877d61082b0c90563c5db148ecde8a13cd9af5467bc59f01a40b523d57381"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/portable/gatt_normal.log": {
+      "source": "vendor/rtl8723ds_ble/validation/portable/gatt_normal.log",
+      "sha256": "c2cc504c47c3409c1174e73cc6cdbf07c8e782cce1ef4759d96dd229a3ba2204"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/portable/h5_normal.log": {
+      "source": "vendor/rtl8723ds_ble/validation/portable/h5_normal.log",
+      "sha256": "6b6acf440612dba69ddfc50db96deb8836d7e6e6db9f4ec59317b918263d16d4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/portable/result.json": {
+      "source": "vendor/rtl8723ds_ble/validation/portable/result.json",
+      "sha256": "2bc10d4bdb9467f7a89357f53f66169574330b22e3c52b3edae243dc3c374a02"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/portable/system_normal.log": {
+      "source": "vendor/rtl8723ds_ble/validation/portable/system_normal.log",
+      "sha256": "af85d3bd8f67e7304fbd805c44f201508c6aed34b38c060fcf4e0ba2a40acff3"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/portable/system_wrong_rom.log": {
+      "source": "vendor/rtl8723ds_ble/validation/portable/system_wrong_rom.log",
+      "sha256": "e2391d25d2ecb2817002c22b56d3981f180c9c3d658dc36cdaa2ad7e1f5e4339"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/vendor/rtl8723ds_ble/validation/stopped_state.json": {
+      "source": "vendor/rtl8723ds_ble/validation/stopped_state.json",
+      "sha256": "cac794879f79c326facd24eaf6c78327b7d0d7509d3e8a5c3d079b3a60c6e550"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/run_sim.sh": {
+      "source": "run_sim.sh",
+      "sha256": "f549680fa602e143d7ca1b90078ce508a6af46c2fab324fd430fdb60152f6eb6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/README.md": {
+      "source": "README.md",
+      "sha256": "b1b826a703380f8da51538de46c4108965cfa701fbfe1ca5f5a73d26ad9ef750",
+      "repository_sha256": "649b6d98e74ab5325c5e39a1302ce860d83ef5f12bfe79e9f624e0336670d103",
+      "relocation_note": "仓库入口与相对链接调整；原始字节哈希保留"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/build.sh": {
+      "source": "build.sh",
+      "sha256": "37fcca93b3eaa932447ee9a60498f4f7c364682a278f5a17421ea90263fc2d6d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/prepare_adapted.py": {
+      "source": "prepare_adapted.py",
+      "sha256": "4da1fb9c050a5b7ea03af58236426c67c071b00bf83c9f66dd9043e231fa57de"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/prepare_sources.tcl": {
+      "source": "prepare_sources.tcl",
+      "sha256": "a9587a14714306da59ded0afef7ccca09bb4a8464df2e1220892c8793e4bad10"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/program_sram.py": {
+      "source": "program_sram.py",
+      "sha256": "153272ac16c9e3402e4c85fdc96a17732817da422d3a98fb49746677c9115f38"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/program_flash.py": {
+      "source": "program_flash.py",
+      "sha256": "0eb37a4f4eecd349c8a8c7aa39702f6ee14e77443af993253863129552a88884"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/build.tcl": {
+      "source": "build.tcl",
+      "sha256": "9735539ac59639ea449977c468119b91ae25bf1416acf1e12c1f9bb3c4b42cee"
+    },
+    "clients/android/.gitattributes": {
+      "source": "clients/android/.gitattributes",
+      "sha256": "816f9b3b0e10a66d2fba6f4daa9f7627f961e75661b10da1d7676853b10729ef"
+    },
+    "clients/android/.gitignore": {
+      "source": "clients/android/.gitignore",
+      "sha256": "1573e93d4be624251a1ca8822d49c037ebc23999831ae64deac353d672daf0a8"
+    },
+    "clients/android/README.md": {
+      "source": "clients/android/README.md",
+      "sha256": "6f3ffb1b5ca0c4157dfa5363ba6f38790a751368f90e0bddeb77b4c60b5ebced",
+      "repository_sha256": "5a8465136c2ccd6fd8ab937d3db76d182bf51570ff02706026256571393eefba",
+      "relocation_note": "仓库入口与相对链接调整；原始字节哈希保留"
+    },
+    "clients/android/app/build.gradle.kts": {
+      "source": "clients/android/app/build.gradle.kts",
+      "sha256": "7619f89372ea690e002d45bd90170267f8ece640c78d234bc3cf883aa2b599f0"
+    },
+    "clients/android/app/src/main/AndroidManifest.xml": {
+      "source": "clients/android/app/src/main/AndroidManifest.xml",
+      "sha256": "7d20a7aaa73f096c3c29c16f01a9def8880063d391ecf704808ea1bc9a3059bb"
+    },
+    "clients/android/app/src/main/kotlin/cn/gowin/control/ConnectionService.kt": {
+      "source": "clients/android/app/src/main/kotlin/cn/gowin/control/ConnectionService.kt",
+      "sha256": "330cc507f56762447ab1188d33cd18d84b2406fb452057b6900024c223924b8a"
+    },
+    "clients/android/app/src/main/kotlin/cn/gowin/control/ControlApplication.kt": {
+      "source": "clients/android/app/src/main/kotlin/cn/gowin/control/ControlApplication.kt",
+      "sha256": "3f437b7ae40845b6262119863ad5c239c54288f7b89572224d80b03c8790f119"
+    },
+    "clients/android/app/src/main/kotlin/cn/gowin/control/MainActivity.kt": {
+      "source": "clients/android/app/src/main/kotlin/cn/gowin/control/MainActivity.kt",
+      "sha256": "1539950de2537c22db4081e7f85cdd73ac510fba98c8c581564f874b20487a7d"
+    },
+    "clients/android/app/src/main/res/drawable/ic_launcher_foreground.xml": {
+      "source": "clients/android/app/src/main/res/drawable/ic_launcher_foreground.xml",
+      "sha256": "0f943a5b0cf7b4d0c44eff3e249b533a657d78b51ae250c6b2bbd02e28441de6"
+    },
+    "clients/android/app/src/main/res/mipmap-anydpi/ic_launcher.xml": {
+      "source": "clients/android/app/src/main/res/mipmap-anydpi/ic_launcher.xml",
+      "sha256": "7b184ece22a91ee3ad3324c0a8cae54ad500a64d3abe64e9512bac9d8bcbcfb2"
+    },
+    "clients/android/app/src/main/res/values/colors.xml": {
+      "source": "clients/android/app/src/main/res/values/colors.xml",
+      "sha256": "1f337cc9240d321c0fc1c8b4900a0c4327c2d448c2b36f7277801cd2b38e1cbd"
+    },
+    "clients/android/app/src/main/res/values/styles.xml": {
+      "source": "clients/android/app/src/main/res/values/styles.xml",
+      "sha256": "319c043c775b23a797c65ecfd05c73f2efc67ced32853bac48821baa8352618c"
+    },
+    "clients/android/app/src/main/res/xml/backup_rules.xml": {
+      "source": "clients/android/app/src/main/res/xml/backup_rules.xml",
+      "sha256": "6235c99aeedc4702f2738276dfe65a70523cfd7f8796e29f7054b5b332135f2d"
+    },
+    "clients/android/app/src/main/res/xml/data_extraction_rules.xml": {
+      "source": "clients/android/app/src/main/res/xml/data_extraction_rules.xml",
+      "sha256": "ea9c8be48c3cf8ad382dcd94ca4959deb66ee5b5223b8d44f47b39a396ab9bcb"
+    },
+    "clients/android/app/src/main/res/xml/file_paths.xml": {
+      "source": "clients/android/app/src/main/res/xml/file_paths.xml",
+      "sha256": "fe71ab7d26bbfe6f941855625fa33c84573d1efb636e777c88e520c4893900f8"
+    },
+    "clients/android/build.gradle.kts": {
+      "source": "clients/android/build.gradle.kts",
+      "sha256": "cf883a751025527c5eba2687060c1b08a8886035781d9fac7e7bbf4b6cef9a82"
+    },
+    "clients/android/core/ble/build.gradle.kts": {
+      "source": "clients/android/core/ble/build.gradle.kts",
+      "sha256": "8f7282aebe97aa6a26960c6fe1ed39ce9be382b1a1016ef4598adb5a9acf861e"
+    },
+    "clients/android/core/ble/src/main/AndroidManifest.xml": {
+      "source": "clients/android/core/ble/src/main/AndroidManifest.xml",
+      "sha256": "571f2735faf5e857752ee057ac8ef63425576a721616c60b86ee5d4c0a2d682f"
+    },
+    "clients/android/core/ble/src/main/kotlin/cn/gowin/control/ble/AndroidBleTransport.kt": {
+      "source": "clients/android/core/ble/src/main/kotlin/cn/gowin/control/ble/AndroidBleTransport.kt",
+      "sha256": "b433b1861375929481cf275308ec37af8e2e5945868524d0cd8f161486fbc64d"
+    },
+    "clients/android/core/ble/src/main/kotlin/cn/gowin/control/ble/BleTransport.kt": {
+      "source": "clients/android/core/ble/src/main/kotlin/cn/gowin/control/ble/BleTransport.kt",
+      "sha256": "3f7775e69d208b37aba999db03f4399fc6860d1a5616f555b3eef73a4337459d"
+    },
+    "clients/android/core/ble/src/main/kotlin/cn/gowin/control/ble/ProtocolSession.kt": {
+      "source": "clients/android/core/ble/src/main/kotlin/cn/gowin/control/ble/ProtocolSession.kt",
+      "sha256": "815c88dc0639a68d78a18471469fa87ae3f8e24437b1f3c859a80a57904d9012"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/AckReadTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/AckReadTest.kt",
+      "sha256": "04248fcd21bdd0ba26c860cc01eaa21176d6b2d717232073fe31524aa4316b35"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/BulkTransferTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/BulkTransferTest.kt",
+      "sha256": "b5ea6a419ded3e98d76a698aa681400ebaea365a8a6be6e5e289922902b796ee"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/CompactTransferTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/CompactTransferTest.kt",
+      "sha256": "f39fbff60ddb5aaea4145170adec3b42a96dea7e67683b862bb7a4d687daeb3d"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/DirectTransferTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/DirectTransferTest.kt",
+      "sha256": "e6647852ec9032d5d9dd57522a0fd93e315139b3c9e50e840b2950a19b32531a"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/ExtendedTransferTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/ExtendedTransferTest.kt",
+      "sha256": "34c0d8e4e207f4132a5ec70a17b0369d1573e1b254e28f9735c5a7baeb1b5352"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/LongTransferTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/LongTransferTest.kt",
+      "sha256": "70a10f67feb8e799576bfdd76503233f1902de1f7bc677aba7fdab333366e8c7"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/LosslessTransferTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/LosslessTransferTest.kt",
+      "sha256": "7c1f37b2f6591bf25e7449d4983c87ff88cae2e933c11aa2d4f42eb34fa95ba2"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/MinimumProfileTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/MinimumProfileTest.kt",
+      "sha256": "6907461be7a5f94966e8e3916266f695adb312e17cd6aaf5eb9a3c0ab560d5bb"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/OpenWideTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/OpenWideTest.kt",
+      "sha256": "47684d0a2fa00da2b3f6928f383aeeb67d28108e04a24347988f8a16acaa5e17"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/RealBoardSessionTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/RealBoardSessionTest.kt",
+      "sha256": "6e096d6aaa3dcc73a95890eb0b80d99b34bde2c4bd003ee5eb0937e9a7504c08"
+    },
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/SecondTransferTest.kt": {
+      "source": "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/SecondTransferTest.kt",
+      "sha256": "9c60333abefaaf9274bf07cd0df196c3d6b9ea8da31ae0af8d8dcb2826ddd644"
+    },
+    "clients/android/core/data/build.gradle.kts": {
+      "source": "clients/android/core/data/build.gradle.kts",
+      "sha256": "75cf87e683eb89ecd6017553e4e6dca7c92edb3753ed8a88a5fdc31696e80b31"
+    },
+    "clients/android/core/data/src/main/AndroidManifest.xml": {
+      "source": "clients/android/core/data/src/main/AndroidManifest.xml",
+      "sha256": "571f2735faf5e857752ee057ac8ef63425576a721616c60b86ee5d4c0a2d682f"
+    },
+    "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/DemoTransport.kt": {
+      "source": "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/DemoTransport.kt",
+      "sha256": "71b3aca54b427c4b91abedd89106d956bc46988632b24efdd2d68d5873a97a20"
+    },
+    "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/RecordingFiles.kt": {
+      "source": "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/RecordingFiles.kt",
+      "sha256": "4aa35ac5c9b4cc4edb2119bfaf42bbf9f065a429246ee2d7cf124628d8d4c7cb"
+    },
+    "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/Workstation.kt": {
+      "source": "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/Workstation.kt",
+      "sha256": "0ae5128f4b1a4ef392750eda2918732787569bf129e29613c66e53996e473399"
+    },
+    "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/DemoProtocolTest.kt": {
+      "source": "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/DemoProtocolTest.kt",
+      "sha256": "6d003625029158136253448ff56c560e78326eeebf5f1253917b5e7c68ad82da"
+    },
+    "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/RadioBridge.kt": {
+      "source": "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/RadioBridge.kt",
+      "sha256": "71ba816d847e4c02279fe7df467523b7215e54ae9bdb6c26ce41b89772362622"
+    },
+    "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/RealRecordingTest.kt": {
+      "source": "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/RealRecordingTest.kt",
+      "sha256": "de92123da870a9c4b58c6cbd1dcc39ce68999aa25704ba34ece5a05191f1e0bc"
+    },
+    "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/RecordingFilesTest.kt": {
+      "source": "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/RecordingFilesTest.kt",
+      "sha256": "f995a7e831c43d005807c94c7ffa988253324cc7be7e598fafd318c12439a5b4"
+    },
+    "clients/android/core/protocol/build.gradle.kts": {
+      "source": "clients/android/core/protocol/build.gradle.kts",
+      "sha256": "9b76d20392ffb23bce7e3a72eae25da1c6bd2a5bad8dcffccf36b2e86d68d7a3"
+    },
+    "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/Models.kt": {
+      "source": "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/Models.kt",
+      "sha256": "084730a4366f41ea120c52cff17864265e710aaf43e9472a23a4f9a508356d40"
+    },
+    "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/PcmRice.kt": {
+      "source": "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/PcmRice.kt",
+      "sha256": "a74648f0015b0e69647cd1c0dbacc9c1def367b7ca56dbd8e333fe7923a668af"
+    },
+    "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/Wire.kt": {
+      "source": "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/Wire.kt",
+      "sha256": "bc571cbce98dcfafa48772ad81ed44ecf4fae5312582d3c2f3a34a02d49717fc"
+    },
+    "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/PcmRiceTest.kt": {
+      "source": "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/PcmRiceTest.kt",
+      "sha256": "b85e28a3f29d00a2e640db0dfd0be75bf4d845b42196e1b8af8321da9d566348"
+    },
+    "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/PcmSecondTest.kt": {
+      "source": "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/PcmSecondTest.kt",
+      "sha256": "cd620e4ab8d5d84a07e85573191e4d1943dacd0fa615c2dc263ad9eea2aa504b"
+    },
+    "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/WireTest.kt": {
+      "source": "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/WireTest.kt",
+      "sha256": "c91b46f3ff543e264cbe5bd2da45d87f360b3f2bfd3caec736b1634587da3986"
+    },
+    "clients/android/core/protocol/src/test/resources/second_vectors.txt": {
+      "source": "clients/android/core/protocol/src/test/resources/second_vectors.txt",
+      "sha256": "260dd05986a860f34df89358022db870262d138d60a9abfd3162366147c5b922"
+    },
+    "clients/android/docs/VALIDATION.md": {
+      "source": "clients/android/docs/VALIDATION.md",
+      "sha256": "3cc6d1e9e6364c7da73cab1218f6907bc5508ef5025764f04ae420f0c7d34fdc"
+    },
+    "clients/android/docs/screenshots/control.png": {
+      "source": "clients/android/docs/screenshots/control.png",
+      "sha256": "b462164629874d707ed07f9a97c87e70ed6dc3b668a57251872943e2dd6e452d"
+    },
+    "clients/android/docs/screenshots/download.png": {
+      "source": "clients/android/docs/screenshots/download.png",
+      "sha256": "aab9f556c6139f527720612f34400747c014f99512a110a2119e4db1a5e4a4e9"
+    },
+    "clients/android/docs/screenshots/library.png": {
+      "source": "clients/android/docs/screenshots/library.png",
+      "sha256": "798c06e935552feee60e3589a870238d956607d75574124f95c86df5763c8b71"
+    },
+    "clients/android/docs/screenshots/paused.png": {
+      "source": "clients/android/docs/screenshots/paused.png",
+      "sha256": "483689c809795a58b97464b81eed816a429a1abd2fbf4188a3264b0ae1ece447"
+    },
+    "clients/android/gradle/wrapper/gradle-wrapper.jar": {
+      "source": "clients/android/gradle/wrapper/gradle-wrapper.jar",
+      "sha256": "2db75c40782f5e8ba1fc278a5574bab070adccb2d21ca5a6e5ed840888448046"
+    },
+    "clients/android/gradle/wrapper/gradle-wrapper.properties": {
+      "source": "clients/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "2b5aa5330711bf4d66e32ee7d5b784a1e07aaf08f9b23a8624a4b2feac5225be"
+    },
+    "clients/android/gradle.properties": {
+      "source": "clients/android/gradle.properties",
+      "sha256": "f36eb4825f12cb1892b70c34ecf6e2b2b0d1953f6bc87c63936ebea5795d21ac"
+    },
+    "clients/android/gradlew": {
+      "source": "clients/android/gradlew",
+      "sha256": "a3648413b47ef77af21d5ebc36c687c7d103aaef3e17f33de7d4f080a6f300a3"
+    },
+    "clients/android/gradlew.bat": {
+      "source": "clients/android/gradlew.bat",
+      "sha256": "57931b17dd228e5c24dac90e815d0bf82477e831a4618dfab4136f5446b42a9f"
+    },
+    "clients/android/settings.gradle.kts": {
+      "source": "clients/android/settings.gradle.kts",
+      "sha256": "e16d1d8656140319c01d5cd2faaa1e5c9ecd3ae85986ddea894ccb00f9c4450a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/app_integration_20261020/summary.json": {
+      "source": "reports/app_integration_20261020/summary.json",
+      "sha256": "70d534547bccc7177558288e9a89d2bdf403b258d5fc2d7727203a9f317bb78e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_030452_150244/summary.json": {
+      "source": "reports/flash_20261020_030452_150244/summary.json",
+      "sha256": "07a46ef2947a8bbf90f7987a880aab9e3f1aed51bbb1013c1df7ebe29be334c0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_034804_337672/summary.json": {
+      "source": "reports/flash_20261020_034804_337672/summary.json",
+      "sha256": "734fd2fefdf56a7205de95b79ee92466d9247f0966faa7b0417005fbc30333c1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_041256_493362/summary.json": {
+      "source": "reports/flash_20261020_041256_493362/summary.json",
+      "sha256": "8e8398b808ad39aa5ed89d8f1f64d55997b41e474f2fca66af7b85d00c5e3f4c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_043811_340487/summary.json": {
+      "source": "reports/flash_20261020_043811_340487/summary.json",
+      "sha256": "937a489ac8b0a18617fc6f850cb565f2c0063cf8b11a7d57b5a1cbf078a673a6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_050505_152961/summary.json": {
+      "source": "reports/flash_20261020_050505_152961/summary.json",
+      "sha256": "25830ce36f0b437e7eeeeaf53128700fb39e6621e329b5bbbe667ba3a88f68fd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_052052_196449/summary.json": {
+      "source": "reports/flash_20261020_052052_196449/summary.json",
+      "sha256": "7b1fd0cfc4c71b91d96706521068a9819ed658cc03806b19219c94c1dad3730e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_054024_091526/summary.json": {
+      "source": "reports/flash_20261020_054024_091526/summary.json",
+      "sha256": "b2024e5962f8ef33508279f9a4fe7c13ed06b1b7960c680d76cfb29e22ff47a3"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_060735_415406/summary.json": {
+      "source": "reports/flash_20261020_060735_415406/summary.json",
+      "sha256": "cd1ebbb739c63f39f27a0b004a1a89c981417f906d661a1c73f00733c884bdfa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_063116_194766/summary.json": {
+      "source": "reports/flash_20261020_063116_194766/summary.json",
+      "sha256": "3efc1e3d4eb6d923ca1a8e6fe714964f8202159fb2cd14d2776dea7c25ad6d57"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_063248_813594/summary.json": {
+      "source": "reports/flash_20261020_063248_813594/summary.json",
+      "sha256": "48eec03d1e31966dcfaf549758bb849c1372c96f27c6d982b33fc3dcb33f50a2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_063508_238766/summary.json": {
+      "source": "reports/flash_20261020_063508_238766/summary.json",
+      "sha256": "64fb7d12d336dc48163ca5b61520e7cf00709294bb885a7f1640cb1dc6138eb6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_071344_623201/summary.json": {
+      "source": "reports/flash_20261020_071344_623201/summary.json",
+      "sha256": "06e2231744877c484f04ec7c01118f02a87d408a3660dfdeb9237b8755c4d2e1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_075254_534665/summary.json": {
+      "source": "reports/flash_20261020_075254_534665/summary.json",
+      "sha256": "bee36ff050864fd258023a57fde295c79a7371289d8592880a6112269ab921a5"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_082212_104434/summary.json": {
+      "source": "reports/flash_20261020_082212_104434/summary.json",
+      "sha256": "c2b5a756530de0e384bfb755076276f5534be2f5c1de8a2f16490851b40ed9b4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_094428_749515/summary.json": {
+      "source": "reports/flash_20261020_094428_749515/summary.json",
+      "sha256": "e02265bbb46dbf47fd947014906e9696c9b2099effe360129e10e1a2945d7f29"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/flash_20261020_100605_908414/summary.json": {
+      "source": "reports/flash_20261020_100605_908414/summary.json",
+      "sha256": "8ac1a19fe3a70bd1f9ad11713a91532d0bd01a73bbe3370aeef65719aae4c61e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/hardware_20261020/README.md": {
+      "source": "reports/hardware_20261020/README.md",
+      "sha256": "69e29e8f17779b4ff8feb265ebec9ede8ca3d54cc690ea643c0c174252a7b612"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/hardware_20261020/summary.json": {
+      "source": "reports/hardware_20261020/summary.json",
+      "sha256": "5806be389f0d1150db39c5d0f1debb4503de1da748e2eaa53335939c849f31b1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/ready_build.json": {
+      "source": "reports/ready_build.json",
+      "sha256": "a9dfb131ba8b280c01dff9a3f6d3e5bfcd8c2c956cde3491e94641fae2934621"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/recording_20261020/README.md": {
+      "source": "reports/recording_20261020/README.md",
+      "sha256": "2b01a9079188fddc13dce395a141f2e596e6eab314e4d83224fd9273d400141e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/recording_20261020/summary.json": {
+      "source": "reports/recording_20261020/summary.json",
+      "sha256": "e561bdc74bf738bcd99ec27a72375bfc9656a4fa98aabc6bed590ebc0300672c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed10_20261020/README.md": {
+      "source": "reports/speed10_20261020/README.md",
+      "sha256": "54ade2534778144b21f092df844de1534269130ab80176c43635181015beae20"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed10_20261020/summary.json": {
+      "source": "reports/speed10_20261020/summary.json",
+      "sha256": "a0958a82557441778ab95053cd400d9d88159ead0e865391325c883b77f066be"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed11_20261020/README.md": {
+      "source": "reports/speed11_20261020/README.md",
+      "sha256": "be8f6f71e07e43f98fee8077cf16532092abf24913f1ffa5b0b4bbec9991b365"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed11_20261020/summary.json": {
+      "source": "reports/speed11_20261020/summary.json",
+      "sha256": "8f1964e1a706e2c3d9c102df295bfd70a7513bf19ec321ef8c30afdd92942a63"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed12_20261020/README.md": {
+      "source": "reports/speed12_20261020/README.md",
+      "sha256": "436f79493a96748410aa261ddf7bae8844c9d25840f90b287f8caa280e2df2e2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed12_20261020/summary.json": {
+      "source": "reports/speed12_20261020/summary.json",
+      "sha256": "ba4fa0c28172470fdc679a624b74d106c2d60523667990418b1ddd0e2ed8d186"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed13_20261020/README.md": {
+      "source": "reports/speed13_20261020/README.md",
+      "sha256": "cdcfd8080a53240342d2f03dc64784aa291333395d6afaf3ee55b3c8b898bcfb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed13_20261020/summary.json": {
+      "source": "reports/speed13_20261020/summary.json",
+      "sha256": "fada28319b24d6464b2eaba052f6cdccab016329e9ae004c49eb7dbf6c963e74"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed14_20261020/README.md": {
+      "source": "reports/speed14_20261020/README.md",
+      "sha256": "dac7236de39862a2990d66f8a027a05f10228bc5644ea329b289d5af791ce954"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed14_20261020/summary.json": {
+      "source": "reports/speed14_20261020/summary.json",
+      "sha256": "1ba0df7adee8eb101b9f364513a72d3139e4b74097472cd31b1951cf4f2c9d31"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed15_20261020/README.md": {
+      "source": "reports/speed15_20261020/README.md",
+      "sha256": "f2f974252470f9c229a4514054c8ddd38cb4976fd51214cac08b43bd4d22d193"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed15_20261020/summary.json": {
+      "source": "reports/speed15_20261020/summary.json",
+      "sha256": "580a781b79994360ba60c0d66108bcd88f0ca1e5f7b60d8779326d8db337a4af"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed16_20261020/README.md": {
+      "source": "reports/speed16_20261020/README.md",
+      "sha256": "42a679bb73718ced7c110e8613a21b627a4d7503c6afcc5afb934c2373450b8d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed16_20261020/summary.json": {
+      "source": "reports/speed16_20261020/summary.json",
+      "sha256": "459818df8f7c96ce3e94a642847740a7e33cb3ebab8433292be2e719397d68ee"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed17_20261020/README.md": {
+      "source": "reports/speed17_20261020/README.md",
+      "sha256": "d8b59f759d8508932d928e5455ec346de5a649a98027439bf4c2473ce915bea9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed17_20261020/summary.json": {
+      "source": "reports/speed17_20261020/summary.json",
+      "sha256": "b76e62bb6dea48106deac2db9d1a6cabbac746b297df3367e7936fa29f1aff88"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/README.md": {
+      "source": "reports/speed18_20261020/README.md",
+      "sha256": "97387ab5b14f6665ec40fb687a005cf9c2cd01178a2b7d8277447fe9d66046c7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/SECOND_PROTOCOL.md": {
+      "source": "reports/speed18_20261020/SECOND_PROTOCOL.md",
+      "sha256": "25376b2926c9c74afff34cfa6c85d386a783ca166826bf7583f0d85ab9cf62b0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_checks.json": {
+      "source": "reports/speed18_20261020/android_checks.json",
+      "sha256": "b48e4cc03feb93c27cd24fb5ba6b3764a8780b99db5589ffab19d70716f743ac"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_final.log": {
+      "source": "reports/speed18_20261020/android_final.log",
+      "sha256": "bdcfbeb41fa7da03bd3e37910dad2f3c5c0750ffa3b8df115fcaf748eeb33c74"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_initial.log": {
+      "source": "reports/speed18_20261020/android_initial.log",
+      "sha256": "0a75574ad097345733ab34fa05c18e15f4c5797812054c81ea75da0e13284506"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_inputs.json": {
+      "source": "reports/speed18_20261020/android_inputs.json",
+      "sha256": "343f05d6a8fa9cac859e7a403c4d75bf23b0762b98191f85467b90057aca8f26"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_retry.log": {
+      "source": "reports/speed18_20261020/android_retry.log",
+      "sha256": "d613c81f3f0a492a3e4a4cd47c4c301d645d105f37beacec2d0198e9d7f5d671"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_second.log": {
+      "source": "reports/speed18_20261020/android_second.log",
+      "sha256": "6f4313c7c0eeb215f091416aa0a7c1ee973e44c7ead56b4d26a65cb8eec8d6dc"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.AckReadTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.AckReadTest.xml",
+      "sha256": "673e522dffa176eae42845e7dfae73ec7981d9c723f8f22420459371531717af"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.BulkTransferTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.BulkTransferTest.xml",
+      "sha256": "edd186822d621d322fcfbcf809bbbc463342bd8a6e796f80e4fb6bf196eb6a9b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.CompactTransferTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.CompactTransferTest.xml",
+      "sha256": "a876d2a41478db86f19f83f0f24979f45247f1aaa810f7becb9afea69d8c3661"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.DirectTransferTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.DirectTransferTest.xml",
+      "sha256": "11b6d13ba1ae4a189a548f8d45bda3c099be806f966e0bb41a94a60669f179bf"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.ExtendedTransferTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.ExtendedTransferTest.xml",
+      "sha256": "61fb008547079e4f7d0cf8f76b196de5fdee8df93b7b3f2a01aa0ab51b54e8fb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.LongTransferTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.LongTransferTest.xml",
+      "sha256": "12a98f8a34f78891188bcca2363ffe99ac11249c2510df60890d00617ae4eee6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.LosslessTransferTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.LosslessTransferTest.xml",
+      "sha256": "d3e9fd21ac318d321bbfac487af604c0a8d5d3e274ea4fa097eb9055a70ba004"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.MinimumProfileTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.MinimumProfileTest.xml",
+      "sha256": "73fe2a187620f324e92f4a8e893483ad1dd6bbc689f7d0d9d6f44b50c139d335"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.OpenWideTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.OpenWideTest.xml",
+      "sha256": "9b053c12e6e4e1c913a981e3132c9a58b8a218b8e435fbe19506a480706d1ea5"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.RealBoardSessionTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.RealBoardSessionTest.xml",
+      "sha256": "980d385bb539ce980f4a381c4df689f0f41141a860a523d8a96d48ef63994950"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.SecondTransferTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.ble.SecondTransferTest.xml",
+      "sha256": "e1eed5c6b666e51c67d904b465a0c56885e769e0d0a24aa2c3612ecf6d190efe"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.data.DemoProtocolTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.data.DemoProtocolTest.xml",
+      "sha256": "b14185be8a73821ecb9cd1d704ea9ec7bb4baf1e157a690d976a76cc33fd37e6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.data.RealRecordingTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.data.RealRecordingTest.xml",
+      "sha256": "63bf563d9c4ad203b90b995ce6cc97e0a4d3847460aa6c2072c9a88271b1fdd8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.data.RecordingFilesTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.data.RecordingFilesTest.xml",
+      "sha256": "1e8e833a7fcc4a17cd7dbc484bbba7333a1e1c27c02bbc6ae5e9ced00a6de6ba"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.protocol.PcmRiceTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.protocol.PcmRiceTest.xml",
+      "sha256": "3edd2cf26ed2488a135cc3b8b9ee3c8544f707a1b69e6ec2a8db24fe66babe6e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.protocol.PcmSecondTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.protocol.PcmSecondTest.xml",
+      "sha256": "bdb8bf7b9d8017710e22d6bb4b778b269b17f5f690bc723df069f9107ea22fdf"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.protocol.WireTest.xml": {
+      "source": "reports/speed18_20261020/android_test_results/TEST-cn.gowin.control.protocol.WireTest.xml",
+      "sha256": "190cc91d07a233833c4c9c4e365c8629e99c5175d07bfd507e0ac71cbf4a3b5a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/android_vectors.log": {
+      "source": "reports/speed18_20261020/android_vectors.log",
+      "sha256": "577bfcf545633659b94f440382b92ef39cc4cdbe42f053b4c8cad722f74a8c60"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/apk.json": {
+      "source": "reports/speed18_20261020/apk.json",
+      "sha256": "85a89b8f8f7b32ec32809b0ab34766fef43fb60926a3d2de604695b001f2997c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/apk_signature.txt": {
+      "source": "reports/speed18_20261020/apk_signature.txt",
+      "sha256": "8310ccdd795665e3144040e62c31fde30eef5d4209f02f771f7e57c2da337a2b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/audit_captures.py": {
+      "source": "reports/speed18_20261020/audit_captures.py",
+      "sha256": "65f44ea8a291364ee66bf857088769fcb74117b417934d1953ab4cceb519687b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/baseline.json": {
+      "source": "reports/speed18_20261020/baseline.json",
+      "sha256": "306a6b32f061d0ec8436ae8a74b76f5f1ceca0e6ed4dbfd27079318160900277"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/baseline_speed.json": {
+      "source": "reports/speed18_20261020/baseline_speed.json",
+      "sha256": "214822b6bd835f67edff6fd91c8086a8e7e9f68cf9e1face87dd94795bc0b6ad"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/baseline_speed.log": {
+      "source": "reports/speed18_20261020/baseline_speed.log",
+      "sha256": "08dd373b3f74b0668284ac725e4acb737d303ab9d0d6ee2a5979e91fb20f0051"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/build_final.log": {
+      "source": "reports/speed18_20261020/build_final.log",
+      "sha256": "076ac023b97cfa80a5232a6d29c74ea06ce3e2b0d84243c344fbbca9015eef0c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/build_initial.log": {
+      "source": "reports/speed18_20261020/build_initial.log",
+      "sha256": "7e1d416a8e32d40c21a48c68687c48e1ac64b72560874a419749b44f2327d9e1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/candidate_final.json": {
+      "source": "reports/speed18_20261020/candidate_final.json",
+      "sha256": "a9dfb131ba8b280c01dff9a3f6d3e5bfcd8c2c956cde3491e94641fae2934621"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/candidate_initial.json": {
+      "source": "reports/speed18_20261020/candidate_initial.json",
+      "sha256": "fe0c7c9a2c6e9484861d798ea46d862216ea3caec1ebe7d5332cd34c876a4eff"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/audit.json": {
+      "source": "reports/speed18_20261020/clean_replay_61/audit.json",
+      "sha256": "0ec40d9caeec44d8fbd3ac0f1cf18bfc44d109ae02119ed8b7288132513c27b4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-0.hex": {
+      "source": "reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-0.hex",
+      "sha256": "191a1da71b61c08156bce46c1e397fa92218194925c5bd3a4f5f1f136dbd22f1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-1.hex": {
+      "source": "reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-1.hex",
+      "sha256": "191a1da71b61c08156bce46c1e397fa92218194925c5bd3a4f5f1f136dbd22f1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-2.hex": {
+      "source": "reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-2.hex",
+      "sha256": "d3c9ffa4888b4e3c5402cff9b19a138adc703e2f510e1481a245ce4b7eb76443"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-3.hex": {
+      "source": "reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-3.hex",
+      "sha256": "d3c9ffa4888b4e3c5402cff9b19a138adc703e2f510e1481a245ce4b7eb76443"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-4.hex": {
+      "source": "reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-4.hex",
+      "sha256": "fce1cd9ebfb3b75c474389161d206a9697763969081f52dfd3e30d64cae197ae"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-5.hex": {
+      "source": "reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-5.hex",
+      "sha256": "82c0d6d676bbb2fe250cf8589f711c4fe0e165a510e3a65e01b08a31c4be50c7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-6.hex": {
+      "source": "reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-6.hex",
+      "sha256": "82c0d6d676bbb2fe250cf8589f711c4fe0e165a510e3a65e01b08a31c4be50c7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-7.hex": {
+      "source": "reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-7.hex",
+      "sha256": "fce1cd9ebfb3b75c474389161d206a9697763969081f52dfd3e30d64cae197ae"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-8.hex": {
+      "source": "reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-8.hex",
+      "sha256": "1af6f986e15dc64924c7e8091ef0184e2a967f17a28ff64101ef337c8539f13b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-9.hex": {
+      "source": "reports/speed18_20261020/clean_replay_61/gw25k-lossless-block-9.hex",
+      "sha256": "188c2b6abd0bb897085009bd182b890c15b04534141a102a9470737b2fde014f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61/simulation.log": {
+      "source": "reports/speed18_20261020/clean_replay_61/simulation.log",
+      "sha256": "6e2350ca3accf7ee5a8f007cb3c3900746a56dc91d69b48bdcd3b9516f25800a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/clean_replay_61.log": {
+      "source": "reports/speed18_20261020/clean_replay_61.log",
+      "sha256": "541aeef7a2f50a13952faa4d1d831047d7a6f8c115c0587db07a4aba7cb3cbc9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/codec_fuzz.json": {
+      "source": "reports/speed18_20261020/codec_fuzz.json",
+      "sha256": "36b009ebb19829a009856116dddb5849f323e46d1300feb1ec3000c57e772415"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/complete_wav_check.json": {
+      "source": "reports/speed18_20261020/complete_wav_check.json",
+      "sha256": "067b1c3a6e4230fe2a12c5177251363e26fff8391dcc8b18918796b314fe86c5"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/compression.json": {
+      "source": "reports/speed18_20261020/compression.json",
+      "sha256": "90a787d6b6f4941bb94cce77f5a1870e0dcbbed0dc96ed724430d7183b3678dd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/documentation_check.json": {
+      "source": "reports/speed18_20261020/documentation_check.json",
+      "sha256": "2af616cce42c527a13d6a2d575ce97d10140e8604985941fe1371acda3b7f1a7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/extremes.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/extremes.log",
+      "sha256": "41af81a7a0b5b45d88634cb02d26ff6d6b6025ef7fcc321dedb27d828270e71c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/extremes.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/extremes.pcm.mem",
+      "sha256": "3eb977914817ae12156127a5ef4c98d186e5a2c5b391d07a7a5d98950f8887b7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/extremes.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/extremes.rice.mem",
+      "sha256": "6ac7a98f6cb717c394562071a55d2cc29ee1fb067abd0a7e56779dfc2849d976"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/extremes.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/extremes.sv",
+      "sha256": "cfeb97f54ccaf66113cd6c5ca6b9834870d3e94d77a313e48bc0a792e56ec6c0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/noise.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/noise.log",
+      "sha256": "a53a82fe224816d4c7e8728896dfd285f88c5a0191c322fe4246dfedcd563179"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/noise.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/noise.pcm.mem",
+      "sha256": "be6e4fcde60d1339968769f23b2ade2692c601ad924734ba0e0af7c34018ebd7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/noise.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/noise.rice.mem",
+      "sha256": "be6e4fcde60d1339968769f23b2ade2692c601ad924734ba0e0af7c34018ebd7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/noise.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/noise.sv",
+      "sha256": "4852747bc5118762491dbbd3575b3eaa750783d304706c18a8379c863e7d1fad"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/ramp.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/ramp.log",
+      "sha256": "ac2c22178037c3bfea51968ad6bb816f7989a8610a6f8cc58663c4f451cfed2d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/ramp.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/ramp.pcm.mem",
+      "sha256": "fca15bc5656fbbb128d4849a4262439083aa440b5b17f3668b53ac500d470de8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/ramp.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/ramp.rice.mem",
+      "sha256": "42616a3a48e738313ef16ee69a36dfd5a847d646560d4dcc87f34cf02edc9dc9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/ramp.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/ramp.sv",
+      "sha256": "50760890812f593ee90ea8b315d214492ae77353736b68eb1a9249d0470a5b8d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_20.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_20.log",
+      "sha256": "244ff8be043613dbaa9c80035184160863e3ec3fdb00e23c64a08b5293bb9328"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_20.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_20.pcm.mem",
+      "sha256": "0736aea80cb278663b3f2e29a5b09ab87cbcd6bafe9ca6fc7cd969a4b98387a7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_20.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_20.rice.mem",
+      "sha256": "0736aea80cb278663b3f2e29a5b09ab87cbcd6bafe9ca6fc7cd969a4b98387a7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_20.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_20.sv",
+      "sha256": "edf3540103c71b2a8d657c0f5c3dee4397e3d44fcdd164308efa994478f43f6c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_3600.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_3600.log",
+      "sha256": "952457fea88c6e4b281a47d007641d7af3182e1f23d489ba9046210bd825f6e5"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_3600.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_3600.pcm.mem",
+      "sha256": "6196c0357a8c862d9da8235b0fdd336761b8e61d374ec61e3576f470818ad96d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_3600.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_3600.rice.mem",
+      "sha256": "6196c0357a8c862d9da8235b0fdd336761b8e61d374ec61e3576f470818ad96d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_3600.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_3600.sv",
+      "sha256": "0d66f16f100bbc8fa2e07cfb3df1d7ef35eb945f7ef17463fa33a3498bf20967"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_4.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_4.log",
+      "sha256": "c6bc3a5a29ef5a6b1dfe26b92f04ce53e3b0a627107cf42678c54eb5f8aa1284"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_4.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_4.pcm.mem",
+      "sha256": "60139eeadb3dc3a49dd0e34c8759a74bf62d4e37bb6c5110f4e75c06e0dd1344"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_4.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_4.rice.mem",
+      "sha256": "60139eeadb3dc3a49dd0e34c8759a74bf62d4e37bb6c5110f4e75c06e0dd1344"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_4.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_4.sv",
+      "sha256": "a700074fcbd5686a80ba40a2b6ef42bcc00139dc43b7b7f1ef8f00c22a8ffff2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_460.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_460.log",
+      "sha256": "2f83fea3fd5f8c1d71b5e5ec18bc78d4af31aaedb994286726751dc92505b6c8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_460.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_460.pcm.mem",
+      "sha256": "3c613894ab40e4e0908d96ad9593220872bc781ca3e59ff47dd987a1b4d4480b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_460.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_460.rice.mem",
+      "sha256": "3c613894ab40e4e0908d96ad9593220872bc781ca3e59ff47dd987a1b4d4480b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_460.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_460.sv",
+      "sha256": "8fb6772426e5a296ec4e214e21950abdfc6f4d35dd0692db7fb940b5061625d4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_7888.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_7888.log",
+      "sha256": "1181b038c9bc9df9973f1d2d6bebdbe4d8ac4916d6ad43374f617a1a32bf9e90"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_7888.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_7888.pcm.mem",
+      "sha256": "ee9c7cd10915ee12d2b2107d5765e380234dba1cfe7f2bbea89e6905bd842f40"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_7888.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_7888.rice.mem",
+      "sha256": "ee9c7cd10915ee12d2b2107d5765e380234dba1cfe7f2bbea89e6905bd842f40"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_7888.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_7888.sv",
+      "sha256": "283c7777873594cc0e1ffcb2545ae97ff8a73f6b1c696c2557aaa8eb8e04c569"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_8.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_8.log",
+      "sha256": "faaaf7c907fd499380a59646ab7dbbf5f2b1fb0b1f907428b152b6978dbafa57"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_8.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_8.pcm.mem",
+      "sha256": "fd7ddab6614a6d1fe19d258b25f4cca423a16e422847e7857e953585f7fb8af7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_8.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_8.rice.mem",
+      "sha256": "fd7ddab6614a6d1fe19d258b25f4cca423a16e422847e7857e953585f7fb8af7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_8.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_8.sv",
+      "sha256": "79d715d318422649b8f5c1267c571328e21f171d605a8a3f6d8e293ac8a55363"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_972.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_972.log",
+      "sha256": "ea57404bc8eb16b7b60969ba12cbb3baaeae272e622c404f6754bac8ee6338c9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_972.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_972.pcm.mem",
+      "sha256": "cde7ff5713440d23e1aefd4be6bbcacfef4e2d5f80c3e57aec35a44b2d345dfa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_972.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_972.rice.mem",
+      "sha256": "cde7ff5713440d23e1aefd4be6bbcacfef4e2d5f80c3e57aec35a44b2d345dfa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_972.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_972.sv",
+      "sha256": "49fc102547c1294df654097ac2df35289035e0b9dc1320ba942bf6449cc4014c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_17.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_17.log",
+      "sha256": "67fc5a0c1c9ca2a9a99b91d2cd9a4d91163215de936067eadb5a49fa42dd5f4c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_17.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_17.pcm.mem",
+      "sha256": "8213bbf74761334eff5943185e2d342218b3ba6f13aae8377d4b57d52e7bd677"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_17.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_17.rice.mem",
+      "sha256": "b52690fbb118614f1caf8919d989fb9d1ee9dc887e82e07c0f8f3edf12db1b14"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_17.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_17.sv",
+      "sha256": "0aff387cc522064d600240aa3042253b54c878d3f12f63950a8c794d6a8d763d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_18.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_18.log",
+      "sha256": "3d7549a25c18bd5880bfaff0814074f19a3ac155b01dea1e3195dd0045c85ec7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_18.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_18.pcm.mem",
+      "sha256": "8254dba85deaba2e997db31436dff9e4adcbc0b65bfb72407ecc61b737e64376"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_18.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_18.rice.mem",
+      "sha256": "ad55ae06e7514d83e83b7474abab9d59cb7f6474e8c04cf99daa616b0e67cfa2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_18.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_18.sv",
+      "sha256": "0aac6e18b0c6f2c9feefecd994c077892cdff63e23c339bc4c1b99e4c0fca9a4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_19.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_19.log",
+      "sha256": "952b3a26b20eedf17df537fa05b67f2b677939234622d5c0fcacacd5a95f2686"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_19.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_19.pcm.mem",
+      "sha256": "c345a14a0586dcbfec713a6e6742cc5d5ec89483098af5882d69878657eb76e8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_19.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_19.rice.mem",
+      "sha256": "fed6173787663f84fa8b3380842790c09978ecb11694f49ff823e9c432a8a392"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/random_walk_19.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/random_walk_19.sv",
+      "sha256": "89de4e658debe8a7e73d4f271bc6a7a90184a356f64766c32ebc0f07d6555891"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/result.json": {
+      "source": "reports/speed18_20261020/encoder_legacy/result.json",
+      "sha256": "3256c0f5d1d943200d89c236954c015b2465011d06f78b0bf4495a58d1cd71fa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/silence.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/silence.log",
+      "sha256": "008120df9e75e619d9e9be528dd45bc56262e07b7f0f9d269a66bc6de14d8c92"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/silence.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/silence.pcm.mem",
+      "sha256": "282578ca9985b15d3c27f590a131d2d1ad5d970be1f31456a68ef105f27dd649"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/silence.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/silence.rice.mem",
+      "sha256": "1c50a3e09b7280d8b5e346a11692da89732b1961d49c5a34ddec151ecb6df90f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/silence.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/silence.sv",
+      "sha256": "44c747be942f11fc1346efe3d61f4bc6c126bf6d9850873e81d08738ed1b2707"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_0.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_0.log",
+      "sha256": "187ff96285bd86805114e56d1aff6144de27077a993c1198948e5ea3fe697dab"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_0.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_0.pcm.mem",
+      "sha256": "e898926a0b91ced4470a27fcfebb538582d28d4964ae5a08a54c301e58c28df1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_0.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_0.rice.mem",
+      "sha256": "176e9c6c761770a0b950847cfd6028c70380b423d98d0fae4ec3c527328dcf76"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_0.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_0.sv",
+      "sha256": "0bdf8573810bcdc57234ec7ae4f768a06e67f2eb41ceab506df97f4f66b849b4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_105456.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_105456.log",
+      "sha256": "4724b50ffb5903f3cdf4c533391ba79a4febc34730a6a5f3eed062dc94bb36b7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_105456.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_105456.pcm.mem",
+      "sha256": "48e3c3ab4e001e3eff20eb0e14453b7b61b208e73d70288d7122eceda6c89a88"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_105456.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_105456.rice.mem",
+      "sha256": "4cf8fde65552e8c261d5219e1319ddc27c1d61ee2d0178d61b22a5205f0aafa1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_105456.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_105456.sv",
+      "sha256": "97f10393ef45b0b4d2268d35453c60b9f4ddb9c65a28122c7d32c6ad66a9710a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_113568.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_113568.log",
+      "sha256": "44f77733d7351dfb8069b8109376abbcb1d4b20d7d7a38c2010ff1b9a25ebe74"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_113568.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_113568.pcm.mem",
+      "sha256": "2cdd50ded5d39289d42dff550b5535efc7bc1100430a83863a3d1632674abab7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_113568.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_113568.rice.mem",
+      "sha256": "f1686ca97f39fe3f5fdc1dde24811e6fd3aab3ff862bc593a23b3f4b27b1fedf"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_113568.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_113568.sv",
+      "sha256": "4c476520faa5f3f9352fdc4a84276160918d86c02f3a90ff7db47aff8d44caf7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_121680.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_121680.log",
+      "sha256": "fbdfce5d3dc1947c92d987b6f514053a1c83cf28c3a5fcd92a498251a3710166"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_121680.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_121680.pcm.mem",
+      "sha256": "14c1e96a1cf5be78a695a87793ec2293c7a0678de8ae9e5f5477aeed095d85c8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_121680.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_121680.rice.mem",
+      "sha256": "105e77b51b77975990ce29038f25511b52d9cc60c847bd95353d74ed01355651"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_121680.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_121680.sv",
+      "sha256": "d76732d451f267f0f39839dbf90d60d01f87d90fdcc510a9cf39481db87d1437"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_129792.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_129792.log",
+      "sha256": "a645dca6c7c3844006de4c51ba7414149a86db23ff96844111151e0ada5ce7b4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_129792.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_129792.pcm.mem",
+      "sha256": "7c5f48759783d3bdc220216d4d13bc68b89cc642688b0323751596ee42ee4e06"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_129792.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_129792.rice.mem",
+      "sha256": "a43e7e0f36f109804e4b3dd6d9d2f769e58f37ffe36771662597cdbcdea6b9bb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_129792.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_129792.sv",
+      "sha256": "d76732d451f267f0f39839dbf90d60d01f87d90fdcc510a9cf39481db87d1437"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_137904.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_137904.log",
+      "sha256": "83d951f25a7bba4ba90566ab4a6bd89535aee1c04a471c0cbbfe9809520504e4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_137904.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_137904.pcm.mem",
+      "sha256": "d38773f9d787710e60e2ecec78d3962e61fe90986b68f7ece8c31a87db7d1f43"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_137904.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_137904.rice.mem",
+      "sha256": "d3fd6ea9e9d80f80656628afb5e2e3abcefc72f108b57ca15461a41ae185764a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_137904.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_137904.sv",
+      "sha256": "c6a3cec504c0d62a685f94e5ea54213829b32d89381bef21123ff9173f184deb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_146016.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_146016.log",
+      "sha256": "c97bc98c07fdc83661a9cfb1f4ec463dcd537828f1b3325d5892b7ba09c9fd17"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_146016.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_146016.pcm.mem",
+      "sha256": "977cd78701ce352583b4f6438525686baf272098349b5a697c8d3514597e9428"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_146016.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_146016.rice.mem",
+      "sha256": "ccb942f96b5e77af23f07bc878ee85e776deff194a129288fafd205bc1318f19"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_146016.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_146016.sv",
+      "sha256": "14abf53e73c2a8c88255e8f9fff1f313ca9934e227eb0d32eb0cead981347795"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_154128.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_154128.log",
+      "sha256": "2e1dbd551cdab0d1d8f9d36f68318faf907ba76a91f01a8fe1d7651b9a85e659"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_154128.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_154128.pcm.mem",
+      "sha256": "d646efbaf5ec285830820359dbd0eaf41cf128b5722701dd733fc604192ec7cb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_154128.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_154128.rice.mem",
+      "sha256": "71056804f9b2cfb5e8c2a68a347cd0d556e02687d3d45f0a2f2afe41a4fa061b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_154128.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_154128.sv",
+      "sha256": "c6a3cec504c0d62a685f94e5ea54213829b32d89381bef21123ff9173f184deb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_16224.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_16224.log",
+      "sha256": "b2508fe8d1d0e428746e7c707509ffa9d24fac2803f3d86f2a6f2297d54de219"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_16224.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_16224.pcm.mem",
+      "sha256": "4fab5d94d9a9f6b94119a9bc5a3e5b47695bfbe047f0c3b4138fbdc68668ae0c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_16224.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_16224.rice.mem",
+      "sha256": "65a07fc39441f87e2e5600cacf2f6ac8eafe454362ba204d3f06a58d3e736f00"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_16224.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_16224.sv",
+      "sha256": "d76732d451f267f0f39839dbf90d60d01f87d90fdcc510a9cf39481db87d1437"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_162240.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_162240.log",
+      "sha256": "664cee121149d0b5a6b95ec719a9fe8ccf15d5ae6b6b50b23fb0462efd91ad57"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_162240.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_162240.pcm.mem",
+      "sha256": "3fed4d4654a1213e868d79e7feaf8989a3b84fb69364e271dd16128dd37c8b95"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_162240.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_162240.rice.mem",
+      "sha256": "83a10494fed56bf66e31884097c63abece695915eb5cc6f49c300d13de4a3d2d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_162240.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_162240.sv",
+      "sha256": "97f10393ef45b0b4d2268d35453c60b9f4ddb9c65a28122c7d32c6ad66a9710a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_170352.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_170352.log",
+      "sha256": "ac8391884aef593591f7b89123226e5416a98e8d2d23e4b2e1e9b98b98f2c474"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_170352.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_170352.pcm.mem",
+      "sha256": "18b980133dca08ebf09ea4edc4bb49994253648377be4e85b8c63201e20bb6b2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_170352.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_170352.rice.mem",
+      "sha256": "7356b08b75c6ebb9d239033e0ec57c356c378dbd50a7fcce657a77771f575140"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_170352.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_170352.sv",
+      "sha256": "4c476520faa5f3f9352fdc4a84276160918d86c02f3a90ff7db47aff8d44caf7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_178464.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_178464.log",
+      "sha256": "ab8ad08255f8393cac3bbd9a816b7a3b39df571b1f3a46b9dd3984c02e74c2ec"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_178464.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_178464.pcm.mem",
+      "sha256": "4a781ed695e2bcf0f50f489230ae0bf238bb9d8a024e3b6667c7e4e56e689b41"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_178464.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_178464.rice.mem",
+      "sha256": "5a1e26119b6e628d23510a6c215e33d69ed8cdd75b8fc6a0638b02763fc7e500"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_178464.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_178464.sv",
+      "sha256": "a5e957ee15321d15af120ad2d56a9abc8a179ec34ea822ad25710aaefe90abff"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_186576.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_186576.log",
+      "sha256": "eae013cb75b929273214d1ffb85d407a52b550f0c5c454265804c3a2041b7afd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_186576.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_186576.pcm.mem",
+      "sha256": "72367ea1ab72a71ae2a795060a3a88bbf743e86c92cd21bd4bedf48fb2489988"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_186576.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_186576.rice.mem",
+      "sha256": "c4f01efc301fc2d90dc70905f8033b9704cda88baec2f87c324b0c65624a8545"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_186576.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_186576.sv",
+      "sha256": "1d55b62ebead6ed9ce7ac9d86b20e10c895a9daea36c6a918540cb9407d3869a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_24336.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_24336.log",
+      "sha256": "d9cd6f0c2290d825b07b8c09656c186f6dff94ef6ff0084d11ad596f4751306a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_24336.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_24336.pcm.mem",
+      "sha256": "72552b79451eb76a25d217b88619a35bd015ed5cad9fa7ef5b0076d048fb3d2f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_24336.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_24336.rice.mem",
+      "sha256": "89358ce31117f3b8ba4586424120b958df51b9368f8222a047371879c1787b9a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_24336.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_24336.sv",
+      "sha256": "97f10393ef45b0b4d2268d35453c60b9f4ddb9c65a28122c7d32c6ad66a9710a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_32448.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_32448.log",
+      "sha256": "9be44e2a29f173432250a6aa661538027cd511530a2ba4403887089863b0317e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_32448.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_32448.pcm.mem",
+      "sha256": "f5707d2a82fe87d6243329946fc7c3e8c0eeb38431a261772f49425bd08f3d61"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_32448.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_32448.rice.mem",
+      "sha256": "7b69f6361015260e825e059af5cecfccbb296154f942760b295e0c785e290ffd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_32448.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_32448.sv",
+      "sha256": "a5e957ee15321d15af120ad2d56a9abc8a179ec34ea822ad25710aaefe90abff"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_40560.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_40560.log",
+      "sha256": "8edcd881365f83cec16ad73f39c5a2134878df337dcc8c612a752bf3253a2af2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_40560.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_40560.pcm.mem",
+      "sha256": "b6b5f5d6ee37afd0da2c8b3adbed1d922c2fb877412b38bc79a85ae5ba8d72c9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_40560.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_40560.rice.mem",
+      "sha256": "bddc1ca789c55f39d05f52ce88409704ec584d73347f3bede8b9f30975da6e9f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_40560.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_40560.sv",
+      "sha256": "c6a3cec504c0d62a685f94e5ea54213829b32d89381bef21123ff9173f184deb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_48672.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_48672.log",
+      "sha256": "3cc98de2c6186094b95336da37ed89eb1459ebc85050a6e868cd5987db68690c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_48672.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_48672.pcm.mem",
+      "sha256": "fc9026d7a86d18f6847977dfffb0845e3b6e6ebea6963058ef10f7a7e2d1853a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_48672.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_48672.rice.mem",
+      "sha256": "4275dbdd9cf459f21747591535a25d4536482d00765f6dd140c1c07ac9cee673"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_48672.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_48672.sv",
+      "sha256": "d76732d451f267f0f39839dbf90d60d01f87d90fdcc510a9cf39481db87d1437"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_56784.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_56784.log",
+      "sha256": "2fcaba5bb2f1ac4554baf0c4d869ef498f62c008ec7f20533a66e38104bd4b0a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_56784.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_56784.pcm.mem",
+      "sha256": "f616a5fc762896bc90133ef3ede3c56b1d320b1702574f56507e38aafb646810"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_56784.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_56784.rice.mem",
+      "sha256": "225799a9227db917362bbf3761ed3e29c99cd59a03143bbb72acb8a4765a9908"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_56784.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_56784.sv",
+      "sha256": "0590ad5aa42c634a13bc6f3d1c72cb2d3b6678b4950bb0cfc45d791f6b5887cc"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_64896.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_64896.log",
+      "sha256": "726af876000e3943b08b983c1f23713ee2a6dbdde99f6d823f7a2604c69c71a8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_64896.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_64896.pcm.mem",
+      "sha256": "b3d19ea4a4f8d51003f06329cb6eeca2527d7c6a1aa20ebb12b58666bb27448a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_64896.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_64896.rice.mem",
+      "sha256": "4899a07ee9937a9df4bcb16e5eea0cce695aa7e7761bee93144c9211f9a264ed"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_64896.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_64896.sv",
+      "sha256": "c6a3cec504c0d62a685f94e5ea54213829b32d89381bef21123ff9173f184deb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_73008.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_73008.log",
+      "sha256": "bbbb32e29d98a5cedca453aee06a84c8be1a1ad00d114405f3d9d39a15f4505a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_73008.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_73008.pcm.mem",
+      "sha256": "860b91336fe6143a27fd0f725acb88e786c62d545f129ac4338251d7841cf4bf"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_73008.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_73008.rice.mem",
+      "sha256": "bb26033c222e5fd38e7e8e13e93e217741b76a36d72cf60db172590f78a4440f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_73008.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_73008.sv",
+      "sha256": "d76732d451f267f0f39839dbf90d60d01f87d90fdcc510a9cf39481db87d1437"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_8112.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_8112.log",
+      "sha256": "bc78fe178207e30e0c559b5eca11c57950f9ffd8de6556a68fd9f47a976258b3"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_8112.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_8112.pcm.mem",
+      "sha256": "9dcf30d5cf4244494275ace763c3136e0156cb0cce2b86fb31ae883fabf3608d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_8112.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_8112.rice.mem",
+      "sha256": "2e66974f70dc7e8558d8d2fae564af983ab24670133cd56dfbe46db4f15f658f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_8112.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_8112.sv",
+      "sha256": "c6a3cec504c0d62a685f94e5ea54213829b32d89381bef21123ff9173f184deb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_81120.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_81120.log",
+      "sha256": "a8a1e8627d00bc384cfeae247c53182b287d0dac236fd04c8b0c23275892471b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_81120.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_81120.pcm.mem",
+      "sha256": "80015de659234e9a8895d4fb1a030db3927e6bc3ac578f5f26a64b083f41852f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_81120.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_81120.rice.mem",
+      "sha256": "90d4918498c1ed0a66d01d966fc6de55cbfe421e06e37b6685b55f1d6ad4d48f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_81120.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_81120.sv",
+      "sha256": "1f262e230630e6ea5730815e39ad50f7e973733056b6f45ae106d4a532673f8b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_89232.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_89232.log",
+      "sha256": "19b0952f4acd891ab31e1f2d5fea5c39e464c30c32b304792926bb0dc647a92c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_89232.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_89232.pcm.mem",
+      "sha256": "53f1edeef687cc1215b07b5b2adeb6d3888d8ec5de50c12541cdd71e29680514"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_89232.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_89232.rice.mem",
+      "sha256": "6c05bc348b46acdd32c2ce8b578a65b9e7843c62f43e0b700b6ca24fc9467aaf"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_89232.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_89232.sv",
+      "sha256": "14abf53e73c2a8c88255e8f9fff1f313ca9934e227eb0d32eb0cead981347795"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_97344.log": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_97344.log",
+      "sha256": "8a136c7d42faab240e91eec8f3e12448fc7060fa4ab225632d69e554befb3850"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_97344.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_97344.pcm.mem",
+      "sha256": "59018408bb3476300387996f4d4de9b842da41f3b343bda6b11cef8980f8820f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_97344.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_97344.rice.mem",
+      "sha256": "e40c1d54f58fb15040d86391210f146f93ef768193264e5fa82bb837e4452761"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy/tone_97344.sv": {
+      "source": "reports/speed18_20261020/encoder_legacy/tone_97344.sv",
+      "sha256": "5adccb568e2498d63cb7c1654ee84d612948c4957e95688ba832d3eeafff2064"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy.log": {
+      "source": "reports/speed18_20261020/encoder_legacy.log",
+      "sha256": "5b699748e7eb56c0bab0d3266ff3631787db94b29c5ddce4701c09120f10efbe"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy_final.log": {
+      "source": "reports/speed18_20261020/encoder_legacy_final.log",
+      "sha256": "d60110167f2a6f36db6d8a75648a407f7d120b9cf3fc47d65b6f0b0e24bf65e1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_legacy_fixed.log": {
+      "source": "reports/speed18_20261020/encoder_legacy_fixed.log",
+      "sha256": "5b699748e7eb56c0bab0d3266ff3631787db94b29c5ddce4701c09120f10efbe"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/extremes.log": {
+      "source": "reports/speed18_20261020/encoder_second/extremes.log",
+      "sha256": "2e7c8b8020668ec7a5cdd21ea91b733aa9bcfb21946bad702003db1960393c18"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/extremes.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/extremes.pcm.mem",
+      "sha256": "3eb977914817ae12156127a5ef4c98d186e5a2c5b391d07a7a5d98950f8887b7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/extremes.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/extremes.rice.mem",
+      "sha256": "1722525eb5908674fb26ac0621e20282e34ca57737de7e94adfffc1ab0c64108"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/extremes.sv": {
+      "source": "reports/speed18_20261020/encoder_second/extremes.sv",
+      "sha256": "a8e994632ea65fa1cbaf1bb0e2c92ef77e7c31ad55301156144e05cbbef19b21"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/noise.log": {
+      "source": "reports/speed18_20261020/encoder_second/noise.log",
+      "sha256": "a05a105c87795e192556a753ed53554eab1339003a3e198b3d3d591a0c631fac"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/noise.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/noise.pcm.mem",
+      "sha256": "be6e4fcde60d1339968769f23b2ade2692c601ad924734ba0e0af7c34018ebd7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/noise.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/noise.rice.mem",
+      "sha256": "be6e4fcde60d1339968769f23b2ade2692c601ad924734ba0e0af7c34018ebd7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/noise.sv": {
+      "source": "reports/speed18_20261020/encoder_second/noise.sv",
+      "sha256": "be450bb60e7fd630b638d6aa587bff3e98b88cc95dacd2bd0cc3f568c67b628c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/ramp.log": {
+      "source": "reports/speed18_20261020/encoder_second/ramp.log",
+      "sha256": "ccefa5b2297710e8f3dd34205d4f09ce936f294a3bc5110ae02a10f2ab6396f0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/ramp.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/ramp.pcm.mem",
+      "sha256": "fca15bc5656fbbb128d4849a4262439083aa440b5b17f3668b53ac500d470de8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/ramp.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/ramp.rice.mem",
+      "sha256": "ebd8427b53698e639ce0280e4ac4200f0152a0b30052764fbcda8be93bae5445"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/ramp.sv": {
+      "source": "reports/speed18_20261020/encoder_second/ramp.sv",
+      "sha256": "2b2de35293f3d177601745fe1d87ae7deda71bfaa30f23a25becdfc541580322"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_20.log": {
+      "source": "reports/speed18_20261020/encoder_second/random_20.log",
+      "sha256": "479809c1bad1079c9b88c9d638fcd6d05e178505b6a3a32ac039bb39ed1eef02"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_20.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_20.pcm.mem",
+      "sha256": "0736aea80cb278663b3f2e29a5b09ab87cbcd6bafe9ca6fc7cd969a4b98387a7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_20.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_20.rice.mem",
+      "sha256": "0736aea80cb278663b3f2e29a5b09ab87cbcd6bafe9ca6fc7cd969a4b98387a7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_20.sv": {
+      "source": "reports/speed18_20261020/encoder_second/random_20.sv",
+      "sha256": "093150dc65ca3e9077a94a1a983b1e2cbf0a4f5448d9e80722b69627b4e17a6f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_3600.log": {
+      "source": "reports/speed18_20261020/encoder_second/random_3600.log",
+      "sha256": "1ab631040d3e3e852bae0d0624d2a18f08d1e43c77187e364f4f165d22383edb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_3600.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_3600.pcm.mem",
+      "sha256": "6196c0357a8c862d9da8235b0fdd336761b8e61d374ec61e3576f470818ad96d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_3600.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_3600.rice.mem",
+      "sha256": "6196c0357a8c862d9da8235b0fdd336761b8e61d374ec61e3576f470818ad96d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_3600.sv": {
+      "source": "reports/speed18_20261020/encoder_second/random_3600.sv",
+      "sha256": "814ed1c363e14e2e0b0e0398a56371588f77ec427675f0cfa3d7ea5af2759e3a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_4.log": {
+      "source": "reports/speed18_20261020/encoder_second/random_4.log",
+      "sha256": "c39b3c6c1863356c87fec914a12b2d8c8cbe9f106f8044bfddc13b8cf221d7fe"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_4.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_4.pcm.mem",
+      "sha256": "60139eeadb3dc3a49dd0e34c8759a74bf62d4e37bb6c5110f4e75c06e0dd1344"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_4.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_4.rice.mem",
+      "sha256": "60139eeadb3dc3a49dd0e34c8759a74bf62d4e37bb6c5110f4e75c06e0dd1344"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_4.sv": {
+      "source": "reports/speed18_20261020/encoder_second/random_4.sv",
+      "sha256": "50381bd3e53d048d52329eab4e066c39ed4a7214f5717fc154abeef7835b04ea"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_460.log": {
+      "source": "reports/speed18_20261020/encoder_second/random_460.log",
+      "sha256": "adf89a92a2d710f89e3495df774459f5e86748d9c94a9d964d7f860783c92130"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_460.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_460.pcm.mem",
+      "sha256": "3c613894ab40e4e0908d96ad9593220872bc781ca3e59ff47dd987a1b4d4480b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_460.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_460.rice.mem",
+      "sha256": "3c613894ab40e4e0908d96ad9593220872bc781ca3e59ff47dd987a1b4d4480b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_460.sv": {
+      "source": "reports/speed18_20261020/encoder_second/random_460.sv",
+      "sha256": "21e67038b5d1ed14cc6aef777e79e9b823db21f3789f931b72244622810f0945"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_7888.log": {
+      "source": "reports/speed18_20261020/encoder_second/random_7888.log",
+      "sha256": "7b0dae8e3f572c4efe90d22ceb8a88e8efbff67fce5fe532efc5b2447b84fb76"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_7888.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_7888.pcm.mem",
+      "sha256": "ee9c7cd10915ee12d2b2107d5765e380234dba1cfe7f2bbea89e6905bd842f40"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_7888.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_7888.rice.mem",
+      "sha256": "ee9c7cd10915ee12d2b2107d5765e380234dba1cfe7f2bbea89e6905bd842f40"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_7888.sv": {
+      "source": "reports/speed18_20261020/encoder_second/random_7888.sv",
+      "sha256": "7b6297bee43a4d77c5b03078a590daeb3c8dd3e90f2f6bb921d2c678181d7b81"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_8.log": {
+      "source": "reports/speed18_20261020/encoder_second/random_8.log",
+      "sha256": "1c7eb146121ed40ce20c6cff9ec60e9215761b9530116c154807335c3816cefd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_8.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_8.pcm.mem",
+      "sha256": "fd7ddab6614a6d1fe19d258b25f4cca423a16e422847e7857e953585f7fb8af7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_8.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_8.rice.mem",
+      "sha256": "fd7ddab6614a6d1fe19d258b25f4cca423a16e422847e7857e953585f7fb8af7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_8.sv": {
+      "source": "reports/speed18_20261020/encoder_second/random_8.sv",
+      "sha256": "033fa6e55c020d8169fb9031131bd2b7d7f343ec23a67ba4174c6216566cd099"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_972.log": {
+      "source": "reports/speed18_20261020/encoder_second/random_972.log",
+      "sha256": "eef6b3a84f805c6838819c94a8530a9b2606775f0e8aea11a8c1f979e52cddcd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_972.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_972.pcm.mem",
+      "sha256": "cde7ff5713440d23e1aefd4be6bbcacfef4e2d5f80c3e57aec35a44b2d345dfa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_972.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_972.rice.mem",
+      "sha256": "cde7ff5713440d23e1aefd4be6bbcacfef4e2d5f80c3e57aec35a44b2d345dfa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_972.sv": {
+      "source": "reports/speed18_20261020/encoder_second/random_972.sv",
+      "sha256": "50b8f9e3de689c5a84b9da3b5c6a396ba0bf3460c36fd93b4ef36635ac928b04"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_17.log": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_17.log",
+      "sha256": "7bc29f5a5dc8bd8a550a094e3305ddc70736cab6ede519beec81a01e37830f7d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_17.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_17.pcm.mem",
+      "sha256": "8213bbf74761334eff5943185e2d342218b3ba6f13aae8377d4b57d52e7bd677"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_17.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_17.rice.mem",
+      "sha256": "b52690fbb118614f1caf8919d989fb9d1ee9dc887e82e07c0f8f3edf12db1b14"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_17.sv": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_17.sv",
+      "sha256": "77fb6cdd932accac15511d0266d03ccf9298077d431d2c6e37b5d1add7e718f7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_18.log": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_18.log",
+      "sha256": "6582ddf97f55fd67c3a57a83c4e56ea8606b12ff690f1ff4bc037a9bb9a25953"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_18.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_18.pcm.mem",
+      "sha256": "8254dba85deaba2e997db31436dff9e4adcbc0b65bfb72407ecc61b737e64376"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_18.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_18.rice.mem",
+      "sha256": "ad55ae06e7514d83e83b7474abab9d59cb7f6474e8c04cf99daa616b0e67cfa2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_18.sv": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_18.sv",
+      "sha256": "d79491c343c26e94706c143a6825b8c2b08f6f806666df304431056828dd2e9c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_19.log": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_19.log",
+      "sha256": "106e348933bf65c4c4c17609b3bc219289618f09cab678855eff9b73ae606c7a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_19.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_19.pcm.mem",
+      "sha256": "c345a14a0586dcbfec713a6e6742cc5d5ec89483098af5882d69878657eb76e8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_19.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_19.rice.mem",
+      "sha256": "fed6173787663f84fa8b3380842790c09978ecb11694f49ff823e9c432a8a392"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/random_walk_19.sv": {
+      "source": "reports/speed18_20261020/encoder_second/random_walk_19.sv",
+      "sha256": "c96a2e20692217dedd73bb3d3c59df887e19de3e620ef214b8be88b3db42aff1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/result.json": {
+      "source": "reports/speed18_20261020/encoder_second/result.json",
+      "sha256": "14ad84bcca925021176c3303293fe70be1ae9f477f4ac9e9f259157f7ca9e360"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/silence.log": {
+      "source": "reports/speed18_20261020/encoder_second/silence.log",
+      "sha256": "160a70cfe4001e1be5dc16cb47347c58fb002155ed43e0c5cfe0d8550e31c8fa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/silence.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/silence.pcm.mem",
+      "sha256": "282578ca9985b15d3c27f590a131d2d1ad5d970be1f31456a68ef105f27dd649"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/silence.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/silence.rice.mem",
+      "sha256": "df0c661ac23d7f2d20cf6b668314230bb8e180afe1c763ed7d2fa40432dba5a4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/silence.sv": {
+      "source": "reports/speed18_20261020/encoder_second/silence.sv",
+      "sha256": "b471535fdd88a8f3c39e276d2bf4dbed621e643ffff68ef3ddb6066047dcf585"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_0.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_0.log",
+      "sha256": "0da9bc7ecd6114afafb2990ad2549bb1bb9bdf2d428f07bb85111bbe3567d4bf"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_0.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_0.pcm.mem",
+      "sha256": "e898926a0b91ced4470a27fcfebb538582d28d4964ae5a08a54c301e58c28df1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_0.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_0.rice.mem",
+      "sha256": "951daa2e9b7791bfa11ede7025781d4adee6ce11953e84a27f549aa89bce812e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_0.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_0.sv",
+      "sha256": "3a94549f31385b4712df2d1f380c0f2078c7820b3d89f25b215bbaf8c0173a5b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_105456.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_105456.log",
+      "sha256": "3ceb5813ffcee66f61fa820a3f5b92a940783574f8723662e699893033a337d1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_105456.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_105456.pcm.mem",
+      "sha256": "48e3c3ab4e001e3eff20eb0e14453b7b61b208e73d70288d7122eceda6c89a88"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_105456.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_105456.rice.mem",
+      "sha256": "4cbfd347b1549b6895681372f884f0637e35852ec2335c4d004dfa81321678a4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_105456.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_105456.sv",
+      "sha256": "71e1ce0fd02a69ffdc33eedddf8e267ac0f89b1ff651437b5ea7e6a670d5f1fa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_113568.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_113568.log",
+      "sha256": "01b49a5347c06bb9b8b447dc89c113f17d2c0d1e8d378e7a7202936e903a0b35"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_113568.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_113568.pcm.mem",
+      "sha256": "2cdd50ded5d39289d42dff550b5535efc7bc1100430a83863a3d1632674abab7"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_113568.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_113568.rice.mem",
+      "sha256": "4c0e9b10fb6faab4085c88c0c5f868ff27e1c2912fc641157e75a67ae8a86cea"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_113568.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_113568.sv",
+      "sha256": "8a4146a71326e78575fd08b941841c7595781fc6ebde9c9dd89c935cec839125"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_121680.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_121680.log",
+      "sha256": "9c99d6ab051d05c3c89979647c329a65139f8deea7daea7dc3a5af2c8df8ad16"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_121680.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_121680.pcm.mem",
+      "sha256": "14c1e96a1cf5be78a695a87793ec2293c7a0678de8ae9e5f5477aeed095d85c8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_121680.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_121680.rice.mem",
+      "sha256": "aac8f052bd78f0e80c09851547652ab8eb0ffdf5de1c61725c4b117d0398e082"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_121680.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_121680.sv",
+      "sha256": "aed26aef28de43491a5d4ee1b3f942e2dbfbbd9340cd5b6217f8ffb40951a046"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_129792.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_129792.log",
+      "sha256": "93d0a7763e8b117142046713a2217b24a0ac404ed6f9fb8591eef7bd2a86775d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_129792.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_129792.pcm.mem",
+      "sha256": "7c5f48759783d3bdc220216d4d13bc68b89cc642688b0323751596ee42ee4e06"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_129792.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_129792.rice.mem",
+      "sha256": "8af47b44bd8b3eeacea507a57dd027222910698bbe91150cb24f7fdbd29bb92c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_129792.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_129792.sv",
+      "sha256": "631a9cb5fa4bccf76624fc30b8028178d21a855ad733319c0d2bbefc848c3cb6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_137904.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_137904.log",
+      "sha256": "bf00b41d171092e16073c1b227f41618108970e32456090b8f82503f123daee1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_137904.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_137904.pcm.mem",
+      "sha256": "d38773f9d787710e60e2ecec78d3962e61fe90986b68f7ece8c31a87db7d1f43"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_137904.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_137904.rice.mem",
+      "sha256": "1e24c7ef5a93b27b1c3306e05cc6ef6468bfb4975888e5522c33e3dcf5294a52"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_137904.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_137904.sv",
+      "sha256": "aed26aef28de43491a5d4ee1b3f942e2dbfbbd9340cd5b6217f8ffb40951a046"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_146016.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_146016.log",
+      "sha256": "ae7e80d7bdd1893e9123e148fae5fedb3e02424dfefb75648ad4a1ec6a500221"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_146016.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_146016.pcm.mem",
+      "sha256": "977cd78701ce352583b4f6438525686baf272098349b5a697c8d3514597e9428"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_146016.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_146016.rice.mem",
+      "sha256": "760304eba22c5e76c1250329a03fd0fe323c3e5d81ea3a41febed36896620c59"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_146016.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_146016.sv",
+      "sha256": "631a9cb5fa4bccf76624fc30b8028178d21a855ad733319c0d2bbefc848c3cb6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_154128.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_154128.log",
+      "sha256": "c3090b08a8bf6bab0c4afc375dca99301afea4dfb428264393d2455f24d53ba8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_154128.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_154128.pcm.mem",
+      "sha256": "d646efbaf5ec285830820359dbd0eaf41cf128b5722701dd733fc604192ec7cb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_154128.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_154128.rice.mem",
+      "sha256": "dd5d759a76732df136f0e6bd6a9064c5c5c2e1814edcc01e38d56ac2b998cc18"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_154128.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_154128.sv",
+      "sha256": "aed26aef28de43491a5d4ee1b3f942e2dbfbbd9340cd5b6217f8ffb40951a046"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_16224.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_16224.log",
+      "sha256": "6799ca5eb29cedcc5a26cbbeefcfdb7fa28c2cc57c946632df614322864596de"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_16224.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_16224.pcm.mem",
+      "sha256": "4fab5d94d9a9f6b94119a9bc5a3e5b47695bfbe047f0c3b4138fbdc68668ae0c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_16224.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_16224.rice.mem",
+      "sha256": "a9a400584248132027db987206f294d5db6edf57245fc77ffec2964b223ce586"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_16224.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_16224.sv",
+      "sha256": "631a9cb5fa4bccf76624fc30b8028178d21a855ad733319c0d2bbefc848c3cb6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_162240.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_162240.log",
+      "sha256": "2e72edafbf929ac4fcf932414fe19431b562e2dac35bad56a32c15435c67fa90"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_162240.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_162240.pcm.mem",
+      "sha256": "3fed4d4654a1213e868d79e7feaf8989a3b84fb69364e271dd16128dd37c8b95"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_162240.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_162240.rice.mem",
+      "sha256": "1e64f58ef742580ca36dd4afab1ac3c16c038b89cca888b6004980e80e3e02c2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_162240.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_162240.sv",
+      "sha256": "71e1ce0fd02a69ffdc33eedddf8e267ac0f89b1ff651437b5ea7e6a670d5f1fa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_170352.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_170352.log",
+      "sha256": "54683432c0e770e6cd327e5d06229a50e6421f2394eca049a157ed10a420de64"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_170352.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_170352.pcm.mem",
+      "sha256": "18b980133dca08ebf09ea4edc4bb49994253648377be4e85b8c63201e20bb6b2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_170352.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_170352.rice.mem",
+      "sha256": "249b594af1f0d5d557e7494b4390a7a5ceeab59cc1bcc00f9644641d79e48845"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_170352.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_170352.sv",
+      "sha256": "8a4146a71326e78575fd08b941841c7595781fc6ebde9c9dd89c935cec839125"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_178464.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_178464.log",
+      "sha256": "45396d2eb1438960412c402e5073882fca21a89823e598ff000817f1c4caddb8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_178464.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_178464.pcm.mem",
+      "sha256": "4a781ed695e2bcf0f50f489230ae0bf238bb9d8a024e3b6667c7e4e56e689b41"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_178464.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_178464.rice.mem",
+      "sha256": "1377d9d2e9aa34a0e16662c4f12c049c5e26ffcbe24e113328629b4565e30a52"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_178464.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_178464.sv",
+      "sha256": "8a4146a71326e78575fd08b941841c7595781fc6ebde9c9dd89c935cec839125"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_186576.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_186576.log",
+      "sha256": "98565b94e63b292b8bf2cda65c716ff6ea80e73c34fc0dcf2e5a72382c23e788"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_186576.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_186576.pcm.mem",
+      "sha256": "72367ea1ab72a71ae2a795060a3a88bbf743e86c92cd21bd4bedf48fb2489988"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_186576.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_186576.rice.mem",
+      "sha256": "b70d993569052c725035c0d38f5f15da5888aa9417183b7177e40d5ea2011cf5"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_186576.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_186576.sv",
+      "sha256": "eeb445b266c2f2601e109fa67489cff6b871b236e56122a86b7af331124a53a0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_24336.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_24336.log",
+      "sha256": "3d47f8a9106e5577445f82afb5f5cfa8cef438eb769eca7ee6cdeafa28c7aeb2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_24336.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_24336.pcm.mem",
+      "sha256": "72552b79451eb76a25d217b88619a35bd015ed5cad9fa7ef5b0076d048fb3d2f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_24336.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_24336.rice.mem",
+      "sha256": "3f75bf83373b9f348823261c30626af2f01f3fa0a6e8abd2efa3ba950b753bbd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_24336.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_24336.sv",
+      "sha256": "26531c5e896c71cd5622b9fbab048fe31d43b5fe1c08447fbd3edcd017d30d8c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_32448.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_32448.log",
+      "sha256": "f20daeb65b6d80380d7064dd5c4ed156317af072ca3c736f8330b3d84394eb85"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_32448.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_32448.pcm.mem",
+      "sha256": "f5707d2a82fe87d6243329946fc7c3e8c0eeb38431a261772f49425bd08f3d61"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_32448.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_32448.rice.mem",
+      "sha256": "abcfaea883ea7065144a26b02e8cb40f7d5547a22525d23da115ae176d30d24e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_32448.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_32448.sv",
+      "sha256": "631a9cb5fa4bccf76624fc30b8028178d21a855ad733319c0d2bbefc848c3cb6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_40560.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_40560.log",
+      "sha256": "5e138d8cf21c7253bd3b447002cba2c4392e5e1d2622fe6f4fa5f964b3c8b14d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_40560.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_40560.pcm.mem",
+      "sha256": "b6b5f5d6ee37afd0da2c8b3adbed1d922c2fb877412b38bc79a85ae5ba8d72c9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_40560.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_40560.rice.mem",
+      "sha256": "3fa41d112d8cdb290f75c6c32f01812b72b75ad44f6d299e5575f2b954a0bcc3"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_40560.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_40560.sv",
+      "sha256": "aed26aef28de43491a5d4ee1b3f942e2dbfbbd9340cd5b6217f8ffb40951a046"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_48672.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_48672.log",
+      "sha256": "9e16a59238218dcc3431129a0ffceab566c071d6cfd1443e6673ac9b3ad80c7a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_48672.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_48672.pcm.mem",
+      "sha256": "fc9026d7a86d18f6847977dfffb0845e3b6e6ebea6963058ef10f7a7e2d1853a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_48672.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_48672.rice.mem",
+      "sha256": "1bd066d42a42c87ea5cb416a84286b03a1ee713448b811064412d1962f858bd0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_48672.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_48672.sv",
+      "sha256": "71e1ce0fd02a69ffdc33eedddf8e267ac0f89b1ff651437b5ea7e6a670d5f1fa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_56784.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_56784.log",
+      "sha256": "63c7a9b41f3704e8e72df52ed58193ed8017dc83e19492ba50b849c926de0f85"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_56784.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_56784.pcm.mem",
+      "sha256": "f616a5fc762896bc90133ef3ede3c56b1d320b1702574f56507e38aafb646810"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_56784.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_56784.rice.mem",
+      "sha256": "a5bd9e2df98783230dbdc4c6e27bd7141de8c6d5c98c1be5ab12115989a281dd"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_56784.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_56784.sv",
+      "sha256": "71e1ce0fd02a69ffdc33eedddf8e267ac0f89b1ff651437b5ea7e6a670d5f1fa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_64896.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_64896.log",
+      "sha256": "11920b3d9c7fb4990df5b48e32e4b9a215fad6724382d1bdd6688fb33f1ede85"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_64896.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_64896.pcm.mem",
+      "sha256": "b3d19ea4a4f8d51003f06329cb6eeca2527d7c6a1aa20ebb12b58666bb27448a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_64896.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_64896.rice.mem",
+      "sha256": "05e3ab0fed635e0e888da976f2c174ef4d088315d1e434fcea796907af829e40"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_64896.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_64896.sv",
+      "sha256": "aed26aef28de43491a5d4ee1b3f942e2dbfbbd9340cd5b6217f8ffb40951a046"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_73008.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_73008.log",
+      "sha256": "a35651717166e89b149db9ac4e2ab64c77ac54fe74ea2e8d3b9959e0f8fb970f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_73008.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_73008.pcm.mem",
+      "sha256": "860b91336fe6143a27fd0f725acb88e786c62d545f129ac4338251d7841cf4bf"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_73008.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_73008.rice.mem",
+      "sha256": "f46e8fbeec6efa06169d8f46e1a08270c3aa25a99f2f4c2faa5ebb323151be41"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_73008.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_73008.sv",
+      "sha256": "631a9cb5fa4bccf76624fc30b8028178d21a855ad733319c0d2bbefc848c3cb6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_8112.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_8112.log",
+      "sha256": "3d2e502e0478ed7da4741a491976be54cd5dd1be22fc7f2c984b6fb6d634c05a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_8112.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_8112.pcm.mem",
+      "sha256": "9dcf30d5cf4244494275ace763c3136e0156cb0cce2b86fb31ae883fabf3608d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_8112.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_8112.rice.mem",
+      "sha256": "fc3e89da525061422163ba09a56761b7daf4f44bc196f88949d06700835505fe"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_8112.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_8112.sv",
+      "sha256": "aed26aef28de43491a5d4ee1b3f942e2dbfbbd9340cd5b6217f8ffb40951a046"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_81120.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_81120.log",
+      "sha256": "817369b2ac7c9e26b7468d4afbeef91fb9ca121c34e03f1ddd95e6e9042588d8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_81120.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_81120.pcm.mem",
+      "sha256": "80015de659234e9a8895d4fb1a030db3927e6bc3ac578f5f26a64b083f41852f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_81120.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_81120.rice.mem",
+      "sha256": "32789ffb45b71c93119cf5ae617163c7aaaf40913a27b246b9ebbd9b054d4ee1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_81120.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_81120.sv",
+      "sha256": "26531c5e896c71cd5622b9fbab048fe31d43b5fe1c08447fbd3edcd017d30d8c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_89232.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_89232.log",
+      "sha256": "e73b2576a1d4287b8aab340982a90a22e6970df479b2290957479efe07c308a9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_89232.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_89232.pcm.mem",
+      "sha256": "53f1edeef687cc1215b07b5b2adeb6d3888d8ec5de50c12541cdd71e29680514"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_89232.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_89232.rice.mem",
+      "sha256": "18f3d02f44e40f361721a0879c3d47d2e07485ece55381ed1c6f4b4d778ba6b4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_89232.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_89232.sv",
+      "sha256": "71e1ce0fd02a69ffdc33eedddf8e267ac0f89b1ff651437b5ea7e6a670d5f1fa"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_97344.log": {
+      "source": "reports/speed18_20261020/encoder_second/tone_97344.log",
+      "sha256": "58bd63519c31586ca3dd8bc326a7a63fcedba5aa1456887ae70eeb530c2bb550"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_97344.pcm.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_97344.pcm.mem",
+      "sha256": "59018408bb3476300387996f4d4de9b842da41f3b343bda6b11cef8980f8820f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_97344.rice.mem": {
+      "source": "reports/speed18_20261020/encoder_second/tone_97344.rice.mem",
+      "sha256": "6241bcb05e1b3751deb25f62d3c5a186f6d7bd63de62cd8aa7babedae682c643"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second/tone_97344.sv": {
+      "source": "reports/speed18_20261020/encoder_second/tone_97344.sv",
+      "sha256": "aed26aef28de43491a5d4ee1b3f942e2dbfbbd9340cd5b6217f8ffb40951a046"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second.log": {
+      "source": "reports/speed18_20261020/encoder_second.log",
+      "sha256": "025c8e2429f31ede8edc71696ade86e8a5a74f7877c6ffb52170453539719efb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second_final.log": {
+      "source": "reports/speed18_20261020/encoder_second_final.log",
+      "sha256": "431c511d5e035653bc11c8e65186bac37a6ed0936b16b593cb198cea991942d3"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/encoder_second_fixed.log": {
+      "source": "reports/speed18_20261020/encoder_second_fixed.log",
+      "sha256": "d52c967d03c3fec631c7389d1c1045e0ed30df2ec0156f274056711502047a2d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/extended_replay_flash.json": {
+      "source": "reports/speed18_20261020/extended_replay_flash.json",
+      "sha256": "59c53806a825cc7b0a87ceb2938d92368d4a451135bd8d8a0902280f0bc8971e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/feasibility.log": {
+      "source": "reports/speed18_20261020/feasibility.log",
+      "sha256": "c1e4bdca2b36c22cc4d92dfb945944a4c4e9b9fab0d8c6cb061e12d2304c50de"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/final_device_identity.log": {
+      "source": "reports/speed18_20261020/final_device_identity.log",
+      "sha256": "38defa93edbdf26f5f8bff2b571f60612066a11019db4d799d921e5854e5a53a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/final_identity_check.json": {
+      "source": "reports/speed18_20261020/final_identity_check.json",
+      "sha256": "88fcce61dc8abd2848d73727773295cb25774b8e9df10c15a92c7a5ef38402ec"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/firmware_inputs.json": {
+      "source": "reports/speed18_20261020/firmware_inputs.json",
+      "sha256": "f0338ac78823901089b599084f9d231bd05844c02e2bb0a1729721816f6296d4"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/flash.json": {
+      "source": "reports/speed18_20261020/flash.json",
+      "sha256": "8ac1a19fe3a70bd1f9ad11713a91532d0bd01a73bbe3370aeef65719aae4c61e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/flash.log": {
+      "source": "reports/speed18_20261020/flash.log",
+      "sha256": "6d36995f8875da7406e585e413e23964fab08541586b0a4f2cc34a2836819c0d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/flash_acceptance.log": {
+      "source": "reports/speed18_20261020/flash_acceptance.log",
+      "sha256": "34405f1186bc36870817803262afea190fe0d1ac7045803fdced849fcab59f85"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/gate_final.log": {
+      "source": "reports/speed18_20261020/gate_final.log",
+      "sha256": "bedb488033585716f41140e806596b7acc63d5c7af0f620e5a10330796bf5f1f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/gate_initial.log": {
+      "source": "reports/speed18_20261020/gate_initial.log",
+      "sha256": "a3c1bf1bb5ffce0e5266195293ed1db8d353bc1a19f35807b504b8652ae02199"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/integration_audit.json": {
+      "source": "reports/speed18_20261020/integration_audit.json",
+      "sha256": "bae8d84ed169658e5595eb3144d382909363671fb8a92b62ffe5126806bd7f1e"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/integration_initial.log": {
+      "source": "reports/speed18_20261020/integration_initial.log",
+      "sha256": "9d8a05d27c5feb94e72071b1881e40d0bd24659585b4c8cc6b8af43394a552e9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_old_download.txt": {
+      "source": "reports/speed18_20261020/kotlin_old_download.txt",
+      "sha256": "c55f2fcb8d15c440388f9271050446c7e57528a7b47cbf49f02a3ba4565bf1e0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_old_sram.gradle.log": {
+      "source": "reports/speed18_20261020/kotlin_old_sram.gradle.log",
+      "sha256": "172f41b67f5ee1c953b3b268e2038729ad5f28f8c4734ec9ce5a0bec5282a55d"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_old_sram.json": {
+      "source": "reports/speed18_20261020/kotlin_old_sram.json",
+      "sha256": "f4f8aa9e701f4a2797b7aa80deff8a1a6fdce3b8b173757475afd5fe6d7e33a3"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_old_sram.log": {
+      "source": "reports/speed18_20261020/kotlin_old_sram.log",
+      "sha256": "132bf5941563575b3aacbe331fc93c0b499bf3d45c28ecd6df43ecd253a1db26"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_old_sram.wav": {
+      "source": "reports/speed18_20261020/kotlin_old_sram.wav",
+      "sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_second_download.txt": {
+      "source": "reports/speed18_20261020/kotlin_second_download.txt",
+      "sha256": "7ac26bac992b09628d304b7cf1cb3c7ecac5faa80891ec0bce35bbad17e46128"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_second_flash.gradle.log": {
+      "source": "reports/speed18_20261020/kotlin_second_flash.gradle.log",
+      "sha256": "b1acc88834b8f5113dc35ef9ebfbcc9b8eadc080c5f6e960eec0f38ee2ef95af"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_second_flash.json": {
+      "source": "reports/speed18_20261020/kotlin_second_flash.json",
+      "sha256": "83616020acf1c35eab46761f68d4434d6c794c5887f56d3531c8bdf98dbd69c1"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_second_flash.log": {
+      "source": "reports/speed18_20261020/kotlin_second_flash.log",
+      "sha256": "2d50c709e0cb7cfd8b27c3425e6ddc26988b5dee13e53566079fbb62d92ed4fb"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_second_flash.wav": {
+      "source": "reports/speed18_20261020/kotlin_second_flash.wav",
+      "sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_second_flash_download.txt": {
+      "source": "reports/speed18_20261020/kotlin_second_flash_download.txt",
+      "sha256": "73655029c35008e25ac87b0cb0c8064ea2efb91dc8c2f1b1cc3695a5e7cd2b95"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_second_sram.gradle.log": {
+      "source": "reports/speed18_20261020/kotlin_second_sram.gradle.log",
+      "sha256": "fe442e92bfcf3d40248688f1edcba9e508025401a2b39755e0cfc3b3d3e3c3b2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_second_sram.json": {
+      "source": "reports/speed18_20261020/kotlin_second_sram.json",
+      "sha256": "f192b5e4059536e1de66885086b2b8314143e98a031527c5aa49b2116c5a8164"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_second_sram.log": {
+      "source": "reports/speed18_20261020/kotlin_second_sram.log",
+      "sha256": "0fb767d89eb6863bba351a94a0ecbfa64fb0dbaed2205ed5a1a09614ea3222f6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/kotlin_second_sram.wav": {
+      "source": "reports/speed18_20261020/kotlin_second_sram.wav",
+      "sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/lint.xml": {
+      "source": "reports/speed18_20261020/lint.xml",
+      "sha256": "23ab97a2416285f9aa023465eee40cc50ba01e8931daf869768e50ed71736e7b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/lossless_1.json": {
+      "source": "reports/speed18_20261020/lossless_1.json",
+      "sha256": "44570d0cf183916486c969fb49d382bbd0569539b8978c736f29325f22505a19"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/lossless_2.json": {
+      "source": "reports/speed18_20261020/lossless_2.json",
+      "sha256": "6c1d44db3dec1e364d14824f7f795c8c54751db8a1e23391840ddc27b5dabfed"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/lossless_3.json": {
+      "source": "reports/speed18_20261020/lossless_3.json",
+      "sha256": "857efe27d5133dc5d27aa7b91739d8ad9222b54dea5aaca7f466b94da8c06519"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/lossless_replay_flash.json": {
+      "source": "reports/speed18_20261020/lossless_replay_flash.json",
+      "sha256": "202f21f674f1ae73046070d18612e8d756b0253c321a06ac05a6ea7ce58d7f2a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/paired_speed.json": {
+      "source": "reports/speed18_20261020/paired_speed.json",
+      "sha256": "d1e94b426d779fbbfb1fd992059e6652b2f7755392de179fed1a2b0911dc35d8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/pairs.log": {
+      "source": "reports/speed18_20261020/pairs.log",
+      "sha256": "96dcd4aaefa1a2076a797e3ba035e405f386253107fa2861696542d9806b94b8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/predictor_feasibility.json": {
+      "source": "reports/speed18_20261020/predictor_feasibility.json",
+      "sha256": "c606ef8f7f25538fdcc3e7d74211afc27764b1938270f88c08426294298b220f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/predictor_feasibility.py": {
+      "source": "reports/speed18_20261020/predictor_feasibility.py",
+      "sha256": "214a69ca085a1c0c9775f5a3ee93b939c4de9631d6e16f38507bf7270e32f1f0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/previous_ready_build.json": {
+      "source": "reports/speed18_20261020/previous_ready_build.json",
+      "sha256": "2cd343684306dd7471157d0fa6becca85c4942b9814bf94891d6fca22262365a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/profile_resume_flash.json": {
+      "source": "reports/speed18_20261020/profile_resume_flash.json",
+      "sha256": "77f84350a7a7250f438169d2a5824c9ef1b157133ba0754fd2eb1c1cd4a89eab"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/profile_resume_sram.json": {
+      "source": "reports/speed18_20261020/profile_resume_sram.json",
+      "sha256": "d3a72a93bdba858c6fee2f4dbdde18c950c14af930139e54b34428afbb9952e6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/profile_resume_sram.log": {
+      "source": "reports/speed18_20261020/profile_resume_sram.log",
+      "sha256": "598145b5406c19a8bd2840ba93a57836ac2e8e2545c60d10343e7c300cc8c962"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/program_sram.log": {
+      "source": "reports/speed18_20261020/program_sram.log",
+      "sha256": "546f33a2cb86e121022529b98408c7037bd1c87378f7c28806009bb8ecc20612"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/protocol_flash.json": {
+      "source": "reports/speed18_20261020/protocol_flash.json",
+      "sha256": "b8d0b90577aaab758c84ae6a87705fb2908a2f10da8b86e967a68ca9e7d6b9e8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/recording_sram.json": {
+      "source": "reports/speed18_20261020/recording_sram.json",
+      "sha256": "a18286b7b62130d087f41332bb56cbd84e649c12c03b3da1a04890fa07a4d6a9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/recording_sram.log": {
+      "source": "reports/speed18_20261020/recording_sram.log",
+      "sha256": "3774509293feab569a79f07d1e7c658d51af58620822a23c2dbe4cd5340fe846"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/recording_sram.wav": {
+      "source": "reports/speed18_20261020/recording_sram.wav",
+      "sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/regression.log": {
+      "source": "reports/speed18_20261020/regression.log",
+      "sha256": "5d85e070a0b1b8fd768498b8198659f8899d1532c82c54f30a3dea13d441c608"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/second_1.json": {
+      "source": "reports/speed18_20261020/second_1.json",
+      "sha256": "891c6cdf27230076aac9e4ee8e6f32a6b8366d25e67142ed3d775dc33d71c733"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/second_2.json": {
+      "source": "reports/speed18_20261020/second_2.json",
+      "sha256": "c2dd00cf126b3b3dd5aba1975d9a80fc6a3eff9b80a865ae3769c3d39fb04d72"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/second_3.json": {
+      "source": "reports/speed18_20261020/second_3.json",
+      "sha256": "284e2e9d08fd5f80a99a3c0cbea6d887defa9fd059b6b3477d0fdfa71e249894"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/second_replay_flash.json": {
+      "source": "reports/speed18_20261020/second_replay_flash.json",
+      "sha256": "ad5f1bae0e658b9ccc4171d8add279e8056bea7e5faed2a425ea571c3c686514"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/second_replay_sram.json": {
+      "source": "reports/speed18_20261020/second_replay_sram.json",
+      "sha256": "ca6ab35c84df5ac373a7e1fc865139f1cd38d44a4c123f8ede4fbbd1a355da4c"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/second_replay_sram.log": {
+      "source": "reports/speed18_20261020/second_replay_sram.log",
+      "sha256": "debec424ff3041f5c978caef933478e627dde621b03536eff0fd339fc4101b97"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/simulation.json": {
+      "source": "reports/speed18_20261020/simulation.json",
+      "sha256": "99fa5d2d254727f4e1da611e9cbda23d7fcad7b3a775b3cfc19c3e00d4917d19"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/speed_flash.json": {
+      "source": "reports/speed18_20261020/speed_flash.json",
+      "sha256": "f4429714303e77b62d3459d157e3328b9682255093a4dfe3a1ee20d6f939c5fc"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/speed_initial.json": {
+      "source": "reports/speed18_20261020/speed_initial.json",
+      "sha256": "2f44868c9b2f2b986e9c1eeda70e0dc8a6cf57a68c24cd0db1461f796355ea78"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/speed_initial.log": {
+      "source": "reports/speed18_20261020/speed_initial.log",
+      "sha256": "80ed357cab8203fbaa1ec4648502f820a0c71faad80217e0b66857a44514106a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/summary.json": {
+      "source": "reports/speed18_20261020/summary.json",
+      "sha256": "8f92bbd0f50dd9b0e6e427ea9d7ac6a00a1d0c75eab8a78128ae5f4e0f407109"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/verify_release.py": {
+      "source": "reports/speed18_20261020/verify_release.py",
+      "sha256": "7de2c60188463d98da426b5ca781a7f763d7eece6ab6e96661a5000c0636fb3a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/wire_audit.json": {
+      "source": "reports/speed18_20261020/wire_audit.json",
+      "sha256": "6c48d017993c9ea9095ab1c08b6ae87460fa8e5af231e59a5a3015e3a53d6d77"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed2_20261020/summary.json": {
+      "source": "reports/speed2_20261020/summary.json",
+      "sha256": "c9f626aba3f6f61d970a06d0c9d9c292ab1aa6f55a0c846d8c15000318dc25a8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed3_20261020/README.md": {
+      "source": "reports/speed3_20261020/README.md",
+      "sha256": "316f4e36c3decd24230d005689fc850a8911d2d39317d5174a8300bdf0c5e9d6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed3_20261020/summary.json": {
+      "source": "reports/speed3_20261020/summary.json",
+      "sha256": "04cecd19cc2fb51cb0c7cb0c74f90de666943fa3472ede19cd4a17ecc5fe72ad"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed4_20261020/README.md": {
+      "source": "reports/speed4_20261020/README.md",
+      "sha256": "edc67dd0c1cdfa906b75b08724fd2c7b9e043b099fff3ef7cfd8b564ec3fbdb0"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed4_20261020/summary.json": {
+      "source": "reports/speed4_20261020/summary.json",
+      "sha256": "a3441fe7926f505dcb0d4e4837a7205051398ec3a1d1e4ca3eab727ac30fe753"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed5_20261020/README.md": {
+      "source": "reports/speed5_20261020/README.md",
+      "sha256": "3eebe9073e78abaa88d26907ac5c713e4ec90adda38650467dd269b5c1872b50"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed5_20261020/summary.json": {
+      "source": "reports/speed5_20261020/summary.json",
+      "sha256": "07f6396839ce7b5ce8e7bad79470de7c9e2cf95693d8b5fb07f3c33b24fdb188"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed6_20261020/README.md": {
+      "source": "reports/speed6_20261020/README.md",
+      "sha256": "113ddddfc5946b44efad53067fad7c9a3fe534303e19a5f616a2adc2881a78c2"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed6_20261020/summary.json": {
+      "source": "reports/speed6_20261020/summary.json",
+      "sha256": "8262cf8a2aa32782c29bcddd63c7d313349e8f98a078b3aeeb2bab41cc5ae2ea"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed7_20261020/README.md": {
+      "source": "reports/speed7_20261020/README.md",
+      "sha256": "9031956e02dccc09bbcaea8bb8b255d0ecfef6ed572dd2b9e54e90a166b7e85f"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed7_20261020/summary.json": {
+      "source": "reports/speed7_20261020/summary.json",
+      "sha256": "d2b774e103929b2cf2accb421f302a806ee457b0b9614e7cd05bc07b64addfa6"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed8_20261020/README.md": {
+      "source": "reports/speed8_20261020/README.md",
+      "sha256": "1f247d04611021655dd9f369587605fe158aae1a8317385c048a0bdd296c88c8"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed8_20261020/summary.json": {
+      "source": "reports/speed8_20261020/summary.json",
+      "sha256": "4684a67a3c8b2a3881600032c265556dcff8f7a230c52b3bfeac53c397ed1c7b"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed9_20261020/README.md": {
+      "source": "reports/speed9_20261020/README.md",
+      "sha256": "5d1bbd98d1eb7b84ecde280fd6dcb8147ede57058a09024b1a7212563454a1c9"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed9_20261020/summary.json": {
+      "source": "reports/speed9_20261020/summary.json",
+      "sha256": "36ab23f279a9345178fba20d24db27a2b555326221cc086f540f7732c4ab06d5"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed_20261020/README.md": {
+      "source": "reports/speed_20261020/README.md",
+      "sha256": "3e84ab4ce13250e042f05e11dbc27ce8c4f27a5ab582ffb58aef05a0dd802e8a"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/reports/speed_20261020/summary.json": {
+      "source": "reports/speed_20261020/summary.json",
+      "sha256": "80b62f84514a73e1e4da1f8668d211e0230d4ec0dbc5c77157b368c394680bd5"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/.gitignore": {
+      "source": null,
+      "sha256": "e2405d5627965c832e746a0d2a76a73fbc9d1a506108b695c659fd42fa5c3b23",
+      "note": "repository import support"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/REPOSITORY_IMPORT.md": {
+      "source": null,
+      "sha256": "48e3a939071022596026d4e30705de94369802b2fb67c6a2c38f984e9274841b",
+      "note": "repository import support"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/artifacts/README.md": {
+      "source": null,
+      "sha256": "38a02e31f980a9d18ea0d88fc75fe731bc2e16b91dfac2780f975dee99fa6ce9",
+      "note": "repository import support"
+    },
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/check_repository_import.py": {
+      "source": null,
+      "sha256": "816d0090945846e760f07cdb0bcd75d6fb848503485e9b366b7c5d9df783cb39",
+      "note": "repository import support"
+    }
+  }
+}

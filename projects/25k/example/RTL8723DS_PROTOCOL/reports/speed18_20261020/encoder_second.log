@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/tests/check_rice_rtl.py", line 49, in <module>
+    if r.returncode or 'PASS encoder' not in r.stdout:raise RuntimeError(name+':'+r.stdout+r.stderr)
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: tone_0:WARNING: reports/speed18_20261020/encoder_second/tone_0.sv:18: $readmemh(/private/tmp/gw25k-rice-vectors/expected.mem): Not enough words in the file for the requested range [0:8111].
+FATAL: reports/speed18_20261020/encoder_second/tone_0.sv:22: result mode=1 len=3374 count=       3374
+       Time: 513350000  Scope: tb_rice
+

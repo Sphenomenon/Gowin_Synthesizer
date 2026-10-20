@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.ble.ExtendedTransferTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-20T11:56:41" hostname="ic-lab" time="0.02">
+  <properties/>
+  <testcase name="longDataOnlyAfterExplicitOpenAtMinimumAndLargeMtu" classname="cn.gowin.control.ble.ExtendedTransferTest" time="0.008"/>
+  <testcase name="unsupportedProbesOnceButBusyAndBadMetadataNeverDowngrade" classname="cn.gowin.control.ble.ExtendedTransferTest" time="0.005"/>
+  <testcase name="lostOrCorruptLongDataRetriesExactlyWithoutPrematureAck" classname="cn.gowin.control.ble.ExtendedTransferTest" time="0.005"/>
+  <testcase name="negotiatedMtuBoundsChunkAndMinimumMtuUsesExactly64Fragments" classname="cn.gowin.control.ble.ExtendedTransferTest" time="0.002"/>
+  <testcase name="longFrameLimitsRemainDataOnlyAndOptIn" classname="cn.gowin.control.ble.ExtendedTransferTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

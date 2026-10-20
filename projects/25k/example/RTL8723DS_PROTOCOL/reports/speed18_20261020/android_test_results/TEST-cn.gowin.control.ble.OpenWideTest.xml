@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.ble.OpenWideTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-20T01:58:20" hostname="Mac.ts.net lan" time="0.005">
+  <properties/>
+  <testcase name="largeBlockRequiresExplicitBoundAndKeepsLogicalAndPcmCrc" classname="cn.gowin.control.ble.OpenWideTest" time="0.0"/>
+  <testcase name="busyNeverFallsBackToAnotherOpen" classname="cn.gowin.control.ble.OpenWideTest" time="0.002"/>
+  <testcase name="unsupportedDisablesProbeForConnectionOnly" classname="cn.gowin.control.ble.OpenWideTest" time="0.002"/>
+  <testcase name="timeoutRetriesSameOpenWithoutAllocatingNewId" classname="cn.gowin.control.ble.OpenWideTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

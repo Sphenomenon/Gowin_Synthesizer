@@ -1,0 +1,61 @@
+{
+  "scope": "Only test dump/scratch paths changed in an ignored runtime copy; production and imported sources remain unchanged",
+  "transforms": [
+    {
+      "path": "tests/audit_lossless_vectors.py",
+      "source_sha256": "805dc2f297bcd15ad4f1dad253bec3c326b58bfb5aa71cea8fb9be1295a410c6",
+      "staged_sha256": "cdfef77dff31ffa21b118cea92969866e8ed43dfeb2a2fff91d5010a32ef5548",
+      "replacement_from": "/private/tmp",
+      "replacement_to": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/codec_dumps",
+      "occurrences": 1
+    },
+    {
+      "path": "tests/check_rice_rtl.py",
+      "source_sha256": "5813eae8a30770d39a14586a30655e7e30ff288a1649c9a08879ac0c4157f0c1",
+      "staged_sha256": "cdb1902f0ce3e670f3abada11f451f69d535bdf2e3c4f28bf4355d9c75477495",
+      "replacement_from": "/private/tmp",
+      "replacement_to": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/codec_dumps",
+      "occurrences": 1
+    },
+    {
+      "path": "tests/run.py",
+      "source_sha256": "b5b468086afb0fedcfbf0966f2975da9912c58f8f86b6fba36dda12b35df54b0",
+      "staged_sha256": "b18bbd82eb18611629da01fc920cfedda35cfc73fc2142e59aaad2a19b7c2ac5",
+      "replacement_from": "/private/tmp",
+      "replacement_to": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/codec_dumps",
+      "occurrences": 2
+    },
+    {
+      "path": "tests/tb_lossless_profile_replay.sv",
+      "source_sha256": "cf5144466cf9f6a153b94f9b9d26475fca23c1c81f359a74edde4b5c08a11c98",
+      "staged_sha256": "2a3d5c7efd5d8f81308404de4d7fe70d2837a42fa5b1072f9f8f429d306e9511",
+      "replacement_from": "/private/tmp",
+      "replacement_to": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/codec_dumps",
+      "occurrences": 1
+    },
+    {
+      "path": "tests/tb_lossless_recording.sv",
+      "source_sha256": "dad35a763fd47712ae8df8a367bcd5bcebbcb9ba4ffc361ac890b55dc1524094",
+      "staged_sha256": "292fab693d0c889ebc8dcbf2a675fb31f15ba2afea05043978e9ebf2c628baab",
+      "replacement_from": "/private/tmp",
+      "replacement_to": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/codec_dumps",
+      "occurrences": 1
+    },
+    {
+      "path": "tests/tb_second_profile_replay.sv",
+      "source_sha256": "1bea12144ac6ba6ba085afad6069baf0dc08b189a241ea309b5833d0dc2d9ac8",
+      "staged_sha256": "1afeede84541d420fe5a5b98c35e223db9eb8a7eba027f5e4f5aa5a7b2706f19",
+      "replacement_from": "/private/tmp",
+      "replacement_to": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/codec_dumps",
+      "occurrences": 1
+    },
+    {
+      "path": "tests/tb_second_recording.sv",
+      "source_sha256": "79d9d7c6eb62eb0886b555a9332dea5b06af45df9ea75ec69ed9633281fbc42c",
+      "staged_sha256": "d3b086721e10795adb66d996051eb291a795d8dc9a5c33e7c888ae949862b03e",
+      "replacement_from": "/private/tmp",
+      "replacement_to": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/codec_dumps",
+      "occurrences": 1
+    }
+  ]
+}

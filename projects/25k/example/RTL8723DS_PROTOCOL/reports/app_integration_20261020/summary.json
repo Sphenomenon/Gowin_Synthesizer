@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-20",
+  "passed": true,
+  "apk": {
+    "path": "artifacts/gowin-control-0.1.1-gw25k-debug.apk",
+    "sha256": "ab222c2f70b0c1e259a5b449cce1009519fad5e54a8e0a66909c892d9da3e4f4"
+  },
+  "firmware": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_025919_563482/impl/pnr/ble_protocol.fs",
+    "sha256": "17f92db8ece34d5933d77d4767adeacc742eb82cf4fe7a6aa3599bc09600d8c6"
+  },
+  "flash_report": "reports/flash_20261020_030452_150244/summary.json",
+  "user_code": [
+    "0x00008BA9"
+  ],
+  "status": [
+    "0x70022020"
+  ],
+  "checks": {
+    "kotlin_sram": true,
+    "kotlin_flash": true,
+    "protocol_sram": true,
+    "protocol_after_180s": true,
+    "protocol_flash": true
+  },
+  "android_unit_tests_passed": 10,
+  "android_opt_in_radio_test": "passed separately before and after Flash reload",
+  "android_lint": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "hdl_regression_groups": 9,
+  "kotlin_sources_match_apk_build": true,
+  "continuous_runtime_checked_ms": 195538,
+  "phone_test": "User chose to install APK and test on phone; not yet verified",
+  "power_cycle_performed": false,
+  "source_hash_manifest": "android_sources.json"
+}

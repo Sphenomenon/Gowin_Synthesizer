@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "report_date_local": "2026-10-03 05:02:31",
+  "tool": "Vivado 2026.1",
+  "device": "xc7z020clg400-2",
+  "design": "bt_verilog_top",
+  "stage": "Routed",
+  "checkpoint": "build/bt_verilog/vivado/bt_verilog.runs/impl_1/bt_verilog_top_routed.dcp",
+  "checkpoint_sha256": "d591261ab82b3a27eb0098bc807a3cc4bb8c0e5a9fe46bfb79c9f09b4d5485b9",
+  "reports": {
+    "total": "build/bt_verilog/reports/utilization.rpt",
+    "core": "build/bt_verilog/reports/utilization_core.rpt",
+    "hierarchy": "build/bt_verilog/reports/utilization_hierarchical.rpt"
+  },
+  "available": {"lut": 53200, "ff": 106400, "bram36_tiles": 140, "dsp": 220},
+  "total": {
+    "lut": 11714, "lut_logic": 11551, "lut_ram": 24, "srl": 139,
+    "ff": 19048, "bram36": 10, "bram18": 1, "bram36_equivalent_tiles": 10.5, "dsp": 0,
+    "device_percent": {"lut": 22.02, "ff": 17.90, "bram36_tiles": 7.50, "dsp": 0.00},
+    "scope": "Complete tested board design, including Bluetooth core, debug hub, VIO, ILA, monitor and PS clock/reset infrastructure."
+  },
+  "bluetooth_core": {
+    "instance": "core", "module": "bt_verilog_core",
+    "lut": 7925, "lut_logic": 7925, "lut_ram": 0, "srl": 0,
+    "ff": 12525, "bram36": 8, "bram18": 0, "bram36_equivalent_tiles": 8, "dsp": 0,
+    "device_percent": {"lut": 14.90, "ff": 11.77, "bram36_tiles": 5.71, "dsp": 0.00},
+    "scope": "Tested Bluetooth UART/H5/HCI patch and ATT/GATT logic, including status/debug counters; excludes PS, VIO, ILA, monitor, debug hub and board I/O buffers."
+  },
+  "hierarchy": [
+    {"instance": "core/transport", "module": "bt_h5_transport", "lut": 4304, "ff": 7309, "bram36": 0, "bram18": 0, "dsp": 0},
+    {"instance": "core/transport/uart", "module": "bt_uart", "lut": 2066, "ff": 107, "bram36": 0, "bram18": 0, "dsp": 0, "contained_in": "core/transport"},
+    {"instance": "core/application", "module": "bt_gatt", "lut": 2264, "ff": 2715, "bram36": 0, "bram18": 0, "dsp": 0},
+    {"instance": "core/initializer", "module": "bt_hci_init", "lut": 1348, "ff": 2464, "bram36": 8, "bram18": 0, "dsp": 0},
+    {"instance": "system_i", "module": "bt_verilog_system", "lut": 3313, "ff": 5768, "bram36": 2, "bram18": 1, "dsp": 0},
+    {"instance": "system_i/vio_bt", "module": "bt_verilog_system_vio_bt_0", "lut": 2274, "ff": 4121, "bram36": 0, "bram18": 0, "dsp": 0, "contained_in": "system_i"},
+    {"instance": "system_i/ila_gpio", "module": "bt_verilog_system_ila_gpio_0", "lut": 824, "ff": 1478, "bram36": 2, "bram18": 1, "dsp": 0, "contained_in": "system_i"},
+    {"instance": "dbg_hub", "module": "dbg_hub", "lut": 473, "ff": 753, "bram36": 0, "bram18": 0, "dsp": 0}
+  ],
+  "notes": [
+    "Numbers are post-route resources from the existing hardware-tested build, not an estimate or a new standalone synthesis.",
+    "One BRAM36 tile is equivalent to two BRAM18 units; the core's eight BRAM36 cells hold the 32768-byte padded patch ROM.",
+    "Per-hierarchy LUT counts do not necessarily sum exactly to the parent total because of cross-hierarchy LUT combining.",
+    "The exported generic wrapper may change implementation counts when debug outputs are unconnected or parameters are changed."
+  ]
+}

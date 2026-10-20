@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "modules": {
+    "protocol": {
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ble": {
+      "tests": 48,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "data": {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    }
+  },
+  "lint": {
+    "Fatal": 0,
+    "Error": 0,
+    "Warning": 5
+  },
+  "lint_warning_ids": [
+    "GradleDependency",
+    "GradleDependency",
+    "GradleDependency",
+    "GradleDependency",
+    "GradleDependency"
+  ]
+}

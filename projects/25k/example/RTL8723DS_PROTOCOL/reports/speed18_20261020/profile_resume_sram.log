@@ -1,0 +1,113 @@
+{
+  "passed": true,
+  "started_at": "2026-10-20T10:04:24.815415+08:00",
+  "transfers": [
+    {
+      "opcode": 48,
+      "max_chunk": 256,
+      "offset": 0,
+      "bytes": 256,
+      "notifications": 22
+    },
+    {
+      "opcode": 64,
+      "max_chunk": 8112,
+      "offset": 256,
+      "bytes": 8112,
+      "notifications": 20
+    },
+    {
+      "opcode": 61,
+      "max_chunk": 8112,
+      "offset": 8368,
+      "bytes": 8112,
+      "notifications": 32
+    },
+    {
+      "opcode": 60,
+      "max_chunk": 8112,
+      "offset": 16480,
+      "bytes": 8112,
+      "notifications": 46
+    },
+    {
+      "opcode": 59,
+      "max_chunk": 972,
+      "offset": 24592,
+      "bytes": 972,
+      "notifications": 6
+    },
+    {
+      "opcode": 57,
+      "max_chunk": 460,
+      "offset": 25564,
+      "bytes": 460,
+      "notifications": 3
+    },
+    {
+      "opcode": 56,
+      "max_chunk": 460,
+      "offset": 26024,
+      "bytes": 460,
+      "notifications": 3
+    },
+    {
+      "opcode": 55,
+      "max_chunk": 460,
+      "offset": 26484,
+      "bytes": 460,
+      "notifications": 32
+    },
+    {
+      "opcode": 54,
+      "max_chunk": 460,
+      "offset": 26944,
+      "bytes": 460,
+      "notifications": 37
+    },
+    {
+      "opcode": 64,
+      "max_chunk": 8112,
+      "offset": 27404,
+      "bytes": 8112,
+      "notifications": 20
+    },
+    {
+      "opcode": 61,
+      "max_chunk": 8112,
+      "offset": 35516,
+      "bytes": 8112,
+      "notifications": 32
+    },
+    {
+      "opcode": 60,
+      "max_chunk": 8112,
+      "offset": 43628,
+      "bytes": 8112,
+      "notifications": 46
+    },
+    {
+      "opcode": 59,
+      "max_chunk": 972,
+      "offset": 51740,
+      "bytes": 972,
+      "notifications": 6
+    },
+    {
+      "opcode": 48,
+      "max_chunk": 256,
+      "offset": 52712,
+      "bytes": 256,
+      "notifications": 22
+    }
+  ],
+  "pcm_bytes": 52968,
+  "reference_matches": true,
+  "old_checkpoint_resumed_with_wide": true,
+  "wide_checkpoint_resumed_with_legacy": true,
+  "compact_profile_switched_both_directions": true,
+  "bulk_profile_switched_both_directions": true,
+  "lossless_profile_switched_both_directions": true,
+  "second_profile_switched_both_directions": true,
+  "finished_at": "2026-10-20T10:04:33.061695+08:00"
+}

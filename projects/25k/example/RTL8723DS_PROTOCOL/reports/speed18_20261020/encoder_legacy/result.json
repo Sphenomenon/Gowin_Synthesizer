@@ -1,0 +1,233 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "case": "tone_0",
+      "pcm": 8112,
+      "encoded": 5492,
+      "mode": 10
+    },
+    {
+      "case": "tone_8112",
+      "pcm": 8112,
+      "encoded": 5501,
+      "mode": 10
+    },
+    {
+      "case": "tone_16224",
+      "pcm": 8112,
+      "encoded": 5498,
+      "mode": 10
+    },
+    {
+      "case": "tone_24336",
+      "pcm": 8112,
+      "encoded": 5499,
+      "mode": 10
+    },
+    {
+      "case": "tone_32448",
+      "pcm": 8112,
+      "encoded": 5496,
+      "mode": 10
+    },
+    {
+      "case": "tone_40560",
+      "pcm": 8112,
+      "encoded": 5501,
+      "mode": 10
+    },
+    {
+      "case": "tone_48672",
+      "pcm": 8112,
+      "encoded": 5498,
+      "mode": 10
+    },
+    {
+      "case": "tone_56784",
+      "pcm": 8112,
+      "encoded": 5493,
+      "mode": 10
+    },
+    {
+      "case": "tone_64896",
+      "pcm": 8112,
+      "encoded": 5501,
+      "mode": 10
+    },
+    {
+      "case": "tone_73008",
+      "pcm": 8112,
+      "encoded": 5498,
+      "mode": 10
+    },
+    {
+      "case": "tone_81120",
+      "pcm": 8112,
+      "encoded": 5500,
+      "mode": 10
+    },
+    {
+      "case": "tone_89232",
+      "pcm": 8112,
+      "encoded": 5494,
+      "mode": 10
+    },
+    {
+      "case": "tone_97344",
+      "pcm": 8112,
+      "encoded": 5502,
+      "mode": 10
+    },
+    {
+      "case": "tone_105456",
+      "pcm": 8112,
+      "encoded": 5499,
+      "mode": 10
+    },
+    {
+      "case": "tone_113568",
+      "pcm": 8112,
+      "encoded": 5495,
+      "mode": 10
+    },
+    {
+      "case": "tone_121680",
+      "pcm": 8112,
+      "encoded": 5498,
+      "mode": 10
+    },
+    {
+      "case": "tone_129792",
+      "pcm": 8112,
+      "encoded": 5498,
+      "mode": 10
+    },
+    {
+      "case": "tone_137904",
+      "pcm": 8112,
+      "encoded": 5501,
+      "mode": 10
+    },
+    {
+      "case": "tone_146016",
+      "pcm": 8112,
+      "encoded": 5494,
+      "mode": 10
+    },
+    {
+      "case": "tone_154128",
+      "pcm": 8112,
+      "encoded": 5501,
+      "mode": 10
+    },
+    {
+      "case": "tone_162240",
+      "pcm": 8112,
+      "encoded": 5499,
+      "mode": 10
+    },
+    {
+      "case": "tone_170352",
+      "pcm": 8112,
+      "encoded": 5495,
+      "mode": 10
+    },
+    {
+      "case": "tone_178464",
+      "pcm": 8112,
+      "encoded": 5496,
+      "mode": 10
+    },
+    {
+      "case": "tone_186576",
+      "pcm": 5424,
+      "encoded": 3680,
+      "mode": 10
+    },
+    {
+      "case": "silence",
+      "pcm": 8112,
+      "encoded": 5070,
+      "mode": 10
+    },
+    {
+      "case": "extremes",
+      "pcm": 8112,
+      "encoded": 5076,
+      "mode": 10
+    },
+    {
+      "case": "noise",
+      "pcm": 8112,
+      "encoded": 8112,
+      "mode": 0
+    },
+    {
+      "case": "ramp",
+      "pcm": 8112,
+      "encoded": 5073,
+      "mode": 10
+    },
+    {
+      "case": "random_4",
+      "pcm": 4,
+      "encoded": 4,
+      "mode": 0
+    },
+    {
+      "case": "random_8",
+      "pcm": 8,
+      "encoded": 8,
+      "mode": 0
+    },
+    {
+      "case": "random_20",
+      "pcm": 20,
+      "encoded": 20,
+      "mode": 0
+    },
+    {
+      "case": "random_460",
+      "pcm": 460,
+      "encoded": 460,
+      "mode": 0
+    },
+    {
+      "case": "random_972",
+      "pcm": 972,
+      "encoded": 972,
+      "mode": 0
+    },
+    {
+      "case": "random_3600",
+      "pcm": 3600,
+      "encoded": 3600,
+      "mode": 0
+    },
+    {
+      "case": "random_7888",
+      "pcm": 7888,
+      "encoded": 7888,
+      "mode": 0
+    },
+    {
+      "case": "random_walk_17",
+      "pcm": 8112,
+      "encoded": 5820,
+      "mode": 10
+    },
+    {
+      "case": "random_walk_18",
+      "pcm": 8112,
+      "encoded": 5810,
+      "mode": 10
+    },
+    {
+      "case": "random_walk_19",
+      "pcm": 8112,
+      "encoded": 5800,
+      "mode": 10
+    }
+  ]
+}

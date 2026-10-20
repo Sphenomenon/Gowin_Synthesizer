@@ -1,0 +1,10 @@
+{
+  "command": [
+    "python3",
+    "projects/25k/example/RTL8723DS_PROTOCOL/tools/check_repository_import.py"
+  ],
+  "returncode": 0,
+  "started": "2026-10-20T19:52:24.590361+08:00",
+  "finished": "2026-10-20T19:52:24.624797+08:00",
+  "log": "repository_import.log"
+}

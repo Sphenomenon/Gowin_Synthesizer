@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.ble.AckReadTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-20T11:56:41" hostname="ic-lab" time="0.117">
+  <properties/>
+  <testcase name="oldFirmwareFallsBackOncePerConnection" classname="cn.gowin.control.ble.AckReadTest" time="0.109"/>
+  <testcase name="combinedTimeoutRetriesIdenticalIdAndPayload" classname="cn.gowin.control.ble.AckReadTest" time="0.005"/>
+  <testcase name="crcConflictNeverFallsBackAndFirstReadNeedsNoAck" classname="cn.gowin.control.ble.AckReadTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

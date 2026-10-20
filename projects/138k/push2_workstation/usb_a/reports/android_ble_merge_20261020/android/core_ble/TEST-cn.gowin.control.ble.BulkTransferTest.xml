@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cn.gowin.control.ble.BulkTransferTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-20T11:56:41" hostname="ic-lab" time="0.07">
+  <properties/>
+  <testcase name="explicitUnsupportedFallsBackOnceButBusyAndInvalidMetadataNeverChangeOpen" classname="cn.gowin.control.ble.BulkTransferTest" time="0.015"/>
+  <testcase name="everyMessageLengthAtMultipleNegotiatedLimitsKeepsBytesAndDuplicates" classname="cn.gowin.control.ble.BulkTransferTest" time="0.044"/>
+  <testcase name="openMetadataRequiresExplicitOpcodeLengthLimitWindowAndReservedBytes" classname="cn.gowin.control.ble.BulkTransferTest" time="0.002"/>
+  <testcase name="lostCorruptShortMixedAndOversizedFragmentsRequireFreshFirst" classname="cn.gowin.control.ble.BulkTransferTest" time="0.002"/>
+  <testcase name="optedInBulkReceivesLargeValuesAndRetriesSameOpenAndReadAfterLoss" classname="cn.gowin.control.ble.BulkTransferTest" time="0.007"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

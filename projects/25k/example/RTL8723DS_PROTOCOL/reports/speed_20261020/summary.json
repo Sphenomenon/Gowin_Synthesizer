@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-20",
+  "passed": true,
+  "apk": {
+    "path": "artifacts/gowin-control-0.2.1-gw25k-fast-debug.apk",
+    "version_name": "0.2.1",
+    "version_code": 4,
+    "bytes": 9737009,
+    "sha256": "042d2653ea7bf8a3e704966884a04c5358c01a5ebbc4f5c904881dbabca9b1f1",
+    "certificate_sha256": "dc39e7120615a53f0bdf18629a361f0ebbf055d36c3b82f48adaf01cdae878ca"
+  },
+  "firmware": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/GW_25K/example/RTL8723DS_PROTOCOL/builds/20261020_040429_731960/impl/pnr/ble_protocol.fs",
+    "sha256": "51b2e4a8d955ccb3e6901cb40d76cc6bc010117bf139557714d86dfe3fc3c07b"
+  },
+  "flash_report": "reports/flash_20261020_041256_493362/summary.json",
+  "user_code": [
+    "0x00004096"
+  ],
+  "status_code": [
+    "0x70022020"
+  ],
+  "transport": "Optional ATT Write Command advertised by characteristic property 0x04; Write Request retained; no v1 logical wire-format changes",
+  "performance": {
+    "benchmark_pcm_bytes": 8192,
+    "baseline_bytes_per_second": 488.50652052575373,
+    "fast_sram_bytes_per_second": 1034.4360154530502,
+    "fast_flash_bytes_per_second": 931.9709200077407,
+    "sram_speedup": 2.1175480203206734,
+    "flash_speedup": 1.9077962746632526,
+    "full_pcm_bytes": 192000,
+    "full_download_seconds_with_resume_and_wav": 196.180852833,
+    "phone_speed_verified": false
+  },
+  "timing": {
+    "constraint_mhz": 50,
+    "fmax_mhz": 51.174,
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "resources": {
+    "lut": 15665,
+    "register": 8815,
+    "cls_used": 10750,
+    "cls_total": 11520,
+    "bsram_used": 30,
+    "bsram_total": 56
+  },
+  "capability_flags": 104,
+  "checks": {
+    "baseline": true,
+    "fast_salted_sram": true,
+    "recording_fast_sram": true,
+    "kotlin_fast_sram": true,
+    "complete_wav_check": true,
+    "flash_recording": true,
+    "speed_flash": true,
+    "protocol_flash": true
+  },
+  "evidence": {
+    "baseline": "reports/speed_20261020/baseline.json",
+    "fast_salted_sram": "reports/speed_20261020/fast_salted_sram.json",
+    "recording_fast_sram": "reports/speed_20261020/recording_fast_sram.json",
+    "kotlin_fast_sram": "reports/speed_20261020/kotlin_fast_sram.json",
+    "complete_wav_check": "reports/speed_20261020/complete_wav_check.json",
+    "flash_recording": "reports/speed_20261020/flash_recording.json",
+    "speed_flash": "reports/speed_20261020/speed_flash.json",
+    "protocol_flash": "reports/speed_20261020/protocol_flash.json"
+  },
+  "simulation_report": "reports/simulations/20261020_040438_955825/result.json",
+  "regression_groups_passed": 12,
+  "ordinary_android_tests_passed": 11,
+  "android_lint": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "physical_kotlin_recording_test_passed": true,
+  "injected_fragment_loss_recovered": true,
+  "cancel_and_disconnect_resume_verified": true,
+  "continuous_timeout_fallback_unit_test": true,
+  "complete_wav_sha256": "2c492fa12189698f5abf3032cfd97aa322e8c4df5456b37f0c7bf56800d760ed",
+  "phone_test": "User installs APK; Android GATT, permissions, UI, background behavior and throughput not verified",
+  "power_cycle_performed": false,
+  "flash_load_method": "Program and Verify then Reprogram reload",
+  "firmware_input_hashes": "firmware_inputs.json",
+  "android_source_hashes": "android_sources.json",
+  "android_review_patch": "android_vs_37c8913.patch",
+  "earlier_diagnostics": "fast_sram / fast_sram_v2 show stale GATT property 0x08 and non-responding writes; salted address namespace caused fresh 0x0C discovery and successful measurement. These early failures are not acceptance evidence."
+}

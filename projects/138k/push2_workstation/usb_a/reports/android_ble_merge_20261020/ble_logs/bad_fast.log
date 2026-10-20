@@ -1,0 +1,3 @@
+UART_FAST_COMMAND: after full patch/reset at 9404135000
+PASS: rejected UART baud command fails closed
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/merge_android_ble_20261020_195027/ble_runtime/tests/tb_protocol_system.sv:583: $finish called at 9510435000 (1ps)
