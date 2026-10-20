@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "date": "2026-10-20",
+  "verified_at": "2026-10-20T13:57:47.449962+08:00",
+  "head_after_implementation_commits": "1fd735d524f8f7775b3be6065c714188750da1c0",
+  "origin_main_after_pull": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+  "pull": {
+    "command": "git pull --no-rebase --no-edit origin main",
+    "returncode": 0,
+    "result": "Already up to date.",
+    "merge_conflicts": false
+  },
+  "implementation_commits": [
+    "45f1c2a",
+    "1fd735d"
+  ],
+  "raw_results": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workspace_sync_20261020_135413",
+  "backup": "/home/sphenicidition/Documents/fpga/.git/workspace_backups/20261020_135311",
+  "original_selected_paths": 585,
+  "original_files_changed_during_packaging": [],
+  "preserved_other_work": {
+    "path": "工程架构报告.md",
+    "sha256": "7dc5b97ac7746d231cc544584766fee625295ac0d1c1270df09ab812728cf6bc",
+    "included_in_commit": false
+  },
+  "remote_review": {
+    "branch": "origin/codex/android-bluetooth-control",
+    "head": "f2bae2dab3fbeb0ce5f55bbd555a3a29c76bb9c8",
+    "merged_into_main": false,
+    "commits": [
+      "37c8913",
+      "f2bae2d"
+    ],
+    "remote_reported_rtl_groups": 50,
+    "remote_reported_android_checks": 63,
+    "remote_hardware_evidence_scope": "25K standalone test audio, not 138K integration or native phone acceptance"
+  },
+  "new_verification": {
+    "source_boundary_tests": 10,
+    "host_panel_endpoint": true,
+    "guide_isolation": true,
+    "jobs": "jobs.json"
+  },
+  "existing_t24_audit": {
+    "inputs": 617,
+    "input_drift": [],
+    "bitstream_hash_matches": true,
+    "directed_evidence_groups": 13,
+    "directed_evidence_hashes_match": true,
+    "integration_gates": 18,
+    "timing_closed": true,
+    "physical_bsram": 234
+  },
+  "generated_artifacts_committed": false,
+  "board_record_changed": false,
+  "hardware_access": false,
+  "new_timing_runs": false,
+  "source_behavior_changed_during_packaging": false
+}
