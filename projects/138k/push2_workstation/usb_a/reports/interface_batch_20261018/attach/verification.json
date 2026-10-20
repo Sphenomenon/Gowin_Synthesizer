@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "scope": "USB MMIO/CDC/FIFO + real audio attach defaults, cancellation, PANIC, Push and GW25K; no CNN/full-board build",
+  "baseline": "migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full83_20261006_203125_607466/Prj1",
+  "inputs": "inputs.json"
+}

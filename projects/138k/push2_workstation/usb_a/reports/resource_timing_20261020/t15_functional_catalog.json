@@ -1,0 +1,48 @@
+{
+  "cases": [
+    {
+      "label": "fifo_apb_services",
+      "report": "results/resource_timing_20261020_110314_988115/timing_units/verification.json",
+      "tested_build": "results/resource_timing_20261020_110314_988115"
+    },
+    {
+      "label": "gain_effect_chain",
+      "report": "results/resource_timing_20261020_110314_988115/gain_chain_ab/verification.json",
+      "tested_build": "results/resource_timing_20261020_110314_988115"
+    },
+    {
+      "label": "video_diagnostics",
+      "report": "results/resource_timing_20261020_110314_988115/video_diag_timing/verification.json",
+      "tested_build": "results/resource_timing_20261020_110314_988115"
+    },
+    {
+      "label": "tf_dma",
+      "report": "results/resource_timing_20261020_111212_369176/tf_dma_timing/verification.json",
+      "tested_build": "results/resource_timing_20261020_111212_369176"
+    },
+    {
+      "label": "dashboard",
+      "report": "results/resource_timing_20261020_113337_961433/dashboard_timing/verification.json",
+      "tested_build": "results/resource_timing_20261020_113337_961433"
+    },
+    {
+      "label": "event_dispatch",
+      "report": "results/resource_timing_20261020_113734_360986/dispatch_ab/verification.json",
+      "tested_build": "results/resource_timing_20261020_113734_360986"
+    },
+    {
+      "label": "pixel_numeric_mmio",
+      "report": "results/timing_equivalence_20261020_110337_366152/verification.json",
+      "inputs": "results/timing_equivalence_20261020_110337_366152/inputs_sha256.json",
+      "tested_build": "results/resource_timing_20261020_110314_988115"
+    },
+    {
+      "label": "vector_envelope_offset",
+      "report": "results/scope_event_ab_20261020_113501_459202/verification.json",
+      "inputs": "results/scope_event_ab_20261020_113501_459202/inputs.json",
+      "tested_build": "results/resource_timing_20261020_113337_961433"
+    }
+  ],
+  "integration_build": "results/resource_timing_20261020_113734_360986",
+  "integration_report": "results/resource_timing_20261020_113734_360986/current_regression_20261020_113842_859213/verification.json"
+}

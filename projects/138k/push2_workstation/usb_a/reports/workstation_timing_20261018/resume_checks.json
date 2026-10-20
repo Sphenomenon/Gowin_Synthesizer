@@ -1,0 +1,36 @@
+{
+  "checked": "2026-10-18T16:00:32.185659+08:00",
+  "checks": [
+    {
+      "name": "source_boundary_resume",
+      "command": [
+        "python3",
+        "sim/test_current_workstation_sources.py"
+      ],
+      "exit_code": 0,
+      "output_tail": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.014s\n\nOK\n"
+    },
+    {
+      "name": "timing_gate_resume",
+      "command": [
+        "python3",
+        "sim/timing/test_workstation_timing_gate.py"
+      ],
+      "exit_code": 0,
+      "output_tail": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.019s\n\nOK\n"
+    },
+    {
+      "name": "p31_functional",
+      "command": [
+        "python3",
+        "reports/workstation_timing_20261018/collect_evidence.py",
+        "results/timing_p31_resume_domain_margin_20261018_155705_399572",
+        "--prepare",
+        "results/workstation_incremental_margin_20261018_154046_134049",
+        "--functional-only"
+      ],
+      "exit_code": 0,
+      "output_tail": "{\n  \"passed\": true,\n  \"timing_closed\": null,\n  \"build\": \"results/timing_p31_resume_domain_margin_20261018_155705_399572\",\n  \"prepare\": \"results/workstation_incremental_margin_20261018_154046_134049\",\n  \"hardware_tested\": false,\n  \"source_bound_test_groups\": 8,\n  \"local_cnn_transforms\": [\n    {\n      \"file\": \"rtl/music/basic_pitch_workstation_link.sv\",\n      \"base_sha256\": \"b45ea2c84e99ec697554aad54b7803830c067335f653a2faef558f9d9cbbcfe4\",\n      \"selected_sha256\": \"0ef34913bdcaf452935b6762d164215a9171ca47926ad23f3bca35c922f935a0\",\n      \"transform\": \"seven DDR diagnostic levels, including reset and calibration status -> two 50MHz sampling stages; UART bit positions unchanged\",\n      \"flash_boot\": false,\n      \"cnn_arithmetic_changed\": false\n    }\n  ]\n}\n"
+    }
+  ]
+}

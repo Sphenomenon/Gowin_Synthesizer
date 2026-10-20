@@ -1,0 +1,35 @@
+START mode=0 profile=0 checked=0 time=80000
+DONE mode=0 profile=0 checked=384 time=6149240000
+START mode=0 profile=1 checked=384 time=6149240000
+DONE mode=0 profile=1 checked=768 time=12298400000
+START mode=0 profile=2 checked=768 time=12298400000
+DONE mode=0 profile=2 checked=1152 time=18447560000
+START mode=0 profile=3 checked=1152 time=18447560000
+DONE mode=0 profile=3 checked=1536 time=24596720000
+START mode=0 profile=4 checked=1536 time=24596720000
+DONE mode=0 profile=4 checked=1920 time=30745880000
+START mode=1 profile=0 checked=1920 time=30745880000
+DONE mode=1 profile=0 checked=2304 time=36898880000
+START mode=1 profile=1 checked=2304 time=36898880000
+DONE mode=1 profile=1 checked=2688 time=43051880000
+START mode=1 profile=2 checked=2688 time=43051880000
+DONE mode=1 profile=2 checked=3072 time=49204880000
+START mode=1 profile=3 checked=3072 time=49204880000
+DONE mode=1 profile=3 checked=3456 time=55357880000
+START mode=1 profile=4 checked=3456 time=55357880000
+DONE mode=1 profile=4 checked=3840 time=61510880000
+START mode=2 profile=0 checked=3840 time=61510880000
+DONE mode=2 profile=0 checked=4224 time=67699720000
+START mode=2 profile=1 checked=4224 time=67699720000
+DONE mode=2 profile=1 checked=4608 time=73888560000
+START mode=2 profile=2 checked=4608 time=73888560000
+DONE mode=2 profile=2 checked=4992 time=80077400000
+START mode=2 profile=3 checked=4992 time=80077400000
+DONE mode=2 profile=3 checked=5376 time=86266240000
+START mode=2 profile=4 checked=5376 time=86266240000
+DONE mode=2 profile=4 checked=5760 time=92455080000
+PASS engine_timing_ab: 15 modes/profiles, 32 voices, 5760 identical PCM samples, bend/pressure/release/PANIC, handshakes unchanged
+- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/timing/tb_engine_timing_ab.sv:95: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 92ms; walltime 17.587 s; speed 5.283 ms/s
+- Verilator: cpu 17.501 s on 1 threads; allocated 7 MB

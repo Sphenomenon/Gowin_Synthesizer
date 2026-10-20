@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "source_bound": true,
+  "build": "results/timing_p10_note_mmio_20261018_051540_858609",
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "added_cycles": 0,
+  "proof": "SAT all65inputbits from actual next-count expression; full/partial/eof/32bitwrap",
+  "miter_sha256": "f6a5108d4151a48b1209726ec8d4125aa9b9833d6e02c64ff22c03279208e43d",
+  "original_source_sha256": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+  "patched_source_sha256": "2470b63c24812d8e4d00d93e8a1f30e8f97232e1e14a9dc5bf6265c3155ee6bf"
+}

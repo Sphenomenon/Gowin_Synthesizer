@@ -1,0 +1,2 @@
+PASS feature cache: 30240 words checked, 17424 variable-latency DDR reads, five banks, all three layers, row/frequency halo boundaries
+out/resource_feature_vendor/tb.sv:37: $finish called at 1301790000 (1ps)

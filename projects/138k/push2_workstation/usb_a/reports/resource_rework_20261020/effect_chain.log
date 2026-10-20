@@ -1,0 +1,5 @@
+PASS effect chain: six orders x eight masks, 12417 stereo frames, max_latency=105/1600 cycles, actual dual-clock DDR delay, synth/PCM/vector dry mix, abort/clear
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_effect_chain/tb.sv:46: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 199ms; walltime 8.954 s; speed 22.285 ms/s
+- Verilator: cpu 8.921 s on 1 threads; allocated 7 MB

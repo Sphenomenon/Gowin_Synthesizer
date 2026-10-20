@@ -1,0 +1,555 @@
+{
+  "timing_closed": false,
+  "problems": [
+    "Fmax below requirement: audio_76m8",
+    "negative endpoints: audio_76m8/setup",
+    "negative endpoints: ddr_ui100/setup",
+    "negative detailed timing paths"
+  ],
+  "frequencies": {
+    "clk_50m": {
+      "required_mhz": 50.0,
+      "actual_mhz": 52.227
+    },
+    "audio_76m8": {
+      "required_mhz": 76.8,
+      "actual_mhz": 76.341
+    },
+    "ddr_mem400": {
+      "required_mhz": 400.0,
+      "actual_mhz": 2598.775
+    },
+    "ddr_ui100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 243.744
+    },
+    "video_pixel148": {
+      "required_mhz": 148.5,
+      "actual_mhz": 152.887
+    },
+    "cpu_bus50": {
+      "required_mhz": 50.0,
+      "actual_mhz": 76.654
+    },
+    "cpu_core100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 1087.724
+    },
+    "usb_48m": {
+      "required_mhz": 48.0,
+      "actual_mhz": 48.678
+    }
+  },
+  "checks": {
+    "clk_50m": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "audio_76m8": {
+      "setup": {
+        "tns_ns": -0.65,
+        "endpoints": 18
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "ddr_mem400": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "ddr_ui100": {
+      "setup": {
+        "tns_ns": -0.567,
+        "endpoints": 14
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "video_ref49": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "video_serial742": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "video_pixel148": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "cpu_bus50": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "cpu_core100": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "usb_48m": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    }
+  },
+  "global_reports": {
+    "setup": true,
+    "hold": true,
+    "recovery": true,
+    "removal": true
+  },
+  "reset_reports": {
+    "recovery": true,
+    "removal": true
+  },
+  "negative_paths": [
+    {
+      "kind": "setup",
+      "slack_ns": -0.08,
+      "source": "u_tf_audio/u_path/u_dma/write_total_bytes_1_s3/Q",
+      "destination": "u_tf_audio/u_path/u_dma/emit_index_3_s1/CE",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": 0.005,
+      "data_delay_ns": 9.851,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.08,
+      "source": "u_tf_audio/u_path/u_dma/write_total_bytes_1_s3/Q",
+      "destination": "u_tf_audio/u_path/u_dma/emit_index_4_s1/CE",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": 0.005,
+      "data_delay_ns": 9.851,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.078,
+      "source": "u_managed/u_audio/u_workstation/event_data_1_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[6]_11_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": 0.001,
+      "data_delay_ns": 13.052,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.078,
+      "source": "u_tf_audio/u_path/u_dma/pending_bytes_0_s1/Q",
+      "destination": "u_tf_audio/u_path/u_dma/write_total_bytes_30_s3/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": -0.001,
+      "data_delay_ns": 10.033,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.077,
+      "source": "u_managed/u_audio/u_workstation/event_data_1_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[7]_3_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": -0.007,
+      "data_delay_ns": 13.059,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.067,
+      "source": "u_video/u_data_reader/render_meta_197_s0/Q",
+      "destination": "u_video/u_renderer/u_even/effect_x2_9_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": 0.004,
+      "data_delay_ns": 10.017,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.066,
+      "source": "u_video/u_data_reader/render_meta_197_s0/Q",
+      "destination": "u_video/u_renderer/u_even/effect_x2_10_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": 0.004,
+      "data_delay_ns": 10.015,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.064,
+      "source": "u_managed/u_audio/u_workstation/event_data_1_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[3]_4_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": -0.009,
+      "data_delay_ns": 13.048,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.063,
+      "source": "u_managed/u_audio/u_workstation/volume_14_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/effects/n559_s/A[11]",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": 0.062,
+      "data_delay_ns": 12.497,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.058,
+      "source": "u_managed/u_audio/u_workstation/event_data_1_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[3]_17_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": 0.001,
+      "data_delay_ns": 13.032,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.045,
+      "source": "u_managed/u_services/score_length_2_s0/Q",
+      "destination": "u_push/events/fifo/unbuffered/consume_r_bin_5_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": 0.091,
+      "data_delay_ns": 12.929,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.041,
+      "source": "u_managed/u_audio/u_workstation/event_data_1_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[7]_15_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": -0.015,
+      "data_delay_ns": 13.031,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.041,
+      "source": "u_video/u_data_reader/render_meta_196_s0/Q",
+      "destination": "u_video/u_renderer/u_odd/effect_x0_9_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": -0.014,
+      "data_delay_ns": 10.009,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.04,
+      "source": "u_managed/u_audio/u_workstation/event_data_1_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[6]_16_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": -0.041,
+      "data_delay_ns": 13.055,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.039,
+      "source": "u_video/u_data_reader/render_meta_196_s0/Q",
+      "destination": "u_video/u_renderer/u_odd/effect_x0_10_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": -0.014,
+      "data_delay_ns": 10.007,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.037,
+      "source": "u_managed/u_audio/u_workstation/event_data_1_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[6]_20_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": -0.013,
+      "data_delay_ns": 13.026,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.027,
+      "source": "u_tf_audio/rate_sync_4_s0/Q",
+      "destination": "u_tf_dac/warmup_7_s0/CE",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": -0.029,
+      "data_delay_ns": 12.853,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.027,
+      "source": "u_tf_audio/rate_sync_4_s0/Q",
+      "destination": "u_tf_dac/warmup_8_s0/CE",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": -0.029,
+      "data_delay_ns": 12.853,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.027,
+      "source": "u_tf_audio/rate_sync_4_s0/Q",
+      "destination": "u_tf_dac/warmup_9_s0/CE",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": -0.029,
+      "data_delay_ns": 12.853,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.026,
+      "source": "u_video/u_data_reader/render_meta_197_s0/Q",
+      "destination": "u_video/u_renderer/u_odd/effect_x2_9_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": -0.009,
+      "data_delay_ns": 9.989,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.026,
+      "source": "u_video/u_data_reader/render_meta_196_s0/Q",
+      "destination": "u_video/u_renderer/u_even/effect_x1_9_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": -0.011,
+      "data_delay_ns": 9.991,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.024,
+      "source": "u_video/u_data_reader/render_meta_197_s0/Q",
+      "destination": "u_video/u_renderer/u_odd/effect_x2_10_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": -0.009,
+      "data_delay_ns": 9.987,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.024,
+      "source": "u_video/u_data_reader/render_meta_196_s0/Q",
+      "destination": "u_video/u_renderer/u_even/effect_x1_10_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": -0.011,
+      "data_delay_ns": 9.989,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.018,
+      "source": "u_managed/u_audio/u_workstation/event_data_1_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[3]_21_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": -0.005,
+      "data_delay_ns": 12.999,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.014,
+      "source": "u_managed/u_audio/u_workstation/volume_14_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/effects/n559_s/A[10]",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": 0.062,
+      "data_delay_ns": 12.552,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.013,
+      "source": "u_managed/u_services/score_length_2_s0/Q",
+      "destination": "u_push/events/fifo/unbuffered/consume_r_gry_2_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": 0.091,
+      "data_delay_ns": 12.897,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.011,
+      "source": "u_managed/u_audio/u_workstation/event_data_1_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[7]_21_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": 0.006,
+      "data_delay_ns": 12.981,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.009,
+      "source": "u_managed/u_audio/u_workstation/event_data_1_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[3]_3_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": 0.007,
+      "data_delay_ns": 12.976,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.008,
+      "source": "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_0_s0/Q",
+      "destination": "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_binary_9_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": 0.007,
+      "data_delay_ns": 9.792,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.005,
+      "source": "u_video/u_data_reader/render_meta_196_s0/Q",
+      "destination": "u_video/u_renderer/u_odd/effect_x1_9_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": -0.015,
+      "data_delay_ns": 9.974,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.003,
+      "source": "u_video/u_data_reader/render_meta_196_s0/Q",
+      "destination": "u_video/u_renderer/u_odd/effect_x1_10_s0/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": -0.015,
+      "data_delay_ns": 9.972,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "setup",
+      "slack_ns": -0.002,
+      "source": "u_managed/u_audio/u_workstation/engine/allocated_mask_o_1_s1/Q",
+      "destination": "u_managed/u_control_cdc/response_held_15_s0/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": 0.053,
+      "data_delay_ns": 12.924,
+      "command": "report_timing -setup -max_paths 50"
+    },
+    {
+      "kind": "hold",
+      "slack_ns": -0.001,
+      "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/ddr_init_complete_d_3_s0/Q",
+      "destination": "u_music/u_report/payload_1_s1/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "clk_50m:[R]",
+      "relation_ns": 0.0,
+      "skew_ns": -1.267,
+      "data_delay_ns": 1.324,
+      "command": "report_timing -hold -max_paths 100"
+    }
+  ],
+  "report_sha256": "659b42e0063d2dd8b3076b8b461ceb17909172a957cda6778d82e0a16db49300",
+  "hardware_tested": false
+}

@@ -1,0 +1,15 @@
+{
+  "file": "rtl/audio/scope_vec/scope_vec_engine.sv",
+  "reference": "results/timing_p27_uart_cdc_route1_20261018_142516_456857",
+  "old_sha256": "c0e7208d907da85ec12172f1eb2babf6b2b69879bb9bd08f68bc26334f7b49c1",
+  "new_sha256": "7b032a827116e600f12127c936a021b956957411303d9a94b955cd72bcbb1be1",
+  "added_cycles": 0,
+  "event_equivalence": "results/scope_event_ab_20261018_214306_268939",
+  "synthesis_equivalence": "results/scope_synth_ab_20261018_214306_270701",
+  "transform_sha256": "1a5041680f7722eb094b358f40261503ddf392ada744357c54420fd625632da8",
+  "cycles": 213522,
+  "events": 2656,
+  "stereo_frames": 1776,
+  "proof": "RTL all-voice states and real Gowin four-state netlist match p27 cycle by cycle; p27 retains existing regression evidence",
+  "fresh_18_gate_regression_passed": true
+}

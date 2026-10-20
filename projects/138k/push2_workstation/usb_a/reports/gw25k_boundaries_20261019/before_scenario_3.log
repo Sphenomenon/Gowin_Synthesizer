@@ -1,0 +1,2 @@
+FATAL: sim/tb_gw138k_panel_backpressure.v:152: full-queue bend release lost: got=68 controls=68
+       Time: 51300000  Scope: tb_gw138k_panel_backpressure

@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "scope": "USB MMIO/CDC/FIFO + real audio attach defaults, cancellation, PANIC, Push and GW25K; no CNN/full-board build",
+  "baseline": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1",
+  "inputs": "inputs.json",
+  "event_reference": "results/timing_p6_vec_cnn85_20261018_031304_461827/Prj1/src/ae350/gw138k_event_workstation.sv"
+}

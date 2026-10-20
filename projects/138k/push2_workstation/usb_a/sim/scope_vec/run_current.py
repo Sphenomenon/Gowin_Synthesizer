@@ -75,11 +75,11 @@ def main():
             for path in (external/'build').glob('*.log'):
                 (out/path.name).write_bytes(path.read_bytes())
             print('TF audio 16/16 PASS',flush=True)
-        text=run([sys.executable,str(ROOT/'sim/audio/run_delay_ddr_equivalence.py'),'--output',str(out/'delay_ddr')],ROOT,out/'delay_ddr.log')
+        text=run([sys.executable,str(ROOT/'sim/audio/run_delay_ddr_equivalence.py'),'--project',str(project),'--output',str(out/'delay_ddr')],ROOT,out/'delay_ddr.log')
         assert 'PASS' in text
         result['tests']['delay_ddr_equivalence']='passed';print('Delay DDR equivalence PASS',flush=True)
         isolation=out/'ddr_isolation'
-        text=run([sys.executable,str(ROOT/'sim/music/run_bp_ddr_isolation.py'),'--output',str(isolation)],ROOT,out/'ddr_isolation.log')
+        text=run([sys.executable,str(ROOT/'sim/music/run_bp_ddr_isolation.py'),'--project',str(project),'--output',str(isolation)],ROOT,out/'ddr_isolation.log')
         records=json.loads((isolation/'summary.json').read_text())
         assert {r['case'] for r in records}=={'old_map','new_map'}
         assert all(r['expected_behavior_confirmed'] for r in records)

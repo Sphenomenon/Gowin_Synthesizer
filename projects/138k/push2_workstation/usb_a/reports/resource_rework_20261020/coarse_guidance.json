@@ -1,0 +1,14 @@
+[
+  {
+    "test": "tb_coarse_local",
+    "passed": true
+  },
+  {
+    "test": "tb_coarse_ddr",
+    "passed": true
+  },
+  {
+    "test": "tb_centers_local",
+    "passed": true
+  }
+]

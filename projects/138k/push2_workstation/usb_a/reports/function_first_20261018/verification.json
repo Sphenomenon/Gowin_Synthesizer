@@ -1,0 +1,109 @@
+{
+  "started": "2026-10-18T23:35:28.415866+08:00",
+  "priority": "function_first_timing_deferred",
+  "prepare": "results/workstation_scope83_20261018_233422_592420",
+  "cnn_policy": "accepted_full83",
+  "hardware_tested": false,
+  "jobs": {
+    "gw25k_host": {
+      "returncode": 0,
+      "command": [
+        "/usr/bin/python3",
+        "sim/run_gw25k_panel.py",
+        "--output",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host"
+      ],
+      "log": "reports/function_first_20261018/gw25k_host.log"
+    },
+    "guide": {
+      "returncode": 1,
+      "command": [
+        "/usr/bin/python3",
+        "sim/run_pl_guide.py",
+        "--baseline",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_20261018_233422_592420/Prj1",
+        "--out",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/guide"
+      ],
+      "log": "reports/function_first_20261018/guide.log"
+    },
+    "d_controls": {
+      "returncode": 2,
+      "command": [
+        "/usr/bin/python3",
+        "sim/sampler/run.py",
+        "--test",
+        "tb_sampler_controls",
+        "--out",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/d_controls"
+      ],
+      "log": "reports/function_first_20261018/d_controls.log"
+    },
+    "d_mode": {
+      "returncode": 2,
+      "command": [
+        "/usr/bin/python3",
+        "sim/sampler/run.py",
+        "--test",
+        "tb_sampler_mode_d",
+        "--out",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/d_mode"
+      ],
+      "log": "reports/function_first_20261018/d_mode.log"
+    },
+    "attach": {
+      "returncode": 0,
+      "command": [
+        "/usr/bin/python3",
+        "sim/run_workstation_attach.py",
+        "--baseline",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_20261018_233422_592420/Prj1",
+        "--out",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/attach"
+      ],
+      "log": "reports/function_first_20261018/attach.log"
+    },
+    "full83_18_gates": {
+      "returncode": 0,
+      "command": [
+        "/usr/bin/python3",
+        "sim/scope_vec/run_current.py",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_20261018_233422_592420"
+      ],
+      "log": "reports/function_first_20261018/full83_18_gates.log"
+    }
+  },
+  "completed": "2026-10-18T23:38:53.126838+08:00",
+  "inputs_sha256": {
+    "firmware.c": "1e8dd2999406097d1b6eb9766c92cdd0de2094d81b3788531b026d8bf3871403",
+    "gw25k_panel.h": "91934d6760b1a7e5f0a41dadbc0fb30c15252457598b4739958ac56ef6ab36dd",
+    "rtl/push2_usb_a_control.sv": "b8af9064b4e658225727e71eb585b2c3b23456eef0c9cf0f9385ef4b16c471ca",
+    "rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+    "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+    "rtl/audio/gw138k_event_workstation.sv": "02b0e5028e0747b5a88d71b2e4ca969c7665ca051b2faf91880847df08f40f50",
+    "rtl/audio/gw138k_usb_lifecycle_merge.sv": "b1f6965afa8a14d1521895cf498530ca0dc3e768b6eaabf3b3a7fefe7c2d3d90",
+    "rtl/audio/push2_controls.sv": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+    "rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+    "rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+    "rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+    "rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+    "rtl/audio/scope_vec/scope_vec_engine.sv": "7b032a827116e600f12127c936a021b956957411303d9a94b955cd72bcbb1be1",
+    "rtl/audio/unified_oscillator_engine.sv": "34554bb3bdb30dab68e35769ebaa333b2ed4c98833caec369b71aec85b34d967",
+    "rtl/sampler/sampler_ddr.sv": "254e086e2741fd4a9666924235188c784c9ea695dc04dbd58e23a849cb9aef07",
+    "rtl/sampler/sampler_fx.sv": "013bce707bd9613baf6421b739d14cdf16570bbd4fb1dd5f1d026aeca5e03c9d",
+    "rtl/sampler/sampler_grid.sv": "f3ef979f6d78f2fa9bbec895efa8ac4ac3516e365d6ad10ad4c2d62af086d514",
+    "rtl/sampler/sampler_import.sv": "fd1d01450cc0257825c7965a70f1cea384a60710e63520e0403dc5c47ae8cdce",
+    "rtl/sampler/sampler_mode_d.sv": "990a159c1f946a2d1ce5d73d11f29b4d9b5498f345a335372f527cef9931f687",
+    "rtl/sampler/sampler_pkg.sv": "bbd59a7a5036afcd96bf3e4d90712964b719a341f6998676c2ef43b1f2904375",
+    "rtl/sampler/sampler_pool.sv": "aaf0d24a8e216975afaf443429e4224884dec3a6df3d45031658ec27d3ffc53f",
+    "rtl/sampler/sampler_push.sv": "6cda6ea209e4b7dcbde0e058efba84de34189e8cd8015802a171118776be4124",
+    "rtl/sampler/sampler_resample.sv": "dc0bda6622ce560d782a6b8b285659dc629927e0cbd9d4de8d84060a196bcc10",
+    "rtl/sampler/sampler_sequencer.sv": "f79a189215f60fa816f8540a4b2dd45c6c251edcbfb3db87d077602ef8990092",
+    "rtl/sampler/sampler_slice.sv": "daccc3259e29b531088ffbda0c27b3dacdee35f5e5757dc2c4888cd4b5415b4b",
+    "rtl/sampler/sampler_storage.sv": "eaded3c5d0e3a6be0a73eb8f0b7a24507be13efc42628bf8c1e8a667b71444ba",
+    "rtl/sampler/sampler_tf_source.sv": "eb2588c9e8ab2eb1587f75e6da8dd07f62bd553a60b0e36a39d7f72acaebfb73",
+    "rtl/sampler/sampler_voice.sv": "3df6dba97859b2e14fad12ffb13522cfe5c38fbabc4fbf43ec8e4f63d5146d36"
+  },
+  "inputs_unchanged": true,
+  "passed": false
+}

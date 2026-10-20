@@ -1,0 +1,504 @@
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_fx.sv:29:8: Filename 'sampler_fx' does not match MODULE name: 'sampler_click'
+   29 | module sampler_click(
+      |        ^~~~~~~~~~~~~
+                       ... For warning description see https://verilator.org/warn/DECLFILENAME?v=5.046
+                       ... Use "/* verilator lint_off DECLFILENAME */" and lint_on around source to disable this message.
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:458:8: Filename 'sampler_sequencer' does not match MODULE name: 'sampler_pattern_ram'
+  458 | module sampler_pattern_ram(
+      |        ^~~~~~~~~~~~~~~~~~~
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_sd_spi_sector_reader.v:12:8: Filename 'third_party_sd_spi_sector_reader' does not match MODULE name: 'sd_spi_sector_reader'
+   12 | module sd_spi_sector_reader #(
+      |        ^~~~~~~~~~~~~~~~~~~~
+%Warning-PINCONNECTEMPTY: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_sd_spi_sector_reader.v:193:6: Instance pin connected by name with empty reference: 'acmdres'
+  193 |     .acmdres      (                 ),
+      |      ^~~~~~~
+                          ... For warning description see https://verilator.org/warn/PINCONNECTEMPTY?v=5.046
+                          ... Use "/* verilator lint_off PINCONNECTEMPTY */" and lint_on around source to disable this message.
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_spi_session.v:10:8: Filename 'third_party_spi_session' does not match MODULE name: 'spi_session'
+   10 | module spi_session (
+      |        ^~~~~~~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:27:11: Operator XOR expects 32 bits on the RHS, but RHS's VARREF 'b' generates 8 bits.
+                                                                                                                                : ... note: In instance 'sampler_mode_d.u_seq.track_ram[3].u_ram'
+   27 |     c=crc ^ b;
+      |           ^
+                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=5.046
+                      ... Use "/* verilator lint_off WIDTHEXPAND */" and lint_on around source to disable this message.
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:115:17: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'v' generates 4 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  115 |             if(v==N-1) state<=FINISH;else v<=v+1;
+      |                 ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:151:36: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 16 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  151 |             interpolated=$signed(a)+((($signed(b)-$signed(a))*$signed({1'b0,work_phase[15:0]}))>>>16);
+      |                                    ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:151:50: Operator SUB expects 64 bits on the LHS, but LHS's SIGNED generates 16 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  151 |             interpolated=$signed(a)+((($signed(b)-$signed(a))*$signed({1'b0,work_phase[15:0]}))>>>16);
+      |                                                  ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:151:50: Operator SUB expects 64 bits on the RHS, but RHS's SIGNED generates 16 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  151 |             interpolated=$signed(a)+((($signed(b)-$signed(a))*$signed({1'b0,work_phase[15:0]}))>>>16);
+      |                                                  ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:152:19: Operator ASSIGNDLY expects 32 bits on the Assign RHS, but Assign RHS's VARREF 'interpolated' generates 64 bits.
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_voice'
+  152 |             scaled<=interpolated;state<=GAIN;
+      |                   ^~
+                     ... For warning description see https://verilator.org/warn/WIDTHTRUNC?v=5.046
+                     ... Use "/* verilator lint_off WIDTHTRUNC */" and lint_on around source to disable this message.
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:154:28: Operator ASSIGNDLY expects 32 bits on the Assign RHS, but Assign RHS's SHIFTRS generates 64 bits.
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_voice'
+  154 |           GAIN:begin scaled<=(64'(scaled)*$signed({1'b0,work_desc.gain_q16}))>>>16;state<=ENV_GAIN;end
+      |                            ^~
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:155:32: Operator ASSIGNDLY expects 32 bits on the Assign RHS, but Assign RHS's SHIFTRS generates 64 bits.
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_voice'
+  155 |           ENV_GAIN:begin scaled<=(64'(scaled)*$signed({1'b0,work_envelope}))>>>16;state<=VOL_GAIN;end
+      |                                ^~
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:156:32: Operator ASSIGNDLY expects 32 bits on the Assign RHS, but Assign RHS's SHIFTRS generates 64 bits.
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_voice'
+  156 |           VOL_GAIN:begin scaled<=(64'(scaled)*$signed({1'b0,work_cfg.volume}))>>>16;state<=VEL_GAIN;end
+      |                                ^~
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:157:32: Operator ASSIGNDLY expects 32 bits on the Assign RHS, but Assign RHS's SHIFTRS generates 64 bits.
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_voice'
+  157 |           VEL_GAIN:begin scaled<=(64'(scaled)*$signed({1'b0,midi_gain(work_velocity)}))>>>16;state<=PRESS_GAIN;end
+      |                                ^~
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:158:34: Operator ASSIGNDLY expects 32 bits on the Assign RHS, but Assign RHS's SHIFTRS generates 64 bits.
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_voice'
+  158 |           PRESS_GAIN:begin scaled<=(64'(scaled)*$signed({1'b0,midi_gain(work_pressure)}))>>>16;state<=PAN_L;end
+      |                                  ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:159:35: Operator ADD expects 64 bits on the LHS, but LHS's VARREF 'acc_l' generates 40 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  159 |           PAN_L:begin acc_l<=acc_l+((64'(scaled)*$signed({1'b0,midi_gain(7'(127-work_cfg.pan))}))>>>16);state<=PAN_R;end
+      |                                   ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:159:28: Operator ASSIGNDLY expects 40 bits on the Assign RHS, but Assign RHS's ADD generates 64 bits.
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_voice'
+  159 |           PAN_L:begin acc_l<=acc_l+((64'(scaled)*$signed({1'b0,midi_gain(7'(127-work_cfg.pan))}))>>>16);state<=PAN_R;end
+      |                            ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:160:35: Operator ADD expects 64 bits on the LHS, but LHS's VARREF 'acc_r' generates 40 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  160 |           PAN_R:begin acc_r<=acc_r+((64'(scaled)*$signed({1'b0,midi_gain(work_cfg.pan)}))>>>16);state<=ADVANCE;end
+      |                                   ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:160:28: Operator ASSIGNDLY expects 40 bits on the Assign RHS, but Assign RHS's ADD generates 64 bits.
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_voice'
+  160 |           PAN_R:begin acc_r<=acc_r+((64'(scaled)*$signed({1'b0,midi_gain(work_cfg.pan)}))>>>16);state<=ADVANCE;end
+      |                            ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:178:37: Operator ADD expects 48 bits on the RHS, but RHS's VARREF 'work_increment' generates 32 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  178 |                 wrap_distance=32'(lo+work_increment-work_phase-1);
+      |                                     ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:182:51: Operator SUB expects 48 bits on the RHS, but RHS's VARREF 'work_increment' generates 32 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  182 |               end else begin next_phase=work_phase-work_increment;wrap_distance=0;end
+      |                                                   ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:180:65: Operator ADD expects 48 bits on the RHS, but RHS's VARREF 'work_increment' generates 32 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  180 |               end else if(work_phase<{work_cfg.trim_start,16'd0}+work_increment) begin
+      |                                                                 ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:177:61: Operator ADD expects 48 bits on the RHS, but RHS's VARREF 'work_increment' generates 32 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  177 |               if(work_cfg.play_mode==LOOPED && work_phase<lo+work_increment) begin
+      |                                                             ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:184:36: Operator ADD expects 48 bits on the RHS, but RHS's VARREF 'work_increment' generates 32 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  184 |               next_phase=work_phase+work_increment;wrap_distance=0;
+      |                                    ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:186:63: Operator ADD expects 48 bits on the RHS, but RHS's VARREF 'wrap_distance' generates 32 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  186 |                 wrap_distance=32'(next_phase-hi);next_phase=lo+wrap_distance;
+      |                                                               ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:199:26: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'v' generates 4 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  199 |             end else if(v==N-1) state<=FINISH;else begin v<=v+1;state<=SELECT;end
+      |                          ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:196:72: Operator GTE expects 32 bits on the LHS, but LHS's SEL generates 16 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  196 |             if(work_cfg.play_mode==LOOPED && registered_distance[31:16]>=registered_span) begin
+      |                                                                        ^~
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:203:49: Bit extraction of var[15:0] requires 4 bit index, not 5 bits.
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_voice'
+  203 |             trial={wrap_remainder,wrap_numerator[wrap_bit]};
+      |                                                 ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:204:30: Operator GTE expects 17 bits on the RHS, but RHS's VARREF 'wrap_divisor' generates 16 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  204 |             reduced=16'(trial>=wrap_divisor ? trial-wrap_divisor : trial);
+      |                              ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:209:19: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'v' generates 4 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  209 |               if(v==N-1) state<=FINISH;else begin v<=v+1;state<=SELECT;end
+      |                   ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:213:20: Operator FUNCREF 'sat16' expects 64 bits on the Function Argument, but Function Argument's VARREF 'acc_l' generates 40 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  213 |             pcm_l<=sat16(acc_l);pcm_r<=sat16(acc_r);pcm_valid<=1;state<=IDLE;
+      |                    ^~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:213:40: Operator FUNCREF 'sat16' expects 64 bits on the Function Argument, but Function Argument's VARREF 'acc_r' generates 40 bits.
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+  213 |             pcm_l<=sat16(acc_l);pcm_r<=sat16(acc_r);pcm_valid<=1;state<=IDLE;
+      |                                        ^~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:414:27: Operator ADD expects 32 bits on the RHS, but RHS's VARREF 'bpm' generates 9 bits.
+                                                                                                                                       : ... note: In instance 'sampler_mode_d.u_seq'
+  414 |           phase_next=phase+bpm;threshold=target_odd ? 720000+7200*swing : 1440000;
+      |                           ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:416:70: Operator ASSIGN expects 32 bits on the Assign RHS, but Assign RHS's VARREF 'pattern' generates 4 bits.
+                                                                                                                                       : ... note: In instance 'sampler_mode_d.u_seq'
+  416 |             initial_step<=0;phase<=0;dispatch_step=0;dispatch_pattern=pattern;do_step=1;
+      |                                                                      ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:418:42: Operator ADD expects 32 bits on the LHS, but LHS's VARREF 'step' generates 4 bits.
+                                                                                                                                       : ... note: In instance 'sampler_mode_d.u_seq'
+  418 |             do_step=1;dispatch_step=(step+1)%16;dispatch_pattern=pattern;
+      |                                          ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:418:65: Operator ASSIGN expects 32 bits on the Assign RHS, but Assign RHS's VARREF 'pattern' generates 4 bits.
+                                                                                                                                       : ... note: In instance 'sampler_mode_d.u_seq'
+  418 |             do_step=1;dispatch_step=(step+1)%16;dispatch_pattern=pattern;
+      |                                                                 ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:422:49: Operator ASSIGN expects 32 bits on the Assign RHS, but Assign RHS's VARREF 'pending_pattern' generates 4 bits.
+                                                                                                                                       : ... note: In instance 'sampler_mode_d.u_seq'
+  422 |               if(pending) begin dispatch_pattern=pending_pattern;pending<=0;end
+      |                                                 ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:424:72: Operator ADD expects 32 bits on the LHS, but LHS's VARREF 'chain_pos' generates 4 bits.
+                                                                                                                                       : ... note: In instance 'sampler_mode_d.u_seq'
+  424 |                 chain_pos<=4'(chain_pos+1>=chain_length ? 0 : chain_pos+1);
+      |                                                                        ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:425:33: Operator ASSIGN expects 32 bits on the Assign RHS, but Assign RHS's ARRAYSEL generates 4 bits.
+                                                                                                                                       : ... note: In instance 'sampler_mode_d.u_seq'
+  425 |                 dispatch_pattern=chain[chain_pos+1>=chain_length ? 0 : chain_pos+1];
+      |                                 ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_fx.sv:14:41: Operator SHIFTRS expects 64 bits on the LHS, but LHS's SIGNED generates 16 bits.
+                                                                                                                               : ... note: In instance 'sampler_mode_d.u_fx'
+   14 |     quantized=($signed(sat16(amplified))>>>shift)<<<shift;
+      |                                         ^~~
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_fx.sv:20:33: Blocking assignment '=' in sequential logic process
+                                                                                                                          : ... note: In instance 'sampler_mode_d.u_fx'
+                                                                                                                          : ... Suggest using delayed assignment '<='
+   20 |       out_valid<=pcm_valid;shift=int'(crush)*12/127;
+      |                                 ^
+                 ... For warning description see https://verilator.org/warn/BLKSEQ?v=5.046
+                 ... Use "/* verilator lint_off BLKSEQ */" and lint_on around source to disable this message.
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_push.sv:20:13: Blocking assignment '=' in sequential logic process
+                                                                                                                            : ... note: In instance 'sampler_mode_d.u_push'
+                                                                                                                            : ... Suggest using delayed assignment '<='
+   20 |         kind=in_event[17:14];note=in_event[13:7];value=in_event[6:0];
+      |             ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_push.sv:20:34: Blocking assignment '=' in sequential logic process
+                                                                                                                            : ... note: In instance 'sampler_mode_d.u_push'
+                                                                                                                            : ... Suggest using delayed assignment '<='
+   20 |         kind=in_event[17:14];note=in_event[13:7];value=in_event[6:0];
+      |                                  ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_push.sv:20:55: Blocking assignment '=' in sequential logic process
+                                                                                                                            : ... note: In instance 'sampler_mode_d.u_push'
+                                                                                                                            : ... Suggest using delayed assignment '<='
+   20 |         kind=in_event[17:14];note=in_event[13:7];value=in_event[6:0];
+      |                                                       ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_push.sv:22:14: Blocking assignment '=' in sequential logic process
+                                                                                                                            : ... note: In instance 'sampler_mode_d.u_push'
+                                                                                                                            : ... Suggest using delayed assignment '<='
+   22 |           pad=int'(note)-36;row=pad/8;col=pad%8;
+      |              ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_push.sv:22:32: Blocking assignment '=' in sequential logic process
+                                                                                                                            : ... note: In instance 'sampler_mode_d.u_push'
+                                                                                                                            : ... Suggest using delayed assignment '<='
+   22 |           pad=int'(note)-36;row=pad/8;col=pad%8;
+      |                                ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_push.sv:22:42: Blocking assignment '=' in sequential logic process
+                                                                                                                            : ... note: In instance 'sampler_mode_d.u_push'
+                                                                                                                            : ... Suggest using delayed assignment '<='
+   22 |           pad=int'(note)-36;row=pad/8;col=pad%8;
+      |                                          ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_push.sv:28:17: Blocking assignment '=' in sequential logic process
+                                                                                                                            : ... note: In instance 'sampler_mode_d.u_push'
+                                                                                                                            : ... Suggest using delayed assignment '<='
+   28 |             slot=int'(group_select)*16+row*4+col;
+      |                 ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:387:23: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  387 |       click<=0;do_step=0;now_time=sample_time+1;
+      |                       ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:387:34: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  387 |       click<=0;do_step=0;now_time=sample_time+1;
+      |                                  ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:414:21: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  414 |           phase_next=phase+bpm;threshold=target_odd ? 720000+7200*swing : 1440000;
+      |                     ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:414:41: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  414 |           phase_next=phase+bpm;threshold=target_odd ? 720000+7200*swing : 1440000;
+      |                                         ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:416:51: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  416 |             initial_step<=0;phase<=0;dispatch_step=0;dispatch_pattern=pattern;do_step=1;
+      |                                                   ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:416:70: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  416 |             initial_step<=0;phase<=0;dispatch_step=0;dispatch_pattern=pattern;do_step=1;
+      |                                                                      ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:416:86: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  416 |             initial_step<=0;phase<=0;dispatch_step=0;dispatch_pattern=pattern;do_step=1;
+      |                                                                                      ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:418:20: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  418 |             do_step=1;dispatch_step=(step+1)%16;dispatch_pattern=pattern;
+      |                    ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:418:36: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  418 |             do_step=1;dispatch_step=(step+1)%16;dispatch_pattern=pattern;
+      |                                    ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:418:65: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  418 |             do_step=1;dispatch_step=(step+1)%16;dispatch_pattern=pattern;
+      |                                                                 ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:422:49: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  422 |               if(pending) begin dispatch_pattern=pending_pattern;pending<=0;end
+      |                                                 ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:425:33: Blocking assignment '=' in sequential logic process
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_seq'
+                                                                                                                                  : ... Suggest using delayed assignment '<='
+  425 |                 dispatch_pattern=chain[chain_pos+1>=chain_length ? 0 : chain_pos+1];
+      |                                 ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:88:19: Blocking assignment '=' in sequential logic process
+                                                                                                                             : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                             : ... Suggest using delayed assignment '<='
+   88 |             chosen=-1;
+      |                   ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:90:105: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+   90 |             for(int k=0;k<N;k++) if(active_mask[k] && key[k]==note && cfg[k].play_mode==ONE_SHOT) chosen=k;
+      |                                                                                                         ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:91:72: Blocking assignment '=' in sequential logic process
+                                                                                                                             : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                             : ... Suggest using delayed assignment '<='
+   91 |             for(int k=0;k<N;k++) if(!active_mask[k] && chosen<0) chosen=k;
+      |                                                                        ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:151:25: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  151 |             interpolated=$signed(a)+((($signed(b)-$signed(a))*$signed({1'b0,work_phase[15:0]}))>>>16);
+      |                         ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:162:21: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  162 |             next_env=work_envelope;
+      |                     ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:164:96: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  164 |               if(work_cfg.release_inc==0 || work_envelope<=work_cfg.release_inc) begin next_env=0;active_mask[v]<=0;end
+      |                                                                                                ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:165:28: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  165 |               else next_env=work_envelope-work_cfg.release_inc;
+      |                            ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:167:84: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  167 |               0: if({1'b0,work_envelope}+work_cfg.attack_inc>=65535) begin next_env=65535;env_state[v]<=1;end
+      |                                                                                    ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:168:31: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  168 |                  else next_env=work_envelope+work_cfg.attack_inc;
+      |                               ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:169:122: Blocking assignment '=' in sequential logic process
+                                                                                                                               : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                               : ... Suggest using delayed assignment '<='
+  169 |               1: if(work_envelope<=work_cfg.sustain || work_cfg.decay_inc>=work_envelope-work_cfg.sustain) begin next_env=work_cfg.sustain;env_state[v]<=2;end
+      |                                                                                                                          ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:170:31: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  170 |                  else next_env=work_envelope-work_cfg.decay_inc;
+      |                               ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:174:15: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  174 |             lo={work_cfg.loop_start,16'd0};hi={work_cfg.loop_end,16'd0};loop_span=work_cfg.loop_end-work_cfg.loop_start;
+      |               ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:174:46: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  174 |             lo={work_cfg.loop_start,16'd0};hi={work_cfg.loop_end,16'd0};loop_span=work_cfg.loop_end-work_cfg.loop_start;
+      |                                              ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:174:82: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  174 |             lo={work_cfg.loop_start,16'd0};hi={work_cfg.loop_end,16'd0};loop_span=work_cfg.loop_end-work_cfg.loop_start;
+      |                                                                                  ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:178:30: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  178 |                 wrap_distance=32'(lo+work_increment-work_phase-1);
+      |                              ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:179:27: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  179 |                 next_phase=hi-1-{32'(wrap_distance[31:16]),wrap_distance[15:0]};
+      |                           ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:181:27: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  181 |                 next_phase={work_cfg.trim_start,16'd0};active_mask[v]<=0;wrap_distance=0;
+      |                           ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:181:87: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  181 |                 next_phase={work_cfg.trim_start,16'd0};active_mask[v]<=0;wrap_distance=0;
+      |                                                                                       ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:182:40: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  182 |               end else begin next_phase=work_phase-work_increment;wrap_distance=0;end
+      |                                        ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:182:80: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  182 |               end else begin next_phase=work_phase-work_increment;wrap_distance=0;end
+      |                                                                                ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:184:25: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  184 |               next_phase=work_phase+work_increment;wrap_distance=0;
+      |                         ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:184:65: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  184 |               next_phase=work_phase+work_increment;wrap_distance=0;
+      |                                                                 ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:186:30: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  186 |                 wrap_distance=32'(next_phase-hi);next_phase=lo+wrap_distance;
+      |                              ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:186:60: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  186 |                 wrap_distance=32'(next_phase-hi);next_phase=lo+wrap_distance;
+      |                                                            ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:188:27: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  188 |                 next_phase={work_cfg.trim_end-32'd1,16'd0};active_mask[v]<=0;
+      |                           ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:203:18: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  203 |             trial={wrap_remainder,wrap_numerator[wrap_bit]};
+      |                  ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:204:20: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_voice'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+  204 |             reduced=16'(trial>=wrap_divisor ? trial-wrap_divisor : trial);
+      |                    ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_ddr.sv:63:14: Blocking assignment '=' in sequential logic process
+                                                                                                                           : ... note: In instance 'sampler_mode_d.u_ddr'
+                                                                                                                           : ... Suggest using delayed assignment '<='
+   63 |         legal=(checked_address[4:0]==0 && checked_base[4:0]==0 && checked_capacity>=32 &&
+      |              ^
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_mode_d.sv:37:16: Signal is not used: 'seq_timestamp'
+                                                                                                                                    : ... note: In instance 'sampler_mode_d'
+   37 |   logic [31:0] seq_timestamp,sample_time,dispatched;
+      |                ^~~~~~~~~~~~~
+                       ... For warning description see https://verilator.org/warn/UNUSEDSIGNAL?v=5.046
+                       ... Use "/* verilator lint_off UNUSEDSIGNAL */" and lint_on around source to disable this message.
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_mode_d.sv:37:30: Signal is not used: 'sample_time'
+                                                                                                                                    : ... note: In instance 'sampler_mode_d'
+   37 |   logic [31:0] seq_timestamp,sample_time,dispatched;
+      |                              ^~~~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_mode_d.sv:37:42: Signal is not used: 'dispatched'
+                                                                                                                                    : ... note: In instance 'sampler_mode_d'
+   37 |   logic [31:0] seq_timestamp,sample_time,dispatched;
+      |                                          ^~~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_mode_d.sv:41:44: Signal is not used: 'voice_reads'
+                                                                                                                                    : ... note: In instance 'sampler_mode_d'
+   41 |   logic [31:0] v_address,v_base,v_capacity,voice_reads,frame_cycles,stale_responses;
+      |                                            ^~~~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_mode_d.sv:41:56: Signal is not used: 'frame_cycles'
+                                                                                                                                    : ... note: In instance 'sampler_mode_d'
+   41 |   logic [31:0] v_address,v_base,v_capacity,voice_reads,frame_cycles,stale_responses;
+      |                                                        ^~~~~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_mode_d.sv:41:69: Signal is not used: 'stale_responses'
+                                                                                                                                    : ... note: In instance 'sampler_mode_d'
+   41 |   logic [31:0] v_address,v_base,v_capacity,voice_reads,frame_cycles,stale_responses;
+      |                                                                     ^~~~~~~~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:37:25: Bits of signal are not used: 'dispatch_pattern'[31:4]
+                                                                                                                                       : ... note: In instance 'sampler_mode_d.u_seq'
+   37 |   integer dispatch_step,dispatch_pattern;
+      |                         ^~~~~~~~~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:27:16: Bits of signal are not used: 'index_a'[31:4]
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+   27 |   logic [31:0] index_a,index_b,addr_a,addr_b;
+      |                ^~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:30:50: Bits of signal are not used: 'interpolated'[63:32]
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+   30 |   logic signed [31:0] scaled;logic signed [63:0] interpolated;
+      |                                                  ^~~~~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:40:9: Bits of signal are not used: 'work_cfg'[230:218]
+                                                                                                                                  : ... note: In instance 'sampler_mode_d.u_voice'
+   40 |   pad_t work_cfg;
+      |         ^~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:41:16: Bits of signal are not used: 'work_desc'[176:72,39:0]
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+   41 |   descriptor_t work_desc;
+      |                ^~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv:50:22: Signal is not driven, nor used: 'span'
+                                                                                                                                   : ... note: In instance 'sampler_mode_d.u_voice'
+   50 |   logic [47:0] lo,hi,span;
+      |                      ^~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_ddr.sv:29:27: Bits of signal are not used: 'client'[31:1]
+                                                                                                                                 : ... note: In instance 'sampler_mode_d.u_ddr'
+   29 |   integer cursor,selected,client,age;
+      |                           ^~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:3:22: Parameter is not used: 'VOICES'
+                                                                                                                               : ... note: In instance 'sampler_mode_d.u_seq.track_ram[3].u_ram'
+    3 |   localparam integer VOICES=16, SLOTS=64, PATTERNS=16;
+      |                      ^~~~~~
+                      ... For warning description see https://verilator.org/warn/UNUSEDPARAM?v=5.046
+                      ... Use "/* verilator lint_off UNUSEDPARAM */" and lint_on around source to disable this message.
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:3:33: Parameter is not used: 'SLOTS'
+                                                                                                                               : ... note: In instance 'sampler_mode_d.u_seq.track_ram[3].u_ram'
+    3 |   localparam integer VOICES=16, SLOTS=64, PATTERNS=16;
+      |                                 ^~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:3:43: Parameter is not used: 'PATTERNS'
+                                                                                                                               : ... note: In instance 'sampler_mode_d.u_seq.track_ram[3].u_ram'
+    3 |   localparam integer VOICES=16, SLOTS=64, PATTERNS=16;
+      |                                           ^~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:4:38: Parameter is not used: 'GATED'
+                                                                                                                               : ... note: In instance 'sampler_mode_d.u_seq.track_ram[3].u_ram'
+    4 |   localparam logic [1:0] ONE_SHOT=0, GATED=1, LOOPED=2;
+      |                                      ^~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:5:32: Parameter is not used: 'E_POLICY'
+                                                                                                                               : ... note: In instance 'sampler_mode_d.u_seq.track_ram[3].u_ram'
+    5 |   localparam logic [7:0] OK=0, E_POLICY=1, E_FORMAT=2, E_BOUNDS=3,
+      |                                ^~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:5:44: Parameter is not used: 'E_FORMAT'
+                                                                                                                               : ... note: In instance 'sampler_mode_d.u_seq.track_ram[3].u_ram'
+    5 |   localparam logic [7:0] OK=0, E_POLICY=1, E_FORMAT=2, E_BOUNDS=3,
+      |                                            ^~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:6:41: Parameter is not used: 'E_CRC'
+                                                                                                                               : ... note: In instance 'sampler_mode_d.u_seq.track_ram[3].u_ram'
+    6 |     E_CAPACITY=4, E_TAG=5, E_TIMEOUT=6, E_CRC=7, E_BUSY=8,
+      |                                         ^~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:6:50: Parameter is not used: 'E_BUSY'
+                                                                                                                               : ... note: In instance 'sampler_mode_d.u_seq.track_ram[3].u_ram'
+    6 |     E_CAPACITY=4, E_TAG=5, E_TIMEOUT=6, E_CRC=7, E_BUSY=8,
+      |                                                  ^~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:7:5: Parameter is not used: 'E_TRUNCATED'
+                                                                                                                              : ... note: In instance 'sampler_mode_d.u_seq.track_ram[3].u_ram'
+    7 |     E_TRUNCATED=9, E_OVERFLOW=10, E_DEADLINE=11;
+      |     ^~~~~~~~~~~
+- V e r i l a t i o n   R e p o r t: Verilator 5.046 2026-02-28 rev fedora-5.046
+- Verilator: Built from 1.460 MB sources in 27 modules, into 0.738 MB in 9 C++ files needing 0.000 MB
+- Verilator: Walltime 0.065 s (elab=0.009, cvt=0.033, bld=0.000); cpu 0.065 s on 1 threads; allocated 38.293 MB

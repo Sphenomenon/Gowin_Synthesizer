@@ -1,0 +1,7 @@
+# Runtime extract; full compile/run log remains in /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/sampler_20261019_020429_230303/tb_sampler_sequencer.log
+METRIC swing_odd_offset_samples=1500 fractional_bpm=137 tempo_change_from=120 tempo_change_to=180 max_jitter_samples=0 dispatched=122
+PASS tb_sampler_sequencer
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/sampler/tb_sampler_sequencer.sv:90: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 25ms; walltime 0.733 s; speed 34.343 ms/s
+- Verilator: cpu 0.731 s on 1 threads; allocated 7 MB

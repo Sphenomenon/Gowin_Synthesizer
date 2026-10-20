@@ -1,0 +1,7 @@
+{"case": "old_map", "expected_behavior_confirmed": true, "exit_code": 1, "seconds": 0.12}
+FATAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/music/tb_viterbi_ddr_isolation.sv:138: external backpointer frame=1 state=0
+       Time: 179740000  Scope: tb_viterbi_ddr_isolation
+{"case": "new_map", "expected_behavior_confirmed": true, "exit_code": 0, "seconds": 11.89}
+PASS Viterbi DDR isolation oracle: 172 frames x 89 states; all scores/backpointers, ties, silence, DDR stalls, concurrent delay writes, 28 notes
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/music/tb_viterbi_ddr_isolation.sv:178: $finish called at 29115780000 (1ps)
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261020_003048_847857/current_regression_20261020_003118_685500/ddr_isolation

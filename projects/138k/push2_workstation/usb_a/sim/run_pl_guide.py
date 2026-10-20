@@ -37,7 +37,7 @@ def main():
     for source in sources:
         if not source.is_file():
             parser.error(f'missing production RTL: {source}; pass --baseline Prj1')
-    out = args.out or Path(tempfile.mkdtemp(prefix='pl-guide-'))
+    out = args.out.resolve() if args.out else Path(tempfile.mkdtemp(prefix='pl-guide-'))
     out.mkdir(parents=True, exist_ok=True)
     passed = False
     try:

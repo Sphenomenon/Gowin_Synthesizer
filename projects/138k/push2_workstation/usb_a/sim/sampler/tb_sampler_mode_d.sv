@@ -13,6 +13,7 @@ module tb_sampler_mode_d;
   logic signed [15:0] l,r;logic [6:0] delay_send;logic [15:0] mask;logic [5:0] count;
   logic [31:0] misses,latency,beats,jitter;logic [7:0] voice_error,ddr_error,seq_error;
   integer pending=0,delay=0,frame=0,sequence_onsets=0,last_voice_count=0,max_render=0;
+  logic track_sequence_onsets=1;
   sampler_mode_d dut(.clk(clk),.rst_n(rst_n),.restart(restart),.panic(panic),.enable(enable),.sample_tick(tick),
     .event_valid(event_valid),.event_ready(event_ready),.event_data(event_data),
     .pad_write(pad_write),.pad_index(pad_index),.pad_config(pad),.descriptor_slot(descriptor_slot),.descriptor(desc),
@@ -46,12 +47,42 @@ module tb_sampler_mode_d;
     @(negedge clk);tick=1;@(negedge clk);tick=0;clocks=0;
     while(!pcm_valid) begin @(negedge clk);clocks=clocks+1;if(clocks>1500) $fatal(1,"mode frame deadline");end
     frame=frame+1;if(clocks>max_render) max_render=clocks;
-    if(running && count!=0 && last_voice_count==0) begin
+    if(track_sequence_onsets && running && count!=0 && last_voice_count==0) begin
       sequence_onsets=sequence_onsets+1;
       if(dut.sample_time!=dut.u_seq.off_time[0]-100) $fatal(1,"event-to-voice timestamp jitter");
     end
     last_voice_count=count;
     repeat(1600-clocks-1) @(negedge clk);
+  endtask
+  // Exercise each combination while a real looping voice and transport run.
+  // Gray-code transitions change one FX control at a time, so an unrelated
+  // active effect must survive each enable/release. Delay is the existing
+  // exported send control; the external P10 delay processor is not in this TB.
+  task automatic running_fx_combinations;
+    logic signed [15:0] dry_l,dry_r;
+    logic [31:0] before_time;
+    logic [15:0] playing_mask;
+    integer previous,selected,changed;
+    track_sequence_onsets=0;
+    send(1,36,127);sample();
+    if(!running || count!=1 || l<=0 || r<=0) $fatal(1,"running FX setup");
+    dry_l=l;dry_r=r;playing_mask=mask;previous=0;
+    for(integer i=0;i<9;i++) begin
+      selected=i==8 ? 0 : i^(i>>1);changed=selected^previous;
+      if(changed&1) send(2,20,(selected&1)?64:0);
+      if(changed&2) send(2,21,(selected&2)?48:0);
+      if(changed&4) send(2,22,(selected&4)?99:0);
+      before_time=dut.sample_time;sample();
+      if(dut.u_fx.crush!=((selected&1)?64:0) ||
+         dut.u_fx.drive!=((selected&2)?48:0) || delay_send!=((selected&4)?99:0))
+        $fatal(1,"combined FX state mask=%0d",selected);
+      if(!running || count!=1 || mask!=playing_mask || dut.sample_time!=before_time+1 || l<=0 || r<=0)
+        $fatal(1,"FX interrupted playback mask=%0d",selected);
+      if(!(selected&3) && (l!=dry_l || r!=dry_r)) $fatal(1,"FX dry return changed source");
+      if((selected&2) && (l<=dry_l || r<=dry_r)) $fatal(1,"combined drive did not process PCM");
+      previous=selected;
+    end
+    if(misses || jitter || voice_error || ddr_error || seq_error) $fatal(1,"combined FX playback fault");
   endtask
   initial begin
     pad='0;desc='0;
@@ -68,10 +99,18 @@ module tb_sampler_mode_d;
     repeat(5001) sample();
     if(sequence_onsets!=3 || jitter!=0 || misses!=0 || voice_error!=0 || ddr_error!=0 || seq_error!=0)
       $fatal(1,"integrated sequencer onsets=%d jitter=%d",sequence_onsets,jitter);
-    send(2,110,127);sample();send(2,110,0);sample();
+    send(2,110,127);sample();
+    if(dut.u_fx.crush) $fatal(1,"score CC110 reached integrated D effect");
+    send(2,20,127);sample();if(dut.u_fx.crush!=127) $fatal(1,"D CC20 not routed");
+    send(2,20,0);sample();if(dut.u_fx.crush) $fatal(1,"D CC20 release");
+    send(2,21,77);sample();if(dut.u_fx.drive!=77) $fatal(1,"D CC21 not routed");
+    send(2,21,0);sample();if(dut.u_fx.drive) $fatal(1,"D CC21 release");
+    send(2,22,99);sample();if(delay_send!=99) $fatal(1,"D CC22 not routed");
+    send(2,22,0);sample();if(delay_send) $fatal(1,"D CC22 release");
+    running_fx_combinations();
     send(2,120,0);if(count!=0 || running || dut.u_seq.event_valid) $fatal(1,"CC120 integrated panic");
     enable=0;#1;if(event_ready) $fatal(1,"inactive mode consumed event");
-    $display("METRIC integrated_frames=%0d same_sample_onsets=%0d integrated_jitter_samples=0 max_render_cycles=%0d",frame,sequence_onsets,max_render);
+    $display("METRIC integrated_frames=%0d same_sample_onsets=%0d integrated_jitter_samples=0 max_render_cycles=%0d fx_combinations=8 playback_fx_switches=8",frame,sequence_onsets,max_render);
     $display("PASS tb_sampler_mode_d");$finish;
   end
   initial begin #100000000;$fatal(1,"timeout");end

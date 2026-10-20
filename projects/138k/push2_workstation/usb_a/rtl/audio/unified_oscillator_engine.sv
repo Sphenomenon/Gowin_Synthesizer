@@ -23,7 +23,8 @@
 
 module unified_oscillator_engine #(
     parameter bit EXPRESSION_ENABLE = 1'b0,
-    parameter int SAMPLE_RATE_HZ = 192000
+    parameter int SAMPLE_RATE_HZ = 192000,
+    parameter bit SEPARATE_OFF_NOTE = 1'b0
 ) (
     input  logic               clk_i,
     input  logic               rst_ni,
@@ -52,7 +53,8 @@ module unified_oscillator_engine #(
     output logic        [5:0]  active_voice_count_o,
     output logic               load_busy_o,
     output logic               mix_busy_o,
-    output logic        [7:0]  issued_slot_count_o
+    output logic        [7:0]  issued_slot_count_o,
+    input  logic        [6:0]  event_off_note_i
 );
   localparam logic [2:0] LOAD_IDLE = 3'd0;
   localparam logic [2:0] LOAD_WAIT_MIDI = 3'd1;
@@ -133,6 +135,23 @@ module unified_oscillator_engine #(
   logic [4:0] release_index;
   logic expression_found;
   logic [4:0] expression_index;
+  wire [6:0] off_note=SEPARATE_OFF_NOTE ? event_off_note_i : event_midi_note_i;
+  wire [31:0] release_matches,release_select,expression_matches,expression_select;
+  for(genvar ev=0;ev<32;ev=ev+1) begin: g_direct_event_select
+    assign release_matches[ev]=ev<=maximum_voice_index && allocated_mask_o[ev] &&
+        envelope_state[ev]!=ENVELOPE_RELEASE && envelope_state[ev]!=ENVELOPE_IDLE &&
+        assigned_midi_note[ev]==off_note;
+    assign expression_matches[ev]=allocated_mask_o[ev] &&
+        envelope_state[ev]!=ENVELOPE_RELEASE && envelope_state[ev]!=ENVELOPE_IDLE &&
+        assigned_midi_note[ev]==expression_note_i;
+    if(ev==0) begin
+      assign release_select[ev]=release_matches[ev];
+      assign expression_select[ev]=expression_matches[ev];
+    end else begin
+      assign release_select[ev]=release_matches[ev] && !(|release_matches[ev-1:0]);
+      assign expression_select[ev]=expression_matches[ev] && !(|expression_matches[ev-1:0]);
+    end
+  end
   logic [4:0] maximum_voice_index;
   logic [5:0] current_partial_count;
   logic accepted_event;
@@ -190,15 +209,12 @@ module unified_oscillator_engine #(
   logic signed [63:0] accumulated_next;
   logic signed [63:0] final_accumulator;
   logic finalize_valid;
-  logic [63:0] accumulated_magnitude;
-  // P30 raises the already-calibrated A/B/C PCM level by exactly 3/2 before
-  // the existing signed 32-bit limiter.  Scaling here keeps each timbre's
-  // harmonic ratios and the P24 A-weighted mode balance unchanged.
-  logic [65:0] loudness_scaled_magnitude;
-  logic [63:0] rounded_magnitude;
-  logic signed [63:0] rounded_mix;
-  logic signed [63:0] quantized_mix;
-  logic quantized_valid;
+  // Keep the exact P30 3/2 gain and rounding, with separate registered
+  // magnitude, scaling and quantization stages. No sample-rate change.
+  unified_mix_quantizer quantizer(
+      .clk_i(clk_i),.rst_ni(rst_ni),.panic_i(panic_i),
+      .valid_i(finalize_valid),.mix_i(final_accumulator),.mode_i(current_mode_o),
+      .valid_o(sample_valid_o),.sample_o(sample_o));
 
   integer voice_index;
   integer pipeline_index;
@@ -240,12 +256,6 @@ module unified_oscillator_engine #(
   assign envelope_signed = $signed({1'b0, gain_product_envelope});
   assign product_extended = {{4{envelope_product[59]}}, envelope_product};
   assign accumulated_next = accumulator + product_extended;
-  assign accumulated_magnitude = final_accumulator[63]
-      ? $unsigned(-final_accumulator) : $unsigned(final_accumulator);
-  assign loudness_scaled_magnitude = {2'b0, accumulated_magnitude} +
-      ({2'b0, accumulated_magnitude} << 1);
-  assign rounded_mix = final_accumulator[63]
-      ? -$signed(rounded_magnitude) : $signed(rounded_magnitude);
   assign envelope_update_attack_sum =
       {1'b0, envelope_update_level_q24} +
       {1'b0, envelope_update_attack_q24};
@@ -373,7 +383,7 @@ module unified_oscillator_engine #(
           // Note Off consumes one still-held voice, not the old release tail.
           envelope_state[index] != ENVELOPE_RELEASE &&
           envelope_state[index] != ENVELOPE_IDLE &&
-          assigned_midi_note[index] == event_midi_note_i) begin
+          assigned_midi_note[index] == off_note) begin
         release_found = 1'b1;
         release_index = index[4:0];
       end
@@ -397,16 +407,6 @@ module unified_oscillator_engine #(
         active_mask_o[index] = 1'b1;
         active_voice_count_o = active_voice_count_o + 6'd1;
       end
-    end
-  end
-
-  always @* begin
-    if (current_mode_o == 2'd2) begin
-      rounded_magnitude =
-          (loudness_scaled_magnitude + 66'd134217728) >> 28;
-    end else begin
-      rounded_magnitude =
-          (loudness_scaled_magnitude + 66'd1073741824) >> 31;
     end
   end
 
@@ -568,10 +568,6 @@ module unified_oscillator_engine #(
       accumulator <= '0;
       final_accumulator <= '0;
       finalize_valid <= 1'b0;
-      quantized_mix <= '0;
-      quantized_valid <= 1'b0;
-      sample_valid_o <= 1'b0;
-      sample_o <= '0;
       mix_busy_o <= 1'b0;
       for (voice_index = 0; voice_index < 32; voice_index = voice_index + 1) begin
         assigned_midi_note[voice_index] <= '0;
@@ -592,9 +588,7 @@ module unified_oscillator_engine #(
         last_pipe[pipeline_index] <= 1'b0;
       end
     end else begin
-      sample_valid_o <= 1'b0;
       finalize_valid <= 1'b0;
-      quantized_valid <= 1'b0;
       envelope_update_valid <= envelope_update_active;
 
       if (envelope_update_active) begin
@@ -623,22 +617,6 @@ module unified_oscillator_engine #(
         envelope_state[envelope_update_write_index] <= envelope_next_state;
       end
 
-      if (finalize_valid) begin
-        quantized_mix <= rounded_mix;
-        quantized_valid <= 1'b1;
-      end
-
-      if (quantized_valid) begin
-        if (quantized_mix > 64'sd2147483647) begin
-          sample_o <= 32'sh7fffffff;
-        end else if (quantized_mix < -64'sd2147483648) begin
-          sample_o <= 32'sh80000000;
-        end else begin
-          sample_o <= quantized_mix[31:0];
-        end
-        sample_valid_o <= 1'b1;
-      end
-
       if (mode_set_valid_i && mode_set_ready_o) begin
         current_mode_o <= mode_i <= 2'd2 ? mode_i : 2'd2;
       end
@@ -651,9 +629,9 @@ module unified_oscillator_engine #(
         end
       end
 
-      if (accepted_event && !event_note_on_i && release_found) begin
-        envelope_state[release_index] <= ENVELOPE_RELEASE;
-      end
+      for(integer ev=0;ev<32;ev=ev+1)
+        if(accepted_event && !event_note_on_i && release_select[ev])
+          envelope_state[ev]<=ENVELOPE_RELEASE;
 
       if (accepted_event && event_note_on_i) begin
         allocated_mask_o[allocation_index] <= 1'b1;
@@ -667,10 +645,9 @@ module unified_oscillator_engine #(
         load_state <= LOAD_WAIT_MIDI;
         expression_gain_q8[allocation_index] <= 8'd128;
       end else if (accepted_expression) begin
-        if (expression_found) begin
-          expression_gain_q8[expression_index] <=
+        for(integer ev=0;ev<32;ev=ev+1)
+          if(expression_select[ev]) expression_gain_q8[ev]<=
               expression_value_i == 7'd127 ? 8'd128 : {1'b0, expression_value_i};
-        end
       end else begin
         case (load_state)
           LOAD_WAIT_MIDI: begin
@@ -785,11 +762,86 @@ module unified_oscillator_engine #(
         accumulator <= '0;
         final_accumulator <= '0;
         finalize_valid <= 1'b0;
-        quantized_mix <= '0;
-        quantized_valid <= 1'b0;
-        sample_valid_o <= 1'b0;
-        sample_o <= '0;
         mix_busy_o <= 1'b0;
+      end
+    end
+  end
+endmodule
+
+// Kept beside its sole production consumer so all existing engine file lists
+// include the quantizer. The independent testbench also exercises this module
+// directly with full-range 64-bit inputs, rounding boundaries and PANIC.
+module unified_mix_quantizer(
+    input logic clk_i,rst_ni,panic_i,valid_i,
+    input logic signed [63:0] mix_i,
+    input logic [1:0] mode_i,
+    output logic valid_o,
+    output logic signed [31:0] sample_o
+);
+  logic magnitude_low_valid,magnitude_valid,scale_low_valid,scaled_valid,rounded_valid;
+  logic low_negative,magnitude_negative,scale_low_negative,scaled_negative,rounded_negative;
+  logic low_mode_c,magnitude_mode_c,scale_low_mode_c,scaled_mode_c;
+  logic [31:0] magnitude_low,magnitude_high_base;
+  logic magnitude_carry;
+  logic [63:0] magnitude;
+  logic [33:0] scale_low_sum;
+  logic [32:0] scale_high_sum;
+  logic [65:0] scaled;
+  logic [38:0] rounded;
+  always @(posedge clk_i or negedge rst_ni) begin
+    if(!rst_ni) begin
+      magnitude_low_valid<=0;magnitude_valid<=0;scale_low_valid<=0;scaled_valid<=0;rounded_valid<=0;valid_o<=0;
+      low_negative<=0;magnitude_negative<=0;scale_low_negative<=0;scaled_negative<=0;rounded_negative<=0;
+      low_mode_c<=0;magnitude_mode_c<=0;scale_low_mode_c<=0;scaled_mode_c<=0;
+      magnitude_low<=0;magnitude_high_base<=0;magnitude_carry<=0;
+      magnitude<=0;scale_low_sum<=0;scale_high_sum<=0;scaled<=0;rounded<=0;sample_o<=0;
+    end else if(panic_i) begin
+      magnitude_low_valid<=0;magnitude_valid<=0;scale_low_valid<=0;scaled_valid<=0;rounded_valid<=0;valid_o<=0;
+      low_negative<=0;magnitude_negative<=0;scale_low_negative<=0;scaled_negative<=0;rounded_negative<=0;
+      low_mode_c<=0;magnitude_mode_c<=0;scale_low_mode_c<=0;scaled_mode_c<=0;
+      magnitude_low<=0;magnitude_high_base<=0;magnitude_carry<=0;
+      magnitude<=0;scale_low_sum<=0;scale_high_sum<=0;scaled<=0;rounded<=0;sample_o<=0;
+    end else begin
+      magnitude_low_valid<=valid_i;
+      magnitude_valid<=magnitude_low_valid;
+      scale_low_valid<=magnitude_valid;
+      scaled_valid<=scale_low_valid;
+      rounded_valid<=scaled_valid;
+      valid_o<=rounded_valid;
+      if(valid_i) begin
+        magnitude_low<=mix_i[63] ? -mix_i[31:0] : mix_i[31:0];
+        magnitude_high_base<=mix_i[63] ? ~mix_i[63:32] : mix_i[63:32];
+        magnitude_carry<=mix_i[63] && mix_i[31:0]==0;
+        low_negative<=mix_i[63];low_mode_c<=mode_i==2'd2;
+      end
+      if(magnitude_low_valid) begin
+        magnitude<={magnitude_high_base+{31'd0,magnitude_carry},magnitude_low};
+        magnitude_negative<=low_negative;magnitude_mode_c<=low_mode_c;
+      end
+      if(magnitude_valid) begin
+        // Split the exact 66-bit 3*x adder at bit 33. Both halves are
+        // independent here; the registered carry is applied next cycle.
+        scale_low_sum<={1'b0,magnitude[32:0]}+{1'b0,magnitude[31:0],1'b0};
+        scale_high_sum<={2'b0,magnitude[63:33]}+{1'b0,magnitude[63:32]};
+        scale_low_negative<=magnitude_negative;scale_low_mode_c<=magnitude_mode_c;
+      end
+      if(scale_low_valid) begin
+        scaled<={scale_high_sum+{32'd0,scale_low_sum[33]},scale_low_sum[32:0]};
+        scaled_negative<=scale_low_negative;scaled_mode_c<=scale_low_mode_c;
+      end
+      if(scaled_valid) begin
+        // Adding half an LSB before shifting is exactly the retained upper
+        // bits plus the discarded rounding bit. Avoid a full 66-bit adder.
+        rounded<=scaled_mode_c ?
+            {1'b0,scaled[65:28]}+{{38{1'b0}},scaled[27]} :
+            {4'b0,scaled[65:31]}+{{38{1'b0}},scaled[30]};
+        rounded_negative<=scaled_negative;
+      end
+      if(rounded_valid) begin
+        if(rounded_negative)
+          sample_o<=rounded>39'd2147483648 ? 32'sh80000000 : -$signed(rounded[31:0]);
+        else
+          sample_o<=rounded>39'd2147483647 ? 32'sh7fffffff : $signed(rounded[31:0]);
       end
     end
   end

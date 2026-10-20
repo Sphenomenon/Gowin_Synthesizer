@@ -1,0 +1,24 @@
+{
+  "head": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+  "origin_main": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+  "head_unchanged": true,
+  "device_25k_files_compared": 1064,
+  "device_25k_file_set_unchanged": true,
+  "device_25k_hashes_unchanged": true,
+  "protected_hashes_unchanged": true,
+  "production_and_test_inputs_unchanged": true,
+  "all_recorded_input_hashes_checked": 145,
+  "recorded_input_changes": [],
+  "staged_inputs_checked": 602,
+  "staged_input_changes": [],
+  "selected_cnn_inputs_checked": 73,
+  "selected_cnn_input_changes": [],
+  "frozen_inputs_checked": 5,
+  "frozen_input_changes": [],
+  "protected_sha256": {
+    "工程架构报告.md": "7dc5b97ac7746d231cc544584766fee625295ac0d1c1270df09ab812728cf6bc",
+    "projects/138k/push2_workstation/usb_a/GW25K_PANEL.md": "6be622ff8a99813ca89a4674341bbe38fde7f19758307e99d5a556808a16dd06",
+    "projects/138k/push2_workstation/usb_a/LATEST_WORKSTATION.json": "8afb5f65b343064d0600d242c994ba8f9eaf5e1faca3f4d7ef6603c365f91fa7",
+    "projects/25k/SOURCE_IMPORT.json": "72950f5df32c3979a37109f1b298192260075972c3e8b482025ff08be7357573"
+  }
+}

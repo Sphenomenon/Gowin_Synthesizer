@@ -1,0 +1,46 @@
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/final/attach_feedback
+firmware_compile 0
+firmware_test 0
+PASS generic firmware: both Push IDs, G1 descriptors, dynamic endpoint/MPS/alt, rejection bounds, 128x128 notes/velocity, channels/cables, no Push OUT, toggles/hotplug
+
+tb_generic_midi_compile 0
+tb_generic_midi_test 0
+PASS generic MMIO/CDC/audio: 174 ordered events, 15609 stalls, exact low/high note velocities at synth, PCM, release, sustain disconnect, reconnect, Push init/force/aftertouch preserved
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/final/attach_feedback/source/sim/tb_generic_midi.sv:116: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 2ms; walltime 0.199 s; speed 8.898 ms/s
+- Verilator: cpu 0.198 s on 1 threads; allocated 7 MB
+
+tb_workstation_attach_compile 0
+tb_workstation_attach_test 0
+PASS audio feedback: 12 real MMIO snapshots, active/release-tail voices, requested vs committed mode, four routes checked against PCM, glide/sustain, reconnect defaults
+PASS attach: 6 default boundaries, ordered tap/CC7/program/bend/CC88/89, detach/reconnect cancellation, full-queue and init PANIC, TF/live/cue exit, no first-frame wait, GW25K guide isolation, Push epoch/volume/release, PCM=448
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/final/attach_feedback/source/sim/tb_workstation_attach.sv:232: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 11ms; walltime 3.101 s; speed 3.669 ms/s
+- Verilator: cpu 3.093 s on 1 threads; allocated 7 MB
+
+tb_usb_lifecycle_merge_compile 0
+tb_usb_lifecycle_merge_test 0
+PASS USB lifecycle merge: stalled old event canceled, immediate priority, CPU backpressure, completion handshake, normal resume
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/final/attach_feedback/source/sim/tb_usb_lifecycle_merge.sv:35: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 160ns; walltime 0.000 s; speed 3.289 ms/s
+- Verilator: cpu 0.000 s on 1 threads; allocated 7 MB
+
+feedback_host_compile 0
+feedback_host_test 0
+RTL FEEDBACK 00: MODE C  ACTIVE 000  OUT STEREO / GLIDE 000  SUSTAIN OFF
+RTL FEEDBACK 01: MODE A  ACTIVE 000  OUT STEREO / GLIDE 000  SUSTAIN OFF
+RTL FEEDBACK 02: MODE A  ACTIVE 002  OUT STEREO / GLIDE 000  SUSTAIN OFF
+RTL FEEDBACK 03: MODE A  ACTIVE 002  OUT STEREO / GLIDE 000  SUSTAIN OFF
+RTL FEEDBACK 04: MODE A  ACTIVE 002  OUT STEREO / GLIDE 073  SUSTAIN ON 
+RTL FEEDBACK 05: MODE A  ACTIVE 002  OUT STEREO / GLIDE 073  SUSTAIN ON 
+RTL FEEDBACK 06: MODE A  ACTIVE 002  OUT LEFT   / GLIDE 073  SUSTAIN ON 
+RTL FEEDBACK 07: MODE A  ACTIVE 002  OUT RIGHT  / GLIDE 073  SUSTAIN ON 
+RTL FEEDBACK 08: MODE A  ACTIVE 002  OUT MUTED  / GLIDE 073  SUSTAIN ON 
+RTL FEEDBACK 09: MODE A  ACTIVE 002  OUT STEREO / GLIDE 073  SUSTAIN OFF
+RTL FEEDBACK 10: MODE B  ACTIVE 000  OUT STEREO / GLIDE 073  SUSTAIN OFF
+RTL FEEDBACK 11: MODE C  ACTIVE 000  OUT STEREO / GLIDE 000  SUSTAIN OFF
+PASS production Host consumes 12 real RTL feedback captures: committed mode, release-tail voices, four audio routes, glide, sustain, reconnect defaults; no input echo
+

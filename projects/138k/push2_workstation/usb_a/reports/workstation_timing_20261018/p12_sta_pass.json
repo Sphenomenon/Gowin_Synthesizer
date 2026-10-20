@@ -1,0 +1,153 @@
+{
+  "timing_closed": true,
+  "problems": [],
+  "frequencies": {
+    "clk_50m": {
+      "required_mhz": 50.0,
+      "actual_mhz": 52.385
+    },
+    "audio_76m8": {
+      "required_mhz": 76.8,
+      "actual_mhz": 76.832
+    },
+    "ddr_mem400": {
+      "required_mhz": 400.0,
+      "actual_mhz": 2598.775
+    },
+    "ddr_ui100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 243.958
+    },
+    "video_pixel148": {
+      "required_mhz": 148.5,
+      "actual_mhz": 152.887
+    },
+    "cpu_bus50": {
+      "required_mhz": 50.0,
+      "actual_mhz": 71.242
+    },
+    "cpu_core100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 1087.724
+    },
+    "usb_48m": {
+      "required_mhz": 48.0,
+      "actual_mhz": 48.563
+    }
+  },
+  "checks": {
+    "clk_50m": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "audio_76m8": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "ddr_mem400": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "ddr_ui100": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "video_ref49": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "video_serial742": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "video_pixel148": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "cpu_bus50": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "cpu_core100": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "usb_48m": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    }
+  },
+  "global_reports": {
+    "setup": true,
+    "hold": true,
+    "recovery": true,
+    "removal": true
+  },
+  "reset_reports": {
+    "recovery": true,
+    "removal": true
+  },
+  "negative_paths": [],
+  "report_sha256": "c2d0665adb47d16b3786d5a90d7ad17e96751322d8db1446b74b2f56acd46089",
+  "hardware_tested": false
+}

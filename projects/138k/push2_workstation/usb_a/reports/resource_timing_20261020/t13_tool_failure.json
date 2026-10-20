@@ -1,0 +1,11 @@
+{
+  "build": "results/resource_timing_20261020_111409_509663",
+  "tool_flow_passed": false,
+  "exit_code": 1,
+  "stage": "routing",
+  "diagnostic": "PR0004: There are total 0 unrouted nets",
+  "input_drift": [],
+  "bitstream_available": false,
+  "timing_acceptance": false,
+  "hardware_tested": false
+}

@@ -1,6 +1,6 @@
 // Push-specific mapping into the existing workstation {kind,a,b} events.
 // Rendering and LED readiness never enter this path.
-module push2_controls(
+module push2_controls #(parameter integer INITIAL_VOLUME=100)(
     input wire clk,rst,connected,
     input wire valid,output wire ready,input wire [3:0] kind,cable,channel,
     input wire [6:0] a,b,
@@ -49,7 +49,7 @@ module push2_controls(
             event_valid<=0;event_data<=0;held<=0;buttons<=0;
             guide_toggle_o<=0;guide_prev_o<=0;guide_next_o<=0;guide_select_o<=0;
             was_connected<=0;panic_pending<=0;panic_epoch<=0;last_note<=0;last_velocity<=0;
-            mapped<=0;ignored<=0;effects<=0;volume<=100;vibrato<=0;glide<=0;quiet<=0;
+            mapped<=0;ignored<=0;effects<=0;volume<=7'(INITIAL_VOLUME);vibrato<=0;glide<=0;quiet<=0;
             scope_scale<=127;scope_rotation<=0;scope_morph<=0;scope_destination<=0;scope_speed<=64;
         end else begin
             guide_toggle_o<=0;

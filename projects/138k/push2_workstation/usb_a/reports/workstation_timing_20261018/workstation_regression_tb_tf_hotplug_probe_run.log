@@ -1,0 +1,2 @@
+PASS TF idle probe, removal stall, reset and reinsertion
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/guidance/tb_tf_hotplug_probe.sv:106: $finish called at 4720000 (1ps)

@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "frames": 12589,
+  "trace_sha256": "45f207cf671d231e94151e22aa6ccea0782ccebb8fa910b5a3189c605734bc09",
+  "source_sha256": {
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_rework_final_route0_20261020_041042/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_rework_final_route0_20261020_041042/Prj1/legacy/rtl/audio/stereo_effects.sv": "370206c4a13f839a0ab5985b872396ca26a497811118186adb159361690d279f",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_rework_final_route0_20261020_041042/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_rework_final_route0_20261020_041042/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_rework_final_route0_20261020_041042/Prj1/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_rework_final_route0_20261020_041042/Prj1/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_rework_final_route0_20261020_041042/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_rework_final_route0_20261020_041042/Prj1/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_rework_final_route0_20261020_041042/Prj1/rtl/music/music_async_fifo.sv": "6d55458af075b01baebc22c81a856e98336a96ae82f061942a1511defc5a3ae6",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/Prj1/legacy/rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/Prj1/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/Prj1/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/Prj1/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/Prj1/rtl/music/music_async_fifo.sv": "eeffa6875e557313d396e83f9ad7eee73d491c36e41e34818b0e2faa99ce7fb1",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/gain_chain_ab/after.sv": "bd6c03c46de02543251a369647e1b915b416d321aafb8e18fd093681886041f8",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_110314_988115/gain_chain_ab/before.sv": "142289fa0612905616e5a42cbaea80aa6bb3fd11399a7c047659be6ae74eb0b5"
+  },
+  "hardware_tested": false
+}

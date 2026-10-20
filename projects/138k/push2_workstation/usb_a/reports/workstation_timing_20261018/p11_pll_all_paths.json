@@ -1,0 +1,395 @@
+[
+  {
+    "endpoint": "u_reference/ICPSEL[0]",
+    "total_ns": 10.072,
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_0_s0"
+    ],
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_0_s0/CLK",
+        "max_ns": 3.808
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_0_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_0_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_0_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/ICPSEL[0]",
+        "max_ns": 5.457
+      }
+    ]
+  },
+  {
+    "endpoint": "u_reference/ICPSEL[1]",
+    "total_ns": 10.169,
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_1_s0"
+    ],
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_1_s0/CLK",
+        "max_ns": 3.815
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_1_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_1_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_1_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/ICPSEL[1]",
+        "max_ns": 5.547
+      }
+    ]
+  },
+  {
+    "endpoint": "u_reference/LPFRES[0]",
+    "total_ns": 9.955,
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_8_s0"
+    ],
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_8_s0/CLK",
+        "max_ns": 3.815
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_8_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_8_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_8_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/LPFRES[0]",
+        "max_ns": 5.333
+      }
+    ]
+  },
+  {
+    "endpoint": "u_reference/LPFRES[1]",
+    "total_ns": 10.07,
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_9_s0"
+    ],
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_9_s0/CLK",
+        "max_ns": 3.813
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_9_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_9_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_9_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/LPFRES[1]",
+        "max_ns": 5.45
+      }
+    ]
+  },
+  {
+    "endpoint": "u_reference/LPFRES[2]",
+    "total_ns": 10.166,
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_10_s0"
+    ],
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_10_s0/CLK",
+        "max_ns": 3.813
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_10_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_10_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/RomDreg_10_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/LPFRES[2]",
+        "max_ns": 5.546
+      }
+    ]
+  },
+  {
+    "endpoint": "u_reference/RESET",
+    "total_ns": 10.819,
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/state_1_s0/CLK",
+        "max_ns": 3.798
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/state_1_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/state_1_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/state_1_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/pll_reset_s1/I2",
+        "max_ns": 0.432
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/pll_reset_s1/I2",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/pll_reset_s1/F",
+        "max_ns": 0.413
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/pll_reset_s1/F",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/RESET",
+        "max_ns": 5.369
+      }
+    ],
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/enable_r_1_s0",
+      "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/state_0_s0",
+      "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/state_1_s0",
+      "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/state_2_s0"
+    ]
+  },
+  {
+    "endpoint": "u_tmds/ICPSEL[0]",
+    "total_ns": 6.221,
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_0_s0"
+    ],
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_0_s0/CLK",
+        "max_ns": 3.8
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_0_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_0_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_0_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst/ICPSEL[0]",
+        "max_ns": 1.614
+      }
+    ]
+  },
+  {
+    "endpoint": "u_tmds/LPFRES[0]",
+    "total_ns": 6.261,
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_8_s0"
+    ],
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_8_s0/CLK",
+        "max_ns": 3.8
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_8_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_8_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_8_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst/LPFRES[0]",
+        "max_ns": 1.654
+      }
+    ]
+  },
+  {
+    "endpoint": "u_tmds/LPFRES[1]",
+    "total_ns": 6.059,
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_9_s0"
+    ],
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_9_s0/CLK",
+        "max_ns": 3.8
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_9_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_9_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_9_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst/LPFRES[1]",
+        "max_ns": 1.452
+      }
+    ]
+  },
+  {
+    "endpoint": "u_tmds/LPFRES[2]",
+    "total_ns": 6.425,
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_10_s0"
+    ],
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_10_s0/CLK",
+        "max_ns": 3.805
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_10_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_10_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/RomDreg_10_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst/LPFRES[2]",
+        "max_ns": 1.813
+      }
+    ]
+  },
+  {
+    "endpoint": "u_tmds/RESET",
+    "total_ns": 7.407000000000001,
+    "segments": [
+      {
+        "kind": "cell",
+        "from": "clk_50m_ibuf/I",
+        "to": "clk_50m_ibuf/O",
+        "max_ns": 0.532
+      },
+      {
+        "kind": "route",
+        "from": "clk_50m_ibuf/O",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/state_2_s0/CLK",
+        "max_ns": 3.798
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/state_2_s0/CLK",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/state_2_s0/Q",
+        "max_ns": 0.275
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/state_2_s0/Q",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/pll_reset_s1/I1",
+        "max_ns": 0.45
+      },
+      {
+        "kind": "cell",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/pll_reset_s1/I1",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/pll_reset_s1/F",
+        "max_ns": 0.413
+      },
+      {
+        "kind": "route",
+        "from": "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/pll_reset_s1/F",
+        "to": "u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst/RESET",
+        "max_ns": 1.939
+      }
+    ],
+    "sources": [
+      "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/enable_r_1_s0",
+      "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/state_0_s0",
+      "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/state_1_s0",
+      "u_video/u_clock/g_hardware.u_pll/u_tmds/u_pll_init/state_2_s0"
+    ]
+  }
+]

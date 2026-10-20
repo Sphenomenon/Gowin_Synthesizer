@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "source_bound": true,
+  "build": "results/workstation_scope83_timing85_20261018_043944_494587",
+  "idle_client_payload_sampling": false,
+  "registered_tag_flags": false,
+  "buffered_clients": true,
+  "cases": [
+    {
+      "tag_bits": 2,
+      "seed": 7,
+      "passed": true,
+      "log": "PASS shared DDR pipeline seed=7 tags=4 commands=5275 reads=3441 full_tag_cycles=322 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_zh5_kray/tb.sv:128: $finish called at 362650000 (1ps)"
+    },
+    {
+      "tag_bits": 3,
+      "seed": 31,
+      "passed": true,
+      "log": "PASS shared DDR pipeline seed=31 tags=8 commands=5156 reads=3412 full_tag_cycles=273 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_zh5_kray/tb.sv:128: $finish called at 362650000 (1ps)"
+    },
+    {
+      "tag_bits": 5,
+      "seed": 127,
+      "passed": true,
+      "log": "PASS shared DDR pipeline seed=127 tags=32 commands=5393 reads=3506 full_tag_cycles=207 all8clients masked memory/native stalls/consecutive returns/BIST epoch/order\n/tmp/cnn_ddr_arbiter_zh5_kray/tb.sv:128: $finish called at 362650000 (1ps)"
+    }
+  ],
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "arbiter_sha256": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+  "client_queues_sha256": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c"
+}

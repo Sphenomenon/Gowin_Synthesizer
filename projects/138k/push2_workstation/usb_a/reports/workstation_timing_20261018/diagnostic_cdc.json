@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "source_bound": true,
+  "hardware_tested": false,
+  "log": "PASS cnn_trace_cdc: 1338 clock checks, all128 level patterns, unrelated phases, exact UART bit positions, reset\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_141031_252897/cnn_trace_cdc_20261018_141043_793821/tb.sv:47: $finish called at 26780000 (1ps)\n"
+}

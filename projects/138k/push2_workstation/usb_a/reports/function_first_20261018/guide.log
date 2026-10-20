@@ -1,0 +1,14 @@
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/guide
+Traceback (most recent call last):
+  File "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/run_pl_guide.py", line 64, in <module>
+    main()
+    ~~~~^^
+  File "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/run_pl_guide.py", line 50, in main
+    raise RuntimeError(f'{name} failed:\n{(result.stdout + result.stderr)[-6000:]}')
+RuntimeError: compile failed:
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_20261018_233422_592420/Prj1/src/usb_host/gw138k_usb_event_fifo.v:518: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in '$4[7:0]').
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:71: error: Unable to bind wire/reg/memory `song_pixel' in `tb_pl_guide.dut.pixels'
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:74:      : A symbol with that name was declared here. Check for declaration after use.
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:71: error: Unable to elaborate r-value: ((PIPELINED)?(guide_mode_q):(guide_mode))?(song_pixel):(base_pixel)
+2 error(s) during elaboration.
+

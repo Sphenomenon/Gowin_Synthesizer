@@ -1,0 +1,2 @@
+PASS guidance: CNN list -> exclusive Push LEDs -> wrong/held notes blocked -> fresh correct keys advance
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/guidance/tb_guidance.sv:93: $finish called at 35300000 (1ps)

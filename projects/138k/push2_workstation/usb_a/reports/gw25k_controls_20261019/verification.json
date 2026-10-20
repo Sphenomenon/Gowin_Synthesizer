@@ -1,0 +1,57 @@
+{
+  "completed": "2026-10-19T02:35:51.442128+08:00",
+  "passed": true,
+  "git_head": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+  "origin_main": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+  "merge": {
+    "strategy": "fast-forward with one-path README backup/stash, followed by content integration",
+    "evidence": "remote_integration.json",
+    "new_commit_created": false,
+    "pushed": false
+  },
+  "device": {
+    "passed": true,
+    "testbenches": 38,
+    "python_tests": 25,
+    "checks": 88,
+    "inputs": 152,
+    "input_hashes_still_match": true,
+    "report": "device_validation.json",
+    "raw_output": "projects/25k/example/MIDI_KEYBOARD/results/host_panel_final_20261019"
+  },
+  "host_actual_endpoint": {
+    "passed": true,
+    "requests": 1019,
+    "full_frames": 2,
+    "report": "host_endpoint_verification.json",
+    "raw_output": "projects/138k/push2_workstation/usb_a/results/gw25k_real_endpoint_20261019"
+  },
+  "import_integrity": "source_import_comparison.json",
+  "preserved_files_sha256": {
+    "工程架构报告.md": "7dc5b97ac7746d231cc544584766fee625295ac0d1c1270df09ab812728cf6bc",
+    "projects/138k/push2_workstation/usb_a/GW25K_PANEL.md": "6be622ff8a99813ca89a4674341bbe38fde7f19758307e99d5a556808a16dd06",
+    "projects/138k/push2_workstation/usb_a/LATEST_WORKSTATION.json": "8afb5f65b343064d0600d242c994ba8f9eaf5e1faca3f4d7ef6603c365f91fa7"
+  },
+  "preserved_files_unchanged": true,
+  "gw138k_production_matches_previous_functional_regression": true,
+  "gw25k_confirmed_controls_implemented": true,
+  "gw25k_actual_pl_endpoint_tested": true,
+  "gw25k_exclusive_fx_context_implemented": false,
+  "d_integrated_into_workstation": false,
+  "hardware_tested": false,
+  "programmed": false,
+  "hardware_or_pin_changes": false,
+  "synthesis_run": false,
+  "pnr_run": false,
+  "new_timing_experiment": false,
+  "timing_closed": false,
+  "standard_i2s_satisfied": false,
+  "sensor_to_analog_latency_measured": false,
+  "prior_iteration": {
+    "passed": false,
+    "path": "projects/25k/example/MIDI_KEYBOARD/results/host_panel_regression_20261019/validation.json",
+    "reason": "legacy integration policy not explicitly selected; inputs edited during run; final run is separate and stable"
+  },
+  "documentation_sha256": "../contest_requirements_20261019/documentation_sha256.json",
+  "final_reviewed": "2026-10-19T02:37:34.563230+08:00"
+}

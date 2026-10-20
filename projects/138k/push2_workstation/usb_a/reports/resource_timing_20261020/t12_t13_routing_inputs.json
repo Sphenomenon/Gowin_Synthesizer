@@ -1,0 +1,11 @@
+{
+  "rtl_identical": true,
+  "changed_input": [
+    "scripts/build.tcl"
+  ],
+  "stages": [
+    "results/resource_timing_20261020_111212_369176",
+    "results/resource_timing_20261020_111409_509663"
+  ],
+  "auto_generated_python_cache_excluded": true
+}

@@ -1,0 +1,3 @@
+PASS GW25K scene: effective gain/CC11, five profiles, committed ABC, bend index 0..255, effective DCR mask, 16 held keys, last-event release, immutable frame/next-frame refresh
+PASS GW25K refresh: 9 independent MMIO changes each trigger one complete frame; stable state only heartbeats
+PASS GW25K production host: actual composite descriptor, PL FS fragmentation, independent DATA toggles, duplicate IN/OUT NAK, full RGB565 coverage, BUSY retry, MIDI interleave/no score feedback, manual/redraw, static heartbeat, 11 response faults (26 frames, 6572 tiles, 225737 MIDI polls)

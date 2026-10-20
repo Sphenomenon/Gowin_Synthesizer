@@ -1,0 +1,73 @@
+{
+  "cases": [
+    {
+      "label": "fifo_apb_services",
+      "report": "results/resource_timing_20261020_122446_658378/timing_units/verification.json",
+      "tested_build": "results/resource_timing_20261020_122446_658378"
+    },
+    {
+      "label": "gain_effect_chain",
+      "report": "results/resource_timing_20261020_115445_182901/gain_chain_ab/verification.json",
+      "tested_build": "results/resource_timing_20261020_115445_182901"
+    },
+    {
+      "label": "video_diagnostics",
+      "report": "results/resource_timing_20261020_110314_988115/video_diag_timing/verification.json",
+      "tested_build": "results/resource_timing_20261020_110314_988115"
+    },
+    {
+      "label": "tf_dma",
+      "report": "results/resource_timing_20261020_121513_672131/tf_dma_timing/verification.json",
+      "tested_build": "results/resource_timing_20261020_121513_672131"
+    },
+    {
+      "label": "dashboard",
+      "report": "results/resource_timing_20261020_122446_658378/dashboard_timing/verification.json",
+      "tested_build": "results/resource_timing_20261020_122446_658378"
+    },
+    {
+      "label": "event_dispatch",
+      "report": "results/resource_timing_20261020_122446_658378/dispatch_ab/verification.json",
+      "tested_build": "results/resource_timing_20261020_122446_658378"
+    },
+    {
+      "label": "pixel_numeric_mmio",
+      "report": "results/timing_equivalence_20261020_115523_226680/verification.json",
+      "inputs": "results/timing_equivalence_20261020_115523_226680/inputs_sha256.json",
+      "tested_build": "results/resource_timing_20261020_115445_182901"
+    },
+    {
+      "label": "vector_envelope_offset",
+      "report": "results/scope_event_ab_20261020_113501_459202/verification.json",
+      "inputs": "results/scope_event_ab_20261020_113501_459202/inputs.json",
+      "tested_build": "results/resource_timing_20261020_113337_961433"
+    },
+    {
+      "label": "large_delay_fifo",
+      "report": "results/resource_timing_20261020_115445_182901/large_fifo/verification.json",
+      "tested_build": "results/resource_timing_20261020_115445_182901"
+    },
+    {
+      "label": "lifecycle",
+      "report": "results/resource_timing_20261020_115841_334502/lifecycle_scoreboard/verification.json",
+      "tested_build": "results/resource_timing_20261020_115841_334502"
+    },
+    {
+      "label": "raster",
+      "report": "results/resource_timing_20261020_115841_334502/raster/verification.json",
+      "tested_build": "results/resource_timing_20261020_115841_334502"
+    },
+    {
+      "label": "storage_vendor",
+      "report": "results/resource_timing_20261020_115841_334502/storage_vendor/summary.json",
+      "tested_build": "results/resource_timing_20261020_115841_334502"
+    },
+    {
+      "label": "storage_behavior",
+      "report": "results/resource_timing_20261020_115841_334502/storage_behavior/summary.json",
+      "tested_build": "results/resource_timing_20261020_115841_334502"
+    }
+  ],
+  "integration_build": "results/resource_timing_20261020_122446_658378",
+  "integration_report": "results/resource_timing_20261020_122446_658378/current_regression_20261020_122659_867737/verification.json"
+}

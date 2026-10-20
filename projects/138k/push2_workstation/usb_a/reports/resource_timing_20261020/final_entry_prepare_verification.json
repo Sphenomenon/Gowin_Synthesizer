@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "closed_build": "results/resource_timing_20261020_124632_064482",
+  "prepared_build": "results/resource_timing_20261020_130937_529574",
+  "identical_non_build_inputs": true,
+  "differences": {
+    "scripts/build.tcl": {
+      "final": "949cd052163a954608e88425c5dc41010b928891575652ae33acac2c3b712dd3",
+      "prepared": "d72f05749764865afe5880add6c9f377f628986a2562d4084044f7423840a67b"
+    }
+  },
+  "active_transform_sha256": "95dbbc1716c83e9377812abe601d586a268d819b47bc66f5e5eb8a2b8f7d91f3"
+}

@@ -1,0 +1,2 @@
+PASS storage (100MHz DDR, 148.5MHz pixels, 64-cycle response latency): packets=37367 drops=143 cues=639 colored_pixels=67200 requests=4208 fault_cycles=64973 frames=10
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_storage_vendor/tb.sv:44: $finish called at 1500040000 (1ps)

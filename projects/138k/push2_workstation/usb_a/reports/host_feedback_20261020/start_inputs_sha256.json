@@ -1,0 +1,7 @@
+{
+  "firmware.c": "1e8dd2999406097d1b6eb9766c92cdd0de2094d81b3788531b026d8bf3871403",
+  "gw25k_panel.h": "a41d18b558c9020ccac923136d738c5af4e78f11f698ae6b1f42a51fce1fe92c",
+  "sim/test_gw25k_panel.c": "bc925b4741d63cc3decbddaa37015c5a5bd03b0b21d5795dc3ad381d044d4e73",
+  "sim/tb_workstation_attach.sv": "2ba2de237190564eb71a20e314ed9db3a4313a9266a07c687bc3292f2c3617ba",
+  "sim/run_workstation_attach.py": "3d0612b9312d3e02804824f86cfd5eedc2dd39340001b5ced1265bf02604da80"
+}

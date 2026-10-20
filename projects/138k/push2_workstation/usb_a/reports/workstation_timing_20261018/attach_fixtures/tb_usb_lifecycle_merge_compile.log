@@ -1,0 +1,124 @@
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'panic_i'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:35:32: ... Location of port declaration
+   35 |     input  logic               panic_i,
+      |                                ^~~~~~~
+                     ... For warning description see https://verilator.org/warn/PINMISSING?v=5.046
+                     ... Use "/* verilator lint_off PINMISSING */" and lint_on around source to disable this message.
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'expression_valid_i'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:39:32: ... Location of port declaration
+   39 |     input  logic               expression_valid_i,
+      |                                ^~~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'expression_ready_o'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:40:32: ... Location of port declaration
+   40 |     output logic               expression_ready_o,
+      |                                ^~~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'expression_note_i'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:41:32: ... Location of port declaration
+   41 |     input  logic        [6:0]  expression_note_i,
+      |                                ^~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'expression_value_i'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:42:32: ... Location of port declaration
+   42 |     input  logic        [6:0]  expression_value_i,
+      |                                ^~~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'event_off_note_i'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:57:32: ... Location of port declaration
+   57 |     input  logic        [6:0]  event_off_note_i
+      |                                ^~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'clear_i'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:194:30: ... Location of port declaration
+  194 |     input logic clk_i,rst_ni,clear_i,valid_i,
+      |                              ^~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'mem_clk_i'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:204:17: ... Location of port declaration
+  204 |     input logic mem_clk_i,mem_rst_ni,
+      |                 ^~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'mem_rst_ni'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:204:27: ... Location of port declaration
+  204 |     input logic mem_clk_i,mem_rst_ni,
+      |                           ^~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'dwr_valid_o'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:205:18: ... Location of port declaration
+  205 |     output logic dwr_valid_o,
+      |                  ^~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'dwr_data_o'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:206:25: ... Location of port declaration
+  206 |     output logic [64:0] dwr_data_o,
+      |                         ^~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'dwr_pop_i'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:207:17: ... Location of port declaration
+  207 |     input logic dwr_pop_i,
+      |                 ^~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'drd_push_i'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:208:17: ... Location of port declaration
+  208 |     input logic drd_push_i,
+      |                 ^~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'drd_data_i'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:209:24: ... Location of port declaration
+  209 |     input logic [64:0] drd_data_i,
+      |                        ^~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'drd_ready_o'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:210:18: ... Location of port declaration
+  210 |     output logic drd_ready_o
+      |                  ^~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:240:86: Instance has missing pin: 'event_off_note_i'
+  240 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:57:32: ... Location of port declaration
+   57 |     input  logic        [6:0]  event_off_note_i
+      |                                ^~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:253:20: Instance has missing pin: 'event_off_note_i'
+  253 |   scope_vec_engine vector_engine(
+      |                    ^~~~~~~~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/scope_vec/scope_vec_engine.sv:34:22: ... Location of port declaration
+   34 |     input wire [6:0] event_off_note_i
+      |                      ^~~~~~~~~~~~~~~~
+%Warning-TIMESCALEMOD: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_math_pkg.sv:1:9: Timescale missing on this module as other modules have it (IEEE 1800-2023 3.14.2.3)
+    1 | package audio_math_pkg;
+      |         ^~~~~~~~~~~~~~
+                       /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_capture_fifo.sv:4:8: ... Location of module with timescale
+    4 | module audio_capture_fifo #(parameter integer ADDRESS_BITS=8) (
+      |        ^~~~~~~~~~~~~~~~~~
+                       ... For warning description see https://verilator.org/warn/TIMESCALEMOD?v=5.046
+                       ... Use "/* verilator lint_off TIMESCALEMOD */" and lint_on around source to disable this message.
+make: Entering directory '/tmp/workstation_timing_attach_20261018_p10c/tb_usb_lifecycle_merge'
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -c -o verilated.o /usr/share/verilator/include/verilated.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -c -o verilated_timing.o /usr/share/verilator/include/verilated_timing.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -c -o verilated_threads.o /usr/share/verilator/include/verilated_threads.cpp
+python3 /usr/share/verilator/bin/verilator_includer -DVL_INCLUDE_OPT=include Vtb_usb_lifecycle_merge.cpp Vtb_usb_lifecycle_merge___024root__0.cpp Vtb_usb_lifecycle_merge__main.cpp Vtb_usb_lifecycle_merge__ConstPool__0__Slow.cpp Vtb_usb_lifecycle_merge___024root__Slow.cpp Vtb_usb_lifecycle_merge___024root__0__Slow.cpp Vtb_usb_lifecycle_merge__Syms__Slow.cpp > Vtb_usb_lifecycle_merge__ALL.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -c -o Vtb_usb_lifecycle_merge__ALL.o Vtb_usb_lifecycle_merge__ALL.cpp
+g++    verilated.o verilated_timing.o verilated_threads.o Vtb_usb_lifecycle_merge__ALL.a    -pthread -lpthread -latomic   -o Vtb_usb_lifecycle_merge
+rm Vtb_usb_lifecycle_merge__ALL.verilator_deplist.tmp
+make: Leaving directory '/tmp/workstation_timing_attach_20261018_p10c/tb_usb_lifecycle_merge'
+- V e r i l a t i o n   R e p o r t: Verilator 5.046 2026-02-28 rev fedora-5.046
+- Verilator: Built from 6.006 MB sources in 53 modules, into 0.071 MB in 7 C++ files needing 0.000 MB
+- Verilator: Walltime 4.720 s (elab=0.020, cvt=0.008, bld=4.630); cpu 0.091 s on 4 threads; allocated 49.344 MB

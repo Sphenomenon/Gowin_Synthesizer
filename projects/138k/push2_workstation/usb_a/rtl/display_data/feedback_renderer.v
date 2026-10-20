@@ -129,7 +129,7 @@ module feedback_renderer #(
         assign spectrum_left=0; assign spectrum_right=0; assign image_hit=0;
     end endgenerate
     assign frame_ready = snapshot_ready && aligned_ready && !busy;
-    feedback_capture #(.CAPTURE_SAMPLES(512),.TRIGGER_TIMEOUT_SAMPLES(8192),.SMOOTH_TRIGGER(1)) u_capture (
+    feedback_capture #(.INPUT_REGISTERED(1),.CAPTURE_SAMPLES(512),.TRIGGER_TIMEOUT_SAMPLES(8192),.SMOOTH_TRIGGER(1)) u_capture (
         .source_clk(source_clk), .source_reset_n(source_reset_n),
         .sample_data(sample_data), .sample_valid(sample_valid),
         .trigger_reference(trigger_reference),

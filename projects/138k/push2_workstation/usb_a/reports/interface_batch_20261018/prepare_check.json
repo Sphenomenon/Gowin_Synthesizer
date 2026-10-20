@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "source": "migration/gw138k_audio/push2_workstation/usb_a/results/build_20261018_015004_551519",
+  "scope": "prepare-only + firmware compile + live overlays + lifecycle merge wiring/source list",
+  "hardware_tested": false,
+  "module_registrations": 1
+}

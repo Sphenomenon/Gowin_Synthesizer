@@ -1,0 +1,133 @@
+{
+  "completed": "2026-10-19T00:30:14.201562+08:00",
+  "priority": "function_first_timing_deferred",
+  "git_head": "9660406207993914abf2e007906815fcb0df42be",
+  "origin_main": "9660406207993914abf2e007906815fcb0df42be",
+  "prepare": "results/workstation_scope83_20261019_002422_673274",
+  "regression": "results/workstation_scope83_20261019_002422_673274/current_regression_20261019_002509_188265",
+  "cnn_policy": "accepted_full83",
+  "selected_cnn_files": 73,
+  "accepted_manifest_files_checked": 594,
+  "staged_manifest_files_checked": 602,
+  "live_cnn_overlay": false,
+  "hardware_tested": false,
+  "programmed": false,
+  "new_timing_experiment": false,
+  "synthesis_run": false,
+  "pnr_run": false,
+  "timing_closed": false,
+  "actual_gw25k_endpoint_tested": false,
+  "jobs": {
+    "guide": {
+      "command": [
+        "python3",
+        "sim/run_pl_guide.py",
+        "--baseline",
+        "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261019_002422_673274/Prj1",
+        "--out",
+        "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/function_first_20261019/guide_final"
+      ],
+      "returncode": 0,
+      "log": "guide.log",
+      "evidence": "guide/verification.json"
+    },
+    "attach": {
+      "command": [
+        "python3",
+        "sim/run_workstation_attach.py",
+        "--baseline",
+        "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261019_002422_673274/Prj1",
+        "--out",
+        "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/function_first_20261019/attach_final"
+      ],
+      "returncode": 0,
+      "log": "attach.log",
+      "evidence": "attach/verification.json"
+    },
+    "full83_18_gates": {
+      "command": [
+        "python3",
+        "sim/scope_vec/run_current.py",
+        "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261019_002422_673274"
+      ],
+      "returncode": 0,
+      "log": "full83_18_gates.log",
+      "evidence": "full83_18_gates/verification.json"
+    },
+    "source_boundary": {
+      "command": [
+        "python3",
+        "sim/test_current_workstation_sources.py"
+      ],
+      "returncode": 0,
+      "log": "source_boundary.log",
+      "evidence": "source_boundary.log",
+      "test_count": 10
+    },
+    "prepare": {
+      "command": [
+        "python3",
+        "tools/build_current_workstation.py",
+        "--prepare-only"
+      ],
+      "returncode": 0,
+      "log": "prepare.log",
+      "evidence": "prepare/build_metadata.json"
+    },
+    "d_controls": {
+      "command": [
+        "python3",
+        "sim/sampler/run.py",
+        "--test",
+        "tb_sampler_controls"
+      ],
+      "returncode": 0,
+      "log": "d_controls.log",
+      "evidence": "d_controls/verification.json",
+      "generated_output": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/sampler_20261019_001943_635468"
+    },
+    "d_mode": {
+      "command": [
+        "python3",
+        "sim/sampler/run.py",
+        "--test",
+        "tb_sampler_mode_d"
+      ],
+      "returncode": 0,
+      "log": "d_mode.log",
+      "evidence": "d_mode/verification.json",
+      "generated_output": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/sampler_20261019_001943_635181"
+    },
+    "gw25k_host": {
+      "command": [
+        "python3",
+        "sim/run_gw25k_panel.py",
+        "--output",
+        "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/function_first_20261019/gw25k_host_verified"
+      ],
+      "returncode": 0,
+      "log": "gw25k_host.log",
+      "evidence": "gw25k_host/verification.json"
+    }
+  },
+  "inputs_sha256": {
+    "firmware.c": "1e8dd2999406097d1b6eb9766c92cdd0de2094d81b3788531b026d8bf3871403",
+    "gw25k_panel.h": "c205822eca308ae2b884fb10f0198bfb56ace95db41238de6c271e3a4d3ebfb7",
+    "rtl/push2_usb_a_control.sv": "b8af9064b4e658225727e71eb585b2c3b23456eef0c9cf0f9385ef4b16c471ca",
+    "rtl/audio/gw138k_usb_lifecycle_merge.sv": "b1f6965afa8a14d1521895cf498530ca0dc3e768b6eaabf3b3a7fefe7c2d3d90",
+    "rtl/audio/gw138k_event_workstation.sv": "02b0e5028e0747b5a88d71b2e4ca969c7665ca051b2faf91880847df08f40f50",
+    "rtl/audio/push2_controls.sv": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+    "rtl/display_data/push2_surface_pixels.sv": "9c23e006beb18c08ec9f05ff4b9712a95e8cb8045a5e4f5d093e9c2382aa3353",
+    "rtl/sampler/sampler_fx.sv": "013bce707bd9613baf6421b739d14cdf16570bbd4fb1dd5f1d026aeca5e03c9d",
+    "sim/test_gw25k_panel.c": "d3a93a56dbbcf2b13e6579bc1332942f51d2ee2550e85452965ad01e2863b9e3",
+    "sim/tb_workstation_attach.sv": "a6fcdb29606bcf6853bc487b2e2618cfda45cce1bd5181349fdc3842a93f3719",
+    "sim/tb_pl_guide.sv": "877256eced901f4748130c4de015c761218cfd3c9bf1b3017ffc005c92255517",
+    "sim/sampler/tb_sampler_controls.sv": "1ed5c9030563ce1f90ba57b9214ce707cae9d45819613eed381dc3fea56281c5",
+    "sim/sampler/tb_sampler_mode_d.sv": "6bcf61808fad233e6f2a086f62d3bd9d6ab5b7397a44718ebb3640342825f74f"
+  },
+  "inputs_match_per_test_evidence": true,
+  "production_inputs_unchanged_during_final_regression": true,
+  "preserved_files_unchanged": true,
+  "passed": true,
+  "final_regression_started": "2026-10-19T00:25:09.148712+08:00"
+}

@@ -1,0 +1,82 @@
+{
+  "accepted_full83": {
+    "build": "results/song_guide_full83_20261006_203125_607466",
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 42.932
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 59.281
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2598.775
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 221.292
+      },
+      "video_pixel148": {
+        "required_mhz": 148.5,
+        "actual_mhz": 153.103
+      },
+      "cpu_bus50": {
+        "required_mhz": 50.0,
+        "actual_mhz": 68.921
+      },
+      "cpu_core100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 1526.249
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 40.742
+      }
+    },
+    "report_sha256": "2ee5acb57521071c2d1b341e6b3220c006700027d1b580d5f9496cde694df220",
+    "hardware_tested_this_run": false,
+    "reference_only": true
+  },
+  "pinned_clk50_full85": {
+    "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 53.055
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 54.758
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2598.775
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 215.707
+      },
+      "video_pixel148": {
+        "required_mhz": 148.5,
+        "actual_mhz": 165.732
+      },
+      "cpu_bus50": {
+        "required_mhz": 50.0,
+        "actual_mhz": 66.186
+      },
+      "cpu_core100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 1231.829
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 39.975
+      }
+    },
+    "report_sha256": "4a6428c4875f87099c30207b9ccb88259f0227cdf281ab47f835f9ab5a1fb25d",
+    "hardware_tested_this_run": false,
+    "reference_only": true
+  }
+}

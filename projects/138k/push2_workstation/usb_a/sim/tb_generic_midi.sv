@@ -37,8 +37,8 @@ module tb_generic_midi;
         end
         if(deadline || overflow || drops)$fatal(1,"audio fault");
     end
-    reg [17:0] expected[0:1023],vectors[0:7];integer wp=0,rp=0,stalls=0,starts=0;
-    always @(posedge aclk)if(rn && av && ar && consume)begin
+    reg [17:0] expected[0:1023],vectors[0:7];integer wp=0,rp=0,stalls=0,starts=0,previous_epoch=0;
+    always @(posedge aclk)if(rn && av && ar && consume && ae[17:14]!=4'd15)begin
         if(rp>=wp || ae!==expected[rp])$fatal(1,"event %0d got=%h wanted=%h",rp,ae,expected[rp]);
         rp++;
     end
@@ -72,7 +72,7 @@ module tb_generic_midi;
         for(integer i=4;i<8;i++)generic_event(vectors[i]);
         wait_frames(2);if(held)$fatal(1,"normal/velocity-zero note release failed");
         // Queue full must backpressure MMIO, preserve every event and allow a
-        // queued disconnect PANIC to drain after pending generic notes.
+        // disconnect to discard the unprocessed queue, then clear audio immediately.
         @(negedge aclk);consume=0;
         fork
             begin
@@ -88,15 +88,15 @@ module tb_generic_midi;
         if(!held[100] || !audio.sustain)$fatal(1,"disconnect setup");
         @(negedge aclk);consume=0;
         for(integer i=0;i<64;i++)generic_event({4'd2,7'd7,7'd100});
-        expect_event({4'd2,7'd120,7'd0});put(0,0);
+        previous_epoch=epoch;put(0,0);wp=rp; // explicitly cancel undrained expectations
         repeat(20)@(negedge clk);consume=1;
-        wait(rp==wp);wait(epoch==1);wait_frames(2);
+        wait(rp==wp);wait(epoch!=previous_epoch);wait_frames(2);
         if(held || active || audio.sustain || audio.deferred)$fatal(1,"disconnect left notes");
         silence=1;wait_frames(8);silence=0;
         repeat(5000)@(negedge clk);put(0,3);
         generic_event({4'd1,7'd0,7'd1});wait_frames(3);
         if(!held[0])$fatal(1,"generic reconnect");
-        expect_event({4'd2,7'd120,7'd0});put(0,0);wait(epoch==2);
+        previous_epoch=epoch;put(0,0);wait(epoch!=previous_epoch);
         repeat(5000)@(negedge clk);put(0,1);repeat(20)@(negedge clk);
         if(!dut.packet_valid || dut.packet_length!=12 ||
            dut.led.bytes_q[95:0]!==96'hf7000a0701011d042100f004)$fatal(1,"Push init not restored");

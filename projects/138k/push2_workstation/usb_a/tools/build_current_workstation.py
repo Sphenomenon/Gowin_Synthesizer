@@ -4,6 +4,8 @@
 The accepted complete staging tree is immutable and supplies CNN staged caches,
 DDR delay, TF recovery and song guidance. Overlays fix scope entry wiring and
 bind the live USB-A PL display/MIDI feedback adapter to its rebuilt ROM.
+CNN files come from the accepted manifest. --cnn-timing85 selects six pinned
+full85 timing fixes; live CNN differences are recorded and never overlaid.
 Prepare/SYN assign no UserCode. Full builds require an explicit release UserCode.
 LATEST_WORKSTATION.json is never changed by the builder.
 """
@@ -21,7 +23,11 @@ import xml.etree.ElementTree as ET
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
 from workstation_memory import audit
+from workstation_timing_constraints import constraints as timing_constraints,physical_constraints,timing_reports
+from workstation_bus_timing import apply as apply_bus_timing
+from workstation_cnn_cdc import select as select_diagnostic_cdc,transform as patch_diagnostic_cdc,LINK as TRACE_LINK
 from stage_usb_firmware import stage_usb_firmware
+from workstation_sources import accepted_cnn_inputs, cnn_source_audit, verify_cnn_inputs, timing85_cnn_inputs, TIMING85_BUILD, TIMING85_OVERLAYS, TIMING85_MANIFEST_SHA256
 from build_full_song_83_bp_ddr_isolation import FROZEN
 BASE=ROOT/'results/song_guide_full83_20261006_203125_607466'
 ACCEPTED_COMMIT='d0c92a0'
@@ -47,6 +53,7 @@ def main():
     mode.add_argument('--prepare-only',action='store_true')
     mode.add_argument('--synthesis-only',action='store_true')
     mode.add_argument('--full',action='store_true',help='Synthesis, P&R and bitstream; no programming')
+    parser.add_argument('--cnn-timing85',action='store_true',help='Apply only six pinned full85 CNN timing fixes to full83')
     parser.add_argument('--user-code',help='Required eight hexadecimal digits for --full only')
     parser.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=parser.parse_args()
@@ -61,26 +68,44 @@ def main():
         parser.error('accepted full83 staging tree is missing: '+str(BASE)+
                      '; restore the accepted baseline before preparing or building')
     acceptance=json.loads((ROOT/'reports/CNN_83_ACCEPTANCE_20261006.json').read_text())
-    assert acceptance['status']=='accepted_by_user' and acceptance['board']['user_code']=='0x00000083'
+    if acceptance['status']!='accepted_by_user' or acceptance['board']['user_code']!='0x00000083':
+        raise ValueError('full83 acceptance record does not identify the accepted baseline')
     originals=json.loads((BASE/'workstation_inputs.json').read_text())
-    assert all(sha(BASE/'Prj1'/name)==digest for name,digest in originals.items()),'accepted input tree drifted'
+    music=accepted_cnn_inputs(BASE/'Prj1',originals)
     for live,(staged,digest) in FROZEN.items():
-        assert sha(ROOT/live)==sha(BASE/'Prj1'/staged)==digest,'accepted DDR input drift: '+live
-    music={str(p.relative_to(ROOT)):sha(p) for p in (ROOT/'rtl/music').rglob('*') if p.is_file()}
-    # The standalone TF board top has an unused pcm_end tie-off added after
-    # staging. It is not instantiated by the workstation; retain baseline bytes.
-    assert all(sha(BASE/'Prj1'/name)==digest for name,digest in music.items()
-               if name!='rtl/music/basic_pitch_tf_board_top.sv'),'accepted CNN source drift'
-    music={name:sha(BASE/'Prj1'/name) for name in music}
-    output=ROOT/'results'/datetime.now().strftime('workstation_scope83_%Y%m%d_%H%M%S_%f')
+        if sha(ROOT/live)!=digest or sha(BASE/'Prj1'/staged)!=digest:
+            raise ValueError('accepted DDR input drift: '+live)
+    accepted_music=music.copy()
+    if args.cnn_timing85:
+        music=timing85_cnn_inputs(ROOT,accepted_music)
+    local_cnn_transforms=[]
+    if args.cnn_timing85:
+        music,trace_patch=select_diagnostic_cdc(ROOT,music);local_cnn_transforms.append(trace_patch)
+    cnn_sources=cnn_source_audit(ROOT,music)
+    if args.cnn_timing85:
+        cnn_sources.update(policy='full83_plus_clk50_timing85',accepted_full83_sha256=accepted_music,
+                           timing_snapshot=TIMING85_BUILD,timing_manifest_sha256=TIMING85_MANIFEST_SHA256,
+                           timing_overlays=list(TIMING85_OVERLAYS),local_transforms=local_cnn_transforms)
+    prefix='workstation_scope83_timing85_' if args.cnn_timing85 else 'workstation_scope83_'
+    output=ROOT/'results'/datetime.now().strftime(prefix+'%Y%m%d_%H%M%S_%f')
     stage=output/'Prj1'
     shutil.copytree(BASE/'Prj1',stage,ignore=shutil.ignore_patterns('impl','build','*.user','__pycache__'))
+    if args.cnn_timing85:
+        for name in TIMING85_OVERLAYS:
+            shutil.copy2(ROOT/TIMING85_BUILD/'Prj1'/name,stage/name)
+        trace=stage/TRACE_LINK;trace.write_text(patch_diagnostic_cdc(trace.read_text()))
     overlays={
         'rtl/audio/gw138k_event_workstation.sv':'src/ae350/gw138k_event_workstation.sv',
         'rtl/display_data/feedback_renderer.v':'src/video/feedback_renderer.v',
+        'rtl/display_data/feedback_capture.v':'src/video/feedback_capture.v',
         'rtl/display_data/output_audio_analysis.v':'src/video/output_audio_analysis.v',
         # Explicit live adapter overlay; all accepted DDR/CNN checks above remain.
         'rtl/push2_usb_a_control.sv':'src/usb_a/push2_usb_a_control.sv',
+        'rtl/audio/push2_controls.sv':'src/push2/push2_controls.sv',
+        'rtl/audio/gw138k_usb_lifecycle_merge.sv':'src/usb_a/gw138k_usb_lifecycle_merge.sv',
+        'rtl/audio/unified_oscillator_engine.sv':'legacy/rtl/audio/unified_oscillator_engine.sv',
+        'rtl/push2/push2_song_screen.sv':'src/push2/push2_song_screen.sv',
+        'rtl/display_data/push2_surface_pixels.sv':'src/push2/push2_surface_pixels.sv',
     }
     for live,dest in overlays.items():shutil.copy2(ROOT/live,stage/dest)
     scope=stage/'rtl/audio/scope_vec'
@@ -90,6 +115,10 @@ def main():
     for path in sorted(scope.glob('*.sv')):
         name=path.relative_to(stage).as_posix()
         if name not in names: ET.SubElement(files,'File',path=name,type='file.verilog',enable='1')
+    ET.SubElement(files,'File',path='src/usb_a/gw138k_usb_lifecycle_merge.sv',type='file.verilog',enable='1')
+    for path in sorted((ROOT/'rtl/timing').glob('*.sv')):
+        dest=stage/'rtl/timing'/path.name;dest.parent.mkdir(exist_ok=True);shutil.copy2(path,dest)
+        ET.SubElement(files,'File',path=dest.relative_to(stage).as_posix(),type='file.verilog',enable='1')
     tree.write(stage/'Prj1.gprj',encoding='UTF-8',xml_declaration=True)
     # Forward control words and DAC-frame metadata through accepted wrappers.
     adapter=stage/'src/ae350/gw138k_controlled_adapter.sv'
@@ -103,6 +132,10 @@ def main():
           '    assign dac_reference_o=frame_reference;assign dac_voices_o=frame_voices;\n'
           '    assign dac_health_o={underrun_count_o[15:0],core_faults[15:0]};')
     managed=stage/'src/usb_host/gw138k_usb_controlled_audio.sv'
+    patch(managed,'gw138k_three_event_arbiter u_usb_cpu_events(',
+          'gw138k_usb_lifecycle_merge #(.EXPLICIT_LIFECYCLE(1)) u_usb_cpu_events(')
+    patch(managed,'    input wire usb_event_valid,','    input wire usb_event_valid,usb_lifecycle,usb_cancel,')
+    patch(managed,'.g1_valid(usb_event_valid),','.g1_valid(usb_event_valid),.g1_lifecycle(usb_lifecycle),.g1_cancel(usb_cancel),')
     patch(managed,'    output wire sample_ce_o, sample_valid_o,',
           '    output wire [31:0] scope_status_o,tf_scope_control_o,\n'
           '    output wire [31:0] dac_reference_o,dac_voices_o,dac_health_o,\n'
@@ -116,6 +149,21 @@ def main():
           '.dac_reference_o(),.dac_voices_o(),.dac_health_o(),')
     top=stage/'src/push2/gw138k_push_workstation_top.v'
     s=top.read_text()
+    # Break the CPU address -> MMIO ready -> CPU stall path in USB clk.
+    # The existing streamer shares this same registered transaction boundary.
+    s=once(s,'    wire [223:0] usb_words;',
+'''    wire host_mmio_select,host_mmio_write,host_mmio_ready;
+    wire [7:0] host_mmio_address;
+    wire [31:0] host_mmio_wdata,host_mmio_rdata;
+    gw138k_mmio_pipeline u_usb_mmio_pipeline(
+        .clk(usb_clk),.reset_n(usb_reset_n),
+        .select_i(host_mmio_select),.write_i(host_mmio_write),.address_i(host_mmio_address),.wdata_i(host_mmio_wdata),
+        .ready_o(host_mmio_ready),.rdata_o(host_mmio_rdata),
+        .select_o(mmio_select),.write_o(mmio_write),.address_o(mmio_address),.wdata_o(mmio_wdata),
+        .ready_i(mmio_ready),.rdata_i(mmio_rdata));
+    wire [223:0] usb_words;''')
+    for port in ['select','write','address','wdata','ready','rdata']:
+        s=once(s,f'.mmio_{port}(mmio_{port})',f'.mmio_{port}(host_mmio_{port})')
     s=once(s,'    wire synth_hp_bck,synth_hp_ws,synth_hp_din,synth_pa_en;',
 '''    wire synth_hp_bck,synth_hp_ws,synth_hp_din,synth_pa_en,synth_sample_ce;
     wire [31:0] scope_status_audio,tf_scope_control_audio,tf_scope_control_50;
@@ -203,6 +251,30 @@ def main():
         .tf_bck_i(tf_hp_bck),.tf_ws_i(tf_hp_ws),.tf_din_i(tf_hp_din),.tf_pa_i(tf_pa_en),
         .hp_bck_o(hp_bck),.hp_ws_o(hp_ws),.hp_din_o(hp_din),.pa_en_o(pa_en),
         .tf_selected_o(final_tf_selected),.switching_o(final_switching));''')
+    # TF playback status is generated in audio_clk, while the CNN's UART
+    # diagnostic trace lives in clk_50m. Synchronize these two level flags;
+    # PCM/model/CNN datapaths remain the accepted full83 bytes.
+    s=once(s,'    basic_pitch_workstation_link u_music (',
+'''    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg tf_format_meta50,tf_format_sync50;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg tf_source_meta50,tf_source_sync50;
+    always @(posedge clk_50m or negedge reset_n) begin
+        if(!reset_n) begin
+            tf_format_meta50<=0;tf_format_sync50<=0;tf_source_meta50<=0;tf_source_sync50<=0;
+        end else begin
+            tf_format_meta50<=tf_format_ready;tf_format_sync50<=tf_format_meta50;
+            tf_source_meta50<=tf_source_active;tf_source_sync50<=tf_source_meta50;
+        end
+    end
+    basic_pitch_workstation_link u_music (''')
+    s=once(s,'.format_ready(tf_format_ready),.source_active(tf_source_active),',
+          '.format_ready(tf_format_sync50),.source_active(tf_source_sync50),')
+    s=once(s,'    push2_usb_a_control u_push(',
+        '    wire usb_lifecycle,usb_cancel;\n    push2_usb_a_control u_push(')
+    s=once(s,'.audio_event(all_usb_event),',
+        '.audio_event(all_usb_event),.audio_lifecycle(usb_lifecycle),.audio_cancel(usb_cancel),')
+    s=once(s,'.usb_event_valid(all_usb_valid),',
+        '.usb_event_valid(all_usb_valid),.usb_lifecycle(usb_lifecycle),.usb_cancel(usb_cancel),')
+    s,bus_timing=apply_bus_timing(ROOT,stage,s)
     top.write_text(s)
     # Existing accepted constraints remain, except merged local-release cells
     # now retained in this equivalent new mailbox rather than telemetry.
@@ -216,18 +288,24 @@ def main():
         s+=f'set_false_path -hold -from [get_regs {{{inst}/held_data*}}] -to [get_regs {{{inst}/destination_data*}}]\n'
         s+=f'set_false_path -to [get_pins {{{inst}/req_meta*/D {inst}/ack_meta*/D}}]\n'
     s+='set_false_path -to [get_pins {tf_run_meta*/D}]\n'
-    sdc.write_text(s)
+    sdc.write_text(s+timing_constraints(diagnostic_cdc=args.cnn_timing85)+timing_reports())
+    cst=stage/'constraints/tang_mega_138k.cst'
+    cst.write_text(cst.read_text()+physical_constraints())
     tcl=stage/'scripts/build.tcl'
     tcl.write_text(once(tcl.read_text(),'set_option -user_code 00000083\n',
                         'set_option -user_code '+args.user_code.upper()+'\n' if args.full else ''))
     usb_firmware=stage_usb_firmware(ROOT,stage,output,args.riscv_prefix)
     (output/'usb_firmware_metadata.json').write_text(json.dumps(usb_firmware,indent=2)+'\n')
+    verify_cnn_inputs(stage,music)
+    (output/'cnn_source_audit.json').write_text(json.dumps(cnn_sources,indent=2)+'\n')
     inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
     changed_from_base=sorted(name for name,digest in inputs.items() if originals.get(name)!=digest)
     metadata=dict(baseline=BASE.relative_to(ROOT).as_posix(),accepted_commit=ACCEPTED_COMMIT,
                   git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
                   build_mode='prepare_only' if args.prepare_only else 'full' if args.full else 'synthesis_only',
                   changed_from_base=changed_from_base,music_sha256=music,usb_firmware=usb_firmware,
+                  cnn_source_policy=cnn_sources['policy'],bus_timing=bus_timing,
+                  cnn_source_audit_sha256=sha(output/'cnn_source_audit.json'),
                   live_usb_control_sha256=sha(ROOT/'rtl/push2_usb_a_control.sv'),
                   frozen_sha256={live:digest for live,(_,digest) in FROZEN.items()},
                   user_code_assigned=args.full,user_code='0x'+args.user_code.upper() if args.full else None,
@@ -235,10 +313,14 @@ def main():
     (output/'workstation_inputs.json').write_text(json.dumps(inputs,indent=2)+'\n')
     (output/'build_metadata.json').write_text(json.dumps(metadata,indent=2)+'\n')
     print(output,flush=True)
+    print('CNN inputs:',cnn_sources['policy']+',',len(music),'files; live differences excluded:',
+          len(cnn_sources['changed']),'changed,',len(cnn_sources['added']),'added,',
+          len(cnn_sources['missing']),'missing; see cnn_source_audit.json',flush=True)
     if args.prepare_only:return
     with (output/'gowin.log').open('w') as log:
         result=subprocess.run([str(Path.home()/'.local/bin/gw_sh'),'scripts/build.tcl'],cwd=stage,
                               env=dict(os.environ,PRJ1_FLOW='all' if args.full else 'syn'),stdout=log,stderr=subprocess.STDOUT)
+    verify_cnn_inputs(stage,music)
     changes=[name for name,digest in inputs.items() if sha(stage/name)!=digest]
     (output/'tool_result.json').write_text(json.dumps(dict(exit_code=result.returncode,inputs_unchanged=not changes,
                                                         changed=changes,build_mode=metadata['build_mode'],hardware_tested=False),indent=2)+'\n')
@@ -251,6 +333,26 @@ def main():
     if args.full:
         assert report['pnr_available'],'full build missing P&R resource evidence'
         print('Complete workstation P&R BSRAM',report['pnr_bsram'],'/',report['bsram_capacity'],flush=True)
+        from audit_workstation_timing import audit as audit_timing
+        from audit_workstation_cdc import audit as audit_cdc
+        sys.path.insert(0,str(stage/'scripts'))
+        from check_video_pll_init import inspect_video_pll_init
+        timing=audit_timing(output)
+        (output/'workstation_timing.json').write_text(json.dumps(timing,indent=2)+'\n')
+        if not timing['timing_closed']:raise ValueError('routed timing failed: '+repr(timing['problems']))
+        # The strict accepted83 source is retained for historical comparisons.
+        # Only the current timing source has the added diagnostic receivers.
+        if args.cnn_timing85:
+            cdc=audit_cdc(output)
+            (output/'workstation_cdc.json').write_text(json.dumps(cdc,indent=2)+'\n')
+            if not cdc['passed']:raise ValueError('routed CDC failed: '+repr(cdc['errors']))
+        errors,evidence=inspect_video_pll_init((stage/'impl/pnr/Prj1.sdf').read_text(),(stage/'impl/pnr/Prj1.vo').read_text(),stage)
+        (output/'pll_init_audit.json').write_text(json.dumps(dict(errors=errors,evidence=evidence),indent=2)+'\n')
+        if errors:raise ValueError('PLL_INIT propagation failed: '+repr(errors))
+        subprocess.run([sys.executable,str(ROOT/'tools/audit_scope_routes.py'),str(output),'--output',str(output/'scope_routes.json')],check=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+        scope=json.loads((output/'scope_routes.json').read_text())
+        if not scope['passed']:raise ValueError('scope CDC failed: '+repr(scope['errors']))
+
     print('Board state unchanged; programming and acceptance require separate recorded operations.',flush=True)
 
 

@@ -1,0 +1,15 @@
+{
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_214242_333215/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "7b032a827116e600f12127c936a021b956957411303d9a94b955cd72bcbb1be1",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_214242_333215/Prj1/rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_214242_333215/Prj1/rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_214242_333215/Prj1/rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_214242_333215/Prj1/rtl/audio/scope_vec/data/scene_controls.mem": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_214242_333215/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p27_uart_cdc_route1_20261018_142516_456857/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "c0e7208d907da85ec12172f1eb2babf6b2b69879bb9bd08f68bc26334f7b49c1",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/timing/tb_scope_event_ab.sv": "554fb9f3a990924820927e783ef22fe3477d75e5806d75fe957b794b36d102a4",
+  "/home/sphenicidition/.local/opt/gowin-1.9.12.03/IDE/simlib/gw5a/prim_sim.v": "7db6e9953af24f1233dbc8f58352a1673e91d01bb69656a16ae893a68089f85d",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/timing/run_scope_synth_ab.py": "5d1c3ab8e8f487b79d1203c2786da49ede4643deb9edfdd4f8b79307cdc00a6b",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/scope_synth_ab_20261018_214306_270701/Prj1/Prj1.gprj": "1f04f57d98068c41c52f1e837325984d72c0afb79e933c8fa532ede3eeb76f75",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/scope_synth_ab_20261018_214306_270701/Prj1/scope.sdc": "9e754c24bf421857b1989e2115044a12ef0e316eb2d135715d905d4357ded33d",
+  "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/scope_synth_ab_20261018_214306_270701/Prj1/build.tcl": "8e95d97d9478ac478536ceaf450ee1ff9ca409bad9905570c03cb0d3a0a460af"
+}

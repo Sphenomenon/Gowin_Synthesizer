@@ -1,0 +1,20 @@
+{
+  "rolled_back_at": "2026-10-19T03:32:06.560061+08:00",
+  "user_request": "回退，尽量在138k上动刀，25k少动，最多给建议",
+  "scope": "latest 25K connection/backpressure implementation only; earlier confirmed-control implementation retained",
+  "restored_production_source": "projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v",
+  "restored_sha256": "2ec36ef7fd0493342a2fbf03ab8e8cae4d1cc94ff4754de1363efd68b232b97a",
+  "active_test_removed": "projects/25k/example/MIDI_KEYBOARD/sim/tb_gw138k_panel_backpressure.v",
+  "withdrawn_test_backup": "projects/138k/push2_workstation/usb_a/results/rollback_panel_boundaries_20261019_033206_553538/withdrawn_tb_gw138k_panel_backpressure.v",
+  "device_input_set_matches_previous_38_testbench_152_input_evidence": true,
+  "earlier_work_preserved": true,
+  "backup_directory": "projects/138k/push2_workstation/usb_a/results/rollback_panel_boundaries_20261019_033206_553538",
+  "new_commit_created": false,
+  "pushed": false,
+  "hardware_tested": false,
+  "programmed": false,
+  "pnr_run": false,
+  "restored_verification": "restored_verification.json",
+  "restored_controls_test_passed": true,
+  "restored_top_elaboration_passed": true
+}

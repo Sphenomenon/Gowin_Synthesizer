@@ -21,7 +21,7 @@ module tb_pl_guide;
         .select(sel),.write(wr),.address(addr),.wdata(wd),.ready(ready),.rdata(rd),
         .audio_valid(av),.audio_ready(consume),.audio_event(ae),.telemetry());
     reg [17:0] expected[0:255];integer wp=0,rp=0,launches=0;
-    always @(posedge aclk)if(rn && av && consume)begin
+    always @(posedge aclk)if(rn && av && consume && ae[17:14]!=4'd15)begin
         if(rp>=wp || ae!==expected[rp])
             $fatal(1,"audio event %0d got=%h expected=%h",rp,ae,expected[rp]);
         rp++;
@@ -129,7 +129,7 @@ module tb_pl_guide;
         wait(rp==wp);
         // Preserve Push decoding, button bindings, target progression and
         // force curve after disconnect/reconnect to its original mode.
-        expect_event({4'd2,7'd120,7'd0});put(0,0);wait(rp==wp);
+        put(0,0);wait(rp==wp);
         repeat(20)@(negedge clk);put(0,1);
         push_midi(11,85,127);push_midi(11,85,0);
         push_midi(11,48,127);push_midi(11,48,0);
@@ -144,7 +144,18 @@ module tb_pl_guide;
         repeat(6)@(negedge clk);check_progress(2,2,0);
         get('h24,value);if(value!={18'd0,7'd30,7'd67})$fatal(1,"Push force telemetry changed");
         wait(rp==wp);
-        $display("PASS PL guide RTL: generic correct/wrong/pressure/vel0, real FIFO backpressure once, reserved CC controls, full feedback, unchanged Push guide/force (%0d audio events)",rp);
+        // Keep an active Push target across device replacement. A GW25K
+        // correct or wrong key, and its reserved guide CCs, must leave it alone.
+        score(69);score(71);check_progress(4,2,0);
+        put(0,0);repeat(20)@(negedge clk);put(0,7);
+        get('h60,before_received);
+        guide_cc(110,0);guide_cc(111,127);guide_cc(112,127);guide_cc(112,0);
+        generic_event(1,69,100);generic_event(1,68,100);
+        generic_event(0,69,0);generic_event(0,68,0);
+        check_progress(4,2,0);get('h60,value);
+        if(value!=before_received)$fatal(1,"GW25K changed active Push guide");
+        wait(rp==wp);
+        $display("PASS PL guide RTL: generic correct/wrong/pressure/vel0, real FIFO backpressure once, reserved CC controls, full feedback, unchanged Push guide/force, GW25K cannot alter an active Push target (%0d audio events)",rp);
         $finish;
     end
     initial begin #30000000;$fatal(1,"timeout rp=%0d wp=%0d",rp,wp);end

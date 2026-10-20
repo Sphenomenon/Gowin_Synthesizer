@@ -1,0 +1,2 @@
+PASS tb_playlist_hold
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/guidance/tb_playlist_hold.sv:40: $finish called at 3300000 (1ps)

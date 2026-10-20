@@ -123,6 +123,13 @@ def clock_estimates(path):
     return result
 
 
+def check_feature_storage(rows):
+    # A hierarchy row can survive even when a constant control sweeps the entire
+    # vector datapath. Its fixed 16KiB geometry ROM must still be implemented.
+    if rows.get(REQUIRED['vector_voices'], {}).get('subtree_bsram', 0) < 8:
+        raise ValueError('vector geometry ROM swept or missing; reject reduced-resource candidate')
+
+
 def audit(build, mode):
     build = Path(build).resolve()
     if mode not in ('synthesis_only', 'full', 'place_route_reuse'):
@@ -134,6 +141,7 @@ def audit(build, mode):
     resource = stage / 'impl/gwsynthesis/Prj1_syn_rsc.xml'
     root = ET.parse(resource).getroot()
     total, rows = hierarchy(root)
+    check_feature_storage(rows)
     top_file = stage / 'src/push2/gw138k_push_workstation_top.v'
     profile = re.search(r'parameter integer TF_AUDIO_KIND\s*=\s*([123])', top_file.read_text())
     if not profile:

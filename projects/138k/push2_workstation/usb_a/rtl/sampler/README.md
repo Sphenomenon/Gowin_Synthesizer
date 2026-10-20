@@ -1,5 +1,9 @@
 # EP-133 style sampler P1 + P2
 
+2026-10-19题目补充：用户已提供选题二全文，并明确D采样器、TF PCM可作为合规实时发声，禁止的是直接播放预处理音乐。D／TF继续保留，不因PCM格式一概排除；既有single_note／single_hit导入审核与回录范围不扩展。完整采样器9个RTL测试、5个导入工具测试、5个模块lint本次通过；这不表示D已接入整机或完整25K设备已落地。原文、补充解释和计分／I2S／延迟差异见[赛题验收对照](../../reports/CONTEST_REQUIREMENTS_20261019.md)。
+
+2026-10-19范围补充：用户明确该独立后端作为25K的EP-133式现场演奏候选基础；4×4演奏／效果上下文、播放中独立组合开关为产品目标。现有`sampler_push`及本文Push布局属于历史候选，不是25K已定接口；旧草案的D模式／CC80／CC89扩展亦未获具体入口确认，现有A/B/C语义保持。题目约束和可借鉴候选见[现场演奏范围](../../reports/GW25K_PERFORMANCE_SCOPE_20261019.md)。最新独立D新增8种效果组合／播放持续验证通过；不代表整机或25K设备已接入。
+
 本目录提供独立 RTL、导入工具与验证；`gw138k_event_workstation.sv`、`build.py` 和现有 TF vendor 源码不由此交付修改。`MODE_D_INTEGRATION.md` 描述主会话接入步骤。所有 RTL 客户端端口属于 76.8 MHz 音频时钟域；48 kHz tick 每 1600 clocks 一次。DDR 原生口是 256-bit BL8，业务 PCM 为有符号 PCM16 单声道，输出 stereo PCM16。
 
 ## 模块
@@ -14,7 +18,7 @@
 | sampler_import.sv | 原样实例化 WAV decoder；PCM16 写 DDR、CRC/长度、峰值 normalize |
 | sampler_storage.sv | pool + import + resample 的事务协调；仅成功写完后提交可读 descriptor |
 | sampler_sequencer.sv | 16 patterns × 4 tracks × 16 steps，同步事件 RAM、实录/门限时长、swing、BPM、串链 |
-| sampler_fx.sv | CC110 BitCrush、CC111 Drive、CC112 P10 delay send；内部合成 click |
+| sampler_fx.sv | CC20 BitCrush、CC21 Drive、CC22 P10 delay send；内部合成 click |
 | sampler_push.sv | 4×4 主 pad、4 组选择、16 pattern pads，按下到松开保留映射 |
 | sampler_slice.sv | 16 等分切片/16 手动起点；边界无效时 valid=0 |
 | sampler_grid.sv | 16×4 pattern grid，P26 frame_start 快照、dirty 状态变化请求 |
@@ -57,4 +61,4 @@ python3 sim/sampler/synth.py --top sampler_mode_d
 python3 sim/sampler/synth.py --top sampler_storage
 ```
 
-输出位于 `out/sampler_*` 和 `out/sampler_synthesis_*`，含输入 hashes、逐测试日志、数值 metrics、vendor hashes。最终固定证据汇总见 `evidence.json`。综合测试为独立模块综合，不能代表整机 P&R 或板上 DDR 时延。具体数值与集成边界见 `MODE_D_INTEGRATION.md`。
+输出位于 `out/sampler_*` 和 `out/sampler_synthesis_*`，含输入 hashes、逐测试日志、数值 metrics、vendor hashes。历史完整验证见 `evidence.json`（对应旧输入）；2026-10-18改号回归单列于 `../../reports/INTERFACE_BATCH_20261018.md`。综合测试为独立模块综合，不能代表整机 P&R 或板上 DDR 时延。具体数值与集成边界见 `MODE_D_INTEGRATION.md`。

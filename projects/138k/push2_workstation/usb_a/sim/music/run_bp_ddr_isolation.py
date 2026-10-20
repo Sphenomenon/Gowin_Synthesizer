@@ -16,12 +16,16 @@ HERE = Path(__file__).resolve().parent
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--project', type=Path, help='Use CNN and DDR-map inputs from a staged workstation Prj1')
     args = parser.parse_args()
     out = args.output or ROOT / 'out' / datetime.now().strftime('bp_ddr_isolation_%Y%m%d_%H%M%S')
     out = out.resolve()
     out.mkdir(parents=True, exist_ok=True)
-    vit = ROOT / 'rtl/music/basic_pitch_viterbi.sv'
-    header = ROOT / 'rtl/music/basic_pitch_ddr_map.svh'
+    project = args.project.resolve() if args.project else ROOT
+    music = project / 'rtl/music'
+    memory = project / 'src/memory' if args.project else ROOT / 'rtl'
+    vit = music / 'basic_pitch_viterbi.sv'
+    header = music / 'basic_pitch_ddr_map.svh'
     text = header.read_text()
     needle = "BP_DDR_BPTR_BYTE_BASE       32'h3040_0000"
     assert text.count(needle) == 1, 'review negative control when BP allocation changes'
@@ -30,10 +34,10 @@ def main():
     negative = out / 'basic_pitch_viterbi_old_map.sv'
     negative.write_text(vit.read_text().replace('"basic_pitch_ddr_map.svh"', f'"{old}"'))
     tb = HERE / 'tb_viterbi_ddr_isolation.sv'
-    inputs = [vit, header, tb, ROOT / 'rtl/ddr_address_map.vh',
-              ROOT / 'rtl/music/basic_pitch_fixed_pkg.svh', Path(__file__)]
+    inputs = [vit, header, tb, memory / 'ddr_address_map.vh',
+              music / 'basic_pitch_fixed_pkg.svh', Path(__file__)]
     (out / 'inputs_sha256.json').write_text(json.dumps({
-        str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+        str(p.relative_to(ROOT) if p.is_relative_to(ROOT) else p): hashlib.sha256(p.read_bytes()).hexdigest()
         for p in inputs}, indent=2) + '\n')
 
     def run(case):
@@ -42,7 +46,7 @@ def main():
         log = ''
         exe = out / (name + '.vvp')
         commands = [
-            ['iverilog', '-g2012', '-I', str(ROOT / 'rtl/music'), '-I', str(ROOT / 'rtl'),
+            ['iverilog', '-g2012', '-I', str(music), '-I', str(memory),
              '-s', 'tb_viterbi_ddr_isolation', '-o', str(exe), str(src), str(tb)],
             ['vvp', str(exe)],
         ]

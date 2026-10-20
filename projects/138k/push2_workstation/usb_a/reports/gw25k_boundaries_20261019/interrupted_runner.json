@@ -1,0 +1,5 @@
+{
+  "passed": false,
+  "reason": "Outer wrapper timeout 180 seconds was below prior complete regression duration 253 seconds; runner was interrupted during screen test",
+  "rtl_failure_observed": false
+}

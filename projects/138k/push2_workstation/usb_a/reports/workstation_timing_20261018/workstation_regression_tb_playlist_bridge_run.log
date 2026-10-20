@@ -1,0 +1,2 @@
+PASS playlist invalidation and reload through CDC
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/guidance/tb_playlist_bridge.sv:39: $finish called at 6560000 (1ps)

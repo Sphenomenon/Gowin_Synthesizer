@@ -1,0 +1,91 @@
+--- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/before/sim/tb_workstation_attach.sv	2026-10-20 00:21:54.000075067 +0800
++++ /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/tb_workstation_attach.sv	2026-10-20 00:25:41.740120554 +0800
+@@ -28,7 +28,7 @@
+         .pc_valid(1'b0),.pc_data(18'd0),.pc_ready(),
+         .cpu_valid(1'b0),.cpu_data(18'd0),.cpu_ready(),
+         .event_valid(merged_valid),.event_data(merged_event),.event_ready(core_ready));
+-    reg sample_ce=0;integer divider=0,frames=0,nonzero=0;
++    reg sample_ce=0;integer divider=0,frames=0,nonzero=0,left_nonzero=0,right_nonzero=0;
+     wire sample_valid;wire signed [31:0] left,right;
+     wire [31:0] active,deadline,overflow,drops;
+     gw138k_event_workstation audio(.clk_i(aclk),.rst_ni(rn),
+@@ -46,7 +46,10 @@
+     always @(posedge aclk)if(rn)begin
+         sample_ce<=0;
+         if(divider==1599)begin divider<=0;sample_ce<=1;end else divider<=divider+1;
+-        if(sample_valid)begin frames++;if(left || right)nonzero++;end
++        if(sample_valid)begin
++            frames++;if(left || right)nonzero++;
++            if(left)left_nonzero++;if(right)right_nonzero++;
++        end
+         if(deadline || overflow || drops)$fatal(1,"audio fault deadline=%0d overflow=%0d drops=%0d",deadline,overflow,drops);
+     end
+     reg check_defaults_on_note=0,watch_order=0;
+@@ -105,6 +108,59 @@
+         if(source==1 ? !tf_control[13] : !audio.cue_running)$fatal(1,"source setup");
+         detached();
+     endtask
++    integer feedback_file,feedback_rows=0;
++    task automatic get(input [7:0] address,output [31:0] value);
++        @(negedge clk);sel=1;wr=0;addr=address;
++        @(posedge clk);while(!ready)@(posedge clk);
++        value=rd;@(negedge clk);sel=0;
++    endtask
++    task automatic feedback_row(input integer expected_mode,expected_voices,expected_route,expected_glide,expected_sustain);
++        reg [31:0] cs,op,nv;
++        // Let the real 4096-cycle audio->USB feedback mailbox publish the
++        // applied state. Reading through the physical MMIO bridge is required.
++        samples(10);get('h10,cs);get('h14,op);get('h24,nv);
++        if(mode!=expected_mode || voices!=expected_voices || route!=expected_route ||
++           audio.glide_cc!=expected_glide || audio.sustain!=expected_sustain)
++            $fatal(1,"audio feedback scenario state mismatch row=%0d",feedback_rows);
++        if(cs!={gain,voices,profile,route,mode,fx} || op!=options)
++            $fatal(1,"audio feedback has not reached real MMIO row=%0d cs=%h",feedback_rows,cs);
++        $fwrite(feedback_file,"%0d %08h %08h %08h %0d %0d %0d %0d %0d\n",
++            feedback_rows,cs,op,nv,expected_mode,expected_voices,expected_route,expected_glide,expected_sustain);
++        feedback_rows++;
++    endtask
++    task automatic feedback_scenarios;
++        integer release_frames;
++        feedback_file=$fopen("audio_feedback.txt","w");if(!feedback_file)$fatal(1,"feedback file open");
++        put(0,7);wait(dut.input_settled);feedback_row(2,0,0,0,0);
++        midi(2,80,0);feedback_row(0,0,0,0,0);
++        midi(1,48,100);midi(1,52,100);feedback_row(0,2,0,0,0);
++        // CC89 is a request. Until real voices release, the page must still
++        // show A even though the pending target is B.
++        midi(2,89,1);feedback_row(0,2,0,0,0);
++        if(!audio.mode_pending || audio.requested_mode!=1)$fatal(1,"mode did not remain pending");
++        midi(2,5,73);midi(2,64,127);midi(0,48,0);feedback_row(0,2,0,73,1);
++        if(held[48] || !held[52] || !audio.deferred[48])$fatal(1,"sustain-held voice vs physical held state");
++        for(integer r=0;r<4;r++)begin
++            midi(2,82,7'(r));samples(2);left_nonzero=0;right_nonzero=0;
++            feedback_row(0,2,r,73,1);
++            if((r==0 && (!left_nonzero || !right_nonzero)) ||
++               (r==1 && (!left_nonzero || right_nonzero)) ||
++               (r==2 && (left_nonzero || !right_nonzero)) ||
++               (r==3 && (left_nonzero || right_nonzero)))
++                $fatal(1,"reported route does not match actual PCM r=%0d L=%0d R=%0d",r,left_nonzero,right_nonzero);
++        end
++        midi(2,82,0);midi(2,64,0);midi(0,52,0);
++        // At first both envelopes are still releasing; held=0 is not ACTIVE=0.
++        feedback_row(0,2,0,73,0);if(held)$fatal(1,"held did not release");
++        release_frames=0;
++        while(mode!=1 && release_frames<2000)begin samples(1);release_frames++;end
++        if(mode!=1 || audio.mode_pending)$fatal(1,"pending mode failed actual commit after release");
++        feedback_row(1,0,0,73,0);
++        detached();put(0,7);wait(dut.input_settled);feedback_row(2,0,0,0,0);
++        if(feedback_rows!=12)$fatal(1,"unexpected feedback row count %0d",feedback_rows);
++        $fclose(feedback_file);detached();
++        $display("PASS audio feedback: 12 real MMIO snapshots, active/release-tail voices, requested vs committed mode, four routes checked against PCM, glide/sustain, reconnect defaults");
++    endtask
+     initial begin
+         #250;rn=1;repeat(20)@(negedge clk);
+         dirty(1);
+@@ -165,6 +221,7 @@
+         put(4,32'h003e8008);samples(2);if(held)$fatal(1,"Push release after panic lost");
+         mapped_before=dut.total_mapped;detached();samples(1);
+         if(dut.total_mapped<=mapped_before)$fatal(1,"lifetime mapped diagnostic reset on detach");
++        feedback_scenarios();
+         $display("PASS attach: %0d default boundaries, ordered tap/CC7/program/bend/CC88/89, detach/reconnect cancellation, full-queue and init PANIC, TF/live/cue exit, no first-frame wait, GW25K guide isolation, Push epoch/volume/release, PCM=%0d",initializations,nonzero);
+         $finish;
+     end

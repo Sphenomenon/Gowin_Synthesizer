@@ -1,5 +1,35 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+保留功能的资源优化已通过完整离线验收：BSRAM **262 → 234/340**，全局 setup/hold/recovery/removal 均非负，CDC／PLL／功能回归通过。复现入口：`python3 build.py --resource-rework --resource-timing --user-code C1102024`。最终候选与位流哈希见 [RESOURCE_TIMING_CANDIDATE.json](RESOURCE_TIMING_CANDIDATE.json)，详情见 [时序修复报告](reports/RESOURCE_TIMING_REPAIR_20261020.md)。尚未烧录；音频最小 setup 余量为 0.022 ns。
+
+## 2026-10-20 保留功能的资源优化（离线候选）
+
+新增 `python3 build.py --resource-rework --user-code C1102004`：每秒音乐取 4 个音高分析时刻，CNN 按 16 个频率列分块，视频两行缓存重排到 4 个原生 SDP，旧混响换成几何早反射与四路 FDN。音乐输入仍为 22.05 kHz；五种音色、A/B/C、chorus、delay、录放、曲谱和跟奏、示波器/HDMI 保留，USB CPU RAM 保持 64 KiB。
+
+<!-- RESOURCE_REWORK_RESULT_BEGIN -->
+
+最终完整物理实现：BSRAM **262 → 234/340**，净省 **28 块（10.69%）**，剩余 **106 块**。T24 `resource_timing_20261020_124632_064482` 已通过完整时序/CDC/PLL/功能验证；最差全局 setup +0.022 ns、hold +0.160 ns。旧资源初版 `resource_rework_final_route0_20261020_041042` 及 `RESOURCE_REWORK_CANDIDATE.json` 保留为历史记录，其时序未闭合。当前离线合格候选记录为 `RESOURCE_TIMING_CANDIDATE.json`。
+
+<!-- RESOURCE_REWORK_RESULT_END -->
+
+实现、物理占用和验证边界见 [资源优化记录](reports/RESOURCE_OPTIMIZATION_20261020.md)。新入口明确使用活动 CNN 候选清单；原 `--current-workstation` 的固定验收输入策略保持原样。本轮不烧录、不切换板上版本记录。
+
+## 2026-10-18 整机时序修复（尚未闭合）
+
+已拆分音频量化、Push像素与矢量声部选择路径，并补窄范围CDC约束。各时钟目标保持原值。
+时序候选使用`--current-workstation --cnn-timing85`：从固定快照复用6处full85 CNN时序基准，并为link的DDR域UART诊断电平补两级同步，
+其余67个CNN目录文件采用full83；当前活动CNN和Flash源码保持原样。
+p34功能与综合网表对照、18项整机回归通过，但布线失败：9460条网络未布通，无有效最终STA。
+p27仍最接近闭合，PLL／CDC通过、最差setup为-0.018ns；当前无构建运行。
+功能验证、候选淘汰与复现命令见
+[时序修复记录](reports/WORKSTATION_TIMING_20261018.md)。本轮未烧录。
+
+## 2026-10-18 整机接口离线候选与CNN输入边界
+
+首批已实现138K接入初始化、消息按序保留与断开作废、25K曲谱功能隔离，以及独立D效果CC20／21／22改号。25K仅保留基础音源页面，曲谱交互／演奏判定／引导回传不属于25K目标；原PL包与端点不变。实施和验证见[首批记录](reports/INTERFACE_BATCH_20261018.md)。
+
+`--current-workstation`按full83验收清单取用73个CNN目录文件，并保留完整输入与DDR冻结核对。活动CNN目录的后续9个修改、11个新增文件单独记录，不覆盖本候选；每次构建输出`cnn_source_audit.json`。原`accepted CNN source drift`暂存阻塞已修复，具体构建、回归及边界见[CNN输入核对](reports/CURRENT_WORKSTATION_SOURCES_20261018.md)。后续Flash模型启动及CNN时序优化未在本入口集成；本次未烧录，不代表新候选已完成时序或板测验收。
+
 ## 2026-10-17 GW25K PL 屏幕与 MIDI 引导（离线候选）
 
 新增GW25K复合设备识别、PL local-v1屏幕输出、设置页覆盖/恢复重画、标准MIDI引导回传，以及generic演奏推进曲谱的事件路径。普通构建与current-workstation已接入活动Host固件和控制RTL；本轮未烧录。接口、保留CC、复现命令及缺失full83的构建边界见 [GW25K适配说明](GW25K_PANEL.md)。
@@ -272,3 +302,13 @@ USB-A 工作站版本的 P138 回读应使用 `../scripts/control.py --usb-a`。
 - P3：固定链顺序为合成混音 → 延迟 → 合唱 → 混响 → 路由 → PT8211；mask 0=关闭、1/2/3 可单独或叠加、7=全开；映射仿真覆盖 1/3/7，关闭由复位/清零路径覆盖。
 - P4：256×64 位曲谱 RAM、绝对帧、LED 掩码、开始/停止/完成状态及 APB 入口均已存在；不产生音符。
 - P5：已统计当前绑定 CC 20–29、71–73、79、102–109。已按 Ableton MIDI Implementation Chart 补齐物理按键 CC 清单（3/9、28–31、35–63、85–90、102–113、116–119）；未根据另一台 2982:1967 Push 的 CC14/15 记录猜测映射。曲谱/录音按键需要把 UI 命令接入统一事件协议后再绑定。
+
+
+2026-10-19赛题对照：[题目原文与用户补充口径](docs/CONTEST_REQUIREMENTS.md)、[实现／验收差异与新离线证据](reports/CONTEST_REQUIREMENTS_20261019.md)。D／TF PCM路径按用户补充口径保留；32实时声部串行重建／FFT及完整独立采样器回归通过，仍未完成25K设备接入、端到端延迟、实际I2S格式和最终时序验收。
+
+2026-10-19后续远程导入：完整25K工程现已补齐，已确认控件接入实际顶层，最终设备38测试台／25个Python协议测试及真实Host／PL端点闭环通过。详见[设备控件落地](reports/GW25K_CONTROLS_20261019.md)；基础控件实现不等于25K专有效果上下文或整机D完成。
+
+2026-10-19范围调整：按用户要求撤回最近25K连接／排队修复，保留此前控件及138K实现；后续优先修改138K，25K以核对和建议为主。当前源码与候选证据的区别见[回退记录](reports/GW25K_ROLLBACK_20261019.md)。
+
+
+2026-10-20继续138K功能接入：生产Host基础页现显示实际活动声部（含释放尾音）、输出路由、滑音和延音。新增真实音频MMIO快照→生产Host联动验证，12组场景、13种字段刷新、真实25K显示端点1019请求／2帧及full83整机18道门禁通过；25K工程只读。字段语义、边界与证据见[138K状态反馈接入](reports/HOST_FEEDBACK_20261020.md)。这是主机侧基础反馈，25K完整参数同步和专有效果上下文、D整机仍待接入；本轮仅prepare与离线仿真，未板测／烧录，时序未闭合。

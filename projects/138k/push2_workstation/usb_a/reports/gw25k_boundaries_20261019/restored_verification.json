@@ -1,0 +1,66 @@
+{
+  "completed": "2026-10-19T03:32:41.184079+08:00",
+  "passed": true,
+  "scope": "restored controls directed test and top elaboration, not a rerun of all 38 testbenches",
+  "jobs": [
+    {
+      "name": "board_top_elaboration",
+      "command": [
+        "iverilog",
+        "-g2005",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "midi_keyboard_top",
+        "-tnull",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v"
+      ],
+      "returncode": 0,
+      "log": "restored_board_top_elaboration.log"
+    },
+    {
+      "name": "controls_compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_gw138k_panel_controls",
+        "-o",
+        "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/rollback_panel_boundaries_20261019_033206_553538/tb_controls_restored",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_gw138k_panel_controls.v"
+      ],
+      "returncode": 0,
+      "log": "restored_controls_compile.log"
+    },
+    {
+      "name": "controls_restored",
+      "command": [
+        "vvp",
+        "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/rollback_panel_boundaries_20261019_033206_553538/tb_controls_restored"
+      ],
+      "returncode": 0,
+      "log": "restored_controls_restored.log"
+    }
+  ],
+  "device_152_inputs_match_previous": true,
+  "gw138k_production_unchanged": true,
+  "protected_files_unchanged": true,
+  "hardware_tested": false,
+  "programmed": false,
+  "synthesis_run": false,
+  "pnr_run": false,
+  "new_timing_experiment": false
+}

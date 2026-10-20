@@ -1,0 +1,2 @@
+PASS scope_event_ab: 213522 cycles, 2656 events, 1776 stereo frames, synthesized outputs exact
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/timing/tb_scope_event_ab.sv:95: $finish called at 2135260000 (1ps)

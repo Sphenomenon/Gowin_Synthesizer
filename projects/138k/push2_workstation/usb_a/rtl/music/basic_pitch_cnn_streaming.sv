@@ -20,6 +20,7 @@ module basic_pitch_cnn_streaming #(
     parameter integer NOTE_BINS = 88,
     parameter integer CONTOUR_BINS = 264,
     parameter integer ROW_BUFFER_ROWS = 19,
+    parameter bit COARSE_GUIDANCE=1'b0,
     parameter bit USE_EXTERNAL_STATE = 1'b0
 ) (
     input  logic clk_i,
@@ -91,7 +92,7 @@ module basic_pitch_cnn_streaming #(
     );
 
     basic_pitch_viterbi #(.NOTE_BINS(NOTE_BINS), .FRAMES(FRAMES),
-                          .USE_EXTERNAL_STATE(USE_EXTERNAL_STATE)) u_viterbi (
+                          .COARSE_GUIDANCE(COARSE_GUIDANCE),.USE_EXTERNAL_STATE(USE_EXTERNAL_STATE)) u_viterbi (
         .clk_i(clk_i), .rst_ni(rst_ni), .start_i(start_i), .active_i(active_i),
         .note_valid_i(note_valid_i && frame_ready_o), .note_idx_i(note_idx_i), .note_q_i(note_q_i),
         .onset_valid_i(onset_valid_i && frame_ready_o), .onset_idx_i(onset_idx_i), .onset_q_i(onset_q_i),

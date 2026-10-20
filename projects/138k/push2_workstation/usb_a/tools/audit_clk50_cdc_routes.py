@@ -32,7 +32,14 @@ def pointer_source(design, vo, net, receiver_clock, instance):
             data.append((key, cell, output))
         else:
             match = re.fullmatch(re.escape(instance) + r'/clear_(wr|rd)_(meta|seen)_.*', cell)
-            if match:
+            shared_tf = instance in ('u_tf_audio/u_path/u_capture_fifo', 'u_tf_audio/u_path/u_playback_fifo')
+            alias = re.fullmatch(r'u_tf_audio/u_path/u_(capture|playback)_fifo/clear_(wr|rd)_(meta|seen)_.*', cell)
+            if shared_tf and alias:
+                # Both byte FIFOs share restart_toggle. Gowin merges their
+                # identical first-stage clear samplers in the same clock.
+                # The meta/seen D relation and gate truth table are still proved.
+                controls[key] = ('shared_tf_restart', alias[3])
+            elif match:
                 controls[key] = match.groups()
             elif (instance == 'u_tf_audio/u_pcm_cdc' and
                   re.fullmatch(r'u_tf_audio/clear_meta_.*', cell)):

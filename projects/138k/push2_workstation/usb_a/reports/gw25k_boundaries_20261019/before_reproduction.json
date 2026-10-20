@@ -1,0 +1,26 @@
+{
+  "production_source_sha256": "2ec36ef7fd0493342a2fbf03ab8e8cae4d1cc94ff4754de1363efd68b232b97a",
+  "jobs": {
+    "1": {
+      "returncode": 1,
+      "log": "scenario_1.log"
+    },
+    "2": {
+      "returncode": 1,
+      "log": "scenario_2.log"
+    },
+    "3": {
+      "returncode": 1,
+      "log": "scenario_3.log"
+    },
+    "4": {
+      "returncode": 0,
+      "log": "scenario_4.log"
+    }
+  },
+  "expected_failure_scenarios": [
+    1,
+    2,
+    3
+  ]
+}

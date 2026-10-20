@@ -1,0 +1,32 @@
+{
+  "candidate": "resource_rework_4hz_tiles_spatial",
+  "status": "offline_implementation_timing_open",
+  "build": "results/resource_rework_final_route0_20261020_041042",
+  "user_code": "0xC1102004",
+  "bitstream": "results/resource_rework_final_route0_20261020_041042/Prj1/impl/pnr/Prj1.fs",
+  "bitstream_sha256": "48aad0f8695923f943d5604babbb07e8842dd697316e21f773f4de59e4e15fcb",
+  "source_manifest": "results/resource_rework_final_route0_20261020_041042/workstation_inputs.json",
+  "source_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7",
+  "source_inputs": 617,
+  "input_drift": [],
+  "physical_bsram": 234,
+  "capacity_bsram": 340,
+  "saved_physical_bsram": 28,
+  "functional_verification": "reports/resource_rework_20261020/verification.json",
+  "regression_rtl_build": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_timing85_20261020_040804_176677",
+  "routing_variants": "reports/resource_rework_20261020/routing_variants.json",
+  "readiness": {
+    "tool_flow_passed": true,
+    "timing_closed": false,
+    "cdc_passed": true,
+    "pll_init_passed": true,
+    "release_ready": false,
+    "hardware_tested": false
+  },
+  "hardware_tested": false,
+  "board_record_changed": false,
+  "report": "reports/RESOURCE_OPTIMIZATION_20261020.md",
+  "routing_comparison": "reports/resource_rework_20261020/routing_comparison.json",
+  "bitstream_header_user_code": "0xc1102004",
+  "bitstream_header_checked": true
+}

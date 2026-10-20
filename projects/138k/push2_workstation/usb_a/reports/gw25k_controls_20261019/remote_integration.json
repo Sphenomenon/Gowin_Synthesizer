@@ -1,0 +1,22 @@
+{
+  "base": "9660406207993914abf2e007906815fcb0df42be",
+  "remote": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+  "head": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+  "strategy": "fast-forward after path-limited README stash and local backup",
+  "local_readme_backup": "local_25k_README.md",
+  "readme_stash": "65f0193bcd78a55518621ab32ea424a81149f009",
+  "other_dirty_inputs_preserved": true,
+  "overlapping_paths": [
+    "projects/25k/README.md"
+  ],
+  "remote_added_paths_previously_present": [],
+  "imported_manifest_entries_checked": 1060,
+  "intentional_source_differences": [
+    "example/MIDI_KEYBOARD/rtl/instrument/midi_keyboard_application.v",
+    "example/MIDI_KEYBOARD/rtl/midi_keyboard_top.v",
+    "example/MIDI_KEYBOARD/run_sim.sh",
+    "example/MIDI_KEYBOARD/sim/tb_midi_keyboard_application.v",
+    "example/MIDI_KEYBOARD/sources.f",
+    "example/MIDI_KEYBOARD/tools/run_checks.py"
+  ]
+}

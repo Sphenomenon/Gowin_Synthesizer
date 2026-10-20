@@ -7,10 +7,11 @@
 #include <stdlib.h>
 
 static volatile uint32_t regs[64];
-static unsigned generic_writes;
+static unsigned generic_writes,score_reads;
 static volatile uint32_t *reg_at(unsigned off) {
     assert(off < sizeof regs && !(off & 3));
     if(off==0x54) generic_writes++;
+    if(off>=0x60 && off<=0x6c) score_reads++;
     return regs+off/4;
 }
 int usbhw_transfer_out_preloaded(uint8_t,int,int,int,uint8_t,int);
@@ -292,14 +293,6 @@ static void wait_frame(unsigned desired){
     while(complete_frames<desired && limit--)step();
     assert(limit && connected && mode==DEVICE_GW25K);
 }
-static void wait_lights(unsigned ons,unsigned offs){
-    unsigned limit=2000;
-    while((note_on_count<ons || note_off_count<offs) && limit--)step();
-    assert(limit);
-}
-static void assert_note(unsigned note,unsigned on){
-    for(unsigned channel=0;channel<16;channel++)assert(notes[channel*128+note]==on);
-}
 static void wait_quiet(void){
     unsigned previous=tile_executions,quiet_since=now_ms,limit=200000;
     while(now_ms-quiet_since<200 && limit--){
@@ -320,7 +313,7 @@ static void initialize(void){
     fixture_vid=0xfb9a;fixture_pid=0xfb9b;
     device_out_pid[1]=device_out_pid[2]=PID_DATA0;
     device_in_pid[1]=device_in_pid[2]=PID_DATA0;
-    connect();assert(connected && mode==DEVICE_GW25K && regs[0]==3);
+    connect();assert(connected && mode==DEVICE_GW25K && regs[0]==7);
     assert(midi_in_ep==1 && midi_in_size==64);
 }
 static void fixture(void){
@@ -349,17 +342,122 @@ static void descriptor_tests(void){
     fixture();configuration_fixture[110]=0;connect();assert(!connected); /* malformed suffix */
     fixture();configuration_size=101;configuration_fixture[2]=101;configuration_fixture[4]=2;generic_fallback();
     fixture();connect();assert(connected && mode==DEVICE_GW25K);
-    assert(!gw.panel_out_toggle && !gw.panel_in_toggle && !gw.midi_out_toggle && !gw.hello && gw.initial_clear);
+    assert(!gw.panel_out_toggle && !gw.panel_in_toggle && !gw.hello);
+}
+/* Verify meanings against the established RTL MMIO layout, including the
+ * lossy fields. No raw Program/14-bit bend is invented by the renderer. */
+static void scene_tests(void){
+    static const char *tones[]={"FLUTE  ","STRINGS","BRASS  ","MARIMBA","PIANO  "};
+    gw25k_reset();memset((void*)regs,0,sizeof regs);
+    regs[0x10/4]=0x80000000u|(2u<<3);
+    regs[0x14/4]=128u<<18;
+    regs[0x24/4]=60u|(100u<<7);
+    gw_scene(gw.scene);gw_format_scene();
+    assert(!strcmp(gw.line1,"NOTE 060  VEL 100  GAIN 127  TONE FLUTE  "));
+    assert(!strcmp(gw.line2,"MOD 000  BEND IDX 128  FX DCR 000"));
+    assert(!strcmp(gw.line3,"MODE C  ACTIVE 000  OUT STEREO"));
+    assert(!strcmp(gw.line4,"GLIDE 000  SUSTAIN OFF"));
+    for(unsigned cc=0;cc<128;cc++){
+        unsigned volume=cc==127?32768u:cc*256u;
+        for(unsigned expression=0;expression<2;expression++){
+            unsigned gain=expression?volume/2u:volume;
+            char expected[4];snprintf(expected,sizeof expected,"%03u",gain>=32768u?127u:gain/256u);
+            gw.scene[0]=gain<<16;gw_format_scene();assert(!memcmp(gw.line1+24,expected,3));
+        }
+    }
+    for(unsigned profile=0;profile<8;profile++){
+        gw.scene[0]=profile<<7;gw_format_scene();
+        assert(!strcmp(gw.line1+34,profile<5?tones[profile]:"UNKNOWN"));
+    }
+    for(unsigned mode=0;mode<4;mode++){
+        gw.scene[0]=mode<<3;gw_format_scene();assert(gw.line3[5]==(char)(mode<3?'A'+mode:'?'));
+    }
+    static const char *routes[]={"STEREO","LEFT  ","RIGHT ","MUTED "};
+    for(unsigned active=0;active<64;active++)for(unsigned route=0;route<4;route++){
+        char expected[4];snprintf(expected,sizeof expected,"%03u",active);
+        gw.scene[0]=(active<<10)|(route<<5);gw_format_scene();
+        assert(!memcmp(gw.line3+15,expected,3) && !strcmp(gw.line3+24,routes[route]));
+    }
+    for(unsigned glide=0;glide<128;glide++)for(unsigned sustain=0;sustain<2;sustain++){
+        char expected[4];snprintf(expected,sizeof expected,"%03u",glide);
+        gw.scene[1]=(glide<<11)|(sustain<<3);gw_format_scene();
+        assert(!memcmp(gw.line4+6,expected,3) && !memcmp(gw.line4+19,sustain?"ON ":"OFF",3));
+    }
+    for(unsigned bend=0;bend<256;bend++){
+        char expected[4];snprintf(expected,sizeof expected,"%03u",bend);
+        gw.scene[1]=(bend<<18)|(127u<<4);gw_format_scene();
+        assert(!memcmp(gw.line2+18,expected,3) && !memcmp(gw.line2+4,"127",3));
+    }
+    for(unsigned mask=0;mask<8;mask++){
+        gw.scene[0]=mask;gw_format_scene();
+        for(unsigned bit=0;bit<3;bit++)assert(gw.line2[30+bit]==(char)('0'+((mask>>bit)&1u)));
+    }
+    for(unsigned key=0;key<16;key++){
+        gw.scene[2]=1u<<(48u+key-36u);gw.scene[3]=0;
+        for(unsigned k=0;k<16;k++)assert(gw_pixel(7u+k*26u,110)==(k==key?0xffff:0x2945));
+    }
+    /* A NoteOff/velocity-zero update clears the last-event velocity; the
+     * held keyboard is read separately from the audio snapshot. */
+    gw.scene[4]=63;gw_format_scene();assert(!memcmp(gw.line1+5,"063",3));
+    assert(!memcmp(gw.line1+14,"000",3));
+    /* A whole PL frame, including regenerated tiles, must use the original
+     * snapshot. A state change is visible only when the next frame starts. */
+    gw.drawing=0;gw_prepare_display();
+    uint32_t original[9];memcpy(original,gw.scene,sizeof original);
+    char status3[sizeof gw.line3],status4[sizeof gw.line4];
+    memcpy(status3,gw.line3,sizeof status3);memcpy(status4,gw.line4,sizeof status4);
+    uint8_t first_tile[528];unsigned tile_length=gw.transaction[1].length;
+    memcpy(first_tile,gw.transaction[1].data,tile_length);
+    regs[0x10/4]=(64u<<24)|(4u<<7)|(17u<<10)|(3u<<5)|7u;
+    regs[0x14/4]=(255u<<18)|(73u<<4)|(91u<<11)|8u;
+    regs[0x1c/4]=1u<<27;regs[0x20/4]=0xffffffffu;regs[0x24/4]=63;
+    gw_prepare_display();assert(!memcmp(original,gw.scene,sizeof original));
+    assert(!memcmp(status3,gw.line3,sizeof status3) && !memcmp(status4,gw.line4,sizeof status4));
+    assert(gw.transaction[1].length==tile_length && !memcmp(first_tile,gw.transaction[1].data,tile_length));
+    gw.tile_y=GW_HEIGHT;gw_prepare_display();
+    assert(gw.transaction[1].type==GW_END && !memcmp(original,gw.scene,sizeof original));
+    gw.drawing=0;gw_prepare_display();
+    assert(gw.scene[0]==regs[0x10/4] && gw.scene[1]==regs[0x14/4]);
+    assert(gw.scene[2]==regs[0x1c/4] && gw.scene[3]==regs[0x20/4] && gw.scene[4]==63);
+    for(unsigned i=5;i<9;i++)assert(!gw.scene[i]);
+    assert(!memcmp(gw.line1+24,"064",3) && !strcmp(gw.line1+34,"PIANO  "));
+    assert(!strcmp(gw.line2,"MOD 073  BEND IDX 255  FX DCR 111"));
+    assert(!strcmp(gw.line3,"MODE A  ACTIVE 017  OUT MUTED "));
+    assert(!strcmp(gw.line4,"GLIDE 091  SUSTAIN ON "));
+    printf("PASS GW25K scene: effective gain/CC11, five profiles, committed ABC, bend index 0..255, effective DCR mask, 16 held keys, last-event release, immutable frame/next-frame refresh, 64 active-count encodings, four output routes, glide 0..127 and sustain\n");
+}
+static void refresh_scene_tests(void){
+    static const unsigned offsets[]={0x10,0x10,0x10,0x10,0x14,0x14,0x1c,0x20,0x24,0x10,0x10,0x14,0x14};
+    static const uint32_t values[]={0x80000010u,0x40000210u,0x40000208u,0x4000020du,
+        255u<<18,(128u<<18)|(73u<<4),1u<<12,1u<<3,60u|(100u<<7),
+        0x4000020du|(2u<<10),0x4000020du|(2u<<10)|(3u<<5),
+        (128u<<18)|(73u<<4)|(91u<<11),(128u<<18)|(73u<<4)|(91u<<11)|8u};
+    /* Independently change gain/profile/mode/FX, bend/modulation, both held
+     * words and last note/velocity through the real service loop. Each stable
+     * change needs one complete frame, with no periodic idle redraw. */
+    for(unsigned i=0;i<sizeof offsets/sizeof offsets[0];i++){
+        wait_quiet();unsigned frames=complete_frames;
+        assert(regs[offsets[i]/4]!=values[i]);regs[offsets[i]/4]=values[i];
+        wait_frame(frames+1);wait_quiet();assert(complete_frames==frames+1);
+        assert(gw.scene[0]==regs[0x10/4] && gw.scene[1]==regs[0x14/4]);
+        assert(gw.scene[2]==regs[0x1c/4] && gw.scene[3]==regs[0x20/4] && gw.scene[4]==regs[0x24/4]);
+    }
+    assert(!score_reads && !note_on_count && !note_off_count && !cc123_count);
+    printf("PASS GW25K refresh: 13 independent MMIO changes each trigger one complete frame; stable state only heartbeats\n");
 }
 static void render_scene(const char *path){
     gw25k_reset();
-    gw.scene[0]=(100u<<24)|(2u<<7)|5u;gw.scene[1]=(73u<<4)|(128u<<18);
+    gw.scene[0]=(100u<<24)|(2u<<7)|(2u<<3)|(2u<<10)|5u;gw.scene[1]=(73u<<4)|(128u<<18)|(73u<<11)|8u;
     gw.scene[2]=(1u<<(48-36))|(1u<<(50-36));gw.scene[4]=60u|(100u<<7);
     gw.scene[5]=60u|(1u<<7)|(1u<<8)|(1u<<9)|(1u<<10)|(12u<<17)|(1u<<22);
     gw.scene[7]=(42u<<16)|7u;gw.scene[8]=3;gw_format_scene();
-    assert(!strcmp(gw.line1,"NOTE 060  VEL 100  VOL 100  PATCH 2"));
-    assert(!strcmp(gw.line2,"MOD 073  BEND 128  FX 1 0 1"));
-    assert(!strcmp(gw.line3,"TRACK 02/12  STEP 00007/00042  MISS 00003"));
+    assert(!strcmp(gw.line1,"NOTE 060  VEL 100  GAIN 100  TONE BRASS  "));
+    assert(!strcmp(gw.line2,"MOD 073  BEND IDX 128  FX DCR 101"));
+    assert(!strcmp(gw.line3,"MODE C  ACTIVE 002  OUT STEREO"));
+    assert(!strcmp(gw.line4,"GLIDE 073  SUSTAIN ON "));
+    gw.scene[0]=0x80000000u;gw_format_scene();
+    assert(!strncmp(gw.line1+24,"127",3));
+    gw.scene[0]=(100u<<24)|(2u<<7)|(2u<<3)|(2u<<10)|5u;gw_format_scene();
     FILE *f=fopen(path,"wb");assert(f);fprintf(f,"P6\n428 142\n255\n");
     for(unsigned y=0;y<142;y++)for(unsigned x=0;x<428;x++){
         unsigned pixel=gw_pixel(x,y);uint8_t rgb[3]={
@@ -368,8 +466,33 @@ static void render_scene(const char *path){
     }
     assert(!fclose(f));
 }
+static void audio_feedback_test(const char *path){
+    FILE *f=fopen(path,"r");assert(f);
+    unsigned id,control,options,note_velocity,mode,active,route,glide,sustain,rows=0;
+    static const char *routes[]={"STEREO","LEFT  ","RIGHT ","MUTED "};
+    initialize();inject_midi=0;unsigned baseline_writes=generic_writes;
+    for(;;){
+        int n=fscanf(f,"%u %x %x %x %u %u %u %u %u",&id,&control,&options,&note_velocity,
+                     &mode,&active,&route,&glide,&sustain);
+        if(n==EOF)break;
+        assert(n==9 && id==rows && mode<3 && active<64 && route<4 && glide<128 && sustain<2);
+        wait_quiet();unsigned frames=complete_frames;
+        regs[0x10/4]=control;regs[0x14/4]=options;regs[0x24/4]=note_velocity;
+        gw.dirty=1;wait_frame(frames+1);wait_quiet();
+        char expected3[sizeof gw.line3],expected4[sizeof gw.line4];
+        snprintf(expected3,sizeof expected3,"MODE %c  ACTIVE %03u  OUT %s",'A'+mode,active,routes[route]);
+        snprintf(expected4,sizeof expected4,"GLIDE %03u  SUSTAIN %s",glide,sustain?"ON ":"OFF");
+        assert(!strcmp(gw.line3,expected3) && !strcmp(gw.line4,expected4));
+        assert(gw.scene[0]==control && gw.scene[1]==options);
+        assert(generic_writes==baseline_writes && !score_reads && !requests[0x10]);
+        printf("RTL FEEDBACK %02u: %s / %s\n",id,gw.line3,gw.line4);rows++;
+    }
+    fclose(f);assert(rows==12);
+    printf("PASS production Host consumes 12 real RTL feedback captures: committed mode, release-tail voices, four audio routes, glide, sustain, reconnect defaults; no input echo\n");
+}
 int main(int argc,char **argv){
     if(argc==3 && !strcmp(argv[1],"--render")){render_scene(argv[2]);return 0;}
+    if(argc==3 && !strcmp(argv[1],"--audio-feedback")){audio_feedback_test(argv[2]);return 0;}
     if(argc==2 && !strcmp(argv[1],"--rtl")){
         rtl_bridge=1;out_nak_left=0;initialize();wait_frame(1);wait_quiet();
         device_manual=1;device_remote=0;device_redraw=1;
@@ -378,33 +501,24 @@ int main(int argc,char **argv){
         printf("PASS production host + actual GW25K RTL endpoint: %u requests, %u full frames, HELLO/TILE/END/DRAWN/manual/resume\n",rtl_requests,complete_frames);
         return 0;
     }
+    scene_tests();
     assert(sizeof gw25k_config==124);
     initialize();tile_busy_left=2;end_busy_left=2;
     wait_frame(1);
     assert(requests[1]==1 && requests[0x20]>1 && requests[0x21]>=3);
     assert(busy_retries==4 && max_out_packet==64 && largest_request>64);
     assert(partial_response_reads && duplicate_count && out_naks==2 && generic_writes && midi_polls>out_packets/4);
-    assert(cc123_count>=16); /* reconnect clears every selectable channel */
-    unsigned ons=note_on_count,offs=note_off_count;
+    /* Push score changes must neither read score MMIO nor produce MIDI OUT
+     * feedback on the GW25K target. PL and incoming performance remain live. */
+    assert(!note_on_count && !note_off_count && !cc123_count && !score_reads);
+    refresh_scene_tests();
+    unsigned before_score=tile_executions;
     regs[0x60/4]=60 | (1u<<7) | (1u<<8) | (1u<<9);
-    wait_lights(ons+16,offs);assert_note(60,1);
-    ons=note_on_count;unsigned refresh_start=now_ms;
-    while(now_ms-refresh_start<650)step();
-    assert(note_on_count>=ons+16);assert_note(60,1); /* local channel/transpose may clear remote LEDs */
-    ons=note_on_count;offs=note_off_count;
-    must_release_note=60;new_target_note=61;
-    regs[0x60/4]=61 | (1u<<7) | (1u<<8) | (1u<<9);
-    wait_lights(ons+16,offs+16);assert_note(60,0);assert_note(61,1);
-    must_release_note=new_target_note=128;
-    offs=note_off_count;regs[0x60/4]=0;
-    wait_lights(note_on_count,offs+16);assert_note(61,0);
-    /* Score feedback preserves raw MIDI pitch rather than folding notes into
-     * the 16 physical pads; only the keyboard's selected channel consumes it. */
-    ons=note_on_count;offs=note_off_count;
-    regs[0x60/4]=1u<<11;regs[0x64/4]=(1u<<(48-36))|(1u<<(63-36));
-    wait_lights(ons+32,offs);assert_note(48,1);assert_note(63,1);
-    offs=note_off_count;regs[0x60/4]=0;regs[0x64/4]=0;
-    wait_lights(note_on_count,offs+32);assert_note(48,0);assert_note(63,0);
+    regs[0x64/4]=(1u<<(48-36))|(1u<<(63-36));
+    regs[0x68/4]=0x12345678;regs[0x6c/4]=3;
+    unsigned score_start=now_ms;while(now_ms-score_start<650)step();
+    assert(!note_on_count && !note_off_count && !cc123_count && !score_reads);
+    assert(tile_executions==before_score);
     wait_quiet();
     unsigned tiles=tile_executions,heartbeats=requests[2],before=now_ms;
     while(now_ms-before<500)step();
@@ -461,6 +575,6 @@ int main(int argc,char **argv){
     assert(uncertain_injected && reset_calls>resets && requests[1]>hellos);
     uncertain_out=prolonged_ack_loss=0;
     descriptor_tests();
-    printf("PASS GW25K production host: actual composite descriptor, PL FS fragmentation, independent DATA toggles, duplicate IN/OUT NAK, full RGB565 coverage, BUSY retry, MIDI interleave/output, manual/redraw, static heartbeat, 11 response faults (%u frames, %u tiles, %u MIDI polls)\n",complete_frames,tile_executions,midi_polls);
+    printf("PASS GW25K production host: actual composite descriptor, PL FS fragmentation, independent DATA toggles, duplicate IN/OUT NAK, full RGB565 coverage, BUSY retry, MIDI interleave/no score feedback, manual/redraw, static heartbeat, 11 response faults (%u frames, %u tiles, %u MIDI polls)\n",complete_frames,tile_executions,midi_polls);
     return 0;
 }

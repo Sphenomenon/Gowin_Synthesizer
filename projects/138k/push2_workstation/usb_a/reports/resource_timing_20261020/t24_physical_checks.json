@@ -1,0 +1,447 @@
+{
+  "build": "results/resource_timing_20261020_124632_064482",
+  "reference": "results/resource_rework_final_route0_20261020_041042",
+  "input_drift": [],
+  "constraints_preserved": true,
+  "constraints_sha256": {
+    "constraints/tang_mega_138k.cst": "1c1e599838d53c076b5ab20842ca163e2c4285a82b267f8203852ce4a564c0bb",
+    "constraints/tang_mega_138k.sdc": "cf7c8613444693570a531d6edf7c93dbb7f415b0b3ef5cfc026b6b74a2bf4f43",
+    "vendor/gowin_ddr3/reference_demo.cst": "46aaacaa92fe547460ffd5c87029f3536081900e3f029a5ea1517588f2b4ea4e",
+    "vendor/gowin_ddr3/reference_demo.sdc": "195461165f1b71c41d103e40738fdf8cf555cfcb44f178f5f104bcea4375c211"
+  },
+  "constraint_checks": {
+    "constraints/tang_mega_138k.cst": {
+      "identical": true,
+      "only_registered_gray_msb_aliases": false
+    },
+    "constraints/tang_mega_138k.sdc": {
+      "identical": false,
+      "only_registered_gray_msb_aliases": true
+    },
+    "vendor/gowin_ddr3/reference_demo.cst": {
+      "identical": true,
+      "only_registered_gray_msb_aliases": false
+    },
+    "vendor/gowin_ddr3/reference_demo.sdc": {
+      "identical": true,
+      "only_registered_gray_msb_aliases": false
+    }
+  },
+  "resources": {
+    "build": "resource_timing_20261020_124632_064482",
+    "pnr_utilization": {
+      "used": 234,
+      "capacity": 340,
+      "primitive_breakdown": {
+        "SDPB": 171,
+        "SDPX9B": 19,
+        "pROM": 35,
+        "pROMX9": 9
+      }
+    },
+    "netlist_primitives": {
+      "u_usb_host": 36,
+      "u_push": 1,
+      "u_managed": 72,
+      "u_tf_audio": 5,
+      "u_music": 26,
+      "u_memory": 32,
+      "u_video": 46,
+      "u_boot_memory": 16
+    },
+    "synthesis": {
+      "syn_bsram": 197,
+      "top_level": {
+        "u_usb_host": 34,
+        "u_push": 1,
+        "u_managed": 58,
+        "u_tf_audio": 5,
+        "u_music": 23,
+        "u_memory": 16,
+        "u_video": 44,
+        "u_boot_memory": 16
+      }
+    },
+    "groups": {
+      "CNN feature cache": 5,
+      "Viterbi": 8,
+      "Recorder packets": 6,
+      "LED score cues": 4,
+      "Video scanout": 4,
+      "Reverb": 20,
+      "Chorus": 4,
+      "Other retained RAM": 183
+    },
+    "resources": {
+      "Logic": {
+        "used": 80940.0,
+        "capacity": 138240.0
+      },
+      "Register": {
+        "used": 46120.0,
+        "capacity": 139095.0
+      },
+      "CLS": {
+        "used": 56713.0,
+        "capacity": 69120.0
+      },
+      "BSRAM": {
+        "used": 234.0,
+        "capacity": 340.0
+      },
+      "DSP": {
+        "used": 155.0,
+        "capacity": 298.0
+      }
+    },
+    "evidence_sha256": {
+      "Prj1/impl/pnr/Prj1.rpt.txt": "eea3f2a8553f4f5fcecc9a8c46a829a1c75d0e15515fed83669c4de199938892",
+      "Prj1/impl/pnr/Prj1.vo": "66b656f71b828ef35a4ace676effe2361ea5cb72a4b8dfca811697747a0d0039",
+      "Prj1/impl/gwsynthesis/Prj1_syn_rsc.xml": "6aa5715db43610cf1a14ee37259e6606eee3847d03083096652e8bbafaca02d3"
+    }
+  },
+  "clocks": {
+    "clk_50m": {
+      "required_mhz": 50.0,
+      "actual_mhz": 53.916,
+      "checks": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "audio_76m8": {
+      "required_mhz": 76.8,
+      "actual_mhz": 76.928,
+      "checks": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "ddr_mem400": {
+      "required_mhz": 400.0,
+      "actual_mhz": 2598.775,
+      "checks": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "ddr_ui100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 195.0,
+      "checks": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "video_ref49": {
+      "checks": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "video_serial742": {
+      "checks": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "video_pixel148": {
+      "required_mhz": 148.5,
+      "actual_mhz": 220.59,
+      "checks": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "cpu_bus50": {
+      "required_mhz": 50.0,
+      "actual_mhz": 67.873,
+      "checks": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "cpu_core100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 1461.988,
+      "checks": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "usb_48m": {
+      "required_mhz": 48.0,
+      "actual_mhz": 55.488,
+      "checks": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    }
+  },
+  "timing": {
+    "timing_closed": true,
+    "problems": [],
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 53.916
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 76.928
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2598.775
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 195.0
+      },
+      "video_pixel148": {
+        "required_mhz": 148.5,
+        "actual_mhz": 220.59
+      },
+      "cpu_bus50": {
+        "required_mhz": 50.0,
+        "actual_mhz": 67.873
+      },
+      "cpu_core100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 1461.988
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 55.488
+      }
+    },
+    "global_worst_ns": {
+      "setup": 0.022,
+      "hold": 0.16,
+      "recovery": 2.762,
+      "removal": 0.273
+    },
+    "pulse_width_worst_ns": 1.393,
+    "pulse_width_violations": [],
+    "checks": {
+      "clk_50m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "audio_76m8": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_mem400": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_ui100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_ref49": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_serial742": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_pixel148": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_bus50": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_core100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "usb_48m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "global_reports": {
+      "setup": true,
+      "hold": true,
+      "recovery": true,
+      "removal": true
+    },
+    "reset_reports": {
+      "recovery": true,
+      "removal": true
+    },
+    "negative_paths": [],
+    "report_sha256": "2707d3ee9412fd1a87440516816f570476dba271cbc639d7605ef75993d536ac",
+    "hardware_tested": false
+  },
+  "global_checks": {
+    "setup": {
+      "paths": 100,
+      "worst_ns": 0.022
+    },
+    "hold": {
+      "paths": 100,
+      "worst_ns": 0.16
+    },
+    "recovery": {
+      "paths": 100,
+      "worst_ns": 2.762
+    },
+    "removal": {
+      "paths": 100,
+      "worst_ns": 0.273
+    }
+  },
+  "pulse_width_worst_ns": 1.393,
+  "pulse_width_violations": [],
+  "hardware_tested": false,
+  "tool_flow_passed": true,
+  "bitstream_sha256": "0cc7ae6263bcf92d96cf9fb9df46d6ab257d5ec5e46f86eb826886d5668092af",
+  "bitstream_identity": {
+    "expected": "0xc1102024",
+    "actual": "0xc1102024",
+    "passed": true
+  },
+  "physical_checks_passed": true,
+  "cdc": {
+    "passed": true,
+    "evidence_drift": [],
+    "report_sha256": "badf1b42fb2a1d840a0c045e3532febfcfd9581092673e2b5e4360fa68c47600"
+  },
+  "pll": {
+    "passed": true,
+    "artifacts_bound": true,
+    "report_sha256": "208813d04f79291b76326fe7ca5e036f6bcb6c42056349ecf54893e07f272f03"
+  },
+  "functional": {
+    "passed": true,
+    "report_sha256": "674aede97d26f574939dd2d70a423fe054580e2f1e691db624d9ee931e51ab89",
+    "report": "reports/resource_timing_20261020/t24_functional_binding.json"
+  },
+  "offline_acceptance_passed": true
+}

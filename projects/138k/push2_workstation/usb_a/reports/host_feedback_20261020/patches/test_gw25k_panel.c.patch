@@ -1,0 +1,128 @@
+--- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/before/sim/test_gw25k_panel.c	2026-10-20 00:21:54.000002396 +0800
++++ /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/test_gw25k_panel.c	2026-10-20 00:30:48.770874048 +0800
+@@ -355,7 +355,8 @@
+     gw_scene(gw.scene);gw_format_scene();
+     assert(!strcmp(gw.line1,"NOTE 060  VEL 100  GAIN 127  TONE FLUTE  "));
+     assert(!strcmp(gw.line2,"MOD 000  BEND IDX 128  FX DCR 000"));
+-    assert(!strcmp(gw.line3,"MODE C  USB MIDI INPUT"));
++    assert(!strcmp(gw.line3,"MODE C  ACTIVE 000  OUT STEREO"));
++    assert(!strcmp(gw.line4,"GLIDE 000  SUSTAIN OFF"));
+     for(unsigned cc=0;cc<128;cc++){
+         unsigned volume=cc==127?32768u:cc*256u;
+         for(unsigned expression=0;expression<2;expression++){
+@@ -371,6 +372,17 @@
+     for(unsigned mode=0;mode<4;mode++){
+         gw.scene[0]=mode<<3;gw_format_scene();assert(gw.line3[5]==(char)(mode<3?'A'+mode:'?'));
+     }
++    static const char *routes[]={"STEREO","LEFT  ","RIGHT ","MUTED "};
++    for(unsigned active=0;active<64;active++)for(unsigned route=0;route<4;route++){
++        char expected[4];snprintf(expected,sizeof expected,"%03u",active);
++        gw.scene[0]=(active<<10)|(route<<5);gw_format_scene();
++        assert(!memcmp(gw.line3+15,expected,3) && !strcmp(gw.line3+24,routes[route]));
++    }
++    for(unsigned glide=0;glide<128;glide++)for(unsigned sustain=0;sustain<2;sustain++){
++        char expected[4];snprintf(expected,sizeof expected,"%03u",glide);
++        gw.scene[1]=(glide<<11)|(sustain<<3);gw_format_scene();
++        assert(!memcmp(gw.line4+6,expected,3) && !memcmp(gw.line4+19,sustain?"ON ":"OFF",3));
++    }
+     for(unsigned bend=0;bend<256;bend++){
+         char expected[4];snprintf(expected,sizeof expected,"%03u",bend);
+         gw.scene[1]=(bend<<18)|(127u<<4);gw_format_scene();
+@@ -392,12 +404,15 @@
+      * snapshot. A state change is visible only when the next frame starts. */
+     gw.drawing=0;gw_prepare_display();
+     uint32_t original[9];memcpy(original,gw.scene,sizeof original);
++    char status3[sizeof gw.line3],status4[sizeof gw.line4];
++    memcpy(status3,gw.line3,sizeof status3);memcpy(status4,gw.line4,sizeof status4);
+     uint8_t first_tile[528];unsigned tile_length=gw.transaction[1].length;
+     memcpy(first_tile,gw.transaction[1].data,tile_length);
+-    regs[0x10/4]=(64u<<24)|(4u<<7)|7u;
+-    regs[0x14/4]=(255u<<18)|(73u<<4);
++    regs[0x10/4]=(64u<<24)|(4u<<7)|(17u<<10)|(3u<<5)|7u;
++    regs[0x14/4]=(255u<<18)|(73u<<4)|(91u<<11)|8u;
+     regs[0x1c/4]=1u<<27;regs[0x20/4]=0xffffffffu;regs[0x24/4]=63;
+     gw_prepare_display();assert(!memcmp(original,gw.scene,sizeof original));
++    assert(!memcmp(status3,gw.line3,sizeof status3) && !memcmp(status4,gw.line4,sizeof status4));
+     assert(gw.transaction[1].length==tile_length && !memcmp(first_tile,gw.transaction[1].data,tile_length));
+     gw.tile_y=GW_HEIGHT;gw_prepare_display();
+     assert(gw.transaction[1].type==GW_END && !memcmp(original,gw.scene,sizeof original));
+@@ -407,12 +422,16 @@
+     for(unsigned i=5;i<9;i++)assert(!gw.scene[i]);
+     assert(!memcmp(gw.line1+24,"064",3) && !strcmp(gw.line1+34,"PIANO  "));
+     assert(!strcmp(gw.line2,"MOD 073  BEND IDX 255  FX DCR 111"));
+-    printf("PASS GW25K scene: effective gain/CC11, five profiles, committed ABC, bend index 0..255, effective DCR mask, 16 held keys, last-event release, immutable frame/next-frame refresh\n");
++    assert(!strcmp(gw.line3,"MODE A  ACTIVE 017  OUT MUTED "));
++    assert(!strcmp(gw.line4,"GLIDE 091  SUSTAIN ON "));
++    printf("PASS GW25K scene: effective gain/CC11, five profiles, committed ABC, bend index 0..255, effective DCR mask, 16 held keys, last-event release, immutable frame/next-frame refresh, 64 active-count encodings, four output routes, glide 0..127 and sustain\n");
+ }
+ static void refresh_scene_tests(void){
+-    static const unsigned offsets[]={0x10,0x10,0x10,0x10,0x14,0x14,0x1c,0x20,0x24};
++    static const unsigned offsets[]={0x10,0x10,0x10,0x10,0x14,0x14,0x1c,0x20,0x24,0x10,0x10,0x14,0x14};
+     static const uint32_t values[]={0x80000010u,0x40000210u,0x40000208u,0x4000020du,
+-        255u<<18,(128u<<18)|(73u<<4),1u<<12,1u<<3,60u|(100u<<7)};
++        255u<<18,(128u<<18)|(73u<<4),1u<<12,1u<<3,60u|(100u<<7),
++        0x4000020du|(2u<<10),0x4000020du|(2u<<10)|(3u<<5),
++        (128u<<18)|(73u<<4)|(91u<<11),(128u<<18)|(73u<<4)|(91u<<11)|8u};
+     /* Independently change gain/profile/mode/FX, bend/modulation, both held
+      * words and last note/velocity through the real service loop. Each stable
+      * change needs one complete frame, with no periodic idle redraw. */
+@@ -424,20 +443,21 @@
+         assert(gw.scene[2]==regs[0x1c/4] && gw.scene[3]==regs[0x20/4] && gw.scene[4]==regs[0x24/4]);
+     }
+     assert(!score_reads && !note_on_count && !note_off_count && !cc123_count);
+-    printf("PASS GW25K refresh: 9 independent MMIO changes each trigger one complete frame; stable state only heartbeats\n");
++    printf("PASS GW25K refresh: 13 independent MMIO changes each trigger one complete frame; stable state only heartbeats\n");
+ }
+ static void render_scene(const char *path){
+     gw25k_reset();
+-    gw.scene[0]=(100u<<24)|(2u<<7)|(2u<<3)|5u;gw.scene[1]=(73u<<4)|(128u<<18);
++    gw.scene[0]=(100u<<24)|(2u<<7)|(2u<<3)|(2u<<10)|5u;gw.scene[1]=(73u<<4)|(128u<<18)|(73u<<11)|8u;
+     gw.scene[2]=(1u<<(48-36))|(1u<<(50-36));gw.scene[4]=60u|(100u<<7);
+     gw.scene[5]=60u|(1u<<7)|(1u<<8)|(1u<<9)|(1u<<10)|(12u<<17)|(1u<<22);
+     gw.scene[7]=(42u<<16)|7u;gw.scene[8]=3;gw_format_scene();
+     assert(!strcmp(gw.line1,"NOTE 060  VEL 100  GAIN 100  TONE BRASS  "));
+     assert(!strcmp(gw.line2,"MOD 073  BEND IDX 128  FX DCR 101"));
+-    assert(!strcmp(gw.line3,"MODE C  USB MIDI INPUT"));
++    assert(!strcmp(gw.line3,"MODE C  ACTIVE 002  OUT STEREO"));
++    assert(!strcmp(gw.line4,"GLIDE 073  SUSTAIN ON "));
+     gw.scene[0]=0x80000000u;gw_format_scene();
+     assert(!strncmp(gw.line1+24,"127",3));
+-    gw.scene[0]=(100u<<24)|(2u<<7)|(2u<<3)|5u;gw_format_scene();
++    gw.scene[0]=(100u<<24)|(2u<<7)|(2u<<3)|(2u<<10)|5u;gw_format_scene();
+     FILE *f=fopen(path,"wb");assert(f);fprintf(f,"P6\n428 142\n255\n");
+     for(unsigned y=0;y<142;y++)for(unsigned x=0;x<428;x++){
+         unsigned pixel=gw_pixel(x,y);uint8_t rgb[3]={
+@@ -446,8 +466,33 @@
+     }
+     assert(!fclose(f));
+ }
++static void audio_feedback_test(const char *path){
++    FILE *f=fopen(path,"r");assert(f);
++    unsigned id,control,options,note_velocity,mode,active,route,glide,sustain,rows=0;
++    static const char *routes[]={"STEREO","LEFT  ","RIGHT ","MUTED "};
++    initialize();inject_midi=0;unsigned baseline_writes=generic_writes;
++    for(;;){
++        int n=fscanf(f,"%u %x %x %x %u %u %u %u %u",&id,&control,&options,&note_velocity,
++                     &mode,&active,&route,&glide,&sustain);
++        if(n==EOF)break;
++        assert(n==9 && id==rows && mode<3 && active<64 && route<4 && glide<128 && sustain<2);
++        wait_quiet();unsigned frames=complete_frames;
++        regs[0x10/4]=control;regs[0x14/4]=options;regs[0x24/4]=note_velocity;
++        gw.dirty=1;wait_frame(frames+1);wait_quiet();
++        char expected3[sizeof gw.line3],expected4[sizeof gw.line4];
++        snprintf(expected3,sizeof expected3,"MODE %c  ACTIVE %03u  OUT %s",'A'+mode,active,routes[route]);
++        snprintf(expected4,sizeof expected4,"GLIDE %03u  SUSTAIN %s",glide,sustain?"ON ":"OFF");
++        assert(!strcmp(gw.line3,expected3) && !strcmp(gw.line4,expected4));
++        assert(gw.scene[0]==control && gw.scene[1]==options);
++        assert(generic_writes==baseline_writes && !score_reads && !requests[0x10]);
++        printf("RTL FEEDBACK %02u: %s / %s\n",id,gw.line3,gw.line4);rows++;
++    }
++    fclose(f);assert(rows==12);
++    printf("PASS production Host consumes 12 real RTL feedback captures: committed mode, release-tail voices, four audio routes, glide, sustain, reconnect defaults; no input echo\n");
++}
+ int main(int argc,char **argv){
+     if(argc==3 && !strcmp(argv[1],"--render")){render_scene(argv[2]);return 0;}
++    if(argc==3 && !strcmp(argv[1],"--audio-feedback")){audio_feedback_test(argv[2]);return 0;}
+     if(argc==2 && !strcmp(argv[1],"--rtl")){
+         rtl_bridge=1;out_nak_left=0;initialize();wait_frame(1);wait_quiet();
+         device_manual=1;device_remote=0;device_redraw=1;

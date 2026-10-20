@@ -1,0 +1,19 @@
+{
+  "tool_result": {
+    "exit_code": 1,
+    "inputs_unchanged": true,
+    "changed": [],
+    "build_mode": "all",
+    "hardware_tested": false,
+    "regenerated_synthesis_outputs": [],
+    "synthesis_reused_bitwise": false,
+    "synthesis_storage_checked": true,
+    "synthesis_storage_error": null
+  },
+  "passed": false,
+  "status": "build failed; no acceptance",
+  "checked": "2026-10-18T23:14:47.912038+08:00",
+  "hardware_tested": false,
+  "build": "results/timing_p34_vector_local_envelope_20261018_214554_355618",
+  "audit_helper_sha256": "67366ee1b3f50b31094684d5cbce465af12c53ff871a80cb3a80080723b080ba"
+}

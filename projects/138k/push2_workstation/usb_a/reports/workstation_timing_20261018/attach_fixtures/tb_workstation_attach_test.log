@@ -1,0 +1,6 @@
+PASS release_cursor_ab: cycles=180949 release_cycles=1550 emergency_boundaries=1, MIDI0/127, both engines, sustain/CC123, exact per-cycle events/PCM
+PASS attach: 6 default boundaries, ordered tap/CC7/program/bend/CC88/89, detach/reconnect cancellation, full-queue and init PANIC, TF/live/cue exit, no first-frame wait, GW25K guide isolation, Push epoch/volume/release, PCM=38
+- /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:222: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 2ms; walltime 1.267 s; speed 1.864 ms/s
+- Verilator: cpu 1.264 s on 1 threads; allocated 7 MB

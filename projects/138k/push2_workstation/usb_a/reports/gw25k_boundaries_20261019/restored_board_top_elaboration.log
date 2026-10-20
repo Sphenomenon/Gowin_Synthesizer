@@ -1,0 +1,24 @@
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some modules have no timescale. This may cause
+       : confusing timing results.	Affected modules are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+rtl/display/midi_landscape_display.v:143: warning: @* is sensitive to all 4 words in array 'fifo'.
+rtl/display/midi_landscape_display.v:143: warning: @* is sensitive to all 4 words in array 'fifo'.

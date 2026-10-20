@@ -18,12 +18,19 @@ a=p.parse_args()
 original=(BASE/TF_DMA).read_text()
 patched=retime_tf_read_total(parallel_tf_byte_counters(retime_tf_write_buffer(original)))
 if a.build:
-    from build_workstation_flash_boot import expected_tf_dma
-    build=a.build.resolve()
-    metadata=json.loads((build/'build_metadata.json').read_text())
-    assert metadata.get('retimed_tf_read_total') and metadata.get('parallel_tf_byte_counters')
+    build=a.build.resolve();metadata=json.loads((build/'build_metadata.json').read_text())
     patched=(build/'Prj1'/TF_DMA).read_text()
-    assert patched==expected_tf_dma(metadata),'TF differs from audited transformation'
+    if metadata.get('bus_timing'):
+        from workstation_bus_timing import expected_dma,INPUTS,HELPER_SHA256
+        assert metadata['bus_timing']['original_sha256']==INPUTS
+        assert hashlib.sha256((ROOT/'tools/cnn_ddr_pipeline_patch.py').read_bytes()).hexdigest()==HELPER_SHA256
+        assert patched==expected_dma(original),'workstation TF transformation drift'
+        assert hashlib.sha256(patched.encode()).hexdigest()==metadata['bus_timing']['transformed_sha256'][TF_DMA]
+    else:
+        from build_workstation_flash_boot import expected_tf_dma
+        assert metadata.get('retimed_tf_read_total') and metadata.get('parallel_tf_byte_counters')
+        assert patched==expected_tf_dma(metadata),'TF differs from audited transformation'
+
 helper=re.search(r'    function \[31:0\] add_byte_count;.*?    endfunction',patched,re.S)[0]
 from cnn_ddr_pipeline_patch import TF_NIBBLE_COUNT_HELPER
 assert helper+'\n' in (TF_BYTE_COUNT_HELPER,TF_NIBBLE_COUNT_HELPER),'actual carry helper drift'

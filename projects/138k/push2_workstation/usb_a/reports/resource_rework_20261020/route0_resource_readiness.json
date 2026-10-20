@@ -1,0 +1,8 @@
+{
+  "tool_flow_passed": true,
+  "timing_closed": false,
+  "cdc_passed": true,
+  "pll_init_passed": true,
+  "release_ready": false,
+  "hardware_tested": false
+}

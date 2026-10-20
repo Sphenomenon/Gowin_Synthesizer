@@ -1,0 +1,24 @@
+{
+  "Old dual comb": {
+    "first_wet_ms": 31.104166666666668,
+    "rt60_seconds": 0.6481128143025897,
+    "occupied_1ms_bins_50_to_500ms": 0.06888888888888889
+  },
+  "Spatial room + FDN": {
+    "first_wet_ms": 3.3125,
+    "rt60_seconds": 0.9868117865302934,
+    "occupied_1ms_bins_50_to_500ms": 0.7688888888888888
+  },
+  "source_sha256": {
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/timing_p27_uart_cdc_route1_20261018_142516_456857/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_reverb_comparison/old.sv": "30f5ffb34c962da35eaae529afa2fdbc041c3136af5633c9c13d3a35fbf4a1d1",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_reverb_comparison/tb.sv": "bfb286d000a8b4939cdf1c741d14e5c1c6b6bd70874c8e7fdd7fb79d3d46db37",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4"
+  },
+  "passed": true,
+  "hardware_tested": false,
+  "scope": "Objective IR characteristics of both RTL algorithms; no subjective listening evaluation"
+}

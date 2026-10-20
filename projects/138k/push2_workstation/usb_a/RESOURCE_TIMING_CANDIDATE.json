@@ -1,0 +1,253 @@
+{
+  "candidate": "resource_rework_timing_closed",
+  "status": "offline_verified_hardware_untested",
+  "build": "results/resource_timing_20261020_124632_064482",
+  "user_code": "0xC1102024",
+  "bitstream": "results/resource_timing_20261020_124632_064482/Prj1/impl/pnr/Prj1.fs",
+  "bitstream_sha256": "0cc7ae6263bcf92d96cf9fb9df46d6ab257d5ec5e46f86eb826886d5668092af",
+  "bitstream_header_user_code": "0xc1102024",
+  "bitstream_header_checked": true,
+  "source_manifest": "results/resource_timing_20261020_124632_064482/workstation_inputs.json",
+  "source_manifest_sha256": "be5107b99ef3119fa31bb23b918d03a71d1ec13148a48f91c617c994d8e42537",
+  "source_inputs": 617,
+  "input_drift": [],
+  "physical_bsram": 234,
+  "capacity_bsram": 340,
+  "remaining_physical_bsram": 106,
+  "saved_physical_bsram": 28,
+  "resource_baseline": "results/timing_p27_uart_cdc_route1_20261018_142516_456857",
+  "physical_resources": {
+    "Logic": {
+      "used": 80940.0,
+      "capacity": 138240.0
+    },
+    "Register": {
+      "used": 46120.0,
+      "capacity": 139095.0
+    },
+    "CLS": {
+      "used": 56713.0,
+      "capacity": 69120.0
+    },
+    "BSRAM": {
+      "used": 234.0,
+      "capacity": 340.0
+    },
+    "DSP": {
+      "used": 155.0,
+      "capacity": 298.0
+    }
+  },
+  "physical_bsram_groups": {
+    "CNN feature cache": 5,
+    "Viterbi": 8,
+    "Recorder packets": 6,
+    "LED score cues": 4,
+    "Video scanout": 4,
+    "Reverb": 20,
+    "Chorus": 4,
+    "Other retained RAM": 183
+  },
+  "functional_verification": "reports/resource_timing_20261020/t24_functional_binding.json",
+  "physical_verification": "reports/resource_timing_20261020/t24_physical_checks.json",
+  "physical_verification_sha256": "ef92dba30029dba8c5952e417e6d2d232d9f13988ed05dc7ba5c5545feed2d2f",
+  "entry_verification": "reports/resource_timing_20261020/final_entry_prepare_verification.json",
+  "timing": {
+    "timing_closed": true,
+    "problems": [],
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 53.916
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 76.928
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2598.775
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 195.0
+      },
+      "video_pixel148": {
+        "required_mhz": 148.5,
+        "actual_mhz": 220.59
+      },
+      "cpu_bus50": {
+        "required_mhz": 50.0,
+        "actual_mhz": 67.873
+      },
+      "cpu_core100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 1461.988
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 55.488
+      }
+    },
+    "global_worst_ns": {
+      "setup": 0.022,
+      "hold": 0.16,
+      "recovery": 2.762,
+      "removal": 0.273
+    },
+    "pulse_width_worst_ns": 1.393,
+    "pulse_width_violations": [],
+    "checks": {
+      "clk_50m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "audio_76m8": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_mem400": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_ui100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_ref49": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_serial742": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_pixel148": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_bus50": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_core100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "usb_48m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "global_reports": {
+      "setup": true,
+      "hold": true,
+      "recovery": true,
+      "removal": true
+    },
+    "reset_reports": {
+      "recovery": true,
+      "removal": true
+    },
+    "negative_paths": [],
+    "report_sha256": "2707d3ee9412fd1a87440516816f570476dba271cbc639d7605ef75993d536ac",
+    "hardware_tested": false
+  },
+  "readiness": {
+    "tool_flow_passed": true,
+    "timing_closed": true,
+    "cdc_passed": true,
+    "pll_init_passed": true,
+    "release_ready": true,
+    "hardware_tested": false
+  },
+  "offline_acceptance_passed": true,
+  "hardware_tested": false,
+  "board_record_changed": false,
+  "report": "reports/RESOURCE_TIMING_REPAIR_20261020.md",
+  "audio_analysis": {
+    "input_sample_rate_hz": 22050,
+    "analysis_times_per_music_second": 4,
+    "window_samples": 44100,
+    "cnn_tile_columns": 16,
+    "realtime_four_inferences_per_second_verified": false
+  },
+  "preserved_features": [
+    "five existing timbres",
+    "A/B/C modes",
+    "chorus",
+    "DDR delay",
+    "recording/playback",
+    "score/guidance",
+    "CNN transcription",
+    "scope/HDMI"
+  ],
+  "usb_cpu_ram_bytes": 65536,
+  "limits": [
+    "minimum global setup margin 0.022 ns",
+    "no board validation",
+    "4 Hz is feature-time density, not guaranteed inference throughput",
+    "TASLP oscillator replacement not implemented"
+  ],
+  "reproduction": "python3 build.py --resource-rework --resource-timing --user-code C1102024"
+}

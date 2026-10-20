@@ -8,6 +8,8 @@ its first use - no logic text is touched.
 """
 from pathlib import Path
 import argparse
+import json
+import hashlib
 import subprocess
 import sys
 
@@ -19,7 +21,9 @@ BUILD = Path(__file__).resolve().parent / 'delay_ddr_build'
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=BUILD)
+    parser.add_argument('--project',type=Path,help='Bind delay DMA and FIFO sources to a staged full workstation')
     args = parser.parse_args()
+    project=args.project.resolve() if args.project else ROOT
     build = args.output.resolve()
     build.mkdir(parents=True, exist_ok=True)
     ref = build / 'stereo_effects_ref.sv'
@@ -37,11 +41,13 @@ def main():
         'iverilog', '-g2012', '-o', str(out),
         str(STAGE / 'legacy/rtl/audio/audio_math_pkg.sv'),
         str(Path(__file__).resolve().parent / 'tb_delay_ddr_equivalence.sv'),
-        str(ROOT / 'rtl/audio/delay_ddr/serial_delay_effect_ddr.sv'),
-        str(ROOT / 'rtl/audio/delay_ddr/delay_ddr_dma.sv'),
-        str(ROOT / 'rtl/music/music_async_fifo.sv'),
+        str(project / 'rtl/audio/delay_ddr/serial_delay_effect_ddr.sv'),
+        str(project / 'rtl/audio/delay_ddr/delay_ddr_dma.sv'),
+        str(project / 'rtl/music/music_async_fifo.sv'),
         str(ref),
     ]
+    inputs=[Path(x) for x in cmd if x.endswith('.sv')]
+    (build/'inputs_sha256.json').write_text(json.dumps({str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs},indent=2)+'\n')
     result = subprocess.run(cmd)
     if result.returncode:
         return result.returncode

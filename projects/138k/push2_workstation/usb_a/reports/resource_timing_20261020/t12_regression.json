@@ -1,0 +1,10 @@
+{
+  "build": "results/resource_timing_20261020_111212_369176",
+  "report": "results/resource_timing_20261020_111212_369176/current_regression_20261020_111224_904492/verification.json",
+  "report_sha256": "dff3be5940acb624e21c3960de9ad97bda999d3d5f998a07100d62302e428deb",
+  "passed": true,
+  "gate_count": 18,
+  "delay_sources_bound": true,
+  "tf_dma_six_oracle_cases": "t12_tf_dma_timing.json",
+  "hardware_tested": false
+}

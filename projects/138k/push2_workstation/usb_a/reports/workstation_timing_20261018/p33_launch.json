@@ -1,0 +1,23 @@
+{
+  "started": "2026-10-18T17:31:36.683497+08:00",
+  "pid": 1001611,
+  "command": [
+    "python3",
+    "tools/build_workstation_timing.py",
+    "--source",
+    "results/timing_p33_measured_paths_20261018_173136_545041",
+    "--flow",
+    "all",
+    "--label",
+    "p33_measured_paths",
+    "--route-option",
+    "1",
+    "--incremental-from",
+    "results/timing_p27_uart_cdc_route1_20261018_142516_456857"
+  ],
+  "prepare": "results/timing_p33_measured_paths_20261018_173136_545041",
+  "detached": true,
+  "hardware_tested": false,
+  "logic_changed": false,
+  "note": "only eight measured p27 path-family budgets; no domain-wide max_delay"
+}

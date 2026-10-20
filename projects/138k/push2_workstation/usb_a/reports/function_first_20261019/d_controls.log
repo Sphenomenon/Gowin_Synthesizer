@@ -1,0 +1,8 @@
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/sampler_20261019_001943_635468
+METRIC groups=4 main_pads=16 pattern_pads=16 equal_slices=16 momentary_fx=3 snapshot_tears=0
+PASS tb_sampler_controls
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/sampler/tb_sampler_controls.sv:64: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 570ns; walltime 0.000 s; speed 7.384 ms/s
+- Verilator: cpu 0.000 s on 1 threads; allocated 7 MB
+EVIDENCE /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/sampler_20261019_001943_635468/verification.json

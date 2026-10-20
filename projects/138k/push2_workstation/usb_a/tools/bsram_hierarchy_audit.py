@@ -15,7 +15,7 @@ import re
 import xml.etree.ElementTree as ET
 
 TOP = 'gw138k_push_workstation_top'
-PRIM = re.compile(r'^\s*(SDPB|SDPX9B|SPB|SPX9B|DPB|DPX9B)\s+\\?([^\s(]+)\s*\(', re.M)
+PRIM = re.compile(r'^\s*(SDPB|SDPX9B|SPB|SPX9B|DPB|DPX9B|pROM|pROMX9)\s+\\?([^\s(]+)\s*\(', re.M)
 UTIL = re.compile(r'\s*BSRAM\s*\|\s*(\d+)/(\d+)\s*\|\s*\d+%')
 
 

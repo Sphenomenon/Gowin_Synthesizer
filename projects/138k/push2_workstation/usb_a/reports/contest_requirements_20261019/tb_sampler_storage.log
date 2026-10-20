@@ -1,0 +1,7 @@
+# Runtime extract; full compile/run log remains in /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/sampler_20261019_020429_230303/tb_sampler_storage.log
+METRIC committed_imports=1 committed_captures=1 capture_frames=20 aborted_transactions=5 vendor_files_modified=0
+PASS tb_sampler_storage
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/sampler/tb_sampler_storage.sv:77: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 10us; walltime 0.000 s; speed 24.044 ms/s
+- Verilator: cpu 0.000 s on 1 threads; allocated 7 MB

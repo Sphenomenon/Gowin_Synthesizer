@@ -1,0 +1,5 @@
+PASS attach: 6 default boundaries, ordered tap/CC7/program/bend/CC88/89, detach/reconnect cancellation, full-queue and init PANIC, TF/live/cue exit, no first-frame wait, GW25K guide isolation, Push epoch/volume/release, PCM=20
+- /tmp/workstation-attach-complete/source/sim/tb_workstation_attach.sv:168: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 1ms; walltime 0.276 s; speed 4.816 ms/s
+- Verilator: cpu 0.275 s on 1 threads; allocated 7 MB

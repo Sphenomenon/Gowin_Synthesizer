@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "frames": 8,
+  "ddr_latency": 3,
+  "seconds": 627.2705681270454,
+  "cycles": {
+    "untiled": 179197503,
+    "tiled": 179927318,
+    "overhead_percent": 0.4072685097626705
+  },
+  "source_sha256": {
+    "rtl/music/basic_pitch_nn_ddr.sv": "f3ec8ec800f28bbd6ccd02ece29a6843635e81d0bd7cd280f59da50c653412a1",
+    "rtl/music/basic_pitch_pcm_pipeline.sv": "1237dda62f16c0ead0bc428a98b11611ece2e1a04bb55f93abe0bdb276aaa265",
+    "rtl/music/basic_pitch_uart_model_loader.sv": "929e4f9a702fe06731a651817ff9217f6ff7cd7e553b642d3dda7b2b53393fd5",
+    "rtl/music/basic_pitch_uart_rx.sv": "28f403ca014eadb6141beb6f293a52266962326de8e15d44f7115d1745310b7c",
+    "rtl/music/basic_pitch_model_loader.sv": "3543f943144627993d0f35aa39cf4e89605dcc934af9de835e6e372d09a3725b",
+    "rtl/music/basic_pitch_weight_cache.sv": "0f363e94427a404a55e6ff2ba52ad7dd485f7313173b52ccf8688d02eeb2d0e6",
+    "rtl/music/basic_pitch_boot_model_loader.sv": "52744252107954c913aebdacce73c3788901f899c544a1e61a55ddfa0a80c3e2",
+    "rtl/music/basic_pitch_flash_model_loader.sv": "3f45c816e2bf5a994a9e336b839ccca35685b2e3f89db908f5f9ab8ad6488805",
+    "rtl/music/basic_pitch_feature_ddr.sv": "fd30dc6e4099fd07ab43c8b6df5a35565a360af1aac4fbcd3f0020e0de64fcaf",
+    "rtl/music/basic_pitch_plane_cache.sv": "2c1d4936e3e3f0a400dad67096cad5a063a5e3a4c8f3f966d2cd8f263a8f7991",
+    "rtl/music/basic_pitch_normlog_ddr.sv": "d140dd83ae28b451d472a8f4892eac22eb952d55ea9385f9b14af4929fa46fd2",
+    "rtl/music/basic_pitch_normlog.sv": "45d599c8dafd47dc9c9c8bab321886a023ed35c39d3473883b8d1009dd3ac5ee",
+    "rtl/music/basic_pitch_ddr_coeff_pair.sv": "8f4310bf64a962dba8045cf966e2d4db3be1264cdf7550b9cb08237706452f05",
+    "rtl/music/basic_pitch_cqt_engine.sv": "68eb2222d752fd908bed1d51eb3640917779aeab36a3d6d23dc38b600f115da4",
+    "rtl/music/basic_pitch_cqt_frontend.sv": "0c92ab77430815c6edad91791479b1f81afe3121a710093f1681b63ed00ed6ae",
+    "rtl/music/basic_pitch_conv2d.sv": "b8305c6219b1152130f6fb1ed8619296879abea1f9d329f6c55cca3934286ab0",
+    "rtl/music/basic_pitch_activation.sv": "0fc5a3c6f9899234c9ea8404e02ba63388dab7bb820b45c04de2dc7892af9a49",
+    "rtl/music/basic_pitch_requant.sv": "6d18a173500d513e9f7c9771ae2edd4322575c72bde7a400cccd5b8e7eee25e2",
+    "rtl/music/basic_pitch_row_buffer.sv": "bc1c94dafa85f61b4f625642de10a00d748f4742dc6fb64c9383bf4447f5278c",
+    "rtl/music/basic_pitch_cnn_streaming.sv": "fd2318fa10c63aac0c11eab87e4d24e23f4a3dc0351586c11361e8b93483d423",
+    "rtl/music/basic_pitch_viterbi.sv": "83a5a0e66062fe66ad37dfa6b30bf6d87023e6d887119a746f0b90d11afaab1d",
+    "rtl/music/basic_pitch_shared_sigmoid.sv": "b42cfa2b37a29f4f99409a97619c0330fba124a843cbb3d235db5b8a335c4779",
+    "rtl/music/basic_pitch_44100_to_48000.sv": "cea1bb76b5e6fa18ed606899fc9d821195fb3d25c07a8a92b236de9c73844347",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "out/resource_cnn_tiles/tb.sv": "8eb6ede051319f84541e24d60592127117cf472eb6c99a77c1d802989c51062c"
+  }
+}

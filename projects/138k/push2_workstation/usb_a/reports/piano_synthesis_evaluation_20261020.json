@@ -1,0 +1,53 @@
+{
+  "clock_assumptions": {
+    "audio_hz": 76800000,
+    "sample_hz": 48000,
+    "bsram_bits_per_block": 18432
+  },
+  "pnr_source": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/timing_p27_uart_cdc_route1_20261018_142516_456857/Prj1/impl/pnr",
+  "pnr_sha256": "eb27c017e90814db88b8948c97b41b1d4c35f6a35f02ec8d6ecdddc442b02a12",
+  "engine_primitives": {
+    "LUT3": 2040,
+    "LUT4": 1202,
+    "LUT2": 875,
+    "DFFCE": 2961,
+    "DFFPE": 35,
+    "DFFRE": 80,
+    "SDPB": 11,
+    "RAM16SDP1": 4,
+    "MULT27X36": 4,
+    "MULTALU27X18": 4,
+    "ALU": 823,
+    "LUT1": 2,
+    "MUX2_LUT5": 428,
+    "MUX2_LUT6": 214,
+    "MUX2_LUT7": 106,
+    "MUX2_LUT8": 53,
+    "pROM": 11
+  },
+  "calculations": {
+    "clocks_per_sample": 1600.0,
+    "current_oscillator_updates_per_second": 49152000,
+    "current_slot_ram_bytes": 10240,
+    "faust_two_fixed_4096_delay_lines_32voices_24bit_bytes": 786432,
+    "faust_two_fixed_4096_delay_lines_32voices_24bit_ideal_bsram": 341.3333333333333,
+    "faust_two_period_delay_lines_32voices_A0_24bit_bytes": 335232,
+    "faust_two_period_delay_lines_32lowest_distinct_notes_24bit_bytes": 157284,
+    "faust_two_fixed_4096_delay_lines_8voices_24bit_bytes": 196608,
+    "modal_32voices_32modes_2states_32bit_bytes": 8192,
+    "modal_32voices_32modes_3coeffs_32bit_bytes": 12288,
+    "modal_32voices_32modes_3multiplies_per_mode_mul_per_second": 147456000,
+    "modal_10000resonators_2multiplies_per_mode_mul_per_second": 960000000,
+    "ddsp_v2_gru_matrix_weights": 221184,
+    "ddsp_v2_gru_MAC_per_second_16voices": 884736000,
+    "ddsp_v2_gru_MAC_per_second_32voices": 1769472000,
+    "ddsp_v2_gru_INT16_matrix_bytes": 442368,
+    "ddsp_v2_gru_INT16_ideal_bsram": 192.0,
+    "ddsp_v2_16voices_128partials_24k_updates_per_second": 49152000,
+    "ddsp_v2_32voices_128partials_48k_updates_per_second": 196608000,
+    "ddsp_v2_32voices_128partials_48k_min_1update_per_clock_lanes": 3,
+    "dynamic_additive_extra_16bit_state_bytes": 2048,
+    "dynamic_additive_extra_24bit_state_bytes": 3072,
+    "zone_velocity_coeff_ROM_8zones_4layers_32partials_16bit_2params_bytes": 4096
+  }
+}

@@ -1,0 +1,45 @@
+--- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/before/gw25k_panel.h	2026-10-20 00:21:53.999913043 +0800
++++ /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/gw25k_panel.h	2026-10-20 00:22:51.224369688 +0800
+@@ -23,7 +23,7 @@
+     unsigned recovering,hello,manual,dirty,drawing,tile_x,tile_y;
+     unsigned panel_out_toggle,panel_in_toggle;
+     uint32_t scene[9];
+-    char line1[44],line2[36],line3[42];
++    char line1[44],line2[36],line3[42],line4[28];
+ };
+ /* The freestanding ROM links libgcc only. Volatile byte accesses keep
+  * compiler loop-pattern transforms from reintroducing an unavailable libc. */
+@@ -96,6 +96,7 @@
+  * the raw Program number, raw 14-bit bend or independent FX master state. */
+ static void gw_format_scene(void) {
+     static const char tones[6][8]={"FLUTE  ","STRINGS","BRASS  ","MARIMBA","PIANO  ","UNKNOWN"};
++    static const char routes[4][7]={"STEREO","LEFT  ","RIGHT ","MUTED "};
+     const uint32_t *s=gw.scene;
+     unsigned profile=(s[0]>>7)&7u,mode=(s[0]>>3)&3u;
+     gw_copy(gw.line1,"NOTE 000  VEL 000  GAIN 000  TONE ",sizeof "NOTE 000  VEL 000  GAIN 000  TONE ");
+@@ -105,8 +106,15 @@
+     gw_copy(gw.line2,"MOD 000  BEND IDX 000  FX DCR 000",sizeof "MOD 000  BEND IDX 000  FX DCR 000");
+     gw_decimal(gw.line2+4,(s[1]>>4)&127u,3);gw_decimal(gw.line2+18,(s[1]>>18)&255u,3);
+     gw.line2[30]=(s[0]&1u)?'1':'0';gw.line2[31]=(s[0]&2u)?'1':'0';gw.line2[32]=(s[0]&4u)?'1':'0';
+-    gw_copy(gw.line3,"MODE A  USB MIDI INPUT",sizeof "MODE A  USB MIDI INPUT");
++    /* ACTIVE is the actual allocated/non-idle voice count, including release
++     * tails. It is neither the held-pad count nor a count of partials. */
++    gw_copy(gw.line3,"MODE A  ACTIVE 000  OUT ",sizeof "MODE A  ACTIVE 000  OUT ");
+     gw.line3[5]=mode<3u?(char)('A'+mode):'?';
++    gw_decimal(gw.line3+15,(s[0]>>10)&63u,3);
++    gw_copy(gw.line3+24,routes[(s[0]>>5)&3u],7);
++    gw_copy(gw.line4,"GLIDE 000  SUSTAIN OFF",sizeof "GLIDE 000  SUSTAIN OFF");
++    gw_decimal(gw.line4+6,(s[1]>>11)&127u,3);
++    gw_copy(gw.line4+19,(s[1]&8u)?"ON ":"OFF",3);
+ }
+ static uint16_t gw_pixel(unsigned x,unsigned y) {
+     const uint32_t *s=gw.scene;
+@@ -117,7 +125,7 @@
+     if(gw_text(x,y,8,30,gw.line1,1))return 0xffff;
+     if(gw_text(x,y,8,44,gw.line2,1))return 0xbdf7;
+     if(gw_text(x,y,8,61,gw.line3,1))return 0x7ffb;
+-    if(gw_text(x,y,8,80,"LIVE MIDI",1))return 0xffe0;
++    if(gw_text(x,y,8,80,gw.line4,1))return 0xffe0;
+     if(y>=106 && y<139 && x>=6 && x<422) {
+         unsigned key=(x-6u)/26u,local=(x-6u)%26u,n=48u+key;
+         unsigned held=n<68u?((s[2]>>(n-36u))&1u):((s[3]>>(n-68u))&1u);

@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "scope": "USB MMIO/CDC/FIFO + real audio attach, cancellation, PANIC, Push/GW25K and 12 actual MMIO captures consumed by the production PL Host; no CNN/full-board build",
+  "actual_audio_feedback_captures": 12,
+  "production_host_feedback_tested": true,
+  "baseline": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261020_003048_847857/Prj1",
+  "inputs": "inputs.json",
+  "event_reference": null
+}

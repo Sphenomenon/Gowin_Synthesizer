@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// Momentary CC 110=crush,111=drive,112=existing P10 delay send. Zero releases.
+// Momentary CC 20=crush,21=drive,22=existing P10 delay send. Zero releases.
 module sampler_fx(
   input logic clk,rst_n,panic,cc_valid,input logic [6:0] cc,value,
   input logic pcm_valid,input logic signed [15:0] pcm_l,pcm_r,
@@ -20,7 +20,7 @@ module sampler_fx(
       out_valid<=pcm_valid;shift=int'(crush)*12/127;
       if(pcm_valid) begin out_l<=process(pcm_l);out_r<=process(pcm_r);end
       if(cc_valid) case(cc)
-        110:crush<=value;111:drive<=value;112:delay_send<=value;default:begin end
+        20:crush<=value;21:drive<=value;22:delay_send<=value;default:begin end
       endcase
       if(panic) begin crush<=0;drive<=0;delay_send<=0;out_l<=0;out_r<=0;out_valid<=0;end
     end

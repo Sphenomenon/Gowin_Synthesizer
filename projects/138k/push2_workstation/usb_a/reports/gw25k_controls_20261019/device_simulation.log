@@ -1,0 +1,1285 @@
+$ iverilog -V
+Icarus Verilog version 13.0 (stable) (v13_0)
+
+Copyright (c) 2000-2026 Stephen Williams (steve@icarus.com)
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along
+  with this program; if not, write to the Free Software Foundation, Inc.,
+  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+Icarus Verilog Preprocessor version 13.0 (stable) (v13_0)
+
+Copyright (c) 1999-2026 Stephen Williams (steve@icarus.com)
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along
+  with this program; if not, write to the Free Software Foundation, Inc.,
+  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+Icarus Verilog Parser/Elaborator version 13.0 (stable) (v13_0)
+
+Copyright (c) 1998-2026 Stephen Williams (steve@icarus.com)
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along
+  with this program; if not, write to the Free Software Foundation, Inc.,
+  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ FLAGS DLL vvp.tgt
+vvp.tgt: Icarus Verilog VVP Code Generator 13.0 (stable) (v13_0)
+
+Copyright (c) 2001-2026 Stephen Williams (steve@icarus.com)
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along
+  with this program; if not, write to the Free Software Foundation, Inc.,
+  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+
+$ /usr/bin/python3 tools/generate_usb_descriptors.py --check
+PASS USB descriptors: three interfaces, MIDI jacks, four bulk endpoints, FS/HS, 124-byte configuration
+
+$ iverilog -g2005 -Wall -I rtl/usb_board/vendor -I . -s midi_keyboard_top -tnull -c sources.f sim/gowin_io_models.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some modules have no timescale. This may cause
+       : confusing timing results.	Affected modules are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+rtl/display/midi_landscape_display.v:143: warning: @* is sensitive to all 4 words in array 'fifo'.
+rtl/display/midi_landscape_display.v:143: warning: @* is sensitive to all 4 words in array 'fifo'.
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_ble_board_system -o /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_board_system -c sources.f sim/gowin_io_models.v sim/tb_ble_board_system.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_board_system
+INIT_PASS: all30147patch bytes and120fragment echoes checked
+PASS: BLE MIDI UART8E1/H5 full ROM-v2 patch, UUID discovery, 3..5-byte notify/read/write, RX backpressure, reconnect advertising, continuous session, reset
+sim/tb_ble_board_system.v:532: $finish called at 40960815000 (1ps)
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_board_system +wrong_rom
+PASS: pure Verilog system rejects incompatible ROM before download
+sim/tb_ble_board_system.v:443: $finish called at 139825000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_ble_gatt_completion -o /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_gatt_completion -c sources.f sim/gowin_io_models.v sim/tb_ble_gatt_completion.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_gatt_completion
+PASS: BLE GATT sync mailbox, 43/255-byte streamed completions, final/first handle, high-byte count, unrelated/zero/malformed isolation and credit-controlled notifications
+sim/tb_ble_gatt_completion.v:130: $finish called at 27000000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_ble_midi_codec -o /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_midi_codec -c sources.f sim/gowin_io_models.v sim/tb_ble_midi_codec.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_midi_codec
+PASS tb_ble_midi_codec: 1160 checks
+sim/tb_ble_midi_codec.v:315: $finish called at 661536000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_ble_pairing_transport -o /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_pairing_transport -c sources.f sim/gowin_io_models.v sim/tb_ble_pairing_transport.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_pairing_transport
+PASS: BLE GATT/SMP synchronous mailbox routing, 35-byte AES payload/address inputs, independent H5/HCI/ACL credits, encrypted pairing, Android AuthReq negotiation, ATT/MIDI compatibility and disconnect cleanup/re-advertising
+sim/tb_ble_pairing_transport.v:295: $finish called at 23400000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_ble_smp -o /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_smp -c sources.f sim/gowin_io_models.v sim/tb_ble_smp.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_ble_smp
+PASS tb_ble_smp: 560 checks, Legacy c1/s1, random RAM bond, RPA reconnect, failures/timeouts
+sim/tb_ble_smp.v:260: $finish called at 7786000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_encoder_button_gestures -o /tmp/gw25k-midi-sim-ih50rrk0/tb_encoder_button_gestures -c sources.f sim/gowin_io_models.v sim/tb_encoder_button_gestures.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_encoder_button_gestures
+PASS: tb_encoder_button_gestures (29 checks, short/long/boundary/reset/rounding/default timing)
+sim/tb_encoder_button_gestures.v:187: $finish called at 1956000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_encoder_input -o /tmp/gw25k-midi-sim-ih50rrk0/tb_encoder_input -c sources.f sim/gowin_io_models.v sim/tb_encoder_input.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_encoder_input
+PASS: tb_encoder_input (358 checks, reversed direction/half speed/startup/chatter/reversal/illegal/filter/key/reset/saturation)
+sim/tb_encoder_input.v:333: $finish called at 24556000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_encoder_response -o /tmp/gw25k-midi-sim-ih50rrk0/tb_encoder_response -c sources.f sim/gowin_io_models.v sim/tb_encoder_response.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_encoder_response
+PASS: tb_encoder_response (42 checks, real 50 MHz defaults: reversed/half speed, AB 20 us / KEY 1 ms)
+sim/tb_encoder_response.v:175: $finish called at 18005383000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_gw138k_encoder_detents -o /tmp/gw25k-midi-sim-ih50rrk0/tb_gw138k_encoder_detents -c sources.f sim/gowin_io_models.v sim/tb_gw138k_encoder_detents.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_gw138k_encoder_detents
+PASS tb_gw138k_encoder_detents: one step per physical detent, reversal, bounce, invalid phase
+sim/tb_gw138k_encoder_detents.v:21: $finish called at 4300000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_gw138k_panel_controls -o /tmp/gw25k-midi-sim-ih50rrk0/tb_gw138k_panel_controls -c sources.f sim/gowin_io_models.v sim/tb_gw138k_panel_controls.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_gw138k_panel_controls
+METRIC keys=16 bend_positions=256 queued_controls=48 held_transpose=1 reconnect_replay=0 device_init_messages=0
+PASS tb_gw138k_panel_controls
+sim/tb_gw138k_panel_controls.v:149: $finish called at 2202480000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_keyboard_event_mapper -o /tmp/gw25k-midi-sim-ih50rrk0/tb_keyboard_event_mapper -c sources.f sim/gowin_io_models.v sim/tb_keyboard_event_mapper.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_keyboard_event_mapper
+PASS tb_keyboard_event_mapper: 485966 checks, 76476 accepted keys, 4100 emitted, 4099 delivered, 1275 stalls, 1391 replacements
+sim/tb_keyboard_event_mapper.v:311: $finish called at 809877000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_lcd_spi_stream -o /tmp/gw25k-midi-sim-ih50rrk0/tb_lcd_spi_stream -c sources.f sim/gowin_io_models.v sim/tb_lcd_spi_stream.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_lcd_spi_stream
+PASS lcd_spi_stream: accepted=1069 decoded=1057 transactions=40 completed=31 aborted=9
+PASS 50 MHz continuous stream: 1024 tokens / 8 clocks, 8191 consecutive 20 ns sample intervals
+PASS minimum pin timing ns: MOSI setup/hold=10/10 DC setup/hold=10/10 CS setup/hold=30/30
+sim/tb_lcd_spi_stream.v:233: $finish called at 179360000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_display_regions -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_display_regions -c sources.f sim/gowin_io_models.v sim/tb_midi_display_regions.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_display_regions
+PASS display regions: 225 snapshots; independent field/key masks, all focus pairs, first/theme/clear repaint, held output, last-snapshot coherence, combined changes and reset
+sim/tb_midi_display_regions.v:131: $finish called at 4670000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_event_router -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_event_router -c sources.f sim/gowin_io_models.v sim/tb_midi_event_router.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_event_router
+PASS: midi_event_router depth=1 checks=883620 accepted=70177 delivered USB/BLE=1024/986 stalls=917 full_replacements=967 flushes=1316
+PASS: midi_event_router depth=3 checks=885456 accepted=70836 delivered USB/BLE=1124/1100 stalls=54 full_replacements=82 flushes=1425
+PASS: midi_event_router depth=16 checks=887425 accepted=70925 delivered USB/BLE=1068/1133 stalls=19 full_replacements=42 flushes=1364
+PASS: midi_event_router all directed and seeded random scoreboards
+sim/tb_midi_event_router.v:316: $finish called at 727506000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_key_layout -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_key_layout -c sources.f sim/gowin_io_models.v sim/tb_midi_key_layout.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_key_layout
+PASS key layout: 65536 snapshots; A--P single-key Note On 48+i/Note Off; 16-key chord and release
+sim/tb_midi_key_layout.v:138: $finish called at 78120000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_keyboard_application -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_keyboard_application -c sources.f sim/gowin_io_models.v sim/tb_midi_keyboard_application.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_keyboard_application
+PASS application: actual USB/BLE packets for 16 keys, host control CRC/settings, held mapping, RX lamp arbitration and per-link ownership, no echo, MIDI backpressure/control independence, disconnect cleanup and current-note replay
+sim/tb_midi_keyboard_application.v:257: $finish called at 33800000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_keyboard_core -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_keyboard_core -c sources.f sim/gowin_io_models.v sim/tb_midi_keyboard_core.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_keyboard_core
+PASS tb_midi_keyboard_core: 345 checks, USB=24 BLE=23
+sim/tb_midi_keyboard_core.v:337: $finish called at 327730000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_landscape_display -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_landscape_display -c sources.f sim/gowin_io_models.v sim/tb_midi_landscape_display.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+rtl/display/midi_landscape_display.v:143: warning: @* is sensitive to all 4 words in array 'fifo'.
+rtl/display/midi_landscape_display.v:143: warning: @* is sensitive to all 4 words in array 'fifo'.
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_landscape_display
+PASS display: 60Hz scene cadence; all26 dynamic regions within 11.539220ms; full repaint 19.450840ms; 55 windows/194172 exact RGB565 pixels, FIFO prefetch, four-stage snapshot coherence, no traffic for unchanged scene, physical50MHz SPI setup/hold
+sim/tb_midi_landscape_display.v:180: $finish called at 136117691000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_landscape_view -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_landscape_view -c sources.f sim/gowin_io_models.v sim/tb_midi_landscape_view.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_landscape_view
+PASS: landscape view 428x142 actual RTL raster, six cards/16 keys clear of right-side vertical strip, empty/half/full/centered upward track, S2 decimal/hex diagnostics and status colors checked by external glyph oracle, four-edge streaming latency, full-frame snapshot stability, 38586 changed pixels
+sim/tb_midi_landscape_view.v:181: $finish called at 5949376000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_performance -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_performance -c sources.f sim/gowin_io_models.v sim/tb_midi_performance.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_performance
+PASS performance: 16 notes/offs; captured held mapping; backpressure; both encoders/all focuses; signed limits; host priority; MOD/EXPR/BEND; panic rearm; offline cleanup+replay without stale notes
+sim/tb_midi_performance.v:210: $finish called at 41820000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_performance_races -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_performance_races -c sources.f sim/gowin_io_models.v sim/tb_midi_performance_races.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_performance_races
+PASS performance races: consecutive final strip/program updates survive emission; each cleanup channel receives its complete sequence
+sim/tb_midi_performance_races.v:75: $finish called at 3900000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_slider_filter -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_slider_filter -c sources.f sim/gowin_io_models.v sim/tb_midi_slider_filter.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_slider_filter
+PASS slider filter: jitter, boundary motion, spike confirmation, release/reset, ramps and all 256 touch positions
+sim/tb_midi_slider_filter.v:166: $finish called at 26636000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_midi_slider_led_map -o /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_slider_led_map -c sources.f sim/gowin_io_models.v sim/tb_midi_slider_led_map.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_midi_slider_led_map
+PASS slider LED map: all 256 positions, disable/restore, monotonic fill, zero/half/full markers and 8-bit boundary
+sim/tb_midi_slider_led_map.v:85: $finish called at 780000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_panel_display_endpoint -o /tmp/gw25k-midi-sim-ih50rrk0/tb_panel_display_endpoint -c sources.f sim/gowin_io_models.v sim/tb_panel_display_endpoint.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_panel_display_endpoint
+PASS tb_panel_display_endpoint checks=244
+sim/tb_panel_display_endpoint.v:184: $finish called at 125820000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_panel_screen_integration -o /tmp/gw25k-midi-sim-ih50rrk0/tb_panel_screen_integration -c sources.f sim/gowin_io_models.v sim/tb_panel_screen_integration.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_panel_screen_integration
+PASS panel integration: 149 checks; real router+PL+MK+MIDI+one-second gestures, host-input page policy, heartbeat/expiry/manual override/fresh redraw, embedded magic, ACK vs physical completion, independent MIDI/panic under display stalls, link-reset RAM ownership
+sim/tb_panel_screen_integration.v:312: $finish called at 159636000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_pca9685_led_driver -o /tmp/gw25k-midi-sim-ih50rrk0/tb_pca9685_led_driver -c sources.f sim/gowin_io_models.v sim/tb_pca9685_led_driver.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_pca9685_led_driver
+PASS PCA9685: address 0x40, sleep/prescale/wake/restart, OUTDRV, 64-byte STOP latch, coherent frame, full-off/on, NACK reinit/reset, real slider bar PWM writes
+sim/tb_pca9685_led_driver.v:101: $finish called at 2594840000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_remote_tile_display -o /tmp/gw25k-midi-sim-ih50rrk0/tb_remote_tile_display -c sources.f sim/gowin_io_models.v sim/tb_remote_tile_display.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+rtl/display/midi_landscape_display.v:143: warning: @* is sensitive to all 4 words in array 'fifo'.
+rtl/display/midi_landscape_display.v:143: warning: @* is sensitive to all 4 words in array 'fifo'.
+rtl/display/midi_landscape_display.v:143: warning: @* is sensitive to all 4 words in array 'fifo'.
+rtl/display/midi_landscape_display.v:143: warning: @* is sensitive to all 4 words in array 'fifo'.
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_remote_tile_display
+PASS remote display: both rotations, synchronous row-major RAM, off-origin asymmetric RGB565 tiles/high byte first, entry clear, forced complete local repaint, safe mid-window switching, physical-CS tile_done, idle silence
+sim/tb_remote_tile_display.v:165: $finish called at 88910040000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_screen_control_endpoint -o /tmp/gw25k-midi-sim-ih50rrk0/tb_screen_control_endpoint -c sources.f sim/gowin_io_models.v sim/tb_screen_control_endpoint.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_screen_control_endpoint
+PASS tb_screen_control_endpoint transactions=30 assertions=2426
+sim/tb_screen_control_endpoint.v:284: $finish called at 34300000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_screen_stream_router -o /tmp/gw25k-midi-sim-ih50rrk0/tb_screen_stream_router -c sources.f sim/gowin_io_models.v sim/tb_screen_stream_router.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_screen_stream_router
+PASS: tb_screen_stream_router (1264 checks, MK/PL framing/magic/payload/backpressure/timeout/reset)
+sim/tb_screen_stream_router.v:361: $finish called at 16000000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_touch_frontend -o /tmp/gw25k-midi-sim-ih50rrk0/tb_touch_frontend -c sources.f sim/gowin_io_models.v sim/tb_touch_frontend.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_touch_frontend
+PASS touch: independent configuration/readback, both buses, 16-key press/release, 12/10 press/release hysteresis, coherent snapshots, slider jitter/spike rejection, endpoints, NACK and reset release
+sim/tb_touch_frontend.v:146: $finish called at 7358260000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_touch_i2c_recovery -o /tmp/gw25k-midi-sim-ih50rrk0/tb_touch_i2c_recovery -c sources.f sim/gowin_io_models.v sim/tb_touch_i2c_recovery.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_touch_i2c_recovery
+PASS I2C: actual slave read/write/ACK/NACK, stretch, timeout, nine-clock SDA recovery, retry, invalid length and reset
+sim/tb_touch_i2c_recovery.v:79: $finish called at 90400000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_touch_scan_guard -o /tmp/gw25k-midi-sim-ih50rrk0/tb_touch_scan_guard -c sources.f sim/gowin_io_models.v sim/tb_touch_scan_guard.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_touch_scan_guard
+Scan spacing expected=30000 measured=30001..30001 cycles
+Scan spacing expected=50000 measured=50001..50001 cycles
+PASS touch scan guard: minimum and fallback start spacing, shared/frequent CHANGE, startup/post-config RESET, mode rewrite, raw/general/sticky-overrun diagnostics, successful-only count and NACK recovery
+sim/tb_touch_scan_guard.v:256: $finish called at 18402731000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_touch_tuning -o /tmp/gw25k-midi-sim-ih50rrk0/tb_touch_tuning -c sources.f sim/gowin_io_models.v sim/tb_touch_tuning.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_touch_tuning
+PASS touch tuning: six independent overrides written/read back, all electrode settings, LP/BREP, calibration, slider NDIL mismatch release and retry recovery
+sim/tb_touch_tuning.v:111: $finish called at 590551000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_usb_board_boot -o /tmp/gw25k-midi-sim-ih50rrk0/tb_usb_board_boot -c sources.f sim/gowin_io_models.v sim/tb_usb_board_boot.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_usb_board_boot
+PASS USB3300 boot: first-command timeout recovers, complete VID/PID/scratch/config verification, immediate DIR release, permanent faults rate-limited with DATA released, success stays handed off
+sim/tb_usb_board_boot.v:100: $finish called at 5540000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_usb_board_cdc -o /tmp/gw25k-midi-sim-ih50rrk0/tb_usb_board_cdc -c sources.f sim/gowin_io_models.v sim/tb_usb_board_cdc.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_usb_board_cdc
+PASS USB board async FIFO: 8155 checks, 2014 accepted words, 4623 stalled writer cycles, 50/60MHz wrap/full/order/reset
+sim/tb_usb_board_cdc.v:73: $finish called at 147844086 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_usb_board_device -o /tmp/gw25k-midi-sim-ih50rrk0/tb_usb_board_device -c sources.f sim/gowin_io_models.v sim/tb_usb_board_device.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_usb_board_device
+PASS USB board UTMI + 50/60MHz CDC speed=480: 1523 checks MIDI_OUT=130 vendor_OUT=513, descriptors, independent endpoints, aggregation, CRC rollback, duplicate OUT, lost-ACK retry, halt, suspend/resume, session reset
+sim/tb_usb_board_device.v:286: $finish called at 49545518100 (1ps)
+
+$ iverilog -P tb_usb_board_device.HIGH_SPEED=0 -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_usb_board_device -o /tmp/gw25k-midi-sim-ih50rrk0/tb_usb_board_device_fs -c sources.f sim/gowin_io_models.v sim/tb_usb_board_device.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_usb_board_device_fs
+PASS USB board UTMI + 50/60MHz CDC speed=12: 400 checks MIDI_OUT=18 vendor_OUT=65, descriptors, independent endpoints, aggregation, CRC rollback, duplicate OUT, lost-ACK retry, halt, suspend/resume, session reset
+sim/tb_usb_board_device.v:286: $finish called at 61365611944 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_usb_midi_codec -o /tmp/gw25k-midi-sim-ih50rrk0/tb_usb_midi_codec -c sources.f sim/gowin_io_models.v sim/tb_usb_midi_codec.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_usb_midi_codec
+PASS: usb_midi_codec 1112 checks, 123 exact valid pairs, all statuses, backpressure, reset and saturation
+sim/tb_usb_midi_codec.v:248: $finish called at 662506000 (1ps)
+
+$ iverilog -g2012 -Wall -I rtl/usb_board/vendor -I . -s tb_ws2812 -o /tmp/gw25k-midi-sim-ih50rrk0/tb_ws2812 -c sources.f sim/gowin_io_models.v sim/tb_ws2812.v
+rtl/usb_board/generated/usb_composite_desc_rom.v:3: warning: timescale for midi_usb_desc_rom inherited from another file.
+rtl/transport/usb_midi_codec.v:1: ...: The inherited timescale is here.
+rtl/usb_board/midi_usb_hs_phy.v:43: warning: timescale for midi_usb_hs_phy inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_ulpi_wrapper.v:31: warning: timescale for midi_ulpi_wrapper inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/midi_usb2_boot.v:4: warning: timescale for midi_usb2_boot inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_crc16.v:39: warning: timescale for midi_usbf_crc16 inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_rx.v:39: warning: timescale for midi_usbf_sie_rx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+rtl/usb_board/vendor/usbf_sie_tx.v:39: warning: timescale for midi_usbf_sie_tx inherited from another file.
+rtl/usb_board/midi_usb_device.v:1: ...: The inherited timescale is here.
+warning: Some design elements have no explicit time unit and/or
+       : time precision. This may cause confusing timing results.
+       : Affected design elements are:
+       :   -- module midi_ble_gatt declared here: rtl/ble_board/midi_ble_gatt.v:4
+       :   -- module midi_ble_h5 declared here: rtl/ble_board/midi_ble_h5.v:7
+       :   -- module midi_ble_hci_init declared here: rtl/ble_board/midi_ble_hci_init.v:4
+       :   -- module midi_ble_link declared here: rtl/ble_board/midi_ble_link.v:3
+       :   -- module midi_ble_smp declared here: rtl/ble_board/midi_ble_smp.v:7
+       :   -- module midi_ble_uart declared here: rtl/ble_board/midi_ble_uart.v:4
+
+$ vvp /tmp/gw25k-midi-sim-ih50rrk0/tb_ws2812
+PASS WS2812: all 16 logical keys map to ABCDHGFEIJKLPONM, GRB colors/release, per-frame snapshot, 340/840 ns pulses, exact average 800 kbit/s, 300 us reset
+sim/tb_ws2812.v:78: $finish called at 15599200000 (1ps)
+
+$ /usr/bin/python3 -m unittest discover -s sim -p 'test_*.py' -v
+test_busy_deadline_is_bounded_without_sequence_advance (test_panel_display.ClientTest.test_busy_deadline_is_bounded_without_sequence_advance) ... ok
+test_busy_retries_keep_sequence_and_suppressed_advances (test_panel_display.ClientTest.test_busy_retries_keep_sequence_and_suppressed_advances) ... ok
+test_decode_cli_does_not_open_usb (test_panel_display.ClientTest.test_decode_cli_does_not_open_usb) ... ok
+test_empty_read_limit_and_partial_write_do_not_retry (test_panel_display.ClientTest.test_empty_read_limit_and_partial_write_do_not_retry) ... ok
+test_end_busy_ack_is_accepted_until_drawn (test_panel_display.ClientTest.test_end_busy_ack_is_accepted_until_drawn) ... ok
+test_fragmented_coalesced_and_stale_response_reads (test_panel_display.ClientTest.test_fragmented_coalesced_and_stale_response_reads) ... ok
+test_manual_override_and_redraw_resume_send_whole_scene (test_panel_display.ClientTest.test_manual_override_and_redraw_resume_send_whole_scene) ... ok
+test_override_during_upload_does_not_report_completion (test_panel_display.ClientTest.test_override_during_upload_does_not_report_completion) ... ok
+test_usb_short_write_poisoning_and_partial_timeout_read (test_panel_display.ClientTest.test_usb_short_write_poisoning_and_partial_timeout_read) ... ok
+test_wrong_ack_channel_type_and_length_fail_boundedly (test_panel_display.ClientTest.test_wrong_ack_channel_type_and_length_fail_boundedly) ... ok
+test_capability_and_status_reserved_validation (test_panel_display.CodecTest.test_capability_and_status_reserved_validation) ... ok
+test_codec_boundaries_and_invalid_frames (test_panel_display.CodecTest.test_codec_boundaries_and_invalid_frames) ... ok
+test_edge_tiles_reassemble_every_pixel_once (test_panel_display.CodecTest.test_edge_tiles_reassemble_every_pixel_once) ... ok
+test_rgb565_and_ppm_binary_first_pixel (test_panel_display.CodecTest.test_rgb565_and_ppm_binary_first_pixel) ... ok
+test_tile_bounds_and_exact_pixel_count (test_panel_display.CodecTest.test_tile_bounds_and_exact_pixel_count) ... ok
+test_wire_header_and_little_endian_metadata (test_panel_display.CodecTest.test_wire_header_and_little_endian_metadata) ... ok
+test_cli_prints_hex_and_decodes (test_screen_control.ScreenControlTest.test_cli_prints_hex_and_decodes) ... ok
+test_crc_standard_vector (test_screen_control.ScreenControlTest.test_crc_standard_vector) ... ok
+test_decode_framing_and_crc (test_screen_control.ScreenControlTest.test_decode_framing_and_crc) ... ok
+test_decode_invalid_request_fields (test_screen_control.ScreenControlTest.test_decode_invalid_request_fields) ... ok
+test_deterministic_random_round_trip (test_screen_control.ScreenControlTest.test_deterministic_random_round_trip) ... ok
+test_encode_all_command_boundaries (test_screen_control.ScreenControlTest.test_encode_all_command_boundaries) ... ok
+test_request_type_and_range_checks (test_screen_control.ScreenControlTest.test_request_type_and_range_checks) ... ok
+test_response_round_trip_and_signed_result (test_screen_control.ScreenControlTest.test_response_round_trip_and_signed_result) ... ok
+test_response_validation (test_screen_control.ScreenControlTest.test_response_validation) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.075s
+
+OK

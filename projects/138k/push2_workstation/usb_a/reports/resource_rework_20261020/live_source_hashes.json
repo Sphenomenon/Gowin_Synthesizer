@@ -1,0 +1,19 @@
+{
+  "rtl/music/basic_pitch_conv2d.sv": "b8305c6219b1152130f6fb1ed8619296879abea1f9d329f6c55cca3934286ab0",
+  "rtl/music/basic_pitch_cqt_engine.sv": "68eb2222d752fd908bed1d51eb3640917779aeab36a3d6d23dc38b600f115da4",
+  "rtl/music/basic_pitch_pcm_pipeline.sv": "1237dda62f16c0ead0bc428a98b11611ece2e1a04bb55f93abe0bdb276aaa265",
+  "rtl/music/basic_pitch_feature_ddr.sv": "fd30dc6e4099fd07ab43c8b6df5a35565a360af1aac4fbcd3f0020e0de64fcaf",
+  "rtl/music/basic_pitch_cnn_streaming.sv": "fd2318fa10c63aac0c11eab87e4d24e23f4a3dc0351586c11361e8b93483d423",
+  "rtl/music/basic_pitch_viterbi.sv": "83a5a0e66062fe66ad37dfa6b30bf6d87023e6d887119a746f0b90d11afaab1d",
+  "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+  "rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+  "rtl/audio/audio_capture_fifo.sv": "468c3106f72a1a3cd17c1c6e3036c0bd21faadb86ef94f6ca1d2d0b16303255b",
+  "rtl/input/score_led_player.sv": "720c0642792de97c83135c71899338f42336a5ded674bef518c4f79e1dbbaa71",
+  "rtl/display_data/video_ddr_scanout.v": "f085d6a16ea9cb1988eae782b6cb1aa123165e1d6444411a7c3f3684c13b4ba6",
+  "rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+  "rtl/audio/stereo_effects.sv": "370206c4a13f839a0ab5985b872396ca26a497811118186adb159361690d279f",
+  "rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4",
+  "rtl/audio/spatial_room_preset.json": "0dfe6a9aba10fef23e84114d808d1af2b889579c088064fbbd1b4e9980a46a39",
+  "tools/generate_room_preset.py": "87da227eb075569db4e80e2537fd224f42f3c3fed3ed7dadf593e244718a63c6",
+  "tools/build_resource_rework.py": "a3c2890d3cc99c280450b26cfa2b1a6b18db3a517827000e6047cd65eb250234"
+}

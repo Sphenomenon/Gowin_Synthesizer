@@ -1,0 +1,174 @@
+{
+  "timing_closed": false,
+  "problems": [
+    "negative detailed timing paths"
+  ],
+  "frequencies": {
+    "clk_50m": {
+      "required_mhz": 50.0,
+      "actual_mhz": 54.11
+    },
+    "audio_76m8": {
+      "required_mhz": 76.8,
+      "actual_mhz": 76.8
+    },
+    "ddr_mem400": {
+      "required_mhz": 400.0,
+      "actual_mhz": 2598.775
+    },
+    "ddr_ui100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 210.896
+    },
+    "video_pixel148": {
+      "required_mhz": 148.5,
+      "actual_mhz": 169.81
+    },
+    "cpu_bus50": {
+      "required_mhz": 50.0,
+      "actual_mhz": 69.852
+    },
+    "cpu_core100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 1244.244
+    },
+    "usb_48m": {
+      "required_mhz": 48.0,
+      "actual_mhz": 48.665
+    }
+  },
+  "checks": {
+    "clk_50m": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "audio_76m8": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "ddr_mem400": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "ddr_ui100": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "video_ref49": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "video_serial742": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "video_pixel148": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "cpu_bus50": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "cpu_core100": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "usb_48m": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    }
+  },
+  "reset_reports": {
+    "recovery": true,
+    "removal": true
+  },
+  "negative_paths": [
+    {
+      "kind": "hold",
+      "slack_ns": -0.43,
+      "source": "u_music/u_ddr_command_buffer/full_s1/Q",
+      "destination": "u_music/u_report/payload_77_s1/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "clk_50m:[R]",
+      "relation_ns": 0.0,
+      "skew_ns": -1.25,
+      "data_delay_ns": 0.877,
+      "command": "report_timing -hold -max_paths 100"
+    },
+    {
+      "kind": "hold",
+      "slack_ns": -0.406,
+      "source": "u_music/u_ddr16/rsp_valid_o_s0/Q",
+      "destination": "u_music/u_report/payload_73_s1/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "clk_50m:[R]",
+      "relation_ns": 0.0,
+      "skew_ns": -1.265,
+      "data_delay_ns": 0.916,
+      "command": "report_timing -hold -max_paths 100"
+    }
+  ],
+  "report_sha256": "8da743956ae3b9102ae5878b9a27ea3b86fab08ef3838d23d6ee34170ef941ca",
+  "hardware_tested": false
+}

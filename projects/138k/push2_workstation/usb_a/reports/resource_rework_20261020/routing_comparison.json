@@ -1,0 +1,107 @@
+{
+  "selected_route_option": 0,
+  "selection_reason": "Both timing-open; route0 has better worst slack and audio/video Fmax. Neither is released to hardware.",
+  "rtl_identical": true,
+  "only_changed_input": "scripts/build.tcl",
+  "variants": [
+    {
+      "route_option": 0,
+      "build": "results/resource_rework_final_route0_20261020_041042",
+      "physical_bsram": 234,
+      "worst_slack_ns": -1.392,
+      "negative_setup_endpoints": 808,
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 50.066
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 69.383
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 212.368
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 145.333
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 73.076
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1020.537
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 45.207
+        }
+      },
+      "readiness": {
+        "tool_flow_passed": true,
+        "timing_closed": false,
+        "cdc_passed": true,
+        "pll_init_passed": true,
+        "release_ready": false,
+        "hardware_tested": false
+      }
+    },
+    {
+      "route_option": 1,
+      "build": "results/workstation_scope83_timing85_20261020_040804_176677",
+      "physical_bsram": 234,
+      "worst_slack_ns": -1.573,
+      "negative_setup_endpoints": 444,
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 55.578
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 68.52
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 229.331
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 142.008
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 68.238
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1020.537
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 47.472
+        }
+      },
+      "readiness": {
+        "tool_flow_passed": true,
+        "timing_closed": false,
+        "cdc_passed": true,
+        "pll_init_passed": true,
+        "release_ready": false,
+        "hardware_tested": false
+      }
+    }
+  ],
+  "hardware_tested": false
+}

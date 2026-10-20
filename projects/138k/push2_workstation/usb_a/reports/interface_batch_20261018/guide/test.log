@@ -1,0 +1,2 @@
+PASS PL guide RTL: generic correct/wrong/pressure/vel0, real FIFO backpressure once, reserved CC controls, full feedback, unchanged Push guide/force, GW25K cannot alter an active Push target (85 audio events)
+migration/gw138k_audio/push2_workstation/usb_a/sim/tb_pl_guide.sv:159: $finish called at 20082246778 (1ps)

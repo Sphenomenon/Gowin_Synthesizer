@@ -12,6 +12,9 @@ module basic_pitch_pcm_pipeline #(
     parameter integer FRAME_LIMIT   = 1,
     parameter integer OCTAVE_LIMIT  = 9,
     parameter integer FRONT_DELAY   = 3200,
+    parameter integer CQT_HOP_NUMERATOR=256, CQT_HOP_DENOMINATOR=1,
+    parameter integer FEATURE_TILE_COLS=0,
+    parameter bit COARSE_GUIDANCE=1'b0,
     parameter bit USE_EXTERNAL_STATE = 1'b0,
     parameter bit USE_EXTERNAL_PLANE = 1'b0,
     parameter bit USE_EXTERNAL_WEIGHTS = 1'b0,
@@ -105,7 +108,7 @@ module basic_pitch_pcm_pipeline #(
         S_READY_NOTE_OUT = 6'd42, S_READY_ONSET_OUT = 6'd43,
         S_READY_REDUCE = 6'd44;
     localparam logic [5:0] S_SCORE_DRAIN = 6'd45,
-                           S_WINDOW_RESTART = 6'd46;
+                           S_WINDOW_RESTART = 6'd46, S_NEXT_FEATURE_TILE=6'd47;
 
     logic [5:0] state, settle_target, cache_target, weight_target, feature_target;
     logic [2:0] settle_count;
@@ -308,6 +311,7 @@ module basic_pitch_pcm_pipeline #(
     assign cqt_log_data = log_lut_rom[cqt_log_addr];
 
     basic_pitch_cqt_engine #(.WIN_LEN(WIN_LEN), .CQT_BINS(CQT_BINS),
+        .HOP_NUMERATOR(CQT_HOP_NUMERATOR),.HOP_DENOMINATOR(CQT_HOP_DENOMINATOR),
         .USE_DDR_SIGNAL(USE_DDR_SIGNAL), .USE_DDR_COEFF(USE_DDR_CQT_COEFF)) u_cqt (
         .clk_i(clk_i), .rst_ni(run_rst_ni), .start_i(state == S_START_CQT),
         .octave_limit_i(OCTAVE_LIMIT[4:0]), .frame_limit_i(FRAME_COUNT),
@@ -590,6 +594,11 @@ module basic_pitch_pcm_pipeline #(
         end
     end
 
+    localparam integer TILE_LOAD_COLS=FEATURE_TILE_COLS+4;
+    localparam bit TILED_FEATURES=(FEATURE_TILE_COLS>0) && USE_EXTERNAL_FEATURES && !USE_ALL_DDR;
+    logic [8:0] feature_tile_col;
+    logic signed [10:0] feature_load_start_col;
+    logic signed [17:0] feature_relative_col;
     logic [1:0] feature_load_kind;
     logic signed [10:0] feature_load_start_row;
     logic [3:0] feature_load_rows;
@@ -776,7 +785,7 @@ module basic_pitch_pcm_pipeline #(
             assign onset_out_x_data = nn_sample_x;
         end else if (USE_EXTERNAL_FEATURES) begin : g_ddr_features
             assign nn_status = 4'd0;
-            basic_pitch_feature_ddr #(.FRAMES(FRAME_LIMIT)) u_feature_ddr (
+            basic_pitch_feature_ddr #(.FRAMES(FRAME_LIMIT),.TILE_COLS(TILED_FEATURES ? TILE_LOAD_COLS : 0)) u_feature_ddr (
                 .clk_i(clk_i), .rst_ni(run_rst_ni),
                 .contour_we_i(contour_act_valid), .contour_row_i(contour_row_d2),
                 .contour_col_i(contour_col_d2), .contour_ch_i(contour_ch_d2[2:0]),
@@ -790,6 +799,7 @@ module basic_pitch_pcm_pipeline #(
                 .load_start_i(state == S_FEATURE_CACHE),
                 .load_kind_i(feature_load_kind),
                 .load_start_row_i(feature_load_start_row), .load_rows_i(feature_load_rows),
+                .load_start_col_i(feature_load_start_col),.load_cols_i(9'(TILE_LOAD_COLS)),
                 .load_done_o(feature_cache_done), .overflow_o(feature_overflow),
                 .read_valid_i(feature_read_valid), .read_addr_i(feature_read_addr),
                 .read_data_o(feature_read_data),
@@ -801,38 +811,48 @@ module basic_pitch_pcm_pipeline #(
             always_comb begin
                 feature_read_valid = 1'b0;
                 feature_read_addr = 15'd0;
+                feature_relative_col=0;
                 feature_read_rel = 12'sd0;
                 feature_contour_cell = 11'd0;
                 feature_note_cell = 10'd0;
                 if ((state == S_START_REDUCE) || (state == S_REDUCE)) begin
                     feature_read_rel = reduce_x_row - feature_load_start_row;
+                    feature_relative_col=reduce_x_col - feature_load_start_col;
                     if ((reduce_x_row >= 0) && (reduce_x_row < FRAME_LIMIT) &&
                         (reduce_x_col >= 0) && (reduce_x_col < CONTOUR_BINS) &&
-                        (feature_read_rel >= 0) && (feature_read_rel < 5)) begin
+                        (feature_read_rel >= 0) && (feature_read_rel < 5) &&
+                        (!TILED_FEATURES || (feature_relative_col>=0 && feature_relative_col<TILE_LOAD_COLS))) begin
                         feature_read_valid = 1'b1;
-                        feature_contour_cell = $unsigned(feature_read_rel) * CONTOUR_BINS +
-                                               reduce_x_col[8:0];
+                        feature_contour_cell = TILED_FEATURES ?
+                        ($unsigned(feature_read_rel)*TILE_LOAD_COLS + $unsigned(feature_relative_col)) :
+                        ($unsigned(feature_read_rel)*CONTOUR_BINS + reduce_x_col[8:0]);
                         feature_read_addr = {1'b0, feature_contour_cell, reduce_x_channel[2:0]};
                     end
                 end else if ((state == S_START_NOTE_OUT) || (state == S_NOTE_OUT)) begin
                     feature_read_rel = note_out_x_row - feature_load_start_row;
+                    feature_relative_col=note_out_x_col - feature_load_start_col;
                     if ((note_out_x_row >= 0) && (note_out_x_row < FRAME_LIMIT) &&
                         (note_out_x_col >= 0) && (note_out_x_col < NOTE_BINS) &&
-                        (feature_read_rel >= 0) && (feature_read_rel < 7)) begin
+                        (feature_read_rel >= 0) && (feature_read_rel < 7) &&
+                        (!TILED_FEATURES || (feature_relative_col>=0 && feature_relative_col<TILE_LOAD_COLS))) begin
                         feature_read_valid = 1'b1;
-                        feature_note_cell = $unsigned(feature_read_rel) * NOTE_BINS +
-                                            note_out_x_col[6:0];
+                        feature_note_cell = TILED_FEATURES ?
+                        ($unsigned(feature_read_rel)*TILE_LOAD_COLS + $unsigned(feature_relative_col)) :
+                        ($unsigned(feature_read_rel)*NOTE_BINS + note_out_x_col[6:0]);
                         feature_read_addr = {feature_note_cell, note_out_x_channel[4:0]};
                     end
                 end else if ((state == S_START_ONSET_OUT) || (state == S_ONSET_OUT)) begin
                     feature_read_rel = onset_out_x_row - feature_load_start_row;
+                    feature_relative_col=onset_out_x_col - feature_load_start_col;
                     if ((onset_out_channel != 0) && (onset_out_x_row >= 0) &&
                         (onset_out_x_row < FRAME_LIMIT) && (onset_out_x_col >= 0) &&
                         (onset_out_x_col < NOTE_BINS) && (feature_read_rel >= 0) &&
-                        (feature_read_rel < 3)) begin
+                        (feature_read_rel < 3) &&
+                        (!TILED_FEATURES || (feature_relative_col>=0 && feature_relative_col<TILE_LOAD_COLS))) begin
                         feature_read_valid = 1'b1;
-                        feature_note_cell = $unsigned(feature_read_rel) * NOTE_BINS +
-                                            onset_out_x_col[6:0];
+                        feature_note_cell = TILED_FEATURES ?
+                        ($unsigned(feature_read_rel)*TILE_LOAD_COLS + $unsigned(feature_relative_col)) :
+                        ($unsigned(feature_read_rel)*NOTE_BINS + onset_out_x_col[6:0]);
                         // Channels 1..32 map to cache lanes 0..31. Subtract
                         // within the five-bit lane, never through the cell
                         // address and its high-fanout BSRAM address pins.
@@ -922,8 +942,9 @@ module basic_pitch_pcm_pipeline #(
     basic_pitch_conv2d #(.IN_T(FRAME_LIMIT), .IN_F(CONTOUR_BINS), .IN_C(8), .KH(5), .KW(5),
         .OUT_T(FRAME_LIMIT), .OUT_F(CONTOUR_BINS), .OUT_C(1), .STRIDE_T(1), .STRIDE_F(1),
         .PAD_T(2), .PAD_F(2), .USE_STACK(0), .ACT(2),
-        .DDR_FETCH(USE_ALL_DDR)) u_reduce (
+        .COLUMN_TILING(TILED_FEATURES),.DDR_FETCH(USE_ALL_DDR)) u_reduce (
         .clk_i(clk_i), .rst_ni(run_rst_ni), .start_i(state == S_START_REDUCE),
+        .col_start_i(feature_tile_col),.col_limit_i(feature_tile_col+9'(FEATURE_TILE_COLS)),
         .row_start_i(reduce_run_row), .row_limit_i((FRAME_LIMIT > 1) ? reduce_run_row + 9'd1 : FRAME_COUNT),
         .pl_addr_o(), .pl_data_i(16'sd0), .x_addr_o(reduce_x_addr),
         .x_channel_o(reduce_x_channel), .x_row_o(reduce_x_row), .x_col_o(reduce_x_col),
@@ -964,8 +985,9 @@ module basic_pitch_pcm_pipeline #(
     basic_pitch_conv2d #(.IN_T(FRAME_LIMIT), .IN_F(NOTE_BINS), .IN_C(32), .KH(7), .KW(3),
         .OUT_T(FRAME_LIMIT), .OUT_F(NOTE_BINS), .OUT_C(1), .STRIDE_T(1), .STRIDE_F(1),
         .PAD_T(3), .PAD_F(1), .USE_STACK(0), .ACT(2),
-        .DDR_FETCH(USE_ALL_DDR)) u_note_out (
+        .COLUMN_TILING(TILED_FEATURES),.DDR_FETCH(USE_ALL_DDR)) u_note_out (
         .clk_i(clk_i), .rst_ni(run_rst_ni), .start_i(state == S_START_NOTE_OUT),
+        .col_start_i(feature_tile_col),.col_limit_i(feature_tile_col+9'(FEATURE_TILE_COLS)),
         .row_start_i(note_out_run_row), .row_limit_i((FRAME_LIMIT > 1) ? note_out_run_row + 9'd1 : FRAME_COUNT),
         .pl_addr_o(), .pl_data_i(16'sd0), .x_addr_o(note_out_x_addr),
         .x_channel_o(note_out_x_channel), .x_row_o(note_out_x_row), .x_col_o(note_out_x_col),
@@ -1008,8 +1030,9 @@ module basic_pitch_pcm_pipeline #(
     basic_pitch_conv2d #(.IN_T(FRAME_LIMIT), .IN_F(NOTE_BINS), .IN_C(33), .KH(3), .KW(3),
         .OUT_T(FRAME_LIMIT), .OUT_F(NOTE_BINS), .OUT_C(1), .STRIDE_T(1), .STRIDE_F(1),
         .PAD_T(1), .PAD_F(1), .USE_STACK(0), .ACT(2),
-        .DDR_FETCH(USE_ALL_DDR)) u_onset_out (
+        .COLUMN_TILING(TILED_FEATURES),.DDR_FETCH(USE_ALL_DDR)) u_onset_out (
         .clk_i(clk_i), .rst_ni(run_rst_ni), .start_i(state == S_START_ONSET_OUT),
+        .col_start_i(feature_tile_col),.col_limit_i(feature_tile_col+9'(FEATURE_TILE_COLS)),
         .row_start_i(onset_out_run_row), .row_limit_i((FRAME_LIMIT > 1) ? onset_out_run_row + 9'd1 : FRAME_COUNT),
         .pl_addr_o(), .pl_data_i(16'sd0), .x_addr_o(onset_out_x_addr),
         .x_cell_addr_o(onset_out_cell_addr), .x_channel_o(onset_out_channel),
@@ -1138,7 +1161,7 @@ module basic_pitch_pcm_pipeline #(
     generate
         if (FRAME_LIMIT > 1) begin : g_full_dp
             basic_pitch_cnn_streaming #(.FRAMES(FRAME_LIMIT),
-                .USE_EXTERNAL_STATE(USE_EXTERNAL_STATE)) u_cnn_stream (
+                .USE_EXTERNAL_STATE(USE_EXTERNAL_STATE),.COARSE_GUIDANCE(COARSE_GUIDANCE)) u_cnn_stream (
                 .clk_i(clk_i), .rst_ni(run_rst_ni), .start_i(state == S_START_DP), .active_i(1'b1),
                 .note_valid_i(dp_have_bins), .note_idx_i(dp_idx[6:0]),
                 .note_q_i(USE_ALL_DDR ? nn_feed_note :
@@ -1279,6 +1302,7 @@ module basic_pitch_pcm_pipeline #(
             weight_target <= S_HOLD; weight_blob_base <= 0; weight_word_count <= 0;
             feature_target <= S_HOLD; feature_load_kind <= 2'd0;
             feature_load_start_row <= 0; feature_load_rows <= 0;
+            feature_tile_col<=0;feature_load_start_col<=-11'sd2;
             dp_frame <= 0; dp_idx <= 0; result_valid_o <= 1'b0; done_o <= 1'b0;
             song_done_o <= 1'b0; front_window_started <= 1'b0;
             stream_wave <= 0;
@@ -1320,7 +1344,8 @@ module basic_pitch_pcm_pipeline #(
                 end
                 S_START_REDUCE: state <= S_REDUCE;
                 S_REDUCE: if (reduce_done) begin
-                    settle_target <= (FRAME_LIMIT > 1) ? S_AFTER_REDUCE : S_PREP_NOTES;
+                    settle_target <= (TILED_FEATURES && feature_tile_col+FEATURE_TILE_COLS<CONTOUR_BINS) ? S_NEXT_FEATURE_TILE :
+                        ((FRAME_LIMIT > 1) ? S_AFTER_REDUCE : S_PREP_NOTES);
                     settle_count <= 3; state <= S_SETTLE;
                 end
                 S_START_NOTES: state <= S_NOTES;
@@ -1330,7 +1355,9 @@ module basic_pitch_pcm_pipeline #(
                 end
                 S_START_NOTE_OUT: state <= S_NOTE_OUT;
                 S_NOTE_OUT: if (note_out_done) begin
-                    if ((FRAME_LIMIT == 1) && USE_EXTERNAL_PLANE && !USE_ALL_DDR) begin
+                    if (TILED_FEATURES && feature_tile_col+FEATURE_TILE_COLS<NOTE_BINS) begin
+                        settle_target<=S_NEXT_FEATURE_TILE;
+                    end else if ((FRAME_LIMIT == 1) && USE_EXTERNAL_PLANE && !USE_ALL_DDR) begin
                         cache_center <= 0;
                         cache_target <= S_PREP_ONSET;
                         settle_target <= S_CACHE;
@@ -1346,7 +1373,9 @@ module basic_pitch_pcm_pipeline #(
                 end
                 S_START_ONSET_OUT: state <= S_ONSET_OUT;
                 S_ONSET_OUT: if (onset_out_done) begin
-                    if (FRAME_LIMIT > 1) begin
+                    if (TILED_FEATURES && feature_tile_col+FEATURE_TILE_COLS<NOTE_BINS) begin
+                        settle_target<=S_NEXT_FEATURE_TILE;
+                    end else if (FRAME_LIMIT > 1) begin
                         dp_frame <= stream_wave - 9'd9;
                         dp_idx <= 0;
                         settle_target <= S_STREAM_FEED;
@@ -1426,6 +1455,7 @@ module basic_pitch_pcm_pipeline #(
                     end else state <= S_START_CONTOUR;
                 end
                 S_PREP_REDUCE: begin
+                    feature_tile_col<=0;feature_load_start_col<=-11'sd2;
                     if (USE_EXTERNAL_FEATURES && !USE_ALL_DDR) begin
                         feature_load_kind <= 2'd0;
                         feature_load_start_row <= $signed({1'b0, reduce_run_row}) - 11'sd2;
@@ -1449,6 +1479,7 @@ module basic_pitch_pcm_pipeline #(
                     end else state <= S_START_NOTES;
                 end
                 S_PREP_NOTE_OUT: begin
+                    feature_tile_col<=0;feature_load_start_col<=-11'sd2;
                     if (USE_EXTERNAL_FEATURES && !USE_ALL_DDR) begin
                         feature_load_kind <= 2'd1;
                         feature_load_start_row <= $signed({1'b0, note_out_run_row}) - 11'sd3;
@@ -1472,6 +1503,7 @@ module basic_pitch_pcm_pipeline #(
                     end else state <= S_START_ONSET;
                 end
                 S_PREP_ONSET_OUT: begin
+                    feature_tile_col<=0;feature_load_start_col<=-11'sd2;
                     if (USE_EXTERNAL_FEATURES && !USE_ALL_DDR) begin
                         feature_load_kind <= 2'd2;
                         feature_load_start_row <= $signed({1'b0, onset_out_run_row}) - 11'sd1;
@@ -1490,6 +1522,11 @@ module basic_pitch_pcm_pipeline #(
                 end
                 S_LOAD_WEIGHT: state <= S_WAIT_WEIGHT;
                 S_WAIT_WEIGHT: if (weight_cache_done) state <= weight_target;
+                S_NEXT_FEATURE_TILE: begin
+                    feature_tile_col<=feature_tile_col+9'(FEATURE_TILE_COLS);
+                    feature_load_start_col<=$signed({2'b0,feature_tile_col})+11'(FEATURE_TILE_COLS)-11'sd2;
+                    state<=S_FEATURE_CACHE;
+                end
                 S_FEATURE_CACHE: state <= S_WAIT_FEATURE;
                 S_WAIT_FEATURE: if (feature_cache_done) state <= feature_target;
                 S_DP: begin

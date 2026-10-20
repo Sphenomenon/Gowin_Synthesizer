@@ -1,5 +1,11 @@
 # 主会话模式 D 接入合同
 
+2026-10-19题目补充：用户已提供选题二全文，并明确D采样器、TF PCM可作为合规实时发声，禁止的是直接播放预处理音乐。D／TF继续保留，不因PCM格式一概排除；既有single_note／single_hit导入审核与回录范围不扩展。完整采样器9个RTL测试、5个导入工具测试、5个模块lint本次通过；这不表示D已接入整机或完整25K设备已落地。原文、补充解释和计分／I2S／延迟差异见[赛题验收对照](../../reports/CONTEST_REQUIREMENTS_20261019.md)。
+
+2026-10-19范围补充：用户明确该独立后端作为25K的EP-133式现场演奏候选基础；4×4演奏／效果上下文、播放中独立组合开关为产品目标。现有`sampler_push`及本文Push布局属于历史候选，不是25K已定接口；旧草案的D模式／CC80／CC89扩展亦未获具体入口确认，现有A/B/C语义保持。题目约束和可借鉴候选见[现场演奏范围](../../reports/GW25K_PERFORMANCE_SCOPE_20261019.md)。最新独立D新增8种效果组合／播放持续验证通过；不代表整机或25K设备已接入。
+
+2026-10-18：本页为后续接入草案，D仍未接整机。本批只将独立效果改为逻辑CC20／21／22并做离线回归；曲谱110／111／112和Push物理CC映射不变。当前模式循环是CC89，CC90用于现场矢量；下述D模式扩展未实施，每次切入D是否清零待定。
+
 这里给出接入 `rtl/audio/gw138k_event_workstation.sv`、workstation DDR arbiter 与 Push 显示的具体位置。该文件已有工作区修改，本交付不替换它。不得将已有 `tf_workstation_audio_bridge` 的文件 PCM takeover mux 接入模式 D。
 
 ## 音频／事件端口
@@ -24,7 +30,7 @@
 | storage_* | sampler_storage唯一写客户端；不与voice read争用业务数据线 |
 | req_*/rsp_* | 整包CDC到DDR域，外层arbiter回传原tag，read与write都必须完成确认 |
 | pcm_valid/l/r | PCM16扩成Q1.31，进入统一混音与P10效果，不直接抢DAC |
-| delay_send | CC112瞬时绑定到现有P10 delay的wet/send控制 |
+| delay_send | CC22瞬时绑定到现有P10 delay的wet/send控制 |
 | active_mask/count | D状态／模式提交判断／屏幕，不复用legacy allocated数组 |
 | deadline_misses,max_latency,ddr_beats,seq_jitter_samples | 状态和数值证据计数器，不能tie-off |
 | voice_error/ddr_error/seq_error | 显式UI错误，必要时CC120；不能只看audio nonzero |
@@ -35,13 +41,13 @@
 
 当前文件在 requested_mode/mode_cycle_base 处已有2-bit模式；宽度足以表示D，但旧 `unified_oscillator_engine` 只认识A/B/C，不能把3直接写入它。
 
-1. 在 workstation 加 `logic [1:0] committed_mode`，`mode_o=committed_mode`。旧core的current_mode单独改名 `legacy_current_mode`。CC80把`b<3`改为`b<4`；CC90循环边界2改为3。初始化保持C=2。
+1. 在 workstation 加 `logic [1:0] committed_mode`，`mode_o=committed_mode`。旧core的current_mode单独改名 `legacy_current_mode`。CC80把`b<3`改为`b<4`；CC89循环边界2改为3。初始化保持C=2。
 2. `mode_pending` 仍只记录请求，不立即改变当前音频路由。请求时撤销sequencer transport，给所有现存voice发graceful release（D用CC123可覆盖one-shot；A/B/C沿用现有逐voice release/sustain清理）。停止新的note-on并清held/sustain/deferred bookkeeping；NOTE_OFF/PANIC仍处理。允许新模式note-on必须等commit，不能排队无限延迟旧键。
 3. 提交条件增加 `sampler_active_count==0`、legacy active_count==0、vec_active==0，且旧帧无pending、无held joined结果、effects可接下一帧。与原先`!pending && !sample_ce_i`边界结合。不要以只有held_notes==0代替voice尾音消失。
 4. A/B/C目标继续走旧core `mode_set_valid/ready`。D目标无需向旧core发非法3，而在全部尾音结束且帧边界空闲时更新committed_mode=3。D离开时先stop+CC123，等D active_count=0，再对legacy提交A/B/C。每次提交给sampler一次restart清除缓存／队列和epoch。
 5. mode_pending只在真正commit时清，不以“请求已发”清；保持同尾音等待期内新的requested_mode覆盖旧请求。PANIC可以立即归零各引擎／P10历史并完成待切模式。
 
-原 `mode_valid` 所在块、`dispatch` always_comb、CC80/CC90 switch 三处是patch点。原 `full` 与 `allocated` 只描述legacy；D不要让legacyfull提前吞掉采样事件。当前Cue注册事件已经18-bit，D可共用该边界，但主会话需决定cue与sampler pattern同时运行的控制优先级，不能双重派发同事件。
+原 `mode_valid` 所在块、`dispatch` always_comb、CC80/CC89 switch 三处是patch点。原 `full` 与 `allocated` 只描述legacy；D不要让legacyfull提前吞掉采样事件。当前Cue注册事件已经18-bit，D可共用该边界，但主会话需决定cue与sampler pattern同时运行的控制优先级，不能双重派发同事件。
 
 ## 同一采样帧派发／混音
 
@@ -60,7 +66,7 @@ wire effects_valid = committed_mode==2'd3 ? sampler_joined : (synth_joined && ve
 
 给 `stereo_effects` 的vector左右或独立新增stereo synth输入接D结果；D时legacy mono synth与外部PCM gain必须0，sampler gain与现有volume/expression串联。不要接 `pcm_left_i/right_i` 的TF媒体信号。FX有效后清sampler_joined，与原join一致，并把它加入core_ce/backpressure和commit条件。D对PANIC的清理同时清join、held_sampler、effect history。
 
-D的BitCrush/Drive在 `sampler_mode_d` 内；delay仍进已有P10 delay。CC110/111/112原值0释放瞬时效果，非零深度；不要把CC112当作独立新delay历史。P10的CC83等排队效果逻辑不应吃掉这三项瞬时CC。
+D的BitCrush/Drive在 `sampler_mode_d` 内；delay仍进已有P10 delay。CC20/21/22原值0释放瞬时效果，非零深度；不要把CC22当作独立新delay历史。P10的CC83等排队效果逻辑不应吃掉这三项瞬时CC。
 
 ## DDR仲裁／CDC
 

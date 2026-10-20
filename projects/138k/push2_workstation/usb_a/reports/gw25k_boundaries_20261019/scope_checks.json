@@ -1,0 +1,23 @@
+{
+  "gw138k_inputs_match_previous_regression": true,
+  "gw138k_production_inputs_sha256": {
+    "firmware.c": "1e8dd2999406097d1b6eb9766c92cdd0de2094d81b3788531b026d8bf3871403",
+    "gw25k_panel.h": "c205822eca308ae2b884fb10f0198bfb56ace95db41238de6c271e3a4d3ebfb7",
+    "rtl/push2_usb_a_control.sv": "b8af9064b4e658225727e71eb585b2c3b23456eef0c9cf0f9385ef4b16c471ca",
+    "rtl/audio/gw138k_usb_lifecycle_merge.sv": "b1f6965afa8a14d1521895cf498530ca0dc3e768b6eaabf3b3a7fefe7c2d3d90",
+    "rtl/audio/gw138k_event_workstation.sv": "02b0e5028e0747b5a88d71b2e4ca969c7665ca051b2faf91880847df08f40f50",
+    "rtl/audio/push2_controls.sv": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+    "rtl/display_data/push2_surface_pixels.sv": "9c23e006beb18c08ec9f05ff4b9712a95e8cb8045a5e4f5d093e9c2382aa3353",
+    "rtl/sampler/sampler_fx.sv": "013bce707bd9613baf6421b739d14cdf16570bbd4fb1dd5f1d026aeca5e03c9d"
+  },
+  "preserved_files_sha256": {
+    "工程架构报告.md": "7dc5b97ac7746d231cc544584766fee625295ac0d1c1270df09ab812728cf6bc",
+    "projects/138k/push2_workstation/usb_a/GW25K_PANEL.md": "6be622ff8a99813ca89a4674341bbe38fde7f19758307e99d5a556808a16dd06",
+    "projects/138k/push2_workstation/usb_a/LATEST_WORKSTATION.json": "8afb5f65b343064d0600d242c994ba8f9eaf5e1faca3f4d7ef6603c365f91fa7"
+  },
+  "source_import_manifest_unchanged": true,
+  "panel_endpoint_unchanged": true,
+  "board_config_unchanged": true,
+  "physical_constraints_unchanged": true,
+  "no_obj_dir_in_source_tree": true
+}

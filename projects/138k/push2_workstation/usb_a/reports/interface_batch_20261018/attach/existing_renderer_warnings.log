@@ -1,0 +1,6 @@
+%Warning-LATCH: migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:45:5: Latch inferred for signal 'tb_workstation_attach.dut.pixels.song_screen.charpos' (not all control paths of combinational always assign a value)
+%Warning-UNOPTFLAT: migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:40:15: Signal unoptimizable: Circular combinational logic: 'tb_workstation_attach.dut.pixels.character'
+%Warning-UNOPTFLAT: migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:30:10: Signal unoptimizable: Circular combinational logic: 'tb_workstation_attach.dut.pixels.song_screen.ink'
+%Warning-LATCH: migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:45:5: Latch inferred for signal 'tb_generic_midi.dut.pixels.song_screen.charpos' (not all control paths of combinational always assign a value)
+%Warning-UNOPTFLAT: migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:40:15: Signal unoptimizable: Circular combinational logic: 'tb_generic_midi.dut.pixels.character'
+%Warning-UNOPTFLAT: migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:30:10: Signal unoptimizable: Circular combinational logic: 'tb_generic_midi.dut.pixels.song_screen.ink'

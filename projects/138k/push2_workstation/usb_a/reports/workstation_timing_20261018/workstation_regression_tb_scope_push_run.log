@@ -1,0 +1,2 @@
+PASS scope_push pads, existing force curve, signed knobs, mute, scene arm, bend
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/scope_vec/tb_scope_push.sv:40: $finish called at 420000 (1ps)

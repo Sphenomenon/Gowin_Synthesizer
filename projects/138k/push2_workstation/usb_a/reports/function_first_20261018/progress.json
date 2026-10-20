@@ -1,0 +1,76 @@
+{
+  "started": "2026-10-18T23:35:28.415866+08:00",
+  "priority": "function_first_timing_deferred",
+  "prepare": "results/workstation_scope83_20261018_233422_592420",
+  "cnn_policy": "accepted_full83",
+  "hardware_tested": false,
+  "jobs": {
+    "gw25k_host": {
+      "returncode": 0,
+      "command": [
+        "/usr/bin/python3",
+        "sim/run_gw25k_panel.py",
+        "--output",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host"
+      ],
+      "log": "reports/function_first_20261018/gw25k_host.log"
+    },
+    "guide": {
+      "returncode": 1,
+      "command": [
+        "/usr/bin/python3",
+        "sim/run_pl_guide.py",
+        "--baseline",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_20261018_233422_592420/Prj1",
+        "--out",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/guide"
+      ],
+      "log": "reports/function_first_20261018/guide.log"
+    },
+    "d_controls": {
+      "returncode": 2,
+      "command": [
+        "/usr/bin/python3",
+        "sim/sampler/run.py",
+        "--test",
+        "tb_sampler_controls",
+        "--out",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/d_controls"
+      ],
+      "log": "reports/function_first_20261018/d_controls.log"
+    },
+    "d_mode": {
+      "returncode": 2,
+      "command": [
+        "/usr/bin/python3",
+        "sim/sampler/run.py",
+        "--test",
+        "tb_sampler_mode_d",
+        "--out",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/d_mode"
+      ],
+      "log": "reports/function_first_20261018/d_mode.log"
+    },
+    "attach": {
+      "returncode": 0,
+      "command": [
+        "/usr/bin/python3",
+        "sim/run_workstation_attach.py",
+        "--baseline",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_20261018_233422_592420/Prj1",
+        "--out",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/attach"
+      ],
+      "log": "reports/function_first_20261018/attach.log"
+    },
+    "full83_18_gates": {
+      "returncode": 0,
+      "command": [
+        "/usr/bin/python3",
+        "sim/scope_vec/run_current.py",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_20261018_233422_592420"
+      ],
+      "log": "reports/function_first_20261018/full83_18_gates.log"
+    }
+  }
+}

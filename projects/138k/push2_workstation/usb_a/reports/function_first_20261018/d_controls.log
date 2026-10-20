@@ -1,0 +1,2 @@
+usage: run.py [-h] [--test TEST]
+run.py: error: unrecognized arguments: --out /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/d_controls

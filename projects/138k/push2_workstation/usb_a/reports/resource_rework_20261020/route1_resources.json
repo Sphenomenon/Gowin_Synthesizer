@@ -1,0 +1,73 @@
+{
+  "build": "workstation_scope83_timing85_20261020_040804_176677",
+  "pnr_utilization": {
+    "used": 234,
+    "capacity": 340,
+    "primitive_breakdown": {
+      "SDPB": 171,
+      "SDPX9B": 19,
+      "pROM": 35,
+      "pROMX9": 9
+    }
+  },
+  "netlist_primitives": {
+    "u_usb_host": 36,
+    "u_push": 1,
+    "u_managed": 72,
+    "u_tf_audio": 5,
+    "u_music": 26,
+    "u_memory": 32,
+    "u_video": 46,
+    "u_boot_memory": 16
+  },
+  "synthesis": {
+    "syn_bsram": 197,
+    "top_level": {
+      "u_usb_host": 34,
+      "u_push": 1,
+      "u_managed": 58,
+      "u_tf_audio": 5,
+      "u_music": 23,
+      "u_memory": 16,
+      "u_video": 44,
+      "u_boot_memory": 16
+    }
+  },
+  "groups": {
+    "CNN feature cache": 5,
+    "Viterbi": 8,
+    "Recorder packets": 6,
+    "LED score cues": 4,
+    "Video scanout": 4,
+    "Reverb": 20,
+    "Chorus": 4,
+    "Other retained RAM": 183
+  },
+  "resources": {
+    "Logic": {
+      "used": 80167.0,
+      "capacity": 138240.0
+    },
+    "Register": {
+      "used": 45499.0,
+      "capacity": 139095.0
+    },
+    "CLS": {
+      "used": 56275.0,
+      "capacity": 69120.0
+    },
+    "BSRAM": {
+      "used": 234.0,
+      "capacity": 340.0
+    },
+    "DSP": {
+      "used": 155.5,
+      "capacity": 298.0
+    }
+  },
+  "evidence_sha256": {
+    "Prj1/impl/pnr/Prj1.rpt.txt": "4123db6d81bae52ea7d0c19df6737cd1bf2bf4edf92e82af50fd7c73df78cddf",
+    "Prj1/impl/pnr/Prj1.vo": "bf127e0e543552ef9adf5b57bc05d38f196e2c1c14ee828e520c6337f2262b81",
+    "Prj1/impl/gwsynthesis/Prj1_syn_rsc.xml": "976c4e7a12022b5afb8441d7ed87a0c621cbdbc0f86dc6ccf6e68cf08051fff8"
+  }
+}

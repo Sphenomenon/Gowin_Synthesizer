@@ -1,0 +1,245 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "synthesis_run": false,
+  "pnr_run": false,
+  "baseline": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261019_002422_673274/Prj1",
+  "scope": "current HDL synth + existing serial DAC witness",
+  "standard_i2s_satisfied": false,
+  "sensor_to_analog_latency_measured": false,
+  "sustained_hardware_timing_proven": false,
+  "inputs": "inputs_sha256.json",
+  "sample_rate_hz": 48000,
+  "active_audible_voices": 32,
+  "oscillator_samples_per_second": 1536000,
+  "oscillator_count_basis": "one independent phase/step/envelope voice per fundamental; mode A",
+  "spectrum_resolution_hz": 1.46484375,
+  "peaks": [
+    {
+      "midi": 60,
+      "expected_hz": 261.6255653005986,
+      "observed_hz": 262.20703125,
+      "relative_db": -0.8885006066858675,
+      "local_prominence_db": 42.013425722260955
+    },
+    {
+      "midi": 61,
+      "expected_hz": 277.1826309768721,
+      "observed_hz": 276.85546875,
+      "relative_db": -0.27718562750861403,
+      "local_prominence_db": 31.804612896296597
+    },
+    {
+      "midi": 62,
+      "expected_hz": 293.6647679174076,
+      "observed_hz": 292.96875,
+      "relative_db": -1.2788034702015354,
+      "local_prominence_db": 31.28879796987615
+    },
+    {
+      "midi": 63,
+      "expected_hz": 311.1269837220809,
+      "observed_hz": 310.546875,
+      "relative_db": -0.8845460524144788,
+      "local_prominence_db": 40.97349563189062
+    },
+    {
+      "midi": 64,
+      "expected_hz": 329.6275569128699,
+      "observed_hz": 329.58984375,
+      "relative_db": -0.0004402629146501671,
+      "local_prominence_db": 48.673598822787255
+    },
+    {
+      "midi": 65,
+      "expected_hz": 349.2282314330039,
+      "observed_hz": 348.6328125,
+      "relative_db": -0.9311199883406586,
+      "local_prominence_db": 47.742919097361245
+    },
+    {
+      "midi": 66,
+      "expected_hz": 369.9944227116344,
+      "observed_hz": 370.60546875,
+      "relative_db": -0.9818681493762735,
+      "local_prominence_db": 47.89815990197141
+    },
+    {
+      "midi": 67,
+      "expected_hz": 391.99543598174927,
+      "observed_hz": 392.578125,
+      "relative_db": -0.8916740555404289,
+      "local_prominence_db": 48.02326481894284
+    },
+    {
+      "midi": 68,
+      "expected_hz": 415.3046975799451,
+      "observed_hz": 416.015625,
+      "relative_db": -1.3359077467370368,
+      "local_prominence_db": 52.289897274825
+    },
+    {
+      "midi": 69,
+      "expected_hz": 440.0,
+      "observed_hz": 439.453125,
+      "relative_db": -0.7835832932983569,
+      "local_prominence_db": 52.92574378228573
+    },
+    {
+      "midi": 70,
+      "expected_hz": 466.1637615180899,
+      "observed_hz": 465.8203125,
+      "relative_db": -0.30447208985001656,
+      "local_prominence_db": 58.654822587072026
+    },
+    {
+      "midi": 71,
+      "expected_hz": 493.8833012561241,
+      "observed_hz": 493.65234375,
+      "relative_db": -0.13499336480450044,
+      "local_prominence_db": 63.796914117260364
+    },
+    {
+      "midi": 72,
+      "expected_hz": 523.2511306011972,
+      "observed_hz": 522.94921875,
+      "relative_db": -0.2339754712342026,
+      "local_prominence_db": 62.0165714804031
+    },
+    {
+      "midi": 73,
+      "expected_hz": 554.3652619537442,
+      "observed_hz": 553.7109375,
+      "relative_db": -1.1280235356403854,
+      "local_prominence_db": 57.752549401086654
+    },
+    {
+      "midi": 74,
+      "expected_hz": 587.3295358348151,
+      "observed_hz": 587.40234375,
+      "relative_db": -0.00877542457378701,
+      "local_prominence_db": 70.5041528691365
+    },
+    {
+      "midi": 75,
+      "expected_hz": 622.2539674441618,
+      "observed_hz": 622.55859375,
+      "relative_db": -0.238189526181897,
+      "local_prominence_db": 61.3020872604642
+    },
+    {
+      "midi": 76,
+      "expected_hz": 659.2551138257398,
+      "observed_hz": 659.1796875,
+      "relative_db": -0.010008832115795549,
+      "local_prominence_db": 73.23329456121718
+    },
+    {
+      "midi": 77,
+      "expected_hz": 698.4564628660078,
+      "observed_hz": 698.73046875,
+      "relative_db": -0.19158483252383104,
+      "local_prominence_db": 62.07903981652788
+    },
+    {
+      "midi": 78,
+      "expected_hz": 739.9888454232688,
+      "observed_hz": 739.74609375,
+      "relative_db": -0.14929545753416074,
+      "local_prominence_db": 62.99116496770114
+    },
+    {
+      "midi": 79,
+      "expected_hz": 783.9908719634985,
+      "observed_hz": 783.69140625,
+      "relative_db": -0.2300302471959837,
+      "local_prominence_db": 61.3067168659586
+    },
+    {
+      "midi": 80,
+      "expected_hz": 830.6093951598903,
+      "observed_hz": 830.56640625,
+      "relative_db": 0.0,
+      "local_prominence_db": 75.11911649051814
+    },
+    {
+      "midi": 81,
+      "expected_hz": 880.0,
+      "observed_hz": 880.37109375,
+      "relative_db": -0.3563114841090975,
+      "local_prominence_db": 60.18041991430999
+    },
+    {
+      "midi": 82,
+      "expected_hz": 932.3275230361799,
+      "observed_hz": 931.640625,
+      "relative_db": -1.2453964701135425,
+      "local_prominence_db": 57.71904757201475
+    },
+    {
+      "midi": 83,
+      "expected_hz": 987.7666025122483,
+      "observed_hz": 987.3046875,
+      "relative_db": -0.5561414137845346,
+      "local_prominence_db": 58.78202110562079
+    },
+    {
+      "midi": 84,
+      "expected_hz": 1046.5022612023945,
+      "observed_hz": 1045.8984375,
+      "relative_db": -0.9580551025927776,
+      "local_prominence_db": 57.928788040086154
+    },
+    {
+      "midi": 85,
+      "expected_hz": 1108.7305239074883,
+      "observed_hz": 1108.88671875,
+      "relative_db": -0.05890886946433742,
+      "local_prominence_db": 66.55915361596874
+    },
+    {
+      "midi": 86,
+      "expected_hz": 1174.6590716696303,
+      "observed_hz": 1174.8046875,
+      "relative_db": -0.05054825149066737,
+      "local_prominence_db": 67.33932114370566
+    },
+    {
+      "midi": 87,
+      "expected_hz": 1244.5079348883237,
+      "observed_hz": 1245.1171875,
+      "relative_db": -0.9756868862574362,
+      "local_prominence_db": 57.793902630447455
+    },
+    {
+      "midi": 88,
+      "expected_hz": 1318.5102276514797,
+      "observed_hz": 1318.359375,
+      "relative_db": -0.05462913062592924,
+      "local_prominence_db": 67.0557621467713
+    },
+    {
+      "midi": 89,
+      "expected_hz": 1396.9129257320155,
+      "observed_hz": 1397.4609375,
+      "relative_db": -0.7867537946427587,
+      "local_prominence_db": 58.19127043362502
+    },
+    {
+      "midi": 90,
+      "expected_hz": 1479.9776908465376,
+      "observed_hz": 1479.4921875,
+      "relative_db": -0.6152658494881581,
+      "local_prominence_db": 58.67845799883224
+    },
+    {
+      "midi": 91,
+      "expected_hz": 1567.981743926997,
+      "observed_hz": 1567.3828125,
+      "relative_db": -0.9423758474183004,
+      "local_prominence_db": 57.882991434074114
+    }
+  ],
+  "frame_cycles": 1600,
+  "input_scope": "internal CPU event port; no USB/sensor emulation"
+}

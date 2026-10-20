@@ -1,0 +1,26 @@
+[
+  {
+    "ddr": 0,
+    "ddr_coeff": 0,
+    "passed": true,
+    "exit_code": 0
+  },
+  {
+    "ddr": 1,
+    "ddr_coeff": 0,
+    "passed": true,
+    "exit_code": 0
+  },
+  {
+    "ddr": 0,
+    "ddr_coeff": 1,
+    "passed": true,
+    "exit_code": 0
+  },
+  {
+    "ddr": 1,
+    "ddr_coeff": 1,
+    "passed": true,
+    "exit_code": 0
+  }
+]

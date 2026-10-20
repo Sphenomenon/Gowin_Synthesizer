@@ -1,0 +1,39 @@
+{
+  "checked": "2026-10-18T21:50:08.006129+08:00",
+  "checks": [
+    {
+      "name": "p34_source_boundary",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "python3",
+        "sim/test_current_workstation_sources.py"
+      ],
+      "negative_case": false
+    },
+    {
+      "name": "p34_timing_gate",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "python3",
+        "sim/timing/test_workstation_timing_gate.py"
+      ],
+      "negative_case": false
+    },
+    {
+      "name": "p34_require_equivalence_flag",
+      "passed": true,
+      "exit_code": 1,
+      "command": [
+        "python3",
+        "reports/workstation_timing_20261018/collect_evidence.py",
+        "results/timing_p34_vector_local_envelope_20261018_214554_355618",
+        "--prepare",
+        "results/workstation_scope83_timing85_20261018_214242_333215",
+        "--functional-only"
+      ],
+      "negative_case": true
+    }
+  ]
+}

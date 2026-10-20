@@ -1,0 +1,774 @@
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'panic_i'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:35:32: ... Location of port declaration
+   35 |     input  logic               panic_i,
+      |                                ^~~~~~~
+                     ... For warning description see https://verilator.org/warn/PINMISSING?v=5.046
+                     ... Use "/* verilator lint_off PINMISSING */" and lint_on around source to disable this message.
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'expression_valid_i'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:39:32: ... Location of port declaration
+   39 |     input  logic               expression_valid_i,
+      |                                ^~~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'expression_ready_o'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:40:32: ... Location of port declaration
+   40 |     output logic               expression_ready_o,
+      |                                ^~~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'expression_note_i'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:41:32: ... Location of port declaration
+   41 |     input  logic        [6:0]  expression_note_i,
+      |                                ^~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'expression_value_i'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:42:32: ... Location of port declaration
+   42 |     input  logic        [6:0]  expression_value_i,
+      |                                ^~~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:94:86: Instance has missing pin: 'event_off_note_i'
+   94 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:57:32: ... Location of port declaration
+   57 |     input  logic        [6:0]  event_off_note_i
+      |                                ^~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'clear_i'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:194:30: ... Location of port declaration
+  194 |     input logic clk_i,rst_ni,clear_i,valid_i,
+      |                              ^~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'mem_clk_i'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:204:17: ... Location of port declaration
+  204 |     input logic mem_clk_i,mem_rst_ni,
+      |                 ^~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'mem_rst_ni'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:204:27: ... Location of port declaration
+  204 |     input logic mem_clk_i,mem_rst_ni,
+      |                           ^~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'dwr_valid_o'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:205:18: ... Location of port declaration
+  205 |     output logic dwr_valid_o,
+      |                  ^~~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'dwr_data_o'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:206:25: ... Location of port declaration
+  206 |     output logic [64:0] dwr_data_o,
+      |                         ^~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'dwr_pop_i'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:207:17: ... Location of port declaration
+  207 |     input logic dwr_pop_i,
+      |                 ^~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'drd_push_i'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:208:17: ... Location of port declaration
+  208 |     input logic drd_push_i,
+      |                 ^~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'drd_data_i'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:209:24: ... Location of port declaration
+  209 |     input logic [64:0] drd_data_i,
+      |                        ^~~~~~~~~~
+%Warning-PINMISSING: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_workstation.sv:104:73: Instance has missing pin: 'drd_ready_o'
+  104 |   stereo_effects #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      |                                                                         ^~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:210:18: ... Location of port declaration
+  210 |     output logic drd_ready_o
+      |                  ^~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:240:86: Instance has missing pin: 'event_off_note_i'
+  240 |   unified_oscillator_engine #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) engine(
+      |                                                                                      ^~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:57:32: ... Location of port declaration
+   57 |     input  logic        [6:0]  event_off_note_i
+      |                                ^~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:253:20: Instance has missing pin: 'event_off_note_i'
+  253 |   scope_vec_engine vector_engine(
+      |                    ^~~~~~~~~~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/scope_vec/scope_vec_engine.sv:34:22: ... Location of port declaration
+   34 |     input wire [6:0] event_off_note_i
+      |                      ^~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:23:25: Instance has missing pin: 'score_ready'
+   23 |     push2_usb_a_control dut(.clk(clk),.reset_n(rn),.audio_clk(aclk),.audio_reset_n(rn),
+      |                         ^~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2_usb_a_control.sv:14:17: ... Location of port declaration
+   14 |     output wire score_ready,
+      |                 ^~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:23:25: Instance has missing pin: 'playlist_ready'
+   23 |     push2_usb_a_control dut(.clk(clk),.reset_n(rn),.audio_clk(aclk),.audio_reset_n(rn),
+      |                         ^~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2_usb_a_control.sv:17:17: ... Location of port declaration
+   17 |     output wire playlist_ready,
+      |                 ^~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:23:25: Instance has missing pin: 'track_launch'
+   23 |     push2_usb_a_control dut(.clk(clk),.reset_n(rn),.audio_clk(aclk),.audio_reset_n(rn),
+      |                         ^~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2_usb_a_control.sv:19:17: ... Location of port declaration
+   19 |     output wire track_launch,
+      |                 ^~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:23:25: Instance has missing pin: 'track_index'
+   23 |     push2_usb_a_control dut(.clk(clk),.reset_n(rn),.audio_clk(aclk),.audio_reset_n(rn),
+      |                         ^~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2_usb_a_control.sv:20:23: ... Location of port declaration
+   20 |     output wire [3:0] track_index,
+      |                       ^~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:40:30: Instance has missing pin: 'scope_status_o'
+   40 |     gw138k_event_workstation audio(.clk_i(aclk),.rst_ni(rn),
+      |                              ^~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv:41:24: ... Location of port declaration
+   41 |     output wire [31:0] scope_status_o,tf_scope_control_o,
+      |                        ^~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:40:30: Instance has missing pin: 'delay_dwr_valid_o'
+   40 |     gw138k_event_workstation audio(.clk_i(aclk),.rst_ni(rn),
+      |                              ^~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv:45:18: ... Location of port declaration
+   45 |     output logic delay_dwr_valid_o,
+      |                  ^~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:40:30: Instance has missing pin: 'delay_dwr_data_o'
+   40 |     gw138k_event_workstation audio(.clk_i(aclk),.rst_ni(rn),
+      |                              ^~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv:46:25: ... Location of port declaration
+   46 |     output logic [64:0] delay_dwr_data_o,
+      |                         ^~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:40:30: Instance has missing pin: 'delay_drd_ready_o'
+   40 |     gw138k_event_workstation audio(.clk_i(aclk),.rst_ni(rn),
+      |                              ^~~~~
+                     /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv:50:18: ... Location of port declaration
+   50 |     output logic delay_drd_ready_o
+      |                  ^~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:52:40: Instance has missing pin: 'scope_status_o'
+   52 |     gw138k_event_workstation_reference reference_audio(.clk_i(aclk),.rst_ni(rn),
+      |                                        ^~~~~~~~~~~~~~~
+                     /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:41:24: ... Location of port declaration
+   41 |     output wire [31:0] scope_status_o,tf_scope_control_o,
+      |                        ^~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:52:40: Instance has missing pin: 'delay_dwr_valid_o'
+   52 |     gw138k_event_workstation_reference reference_audio(.clk_i(aclk),.rst_ni(rn),
+      |                                        ^~~~~~~~~~~~~~~
+                     /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:45:18: ... Location of port declaration
+   45 |     output logic delay_dwr_valid_o,
+      |                  ^~~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:52:40: Instance has missing pin: 'delay_dwr_data_o'
+   52 |     gw138k_event_workstation_reference reference_audio(.clk_i(aclk),.rst_ni(rn),
+      |                                        ^~~~~~~~~~~~~~~
+                     /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:46:25: ... Location of port declaration
+   46 |     output logic [64:0] delay_dwr_data_o,
+      |                         ^~~~~~~~~~~~~~~~
+%Warning-PINMISSING: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:52:40: Instance has missing pin: 'delay_drd_ready_o'
+   52 |     gw138k_event_workstation_reference reference_audio(.clk_i(aclk),.rst_ni(rn),
+      |                                        ^~~~~~~~~~~~~~~
+                     /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:50:18: ... Location of port declaration
+   50 |     output logic delay_drd_ready_o
+      |                  ^~~~~~~~~~~~~~~~~
+%Warning-TIMESCALEMOD: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_math_pkg.sv:1:9: Timescale missing on this module as other modules have it (IEEE 1800-2023 3.14.2.3)
+    1 | package audio_math_pkg;
+      |         ^~~~~~~~~~~~~~
+                       /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/audio_capture_fifo.sv:4:8: ... Location of module with timescale
+    4 | module audio_capture_fifo #(parameter integer ADDRESS_BITS=8) (
+      |        ^~~~~~~~~~~~~~~~~~
+                       ... For warning description see https://verilator.org/warn/TIMESCALEMOD?v=5.046
+                       ... Use "/* verilator lint_off TIMESCALEMOD */" and lint_on around source to disable this message.
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/pitch_expression.sv:11:59: Operator DIV expects 64 bits on the RHS, but RHS's VARREF 'SAMPLE_RATE_HZ' generates 32 bits.
+                                                                                                                                                                                                                    : ... note: In instance 'tb_workstation_attach.reference_audio.pitch'
+   11 |   localparam logic [31:0] LFO_STEP = (64'd4294967296 * 5) / SAMPLE_RATE_HZ;
+      |                                                           ^
+                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=5.046
+                      ... Use "/* verilator lint_off WIDTHEXPAND */" and lint_on around source to disable this message.
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/pitch_expression.sv:11:27: Operator VAR 'LFO_STEP' expects 32 bits on the Initial value, but Initial value's DIV generates 64 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.pitch'
+   11 |   localparam logic [31:0] LFO_STEP = (64'd4294967296 * 5) / SAMPLE_RATE_HZ;
+      |                           ^~~~~~~~
+                     ... For warning description see https://verilator.org/warn/WIDTHTRUNC?v=5.046
+                     ... Use "/* verilator lint_off WIDTHTRUNC */" and lint_on around source to disable this message.
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:27:24: Operator ASSIGNW expects 4 bits on the Assign RHS, but Assign RHS's DIV generates 8 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   27 |     wire [3:0] list_row=(y-8'd28)/8'd16;
+      |                        ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:30:25: Operator ASSIGNW expects 7 bits on the Assign RHS, but Assign RHS's DIV generates 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   30 |     wire [6:0] list_char=(list_local_x-10'd32)/10'd12;
+      |                         ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:31:25: Operator ASSIGNW expects 7 bits on the Assign RHS, but Assign RHS's DIV generates 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   31 |     wire [6:0] song_char=(x-10'd96)/10'd12;
+      |                         ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:73:20: Operator ASSIGN expects 6 bits on the Assign RHS, but Assign RHS's DIV generates 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   73 |             charpos=(x-10'd24)/10'd12;
+      |                    ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:75:16: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   75 |             row=(y-5)/2;col=((x-24)%12)/2;draw=1;
+      |                ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:75:28: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   75 |             row=(y-5)/2;col=((x-24)%12)/2;draw=1;
+      |                            ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:77:20: Operator ASSIGN expects 6 bits on the Assign RHS, but Assign RHS's DIV generates 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   77 |             charpos=(x-10'd700)/10'd12;
+      |                    ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:79:16: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   79 |             row=(y-5)/2;col=((x-700)%12)/2;draw=1;
+      |                ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:79:28: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   79 |             row=(y-5)/2;col=((x-700)%12)/2;draw=1;
+      |                            ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:85:20: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   85 |                 row=((y-28)%16)/2;col=((list_local_x-32)%12)/2;draw=1;
+      |                    ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:85:38: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   85 |                 row=((y-28)%16)/2;col=((list_local_x-32)%12)/2;draw=1;
+      |                                      ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:93:20: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   93 |                 row=(y-32)/2;col=((x-96)%12)/2;draw=1;
+      |                    ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:93:33: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   93 |                 row=(y-32)/2;col=((x-96)%12)/2;draw=1;
+      |                                 ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:95:24: Operator ASSIGN expects 6 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   95 |                 charpos=(x-96)/12;
+      |                        ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:97:20: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   97 |                 row=(y-58)/2;col=((x-96)%12)/2;draw=1;
+      |                    ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:97:33: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   97 |                 row=(y-58)/2;col=((x-96)%12)/2;draw=1;
+      |                                 ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:99:24: Operator ASSIGN expects 6 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 10 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+   99 |                 charpos=(x-96)/12;
+      |                        ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:101:20: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                             : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+  101 |                 row=(y-82)/2;col=((x-96)%12)/2;draw=1;
+      |                    ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:101:33: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 10 bits.
+                                                                                                                                             : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+  101 |                 row=(y-82)/2;col=((x-96)%12)/2;draw=1;
+      |                                 ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:103:24: Operator ASSIGN expects 6 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 10 bits.
+                                                                                                                                             : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+  103 |                 charpos=(x-24)/12;
+      |                        ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:106:24: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                             : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+  106 |                     row=(y-120)/2;col=((x-24)%12)/2;draw=1;
+      |                        ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv:106:38: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 10 bits.
+                                                                                                                                             : ... note: In instance 'tb_workstation_attach.dut.pixels.song_screen'
+  106 |                     row=(y-120)/2;col=((x-24)%12)/2;draw=1;
+      |                                      ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv:137:45: Operator FUNCREF 'rshift' expects 64 bits on the Function Argument, but Function Argument's SIGNED generates 32 bits.
+                                                                                                                                                              : ... note: In instance 'tb_workstation_attach.reference_audio.effects.delay_stage'
+  137 |           feedback_wide_l<=$signed(input_l)+rshift($signed(frames>=ECHO_SAMPLES?read_l:32'sd0),1);
+      |                                             ^~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv:137:44: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                              : ... note: In instance 'tb_workstation_attach.reference_audio.effects.delay_stage'
+  137 |           feedback_wide_l<=$signed(input_l)+rshift($signed(frames>=ECHO_SAMPLES?read_l:32'sd0),1);
+      |                                            ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv:138:45: Operator FUNCREF 'rshift' expects 64 bits on the Function Argument, but Function Argument's SIGNED generates 32 bits.
+                                                                                                                                                              : ... note: In instance 'tb_workstation_attach.reference_audio.effects.delay_stage'
+  138 |           feedback_wide_r<=$signed(input_r)+rshift($signed(frames>=ECHO_SAMPLES?read_r:32'sd0),1);state<=3;
+      |                                             ^~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv:138:44: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                              : ... note: In instance 'tb_workstation_attach.reference_audio.effects.delay_stage'
+  138 |           feedback_wide_r<=$signed(input_r)+rshift($signed(frames>=ECHO_SAMPLES?read_r:32'sd0),1);state<=3;
+      |                                            ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv:142:37: Operator FUNCREF 'rshift' expects 64 bits on the Function Argument, but Function Argument's VARREF 'product_l' generates 49 bits.
+                                                                                                                                                              : ... note: In instance 'tb_workstation_attach.reference_audio.effects.delay_stage'
+  142 |           mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=4;
+      |                                     ^~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv:142:36: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                              : ... note: In instance 'tb_workstation_attach.reference_audio.effects.delay_stage'
+  142 |           mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=4;
+      |                                    ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv:142:84: Operator FUNCREF 'rshift' expects 64 bits on the Function Argument, but Function Argument's VARREF 'product_r' generates 49 bits.
+                                                                                                                                                              : ... note: In instance 'tb_workstation_attach.reference_audio.effects.delay_stage'
+  142 |           mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=4;
+      |                                                                                    ^~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv:142:83: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                              : ... note: In instance 'tb_workstation_attach.reference_audio.effects.delay_stage'
+  142 |           mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=4;
+      |                                                                                   ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:148:59: Operator SUB expects 32 bits on the LHS, but LHS's VARREF 'pointer' generates 11 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  148 |     if(!clear_i && state==1) begin read_a<=comb_a[(pointer-COMB_A)&11'h7ff];read_b<=comb_b[(pointer-COMB_B)&11'h7ff];end
+      |                                                           ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:148:67: Operator AND expects 32 bits on the RHS, but RHS's CONST '11'h7ff' generates 11 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  148 |     if(!clear_i && state==1) begin read_a<=comb_a[(pointer-COMB_A)&11'h7ff];read_b<=comb_b[(pointer-COMB_B)&11'h7ff];end
+      |                                                                   ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:148:100: Operator SUB expects 32 bits on the LHS, but LHS's VARREF 'pointer' generates 11 bits.
+                                                                                                                                                                                                                    : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  148 |     if(!clear_i && state==1) begin read_a<=comb_a[(pointer-COMB_A)&11'h7ff];read_b<=comb_b[(pointer-COMB_B)&11'h7ff];end
+      |                                                                                                    ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:148:108: Operator AND expects 32 bits on the RHS, but RHS's CONST '11'h7ff' generates 11 bits.
+                                                                                                                                                                                                                    : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  148 |     if(!clear_i && state==1) begin read_a<=comb_a[(pointer-COMB_A)&11'h7ff];read_b<=comb_b[(pointer-COMB_B)&11'h7ff];end
+      |                                                                                                            ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:164:59: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  164 |         3:begin damping_a<=sat31(rshift($signed(damping_a)+$signed(rv_a),1));damping_b<=sat31(rshift($signed(damping_b)+$signed(rv_b),1));state<=4;end
+      |                                                           ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:164:59: Operator ADD expects 64 bits on the RHS, but RHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  164 |         3:begin damping_a<=sat31(rshift($signed(damping_a)+$signed(rv_a),1));damping_b<=sat31(rshift($signed(damping_b)+$signed(rv_b),1));state<=4;end
+      |                                                           ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:164:120: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                    : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  164 |         3:begin damping_a<=sat31(rshift($signed(damping_a)+$signed(rv_a),1));damping_b<=sat31(rshift($signed(damping_b)+$signed(rv_b),1));state<=4;end
+      |                                                                                                                        ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:164:120: Operator ADD expects 64 bits on the RHS, but RHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                    : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  164 |         3:begin damping_a<=sat31(rshift($signed(damping_a)+$signed(rv_a),1));damping_b<=sat31(rshift($signed(damping_b)+$signed(rv_b),1));state<=4;end
+      |                                                                                                                        ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:166:51: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  166 |           feedback_wide_a<=rshift($signed(input_l)+$signed(input_r),2)+rshift($signed(damping_a)*64'sd3,2);
+      |                                                   ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:166:51: Operator ADD expects 64 bits on the RHS, but RHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  166 |           feedback_wide_a<=rshift($signed(input_l)+$signed(input_r),2)+rshift($signed(damping_a)*64'sd3,2);
+      |                                                   ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:167:51: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  167 |           feedback_wide_b<=rshift($signed(input_l)+$signed(input_r),2)+rshift($signed(damping_b)*64'sd3,2);
+      |                                                   ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:167:51: Operator ADD expects 64 bits on the RHS, but RHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  167 |           feedback_wide_b<=rshift($signed(input_l)+$signed(input_r),2)+rshift($signed(damping_b)*64'sd3,2);
+      |                                                   ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:172:37: Operator FUNCREF 'rshift' expects 64 bits on the Function Argument, but Function Argument's VARREF 'product_l' generates 49 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  172 |           mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=6;
+      |                                     ^~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:172:36: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  172 |           mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=6;
+      |                                    ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:172:84: Operator FUNCREF 'rshift' expects 64 bits on the Function Argument, but Function Argument's VARREF 'product_r' generates 49 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  172 |           mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=6;
+      |                                                                                    ^~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:172:83: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.reverb_stage'
+  172 |           mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=6;
+      |                                                                                   ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:97:80: Operator ASSIGNDLY expects 16 bits on the Assign RHS, but Assign RHS's VARREF 'CHORUS_BASE' generates 32 bits.
+                                                                                                                                                                                                                 : ... note: In instance 'tb_workstation_attach.reference_audio.effects.chorus_stage'
+   97 |       pointer<=0;read_address<=0;frames<=0;state<=0;gain<=0;lfo<=0;chorus_delay<=CHORUS_BASE;
+      |                                                                                ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:114:43: Operator FUNCREF 'rshift' expects 64 bits on the Function Argument, but Function Argument's VARREF 'product_l' generates 49 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.chorus_stage'
+  114 |         3:begin mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=4;end
+      |                                           ^~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:114:42: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.chorus_stage'
+  114 |         3:begin mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=4;end
+      |                                          ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:114:90: Operator FUNCREF 'rshift' expects 64 bits on the Function Argument, but Function Argument's VARREF 'product_r' generates 49 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.chorus_stage'
+  114 |         3:begin mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=4;end
+      |                                                                                          ^~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:114:89: Operator ADD expects 64 bits on the LHS, but LHS's SIGNED generates 32 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects.chorus_stage'
+  114 |         3:begin mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=4;end
+      |                                                                                         ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:262:42: Logical operator COND expects 1 bit on the Conditional Test, but Conditional Test's VARREF 'VECTOR_ENABLE' generates 32 bits.
+                                                                                                                                                                                                                  : ... note: In instance 'tb_workstation_attach.reference_audio.effects'
+  262 |           input_vl<=$signed(VECTOR_ENABLE?vector_left_i:32'sd0)*$signed({1'b0,sg});
+      |                                          ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:263:42: Logical operator COND expects 1 bit on the Conditional Test, but Conditional Test's VARREF 'VECTOR_ENABLE' generates 32 bits.
+                                                                                                                                                                                                                  : ... note: In instance 'tb_workstation_attach.reference_audio.effects'
+  263 |           input_vr<=$signed(VECTOR_ENABLE?vector_right_i:32'sd0)*$signed({1'b0,sg});
+      |                                          ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:270:41: Operator ADD expects 64 bits on the LHS, but LHS's VARREF 'input_s' generates 49 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects'
+  270 |         SCALE:begin input_mix_l<=input_s+input_l+input_vl;input_mix_r<=input_s+input_r+input_vr;state<=DRY;end
+      |                                         ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:270:41: Operator ADD expects 64 bits on the RHS, but RHS's VARREF 'input_l' generates 49 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects'
+  270 |         SCALE:begin input_mix_l<=input_s+input_l+input_vl;input_mix_r<=input_s+input_r+input_vr;state<=DRY;end
+      |                                         ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:270:49: Operator ADD expects 64 bits on the RHS, but RHS's VARREF 'input_vl' generates 49 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects'
+  270 |         SCALE:begin input_mix_l<=input_s+input_l+input_vl;input_mix_r<=input_s+input_r+input_vr;state<=DRY;end
+      |                                                 ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:270:79: Operator ADD expects 64 bits on the LHS, but LHS's VARREF 'input_s' generates 49 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects'
+  270 |         SCALE:begin input_mix_l<=input_s+input_l+input_vl;input_mix_r<=input_s+input_r+input_vr;state<=DRY;end
+      |                                                                               ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:270:79: Operator ADD expects 64 bits on the RHS, but RHS's VARREF 'input_r' generates 49 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects'
+  270 |         SCALE:begin input_mix_l<=input_s+input_l+input_vl;input_mix_r<=input_s+input_r+input_vr;state<=DRY;end
+      |                                                                               ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/stereo_effects.sv:270:87: Operator ADD expects 64 bits on the RHS, but RHS's VARREF 'input_vr' generates 49 bits.
+                                                                                                                                                                                                                   : ... note: In instance 'tb_workstation_attach.reference_audio.effects'
+  270 |         SCALE:begin input_mix_l<=input_s+input_l+input_vl;input_mix_r<=input_s+input_r+input_vr;state<=DRY;end
+      |                                                                                       ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:35:20: Operator ASSIGNW expects 4 bits on the Assign RHS, but Assign RHS's DIV generates 10 bits.
+                                                                                                                                                      : ... note: In instance 'tb_workstation_attach.dut.pixels'
+   35 |     wire [3:0] tile=x/10'd120;
+      |                    ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:36:23: Operator ASSIGNW expects 7 bits on the Assign RHS, but Assign RHS's MODDIV generates 10 bits.
+                                                                                                                                                      : ... note: In instance 'tb_workstation_attach.dut.pixels'
+   36 |     wire [6:0] local_x=x%10'd120;
+      |                       ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:37:23: Operator ASSIGNW expects 4 bits on the Assign RHS, but Assign RHS's DIV generates 7 bits.
+                                                                                                                                                      : ... note: In instance 'tb_workstation_attach.dut.pixels'
+   37 |     wire [3:0] charpos=local_x/7'd12;
+      |                       ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:38:19: Operator ASSIGNW expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 7 bits.
+                                                                                                                                                      : ... note: In instance 'tb_workstation_attach.dut.pixels'
+   38 |     wire [2:0] col=(local_x%7'd12)/2;
+      |                   ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:92:47: Operator LT expects 32 bits on the LHS, but LHS's VARREF 'x' generates 10 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+   92 |                 gx=4'(cell_index);grid_x_ink=x<736+cell_index*26+22;
+      |                                               ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:91:17: Operator GTE expects 32 bits on the LHS, but LHS's VARREF 'x' generates 10 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+   91 |             if(x>=736+cell_index*26 && x<736+(cell_index+1)*26) begin
+      |                 ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:91:41: Operator LT expects 32 bits on the LHS, but LHS's VARREF 'x' generates 10 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+   91 |             if(x>=736+cell_index*26 && x<736+(cell_index+1)*26) begin
+      |                                         ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:95:47: Operator LT expects 32 bits on the LHS, but LHS's VARREF 'y' generates 8 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+   95 |                 gy=4'(cell_index);grid_y_ink=y<40+cell_index*10+7;
+      |                                               ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:94:17: Operator GTE expects 32 bits on the LHS, but LHS's VARREF 'y' generates 8 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+   94 |             if(y>=40+cell_index*10 && y<40+(cell_index+1)*10) begin
+      |                 ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:94:40: Operator LT expects 32 bits on the LHS, but LHS's VARREF 'y' generates 8 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+   94 |             if(y>=40+cell_index*10 && y<40+(cell_index+1)*10) begin
+      |                                        ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:101:27: Operator ASSIGN expects 8 bits on the Assign RHS, but Assign RHS's SEL generates 7 bits.
+                                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  101 |         case(tile)0:number=cs[30:24];1:number={1'b0,op[10:4]};2:number={1'b0,op[17:11]};
+      |                           ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:104:37: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  104 |             text=top_label(tile);row=(y-8)/2;draw=1;
+      |                                     ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:105:34: Operator EQ expects 4 bits on the LHS, but LHS's SEL generates 2 bits.
+                                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  105 |             active=tile<3?cs[4:3]==tile:cs[9:7]==tile-3;
+      |                                  ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:105:48: Operator EQ expects 32 or 4 bits on the LHS, but LHS's SEL generates 3 bits.
+                                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  105 |             active=tile<3?cs[4:3]==tile:cs[9:7]==tile-3;
+      |                                                ^~
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:109:16: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  109 |             row=(y-26)/2;draw=1;
+      |                ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:112:40: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  112 |             text=bottom_label(tile);row=(y-134)/2;draw=1;
+      |                                        ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:113:65: Bit extraction of var[2:0] requires 2 bit index, not 4 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  113 |             active=tile<3?(display_meta_seen?display_effect_mask[tile]:cs[tile]):tile<7?cs[6:5]==tile-3:1;
+      |                                                                 ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:113:74: Bit extraction of var[31:0] requires 5 bit index, not 4 bits.
+                                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  113 |             active=tile<3?(display_meta_seen?display_effect_mask[tile]:cs[tile]):tile<7?cs[6:5]==tile-3:1;
+      |                                                                          ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:113:96: Operator EQ expects 32 or 4 bits on the LHS, but LHS's SEL generates 2 bits.
+                                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  113 |             active=tile<3?(display_meta_seen?display_effect_mask[tile]:cs[tile]):tile<7?cs[6:5]==tile-3:1;
+      |                                                                                                ^~
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:117:16: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  117 |             row=(y-42)/2;draw=1;
+      |                ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:119:37: Operator DIV expects 32 bits on the LHS, but LHS's VARREF 'number' generates 8 bits.
+                                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  119 |             text={8'd32,8'(48+number/100),8'(48+(number/10)%10),8'(48+number%10),48'h202020202020};
+      |                                     ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:119:56: Operator DIV expects 32 bits on the LHS, but LHS's VARREF 'number' generates 8 bits.
+                                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  119 |             text={8'd32,8'(48+number/100),8'(48+(number/10)%10),8'(48+number%10),48'h202020202020};
+      |                                                        ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:119:77: Operator MODDIV expects 32 bits on the LHS, but LHS's VARREF 'number' generates 8 bits.
+                                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  119 |             text={8'd32,8'(48+number/100),8'(48+(number/10)%10),8'(48+number%10),48'h202020202020};
+      |                                                                             ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv:120:16: Operator ASSIGN expects 3 bits on the Assign RHS, but Assign RHS's DIV generates 32 or 8 bits.
+                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.pixels'
+  120 |             row=(y-74)/2;draw=1;active=1;
+      |                ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/push2_controls.sv:114:124: Operator ADD expects 32 bits on the LHS, but LHS's VARREF 'scope_destination' generates 7 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.controls'
+  114 |                           77:begin scope_destination<=(scope_destination+b)&7;event_data<={4'd2,7'd91,7'((scope_destination+b)&7)};end
+      |                                                                                                                            ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/push2_controls.sv:114:124: Operator ADD expects 32 bits on the RHS, but RHS's VARREF 'b' generates 7 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.controls'
+  114 |                           77:begin scope_destination<=(scope_destination+b)&7;event_data<={4'd2,7'd91,7'((scope_destination+b)&7)};end
+      |                                                                                                                            ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_lights.sv:16:71: Bit extraction of var[63:0] requires 6 bit index, not 7 bits.
+                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.lights'
+   16 |             if(!clear_guide && !guide_changed && scan<64 && guide_mask[scan]) color=126;
+      |                                                                       ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_lights.sv:22:54: Bit extraction of var[31:0] requires 5 bit index, not 7 bits.
+                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.lights'
+   22 |             if(score_running && scan<32 && score_mask[scan])color=126;
+      |                                                      ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_lights.sv:23:20: Bit extraction of var[63:0] requires 6 bit index, not 7 bits.
+                                                                                                                                       : ... note: In instance 'tb_workstation_attach.dut.lights'
+   23 |             if(held[scan])color=122;
+      |                    ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_lights.sv:24:47: Operator EQ expects 32 or 7 bits on the LHS, but LHS's SEL generates 2 bits.
+                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.lights'
+   24 |         end else if(scan<67)color=control[4:3]==scan-64?126:1;
+      |                                               ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_lights.sv:25:43: Operator EQ expects 32 or 7 bits on the LHS, but LHS's SEL generates 3 bits.
+                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.lights'
+   25 |         else if(scan<72)color=control[9:7]==scan-67?15:1;
+      |                                           ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_lights.sv:27:43: Operator EQ expects 32 or 7 bits on the LHS, but LHS's SEL generates 2 bits.
+                                                                                                                                        : ... note: In instance 'tb_workstation_attach.dut.lights'
+   27 |         else if(scan<79)color=control[6:5]==scan-75?15:1;
+      |                                           ^~
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_score_guide.sv:31:23: Bit extraction of var[63:0] requires 6 bit index, not 7 bits.
+                                                                                                                                            : ... note: In instance 'tb_workstation_attach.dut.u_guide'
+   31 |             guide_mask[target_note - 7'd36] = 1'b1;
+      |                       ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/push2/push2_playlist_hold.sv:26:25: Operator ASSIGNDLY expects 29 bits on the Assign RHS, but Assign RHS's CONST '1'h1' generates 1 bits.
+                                                                                                                                               : ... note: In instance 'tb_workstation_attach.dut.u_playlist_hold'
+   26 |                     hold<=1'b1;
+      |                         ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/input/midi_stream_decoder.sv:43:23: Operator LT expects 32 bits on the LHS, but LHS's VARREF 'count' generates 6 bits.
+                                                                                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.reference_audio.decoder'
+   43 |     if(push && (count < FIFO_DEPTH || pop)) fifo[wr]<=decoded;
+      |                       ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/input/midi_stream_decoder.sv:51:26: Operator LT expects 32 bits on the LHS, but LHS's VARREF 'count' generates 6 bits.
+                                                                                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.reference_audio.decoder'
+   51 |       if (push && (count < FIFO_DEPTH || pop)) begin
+      |                          ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/input/midi_stream_decoder.sv:54:29: Operator LT expects 32 bits on the LHS, but LHS's VARREF 'count' generates 6 bits.
+                                                                                                                                                                                                                       : ... note: In instance 'tb_workstation_attach.reference_audio.decoder'
+   54 |       case ({push && (count < FIFO_DEPTH || pop),pop})
+      |                             ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/pitch_expression.sv:39:55: Operator GT expects 22 bits on the RHS, but RHS's VARREF 'glide_step_q20_i' generates 16 bits.
+                                                                                                                                                                                                                    : ... note: In instance 'tb_workstation_attach.reference_audio.pitch'
+   39 |         glide_ratio <= target_ratio_q20_i-glide_ratio > glide_step_q20_i
+      |                                                       ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/pitch_expression.sv:40:27: Operator ADD expects 22 bits on the RHS, but RHS's VARREF 'glide_step_q20_i' generates 16 bits.
+                                                                                                                                                                                                                    : ... note: In instance 'tb_workstation_attach.reference_audio.pitch'
+   40 |             ? glide_ratio + glide_step_q20_i : target_ratio_q20_i;
+      |                           ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/pitch_expression.sv:41:58: Operator GT expects 22 bits on the RHS, but RHS's VARREF 'glide_step_q20_i' generates 16 bits.
+                                                                                                                                                                                                                    : ... note: In instance 'tb_workstation_attach.reference_audio.pitch'
+   41 |       else glide_ratio <= glide_ratio-target_ratio_q20_i > glide_step_q20_i
+      |                                                          ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/pitch_expression.sv:42:27: Operator SUB expects 22 bits on the RHS, but RHS's VARREF 'glide_step_q20_i' generates 16 bits.
+                                                                                                                                                                                                                    : ... note: In instance 'tb_workstation_attach.reference_audio.pitch'
+   42 |             ? glide_ratio - glide_step_q20_i : target_ratio_q20_i;
+      |                           ^
+%Warning-WIDTHEXPAND: /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:98:34: Operator COND expects 10 bits on the Conditional False, but Conditional False's REPLICATE generates 9 bits.
+                                                                                                        : ... note: In instance 'tb_workstation_attach.reference_audio'
+   98 |       .speed_q8_i(cue_speed==127 ? 10'd512 : {cue_speed,2'b00}),
+      |                                  ^
+%Warning-WIDTHEXPAND: /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:340:31: Operator COND expects 16 bits on the Conditional False, but Conditional False's REPLICATE generates 15 bits.
+                                                                                                         : ... note: In instance 'tb_workstation_attach.reference_audio'
+  340 |             7: volume<=b==127 ? 16'd32768 : {b,8'd0};
+      |                               ^
+%Warning-WIDTHEXPAND: /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:341:41: Operator COND expects 16 bits on the Conditional False, but Conditional False's REPLICATE generates 15 bits.
+                                                                                                         : ... note: In instance 'tb_workstation_attach.reference_audio'
+  341 |             11: expression_gain<=b==127 ? 16'd32768 : {b,8'd0};
+      |                                         ^
+%Warning-WIDTHEXPAND: /tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv:342:36: Operator COND expects 16 bits on the Conditional False, but Conditional False's REPLICATE generates 15 bits.
+                                                                                                         : ... note: In instance 'tb_workstation_attach.reference_audio'
+  342 |             16: pcm_gain_o<=b==127 ? 16'd32768 : {b,8'd0};
+      |                                    ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv:98:34: Operator COND expects 10 bits on the Conditional False, but Conditional False's REPLICATE generates 9 bits.
+                                                                                                                                                    : ... note: In instance 'tb_workstation_attach.audio'
+   98 |       .speed_q8_i(cue_speed==127 ? 10'd512 : {cue_speed,2'b00}),
+      |                                  ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv:344:31: Operator COND expects 16 bits on the Conditional False, but Conditional False's REPLICATE generates 15 bits.
+                                                                                                                                                     : ... note: In instance 'tb_workstation_attach.audio'
+  344 |             7: volume<=b==127 ? 16'd32768 : {b,8'd0};
+      |                               ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv:345:41: Operator COND expects 16 bits on the Conditional False, but Conditional False's REPLICATE generates 15 bits.
+                                                                                                                                                     : ... note: In instance 'tb_workstation_attach.audio'
+  345 |             11: expression_gain<=b==127 ? 16'd32768 : {b,8'd0};
+      |                                         ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv:346:36: Operator COND expects 16 bits on the Conditional False, but Conditional False's REPLICATE generates 15 bits.
+                                                                                                                                                     : ... note: In instance 'tb_workstation_attach.audio'
+  346 |             16: pcm_gain_o<=b==127 ? 16'd32768 : {b,8'd0};
+      |                                    ^
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:81:48: Logical operator LOGOR expects 1 bit on the LHS, but LHS's VARREF 'left' generates 32 bits.
+                                                                                                           : ... note: In instance 'tb_workstation_attach'
+   81 |         if(sample_valid)begin frames++;if(left || right)nonzero++;end
+      |                                                ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:81:48: Logical operator LOGOR expects 1 bit on the RHS, but RHS's VARREF 'right' generates 32 bits.
+                                                                                                           : ... note: In instance 'tb_workstation_attach'
+   81 |         if(sample_valid)begin frames++;if(left || right)nonzero++;end
+      |                                                ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:82:21: Logical operator LOGOR expects 1 bit on the LHS, but LHS's VARREF 'deadline' generates 32 bits.
+                                                                                                           : ... note: In instance 'tb_workstation_attach'
+   82 |         if(deadline || overflow || (drops && !ab_stress))$fatal(1,"audio fault deadline=%0d overflow=%0d drops=%0d",deadline,overflow,drops);
+      |                     ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:82:21: Logical operator LOGOR expects 1 bit on the RHS, but RHS's VARREF 'overflow' generates 32 bits.
+                                                                                                           : ... note: In instance 'tb_workstation_attach'
+   82 |         if(deadline || overflow || (drops && !ab_stress))$fatal(1,"audio fault deadline=%0d overflow=%0d drops=%0d",deadline,overflow,drops);
+      |                     ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:82:43: Logical operator LOGAND expects 1 bit on the LHS, but LHS's VARREF 'drops' generates 32 bits.
+                                                                                                           : ... note: In instance 'tb_workstation_attach'
+   82 |         if(deadline || overflow || (drops && !ab_stress))$fatal(1,"audio fault deadline=%0d overflow=%0d drops=%0d",deadline,overflow,drops);
+      |                                           ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:101:83: Logical operator LOGOR expects 1 bit on the RHS, but RHS's VARXREF 'vibrato_depth' generates 7 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  101 |            audio.bend_index!=128 || audio.sustain || audio.expression_gain!=32768 ||
+      |                                                                                   ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:102:32: Logical operator LOGOR expects 1 bit on the RHS, but RHS's VARXREF 'glide_cc' generates 7 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  102 |            audio.vibrato_depth || audio.glide_cc || route || audio.scope_enable ||
+      |                                ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:102:50: Logical operator LOGOR expects 1 bit on the RHS, but RHS's VARREF 'route' generates 2 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  102 |            audio.vibrato_depth || audio.glide_cc || route || audio.scope_enable ||
+      |                                                  ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:102:81: Logical operator LOGOR expects 1 bit on the RHS, but RHS's SEL generates 2 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  102 |            audio.vibrato_depth || audio.glide_cc || route || audio.scope_enable ||
+      |                                                                                 ^~
+%Warning-WIDTHEXPAND: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:122:36: Operator ASSIGN expects 32 bits on the Assign RHS, but Assign RHS's VARREF 'epoch' generates 10 bits.
+                                                                                                             : ... note: In instance 'tb_workstation_attach'
+  122 |         integer old_epoch;old_epoch=epoch;put(0,0);wait(epoch!=old_epoch);
+      |                                    ^
+%Warning-WIDTHEXPAND: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:122:62: Operator NEQ expects 32 bits on the LHS, but LHS's VARREF 'epoch' generates 10 bits.
+                                                                                                             : ... note: In instance 'tb_workstation_attach'
+  122 |         integer old_epoch;old_epoch=epoch;put(0,0);wait(epoch!=old_epoch);
+      |                                                              ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:124:17: Logical operator LOGOR expects 1 bit on the LHS, but LHS's VARREF 'held' generates 128 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  124 |         if(held || audio.sustain || audio.deferred || audio.event_valid)$fatal(1,"stale event survived detach");
+      |                 ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:124:34: Logical operator LOGOR expects 1 bit on the RHS, but RHS's VARXREF 'deferred' generates 128 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  124 |         if(held || audio.sustain || audio.deferred || audio.event_valid)$fatal(1,"stale event survived detach");
+      |                                  ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:152:17: Logical operator LOGOR expects 1 bit on the LHS, but LHS's VARREF 'held' generates 128 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  152 |         if(held || audio.volume!=16'd8448 || profile!=1 || audio.bend_index!=144 ||
+      |                 ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:155:9: Logical operator IF expects 1 bit on the If, but If's VARXREF 'frames' generates 32 bits.
+                                                                                                           : ... note: In instance 'tb_workstation_attach'
+  155 |         if(dut.frames)$fatal(1,"test unexpectedly depended on screen");
+      |         ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:164:17: Logical operator LOGOR expects 1 bit on the LHS, but LHS's VARREF 'held' generates 128 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  164 |         if(held || audio.volume!=32768)$fatal(1,"old queued input replayed after reconnect");
+      |                 ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:170:9: Logical operator IF expects 1 bit on the If, but If's VARREF 'held' generates 128 bits.
+                                                                                                           : ... note: In instance 'tb_workstation_attach'
+  170 |         if(held)$fatal(1,"mid-init old note replayed");
+      |         ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:175:38: Logical operator LOGNOT expects 1 bit on the LHS, but LHS's VARREF 'held' generates 128 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  175 |         midi(2,120,0);consume=1;wait(!held);samples(3);
+      |                                      ^
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:180:51: Logical operator LOGNOT expects 1 bit on the LHS, but LHS's VARREF 'nonzero' generates 32 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  180 |         midi(1,63,100);samples(5);if(!held[63] || !nonzero)$fatal(1,"no PCM after init");
+      |                                                   ^
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:190:40: Logical operator IF expects 1 bit on the If, but If's VARREF 'held' generates 128 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  190 |         put(4,32'h003c8008);samples(2);if(held)$fatal(1,"first Push release lost");
+      |                                        ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:194:34: Logical operator LOGNOT expects 1 bit on the LHS, but LHS's VARREF 'held' generates 128 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  194 |         put(4,32'h7f1bb00b);wait(!held);samples(2);
+      |                                  ^
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:195:9: Logical operator IF expects 1 bit on the If, but If's VARXREF 'held' generates 64 bits.
+                                                                                                           : ... note: In instance 'tb_workstation_attach'
+  195 |         if(dut.held)$fatal(1,"Push panic failed");
+      |         ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:197:40: Logical operator IF expects 1 bit on the If, but If's VARREF 'held' generates 128 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  197 |         put(4,32'h003e8008);samples(2);if(held)$fatal(1,"Push release after panic lost");
+      |                                        ^~
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:206:56: Logical operator COND expects 1 bit on the Conditional Test, but Conditional Test's MODDIVS generates 32 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  206 |             midi(2,120,0);samples(1);midi(2,90,round%2 ? 127 : 0);samples(1);
+      |                                                        ^
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:208:113: Logical operator COND expects 1 bit on the Conditional Test, but Conditional Test's MODDIVS generates 32 bits.
+                                                                                                             : ... note: In instance 'tb_workstation_attach'
+  208 |             for(integer key=0;key<7;key++)midi(1,key==0?0:key==1?1:key==2?31:key==3?63:key==4?64:key==5?(round%2?94:126):(round%2?95:127),100);
+      |                                                                                                                 ^
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:208:130: Logical operator COND expects 1 bit on the Conditional Test, but Conditional Test's MODDIVS generates 32 bits.
+                                                                                                             : ... note: In instance 'tb_workstation_attach'
+  208 |             for(integer key=0;key<7;key++)midi(1,key==0?0:key==1?1:key==2?31:key==3?63:key==4?64:key==5?(round%2?94:126):(round%2?95:127),100);
+      |                                                                                                                                  ^
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:210:113: Logical operator COND expects 1 bit on the Conditional Test, but Conditional Test's MODDIVS generates 32 bits.
+                                                                                                             : ... note: In instance 'tb_workstation_attach'
+  210 |             for(integer key=0;key<7;key++)midi(0,key==0?0:key==1?1:key==2?31:key==3?63:key==4?64:key==5?(round%2?94:126):(round%2?95:127),0);
+      |                                                                                                                 ^
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:210:130: Logical operator COND expects 1 bit on the Conditional Test, but Conditional Test's MODDIVS generates 32 bits.
+                                                                                                             : ... note: In instance 'tb_workstation_attach'
+  210 |             for(integer key=0;key<7;key++)midi(0,key==0?0:key==1?1:key==2?31:key==3?63:key==4?64:key==5?(round%2?94:126):(round%2?95:127),0);
+      |                                                                                                                                  ^
+%Warning-WIDTHTRUNC: /tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv:212:13: Logical operator IF expects 1 bit on the If, but If's VARXREF 'deferred' generates 128 bits.
+                                                                                                            : ... note: In instance 'tb_workstation_attach'
+  212 |             if(audio.deferred)$fatal(1,"release did not clear deferred map");
+      |             ^~
+%Warning-UNSIGNED: /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv:141:34: Comparison is constant due to unsigned arithmetic
+                                                                                                                                                                                                                           : ... note: In instance 'tb_workstation_attach.reference_audio.engine'
+  141 |     assign release_matches[ev]=ev<=maximum_voice_index && allocated_mask_o[ev] &&
+      |                                  ^~
+                   ... For warning description see https://verilator.org/warn/UNSIGNED?v=5.046
+                   ... Use "/* verilator lint_off UNSIGNED */" and lint_on around source to disable this message.
+make: Entering directory '/tmp/workstation_timing_attach_20261018_p10c/tb_workstation_attach'
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -c -o verilated.o /usr/share/verilator/include/verilated.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -c -o verilated_timing.o /usr/share/verilator/include/verilated_timing.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -c -o verilated_threads.o /usr/share/verilator/include/verilated_threads.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -x c++-header Vtb_workstation_attach__pch.h -o Vtb_workstation_attach__pch.h.fast.gch
+g++   -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -x c++-header Vtb_workstation_attach__pch.h -o Vtb_workstation_attach__pch.h.slow.gch
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.fast -c -o Vtb_workstation_attach.o Vtb_workstation_attach.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.fast -c -o Vtb_workstation_attach___024root__0.o Vtb_workstation_attach___024root__0.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.fast -c -o Vtb_workstation_attach___024root__1.o Vtb_workstation_attach___024root__1.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.fast -c -o Vtb_workstation_attach___024root__2.o Vtb_workstation_attach___024root__2.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.fast -c -o Vtb_workstation_attach___024root__3.o Vtb_workstation_attach___024root__3.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.fast -c -o Vtb_workstation_attach___024root__4.o Vtb_workstation_attach___024root__4.cpp
+g++ -Os  -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.fast -c -o Vtb_workstation_attach__main.o Vtb_workstation_attach__main.cpp
+g++   -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.slow -c -o Vtb_workstation_attach__ConstPool__0__Slow.o Vtb_workstation_attach__ConstPool__0__Slow.cpp
+g++   -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.slow -c -o Vtb_workstation_attach___024root__Slow.o Vtb_workstation_attach___024root__Slow.cpp
+g++   -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.slow -c -o Vtb_workstation_attach___024root__0__Slow.o Vtb_workstation_attach___024root__0__Slow.cpp
+g++   -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.slow -c -o Vtb_workstation_attach___024root__1__Slow.o Vtb_workstation_attach___024root__1__Slow.cpp
+g++   -I. -Wall -Wextra -Wfloat-conversion -Wlogical-op -Werror -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVERILATOR=1 -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TIMING=1 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -DVM_TRACE_SAIF=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-int-in-bool-context -Wno-shadow -Wno-sign-compare -Wno-subobject-linkage -Wno-tautological-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable    -DVL_TIME_CONTEXT   -fcoroutines -include Vtb_workstation_attach__pch.h.slow -c -o Vtb_workstation_attach__Syms__Slow.o Vtb_workstation_attach__Syms__Slow.cpp
+g++    verilated.o verilated_timing.o verilated_threads.o Vtb_workstation_attach__ALL.a    -pthread -lpthread -latomic   -o Vtb_workstation_attach
+rm Vtb_workstation_attach__ALL.verilator_deplist.tmp
+make: Leaving directory '/tmp/workstation_timing_attach_20261018_p10c/tb_workstation_attach'
+- V e r i l a t i o n   R e p o r t: Verilator 5.046 2026-02-28 rev fedora-5.046
+- Verilator: Built from 6.017 MB sources in 53 modules, into 4.527 MB in 12 C++ files needing 0.015 MB
+- Verilator: Walltime 13.034 s (elab=0.044, cvt=0.556, bld=12.309); cpu 0.787 s on 4 threads; allocated 81.355 MB

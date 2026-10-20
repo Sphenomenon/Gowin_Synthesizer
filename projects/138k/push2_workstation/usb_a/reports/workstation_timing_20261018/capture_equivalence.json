@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "source_bound": true,
+  "project": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_043944_494587/Prj1",
+  "hardware_tested": false,
+  "log": "PASS capture_input_ab: cycles=30022/30022 snapshots=71/62, exact banks/peaks/metadata, raw and six-pole triggers, one-cycle input pipeline, resets\n/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/timing/tb_capture_input_ab.sv:53: $finish called at 300340000 (1ps)"
+}

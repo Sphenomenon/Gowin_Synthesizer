@@ -127,6 +127,7 @@ def main():
         # nn_ddr first: its include defines the BP_DDR_* macros the pipeline
         # copy references (single compilation unit, Gowin order preserved).
         sources = [str(SRC / 'basic_pitch_nn_ddr.sv'), str(sim_copy)] + others
+        sources.append(str(ROOT / 'rtl/memory/workstation_sdp.sv'))
         sources.append(str(HERE / 'tb_bp_config_ab.sv'))
         result = compile_tb(sim_copy, sources, GEN / 'tb_bp_config_ab.vvp')
         if result.returncode == 0:

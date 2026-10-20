@@ -1,0 +1,57 @@
+{
+  "build": "results/resource_timing_20261020_122446_658378",
+  "bsram": 197,
+  "feature_geometry_passed": true,
+  "synthesis_clock_estimates": [
+    {
+      "clock": "clk_50m",
+      "required_mhz": 50.0,
+      "synthesis_estimated_mhz": 63.563,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 76.8,
+      "synthesis_estimated_mhz": 80.254,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 48.0,
+      "synthesis_estimated_mhz": 66.359,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+      "required_mhz": 400.0,
+      "synthesis_estimated_mhz": 1487.018,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 50.0,
+      "synthesis_estimated_mhz": 346.464,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+      "required_mhz": 100.0,
+      "synthesis_estimated_mhz": 1617.337,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+      "required_mhz": 100.0,
+      "synthesis_estimated_mhz": 223.924,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+      "required_mhz": 148.5,
+      "synthesis_estimated_mhz": 236.558,
+      "estimate_meets_requirement": true
+    }
+  ],
+  "not_routed_evidence": true,
+  "hardware_tested": false
+}

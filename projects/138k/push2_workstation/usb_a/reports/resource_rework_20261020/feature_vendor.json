@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "vendor_model": true,
+  "log": "PASS feature cache: 30240 words checked, 17424 variable-latency DDR reads, five banks, all three layers, row/frequency halo boundaries\n- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_feature_vendor/tb.sv:37: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 1ms; walltime 0.131 s; speed 9.948 ms/s\n- Verilator: cpu 0.131 s on 1 threads; allocated 7 MB",
+  "icarus_vendor_also_passed": true
+}

@@ -1,0 +1,6 @@
+PASS audio feedback: 12 real MMIO snapshots, active/release-tail voices, requested vs committed mode, four routes checked against PCM, glide/sustain, reconnect defaults
+PASS attach: 6 default boundaries, ordered tap/CC7/program/bend/CC88/89, detach/reconnect cancellation, full-queue and init PANIC, TF/live/cue exit, no first-frame wait, GW25K guide isolation, Push epoch/volume/release, PCM=448
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/final/attach_feedback/source/sim/tb_workstation_attach.sv:232: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 11ms; walltime 3.101 s; speed 3.669 ms/s
+- Verilator: cpu 3.093 s on 1 threads; allocated 7 MB

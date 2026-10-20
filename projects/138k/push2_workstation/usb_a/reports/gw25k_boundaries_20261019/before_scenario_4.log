@@ -1,0 +1,3 @@
+METRIC pending_bend_reconnect_replay=0
+PASS tb_gw138k_panel_backpressure scenario=4
+sim/tb_gw138k_panel_backpressure.v:159: $finish called at 51460000 (1ps)

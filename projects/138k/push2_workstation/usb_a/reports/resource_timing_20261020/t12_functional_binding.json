@@ -1,0 +1,175 @@
+{
+  "build": "results/resource_timing_20261020_111212_369176",
+  "cases": {
+    "fifo_apb_services": {
+      "passed": true,
+      "report": "results/resource_timing_20261020_110314_988115/timing_units/verification.json",
+      "report_sha256": "7ed9f6117a3876c739e41f85175e9c0effc9345863ff20f9d16945699a3fbe75",
+      "input_manifest_sha256": null,
+      "tested_input_drift": [],
+      "candidate_differences": [],
+      "identical_candidate_inputs": [
+        "rtl/music/music_async_fifo.sv",
+        "src/ae350/gw138k_controlled_services.sv",
+        "src/migration/gw138k_apb_cdc.sv",
+        "src/usb_host/gw138k_usb_event_fifo.v"
+      ]
+    },
+    "gain_effect_chain": {
+      "passed": true,
+      "report": "results/resource_timing_20261020_110314_988115/gain_chain_ab/verification.json",
+      "report_sha256": "223cc98d9cc64b79f55aeebbb5814b28eae67393f9c91a156cc076680c13bafc",
+      "input_manifest_sha256": null,
+      "tested_input_drift": [],
+      "candidate_differences": [],
+      "identical_candidate_inputs": [
+        "legacy/rtl/audio/audio_math_pkg.sv",
+        "legacy/rtl/audio/stereo_effects.sv",
+        "rtl/audio/delay_ddr/delay_ddr_dma.sv",
+        "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv",
+        "rtl/audio/serial_spatial_reverb.sv",
+        "rtl/audio/spatial_room_preset.svh",
+        "rtl/memory/workstation_sdp.sv",
+        "rtl/memory/workstation_sdp_banked.sv",
+        "rtl/music/music_async_fifo.sv"
+      ]
+    },
+    "video_diagnostics": {
+      "passed": true,
+      "report": "results/resource_timing_20261020_110314_988115/video_diag_timing/verification.json",
+      "report_sha256": "31b3133f68bfcc8d325ed8b1cea215081866a35f9fc739b1d780f7bc7cb13963",
+      "input_manifest_sha256": null,
+      "tested_input_drift": [],
+      "candidate_differences": [],
+      "identical_candidate_inputs": [
+        "src/video/video_runtime_diagnostics.v"
+      ]
+    },
+    "tf_dma": {
+      "passed": true,
+      "report": "results/resource_timing_20261020_111212_369176/tf_dma_timing/verification.json",
+      "report_sha256": "65369365cd123266977085875f249ab89ba03326ee7c839c7780a1b047e516d6",
+      "input_manifest_sha256": null,
+      "tested_input_drift": [],
+      "candidate_differences": [],
+      "identical_candidate_inputs": [
+        "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "src/memory/tf_audio_ddr_command_buffer.sv",
+        "src/storage/tf_audio_ddr_dma.v"
+      ]
+    },
+    "pixel_numeric_mmio": {
+      "passed": true,
+      "report": "results/timing_equivalence_20261020_110337_366152/verification.json",
+      "report_sha256": "42fbdcea9051fb87a34791f3ad09fe66189c63b5166d948b49ce9a76e1a0b352",
+      "input_manifest_sha256": "8b611d974351475622b6333917075dc1c21a6e66a5689f86096983cbf195aa7d",
+      "tested_input_drift": [],
+      "candidate_differences": [],
+      "identical_candidate_inputs": [
+        "legacy/rtl/audio/audio_capture_fifo.sv",
+        "legacy/rtl/audio/audio_math_pkg.sv",
+        "legacy/rtl/audio/audio_visual_extensions.sv",
+        "legacy/rtl/audio/audio_workstation.sv",
+        "legacy/rtl/audio/midi_step_rom.sv",
+        "legacy/rtl/audio/mode_timbre_rom.sv",
+        "legacy/rtl/audio/partial_step_generator_variable.sv",
+        "legacy/rtl/audio/pitch_expression.sv",
+        "legacy/rtl/audio/sine_interp.sv",
+        "legacy/rtl/audio/spectrum_fft256.sv",
+        "legacy/rtl/audio/stereo_effects.sv",
+        "legacy/rtl/audio/unified_oscillator_engine.sv",
+        "rtl/timing/gw138k_mmio_pipeline.sv",
+        "src/migration/gw138k_stream_cdc.sv",
+        "src/push2/push2_controls.sv",
+        "src/push2/push2_led_tx.sv",
+        "src/push2/push2_lights.sv",
+        "src/push2/push2_midi_rx.sv",
+        "src/push2/push2_playlist_hold.sv",
+        "src/push2/push2_song_screen.sv",
+        "src/push2/push2_surface_pixels.sv",
+        "src/usb_a/push2_score_guide.sv",
+        "src/usb_a/push2_screen_fifo_streamer.sv",
+        "src/usb_a/push2_song_menu.sv",
+        "src/usb_a/push2_usb_a_control.sv",
+        "src/usb_host/gw138k_usb_event_fifo.v",
+        "src/video/video_font_5x7.v"
+      ]
+    },
+    "vector_envelope": {
+      "passed": true,
+      "report": "results/scope_event_ab_20261020_110337_607709/verification.json",
+      "report_sha256": "d58e2612a93012eac41c79b758b114f38b774c39b9e53ebb9990ca48734ce924",
+      "input_manifest_sha256": "ef6ad02ef499369b37df7ed93775ffee4e881af324fb6f167ecdcb5156127ab2",
+      "tested_input_drift": [],
+      "candidate_differences": [],
+      "identical_candidate_inputs": [
+        "rtl/audio/scope_vec/data/note_steps.mem",
+        "rtl/audio/scope_vec/data/paths.mem",
+        "rtl/audio/scope_vec/data/rotation.mem",
+        "rtl/audio/scope_vec/data/scene_controls.mem",
+        "rtl/audio/scope_vec/scope_vec_engine.sv",
+        "sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem"
+      ]
+    }
+  },
+  "changed_rtl": [
+    "legacy/rtl/audio/stereo_effects.sv",
+    "rtl/audio/delay_ddr/delay_ddr_dma.sv",
+    "rtl/audio/scope_vec/scope_vec_engine.sv",
+    "rtl/music/music_async_fifo.sv",
+    "src/ae350/gw138k_controlled_services.sv",
+    "src/migration/gw138k_apb_cdc.sv",
+    "src/push2/push2_surface_pixels.sv",
+    "src/storage/tf_audio_ddr_dma.v",
+    "src/usb_host/gw138k_usb_event_fifo.v",
+    "src/video/video_runtime_diagnostics.v"
+  ],
+  "changed_rtl_coverage": {
+    "legacy/rtl/audio/stereo_effects.sv": [
+      "gain_effect_chain",
+      "pixel_numeric_mmio"
+    ],
+    "rtl/audio/delay_ddr/delay_ddr_dma.sv": [
+      "gain_effect_chain"
+    ],
+    "rtl/audio/scope_vec/scope_vec_engine.sv": [
+      "vector_envelope"
+    ],
+    "rtl/music/music_async_fifo.sv": [
+      "fifo_apb_services",
+      "gain_effect_chain"
+    ],
+    "src/ae350/gw138k_controlled_services.sv": [
+      "fifo_apb_services"
+    ],
+    "src/migration/gw138k_apb_cdc.sv": [
+      "fifo_apb_services"
+    ],
+    "src/push2/push2_surface_pixels.sv": [
+      "pixel_numeric_mmio"
+    ],
+    "src/storage/tf_audio_ddr_dma.v": [
+      "tf_dma"
+    ],
+    "src/usb_host/gw138k_usb_event_fifo.v": [
+      "fifo_apb_services",
+      "pixel_numeric_mmio"
+    ],
+    "src/video/video_runtime_diagnostics.v": [
+      "video_diagnostics"
+    ]
+  },
+  "uncovered_changed_rtl": [],
+  "integration": {
+    "passed": true,
+    "report": "results/resource_timing_20261020_111212_369176/current_regression_20261020_111224_904492/verification.json",
+    "report_sha256": "dff3be5940acb624e21c3960de9ad97bda999d3d5f998a07100d62302e428deb",
+    "candidate_input_differences": [],
+    "tests": 18,
+    "historical_tf_suite_uses_workspace_sources": true,
+    "staged_tf_coverage": "tf_dma"
+  },
+  "passed": true,
+  "hardware_tested": false
+}

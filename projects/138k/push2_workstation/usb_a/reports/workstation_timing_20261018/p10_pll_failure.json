@@ -1,0 +1,44 @@
+{
+  "errors": [
+    "video PLL_INIT VO/SDF audit failed: u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst/ICPSEL[0]: full propagation 10.435 ns exceeds 10.000 ns"
+  ],
+  "evidence": {
+    "budget_ns": 10.0,
+    "state_window_ns": 20.0,
+    "official_helper_sha256": "3ef05a1ba92157d73e3c54ed9d589645508a4ae332d8bcf133a0457cc3e866c8",
+    "stages": [
+      {
+        "pll": "u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst",
+        "helper": "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init",
+        "init_clock_mhz": 50,
+        "clk_period_ns": 20,
+        "multi_fac": 24,
+        "parameters": {
+          "FCLKIN": "\"50\"",
+          "MDIV_SEL": "24",
+          "MDIV_FRAC_SEL": "6",
+          "ODIV0_SEL": "25",
+          "ODIV0_FRAC_SEL": "0",
+          "IDIV_SEL": "1",
+          "FBDIV_SEL": "1",
+          "CLKOUT0_EN": "\"TRUE\"",
+          "CLKFB_SEL": "\"INTERNAL\"",
+          "DYN_ICP_SEL": "\"TRUE\"",
+          "DYN_LPF_SEL": "\"TRUE\"",
+          "DYN_MDIV_SEL": "\"FALSE\"",
+          "DYN_IDIV_SEL": "\"FALSE\"",
+          "DYN_FBDIV_SEL": "\"FALSE\"",
+          "DYN_ODIV0_SEL": "\"FALSE\""
+        },
+        "helper_ff_count": 40,
+        "paths": []
+      }
+    ],
+    "source_sha256": {
+      "vendor/sipeed_dvi/video_pll_1080p_gw5a.v": "0807a7d45aa095e327a6da3ba119fac727d982cdb99b6da02bdf11f6858fdad3",
+      "vendor/sipeed_dvi/video_pll_init.v": "ca1e667fe6f5e9c67e566a8acbd215039b027743bd105d32e1bf91ac380e0453"
+    },
+    "routed_netlist_sha256": "65f8dcce443b2b57a1a7c946b7da55f010baa97a8affad24ab19d8ecc1c8f99a",
+    "sdf_sha256": "fe707fe9afcd56fea5b0d18646c64f9615163e9d4840fec8509eabfd4598933d"
+  }
+}

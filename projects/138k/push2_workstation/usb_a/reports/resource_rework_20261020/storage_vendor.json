@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "log": "PASS storage (100MHz DDR, 148.5MHz pixels, 64-cycle response latency): packets=37367 drops=143 cues=639 colored_pixels=67200 requests=4208 fault_cycles=64973 frames=10\n/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_storage_vendor/tb.sv:44: $finish called at 1500040000 (1ps)",
+  "source_sha256": {
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/audio/audio_capture_fifo.sv": "468c3106f72a1a3cd17c1c6e3036c0bd21faadb86ef94f6ca1d2d0b16303255b",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_storage_vendor/audio_capture_fifo_reference.sv": "cc9e45ead04730c459e5daff01dd54ef7694486e2da0bbc22a2a41e29e9538c0",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv": "720c0642792de97c83135c71899338f42336a5ded674bef518c4f79e1dbbaa71",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_storage_vendor/score_led_player_reference.sv": "c23d186cef7d6808b2a7771fc1451e9a7fe4855f8b6dc0a6ff3e5d881d07b5d8",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v": "f085d6a16ea9cb1988eae782b6cb1aa123165e1d6444411a7c3f3684c13b4ba6",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_storage_vendor/video_ddr_scanout_reference.sv": "fb483844542cbfbff66b10770873325e2345c1038ef576e168629dda03b7e9ea",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_storage_vendor/vendor.v": "5db6a9f2bf35b85918d8221b5e12e08297b0bb670e2ee0b939c741301ce52260",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_storage_vendor/tb.sv": "719d113a2003e436322114f58f88e8902e03d09a08e8b7b71ac01b58e7793fef"
+  },
+  "hardware_tested": false
+}

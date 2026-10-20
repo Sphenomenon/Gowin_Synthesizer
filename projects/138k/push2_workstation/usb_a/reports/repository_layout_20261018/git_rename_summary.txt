@@ -1,0 +1,1547 @@
+ create mode 120000 migration/gw138k_audio
+ rename {migration/gw138k_audio => projects/138k}/README.md (81%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/build_boot.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/build_workstation.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/check_analysis_banks.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/check_boot.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/check_fft2048.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/check_keyboard_repeat.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/check_live_renderer.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/check_pll_sequence.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/check_spectrum_bars.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/check_workstation.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/generate_fft2048_rom.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/keyboard_midi.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/midi_serial.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/preview_live_wave.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/preview_spectrum_bars.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/read_boot.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/read_workstation.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/run_controlled.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/ae350/scripts/run_ui.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/CURRENT.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/ORIGINS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/PENDING_BOARD.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/PLAN.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/README.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/build_firmware.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/build_full.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/firmware/host_bridge.inc (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/firmware/main.c (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/firmware/midi_descriptor.c (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/firmware/midi_descriptor.h (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/integration/gw138k_push_performance_uart.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/integration/gw138k_push_workstation_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/integration/push.cst (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/integration/push.sdc (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/overrides/src/video/output_audio_analysis.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/probe/build.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/probe/length_build.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/probe/push2_hspi_link_debug.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/probe/push_length_probe.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/probe/push_link_probe.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/probe/push_surface_probe.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/probe/surface_build.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/Prj1.gprj (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/constraints/tang_mega_138k.cst (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/constraints/tang_mega_138k.sdc (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/architecture.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/dashboard_preview.png (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/ddr_display.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/ddr_platform_notes.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_ddr_1080p_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_fft_image_20260909.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_gui_sine_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_hdmi_clock_fix_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_latency_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_note_transition_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_output_gain_20260909.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_pattern_trigger_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_polyphonic_trigger_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_tdm32_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_video_diagnostics_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_video_pll_init_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_voice_onset_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_evidence_wave_trigger_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_inputs_fft_image_20260909.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_inputs_latency_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_inputs_output_gain_20260909.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_inputs_tdm32_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/build_inputs_voice_onset_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/com26_backend_smoke_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/com26_ddr_first_board_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/com26_ddr_pre_download_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/com26_hdmi_clock_fix_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/com26_video_diagnostics_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/com26_video_diagnostics_no_reply_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/com26_video_pll_init_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/ddr_configuration_paths.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/ddr_configuration_paths.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/ddr_reset_sequence.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/ddr_reset_sequence.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/fft_dft_comparison_20260909.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/gui_geometry_output_gain_20260909.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_note_transition_inputs_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_pattern_trigger_inputs_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_polyphonic_trigger_inputs_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_ddr_1080p_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_fft_image_20260909.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_gui_sine_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_hdmi_clock_fix_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_latency_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_note_transition_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_output_gain_20260909.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_pattern_trigger_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_polyphonic_trigger_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_tdm32_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_voice_onset_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_summary_wave_trigger_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_video_diagnostics_inputs_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/hdl_wave_trigger_inputs_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/measure_ping_pacing_20260908.py.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/measure_worker_ping_20260908.py.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/note_transition_after_samples_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/note_transition_before_samples_20260908.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/resources_fft_image_20260909.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/resources_latency_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/resources_output_gain_20260909.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/resources_tdm32_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/resources_voice_onset_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/serial_blocking_retest_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/serial_latency_after_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/serial_latency_before_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/serial_latency_d2xx_trial_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/serial_ping_pacing_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/serial_ping_pacing_stress_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/serial_pipeline_1000_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/serial_worker_200_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/tmds_clock_primitive_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/tmds_pll_init_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/uart_pacing_115200.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/uart_pacing_probe_20260908.py.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/verification_inputs_fft_image_20260909.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/verification_inputs_host_latency_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/verification_inputs_latency_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/verification_inputs_output_gain_20260909.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/verification_inputs_tdm32_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/verification_inputs_voice_onset_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/verify_output_control_geometry_20260909.py.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/video_pll_init_audit_selftest_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/video_pll_init_sequence_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/evidence/wave_stability_dds_baseline_20260908.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/examples/sine_preset.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/feedback_notes.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/gui_control.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/hardware.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/hdmi_no_signal_investigation.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/host_latency.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/images/feedback_1080p.png (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/images/feedback_32voices.png (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/images/feedback_32voices_hold.png (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/images/feedback_analysis.png (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/images/feedback_analysis_hold.png (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/images/feedback_dashboard_hold.png (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/images/instrument_gui.png (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/images/voice_onset_gui_preview.png (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/latency.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/output_analysis.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/output_controls.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/tdm32.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/third_party_video.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/uart_protocol.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/verification.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/video_1080p_notes.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/voice_onset.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/docs/voice_resources.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/audio_services.h (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/boot.ld (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/boot.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/firmware_checks.h (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/services_ddr.c (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/services_main.c (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/start.S (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_main.c (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_model.h (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_render.c (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_render.h (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_runtime.c (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/audio_capture_fifo.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/audio_math_pkg.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/audio_visual_extensions.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/audio_workstation.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/midi_step_rom.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/mode_timbre_rom.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/pitch_expression.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/sine_interp.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/spectrum_fft256.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/stereo_effects.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/input/midi_stream_decoder.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/input/score_led_player.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/input/uart_rx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy_audio.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/riscv_ae350_config.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/analyze_waveform_stability.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/audit_ddr_configuration_paths.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/audit_ddr_reset_sequence.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/build.ps1 (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/build.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/build.tcl (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/check_build.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/check_output_fft.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/check_serializer_startup.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/check_tmds_clock.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/check_video_pll_init.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/check_video_pll_sequence.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/generate_analysis_roms.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/generate_sine_lut.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/gowin_paths.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/render_feedback_preview.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/run_tests.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/scripts/update_project.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/data/audio_chain/fft_hann.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/data/audio_chain/fft_tw_im.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/data/audio_chain/fft_tw_re.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/data/audio_chain/pitch_bend_q20.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage3_sine2048x24.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/models/video_clock_1080p_model.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/primitives/tb_tmds_clock.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/primitives/tb_video_pll_init.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_analysis_renderer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_audio_latency_monitor.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_audio_latency_tags.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_audio_output_stage.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_ddr3_bist.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_ddr_bandwidth.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_ddr_framebuffer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_ddr_recovery_guard.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_feedback_capture.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_feedback_dashboard.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_feedback_polyphonic.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_feedback_renderer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_feedback_stable_display.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_feedback_trigger.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_feedback_wave_align.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_final_output_analysis.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_note_transition.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_output_audio_analysis.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_output_gain_integration.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_pt8211_observer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_pt8211_stereo.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_pt8211_tx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_sine_rom.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_sine_voices.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_synth_32voices.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_synth_engine.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_uart_audio_latency.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_uart_control.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_uart_latency.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_video_clock_1080p.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_video_dashboard.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_video_epoch_recovery.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_video_monitor.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_video_peak_meter.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_video_runtime_diagnostics.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_video_timing.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_video_timing_1080p.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_video_tmds.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_voice_bank_tdm.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_voice_onset_integration.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_voice_onset_monitor.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/tb_voice_onset_protocol.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/test_async_worker_review.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/test_ftdi_serial.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/test_instrument_backend.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/test_instrument_cli.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/test_instrument_ui.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/test_latency_diagnostics.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/test_output_controls.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/test_serial_low_latency.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/test_video_diagnostics.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/test_voice_onset_diagnostics.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_ahb_ddr.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_boot_memory.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_controlled_adapter.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_controlled_audio.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_controlled_services.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_cpu_pll_cell.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_ddr_arbiter.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_ddr_workstation_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_event_arbiter.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_event_workstation.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_performance_uart.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_three_event_arbiter.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_ui_services.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_ui_workstation_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_view_select.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_workstation_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_workstation_uart.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/riscv_ae350_config.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/riscv_ae350_soc.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/riscv_ae350_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/audio/audio_output_stage.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/audio/pt8211_observer.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/audio/pt8211_tx.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/control/uart_control.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/control/uart_rx.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/control/uart_tx.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/diagnostics/audio_latency_monitor.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/diagnostics/voice_onset_monitor.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/memory/ddr3_bist.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/memory/ddr3_platform.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/memory/ddr_frame_writer.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/memory/ddr_recovery_guard.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_apb_cdc.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_audio_adapter.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_audio_clock.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_audio_display_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_audio_services.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_counter_cdc.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_managed_audio.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_runtime_uart.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_stream_cdc.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/platform/reset_release.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/platform/video_clock.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/platform/video_clock_1080p.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/gw138k_push_performance_uart.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/gw138k_push_workstation_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_controls.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_display_tx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_driver_core.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_host_gate.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_hspi_link.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_led_tx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_lights.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_midi_rx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_out_scheduler.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_surface.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_surface_pixels.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push_hspi_phy.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/synth/synth_engine.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/synth/synth_sine_rom.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/synth/synth_voice.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/synth/synth_voice_bank.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/top/prj1_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/gw138k_usb_controlled_audio.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/gw138k_usb_event_fifo.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/gw138k_usb_host_core.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/gw138k_usb_host_core.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/gw138k_usb_midi_host.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/gw138k_usb_performance_uart.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/gw138k_usb_workstation_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/usb_fs_phy.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/usb_midi_event_decoder.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/audio_analysis_rom.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/feedback_capture.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/feedback_dashboard.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/feedback_renderer.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/feedback_wave_align.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/hdmi_display.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/output_audio_analysis.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/output_audio_capture.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/video_dashboard.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/video_ddr_scanout.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/video_font_5x7.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/video_monitor_cdc.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/video_peak_meter.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/video_runtime_diagnostics.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/video_timing_1080p.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/video_timing_640x480.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/configure_serial_latency.ps1 (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_backend/__init__.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_backend/diagnostics.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_backend/ftdi_serial.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_backend/protocol.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_backend/transport.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_backend/worker.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_cli.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_gui.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_ui/__init__.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_ui/app.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_ui/latency.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_ui/presets.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_ui/voice_model.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/instrument_ui/widgets.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/requirements.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/tools/serial_latency_probe.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/gowin_ddr3/ddr3_memory_interface.ipc (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/gowin_ddr3/ddr3_memory_interface.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/gowin_ddr3/ddr3_pll.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/gowin_ddr3/ddr3_pll_init.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/gowin_ddr3/ddr3_pll_primitive.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/gowin_ddr3/generation_parameters.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/gowin_ddr3/provenance.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/gowin_ddr3/reference_demo.cst (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/gowin_ddr3/reference_demo.sdc (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/LICENSE (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/dvi_tx_clk_drv.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/dvi_tx_tmds_enc.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/dvi_tx_tmds_phy.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/dvi_tx_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/video_pll_1080p_gw5a.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/video_pll_gw5a.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/results/workstation_20260911_174045_306332/Prj1/vendor/sipeed_dvi/video_pll_init.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/rtl/push2_controls.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/rtl/push2_host_gate.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/rtl/push2_hspi_link.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/rtl/push2_led_tx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/rtl/push2_lights.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/rtl/push2_surface.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/rtl/push2_surface_pixels.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/rtl/push_hspi_phy.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/scripts/audit.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/scripts/control.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/scripts/forwarded_clock.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/scripts/program_probe.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/scripts/program_sram.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/scripts/program_when_ready.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/scripts/reset_distribution.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/scripts/restore_controls.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/scripts/test_parser.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/sim/tb_controls.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/sim/tb_host_gate.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/sim/tb_hspi_link.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/sim/tb_surface_fault.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/sim/tb_visual.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/.gitignore (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/ACTIVE_DIAG_20261013.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/CURRENT_BLOCKER_20261013.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/POWER_AUDIT_20261013.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/PROGRESS_20261012.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/PROGRESS_20261012.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/PROGRESS_20261013.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/PROGRESS_20261013.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/README.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/RESUME_DEBUG_20261013.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/SCHEMATIC_REVIEW_20261013.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/WIRE_AUDIT_20261013.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/build.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/diagnose.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/docs/AT42QT2160_9502C.pdf (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/docs/Gowin_ADC_UG299_1.0.8.pdf (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/docs/QT2160_id_debug_20261013.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/docs/U4_J8_wiring.pdf (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/docs/U4_J8_wiring.png (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/docs/adc_generate.mod (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/docs/draw_wiring.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/docs/wiring_sources.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/input_netlist.tel (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/input_schematic.pdf (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/monitor.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/netlist.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/program.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/qt2160_probe.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/tb_i2c_listener.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/tb_i2c_master.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/tb_i2c_scan.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/tb_power_monitor.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/touch_power_adc.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/touchboard_diag_top.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/touchboard_top.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/touchboard_wire_top.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/uart_tx.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/rtl/ws2812_black.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/summarize_idle.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/test.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/test_profile.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/test_wire_trace.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/i2c_device_model.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/power_adc_model.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/tb_diag.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/tb_diag_full.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/tb_i2c_faults.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/tb_i2c_listener.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/tb_power_monitor.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/tb_quiet.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/tb_touchboard.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/tb_wire_trace.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/tb_ws2812_black.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/tests/test_monitor_io.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/touchboard_test/wire_trace.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_GENERIC_MIDI.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P10_SERIAL_EFFECT_ORDER.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P11_SHARED_DISPLAY_DATA.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P12_HDMI_SHARED_DISPLAY_READER.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P13_PUSH_SHARED_SUMMARY.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P14_C_MODE_32.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P16_PRESSURE_PUSH_REFRESH.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P17_PRESSURE_PUSH_LATENCY.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P18_PUSH_AFTERTOUCH_SCREEN.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P19_PUSH_SCREEN_KEEPALIVE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P20_FORCE_SCREEN_RESTART.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P21_SCREEN_LOADER.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P22_KEYBOARD_REPEAT.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P23_PANIC_SYNC.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P24_MODE_LEVEL.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P26_INTERACTION_LATENCY.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P27_CONTROL_BINDINGS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P28_EFFECT_MASK_AUDIT.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P2P5.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P2P5_V2.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P2P5_V3.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P2P6.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P2_LOW_BASS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P3_COMPOSITE_BOTTOM_EFFECT_CHAIN.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P3_HDMI_EFFECT_CHAIN.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P3_SERIAL_EFFECTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P3_UI_EFFECT_CHAIN.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P4_UNIFIED_ANALYSIS_PAGE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P5_SHARED_DISPLAY_METADATA.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P6_EFFECT_QUEUE_DIAGNOSTICS_REMOVED.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P7_SHUFFLE_ANIMATION.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P8_SLIDE_UNIQUE_QUEUE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_P9_CLEAR_ALL_EFFECTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_RESTORED_D50E.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_RESTORED_D50E_BASE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_RESTORED_HOTPLUG.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_ROLLBACK.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/BOARD_CURRENT_ROLLBACK_V2.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/C_MODE_VOICE_LIMIT_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/DISPLAY_DATA_LAYOUT_V1.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/DISPLAY_DATA_SOURCE_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/GENERIC_MIDI_CANDIDATE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/GENERIC_MIDI_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/GW25K_PANEL.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/HOTPLUG_READY.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/LATEST_WORKSTATION.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P10_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P11_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P12_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P13_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P14_C_MODE_32_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P16_PRESSURE_PUSH_REFRESH_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P17_PRESSURE_PUSH_LATENCY_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P18_PUSH_AFTERTOUCH_SCREEN_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P19_PUSH_SCREEN_KEEPALIVE_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P20_FORCE_SCREEN_RESTART_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P21_SCREEN_LOADER_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P22_KEYBOARD_REPEAT_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P22_KEYBOARD_REPEAT_CANDIDATE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P22_KEYBOARD_REPEAT_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P23_PANIC_SYNC_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P23_PANIC_SYNC_CANDIDATE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P23_PANIC_SYNC_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P24_MODE_LEVEL_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P24_MODE_LEVEL_CANDIDATE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P24_MODE_LEVEL_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P25_SPECTRUM_EXPERIMENT.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P25_SPECTRUM_LEAKAGE_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P25_SPECTRUM_LEAKAGE_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P26_INTERACTION_LATENCY_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P26_INTERACTION_LATENCY_CANDIDATE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P26_INTERACTION_LATENCY_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P27_CONTROL_BINDINGS_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P27_CONTROL_BINDINGS_CANDIDATE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P27_CONTROL_BINDINGS_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P28_EFFECT_MASK_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P28_EFFECT_MASK_AUDIT_CANDIDATE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P28_EFFECT_MASK_AUDIT_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P29_USB_IN_DIAGNOSTICS_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P29_USB_IN_DIAGNOSTICS_CANDIDATE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P29_USB_IN_DIAGNOSTICS_VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P2P5_PATCH.diff (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P2P5_PATCH_PLAN.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/P30_ABC_LOUDNESS_1_5X.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/README.md (95%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/READY.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/TF_AUDIO_DDR_INTEGRATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/audit.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/build.py (99%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/docs/CNN_FLASH_BOOT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/firmware.c (99%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/gw25k_panel.h (74%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/p11.cst (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/p11.gsc (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CLK50_TIMING_FIX_20261007.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CLK50_TIMING_FIX_20261007.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_83_ACCEPTANCE_20261006.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_CORRECTNESS_SPEED_20261006.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FIX_HANDOFF_20261006.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_B0_COORDINATE_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_B2_CARD_TMDS_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_B3_LOCAL_PATH_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_B4_FEATURE_SLOT_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_B6_TF_BACKGROUND_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_B7_DYNAMIC_BIST_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_B8_TF_SPECTRUM_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_B9_GROUPED_TF_CARD_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_BACKGROUND_COORDINATE_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_BASELINE_HEALTH_20261010_0344.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_BA_EXPORTER_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_BB_BIST_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_BC_TF_MASK_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_BD_REGISTERED_TF_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_BE_RETURN_PIPELINE_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_BF_CONTROL_BUDGET.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_BIST_PATTERN_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_BIST_PIPELINE_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_C0_DDR_CONSTRAINT_GROUPS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_C0_FRAME_SLOT_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_C1_NIBBLE_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_CARD_SELECT_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_COMPLETE_BACKGROUND_RENDERER_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_COMPLETE_BACKGROUND_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_CONTENT_AUDIT.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_CURRENT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_DEPLOY_FAULT_TESTS_20261010.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_DYNAMIC_BACKGROUND_ANALYSIS_PAGE_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_DYNAMIC_BACKGROUND_RENDERER_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_DYNAMIC_BACKGROUND_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_FAST_AVAILABILITY_PROTOCOL_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_FEATURE_READ_ADDRESS_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_IDLE_CLIENT_PAYLOAD_SAT.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_IDLE_CLIENT_PAYLOAD_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_IMPLEMENTATION.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_IMPLEMENTATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_MASKED_WRITE_PROTOCOL_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_NIBBLE_COUNTER_PROTOCOL.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_NIBBLE_COUNTER_SAT.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_OPTION_GUARDS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_PARALLEL_SPECTRUM_RENDERER_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_PARALLEL_TF_CONTROL_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_PIXEL_SKID_FULL_RENDERER_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_PIXEL_SKID_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_QUIET_SHARED_ANALYSIS_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_REGISTERED_TF_RESPONSE_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_RELEASE_COMPARISON.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_RENDERER_FIRST_ISSUE_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_SHALLOW_CARD_DASHBOARD_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_SHALLOW_CARD_RENDERER_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_SPECTRUM_ADDRESS_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_TAG_FLAGS_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_TF_AVAILABILITY_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_TF_BYTE_COUNT_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_TF_MASK_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_TF_READ_TOTAL_PROTOCOL_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_TF_READ_TOTAL_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_TF_RETURN_PIPELINE_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_FLASH_BOOT_WAITER_TESTS.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_STAGED_CACHE_FIX_20261005.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/CNN_THROUGHPUT_BRIEF_20261004.md (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/CURRENT_WORKSTATION_SOURCES_20261018.md
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/DELAY_DDR_PLAN_B_20261005.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/FLASH85_20261008.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/FLASH85_20261008.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/FLASH85_20261012.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/FLASH85_20261012.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/FTDI_RELOAD85_20261008.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/FTDI_RELOAD85_20261008.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/FULL_SONG_GUIDANCE_20261003.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/GW25K_PANEL_20261017.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/GW25K_PANEL_20261017_generic_midi_test.log (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/GW25K_PANEL_20261017_hotplug_test.log (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/GW25K_PANEL_20261017_rtl_exchange.log (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/GW25K_PANEL_20261017_test.log (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/INTERFACE_BATCH_20261018.md
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/PUSH_CNN_SCORE_GUIDANCE_20261002.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/RTL8723DS_BLE_MIGRATION_20261007.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/RTL8723DS_BLE_MIGRATION_20261007.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/SCOPE84_BOARD_20261006.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/SCOPE84_BOARD_20261006.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/SCOPE_VEC_BASIC_PITCH_MERGE_20261002.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/SCOPE_VEC_BASIC_PITCH_MERGE_20261002.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/SCOPE_WORKSTATION_MERGE_20261006.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/SCOPE_WORKSTATION_MERGE_20261006.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/TF_HOTPLUG_20261003.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/TF_PUSH_SONG_SELECTION_20261003.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/TF_SCOPE_PLAYBACK_20261002.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/TF_SCOPE_PLAYBACK_20261002.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/TF_STALL_RECOVERY_20261004.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/WORKSTATION_BASIC_PITCH_INTEGRATION_20261002.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/WORKSTATION_BSRAM_AUDIT_20261004.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/WORKSTATION_BSRAM_AUDIT_20261004.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/WORKSTATION_BSRAM_REVIEW_20261001.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/WORKSTATION_BSRAM_REVIEW_20261001.md (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/WORKSTATION_TIMING_20261018.md
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/current_workstation_sources_20261018/cnn_source_audit.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/current_workstation_sources_20261018/regression.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/current_workstation_sources_20261018/scope_merge.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/current_workstation_sources_20261018/source_verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/current_workstation_sources_20261018/staged_ddr_inputs_sha256.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/current_workstation_sources_20261018/staged_ddr_isolation.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/current_workstation_sources_20261018/synthesis.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/current_workstation_sources_20261018/tool_result.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/generic_events.mem
+ create mode 100755 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/generic_midi
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/inputs.json
+ create mode 120000 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/rtl
+ create mode 120000 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/sim/data
+ create mode 120000 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/sim/matlab
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/source/firmware.c
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/source/gw25k_panel.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/source/sim/tb_generic_midi.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/source/sim/tb_usb_lifecycle_merge.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/source/sim/tb_workstation_attach.sv
+ rename {migration/gw138k_audio/push2_workstation/usb_a => projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/source}/sim/test_generic_midi.c (100%)
+ create mode 100755 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi.mk
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__ALL.a
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__ConstPool__0__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__ConstPool__0__Slow.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__ConstPool__0__Slow.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__Syms.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__Syms__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__Syms__Slow.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__Syms__Slow.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__0.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__0.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__0.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__0__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__0__Slow.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__0__Slow.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__1.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__1.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__1.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__2.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__2.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__2.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__Slow.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi___024root__Slow.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__main.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__main.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__main.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__pch.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__pch.h.fast.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__pch.h.fast.gch
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__pch.h.slow.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__pch.h.slow.gch
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__ver.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi__verFiles.dat
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/Vtb_generic_midi_classes.mk
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/verilated.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/verilated.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/verilated_threads.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/verilated_threads.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/verilated_timing.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_generic_midi/verilated_timing.o
+ create mode 100755 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge.mk
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__ALL.a
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__ALL.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__ALL.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__ALL.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__ConstPool__0__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__Syms.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__Syms__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge___024root.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge___024root__0.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge___024root__0__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge___024root__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__main.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__pch.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__ver.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge__verFiles.dat
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge_classes.mk
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/verilated.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/verilated.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/verilated_threads.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/verilated_threads.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/verilated_timing.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_usb_lifecycle_merge/verilated_timing.o
+ create mode 100755 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach.mk
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__ALL.a
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__ConstPool__0__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__ConstPool__0__Slow.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__ConstPool__0__Slow.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__Syms.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__Syms__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__Syms__Slow.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__Syms__Slow.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__0.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__0.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__0.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__0__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__0__Slow.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__0__Slow.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__1.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__1.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__1.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__2.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__2.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__2.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__Slow.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__Slow.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach___024root__Slow.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__main.cpp
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__main.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__main.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__pch.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__pch.h.fast.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__pch.h.fast.gch
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__pch.h.slow.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__pch.h.slow.gch
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__ver.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach__verFiles.dat
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/Vtb_workstation_attach_classes.mk
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/verilated.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/verilated.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/verilated_threads.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/verilated_threads.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/verilated_timing.d
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/tb_workstation_attach/verilated_timing.o
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/attach/verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/guide/verification.json
+ create mode 100755 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/generic_midi
+ create mode 100755 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/hotplug
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/renderer.png
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/renderer.ppm
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source/firmware.c
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source/gw25k_panel.h
+ rename {migration/gw138k_audio/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware => projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source/headers}/minlibc.h (100%)
+ rename {migration/gw138k_audio/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb => projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source/headers}/usb_core.h (100%)
+ rename {migration/gw138k_audio/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb => projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source/headers}/usb_defs.h (100%)
+ rename {migration/gw138k_audio/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb => projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source/headers}/usb_hw.h (100%)
+ rename {migration/gw138k_audio/push2_workstation/usb_a => projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source}/sim/run_gw25k_panel.py (100%)
+ rename {migration/gw138k_audio/push2_workstation/usb_a => projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source}/sim/tb_gw25k_panel_endpoint.v (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source/sim/test_generic_midi.c
+ rename {migration/gw138k_audio/push2_workstation/usb_a => projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source}/sim/test_gw25k_panel.c (92%)
+ rename {migration/gw138k_audio/push2_workstation/usb_a => projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/source}/sim/test_hotplug.c (100%)
+ create mode 100755 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/test_gw25k_panel
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/gw25k_host/verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/progress.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/function_first_20261018/verification.json
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/gw25k_panel_preview.png (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/attach/inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/attach/verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/d_controls/inputs_sha256.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/d_controls/verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/d_mode/inputs_sha256.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/d_mode/verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/guide/verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/panel/renderer.png
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/panel/verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/prepare_check.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/summary.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/interface_batch_20261018/usb_firmware_metadata.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/before_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/entrypoints.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/git_rename_stat.txt
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/git_rename_summary.txt
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/repository_layout_20261018/verification.json
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/reports/song_guide_board_status_58_20261003.txt (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/attach.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/attach_fixture_archive.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/attach_fixtures/inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/attach_fixtures/source/sim/tb_generic_midi.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/attach_fixtures/source/sim/tb_workstation_attach.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/attach_fixtures/source/workstation_reference.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/attach_fixtures/verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/attach_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/attach_location.txt
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/capture_equivalence.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/capture_equivalence_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/capture_equivalence_location.txt
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/collect_evidence.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/current_functional_verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/ddr_bus_timing.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/diagnostic_cdc.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/diagnostic_cdc_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/diagnostic_cdc_location.txt
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/interrupted_20261018_1554.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_attach.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_attach_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_capture_equivalence.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_capture_equivalence_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_cdc.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_functional_verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_pll_failure.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_routed_partial_success.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_scope_merge.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_timing_equivalence.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_timing_equivalence_inputs_sha256.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_vector_event_equivalence.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_vector_event_equivalence_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_vector_synthesis_equivalence.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_vector_synthesis_equivalence_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_workstation_regression.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p10_workstation_regression_tf_inputs_sha256.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p11_cdc.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p11_functional_verification.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p11_pll_all_paths.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p11_routed_failure.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p12_pll_failure_all_paths.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p12_sta_pass.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p13_pll_pass.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p13_sta_failure.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p14_pll_pass.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p15_pll_pass.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p15_sta_failure.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p16_pll_pass.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p16_sta_failure.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p17_sta_failure.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p19_sta_failure.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p20_pll_pass.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p20_sta_failure.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p20_workstation_cdc.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p21_sta.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p23_pll.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p23_sta.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p26_pll.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p26_sta.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p27_cdc.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p27_pll.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p27_sta.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p31_cdc.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p31_launch.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p31_pll.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p31_sta.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p32_cdc.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p32_launch.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p32_pll.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p32_sta.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p33_audits.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p33_cdc.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p33_launch.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p33_pll.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p33_sta.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p33_watcher_launch.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p34_audits.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p34_functional_launch.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p34_gate_checks.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p34_launch.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p34_regression_launch.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p34_watcher_launch.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/p6_routed_failure.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/pinned_cnn_git_sources.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/progress.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/reference_frequencies.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/remote_resume.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/resume_audit_watcher_launch.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/resume_checks.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/resumed_candidate_audits.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/scope_merge.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/status_20261018_1653.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/status_20261018_1733.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/status_20261018_2144.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/status_20261018_2203.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/status_20261018_2320.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/test_source_bindings.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/tf_buffer_timing.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/tf_bus_timing_corrected_hash.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/tf_read_availability_source_bound.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/tf_read_total_source_bound.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/timing_equivalence.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/timing_equivalence_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/timing_equivalence_inputs_sha256.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/timing_equivalence_location.txt
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/vector_event_equivalence.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/vector_event_equivalence_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/vector_event_equivalence_location.txt
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/vector_local_envelope_equivalence.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/vector_synthesis_equivalence.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/vector_synthesis_equivalence_inputs.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/vector_synthesis_equivalence_location.txt
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/watch_p33.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/watch_p34.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/watch_resumed_candidates.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/workstation_regression.json
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/workstation_regression_location.txt
+ create mode 100644 projects/138k/push2_workstation/usb_a/reports/workstation_timing_20261018/workstation_regression_tf_inputs_sha256.json
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/delay_ddr/delay_ddr_dma.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv (80%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_usb_lifecycle_merge.sv
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/p24_mode_gain_scale.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/push2_controls.sv (98%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/EVIDENCE.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/README.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/VERIFICATION.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/data/manifest.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/data/note_steps.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/data/paths.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/data/rotation.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/data/scene.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/data/scene_controls.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/scope_control_player.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/scope_dac_select.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/scope_tf_control.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/scope_tf_transport.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/scope_vec/scope_vec_engine.sv (77%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/audio/unified_oscillator_engine.sv (82%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/bluetooth/README.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/bluetooth/adaptations/bt_h5_transport.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/bluetooth/adaptations/bt_hci_init.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/bluetooth/constraints/ble.sdc (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/bluetooth/constraints/ble_board.cst (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/bluetooth/constraints/ble_io.cst (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/bluetooth/gw138k_ble_board_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/bluetooth/gw138k_ble_link.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/bluetooth/gw138k_ble_status_uart.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/ddr_address_map.vh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/ddr_address_map_guard.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/display_data/display_data_reader.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/display_data/display_data_writer.v (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_capture.v
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/display_data/feedback_renderer.v (99%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/display_data/gw138k_ddr_arbiter.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/display_data/hdmi_display.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/display_data/output_audio_analysis.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv (68%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/display_data/tf_audio_ddr_command_buffer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/display_data_layout_pkg.svh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_44100_to_48000.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_activation.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_boot_model_loader.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_cnn_streaming.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_cnn_weights.svh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_conv2d.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_cqt_engine.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_cqt_frontend.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_ddr16_port.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_arbiter_pipeline.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_boot_gate.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_client_queues.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_coeff_pair.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_command_buffer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_map.svh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_read_credit.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_sync_fifo.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_feature_ddr.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_fixed_pkg.svh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_flash_io_guard.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_flash_map.svh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_flash_model_loader.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_flash_serial_boot.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_link_uart.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_model_loader.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_nn_ddr.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_normlog.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_normlog_ddr.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_pcm_pipeline.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_plane_cache.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_requant.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_row_buffer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_shared_sigmoid.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_startup_panic.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_tf_board_top.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_uart_model_loader.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_uart_rx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_viterbi.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_weight_cache.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/basic_pitch_workstation_link.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/blocking_music_guidance.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/blocking_note_search.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/blocking_note_trainer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/blocking_note_viterbi.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/blocking_pcm_note_detector.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/music_async_fifo.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/music_ddr_engine.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/music_note_coefficients.svh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/music_upload_parser.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/music_upload_uart.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/tf_playlist_bridge.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cnn_ddr_blob.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/contour.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/contour_b.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/contour_bq.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/contour_reduce.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/contour_reduce_b.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/contour_reduce_bq.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_imag.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_imag_b.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_imag_bq.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_lowpass.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_lowpass_b.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_lowpass_bq.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_norm.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_norm_log.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_real.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_real_b.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/cqt_real_bq.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/log2_lut.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/note_out.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/note_out_b.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/note_out_bq.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/notes.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/notes_b.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/notes_bq.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/onset.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/onset_b.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/onset_bq.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/onset_out.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/onset_out_b.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/onset_out_bq.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/resampler_poly.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/music/weights/sigmoid_lut.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/push2/push2_led_tx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/push2/push2_lights.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/push2/push2_playlist_hold.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/push2/push2_score_guide.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/push2/push2_song_menu.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv (54%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/push2_screen_fifo_streamer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/push2_screen_packet_loader.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/push2_usb_a_control.sv (63%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/MODE_D_INTEGRATION.md (94%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/README.md (95%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/evidence.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/evidence/mode_d_synthesis.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/evidence/mode_synthesis_inputs_sha256.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/evidence/simulation_inputs_sha256.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/evidence/storage_synthesis.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/evidence/storage_synthesis_inputs_sha256.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/example_spec.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/import_samples.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_ddr.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_fx.sv (91%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_grid.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_import.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_mode_d.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_push.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_resample.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_slice.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_storage.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_tf_source.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/pt8211_tx.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/GPL-3.0.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/THIRD_PARTY.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/LICENSE (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/audio/audio_fifo.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/audio/pcm_drain.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/audio/pcm_fifo.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/audio/wav_parser.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/common/sync_rom.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/huff_tabs_tail.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_antialias.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_bitstream.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_decoder.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_huffman.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_imdct.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_mul.vh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_reorder.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_requant.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_reservoir.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_scalefac.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_sfbtab.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_sideinfo.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_spectra.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_stereo.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/mp3_synth.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/embed_mp3.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/font8x8.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/frame_size.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/huff_count1.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/huff_index.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/huff_linbits.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/huff_tabs.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/huff_tabs_2048.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/imdct.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/pow43.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/pow43_1024.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/pow43_full.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/preamp.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/scf_partitions.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/scfc_decode.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/sfb_long.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/sfb_mixed.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/sfb_short.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/sine256.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/synth_cos.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/mp3/tables/synth_win.memh (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/sd/tf_sd_file_reader.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_async_byte_fifo.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_dma.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_path.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_decoder_ip.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_file_reader.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_flac_pcm_decoder.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_mp3_pcm_decoder.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_pcm_bram_fifo.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_sd_audio_pcm_player.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_sd_spi_file_reader.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_sd_spi_sector_reader.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_spi_session.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/tf_async_pcm_fifo.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/rtl/tf_audio/tf_workstation_audio_bridge.v (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/rtl/timing/gw138k_level_cdc.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/rtl/timing/gw138k_mmio_pipeline.sv
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/audio/delay_ddr_build/stereo_effects_ref.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/audio/delay_ddr_build/tb_delay_ddr.vvp (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/audio/run_delay_ddr_equivalence.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/audio/tb_delay_ddr_equivalence.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/cpu_audio_probe.c (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_44100_to_48000.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_frontend_windows.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_guidance.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_music_ddr_command_buffer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_playlist_bridge.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_playlist_hold.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_score_stream.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_song_menu.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_song_screen.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_tf_ddr_command_buffer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_tf_hotplug_probe.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_viterbi_first_alignment.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_viterbi_score.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/guidance/tb_viterbi_score_ddr.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/model_flash/flash_ddr_probe.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/model_flash/flash_pin_probe.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/model_flash/tb_cache_read_retime.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/model_flash/tb_ddr_boot_gate.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/model_flash/tb_ddr_read_credit.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/model_flash/tb_flash_io_guard.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/model_flash/tb_flash_serial_boot.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/model_flash/tb_startup_panic.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/.gitignore (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/run_bp_config_ab.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/run_bp_ddr_isolation.py (79%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/run_conv_mac_equivalence.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/run_conv_mask_equivalence.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/run_cqt_magnitude_math.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/run_cqt_pipeline_equivalence.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/run_frontend_write_equivalence.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/run_local_arbiter_equivalence.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/tb_bp_config_ab.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/tb_cqt_pipeline_equivalence.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/tb_frontend_write_equivalence.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/tb_viterbi_ddr_isolation.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/test_clk50_audit.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/music/test_clk50_cdc_gate.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p10/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p10/tb_serial_effect_order.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p11/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p11/tb_display_data_reader.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p11/tb_display_write_path.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p11/tb_push_aftertouch_init.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p11/tb_push_display_summary.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p11/tb_push_pressure.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p11/tb_push_surface_refresh.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p11/tb_shared_display.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p11/tb_unified_expression.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p11/tb_unified_mode2_32.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p22/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p22/tb_keyboard_audio.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p23/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p23/tb_cpu_release.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p23/tb_panic_audio.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p23/tb_panic_push.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p23/test_keyboard_panic.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p23/test_ui_panic.c (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p24/measure.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p24/polyphony.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p24/tb_mode_levels.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p25/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p25/tb_panic_spectrum.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p26/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p26/tb_interaction_latency.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p26/tb_screen_fifo_streamer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p27/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p27/tb_p27_audio.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p27/tb_p27_push.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p27/tb_p27_services.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p8/make_preview.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p8/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p8/tb_effect_queue.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p8/tb_effect_slide.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p9/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/p9/tb_effect_queue.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/run_generic_midi.py (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/run_gw25k_panel.py
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/run_pl_guide.py (96%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/run_screen_loader.py (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/run_workstation_attach.py
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/synth.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/tb_sampler_controls.sv (88%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/tb_sampler_ddr.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/tb_sampler_import.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/tb_sampler_mode_d.sv (90%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/tb_sampler_pool.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/tb_sampler_sequencer.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/tb_sampler_storage.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/tb_sampler_tf_source.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/tb_sampler_voice.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/sampler/test_import_tool.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/run_current.py (98%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/run_merge.py (95%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_controls.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_dac_select.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_injection.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_push.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_tf_bounds.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_tf_coexist.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_tf_control.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_tf_play.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_tf_transport.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_vec.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_workstation.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tb_scope_xy.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/scope_vec/tf_decoder_endpoint.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tb_cpu_audio.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tb_generic_midi.sv (93%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/tb_gw25k_panel_endpoint.v
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tb_mmio.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tb_pl_guide.sv (90%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tb_screen_packet_loader.sv (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/tb_usb_lifecycle_merge.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/tb_workstation_attach.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/test_generic_midi.c
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/test_gw25k_panel.c
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/test_hotplug.c
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/test_stage_usb_firmware.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/test_usb_in_decode.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/data/tf_mp3.mp3.b64 (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_ddr_address_map.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_audio_ddr_dma.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_audio_ddr_path_flac.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_audio_ddr_path_mp3.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_audio_decoder_ip.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_audio_ip_unsupported.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_flac_pcm_decoder.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_flac_pcm_decoder_constant_stereo.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_flac_pcm_decoder_limits.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_flac_pcm_decoder_stereo.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_flac_pcm_decoder_verbatim.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_mp3_file.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_wav_chunk_parser.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_wav_formats.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_tf_wav_pcm_decoder.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/sim/tf_audio/tb_workstation_ddr_audio_arbiter.sv (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/event_reference.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/mmio_fixture.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/run.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/run_capture_ab.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/run_scope_event_ab.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/run_scope_synth_ab.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/tb_capture_input_ab.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/tb_engine_timing_ab.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/tb_mix_quantizer.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/tb_mmio_pipeline.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/tb_push_decimal.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/tb_push_pixel_mmio.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/tb_push_song_pixels.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/tb_push_surface_pipeline.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/tb_scope_event_ab.sv
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/test_cnn_trace_cdc.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/sim/timing/test_workstation_timing_gate.py
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/src/video/feedback_pixel_skid.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tests/bluetooth/tb_gw138k_ble_board.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tests/bluetooth/tb_gw138k_ble_uart50.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/analyze_bp_throughput.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/audit_clk50_cdc_routes.py (96%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/audit_clk50_timing.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/audit_ddr_ui_timing.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/audit_rtl8723ds_ble.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/audit_scope_routes.py (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/tools/audit_workstation_cdc.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/tools/audit_workstation_timing.py
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/bsram_hierarchy_audit.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_cnn_flash_ddr_probe.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_cnn_flash_image.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_cnn_flash_probe.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_current_workstation.py (67%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_65.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_66.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_67.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_68.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_69.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_70.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_71.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_72.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_73.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_74.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_75.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_76.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_77.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_78.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_79.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_80.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_81_bp_measure.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_82_bp_staged_cache.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_83_bp_ddr_isolation.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_full_song_85_clk50_timing.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_rtl8723ds_ble.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_score_guidance_4d.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_song_guide_52.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/build_workstation_flash_boot.py (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/tools/build_workstation_timing.py
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/capture_bp_dwell.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/capture_model_path.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/capture_scope_smoke.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/capture_score_guidance_board.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/capture_score_windows.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/capture_tf_hotplug.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/capture_workstation_basic_pitch.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/cnn_ddr_pipeline_patch.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/deploy_cnn_flash_boot.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/read_ble_status.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/refresh_cnn_flash_status.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/rtl8723ds_ble_sources.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/scope_score/README.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/scope_score/compile_scope.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/scope_score/demo_scene.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/scope_score/geometry.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/stage_usb_firmware.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_bist_expected_pattern.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_bist_pipeline.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_cache_read_retime.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_card_geometry.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_card_select.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_cpu_release.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_dashboard_predecode.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_ddr_arbiter_pipeline.py (97%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_ddr_boot_gate.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_ddr_pointer_arithmetic.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_ddr_read_credit.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_ddr_sync_fifo.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_feature_read_address.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_flash_boot.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_flash_ddr_pipeline.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_flash_deploy.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_flash_serial_boot.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_flash_waiter.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_idle_client_payload.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_model_memory_ready.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_pixel_skid.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_renderer_dimensions.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_renderer_predecode.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_renderer_spectrum_address.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_shared_display.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_start_delay_retime.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_startup_history.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_startup_panic.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_tf_buffer_enable.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_tf_byte_count.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_tf_capture_limit.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_tf_read_availability.py (76%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_tf_read_total.py (78%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_tf_write_buffer_retime.py (97%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_tf_write_mask.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_tmds_statistics.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_cnn_video_telemetry.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/test_rtl8723ds_ble.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/tf_scope_media/README.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/tf_scope_media/centered_song.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/tf_scope_media/media.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/upload_cnn_ddr_uart.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/verify_ble_payloads.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/verify_cnn_flash_workstation.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/wait_cnn_flash_acceptance.py (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/tools/workstation_bus_timing.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/tools/workstation_cnn_cdc.py
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/tools/workstation_memory.py (96%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/tools/workstation_sources.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/tools/workstation_timing_constraints.py
+ create mode 100644 projects/138k/push2_workstation/usb_a/tools/workstation_vector_timing.py
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/usb_a.sdc (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/README.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/ddr3_reference/ddr3_memory_interface.vo (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/MANIFEST.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/NOTICE.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/README.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/constraints/vivado_example.xdc (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/examples/rtl8723ds_ble_board_top.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/firmware/rtl8723ds_config.bin (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/firmware/rtl8723ds_fw.bin (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/firmware_manifest.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/inputs.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/reports/CDC_ROM_AUDIT.md (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/reports/resource_summary.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/reports/utilization.rpt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/reports/utilization_core.rpt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/reports/utilization_hierarchical.rpt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/rtl/bt_gatt.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/rtl/bt_h5_transport.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/rtl/bt_hci_init.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/rtl/bt_uart.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/rtl/bt_verilog_core.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/rtl/reset_release_sync.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/rtl8723ds_patch.mem (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/scripts/sim_bt_gatt.tcl (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/scripts/sim_bt_h5.tcl (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/scripts/sim_bt_system.tcl (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/scripts/simulate.ps1 (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/scripts/verify_package.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/sources.f (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/tests/tb_bt_gatt.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/tests/tb_bt_h5.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/tests/tb_bt_verilog_system.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/arm_stopped_state.txt (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/final_state.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/independent_audit.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/initialized_state.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/pc_receive.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/portable/gatt_normal.log (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/portable/h5_normal.log (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/portable/result.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/portable/system_normal.log (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/portable/system_wrong_rom.log (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/rtl8723ds_ble/validation/stopped_state.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/baremetal.ld (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/minlibc.c (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/minlibc.h
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/start.S (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb/usb_core.c (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb/usb_core.h
+ create mode 100644 projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb/usb_defs.h
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb/usb_hw.c (100%)
+ create mode 100644 projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb/usb_hw.h
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/inputs.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/VexRiscv.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/iosys2.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/simpleuart.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usb_fs_phy.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usb_transceiver.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_core.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc16.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc5.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_fifo.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_host_defs.v (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_sie.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/usb_a/vendor/workstation_inputs.json (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/vendor/EXM_HSPI.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/vendor/push2_demo_pixels.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/vendor/push2_display_tx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/vendor/push2_driver_core.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/vendor/push2_led_tx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/vendor/push2_midi_rx.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/vendor/push2_out_scheduler.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/push2_workstation/vendor/push2_visual_init.sv (100%)
+ rename {migration/gw138k_audio => projects/138k}/scripts/board_preflight.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/scripts/build.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/scripts/check_audio_build.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/scripts/check_managed_synthesis.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/scripts/read_runtime.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/scripts/run.py (100%)
+ rename {migration/gw138k_audio => projects/138k}/scripts/test_audio_audit.py (100%)
+ create mode 100644 projects/25k/README.md
+ create mode 100644 projects/README.md

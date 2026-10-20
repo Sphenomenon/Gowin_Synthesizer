@@ -1,0 +1,26 @@
+{
+  "started": "2026-10-18T21:45:54.302419+08:00",
+  "pid": 1021153,
+  "command": [
+    "python3",
+    "tools/build_workstation_timing.py",
+    "--source",
+    "results/workstation_scope83_timing85_20261018_214242_333215",
+    "--flow",
+    "all",
+    "--label",
+    "p34_vector_local_envelope",
+    "--route-option",
+    "1",
+    "--route-reference",
+    "results/timing_p27_uart_cdc_route1_20261018_142516_456857"
+  ],
+  "prepare": "results/workstation_scope83_timing85_20261018_214242_333215",
+  "detached": true,
+  "hardware_tested": false,
+  "logic_changed": [
+    "rtl/audio/scope_vec/scope_vec_engine.sv"
+  ],
+  "vector_event_equivalence": "results/scope_event_ab_20261018_214306_268939",
+  "vector_synthesis_equivalence": "results/scope_synth_ab_20261018_214306_270701"
+}

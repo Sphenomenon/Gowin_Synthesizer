@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-18",
+  "base_commit": "abe43c7",
+  "hardware_tested": false,
+  "full_workstation_built": false,
+  "suites": {
+    "attach": {
+      "passed": true,
+      "source": "/tmp/workstation-attach-complete",
+      "evidence": "attach/verification.json"
+    },
+    "panel": {
+      "passed": true,
+      "source": "/tmp/workstation-gw25k-verified",
+      "evidence": "panel/verification.json"
+    },
+    "guide": {
+      "passed": true,
+      "source": "/tmp/workstation-pl-guide-complete",
+      "evidence": "guide/verification.json"
+    },
+    "d_controls": {
+      "passed": true,
+      "source": "migration/gw138k_audio/push2_workstation/usb_a/out/sampler_20261018_012710_664258",
+      "evidence": "d_controls/verification.json"
+    },
+    "d_mode": {
+      "passed": true,
+      "source": "migration/gw138k_audio/push2_workstation/usb_a/out/sampler_20261018_014609_126469",
+      "evidence": "d_mode/verification.json"
+    }
+  },
+  "current_workstation_blocker": "accepted CNN source drift before staging; no baseline protection bypass",
+  "firmware": {
+    "firmware_bytes": 19288,
+    "static_ram_bytes": 25003,
+    "stack_margin_bytes": 40532
+  }
+}

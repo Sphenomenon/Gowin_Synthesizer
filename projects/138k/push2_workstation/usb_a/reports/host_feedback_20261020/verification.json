@@ -1,0 +1,84 @@
+{
+  "passed": true,
+  "date": "2026-10-20",
+  "completed": "2026-10-20T00:37:19.716831+08:00",
+  "scope": "138K production PL feedback from existing audio/MMIO state; 25K source read-only",
+  "head": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+  "raw_results": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689",
+  "prepare": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261020_003048_847857",
+  "implementation_files": [
+    "gw25k_panel.h"
+  ],
+  "test_files": [
+    "sim/test_gw25k_panel.c",
+    "sim/tb_workstation_attach.sv",
+    "sim/run_workstation_attach.py"
+  ],
+  "production_rtl_changed_this_batch": false,
+  "firmware_entry_c_changed_this_batch": false,
+  "protocol_or_mmio_layout_changed": false,
+  "device_25k_changed": false,
+  "tests": {
+    "source_boundary_tests": 10,
+    "full83_gates": 18,
+    "actual_audio_mmio_captures": 12,
+    "panel_independent_refresh_fields": 13,
+    "panel_frames": 30,
+    "panel_tiles": 7580,
+    "panel_midi_polls": 260469,
+    "panel_actual_endpoint_requests": 1019,
+    "panel_actual_endpoint_frames": 2,
+    "panel_actual_endpoint_rtl": true,
+    "address_and_undefined_sanitizers": true,
+    "legacy_generic_and_push": true,
+    "attach_lifecycle_and_guide_isolation": true
+  },
+  "build": {
+    "mode": "prepare_only",
+    "cnn_source_policy": "accepted_full83",
+    "selected_cnn_files": 73,
+    "live_cnn_overlay": false,
+    "excluded_active_cnn_changes": 9,
+    "excluded_active_cnn_additions": 11,
+    "firmware_bytes": 19788,
+    "static_ram_bytes": 25548,
+    "stack_margin_bytes": 39988,
+    "rom_sha256": {
+      "push2_usb_a.hex": "d49f415c9b608c7e2826110bb89d2149f6e80af0a9d6dc918f22d731feac5d8f",
+      "src/usb_a/push2_usb_a.hex": "d49f415c9b608c7e2826110bb89d2149f6e80af0a9d6dc918f22d731feac5d8f"
+    }
+  },
+  "evidence": {
+    "jobs": "jobs.json",
+    "panel": "panel/verification.json",
+    "attach": "attach/verification.json",
+    "guide": "guide/verification.json",
+    "full83": "full83/verification.json",
+    "scope_checks": "scope_checks.json",
+    "renderer": "panel/renderer.png",
+    "captured_mmio": "attach/audio_feedback.txt",
+    "production_host_feedback": "attach/feedback_host_test.log"
+  },
+  "not_rerun": [
+    "2026-10-19 32-note serial audio/FFT test",
+    "full standalone sampler suite",
+    "full 25K device suite"
+  ],
+  "remaining": [
+    "25K local bidirectional parameter synchronization",
+    "25K-specific effects context and 16-key assignments require product decisions",
+    "D whole-system mode/DDR/UI integration deferred",
+    "three withdrawn 25K queue/join boundary fixes remain suggestions",
+    "physical latency and serial audio interface acceptance",
+    "timing closure"
+  ],
+  "hardware_tested": false,
+  "programmed": false,
+  "hardware_or_pins_changed": false,
+  "synthesis_run": false,
+  "place_and_route_run": false,
+  "new_timing_experiments": false,
+  "timing_closed": false,
+  "commit_created": false,
+  "pushed": false
+}

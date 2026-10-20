@@ -1,0 +1,196 @@
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_fx.sv:29:8: Filename 'sampler_fx' does not match MODULE name: 'sampler_click'
+   29 | module sampler_click(
+      |        ^~~~~~~~~~~~~
+                       ... For warning description see https://verilator.org/warn/DECLFILENAME?v=5.046
+                       ... Use "/* verilator lint_off DECLFILENAME */" and lint_on around source to disable this message.
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:458:8: Filename 'sampler_sequencer' does not match MODULE name: 'sampler_pattern_ram'
+  458 | module sampler_pattern_ram(
+      |        ^~~~~~~~~~~~~~~~~~~
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_sd_spi_sector_reader.v:12:8: Filename 'third_party_sd_spi_sector_reader' does not match MODULE name: 'sd_spi_sector_reader'
+   12 | module sd_spi_sector_reader #(
+      |        ^~~~~~~~~~~~~~~~~~~~
+%Warning-PINCONNECTEMPTY: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_sd_spi_sector_reader.v:193:6: Instance pin connected by name with empty reference: 'acmdres'
+  193 |     .acmdres      (                 ),
+      |      ^~~~~~~
+                          ... For warning description see https://verilator.org/warn/PINCONNECTEMPTY?v=5.046
+                          ... Use "/* verilator lint_off PINCONNECTEMPTY */" and lint_on around source to disable this message.
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_spi_session.v:10:8: Filename 'third_party_spi_session' does not match MODULE name: 'spi_session'
+   10 | module spi_session (
+      |        ^~~~~~~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:27:11: Operator XOR expects 32 bits on the RHS, but RHS's VARREF 'b' generates 8 bits.
+                                                                                                                                : ... note: In instance 'sampler_storage.u_import.u_wav'
+   27 |     c=crc ^ b;
+      |           ^
+                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=5.046
+                      ... Use "/* verilator lint_off WIDTHEXPAND */" and lint_on around source to disable this message.
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_resample.sv:33:33: Logical operator LOGOR expects 1 bit on the LHS, but LHS's SEL generates 5 bits.
+                                                                                                                                    : ... note: In instance 'sampler_storage.u_capture'
+   33 |         else if(base_bytes[4:0] || max_frames>capacity_bytes/2 || capacity_bytes<32)
+      |                                 ^~
+                     ... For warning description see https://verilator.org/warn/WIDTHTRUNC?v=5.046
+                     ... Use "/* verilator lint_off WIDTHTRUNC */" and lint_on around source to disable this message.
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv:31:18: Logical operator LOGOR expects 1 bit on the LHS, but LHS's SEL generates 5 bits.
+                                                                                                                                : ... note: In instance 'sampler_storage.u_pool'
+   31 |     if(BASE[4:0] || GRANULE%32 || (GRANULE&(GRANULE-1))!=0 || GRANULES<1 ||
+      |                  ^~
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv:31:18: Logical operator LOGOR expects 1 bit on the RHS, but RHS's MODDIVS generates 32 bits.
+                                                                                                                                : ... note: In instance 'sampler_storage.u_pool'
+   31 |     if(BASE[4:0] || GRANULE%32 || (GRANULE&(GRANULE-1))!=0 || GRANULES<1 ||
+      |                  ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv:66:28: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'pos' generates 7 bits.
+                                                                                                                                 : ... note: In instance 'sampler_storage.u_pool'
+   66 |         else begin pos<=pos==GRANULES-1 ? 0 : pos+1'b1;examined<=examined+1'b1;end
+      |                            ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv:65:29: Operator ADD expects 32 bits on the LHS, but LHS's VARREF 'examined' generates 8 bits.
+                                                                                                                                 : ... note: In instance 'sampler_storage.u_pool'
+   65 |         end else if(examined+1>=GRANULES+int'(needed)-1) begin done<=1;error<=E_CAPACITY;searching<=0;end
+      |                             ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv:55:20: Operator GTE expects 8 bits on the RHS, but RHS's VARREF 'needed' generates 7 bits.
+                                                                                                                                 : ... note: In instance 'sampler_storage.u_pool'
+   55 |         if(run_next>=needed) begin
+      |                    ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv:89:73: Operator ADD expects 32 bits on the LHS, but LHS's ARRAYSEL generates 7 bits.
+                                                                                                                                 : ... note: In instance 'sampler_storage.u_pool'
+   89 |           for(int j=0;j<GRANULES;j++) if(j>=first[slot] && j<first[slot]+count[slot]) used[j]<=0;
+      |                                                                         ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv:89:73: Operator ADD expects 32 bits on the RHS, but RHS's ARRAYSEL generates 7 bits.
+                                                                                                                                 : ... note: In instance 'sampler_storage.u_pool'
+   89 |           for(int j=0;j<GRANULES;j++) if(j>=first[slot] && j<first[slot]+count[slot]) used[j]<=0;
+      |                                                                         ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_import.sv:52:54: Logical operator LOGOR expects 1 bit on the RHS, but RHS's SEL generates 5 bits.
+                                                                                                                                  : ... note: In instance 'sampler_storage.u_import'
+   52 |         end else if(expected_frames>capacity_bytes/2 || base_bytes[4:0] || capacity_bytes<32) begin
+      |                                                      ^~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_import.sv:58:26: Operator GTE expects 17 bits on the RHS, but RHS's VARREF 'divisor' generates 16 bits.
+                                                                                                                                   : ... note: In instance 'sampler_storage.u_import'
+   58 |         reduced=16'(trial>=divisor ? trial-divisor : trial);
+      |                          ^~
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_import.sv:59:45: Bit extraction of var[31:0] requires 5 bit index, not 6 bits.
+                                                                                                                                  : ... note: In instance 'sampler_storage.u_import'
+   59 |         next_quotient=quotient;next_quotient[divide_bit]=trial>=divisor;
+      |                                             ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_import.sv:59:63: Operator GTE expects 17 bits on the RHS, but RHS's VARREF 'divisor' generates 16 bits.
+                                                                                                                                   : ... note: In instance 'sampler_storage.u_import'
+   59 |         next_quotient=quotient;next_quotient[divide_bit]=trial>=divisor;
+      |                                                               ^~
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_import.sv:57:14: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_storage.u_import'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+   57 |         trial={remainder,(divide_bit>=16 && divide_bit<31)};
+      |              ^
+                 ... For warning description see https://verilator.org/warn/BLKSEQ?v=5.046
+                 ... Use "/* verilator lint_off BLKSEQ */" and lint_on around source to disable this message.
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_import.sv:58:16: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_storage.u_import'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+   58 |         reduced=16'(trial>=divisor ? trial-divisor : trial);
+      |                ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_import.sv:59:22: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_storage.u_import'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+   59 |         next_quotient=quotient;next_quotient[divide_bit]=trial>=divisor;
+      |                      ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_import.sv:59:57: Blocking assignment '=' in sequential logic process
+                                                                                                                              : ... note: In instance 'sampler_storage.u_import'
+                                                                                                                              : ... Suggest using delayed assignment '<='
+   59 |         next_quotient=quotient;next_quotient[divide_bit]=trial>=divisor;
+      |                                                         ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv:52:17: Blocking assignment '=' in sequential logic process
+                                                                                                                            : ... note: In instance 'sampler_storage.u_pool'
+                                                                                                                            : ... Suggest using delayed assignment '<='
+   52 |         run_next=used[pos] ? 0 : (pos==0 ? 1 : run_length+1'b1);
+      |                 ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv:53:18: Blocking assignment '=' in sequential logic process
+                                                                                                                            : ... note: In instance 'sampler_storage.u_pool'
+                                                                                                                            : ... Suggest using delayed assignment '<='
+   53 |         run_start=(run_length==0 || pos==0) ? pos : start_at;
+      |                  ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pool.sv:69:13: Blocking assignment '=' in sequential logic process
+                                                                                                                            : ... note: In instance 'sampler_storage.u_pool'
+                                                                                                                            : ... Suggest using delayed assignment '<='
+   69 |         need=(bytes/GRANULE)+((bytes%GRANULE)!=0);
+      |             ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_resample.sv:50:17: Blocking assignment '=' in sequential logic process
+                                                                                                                                : ... note: In instance 'sampler_storage.u_capture'
+                                                                                                                                : ... Suggest using delayed assignment '<='
+   50 |             mono=($signed(pcm_l)+$signed(pcm_r))>>>1;
+      |                 ^
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_storage.sv:26:55: Signal is not used: 'epoch'
+                                                                                                                                     : ... note: In instance 'sampler_storage'
+   26 |   logic pool_done,reserve_sent;logic [7:0] pool_error,epoch;
+      |                                                       ^~~~~
+                       ... For warning description see https://verilator.org/warn/UNUSEDSIGNAL?v=5.046
+                       ... Use "/* verilator lint_off UNUSEDSIGNAL */" and lint_on around source to disable this message.
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_storage.sv:28:9: Signal is not used: 'imp_busy'
+                                                                                                                                    : ... note: In instance 'sampler_storage'
+   28 |   logic imp_busy,imp_done,cap_busy,cap_done,imp_valid,cap_valid;
+      |         ^~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_storage.sv:28:27: Signal is not used: 'cap_busy'
+                                                                                                                                     : ... note: In instance 'sampler_storage'
+   28 |   logic imp_busy,imp_done,cap_busy,cap_done,imp_valid,cap_valid;
+      |                           ^~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_import.sv:19:32: Signal is not used: 'right_pcm'
+                                                                                                                                    : ... note: In instance 'sampler_storage.u_import'
+   19 |   logic signed [15:0] left_pcm,right_pcm;
+      |                                ^~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_resample.sv:20:23: Bits of signal are not used: 'mono'[16]
+                                                                                                                                      : ... note: In instance 'sampler_storage.u_capture'
+   20 |   logic signed [16:0] mono;
+      |                       ^~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v:95:16: Bits of signal are not used: 'channel_byte_full'[3]
+                                                                                                                                                : ... note: In instance 'sampler_storage.u_import.u_wav'
+   95 |     wire [3:0] channel_byte_full = current_is_left ? bcnt :
+      |                ^~~~~~~~~~~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:3:22: Parameter is not used: 'VOICES'
+                                                                                                                               : ... note: In instance 'sampler_storage.u_import.u_wav'
+    3 |   localparam integer VOICES=16, SLOTS=64, PATTERNS=16;
+      |                      ^~~~~~
+                      ... For warning description see https://verilator.org/warn/UNUSEDPARAM?v=5.046
+                      ... Use "/* verilator lint_off UNUSEDPARAM */" and lint_on around source to disable this message.
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:3:33: Parameter is not used: 'SLOTS'
+                                                                                                                               : ... note: In instance 'sampler_storage.u_import.u_wav'
+    3 |   localparam integer VOICES=16, SLOTS=64, PATTERNS=16;
+      |                                 ^~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:3:43: Parameter is not used: 'PATTERNS'
+                                                                                                                               : ... note: In instance 'sampler_storage.u_import.u_wav'
+    3 |   localparam integer VOICES=16, SLOTS=64, PATTERNS=16;
+      |                                           ^~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:4:26: Parameter is not used: 'ONE_SHOT'
+                                                                                                                               : ... note: In instance 'sampler_storage.u_import.u_wav'
+    4 |   localparam logic [1:0] ONE_SHOT=0, GATED=1, LOOPED=2;
+      |                          ^~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:4:38: Parameter is not used: 'GATED'
+                                                                                                                               : ... note: In instance 'sampler_storage.u_import.u_wav'
+    4 |   localparam logic [1:0] ONE_SHOT=0, GATED=1, LOOPED=2;
+      |                                      ^~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:4:47: Parameter is not used: 'LOOPED'
+                                                                                                                               : ... note: In instance 'sampler_storage.u_import.u_wav'
+    4 |   localparam logic [1:0] ONE_SHOT=0, GATED=1, LOOPED=2;
+      |                                               ^~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:6:28: Parameter is not used: 'E_TIMEOUT'
+                                                                                                                               : ... note: In instance 'sampler_storage.u_import.u_wav'
+    6 |     E_CAPACITY=4, E_TAG=5, E_TIMEOUT=6, E_CRC=7, E_BUSY=8,
+      |                            ^~~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:7:35: Parameter is not used: 'E_DEADLINE'
+                                                                                                                               : ... note: In instance 'sampler_storage.u_import.u_wav'
+    7 |     E_TRUNCATED=9, E_OVERFLOW=10, E_DEADLINE=11;
+      |                                   ^~~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v:78:16: Bits of signal are not used: 'win'[31:24]
+                                                                                                                                                 : ... note: In instance 'sampler_storage.u_import.u_wav.u_parser'
+   78 |     reg [31:0] win;                        
+      |                ^~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v:80:16: Bits of signal are not used: 'csize'[31:1]
+                                                                                                                                                 : ... note: In instance 'sampler_storage.u_import.u_wav.u_parser'
+   80 |     reg [31:0] csize;                      
+      |                ^~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v:107:17: Bits of signal are not used: 'chan_final'[15:4]
+                                                                                                                                                  : ... note: In instance 'sampler_storage.u_import.u_wav.u_parser'
+  107 |     wire [15:0] chan_final = (fcnt == 6'd2) ? {8'd0, inbyte} :
+      |                 ^~~~~~~~~~
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v:114:17: Bits of signal are not used: 'bits_final'[15:6]
+                                                                                                                                                  : ... note: In instance 'sampler_storage.u_import.u_wav.u_parser'
+  114 |     wire [15:0] bits_final = (fcnt == 6'd14) ? {8'd0, inbyte} :
+      |                 ^~~~~~~~~~
+- V e r i l a t i o n   R e p o r t: Verilator 5.046 2026-02-28 rev fedora-5.046
+- Verilator: Built from 1.460 MB sources in 27 modules, into 0.214 MB in 9 C++ files needing 0.000 MB
+- Verilator: Walltime 0.040 s (elab=0.007, cvt=0.016, bld=0.000); cpu 0.039 s on 1 threads; allocated 36.293 MB

@@ -1,0 +1,44 @@
+{
+  "checked_on": "2026-10-19T00:56:17.785234+08:00",
+  "passed": true,
+  "hardware_tested": false,
+  "production_rtl_changed": false,
+  "production_firmware_changed": false,
+  "test_changed": "sim/sampler/tb_sampler_mode_d.sv",
+  "command": [
+    "python3",
+    "sim/sampler/run.py",
+    "--test",
+    "tb_sampler_mode_d"
+  ],
+  "generated_output": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/sampler_20261019_005444_940592",
+  "test_evidence": "sampler_verification.json",
+  "input_evidence": "sampler_inputs_sha256.json",
+  "prior_functional_batch": "../function_first_20261019/verification.json",
+  "covered_effects": [
+    "CC20 BitCrush",
+    "CC21 Drive",
+    "CC22 exported delay send"
+  ],
+  "effect_combinations": 8,
+  "single_control_transitions": 8,
+  "existing_voice_kept_running": true,
+  "sample_time_kept_advancing": true,
+  "external_delay_audio_tested": false,
+  "gw25k_pad_mapping_implemented": false,
+  "full_board_integration_tested": false,
+  "synthesis_run": false,
+  "pnr_run": false,
+  "programmed": false,
+  "metrics": [
+    {
+      "test": "tb_sampler_mode_d",
+      "integrated_frames": 5022,
+      "same_sample_onsets": 3,
+      "integrated_jitter_samples": 0,
+      "max_render_cycles": 62,
+      "fx_combinations": 8,
+      "playback_fx_switches": 8
+    }
+  ]
+}

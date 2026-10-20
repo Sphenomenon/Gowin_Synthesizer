@@ -1,0 +1,94 @@
+{
+  "checked": "2026-10-18T17:32:40.509945+08:00",
+  "timing_closed": false,
+  "best_completed_candidate": "p27",
+  "p27_worst_setup_ns": -0.018,
+  "completed": {
+    "p31": {
+      "timing_closed": false,
+      "pll_passed": true,
+      "cdc_passed": true,
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 49.507
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 75.746
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 227.337
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 155.096
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 74.641
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1244.243
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 47.239
+        }
+      },
+      "worst_setup_ns": -0.402,
+      "hold_endpoints": 0
+    },
+    "p32": {
+      "timing_closed": false,
+      "pll_passed": true,
+      "cdc_passed": true,
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 51.954
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 76.412
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 313.784
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 155.628
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 74.123
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1087.724
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 48.314
+        }
+      },
+      "worst_setup_ns": -0.287,
+      "hold_endpoints": 0
+    }
+  },
+  "current_candidate": "results/timing_p33_measured_paths_20261018_173136_739962",
+  "current_prepare": "results/timing_p33_measured_paths_20261018_173136_545041",
+  "current_state": "fresh synthesis running; eight actual p27 path-family max_delay budgets only",
+  "hardware_tested": false
+}

@@ -1,0 +1,102 @@
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_fx.sv:29:8: Filename 'sampler_fx' does not match MODULE name: 'sampler_click'
+   29 | module sampler_click(
+      |        ^~~~~~~~~~~~~
+                       ... For warning description see https://verilator.org/warn/DECLFILENAME?v=5.046
+                       ... Use "/* verilator lint_off DECLFILENAME */" and lint_on around source to disable this message.
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_sequencer.sv:458:8: Filename 'sampler_sequencer' does not match MODULE name: 'sampler_pattern_ram'
+  458 | module sampler_pattern_ram(
+      |        ^~~~~~~~~~~~~~~~~~~
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_sd_spi_sector_reader.v:12:8: Filename 'third_party_sd_spi_sector_reader' does not match MODULE name: 'sd_spi_sector_reader'
+   12 | module sd_spi_sector_reader #(
+      |        ^~~~~~~~~~~~~~~~~~~~
+%Warning-PINCONNECTEMPTY: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_sd_spi_sector_reader.v:193:6: Instance pin connected by name with empty reference: 'acmdres'
+  193 |     .acmdres      (                 ),
+      |      ^~~~~~~
+                          ... For warning description see https://verilator.org/warn/PINCONNECTEMPTY?v=5.046
+                          ... Use "/* verilator lint_off PINCONNECTEMPTY */" and lint_on around source to disable this message.
+%Warning-DECLFILENAME: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/third_party_spi_session.v:10:8: Filename 'third_party_spi_session' does not match MODULE name: 'spi_session'
+   10 | module spi_session (
+      |        ^~~~~~~~~~~
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:27:11: Operator XOR expects 32 bits on the RHS, but RHS's VARREF 'b' generates 8 bits.
+                                                                                                                                : ... note: In instance 'sampler_slice'
+   27 |     c=crc ^ b;
+      |           ^
+                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=5.046
+                      ... Use "/* verilator lint_off WIDTHEXPAND */" and lint_on around source to disable this message.
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:3:22: Parameter is not used: 'VOICES'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    3 |   localparam integer VOICES=16, SLOTS=64, PATTERNS=16;
+      |                      ^~~~~~
+                      ... For warning description see https://verilator.org/warn/UNUSEDPARAM?v=5.046
+                      ... Use "/* verilator lint_off UNUSEDPARAM */" and lint_on around source to disable this message.
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:3:33: Parameter is not used: 'SLOTS'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    3 |   localparam integer VOICES=16, SLOTS=64, PATTERNS=16;
+      |                                 ^~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:3:43: Parameter is not used: 'PATTERNS'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    3 |   localparam integer VOICES=16, SLOTS=64, PATTERNS=16;
+      |                                           ^~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:4:26: Parameter is not used: 'ONE_SHOT'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    4 |   localparam logic [1:0] ONE_SHOT=0, GATED=1, LOOPED=2;
+      |                          ^~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:4:38: Parameter is not used: 'GATED'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    4 |   localparam logic [1:0] ONE_SHOT=0, GATED=1, LOOPED=2;
+      |                                      ^~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:4:47: Parameter is not used: 'LOOPED'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    4 |   localparam logic [1:0] ONE_SHOT=0, GATED=1, LOOPED=2;
+      |                                               ^~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:5:26: Parameter is not used: 'OK'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    5 |   localparam logic [7:0] OK=0, E_POLICY=1, E_FORMAT=2, E_BOUNDS=3,
+      |                          ^~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:5:32: Parameter is not used: 'E_POLICY'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    5 |   localparam logic [7:0] OK=0, E_POLICY=1, E_FORMAT=2, E_BOUNDS=3,
+      |                                ^~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:5:44: Parameter is not used: 'E_FORMAT'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    5 |   localparam logic [7:0] OK=0, E_POLICY=1, E_FORMAT=2, E_BOUNDS=3,
+      |                                            ^~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:5:56: Parameter is not used: 'E_BOUNDS'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    5 |   localparam logic [7:0] OK=0, E_POLICY=1, E_FORMAT=2, E_BOUNDS=3,
+      |                                                        ^~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:6:5: Parameter is not used: 'E_CAPACITY'
+                                                                                                                              : ... note: In instance 'sampler_slice'
+    6 |     E_CAPACITY=4, E_TAG=5, E_TIMEOUT=6, E_CRC=7, E_BUSY=8,
+      |     ^~~~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:6:19: Parameter is not used: 'E_TAG'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    6 |     E_CAPACITY=4, E_TAG=5, E_TIMEOUT=6, E_CRC=7, E_BUSY=8,
+      |                   ^~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:6:28: Parameter is not used: 'E_TIMEOUT'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    6 |     E_CAPACITY=4, E_TAG=5, E_TIMEOUT=6, E_CRC=7, E_BUSY=8,
+      |                            ^~~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:6:41: Parameter is not used: 'E_CRC'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    6 |     E_CAPACITY=4, E_TAG=5, E_TIMEOUT=6, E_CRC=7, E_BUSY=8,
+      |                                         ^~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:6:50: Parameter is not used: 'E_BUSY'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    6 |     E_CAPACITY=4, E_TAG=5, E_TIMEOUT=6, E_CRC=7, E_BUSY=8,
+      |                                                  ^~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:7:5: Parameter is not used: 'E_TRUNCATED'
+                                                                                                                              : ... note: In instance 'sampler_slice'
+    7 |     E_TRUNCATED=9, E_OVERFLOW=10, E_DEADLINE=11;
+      |     ^~~~~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:7:20: Parameter is not used: 'E_OVERFLOW'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    7 |     E_TRUNCATED=9, E_OVERFLOW=10, E_DEADLINE=11;
+      |                    ^~~~~~~~~~
+%Warning-UNUSEDPARAM: /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_pkg.sv:7:35: Parameter is not used: 'E_DEADLINE'
+                                                                                                                               : ... note: In instance 'sampler_slice'
+    7 |     E_TRUNCATED=9, E_OVERFLOW=10, E_DEADLINE=11;
+      |                                   ^~~~~~~~~~
+- V e r i l a t i o n   R e p o r t: Verilator 5.046 2026-02-28 rev fedora-5.046
+- Verilator: Built from 1.460 MB sources in 27 modules, into 0.037 MB in 9 C++ files needing 0.000 MB
+- Verilator: Walltime 0.024 s (elab=0.005, cvt=0.003, bld=0.000); cpu 0.024 s on 1 threads; allocated 36.285 MB

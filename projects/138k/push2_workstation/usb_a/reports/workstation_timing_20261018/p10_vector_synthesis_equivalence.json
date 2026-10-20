@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "scope": "standalone Gowin vector netlist; not full-board timing",
+  "netlist_sha256": "6910fb5d56bc708dabc441dc05eeb095eab970401528bec01705716334d3a1a0"
+}

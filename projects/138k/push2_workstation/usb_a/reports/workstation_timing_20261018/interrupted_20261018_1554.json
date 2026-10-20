@@ -1,0 +1,27 @@
+{
+  "checked": "2026-10-18T15:58:33.418496+08:00",
+  "hardware_tested": false,
+  "builds": {
+    "p25": {
+      "build": "results/timing_p25_complete_uart_cdc_20261018_141043_879626",
+      "tool_result_present": false,
+      "routed_timing_complete": false,
+      "status": "interrupted during the user abort; tool process absent when continuation began",
+      "synthesis_finished": true
+    },
+    "p29": {
+      "build": "results/timing_p29_margin_closed_layout_20261018_150934_186864",
+      "tool_result_present": false,
+      "routed_timing_complete": false,
+      "status": "interrupted during the user abort; tool process absent when continuation began",
+      "synthesis_finished": true
+    },
+    "p30": {
+      "build": "results/timing_p30_incremental_domain_margin_20261018_154055_382652",
+      "tool_result_present": false,
+      "routed_timing_complete": false,
+      "status": "interrupted during the user abort; tool process absent when continuation began",
+      "synthesis_finished": true
+    }
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "top": "gw138k_push_workstation_top",
+  "build_directory": "workstation_scope83_20261018_021532_266586",
+  "build_mode": "synthesis_only",
+  "bsram_measurement_stage": "synthesis",
+  "bsram": 216,
+  "bsram_capacity": 340,
+  "bsram_remaining": 124,
+  "pnr_available": false,
+  "pnr_bsram": null,
+  "pnr_primitive_breakdown": null,
+  "timing_closed": null,
+  "hardware_tested": false,
+  "tf_decoder": "wav",
+  "basic_pitch_elaborated": true,
+  "features": {
+    "usb_host": {
+      "instance": "u_usb_host",
+      "self_bsram": 32,
+      "subtree_bsram": 34
+    },
+    "push_surface": {
+      "instance": "u_push",
+      "self_bsram": 0,
+      "subtree_bsram": 1
+    },
+    "synthesizer": {
+      "instance": "u_managed/u_audio/u_workstation/engine",
+      "self_bsram": 8,
+      "subtree_bsram": 17
+    },
+    "vector_voices": {
+      "instance": "u_managed/u_audio/u_workstation/vector_engine",
+      "self_bsram": 9,
+      "subtree_bsram": 9
+    },
+    "vector_control_events": {
+      "instance": "u_managed/u_audio/u_workstation/cue_player",
+      "self_bsram": 1,
+      "subtree_bsram": 1
+    },
+    "scope_dac_selection": {
+      "instance": "u_tf_dac",
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "basic_pitch_pipeline": {
+      "instance": "u_music/u_basic_pitch",
+      "self_bsram": 3,
+      "subtree_bsram": 51
+    },
+    "basic_pitch_ddr_port": {
+      "instance": "u_music/u_ddr16",
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "serial_effects": {
+      "instance": "u_managed/u_audio/u_workstation/effects",
+      "self_bsram": 0,
+      "subtree_bsram": 12
+    },
+    "tf_spi_fat_reader": {
+      "instance": "u_tf_audio/u_path/u_file_reader",
+      "self_bsram": 1,
+      "subtree_bsram": 1
+    },
+    "tf_capture_fifo": {
+      "instance": "u_tf_audio/u_path/u_capture_fifo",
+      "self_bsram": 2,
+      "subtree_bsram": 2
+    },
+    "tf_playback_fifo": {
+      "instance": "u_tf_audio/u_path/u_playback_fifo",
+      "self_bsram": 2,
+      "subtree_bsram": 2
+    },
+    "tf_ddr_dma": {
+      "instance": "u_tf_audio/u_path/u_dma",
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "shared_ddr_controller": {
+      "instance": "u_memory",
+      "self_bsram": 0,
+      "subtree_bsram": 16
+    },
+    "hdmi_display_analysis": {
+      "instance": "u_video",
+      "self_bsram": 0,
+      "subtree_bsram": 48
+    },
+    "ae350_boot_memory": {
+      "instance": "u_boot_memory",
+      "self_bsram": 16,
+      "subtree_bsram": 16
+    }
+  },
+  "top_level_bsram": {
+    "u_usb_host": 34,
+    "u_push": 1,
+    "u_managed": 45,
+    "u_tf_audio": 5,
+    "u_music": 51,
+    "u_memory": 16,
+    "u_video": 48,
+    "u_boot_memory": 16
+  },
+  "synthesis_clock_estimates": [
+    {
+      "clock": "clk_50m",
+      "required_mhz": 50.0,
+      "synthesis_estimated_mhz": 50.351,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 76.8,
+      "synthesis_estimated_mhz": 43.635,
+      "estimate_meets_requirement": false
+    },
+    {
+      "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 48.0,
+      "synthesis_estimated_mhz": 38.267,
+      "estimate_meets_requirement": false
+    },
+    {
+      "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+      "required_mhz": 400.0,
+      "synthesis_estimated_mhz": 1487.018,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 50.0,
+      "synthesis_estimated_mhz": 346.464,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+      "required_mhz": 100.0,
+      "synthesis_estimated_mhz": 1617.337,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+      "required_mhz": 100.0,
+      "synthesis_estimated_mhz": 223.924,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+      "required_mhz": 148.5,
+      "synthesis_estimated_mhz": 205.078,
+      "estimate_meets_requirement": true
+    }
+  ],
+  "evidence_sha256": {
+    "Prj1/impl/gwsynthesis/Prj1_syn_rsc.xml": "f956ac3f3ea21f184191f03c1cde59045aade9c5411649c02c2d498640dcb268",
+    "Prj1/src/push2/gw138k_push_workstation_top.v": "c5e4a660d368e8609f28384a846005246d371011063a4bcc06fb6e8eb2c34682",
+    "workstation_inputs.json": "6451747a0c9edf35a2e1369c115055c229286a1a37a55538aad2fa546064fb22",
+    "tool_result.json": "be9abd1e7e0d382ae3126da6f6425360141d1285d26902e463f560c544cb1048"
+  },
+  "notes": [
+    "Subtree counts already include descendants; sum only immediate top-level children plus top self.",
+    "Synthesis BSRAM is not P&R physical utilization; no savings claim against historical routed 253.",
+    "P&R counts SDPB/SDPX9B/pROM primitives; synthesis counts 18Kb-block equivalents. Compare only within one stage: bsram vs bsram, pnr_bsram vs pnr_bsram.",
+    "Reserved NN DDR address space alone does not instantiate a neural network.",
+    "Timing closure and board acceptance require separate routed/physical evidence."
+  ],
+  "expected_merge_instances": {
+    "u_scope_output": true,
+    "u_final_output_observer": true,
+    "u_final_output_cdc": true,
+    "u_tf_control_cdc": true,
+    "u_tf_scope_transport": true,
+    "u_delay_ddr_dma": true
+  },
+  "prepare_and_synthesis_inputs_identical": true
+}

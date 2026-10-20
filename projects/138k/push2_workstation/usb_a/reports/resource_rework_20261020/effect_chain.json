@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "log": "PASS effect chain: six orders x eight masks, 12417 stereo frames, max_latency=105/1600 cycles, actual dual-clock DDR delay, synth/PCM/vector dry mix, abort/clear\n- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_effect_chain/tb.sv:46: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28\n- Verilator: $finish at 199ms; walltime 8.954 s; speed 22.285 ms/s\n- Verilator: cpu 8.921 s on 1 threads; allocated 7 MB",
+  "source_sha256": {
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/timing_p27_uart_cdc_route1_20261018_142516_456857/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/audio/stereo_effects.sv": "370206c4a13f839a0ab5985b872396ca26a497811118186adb159361690d279f",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": "6d55458af075b01baebc22c81a856e98336a96ae82f061942a1511defc5a3ae6",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_effect_chain/tb.sv": "bb0ecc7f447eb13ebe9a183f10a9327d102aa5d8756dd21f302072871500be12",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4"
+  },
+  "hardware_tested": false
+}

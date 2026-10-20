@@ -31,6 +31,7 @@ module basic_pitch_conv2d #(
     parameter int USE_STACK = 1,      // 1: input is plane[t][f + shift[c]]
                                       // 0: input is a feature map X[t][f][c]
     parameter int ACT       = 0,      // 0 = none, 1 = ReLU, 2 = sigmoid
+    parameter bit COLUMN_TILING = 1'b0,
     parameter bit DDR_FETCH = 1'b0
 ) (
     input  logic               clk_i,
@@ -38,6 +39,7 @@ module basic_pitch_conv2d #(
     input  logic               start_i,
     input  logic [8:0]         row_start_i,     // first output row (inclusive)
     input  logic [8:0]         row_limit_i,     // test hook: output rows to compute
+    input logic [8:0] col_start_i, col_limit_i, // exclusive limit; ignored unless COLUMN_TILING
     // input feature RAM (USE_STACK = 0)
     // CQT plane (USE_STACK = 1), 172 x 309
     output logic [15:0]        pl_addr_o,
@@ -164,13 +166,13 @@ module basic_pitch_conv2d #(
 
             case (state)
                 S_IDLE: if (start_i) begin
-                    ot <= row_start_i; of <= '0; oc <= '0; kh <= '0; kw <= '0; ic <= '0;
+                    ot <= row_start_i; of <= COLUMN_TILING ? col_start_i : 9'd0; oc <= '0; kh <= '0; kw <= '0; ic <= '0;
                     acc <= '0;
                     state <= S_T;
                 end
 
                 S_T: begin
-                    of <= '0;
+                    of <= COLUMN_TILING ? col_start_i : 9'd0;
                     oc <= '0;
                     state <= S_F;
                 end
@@ -251,7 +253,7 @@ module basic_pitch_conv2d #(
                     y_data_o <= act_val;
                     if (oc == OUT_C - 1) begin
                         oc <= '0;
-                        if (of == OUT_F - 1) begin
+                        if ((of == OUT_F - 1) || (COLUMN_TILING && of + 9'd1 >= col_limit_i)) begin
                             of <= '0;
                             if ((ot == row_limit_i - 1) || (ot == OUT_T - 1)) begin
                                 state <= S_DONE;

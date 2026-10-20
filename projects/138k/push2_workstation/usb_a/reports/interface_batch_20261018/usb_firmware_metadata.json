@@ -1,0 +1,31 @@
+{
+  "compiler_prefix": "/home/sphenicidition/.local/opt/amd/2025.2.1/gnu/riscv/lin/bin/riscv64-unknown-elf",
+  "firmware_bytes": 19288,
+  "static_ram_bytes": 25003,
+  "static_ram_end": 25004,
+  "stack_margin_bytes": 40532,
+  "live_sha256": {
+    "firmware.c": "1e8dd2999406097d1b6eb9766c92cdd0de2094d81b3788531b026d8bf3871403",
+    "gw25k_panel.h": "91934d6760b1a7e5f0a41dadbc0fb30c15252457598b4739958ac56ef6ab36dd"
+  },
+  "staged_source_sha256": {
+    "baremetal.ld": "782346f25a8dfffc5bfbb8198c2b12e5166b2d500aa00e626e8187f5a0473da8",
+    "minlibc.c": "67270201c156358943bf01df27fc81da2a97730668174426ee11584a60f607bf",
+    "minlibc.h": "6b69e720d83f1a50d1bb617116cab5a77be69f4bfacbc1bbca41c31889f13e86",
+    "start.S": "922d197b938e653b3a94ef6107303cb828a2be267629bd92899498d429cbb60e",
+    "firmware.c": "1e8dd2999406097d1b6eb9766c92cdd0de2094d81b3788531b026d8bf3871403",
+    "gw25k_panel.h": "91934d6760b1a7e5f0a41dadbc0fb30c15252457598b4739958ac56ef6ab36dd",
+    "usb/usb_core.c": "fbe2b0995c27bf3621e3b32993b2405ff3b018ffe751dfebad14611c2cc50fa5",
+    "usb/usb_core.h": "6b121c052986df83a612db01ade9a7e8524fec80fd8bd718e8b5722c985900c6",
+    "usb/usb_defs.h": "d492a33d57f93d939dac591b5c1f5a70ed71018b1f0310c9d3b51880a677a6f5",
+    "usb/usb_hw.c": "e86373c34b7fce1cb544d9514b0f510a5948515aa0d8ee825fd33ce724d83f50",
+    "usb/usb_hw.h": "2644a4bafe138954a871b69730e9edc472099c438a06fc4e071625367deae954"
+  },
+  "firmware_elf_sha256": "181b3884babb3fc8e24dc9eb34d4f4d57cc2a93992756b896251bb399b9c0f8b",
+  "firmware_binary_sha256": "49fdbcf94325d444ea46501c9cbbef34fafea1cbb8eb9ea0192df49573a70c53",
+  "rom_sha256": {
+    "push2_usb_a.hex": "fb4bf3c2aa51bd525ed35b288b7c2100c97cd429dfc75aee82ac9231ae211185",
+    "src/usb_a/push2_usb_a.hex": "fb4bf3c2aa51bd525ed35b288b7c2100c97cd429dfc75aee82ac9231ae211185"
+  },
+  "hardware_tested": false
+}

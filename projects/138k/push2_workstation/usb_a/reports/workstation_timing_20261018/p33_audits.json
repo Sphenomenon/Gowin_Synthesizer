@@ -1,0 +1,54 @@
+{
+  "tool_result": {
+    "exit_code": 0,
+    "inputs_unchanged": true,
+    "changed": [],
+    "build_mode": "all",
+    "hardware_tested": false,
+    "regenerated_synthesis_outputs": [],
+    "synthesis_reused_bitwise": false,
+    "synthesis_storage_checked": true,
+    "synthesis_storage_error": null
+  },
+  "passed": false,
+  "commands": {
+    "sta": {
+      "command": [
+        "/usr/bin/python3",
+        "tools/audit_workstation_timing.py",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p33_measured_paths_20261018_173136_739962",
+        "--require-closed",
+        "--output",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/workstation_timing_20261018/p33_sta.json"
+      ],
+      "exit_code": 1
+    },
+    "cdc": {
+      "command": [
+        "/usr/bin/python3",
+        "tools/audit_workstation_cdc.py",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p33_measured_paths_20261018_173136_739962"
+      ],
+      "exit_code": 0
+    },
+    "pll": {
+      "command": [
+        "/usr/bin/python3",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p33_measured_paths_20261018_173136_739962/Prj1/scripts/check_video_pll_init.py",
+        "--root",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p33_measured_paths_20261018_173136_739962/Prj1",
+        "--output",
+        "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/workstation_timing_20261018/p33_pll.json"
+      ],
+      "exit_code": 0
+    }
+  },
+  "timing_closed": false,
+  "cdc_passed": true,
+  "pll_passed": true,
+  "status": "audited; not accepted",
+  "checked": "2026-10-18T18:36:28.589512+08:00",
+  "hardware_tested": false,
+  "build": "results/timing_p33_measured_paths_20261018_173136_739962",
+  "audit_helper_sha256": "92a0b0237c38585c0d23fc52b9316949a1219cd36cc45ee9ecaf222de20a4ee8"
+}

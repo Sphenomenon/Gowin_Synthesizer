@@ -1,0 +1,54 @@
+{
+  "completed": "2026-10-19T02:06:16.950277+08:00",
+  "passed": true,
+  "requirement_source": "../../docs/CONTEST_REQUIREMENTS.md",
+  "user_clarification": "D sampler and TF PCM remain eligible paths; exclude direct playback of preprocessed music, not PCM format/source categorically",
+  "jobs": {
+    "realtime_synth": {
+      "passed": true,
+      "evidence": "synth_verification.json",
+      "raw_output": "projects/138k/push2_workstation/usb_a/results/contest_requirements_20261019",
+      "command": "python3 sim/contest/run.py --baseline results/workstation_scope83_20261019_002422_673274/Prj1 --output results/contest_requirements_20261019"
+    },
+    "sampler_full": {
+      "passed": true,
+      "rtl_tests": 9,
+      "python_tests": 5,
+      "lint_tops": 5,
+      "evidence": "sampler_verification.json",
+      "raw_output": "projects/138k/push2_workstation/usb_a/out/sampler_20261019_020429_230303",
+      "command": "python3 sim/sampler/run.py"
+    }
+  },
+  "inputs_match_current_files": true,
+  "production_matches_previous_functional_regression": true,
+  "production_inputs_sha256": {
+    "firmware.c": "1e8dd2999406097d1b6eb9766c92cdd0de2094d81b3788531b026d8bf3871403",
+    "gw25k_panel.h": "c205822eca308ae2b884fb10f0198bfb56ace95db41238de6c271e3a4d3ebfb7",
+    "rtl/push2_usb_a_control.sv": "b8af9064b4e658225727e71eb585b2c3b23456eef0c9cf0f9385ef4b16c471ca",
+    "rtl/audio/gw138k_usb_lifecycle_merge.sv": "b1f6965afa8a14d1521895cf498530ca0dc3e768b6eaabf3b3a7fefe7c2d3d90",
+    "rtl/audio/gw138k_event_workstation.sv": "02b0e5028e0747b5a88d71b2e4ca969c7665ca051b2faf91880847df08f40f50",
+    "rtl/audio/push2_controls.sv": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+    "rtl/display_data/push2_surface_pixels.sv": "9c23e006beb18c08ec9f05ff4b9712a95e8cb8045a5e4f5d093e9c2382aa3353",
+    "rtl/sampler/sampler_fx.sv": "013bce707bd9613baf6421b739d14cdf16570bbd4fb1dd5f1d026aeca5e03c9d"
+  },
+  "hardware_tested": false,
+  "programmed": false,
+  "synthesis_run": false,
+  "pnr_run": false,
+  "new_timing_experiment": false,
+  "timing_closed": false,
+  "all_contest_requirements_satisfied": false,
+  "gw25k_full_device_tested": false,
+  "standard_i2s_satisfied": false,
+  "sensor_to_analog_latency_measured": false,
+  "preserved_files_unchanged": true,
+  "preserved_files_sha256": {
+    "工程架构报告.md": "7dc5b97ac7746d231cc544584766fee625295ac0d1c1270df09ab812728cf6bc",
+    "projects/138k/push2_workstation/usb_a/GW25K_PANEL.md": "6be622ff8a99813ca89a4674341bbe38fde7f19758307e99d5a556808a16dd06",
+    "projects/138k/push2_workstation/usb_a/LATEST_WORKSTATION.json": "8afb5f65b343064d0600d242c994ba8f9eaf5e1faca3f4d7ef6603c365f91fa7"
+  },
+  "documentation_sha256": "documentation_sha256.json",
+  "production_unchanged_scope": "138K; subsequent 25K control changes are verified separately",
+  "later_gw25k_integration_report": "../gw25k_controls_20261019/verification.json"
+}

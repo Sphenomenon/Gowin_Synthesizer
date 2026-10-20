@@ -35,9 +35,25 @@ def main():
                     help='Merge scope into accepted full83; full requires UserCode, never changes board latest')
     ap.add_argument('--tf-audio-kind',choices=['mp3','wav','flac'],default='wav',
                     help='TF decoder profile to elaborate (default: wav)')
+    ap.add_argument('--cnn-timing85',action='store_true',help='Current workstation: six pinned CNN timing fixes')
+    ap.add_argument('--resource-rework',action='store_true',
+                    help='Complete candidate with 4-Hz guidance, tiled CNN, SDP buffers and spatial reverb')
+    ap.add_argument('--resource-timing',action='store_true',
+                    help='Resource candidate: measured structural timing fixes and route0; keeps all clocks/features')
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=ap.parse_args()
+    if args.resource_timing and not args.resource_rework:
+        ap.error('--resource-timing requires --resource-rework')
+    if args.resource_rework:
+        if ((args.prepare_only and args.synthesis_only) or args.reuse_synthesis or
+            args.tf_audio_kind!='wav' or args.riscv_prefix is not None):
+            ap.error('--resource-rework supports the complete WAV workstation; no synthesis reuse or compiler override')
+        flow='prepare' if args.prepare_only else 'syn' if args.synthesis_only else 'all'
+        command=[sys.executable,str(ROOT/'tools/build_resource_rework.py'),'--flow',flow]
+        if args.resource_timing:command+=['--timing-fixes','--route-option','0']
+        if args.user_code is not None:command+=['--user-code',args.user_code]
+        raise SystemExit(subprocess.run(command).returncode)
     if args.current_workstation:
         if ((args.prepare_only and args.synthesis_only) or args.reuse_synthesis or
             args.tf_audio_kind!='wav'):
@@ -47,9 +63,12 @@ def main():
         command=[sys.executable,str(ROOT/'tools/build_current_workstation.py'),flag]
         if args.user_code is not None: command+=['--user-code',args.user_code]
         if args.riscv_prefix is not None: command+=['--riscv-prefix',args.riscv_prefix]
+        if args.cnn_timing85: command+=['--cnn-timing85']
         raise SystemExit(subprocess.run(command).returncode)
     tf_audio_kind={'mp3':1,'wav':2,'flac':3}[args.tf_audio_kind]
     build_mode='synthesis_only' if args.synthesis_only else 'place_route_reuse' if args.reuse_synthesis else 'full'
+    if args.cnn_timing85:
+        ap.error('--cnn-timing85 requires --current-workstation')
     if args.user_code is not None:
         if len(args.user_code)!=8 or any(c not in '0123456789abcdefABCDEF' for c in args.user_code):
             ap.error('--user-code requires eight hexadecimal digits')
@@ -193,6 +212,8 @@ def main():
         '.control_options_o(control_options),.scope_status_o(),.tf_scope_control_o(),')
     p.write_text(s)
     p=stage/'src/usb_host/gw138k_usb_controlled_audio.sv';s=p.read_text()
+    s=replace(s,'gw138k_three_event_arbiter u_usb_cpu_events(',
+        'gw138k_usb_lifecycle_merge u_usb_cpu_events(')
     s=replace(s,'    output wire sample_ce_o, sample_valid_o,',
         '    output wire sample_ce_o, sample_valid_o,\n    output wire [31:0] scope_status_o,tf_scope_control_o,')
     s=replace(s,'.control_options_o(control_options),',
@@ -357,6 +378,7 @@ static inline unsigned ui_active(const ui_model*m,unsigned note) {''')
     dest=stage/'src/usb_a';dest.mkdir()
     tree=ET.parse(stage/'Prj1.gprj');fl=tree.find('FileList')
     fl.insert(0,ET.Element('File',path='src/memory/display_data_layout_pkg.sv',type='file.verilog',enable='1'))
+    shutil.copy2(ROOT/'rtl/audio/gw138k_usb_lifecycle_merge.sv',stage/'src/usb_a/gw138k_usb_lifecycle_merge.sv')
     for source in sorted(scope_dest.glob('*.sv')):
         ET.SubElement(fl,'File',path=source.relative_to(stage).as_posix(),type='file.verilog',enable='1')
     tf_sources=[stage/'src/memory/ddr_address_map_guard.v',stage/'src/audio/tf_rate_pt8211_tx.v']

@@ -37,11 +37,13 @@ module tb_sampler_controls;
     send(1,99,100);if(!pattern_valid || pattern!=15) $fatal(1,"pattern15 pad");
     out_ready=0;send(1,36,70);if(in_ready) $fatal(1,"event backpressure");
     repeat(4) @(negedge clk);if(out_event[13:7]!=68 || !out_valid) $fatal(1,"stable stalled event");out_ready=1;
-    effect(110,127);if(out_l!=8192 || out_r!= -12288) $fatal(1,"bitcrush precision");
-    effect(110,0);if(out_l!=10001 || out_r!= -10001) $fatal(1,"momentary release");
-    effect(111,127);if(out_l!=32767 || out_r!= -32768) $fatal(1,"drive saturation");
-    effect(111,0);effect(112,99);if(delay_send!=99) $fatal(1,"P10 delay send");
-    effect(112,0);if(delay_send!=0) $fatal(1,"P10 delay release");
+    effect(110,127);effect(111,127);effect(112,127);
+    if(out_l!=10001 || out_r!= -10001 || delay_send) $fatal(1,"score CC reached D FX");
+    effect(20,127);if(out_l!=8192 || out_r!= -12288) $fatal(1,"bitcrush precision");
+    effect(20,0);if(out_l!=10001 || out_r!= -10001) $fatal(1,"momentary release");
+    effect(21,127);if(out_l!=32767 || out_r!= -32768) $fatal(1,"drive saturation");
+    effect(21,0);effect(22,99);if(delay_send!=99) $fatal(1,"P10 delay send");
+    effect(22,0);if(delay_send!=0) $fatal(1,"P10 delay release");
     for(int i=0;i<16;i++) begin slice_index=4'(i);#1;
       if(!slice_valid || slice_start!=10+i*10 || slice_end!=20+i*10) $fatal(1,"equal slicing");
     end

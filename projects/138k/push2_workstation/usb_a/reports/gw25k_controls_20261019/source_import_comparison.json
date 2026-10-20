@@ -1,0 +1,23 @@
+{
+  "source_import_manifest_unchanged": true,
+  "checked": 1060,
+  "matched": 1049,
+  "intentional_modified_files": [
+    "README.md",
+    "example/MIDI_KEYBOARD/README.md",
+    "example/MIDI_KEYBOARD/docs/PANEL_DISPLAY_PROTOCOL.md",
+    "example/MIDI_KEYBOARD/rtl/instrument/encoder_input.v",
+    "example/MIDI_KEYBOARD/rtl/instrument/midi_keyboard_application.v",
+    "example/MIDI_KEYBOARD/rtl/midi_keyboard_top.v",
+    "example/MIDI_KEYBOARD/run_sim.sh",
+    "example/MIDI_KEYBOARD/sim/tb_midi_keyboard_application.v",
+    "example/MIDI_KEYBOARD/sim/tb_panel_screen_integration.v",
+    "example/MIDI_KEYBOARD/sources.f",
+    "example/MIDI_KEYBOARD/tools/run_checks.py"
+  ],
+  "new_sources_and_tests": [
+    "example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v",
+    "example/MIDI_KEYBOARD/sim/tb_gw138k_panel_controls.v",
+    "example/MIDI_KEYBOARD/sim/tb_gw138k_encoder_detents.v"
+  ]
+}

@@ -1,0 +1,5 @@
+PASS mix_quantizer: 8738 exact 128-bit-oracle results, 4 modes, limits/rounding/PANIC, flushes=15
+- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/timing/tb_mix_quantizer.sv:75: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 102us; walltime 0.007 s; speed 14.042 ms/s
+- Verilator: cpu 0.007 s on 1 threads; allocated 7 MB

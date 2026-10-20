@@ -1,0 +1,76 @@
+- V e r i l a t i o n   R e p o r t: Verilator 5.046 2026-02-28 rev fedora-5.046
+- Verilator: Built from 0.036 MB sources in 2 modules, into 0.164 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.014 s (elab=0.001, cvt=0.009, bld=0.000); cpu 0.014 s on 1 threads; allocated 31.293 MB
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:55:62: Operator SUB expects 32 bits on the LHS, but LHS's VARREF 'position' generates 8 bits.
+                                                                                                                                            : ... note: In instance 'gw138k_panel_performance'
+   55 |    else if(position>128+BEND_DEAD_ZONE)v=8192+(8191*(position-128-BEND_DEAD_ZONE))/(127-BEND_DEAD_ZONE);
+      |                                                              ^
+                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=5.046
+                      ... Use "/* verilator lint_off WIDTHEXPAND */" and lint_on around source to disable this message.
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:55:20: Operator GT expects 32 bits on the LHS, but LHS's VARREF 'position' generates 8 bits.
+                                                                                                                                            : ... note: In instance 'gw138k_panel_performance'
+   55 |    else if(position>128+BEND_DEAD_ZONE)v=8192+(8191*(position-128-BEND_DEAD_ZONE))/(127-BEND_DEAD_ZONE);
+      |                    ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:54:15: Operator LT expects 32 bits on the LHS, but LHS's VARREF 'position' generates 8 bits.
+                                                                                                                                            : ... note: In instance 'gw138k_panel_performance'
+   54 |    if(position<128-BEND_DEAD_ZONE)v=(8192*position)/(128-BEND_DEAD_ZONE);
+      |               ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:57:11: Operator ASSIGN expects 14 bits on the Assign RHS, but Assign RHS's VARREF 'v' generates 32 bits.
+                                                                                                                                           : ... note: In instance 'gw138k_panel_performance'
+   57 |    bend_at=v;
+      |           ^
+                     ... For warning description see https://verilator.org/warn/WIDTHTRUNC?v=5.046
+                     ... Use "/* verilator lint_off WIDTHTRUNC */" and lint_on around source to disable this message.
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:76:78: Operator ASSIGN expects 4 bits on the Assign RHS, but Assign RHS's VARREF 'i' generates 32 bits.
+                                                                                                                                           : ... note: In instance 'gw138k_panel_performance'
+   76 |   for(i=15;i>=0;i=i-1)if(active_keys[i] && !desired[i])begin found=1;selected=i;end
+      |                                                                              ^
+%Warning-WIDTHTRUNC: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:78:79: Operator ASSIGN expects 4 bits on the Assign RHS, but Assign RHS's VARREF 'i' generates 32 bits.
+                                                                                                                                           : ... note: In instance 'gw138k_panel_performance'
+   78 |    for(i=15;i>=0;i=i-1)if(desired[i] && !active_keys[i])begin found=1;selected=i;end
+      |                                                                               ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:79:12: Operator ADD expects 32 bits on the RHS, but RHS's VARREF 'selected' generates 4 bits.
+                                                                                                                                            : ... note: In instance 'gw138k_panel_performance'
+   79 |   mapped=48+selected+$signed(applied_transpose);
+      |            ^
+%Warning-WIDTHEXPAND: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:79:21: Operator ADD expects 32 bits on the RHS, but RHS's SIGNED generates 8 bits.
+                                                                                                                                            : ... note: In instance 'gw138k_panel_performance'
+   79 |   mapped=48+selected+$signed(applied_transpose);
+      |                     ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:94:11: Blocking assignment '=' in sequential logic process
+                                                                                                                                       : ... note: In instance 'gw138k_panel_performance'
+                                                                                                                                       : ... Suggest using delayed assignment '<='
+   94 |    rd_next=q_read;wr_next=q_write;count_next=q_count;
+      |           ^
+                 ... For warning description see https://verilator.org/warn/BLKSEQ?v=5.046
+                 ... Use "/* verilator lint_off BLKSEQ */" and lint_on around source to disable this message.
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:94:26: Blocking assignment '=' in sequential logic process
+                                                                                                                                       : ... note: In instance 'gw138k_panel_performance'
+                                                                                                                                       : ... Suggest using delayed assignment '<='
+   94 |    rd_next=q_read;wr_next=q_write;count_next=q_count;
+      |                          ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:94:45: Blocking assignment '=' in sequential logic process
+                                                                                                                                       : ... note: In instance 'gw138k_panel_performance'
+                                                                                                                                       : ... Suggest using delayed assignment '<='
+   94 |    rd_next=q_read;wr_next=q_write;count_next=q_count;
+      |                                             ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:130:13: Blocking assignment '=' in sequential logic process
+                                                                                                                                        : ... note: In instance 'gw138k_panel_performance'
+                                                                                                                                        : ... Suggest using delayed assignment '<='
+  130 |      rd_next=rd_next==CONTROL_DEPTH-1 ? 0 : rd_next+1;count_next=count_next-1;
+      |             ^
+%Warning-BLKSEQ: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:130:65: Blocking assignment '=' in sequential logic process
+                                                                                                                                        : ... note: In instance 'gw138k_panel_performance'
+                                                                                                                                        : ... Suggest using delayed assignment '<='
+  130 |      rd_next=rd_next==CONTROL_DEPTH-1 ? 0 : rd_next+1;count_next=count_next-1;
+      |                                                                 ^
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:14:75: Bits of signal are not used: 'config_value'[31:8]
+                                                                                                                                             : ... note: In instance 'gw138k_panel_performance'
+   14 |  input wire config_write,input wire [7:0] config_opcode,input wire [31:0] config_value,
+      |                                                                           ^~~~~~~~~~~~
+                       ... For warning description see https://verilator.org/warn/UNUSEDSIGNAL?v=5.046
+                       ... Use "/* verilator lint_off UNUSEDSIGNAL */" and lint_on around source to disable this message.
+%Warning-UNUSEDSIGNAL: /home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/instrument/gw138k_panel_performance.v:52:11: Bits of function variable are not used: 'v'[31:14]
+                                                                                                                                             : ... note: In instance 'gw138k_panel_performance'
+   52 |   integer v;
+      |           ^

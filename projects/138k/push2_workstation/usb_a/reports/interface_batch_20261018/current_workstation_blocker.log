@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "migration/gw138k_audio/push2_workstation/usb_a/tools/build_current_workstation.py", line 262, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "migration/gw138k_audio/push2_workstation/usb_a/tools/build_current_workstation.py", line 72, in main
+    assert all(sha(BASE/'Prj1'/name)==digest for name,digest in music.items()
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+               if name!='rtl/music/basic_pitch_tf_board_top.sv'),'accepted CNN source drift'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: accepted CNN source drift

@@ -1,0 +1,8 @@
+{
+  "results/workstation_scope83_20261019_002422_673274/Prj1/rtl/music/basic_pitch_viterbi.sv": "852d579b2a6e908b3e301b3dc6d38c4eb7b0ae39b4df7707d131bfc9fa173bcd",
+  "results/workstation_scope83_20261019_002422_673274/Prj1/rtl/music/basic_pitch_ddr_map.svh": "49b7b954e3d6b45b305d443e408045889f7a8ce25138f81ccdd859dd39c163af",
+  "sim/music/tb_viterbi_ddr_isolation.sv": "67ab424712b10ebb5cbb78fc4e8c5dd34aa36676b58f9c37b8eb4030dcb8234d",
+  "results/workstation_scope83_20261019_002422_673274/Prj1/src/memory/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+  "results/workstation_scope83_20261019_002422_673274/Prj1/rtl/music/basic_pitch_fixed_pkg.svh": "4ac26ded20a26444a3f422909ec38e814e4551ccaaefe21ca040989e73b379c9",
+  "sim/music/run_bp_ddr_isolation.py": "39688a696a526a87d21a9071d9320f6567d7f82a3564eadc63e1a4388d3a1d3f"
+}

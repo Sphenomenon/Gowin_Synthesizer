@@ -1,0 +1,11 @@
+{
+  "started": "2026-10-18T21:57:40.208554+08:00",
+  "pid": 1021995,
+  "command": [
+    "python3",
+    "sim/scope_vec/run_current.py",
+    "results/workstation_scope83_timing85_20261018_214242_333215"
+  ],
+  "detached": true,
+  "hardware_tested": false
+}

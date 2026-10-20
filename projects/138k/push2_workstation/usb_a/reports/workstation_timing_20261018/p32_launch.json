@@ -1,0 +1,22 @@
+{
+  "started": "2026-10-18T16:00:05.846304+08:00",
+  "pid": 993549,
+  "command": [
+    "python3",
+    "tools/build_workstation_timing.py",
+    "--source",
+    "results/workstation_incremental_margin_20261018_154046_134049",
+    "--flow",
+    "all",
+    "--label",
+    "p32_domain_margin_reference12",
+    "--route-option",
+    "1",
+    "--route-reference",
+    "results/timing_p12_diagnostic_pll_route1_20261018_085002_361936"
+  ],
+  "cwd": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a",
+  "runner_log": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/workstation_timing_20261018/p32_runner.log",
+  "detached": true,
+  "difference": "fresh synthesis with p12 physical hints and strict same-domain budgets; p31 uses matching seven-level p27 reference"
+}

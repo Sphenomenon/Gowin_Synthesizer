@@ -1,0 +1,213 @@
+HB 10 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0000
+HB 20 ms  a_busy=1 a_prog=0030  b_busy=1 b_prog=0000
+HB 30 ms  a_busy=1 a_prog=0820  b_busy=1 b_prog=0000
+HB 40 ms  a_busy=1 a_prog=0820  b_busy=1 b_prog=0000
+HB 50 ms  a_busy=1 a_prog=0830  b_busy=1 b_prog=0000
+HB 60 ms  a_busy=1 a_prog=0820  b_busy=1 b_prog=0000
+HB 70 ms  a_busy=1 a_prog=0820  b_busy=1 b_prog=0000
+HB 80 ms  a_busy=1 a_prog=0820  b_busy=1 b_prog=0000
+HB 90 ms  a_busy=1 a_prog=0820  b_busy=1 b_prog=0000
+HB 100 ms  a_busy=1 a_prog=0820  b_busy=1 b_prog=0000
+HB 110 ms  a_busy=1 a_prog=0820  b_busy=1 b_prog=0000
+HB 120 ms  a_busy=1 a_prog=0830  b_busy=1 b_prog=0000
+HB 130 ms  a_busy=1 a_prog=0830  b_busy=1 b_prog=0000
+HB 140 ms  a_busy=1 a_prog=0830  b_busy=1 b_prog=0000
+HB 150 ms  a_busy=1 a_prog=0830  b_busy=1 b_prog=0000
+HB 160 ms  a_busy=1 a_prog=0830  b_busy=1 b_prog=0000
+HB 170 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 180 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 190 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 200 ms  a_busy=1 a_prog=1820  b_busy=1 b_prog=0000
+HB 210 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 220 ms  a_busy=1 a_prog=1828  b_busy=1 b_prog=0000
+HB 230 ms  a_busy=1 a_prog=18c9  b_busy=1 b_prog=0000
+HB 240 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 250 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 260 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 270 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 280 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 290 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 300 ms  a_busy=1 a_prog=1849  b_busy=1 b_prog=0000
+HB 310 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 320 ms  a_busy=1 a_prog=1828  b_busy=1 b_prog=0000
+HB 330 ms  a_busy=1 a_prog=1948  b_busy=1 b_prog=0000
+HB 340 ms  a_busy=1 a_prog=1940  b_busy=1 b_prog=0000
+HB 350 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 360 ms  a_busy=1 a_prog=1948  b_busy=1 b_prog=0000
+HB 370 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 380 ms  a_busy=1 a_prog=1828  b_busy=1 b_prog=0000
+HB 390 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 400 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 410 ms  a_busy=1 a_prog=18c9  b_busy=1 b_prog=0000
+HB 420 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 430 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 440 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 450 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 460 ms  a_busy=1 a_prog=1849  b_busy=1 b_prog=0000
+HB 470 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 480 ms  a_busy=1 a_prog=1820  b_busy=1 b_prog=0000
+HB 490 ms  a_busy=1 a_prog=1849  b_busy=1 b_prog=0000
+HB 500 ms  a_busy=1 a_prog=1948  b_busy=1 b_prog=0000
+HB 510 ms  a_busy=1 a_prog=1948  b_busy=1 b_prog=0000
+HB 520 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 530 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 540 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 550 ms  a_busy=1 a_prog=1849  b_busy=1 b_prog=0000
+HB 560 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 570 ms  a_busy=1 a_prog=1948  b_busy=1 b_prog=0000
+HB 580 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 590 ms  a_busy=1 a_prog=1820  b_busy=1 b_prog=0000
+HB 600 ms  a_busy=1 a_prog=1948  b_busy=1 b_prog=0000
+WAVE_A completed=0 hashes=0000000000000000000000000000000000000000df2a19c0
+HB 610 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 620 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 630 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 640 ms  a_busy=1 a_prog=1940  b_busy=1 b_prog=0000
+HB 650 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 660 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 670 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 680 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 690 ms  a_busy=1 a_prog=1828  b_busy=1 b_prog=0000
+HB 700 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 710 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 720 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 730 ms  a_busy=1 a_prog=1940  b_busy=1 b_prog=0000
+HB 740 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 750 ms  a_busy=1 a_prog=1828  b_busy=1 b_prog=0000
+HB 760 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 770 ms  a_busy=1 a_prog=1940  b_busy=1 b_prog=0000
+HB 780 ms  a_busy=1 a_prog=1828  b_busy=1 b_prog=0000
+HB 790 ms  a_busy=1 a_prog=1948  b_busy=1 b_prog=0000
+HB 800 ms  a_busy=1 a_prog=1940  b_busy=1 b_prog=0000
+HB 810 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 820 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 830 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 840 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 850 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 860 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 870 ms  a_busy=1 a_prog=18c9  b_busy=1 b_prog=0000
+HB 880 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 890 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 900 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 910 ms  a_busy=1 a_prog=1828  b_busy=1 b_prog=0000
+HB 920 ms  a_busy=1 a_prog=1849  b_busy=1 b_prog=0000
+HB 930 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 940 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 950 ms  a_busy=1 a_prog=1828  b_busy=1 b_prog=0000
+HB 960 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 970 ms  a_busy=1 a_prog=1940  b_busy=1 b_prog=0000
+HB 980 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 990 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 1000 ms  a_busy=1 a_prog=1828  b_busy=1 b_prog=0000
+HB 1010 ms  a_busy=1 a_prog=1940  b_busy=1 b_prog=0000
+HB 1020 ms  a_busy=1 a_prog=1898  b_busy=1 b_prog=0000
+HB 1030 ms  a_busy=1 a_prog=1918  b_busy=1 b_prog=0000
+HB 1040 ms  a_busy=1 a_prog=1948  b_busy=1 b_prog=0000
+WAVE_A completed=1 hashes=0000000000000000000000000000000000000000e7e6ee0a
+HB 1050 ms  a_busy=1 a_prog=2098  b_busy=1 b_prog=0000
+WAVE_A completed=2 hashes=00000000000000000000000000000000c004f268e7e6ee0a
+HB 1060 ms  a_busy=1 a_prog=2118  b_busy=1 b_prog=0000
+WAVE_A completed=3 hashes=0000000000000000000000000000000034a5acbde7e6ee0a
+WAVE_A completed=4 hashes=0000000000000000000000000000000034a5acbde7e6ee0a
+HB 1070 ms  a_busy=1 a_prog=29d4  b_busy=1 b_prog=0000
+HB 1080 ms  a_busy=1 a_prog=2828  b_busy=1 b_prog=0000
+HB 1090 ms  a_busy=1 a_prog=2940  b_busy=1 b_prog=0000
+WAVE_A completed=5 hashes=000000000000000000000000a84d244a34a5acbde7e6ee0a
+HB 1100 ms  a_busy=1 a_prog=2898  b_busy=1 b_prog=0000
+HB 1110 ms  a_busy=1 a_prog=2940  b_busy=1 b_prog=0000
+HB 1120 ms  a_busy=1 a_prog=2898  b_busy=1 b_prog=0000
+WAVE_A completed=6 hashes=0000000000000000000000007980a8bf34a5acbde7e6ee0a
+WAVE_A completed=7 hashes=0000000000000000000000007980a8bf34a5acbde7e6ee0a
+HB 1130 ms  a_busy=1 a_prog=3049  b_busy=1 b_prog=0000
+HB 1140 ms  a_busy=1 a_prog=3849  b_busy=1 b_prog=0000
+HB 1150 ms  a_busy=1 a_prog=3948  b_busy=1 b_prog=0000
+HB 1160 ms  a_busy=1 a_prog=3898  b_busy=1 b_prog=0000
+HB 1170 ms  a_busy=1 a_prog=3898  b_busy=1 b_prog=0000
+HB 1180 ms  a_busy=1 a_prog=3918  b_busy=1 b_prog=0000
+HB 1190 ms  a_busy=1 a_prog=3849  b_busy=1 b_prog=0000
+HB 1200 ms  a_busy=1 a_prog=3940  b_busy=1 b_prog=0000
+HB 1210 ms  a_busy=1 a_prog=3898  b_busy=1 b_prog=0000
+HB 1220 ms  a_busy=1 a_prog=3849  b_busy=1 b_prog=0000
+HB 1230 ms  a_busy=1 a_prog=3828  b_busy=1 b_prog=0000
+HB 1240 ms  a_busy=1 a_prog=3898  b_busy=1 b_prog=0000
+WAVE_A completed=8 hashes=00000000f002486541921ba57980a8bf34a5acbde7e6ee0a
+HB 1250 ms  a_busy=1 a_prog=3140  b_busy=1 b_prog=0000
+HB 1260 ms  a_busy=1 a_prog=3118  b_busy=1 b_prog=0000
+HB 1270 ms  a_busy=1 a_prog=3898  b_busy=1 b_prog=0000
+HB 1280 ms  a_busy=1 a_prog=3898  b_busy=1 b_prog=0000
+HB 1290 ms  a_busy=1 a_prog=3898  b_busy=1 b_prog=0000
+HB 1300 ms  a_busy=1 a_prog=3918  b_busy=1 b_prog=0000
+HB 1310 ms  a_busy=1 a_prog=3948  b_busy=1 b_prog=0000
+HB 1320 ms  a_busy=1 a_prog=3849  b_busy=1 b_prog=0000
+HB 1330 ms  a_busy=1 a_prog=3898  b_busy=1 b_prog=0000
+HB 1340 ms  a_busy=1 a_prog=3898  b_busy=1 b_prog=0000
+HB 1350 ms  a_busy=1 a_prog=3940  b_busy=1 b_prog=0000
+HB 1360 ms  a_busy=1 a_prog=3940  b_busy=1 b_prog=0000
+HB 1370 ms  a_busy=1 a_prog=3940  b_busy=1 b_prog=0000
+WAVE_A completed=9 hashes=3db8e0434c74c58c2d3900167980a8bf34a5acbde7e6ee0a
+HB 1380 ms  a_busy=1 a_prog=4098  b_busy=1 b_prog=0000
+RUN_A notes=1 hashes=e7e6ee0a_34a5acbd_7980a8bf_2d390016_4c74c58c_a03d3309
+HB 1390 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0010
+HB 1400 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0010
+HB 1410 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0810
+HB 1420 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0800
+HB 1430 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0810
+HB 1440 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0800
+HB 1450 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0810
+HB 1460 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0800
+HB 1470 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0810
+HB 1480 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0810
+HB 1490 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0810
+HB 1500 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0800
+HB 1510 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0810
+HB 1520 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0800
+HB 1530 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0800
+HB 1540 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0810
+HB 1550 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=0810
+HB 1560 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1570 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1580 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1590 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1600 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1610 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1620 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1630 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+WAVE_B completed=0 hashes=0000000000000000000000000000000000000000df2a19c0
+HB 1640 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1650 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1660 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1670 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1680 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1690 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1700 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1710 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+HB 1720 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=1800
+WAVE_B completed=1 hashes=0000000000000000000000000000000000000000e7e6ee0a
+WAVE_B completed=2 hashes=00000000000000000000000000000000c004f268e7e6ee0a
+WAVE_B completed=3 hashes=0000000000000000000000000000000034a5acbde7e6ee0a
+WAVE_B completed=4 hashes=0000000000000000000000000000000034a5acbde7e6ee0a
+HB 1730 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=2800
+WAVE_B completed=5 hashes=000000000000000000000000a84d244a34a5acbde7e6ee0a
+HB 1740 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=2800
+WAVE_B completed=6 hashes=0000000000000000000000007980a8bf34a5acbde7e6ee0a
+WAVE_B completed=7 hashes=0000000000000000000000007980a8bf34a5acbde7e6ee0a
+HB 1750 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=3800
+HB 1760 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=3800
+HB 1770 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=3800
+WAVE_B completed=8 hashes=00000000f002486541921ba57980a8bf34a5acbde7e6ee0a
+HB 1780 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=3800
+HB 1790 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=3800
+HB 1800 ms  a_busy=1 a_prog=0020  b_busy=1 b_prog=3800
+WAVE_B completed=9 hashes=3db8e0434c74c58c2d3900167980a8bf34a5acbde7e6ee0a
+RUN_B notes=1 hashes=e7e6ee0a_34a5acbd_7980a8bf_2d390016_4c74c58c_a03d3309
+COVERAGE layer=0 writes_A=4224 writes_B=4224
+COVERAGE layer=1 writes_A=528 writes_B=528
+COVERAGE layer=2 writes_A=5632 writes_B=5632
+COVERAGE layer=3 writes_A=176 writes_B=176
+COVERAGE layer=4 writes_A=5632 writes_B=5632
+COVERAGE layer=5 writes_A=176 writes_B=176
+PASS dual-config equivalence (1 notes)
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/music/tb_bp_config_ab.sv:343: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 2s; walltime 179.855 s; speed 10.067 ms/s
+- Verilator: cpu 179.434 s on 1 threads; allocated 21 MB

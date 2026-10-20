@@ -1,0 +1,15 @@
+{
+  "checked": "2026-10-18T22:03:22.674690+08:00",
+  "timing_closed": false,
+  "p33_status": "complete; STA failed, PLL and CDC passed",
+  "p34_build": "results/timing_p34_vector_local_envelope_20261018_214554_355618",
+  "p34_phase": "routing phase1 completed",
+  "p34_synthesis_bsram": 217,
+  "p34_vector_rtl_equivalence_passed": true,
+  "p34_gowin_netlist_equivalence_passed": true,
+  "p34_fresh_18_gate_regression_passed": true,
+  "p34_feature_storage_passed": true,
+  "best_completed_candidate": "p27",
+  "best_worst_setup_ns": -0.018,
+  "hardware_tested": false
+}

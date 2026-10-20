@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "timing_closed": null,
+  "hardware_tested": false,
+  "source_bound_test_groups": 8,
+  "local_cnn_transforms": [
+    {
+      "file": "rtl/music/basic_pitch_workstation_link.sv",
+      "base_sha256": "b45ea2c84e99ec697554aad54b7803830c067335f653a2faef558f9d9cbbcfe4",
+      "selected_sha256": "f0ba2ef187aecaa188dfb3474ddc7984852f382b390b399806c44ec6c76c9265",
+      "transform": "five DDR diagnostic levels -> two 50MHz sampling stages; UART bit positions unchanged",
+      "flash_boot": false,
+      "cnn_arithmetic_changed": false
+    }
+  ]
+}

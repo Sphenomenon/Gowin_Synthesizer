@@ -1,0 +1,6 @@
+METRIC integrated_frames=5012 same_sample_onsets=3 integrated_jitter_samples=0 max_render_cycles=62
+PASS tb_sampler_mode_d
+- migration/gw138k_audio/push2_workstation/usb_a/sim/sampler/tb_sampler_mode_d.sv:82: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 80ms; walltime 2.958 s; speed 27.231 ms/s
+- Verilator: cpu 2.947 s on 1 threads; allocated 7 MB

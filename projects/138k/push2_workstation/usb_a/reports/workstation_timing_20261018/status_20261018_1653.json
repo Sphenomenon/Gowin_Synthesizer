@@ -1,0 +1,35 @@
+{
+  "checked": "2026-10-18T16:53:06.759789+08:00",
+  "timing_closed": false,
+  "best_completed": "p27",
+  "best_setup_ns": -0.018,
+  "candidates": [
+    {
+      "candidate": "p31",
+      "build": "results/timing_p31_resume_domain_margin_20261018_155705_399572",
+      "last_phases": [
+        "[30%] Placement Phase 2 completed",
+        "[50%] Placement Phase 3 completed",
+        "Running routing......",
+        "[60%] Routing Phase 0 completed",
+        "[70%] Routing Phase 1 completed"
+      ],
+      "log_modified": "2026-10-18T16:09:38.861504+08:00",
+      "complete": false
+    },
+    {
+      "candidate": "p32",
+      "build": "results/timing_p32_domain_margin_reference12_20261018_160005_905146",
+      "last_phases": [
+        "[30%] Placement Phase 2 completed",
+        "[50%] Placement Phase 3 completed",
+        "Running routing......",
+        "[60%] Routing Phase 0 completed",
+        "[70%] Routing Phase 1 completed"
+      ],
+      "log_modified": "2026-10-18T16:13:08.944158+08:00",
+      "complete": false
+    }
+  ],
+  "hardware_tested": false
+}

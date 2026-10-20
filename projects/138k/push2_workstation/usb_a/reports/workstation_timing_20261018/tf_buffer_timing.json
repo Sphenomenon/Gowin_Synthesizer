@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "original_sha256": "c4b4a3e2ad17a50e2a59091d9f93f7c368c33c89956cd4d048734a3ef1f1f552",
+  "patched_sha256": "97cbec2d6c5123b33a5e7d01276d6e3a7f469684092fbf94583254bcf32cd140",
+  "log": "PASS TF buffer20000cycles independentoracle native stalls,invalidpayloadchanges,4resets,last_epoch983commands\n/tmp/cnn_tf_buffer_enable_lbdrdqqh/tb.sv:21: $finish called at 200130000 (1ps)"
+}

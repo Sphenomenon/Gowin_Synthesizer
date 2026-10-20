@@ -1,0 +1,48 @@
+{
+  "timing_closed": false,
+  "problems": [
+    "Fmax below requirement: clk_50m",
+    "Fmax below requirement: audio_76m8",
+    "Fmax below requirement: usb_48m",
+    "negative endpoints: clk_50m/setup",
+    "negative endpoints: audio_76m8/setup",
+    "negative endpoints: ddr_ui100/setup",
+    "negative endpoints: video_pixel148/setup",
+    "negative endpoints: usb_48m/setup",
+    "negative detailed timing paths"
+  ],
+  "frequencies": {
+    "clk_50m": {
+      "required_mhz": 50.0,
+      "actual_mhz": 49.507
+    },
+    "audio_76m8": {
+      "required_mhz": 76.8,
+      "actual_mhz": 75.746
+    },
+    "ddr_mem400": {
+      "required_mhz": 400.0,
+      "actual_mhz": 2598.775
+    },
+    "ddr_ui100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 227.337
+    },
+    "video_pixel148": {
+      "required_mhz": 148.5,
+      "actual_mhz": 155.096
+    },
+    "cpu_bus50": {
+      "required_mhz": 50.0,
+      "actual_mhz": 74.641
+    },
+    "cpu_core100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 1244.243
+    },
+    "usb_48m": {
+      "required_mhz": 48.0,
+      "actual_mhz": 47.239
+    }
+  }
+}

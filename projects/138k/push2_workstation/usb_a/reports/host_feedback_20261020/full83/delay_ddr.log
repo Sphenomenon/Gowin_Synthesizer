@@ -1,0 +1,6 @@
+[3360567000] clear pulse at sample 12000
+[5600567000] DDR stall injected at sample 20000
+[8400707000] reset pulse at sample 30000
+[12040707000] long DDR stall: underrun expected
+EQUIVALENCE PASS: 45000 samples compared, underrun_flag=1 dut_status=00011100 dma_status=00000000
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/audio/tb_delay_ddr_equivalence.sv:251: $finish called at 13020707000 (1ps)

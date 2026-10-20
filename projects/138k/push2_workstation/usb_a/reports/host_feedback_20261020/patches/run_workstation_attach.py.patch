@@ -1,0 +1,34 @@
+--- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/before/sim/run_workstation_attach.py	2026-10-20 00:21:54.000128708 +0800
++++ /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/run_workstation_attach.py	2026-10-20 00:25:41.740279790 +0800
+@@ -44,7 +44,8 @@
+     (staged / 'sim').mkdir(parents=True)
+     inputs = sources + [Path(__file__), ROOT / 'rtl/ddr_address_map.vh']
+     for name in ('firmware.c', 'gw25k_panel.h', 'sim/test_generic_midi.c',
+-                 'sim/tb_generic_midi.sv', 'sim/tb_workstation_attach.sv', 'sim/tb_usb_lifecycle_merge.sv'):
++                 'sim/tb_generic_midi.sv', 'sim/tb_workstation_attach.sv', 'sim/tb_usb_lifecycle_merge.sv',
++                 'sim/test_gw25k_panel.c'):
+         source = ROOT / name
+         shutil.copy2(source, staged / name)
+         inputs.append(source)
+@@ -78,6 +79,11 @@
+             '--top-module', top, '--Mdir', str(out / top), '-I' + str(ROOT / 'rtl'),
+             *map(str, sources), str(staged / 'sim' / (top + '.sv'))]),
+             (top + '_test', [str(out / top / ('V' + top))])]
++    commands += [('feedback_host_compile', ['gcc', '-std=c99', '-O1', '-g',
++        '-Wall', '-Wextra', '-fsanitize=address,undefined', '-fno-omit-frame-pointer',
++        '-I' + str(vendor), '-I' + str(vendor / 'usb'),
++        str(staged / 'sim/test_gw25k_panel.c'), '-o', str(out / 'feedback_host')]),
++        ('feedback_host_test', [str(out / 'feedback_host'), '--audio-feedback', str(out / 'audio_feedback.txt')])]
+     passed = False
+     try:
+         for name, command in commands:
+@@ -93,7 +99,8 @@
+         passed = True
+     finally:
+         (out / 'verification.json').write_text(json.dumps(dict(passed=passed, hardware_tested=False,
+-            scope='USB MMIO/CDC/FIFO + real audio attach defaults, cancellation, PANIC, Push and GW25K; no CNN/full-board build',
++            scope='USB MMIO/CDC/FIFO + real audio attach, cancellation, PANIC, Push/GW25K and 12 actual MMIO captures consumed by the production PL Host; no CNN/full-board build',
++            actual_audio_feedback_captures=12, production_host_feedback_tested=passed,
+             baseline=str(base), inputs='inputs.json',event_reference=str(args.event_reference) if args.event_reference else None), indent=2) + '\n')
+ 
+ 

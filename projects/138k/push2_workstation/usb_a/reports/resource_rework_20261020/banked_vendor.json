@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "source_sha256": {
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_banked_vendor/vendor.v": "5db6a9f2bf35b85918d8221b5e12e08297b0bb670e2ee0b939c741301ce52260",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_banked_vendor/tb.sv": "e44d603b321df28693aff56a7bf875fb08e442b821141cd189d7251e3f981520"
+  }
+}

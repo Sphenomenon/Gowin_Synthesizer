@@ -1,0 +1,7 @@
+{
+  "rtl/audio/stereo_effects.sv": "370206c4a13f839a0ab5985b872396ca26a497811118186adb159361690d279f",
+  "rtl/music/music_async_fifo.sv": "6d55458af075b01baebc22c81a856e98336a96ae82f061942a1511defc5a3ae6",
+  "rtl/display_data/push2_surface_pixels.sv": "9c23e006beb18c08ec9f05ff4b9712a95e8cb8045a5e4f5d093e9c2382aa3353",
+  "rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+  "rtl/audio/scope_vec/scope_vec_engine.sv": "7b032a827116e600f12127c936a021b956957411303d9a94b955cd72bcbb1be1"
+}

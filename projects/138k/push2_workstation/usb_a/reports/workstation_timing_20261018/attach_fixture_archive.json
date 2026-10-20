@@ -1,0 +1,14 @@
+{
+  "/tmp/workstation_timing_attach_20261018_p10c/source/workstation_reference.sv": {
+    "archived_path": "reports/workstation_timing_20261018/attach_fixtures/source/workstation_reference.sv",
+    "sha256": "3cfe38748f62c59531003bfdc08f92d466833bd66b57a19e5c9b817ee6703bab"
+  },
+  "/tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_workstation_attach.sv": {
+    "archived_path": "reports/workstation_timing_20261018/attach_fixtures/source/sim/tb_workstation_attach.sv",
+    "sha256": "7c1219d239ea44cd04f109069d43a839fa501924bfde7fe0f2fd30faa3df8ddf"
+  },
+  "/tmp/workstation_timing_attach_20261018_p10c/source/sim/tb_generic_midi.sv": {
+    "archived_path": "reports/workstation_timing_20261018/attach_fixtures/source/sim/tb_generic_midi.sv",
+    "sha256": "cf3cdfe0c5fc0178032cf881f32b5b3578f6e4846c48c93754435c7316f8d2a2"
+  }
+}

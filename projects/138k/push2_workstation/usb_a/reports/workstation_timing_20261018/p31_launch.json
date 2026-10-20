@@ -1,0 +1,23 @@
+{
+  "started": "2026-10-18T15:57:05.343965+08:00",
+  "pid": 993228,
+  "command": [
+    "python3",
+    "tools/build_workstation_timing.py",
+    "--source",
+    "results/workstation_incremental_margin_20261018_154046_134049",
+    "--flow",
+    "pnr",
+    "--label",
+    "p31_resume_domain_margin",
+    "--route-option",
+    "1",
+    "--reuse-synthesis-from",
+    "results/timing_p30_incremental_domain_margin_20261018_154055_382652",
+    "--incremental-from",
+    "results/timing_p27_uart_cdc_route1_20261018_142516_456857"
+  ],
+  "cwd": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a",
+  "runner_log": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/workstation_timing_20261018/p31_runner.log",
+  "detached": true
+}

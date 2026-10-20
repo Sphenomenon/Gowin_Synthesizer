@@ -1,0 +1,1554 @@
+ .gitattributes                                     |    12 +-
+ .gitignore                                         |    56 +-
+ GIT_SCOPE.md                                       |    20 +-
+ README.md                                          |    35 +-
+ ROADMAP.md                                         |     2 +-
+ migration/gw138k_audio                             |     1 +
+ .../gw138k_audio => projects/138k}/README.md       |     6 +-
+ .../138k}/ae350/scripts/build_boot.py              |     0
+ .../138k}/ae350/scripts/build_workstation.py       |     0
+ .../138k}/ae350/scripts/check_analysis_banks.py    |     0
+ .../138k}/ae350/scripts/check_boot.py              |     0
+ .../138k}/ae350/scripts/check_fft2048.py           |     0
+ .../138k}/ae350/scripts/check_keyboard_repeat.py   |     0
+ .../138k}/ae350/scripts/check_live_renderer.py     |     0
+ .../138k}/ae350/scripts/check_pll_sequence.py      |     0
+ .../138k}/ae350/scripts/check_spectrum_bars.py     |     0
+ .../138k}/ae350/scripts/check_workstation.py       |     0
+ .../138k}/ae350/scripts/generate_fft2048_rom.py    |     0
+ .../138k}/ae350/scripts/keyboard_midi.py           |     0
+ .../138k}/ae350/scripts/midi_serial.py             |     0
+ .../138k}/ae350/scripts/preview_live_wave.py       |     0
+ .../138k}/ae350/scripts/preview_spectrum_bars.py   |     0
+ .../138k}/ae350/scripts/read_boot.py               |     0
+ .../138k}/ae350/scripts/read_workstation.py        |     0
+ .../138k}/ae350/scripts/run_controlled.py          |     0
+ .../138k}/ae350/scripts/run_ui.py                  |     0
+ .../138k}/push2_workstation/CURRENT.json           |     0
+ .../138k}/push2_workstation/ORIGINS.json           |     0
+ .../138k}/push2_workstation/PENDING_BOARD.json     |     0
+ .../138k}/push2_workstation/PLAN.md                |     0
+ .../138k}/push2_workstation/README.md              |     0
+ .../138k}/push2_workstation/build_firmware.py      |     0
+ .../138k}/push2_workstation/build_full.py          |     0
+ .../push2_workstation/firmware/host_bridge.inc     |     0
+ .../138k}/push2_workstation/firmware/main.c        |     0
+ .../push2_workstation/firmware/midi_descriptor.c   |     0
+ .../push2_workstation/firmware/midi_descriptor.h   |     0
+ .../integration/gw138k_push_performance_uart.sv    |     0
+ .../integration/gw138k_push_workstation_top.v      |     0
+ .../138k}/push2_workstation/integration/push.cst   |     0
+ .../138k}/push2_workstation/integration/push.sdc   |     0
+ .../overrides/src/video/output_audio_analysis.v    |     0
+ .../138k}/push2_workstation/probe/build.py         |     0
+ .../138k}/push2_workstation/probe/length_build.py  |     0
+ .../probe/push2_hspi_link_debug.sv                 |     0
+ .../push2_workstation/probe/push_length_probe.sv   |     0
+ .../push2_workstation/probe/push_link_probe.sv     |     0
+ .../push2_workstation/probe/push_surface_probe.sv  |     0
+ .../138k}/push2_workstation/probe/surface_build.py |     0
+ .../Prj1/Prj1.gprj                                 |     0
+ .../Prj1/constraints/tang_mega_138k.cst            |     0
+ .../Prj1/constraints/tang_mega_138k.sdc            |     0
+ .../Prj1/docs/architecture.md                      |     0
+ .../Prj1/docs/dashboard_preview.png                |   Bin
+ .../Prj1/docs/ddr_display.md                       |     0
+ .../Prj1/docs/ddr_platform_notes.md                |     0
+ .../Prj1/docs/evidence/build_evidence.json         |     0
+ .../build_evidence_ddr_1080p_20260908.json         |     0
+ .../build_evidence_fft_image_20260909.json         |     0
+ .../evidence/build_evidence_gui_sine_20260908.json |     0
+ .../build_evidence_hdmi_clock_fix_20260908.json    |     0
+ .../evidence/build_evidence_latency_20260908.json  |     0
+ .../build_evidence_note_transition_20260908.json   |     0
+ .../build_evidence_output_gain_20260909.json       |     0
+ .../build_evidence_pattern_trigger_20260908.json   |     0
+ ...build_evidence_polyphonic_trigger_20260908.json |     0
+ .../evidence/build_evidence_tdm32_20260908.json    |     0
+ .../build_evidence_video_diagnostics_20260908.json |     0
+ .../build_evidence_video_pll_init_20260908.json    |     0
+ .../build_evidence_voice_onset_20260908.json       |     0
+ .../build_evidence_wave_trigger_20260908.json      |     0
+ .../evidence/build_inputs_fft_image_20260909.json  |     0
+ .../evidence/build_inputs_latency_20260908.json    |     0
+ .../build_inputs_output_gain_20260909.json         |     0
+ .../docs/evidence/build_inputs_tdm32_20260908.json |     0
+ .../build_inputs_voice_onset_20260908.json         |     0
+ .../evidence/com26_backend_smoke_20260908.json     |     0
+ .../evidence/com26_ddr_first_board_20260908.json   |     0
+ .../evidence/com26_ddr_pre_download_20260908.json  |     0
+ .../evidence/com26_hdmi_clock_fix_20260908.json    |     0
+ .../evidence/com26_video_diagnostics_20260908.json |     0
+ .../com26_video_diagnostics_no_reply_20260908.json |     0
+ .../evidence/com26_video_pll_init_20260908.json    |     0
+ .../docs/evidence/ddr_configuration_paths.json     |     0
+ .../Prj1/docs/evidence/ddr_configuration_paths.md  |     0
+ .../Prj1/docs/evidence/ddr_reset_sequence.json     |     0
+ .../Prj1/docs/evidence/ddr_reset_sequence.md       |     0
+ .../docs/evidence/fft_dft_comparison_20260909.json |     0
+ .../gui_geometry_output_gain_20260909.json         |     0
+ .../hdl_note_transition_inputs_20260908.json       |     0
+ .../hdl_pattern_trigger_inputs_20260908.json       |     0
+ .../hdl_polyphonic_trigger_inputs_20260908.json    |     0
+ .../Prj1/docs/evidence/hdl_summary.txt             |     0
+ .../evidence/hdl_summary_ddr_1080p_20260908.txt    |     0
+ .../evidence/hdl_summary_fft_image_20260909.txt    |     0
+ .../evidence/hdl_summary_gui_sine_20260908.txt     |     0
+ .../hdl_summary_hdmi_clock_fix_20260908.txt        |     0
+ .../docs/evidence/hdl_summary_latency_20260908.txt |     0
+ .../hdl_summary_note_transition_20260908.txt       |     0
+ .../evidence/hdl_summary_output_gain_20260909.txt  |     0
+ .../hdl_summary_pattern_trigger_20260908.txt       |     0
+ .../hdl_summary_polyphonic_trigger_20260908.txt    |     0
+ .../docs/evidence/hdl_summary_tdm32_20260908.txt   |     0
+ .../evidence/hdl_summary_voice_onset_20260908.txt  |     0
+ .../evidence/hdl_summary_wave_trigger_20260908.txt |     0
+ .../hdl_video_diagnostics_inputs_20260908.json     |     0
+ .../evidence/hdl_wave_trigger_inputs_20260908.json |     0
+ .../evidence/measure_ping_pacing_20260908.py.txt   |     0
+ .../evidence/measure_worker_ping_20260908.py.txt   |     0
+ .../note_transition_after_samples_20260908.txt     |     0
+ .../note_transition_before_samples_20260908.txt    |     0
+ .../evidence/resources_fft_image_20260909.json     |     0
+ .../docs/evidence/resources_latency_20260908.json  |     0
+ .../evidence/resources_output_gain_20260909.json   |     0
+ .../docs/evidence/resources_tdm32_20260908.json    |     0
+ .../evidence/resources_voice_onset_20260908.json   |     0
+ .../evidence/serial_blocking_retest_20260908.json  |     0
+ .../evidence/serial_latency_after_20260908.json    |     0
+ .../evidence/serial_latency_before_20260908.json   |     0
+ .../serial_latency_d2xx_trial_20260908.json        |     0
+ .../docs/evidence/serial_ping_pacing_20260908.json |     0
+ .../serial_ping_pacing_stress_20260908.json        |     0
+ .../evidence/serial_pipeline_1000_20260908.json    |     0
+ .../docs/evidence/serial_worker_200_20260908.json  |     0
+ .../evidence/tmds_clock_primitive_20260908.json    |     0
+ .../Prj1/docs/evidence/tmds_pll_init_20260908.json |     0
+ .../Prj1/docs/evidence/uart_pacing_115200.json     |     0
+ .../evidence/uart_pacing_probe_20260908.py.txt     |     0
+ .../verification_inputs_fft_image_20260909.json    |     0
+ .../verification_inputs_host_latency_20260908.json |     0
+ .../verification_inputs_latency_20260908.json      |     0
+ .../verification_inputs_output_gain_20260909.json  |     0
+ .../verification_inputs_tdm32_20260908.json        |     0
+ .../verification_inputs_voice_onset_20260908.json  |     0
+ .../verify_output_control_geometry_20260909.py.txt |     0
+ .../video_pll_init_audit_selftest_20260908.json    |     0
+ .../evidence/video_pll_init_sequence_20260908.json |     0
+ .../wave_stability_dds_baseline_20260908.json      |     0
+ .../Prj1/docs/examples/sine_preset.json            |     0
+ .../Prj1/docs/feedback_notes.md                    |     0
+ .../Prj1/docs/gui_control.md                       |     0
+ .../Prj1/docs/hardware.md                          |     0
+ .../Prj1/docs/hdmi_no_signal_investigation.md      |     0
+ .../Prj1/docs/host_latency.md                      |     0
+ .../Prj1/docs/images/feedback_1080p.png            |   Bin
+ .../Prj1/docs/images/feedback_32voices.png         |   Bin
+ .../Prj1/docs/images/feedback_32voices_hold.png    |   Bin
+ .../Prj1/docs/images/feedback_analysis.png         |   Bin
+ .../Prj1/docs/images/feedback_analysis_hold.png    |   Bin
+ .../Prj1/docs/images/feedback_dashboard_hold.png   |   Bin
+ .../Prj1/docs/images/instrument_gui.png            |   Bin
+ .../Prj1/docs/images/voice_onset_gui_preview.png   |   Bin
+ .../Prj1/docs/latency.md                           |     0
+ .../Prj1/docs/output_analysis.md                   |     0
+ .../Prj1/docs/output_controls.md                   |     0
+ .../Prj1/docs/tdm32.md                             |     0
+ .../Prj1/docs/third_party_video.md                 |     0
+ .../Prj1/docs/uart_protocol.md                     |     0
+ .../Prj1/docs/verification.md                      |     0
+ .../Prj1/docs/video_1080p_notes.md                 |     0
+ .../Prj1/docs/voice_onset.md                       |     0
+ .../Prj1/docs/voice_resources.md                   |     0
+ .../Prj1/firmware/audio_services.h                 |     0
+ .../Prj1/firmware/boot.ld                          |     0
+ .../Prj1/firmware/boot.mem                         |     0
+ .../Prj1/firmware/firmware_checks.h                |     0
+ .../Prj1/firmware/services_ddr.c                   |     0
+ .../Prj1/firmware/services_main.c                  |     0
+ .../Prj1/firmware/start.S                          |     0
+ .../Prj1/firmware/ui_main.c                        |     0
+ .../Prj1/firmware/ui_model.h                       |     0
+ .../Prj1/firmware/ui_render.c                      |     0
+ .../Prj1/firmware/ui_render.h                      |     0
+ .../Prj1/firmware/ui_runtime.c                     |     0
+ .../Prj1/legacy/rtl/audio/audio_capture_fifo.sv    |     0
+ .../Prj1/legacy/rtl/audio/audio_math_pkg.sv        |     0
+ .../legacy/rtl/audio/audio_visual_extensions.sv    |     0
+ .../Prj1/legacy/rtl/audio/audio_workstation.sv     |     0
+ .../Prj1/legacy/rtl/audio/midi_step_rom.sv         |     0
+ .../Prj1/legacy/rtl/audio/mode_timbre_rom.sv       |     0
+ .../rtl/audio/partial_step_generator_variable.sv   |     0
+ .../Prj1/legacy/rtl/audio/pitch_expression.sv      |     0
+ .../Prj1/legacy/rtl/audio/sine_interp.sv           |     0
+ .../Prj1/legacy/rtl/audio/spectrum_fft256.sv       |     0
+ .../Prj1/legacy/rtl/audio/stereo_effects.sv        |     0
+ .../legacy/rtl/audio/unified_oscillator_engine.sv  |     0
+ .../Prj1/legacy/rtl/input/midi_stream_decoder.sv   |     0
+ .../Prj1/legacy/rtl/input/score_led_player.sv      |     0
+ .../Prj1/legacy/rtl/input/uart_rx.sv               |     0
+ .../Prj1/legacy_audio.sv                           |     0
+ .../Prj1/riscv_ae350_config.v                      |     0
+ .../Prj1/scripts/analyze_waveform_stability.py     |     0
+ .../Prj1/scripts/audit_ddr_configuration_paths.py  |     0
+ .../Prj1/scripts/audit_ddr_reset_sequence.py       |     0
+ .../Prj1/scripts/build.ps1                         |     0
+ .../Prj1/scripts/build.py                          |     0
+ .../Prj1/scripts/build.tcl                         |     0
+ .../Prj1/scripts/check_build.py                    |     0
+ .../Prj1/scripts/check_output_fft.py               |     0
+ .../Prj1/scripts/check_serializer_startup.py       |     0
+ .../Prj1/scripts/check_tmds_clock.py               |     0
+ .../Prj1/scripts/check_video_pll_init.py           |     0
+ .../Prj1/scripts/check_video_pll_sequence.py       |     0
+ .../Prj1/scripts/generate_analysis_roms.py         |     0
+ .../Prj1/scripts/generate_sine_lut.py              |     0
+ .../Prj1/scripts/gowin_paths.py                    |     0
+ .../Prj1/scripts/render_feedback_preview.py        |     0
+ .../Prj1/scripts/run_tests.py                      |     0
+ .../Prj1/scripts/update_project.py                 |     0
+ .../Prj1/sim/data/audio_chain/fft_hann.mem         |     0
+ .../Prj1/sim/data/audio_chain/fft_tw_im.mem        |     0
+ .../Prj1/sim/data/audio_chain/fft_tw_re.mem        |     0
+ .../Prj1/sim/data/audio_chain/pitch_bend_q20.mem   |     0
+ .../output/stage13_note_voice/stage13_adsr_q24.mem |     0
+ .../stage13_note_voice/stage13_midi_step.mem       |     0
+ .../stage13_note_voice/stage13_ratio_q18.mem       |     0
+ .../stage15_mode_gain_q15.mem                      |     0
+ .../Prj1/sim/matlab/output/stage3_sine2048x24.mem  |     0
+ .../Prj1/sim/models/video_clock_1080p_model.v      |     0
+ .../Prj1/sim/primitives/tb_tmds_clock.sv           |     0
+ .../Prj1/sim/primitives/tb_video_pll_init.sv       |     0
+ .../Prj1/sim/tb_analysis_renderer.sv               |     0
+ .../Prj1/sim/tb_audio_latency_monitor.sv           |     0
+ .../Prj1/sim/tb_audio_latency_tags.sv              |     0
+ .../Prj1/sim/tb_audio_output_stage.sv              |     0
+ .../Prj1/sim/tb_ddr3_bist.sv                       |     0
+ .../Prj1/sim/tb_ddr_bandwidth.sv                   |     0
+ .../Prj1/sim/tb_ddr_framebuffer.sv                 |     0
+ .../Prj1/sim/tb_ddr_recovery_guard.sv              |     0
+ .../Prj1/sim/tb_feedback_capture.sv                |     0
+ .../Prj1/sim/tb_feedback_dashboard.sv              |     0
+ .../Prj1/sim/tb_feedback_polyphonic.sv             |     0
+ .../Prj1/sim/tb_feedback_renderer.sv               |     0
+ .../Prj1/sim/tb_feedback_stable_display.sv         |     0
+ .../Prj1/sim/tb_feedback_trigger.sv                |     0
+ .../Prj1/sim/tb_feedback_wave_align.sv             |     0
+ .../Prj1/sim/tb_final_output_analysis.sv           |     0
+ .../Prj1/sim/tb_note_transition.sv                 |     0
+ .../Prj1/sim/tb_output_audio_analysis.sv           |     0
+ .../Prj1/sim/tb_output_gain_integration.sv         |     0
+ .../Prj1/sim/tb_pt8211_observer.sv                 |     0
+ .../Prj1/sim/tb_pt8211_stereo.sv                   |     0
+ .../Prj1/sim/tb_pt8211_tx.sv                       |     0
+ .../Prj1/sim/tb_sine_rom.sv                        |     0
+ .../Prj1/sim/tb_sine_voices.sv                     |     0
+ .../Prj1/sim/tb_synth_32voices.sv                  |     0
+ .../Prj1/sim/tb_synth_engine.sv                    |     0
+ .../Prj1/sim/tb_uart_audio_latency.sv              |     0
+ .../Prj1/sim/tb_uart_control.sv                    |     0
+ .../Prj1/sim/tb_uart_latency.sv                    |     0
+ .../Prj1/sim/tb_video_clock_1080p.sv               |     0
+ .../Prj1/sim/tb_video_dashboard.sv                 |     0
+ .../Prj1/sim/tb_video_epoch_recovery.sv            |     0
+ .../Prj1/sim/tb_video_monitor.sv                   |     0
+ .../Prj1/sim/tb_video_peak_meter.sv                |     0
+ .../Prj1/sim/tb_video_runtime_diagnostics.sv       |     0
+ .../Prj1/sim/tb_video_timing.sv                    |     0
+ .../Prj1/sim/tb_video_timing_1080p.sv              |     0
+ .../Prj1/sim/tb_video_tmds.sv                      |     0
+ .../Prj1/sim/tb_voice_bank_tdm.sv                  |     0
+ .../Prj1/sim/tb_voice_onset_integration.sv         |     0
+ .../Prj1/sim/tb_voice_onset_monitor.sv             |     0
+ .../Prj1/sim/tb_voice_onset_protocol.sv            |     0
+ .../Prj1/sim/test_async_worker_review.py           |     0
+ .../Prj1/sim/test_ftdi_serial.py                   |     0
+ .../Prj1/sim/test_instrument_backend.py            |     0
+ .../Prj1/sim/test_instrument_cli.py                |     0
+ .../Prj1/sim/test_instrument_ui.py                 |     0
+ .../Prj1/sim/test_latency_diagnostics.py           |     0
+ .../Prj1/sim/test_output_controls.py               |     0
+ .../Prj1/sim/test_serial_low_latency.py            |     0
+ .../Prj1/sim/test_video_diagnostics.py             |     0
+ .../Prj1/sim/test_voice_onset_diagnostics.py       |     0
+ .../Prj1/src/ae350/gw138k_ahb_ddr.sv               |     0
+ .../Prj1/src/ae350/gw138k_boot_memory.sv           |     0
+ .../Prj1/src/ae350/gw138k_controlled_adapter.sv    |     0
+ .../Prj1/src/ae350/gw138k_controlled_audio.sv      |     0
+ .../Prj1/src/ae350/gw138k_controlled_services.sv   |     0
+ .../Prj1/src/ae350/gw138k_cpu_pll_cell.v           |     0
+ .../Prj1/src/ae350/gw138k_ddr_arbiter.sv           |     0
+ .../Prj1/src/ae350/gw138k_ddr_workstation_top.v    |     0
+ .../Prj1/src/ae350/gw138k_event_arbiter.sv         |     0
+ .../Prj1/src/ae350/gw138k_event_workstation.sv     |     0
+ .../Prj1/src/ae350/gw138k_performance_uart.sv      |     0
+ .../Prj1/src/ae350/gw138k_three_event_arbiter.sv   |     0
+ .../Prj1/src/ae350/gw138k_ui_services.sv           |     0
+ .../Prj1/src/ae350/gw138k_ui_workstation_top.v     |     0
+ .../Prj1/src/ae350/gw138k_view_select.sv           |     0
+ .../Prj1/src/ae350/gw138k_workstation_top.v        |     0
+ .../Prj1/src/ae350/gw138k_workstation_uart.sv      |     0
+ .../Prj1/src/ae350/riscv_ae350_config.v            |     0
+ .../Prj1/src/ae350/riscv_ae350_soc.v               |     0
+ .../Prj1/src/ae350/riscv_ae350_top.v               |     0
+ .../Prj1/src/audio/audio_output_stage.v            |     0
+ .../Prj1/src/audio/pt8211_observer.v               |     0
+ .../Prj1/src/audio/pt8211_tx.v                     |     0
+ .../Prj1/src/control/uart_control.v                |     0
+ .../Prj1/src/control/uart_rx.v                     |     0
+ .../Prj1/src/control/uart_tx.v                     |     0
+ .../Prj1/src/diagnostics/audio_latency_monitor.v   |     0
+ .../Prj1/src/diagnostics/voice_onset_monitor.v     |     0
+ .../Prj1/src/memory/ddr3_bist.v                    |     0
+ .../Prj1/src/memory/ddr3_platform.v                |     0
+ .../Prj1/src/memory/ddr_frame_writer.v             |     0
+ .../Prj1/src/memory/ddr_recovery_guard.v           |     0
+ .../Prj1/src/migration/gw138k_apb_cdc.sv           |     0
+ .../Prj1/src/migration/gw138k_audio_adapter.sv     |     0
+ .../Prj1/src/migration/gw138k_audio_clock.v        |     0
+ .../Prj1/src/migration/gw138k_audio_display_top.v  |     0
+ .../Prj1/src/migration/gw138k_audio_services.sv    |     0
+ .../Prj1/src/migration/gw138k_counter_cdc.sv       |     0
+ .../Prj1/src/migration/gw138k_managed_audio.sv     |     0
+ .../Prj1/src/migration/gw138k_runtime_uart.sv      |     0
+ .../Prj1/src/migration/gw138k_stream_cdc.sv        |     0
+ .../Prj1/src/platform/reset_release.v              |     0
+ .../Prj1/src/platform/video_clock.v                |     0
+ .../Prj1/src/platform/video_clock_1080p.v          |     0
+ .../Prj1/src/push2/gw138k_push_performance_uart.sv |     0
+ .../Prj1/src/push2/gw138k_push_workstation_top.v   |     0
+ .../Prj1/src/push2/push2_controls.sv               |     0
+ .../Prj1/src/push2/push2_display_tx.sv             |     0
+ .../Prj1/src/push2/push2_driver_core.sv            |     0
+ .../Prj1/src/push2/push2_host_gate.sv              |     0
+ .../Prj1/src/push2/push2_hspi_link.sv              |     0
+ .../Prj1/src/push2/push2_led_tx.sv                 |     0
+ .../Prj1/src/push2/push2_lights.sv                 |     0
+ .../Prj1/src/push2/push2_midi_rx.sv                |     0
+ .../Prj1/src/push2/push2_out_scheduler.sv          |     0
+ .../Prj1/src/push2/push2_surface.sv                |     0
+ .../Prj1/src/push2/push2_surface_pixels.sv         |     0
+ .../Prj1/src/push2/push_hspi_phy.sv                |     0
+ .../Prj1/src/synth/synth_engine.v                  |     0
+ .../Prj1/src/synth/synth_sine_rom.v                |     0
+ .../Prj1/src/synth/synth_voice.v                   |     0
+ .../Prj1/src/synth/synth_voice_bank.v              |     0
+ .../Prj1/src/top/prj1_top.v                        |     0
+ .../src/usb_host/gw138k_usb_controlled_audio.sv    |     0
+ .../Prj1/src/usb_host/gw138k_usb_event_fifo.v      |     0
+ .../Prj1/src/usb_host/gw138k_usb_host_core.json    |     0
+ .../Prj1/src/usb_host/gw138k_usb_host_core.v       |     0
+ .../Prj1/src/usb_host/gw138k_usb_midi_host.sv      |     0
+ .../src/usb_host/gw138k_usb_performance_uart.sv    |     0
+ .../Prj1/src/usb_host/gw138k_usb_workstation_top.v |     0
+ .../Prj1/src/usb_host/usb_fs_phy.v                 |     0
+ .../Prj1/src/usb_host/usb_midi_event_decoder.sv    |     0
+ .../Prj1/src/video/audio_analysis_rom.v            |     0
+ .../Prj1/src/video/feedback_capture.v              |     0
+ .../Prj1/src/video/feedback_dashboard.v            |     0
+ .../Prj1/src/video/feedback_renderer.v             |     0
+ .../Prj1/src/video/feedback_wave_align.v           |     0
+ .../Prj1/src/video/hdmi_display.v                  |     0
+ .../Prj1/src/video/output_audio_analysis.v         |     0
+ .../Prj1/src/video/output_audio_capture.v          |     0
+ .../Prj1/src/video/video_dashboard.v               |     0
+ .../Prj1/src/video/video_ddr_scanout.v             |     0
+ .../Prj1/src/video/video_font_5x7.v                |     0
+ .../Prj1/src/video/video_monitor_cdc.v             |     0
+ .../Prj1/src/video/video_peak_meter.v              |     0
+ .../Prj1/src/video/video_runtime_diagnostics.v     |     0
+ .../Prj1/src/video/video_timing_1080p.v            |     0
+ .../Prj1/src/video/video_timing_640x480.v          |     0
+ .../Prj1/tools/configure_serial_latency.ps1        |     0
+ .../Prj1/tools/instrument_backend/__init__.py      |     0
+ .../Prj1/tools/instrument_backend/diagnostics.py   |     0
+ .../Prj1/tools/instrument_backend/ftdi_serial.py   |     0
+ .../Prj1/tools/instrument_backend/protocol.py      |     0
+ .../Prj1/tools/instrument_backend/transport.py     |     0
+ .../Prj1/tools/instrument_backend/worker.py        |     0
+ .../Prj1/tools/instrument_cli.py                   |     0
+ .../Prj1/tools/instrument_gui.py                   |     0
+ .../Prj1/tools/instrument_ui/__init__.py           |     0
+ .../Prj1/tools/instrument_ui/app.py                |     0
+ .../Prj1/tools/instrument_ui/latency.py            |     0
+ .../Prj1/tools/instrument_ui/presets.py            |     0
+ .../Prj1/tools/instrument_ui/voice_model.py        |     0
+ .../Prj1/tools/instrument_ui/widgets.py            |     0
+ .../Prj1/tools/requirements.txt                    |     0
+ .../Prj1/tools/serial_latency_probe.py             |     0
+ .../vendor/gowin_ddr3/ddr3_memory_interface.ipc    |     0
+ .../Prj1/vendor/gowin_ddr3/ddr3_memory_interface.v |     0
+ .../Prj1/vendor/gowin_ddr3/ddr3_pll.v              |     0
+ .../Prj1/vendor/gowin_ddr3/ddr3_pll_init.v         |     0
+ .../Prj1/vendor/gowin_ddr3/ddr3_pll_primitive.v    |     0
+ .../vendor/gowin_ddr3/generation_parameters.txt    |     0
+ .../Prj1/vendor/gowin_ddr3/provenance.json         |     0
+ .../Prj1/vendor/gowin_ddr3/reference_demo.cst      |     0
+ .../Prj1/vendor/gowin_ddr3/reference_demo.sdc      |     0
+ .../Prj1/vendor/sipeed_dvi/LICENSE                 |     0
+ .../Prj1/vendor/sipeed_dvi/dvi_tx_clk_drv.v        |     0
+ .../Prj1/vendor/sipeed_dvi/dvi_tx_tmds_enc.v       |     0
+ .../Prj1/vendor/sipeed_dvi/dvi_tx_tmds_phy.v       |     0
+ .../Prj1/vendor/sipeed_dvi/dvi_tx_top.v            |     0
+ .../Prj1/vendor/sipeed_dvi/video_pll_1080p_gw5a.v  |     0
+ .../Prj1/vendor/sipeed_dvi/video_pll_gw5a.v        |     0
+ .../Prj1/vendor/sipeed_dvi/video_pll_init.v        |     0
+ .../138k}/push2_workstation/rtl/push2_controls.sv  |     0
+ .../138k}/push2_workstation/rtl/push2_host_gate.sv |     0
+ .../138k}/push2_workstation/rtl/push2_hspi_link.sv |     0
+ .../138k}/push2_workstation/rtl/push2_led_tx.sv    |     0
+ .../138k}/push2_workstation/rtl/push2_lights.sv    |     0
+ .../138k}/push2_workstation/rtl/push2_surface.sv   |     0
+ .../push2_workstation/rtl/push2_surface_pixels.sv  |     0
+ .../138k}/push2_workstation/rtl/push_hspi_phy.sv   |     0
+ .../138k}/push2_workstation/scripts/audit.py       |     0
+ .../138k}/push2_workstation/scripts/control.py     |     0
+ .../push2_workstation/scripts/forwarded_clock.py   |     0
+ .../push2_workstation/scripts/program_probe.py     |     0
+ .../push2_workstation/scripts/program_sram.py      |     0
+ .../scripts/program_when_ready.py                  |     0
+ .../scripts/reset_distribution.py                  |     0
+ .../push2_workstation/scripts/restore_controls.py  |     0
+ .../138k}/push2_workstation/scripts/test_parser.py |     0
+ .../138k}/push2_workstation/sim/tb_controls.sv     |     0
+ .../138k}/push2_workstation/sim/tb_host_gate.sv    |     0
+ .../138k}/push2_workstation/sim/tb_hspi_link.sv    |     0
+ .../push2_workstation/sim/tb_surface_fault.sv      |     0
+ .../138k}/push2_workstation/sim/tb_visual.sv       |     0
+ .../push2_workstation/touchboard_test/.gitignore   |     0
+ .../touchboard_test/ACTIVE_DIAG_20261013.md        |     0
+ .../touchboard_test/CURRENT_BLOCKER_20261013.md    |     0
+ .../touchboard_test/POWER_AUDIT_20261013.md        |     0
+ .../touchboard_test/PROGRESS_20261012.json         |     0
+ .../touchboard_test/PROGRESS_20261012.md           |     0
+ .../touchboard_test/PROGRESS_20261013.json         |     0
+ .../touchboard_test/PROGRESS_20261013.md           |     0
+ .../push2_workstation/touchboard_test/README.md    |     0
+ .../touchboard_test/RESUME_DEBUG_20261013.md       |     0
+ .../touchboard_test/SCHEMATIC_REVIEW_20261013.md   |     0
+ .../touchboard_test/WIRE_AUDIT_20261013.md         |     0
+ .../push2_workstation/touchboard_test/build.py     |     0
+ .../push2_workstation/touchboard_test/diagnose.py  |     0
+ .../touchboard_test/docs/AT42QT2160_9502C.pdf      |   Bin
+ .../touchboard_test/docs/Gowin_ADC_UG299_1.0.8.pdf |   Bin
+ .../docs/QT2160_id_debug_20261013.md               |     0
+ .../touchboard_test/docs/U4_J8_wiring.pdf          |   Bin
+ .../touchboard_test/docs/U4_J8_wiring.png          |   Bin
+ .../touchboard_test/docs/adc_generate.mod          |     0
+ .../touchboard_test/docs/draw_wiring.py            |     0
+ .../touchboard_test/docs/wiring_sources.json       |     0
+ .../touchboard_test/input_netlist.tel              |     0
+ .../touchboard_test/input_schematic.pdf            |   Bin
+ .../push2_workstation/touchboard_test/monitor.py   |     0
+ .../push2_workstation/touchboard_test/netlist.py   |     0
+ .../push2_workstation/touchboard_test/program.py   |     0
+ .../touchboard_test/rtl/qt2160_probe.sv            |     0
+ .../touchboard_test/rtl/tb_i2c_listener.sv         |     0
+ .../touchboard_test/rtl/tb_i2c_master.sv           |     0
+ .../touchboard_test/rtl/tb_i2c_scan.sv             |     0
+ .../touchboard_test/rtl/tb_power_monitor.sv        |     0
+ .../touchboard_test/rtl/touch_power_adc.v          |     0
+ .../touchboard_test/rtl/touchboard_diag_top.sv     |     0
+ .../touchboard_test/rtl/touchboard_top.sv          |     0
+ .../touchboard_test/rtl/touchboard_wire_top.sv     |     0
+ .../touchboard_test/rtl/uart_tx.v                  |     0
+ .../touchboard_test/rtl/ws2812_black.sv            |     0
+ .../touchboard_test/summarize_idle.py              |     0
+ .../push2_workstation/touchboard_test/test.py      |     0
+ .../touchboard_test/test_profile.py                |     0
+ .../touchboard_test/test_wire_trace.py             |     0
+ .../touchboard_test/tests/i2c_device_model.sv      |     0
+ .../touchboard_test/tests/power_adc_model.sv       |     0
+ .../touchboard_test/tests/tb_diag.sv               |     0
+ .../touchboard_test/tests/tb_diag_full.sv          |     0
+ .../touchboard_test/tests/tb_i2c_faults.sv         |     0
+ .../touchboard_test/tests/tb_i2c_listener.sv       |     0
+ .../touchboard_test/tests/tb_power_monitor.sv      |     0
+ .../touchboard_test/tests/tb_quiet.sv              |     0
+ .../touchboard_test/tests/tb_touchboard.sv         |     0
+ .../touchboard_test/tests/tb_wire_trace.sv         |     0
+ .../touchboard_test/tests/tb_ws2812_black.sv       |     0
+ .../touchboard_test/tests/test_monitor_io.py       |     0
+ .../touchboard_test/wire_trace.py                  |     0
+ .../push2_workstation/usb_a/BOARD_CURRENT.json     |     0
+ .../usb_a/BOARD_CURRENT_GENERIC_MIDI.json          |     0
+ .../BOARD_CURRENT_P10_SERIAL_EFFECT_ORDER.json     |     0
+ .../BOARD_CURRENT_P11_SHARED_DISPLAY_DATA.json     |     0
+ ...ARD_CURRENT_P12_HDMI_SHARED_DISPLAY_READER.json |     0
+ .../BOARD_CURRENT_P13_PUSH_SHARED_SUMMARY.json     |     0
+ .../usb_a/BOARD_CURRENT_P14_C_MODE_32.json         |     0
+ .../BOARD_CURRENT_P16_PRESSURE_PUSH_REFRESH.json   |     0
+ .../BOARD_CURRENT_P17_PRESSURE_PUSH_LATENCY.json   |     0
+ .../BOARD_CURRENT_P18_PUSH_AFTERTOUCH_SCREEN.json  |     0
+ .../BOARD_CURRENT_P19_PUSH_SCREEN_KEEPALIVE.json   |     0
+ .../BOARD_CURRENT_P20_FORCE_SCREEN_RESTART.json    |     0
+ .../usb_a/BOARD_CURRENT_P21_SCREEN_LOADER.json     |     0
+ .../usb_a/BOARD_CURRENT_P22_KEYBOARD_REPEAT.json   |     0
+ .../usb_a/BOARD_CURRENT_P23_PANIC_SYNC.json        |     0
+ .../usb_a/BOARD_CURRENT_P24_MODE_LEVEL.json        |     0
+ .../BOARD_CURRENT_P26_INTERACTION_LATENCY.json     |     0
+ .../usb_a/BOARD_CURRENT_P27_CONTROL_BINDINGS.json  |     0
+ .../usb_a/BOARD_CURRENT_P28_EFFECT_MASK_AUDIT.json |     0
+ .../usb_a/BOARD_CURRENT_P2P5.json                  |     0
+ .../usb_a/BOARD_CURRENT_P2P5_V2.json               |     0
+ .../usb_a/BOARD_CURRENT_P2P5_V3.json               |     0
+ .../usb_a/BOARD_CURRENT_P2P6.json                  |     0
+ .../usb_a/BOARD_CURRENT_P2_LOW_BASS.json           |     0
+ ...D_CURRENT_P3_COMPOSITE_BOTTOM_EFFECT_CHAIN.json |     0
+ .../usb_a/BOARD_CURRENT_P3_HDMI_EFFECT_CHAIN.json  |     0
+ .../usb_a/BOARD_CURRENT_P3_SERIAL_EFFECTS.json     |     0
+ .../usb_a/BOARD_CURRENT_P3_UI_EFFECT_CHAIN.json    |     0
+ .../BOARD_CURRENT_P4_UNIFIED_ANALYSIS_PAGE.json    |     0
+ .../BOARD_CURRENT_P5_SHARED_DISPLAY_METADATA.json  |     0
+ ...URRENT_P6_EFFECT_QUEUE_DIAGNOSTICS_REMOVED.json |     0
+ .../usb_a/BOARD_CURRENT_P7_SHUFFLE_ANIMATION.json  |     0
+ .../usb_a/BOARD_CURRENT_P8_SLIDE_UNIQUE_QUEUE.json |     0
+ .../usb_a/BOARD_CURRENT_P9_CLEAR_ALL_EFFECTS.json  |     0
+ .../usb_a/BOARD_CURRENT_RESTORED_D50E.json         |     0
+ .../usb_a/BOARD_CURRENT_RESTORED_D50E_BASE.json    |     0
+ .../usb_a/BOARD_CURRENT_RESTORED_HOTPLUG.json      |     0
+ .../usb_a/BOARD_CURRENT_ROLLBACK.json              |     0
+ .../usb_a/BOARD_CURRENT_ROLLBACK_V2.json           |     0
+ .../usb_a/C_MODE_VOICE_LIMIT_AUDIT.md              |     0
+ .../usb_a/DISPLAY_DATA_LAYOUT_V1.md                |     0
+ .../usb_a/DISPLAY_DATA_SOURCE_AUDIT.md             |     0
+ .../usb_a/GENERIC_MIDI_CANDIDATE.json              |     0
+ .../usb_a/GENERIC_MIDI_VERIFICATION.md             |     0
+ .../138k}/push2_workstation/usb_a/GW25K_PANEL.md   |     0
+ .../push2_workstation/usb_a/HOTPLUG_READY.json     |     0
+ .../usb_a/LATEST_WORKSTATION.json                  |     0
+ .../push2_workstation/usb_a/P10_VERIFICATION.md    |     0
+ .../push2_workstation/usb_a/P11_VERIFICATION.md    |     0
+ .../push2_workstation/usb_a/P12_VERIFICATION.md    |     0
+ .../push2_workstation/usb_a/P13_VERIFICATION.md    |     0
+ .../usb_a/P14_C_MODE_32_VERIFICATION.md            |     0
+ .../P16_PRESSURE_PUSH_REFRESH_VERIFICATION.md      |     0
+ .../P17_PRESSURE_PUSH_LATENCY_VERIFICATION.md      |     0
+ .../P18_PUSH_AFTERTOUCH_SCREEN_VERIFICATION.md     |     0
+ .../P19_PUSH_SCREEN_KEEPALIVE_VERIFICATION.md      |     0
+ .../usb_a/P20_FORCE_SCREEN_RESTART_VERIFICATION.md |     0
+ .../usb_a/P21_SCREEN_LOADER_VERIFICATION.md        |     0
+ .../usb_a/P22_KEYBOARD_REPEAT_AUDIT.md             |     0
+ .../usb_a/P22_KEYBOARD_REPEAT_CANDIDATE.json       |     0
+ .../usb_a/P22_KEYBOARD_REPEAT_VERIFICATION.md      |     0
+ .../usb_a/P23_PANIC_SYNC_AUDIT.md                  |     0
+ .../usb_a/P23_PANIC_SYNC_CANDIDATE.json            |     0
+ .../usb_a/P23_PANIC_SYNC_VERIFICATION.md           |     0
+ .../usb_a/P24_MODE_LEVEL_AUDIT.md                  |     0
+ .../usb_a/P24_MODE_LEVEL_CANDIDATE.json            |     0
+ .../usb_a/P24_MODE_LEVEL_VERIFICATION.md           |     0
+ .../usb_a/P25_SPECTRUM_EXPERIMENT.json             |     0
+ .../usb_a/P25_SPECTRUM_LEAKAGE_AUDIT.md            |     0
+ .../usb_a/P25_SPECTRUM_LEAKAGE_VERIFICATION.md     |     0
+ .../usb_a/P26_INTERACTION_LATENCY_AUDIT.md         |     0
+ .../usb_a/P26_INTERACTION_LATENCY_CANDIDATE.json   |     0
+ .../usb_a/P26_INTERACTION_LATENCY_VERIFICATION.md  |     0
+ .../usb_a/P27_CONTROL_BINDINGS_AUDIT.md            |     0
+ .../usb_a/P27_CONTROL_BINDINGS_CANDIDATE.json      |     0
+ .../usb_a/P27_CONTROL_BINDINGS_VERIFICATION.md     |     0
+ .../usb_a/P28_EFFECT_MASK_AUDIT.md                 |     0
+ .../usb_a/P28_EFFECT_MASK_AUDIT_CANDIDATE.json     |     0
+ .../usb_a/P28_EFFECT_MASK_AUDIT_VERIFICATION.md    |     0
+ .../usb_a/P29_USB_IN_DIAGNOSTICS_AUDIT.md          |     0
+ .../usb_a/P29_USB_IN_DIAGNOSTICS_CANDIDATE.json    |     0
+ .../usb_a/P29_USB_IN_DIAGNOSTICS_VERIFICATION.md   |     0
+ .../138k}/push2_workstation/usb_a/P2P5_PATCH.diff  |     0
+ .../push2_workstation/usb_a/P2P5_PATCH_PLAN.md     |     0
+ .../usb_a/P30_ABC_LOUDNESS_1_5X.md                 |     0
+ .../138k}/push2_workstation/usb_a/README.md        |    16 +
+ .../138k}/push2_workstation/usb_a/READY.json       |     0
+ .../usb_a/TF_AUDIO_DDR_INTEGRATION.md              |     0
+ .../138k}/push2_workstation/usb_a/audit.py         |     0
+ .../138k}/push2_workstation/usb_a/build.py         |     7 +
+ .../push2_workstation/usb_a/docs/CNN_FLASH_BOOT.md |     0
+ .../138k}/push2_workstation/usb_a/firmware.c       |     2 +-
+ .../138k}/push2_workstation/usb_a/gw25k_panel.h    |    80 +-
+ .../138k}/push2_workstation/usb_a/p11.cst          |     0
+ .../138k}/push2_workstation/usb_a/p11.gsc          |     0
+ .../usb_a/reports/CLK50_TIMING_FIX_20261007.json   |     0
+ .../usb_a/reports/CLK50_TIMING_FIX_20261007.md     |     0
+ .../usb_a/reports/CNN_83_ACCEPTANCE_20261006.json  |     0
+ .../reports/CNN_CORRECTNESS_SPEED_20261006.md      |     0
+ .../usb_a/reports/CNN_FIX_HANDOFF_20261006.md      |     0
+ .../CNN_FLASH_BOOT_B0_COORDINATE_TESTS.json        |     0
+ .../reports/CNN_FLASH_BOOT_B2_CARD_TMDS_TESTS.json |     0
+ .../CNN_FLASH_BOOT_B3_LOCAL_PATH_TESTS.json        |     0
+ .../CNN_FLASH_BOOT_B4_FEATURE_SLOT_TESTS.json      |     0
+ .../CNN_FLASH_BOOT_B6_TF_BACKGROUND_TESTS.json     |     0
+ .../CNN_FLASH_BOOT_B7_DYNAMIC_BIST_TESTS.json      |     0
+ .../CNN_FLASH_BOOT_B8_TF_SPECTRUM_TESTS.json       |     0
+ .../CNN_FLASH_BOOT_B9_GROUPED_TF_CARD_TESTS.json   |     0
+ ...CNN_FLASH_BOOT_BACKGROUND_COORDINATE_TESTS.json |     0
+ ...N_FLASH_BOOT_BASELINE_HEALTH_20261010_0344.json |     0
+ .../reports/CNN_FLASH_BOOT_BA_EXPORTER_TESTS.json  |     0
+ .../reports/CNN_FLASH_BOOT_BB_BIST_TESTS.json      |     0
+ .../reports/CNN_FLASH_BOOT_BC_TF_MASK_TESTS.json   |     0
+ .../CNN_FLASH_BOOT_BD_REGISTERED_TF_TESTS.json     |     0
+ .../CNN_FLASH_BOOT_BE_RETURN_PIPELINE_TESTS.json   |     0
+ .../reports/CNN_FLASH_BOOT_BF_CONTROL_BUDGET.json  |     0
+ .../reports/CNN_FLASH_BOOT_BIST_PATTERN_TESTS.json |     0
+ .../CNN_FLASH_BOOT_BIST_PIPELINE_TESTS.json        |     0
+ .../CNN_FLASH_BOOT_C0_DDR_CONSTRAINT_GROUPS.json   |     0
+ .../CNN_FLASH_BOOT_C0_FRAME_SLOT_TESTS.json        |     0
+ .../reports/CNN_FLASH_BOOT_C1_NIBBLE_TESTS.json    |     0
+ .../reports/CNN_FLASH_BOOT_CARD_SELECT_TESTS.json  |     0
+ ...SH_BOOT_COMPLETE_BACKGROUND_RENDERER_TESTS.json |     0
+ .../CNN_FLASH_BOOT_COMPLETE_BACKGROUND_TESTS.json  |     0
+ .../reports/CNN_FLASH_BOOT_CONTENT_AUDIT.json      |     0
+ .../usb_a/reports/CNN_FLASH_BOOT_CURRENT.md        |     0
+ ...CNN_FLASH_BOOT_DEPLOY_FAULT_TESTS_20261010.json |     0
+ ...OOT_DYNAMIC_BACKGROUND_ANALYSIS_PAGE_TESTS.json |     0
+ ...ASH_BOOT_DYNAMIC_BACKGROUND_RENDERER_TESTS.json |     0
+ .../CNN_FLASH_BOOT_DYNAMIC_BACKGROUND_TESTS.json   |     0
+ ...LASH_BOOT_FAST_AVAILABILITY_PROTOCOL_TESTS.json |     0
+ .../CNN_FLASH_BOOT_FEATURE_READ_ADDRESS_TESTS.json |     0
+ .../CNN_FLASH_BOOT_IDLE_CLIENT_PAYLOAD_SAT.json    |     0
+ .../CNN_FLASH_BOOT_IDLE_CLIENT_PAYLOAD_TESTS.json  |     0
+ .../reports/CNN_FLASH_BOOT_IMPLEMENTATION.json     |     0
+ .../usb_a/reports/CNN_FLASH_BOOT_IMPLEMENTATION.md |     0
+ ...CNN_FLASH_BOOT_MASKED_WRITE_PROTOCOL_TESTS.json |     0
+ .../CNN_FLASH_BOOT_NIBBLE_COUNTER_PROTOCOL.json    |     0
+ .../reports/CNN_FLASH_BOOT_NIBBLE_COUNTER_SAT.json |     0
+ .../reports/CNN_FLASH_BOOT_OPTION_GUARDS.json      |     0
+ ...LASH_BOOT_PARALLEL_SPECTRUM_RENDERER_TESTS.json |     0
+ .../CNN_FLASH_BOOT_PARALLEL_TF_CONTROL_TESTS.json  |     0
+ ..._FLASH_BOOT_PIXEL_SKID_FULL_RENDERER_TESTS.json |     0
+ .../reports/CNN_FLASH_BOOT_PIXEL_SKID_TESTS.json   |     0
+ ...CNN_FLASH_BOOT_QUIET_SHARED_ANALYSIS_TESTS.json |     0
+ ...NN_FLASH_BOOT_REGISTERED_TF_RESPONSE_TESTS.json |     0
+ .../reports/CNN_FLASH_BOOT_RELEASE_COMPARISON.json |     0
+ .../CNN_FLASH_BOOT_RENDERER_FIRST_ISSUE_TESTS.json |     0
+ ...NN_FLASH_BOOT_SHALLOW_CARD_DASHBOARD_TESTS.json |     0
+ ...CNN_FLASH_BOOT_SHALLOW_CARD_RENDERER_TESTS.json |     0
+ .../CNN_FLASH_BOOT_SPECTRUM_ADDRESS_TESTS.json     |     0
+ .../reports/CNN_FLASH_BOOT_TAG_FLAGS_TESTS.json    |     0
+ .../usb_a/reports/CNN_FLASH_BOOT_TESTS.json        |     0
+ .../CNN_FLASH_BOOT_TF_AVAILABILITY_TESTS.json      |     0
+ .../CNN_FLASH_BOOT_TF_BYTE_COUNT_TESTS.json        |     0
+ .../reports/CNN_FLASH_BOOT_TF_MASK_TESTS.json      |     0
+ ...NN_FLASH_BOOT_TF_READ_TOTAL_PROTOCOL_TESTS.json |     0
+ .../CNN_FLASH_BOOT_TF_READ_TOTAL_TESTS.json        |     0
+ .../CNN_FLASH_BOOT_TF_RETURN_PIPELINE_TESTS.json   |     0
+ .../usb_a/reports/CNN_FLASH_BOOT_WAITER_TESTS.json |     0
+ .../usb_a/reports/CNN_STAGED_CACHE_FIX_20261005.md |     0
+ .../usb_a/reports/CNN_THROUGHPUT_BRIEF_20261004.md |     0
+ .../CURRENT_WORKSTATION_SOURCES_20261018.md        |    54 +
+ .../usb_a/reports/DELAY_DDR_PLAN_B_20261005.md     |     0
+ .../usb_a/reports/FLASH85_20261008.json            |     0
+ .../usb_a/reports/FLASH85_20261008.md              |     0
+ .../usb_a/reports/FLASH85_20261012.json            |     0
+ .../usb_a/reports/FLASH85_20261012.md              |     0
+ .../usb_a/reports/FTDI_RELOAD85_20261008.json      |     0
+ .../usb_a/reports/FTDI_RELOAD85_20261008.md        |     0
+ .../usb_a/reports/FULL_SONG_GUIDANCE_20261003.md   |     0
+ .../usb_a/reports/GW25K_PANEL_20261017.json        |     0
+ .../GW25K_PANEL_20261017_generic_midi_test.log     |     0
+ .../reports/GW25K_PANEL_20261017_hotplug_test.log  |     0
+ .../reports/GW25K_PANEL_20261017_rtl_exchange.log  |     0
+ .../usb_a/reports/GW25K_PANEL_20261017_test.log    |     0
+ .../usb_a/reports/INTERFACE_BATCH_20261018.md      |    79 +
+ .../reports/PUSH_CNN_SCORE_GUIDANCE_20261002.md    |     0
+ .../reports/RTL8723DS_BLE_MIGRATION_20261007.json  |     0
+ .../reports/RTL8723DS_BLE_MIGRATION_20261007.md    |     0
+ .../usb_a/reports/SCOPE84_BOARD_20261006.json      |     0
+ .../usb_a/reports/SCOPE84_BOARD_20261006.md        |     0
+ .../SCOPE_VEC_BASIC_PITCH_MERGE_20261002.json      |     0
+ .../SCOPE_VEC_BASIC_PITCH_MERGE_20261002.md        |     0
+ .../reports/SCOPE_WORKSTATION_MERGE_20261006.json  |     0
+ .../reports/SCOPE_WORKSTATION_MERGE_20261006.md    |     0
+ .../usb_a/reports/TF_HOTPLUG_20261003.md           |     0
+ .../reports/TF_PUSH_SONG_SELECTION_20261003.md     |     0
+ .../usb_a/reports/TF_SCOPE_PLAYBACK_20261002.json  |     0
+ .../usb_a/reports/TF_SCOPE_PLAYBACK_20261002.md    |     0
+ .../usb_a/reports/TF_STALL_RECOVERY_20261004.md    |     0
+ ...WORKSTATION_BASIC_PITCH_INTEGRATION_20261002.md |     0
+ .../reports/WORKSTATION_BSRAM_AUDIT_20261004.json  |     0
+ .../reports/WORKSTATION_BSRAM_AUDIT_20261004.md    |     0
+ .../reports/WORKSTATION_BSRAM_REVIEW_20261001.json |     0
+ .../reports/WORKSTATION_BSRAM_REVIEW_20261001.md   |     0
+ .../usb_a/reports/WORKSTATION_TIMING_20261018.md   |   361 +
+ .../cnn_source_audit.json                          |   191 +
+ .../regression.json                                |    44 +
+ .../scope_merge.json                               |   116 +
+ .../source_verification.json                       |    41 +
+ .../staged_ddr_inputs_sha256.json                  |     8 +
+ .../staged_ddr_isolation.json                      |    14 +
+ .../synthesis.json                                 |   181 +
+ .../tool_result.json                               |     7 +
+ .../attach/generic_events.mem                      |     8 +
+ .../function_first_20261018/attach/generic_midi    |   Bin 0 -> 126608 bytes
+ .../function_first_20261018/attach/inputs.json     |    68 +
+ .../reports/function_first_20261018/attach/rtl     |     1 +
+ .../function_first_20261018/attach/sim/data        |     1 +
+ .../function_first_20261018/attach/sim/matlab      |     1 +
+ .../attach/source/firmware.c                       |   328 +
+ .../attach/source/gw25k_panel.h                    |   246 +
+ .../attach/source/sim/tb_generic_midi.sv           |   119 +
+ .../attach/source/sim/tb_usb_lifecycle_merge.sv    |    38 +
+ .../attach/source/sim/tb_workstation_attach.sv     |   178 +
+ .../attach/source}/sim/test_generic_midi.c         |     0
+ .../attach/tb_generic_midi/Vtb_generic_midi        |   Bin 0 -> 473656 bytes
+ .../attach/tb_generic_midi/Vtb_generic_midi.cpp    |    92 +
+ .../attach/tb_generic_midi/Vtb_generic_midi.d      |     1 +
+ .../attach/tb_generic_midi/Vtb_generic_midi.h      |    87 +
+ .../attach/tb_generic_midi/Vtb_generic_midi.mk     |    66 +
+ .../attach/tb_generic_midi/Vtb_generic_midi.o      |   Bin 0 -> 8816 bytes
+ .../attach/tb_generic_midi/Vtb_generic_midi__ALL.a |   Bin 0 -> 495534 bytes
+ .../Vtb_generic_midi__ConstPool__0__Slow.cpp       |   149 +
+ .../Vtb_generic_midi__ConstPool__0__Slow.d         |     3 +
+ .../Vtb_generic_midi__ConstPool__0__Slow.o         |   Bin 0 -> 3408 bytes
+ .../tb_generic_midi/Vtb_generic_midi__Syms.h       |    38 +
+ .../Vtb_generic_midi__Syms__Slow.cpp               |    28 +
+ .../tb_generic_midi/Vtb_generic_midi__Syms__Slow.d |     2 +
+ .../tb_generic_midi/Vtb_generic_midi__Syms__Slow.o |   Bin 0 -> 19888 bytes
+ .../tb_generic_midi/Vtb_generic_midi___024root.h   |  1247 ++
+ .../Vtb_generic_midi___024root__0.cpp              |  8926 +++++++++++++
+ .../Vtb_generic_midi___024root__0.d                |     2 +
+ .../Vtb_generic_midi___024root__0.o                |   Bin 0 -> 137880 bytes
+ .../Vtb_generic_midi___024root__0__Slow.cpp        |  6186 +++++++++
+ .../Vtb_generic_midi___024root__0__Slow.d          |     2 +
+ .../Vtb_generic_midi___024root__0__Slow.o          |   Bin 0 -> 180608 bytes
+ .../Vtb_generic_midi___024root__1.cpp              |  7836 ++++++++++++
+ .../Vtb_generic_midi___024root__1.d                |     2 +
+ .../Vtb_generic_midi___024root__1.o                |   Bin 0 -> 50960 bytes
+ .../Vtb_generic_midi___024root__2.cpp              |  3015 +++++
+ .../Vtb_generic_midi___024root__2.d                |     2 +
+ .../Vtb_generic_midi___024root__2.o                |   Bin 0 -> 27424 bytes
+ .../Vtb_generic_midi___024root__Slow.cpp           |    24 +
+ .../Vtb_generic_midi___024root__Slow.d             |     2 +
+ .../Vtb_generic_midi___024root__Slow.o             |   Bin 0 -> 37480 bytes
+ .../tb_generic_midi/Vtb_generic_midi__main.cpp     |    39 +
+ .../tb_generic_midi/Vtb_generic_midi__main.d       |     2 +
+ .../tb_generic_midi/Vtb_generic_midi__main.o       |   Bin 0 -> 4648 bytes
+ .../attach/tb_generic_midi/Vtb_generic_midi__pch.h |    27 +
+ .../tb_generic_midi/Vtb_generic_midi__pch.h.fast.d |     9 +
+ .../Vtb_generic_midi__pch.h.fast.gch               |   Bin 0 -> 105882848 bytes
+ .../tb_generic_midi/Vtb_generic_midi__pch.h.slow.d |     9 +
+ .../Vtb_generic_midi__pch.h.slow.gch               |   Bin 0 -> 105114184 bytes
+ .../attach/tb_generic_midi/Vtb_generic_midi__ver.d |     1 +
+ .../tb_generic_midi/Vtb_generic_midi__verFiles.dat |    61 +
+ .../tb_generic_midi/Vtb_generic_midi_classes.mk    |    56 +
+ .../attach/tb_generic_midi/verilated.d             |    12 +
+ .../attach/tb_generic_midi/verilated.o             |   Bin 0 -> 235384 bytes
+ .../attach/tb_generic_midi/verilated_threads.d     |     7 +
+ .../attach/tb_generic_midi/verilated_threads.o     |   Bin 0 -> 55328 bytes
+ .../attach/tb_generic_midi/verilated_timing.d      |     7 +
+ .../attach/tb_generic_midi/verilated_timing.o      |   Bin 0 -> 10544 bytes
+ .../tb_usb_lifecycle_merge/Vtb_usb_lifecycle_merge |   Bin 0 -> 211704 bytes
+ .../Vtb_usb_lifecycle_merge.cpp                    |    92 +
+ .../Vtb_usb_lifecycle_merge.h                      |    87 +
+ .../Vtb_usb_lifecycle_merge.mk                     |    66 +
+ .../Vtb_usb_lifecycle_merge__ALL.a                 |   Bin 0 -> 63756 bytes
+ .../Vtb_usb_lifecycle_merge__ALL.cpp               |     9 +
+ .../Vtb_usb_lifecycle_merge__ALL.d                 |    17 +
+ .../Vtb_usb_lifecycle_merge__ALL.o                 |   Bin 0 -> 56912 bytes
+ ...Vtb_usb_lifecycle_merge__ConstPool__0__Slow.cpp |     9 +
+ .../Vtb_usb_lifecycle_merge__Syms.h                |    38 +
+ .../Vtb_usb_lifecycle_merge__Syms__Slow.cpp        |    28 +
+ .../Vtb_usb_lifecycle_merge___024root.h            |    66 +
+ .../Vtb_usb_lifecycle_merge___024root__0.cpp       |   705 ++
+ .../Vtb_usb_lifecycle_merge___024root__0__Slow.cpp |   242 +
+ .../Vtb_usb_lifecycle_merge___024root__Slow.cpp    |    24 +
+ .../Vtb_usb_lifecycle_merge__main.cpp              |    39 +
+ .../Vtb_usb_lifecycle_merge__pch.h                 |    27 +
+ .../Vtb_usb_lifecycle_merge__ver.d                 |     1 +
+ .../Vtb_usb_lifecycle_merge__verFiles.dat          |    59 +
+ .../Vtb_usb_lifecycle_merge_classes.mk             |    54 +
+ .../attach/tb_usb_lifecycle_merge/verilated.d      |    12 +
+ .../attach/tb_usb_lifecycle_merge/verilated.o      |   Bin 0 -> 235384 bytes
+ .../tb_usb_lifecycle_merge/verilated_threads.d     |     7 +
+ .../tb_usb_lifecycle_merge/verilated_threads.o     |   Bin 0 -> 55328 bytes
+ .../tb_usb_lifecycle_merge/verilated_timing.d      |     7 +
+ .../tb_usb_lifecycle_merge/verilated_timing.o      |   Bin 0 -> 10544 bytes
+ .../tb_workstation_attach/Vtb_workstation_attach   |   Bin 0 -> 599360 bytes
+ .../Vtb_workstation_attach.cpp                     |    92 +
+ .../tb_workstation_attach/Vtb_workstation_attach.d |     2 +
+ .../tb_workstation_attach/Vtb_workstation_attach.h |    87 +
+ .../Vtb_workstation_attach.mk                      |    66 +
+ .../tb_workstation_attach/Vtb_workstation_attach.o |   Bin 0 -> 9056 bytes
+ .../Vtb_workstation_attach__ALL.a                  |   Bin 0 -> 771962 bytes
+ .../Vtb_workstation_attach__ConstPool__0__Slow.cpp |   149 +
+ .../Vtb_workstation_attach__ConstPool__0__Slow.d   |     3 +
+ .../Vtb_workstation_attach__ConstPool__0__Slow.o   |   Bin 0 -> 3432 bytes
+ .../Vtb_workstation_attach__Syms.h                 |    38 +
+ .../Vtb_workstation_attach__Syms__Slow.cpp         |    28 +
+ .../Vtb_workstation_attach__Syms__Slow.d           |     2 +
+ .../Vtb_workstation_attach__Syms__Slow.o           |   Bin 0 -> 20000 bytes
+ .../Vtb_workstation_attach___024root.h             |  1348 ++
+ .../Vtb_workstation_attach___024root__0.cpp        | 12522 +++++++++++++++++++
+ .../Vtb_workstation_attach___024root__0.d          |     2 +
+ .../Vtb_workstation_attach___024root__0.o          |   Bin 0 -> 359320 bytes
+ .../Vtb_workstation_attach___024root__0__Slow.cpp  |  6676 ++++++++++
+ .../Vtb_workstation_attach___024root__0__Slow.d    |     3 +
+ .../Vtb_workstation_attach___024root__0__Slow.o    |   Bin 0 -> 190496 bytes
+ .../Vtb_workstation_attach___024root__1.cpp        |  8042 ++++++++++++
+ .../Vtb_workstation_attach___024root__1.d          |     2 +
+ .../Vtb_workstation_attach___024root__1.o          |   Bin 0 -> 48800 bytes
+ .../Vtb_workstation_attach___024root__2.cpp        |  6578 ++++++++++
+ .../Vtb_workstation_attach___024root__2.d          |     2 +
+ .../Vtb_workstation_attach___024root__2.o          |   Bin 0 -> 66768 bytes
+ .../Vtb_workstation_attach___024root__Slow.cpp     |    24 +
+ .../Vtb_workstation_attach___024root__Slow.d       |     2 +
+ .../Vtb_workstation_attach___024root__Slow.o       |   Bin 0 -> 42200 bytes
+ .../Vtb_workstation_attach__main.cpp               |    39 +
+ .../Vtb_workstation_attach__main.d                 |     2 +
+ .../Vtb_workstation_attach__main.o                 |   Bin 0 -> 4712 bytes
+ .../Vtb_workstation_attach__pch.h                  |    27 +
+ .../Vtb_workstation_attach__pch.h.fast.d           |    10 +
+ .../Vtb_workstation_attach__pch.h.fast.gch         |   Bin 0 -> 105945775 bytes
+ .../Vtb_workstation_attach__pch.h.slow.d           |    10 +
+ .../Vtb_workstation_attach__pch.h.slow.gch         |   Bin 0 -> 105435484 bytes
+ .../Vtb_workstation_attach__ver.d                  |     1 +
+ .../Vtb_workstation_attach__verFiles.dat           |    61 +
+ .../Vtb_workstation_attach_classes.mk              |    56 +
+ .../attach/tb_workstation_attach/verilated.d       |    12 +
+ .../attach/tb_workstation_attach/verilated.o       |   Bin 0 -> 235384 bytes
+ .../tb_workstation_attach/verilated_threads.d      |     7 +
+ .../tb_workstation_attach/verilated_threads.o      |   Bin 0 -> 55328 bytes
+ .../tb_workstation_attach/verilated_timing.d       |     7 +
+ .../tb_workstation_attach/verilated_timing.o       |   Bin 0 -> 10544 bytes
+ .../attach/verification.json                       |     8 +
+ .../guide/verification.json                        |    21 +
+ .../gw25k_host/generic_midi                        |   Bin 0 -> 172176 bytes
+ .../function_first_20261018/gw25k_host/hotplug     |   Bin 0 -> 146752 bytes
+ .../gw25k_host/renderer.png                        |   Bin 0 -> 1761 bytes
+ .../gw25k_host/renderer.ppm                        |     4 +
+ .../gw25k_host/source/firmware.c                   |   328 +
+ .../gw25k_host/source/gw25k_panel.h                |   246 +
+ .../gw25k_host/source/headers}/minlibc.h           |     0
+ .../gw25k_host/source/headers}/usb_core.h          |     0
+ .../gw25k_host/source/headers}/usb_defs.h          |     0
+ .../gw25k_host/source/headers}/usb_hw.h            |     0
+ .../gw25k_host/source}/sim/run_gw25k_panel.py      |     0
+ .../source}/sim/tb_gw25k_panel_endpoint.v          |     0
+ .../gw25k_host/source/sim/test_generic_midi.c      |   179 +
+ .../gw25k_host/source}/sim/test_gw25k_panel.c      |    53 +-
+ .../gw25k_host/source}/sim/test_hotplug.c          |     0
+ .../gw25k_host/test_gw25k_panel                    |   Bin 0 -> 236528 bytes
+ .../gw25k_host/verification.json                   |    35 +
+ .../reports/function_first_20261018/progress.json  |    76 +
+ .../function_first_20261018/verification.json      |   109 +
+ .../usb_a/reports/gw25k_panel_preview.png          |   Bin
+ .../interface_batch_20261018/attach/inputs.json    |    64 +
+ .../attach/verification.json                       |     7 +
+ .../d_controls/inputs_sha256.json                  |    25 +
+ .../d_controls/verification.json                   |    89 +
+ .../d_mode/inputs_sha256.json                      |    25 +
+ .../d_mode/verification.json                       |    87 +
+ .../guide/verification.json                        |    21 +
+ .../interface_batch_20261018/panel/renderer.png    |   Bin 0 -> 1761 bytes
+ .../panel/verification.json                        |    35 +
+ .../interface_batch_20261018/prepare_check.json    |     7 +
+ .../reports/interface_batch_20261018/summary.json  |    39 +
+ .../usb_firmware_metadata.json                     |    31 +
+ .../repository_layout_20261018/before_inputs.json  |  6186 +++++++++
+ .../repository_layout_20261018/entrypoints.json    |    36 +
+ .../repository_layout_20261018/git_rename_stat.txt |  1550 +++
+ .../git_rename_summary.txt                         |  1543 +++
+ .../repository_layout_20261018/verification.json   |    71 +
+ .../song_guide_board_status_58_20261003.txt        |     0
+ .../workstation_timing_20261018/attach.json        |     8 +
+ .../attach_fixture_archive.json                    |    14 +
+ .../attach_fixtures/inputs.json                    |    71 +
+ .../attach_fixtures/source/sim/tb_generic_midi.sv  |   119 +
+ .../source/sim/tb_workstation_attach.sv            |   225 +
+ .../source/workstation_reference.sv                |   424 +
+ .../attach_fixtures/verification.json              |     8 +
+ .../workstation_timing_20261018/attach_inputs.json |    71 +
+ .../attach_location.txt                            |     1 +
+ .../capture_equivalence.json                       |     7 +
+ .../capture_equivalence_inputs.json                |     7 +
+ .../capture_equivalence_location.txt               |     1 +
+ .../collect_evidence.py                            |   207 +
+ .../current_functional_verification.json           |    33 +
+ .../ddr_bus_timing.json                            |    32 +
+ .../diagnostic_cdc.json                            |     6 +
+ .../diagnostic_cdc_inputs.json                     |     8 +
+ .../diagnostic_cdc_location.txt                    |     1 +
+ .../interrupted_20261018_1554.json                 |    27 +
+ .../workstation_timing_20261018/p10_attach.json    |     8 +
+ .../p10_attach_inputs.json                         |    71 +
+ .../p10_capture_equivalence.json                   |     7 +
+ .../p10_capture_equivalence_inputs.json            |     7 +
+ .../workstation_timing_20261018/p10_cdc.json       |   843 ++
+ .../p10_functional_verification.json               |   330 +
+ .../p10_pll_failure.json                           |    44 +
+ .../p10_routed_partial_success.json                |   174 +
+ .../p10_scope_merge.json                           |   119 +
+ .../p10_timing_equivalence.json                    |    16 +
+ .../p10_timing_equivalence_inputs_sha256.json      |    45 +
+ .../p10_vector_event_equivalence.json              |     4 +
+ .../p10_vector_event_equivalence_inputs.json       |    11 +
+ .../p10_vector_synthesis_equivalence.json          |     6 +
+ .../p10_vector_synthesis_equivalence_inputs.json   |    15 +
+ .../p10_workstation_regression.json                |    44 +
+ ...10_workstation_regression_tf_inputs_sha256.json |    63 +
+ .../workstation_timing_20261018/p11_cdc.json       |   871 ++
+ .../p11_functional_verification.json               |    16 +
+ .../p11_pll_all_paths.json                         |   395 +
+ .../p11_routed_failure.json                        |  1623 +++
+ .../p12_pll_failure_all_paths.json                 |   395 +
+ .../workstation_timing_20261018/p12_sta_pass.json  |   153 +
+ .../workstation_timing_20261018/p13_pll_pass.json  |   587 +
+ .../p13_sta_failure.json                           |  1843 +++
+ .../workstation_timing_20261018/p14_pll_pass.json  |   587 +
+ .../workstation_timing_20261018/p15_pll_pass.json  |   587 +
+ .../p15_sta_failure.json                           |  1073 ++
+ .../workstation_timing_20261018/p16_pll_pass.json  |   587 +
+ .../p16_sta_failure.json                           |  1037 ++
+ .../p17_sta_failure.json                           |  1011 ++
+ .../p19_sta_failure.json                           |  2432 ++++
+ .../workstation_timing_20261018/p20_pll_pass.json  |   587 +
+ .../p20_sta_failure.json                           |   555 +
+ .../p20_workstation_cdc.json                       |   871 ++
+ .../workstation_timing_20261018/p21_sta.json       |  2022 +++
+ .../workstation_timing_20261018/p23_pll.json       |   338 +
+ .../workstation_timing_20261018/p23_sta.json       |  2434 ++++
+ .../workstation_timing_20261018/p26_pll.json       |   587 +
+ .../workstation_timing_20261018/p26_sta.json       |  1591 +++
+ .../workstation_timing_20261018/p27_cdc.json       |   879 ++
+ .../workstation_timing_20261018/p27_pll.json       |   587 +
+ .../workstation_timing_20261018/p27_sta.json       |   473 +
+ .../workstation_timing_20261018/p31_cdc.json       |   879 ++
+ .../workstation_timing_20261018/p31_launch.json    |    23 +
+ .../workstation_timing_20261018/p31_pll.json       |   587 +
+ .../workstation_timing_20261018/p31_sta.json       |  1808 +++
+ .../workstation_timing_20261018/p32_cdc.json       |   879 ++
+ .../workstation_timing_20261018/p32_launch.json    |    22 +
+ .../workstation_timing_20261018/p32_pll.json       |   587 +
+ .../workstation_timing_20261018/p32_sta.json       |  1552 +++
+ .../workstation_timing_20261018/p33_audits.json    |    54 +
+ .../workstation_timing_20261018/p33_cdc.json       |   879 ++
+ .../workstation_timing_20261018/p33_launch.json    |    23 +
+ .../workstation_timing_20261018/p33_pll.json       |   587 +
+ .../workstation_timing_20261018/p33_sta.json       |  1735 +++
+ .../p33_watcher_launch.json                        |     6 +
+ .../workstation_timing_20261018/p34_audits.json    |    19 +
+ .../p34_functional_launch.json                     |    24 +
+ .../p34_gate_checks.json                           |    39 +
+ .../workstation_timing_20261018/p34_launch.json    |    26 +
+ .../p34_regression_launch.json                     |    11 +
+ .../p34_watcher_launch.json                        |     6 +
+ .../p6_routed_failure.json                         |  3626 ++++++
+ .../pinned_cnn_git_sources.json                    |    35 +
+ .../workstation_timing_20261018/progress.json      |    89 +
+ .../reference_frequencies.json                     |    82 +
+ .../workstation_timing_20261018/remote_resume.json |     6 +
+ .../resume_audit_watcher_launch.json               |     7 +
+ .../workstation_timing_20261018/resume_checks.json |    36 +
+ .../resumed_candidate_audits.json                  |   115 +
+ .../workstation_timing_20261018/scope_merge.json   |   120 +
+ .../status_20261018_1653.json                      |    35 +
+ .../status_20261018_1733.json                      |    94 +
+ .../status_20261018_2144.json                      |    49 +
+ .../status_20261018_2203.json                      |    15 +
+ .../status_20261018_2320.json                      |    20 +
+ .../test_source_bindings.json                      |   180 +
+ .../tf_buffer_timing.json                          |     8 +
+ .../tf_bus_timing_corrected_hash.json              |   447 +
+ .../tf_read_availability_source_bound.json         |    12 +
+ .../tf_read_total_source_bound.json                |    12 +
+ .../timing_equivalence.json                        |    16 +
+ .../timing_equivalence_inputs.json                 |    40 +
+ .../timing_equivalence_inputs_sha256.json          |    45 +
+ .../timing_equivalence_location.txt                |     1 +
+ .../vector_event_equivalence.json                  |     4 +
+ .../vector_event_equivalence_inputs.json           |    11 +
+ .../vector_event_equivalence_location.txt          |     1 +
+ .../vector_local_envelope_equivalence.json         |    15 +
+ .../vector_synthesis_equivalence.json              |     6 +
+ .../vector_synthesis_equivalence_inputs.json       |    15 +
+ .../vector_synthesis_equivalence_location.txt      |     1 +
+ .../workstation_timing_20261018/watch_p33.py       |    31 +
+ .../workstation_timing_20261018/watch_p34.py       |    31 +
+ .../watch_resumed_candidates.py                    |   104 +
+ .../workstation_regression.json                    |    44 +
+ .../workstation_regression_location.txt            |     1 +
+ .../workstation_regression_tf_inputs_sha256.json   |    63 +
+ .../usb_a/rtl/audio/delay_ddr/delay_ddr_dma.sv     |     0
+ .../rtl/audio/delay_ddr/serial_delay_effect_ddr.sv |     0
+ .../usb_a/rtl/audio/gw138k_event_workstation.sv    |   101 +-
+ .../usb_a/rtl/audio/gw138k_usb_lifecycle_merge.sv  |    29 +
+ .../usb_a/rtl/audio/p24_mode_gain_scale.json       |     0
+ .../usb_a/rtl/audio/push2_controls.sv              |     4 +-
+ .../usb_a/rtl/audio/scope_vec/EVIDENCE.json        |     0
+ .../usb_a/rtl/audio/scope_vec/README.md            |     0
+ .../usb_a/rtl/audio/scope_vec/VERIFICATION.md      |     0
+ .../usb_a/rtl/audio/scope_vec/data/manifest.json   |     0
+ .../usb_a/rtl/audio/scope_vec/data/note_steps.mem  |     0
+ .../usb_a/rtl/audio/scope_vec/data/paths.mem       |     0
+ .../usb_a/rtl/audio/scope_vec/data/rotation.mem    |     0
+ .../usb_a/rtl/audio/scope_vec/data/scene.json      |     0
+ .../rtl/audio/scope_vec/data/scene_controls.mem    |     0
+ .../rtl/audio/scope_vec/scope_control_player.sv    |     0
+ .../usb_a/rtl/audio/scope_vec/scope_dac_select.sv  |     0
+ .../usb_a/rtl/audio/scope_vec/scope_tf_control.sv  |     0
+ .../rtl/audio/scope_vec/scope_tf_transport.sv      |     0
+ .../usb_a/rtl/audio/scope_vec/scope_vec_engine.sv  |    90 +-
+ .../usb_a/rtl/audio/unified_oscillator_engine.sv   |   172 +-
+ .../usb_a/rtl/bluetooth/README.md                  |     0
+ .../rtl/bluetooth/adaptations/bt_h5_transport.v    |     0
+ .../usb_a/rtl/bluetooth/adaptations/bt_hci_init.v  |     0
+ .../usb_a/rtl/bluetooth/constraints/ble.sdc        |     0
+ .../usb_a/rtl/bluetooth/constraints/ble_board.cst  |     0
+ .../usb_a/rtl/bluetooth/constraints/ble_io.cst     |     0
+ .../usb_a/rtl/bluetooth/gw138k_ble_board_top.v     |     0
+ .../usb_a/rtl/bluetooth/gw138k_ble_link.v          |     0
+ .../usb_a/rtl/bluetooth/gw138k_ble_status_uart.v   |     0
+ .../push2_workstation/usb_a/rtl/ddr_address_map.vh |     0
+ .../usb_a/rtl/ddr_address_map_guard.v              |     0
+ .../usb_a/rtl/display_data/display_data_reader.v   |     0
+ .../usb_a/rtl/display_data/display_data_writer.v   |     0
+ .../usb_a/rtl/display_data/feedback_capture.v      |   228 +
+ .../usb_a/rtl/display_data/feedback_renderer.v     |     2 +-
+ .../usb_a/rtl/display_data/gw138k_ddr_arbiter.sv   |     0
+ .../usb_a/rtl/display_data/hdmi_display.v          |     0
+ .../usb_a/rtl/display_data/output_audio_analysis.v |     0
+ .../usb_a/rtl/display_data/push2_surface_pixels.sv |    63 +-
+ .../display_data/tf_audio_ddr_command_buffer.sv    |     0
+ .../usb_a/rtl/display_data_layout_pkg.svh          |     0
+ .../usb_a/rtl/music/basic_pitch_44100_to_48000.sv  |     0
+ .../usb_a/rtl/music/basic_pitch_activation.sv      |     0
+ .../rtl/music/basic_pitch_boot_model_loader.sv     |     0
+ .../usb_a/rtl/music/basic_pitch_cnn_streaming.sv   |     0
+ .../usb_a/rtl/music/basic_pitch_cnn_weights.svh    |     0
+ .../usb_a/rtl/music/basic_pitch_conv2d.sv          |     0
+ .../usb_a/rtl/music/basic_pitch_cqt_engine.sv      |     0
+ .../usb_a/rtl/music/basic_pitch_cqt_frontend.sv    |     0
+ .../usb_a/rtl/music/basic_pitch_ddr16_port.sv      |     0
+ .../rtl/music/basic_pitch_ddr_arbiter_pipeline.sv  |     0
+ .../usb_a/rtl/music/basic_pitch_ddr_boot_gate.sv   |     0
+ .../rtl/music/basic_pitch_ddr_client_queues.sv     |     0
+ .../usb_a/rtl/music/basic_pitch_ddr_coeff_pair.sv  |     0
+ .../rtl/music/basic_pitch_ddr_command_buffer.sv    |     0
+ .../usb_a/rtl/music/basic_pitch_ddr_map.svh        |     0
+ .../usb_a/rtl/music/basic_pitch_ddr_read_credit.sv |     0
+ .../usb_a/rtl/music/basic_pitch_ddr_sync_fifo.sv   |     0
+ .../usb_a/rtl/music/basic_pitch_feature_ddr.sv     |     0
+ .../usb_a/rtl/music/basic_pitch_fixed_pkg.svh      |     0
+ .../usb_a/rtl/music/basic_pitch_flash_io_guard.sv  |     0
+ .../usb_a/rtl/music/basic_pitch_flash_map.svh      |     0
+ .../rtl/music/basic_pitch_flash_model_loader.sv    |     0
+ .../rtl/music/basic_pitch_flash_serial_boot.sv     |     0
+ .../usb_a/rtl/music/basic_pitch_link_uart.sv       |     0
+ .../usb_a/rtl/music/basic_pitch_model_loader.sv    |     0
+ .../usb_a/rtl/music/basic_pitch_nn_ddr.sv          |     0
+ .../usb_a/rtl/music/basic_pitch_normlog.sv         |     0
+ .../usb_a/rtl/music/basic_pitch_normlog_ddr.sv     |     0
+ .../usb_a/rtl/music/basic_pitch_pcm_pipeline.sv    |     0
+ .../usb_a/rtl/music/basic_pitch_plane_cache.sv     |     0
+ .../usb_a/rtl/music/basic_pitch_requant.sv         |     0
+ .../usb_a/rtl/music/basic_pitch_row_buffer.sv      |     0
+ .../usb_a/rtl/music/basic_pitch_shared_sigmoid.sv  |     0
+ .../usb_a/rtl/music/basic_pitch_startup_panic.sv   |     0
+ .../usb_a/rtl/music/basic_pitch_tf_board_top.sv    |     0
+ .../rtl/music/basic_pitch_uart_model_loader.sv     |     0
+ .../usb_a/rtl/music/basic_pitch_uart_rx.sv         |     0
+ .../usb_a/rtl/music/basic_pitch_viterbi.sv         |     0
+ .../usb_a/rtl/music/basic_pitch_weight_cache.sv    |     0
+ .../rtl/music/basic_pitch_workstation_link.sv      |     0
+ .../usb_a/rtl/music/blocking_music_guidance.sv     |     0
+ .../usb_a/rtl/music/blocking_note_search.sv        |     0
+ .../usb_a/rtl/music/blocking_note_trainer.sv       |     0
+ .../usb_a/rtl/music/blocking_note_viterbi.sv       |     0
+ .../usb_a/rtl/music/blocking_pcm_note_detector.sv  |     0
+ .../usb_a/rtl/music/music_async_fifo.sv            |     0
+ .../usb_a/rtl/music/music_ddr_engine.sv            |     0
+ .../usb_a/rtl/music/music_note_coefficients.svh    |     0
+ .../usb_a/rtl/music/music_upload_parser.sv         |     0
+ .../usb_a/rtl/music/music_upload_uart.sv           |     0
+ .../usb_a/rtl/music/tf_playlist_bridge.sv          |     0
+ .../usb_a/rtl/music/weights/cnn_ddr_blob.mem       |     0
+ .../usb_a/rtl/music/weights/contour.mem            |     0
+ .../usb_a/rtl/music/weights/contour_b.mem          |     0
+ .../usb_a/rtl/music/weights/contour_bq.mem         |     0
+ .../usb_a/rtl/music/weights/contour_reduce.mem     |     0
+ .../usb_a/rtl/music/weights/contour_reduce_b.mem   |     0
+ .../usb_a/rtl/music/weights/contour_reduce_bq.mem  |     0
+ .../usb_a/rtl/music/weights/cqt_imag.mem           |     0
+ .../usb_a/rtl/music/weights/cqt_imag_b.mem         |     0
+ .../usb_a/rtl/music/weights/cqt_imag_bq.mem        |     0
+ .../usb_a/rtl/music/weights/cqt_lowpass.mem        |     0
+ .../usb_a/rtl/music/weights/cqt_lowpass_b.mem      |     0
+ .../usb_a/rtl/music/weights/cqt_lowpass_bq.mem     |     0
+ .../usb_a/rtl/music/weights/cqt_norm.mem           |     0
+ .../usb_a/rtl/music/weights/cqt_norm_log.mem       |     0
+ .../usb_a/rtl/music/weights/cqt_real.mem           |     0
+ .../usb_a/rtl/music/weights/cqt_real_b.mem         |     0
+ .../usb_a/rtl/music/weights/cqt_real_bq.mem        |     0
+ .../usb_a/rtl/music/weights/log2_lut.mem           |     0
+ .../usb_a/rtl/music/weights/note_out.mem           |     0
+ .../usb_a/rtl/music/weights/note_out_b.mem         |     0
+ .../usb_a/rtl/music/weights/note_out_bq.mem        |     0
+ .../usb_a/rtl/music/weights/notes.mem              |     0
+ .../usb_a/rtl/music/weights/notes_b.mem            |     0
+ .../usb_a/rtl/music/weights/notes_bq.mem           |     0
+ .../usb_a/rtl/music/weights/onset.mem              |     0
+ .../usb_a/rtl/music/weights/onset_b.mem            |     0
+ .../usb_a/rtl/music/weights/onset_bq.mem           |     0
+ .../usb_a/rtl/music/weights/onset_out.mem          |     0
+ .../usb_a/rtl/music/weights/onset_out_b.mem        |     0
+ .../usb_a/rtl/music/weights/onset_out_bq.mem       |     0
+ .../usb_a/rtl/music/weights/resampler_poly.mem     |     0
+ .../usb_a/rtl/music/weights/sigmoid_lut.mem        |     0
+ .../usb_a/rtl/push2/push2_led_tx.sv                |     0
+ .../usb_a/rtl/push2/push2_lights.sv                |     0
+ .../usb_a/rtl/push2/push2_playlist_hold.sv         |     0
+ .../usb_a/rtl/push2/push2_score_guide.sv           |     0
+ .../usb_a/rtl/push2/push2_song_menu.sv             |     0
+ .../usb_a/rtl/push2/push2_song_screen.sv           |    88 +-
+ .../usb_a/rtl/push2_screen_fifo_streamer.sv        |     0
+ .../usb_a/rtl/push2_screen_packet_loader.sv        |     0
+ .../usb_a/rtl/push2_usb_a_control.sv               |   164 +-
+ .../usb_a/rtl/sampler/MODE_D_INTEGRATION.md        |    10 +-
+ .../push2_workstation/usb_a/rtl/sampler/README.md  |     4 +-
+ .../usb_a/rtl/sampler/evidence.json                |     0
+ .../rtl/sampler/evidence/mode_d_synthesis.txt      |     0
+ .../evidence/mode_synthesis_inputs_sha256.json     |     0
+ .../sampler/evidence/simulation_inputs_sha256.json |     0
+ .../rtl/sampler/evidence/storage_synthesis.txt     |     0
+ .../evidence/storage_synthesis_inputs_sha256.json  |     0
+ .../usb_a/rtl/sampler/example_spec.json            |     0
+ .../usb_a/rtl/sampler/import_samples.py            |     0
+ .../usb_a/rtl/sampler/sampler_ddr.sv               |     0
+ .../usb_a/rtl/sampler/sampler_fx.sv                |     4 +-
+ .../usb_a/rtl/sampler/sampler_grid.sv              |     0
+ .../usb_a/rtl/sampler/sampler_import.sv            |     0
+ .../usb_a/rtl/sampler/sampler_mode_d.sv            |     0
+ .../usb_a/rtl/sampler/sampler_pkg.sv               |     0
+ .../usb_a/rtl/sampler/sampler_pool.sv              |     0
+ .../usb_a/rtl/sampler/sampler_push.sv              |     0
+ .../usb_a/rtl/sampler/sampler_resample.sv          |     0
+ .../usb_a/rtl/sampler/sampler_sequencer.sv         |     0
+ .../usb_a/rtl/sampler/sampler_slice.sv             |     0
+ .../usb_a/rtl/sampler/sampler_storage.sv           |     0
+ .../usb_a/rtl/sampler/sampler_tf_source.sv         |     0
+ .../usb_a/rtl/sampler/sampler_voice.sv             |     0
+ .../usb_a/rtl/tf_audio/pt8211_tx.v                 |     0
+ .../usb_a/rtl/tf_audio/storage/GPL-3.0.txt         |     0
+ .../usb_a/rtl/tf_audio/storage/THIRD_PARTY.md      |     0
+ .../usb_a/rtl/tf_audio/storage/tang_mp3/LICENSE    |     0
+ .../tf_audio/storage/tang_mp3/audio/audio_fifo.v   |     0
+ .../tf_audio/storage/tang_mp3/audio/pcm_drain.v    |     0
+ .../rtl/tf_audio/storage/tang_mp3/audio/pcm_fifo.v |     0
+ .../tf_audio/storage/tang_mp3/audio/wav_parser.v   |     0
+ .../tf_audio/storage/tang_mp3/common/sync_rom.v    |     0
+ .../tf_audio/storage/tang_mp3/mp3/huff_tabs_tail.v |     0
+ .../tf_audio/storage/tang_mp3/mp3/mp3_antialias.v  |     0
+ .../tf_audio/storage/tang_mp3/mp3/mp3_bitstream.v  |     0
+ .../tf_audio/storage/tang_mp3/mp3/mp3_decoder.v    |     0
+ .../tf_audio/storage/tang_mp3/mp3/mp3_huffman.v    |     0
+ .../rtl/tf_audio/storage/tang_mp3/mp3/mp3_imdct.v  |     0
+ .../rtl/tf_audio/storage/tang_mp3/mp3/mp3_mul.vh   |     0
+ .../tf_audio/storage/tang_mp3/mp3/mp3_reorder.v    |     0
+ .../tf_audio/storage/tang_mp3/mp3/mp3_requant.v    |     0
+ .../tf_audio/storage/tang_mp3/mp3/mp3_reservoir.v  |     0
+ .../tf_audio/storage/tang_mp3/mp3/mp3_scalefac.v   |     0
+ .../rtl/tf_audio/storage/tang_mp3/mp3/mp3_sfbtab.v |     0
+ .../tf_audio/storage/tang_mp3/mp3/mp3_sideinfo.v   |     0
+ .../tf_audio/storage/tang_mp3/mp3/mp3_spectra.v    |     0
+ .../rtl/tf_audio/storage/tang_mp3/mp3/mp3_stereo.v |     0
+ .../rtl/tf_audio/storage/tang_mp3/mp3/mp3_synth.v  |     0
+ .../storage/tang_mp3/mp3/tables/embed_mp3.memh     |     0
+ .../storage/tang_mp3/mp3/tables/font8x8.memh       |     0
+ .../storage/tang_mp3/mp3/tables/frame_size.memh    |     0
+ .../storage/tang_mp3/mp3/tables/huff_count1.memh   |     0
+ .../storage/tang_mp3/mp3/tables/huff_index.memh    |     0
+ .../storage/tang_mp3/mp3/tables/huff_linbits.memh  |     0
+ .../storage/tang_mp3/mp3/tables/huff_tabs.memh     |     0
+ .../tang_mp3/mp3/tables/huff_tabs_2048.memh        |     0
+ .../storage/tang_mp3/mp3/tables/imdct.memh         |     0
+ .../storage/tang_mp3/mp3/tables/pow43.memh         |     0
+ .../storage/tang_mp3/mp3/tables/pow43_1024.memh    |     0
+ .../storage/tang_mp3/mp3/tables/pow43_full.memh    |     0
+ .../storage/tang_mp3/mp3/tables/preamp.memh        |     0
+ .../tang_mp3/mp3/tables/scf_partitions.memh        |     0
+ .../storage/tang_mp3/mp3/tables/scfc_decode.memh   |     0
+ .../storage/tang_mp3/mp3/tables/sfb_long.memh      |     0
+ .../storage/tang_mp3/mp3/tables/sfb_mixed.memh     |     0
+ .../storage/tang_mp3/mp3/tables/sfb_short.memh     |     0
+ .../storage/tang_mp3/mp3/tables/sine256.memh       |     0
+ .../storage/tang_mp3/mp3/tables/synth_cos.memh     |     0
+ .../storage/tang_mp3/mp3/tables/synth_win.memh     |     0
+ .../storage/tang_mp3/sd/tf_sd_file_reader.v        |     0
+ .../tang_mp3/vendor/tf_sd_spi_sector_reader.v      |     0
+ .../storage/tang_mp3/vendor/tf_spi_session.v       |     0
+ .../rtl/tf_audio/storage/tf_async_byte_fifo.v      |     0
+ .../usb_a/rtl/tf_audio/storage/tf_audio_ddr_dma.v  |     0
+ .../usb_a/rtl/tf_audio/storage/tf_audio_ddr_path.v |     0
+ .../rtl/tf_audio/storage/tf_audio_decoder_ip.v     |     0
+ .../rtl/tf_audio/storage/tf_audio_file_reader.v    |     0
+ .../rtl/tf_audio/storage/tf_flac_pcm_decoder.v     |     0
+ .../rtl/tf_audio/storage/tf_mp3_pcm_decoder.v      |     0
+ .../usb_a/rtl/tf_audio/storage/tf_pcm_bram_fifo.v  |     0
+ .../rtl/tf_audio/storage/tf_sd_audio_pcm_player.v  |     0
+ .../rtl/tf_audio/storage/tf_wav_chunk_parser.v     |     0
+ .../rtl/tf_audio/storage/tf_wav_pcm_decoder.v      |     0
+ .../storage/third_party_sd_spi_file_reader.v       |     0
+ .../storage/third_party_sd_spi_sector_reader.v     |     0
+ .../rtl/tf_audio/storage/third_party_spi_session.v |     0
+ .../usb_a/rtl/tf_audio/tf_async_pcm_fifo.v         |     0
+ .../rtl/tf_audio/tf_workstation_audio_bridge.v     |     0
+ .../rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv |   219 +
+ .../rtl/timing/basic_pitch_ddr_client_queues.sv    |   228 +
+ .../usb_a/rtl/timing/gw138k_level_cdc.sv           |    12 +
+ .../usb_a/rtl/timing/gw138k_mmio_pipeline.sv       |    30 +
+ .../audio/delay_ddr_build/stereo_effects_ref.sv    |     0
+ .../sim/audio/delay_ddr_build/tb_delay_ddr.vvp     |     0
+ .../usb_a/sim/audio/run_delay_ddr_equivalence.py   |     0
+ .../usb_a/sim/audio/tb_delay_ddr_equivalence.sv    |     0
+ .../push2_workstation/usb_a/sim/cpu_audio_probe.c  |     0
+ .../usb_a/sim/guidance/tb_44100_to_48000.sv        |     0
+ .../usb_a/sim/guidance/tb_frontend_windows.sv      |     0
+ .../usb_a/sim/guidance/tb_guidance.sv              |     0
+ .../sim/guidance/tb_music_ddr_command_buffer.sv    |     0
+ .../usb_a/sim/guidance/tb_playlist_bridge.sv       |     0
+ .../usb_a/sim/guidance/tb_playlist_hold.sv         |     0
+ .../usb_a/sim/guidance/tb_score_stream.sv          |     0
+ .../usb_a/sim/guidance/tb_song_menu.sv             |     0
+ .../usb_a/sim/guidance/tb_song_screen.sv           |     0
+ .../usb_a/sim/guidance/tb_tf_ddr_command_buffer.sv |     0
+ .../usb_a/sim/guidance/tb_tf_hotplug_probe.sv      |     0
+ .../sim/guidance/tb_viterbi_first_alignment.sv     |     0
+ .../usb_a/sim/guidance/tb_viterbi_score.sv         |     0
+ .../usb_a/sim/guidance/tb_viterbi_score_ddr.sv     |     0
+ .../usb_a/sim/model_flash/flash_ddr_probe.sv       |     0
+ .../usb_a/sim/model_flash/flash_pin_probe.sv       |     0
+ .../usb_a/sim/model_flash/tb_boot_model.sv         |     0
+ .../usb_a/sim/model_flash/tb_cache_read_retime.sv  |     0
+ .../usb_a/sim/model_flash/tb_ddr_boot_gate.sv      |     0
+ .../usb_a/sim/model_flash/tb_ddr_read_credit.sv    |     0
+ .../usb_a/sim/model_flash/tb_flash_io_guard.sv     |     0
+ .../usb_a/sim/model_flash/tb_flash_serial_boot.sv  |     0
+ .../usb_a/sim/model_flash/tb_startup_panic.sv      |     0
+ .../push2_workstation/usb_a/sim/music/.gitignore   |     0
+ .../usb_a/sim/music/run_bp_config_ab.py            |     0
+ .../usb_a/sim/music/run_bp_ddr_isolation.py        |    16 +-
+ .../usb_a/sim/music/run_conv_mac_equivalence.py    |     0
+ .../usb_a/sim/music/run_conv_mask_equivalence.py   |     0
+ .../usb_a/sim/music/run_cqt_magnitude_math.py      |     0
+ .../sim/music/run_cqt_pipeline_equivalence.py      |     0
+ .../sim/music/run_frontend_write_equivalence.py    |     0
+ .../sim/music/run_local_arbiter_equivalence.py     |     0
+ .../usb_a/sim/music/tb_bp_config_ab.sv             |     0
+ .../usb_a/sim/music/tb_cqt_pipeline_equivalence.sv |     0
+ .../sim/music/tb_frontend_write_equivalence.sv     |     0
+ .../usb_a/sim/music/tb_viterbi_ddr_isolation.sv    |     0
+ .../usb_a/sim/music/test_clk50_audit.py            |     0
+ .../usb_a/sim/music/test_clk50_cdc_gate.py         |     0
+ .../138k}/push2_workstation/usb_a/sim/p10/run.py   |     0
+ .../usb_a/sim/p10/tb_serial_effect_order.sv        |     0
+ .../138k}/push2_workstation/usb_a/sim/p11/run.py   |     0
+ .../usb_a/sim/p11/tb_display_data_reader.sv        |     0
+ .../usb_a/sim/p11/tb_display_write_path.sv         |     0
+ .../usb_a/sim/p11/tb_push_aftertouch_init.sv       |     0
+ .../usb_a/sim/p11/tb_push_display_summary.sv       |     0
+ .../usb_a/sim/p11/tb_push_pressure.sv              |     0
+ .../usb_a/sim/p11/tb_push_surface_refresh.sv       |     0
+ .../usb_a/sim/p11/tb_shared_display.sv             |     0
+ .../usb_a/sim/p11/tb_unified_expression.sv         |     0
+ .../usb_a/sim/p11/tb_unified_mode2_32.sv           |     0
+ .../138k}/push2_workstation/usb_a/sim/p22/run.py   |     0
+ .../usb_a/sim/p22/tb_keyboard_audio.sv             |     0
+ .../138k}/push2_workstation/usb_a/sim/p23/run.py   |     0
+ .../usb_a/sim/p23/tb_cpu_release.sv                |     0
+ .../usb_a/sim/p23/tb_panic_audio.sv                |     0
+ .../usb_a/sim/p23/tb_panic_push.sv                 |     0
+ .../usb_a/sim/p23/test_keyboard_panic.py           |     0
+ .../usb_a/sim/p23/test_ui_panic.c                  |     0
+ .../push2_workstation/usb_a/sim/p24/measure.py     |     0
+ .../push2_workstation/usb_a/sim/p24/polyphony.py   |     0
+ .../usb_a/sim/p24/tb_mode_levels.sv                |     0
+ .../138k}/push2_workstation/usb_a/sim/p25/run.py   |     0
+ .../usb_a/sim/p25/tb_panic_spectrum.sv             |     0
+ .../138k}/push2_workstation/usb_a/sim/p26/run.py   |     0
+ .../usb_a/sim/p26/tb_interaction_latency.sv        |     0
+ .../usb_a/sim/p26/tb_screen_fifo_streamer.sv       |     0
+ .../138k}/push2_workstation/usb_a/sim/p27/run.py   |     0
+ .../usb_a/sim/p27/tb_p27_audio.sv                  |     0
+ .../push2_workstation/usb_a/sim/p27/tb_p27_push.sv |     0
+ .../usb_a/sim/p27/tb_p27_services.sv               |     0
+ .../push2_workstation/usb_a/sim/p8/make_preview.py |     0
+ .../138k}/push2_workstation/usb_a/sim/p8/run.py    |     0
+ .../usb_a/sim/p8/tb_effect_queue.sv                |     0
+ .../usb_a/sim/p8/tb_effect_slide.sv                |     0
+ .../138k}/push2_workstation/usb_a/sim/p9/run.py    |     0
+ .../usb_a/sim/p9/tb_effect_queue.sv                |     0
+ .../138k}/push2_workstation/usb_a/sim/run.py       |     0
+ .../usb_a/sim/run_generic_midi.py                  |     0
+ .../push2_workstation/usb_a/sim/run_gw25k_panel.py |   160 +
+ .../push2_workstation/usb_a/sim/run_pl_guide.py    |     2 +-
+ .../usb_a/sim/run_screen_loader.py                 |     0
+ .../usb_a/sim/run_workstation_attach.py            |   101 +
+ .../push2_workstation/usb_a/sim/sampler/run.py     |     0
+ .../push2_workstation/usb_a/sim/sampler/synth.py   |     0
+ .../usb_a/sim/sampler/tb_sampler_controls.sv       |    12 +-
+ .../usb_a/sim/sampler/tb_sampler_ddr.sv            |     0
+ .../usb_a/sim/sampler/tb_sampler_import.sv         |     0
+ .../usb_a/sim/sampler/tb_sampler_mode_d.sv         |     9 +-
+ .../usb_a/sim/sampler/tb_sampler_pool.sv           |     0
+ .../usb_a/sim/sampler/tb_sampler_sequencer.sv      |     0
+ .../usb_a/sim/sampler/tb_sampler_storage.sv        |     0
+ .../usb_a/sim/sampler/tb_sampler_tf_source.sv      |     0
+ .../usb_a/sim/sampler/tb_sampler_voice.sv          |     0
+ .../usb_a/sim/sampler/test_import_tool.py          |     0
+ .../push2_workstation/usb_a/sim/scope_vec/run.py   |     0
+ .../usb_a/sim/scope_vec/run_current.py             |     2 +-
+ .../usb_a/sim/scope_vec/run_merge.py               |     3 +
+ .../usb_a/sim/scope_vec/tb_scope_controls.sv       |     0
+ .../usb_a/sim/scope_vec/tb_scope_dac_select.sv     |     0
+ .../usb_a/sim/scope_vec/tb_scope_injection.sv      |     0
+ .../usb_a/sim/scope_vec/tb_scope_push.sv           |     0
+ .../usb_a/sim/scope_vec/tb_scope_tf_bounds.sv      |     0
+ .../usb_a/sim/scope_vec/tb_scope_tf_coexist.sv     |     0
+ .../usb_a/sim/scope_vec/tb_scope_tf_control.sv     |     0
+ .../usb_a/sim/scope_vec/tb_scope_tf_play.sv        |     0
+ .../usb_a/sim/scope_vec/tb_scope_tf_transport.sv   |     0
+ .../usb_a/sim/scope_vec/tb_scope_vec.sv            |     0
+ .../usb_a/sim/scope_vec/tb_scope_workstation.sv    |     0
+ .../usb_a/sim/scope_vec/tb_scope_xy.sv             |     0
+ .../usb_a/sim/scope_vec/tf_decoder_endpoint.sv     |     0
+ .../push2_workstation/usb_a/sim/tb_cpu_audio.sv    |     0
+ .../push2_workstation/usb_a/sim/tb_generic_midi.sv |    12 +-
+ .../usb_a/sim/tb_gw25k_panel_endpoint.v            |    65 +
+ .../138k}/push2_workstation/usb_a/sim/tb_mmio.sv   |     0
+ .../push2_workstation/usb_a/sim/tb_pl_guide.sv     |    17 +-
+ .../usb_a/sim/tb_screen_packet_loader.sv           |     0
+ .../usb_a/sim/tb_usb_lifecycle_merge.sv            |    38 +
+ .../usb_a/sim/tb_workstation_attach.sv             |   172 +
+ .../usb_a/sim/test_current_workstation_sources.py  |   141 +
+ .../usb_a/sim/test_generic_midi.c                  |   179 +
+ .../push2_workstation/usb_a/sim/test_gw25k_panel.c |   451 +
+ .../push2_workstation/usb_a/sim/test_hotplug.c     |   144 +
+ .../usb_a/sim/test_stage_usb_firmware.py           |     0
+ .../usb_a/sim/test_usb_in_decode.py                |     0
+ .../usb_a/sim/tf_audio/data/tf_mp3.mp3.b64         |     0
+ .../push2_workstation/usb_a/sim/tf_audio/run.py    |     0
+ .../usb_a/sim/tf_audio/tb_ddr_address_map.sv       |     0
+ .../usb_a/sim/tf_audio/tb_tf_audio_ddr_dma.sv      |     0
+ .../sim/tf_audio/tb_tf_audio_ddr_path_flac.sv      |     0
+ .../usb_a/sim/tf_audio/tb_tf_audio_ddr_path_mp3.sv |     0
+ .../usb_a/sim/tf_audio/tb_tf_audio_decoder_ip.sv   |     0
+ .../sim/tf_audio/tb_tf_audio_ip_unsupported.sv     |     0
+ .../usb_a/sim/tf_audio/tb_tf_flac_pcm_decoder.sv   |     0
+ .../tb_tf_flac_pcm_decoder_constant_stereo.sv      |     0
+ .../sim/tf_audio/tb_tf_flac_pcm_decoder_limits.sv  |     0
+ .../sim/tf_audio/tb_tf_flac_pcm_decoder_stereo.sv  |     0
+ .../tf_audio/tb_tf_flac_pcm_decoder_verbatim.sv    |     0
+ .../usb_a/sim/tf_audio/tb_tf_mp3_file.sv           |     0
+ .../usb_a/sim/tf_audio/tb_tf_wav_chunk_parser.sv   |     0
+ .../usb_a/sim/tf_audio/tb_tf_wav_formats.sv        |     0
+ .../usb_a/sim/tf_audio/tb_tf_wav_pcm_decoder.sv    |     0
+ .../tf_audio/tb_workstation_ddr_audio_arbiter.sv   |     0
+ .../usb_a/sim/timing/event_reference.py            |    65 +
+ .../usb_a/sim/timing/mmio_fixture.py               |    40 +
+ .../138k/push2_workstation/usb_a/sim/timing/run.py |   109 +
+ .../usb_a/sim/timing/run_capture_ab.py             |    20 +
+ .../usb_a/sim/timing/run_scope_event_ab.py         |    48 +
+ .../usb_a/sim/timing/run_scope_synth_ab.py         |    69 +
+ .../usb_a/sim/timing/tb_capture_input_ab.sv        |    56 +
+ .../usb_a/sim/timing/tb_engine_timing_ab.sv        |    98 +
+ .../usb_a/sim/timing/tb_mix_quantizer.sv           |    78 +
+ .../usb_a/sim/timing/tb_mmio_pipeline.sv           |    81 +
+ .../usb_a/sim/timing/tb_push_decimal.sv            |    29 +
+ .../usb_a/sim/timing/tb_push_pixel_mmio.sv         |    61 +
+ .../usb_a/sim/timing/tb_push_song_pixels.sv        |    53 +
+ .../usb_a/sim/timing/tb_push_surface_pipeline.sv   |    56 +
+ .../usb_a/sim/timing/tb_scope_event_ab.sv          |    98 +
+ .../usb_a/sim/timing/test_cnn_trace_cdc.py         |    65 +
+ .../sim/timing/test_workstation_timing_gate.py     |   100 +
+ .../usb_a/src/video/feedback_pixel_skid.v          |     0
+ .../usb_a/tests/bluetooth/tb_gw138k_ble_board.v    |     0
+ .../usb_a/tests/bluetooth/tb_gw138k_ble_uart50.v   |     0
+ .../usb_a/tools/analyze_bp_throughput.py           |     0
+ .../usb_a/tools/audit_clk50_cdc_routes.py          |     9 +-
+ .../usb_a/tools/audit_clk50_timing.py              |     0
+ .../usb_a/tools/audit_ddr_ui_timing.py             |     0
+ .../usb_a/tools/audit_rtl8723ds_ble.py             |     0
+ .../usb_a/tools/audit_scope_routes.py              |     0
+ .../usb_a/tools/audit_workstation_cdc.py           |   214 +
+ .../usb_a/tools/audit_workstation_timing.py        |    86 +
+ .../usb_a/tools/bsram_hierarchy_audit.py           |     0
+ .../usb_a/tools/build_cnn_flash_ddr_probe.py       |     0
+ .../usb_a/tools/build_cnn_flash_image.py           |     0
+ .../usb_a/tools/build_cnn_flash_probe.py           |     0
+ .../usb_a/tools/build_current_workstation.py       |   124 +-
+ .../usb_a/tools/build_full_song_65.py              |     0
+ .../usb_a/tools/build_full_song_66.py              |     0
+ .../usb_a/tools/build_full_song_67.py              |     0
+ .../usb_a/tools/build_full_song_68.py              |     0
+ .../usb_a/tools/build_full_song_69.py              |     0
+ .../usb_a/tools/build_full_song_70.py              |     0
+ .../usb_a/tools/build_full_song_71.py              |     0
+ .../usb_a/tools/build_full_song_72.py              |     0
+ .../usb_a/tools/build_full_song_73.py              |     0
+ .../usb_a/tools/build_full_song_74.py              |     0
+ .../usb_a/tools/build_full_song_75.py              |     0
+ .../usb_a/tools/build_full_song_76.py              |     0
+ .../usb_a/tools/build_full_song_77.py              |     0
+ .../usb_a/tools/build_full_song_78.py              |     0
+ .../usb_a/tools/build_full_song_79.py              |     0
+ .../usb_a/tools/build_full_song_80.py              |     0
+ .../usb_a/tools/build_full_song_81_bp_measure.py   |     0
+ .../tools/build_full_song_82_bp_staged_cache.py    |     0
+ .../tools/build_full_song_83_bp_ddr_isolation.py   |     0
+ .../usb_a/tools/build_full_song_85_clk50_timing.py |     0
+ .../usb_a/tools/build_rtl8723ds_ble.py             |     0
+ .../usb_a/tools/build_score_guidance_4d.py         |     0
+ .../usb_a/tools/build_song_guide_52.py             |     0
+ .../usb_a/tools/build_workstation_flash_boot.py    |     0
+ .../usb_a/tools/build_workstation_timing.py        |   250 +
+ .../usb_a/tools/capture_bp_dwell.py                |     0
+ .../usb_a/tools/capture_model_path.py              |     0
+ .../usb_a/tools/capture_scope_smoke.py             |     0
+ .../usb_a/tools/capture_score_guidance_board.py    |     0
+ .../usb_a/tools/capture_score_windows.py           |     0
+ .../usb_a/tools/capture_tf_hotplug.py              |     0
+ .../usb_a/tools/capture_workstation_basic_pitch.py |     0
+ .../usb_a/tools/cnn_ddr_pipeline_patch.py          |     0
+ .../usb_a/tools/deploy_cnn_flash_boot.py           |     0
+ .../usb_a/tools/read_ble_status.py                 |     0
+ .../usb_a/tools/refresh_cnn_flash_status.py        |     0
+ .../usb_a/tools/rtl8723ds_ble_sources.py           |     0
+ .../usb_a/tools/scope_score/README.md              |     0
+ .../usb_a/tools/scope_score/compile_scope.py       |     0
+ .../usb_a/tools/scope_score/demo_scene.json        |     0
+ .../usb_a/tools/scope_score/geometry.json          |     0
+ .../usb_a/tools/stage_usb_firmware.py              |     0
+ .../usb_a/tools/test_cnn_bist_expected_pattern.py  |     0
+ .../usb_a/tools/test_cnn_bist_pipeline.py          |     0
+ .../usb_a/tools/test_cnn_cache_read_retime.py      |     0
+ .../usb_a/tools/test_cnn_card_geometry.py          |     0
+ .../usb_a/tools/test_cnn_card_select.py            |     0
+ .../usb_a/tools/test_cnn_cpu_release.py            |     0
+ .../usb_a/tools/test_cnn_dashboard_predecode.py    |     0
+ .../usb_a/tools/test_cnn_ddr_arbiter_pipeline.py   |     5 +-
+ .../usb_a/tools/test_cnn_ddr_boot_gate.py          |     0
+ .../usb_a/tools/test_cnn_ddr_pointer_arithmetic.py |     0
+ .../usb_a/tools/test_cnn_ddr_read_credit.py        |     0
+ .../usb_a/tools/test_cnn_ddr_sync_fifo.py          |     0
+ .../usb_a/tools/test_cnn_feature_read_address.py   |     0
+ .../usb_a/tools/test_cnn_flash_boot.py             |     0
+ .../usb_a/tools/test_cnn_flash_ddr_pipeline.py     |     0
+ .../usb_a/tools/test_cnn_flash_deploy.py           |     0
+ .../usb_a/tools/test_cnn_flash_serial_boot.py      |     0
+ .../usb_a/tools/test_cnn_flash_waiter.py           |     0
+ .../usb_a/tools/test_cnn_idle_client_payload.py    |     0
+ .../usb_a/tools/test_cnn_model_memory_ready.py     |     0
+ .../usb_a/tools/test_cnn_pixel_skid.py             |     0
+ .../usb_a/tools/test_cnn_renderer_dimensions.py    |     0
+ .../usb_a/tools/test_cnn_renderer_predecode.py     |     0
+ .../tools/test_cnn_renderer_spectrum_address.py    |     0
+ .../usb_a/tools/test_cnn_shared_display.py         |     0
+ .../usb_a/tools/test_cnn_start_delay_retime.py     |     0
+ .../usb_a/tools/test_cnn_startup_history.py        |     0
+ .../usb_a/tools/test_cnn_startup_panic.py          |     0
+ .../usb_a/tools/test_cnn_tf_buffer_enable.py       |     0
+ .../usb_a/tools/test_cnn_tf_byte_count.py          |     0
+ .../usb_a/tools/test_cnn_tf_capture_limit.py       |     0
+ .../usb_a/tools/test_cnn_tf_read_availability.py   |    14 +-
+ .../usb_a/tools/test_cnn_tf_read_total.py          |    17 +-
+ .../usb_a/tools/test_cnn_tf_write_buffer_retime.py |     5 +-
+ .../usb_a/tools/test_cnn_tf_write_mask.py          |     0
+ .../usb_a/tools/test_cnn_tmds_statistics.py        |     0
+ .../usb_a/tools/test_cnn_video_telemetry.py        |     0
+ .../usb_a/tools/test_rtl8723ds_ble.py              |     0
+ .../usb_a/tools/tf_scope_media/README.md           |     0
+ .../usb_a/tools/tf_scope_media/centered_song.py    |     0
+ .../usb_a/tools/tf_scope_media/media.py            |     0
+ .../usb_a/tools/upload_cnn_ddr_uart.py             |     0
+ .../usb_a/tools/verify_ble_payloads.py             |     0
+ .../usb_a/tools/verify_cnn_flash_workstation.py    |     0
+ .../usb_a/tools/wait_cnn_flash_acceptance.py       |     0
+ .../usb_a/tools/workstation_bus_timing.py          |    51 +
+ .../usb_a/tools/workstation_cnn_cdc.py             |    36 +
+ .../usb_a/tools/workstation_memory.py              |     8 +
+ .../usb_a/tools/workstation_sources.py             |    73 +
+ .../usb_a/tools/workstation_timing_constraints.py  |    93 +
+ .../usb_a/tools/workstation_vector_timing.py       |    36 +
+ .../138k}/push2_workstation/usb_a/usb_a.sdc        |     0
+ .../138k}/push2_workstation/usb_a/vendor/README.md |     0
+ .../vendor/ddr3_reference/ddr3_memory_interface.vo |     0
+ .../usb_a/vendor/rtl8723ds_ble/MANIFEST.json       |     0
+ .../usb_a/vendor/rtl8723ds_ble/NOTICE.md           |     0
+ .../usb_a/vendor/rtl8723ds_ble/README.md           |     0
+ .../rtl8723ds_ble/constraints/vivado_example.xdc   |     0
+ .../examples/rtl8723ds_ble_board_top.v             |     0
+ .../rtl8723ds_ble/firmware/rtl8723ds_config.bin    |   Bin
+ .../vendor/rtl8723ds_ble/firmware/rtl8723ds_fw.bin |   Bin
+ .../vendor/rtl8723ds_ble/firmware_manifest.json    |     0
+ .../usb_a/vendor/rtl8723ds_ble/inputs.json         |     0
+ .../vendor/rtl8723ds_ble/reports/CDC_ROM_AUDIT.md  |     0
+ .../rtl8723ds_ble/reports/resource_summary.json    |     0
+ .../vendor/rtl8723ds_ble/reports/utilization.rpt   |     0
+ .../rtl8723ds_ble/reports/utilization_core.rpt     |     0
+ .../reports/utilization_hierarchical.rpt           |     0
+ .../usb_a/vendor/rtl8723ds_ble/rtl/bt_gatt.v       |     0
+ .../vendor/rtl8723ds_ble/rtl/bt_h5_transport.v     |     0
+ .../usb_a/vendor/rtl8723ds_ble/rtl/bt_hci_init.v   |     0
+ .../usb_a/vendor/rtl8723ds_ble/rtl/bt_uart.v       |     0
+ .../vendor/rtl8723ds_ble/rtl/bt_verilog_core.v     |     0
+ .../vendor/rtl8723ds_ble/rtl/reset_release_sync.v  |     0
+ .../usb_a/vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v |     0
+ .../usb_a/vendor/rtl8723ds_ble/rtl8723ds_patch.mem |     0
+ .../vendor/rtl8723ds_ble/scripts/sim_bt_gatt.tcl   |     0
+ .../vendor/rtl8723ds_ble/scripts/sim_bt_h5.tcl     |     0
+ .../vendor/rtl8723ds_ble/scripts/sim_bt_system.tcl |     0
+ .../vendor/rtl8723ds_ble/scripts/simulate.ps1      |     0
+ .../vendor/rtl8723ds_ble/scripts/verify_package.py |     0
+ .../usb_a/vendor/rtl8723ds_ble/sources.f           |     0
+ .../usb_a/vendor/rtl8723ds_ble/tests/tb_bt_gatt.v  |     0
+ .../usb_a/vendor/rtl8723ds_ble/tests/tb_bt_h5.v    |     0
+ .../rtl8723ds_ble/tests/tb_bt_verilog_system.v     |     0
+ .../rtl8723ds_ble/validation/arm_stopped_state.txt |     0
+ .../rtl8723ds_ble/validation/final_state.json      |     0
+ .../validation/independent_audit.json              |     0
+ .../validation/initialized_state.json              |     0
+ .../rtl8723ds_ble/validation/pc_receive.json       |     0
+ .../validation/portable/gatt_normal.log            |     0
+ .../validation/portable/h5_normal.log              |     0
+ .../rtl8723ds_ble/validation/portable/result.json  |     0
+ .../validation/portable/system_normal.log          |     0
+ .../validation/portable/system_wrong_rom.log       |     0
+ .../rtl8723ds_ble/validation/stopped_state.json    |     0
+ .../vendor/usb_host_fs_8fc3/firmware/baremetal.ld  |     0
+ .../vendor/usb_host_fs_8fc3/firmware/minlibc.c     |     0
+ .../vendor/usb_host_fs_8fc3/firmware/minlibc.h     |    29 +
+ .../usb_a/vendor/usb_host_fs_8fc3/firmware/start.S |     0
+ .../usb_host_fs_8fc3/firmware/usb/usb_core.c       |     0
+ .../usb_host_fs_8fc3/firmware/usb/usb_core.h       |   107 +
+ .../usb_host_fs_8fc3/firmware/usb/usb_defs.h       |   153 +
+ .../vendor/usb_host_fs_8fc3/firmware/usb/usb_hw.c  |     0
+ .../vendor/usb_host_fs_8fc3/firmware/usb/usb_hw.h  |    31 +
+ .../usb_a/vendor/usb_host_fs_8fc3/inputs.json      |     0
+ .../usb_a/vendor/usb_host_fs_8fc3/src/VexRiscv.v   |     0
+ .../usb_a/vendor/usb_host_fs_8fc3/src/iosys2.v     |     0
+ .../usb_a/vendor/usb_host_fs_8fc3/src/simpleuart.v |     0
+ .../usb_a/vendor/usb_host_fs_8fc3/src/usb_fs_phy.v |     0
+ .../vendor/usb_host_fs_8fc3/src/usb_transceiver.v  |     0
+ .../usb_a/vendor/usb_host_fs_8fc3/src/usbh_core.sv |     0
+ .../vendor/usb_host_fs_8fc3/src/usbh_crc16.sv      |     0
+ .../usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc5.sv |     0
+ .../usb_a/vendor/usb_host_fs_8fc3/src/usbh_fifo.sv |     0
+ .../vendor/usb_host_fs_8fc3/src/usbh_host_defs.v   |     0
+ .../usb_a/vendor/usb_host_fs_8fc3/src/usbh_sie.sv  |     0
+ .../usb_a/vendor/workstation_inputs.json           |     0
+ .../138k}/push2_workstation/vendor/EXM_HSPI.sv     |     0
+ .../push2_workstation/vendor/push2_demo_pixels.sv  |     0
+ .../push2_workstation/vendor/push2_display_tx.sv   |     0
+ .../push2_workstation/vendor/push2_driver_core.sv  |     0
+ .../138k}/push2_workstation/vendor/push2_led_tx.sv |     0
+ .../push2_workstation/vendor/push2_midi_rx.sv      |     0
+ .../vendor/push2_out_scheduler.sv                  |     0
+ .../push2_workstation/vendor/push2_visual_init.sv  |     0
+ .../138k}/scripts/board_preflight.py               |     0
+ .../138k}/scripts/build.py                         |     0
+ .../138k}/scripts/check_audio_build.py             |     0
+ .../138k}/scripts/check_managed_synthesis.py       |     0
+ .../138k}/scripts/read_runtime.py                  |     0
+ .../gw138k_audio => projects/138k}/scripts/run.py  |     0
+ .../138k}/scripts/test_audio_audit.py              |     0
+ projects/25k/README.md                             |    15 +
+ projects/README.md                                 |    21 +
+ ...216\245\345\217\243\350\247\204\345\210\222.md" |    81 +-
+ 1553 files changed, 126130 insertions(+), 412 deletions(-)

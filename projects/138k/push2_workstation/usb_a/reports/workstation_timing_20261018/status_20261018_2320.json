@@ -1,0 +1,20 @@
+{
+  "checked": "2026-10-18T23:21:09.655953+08:00",
+  "timing_closed": false,
+  "best_completed_candidate": "results/timing_p27_uart_cdc_route1_20261018_142516_456857",
+  "best_worst_setup_ns": -0.018,
+  "p34_build": "results/timing_p34_vector_local_envelope_20261018_214554_355618",
+  "p34_status": "P&R failed with PR0004: 9460 unrouted nets; no valid final STA",
+  "p34_finished": "2026-10-18T23:14:43+08:00",
+  "p34_tool_exit_code": 1,
+  "p34_inputs_unchanged": true,
+  "p34_rtl_equivalence_passed": true,
+  "p34_real_gowin_netlist_equivalence_passed": true,
+  "p34_fresh_regression_gates": 18,
+  "p34_fresh_regression_passed": true,
+  "p34_synthesis_bsram": 217,
+  "p34_board_validated": false,
+  "running_builds": [],
+  "hardware_tested": false,
+  "next_work": "reduce critical combinational paths without the p34 routing expansion; validate logic and physical routability before closure"
+}

@@ -25,6 +25,8 @@ module basic_pitch_cqt_engine #(
     parameter int PER_OCT  = 36,
     parameter int CQT_BINS = 309,
     parameter int KTAPS    = 256,
+    parameter int HOP_NUMERATOR=256,
+    parameter int HOP_DENOMINATOR=1,
     parameter bit USE_DDR_SIGNAL = 1'b0,
     parameter bit USE_DDR_COEFF = 1'b0
 ) (
@@ -120,7 +122,12 @@ module basic_pitch_cqt_engine #(
     wire signed [9:0] j_idx   = (10'sd8 - {5'd0, oct}) * 10'sd36 + {1'b0, b_cnt} - 10'sd15;
     wire              j_valid = (j_idx >= 0) && (j_idx < CQT_BINS);
 
-    wire signed [19:0] raw_idx = $signed({9'd0, t_cnt}) * $signed({9'd0, hop})
+    // Divide after multiplying the frame number, before the octave shift.
+    // A rational 22050/4 hop keeps every octave aligned at 0,250,500,... ms.
+    // Repeatedly shifting a rounded 5512-sample hop would drift in low octaves.
+    wire [31:0] frame_sample = (t_cnt * HOP_NUMERATOR) / HOP_DENOMINATOR;
+    wire [19:0] octave_sample = frame_sample >> oct;
+    wire signed [19:0] raw_idx = $signed(octave_sample)
                                  + $signed({9'd0, k_cnt}) - 20'sd128;
     function automatic [17:0] reflect(input signed [19:0] idx, input [16:0] len);
         if (idx < 0)                 reflect = -idx[17:0];

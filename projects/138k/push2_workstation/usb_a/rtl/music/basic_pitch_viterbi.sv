@@ -17,6 +17,7 @@
 module basic_pitch_viterbi #(
     parameter int NOTE_BINS = 88,
     parameter int FRAMES    = 172,
+    parameter bit COARSE_GUIDANCE=1'b0,
     parameter bit USE_EXTERNAL_STATE = 1'b0
 ) (
     input  logic               clk_i,
@@ -101,9 +102,9 @@ module basic_pitch_viterbi #(
     logic               score_onset_hot, score_onset_previous;
     wire [7:0] score_midi =
         (state == S_SCORE_FIRST ? {1'b0,cmt_note} : {1'b0,path_mem[score_scan]}) + 8'd21;
-    wire score_pair = score_scan < frame_cnt &&
-        path_mem[score_scan] != SIL_IDX &&
-        path_mem[score_scan] == path_mem[score_scan + 8'd1];
+    wire score_pair = score_scan <= frame_cnt && path_mem[score_scan] != SIL_IDX &&
+        (COARSE_GUIDANCE || (score_scan < frame_cnt &&
+         path_mem[score_scan] == path_mem[score_scan + 8'd1]));
     wire score_new = !score_previous_valid ||
         path_mem[score_scan] != score_previous ||
         (score_onset_hot && !score_onset_previous);
@@ -425,10 +426,17 @@ module basic_pitch_viterbi #(
                 end
 
                 S_CMMT: begin
-                    if (cmt_idx >= frame_cnt) begin
+                    if (COARSE_GUIDANCE ? (cmt_idx > frame_cnt) : (cmt_idx >= frame_cnt)) begin
                         state <= S_DONE;
                     end else if (path_mem[cmt_idx] == SIL_IDX) begin
                         cmt_idx <= cmt_idx + 8'd1;
+                    end else if (COARSE_GUIDANCE) begin
+                        if (USE_EXTERNAL_STATE) state<=S_EXT_CMT_NOTE_REQ;
+                        else begin
+                            cmt_found<=1'b1;cmt_note<=path_mem[cmt_idx];
+                            cmt_conf<=note_mem[cmt_idx*NOTE_BINS+path_mem[cmt_idx]];
+                            cmt_frame<={8'd0,cmt_idx};state<=S_DONE;
+                        end
                     end else if ((cmt_idx + 8'd1 <= frame_cnt) &&
                                  (path_mem[cmt_idx + 8'd1] == path_mem[cmt_idx])) begin
                         if (USE_EXTERNAL_STATE) begin
@@ -496,7 +504,7 @@ module basic_pitch_viterbi #(
                 // each fresh onset within a run becomes one score step. The
                 // onset flags already live in the Viterbi DDR state.
                 S_SCORE: begin
-                    if (score_scan >= frame_cnt) begin
+                    if (COARSE_GUIDANCE ? (score_scan > frame_cnt) : (score_scan >= frame_cnt)) begin
                         state <= S_IDLE;
                         score_complete_o <= 1'b1;
                     end else if (score_pair) begin

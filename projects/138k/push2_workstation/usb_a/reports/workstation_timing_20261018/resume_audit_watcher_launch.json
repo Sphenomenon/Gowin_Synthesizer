@@ -1,0 +1,7 @@
+{
+  "started": "2026-10-18T16:06:46.881217+08:00",
+  "pid": 994445,
+  "script": "reports/workstation_timing_20261018/watch_resumed_candidates.py",
+  "hardware_access": false,
+  "detached": true
+}

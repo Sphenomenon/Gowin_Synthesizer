@@ -1,0 +1,16 @@
+[
+  {
+    "build": "results/resource_timing_20261020_124905_665114",
+    "pid": 1261101,
+    "action": "terminated_optional_trial_after_t24_offline_acceptance",
+    "selected_build": "results/resource_timing_20261020_124632_064482",
+    "claimed_physical_pass": false
+  },
+  {
+    "build": "results/resource_timing_incremental_20261020_125601_885721",
+    "pid": 1261997,
+    "action": "terminated_optional_trial_after_t24_offline_acceptance",
+    "selected_build": "results/resource_timing_20261020_124632_064482",
+    "claimed_physical_pass": false
+  }
+]

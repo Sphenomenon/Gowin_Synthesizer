@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "frames": 106434,
+  "seconds": 5.386365718208253,
+  "rt60_estimate_seconds": 0.9868117865302928,
+  "wet_interchannel_correlation": 0.004885172099961256,
+  "final_100ms_peak_q31": 241,
+  "source_sha256": {
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/timing_p27_uart_cdc_route1_20261018_142516_456857/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_spatial_reverb/tb.sv": "2474bee0d1cd386ed3720ab46208dcb95d4afd064f8b576adab21b7d71522ee7",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4"
+  },
+  "hardware_tested": false
+}

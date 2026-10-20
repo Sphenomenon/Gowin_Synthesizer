@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "timing_closed": null,
+  "build": "results/timing_p34_vector_local_envelope_20261018_214554_355618",
+  "prepare": "results/workstation_scope83_timing85_20261018_214242_333215",
+  "hardware_tested": false,
+  "source_bound_test_groups": 8,
+  "local_cnn_transforms": [
+    {
+      "file": "rtl/music/basic_pitch_workstation_link.sv",
+      "base_sha256": "b45ea2c84e99ec697554aad54b7803830c067335f653a2faef558f9d9cbbcfe4",
+      "selected_sha256": "0ef34913bdcaf452935b6762d164215a9171ca47926ad23f3bca35c922f935a0",
+      "transform": "seven DDR diagnostic levels, including reset and calibration status -> two 50MHz sampling stages; UART bit positions unchanged",
+      "flash_boot": false,
+      "cnn_arithmetic_changed": false
+    }
+  ],
+  "vector_local_envelope_equivalence": {
+    "file": "rtl/audio/scope_vec/scope_vec_engine.sv",
+    "reference": "results/timing_p27_uart_cdc_route1_20261018_142516_456857",
+    "old_sha256": "c0e7208d907da85ec12172f1eb2babf6b2b69879bb9bd08f68bc26334f7b49c1",
+    "new_sha256": "7b032a827116e600f12127c936a021b956957411303d9a94b955cd72bcbb1be1",
+    "added_cycles": 0,
+    "event_equivalence": "results/scope_event_ab_20261018_214306_268939",
+    "synthesis_equivalence": "results/scope_synth_ab_20261018_214306_270701",
+    "transform_sha256": "1a5041680f7722eb094b358f40261503ddf392ada744357c54420fd625632da8",
+    "cycles": 213522,
+    "events": 2656,
+    "stereo_frames": 1776,
+    "proof": "RTL all-voice states and real Gowin four-state netlist match p27 cycle by cycle; p27 retains existing regression evidence",
+    "fresh_18_gate_regression_passed": true
+  }
+}

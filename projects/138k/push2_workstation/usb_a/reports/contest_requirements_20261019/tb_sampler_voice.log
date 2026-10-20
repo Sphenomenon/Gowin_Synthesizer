@@ -1,0 +1,7 @@
+# Runtime extract; full compile/run log remains in /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/sampler_20261019_020429_230303/tb_sampler_voice.log
+METRIC voices=16 full_range_notes=128 extreme_pairs=256 max_frame_beats=32 max_frame_cycles=1405 max_ddr_latency=17 deadline_misses=0 peak_bytes_per_second=49152000 max_voice_read_latency=35 max_voice_grant_wait=17
+PASS tb_sampler_voice
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/sampler/tb_sampler_voice.sv:131: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 15ms; walltime 0.539 s; speed 28.558 ms/s
+- Verilator: cpu 0.538 s on 1 threads; allocated 7 MB

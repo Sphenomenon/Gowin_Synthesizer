@@ -1,0 +1,37 @@
+{
+  "tool_passed": true,
+  "exit_code": 0,
+  "full_workstation": false,
+  "hardware_tested": false,
+  "target_pixel_mhz": 148.5,
+  "target_memory_mhz": 100,
+  "physical_bsram": 4,
+  "frequency_rows": [
+    [
+      "1",
+      "memory_100",
+      "100.000(MHz)",
+      "119.749(MHz)",
+      "8",
+      "TOP"
+    ],
+    [
+      "2",
+      "pixel_148m5",
+      "148.500(MHz)",
+      "225.698(MHz)",
+      "7",
+      "TOP"
+    ]
+  ],
+  "input_sha256": {
+    "video.gprj": "7bb7051bd31255eb26107a322882319b0b31915656bfb2c79ea6845fa6bc0138",
+    "target.sdc": "8c01c7aed7b195d51d660cb992ffab607f3fbf24fe09bc20a26bbc0b02053605",
+    "build.tcl": "e56210722b9e726a95c8e9e6a288e18de9b22ea462399749d2a7e2d482e8a579",
+    "video.gprj.user": "9a2827917da88afe4cdb4b179ec5573625d989fc7ebcf151aa4e68bfff5bf1b7",
+    "video_timing_probe.v": "0fee93a563d208f7552ab6b32211f45ff1124182d1655d90209c9817efab5102",
+    "src/memory/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "rtl/display_data/video_ddr_scanout.v": "f085d6a16ea9cb1988eae782b6cb1aa123165e1d6444411a7c3f3684c13b4ba6"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "selected_build": "results/resource_timing_20261020_124632_064482",
+  "bitstream_sha256": "0cc7ae6263bcf92d96cf9fb9df46d6ab257d5ec5e46f86eb826886d5668092af",
+  "source_inputs": 617,
+  "input_drift": [],
+  "tool_flow_passed": true,
+  "timing_closed": true,
+  "cdc_passed": true,
+  "pll_passed": true,
+  "functional_passed": true,
+  "header_identity_passed": true,
+  "physical_bsram": 234,
+  "original_resource_pointer_preserved": true,
+  "hardware_tested": false,
+  "active_entry_matches_candidate": true,
+  "artifacts_sha256": {
+    "RESOURCE_TIMING_CANDIDATE.json": "33015fadb24cb9f2b631e121759b7237b8f4ec89a33cdcd8eb90403e859d3aa2",
+    "reports/RESOURCE_TIMING_REPAIR_20261020.md": "a5128707dc7f425615dd9fa0544822fcc257daaccd5fbd8500a08824f33926a7",
+    "tools/workstation_resource_timing.py": "95dbbc1716c83e9377812abe601d586a268d819b47bc66f5e5eb8a2b8f7d91f3",
+    "reports/resource_timing_20261020/t24_physical_checks.json": "ef92dba30029dba8c5952e417e6d2d232d9f13988ed05dc7ba5c5545feed2d2f",
+    "reports/resource_timing_20261020/t24_functional_binding.json": "674aede97d26f574939dd2d70a423fe054580e2f1e691db624d9ee931e51ab89"
+  }
+}

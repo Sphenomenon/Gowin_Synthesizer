@@ -293,7 +293,7 @@ static void connect(void) {
     in_pid=PID_DATA0;
     last_in_reply=usbhw_timer_now();connected=1;
     if(mode==DEVICE_GW25K)gw25k_reset();
-    MMIO(0x00)=mode==DEVICE_PUSH?1:3; // bit 0 connected; bit 1 generic MIDI
+    MMIO(0x00)=mode==DEVICE_PUSH?1:mode==DEVICE_GW25K?7:3; // bits 0 connected, 1 generic MIDI, 2 GW25K qualifier
     // Let the existing RTL scheduler send Live/brightness/strip setup first.
     if(mode==DEVICE_PUSH)
         for(unsigned i=0;i<100 && connected;i++){poll_midi();lights();delay(1);}

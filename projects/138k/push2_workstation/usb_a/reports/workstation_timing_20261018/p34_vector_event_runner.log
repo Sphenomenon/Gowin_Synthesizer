@@ -1,0 +1,7 @@
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/scope_event_ab_20261018_214306_268939
+PASS scope_event_ab: 213522 cycles, 2656 events, 1776 stereo frames, all voice states exact
+- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/timing/tb_scope_event_ab.sv:95: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 2ms; walltime 0.102 s; speed 20.883 ms/s
+- Verilator: cpu 0.102 s on 1 threads; allocated 7 MB
+

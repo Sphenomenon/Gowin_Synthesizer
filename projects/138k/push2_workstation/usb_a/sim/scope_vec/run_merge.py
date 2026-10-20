@@ -36,6 +36,9 @@ def main():
         ['vendor/','src/memory/','src/storage/','src/platform/','src/top/','src/usb_a/','rtl/music/',
          'src/ae350/riscv_','workstation_top.v','workstation_top.sv','gw138k_cpu_pll_cell.v','gw138k_audio_clock.v'])]
     audio_sources += [project/'rtl/music/music_async_fifo.sv']
+    # The USB/CPU lifecycle arbiter belongs to the managed audio path even
+    # though it is stored next to the USB MMIO block. Older stages lack it.
+    audio_sources += [p for p in sources if p.name=='gw138k_usb_lifecycle_merge.sv']
     tests={
         'tb_scope_dac_select':[project/'src/audio/pt8211_tx.v',project/'src/audio/tf_rate_pt8211_tx.v',
             project/'src/audio/pt8211_observer.v',scope/'scope_dac_select.sv'],

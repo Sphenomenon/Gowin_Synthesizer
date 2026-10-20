@@ -21,13 +21,9 @@ struct gw_panel_state {
     uint16_t sequence[2];
     uint32_t session,last_health,recover_until,frame;
     unsigned recovering,hello,manual,dirty,drawing,tile_x,tile_y;
-    unsigned panel_out_toggle,panel_in_toggle,midi_out_toggle;
-    uint32_t scene[9],sent_notes[4],refresh_notes[4],last_feedback_refresh;
-    char line1[36],line2[28],line3[42],target[11];
-    unsigned initial_clear,feedback_active,feedback_kind,feedback_note,feedback_channel;
-    uint8_t feedback_packet[64];
-    unsigned feedback_length;
-    uint32_t feedback_started;
+    unsigned panel_out_toggle,panel_in_toggle;
+    uint32_t scene[9];
+    char line1[44],line2[36],line3[42],line4[28];
 };
 /* The freestanding ROM links libgcc only. Volatile byte accesses keep
  * compiler loop-pattern transforms from reintroducing an unavailable libc. */
@@ -52,7 +48,7 @@ static void gw_put16(uint8_t *p,unsigned n){p[0]=(uint8_t)n;p[1]=(uint8_t)(n>>8)
 static void gw_put32(uint8_t *p,uint32_t n){gw_put16(p,n);gw_put16(p+2,n>>16);}
 static int gw_due(uint32_t now,uint32_t deadline){return (int32_t)(now-deadline)>=0;}
 static void gw25k_reset(void) {
-    gw_zero(&gw,sizeof gw);gw.active=-1;gw.dirty=1;gw.initial_clear=1;
+    gw_zero(&gw,sizeof gw);gw.active=-1;gw.dirty=1;
     gw.session=++gw_session_counter;if(!gw.session)gw.session=++gw_session_counter;
 }
 static void gw_recover(void) {
@@ -66,7 +62,7 @@ static void gw_recover(void) {
 }
 static void gw_scene(uint32_t *s) {
     s[0]=MMIO(0x10);s[1]=MMIO(0x14);s[2]=MMIO(0x1c);s[3]=MMIO(0x20);
-    s[4]=MMIO(0x24);s[5]=MMIO(0x60);s[6]=MMIO(0x64);s[7]=MMIO(0x68);s[8]=MMIO(0x6c);
+    s[4]=MMIO(0x24);s[5]=s[6]=s[7]=s[8]=0; /* Push-only score state */
 }
 /* Compact column font: ASCII 32..90, 5x7. */
 static const uint8_t gw_font[59][5]={
@@ -95,22 +91,33 @@ static int gw_text(unsigned x,unsigned y,unsigned left,unsigned top,const char *
 static void gw_decimal(char *p,unsigned n,unsigned digits) {
     while(digits){p[--digits]=(char)('0'+n%10u);n/=10u;}
 }
+/* Existing MMIO reports effective gain (CC7 * expression), profile, committed
+ * mode, effective FX mask and the 8-bit bend-table index. It does not report
+ * the raw Program number, raw 14-bit bend or independent FX master state. */
 static void gw_format_scene(void) {
-    const uint32_t *s=gw.scene;unsigned guide=s[5];
-    gw_copy(gw.line1,"NOTE 000  VEL 000  VOL 000  PATCH 0",36);
+    static const char tones[6][8]={"FLUTE  ","STRINGS","BRASS  ","MARIMBA","PIANO  ","UNKNOWN"};
+    static const char routes[4][7]={"STEREO","LEFT  ","RIGHT ","MUTED "};
+    const uint32_t *s=gw.scene;
+    unsigned profile=(s[0]>>7)&7u,mode=(s[0]>>3)&3u;
+    gw_copy(gw.line1,"NOTE 000  VEL 000  GAIN 000  TONE ",sizeof "NOTE 000  VEL 000  GAIN 000  TONE ");
     gw_decimal(gw.line1+5,s[4]&127u,3);gw_decimal(gw.line1+14,(s[4]>>7)&127u,3);
-    gw_decimal(gw.line1+23,(s[0]>>24)&127u,3);gw.line1[34]=(char)('0'+((s[0]>>7)&7u));
-    gw_copy(gw.line2,"MOD 000  BEND 000  FX 0 0 0",28);
-    gw_decimal(gw.line2+4,(s[1]>>4)&127u,3);gw_decimal(gw.line2+14,(s[1]>>18)&255u,3);
-    gw.line2[22]=(s[0]&1u)?'1':'0';gw.line2[24]=(s[0]&2u)?'1':'0';gw.line2[26]=(s[0]&4u)?'1':'0';
-    gw_copy(gw.line3,"TRACK 00/00  STEP 00000/00000  MISS 00000",42);
-    gw_decimal(gw.line3+6,((guide&(1u<<9))?((guide>>22)&15u):((guide>>13)&15u))+((guide>>17)&31u?1u:0u),2);gw_decimal(gw.line3+9,(guide>>17)&31u,2);
-    gw_decimal(gw.line3+18,s[7]&65535u,5);gw_decimal(gw.line3+24,s[7]>>16,5);gw_decimal(gw.line3+36,s[8]&65535u,5);
-    gw_copy(gw.target,"TARGET 000",11);gw_decimal(gw.target+7,guide&127u,3);
+    gw_decimal(gw.line1+24,(s[0]>>16)>=32768u?127u:(s[0]>>24),3);
+    gw_copy(gw.line1+34,tones[profile<5u?profile:5u],8);
+    gw_copy(gw.line2,"MOD 000  BEND IDX 000  FX DCR 000",sizeof "MOD 000  BEND IDX 000  FX DCR 000");
+    gw_decimal(gw.line2+4,(s[1]>>4)&127u,3);gw_decimal(gw.line2+18,(s[1]>>18)&255u,3);
+    gw.line2[30]=(s[0]&1u)?'1':'0';gw.line2[31]=(s[0]&2u)?'1':'0';gw.line2[32]=(s[0]&4u)?'1':'0';
+    /* ACTIVE is the actual allocated/non-idle voice count, including release
+     * tails. It is neither the held-pad count nor a count of partials. */
+    gw_copy(gw.line3,"MODE A  ACTIVE 000  OUT ",sizeof "MODE A  ACTIVE 000  OUT ");
+    gw.line3[5]=mode<3u?(char)('A'+mode):'?';
+    gw_decimal(gw.line3+15,(s[0]>>10)&63u,3);
+    gw_copy(gw.line3+24,routes[(s[0]>>5)&3u],7);
+    gw_copy(gw.line4,"GLIDE 000  SUSTAIN OFF",sizeof "GLIDE 000  SUSTAIN OFF");
+    gw_decimal(gw.line4+6,(s[1]>>11)&127u,3);
+    gw_copy(gw.line4+19,(s[1]&8u)?"ON ":"OFF",3);
 }
 static uint16_t gw_pixel(unsigned x,unsigned y) {
     const uint32_t *s=gw.scene;
-    unsigned guide=s[5];
     uint16_t color=y<21?0x18e3:0x0841;
     if(y==21 || y==100)color=0x2b8d;
     if(gw_text(x,y,8,4,"GOWIN SYNTH",2))return 0x7ffb;
@@ -118,16 +125,11 @@ static uint16_t gw_pixel(unsigned x,unsigned y) {
     if(gw_text(x,y,8,30,gw.line1,1))return 0xffff;
     if(gw_text(x,y,8,44,gw.line2,1))return 0xbdf7;
     if(gw_text(x,y,8,61,gw.line3,1))return 0x7ffb;
-    const char *status=!(guide&(1u<<8))?"LIVE MIDI":!(guide&(1u<<9))?"SELECT TRACK":
-        !(guide&(1u<<10))?"ANALYZING":"PLAY THE LIT NOTE";
-    if(gw_text(x,y,8,80,status,1))return 0xffe0;
-    if((guide&0x180u)==0x180u && gw_text(x,y,280,80,gw.target,1))return 0xffe0;
+    if(gw_text(x,y,8,80,gw.line4,1))return 0xffe0;
     if(y>=106 && y<139 && x>=6 && x<422) {
         unsigned key=(x-6u)/26u,local=(x-6u)%26u,n=48u+key;
         unsigned held=n<68u?((s[2]>>(n-36u))&1u):((s[3]>>(n-68u))&1u);
-        unsigned lit=((guide&0x380u)==0x380u && (guide&127u)==n) ||
-            (!(guide&(1u<<8)) && (guide&(1u<<11)) && ((s[6]>>(n-36u))&1u));
-        color=local==25?0x0841:held?0xffff:lit?0xffe0:0x2945;
+        color=local==25?0x0841:held?0xffff:0x2945;
         char label[2]={(char)('A'+key),0};
         if(gw_text(x,y,6u+key*26u+10u,118,label,1))color=held?0x0000:0xbdf7;
     }
@@ -158,51 +160,6 @@ static void gw_prepare_display(void) {
     gw_put16(p+28,width);gw_put16(p+30,height);
     for(unsigned row=0;row<height;row++)for(unsigned col=0;col<width;col++)
         gw_put16(p+32u+2u*(row*width+col),gw_pixel(gw.tile_x+col,gw.tile_y+row));
-}
-static void gw_feedback(void) {
-    uint32_t want[4]={0,0,0,0};unsigned state=MMIO(0x60);
-    if((state&0x380u)==0x380u)want[(state&127u)>>5]|=1u<<(state&31u);
-    else if(!(state&(1u<<8)) && (state&(1u<<11))) {
-        uint32_t mask=MMIO(0x64);
-        for(unsigned i=0;i<32;i++)if(mask&(1u<<i))want[(i+36u)>>5]|=1u<<((i+36u)&31u);
-    }
-    uint32_t now=(uint32_t)usbhw_timer_now();
-    if((uint32_t)(now-gw.last_feedback_refresh)>=500u) {
-        gw_copy(gw.refresh_notes,want,sizeof want);gw.last_feedback_refresh=now;
-    }
-    if(!gw.feedback_active) {
-        unsigned kind=0,note=0,found=0;
-        if(gw.initial_clear){kind=11;note=123;found=1;}
-        else {
-            for(unsigned i=0;i<128;i++)if((gw.sent_notes[i>>5]&~want[i>>5])&(1u<<(i&31u))){kind=8;note=i;found=1;break;}
-            if(!found)for(unsigned i=0;i<128;i++)if((want[i>>5]&~gw.sent_notes[i>>5])&(1u<<(i&31u))){kind=9;note=i;found=1;break;}
-            if(!found)for(unsigned i=0;i<128;i++)if((want[i>>5]&gw.refresh_notes[i>>5])&(1u<<(i&31u))){kind=9;note=i;found=1;break;}
-        }
-        if(!found)return;
-        if(kind==9)gw.refresh_notes[note>>5]&=~(1u<<(note&31u));
-        gw.feedback_active=1;gw.feedback_kind=kind;gw.feedback_note=note;gw.feedback_channel=0;gw.feedback_length=0;
-    }
-    if(!gw.feedback_length) {
-        unsigned events=midi_out_size/4u;if(events>16u-gw.feedback_channel)events=16u-gw.feedback_channel;
-        gw.feedback_length=events*4u;
-        for(unsigned i=0;i<events;i++) {
-            uint8_t *p=gw.feedback_packet+4u*i;p[0]=(uint8_t)gw.feedback_kind;
-            p[1]=(uint8_t)((gw.feedback_kind<<4)|(gw.feedback_channel+i));
-            p[2]=(uint8_t)gw.feedback_note;p[3]=gw.feedback_kind==9?100:0;
-        }
-        gw.feedback_started=(uint32_t)usbhw_timer_now();
-    }
-    int result=usbhw_transfer_out(PID_OUT,dev.address,midi_out_ep,1,
-        gw.midi_out_toggle?PID_DATA1:PID_DATA0,gw.feedback_packet,(int)gw.feedback_length);
-    if(result==USB_RES_OK) {
-        gw.midi_out_toggle^=1;gw.feedback_channel+=gw.feedback_length/4u;gw.feedback_length=0;
-        if(gw.feedback_channel==16) {
-            if(gw.feedback_kind==9)gw.sent_notes[gw.feedback_note>>5]|=1u<<(gw.feedback_note&31u);
-            else if(gw.feedback_kind==8)gw.sent_notes[gw.feedback_note>>5]&=~(1u<<(gw.feedback_note&31u));
-            else {gw_zero(gw.sent_notes,sizeof gw.sent_notes);gw.initial_clear=0;}
-            gw.feedback_active=0;
-        }
-    } else if(result==USB_RES_STALL || (uint32_t)(usbhw_timer_now()-gw.feedback_started)>=100u)disconnect();
 }
 static void gw_response(unsigned channel) {
     struct gw_transaction *t=&gw.transaction[channel];uint8_t *p=t->reply;
@@ -278,7 +235,6 @@ static void gw_transfer(void) {
 }
 static void gw25k_service(void) {
     if(!connected || mode!=DEVICE_GW25K)return;
-    gw_feedback();if(!connected)return;
     uint32_t now=(uint32_t)usbhw_timer_now();
     if(gw.recovering) {
         uint8_t p[64],pid=0;

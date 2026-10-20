@@ -182,7 +182,7 @@ def main():
         variants.append(('nibble_counters',nibble_tf_byte_counters(variants[-1][1])))
     if args.build:
         assert args.parallel_byte_counters and (args.build/'Prj1'/TF_DMA).read_text()==variants[-1][1],'frozen TF source differs from tested variant'
-    bus_root=args.build/'Prj1/rtl/music' if args.build else ROOT/'rtl/music'
+    bus_root=(args.build/'Prj1/rtl/timing' if (args.build/'Prj1/rtl/timing').is_dir() else args.build/'Prj1/rtl/music') if args.build else ROOT/'rtl/music'
     arbiter_source=bus_root/'basic_pitch_ddr_arbiter_pipeline.sv'
     client_queues_source=bus_root/'basic_pitch_ddr_client_queues.sv'
     tf_buffer_source=args.build/'Prj1'/TF_BUFFER if args.build else ROOT/'rtl/display_data/tf_audio_ddr_command_buffer.sv'
@@ -219,7 +219,8 @@ def main():
                                   zero_cycle_response=zero,full_buffered_topology=buffered and args.full_buffered_topology,inflight_restart=buffered and args.full_buffered_topology,passed=True, log=result.stdout.strip()))
     report = dict(passed=True,source_bound=bool(args.build),build=str(args.build) if args.build else None, hardware_tested=False, pcm_saved=False, cases=cases,
                   variant_source_sha256={label:hashlib.sha256(text.encode()).hexdigest() for label,text in variants},
-                  staged_source_sha256=hashlib.sha256(patched.encode()).hexdigest(),
+                  staged_source_sha256=hashlib.sha256((args.build/'Prj1'/TF_DMA).read_bytes()).hexdigest() if args.build else None,
+                  retimed_base_source_sha256=hashlib.sha256(patched.encode()).hexdigest(),
                   original_source_sha256=hashlib.sha256(original.encode()).hexdigest(),
                   arbiter_source=str(arbiter_source),arbiter_sha256=hashlib.sha256(arbiter_source.read_bytes()).hexdigest(),
                   client_queues_source=str(client_queues_source),client_queues_sha256=hashlib.sha256(client_queues_source.read_bytes()).hexdigest(),

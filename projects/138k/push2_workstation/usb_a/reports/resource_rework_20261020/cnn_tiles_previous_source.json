@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "frames": 8,
+  "ddr_latency": 3,
+  "seconds": 607.8620743269566,
+  "cycles": {
+    "untiled": 179197503,
+    "tiled": 179927318,
+    "overhead_percent": 0.4072685097626705
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "sources": {
+    "command": [
+      "python3",
+      "sim/test_current_workstation_sources.py"
+    ],
+    "returncode": 0,
+    "started": "2026-10-20T00:31:18.530715+08:00",
+    "finished": "2026-10-20T00:31:18.644838+08:00",
+    "log": "sources.log"
+  },
+  "host_endpoint": {
+    "command": [
+      "python3",
+      "sim/run_gw25k_panel.py",
+      "--endpoint-rtl",
+      "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/control/panel_display_endpoint.v",
+      "--output",
+      "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/final/host_endpoint"
+    ],
+    "returncode": 0,
+    "started": "2026-10-20T00:31:18.529864+08:00",
+    "finished": "2026-10-20T00:31:26.059596+08:00",
+    "log": "host_endpoint.log"
+  },
+  "guide": {
+    "command": [
+      "python3",
+      "sim/run_pl_guide.py",
+      "--baseline",
+      "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261020_003048_847857/Prj1",
+      "--out",
+      "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/final/guide"
+    ],
+    "returncode": 0,
+    "started": "2026-10-20T00:31:18.530565+08:00",
+    "finished": "2026-10-20T00:31:32.925481+08:00",
+    "log": "guide.log"
+  },
+  "attach_feedback": {
+    "command": [
+      "python3",
+      "sim/run_workstation_attach.py",
+      "--baseline",
+      "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261020_003048_847857/Prj1",
+      "--out",
+      "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/final/attach_feedback"
+    ],
+    "returncode": 0,
+    "started": "2026-10-20T00:31:18.530233+08:00",
+    "finished": "2026-10-20T00:31:42.293424+08:00",
+    "log": "attach_feedback.log"
+  },
+  "full83_18_gates": {
+    "command": [
+      "python3",
+      "sim/scope_vec/run_current.py",
+      "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261020_003048_847857"
+    ],
+    "returncode": 0,
+    "started": "2026-10-20T00:31:18.645211+08:00",
+    "finished": "2026-10-20T00:34:48.631091+08:00",
+    "log": "full83_18_gates.log"
+  }
+}

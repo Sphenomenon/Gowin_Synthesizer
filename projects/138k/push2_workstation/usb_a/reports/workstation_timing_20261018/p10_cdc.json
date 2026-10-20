@@ -1,0 +1,843 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "mailbox": {
+    "local_release_chains": {
+      "source": [
+        "u_song_command_cdc/source_release_0_s0",
+        "u_song_command_cdc/source_release_1_s0",
+        "u_song_command_cdc/source_release_2_s0"
+      ],
+      "destination": [
+        "u_song_command_cdc/destination_release_0_s0",
+        "u_song_command_cdc/destination_release_1_s0",
+        "u_song_command_cdc/destination_release_2_s0"
+      ]
+    },
+    "payload_bits": 4,
+    "maximum_payload_flight_ns": 0.744,
+    "extra_request_settling_stage": true
+  },
+  "gray": {
+    "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray": {
+      "pointer_bits": 10,
+      "maximum_flight_ns": 1.6390000000000002,
+      "chains": [
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_binary_9_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta_9_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_sync_9_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_8_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta_8_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_sync_8_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_7_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta_7_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_sync_7_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_6_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta_6_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_sync_6_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_5_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta_5_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_sync_5_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_4_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta_4_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_sync_4_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_3_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta_3_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_sync_3_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_2_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta_2_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_sync_2_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_1_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta_1_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_sync_1_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_0_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta_0_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray": {
+      "pointer_bits": 10,
+      "maximum_flight_ns": 2.053,
+      "chains": [
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_9_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_9_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_sync_9_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_8_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_8_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_sync_8_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_7_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_7_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_sync_7_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_6_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_6_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_sync_6_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_5_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_5_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_sync_5_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_4_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_4_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_sync_4_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_3_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_3_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_sync_3_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_2_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_2_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_sync_2_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_1_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_1_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_sync_1_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_0_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_0_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray": {
+      "pointer_bits": 10,
+      "maximum_flight_ns": 1.8359999999999999,
+      "chains": [
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_binary_9_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta_9_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_sync_9_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_8_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta_8_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_sync_8_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_7_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta_7_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_sync_7_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_6_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta_6_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_sync_6_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_5_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta_5_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_sync_5_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_4_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta_4_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_sync_4_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_3_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta_3_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_sync_3_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_2_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta_2_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_sync_2_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_1_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta_1_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_sync_1_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_0_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta_0_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray": {
+      "pointer_bits": 10,
+      "maximum_flight_ns": 1.6829999999999998,
+      "chains": [
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_9_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_9_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_sync_9_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_8_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_8_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_sync_8_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_7_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_7_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_sync_7_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_6_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_6_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_sync_6_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_5_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_5_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_sync_5_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_4_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_4_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_sync_4_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_3_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_3_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_sync_3_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_2_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_2_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_sync_2_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_1_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_1_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_sync_1_s0"
+        ],
+        [
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_0_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_0_s0",
+          "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_music/u_ddr_req_cdc/read_gray": {
+      "pointer_bits": 5,
+      "maximum_flight_ns": 0.868,
+      "chains": [
+        [
+          "u_music/u_ddr_req_cdc/read_binary_4_s0",
+          "u_music/u_ddr_req_cdc/read_gray_meta_4_s0",
+          "u_music/u_ddr_req_cdc/read_gray_sync_4_s0"
+        ],
+        [
+          "u_music/u_ddr_req_cdc/read_gray_3_s0",
+          "u_music/u_ddr_req_cdc/read_gray_meta_3_s0",
+          "u_music/u_ddr_req_cdc/read_gray_sync_3_s0"
+        ],
+        [
+          "u_music/u_ddr_req_cdc/read_gray_2_s0",
+          "u_music/u_ddr_req_cdc/read_gray_meta_2_s0",
+          "u_music/u_ddr_req_cdc/read_gray_sync_2_s0"
+        ],
+        [
+          "u_music/u_ddr_req_cdc/read_gray_1_s0",
+          "u_music/u_ddr_req_cdc/read_gray_meta_1_s0",
+          "u_music/u_ddr_req_cdc/read_gray_sync_1_s0"
+        ],
+        [
+          "u_music/u_ddr_req_cdc/read_gray_0_s0",
+          "u_music/u_ddr_req_cdc/read_gray_meta_0_s0",
+          "u_music/u_ddr_req_cdc/read_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_music/u_ddr_req_cdc/write_gray": {
+      "pointer_bits": 5,
+      "maximum_flight_ns": 0.909,
+      "chains": [
+        [
+          "u_music/u_ddr_req_cdc/write_gray_4_s0",
+          "u_music/u_ddr_req_cdc/write_gray_meta_4_s0",
+          "u_music/u_ddr_req_cdc/write_gray_sync_4_s0"
+        ],
+        [
+          "u_music/u_ddr_req_cdc/write_gray_3_s0",
+          "u_music/u_ddr_req_cdc/write_gray_meta_3_s0",
+          "u_music/u_ddr_req_cdc/write_gray_sync_3_s0"
+        ],
+        [
+          "u_music/u_ddr_req_cdc/write_gray_2_s0",
+          "u_music/u_ddr_req_cdc/write_gray_meta_2_s0",
+          "u_music/u_ddr_req_cdc/write_gray_sync_2_s0"
+        ],
+        [
+          "u_music/u_ddr_req_cdc/write_gray_1_s0",
+          "u_music/u_ddr_req_cdc/write_gray_meta_1_s0",
+          "u_music/u_ddr_req_cdc/write_gray_sync_1_s0"
+        ],
+        [
+          "u_music/u_ddr_req_cdc/write_gray_0_s0",
+          "u_music/u_ddr_req_cdc/write_gray_meta_0_s0",
+          "u_music/u_ddr_req_cdc/write_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_music/u_ddr_rsp_cdc/read_gray": {
+      "pointer_bits": 3,
+      "maximum_flight_ns": 1.062,
+      "chains": [
+        [
+          "u_music/u_ddr_rsp_cdc/read_binary_2_s0",
+          "u_music/u_ddr_rsp_cdc/read_gray_meta_2_s0",
+          "u_music/u_ddr_rsp_cdc/read_gray_sync_2_s0"
+        ],
+        [
+          "u_music/u_ddr_rsp_cdc/read_gray_1_s0",
+          "u_music/u_ddr_rsp_cdc/read_gray_meta_1_s0",
+          "u_music/u_ddr_rsp_cdc/read_gray_sync_1_s0"
+        ],
+        [
+          "u_music/u_ddr_rsp_cdc/read_gray_0_s0",
+          "u_music/u_ddr_rsp_cdc/read_gray_meta_0_s0",
+          "u_music/u_ddr_rsp_cdc/read_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_music/u_ddr_rsp_cdc/write_gray": {
+      "pointer_bits": 3,
+      "maximum_flight_ns": 0.744,
+      "chains": [
+        [
+          "u_music/u_ddr_rsp_cdc/write_gray_2_s0",
+          "u_music/u_ddr_rsp_cdc/write_gray_meta_2_s0",
+          "u_music/u_ddr_rsp_cdc/write_gray_sync_2_s0"
+        ],
+        [
+          "u_music/u_ddr_rsp_cdc/write_gray_1_s0",
+          "u_music/u_ddr_rsp_cdc/write_gray_meta_1_s0",
+          "u_music/u_ddr_rsp_cdc/write_gray_sync_1_s0"
+        ],
+        [
+          "u_music/u_ddr_rsp_cdc/write_gray_0_s0",
+          "u_music/u_ddr_rsp_cdc/write_gray_meta_0_s0",
+          "u_music/u_ddr_rsp_cdc/write_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_score_push_cdc/read_gray": {
+      "pointer_bits": 3,
+      "maximum_flight_ns": 0.789,
+      "chains": [
+        [
+          "u_score_push_cdc/read_binary_2_s0",
+          "u_score_push_cdc/read_gray_meta_2_s0",
+          "u_score_push_cdc/read_gray_sync_2_s0"
+        ],
+        [
+          "u_score_push_cdc/read_gray_1_s0",
+          "u_score_push_cdc/read_gray_meta_1_s0",
+          "u_score_push_cdc/read_gray_sync_1_s0"
+        ],
+        [
+          "u_score_push_cdc/read_gray_0_s0",
+          "u_score_push_cdc/read_gray_meta_0_s0",
+          "u_score_push_cdc/read_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_score_push_cdc/write_gray": {
+      "pointer_bits": 3,
+      "maximum_flight_ns": 0.895,
+      "chains": [
+        [
+          "u_score_push_cdc/write_gray_2_s0",
+          "u_score_push_cdc/write_gray_meta_2_s0",
+          "u_score_push_cdc/write_gray_sync_2_s0"
+        ],
+        [
+          "u_score_push_cdc/write_gray_1_s0",
+          "u_score_push_cdc/write_gray_meta_1_s0",
+          "u_score_push_cdc/write_gray_sync_1_s0"
+        ],
+        [
+          "u_score_push_cdc/write_gray_0_s0",
+          "u_score_push_cdc/write_gray_meta_0_s0",
+          "u_score_push_cdc/write_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_playlist_bridge/fifo/read_gray": {
+      "pointer_bits": 3,
+      "maximum_flight_ns": 0.768,
+      "chains": [
+        [
+          "u_playlist_bridge/fifo/read_binary_2_s0",
+          "u_playlist_bridge/fifo/read_gray_meta_2_s0",
+          "u_playlist_bridge/fifo/read_gray_sync_2_s0"
+        ],
+        [
+          "u_playlist_bridge/fifo/read_gray_1_s0",
+          "u_playlist_bridge/fifo/read_gray_meta_1_s0",
+          "u_playlist_bridge/fifo/read_gray_sync_1_s0"
+        ],
+        [
+          "u_playlist_bridge/fifo/read_gray_0_s0",
+          "u_playlist_bridge/fifo/read_gray_meta_0_s0",
+          "u_playlist_bridge/fifo/read_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_playlist_bridge/fifo/write_gray": {
+      "pointer_bits": 3,
+      "maximum_flight_ns": 0.759,
+      "chains": [
+        [
+          "u_playlist_bridge/fifo/write_gray_2_s0",
+          "u_playlist_bridge/fifo/write_gray_meta_2_s0",
+          "u_playlist_bridge/fifo/write_gray_sync_2_s0"
+        ],
+        [
+          "u_playlist_bridge/fifo/write_gray_1_s0",
+          "u_playlist_bridge/fifo/write_gray_meta_1_s0",
+          "u_playlist_bridge/fifo/write_gray_sync_1_s0"
+        ],
+        [
+          "u_playlist_bridge/fifo/write_gray_0_s0",
+          "u_playlist_bridge/fifo/write_gray_meta_0_s0",
+          "u_playlist_bridge/fifo/write_gray_sync_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_tf_audio/u_pcm_cdc/rd_gray": {
+      "pointer_bits": 5,
+      "maximum_flight_ns": 0.9440000000000001,
+      "chains": [
+        [
+          "u_tf_audio/u_pcm_cdc/rd_bin_4_s1",
+          "u_tf_audio/u_pcm_cdc/rd_gray_w1_4_s0",
+          "u_tf_audio/u_pcm_cdc/rd_gray_w2_4_s0"
+        ],
+        [
+          "u_tf_audio/u_pcm_cdc/rd_gray_3_s1",
+          "u_tf_audio/u_pcm_cdc/rd_gray_w1_3_s0",
+          "u_tf_audio/u_pcm_cdc/rd_gray_w2_3_s0"
+        ],
+        [
+          "u_tf_audio/u_pcm_cdc/rd_gray_2_s1",
+          "u_tf_audio/u_pcm_cdc/rd_gray_w1_2_s0",
+          "u_tf_audio/u_pcm_cdc/rd_gray_w2_2_s0"
+        ],
+        [
+          "u_tf_audio/u_pcm_cdc/rd_gray_1_s1",
+          "u_tf_audio/u_pcm_cdc/rd_gray_w1_1_s0",
+          "u_tf_audio/u_pcm_cdc/rd_gray_w2_1_s0"
+        ],
+        [
+          "u_tf_audio/u_pcm_cdc/rd_gray_0_s1",
+          "u_tf_audio/u_pcm_cdc/rd_gray_w1_0_s0",
+          "u_tf_audio/u_pcm_cdc/rd_gray_w2_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_tf_audio/u_pcm_cdc/wr_gray": {
+      "pointer_bits": 5,
+      "maximum_flight_ns": 1.111,
+      "chains": [
+        [
+          "u_tf_audio/u_pcm_cdc/wr_gray_4_s1",
+          "u_tf_audio/u_pcm_cdc/wr_gray_r1_4_s0",
+          "u_tf_audio/u_pcm_cdc/wr_gray_r2_4_s0"
+        ],
+        [
+          "u_tf_audio/u_pcm_cdc/wr_gray_3_s1",
+          "u_tf_audio/u_pcm_cdc/wr_gray_r1_3_s0",
+          "u_tf_audio/u_pcm_cdc/wr_gray_r2_3_s0"
+        ],
+        [
+          "u_tf_audio/u_pcm_cdc/wr_gray_2_s1",
+          "u_tf_audio/u_pcm_cdc/wr_gray_r1_2_s0",
+          "u_tf_audio/u_pcm_cdc/wr_gray_r2_2_s0"
+        ],
+        [
+          "u_tf_audio/u_pcm_cdc/wr_gray_1_s1",
+          "u_tf_audio/u_pcm_cdc/wr_gray_r1_1_s0",
+          "u_tf_audio/u_pcm_cdc/wr_gray_r2_1_s0"
+        ],
+        [
+          "u_tf_audio/u_pcm_cdc/wr_gray_0_s1",
+          "u_tf_audio/u_pcm_cdc/wr_gray_r1_0_s0",
+          "u_tf_audio/u_pcm_cdc/wr_gray_r2_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_tf_audio/u_path/u_capture_fifo/rd_gray": {
+      "pointer_bits": 13,
+      "maximum_flight_ns": 1.75,
+      "chains": [
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_bin_12_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_12_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_12_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_11_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_11_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_11_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_10_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_10_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_10_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_9_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_9_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_9_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_8_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_8_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_8_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_7_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_7_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_7_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_6_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_6_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_6_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_5_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_5_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_5_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_4_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_4_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_4_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_3_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_3_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_3_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_2_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_2_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_2_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_1_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_1_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_1_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_0_s1",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1_0_s0",
+          "u_tf_audio/u_path/u_capture_fifo/rd_gray_w2_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_tf_audio/u_path/u_capture_fifo/wr_gray": {
+      "pointer_bits": 13,
+      "maximum_flight_ns": 1.119,
+      "chains": [
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_12_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_12_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_12_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_11_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_11_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_11_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_10_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_10_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_10_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_9_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_9_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_9_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_8_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_8_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_8_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_7_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_7_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_7_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_6_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_6_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_6_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_5_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_5_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_5_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_4_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_4_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_4_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_3_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_3_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_3_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_2_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_2_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_2_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_1_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_1_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_1_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_0_s1",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1_0_s0",
+          "u_tf_audio/u_path/u_capture_fifo/wr_gray_r2_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_tf_audio/u_path/u_playback_fifo/rd_gray": {
+      "pointer_bits": 13,
+      "maximum_flight_ns": 1.5190000000000001,
+      "chains": [
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_bin_12_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_12_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_12_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_11_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_11_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_11_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_10_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_10_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_10_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_9_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_9_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_9_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_8_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_8_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_8_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_7_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_7_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_7_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_6_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_6_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_6_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_5_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_5_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_5_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_4_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_4_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_4_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_3_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_3_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_3_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_2_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_2_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_2_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_1_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_1_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_1_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_0_s1",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1_0_s0",
+          "u_tf_audio/u_path/u_playback_fifo/rd_gray_w2_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    },
+    "u_tf_audio/u_path/u_playback_fifo/wr_gray": {
+      "pointer_bits": 13,
+      "maximum_flight_ns": 1.2890000000000001,
+      "chains": [
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_12_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_12_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_12_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_11_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_11_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_11_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_10_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_10_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_10_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_9_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_9_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_9_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_8_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_8_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_8_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_7_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_7_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_7_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_6_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_6_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_6_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_5_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_5_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_5_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_4_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_4_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_4_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_3_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_3_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_3_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_2_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_2_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_2_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_1_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_1_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_1_s0"
+        ],
+        [
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_0_s1",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1_0_s0",
+          "u_tf_audio/u_path/u_playback_fifo/wr_gray_r2_0_s0"
+        ]
+      ],
+      "binary_alias_msb_only": true
+    }
+  },
+  "levels": {
+    "tf_format_meta50": [
+      "u_tf_audio/format_sync_s0",
+      "tf_format_meta50_s0",
+      "tf_format_sync50_s0"
+    ],
+    "tf_source_meta50": [
+      "u_tf_audio/source_active_s1",
+      "tf_source_meta50_s0",
+      "tf_source_sync50_s0"
+    ],
+    "u_push/analysis_done_meta": [
+      "u_music/u_basic_pitch/song_done_o_s0",
+      "u_push/analysis_done_meta_s0",
+      "u_push/analysis_done_sync_s0"
+    ],
+    "u_tf_audio/u_path/pb_meta": [
+      "u_tf_audio/u_path/u_dma/playback_start_toggle_s2",
+      "u_tf_audio/u_path/pb_meta_s0",
+      "u_tf_audio/u_path/pb_sync_s0"
+    ],
+    "u_tf_audio/u_path/pb_done_meta": [
+      "u_tf_audio/u_path/u_dma/playback_done_toggle_s2",
+      "u_tf_audio/u_path/pb_done_meta_s0",
+      "u_tf_audio/u_path/pb_done_sync_s0"
+    ]
+  },
+  "errors": [],
+  "audio_local_release": [
+    "u_push/audio_release_0_s0",
+    "u_push/audio_release_1_s0"
+  ],
+  "held_file_size": {
+    "bits": 32,
+    "maximum_flight_ns": 1.3730000000000002
+  },
+  "evidence_sha256": {
+    "Prj1/impl/pnr/Prj1.sdf": "fe707fe9afcd56fea5b0d18646c64f9615163e9d4840fec8509eabfd4598933d",
+    "Prj1/impl/pnr/Prj1.vo": "65f8dcce443b2b57a1a7c946b7da55f010baa97a8affad24ab19d8ecc1c8f99a",
+    "Prj1/constraints/tang_mega_138k.sdc": "47c81787a31b39273322257089c32fd3c70235452eac816804d96cd0e4166e47",
+    "Prj1/src/migration/gw138k_stream_cdc.sv": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+    "Prj1/src/storage/tf_async_byte_fifo.v": "e9a7c01f7e5a13569de361b4615099f56706e4bcb93701005938639b45c28148",
+    "Prj1/src/storage/tf_audio_ddr_path.v": "ebbf714a3e1670378fcdfce7b9eae34b6841ae82be37c0e5d7bccf5dd176291f"
+  }
+}

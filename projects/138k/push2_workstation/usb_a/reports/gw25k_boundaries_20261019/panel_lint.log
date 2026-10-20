@@ -1,0 +1,76 @@
+%Warning-WIDTHEXPAND: rtl/instrument/gw138k_panel_performance.v:67:62: Operator SUB expects 32 bits on the LHS, but LHS's VARREF 'position' generates 8 bits.
+                                                                     : ... note: In instance 'gw138k_panel_performance'
+   67 |    else if(position>128+BEND_DEAD_ZONE)v=8192+(8191*(position-128-BEND_DEAD_ZONE))/(127-BEND_DEAD_ZONE);
+      |                                                              ^
+                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=5.046
+                      ... Use "/* verilator lint_off WIDTHEXPAND */" and lint_on around source to disable this message.
+%Warning-WIDTHEXPAND: rtl/instrument/gw138k_panel_performance.v:67:20: Operator GT expects 32 bits on the LHS, but LHS's VARREF 'position' generates 8 bits.
+                                                                     : ... note: In instance 'gw138k_panel_performance'
+   67 |    else if(position>128+BEND_DEAD_ZONE)v=8192+(8191*(position-128-BEND_DEAD_ZONE))/(127-BEND_DEAD_ZONE);
+      |                    ^
+%Warning-WIDTHEXPAND: rtl/instrument/gw138k_panel_performance.v:66:15: Operator LT expects 32 bits on the LHS, but LHS's VARREF 'position' generates 8 bits.
+                                                                     : ... note: In instance 'gw138k_panel_performance'
+   66 |    if(position<128-BEND_DEAD_ZONE)v=(8192*position)/(128-BEND_DEAD_ZONE);
+      |               ^
+%Warning-WIDTHTRUNC: rtl/instrument/gw138k_panel_performance.v:69:11: Operator ASSIGN expects 14 bits on the Assign RHS, but Assign RHS's VARREF 'v' generates 32 bits.
+                                                                    : ... note: In instance 'gw138k_panel_performance'
+   69 |    bend_at=v;
+      |           ^
+                     ... For warning description see https://verilator.org/warn/WIDTHTRUNC?v=5.046
+                     ... Use "/* verilator lint_off WIDTHTRUNC */" and lint_on around source to disable this message.
+%Warning-WIDTHTRUNC: rtl/instrument/gw138k_panel_performance.v:93:78: Operator ASSIGN expects 4 bits on the Assign RHS, but Assign RHS's VARREF 'i' generates 32 bits.
+                                                                    : ... note: In instance 'gw138k_panel_performance'
+   93 |   for(i=15;i>=0;i=i-1)if(active_keys[i] && !desired[i])begin found=1;selected=i;end
+      |                                                                              ^
+%Warning-WIDTHTRUNC: rtl/instrument/gw138k_panel_performance.v:95:79: Operator ASSIGN expects 4 bits on the Assign RHS, but Assign RHS's VARREF 'i' generates 32 bits.
+                                                                    : ... note: In instance 'gw138k_panel_performance'
+   95 |    for(i=15;i>=0;i=i-1)if(desired[i] && !active_keys[i])begin found=1;selected=i;end
+      |                                                                               ^
+%Warning-WIDTHEXPAND: rtl/instrument/gw138k_panel_performance.v:96:12: Operator ADD expects 32 bits on the RHS, but RHS's VARREF 'selected' generates 4 bits.
+                                                                     : ... note: In instance 'gw138k_panel_performance'
+   96 |   mapped=48+selected+$signed(applied_transpose);
+      |            ^
+%Warning-WIDTHEXPAND: rtl/instrument/gw138k_panel_performance.v:96:21: Operator ADD expects 32 bits on the RHS, but RHS's SIGNED generates 8 bits.
+                                                                     : ... note: In instance 'gw138k_panel_performance'
+   96 |   mapped=48+selected+$signed(applied_transpose);
+      |                     ^
+%Warning-BLKSEQ: rtl/instrument/gw138k_panel_performance.v:112:11: Blocking assignment '=' in sequential logic process
+                                                                 : ... note: In instance 'gw138k_panel_performance'
+                                                                 : ... Suggest using delayed assignment '<='
+  112 |    rd_next=q_read;wr_next=q_write;count_next=q_count;
+      |           ^
+                 ... For warning description see https://verilator.org/warn/BLKSEQ?v=5.046
+                 ... Use "/* verilator lint_off BLKSEQ */" and lint_on around source to disable this message.
+%Warning-BLKSEQ: rtl/instrument/gw138k_panel_performance.v:112:26: Blocking assignment '=' in sequential logic process
+                                                                 : ... note: In instance 'gw138k_panel_performance'
+                                                                 : ... Suggest using delayed assignment '<='
+  112 |    rd_next=q_read;wr_next=q_write;count_next=q_count;
+      |                          ^
+%Warning-BLKSEQ: rtl/instrument/gw138k_panel_performance.v:112:45: Blocking assignment '=' in sequential logic process
+                                                                 : ... note: In instance 'gw138k_panel_performance'
+                                                                 : ... Suggest using delayed assignment '<='
+  112 |    rd_next=q_read;wr_next=q_write;count_next=q_count;
+      |                                             ^
+%Warning-BLKSEQ: rtl/instrument/gw138k_panel_performance.v:151:13: Blocking assignment '=' in sequential logic process
+                                                                 : ... note: In instance 'gw138k_panel_performance'
+                                                                 : ... Suggest using delayed assignment '<='
+  151 |      rd_next=rd_next==CONTROL_DEPTH-1 ? 0 : rd_next+1;count_next=count_next-1;
+      |             ^
+%Warning-BLKSEQ: rtl/instrument/gw138k_panel_performance.v:151:65: Blocking assignment '=' in sequential logic process
+                                                                 : ... note: In instance 'gw138k_panel_performance'
+                                                                 : ... Suggest using delayed assignment '<='
+  151 |      rd_next=rd_next==CONTROL_DEPTH-1 ? 0 : rd_next+1;count_next=count_next-1;
+      |                                                                 ^
+%Warning-UNUSEDSIGNAL: rtl/instrument/gw138k_panel_performance.v:14:75: Bits of signal are not used: 'config_value'[31:8]
+                                                                      : ... note: In instance 'gw138k_panel_performance'
+   14 |  input wire config_write,input wire [7:0] config_opcode,input wire [31:0] config_value,
+      |                                                                           ^~~~~~~~~~~~
+                       ... For warning description see https://verilator.org/warn/UNUSEDSIGNAL?v=5.046
+                       ... Use "/* verilator lint_off UNUSEDSIGNAL */" and lint_on around source to disable this message.
+%Warning-UNUSEDSIGNAL: rtl/instrument/gw138k_panel_performance.v:64:11: Bits of function variable are not used: 'v'[31:14]
+                                                                      : ... note: In instance 'gw138k_panel_performance'
+   64 |   integer v;
+      |           ^
+- V e r i l a t i o n   R e p o r t: Verilator 5.046 2026-02-28 rev fedora-5.046
+- Verilator: Built from 0.037 MB sources in 2 modules, into 0.205 MB in 3 C++ files needing 0.000 MB
+- Verilator: Walltime 0.023 s (elab=0.002, cvt=0.015, bld=0.000); cpu 0.023 s on 1 threads; allocated 31.281 MB

@@ -1,0 +1,14 @@
+[
+  {
+    "case": "old_map",
+    "expected_behavior_confirmed": true,
+    "exit_code": 1,
+    "seconds": 0.11
+  },
+  {
+    "case": "new_map",
+    "expected_behavior_confirmed": true,
+    "exit_code": 0,
+    "seconds": 11.75
+  }
+]

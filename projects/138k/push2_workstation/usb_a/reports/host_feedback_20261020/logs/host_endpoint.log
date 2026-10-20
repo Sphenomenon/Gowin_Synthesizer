@@ -1,0 +1,7 @@
+PASS GW25K scene: effective gain/CC11, five profiles, committed ABC, bend index 0..255, effective DCR mask, 16 held keys, last-event release, immutable frame/next-frame refresh, 64 active-count encodings, four output routes, glide 0..127 and sustain
+PASS GW25K refresh: 13 independent MMIO changes each trigger one complete frame; stable state only heartbeats
+PASS GW25K production host: actual composite descriptor, PL FS fragmentation, independent DATA toggles, duplicate IN/OUT NAK, full RGB565 coverage, BUSY retry, MIDI interleave/no score feedback, manual/redraw, static heartbeat, 11 response faults (30 frames, 7580 tiles, 260469 MIDI polls)
+PASS generic firmware: both Push IDs, G1 descriptors, dynamic endpoint/MPS/alt, rejection bounds, 128x128 notes/velocity, channels/cables, no Push OUT, toggles/hotplug
+PASS production USB firmware: keepalive, stale-frame restart, direct FIFO load/reload and ACK-only toggles
+PASS production host + actual GW25K RTL endpoint: 1019 requests, 2 full frames, HELLO/TILE/END/DRAWN/manual/resume
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/host_feedback_20261020_002153_999689/final/host_endpoint

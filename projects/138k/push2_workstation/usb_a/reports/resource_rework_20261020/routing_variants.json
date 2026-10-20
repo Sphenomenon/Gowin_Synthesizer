@@ -1,0 +1,11 @@
+{
+  "stages": [
+    "results/workstation_scope83_timing85_20261020_040804_176677",
+    "results/resource_rework_final_route0_20261020_041042"
+  ],
+  "rtl_identical": true,
+  "only_changed_input": [
+    "scripts/build.tcl"
+  ],
+  "hardware_tested": false
+}

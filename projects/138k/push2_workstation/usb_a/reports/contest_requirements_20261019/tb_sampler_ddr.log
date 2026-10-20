@@ -1,0 +1,7 @@
+# Runtime extract; full compile/run log remains in /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/sampler_20261019_020429_230303/tb_sampler_ddr.log
+METRIC ddr_clients=3 completed_beats=12 rejected_stale=2 epoch_wrap_restarts=257 timeout_limit=12
+PASS tb_sampler_ddr
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/sampler/tb_sampler_ddr.sv:49: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 6us; walltime 0.000 s; speed 23.327 ms/s
+- Verilator: cpu 0.000 s on 1 threads; allocated 7 MB

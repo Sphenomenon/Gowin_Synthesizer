@@ -1,0 +1,24 @@
+{
+  "checked_on": "2026-10-19",
+  "projects_25k_files": [
+    "projects/25k/README.md"
+  ],
+  "device_source_search": {
+    "root": "/home/sphenicidition",
+    "patterns": [
+      "*panel_display_endpoint.v",
+      "*25[kK]*.gprj"
+    ],
+    "excluded": [
+      ".git",
+      "node_modules",
+      "results",
+      ".cache"
+    ],
+    "matches": [],
+    "returncode": 1,
+    "stderr": ""
+  },
+  "complete_25k_project_found": false,
+  "does_not_search_external_mounts": true
+}

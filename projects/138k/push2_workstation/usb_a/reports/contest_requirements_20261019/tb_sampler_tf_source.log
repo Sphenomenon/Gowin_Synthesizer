@@ -1,0 +1,7 @@
+# Runtime extract; full compile/run log remains in /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/sampler_20261019_020429_230303/tb_sampler_tf_source.log
+METRIC tf_fifo_test_bytes=8 overflow_refusals=1 restart_stale_bytes=0
+PASS tb_sampler_tf_source
+- /home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/sampler/tb_sampler_tf_source.sv:27: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 291ns; walltime 0.000 s; speed 7.763 ms/s
+- Verilator: cpu 0.000 s on 1 threads; allocated 7 MB

@@ -1,0 +1,86 @@
+{
+  "completed": "2026-10-19T02:58:06.436061+08:00",
+  "passed": true,
+  "git_head": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+  "origin_main": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+  "scope": "25K production control lifecycle and continuous Pitch Bend under backpressure",
+  "reproduced_before_fix": {
+    "simultaneous_usb_control_ble_join": "lost CC89",
+    "held_retune_after_ble_join": "two old offs, missing two replacement ons",
+    "single_release_at_full_queue": "68 controls received, final centered bend missing",
+    "old_session_pending_bend_not_replayed": true,
+    "evidence": "before_reproduction.json"
+  },
+  "device": {
+    "passed": true,
+    "testbenches": 39,
+    "python_tests": 25,
+    "checks": 90,
+    "inputs": 153,
+    "input_hashes_stable": true,
+    "evidence": "device_validation.json",
+    "raw_output": "projects/25k/example/MIDI_KEYBOARD/results/panel_boundaries_complete_20261019_025344_019807/device"
+  },
+  "directed": {
+    "application": "midi_keyboard_application HOST_PANEL_CONTROLS=1 with real USB/BLE MIDI codecs and MK endpoint",
+    "scenarios": 6,
+    "held_retune_link_changes": 3,
+    "control_fifo_saturated": 64,
+    "discrete_controls_retained_per_saturation": 68,
+    "one_shot_bend_release_delivered": true,
+    "continuous_bend_coalesced_only_while_queue_full": true,
+    "old_usb_pending_bend_replayed": false,
+    "surviving_ble_pending_bend_retained": true,
+    "control_overflows": 0,
+    "new_link_inherited_old_note_or_control": false,
+    "evidence": "tb_gw138k_panel_backpressure.log"
+  },
+  "lint": {
+    "passed": true,
+    "latch_or_unoptflat_errors": false,
+    "warnings_retained": "width, blocking sequential assignments, unused bits; see log",
+    "evidence": "panel_lint.log"
+  },
+  "scope_checks": {
+    "gw138k_inputs_match_previous_regression": true,
+    "gw138k_production_inputs_sha256": {
+      "firmware.c": "1e8dd2999406097d1b6eb9766c92cdd0de2094d81b3788531b026d8bf3871403",
+      "gw25k_panel.h": "c205822eca308ae2b884fb10f0198bfb56ace95db41238de6c271e3a4d3ebfb7",
+      "rtl/push2_usb_a_control.sv": "b8af9064b4e658225727e71eb585b2c3b23456eef0c9cf0f9385ef4b16c471ca",
+      "rtl/audio/gw138k_usb_lifecycle_merge.sv": "b1f6965afa8a14d1521895cf498530ca0dc3e768b6eaabf3b3a7fefe7c2d3d90",
+      "rtl/audio/gw138k_event_workstation.sv": "02b0e5028e0747b5a88d71b2e4ca969c7665ca051b2faf91880847df08f40f50",
+      "rtl/audio/push2_controls.sv": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+      "rtl/display_data/push2_surface_pixels.sv": "9c23e006beb18c08ec9f05ff4b9712a95e8cb8045a5e4f5d093e9c2382aa3353",
+      "rtl/sampler/sampler_fx.sv": "013bce707bd9613baf6421b739d14cdf16570bbd4fb1dd5f1d026aeca5e03c9d"
+    },
+    "preserved_files_sha256": {
+      "工程架构报告.md": "7dc5b97ac7746d231cc544584766fee625295ac0d1c1270df09ab812728cf6bc",
+      "projects/138k/push2_workstation/usb_a/GW25K_PANEL.md": "6be622ff8a99813ca89a4674341bbe38fde7f19758307e99d5a556808a16dd06",
+      "projects/138k/push2_workstation/usb_a/LATEST_WORKSTATION.json": "8afb5f65b343064d0600d242c994ba8f9eaf5e1faca3f4d7ef6603c365f91fa7"
+    },
+    "source_import_manifest_unchanged": true,
+    "panel_endpoint_unchanged": true,
+    "board_config_unchanged": true,
+    "physical_constraints_unchanged": true,
+    "no_obj_dir_in_source_tree": true
+  },
+  "previous_138k_functional_evidence": "../function_first_20261019/verification.json",
+  "previous_actual_host_pl_endpoint_evidence": "../gw25k_controls_20261019/host_endpoint_verification.json",
+  "host_and_pl_tests_rerun": false,
+  "interrupted_prior_attempt": {
+    "passed": false,
+    "raw_output": "projects/25k/example/MIDI_KEYBOARD/results/panel_boundaries_final_20261019_025026_957381",
+    "reason": "outer harness timeout 180s; corrected final wrapper allows 600s"
+  },
+  "gw25k_exclusive_fx_context_implemented": false,
+  "d_integrated_into_workstation": false,
+  "hardware_tested": false,
+  "programmed": false,
+  "hardware_or_pin_changes": false,
+  "synthesis_run": false,
+  "pnr_run": false,
+  "new_timing_experiment": false,
+  "timing_closed": false,
+  "new_commit_created": false,
+  "pushed": false
+}

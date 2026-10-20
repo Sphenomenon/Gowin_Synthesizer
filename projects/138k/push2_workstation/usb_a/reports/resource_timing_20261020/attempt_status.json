@@ -1,0 +1,778 @@
+{
+  "goal_complete": true,
+  "attempts": [
+    {
+      "attempt": 12,
+      "build": "results/resource_timing_20261020_111212_369176",
+      "complete": true,
+      "timing_closed": false,
+      "global_worst_ns": null,
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 51.448
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 65.354
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 227.407
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 147.332
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 68.115
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1244.246
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 48.883
+        }
+      },
+      "negative_endpoints": {
+        "clk_50m": {
+          "setup": 0,
+          "hold": 0
+        },
+        "audio_76m8": {
+          "setup": 1084,
+          "hold": 0
+        },
+        "ddr_mem400": {
+          "setup": 0,
+          "hold": 0
+        },
+        "ddr_ui100": {
+          "setup": 269,
+          "hold": 0
+        },
+        "video_ref49": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_serial742": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_pixel148": {
+          "setup": 2,
+          "hold": 0
+        },
+        "cpu_bus50": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_core100": {
+          "setup": 0,
+          "hold": 0
+        },
+        "usb_48m": {
+          "setup": 0,
+          "hold": 0
+        }
+      },
+      "problems": [
+        "Fmax below requirement: audio_76m8",
+        "Fmax below requirement: video_pixel148",
+        "negative endpoints: audio_76m8/setup",
+        "negative endpoints: ddr_ui100/setup",
+        "negative endpoints: video_pixel148/setup",
+        "negative detailed timing paths"
+      ]
+    },
+    {
+      "attempt": 15,
+      "build": "results/resource_timing_20261020_113734_360986",
+      "complete": true,
+      "timing_closed": false,
+      "global_worst_ns": {
+        "setup": -1.232,
+        "hold": -0.863,
+        "recovery": 1.37,
+        "removal": 0.253
+      },
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 52.723
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 70.163
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 214.5
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 192.017
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 72.367
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1562.743
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 52.26
+        }
+      },
+      "negative_endpoints": {
+        "clk_50m": {
+          "setup": 0,
+          "hold": 0
+        },
+        "audio_76m8": {
+          "setup": 752,
+          "hold": 0
+        },
+        "ddr_mem400": {
+          "setup": 0,
+          "hold": 0
+        },
+        "ddr_ui100": {
+          "setup": 94,
+          "hold": 0
+        },
+        "video_ref49": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_serial742": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_pixel148": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_bus50": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_core100": {
+          "setup": 0,
+          "hold": 0
+        },
+        "usb_48m": {
+          "setup": 0,
+          "hold": 0
+        }
+      },
+      "problems": [
+        "Fmax below requirement: audio_76m8",
+        "negative endpoints: audio_76m8/setup",
+        "negative endpoints: ddr_ui100/setup",
+        "negative detailed timing paths"
+      ]
+    },
+    {
+      "attempt": 16,
+      "build": "results/resource_timing_20261020_115445_182901",
+      "complete": true,
+      "timing_closed": false,
+      "global_worst_ns": {
+        "setup": -6.355,
+        "hold": -1.971,
+        "recovery": 1.983,
+        "removal": 0.337
+      },
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 53.976
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 71.852
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 209.841
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 204.832
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 68.349
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1530.455
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 50.305
+        }
+      },
+      "negative_endpoints": {
+        "clk_50m": {
+          "setup": 0,
+          "hold": 0
+        },
+        "audio_76m8": {
+          "setup": 418,
+          "hold": 0
+        },
+        "ddr_mem400": {
+          "setup": 0,
+          "hold": 0
+        },
+        "ddr_ui100": {
+          "setup": 51,
+          "hold": 0
+        },
+        "video_ref49": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_serial742": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_pixel148": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_bus50": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_core100": {
+          "setup": 0,
+          "hold": 0
+        },
+        "usb_48m": {
+          "setup": 0,
+          "hold": 0
+        }
+      },
+      "problems": [
+        "Fmax below requirement: audio_76m8",
+        "negative endpoints: audio_76m8/setup",
+        "negative endpoints: ddr_ui100/setup",
+        "negative detailed timing paths"
+      ]
+    },
+    {
+      "attempt": 17,
+      "build": "results/resource_timing_20261020_115841_334502",
+      "complete": true,
+      "timing_closed": false,
+      "global_worst_ns": {
+        "setup": -6.181,
+        "hold": -1.828,
+        "recovery": 2.152,
+        "removal": 0.253
+      },
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 51.202
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 73.36
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 209.17
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 220.743
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 68.408
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1406.468
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 54.071
+        }
+      },
+      "negative_endpoints": {
+        "clk_50m": {
+          "setup": 0,
+          "hold": 0
+        },
+        "audio_76m8": {
+          "setup": 301,
+          "hold": 0
+        },
+        "ddr_mem400": {
+          "setup": 0,
+          "hold": 0
+        },
+        "ddr_ui100": {
+          "setup": 56,
+          "hold": 0
+        },
+        "video_ref49": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_serial742": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_pixel148": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_bus50": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_core100": {
+          "setup": 0,
+          "hold": 0
+        },
+        "usb_48m": {
+          "setup": 0,
+          "hold": 0
+        }
+      },
+      "problems": [
+        "Fmax below requirement: audio_76m8",
+        "negative endpoints: audio_76m8/setup",
+        "negative endpoints: ddr_ui100/setup",
+        "negative detailed timing paths"
+      ]
+    },
+    {
+      "attempt": 18,
+      "build": "results/resource_timing_20261020_120219_996450",
+      "complete": true,
+      "timing_closed": false,
+      "global_worst_ns": {
+        "setup": -6.671,
+        "hold": -2.157,
+        "recovery": -0.444,
+        "removal": 0.25
+      },
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 53.094
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 73.274
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 207.316
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 184.5
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 71.685
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1489.424
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 48.905
+        }
+      },
+      "negative_endpoints": {
+        "clk_50m": {
+          "setup": 0,
+          "hold": 0
+        },
+        "audio_76m8": {
+          "setup": 211,
+          "hold": 0
+        },
+        "ddr_mem400": {
+          "setup": 0,
+          "hold": 0
+        },
+        "ddr_ui100": {
+          "setup": 51,
+          "hold": 0
+        },
+        "video_ref49": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_serial742": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_pixel148": {
+          "setup": 16,
+          "hold": 0
+        },
+        "cpu_bus50": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_core100": {
+          "setup": 0,
+          "hold": 0
+        },
+        "usb_48m": {
+          "setup": 0,
+          "hold": 0
+        }
+      },
+      "problems": [
+        "Fmax below requirement: audio_76m8",
+        "negative endpoints: audio_76m8/setup",
+        "negative endpoints: ddr_ui100/setup",
+        "negative endpoints: video_pixel148/setup",
+        "negative detailed timing paths"
+      ]
+    },
+    {
+      "attempt": 19,
+      "build": "results/resource_timing_20261020_121513_672131",
+      "complete": true,
+      "timing_closed": false,
+      "global_worst_ns": {
+        "setup": -5.877,
+        "hold": -1.993,
+        "recovery": 1.541,
+        "removal": 0.253
+      },
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 54.478
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 71.211
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 215.415
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 216.443
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 73.516
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 881.834
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 47.392
+        }
+      },
+      "negative_endpoints": {
+        "clk_50m": {
+          "setup": 0,
+          "hold": 0
+        },
+        "audio_76m8": {
+          "setup": 333,
+          "hold": 0
+        },
+        "ddr_mem400": {
+          "setup": 0,
+          "hold": 0
+        },
+        "ddr_ui100": {
+          "setup": 77,
+          "hold": 0
+        },
+        "video_ref49": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_serial742": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_pixel148": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_bus50": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_core100": {
+          "setup": 0,
+          "hold": 0
+        },
+        "usb_48m": {
+          "setup": 9,
+          "hold": 0
+        }
+      },
+      "problems": [
+        "Fmax below requirement: audio_76m8",
+        "Fmax below requirement: usb_48m",
+        "negative endpoints: audio_76m8/setup",
+        "negative endpoints: ddr_ui100/setup",
+        "negative endpoints: usb_48m/setup",
+        "negative detailed timing paths"
+      ]
+    },
+    {
+      "attempt": 23,
+      "build": "results/resource_timing_20261020_122446_658378",
+      "complete": true,
+      "timing_closed": false,
+      "global_worst_ns": {
+        "setup": -6.915,
+        "hold": -1.945,
+        "recovery": 2.762,
+        "removal": 0.273
+      },
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 53.916
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 76.928
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 195.0
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 220.59
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 67.873
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1461.988
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 55.488
+        }
+      },
+      "negative_endpoints": {
+        "clk_50m": {
+          "setup": 0,
+          "hold": 0
+        },
+        "audio_76m8": {
+          "setup": 0,
+          "hold": 0
+        },
+        "ddr_mem400": {
+          "setup": 0,
+          "hold": 0
+        },
+        "ddr_ui100": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_ref49": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_serial742": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_pixel148": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_bus50": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_core100": {
+          "setup": 0,
+          "hold": 0
+        },
+        "usb_48m": {
+          "setup": 0,
+          "hold": 0
+        }
+      },
+      "problems": [
+        "negative detailed timing paths"
+      ]
+    },
+    {
+      "attempt": 24,
+      "build": "results/resource_timing_20261020_124632_064482",
+      "complete": true,
+      "timing_closed": true,
+      "global_worst_ns": {
+        "setup": 0.022,
+        "hold": 0.16,
+        "recovery": 2.762,
+        "removal": 0.273
+      },
+      "problems": [],
+      "offline_acceptance_passed": true,
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 53.916
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 76.928
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2598.775
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 195.0
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 220.59
+        },
+        "cpu_bus50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 67.873
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1461.988
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 55.488
+        }
+      },
+      "negative_endpoints": {
+        "clk_50m": {
+          "setup": 0,
+          "hold": 0
+        },
+        "audio_76m8": {
+          "setup": 0,
+          "hold": 0
+        },
+        "ddr_mem400": {
+          "setup": 0,
+          "hold": 0
+        },
+        "ddr_ui100": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_ref49": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_serial742": {
+          "setup": 0,
+          "hold": 0
+        },
+        "video_pixel148": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_bus50": {
+          "setup": 0,
+          "hold": 0
+        },
+        "cpu_core100": {
+          "setup": 0,
+          "hold": 0
+        },
+        "usb_48m": {
+          "setup": 0,
+          "hold": 0
+        }
+      }
+    },
+    {
+      "attempt": 25,
+      "build": "results/resource_timing_20261020_124905_665114",
+      "complete": false,
+      "current_progress": [
+        "[60%] Tech-Mapping Phase 0 completed",
+        "[65%] Tech-Mapping Phase 1 completed",
+        "[75%] Tech-Mapping Phase 2 completed"
+      ],
+      "status": "optional_trial_stopped_after_t24_acceptance",
+      "claimed_physical_pass": false
+    },
+    {
+      "attempt": 27,
+      "build": "results/resource_timing_incremental_20261020_125601_885721",
+      "complete": false,
+      "current_progress": [
+        "[5%] Running netlist conversion ...",
+        "Running device independent optimization ...",
+        "[10%] Optimizing Phase 0 completed"
+      ],
+      "status": "optional_trial_stopped_after_t24_acceptance",
+      "claimed_physical_pass": false
+    }
+  ],
+  "offline_acceptance_passed": true,
+  "selected_attempt": 24,
+  "selected_build": "results/resource_timing_20261020_124632_064482",
+  "final_bookkeeping_in_progress": false
+}

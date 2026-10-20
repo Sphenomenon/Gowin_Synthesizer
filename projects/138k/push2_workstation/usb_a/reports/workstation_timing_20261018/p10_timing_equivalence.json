@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "tests": {
+    "mix_quantizer": "passed",
+    "push_decimal": "passed",
+    "push_song_pixels": "passed",
+    "engine_timing_ab": "passed",
+    "push_surface_pipeline": "passed",
+    "push_pixel_mmio": "passed",
+    "push_pixel_mmio_bridge": "passed",
+    "mmio_pipeline": "passed"
+  },
+  "hardware_tested": false,
+  "project": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/workstation_scope83_timing85_20261018_051508_944162/Prj1",
+  "baseline": "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/song_guide_full83_20261006_203125_607466/Prj1"
+}

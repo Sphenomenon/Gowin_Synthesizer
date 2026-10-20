@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "source_bound": true,
+  "build": "results/timing_p10_note_mmio_20261018_051540_858609",
+  "hardware_tested": false,
+  "pcm_saved": false,
+  "added_cycles": 0,
+  "proof": "SAT all64inputbits: unsigned modulo delta<32 and nonzero,including every wrap and low5-bit borrow",
+  "miter_sha256": "391dfc54bb68c4a44756a3f1309d9d657e030cde184360b380d70996ac6b3649",
+  "original_source_sha256": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+  "patched_source_sha256": "2470b63c24812d8e4d00d93e8a1f30e8f97232e1e14a9dc5bf6265c3155ee6bf"
+}

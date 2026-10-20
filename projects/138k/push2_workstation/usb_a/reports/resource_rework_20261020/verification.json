@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "collected_at": "2026-10-20T04:24:23.215539",
+  "tests": {
+    "workstation": {
+      "passed": true,
+      "evidence": "workstation_regression.json",
+      "sha256": "e5903e5adb0e6600fdb1b021103cdc3ed0d6bdf7c2cb329da48e18ee7ad5ad42"
+    },
+    "cnn_tiled_real_weights": {
+      "passed": true,
+      "evidence": "cnn_tiles.json",
+      "sha256": "a1282281b25fa26fb3c477e84059ec8ba18906fdce3dac1c4bfa7778fcbe9d24"
+    },
+    "recorder_score_video_vendor": {
+      "passed": true,
+      "evidence": "storage_vendor.json",
+      "sha256": "bd1d16639c858b18d546a2310cc1e5bd3c0bff45f310c055ca1755ccefea3bf3"
+    },
+    "recorder_score_video_behavior": {
+      "passed": true,
+      "evidence": "storage_behavior.json",
+      "sha256": "47c3e19fac38e5b1ab8468eb8525e27fc1bba251a7252fabba4a47c8a1e79fe3"
+    },
+    "serialized_native_sdp": {
+      "passed": true,
+      "evidence": "banked_vendor.json",
+      "sha256": "c51d768fad062429715f4e9ebdb21646567d6b97062ab78e986c0766747c135b"
+    },
+    "feature_cache_vendor": {
+      "passed": true,
+      "evidence": "feature_vendor.json",
+      "sha256": "fcb7b8aa770b9dc62399b2105fdb82a0ceb3cd23748e7ec8641758dc9ccb8adf"
+    },
+    "coarse_guidance": {
+      "passed": true,
+      "evidence": "coarse_guidance.json",
+      "sha256": "f124a6641433b8b7bf67b7095889476a80156a899fce04753a7bfcf16d0cd041"
+    },
+    "default_cqt": {
+      "passed": true,
+      "evidence": "cqt_default.json",
+      "sha256": "abec4d1def6c4e365e2b120e4be46be697ae124d0ce6e8041663a618d5dd1873"
+    },
+    "spatial_fixedpoint": {
+      "passed": true,
+      "evidence": "spatial_reverb.json",
+      "sha256": "6a41f8f5123d937bc1322a9991fc8b78bfbb65524602996711fd7921afdec03f"
+    },
+    "effect_orders_masks_ddr": {
+      "passed": true,
+      "evidence": "effect_chain.json",
+      "sha256": "e2b79fa50c8c92ab31bd49af6999ed7bd1a5ebc9b58560cbe017a312f26d73ec"
+    },
+    "impulse_comparison": {
+      "passed": true,
+      "evidence": "reverb_comparison.json",
+      "sha256": "ca640a90d9769f6521ee2a830eb22ae9000cfa08ce710640d31ba496769e361c"
+    },
+    "default_all_ddr_vs_cache": {
+      "passed": true,
+      "evidence": "default_cache_equivalence.log",
+      "sha256": "1fc7bf6720654435c340e6d28586af0e7438960a65a2c60d1b8b9144a08f4635",
+      "input_manifest": "default_cache_inputs.json"
+    }
+  },
+  "tools": {
+    "iverilog": "Icarus Verilog version 13.0 (stable) (v13_0)",
+    "verilator": "Verilator 5.046 2026-02-28 rev fedora-5.046",
+    "python": "Python 3.14.7",
+    "gowin": "V1.9.12.03; GW5AST-LV138PG484AC2/I1"
+  },
+  "hardware_tested": false,
+  "scope": "Functional and numerical tests; routed resources/timing are separate evidence.",
+  "cnn_accuracy_scope": "Real weights, deterministic pseudorandom PCM. Numerical equivalence at the same 4-Hz CQT times; no labelled music accuracy claim."
+}

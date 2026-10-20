@@ -1,0 +1,41 @@
+{
+  "baseline": "results/song_guide_full83_20261006_203125_607466",
+  "baseline_manifest_sha256": "a8caece577521b28196175f25d468ec7845d12a2f0fe29c6cbadfa246e67de28",
+  "accepted_inputs_verified": 594,
+  "cnn_inputs_verified": 73,
+  "live_changed": 9,
+  "live_added": 11,
+  "live_missing": 0,
+  "baseline_and_staged_cnn_match": true,
+  "live_cnn_unchanged_from_staging_audit": true,
+  "tracked_live_cnn_or_ddr_changes": [],
+  "prepare_build": "results/workstation_scope83_20261018_021524_310542",
+  "hardware_tested": false,
+  "unit_tests": {
+    "source_boundary": 6,
+    "usb_firmware_staging": 6,
+    "source_boundary_python_optimized": 6,
+    "passed": true
+  },
+  "latest_workstation_sha256": "8afb5f65b343064d0600d242c994ba8f9eaf5e1faca3f4d7ef6603c365f91fa7",
+  "synthesis_build": "results/workstation_scope83_20261018_021532_266586",
+  "regression": "results/workstation_scope83_20261018_021524_310542/current_regression_20261018_022033_474844",
+  "synthesis_exit_code": 0,
+  "regression_passed": true,
+  "regression_gates": 18,
+  "prepare_and_synthesis_inputs_identical": true,
+  "all_staged_inputs_unchanged": true,
+  "staged_ddr_isolation_uses_selected_cnn": true,
+  "baseline_manifest_unchanged": true,
+  "latest_workstation_unchanged": true,
+  "user_code_assigned": false,
+  "pnr_run": false,
+  "scripts_sha256": {
+    "tools/build_current_workstation.py": "10826e27d8b14bc3e42e8144627f3f5f8aed059ba572899a499bc59b7a19ab65",
+    "tools/workstation_sources.py": "6636dee8cdf6152d6eed75ba5457849e7196c5f989eec879348eba82585cdfc1",
+    "sim/test_current_workstation_sources.py": "7f6bdaf08fe0c305b3643a3781989dcbf366998273a425c7b56a17cbbef18cc7",
+    "sim/scope_vec/run_merge.py": "cc88c03f1427a09778e3bf9fdfd01a2442d910b4c64c5c4776bec048236ee248",
+    "sim/scope_vec/run_current.py": "cd1c37ae91dac47ae289ebea5c7201b7963d21f102f4243c4e4decc4507e8087",
+    "sim/music/run_bp_ddr_isolation.py": "39688a696a526a87d21a9071d9320f6567d7f82a3564eadc63e1a4388d3a1d3f"
+  }
+}

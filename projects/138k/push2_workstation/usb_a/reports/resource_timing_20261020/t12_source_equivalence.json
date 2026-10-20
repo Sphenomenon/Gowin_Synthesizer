@@ -1,0 +1,57 @@
+{
+  "build": "results/resource_timing_20261020_111212_369176",
+  "reused_functional_evidence": [
+    {
+      "test": "timing_units",
+      "source_report": "results/resource_timing_20261020_110314_988115/timing_units/verification.json",
+      "source_report_sha256": "7ed9f6117a3876c739e41f85175e9c0effc9345863ff20f9d16945699a3fbe75",
+      "identical_tested_staged_sources": [
+        "rtl/music/music_async_fifo.sv",
+        "src/ae350/gw138k_controlled_services.sv",
+        "src/migration/gw138k_apb_cdc.sv",
+        "src/usb_host/gw138k_usb_event_fifo.v"
+      ]
+    },
+    {
+      "test": "gain_chain_ab",
+      "source_report": "results/resource_timing_20261020_110314_988115/gain_chain_ab/verification.json",
+      "source_report_sha256": "223cc98d9cc64b79f55aeebbb5814b28eae67393f9c91a156cc076680c13bafc",
+      "identical_tested_staged_sources": [
+        "legacy/rtl/audio/audio_math_pkg.sv",
+        "legacy/rtl/audio/stereo_effects.sv",
+        "rtl/audio/delay_ddr/delay_ddr_dma.sv",
+        "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv",
+        "rtl/audio/serial_spatial_reverb.sv",
+        "rtl/audio/spatial_room_preset.svh",
+        "rtl/memory/workstation_sdp.sv",
+        "rtl/memory/workstation_sdp_banked.sv",
+        "rtl/music/music_async_fifo.sv"
+      ]
+    },
+    {
+      "test": "video_diag_timing",
+      "source_report": "results/resource_timing_20261020_110314_988115/video_diag_timing/verification.json",
+      "source_report_sha256": "31b3133f68bfcc8d325ed8b1cea215081866a35f9fc739b1d780f7bc7cb13963",
+      "identical_tested_staged_sources": [
+        "src/video/video_runtime_diagnostics.v"
+      ]
+    }
+  ],
+  "changed_from_resource_reference": [
+    "legacy/rtl/audio/stereo_effects.sv",
+    "rtl/audio/delay_ddr/delay_ddr_dma.sv",
+    "rtl/audio/scope_vec/scope_vec_engine.sv",
+    "rtl/music/music_async_fifo.sv",
+    "scripts/__pycache__/check_video_pll_init.cpython-314.pyc",
+    "scripts/build.tcl",
+    "src/ae350/gw138k_controlled_services.sv",
+    "src/migration/gw138k_apb_cdc.sv",
+    "src/push2/push2_surface_pixels.sv",
+    "src/storage/tf_audio_ddr_dma.v",
+    "src/usb_host/gw138k_usb_event_fifo.v",
+    "src/video/video_runtime_diagnostics.v"
+  ],
+  "old_build_rejected_before_pnr": true,
+  "old_build_failure": "CNN link preparation lost candidate settings; TA2003 at trace CDC constraint; no timing/resource acceptance",
+  "hardware_tested": false
+}

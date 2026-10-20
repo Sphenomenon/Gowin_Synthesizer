@@ -1,0 +1,5 @@
+PASS push_decimal: all 65536 inputs, 100 update bursts, 34-cycle convergence and reset
+- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/timing/tb_push_decimal.sv:26: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 12ms; walltime 0.391 s; speed 30.460 ms/s
+- Verilator: cpu 0.390 s on 1 threads; allocated 7 MB

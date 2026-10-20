@@ -1,0 +1,49 @@
+{
+  "checked": "2026-10-18T22:02:35.829767+08:00",
+  "p33_completed": "2026-10-18T18:36:02+08:00",
+  "p33_timing_closed": false,
+  "p33_pll_passed": true,
+  "p33_pll_maximum_propagation_ns": 8.058,
+  "p33_cdc_passed": true,
+  "p33_frequencies": {
+    "clk_50m": {
+      "required_mhz": 50.0,
+      "actual_mhz": 49.46
+    },
+    "audio_76m8": {
+      "required_mhz": 76.8,
+      "actual_mhz": 75.186
+    },
+    "ddr_mem400": {
+      "required_mhz": 400.0,
+      "actual_mhz": 2598.775
+    },
+    "ddr_ui100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 227.337
+    },
+    "video_pixel148": {
+      "required_mhz": 148.5,
+      "actual_mhz": 155.096
+    },
+    "cpu_bus50": {
+      "required_mhz": 50.0,
+      "actual_mhz": 69.859
+    },
+    "cpu_core100": {
+      "required_mhz": 100.0,
+      "actual_mhz": 1244.243
+    },
+    "usb_48m": {
+      "required_mhz": 48.0,
+      "actual_mhz": 47.354
+    }
+  },
+  "p33_worst_setup_ns": -0.308,
+  "best_completed_candidate": "p27",
+  "best_worst_setup_ns": -0.018,
+  "current_prepare": "results/workstation_scope83_timing85_20261018_214242_333215",
+  "current_status": "p34 RTL all-voice and Gowin four-state netlist equivalence both passed; full SYN/PNR and fresh 18-gate regression running",
+  "hardware_tested": false,
+  "current_candidate": "results/timing_p34_vector_local_envelope_20261018_214554_355618"
+}

@@ -1,0 +1,2 @@
+PASS banked native SDP: 4132 full-precision reads, all five banks, 511/512 boundaries, random rewrites, clear abort
+/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_banked_vendor/tb.sv:37: $finish called at 259300000 (1ps)

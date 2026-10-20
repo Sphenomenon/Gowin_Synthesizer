@@ -1,0 +1,29 @@
+{
+  "tool_passed": true,
+  "exit_code": 0,
+  "full_workstation": false,
+  "hardware_tested": false,
+  "target_mhz": 76.8,
+  "physical_bsram": 20,
+  "frequency_rows": [
+    [
+      "1",
+      "audio_76m8",
+      "76.800(MHz)",
+      "102.002(MHz)",
+      "13",
+      "TOP"
+    ]
+  ],
+  "input_sha256": {
+    "reverb.gprj": "ddf03733b5342612cd059ac6f0d285b9600b5d732c2878aeac1a5e1d63941226",
+    "target.sdc": "9c9cb36fe0be63c385fe1858987ab7b45c7669b717beb27d8deb7c5ebb97f6b8",
+    "build.tcl": "009a730c4f89397ca6668e682c6887564836bda60a8ddfd0c7b025a436a81fa9",
+    "reverb.gprj.user": "de527f0b0d4e2e7d5450b5bd12c9bb16a420c512df38abedd2fe6b6883577be8",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+    "rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4",
+    "rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "label": "buffer1_stall0_zero0",
+      "passed": true,
+      "buffered_native": true,
+      "stalled": false,
+      "zero_latency_return": false
+    },
+    {
+      "label": "buffer1_stall1_zero0",
+      "passed": true,
+      "buffered_native": true,
+      "stalled": true,
+      "zero_latency_return": false
+    },
+    {
+      "label": "buffer0_stall0_zero0",
+      "passed": true,
+      "buffered_native": false,
+      "stalled": false,
+      "zero_latency_return": false
+    },
+    {
+      "label": "buffer0_stall1_zero0",
+      "passed": true,
+      "buffered_native": false,
+      "stalled": true,
+      "zero_latency_return": false
+    },
+    {
+      "label": "buffer0_stall0_zero1",
+      "passed": true,
+      "buffered_native": false,
+      "stalled": false,
+      "zero_latency_return": true
+    },
+    {
+      "label": "buffer0_stall1_zero1",
+      "passed": true,
+      "buffered_native": false,
+      "stalled": true,
+      "zero_latency_return": true
+    }
+  ],
+  "source_sha256": {
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_111212_369176/Prj1/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_111212_369176/Prj1/rtl/timing/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_111212_369176/Prj1/src/memory/tf_audio_ddr_command_buffer.sv": "97cbec2d6c5123b33a5e7d01276d6e3a7f469684092fbf94583254bcf32cd140",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_111212_369176/Prj1/src/storage/tf_audio_ddr_dma.v": "87ac1206d9915bb0826837b96ef90e2d477d03ce4a25d31409138bfd871c0773",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_111212_369176/tf_dma_timing/buffer0_stall0_zero0.sv": "dec14c5ba6e5ceb502d2b342add20c26eda6cf5f1c78b57996798e9e6a5390f2",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_111212_369176/tf_dma_timing/buffer0_stall0_zero1.sv": "8f75ac7d80a098c0bce3ec97f93de821cacfab3f08a77abd4424cb31ee615537",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_111212_369176/tf_dma_timing/buffer0_stall1_zero0.sv": "fb6e6292260742964fb0072a9a1262a677b7ea64feb56a6579cf0fc9c6ea364c",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_111212_369176/tf_dma_timing/buffer0_stall1_zero1.sv": "0265902acffa3c8a2da81864ddc475f415fa4bc148979b6e84d5f4ee0b54127a",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_111212_369176/tf_dma_timing/buffer1_stall0_zero0.sv": "b78e2f3236f3305084661517d19553776398235191308a9e4978c46ec66e8207",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_111212_369176/tf_dma_timing/buffer1_stall1_zero0.sv": "f4c2ceeb3d4d6c9e9ee6982a668255cd23a2ef67e5655976723fbbad7639f466",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/resource_timing/run_tf_dma.py": "8a3ed801c9371045b1b217940a183c83d33cc065e5751a787d32e31bad2a60b8",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_audio_ddr_dma.sv": "02f0cfcd2b7498bae92b59aac32784b9f8c7daef4b7e9e30bd6bfee63459f44a"
+  },
+  "hardware_tested": false
+}

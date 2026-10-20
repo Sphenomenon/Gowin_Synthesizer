@@ -1,0 +1,29 @@
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/attach
+firmware_compile 0
+firmware_test 0
+PASS generic firmware: both Push IDs, G1 descriptors, dynamic endpoint/MPS/alt, rejection bounds, 128x128 notes/velocity, channels/cables, no Push OUT, toggles/hotplug
+
+tb_generic_midi_compile 0
+tb_generic_midi_test 0
+PASS generic MMIO/CDC/audio: 174 ordered events, 15609 stalls, exact low/high note velocities at synth, PCM, release, sustain disconnect, reconnect, Push init/force/aftertouch preserved
+- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/attach/source/sim/tb_generic_midi.sv:116: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 2ms; walltime 0.258 s; speed 6.862 ms/s
+- Verilator: cpu 0.257 s on 1 threads; allocated 7 MB
+
+tb_workstation_attach_compile 0
+tb_workstation_attach_test 0
+PASS attach: 6 default boundaries, ordered tap/CC7/program/bend/CC88/89, detach/reconnect cancellation, full-queue and init PANIC, TF/live/cue exit, no first-frame wait, GW25K guide isolation, Push epoch/volume/release, PCM=20
+- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/attach/source/sim/tb_workstation_attach.sv:175: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 1ms; walltime 0.287 s; speed 4.627 ms/s
+- Verilator: cpu 0.287 s on 1 threads; allocated 7 MB
+
+tb_usb_lifecycle_merge_compile 0
+tb_usb_lifecycle_merge_test 0
+PASS USB lifecycle merge: stalled old event canceled, immediate priority, CPU backpressure, completion handshake, normal resume
+- /home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/function_first_20261018/attach/source/sim/tb_usb_lifecycle_merge.sv:35: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.046 2026-02-28
+- Verilator: $finish at 160ns; walltime 0.000 s; speed 3.247 ms/s
+- Verilator: cpu 0.000 s on 1 threads; allocated 7 MB
+

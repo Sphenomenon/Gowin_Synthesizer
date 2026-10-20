@@ -1,0 +1,233 @@
+{
+  "assumptions": {
+    "fs_hz": 48000.0,
+    "clock_hz": 76800000.0,
+    "BSRAM_block_bits": 18432,
+    "capacity_only_not_placed": true,
+    "pole_study_omits_state_rounding_and_feedback_nonlinearity": true
+  },
+  "resources": {
+    "engine": {
+      "LUT_ALU": 4942,
+      "ordinary_FF": 3076,
+      "native_DSP": 12.0,
+      "BSRAM": 22,
+      "primitives": {
+        "LUT3": 2040,
+        "LUT4": 1202,
+        "LUT2": 875,
+        "DFFCE": 2961,
+        "DFFPE": 35,
+        "DFFRE": 80,
+        "SDPB": 11,
+        "RAM16SDP1": 4,
+        "MULT27X36": 4,
+        "MULTALU27X18": 4,
+        "ALU": 823,
+        "LUT1": 2,
+        "MUX2_LUT5": 428,
+        "MUX2_LUT6": 214,
+        "MUX2_LUT7": 106,
+        "MUX2_LUT8": 53,
+        "pROM": 11
+      }
+    },
+    "effects_router": {
+      "LUT_ALU": 693,
+      "ordinary_FF": 405,
+      "native_DSP": 6.0,
+      "BSRAM": 0,
+      "primitives": {
+        "LUT4": 249,
+        "LUT3": 306,
+        "LUT2": 35,
+        "DFFCE": 393,
+        "DFFPE": 12,
+        "MULT27X36": 3,
+        "ALU": 102,
+        "LUT1": 1
+      }
+    },
+    "delay_stage": {
+      "LUT_ALU": 2911,
+      "ordinary_FF": 600,
+      "native_DSP": 4.0,
+      "BSRAM": 0,
+      "primitives": {
+        "LUT4": 344,
+        "LUT2": 122,
+        "LUT3": 2287,
+        "DFFRE": 64,
+        "DFFCE": 535,
+        "DFFPE": 1,
+        "MULT27X36": 2,
+        "ALU": 158,
+        "RAM16SDP4": 1088,
+        "MUX2_LUT5": 1040,
+        "MUX2_LUT6": 520,
+        "MUX2_LUT7": 260,
+        "MUX2_LUT8": 130,
+        "INV": 1
+      }
+    },
+    "chorus_stage": {
+      "LUT_ALU": 442,
+      "ordinary_FF": 299,
+      "native_DSP": 5.0,
+      "BSRAM": 4,
+      "primitives": {
+        "LUT2": 105,
+        "LUT4": 110,
+        "LUT3": 111,
+        "DFFCE": 296,
+        "DFFPE": 3,
+        "SDPB": 4,
+        "MULT27X36": 2,
+        "MULTALU27X18": 1,
+        "ALU": 115,
+        "LUT1": 1
+      }
+    },
+    "reverb_stage": {
+      "LUT_ALU": 884,
+      "ordinary_FF": 519,
+      "native_DSP": 8.0,
+      "BSRAM": 8,
+      "primitives": {
+        "LUT3": 266,
+        "LUT4": 272,
+        "LUT2": 84,
+        "DFFCE": 519,
+        "SDPB": 8,
+        "MULT27X36": 4,
+        "ALU": 261,
+        "LUT1": 1
+      }
+    }
+  },
+  "tiers": [
+    {
+      "name": "prototype",
+      "voices": 8,
+      "primary": 512,
+      "secondary": 704,
+      "body": 64,
+      "longitudinal": 0,
+      "total_sections": 1280,
+      "raw_bytes": 25576,
+      "ideal_capacity_BSRAM": 12,
+      "section_updates_per_sec": 61440000,
+      "ideal_cycles_4_issue_lanes": 320,
+      "all_hammers_active_mul_per_sample": 4544
+    },
+    {
+      "name": "recommended",
+      "voices": 32,
+      "primary": 2048,
+      "secondary": 1408,
+      "body": 64,
+      "longitudinal": 0,
+      "total_sections": 3520,
+      "raw_bytes": 71360,
+      "ideal_capacity_BSRAM": 31,
+      "section_updates_per_sec": 168960000,
+      "ideal_cycles_4_issue_lanes": 880,
+      "all_hammers_active_mul_per_sample": 12800
+    },
+    {
+      "name": "extended",
+      "voices": 32,
+      "primary": 4096,
+      "secondary": 2112,
+      "body": 128,
+      "longitudinal": 128,
+      "total_sections": 6464,
+      "raw_bytes": 132280,
+      "ideal_capacity_BSRAM": 58,
+      "section_updates_per_sec": 310272000,
+      "ideal_cycles_4_issue_lanes": 1616,
+      "all_hammers_active_mul_per_sample": 23872
+    }
+  ],
+  "coefficient_sweep": [
+    {
+      "coefficient_bits": 18,
+      "fractional_bits": 16,
+      "cases": 440,
+      "stable_cases": 440,
+      "real_pole_cases": 0,
+      "max_abs_pitch_error_cents": 458.5561874396758,
+      "max_abs_T60_error_percent": 5.688992852294438
+    },
+    {
+      "coefficient_bits": 24,
+      "fractional_bits": 22,
+      "cases": 440,
+      "stable_cases": 440,
+      "real_pole_cases": 0,
+      "max_abs_pitch_error_cents": 10.288719157202525,
+      "max_abs_T60_error_percent": 0.6007582142162571
+    },
+    {
+      "coefficient_bits": 27,
+      "fractional_bits": 25,
+      "cases": 440,
+      "stable_cases": 440,
+      "real_pole_cases": 0,
+      "max_abs_pitch_error_cents": 1.6603022658869533,
+      "max_abs_T60_error_percent": 0.025520146468172022
+    },
+    {
+      "coefficient_bits": 32,
+      "fractional_bits": 30,
+      "cases": 440,
+      "stable_cases": 440,
+      "real_pole_cases": 0,
+      "max_abs_pitch_error_cents": 0.031945831843954324,
+      "max_abs_T60_error_percent": 0.0017848822955857102
+    }
+  ],
+  "A0_T60_10s_examples": [
+    {
+      "bits": 18,
+      "frequency_hz": 29.841570800665107,
+      "pitch_error_cents": 141.47023144695584,
+      "T60_seconds": 9.43124462874058
+    },
+    {
+      "bits": 24,
+      "frequency_hz": 27.411206574131416,
+      "pitch_error_cents": -5.5989422113424165,
+      "T60_seconds": 9.976862147501445
+    },
+    {
+      "bits": 27,
+      "frequency_hz": 27.506221843498935,
+      "pitch_error_cents": 0.39164541749112275,
+      "T60_seconds": 9.997518474819342
+    },
+    {
+      "bits": 32,
+      "frequency_hz": 27.5002931009106,
+      "pitch_error_cents": 0.018451766259284432,
+      "T60_seconds": 10.000106531202276
+    }
+  ],
+  "room": {
+    "current_chorus_raw_bytes": 8192,
+    "current_reverb_raw_bytes": 16384,
+    "ER_4096_mono_24bit_raw_bytes": 12288,
+    "FDN4_1024_24bit_raw_bytes": 12288,
+    "FDN8_1024_24bit_raw_bytes": 24576,
+    "FDN4_plus_ER_ideal_BSRAM": 11,
+    "FDN8_plus_ER_ideal_BSRAM": 16,
+    "HRTF_1source_2ears_128taps_MAC_per_sec": 12288000,
+    "HRTF_16paths_2ears_128taps_MAC_per_sec": 196608000,
+    "HRTF_32voices_2ears_128taps_MAC_per_sec": 393216000,
+    "FDTD_10x5x3m_5cm_grid_nodes": 1200000,
+    "FDTD_5cm_48k_node_updates_sec": 57600000000,
+    "FDTD_two_32bit_pressure_fields_bytes": 9600000,
+    "full_note_main_64mode_four27bit_coeff_ROM_bytes": 76032,
+    "two_additional_AB_gain_mode_bits": 5120
+  }
+}

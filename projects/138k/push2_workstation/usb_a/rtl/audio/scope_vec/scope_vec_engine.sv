@@ -10,7 +10,8 @@ module scope_vec_engine #(
     parameter PATH_FILE="rtl/audio/scope_vec/data/paths.mem",
     parameter ROTATION_FILE="rtl/audio/scope_vec/data/rotation.mem",
     parameter NOTE_FILE="rtl/audio/scope_vec/data/note_steps.mem",
-    parameter ADSR_FILE="sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem"
+    parameter ADSR_FILE="sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem",
+    parameter bit SEPARATE_OFF_NOTE=1'b0
 )(
     input wire clk_i,rst_ni,panic_i,sample_ce_i,
     output wire sample_ready_o,
@@ -29,7 +30,8 @@ module scope_vec_engine #(
     output reg [3:0] active_count_o,
     output reg [31:0] rejected_events_o,
     output reg config_error_o,frequency_error_o,clip_o,
-    output wire busy_o
+    output wire busy_o,
+    input wire [6:0] event_off_note_i
 );
     localparam integer POINTS=1<<POINT_BITS;
     localparam [31:0] MAX_STEP=32'((64'd4294967296*MAX_SCAN_HZ)/48000);
@@ -37,6 +39,12 @@ module scope_vec_engine #(
     (* ram_style="block",syn_ramstyle="block_ram" *) reg [31:0] path_rom[0:SHAPES*POINTS-1];
     reg [31:0] note_rom[0:127],rotation_rom[0:511];
     reg [31:0] rotation_q;
+    // Compare fixed tuning words before selecting a note. This is a continuous
+    // view of the original ROM, so there is no second initialization order.
+    wire [127:0] note_above_limit;
+    for(genvar n=0;n<128;n=n+1)begin: g_note_limit
+        assign note_above_limit[n]=note_rom[n]>MAX_STEP;
+    end
     reg [23:0] adsr_rom[0:19];
     reg [31:0] phase[0:VOICES-1],base_step[0:VOICES-1];
     reg [21:0] own_pitch[0:VOICES-1];
@@ -66,13 +74,34 @@ module scope_vec_engine #(
     reg [23:0] frame_envelope_max;
     wire signed [34:0] rotation_product_x=$signed(mx)*$signed(rotation_xy[31:16])-$signed(my)*$signed(rotation_xy[15:0]);
     wire signed [34:0] rotation_product_y=$signed(mx)*$signed(rotation_xy[15:0])+$signed(my)*$signed(rotation_xy[31:16]);
-    wire signed [56:0] offset_product_x=$signed(frame_offset_x)*$signed({1'b0,frame_envelope_max});
-    wire signed [56:0] offset_product_y=$signed(frame_offset_y)*$signed({1'b0,frame_envelope_max});
+    // The maximum is final before state 15. Capture the offset products beside
+    // the calibration products, so per-voice max selection cannot drive DSP CE.
+    reg signed [56:0] offset_product_x,offset_product_y;
     wire signed [38:0] calibrated_x=39'(cal_product_x>>>14)+39'(offset_product_x>>>24);
     wire signed [38:0] calibrated_y=39'(cal_product_y>>>14)+39'(offset_product_y>>>24);
-    reg free_found,release_found;
-    integer free_index,release_index,j;
-    reg [24:0] env_sum;
+    // The workstation has independent on/off sources during sustain scans.
+    // Only Note On addresses the tuning ROM; release compares this bypass.
+    wire [6:0] off_note=SEPARATE_OFF_NOTE ? event_off_note_i : event_note_i;
+    wire [VOICES-1:0] idle_mask,release_mask,free_select,release_select;
+    wire free_found=|idle_mask;
+    integer j;
+    // Select the lowest voice directly; avoid priority encode then decode.
+    for(genvar v=0;v<VOICES;v=v+1) begin: g_event_select
+        assign idle_mask[v]=env_state[v]==IDLE;
+        assign release_mask[v]=note[v]==off_note && env_state[v]!=IDLE && env_state[v]!=RELEASE;
+        if(v==0) begin
+            assign free_select[v]=idle_mask[v];
+            assign release_select[v]=release_mask[v];
+        end else begin
+            assign free_select[v]=idle_mask[v] && !(|idle_mask[v-1:0]);
+            assign release_select[v]=release_mask[v] && !(|release_mask[v-1:0]);
+        end
+    end
+    wire [24:0] voice_attack_sum[0:VOICES-1],voice_decay_threshold[0:VOICES-1];
+    for(genvar e=0;e<VOICES;e=e+1) begin: g_local_envelope
+        assign voice_attack_sum[e]={1'b0,envelope[e]}+{1'b0,attack[e]};
+        assign voice_decay_threshold[e]={1'b0,sustain[e]}+{1'b0,decay[e]};
+    end
     reg [VOICES-1:0] frame_active;
     reg frame_frequency_error;
     wire [POINT_BITS-1:0] point_index=scan_phase[31 -: POINT_BITS];
@@ -129,14 +158,9 @@ module scope_vec_engine #(
 
             default:rom_address=0;
         endcase
-        free_found=0;release_found=0;free_index=0;release_index=0;
         active_mask_o=0;active_count_o=0;
         for(integer k=0;k<VOICES;k=k+1) begin
-            if(env_state[k]==IDLE && !free_found) begin free_found=1;free_index=k;end
             if(env_state[k]!=IDLE) begin active_mask_o[k]=1;active_count_o=active_count_o+1'b1;end
-            if(note[k]==event_note_i && env_state[k]!=IDLE && env_state[k]!=RELEASE && !release_found) begin
-                release_found=1;release_index=k;
-            end
         end
     end
     always @(posedge clk_i) begin rom_q<=path_rom[rom_address];rotation_q<=rotation_rom[rotation];end
@@ -150,7 +174,7 @@ module scope_vec_engine #(
             scan_phase<=0;own_product<=0;pitch_product<=0;frame_active<=0;frame_frequency_error<=0;
             a0<=0;a1<=0;b0<=0;b1<=0;rotation_xy<=0;ax<=0;ay<=0;bx<=0;by<=0;mx<=0;my<=0;
             rotated_x<=0;rotated_y<=0;env_x<=0;env_y<=0;voice_x<=0;voice_y<=0;
-            cal_product_x<=0;cal_product_y<=0;scaled_x<=0;scaled_y<=0;
+            cal_product_x<=0;cal_product_y<=0;scaled_x<=0;scaled_y<=0;offset_product_x<=0;offset_product_y<=0;
             for(j=0;j<VOICES;j=j+1) begin
                 phase[j]<=0;base_step[j]<=0;own_pitch[j]<=1048576;note[j]<=0;shape[j]<=0;morph_shape[j]<=0;
                 env_state[j]<=IDLE;envelope[j]<=0;attack[j]<=0;decay[j]<=0;sustain[j]<=0;release_step[j]<=0;velocity[j]<=0;
@@ -165,20 +189,20 @@ module scope_vec_engine #(
                 if(event_valid_i && event_ready_o) begin
                     if(event_note_on_i) begin
                         if(32'(event_shape_i)>=SHAPES || 32'(event_morph_shape_i)>=SHAPES || event_profile_i>=5 ||
-                           event_pitch_q20_i==0 || event_velocity_i==0 || note_rom[event_note_i]>MAX_STEP) begin
+                           event_pitch_q20_i==0 || event_velocity_i==0 || note_above_limit[event_note_i]) begin
                             rejected_events_o<=rejected_events_o+1'b1;config_error_o<=1;
                         end else if(!free_found) rejected_events_o<=rejected_events_o+1'b1;
-                        else begin
-                            phase[free_index]<=0;base_step[free_index]<=note_rom[event_note_i];own_pitch[free_index]<=event_pitch_q20_i;
-                            note[free_index]<=event_note_i;shape[free_index]<=event_shape_i;morph_shape[free_index]<=event_morph_shape_i;
-                            env_state[free_index]<=ATTACK;envelope[free_index]<=0;
-                            attack[free_index]<=adsr_rom[{event_profile_i,2'b00}];
-                            decay[free_index]<=adsr_rom[{event_profile_i,2'b00}+1];
-                            sustain[free_index]<=adsr_rom[{event_profile_i,2'b00}+2];
-                            release_step[free_index]<=adsr_rom[{event_profile_i,2'b00}+3];
-                            velocity[free_index]<=event_velocity_i==127 ? 16'd32767 : 16'(event_velocity_i*258+(event_velocity_i>=64));
+                        else for(j=0;j<VOICES;j=j+1) if(free_select[j]) begin
+                            phase[j]<=0;base_step[j]<=note_rom[event_note_i];own_pitch[j]<=event_pitch_q20_i;
+                            note[j]<=event_note_i;shape[j]<=event_shape_i;morph_shape[j]<=event_morph_shape_i;
+                            env_state[j]<=ATTACK;envelope[j]<=0;
+                            attack[j]<=adsr_rom[{event_profile_i,2'b00}];
+                            decay[j]<=adsr_rom[{event_profile_i,2'b00}+1];
+                            sustain[j]<=adsr_rom[{event_profile_i,2'b00}+2];
+                            release_step[j]<=adsr_rom[{event_profile_i,2'b00}+3];
+                            velocity[j]<=event_velocity_i==127 ? 16'd32767 : 16'(event_velocity_i*258+(event_velocity_i>=64));
                         end
-                    end else if(release_found) env_state[release_index]<=RELEASE;
+                    end else for(j=0;j<VOICES;j=j+1) if(release_select[j]) env_state[j]<=RELEASE;
                 end
                 case(state)
                     0:if(sample_ce_i) begin
@@ -195,18 +219,20 @@ module scope_vec_engine #(
                     end
                     1:begin
                         own_product<=base_step[voice_index]*own_pitch[voice_index];scan_phase<=phase[voice_index];
-                        env_sum={1'b0,envelope[voice_index]}+{1'b0,attack[voice_index]};
-                        case(env_state[voice_index])
-                            ATTACK:if(attack[voice_index]==0 || env_sum>=25'hffffff) begin envelope[voice_index]<=24'hffffff;env_state[voice_index]<=DECAY;end
-                                   else envelope[voice_index]<=env_sum[23:0];
-                            DECAY:if(decay[voice_index]==0 || envelope[voice_index]<=sustain[voice_index] || envelope[voice_index]-sustain[voice_index]<=decay[voice_index]) begin
-                                      envelope[voice_index]<=sustain[voice_index];env_state[voice_index]<=SUSTAIN;
-                                  end else envelope[voice_index]<=envelope[voice_index]-decay[voice_index];
-                            SUSTAIN:envelope[voice_index]<=sustain[voice_index];
-                            RELEASE:if(release_step[voice_index]==0 || envelope[voice_index]<=release_step[voice_index]) begin envelope[voice_index]<=0;env_state[voice_index]<=IDLE;end
-                                    else envelope[voice_index]<=envelope[voice_index]-release_step[voice_index];
-                            default:envelope[voice_index]<=0;
-                        endcase
+                        // Keep each voice arithmetic local; decode only its write enable.
+                        for(j=0;j<VOICES;j=j+1) if(voice_index==j) begin
+                            case(env_state[j])
+                                ATTACK:if(attack[j]==0 || voice_attack_sum[j]>=25'hffffff) begin envelope[j]<=24'hffffff;env_state[j]<=DECAY;end
+                                       else envelope[j]<=voice_attack_sum[j][23:0];
+                                DECAY:if(decay[j]==0 || {1'b0,envelope[j]}<=voice_decay_threshold[j]) begin
+                                          envelope[j]<=sustain[j];env_state[j]<=SUSTAIN;
+                                      end else envelope[j]<=envelope[j]-decay[j];
+                                SUSTAIN:envelope[j]<=sustain[j];
+                                RELEASE:if(release_step[j]==0 || envelope[j]<=release_step[j]) begin envelope[j]<=0;env_state[j]<=IDLE;end
+                                        else envelope[j]<=envelope[j]-release_step[j];
+                                default:envelope[j]<=0;
+                            endcase
+                        end
                         state<=2;
                     end
                     2:begin pitch_product<=own_product[51:20]*frame_pitch;own_overflow<=|own_product[53:52];state<=3;end
@@ -240,7 +266,11 @@ module scope_vec_engine #(
                         if(32'(voice_index)==VOICES-1) state<=15;
                         else begin voice_index<=voice_index+1'b1;state<=1;end
                     end
-                    15:begin cal_product_x<=sum_x*$signed(frame_cal_x);cal_product_y<=sum_y*$signed(frame_cal_y);state<=16;end
+                    15:begin
+                        cal_product_x<=sum_x*$signed(frame_cal_x);cal_product_y<=sum_y*$signed(frame_cal_y);
+                        offset_product_x<=$signed(frame_offset_x)*$signed({1'b0,frame_envelope_max});
+                        offset_product_y<=$signed(frame_offset_y)*$signed({1'b0,frame_envelope_max});state<=16;
+                    end
                     16:begin
                         scaled_x<=calibrated_x*$signed({1'b0,frame_scale});
                         scaled_y<=calibrated_y*$signed({1'b0,frame_scale});state<=17;

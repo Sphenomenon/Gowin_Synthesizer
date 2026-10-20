@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/workstation_timing_20261018/collect_evidence.py", line 66, in <module>
+    assert changed==expected_changes,changed
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rtl/music/basic_pitch_workstation_link.sv', 'rtl/audio/scope_vec/scope_vec_engine.sv', 'Prj1.gprj', 'constraints/tang_mega_138k.cst'}

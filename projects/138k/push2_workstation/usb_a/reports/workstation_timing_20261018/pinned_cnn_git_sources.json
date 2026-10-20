@@ -1,0 +1,35 @@
+{
+  "source_commit": "3f762f5ebabf78c28156d91a022d3a6c5547776b",
+  "files": {
+    "rtl/music/basic_pitch_viterbi.sv": {
+      "git_sha256": "7891c1294aaa5f75a32a86e8fc5a1a7d1c95d8579238cb3e85700102482f0154",
+      "candidate_sha256": "7891c1294aaa5f75a32a86e8fc5a1a7d1c95d8579238cb3e85700102482f0154",
+      "matches": true
+    },
+    "rtl/music/basic_pitch_cqt_engine.sv": {
+      "git_sha256": "8a3913c7def13ddff692f226ba1c623bb928d67be06af5f5f6f2380ee9eb6028",
+      "candidate_sha256": "8a3913c7def13ddff692f226ba1c623bb928d67be06af5f5f6f2380ee9eb6028",
+      "matches": true
+    },
+    "rtl/music/basic_pitch_cqt_frontend.sv": {
+      "git_sha256": "0c92ab77430815c6edad91791479b1f81afe3121a710093f1681b63ed00ed6ae",
+      "candidate_sha256": "0c92ab77430815c6edad91791479b1f81afe3121a710093f1681b63ed00ed6ae",
+      "matches": true
+    },
+    "rtl/music/basic_pitch_workstation_link.sv": {
+      "git_sha256": "b45ea2c84e99ec697554aad54b7803830c067335f653a2faef558f9d9cbbcfe4",
+      "candidate_sha256": "b45ea2c84e99ec697554aad54b7803830c067335f653a2faef558f9d9cbbcfe4",
+      "matches": true
+    },
+    "rtl/music/basic_pitch_pcm_pipeline.sv": {
+      "git_sha256": "294f9cbd3bd4890ee01b140a649cdfcdb13411d76042c5defe9a9a8415235a75",
+      "candidate_sha256": "294f9cbd3bd4890ee01b140a649cdfcdb13411d76042c5defe9a9a8415235a75",
+      "matches": true
+    },
+    "rtl/music/basic_pitch_conv2d.sv": {
+      "git_sha256": "086d159ee1737c6470481ffdd45b377e43351c8f495ed6dde6617c80f6404537",
+      "candidate_sha256": "086d159ee1737c6470481ffdd45b377e43351c8f495ed6dde6617c80f6404537",
+      "matches": true
+    }
+  }
+}

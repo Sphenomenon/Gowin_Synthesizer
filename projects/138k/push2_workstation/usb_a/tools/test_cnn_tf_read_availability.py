@@ -15,11 +15,19 @@ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Pa
 original=(BASE/TF_DMA).read_text()
 patched=fast_tf_read_availability(retime_tf_read_total(parallel_tf_byte_counters(retime_tf_write_buffer(original))))
 if a.build:
-    from build_workstation_flash_boot import expected_tf_dma
     build=a.build.resolve();metadata=json.loads((build/'build_metadata.json').read_text())
-    assert metadata.get('fast_tf_read_availability') and metadata.get('retimed_tf_read_total')
     patched=(build/'Prj1'/TF_DMA).read_text()
-    assert patched==expected_tf_dma(metadata),'candidate TF source drift'
+    if metadata.get('bus_timing'):
+        from workstation_bus_timing import expected_dma,INPUTS,HELPER_SHA256
+        assert metadata['bus_timing']['original_sha256']==INPUTS
+        assert hashlib.sha256((ROOT/'tools/cnn_ddr_pipeline_patch.py').read_bytes()).hexdigest()==HELPER_SHA256
+        assert patched==expected_dma(original),'workstation TF transformation drift'
+        assert hashlib.sha256(patched.encode()).hexdigest()==metadata['bus_timing']['transformed_sha256'][TF_DMA]
+    else:
+        from build_workstation_flash_boot import expected_tf_dma
+        assert metadata.get('fast_tf_read_availability') and metadata.get('retimed_tf_read_total')
+        assert patched==expected_tf_dma(metadata),'candidate TF source drift'
+
 block=re.search(r'    wire \[31:0\] read_plus32=.*?    wire read_has_full_beat = !available_lt32;',patched,re.S)[0]
 body='''module miter(input[31:0]write_total_bytes,read_total_bytes,output equal);
 '''+TF_BYTE_COUNT_HELPER+'\n'+block+'''

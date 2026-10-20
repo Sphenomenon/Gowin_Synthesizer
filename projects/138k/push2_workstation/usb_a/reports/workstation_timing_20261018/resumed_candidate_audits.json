@@ -1,0 +1,115 @@
+{
+  "hardware_tested": false,
+  "jobs": {
+    "p31": {
+      "build": "results/timing_p31_resume_domain_margin_20261018_155705_399572",
+      "tool_result": {
+        "exit_code": 0,
+        "inputs_unchanged": true,
+        "changed": [],
+        "build_mode": "pnr",
+        "hardware_tested": false,
+        "regenerated_synthesis_outputs": [
+          "Prj1.prj",
+          "Prj1.log",
+          "Prj1.vg",
+          "Prj1_syn.rpt.html",
+          "Prj1_syn_resource.html"
+        ],
+        "synthesis_reused_bitwise": false,
+        "synthesis_storage_checked": true,
+        "synthesis_storage_error": null
+      },
+      "passed": false,
+      "commands": {
+        "sta": {
+          "command": [
+            "/usr/bin/python3",
+            "tools/audit_workstation_timing.py",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p31_resume_domain_margin_20261018_155705_399572",
+            "--require-closed",
+            "--output",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/workstation_timing_20261018/p31_sta.json"
+          ],
+          "exit_code": 1
+        },
+        "cdc": {
+          "command": [
+            "/usr/bin/python3",
+            "tools/audit_workstation_cdc.py",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p31_resume_domain_margin_20261018_155705_399572"
+          ],
+          "exit_code": 0
+        },
+        "pll": {
+          "command": [
+            "/usr/bin/python3",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p31_resume_domain_margin_20261018_155705_399572/Prj1/scripts/check_video_pll_init.py",
+            "--root",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p31_resume_domain_margin_20261018_155705_399572/Prj1",
+            "--output",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/workstation_timing_20261018/p31_pll.json"
+          ],
+          "exit_code": 0
+        }
+      },
+      "timing_closed": false,
+      "cdc_passed": true,
+      "pll_passed": true,
+      "status": "audited; not accepted"
+    },
+    "p32": {
+      "build": "results/timing_p32_domain_margin_reference12_20261018_160005_905146",
+      "tool_result": {
+        "exit_code": 0,
+        "inputs_unchanged": true,
+        "changed": [],
+        "build_mode": "all",
+        "hardware_tested": false,
+        "regenerated_synthesis_outputs": [],
+        "synthesis_reused_bitwise": false,
+        "synthesis_storage_checked": true,
+        "synthesis_storage_error": null
+      },
+      "passed": false,
+      "commands": {
+        "sta": {
+          "command": [
+            "/usr/bin/python3",
+            "tools/audit_workstation_timing.py",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p32_domain_margin_reference12_20261018_160005_905146",
+            "--require-closed",
+            "--output",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/workstation_timing_20261018/p32_sta.json"
+          ],
+          "exit_code": 1
+        },
+        "cdc": {
+          "command": [
+            "/usr/bin/python3",
+            "tools/audit_workstation_cdc.py",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p32_domain_margin_reference12_20261018_160005_905146"
+          ],
+          "exit_code": 0
+        },
+        "pll": {
+          "command": [
+            "/usr/bin/python3",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p32_domain_margin_reference12_20261018_160005_905146/Prj1/scripts/check_video_pll_init.py",
+            "--root",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/results/timing_p32_domain_margin_reference12_20261018_160005_905146/Prj1",
+            "--output",
+            "/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/reports/workstation_timing_20261018/p32_pll.json"
+          ],
+          "exit_code": 0
+        }
+      },
+      "timing_closed": false,
+      "cdc_passed": true,
+      "pll_passed": true,
+      "status": "audited; not accepted"
+    }
+  },
+  "watcher_sha256": "92a0b0237c38585c0d23fc52b9316949a1219cd36cc45ee9ecaf222de20a4ee8",
+  "updated": "2026-10-18T17:11:24.795578+08:00"
+}

@@ -1,0 +1,8 @@
+METRIC simultaneous_join_control=1 new_link_inherited=0
+METRIC held_retune_link_changes=3 old_link_retained=1 new_link_inherited=0
+METRIC saturated_control_queue=64 ordered_controls=68 single_sample_bend_release=1 coalesced=0
+METRIC pending_bend_reconnect_replay=0 surviving_ble=0
+METRIC saturated_control_queue=64 ordered_controls=68 single_sample_bend_release=1 coalesced=1
+METRIC pending_bend_reconnect_replay=0 surviving_ble=1
+PASS tb_gw138k_panel_backpressure scenario=0
+sim/tb_gw138k_panel_backpressure.v:167: $finish called at 400500000 (1ps)

@@ -1,0 +1,24 @@
+{
+  "p34_vector_event": {
+    "pid": 1020820,
+    "command": [
+      "python3",
+      "sim/timing/run_scope_event_ab.py",
+      "results/workstation_scope83_timing85_20261018_214242_333215/Prj1",
+      "--reference",
+      "results/timing_p27_uart_cdc_route1_20261018_142516_456857/Prj1"
+    ],
+    "log": "reports/workstation_timing_20261018/p34_vector_event_runner.log"
+  },
+  "p34_vector_synth": {
+    "pid": 1020821,
+    "command": [
+      "python3",
+      "sim/timing/run_scope_synth_ab.py",
+      "results/workstation_scope83_timing85_20261018_214242_333215/Prj1",
+      "--reference",
+      "results/timing_p27_uart_cdc_route1_20261018_142516_456857/Prj1"
+    ],
+    "log": "reports/workstation_timing_20261018/p34_vector_synth_runner.log"
+  }
+}

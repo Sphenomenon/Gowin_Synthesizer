@@ -1,0 +1,2 @@
+PASS score stream: 260 ordered targets, wrap, backpressure and new-song clear
+/home/sphenicidition/Documents/fpga/migration/gw138k_audio/push2_workstation/usb_a/sim/guidance/tb_score_stream.sv:54: $finish called at 20980000 (1ps)
