@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "identity": "custom_138k_usb2_mmio_dev_20261022_v1",
+  "date": "2026-10-22",
+  "base_commit": "e88fc9c5565b53e5556329fb954735b8fc26b95e",
+  "worktree_state": "uncommitted development snapshot; not pushed",
+  "component_top": "workstation_usb2_host_mmio",
+  "selected_rtl": [
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_ulpi_link.sv",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_ulpi_supervisor.sv",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_controller.sv",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_mac.sv",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_phy.sv",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_port.sv",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb3300_host_init.sv",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb3300_host_link.sv",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_cpu_bridge.sv",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_mmio.sv"
+  ],
+  "source_policy": {
+    "accepted_profiles_changed": false,
+    "frozen_or_vendor_bytes_changed": false,
+    "production_firmware_selection_changed": false,
+    "board_prepare_still_pinout_only": true,
+    "experimental_build": "temporary component project reconstructed by the regression; not a production builder"
+  },
+  "configuration": {
+    "device": "GW5AST-LV138PG484AC2/I1",
+    "family": "GW5AST-138C",
+    "cpu_nominal_hz": 48000000,
+    "reference_hz": 50000000,
+    "ulpi_hz": 60000000,
+    "default_attach_debounce_us": 100000,
+    "native_test_attach_debounce_us": 100,
+    "root_reset_ms": 50,
+    "recovery_ms": 10,
+    "mac_upload_timeout_cycles": 60000,
+    "mac_packet_timeout_cycles": 60000,
+    "bridge_transaction_timeout_cycles": 120000,
+    "unit_bridge_transaction_timeout_cycles": 2048,
+    "unit_cpu_half_period_ps": [
+      10417,
+      7353,
+      25000
+    ],
+    "component_sdc_period_ns": {
+      "clk_cpu": 20.833333,
+      "clk_ref": 20.0,
+      "clk_ulpi": 16.666667
+    },
+    "component_false_paths": []
+  },
+  "input_sha256": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/pinout.json": "2213484d9472d192f877beb6323f13b79bc3b832f6f45f71fb968f8c70f802ae",
+    "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_host.c": "afc2a876c6de37057ba02538f4d61cdead4e6e422a0ae01b55cb939fe30aa2d6",
+    "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_host.h": "4d7ea3e7374f951d295dfa7acb160ddc1a73b0604394982927b9aa43eea32192",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_ulpi_link.sv": "0138a87ca4afa33854f0c72ea13f2dea6f212e99d3053d0fbefe44072e1fc5bb",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_ulpi_supervisor.sv": "9741276485cc6393e7786bb7ca5886d719f120e810839fe9aa2078a723b2a840",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_cpu_bridge.sv": "0bef0fa9c848ec606442b1b397a19eb7d822af0802cebdb2ed4e1acb6287fb26",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_controller.sv": "fef42fd02e74c27629d5efbdbb9957a079198ab0588751a621f3df9d6dadf33d",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_mac.sv": "d73e34695d3fbf7be0ef81423232f093df34fa9bdd11d98ee77b16572622168b",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_mmio.sv": "fdbd3e33be9232505df19daaa950a322601063f7dd8903c93873c867de37a033",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_phy.sv": "d88814938e3d0bb181a2397585ad480255b5b3ebaa670d5925f91ded6c893688",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_port.sv": "29d267e61a71ef572a96eb35f1877ad032bcaab9f72f225d00315de3e47b44e7",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb3300_host_init.sv": "546d0d2ee624dc4ecb2551273c27b9cba5e48c2d81d16dadce13c43e16fc4dbe",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb3300_host_link.sv": "9992615d19aa187e5afe3018c9f55b6480f548653cc29a1af98ef8267a51c99b",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_ulpi_link.py": "1732330b8198511533922419822af436f8eeb58d088ae7ce7133855ce7baf256",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_mmio.py": "5249bd11eee19f3b151233c3dfe432f765241d2a646d7796e70fdf778f669dbe",
+    "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_cpu_bridge.sv": "6264269c18521df20a133deb8ba0f326b247e3b79c8f7882a339410575344f61",
+    "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_mac_25k.sv": "87160461a8381d1082e715fddbc0e6217a2a7b2639599f546f52c166edcbd0d2",
+    "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_mmio_clock.sv": "a80f49145a64d2c355241617996c45eadf3b07407c3ac078d46d3abcdca3b552",
+    "projects/138k/push2_workstation/usb_a/sim/usb2/test_workstation_usb2_driver.c": "f8c3aff5c7cb70e7c59b01d86dfbc8657e0471a2814d0724ad430ad25426435a",
+    "projects/138k/push2_workstation/usb_a/sim/usb2/usb3300_host_model.sv": "f763b935daf2de0f4433dfa513d24fe5406d62258c701e52797003c8c0827c37",
+    "projects/138k/push2_workstation/usb_a/sim/usb2/usb3300_packet_model.sv": "5a474d54dabc06b9e3db0a6d3e4e189473c17a09d2b88a3bb4403b973b7ef637",
+    "projects/138k/push2_workstation/usb_a/sim/usb2/usb3300_register_model.sv": "19c808ad5a28fb5977ca995f9c6e0c067fe178a06d96967b3ecf04f382b9d9ce",
+    "projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": "76f15a00e2440ed598eb3f41020e2998661e8971ff51e7f6a4c5945fa8728210",
+    "projects/25k/prj/usb2_device/hs/usb_cdc_core.v": "35863cea6652980a22e8d741e9148a93928dcc2ddf7a7013cf4e479b7267f338",
+    "projects/25k/prj/usb2_device/hs/usb_desc_rom.v": "0dd5db3ca174ff8ed3a5862071ebee3ddd21653b77428eb55db4198475bcbaf8",
+    "projects/25k/prj/vendor/ultraembedded_usb_hs/UPSTREAM.json": "06d978f6ff82d36797b8ffef1fa5ec3b52aef40e629760b7cb777a754fad9a67",
+    "projects/25k/prj/vendor/ultraembedded_usb_hs/cdc/usbf_crc16.v": "ad478724e9e71c724788274c237a8324d27deb17724b39d0681740eda92f18d9",
+    "projects/25k/prj/vendor/ultraembedded_usb_hs/cdc/usbf_defs.v": "5ea9871d316cea1a9b7f5faf33c0f9b3bb513594aacb33288638c2a64a28f484",
+    "projects/25k/prj/vendor/ultraembedded_usb_hs/cdc/usbf_device_core.v": "a5283b58e6df54a3d9149ed139f34f4a9d190f7b1a20b10d87149f6b3ee5262d",
+    "projects/25k/prj/vendor/ultraembedded_usb_hs/cdc/usbf_sie_rx.v": "8b357ce23dfa2ad8ce418289be7056f6a1fd2af41afa0e088f7846cff7638464",
+    "projects/25k/prj/vendor/ultraembedded_usb_hs/cdc/usbf_sie_tx.v": "e0e7acb454d59894fc2c6e871b30ddeaa441207dc7171d8c787b56f3e4424c49"
+  },
+  "tools": {
+    "verilator": "Verilator 5.046 2026-02-28 rev fedora-5.046",
+    "yosys": "Yosys 0.67+post (git sha1 22c15a7ecd53437f18f67c72572bd693f78357ca, GNU /usr/bin/g++ 16.1.1)",
+    "host_gcc": "gcc (GCC) 16.2.1 20260819 (Red Hat 16.2.1-2)",
+    "riscv_gcc": "riscv32-xilinx-elf-gcc.real (GCC) 13.4.0",
+    "gowin": "1.9.12.03; run syn only"
+  },
+  "verification": {
+    "combined_new_six_and_existing_thirteen": {
+      "test_entries": 19,
+      "seconds": 813.621,
+      "passed": true,
+      "log_sha256": "1e3d4dd5f7fbe7bc9f4381fa6cdb092e6ccb40b6de9f73f5d110fe64d8f26d90",
+      "pass_lines": [
+        "PASS workstation_usb2_mac_25k: HS=1 native=1 mmio=1, 2683 checks, descriptors/address/config/512-byte bulk/real SOF",
+        "PASS workstation_usb2_mac_25k: HS=0 native=1 mmio=1, 4970 checks, descriptors/address/config/64-byte bulk/real SOF",
+        "PASS workstation_usb2_cpu_bridge: half-period=10417, 7828 checks, sealed 512-byte CDC/reset/timeout/clock loss",
+        "PASS workstation_usb2_cpu_bridge: half-period=7353, 8170 checks, sealed 512-byte CDC/reset/timeout/clock loss",
+        "PASS workstation_usb2_cpu_bridge: half-period=25000, 7342 checks, sealed 512-byte CDC/reset/timeout/clock loss",
+        "PASS workstation_usb2_driver: 512/64-byte bounds, cancellation, NYET, reset, clock/timer failure",
+        "PASS Gowin USB2 MMIO synthesis: 4 SDPB, 1073 registers, no P&R or bitstream",
+        "PASS workstation_ulpi_supervisor: 223 checks, 4 scenarios, missing/stopped clock, explicit recovery, asynchronous assertion/synchronous release",
+        "PASS Gowin USB2 controller synthesis: 2 SDPB, 791 registers, no P&R or bitstream",
+        "PASS USB2 HS UTMI: filtered chirp, descriptors/min lengths/qualifier/other-speed, address status ACK, configuration, CDC, 512-byte binary loopback, 500us idle preservation, 3ms HS warm reset and re-enumeration",
+        "PASS workstation_usb2_host_port: 15940 checks, 14 scenarios, HS chirps/FS fallback, debounce/recovery/session fencing and failure injection",
+        "PASS workstation_usb3300_host_init: 3762 checks, 19 scenarios, physical ID/scratch/host readback, bounded retries/failures",
+        "PASS workstation_usb2_host_mac: HS=1 physical=1, 1841 checks, CRC/commit/duplicates/faults/SOF/backpressure",
+        "PASS workstation_usb2_host_mac: HS=0 physical=1, 449 checks, CRC/commit/duplicates/faults/SOF/backpressure",
+        "PASS workstation_usb2_host_mac: HS=1 physical=0, 1841 checks, CRC/commit/duplicates/faults/SOF/backpressure",
+        "PASS workstation_usb2_host_mac: HS=0 physical=0, 449 checks, CRC/commit/duplicates/faults/SOF/backpressure",
+        "PASS workstation_usb2_mac_25k: HS=1 native=0 mmio=0, 1108 checks, descriptors/address/config/512-byte bulk/real SOF",
+        "PASS workstation_usb2_mac_25k: HS=0 native=0 mmio=0, 224 checks, descriptors/address/config/64-byte bulk/real SOF",
+        "PASS workstation_usb2_mac_25k: HS=1 native=1 mmio=0, 1144 checks, descriptors/address/config/512-byte bulk/real SOF",
+        "PASS workstation_usb2_mac_25k: HS=0 native=1 mmio=0, 264 checks, descriptors/address/config/64-byte bulk/real SOF",
+        "PASS workstation_usb2_25k_negotiation: deviceHS=1, 922 checks, 3666025 cycles, 2736000 physical raw bytes, 912 chirps, default 60MHz/50ms reset/10ms recovery",
+        "PASS workstation_usb2_25k_negotiation: deviceHS=0, 7 checks, 3607530 cycles, 0 physical raw bytes, 0 chirps, default 60MHz/50ms reset/10ms recovery",
+        "PASS workstation_ulpi_link: 10176 checks, 17 reset scenarios, 256 scratch patterns, 514-byte TX, NOPID, RXCMD, preemption, timeouts",
+        "PASS workstation_usb3300_host_link: 3115 checks, 5 scenarios, real composition/CSR handoff, warm recovery, missing clock and runtime cancellation"
+      ]
+    },
+    "final_six_focused_checks_including_reference_clock": {
+      "test_entries": 6,
+      "seconds": 15.082,
+      "passed": true,
+      "log_sha256": "38ca77e038caee5c6b3fa00bc774eafa9e0bcf313ca6926fb3c62e93ee2e6525",
+      "pass_lines": [
+        "PASS workstation_usb2_driver: 512/64-byte bounds, cancellation, NYET, reset, clock/timer failure",
+        "PASS workstation_usb2_mmio_clock: 3220 checks, actual missing/stopped PHY clock, live CPU diagnostics and restart",
+        "PASS workstation_usb2_cpu_bridge: half-period=10417, 7828 checks, sealed 512-byte CDC/reset/timeout/clock loss",
+        "PASS workstation_usb2_cpu_bridge: half-period=7353, 8170 checks, sealed 512-byte CDC/reset/timeout/clock loss",
+        "PASS workstation_usb2_cpu_bridge: half-period=25000, 7342 checks, sealed 512-byte CDC/reset/timeout/clock loss",
+        "PASS Gowin USB2 MMIO synthesis: 4 SDPB, 1073 registers, no P&R or bitstream"
+      ]
+    },
+    "legacy_pinout": {
+      "test_entries": 25,
+      "seconds": 0.491,
+      "passed": true,
+      "log_sha256": "2e80e03bf2b2fcd3b35f64b69b0208bc4381593043b8020821475c977d2bc310",
+      "pass_lines": []
+    },
+    "accepted_current_source_policy": {
+      "test_entries": 10,
+      "seconds": 0.013,
+      "passed": true,
+      "log_sha256": "45629e08d8c41ba474e149425cf4477b6ed2d14afbd48b41a5dea35ddb36ae32",
+      "pass_lines": []
+    },
+    "legacy_firmware_staging": {
+      "test_entries": 6,
+      "seconds": 0.024,
+      "passed": true,
+      "log_sha256": "c57bdec5f19166a93690118c71d5c3ee68b3bfc2827da2e950a0cdc421d4bd4f",
+      "pass_lines": []
+    },
+    "clean_prepare_baselines": {
+      "test_entries": 23,
+      "seconds": 6.031,
+      "passed": true,
+      "log_sha256": "d64345bcae8e6ae03d33b019d817619c67a1d3305aa764d5be57e43dfb9c8fbc",
+      "pass_lines": []
+    }
+  },
+  "unique_python_test_entries": {
+    "new_mmio": 7,
+    "existing_usb": 13,
+    "legacy_source_and_prepare": 64,
+    "total": 84,
+    "counting": "grouped validation; repeated focused runs and parameter subcases are not counted again"
+  },
+  "discovery": {
+    "current_mmio_entry_count": 7,
+    "note": "The combined run began before removal of an imported TestCase class, so it also executed the existing thirteen USB tests. Current module discovery and the final six focused checks were verified after the import fix."
+  },
+  "native_mmio_checks": {
+    "high_speed": 2683,
+    "full_speed": 4970,
+    "scope": "register bus master, physical ULPI digital model, real 25K CDC/SIE; not actual CPU firmware"
+  },
+  "synthesis": {
+    "tool": "Gowin",
+    "scope": "ten-module component, no P&R",
+    "sdpb_primitives": 4,
+    "registers": 1073,
+    "physical_routed_bsram": null,
+    "routed_timing": null,
+    "bitstream": null
+  },
+  "status": {
+    "source_implemented": true,
+    "offline_component_verified": true,
+    "hardware_accepted": false,
+    "vexriscv_bus_integrated": false,
+    "whole_firmware_linked": false,
+    "new_board_profile_complete": false,
+    "release_ready": false,
+    "sram_deployed": false,
+    "flash_deployed": false
+  },
+  "remaining": [
+    "Integrate native MMIO with the real VexRiscv bus and define bus-error handling.",
+    "Select and link the first-party driver in an explicit new-board firmware profile; adapt usbhw callers and endpoint policies.",
+    "Verify actual CPU execution through the HS/FS device path, not just bus-master and C-model tests.",
+    "Integrate and validate the real 25K MIDI/PL HS backend while preserving the wire contracts and lifecycle fences.",
+    "Finish the native new-board composition, all I/O/electrical constraints, full synthesis, P&R, timing, CDC and PLL gates.",
+    "Confirm amplifier U1 identity, FPC/resistor-network pairing and actual digital audio format before driving the amplifier.",
+    "Resolve or confirm as-built USB3300 ULPI level-converter electrical compatibility before board operation.",
+    "Finish and verify real HDMI, TF, BLE and audio/peripheral paths against the whole-board bring-up checklist.",
+    "Physical USB/25K/Push, analog audio, HDMI, reset and power-cycle acceptance and separate deployment evidence remain absent."
+  ],
+  "rollback": "Keep the existing explicit profiles at the base commit; do not select the new MMIO/driver. No SRAM/Flash contents were changed.",
+  "preserved_untracked_user_files": [
+    "工程架构报告.md",
+    "projects/138k/push2_workstation/usb_a/reports/MODE_D_EP133_COMPARISON_20261020.md"
+  ]
+}

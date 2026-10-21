@@ -6,9 +6,74 @@ ship with the old accepted firmware ROM. No board operations are performed.
 """
 from pathlib import Path
 import hashlib
+import json
 import os
 import shutil
 import subprocess
+
+
+USB2_VENDOR_MANIFEST_SHA256 = '901833fa2083c9a09db62045c5b12e63360c3f61e7775847ca78ddaeb5c76ba6'
+
+
+def verify_usb2_cpu_vendor(root):
+    vendor = Path(root) / 'vendor/usb_host_fs_8fc3'
+    manifest = vendor / 'inputs.json'
+    if sha(manifest) != USB2_VENDOR_MANIFEST_SHA256:
+        raise ValueError('USB2 CPU vendor manifest identity changed')
+    records = json.loads(manifest.read_text())
+    for relative, expected in records.items():
+        if sha(vendor / relative) != expected:
+            raise ValueError('USB2 CPU immutable vendor source changed: ' + relative)
+    return vendor
+
+
+def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None):
+    root, output, entry = map(Path, (root, output, entry))
+    vendor = verify_usb2_cpu_vendor(root)
+    prefix = compiler_prefix(riscv_prefix)
+    sources = [vendor / 'firmware/start.S', entry,
+               root / 'drivers/usb2/workstation_usb2_host.c', root / 'drivers/usb2/workstation_usb2_cpu_port.c']
+    headers = [root / 'drivers/usb2/workstation_usb2_host.h', root / 'drivers/usb2/workstation_usb2_cpu_port.h']
+    linker = vendor / 'firmware/baremetal.ld'
+    for source in [*sources, *headers, linker]:
+        if not source.is_file():
+            raise FileNotFoundError('missing explicit USB2 CPU firmware input: ' + str(source))
+    identities = {str(source.relative_to(root)): sha(source) for source in [*sources, *headers, linker]}
+    output.mkdir(parents=True, exist_ok=False)
+    shutil.copyfile(linker, output / 'baremetal.ld')
+    common = ['-march=rv32i', '-mabi=ilp32', '-mno-relax', '-msmall-data-limit=0']
+    with (output / 'build.log').open('w') as log:
+        objects = []
+        for index, source in enumerate(sources):
+            target = 'start.o' if index == 0 else f'source_{index}.o'
+            objects.append(target)
+            subprocess.run([prefix + '-gcc', *common, '-std=c11', '-Os', '-ffreestanding',
+                            '-ffunction-sections', '-fdata-sections', '-Wall', '-Wextra', '-Werror',
+                            '-I', str(root / 'drivers/usb2'), '-c', str(source.resolve()), '-o', target],
+                           cwd=output, stdout=log, stderr=subprocess.STDOUT, check=True)
+        subprocess.run([prefix + '-gcc', *common, '-nostdlib', '-Wl,-e,_start,--gc-sections,--build-id=none,-T,baremetal.ld',
+                        *objects, '-lgcc', '-o', 'firmware.elf'], cwd=output,
+                       stdout=log, stderr=subprocess.STDOUT, check=True)
+        subprocess.run([prefix + '-objcopy', '-O', 'binary', 'firmware.elf', 'firmware.bin'], cwd=output,
+                       stdout=log, stderr=subprocess.STDOUT, check=True)
+    size = subprocess.run([prefix + '-size', str(output / 'firmware.elf')], text=True, capture_output=True, check=True)
+    symbols = subprocess.run([prefix + '-nm', '-n', str(output / 'firmware.elf')], text=True, capture_output=True, check=True)
+    used = static_memory_bytes(size.stdout)
+    end = static_memory_end(symbols.stdout)
+    binary = (output / 'firmware.bin').read_bytes()
+    if not binary or max(len(binary), used, end) >= 60000:
+        raise ValueError('USB2 CPU firmware must leave stack space in 64 KiB RAM')
+    for relative, expected in identities.items():
+        if sha(root / relative) != expected:
+            raise ValueError('USB2 CPU firmware input changed during compilation: ' + relative)
+    padded = binary.ljust(65536, b'\0')
+    rom = output / 'usb2_cpu.hex'
+    rom.write_text(''.join(f'{int.from_bytes(padded[index:index+4], "little"):08x}\n'
+                           for index in range(0, len(padded), 4)))
+    return dict(isa='rv32i', abi='ilp32', entry=str(entry.relative_to(root)), input_sha256=identities,
+                firmware_bytes=len(binary), static_ram_bytes=used, static_ram_end=end, stack_margin_bytes=65536-end,
+                elf_sha256=sha(output / 'firmware.elf'), binary_sha256=sha(output / 'firmware.bin'), rom_sha256=sha(rom),
+                vendor_manifest_sha256=USB2_VENDOR_MANIFEST_SHA256, hardware_tested=False)
 
 
 def sha(path):

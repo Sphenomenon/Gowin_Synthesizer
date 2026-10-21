@@ -1,12 +1,20 @@
 `timescale 1ns/1ps
 module tb_workstation_usb2_mac_25k #(
     parameter integer HIGH_SPEED = 1,
-    parameter integer NATIVE_PORT = 0
+    parameter integer NATIVE_PORT = 0,
+    parameter integer NATIVE_MMIO = 0
 );
     reg clk = 0;
     always #8.333 clk = ~clk;
     reg clk_ref = 0;
     always #10 clk_ref = ~clk_ref;
+    reg clk_cpu = 0;
+    always #10.417 if (NATIVE_MMIO != 0) clk_cpu = ~clk_cpu;
+    reg cpu_cs = 0, cpu_write = 0;
+    reg [7:0] cpu_address = 0;
+    reg [31:0] cpu_write_data = 0;
+    wire [31:0] cpu_read_data;
+    wire cpu_ack, cpu_error;
     reg board_reset_n = 0, board_enable = 1, attached = 1, stall_phy = 0, reset_request = 0;
     reg device_reset = 1, device_enable = 0, mac_reset_n = 0, running = 0;
     reg [1:0] negotiation_line = 1, packet_line = 1;
@@ -107,6 +115,7 @@ module tb_workstation_usb2_mac_25k #(
         tri [7:0] physical_data;
         assign physical_data = host_oe ? host_data : 8'hzz;
         assign physical_data = phy_oe ? phy_data : 8'hzz;
+        if (NATIVE_MMIO == 0) begin : transaction_interface
         workstation_usb2_host_controller #(.ATTACH_DEBOUNCE_US(100)) host (
             .clk_ref(clk_ref), .clk_ulpi(clk), .reset_n(board_reset_n), .enable_i(board_enable),
             .hs_enable_i(1'b1), .reset_request_i(reset_request),
@@ -127,6 +136,33 @@ module tb_workstation_usb2_mac_25k #(
             .vendor_id_o(), .product_id_o(), .function_o(), .init_failure_code_o(), .init_stage_o(),
             .clock_failure_code_o(), .received_bytes_o(), .transmitted_bytes_o()
         );
+        end else begin : cpu_interface
+            workstation_usb2_host_mmio #(.ATTACH_DEBOUNCE_US(100)) host (
+                .clk_cpu(clk_cpu), .clk_ref(clk_ref), .clk_ulpi(clk), .reset_n(board_reset_n),
+                .reg_cs_i(cpu_cs), .reg_wr_i(cpu_write), .reg_addr_i(cpu_address), .reg_wdata_i(cpu_write_data), .reg_be_i(4'hf),
+                .reg_ack_o(cpu_ack), .reg_error_o(cpu_error), .reg_rdata_o(cpu_read_data), .irq_o(),
+                .ulpi_data_i(physical_data), .ulpi_dir_i(phy_dir), .ulpi_nxt_i(phy_nxt),
+                .ulpi_data_o(host_data), .ulpi_data_oe_o(host_oe), .ulpi_stp_o(host_stp),
+                .transaction_reset_n_o(transaction_reset_n), .phy_ready_o(phy_ready), .failed_o(host_failed),
+                .high_speed_o(host_hs), .traffic_enable_o(traffic_enable), .sof_count_o(sof_count)
+            );
+            assign mac_fatal = host.controller.mac_failed_o;
+            assign phy_failed = host.controller.phy_failed_o;
+            assign host_connected = host.controller.connected_o;
+            assign native_sof_enable = host.controller.sof_enable_o;
+            assign missed_sof = host.controller.missed_sof_o;
+            assign mac_state = host.controller.mac_state_o;
+            assign port_state = host.controller.port_state_o;
+            assign port_failure = host.controller.port_failure_code_o;
+            assign command_ready = 0;
+            assign result_valid = 0;
+            assign receive_valid = 0;
+            assign receive_last = 0;
+            assign receive_data = 0;
+            assign result_status = 0;
+            assign result_pid = 0;
+            assign result_length = 0;
+        end
         usb3300_host_model #(.HIGH_SPEED(HIGH_SPEED)) phy (
             .clk_ulpi(clk), .reset_n(board_reset_n), .runtime_i(transaction_reset_n), .attached_i(attached),
             .stall_i(stall_phy), .link_data_i(physical_data), .link_oe_i(host_oe), .link_stp_i(host_stp),
@@ -139,7 +175,7 @@ module tb_workstation_usb2_mac_25k #(
         );
         always @(posedge clk) begin
             if (host_oe && phy_oe) $fatal(1, "native ULPI bus contention");
-            if (board_reset_n && !transaction_reset_n && (result_valid || receive_valid || command_ready))
+            if (NATIVE_MMIO == 0 && board_reset_n && !transaction_reset_n && (result_valid || receive_valid || command_ready))
                 $fatal(1, "transaction escaped native reset boundary");
         end
     end endgenerate
@@ -183,9 +219,39 @@ module tb_workstation_usb2_mac_25k #(
     task automatic check(input reg condition, input string message);
         begin checks = checks + 1; if (!condition) $fatal(1, "%s HS=%0d cycle=%0d MAC=%0d status=%0d PID=%02x device=%0d", message, HIGH_SPEED, cycle, mac_state, result_status, result_pid, device_hsstate); end
     endtask
-    task automatic transfer(input [7:0] pid, input integer endpoint, input reg toggle, input integer length, input integer expected_status);
+    task automatic cpu_access(input reg write_enable, input [7:0] address, input [31:0] data, output reg [31:0] value);
         integer deadline;
         begin
+            @(negedge clk_cpu); cpu_cs = 1; cpu_write = write_enable; cpu_address = address; cpu_write_data = data;
+            deadline = 0; @(negedge clk_cpu);
+            while (!cpu_ack && deadline < 16) begin deadline = deadline + 1; @(negedge clk_cpu); end
+            check(cpu_ack && !cpu_error, $sformatf("native CPU MMIO %02x", address)); value = cpu_read_data;
+            cpu_cs = 0; @(negedge clk_cpu);
+        end
+    endtask
+    reg [31:0] cpu_value;
+    task automatic transfer(input [7:0] pid, input integer endpoint, input reg toggle, input integer length, input integer expected_status);
+        integer deadline;
+        reg [31:0] value;
+        begin
+            if (NATIVE_MMIO != 0) begin
+                if (pid != 8'h69 && pid != 8'hb4)
+                    for (integer byte_index = 0; byte_index < length; byte_index = byte_index + 1)
+                        cpu_access(1, 8'h10, {24'd0, payload[byte_index]}, value);
+                cpu_access(1, 8'h0c, {2'd0, 10'(length), toggle, 4'(endpoint), command_device, pid}, value);
+                deadline = cycle + 100000; value = 0;
+                while (!value[18] && cycle < deadline) cpu_access(0, 8'h08, 0, value);
+                check(value[18] && !value[17], "native CPU receives complete packet result");
+                cpu_access(0, 8'h18, 0, value);
+                check(value[31] && value[3:0] == 4'(expected_status), "native CPU result status");
+                received_length = int'(value[25:16]);
+                if (consume_enabled) begin
+                    for (integer byte_index = 0; byte_index < received_length; byte_index = byte_index + 1) begin
+                        cpu_access(0, 8'h14, 0, value); received[byte_index] = value[7:0];
+                    end
+                    cpu_access(1, 8'h1c, 1, value);
+                end
+            end else begin
             @(negedge clk); command_pid = pid; command_endpoint = endpoint;
             command_toggle = toggle; command_length = length; command_valid = 1;
             @(posedge clk); while (!command_ready) @(posedge clk);
@@ -210,6 +276,7 @@ module tb_workstation_usb2_mac_25k #(
                     received[byte_index] = receive_data; wait_cycles(1);
                 end
                 receive_ready = 0;
+            end
             end
         end
     endtask
@@ -244,6 +311,7 @@ module tb_workstation_usb2_mac_25k #(
         wait_cycles(10); device_reset = 0; device_enable = 1;
         if (NATIVE_PORT != 0) begin
             board_reset_n = 1;
+            if (NATIVE_MMIO != 0) begin repeat (10) @(negedge clk_cpu); cpu_access(1, 4, 3, cpu_value); end
             wait (traffic_enable); wait_cycles(10);
             check(!host_failed && host_connected && host_hs == (HIGH_SPEED != 0) && device_hs == (HIGH_SPEED != 0), "native reset and device negotiation");
             check(sof_count >= (HIGH_SPEED != 0 ? 80 : 10), "recovery uses actual MAC SOF packets");
@@ -280,26 +348,42 @@ module tb_workstation_usb2_mac_25k #(
         if (NATIVE_PORT != 0) begin
             setup(8'h80, 6, 16'h0100, 18); consume_enabled = 0;
             transfer(8'h69, 0, 1, HIGH_SPEED != 0 ? 64 : 8, 0);
-            check(result_valid && !receive_valid, "native held completion before cancellation");
-            if (HIGH_SPEED != 0) begin reset_request = 1; wait_cycles(1); reset_request = 0; end
+            if (NATIVE_MMIO != 0) begin
+                cpu_access(0, 8'h18, 0, cpu_value); check(cpu_value[31], "hold CPU result across native cancellation");
+            end else check(result_valid && !receive_valid, "native held completion before cancellation");
+            if (HIGH_SPEED != 0) begin
+                if (NATIVE_MMIO != 0) cpu_access(1, 4, 7, cpu_value);
+                else begin reset_request = 1; wait_cycles(1); reset_request = 0; end
+            end
             else begin attached = 0; device_reset = 1; end
             wait (!transaction_reset_n); wait_cycles(200);
-            check(!result_valid && !receive_valid && !command_ready, "native cancellation removes old completion and receive data");
+            if (NATIVE_MMIO != 0) begin
+                cpu_access(0, 8'h08, 0, cpu_value);
+                check(cpu_value[19] && !cpu_value[18] && !cpu_value[17], "native CPU observes cancellation without stale completion");
+                cpu_access(1, 8'h1c, 4, cpu_value);
+            end else check(!result_valid && !receive_valid && !command_ready, "native cancellation removes old completion and receive data");
             if (HIGH_SPEED == 0) begin device_reset = 0; attached = 1; end
             wait (traffic_enable); wait_cycles(10); consume_enabled = 1; command_device = 0;
             check(!device_configured && device_address == 0 && host_hs == (HIGH_SPEED != 0), "native reset/reconnect cleared device session");
             get_descriptor();
             check(normal_packets > (HIGH_SPEED != 0 ? 100 : 50) && !host_failed && missed_sof == 0, "same physical PHY and MAC carried reset through real packets");
             stall_phy = 1; wait (mac_fatal); wait_cycles(200);
-            check(host_failed && !command_ready && !result_valid && !receive_valid && !traffic_enable && !native_sof_enable, "MAC watchdog closes native API");
+            check(host_failed && !traffic_enable && !native_sof_enable, "MAC watchdog closes native traffic");
+            if (NATIVE_MMIO != 0) begin
+                cpu_access(0, 8'h08, 0, cpu_value);
+                check(cpu_value[19] && !cpu_value[18] && !cpu_value[17] && !cpu_value[16], "native fault cancels CPU transaction channel");
+            end else check(!command_ready && !result_valid && !receive_valid, "MAC watchdog closes native API");
             wait_cycles(12000);
             check(mac_fatal && host_failed && !transaction_reset_n, "MAC failure remains latched after PHY resets the MAC");
             board_enable = 0; wait_cycles(200); stall_phy = 0;
+            if (NATIVE_MMIO != 0) begin cpu_access(1, 4, 2, cpu_value); wait_cycles(200); end
             check(!mac_fatal, "explicit disable clears native MAC failure latch");
-            board_enable = 1; wait (!phy_ready); wait (phy_ready);
+            board_enable = 1;
+            if (NATIVE_MMIO != 0) cpu_access(1, 4, 3, cpu_value);
+            wait (!phy_ready); wait (phy_ready);
             check(!mac_fatal && !phy_failed, "explicit restart completes new PHY self-test");
         end
-        $display("PASS workstation_usb2_mac_25k: HS=%0d native=%0d, %0d checks, descriptors/address/config/%0d-byte bulk/real SOF", HIGH_SPEED, NATIVE_PORT, checks, MAX_PAYLOAD);
+        $display("PASS workstation_usb2_mac_25k: HS=%0d native=%0d mmio=%0d, %0d checks, descriptors/address/config/%0d-byte bulk/real SOF", HIGH_SPEED, NATIVE_PORT, NATIVE_MMIO, checks, MAX_PAYLOAD);
         $finish;
     end
     initial begin

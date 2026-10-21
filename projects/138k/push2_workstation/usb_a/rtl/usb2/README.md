@@ -4,6 +4,10 @@
 
 后续增量 [Host MAC 包级报告](../../reports/CUSTOM_BOARD_USB2_HOST_MAC_20261022.md) 增加真实 SOF／事务与双端枚举、回环验证。[原生控制器报告](../../reports/CUSTOM_BOARD_USB2_CONTROLLER_20261022.md) 进一步将八模块组成同一物理 ULPI 仿真链路，完成真实 25K HS／FS 枚举、回环、复位与故障隔离，并通过 Gowin 组件综合；仍不是包含 CPU 的整机或实板验收。
 
+[CPU 寄存器边界](CPU_MMIO.md) 新增双时钟整包邮箱、原生 MMIO 组合与独立第一方驱动；旧 CPU／固件 profile 不会自动选择它。[MMIO 阶段记录](../../reports/CUSTOM_BOARD_USB2_MMIO_20261022.md) 区分寄存器主机仿真、C 驱动模型、RV32 对象编译与真正 CPU／整机集成。
+
+[CPU 接入开发快照](../../reports/CUSTOM_BOARD_USB2_CPU_CHECKPOINT_20261022.md) 保存原生 CPU 总线、SoC 与独立 RV32I 固件入口。真实 CPU 的 HS／FS 端到端测试仍失败，不能将该快照当成通过验证的整机或部署候选。
+
 ## 模块与时钟
 
 | 模块 | 职责 |
@@ -16,8 +20,12 @@
 | `workstation_usb2_host_phy.sv` | 六模块平台组合，将 CSR 交给端口状态机，按所有权在 chirp 与 MAC 间交接 UTMI，失败时拉高 STP／释放 DATA |
 | `workstation_usb2_host_mac.sv` | 60 MHz 单事务引擎、HS／FS SOF、完整包上传、PID／CRC、ACK／重复包、接收提交与结果背压 |
 | `workstation_usb2_host_controller.sv` | PHY＋MAC 原生组合、独立故障复位与跨域锁存、立即关闭 DATA OE／拉高 STP、隔离失败会话 |
+| `workstation_usb2_cpu_bridge.sv` | CPU／ULPI 整包双时钟邮箱、寄存器、状态快照、取消代次与有界恢复 |
+| `workstation_usb2_host_mmio.sv` | CPU bridge＋原生控制器，独立参考域 enable／停钟诊断交接 |
 
 `clk_ref` 预期 50 MHz，`enable_i` 在此域。`clk_ulpi` 为 USB3300 提供的 60 MHz。除了 `clock_running_o`／`clock_present_o`／`clock_failed_o`／`clock_failure_code_o`，组合模块的 CSR、UTMI 和诊断数据均在 ULPI 域。`ready_o` 可因复位／停钟异步撤销；它不是可以直接采入另一个域的多字节状态快照。
+
+上述说明针对 Link／PHY／原生控制器端口；新增 MMIO 的寄存器、IRQ 与取消代次在 CPU 域，其快照及参考域故障交接见 [CPU MMIO 文档](CPU_MMIO.md)，不直接采样原生多字节诊断。
 
 参考域 `reset_n` 须来自异步置位、参考域同步释放的复位源。心跳计数器的复位独立同步到 ULPI；ULPI 链路的释放另经两级同步。心跳仅将分频计数器最高位跨域，经两级寄存器同步，不直接采样运行中的多位计数器。这里验证的是时钟存活，不是 60 MHz 频率精度或已完成的整板 CDC／恢复移除时序验收。
 
@@ -84,7 +92,7 @@ OUT／SETUP 先收全上传内容再启动 token，默认总上传预算 60,000 
 
 结果码：`0` 成功，`1` NAK，`2` STALL，`3` 无响应，`4` PID／CRC／RxError／非法响应，`5` 重复有效数据包，`6` 接收超限，`7` 上传超时，`8` 非法命令，`9` HS OUT NYET。NYET 表示本次 OUT 已接受但后续未就绪，不能当成未接受而盲目重发；后续 PING／重试策略属于固件。MAC 不自动修改端点 toggle，不把 NAK、NYET 或重复包伪装成新的数据成功。
 
-ULPI 包间隔使用规范 Table 10 的时基：HS 连续发送从 STP 计时，接收转发送从 RX 结束计时，FS 从新鲜 SE0→J RXCMD 计时。响应计时、丢包和事务结果分开；每个包阶段另有默认 60,000 拍看门狗。`fatal_o` 表示无法保证当前 PHY 事务完成，由独立的 `fault_reset_n` 清除，普通事务 `reset_n` 不清除它。原生控制器为该故障提供跨域锁存并立即隔离 DATA／拉高 STP，只有外部关闭 `enable_i` 或全局复位才能显式清除，避免 PHY 先复位 MAC 导致参考域漏采故障，也不形成自动重启环。CPU／MMIO／CDC 与固件适配尚未接入，不能直接拿这个组件上板。
+ULPI 包间隔使用规范 Table 10 的时基：HS 连续发送从 STP 计时，接收转发送从 RX 结束计时，FS 从新鲜 SE0→J RXCMD 计时。响应计时、丢包和事务结果分开；每个包阶段另有默认 60,000 拍看门狗。`fatal_o` 表示无法保证当前 PHY 事务完成，由独立的 `fault_reset_n` 清除，普通事务 `reset_n` 不清除它。原生控制器为该故障提供跨域锁存并立即隔离 DATA／拉高 STP，只有外部关闭 `enable_i` 或全局复位才能显式清除，避免 PHY 先复位 MAC 导致参考域漏采故障，也不形成自动重启环。MMIO／双时钟邮箱已有显式组件，但 VexRiscv／整机固件仍未接入，不能直接拿这个组件上板。
 
 ## 复现与集成边界
 

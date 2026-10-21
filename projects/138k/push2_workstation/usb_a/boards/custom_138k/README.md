@@ -43,6 +43,10 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 
 更新的 [Host MAC 包级进展](../../reports/CUSTOM_BOARD_USB2_HOST_MAC_20261022.md) 已补独立事务引擎及真实 25K 枚举／HS 512 字节、FS 64 字节回环。[原生控制器进展](../../reports/CUSTOM_BOARD_USB2_CONTROLLER_20261022.md) 已进一步完成 PHY＋MAC 同链路仿真、故障隔离与 Gowin 组件综合；仍须接入 CPU／固件并组成完整新板配置，不能当成 MIDI／PL 或实板完成。
 
+[CPU MMIO 进展](../../reports/CUSTOM_BOARD_USB2_MMIO_20261022.md) 增加显式双时钟整包邮箱与第一方有界驱动，不会自动替换旧 FS MMIO／固件。寄存器主机到真实 25K 的仿真仍不等于 VexRiscv、MIDI／PL 或新板整机接入。
+
+[CPU 接入开发快照](../../reports/CUSTOM_BOARD_USB2_CPU_CHECKPOINT_20261022.md) 保存原生总线、SoC 与 RV32I 固件暂存进度；真实 CPU 的 HS／FS 端到端回归仍失败，不是可上板候选，也不改变已接受整机配置。
+
 之后分别执行时序／CDC／PLL／资源门禁及实体排线、Push／25K、音频、HDMI 验收，另建具有完整来源和位流哈希的新候选。Push 和 25K 在同一个 USB-A 口交替接入，不假定同时连接或 High-Speed。不得凭本阶段通过执行 SRAM 或 Flash 下载。
 
 本入口不改 `p11.cst`、冻结基线、vendor 或整机 RTL；回退即继续原有显式整机配置，不需要恢复网表、重新刷板或删除历史结果。将来接入原生新板装配时，应保留本配置作为位置权威，并以通过端口覆盖、电气检查和完整物理门禁作为结束 `pinout_only` 阶段的条件。
