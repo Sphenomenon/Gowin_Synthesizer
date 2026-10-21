@@ -1,0 +1,216 @@
+`default_nettype none
+// Snapshot the same immutable front banks used by this raster. Reuse their
+// read ports before pixels issue. DDR stalls retain those banks; audio never waits.
+module display_data_writer (
+    input wire clk,rst_n,enabled,start,
+    input wire [255:0] effect_meta,
+    input wire [31:0] analysis_sequence,analysis_skipped,stereo_peaks,
+    input wire analysis_valid,
+    input wire [2:0] image_gain,
+    output wire busy,
+    output reg done,initialized,
+    output wire req_valid,
+    input wire req_ready,
+    output reg [28:0] req_addr,
+    output reg [255:0] req_wdata,
+    output wire read_enable,
+    output wire [1:0] read_kind,
+    output wire [15:0] read_addr,
+    input wire [31:0] read_data
+);
+    import display_data_layout_pkg::*;
+    localparam [3:0] INIT_CONTROL=0,INIT_BANK0=1,INIT_BANK1=2,IDLE=3,SNAPSHOT=4,
+        INVALIDATE=5,READ=6,WAIT_RAM=7,CAPTURE=8,WRITE=9,META=10,DESC=11,
+        COMMIT_BANK=12,COMMIT_GLOBAL=13,FINISH=14;
+    reg [3:0] state;
+    reg bank;
+    reg [31:0] frame_sequence;
+    reg [255:0] meta_q,pack_data;
+    reg [31:0] analysis_sequence_q,analysis_skipped_q,peaks_q;
+    reg valid_q;
+    reg [2:0] gain_q;
+    reg [1:0] kind,descriptor;
+    reg high_beat;
+    reg [15:0] index;
+    reg [28:0] payload_address;
+    wire [28:0] payload_base=bank ? PAYLOAD_BANK1_WORD : PAYLOAD_BANK0_WORD;
+    wire [28:0] desc_base=bank ? DESC_BANK1_WORD : DESC_BANK0_WORD;
+    wire [28:0] bank_header=bank ? BANK1_HEADER_WORD : BANK0_HEADER_WORD;
+    wire [31:0] wave_sequence=meta_q[95:64],wave_skipped=meta_q[63:32];
+    wire [31:0] valid_flags=valid_q ? 32'hf : 32'h9;
+    wire [31:0] generation=frame_sequence<<1;
+    control_record_t control_data;
+    block_descriptor_t desc_data;
+    always @* begin
+        control_data='0;
+        control_data.magic=DISPLAY_MAGIC;
+        control_data.version_bank_count={8'd4,7'd0,bank,VERSION_MAJOR,VERSION_MINOR};
+        control_data.frame_sequence=frame_sequence;
+        control_data.commit_sequence=state==INVALIDATE ? generation|32'd1 : generation;
+        control_data.descriptor_base_word={3'd0,desc_base};
+        control_data.flags=valid_flags;
+        control_data.waveform_skipped=wave_skipped;
+        control_data.analysis_skipped=analysis_skipped_q;
+        desc_data='0;
+        desc_data.magic=BLOCK_MAGIC;
+        desc_data.version_type_format={16'd0,VERSION_MAJOR,VERSION_MINOR};
+        desc_data.version_type_format[31:24]={6'd0,descriptor}+8'd1;
+        desc_data.version_type_format[23:16]={6'd0,descriptor}+8'd1;
+        desc_data.frame_sequence=frame_sequence;
+        desc_data.source_sequence=descriptor==0 ? wave_sequence : descriptor==3 ? frame_sequence : analysis_sequence_q;
+        desc_data.sample_rate_hz=descriptor==3 ? 32'd0 : SAMPLE_RATE_HZ;
+        desc_data.flags=descriptor==0 || descriptor==3 || valid_q ? 32'd1 : 32'd0;
+        desc_data.skipped_samples=descriptor==0 ? wave_skipped : descriptor==3 ? 32'd0 : analysis_skipped_q;
+        desc_data.bank_header_word={3'd0,bank_header};
+        case(descriptor)
+            0:begin
+                desc_data.valid_length=512; desc_data.payload_words=512;
+                desc_data.payload_base_word={3'd0,payload_base}+WAVEFORM_OFFSET_WORD;
+                desc_data.window_trigger=32'h0d010200; // 8192 timeout, six-pole trigger, 512 unwindowed samples
+            end
+            1:begin
+                desc_data.valid_length=valid_q ? 65536 : 0; desc_data.payload_words=2048;
+                desc_data.payload_base_word={3'd0,payload_base}+LISSAJOUS_OFFSET_WORD;
+                desc_data.window_trigger=32'h00000800; // 2048 unwindowed L/R samples
+                desc_data.display_gain={29'd0,gain_q};desc_data.aux0=32'h01000100; // 256 x 256
+            end
+            2:begin
+                desc_data.valid_length=valid_q ? 512 : 0; desc_data.payload_words=256;
+                desc_data.payload_base_word={3'd0,payload_base}+SPECTRUM_OFFSET_WORD;
+                desc_data.window_trigger=32'h00020800; // periodic Hann, 2048 samples
+                desc_data.aux0=32'h03550002; // input bin range 2..853 inclusive
+                desc_data.aux1=224; // legacy display log-height ceiling
+            end
+            3:begin
+                desc_data.valid_length=16;desc_data.payload_words=16;
+                desc_data.payload_base_word={3'd0,payload_base}+EFFECT_META_OFFSET_WORD;
+            end
+        endcase
+    end
+    assign busy=state!=IDLE;
+    assign read_enable=state==READ || state==WAIT_RAM;
+    assign read_kind=kind;
+    assign read_addr=index;
+    wire last_lane=kind==0 ? &index[2:0] : kind==1 ? &index[7:0] : &index[3:0];
+    wire last_element=kind==1 ? &index : index==511;
+    wire write_state=state<=INIT_BANK1 || state==INVALIDATE || state==WRITE ||
+        state==META || state==DESC || state==COMMIT_BANK || state==COMMIT_GLOBAL;
+    assign req_valid=enabled && write_state;
+    always @* begin
+        req_addr=0;req_wdata=0;
+        case(state)
+            INIT_CONTROL:req_addr=DISPLAY_CONTROL_WORD;
+            INIT_BANK0:req_addr=BANK0_HEADER_WORD;
+            INIT_BANK1:req_addr=BANK1_HEADER_WORD;
+            INVALIDATE,COMMIT_BANK:begin req_addr=bank_header;req_wdata=control_data;end
+            WRITE:begin req_addr=payload_address;req_wdata=pack_data;end
+            META:begin
+                req_addr=payload_base+EFFECT_META_OFFSET_WORD+(high_beat ? 29'd8 : 29'd0);
+                req_wdata=high_beat ? {64'd0,SAMPLE_RATE_HZ,valid_flags,{29'd0,gain_q},peaks_q,analysis_skipped_q,analysis_sequence_q} : meta_q;
+            end
+            DESC:begin
+                req_addr=desc_base+{23'd0,descriptor,high_beat,3'd0};
+                req_wdata=high_beat ? desc_data[511:256] : desc_data[255:0];
+            end
+            COMMIT_GLOBAL:begin req_addr=DISPLAY_CONTROL_WORD;req_wdata=control_data;end
+            default:begin end
+        endcase
+    end
+    always @(posedge clk or negedge rst_n) begin
+        if(!rst_n) begin
+            state<=INIT_CONTROL;bank<=0;frame_sequence<=0;initialized<=0;done<=0;
+            meta_q<=0;analysis_sequence_q<=0;analysis_skipped_q<=0;peaks_q<=0;valid_q<=0;gain_q<=0;
+            kind<=0;index<=0;descriptor<=0;high_beat<=0;payload_address<=0;pack_data<=0;
+        end else begin
+            done<=0;
+            case(state)
+                INIT_CONTROL:if(req_valid && req_ready)state<=INIT_BANK0;
+                INIT_BANK0:if(req_valid && req_ready)state<=INIT_BANK1;
+                INIT_BANK1:if(req_valid && req_ready)begin state<=IDLE;initialized<=1;end
+                IDLE:if(start)begin bank<=~bank;frame_sequence<=frame_sequence+1'b1;state<=SNAPSHOT;end
+                // Renderer latches effect state and swaps the analysis bank on start.
+                SNAPSHOT:begin
+                    meta_q<=effect_meta;analysis_sequence_q<=analysis_sequence;analysis_skipped_q<=analysis_skipped;
+                    valid_q<=analysis_valid;gain_q<=image_gain;peaks_q<=stereo_peaks;
+                    kind<=0;index<=0;payload_address<=payload_base;state<=INVALIDATE;
+                end
+                INVALIDATE:if(req_valid && req_ready)state<=READ;
+                READ:state<=WAIT_RAM;
+                WAIT_RAM:state<=CAPTURE;
+                CAPTURE:begin
+                    case(kind)
+                        0:pack_data<={read_data,pack_data[255:32]};
+                        1:pack_data<={valid_q && read_data[0],pack_data[255:1]};
+                        2:pack_data<={valid_q ? read_data[15:0] : 16'd0,pack_data[255:16]};
+                        default:begin end
+                    endcase
+                    if(last_lane)state<=WRITE;
+                    else begin index<=index+1'b1;state<=READ;end
+                end
+                WRITE:if(req_valid && req_ready)begin
+                    payload_address<=payload_address+29'd8;
+                    if(last_element)begin
+                        index<=0;
+                        if(kind==2)begin high_beat<=0;state<=META;end
+                        else begin kind<=kind+1'b1;state<=READ;end
+                    end else begin index<=index+1'b1;state<=READ;end
+                end
+                META:if(req_valid && req_ready)begin
+                    high_beat<=~high_beat;
+                    if(high_beat)begin descriptor<=0;state<=DESC;end
+                end
+                DESC:if(req_valid && req_ready)begin
+                    high_beat<=~high_beat;
+                    if(high_beat)begin
+                        if(descriptor==3)state<=COMMIT_BANK;
+                        else descriptor<=descriptor+1'b1;
+                    end
+                end
+                COMMIT_BANK:if(req_valid && req_ready)state<=COMMIT_GLOBAL;
+                COMMIT_GLOBAL:if(req_valid && req_ready)state<=FINISH;
+                FINISH:begin done<=1;state<=IDLE;end
+                default:state<=INIT_CONTROL;
+            endcase
+        end
+    end
+endmodule
+
+// Register the selected request before arbitration. This breaks the path from
+// display enables/address selection through DDR ready and back to the writers.
+// The shared FSM gets a registered ACK to keep its next-state decode off the
+// DDR-ready path. Framebuffer beats keep the immediate ACK for 60 Hz throughput.
+module display_write_bridge(
+    input wire clk,rst_n,
+    input wire shared_valid,
+    input wire [28:0] shared_addr,
+    input wire [255:0] shared_data,
+    output wire shared_ready,
+    input wire frame_valid,
+    input wire [28:0] frame_addr,
+    input wire [255:0] frame_data,
+    output wire frame_ready,
+    output wire req_valid,
+    output reg [28:0] req_addr,
+    output reg [255:0] req_data,
+    input wire req_ready
+);
+    reg pending,owner_shared,shared_ack;
+    assign req_valid=pending;
+    assign shared_ready=shared_ack;
+    assign frame_ready=pending && req_ready && !owner_shared;
+    always @(posedge clk or negedge rst_n)begin
+        if(!rst_n)begin pending<=0;owner_shared<=0;shared_ack<=0;req_addr<=0;req_data<=0;end
+        else begin
+            shared_ack<=0;
+            if(pending)begin
+                if(req_ready)begin pending<=0;shared_ack<=owner_shared;end
+            end else if(!shared_ack && (shared_valid || frame_valid))begin
+                owner_shared<=shared_valid;
+                req_addr<=shared_valid ? shared_addr : frame_addr;
+                req_data<=shared_valid ? shared_data : frame_data;
+                pending<=1;
+            end
+        end
+    end
+endmodule
+`default_nettype wire

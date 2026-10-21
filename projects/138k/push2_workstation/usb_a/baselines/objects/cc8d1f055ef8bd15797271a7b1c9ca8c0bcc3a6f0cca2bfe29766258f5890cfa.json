@@ -1,0 +1,299 @@
+{
+  "schema": "scope-control-v1",
+  "duration_samples": 2160000,
+  "description": "45-second control-only example. Live pads, mute and bend can be overlaid.",
+  "events": [
+    {
+      "sample": 0,
+      "op": "cc",
+      "cc": 90,
+      "value": 127
+    },
+    {
+      "sample": 0,
+      "op": "note_on",
+      "note": 48,
+      "velocity": 64,
+      "shape": 0
+    },
+    {
+      "sample": 72000,
+      "op": "note_off",
+      "note": 48
+    },
+    {
+      "sample": 96000,
+      "op": "note_on",
+      "note": 49,
+      "velocity": 80,
+      "shape": 1
+    },
+    {
+      "sample": 168000,
+      "op": "note_off",
+      "note": 49
+    },
+    {
+      "sample": 192000,
+      "op": "note_on",
+      "note": 50,
+      "velocity": 96,
+      "shape": 2
+    },
+    {
+      "sample": 264000,
+      "op": "note_off",
+      "note": 50
+    },
+    {
+      "sample": 288000,
+      "op": "note_on",
+      "note": 51,
+      "velocity": 112,
+      "shape": 3
+    },
+    {
+      "sample": 360000,
+      "op": "note_off",
+      "note": 51
+    },
+    {
+      "sample": 384000,
+      "op": "note_on",
+      "note": 52,
+      "velocity": 64,
+      "shape": 4
+    },
+    {
+      "sample": 456000,
+      "op": "note_off",
+      "note": 52
+    },
+    {
+      "sample": 480000,
+      "op": "note_on",
+      "note": 53,
+      "velocity": 80,
+      "shape": 5
+    },
+    {
+      "sample": 480000,
+      "op": "cc",
+      "cc": 91,
+      "value": 6
+    },
+    {
+      "sample": 528000,
+      "op": "cc",
+      "cc": 92,
+      "value": 100
+    },
+    {
+      "sample": 552000,
+      "op": "note_off",
+      "note": 53
+    },
+    {
+      "sample": 576000,
+      "op": "note_on",
+      "note": 54,
+      "velocity": 96,
+      "shape": 6
+    },
+    {
+      "sample": 648000,
+      "op": "note_off",
+      "note": 54
+    },
+    {
+      "sample": 672000,
+      "op": "note_on",
+      "note": 55,
+      "velocity": 112,
+      "shape": 7
+    },
+    {
+      "sample": 744000,
+      "op": "note_off",
+      "note": 55
+    },
+    {
+      "sample": 768000,
+      "op": "note_on",
+      "note": 56,
+      "velocity": 64,
+      "shape": 0
+    },
+    {
+      "sample": 768000,
+      "op": "cc",
+      "cc": 94,
+      "value": 32
+    },
+    {
+      "sample": 840000,
+      "op": "note_off",
+      "note": 56
+    },
+    {
+      "sample": 864000,
+      "op": "note_on",
+      "note": 57,
+      "velocity": 80,
+      "shape": 1
+    },
+    {
+      "sample": 936000,
+      "op": "note_off",
+      "note": 57
+    },
+    {
+      "sample": 960000,
+      "op": "note_on",
+      "note": 58,
+      "velocity": 96,
+      "shape": 2
+    },
+    {
+      "sample": 960000,
+      "op": "bend",
+      "value": 10000
+    },
+    {
+      "sample": 1032000,
+      "op": "note_off",
+      "note": 58
+    },
+    {
+      "sample": 1056000,
+      "op": "note_on",
+      "note": 59,
+      "velocity": 112,
+      "shape": 3
+    },
+    {
+      "sample": 1056000,
+      "op": "bend",
+      "value": 8192
+    },
+    {
+      "sample": 1128000,
+      "op": "note_off",
+      "note": 59
+    },
+    {
+      "sample": 1152000,
+      "op": "note_on",
+      "note": 48,
+      "velocity": 64,
+      "shape": 4
+    },
+    {
+      "sample": 1224000,
+      "op": "note_off",
+      "note": 48
+    },
+    {
+      "sample": 1248000,
+      "op": "note_on",
+      "note": 49,
+      "velocity": 80,
+      "shape": 5
+    },
+    {
+      "sample": 1320000,
+      "op": "note_off",
+      "note": 49
+    },
+    {
+      "sample": 1344000,
+      "op": "note_on",
+      "note": 50,
+      "velocity": 96,
+      "shape": 6
+    },
+    {
+      "sample": 1344000,
+      "op": "cc",
+      "cc": 95,
+      "value": 127
+    },
+    {
+      "sample": 1392000,
+      "op": "cc",
+      "cc": 95,
+      "value": 0
+    },
+    {
+      "sample": 1416000,
+      "op": "note_off",
+      "note": 50
+    },
+    {
+      "sample": 1440000,
+      "op": "note_on",
+      "note": 51,
+      "velocity": 112,
+      "shape": 7
+    },
+    {
+      "sample": 1512000,
+      "op": "note_off",
+      "note": 51
+    },
+    {
+      "sample": 1536000,
+      "op": "note_on",
+      "note": 52,
+      "velocity": 64,
+      "shape": 0
+    },
+    {
+      "sample": 1608000,
+      "op": "note_off",
+      "note": 52
+    },
+    {
+      "sample": 1632000,
+      "op": "note_on",
+      "note": 53,
+      "velocity": 80,
+      "shape": 1
+    },
+    {
+      "sample": 1704000,
+      "op": "note_off",
+      "note": 53
+    },
+    {
+      "sample": 1728000,
+      "op": "note_on",
+      "note": 54,
+      "velocity": 96,
+      "shape": 2
+    },
+    {
+      "sample": 1800000,
+      "op": "note_off",
+      "note": 54
+    },
+    {
+      "sample": 1824000,
+      "op": "note_on",
+      "note": 55,
+      "velocity": 112,
+      "shape": 3
+    },
+    {
+      "sample": 1896000,
+      "op": "note_off",
+      "note": 55
+    },
+    {
+      "sample": 1920000,
+      "op": "cc",
+      "cc": 123,
+      "value": 0
+    }
+  ]
+}

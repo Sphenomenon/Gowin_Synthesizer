@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-10-21",
+  "base_commit": "a97505ceef2e1b6857f4125a0a317bd808eabd49",
+  "uncommitted_implementation": true,
+  "scope": "versioned complete-workstation prepare inputs; no new bitstream acceptance",
+  "source_sha256": {
+    ".gitattributes": "2db8e535c31977477549627ea8690abc2890482dac4dd816bb280086ac847f90",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_sources.py": "e37d1735245b3b82a5d29879dd3a7152bb7a174aad63ff5a0b460828b331181a",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_cnn_cdc.py": "b6abf223750bc701aa34cd6373cb2756c6abd4510f641aa343a0d576391369ef",
+    "projects/138k/push2_workstation/usb_a/tools/build_current_workstation.py": "3209da15e4a86c2bf119c488f91ef2721dae025f3be5be8b785065f86a028107",
+    "projects/138k/push2_workstation/usb_a/tools/build_resource_rework.py": "2ee8bda3beb61bec0c482b5af8712c03a61a306dda87d6802bbe19a87617f831",
+    "projects/138k/push2_workstation/usb_a/sim/baseline_fixture.py": "083eaf1fbfba3fbeb35b04f56d9b278c23f27436bd684581676a50b28234a3f7",
+    "projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py": "a0674152e4a89b8f43393840fd1fc724ee0788fedef0238086022c5146ae759f",
+    "projects/138k/push2_workstation/usb_a/sim/test_stage_usb_firmware.py": "2d74282915b35c754d05819918fe00d877f9889b5cb504d71f7e154a6c5f0725",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_baselines.py": "9519cae01558881dea1f102ce0148ef412ec664105280471faccf667503e4ff8",
+    "projects/138k/push2_workstation/usb_a/sim/timing/test_cnn_trace_cdc.py": "590fdb72c5fc1f59d65ba99a3cb0be93ec3ac3393dce4c3cc4ed41b55b3662e1"
+  },
+  "baselines": {
+    "accepted_full83": {
+      "manifest_sha256": "9bc6482b5885b9bc635d5089589e62aad6adf182a1822e2945a54be024c12717",
+      "origin_inputs_sha256": "a8caece577521b28196175f25d468ec7845d12a2f0fe29c6cbadfa246e67de28",
+      "source_files": 414,
+      "excluded": {
+        "historical_documentation_or_capture": 178,
+        "firmware_build_intermediate": 2
+      }
+    },
+    "timing85": {
+      "manifest_sha256": "1a12086acbfa39909570e21c704007adfccac5a6a2fbe0b8b552969c97116029",
+      "origin_inputs_sha256": "c5aef03165e18b7f71119e6b563516feb00c88de86a156a2715f32a183ddef2c",
+      "source_files": 417,
+      "excluded": {
+        "historical_documentation_or_capture": 178,
+        "firmware_build_intermediate": 2
+      }
+    },
+    "resource_rework_route0": {
+      "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+      "origin_inputs_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7",
+      "source_files": 437,
+      "excluded": {
+        "historical_documentation_or_capture": 178,
+        "firmware_build_intermediate": 2
+      }
+    }
+  },
+  "before_after_equivalence": {
+    "accepted_full83": {
+      "passed": true,
+      "source_files": 422,
+      "changed": [],
+      "excluded_nonproduction": 180,
+      "inputs_sha256": "4173db4c67c2e0f1883bae17d56158880e20c94c6ae0220bf84540c33840a340"
+    },
+    "timing85": {
+      "passed": true,
+      "source_files": 422,
+      "changed": [],
+      "excluded_nonproduction": 180,
+      "inputs_sha256": "c90b29bee223ab7a15a56088bb0f126f7fe3eb34a5eff8b4a09c2dcc5a084834"
+    },
+    "resource_timing": {
+      "passed": true,
+      "source_files": 437,
+      "changed": [],
+      "excluded_nonproduction": 180,
+      "inputs_sha256": "17fa5c215b2afb1f0ba49e5f886d215df30b0ac03363d8729166e44f3644f0b8"
+    }
+  },
+  "clean_checkout": {
+    "passed": true,
+    "historical_private_staging_present": false,
+    "profiles": {
+      "accepted_full83": {
+        "passed": true,
+        "source_files": 422,
+        "changed": [],
+        "inputs_sha256": "4173db4c67c2e0f1883bae17d56158880e20c94c6ae0220bf84540c33840a340",
+        "source_baselines": [
+          {
+            "name": "accepted_full83",
+            "manifest": "projects/138k/push2_workstation/usb_a/baselines/accepted_full83.json",
+            "manifest_sha256": "9bc6482b5885b9bc635d5089589e62aad6adf182a1822e2945a54be024c12717",
+            "origin": {
+              "build": "results/song_guide_full83_20261006_203125_607466",
+              "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/accepted_full83.inputs.json",
+              "input_manifest_sha256": "a8caece577521b28196175f25d468ec7845d12a2f0fe29c6cbadfa246e67de28"
+            },
+            "source_files": 414,
+            "excluded_files": 180
+          }
+        ]
+      },
+      "timing85": {
+        "passed": true,
+        "source_files": 422,
+        "changed": [],
+        "inputs_sha256": "c90b29bee223ab7a15a56088bb0f126f7fe3eb34a5eff8b4a09c2dcc5a084834",
+        "source_baselines": [
+          {
+            "name": "accepted_full83",
+            "manifest": "projects/138k/push2_workstation/usb_a/baselines/accepted_full83.json",
+            "manifest_sha256": "9bc6482b5885b9bc635d5089589e62aad6adf182a1822e2945a54be024c12717",
+            "origin": {
+              "build": "results/song_guide_full83_20261006_203125_607466",
+              "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/accepted_full83.inputs.json",
+              "input_manifest_sha256": "a8caece577521b28196175f25d468ec7845d12a2f0fe29c6cbadfa246e67de28"
+            },
+            "source_files": 414,
+            "excluded_files": 180
+          },
+          {
+            "name": "timing85",
+            "manifest": "projects/138k/push2_workstation/usb_a/baselines/timing85.json",
+            "manifest_sha256": "1a12086acbfa39909570e21c704007adfccac5a6a2fbe0b8b552969c97116029",
+            "origin": {
+              "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+              "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/timing85.inputs.json",
+              "input_manifest_sha256": "c5aef03165e18b7f71119e6b563516feb00c88de86a156a2715f32a183ddef2c"
+            },
+            "source_files": 417,
+            "excluded_files": 180
+          }
+        ]
+      },
+      "resource_timing": {
+        "passed": true,
+        "source_files": 437,
+        "changed": [],
+        "inputs_sha256": "17fa5c215b2afb1f0ba49e5f886d215df30b0ac03363d8729166e44f3644f0b8",
+        "source_baselines": [
+          {
+            "name": "resource_rework_route0",
+            "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+            "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+            "origin": {
+              "build": "results/resource_rework_final_route0_20261020_041042",
+              "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+              "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+            },
+            "source_files": 437,
+            "excluded_files": 180
+          }
+        ]
+      }
+    },
+    "corrupt_source_rejected": {
+      "passed": true,
+      "exit_code": 2
+    }
+  },
+  "unit_tests": {
+    "passed": true,
+    "executed": 38,
+    "counts": {
+      "accepted_input_boundary": 10,
+      "usb_firmware_staging": 6,
+      "baseline_reconstruction": 22
+    },
+    "optional_clean_checkout_integration": {
+      "executed": 1,
+      "passed": true
+    }
+  },
+  "simulations": {
+    "trace_cdc": {
+      "passed": true,
+      "result": "PASS cnn_trace_cdc: 1338 clock checks, all128 level patterns, unrelated phases, exact UART bit positions, reset"
+    },
+    "lifecycle": {
+      "passed": true,
+      "result": "PASS lifecycle scoreboard: 36395 accepted, 36235 played, 160 canceled, 404 direct lifecycle cycles, three sources/stalls/fair rotation"
+    }
+  },
+  "additional_resource_rework_prepare": {
+    "passed": true,
+    "source_files": 437,
+    "hardware_tested": false
+  },
+  "original_staging_manifests_unchanged": {
+    "accepted_full83": true,
+    "timing85": true,
+    "resource_rework_route0": true
+  },
+  "synthesis_run": false,
+  "place_route_run": false,
+  "bitstream_generated": false,
+  "board_io_performed": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "hardware_tested": false
+}

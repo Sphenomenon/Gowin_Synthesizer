@@ -1,0 +1,462 @@
+`include "src/memory/ddr_address_map.vh"
+
+// Streaming TF audio DDR ring.
+//
+// The business side remains byte addressed and 32-bit wide.  The Gowin user
+// port remains its native 256-bit (32-byte BL8) interface: one accepted beat
+// consumes eight native DQ words and advances app_addr by eight.  The two
+// fixed 64 MiB regions form a 128 MiB circular window.  Once read data has
+// been copied into the playback FIFO, the corresponding DDR beat is released
+// and may be overwritten by a later part of a file larger than 128 MiB.
+module tf_audio_ddr_dma #(
+    // Fixed hardware value: 64 MiB.  This parameter is exposed only so the
+    // boundary/ring testbench can scale the same state machine down.
+    parameter [31:0] AUDIO_BANK_BYTES = `PRJ1_DDR_AUDIO_BANK_BYTES,
+    parameter [31:0] AUDIO_BANK0_BYTE_BASE =
+        `PRJ1_DDR_AUDIO_BANK0_BYTE_BASE,
+    parameter [31:0] AUDIO_BANK0_NATIVE_BASE =
+        {3'd0, `PRJ1_DDR_AUDIO_BANK0_APP_BASE},
+    parameter [31:0] AUDIO_STREAM_START_BYTES = 32'd2_048
+) (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire        mem_ready,
+    input  wire        capture_done_toggle,
+    input  wire        restart_toggle,
+    input  wire [31:0] file_size_bytes,
+    input  wire        fifo_in_empty,
+    input  wire        fifo_in_rd_valid,
+    input  wire [7:0]  fifo_in_rd_data,
+    output reg         fifo_in_rd_en,
+    output reg         playback_start_toggle,
+    output reg         playback_done_toggle,
+    input  wire        fifo_out_full,
+    output wire        fifo_out_wr_en,
+    output wire [7:0]  fifo_out_wr_data,
+    output reg  [2:0]  app_cmd,
+    output reg         app_en,
+    output reg  [28:0] app_addr,
+    output reg  [255:0] app_wdata,
+    input  wire        app_rdy,
+    output reg         app_wren,
+    output reg         app_wend,
+    input  wire        app_wrdy,
+    input  wire        app_rvalid,
+    input  wire [255:0] app_rdata,
+    output reg         capacity_error,
+    output reg         bank0_valid,
+    output reg         bank1_valid,
+    output reg         file_size_valid,
+    output reg  [31:0] staged_file_size
+);
+    localparam [1:0] S_STREAM = 2'd0, S_DONE = 2'd2;
+
+    // Corrected non-overlapping map.  Video owns 0..8 MiB and the historical
+    // workstation pages own 16..24 MiB, so audio starts at 24 MiB.
+    // The byte/native values below are fixed for the default 64 MiB bank.
+    // A reduced test parameter derives bank 1 from bank 0 while preserving
+    // the same mapping equation.
+    localparam [31:0] AUDIO_BANK_DQ_WORDS   = AUDIO_BANK_BYTES >> 2;
+    localparam [31:0] AUDIO_BANK_BEATS      = AUDIO_BANK_BYTES >> 5;
+    localparam [31:0] AUDIO_TOTAL_BYTES     = AUDIO_BANK_BYTES + AUDIO_BANK_BYTES;
+    localparam [31:0] AUDIO_BANK0_BYTE_END  = AUDIO_BANK0_BYTE_BASE + AUDIO_BANK_BYTES - 1'b1;
+    localparam [31:0] AUDIO_BANK1_BYTE_BASE = AUDIO_BANK0_BYTE_BASE + AUDIO_BANK_BYTES;
+    localparam [31:0] AUDIO_BANK1_BYTE_END  = AUDIO_BANK1_BYTE_BASE + AUDIO_BANK_BYTES - 1'b1;
+    localparam [31:0] AUDIO_BANK0_NATIVE_END  = AUDIO_BANK0_NATIVE_BASE + AUDIO_BANK_DQ_WORDS - 1'b1;
+    localparam [31:0] AUDIO_BANK1_NATIVE_BASE = AUDIO_BANK0_NATIVE_BASE + AUDIO_BANK_DQ_WORDS;
+    localparam [31:0] AUDIO_BANK1_NATIVE_END  = AUDIO_BANK1_NATIVE_BASE + AUDIO_BANK_DQ_WORDS - 1'b1;
+
+    reg [1:0] state;
+    reg capture_meta, capture_sync, capture_seen;
+    reg restart_meta, restart_sync, restart_seen;
+    reg [31:0] size_meta, size_sync;
+    reg [31:0] capture_byte_count;
+    reg [31:0] write_total_bytes, read_total_bytes;
+    reg [31:0] write_ring_offset, read_ring_offset;
+    reg [255:0] write_buf, read_buf;
+    reg write_clear_pending;
+    reg [5:0] write_count;
+    reg [5:0] pending_bytes;
+    reg [5:0] read_pending_bytes;
+    reg [5:0] emit_index, emit_bytes_left;
+    reg write_pending, read_pending, read_buf_valid;
+    reg in_read_wait;
+    reg capture_overflow;
+    reg capture_limit_hit;
+    reg eof_seen, eof_finalized, stream_started;
+    reg end_reported;
+
+    wire capture_finished = (capture_sync != capture_seen);
+    wire restart_event = (restart_sync != restart_seen);
+    wire [31:0] committed_used = write_total_bytes - read_total_bytes;
+    wire [31:0] accepted_used = capture_byte_count - read_total_bytes;
+    wire [31:0] pending_used = committed_used + {26'd0, pending_bytes};
+    wire ring_has_room_for_input = accepted_used < AUDIO_TOTAL_BYTES;
+    wire ring_can_commit = pending_used <= AUDIO_TOTAL_BYTES;
+    wire write_selected = mem_ready && write_pending && ring_can_commit;
+
+    wire [31:0] available_bytes = write_total_bytes - read_total_bytes;
+    wire [31:0] read_plus32=add_byte_count(read_total_bytes,6'd32);
+    wire available_lt32=(write_total_bytes[4:0]>=read_total_bytes[4:0] &&
+                        write_total_bytes[31:5]==read_total_bytes[31:5]) ||
+                       (write_total_bytes[4:0]<read_total_bytes[4:0] &&
+                        write_total_bytes[31:5]==read_plus32[31:5]);
+    wire read_has_full_beat = !available_lt32;
+    wire read_has_partial_beat = eof_finalized && (write_total_bytes != read_total_bytes);
+    wire read_request = mem_ready && state == S_STREAM && stream_started &&
+                        !write_selected && !read_pending && !read_buf_valid &&
+                        !fifo_out_full && (read_has_full_beat || read_has_partial_beat);
+    wire read_accept = read_request && app_rdy;
+    wire [5:0] read_chunk_bytes = (eof_finalized && available_lt32) ?
+                                  available_bytes[5:0] : 6'd32;
+    wire write_accept = write_selected && app_rdy && app_wrdy;
+    wire read_response = app_rvalid && (read_pending || read_accept);
+    wire [5:0] read_response_bytes = read_accept ? read_chunk_bytes :
+                                                   read_pending_bytes;
+    // Partial final beat consumes exactly all committed bytes. The full
+    // beat advances32; avoid feeding available-byte subtraction into addition.
+    wire [31:0] read_total_after_accept=(eof_finalized && available_lt32) ?
+        write_total_bytes : add_byte_count(read_total_bytes,6'd32);
+    reg [31:0] read_total_pending;
+    wire emit_byte = (state == S_STREAM) && read_buf_valid && !fifo_out_full &&
+                     (emit_bytes_left != 0);
+
+    wire [31:0] write_native_addr = (write_ring_offset < AUDIO_BANK_BYTES) ?
+                                     AUDIO_BANK0_NATIVE_BASE + (write_ring_offset >> 2) :
+                                     AUDIO_BANK1_NATIVE_BASE +
+                                     ((write_ring_offset - AUDIO_BANK_BYTES) >> 2);
+    wire [31:0] read_native_addr = (read_ring_offset < AUDIO_BANK_BYTES) ?
+                                    AUDIO_BANK0_NATIVE_BASE + (read_ring_offset >> 2) :
+                                    AUDIO_BANK1_NATIVE_BASE +
+                                    ((read_ring_offset - AUDIO_BANK_BYTES) >> 2);
+
+    function [31:0] add_byte_count;
+        input [31:0] value;
+        input [5:0] increment;
+        reg [8:0] low_sum;
+        reg carry8,carry16,carry24;
+        reg [7:0] b1,b2,b3;
+        begin
+            low_sum={1'b0,value[7:0]}+{3'd0,increment};
+            carry8=low_sum[8];
+            carry16=carry8 && value[15:8]==8'hff;
+            carry24=carry8 && value[23:8]==16'hffff;
+            b1=value[15:8]+carry8;
+            b2=value[23:16]+carry16;
+            b3=value[31:24]+carry24;
+            add_byte_count={b3,b2,b1,low_sum[7:0]};
+        end
+    endfunction
+    function [31:0] advance_ring;
+        input [31:0] offset;
+        begin
+            if(AUDIO_TOTAL_BYTES!=0 &&
+                (AUDIO_TOTAL_BYTES & (AUDIO_TOTAL_BYTES-1'b1))==0)
+                advance_ring=(offset+32'd32)&(AUDIO_TOTAL_BYTES-1'b1);
+            else if (offset + 32'd32 >= AUDIO_TOTAL_BYTES)
+                advance_ring = offset + 32'd32 - AUDIO_TOTAL_BYTES;
+            else
+                advance_ring = offset + 32'd32;
+        end
+    endfunction
+
+    // Bank valid means that committed, not-yet-read bytes currently occupy
+    // some part of that bank.  The read buffer is already a private copy and
+    // is therefore freeable in DDR as soon as the read response is captured.
+    always @(*) begin
+        bank0_valid = 1'b0;
+        bank1_valid = 1'b0;
+        if (available_bytes != 0) begin
+            if (available_bytes > AUDIO_BANK_BYTES) begin
+                bank0_valid = 1'b1;
+                bank1_valid = 1'b1;
+            end else if (available_bytes == AUDIO_BANK_BYTES) begin
+                // Exactly one bank is occupied only when the read pointer is
+                // exactly bank-aligned; an unaligned 64 MiB interval spans
+                // both banks.
+                if (read_ring_offset == 0)
+                    bank0_valid = 1'b1;
+                else if (read_ring_offset == AUDIO_BANK_BYTES)
+                    bank1_valid = 1'b1;
+                else begin
+                    bank0_valid = 1'b1;
+                    bank1_valid = 1'b1;
+                end
+            end else if (read_ring_offset < AUDIO_BANK_BYTES) begin
+                bank0_valid = 1'b1;
+                if (read_ring_offset + available_bytes > AUDIO_BANK_BYTES)
+                    bank1_valid = 1'b1;
+            end else begin
+                bank1_valid = 1'b1;
+                if (read_ring_offset + available_bytes > AUDIO_TOTAL_BYTES)
+                    bank0_valid = 1'b1;
+            end
+        end
+    end
+
+    assign fifo_out_wr_en = emit_byte;
+    assign fifo_out_wr_data = read_buf[emit_index*8 +: 8];
+
+    always @(*) begin
+        app_cmd   = 3'b000;
+        app_en    = 1'b0;
+        app_addr  = 29'd0;
+        app_wdata = write_buf;
+        app_wren  = 1'b0;
+        app_wend  = 1'b0;
+        if (write_selected) begin
+            app_cmd  = 3'b000;
+            // Keep the request asserted until the external arbiter returns
+            // ready.  app_en must not depend combinationally on app_rdy;
+            // the top-level audio adapter feeds its accepted pulse back as
+            // the DMA-side ready signal.
+            app_en   = 1'b1;
+            app_addr = write_native_addr[28:0];
+            app_wren = app_en;
+            app_wend = app_en;
+        end else if (read_request) begin
+            app_cmd  = 3'b001;
+            app_en   = 1'b1;
+            app_addr = read_native_addr[28:0];
+        end
+    end
+
+    // The saturating byte count changes only at a capture acceptance. Predict
+    // its terminal value on the same edge, so the wide buffer never decodes
+    // the 32-bit count in its per-byte write-enable cones.
+    always @(posedge clk or negedge rst_n)begin
+        if(!rst_n)capture_limit_hit<=0;
+        else if(restart_event || (state==S_DONE && capture_finished))capture_limit_hit<=0;
+        else if(state==S_STREAM && fifo_in_rd_valid && capture_byte_count==32'hffff_fffe)
+            capture_limit_hit<=1;
+    end
+    wire epoch_clear=restart_event || (state==S_DONE && capture_finished);
+    always @(posedge clk or negedge rst_n) begin
+        if(!rst_n)begin write_buf<=0;write_clear_pending<=0;end
+        else if(epoch_clear)begin write_buf<=0;write_clear_pending<=0;end
+        else begin
+            write_clear_pending<=write_accept;
+            if(write_clear_pending)write_buf<=0;
+            else if(state==S_STREAM && fifo_in_rd_valid && !capture_limit_hit)
+                write_buf[write_count*8 +:8]<=fifo_in_rd_data;
+        end
+    end
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            state <= S_STREAM;
+            capture_meta <= 1'b0;
+            capture_sync <= 1'b0;
+            capture_seen <= 1'b0;
+            restart_meta <= 1'b0;
+            restart_sync <= 1'b0;
+            restart_seen <= 1'b0;
+            size_meta <= 32'd0;
+            size_sync <= 32'd0;
+            capture_byte_count <= 32'd0;
+            write_total_bytes <= 32'd0;
+            read_total_bytes <= 32'd0;
+            write_ring_offset <= 32'd0;
+            read_ring_offset <= 32'd0;
+            read_buf <= 256'd0;
+            write_count <= 6'd0;
+            pending_bytes <= 6'd0;
+            read_pending_bytes <= 6'd0;
+            emit_index <= 6'd0;
+            emit_bytes_left <= 6'd0;
+            write_pending <= 1'b0;
+            read_pending <= 1'b0;
+            read_buf_valid <= 1'b0;
+            in_read_wait <= 1'b0;
+            capture_overflow <= 1'b0;
+            eof_seen <= 1'b0;
+            eof_finalized <= 1'b0;
+            stream_started <= 1'b0;
+            end_reported <= 1'b0;
+            capacity_error <= 1'b0;
+            file_size_valid <= 1'b0;
+            staged_file_size <= 32'd0;
+            fifo_in_rd_en <= 1'b0;
+            playback_start_toggle <= 1'b0;
+            playback_done_toggle <= 1'b0;
+        end else begin
+            capture_meta <= capture_done_toggle;
+            capture_sync <= capture_meta;
+            restart_meta <= restart_toggle;
+            restart_sync <= restart_meta;
+            size_meta <= file_size_bytes;
+            size_sync <= size_meta;
+            fifo_in_rd_en <= 1'b0;
+
+            // A restart/track change starts a new ring epoch.  The physical
+            // DDR contents need not be erased because no old pointer survives.
+            if (restart_event) begin
+                restart_seen <= restart_sync;
+                capture_seen <= capture_sync;
+                state <= S_STREAM;
+                capture_byte_count <= 32'd0;
+                write_total_bytes <= 32'd0;
+                read_total_bytes <= 32'd0;
+                write_ring_offset <= 32'd0;
+                read_ring_offset <= 32'd0;
+                write_count <= 6'd0;
+                pending_bytes <= 6'd0;
+                read_pending_bytes <= 6'd0;
+                emit_index <= 6'd0;
+                emit_bytes_left <= 6'd0;
+                write_pending <= 1'b0;
+                read_pending <= 1'b0;
+                read_buf_valid <= 1'b0;
+                in_read_wait <= 1'b0;
+                capture_overflow <= 1'b0;
+                eof_seen <= 1'b0;
+                eof_finalized <= 1'b0;
+                stream_started <= 1'b0;
+                end_reported <= 1'b0;
+                capacity_error <= 1'b0;
+                file_size_valid <= 1'b0;
+                staged_file_size <= 32'd0;
+                read_buf <= 256'd0;
+            end else if (state == S_DONE) begin
+                // A new capture toggle is accepted as a fresh epoch for
+                // simple test harnesses that do not send restart first.
+                if (capture_finished) begin
+                    capture_seen <= capture_sync;
+                    state <= S_STREAM;
+                    capture_byte_count <= 32'd0;
+                    write_total_bytes <= 32'd0;
+                    read_total_bytes <= 32'd0;
+                    write_ring_offset <= 32'd0;
+                    read_ring_offset <= 32'd0;
+                    write_count <= 6'd0;
+                    pending_bytes <= 6'd0;
+                    read_pending_bytes <= 6'd0;
+                    emit_index <= 6'd0;
+                    emit_bytes_left <= 6'd0;
+                    write_pending <= 1'b0;
+                    read_pending <= 1'b0;
+                    read_buf_valid <= 1'b0;
+                    in_read_wait <= 1'b0;
+                    capture_overflow <= 1'b0;
+                    eof_seen <= 1'b0;
+                    eof_finalized <= 1'b0;
+                    stream_started <= 1'b0;
+                    end_reported <= 1'b0;
+                    capacity_error <= 1'b0;
+                    file_size_valid <= 1'b0;
+                    staged_file_size <= 32'd0;
+                end
+            end else begin
+                // Input is throttled by ring occupancy as well as the
+                // asynchronous FIFO.  This is the key no-overwrite rule.
+                if (!write_pending && !in_read_wait && !fifo_in_empty &&
+                    ring_has_room_for_input && !capture_overflow) begin
+                    fifo_in_rd_en <= 1'b1;
+                    in_read_wait <= 1'b1;
+                end
+
+                if (fifo_in_rd_valid) begin
+                    in_read_wait <= 1'b0;
+                    if (capture_byte_count == 32'hffff_ffff) begin
+                        // The business counters are deliberately 32-bit;
+                        // a file beyond that representable range is the only
+                        // capacity error in streaming mode.
+                        capture_overflow <= 1'b1;
+                        capacity_error <= 1'b1;
+                    end else begin
+                        capture_byte_count <= add_byte_count(capture_byte_count,6'd1);
+
+                        if (write_count == 6'd31) begin
+                            write_count <= 6'd0;
+                            pending_bytes <= 6'd32;
+                            write_pending <= 1'b1;
+                        end else begin
+                            write_count <= write_count + 1'b1;
+                        end
+                    end
+                end
+
+                if (capture_finished) begin
+                    capture_seen <= capture_sync;
+                    eof_seen <= 1'b1;
+                end
+
+                if ((eof_seen || capture_finished) && !write_pending &&
+                    !in_read_wait && fifo_in_empty && write_count != 0) begin
+                    // The final short beat is padded by write_buf; only
+                    // pending_bytes are later emitted to the decoder.
+                    pending_bytes <= write_count;
+                    write_count <= 6'd0;
+                    write_pending <= 1'b1;
+                end
+
+                if (write_accept) begin
+                    write_pending <= 1'b0;
+                    write_total_bytes <= add_byte_count(write_total_bytes,pending_bytes);
+                    write_ring_offset <= advance_ring(write_ring_offset);
+                end
+
+                if ((eof_seen || capture_finished) && !write_pending &&
+                    !in_read_wait && fifo_in_empty && write_count == 0 &&
+                    !eof_finalized) begin
+                    eof_finalized <= 1'b1;
+                    if (capture_overflow) begin
+                        // A 32-bit business counter cannot represent a
+                        // fifth gigabyte.  Report that explicit error and
+                        // terminate instead of waiting forever for an
+                        // unrepresentable final byte count.
+                        capacity_error <= 1'b1;
+                        file_size_valid <= 1'b0;
+                        staged_file_size <= 32'd0;
+                        end_reported <= 1'b1;
+                        playback_done_toggle <= ~playback_done_toggle;
+                        state <= S_DONE;
+                    end else begin
+                        file_size_valid <= 1'b1;
+                        staged_file_size <= capture_byte_count;
+                    end
+                end
+
+                if (!stream_started &&
+                    ((write_total_bytes >= AUDIO_STREAM_START_BYTES &&
+                      write_total_bytes != 0) ||
+                     (eof_finalized && write_total_bytes != 0))) begin
+                    stream_started <= 1'b1;
+                    playback_start_toggle <= ~playback_start_toggle;
+                end
+
+                if (read_accept) begin
+                    read_pending <= 1'b1;
+                    read_pending_bytes <= read_chunk_bytes;
+                    read_total_pending <= read_total_after_accept;
+                end
+                if (read_response) begin
+                    read_pending <= 1'b0;
+                    read_buf <= app_rdata;
+                    read_buf_valid <= 1'b1;
+                    emit_index <= 6'd0;
+                    emit_bytes_left <= read_response_bytes;
+                    read_total_bytes <= read_accept ? read_total_after_accept : read_total_pending;
+                    read_ring_offset <= advance_ring(read_ring_offset);
+                end
+                if (emit_byte) begin
+                    emit_bytes_left <= emit_bytes_left - 1'b1;
+                    if (emit_bytes_left == 6'd1) begin
+                        emit_index <= 6'd0;
+                        read_buf_valid <= 1'b0;
+                    end else begin
+                        emit_index <= emit_index + 1'b1;
+                    end
+                end
+
+                if (eof_finalized && !end_reported &&
+                    read_total_bytes >= staged_file_size &&
+                    !read_pending && !read_buf_valid &&
+                    emit_bytes_left == 0) begin
+                    end_reported <= 1'b1;
+                    playback_done_toggle <= ~playback_done_toggle;
+                    state <= S_DONE;
+                end
+            end
+        end
+    end
+endmodule

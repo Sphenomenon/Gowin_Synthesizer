@@ -5,6 +5,7 @@
 // Portable, CPU-free MIDI -> synthesis -> stereo PCM/effects boundary.
 module gw138k_event_workstation #(
     parameter integer SAMPLE_RATE_HZ=48000,
+    parameter bit TIMING_OPTIMIZED=0,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600
 ) (
@@ -17,6 +18,7 @@ module gw138k_event_workstation #(
     output logic [31:0] applied_events_o,
     output wire [31:0] pc_overflow_o,control_options_o,
     output logic [9:0] panic_epoch_o,
+    output wire panic_muted_o,
     input logic cpu_event_valid_i,
     input logic [17:0] cpu_event_i,
     output wire cpu_event_ready_o,
@@ -55,44 +57,18 @@ module gw138k_event_workstation #(
   logic [1:0] effect_count;
   logic [2:0] effect_selected;
   logic effect_master;
-  assign effect_mask_o=effect_master ? effect_selected : 3'b000;
   logic event_valid, event_ready;
   logic [17:0] event_data;
   logic fifo_event_valid,fifo_event_ready;
   wire cue_valid,cue_ready,cue_running,cue_done,cue_error;
   wire [17:0] cue_event;
   wire [31:0] cue_late,cue_time;
-  logic [6:0] cue_speed;
-  wire register_room=!event_valid || event_ready;
-  // Kind 15 belongs only to the on-chip USB lifecycle link. Ordinary MIDI
-  // decoders cannot generate it. Detach/PANIC bypass the initialization wait.
-  wire usb_internal=cpu_event_i[17:14]==4'd15;
-  wire usb_lifecycle=cpu_event_valid_i && usb_internal && cpu_event_i[6:0]<3;
-  wire usb_attach=usb_lifecycle && cpu_event_i[6:0]==7'd1;
-  logic attach_initializing;
-  logic [3:0] attach_step;
+  wire [6:0] cue_speed;
+  wire usb_internal,usb_lifecycle,attach_initializing;
+  wire [3:0] attach_step;
   wire arbiter_cpu_ready;
-  assign cpu_event_ready_o=usb_lifecycle || (!attach_initializing && (usb_internal || arbiter_cpu_ready));
-  function automatic [17:0] attach_event(input [3:0] step);
-    case(step)
-      0: attach_event={4'd2,7'd96,7'd0}; // stop cue
-      1: attach_event={4'd2,7'd104,7'd0}; // leave TF
-      2: attach_event={4'd2,7'd90,7'd0}; // leave live vector after PANIC
-      3: attach_event={4'd4,7'd0,7'd64}; // center bend
-      4: attach_event={4'd2,7'd64,7'd0};
-      5: attach_event={4'd2,7'd11,7'd127};
-      6: attach_event={4'd2,7'd1,7'd0};
-      7: attach_event={4'd2,7'd5,7'd0};
-      8: attach_event={4'd2,7'd82,7'd0};
-      9: attach_event={4'd2,7'd7,7'd127};
-      10:attach_event={4'd3,7'd73,7'd0};
-      11:attach_event={4'd2,7'd80,7'd2};
-      default:attach_event={4'd2,7'd81,7'd0};
-    endcase
-  endfunction
   wire cue_start=event_valid && event_ready && kind==2 && a==96 && b==127 && !tf_scope_control_o[12] && (scope_enable || legacy_active_mask==0);
   wire cue_stop=usb_lifecycle || (event_valid && event_ready && kind==2 && ((a==96 && b==0) || a==120 || a==123));
-  assign cue_ready=register_room && !attach_initializing && !fifo_event_valid && !cue_stop;
   scope_control_player cue_player(
       .clk_i,.rst_ni,.sample_ce_i(core_ce),.start_i(cue_start),.stop_i(cue_stop),
       .speed_q8_i(cue_speed==127 ? 10'd512 : {cue_speed,2'b00}),
@@ -110,17 +86,12 @@ module gw138k_event_workstation #(
   assign right_o=(route_o==1 || route_o==3)?32'sd0:effect_right;
   logic [1:0] requested_mode;
   logic mode_pending, mode_ready, mode_valid;
-  wire [1:0] mode_cycle_base=mode_pending ? requested_mode : mode_o;
   logic [15:0] volume, expression_gain;
-  logic [31:0] volume_product;
   logic [21:0] target_ratio;
-  logic [21:0] bend_rom[0:255];
   logic [15:0] glide_step;
   logic [6:0] vibrato_depth, glide_cc;
   logic [7:0] bend_index;
-  logic [5:0] snapshot_request;
   logic sustain, releasing;
-  assign control_options_o={snapshot_request,bend_index,glide_cc,vibrato_depth,sustain,target_ratio!=22'd1048576,glide_step!=0,vibrato_depth!=0};
   logic [6:0] release_index;
   logic deferred_current;
   wire [6:0] next_release_index=release_index+7'd1;
@@ -143,11 +114,6 @@ module gw138k_event_workstation #(
   logic scope_enable,scope_muted,scope_control_error;
   logic [2:0] scope_morph_shape;
   logic [6:0] scope_shape,scope_morph,scope_scale,scope_rotation;
-  scope_tf_control tf_controls(
-      .clk_i,.rst_ni,.event_valid_i(usb_lifecycle || (event_valid && event_ready && kind==2)),
-      .cc_i(usb_lifecycle ? 7'd120 : a),.value_i(usb_lifecycle ? 7'd0 : b),.live_enable_i(scope_enable),
-      .voices_idle_i(legacy_active_mask==0 && vec_active==0),.control_o(tf_scope_control_o));
-  wire scope_enable_target=b==64 ? !scope_enable : b==127;
   logic [6:0] scope_cal_x,scope_cal_y,scope_offset_x,scope_offset_y;
   wire vec_ready,vec_event_ready,vec_valid,vec_busy,vec_config_error,vec_frequency_error,vec_clip,fx_clip;
   wire [7:0] vec_active;
@@ -165,44 +131,90 @@ module gw138k_event_workstation #(
   assign scope_status_o={vec_rejected[15:0],cue_running,cue_done,cue_error,|cue_late,(scope_control_error || tf_scope_control_o[15]),vec_frequency_error,vec_config_error,scope_enable,vec_active};
 
   logic panic_muted;
+  assign panic_muted_o=panic_muted;
   logic dispatch, full;
-  // Drain the arbiter's one registered event on a USB boundary. The local
-  // register is cleared on that edge, so an already accepted old USB event
-  // cannot emerge after reconnect. Keep the arbiter tied to its original
-  // system reset; other source parsers retain their state.
-  assign fifo_event_ready=usb_lifecycle || (register_room && !attach_initializing);
-  // Register the FIFO output before MIDI routing and 32-way note matching.
-  always_ff @(posedge clk_i or negedge rst_ni) begin
-    if(!rst_ni) begin event_valid<=0;event_data<=0;attach_initializing<=0;attach_step<=0;end
-    else if(usb_lifecycle) begin
-      event_valid<=0;event_data<=0;
-      // A user PANIC during init restarts the defaults, but never starts a
-      // fresh initialization during ordinary performance.
-      attach_initializing<=(usb_attach && cpu_event_i[7]) ||
-          (cpu_event_i[6:0]==7'd2 && attach_initializing);
-      attach_step<=0;
-    end else if(attach_initializing) begin
-      if(register_room) begin
-        event_valid<=attach_step<13;
-        if(attach_step<13) begin event_data<=attach_event(attach_step);attach_step<=attach_step+1'b1;end
-      end
-      // FIFO acceptance alone is insufficient: wait for the actual C commit.
-      if(attach_step==13 && !event_valid && !mode_pending && mode_o==2)
-        attach_initializing<=0;
-    end else if(fifo_event_ready) begin
-      event_valid<=fifo_event_valid || (cue_valid && !cue_stop);
-      if(fifo_event_valid) event_data<=fifo_event_data;
-      else if(cue_valid && !cue_stop) event_data<=cue_event;
-    end
-  end
-  initial $readmemh(`AUDIO_BEND_MEM_FILE,bend_rom);
-  assign volume_product=volume*expression_gain;
-  assign synth_gain_o=volume_product[30:15];
+  wire control_rejected;
+  wire parameter_commit=event_valid && (TIMING_OPTIMIZED ? (dispatch && !releasing) : event_ready);
+  workstation_session session (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .cpu_valid_i(cpu_event_valid_i),
+      .cpu_event_i(cpu_event_i),
+      .arbiter_ready_i(arbiter_cpu_ready),
+      .cpu_ready_o(cpu_event_ready_o),
+      .internal_o(usb_internal),
+      .lifecycle_o(usb_lifecycle),
+      .fifo_valid_i(fifo_event_valid),
+      .fifo_event_i(fifo_event_data),
+      .fifo_ready_o(fifo_event_ready),
+      .cue_valid_i(cue_valid),
+      .cue_stop_i(cue_stop),
+      .cue_event_i(cue_event),
+      .cue_ready_o(cue_ready),
+      .event_ready_i(event_ready),
+      .event_valid_o(event_valid),
+      .event_o(event_data),
+      .mode_pending_i(mode_pending),
+      .mode_i(mode_o),
+      .initializing_o(attach_initializing),
+      .initialization_step_o(attach_step)
+  );
+  workstation_parameters parameters (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .commit_i(parameter_commit),
+      .lifecycle_i(usb_lifecycle),
+      .mode_applied_i(mode_valid),
+      .kind_i(kind),
+      .address_i(a),
+      .value_i(b),
+      .mode_i(mode_o),
+      .legacy_active_i(legacy_active_mask),
+      .vector_active_i(vec_active),
+      .cue_running_i(cue_running),
+      .requested_mode_o(requested_mode),
+      .mode_pending_o(mode_pending),
+      .volume_o(volume),
+      .expression_gain_o(expression_gain),
+      .pcm_gain_o(pcm_gain_o),
+      .synth_gain_o(synth_gain_o),
+      .route_o(route_o),
+      .profile_o(profile),
+      .effect_selected_o(effect_selected),
+      .effect_master_o(effect_master),
+      .effect_count_o(effect_count),
+      .effect_mask_o(effect_mask_o),
+      .effect_order_o(effect_order_o),
+      .target_ratio_o(target_ratio),
+      .glide_step_o(glide_step),
+      .vibrato_depth_o(vibrato_depth),
+      .glide_cc_o(glide_cc),
+      .bend_index_o(bend_index),
+      .sustain_o(sustain),
+      .options_o(control_options_o),
+      .tf_control_o(tf_scope_control_o),
+      .panel_event_valid_o(panel_event_valid_o),
+      .panel_command_o(panel_command_o),
+      .scope_enable_o(scope_enable),
+      .scope_muted_o(scope_muted),
+      .scope_error_o(scope_control_error),
+      .scope_morph_shape_o(scope_morph_shape),
+      .scope_shape_o(scope_shape),
+      .scope_morph_o(scope_morph),
+      .scope_scale_o(scope_scale),
+      .scope_rotation_o(scope_rotation),
+      .scope_cal_x_o(scope_cal_x),
+      .scope_cal_y_o(scope_cal_y),
+      .scope_offset_x_o(scope_offset_x),
+      .scope_offset_y_o(scope_offset_y),
+      .cue_speed_o(cue_speed),
+      .rejected_o(control_rejected)
+  );
   assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle;
   assign full = scope_enable ? &vec_active : &allocated;
-  assign dispatch=!usb_lifecycle && !pending && !sample_ce_i && !load_busy && !mix_busy && !vec_busy && !mode_valid;
+  assign dispatch=!usb_lifecycle && !pending && !sample_ce_i && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);
   wire panic_accept=usb_lifecycle || (event_valid && event_ready && kind==2 && a==120);
-  assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready && fx_ready && !synth_joined && !vec_joined;
+  assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready && fx_ready && !synth_joined && !vec_joined && !panic_accept;
   always_comb begin
     core_event_valid=0; core_note_on=0; core_note=a; core_velocity=b;
     core_expression_valid=0; core_expression_note=a; core_expression_value=b;
@@ -216,7 +228,7 @@ module gw138k_event_workstation #(
       else if(kind==0 || kind==1) begin
         core_note_on=kind==1;
         core_event_valid=dispatch && !(kind==1 && full);
-        event_ready=dispatch && ((kind==1 && full) || (scope_enable ? vec_event_ready : core_event_ready));
+        event_ready=dispatch && (TIMING_OPTIMIZED || (kind==1 && full) || (scope_enable ? vec_event_ready : core_event_ready));
       end else if(kind==5) begin
         core_expression_valid=dispatch && core_expression_ready;
         event_ready=dispatch && core_expression_ready;
@@ -275,8 +287,8 @@ module gw138k_event_workstation #(
     if(!rst_ni) begin synth_joined<=0;vec_joined<=0;held_synth<=0;held_vec_l<=0;held_vec_r<=0;held_vec_clip<=0;end
     else if(panic_accept) begin synth_joined<=0;vec_joined<=0;held_synth<=0;held_vec_l<=0;held_vec_r<=0;held_vec_clip<=0;end
     else begin
-      if(synth_valid_o) begin synth_joined<=1;held_synth<=synth_o;end
-      if(vec_valid) begin vec_joined<=1;held_vec_l<=vec_left;held_vec_r<=vec_right;held_vec_clip<=vec_clip;end
+      if(synth_valid_o && frame_inflight) begin synth_joined<=1;held_synth<=synth_o;end
+      if(vec_valid && frame_inflight) begin vec_joined<=1;held_vec_l<=vec_left;held_vec_r<=vec_right;held_vec_clip<=vec_clip;end
       if(effects_valid && fx_ready) begin synth_joined<=0;vec_joined<=0;end
     end
   end
@@ -291,21 +303,12 @@ module gw138k_event_workstation #(
       .drd_push_i(delay_drd_push_i),.drd_data_i(delay_drd_data_i),.drd_ready_o(delay_drd_ready_o));
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin
-      applied_events_o<=0;pending<=0; frame_inflight<=0; deadline_miss_o<=0; note_drop_o<=0;
-      held_pcm_l<=0; held_pcm_r<=0; profile<=0; requested_mode<=2;
-      mode_pending<=0; volume<=32768; expression_gain<=32768; pcm_gain_o<=0;
-      route_o<=0; target_ratio<=1048576; glide_step<=0; vibrato_depth<=0;
-      effect_selected<=0;effect_master<=1;effect_order_o<=6'b10_01_00;effect_count<=0;
-      glide_cc<=0; bend_index<=128; snapshot_request<=0;
-      sustain<=0; held<=0; deferred<=0; releasing<=0; release_index<=0; deferred_current<=0;
+      applied_events_o<=0;pending<=0;frame_inflight<=0;deadline_miss_o<=0;note_drop_o<=0;
+      held_pcm_l<=0;held_pcm_r<=0;
+      held<=0;deferred<=0;releasing<=0;release_index<=0;deferred_current<=0;
       panic_epoch_o<=0;panic_muted<=0;
-      panel_event_valid_o<=0;panel_command_o<=0;
-      cue_speed<=64;scope_enable<=0;scope_muted<=0;scope_control_error<=0;scope_morph_shape<=0;
-      scope_shape<=127;scope_morph<=0;scope_scale<=127;scope_rotation<=0;
-      scope_cal_x<=64;scope_cal_y<=64;scope_offset_x<=64;scope_offset_y<=64;
       vec_previous_rejected<=0;vec_previous_frequency_error<=0;
     end else begin
-      panel_event_valid_o<=0;
       vec_previous_rejected<=vec_rejected;vec_previous_frequency_error<=vec_frequency_error;
       if(vec_rejected!=vec_previous_rejected || (vec_frequency_error && !vec_previous_frequency_error))
         note_drop_o<=note_drop_o+(vec_rejected-vec_previous_rejected)+(vec_frequency_error && !vec_previous_frequency_error);
@@ -323,103 +326,32 @@ module gw138k_event_workstation #(
         if(core_ce) begin pending<=0; held_pcm_l<=pcm_left_i; held_pcm_r<=pcm_right_i; end
         if(effects_valid && !fx_ready) deadline_miss_o<=deadline_miss_o+1;
       end
-      if(mode_valid) mode_pending<=0;
       if(releasing && dispatch && (!deferred_current || (scope_enable ? vec_event_ready : core_event_ready))) begin
         deferred[release_index]<=0;
         if(release_index==127) begin releasing<=0;deferred_current<=0;end
         else begin release_index<=next_release_index;deferred_current<=deferred[next_release_index];end
       end
       if(usb_lifecycle) begin
-        held<=0;deferred<=0;sustain<=0;releasing<=0;release_index<=0;deferred_current<=0;
-        mode_pending<=0;panic_epoch_o<=panic_epoch_o+1'b1;panic_muted<=1;
+        held<=0;deferred<=0;releasing<=0;release_index<=0;deferred_current<=0;
+        panic_epoch_o<=panic_epoch_o+1'b1;panic_muted<=1;
       end
       if(event_valid && event_ready) begin
         applied_events_o<=applied_events_o+1'b1;
         case(kind)
           0: begin held[a]<=0; if(sustain) deferred[a]<=1; end
           1: if(tf_scope_control_o[12] || full) note_drop_o<=note_drop_o+1; else if(scope_enable && a>95) begin end else begin held[a]<=1; deferred[a]<=0; panic_muted<=0; end
-          2: case(a)
-            1: vibrato_depth<=b;
-            5: begin glide_cc<=b;glide_step<=b==0 ? 16'd0 : 16'd256-({9'd0,b}<<1);end
-            7: volume<=b==127 ? 16'd32768 : {b,8'd0};
-            11: expression_gain<=b==127 ? 16'd32768 : {b,8'd0};
-            16: pcm_gain_o<=b==127 ? 16'd32768 : {b,8'd0};
-            64: begin
-              sustain<=b>=64;
-              if(b<64 && sustain) begin releasing<=1;release_index<=0;deferred_current<=deferred[0];end
-            end
-            80: if(b<3) begin requested_mode<=b[1:0]; mode_pending<=1; end
-            81: begin effect_selected<=b[2:0];effect_master<=1;effect_count<=0;effect_order_o<=6'b10_01_00;end
-            84: if(b<3) effect_order_o[1:0]<=b[1:0];
-            85: if(b<3) effect_order_o[3:2]<=b[1:0];
-            86: if(b<3) effect_order_o[5:4]<=b[1:0];
-            // A queue contains each effect at most once. After three distinct
-            // selections the next press clears the queue and all effect enables.
-            // A later press starts again; duplicates before full do nothing.
-            87: if(b<3) begin
-              if(effect_count==3) begin
-                effect_order_o<=6'b11_11_11;effect_selected<=3'b000;effect_count<=0;
-              end else if(effect_count==0) begin
-                effect_order_o<={4'b1111,b[1:0]};effect_selected<=3'b001<<b[1:0];effect_count<=1;effect_master<=1;
-              end else if(effect_order_o[1:0]!=b[1:0] &&
-                          (effect_count!=2 || effect_order_o[3:2]!=b[1:0])) begin
-                if(effect_count==1) begin
-                  effect_order_o[3:2]<=b[1:0]; effect_count<=2;
-                end else begin
-                  effect_order_o[5:4]<=b[1:0]; effect_count<=3;
-                end
-                effect_selected<=effect_selected | (3'b001<<b[1:0]);effect_master<=1;
+          2: begin
+            if(control_rejected) note_drop_o<=note_drop_o+1'b1;
+            case(a)
+              64: if(b<64 && sustain) begin releasing<=1;release_index<=0;deferred_current<=deferred[0];end
+              120: begin
+                held<=0;deferred<=0;releasing<=0;release_index<=0;deferred_current<=0;
+                panic_epoch_o<=panic_epoch_o+1'b1;panic_muted<=1;
               end
-            end
-            88: effect_master<=~effect_master;
-            89: if(b<2) begin
-              if(b[0]) requested_mode<=mode_cycle_base==2 ? 0 : mode_cycle_base+1'b1;
-              else requested_mode<=mode_cycle_base==0 ? 2 : mode_cycle_base-1'b1;
-              mode_pending<=1;
-            end
-            90: begin
-              if((b==0 || b==64 || b==127) && (scope_enable_target==scope_enable || (legacy_active_mask==0 && vec_active==0))) begin
-                scope_enable<=scope_enable_target;scope_muted<=0;
-                if(scope_enable_target) begin effect_selected<=0;effect_master<=1;end
-              end else begin scope_control_error<=1;note_drop_o<=note_drop_o+1'b1;end
-            end
-            104: if((b==64 || b==127) &&
-                    (tf_scope_control_o[12] || (legacy_active_mask==0 && vec_active==0))) begin
-              scope_enable<=0;scope_muted<=0;effect_selected<=0;effect_master<=1;
-            end
-            91: if(b<8) scope_morph_shape<=b[2:0];else begin scope_control_error<=1;note_drop_o<=note_drop_o+1'b1;end
-            92: scope_morph<=b;
-            93: scope_scale<=b;
-            94: scope_rotation<=b;
-            95: if(b==0 || b==64 || b==127) scope_muted<=b==64 ? ~scope_muted : b==127;else begin scope_control_error<=1;note_drop_o<=note_drop_o+1'b1;end
-            96: if((b!=0 && b!=127) || (b==127 && (tf_scope_control_o[12] || cue_running || (!scope_enable && legacy_active_mask!=0)))) begin scope_control_error<=1;note_drop_o<=note_drop_o+1'b1;end
-            103: if(b!=0) cue_speed<=b;else begin scope_control_error<=1;note_drop_o<=note_drop_o+1'b1;end
-            97: if(b<8 || b==127) scope_shape<=b;else begin scope_control_error<=1;note_drop_o<=note_drop_o+1'b1;end
-            98: scope_cal_x<=b;
-            99: scope_offset_x<=b;
-            100: scope_cal_y<=b;
-            101: scope_offset_y<=b;
-            82: if(b<4) route_o<=b[1:0];
-            83: if(b==127) snapshot_request<=snapshot_request+1'b1;
-            120: begin
-              held<=0; deferred<=0; sustain<=0; releasing<=0; release_index<=0; deferred_current<=0;
-              panic_epoch_o<=panic_epoch_o+1'b1; panic_muted<=1;
-            end
-            123: begin
-              deferred<=held|deferred; held<=0; sustain<=0;
-              releasing<=1;release_index<=0;deferred_current<=held[0] || deferred[0];
-            end
-            default: begin end
-          endcase
-          3: begin
-            if(a<8) profile<=4;
-            else if(a<16) profile<=3;
-            else if(a>=40 && a<48) profile<=1;
-            else if(a>=56 && a<64) profile<=2;
-            else profile<=0;
+              123: begin deferred<=held|deferred;held<=0;releasing<=1;release_index<=0;deferred_current<=held[0] || deferred[0];end
+              default: begin end
+            endcase
           end
-          4: begin target_ratio<=bend_rom[{b,a[6]}];bend_index<={b,a[6]};end
-          6: begin panel_event_valid_o<=1;panel_command_o<=a;end
           default: begin end
         endcase
       end

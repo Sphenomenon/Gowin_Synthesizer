@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Merge scope playback into accepted full83; build only, no board I/O.
 
-The accepted complete staging tree is immutable and supplies CNN staged caches,
+The versioned accepted source baseline supplies CNN staged caches,
 DDR delay, TF recovery and song guidance. Overlays fix scope entry wiring and
 bind the live USB-A PL display/MIDI feedback adapter to its rebuilt ROM.
 CNN files come from the accepted manifest. --cnn-timing85 selects six pinned
@@ -27,9 +27,8 @@ from workstation_timing_constraints import constraints as timing_constraints,phy
 from workstation_bus_timing import apply as apply_bus_timing
 from workstation_cnn_cdc import select as select_diagnostic_cdc,transform as patch_diagnostic_cdc,LINK as TRACE_LINK
 from stage_usb_firmware import stage_usb_firmware
-from workstation_sources import accepted_cnn_inputs, cnn_source_audit, verify_cnn_inputs, timing85_cnn_inputs, TIMING85_BUILD, TIMING85_OVERLAYS, TIMING85_MANIFEST_SHA256
-from build_full_song_83_bp_ddr_isolation import FROZEN
-BASE=ROOT/'results/song_guide_full83_20261006_203125_607466'
+from workstation_sources import cnn_source_audit, verify_cnn_inputs, timing85_cnn_inputs, TIMING85_BUILD, TIMING85_OVERLAYS, TIMING85_MANIFEST_SHA256, ACCEPTED_DDR_INPUTS as FROZEN
+from workstation_baselines import load_baseline
 ACCEPTED_COMMIT='d0c92a0'
 
 
@@ -64,16 +63,17 @@ def main():
             parser.error('full release must use a nonzero UserCode distinct from accepted 0x83')
     elif args.user_code is not None:
         parser.error('--user-code is only supported with --full')
-    if not (BASE/'Prj1/Prj1.gprj').is_file() or not (BASE/'workstation_inputs.json').is_file():
-        parser.error('accepted full83 staging tree is missing: '+str(BASE)+
-                     '; restore the accepted baseline before preparing or building')
+    try:
+        baseline=load_baseline(ROOT,'accepted_full83')
+    except (OSError,ValueError) as error:
+        parser.error(str(error))
     acceptance=json.loads((ROOT/'reports/CNN_83_ACCEPTANCE_20261006.json').read_text())
     if acceptance['status']!='accepted_by_user' or acceptance['board']['user_code']!='0x00000083':
         raise ValueError('full83 acceptance record does not identify the accepted baseline')
-    originals=json.loads((BASE/'workstation_inputs.json').read_text())
-    music=accepted_cnn_inputs(BASE/'Prj1',originals)
+    originals=baseline.inputs
+    music=baseline.music
     for live,(staged,digest) in FROZEN.items():
-        if sha(ROOT/live)!=digest or sha(BASE/'Prj1'/staged)!=digest:
+        if sha(ROOT/live)!=digest or hashlib.sha256(baseline.read_bytes(staged)).hexdigest()!=digest:
             raise ValueError('accepted DDR input drift: '+live)
     accepted_music=music.copy()
     if args.cnn_timing85:
@@ -89,10 +89,13 @@ def main():
     prefix='workstation_scope83_timing85_' if args.cnn_timing85 else 'workstation_scope83_'
     output=ROOT/'results'/datetime.now().strftime(prefix+'%Y%m%d_%H%M%S_%f')
     stage=output/'Prj1'
-    shutil.copytree(BASE/'Prj1',stage,ignore=shutil.ignore_patterns('impl','build','*.user','__pycache__'))
+    baseline.materialize(stage)
+    source_baselines=[baseline.evidence()]
     if args.cnn_timing85:
+        timing_baseline=load_baseline(ROOT,'timing85')
+        source_baselines.append(timing_baseline.evidence())
         for name in TIMING85_OVERLAYS:
-            shutil.copy2(ROOT/TIMING85_BUILD/'Prj1'/name,stage/name)
+            timing_baseline.copy_file(name,stage/name)
         trace=stage/TRACE_LINK;trace.write_text(patch_diagnostic_cdc(trace.read_text()))
     overlays={
         'rtl/audio/gw138k_event_workstation.sv':'src/ae350/gw138k_event_workstation.sv',
@@ -108,10 +111,14 @@ def main():
         'rtl/display_data/push2_surface_pixels.sv':'src/push2/push2_surface_pixels.sv',
     }
     for live,dest in overlays.items():shutil.copy2(ROOT/live,stage/dest)
+    controls=stage/'rtl/control'
+    shutil.copytree(ROOT/'rtl/control',controls,dirs_exist_ok=True)
     scope=stage/'rtl/audio/scope_vec'
     shutil.copytree(ROOT/'rtl/audio/scope_vec',scope,dirs_exist_ok=True)
     tree=ET.parse(stage/'Prj1.gprj');files=tree.find('FileList')
     names={f.get('path') for f in files}
+    for path in sorted(controls.glob('*.sv')):
+        ET.SubElement(files,'File',path=path.relative_to(stage).as_posix(),type='file.verilog',enable='1')
     for path in sorted(scope.glob('*.sv')):
         name=path.relative_to(stage).as_posix()
         if name not in names: ET.SubElement(files,'File',path=name,type='file.verilog',enable='1')
@@ -300,7 +307,7 @@ def main():
     (output/'cnn_source_audit.json').write_text(json.dumps(cnn_sources,indent=2)+'\n')
     inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
     changed_from_base=sorted(name for name,digest in inputs.items() if originals.get(name)!=digest)
-    metadata=dict(baseline=BASE.relative_to(ROOT).as_posix(),accepted_commit=ACCEPTED_COMMIT,
+    metadata=dict(baseline=baseline.descriptor['origin']['build'],source_baselines=source_baselines,accepted_commit=ACCEPTED_COMMIT,
                   git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
                   build_mode='prepare_only' if args.prepare_only else 'full' if args.full else 'synthesis_only',
                   changed_from_base=changed_from_base,music_sha256=music,usb_firmware=usb_firmware,

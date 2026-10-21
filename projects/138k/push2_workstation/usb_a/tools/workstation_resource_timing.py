@@ -332,7 +332,7 @@ def gray_write_aliases(text):
     return text + block
 
 
-def apply(stage):
+def apply(stage, native_composition=False):
     transforms={
         'constraints/tang_mega_138k.sdc':gray_write_aliases,
         'src/migration/gw138k_apb_cdc.sv':apb,
@@ -348,6 +348,8 @@ def apply(stage):
         'src/video/video_timing_1080p.v':raster,
         'rtl/timing/basic_pitch_ddr_client_queues.sv':slot_payload,
     }
+    if native_composition:
+        del transforms['src/ae350/gw138k_event_workstation.sv']
     evidence={}
     for name,transform in transforms.items():
         p=stage/name;old=p.read_bytes();new=transform(old.decode()).encode();p.write_bytes(new)

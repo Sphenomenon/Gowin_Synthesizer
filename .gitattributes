@@ -32,3 +32,7 @@ projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipelin
 # tool whitespace; their SHA256 manifests, rather than formatting, bind bytes.
 projects/25k/example/RTL8723DS_PROTOCOL/vendor/** -whitespace
 projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/** -whitespace
+
+# Locked source inputs retain their bytes; historical whitespace is not reformatted.
+projects/138k/push2_workstation/usb_a/baselines/** -text
+projects/138k/push2_workstation/usb_a/baselines/objects/** -whitespace linguist-vendored

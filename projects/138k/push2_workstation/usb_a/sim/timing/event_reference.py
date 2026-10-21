@@ -16,7 +16,11 @@ def add_reference(staged, reference):
     observed=['cpu_event_ready_o','core_event_valid','core_note_on','core_note','core_velocity',
         'core_expression_valid','core_expression_note','core_expression_value','event_ready',
         'held','deferred','releasing','release_index','panic_epoch_o','applied_events_o',
-        'sample_valid_o','left_o','right_o','active_mask_o','active_voice_count_o','note_drop_o']
+        'sample_valid_o','left_o','right_o','active_mask_o','active_voice_count_o','note_drop_o',
+        'control_options_o','effect_mask_o','effect_order_o','effect_count','effect_master',
+        'requested_mode','mode_pending','volume','expression_gain','pcm_gain_o','route_o',
+        'profile_o','target_ratio','glide_step','vibrato_depth','glide_cc','bend_index',
+        'sustain','scope_status_o','tf_scope_control_o','panel_event_valid_o','panel_command_o']
     before='{'+','.join('audio.'+name for name in observed)+'}'
     after='{'+','.join('reference_audio.'+name for name in observed)+'}'
     checker='''
@@ -40,6 +44,20 @@ def add_reference(staged, reference):
     anchor='        $display("PASS attach:'
     if text.count(anchor)!=1:raise ValueError('missing attach conclusion anchor')
     stimulus='''        ab_stress=1;
+        put(0,7);wait(dut.input_settled);samples(2);
+        midi(2,120,0);samples(1);
+        for(integer value=0;value<128;value++)begin
+            midi(2,7,value);midi(2,11,value);midi(2,16,value);
+            midi(2,1,value);midi(2,5,value);midi(2,64,value);
+            midi(2,80,value);midi(2,81,value);midi(2,82,value);midi(2,83,value);
+            midi(2,84,value);midi(2,85,value);midi(2,86,value);midi(2,87,value);
+            midi(2,88,value);midi(2,89,value);midi(2,90,value);midi(2,91,value);
+            midi(2,92,value);midi(2,93,value);midi(2,94,value);midi(2,95,value);
+            midi(2,96,value);midi(2,97,value);midi(2,98,value);midi(2,99,value);
+            midi(2,100,value);midi(2,101,value);midi(2,103,value);midi(2,104,value);
+            midi(3,value,0);midi(4,value,127-value);midi(6,value,0);
+            samples(1);midi(2,120,0);samples(1);
+        end
         // MIDI0/127 exercise original rejection behavior too; the old/new
         // drop counters must agree while deadline and overflow remain zero.
         // All cursor boundaries, including MIDI0/127, both engines and CC123.

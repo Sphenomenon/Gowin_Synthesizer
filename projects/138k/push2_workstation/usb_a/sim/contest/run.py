@@ -42,6 +42,7 @@ def main():
                 ROOT / 'rtl/audio/gw138k_event_workstation.sv',
                 base / 'src/audio/pt8211_tx.v', base / 'src/audio/pt8211_observer.v']
     sources += sorted((ROOT / 'rtl/audio/scope_vec').glob('*.sv'))
+    sources += sorted((ROOT / 'rtl/control').glob('*.sv'))
     sources += sorted((ROOT / 'rtl/audio/delay_ddr').glob('*.sv'))
     sources += [HERE / 'tb_realtime_synth.sv']
     inputs = sources + [Path(__file__).resolve(), ROOT / 'rtl/ddr_address_map.vh',

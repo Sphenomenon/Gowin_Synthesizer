@@ -201,6 +201,7 @@ def main():
     # Packages must be parsed before modules.
     audio_sources.sort(key=lambda p:(not p.name.endswith('_pkg.sv'),str(p)))
     integration=audio_sources+[project/'src/ae350/gw138k_event_workstation.sv',project/'src/ae350/gw138k_three_event_arbiter.sv',project/'rtl/audio/scope_vec/scope_vec_engine.sv',project/'rtl/audio/scope_vec/scope_control_player.sv',project/'rtl/audio/scope_vec/scope_tf_control.sv']
+    integration += sorted((project / 'rtl/control').glob('*.sv'))
     samples={};test_summaries={};metrics={};all_inputs=set(integration)
     try:
         for top,inputs in [('tb_scope_vec',[project/'rtl/audio/scope_vec/scope_vec_engine.sv',project/'rtl/audio/scope_vec/scope_control_player.sv']),

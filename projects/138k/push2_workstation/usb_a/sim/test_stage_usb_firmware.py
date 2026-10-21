@@ -121,20 +121,21 @@ class UsbFirmwareStagingTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'static RAM end=60000'):
                 staging.stage_usb_firmware(self.root, self.stage, self.output)
 
-    def test_current_builder_rejects_missing_accepted_baseline_without_building(self):
+    def test_current_builder_rejects_missing_locked_baseline_without_building(self):
         path = ROOT / 'tools/build_current_workstation.py'
         spec = importlib.util.spec_from_file_location('current_workstation_test', path)
         builder = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(builder)
-        builder.BASE = self.base / 'absent-full83'
+        missing_root = self.base / 'repository/projects/138k/push2_workstation/usb_a'
         error_text = io.StringIO()
         with patch.object(sys, 'argv', [str(path), '--prepare-only']), \
+             patch.object(builder, 'ROOT', missing_root), \
              patch.object(builder, 'stage_usb_firmware') as compile_firmware, \
              contextlib.redirect_stderr(error_text):
             with self.assertRaises(SystemExit) as error:
                 builder.main()
         self.assertEqual(error.exception.code, 2)
-        self.assertIn('accepted full83 staging tree is missing', error_text.getvalue())
+        self.assertIn('locked baseline index is missing', error_text.getvalue())
         compile_firmware.assert_not_called()
 
 

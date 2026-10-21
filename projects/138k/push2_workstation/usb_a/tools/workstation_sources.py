@@ -1,6 +1,6 @@
 """Source boundary for workstation builds based on the accepted full83 tree."""
 import hashlib
-import json
+from workstation_baselines import load_baseline
 
 
 MUSIC = 'rtl/music/'
@@ -58,14 +58,31 @@ TIMING85_OVERLAYS = tuple(MUSIC + name + '.sv' for name in (
     'basic_pitch_viterbi', 'basic_pitch_cqt_engine', 'basic_pitch_cqt_frontend',
     'basic_pitch_workstation_link', 'basic_pitch_pcm_pipeline', 'basic_pitch_conv2d'))
 
+ACCEPTED_DDR_INPUTS = {
+    'rtl/display_data/gw138k_ddr_arbiter.sv': (
+        'src/ae350/gw138k_ddr_arbiter.sv',
+        '61b0353f72419f0a719f693e121b1aa9ff8b07ed0dbfbdd33ec39f72172ef178'),
+    'rtl/display_data/hdmi_display.v': (
+        'src/video/hdmi_display.v',
+        '7421e472c9289b1cca0eefe1c428bc03d7f6ea1081e7f8f86a785d6d7ac42dcc'),
+    'rtl/ddr_address_map.vh': (
+        'src/memory/ddr_address_map.vh',
+        '0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb'),
+    'rtl/audio/delay_ddr/delay_ddr_dma.sv': (
+        'rtl/audio/delay_ddr/delay_ddr_dma.sv',
+        'e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301'),
+    'rtl/audio/delay_ddr/serial_delay_effect_ddr.sv': (
+        'rtl/audio/delay_ddr/serial_delay_effect_ddr.sv',
+        'e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6'),
+}
+
 
 def timing85_cnn_inputs(root, accepted):
     """Select six proven timing patches from a pinned snapshot, never live CNN."""
-    snapshot = root / TIMING85_BUILD
-    manifest = snapshot / 'workstation_inputs.json'
-    if not manifest.is_file() or sha(manifest) != TIMING85_MANIFEST_SHA256:
+    snapshot = load_baseline(root, 'timing85')
+    if snapshot.descriptor['origin']['input_manifest_sha256'] != TIMING85_MANIFEST_SHA256:
         raise ValueError('timing85 input manifest is missing or changed')
-    selected = accepted_cnn_inputs(snapshot / 'Prj1', json.loads(manifest.read_text()))
+    selected = snapshot.music
     changed = {name for name in accepted.keys() | selected.keys()
                if accepted.get(name) != selected.get(name)}
     if changed != set(TIMING85_OVERLAYS):

@@ -40,11 +40,24 @@ def main():
                     help='Complete candidate with 4-Hz guidance, tiled CNN, SDP buffers and spatial reverb')
     ap.add_argument('--resource-timing',action='store_true',
                     help='Resource candidate: measured structural timing fixes and route0; keeps all clocks/features')
+    ap.add_argument('--replicate-resources',action='store_true',help='Resource candidate only: explicit high-fanout resource replication')
+    ap.add_argument('--place-option',type=int,choices=range(5),help='Resource candidate only: explicit Arora V placement algorithm')
+    ap.add_argument('--max-fanout',type=int,help='Resource candidate only: explicit synthesis fanout limit')
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=ap.parse_args()
+    if args.resource_rework and (args.current_workstation or args.cnn_timing85):
+        ap.error('--resource-rework cannot be mixed with --current-workstation or --cnn-timing85')
+    if args.cnn_timing85 and not args.current_workstation:
+        ap.error('--cnn-timing85 requires --current-workstation')
     if args.resource_timing and not args.resource_rework:
         ap.error('--resource-timing requires --resource-rework')
+    if args.replicate_resources and not args.resource_rework:
+        ap.error('--replicate-resources requires --resource-rework')
+    if args.place_option is not None and not args.resource_rework:
+        ap.error('--place-option requires --resource-rework')
+    if args.max_fanout is not None and not args.resource_rework:
+        ap.error('--max-fanout requires --resource-rework')
     if args.resource_rework:
         if ((args.prepare_only and args.synthesis_only) or args.reuse_synthesis or
             args.tf_audio_kind!='wav' or args.riscv_prefix is not None):
@@ -52,6 +65,9 @@ def main():
         flow='prepare' if args.prepare_only else 'syn' if args.synthesis_only else 'all'
         command=[sys.executable,str(ROOT/'tools/build_resource_rework.py'),'--flow',flow]
         if args.resource_timing:command+=['--timing-fixes','--route-option','0']
+        if args.replicate_resources:command+=['--replicate-resources']
+        if args.place_option is not None:command+=['--place-option',str(args.place_option)]
+        if args.max_fanout is not None:command+=['--max-fanout',str(args.max_fanout)]
         if args.user_code is not None:command+=['--user-code',args.user_code]
         raise SystemExit(subprocess.run(command).returncode)
     if args.current_workstation:
@@ -67,8 +83,6 @@ def main():
         raise SystemExit(subprocess.run(command).returncode)
     tf_audio_kind={'mp3':1,'wav':2,'flac':3}[args.tf_audio_kind]
     build_mode='synthesis_only' if args.synthesis_only else 'place_route_reuse' if args.reuse_synthesis else 'full'
-    if args.cnn_timing85:
-        ap.error('--cnn-timing85 requires --current-workstation')
     if args.user_code is not None:
         if len(args.user_code)!=8 or any(c not in '0123456789abcdefABCDEF' for c in args.user_code):
             ap.error('--user-code requires eight hexadecimal digits')

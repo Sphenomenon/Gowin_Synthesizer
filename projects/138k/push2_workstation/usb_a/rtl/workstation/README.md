@@ -1,0 +1,76 @@
+# 工作站原生装配边界
+
+这里是 `build.py --resource-rework --resource-timing` 开发候选的第一方整机源码入口，不是完整工程副本。锁定基线继续提供 CPU/IP、固件 ROM、约束和尚未迁出的组件；实际输入由生成工程的 `workstation_inputs.json` 和 `workstation_composition.json` 绑定。
+
+accepted full83 和 pinned timing85 保留原来的来源策略与 CNN 保护。它们采用共享事件工作站及控制模块，但不隐式切换为这里的资源候选顶层。历史验收记录和冻结文件不修改。
+
+## 维护入口
+
+| 边界 | 源码 | 责任 |
+|---|---|---|
+| 板级装配 | `gw138k_push_workstation_top.v` | 时钟复位、引脚、组件连接、CDC 和平台就绪；不再持有 TF/识别播放恢复状态机 |
+| 音频域适配 | `gw138k_controlled_adapter.sv` | 串口输入跨域、采样时钟、串行 DAC、采集扩展和状态观察 |
+| USB/CPU 适配 | `gw138k_usb_controlled_audio.sv` | 设备/CPU 输入合并、服务寄存器和音频组件连接 |
+| 会话控制 | `../control/workstation_session.sv` | 生命周期、旧事件作废、接入默认事件序列、初始化完成屏障 |
+| 公共参数 | `../control/workstation_parameters.sv` | 已提交命令的唯一参数应用点；模式请求、音量/表情、音色、效果队列、矢量/TF 控制及状态投影 |
+| 实时事件与数据通路 | `../audio/gw138k_event_workstation.sv` | 事件仲裁、音符/延音释放、声部调度、帧汇合、DSP 和 deadline；不再实现公共参数 CC 分支 |
+| 播放业务服务 | `../services/workstation_playback_service.sv` | 模型就绪等待、选曲排队、取消、拔卡恢复/超时、TF 与识别的读取控制 |
+| 串行帧交接 | `../audio/workstation_frame_delivery.sv` | PANIC/生命周期取消的显式零帧、每采样周期最多交付一次、丢弃已取消帧的迟到响应；普通缺帧与非预期重复继续报错 |
+| 最终输出路由 | `../audio/workstation_output_router.sv` | 安全切换串行输出、最终输出观察和固定的 128-bit tap 快照 |
+
+`tools/workstation_composition.py` 只选择和复制明确列出的源码，并验证编译清单与哈希；不生成业务 RTL，也不对这三份装配文件做字符串改写。新增公共行为应先确定所属边界，不把条件分支继续加到顶层。
+
+## 控制与状态契约
+
+- 18-bit 事件格式、现有 CC、MMIO、USB PL 和 BLE 线规不变；没有偷偷加入来源、会话号或 revision 字段。
+- 只有事件被接受后，`workstation_parameters` 才更新公共参数。`mode_pending` 表示请求未提交，实际模式仍以声部引擎的 `mode_o` 为准。
+- 会话模块拥有事件寄存器和初始化进度；断开/PANIC 优先，旧事件不得穿过重连。初始化必须等待最终模式实际应用，不能把入队成功当完成。
+- 参数模块拥有延音开关；音频工作站拥有 held/deferred 音符表、释放游标、声部及实时统计。两者在同一音频时钟边沿提交，保持原先周期语义。
+- Push 等适配器的相对旋钮缓存不是权威状态。现有 MMIO/显示投影的位布局保持兼容；尚未扩成新的完整跨设备状态协议。
+- `TIMING_OPTIMIZED` 是编译期结构选择。资源时序候选显式启用已验证的调度结构与公共命令提交简化；普通整机保留原调度/提交表达式，不靠运行时推测 profile。公共命令的接受条件为有效事件、非延音释放扫描及可调度，不必再经过音符/逐音表情的 ready 选择器；音符类在参数模块不写公共状态。两种表达式均做完整逐拍对比。
+- 引擎响应只有在当前 `frame_inflight` 有效时才进入汇合；PANIC 当拍不启动新渲染。已取消作业的迟到结果不能留下单边 joined，阻塞下一采样。
+- 原生串行适配读取工作站已有的 PANIC 静音投影，不另存一套控制真值。尚未交付的取消帧以及 PANIC 静音期间每个周期交付显式零帧，音符恢复后按下一完整帧恢复；正常渲染不增加流水延迟。串行节拍保持 1,600 音频时钟，非取消缺帧不自动补零掩盖，非取消重复交付计入已有健康字低 16 位。
+
+## 音频路由与观察点
+
+| 路径 | 效果处理 | 最终输出 | 已有录音扩展 | 最终显示 tap |
+|---|---|---|---|---|
+| A/B/C 合成 | 合成支路串行效果链 | 合成 DAC | 合成支路输出 | 实际最终串行输出 |
+| 实时矢量 | 现有矢量混入路径，模式行为不变 | 优先占用合成 DAC；静音时不回退 TF | 合成支路输出 | 实际最终串行输出 |
+| TF 播放 | 仍保持原有独立支路，不声称经过合成效果链 | TF DAC，帧边界切换并等待稳定 | 未接入该录音扩展 | 实际最终串行输出 |
+
+128-bit 快照从高到低依次是 PCM 左右各 16-bit、触发参考 32-bit、声部掩码 32-bit、健康字 32-bit。TF 被选中时参考和声部掩码为零；健康字仍是原合成支路的 serializer/core 计数，不冒充 TF 全链路健康。跨域传输保留在组合根的 `u_final_output_cdc`。
+
+这次归位不强制改变采样率、效果作用范围或录音点。后续 D/BLE 接入必须显式选择 tap、位宽、背压/丢弃和存储归属，不能把“有录音模块”解释为“已经能录所有音源”。
+
+取消补零发生在串行交接点，不向既有 render-complete 录音扩展重复注入采样。其连续录音/取消时长表达仍须按实际录音契约单独集成，不能从最终串行连续性推导录音文件已经连续。
+
+## 构建与验证
+
+```sh
+python3 projects/138k/push2_workstation/usb_a/build.py --resource-rework --resource-timing --prepare-only
+python3 projects/138k/push2_workstation/usb_a/tools/build_resource_rework.py --timing-fixes --flow all --place-option 2 --route-option 0 --max-fanout 128 --user-code <新的八位十六进制标识>
+```
+
+高扇出物理实验可显式加 `--replicate-resources`（统一入口同名选项）；该选项写入实际 Tcl 和构建元数据，默认关闭，不改变时钟或 CDC 例外。不同物理配置分别产生候选和门禁结果，不能复用已有验收身份。
+
+本轮全局复制实验虽改善音频 setup，却引入复制复位节点的 recovery/removal 失败和 FIFO CDC 拓扑失败，未形成可下载候选；该选项仅保留复现用途，不能用来绕过门禁。只有相应复位/CDC 独立证明及整机门禁均闭合后才能进入可用配置，否则后续应退役该实验。`--place-option 0..4` 是另一项显式物理配置（统一入口同名），记录实际算法，不改时钟、同步器或例外。
+
+`--max-fanout <1..10000>`（统一入口同名）是 Gowin 的综合扇出选项，独立于上述 P&R 全局复制；实际 Tcl、元数据和输入哈希均记录其值，未指定时保留工具默认。上面的 place2/route0/max_fanout128、关闭 P&R 全局复制是本轮通过配置；64 的实验虽时序非负，PLL 门禁仍失败。通过候选 `0xC110210A` 的配置、442 项输入及位流身份见[本轮证据](../../reports/architecture_refactor_20261021/verification.json)，不保证不同源码或工具重跑自动通过，更不能复用该编号。实际 setup 余量仅 9 ps，仍须继续改善稳健性。
+
+PNR/all 必须显式给新的 `--user-code`，不再默认套用历史编号。工具流成功但时序、CDC 或 PLL 门禁失败时入口返回非零；`resource_all_result.json` 的工具成功与 `resource_readiness.json` 的离线可用性仍分别记录。离线通过也不会自动下载或写 Flash。
+
+`--resource-rework` 与 `--current-workstation`／`--cnn-timing85` 混用会直接报错；不会按分支顺序忽略其中一个来源策略。
+
+验证入口：
+
+- `sim/architecture/test_workstation_composition.py`：源码选择、重复/禁用输入、缺源及漂移拒绝。
+- `sim/architecture/run.py --project <新Prj1> --reference <重整前Prj1> --output <新目录>`：播放服务对照原顶层状态机，以及输出引脚/PCM/tap 的逐周期对比。
+- `sim/architecture/run_serial_delivery.py --project <新Prj1> --output <新目录>`：真实引擎/效果/PT8211，A/B/C 与矢量各扫描 CC PANIC/生命周期的 1,600 相位，验证真实发声/清音符，并用不补零的独立串行端作负对照；不能只测空闲期 PANIC。
+- `sim/run_workstation_attach.py --baseline <重整前Prj1> --event-reference <原事件工作站> --timing-optimized --out <新目录>`：真实 USB/CPU 仲裁、控制参数、接入/取消、PANIC、held/deferred 与 PCM 对比。
+- 综合、P&R、时序/CDC/PLL 门禁独立执行。离线通过后仍需设备身份读回、明确授权的 SRAM 下载和实体检查；不能把 UART 内核快照当作模拟音频或 HDMI 验收。
+- 授权后的核心 smoke 可用 `tools/capture_scope_smoke.py --seconds 5 --exercise-controls --exercise-polyphony --exercise-live --output <新JSON>`，此前须确认目标身份与 DDR 模型就绪。它不下载位流；只做带 CRC 的状态与离散快照，不保存音频流。快照须匹配新 token/完成计数/采样序号，并等待另一条新鲜完成记录后取数，避免把第一次完成状态与尚未稳定的 MMIO 数据混为一谈。
+
+## 仍需继续收敛
+
+这里完成的是开发候选的组合根与主要控制边界，不宣称所有历史构建器已退役。底层仍有带哈希/锚点约束的时序与 IP 适配；公共显示位域、Push 专有交互和 Android `Workstation` 协调职责仍可继续拆分。D 模式、138K 实际音频 BLE 录音及完整多端状态同步没有因这次重整而自动完成。

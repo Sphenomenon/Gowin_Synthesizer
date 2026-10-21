@@ -11,10 +11,10 @@ P29 USB IN 诊断已形成离线候选：UserCode `0x00000029`，SHA256 `b43d9e9
 当前说明、资源和时序记录在 [`push2_workstation/usb_a/README.md`](push2_workstation/usb_a/README.md) 与 [`P29_USB_IN_DIAGNOSTICS_VERIFICATION.md`](push2_workstation/usb_a/P29_USB_IN_DIAGNOSTICS_VERIFICATION.md)；板端稳定版本仍以 [`BOARD_CURRENT_P28_EFFECT_MASK_AUDIT.json`](push2_workstation/usb_a/BOARD_CURRENT_P28_EFFECT_MASK_AUDIT.json) 为准。构建入口是 [`push2_workstation/usb_a/build.py`](push2_workstation/usb_a/build.py)。
 
 ```sh
-python3 projects/138k/push2_workstation/usb_a/build.py --prepare-only
-python3 projects/138k/push2_workstation/usb_a/build.py
+python3 projects/138k/push2_workstation/usb_a/build.py --current-workstation --prepare-only
+python3 projects/138k/push2_workstation/usb_a/build.py --resource-rework --resource-timing --prepare-only
 ```
 
-每次完整构建都会创建新的 `usb_a/results/build_*` 目录。构建目录、位流、实现数据库、仿真波形和捕获文件不提交；版本 JSON 保存 UserCode、SHA256、SRAM 读回和实体结果。需要发布可直接下载的稳定位流时，应把它作为 GitHub Release 附件，并保留 P10 回退版本。
+当前整机输入由[锁定源码闭包](push2_workstation/usb_a/baselines/README.md)提供，不依赖忽略的历史暂存。每次准备或完整构建在 `usb_a/results/` 中创建对应配置的新目录；完整构建需显式分配新的 UserCode。构建目录、位流、实现数据库、仿真波形和捕获文件不提交；版本 JSON 保存 UserCode、SHA256、SRAM 读回和实体结果。需要发布可直接下载的稳定位流时，应把它作为 GitHub Release 附件，并保留 P10 回退版本。
 
 P28 已关闭 `effect_mask_sync_[0..2]_s0/RESET` 的旧缺口，完整 routed audit 与实体回归通过。P29 已在源码和离线位流中补齐 USB IN 诊断，等待以后单独 SRAM 下载和实体检查；P28 的板端字段仍为 `null`。其余历史目录只是本地参考，不代表当前板上版本。

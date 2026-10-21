@@ -2,9 +2,17 @@
 
 这是运行在 Gowin GW5AST-LV138PG484AC2/I1 和 NEO Dock 31005 上的 FPGA 音频工作站。主工程位于 [`projects/138k`](projects/138k)，Push 2 连接板载 J18 USB-A，不经过 CH569。
 
-当前实体通过版本为 P28，UserCode `0x00000028`，位流 SHA256 为 `a6544465c4aad1bb7a07abfb6158f1a787927442698eaf8193e9bad080f2fbb1`。P28 已关闭旧 `effect_mask` reset 审计缺口，完整 routed audit、通用 MIDI 和音频回归通过；从 `0x00006DE8` 只写 SRAM 并读回，Flash 未写。用户已确认 Push、连续压力、屏幕与灯光、MIDI、电脑键盘、HDMI、耳机、效果链、曲谱和录音控制正常。通用 MIDI `0x00006DE8`、P27 `0x00000027` 和 P10 继续保留为回退版本。
+## 架构与状态入口
 
-P29 USB IN 诊断已完成离线构建和完整审计，能分别回读传输/协议错误、重复 DATA、正常 NAK 和失联次数。候选 UserCode 为 `0x00000029`，SHA256 为 `b43d9e981cde16d571caeeea1ca2ca7e2031c556202cab48fa95eed6e6940581`。本会话按用户要求没有下载或读回 P29，也没有写 Flash，因此当前实体稳定版本仍记为 P28。
+- [全链路架构与工程收敛](docs/architecture/README.md)：实际运行链路、模块与状态归属、构建／验证／发布流程、风险与分阶段整改。后续开发先读此文和根目录 [AGENTS.md](AGENTS.md)。
+- 最近记录的工作站配置 Flash 部署为 full85／`0x85`（2026-10-12），仍有全板时序、Push 重连和物理断电启动等验收缺口；见[部署索引](projects/138k/push2_workstation/usb_a/LATEST_WORKSTATION.json)及其证据。这不代表已重新读取当前 SRAM 内容。
+- 最新记录的资源时序离线候选为 T24／`0xC1102024`，尚未板测或部署；见[候选清单](projects/138k/push2_workstation/usb_a/RESOURCE_TIMING_CANDIDATE.json)。离线候选、已验收基线和实际部署不能统称为“最新版”。
+
+## 早期 P28／P29 验收记录（历史）
+
+早期实体通过版本 P28 的 UserCode 为 `0x00000028`，位流 SHA256 为 `a6544465c4aad1bb7a07abfb6158f1a787927442698eaf8193e9bad080f2fbb1`。P28 已关闭旧 `effect_mask` reset 审计缺口，完整 routed audit、通用 MIDI 和音频回归通过；该轮从 `0x00006DE8` 只写 SRAM 并读回，Flash 未写。用户已确认 Push、连续压力、屏幕与灯光、MIDI、电脑键盘、HDMI、耳机、效果链、曲谱和录音控制正常。通用 MIDI `0x00006DE8`、P27 `0x00000027` 和 P10 继续保留为历史回退版本。
+
+P29 USB IN 诊断当时已完成离线构建和完整审计，能分别回读传输/协议错误、重复 DATA、正常 NAK 和失联次数。候选 UserCode 为 `0x00000029`，SHA256 为 `b43d9e981cde16d571caeeea1ca2ca7e2031c556202cab48fa95eed6e6940581`。该轮没有下载或读回 P29，也没有写 Flash；此处保留其历史适用范围，不作为当前部署说明。
 
 ## 工程目录
 
@@ -37,21 +45,21 @@ fpga/                         Git 根目录
 
 ## 构建
 
-仓库保存了构建所需的冻结 USB Host 源码、输入清单和 DDR 审计参考网表。先准备工程副本：
+当前完整工作站从 [可版本化输入闭包](projects/138k/push2_workstation/usb_a/baselines/README.md) 重建 accepted／timing85／资源时序基线，不再依赖本机忽略的历史暂存树。清单绑定来源和哈希，缺失或改动明确失败；需要重建 USB 固件的路径仍须准备 RISC-V bare-metal 工具链。先按 accepted full83 输入策略准备工程副本：
 
 ```sh
-python3 projects/138k/push2_workstation/usb_a/build.py --prepare-only
+python3 projects/138k/push2_workstation/usb_a/build.py --current-workstation --prepare-only
 ```
 
-完整构建会在 `usb_a/results/` 中创建新目录：
+资源时序候选是另一套输入策略，仅准备、不烧录：
 
 ```sh
-python3 projects/138k/push2_workstation/usb_a/build.py
+python3 projects/138k/push2_workstation/usb_a/build.py --resource-rework --resource-timing --prepare-only
 ```
 
-构建产物、捕获文件和位流留在本地。正式版本通过 UserCode、SHA256、SRAM 写前/写后读回和实体结果记录，不靠 `LATEST_BUILD.txt` 判断。
+不带整机选择参数的 `build.py` 保留早期构建路径，不是当前完整工作站默认入口。完整构建需显式选择策略并分配新的 UserCode；详见[架构中的构建流程](docs/architecture/README.md#8-统一研发与交付流程)。构建产物、捕获文件和位流留在本地。正式版本通过输入清单、UserCode、SHA256、SRAM 写前/写后读回和实体结果记录，不靠 `LATEST_BUILD.txt` 判断；准备／构建不会自动授权板卡操作。
 
-## 已知缺口
+## 早期 P 系列缺口（历史）
 
 旧 `effect_mask_sync_[0..2]_s0/RESET` 缺口已在 P28 关闭。USB IN error 诊断已在 P29 离线候选中实现并通过完整 routed audit，尚待以后单独 SRAM 下载和实体检查；P28 板端记录仍为 `null`。
 

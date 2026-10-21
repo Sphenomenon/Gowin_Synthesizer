@@ -5,11 +5,12 @@ import argparse,hashlib,json,subprocess,sys
 from datetime import datetime
 ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT/'tools'))
 from workstation_cnn_cdc import transform,LINK
-from workstation_sources import TIMING85_BUILD,verify_cnn_inputs
+from workstation_sources import verify_cnn_inputs
+from workstation_baselines import load_baseline
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 p=argparse.ArgumentParser();p.add_argument('build',type=Path);a=p.parse_args();build=a.build.resolve();stage=build/'Prj1'
-source=stage/LINK;fixed=ROOT/TIMING85_BUILD/'Prj1'/LINK
-assert source.read_text()==transform(fixed.read_text()),'patch exceeds exact diagnostic substitution'
+source=stage/LINK;baseline=load_baseline(ROOT,'timing85');fixed=baseline.read_bytes(LINK)
+assert source.read_text()==transform(fixed.decode()),'patch exceeds exact diagnostic substitution'
 meta=json.loads((build/'build_metadata.json').read_text());verify_cnn_inputs(stage,meta['music_sha256'])
 text=source.read_text();start=text.index('    // UART samples levels, not event counts.');end=text.index('    wire [10:0] tf_trace',start);snippet=text[start:end]
 assert "model_status,ddr_trace_sync[0],1'b1};" in text
@@ -57,9 +58,10 @@ initial begin
 end
 endmodule
 '''
-(out/'tb.sv').write_text(bench);inputs=[source,fixed,stage/'rtl/timing/gw138k_level_cdc.sv',Path(__file__).resolve(),ROOT/'tools/workstation_cnn_cdc.py',out/'tb.sv']
+(out/'tb.sv').write_text(bench);inputs=[source,baseline.manifest,stage/'rtl/timing/gw138k_level_cdc.sv',Path(__file__).resolve(),ROOT/'tools/workstation_cnn_cdc.py',out/'tb.sv']
 hashes={str(x):sha(x) for x in inputs}
 subprocess.run(['iverilog','-g2012','-s','tb','-o',str(out/'simv'),str(stage/'rtl/timing/gw138k_level_cdc.sv'),str(out/'tb.sv')],check=True)
 r=subprocess.run(['vvp',str(out/'simv')],text=True,capture_output=True,check=True);assert 'PASS cnn_trace_cdc:' in r.stdout
 assert hashes=={str(x):sha(x) for x in inputs}
+assert fixed==load_baseline(ROOT,'timing85').read_bytes(LINK)
 (out/'verification.json').write_text(json.dumps(dict(passed=True,source_bound=True,hardware_tested=False,log=r.stdout),indent=2)+'\n');(out/'inputs.json').write_text(json.dumps(hashes,indent=2)+'\n');print(r.stdout)

@@ -1,9 +1,15 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+## 2026-10-21 控制与装配重整
+
+资源时序开发候选现从 [原生组合根](rtl/workstation/README.md) 装配：会话、公共参数唯一应用点、播放业务服务、串行帧交接和最终输出路由分开维护；事件线规与 DSP 算术保持。accepted full83／pinned timing85 不隐式切换资源候选；混用来源选项直接失败。新候选 **`0xC110210A`** 已完成综合/P&R、时序/CDC/PLL/资源门禁及授权的 SRAM 下载，21 项公共控件、32 声部 A 模式与矢量核心 smoke 通过，音频健康字为零；Flash 索引保持 full85。来源和实测范围见 [本轮报告](reports/ARCHITECTURE_REFACTOR_20261021.md)及[紧凑证据](reports/architecture_refactor_20261021/verification.json)。setup 余量仅 **0.009 ns**；SRAM 后读回自动启动失败标志仍置位，未做冷启动、物理 DAC/HDMI 和 Push/25K 验收，不作为完整硬件发布。
+
+**下方 T24 命令与编号是 2026-10-20 的历史复现记录，不代表当前源码输入。** 本轮改变了第一方实现；新 PNR/all 构建必须显式使用新的 `--user-code`，不能把当前入口输出重新标成 `C1102024` 或继承旧候选验收。工具成功但 timing/CDC/PLL 失败时当前入口返回非零，不自动上板。
+
 
 ## 2026-10-20当前离线状态与同步入口
 
-最新离线候选为 **T24／0xC1102024**：完整时序、CDC、PLL及功能绑定通过，物理BSRAM234/340，setup最小余量0.022ns；候选未板测或烧录，板上旧版本记录保持。构建入口为`python3 build.py --resource-rework --resource-timing`，输入策略与原`--current-workstation`分开记录，不将活动CNN候选冒充full83验收输入。完整构建依赖本机清单绑定的既有暂存目录，克隆后缺少这些历史输入时应按门禁明确失败，不复制生成数据库冒充源码。
+最新离线候选为 **T24／0xC1102024**：完整时序、CDC、PLL及功能绑定通过，物理BSRAM234/340，setup最小余量0.022ns；候选未板测或烧录，板上旧版本记录保持。构建入口为`python3 build.py --resource-rework --resource-timing`，输入策略与原`--current-workstation`分开记录，不将活动CNN候选冒充full83验收输入。当前生产准备路径已迁到[可版本化输入闭包](baselines/README.md)，不再依赖忽略的本机历史暂存；缺失或改动锁定输入时明确失败，不回退到历史目录。此次源码迁移不改变T24位流身份，也不新增时序或实板验收。
 
 已落地接入初始化／消息保留／断开取消／PANIC、25K曲谱隔离和实际音源状态PL基础页；D独立效果保留，尚未接整机。Android／25K蓝牙录音下载源码已合入main，仍独立构建；138K业务接入与实物验收尚未因此完成，见[合并记录](reports/ANDROID_BLE_MERGE_20261020.md)。最新状态、pull核对及验证见[工作区同步记录](reports/WORKSPACE_SYNC_20261020.md)；物理结果见[候选清单](RESOURCE_TIMING_CANDIDATE.json)和[时序报告](reports/RESOURCE_TIMING_REPAIR_20261020.md)。下方各日期及板上数字保留其历史适用范围。
 

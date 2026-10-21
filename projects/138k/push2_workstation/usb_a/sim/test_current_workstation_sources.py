@@ -2,7 +2,6 @@
 """Guard the boundary between accepted CNN inputs and ongoing source work."""
 from pathlib import Path
 import shutil
-import json
 from unittest.mock import patch
 import sys
 import tempfile
@@ -11,6 +10,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 import workstation_sources as sources
+from baseline_fixture import write_baseline
 from workstation_sources import accepted_cnn_inputs, cnn_source_audit, sha, verify_cnn_inputs
 
 
@@ -95,22 +95,18 @@ class PinnedTimingSources(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
-        self.snapshot = self.root / 'snapshot'
-        self.project = self.snapshot / 'Prj1'
-        self.inputs = {}
+        self.root = Path(self.temp.name) / 'repository/projects/138k/push2_workstation/usb_a'
+        files = {}
         self.accepted = {}
         for name in sources.TIMING85_OVERLAYS + ('rtl/music/unchanged.sv', 'src/top.sv'):
-            path = self.project / name
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(name + '\n')
-            self.inputs[name] = sha(path)
+            files[name] = name + '\n'
+        fixture = write_baseline(self.root, 'timing85', files)
+        self.project = fixture.project
+        self.manifest = fixture.original
+        self.inputs = fixture.inputs
+        for name in self.inputs:
             if name.startswith('rtl/music/'):
                 self.accepted[name] = 'old' if name in sources.TIMING85_OVERLAYS else self.inputs[name]
-        self.manifest = self.snapshot / 'workstation_inputs.json'
-        self.manifest.write_text(json.dumps(self.inputs))
-        self.path_patch = patch.object(sources, 'TIMING85_BUILD', 'snapshot')
-        self.path_patch.start(); self.addCleanup(self.path_patch.stop)
         self.hash_patch = patch.object(sources, 'TIMING85_MANIFEST_SHA256', sha(self.manifest))
         self.hash_patch.start(); self.addCleanup(self.hash_patch.stop)
 

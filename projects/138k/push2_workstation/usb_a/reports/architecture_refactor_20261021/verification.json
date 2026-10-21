@@ -1,0 +1,827 @@
+{
+  "schema_version": 1,
+  "delivery_checks": {
+    "checked_at": "2026-10-21T06:33:23+08:00",
+    "architecture_unit": {
+      "tests": 27,
+      "passed": true,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/architecture_unit_delivery.log",
+        "sha256": "f20ed13f26f357b5238f4d82fcd982c7acefd384ee91506a8a2c10ffb980bdf5"
+      }
+    },
+    "source_selection": {
+      "tests": 10,
+      "passed": true,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/source_tests_delivery.log",
+        "sha256": "2d407504d003cfe404f23be48347e686ae1f67393860d4067d9a0bf06b1ddd60"
+      }
+    },
+    "clean_prepare": {
+      "tests": 23,
+      "passed": true,
+      "environment": {
+        "GW138K_VERIFY_CLEAN_PREPARE": "1"
+      },
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/clean_prepare_delivery.log",
+        "sha256": "34afd92c037c79d6b6cf62b6308c75124d23ee3e1eb6c466abbdfec503e99dc2"
+      }
+    },
+    "firmware": {
+      "tests": 6,
+      "passed": true,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/firmware_tests_delivery.log",
+        "sha256": "ba7ccc824660f99f10c5378a4598ede6de9cccb44d4230bf847998033f779998"
+      }
+    },
+    "changed_python_syntax": {
+      "files": 23,
+      "passed": true
+    },
+    "git_diff_check_passed": true,
+    "tracked_frozen_vendor_origin_or_deployment_index_differences": [],
+    "final_jtag_identity": {
+      "user_code": "0xC110210A",
+      "status": "0x00026230",
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/board_identity_delivery.log",
+        "sha256": "b9e49d18a172b9d83e7f6d9c893ab40351fdd41e797907f2aa8241c8cb0c7dbc"
+      }
+    }
+  },
+  "recorded_at": "2026-10-21T06:31:56+08:00",
+  "scope": "138K native control/composition refactor and cancellation serial-delivery repair; resource-timing development profile only",
+  "status": {
+    "source_implementation_complete": true,
+    "offline_gates_passed": true,
+    "sram_programmed": true,
+    "uart_core_smoke_passed": true,
+    "hardware_acceptance_complete": false,
+    "flash_deployed": false
+  },
+  "source_identity": {
+    "repository_head_observed_at_delivery": "a97505ceef2e1b6857f4125a0a317bd808eabd49",
+    "uncommitted_changes": true,
+    "not_a_clean_commit_build": true,
+    "inherited_metadata_git_commit": "5a4bd71011fcf1c19a2a996428603d7b41b4d86a",
+    "inherited_git_commit_is_not_candidate_source_identity": true,
+    "authority": "Exact staged input SHA256 manifest and explicit native source hashes; historical inherited metadata is not the delivery worktree commit.",
+    "profile": "build.py --resource-rework --resource-timing",
+    "baseline_reconstruction": [
+      {
+        "name": "resource_rework_route0",
+        "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+        "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+        "origin": {
+          "build": "results/resource_rework_final_route0_20261020_041042",
+          "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+          "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+        },
+        "source_files": 437,
+        "excluded_files": 180
+      }
+    ],
+    "cnn_source_policy": "explicit_live_candidate",
+    "accepted_full83_and_pinned_timing85_silently_switched": false,
+    "composition": {
+      "policy": "native_resource_timing_v1",
+      "sources": {
+        "rtl/workstation/gw138k_push_workstation_top.v": {
+          "destination": "src/push2/gw138k_push_workstation_top.v",
+          "sha256": "14b6512ee9589441675e98897cbe329327e8d9523d52c4bac17d65e409d5fdc5"
+        },
+        "rtl/workstation/gw138k_controlled_adapter.sv": {
+          "destination": "src/ae350/gw138k_controlled_adapter.sv",
+          "sha256": "f5d3b3d8fff94d1b2bd40a04adfc07a1a679ce4d1250fe5bed3120eb1d384775"
+        },
+        "rtl/workstation/gw138k_usb_controlled_audio.sv": {
+          "destination": "src/usb_host/gw138k_usb_controlled_audio.sv",
+          "sha256": "4c25dd78f9407bcee0bca6893baca4870badf62257a0d31126534f9988401d39"
+        },
+        "rtl/audio/gw138k_event_workstation.sv": {
+          "destination": "src/ae350/gw138k_event_workstation.sv",
+          "sha256": "5c552e169192a2c83fba7040dd132268b081da19d7753e69c0315f38fc93174d"
+        },
+        "rtl/audio/workstation_output_router.sv": {
+          "destination": "rtl/audio/workstation_output_router.sv",
+          "sha256": "1f07d2ed632970d46d4e38284c2ceecdf760148e5a94dcd86cc683026f6a7ee9"
+        },
+        "rtl/audio/workstation_frame_delivery.sv": {
+          "destination": "rtl/audio/workstation_frame_delivery.sv",
+          "sha256": "639fcc1496cc6a8c0f19f0979e4affdcfca34e1770d3b89c318dde3141f715c6"
+        },
+        "rtl/control/workstation_session.sv": {
+          "destination": "rtl/control/workstation_session.sv",
+          "sha256": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0"
+        },
+        "rtl/control/workstation_parameters.sv": {
+          "destination": "rtl/control/workstation_parameters.sv",
+          "sha256": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287"
+        },
+        "rtl/services/workstation_playback_service.sv": {
+          "destination": "rtl/services/workstation_playback_service.sv",
+          "sha256": "708bf573e4b2c7a42839771cddf6924b94d8845e944faf51d299bea83daae5d3"
+        }
+      }
+    },
+    "maintenance_tool_inputs": [
+      {
+        "path": "projects/138k/push2_workstation/usb_a/build.py",
+        "sha256": "9cd0510063f3e7a3a2e37dd1c4854c5759e5ceb9833e81d4394ac83930558271"
+      },
+      {
+        "path": "projects/138k/push2_workstation/usb_a/tools/build_resource_rework.py",
+        "sha256": "8c6d71f481f28effa3b9ef216305c7d5f3d534cc723f7efe38898e4c146b95bf"
+      },
+      {
+        "path": "projects/138k/push2_workstation/usb_a/tools/workstation_composition.py",
+        "sha256": "8306eddc2d249c4288684b5b23ff929b57a9d57426bed0a3f8c85f84a821514c"
+      },
+      {
+        "path": "projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py",
+        "sha256": "e7cb48c85e0040d1e78ba8b64b702c55aaca1ecc120d8fcdcff4c0283b08b07f"
+      },
+      {
+        "path": "projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py",
+        "sha256": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0"
+      },
+      {
+        "path": "projects/138k/push2_workstation/usb_a/tools/build_current_workstation.py",
+        "sha256": "003fc4235acac22d86c7f8ae65d0dcfe647b7747015fbdbb324e20bb4b241c5e"
+      },
+      {
+        "path": "projects/138k/push2_workstation/usb_a/tools/workstation_sources.py",
+        "sha256": "e37d1735245b3b82a5d29879dd3a7152bb7a174aad63ff5a0b460828b331181a"
+      },
+      {
+        "path": "projects/138k/push2_workstation/usb_a/tools/workstation_cnn_cdc.py",
+        "sha256": "b6abf223750bc701aa34cd6373cb2756c6abd4510f641aa343a0d576391369ef"
+      },
+      {
+        "path": "projects/138k/push2_workstation/usb_a/tools/capture_scope_smoke.py",
+        "sha256": "4ac4bd8e4cd6731be1a257cbf500a65fda30eb29295c35e0cb338db662ea6a90"
+      },
+      {
+        "path": "projects/138k/push2_workstation/usb_a/tools/upload_cnn_ddr_uart.py",
+        "sha256": "61b89927d4fe35a02a1ca7f21f98b62e1b4b2dc053eb5f91334838ea5bf2bda2"
+      }
+    ],
+    "candidate_directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066",
+    "input_count": 442,
+    "manifest": {
+      "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066/workstation_inputs.json",
+      "sha256": "30a0c3451fd65f10d45b5ef82b6a0f52770517e645df417aa09c7ca2b73928a9"
+    },
+    "input_drift": [],
+    "unchanged_from_pre_refactor_constraints": {
+      "constraints/tang_mega_138k.cst": "1c1e599838d53c076b5ab20842ca163e2c4285a82b267f8203852ce4a564c0bb",
+      "constraints/tang_mega_138k.sdc": "cf7c8613444693570a531d6edf7c93dbb7f415b0b3ef5cfc026b6b74a2bf4f43",
+      "constraints/p11.gsc": "cf2ce8bcbc84e619dcc974bcfae01ce3b9c2b328a4a51d2419b3bdc770e9d448",
+      "vendor/gowin_ddr3/reference_demo.cst": "46aaacaa92fe547460ffd5c87029f3536081900e3f029a5ea1517588f2b4ea4e",
+      "vendor/gowin_ddr3/reference_demo.sdc": "195461165f1b71c41d103e40738fdf8cf555cfcb44f178f5f104bcea4375c211"
+    },
+    "functional_witness_binding": {
+      "project": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051136_856825",
+      "input_manifest": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051136_856825/workstation_inputs.json",
+        "sha256": "fe64bb222785208dc2064ab06392276f63c6e429211c13225a201607da6f6589"
+      },
+      "only_different_input": [
+        "scripts/build.tcl"
+      ],
+      "same_rtl_rom_and_constraints": true,
+      "different_configuration": "Tcl UserCode and synthesis max_fanout 64 vs 128"
+    }
+  },
+  "configuration": {
+    "user_code": "0xC110210A",
+    "tool_version": "Gowin V1.9.12.03 (86714)",
+    "device": "GW5AST-LV138PG484AC2/I1",
+    "place_option": 2,
+    "route_option": 0,
+    "synthesis_max_fanout": 128,
+    "pnr_replicate_resources": false,
+    "timing_optimized": true,
+    "metadata": {
+      "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066/build_metadata.json",
+      "sha256": "05daab6ec7d3d224ac3f0c4e3b0fbbd9b1904eebd785847b24d347fc463d5241"
+    },
+    "tcl": {
+      "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066/Prj1/scripts/build.tcl",
+      "sha256": "736edfc203af9bb7dda65cbfa427a4f7d61ab18b1f5e80d6dabf4199668bf1be"
+    }
+  },
+  "bitstream": {
+    "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066/Prj1/impl/pnr/Prj1.fs",
+    "sha256": "ec619fbd72476dd5d1020e7d9c55e666265f92ec1b1e97e3eb2aa9044bd45ca6",
+    "header_user_code": "0xC110210A"
+  },
+  "offline_validation": {
+    "readiness": {
+      "tool_flow_passed": true,
+      "timing_closed": true,
+      "cdc_passed": true,
+      "pll_init_passed": true,
+      "release_ready": true,
+      "hardware_tested": false
+    },
+    "readiness_evidence": {
+      "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066/resource_readiness.json",
+      "sha256": "fd4c5e9d75e3c6d81a288c6d78727bca13441e884232f3398bf7a377d0d7afd7"
+    },
+    "timing": {
+      "closed": true,
+      "worst_ns": {
+        "setup": 0.009,
+        "hold": 0.165,
+        "recovery": 2.438,
+        "removal": 0.253
+      },
+      "pulse_width_violations": [],
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066/workstation_timing.json",
+        "sha256": "384bbe684a51142fc2f3464defc0bff69db49d456607362be16f349717aa0e28"
+      }
+    },
+    "cdc": {
+      "passed": true,
+      "errors": [],
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066/workstation_cdc.json",
+        "sha256": "63c97e041bacb3be9619d7cec3241ade32568a3a41a700761a7fa2e2e6d3320c"
+      }
+    },
+    "pll": {
+      "passed": true,
+      "errors": [],
+      "budget_ns": 10.0,
+      "maximum_propagation_ns": 9.854000000000001,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066/pll_init_audit.json",
+        "sha256": "b29c99753da43ffbe16155602ea7b109dce7bc48aa8e51627ba631de6999ddfe"
+      }
+    },
+    "resources": {
+      "Logic": {
+        "used": 80978,
+        "capacity": 138240
+      },
+      "Register": {
+        "used": 46322,
+        "capacity": 139095
+      },
+      "CLS": {
+        "used": 56927,
+        "capacity": 69120
+      },
+      "BSRAM": {
+        "used": 234,
+        "capacity": 340
+      },
+      "DSP": {
+        "used": 155,
+        "capacity": 298
+      }
+    },
+    "synthesis_equivalent_bsram": 197,
+    "physical_bsram": 234,
+    "features_present": [
+      "ae350_boot_memory",
+      "basic_pitch_ddr_port",
+      "basic_pitch_pipeline",
+      "hdmi_display_analysis",
+      "push_surface",
+      "scope_dac_selection",
+      "serial_effects",
+      "shared_ddr_controller",
+      "synthesizer",
+      "tf_capture_fifo",
+      "tf_ddr_dma",
+      "tf_playback_fifo",
+      "tf_spi_fat_reader",
+      "usb_host",
+      "vector_control_events",
+      "vector_voices"
+    ],
+    "resource_evidence": {
+      "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066/workstation_memory.json",
+      "sha256": "d2046f0c08c8345830acf9f9ff9e848cb11d1a83d8d80300da8ca830e2db8d22"
+    },
+    "unit_tests": {
+      "architecture": {
+        "passed": true,
+        "tests": 27,
+        "evidence": {
+          "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/architecture_unit_delivery.log",
+          "sha256": "f20ed13f26f357b5238f4d82fcd982c7acefd384ee91506a8a2c10ffb980bdf5"
+        }
+      },
+      "current_workstation_sources": {
+        "passed": true,
+        "tests": 10,
+        "evidence": {
+          "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/source_tests_final.log",
+          "sha256": "45629e08d8c41ba474e149425cf4477b6ed2d14afbd48b41a5dea35ddb36ae32"
+        }
+      },
+      "clean_baselines": {
+        "passed": true,
+        "tests": 23,
+        "evidence": {
+          "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/clean_prepare_final.log",
+          "sha256": "3539ec15908cb349365616557b2ede0f16fd4196739bff5dc94bba61b84e268d"
+        },
+        "environment": {
+          "GW138K_VERIFY_CLEAN_PREPARE": "1"
+        }
+      },
+      "firmware": {
+        "passed": true,
+        "tests": 6,
+        "evidence": {
+          "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/firmware_tests_final.log",
+          "sha256": "ba8dd02bb7437942124041e01665b154f224dfbcb0a07cdebc0a6802f7ac9c74"
+        }
+      }
+    },
+    "functional_regressions": {
+      "attach_default_converged": {
+        "passed": true,
+        "evidence": {
+          "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/attach_default_converged/verification.json",
+          "sha256": "65b3a1ca2a46c74fb3d8793c70176d38b4d96e2f623a0b23ec0af2f572b588f6"
+        },
+        "cycles": 1365022,
+        "reference": "pre-refactor default event workstation",
+        "audio_feedback_captures": 12
+      },
+      "attach_native_converged": {
+        "passed": true,
+        "evidence": {
+          "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/attach_native_converged/verification.json",
+          "sha256": "61f18a579d55058f00c4872032f33e3769e33f1ba2f56827a63d05e43a9b60e3"
+        },
+        "cycles": 1365022,
+        "reference": "pre-refactor resource candidate",
+        "audio_feedback_captures": 12
+      },
+      "boundaries_converged": {
+        "passed": true,
+        "evidence": {
+          "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/boundaries_converged/verification.json",
+          "sha256": "ab229cf45b40fc9369fb2e4ac3688d732771b3e3309da3053c39f84dd490fa78"
+        },
+        "playback_cycles": 4313,
+        "output_cycles": 72440,
+        "synth_frames": 296,
+        "tf_frames": 62
+      },
+      "serial_delivery_converged": {
+        "passed": true,
+        "evidence": {
+          "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/serial_delivery_converged/verification.json",
+          "sha256": "d11c1d19681cf55143991b00118a19824663ca678ad592b11da5676693263569"
+        },
+        "cycles": 122980825,
+        "cc_cancel_cases": 6400,
+        "lifecycle_cancel_cases": 6400,
+        "engines": [
+          "A",
+          "B",
+          "C",
+          "vector"
+        ],
+        "raw_cc_underruns": 2761,
+        "raw_lifecycle_underruns": 2761,
+        "guarded_underruns": 0,
+        "duplicate_faults": 0,
+        "deadline_misses": 0,
+        "frame_cycles": 1600
+      },
+      "realtime_synth_converged": {
+        "passed": true,
+        "evidence": {
+          "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/realtime_synth_converged/verification.json",
+          "sha256": "2213c850270fe9e62c17d0960dc32850bd45812e4b09b6d1d2ccdc714e37df12"
+        },
+        "sample_rate_hz": 48000,
+        "voices": 32,
+        "samples": 32768,
+        "maximum_render_cycles": 1072,
+        "frame_cycles": 1600,
+        "serializer_underruns_during_capture": 0,
+        "analog_measurement": false
+      }
+    },
+    "scope_tf_display": {
+      "passed": true,
+      "tests": 8,
+      "metrics": {
+        "dac_synth_pairs": 4231,
+        "dac_tf_pairs": 152,
+        "dac_min_bck_pulse_cycles": 12,
+        "dac_max_handover_cycles": 28729,
+        "workstation_max_cycles": 1144,
+        "scope_transport_assertions": 21,
+        "scope_transport_restarts": 10,
+        "tf_control_assertions": 13,
+        "tf_play_display_pairs": 722,
+        "tf_pause_zero_pairs": 77,
+        "tf_playlist_bound_checks": 3,
+        "xy_quadrants": 4,
+        "coexist_deadline_misses": 0,
+        "coexist_analysis_samples": 1683,
+        "coexist_vector_frames": 782,
+        "coexist_muted_frames": 200,
+        "coexist_xy_observation_frames": 775
+      },
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/scope_merge_converged.log",
+        "sha256": "2b1228926cb93d14851308f145e6528690f9f3852d0ef932d9563d21bb1d2cef"
+      }
+    },
+    "lifecycle": {
+      "passed": true,
+      "accepted": 36395,
+      "played": 36235,
+      "cancelled": 160,
+      "direct_lifecycle_cycles": 404,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/lifecycle_converged.log",
+        "sha256": "c0644ca9429b09bea6a772092a114741d7cd8b9f80aa97bfd6c3f27f917e909c"
+      }
+    },
+    "pinned_timing85_trace_cdc": {
+      "passed": true,
+      "level_patterns": 128,
+      "clock_checks": 1338,
+      "not_the_resource_profile": true,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/trace_cdc_timing85.log",
+        "sha256": "fcc91c220108fb1572de11f5715e2d259e98ed1481e81d8eaf9e3606df567f47"
+      }
+    }
+  },
+  "sram_deployment": {
+    "authorization": "Explicit user request to modify, verify, synthesize, deploy and inspect the connected 138K; constrained here to SRAM and volatile DDR, no Flash writes.",
+    "debugger_serial": "2025030317",
+    "usb_vid_pid": "0403:6010",
+    "device_id": "0x0001081B",
+    "cable_location": 54,
+    "programmer": "Gowin Programmer 1.9.12.02 programmer_cli",
+    "operations": [
+      {
+        "name": "before",
+        "passed": true
+      },
+      {
+        "name": "sram",
+        "passed": true
+      },
+      {
+        "name": "after",
+        "passed": true
+      }
+    ],
+    "operation_indices": {
+      "before": 0,
+      "sram": 2,
+      "after": 0
+    },
+    "from_user_code": "0x00000085",
+    "to_user_code": "0xC110210A",
+    "programmed_sha256": "ec619fbd72476dd5d1020e7d9c55e666265f92ec1b1e97e3eb2aa9044bd45ca6",
+    "program_result": {
+      "path": "projects/138k/push2_workstation/results/sram_20261021_062045_522145/result.json",
+      "sha256": "6c610e1fe133547ceb548a7391077abb38d0015f27ca38405f7aa78f18572bfe"
+    },
+    "operation_logs": [
+      {
+        "path": "projects/138k/push2_workstation/results/sram_20261021_062045_522145/before.log",
+        "sha256": "02a71501b199abee929fa7641135ec7f3c375a023a53fd041d55b510d29e49fc"
+      },
+      {
+        "path": "projects/138k/push2_workstation/results/sram_20261021_062045_522145/sram.log",
+        "sha256": "cf06158da45dd735e65ba20870e8d0ac6438214c5bbda4158fcd0c83f8d79880"
+      },
+      {
+        "path": "projects/138k/push2_workstation/results/sram_20261021_062045_522145/after.log",
+        "sha256": "fc5b5ca0e51b59c777e09e00490da56dc71c718022148d3982a80b94292c0667"
+      }
+    ],
+    "preflight": {
+      "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/deployment_preflight.json",
+      "sha256": "c1af71ff825fb7b66b2952d30bca6118c56f28a0ef297edc77fd699c16d123a2"
+    },
+    "identity_before": {
+      "user_code": "0x00000085",
+      "status": "0x00026020",
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/board_identity_before_candidate.log",
+        "sha256": "a2edcaccd097124179eea4f622dedbf2ee402b0dcebec3234b25de434ecc27fe"
+      }
+    },
+    "identity_after_core_smoke": {
+      "user_code": "0xC110210A",
+      "status": "0x00026230",
+      "decoded_flags": {
+        "crc_error": false,
+        "bad_command_error": false,
+        "id_verify_failed": false,
+        "timeout_error": false,
+        "auto_boot_2nd_fail": true,
+        "auto_boot_1st_fail": true,
+        "done_final": true,
+        "serial_crc_error": false,
+        "serial_ecc_uncorrectable": false
+      },
+      "all_boot_error_flags_clear": false,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/board_identity_after_candidate.log",
+        "sha256": "b9e49d18a172b9d83e7f6d9c893ab40351fdd41e797907f2aa8241c8cb0c7dbc"
+      }
+    },
+    "status_register_authority": {
+      "document": "Gowin UG704-1.0.4E",
+      "pages": [
+        65,
+        66
+      ],
+      "local_pdf_sha256": "021c2cec4ab3640aa225680ff6da78c060543098ae52ecc968700272bbea5cc7"
+    },
+    "status_limit": "Done Final and no command/CRC/ID/timeout error do not establish successful auto-boot: bit4 and bit9 remain set after SRAM. No flag clearing, additional reset, Flash reload or cold boot was performed; mechanism not diagnosed.",
+    "volatile_ddr_model": {
+      "bytes": 104478,
+      "crc32": "AF01A61B",
+      "blob_sha256": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf",
+      "ready_status": "0xE",
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/model_candidate.log",
+        "sha256": "81a5e83dae92ddcb54890f824a48f0bc334bb3322dc22286c2407c8f8ff8cc4f"
+      }
+    },
+    "core_smoke": {
+      "passed": true,
+      "started_at": "2026-10-21T06:24:54+08:00",
+      "finished_at": "2026-10-21T06:26:02+08:00",
+      "tests": {
+        "startup_cpu_audio_ddr_model": "passed",
+        "push_connected_screen_frames_advancing": "not_observed",
+        "common_control_application": "passed",
+        "polyphony_32_mode_a": "passed",
+        "live_three_voices": "passed",
+        "live_geometry_stereo_core_output": "passed",
+        "scope_mute_zero_core_output": "passed",
+        "live_note_release_and_panic": "passed",
+        "audio_health_zero": "passed"
+      },
+      "audio_health_word": "00000000",
+      "crc_bad": 0,
+      "live_core_snapshot_metrics": {
+        "snapshots": 3,
+        "distinct_axes": 3,
+        "nonzero": 3
+      },
+      "sample_stream_saved": false
+    },
+    "control_checks": 21,
+    "polyphony": {
+      "mode": "A",
+      "held_and_active": 32,
+      "single_key_release_active": 31,
+      "panic_active": 0,
+      "analog_measurement": false
+    },
+    "core_smoke_evidence": {
+      "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/smoke_candidate.json",
+      "sha256": "38c95d8c4fbff2a831a711288b380491fb7d28aacb3d03169d59b4876d999f60"
+    },
+    "settled_observation": {
+      "passed": true,
+      "started_at": "2026-10-21T06:26:57+08:00",
+      "finished_at": "2026-10-21T06:27:29+08:00",
+      "tests": {
+        "startup_cpu_audio_ddr_model": "passed",
+        "push_connected_screen_frames_advancing": "not_observed",
+        "audio_health_zero": "passed"
+      },
+      "audio_health_word": "00000000",
+      "crc_bad": 0,
+      "sample_counter_delta": 1392000,
+      "runtime_report_sequence_delta": 29,
+      "samples_per_runtime_report": 48000.0,
+      "sample_stream_saved": false
+    },
+    "settled_observation_evidence": {
+      "path": "projects/138k/push2_workstation/usb_a/results/architecture_20261021/smoke_candidate_settled.json",
+      "sha256": "4fec6dda44ebe9f4d055684b776bdbe1a60142ca7f1c2fc51e53fe2af35f07a8"
+    },
+    "final_control_state": {
+      "sequence": 296,
+      "applied_events": 148,
+      "mode": "C",
+      "sound": "flute",
+      "route": "stereo",
+      "effects": 0,
+      "active_voices": 0,
+      "gain_q15": 32768,
+      "pc_input_errors": 0,
+      "held_notes": []
+    },
+    "flash_written": false,
+    "flash_deployment_index_changed": false,
+    "flash_deployment_index": {
+      "path": "projects/138k/push2_workstation/usb_a/LATEST_WORKSTATION.json",
+      "sha256": "8afb5f65b343064d0600d242c994ba8f9eaf5e1faca3f4d7ef6603c365f91fa7"
+    }
+  },
+  "rejected_or_stopped_trials": [
+    {
+      "user_code": "0xC1102101",
+      "directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_011256_126900",
+      "sram_programmed": false,
+      "outcome": "offline_rejected",
+      "worst_ns": {
+        "setup": -1.45,
+        "hold": 0.165,
+        "recovery": 2.203,
+        "removal": 0.253
+      },
+      "cdc_passed": true,
+      "pll_init_passed": true,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_011256_126900/resource_readiness.json",
+        "sha256": "1e087ff63f10976dfa2a0dd5c873ba716a340e28a1649c11d461e53a5040f7e9"
+      }
+    },
+    {
+      "user_code": "0xC1102102",
+      "directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_012648_134048",
+      "sram_programmed": false,
+      "outcome": "offline_rejected",
+      "worst_ns": {
+        "setup": -1.772,
+        "hold": 0.165,
+        "recovery": 2.203,
+        "removal": 0.253
+      },
+      "cdc_passed": true,
+      "pll_init_passed": false,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_012648_134048/resource_readiness.json",
+        "sha256": "20fa99f4c6e0a55bd27a03c1158de2f3bd60bec62d966c71faf27d0baacd4f87"
+      }
+    },
+    {
+      "user_code": "0xC1102103",
+      "directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_033638_320590",
+      "sram_programmed": false,
+      "outcome": "stopped_before_completion_after_cancellation_bug_discovery",
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_033638_320590/trial_stop.json",
+        "sha256": "00236624ffc58a727901b92e82c8bf739c41b3f115b7327c7d010e33e26ebb36"
+      }
+    },
+    {
+      "user_code": "0xC1102104",
+      "directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_033646_909325",
+      "sram_programmed": false,
+      "outcome": "stopped_before_completion_after_cancellation_bug_discovery",
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_033646_909325/trial_stop.json",
+        "sha256": "00236624ffc58a727901b92e82c8bf739c41b3f115b7327c7d010e33e26ebb36"
+      }
+    },
+    {
+      "user_code": "0xC1102105",
+      "directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_041037_132283",
+      "sram_programmed": false,
+      "outcome": "offline_rejected",
+      "worst_ns": {
+        "setup": -0.887,
+        "hold": 0.162,
+        "recovery": -3.279,
+        "removal": -0.298
+      },
+      "cdc_passed": false,
+      "pll_init_passed": false,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_041037_132283/resource_readiness.json",
+        "sha256": "66fbbc39e6a712754bffcc2ab65fa36afd3c1fe39998b065f62060eaf0af22c8"
+      }
+    },
+    {
+      "user_code": "0xC1102106",
+      "directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_041211_340358",
+      "sram_programmed": false,
+      "outcome": "offline_rejected",
+      "worst_ns": {
+        "setup": -0.887,
+        "hold": 0.163,
+        "recovery": -2.488,
+        "removal": -0.298
+      },
+      "cdc_passed": false,
+      "pll_init_passed": true,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_041211_340358/resource_readiness.json",
+        "sha256": "6e802ed359f1c2c8355ed7199e272617f16abb3c22a6df9fe7cbe8218f7e5534"
+      }
+    },
+    {
+      "user_code": "0xC1102107",
+      "directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_043916_583681",
+      "sram_programmed": false,
+      "outcome": "offline_rejected",
+      "worst_ns": {
+        "setup": -0.871,
+        "hold": 0.136,
+        "recovery": 2.763,
+        "removal": 0.253
+      },
+      "cdc_passed": true,
+      "pll_init_passed": false,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_043916_583681/resource_readiness.json",
+        "sha256": "20fa99f4c6e0a55bd27a03c1158de2f3bd60bec62d966c71faf27d0baacd4f87"
+      }
+    },
+    {
+      "user_code": "0xC1102108",
+      "directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_043932_272792",
+      "sram_programmed": false,
+      "outcome": "offline_rejected",
+      "worst_ns": {
+        "setup": -1.033,
+        "hold": 0.136,
+        "recovery": 2.12,
+        "removal": 0.253
+      },
+      "cdc_passed": true,
+      "pll_init_passed": false,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_043932_272792/resource_readiness.json",
+        "sha256": "20fa99f4c6e0a55bd27a03c1158de2f3bd60bec62d966c71faf27d0baacd4f87"
+      }
+    },
+    {
+      "user_code": "0xC1102109",
+      "directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051136_856825",
+      "sram_programmed": false,
+      "outcome": "offline_rejected",
+      "worst_ns": {
+        "setup": 0.014,
+        "hold": 0.165,
+        "recovery": 2.415,
+        "removal": 0.34
+      },
+      "cdc_passed": true,
+      "pll_init_passed": false,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051136_856825/resource_readiness.json",
+        "sha256": "52439b8781c74b7be416734c4124d1e02ad935bbd4969742bdb50d34b8dd89ba"
+      }
+    },
+    {
+      "user_code": "0xC110210A",
+      "directory": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066",
+      "sram_programmed": true,
+      "outcome": "offline_passed",
+      "worst_ns": {
+        "setup": 0.009,
+        "hold": 0.165,
+        "recovery": 2.438,
+        "removal": 0.253
+      },
+      "cdc_passed": true,
+      "pll_init_passed": true,
+      "evidence": {
+        "path": "projects/138k/push2_workstation/usb_a/results/resource_timing_20261021_051151_426066/resource_readiness.json",
+        "sha256": "fd4c5e9d75e3c6d81a288c6d78727bca13441e884232f3398bf7a377d0d7afd7"
+      }
+    }
+  ],
+  "rollback": {
+    "user_code": "0x00000085",
+    "bitstream": {
+      "path": "projects/138k/push2_workstation/usb_a/results/song_guide_full85_clk50_20261007_084539_884006_route1/Prj1/impl/pnr/Prj1.fs",
+      "sha256": "7f96a42b0adf4e87863089d610a454e570876a78c7917d892949116918015444"
+    },
+    "method": "Verify current UserCode, program this verified old image to SRAM only via program_sram.py --from-code 0xc110210a, read back 0x85, then reload volatile DDR model if needed. Do not write Flash.",
+    "scope": "Restores the previous image, not proof that old timing and cancellation-health faults are solved."
+  },
+  "remaining_gaps": [
+    "Only 0.009 ns setup margin; no cross-run, temperature/voltage or sustained maximum-load hardware timing qualification.",
+    "Auto-boot first/second-fail status flags remain set after SRAM operation; cold boot and automatic startup not accepted or diagnosed.",
+    "UART core snapshots are not physical DAC waveform, analog audio, HDMI reception or final serial pin measurements.",
+    "Push was not connected; no Push/25K hotplug, simultaneous attachment, USB High-Speed or cross-board acceptance is claimed.",
+    "TF hotplug and CNN song-score correctness were not physically exercised in this smoke.",
+    "D integration, long recording, 138K actual-output BLE recording and complete bidirectional multi-endpoint parameter synchronization remain separate work.",
+    "Serial cancellation zero markers do not change the existing render-complete recording extension timeline contract.",
+    "Historical numbered builders and lower-level checked text overlays still require staged retirement; no claim that all technical debt is removed.",
+    "The candidate is in volatile SRAM only. Flash remains full85; a later reset/reload is not guaranteed to preserve the candidate or DDR model."
+  ]
+}

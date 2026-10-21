@@ -1,6 +1,7 @@
 """Bounded local diagnostic patch on the pinned CNN timing85 link only."""
 import hashlib
-from workstation_sources import TIMING85_BUILD,TIMING85_OVERLAYS
+from workstation_sources import TIMING85_OVERLAYS
+from workstation_baselines import load_baseline
 LINK='rtl/music/basic_pitch_workstation_link.sv'
 
 
@@ -26,10 +27,10 @@ def transform(text):
 
 def select(root,selected):
     if LINK not in TIMING85_OVERLAYS:raise ValueError('trace patch must stay inside the six timing files')
-    path=root/TIMING85_BUILD/'Prj1'/LINK
-    before=hashlib.sha256(path.read_bytes()).hexdigest()
+    payload=load_baseline(root,'timing85').read_bytes(LINK)
+    before=hashlib.sha256(payload).hexdigest()
     if selected[LINK]!=before:raise ValueError('trace patch requires the exact pinned timing85 link')
-    text=transform(path.read_text());after=hashlib.sha256(text.encode()).hexdigest()
+    text=transform(payload.decode());after=hashlib.sha256(text.encode()).hexdigest()
     selected=selected.copy();selected[LINK]=after
     return selected,dict(file=LINK,base_sha256=before,selected_sha256=after,
         transform='seven DDR diagnostic levels, including reset and calibration status -> two 50MHz sampling stages; UART bit positions unchanged',

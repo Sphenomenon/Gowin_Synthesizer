@@ -9,22 +9,18 @@ from pathlib import Path
 from datetime import datetime
 import argparse,hashlib,json,os,re,shutil,subprocess,sys
 import xml.etree.ElementTree as ET
+from workstation_baselines import load_baseline
 ROOT=Path(__file__).resolve().parents[1]
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def prepare(timing_fixes=False):
     if timing_fixes:
         # A new timing candidate branches from the immutable, fully routed
         # 234-block source. Do not weaken the accepted builder's input guard.
-        reference=ROOT/'results/resource_rework_final_route0_20261020_041042'
-        expected=json.loads((reference/'workstation_inputs.json').read_text())
-        bad=[n for n,h in expected.items() if sha(reference/'Prj1'/n)!=h]
-        if bad:raise ValueError('resource timing reference drift: '+repr(bad))
+        reference=load_baseline(ROOT,'resource_rework_route0')
         output=ROOT/'results'/datetime.now().strftime('resource_timing_%Y%m%d_%H%M%S_%f');output.mkdir()
         stage=output/'Prj1'
-        shutil.copytree(reference/'Prj1',stage,ignore=shutil.ignore_patterns('impl','*.user','__pycache__'))
-        for f in reference.glob('*.json'):
-            if f.name in ('build_metadata.json','cnn_source_audit.json','prepared_cnn_source_audit.json'):
-                shutil.copy2(f,output/f.name)
+        reference.materialize(stage)
+        reference.copy_metadata(output)
     else:
         p=subprocess.run([sys.executable,str(ROOT/'tools/build_current_workstation.py'),
                           '--prepare-only','--cnn-timing85'],cwd=ROOT,text=True,capture_output=True)
@@ -62,7 +58,10 @@ def prepare(timing_fixes=False):
     timing_evidence={}
     if timing_fixes:
         from workstation_resource_timing import apply
-        timing_evidence=apply(stage)
+        timing_evidence=apply(stage,native_composition=True)
+        from workstation_composition import install,verify
+        composition=install(stage)
+        verify(stage,composition)
     tree=ET.parse(stage/'Prj1.gprj');files=tree.find('FileList');names={f.get('path') for f in files}
     included=set(re.findall(r'`include\s+"([^"]+)"',(stage/'legacy_audio.sv').read_text()))
     standalone_excluded={'rtl/music/basic_pitch_tf_board_top.sv',
@@ -73,6 +72,10 @@ def prepare(timing_fixes=False):
             ET.SubElement(files,'File',path=name,type='file.verilog',enable='1');names.add(name)
     tree.write(stage/'Prj1.gprj',encoding='UTF-8',xml_declaration=True)
     meta=json.loads((output/'build_metadata.json').read_text())
+    if timing_fixes:meta['source_baselines']=[reference.evidence()]
+    if timing_fixes:
+        meta['composition']=composition
+        (output/'workstation_composition.json').write_text(json.dumps(composition,indent=2)+'\n')
     meta.update(candidate='resource_rework_4hz_tiles_spatial',cnn_source_policy='explicit_live_candidate',
         analysis=dict(audio_rate_hz=22050,judgments_per_second=4,window_samples=44100,frames=8,
                       frequency_tile_columns=16,loaded_columns_with_halo=20),
@@ -124,14 +127,24 @@ def audit_outputs(output,flow,exit_code,drift,tool_ok):
         pll_init_passed=not errors,release_ready=ready,hardware_tested=False),indent=2)+'\n')
     print('Routed timing_closed:',timing['timing_closed'],'CDC:',cdc['passed'],
           'PLL:',not errors,'release_ready:',ready,flush=True)
+    return ready
 
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--flow',choices=['prepare','syn','pnr','all'],default='prepare')
     a.add_argument('--timing-fixes',action='store_true',help='Measured structural setup fixes; clocks and CDC requirements unchanged')
     a.add_argument('--stage',type=Path,help='Reuse a previously prepared candidate')
     a.add_argument('--route-option',type=int,choices=(0,1),default=1,help='Gowin general or effort routing; clocks unchanged')
-    a.add_argument('--user-code',default='C1102004',help='Candidate bitstream identity, not a release pointer')
+    a.add_argument('--replicate-resources',action='store_true',help='Explicit timing-driven high-fanout resource replication; clocks unchanged')
+    a.add_argument('--place-option',type=int,choices=range(5),help='Explicit Arora V placement algorithm; preserves clocks and constraints')
+    a.add_argument('--max-fanout',type=int,help='Explicit synthesis fanout limit (1..10000), not PNR resource replication')
+    a.add_argument('--user-code',help='Required new eight-hex identity for PNR/all; not a release pointer')
     args=a.parse_args()
+    if args.max_fanout is not None and not 1<=args.max_fanout<=10000:
+        a.error('--max-fanout must be between 1 and 10000')
+    if args.flow in ('pnr','all') and args.user_code is None:
+        a.error('--user-code is required for a new PNR/all candidate')
+    if args.user_code is not None and not re.fullmatch(r'[0-9A-Fa-f]{8}',args.user_code):
+        a.error('eight hex digits required for --user-code')
     if args.stage:
         output=args.stage.resolve();stage=output/'Prj1';meta=json.loads((output/'build_metadata.json').read_text())
         if meta.get('candidate')!='resource_rework_4hz_tiles_spatial':raise ValueError('not a resource-rework stage')
@@ -139,7 +152,9 @@ def main():
         bad=[n for n,h in expected.items() if not (stage/n).exists() or sha(stage/n)!=h]
         if bad:raise ValueError('candidate inputs drifted: '+repr(bad))
     else:output,stage,meta=prepare(args.timing_fixes)
-    if not re.fullmatch(r'[0-9A-Fa-f]{8}',args.user_code):raise ValueError('eight hex digits required')
+    if meta.get('composition'):
+        from workstation_composition import verify
+        verify(stage,meta['composition'])
     tcl=stage/'scripts/build.tcl';s=tcl.read_text();s=re.sub(r'^set_option -user_code .*\n','',s,flags=re.M)
     if args.flow in ('pnr','all'):
         anchor='open_project [file join $root Prj1.gprj]\n'
@@ -147,8 +162,18 @@ def main():
         s=s.replace(anchor,anchor+'set_option -user_code '+args.user_code+'\n')
     s,n=re.subn(r'^set_option -route_option [01]$', 'set_option -route_option '+str(args.route_option),s,flags=re.M)
     if n!=1:raise ValueError('routing option anchor drift')
+    s=re.sub(r'^set_option -replicate_resources [01]\n','',s,flags=re.M)
+    route_anchor='set_option -route_option '+str(args.route_option)+'\n'
+    if args.replicate_resources:s=s.replace(route_anchor,route_anchor+'set_option -replicate_resources 1\n',1)
+    placement=re.findall(r'^set_option -place_option ([0-4])$',s,flags=re.M)
+    if args.place_option is not None:
+        if len(placement)!=1:raise ValueError('placement option anchor drift')
+        s=re.sub(r'^set_option -place_option [0-4]$', 'set_option -place_option '+str(args.place_option),s,flags=re.M)
+    selected_placement=args.place_option if args.place_option is not None else int(placement[0]) if len(placement)==1 else None
+    s=re.sub(r'^set_option -max_fanout \d+\n','',s,flags=re.M)
+    if args.max_fanout is not None:s=s.replace(route_anchor,route_anchor+'set_option -max_fanout '+str(args.max_fanout)+'\n',1)
     tcl.write_text(s)
-    meta.update(route_option=args.route_option,build_mode=args.flow,user_code='0x'+args.user_code if args.flow in ('pnr','all') else None,hardware_tested=False)
+    meta.update(route_option=args.route_option,place_option=selected_placement,synthesis_max_fanout=args.max_fanout,replicate_resources=args.replicate_resources,build_mode=args.flow,user_code='0x'+args.user_code if args.flow in ('pnr','all') else None,hardware_tested=False)
     (output/'build_metadata.json').write_text(json.dumps(meta,indent=2)+'\n')
     inputs={p.relative_to(stage).as_posix():sha(p) for p in stage.rglob('*') if p.is_file() and 'impl' not in p.relative_to(stage).parts}
     (output/'workstation_inputs.json').write_text(json.dumps(inputs,indent=2)+'\n')
@@ -169,7 +194,10 @@ def main():
     ok=p.returncode==0 and not drift and not re.search(r'^ERROR\s*\(',log,re.M)
     (output/('resource_'+args.flow+'_result.json')).write_text(json.dumps(dict(passed=ok,exit_code=p.returncode,
               input_drift=drift,hardware_tested=False),indent=2)+'\n')
-    audit_outputs(output,args.flow,p.returncode,drift,ok)
+    ready=audit_outputs(output,args.flow,p.returncode,drift,ok)
     print('Tool flow PASS' if ok else 'Tool flow FAIL',args.flow,flush=True)
     if not ok:raise SystemExit(1)
+    if args.flow in ('pnr','all') and not ready:
+        print('Offline timing/CDC/PLL gates FAIL; candidate must not be deployed',flush=True)
+        raise SystemExit(2)
 if __name__=='__main__':main()
