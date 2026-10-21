@@ -56,7 +56,7 @@ class CpuBoundary(unittest.TestCase):
         source = ROOT / 'drivers/usb2/workstation_usb2_host.c'
         with tempfile.TemporaryDirectory(prefix='workstation-usb2-driver-riscv-') as directory:
             compilation = subprocess.run([
-                prefix + '-gcc', '-march=rv32im', '-mabi=ilp32', '-Os', '-ffreestanding', '-std=c11',
+                prefix + '-gcc', '-march=rv32i', '-mabi=ilp32', '-Os', '-ffreestanding', '-std=c11',
                 '-Wall', '-Wextra', '-Werror', '-c', str(source), '-o', str(Path(directory) / 'host.o'),
             ], text=True, capture_output=True, timeout=30)
             self.assertEqual(compilation.returncode, 0, compilation.stdout + compilation.stderr)

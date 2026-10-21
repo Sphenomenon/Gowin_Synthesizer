@@ -14,14 +14,13 @@ import test_workstation_usb2_mmio as mmio_regression
 
 
 ROOT = mmio_regression.ROOT
-sys.path.insert(0, str(ROOT / 'tools'))
-from stage_usb_firmware import stage_usb2_cpu_firmware, verify_usb2_cpu_vendor
+sys.path.insert(0, str(ROOT))
+from tools.stage_usb_firmware import stage_usb2_cpu_firmware, verify_usb2_cpu_vendor
+from tools.workstation_usb2_soc import soc_sources as explicit_soc_sources
 
 
 def soc_sources():
-    vendor = verify_usb2_cpu_vendor(ROOT)
-    return [*mmio_regression.mmio_sources(), ROOT / 'rtl/usb2/workstation_usb2_cpu_bus.sv',
-            ROOT / 'rtl/usb2/workstation_usb2_soc.sv', vendor / 'src/VexRiscv.v', vendor / 'src/simpleuart.v']
+    return explicit_soc_sources(ROOT)
 
 
 class NativeCpu(unittest.TestCase):
@@ -33,6 +32,19 @@ class NativeCpu(unittest.TestCase):
             ROOT / 'rtl/usb2/workstation_usb2_cpu_bus.sv', vendor / 'src/simpleuart.v',
             ROOT / 'sim/usb2/tb_workstation_usb2_cpu_bus.sv',
         ], 'PASS workstation_usb2_cpu_bus:')
+
+    def test_native_soc_lint_keeps_vendor_warnings_separate(self):
+        self.assertIsNotNone(shutil.which('verilator'), 'Verilator is required for native SoC lint')
+        command = ['verilator', '--lint-only', '--timing', '--timescale-override', '1ns/1ps',
+                   '-Wall', '-Wno-fatal', '--top-module', 'workstation_usb2_soc',
+                   *(str(source) for source in soc_sources())]
+        execution = subprocess.run(command, text=True, capture_output=True, timeout=30)
+        self.assertEqual(execution.returncode, 0, execution.stdout + execution.stderr)
+        native_warnings = [warning for warning in re.findall(r'^%Warning[^\n]*', execution.stderr, re.M)
+                           if '/rtl/usb2/' in warning]
+        self.assertEqual(len(native_warnings), 1, native_warnings)
+        self.assertTrue(native_warnings[0].startswith('%Warning-SYNCASYNCNET:'), native_warnings)
+        self.assertIn("'workstation_usb2_soc.cpu_reset_n'", native_warnings[0])
 
     def test_actual_rv32i_firmware_with_high_and_full_speed_25k(self):
         self.assertIsNotNone(shutil.which('verilator'), 'Verilator is required for actual CPU execution')

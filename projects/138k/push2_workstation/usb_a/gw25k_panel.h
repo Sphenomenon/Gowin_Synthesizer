@@ -10,6 +10,11 @@
 #define GW_HEALTH 2u
 #define GW_TILE 0x20u
 #define GW_END 0x21u
+#ifdef WORKSTATION_USB2_NATIVE
+#define GW_USB_PACKET_CAPACITY 512u
+#else
+#define GW_USB_PACKET_CAPACITY 64u
+#endif
 struct gw_transaction {
     uint8_t data[528],reply[64];
     unsigned length,position,received,type,used,reading;
@@ -216,7 +221,7 @@ static void gw_transfer(void) {
          * duplicate USB DATA is acknowledged without another append. */
         return;
     }
-    uint8_t packet[64],pid=0;
+    uint8_t packet[GW_USB_PACKET_CAPACITY],pid=0;
     int n=usbhw_transfer_in(PID_IN,dev.address,panel_in_ep,&pid,packet,(int)panel_in_size);
     if(n==USB_RES_STALL){disconnect();return;}
     if(n<0)return;
@@ -237,7 +242,7 @@ static void gw25k_service(void) {
     if(!connected || mode!=DEVICE_GW25K)return;
     uint32_t now=(uint32_t)usbhw_timer_now();
     if(gw.recovering) {
-        uint8_t p[64],pid=0;
+        uint8_t p[GW_USB_PACKET_CAPACITY],pid=0;
         int n=usbhw_transfer_in(PID_IN,dev.address,panel_in_ep,&pid,p,(int)panel_in_size);
         if(n==USB_RES_STALL){disconnect();return;}
         if(n>=0 && (pid==PID_DATA0 || pid==PID_DATA1) && pid==(gw.panel_in_toggle?PID_DATA1:PID_DATA0))gw.panel_in_toggle^=1;

@@ -46,7 +46,7 @@ module workstation_usb2_cpu_bus #(
     localparam integer DIVIDER_WIDTH = MILLISECOND_CYCLES < 2 ? 1 : $clog2(MILLISECOND_CYCLES);
     reg [31:0] memory [0:16383];
     reg [31:0] memory_read_q, peripheral_read_q;
-    reg memory_response_q;
+    reg memory_response_q, bootstrap_response_q;
     reg [2:0] state_q;
     reg [31:0] address_q, write_data_q;
     reg write_q;
@@ -64,7 +64,8 @@ module workstation_usb2_cpu_bus #(
                       data_address_i == 32'h0200005c || data_address_i == 32'h02000060;
     wire data_memory_accept = data_accept && data_memory;
     wire instruction_accept = instruction_valid_i && instruction_ready_o;
-    wire bad_instruction = instruction_accept && instruction_address_i[31:16] != 0;
+    wire instruction_bootstrap = instruction_address_i[31:6] == 26'h2000000;
+    wire bad_instruction = instruction_accept && instruction_address_i[31:16] != 0 && !instruction_bootstrap;
     wire invalid_local_write = data_local && data_write_i && data_address_i != 32'h02000010 && data_address_i != 32'h02000058;
     wire invalid_data = data_accept && ((!data_memory && !data_usb && !data_service && !data_uart && !data_local) || invalid_local_write);
     wire [13:0] memory_address = data_memory_accept ? data_address_i[15:2] : instruction_address_i[15:2];
@@ -81,7 +82,7 @@ module workstation_usb2_cpu_bus #(
     initial if (ROM_FILE != "") $readmemh(ROM_FILE, memory);
     assign data_ready_o = reset_n && state_q == IDLE;
     assign instruction_ready_o = reset_n && !data_memory_accept;
-    assign instruction_data_o = memory_read_q;
+    assign instruction_data_o = bootstrap_response_q ? 32'h00000067 : memory_read_q;
     assign data_read_data_o = memory_response_q ? memory_read_q : peripheral_read_q;
     assign usb_cs_o = reset_n && state_q == USB;
     assign usb_write_o = write_q;
@@ -129,10 +130,11 @@ module workstation_usb2_cpu_bus #(
     always @(posedge clk_cpu or negedge reset_n) begin
         if (!reset_n) begin
             state_q <= IDLE; address_q <= 0; write_data_q <= 0; write_q <= 0; mask_q <= 0; elapsed_q <= 0;
-            instruction_response_o <= 0; instruction_error_o <= 0;
+            instruction_response_o <= 0; instruction_error_o <= 0; bootstrap_response_q <= 0;
             data_response_o <= 0; memory_response_q <= 0; peripheral_read_q <= 0;
         end else begin
             instruction_response_o <= instruction_accept; instruction_error_o <= bad_instruction;
+            bootstrap_response_q <= instruction_accept && instruction_bootstrap;
             data_response_o <= 0; memory_response_q <= 0;
             if (state_q == IDLE || state_q == USB_RELEASE) elapsed_q <= 0;
             else elapsed_q <= elapsed_q + 1'b1;

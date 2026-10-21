@@ -34,6 +34,10 @@ def main():
     ap.add_argument('--prepare-pinout',choices=['custom-138k'],help='Offline custom-board locations only; not a workstation synthesis path')
     ap.add_argument('--netlist-dir',type=Path,help='Explicit directory containing the three locked custom-board netlists')
     ap.add_argument('--pinout-output',type=Path,help='New output directory for --prepare-pinout; refuses existing paths')
+    ap.add_argument('--prepare-usb2-soc',action='store_true',help='Prepare native CPU/USB2 component and probe ROM only; not a workstation or board candidate')
+    ap.add_argument('--usb2-soc-output',type=Path,help='Required new output directory for --prepare-usb2-soc')
+    ap.add_argument('--usb2-firmware-profile',choices=['probe','workstation'],help='Explicit USB2 CPU firmware; default probe, never changes accepted workstation profiles')
+    ap.add_argument('--usb2-full-speed-only',action='store_true',help='Explicit native workstation diagnostic policy; HS remains enabled by default')
     ap.add_argument('--current-workstation',action='store_true',
                     help='Merge scope into accepted full83; full requires UserCode, never changes board latest')
     ap.add_argument('--tf-audio-kind',choices=['mp3','wav','flac'],default='wav',
@@ -49,6 +53,30 @@ def main():
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=ap.parse_args()
+    if args.usb2_full_speed_only and (not args.prepare_usb2_soc or args.usb2_firmware_profile!='workstation'):
+        ap.error('--usb2-full-speed-only requires --prepare-usb2-soc --usb2-firmware-profile workstation')
+    if args.prepare_usb2_soc:
+        if args.usb2_soc_output is None:
+            ap.error('--prepare-usb2-soc requires --usb2-soc-output')
+        if (args.prepare_pinout or args.netlist_dir is not None or args.pinout_output is not None or
+                args.prepare_only or args.synthesis_only or args.reuse_synthesis or args.no_update_latest or
+                args.current_workstation or args.cnn_timing85 or args.resource_rework or args.resource_timing or
+                args.replicate_resources or args.place_option is not None or args.max_fanout is not None or
+                args.user_code is not None or args.tf_audio_kind!='wav'):
+            ap.error('--prepare-usb2-soc cannot be mixed with pinout, workstation, synthesis or release options')
+        from tools.workstation_usb2_soc import prepare as prepare_usb2_soc
+        try:
+            output,metadata=prepare_usb2_soc(ROOT,args.usb2_soc_output,args.riscv_prefix,
+                                           args.usb2_firmware_profile or 'probe',not args.usb2_full_speed_only)
+        except (ValueError,OSError,subprocess.CalledProcessError) as error:
+            ap.error(str(error))
+        print(output)
+        print(json.dumps(dict(identity=metadata['identity'],validation_stage=metadata['validation_stage'],
+                              sources=len(metadata['staged_input_sha256'])-4,
+                              rom_sha256=metadata['firmware']['rom_sha256'],deployment_allowed=False)))
+        return
+    if args.usb2_soc_output is not None or args.usb2_firmware_profile is not None:
+        ap.error('--usb2-soc-output and --usb2-firmware-profile require --prepare-usb2-soc')
     if args.prepare_pinout:
         if not args.netlist_dir:
             ap.error('--prepare-pinout requires --netlist-dir')

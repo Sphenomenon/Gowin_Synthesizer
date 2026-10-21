@@ -27,18 +27,28 @@ def verify_usb2_cpu_vendor(root):
     return vendor
 
 
-def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None):
+def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None, *, workstation=False, allow_high_speed=True):
     root, output, entry = map(Path, (root, output, entry))
+    if not workstation and not allow_high_speed:
+        raise ValueError('full-speed-only policy requires workstation firmware')
     vendor = verify_usb2_cpu_vendor(root)
     prefix = compiler_prefix(riscv_prefix)
     sources = [vendor / 'firmware/start.S', entry,
                root / 'drivers/usb2/workstation_usb2_host.c', root / 'drivers/usb2/workstation_usb2_cpu_port.c']
     headers = [root / 'drivers/usb2/workstation_usb2_host.h', root / 'drivers/usb2/workstation_usb2_cpu_port.h']
+    if workstation:
+        sources += [root / 'drivers/usb2/workstation_usb2_backend.c', vendor / 'firmware/minlibc.c',
+                    vendor / 'firmware/usb/usb_core.c']
+        headers += [root / 'firmware.c', root / 'gw25k_panel.h', root / 'drivers/usb2/workstation_usb2_backend.h',
+                    vendor / 'firmware/minlibc.h', vendor / 'firmware/usb/usb_core.h',
+                    vendor / 'firmware/usb/usb_defs.h', vendor / 'firmware/usb/usb_hw.h']
     linker = vendor / 'firmware/baremetal.ld'
     for source in [*sources, *headers, linker]:
         if not source.is_file():
             raise FileNotFoundError('missing explicit USB2 CPU firmware input: ' + str(source))
     identities = {str(source.relative_to(root)): sha(source) for source in [*sources, *headers, linker]}
+    compiler_version = subprocess.run([prefix + '-gcc', '--version'], text=True, capture_output=True,
+                                      check=True).stdout.splitlines()[0]
     output.mkdir(parents=True, exist_ok=False)
     shutil.copyfile(linker, output / 'baremetal.ld')
     common = ['-march=rv32i', '-mabi=ilp32', '-mno-relax', '-msmall-data-limit=0']
@@ -47,9 +57,14 @@ def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None):
         for index, source in enumerate(sources):
             target = 'start.o' if index == 0 else f'source_{index}.o'
             objects.append(target)
-            subprocess.run([prefix + '-gcc', *common, '-std=c11', '-Os', '-ffreestanding',
-                            '-ffunction-sections', '-fdata-sections', '-Wall', '-Wextra', '-Werror',
-                            '-I', str(root / 'drivers/usb2'), '-c', str(source.resolve()), '-o', target],
+            profile_flags = ['-DWORKSTATION_USB2_NATIVE', '-I', str(root), '-I', str(vendor / 'firmware'),
+                             '-I', str(vendor / 'firmware/usb')] if workstation else []
+            if not allow_high_speed:
+                profile_flags += ['-DWORKSTATION_USB2_FORCE_FS']
+            warning_flags = ['-Wall'] if vendor in source.parents else ['-Wall', '-Wextra', '-Werror']
+            subprocess.run([prefix + '-gcc', *common, '-std=c11', '-O2' if workstation else '-Os', '-ffreestanding',
+                            '-ffunction-sections', '-fdata-sections', *warning_flags,
+                            *profile_flags, '-I', str(root / 'drivers/usb2'), '-c', str(source.resolve()), '-o', target],
                            cwd=output, stdout=log, stderr=subprocess.STDOUT, check=True)
         subprocess.run([prefix + '-gcc', *common, '-nostdlib', '-Wl,-e,_start,--gc-sections,--build-id=none,-T,baremetal.ld',
                         *objects, '-lgcc', '-o', 'firmware.elf'], cwd=output,
@@ -70,7 +85,10 @@ def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None):
     rom = output / 'usb2_cpu.hex'
     rom.write_text(''.join(f'{int.from_bytes(padded[index:index+4], "little"):08x}\n'
                            for index in range(0, len(padded), 4)))
-    return dict(isa='rv32i', abi='ilp32', entry=str(entry.relative_to(root)), input_sha256=identities,
+    return dict(isa='rv32i', abi='ilp32', compiler_prefix=prefix, compiler_version=compiler_version,
+                firmware_profile='workstation' if workstation else 'probe',
+                high_speed_allowed=bool(allow_high_speed),
+                entry=str(entry.relative_to(root)), input_sha256=identities,
                 firmware_bytes=len(binary), static_ram_bytes=used, static_ram_end=end, stack_margin_bytes=65536-end,
                 elf_sha256=sha(output / 'firmware.elf'), binary_sha256=sha(output / 'firmware.bin'), rom_sha256=sha(rom),
                 vendor_manifest_sha256=USB2_VENDOR_MANIFEST_SHA256, hardware_tested=False)

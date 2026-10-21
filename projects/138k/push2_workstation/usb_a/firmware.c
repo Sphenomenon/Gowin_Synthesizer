@@ -6,6 +6,9 @@
 #include "minlibc.h"
 #include "usb_core.h"
 #include "usb_hw.h"
+#ifdef WORKSTATION_USB2_NATIVE
+#include "workstation_usb2_backend.h"
+#endif
 #ifndef MMIO
 #define MMIO(off) (*(volatile uint32_t *)(0x02000200u+(off)))
 #endif
@@ -58,6 +61,14 @@ static void disconnect(void) {
 #define MIDI_CONFIG_LIMIT 2048u
 static uint8_t configuration[MIDI_CONFIG_LIMIT+512];
 static unsigned le16(const uint8_t *p) {return p[0]|((unsigned)p[1]<<8);}
+#ifdef WORKSTATION_USB2_NATIVE
+static int midi_bulk_packet_size(unsigned packet) {
+    if(usbhw_native_high_speed())return packet==512;
+    return packet==8 || packet==16 || packet==32 || packet==64;
+}
+#else
+#define midi_bulk_packet_size(packet) ((packet)==8 || (packet)==16 || (packet)==32 || (packet)==64)
+#endif
 static int find_midi_in(void) {
     int n=usb_get_descriptor(&dev,DESC_CONFIGURATION,0,configuration,9);
     if(n!=9 || configuration[0]!=9 || configuration[1]!=DESC_CONFIGURATION)return 0;
@@ -90,7 +101,7 @@ static int find_midi_in(void) {
             if(len<7)return 0;
             unsigned packet=le16(d+4);
             unsigned bulk=(d[3]&3)==ENDPOINT_TYPE_BULK && !(d[2]&0x70) && (d[2]&15) &&
-                          (packet==8 || packet==16 || packet==32 || packet==64);
+                          midi_bulk_packet_size(packet);
             if(bulk && midi && version && !alt && !(d[2]&0x80) && !midi_out_ep) {
                 midi_out_ep=d[2]&15;midi_out_size=packet;
             }
@@ -100,7 +111,7 @@ static int find_midi_in(void) {
             }
             if(!ep && midi && version && (d[2]&0x80) && !(d[2]&0x70) &&
                (d[2]&15) && (d[3]&3)==ENDPOINT_TYPE_BULK &&
-               (packet==8 || packet==16 || packet==32 || packet==64)) {
+               midi_bulk_packet_size(packet)) {
                 ep=d[2]&15;size=packet;chosen_number=number;chosen_alt=alt;
             }
         }
@@ -180,16 +191,37 @@ static void poll_midi(void) {
 // screen_packet < 0 uses the ordinary byte buffer for headers and MIDI.
 static int send_packet(unsigned ep,uint8_t *data,unsigned n,int screen_packet) {
     if(mode!=DEVICE_PUSH)return 0;
+#ifdef WORKSTATION_USB2_NATIVE
+    if(screen_packet>=0) {
+        uint8_t pixels[512];
+        unsigned limit=usbhw_native_packet_limit();
+        for(unsigned offset=0;offset<n;) {
+            unsigned count=n-offset;if(count>limit)count=limit;
+            if((count&1u) || count>sizeof pixels)return 0;
+            MMIO(0x28)=((unsigned)screen_packet<<8)+(offset>>1);
+            for(unsigned index=0;index<count;index+=2) {
+                unsigned pixel=MMIO(0x2c)^((((offset+index)>>1)&1u)?0xffe7u:0xf3e7u);
+                pixels[index]=(uint8_t)pixel;pixels[index+1]=(uint8_t)(pixel>>8);
+            }
+            if(!send_packet(ep,pixels,count,-1))return 0;
+            offset+=count;
+        }
+        return 1;
+    }
+#endif
     int r=USB_RES_TIMEOUT;
     for(unsigned retry=0;retry<1000;retry++) {
         if(!connected)return 0;
+#ifndef WORKSTATION_USB2_NATIVE
         if(screen_packet>=0) {
             MMIO(0x28)=(unsigned)screen_packet<<8;
             // Blocking store: load 256 encoded pixels through the existing
             // USB register handshake, then return with the TX FIFO full.
             MMIO(0x50)=1;
             r=usbhw_transfer_out_preloaded(PID_OUT,dev.address,ep,1,toggles[ep]?PID_DATA1:PID_DATA0,n);
-        } else {
+        } else
+#endif
+        {
             r=usbhw_transfer_out(PID_OUT,dev.address,ep,1,toggles[ep]?PID_DATA1:PID_DATA0,data,n);
         }
         if(r==USB_RES_OK) {toggles[ep]^=1;return 1;}
@@ -301,6 +333,9 @@ static void connect(void) {
 int main(void) {
     reg_uart_clkdiv=417;
     usbhw_init(0x02000100);
+#if defined(WORKSTATION_USB2_NATIVE) && defined(WORKSTATION_USB2_FORCE_FS)
+    usbhw_native_allow_high_speed(0);
+#endif
     for(;;) {
         if(!connected){connect();continue;}
         // The exact Push display transport is a 327696-byte full frame.  Do

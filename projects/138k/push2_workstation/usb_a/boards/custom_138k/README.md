@@ -45,7 +45,7 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 
 [CPU MMIO 进展](../../reports/CUSTOM_BOARD_USB2_MMIO_20261022.md) 增加显式双时钟整包邮箱与第一方有界驱动，不会自动替换旧 FS MMIO／固件。寄存器主机到真实 25K 的仿真仍不等于 VexRiscv、MIDI／PL 或新板整机接入。
 
-[CPU 接入开发快照](../../reports/CUSTOM_BOARD_USB2_CPU_CHECKPOINT_20261022.md) 保存原生总线、SoC 与 RV32I 固件暂存进度；真实 CPU 的 HS／FS 端到端回归仍失败，不是可上板候选，也不改变已接受整机配置。
+[CPU 接入开发快照](../../reports/CUSTOM_BOARD_USB2_CPU_CHECKPOINT_20261022.md) 保留推送时的失败证据；后续 [CPU 实际执行记录](../../reports/CUSTOM_BOARD_USB2_CPU_20261022.md) 已修复启动入口，完成真实 RV32I 的 HS／FS 枚举、回环、取消与恢复及组件综合。[显式 SoC 准备入口](../../rtl/usb2/CPU_SOC.md) 仍只是组件／probe，不是工作站业务接入或可上板候选，也不改变已接受整机配置。
 
 之后分别执行时序／CDC／PLL／资源门禁及实体排线、Push／25K、音频、HDMI 验收，另建具有完整来源和位流哈希的新候选。Push 和 25K 在同一个 USB-A 口交替接入，不假定同时连接或 High-Speed。不得凭本阶段通过执行 SRAM 或 Flash 下载。
 

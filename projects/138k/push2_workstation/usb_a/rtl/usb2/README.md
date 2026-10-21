@@ -6,7 +6,7 @@
 
 [CPU 寄存器边界](CPU_MMIO.md) 新增双时钟整包邮箱、原生 MMIO 组合与独立第一方驱动；旧 CPU／固件 profile 不会自动选择它。[MMIO 阶段记录](../../reports/CUSTOM_BOARD_USB2_MMIO_20261022.md) 区分寄存器主机仿真、C 驱动模型、RV32 对象编译与真正 CPU／整机集成。
 
-[CPU 接入开发快照](../../reports/CUSTOM_BOARD_USB2_CPU_CHECKPOINT_20261022.md) 保存原生 CPU 总线、SoC 与独立 RV32I 固件入口。真实 CPU 的 HS／FS 端到端测试仍失败，不能将该快照当成通过验证的整机或部署候选。
+[CPU 接入开发快照](../../reports/CUSTOM_BOARD_USB2_CPU_CHECKPOINT_20261022.md) 保存推送时仍失败的历史状态。后续 [CPU 实际执行记录](../../reports/CUSTOM_BOARD_USB2_CPU_20261022.md) 定位并修复复位入口不匹配，完成 RV32I 真实执行 HS／FS 回归与组件综合；[SoC 边界及显式准备入口](CPU_SOC.md) 仍不等于工作站业务或新板整机部署。
 
 ## 模块与时钟
 
@@ -22,6 +22,8 @@
 | `workstation_usb2_host_controller.sv` | PHY＋MAC 原生组合、独立故障复位与跨域锁存、立即关闭 DATA OE／拉高 STP、隔离失败会话 |
 | `workstation_usb2_cpu_bridge.sv` | CPU／ULPI 整包双时钟邮箱、寄存器、状态快照、取消代次与有界恢复 |
 | `workstation_usb2_host_mmio.sv` | CPU bridge＋原生控制器，独立参考域 enable／停钟诊断交接 |
+| `workstation_usb2_cpu_bus.sv` | CPU 同步 RAM、显式启动跳转、UART／计时器、带错误／超时的 USB 与外部服务仲裁 |
+| `workstation_usb2_soc.sv` | 锁定 VexRiscv＋原生 CPU 总线＋USB2 MMIO 组件；不内置工作站业务 |
 
 `clk_ref` 预期 50 MHz，`enable_i` 在此域。`clk_ulpi` 为 USB3300 提供的 60 MHz。除了 `clock_running_o`／`clock_present_o`／`clock_failed_o`／`clock_failure_code_o`，组合模块的 CSR、UTMI 和诊断数据均在 ULPI 域。`ready_o` 可因复位／停钟异步撤销；它不是可以直接采入另一个域的多字节状态快照。
 
