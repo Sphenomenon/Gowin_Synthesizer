@@ -51,6 +51,7 @@ reg [7:0] response[0:2047];
 reg [7:0] collected[0:2047];
 integer response_len=0,response_count=0,tx_count=0,current_address=0;
 integer total=0,i,j,base,chirp_cycles=0;
+integer warm_reset_chirp_index;
 reg [7:0] packet_bytes[0:2047];
 reg collecting_enabled=0;
 always @(posedge clk)begin
@@ -185,6 +186,8 @@ initial begin
  control_get(8'h80,8,0,0,1,1);if(collected[0]!=0)$fatal(1,"GET_CONFIGURATION before SET");
  control_set(0,5,7,0);
  control_set(0,9,1,0);if(!configured)$fatal(1,"SET_CONFIGURATION");
+ linestate=0;idle(30000);
+ if(!hs||usbreset||!configured||requested_address!=7)$fatal(1,"legal 500us HS idle cleared device state");
  control_get(8'h80,8,0,0,1,1);if(collected[0]!=1)$fatal(1,"GET_CONFIGURATION after SET");
  control_get(8'h81,10,0,1,1,1);if(collected[0]!=0)$fatal(1,"GET_INTERFACE");
  control_get(8'ha1,8'h21,0,0,7,7);if(collected[0]!=0||collected[1]!=8'hc2||collected[6]!=8)$fatal(1,"CDC line coding");
@@ -196,7 +199,18 @@ initial begin
  if(response_len!=515)$fatal(1,"HS bulk length=%0d expected515",response_len);
  for(i=0;i<512;i=i+1)if(response[i+1]!=((i*37+19)&255))$fatal(1,"HS bulk mismatch at %0d got%02x",i,response[i+1]);
  host_ack();idle(20);
- $display("PASS USB2 HS UTMI: filtered chirp, descriptors/min lengths/qualifier/other-speed, address status ACK, configuration, CDC, 512-byte binary loopback");
+ collecting_enabled=0;linestate=0;idle(185000);
+ if(hs||opmode!=0||xcvr!=1||term!=1||chirp)$fatal(1,"HS reset must revert to FS after 3ms and wait for settling");
+ idle(4000);
+ if(!chirp)$fatal(1,"HS warm reset did not begin device chirp after FS settling");
+ while(chirp)@(negedge clk);
+ for(warm_reset_chirp_index=0;warm_reset_chirp_index<6;warm_reset_chirp_index=warm_reset_chirp_index+1)begin
+  linestate=warm_reset_chirp_index[0]?1:2;idle(3000);
+ end
+ if(!hs||configured||requested_address!=0)$fatal(1,"HS warm reset did not clear and renegotiate device");
+ current_address=0;linestate=0;idle(20);collecting_enabled=1;
+ control_get(8'h80,6,16'h0100,0,18,18);
+ $display("PASS USB2 HS UTMI: filtered chirp, descriptors/min lengths/qualifier/other-speed, address status ACK, configuration, CDC, 512-byte binary loopback, 500us idle preservation, 3ms HS warm reset and re-enumeration");
  $finish;
 end
 initial begin #50000000;$fatal(1,"test global timeout");end

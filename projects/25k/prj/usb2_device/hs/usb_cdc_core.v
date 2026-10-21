@@ -312,6 +312,7 @@ localparam DETACH_TIME    = 20'd60000;  // 1ms -> T0
 localparam ATTACH_FS_TIME = 20'd180000; // T0 + 3ms = T1
 localparam CHIRPK_TIME    = 20'd246000; // T1 + ~1ms
 localparam HS_RESET_TIME  = 20'd600000; // T0 + 10ms = T9
+localparam HS_RECHECK_START = ATTACH_FS_TIME - 20'd6000;
 localparam HS_CHIRP_COUNT = 8'd6;
 reg [7:0] chirp_stable_q;
 reg       chirp_qualified_q;
@@ -405,7 +406,7 @@ begin
 
         // Long SE0 - could be reset or suspend
         // TODO: Should revert to FS mode and check...
-        if (usb_rst_time_q >= HS_RESET_TIME && usb_reset_w)
+        if (usb_reset_w)
             next_state_r = STATE_WAIT_RST;
     end
     default:
@@ -426,7 +427,7 @@ if (rst_i)
     usb_rst_time_q <= `USB_RST_W'b0;
 // Entering wait for reset state
 else if (next_state_r == STATE_WAIT_RST && state_q != STATE_WAIT_RST)
-    usb_rst_time_q <=  `USB_RST_W'b0;
+    usb_rst_time_q <= state_q == STATE_HIGHSPEED ? HS_RECHECK_START : `USB_RST_W'b0;
 // Waiting for reset, reset count on line state toggle
 else if (state_q == STATE_WAIT_RST && (utmi_linestate_i != 2'b00))
     usb_rst_time_q <=  `USB_RST_W'b0;
@@ -533,6 +534,21 @@ endgenerate
 assign hs_active_o      = usb_hs_w;
 assign usb_reset_o      = usb_reset_w;
 assign chirp_active_o   = utmi_chirp_en_w;
+
+localparam [17:0] HIGH_SPEED_IDLE_CYCLES = 18'd180000;
+localparam [17:0] SIE_RESET_CYCLES = 18'd16384;
+localparam [17:0] HIGH_SPEED_GUARD_CYCLES = HIGH_SPEED_IDLE_CYCLES - SIE_RESET_CYCLES;
+reg [17:0] high_speed_idle_q;
+always @(posedge clk_i or posedge rst_i)
+if (rst_i)
+    high_speed_idle_q <= 18'd0;
+else if (!usb_hs_w || utmi_linestate_i != 2'b00)
+    high_speed_idle_q <= 18'd0;
+else if (high_speed_idle_q < HIGH_SPEED_IDLE_CYCLES)
+    high_speed_idle_q <= high_speed_idle_q + 1'b1;
+
+wire [1:0] sie_linestate_w = usb_hs_w && utmi_linestate_i == 2'b00 && high_speed_idle_q < HIGH_SPEED_GUARD_CYCLES ?
+                            2'b01 : utmi_linestate_i;
 assign device_address_o = device_addr_q;
 
 //-----------------------------------------------------------------
@@ -567,7 +583,7 @@ u_core
     .utmi_rxvalid_i(utmi_rxvalid_i),
     .utmi_rxactive_i(utmi_rxactive_i),
     .utmi_rxerror_i(utmi_rxerror_i),
-    .utmi_linestate_i(utmi_linestate_i),
+    .utmi_linestate_i(sie_linestate_w),
 
     .reg_chirp_en_i(utmi_chirp_en_w),
     .reg_int_en_sof_i(1'b0),

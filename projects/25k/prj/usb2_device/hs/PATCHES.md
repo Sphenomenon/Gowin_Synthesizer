@@ -52,6 +52,22 @@ USB identifier. Device strings use manufacturer `GW25K`, product
 
 ## Negotiation and observations
 
+The custom-138K Host integration exposed a related reset-detection issue:
+the pinned upstream SIE's 16,384-cycle SE0 detector treats about 273 us at
+60 MHz as reset, shorter than a legal 100-500 us tail after host chirps.
+The first-party CDC wrapper now qualifies HS idle for 180,000 cycles before
+that detector can assert. Only the SIE reset-detection LineState input is
+guarded; payload, PID, CRC, RxActive and RxValid remain unchanged. The HS
+negotiator then reverts to FS and allows 100 us for the FS line check before
+starting a new device chirp. It no longer gates this transition on elapsed
+time since the previous reset. The control regression checks 500 us HS idle
+without losing address/configuration, then a 3 ms HS reset, renegotiation and
+another real descriptor transfer. Immutable vendor sources and their
+original manifests are not changed. This is not complete suspend/resume
+support or new hardware acceptance; historical SRAM identities do not apply
+to these changed sources. The 138K-side evidence and remaining scope are in
+`../../../../138k/push2_workstation/usb_a/reports/CUSTOM_BOARD_USB2_HOST_PORT_20261022.md`.
+
 The 60 MHz HS negotiation state machine now requires six alternating
 K-J-K-J-K-J states, each stable for at least 150 cycles (2.5 us). SE0/SE1 and
 short glitches cannot count as chirps. It keeps the upstream roughly 3 ms

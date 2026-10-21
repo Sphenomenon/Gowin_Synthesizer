@@ -37,6 +37,10 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 
 网表已足够推进本阶段位置映射，不以取得整份原理图为前提。尚需完成新板原生顶层／复位和电气约束、USB2 ULPI Host 及 48／60 MHz 域交接、DAC 型号对应的格式／MCLK／启动静音、HDMI 极性补偿与 CEC 安全处理，才能进入综合和 P&R。DAC 的具体型号用于协议适配；不能仅换位置就把旧 `pt8211_tx` 认定为兼容。
 
+外设集成的完整交付清单及 ULPI 开发库进展见 [新板 bring-up 清单](../../reports/CUSTOM_BOARD_BRINGUP_20261022.md)。新库尚未选入整机配置，不能把 PHY 自检 ready 当作 USB High-Speed Host、25K MIDI／PL 或上板验收。
+
+后续 [HS／FS 端口联调](../../reports/CUSTOM_BOARD_USB2_HOST_PORT_20261022.md) 已加入 50 ms 根复位、连续 K/J、FS 回退和实际 25K 核的计时回归。它仍缺 Host MAC／固件与整机接入，不改变本配置的 pinout-only／电气阻断状态。
+
 之后分别执行时序／CDC／PLL／资源门禁及实体排线、Push／25K、音频、HDMI 验收，另建具有完整来源和位流哈希的新候选。Push 和 25K 在同一个 USB-A 口交替接入，不假定同时连接或 High-Speed。不得凭本阶段通过执行 SRAM 或 Flash 下载。
 
 本入口不改 `p11.cst`、冻结基线、vendor 或整机 RTL；回退即继续原有显式整机配置，不需要恢复网表、重新刷板或删除历史结果。将来接入原生新板装配时，应保留本配置作为位置权威，并以通过端口覆盖、电气检查和完整物理门禁作为结束 `pinout_only` 阶段的条件。
