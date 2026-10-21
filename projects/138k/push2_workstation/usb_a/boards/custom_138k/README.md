@@ -45,7 +45,9 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 
 [CPU MMIO 进展](../../reports/CUSTOM_BOARD_USB2_MMIO_20261022.md) 增加显式双时钟整包邮箱与第一方有界驱动，不会自动替换旧 FS MMIO／固件。寄存器主机到真实 25K 的仿真仍不等于 VexRiscv、MIDI／PL 或新板整机接入。
 
-[CPU 接入开发快照](../../reports/CUSTOM_BOARD_USB2_CPU_CHECKPOINT_20261022.md) 保留推送时的失败证据；后续 [CPU 实际执行记录](../../reports/CUSTOM_BOARD_USB2_CPU_20261022.md) 已修复启动入口，完成真实 RV32I 的 HS／FS 枚举、回环、取消与恢复及组件综合。[显式 SoC 准备入口](../../rtl/usb2/CPU_SOC.md) 仍只是组件／probe，不是工作站业务接入或可上板候选，也不改变已接受整机配置。
+[CPU 接入开发快照](../../reports/CUSTOM_BOARD_USB2_CPU_CHECKPOINT_20261022.md) 保留推送时的失败证据；后续 [CPU 实际执行记录](../../reports/CUSTOM_BOARD_USB2_CPU_20261022.md) 已修复启动入口，完成真实 RV32I 的 HS／FS 枚举、回环、取消与恢复及组件综合。[显式 SoC 准备入口](../../rtl/usb2/CPU_SOC.md) 默认仍选择 probe，可另行选择业务固件；两者都不是可上板整机候选，也不改变已接受整机配置。
+
+更新的 [工作站应用记录](../../reports/CUSTOM_BOARD_USB2_WORKSTATION_20261022.md) 增加显式生产固件 profile、原生后端、HS／FS 的实际 25K MIDI／PL CPU 仿真和 Push 软件分包验证。服务 owner 及板级组合仍待接入，不解除本配置的 pinout-only／电气门禁，也不能从组件综合推导可上板。
 
 之后分别执行时序／CDC／PLL／资源门禁及实体排线、Push／25K、音频、HDMI 验收，另建具有完整来源和位流哈希的新候选。Push 和 25K 在同一个 USB-A 口交替接入，不假定同时连接或 High-Speed。不得凭本阶段通过执行 SRAM 或 Flash 下载。
 

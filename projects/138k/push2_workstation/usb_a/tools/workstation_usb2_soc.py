@@ -1,6 +1,7 @@
 """Explicit native CPU/USB2 component preparation, never board deployment."""
 
 from pathlib import Path
+import hashlib
 import json
 import re
 import shutil
@@ -45,18 +46,36 @@ def soc_sources(root):
     return sources
 
 
-def prepare(root, output, riscv_prefix=None, firmware_profile='probe', allow_high_speed=True):
+def prepare(root, output, riscv_prefix=None, firmware_profile='probe', allow_high_speed=True, component='soc'):
     root, output = Path(root).resolve(), Path(output).resolve()
     if firmware_profile not in ('probe', 'workstation'):
         raise ValueError('unknown USB2 firmware profile: ' + str(firmware_profile))
     if firmware_profile != 'workstation' and not allow_high_speed:
         raise ValueError('full-speed-only policy requires workstation firmware')
+    if component not in ('soc', 'workstation-input'):
+        raise ValueError('unknown USB2 component: ' + str(component))
+    if component == 'workstation-input' and firmware_profile != 'workstation':
+        raise ValueError('workstation-input requires explicit workstation firmware')
     if output.exists():
         raise FileExistsError('USB2 component output already exists: ' + str(output))
     sources = soc_sources(root)
+    bundle = None
+    if component == 'workstation-input':
+        from tools.workstation_usb2_input import input_bundle
+        bundle = input_bundle(root)
+        sources += [root / relative for relative in bundle['native_paths']]
     selected_inputs = tuple(relative for relative in PREPARATION_INPUTS if relative != PROBE_ENTRY)
     selected_inputs += WORKSTATION_INPUTS if firmware_profile == 'workstation' else (PROBE_ENTRY,)
     inputs = {relative: sha(root / relative) for relative in (*SOC_SOURCE_PATHS, *selected_inputs)}
+    if bundle:
+        inputs.update(bundle['input_sha256'])
+    source_paths = tuple(str(source.relative_to(root)) for source in sources)
+    staged_expected = {relative: inputs[relative] for relative in source_paths}
+    if bundle:
+        staged_expected.update({relative: hashlib.sha256(payload).hexdigest()
+                                for relative, payload in bundle['payloads'].items()})
+        source_paths += tuple(bundle['payloads'])
+    top = 'workstation_usb2_input' if bundle else 'workstation_usb2_soc'
     device = json.loads((root / 'boards/custom_138k/pinout.json').read_text())['device']
     if device != 'GW5AST-LV138PG484AC2/I1':
         raise ValueError('USB2 component requires the checked custom-138k device')
@@ -67,45 +86,60 @@ def prepare(root, output, riscv_prefix=None, firmware_profile='probe', allow_hig
         shutil.copyfile(source, destination)
         if sha(destination) != inputs[str(source.relative_to(root))]:
             raise ValueError('USB2 staged source identity changed: ' + str(source))
+    if bundle:
+        for relative, payload in bundle['payloads'].items():
+            destination = output / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(payload)
     application = firmware_profile == 'workstation'
     firmware = stage_usb2_cpu_firmware(root, output / 'firmware', root / ('firmware.c' if application else PROBE_ENTRY),
                                       riscv_prefix, workstation=application, allow_high_speed=allow_high_speed)
     shutil.copyfile(output / 'firmware/usb2_cpu.hex', output / 'usb2_cpu.hex')
     if sha(output / 'usb2_cpu.hex') != firmware['rom_sha256']:
         raise ValueError('USB2 staged ROM identity changed')
-    (output / 'usb2_soc.sdc').write_text(
+    clocks = (
         'create_clock -name cpu_48 -period 20.833333 [get_ports {clk_cpu}]\n'
         'create_clock -name reference_50 -period 20.000 [get_ports {clk_ref}]\n'
         'create_clock -name ulpi_60 -period 16.666667 [get_ports {clk_ulpi}]\n')
+    if bundle:
+        clocks += 'create_clock -name audio_76_8 -period 13.020833 [get_ports {clk_audio}]\n'
+    (output / 'usb2_soc.sdc').write_text(clocks)
     project = ElementTree.Element('Project')
     ElementTree.SubElement(project, 'Template').text = 'FPGA'
     ElementTree.SubElement(project, 'Version').text = '5'
     ElementTree.SubElement(project, 'Device', name='GW5AST-138C', pn=device).text = 'gw5ast138c-006'
     files = ElementTree.SubElement(project, 'FileList')
-    for relative in SOC_SOURCE_PATHS:
+    for relative in source_paths:
         ElementTree.SubElement(files, 'File', path=relative, type='file.verilog', enable='1')
     ElementTree.SubElement(files, 'File', path='usb2_soc.sdc', type='file.sdc', enable='1')
     ElementTree.ElementTree(project).write(output / 'usb2_soc.gprj', encoding='UTF-8', xml_declaration=True)
     (output / 'synthesis.tcl').write_text(
         'cd [file dirname [info script]]\nopen_project usb2_soc.gprj\n'
-        'set_option -top_module workstation_usb2_soc\n'
+        'set_option -top_module ' + top + '\n'
         'set_option -output_base_name usb2_soc_component\n'
         'set_option -verilog_std sysv2017\nset_option -timing_driven 1\nrun syn\n')
     verify_usb2_cpu_vendor(root)
     for relative, expected in inputs.items():
         if sha(root / relative) != expected:
             raise ValueError('USB2 component input changed during preparation: ' + relative)
-    for relative in SOC_SOURCE_PATHS:
-        if sha(output / relative) != inputs[relative]:
+    if bundle:
+        repeated = input_bundle(root)
+        if repeated != bundle:
+            raise ValueError('USB2 input-owner sources changed during preparation')
+    for relative, expected in staged_expected.items():
+        if sha(output / relative) != expected:
             raise ValueError('USB2 staged source identity changed: ' + relative)
-    staged_paths = (*SOC_SOURCE_PATHS, 'usb2_cpu.hex', 'usb2_soc.sdc', 'usb2_soc.gprj', 'synthesis.tcl')
+    staged_paths = (*source_paths, 'usb2_cpu.hex', 'usb2_soc.sdc', 'usb2_soc.gprj', 'synthesis.tcl')
     metadata = dict(
-        schema=1, identity='custom138k-usb2-workstation-component-v1' if application else 'custom138k-usb2-soc-component-v1',
-        top_module='workstation_usb2_soc', device=device, firmware_profile=firmware_profile,
+        schema=1, identity='custom138k-usb2-input-component-v1' if bundle else
+                          'custom138k-usb2-workstation-component-v1' if application else 'custom138k-usb2-soc-component-v1',
+        top_module=top, component=component, source_paths=list(source_paths), device=device, firmware_profile=firmware_profile,
         high_speed_allowed=bool(allow_high_speed),
-        validation_stage='component_prepare_only', source_policy='explicit_native_rtl_and_locked_cpu_vendor',
+        validation_stage='component_prepare_only', source_policy='explicit_native_input_owner_and_locked_support' if bundle
+                                                                else 'explicit_native_rtl_and_locked_cpu_vendor',
         firmware_role='workstation_application' if application else 'simulation_enumeration_probe',
         requires_external_probe_service=not application, business_firmware_selected=application,
+        input_owner_integrated=bool(bundle), input_owner_provenance=bundle['provenance'] if bundle else None,
         workstation_integrated=False, synthesis_allowed=True, place_route_allowed=False,
         hardware_tested=False, deployment_allowed=False, release_ready=False,
         clocks_hz=dict(cpu=48000000, reference=50000000, ulpi=60000000),

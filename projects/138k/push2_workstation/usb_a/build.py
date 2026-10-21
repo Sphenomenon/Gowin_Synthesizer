@@ -34,9 +34,10 @@ def main():
     ap.add_argument('--prepare-pinout',choices=['custom-138k'],help='Offline custom-board locations only; not a workstation synthesis path')
     ap.add_argument('--netlist-dir',type=Path,help='Explicit directory containing the three locked custom-board netlists')
     ap.add_argument('--pinout-output',type=Path,help='New output directory for --prepare-pinout; refuses existing paths')
-    ap.add_argument('--prepare-usb2-soc',action='store_true',help='Prepare native CPU/USB2 component and probe ROM only; not a workstation or board candidate')
+    ap.add_argument('--prepare-usb2-soc',action='store_true',help='Prepare native CPU/USB2 component with explicit probe or workstation firmware; not an integrated board candidate')
     ap.add_argument('--usb2-soc-output',type=Path,help='Required new output directory for --prepare-usb2-soc')
     ap.add_argument('--usb2-firmware-profile',choices=['probe','workstation'],help='Explicit USB2 CPU firmware; default probe, never changes accepted workstation profiles')
+    ap.add_argument('--usb2-component',choices=['soc','workstation-input'],help='Explicit component composition; workstation-input requires workstation firmware')
     ap.add_argument('--usb2-full-speed-only',action='store_true',help='Explicit native workstation diagnostic policy; HS remains enabled by default')
     ap.add_argument('--current-workstation',action='store_true',
                     help='Merge scope into accepted full83; full requires UserCode, never changes board latest')
@@ -67,7 +68,8 @@ def main():
         from tools.workstation_usb2_soc import prepare as prepare_usb2_soc
         try:
             output,metadata=prepare_usb2_soc(ROOT,args.usb2_soc_output,args.riscv_prefix,
-                                           args.usb2_firmware_profile or 'probe',not args.usb2_full_speed_only)
+                                           args.usb2_firmware_profile or 'probe',not args.usb2_full_speed_only,
+                                           args.usb2_component or 'soc')
         except (ValueError,OSError,subprocess.CalledProcessError) as error:
             ap.error(str(error))
         print(output)
@@ -75,8 +77,8 @@ def main():
                               sources=len(metadata['staged_input_sha256'])-4,
                               rom_sha256=metadata['firmware']['rom_sha256'],deployment_allowed=False)))
         return
-    if args.usb2_soc_output is not None or args.usb2_firmware_profile is not None:
-        ap.error('--usb2-soc-output and --usb2-firmware-profile require --prepare-usb2-soc')
+    if args.usb2_soc_output is not None or args.usb2_firmware_profile is not None or args.usb2_component is not None:
+        ap.error('--usb2-soc-output, --usb2-firmware-profile and --usb2-component require --prepare-usb2-soc')
     if args.prepare_pinout:
         if not args.netlist_dir:
             ap.error('--prepare-pinout requires --netlist-dir')

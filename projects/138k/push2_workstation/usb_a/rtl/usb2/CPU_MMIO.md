@@ -60,4 +60,4 @@ CPU 必须先等 STATUS 的会话可用与 traffic enable，再在提交前装�
 
 所有等待同时受可回绕毫秒期限及可配置轮询次数上限限制；计时器不走也不会无限等待。总线错误、协议自相矛盾或超时请求关闭 Host；若关闭写本身也失败，则只能报告 I/O 故障，不能宣称已关闭硬件。软件取消返回须重新枚举／恢复会话，而不是沿用旧地址继续传输。
 
-MMIO 阶段证据见 [原始记录](../../reports/CUSTOM_BOARD_USB2_MMIO_20261022.md)。后续 [原生 CPU 组件](CPU_SOC.md) 已接 VexRiscv 总线并实际执行第一方 RV32I 驱动，通过 HS／FS 枚举和回环；这仍不是整机业务固件、MIDI／PL backend 或上板验收。复现入口分别为 `sim/test_workstation_usb2_mmio.py`、`sim/test_workstation_usb2_soc.py` 与 `sim/test_workstation_usb2_preparation.py`。
+MMIO 阶段证据见 [原始记录](../../reports/CUSTOM_BOARD_USB2_MMIO_20261022.md)。后续 [原生 CPU 组件](CPU_SOC.md) 已接 VexRiscv 总线并实际执行第一方 RV32I 驱动，通过 HS／FS 枚举和回环；更新的 [工作站 backend](../../drivers/usb2/WORKSTATION_BACKEND.md) 另行选择生产固件，完成实际 25K MIDI／PL 的应用仿真，外部服务仍未接入板级真实 owner，不等于上板验收。复现入口为 `sim/test_workstation_usb2_mmio.py`、`sim/test_workstation_usb2_soc.py`、`sim/test_workstation_usb2_preparation.py` 与 `sim/test_workstation_usb2_application.py`。

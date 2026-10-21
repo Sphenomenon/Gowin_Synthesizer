@@ -27,7 +27,7 @@ class ComponentPreparation(unittest.TestCase):
         self.root = self.base / 'minimal_checkout'
         self.output = self.base / 'component'
         vendor_paths = json.loads((ROOT / 'vendor/usb_host_fs_8fc3/inputs.json').read_text())
-        inputs = set((*preparation.SOC_SOURCE_PATHS, *preparation.PREPARATION_INPUTS,
+        inputs = set((*preparation.SOC_SOURCE_PATHS, *preparation.PREPARATION_INPUTS, *preparation.WORKSTATION_INPUTS,
                       *('vendor/usb_host_fs_8fc3/' + relative for relative in vendor_paths)))
         self.original = {relative: staging.sha(ROOT / relative) for relative in inputs}
         for relative in inputs:
@@ -81,6 +81,65 @@ class ComponentPreparation(unittest.TestCase):
         with self.assertRaisesRegex(FileNotFoundError, 'missing explicit USB2 SoC source'):
             preparation.prepare(self.root, self.output)
         self.assertFalse(self.output.exists())
+
+    def test_workstation_profiles_compile_business_firmware_without_probe(self):
+        for high_speed in (True, False):
+            with self.subTest(high_speed=high_speed):
+                output = self.base / ('workstation-hs' if high_speed else 'workstation-fs')
+                with patch.object(staging.subprocess, 'run', wraps=subprocess.run) as commands:
+                    _, metadata = preparation.prepare(self.root, output, firmware_profile='workstation',
+                                                      allow_high_speed=high_speed)
+                self.assertEqual(metadata['firmware_role'], 'workstation_application')
+                self.assertEqual(metadata['firmware_profile'], 'workstation')
+                self.assertEqual(metadata['high_speed_allowed'], high_speed)
+                self.assertTrue(metadata['business_firmware_selected'])
+                for key in ('requires_external_probe_service', 'workstation_integrated', 'place_route_allowed',
+                            'deployment_allowed', 'release_ready', 'hardware_tested'):
+                    self.assertFalse(metadata[key], key)
+                self.assertNotIn(preparation.PROBE_ENTRY, metadata['input_sha256'])
+                for relative in preparation.WORKSTATION_INPUTS:
+                    self.assertEqual(metadata['input_sha256'][relative], self.original[relative])
+                firmware = metadata['firmware']
+                self.assertEqual(firmware['firmware_profile'], 'workstation')
+                self.assertEqual(firmware['high_speed_allowed'], high_speed)
+                self.assertEqual(firmware['isa'], 'rv32i')
+                self.assertLess(firmware['static_ram_end'], 60000)
+                self.assertEqual(staging.sha(output / 'usb2_cpu.hex'), firmware['rom_sha256'])
+                compile_commands = [call.args[0] for call in commands.call_args_list if '-c' in call.args[0]]
+                self.assertEqual(len(compile_commands), 7)
+                for command in compile_commands:
+                    self.assertIn('-DWORKSTATION_USB2_NATIVE', command)
+                    self.assertEqual('-DWORKSTATION_USB2_FORCE_FS' in command, not high_speed)
+                    self.assertIn('-march=rv32i', command)
+                    self.assertIn('-O2', command)
+                    if '/vendor/' not in command[command.index('-c') + 1]:
+                        self.assertIn('-Werror', command)
+                self.assertFalse((output / 'impl').exists())
+
+    def test_workstation_missing_backend_does_not_fall_back_to_probe(self):
+        (self.root / 'drivers/usb2/workstation_usb2_backend.c').unlink()
+        with self.assertRaises(FileNotFoundError):
+            preparation.prepare(self.root, self.output, firmware_profile='workstation')
+        self.assertFalse(self.output.exists())
+
+    def test_workstation_input_drift_is_rejected(self):
+        def compile_and_change(*arguments, **keywords):
+            result = staging.stage_usb2_cpu_firmware(*arguments, **keywords)
+            source = self.root / 'drivers/usb2/workstation_usb2_backend.c'
+            source.write_bytes(source.read_bytes() + b'\n')
+            return result
+
+        with patch.object(preparation, 'stage_usb2_cpu_firmware', side_effect=compile_and_change):
+            with self.assertRaisesRegex(ValueError, 'input changed during preparation'):
+                preparation.prepare(self.root, self.output, firmware_profile='workstation')
+        self.assertFalse((self.output / 'component_inputs.json').exists())
+
+    def test_invalid_firmware_profiles_fail_without_output(self):
+        for profile, high_speed in (('unknown', True), ('probe', False)):
+            with self.subTest(profile=profile, high_speed=high_speed):
+                with self.assertRaises(ValueError):
+                    preparation.prepare(self.root, self.output, firmware_profile=profile, allow_high_speed=high_speed)
+                self.assertFalse(self.output.exists())
 
     def test_vendor_manifest_selected_and_unused_bytes_are_locked(self):
         for relative in ('inputs.json', 'src/VexRiscv.v', 'firmware/minlibc.c'):
@@ -168,6 +227,8 @@ class ComponentPreparation(unittest.TestCase):
         component = ['--prepare-usb2-soc', '--usb2-soc-output', str(self.output)]
         invalid = [
             ['--prepare-usb2-soc'], ['--usb2-soc-output', str(self.output)],
+            ['--usb2-firmware-profile', 'workstation'], ['--usb2-full-speed-only'],
+            component + ['--usb2-full-speed-only'],
             *(component + extra for extra in (
                 ['--current-workstation'], ['--cnn-timing85'], ['--resource-rework'], ['--resource-timing'],
                 ['--prepare-only'], ['--synthesis-only'], ['--reuse-synthesis', str(self.base)],
@@ -198,6 +259,19 @@ class ComponentPreparation(unittest.TestCase):
         self.assertFalse(list(self.output.rglob('*.cst')))
         self.assertFalse(list(self.output.rglob('*.fs')))
         self.assertEqual({source: source.read_bytes() for source in ROOT.glob('LATEST*.json')}, latest)
+
+    def test_cli_explicit_workstation_fs_policy(self):
+        execution = subprocess.run([sys.executable, str(ROOT / 'build.py'), '--prepare-usb2-soc',
+                                    '--usb2-soc-output', str(self.output), '--usb2-firmware-profile', 'workstation',
+                                    '--usb2-full-speed-only'], text=True, capture_output=True, timeout=60)
+        self.assertEqual(execution.returncode, 0, execution.stdout + execution.stderr)
+        metadata = json.loads((self.output / 'component_inputs.json').read_text())
+        self.assertEqual(metadata['firmware_profile'], 'workstation')
+        self.assertFalse(metadata['high_speed_allowed'])
+        self.assertTrue(metadata['business_firmware_selected'])
+        self.assertFalse(metadata['workstation_integrated'])
+        self.assertFalse(metadata['deployment_allowed'])
+        self.assertFalse((self.output / 'impl').exists())
 
 
 if __name__ == '__main__':

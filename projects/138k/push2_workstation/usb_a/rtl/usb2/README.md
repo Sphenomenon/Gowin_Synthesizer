@@ -8,6 +8,8 @@
 
 [CPU 接入开发快照](../../reports/CUSTOM_BOARD_USB2_CPU_CHECKPOINT_20261022.md) 保存推送时仍失败的历史状态。后续 [CPU 实际执行记录](../../reports/CUSTOM_BOARD_USB2_CPU_20261022.md) 定位并修复复位入口不匹配，完成 RV32I 真实执行 HS／FS 回归与组件综合；[SoC 边界及显式准备入口](CPU_SOC.md) 仍不等于工作站业务或新板整机部署。
 
+更新的 [工作站业务后端](../../drivers/usb2/WORKSTATION_BACKEND.md) 可显式选择生产 `firmware.c`，已验证真实 CPU 经原生 Host 与实际 25K MIDI／PL 的 HS／FS 枚举、128 个事件及两块 TILE，并核对 Push 软件分包。[本轮应用记录](../../reports/CUSTOM_BOARD_USB2_WORKSTATION_20261022.md) 独立记录其输入、ROM 与组件综合；外部工作站服务仍为模型，尚非新板组合根、完整 DSP／显示或硬件验收。
+
 ## 模块与时钟
 
 | 模块 | 职责 |

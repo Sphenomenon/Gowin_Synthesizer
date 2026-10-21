@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 module tb_workstation_usb2_application_25k #(
-    parameter integer HIGH_SPEED = 1
+    parameter integer HIGH_SPEED = 1,
+    parameter integer TRACE_LINK = 0
 );
     reg clk_cpu = 0, clk_ref = 0, clk_ulpi = 0, reset_n = 1;
     always #10.417 clk_cpu = !clk_cpu;
@@ -39,6 +40,25 @@ module tb_workstation_usb2_application_25k #(
     wire [31:0] expected_event = (midi_received[0] ? 32'd0 : 32'd16384) |
                                  ((32'd36 + 32'(midi_received >> 1)) << 7) |
                                  (midi_received[0] ? 32'd0 : 32'd100);
+    reg [2:0] previous_device_state;
+    reg previous_runtime;
+    integer traced_results = 0;
+
+    always @(posedge clk_ulpi) begin
+        previous_device_state <= device.phy_state;
+        previous_runtime <= transaction_reset_n;
+        if (TRACE_LINK != 0) begin
+            if (device.phy_state != previous_device_state || transaction_reset_n != previous_runtime)
+                $display("LINK %0t device=%0d timer=%0d line=%b function=%x runtime=%b port=%0d", $time,
+                         device.phy_state, device.phy.usb_rst_time_q, device_line, phy.function_o,
+                         transaction_reset_n, host.usb.port_state);
+            if (host.usb.result_valid && host.usb.result_ready && traced_results < 20) begin
+                $display("RESULT %0t pid=%x status=%0d length=%0d device=%0d", $time,
+                         host.usb.result_pid, host.usb.result_status, host.usb.result_length, device.phy_state);
+                traced_results <= traced_results + 1;
+            end
+        end
+    end
 
     workstation_usb2_soc #(.ATTACH_DEBOUNCE_US(100)) host (
         .clk_cpu(clk_cpu), .clk_ref(clk_ref), .clk_ulpi(clk_ulpi), .reset_n(reset_n), .uart_rx_i(1'b1), .uart_tx_o(),

@@ -43,6 +43,7 @@ module usb3300_host_model #(
                               (active_packet ? 2'b01 : 2'b00) :
                               (full_speed_eop_q != 0 ? 2'b00 : 2'b01);
     wire byte_ready = HIGH_SPEED != 0 || byte_phase_q == 0;
+    wire peripheral_dp_pullup = device_term_i && (device_xcvr_i == 0 || device_xcvr_i == 1);
 
     assign phy_data_o = runtime_i ? packet_data : register_data;
     assign phy_oe_o = runtime_i ? packet_oe : register_oe;
@@ -52,7 +53,7 @@ module usb3300_host_model #(
     assign device_line_o = !attached_i ? 2'b00 : runtime_i ? runtime_line :
                            chirp_valid ? (chirp_data == 0 ? 2'b10 : 2'b01) :
                            device_chirp_i ? 2'b10 :
-                           ((function_o == 8'h45 || function_o == 8'h41) && device_term_i && device_xcvr_i == 1) ? 2'b01 : 2'b00;
+                           ((function_o == 8'h45 || function_o == 8'h41) && peripheral_dp_pullup) ? 2'b01 : 2'b00;
     assign normal_packets_o = normal_packets_q;
 
     always @(posedge clk_ulpi or negedge reset_n) begin
