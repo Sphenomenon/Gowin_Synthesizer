@@ -1,0 +1,12 @@
+IO_LOC "usb2_ulpi_data[0]" A21;
+IO_LOC "usb2_ulpi_data[1]" B21;
+IO_LOC "usb2_ulpi_data[2]" A20;
+IO_LOC "usb2_ulpi_data[3]" B20;
+IO_LOC "usb2_ulpi_data[4]" A19;
+IO_LOC "usb2_ulpi_data[5]" A18;
+IO_LOC "usb2_ulpi_data[6]" B18;
+IO_LOC "usb2_ulpi_data[7]" B17;
+IO_LOC "usb2_ulpi_clk" C18;
+IO_LOC "usb2_ulpi_dir" F16;
+IO_LOC "usb2_ulpi_nxt" D16;
+IO_LOC "usb2_ulpi_stp" E17;

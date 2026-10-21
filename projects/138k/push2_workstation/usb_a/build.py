@@ -31,6 +31,9 @@ def main():
     ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path)
     ap.add_argument('--synthesis-only',action='store_true',help='Offline synthesis only; no place/route or programming')
     ap.add_argument('--no-update-latest',action='store_true',help='Keep the local latest-build pointer unchanged')
+    ap.add_argument('--prepare-pinout',choices=['custom-138k'],help='Offline custom-board locations only; not a workstation synthesis path')
+    ap.add_argument('--netlist-dir',type=Path,help='Explicit directory containing the three locked custom-board netlists')
+    ap.add_argument('--pinout-output',type=Path,help='New output directory for --prepare-pinout; refuses existing paths')
     ap.add_argument('--current-workstation',action='store_true',
                     help='Merge scope into accepted full83; full requires UserCode, never changes board latest')
     ap.add_argument('--tf-audio-kind',choices=['mp3','wav','flac'],default='wav',
@@ -46,6 +49,26 @@ def main():
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=ap.parse_args()
+    if args.prepare_pinout:
+        if not args.netlist_dir:
+            ap.error('--prepare-pinout requires --netlist-dir')
+        if (args.prepare_only or args.synthesis_only or args.reuse_synthesis or args.current_workstation or
+                args.cnn_timing85 or args.resource_rework or args.resource_timing or args.replicate_resources or
+                args.place_option is not None or args.max_fanout is not None or args.user_code is not None or
+                args.riscv_prefix is not None or args.tf_audio_kind!='wav'):
+            ap.error('--prepare-pinout cannot be mixed with workstation preparation, synthesis or release options')
+        from tools.workstation_pinout import prepare as prepare_pinout
+        try:
+            output,plan=prepare_pinout(ROOT,args.netlist_dir,args.pinout_output)
+        except (ValueError,OSError) as error:
+            ap.error(str(error))
+        print(output)
+        print(json.dumps(dict(identity=plan['identity'],ports=len(plan['ports']),
+                              validation_stage=plan['validation_stage'],synthesis_allowed=False,
+                              electrical_status=plan['electrical_check']['status'])))
+        return
+    if args.netlist_dir is not None or args.pinout_output is not None:
+        ap.error('--netlist-dir and --pinout-output require --prepare-pinout')
     if args.resource_rework and (args.current_workstation or args.cnn_timing85):
         ap.error('--resource-rework cannot be mixed with --current-workstation or --cnn-timing85')
     if args.cnn_timing85 and not args.current_workstation:

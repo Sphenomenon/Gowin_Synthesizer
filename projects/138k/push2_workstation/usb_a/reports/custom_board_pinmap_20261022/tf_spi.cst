@@ -1,0 +1,4 @@
+IO_LOC "sd_miso" AA15;
+IO_LOC "sd_mosi" W14;
+IO_LOC "sd_sck" V15;
+IO_LOC "sd_cs_n" W15;

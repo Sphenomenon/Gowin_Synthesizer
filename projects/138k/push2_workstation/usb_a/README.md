@@ -1,5 +1,7 @@
 # Push 2 USB-A 与完整音频工作站合并
 
+自定义 USB2／USB3300 底板使用[显式引脚配置](boards/custom_138k/README.md)生成网表级位置规划；已发现 PHY 与转换器 1.8V 侧的电气冲突，见[上板前检查](reports/CUSTOM_BOARD_PREFLIGHT_20261022.md)。该入口不切换旧板整机来源、不生成可下载位流，尚需独立完成 ULPI／DAC／HDMI 和电气适配。
+
 ## 2026-10-21 控制与装配重整
 
 资源时序开发候选现从 [原生组合根](rtl/workstation/README.md) 装配：会话、公共参数唯一应用点、播放业务服务、串行帧交接和最终输出路由分开维护；事件线规与 DSP 算术保持。accepted full83／pinned timing85 不隐式切换资源候选；混用来源选项直接失败。新候选 **`0xC110210A`** 已完成综合/P&R、时序/CDC/PLL/资源门禁及授权的 SRAM 下载，21 项公共控件、32 声部 A 模式与矢量核心 smoke 通过，音频健康字为零；Flash 索引保持 full85。来源和实测范围见 [本轮报告](reports/ARCHITECTURE_REFACTOR_20261021.md)及[紧凑证据](reports/architecture_refactor_20261021/verification.json)。setup 余量仅 **0.009 ns**；SRAM 后读回自动启动失败标志仍置位，未做冷启动、物理 DAC/HDMI 和 Push/25K 验收，不作为完整硬件发布。

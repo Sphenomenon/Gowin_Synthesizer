@@ -1,0 +1,10 @@
+IO_LOC "hp_bck" A16;
+IO_LOC "hp_ws" B16;
+IO_LOC "hp_din" A15;
+IO_LOC "dac_mclk" D17;
+IO_LOC "dac_pdn_n" C17;
+IO_LOC "dac_sslow" B15;
+IO_LOC "dac_smute" A14;
+IO_LOC "dac_sd" A13;
+IO_LOC "dac_slow" B13;
+IO_LOC "amp_fpga_det" C13;

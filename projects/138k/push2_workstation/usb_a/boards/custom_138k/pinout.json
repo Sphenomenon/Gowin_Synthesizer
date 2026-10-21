@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "identity": "custom_138k_usb2_20261022_pinout_v2",
+  "device": "GW5AST-LV138PG484AC2/I1",
+  "core_baseline": "accepted_full83",
+  "sources": {
+    "carrier": {"filename": "Netlist_my_138k_2026-10-21.tel", "sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121"},
+    "amplifier": {"filename": "功放.tel", "sha256": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75"},
+    "bluetooth": {"filename": "蓝牙.tel", "sha256": "832e1eae56a744f8535899f57caea097f51419e2eb210186a492c182e5091eb2"}
+  },
+  "electrical_evidence": {
+    "model_basis": "Existing supplementary schematic, not the netlist package values or an observation of the assembled board",
+    "schematic": "ProPrj_138K（这个有效）_2026-10-16.epro2/138K（这个有效）.epru",
+    "schematic_sha256": "c714cacea6ca2b6dc400c8e22a851f9e0b644303968b76dde492c7f4b043e19b",
+    "component_models": {"U2": "USB3300-EZK", "U4": "TXS0108EPWR", "U5": "TXS0104EPWR"},
+    "datasheets": {
+      "USB3300": {"document": "Microchip DS00001783C, page 12, Table 5-3", "sha256": "33e73e37f5110cb9e3ef66ccf8c7fdd4a16593c7b1afcff0c5df523e41963a9e"},
+      "TXS0108E": {"document": "Texas Instruments SCES642L, section 5.3", "sha256": "a6ddbe03088d291d1a1f8012189086b4b9962d1c878a462a8393c59fe225c883"},
+      "TXS0104E": {"document": "Texas Instruments SCES651K, page 9, section 6.3", "sha256": "88295316d8d520f1b967af2ce9c7dc4b7491c1e647968728b9690c6514fb7b41"}
+    }
+  },
+  "assumptions": {
+    "audio_cable": "carrier FPC2.n -> amplifier FPC1.n; continuity not measured",
+    "audio_resistor_arrays": "RN1/RN2 isolated pairs 1-8, 2-7, 3-6, 4-5; internal pairing not independently confirmed",
+    "bluetooth_cable": "carrier FPC3.n -> bluetooth FPC1.(25-n); required by matching signal names, continuity not measured",
+    "core": "same 30354 core module and voltage configuration as reference; electrical compatibility not accepted"
+  },
+  "core_ports": ["clk_50m", "debug_uart_tx", "pc_uart_rx_i"],
+  "retired_ports": ["usb1_dp", "usb1_dn", "pa_en", "hdmi_tx_en", "button1_n", "midi_rx_i"],
+  "audio": [
+    {"port": "hp_bck", "pin": 10, "dac": "U1.3", "array": ["RN1.2", "RN1.7"]},
+    {"port": "hp_ws", "pin": 12, "dac": "U1.5", "array": ["RN1.4", "RN1.5"]},
+    {"port": "hp_din", "pin": 11, "dac": "U1.4", "array": ["RN1.3", "RN1.6"]},
+    {"port": "dac_mclk", "pin": 9, "dac": "U1.46", "array": ["RN1.1", "RN1.8"]},
+    {"port": "dac_pdn_n", "pin": 8, "dac": "U1.2"},
+    {"port": "dac_sslow", "pin": 13, "dac": "U1.6", "array": ["RN2.5", "RN2.4"]},
+    {"port": "dac_smute", "pin": 14, "dac": "U1.7", "array": ["RN2.6", "RN2.3"]},
+    {"port": "dac_sd", "pin": 15, "dac": "U1.8", "array": ["RN2.7", "RN2.2"]},
+    {"port": "dac_slow", "pin": 16, "dac": "U1.9", "array": ["RN2.8", "RN2.1"]},
+    {"port": "amp_fpga_det", "pin": 17, "dac": "D5.1", "additional_nodes": ["R43.1", "R44.2"]}
+  ],
+  "ulpi": [
+    {"port": "usb2_ulpi_data[0]", "phy": "U2.24", "bridge": ["U4.1", "U4.20"]},
+    {"port": "usb2_ulpi_data[1]", "phy": "U2.23", "bridge": ["U4.3", "U4.18"]},
+    {"port": "usb2_ulpi_data[2]", "phy": "U2.22", "bridge": ["U4.4", "U4.17"]},
+    {"port": "usb2_ulpi_data[3]", "phy": "U2.21", "bridge": ["U4.5", "U4.16"]},
+    {"port": "usb2_ulpi_data[4]", "phy": "U2.20", "bridge": ["U4.6", "U4.15"]},
+    {"port": "usb2_ulpi_data[5]", "phy": "U2.19", "bridge": ["U4.7", "U4.14"]},
+    {"port": "usb2_ulpi_data[6]", "phy": "U2.18", "bridge": ["U4.8", "U4.13"]},
+    {"port": "usb2_ulpi_data[7]", "phy": "U2.17", "bridge": ["U4.9", "U4.12"]},
+    {"port": "usb2_ulpi_clk", "phy": "U2.14", "bridge": ["U5.2", "U5.13"]},
+    {"port": "usb2_ulpi_dir", "phy": "U2.12", "bridge": ["U5.4", "U5.11"]},
+    {"port": "usb2_ulpi_nxt", "phy": "U2.11", "bridge": ["U5.5", "U5.10"]},
+    {"port": "usb2_ulpi_stp", "phy": "U2.13", "bridge": ["U5.3", "U5.12"]}
+  ],
+  "tf_spi": {"sd_miso": "U16.1", "sd_mosi": "U16.8", "sd_sck": "U16.7", "sd_cs_n": "U16.5"},
+  "hdmi_pairs": [
+    {"port": "tmds_data_p[0]", "native_nodes": ["C22.1", "C23.1"], "connector_nodes": ["USB3.7", "USB3.9"], "capacitors": ["C22", "C23"]},
+    {"port": "tmds_data_p[1]", "native_nodes": ["C24.2", "C25.2"], "connector_nodes": ["USB3.4", "USB3.6"], "capacitors": ["C24", "C25"]},
+    {"port": "tmds_data_p[2]", "native_nodes": ["C26.1", "C27.1"], "connector_nodes": ["USB3.1", "USB3.3"], "capacitors": ["C26", "C27"]},
+    {"port": "tmds_clk_p", "native_nodes": ["C20.2", "C21.2"], "connector_nodes": ["USB3.10", "USB3.12"], "capacitors": ["C20", "C21"]}
+  ],
+  "carrier_controls": {
+    "hdmi_hpd": {"node": "R19.2", "bank": 3},
+    "hdmi_cec": {"node": "R21.1", "bank": 3}
+  },
+  "bluetooth": [
+    {"pin": 5, "signal": "UART_RX", "module": "U2.43"},
+    {"pin": 6, "signal": "UART_TX", "module": "U2.42"},
+    {"pin": 7, "signal": "BT_DIS#", "module": "U2.34"},
+    {"pin": 8, "signal": "PCM_SYNC", "module": "U2.28"},
+    {"pin": 9, "signal": "PCM_IN", "module": "U2.27"},
+    {"pin": 10, "signal": "PCM_CLK", "module": "U2.26"},
+    {"pin": 11, "signal": "PCM_OUT", "module": "U2.25"},
+    {"pin": 12, "signal": "SD_D2", "module": "U2.14"},
+    {"pin": 13, "signal": "SD_D3", "module": "U2.15"},
+    {"pin": 14, "signal": "SD_CMD", "module": "U2.16"},
+    {"pin": 15, "signal": "SD_CLK", "module": "U2.17"},
+    {"pin": 16, "signal": "SD_D0", "module": "U2.18"},
+    {"pin": 17, "signal": "SD_D1", "module": "U2.19"},
+    {"pin": 18, "signal": "BT_HOST_WAKE_DEV", "module": "U2.6"},
+    {"pin": 19, "signal": "WL_DIS#", "module": "U2.12"}
+  ],
+  "reserved_nodes": ["U16.2", "U16.3", "R23.2", "R24.2", "SW1.1", "SW1.2", "SW1.3", "SW1.5", "U13.1", "U13.3", "U13.5", "U13.9", "J2.38"],
+  "implementation_gaps": [
+    "USB3300 ULPI logic is connected to the 1.8 V A-side of U4/U5: STP cannot meet the 2.0 V VIH minimum and PHY outputs exceed the translator A-side recommended input range; schematic-based deployment blocker, actual assembly not measured",
+    "Native custom-board top-level ports, reset policy and complete IO electrical constraints are not implemented",
+    "USB2 ULPI Host transport, 48/60 MHz domain transfer and PHY recovery are not implemented",
+    "DAC identity, serial format, MCLK and power/mute sequencing are not verified or implemented",
+    "All four serialized TMDS lanes require polarity compensation before their native differential buffers",
+    "K14 is CEC, not the old transmitter-enable output; open-drain handling is not implemented",
+    "Audio cable and resistor-array pairing and Bluetooth cable continuity remain explicit assumptions",
+    "New routed timing, CDC, PLL, functional and physical hardware acceptance are required"
+  ]
+}
