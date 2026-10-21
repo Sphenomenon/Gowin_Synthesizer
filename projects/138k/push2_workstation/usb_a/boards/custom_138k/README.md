@@ -41,6 +41,8 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 
 后续 [HS／FS 端口联调](../../reports/CUSTOM_BOARD_USB2_HOST_PORT_20261022.md) 已加入 50 ms 根复位、连续 K/J、FS 回退和实际 25K 核的计时回归。它仍缺 Host MAC／固件与整机接入，不改变本配置的 pinout-only／电气阻断状态。
 
+更新的 [Host MAC 包级进展](../../reports/CUSTOM_BOARD_USB2_HOST_MAC_20261022.md) 已补独立事务引擎及真实 25K 枚举／HS 512 字节、FS 64 字节回环。[原生控制器进展](../../reports/CUSTOM_BOARD_USB2_CONTROLLER_20261022.md) 已进一步完成 PHY＋MAC 同链路仿真、故障隔离与 Gowin 组件综合；仍须接入 CPU／固件并组成完整新板配置，不能当成 MIDI／PL 或实板完成。
+
 之后分别执行时序／CDC／PLL／资源门禁及实体排线、Push／25K、音频、HDMI 验收，另建具有完整来源和位流哈希的新候选。Push 和 25K 在同一个 USB-A 口交替接入，不假定同时连接或 High-Speed。不得凭本阶段通过执行 SRAM 或 Flash 下载。
 
 本入口不改 `p11.cst`、冻结基线、vendor 或整机 RTL；回退即继续原有显式整机配置，不需要恢复网表、重新刷板或删除历史结果。将来接入原生新板装配时，应保留本配置作为位置权威，并以通过端口覆盖、电气检查和完整物理门禁作为结束 `pinout_only` 阶段的条件。

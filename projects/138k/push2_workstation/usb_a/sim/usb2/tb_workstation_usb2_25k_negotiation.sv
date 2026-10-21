@@ -19,6 +19,8 @@ module tb_workstation_usb2_25k_negotiation #(
     assign physical_data = phy_oe ? phy_data : 8'hzz;
     wire [7:0] function_value;
     wire host_chirp_valid;
+    wire mac_txend;
+    wire mac_line_valid;
     wire [7:0] host_chirp_data;
     wire [7:0] device_txdata;
     wire device_txvalid;
@@ -68,7 +70,8 @@ module tb_workstation_usb2_25k_negotiation #(
         .ulpi_data_i(physical_data), .ulpi_dir_i(phy_dir), .ulpi_nxt_i(phy_nxt),
         .ulpi_data_o(host_data), .ulpi_data_oe_o(host_oe), .ulpi_stp_o(host_stp),
         .mac_data_i(8'h00), .mac_txvalid_i(1'b0), .mac_txready_o(),
-        .mac_data_o(), .mac_rxvalid_o(), .mac_rxactive_o(), .mac_rxerror_o(), .mac_reset_n_o(mac_reset_n),
+        .mac_data_o(), .mac_rxvalid_o(), .mac_rxactive_o(), .mac_rxerror_o(),
+        .mac_txend_o(mac_txend), .mac_line_valid_o(mac_line_valid), .mac_reset_n_o(mac_reset_n),
         .connected_o(), .high_speed_o(high_speed), .sof_enable_o(sof_enable), .traffic_enable_o(traffic_enable),
         .reset_active_o(reset_active), .session_reset_o(), .unsupported_low_speed_o(),
         .failed_o(failed), .port_state_o(port_state), .port_failure_code_o(port_failure),
@@ -79,6 +82,10 @@ module tb_workstation_usb2_25k_negotiation #(
         .init_otg_control_o(), .linestate_o(), .vbus_state_o(), .id_state_o(), .host_disconnect_o(), .tx_abort_o(),
         .link_fatal_o(link_fatal), .received_bytes_o(received_bytes), .transmitted_bytes_o(transmitted_bytes), .rxcmd_count_o()
     );
+    always @(posedge clk_ulpi) begin
+        if (reset_n && mac_txend) $fatal(1, "chirp or CSR STP leaked into idle MAC");
+        if (!mac_reset_n && mac_line_valid) $fatal(1, "RXCMD escaped MAC reset boundary");
+    end
     usb3300_register_model #(.HOST_PORT_MODEL(1)) phy (
         .clk_ulpi(clk_ulpi), .reset_n(reset_n), .fault_i(4'd0), .link_data_i(physical_data),
         .link_data_oe_i(host_oe), .link_stp_i(host_stp), .phy_data_o(phy_data), .phy_data_oe_o(phy_oe),

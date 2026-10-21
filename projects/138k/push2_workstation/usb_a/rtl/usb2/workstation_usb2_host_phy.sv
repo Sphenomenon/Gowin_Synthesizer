@@ -21,6 +21,8 @@ module workstation_usb2_host_phy #(
     output wire mac_rxvalid_o,
     output wire mac_rxactive_o,
     output wire mac_rxerror_o,
+    output wire mac_txend_o,
+    output wire mac_line_valid_o,
     output wire mac_reset_n_o,
     output wire connected_o,
     output wire high_speed_o,
@@ -92,6 +94,8 @@ module workstation_usb2_host_phy #(
     assign mac_rxvalid_o = mac_reset_n_o && link_rxvalid;
     assign mac_rxactive_o = mac_reset_n_o && link_rxactive;
     assign mac_rxerror_o = mac_reset_n_o && link_rxerror;
+    assign mac_txend_o = mac_reset_n_o && link_stp;
+    assign mac_line_valid_o = mac_reset_n_o && rxcmd_valid;
 
     workstation_usb2_host_port #(.ATTACH_DEBOUNCE_US(ATTACH_DEBOUNCE_US)) port_control (
         .clk_ulpi(clk_ulpi), .reset_n(link_reset_n), .phy_ready_i(phy_ready_o), .phy_fatal_i(link_fatal_o),

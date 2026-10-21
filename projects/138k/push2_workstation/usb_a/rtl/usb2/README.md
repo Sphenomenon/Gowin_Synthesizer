@@ -2,6 +2,8 @@
 
 这是自定义 138K 的显式开发源码，不是已接入整机的 USB High-Speed Host。旧 `--current-workstation`、`--cnn-timing85`、`--resource-rework --resource-timing` 的输入策略均未改变，`--prepare-pinout` 仍只准备位置约束。完整目标见 [bring-up 清单](../../reports/CUSTOM_BOARD_BRINGUP_20261022.md)，后续 Host 端口与 25K 联调的当前证据见 [HS／FS 协商报告](../../reports/CUSTOM_BOARD_USB2_HOST_PORT_20261022.md)。
 
+后续增量 [Host MAC 包级报告](../../reports/CUSTOM_BOARD_USB2_HOST_MAC_20261022.md) 增加真实 SOF／事务与双端枚举、回环验证。[原生控制器报告](../../reports/CUSTOM_BOARD_USB2_CONTROLLER_20261022.md) 进一步将八模块组成同一物理 ULPI 仿真链路，完成真实 25K HS／FS 枚举、回环、复位与故障隔离，并通过 Gowin 组件综合；仍不是包含 CPU 的整机或实板验收。
+
 ## 模块与时钟
 
 | 模块 | 职责 |
@@ -12,6 +14,8 @@
 | `workstation_usb3300_host_link.sv` | 以上三者的原生组合，初始化独占 CSR，成功后转交运行期 CSR／UTMI 客户端，失败时禁止 DATA 驱动并拉高 STP |
 | `workstation_usb2_host_port.sv` | 初始化后的 PHY 配置唯一拥有者；接入去抖、50 ms 根端口复位、设备 K 过滤、连续 Host K/J、排空后切换 HS、FS 回退、恢复／断开／软件复位 |
 | `workstation_usb2_host_phy.sv` | 六模块平台组合，将 CSR 交给端口状态机，按所有权在 chirp 与 MAC 间交接 UTMI，失败时拉高 STP／释放 DATA |
+| `workstation_usb2_host_mac.sv` | 60 MHz 单事务引擎、HS／FS SOF、完整包上传、PID／CRC、ACK／重复包、接收提交与结果背压 |
+| `workstation_usb2_host_controller.sv` | PHY＋MAC 原生组合、独立故障复位与跨域锁存、立即关闭 DATA OE／拉高 STP、隔离失败会话 |
 
 `clk_ref` 预期 50 MHz，`enable_i` 在此域。`clk_ulpi` 为 USB3300 提供的 60 MHz。除了 `clock_running_o`／`clock_present_o`／`clock_failed_o`／`clock_failure_code_o`，组合模块的 CSR、UTMI 和诊断数据均在 ULPI 域。`ready_o` 可因复位／停钟异步撤销；它不是可以直接采入另一个域的多字节状态快照。
 
@@ -68,6 +72,20 @@
 
 端口状态可由 `state_o` 定位；错误码 `1` PHY fatal／TX abort，`2` CSR 错误或重试耗尽，`3` CSR 总时限，`4` Function 读回不符，`5` chirp 开始超时，`6` raw train 背压，`7` drain 状态超时，`9` 非法状态，`10` MAC 无法静止。最多重试 3 次安全 CSR 抢占，不因重试刷新时限。`failed_o` 必须用于 DATA OE／STP 安全隔离，完整 `host_phy` 已落实该连接；独立使用端口模块时不能漏接。
 
+## Host MAC 事务边界
+
+MAC 的所有端口都在 60 MHz 域。接 `host_phy` 时，`reset_n` 使用 `mac_reset_n_o`，速度和调度许可分别接 `high_speed_o`、`sof_enable_o`、`traffic_enable_o`；`idle_o` 回接 `mac_idle_i`。`idle_o` 等实际包排空／间隔以及 RX inactive 后才置位，不因用户尚未读结果或正在上传而阻止端口取消。新增 `mac_txend_o` 是正常 MAC 所有权期间的真实 STP，`mac_line_valid_o` 是同一边界的新鲜 RXCMD；分别接 `tx_end_i` 和 `line_valid_i`，`linestate_i` 接 `linestate_o`。不可用 TXVALID 的下降沿代替真实 STP，也不能把 CSR／raw chirp STP 当成普通包完成。
+
+命令为 valid／ready 单次事务：完整 PID、7-bit 地址、4-bit 端点、期望 DATA toggle 和长度。支持 OUT／IN／SETUP，以及 HS PING；SETUP 强制 DATA0 且长度为 8，FS 拒绝 PING。HS 包上限 512、FS 上限 64。这里不替代端点自身的 max-packet 管理；实际 25K FS EP0 为 8，回归由 8＋8＋2 三次 IN 读取完整设备描述符。
+
+OUT／SETUP 先收全上传内容再启动 token，默认总上传预算 60,000 拍，不因每个字节到来而延长。IN 先放入私有缓冲，验证 PID 互补、RxError、CRC16、长度和溢出后才能 ACK。正确 toggle 的有效包在 ACK 结束后发布成功结果；重复 toggle 仅 ACK、不重复提交。坏包／溢出不 ACK，不向用户发布部分数据。两块 512×8 缓冲使用同步读写，不清零内容；会话复位清除可见性和指针，旧字节不能成为新结果。Yosys 推断检查防止它们静默退化成异步读寄存器阵列，但不是目标器件 BSRAM 实耗证明。
+
+结果在消费前保持，接收流只在成功结果被消费后开放，`receive_last_o` 标出最后一个字节；在结果和数据都消费完前不接下一个命令。结果或数据背压、上传等待均不占住 SOF 调度。实时 SOF 使用 7,500／60,000 拍节拍；HS 每 8 个 microframe 才增加一次 11-bit frame，FS 每次增加。普通事务预留 HS 900／FS 5,000 拍帧尾预算，跨界命令等待下一个 SOF。`missed_sof_o` 计数尚未发出的 SOF 被下一次节拍覆盖的次数，不是模拟信号抖动／电气合规测量。
+
+结果码：`0` 成功，`1` NAK，`2` STALL，`3` 无响应，`4` PID／CRC／RxError／非法响应，`5` 重复有效数据包，`6` 接收超限，`7` 上传超时，`8` 非法命令，`9` HS OUT NYET。NYET 表示本次 OUT 已接受但后续未就绪，不能当成未接受而盲目重发；后续 PING／重试策略属于固件。MAC 不自动修改端点 toggle，不把 NAK、NYET 或重复包伪装成新的数据成功。
+
+ULPI 包间隔使用规范 Table 10 的时基：HS 连续发送从 STP 计时，接收转发送从 RX 结束计时，FS 从新鲜 SE0→J RXCMD 计时。响应计时、丢包和事务结果分开；每个包阶段另有默认 60,000 拍看门狗。`fatal_o` 表示无法保证当前 PHY 事务完成，由独立的 `fault_reset_n` 清除，普通事务 `reset_n` 不清除它。原生控制器为该故障提供跨域锁存并立即隔离 DATA／拉高 STP，只有外部关闭 `enable_i` 或全局复位才能显式清除，避免 PHY 先复位 MAC 导致参考域漏采故障，也不形成自动重启环。CPU／MMIO／CDC 与固件适配尚未接入，不能直接拿这个组件上板。
+
 ## 复现与集成边界
 
 在仓库根目录执行：
@@ -84,6 +102,6 @@ validation_dir="$(mktemp -d)"
 
 25K 第一方 CDC 适配增加 HS 3 ms 空闲判定及复位后 100 µs FS 检查窗口，修复上游短 SE0 计数器误伤合法 100–500 µs chirp 尾段的问题。对应控制回归还验证地址／配置跨 500 µs HS 空闲保持、512 字节真实 SIE 事务、3 ms HS 热复位及重新读描述符。vendor 字节与原始清单不改，测试也核验其锁定哈希。
 
-协商联调中的电气连线／差分线态与 SOF 保活活动由独立模型抽象，不是模拟信号完整性或 Host 发包／枚举证明。设备侧控制测试使用真实 token／PID／CRC／ACK 路径，但不能反向证明 138K Host SIE 已完成。完整 suspend／resume、LPM、USB 电气合规也没有因此通过。
+原协商联调中的电气连线／差分线态与 SOF 保活活动由独立模型抽象，不是模拟信号完整性或 Host 发包／枚举证明。独立 MAC 回归覆盖物理 ULPI 和实际 25K CDC／SIE；原生控制器回归再将两者接在同一链路上，使用真实 SOF 完成 50 ms 根复位、10 ms recovery、枚举、回环及会话取消。这里只将接入去抖缩短为 100 µs，不缩放复位／恢复时间；差分线态仍为数字模型。完整 suspend／resume、LPM、USB 电气合规也没有因此通过。
 
-集成时只能在显式新板配置中选入这四个第一方模块。60 MHz CSR／UTMI 不得直接接原 48 MHz Host；须使用明确的时钟迁移或异步桥，并验证超时、取消、FIFO 深度和复位。不得更改 vendor、冻结基线或旧部署身份。完整时序、原生新板组合根、I/O 电气约束、Gowin 综合／P&R、USB 协议和实体调试均是后续门禁，不被上述通用综合或仿真替代。
+集成时只能在显式新板配置中选择所需第一方模块。60 MHz CSR／UTMI 不得直接接原 48 MHz Host；须使用明确的时钟迁移或异步桥，并验证超时、取消、FIFO 深度和复位。不得更改 vendor、冻结基线或旧部署身份。Gowin 组件综合已验证两块 SDPB、791 个寄存器；完整整机综合／P&R、时序／CDC／PLL、原生新板组合根、I/O 电气约束、USB 协议与实体调试仍是后续门禁。
