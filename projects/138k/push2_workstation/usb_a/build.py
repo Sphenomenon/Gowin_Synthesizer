@@ -37,7 +37,7 @@ def main():
     ap.add_argument('--prepare-usb2-soc',action='store_true',help='Prepare native CPU/USB2 component with explicit probe or workstation firmware; not an integrated board candidate')
     ap.add_argument('--usb2-soc-output',type=Path,help='Required new output directory for --prepare-usb2-soc')
     ap.add_argument('--usb2-firmware-profile',choices=['probe','workstation'],help='Explicit USB2 CPU firmware; default probe, never changes accepted workstation profiles')
-    ap.add_argument('--usb2-component',choices=['soc','workstation-input'],help='Explicit component composition; workstation-input requires workstation firmware')
+    ap.add_argument('--usb2-component',choices=['soc','workstation-input','workstation-audio'],help='Explicit component composition; input/audio require workstation firmware')
     ap.add_argument('--usb2-full-speed-only',action='store_true',help='Explicit native workstation diagnostic policy; HS remains enabled by default')
     ap.add_argument('--current-workstation',action='store_true',
                     help='Merge scope into accepted full83; full requires UserCode, never changes board latest')
@@ -74,7 +74,7 @@ def main():
             ap.error(str(error))
         print(output)
         print(json.dumps(dict(identity=metadata['identity'],validation_stage=metadata['validation_stage'],
-                              sources=len(metadata['staged_input_sha256'])-4,
+                              sources=len(metadata['source_paths']),
                               rom_sha256=metadata['firmware']['rom_sha256'],deployment_allowed=False)))
         return
     if args.usb2_soc_output is not None or args.usb2_firmware_profile is not None or args.usb2_component is not None:

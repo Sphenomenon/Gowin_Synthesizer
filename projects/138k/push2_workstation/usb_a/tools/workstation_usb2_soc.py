@@ -52,17 +52,21 @@ def prepare(root, output, riscv_prefix=None, firmware_profile='probe', allow_hig
         raise ValueError('unknown USB2 firmware profile: ' + str(firmware_profile))
     if firmware_profile != 'workstation' and not allow_high_speed:
         raise ValueError('full-speed-only policy requires workstation firmware')
-    if component not in ('soc', 'workstation-input'):
+    if component not in ('soc', 'workstation-input', 'workstation-audio'):
         raise ValueError('unknown USB2 component: ' + str(component))
-    if component == 'workstation-input' and firmware_profile != 'workstation':
-        raise ValueError('workstation-input requires explicit workstation firmware')
+    if component != 'soc' and firmware_profile != 'workstation':
+        raise ValueError(component + ' requires explicit workstation firmware')
     if output.exists():
         raise FileExistsError('USB2 component output already exists: ' + str(output))
     sources = soc_sources(root)
     bundle = None
-    if component == 'workstation-input':
+    if component != 'soc':
         from tools.workstation_usb2_input import input_bundle
-        bundle = input_bundle(root)
+        bundle_loader = input_bundle
+        if component == 'workstation-audio':
+            from tools.workstation_usb2_audio import audio_bundle
+            bundle_loader = audio_bundle
+        bundle = bundle_loader(root)
         sources += [root / relative for relative in bundle['native_paths']]
     selected_inputs = tuple(relative for relative in PREPARATION_INPUTS if relative != PROBE_ENTRY)
     selected_inputs += WORKSTATION_INPUTS if firmware_profile == 'workstation' else (PROBE_ENTRY,)
@@ -74,8 +78,11 @@ def prepare(root, output, riscv_prefix=None, firmware_profile='probe', allow_hig
     if bundle:
         staged_expected.update({relative: hashlib.sha256(payload).hexdigest()
                                 for relative, payload in bundle['payloads'].items()})
-        source_paths += tuple(bundle['payloads'])
-    top = 'workstation_usb2_input' if bundle else 'workstation_usb2_soc'
+        source_paths += tuple(relative for relative in bundle['payloads'] if Path(relative).suffix in ('.sv', '.v'))
+    audio = component == 'workstation-audio'
+    if audio:
+        source_paths = tuple(sorted(source_paths, key=lambda relative: not relative.endswith('/audio_math_pkg.sv')))
+    top = 'workstation_usb2_audio' if audio else 'workstation_usb2_input' if bundle else 'workstation_usb2_soc'
     device = json.loads((root / 'boards/custom_138k/pinout.json').read_text())['device']
     if device != 'GW5AST-LV138PG484AC2/I1':
         raise ValueError('USB2 component requires the checked custom-138k device')
@@ -103,6 +110,12 @@ def prepare(root, output, riscv_prefix=None, firmware_profile='probe', allow_hig
         'create_clock -name ulpi_60 -period 16.666667 [get_ports {clk_ulpi}]\n')
     if bundle:
         clocks += 'create_clock -name audio_76_8 -period 13.020833 [get_ports {clk_audio}]\n'
+    clocks_hz = dict(cpu=48000000, reference=50000000, ulpi=60000000)
+    if bundle:
+        clocks_hz['audio'] = 76800000
+    if audio:
+        clocks += 'create_clock -name memory_100 -period 10.000 [get_ports {clk_memory}]\n'
+        clocks_hz['memory'] = 100000000
     (output / 'usb2_soc.sdc').write_text(clocks)
     project = ElementTree.Element('Project')
     ElementTree.SubElement(project, 'Template').text = 'FPGA'
@@ -123,26 +136,29 @@ def prepare(root, output, riscv_prefix=None, firmware_profile='probe', allow_hig
         if sha(root / relative) != expected:
             raise ValueError('USB2 component input changed during preparation: ' + relative)
     if bundle:
-        repeated = input_bundle(root)
+        repeated = bundle_loader(root)
         if repeated != bundle:
             raise ValueError('USB2 input-owner sources changed during preparation')
     for relative, expected in staged_expected.items():
         if sha(output / relative) != expected:
             raise ValueError('USB2 staged source identity changed: ' + relative)
-    staged_paths = (*source_paths, 'usb2_cpu.hex', 'usb2_soc.sdc', 'usb2_soc.gprj', 'synthesis.tcl')
+    staged_paths = (*staged_expected, 'usb2_cpu.hex', 'usb2_soc.sdc', 'usb2_soc.gprj', 'synthesis.tcl')
     metadata = dict(
-        schema=1, identity='custom138k-usb2-input-component-v1' if bundle else
+        schema=1, identity='custom138k-usb2-audio-component-v1' if audio else
+                          'custom138k-usb2-input-component-v1' if bundle else
                           'custom138k-usb2-workstation-component-v1' if application else 'custom138k-usb2-soc-component-v1',
         top_module=top, component=component, source_paths=list(source_paths), device=device, firmware_profile=firmware_profile,
         high_speed_allowed=bool(allow_high_speed),
-        validation_stage='component_prepare_only', source_policy='explicit_native_input_owner_and_locked_support' if bundle
+        validation_stage='component_prepare_only', source_policy='explicit_native_audio_and_locked_resource_dependencies' if audio else
+                                                                'explicit_native_input_owner_and_locked_support' if bundle
                                                                 else 'explicit_native_rtl_and_locked_cpu_vendor',
         firmware_role='workstation_application' if application else 'simulation_enumeration_probe',
         requires_external_probe_service=not application, business_firmware_selected=application,
         input_owner_integrated=bool(bundle), input_owner_provenance=bundle['provenance'] if bundle else None,
+        audio_path_integrated=audio,
         workstation_integrated=False, synthesis_allowed=True, place_route_allowed=False,
         hardware_tested=False, deployment_allowed=False, release_ready=False,
-        clocks_hz=dict(cpu=48000000, reference=50000000, ulpi=60000000),
+        clocks_hz=clocks_hz,
         input_sha256=inputs, firmware=firmware,
         staged_input_sha256={relative: sha(output / relative) for relative in staged_paths},
     )
@@ -154,17 +170,43 @@ def audit_component_synthesis(output):
     output = Path(output)
     manifest = output / 'component_inputs.json'
     metadata = json.loads(manifest.read_text())
-    if metadata['identity'] not in ('custom138k-usb2-soc-component-v1', 'custom138k-usb2-workstation-component-v1') or metadata['top_module'] != 'workstation_usb2_soc':
+    identities = {'custom138k-usb2-soc-component-v1': 'workstation_usb2_soc',
+                  'custom138k-usb2-workstation-component-v1': 'workstation_usb2_soc',
+                  'custom138k-usb2-input-component-v1': 'workstation_usb2_input'}
+    if metadata.get('identity') not in identities or metadata.get('top_module') != identities[metadata['identity']]:
         raise ValueError('not the explicit USB2 CPU component')
+    input_owner = metadata['identity'] == 'custom138k-usb2-input-component-v1'
+    native_paths = SOC_SOURCE_PATHS
+    register_limit = 2304
+    if input_owner:
+        from tools.workstation_usb2_input import NATIVE_INPUT_SOURCES, LOCKED_INPUT_SOURCES
+        native_paths += NATIVE_INPUT_SOURCES
+        support_paths = tuple('support/workstation/' + relative for relative in LOCKED_INPUT_SOURCES)
+        provenance = metadata.get('input_owner_provenance', {})
+        if (metadata.get('component') != 'workstation-input' or metadata.get('firmware_profile') != 'workstation' or
+                metadata.get('source_policy') != 'explicit_native_input_owner_and_locked_support' or
+                metadata.get('input_owner_integrated') is not True or
+                metadata.get('source_paths') != list((*native_paths, *support_paths)) or
+                metadata.get('clocks_hz', {}).get('audio') != 76800000 or
+                provenance.get('baseline', {}).get('name') != 'resource_rework_route0' or
+                set(provenance.get('locked_sources', {})) != set(support_paths)):
+            raise ValueError('USB2 input-owner source policy changed')
+        for relative in support_paths:
+            if metadata['staged_input_sha256'].get(relative) != provenance['locked_sources'][relative].get('sha256'):
+                raise ValueError('USB2 locked support source does not match its baseline: ' + relative)
+        register_limit = 4096
     for relative, expected in metadata['staged_input_sha256'].items():
         if sha(output / relative) != expected:
             raise ValueError('USB2 synthesis input identity changed: ' + relative)
-    for relative in SOC_SOURCE_PATHS:
+    for relative in native_paths:
         if metadata['staged_input_sha256'][relative] != metadata['input_sha256'][relative]:
             raise ValueError('USB2 copied source does not match its original input: ' + relative)
     netlist = output / 'impl/gwsynthesis/usb2_soc_component.vg'
     text = netlist.read_text()
+    if not re.search(r'^\s*module\s+' + re.escape(metadata['top_module']) + r'\s*\(', text, re.M):
+        raise ValueError('USB2 synthesized top module mismatch')
     block_rams = re.findall(r'^\s*SDPB\s+(\S+)\s*\(', text, re.M)
+    fifo_rams = re.findall(r'^\s*SDPX9B\s+(\S+)\s*\(', text, re.M)
     registers = re.findall(r'^\s*DFF[A-Z0-9_]*\s+\S+\s*\(', text, re.M)
     planes = []
     memory_names = set()
@@ -185,8 +227,23 @@ def audit_component_synthesis(output):
         'receive_memory_receive_memory_0_0_s', 'transmit_memory_transmit_memory_0_0_s',
         'transmit_buffer_transmit_buffer_0_0_s', 'receive_buffer_receive_buffer_0_0_s',
     }
-    if len(block_rams) != 38 or set(block_rams) != expected_rams or len(registers) >= 2304:
+    if len(block_rams) != 38 or set(block_rams) != expected_rams or len(registers) >= register_limit:
         raise ValueError('USB2 component RAM/register resource gate failed')
+    expected_fifo_rams = {'storage_storage_0_0_s'} if input_owner else set()
+    if len(fifo_rams) != len(expected_fifo_rams) or set(fifo_rams) != expected_fifo_rams:
+        raise ValueError('USB2 event FIFO RAM resource gate failed')
+    resource_report = output / 'impl/gwsynthesis/usb2_soc_component_syn_rsc.xml'
+    resource = ElementTree.parse(resource_report).getroot()
+    reported = {}
+    for key in ('T_Register', 'T_Bsram', 'T_Ssram'):
+        value = re.fullmatch(r'(\d+)\(\d+\)', resource.get(key, '0(0)'))
+        if value is None:
+            raise ValueError('USB2 synthesis resource report is malformed: ' + key)
+        reported[key] = int(value[1])
+    if (resource.get('name') != metadata['top_module'] or reported['T_Register'] != len(registers) or
+            reported['T_Bsram'] != len(block_rams) + len(fifo_rams) or
+            reported['T_Ssram'] != (82 if input_owner else 0)):
+        raise ValueError('USB2 synthesis resource report does not match the component')
     words = [int(word, 16) for word in (output / 'usb2_cpu.hex').read_text().splitlines()]
     if len(words) != 16384:
         raise ValueError('USB2 CPU ROM is not 64 KiB')
@@ -194,7 +251,10 @@ def audit_component_synthesis(output):
         actual = sum(((plane[index >> 3] >> (index & 7)) & 1) << bit for bit, plane in enumerate(planes))
         if actual != expected:
             raise ValueError(f'USB2 synthesized ROM mismatch at word {index}')
-    return dict(validation_stage='component_synthesis_only', component_inputs_sha256=sha(manifest),
+    return dict(validation_stage='component_synthesis_only', identity=metadata['identity'], top_module=metadata['top_module'],
+                register_limit_exclusive=register_limit, input_owner_integrated=input_owner, component_inputs_sha256=sha(manifest),
                 netlist_sha256=sha(netlist), sdpb_primitives=len(block_rams), registers=len(registers),
+                sdpx9b_primitives=len(fifo_rams), synthesis_bsram_equivalent=reported['T_Bsram'],
+                synthesis_ssram=reported['T_Ssram'], resource_report_sha256=sha(resource_report),
                 verified_rom_words=len(words), rom_sha256=sha(output / 'usb2_cpu.hex'),
                 place_route_verified=False, hardware_tested=False, deployment_allowed=False)

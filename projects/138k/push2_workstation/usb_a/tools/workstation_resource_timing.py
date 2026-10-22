@@ -7,7 +7,10 @@ The APB mailbox reserves one audio cycle for local read-address predecode.
 from pathlib import Path
 import hashlib
 import re
-from cnn_ddr_pipeline_patch import pipeline_tf_read_return
+if __package__:
+    from .cnn_ddr_pipeline_patch import pipeline_tf_read_return
+else:
+    from cnn_ddr_pipeline_patch import pipeline_tf_read_return
 
 
 def once(text, old, new):

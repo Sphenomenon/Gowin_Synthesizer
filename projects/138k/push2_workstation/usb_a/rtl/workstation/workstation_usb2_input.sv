@@ -74,7 +74,7 @@ module workstation_usb2_input #(
         .owner_write_data_o(owner_write_data), .owner_ready_i(owner_ready), .owner_read_data_i(owner_read_data),
         .canceled_requests_o(canceled_requests_o)
     );
-    push2_usb_a_control control (
+    push2_usb_a_control input_owner (
         .clk(clk_cpu), .reset_n(cpu_reset_n), .audio_clk(clk_audio), .audio_reset_n(audio_reset_n),
         .feedback_clk(clk_ref), .feedback_reset_n(reset_n), .performance_words(performance_words_i),
         .display_meta_data(display_meta_data_i), .display_meta_valid(display_meta_valid_i),

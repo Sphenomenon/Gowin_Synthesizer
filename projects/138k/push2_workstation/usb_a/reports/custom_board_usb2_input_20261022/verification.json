@@ -1,0 +1,550 @@
+{
+  "schema": 1,
+  "date": "2026-10-22",
+  "validation_stage": "native_input_component_verified_offline",
+  "source_head": "e896526c3564ad80269b7fa34df1bb7c39a7440e",
+  "uncommitted_development": true,
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_ulpi_link.sv": "0138a87ca4afa33854f0c72ea13f2dea6f212e99d3053d0fbefe44072e1fc5bb",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_ulpi_supervisor.sv": "9741276485cc6393e7786bb7ca5886d719f120e810839fe9aa2078a723b2a840",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_controller.sv": "fef42fd02e74c27629d5efbdbb9957a079198ab0588751a621f3df9d6dadf33d",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_mac.sv": "d73e34695d3fbf7be0ef81423232f093df34fa9bdd11d98ee77b16572622168b",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_phy.sv": "d88814938e3d0bb181a2397585ad480255b5b3ebaa670d5925f91ded6c893688",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_port.sv": "29d267e61a71ef572a96eb35f1877ad032bcaab9f72f225d00315de3e47b44e7",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb3300_host_init.sv": "546d0d2ee624dc4ecb2551273c27b9cba5e48c2d81d16dadce13c43e16fc4dbe",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb3300_host_link.sv": "9992615d19aa187e5afe3018c9f55b6480f548653cc29a1af98ef8267a51c99b",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_cpu_bridge.sv": "0bef0fa9c848ec606442b1b397a19eb7d822af0802cebdb2ed4e1acb6287fb26",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_host_mmio.sv": "fdbd3e33be9232505df19daaa950a322601063f7dd8903c93873c867de37a033",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_cpu_bus.sv": "016fd241557399d2994697e784aae2fb55e5a2d847180ead9f49c31b9b851cba",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_soc.sv": "1181a4b32c3959ef4e6f6ea54abaf2b63677f43332eb87e7b4cd37b1135cbc21",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/VexRiscv.v": "b4befdee132dbd5d8cf88991f24b69f1eef97cbad8a5656a745f0d69a7a31226",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/simpleuart.v": "26bbed2ad964b75a40a6f7e72f3871cf2cc3457d8b7ac8136a947d5d65fd69fa",
+    "projects/138k/push2_workstation/usb_a/build.py": "091ec76491ede1985940045e16b1f0862c46c5878b3e47593e683222d9243215",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_usb2_soc.py": "d39ca7d499ff258bad7d379b810d0d00b6de2835afdf1868795133b5938850f8",
+    "projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": "055d762a846f3a1c441f6157a443c0081c2dd6a9aba0d8576ed6903979b96fc8",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/pinout.json": "2213484d9472d192f877beb6323f13b79bc3b832f6f45f71fb968f8c70f802ae",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/inputs.json": "901833fa2083c9a09db62045c5b12e63360c3f61e7775847ca78ddaeb5c76ba6",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/start.S": "922d197b938e653b3a94ef6107303cb828a2be267629bd92899498d429cbb60e",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/baremetal.ld": "782346f25a8dfffc5bfbb8198c2b12e5166b2d500aa00e626e8187f5a0473da8",
+    "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_host.c": "5b029d03517893272582f506b07f2ec77f1ac300b9f7f236377a5a90bba6f5ea",
+    "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_host.h": "4d7ea3e7374f951d295dfa7acb160ddc1a73b0604394982927b9aa43eea32192",
+    "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_cpu_port.c": "cd841c339aad4f99d00af9a694f7a119cf2f2c4067ba8befd18de805e4df3589",
+    "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_cpu_port.h": "5ecb71b2a57fa8e5c6d958bafbcdbaa3e146ceb0b003666ac5ea1aedb2453e0b",
+    "projects/138k/push2_workstation/usb_a/firmware.c": "0a2acb8243d67357a4a69c869e3262fc89b624a5cf433feb8a2d12a0b27fc738",
+    "projects/138k/push2_workstation/usb_a/gw25k_panel.h": "6986f631f2c72da58a79ed1b267578c0e9a0c4730933ae7c735cdc7089235d76",
+    "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_backend.c": "527c5e420bc35b39c829f6fc0c83c71a445fbf3a4f2cedab0254f0eae7d86a28",
+    "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_backend.h": "2b8530fe2ef0ad98b42d14070c25c0895b6a4b5c6dee8bd05a11cf1539821d17",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/minlibc.c": "67270201c156358943bf01df27fc81da2a97730668174426ee11584a60f607bf",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/minlibc.h": "6b69e720d83f1a50d1bb617116cab5a77be69f4bfacbc1bbca41c31889f13e86",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb/usb_core.c": "fbe2b0995c27bf3621e3b32993b2405ff3b018ffe751dfebad14611c2cc50fa5",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb/usb_core.h": "6b121c052986df83a612db01ade9a7e8524fec80fd8bd718e8b5722c985900c6",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb/usb_defs.h": "d492a33d57f93d939dac591b5c1f5a70ed71018b1f0310c9d3b51880a677a6f5",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/usb/usb_hw.h": "3e72e7c5821e5d965c646be4114b6bb691749679ad4eea35ab7149743cf9af08",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv": "c80e279e892a9d35750402c29626678661521b1ad10f1bd4a8a656e3c61ee33c",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_service_adapter.sv": "9c42d9aea1bb0d140760c5e3824650a56e8364f00e61a6cee20fee112e189d12",
+    "projects/138k/push2_workstation/usb_a/rtl/push2_usb_a_control.sv": "b8af9064b4e658225727e71eb585b2c3b23456eef0c9cf0f9385ef4b16c471ca",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/push2_controls.sv": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+    "projects/138k/push2_workstation/usb_a/rtl/push2/push2_lights.sv": "b686f65d6e3fd67237861da95624bc3685de8bb691533b73c82503ee431d955d",
+    "projects/138k/push2_workstation/usb_a/rtl/push2/push2_led_tx.sv": "add27dec44bb355c748850e5f66b9f04b4908093d8a30c6b16fdd8eb42812cb8",
+    "projects/138k/push2_workstation/usb_a/rtl/push2/push2_playlist_hold.sv": "f8b4e79c34440c5c5ea0dafea5ed0e767c25c72c2c23bfa1c09437bf381016e5",
+    "projects/138k/push2_workstation/usb_a/rtl/push2/push2_song_menu.sv": "34bdf2edc0cfa53a1fb7d8b7b4ea83666fb54d5de8f4452f3757c18ec179e025",
+    "projects/138k/push2_workstation/usb_a/rtl/push2/push2_score_guide.sv": "aedd96d346a1c3567781c3df54b9e53e464389c5fdde730df127056e69bbbb16",
+    "projects/138k/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv": "51638b9ba0e3cfb9a4e8c2a8b4ad330fad4cba3b168179abbf25de437c2c0702",
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv": "8a10a2361823ce82ec89588a143680096a8d9aab268026f719474ac0445b4ac5",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_usb2_input.py": "8508a9086494723a36fb45fe31585b8239a9cbf3c925d7bada9a0775df44f4c7",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+    "projects/138k/push2_workstation/usb_a/baselines/index.json": "f8f9606b0700ec214563c754a0d00d38668fbb1c376bf7988f9749d07f7ec205",
+    "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/USB2_INPUT.md": "677a8d5db4486e5bb54c604d364c1d8b8e2538c3bdff24ed0f570a4cdfccff10",
+    "projects/138k/push2_workstation/usb_a/reports/CUSTOM_BOARD_USB2_INPUT_20261022.md": "09fb56e682174f125780148614dcff381b1b078e6f9e45f9285ed8f0a059993e",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/README.md": "151711fc527edb347f1dfba57a306fb04410d888b4d01fb1059423590a333bb7",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/CPU_SOC.md": "3945fbb160de9285377fb692009038d90d516d3bcfb16708b67be5c03f299bc1",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/README.md": "1a5ef6ff18ba1c6330f6a58d51c1f113860e63f29d30b95ceee045ec607304dd",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_input.py": "8b25db9a85b70f384535a2ac71acf920d5fc567ceae9161b389ff186c991696b"
+  },
+  "identity": "custom138k-usb2-input-component-v1",
+  "source_policy": "explicit_native_input_owner_and_locked_support",
+  "rtl_sources": 29,
+  "input_owner_provenance": {
+    "policy": "explicit_current_input_owner_and_four_locked_support_sources",
+    "baseline": {
+      "name": "resource_rework_route0",
+      "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+      "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+      "origin": {
+        "build": "results/resource_rework_final_route0_20261020_041042",
+        "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+        "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+      },
+      "source_files": 437,
+      "excluded_files": 180
+    },
+    "locked_sources": {
+      "support/workstation/src/migration/gw138k_stream_cdc.sv": {
+        "target": "src/migration/gw138k_stream_cdc.sv",
+        "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/migration/gw138k_stream_cdc.sv",
+        "sha256": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376"
+      },
+      "support/workstation/src/usb_host/gw138k_usb_event_fifo.v": {
+        "target": "src/usb_host/gw138k_usb_event_fifo.v",
+        "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/usb_host/gw138k_usb_event_fifo.v",
+        "sha256": "517b0ccbddd48fc0a13a99dfc05dac584b03184f7502f40abad88c3992d82145"
+      },
+      "support/workstation/src/push2/push2_midi_rx.sv": {
+        "target": "src/push2/push2_midi_rx.sv",
+        "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/push2/push2_midi_rx.sv",
+        "sha256": "4588f7c614351b113f89f4e967c95657c1f216b0a0328e96f669ced31f55d3e3"
+      },
+      "support/workstation/src/video/video_font_5x7.v": {
+        "target": "src/video/video_font_5x7.v",
+        "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/video/video_font_5x7.v",
+        "sha256": "f8db5962cd395d8f6d13727a853d4bf2a6994a2ec8b9ac8d880ab11449ee896b"
+      }
+    }
+  },
+  "input_owner_integrated": true,
+  "workstation_integrated": false,
+  "hardware_tested": false,
+  "place_route_verified": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "tests": {
+    "unique_tests": 101,
+    "skipped": 0,
+    "groups": [
+      {
+        "name": "native_input",
+        "unique_tests": 8,
+        "seconds": 496.398,
+        "skipped": 0,
+        "log": {
+          "path": "/tmp/workstation-usb2-input-final-v2-20261022.log",
+          "sha256": "6f7a10abfeb9d022f97d18a58dec22d029aca19ac7ba2bae06ce3979b108af73"
+        }
+      },
+      {
+        "name": "existing_usb2",
+        "unique_tests": 29,
+        "seconds": 547.06,
+        "skipped": 0,
+        "log": {
+          "path": "/tmp/workstation-usb2-input-default-regressions-20261022.log",
+          "sha256": "3ac1448666eb0a1223965eeda18846b24160a82a4c67148a1baf1bd9c1817dab"
+        }
+      },
+      {
+        "name": "accepted_firmware_pinout_clean_baselines",
+        "unique_tests": 64,
+        "seconds": 6.677,
+        "skipped": 0,
+        "log": {
+          "path": "/tmp/workstation-usb2-input-production-guards-v2-20261022.log",
+          "sha256": "91be80e03bc477e85e9bb582448e5e813e833ca582005ff7839f26870893190f"
+        }
+      }
+    ],
+    "repeated_default_resource_audit": {
+      "path": "/tmp/workstation-usb2-input-default-audit-v2-20261022.log",
+      "sha256": "22b46cbabba6a5139da75314d44942cef9107584feee1f9fcf63a19c90ed9995"
+    }
+  },
+  "actual_cpu_owner_fifo_simulations": [
+    {
+      "high_speed": true,
+      "evidence": {
+        "path": "/tmp/workstation-usb2-input-evidence-20261022-final-v2/hs_1/input_evidence.json",
+        "sha256": "ae869f52f351de5375854a88c6229a65f2534d5001bfcb2afda8313d24cbdd7e"
+      },
+      "manifest": {
+        "path": "/tmp/workstation-usb2-input-evidence-20261022-final-v2/hs_1/component_inputs.json",
+        "sha256": "da10912d4678655a9a936874aa6c6ce24420ed23f44d656e3a653de2aacd60d0"
+      },
+      "execution": {
+        "path": "/tmp/workstation-usb2-input-evidence-20261022-final-v2/hs_1/execution.log",
+        "sha256": "59b82b6bde365ecb78bdb7456c7d0f143ff55a29a81fefb63396404cee3ce655"
+      },
+      "compilation": {
+        "path": "/tmp/workstation-usb2-input-evidence-20261022-final-v2/hs_1/compilation.log",
+        "sha256": "0d04d56743de73db4df8d5608220b95bf7a5bf0109f3b25344db3d58ccf63626"
+      },
+      "same_29_rtl_as_synthesis": true,
+      "firmware": {
+        "rom_sha256": "31c4d7d58141ef0ec2b33f826a9c22251b7d4f23771cbaa189427b0f1277d457",
+        "firmware_bytes": 22176,
+        "static_ram_end": 28024,
+        "isa": "rv32i",
+        "high_speed_allowed": true
+      },
+      "simulation_input_sha256": {
+        "projects/138k/push2_workstation/usb_a/sim/usb2/usb3300_register_model.sv": "19c808ad5a28fb5977ca995f9c6e0c067fe178a06d96967b3ecf04f382b9d9ce",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/usb3300_packet_model.sv": "5a474d54dabc06b9e3db0a6d3e4e189473c17a09d2b88a3bb4403b973b7ef637",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/usb3300_host_model.sv": "7317166f622fa60a92deef04de08b58766f121d366e6b4a57806719b74f3e1b9",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_input_25k.sv": "81da08f171809611ecb9fed0d8d5b2199e2fd63c4d6537c09a9b08211603954b",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/midi_usb_device.v": "486badebe6df2fc8faecc5d616987caaea631cac9bbf00fabbb7503beb8f54cd",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/midi_usb_hs_phy.v": "00ac7e281990c0fe18e4b2b4d5c590fa6cbaa5b6896c56fe8bfdec0df94e0445",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/generated/usb_composite_desc_rom.v": "e022f0c6f52a97483914c1d2b6a30a4e51b73de8c51a68e8f94791dd848133ee",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_sie_tx.v": "36d6e5c3f926a6aed36ced5f21664635bd5120f5b7d753ad08915a45c3da7621",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_sie_rx.v": "7731842eefa2d5f2513fd240ba70403362ad01033195594cc7699645f641ce87",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_crc16.v": "fbdf75fc7a24342db71ea9de8c7332b4b4e6074db88e9e41b3e908da133a2033",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/control/panel_display_endpoint.v": "cba754e6d16bb9c998c7e23d23039b60e7ef03867244192f2ac8943b2f7135e8",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_defs.v": "5ea9871d316cea1a9b7f5faf33c0f9b3bb513594aacb33288638c2a64a28f484",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_input.py": "8b25db9a85b70f384535a2ac71acf920d5fc567ceae9161b389ff186c991696b",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_application.py": "60ace1dcc0ce45f5190d7f8ec392d65bd9d4177885d96a3357e2e63639adf58f"
+      },
+      "checked_by_bench": {
+        "audio_events": 136,
+        "discarded_stale_events": 20,
+        "attachments": 2,
+        "detachments": 1,
+        "barriers": 2,
+        "minimum_tiles": 4,
+        "minimum_fifo_backpressure_cpu_cycles": 200
+      }
+    },
+    {
+      "high_speed": false,
+      "evidence": {
+        "path": "/tmp/workstation-usb2-input-evidence-20261022-final-v2/hs_0/input_evidence.json",
+        "sha256": "7da9099f4744e20a3647b7cf3d5c60dd38f0c4bc7435c44c1bbe706ef85813a0"
+      },
+      "manifest": {
+        "path": "/tmp/workstation-usb2-input-evidence-20261022-final-v2/hs_0/component_inputs.json",
+        "sha256": "16e23c676f63fa018f77da2814590c1868b17c14ec4009b514c3e7dbcf15f136"
+      },
+      "execution": {
+        "path": "/tmp/workstation-usb2-input-evidence-20261022-final-v2/hs_0/execution.log",
+        "sha256": "f38f6da0edf34d0ab0e2c639cd49f20a2b7c403ed564e86f611ec798e4176879"
+      },
+      "compilation": {
+        "path": "/tmp/workstation-usb2-input-evidence-20261022-final-v2/hs_0/compilation.log",
+        "sha256": "3285e12236b5bf9e51b813b90112296e0a1921abcecef06bf14391d1de0d42d1"
+      },
+      "same_29_rtl_as_synthesis": true,
+      "firmware": {
+        "rom_sha256": "80a3415b6c89de06f359b268e14b7e826c14f6dd34ea54ddad4739ecf422aa41",
+        "firmware_bytes": 22232,
+        "static_ram_end": 28080,
+        "isa": "rv32i",
+        "high_speed_allowed": false
+      },
+      "simulation_input_sha256": {
+        "projects/138k/push2_workstation/usb_a/sim/usb2/usb3300_register_model.sv": "19c808ad5a28fb5977ca995f9c6e0c067fe178a06d96967b3ecf04f382b9d9ce",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/usb3300_packet_model.sv": "5a474d54dabc06b9e3db0a6d3e4e189473c17a09d2b88a3bb4403b973b7ef637",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/usb3300_host_model.sv": "7317166f622fa60a92deef04de08b58766f121d366e6b4a57806719b74f3e1b9",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_input_25k.sv": "81da08f171809611ecb9fed0d8d5b2199e2fd63c4d6537c09a9b08211603954b",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/midi_usb_device.v": "486badebe6df2fc8faecc5d616987caaea631cac9bbf00fabbb7503beb8f54cd",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/midi_usb_hs_phy.v": "00ac7e281990c0fe18e4b2b4d5c590fa6cbaa5b6896c56fe8bfdec0df94e0445",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/generated/usb_composite_desc_rom.v": "e022f0c6f52a97483914c1d2b6a30a4e51b73de8c51a68e8f94791dd848133ee",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_sie_tx.v": "36d6e5c3f926a6aed36ced5f21664635bd5120f5b7d753ad08915a45c3da7621",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_sie_rx.v": "7731842eefa2d5f2513fd240ba70403362ad01033195594cc7699645f641ce87",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_crc16.v": "fbdf75fc7a24342db71ea9de8c7332b4b4e6074db88e9e41b3e908da133a2033",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/control/panel_display_endpoint.v": "cba754e6d16bb9c998c7e23d23039b60e7ef03867244192f2ac8943b2f7135e8",
+        "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_defs.v": "5ea9871d316cea1a9b7f5faf33c0f9b3bb513594aacb33288638c2a64a28f484",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_input.py": "8b25db9a85b70f384535a2ac71acf920d5fc567ceae9161b389ff186c991696b",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_application.py": "60ace1dcc0ce45f5190d7f8ec392d65bd9d4177885d96a3357e2e63639adf58f"
+      },
+      "checked_by_bench": {
+        "audio_events": 136,
+        "discarded_stale_events": 20,
+        "attachments": 2,
+        "detachments": 1,
+        "barriers": 2,
+        "minimum_tiles": 4,
+        "minimum_fifo_backpressure_cpu_cycles": 200
+      }
+    }
+  ],
+  "synthesis": {
+    "audit": {
+      "validation_stage": "component_synthesis_only",
+      "identity": "custom138k-usb2-input-component-v1",
+      "top_module": "workstation_usb2_input",
+      "register_limit_exclusive": 4096,
+      "input_owner_integrated": true,
+      "component_inputs_sha256": "da10912d4678655a9a936874aa6c6ce24420ed23f44d656e3a653de2aacd60d0",
+      "netlist_sha256": "b6264a6c3214aa1c8de55892d5aeaaaf550ae7edacc0df57226ca1e237a9660f",
+      "sdpb_primitives": 38,
+      "registers": 3861,
+      "sdpx9b_primitives": 1,
+      "synthesis_bsram_equivalent": 39,
+      "synthesis_ssram": 82,
+      "resource_report_sha256": "b0db33d0f57534e4aceb3bccce524ce165240fa82e5a21eca3156310ab4d299d",
+      "verified_rom_words": 16384,
+      "rom_sha256": "31c4d7d58141ef0ec2b33f826a9c22251b7d4f23771cbaa189427b0f1277d457",
+      "place_route_verified": false,
+      "hardware_tested": false,
+      "deployment_allowed": false
+    },
+    "manifest": {
+      "path": "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/component_inputs.json",
+      "sha256": "da10912d4678655a9a936874aa6c6ce24420ed23f44d656e3a653de2aacd60d0"
+    },
+    "log": {
+      "path": "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/synthesis.log",
+      "sha256": "51285f4e58897e850a8f622275a89974100859055fa0a8636074fd588094b383"
+    },
+    "warnings_by_code": {
+      "EX1998": 1,
+      "EX3791": 24,
+      "CV0020": 6,
+      "NL0002": 1
+    },
+    "warnings": [
+      {
+        "code": "EX1998",
+        "message": "Net 'IBusSimplePlugin_rspJoin_fetchRsp_isRvc' does not have a driver(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/vendor/usb_host_fs_8fc3/src/VexRiscv.v\":488)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 17 truncated to fit in target size 16(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/vendor/usb_host_fs_8fc3/src/simpleuart.v\":74)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 5 truncated to fit in target size 4(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/vendor/usb_host_fs_8fc3/src/simpleuart.v\":99)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 17 truncated to fit in target size 16(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/vendor/usb_host_fs_8fc3/src/simpleuart.v\":112)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 32 truncated to fit in target size 4(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/vendor/usb_host_fs_8fc3/src/simpleuart.v\":133)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 8 truncated to fit in target size 7(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_lights.sv\":66)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 7 truncated to fit in target size 4(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/display_data/push2_surface_pixels.sv\":46)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 10 truncated to fit in target size 7(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":30)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 10 truncated to fit in target size 7(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":31)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 10 truncated to fit in target size 6(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":73)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":75)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 10 truncated to fit in target size 6(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":77)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":79)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":93)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 32 truncated to fit in target size 6(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":95)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":97)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 32 truncated to fit in target size 6(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":99)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":101)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 32 truncated to fit in target size 6(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":103)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv\":106)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/display_data/push2_surface_pixels.sv\":255)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/display_data/push2_surface_pixels.sv\":260)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/display_data/push2_surface_pixels.sv\":263)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/display_data/push2_surface_pixels.sv\":268)"
+      },
+      {
+        "code": "EX3791",
+        "message": "Expression size 31 truncated to fit in target size 3(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/display_data/push2_surface_pixels.sv\":271)"
+      },
+      {
+        "code": "CV0020",
+        "message": "Input performance_words_i[447:288] is unused(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/workstation/workstation_usb2_input.sv\":14)"
+      },
+      {
+        "code": "CV0020",
+        "message": "Input performance_words_i[223:196] is unused(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/workstation/workstation_usb2_input.sv\":14)"
+      },
+      {
+        "code": "CV0020",
+        "message": "Input performance_words_i[131:64] is unused(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/workstation/workstation_usb2_input.sv\":14)"
+      },
+      {
+        "code": "CV0020",
+        "message": "Input performance_words_i[31:0] is unused(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/workstation/workstation_usb2_input.sv\":14)"
+      },
+      {
+        "code": "CV0020",
+        "message": "Input display_meta_data_i[63:26] is unused(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/workstation/workstation_usb2_input.sv\":15)"
+      },
+      {
+        "code": "CV0020",
+        "message": "Input display_meta_data_i[22:0] is unused(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/workstation/workstation_usb2_input.sv\":15)"
+      },
+      {
+        "code": "NL0002",
+        "message": "The module \"gw138k_usb_event_fifo.fifo.consume_buffered_cdc\" instantiated to \"consume_buffered_cdc\" is swept in optimizing(\"/tmp/workstation-usb2-input-synthesis-20261022-final-v2/support/workstation/src/usb_host/gw138k_usb_event_fifo.v\":104)"
+      }
+    ],
+    "lint": {
+      "command": [
+        "verilator",
+        "--lint-only",
+        "--timing",
+        "--timescale-override",
+        "1ns/1ps",
+        "-Wall",
+        "-Wno-fatal",
+        "--top-module",
+        "workstation_usb2_input",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_ulpi_link.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_ulpi_supervisor.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_usb2_host_controller.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_usb2_host_mac.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_usb2_host_phy.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_usb2_host_port.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_usb3300_host_init.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_usb3300_host_link.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_usb2_cpu_bridge.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_usb2_host_mmio.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_usb2_cpu_bus.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/usb2/workstation_usb2_soc.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/vendor/usb_host_fs_8fc3/src/VexRiscv.v",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/vendor/usb_host_fs_8fc3/src/simpleuart.v",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/workstation/workstation_usb2_input.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/workstation/workstation_usb2_service_adapter.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2_usb_a_control.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/audio/push2_controls.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_lights.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_led_tx.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_playlist_hold.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_menu.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_score_guide.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/push2/push2_song_screen.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/rtl/display_data/push2_surface_pixels.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/support/workstation/src/migration/gw138k_stream_cdc.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/support/workstation/src/usb_host/gw138k_usb_event_fifo.v",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/support/workstation/src/push2/push2_midi_rx.sv",
+        "/tmp/workstation-usb2-input-synthesis-20261022-final-v2/support/workstation/src/video/video_font_5x7.v"
+      ],
+      "returncode": 0,
+      "log_sha256": "ed6867f6787471f447d1041c7a0cbbe487746c94fc38da6ddf1720c9a96a4d9a",
+      "warnings_by_code": {
+        "DECLFILENAME": 3,
+        "PINCONNECTEMPTY": 9,
+        "WIDTHTRUNC": 36,
+        "WIDTHEXPAND": 26,
+        "UNUSEDSIGNAL": 169,
+        "UNDRIVEN": 1,
+        "PROCASSINIT": 21,
+        "SYNCASYNCNET": 3
+      },
+      "composition_adapter_warnings": []
+    },
+    "auditor_sha256": "d39ca7d499ff258bad7d379b810d0d00b6de2835afdf1868795133b5938850f8"
+  },
+  "actual_netlist_recheck": {
+    "manifest": {
+      "path": "/tmp/workstation-usb2-input-pinout-recheck-20261022/pinout.json",
+      "sha256": "394e88b2d229cbf6a293af2daaef4828fa4b2f1b1dd3b6b6da3a9f58d2fcef96"
+    },
+    "log": {
+      "path": "/tmp/workstation-usb2-input-pinout-recheck-20261022.log",
+      "sha256": "d0b8d6a25400bb3be3661b9faf17eb46eceef74e48f75b66e6e3472877356fb4"
+    },
+    "electrical_check": {
+      "status": "blocked",
+      "scope": "USB3300 and translator nominal logic voltage domains only",
+      "actual_board_measured": false,
+      "full_electrical_acceptance": false,
+      "translators": [
+        {
+          "part": "U4",
+          "phy_side": "A",
+          "supply_node": "U4.2",
+          "supply_network": "VDD_1V8",
+          "nominal_mv": 1800
+        },
+        {
+          "part": "U5",
+          "phy_side": "A",
+          "supply_node": "U5.1",
+          "supply_network": "VDD_1V8",
+          "nominal_mv": 1800
+        }
+      ],
+      "findings": [
+        {
+          "code": "ULPI_PHY_OUTPUT_DOMAIN",
+          "part": "U4",
+          "node": "U4.2",
+          "translator_input_high_max_mv": 1800,
+          "phy_output_supply_min_mv": 3000,
+          "phy_output_high_min_mv": 2600,
+          "message": "USB3300 output high is outside the translator A-side recommended input range"
+        },
+        {
+          "code": "ULPI_PHY_OUTPUT_DOMAIN",
+          "part": "U5",
+          "node": "U5.1",
+          "translator_input_high_max_mv": 1800,
+          "phy_output_supply_min_mv": 3000,
+          "phy_output_high_min_mv": 2600,
+          "message": "USB3300 output high is outside the translator A-side recommended input range"
+        },
+        {
+          "code": "ULPI_STP_HIGH_LEVEL",
+          "part": "U5",
+          "driver_node": "U5.3",
+          "receiver_node": "U2.13",
+          "driver_supply_mv": 1800,
+          "receiver_vih_min_mv": 2000,
+          "message": "Translator PHY-side supply is below USB3300 minimum valid high input"
+        }
+      ]
+    }
+  },
+  "remaining_gaps": [
+    "real session/parameter application and DSP/serial audio output",
+    "complete new-board composition, clocks, IO constraints, P&R/timing/CDC/PLL/resource gates",
+    "ULPI electrical mismatch unresolved; no board measured evidence",
+    "amplifier U1 identity and FPC/RN connectivity confirmation",
+    "HDMI serial polarity and CEC safety, TF physical validation",
+    "BLE connector ball mapping and real 138K controller/peripheral integration",
+    "physical 25K/Push checks and separately authorized SRAM/Flash acceptance"
+  ],
+  "rollback": "Keep existing explicit accepted/resource profiles; no deployed bitstream changed"
+}

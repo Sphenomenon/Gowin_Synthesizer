@@ -1,6 +1,6 @@
 # 原生 CPU／USB2 组件
 
-`workstation_usb2_soc.sv` 只组合锁定的 VexRiscv、第一方总线及原生 USB2 MMIO，不复制工作站业务或公共参数。它是新板整机的待集成组件，不是当前已接受配置的自动替换，没有包含 PLL、板级 IO、DDR、音频或 BLE 业务。ROM 可显式选择枚举 probe 或真实工作站业务固件；后者的 [USB2 backend](../../drivers/usb2/WORKSTATION_BACKEND.md) 已覆盖 25K MIDI／PL 与 Push 软件分包，但外部服务仍须接入真实工作站 owner。
+`workstation_usb2_soc.sv` 只组合锁定的 VexRiscv、第一方总线及原生 USB2 MMIO，不复制工作站业务或公共参数。它是新板整机的待集成组件，不是当前已接受配置的自动替换，没有包含 PLL、板级 IO、DDR、音频或 BLE 业务。ROM 可显式选择枚举 probe 或真实工作站业务固件；后者的 [USB2 backend](../../drivers/usb2/WORKSTATION_BACKEND.md) 已覆盖 25K MIDI／PL 与 Push 软件分包。默认 SoC 保留外部服务端口；显式的 [workstation-input 组件](../workstation/USB2_INPUT.md) 接入原 owner／事件 FIFO，但仍不代表新板整机完成。
 
 ## 时钟、复位与启动
 
