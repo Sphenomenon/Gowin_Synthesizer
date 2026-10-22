@@ -12,12 +12,15 @@ import xml.etree.ElementTree as ET
 from workstation_baselines import load_baseline
 ROOT=Path(__file__).resolve().parents[1]
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
-def prepare(timing_fixes=False):
+def prepare(timing_fixes=False,output_directory=None):
+    if output_directory is not None and not timing_fixes:
+        raise ValueError('explicit output requires the native resource-timing prepare policy')
     if timing_fixes:
         # A new timing candidate branches from the immutable, fully routed
         # 234-block source. Do not weaken the accepted builder's input guard.
         reference=load_baseline(ROOT,'resource_rework_route0')
-        output=ROOT/'results'/datetime.now().strftime('resource_timing_%Y%m%d_%H%M%S_%f');output.mkdir()
+        output=Path(output_directory).resolve() if output_directory is not None else ROOT/'results'/datetime.now().strftime('resource_timing_%Y%m%d_%H%M%S_%f')
+        output.mkdir()
         stage=output/'Prj1'
         reference.materialize(stage)
         reference.copy_metadata(output)

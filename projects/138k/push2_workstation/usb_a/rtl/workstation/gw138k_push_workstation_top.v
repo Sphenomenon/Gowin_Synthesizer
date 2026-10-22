@@ -1,5 +1,38 @@
 // Independent C-revision migration candidate. Original Prj1 top is retained.
 // G1 MIDI is on a separate expansion pin; BL616 V14 is not reused.
+`ifdef WORKSTATION_CUSTOM_138K
+module workstation_custom_138k_top #(
+    parameter integer TF_AUDIO_KIND=2,
+    parameter integer USB2_DIAGNOSTIC_UART=0
+) (
+    input wire clk_50m,pc_uart_rx_i,
+    input wire usb2_ulpi_clk,usb2_ulpi_dir,usb2_ulpi_nxt,
+    inout wire [7:0] usb2_ulpi_data,
+    output wire usb2_ulpi_stp,
+    input wire sd_miso,
+    output wire sd_mosi,sd_sck,sd_cs_n,
+    inout wire hp_bck,hp_ws,hp_din,dac_mclk,dac_pdn_n,
+    inout wire dac_sslow,dac_smute,dac_sd,dac_slow,
+    input wire amp_fpga_det,
+    output wire debug_uart_tx,
+    input wire hdmi_hpd,
+    inout wire hdmi_cec,
+    output wire tmds_clk_p,tmds_clk_n,
+    output wire [2:0] tmds_data_p,tmds_data_n,
+    output wire [14:0] ddr_addr,
+    output wire [2:0] ddr_bank,
+    output wire ddr_cs,ddr_ras,ddr_cas,ddr_we,ddr_ck,ddr_ck_n,ddr_cke,ddr_odt,ddr_reset_n,
+    output wire [3:0] ddr_dm,
+    inout wire [31:0] ddr_dq,
+    inout wire [3:0] ddr_dqs,ddr_dqs_n
+);
+    wire button1_n=1'b1;
+    wire midi_rx_i=1'b1;
+    wire pa_en,hdmi_tx_en;
+    wire reference_bck,reference_ws,reference_din;
+    assign {hp_bck,hp_ws,hp_din,dac_mclk,dac_pdn_n,dac_sslow,dac_smute,dac_sd,dac_slow}=9'bz;
+    assign hdmi_cec=1'bz;
+`else
 module gw138k_push_workstation_top #(
     parameter integer TF_AUDIO_KIND=2
 ) (
@@ -28,6 +61,7 @@ module gw138k_push_workstation_top #(
     inout wire [31:0] ddr_dq,
     inout wire [3:0] ddr_dqs,ddr_dqs_n
 );
+`endif
     wire reset_n;
     reset_release u_reset(.clk(clk_50m),.ext_reset_n(button1_n),.reset_n(reset_n));
     wire audio_clk,audio_reset_n,audio_locked;
@@ -42,6 +76,7 @@ module gw138k_push_workstation_top #(
     always @(posedge usb_clk or negedge usb_qualified)
         if(!usb_qualified)usb_release<=0;else usb_release<={usb_release[2:0],1'b1};
     wire usb_reset_n=usb_release[3];
+`ifndef WORKSTATION_CUSTOM_138K
     wire mmio_select,mmio_write,mmio_ready;
     wire [7:0] mmio_address;wire [31:0] mmio_wdata,mmio_rdata;
     wire host_mmio_select,host_mmio_write,host_mmio_ready;
@@ -57,6 +92,9 @@ module gw138k_push_workstation_top #(
     iosys2 u_usb_host(.clk(usb_clk),.resetn(usb_reset_n),.uart_rx(1'b1),.uart_tx(),
         .usb_dp(usb1_dp),.usb_dm(usb1_dn),.mmio_select(host_mmio_select),.mmio_write(host_mmio_write),
         .mmio_address(host_mmio_address),.mmio_wdata(host_mmio_wdata),.mmio_ready(host_mmio_ready),.mmio_rdata(host_mmio_rdata));
+`else
+    wire [223:0] usb_words;
+`endif
     wire [31:0] output_pcm,output_reference,active_voices,display_status;
     wire synth_hp_bck,synth_hp_ws,synth_hp_din,synth_pa_en,synth_sample_ce;
     wire [31:0] scope_status_audio,tf_scope_control_audio,tf_scope_control_50;
@@ -107,7 +145,13 @@ module gw138k_push_workstation_top #(
         .analysis_hold_o(music_analysis_hold),.reader_restart_o(playback_restart),
         .reader_track_o(playback_track),.score_accept_o(score_accept)
     );
+`ifdef WORKSTATION_CUSTOM_138K
+    wire native_usb_uart;
+    assign debug_uart_tx=USB2_DIAGNOSTIC_UART ? native_usb_uart :
+        (music_report_sending ? music_report_serial : runtime_serial);
+`else
     assign debug_uart_tx=music_report_sending ? music_report_serial : runtime_serial;
+`endif
     wire [2:0] effect_mask;
     wire [5:0] effect_order;
     wire output_sample_valid;
@@ -183,6 +227,27 @@ module gw138k_push_workstation_top #(
         .source_valid(display_summary_valid),.source_data(display_summary),
         .destination_valid(display_summary_usb_valid),.destination_data(display_summary_usb));
     wire usb_lifecycle,usb_cancel;
+`ifdef WORKSTATION_CUSTOM_138K
+    wire [7:0] native_usb_data;
+    wire native_usb_oe;
+    assign usb2_ulpi_data=native_usb_oe ? native_usb_data : 8'bz;
+    workstation_usb2_input u_native_usb (
+        .clk_cpu(usb_clk),.clk_ref(clk_50m),.clk_ulpi(usb2_ulpi_clk),.clk_audio(audio_clk),
+        .reset_n(usb_reset_n),.audio_reset_n(audio_reset_n),.uart_rx_i(1'b1),.uart_tx_o(native_usb_uart),
+        .ulpi_data_i(usb2_ulpi_data),.ulpi_dir_i(usb2_ulpi_dir),.ulpi_nxt_i(usb2_ulpi_nxt),
+        .ulpi_data_o(native_usb_data),.ulpi_data_oe_o(native_usb_oe),.ulpi_stp_o(usb2_ulpi_stp),
+        .performance_words_i(push_snapshot),.display_meta_data_i(display_summary_usb),
+        .display_meta_valid_i(display_summary_usb_valid),.service_state_data_i(service_state_usb),
+        .service_state_valid_i(service_state_usb_valid),.score_valid_i(score_usb_valid),
+        .analysis_done_i(music_analysis_done),.score_ready_o(score_usb_ready),.score_note_i(score_usb_note),
+        .playlist_valid_i(playlist_usb_valid),.playlist_ready_o(playlist_usb_ready),.playlist_word_i(playlist_usb_word),
+        .track_launch_o(push_track_launch),.track_index_o(push_track_index),
+        .audio_valid_o(all_usb_valid),.audio_ready_i(all_usb_ready),.audio_event_o(all_usb_event),
+        .audio_lifecycle_o(usb_lifecycle),.audio_cancel_o(usb_cancel),.telemetry_o(usb_words),
+        .canceled_requests_o(),.cpu_fault_o(),.cpu_fault_address_o(),.transaction_reset_n_o(),
+        .phy_ready_o(),.failed_o(),.high_speed_o(),.traffic_enable_o(),.sof_count_o()
+    );
+`else
     push2_usb_a_control u_push(.clk(usb_clk),.reset_n(usb_reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),
         .feedback_clk(clk_50m),.feedback_reset_n(reset_n),.performance_words(push_snapshot),
         .display_meta_data(display_summary_usb),.display_meta_valid(display_summary_usb_valid),
@@ -194,6 +259,7 @@ module gw138k_push_workstation_top #(
         .track_index(push_track_index),
         .select(mmio_select),.write(mmio_write),.address(mmio_address),.wdata(mmio_wdata),.ready(mmio_ready),.rdata(mmio_rdata),
         .audio_valid(all_usb_valid),.audio_ready(all_usb_ready),.audio_event(all_usb_event),.audio_lifecycle(usb_lifecycle),.audio_cancel(usb_cancel),.telemetry(usb_words));
+`endif
     gw138k_usb_controlled_audio u_managed(
         .usb_event_valid(all_usb_valid),.usb_lifecycle(usb_lifecycle),.usb_cancel(usb_cancel),.usb_event_ready(all_usb_ready),.usb_event_data(all_usb_event),
         .pc_uart_rx_i((music_model_status==4'd14 || tf_scope_control_audio[12]) ? pc_uart_rx_i : 1'b1),.performance_words_o(performance_words),
@@ -343,7 +409,11 @@ module gw138k_push_workstation_top #(
         .synth_bck_i(synth_hp_bck),.synth_ws_i(synth_hp_ws),.synth_data_i(synth_hp_din),.synth_pa_i(synth_pa_en),
         .tf_bck_i(tf_hp_bck),.tf_ws_i(tf_hp_ws),.tf_data_i(tf_hp_din),.tf_pa_i(tf_pa_en),
         .synth_reference_i(synth_dac_reference),.synth_voices_i(synth_dac_voices),.synth_health_i(synth_dac_health),
+`ifdef WORKSTATION_CUSTOM_138K
+        .bck_o(reference_bck),.ws_o(reference_ws),.data_o(reference_din),.pa_o(pa_en),
+`else
         .bck_o(hp_bck),.ws_o(hp_ws),.data_o(hp_din),.pa_o(pa_en),
+`endif
         .tap_valid_o(final_sample_valid),.tap_snapshot_o(final_snapshot)
     );
     ddr_address_map_guard u_ddr_address_map_guard();

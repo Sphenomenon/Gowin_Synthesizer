@@ -74,3 +74,7 @@ PNR/all 必须显式给新的 `--user-code`，不再默认套用历史编号。�
 ## 仍需继续收敛
 
 这里完成的是开发候选的组合根与主要控制边界，不宣称所有历史构建器已退役。底层仍有带哈希/锚点约束的时序与 IP 适配；公共显示位域、Push 专有交互和 Android `Workstation` 协调职责仍可继续拆分。D 模式、138K 实际音频 BLE 录音及完整多端状态同步没有因这次重整而自动完成。
+
+## 新板 USB2 组件
+
+显式 `workstation-input` 接入原输入 owner；[workstation-audio](USB2_AUDIO.md) 再复用本目录会话／参数／DSP／串行帧交接和原 delay DMA。它们是独立组件验证入口，不是这里完整 resource-timing 配置的新来源，也不自动选择新板 IO 或替换部署。

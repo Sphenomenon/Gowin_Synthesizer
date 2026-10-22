@@ -34,6 +34,8 @@ def main():
     ap.add_argument('--prepare-pinout',choices=['custom-138k'],help='Offline custom-board locations only; not a workstation synthesis path')
     ap.add_argument('--netlist-dir',type=Path,help='Explicit directory containing the three locked custom-board netlists')
     ap.add_argument('--pinout-output',type=Path,help='New output directory for --prepare-pinout; refuses existing paths')
+    ap.add_argument('--prepare-custom-board',action='store_true',help='Prepare native 138K board integration for offline synthesis only; electrical and full physical gates remain blocked')
+    ap.add_argument('--custom-board-output',type=Path,help='Required new output directory for --prepare-custom-board')
     ap.add_argument('--prepare-usb2-soc',action='store_true',help='Prepare native CPU/USB2 component with explicit probe or workstation firmware; not an integrated board candidate')
     ap.add_argument('--usb2-soc-output',type=Path,help='Required new output directory for --prepare-usb2-soc')
     ap.add_argument('--usb2-firmware-profile',choices=['probe','workstation'],help='Explicit USB2 CPU firmware; default probe, never changes accepted workstation profiles')
@@ -54,8 +56,32 @@ def main():
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=ap.parse_args()
-    if args.usb2_full_speed_only and (not args.prepare_usb2_soc or args.usb2_firmware_profile!='workstation'):
-        ap.error('--usb2-full-speed-only requires --prepare-usb2-soc --usb2-firmware-profile workstation')
+    if args.usb2_full_speed_only and not (args.prepare_custom_board or
+            (args.prepare_usb2_soc and args.usb2_firmware_profile=='workstation')):
+        ap.error('--usb2-full-speed-only requires explicit native workstation firmware preparation')
+    if args.prepare_custom_board:
+        if args.custom_board_output is None or args.netlist_dir is None:
+            ap.error('--prepare-custom-board requires --custom-board-output and --netlist-dir')
+        if (args.prepare_pinout or args.pinout_output is not None or args.prepare_usb2_soc or
+                args.usb2_soc_output is not None or args.usb2_firmware_profile is not None or args.usb2_component is not None or
+                args.prepare_only or args.synthesis_only or args.reuse_synthesis or args.no_update_latest or
+                args.current_workstation or args.cnn_timing85 or args.resource_rework or args.resource_timing or
+                args.replicate_resources or args.place_option is not None or args.max_fanout is not None or
+                args.user_code is not None or args.tf_audio_kind!='wav'):
+            ap.error('--prepare-custom-board cannot be mixed with component, pinout-only, workstation or release options')
+        from tools.workstation_custom_board import prepare as prepare_custom_board
+        try:
+            output,metadata=prepare_custom_board(ROOT,args.netlist_dir,args.custom_board_output,
+                                                 args.riscv_prefix,not args.usb2_full_speed_only)
+        except (ValueError,OSError,subprocess.CalledProcessError) as error:
+            ap.error(str(error))
+        print(output)
+        print(json.dumps(dict(identity=metadata['identity'],validation_stage=metadata['validation_stage'],
+                              sources=len(metadata['enabled_inputs']),electrical_blocked=metadata['electrical_blocked'],
+                              deployment_allowed=False)))
+        return
+    if args.custom_board_output is not None:
+        ap.error('--custom-board-output requires --prepare-custom-board')
     if args.prepare_usb2_soc:
         if args.usb2_soc_output is None:
             ap.error('--prepare-usb2-soc requires --usb2-soc-output')

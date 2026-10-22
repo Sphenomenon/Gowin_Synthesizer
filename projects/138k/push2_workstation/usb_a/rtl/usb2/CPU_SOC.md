@@ -65,3 +65,5 @@ python3 -c 'from tools.workstation_usb2_soc import audit_component_synthesis; pr
 业务后端已处理 Push 软件分包、FS 回退、端点 MPS／toggle／NYET 与实际 25K MIDI／PL CPU 仿真，见 [本轮应用证据](../../reports/CUSTOM_BOARD_USB2_WORKSTATION_20261022.md)。进入真实新板配置前，仍必须接入现有工作站服务，补板级时钟、复位、IO 和完整物理门禁。临时 probe／综合工程不得成为唯一生产输入；业务配置落地后保留必要的独立 CPU 回归，退役 probe 作为部署入口的可能性。
 
 回退仍是原有显式整机配置，不选择新 SoC 即可，不需要恢复 vendor、旧基线或刷板。本阶段证据见 [CPU 实际执行记录](../../reports/CUSTOM_BOARD_USB2_CPU_20261022.md)。
+
+显式 [workstation-audio](../workstation/USB2_AUDIO.md) 在后续组件中接上现有会话、参数、DSP、参考串行链与 delay DMA；它有独立的五时钟来源清单和综合审计，不扩大本 SoC 的默认 38 SDPB／寄存器预算，也不补齐新板 PLL、功放或物理门禁。
