@@ -154,6 +154,7 @@ AE350 继续承载既有 UI／服务请求，VexRiscv 继续承载 USB Host；�
 |---|---|---|
 | 50 MHz 业务域 | TF 控制、识别、部分显示与诊断 | 后台任务可背压，取消与就绪必须传播到消费者 |
 | 48 MHz USB 域 | Host、MIDI、Push／PL 传输 | 事件 FIFO／握手跨域；设备断开不能留下旧事件 |
+| 60 MHz ULPI 域（显式新板配置） | 外部 USB3300 并口、PHY／MAC 事务 | 外部时钟资格与丢钟隔离；通过整包邮箱与 48 MHz CPU 交接，不假定与参考时钟同相 |
 | 76.8 MHz 音频域 | 合成、效果、采样与 DAC | 48 kHz 实时预算；持续观测 deadline／overflow／drop |
 | 100 MHz DDR UI 域 | 共享内存请求与响应 | CDC 请求队列、返回路由、写掩码、启动隔离 |
 | 400 MHz DDR 存储时钟 | DDR PHY | 由平台 IP 和约束管理，不作为普通业务时钟 |
@@ -188,6 +189,9 @@ DDR 地址唯一依据是 [ddr_address_map.vh](../../projects/138k/push2_worksta
 | 再加 `--cnn-timing85` | 只允许清单绑定的六个 full85 CNN 时序文件 | 不能扩成“选最新 CNN” |
 | `--resource-rework` | 从整机准备流程形成显式活动 CNN／资源候选 | 算法配置、资源与功能证据须另立候选 |
 | 再加 `--resource-timing` | 从可版本化的固定资源参考基线出发，再叠加结构时序修复 | 锁定参考 ROM 与活动 overlay 分开；重新准备不自动重现 T24 的位流哈希 |
+| `--prepare-custom-board` | 从锁定资源时序父配置显式选择新板原生 USB2、共享装配分支、DVI provider 和位置约束 | 仅 prepare／离线综合；不是上述整机配置的默认升级，未完成电气／IO／时序／CDC／PLL／P&R／实板门禁，禁止部署 |
+
+新板与原 Dock 共享第一方工作站组合体；板级分支只处理端口、复位、USB 输入连接和输出安全隔离，业务边界不另起副本。功放型号未定时不把参考 PT8211 波形直接送到未知 DAC，蓝牙独立工程也不自动成为整机后端。维护与回归入口见[原生装配说明](../../projects/138k/push2_workstation/usb_a/rtl/workstation/README.md#显式新板装配)，版本证据独立存入 reports。
 
 初次梳理时 `usb_a/tools` 中 Git 跟踪的 Python 文件为 107 个，其中 30 个以 `build_` 开头、20 个属于 `build_full_song_` 系列。这不是按行数判定“坏代码”，而是表明历史实验已经挤进生产依赖面。阶段 A 只新增通用基线解析器，不增加编号生产入口；整机路径也已解除对编号脚本中 DDR 常量的导入。其余历史入口不立即删除。
 

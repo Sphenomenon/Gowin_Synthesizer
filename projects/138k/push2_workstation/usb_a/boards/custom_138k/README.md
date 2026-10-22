@@ -47,7 +47,9 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 
 [CPU 接入开发快照](../../reports/CUSTOM_BOARD_USB2_CPU_CHECKPOINT_20261022.md) 保留推送时的失败证据；后续 [CPU 实际执行记录](../../reports/CUSTOM_BOARD_USB2_CPU_20261022.md) 已修复启动入口，完成真实 RV32I 的 HS／FS 枚举、回环、取消与恢复及组件综合。[显式 SoC 准备入口](../../rtl/usb2/CPU_SOC.md) 默认仍选择 probe，可另行选择业务固件；两者都不是可上板整机候选，也不改变已接受整机配置。
 
-更新的 [工作站应用记录](../../reports/CUSTOM_BOARD_USB2_WORKSTATION_20261022.md) 增加显式生产固件 profile、原生后端、HS／FS 的实际 25K MIDI／PL CPU 仿真和 Push 软件分包验证。显式 [输入 owner／FIFO 组件](../../rtl/workstation/USB2_INPUT.md) 接入原工作站事件边界；[音频组件](../../rtl/workstation/USB2_AUDIO.md) 继续连接原会话、公共参数、DSP、参考串行链与 delay DMA，分别记录来源和模型范围。板级组合仍未完成，不解除本配置的 pinout-only／电气门禁，也不能从组件综合推导可上板。
+更新的 [工作站应用记录](../../reports/CUSTOM_BOARD_USB2_WORKSTATION_20261022.md) 增加显式生产固件 profile、原生后端、HS／FS 的实际 25K MIDI／PL CPU 仿真和 Push 软件分包验证。显式 [输入 owner／FIFO 组件](../../rtl/workstation/USB2_INPUT.md) 接入原工作站事件边界；[音频组件](../../rtl/workstation/USB2_AUDIO.md) 继续连接原会话、公共参数、DSP、参考串行链与 delay DMA，分别记录来源和模型范围。组件综合本身不解除本配置的 pinout-only／电气门禁，也不能推导可上板。
+
+另有显式 [`--prepare-custom-board` 原生装配入口](../../rtl/workstation/README.md#显式新板装配)，复用现有整机组合并选择新板位置、USB2 和四对 TMDS 极性补偿；其 prepare／离线综合与本目录位置配置是不同验证阶段。它仍禁止 P&R／部署，DAC 信号高阻、CEC 释放，未完成电气、功放、BLE 和实板验收；具体来源与结果见[装配记录](../../reports/CUSTOM_BOARD_NATIVE_INTEGRATION_20261022.md)。不得把已编译的整机源码组合误报为已经接通的新板。
 
 之后分别执行时序／CDC／PLL／资源门禁及实体排线、Push／25K、音频、HDMI 验收，另建具有完整来源和位流哈希的新候选。Push 和 25K 在同一个 USB-A 口交替接入，不假定同时连接或 High-Speed。不得凭本阶段通过执行 SRAM 或 Flash 下载。
 

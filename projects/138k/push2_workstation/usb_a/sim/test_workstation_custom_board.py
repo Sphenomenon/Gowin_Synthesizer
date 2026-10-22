@@ -57,7 +57,7 @@ class NativeBoard(unittest.TestCase):
             result = subprocess.run(['gw_sh', str(stage / 'synthesis.tcl')], cwd=stage,
                                     text=True, capture_output=True, timeout=180)
             self.assertEqual(result.returncode, 0, result.stdout[-3000:] + result.stderr[-3000:])
-            self.assertNotRegex(result.stdout + result.stderr, r'^ERROR\s*\(', 'native TMDS dedicated routing failed')
+            self.assertNotRegex(result.stdout + result.stderr, r'(?m)^ERROR\s*\(', 'native TMDS dedicated routing failed')
 
     def test_high_speed_native_full_profile_input(self):
         self.run_prepared_input(1)
@@ -216,6 +216,24 @@ class NativeBoard(unittest.TestCase):
                 self.assertIn('cannot be mixed', result.stderr)
                 self.assertFalse(output.exists())
 
+    def test_firmware_failure_keeps_partial_stage_non_deployable(self):
+        profile, payloads, _ = fixture()
+        netlists = {role: pinout.Netlist(payload) for role, payload in payloads.items()}
+        identities = {role: dict(profile['sources'][role], sha256=pinout.digest(payload))
+                      for role, payload in payloads.items()}
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'native'
+            with patch.object(pinout, 'load_sources', return_value=(netlists, identities)), \
+                    patch.object(integration, 'stage_usb2_cpu_firmware', side_effect=ValueError('injected firmware failure')):
+                with self.assertRaisesRegex(ValueError, 'injected firmware failure'):
+                    integration.prepare(ROOT, Path(directory) / 'netlists', output)
+            self.assertTrue((output / 'workstation/Prj1/scripts/build.tcl').read_text().startswith('error '))
+            metadata = json.loads((output / 'workstation/build_metadata.json').read_text())
+            self.assertEqual(metadata['validation_stage'], 'integration_prepare_incomplete')
+            for flag in ('place_route_allowed', 'deployment_allowed', 'release_ready', 'hardware_tested'):
+                self.assertIs(metadata[flag], False)
+            self.assertFalse((output / 'integration_inputs.json').exists())
+
     def test_missing_native_source_does_not_materialize_a_candidate(self):
         original = Path.is_file
         missing = ROOT / 'rtl/display_data/workstation_custom_dvi.sv'
@@ -254,13 +272,20 @@ class NativeBoard(unittest.TestCase):
                             original_bench_sha256=hashlib.sha256(original.encode()).hexdigest(),
                             physical_hardware_tested=False, polarity_location='parallel_word_before_OSER10',
                             serializer_reset_connector_clock_level=1, cases=[])
-            for cable_swapped in (True, False):
-                bench = stage / f'bench_{int(cable_swapped)}.sv'
+            for relative in ('dvi_tx_top.v', 'dvi_tx_tmds_phy.v', 'dvi_tx_clk_drv.v'):
+                (stage / relative).write_bytes(baseline.read_bytes('vendor/sipeed_dvi/' + relative))
+            evidence['startup_contract'] = dict(reference_first_falling_ui=31, native_first_falling_ui=21,
+                                                 first_source_ui=101, reference_discard_words=7, native_discard_words=8)
+            cases = [('reference', False, None), ('reversed', True, None)]
+            cases.extend((f'unreversed_{lane}', True, lane) for lane in ('clock', 'blue', 'green', 'red'))
+            for label, use_native, unreversed_lane in cases:
+                bench = stage / f'bench_{label}.sv'
                 changed = original
-                if cable_swapped:
+                if use_native:
                     declaration = '    wire [1:0] clock_pair, blue_pair, green_pair, red_pair;'
                     insertion = declaration + '\n    wire [1:0] fpga_clock,fpga_blue,fpga_green,fpga_red;\n' + '\n'.join(
-                        f'    assign {observed}={{ {physical}[0],{physical}[1] }};'
+                        (f'    assign {observed}={physical};' if observed == f'{unreversed_lane}_pair'
+                         else f'    assign {observed}={{ {physical}[0],{physical}[1] }};')
                         for observed, physical in zip(('clock_pair','blue_pair','green_pair','red_pair'),
                                                       ('fpga_clock','fpga_blue','fpga_green','fpga_red')))
                     self.assertEqual(changed.count(declaration), 1)
@@ -270,25 +295,50 @@ class NativeBoard(unittest.TestCase):
                     changed = changed.replace(anchor, 'fpga_clock,fpga_blue,fpga_green,fpga_red);')
                     reset_idle = 'clock_pair[1]!==0) $fatal'
                     self.assertEqual(changed.count(reset_idle), 1)
-                    changed = changed.replace(reset_idle, 'clock_pair[1]!==1) $fatal')
+                    if unreversed_lane != 'clock':
+                        changed = changed.replace(reset_idle, 'clock_pair[1]!==1) $fatal')
+                    startup_comment = re.compile(r'                    // With the documented common stopped-clock startup:.*?(?=                    source_index=)', re.S)
+                    changed, count = startup_comment.subn('', changed)
+                    self.assertEqual(count, 1)
+                    self.assertEqual(changed.count('source_index=decoded_words-7;'), 1)
+                    changed = changed.replace('source_index=decoded_words-7;', 'source_index=decoded_words-8;')
+                counter_anchor = '    reg previous_clock=0;'
+                self.assertEqual(changed.count(counter_anchor), 1)
+                changed = changed.replace(counter_anchor, counter_anchor + '\n'
+                    '    integer startup_ui=0;\n'
+                    '    always @(fclk or posedge serializer_reset)\n'
+                    '        if(serializer_reset) startup_ui=0;\n'
+                    '        else if(enable) startup_ui=startup_ui+1;\n')
+                edge_anchor = "            if(previous_clock===1'b1 && clock_pair[1]===1'b0) begin"
+                self.assertEqual(changed.count(edge_anchor), 1)
+                first_falling_ui, discard_words = (21, 8) if use_native else (31, 7)
+                changed = changed.replace(edge_anchor, edge_anchor + '\n'
+                    f'                if(decoded_words==0 && startup_ui!={first_falling_ui})\n'
+                    '                    $fatal(1,"fixed first TMDS clock edge changed: %0d",startup_ui);\n'
+                    f'                if(decoded_words=={discard_words} && startup_ui!=101)\n'
+                    '                    $fatal(1,"fixed first source edge changed: %0d",startup_ui);\n')
                 bench.write_text(changed)
-                executable = stage / f'tmds_{int(cable_swapped)}'
+                executable = stage / f'tmds_{label}'
+                implementation = [str(native)] if use_native else [str(stage / relative) for relative in
+                    ('dvi_tx_top.v', 'dvi_tx_tmds_phy.v', 'dvi_tx_clk_drv.v')]
                 command = ['iverilog', '-g2012', '-s', 'tb_tmds_clock', '-o', str(executable), str(models),
                            str(stage / 'video_pll_1080p_gw5a.v'), str(stage / 'dvi_tx_tmds_enc.v'),
-                           str(native), str(bench)]
+                           *implementation, str(bench)]
                 compilation = subprocess.run(command, text=True, capture_output=True, timeout=60)
                 self.assertEqual(compilation.returncode, 0, compilation.stdout + compilation.stderr)
                 result = subprocess.run(['vvp', str(executable)], text=True, capture_output=True, timeout=60)
-                log = stage / f'execution_{int(cable_swapped)}.log'
+                log = stage / f'execution_{label}.log'
                 log.write_text(result.stdout + result.stderr)
-                evidence['cases'].append(dict(cable_swapped=cable_swapped, returncode=result.returncode,
+                evidence['cases'].append(dict(case=label, native=use_native, unreversed_lane=unreversed_lane,
+                                              returncode=result.returncode,
                                               bench_sha256=digest(bench), log_sha256=digest(log)))
-                if cable_swapped:
+                if unreversed_lane is None:
                     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                     self.assertIn('PASS official Gowin TMDS clock: all 9 startup/phase cases', result.stdout)
                 else:
-                    self.assertNotEqual(result.returncode, 0, 'negative cable control unexpectedly passed')
-                    self.assertIn('TMDS word mismatch', result.stdout)
+                    self.assertNotEqual(result.returncode, 0, 'negative cable control unexpectedly passed: ' + label)
+                    self.assertIn('fixed first TMDS clock edge changed' if unreversed_lane == 'clock'
+                                  else 'TMDS word mismatch', result.stdout)
             self.assertEqual(digest(native), evidence['source_sha256'])
             self.assertEqual(digest(ROOT / 'rtl/display_data/workstation_custom_dvi.sv'), evidence['source_sha256'])
             (stage / 'evidence.json').write_text(json.dumps(evidence, indent=2) + '\n')

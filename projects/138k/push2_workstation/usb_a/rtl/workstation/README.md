@@ -78,3 +78,26 @@ PNR/all 必须显式给新的 `--user-code`，不再默认套用历史编号。�
 ## 新板 USB2 组件
 
 显式 `workstation-input` 接入原输入 owner；[workstation-audio](USB2_AUDIO.md) 再复用本目录会话／参数／DSP／串行帧交接和原 delay DMA。它们是独立组件验证入口，不是这里完整 resource-timing 配置的新来源，也不自动选择新板 IO 或替换部署。
+
+## 显式新板装配
+
+`build.py --prepare-custom-board` 是独立的新板源码组合入口，仅准备工程并允许离线综合，不改变 accepted、timing85 或原 resource-timing 配置。它从锁定的资源时序父配置重建依赖，逐项禁用旧 USB FS CPU／Host、旧装配顶层、旧 DVI 输出 provider 和旧板约束，改选原生 USB2 输入及新板位置规划。禁用的历史文件保留原字节，替换关系与完整编译闭包写入 `integration_inputs.json`。
+
+`workstation_custom_138k_top.sv` 只为共享的 `gw138k_push_workstation_top.v` 选择 `WORKSTATION_CUSTOM_138K` 板级分支；不复制 DSP、DDR、TF、识别、播放或显示工作站。未定义该宏时的预处理 token 身份有独立回归保护。新板分支继续只有一个公共参数应用点和最终输出路由，不把 USB 服务 ACK 当成音频命令已经应用。
+
+新板 DVI provider 在 OSER10 的十位并行输入处补偿四对反相，OSER10.Q 直接连 ELVDS_OBUF，不能在专用串行输出路径插入 LUT 反相。功放型号未确认，九个 DAC 信号保持高阻；原 PT8211 参考串行输出仍在内部用于观察，不能据此宣称新功放已驱动。CEC 高阻释放；BLE 引脚和业务后端仍未补齐。
+
+```sh
+python3 projects/138k/push2_workstation/usb_a/build.py \
+  --prepare-custom-board \
+  --netlist-dir "$HOME/Documents/fpga补充文档" \
+  --custom-board-output /tmp/custom_138k_new_candidate
+gw_sh /tmp/custom_138k_new_candidate/workstation/Prj1/scripts/custom_board_synthesis.tcl \
+  > /tmp/custom_138k_new_candidate/synthesis.log 2>&1
+PYTHONPATH=projects/138k/push2_workstation/usb_a \
+  python3 -m tools.workstation_custom_board_audit /tmp/custom_138k_new_candidate
+```
+
+`--usb2-full-speed-only` 可显式准备 FS 业务固件配置；默认允许 HS 协商，不保证实物链路速率。输出目录必须不存在，不可混入整机发布参数。生成的旧通用 `build.tcl` 主动报错，不能沿它进入 P&R；完整 IO、时序／CDC／PLL、电气和实板门禁必须先补齐。当前来源、综合、实际 25K 仿真及剩余阻断见[新板原生装配记录](../../reports/CUSTOM_BOARD_NATIVE_INTEGRATION_20261022.md)。
+
+新板时钟声明由 `boards/custom_138k/clocks.json` 单一生成，显式保留 50／60 MHz 两个输入和九个派生时钟；视频 CLKDIV /5 使用 `{1 7 11}` 边沿描述实际 60/40 波形，不能按默认 50% 占空比代替。独立源网表审计检查可见 PLL 的来源连接、分频、相位及使能；DDR 不透明 IP 内部 UI 分频仍留待实现后验证，不把它算作已解析。约束生成不新增 false path 或全域异步时钟组，也不因此解除 P&R／部署门禁。详见[显式时钟记录](../../reports/CUSTOM_BOARD_NATIVE_CLOCKS_20261022.md)。

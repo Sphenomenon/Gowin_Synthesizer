@@ -11,6 +11,7 @@ from tools.stage_usb_firmware import sha, stage_usb2_cpu_firmware
 from tools.workstation_pinout import prepare as prepare_pinout
 from tools.workstation_usb2_input import NATIVE_INPUT_SOURCES, LOCKED_INPUT_SOURCES
 from tools.workstation_usb2_soc import SOC_SOURCE_PATHS
+from tools.workstation_custom_clocks import clock_bundle
 
 
 NATIVE_SOURCES = (*SOC_SOURCE_PATHS, *NATIVE_INPUT_SOURCES,
@@ -39,6 +40,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     root, output = Path(root).resolve(), Path(output).resolve()
     if output.exists():
         raise FileExistsError('custom-board output already exists: ' + str(output))
+    clocks = clock_bundle(root)
     selected = [root / name for name in ('build.py', 'firmware.c', 'gw25k_panel.h')]
     for directory in ('rtl', 'tools', 'drivers/usb2', 'boards/custom_138k', 'baselines'):
         selected += [source for source in (root / directory).rglob('*') if source.is_file()
@@ -54,6 +56,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if builder.ROOT.resolve() != root:
         raise ValueError('resource builder root does not match explicit custom-board root')
     parent_output, stage, parent_metadata = builder.prepare(timing_fixes=True, output_directory=output / 'workstation')
+    (stage / 'scripts/build.tcl').write_text(
+        'error "This native-board integration stage is synthesis-only; P&R and deployment are not authorized or validated."\n')
+    (parent_output / 'build_metadata.json').write_text(json.dumps(dict(
+        candidate='custom138k-native-integration-20261022-a3',
+        source_policy='explicit_native_board_on_resource_timing', validation_stage='integration_prepare_incomplete',
+        place_route_allowed=False, deployment_allowed=False, release_ready=False, hardware_tested=False), indent=2) + '\n')
     (output / 'parent_prepare_metadata.json').write_text(json.dumps(parent_metadata, indent=2) + '\n')
     project = stage / 'Prj1.gprj'
     tree = ElementTree.parse(project)
@@ -89,9 +97,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                        workstation=True, allow_high_speed=allow_high_speed)
     shutil.copyfile(stage / 'native_usb_firmware/usb2_cpu.hex', stage / 'usb2_cpu.hex')
     shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')
-    (stage / 'constraints/custom_138k.sdc').write_text(
-        'create_clock -name reference_50 -period 20.000 [get_ports {clk_50m}]\n'
-        'create_clock -name ulpi_60 -period 16.666667 [get_ports {usb2_ulpi_clk}]\n')
+    (stage / 'constraints/custom_138k.sdc').write_text(clocks['sdc'])
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.locations.cst', type='file.cst', enable='1')
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.sdc', type='file.sdc', enable='1')
     tree.write(project, encoding='UTF-8', xml_declaration=True)
@@ -101,8 +107,6 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         'set_option -top_module workstation_custom_138k_top\n'
         'set_option -output_base_name custom_138k_integration\n'
         'set_option -verilog_std sysv2017\nset_option -timing_driven 1\nrun syn\n')
-    (stage / 'scripts/build.tcl').write_text(
-        'error "This native-board integration stage is synthesis-only; P&R and deployment are not authorized or validated."\n')
     enabled = [entry.get('path') for entry in files if entry.get('enable') == '1']
     if len(enabled) != len(set(enabled)):
         raise ValueError('native-board duplicate selected input')
@@ -114,7 +118,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise ValueError('native-board excluded historical input changed: ' + relative)
     staged = {str(source.relative_to(stage)): sha(source) for source in stage.rglob('*')
               if source.is_file() and 'impl' not in source.relative_to(stage).parts}
-    metadata = dict(schema=1, identity='custom138k-native-integration-20261022-a2',
+    metadata = dict(schema=1, identity='custom138k-native-integration-20261022-a3',
                     top_module='workstation_custom_138k_top', source_policy='explicit_native_board_on_resource_timing',
                     validation_stage='integration_prepare_only', device=pinout['device'],
                     firmware=firmware, high_speed_allowed=bool(allow_high_speed),
@@ -129,6 +133,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     electrical_blocked=pinout['electrical_check']['status']=='blocked',
                     synthesis_allowed=True, place_route_allowed=False, io_electrical_complete=False,
                     timing_constraints_complete=False, hardware_tested=False,
+                    clock_plan_source=clocks['source'], clock_plan_sha256=clocks['source_sha256'],
                     deployment_allowed=False, release_ready=False, bitstream_sha256=None,
                     remaining_gaps=['USB3300/TXS electrical compatibility', 'DAC identity and driver',
                                     'BLE pin map and business backend', 'complete IO/CDC/timing/PLL/P&R gates',
