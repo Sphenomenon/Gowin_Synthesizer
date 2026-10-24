@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "checks": {
+    "h5_normal": true,
+    "gatt_normal": true,
+    "system_normal": true,
+    "system_wrong_rom": true
+  },
+  "board_example_elaboration": "PASS",
+  "tool": "Vivado XSim 2026.1",
+  "validated_sha256": {
+    "rtl/bt_uart.v": "004babc4c97502af75d6715a489cf20f31e3003f569fab57504967b1aafa88dc",
+    "rtl/bt_h5_transport.v": "2eab823619e9de0b6b4cc4a631e0295f631261eebc292aef9486724ed62f7fdc",
+    "rtl/bt_hci_init.v": "0963e4d95210ecd28887d8fe6ea5e7e5b102c90c244125782aff1d5ddeac0c12",
+    "rtl/bt_gatt.v": "4c7b4dcd486a85e94e00c1daff1a66ff81d94071bbd597f11aa95b7311818465",
+    "rtl/bt_verilog_core.v": "5c596ca839e7bf1a7ebe18ee72ca74b6e6de5ce81e19ce77a7bc961fcd99cc3a",
+    "rtl/reset_release_sync.v": "d5311e4a6141261abe6c699572b3c0053b39c0e631d9d2c1b18b21f87048489d",
+    "rtl/rtl8723ds_ble.v": "db12a57311df8cf1af5c2ddf94f7fefc71c7c51b9d3b5506b52830f9b16a4bb9",
+    "examples/rtl8723ds_ble_board_top.v": "a279389904b6ed8875581f49ed333732a3c53d4b9282bbc6df3053a559bda9d9",
+    "scripts/simulate.ps1": "d57230228d44fcfe6ce1a04be6a6336a85fff18fbfe7c2a414eec7222ba1d1b0",
+    "rtl8723ds_patch.mem": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30",
+    "firmware/rtl8723ds_fw.bin": "19c1bed7a9359b1a021c20f81b525bdebf5067f9021716991d94be9101f76e63",
+    "firmware/rtl8723ds_config.bin": "7d1e18df7654da8f6382520841bb535f2d1246fc8495e3ae652f7b23e820168d",
+    "tests/tb_bt_h5.v": "4830eaefc26a21493b52ad94c43fb670df83915ca6e98fff7dd04ca2324b41d4",
+    "scripts/sim_bt_h5.tcl": "e71ff04606fd03ec7ba779431bc954ab50987ff131bc83240ca2783d6eafd07b",
+    "tests/tb_bt_gatt.v": "25f16810d0568ec58669e95b749965096908f5f90dcd623903687fd187e7b98f",
+    "scripts/sim_bt_gatt.tcl": "0243e4a318d43dab5af0556b7a4e524b6873abc643a90d5be99acf4d78dbafaf",
+    "scripts/sim_bt_system.tcl": "57bf73152d2b29525b129cdeaa9e6817922a327786ef823e0d0857bb12960fb2",
+    "tests/tb_bt_verilog_system.v": "12bb89368fe231db2206641d2c556c365b19f061e77023ac8e910c30ae4ae321"
+  },
+  "scope": "Portable wrapper and board example simulation; core RTL remains byte-identical to hardware-tested sources. No new hardware run or standalone resource synthesis."
+}

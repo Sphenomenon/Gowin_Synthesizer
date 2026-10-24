@@ -1,0 +1,93 @@
+{
+  "recorded_at": "2026-10-23T22:16:55.158354+08:00",
+  "passed": true,
+  "source": "Direct user listening feedback and user-reported DC measurements; voltages were not acquired by JTAG",
+  "output": "CN1 and CN2 speaker ports",
+  "observation": "After hardware solder-joint repair and SRAM reload, user confirms audible sound at CN speaker interface",
+  "test": "-42dBFS, silence / left 1kHz / right 1.5kHz / both, 2s each",
+  "measurements": {
+    "avdd_12v_volts": 9.1,
+    "sd_n_volts": 0,
+    "requested_avdd_point": "C69/C70 positive terminal to GND",
+    "requested_sd_point": "R27 near U2, U2 pin 1 to GND",
+    "raw_user_reply": "9.1V 0V"
+  },
+  "digital_evidence": "jtag_after_solder_repair.json",
+  "digital_passed": true,
+  "pull_down_root_cause_confirmed": false,
+  "pending_measurements": [],
+  "diagnosis": "../docs/扬声器无声定位.md",
+  "running_manifest": "build_20261023_050730_086783.json",
+  "updated_at": "2026-10-23T23:17:21.104294+08:00",
+  "control_measurements": {
+    "source": "User reply in this chat before FPGA repower",
+    "r40_5v_end_volts": 5.0,
+    "r40_shdn_spk_end_volts": 0.0,
+    "plug_det_volts": 0.657,
+    "raw_user_reply": "5V 0 0.657V"
+  },
+  "control_interpretation": "Consistent with Q2 conducting and holding SHDN_SPK low; exact transistor and jack switching root cause still unconfirmed",
+  "dac_observation": {
+    "source": "User scope observation",
+    "node": "AK4493SEQ-L AOUTRP/AOUTRN",
+    "observation": "Noise around zero; no signal observed",
+    "coupling": "DC coupling requested; user supplied voltage values, setup not independently verified",
+    "dc_bias_measured": true,
+    "dc_measurements": {
+      "source": "User reply in this chat; not acquired by JTAG",
+      "raw_user_reply": "RP=0 RL=0 DVDD1.8V PDN 2.4V",
+      "aoutrp_volts": 0.0,
+      "second_output_reported_label": "RL",
+      "second_output_volts": 0.0,
+      "second_output_pin_confirmed": false,
+      "dvdd_volts": 1.8,
+      "pdn_volts": 2.4
+    },
+    "interpretation": "DVDD is present. PDN is below expected FPGA 3.3V high but is not proven logically low; threshold depends on actual TVDD and exact part specifications. Check DAC-side analog supplies and physical MCLK before attributing absent output to I2S data or device failure.",
+    "supply_and_clock_followup": {
+      "source": "User reply in this chat before SRAM reload",
+      "raw_user_reply": "5V 3.3V 时钟没有，应该是FPGA提供的吧",
+      "vddr_volts": 5.0,
+      "avdd_volts": 3.3,
+      "tvdd_separately_confirmed": false,
+      "mclk_observed": false,
+      "mclk_frequency_hz": null,
+      "output_label_RL_still_unconfirmed": true
+    },
+    "reload_after_missing_clock": {
+      "pre_reload_jtag": "jtag_dac_missing_mclk.json",
+      "pre_reload_result": "Invalid AMP1 signature; all captured words zero. Current audio operation could not be confirmed. Cause unconfirmed.",
+      "programming_evidence": "sram_radio_20261023_223933_496354.json",
+      "user_code": "0x13802302",
+      "programming_passed": true,
+      "post_reload_jtag": "jtag_dac_mclk_reload.json",
+      "digital_passed": true,
+      "dac_side_mclk_remeasurement_pending": true,
+      "route": "FPGA B13 -> main FPC2.16 -> daughterboard FPC1.9 -> U1.46",
+      "limitation": "Internal counter recovery does not prove MCLK at FPGA pad or DAC pin. No flash writes."
+    }
+  },
+  "hardware_repair_followup": {
+    "source": "User message in this chat",
+    "raw_user_reply": "修复了硬件虚焊的问题，再下载",
+    "repair_location_confirmed": false,
+    "programming_evidence": "sram_radio_20261023_230533_424266.json",
+    "programming_passed": true,
+    "user_code": "0x13802302",
+    "post_reload_jtag": "jtag_after_solder_repair.json",
+    "digital_passed": true,
+    "analog_verified": true,
+    "physical_mclk_after_repair_confirmed": false,
+    "analog_verification_method": "User listening at CN speaker interface"
+  },
+  "previous_observation": "Both ports have no audible sound",
+  "analog_verified": true,
+  "verification_scope": "Basic audible output at CN speaker interface; CN1 and CN2 were not individually specified in the confirmation",
+  "latest_result": "speaker_success_after_repair.json",
+  "measurements_state": "Historical measurements before solder-joint repair; not current post-repair voltages",
+  "amplifier_shutdown_confirmed_before_repair": true,
+  "optional_characterization": [
+    "Individual CN1/CN2 output and channel separation",
+    "Post-repair DAC clock/output and SD# waveforms"
+  ]
+}

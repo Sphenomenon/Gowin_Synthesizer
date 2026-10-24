@@ -1,0 +1,10 @@
+*** GOWIN Tcl Command Line Console  *** 
+The available OpenGL surface format was either not version 3.2 or higher or not a Core Profile.
+Chromium on macOS will fall back to software rendering in this case.
+Hardware acceleration and features such as WebGL will not be available.
+current device: GW5AST-138C  GW5AST-LV138PG484AC2/I1
+unknown option: -verilog_define 
+
+    while executing
+"set_option -verilog_define {CHANNEL_ISOLATION_TEST}"
+    (file "/private/tmp/gw138k-build-nykl_u92/prj/.gw138k_syn.tcl" line 9)

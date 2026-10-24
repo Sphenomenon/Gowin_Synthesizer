@@ -1,0 +1,21 @@
+*** GOWIN Tcl Command Line Console  *** 
+The available OpenGL surface format was either not version 3.2 or higher or not a Core Profile.
+Chromium on macOS will fall back to software rendering in this case.
+Hardware acceleration and features such as WebGL will not be available.
+add new file: "/private/tmp/gw138k-build-ujbuluvo/prj/constraints/lcd.cst"
+add new file: "/private/tmp/gw138k-build-ujbuluvo/prj/constraints/lcd.sdc"
+current device: GW5AST-138C  GW5AST-LV138PG484AC2/I1
+add new file: "/private/tmp/gw138k-build-ujbuluvo/prj/impl/gwsynthesis/lcd138k.vg"
+NOTE (PJ2001) : Skip synthesis, because there is only one netlist file in this project
+Reading netlist file: "/private/tmp/gw138k-build-ujbuluvo/prj/impl/gwsynthesis/lcd138k.vg"
+Parsing netlist file "/private/tmp/gw138k-build-ujbuluvo/prj/impl/gwsynthesis/lcd138k.vg" completed
+Processing netlist completed
+Reading constraint file: "/private/tmp/gw138k-build-ujbuluvo/prj/constraints/lcd.cst"
+ERROR  (CT1135) : "/private/tmp/gw138k-build-ujbuluvo/prj/constraints/lcd.cst":28 | Can't find object named 'lcd_r[*]'
+ERROR  (CT1135) : "/private/tmp/gw138k-build-ujbuluvo/prj/constraints/lcd.cst":29 | Can't find object named 'lcd_g[*]'
+ERROR  (CT1135) : "/private/tmp/gw138k-build-ujbuluvo/prj/constraints/lcd.cst":30 | Can't find object named 'lcd_b[*]'
+Physical Constraint parsed completed with errors
+
+    while executing
+"run pnr"
+    (file "/private/tmp/gw138k-build-ujbuluvo/prj/.gw138k_pnr.tcl" line 12)

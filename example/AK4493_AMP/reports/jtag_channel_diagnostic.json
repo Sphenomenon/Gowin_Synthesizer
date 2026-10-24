@@ -1,0 +1,120 @@
+{
+  "captured_at": "2026-10-24T02:33:37.012890+08:00",
+  "artifact": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/builds/20261024_023144_617877/impl/pnr/ao_0.fs",
+    "sha256": "62c921465dd170710d203495984f2d72cbd28c685e6319a6321d152a3fe2fb60"
+  },
+  "capture_valid": true,
+  "digital_passed": true,
+  "analog_verified": false,
+  "passed": false,
+  "usb_location": "12385",
+  "captures": [
+    {
+      "csv": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/jtag_channel_diagnostic.0.csv",
+      "first": {
+        "audio_clocks": 651218973,
+        "frames": 2542865,
+        "pdn": true,
+        "smute": false,
+        "restart_n": true,
+        "plug_det": true,
+        "phase": 1,
+        "heartbeat": 2649829094,
+        "vccio5": {
+          "raw": 867,
+          "volts": 3.38671875,
+          "minimum_raw": 864,
+          "maximum_raw": 871,
+          "count": 4899,
+          "timeouts": 0,
+          "flags": 1,
+          "age_cycles_mod_16777216": 231049
+        }
+      },
+      "last": {
+        "audio_clocks": 651219004,
+        "frames": 2542865,
+        "pdn": true,
+        "smute": false,
+        "restart_n": true,
+        "plug_det": true,
+        "phase": 1,
+        "heartbeat": 2649829221,
+        "vccio5": {
+          "raw": 867,
+          "volts": 3.38671875,
+          "minimum_raw": 864,
+          "maximum_raw": 871,
+          "count": 4899,
+          "timeouts": 0,
+          "flags": 1,
+          "age_cycles_mod_16777216": 231176
+        }
+      }
+    },
+    {
+      "csv": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/jtag_channel_diagnostic.1.csv",
+      "first": {
+        "audio_clocks": 677552445,
+        "frames": 2645730,
+        "pdn": true,
+        "smute": false,
+        "restart_n": true,
+        "plug_det": true,
+        "phase": 2,
+        "heartbeat": 2756980760,
+        "vccio5": {
+          "raw": 864,
+          "volts": 3.375,
+          "minimum_raw": 864,
+          "maximum_raw": 871,
+          "count": 5097,
+          "timeouts": 0,
+          "flags": 1,
+          "age_cycles_mod_16777216": 290888
+        }
+      },
+      "last": {
+        "audio_clocks": 677552476,
+        "frames": 2645730,
+        "pdn": true,
+        "smute": false,
+        "restart_n": true,
+        "plug_det": true,
+        "phase": 2,
+        "heartbeat": 2756980887,
+        "vccio5": {
+          "raw": 864,
+          "volts": 3.375,
+          "minimum_raw": 864,
+          "maximum_raw": 871,
+          "count": 5097,
+          "timeouts": 0,
+          "flags": 1,
+          "age_cycles_mod_16777216": 291015
+        }
+      }
+    }
+  ],
+  "counter_deltas": {
+    "audio_clocks": 26333472,
+    "frames": 102865,
+    "heartbeat": 107151666
+  },
+  "interval_seconds": 2.14303332,
+  "measured_audio_clock_hz": 12287943.334450817,
+  "measured_frame_hz": 47999.72032166071,
+  "vccio5": {
+    "raw": 864,
+    "volts": 3.375,
+    "minimum_raw": 864,
+    "maximum_raw": 871,
+    "count": 5097,
+    "timeouts": 0,
+    "flags": 1,
+    "age_cycles_mod_16777216": 291015
+  },
+  "board_power_passed": true,
+  "limitation": "Internal VCCIO5 ADC measures the FPGA IO supply, not the daughterboard supply. Counters verify FPGA clocks and generator state; DAC and amplifier analog output require measurement or listening."
+}

@@ -1,0 +1,123 @@
+{
+  "recorded_at": "2026-10-24T02:21:54.957626+08:00",
+  "output": "3.5mm headphone interface",
+  "connector_reference_confirmed": false,
+  "status": "alternating_diagnostic_persisted_to_flash; prior_right_only_audio_with_pops_and_dropouts_unresolved",
+  "passed": false,
+  "analog_verified": false,
+  "analog_result": "Continuous dual tones still produce right-ear-only audio with periodic pops and dropouts; analog test failed",
+  "running_manifest": "build_20261024_023144_617877.json",
+  "user_code": "0x13802401",
+  "programming_evidence": "flash_channels_20261024/result.json",
+  "programming_passed": true,
+  "digital_evidence": "jtag_flash_channels_boot.json",
+  "digital_passed": true,
+  "measured_internal_audio_clock_hz": 12287959.330125678,
+  "measured_internal_frame_hz": 47999.40397431443,
+  "test": "-42dBFS; silence / left 1kHz / silence / right 1.5kHz, each 3 seconds; no both-channel stage",
+  "hardware_update": {
+    "source": "Direct user reply in this chat",
+    "raw_user_reply": "也修改过使能电路",
+    "headphone_enable_circuit_modified": true,
+    "modification_details": null,
+    "gain_feedback_resistors_modified": true,
+    "gain_feedback_confirmation": "左右输入、反馈电阻均已补齐",
+    "gain_feedback_values_and_wiring_verified": false,
+    "enable_method": "User reports directly pulling SHUTDOWN high",
+    "enable_node_voltage_and_isolation_confirmed": false,
+    "user_assessment_of_enable": "这里没有问题应该"
+  },
+  "user_preference": {
+    "raw_user_reply": "不管这些，直接测试",
+    "proceed_with_direct_listening": true
+  },
+  "dc_voltage_measurements": null,
+  "prior_speaker_success": "speaker_success_after_repair.json",
+  "listening_setup": "3.5mm TRS headphones; alternating diagnostic, 12-second cycle",
+  "limitations": [
+    "FPGA_DET reads speaker shutdown node, not headphone SHDN#",
+    "User reports feedback resistors installed and shutdown pulled high; values, wiring, actual pin voltage and isolation not independently verified",
+    "Sparse JTAG captures do not exclude brief physical clock or amplifier supply/enable faults"
+  ],
+  "updated_at": "2026-10-24T02:56:58.545549+08:00",
+  "initial_test": {
+    "running_manifest": "build_20261023_050730_086783.json",
+    "user_code": "0x13802302",
+    "programming_evidence": "sram_radio_20261024_021832_007974.json",
+    "digital_evidence": "jtag_3p5mm_start.json",
+    "test": "-42dBFS; silence / left 1kHz / right 1.5kHz / both, each 2 seconds"
+  },
+  "listening_feedback": {
+    "source": "Direct user reply in this chat",
+    "raw_user_reply": "声道有问题。现在是先左然后一直两边都有声音",
+    "audible_output_confirmed": true,
+    "channel_issue_reported": true,
+    "exact_phase_and_silence_behavior_confirmed": false,
+    "root_cause_confirmed": false
+  },
+  "audible_output_confirmed": true,
+  "channel_separation_verified": false,
+  "simulation_evidence": [
+    "simulation.json",
+    "simulation_channel_isolation.json",
+    "simulation_continuous.json"
+  ],
+  "diagnostic_phase_labels": {
+    "0": "silence",
+    "1": "left 1kHz only",
+    "2": "silence",
+    "3": "right 1.5kHz only"
+  },
+  "diagnostic_compiled_parameters": {
+    "ISOLATE_CHANNELS": 1,
+    "PHASE_FRAMES": 144000
+  },
+  "isolation_diagnostic": {
+    "running_manifest": "build_20261024_023144_617877.json",
+    "user_code": "0x13802401",
+    "programming_evidence": "sram_radio_20261024_023233_391731.json",
+    "digital_evidence": "jtag_channel_diagnostic.json",
+    "test": "-42dBFS; silence / left 1kHz / silence / right 1.5kHz, each 3 seconds; no both-channel stage"
+  },
+  "isolation_listening_feedback": {
+    "source": "Direct user replies in this chat",
+    "raw_user_reply": "只有一边有声音并且有固定间隔的噗嗤声。大概是在响一边的时候出现9次左右并且无论是否响都会存在，还会让原本的响声消失",
+    "audible_side": "right",
+    "connector": "3-contact TRS",
+    "pops_during_tone_and_silence": true,
+    "approximate_pops_per_sounding_segment": 9,
+    "sound_interrupted_by_pops": true,
+    "right_side_and_trs_confirmation": "三段TRS，方向R 使能为直接讲SHUTDOWN拉高了"
+  },
+  "intermittent_digital_evidence": "headphone_pops_digital_summary.json",
+  "continuous_listening_feedback": {
+    "source": "Direct user reply in this chat",
+    "raw_user_reply": "仍有噗嗤和断音，仍只有右耳响",
+    "audible_side": "right",
+    "periodic_pops_and_dropouts_persist": true,
+    "left_audio_audible": false,
+    "channel_separation_passed": false,
+    "playback_phase_switching_required_for_fault": false
+  },
+  "pending_measurements": [
+    "PVDD at C85 non-ground terminal / U4.3: DC level and dips synchronized with pops",
+    "PVSS at C92 non-ground terminal / U4.7: negative voltage and collapse/restart synchronized with pops",
+    "Known-good headphone comparison"
+  ],
+  "diagnostic_next_step": "Alternating diagnostic persisted to Flash at user request; headphone analog fault remains unresolved",
+  "continuous_diagnostic": {
+    "running_manifest": "build_20261024_024209_479935.json",
+    "user_code": "0x13802402",
+    "programming_evidence": "sram_radio_20261024_024255_334804.json",
+    "digital_evidence": "jtag_3p5mm_continuous.json",
+    "test": "-42dBFS; continuous left 1kHz and right 1.5kHz; no periodic channel/silence switching",
+    "diagnostic_phase_labels": {
+      "3": "continuous both-channel tones"
+    },
+    "diagnostic_compiled_parameters": {
+      "CONTINUOUS_TONES": 1
+    }
+  },
+  "flash_persisted": true,
+  "flash_deployment_evidence": "flash_channels_20261024/result.json"
+}

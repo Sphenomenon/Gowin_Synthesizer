@@ -1,0 +1,129 @@
+{
+  "audited_at": "2026-10-23T19:33:13.343715+08:00",
+  "objective": "自行验证 蓝牙 wifi 功放；引脚不确定时参考官方原理图 IO",
+  "complete": false,
+  "previous_goal_turn": "User repaired wireless cold solder; original mapping passed BLE air/GATT/10 CRC notifications and SDIO 024c:d723 function 1 ready; left original image advertising",
+  "requirements": [
+    {
+      "item": "BLE 广播、GATT 与 CRC 通知实板验证",
+      "status": "achieved",
+      "evidence": [
+        "RTL8723DS/reports/ble_after_repair_original.json",
+        "RTL8723DS/reports/jtag_after_repair_gatt.json"
+      ],
+      "observed": {
+        "passed": true,
+        "name": "RTL8723-BLE",
+        "rom_version": 2,
+        "patch_fragments": 120,
+        "read_valid": true,
+        "notifications": 10,
+        "notification_crc_valid": true,
+        "sequence_contiguous": true,
+        "intervals_ms": [
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500
+        ],
+        "fpga_notification_count": 10,
+        "driver_uart_errors": 0,
+        "driver_protocol_errors": 0,
+        "evidence": [
+          "jtag_after_repair_original.json",
+          "ble_after_repair_original.json",
+          "jtag_after_repair_gatt.json"
+        ]
+      }
+    },
+    {
+      "item": "Wi-Fi SDIO 识别 024c:d723 并使功能 1 ready",
+      "status": "achieved",
+      "evidence": [
+        "RTL8723DS/reports/jtag_after_repair_ready.json"
+      ],
+      "observed": {
+        "passed": true,
+        "wl_enable": true,
+        "done": true,
+        "identified": true,
+        "failed": false,
+        "state": 6,
+        "step": 21,
+        "dat_pins": 15,
+        "error": "00",
+        "error_name": "none",
+        "ocr": "90ffffff",
+        "rca": "0002",
+        "cccr_revision": 50,
+        "card_capabilities": 19,
+        "function_interface": 7,
+        "cis_pointer": "001000",
+        "vendor_id": "024c",
+        "device_id": "d723",
+        "last_response": "00001002",
+        "commands": 20,
+        "evidence": [
+          "jtag_after_repair_original.json",
+          "jtag_after_repair_gatt.json",
+          "jtag_after_repair_ready.json"
+        ]
+      }
+    },
+    {
+      "item": "功放实际模拟输出",
+      "status": "not_achieved",
+      "evidence": [
+        "AK4493_AMP/reports/jtag_no_sound.json",
+        "AK4493_AMP/reports/user_feedback.json",
+        "AK4493_AMP/docs/6.35mm无声定位.md"
+      ],
+      "observed": {
+        "digital_passed": true,
+        "analog_verified": false,
+        "analog_function_passed": false,
+        "user_listening_result": "no sound from 6.35mm headphone jack",
+        "u4_variant": "MAX9722A",
+        "schematic_missing_external_gain_network": true,
+        "physical_root_cause_confirmed": false
+      },
+      "missing": "Actual PCB resistor connections, Q1/Q2 part numbers, U4 supply/SHDN voltage and analog signal evidence"
+    },
+    {
+      "item": "不确定 IO 按官方资料与主板连接追踪核对",
+      "status": "schematic_audit_done_radio_active_interfaces_functionally_verified",
+      "evidence": [
+        "../Hardware/原理图解析.md",
+        "RTL8723DS/constraints/radio.cst",
+        "AK4493_AMP/constraints/audio.cst",
+        "RTL8723DS/reports/verification_after_repair.json"
+      ],
+      "missing": "Audio analog/PCB verification remains unavailable; no physical continuity measurement or 4-bit SDIO/PCM test"
+    }
+  ],
+  "additional_evidence": {
+    "vccio5_min_volts": 3.375,
+    "vccio5_max_volts": 3.40234375,
+    "adc_timeouts": 0,
+    "adc_conversions": 1551980,
+    "measured_frame_hz": 48000.198907513135
+  },
+  "blocker": "Wireless scope achieved after user repair with unchanged pins. Remaining amplifier task requires actual PCB gain resistor connections, Q1/Q2 type and U4 supply/SHDN or analog waveform evidence.",
+  "host_observation": {
+    "microphone_authorization": "denied (AVFoundation=2), rechecked",
+    "measurement_device": "No USB oscilloscope, logic analyzer or audio capture device found in current USB inventory"
+  },
+  "needed_to_resume": [
+    "Actual audio PCB gain resistor connectivity and Q1/Q2 part numbers; U4 supply/SHDN and analog signal evidence"
+  ],
+  "current_sram": "RTL8723DS GAO, UserCode 0x13802301; original pins; initialized and advertising; SDIO function 1 ready; no flash programming",
+  "corrections": [
+    "D4 flyback diode was misread earlier: cathode is on +5V, anode is on Q1 collector; its drawn flyback polarity is correct",
+    "FPGA_DET reads Q2 collector / SHDN_SPK through R43, not PLUG_DET directly"
+  ]
+}

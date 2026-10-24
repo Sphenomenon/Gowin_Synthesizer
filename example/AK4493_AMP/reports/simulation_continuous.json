@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "decoded_samples": 2000,
+  "sample_rate": 48000,
+  "format": "I2S 32-bit",
+  "peak_dbfs": -42,
+  "isolate_channels": false,
+  "continuous_tones": true,
+  "checks": [
+    {
+      "phase": 1,
+      "channel": 0,
+      "active": true,
+      "rms": 12061876.141819268
+    },
+    {
+      "phase": 1,
+      "channel": 1,
+      "active": true,
+      "rms": 12061876.191961408
+    },
+    {
+      "phase": 2,
+      "channel": 0,
+      "active": true,
+      "rms": 12061876.141819268
+    },
+    {
+      "phase": 2,
+      "channel": 1,
+      "active": true,
+      "rms": 12061876.191961408
+    },
+    {
+      "phase": 3,
+      "channel": 0,
+      "active": true,
+      "rms": 12061876.141819268
+    },
+    {
+      "phase": 3,
+      "channel": 1,
+      "active": true,
+      "rms": 12061876.191961408
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "started_at": "2026-10-23T04:33:45.800181+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/build_gao.tcl",
+  "stage_directory": "/private/tmp/gw138k-build-q97xq2q5",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/reports/build_20261023_043345_788620_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/reports/build_20261023_043345_788620_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/builds/20261023_043345_788620/impl/pnr/ao_0.fs",
+      "sha256": "9be95c32f740feaab1d8461561c2118bf3a8c2e15b9ac772f678c14c690272d7"
+    }
+  ],
+  "timing": {
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "source_hashes": {
+    "rtl/ble_bringup_top.v": "99c6bc02db13889b401a7609974551b3dab642bf98c4b2fd06dbf0c033574eea",
+    "rtl/radio_status_uart.v": "991928b1a22d0cd3871a89363e9c95b19a81d3569dd514e49a942c85ea322427",
+    "rtl/rtl8723ds_138k_top.v": "d0063ce043ecc83729d476752b952ded48190c8a1b730c454ff66dcb2d2692d8",
+    "rtl/sdio_command.v": "8420d6edd3813541daac6b48502bd832bbebd28c54e0d554ae3e82d1e262ac0a",
+    "rtl/sdio_identify.v": "f833afca1c19c3f038ea87e8282771b452e51c929c2354afc18db2f478ed9cd3",
+    "rtl/uart_tx.v": "3513207cae9e529b0dabd45040a33012440ad4c1fc842571b4cb70ece5d09e8f",
+    "rtl/usb1_passive_monitor.v": "31a1e7ce848b0ab4ad73cc85c37156f99f594d49323ec6811e5b28d1ce1ffe13",
+    "constraints/radio.cst": "a4e37b26b780d9777994afefad229706ea5dab14d9d5af8de60ec38541c4d88a",
+    "constraints/radio.sdc": "a46802858cd31f6e9c7aa91e854dc41ace01edffcff4704bc4cb31a0e4049ebf",
+    "vendor/rtl8723ds_ble/MANIFEST.json": "7151a2ebbc4c1c983b14f233182109c886a7753461b47fa584a9429f1665b3b1",
+    "vendor/rtl8723ds_ble/NOTICE.md": "63db7876b02ebebb330740ce4a819d0d930087bc3261d22202179024e101310c",
+    "vendor/rtl8723ds_ble/README.md": "ca8ab9c882bf07471eb1cb37d611d6050b48eb1445bf7e731744c70ea7c1fe7c",
+    "vendor/rtl8723ds_ble/constraints/vivado_example.xdc": "8adfa86413272590b1803f2824a2abcd8cb6227eaa04959570542be2351ebf45",
+    "vendor/rtl8723ds_ble/examples/rtl8723ds_ble_board_top.v": "a279389904b6ed8875581f49ed333732a3c53d4b9282bbc6df3053a559bda9d9",
+    "vendor/rtl8723ds_ble/firmware/rtl8723ds_config.bin": "7d1e18df7654da8f6382520841bb535f2d1246fc8495e3ae652f7b23e820168d",
+    "vendor/rtl8723ds_ble/firmware/rtl8723ds_fw.bin": "19c1bed7a9359b1a021c20f81b525bdebf5067f9021716991d94be9101f76e63",
+    "vendor/rtl8723ds_ble/firmware_manifest.json": "acb4358578446bca1febdb0476e4c17ac0af16e482cdf2e686b54256e0f3f774",
+    "vendor/rtl8723ds_ble/reports/CDC_ROM_AUDIT.md": "85908decd4708d0af7f813e93a16e97668548cc93b290ec2c558650c1aef563a",
+    "vendor/rtl8723ds_ble/reports/resource_summary.json": "e382e1771e505840da2a8c453a105d6b4d5102aac30cafeaf89866405b9229ae",
+    "vendor/rtl8723ds_ble/reports/utilization.rpt": "f7fdec1a0aad8c193ed4eb821446f594a753a68c6b95bd28459129585caa5f9e",
+    "vendor/rtl8723ds_ble/reports/utilization_core.rpt": "f4c00bbe568d14275a2e2cb973074ad3c51c7342c6cdb4de3d31825988567086",
+    "vendor/rtl8723ds_ble/reports/utilization_hierarchical.rpt": "746a13c3f25765501d9c3e3335f64e0fd8674090a95fb839fd9fe423302a0c42",
+    "vendor/rtl8723ds_ble/rtl/bt_gatt.v": "4c7b4dcd486a85e94e00c1daff1a66ff81d94071bbd597f11aa95b7311818465",
+    "vendor/rtl8723ds_ble/rtl/bt_h5_transport.v": "2eab823619e9de0b6b4cc4a631e0295f631261eebc292aef9486724ed62f7fdc",
+    "vendor/rtl8723ds_ble/rtl/bt_hci_init.v": "0963e4d95210ecd28887d8fe6ea5e7e5b102c90c244125782aff1d5ddeac0c12",
+    "vendor/rtl8723ds_ble/rtl/bt_uart.v": "004babc4c97502af75d6715a489cf20f31e3003f569fab57504967b1aafa88dc",
+    "vendor/rtl8723ds_ble/rtl/bt_verilog_core.v": "5c596ca839e7bf1a7ebe18ee72ca74b6e6de5ce81e19ce77a7bc961fcd99cc3a",
+    "vendor/rtl8723ds_ble/rtl/reset_release_sync.v": "d5311e4a6141261abe6c699572b3c0053b39c0e631d9d2c1b18b21f87048489d",
+    "vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v": "db12a57311df8cf1af5c2ddf94f7fefc71c7c51b9d3b5506b52830f9b16a4bb9",
+    "vendor/rtl8723ds_ble/rtl8723ds_patch.mem": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30",
+    "vendor/rtl8723ds_ble/scripts/sim_bt_gatt.tcl": "0243e4a318d43dab5af0556b7a4e524b6873abc643a90d5be99acf4d78dbafaf",
+    "vendor/rtl8723ds_ble/scripts/sim_bt_h5.tcl": "e71ff04606fd03ec7ba779431bc954ab50987ff131bc83240ca2783d6eafd07b",
+    "vendor/rtl8723ds_ble/scripts/sim_bt_system.tcl": "57bf73152d2b29525b129cdeaa9e6817922a327786ef823e0d0857bb12960fb2",
+    "vendor/rtl8723ds_ble/scripts/simulate.ps1": "d57230228d44fcfe6ce1a04be6a6336a85fff18fbfe7c2a414eec7222ba1d1b0",
+    "vendor/rtl8723ds_ble/scripts/verify_package.py": "d81b79b11b4e5075ab8686efbd8bf98c111ba730b5c6efe16a9cae2da592d253",
+    "vendor/rtl8723ds_ble/sources.f": "0c10eb32d276dd7e4bfca953d094649533ce59e9fa6dd1bb24ff338d26ec4e55",
+    "vendor/rtl8723ds_ble/tests/tb_bt_gatt.v": "25f16810d0568ec58669e95b749965096908f5f90dcd623903687fd187e7b98f",
+    "vendor/rtl8723ds_ble/tests/tb_bt_h5.v": "4830eaefc26a21493b52ad94c43fb670df83915ca6e98fff7dd04ca2324b41d4",
+    "vendor/rtl8723ds_ble/tests/tb_bt_verilog_system.v": "12bb89368fe231db2206641d2c556c365b19f061e77023ac8e910c30ae4ae321",
+    "vendor/rtl8723ds_ble/validation/arm_stopped_state.txt": "a14113bcd7c27705e015ef3dc3f94eed0f208bf940e7756060b9aec3637a05f0",
+    "vendor/rtl8723ds_ble/validation/final_state.json": "8aee2c635dce8c10b94d335e1a999512a78a7b1bc3208231898a45cc3e1cdb17",
+    "vendor/rtl8723ds_ble/validation/independent_audit.json": "f1970843ba537d8d32ba31f33259e308cb9e5ed3c6ad678481c7d717e5ad4203",
+    "vendor/rtl8723ds_ble/validation/initialized_state.json": "272c48b6c1fe688daa1b21a1b7014c6ba5c492950a553972712729ae442ed6be",
+    "vendor/rtl8723ds_ble/validation/pc_receive.json": "a35877d61082b0c90563c5db148ecde8a13cd9af5467bc59f01a40b523d57381",
+    "vendor/rtl8723ds_ble/validation/portable/gatt_normal.log": "c2cc504c47c3409c1174e73cc6cdbf07c8e782cce1ef4759d96dd229a3ba2204",
+    "vendor/rtl8723ds_ble/validation/portable/h5_normal.log": "6b6acf440612dba69ddfc50db96deb8836d7e6e6db9f4ec59317b918263d16d4",
+    "vendor/rtl8723ds_ble/validation/portable/result.json": "2bc10d4bdb9467f7a89357f53f66169574330b22e3c52b3edae243dc3c374a02",
+    "vendor/rtl8723ds_ble/validation/portable/system_normal.log": "af85d3bd8f67e7304fbd805c44f201508c6aed34b38c060fcf4e0ba2a40acff3",
+    "vendor/rtl8723ds_ble/validation/portable/system_wrong_rom.log": "e2391d25d2ecb2817002c22b56d3981f180c9c3d658dc36cdaa2ad7e1f5e4339",
+    "vendor/rtl8723ds_ble/validation/stopped_state.json": "cac794879f79c326facd24eaf6c78327b7d0d7509d3e8a5c3d079b3a60c6e550"
+  },
+  "gao": [
+    {
+      "definition": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/builds/20261023_043345_788620/debug/radio.gao",
+      "sha256": "a66a494fbd054382217220970e1097f7892e8402430a734c1bb8413533fd6f7f"
+    }
+  ],
+  "finished_at": "2026-10-23T04:35:55.178893+08:00"
+}

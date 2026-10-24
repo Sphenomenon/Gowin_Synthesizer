@@ -1,0 +1,18 @@
+{
+  "repository": "https://github.com/lwfinger/rtl8723ds",
+  "commit": "52e593e8c889b68ba58bd51cbdbcad7fe71362e4",
+  "license": "GPL-2.0-only",
+  "copyright": "Realtek Corporation",
+  "source_sha256": {
+    "hal/phydm/rtl8723d/halhwimg8723d_mac.c": "f0a34c0016a1a03fdc5dd44e8200d355cfd2e045620138a95f5bb830ae89fab6",
+    "hal/phydm/rtl8723d/halhwimg8723d_bb.c": "ad6b45da27b45bfe942edf84fcad8c26df83d86179d4ad034d053581c59fa736",
+    "hal/phydm/rtl8723d/halhwimg8723d_rf.c": "1490c6e6582eb4774d99e1136a301448c726110658158cf45a912917a0a98107",
+    "hal/rtl8723d/hal8723d_fw.c": "3dea58dd726f6bd0719013e22fe4d03e3fcbfee989521d3b775ee03307843b8a",
+    "hal/rtl8723d/sdio/sdio_halinit.c": "824316f25d851adcb5c81b897c2f3b152f31be9e2422c58ea1a05aeb87d756da",
+    "hal/rtl8723d/sdio/sdio_ops.c": "862993314d31173f647d80b83face199efe13d408196b5491c9a7c77822b897d",
+    "hal/rtl8723d/rtl8723d_cmd.c": "7b51653454250f0491b04696820071fbf3c3688b33267b6f431da88554734ff1",
+    "hal/phydm/rtl8723d/halphyrf_8723d.c": "d917a3cbf10a34d106dcf48cc58fb0cba3f9764276dd1c2be6975224cb87f0ab",
+    "hal/btc/halbtc8723d1ant.c": "9d3a99697e201d18b3bf82969a68ca7dda51b9ce5ae2407de1d8b316f3f837ba"
+  },
+  "firmware_sha256": "3fd0b4d92365c1abf4914b9bdc27460dd3be5a21a627bf25be328b8788d1d255"
+}

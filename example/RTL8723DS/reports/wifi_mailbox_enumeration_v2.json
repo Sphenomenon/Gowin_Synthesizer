@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "operation": "SDIO mailbox and enumeration; not a Wi-Fi scan",
+  "identity": {
+    "ocr": "90ffffff",
+    "rca": "0003",
+    "revision": 50,
+    "vendor_id": "024c",
+    "device_id": "d723",
+    "function1_ready": true,
+    "block_size": 512
+  },
+  "registers_cmd52": {
+    "0000": "500082ff",
+    "0004": "36820012",
+    "00f0": "01413131"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "hardware_verified": false,
+  "cases": [
+    {
+      "name": "full-resolution-auto",
+      "frames": 13,
+      "pixels_checked": 1697280,
+      "passed": true,
+      "simulator": "PASS scan, blanking, startup, sequence, reset (480x272)\n/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/tests/tb_lcd_scan.v:64: $finish called at 234337097904 (1ps)"
+    },
+    {
+      "name": "fixed-inverted-polarity",
+      "frames": 4,
+      "pixels_checked": 4608,
+      "passed": true,
+      "simulator": "PASS scan, blanking, startup, sequence, reset (48x24)\n/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/tests/tb_lcd_scan.v:64: $finish called at 2107906752 (1ps)"
+    },
+    {
+      "name": "top-integration-with-behavioral-pll",
+      "passed": true,
+      "simulator": "PASS top: RGB pin ordering, PCLK sample edge, restart and PLL lock loss/recovery\n/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/tests/tb_lcd_top.v:69: $finish called at 50051844856 (1ps)"
+    }
+  ],
+  "source_hashes": {
+    "rtl/lcd_pll.v": "7694a22744a9678e7b938951ebc1639de202df56e2ba336f6ac274e8087e3848",
+    "rtl/lcd_rgb_top.v": "c44202f2ecf2752585fd061a5f44c6c4c5982f53bd333cc597cf2bb309f62f1c",
+    "rtl/lcd_scan.v": "3cdaffdd5a4fc2cdcb9cf6a3664a2e0a753e2739dfdf8cc3a2076a9edd8b4a61",
+    "tests/check_lcd.py": "abe9c264a4ce3e30b5c5f9a0b5cd6c265f5f1382f5cc949403cd8c695cd7b3a9",
+    "tests/tb_lcd_scan.v": "a2f6f47692455a9d404f694bb452d6e88036b04007e2d002d893666dcf358866",
+    "tests/tb_lcd_top.v": "97b526888685034233a13d4ed1eb9b5d058797109fd206383afaeb28f849fdcc"
+  }
+}

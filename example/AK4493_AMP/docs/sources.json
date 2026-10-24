@@ -1,0 +1,42 @@
+{
+  "recorded_at": "2026-10-23T10:03:18.465173+08:00",
+  "files": [
+    {
+      "path": "MAX9722-MAX9722B.pdf",
+      "source_url": "https://www.analog.com/media/en/technical-documentation/data-sheets/MAX9722-MAX9722B.pdf",
+      "product_url": "https://www.analog.com/en/products/max9722.html",
+      "document": "19-3049; Rev 2; 10/07",
+      "pages": 21,
+      "verified_pages": [
+        2,
+        12,
+        17
+      ],
+      "sha256": "9d9b4015bdd5c52d229bc3399aeb232035909e0ed68baf122195b0236dda944c"
+    },
+    {
+      "path": "../../../Hardware/SCH_Schematic2_2026-10-23.pdf",
+      "sha256": "ed8c69da7cf6a1d901e1a1d9d0be92dbb9d0233ba04a0f4d608a780ce3d8ea91",
+      "derived_images": [
+        "schematic_headphone_stage.png",
+        "schematic_headphone_control.png",
+        "schematic_speaker_stage.png",
+        "schematic_speaker_control.png"
+      ]
+    },
+    {
+      "path": "tpa3140d2.pdf",
+      "source_url": "https://www.ti.com/lit/ds/symlink/tpa3140d2.pdf",
+      "document": "SLOS882B; January 2015; Revised December 2017",
+      "pages": 39,
+      "verified_pages": [
+        4,
+        6,
+        13,
+        18
+      ],
+      "sha256": "d8e50e79d87a8973d3334a0e3b5e195a3f20eac23bca4a21a1e078e018154744"
+    }
+  ],
+  "updated_at": "2026-10-23T22:16:55.158354+08:00"
+}

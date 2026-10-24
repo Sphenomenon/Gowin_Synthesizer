@@ -1,0 +1,20 @@
+{
+  "time": "2026-10-23T21:23:07.241314+08:00",
+  "passed": true,
+  "operation": "RTL8723DS passive Wi-Fi scan",
+  "access_points": [],
+  "packets": 0,
+  "scan_completed": false,
+  "identity": {
+    "ocr": "90ffffff",
+    "rca": "0004",
+    "revision": 50,
+    "vendor_id": "024c",
+    "device_id": "d723",
+    "function1_ready": true,
+    "block_size": 512
+  },
+  "stage": "power_on_cmd53_check",
+  "cmd53_verified": true,
+  "cmd53_write_read_verified": true
+}

@@ -1,0 +1,21 @@
+{
+  "started_at": "2026-10-24T12:47:23.617202+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/build_gao.tcl",
+  "stage_directory": "/private/tmp/gw138k-build-bdcvhjwy",
+  "passed": false,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/reports/build_20261024_124723_615476_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/reports/build_20261024_124723_615476_pnr.log"
+    }
+  },
+  "artifacts": [],
+  "timing": {
+    "setup_violations": 5
+  },
+  "error": "Setup timing has violations; artifacts not released"
+}

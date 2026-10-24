@@ -1,0 +1,39 @@
+{
+  "started_at": "2026-10-23T04:57:51.953023+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/build_gao.tcl",
+  "stage_directory": "/private/tmp/gw138k-build-yj8zps03",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/build_20261023_045751_950780_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/build_20261023_045751_950780_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/builds/20261023_045751_950780/impl/pnr/ao_0.fs",
+      "sha256": "097cf18740ad65862648c2eef1100248ed405fcbc41d06a690fb9e2b3f6425de"
+    }
+  ],
+  "timing": {
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "source_hashes": {
+    "rtl/ak4493_amp_top.v": "d4e49de1876089c915af325f6d356223e7762ea9584993721849771e2af3b5af",
+    "rtl/ak4493_pin_test.v": "d08c48d58a6d11480f5f0d0adace2b2ec8e857586b9e0a684e7078a931477e12",
+    "constraints/audio.cst": "4bd27f25a384514303762e6140815e6f192a7088455bc7a36105cef8190d9844",
+    "constraints/audio.sdc": "1b08574597dba1f22f2aaae6c25c24f3464e8fc48df38e86298e089e023b9a9a"
+  },
+  "gao": [
+    {
+      "definition": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/builds/20261023_045751_950780/debug/audio.gao",
+      "sha256": "af1ac8e84e4fd502822a1a485dff6b1cb38e9db4ee4a3325b657cef22b8f7fb4"
+    }
+  ],
+  "finished_at": "2026-10-23T04:58:06.192681+08:00"
+}

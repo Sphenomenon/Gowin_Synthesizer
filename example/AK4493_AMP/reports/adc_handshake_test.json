@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "checks": [
+    "conversion handshake",
+    "minimum/maximum",
+    "stale ready rejection",
+    "timeout",
+    "reset"
+  ],
+  "analog_accuracy_simulated": false
+}

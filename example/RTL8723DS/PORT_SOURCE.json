@@ -1,0 +1,6 @@
+{
+  "source": "../GW_25k/example/RTL8723DS_BLE",
+  "target": "GW5AST-LV138PG484AC2/I1",
+  "vendor_manifest_sha256": "7151a2ebbc4c1c983b14f233182109c886a7753461b47fa584a9429f1665b3b1",
+  "scope": "BLE GATT demo + native 1-bit SDIO enumeration / CIS identification; no Wi-Fi network stack"
+}

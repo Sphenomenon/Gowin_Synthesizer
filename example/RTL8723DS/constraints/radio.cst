@@ -1,0 +1,30 @@
+// Custom 138K board: Hardware/SCH_MY_138K_1_2026-10-23.pdf J2.
+// FPC3 n maps to wireless FPC1 (25-n). Bank5 requires 3.3V VCCIO.
+IO_LOC "clk_50mhz" V22;
+IO_PORT "clk_50mhz" IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// DIP_SWITCH_0: ON pulls low through 1.5k; OFF uses internal pull-up.
+IO_LOC "restart_n" V13;
+IO_PORT "restart_n" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "module_uart_tx" W12;
+IO_PORT "module_uart_tx" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "module_uart_rx" T14;
+IO_PORT "module_uart_rx" IO_TYPE=LVCMOS33 PULL_MODE=NONE DRIVE=4 BANK_VCCIO=3.3;
+IO_LOC "module_bt_dis_n" AA9;
+IO_PORT "module_bt_dis_n" IO_TYPE=LVCMOS33 PULL_MODE=NONE DRIVE=4 BANK_VCCIO=3.3;
+IO_LOC "module_wl_dis_n" AA13;
+IO_PORT "module_wl_dis_n" IO_TYPE=LVCMOS33 PULL_MODE=NONE DRIVE=4 BANK_VCCIO=3.3;
+IO_LOC "wifi_sd_clk" V10;
+IO_PORT "wifi_sd_clk" IO_TYPE=LVCMOS33 PULL_MODE=NONE DRIVE=4 BANK_VCCIO=3.3;
+IO_LOC "wifi_sd_cmd" W11;
+IO_PORT "wifi_sd_cmd" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=4 BANK_VCCIO=3.3;
+IO_LOC "wifi_sd_dat[0]" AB12;
+IO_PORT "wifi_sd_dat[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "wifi_sd_dat[1]" Y12;
+IO_PORT "wifi_sd_dat[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "wifi_sd_dat[2]" W10;
+IO_PORT "wifi_sd_dat[2]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+IO_LOC "wifi_sd_dat[3]" Y11;
+IO_PORT "wifi_sd_dat[3]" IO_TYPE=LVCMOS33 PULL_MODE=UP BANK_VCCIO=3.3;
+// Core-board BL616 RX status route, separate from the module H5 UART.
+IO_LOC "debug_uart_tx" U15;
+IO_PORT "debug_uart_tx" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=4;

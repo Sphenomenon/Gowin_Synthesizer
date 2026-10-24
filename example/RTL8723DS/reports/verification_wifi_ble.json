@@ -1,0 +1,34 @@
+{
+  "time": "2026-10-23T21:51:30.478484+08:00",
+  "passed": true,
+  "operation": "Wi-Fi scan followed by BLE GATT verification",
+  "scan_report": "wifi_scan_bt_handoff.json",
+  "ble_report": "ble_after_wifi_handoff.json",
+  "wifi_packets": 53,
+  "wifi_bssids": 6,
+  "cleanup": {
+    "mac_receive_enabled": false,
+    "antenna_owner": "BT",
+    "coex_grants": "0000dd2a"
+  },
+  "ble_notifications": 10,
+  "ble_crc_valid": true,
+  "ble_sequence_contiguous": true,
+  "ble_intervals_ms": [
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500
+  ],
+  "bridge_manifest": "build_20261023_211729_194831.json",
+  "sources": {
+    "tools/wifi_scan.py": "1f25220d01afbab225f130f233c6f98b45d16b436e9418fecd20d87b7a567bde",
+    "tools/wifi_iqk.py": "14fcd6057f3a76e92b0ead007750173d7283157ccd92033ac9dbf522b65d3637",
+    "tools/wifi_sdio.py": "56afd4814a06119a67f9627d9294b407573574a5ebe741830167e6803fc769a8"
+  }
+}

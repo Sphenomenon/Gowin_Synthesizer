@@ -1,0 +1,33 @@
+{
+  "status": "offline_candidate",
+  "simulation_passed": true,
+  "build_passed": true,
+  "pixel_values_checked": 1701888,
+  "top_integration_passed": true,
+  "timing": {
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "clock_report_rows": [
+    "2     pixel_clk    Generated   111.111   9.000MHz    0.000    55.556   clk_50mhz                    clk_50mhz   clockgen/PLL_inst/CLKOUT0",
+    "3     lcd_sample   Generated   111.111   9.000MHz    55.556   0.000    clockgen/PLL_inst/CLKOUT0    pixel_clk   lcd_pclk lcd_pclk_d_4"
+  ],
+  "pin_assignments_verified": 23,
+  "user_code": "0x13802410",
+  "artifact": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/builds/20261024_121635_344393/impl/pnr/lcd138k.fs",
+    "sha256": "382751754e0d5b44b213e71abd0bfa5f4036822bcae73c669477221a3f117d8d"
+  },
+  "source_hashes_match": true,
+  "programmer_check_only_passed": true,
+  "warnings": [
+    "PR1014: 50MHz input route to PLL uses generic routing; physical clock not measured.",
+    "Output timing budget is provisional: panel setup/hold data not yet confirmed."
+  ],
+  "panel_pinout_verified": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "screen_observed": false,
+  "touch_tested": false,
+  "next_step": "Identify actual panel PCB revision and pinout; verify cable continuity without power before SRAM testing."
+}

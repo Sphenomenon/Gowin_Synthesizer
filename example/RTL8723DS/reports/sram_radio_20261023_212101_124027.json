@@ -1,0 +1,31 @@
+{
+  "time": "2026-10-23T21:21:01.124097+08:00",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5AST-138C",
+    "--operation_index",
+    "4",
+    "--fsFile",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/builds/20261023_211729_194831/impl/pnr/wifiscan138k.fs",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "2.5MHz"
+  ],
+  "manifest": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/reports/build_20261023_211729_194831.json",
+  "file_sha256": "2882bec533aa126786d42cd7f54f8c7dc50fd854e89e4754ba68f08538eb0fab",
+  "passed": true,
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/reports/sram_radio_20261023_212101_124027.log",
+  "returncode": 0,
+  "user_code": [
+    "0x13802303"
+  ],
+  "status_code": [
+    "0x00022230"
+  ],
+  "error_in_output": false,
+  "finished": true
+}

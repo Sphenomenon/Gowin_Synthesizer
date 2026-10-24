@@ -1,0 +1,22 @@
+{
+  "board": {
+    "pass": true,
+    "seconds": 0.288
+  },
+  "h5": {
+    "pass": true,
+    "seconds": 0.53
+  },
+  "gatt": {
+    "pass": true,
+    "seconds": 0.029
+  },
+  "system": {
+    "pass": true,
+    "seconds": 12.504
+  },
+  "wrong_rom": {
+    "pass": true,
+    "seconds": 0.081
+  }
+}

@@ -1,0 +1,15 @@
+SDIO case 0 PASS error=00 commands=        25
+SDIO case 1 PASS error=13 commands=         7
+SDIO case 2 PASS error=11 commands=         2
+SDIO case 3 PASS error=12 commands=         5
+SDIO case 4 PASS error=2b commands=        21
+SDIO case 5 PASS error=2c commands=        26
+SDIO case 7 PASS error=20 commands=         7
+SDIO case 8 PASS error=22 commands=         2
+SDIO case 9 PASS error=26 commands=        11
+SDIO case 10 PASS error=28 commands=        13
+SDIO case 11 PASS error=24 commands=         5
+SDIO case 12 PASS error=12 commands=         2
+SDIO case 13 PASS error=14 commands=         6
+PASS: SDIO native discovery, CRC, timeout, R5/R6, CIS, function ready
+/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/RTL8723DS/tests/tb_sdio_identify.v:157: $finish called at 2211580000 (1ps)

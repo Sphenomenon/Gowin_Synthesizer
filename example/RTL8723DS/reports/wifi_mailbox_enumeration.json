@@ -1,0 +1,5 @@
+{
+  "passed": false,
+  "operation": "SDIO mailbox and enumeration; not a Wi-Fi scan",
+  "error": "TimeoutError: JTAG mailbox response timeout, op=127, tag=0000017f"
+}

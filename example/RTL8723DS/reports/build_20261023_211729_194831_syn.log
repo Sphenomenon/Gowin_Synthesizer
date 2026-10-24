@@ -1,0 +1,109 @@
+*** GOWIN Tcl Command Line Console  *** 
+The available OpenGL surface format was either not version 3.2 or higher or not a Core Profile.
+Chromium on macOS will fall back to software rendering in this case.
+Hardware acceleration and features such as WebGL will not be available.
+Gowin storage adaptations: H5 pending payload synchronous RAM; GATT 2x32-byte slots +32-byte active TX
+BLE firmware ROM source: /private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl8723ds_patch.mem
+BLE firmware ROM staged ASCII path: /private/tmp/gw138k-ble-rom-12301/rtl8723ds_patch.mem
+current device: GW5AST-138C  GW5AST-LV138PG484AC2/I1
+add new file: "vendor/rtl8723ds_ble/rtl/bt_hci_init.v"
+add new file: "generated/rtl/bt_h5_transport.v"
+add new file: "vendor/rtl8723ds_ble/rtl/reset_release_sync.v"
+add new file: "generated/rtl/bt_gatt.v"
+add new file: "generated/rtl/bt_verilog_core.v"
+add new file: "vendor/rtl8723ds_ble/rtl/bt_uart.v"
+add new file: "vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v"
+add new file: "/private/tmp/gw138k-build-mffwiao3/prj/generated/ble_bringup_top.v"
+add new file: "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/data/ipcores/gw_jtag.v"
+add new file: "rtl/rtl8723ds_138k_top.v"
+add new file: "rtl/sdio_command.v"
+add new file: "rtl/wifi_jtag_mailbox.v"
+add new file: "rtl/radio_status_uart.v"
+add new file: "rtl/usb1_passive_monitor.v"
+add new file: "rtl/wifi_scan_top.v"
+add new file: "rtl/sdio_transfer.v"
+add new file: "rtl/uart_tx.v"
+add new file: "rtl/sdio_identify.v"
+add new file: "constraints/wifi_scan.cst"
+add new file: "constraints/wifi_scan.sdc"
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/reset_release_sync.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_gatt.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_verilog_core.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_uart.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/generated/ble_bringup_top.v'
+Analyzing Verilog file '/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/data/ipcores/gw_jtag.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/rtl/rtl8723ds_138k_top.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/rtl/sdio_command.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/rtl/wifi_jtag_mailbox.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/rtl/radio_status_uart.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/rtl/usb1_passive_monitor.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/rtl/wifi_scan_top.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/rtl/sdio_transfer.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/rtl/uart_tx.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-mffwiao3/prj/rtl/sdio_identify.v'
+Compiling module 'wifi_scan_top'("/private/tmp/gw138k-build-mffwiao3/prj/rtl/wifi_scan_top.v":2)
+Extracting RAM for identifier 'bytes'("/private/tmp/gw138k-build-mffwiao3/prj/rtl/wifi_scan_top.v":40)
+Extracting RAM for identifier 'bytes'("/private/tmp/gw138k-build-mffwiao3/prj/rtl/wifi_scan_top.v":40)
+Extracting RAM for identifier 'bytes'("/private/tmp/gw138k-build-mffwiao3/prj/rtl/wifi_scan_top.v":40)
+Extracting RAM for identifier 'bytes'("/private/tmp/gw138k-build-mffwiao3/prj/rtl/wifi_scan_top.v":40)
+Compiling module 'ble_bringup_top(SESSION_MS=0)'("/private/tmp/gw138k-build-mffwiao3/prj/generated/ble_bringup_top.v":3)
+Compiling module 'ble_restart_filter'("/private/tmp/gw138k-build-mffwiao3/prj/generated/ble_bringup_top.v":94)
+Compiling module 'rtl8723ds_ble(SESSION_MS=0,PATCH_FILE="/private/tmp/gw138k-ble-rom-12301/rtl8723ds_patch.mem")'("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v":4)
+Compiling module 'reset_release_sync'("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/reset_release_sync.v":1)
+Compiling module 'bt_verilog_core(SESSION_MS=0,PATCH_FILE="/private/tmp/gw138k-ble-rom-12301/rtl8723ds_patch.mem")'("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_verilog_core.v":2)
+Compiling module 'bt_h5_transport'("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v":6)
+Extracting RAM for identifier 'pending_ram'("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v":42)
+Extracting RAM for identifier 'delivered_ram'("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v":43)
+Compiling module 'bt_uart'("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_uart.v":3)
+WARN  (EX3791) : Expression size 5 truncated to fit in target size 4("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_uart.v":54)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_uart.v":68)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v":173)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v":179)
+WARN  (EX3791) : Expression size 4 truncated to fit in target size 3("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v":244)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v":276)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v":315)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v":326)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_h5_transport.v":330)
+Compiling module 'bt_hci_init(PATCH_FILE="/private/tmp/gw138k-ble-rom-12301/rtl8723ds_patch.mem")'("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v":3)
+Extracting RAM for identifier 'patch_mem'("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v":36)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 9("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v":111)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 8("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v":112)
+WARN  (EX3791) : Expression size 32 truncated to fit in target size 9("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v":113)
+WARN  (EX3791) : Expression size 16 truncated to fit in target size 15("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v":128)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v":133)
+WARN  (EX3791) : Expression size 10 truncated to fit in target size 9("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v":153)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v":190)
+WARN  (EX3791) : Expression size 9 truncated to fit in target size 8("/private/tmp/gw138k-build-mffwiao3/prj/vendor/rtl8723ds_ble/rtl/bt_hci_init.v":193)
+Compiling module 'bt_gatt'("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_gatt.v":5)
+WARN  (EX3791) : Expression size 12 truncated to fit in target size 9("/private/tmp/gw138k-build-mffwiao3/prj/generated/rtl/bt_gatt.v":130)
+Compiling module 'usb1_passive_monitor'("/private/tmp/gw138k-build-mffwiao3/prj/rtl/usb1_passive_monitor.v":5)
+Compiling module 'wifi_jtag_mailbox'("/private/tmp/gw138k-build-mffwiao3/prj/rtl/wifi_jtag_mailbox.v":4)
+Compiling module 'GW_JTAG'("/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/data/ipcores/gw_jtag.v":1)
+Compiling module 'sdio_transfer'("/private/tmp/gw138k-build-mffwiao3/prj/rtl/sdio_transfer.v":3)
+Compiling module 'sdio_command'("/private/tmp/gw138k-build-mffwiao3/prj/rtl/sdio_command.v":3)
+NOTE  (EX0101) : Current top module is "wifi_scan_top"
+[5%] Running netlist conversion ...
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+WARN  (NL0002) : The module "usb1_passive_monitor" instantiated to "usb1_monitor" is swept in optimizing("/private/tmp/gw138k-build-mffwiao3/prj/generated/ble_bringup_top.v":71)
+[95%] Generate netlist file "/private/tmp/gw138k-build-mffwiao3/prj/impl/gwsynthesis/wifiscan138k.vg" completed
+[100%] Generate report file "/private/tmp/gw138k-build-mffwiao3/prj/impl/gwsynthesis/wifiscan138k_syn.rpt.html" completed
+GowinSynthesis finish

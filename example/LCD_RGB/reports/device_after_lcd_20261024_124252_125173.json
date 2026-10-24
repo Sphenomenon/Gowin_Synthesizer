@@ -1,0 +1,25 @@
+{
+  "time": "2026-10-24T12:42:52.408977+08:00",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5AST-138C",
+    "--operation_index",
+    "0",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "2.5MHz"
+  ],
+  "returncode": 0,
+  "user_code": [
+    "0x13802411"
+  ],
+  "status_code": [
+    "0x00022230"
+  ],
+  "passed": true,
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/reports/device_after_lcd_20261024_124252_125173.log"
+}

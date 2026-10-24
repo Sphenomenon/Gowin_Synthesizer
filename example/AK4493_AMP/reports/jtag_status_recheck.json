@@ -1,0 +1,69 @@
+{
+  "captured_at": "2026-10-23T05:04:13.239877+08:00",
+  "artifact": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/builds/20261023_045751_950780/impl/pnr/ao_0.fs",
+    "sha256": "097cf18740ad65862648c2eef1100248ed405fcbc41d06a690fb9e2b3f6425de"
+  },
+  "capture_valid": true,
+  "digital_passed": true,
+  "analog_verified": false,
+  "passed": false,
+  "usb_location": "12449",
+  "captures": [
+    {
+      "csv": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/jtag_status_recheck.0.csv",
+      "first": {
+        "audio_clocks": 3494794470,
+        "frames": 13650581,
+        "pdn": true,
+        "smute": false,
+        "restart_n": true,
+        "plug_det": false,
+        "phase": 2,
+        "heartbeat": 1335509493
+      },
+      "last": {
+        "audio_clocks": 3494794501,
+        "frames": 13650581,
+        "pdn": true,
+        "smute": false,
+        "restart_n": true,
+        "plug_det": false,
+        "phase": 2,
+        "heartbeat": 1335509620
+      }
+    },
+    {
+      "csv": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/jtag_status_recheck.1.csv",
+      "first": {
+        "audio_clocks": 3520783837,
+        "frames": 13752102,
+        "pdn": true,
+        "smute": false,
+        "restart_n": true,
+        "plug_det": false,
+        "phase": 3,
+        "heartbeat": 1441260922
+      },
+      "last": {
+        "audio_clocks": 3520783869,
+        "frames": 13752102,
+        "pdn": true,
+        "smute": false,
+        "restart_n": true,
+        "plug_det": false,
+        "phase": 3,
+        "heartbeat": 1441261049
+      }
+    }
+  ],
+  "counter_deltas": {
+    "audio_clocks": 25989368,
+    "frames": 101521,
+    "heartbeat": 105751429
+  },
+  "interval_seconds": 2.11502858,
+  "measured_audio_clock_hz": 12287951.210569456,
+  "measured_frame_hz": 47999.82419150099,
+  "limitation": "Counters verify FPGA clocks and generator state; DAC and amplifier analog output require measurement or listening."
+}

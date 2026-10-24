@@ -1,0 +1,41 @@
+*** GOWIN Tcl Command Line Console  *** 
+The available OpenGL surface format was either not version 3.2 or higher or not a Core Profile.
+Chromium on macOS will fall back to software rendering in this case.
+Hardware acceleration and features such as WebGL will not be available.
+add new file: "/private/tmp/gw138k-build-9b7tqoej/prj/constraints/lcd.cst"
+add new file: "/private/tmp/gw138k-build-9b7tqoej/prj/constraints/lcd.sdc"
+current device: GW5AST-138C  GW5AST-LV138PG484AC2/I1
+add new file: "/private/tmp/gw138k-build-9b7tqoej/prj/impl/gwsynthesis/lcd138k.vg"
+NOTE (PJ2001) : Skip synthesis, because there is only one netlist file in this project
+Reading netlist file: "/private/tmp/gw138k-build-9b7tqoej/prj/impl/gwsynthesis/lcd138k.vg"
+Parsing netlist file "/private/tmp/gw138k-build-9b7tqoej/prj/impl/gwsynthesis/lcd138k.vg" completed
+Processing netlist completed
+Reading constraint file: "/private/tmp/gw138k-build-9b7tqoej/prj/constraints/lcd.cst"
+Physical Constraint parsed completed
+Running placement......
+[10%] Placement Phase 0 completed
+[20%] Placement Phase 1 completed
+[30%] Placement Phase 2 completed
+[50%] Placement Phase 3 completed
+Running routing......
+[60%] Routing Phase 0 completed
+[70%] Routing Phase 1 completed
+[80%] Routing Phase 2 completed
+WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk_50mhz_d' by the specified constraint. And then it may lead to the excessive delay or skew
+[90%] Routing Phase 3 completed
+Running timing analysis......
+[95%] Timing analysis completed
+Placement and routing completed
+Bitstream generation in progress......
+Bitstream generation completed
+Running power analysis......
+[100%] Power analysis completed
+Generate file "/private/tmp/gw138k-build-9b7tqoej/prj/impl/pnr/lcd138k.power.html" completed
+Generate file "/private/tmp/gw138k-build-9b7tqoej/prj/impl/pnr/lcd138k.pin.html" completed
+Generate file "/private/tmp/gw138k-build-9b7tqoej/prj/impl/pnr/lcd138k.rpt.html" completed
+Generate file "/private/tmp/gw138k-build-9b7tqoej/prj/impl/pnr/lcd138k.rpt.txt" completed
+Generate file "/private/tmp/gw138k-build-9b7tqoej/prj/impl/pnr/lcd138k.tr.html" completed
+Generate file "/private/tmp/gw138k-build-9b7tqoej/prj/impl/pnr/lcd138k.tr" completed
+Generate file "/private/tmp/gw138k-build-9b7tqoej/prj/impl/pnr/lcd138k.io.cst" completed
+Sat Oct 24 12:33:10 2026
+

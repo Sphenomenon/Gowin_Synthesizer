@@ -1,0 +1,34 @@
+{
+  "started_at": "2026-10-24T12:16:35.346802+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/build.tcl",
+  "stage_directory": "/private/tmp/gw138k-build-v6oyq1vk",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/reports/build_20261024_121635_344393_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/reports/build_20261024_121635_344393_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/builds/20261024_121635_344393/impl/pnr/lcd138k.fs",
+      "sha256": "382751754e0d5b44b213e71abd0bfa5f4036822bcae73c669477221a3f117d8d"
+    }
+  ],
+  "timing": {
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "source_hashes": {
+    "rtl/lcd_pll.v": "7694a22744a9678e7b938951ebc1639de202df56e2ba336f6ac274e8087e3848",
+    "rtl/lcd_rgb_top.v": "c44202f2ecf2752585fd061a5f44c6c4c5982f53bd333cc597cf2bb309f62f1c",
+    "rtl/lcd_scan.v": "3cdaffdd5a4fc2cdcb9cf6a3664a2e0a753e2739dfdf8cc3a2076a9edd8b4a61",
+    "constraints/lcd.cst": "3503323ae5c6f21ec3b39bf1ca7b0ccd122d8d2ce75aeb85f7b66def4e242c6a",
+    "constraints/lcd.sdc": "ee8cb9630108cc9c8f2ddda1908d038281d5bda2ba80d582e0ddd6868a1b6c6d"
+  },
+  "finished_at": "2026-10-24T12:16:53.031762+08:00"
+}

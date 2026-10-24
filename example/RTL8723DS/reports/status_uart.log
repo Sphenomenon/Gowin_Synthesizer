@@ -1,0 +1,2 @@
+PASS: 262-byte UART frames, all 32 words, coherent snapshots
+/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/RTL8723DS/tests/tb_radio_status_uart.v:47: $finish called at 551326000 (1ps)

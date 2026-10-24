@@ -1,0 +1,26 @@
+{
+  "recorded_at": "2026-10-23T10:03:18.465173+08:00",
+  "source": "Direct user replies in this chat; not an instrument measurement",
+  "audio": {
+    "observation": "no audible sound",
+    "output": "6.35mm headphone jack J2",
+    "test": "silence / left 1kHz / right 1.5kHz / both, each 2s, sine peak -42dBFS",
+    "u4_variant_confirmed_by_user": "MAX9722A",
+    "q1_q2_part_numbers": null,
+    "analog_function_passed": false,
+    "root_cause_confirmed": false
+  },
+  "wireless": {
+    "user_reports_power_and_connection_normal": true,
+    "fpc_continuity": "not currently measurable by user",
+    "protocol_success": false
+  },
+  "digital_evidence": "jtag_no_sound.json",
+  "diagnosis": "../docs/6.35mm无声定位.md",
+  "limitations": [
+    "Actual PCB gain resistor connections have not been checked",
+    "U4 supply and SHDN voltage have not been measured",
+    "Ordinary-NPN clamping hypothesis depends on Q1/Q2 actual types",
+    "FPGA_DET low is not a direct reading of PLUG_DET or SHDN_EAR"
+  ]
+}

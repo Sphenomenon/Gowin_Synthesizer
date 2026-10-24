@@ -1,0 +1,31 @@
+{
+  "time": "2026-10-23T22:39:33.496422+08:00",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5AST-138C",
+    "--operation_index",
+    "4",
+    "--fsFile",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/builds/20261023_050730_086783/impl/pnr/ao_0.fs",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "2.5MHz"
+  ],
+  "manifest": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/build_20261023_050730_086783.json",
+  "file_sha256": "446f5dbfee8d1771406650eae70135d28840969dd2eabf4aa84c61d0837be8e5",
+  "passed": true,
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/sram_radio_20261023_223933_496354.log",
+  "returncode": 0,
+  "user_code": [
+    "0x13802302"
+  ],
+  "status_code": [
+    "0x00022230"
+  ],
+  "error_in_output": false,
+  "finished": true
+}

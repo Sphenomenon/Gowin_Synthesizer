@@ -1,0 +1,20 @@
+# Generated builds and local tools remain outside source control.
+**/builds/
+**/generated/
+**/__pycache__/
+**/.venv/
+*.pyc
+*.vvp
+*.vcd
+*.fst
+.DS_Store
+
+# Keep dated verification logs and frozen firmware required by manifests.
+!**/reports/**/*.log
+!RTL8723DS/vendor/**/*.bin
+!RTL8723DS/vendor/**/*.rpt
+!RTL8723DS/vendor/**/*.log
+
+# Summaries are versioned; raw JTAG/UART captures remain local.
+**/reports/**/*.csv
+**/reports/**/*.raw

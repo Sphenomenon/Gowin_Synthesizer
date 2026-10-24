@@ -1,0 +1,22 @@
+{
+  "packets": 0,
+  "access_points": [],
+  "raw": [],
+  "stage": "channel_11",
+  "factory_calibration": {
+    "crystal_cap": 19,
+    "antenna": "S1",
+    "wifi_mac": "34:20:03:3d:7a:62",
+    "raw_length": 167,
+    "logical_hex": "2981007ce1880700a004ec3512c0a2d8262626262626262626262602ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff222222222222212121212102ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff20131e000000ffffff2a2011000000ff00ff11ffffffffff3e10011223ffffff20044c0223d721020c00220400080032ff21020c00222a010100000000000000000000000200ffff0000000000000000000000000000000000eb006e0100000000ff3420033d7a62ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
+  "coex_scan_grants": "0000ff00",
+  "receive_registers": {
+    "0100": "000006bf",
+    "0608": "7000200e",
+    "0800": "83046c00",
+    "0870": "07000460",
+    "0948": "99000000"
+  },
+  "antenna_restored": true
+}

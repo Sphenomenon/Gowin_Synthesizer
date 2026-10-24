@@ -1,0 +1,42 @@
+{
+  "started_at": "2026-10-24T02:31:44.626197+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/build_channels_gao.tcl",
+  "stage_directory": "/private/tmp/gw138k-build-lpizqbij",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/build_20261024_023144_617877_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/build_20261024_023144_617877_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/builds/20261024_023144_617877/impl/pnr/ao_0.fs",
+      "sha256": "62c921465dd170710d203495984f2d72cbd28c685e6319a6321d152a3fe2fb60"
+    }
+  ],
+  "timing": {
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "source_hashes": {
+    "rtl/ak4493_amp_top.v": "baa1ff5b03619ec20548cf82c3f366f76d8c7ecce32ca4155107646772de27c2",
+    "rtl/ak4493_pin_test.v": "cdb7a65995f0ce89e0975a221bf00593d28f923d3a4a7dc1af6071162cd05813",
+    "rtl/diagnostic/ak4493_channel_test.v": "cd1e736c21284dc7dfa942d4b56b625028a298591f0c01f3a22eddfb585d5a61",
+    "rtl/vccio5_adc.v": "1d9b55b2e937c9d53c8f2ba8302c2c04cc431b70f43a9c3ff3459da88ab88259",
+    "rtl/vccio5_monitor.v": "e2ea9b2f740ba9ee57ae67d98fa54bb18fb8c0e178b9bc4dfef7c6a3b04761cd",
+    "constraints/audio.cst": "4bd27f25a384514303762e6140815e6f192a7088455bc7a36105cef8190d9844",
+    "constraints/audio.sdc": "a81397298aa3522d923a6309ca99cc024ea20e86fc58257e596137f5695fe471"
+  },
+  "gao": [
+    {
+      "definition": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/builds/20261024_023144_617877/debug/audio.gao",
+      "sha256": "66d0110c48abac4acc51792aee989a54c8a7c3cb3deaa660c2f628334d02af6d"
+    }
+  ],
+  "finished_at": "2026-10-24T02:32:01.600435+08:00"
+}

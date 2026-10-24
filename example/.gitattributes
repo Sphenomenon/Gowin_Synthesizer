@@ -1,0 +1,8 @@
+# Frozen manifests bind original firmware and vendor bytes, including CRLF.
+RTL8723DS/vendor/** -text -whitespace linguist-vendored
+*.pdf binary
+*.png binary
+*.jpg binary
+
+# Preserve tool output exactly; whitespace in historical logs is evidence.
+**/reports/** -whitespace

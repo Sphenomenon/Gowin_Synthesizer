@@ -1,0 +1,22 @@
+{
+  "sdio": {
+    "pass": true,
+    "seconds": 0.433
+  },
+  "status_uart": {
+    "pass": true,
+    "seconds": 0.118
+  },
+  "continuous": {
+    "pass": true,
+    "seconds": 0.101
+  },
+  "sdio_transfer": {
+    "pass": true,
+    "seconds": 12.445
+  },
+  "wifi_mailbox": {
+    "pass": true,
+    "seconds": 0.026
+  }
+}

@@ -141,3 +141,15 @@ logs remain untracked. Original BLE firmware and manifest-bound upstream
 reports/logs are explicit source-input exceptions. Existing manifests keep
 their historical paths and hashes; their bitstreams require a local rebuild.
 Imported files disable Git newline conversion to preserve frozen input bytes.
+
+## Standalone Mega138K hardware examples (2026-10-24)
+
+At the user's explicit request, root `example/` imports the independent
+Mega138K BLE/Wi-Fi, AK4493/amplifier, and RGB LCD diagnostics. It does not feed
+the complete-workstation build or change its accepted inputs. SOURCE_IMPORT.json
+binds the copied source and historical evidence bytes; vendor inputs keep their
+original manifests, licenses, and line endings. Generated builds, bitstreams,
+automatically adapted RTL, waves, and raw JTAG/UART captures remain local.
+Historical absolute paths and artifact hashes are evidence, not a clone-time
+dependency; rebuild locally before programming. Physical outcomes and deployment
+records retain each example's own scope and unresolved hardware issues.

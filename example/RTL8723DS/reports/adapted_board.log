@@ -1,0 +1,2 @@
+PASS: POR, low/high BT_DIS, button debounce, expiry, OE, restart
+/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/RTL8723DS/tests/tb_ble_bringup.v:52: $finish called at 71102000000 (1ps)

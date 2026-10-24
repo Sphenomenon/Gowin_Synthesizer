@@ -1,0 +1,18 @@
+{
+  "started_at": "2026-10-23T04:06:16.698523+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/build.tcl",
+  "stage_directory": "/private/tmp/gw138k-build-ddeww5q4",
+  "passed": false,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/reports/build_20261023_040616_688784_syn.log"
+    },
+    "pnr": {
+      "returncode": -6,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/RTL8723DS/reports/build_20261023_040616_688784_pnr.log"
+    }
+  },
+  "artifacts": [],
+  "error": "pnr failed; existing successful artifacts were preserved."
+}

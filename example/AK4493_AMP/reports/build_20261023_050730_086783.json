@@ -1,0 +1,41 @@
+{
+  "started_at": "2026-10-23T05:07:30.089902+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/build_gao.tcl",
+  "stage_directory": "/private/tmp/gw138k-build-xxuph6tv",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/build_20261023_050730_086783_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/reports/build_20261023_050730_086783_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/builds/20261023_050730_086783/impl/pnr/ao_0.fs",
+      "sha256": "446f5dbfee8d1771406650eae70135d28840969dd2eabf4aa84c61d0837be8e5"
+    }
+  ],
+  "timing": {
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "source_hashes": {
+    "rtl/ak4493_amp_top.v": "a18301027c8f078414dc5b8f5ec35090ab6c967b64b390fbadc7218aa13eb79f",
+    "rtl/ak4493_pin_test.v": "d08c48d58a6d11480f5f0d0adace2b2ec8e857586b9e0a684e7078a931477e12",
+    "rtl/vccio5_adc.v": "1d9b55b2e937c9d53c8f2ba8302c2c04cc431b70f43a9c3ff3459da88ab88259",
+    "rtl/vccio5_monitor.v": "e2ea9b2f740ba9ee57ae67d98fa54bb18fb8c0e178b9bc4dfef7c6a3b04761cd",
+    "constraints/audio.cst": "4bd27f25a384514303762e6140815e6f192a7088455bc7a36105cef8190d9844",
+    "constraints/audio.sdc": "a81397298aa3522d923a6309ca99cc024ea20e86fc58257e596137f5695fe471"
+  },
+  "gao": [
+    {
+      "definition": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/builds/20261023_050730_086783/debug/audio.gao",
+      "sha256": "66d0110c48abac4acc51792aee989a54c8a7c3cb3deaa660c2f628334d02af6d"
+    }
+  ],
+  "finished_at": "2026-10-23T05:07:46.898321+08:00"
+}

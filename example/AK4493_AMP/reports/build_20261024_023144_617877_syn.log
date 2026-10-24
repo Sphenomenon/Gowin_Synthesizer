@@ -1,0 +1,44 @@
+*** GOWIN Tcl Command Line Console  *** 
+The available OpenGL surface format was either not version 3.2 or higher or not a Core Profile.
+Chromium on macOS will fall back to software rendering in this case.
+Hardware acceleration and features such as WebGL will not be available.
+current device: GW5AST-138C  GW5AST-LV138PG484AC2/I1
+add new file: "rtl/ak4493_pin_test.v"
+add new file: "rtl/vccio5_adc.v"
+add new file: "rtl/vccio5_monitor.v"
+add new file: "rtl/diagnostic/ak4493_channel_test.v"
+add new file: "constraints/audio.cst"
+add new file: "constraints/audio.sdc"
+add new file: "debug/audio.gao"
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file '/private/tmp/gw138k-build-lpizqbij/prj/rtl/ak4493_pin_test.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-lpizqbij/prj/rtl/vccio5_adc.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-lpizqbij/prj/rtl/vccio5_monitor.v'
+Analyzing Verilog file '/private/tmp/gw138k-build-lpizqbij/prj/rtl/diagnostic/ak4493_channel_test.v'
+Analyzing included file '/private/tmp/gw138k-build-lpizqbij/prj/rtl/ak4493_amp_top.v'("/private/tmp/gw138k-build-lpizqbij/prj/rtl/diagnostic/ak4493_channel_test.v":3)
+Back to file '/private/tmp/gw138k-build-lpizqbij/prj/rtl/diagnostic/ak4493_channel_test.v'("/private/tmp/gw138k-build-lpizqbij/prj/rtl/diagnostic/ak4493_channel_test.v":3)
+Compiling module 'ak4493_amp_top'("/private/tmp/gw138k-build-lpizqbij/prj/rtl/ak4493_amp_top.v":1)
+Compiling module 'ak4493_pin_test(PHASE_FRAMES=144000,ISOLATE_CHANNELS=1)'("/private/tmp/gw138k-build-lpizqbij/prj/rtl/ak4493_pin_test.v":3)
+Compiling module 'vccio5_monitor'("/private/tmp/gw138k-build-lpizqbij/prj/rtl/vccio5_monitor.v":3)
+Compiling module 'vccio5_adc'("/private/tmp/gw138k-build-lpizqbij/prj/rtl/vccio5_adc.v":11)
+NOTE  (EX0101) : Current top module is "ak4493_amp_top"
+[5%] Running netlist conversion ...
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "/private/tmp/gw138k-build-lpizqbij/prj/impl/gwsynthesis/audio138k.vg" completed
+[100%] Generate report file "/private/tmp/gw138k-build-lpizqbij/prj/impl/gwsynthesis/audio138k_syn.rpt.html" completed
+GowinSynthesis finish

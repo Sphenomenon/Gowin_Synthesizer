@@ -1,0 +1,31 @@
+{
+  "time": "2026-10-24T12:51:26.341549+08:00",
+  "command": [
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "--device",
+    "GW5AST-138C",
+    "--operation_index",
+    "4",
+    "--fsFile",
+    "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/builds/20261024_125033_837482/impl/pnr/ao_0.fs",
+    "--cable-index",
+    "1",
+    "--channel",
+    "0",
+    "--frequency",
+    "2.5MHz"
+  ],
+  "manifest": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/reports/last_build.json",
+  "file_sha256": "3a59265e2a9c12279ae89d679e3cd4764ae9a5aba49a8bfaf30049ef92cb0fe2",
+  "passed": true,
+  "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/reports/sram_radio_20261024_125126_341491.log",
+  "returncode": 0,
+  "user_code": [
+    "0x13802412"
+  ],
+  "status_code": [
+    "0x00022230"
+  ],
+  "error_in_output": false,
+  "finished": true
+}

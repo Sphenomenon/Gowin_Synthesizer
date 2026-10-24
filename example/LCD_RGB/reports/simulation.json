@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "hardware_verified": false,
+  "target": "Alientek ATK4384 800x480 RGB",
+  "pixel_clock_hz": 31500000,
+  "scan_total": [
+    976,
+    528
+  ],
+  "cases": [
+    {
+      "name": "full-resolution-auto",
+      "frames": 13,
+      "pixels_checked": 4992000,
+      "passed": true,
+      "simulator": "PASS scan, blanking, startup, sequence, reset (800x480)\n/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/tests/tb_lcd_scan.v:68: $finish called at 230166945436 (1ps)"
+    },
+    {
+      "name": "fixed-inverted-polarity",
+      "frames": 4,
+      "pixels_checked": 4608,
+      "passed": true,
+      "simulator": "PASS scan, blanking, startup, sequence, reset (48x24)\n/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/tests/tb_lcd_scan.v:68: $finish called at 2821141036 (1ps)"
+    },
+    {
+      "name": "top-integration-with-behavioral-pll",
+      "passed": true,
+      "simulator": "PASS top: RGB pin ordering, PCLK sample edge, restart and PLL lock loss/recovery\n/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/tests/tb_lcd_top.v:72: $finish called at 49079855682 (1ps)"
+    }
+  ],
+  "source_hashes": {
+    "rtl/lcd_pll.v": "7ce420aeb5c01a033d14a91137582bf76c49ec6d05d1f9461fe710aeb38ffaf7",
+    "rtl/lcd_rgb_top.v": "c44202f2ecf2752585fd061a5f44c6c4c5982f53bd333cc597cf2bb309f62f1c",
+    "rtl/lcd_scan.v": "cbe1e1b73e578b6f2cd3df2071130b6e9b4c449c35c267bdece5341094b06f94",
+    "tests/check_lcd.py": "c567651983558fbe24c43c1c89bf80c0e66feb19c7fc77ede36152dab1bbe112",
+    "tests/tb_lcd_scan.v": "680a63debc862f043dddf01dfb16a1c0b6f5517d4a058a4a9903d3d56b09f95f",
+    "tests/tb_lcd_top.v": "17f7d3c04ba4d118cdf9d6cedfe7be0effab6584765dfc6243ebff882f19cdbe"
+  }
+}

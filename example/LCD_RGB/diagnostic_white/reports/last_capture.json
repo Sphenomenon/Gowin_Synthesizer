@@ -1,0 +1,70 @@
+{
+  "time": "2026-10-24T12:51:50.891546+08:00",
+  "artifact": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/diagnostic_white/builds/20261024_125033_837482/impl/pnr/ao_0.fs",
+    "sha256": "3a59265e2a9c12279ae89d679e3cd4764ae9a5aba49a8bfaf30049ef92cb0fe2"
+  },
+  "user_code": "0x13802412",
+  "capture_valid": true,
+  "digital_passed": true,
+  "physical_clock_measured": false,
+  "screen_verified": false,
+  "usb_location": "12369",
+  "captures": [
+    {
+      "csv": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/diagnostic_white/reports/jtag_lcd_20261024_125150_891530.0.csv",
+      "first": {
+        "heartbeat": 691854346,
+        "pixel_clocks": 435868197,
+        "frames": 846,
+        "active_pixels": 324792922,
+        "flags": 255
+      },
+      "last": {
+        "heartbeat": 691854473,
+        "pixel_clocks": 435868277,
+        "frames": 846,
+        "active_pixels": 324793002,
+        "flags": 255
+      }
+    },
+    {
+      "csv": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/diagnostic_white/reports/jtag_lcd_20261024_125150_891530.1.csv",
+      "first": {
+        "heartbeat": 799230230,
+        "pixel_clocks": 503515004,
+        "frames": 978,
+        "active_pixels": 375172369,
+        "flags": 255
+      },
+      "last": {
+        "heartbeat": 799230357,
+        "pixel_clocks": 503515084,
+        "frames": 978,
+        "active_pixels": 375172449,
+        "flags": 255
+      }
+    }
+  ],
+  "counter_deltas": {
+    "heartbeat": 107375884,
+    "pixel_clocks": 67646807,
+    "frames": 132,
+    "active_pixels": 50379447
+  },
+  "interval_seconds": 2.14751768,
+  "measured_internal_pixel_clock_hz": 31500000.037252314,
+  "measured_internal_frame_hz": 61.46631584425419,
+  "measured_active_pixels_per_second": 23459386.37394594,
+  "flags": {
+    "pll_locked": true,
+    "restart_released": true,
+    "scan_reset_released": true,
+    "backlight_on": true,
+    "de_seen": true,
+    "hsync_seen": true,
+    "vsync_seen": true,
+    "white_data_seen": true
+  },
+  "limitation": "Counters and sticky observations verify internal FPGA logic relative to the nominal 50MHz reference. They do not measure physical IO waveforms, cable continuity, panel voltages or visible luminance."
+}

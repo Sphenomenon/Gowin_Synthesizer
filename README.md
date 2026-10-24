@@ -33,6 +33,7 @@ fpga/                         Git 根目录
 
 ## 入口
 
+- [独立板级例程](example/README.md)：本版主板的 BLE/Wi-Fi 扫描、AK4493/功放与 RGB LCD 测试，含接线和独立验收记录。
 - [25K 面板工程](projects/25k/README.md)：设备端源码、构建入口、独立例程与对接边界。
 - [整机接口规划](整机接口规划.md)：138K／Push／25K分工、已确认MIDI映射与默认值、现有协议差异及待确认项。
 - [`push2_workstation/usb_a`](projects/138k/push2_workstation/usb_a)：当前 USB-A 工作站源码、仿真、审计和版本记录。

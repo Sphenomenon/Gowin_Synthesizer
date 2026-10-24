@@ -1,0 +1,38 @@
+{
+  "validated_at": "2026-10-24T13:20:26.232097+08:00",
+  "base_commit": "f502f28f329c6665e4a6150583e390b2c9611cef",
+  "passed": true,
+  "imported_bytes_verified": true,
+  "vendor_bytes_preserved": true,
+  "staged_diff_check_passed": true,
+  "checks": [
+    {
+      "name": "wireless",
+      "passed": true,
+      "exit_code": 0,
+      "scope": "Frozen vendor manifest; 5 original BLE + 5 adapted BLE + 5 SDIO/UART/mailbox simulations; 4 Wi-Fi parser tests",
+      "execution_log_sha256": "c7305bd77ae295546a0f100afebfb811d89e68d51301d93e011191d13ca1e3bb"
+    },
+    {
+      "name": "audio",
+      "passed": true,
+      "exit_code": 0,
+      "scope": "Default, alternating and continuous I2S decode simulations; ADC handshake/stale-ready/timeout/reset test",
+      "execution_log_sha256": "8146f7dfd0afb7cf961e6093b877a225699c380dac74f07b18e413552e4aadfd"
+    },
+    {
+      "name": "lcd",
+      "passed": true,
+      "exit_code": 0,
+      "scope": "800x480 patterns, sync/backlight/reset and top-level pixel clock simulations",
+      "execution_log_sha256": "7890abb4038c34eb2ca701906fbab886725dba8c2e5753675d79ababf8aa4f42"
+    }
+  ],
+  "historical_reports_preserved": true,
+  "new_synthesis_or_route_performed": false,
+  "board_operation_performed": false,
+  "limitations": [
+    "Import validation is offline and does not expand recorded physical acceptance",
+    "Bitstreams, generated builds and raw hardware captures remain local; historical manifests require rebuilding on a new clone"
+  ]
+}

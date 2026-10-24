@@ -1,0 +1,29 @@
+{
+  "recorded_at": "2026-10-23T23:17:21.104294+08:00",
+  "source": "Direct user listening confirmation in this chat",
+  "raw_user_reply": "记录 CN接口成果发声。",
+  "interpreted_confirmation": "CN speaker interface successfully produces audible sound",
+  "verification_scope": "Basic audible output at CN speaker interface; CN1 and CN2 were not individually specified in the confirmation",
+  "passed": true,
+  "analog_verified": true,
+  "verification_method": "User listening",
+  "output": "CN speaker interface",
+  "individual_connector_results": {
+    "CN1": null,
+    "CN2": null
+  },
+  "channel_separation_verified": false,
+  "instrument_waveform_verified": false,
+  "repair": {
+    "user_reported_solder_joint_repair": true,
+    "specific_location": null
+  },
+  "running_manifest": "build_20261023_050730_086783.json",
+  "user_code": "0x13802302",
+  "bitstream_sha256": "446f5dbfee8d1771406650eae70135d28840969dd2eabf4aa84c61d0837be8e5",
+  "programming_evidence": "sram_radio_20261023_230533_424266.json",
+  "digital_evidence": "jtag_after_solder_repair.json",
+  "digital_passed": true,
+  "test": "-42dBFS, silence / left 1kHz / right 1.5kHz / both, 2s each",
+  "root_cause_detail_confirmed": false
+}

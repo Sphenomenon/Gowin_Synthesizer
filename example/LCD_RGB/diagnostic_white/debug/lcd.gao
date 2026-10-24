@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GAO_CONFIG>
+  <Version>3.0</Version>
+  <Mode>Standard</Mode>
+  <AoCore index="0" sample_clock="clk_50mhz" trig_type="0" storage_depth="128" window_num="1" capture_amount="128" implementation="0" trigger_pos="0" module_name="lcd_rgb_top" force_trigger_by_falling_edge="false" capture_init_data_enabled="false">
+    <SignalList>
+      <Bus capture_enable="true" name="lcd_debug[191:0]">
+        <Signal>lcd_debug[191]</Signal>
+        <Signal>lcd_debug[190]</Signal>
+        <Signal>lcd_debug[189]</Signal>
+        <Signal>lcd_debug[188]</Signal>
+        <Signal>lcd_debug[187]</Signal>
+        <Signal>lcd_debug[186]</Signal>
+        <Signal>lcd_debug[185]</Signal>
+        <Signal>lcd_debug[184]</Signal>
+        <Signal>lcd_debug[183]</Signal>
+        <Signal>lcd_debug[182]</Signal>
+        <Signal>lcd_debug[181]</Signal>
+        <Signal>lcd_debug[180]</Signal>
+        <Signal>lcd_debug[179]</Signal>
+        <Signal>lcd_debug[178]</Signal>
+        <Signal>lcd_debug[177]</Signal>
+        <Signal>lcd_debug[176]</Signal>
+        <Signal>lcd_debug[175]</Signal>
+        <Signal>lcd_debug[174]</Signal>
+        <Signal>lcd_debug[173]</Signal>
+        <Signal>lcd_debug[172]</Signal>
+        <Signal>lcd_debug[171]</Signal>
+        <Signal>lcd_debug[170]</Signal>
+        <Signal>lcd_debug[169]</Signal>
+        <Signal>lcd_debug[168]</Signal>
+        <Signal>lcd_debug[167]</Signal>
+        <Signal>lcd_debug[166]</Signal>
+        <Signal>lcd_debug[165]</Signal>
+        <Signal>lcd_debug[164]</Signal>
+        <Signal>lcd_debug[163]</Signal>
+        <Signal>lcd_debug[162]</Signal>
+        <Signal>lcd_debug[161]</Signal>
+        <Signal>lcd_debug[160]</Signal>
+        <Signal>lcd_debug[159]</Signal>
+        <Signal>lcd_debug[158]</Signal>
+        <Signal>lcd_debug[157]</Signal>
+        <Signal>lcd_debug[156]</Signal>
+        <Signal>lcd_debug[155]</Signal>
+        <Signal>lcd_debug[154]</Signal>
+        <Signal>lcd_debug[153]</Signal>
+        <Signal>lcd_debug[152]</Signal>
+        <Signal>lcd_debug[151]</Signal>
+        <Signal>lcd_debug[150]</Signal>
+        <Signal>lcd_debug[149]</Signal>
+        <Signal>lcd_debug[148]</Signal>
+        <Signal>lcd_debug[147]</Signal>
+        <Signal>lcd_debug[146]</Signal>
+        <Signal>lcd_debug[145]</Signal>
+        <Signal>lcd_debug[144]</Signal>
+        <Signal>lcd_debug[143]</Signal>
+        <Signal>lcd_debug[142]</Signal>
+        <Signal>lcd_debug[141]</Signal>
+        <Signal>lcd_debug[140]</Signal>
+        <Signal>lcd_debug[139]</Signal>
+        <Signal>lcd_debug[138]</Signal>
+        <Signal>lcd_debug[137]</Signal>
+        <Signal>lcd_debug[136]</Signal>
+        <Signal>lcd_debug[135]</Signal>
+        <Signal>lcd_debug[134]</Signal>
+        <Signal>lcd_debug[133]</Signal>
+        <Signal>lcd_debug[132]</Signal>
+        <Signal>lcd_debug[131]</Signal>
+        <Signal>lcd_debug[130]</Signal>
+        <Signal>lcd_debug[129]</Signal>
+        <Signal>lcd_debug[128]</Signal>
+        <Signal>lcd_debug[127]</Signal>
+        <Signal>lcd_debug[126]</Signal>
+        <Signal>lcd_debug[125]</Signal>
+        <Signal>lcd_debug[124]</Signal>
+        <Signal>lcd_debug[123]</Signal>
+        <Signal>lcd_debug[122]</Signal>
+        <Signal>lcd_debug[121]</Signal>
+        <Signal>lcd_debug[120]</Signal>
+        <Signal>lcd_debug[119]</Signal>
+        <Signal>lcd_debug[118]</Signal>
+        <Signal>lcd_debug[117]</Signal>
+        <Signal>lcd_debug[116]</Signal>
+        <Signal>lcd_debug[115]</Signal>
+        <Signal>lcd_debug[114]</Signal>
+        <Signal>lcd_debug[113]</Signal>
+        <Signal>lcd_debug[112]</Signal>
+        <Signal>lcd_debug[111]</Signal>
+        <Signal>lcd_debug[110]</Signal>
+        <Signal>lcd_debug[109]</Signal>
+        <Signal>lcd_debug[108]</Signal>
+        <Signal>lcd_debug[107]</Signal>
+        <Signal>lcd_debug[106]</Signal>
+        <Signal>lcd_debug[105]</Signal>
+        <Signal>lcd_debug[104]</Signal>
+        <Signal>lcd_debug[103]</Signal>
+        <Signal>lcd_debug[102]</Signal>
+        <Signal>lcd_debug[101]</Signal>
+        <Signal>lcd_debug[100]</Signal>
+        <Signal>lcd_debug[99]</Signal>
+        <Signal>lcd_debug[98]</Signal>
+        <Signal>lcd_debug[97]</Signal>
+        <Signal>lcd_debug[96]</Signal>
+        <Signal>lcd_debug[95]</Signal>
+        <Signal>lcd_debug[94]</Signal>
+        <Signal>lcd_debug[93]</Signal>
+        <Signal>lcd_debug[92]</Signal>
+        <Signal>lcd_debug[91]</Signal>
+        <Signal>lcd_debug[90]</Signal>
+        <Signal>lcd_debug[89]</Signal>
+        <Signal>lcd_debug[88]</Signal>
+        <Signal>lcd_debug[87]</Signal>
+        <Signal>lcd_debug[86]</Signal>
+        <Signal>lcd_debug[85]</Signal>
+        <Signal>lcd_debug[84]</Signal>
+        <Signal>lcd_debug[83]</Signal>
+        <Signal>lcd_debug[82]</Signal>
+        <Signal>lcd_debug[81]</Signal>
+        <Signal>lcd_debug[80]</Signal>
+        <Signal>lcd_debug[79]</Signal>
+        <Signal>lcd_debug[78]</Signal>
+        <Signal>lcd_debug[77]</Signal>
+        <Signal>lcd_debug[76]</Signal>
+        <Signal>lcd_debug[75]</Signal>
+        <Signal>lcd_debug[74]</Signal>
+        <Signal>lcd_debug[73]</Signal>
+        <Signal>lcd_debug[72]</Signal>
+        <Signal>lcd_debug[71]</Signal>
+        <Signal>lcd_debug[70]</Signal>
+        <Signal>lcd_debug[69]</Signal>
+        <Signal>lcd_debug[68]</Signal>
+        <Signal>lcd_debug[67]</Signal>
+        <Signal>lcd_debug[66]</Signal>
+        <Signal>lcd_debug[65]</Signal>
+        <Signal>lcd_debug[64]</Signal>
+        <Signal>lcd_debug[63]</Signal>
+        <Signal>lcd_debug[62]</Signal>
+        <Signal>lcd_debug[61]</Signal>
+        <Signal>lcd_debug[60]</Signal>
+        <Signal>lcd_debug[59]</Signal>
+        <Signal>lcd_debug[58]</Signal>
+        <Signal>lcd_debug[57]</Signal>
+        <Signal>lcd_debug[56]</Signal>
+        <Signal>lcd_debug[55]</Signal>
+        <Signal>lcd_debug[54]</Signal>
+        <Signal>lcd_debug[53]</Signal>
+        <Signal>lcd_debug[52]</Signal>
+        <Signal>lcd_debug[51]</Signal>
+        <Signal>lcd_debug[50]</Signal>
+        <Signal>lcd_debug[49]</Signal>
+        <Signal>lcd_debug[48]</Signal>
+        <Signal>lcd_debug[47]</Signal>
+        <Signal>lcd_debug[46]</Signal>
+        <Signal>lcd_debug[45]</Signal>
+        <Signal>lcd_debug[44]</Signal>
+        <Signal>lcd_debug[43]</Signal>
+        <Signal>lcd_debug[42]</Signal>
+        <Signal>lcd_debug[41]</Signal>
+        <Signal>lcd_debug[40]</Signal>
+        <Signal>lcd_debug[39]</Signal>
+        <Signal>lcd_debug[38]</Signal>
+        <Signal>lcd_debug[37]</Signal>
+        <Signal>lcd_debug[36]</Signal>
+        <Signal>lcd_debug[35]</Signal>
+        <Signal>lcd_debug[34]</Signal>
+        <Signal>lcd_debug[33]</Signal>
+        <Signal>lcd_debug[32]</Signal>
+        <Signal>lcd_debug[31]</Signal>
+        <Signal>lcd_debug[30]</Signal>
+        <Signal>lcd_debug[29]</Signal>
+        <Signal>lcd_debug[28]</Signal>
+        <Signal>lcd_debug[27]</Signal>
+        <Signal>lcd_debug[26]</Signal>
+        <Signal>lcd_debug[25]</Signal>
+        <Signal>lcd_debug[24]</Signal>
+        <Signal>lcd_debug[23]</Signal>
+        <Signal>lcd_debug[22]</Signal>
+        <Signal>lcd_debug[21]</Signal>
+        <Signal>lcd_debug[20]</Signal>
+        <Signal>lcd_debug[19]</Signal>
+        <Signal>lcd_debug[18]</Signal>
+        <Signal>lcd_debug[17]</Signal>
+        <Signal>lcd_debug[16]</Signal>
+        <Signal>lcd_debug[15]</Signal>
+        <Signal>lcd_debug[14]</Signal>
+        <Signal>lcd_debug[13]</Signal>
+        <Signal>lcd_debug[12]</Signal>
+        <Signal>lcd_debug[11]</Signal>
+        <Signal>lcd_debug[10]</Signal>
+        <Signal>lcd_debug[9]</Signal>
+        <Signal>lcd_debug[8]</Signal>
+        <Signal>lcd_debug[7]</Signal>
+        <Signal>lcd_debug[6]</Signal>
+        <Signal>lcd_debug[5]</Signal>
+        <Signal>lcd_debug[4]</Signal>
+        <Signal>lcd_debug[3]</Signal>
+        <Signal>lcd_debug[2]</Signal>
+        <Signal>lcd_debug[1]</Signal>
+        <Signal>lcd_debug[0]</Signal>
+      </Bus>
+    </SignalList>
+    <Triggers>
+      <Trigger index="0">
+        <SignalList>
+          <Signal>lcd_debug[32]</Signal>
+        </SignalList>
+      </Trigger>
+      <Trigger index="1" />
+      <Trigger index="2" />
+      <Trigger index="3" />
+      <Trigger index="4" />
+      <Trigger index="5" />
+      <Trigger index="6" />
+      <Trigger index="7" />
+      <Trigger index="8" />
+      <Trigger index="9" />
+      <Trigger index="10" />
+      <Trigger index="11" />
+      <Trigger index="12" />
+      <Trigger index="13" />
+      <Trigger index="14" />
+      <Trigger index="15" />
+    </Triggers>
+    <MatchUnits>
+      <MatchUnit index="0" enabled="1" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="1" value1="0" trigger="0" />
+      <MatchUnit index="1" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="2" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="3" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="4" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="5" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="6" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="7" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="8" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="9" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="10" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="11" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="12" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="13" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="14" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="15" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+    </MatchUnits>
+    <Expressions type="Static">
+      <Expression>M0|!M0</Expression>
+    </Expressions>
+  </AoCore>
+  <GAO_ID>1010010010010110</GAO_ID>
+</GAO_CONFIG>

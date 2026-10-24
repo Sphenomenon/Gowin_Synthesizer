@@ -1,0 +1,13 @@
+{
+  "captured_at": "2026-10-23T22:39:07.054444+08:00",
+  "artifact": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/AK4493_AMP/builds/20261023_050730_086783/impl/pnr/ao_0.fs",
+    "sha256": "446f5dbfee8d1771406650eae70135d28840969dd2eabf4aa84c61d0837be8e5"
+  },
+  "capture_valid": false,
+  "digital_passed": false,
+  "analog_verified": false,
+  "passed": false,
+  "usb_location": "12337",
+  "error": "Invalid AMP1 signature"
+}

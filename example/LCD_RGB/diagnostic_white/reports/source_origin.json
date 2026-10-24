@@ -1,0 +1,8 @@
+{
+  "parent_source_hashes": {
+    "rtl/lcd_pll.v": "7ce420aeb5c01a033d14a91137582bf76c49ec6d05d1f9461fe710aeb38ffaf7",
+    "rtl/lcd_rgb_top.v": "c44202f2ecf2752585fd061a5f44c6c4c5982f53bd333cc597cf2bb309f62f1c",
+    "rtl/lcd_scan.v": "cbe1e1b73e578b6f2cd3df2071130b6e9b4c449c35c267bdece5341094b06f94"
+  },
+  "changes": "FIXED_PATTERN=6 plus registered Gray counters and GAO capture; same panel pins and timing."
+}

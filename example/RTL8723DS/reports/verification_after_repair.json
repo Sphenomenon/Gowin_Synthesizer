@@ -1,0 +1,100 @@
+{
+  "verified_at": "2026-10-23T19:33:13.343715+08:00",
+  "scope": "BLE advertising, GATT read and notifications; Wi-Fi SDIO identification and function 1 ready",
+  "passed": true,
+  "user_reported_action": "repaired cold solder joints on Bluetooth/wireless board",
+  "pin_mapping": "unchanged; main FPC3 n to wireless FPC1 (25-n)",
+  "reversed_mapping": {
+    "attempted": false,
+    "reason": "User requested reversal only if original mapping failed; original mapping passed"
+  },
+  "rtl_changed": false,
+  "constraints_changed": false,
+  "rebuilt": false,
+  "flash_written": false,
+  "build_manifest": "build_20261023_043345_788620.json",
+  "artifact": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/RTL8723DS/builds/20261023_043345_788620/impl/pnr/ao_0.fs",
+    "sha256": "9be95c32f740feaab1d8461561c2118bf3a8c2e15b9ac772f678c14c690272d7"
+  },
+  "sram_programming_reports": [
+    "sram_radio_20261023_192650_246253.json",
+    "sram_radio_20261023_193022_415946.json"
+  ],
+  "ble": {
+    "passed": true,
+    "name": "RTL8723-BLE",
+    "rom_version": 2,
+    "patch_fragments": 120,
+    "read_valid": true,
+    "notifications": 10,
+    "notification_crc_valid": true,
+    "sequence_contiguous": true,
+    "intervals_ms": [
+      500,
+      500,
+      500,
+      500,
+      500,
+      500,
+      500,
+      500,
+      500
+    ],
+    "fpga_notification_count": 10,
+    "driver_uart_errors": 0,
+    "driver_protocol_errors": 0,
+    "evidence": [
+      "jtag_after_repair_original.json",
+      "ble_after_repair_original.json",
+      "jtag_after_repair_gatt.json"
+    ]
+  },
+  "wifi_sdio": {
+    "passed": true,
+    "wl_enable": true,
+    "done": true,
+    "identified": true,
+    "failed": false,
+    "state": 6,
+    "step": 21,
+    "dat_pins": 15,
+    "error": "00",
+    "error_name": "none",
+    "ocr": "90ffffff",
+    "rca": "0002",
+    "cccr_revision": 50,
+    "card_capabilities": 19,
+    "function_interface": 7,
+    "cis_pointer": "001000",
+    "vendor_id": "024c",
+    "device_id": "d723",
+    "last_response": "00001002",
+    "commands": 20,
+    "evidence": [
+      "jtag_after_repair_original.json",
+      "jtag_after_repair_gatt.json",
+      "jtag_after_repair_ready.json"
+    ]
+  },
+  "final_state": {
+    "image": "RTL8723DS GAO",
+    "user_code": "0x13802301",
+    "reinitialized_after_gatt_test": true,
+    "advertisement_seen_without_connecting": true,
+    "ble_initialized": true,
+    "ble_connected": false,
+    "sdio_ready": true,
+    "evidence": [
+      "jtag_after_repair_ready.json",
+      "advertising_after_repair_ready.json"
+    ]
+  },
+  "limits": [
+    "Specific defective solder joint was not isolated; failures disappeared after user repair with unchanged image",
+    "No power-off continuity measurement; operational checks validate active radio interfaces",
+    "SDIO test is identification/CMD52, not Wi-Fi firmware, CMD53 payload or networking",
+    "4-bit/high-speed SDIO and PCM are not verified",
+    "Audio amplifier remains a separate unresolved task"
+  ]
+}

@@ -1,0 +1,2 @@
+PASS: SESSION_MS=0 keeps BLE session active
+/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/RTL8723DS/tests/tb_continuous.v:15: $finish called at 100100000 (1ps)

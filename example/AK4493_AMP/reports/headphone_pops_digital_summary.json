@@ -1,0 +1,42 @@
+{
+  "recorded_at": "2026-10-24T02:42:10.618280+08:00",
+  "source_reports": [
+    "jtag_3p5mm_pops_0.json",
+    "jtag_3p5mm_pops_1.json",
+    "jtag_3p5mm_pops_2.json"
+  ],
+  "capture_valid": true,
+  "digital_passed": true,
+  "sample_points": 6,
+  "observation_span_seconds": 73.63824272,
+  "intervals": [
+    {
+      "seconds": 2.1071493,
+      "audio_clock_hz": 12287945.139910113,
+      "frame_hz": 47999.446455929814
+    },
+    {
+      "seconds": 34.07017712,
+      "audio_clock_hz": 12287945.217468245,
+      "frame_hz": 47999.80916565309
+    },
+    {
+      "seconds": 2.21691308,
+      "audio_clock_hz": 12287945.452511834,
+      "frame_hz": 47999.62657985671
+    },
+    {
+      "seconds": 33.13797744,
+      "audio_clock_hz": 12287945.446799725,
+      "frame_hz": 47999.79126306026
+    },
+    {
+      "seconds": 2.10602578,
+      "audio_clock_hz": 12287945.497039452,
+      "frame_hz": 47999.8872568407
+    }
+  ],
+  "sampled_controls_stable": true,
+  "counter_rates_consistent": true,
+  "limitations": "Sparse internal JTAG captures; does not exclude brief pad/physical-clock glitches, daughterboard power faults, or headphone enable toggling. VCCIO5 is not the headphone amplifier supply."
+}

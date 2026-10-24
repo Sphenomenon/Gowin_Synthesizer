@@ -1,0 +1,3 @@
+INIT_PASS: all30147patch bytes and120fragment echoes checked
+PASS: pure Verilog UART8E1/H5 full patch, HCI setup, ATT discovery, CCCD and3CRC-valid notifications
+/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/RTL8723DS/vendor/rtl8723ds_ble/tests/tb_bt_verilog_system.v:495: $finish called at 39856186000 (1ps)

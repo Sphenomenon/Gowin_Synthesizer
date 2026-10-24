@@ -1,0 +1,11 @@
+{
+  "checked_at": "2026-10-23T19:31:49.341716+08:00",
+  "connected_by_test": false,
+  "passed": true,
+  "device_name": "RTL8723-BLE",
+  "device_id": "2E7F18FF-351D-F03C-0C53-007C2F075A28",
+  "service_uuids": [
+    "0000fff0-0000-1000-8000-00805f9b34fb"
+  ],
+  "rssi": -64
+}

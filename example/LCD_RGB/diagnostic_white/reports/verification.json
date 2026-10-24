@@ -1,0 +1,28 @@
+{
+  "status": "internal_scan_passed_faint_gray_green_visible_rgb_adapter_required",
+  "user_observation": {
+    "normal_patterns": "backlight on, black screen",
+    "fixed_white": "faint gray-green image visible",
+    "connection": "same-side FPC cable directly to FPC4"
+  },
+  "simulation": {
+    "passed": true,
+    "scope": "three complete first-frame captures, PCLK sampling, static white, reset and PLL lock-loss recovery"
+  },
+  "build_manifest": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/diagnostic_white/reports/last_build.json",
+  "programming_report": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/diagnostic_white/reports/sram_radio_20261024_125126_341491.json",
+  "active_user_code": "0x13802412",
+  "sram_programmed_and_verified": true,
+  "flash_written": false,
+  "jtag_capture": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/diagnostic_white/reports/last_capture.json",
+  "internal_digital_passed": true,
+  "internal_pixel_clock_hz": 31500000.037252314,
+  "nominal_frame_hz": 61.12611773472429,
+  "short_interval_frame_rate_hz": 61.46631584425419,
+  "frame_count_uncertainty": "two asynchronous endpoints introduce up to one frame of count uncertainty",
+  "physical_pin_waveforms_measured": false,
+  "full_brightness_color_test_passed": false,
+  "finding": "Visible faint gray-green fixed-white result agrees with low-bit-only RGB mapping; high bits are grounded on board. Physical cable continuity and exact panel variant remain unmeasured.",
+  "required_adapter": "Board 3..7 -> panel 6..10; 12..17 -> 14..19; 21..25 -> 24..28, all ascending one-to-one. Isolate original high-bit ground wires; ground panel unused low bits separately.",
+  "next_step": "Power off, implement RGB bitweight adapter per docs/接线核对.md, then repeat fixed-white and normal pattern tests."
+}

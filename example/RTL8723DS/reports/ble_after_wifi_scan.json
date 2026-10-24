@@ -1,0 +1,9 @@
+{
+  "started_at": "2026-10-23T21:44:19.845494+08:00",
+  "passed": false,
+  "device_name": "RTL8723-BLE",
+  "device_id": "2E7F18FF-351D-F03C-0C53-007C2F075A28",
+  "status": "error",
+  "error": "TimeoutError: ",
+  "finished_at": "2026-10-23T21:44:41.537560+08:00"
+}

@@ -1,0 +1,2 @@
+PASS: pure Verilog system rejects incompatible ROM before download
+/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/RTL8723DS/vendor/rtl8723ds_ble/tests/tb_bt_verilog_system.v:431: $finish called at 139765000 (1ps)

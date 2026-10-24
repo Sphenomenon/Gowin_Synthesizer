@@ -1,0 +1,199 @@
+{
+  "started_at": "2026-10-24T02:53:15.506488+08:00",
+  "manifest": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/reports/build_20261024_023144_617877.json",
+  "expected_user_code": "0x13802401",
+  "playback": "silence 3s -> left 1kHz 3s -> silence 3s -> right 1.5kHz 3s; repeat",
+  "peak_dbfs": -42,
+  "physical_power_cycle_tested": false,
+  "passed": true,
+  "commands": [
+    {
+      "label": "before_code",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12385",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "0"
+      ],
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/reports/flash_channels_20261024/before_code.log"
+    },
+    {
+      "label": "flash_id",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12385",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "51"
+      ],
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/reports/flash_channels_20261024/flash_id.log"
+    },
+    {
+      "label": "program_verify",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12385",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "54",
+        "--fsFile",
+        "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/builds/20261024_023144_617877/impl/pnr/ao_0.fs",
+        "--spiaddr",
+        "0x000000"
+      ],
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/reports/flash_channels_20261024/program_verify.log"
+    },
+    {
+      "label": "independent_verify",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12385",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "66",
+        "--fsFile",
+        "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/builds/20261024_023144_617877/impl/pnr/ao_0.fs",
+        "--spiaddr",
+        "0x000000"
+      ],
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/reports/flash_channels_20261024/independent_verify.log"
+    },
+    {
+      "label": "erase_sram",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12385",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "24"
+      ],
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/reports/flash_channels_20261024/erase_sram.log"
+    },
+    {
+      "label": "reload_from_flash",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12385",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "1"
+      ],
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/reports/flash_channels_20261024/reload_from_flash.log"
+    },
+    {
+      "label": "after_flash_boot",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12385",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "0"
+      ],
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/reports/flash_channels_20261024/after_flash_boot.log"
+    },
+    {
+      "label": "flash_boot_settled_0",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12385",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "0"
+      ],
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/reports/flash_channels_20261024/flash_boot_settled_0.log"
+    }
+  ],
+  "file_sha256": "62c921465dd170710d203495984f2d72cbd28c685e6319a6321d152a3fe2fb60",
+  "artifact": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/builds/20261024_023144_617877/impl/pnr/ao_0.fs",
+  "active_operation": null,
+  "flash_program_verify_passed": true,
+  "independent_flash_verify_passed": true,
+  "boot_user_codes": [
+    "0x13802401"
+  ],
+  "boot_status_codes": [
+    "0x00022020"
+  ],
+  "finished_at": "2026-10-24T02:56:58.545549+08:00",
+  "initial_boot_read_was_before_configuration_completed": true,
+  "flash_reload_passed": true,
+  "verification_scope": "Flash programming, independent byte verification, Flash reload UserCode and internal digital operation; excludes headphone analog performance and physical power-cycle test",
+  "digital_passed": true,
+  "digital_evidence": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/AK4493_AMP/reports/jtag_flash_channels_boot.json",
+  "analog_verified": false,
+  "measured_internal_audio_clock_hz": 12287959.330125678,
+  "measured_internal_frame_hz": 47999.40397431443
+}

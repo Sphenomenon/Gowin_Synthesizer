@@ -1,0 +1,2043 @@
+{
+  "imported_at": "2026-10-24T13:18:37.768230+08:00",
+  "source_root": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example",
+  "destination": "example/",
+  "scope": "Standalone hardware diagnostics only; not integrated into the complete workstation",
+  "source_files": [
+    {
+      "path": "AK4493_AMP/README.md",
+      "bytes": 11674,
+      "sha256": "8720551b931b2f7aaaf742ff60e9ca5bbbd1f08080f792c73c6cb84a16118ac3"
+    },
+    {
+      "path": "AK4493_AMP/build_channels_gao.tcl",
+      "bytes": 1114,
+      "sha256": "5676aa7295b37b4ad5185076fe720f851c3a8da9cd4f182c09b37a1c2ac12c2e"
+    },
+    {
+      "path": "AK4493_AMP/build_continuous_gao.tcl",
+      "bytes": 1115,
+      "sha256": "7ef32c1de54f468182509649f81e13717f04e23daa089df3f3ff1a8200437404"
+    },
+    {
+      "path": "AK4493_AMP/build_gao.tcl",
+      "bytes": 884,
+      "sha256": "7053f1b1c08d1e1089d12d3da262dafabe76cb3a8d33ff3cd689fa05e7fb3412"
+    },
+    {
+      "path": "AK4493_AMP/constraints/audio.cst",
+      "bytes": 1264,
+      "sha256": "4bd27f25a384514303762e6140815e6f192a7088455bc7a36105cef8190d9844"
+    },
+    {
+      "path": "AK4493_AMP/constraints/audio.sdc",
+      "bytes": 826,
+      "sha256": "a81397298aa3522d923a6309ca99cc024ea20e86fc58257e596137f5695fe471"
+    },
+    {
+      "path": "AK4493_AMP/debug/audio.gao",
+      "bytes": 18343,
+      "sha256": "66d0110c48abac4acc51792aee989a54c8a7c3cb3deaa660c2f628334d02af6d"
+    },
+    {
+      "path": "AK4493_AMP/docs/3.5mm输出测试.md",
+      "bytes": 9196,
+      "sha256": "b12745d7a73832fbd9c64c893f678ae29abfb1612a6801da93a415ef94fb6a4a"
+    },
+    {
+      "path": "AK4493_AMP/docs/6.35mm无声定位.md",
+      "bytes": 6255,
+      "sha256": "f135c567b958f091e4ad0bd7b71c4f126f2f979a54cc86a68cae67a8ae26f1fd"
+    },
+    {
+      "path": "AK4493_AMP/docs/MAX9722-MAX9722B.pdf",
+      "bytes": 527162,
+      "sha256": "9d9b4015bdd5c52d229bc3399aeb232035909e0ed68baf122195b0236dda944c"
+    },
+    {
+      "path": "AK4493_AMP/docs/schematic_headphone_control.png",
+      "bytes": 274350,
+      "sha256": "4fc049a9a675106450cf1cd15d1ea32d6ad096af5e556e8a25e691ee8c89a1b2"
+    },
+    {
+      "path": "AK4493_AMP/docs/schematic_headphone_stage.png",
+      "bytes": 239428,
+      "sha256": "ddad86cede942d4e55d18145e38fab13aab5b265cc924ec97e79425670fbd297"
+    },
+    {
+      "path": "AK4493_AMP/docs/schematic_speaker_control.png",
+      "bytes": 49775,
+      "sha256": "89ff04bb7755fc8dd97339f96bd19f60752d229ebe277725e1983b6b9ba058c6"
+    },
+    {
+      "path": "AK4493_AMP/docs/schematic_speaker_stage.png",
+      "bytes": 188394,
+      "sha256": "322f7ec5bc20c2ee8e6d13df5f38dc55a5dd2ade3b45afa709e223d58bff6457"
+    },
+    {
+      "path": "AK4493_AMP/docs/sources.json",
+      "bytes": 1297,
+      "sha256": "04ea601dc632aa1f750931431b806a33887e5a0f0a8be7774276789ea56b316b"
+    },
+    {
+      "path": "AK4493_AMP/docs/tpa3140d2.pdf",
+      "bytes": 1563862,
+      "sha256": "d8e50e79d87a8973d3334a0e3b5e195a3f20eac23bca4a21a1e078e018154744"
+    },
+    {
+      "path": "AK4493_AMP/docs/扬声器无声定位.md",
+      "bytes": 8692,
+      "sha256": "dc5aedbd38b04058d20797863b738f938f225015dd8794745c2018adef84e176"
+    },
+    {
+      "path": "AK4493_AMP/ip/vccio5_adc.mod",
+      "bytes": 446,
+      "sha256": "a2851c6185121f8762d6192d68fe02ae496e8bdc756d1ffc3d9813c8f0f4edf4"
+    },
+    {
+      "path": "AK4493_AMP/reports/adc_handshake_test.json",
+      "bytes": 185,
+      "sha256": "0577375b07babf3d0442528b812ce86912db26db5f4740b23d6471c6ceb36e98"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261023_045617_047940.json",
+      "bytes": 914,
+      "sha256": "00a2de81a79e308dad4697afb4eb8eed024e4c353b59bf050e660fd33c35a6bf"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261023_045617_047940_pnr.log",
+      "bytes": 2877,
+      "sha256": "33992eae6700b17ed2e78db7baea3785460ab648c3c5ea15ca47b647dcdf3016"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261023_045617_047940_syn.log",
+      "bytes": 1789,
+      "sha256": "e7ff701f6f2348e56cecbe4807f7c76ed4e4c50faca7b0fbac37061fa7591fd0"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261023_045751_950780.json",
+      "bytes": 1902,
+      "sha256": "b2b8cac33e9d7c551304afb43eddff962565360e63e403276396dcdf3d407fdc"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261023_045751_950780_pnr.log",
+      "bytes": 2877,
+      "sha256": "8b8c7c34f83b28dd88448b5035c467021a1ab84d215d9a476661498b3e13fe3d"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261023_045751_950780_syn.log",
+      "bytes": 1789,
+      "sha256": "3c141fc7c99831ad65662aca55a1aaa6441b89103aeeea2b6659e81c722fb24f"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261023_050730_086783.json",
+      "bytes": 2090,
+      "sha256": "fe925c3f73dd5f7710a2eb9e928e5e60129cbf78be908bad746b26c885b43b9c"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261023_050730_086783_pnr.log",
+      "bytes": 2877,
+      "sha256": "def8d994b34c0c5306f1a4ba4f603f0b5d26d9365d2d947d555cce3e093e966a"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261023_050730_086783_syn.log",
+      "bytes": 2216,
+      "sha256": "2c57a994721c01075ae2b7d7eb8f649584bffb5869a3db643b5437e3d784d942"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261024_022911_093567.json",
+      "bytes": 631,
+      "sha256": "177c3af598f34fd103dc8651e84083c32c1ce9a2a1b4973988a3b726c99ceccf"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261024_022911_093567_syn.log",
+      "bytes": 514,
+      "sha256": "976a37021830a4c07e3942e3054441cdfe015d3305db9a6f93cfbfc352c46331"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261024_023144_617877.json",
+      "bytes": 2211,
+      "sha256": "15e5608d8156bed90fed8fddb6958bc2115ed5524f4593874f54328f09a08b5f"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261024_023144_617877_pnr.log",
+      "bytes": 2877,
+      "sha256": "93a3cfb2944ac7315a1fd7b930fc987c1ba55aac581357f454f1bdd68b10688c"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261024_023144_617877_syn.log",
+      "bytes": 2627,
+      "sha256": "22b59ec1a8f0ce1ad00b59612d481a57a6d0280864e72490ed2574328c40a27e"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261024_024209_479935.json",
+      "bytes": 2328,
+      "sha256": "415b250f18c58b5eb2742d6f1feb4c3e286e8188a9d84d5a81c4cd914eeb3bc8"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261024_024209_479935_pnr.log",
+      "bytes": 2877,
+      "sha256": "9cdb15b0b0c15b3ce9a4d9da045247da607ee8ce04beddf8deeb2877143870cb"
+    },
+    {
+      "path": "AK4493_AMP/reports/build_20261024_024209_479935_syn.log",
+      "bytes": 2622,
+      "sha256": "f1f3426dd6b7122d6543da44cf59e1df50ff5a4b61cdb866ca75014ec1015999"
+    },
+    {
+      "path": "AK4493_AMP/reports/flash_channels_20261024/after_flash_boot.log",
+      "bytes": 258,
+      "sha256": "ea4c8abf9123a32bea212c7355b43fa7eb060a023c88c5880dd0da69be62c830"
+    },
+    {
+      "path": "AK4493_AMP/reports/flash_channels_20261024/before_code.log",
+      "bytes": 258,
+      "sha256": "849b8c0fdbd2cd4b90bef084df0ebc8d307881ba42a9736de70b2ea095f0036c"
+    },
+    {
+      "path": "AK4493_AMP/reports/flash_channels_20261024/erase_sram.log",
+      "bytes": 201,
+      "sha256": "f789f74316e42324b751f0b20af3292590e5ad06a2e8878bcc05fbe31522daa4"
+    },
+    {
+      "path": "AK4493_AMP/reports/flash_channels_20261024/flash_boot_settled_0.log",
+      "bytes": 258,
+      "sha256": "7e8d0cab86127d303ed181c738230bc85f5f03b8ce1087544a62ee33e07015e8"
+    },
+    {
+      "path": "AK4493_AMP/reports/flash_channels_20261024/flash_id.log",
+      "bytes": 238,
+      "sha256": "631cd76bd1fd31e10d1fbd56b7033b21635dc93647f0ff0112880b95d8c58de6"
+    },
+    {
+      "path": "AK4493_AMP/reports/flash_channels_20261024/independent_verify.log",
+      "bytes": 1164997,
+      "sha256": "07d5c6f562752ad70dcc6763e0db03f2e41bb44d1c27fb7b038516d43df64085"
+    },
+    {
+      "path": "AK4493_AMP/reports/flash_channels_20261024/program_verify.log",
+      "bytes": 1253684,
+      "sha256": "b22a78a131ca9ce19f8ca45bdc5ae57b5497c0e725c1b5b37b6a7832472296a3"
+    },
+    {
+      "path": "AK4493_AMP/reports/flash_channels_20261024/reload_from_flash.log",
+      "bytes": 172,
+      "sha256": "6fffd07c9720d91d8954d99768d7eafe918d75acf8c590c9b009409435f601d5"
+    },
+    {
+      "path": "AK4493_AMP/reports/flash_channels_20261024/result.json",
+      "bytes": 6734,
+      "sha256": "023abfa7bc8bbd99f81d8e176b9f42a35794d9f791dd625ac7effe013463a0e8"
+    },
+    {
+      "path": "AK4493_AMP/reports/headphone_3p5mm.json",
+      "bytes": 5637,
+      "sha256": "e0f155b5051f36785bf9aa76da61519683240b6a4cacd09b6e0b69e7e7eaa713"
+    },
+    {
+      "path": "AK4493_AMP/reports/headphone_pops_digital_summary.json",
+      "bytes": 1198,
+      "sha256": "72b41ca2dd15eb3e359baa16832cf0c3bee57900fd59b0e037b2a66e3048d5dc"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_3p5mm_continuous.json",
+      "bytes": 3516,
+      "sha256": "7c241a01f416ec39cee01b8c8684e7bde67804a4fc2b120ef4b7122c4234d835"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_3p5mm_pops_0.json",
+      "bytes": 3524,
+      "sha256": "31f96f0f0554c29274881e196399b4d886651cd39d3bde1a139811559925485e"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_3p5mm_pops_1.json",
+      "bytes": 3534,
+      "sha256": "86e2d7aa978e2641b215210aa21d441ff814658c389365a4e35ef234a1374a57"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_3p5mm_pops_2.json",
+      "bytes": 3505,
+      "sha256": "1dbb93bc3e74f579de51db408dd0349381ca621003c8d9c95a15d4694ebe9b98"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_3p5mm_start.json",
+      "bytes": 3495,
+      "sha256": "2a13226f45fcd996b628ac144bbf056ea4afb25be578dc9d821086bc34fd659b"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_after_solder_repair.json",
+      "bytes": 3533,
+      "sha256": "268152d76126820856b94fc75e049681fbb42397b7646ed98476a84fd4eb1ddc"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_channel_diagnostic.json",
+      "bytes": 3518,
+      "sha256": "27d636d594451f5f0d5acb72c18eba17f126a5f454361b2db7deca5c8e202f26"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_dac_mclk_reload.json",
+      "bytes": 3523,
+      "sha256": "68ad6d7d4b4128b8ab7f23e27f363fd209daaf375f5f09009b6a85c0766abb9b"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_dac_missing_mclk.json",
+      "bytes": 508,
+      "sha256": "383c5d85ee705329432b3b588515596d1497d6f171cf70c477b50ff97f933987"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_flash_channels_boot.json",
+      "bytes": 3533,
+      "sha256": "171d4c87d0d4c4729b2e6d1d36b85a19675f4a839a93a640aad84ec7b9976afd"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_no_sound.json",
+      "bytes": 3514,
+      "sha256": "7f44711bf7b333b6e8c924c7ef57c81764cb54cebee5c4e046e5cfea850d81a0"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_speaker_repower.json",
+      "bytes": 3519,
+      "sha256": "805380bade5e25b8c8bf99ea29f6850ad08d9547f0b3dcf340d0a9b8d30d93a1"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_speaker_resume.json",
+      "bytes": 3526,
+      "sha256": "297a5aa00e6acb2d86a456836445f3bfb8e5b21d79147aa397740b9b204c0ac5"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_status.json",
+      "bytes": 2157,
+      "sha256": "4311ced43d1bf95e21242036dd589f93ca6ae362269e062eafd2a158ea1379a0"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_status_recheck.json",
+      "bytes": 2188,
+      "sha256": "ddce9b4806ba46cd48bc087a573226f8d8861c0cedb5bca5060da9cce2642995"
+    },
+    {
+      "path": "AK4493_AMP/reports/jtag_vccio5.json",
+      "bytes": 3490,
+      "sha256": "0f44018e00288fabf0857dc1fcf18cb1f8a341df6878aad8e5f3b548bc6d9dbe"
+    },
+    {
+      "path": "AK4493_AMP/reports/last_build.json",
+      "bytes": 2328,
+      "sha256": "415b250f18c58b5eb2742d6f1feb4c3e286e8188a9d84d5a81c4cd914eeb3bc8"
+    },
+    {
+      "path": "AK4493_AMP/reports/last_failure.json",
+      "bytes": 631,
+      "sha256": "177c3af598f34fd103dc8651e84083c32c1ce9a2a1b4973988a3b726c99ceccf"
+    },
+    {
+      "path": "AK4493_AMP/reports/simulation.json",
+      "bytes": 796,
+      "sha256": "737ee7fecd03facb7ed8e9ce731320dd5ad6926b54b1eab3e91b49b1a57fccdf"
+    },
+    {
+      "path": "AK4493_AMP/reports/simulation_channel_isolation.json",
+      "bytes": 767,
+      "sha256": "7a145d845649dd48640986341eb2d7ada2a486386b7205ffc52d73bb35eac2ff"
+    },
+    {
+      "path": "AK4493_AMP/reports/simulation_continuous.json",
+      "bytes": 823,
+      "sha256": "040fddccf56946d652c922be82bd8d0d87c676cba314f2c0f6c0f90d386cf65d"
+    },
+    {
+      "path": "AK4493_AMP/reports/speaker_resume.json",
+      "bytes": 4530,
+      "sha256": "2e0143078eed0bdb0022f10cf60d2567343cb9903768a86f224429fe90a7b7e8"
+    },
+    {
+      "path": "AK4493_AMP/reports/speaker_success_after_repair.json",
+      "bytes": 1215,
+      "sha256": "6cc8549661021b5bff9c06419ed26f042e8fb9c387b5673f1a2441d1f3657d3e"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_045918_050766.json",
+      "bytes": 1110,
+      "sha256": "2d145698a8e01707b910cdd0ca21c50d215cc36a66467f3cfd54db634793e900"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_045918_050766.log",
+      "bytes": 1382241,
+      "sha256": "063b70053c3aa07bde33b6ec17d48f476786738221e69ba1e0c8f072511453d7"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_050806_481934.json",
+      "bytes": 1110,
+      "sha256": "a6c478d8202b3d0986125eb9db041beb8cbad1f3b1969f98061d27f5d6b9128f"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_050806_481934.log",
+      "bytes": 1382241,
+      "sha256": "494bd338d8e0a298ff37e90fc23826f05bc9889b78fba777fc5b3fa037114b39"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_215525_739416.json",
+      "bytes": 1128,
+      "sha256": "8b1fe1a4c2f6d75739443a8063d47d5fd4325f46958922e400b36c9cb60c6370"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_215525_739416.log",
+      "bytes": 1382241,
+      "sha256": "2e5a05001e20baa2d705c2ee5a4647594352882fbcdcd236ef446bbfd82276c7"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_222246_160136.json",
+      "bytes": 1128,
+      "sha256": "7afc0d5162872209850cada58e2a0943f99fbee7e723ab59fa91a11173ddd90a"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_222246_160136.log",
+      "bytes": 1382241,
+      "sha256": "850a22c20bbc6aac80740e32595f489973fec26121a88a742ebe86a99d8e6038"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_223933_496354.json",
+      "bytes": 1128,
+      "sha256": "7eb0cbab9d08163c603b8989d3dacd347c400fd81b07110cd166189dd071fc66"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_223933_496354.log",
+      "bytes": 1382241,
+      "sha256": "57f4318755ef1b9f88d33e483518b20a8af1d0aea4a64e34a84690fe460d3b6e"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_230533_424266.json",
+      "bytes": 1128,
+      "sha256": "06c2da2ee1e2a07892cce3ce4c5cb44aa551a5512ea03773b7c70c4f5d1c92d1"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261023_230533_424266.log",
+      "bytes": 1382241,
+      "sha256": "09f5ba40424673d2bdb91368069bcd6b4090b4b6c54eccc1d36ba23e8fdd7b1e"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261024_021832_007974.json",
+      "bytes": 1128,
+      "sha256": "5dd3ed03dc7d8515e8dda55656fb5200d29b277b8e33267af1e7196dae68453b"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261024_021832_007974.log",
+      "bytes": 1382240,
+      "sha256": "e66b05c81630f88e791860aa0ecc6791011d81cd838349ab51ea2f4ad0a002f3"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261024_023233_391731.json",
+      "bytes": 1128,
+      "sha256": "92ba4f0ad19b56e687f99300108f21f59c4e307abdb8962f74a5b63333cb8ad0"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261024_023233_391731.log",
+      "bytes": 1382241,
+      "sha256": "1fcd925c811a041ff111346b335e657c0aea0793463ef0fe03b3f53fb013c2d4"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261024_024255_334804.json",
+      "bytes": 1128,
+      "sha256": "a1d5b30ab9829d2a630f3eae3e2261f694e20f6fa0684c39356c857c0f651324"
+    },
+    {
+      "path": "AK4493_AMP/reports/sram_radio_20261024_024255_334804.log",
+      "bytes": 1382241,
+      "sha256": "062a4269d53c0ea55c065dc17ef59679de5ffd51ecf61668a9150efa85288d7b"
+    },
+    {
+      "path": "AK4493_AMP/reports/user_feedback.json",
+      "bytes": 1009,
+      "sha256": "4c203f46d203e644031ed0a380d4240a0408fca03962fb9aef3a306055b45e5b"
+    },
+    {
+      "path": "AK4493_AMP/rtl/ak4493_amp_top.v",
+      "bytes": 2109,
+      "sha256": "9b7b0e340cf51c2d08e30112dd58ff9a903c9e9762dc023782dda195c81d9591"
+    },
+    {
+      "path": "AK4493_AMP/rtl/ak4493_pin_test.v",
+      "bytes": 7626,
+      "sha256": "d6c73227827cf252e868188a59cc49f9747ffe858ef852e25fb82f2c62bc5f28"
+    },
+    {
+      "path": "AK4493_AMP/rtl/diagnostic/ak4493_channel_test.v",
+      "bytes": 166,
+      "sha256": "cd1e736c21284dc7dfa942d4b56b625028a298591f0c01f3a22eddfb585d5a61"
+    },
+    {
+      "path": "AK4493_AMP/rtl/diagnostic/ak4493_continuous_test.v",
+      "bytes": 159,
+      "sha256": "610575e8d87bd0f9d997a9c760d6d6b53339bad823e099434c9dd3f148ff5169"
+    },
+    {
+      "path": "AK4493_AMP/rtl/vccio5_adc.v",
+      "bytes": 1696,
+      "sha256": "1d9b55b2e937c9d53c8f2ba8302c2c04cc431b70f43a9c3ff3459da88ab88259"
+    },
+    {
+      "path": "AK4493_AMP/rtl/vccio5_monitor.v",
+      "bytes": 2349,
+      "sha256": "e2ea9b2f740ba9ee57ae67d98fa54bb18fb8c0e178b9bc4dfef7c6a3b04761cd"
+    },
+    {
+      "path": "AK4493_AMP/tests/check_audio.py",
+      "bytes": 3235,
+      "sha256": "fc747e63eb9b293227cc71aefd1f2cd3d0ecef7850c19430f9fa0dac16dc0a48"
+    },
+    {
+      "path": "AK4493_AMP/tests/tb_audio.v",
+      "bytes": 3005,
+      "sha256": "bcf53734a0cf0a9242b548efa775fad2156d8702e37e54a0733875173f0ce52f"
+    },
+    {
+      "path": "AK4493_AMP/tests/tb_vccio5_monitor.v",
+      "bytes": 1520,
+      "sha256": "7c5bf241fe60718f96eb4602072e5a5fec3cde0ea78ab7067f156aa75a0be1c9"
+    },
+    {
+      "path": "AK4493_AMP/tools/jtag_status.py",
+      "bytes": 6046,
+      "sha256": "886a881c6b56fb713e337521bff210e2fd324e8d6dd1ba732bb7ae6054914b85"
+    },
+    {
+      "path": "LCD_RGB/.gitignore",
+      "bytes": 27,
+      "sha256": "33f3e94ba23f02c5485e9f00b12c71c881c880c044b0d933e8cf9d61cc9249fa"
+    },
+    {
+      "path": "LCD_RGB/README.md",
+      "bytes": 7263,
+      "sha256": "b5667a367869b2902c3d7cb2a3f5ef99b68056e036f3bd2f1c6df1f804db0bab"
+    },
+    {
+      "path": "LCD_RGB/build.tcl",
+      "bytes": 886,
+      "sha256": "44280e6799c68f16da173111b1afa13c76ecec9db1ba0ed897b2dde1c77ee311"
+    },
+    {
+      "path": "LCD_RGB/constraints/lcd.cst",
+      "bytes": 2342,
+      "sha256": "3503323ae5c6f21ec3b39bf1ca7b0ccd122d8d2ce75aeb85f7b66def4e242c6a"
+    },
+    {
+      "path": "LCD_RGB/constraints/lcd.sdc",
+      "bytes": 688,
+      "sha256": "c4a579ff5c510776c78b69960e4f011925a61701cad1ba5355679fb1d7013abb"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/README.md",
+      "bytes": 2698,
+      "sha256": "51cb6ed824b1fa59804ee7d579d240aadfb322b3ee1c49fd1602adf14afff06e"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/build_gao.tcl",
+      "bytes": 909,
+      "sha256": "a4b67353fe1e2b70157d332e3c572094e34d53eb03755a7a50b89f63f90ee900"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/constraints/lcd.cst",
+      "bytes": 2342,
+      "sha256": "3503323ae5c6f21ec3b39bf1ca7b0ccd122d8d2ce75aeb85f7b66def4e242c6a"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/constraints/lcd.sdc",
+      "bytes": 883,
+      "sha256": "d4dd0e2214b16ae36d3f1b94195bdc205c1297181c1b75eb5d46b018fb3c902e"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/debug/lcd.gao",
+      "bytes": 11231,
+      "sha256": "36bfec0789b87e822d39e49d98c122019ce1ade588a95e70359c4216adf12734"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/build_20261024_124723_615476.json",
+      "bytes": 930,
+      "sha256": "08f611eec51238238112e910fea6de66ec93a1929a826f82cafc45d86a1df093"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/build_20261024_124723_615476_pnr.log",
+      "bytes": 2849,
+      "sha256": "19cebab593480ed680c98a312e6a1a87ed646f323b57f041315763a00134703f"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/build_20261024_124723_615476_syn.log",
+      "bytes": 2332,
+      "sha256": "5c9ed5aea6ba9406cf8dbac45a73916f4801779cb6885d766691a9ccd31c9c06"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/build_20261024_125033_837482.json",
+      "bytes": 2045,
+      "sha256": "7b2703967f479d7a9e7e13389aa7302a8c0da7aab3951686273bfab0db42d21f"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/build_20261024_125033_837482_pnr.log",
+      "bytes": 2849,
+      "sha256": "6a483cd31ec8d5cb6b2c26443da3d7337c1b562251cfb76e41d2b9c02f079b5d"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/build_20261024_125033_837482_syn.log",
+      "bytes": 2332,
+      "sha256": "9466b6ba9f5fa9e30369b8bb2885dcd5ba4c80864cd505864a7e47c44392d0e6"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/jtag_lcd_20261024_125150_891530.0.log",
+      "bytes": 123,
+      "sha256": "68171c0c100d87d1bb4d3d82c675c76a3a97c68e284c72d8630088334118e6bb"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/jtag_lcd_20261024_125150_891530.1.log",
+      "bytes": 123,
+      "sha256": "d262674a96a444ddc7fd5cf136269600c484021a2ed0bae95c17984f1fd792a5"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/jtag_lcd_20261024_125150_891530.json",
+      "bytes": 2356,
+      "sha256": "01416cc02a7443898078c8c0d75eb825b5056f863f3b7204c6b47fb486375477"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/last_build.json",
+      "bytes": 2045,
+      "sha256": "7b2703967f479d7a9e7e13389aa7302a8c0da7aab3951686273bfab0db42d21f"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/last_capture.json",
+      "bytes": 2356,
+      "sha256": "01416cc02a7443898078c8c0d75eb825b5056f863f3b7204c6b47fb486375477"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/last_failure.json",
+      "bytes": 930,
+      "sha256": "08f611eec51238238112e910fea6de66ec93a1929a826f82cafc45d86a1df093"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/source_origin.json",
+      "bytes": 414,
+      "sha256": "44b00c78d470e6384872c58f848c5dc9b2ad2b761d31fcffb11058e5210d5eb5"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/sram_radio_20261024_125126_341491.json",
+      "bytes": 1152,
+      "sha256": "6c269053e73478ef52225b235069fcbf2a584869f78c861390dc1d1e3367e660"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/sram_radio_20261024_125126_341491.log",
+      "bytes": 1382241,
+      "sha256": "27f9c3e071efbf54062014e7cf9d8941209be1811f7f4a31d6d81f67e91e2716"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/reports/verification.json",
+      "bytes": 1943,
+      "sha256": "a6f09e88c16db1245e0d3504975cdfe549674955756339843f0e329e72c5e894"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/rtl/lcd_pll.v",
+      "bytes": 6072,
+      "sha256": "7ce420aeb5c01a033d14a91137582bf76c49ec6d05d1f9461fe710aeb38ffaf7"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/rtl/lcd_rgb_top.v",
+      "bytes": 3234,
+      "sha256": "48711f9c2855b68acbee0d1a1563ebd229cacb23fc2375b2035c2340829a101b"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/rtl/lcd_scan.v",
+      "bytes": 4458,
+      "sha256": "cbe1e1b73e578b6f2cd3df2071130b6e9b4c449c35c267bdece5341094b06f94"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/tests/capture_status.py",
+      "bytes": 6939,
+      "sha256": "a3d604889844f0b428879a22f14ddc3d0c628c8b4f572cc573d0b9cf25afe02c"
+    },
+    {
+      "path": "LCD_RGB/diagnostic_white/tests/tb_lcd_top.v",
+      "bytes": 2784,
+      "sha256": "d5e079603f4f1df0d39a9a99b6262b2e7ab5622a7bb650f65fee314007b8b293"
+    },
+    {
+      "path": "LCD_RGB/docs/reference/atk-md0430r-manual-page4.jpg",
+      "bytes": 269790,
+      "sha256": "676d805fa9383285042e16b225c9e5de03e7431a032a69984da983e2ff7e1e07"
+    },
+    {
+      "path": "LCD_RGB/docs/参数来源.md",
+      "bytes": 1963,
+      "sha256": "9192c00d6e74f825fe894f9443760a97fed071caa47bf632b6b45808ae7818b3"
+    },
+    {
+      "path": "LCD_RGB/docs/接线核对.md",
+      "bytes": 4175,
+      "sha256": "cc5dcc7f6e27d3ec32f234025fad80df55d13f6ee3f47175be9aed1676418c9f"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/README.md",
+      "bytes": 5768,
+      "sha256": "96c74056adb859f2a26856cd895d8b82fd68858b64e898c5014ac5174301800b"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/build.tcl",
+      "bytes": 850,
+      "sha256": "151cd8a9edfebe2f3fd58d71e6bcee69c56fff956327bddd274ce84db9b7a420"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/constraints/lcd.cst",
+      "bytes": 2342,
+      "sha256": "3503323ae5c6f21ec3b39bf1ca7b0ccd122d8d2ce75aeb85f7b66def4e242c6a"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/constraints/lcd.sdc",
+      "bytes": 686,
+      "sha256": "ee8cb9630108cc9c8f2ddda1908d038281d5bda2ba80d582e0ddd6868a1b6c6d"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/docs/接线核对.md",
+      "bytes": 2737,
+      "sha256": "1bdc0f63f5e36c6e2329c79393e969c85aa7820dc199adc8be6b1f44ffca49fa"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/reports/last_build.json",
+      "bytes": 1660,
+      "sha256": "c70e62c589ed1e2bc7ba5272b39366c703330952203c986a86f978876a5973d9"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/reports/simulation.json",
+      "bytes": 1786,
+      "sha256": "d9b601eeef9eaccd811b1dd95feb8ba28e4e707854dab0be14bea2de90da5eb8"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/reports/verification.json",
+      "bytes": 1400,
+      "sha256": "1d5488fff9b5272136892be90dc03c317c79f7b243ff19f35a728183402c437b"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/rtl/lcd_pll.v",
+      "bytes": 6065,
+      "sha256": "7694a22744a9678e7b938951ebc1639de202df56e2ba336f6ac274e8087e3848"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/rtl/lcd_rgb_top.v",
+      "bytes": 930,
+      "sha256": "c44202f2ecf2752585fd061a5f44c6c4c5982f53bd333cc597cf2bb309f62f1c"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/rtl/lcd_scan.v",
+      "bytes": 4405,
+      "sha256": "3cdaffdd5a4fc2cdcb9cf6a3664a2e0a753e2739dfdf8cc3a2076a9edd8b4a61"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/tests/check_lcd.py",
+      "bytes": 5452,
+      "sha256": "abe9c264a4ce3e30b5c5f9a0b5cd6c265f5f1382f5cc949403cd8c695cd7b3a9"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/tests/tb_lcd_scan.v",
+      "bytes": 2857,
+      "sha256": "a2f6f47692455a9d404f694bb452d6e88036b04007e2d002d893666dcf358866"
+    },
+    {
+      "path": "LCD_RGB/history/wildfire-480x272/tests/tb_lcd_top.v",
+      "bytes": 3153,
+      "sha256": "97b526888685034233a13d4ed1eb9b5d058797109fd206383afaeb28f849fdcc"
+    },
+    {
+      "path": "LCD_RGB/reports/00-color-bars.png",
+      "bytes": 11365,
+      "sha256": "148d14bd268c752a8ecbe306a73a4bd8229a5f2c1f07f9175cd1ed251c3e1737"
+    },
+    {
+      "path": "LCD_RGB/reports/01-rgb-ramps.png",
+      "bytes": 7092,
+      "sha256": "19202703f5e0e8dea796157ec031ceb5037ae089abc8de375ed5e1a61923601f"
+    },
+    {
+      "path": "LCD_RGB/reports/02-gray-ramp.png",
+      "bytes": 7018,
+      "sha256": "e91dd64d101e2a3ca8018f983a8a39099503fb287a672dd0c1a9b6a164509450"
+    },
+    {
+      "path": "LCD_RGB/reports/03-gray-16.png",
+      "bytes": 13347,
+      "sha256": "50ba44c179e3eb2492642a9423436bd3daf90c1128f252c9270f33d0d2a7baa4"
+    },
+    {
+      "path": "LCD_RGB/reports/04-near-black.png",
+      "bytes": 12752,
+      "sha256": "b4134510f27dc4f35755105e3422f89362f26ae8f3bcba54f3c852638ec1936e"
+    },
+    {
+      "path": "LCD_RGB/reports/05-near-white.png",
+      "bytes": 9947,
+      "sha256": "89247dfd138d5995b81e8911c263b37b16d1000040c2e80a5ebc153ea7b36334"
+    },
+    {
+      "path": "LCD_RGB/reports/06-white.png",
+      "bytes": 2245,
+      "sha256": "62589af4ae6661b77d541afc06a47824c180cb784ef1b4012cb42c3b237c7367"
+    },
+    {
+      "path": "LCD_RGB/reports/07-black.png",
+      "bytes": 1196,
+      "sha256": "94ed90ab5cbd201db34230580160c1aa76b41d278162395c11c85959e72f3ed0"
+    },
+    {
+      "path": "LCD_RGB/reports/08-gray-50.png",
+      "bytes": 2247,
+      "sha256": "ddd34b100429e09944eb396d1c81019594298c6deed1c5c8f1c060252b14a2b1"
+    },
+    {
+      "path": "LCD_RGB/reports/09-checkerboard.png",
+      "bytes": 5210,
+      "sha256": "a80ff25f548c18a06cdbb11ba3634ec32eb5c63998c643d85910b768edd2a40b"
+    },
+    {
+      "path": "LCD_RGB/reports/10-walking-bit.png",
+      "bytes": 11328,
+      "sha256": "c983b7e2a3ff80fc1128ef99dc572fa258fa73836976fd16216a238be8c1f81a"
+    },
+    {
+      "path": "LCD_RGB/reports/11-border-cross.png",
+      "bytes": 3328,
+      "sha256": "b6607d98554341ef1bf92c7c8b4a97e7e1c304651cbbc9e03c30e59542ed6977"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121154_632126.json",
+      "bytes": 612,
+      "sha256": "58b75f66131f0580d166b657474320d5de6e52850b3ed78bfea82f2c2f645896"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121154_632126_syn.log",
+      "bytes": 49,
+      "sha256": "97134fe6b4dd6cd22a3a94eae24bc7328f830a486257376c9c370c45066b14f9"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121226_811378.json",
+      "bytes": 836,
+      "sha256": "b515bcd10d972a576c926ff86045afaeaae76447ef80a6553b113ca321c4e86e"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121226_811378_pnr.log",
+      "bytes": 1470,
+      "sha256": "0cc11d259c1265e927e735c13ec24ce7310f8dcfb4190be1c346d0d40cdcb18c"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121226_811378_syn.log",
+      "bytes": 2810,
+      "sha256": "04f89e7bc12db04406f2d35dad9fdde45e08cb91fb1f92b4587f58e89dc8338b"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121450_696787.json",
+      "bytes": 1660,
+      "sha256": "6ccdd33692cd24175ee806c9941dc9ff1f8343b5a551aa1fc7c933a3033c5912"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121450_696787_pnr.log",
+      "bytes": 2350,
+      "sha256": "9f0de3deb28db0ba9b83225beda9e1284fb1cfdf3a9d9f6efb5df0f4b61c47ec"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121450_696787_syn.log",
+      "bytes": 1900,
+      "sha256": "be6b70473bd60103a709e027f23c8ce13456b1ac6d1b4b3a0a4101d00ab42686"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121635_344393.json",
+      "bytes": 1660,
+      "sha256": "c70e62c589ed1e2bc7ba5272b39366c703330952203c986a86f978876a5973d9"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121635_344393_pnr.log",
+      "bytes": 2350,
+      "sha256": "c220cb5c383808a5f9f68af544f1b672daec39a3de5c842756e2ced0f943cbfc"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_121635_344393_syn.log",
+      "bytes": 1900,
+      "sha256": "e54c6d8cdd3b9fad825909bab09f85aa3eba98b684935fdd1a60d520bc0a305d"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_123056_995019.json",
+      "bytes": 875,
+      "sha256": "a55f39dea78696beca2771c61ade088b98b12045d7e7c2acdc333bc9ed31c8c4"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_123056_995019_pnr.log",
+      "bytes": 2350,
+      "sha256": "ef44163bde9edd9e44c93440f664ea8d93f0d2519a541e2402bf34afb0d3c80b"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_123056_995019_syn.log",
+      "bytes": 1900,
+      "sha256": "71e6a847c83411ea12ab8f3c24faf9c71a6cb1491939305f1108f40d0f8d2851"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_123255_875983.json",
+      "bytes": 1660,
+      "sha256": "c936c3e5ac154e09a1a5038e0db8496799a977d1237279ef6dbb55e2287d8ec0"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_123255_875983_pnr.log",
+      "bytes": 2350,
+      "sha256": "5ac3fe68f2a5be759d08848d30f77acd82b15e304618de0ff3d93219304b66b3"
+    },
+    {
+      "path": "LCD_RGB/reports/build_20261024_123255_875983_syn.log",
+      "bytes": 2162,
+      "sha256": "0f0a341d176d8bed09c89b756261ea4a2a958a8c24cca73e63cf66ec407c6580"
+    },
+    {
+      "path": "LCD_RGB/reports/device_after_lcd_20261024_124252_125173.json",
+      "bytes": 621,
+      "sha256": "d5f62432bddb3e9bd7f2e7591ff0d1e7853895b189d95df17ae677db3589d053"
+    },
+    {
+      "path": "LCD_RGB/reports/device_after_lcd_20261024_124252_125173.log",
+      "bytes": 257,
+      "sha256": "6f012ed35dda56336718440184706faff3eeaa8317830cd75aabb5ff8ad6c82b"
+    },
+    {
+      "path": "LCD_RGB/reports/last_build.json",
+      "bytes": 1660,
+      "sha256": "c936c3e5ac154e09a1a5038e0db8496799a977d1237279ef6dbb55e2287d8ec0"
+    },
+    {
+      "path": "LCD_RGB/reports/last_failure.json",
+      "bytes": 875,
+      "sha256": "a55f39dea78696beca2771c61ade088b98b12045d7e7c2acdc333bc9ed31c8c4"
+    },
+    {
+      "path": "LCD_RGB/reports/simulation.json",
+      "bytes": 1900,
+      "sha256": "73a28d922ae5cf7e9d6e0fef461c9a4a100acfd1f8419e6643a95c744fcb5f2a"
+    },
+    {
+      "path": "LCD_RGB/reports/sram_radio_20261024_124217_889398.json",
+      "bytes": 1104,
+      "sha256": "4810e7ef5e00e8e9ec1ae5f584bfb160686bd8a03ea202a82a08c36763a4d0c8"
+    },
+    {
+      "path": "LCD_RGB/reports/sram_radio_20261024_124217_889398.log",
+      "bytes": 1382241,
+      "sha256": "bbdf4ef58ad3be47369add9937e1dae952fe7aa6fb74302a2df470abf571e602"
+    },
+    {
+      "path": "LCD_RGB/reports/test-patterns-preview.png",
+      "bytes": 18999,
+      "sha256": "808f55a1abb58df3a3c9c4f294bddaf754995c094a2780e3e9ca2883f71a14dc"
+    },
+    {
+      "path": "LCD_RGB/reports/verification.json",
+      "bytes": 3363,
+      "sha256": "fc358dbc2c59d3ae48c94100eb9323c1bd09ee96175649a20b79273035fd2bff"
+    },
+    {
+      "path": "LCD_RGB/rtl/lcd_pll.v",
+      "bytes": 6072,
+      "sha256": "7ce420aeb5c01a033d14a91137582bf76c49ec6d05d1f9461fe710aeb38ffaf7"
+    },
+    {
+      "path": "LCD_RGB/rtl/lcd_rgb_top.v",
+      "bytes": 930,
+      "sha256": "c44202f2ecf2752585fd061a5f44c6c4c5982f53bd333cc597cf2bb309f62f1c"
+    },
+    {
+      "path": "LCD_RGB/rtl/lcd_scan.v",
+      "bytes": 4458,
+      "sha256": "cbe1e1b73e578b6f2cd3df2071130b6e9b4c449c35c267bdece5341094b06f94"
+    },
+    {
+      "path": "LCD_RGB/tests/check_lcd.py",
+      "bytes": 5563,
+      "sha256": "c567651983558fbe24c43c1c89bf80c0e66feb19c7fc77ede36152dab1bbe112"
+    },
+    {
+      "path": "LCD_RGB/tests/tb_lcd_scan.v",
+      "bytes": 3065,
+      "sha256": "680a63debc862f043dddf01dfb16a1c0b6f5517d4a058a4a9903d3d56b09f95f"
+    },
+    {
+      "path": "LCD_RGB/tests/tb_lcd_top.v",
+      "bytes": 3336,
+      "sha256": "17f7d3c04ba4d118cdf9d6cedfe7be0effab6584765dfc6243ebff882f19cdbe"
+    },
+    {
+      "path": "README.md",
+      "bytes": 661,
+      "sha256": "e5b920a19cc80460b5ae385930df2dea5d94d0440907cd021aae0ab4d63105e8"
+    },
+    {
+      "path": "RTL8723DS/.gitignore",
+      "bytes": 40,
+      "sha256": "f9a4c6d2970956baaf6e73c4d787199270979be6ca14af9cec50e4bdf4b85659"
+    },
+    {
+      "path": "RTL8723DS/PORT_SOURCE.json",
+      "bytes": 290,
+      "sha256": "0f94655a03df2a4f69a84e417a6edc0c393d82fc63669acc529c72420da7764f"
+    },
+    {
+      "path": "RTL8723DS/README.md",
+      "bytes": 13954,
+      "sha256": "e3e181b5dc1f898ccb6a72a3f816a476e332f68c80c1283b8b5eefae69914dc0"
+    },
+    {
+      "path": "RTL8723DS/build.sh",
+      "bytes": 219,
+      "sha256": "37fcca93b3eaa932447ee9a60498f4f7c364682a278f5a17421ea90263fc2d6d"
+    },
+    {
+      "path": "RTL8723DS/build.tcl",
+      "bytes": 1252,
+      "sha256": "cad093e6ef6bd7d1674e81869c650ec89da4e825f46f9ec174bb64cc00e8d371"
+    },
+    {
+      "path": "RTL8723DS/build_gao.tcl",
+      "bytes": 1277,
+      "sha256": "67e185a04bdb2093974e0ffaa32c8f2b8752b871fad23e05e406d6811c45c8e6"
+    },
+    {
+      "path": "RTL8723DS/build_wifi_scan.tcl",
+      "bytes": 1350,
+      "sha256": "35c33bc3e567495479c14f0759fc890606fcddf7c8709aa7f0e643d828c9509b"
+    },
+    {
+      "path": "RTL8723DS/constraints/radio.cst",
+      "bytes": 1558,
+      "sha256": "a4e37b26b780d9777994afefad229706ea5dab14d9d5af8de60ec38541c4d88a"
+    },
+    {
+      "path": "RTL8723DS/constraints/radio.sdc",
+      "bytes": 520,
+      "sha256": "a46802858cd31f6e9c7aa91e854dc41ace01edffcff4704bc4cb31a0e4049ebf"
+    },
+    {
+      "path": "RTL8723DS/constraints/wifi_scan.cst",
+      "bytes": 1722,
+      "sha256": "44caeb3fddca847cccbce4edae36743e07157ee73a379ae3065149e1caf816fc"
+    },
+    {
+      "path": "RTL8723DS/constraints/wifi_scan.sdc",
+      "bytes": 654,
+      "sha256": "bccb34bf6526535dabfccb207e45e5510440b91ef0d794350c145cd7f6697f3d"
+    },
+    {
+      "path": "RTL8723DS/debug/radio.gao",
+      "bytes": 49349,
+      "sha256": "a66a494fbd054382217220970e1097f7892e8402430a734c1bb8413533fd6f7f"
+    },
+    {
+      "path": "RTL8723DS/prepare_adapted.py",
+      "bytes": 3252,
+      "sha256": "439771ffc1df3498b68bb67014ebe8e1640781711ec3b7f053de9dd955f97296"
+    },
+    {
+      "path": "RTL8723DS/prepare_sources.tcl",
+      "bytes": 1970,
+      "sha256": "6fe426a7337feea917d24e68d7c80df07ea22fb22e94a37df9f6a16298714305"
+    },
+    {
+      "path": "RTL8723DS/program_sram.py",
+      "bytes": 5807,
+      "sha256": "fdfc76388706ad31419449c08b955d0b7991dfdfd2b02f205ec74832074b005a"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_board.log",
+      "bytes": 224,
+      "sha256": "6fbef7ccbe8a2c86cf510b0d23a8ee631c424cdd54015ff5c45b60d4ce34c5a9"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_board_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_gatt.log",
+      "bytes": 306,
+      "sha256": "805095efc2ec76343327349d3bb162a6e1c299d5536b34e7d873897f2018b8a9"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_gatt_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_h5.log",
+      "bytes": 291,
+      "sha256": "3b2f7a016479f62cc579eb9423ef1d999f3cf017172048398b4cb911ab1c567a"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_h5_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_simulation_results.json",
+      "bytes": 289,
+      "sha256": "c241d3e586e0dd8be5795c2a3d59b89c74cfc447ca4969c58936819ce295db73"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_system.log",
+      "bytes": 349,
+      "sha256": "d13eb9c39b5310c27b68e8cfebe88479df2c2fdc56a44b89efb58289aa9bd5f2"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_system_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_wrong_rom.log",
+      "bytes": 252,
+      "sha256": "99e8101d5cff8e25ca8acc1e9223e00b5c876a7f0eee013d45fd9dc863d3ab28"
+    },
+    {
+      "path": "RTL8723DS/reports/adapted_wrong_rom_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/advertising_after_repair_ready.json",
+      "bytes": 274,
+      "sha256": "117b48216110f2f3cb683301a0ea1b63af068c60342c2ade59a6fea09e3954a0"
+    },
+    {
+      "path": "RTL8723DS/reports/ble_20261023_first.json",
+      "bytes": 166,
+      "sha256": "54b32ced3c1f79e40697cbdb7235a72e3d8e231d17ef350eb2473111356641c5"
+    },
+    {
+      "path": "RTL8723DS/reports/ble_after_repair_original.json",
+      "bytes": 2179,
+      "sha256": "cca846a9954b2eaa9a14cf7f14a9dbb7972abd541d50cbc9bd8a00c80ac83774"
+    },
+    {
+      "path": "RTL8723DS/reports/ble_after_wifi_handoff.json",
+      "bytes": 2179,
+      "sha256": "d486d162ba744d75d03214b4f0dd65d8af8ba39125da7012de3ffad50f1d64ad"
+    },
+    {
+      "path": "RTL8723DS/reports/ble_after_wifi_scan.json",
+      "bytes": 264,
+      "sha256": "20e7294c057ae20202caffe73c11c39c4f1f767dfd1f28bc85b4644d635f6e77"
+    },
+    {
+      "path": "RTL8723DS/reports/ble_wifi_disabled.json",
+      "bytes": 166,
+      "sha256": "e6c56a3da09b6c4e3ba183f855d525c2e8df5fd0b3d52c5009182572e114c056"
+    },
+    {
+      "path": "RTL8723DS/reports/board.log",
+      "bytes": 224,
+      "sha256": "6fbef7ccbe8a2c86cf510b0d23a8ee631c424cdd54015ff5c45b60d4ce34c5a9"
+    },
+    {
+      "path": "RTL8723DS/reports/board_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_040415_402004.json",
+      "bytes": 616,
+      "sha256": "183cdb340b3ff786c82059e2dad058ff94951068780fc5598694b075de2e7cde"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_040415_402004_syn.log",
+      "bytes": 49,
+      "sha256": "97134fe6b4dd6cd22a3a94eae24bc7328f830a486257376c9c370c45066b14f9"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_040616_688784.json",
+      "bytes": 843,
+      "sha256": "f15ed9c6ef4034105782f46a9cccace9098e86047893572578e7b81f717c4ad3"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_040616_688784_pnr.log",
+      "bytes": 1089,
+      "sha256": "6fa74b07646082cf142d8ae97cc3f38f902bbedb5c2233d36cae45b782e87696"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_040616_688784_syn.log",
+      "bytes": 8688,
+      "sha256": "9d8ba2c08a9bfbd8c079f8393c5a68f87a0625d4803feffbc06fc2b349d03ecb"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_040836_846652.json",
+      "bytes": 1112,
+      "sha256": "460bb13e10f695ef7486b5bbfc75d3cf2b2b8efeaedd8a1cf77b3ef19b9bd886"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_040836_846652_pnr.log",
+      "bytes": 2376,
+      "sha256": "af4537920bf4ca53d5ad182744487fdd7f197ef2ebc44700504172f7ffb49bb9"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_040836_846652_syn.log",
+      "bytes": 8688,
+      "sha256": "a5061f436a9f269ab678d434baba5c6900ad38892762df2cae7d87b502876677"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_041726_201293.json",
+      "bytes": 7054,
+      "sha256": "0af8fbbb0f6f34dab15b7f942f49b614c466c5e0891fabb0f5769ee8ed3b0a8a"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_041726_201293_pnr.log",
+      "bytes": 2376,
+      "sha256": "d37c18f45f5a97e60212eb6104297b4f7af72004b6b206ac460894f88fb554bc"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_041726_201293_syn.log",
+      "bytes": 8688,
+      "sha256": "9fe80816bf2fe308346df14f65678f5b147f1f4c016fc11c7917d5b2c3104aa4"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_042613_031884.json",
+      "bytes": 846,
+      "sha256": "c132a60164ec07c89f74e3203be696bfb66c192d096733576b0c265c60ba6859"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_042613_031884_pnr.log",
+      "bytes": 84641,
+      "sha256": "782a2cddc1f21ba8e75458b18dbe6d602324159b7bc72187779c709cebbf6897"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_042613_031884_syn.log",
+      "bytes": 8720,
+      "sha256": "2019b9a5ffbe028977b5ca337cf0ef319bd7cc575f82245046c7a773d7e363c9"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_042729_607546.json",
+      "bytes": 7356,
+      "sha256": "58e2b4f71dd5550bc5c919b70c7b2e1335de1f8549623175c57d7c338edfb9df"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_042729_607546_pnr.log",
+      "bytes": 2877,
+      "sha256": "48b45686695628905e4c1793a2834eda86ba4ed85c7cca389c89f50f356e7e46"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_042729_607546_syn.log",
+      "bytes": 8720,
+      "sha256": "f40da64b3a809ba0757b49b65aa3fc01b25a41196e1ce12e1cf9fe1bf514b3ad"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_043345_788620.json",
+      "bytes": 7356,
+      "sha256": "6114a289e1dc9eb44375d3555aa698c7cc1d28de9e3e0752fdfa320f769322c7"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_043345_788620_pnr.log",
+      "bytes": 2877,
+      "sha256": "5c64df67baa4d9f8dca2d409ec94c825c67eb8e53953ff65e7a3f314953cc842"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_043345_788620_syn.log",
+      "bytes": 8720,
+      "sha256": "35ce56d8277030ce4519c53d492cdb509ba9ba49ee409dd269ec512f3c7eb7d0"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_204229_125440.json",
+      "bytes": 626,
+      "sha256": "210a66a543aac91a6e2092ad6cd8548550acfb63396e694c150e4c461f12056e"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_204229_125440_syn.log",
+      "bytes": 8557,
+      "sha256": "a0b6931cb5012499b414c1b507ca28a43bf98dd473584f74ace3f9cdfb4ccc4e"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_204439_868070.json",
+      "bytes": 852,
+      "sha256": "6413d8918716525c1753f769ddce7adbc06f5c13bd66ec8a9bf9a549284bf2ad"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_204439_868070_pnr.log",
+      "bytes": 1811,
+      "sha256": "1935eee1d7c266a2fcd7f514e45b045378ddb5c41b22360ea636e169f32c2907"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_204439_868070_syn.log",
+      "bytes": 9527,
+      "sha256": "b28a59332edd7b331a0668800de31d53be700804219e05072f4ce0a03494cfc8"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_205149_879643.json",
+      "bytes": 7558,
+      "sha256": "222e64bb439a3c03d11cfbdcc09135dc4be6a75d2b9ce48c075fae275ed3a79e"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_205149_879643_pnr.log",
+      "bytes": 2418,
+      "sha256": "e63bb87c53457b3fc9d4b94b6d16dcece76900e5fb2e37e6a1ded4b8a7cc8232"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_205149_879643_syn.log",
+      "bytes": 9704,
+      "sha256": "f2f2d25e6558571e60d1cd47548c9ac338245b210ed26698bf664a3963d56a0a"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_211729_194831.json",
+      "bytes": 7971,
+      "sha256": "64f79ddc9fc2e15300e3587b016d306ef7218382be5c45ce1c481335e00938dc"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_211729_194831_pnr.log",
+      "bytes": 2584,
+      "sha256": "a3f4c0d2a9229968c368841948cd5a8e4342d5ae7413f36d7fa1a18f5bd192e1"
+    },
+    {
+      "path": "RTL8723DS/reports/build_20261023_211729_194831_syn.log",
+      "bytes": 9704,
+      "sha256": "c91f57936a6e1bf0f47197410d7af0034a140543fd9155d5ea12659b543d4cbd"
+    },
+    {
+      "path": "RTL8723DS/reports/continuous.log",
+      "bytes": 200,
+      "sha256": "6c3648149773972aa1c426c717e86c330bcfb1bf3ca040969fc488657ea4ec69"
+    },
+    {
+      "path": "RTL8723DS/reports/continuous_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/gao_first_build.json",
+      "bytes": 7356,
+      "sha256": "58e2b4f71dd5550bc5c919b70c7b2e1335de1f8549623175c57d7c338edfb9df"
+    },
+    {
+      "path": "RTL8723DS/reports/gatt.log",
+      "bytes": 306,
+      "sha256": "805095efc2ec76343327349d3bb162a6e1c299d5536b34e7d873897f2018b8a9"
+    },
+    {
+      "path": "RTL8723DS/reports/gatt_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/h5.log",
+      "bytes": 291,
+      "sha256": "3b2f7a016479f62cc579eb9423ef1d999f3cf017172048398b4cb911ab1c567a"
+    },
+    {
+      "path": "RTL8723DS/reports/h5_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/jtag_after_repair_gatt.json",
+      "bytes": 4548,
+      "sha256": "22a7112e6cbbbdf85b1030f9b4df58dc16d9f44f618e7ebc9cca5f27bc874dd1"
+    },
+    {
+      "path": "RTL8723DS/reports/jtag_after_repair_original.json",
+      "bytes": 4546,
+      "sha256": "2a718fa1ec19d7d786df9fb9f5ce34a670467c9b14d4057578ea86d0753c5833"
+    },
+    {
+      "path": "RTL8723DS/reports/jtag_after_repair_ready.json",
+      "bytes": 4545,
+      "sha256": "7ac0ef9621d9732cd3c4254331e90990cc13bd17896252cb2fe67c50726d3592"
+    },
+    {
+      "path": "RTL8723DS/reports/jtag_raw_uart_decoded.json",
+      "bytes": 1664,
+      "sha256": "9bd858f1798b63165957d95a5a97f289f748e18b63161b0769ccd100d0992502"
+    },
+    {
+      "path": "RTL8723DS/reports/jtag_status_20261023.json",
+      "bytes": 4553,
+      "sha256": "b05cf5a3f0459ad392c695bdb2b702db3a2bf0c6806b9fbd371ddb199be2d375"
+    },
+    {
+      "path": "RTL8723DS/reports/jtag_wifi_scan_transport_probe.json",
+      "bytes": 4554,
+      "sha256": "4d657f9d6c814606de6a179596a5e08f89ccc42e25c6100545ab3f25740ab1b9"
+    },
+    {
+      "path": "RTL8723DS/reports/last_build.json",
+      "bytes": 7971,
+      "sha256": "64f79ddc9fc2e15300e3587b016d306ef7218382be5c45ce1c481335e00938dc"
+    },
+    {
+      "path": "RTL8723DS/reports/last_failure.json",
+      "bytes": 852,
+      "sha256": "6413d8918716525c1753f769ddce7adbc06f5c13bd66ec8a9bf9a549284bf2ad"
+    },
+    {
+      "path": "RTL8723DS/reports/production_build.json",
+      "bytes": 7054,
+      "sha256": "0af8fbbb0f6f34dab15b7f942f49b614c466c5e0891fabb0f5769ee8ed3b0a8a"
+    },
+    {
+      "path": "RTL8723DS/reports/radio_after_final_scan.json",
+      "bytes": 633,
+      "sha256": "a693e6d4ae2237c49f2a02b3f76a0b6ea65c1a627d6e95e625bdfb43512a2832"
+    },
+    {
+      "path": "RTL8723DS/reports/radio_simulation_results.json",
+      "bytes": 314,
+      "sha256": "e34a4ff213504e967457af13815460b85b0378c13587ff182436028cda751c67"
+    },
+    {
+      "path": "RTL8723DS/reports/sdio.log",
+      "bytes": 833,
+      "sha256": "7f0dd121390167d63cf94c5663c6480d9a18da7accf1fe7b18fd8367c50232fc"
+    },
+    {
+      "path": "RTL8723DS/reports/sdio_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/sdio_transfer.log",
+      "bytes": 719,
+      "sha256": "b2f55a6682d83ffa2dfe8d16cf5067741f2e13ba87a3e9d57907cc2144c9f33f"
+    },
+    {
+      "path": "RTL8723DS/reports/sdio_transfer_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/simulation_results.json",
+      "bytes": 289,
+      "sha256": "310493d82d8054d503bbefd46c4554a3d7d636f0c8ee4a7723664e75282ee46e"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_041900_964284.json",
+      "bytes": 1112,
+      "sha256": "f26a3fabc4001b62086d303beae5dc2434ca604c2ccd0e67ade68fcd18ff4112"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_041900_964284.log",
+      "bytes": 1382241,
+      "sha256": "e6b636a59927ee9774bebb3a9b8bb9e2ab97ed54dd8da1c2c897fba2670ee60f"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_043010_397420.json",
+      "bytes": 1107,
+      "sha256": "f14ffb5c5b52f22c0003a49b23b8f8922221e30e93aac2277670f735736a08c9"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_043010_397420.log",
+      "bytes": 1382241,
+      "sha256": "1c6e83ede717fcc35ff8a868da1e1643be68115c1a2153c20d3b1bd5c63caeb8"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_043614_248522.json",
+      "bytes": 1107,
+      "sha256": "a14d4d78950f86b56c2295c4cddc2226f7e90f90ce390cf381cc03c68460b522"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_043614_248522.log",
+      "bytes": 1382241,
+      "sha256": "4f379284f9ceff34c09ea9b77d44460c7340fe470c2271eba58f3712bf9e00f1"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_192650_246253.json",
+      "bytes": 1125,
+      "sha256": "a8159df82bc14cafddd038a7f429501639a4aad2284367452a0496b5737c739e"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_192650_246253.log",
+      "bytes": 1382241,
+      "sha256": "c3a8ee6cbf6861f7ef01fbad5b325facc0b2ccde93f3a3cf37c017b25304c21c"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_193022_415946.json",
+      "bytes": 1125,
+      "sha256": "0baa379dfea066d8d0bdfd96e7fd82b3b2045e516afe14313dc86f3f77b7381f"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_193022_415946.log",
+      "bytes": 1382241,
+      "sha256": "30cb7d9bf410fc864c321126b960407f479f19e15db026ffae25c231fcda8a26"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_205656_906062.json",
+      "bytes": 1133,
+      "sha256": "b21a2d894e071fee00f33e24f248cbde46404329990f25974aef714d2f5c0e59"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_205656_906062.log",
+      "bytes": 1382241,
+      "sha256": "3d50a28cbcd9e062579f96d2b310d38c25c6622da65be30c5a3b71a8147af70d"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_212101_124027.json",
+      "bytes": 1133,
+      "sha256": "e7d6e1aeafc445b52f53e69026f9d849ffff34387fe5a1e956e743bcc43bfdde"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_212101_124027.log",
+      "bytes": 1382241,
+      "sha256": "1ccce6d513c14e9657d053b9db696cd06fb2f56105dcc53671466d4009732721"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_214622_107465.json",
+      "bytes": 1133,
+      "sha256": "72174c0c5eeb19f37b438274807e48fcf1a189b1ffa15b07700fae07b1f61989"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_214622_107465.log",
+      "bytes": 1382240,
+      "sha256": "6eaca412cb4f7b693a7c20241d16b0ab706e839e8e9a78a50081de688eb89857"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_214943_582001.json",
+      "bytes": 1133,
+      "sha256": "29442eba07a22c7756211c2748533f577cc602c7eaececd48fa7ff90b4ec0334"
+    },
+    {
+      "path": "RTL8723DS/reports/sram_radio_20261023_214943_582001.log",
+      "bytes": 1382241,
+      "sha256": "1ccce6d513c14e9657d053b9db696cd06fb2f56105dcc53671466d4009732721"
+    },
+    {
+      "path": "RTL8723DS/reports/status_20261023_first.json",
+      "bytes": 116,
+      "sha256": "597890504b845ac5bfbf558a9d1e3600249154ad14c73ead52ef8d4b4daf05e1"
+    },
+    {
+      "path": "RTL8723DS/reports/status_uart.log",
+      "bytes": 224,
+      "sha256": "25b88cabb65ebab28444328c4bc3a83de208f9da81d489b472d377bac1fd3c41"
+    },
+    {
+      "path": "RTL8723DS/reports/status_uart_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/system.log",
+      "bytes": 349,
+      "sha256": "d13eb9c39b5310c27b68e8cfebe88479df2c2fdc56a44b89efb58289aa9bd5f2"
+    },
+    {
+      "path": "RTL8723DS/reports/system_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/verification_after_repair.json",
+      "bytes": 3046,
+      "sha256": "9531daad4991a43af8c2f58fd87d1377a4414a8fbbbdb740a22ed88bc8dbe159"
+    },
+    {
+      "path": "RTL8723DS/reports/verification_wifi_ble.json",
+      "bytes": 930,
+      "sha256": "f71a9ca476ffd4c0f3da57bc5bdfeff6e5c120ba5faef3ead3a6a0120c195e63"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_factory_calibration.json",
+      "bytes": 1224,
+      "sha256": "081a4c6a1a07e65dce0f15e2c60c6ff54421d1a07702243cc27ea1f09bcb8c46"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_firmware_check.json",
+      "bytes": 590,
+      "sha256": "0ec55bea805eb1e67d2a53a00e7072206793eb01a62bdca87c998b70a0f065f7"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_mailbox.log",
+      "bytes": 258,
+      "sha256": "698b95204ddb08e107ee324571f5dc18bc5a70453a915401030823580b87981e"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_mailbox_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_mailbox_enumeration.json",
+      "bytes": 167,
+      "sha256": "80ee263b6e6151734eb8e67830609795312edbdbfb9025c19130a6d8c5181225"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_mailbox_enumeration_v2.json",
+      "bytes": 369,
+      "sha256": "eba566f6aa06ca31538e1749c07f84b4c92c34310688ae14453257a172853d97"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_power_check.json",
+      "bytes": 462,
+      "sha256": "2d8fce064b7ceb66859a22a5ee13fed594ec3dc677db5e2c313c25f88d362f60"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_ant_paths.json",
+      "bytes": 107,
+      "sha256": "74a7d5b57fdc2878be6fc5ab24e71428640345dc2e94831b2f317f411706fc2d"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_antenna_check.json",
+      "bytes": 291,
+      "sha256": "add27464b8242544f1ddf6a8159243221cc61552623affee0efb1065eb2e36fe"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_bt_handoff.json",
+      "bytes": 53626,
+      "sha256": "84817df676f59721b7c962590d030709776d198b2b50b22802f678bed83073d8"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_clean_check.json",
+      "bytes": 51116,
+      "sha256": "307e7790bce460119ac7484fe87b8964c805c6aae2d62b842646d8002c3b88c3"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_concurrent_rx_check.json",
+      "bytes": 291,
+      "sha256": "add27464b8242544f1ddf6a8159243221cc61552623affee0efb1065eb2e36fe"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_crystal_check.json",
+      "bytes": 1473,
+      "sha256": "7a24135462822d61e842c10df5351a09730a648566c2c1a1fcc2f56c005cddf2"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_final.json",
+      "bytes": 63150,
+      "sha256": "81f4f1b1deb184d8bdf3b4be539b72315b9f30d6b3a7f5e81cf00637138df213"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_first.json",
+      "bytes": 903,
+      "sha256": "713b21a56e0b41f9a90c636d2ebf4caabf817f1292601172fae804fd0976ab29"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_iqk_check.json",
+      "bytes": 631,
+      "sha256": "b5ef3ee6d3e704fef46fd430cf56c0bc0d0b52ae3af6132555224ec854c7a273"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_mac_trx_check.json",
+      "bytes": 291,
+      "sha256": "add27464b8242544f1ddf6a8159243221cc61552623affee0efb1065eb2e36fe"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_rx_limit_check.json",
+      "bytes": 39264,
+      "sha256": "f3dca2bd57c374c47e29224e932298c8e7be882fc7cbc755dc272e56fe0b7c77"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_verified.json",
+      "bytes": 58335,
+      "sha256": "3ca2b7e93086d2a04dbc3e85c916030b23ca02e038ef01e6ef858b44f45fc72d"
+    },
+    {
+      "path": "RTL8723DS/reports/wifi_scan_wlan_grant_check.json",
+      "bytes": 291,
+      "sha256": "add27464b8242544f1ddf6a8159243221cc61552623affee0efb1065eb2e36fe"
+    },
+    {
+      "path": "RTL8723DS/reports/wrong_rom.log",
+      "bytes": 252,
+      "sha256": "99e8101d5cff8e25ca8acc1e9223e00b5c876a7f0eee013d45fd9dc863d3ab28"
+    },
+    {
+      "path": "RTL8723DS/reports/wrong_rom_compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "RTL8723DS/rtl/ble_bringup_top.v",
+      "bytes": 5355,
+      "sha256": "99c6bc02db13889b401a7609974551b3dab642bf98c4b2fd06dbf0c033574eea"
+    },
+    {
+      "path": "RTL8723DS/rtl/radio_status_uart.v",
+      "bytes": 1605,
+      "sha256": "991928b1a22d0cd3871a89363e9c95b19a81d3569dd514e49a942c85ea322427"
+    },
+    {
+      "path": "RTL8723DS/rtl/rtl8723ds_138k_top.v",
+      "bytes": 3273,
+      "sha256": "d0063ce043ecc83729d476752b952ded48190c8a1b730c454ff66dcb2d2692d8"
+    },
+    {
+      "path": "RTL8723DS/rtl/sdio_command.v",
+      "bytes": 5176,
+      "sha256": "8420d6edd3813541daac6b48502bd832bbebd28c54e0d554ae3e82d1e262ac0a"
+    },
+    {
+      "path": "RTL8723DS/rtl/sdio_identify.v",
+      "bytes": 9385,
+      "sha256": "f833afca1c19c3f038ea87e8282771b452e51c929c2354afc18db2f478ed9cd3"
+    },
+    {
+      "path": "RTL8723DS/rtl/sdio_transfer.v",
+      "bytes": 8152,
+      "sha256": "65d289ad304b6e6a46944229746273d3edcc02c9224aa23dbbafdbead49835f5"
+    },
+    {
+      "path": "RTL8723DS/rtl/uart_tx.v",
+      "bytes": 1378,
+      "sha256": "3513207cae9e529b0dabd45040a33012440ad4c1fc842571b4cb70ece5d09e8f"
+    },
+    {
+      "path": "RTL8723DS/rtl/usb1_passive_monitor.v",
+      "bytes": 3149,
+      "sha256": "31a1e7ce848b0ab4ad73cc85c37156f99f594d49323ec6811e5b28d1ce1ffe13"
+    },
+    {
+      "path": "RTL8723DS/rtl/wifi_jtag_mailbox.v",
+      "bytes": 3610,
+      "sha256": "5a1de9e12eaef0b8e4e7b84fe3b72280b2948477bd3570c452ee1747f0d7b8d0"
+    },
+    {
+      "path": "RTL8723DS/rtl/wifi_scan_top.v",
+      "bytes": 4744,
+      "sha256": "78881399de509c7bc59006b3dcc36730a38e62d136cc8e84c80ccc9b04f7e600"
+    },
+    {
+      "path": "RTL8723DS/run_sim.sh",
+      "bytes": 354,
+      "sha256": "a6b921f97f1745a83a08c09f54526c84087573a7729364f3b7f7cdd4a8f44dd5"
+    },
+    {
+      "path": "RTL8723DS/tests/fixtures/wifi_beacons.json",
+      "bytes": 6389,
+      "sha256": "1ed9e120c2f4988b1c0c0116a4aeec67be73e194ed52c8b74faada756bc7e5fb"
+    },
+    {
+      "path": "RTL8723DS/tests/radio.py",
+      "bytes": 1767,
+      "sha256": "fcb42cb7bdb4069454402b5a87f17872b2accf9a2e64e2e79a705c0077070acf"
+    },
+    {
+      "path": "RTL8723DS/tests/simulate.py",
+      "bytes": 2861,
+      "sha256": "8e9c1c15fa4c5ec290dfdb78e1f86a8d6cc9c1c9124f073ec15b88872cb8060d"
+    },
+    {
+      "path": "RTL8723DS/tests/tb_ble_bringup.v",
+      "bytes": 2366,
+      "sha256": "3bf3bdbe7051e97a05b721584d419d469ca3113b6e98b46b18d33a0bf4643442"
+    },
+    {
+      "path": "RTL8723DS/tests/tb_continuous.v",
+      "bytes": 780,
+      "sha256": "2e8a966b066b416d0423be18b3657dbb87f48d15e3cc46c4fe0a48191bba1d9f"
+    },
+    {
+      "path": "RTL8723DS/tests/tb_radio_status_uart.v",
+      "bytes": 1968,
+      "sha256": "10200e06c3eec4bbdfdc6da724cd7b39fec1b44f556a10decf75e7409d0ddc8b"
+    },
+    {
+      "path": "RTL8723DS/tests/tb_sdio_identify.v",
+      "bytes": 7306,
+      "sha256": "b1b5fec203b6cc50d546416b9717c11bfe411a59b0edd6fdac1f24b90e4be04c"
+    },
+    {
+      "path": "RTL8723DS/tests/tb_sdio_transfer.v",
+      "bytes": 5465,
+      "sha256": "4f3bb1a54190d69cf9910f6da75062b00692d3387328b4559a5a2aef9a9586b5"
+    },
+    {
+      "path": "RTL8723DS/tests/tb_wifi_mailbox.v",
+      "bytes": 3207,
+      "sha256": "4ff8393b1cbb220282582bb262d3018e18f8f0c15d72beb4b2a2b72c2afb4c72"
+    },
+    {
+      "path": "RTL8723DS/tests/test_wifi_scan.py",
+      "bytes": 2073,
+      "sha256": "8c655363ad64d529a6c5a9609c188c96daae13a6784312173e9fc0837c004b4e"
+    },
+    {
+      "path": "RTL8723DS/tools/ble_check.py",
+      "bytes": 5179,
+      "sha256": "14708305cf0329a1d857cd0ad058257a7e626a1cc59da94838379722f95981a1"
+    },
+    {
+      "path": "RTL8723DS/tools/gowin_build.py",
+      "bytes": 9126,
+      "sha256": "14cbe2c08c09ede7829d3f233e3b102ce920626b465d68d29aedcaf799ce40a0"
+    },
+    {
+      "path": "RTL8723DS/tools/jtag_mpsse.py",
+      "bytes": 6101,
+      "sha256": "e5fe41f0d5293dbb8733b48451169bc278d57a150488a023da7ab9d86323948a"
+    },
+    {
+      "path": "RTL8723DS/tools/jtag_status.py",
+      "bytes": 4870,
+      "sha256": "2e4d145cf285fa97ce58a2511cc01cc6a9585f4982c5a86e1fb6aa714b710cdf"
+    },
+    {
+      "path": "RTL8723DS/tools/requirements-ble.txt",
+      "bytes": 13,
+      "sha256": "4488312d3351b6791fdd2de268cf96f4407a7a8acb5dbc627f46362f46139b6e"
+    },
+    {
+      "path": "RTL8723DS/tools/status.py",
+      "bytes": 4162,
+      "sha256": "86117d0e5adfa60f52d45ca5e4bb44cf0902fcf0cf8938ccd1242904255b2359"
+    },
+    {
+      "path": "RTL8723DS/tools/wifi_iqk.py",
+      "bytes": 3222,
+      "sha256": "14fcd6057f3a76e92b0ead007750173d7283157ccd92033ac9dbf522b65d3637"
+    },
+    {
+      "path": "RTL8723DS/tools/wifi_scan.py",
+      "bytes": 19690,
+      "sha256": "1f25220d01afbab225f130f233c6f98b45d16b436e9418fecd20d87b7a567bde"
+    },
+    {
+      "path": "RTL8723DS/tools/wifi_sdio.py",
+      "bytes": 7190,
+      "sha256": "56afd4814a06119a67f9627d9294b407573574a5ebe741830167e6803fc769a8"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/MANIFEST.json",
+      "bytes": 6229,
+      "sha256": "7151a2ebbc4c1c983b14f233182109c886a7753461b47fa584a9429f1665b3b1"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/NOTICE.md",
+      "bytes": 576,
+      "sha256": "63db7876b02ebebb330740ce4a819d0d930087bc3261d22202179024e101310c"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/README.md",
+      "bytes": 6882,
+      "sha256": "ca8ab9c882bf07471eb1cb37d611d6050b48eb1445bf7e731744c70ea7c1fe7c"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/constraints/vivado_example.xdc",
+      "bytes": 446,
+      "sha256": "8adfa86413272590b1803f2824a2abcd8cb6227eaa04959570542be2351ebf45"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/examples/rtl8723ds_ble_board_top.v",
+      "bytes": 1177,
+      "sha256": "a279389904b6ed8875581f49ed333732a3c53d4b9282bbc6df3053a559bda9d9"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/firmware/rtl8723ds_config.bin",
+      "bytes": 47,
+      "sha256": "7d1e18df7654da8f6382520841bb535f2d1246fc8495e3ae652f7b23e820168d"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/firmware/rtl8723ds_fw.bin",
+      "bytes": 48988,
+      "sha256": "19c1bed7a9359b1a021c20f81b525bdebf5067f9021716991d94be9101f76e63"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/firmware_manifest.json",
+      "bytes": 636,
+      "sha256": "acb4358578446bca1febdb0476e4c17ac0af16e482cdf2e686b54256e0f3f774"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/reports/CDC_ROM_AUDIT.md",
+      "bytes": 3478,
+      "sha256": "85908decd4708d0af7f813e93a16e97668548cc93b290ec2c558650c1aef563a"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/reports/resource_summary.json",
+      "bytes": 3161,
+      "sha256": "e382e1771e505840da2a8c453a105d6b4d5102aac30cafeaf89866405b9229ae"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/reports/utilization.rpt",
+      "bytes": 12178,
+      "sha256": "f7fdec1a0aad8c193ed4eb821446f594a753a68c6b95bd28459129585caa5f9e"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/reports/utilization_core.rpt",
+      "bytes": 9720,
+      "sha256": "f4c00bbe568d14275a2e2cb973074ad3c51c7342c6cdb4de3d31825988567086"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/reports/utilization_hierarchical.rpt",
+      "bytes": 13413,
+      "sha256": "746a13c3f25765501d9c3e3335f64e0fd8674090a95fb839fd9fe423302a0c42"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/rtl/bt_gatt.v",
+      "bytes": 20709,
+      "sha256": "4c7b4dcd486a85e94e00c1daff1a66ff81d94071bbd597f11aa95b7311818465"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/rtl/bt_h5_transport.v",
+      "bytes": 17825,
+      "sha256": "2eab823619e9de0b6b4cc4a631e0295f631261eebc292aef9486724ed62f7fdc"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/rtl/bt_hci_init.v",
+      "bytes": 11238,
+      "sha256": "0963e4d95210ecd28887d8fe6ea5e7e5b102c90c244125782aff1d5ddeac0c12"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/rtl/bt_uart.v",
+      "bytes": 3499,
+      "sha256": "004babc4c97502af75d6715a489cf20f31e3003f569fab57504967b1aafa88dc"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/rtl/bt_verilog_core.v",
+      "bytes": 6314,
+      "sha256": "5c596ca839e7bf1a7ebe18ee72ca74b6e6de5ce81e19ce77a7bc961fcd99cc3a"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/rtl/reset_release_sync.v",
+      "bytes": 424,
+      "sha256": "d5311e4a6141261abe6c699572b3c0053b39c0e631d9d2c1b18b21f87048489d"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/rtl/rtl8723ds_ble.v",
+      "bytes": 1600,
+      "sha256": "db12a57311df8cf1af5c2ddf94f7fefc71c7c51b9d3b5506b52830f9b16a4bb9"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/rtl8723ds_patch.mem",
+      "bytes": 131072,
+      "sha256": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/scripts/sim_bt_gatt.tcl",
+      "bytes": 274,
+      "sha256": "0243e4a318d43dab5af0556b7a4e524b6873abc643a90d5be99acf4d78dbafaf"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/scripts/sim_bt_h5.tcl",
+      "bytes": 195,
+      "sha256": "e71ff04606fd03ec7ba779431bc954ab50987ff131bc83240ca2783d6eafd07b"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/scripts/sim_bt_system.tcl",
+      "bytes": 202,
+      "sha256": "57bf73152d2b29525b129cdeaa9e6817922a327786ef823e0d0857bb12960fb2"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/scripts/simulate.ps1",
+      "bytes": 2878,
+      "sha256": "d57230228d44fcfe6ce1a04be6a6336a85fff18fbfe7c2a414eec7222ba1d1b0"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/scripts/verify_package.py",
+      "bytes": 566,
+      "sha256": "d81b79b11b4e5075ab8686efbd8bf98c111ba730b5c6efe16a9cae2da592d253"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/sources.f",
+      "bytes": 135,
+      "sha256": "0c10eb32d276dd7e4bfca953d094649533ce59e9fa6dd1bb24ff338d26ec4e55"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/tests/tb_bt_gatt.v",
+      "bytes": 12461,
+      "sha256": "25f16810d0568ec58669e95b749965096908f5f90dcd623903687fd187e7b98f"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/tests/tb_bt_h5.v",
+      "bytes": 16990,
+      "sha256": "4830eaefc26a21493b52ad94c43fb670df83915ca6e98fff7dd04ca2324b41d4"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/tests/tb_bt_verilog_system.v",
+      "bytes": 24954,
+      "sha256": "12bb89368fe231db2206641d2c556c365b19f061e77023ac8e910c30ae4ae321"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/arm_stopped_state.txt",
+      "bytes": 140,
+      "sha256": "a14113bcd7c27705e015ef3dc3f94eed0f208bf940e7756060b9aec3637a05f0"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/final_state.json",
+      "bytes": 973,
+      "sha256": "8aee2c635dce8c10b94d335e1a999512a78a7b1bc3208231898a45cc3e1cdb17"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/independent_audit.json",
+      "bytes": 4495,
+      "sha256": "f1970843ba537d8d32ba31f33259e308cb9e5ed3c6ad678481c7d717e5ad4203"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/initialized_state.json",
+      "bytes": 966,
+      "sha256": "272c48b6c1fe688daa1b21a1b7014c6ba5c492950a553972712729ae442ed6be"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/pc_receive.json",
+      "bytes": 7793,
+      "sha256": "a35877d61082b0c90563c5db148ecde8a13cd9af5467bc59f01a40b523d57381"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/portable/gatt_normal.log",
+      "bytes": 1855,
+      "sha256": "c2cc504c47c3409c1174e73cc6cdbf07c8e782cce1ef4759d96dd229a3ba2204"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/portable/h5_normal.log",
+      "bytes": 1815,
+      "sha256": "6b6acf440612dba69ddfc50db96deb8836d7e6e6db9f4ec59317b918263d16d4"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/portable/result.json",
+      "bytes": 2204,
+      "sha256": "2bc10d4bdb9467f7a89357f53f66169574330b22e3c52b3edae243dc3c374a02"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/portable/system_normal.log",
+      "bytes": 1917,
+      "sha256": "af85d3bd8f67e7304fbd805c44f201508c6aed34b38c060fcf4e0ba2a40acff3"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/portable/system_wrong_rom.log",
+      "bytes": 1849,
+      "sha256": "e2391d25d2ecb2817002c22b56d3981f180c9c3d658dc36cdaa2ad7e1f5e4339"
+    },
+    {
+      "path": "RTL8723DS/vendor/rtl8723ds_ble/validation/stopped_state.json",
+      "bytes": 952,
+      "sha256": "cac794879f79c326facd24eaf6c78327b7d0d7509d3e8a5c3d079b3a60c6e550"
+    },
+    {
+      "path": "RTL8723DS/vendor/wifi/COPYING",
+      "bytes": 17997,
+      "sha256": "cd5c66af63b509ccd75ec85fee41b6e5cbb77cd6bf9392a54900acc0f02be4a6"
+    },
+    {
+      "path": "RTL8723DS/vendor/wifi/provenance.json",
+      "bytes": 1266,
+      "sha256": "e8998f44679af2fc4500fdf85dbc0b81ace23feab437dbfe8dd4253875a3dfac"
+    },
+    {
+      "path": "RTL8723DS/vendor/wifi/register_tables.json",
+      "bytes": 34309,
+      "sha256": "7a94b7033d86ec424bdb4db09e95bc53e5fd3eb29696a8844de929ce4cb6b8a5"
+    },
+    {
+      "path": "RTL8723DS/vendor/wifi/rtl8723d_fw_nic.bin",
+      "bytes": 27506,
+      "sha256": "3fd0b4d92365c1abf4914b9bdc27460dd3be5a21a627bf25be328b8788d1d255"
+    },
+    {
+      "path": "goal_audit.json",
+      "bytes": 4664,
+      "sha256": "961f28c0cfd53a9bbff08191334afcb4b4d6f1934c20e3569054c76c38c5beff"
+    },
+    {
+      "path": "验证状态.md",
+      "bytes": 4221,
+      "sha256": "59a3809ddf3cb8800c50148e253cdaa4024d9fba373002e86e0b41ebff21622d"
+    }
+  ],
+  "excluded_file_count": 538,
+  "exclusion_policy": [
+    "Generated builds, bitstreams, adapted RTL and tool caches remain local",
+    "Raw JTAG CSV and UART captures remain local; original historical summaries/logs retain their paths and hashes"
+  ],
+  "edited_import_files": [
+    "README.md"
+  ],
+  "added_import_files": [
+    ".gitignore",
+    ".gitattributes",
+    "SOURCE_IMPORT.json",
+    "IMPORT_VALIDATION.json"
+  ],
+  "hardware_acceptance": "Preserved per-example records; this import performs no board operation"
+}

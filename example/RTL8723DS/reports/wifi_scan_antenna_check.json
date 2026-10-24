@@ -1,0 +1,15 @@
+{
+  "packets": 0,
+  "access_points": [],
+  "raw": [],
+  "stage": "channel_11",
+  "coex_scan_grants": "0000ff00",
+  "receive_registers": {
+    "0100": "000006bf",
+    "0608": "7000200e",
+    "0800": "83046c00",
+    "0870": "07000460",
+    "0948": "99000000"
+  },
+  "antenna_restored": true
+}

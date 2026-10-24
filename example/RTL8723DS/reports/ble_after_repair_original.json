@@ -1,0 +1,96 @@
+{
+  "started_at": "2026-10-23T19:29:11.672009+08:00",
+  "passed": true,
+  "device_name": "RTL8723-BLE",
+  "device_id": "2E7F18FF-351D-F03C-0C53-007C2F075A28",
+  "connected": true,
+  "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
+  "characteristic_uuid": "0000fff1-0000-1000-8000-00805f9b34fb",
+  "properties": [
+    "notify",
+    "read"
+  ],
+  "read": {
+    "hex": "42545354000000004ae50100000102030405ffc0",
+    "valid": true,
+    "sequence": 0,
+    "milliseconds": 124234
+  },
+  "notifications": [
+    {
+      "hex": "4254535400000000b7e7010000010203040516b5",
+      "valid": true,
+      "sequence": 0,
+      "milliseconds": 124855
+    },
+    {
+      "hex": "4254535401000000abe90100000102030405e8ce",
+      "valid": true,
+      "sequence": 1,
+      "milliseconds": 125355
+    },
+    {
+      "hex": "42545354020000009feb01000001020304058285",
+      "valid": true,
+      "sequence": 2,
+      "milliseconds": 125855
+    },
+    {
+      "hex": "425453540300000093ed01000001020304051543",
+      "valid": true,
+      "sequence": 3,
+      "milliseconds": 126355
+    },
+    {
+      "hex": "425453540400000087ef0100000102030405d7cc",
+      "valid": true,
+      "sequence": 4,
+      "milliseconds": 126855
+    },
+    {
+      "hex": "42545354050000007bf10100000102030405f44b",
+      "valid": true,
+      "sequence": 5,
+      "milliseconds": 127355
+    },
+    {
+      "hex": "42545354060000006ff301000001020304059339",
+      "valid": true,
+      "sequence": 6,
+      "milliseconds": 127855
+    },
+    {
+      "hex": "425453540700000063f5010000010203040504ff",
+      "valid": true,
+      "sequence": 7,
+      "milliseconds": 128355
+    },
+    {
+      "hex": "425453540800000057f70100000102030405a0a2",
+      "valid": true,
+      "sequence": 8,
+      "milliseconds": 128855
+    },
+    {
+      "hex": "42545354090000004bf901000001020304055ed9",
+      "valid": true,
+      "sequence": 9,
+      "milliseconds": 129355
+    }
+  ],
+  "notification_intervals_ms": [
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500,
+    500
+  ],
+  "sequence_contiguous": true,
+  "timestamps_increasing": true,
+  "status": "pass",
+  "finished_at": "2026-10-23T19:29:17.776328+08:00"
+}

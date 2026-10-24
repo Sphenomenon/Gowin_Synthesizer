@@ -1,0 +1,40 @@
+{
+  "started_at": "2026-10-24T12:50:33.840006+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/build_gao.tcl",
+  "stage_directory": "/private/tmp/gw138k-build-ztx5at04",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/reports/build_20261024_125033_837482_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/reports/build_20261024_125033_837482_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/builds/20261024_125033_837482/impl/pnr/ao_0.fs",
+      "sha256": "3a59265e2a9c12279ae89d679e3cd4764ae9a5aba49a8bfaf30049ef92cb0fe2"
+    }
+  ],
+  "timing": {
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "source_hashes": {
+    "rtl/lcd_pll.v": "7ce420aeb5c01a033d14a91137582bf76c49ec6d05d1f9461fe710aeb38ffaf7",
+    "rtl/lcd_rgb_top.v": "48711f9c2855b68acbee0d1a1563ebd229cacb23fc2375b2035c2340829a101b",
+    "rtl/lcd_scan.v": "cbe1e1b73e578b6f2cd3df2071130b6e9b4c449c35c267bdece5341094b06f94",
+    "constraints/lcd.cst": "3503323ae5c6f21ec3b39bf1ca7b0ccd122d8d2ce75aeb85f7b66def4e242c6a",
+    "constraints/lcd.sdc": "d4dd0e2214b16ae36d3f1b94195bdc205c1297181c1b75eb5d46b018fb3c902e"
+  },
+  "gao": [
+    {
+      "definition": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/LCD_RGB/diagnostic_white/builds/20261024_125033_837482/debug/lcd.gao",
+      "sha256": "36bfec0789b87e822d39e49d98c122019ce1ade588a95e70359c4216adf12734"
+    }
+  ],
+  "finished_at": "2026-10-24T12:50:57.029392+08:00"
+}

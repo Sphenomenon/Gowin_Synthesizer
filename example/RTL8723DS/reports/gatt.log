@@ -1,0 +1,2 @@
+PASS: bt_gatt connection, discovery, ATT errors, CCCD, controller credit, two response slots, PB00, CRC16 and notification sequence
+/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/RTL8723DS/vendor/rtl8723ds_ble/tests/tb_bt_gatt.v:270: $finish called at 36487000 (1ps)

@@ -1,0 +1,78 @@
+{
+  "status": "internal_scan_passed_faint_gray_green_visible_rgb_adapter_required",
+  "target": "Alientek ATK-MD0430R-800480 / ATK4384",
+  "resolution": [
+    800,
+    480
+  ],
+  "pixel_clock_hz": 31500000,
+  "scan_total": [
+    976,
+    528
+  ],
+  "refresh_hz": 61.12611773472429,
+  "simulation_passed": true,
+  "build_passed": true,
+  "pixel_values_checked": 4996608,
+  "top_integration_passed": true,
+  "timing": {
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "minimum_reported_setup_slack_ns": 1.767,
+  "internal_fmax_mhz": 36.638,
+  "clock_report_rows": [
+    "2     pixel_clk    Generated   31.746   31.500MHz   0.000    15.873   clk_50mhz                    clk_50mhz   clockgen/PLL_inst/CLKOUT0",
+    "3     lcd_sample   Generated   31.746   31.500MHz   15.873   0.000    clockgen/PLL_inst/CLKOUT0    pixel_clk   lcd_pclk lcd_pclk_d_4"
+  ],
+  "synthesized_pll_parameters": {
+    "IDIV_SEL": 1,
+    "FBDIV_SEL": 1,
+    "MDIV_SEL": 15,
+    "MDIV_FRAC_SEL": 6,
+    "ODIV0_SEL": 25,
+    "ODIV0_FRAC_SEL": 0
+  },
+  "pin_assignments_verified": 23,
+  "user_code": "0x13802411",
+  "artifact": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/builds/20261024_123255_875983/impl/pnr/lcd138k.fs",
+    "sha256": "e91501d111252706faf00efb5761bfe9cd030e02d799a7dd24525560f7a61705"
+  },
+  "source_hashes_match": true,
+  "build_script_sha256": "44280e6799c68f16da173111b1afa13c76ecec9db1ba0ed897b2dde1c77ee311",
+  "programmer_check_only_passed": true,
+  "reference_module_pinout_verified": true,
+  "panel_pinout_verified": false,
+  "physical_cable_continuity_verified": false,
+  "rgb_bitweight_adapter_verified": false,
+  "panel_reset_verified": false,
+  "sram_programmed": true,
+  "flash_written": false,
+  "screen_observed": true,
+  "touch_tested": false,
+  "warnings": [
+    "PR1014: 50MHz input route to PLL uses generic routing; physical clock not measured.",
+    "Output timing budget remains provisional: setup 5ns / hold 2ns.",
+    "Board drives low RGB bits and grounds high bits; adapter required for normal RGB565 color testing.",
+    "Board FPC4 pin 40 is NC, while module defines LCD RESET."
+  ],
+  "next_step": "Power off, implement RGB bitweight adapter per docs/接线核对.md, then repeat fixed-white and normal pattern tests.",
+  "sram_verify_passed": true,
+  "post_program_device_read_passed": true,
+  "programming_report": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/reports/sram_radio_20261024_124217_889398.json",
+  "post_program_read_report": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/reports/device_after_lcd_20261024_124252_125173.json",
+  "device_id": "0x0001081B",
+  "read_user_code": "0x13802411",
+  "read_status_code": "0x00022230",
+  "programmed_at": "2026-10-24T12:42:17.889463+08:00",
+  "display_passed": false,
+  "user_observation": {
+    "backlight_on": true,
+    "image": "black",
+    "connection": "same-side FPC cable directly to FPC4; actual continuity not measured"
+  },
+  "current_diagnostic_report": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/LCD_RGB/diagnostic_white/reports/verification.json",
+  "current_sram_user_code": "0x13802412",
+  "fixed_white_user_observation": "faint gray-green image visible"
+}
