@@ -1,0 +1,138 @@
+{
+  "started_at": "2026-10-24T14:00:32.656933+08:00",
+  "passed": true,
+  "artifact": {
+    "path": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/CLOCK_MEASURE/builds/20261024_135823_701529/impl/pnr/ao_0.fs",
+    "sha256": "0b2b5f9dcde24f8513febe69c1ffb9fe4b36be81545c54afffd0594282814ef5"
+  },
+  "expected_user_code": "0x13802420",
+  "reference": {
+    "pin": "V22",
+    "assumed_frequency_hz": 50000000,
+    "externally_calibrated": false,
+    "absolute_accuracy_ppm": null
+  },
+  "gate_reference_cycles": 500000000,
+  "requested_windows": 6,
+  "flash_written": false,
+  "windows": [
+    {
+      "window_id": 1,
+      "count_a": 122879457,
+      "count_b": 169342701,
+      "reference_cycles": 500000000,
+      "heartbeat": 572496550,
+      "endpoint_a": 122879498,
+      "endpoint_b": 169342759,
+      "csv": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/CLOCK_MEASURE/reports/measurement.gate1.csv",
+      "frequency_a_hz": 12287945.7,
+      "frequency_b_hz": 16934270.1
+    },
+    {
+      "window_id": 2,
+      "count_a": 122879458,
+      "count_b": 169342702,
+      "reference_cycles": 500000000,
+      "heartbeat": 1044800041,
+      "endpoint_a": 245758956,
+      "endpoint_b": 338685461,
+      "csv": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/CLOCK_MEASURE/reports/measurement.gate2.csv",
+      "frequency_a_hz": 12287945.8,
+      "frequency_b_hz": 16934270.2
+    },
+    {
+      "window_id": 3,
+      "count_a": 122879457,
+      "count_b": 169342701,
+      "reference_cycles": 500000000,
+      "heartbeat": 1518371595,
+      "endpoint_a": 368638413,
+      "endpoint_b": 508028162,
+      "csv": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/CLOCK_MEASURE/reports/measurement.gate3.csv",
+      "frequency_a_hz": 12287945.7,
+      "frequency_b_hz": 16934270.1
+    },
+    {
+      "window_id": 4,
+      "count_a": 122879457,
+      "count_b": 169342701,
+      "reference_cycles": 500000000,
+      "heartbeat": 2143331675,
+      "endpoint_a": 491517870,
+      "endpoint_b": 677370863,
+      "csv": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/CLOCK_MEASURE/reports/measurement.gate4.csv",
+      "frequency_a_hz": 12287945.7,
+      "frequency_b_hz": 16934270.1
+    },
+    {
+      "window_id": 5,
+      "count_a": 122879457,
+      "count_b": 169342702,
+      "reference_cycles": 500000000,
+      "heartbeat": 2617035172,
+      "endpoint_a": 614397327,
+      "endpoint_b": 846713565,
+      "csv": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/CLOCK_MEASURE/reports/measurement.gate5.csv",
+      "frequency_a_hz": 12287945.7,
+      "frequency_b_hz": 16934270.2
+    },
+    {
+      "window_id": 6,
+      "count_a": 122879458,
+      "count_b": 169342702,
+      "reference_cycles": 500000000,
+      "heartbeat": 3088476001,
+      "endpoint_a": 737276785,
+      "endpoint_b": 1016056267,
+      "csv": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/CLOCK_MEASURE/reports/measurement.gate6.csv",
+      "frequency_a_hz": 12287945.8,
+      "frequency_b_hz": 16934270.2
+    }
+  ],
+  "usb_location": "12481",
+  "device_log": "/Users/zhaojiying/Library/CloudStorage/飞牛同步-云工作空间/Mega_138K/example/CLOCK_MEASURE/reports/measurement.device.log",
+  "total_reference_cycles": 3000000000,
+  "nominal_observation_seconds": 60.0,
+  "oscillators": [
+    {
+      "pin": "K18",
+      "nominal_frequency_hz": 12288000,
+      "total_edges": 737276744,
+      "measured_frequency_hz": 12287945.733333332,
+      "ratio_to_reference": 0.24575891466666666,
+      "deviation_hz": -54.2666666675359,
+      "deviation_ppm": -4.4162326389152184,
+      "minimum_window_hz": 12287945.7,
+      "maximum_window_hz": 12287945.8,
+      "window_stddev_hz": 0.04714045278155064,
+      "running": true
+    },
+    {
+      "pin": "J19",
+      "nominal_frequency_hz": 16934400,
+      "total_edges": 1016056209,
+      "measured_frequency_hz": 16934270.15,
+      "ratio_to_reference": 0.338685403,
+      "deviation_hz": -129.85000000149012,
+      "deviation_ppm": -7.6678240741312464,
+      "minimum_window_hz": 16934270.1,
+      "maximum_window_hz": 16934270.2,
+      "window_stddev_hz": 0.04999999888241291,
+      "running": true
+    }
+  ],
+  "aggregate_one_edge_resolution_hz": 0.016666666666666666,
+  "limitation": "Frequencies assume the stated board reference frequency. Reference oscillator error scales both results; Gray CDC/gate quantization and short-term variation remain. This is a frequency ratio measurement, not externally calibrated absolute frequency or jitter.",
+  "finished_at": "2026-10-24T14:01:33.998167+08:00",
+  "endpoint_consistency_passed": true,
+  "b_to_a_ratio": 1.3781205188807637,
+  "b_to_a_ratio_deviation_ppm": -3.251605795062673,
+  "capture_sha256": {
+    "measurement.gate1.csv": "8073f19a1a4f986e06ea6d85f45f2683451d4a248463b6f22e076bb209a70b3b",
+    "measurement.gate2.csv": "fa3a175d2710e089bad3ceaeea18c02f1151f349ae3935f74a75bd69015f8456",
+    "measurement.gate3.csv": "a413ab808e331c7ff3429bea14a9eac31623bc0e56db387f05f648e408205c0c",
+    "measurement.gate4.csv": "3f6cbaa52c71c630572d06df05b443b811046d01d116d7b34b588cf96450d41d",
+    "measurement.gate5.csv": "55513cdf19b9a0ac93f94391341fad48703a3c931d6f42ab5f02d7b8680b0f76",
+    "measurement.gate6.csv": "73ee3271344baa73513363d3dcea8e9379d9868951de74da14a369a2b77ae227"
+  }
+}

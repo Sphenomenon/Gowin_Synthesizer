@@ -1,0 +1,190 @@
+{
+  "started_at": "2026-10-24T14:00:19.881380+08:00",
+  "previous_user_code": "0x13802401",
+  "measurement_user_code": "0x13802420",
+  "flash_written": false,
+  "restored": true,
+  "measurement_passed": true,
+  "commands": [
+    {
+      "name": "program_measurement",
+      "args": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+        "example/RTL8723DS/program_sram.py",
+        "--manifest",
+        "example/CLOCK_MEASURE/reports/last_build.json",
+        "--allow-gao"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "measure",
+      "args": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+        "example/CLOCK_MEASURE/tools/measure.py",
+        "--windows",
+        "6",
+        "--output",
+        "example/CLOCK_MEASURE/reports/measurement.json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "restore_flash_audio",
+      "args": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12481",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "restored_device_0",
+      "args": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12481",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "restored_device_1",
+      "args": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12481",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "restored_device_2",
+      "args": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12481",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "restored_device_3",
+      "args": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12481",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "restored_device_4",
+      "args": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12481",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "restored_device_5",
+      "args": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12481",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "restored_device_6",
+      "args": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "12481",
+        "--channel",
+        "0",
+        "--frequency",
+        "2.5MHz",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "restored_user_code": "0x13802401",
+  "finished_at": "2026-10-24T14:01:50.502004+08:00",
+  "restored_audio_digital_passed": true,
+  "restored_audio_evidence": "audio_after_restore.json",
+  "passed": true
+}

@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GAO_CONFIG>
+  <Version>3.0</Version>
+  <Mode>Standard</Mode>
+  <AoCore index="0" sample_clock="clk_50mhz" trig_type="0" storage_depth="128" window_num="1" capture_amount="128" implementation="0" trigger_pos="0" module_name="clock_measure_top" force_trigger_by_falling_edge="false" capture_init_data_enabled="false">
+    <SignalList>
+      <Bus capture_enable="true" name="frequency_debug[255:0]">
+        <Signal>frequency_debug[255]</Signal>
+        <Signal>frequency_debug[254]</Signal>
+        <Signal>frequency_debug[253]</Signal>
+        <Signal>frequency_debug[252]</Signal>
+        <Signal>frequency_debug[251]</Signal>
+        <Signal>frequency_debug[250]</Signal>
+        <Signal>frequency_debug[249]</Signal>
+        <Signal>frequency_debug[248]</Signal>
+        <Signal>frequency_debug[247]</Signal>
+        <Signal>frequency_debug[246]</Signal>
+        <Signal>frequency_debug[245]</Signal>
+        <Signal>frequency_debug[244]</Signal>
+        <Signal>frequency_debug[243]</Signal>
+        <Signal>frequency_debug[242]</Signal>
+        <Signal>frequency_debug[241]</Signal>
+        <Signal>frequency_debug[240]</Signal>
+        <Signal>frequency_debug[239]</Signal>
+        <Signal>frequency_debug[238]</Signal>
+        <Signal>frequency_debug[237]</Signal>
+        <Signal>frequency_debug[236]</Signal>
+        <Signal>frequency_debug[235]</Signal>
+        <Signal>frequency_debug[234]</Signal>
+        <Signal>frequency_debug[233]</Signal>
+        <Signal>frequency_debug[232]</Signal>
+        <Signal>frequency_debug[231]</Signal>
+        <Signal>frequency_debug[230]</Signal>
+        <Signal>frequency_debug[229]</Signal>
+        <Signal>frequency_debug[228]</Signal>
+        <Signal>frequency_debug[227]</Signal>
+        <Signal>frequency_debug[226]</Signal>
+        <Signal>frequency_debug[225]</Signal>
+        <Signal>frequency_debug[224]</Signal>
+        <Signal>frequency_debug[223]</Signal>
+        <Signal>frequency_debug[222]</Signal>
+        <Signal>frequency_debug[221]</Signal>
+        <Signal>frequency_debug[220]</Signal>
+        <Signal>frequency_debug[219]</Signal>
+        <Signal>frequency_debug[218]</Signal>
+        <Signal>frequency_debug[217]</Signal>
+        <Signal>frequency_debug[216]</Signal>
+        <Signal>frequency_debug[215]</Signal>
+        <Signal>frequency_debug[214]</Signal>
+        <Signal>frequency_debug[213]</Signal>
+        <Signal>frequency_debug[212]</Signal>
+        <Signal>frequency_debug[211]</Signal>
+        <Signal>frequency_debug[210]</Signal>
+        <Signal>frequency_debug[209]</Signal>
+        <Signal>frequency_debug[208]</Signal>
+        <Signal>frequency_debug[207]</Signal>
+        <Signal>frequency_debug[206]</Signal>
+        <Signal>frequency_debug[205]</Signal>
+        <Signal>frequency_debug[204]</Signal>
+        <Signal>frequency_debug[203]</Signal>
+        <Signal>frequency_debug[202]</Signal>
+        <Signal>frequency_debug[201]</Signal>
+        <Signal>frequency_debug[200]</Signal>
+        <Signal>frequency_debug[199]</Signal>
+        <Signal>frequency_debug[198]</Signal>
+        <Signal>frequency_debug[197]</Signal>
+        <Signal>frequency_debug[196]</Signal>
+        <Signal>frequency_debug[195]</Signal>
+        <Signal>frequency_debug[194]</Signal>
+        <Signal>frequency_debug[193]</Signal>
+        <Signal>frequency_debug[192]</Signal>
+        <Signal>frequency_debug[191]</Signal>
+        <Signal>frequency_debug[190]</Signal>
+        <Signal>frequency_debug[189]</Signal>
+        <Signal>frequency_debug[188]</Signal>
+        <Signal>frequency_debug[187]</Signal>
+        <Signal>frequency_debug[186]</Signal>
+        <Signal>frequency_debug[185]</Signal>
+        <Signal>frequency_debug[184]</Signal>
+        <Signal>frequency_debug[183]</Signal>
+        <Signal>frequency_debug[182]</Signal>
+        <Signal>frequency_debug[181]</Signal>
+        <Signal>frequency_debug[180]</Signal>
+        <Signal>frequency_debug[179]</Signal>
+        <Signal>frequency_debug[178]</Signal>
+        <Signal>frequency_debug[177]</Signal>
+        <Signal>frequency_debug[176]</Signal>
+        <Signal>frequency_debug[175]</Signal>
+        <Signal>frequency_debug[174]</Signal>
+        <Signal>frequency_debug[173]</Signal>
+        <Signal>frequency_debug[172]</Signal>
+        <Signal>frequency_debug[171]</Signal>
+        <Signal>frequency_debug[170]</Signal>
+        <Signal>frequency_debug[169]</Signal>
+        <Signal>frequency_debug[168]</Signal>
+        <Signal>frequency_debug[167]</Signal>
+        <Signal>frequency_debug[166]</Signal>
+        <Signal>frequency_debug[165]</Signal>
+        <Signal>frequency_debug[164]</Signal>
+        <Signal>frequency_debug[163]</Signal>
+        <Signal>frequency_debug[162]</Signal>
+        <Signal>frequency_debug[161]</Signal>
+        <Signal>frequency_debug[160]</Signal>
+        <Signal>frequency_debug[159]</Signal>
+        <Signal>frequency_debug[158]</Signal>
+        <Signal>frequency_debug[157]</Signal>
+        <Signal>frequency_debug[156]</Signal>
+        <Signal>frequency_debug[155]</Signal>
+        <Signal>frequency_debug[154]</Signal>
+        <Signal>frequency_debug[153]</Signal>
+        <Signal>frequency_debug[152]</Signal>
+        <Signal>frequency_debug[151]</Signal>
+        <Signal>frequency_debug[150]</Signal>
+        <Signal>frequency_debug[149]</Signal>
+        <Signal>frequency_debug[148]</Signal>
+        <Signal>frequency_debug[147]</Signal>
+        <Signal>frequency_debug[146]</Signal>
+        <Signal>frequency_debug[145]</Signal>
+        <Signal>frequency_debug[144]</Signal>
+        <Signal>frequency_debug[143]</Signal>
+        <Signal>frequency_debug[142]</Signal>
+        <Signal>frequency_debug[141]</Signal>
+        <Signal>frequency_debug[140]</Signal>
+        <Signal>frequency_debug[139]</Signal>
+        <Signal>frequency_debug[138]</Signal>
+        <Signal>frequency_debug[137]</Signal>
+        <Signal>frequency_debug[136]</Signal>
+        <Signal>frequency_debug[135]</Signal>
+        <Signal>frequency_debug[134]</Signal>
+        <Signal>frequency_debug[133]</Signal>
+        <Signal>frequency_debug[132]</Signal>
+        <Signal>frequency_debug[131]</Signal>
+        <Signal>frequency_debug[130]</Signal>
+        <Signal>frequency_debug[129]</Signal>
+        <Signal>frequency_debug[128]</Signal>
+        <Signal>frequency_debug[127]</Signal>
+        <Signal>frequency_debug[126]</Signal>
+        <Signal>frequency_debug[125]</Signal>
+        <Signal>frequency_debug[124]</Signal>
+        <Signal>frequency_debug[123]</Signal>
+        <Signal>frequency_debug[122]</Signal>
+        <Signal>frequency_debug[121]</Signal>
+        <Signal>frequency_debug[120]</Signal>
+        <Signal>frequency_debug[119]</Signal>
+        <Signal>frequency_debug[118]</Signal>
+        <Signal>frequency_debug[117]</Signal>
+        <Signal>frequency_debug[116]</Signal>
+        <Signal>frequency_debug[115]</Signal>
+        <Signal>frequency_debug[114]</Signal>
+        <Signal>frequency_debug[113]</Signal>
+        <Signal>frequency_debug[112]</Signal>
+        <Signal>frequency_debug[111]</Signal>
+        <Signal>frequency_debug[110]</Signal>
+        <Signal>frequency_debug[109]</Signal>
+        <Signal>frequency_debug[108]</Signal>
+        <Signal>frequency_debug[107]</Signal>
+        <Signal>frequency_debug[106]</Signal>
+        <Signal>frequency_debug[105]</Signal>
+        <Signal>frequency_debug[104]</Signal>
+        <Signal>frequency_debug[103]</Signal>
+        <Signal>frequency_debug[102]</Signal>
+        <Signal>frequency_debug[101]</Signal>
+        <Signal>frequency_debug[100]</Signal>
+        <Signal>frequency_debug[99]</Signal>
+        <Signal>frequency_debug[98]</Signal>
+        <Signal>frequency_debug[97]</Signal>
+        <Signal>frequency_debug[96]</Signal>
+        <Signal>frequency_debug[95]</Signal>
+        <Signal>frequency_debug[94]</Signal>
+        <Signal>frequency_debug[93]</Signal>
+        <Signal>frequency_debug[92]</Signal>
+        <Signal>frequency_debug[91]</Signal>
+        <Signal>frequency_debug[90]</Signal>
+        <Signal>frequency_debug[89]</Signal>
+        <Signal>frequency_debug[88]</Signal>
+        <Signal>frequency_debug[87]</Signal>
+        <Signal>frequency_debug[86]</Signal>
+        <Signal>frequency_debug[85]</Signal>
+        <Signal>frequency_debug[84]</Signal>
+        <Signal>frequency_debug[83]</Signal>
+        <Signal>frequency_debug[82]</Signal>
+        <Signal>frequency_debug[81]</Signal>
+        <Signal>frequency_debug[80]</Signal>
+        <Signal>frequency_debug[79]</Signal>
+        <Signal>frequency_debug[78]</Signal>
+        <Signal>frequency_debug[77]</Signal>
+        <Signal>frequency_debug[76]</Signal>
+        <Signal>frequency_debug[75]</Signal>
+        <Signal>frequency_debug[74]</Signal>
+        <Signal>frequency_debug[73]</Signal>
+        <Signal>frequency_debug[72]</Signal>
+        <Signal>frequency_debug[71]</Signal>
+        <Signal>frequency_debug[70]</Signal>
+        <Signal>frequency_debug[69]</Signal>
+        <Signal>frequency_debug[68]</Signal>
+        <Signal>frequency_debug[67]</Signal>
+        <Signal>frequency_debug[66]</Signal>
+        <Signal>frequency_debug[65]</Signal>
+        <Signal>frequency_debug[64]</Signal>
+        <Signal>frequency_debug[63]</Signal>
+        <Signal>frequency_debug[62]</Signal>
+        <Signal>frequency_debug[61]</Signal>
+        <Signal>frequency_debug[60]</Signal>
+        <Signal>frequency_debug[59]</Signal>
+        <Signal>frequency_debug[58]</Signal>
+        <Signal>frequency_debug[57]</Signal>
+        <Signal>frequency_debug[56]</Signal>
+        <Signal>frequency_debug[55]</Signal>
+        <Signal>frequency_debug[54]</Signal>
+        <Signal>frequency_debug[53]</Signal>
+        <Signal>frequency_debug[52]</Signal>
+        <Signal>frequency_debug[51]</Signal>
+        <Signal>frequency_debug[50]</Signal>
+        <Signal>frequency_debug[49]</Signal>
+        <Signal>frequency_debug[48]</Signal>
+        <Signal>frequency_debug[47]</Signal>
+        <Signal>frequency_debug[46]</Signal>
+        <Signal>frequency_debug[45]</Signal>
+        <Signal>frequency_debug[44]</Signal>
+        <Signal>frequency_debug[43]</Signal>
+        <Signal>frequency_debug[42]</Signal>
+        <Signal>frequency_debug[41]</Signal>
+        <Signal>frequency_debug[40]</Signal>
+        <Signal>frequency_debug[39]</Signal>
+        <Signal>frequency_debug[38]</Signal>
+        <Signal>frequency_debug[37]</Signal>
+        <Signal>frequency_debug[36]</Signal>
+        <Signal>frequency_debug[35]</Signal>
+        <Signal>frequency_debug[34]</Signal>
+        <Signal>frequency_debug[33]</Signal>
+        <Signal>frequency_debug[32]</Signal>
+        <Signal>frequency_debug[31]</Signal>
+        <Signal>frequency_debug[30]</Signal>
+        <Signal>frequency_debug[29]</Signal>
+        <Signal>frequency_debug[28]</Signal>
+        <Signal>frequency_debug[27]</Signal>
+        <Signal>frequency_debug[26]</Signal>
+        <Signal>frequency_debug[25]</Signal>
+        <Signal>frequency_debug[24]</Signal>
+        <Signal>frequency_debug[23]</Signal>
+        <Signal>frequency_debug[22]</Signal>
+        <Signal>frequency_debug[21]</Signal>
+        <Signal>frequency_debug[20]</Signal>
+        <Signal>frequency_debug[19]</Signal>
+        <Signal>frequency_debug[18]</Signal>
+        <Signal>frequency_debug[17]</Signal>
+        <Signal>frequency_debug[16]</Signal>
+        <Signal>frequency_debug[15]</Signal>
+        <Signal>frequency_debug[14]</Signal>
+        <Signal>frequency_debug[13]</Signal>
+        <Signal>frequency_debug[12]</Signal>
+        <Signal>frequency_debug[11]</Signal>
+        <Signal>frequency_debug[10]</Signal>
+        <Signal>frequency_debug[9]</Signal>
+        <Signal>frequency_debug[8]</Signal>
+        <Signal>frequency_debug[7]</Signal>
+        <Signal>frequency_debug[6]</Signal>
+        <Signal>frequency_debug[5]</Signal>
+        <Signal>frequency_debug[4]</Signal>
+        <Signal>frequency_debug[3]</Signal>
+        <Signal>frequency_debug[2]</Signal>
+        <Signal>frequency_debug[1]</Signal>
+        <Signal>frequency_debug[0]</Signal>
+      </Bus>
+    </SignalList>
+    <Triggers>
+      <Trigger index="0">
+        <SignalList>
+          <Signal>frequency_debug[32]</Signal>
+        </SignalList>
+      </Trigger>
+      <Trigger index="1" />
+      <Trigger index="2" />
+      <Trigger index="3" />
+      <Trigger index="4" />
+      <Trigger index="5" />
+      <Trigger index="6" />
+      <Trigger index="7" />
+      <Trigger index="8" />
+      <Trigger index="9" />
+      <Trigger index="10" />
+      <Trigger index="11" />
+      <Trigger index="12" />
+      <Trigger index="13" />
+      <Trigger index="14" />
+      <Trigger index="15" />
+    </Triggers>
+    <MatchUnits>
+      <MatchUnit index="0" enabled="1" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="1" value1="0" trigger="0" />
+      <MatchUnit index="1" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="2" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="3" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="4" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="5" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="6" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="7" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="8" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="9" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="10" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="11" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="12" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="13" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="14" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+      <MatchUnit index="15" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+    </MatchUnits>
+    <Expressions type="Static">
+      <Expression>M0|!M0</Expression>
+    </Expressions>
+  </AoCore>
+  <GAO_ID>1111000100100100</GAO_ID>
+</GAO_CONFIG>

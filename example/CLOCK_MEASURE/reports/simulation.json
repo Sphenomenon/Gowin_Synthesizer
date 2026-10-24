@@ -1,0 +1,26 @@
+{
+  "validated_at": "2026-10-24T14:01:02.119478+08:00",
+  "passed": true,
+  "compile_command": [
+    "iverilog",
+    "-g2012",
+    "-s",
+    "tb_clock_measure",
+    "-o",
+    "/private/tmp/clock_measure.vvp",
+    "example/CLOCK_MEASURE/rtl/clock_measure.v",
+    "example/CLOCK_MEASURE/tests/tb_clock_measure.v"
+  ],
+  "output": "PASS exact reference gates, asynchronous edge counts, counter wraps, stopped/restarted oscillator and reset\nexample/CLOCK_MEASURE/tests/tb_clock_measure.v:36: $finish called at 25825000 (1ps)\n",
+  "coverage": [
+    "Exact 97-reference-cycle gates",
+    "Independent asynchronous source edge counts",
+    "8-bit test counter wraparound",
+    "Stopped and restarted oscillator",
+    "Reset and repeat measurement"
+  ],
+  "source_hashes": {
+    "rtl/clock_measure.v": "ff7ba74d2a6083271f30c0bd0b578fd26a4f77117dea22e4d9500c36805c9a5a",
+    "tests/tb_clock_measure.v": "37854c05dd56f35803c61ccaf3c0b5999de100665dc67a07b400037fe8848891"
+  }
+}

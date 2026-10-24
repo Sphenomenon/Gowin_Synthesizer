@@ -6,6 +6,9 @@
 - [RTL8723DS：BLE 与 Wi-Fi 扫描](RTL8723DS/README.md)：BLE 广播、GATT 读/通知及 SDIO 识别已实板验证；板上 Wi-Fi 被动扫描已收到信标。尚未实现连接路由器或网络通信。
 - [AK4493 音频与功放测试](AK4493_AMP/README.md)：48kHz /32 位 I²S、左右测试音及 JTAG 数字检查；修焊后 CN 扬声器已发声。左右交替镜像已固化，3.5mm 仅右耳有声、噗嗤与断音仍待定位。
 
+- [双音频晶振测频](CLOCK_MEASURE/README.md)：以核心板 50MHz 为参考，六个 10 秒窗口实测 K18 / J19 的频率比值及折算频率；测后恢复左右交替音频，未写 Flash。
+- [主板与子板原理图说明](../Hardware/原理图解析.md)：本版底板、音频板、无线板的信号与电源关系，含双晶振实测数据。
+
 ## 克隆后使用
 
 从仓库根目录按各例程 README 构建和仿真。依赖 Python 3、Icarus Verilog、Gowin EDA；默认 EDA 路径针对本机 macOS，移植到其他安装位置时需核对脚本内的工具/IP 路径。构建与仿真不会授权上板或写 Flash。

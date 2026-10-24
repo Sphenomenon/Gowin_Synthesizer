@@ -1,0 +1,39 @@
+{
+  "started_at": "2026-10-24T13:58:23.703514+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/CLOCK_MEASURE/build_gao.tcl",
+  "stage_directory": "/private/tmp/gw138k-build-s2m_0qqp",
+  "passed": true,
+  "phases": {
+    "syn": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/CLOCK_MEASURE/reports/build_20261024_135823_701529_syn.log"
+    },
+    "pnr": {
+      "returncode": 0,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/CLOCK_MEASURE/reports/build_20261024_135823_701529_pnr.log"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/CLOCK_MEASURE/builds/20261024_135823_701529/impl/pnr/ao_0.fs",
+      "sha256": "0b2b5f9dcde24f8513febe69c1ffb9fe4b36be81545c54afffd0594282814ef5"
+    }
+  ],
+  "timing": {
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "source_hashes": {
+    "rtl/clock_measure.v": "ff7ba74d2a6083271f30c0bd0b578fd26a4f77117dea22e4d9500c36805c9a5a",
+    "rtl/clock_measure_top.v": "9933b1e3a92342a7e8f0bc150e826b60bb793da177ad958d99e300a255cac671",
+    "constraints/clocks.cst": "bdbc36c7fc316e86968e5435c22cae60b41128ae893c6edd8870da873795b9ec",
+    "constraints/clocks.sdc": "8846f8c3ca8523dadeac5512e651525c7b9947666e12c6d54351ae9760bceaa0"
+  },
+  "gao": [
+    {
+      "definition": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/CLOCK_MEASURE/builds/20261024_135823_701529/debug/frequency.gao",
+      "sha256": "a65225eeea61568ece09bf6642e0b6201599b745291477bed50c476a305d1000"
+    }
+  ],
+  "finished_at": "2026-10-24T13:58:40.077992+08:00"
+}

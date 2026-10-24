@@ -1,0 +1,5 @@
+builds/
+__pycache__/
+*.pyc
+*.vvp
+reports/*.csv

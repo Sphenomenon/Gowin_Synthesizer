@@ -1,0 +1,14 @@
+{
+  "started_at": "2026-10-24T13:58:10.319484+08:00",
+  "script": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/CLOCK_MEASURE/build_gao.tcl",
+  "stage_directory": "/private/tmp/gw138k-build-9vhuono7",
+  "passed": false,
+  "phases": {
+    "syn": {
+      "returncode": 1,
+      "log": "/Users/zhaojiying/Library/CloudStorage/\u98de\u725b\u540c\u6b65-\u4e91\u5de5\u4f5c\u7a7a\u95f4/Mega_138K/example/CLOCK_MEASURE/reports/build_20261024_135810_317276_syn.log"
+    }
+  },
+  "artifacts": [],
+  "error": "syn failed; existing successful artifacts were preserved."
+}
