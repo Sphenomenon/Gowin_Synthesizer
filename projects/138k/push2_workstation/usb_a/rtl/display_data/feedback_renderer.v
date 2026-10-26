@@ -10,7 +10,8 @@ module feedback_renderer #(
     parameter integer ENABLE_ANALYSIS = 0,
     parameter integer SHARED_EXPORT = 0,
     parameter integer SHARED_RENDER = 0,
-    parameter integer SHARED_WAVE_ZERO_BITS = 0
+    parameter integer SHARED_WAVE_ZERO_BITS = 0,
+    parameter integer SCALE_THREE_HALVES = 0
 ) (
     input wire clk,
     input wire rst_n,
@@ -87,13 +88,20 @@ module feedback_renderer #(
     wire [255:0] local_display_meta={32'h44495350, {23'd0,frame_effect_order,frame_effect_mask}, snapshot_peak, snapshot_voices, snapshot_status, snapshot_sequence, snapshot_skipped, frame_memory_status};
     assign shared_export_meta=local_display_meta;
     assign display_meta=use_shared_render ? shared_render_meta : local_display_meta;
-    wire [10:0] wave_offset = issue_x-11'd64;
-    wire [8:0] wave_addr = issue_x >= 64 && issue_x < 1088 ? wave_offset[9:1] : 9'b0;
+    wire [10:0] canvas_x = SCALE_THREE_HALVES ? issue_x + (issue_x >> 1) : issue_x;
+    wire [10:0] canvas_y = SCALE_THREE_HALVES ? issue_y + (issue_y >> 1) : issue_y;
+    wire [10:0] wave_offset = canvas_x-11'd64;
+    wire [8:0] wave_addr = canvas_x >= 64 && canvas_x < 1088 ? wave_offset[9:1] : 9'b0;
     wire analysis_ready,image_hit;
     wire [7:0] spectrum_left,spectrum_right;
     wire [15:0] peak_left,peak_right;
     wire [2:0] image_gain;
     wire [31:0] analysis_sequence,analysis_skipped;
+    wire [10:0] next_x=advance ? (issue_x==WIDTH-2 ? 11'd0 : issue_x+11'd2) : issue_x;
+    wire [10:0] next_canvas_x=SCALE_THREE_HALVES ? next_x + (next_x >> 1) : next_x;
+    wire [10:0] spectrum_offset=next_canvas_x-11'd64;
+    wire [8:0] spectrum_column=next_canvas_x>=64 && next_canvas_x<1088 ? spectrum_offset[9:1] : 9'd0;
+    wire [10:0] image_x=canvas_x-11'd1248, image_y=canvas_y-11'd224;
     wire export_read=SHARED_EXPORT && exporting && shared_read_enable;
     wire local_render_read=(SHARED_RENDER==0) && advance;
     wire [8:0] read_column=exporting ? shared_read_addr[8:0] : spectrum_column;
@@ -111,10 +119,6 @@ module feedback_renderer #(
     wire [31:0] shared_wave_data=(wave_data >> SHARED_WAVE_ZERO_BITS) << SHARED_WAVE_ZERO_BITS;
     assign shared_read_data=shared_read_kind==0 ? shared_wave_data :
         shared_read_kind==1 ? {31'd0,image_hit} : {16'd0,spectrum_right,spectrum_left};
-    wire [10:0] next_x=advance ? (issue_x==WIDTH-2 ? 11'd0 : issue_x+11'd2) : issue_x;
-    wire [10:0] spectrum_offset=next_x-11'd64;
-    wire [8:0] spectrum_column=next_x>=64 && next_x<1088 ? spectrum_offset[9:1] : 9'd0;
-    wire [10:0] image_x=issue_x-11'd1248, image_y=issue_y-11'd224;
     generate if(ENABLE_ANALYSIS) begin : g_analysis
         output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1)) u_analysis(.clk(clk),.reset_n(rst_n),
             .source_clk(source_clk),.source_reset_n(source_reset_n),.pcm_pair(output_pcm),.sample_valid(sample_valid),
@@ -229,7 +233,7 @@ module feedback_renderer #(
             end
             if (advance) begin
                 previous_wave_data <= render_wave_data;
-                read_x <= issue_x; read_y <= issue_y;
+                read_x <= canvas_x; read_y <= canvas_y;
                 if (issue_x == WIDTH-2) begin
                     issue_x <= 0;
                     if (issue_y == HEIGHT-1) all_issued <= 1;
