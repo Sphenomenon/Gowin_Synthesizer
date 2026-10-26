@@ -2,10 +2,16 @@
 # repository tracks the 138K host and 25K panel under projects/, plus shared
 # planning documents. Generated outputs stay local. The old migration path
 # is a tracked compatibility symlink, not a second source tree.
+#
+# Historical/reference trees are ignored wholesale below and the canonical
+# first-party paths are re-admitted with '!' rules.  ORDER MATTERS: a '!' only
+# re-admits a path excluded by an earlier rule, so do not reorder this block.
 /fpga/
 /Mega_138K/
 /migration/*
 !/migration/gw138k_audio
+# Re-admit the 138K tree, then admit only these parts of it: README.md,
+# scripts/, ae350/scripts/ and the whole push2_workstation/ workstation.
 !/projects/138k/
 projects/138k/*
 !/projects/138k/README.md
@@ -80,3 +86,8 @@ a.out
 projects/138k/push2_workstation/usb_a/reports/function_first_*/attach/
 projects/138k/push2_workstation/usb_a/reports/function_first_*/gw25k_host/
 projects/138k/push2_workstation/usb_a/reports/function_first_*/guide/
+
+# Report evidence convention: under reports/, *.md / *.json / *.py / *.sv and
+# resource/timing text summaries are tracked as dated evidence, while raw
+# *.log and *.tr tool output stay local unless a specific file is re-admitted
+# with '!' above.  MIDI_KEYBOARD reports follow the same json-first convention.
