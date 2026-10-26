@@ -36,6 +36,7 @@ def main():
     ap.add_argument('--pinout-output',type=Path,help='New output directory for --prepare-pinout; refuses existing paths')
     ap.add_argument('--prepare-custom-board',action='store_true',help='Prepare native 138K board integration for offline synthesis only; electrical and full physical gates remain blocked')
     ap.add_argument('--custom-board-output',type=Path,help='Required new output directory for --prepare-custom-board')
+    ap.add_argument('--hdmi-mode',choices=['1080p60','720p30','720p60'],help='Explicit native-board HDMI mode; never changes accepted workstation profiles')
     ap.add_argument('--prepare-usb2-soc',action='store_true',help='Prepare native CPU/USB2 component with explicit probe or workstation firmware; not an integrated board candidate')
     ap.add_argument('--usb2-soc-output',type=Path,help='Required new output directory for --prepare-usb2-soc')
     ap.add_argument('--usb2-firmware-profile',choices=['probe','workstation'],help='Explicit USB2 CPU firmware; default probe, never changes accepted workstation profiles')
@@ -56,6 +57,8 @@ def main():
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=ap.parse_args()
+    if args.hdmi_mode is not None and not args.prepare_custom_board:
+        ap.error('--hdmi-mode requires --prepare-custom-board')
     if args.usb2_full_speed_only and not (args.prepare_custom_board or
             (args.prepare_usb2_soc and args.usb2_firmware_profile=='workstation')):
         ap.error('--usb2-full-speed-only requires explicit native workstation firmware preparation')
@@ -72,7 +75,7 @@ def main():
         from tools.workstation_custom_board import prepare as prepare_custom_board
         try:
             output,metadata=prepare_custom_board(ROOT,args.netlist_dir,args.custom_board_output,
-                                                 args.riscv_prefix,not args.usb2_full_speed_only)
+                                                 args.riscv_prefix,not args.usb2_full_speed_only,args.hdmi_mode or '1080p60')
         except (ValueError,OSError,subprocess.CalledProcessError) as error:
             ap.error(str(error))
         print(output)

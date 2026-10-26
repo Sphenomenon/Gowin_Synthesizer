@@ -64,6 +64,11 @@ def fixture():
         pin = channel['pin']
         connect('carrier', 'BANK5_T14' if pin == 5 else channel['signal'], 'FPC3.' + str(pin))
         connect('bluetooth', channel['signal'], 'FPC1.' + str(25 - pin), channel['module'])
+    for node, name in {'J2.2':'BANK4_Y22', 'J2.3':'BANK4_Y21', 'J2.56':'BANK5_T14',
+                       'J2.57':'DIP_SWITCH_0_BANK5_V13', 'J2.77':'BANK5_W14', 'J2.78':'BANK5_V15',
+                       'J2.79':'BANK5_W15', 'J2.100':'BANK4_W22', 'J2.58':'UART_TX',
+                       'J2.59':'BT_DIS#', 'J2.71':'WL_DIS#'}.items():
+        connect('carrier', name, node)
     for pin in (1, 2, 3, 4, 21, 22, 23, 24):
         supply = '+5V' if pin in (1, 2, 23, 24) else 'GND'
         connect('carrier', supply, 'FPC3.' + str(pin))

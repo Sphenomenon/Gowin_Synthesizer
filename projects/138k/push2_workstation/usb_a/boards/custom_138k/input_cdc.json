@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "identity": "custom138k-input-fifo-cdc-20261022-v1",
+  "fifo": "u_native_usb/input_owner/events/fifo/unbuffered",
+  "pointer_bits": 7,
+  "write_binary_alias_bit": 6,
+  "gray_max_delay_ns": 10.0,
+  "synchronizer_max_delay_ns": 2.0
+}

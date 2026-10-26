@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "identity": "custom138k-usb2-bridge-cdc-20261022-v1",
+  "bridge": "u_native_usb/host/usb/bridge",
+  "controls": ["request", "result", "reset", "reset_ack", "high_speed", "snapshot", "snapshot_ack", "reference_fault"],
+  "mailboxes": ["descriptor", "result", "snapshot"],
+  "synchronizer_max_delay_ns": 2.0,
+  "mailbox_max_delay_ns": 16.0,
+  "snapshot_constant_bits": [9, 10, 11, 12, 13, 14, 15, 29, 33, 41, 42, 43, 44, 45, 46, 47]
+}

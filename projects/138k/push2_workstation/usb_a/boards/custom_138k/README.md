@@ -30,10 +30,14 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 - USB2 解析 8 位 DATA 和 CLK／DIR／NXT／STP 的转换器两侧网络，并检查 VCCA／VCCB／OE 和 RESET 的现有连接；不虚构 FPGA 可控 PHY RESET，也不把旧 D+/D− 软 PHY 接口当成 ULPI。
 - TF SPI 的 MOSI 为 **W14**；Y16 与 AB15 是保留的其他数据脚。
 - HDMI 保持原生合法差分对顺序；四对均记录串行极性补偿需求，不能用交换 `IO_LOC` 正负球位代替逻辑补偿。K14 是 CEC，不再是旧 `hdmi_tx_en`。
-- 蓝牙按底板 `FPC3.n → FPC1.(25−n)` 核对 15 根信号和八个电源／地触点。仅 T14 有明确球位，其余只有连接器端点，不猜测 BGA，也不在本配置接入 BLE 业务。
+- 蓝牙按底板 `FPC3.n → FPC1.(25−n)` 核对 15 根信号和八个电源／地触点。本位置规划仍只记录线序；原生装配另用 `bluetooth.json` 核对自定义 J2 与核心板 C2400 的编号转换及周边锚点，接入 T14／W12／AA9／AA13 四根 UART／使能信号，并选择 `bluetooth.cst`。PCM／SDIO／HOST_WAKE 未新增驱动。
 - 旧 Dock 的 `usb1_dp`／`usb1_dn`、`pa_en`、`hdmi_tx_en`、`button1_n`、`midi_rx_i` 不复制到新板规划；不拿功放检测或 PDN 冒充 `pa_en`，不猜新复位按钮。
 
 ## 后续整机适配与回退
+
+原生装配必须同时选择 `ddr.cst` 的 PLL、DDRDLL 和 CLKDIV 专用资源位置，并与其他约束合并为唯一有效 CST。DDR 球位和电气属性相同，不能代替这些资源定位；只复制 `IO_LOC`／`IO_PORT` 会丢失官方 DDR 时钟布局要求。该约束进入原生 `a24` 准备身份，不切换 accepted 整机输入。来源、同板 A/B 和整机验证范围见 [DDR 约束修复记录](../../reports/WORKSTATION_DDR_OFFICIAL_AB_20261026.md)。
+
+三项资源定位不是整机初始化稳健性或稳定显示的验收结论；后续已观察到暖重配置前态依赖及显示欠载，当前范围和证据见 [出图后闪烁排查](../../reports/WORKSTATION_HDMI_FLICKER_20261026.md)。
 
 网表已足够推进本阶段位置映射，不以取得整份原理图为前提。尚需完成新板原生顶层／复位和电气约束、USB2 ULPI Host 及 48／60 MHz 域交接、DAC 型号对应的格式／MCLK／启动静音、HDMI 极性补偿与 CEC 安全处理，才能进入综合和 P&R。DAC 的具体型号用于协议适配；不能仅换位置就把旧 `pt8211_tx` 认定为兼容。
 
@@ -49,7 +53,9 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 
 更新的 [工作站应用记录](../../reports/CUSTOM_BOARD_USB2_WORKSTATION_20261022.md) 增加显式生产固件 profile、原生后端、HS／FS 的实际 25K MIDI／PL CPU 仿真和 Push 软件分包验证。显式 [输入 owner／FIFO 组件](../../rtl/workstation/USB2_INPUT.md) 接入原工作站事件边界；[音频组件](../../rtl/workstation/USB2_AUDIO.md) 继续连接原会话、公共参数、DSP、参考串行链与 delay DMA，分别记录来源和模型范围。组件综合本身不解除本配置的 pinout-only／电气门禁，也不能推导可上板。
 
-另有显式 [`--prepare-custom-board` 原生装配入口](../../rtl/workstation/README.md#显式新板装配)，复用现有整机组合并选择新板位置、USB2 和四对 TMDS 极性补偿；其 prepare／离线综合与本目录位置配置是不同验证阶段。它仍禁止 P&R／部署，DAC 信号高阻、CEC 释放，未完成电气、功放、BLE 和实板验收；具体来源与结果见[装配记录](../../reports/CUSTOM_BOARD_NATIVE_INTEGRATION_20261022.md)。不得把已编译的整机源码组合误报为已经接通的新板。
+另有显式 [`--prepare-custom-board` 原生装配入口](../../rtl/workstation/README.md#显式新板装配)，复用现有整机组合并选择新板位置、USB2 和四对 TMDS 极性补偿；其 prepare／离线综合与本目录位置配置是不同验证阶段。原生入口通过 `workstation_fpc_audio` 驱动 AUDIO→FPC→功放链路，并接入蓝牙业务协议和实际音频短录音／下载；本位置配置单独使用时不因此获得驱动。CEC 释放；完整电气、布局布线、时序和实板验收仍需分别完成。音频实现、蓝牙来源与容量限制见原生入口说明。不得把已编译的整机源码组合误报为已经接通的新板。
+
+2026-10-24 原生整合通过 `peripherals.json` 单独锁定远端验证依据：音频实际采用主板 `FPC2.n` → 功放 `FPC1.(25-n)`，不沿用本独立位置配置的同序排线假设；K18 输入 12.288 MHz，功放 MCLK 为 256fs。原生位置生成先按本配置网表推导，再交叉核对远端约束，并加入 LCD。Push CC71／CC79 或 25K 编码器 1 通过同一 CC7 权威控制最终输出音量，不修改功放 vendor 或另写控制协议。原生合并 CST 和独立 pinout-only 输出不能互换使用；详细来源与未完成验收见[本次整合记录](../../reports/WORKSTATION_INTEGRATION_20261024.md)。
 
 之后分别执行时序／CDC／PLL／资源门禁及实体排线、Push／25K、音频、HDMI 验收，另建具有完整来源和位流哈希的新候选。Push 和 25K 在同一个 USB-A 口交替接入，不假定同时连接或 High-Speed。不得凭本阶段通过执行 SRAM 或 Flash 下载。
 

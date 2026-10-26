@@ -1,0 +1,3 @@
+INS_LOC "u_memory/u_pll/u_pll_0/PLL_inst" PLL_L[0];
+INS_LOC "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_dll" DDRDLLM_BL;
+INS_LOC "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv" LEFTSIDE[4];

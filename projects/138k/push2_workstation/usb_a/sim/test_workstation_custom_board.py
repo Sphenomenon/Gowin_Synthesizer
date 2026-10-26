@@ -22,6 +22,9 @@ from tools import workstation_custom_board as integration
 from tools import workstation_pinout as pinout
 from tools.workstation_baselines import load_baseline
 from tools.workstation_usb2_soc import SOC_SOURCE_PATHS
+from tools.workstation_custom_clocks import clock_bundle, shared_cdc_bundle
+from tools.workstation_custom_usb2_cdc import cdc_bundle
+from tools.workstation_custom_input_cdc import input_cdc_bundle
 from test_workstation_pinout import fixture
 from test_workstation_usb2_application import MODEL_INPUTS, midi_sources
 
@@ -158,6 +161,46 @@ class NativeBoard(unittest.TestCase):
             with patch.object(pinout, 'load_sources', return_value=(netlists, identities)):
                 _, metadata = integration.prepare(ROOT, Path(directory) / 'netlists', output)
             stage = output / 'workstation/Prj1'
+            self.assertEqual(metadata['identity'], integration.IDENTITY)
+            self.assertEqual((stage / 'constraints/custom_138k.sdc').read_text(),
+                             clock_bundle(ROOT)['sdc'] + cdc_bundle(ROOT)['sdc'] + input_cdc_bundle(ROOT)['sdc'] + integration.FPC_AUDIO_SDC + integration.BLUETOOTH_SDC + integration.LCD_SDC + shared_cdc_bundle(stage)['sdc'] + integration.timing_constraints() + integration.MODEL_FLASH_SDC)
+            shared_sdc = shared_cdc_bundle(stage)['sdc']
+            self.assertIn('u_video/u_scanout/held_request*', shared_sdc)
+            self.assertIn('u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_binary_9*', shared_sdc)
+            self.assertIn('u_native_usb/input_owner/feedback/held_data*', shared_sdc)
+            self.assertIn('u_video/u_dvi/clock_lane/serializer/RESET', shared_sdc)
+            self.assertNotIn('u_push/', shared_sdc)
+            self.assertNotIn('u_managed/u_audio/u_midi_cdc/', shared_sdc)
+            self.assertNotIn('[get_ports ', shared_sdc)
+            self.assertNotIn('create_generated_clock', shared_sdc)
+            parent_sdc = stage / 'constraints/tang_mega_138k.sdc'
+            parent_bytes = parent_sdc.read_bytes()
+            parent_sdc.write_bytes(parent_bytes + b'\nset_false_path -from [all_clocks]\n')
+            with self.assertRaisesRegex(ValueError, 'parent SDC changed'):
+                shared_cdc_bundle(stage)
+            parent_sdc.write_bytes(parent_bytes)
+            self.assertEqual((stage / 'constraints/custom_138k.audio.cst').read_bytes(),
+                             (ROOT / integration.FPC_AUDIO_CST).read_bytes())
+            self.assertEqual([name for name in metadata['enabled_inputs'] if name.endswith('.cst')],
+                             ['constraints/custom_138k.cst'])
+            combined = ''.join((stage / ('constraints/custom_138k.' + part + '.cst')).read_text() + '\n'
+                               for part in ('locations', 'audio', 'bluetooth', 'display', 'peripherals', 'model_flash', 'ddr'))
+            self.assertEqual((stage / 'constraints/custom_138k.cst').read_text(), combined)
+            self.assertEqual((stage / 'constraints/custom_138k.display.cst').read_bytes(),
+                             (ROOT / integration.DISPLAY_CST).read_bytes())
+            self.assertEqual(metadata['identity'], 'custom138k-native-integration-20261026-a24')
+            self.assertEqual((stage / 'constraints/custom_138k.ddr.cst').read_bytes(),
+                             (ROOT / integration.DDR_CST).read_bytes())
+            for constraint in (
+                'INS_LOC "u_memory/u_pll/u_pll_0/PLL_inst" PLL_L[0];',
+                'INS_LOC "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_dll" DDRDLLM_BL;',
+                'INS_LOC "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv" LEFTSIDE[4];',
+            ):
+                self.assertEqual(combined.count(constraint), 1)
+            plan = json.loads((output / 'pinout/pinout.json').read_text())
+            self.assertEqual(plan['constraints_sha256'], digest(output / 'pinout/custom_138k.locations.cst'))
+            self.assertEqual(metadata['input_cdc_plan_sha256'], input_cdc_bundle(ROOT)['source_sha256'])
+            self.assertEqual(metadata['usb2_cdc_plan_sha256'], cdc_bundle(ROOT)['source_sha256'])
             self.assertTrue(metadata['native_usb'])
             self.assertTrue(metadata['electrical_blocked'])
             self.assertFalse(metadata['legacy_usb_host_elaborated'])
@@ -166,7 +209,10 @@ class NativeBoard(unittest.TestCase):
                 self.assertFalse(metadata[flag], flag)
             self.assertEqual(metadata['firmware']['rom_sha256'],
                              '31c4d7d58141ef0ec2b33f826a9c22251b7d4f23771cbaa189427b0f1277d457')
-            self.assertEqual(metadata['audio_pin_behavior'], 'high_impedance_pending_actual_dac_identity')
+            self.assertEqual(metadata['audio_pin_behavior'], 'ak4493_i2s32_48k_mclk256fs_final_master_volume')
+            self.assertEqual(plan['ports']['dac_pdn_n']['balls'], ['C13'])
+            self.assertEqual(plan['ports']['hp_bck']['balls'], ['A13'])
+            self.assertEqual(plan['ports']['clk_12m288']['balls'], ['K18'])
             for relative, expected in metadata['staged_input_sha256'].items():
                 self.assertEqual(digest(stage / relative), expected, relative)
             for relative, expected in metadata['source_snapshot_sha256'].items():
@@ -183,9 +229,10 @@ class NativeBoard(unittest.TestCase):
             text = preprocess(ROOT / 'rtl/workstation/workstation_custom_138k_top.sv', Path(directory) / 'native.v')
             self.assertNotIn('iosys2 u_usb_host', text)
             self.assertNotIn('push2_usb_a_control u_push', text)
-            for instance in ('workstation_usb2_input u_native_usb', 'gw138k_usb_controlled_audio u_managed',
-                             'ddr3_platform u_memory', 'hdmi_display u_video', 'basic_pitch_workstation_link u_music',
-                             'delay_ddr_dma #', 'workstation_output_router u_output_router'):
+            for instance in ('workstation_usb2_input u_native_usb', 'gw138k_usb_controlled_audio #(.EXTERNAL_MASTER_VOLUME(1)) u_managed',
+                             'ddr3_platform u_memory', 'hdmi_display u_video', "basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1'b1)) u_music",
+                             'delay_ddr_dma #', 'workstation_output_router u_output_router',
+                             'workstation_fpc_audio u_fpc_audio', 'workstation_bluetooth u_bluetooth', 'workstation_lcd u_lcd'):
                 self.assertEqual(text.count(instance), 1, instance)
             header = re.search(r'module\s+workstation_custom_138k_top\s*#\(.*?\)\s*\((.*?)\);', text, re.S)[1]
             parts = re.split(r'\b(input|output|inout)\b', header)

@@ -1,0 +1,7 @@
+// Preserve the reference core's 3.3 V emulated differential output standard.
+IO_PORT "tmds_data_p[0]" IO_TYPE=LVCMOS33D PULL_MODE=NONE DRIVE=8;
+IO_PORT "tmds_data_p[1]" IO_TYPE=LVCMOS33D PULL_MODE=NONE DRIVE=8;
+IO_PORT "tmds_data_p[2]" IO_TYPE=LVCMOS33D PULL_MODE=NONE DRIVE=8;
+IO_PORT "tmds_clk_p" IO_TYPE=LVCMOS33D PULL_MODE=NONE DRIVE=8;
+IO_PORT "hdmi_hpd" IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+IO_PORT "hdmi_cec" IO_TYPE=LVCMOS33 PULL_MODE=NONE;

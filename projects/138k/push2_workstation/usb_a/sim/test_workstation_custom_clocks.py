@@ -78,8 +78,8 @@ class NativeClocks(unittest.TestCase):
 
     def test_all_primary_and_generated_clocks_have_explicit_tcl_declarations(self):
         bundle = clock_bundle(ROOT)
-        self.assertEqual(len(bundle['plan']['primary']), 2)
-        self.assertEqual(len(bundle['plan']['generated']), 9)
+        self.assertEqual(len(bundle['plan']['primary']), 3)
+        self.assertEqual(len(bundle['plan']['generated']), 10)
         self.assertNotIn('set_false_path', bundle['sdc'])
         self.assertNotIn('set_clock_groups', bundle['sdc'])
         prefix = '''
@@ -92,7 +92,7 @@ proc create_generated_clock {args} {global clocks; lappend clocks [list generate
         result = subprocess.run(['tclsh'], input=prefix + bundle['sdc'] + '\nputs [llength $clocks]\n',
                                 text=True, capture_output=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(result.stdout.strip(), '11')
+        self.assertEqual(result.stdout.strip(), '13')
         pixel = next(line for line in bundle['sdc'].splitlines() if '-name video_pixel148 ' in line)
         self.assertIn('-edges {1 7 11}', pixel)
         self.assertNotIn('-divide_by', pixel)

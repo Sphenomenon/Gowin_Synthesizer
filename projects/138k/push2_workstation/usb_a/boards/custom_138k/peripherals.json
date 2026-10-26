@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "identity": "custom138k-workstation-peripherals-20261024-v1",
+  "remote_main_revision": "e528073e2ae8763ecfcf2e10761f88cb9b0ca223",
+  "remote_business_revision": "f2bae2dab3fbeb0ce5f55bbd555a3a29c76bb9c8",
+  "reviewed_sources": {
+    "example/AK4493_AMP/constraints/audio.cst": "4bd27f25a384514303762e6140815e6f192a7088455bc7a36105cef8190d9844",
+    "example/AK4493_AMP/rtl/ak4493_pin_test.v": "d6c73227827cf252e868188a59cc49f9747ffe858ef852e25fb82f2c62bc5f28",
+    "example/LCD_RGB/constraints/lcd.cst": "3503323ae5c6f21ec3b39bf1ca7b0ccd122d8d2ce75aeb85f7b66def4e242c6a",
+    "example/LCD_RGB/rtl/lcd_scan.v": "cbe1e1b73e578b6f2cd3df2071130b6e9b4c449c35c267bdece5341094b06f94",
+    "example/LCD_RGB/rtl/lcd_pll.v": "7ce420aeb5c01a033d14a91137582bf76c49ec6d05d1f9461fe710aeb38ffaf7",
+    "example/CLOCK_MEASURE/reports/measurement.json": "53873dcb8d3161af9b5c79b4805601f338ebe7ce9cf5664a9a7f913703eafff2"
+  },
+  "audio_aliases": {
+    "ak_pdn": "dac_pdn_n", "ak_mclk": "dac_mclk", "ak_bick": "hp_bck",
+    "ak_sdata": "hp_din", "ak_lrck": "hp_ws", "ak_sslow": "dac_sslow",
+    "ak_smute": "dac_smute", "ak_sd": "dac_sd", "ak_slow": "dac_slow",
+    "plug_det": "amp_fpga_det"
+  },
+  "included": ["usb2_push_or_25k", "abc_synthesis", "vector", "effects", "tf_wav", "recognition", "hdmi", "lcd_performance", "ak4493_master_volume", "ble_business_second40"],
+  "excluded": ["mode_d", "long_ddr_recording", "wifi_network_service", "lcd_touch_input"],
+  "hardware_acceptance_inherited": false
+}

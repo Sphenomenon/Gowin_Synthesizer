@@ -1,0 +1,13 @@
+{
+  "identity": "custom138k-bluetooth-20261023-v1",
+  "core_schematic": "tang_mega_138k_30354_Schematics..pdf, page 6, C2400",
+  "core_schematic_sha256": "326c45a7ae05e990d5f885fba6ec9b589d966941aa3c00f7d43122d99c068af7",
+  "connector_numbering": "J2.1..50 = C2400.1,3,..99; J2.51..100 = C2400.100,98,..2",
+  "anchors": {"J2.2":"BANK4_Y22", "J2.3":"BANK4_Y21", "J2.56":"BANK5_T14", "J2.57":"DIP_SWITCH_0_BANK5_V13", "J2.77":"BANK5_W14", "J2.78":"BANK5_V15", "J2.79":"BANK5_W15", "J2.100":"BANK4_W22"},
+  "ports": {
+    "ble_uart_tx_o": {"ball":"T14", "carrier_pin":5, "connector":56, "core_pin":90, "module_node":"U2.43", "signal":"UART_RX"},
+    "ble_uart_rx_i": {"ball":"W12", "carrier_pin":6, "connector":58, "core_pin":86, "module_node":"U2.42", "signal":"UART_TX"},
+    "ble_bt_dis_n": {"ball":"AA9", "carrier_pin":7, "connector":59, "core_pin":84, "module_node":"U2.34", "signal":"BT_DIS#"},
+    "ble_wl_dis_n": {"ball":"AA13", "carrier_pin":19, "connector":71, "core_pin":60, "module_node":"U2.12", "signal":"WL_DIS#"}
+  }
+}
