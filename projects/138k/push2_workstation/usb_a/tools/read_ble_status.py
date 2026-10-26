@@ -23,7 +23,7 @@ def decode_line(line):
     if re.fullmatch(r'BLE1 [0-9A-F]{192}\n', line) is None:
         raise ValueError('Expected one BLE1 line with exactly 24 hex words')
     words = [int(line[5+i*8:13+i*8], 16) for i in range(24)]
-    if words[0] != 0x42545647 or words[1] != 1 or words[22] != 50000000 or words[23] != 115200:
+    if words[0] != 0x42545647 or words[1] != 1 or words[22] != 50000000 or words[23] not in (115200, 921600):
         raise ValueError('Not the expected GW138K BLE status format or clock configuration')
     result = dict(zip(WORD_NAMES, words))
     flags = words[2]
