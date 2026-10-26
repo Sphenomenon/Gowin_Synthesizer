@@ -21,7 +21,7 @@ from tools.workstation_custom_flash import prepare as prepare_model_flash, SDC a
 from tools.workstation_video_mode import apply as apply_video_mode, PROFILES_720
 
 
-IDENTITY = 'custom138k-native-integration-20261027-a25'
+IDENTITY = 'custom138k-native-integration-20261027-a26'
 FPC_AUDIO_CST = 'boards/custom_138k/audio.cst'
 DISPLAY_CST = 'boards/custom_138k/display.cst'
 DDR_CST = 'boards/custom_138k/ddr.cst'

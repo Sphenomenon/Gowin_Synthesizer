@@ -45,7 +45,8 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         STORE_REQ=11,BUILD=12,CRC=13,REPLAY_ADDR=14,REPLAY=15,DONE=16,RECORD_WAIT=17,BUILD_FETCH=18,REPLAY_RECORD_WAIT=19,STORE_META=20,META_ADDR=21,META_READ=22;
     reg [4:0] state;
     reg [7:0] frag[0:19], previous[0:19], header[0:35];
-    reg [7:0] reply[0:127];
+    (* syn_ramstyle="distributed_ram" *) reg [7:0] reply[0:83];
+    reg [7:0] reply_opcode, reply_result;
     (* ram_style="block" *) reg [7:0] request_cache[0:2047];
     (* ram_style="block" *) reg [7:0] reply_cache[0:4095];
     (* syn_ramstyle=CACHE_METADATA_RAM_STYLE *) reg [31:0] cache_id[0:31];
@@ -74,7 +75,10 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     reg [7:0] current_reply_byte;
     assign busy=state!=IDLE;
     assign response_data=reply[response_addr];
-    assign response_is_data=(reply[0]==8'h31 || reply[0]==8'h35 || reply[0]==8'h3e || reply[0]==8'h3f || reply[0]==8'h41 || reply[0]==8'h42) && reply[1]==0;
+    assign response_is_data=(reply_opcode==8'h31 || reply_opcode==8'h35 || reply_opcode==8'h3e || reply_opcode==8'h3f || reply_opcode==8'h41 || reply_opcode==8'h42) && reply_result==0;
+    wire reply_we=resetn && enable && (state==BUILD || state==CRC || state==REPLAY);
+    wire [6:0] reply_write_addr=state==CRC ? response_length-4+index : index;
+    wire [7:0] reply_write_data=state==CRC ? le32(~crc_work,index) : state==REPLAY ? reply_cache_data : current_reply_byte;
     // Write-through single-port RAM is supported by GW5A (NO_CHANGE is not).
     wire request_cache_we=resetn && enable && state==STORE_REQ;
     wire [10:0] request_cache_addr={cache_slot,index[5:0]};
@@ -85,6 +89,11 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         {cache_slot,7'd0}+response_length-4+index : {cache_slot,index};
     wire [7:0] reply_cache_write_data=state==STORE_META ? le32(recording_id,index) : state==CRC ? le32(~crc_work,index) : current_reply_byte;
     always @(posedge clk) begin
+        if(reply_we) begin
+            reply[reply_write_addr]<=reply_write_data;
+            if(reply_write_addr==0) reply_opcode<=reply_write_data;
+            if(reply_write_addr==1) reply_result<=reply_write_data;
+        end
         if(request_cache_we) begin
             request_cache[request_cache_addr]<=header[index];
             request_cache_data<=header[index];
@@ -325,13 +334,11 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                 end
                 BUILD_FETCH: begin current_reply_byte<=logical_byte(index);state<=BUILD;end
                 BUILD: begin
-                    reply[index]<=current_reply_byte;
                     crc_work<=crc_byte(crc_work,current_reply_byte);
                     if(index+5==response_length) begin index<=0; state<=CRC; end
                     else begin index<=index+1'b1;state<=BUILD_FETCH;end
                 end
                 CRC: begin
-                    reply[response_length-4+index]<=le32(~crc_work,index);
                     if(index==3) begin
                         if(accept_request) begin
                             cache_valid[cache_slot]<=1; cache_id[cache_slot]<=request_id;
@@ -351,7 +358,6 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                 end
                 REPLAY_ADDR: state<=REPLAY;
                 REPLAY: begin
-                    reply[index]<=reply_cache_data;
                     if(index+1==response_length) state<=DONE;
                     else begin index<=index+1'b1; state<=REPLAY_ADDR; end
                 end

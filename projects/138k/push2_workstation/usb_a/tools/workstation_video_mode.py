@@ -8,7 +8,7 @@ from tools.stage_usb_firmware import sha
 
 
 MODES = ('1080p60', '720p30', '720p60')
-IDENTITY_720 = 'custom138k-native-integration-20261027-video720p30-a25'
+IDENTITY_720 = 'custom138k-native-integration-20261027-video720p30-a26'
 LOCKED_INPUTS = {
     'src/video/hdmi_display.v': '900914bbcc98cdb563f708eea2bf6edf989917526103d628799930acfba59794',
     'src/video/feedback_renderer.v': '70b273a40429e7af40830664990280a2dcc1d1ec79c693b8b23d8f3276064834',
@@ -21,7 +21,7 @@ ADAPTED_PLL = 'rtl/display_data/workstation_video_pll_720p30.v'
 PROFILES_720 = {
     '720p30': dict(identity=IDENTITY_720, refresh_hz=30, h_total=3300,
                    timing=TIMING, pll=ADAPTED_PLL),
-    '720p60': dict(identity='custom138k-native-integration-20261027-video720p60-a25',
+    '720p60': dict(identity='custom138k-native-integration-20261027-video720p60-a26',
                    refresh_hz=60, h_total=1650,
                    timing='rtl/display_data/workstation_video_timing_720p60.sv',
                    pll='rtl/display_data/workstation_video_pll_720p60.v'),

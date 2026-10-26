@@ -1,0 +1,216 @@
+{
+  "date": "2026-10-27",
+  "candidate": "custom138k-native-integration-20261027-a26",
+  "parent_commits": [
+    "7856649",
+    "b480310"
+  ],
+  "scope": "isolated BLE synthesis and RTL simulation only; no full-design synthesis, P&R, bitstream or board operation",
+  "device": "GW5AST-LV138PG484AC2/I1",
+  "device_version": "C",
+  "tool": "Gowin 1.9.12.03",
+  "top": "workstation_bluetooth",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/workstation_bluetooth.sv": "0186acdbc61940900a79c83b381dd025e3b87bc25b8ced0a5a0ce092aab5f6c9",
+    "projects/138k/push2_workstation/usb_a/tools/synthesize_workstation_bluetooth.py": "126d3285a6e9fabe9f24b20d2198783ffcd3a8573e8cb091946b7decbcd0bc7b",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_bluetooth.py": "1f944aa2b39eb6dbeebbfccfe8e2d525a92c5657a1d424aafe8c6301ed219c39",
+    "projects/25k/example/RTL8723DS_PROTOCOL/prepare_adapted.py": "bc49ab237f4135b8e4c4289dce7077ceb49350924c4b1d095085dea9422aca50",
+    "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_gatt.v": "477dce8368527091d773e60599b0260a7dc10c83feed760d23353c00b972feb1",
+    "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_verilog_core.v": "83fe791a7ff42cbf4d70ae76d0c7f3e6b644c61ba23898608f3be98d38ea5c5b",
+    "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_protocol_command.v": "241960ea0ffe232905e6537bb4d46f236963bd901a6603f03c7c28c9094bd34e",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "4647432e01c6b6ff5a71e465435b06149e7577321c787901d306430cb6695961",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_video_mode.py": "5c3cc1b0eaeccab8863707f45900c350d7dcfc7d9588e7c05c47b8a16b8501d2",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": "d35d1b3a192e2b4492547d8f6545e14c6f98f2a660611b3d79f550258d949217",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py": "bd109729a90a4a1cbdba2b593ae559d0ec9cb90e19a0fc733112bb5b55eca052",
+    "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": "1e71b033a0950fb9985e42e6d0306d88baa70119bdfaf510dcf0f05cf878fc43"
+  },
+  "previous_summary": "summary.json",
+  "variants": {
+    "reply84": {
+      "scope": "isolated_ble_synthesis_not_physical_implementation",
+      "seconds": 126.811,
+      "resources": {
+        "Lut": 15285,
+        "Alu": 2319,
+        "Register": 7525,
+        "Bsram": 63,
+        "Ssram": 40
+      },
+      "primitives": {
+        "ALU": 2319,
+        "DFFCE": 531,
+        "DFFPE": 20,
+        "DFFRE": 6859,
+        "DFFSE": 115,
+        "GND": 11,
+        "GSR": 1,
+        "IBUF": 69,
+        "INV": 29,
+        "LUT2": 1513,
+        "LUT3": 4918,
+        "LUT4": 8825,
+        "MUX2_LUT5": 935,
+        "MUX2_LUT6": 347,
+        "MUX2_LUT7": 114,
+        "MUX2_LUT8": 41,
+        "OBUF": 776,
+        "RAM16S4": 4,
+        "RAM16SDP4": 36,
+        "SDPB": 44,
+        "SP": 3,
+        "VCC": 11,
+        "pROM": 16
+      },
+      "inputs_sha256": {
+        "native_bluetooth/ble_protocol_command.v": "ad7c82c8a3ac1a5e15bf8af7b51275c196729b3d6068e916a0c12e07a557a655",
+        "native_bluetooth/ble_recording.v": "1e71b033a0950fb9985e42e6d0306d88baa70119bdfaf510dcf0f05cf878fc43",
+        "native_bluetooth/bt_acl_bridge.v": "4444fdaf4258076b8edf4d0f46624062a1cd9dc75198f17c7e281ba5d385db9a",
+        "native_bluetooth/bt_gatt.v": "bcecc9a137a0982f11084c9b5fe90f82e50a5683024e87d710cab5023f49852c",
+        "native_bluetooth/bt_h5_transport.v": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+        "native_bluetooth/bt_hci_init.v": "e7559d802a3e9b1f6713e70656463ef7eceb3285c9ecfc9ad5474bed961a7bf2",
+        "native_bluetooth/bt_uart.v": "004babc4c97502af75d6715a489cf20f31e3003f569fab57504967b1aafa88dc",
+        "native_bluetooth/bt_uart_fast.v": "f17d460523fe9faecf05862de5fcde23d591aab656fc7412bb83ea4a89dbd646",
+        "native_bluetooth/bt_verilog_core.v": "83fe791a7ff42cbf4d70ae76d0c7f3e6b644c61ba23898608f3be98d38ea5c5b",
+        "native_bluetooth/patch_path.vh": "1fb55111cbb54b9bf67256f7f3f3b9f8d544fecb6a6c27ecb05f04904c0b0100",
+        "native_bluetooth/reset_release_sync.v": "d5311e4a6141261abe6c699572b3c0053b39c0e631d9d2c1b18b21f87048489d",
+        "native_bluetooth/rtl8723ds_patch.mem": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30",
+        "workstation_bluetooth.sv": "0186acdbc61940900a79c83b381dd025e3b87bc25b8ced0a5a0ce092aab5f6c9"
+      },
+      "netlist_sha256": "859af76bcbe727b0c68ee4f4c45cbdb7a55ca30e678f2e656843c3e7c9540ee2",
+      "reply_ram_instances": {}
+    },
+    "reply_ram84": {
+      "scope": "isolated_ble_synthesis_not_physical_implementation",
+      "seconds": 123.58,
+      "resources": {
+        "Lut": 14669,
+        "Alu": 2318,
+        "Register": 6868,
+        "Bsram": 63,
+        "Ssram": 52
+      },
+      "primitives": {
+        "ALU": 2318,
+        "DFFCE": 530,
+        "DFFPE": 20,
+        "DFFRE": 6203,
+        "DFFSE": 115,
+        "GND": 11,
+        "GSR": 1,
+        "IBUF": 69,
+        "INV": 30,
+        "LUT2": 1152,
+        "LUT3": 4687,
+        "LUT4": 8800,
+        "MUX2_LUT5": 769,
+        "MUX2_LUT6": 269,
+        "MUX2_LUT7": 74,
+        "MUX2_LUT8": 25,
+        "OBUF": 776,
+        "RAM16S4": 4,
+        "RAM16SDP4": 48,
+        "SDPB": 44,
+        "SP": 3,
+        "VCC": 11,
+        "pROM": 16
+      },
+      "inputs_sha256": {
+        "native_bluetooth/ble_protocol_command.v": "241960ea0ffe232905e6537bb4d46f236963bd901a6603f03c7c28c9094bd34e",
+        "native_bluetooth/ble_recording.v": "1e71b033a0950fb9985e42e6d0306d88baa70119bdfaf510dcf0f05cf878fc43",
+        "native_bluetooth/bt_acl_bridge.v": "4444fdaf4258076b8edf4d0f46624062a1cd9dc75198f17c7e281ba5d385db9a",
+        "native_bluetooth/bt_gatt.v": "bcecc9a137a0982f11084c9b5fe90f82e50a5683024e87d710cab5023f49852c",
+        "native_bluetooth/bt_h5_transport.v": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+        "native_bluetooth/bt_hci_init.v": "e7559d802a3e9b1f6713e70656463ef7eceb3285c9ecfc9ad5474bed961a7bf2",
+        "native_bluetooth/bt_uart.v": "004babc4c97502af75d6715a489cf20f31e3003f569fab57504967b1aafa88dc",
+        "native_bluetooth/bt_uart_fast.v": "f17d460523fe9faecf05862de5fcde23d591aab656fc7412bb83ea4a89dbd646",
+        "native_bluetooth/bt_verilog_core.v": "83fe791a7ff42cbf4d70ae76d0c7f3e6b644c61ba23898608f3be98d38ea5c5b",
+        "native_bluetooth/patch_path.vh": "58b58b339a8b1bba7c1699cbbc18fcefda7422e7949e2031891cb9cdaedda4de",
+        "native_bluetooth/reset_release_sync.v": "d5311e4a6141261abe6c699572b3c0053b39c0e631d9d2c1b18b21f87048489d",
+        "native_bluetooth/rtl8723ds_patch.mem": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30",
+        "workstation_bluetooth.sv": "0186acdbc61940900a79c83b381dd025e3b87bc25b8ced0a5a0ce092aab5f6c9"
+      },
+      "netlist_sha256": "19fea6ca7abcc09d82ddad23328a48becb345ce03151fbbc133cad4f74974eea",
+      "reply_ram_instances": {
+        "u_core/application/command_endpoint/reply_reply_0_0_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_0_1_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_1_0_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_1_1_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_2_0_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_2_1_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_3_0_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_3_1_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_4_0_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_4_1_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_5_0_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        },
+        "u_core/application/command_endpoint/reply_reply_5_1_s": {
+          "kind": "RAM16SDP4",
+          "parameters": {}
+        }
+      }
+    }
+  },
+  "a26_minus_a25": {
+    "Lut": -1062,
+    "Alu": -3,
+    "Register": -1010,
+    "Bsram": 0,
+    "Ssram": 12,
+    "logic_proxy_lut_alu_plus_6_ram16": -993
+  },
+  "a26_minus_original_ble": {
+    "Lut": -2898,
+    "Alu": -65,
+    "Register": -2855,
+    "Bsram_xml": -2,
+    "Ssram": 48,
+    "logic_proxy_lut_alu_plus_6_ram16": -2675,
+    "projected_18k_blocks": -4
+  },
+  "physical_cls_measured": false,
+  "physical_bsram_measured": false,
+  "ae350_business_offload_implemented": false,
+  "validation": {
+    "ble_regressions": 8,
+    "compact_bulk_direct_cases": 5,
+    "accepted_source_regressions": 10,
+    "native_prepare": 1,
+    "video_regressions": 11,
+    "implementation_regressions": 15,
+    "maximum_reply_stall_cycles": 24,
+    "passed": true
+  },
+  "rollback": "Revert a26 source and identity changes to return to a25; no board deployment changed."
+}

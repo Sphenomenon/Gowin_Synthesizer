@@ -54,6 +54,15 @@ class Bluetooth(unittest.TestCase):
 
     def test_request_cache_replay_eviction_and_expiry_with_both_storage_styles(self):
         original=(PROTOCOL / 'tests/tb_protocol_command.sv').read_text()
+        hold_anchor='        save_response();release_response();elapsed=900;'
+        self.assertEqual(original.count(hold_anchor),1)
+        original=original.replace(hold_anchor,'''        save_response();
+        repeat(24) begin
+            @(negedge clk);elapsed=elapsed+1;
+            if(!valid || length!=84)$fatal(1,"Maximum reply changed while stalled");
+            compare_saved();
+        end
+        release_response();elapsed=900;''')
         original=original.replace('        elapsed=64000;',
             '''        elapsed=62999;
         make_request(2,36,64'h1020304050607080,0);send_request();verify_response(0,84);release_response();
