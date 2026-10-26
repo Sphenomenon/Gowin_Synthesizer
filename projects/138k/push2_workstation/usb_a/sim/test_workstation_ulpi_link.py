@@ -7,12 +7,15 @@ import json
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 import xml.etree.ElementTree as ElementTree
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from tools.workstation_synthesis_netlist import SynthesisNetlist
 
 
 def controller_sources():
@@ -187,6 +190,11 @@ class PhysicalLink(unittest.TestCase):
             registers = re.findall(r'^\s*DFF[A-Z0-9_]*\s+\S+\s*\(', netlist, re.M)
             self.assertEqual(len(block_rams), 2, 'TX and RX buffers must remain two SDPB primitives')
             self.assertLess(len(registers), 2048, 'standalone controller exceeded its register budget')
+            design = SynthesisNetlist(netlist, 'workstation_usb2_host_controller')
+            first, second = 'fatal_sync_q_0_s0', 'fatal_sync_q_1_s0'
+            self.assertEqual(design.pin(first, 'Q'), design.pin(second, 'D'),
+                             'fatal receiver stages must not contain an enable/reset data mux')
+            self.assertEqual(design.pin(first, 'CLEAR'), design.pin(second, 'CLEAR'))
             print(f'PASS Gowin USB2 controller synthesis: {len(block_rams)} SDPB, {len(registers)} registers, no P&R or bitstream')
 
     @unittest.skipUnless(shutil.which('yosys'), 'yosys is required for the memory-inference check')

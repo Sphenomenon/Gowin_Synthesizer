@@ -34,7 +34,7 @@ module workstation_usb2_input #(
     output wire transaction_reset_n_o, phy_ready_o, failed_o, high_speed_o, traffic_enable_o,
     output wire [31:0] sof_count_o
 );
-    (* async_reg = "true" *) reg [1:0] cpu_release_q, session_release_q;
+    (* async_reg = "true", syn_preserve=1 *) reg [1:0] cpu_release_q, session_release_q, feedback_release_q;
     wire cpu_reset_n = cpu_release_q[1];
     wire session_reset_n = cpu_reset_n && transaction_reset_n_o;
     wire service_valid, service_write, service_ready, service_error;
@@ -48,6 +48,9 @@ module workstation_usb2_input #(
     always @(posedge clk_cpu or negedge reset_n)
         if (!reset_n) cpu_release_q <= 0;
         else cpu_release_q <= {cpu_release_q[0], 1'b1};
+    always @(posedge clk_ref or negedge reset_n)
+        if (!reset_n) feedback_release_q <= 0;
+        else feedback_release_q <= {feedback_release_q[0], 1'b1};
     always @(posedge clk_cpu or negedge session_reset_n)
         if (!session_reset_n) session_release_q <= 0;
         else session_release_q <= {session_release_q[0], 1'b1};
@@ -76,7 +79,7 @@ module workstation_usb2_input #(
     );
     push2_usb_a_control input_owner (
         .clk(clk_cpu), .reset_n(cpu_reset_n), .audio_clk(clk_audio), .audio_reset_n(audio_reset_n),
-        .feedback_clk(clk_ref), .feedback_reset_n(reset_n), .performance_words(performance_words_i),
+        .feedback_clk(clk_ref), .feedback_reset_n(feedback_release_q[1]), .performance_words(performance_words_i),
         .display_meta_data(display_meta_data_i), .display_meta_valid(display_meta_valid_i),
         .service_state_data(service_state_data_i), .service_state_valid(service_state_valid_i),
         .score_valid(score_valid_i), .analysis_done(analysis_done_i), .score_ready(score_ready_o), .score_note(score_note_i),

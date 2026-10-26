@@ -30,6 +30,8 @@ module workstation_usb2_host_mmio #(
 );
     wire enable_cpu, hs_enable, reset_request;
     (* async_reg = "true" *) reg [1:0] enable_ref_q;
+    (* async_reg = "true", syn_preserve=1 *) reg [1:0] reference_release_q;
+    wire reference_reset_n = reference_release_q[1];
     reg [2:0] reference_fault_q;
     wire command_valid, command_ready, command_toggle, transmit_valid, transmit_ready;
     wire result_valid, result_ready, receive_valid, receive_ready, receive_last;
@@ -46,12 +48,28 @@ module workstation_usb2_host_mmio #(
     wire [7:0] unused_function;
     wire [31:0] unused_received, unused_transmitted;
     wire unused_session_reset;
+    (* async_reg = "true", syn_preserve=1 *) reg [1:0] status_release_q;
+    (* async_reg = "true" *) reg [4:0] failure_meta_q, failure_sync_q;
+    wire status_reset_n = status_release_q[1];
+    always @(posedge clk_ulpi or negedge reset_n)
+        if (!reset_n) status_release_q <= 0;
+        else status_release_q <= {status_release_q[0], 1'b1};
+    always @(posedge clk_ulpi or negedge status_reset_n)
+        if (!status_reset_n) begin failure_meta_q <= 0; failure_sync_q <= 0; end
+        else begin
+            failure_meta_q <= {clock_failure, phy_failed, failed_o, mac_failed};
+            failure_sync_q <= failure_meta_q;
+        end
     wire [15:0] status = {7'd0, unsupported_low_speed, reset_active, sof_enable,
-                          phy_failed, failed_o, traffic_enable_o, high_speed_o, connected, phy_ready_o};
-    wire [31:0] diagnostic = {7'd0, clock_failure, init_stage, init_failure, mac_state, port_failure, port_state, mac_failed};
+                          failure_sync_q[2:1], traffic_enable_o, high_speed_o, connected, phy_ready_o};
+    wire [31:0] diagnostic = {7'd0, failure_sync_q[4:3], init_stage, init_failure, mac_state, port_failure, port_state, failure_sync_q[0]};
 
     always @(posedge clk_ref or negedge reset_n)
-        if (!reset_n) begin enable_ref_q <= 0; reference_fault_q <= 0; end
+        if (!reset_n) reference_release_q <= 0;
+        else reference_release_q <= {reference_release_q[0], 1'b1};
+
+    always @(posedge clk_ref or negedge reference_reset_n)
+        if (!reference_reset_n) begin enable_ref_q <= 0; reference_fault_q <= 0; end
         else begin
             enable_ref_q <= {enable_ref_q[0], enable_cpu};
             reference_fault_q <= {clock_failure == 2'd3, clock_failure == 2'd2, clock_failure == 2'd1};
@@ -71,7 +89,7 @@ module workstation_usb2_host_mmio #(
         .receive_data_i(receive_data), .receive_valid_i(receive_valid), .receive_ready_o(receive_ready), .receive_last_i(receive_last)
     );
     workstation_usb2_host_controller #(.ATTACH_DEBOUNCE_US(ATTACH_DEBOUNCE_US)) controller (
-        .clk_ref(clk_ref), .clk_ulpi(clk_ulpi), .reset_n(reset_n), .enable_i(enable_ref_q[1]),
+        .clk_ref(clk_ref), .clk_ulpi(clk_ulpi), .reset_n(reference_reset_n), .enable_i(enable_ref_q[1]),
         .hs_enable_i(hs_enable), .reset_request_i(reset_request),
         .ulpi_data_i(ulpi_data_i), .ulpi_dir_i(ulpi_dir_i), .ulpi_nxt_i(ulpi_nxt_i),
         .ulpi_data_o(ulpi_data_o), .ulpi_data_oe_o(ulpi_data_oe_o), .ulpi_stp_o(ulpi_stp_o),

@@ -85,16 +85,23 @@ module workstation_usb2_host_phy #(
     wire link_rxactive;
     wire link_rxerror;
     wire rxcmd_valid;
+    wire link_txend;
+    (* async_reg = "true", syn_preserve=1 *) reg [1:0] mac_release_q;
+    wire mac_qualified_n = link_reset_n && phy_ready_o && !owns_tx && !failed_o;
+
+    always @(posedge clk_ulpi or negedge mac_qualified_n)
+        if (!mac_qualified_n) mac_release_q <= 0;
+        else mac_release_q <= {mac_release_q[0], 1'b1};
 
     assign ulpi_data_oe_o = link_oe && !port_failed;
     assign ulpi_stp_o = link_stp || port_failed;
     assign failed_o = port_failed || clock_failed_o || init_failed_o || link_fatal_o;
-    assign mac_reset_n_o = link_reset_n && phy_ready_o && !owns_tx && !failed_o;
+    assign mac_reset_n_o = mac_release_q[1];
     assign mac_txready_o = mac_reset_n_o && link_txready;
     assign mac_rxvalid_o = mac_reset_n_o && link_rxvalid;
     assign mac_rxactive_o = mac_reset_n_o && link_rxactive;
     assign mac_rxerror_o = mac_reset_n_o && link_rxerror;
-    assign mac_txend_o = mac_reset_n_o && link_stp;
+    assign mac_txend_o = mac_reset_n_o && link_txend;
     assign mac_line_valid_o = mac_reset_n_o && rxcmd_valid;
 
     workstation_usb2_host_port #(.ATTACH_DEBOUNCE_US(ATTACH_DEBOUNCE_US)) port_control (
@@ -118,6 +125,7 @@ module workstation_usb2_host_phy #(
         .clk_ref(clk_ref), .clk_ulpi(clk_ulpi), .reset_n(reset_n), .enable_i(enable_i),
         .ulpi_data_i(ulpi_data_i), .ulpi_dir_i(ulpi_dir_i), .ulpi_nxt_i(ulpi_nxt_i),
         .ulpi_data_o(ulpi_data_o), .ulpi_data_oe_o(link_oe), .ulpi_stp_o(link_stp),
+        .utmi_txend_o(link_txend),
         .link_reset_n_o(link_reset_n), .ready_o(phy_ready_o), .clock_running_o(clock_running_o),
         .clock_present_o(clock_present_o), .clock_failed_o(clock_failed_o), .clock_failure_code_o(clock_failure_code_o),
         .init_failed_o(init_failed_o), .init_failure_code_o(init_failure_code_o), .init_stage_o(init_stage_o),

@@ -1,7 +1,9 @@
 `timescale 1ns/1ps
 // CPU-facing subsystem candidate. Existing physical HDMI top is unchanged.
 // preset_n resets only control state; audio reset remains independently owned.
-module gw138k_usb_controlled_audio (
+module gw138k_usb_controlled_audio #(
+    parameter bit EXTERNAL_MASTER_VOLUME=0
+) (
     input wire usb_event_valid,usb_lifecycle,usb_cancel,
     input wire [17:0] usb_event_data,
     output wire usb_event_ready,
@@ -15,6 +17,7 @@ module gw138k_usb_controlled_audio (
     output wire pready, pslverr,
     output wire [31:0] prdata,
     output wire hp_bck, hp_ws, hp_din, pa_en,
+    output wire [15:0] master_volume_o,
     output wire [31:0] scope_status_o,tf_scope_control_o,
     output wire [31:0] dac_reference_o,dac_voices_o,dac_health_o,
     output wire sample_ce_o, sample_valid_o,
@@ -104,7 +107,8 @@ module gw138k_usb_controlled_audio (
         .pc_valid(cpu_event_valid),.pc_data(cpu_event),.pc_ready(cpu_event_ready),
         .cpu_valid(1'b0),.cpu_data(18'd0),.cpu_ready(),
         .event_valid(merged_valid),.event_ready(merged_ready),.event_data(merged_data));
-    gw138k_controlled_adapter u_audio(
+    gw138k_controlled_adapter #(.EXTERNAL_MASTER_VOLUME(EXTERNAL_MASTER_VOLUME)) u_audio(
+        .master_volume_o(master_volume_o),
         .control_state_o(control_state),.control_pitch_o(control_pitch),.control_options_o(control_options),.scope_status_o(scope_status_o),.tf_scope_control_o(tf_scope_control_o),.dac_reference_o(dac_reference_o),.dac_voices_o(dac_voices_o),.dac_health_o(dac_health_o),
         .pc_uart_rx_i(pc_uart_rx_i),.held_notes_o(held_notes),.applied_events_o(applied_events),.pc_health_o(pc_health),
         .panel_event_valid_o(panel_event_valid),.panel_command_o(panel_command),

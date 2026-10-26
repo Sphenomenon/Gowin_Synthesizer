@@ -27,6 +27,12 @@ module tb_workstation_usb2_cpu_bridge #(
     reg [9:0] fake_length = 0, fake_index = 0;
     reg [7:0] fake_pid = 0;
     integer checks = 0, cycles = 0, command_count = 0, reset_count = 0;
+    integer descriptor_hold_checks = 0, result_hold_checks = 0, snapshot_hold_checks = 0;
+    reg descriptor_monitor_valid = 0, result_monitor_valid = 0, snapshot_monitor_valid = 0;
+    reg held_request_toggle = 0, published_result_toggle = 0, snapshot_waiting = 0;
+    reg [29:0] held_descriptor = 0;
+    reg [21:0] held_result = 0;
+    reg [79:0] held_snapshot = 0;
     wire command_ready = fake_state == 0 && allow_command;
     wire transmit_ready = fake_state == 1 && allow_upload && cycles % 7 != 0;
     wire result_valid = fake_state == 2 && allow_result;
@@ -82,6 +88,44 @@ module tb_workstation_usb2_cpu_bridge #(
     task automatic check(input reg condition, input string message);
         begin checks = checks + 1; if (!condition) $fatal(1, "%s cycles=%0d fake=%0d", message, cycles, fake_state); end
     endtask
+    always @(negedge clk_cpu) begin
+        if (dut.cpu_session_ready !== 1'b1) descriptor_monitor_valid = 0;
+        else begin
+            if (descriptor_monitor_valid && held_request_toggle == dut.request_toggle_q) begin
+                descriptor_hold_checks = descriptor_hold_checks + 1;
+                if (held_descriptor !== dut.descriptor_cpu_q) $fatal(1, "descriptor source changed before next request");
+            end
+            held_descriptor = dut.descriptor_cpu_q;
+            held_request_toggle = dut.request_toggle_q;
+            descriptor_monitor_valid = 1;
+        end
+    end
+    always @(negedge clk_ulpi) begin
+        if (dut.ulpi_reset_n !== 1'b1) snapshot_monitor_valid = 0;
+        else begin
+            if (snapshot_monitor_valid && snapshot_waiting) begin
+                snapshot_hold_checks = snapshot_hold_checks + 1;
+                if (held_snapshot !== dut.snapshot_mailbox_q) $fatal(1, "snapshot source changed before acknowledgement");
+            end
+            held_snapshot = dut.snapshot_mailbox_q;
+            snapshot_waiting = dut.snapshot_ack_sync_q[1] != dut.snapshot_toggle_q;
+            snapshot_monitor_valid = 1;
+        end
+        if (dut.ulpi_session_ready !== 1'b1) begin
+            result_monitor_valid = 0;
+            published_result_toggle = 0;
+        end else begin
+            if (result_monitor_valid && dut.request_sync_q[1] == published_result_toggle) begin
+                result_hold_checks = result_hold_checks + 1;
+                if (held_result !== dut.result_mailbox_q) $fatal(1, "result source changed before next request");
+            end
+            if (published_result_toggle != dut.result_toggle_q) begin
+                held_result = dut.result_mailbox_q;
+                published_result_toggle = dut.result_toggle_q;
+                result_monitor_valid = 1;
+            end else if (dut.request_sync_q[1] != published_result_toggle) result_monitor_valid = 0;
+        end
+    end
     task automatic cpu_wait(input integer count);
         repeat (count) @(negedge clk_cpu);
     endtask
@@ -195,6 +239,10 @@ module tb_workstation_usb2_cpu_bridge #(
         for (integer iteration = 0; iteration < 16; iteration = iteration + 1) begin
             start(8'h69, 8); wait_done(); cancel_session();
         end
+        check(descriptor_hold_checks > 100 && result_hold_checks > 100 && snapshot_hold_checks > 100,
+              "mailbox hold monitors exercised across real transactions");
+        $display("PASS workstation_usb2_mailbox_holds: descriptor=%0d result=%0d snapshot=%0d",
+                 descriptor_hold_checks, result_hold_checks, snapshot_hold_checks);
         $display("PASS workstation_usb2_cpu_bridge: half-period=%0d, %0d checks, sealed 512-byte CDC/reset/timeout/clock loss", CPU_HALF_PERIOD_PS, checks);
         $finish;
     end

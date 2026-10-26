@@ -191,11 +191,11 @@ module workstation_usb2_cpu_bridge #(
         end
     end
 
-    always @(posedge clk_cpu or negedge channel_reset_n) begin
-        if (!channel_reset_n) begin
+    always @(posedge clk_cpu or negedge cpu_session_ready) begin
+        if (!cpu_session_ready) begin
             transmit_count_q <= 0; receive_index_q <= 0; descriptor_cpu_q <= 0;
             request_toggle_q <= 0; result_sync_q <= 0; result_cpu_q <= 0; busy_q <= 0; done_q <= 0;
-        end else if (cpu_session_ready) begin
+        end else begin
             result_sync_q <= {result_sync_q[0], result_toggle_q};
             if (upload_write) transmit_count_q <= transmit_count_q + 1'b1;
             if (command_write) begin
@@ -239,11 +239,11 @@ module workstation_usb2_cpu_bridge #(
         end
     end
 
-    always @(posedge clk_ulpi or negedge channel_reset_n) begin
-        if (!channel_reset_n) begin
+    always @(posedge clk_ulpi or negedge ulpi_session_ready) begin
+        if (!ulpi_session_ready) begin
             request_sync_q <= 0; result_toggle_q <= 0; result_mailbox_q <= 0; descriptor_ulpi_q <= 0;
             state_q <= IDLE; upload_index_q <= 0; receive_count_q <= 0; elapsed_q <= 0; recovery_q <= 0;
-        end else if (ulpi_session_ready) begin
+        end else begin
             request_sync_q <= {request_sync_q[0], request_toggle_q}; recovery_q <= 0;
             if (active_transfer) elapsed_q <= elapsed_q + 1'b1;
             else elapsed_q <= 0;

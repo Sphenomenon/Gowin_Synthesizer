@@ -4,7 +4,9 @@
 // PT8211 25 clocks/half-BCK -> 1600 clocks/frame -> exactly nominal 48 kHz.
 // Q1.31 L/R goes directly to the existing stereo PT8211 quantizer. Original
 // Q1.15 mix controls, Q0.24 envelope and internal headroom remain unchanged.
-module gw138k_controlled_adapter (
+module gw138k_controlled_adapter #(
+    parameter bit EXTERNAL_MASTER_VOLUME=0
+) (
     input wire clk_50m, audio_clk, reset_n, midi_rx_i,
     input wire pc_uart_rx_i,
     output wire [127:0] held_notes_o,
@@ -15,6 +17,7 @@ module gw138k_controlled_adapter (
     output wire cpu_event_ready_o,
     output wire [31:0] control_state_o,control_pitch_o,control_options_o,
     output wire hp_bck, hp_ws, hp_din, pa_en,
+    output wire [15:0] master_volume_o,
     output wire [31:0] scope_status_o,tf_scope_control_o,
     output wire [31:0] dac_reference_o,dac_voices_o,dac_health_o,
     output wire sample_ce_o, sample_valid_o,
@@ -92,7 +95,7 @@ module gw138k_controlled_adapter (
     wire [5:0] voice_count;
     wire [1:0] mode,route;
     wire [2:0] profile;
-    assign control_state_o={synth_gain,voice_count,profile,route,mode,effect_mask};
+    assign control_state_o={EXTERNAL_MASTER_VOLUME ? master_volume_o : synth_gain,voice_count,profile,route,mode,effect_mask};
     wire [9:0] panic_epoch;
     wire panic_muted;
     assign control_pitch_o={panic_epoch,pitch};
@@ -104,7 +107,9 @@ module gw138k_controlled_adapter (
     assign effect_order_o=effect_order;
     wire synth_valid, clip;
     wire signed [31:0] synth;
-    gw138k_event_workstation #(.SAMPLE_RATE_HZ(48000),.TIMING_OPTIMIZED(1)) u_workstation(
+    gw138k_event_workstation #(.SAMPLE_RATE_HZ(48000),.TIMING_OPTIMIZED(1),
+        .EXTERNAL_MASTER_VOLUME(EXTERNAL_MASTER_VOLUME)) u_workstation(
+        .master_volume_o(master_volume_o),
         .clk_i(audio_clk),.rst_ni(reset_audio_n),.midi_byte_valid_i(midi_valid_audio),
         .midi_byte_i(midi_byte_audio),.pc_byte_valid_i(pc_valid_audio),.pc_byte_i(pc_byte_audio),
         .held_notes_o(held_notes_o),.applied_events_o(applied_events_o),.pc_overflow_o(pc_overflow),.control_options_o(control_options_o),.panic_epoch_o(panic_epoch),.panic_muted_o(panic_muted),

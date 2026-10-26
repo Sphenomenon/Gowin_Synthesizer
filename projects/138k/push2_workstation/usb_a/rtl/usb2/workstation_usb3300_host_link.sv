@@ -52,6 +52,7 @@ module workstation_usb3300_host_link #(
     output wire utmi_rxvalid_o,
     output wire utmi_rxactive_o,
     output wire utmi_rxerror_o,
+    output wire utmi_txend_o,
     output wire [1:0] utmi_linestate_o,
     output wire [1:0] vbus_state_o,
     output wire id_state_o,
@@ -80,11 +81,11 @@ module workstation_usb3300_host_link #(
     wire link_rxvalid;
     wire link_rxactive;
     wire link_rxerror;
-    wire safe_stop = force_stp || init_failed_o || link_fatal_o;
+    wire safe_stop = !link_reset_n_o || init_failed_o || link_fatal_o;
 
     assign ready_o = init_ready && !safe_stop;
-    assign ulpi_data_oe_o = link_oe && !safe_stop;
-    assign ulpi_stp_o = link_stp || safe_stop;
+    assign ulpi_data_oe_o = link_oe && !safe_stop && !force_stp;
+    assign ulpi_stp_o = link_stp || safe_stop || force_stp;
     assign csr_ready_o = ready_o && link_csr_ready;
     assign csr_response_valid_o = ready_o && link_response_valid;
     assign csr_response_data_o = link_response_data;
@@ -93,6 +94,7 @@ module workstation_usb3300_host_link #(
     assign utmi_rxvalid_o = ready_o && link_rxvalid;
     assign utmi_rxactive_o = ready_o && link_rxactive;
     assign utmi_rxerror_o = ready_o && link_rxerror;
+    assign utmi_txend_o = ready_o && link_stp;
 
     workstation_ulpi_supervisor #(
         .HEARTBEAT_WIDTH(HEARTBEAT_WIDTH), .EXIT_HOLD_REF_CYCLES(EXIT_HOLD_REF_CYCLES),
