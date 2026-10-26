@@ -46,6 +46,7 @@ module tb_panel_screen_integration;
  wire [15:0] active_keys;
  wire panic_busy;
  midi_keyboard_application #(.CLK_HZ(1000),.HOST_PANEL_CONTROLS(0)) app(
+  .touch_diagnostics(800'd0),
   .clk(clk),.reset(reset),.control_reset(control_reset||mk_reset),.usb_online(1'b1),.ble_online(1'b0),
   .key_bitmap(keys),.keypad_ready(1'b1),.slider_valid(1'b0),.slider_touch(1'b0),.slider_position(8'd0),
   .enc1_step(1'b0),.enc1_press(e1_short&&!remote_enable),.enc1_direction(2'sd1),

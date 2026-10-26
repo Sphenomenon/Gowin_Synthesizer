@@ -3,6 +3,7 @@ module tb_gw138k_panel_controls;
     reg clk=0;always #10 clk=~clk;
     reg reset=1,control_reset=0,usb_online=0,ble_online=0;
     reg [15:0] key_bitmap=0;
+    reg [799:0] touch_diagnostics=0;
     reg keypad_ready=1,slider_valid=0,slider_touch=0;
     reg [7:0] slider_position=0;
     reg enc1_step=0,enc1_press=0,enc2_step=0,enc2_press=0;
@@ -25,6 +26,8 @@ module tb_gw138k_panel_controls;
     wire panic_busy,screen_update;
     wire [31:0] status_flags,emitted_events;
     midi_keyboard_application #(.CLK_HZ(4000),.FIFO_DEPTH(2)) dut(.*);
+    wire [15:0] strip_leds;
+    midi_slider_led_map slider_lamps(.enabled(1'b1),.position(strip_value),.led_bitmap(strip_leds));
 
     reg [23:0] messages[0:4095];integer received=0,ble_received=0,sequence_number=0,mark,i,last_bend,current_bend;
     reg stalled=0;reg[31:0] held_packet;
@@ -91,7 +94,17 @@ module tb_gw138k_panel_controls;
         end
     endtask
     initial begin
-      ticks(5);reset=0;usb_online=1;drain();
+      ticks(5);reset=0;ticks(2);
+      for(i=0;i<256;i=i+1)begin
+        slider(i,1);
+        if(strip_value!==i[7:0] || strip_leds!==16'((1<<((i+15)/16))-1))
+          $fatal(1,"offline slider feedback frozen: pos=%0d strip=%0d leds=%04h",i,strip_value,strip_leds);
+      end
+      drain();
+      if(received!=0 || ble_received!=0)$fatal(1,"offline slider emitted MIDI");
+      usb_online=1;drain();
+      if(strip_value!=255 || strip_leds!=16'hffff || received!=0)$fatal(1,"USB attach reset local slider or replayed offline bend");
+      slider(255,0);drain();
       if(received!=0 || program_number!=73 || velocity!=100 || slider_mode!=2 || strip_value!=128 || dut.host_panel.performance.volume!=127)$fatal(1,"attach defaults or unexpected device initialization");
       key_bitmap=16'hffff;drain();if(received!=16)$fatal(1,"16 key presses");
       for(i=0;i<16;i=i+1)expect_at(i,{8'h90,8'(48+i),8'd100});
@@ -144,7 +157,19 @@ module tb_gw138k_panel_controls;
       usb_online=0;ticks(5);usb_online=1;ticks(5);usb_packet_tx_ready=1;drain();
       if(received!=mark || active_keys!=0 || program_number!=73 || dut.host_panel.performance.volume!=127)$fatal(1,"reconnect replay or local defaults");
       key_bitmap=0;drain();key_bitmap=1;drain();expect_at(received-1,24'h903c64);key_bitmap=0;drain();
+      usb_online=0;ble_online=0;drain();mark=received;
+      slider(0,1);
+      if(strip_value!=0 || strip_leds!=0)$fatal(1,"disconnected slider left endpoint");
+      slider(255,1);
+      if(strip_value!=255 || strip_leds!=16'hffff)$fatal(1,"disconnected slider right endpoint");
+      control_reset=1;ticks(3);control_reset=0;drain();
+      if(strip_value!=255)$fatal(1,"control reset changed local slider");
+      slider(255,0);
+      if(strip_value!=128 || strip_leds!=16'h00ff)$fatal(1,"disconnected slider release did not center LEDs");
+      usb_online=1;drain();
+      if(received!=mark)$fatal(1,"reconnect replayed offline slider");
       if(dut.host_panel.performance.control_overflows!=0)$fatal(1,"control queue overflow");
+      $display("METRIC offline_slider_positions=256 offline_led_release=1 attach_preserves_slider=1 offline_bend_replay=0");
       $display("METRIC keys=16 bend_positions=256 queued_controls=48 held_transpose=1 reconnect_replay=0 device_init_messages=0");
       $display("PASS tb_gw138k_panel_controls");$finish;
     end

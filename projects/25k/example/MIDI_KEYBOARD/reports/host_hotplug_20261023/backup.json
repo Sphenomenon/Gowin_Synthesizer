@@ -1,0 +1,78 @@
+{
+  "time": "2026-10-23T02:28:02.655022+08:00",
+  "dump_command": [
+    "openFPGALoader",
+    "-c",
+    "ft2232",
+    "--freq",
+    "2500000",
+    "--dump-flash",
+    "--file-size",
+    "8388608",
+    "-o",
+    "0",
+    "results/hotplug_20261023/hardware/before_flash.bin"
+  ],
+  "backup_bytes": 8388608,
+  "backup_sha256": "83bbe0251e2494238c8c1832cc9f1b1b2d4d2ef1c2bef0982880dc4cbb9c670f",
+  "steps": [
+    {
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "1",
+        "--cable-index",
+        "1",
+        "--channel",
+        "1",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "returncode": 50,
+      "log": "restore_after_backup.log"
+    },
+    {
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "0",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "returncode": 0,
+      "log": "before_libusb.log"
+    },
+    {
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "51",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "returncode": 0,
+      "log": "flash_id_libusb.log"
+    }
+  ],
+  "independent_repeat_read_sha256": "83bbe0251e2494238c8c1832cc9f1b1b2d4d2ef1c2bef0982880dc4cbb9c670f",
+  "two_full_flash_reads_match": true,
+  "configuration_restored_after_detection": {
+    "log": "after_backup_restored.log",
+    "user_code": "0x0000A25D",
+    "status_code": "0x70022020"
+  }
+}

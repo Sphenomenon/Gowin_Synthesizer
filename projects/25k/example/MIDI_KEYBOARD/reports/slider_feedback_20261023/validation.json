@@ -1,0 +1,1818 @@
+{
+  "schema_version": 2,
+  "started_at": "2026-10-23T03:33:32.736758+08:00",
+  "scope": "complete midi_keyboard_top Verilog-2005 elaboration and behavioral/protocol regression",
+  "top_module": "midi_keyboard_top",
+  "simulation_models": "sim/gowin_io_models.v",
+  "working_directory": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD",
+  "hardware_validated": false,
+  "passed": true,
+  "checks": [
+    {
+      "name": "Complete sources.f coverage",
+      "returncode": 0,
+      "details": {
+        "rtl_files": 46
+      }
+    },
+    {
+      "name": "Configuration JSON parsing",
+      "returncode": 0,
+      "details": {
+        "files": 4
+      }
+    },
+    {
+      "name": "Original QT2160 manifest checksums",
+      "returncode": 0,
+      "details": {
+        "manifest": "vendor/qt2160_reference/MANIFEST_SHA256.txt",
+        "verified_files": 22
+      }
+    },
+    {
+      "name": "Original panel interface manifest checksums",
+      "returncode": 0,
+      "details": {
+        "manifest": "vendor/gowin_panel_interface/MANIFEST_SHA256.txt",
+        "verified_files": 11
+      }
+    },
+    {
+      "name": "Icarus version",
+      "command": [
+        "iverilog",
+        "-V"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.006,
+      "output_sha256": "ca23091099109d3237b10e6336dbb5b325dda94c3c52cd4111d924bd60227f5d",
+      "pass_marker_required": false
+    },
+    {
+      "name": "USB descriptor generator --check",
+      "command": [
+        "/usr/bin/python3",
+        "tools/generate_usb_descriptors.py",
+        "--check"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.039,
+      "output_sha256": "910159b0e366238ceddd9c7613e3f51b71b2c4013d7135a52154905805fc7aa7",
+      "pass_marker_required": true
+    },
+    {
+      "name": "Board top elaboration (Verilog-2005)",
+      "command": [
+        "iverilog",
+        "-g2005",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "midi_keyboard_top",
+        "-tnull",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.052,
+      "output_sha256": "ae1f5a790d3c97678c313fa3e21a8765f642330940559328169e8d9b25ca3b39",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_ble_board_system compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_ble_board_system",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_board_system",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_ble_board_system.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.049,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_ble_board_system",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_board_system"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 24.129,
+      "output_sha256": "ced1cdfeec7cedae77eb8100a21a6f8b684f3432a6bbe780c4485e94b8824b0c",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_ble_board_system wrong-ROM rejection",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_board_system",
+        "+wrong_rom"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.124,
+      "output_sha256": "b158e2470bd592029042703c09ce9f53745f436895ac20fe5e2bf0ca6025c4b1",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_ble_gatt_completion compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_ble_gatt_completion",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_gatt_completion",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_ble_gatt_completion.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.038,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_ble_gatt_completion",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_gatt_completion"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.027,
+      "output_sha256": "97f965df5f91ef80b73f3d08a88e385388b25aa90461bf8cd23b685e4ce00739",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_ble_midi_codec compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_ble_midi_codec",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_midi_codec",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_ble_midi_codec.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.032,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_ble_midi_codec",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_midi_codec"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.091,
+      "output_sha256": "18580dc66987eef52a1b56f14c9ee97fb00d5c0e8a2da0716b9a46b8c7d1d0e9",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_ble_pairing_transport compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_ble_pairing_transport",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_pairing_transport",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_ble_pairing_transport.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.038,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_ble_pairing_transport",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_pairing_transport"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.035,
+      "output_sha256": "3c6c9fd46ff61c719a6ac9f916aa750ed4130b0bbcf979a117a1d69d628c66d2",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_ble_smp compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_ble_smp",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_smp",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_ble_smp.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.034,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_ble_smp",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ble_smp"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.011,
+      "output_sha256": "df97900f834b02f3d234d90989cc89f34dbf566ad798594d025e48efbb84adb6",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_encoder_button_gestures compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_encoder_button_gestures",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_encoder_button_gestures",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_encoder_button_gestures.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.027,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_encoder_button_gestures",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_encoder_button_gestures"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.007,
+      "output_sha256": "b19db6f423329ec0b6c61618f0780ab2896ea762b1b7240f36917e7253d4a701",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_encoder_input compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_encoder_input",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_encoder_input",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_encoder_input.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.032,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_encoder_input",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_encoder_input"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.014,
+      "output_sha256": "ba9b4a749c58f86f5400c12c84efa60cc5fe938615caa3d7c791f245d6bd52f7",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_encoder_response compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_encoder_response",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_encoder_response",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_encoder_response.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.037,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_encoder_response",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_encoder_response"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 1.555,
+      "output_sha256": "6e8a163469488301ced427a01bfc2df0c178feddef7b0add9057b0a1b10a06c3",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_gw138k_encoder_detents compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_gw138k_encoder_detents",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_gw138k_encoder_detents",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_gw138k_encoder_detents.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.026,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_gw138k_encoder_detents",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_gw138k_encoder_detents"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.006,
+      "output_sha256": "7c7fd2e1fdd5d225e1c30b5f078b3bb52cf7d9f86b653403d63b0fb8090b3878",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_gw138k_panel_backpressure compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_gw138k_panel_backpressure",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_gw138k_panel_backpressure",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_gw138k_panel_backpressure.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.034,
+      "output_sha256": "64668a25915813554a80a0838e8359c838b9ee540c00934834f2be4a2c8cd8e4",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_gw138k_panel_backpressure",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_gw138k_panel_backpressure"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 2.624,
+      "output_sha256": "08be39e12d2681c0109e945e90bc17c6343fd047e05cdbaf25d4a0d70387e8ac",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_gw138k_panel_controls compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_gw138k_panel_controls",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_gw138k_panel_controls",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_gw138k_panel_controls.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.033,
+      "output_sha256": "64668a25915813554a80a0838e8359c838b9ee540c00934834f2be4a2c8cd8e4",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_gw138k_panel_controls",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_gw138k_panel_controls"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 6.735,
+      "output_sha256": "e4971666d6145746fa444b7521eb24108096e7d0b7d98ca106e39090d5a9b8a5",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_keyboard_event_mapper compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_keyboard_event_mapper",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_keyboard_event_mapper",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_keyboard_event_mapper.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.029,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_keyboard_event_mapper",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_keyboard_event_mapper"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 1.306,
+      "output_sha256": "9b7d5164016ef5b8422f81ac7690724c5777d14feb5eb600a111c3abb8026be9",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_lcd_spi_stream compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_lcd_spi_stream",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_lcd_spi_stream",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_lcd_spi_stream.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.031,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_lcd_spi_stream",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_lcd_spi_stream"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.105,
+      "output_sha256": "60b6723c229f6cd1f61d80c66837735036307f811c7b49572d40f4f85d117e4b",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_display_regions compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_display_regions",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_display_regions",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_display_regions.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.03,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_display_regions",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_display_regions"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.007,
+      "output_sha256": "a8f45096201ca662dd444af10af78a0f837aa80998f23409c506721862bf0208",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_event_router compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_event_router",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_event_router",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_event_router.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.036,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_event_router",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_event_router"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 7.713,
+      "output_sha256": "4b5227b1f2c4c9b38a2e92328b161164289aba577d2c82e788f16de2e0f98af0",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_key_layout compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_key_layout",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_key_layout",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_key_layout.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.029,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_key_layout",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_key_layout"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 1.981,
+      "output_sha256": "ab1f4b847a768440cd406979a24b4d06991b45f9692c253bf478fa2e57b0533f",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_keyboard_application compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_keyboard_application",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_keyboard_application",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_keyboard_application.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.029,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_keyboard_application",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_keyboard_application"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.051,
+      "output_sha256": "0a078dfde56f79a441e4cb5646fcddaa791e4d64ddea10e8cffdb22e8ecb0151",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_keyboard_core compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_keyboard_core",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_keyboard_core",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_keyboard_core.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.03,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_keyboard_core",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_keyboard_core"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.113,
+      "output_sha256": "d97d44f3369b7d61c0473ee14d11a73e3797c96f3d63dba97e32fe3ad5df48d3",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_landscape_display compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_landscape_display",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_landscape_display",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_landscape_display.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.029,
+      "output_sha256": "225925490d1193de9178d753cd665b2ec1cf1da0b89e5e3580d19222031cf7a3",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_landscape_display",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_landscape_display"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 69.467,
+      "output_sha256": "81d625a61a67cfe641eb8c3afdc7c8fa61020b7348da44c301f5a98c8d053fc2",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_landscape_view compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_landscape_view",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_landscape_view",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_landscape_view.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.028,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_landscape_view",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_landscape_view"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 2.701,
+      "output_sha256": "f0d1b95e9dc71ab0ebf370060aac407a7d8f1fbec347058a846926225093732f",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_performance compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_performance",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_performance",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_performance.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.032,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_performance",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_performance"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.037,
+      "output_sha256": "ae14c2dd632cd8b943c58375803ccf4366110af449fa675e5f1727f226c10975",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_performance_races compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_performance_races",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_performance_races",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_performance_races.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.032,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_performance_races",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_performance_races"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.01,
+      "output_sha256": "a593941559a540102c035f5601786f6cbfd9460666aa096b23db7fc30ad53acc",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_slider_filter compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_slider_filter",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_slider_filter",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_slider_filter.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.026,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_slider_filter",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_slider_filter"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.013,
+      "output_sha256": "bf4f6224faf5905710477d57335669c48a5565f48a0229db20c3cb6a2c062033",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_midi_slider_led_map compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_midi_slider_led_map",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_slider_led_map",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_midi_slider_led_map.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.025,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_midi_slider_led_map",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_midi_slider_led_map"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.007,
+      "output_sha256": "ecd095090d523a15d669e0bd9eb1e8f93ad0860d6fab3e47fab83b6cfc84f360",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_panel_display_endpoint compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_panel_display_endpoint",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_panel_display_endpoint",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_panel_display_endpoint.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.029,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_panel_display_endpoint",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_panel_display_endpoint"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.055,
+      "output_sha256": "ffd6deeced6a348c1df1fef8a0cf5b63b97d1c0077bdcdf9bdd1bc4a33cf2df5",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_panel_screen_integration compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_panel_screen_integration",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_panel_screen_integration",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_panel_screen_integration.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.035,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_panel_screen_integration",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_panel_screen_integration"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.146,
+      "output_sha256": "fb922f279c8085e1fc5b03ab40c8cb277deba6e44b5da16d35e6b9238cdc3fcc",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_pca9685_led_driver compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_pca9685_led_driver",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_pca9685_led_driver",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_pca9685_led_driver.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.033,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_pca9685_led_driver",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_pca9685_led_driver"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.297,
+      "output_sha256": "1c9de7c5348aa12ba14046c9d49aaf56da6f991c26683aed494427456ce6d13a",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_remote_tile_display compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_remote_tile_display",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_remote_tile_display",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_remote_tile_display.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.039,
+      "output_sha256": "8cf715c860792305991725709cbf5043c9bf7e14e6d263ce8da8b360990c08db",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_remote_tile_display",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_remote_tile_display"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 79.048,
+      "output_sha256": "a7edf32039d525813588e09f3071a139f59d7f5a1ce1b83d5aa4872168280565",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_screen_control_endpoint compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_screen_control_endpoint",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_screen_control_endpoint",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_screen_control_endpoint.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.028,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_screen_control_endpoint",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_screen_control_endpoint"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.029,
+      "output_sha256": "93417a8c9a8a946a3f62017c48651db284d7128db837cb19d710f0d7ee62a1b8",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_screen_stream_router compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_screen_stream_router",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_screen_stream_router",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_screen_stream_router.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.03,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_screen_stream_router",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_screen_stream_router"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.019,
+      "output_sha256": "65899488aaf052accae0adb007a77fbd6703801094414904e16dc50cb0170b2a",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_touch_frontend compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_touch_frontend",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_touch_frontend",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_touch_frontend.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.033,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_touch_frontend",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_touch_frontend"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 2.101,
+      "output_sha256": "15882bbb683333184a9bb66d13a36481d1dc6c4fab3f11d0966e170304db546f",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_touch_i2c_recovery compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_touch_i2c_recovery",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_touch_i2c_recovery",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_touch_i2c_recovery.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.031,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_touch_i2c_recovery",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_touch_i2c_recovery"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.015,
+      "output_sha256": "9a6170d062a114494d41c6bc27c9aa6e99b1ffddd81caca639b5e1e699322e4f",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_touch_scan_guard compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_touch_scan_guard",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_touch_scan_guard",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_touch_scan_guard.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.034,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_touch_scan_guard",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_touch_scan_guard"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 6.221,
+      "output_sha256": "56e1b468dbcfa4ea25c01161a9085a0614148e7c5fedd8f0a8b4ee6122492aeb",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_touch_tuning compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_touch_tuning",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_touch_tuning",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_touch_tuning.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.036,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_touch_tuning",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_touch_tuning"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.173,
+      "output_sha256": "1060b632f3d81d576444968b883a5648b5d3f746ed4e49917f8166fe98aaf7e9",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_usb_board_boot compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_usb_board_boot",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_usb_board_boot",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_usb_board_boot.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.03,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_usb_board_boot",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_usb_board_boot"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.007,
+      "output_sha256": "d7add507b4acf53b1c28c2e9526a26029b66529da6b27320137f9eb3e56cd83b",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_usb_board_cdc compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_usb_board_cdc",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_usb_board_cdc",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_usb_board_cdc.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.03,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_usb_board_cdc",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_usb_board_cdc"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.041,
+      "output_sha256": "96069dac8f3b0691d59c61de7c798c5dff4b920c65fc10df37c10905244c53a8",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_usb_board_device compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_usb_board_device",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_usb_board_device",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_usb_board_device.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.039,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_usb_board_device",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_usb_board_device"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 45.009,
+      "output_sha256": "32c326f5ebbcfb59986bcd080a2919e77e11418b2f0c0236f193bd54de2c6a3f",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_usb_board_device full-speed compile",
+      "command": [
+        "iverilog",
+        "-P",
+        "tb_usb_board_device.HIGH_SPEED=0",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_usb_board_device",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_usb_board_device_fs",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_usb_board_device.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.04,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_usb_board_device full-speed",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_usb_board_device_fs"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 52.504,
+      "output_sha256": "63b2cba5276634d95033403b27016cc976fc9b2e3e4460d0e02fc30309a1a4f4",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_usb_midi_codec compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_usb_midi_codec",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_usb_midi_codec",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_usb_midi_codec.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.024,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_usb_midi_codec",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_usb_midi_codec"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.087,
+      "output_sha256": "b00a074d20abb834d35698d2f7f1fb05ef6f52386f62677ba2a9ff79ce2e10ab",
+      "pass_marker_required": true
+    },
+    {
+      "name": "tb_ws2812 compile",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-I",
+        "rtl/usb_board/vendor",
+        "-I",
+        ".",
+        "-s",
+        "tb_ws2812",
+        "-o",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ws2812",
+        "-c",
+        "sources.f",
+        "sim/gowin_io_models.v",
+        "sim/tb_ws2812.v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.025,
+      "output_sha256": "0c8d7dba20a265128194d247872411dd82d760de21af781c770f76a444690804",
+      "pass_marker_required": false
+    },
+    {
+      "name": "tb_ws2812",
+      "command": [
+        "vvp",
+        "/tmp/gw25k-midi-sim-2652dq9a/tb_ws2812"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.429,
+      "output_sha256": "175bf5656104ea98e12005ee42b4f17432bb21fad083fd3a93e97ed97af74d09",
+      "pass_marker_required": true
+    },
+    {
+      "name": "Python screen protocol",
+      "command": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "sim",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "elapsed_seconds": 0.167,
+      "output_sha256": "1029df96b8c3f934ff8e0f5d513bca50347a997726f4867678541ff45704abbb",
+      "pass_marker_required": false
+    },
+    {
+      "name": "Input hashes stable throughout regression",
+      "returncode": 0,
+      "details": []
+    }
+  ],
+  "sha256": {
+    "../RTL8723DS_BLE/vendor/rtl8723ds_ble/firmware/rtl8723ds_config.bin": "7d1e18df7654da8f6382520841bb535f2d1246fc8495e3ae652f7b23e820168d",
+    "../RTL8723DS_BLE/vendor/rtl8723ds_ble/firmware/rtl8723ds_fw.bin": "19c1bed7a9359b1a021c20f81b525bdebf5067f9021716991d94be9101f76e63",
+    "build.sh": "c3df2d19f102d6ae75f34623107a88f879c0fbc1bbe1ac930afab3383f7d7d58",
+    "build.tcl": "8ad146d1a0035c15eaf9d79c73134f17f8d3cc424a43d632b7742286f9a17c68",
+    "config/ble_midi.json": "dabde067a23fefe37b07d83e1eed11279c4dc2709792a3635702850d2a2ee492",
+    "config/board.json": "7ab1387c7a047b31ed3275badccaf2360f5ef8304eb032e463c6d8ee5500e6f0",
+    "config/usb_composite.json": "f61e3fc25276367d689daeaccd752245e539431860e6fde8675ea5aa61aa3b10",
+    "config/usb_descriptors.json": "903a10c35bd904df76a55254fe3ea6e455a979e92f43ca3d78acc53f2d9fdf7c",
+    "constraints/midi_keyboard.cst": "93afcdb5ac9cb2bbc13132b23e565a2480f8b8424ad73cee71374dc73a78abae",
+    "constraints/midi_keyboard.sdc": "c054a7924f6d30aec85514835fb6a9369f0a011ae1af0b7c984a4996ce105343",
+    "rtl/ble_board/NOTICE.md": "d832ceef5c9c628e0b61ee7008da9bb460daca374c62a934aa376c1f82026113",
+    "rtl/ble_board/firmware_manifest.json": "acb4358578446bca1febdb0476e4c17ac0af16e482cdf2e686b54256e0f3f774",
+    "rtl/ble_board/midi_ble_gatt.v": "80022c3b405af6ed43329d1253f64102f7c37dc611806304e82dd5c7a6f684fe",
+    "rtl/ble_board/midi_ble_h5.v": "3e540a8ac937042a8563ebcadc497a48a72ab07fd9c8608d3f815761c5dd3079",
+    "rtl/ble_board/midi_ble_hci_init.v": "58dd2c42ad3150293828ca8dd7bc1968e6452369de496336ea394639397d235a",
+    "rtl/ble_board/midi_ble_link.v": "8dbea7dcaf3f932f284011ee9cec9eebed8935563f0c045d743f8a28761e6643",
+    "rtl/ble_board/midi_ble_smp.v": "ceb9d562adcf50cb03d7f7a0bed3c81ac1bcc45acb1103676ea075f5f039ef6e",
+    "rtl/ble_board/midi_ble_uart.v": "8004677c8749289d651673a38872a39787125c4cb93f63b97430c857a97dfe96",
+    "rtl/ble_board/rtl8723ds_patch.mem": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30",
+    "rtl/control/panel_display_endpoint.v": "cba754e6d16bb9c998c7e23d23039b60e7ef03867244192f2ac8943b2f7135e8",
+    "rtl/control/screen_control_endpoint.v": "b723627d0e1d79cf7ff3e9434991e3edf7dfe68888bfc71ccbd0e37e0d6440a2",
+    "rtl/control/screen_stream_router.v": "976a85eefe8bec0128750e125a5fefc765735f2ae27d8a833dcd861d0c5b54b4",
+    "rtl/core/midi_event_fifo.v": "582a27007e94171bb825ec6add9160505f74bce3a738622c993548205d8873ea",
+    "rtl/core/midi_event_router.v": "849d7713b4a9f82e40e960c590a4aa227e58ba6d2e7f08f652376c8746914852",
+    "rtl/display/THIRD_PARTY_LICENSE.txt": "88e1cba040d75ec8d24d511ea60897e608969b7e4ec4efb1e8114a2db9bf62ba",
+    "rtl/display/lcd_init_rom.v": "3c1cc72ca98a2f4e0cea6911e8ac438989eb15846f4a84bcb659dbdc4a7fedb6",
+    "rtl/display/lcd_spi_byte.v": "3a3f1f3d6a065aae955fdd3b7b24df179330c94a405d7c17db8466df580f45a1",
+    "rtl/display/lcd_spi_stream.v": "1dc17e391a4f7a8f84444b5b34a5734f34bcf7c22603538f79c9c9463a042ff4",
+    "rtl/display/midi_display_regions.v": "4dca85da70605f246f87e0b7bf52227ed38eebbc51ef31b189f368754f237354",
+    "rtl/display/midi_landscape_display.v": "479c6b0a379c8a712e5d539d82506bb1d540c6e5e74cfe42882ec6dd760cca48",
+    "rtl/display/midi_landscape_view.v": "789a8bbb3c05d51f90a8aa6be0097ef4b34a317f93c277877f802c4a70cb18f4",
+    "rtl/input/keyboard_event_mapper.v": "1313d01a00af9a0db03068d1dea06c83872564688144fedfed66849c52ecbc40",
+    "rtl/input/midi_key_layout.v": "70b471ed4b195e179ff938d9bd5e62fbebcddb24b26a2239e31371bd10dfe0df",
+    "rtl/instrument/encoder_button_gestures.v": "ef5efedeccd2c7346505ede8fbe3471c61422d01961067a0de7433b334b2f3cc",
+    "rtl/instrument/encoder_input.v": "145a923cee1bde79b8d340d4ce1d1754037d1f5c087e2eacf6d616aba3ca43cd",
+    "rtl/instrument/gw138k_panel_performance.v": "5d74b6ac6594d81483758792064710d499568c774433936bf17355a512ff3f16",
+    "rtl/instrument/midi_keyboard_application.v": "68f351592f863edf77dfaf993c014c6dd6bbd8da60516c499f3ab539236d8926",
+    "rtl/instrument/midi_performance.v": "35e54d95b86a002a86379392671ef6907dd444eaf519fbfe5c6d3f637425dce6",
+    "rtl/midi_keyboard_core.v": "50361a7028c7ecf7acb8259df6ce235a2e7e302d387734dfd7b6b7000aa78b67",
+    "rtl/midi_keyboard_top.v": "67f7a3c1106b74b7c1ec311f09718345476a33612cf1124369e88341b55ed6c1",
+    "rtl/peripheral/midi_i2c_register_master.v": "61dff6eb16848fb5b9c21728e2f102b33d702019a64f73490eafbf2dc11a4b6b",
+    "rtl/peripheral/midi_slider_filter.v": "263f0cb2a41d2990d192e4b169f977bf7ad7ad4047bcb312bd250f5cd363f4d8",
+    "rtl/peripheral/midi_slider_led_map.v": "3b34fd2119369025b6fcc9ddef5a8fa92ee60305eea476b9754c056ece55ee17",
+    "rtl/peripheral/midi_touch_frontend.v": "a088b5f75f59b2aad855d9d36fc40475e48e2660e283b2dfb99c6fc0c00b13bd",
+    "rtl/peripheral/midi_ws2812.v": "4423365c9eaed255372d87102bc89ee01569c2feb49a6ddc54c0e21eca0b8721",
+    "rtl/peripheral/pca9685_led_driver.v": "144faee85bae75e3193ec36fd0bee635fd714af1994463a14769338c9be56c94",
+    "rtl/transport/ble_midi_codec.v": "cbe435abf19accb408929ad59b0ed2b89d9173c8dc1dab6c4ef4f34f87e3e2e9",
+    "rtl/transport/usb_midi_codec.v": "e9e4cccfd7a0559fdf21aa75edccff3290a456d3431a976c506ab71090efd5e6",
+    "rtl/usb_board/NOTICE.md": "8c1afa2f59c02a726c450b459b4dff5f6edde5811fd8ebec1555aa2f79242516",
+    "rtl/usb_board/generated/usb_composite_desc_rom.v": "e022f0c6f52a97483914c1d2b6a30a4e51b73de8c51a68e8f94791dd848133ee",
+    "rtl/usb_board/midi_usb2_link.v": "fcf16129eedfc9da23e30c8bc522f50f28c75206db575e2fefb97f5f386fe73f",
+    "rtl/usb_board/midi_usb_async_fifo.v": "895eda52772844734f803c7c3ff274d9fb22d47ca80ac29f002f917f9e182188",
+    "rtl/usb_board/midi_usb_bridge.v": "9a7b8f56febc72fcaeb70d9e47cd023c479ddbe48a7bfc54e84ee188171ebc06",
+    "rtl/usb_board/midi_usb_device.v": "486badebe6df2fc8faecc5d616987caaea631cac9bbf00fabbb7503beb8f54cd",
+    "rtl/usb_board/midi_usb_hs_phy.v": "00ac7e281990c0fe18e4b2b4d5c590fa6cbaa5b6896c56fe8bfdec0df94e0445",
+    "rtl/usb_board/vendor/LICENSE-GPL-2.0": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "rtl/usb_board/vendor/LICENSE-LGPL-2.1": "20c17d8b8c48a600800dfd14f95d5cb9ff47066a9641ddeab48dc54aec96e331",
+    "rtl/usb_board/vendor/UPSTREAM.json": "a67b3e349623d0e9b7daf3bea5b420e80d6b5b90028a60d928c88423a679ad2c",
+    "rtl/usb_board/vendor/midi_ulpi_wrapper.v": "05cc38328df75dfa376c099b5f5394b156710836a27d750faf3f2f482c6a13bd",
+    "rtl/usb_board/vendor/midi_usb2_boot.v": "6da19851912ce2d165e2909baf9182c5908ad0ea75e0d9857b116c28d664484d",
+    "rtl/usb_board/vendor/usbf_crc16.v": "fbdf75fc7a24342db71ea9de8c7332b4b4e6074db88e9e41b3e908da133a2033",
+    "rtl/usb_board/vendor/usbf_defs.v": "5ea9871d316cea1a9b7f5faf33c0f9b3bb513594aacb33288638c2a64a28f484",
+    "rtl/usb_board/vendor/usbf_sie_rx.v": "7731842eefa2d5f2513fd240ba70403362ad01033195594cc7699645f641ce87",
+    "rtl/usb_board/vendor/usbf_sie_tx.v": "36d6e5c3f926a6aed36ced5f21664635bd5120f5b7d753ad08915a45c3da7621",
+    "run_sim.sh": "f35626b68981f0ce0924cb5c7d61726e06d0961e630a8a8653f251567da9e5b6",
+    "sim/gowin_io_models.v": "7005cc8b5cae624a2f69ff1ba16c68bd5d891a8200c90bcc0815a6e4d975956f",
+    "sim/tb_ble_board_system.v": "5d740a275e7bd49bccf647496d9e129162c4c9bb22380d657a83b6e9f72701cb",
+    "sim/tb_ble_gatt_completion.v": "4d6d41a31135965210cd547a0ff32bef71dd015a24890058da80033150a53159",
+    "sim/tb_ble_midi_codec.v": "49b216d18ce8da2b889c392cd3de0f8f8e9f2ab8dff362e2ddbe777b7fc2ca77",
+    "sim/tb_ble_pairing_transport.v": "6518a2ecbaca041a670658d44a8910a258c697da9bf6a7ca114b981e6bbc9ebb",
+    "sim/tb_ble_smp.v": "02bf2abdd466a465ed8c71685db4a29cbcc58fb5820100d761b69b3345577d7c",
+    "sim/tb_encoder_button_gestures.v": "8a5856e16bffd0f2794d8d842086a6e228a3a4ee34d5843818f265505dc1a114",
+    "sim/tb_encoder_input.v": "8daca4ac5bf71b1902f5b4d32da891b32f4fefd6c8b76003534e29f9ada95a2b",
+    "sim/tb_encoder_response.v": "a85356c4bcc6cd5772485a1b23a679b48becabc94c63594ab18396caa45371cb",
+    "sim/tb_gw138k_encoder_detents.v": "4127702512b90476025f967067f52cf616c1a143cc2d5a5a2ba0ee139a8b48be",
+    "sim/tb_gw138k_panel_backpressure.v": "1770c20d1f96015fbce7e95379853428044762df1863d8cbef1f1b94398aa9af",
+    "sim/tb_gw138k_panel_controls.v": "4075f7417dd010c994aeea24a128f7a1f68141d765bb9b05001365689370c638",
+    "sim/tb_keyboard_event_mapper.v": "20c15057f3d87d6364586ecc8cc1445117a81490516ce0701c3310bae7ca816f",
+    "sim/tb_lcd_spi_stream.v": "7ba5162f7b963a57b3cab7fb19f441ed3e6177d14008fca80e1dd9cff6ef92e3",
+    "sim/tb_midi_display_regions.v": "e32480d8f151ffd4491613e21304902864f791368d8c50097d8211da0b342f04",
+    "sim/tb_midi_event_router.v": "a5e64623f24bb24251f1be2934486363a21414d6fb855de267e4b61b59d557eb",
+    "sim/tb_midi_key_layout.v": "f6590e0df1ed6732716da2e8821e5ad1afc2e8be2a7579e6be96e308c51b0b92",
+    "sim/tb_midi_keyboard_application.v": "a89e09eb2539633bbad7aebbca073703fa266b3b3b9e43102f83b276af8e593b",
+    "sim/tb_midi_keyboard_core.v": "ec89745b2b1eb2f1442af9bccff456ed0387a7945c40617a6184b18951679d7f",
+    "sim/tb_midi_landscape_display.v": "a4ec26dd344254773d6c820ff67d775c35435b5d9d862b1319c310a946d5206d",
+    "sim/tb_midi_landscape_view.v": "ca0250de2473c7602eecee80cf6cafc9f91a4ee087baea7893d4cf871953c9b6",
+    "sim/tb_midi_performance.v": "97b1538ffef07d953009a2c975ff50c2b7c63dc6d987bf2fabf33a5a248521b7",
+    "sim/tb_midi_performance_races.v": "9eff33df29a7397f8cddcbc3f4e97c83f76bed3711f29ec84d8402b75b9b9834",
+    "sim/tb_midi_slider_filter.v": "f92520b8a8298f28e8caa7d934fe79beb133ce5285b601d933d1a7bed7e2a12a",
+    "sim/tb_midi_slider_led_map.v": "9925d88c6bbb25c57bd7661e60db1fb9581128973e0509df7eccc459a61306fa",
+    "sim/tb_panel_display_endpoint.v": "bab722d2321b35d79fa3536a4e62982a8adb8e17486a1acd64de9c87fe4b3448",
+    "sim/tb_panel_screen_integration.v": "bcc2f452dbede1996fc789ddc646be2f7804baf5b9b7ea51bf9f6525f0194f8c",
+    "sim/tb_pca9685_led_driver.v": "373156a54fca9ea595b7f95114d45261ea8e5377f9a345d48418b52e09fbe958",
+    "sim/tb_remote_tile_display.v": "47a75042f9df51cf0cd185ea0b797172a1e06cd5b9101967eff457a5cbe7ada7",
+    "sim/tb_screen_control_endpoint.v": "3fac7030e4049c065009f3b7ffec59fa7ddbf3323488f34b9819cc5d091651c6",
+    "sim/tb_screen_stream_router.v": "3d6f54e775c9019692a51d21a9e73d258b344d26baafdc8fbd4e1bd8cefe092c",
+    "sim/tb_touch_frontend.v": "3efd636ae52f47b26961e904291d18ece8996ed3164a46bb8b0455cde9fa937f",
+    "sim/tb_touch_i2c_model.v": "b84d1fded3369989ef69d2e830b8944d63817015917d84c725b869c05c53c0d0",
+    "sim/tb_touch_i2c_recovery.v": "025e01c699cbd012d15484bc07e70f3ab87aad33f248d4be0deaac780da8c226",
+    "sim/tb_touch_scan_guard.v": "ef6c47f65a74c957c7b82ecb155f494d3844f622662c3bf67ca80359b86bb62c",
+    "sim/tb_touch_tuning.v": "72c50d5f8d55a5f03e7a13522937ec485144dcfa443a12b04e0398e53af2a590",
+    "sim/tb_usb_board_boot.v": "06c6d8f0134c8371820f977716e77ff7faefa61968beaf56522c0e982e88609e",
+    "sim/tb_usb_board_cdc.v": "66c78d54debcb69f4e1448c4d64cd0325e253faebd5453689869861da4eb5bc8",
+    "sim/tb_usb_board_device.v": "c4a6939fadf1c2d7f6ebbf968938e6c7d2ea531f0bc757706467d2710eb37ac3",
+    "sim/tb_usb_midi_codec.v": "66c6645f44682fd9777b1cde8fbb05413ab44c7c10d481e5cbe171afb0c6c00b",
+    "sim/tb_ws2812.v": "9d3c9bcb9b878c8a262af45577c625d2d5bc77f3ac91db185459ea43d9a7260a",
+    "sim/test_panel_display.py": "3a07613cbc24d67daf269ad8bfce8b59636fb89cdb3955f57169b51ab5b7eae2",
+    "sim/test_screen_control.py": "22ecfe7504959df5cda25d03fc018dec62fea4cb27ab6e295b3e87408e3747f2",
+    "sources.f": "e75f5b111a659122dfb19db5b781b3102e6c001f339162d74f8a0bc32b6968e8",
+    "tools/generate_usb_descriptors.py": "dbccf641fe55918bbfd52c445e6176f43dca1190580c42f21604b6730fd2accb",
+    "tools/gowin_build.py": "1a0968ca51b030060cfae4db8a7baf94c748164824f22cbeef0c431da7e3871e",
+    "tools/panel_display.py": "adf873fb6effdb4918564bfa88b9abd610e7443a269716f3d0d5cf0f3fc9434b",
+    "tools/render_preview.py": "c754623c6c89283bad9055031b292814a02a311dde9e953b08d6ed9254d2183d",
+    "tools/run_checks.py": "af3460718a72b7c07d621b981fc271c2d2451990631ef7e5f1bcf0bd1dd7dc99",
+    "tools/screen_control.py": "2de381ae2942420340c9146ff50efb74fa80d3fd2a98136ae4f213955f9d0566",
+    "tools/synthesize.py": "751c929b82e04b8b4c75f3b8d4588d2307d1f7dc1e439380cf92baa9d270273a",
+    "vendor/gowin_panel_interface/MANIFEST_SHA256.txt": "131ed05a94a1ef0b90bbcd8b32293d643ddd513704e9dfe3c1679c565a325956",
+    "vendor/gowin_panel_interface/SOURCE.json": "fc2ee7d013247c4d901738ff4e6268430558e27ee7400d349ca65533b2bae7f9",
+    "vendor/gowin_panel_interface/待确认.md": "d49aa823876c5529e31759b654371c805bc419102dd151a508d43249bd7f0711",
+    "vendor/gowin_panel_interface/报告/工程架构报告.md": "3061cdb79ce8fcb89f9624f1b87631c97044cda0f317928ba0eebaacb76a87bf",
+    "vendor/gowin_panel_interface/报告/整机接口规划.md": "91ba91bab3aaea07b91084f1aa90586526c6f4e3491bbf571cb63983a4a168ff",
+    "vendor/gowin_panel_interface/接口/HighSpeed接口.md": "0fb2fdb14e3dd43f91cb5504ba813bb94dca0c4ecb4e97d6facae4b1c4dae086",
+    "vendor/gowin_panel_interface/模块/138K主机.md": "b3b640e81876f483ade8ee7c81cf4f60d25f095a45bf436d686d04bebf6ac165",
+    "vendor/gowin_panel_interface/模块/25K面板.md": "b79e444fa2611eb0ec4eadd1231dad6929a3536cd93b141703fb7b858995a80f",
+    "vendor/gowin_panel_interface/模块/Push 2.md": "10516bcd1810023ea4ade24af0e583d930139d86ebc6d7155d36c3e8ff979184",
+    "vendor/gowin_panel_interface/模块/SPI屏.md": "82bef4800ea27377a89235735f50764c1f5ee6a434fabe2b6629d7669a7b8f61",
+    "vendor/gowin_panel_interface/模块/触摸板.md": "42dfcbbb9362894b327a86227fa096fc3d823db852944b8abf24481cf627033a",
+    "vendor/gowin_panel_interface/系统总览.md": "ffe53b97f9b74af3a037b405965aa282c19118956c056a82adf4192bf95f3d3e",
+    "vendor/gowin_panel_interface/系统连线.canvas": "972243a41e067f8f2fc78d393e1ea28638fe4b638c0e1e8e2e8437d71c630fef",
+    "vendor/qt2160_reference/MANIFEST_SHA256.txt": "05df6c6b78d788b712130f8aec434b6a3622cacea63cbb99ae0dc388a0893d38",
+    "vendor/qt2160_reference/README.md": "21c5af8599c2879c70947c217707d2a5cbe094230205c0a711535308566eecc7",
+    "vendor/qt2160_reference/SOURCE.json": "22650462495240d850e6f3c9f4e4c79cc47e566dbba988be6c0fb0f3a995b352",
+    "vendor/qt2160_reference/constraints/led_breath.xdc": "fff5cd80c3989d80ef0ad1acd5c784f2639ad2b3f100faa17d8818615850fffd",
+    "vendor/qt2160_reference/constraints/qt2160.xdc": "e998966b5893466a0647b497717d52ffb25effc71ddf68171de5d3ce6c88f1ac",
+    "vendor/qt2160_reference/constraints/qt2160_keypad.xdc": "4179c752397a607eb360bda85565dac379daf29e9fa33e13787d6835642496f3",
+    "vendor/qt2160_reference/constraints/uart_led.xdc": "ffe20e32d2d4478a8dda0da5f38c7343a015bc6b4902dda4cb3b81a66891ba7f",
+    "vendor/qt2160_reference/docs/README_QT2160_KEYPAD.md": "bfe2a733c678195dd9f26940b45f0d83ab7a2afb9aa2a4b4ebad45bfa95eab4e",
+    "vendor/qt2160_reference/docs/README_QT2160_KEYPAD_STABILITY.md": "2194d7d60bef47ec7a695133d9fbfae5c6da90623c03ffdd4a50617ebfb8e2c1",
+    "vendor/qt2160_reference/docs/README_QT2160_SLIDER.md": "62fd2ef12a08e79cde6da7dc7208b0eae737a1cabe697271afc3ffee3f5aa7f5",
+    "vendor/qt2160_reference/docs/keypad_retest_20261016_2302.md": "4aa82f8ff543c857a9892e9db89e719e3931a55678a7500a4d9a3b7526d26107",
+    "vendor/qt2160_reference/reference/sd_boot_top.v": "29bc8150da827b479eabac8df300e902a9f0b41e90b99e81320831916c336206",
+    "vendor/qt2160_reference/rtl/led_breath_channel.v": "665941d02f44eb03199f1de0eecce0ba87c2c38267d5a8abf369331b95ae03a9",
+    "vendor/qt2160_reference/rtl/qt2160_i2c_master.v": "0cf485e1503af6a6b82f7e35836886c907d44393f8c091f95a19aa698c02f03c",
+    "vendor/qt2160_reference/rtl/qt2160_keypad_reader.v": "12c1266e6f94ced57b9df47fb708708eb2199a068d32aea35803446b56626e74",
+    "vendor/qt2160_reference/rtl/qt2160_keypad_uart.v": "b0d5e54338d03fc81912e5b7f4fc0ffd0092883416ae8280f042a04a1d57945a",
+    "vendor/qt2160_reference/rtl/qt2160_slider_reader.v": "bbbb5382f2f57e5f6ed5d084a96df971325164095c96e60919bbba35f73ef649",
+    "vendor/qt2160_reference/rtl/uart_led_controller.v": "01737f90ea27fffa3ce1165df6440be85932b77c0c3e860a5e3540565fd1c69d",
+    "vendor/qt2160_reference/rtl/uart_rx.v": "8042b0d9b9c1f2d51b64029454977474b0d0bd49214cd0212b8d4039813cf031",
+    "vendor/qt2160_reference/rtl/uart_tx.v": "59389caf24cd8f15225d6861ff5c136276f17285797237da931005ac714c0108",
+    "vendor/qt2160_reference/scripts/test_qt2160_keypad.ps1": "4f6c14cbd991b1a6d126c817d186d5df928ca366a9dba3463bbe9babbaf3f7ba",
+    "vendor/qt2160_reference/scripts/test_qt2160_slider.ps1": "cb32250047e36d50cda47ef1b4cdc06df988febad38b1f3e73a17198ffca974b",
+    "vendor/qt2160_reference/sim/tb_qt2160_keypad.sv": "37c48c9e1dfc03e88b12892178506a5f1e34340988ef7f28ead8ba90e02054be",
+    "vendor/qt2160_reference/sim/tb_qt2160_slider.sv": "3ea9fc9197a13f11c0f224d8b173941a1c8da7161c3604bd782a3f57ff17f5c1"
+  },
+  "reference_integrity": {
+    "manifest": "vendor/qt2160_reference/MANIFEST_SHA256.txt",
+    "verified_files": 22
+  },
+  "panel_reference_integrity": {
+    "manifest": "vendor/gowin_panel_interface/MANIFEST_SHA256.txt",
+    "verified_files": 11
+  },
+  "testbenches": [
+    "tb_ble_board_system",
+    "tb_ble_gatt_completion",
+    "tb_ble_midi_codec",
+    "tb_ble_pairing_transport",
+    "tb_ble_smp",
+    "tb_encoder_button_gestures",
+    "tb_encoder_input",
+    "tb_encoder_response",
+    "tb_gw138k_encoder_detents",
+    "tb_gw138k_panel_backpressure",
+    "tb_gw138k_panel_controls",
+    "tb_keyboard_event_mapper",
+    "tb_lcd_spi_stream",
+    "tb_midi_display_regions",
+    "tb_midi_event_router",
+    "tb_midi_key_layout",
+    "tb_midi_keyboard_application",
+    "tb_midi_keyboard_core",
+    "tb_midi_landscape_display",
+    "tb_midi_landscape_view",
+    "tb_midi_performance",
+    "tb_midi_performance_races",
+    "tb_midi_slider_filter",
+    "tb_midi_slider_led_map",
+    "tb_panel_display_endpoint",
+    "tb_panel_screen_integration",
+    "tb_pca9685_led_driver",
+    "tb_remote_tile_display",
+    "tb_screen_control_endpoint",
+    "tb_screen_stream_router",
+    "tb_touch_frontend",
+    "tb_touch_i2c_recovery",
+    "tb_touch_scan_guard",
+    "tb_touch_tuning",
+    "tb_usb_board_boot",
+    "tb_usb_board_cdc",
+    "tb_usb_board_device",
+    "tb_usb_midi_codec",
+    "tb_ws2812"
+  ],
+  "temporary_executables": "/tmp/gw25k-midi-sim-2652dq9a",
+  "inputs_changed_during_run": [],
+  "failed_checks": [],
+  "finished_at": "2026-10-23T03:38:39.355767+08:00",
+  "log_sha256": "0f11fd15eb94d73848c643b46ecdcb8051e0efbd7e961ff7eb08bc0aef1c09a9"
+}

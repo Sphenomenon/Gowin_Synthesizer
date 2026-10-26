@@ -11,6 +11,7 @@ module screen_control_endpoint (
     input  wire              tx_ready,
     output wire [7:0]        tx_data,
     input  wire [31:0]       status_flags,
+    input  wire [799:0]      touch_diagnostics,
     output reg  [3:0]        midi_channel,
     output reg signed [7:0]  transpose,
     output reg  [3:0]        screen_page,
@@ -68,6 +69,10 @@ module screen_control_endpoint (
                 8'h01: begin
                     if (arg0 != 0 || arg1 != 0) response_status = 32'd2;
                     else response_result = status_flags;
+                end
+                8'h02: begin
+                    if (arg0 > 24 || arg1 != 0) response_status = 32'd2;
+                    else response_result = touch_diagnostics[arg0[4:0]*32+:32];
                 end
                 8'h10, 8'h20: begin
                     if (arg0 > 32'd15 || arg1 != 0) response_status = 32'd2;
@@ -152,7 +157,7 @@ module screen_control_endpoint (
                         if (protocol_errors != 16'hffff)
                             protocol_errors <= protocol_errors + 1'b1;
                     end else begin
-                        if (opcode != 8'h01) begin
+                        if (opcode != 8'h01 && opcode != 8'h02) begin
                             config_write <= 1'b1;
                             config_opcode <= opcode;
                             config_value <= arg0;

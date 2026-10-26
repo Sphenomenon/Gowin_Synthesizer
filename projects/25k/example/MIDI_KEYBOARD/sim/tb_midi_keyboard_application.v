@@ -3,6 +3,7 @@ module tb_midi_keyboard_application;
     reg clk=0;always #10 clk=~clk;
     reg reset=1,control_reset=0,usb_online=0,ble_online=0;
     reg [15:0] key_bitmap=0;
+    reg [799:0] touch_diagnostics=0;
     reg keypad_ready=1,slider_valid=0,slider_touch=0;
     reg [7:0] slider_position=0;
     reg enc1_step=0,enc1_press=0,enc2_step=0,enc2_press=0;

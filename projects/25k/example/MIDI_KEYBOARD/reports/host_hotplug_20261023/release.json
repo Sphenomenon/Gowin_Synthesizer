@@ -1,0 +1,78 @@
+{
+  "recorded_at": "2026-10-23T03:25:18.033397+08:00",
+  "user_code": "0xC1251031",
+  "source_identity": {
+    "git_head": "f502f28f329c6665e4a6150583e390b2c9611cef",
+    "input_manifest_sha256": "b04c0264653c9e9644cee94a2bb238a98e6c6422ddcee8672e06c890ce76d406",
+    "tracked_diff_sha256": "807f4b9d949c4dab348a1a547b1f4529316553d8df03e36f6139379f34b37e3a"
+  },
+  "configuration": {
+    "top": "midi_keyboard_top",
+    "HOST_PANEL_CONTROLS": 1,
+    "device": "GW5A-LV25MG121NC1/I0"
+  },
+  "bitstream": {
+    "path": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/hotplug_20261023/build_romstream/impl/pnr/midi_keyboard.fs",
+    "sha256": "809f93e1c548e6700e2721dafd5f44cb0cb54a35f33a3e466603deeeb26383a1"
+  },
+  "timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "setup_worst_slack_ns": 0.031,
+    "hold_worst_slack_ns": 0.21,
+    "recovery_worst_slack_ns": 3.964,
+    "removal_worst_slack_ns": 0.851,
+    "clocks": [
+      {
+        "name": "clk_50mhz",
+        "constraint_mhz": 50.0,
+        "actual_fmax_mhz": 50.079
+      },
+      {
+        "name": "clk_ulpi60",
+        "constraint_mhz": 60.002,
+        "actual_fmax_mhz": 67.828
+      }
+    ],
+    "passed": true
+  },
+  "offline_validation_passed": true,
+  "flash_programmed_verified": true,
+  "physical_power_cycle_tested": false,
+  "touch_audio_display_hardware_accepted": false,
+  "sha256": {
+    "backpressure.log": "08be39e12d2681c0109e945e90bc17c6343fd047e05cdbaf25d4a0d70387e8ac",
+    "backup.json": "447717f6faed9a04340e15ba2bae31ba9f68813b4206894cd7fc650ecd3653eb",
+    "build.json": "e14cbe6294e514e871dd697de8036f9fc4422c91276c3028da1ec35d7417b642",
+    "controls.log": "7d63a98afac808611cf48bd523b58b88554576033b35f5937374c0070bdc63f0",
+    "deployment.json": "64c3aa6f27c544ac8deab546c94047c5c88a5d795517c5e40288d8c862e7858b",
+    "device_after.log": "acd3b531224bc6e9da46d89e6fca831a0161a349bd07a0b8eda7f82503cb601b",
+    "device_after_initial_configuration.log": "040b0f9f0409df32c01cbad6daf8186fdbb422f93288c07a1f2945a645d2a729",
+    "device_after_repeat.log": "acd3b531224bc6e9da46d89e6fca831a0161a349bd07a0b8eda7f82503cb601b",
+    "device_before.log": "7c25659e9f290c8a0937c04ab3227e6c9dc688adc4559d520c5abfd5abd741fa",
+    "flash_id.log": "0c04eaa6743efe0312d9af3fcfa661f8a79215ca20c504653f08c97e7afa449f",
+    "hci_bootstrap.log": "ced1cdfeec7cedae77eb8100a21a6f8b684f3432a6bbe780c4485e94b8824b0c",
+    "hci_wrong_rom.log": "b158e2470bd592029042703c09ce9f53745f436895ac20fe5e2bf0ca6025c4b1",
+    "netlist_equivalence.json": "fbb06e39f4bfc6ab54a5a733e8d002f796562a8800244f40aede0214dff6c6c5",
+    "program_verify.log": "bcef9caa168b003728ac8744627e9105700540d26c17314136fbc669e988caac",
+    "reload_flash.log": "4157e5424a7656d3b400e63baaf6bf0274f310e67787913729bb9e1c90803ead",
+    "validation.json": "bc4e9350db80a72a6dbae22ac6b342e38041e47f155d9235cccf6a1bbb15217c",
+    "routed_resources.txt": "60ec6c2ce6762042c3ae219eef88c85a2080ee7ad1d8165b514ec8cd882ae091",
+    "routed_timing.tr": "94c8699153392076e88999eb2e4bf662f74091a648051341deb65715dc54ad5f",
+    "synthesis_resources.xml": "004a1129a395b8f3e0df640fc9c3bf01a414aea9ac48c9df3cecd61cadfe01ee"
+  },
+  "physical_resources": {
+    "logic": 21396,
+    "logic_capacity": 23040,
+    "lut": 19268,
+    "alu": 2128,
+    "register": 10166,
+    "cls": 11262,
+    "cls_capacity": 11520,
+    "bsram": 54,
+    "bsram_capacity": 56,
+    "dsp": 3,
+    "dsp_capacity": 28
+  },
+  "synthesis_bsram_equivalent": 40
+}

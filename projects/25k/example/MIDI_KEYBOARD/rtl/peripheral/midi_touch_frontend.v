@@ -26,7 +26,8 @@ module midi_touch_frontend #(
     output wire slider_touch, output wire keypad_ready, output wire slider_ready,
     output wire [15:0] errors,
     output wire [7:0] slider_raw_position, output wire [7:0] slider_general_status,
-    output wire slider_overrun, output wire [7:0] slider_sample_count
+    output wire slider_overrun, output wire [7:0] slider_sample_count,
+    output wire [799:0] touch_diagnostics
 );
     wire k_scl_low, k_sda_low, s_scl_low, s_sda_low;
     wire [15:0] unused_slider_keys;
@@ -34,6 +35,10 @@ module midi_touch_frontend #(
     wire unused_key_touch;
     wire raw_slider_valid, raw_slider_touch;
     wire [7:0] raw_slider_position;
+    wire [511:0] key_levels;
+    wire [31:0] key_status, key_detect, key_frame_count;
+    wire key_overrun;
+    localparam integer KEY_RELEASE_THRESHOLD = KEY_NEGATIVE_THRESHOLD > 2 ? KEY_NEGATIVE_THRESHOLD - 2 : 1;
     assign slider_raw_position = raw_slider_position;
     (* ASYNC_REG = "TRUE" *) reg change_meta = 1, change_sync = 1;
     always @(posedge clk) begin
@@ -53,7 +58,9 @@ module midi_touch_frontend #(
         .clk(clk), .reset(reset), .change_n(change_sync),
         .scl_in(touch1_scl), .sda_in(touch1_sda), .scl_low(k_scl_low), .sda_low(k_sda_low),
         .keys(key_bitmap), .position(unused_key_position), .touched(unused_key_touch),
-        .update(key_update), .ready(keypad_ready), .error_code(errors[7:0]));
+        .update(key_update), .ready(keypad_ready), .error_code(errors[7:0]),
+        .overrun_seen(key_overrun), .diagnostic_levels(key_levels),
+        .diagnostic_status(key_status), .diagnostic_detect(key_detect), .frame_count(key_frame_count));
     midi_qt2160_client #(.IS_SLIDER(1), .CLK_HZ(CLK_HZ),
         .NEGATIVE_THRESHOLD(SLIDER_NEGATIVE_THRESHOLD),
         .DETECT_INTEGRATOR(SLIDER_DETECT_INTEGRATOR), .BURST_LENGTH(SLIDER_BURST_LENGTH),
@@ -70,6 +77,16 @@ module midi_touch_frontend #(
         .clk(clk), .reset(reset), .sample_valid(raw_slider_valid),
         .raw_touch(raw_slider_touch), .raw_position(raw_slider_position),
         .valid(slider_valid), .touched(slider_touch), .position(slider_position));
+    assign touch_diagnostics[31:0] = key_status;
+    assign touch_diagnostics[63:32] = key_detect;
+    assign touch_diagnostics[95:64] = key_levels[9*32+:32];
+    assign touch_diagnostics[127:96] = key_levels[15*32+:32];
+    assign touch_diagnostics[159:128] = {slider_sample_count,slider_general_status,slider_position,slider_raw_position};
+    assign touch_diagnostics[191:160] = {8'd0,errors,1'b0,key_overrun,slider_overrun,2'd0,slider_touch,slider_ready,keypad_ready};
+    assign touch_diagnostics[223:192] = key_frame_count;
+    assign touch_diagnostics[255:224] = 32'h54430102;
+    assign touch_diagnostics[767:256] = key_levels;
+    assign touch_diagnostics[799:768] = {8'd0,SLIDER_NEGATIVE_THRESHOLD[7:0],KEY_RELEASE_THRESHOLD[7:0],KEY_NEGATIVE_THRESHOLD[7:0]};
 endmodule
 
 // Configuration and filtering are derived from the supplied reference readers.
@@ -94,7 +111,9 @@ module midi_qt2160_client #(
     output reg touched = 0, output reg update = 0, output reg ready = 0,
     output reg [7:0] error_code = 0,
     output reg [7:0] general_status = 0, output reg overrun_seen = 0,
-    output reg [7:0] sample_count = 0
+    output reg [7:0] sample_count = 0,
+    output reg [511:0] diagnostic_levels = 0,
+    output reg [31:0] diagnostic_status = 0, diagnostic_detect = 0, frame_count = 0
 );
     localparam [3:0] STARTUP=0, IDENTIFY=1, CONFIGURE=2, CAL_WAIT=3,
         STATUS_BEFORE=4, SIGNAL_A=5, SIGNAL_B=6, REFERENCE_A=7,
@@ -155,6 +174,7 @@ module midi_qt2160_client #(
             request <= 0; read_request <= 0; register_address <= 0; byte_count <= 1; write_data <= 0;
             keys <= 0; position <= 0; touched <= 0; update <= 0; ready <= 0; error_code <= 0;
             general_status <= 0; overrun_seen <= 0; sample_count <= 0;
+            diagnostic_levels <= 0; diagnostic_status <= 0; diagnostic_detect <= 0; frame_count <= 0;
         end else begin
             request <= 0; update <= 0;
             if (poll_count < POLL_LIMIT) poll_count <= poll_count + 1;
@@ -266,6 +286,11 @@ module midi_qt2160_client #(
                             default: begin
                                 keys <= filtered_keys; ready <= 1; update <= 1; error_code <= 0;
                                 sample_count <= sample_count + 1'b1; state <= IDLE;
+                                diagnostic_status <= {read_data[7:0],sample_count+8'd1,filtered_keys};
+                                diagnostic_detect <= {read_data[23:8],keys_before};
+                                for(k=0;k<16;k=k+1)
+                                    diagnostic_levels[k*32+:32] <= {references[k*16+:16],signals[k*16+:16]};
+                                frame_count <= frame_count + 1'b1;
                             end
                         endcase
                     end

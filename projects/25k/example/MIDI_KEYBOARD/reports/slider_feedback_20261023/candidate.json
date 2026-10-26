@@ -1,0 +1,69 @@
+{
+  "recorded_at": "2026-10-23T03:39:26.628516+08:00",
+  "user_code": "0xC1251032",
+  "source_identity": {
+    "git_head": "f502f28f329c6665e4a6150583e390b2c9611cef",
+    "input_manifest_sha256": "43f56f08547c40bb54506d6eb588292224af37a7a965da7ebbc31ca977fc49a1",
+    "tracked_diff_sha256": "6b4050a281fafeee0eb60721af901ace1e91c36330f148df826431880d2f2e8a"
+  },
+  "configuration": {
+    "top": "midi_keyboard_top",
+    "HOST_PANEL_CONTROLS": 1,
+    "device": "GW5A-LV25MG121NC1/I0"
+  },
+  "previous_user_code": "0xC1251031",
+  "changed_inputs_since_previous": [
+    "rtl/instrument/gw138k_panel_performance.v",
+    "sim/tb_gw138k_panel_controls.v"
+  ],
+  "bitstream": {
+    "path": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/slider_fix_20261023/build/impl/pnr/midi_keyboard.fs",
+    "sha256": "303e1403f67503285e07469bb6c13dd8aa698db77d42054ad102ead622a2e671"
+  },
+  "timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "setup_worst_slack_ns": 0.348,
+    "hold_worst_slack_ns": 0.247,
+    "recovery_worst_slack_ns": 4.305,
+    "removal_worst_slack_ns": 1.025,
+    "clocks": [
+      {
+        "name": "clk_50mhz",
+        "constraint_mhz": 50.0,
+        "actual_fmax_mhz": 50.885
+      },
+      {
+        "name": "clk_ulpi60",
+        "constraint_mhz": 60.002,
+        "actual_fmax_mhz": 66.794
+      }
+    ],
+    "passed": true
+  },
+  "offline_validation_passed": true,
+  "physical_resources": {
+    "logic": 21388,
+    "logic_capacity": 23040,
+    "lut": 19267,
+    "alu": 2121,
+    "register": 10166,
+    "cls": 11206,
+    "cls_capacity": 11520,
+    "bsram": 54,
+    "bsram_capacity": 56,
+    "dsp": 3,
+    "dsp_capacity": 28
+  },
+  "synthesis_bsram_equivalent": 40,
+  "deployment_evidence": "Pending; cable disconnected after successful initial identity read",
+  "physical_slider_feedback_accepted": false,
+  "sha256": {
+    "build.json": "6ed054241b3b84721d5c0ee90f509289121fe82b000ba609f15b3b630d9952ee",
+    "validation.json": "d7dab14be9238c9b72993f583a7bfc441e78e70a195a7bf6ac9a01c3a9cbb55b",
+    "reproduce.log": "b1a022de0fe9c6bd85c0f878f500c3da7f44d9c0ddd28c7cb17320caefc8484a",
+    "controls.log": "e4971666d6145746fa444b7521eb24108096e7d0b7d98ca106e39090d5a9b8a5",
+    "routed_resources.txt": "09c4f597da97e6ac924049e4dac185ad7e48a1193890b67e601299c4ce43d925",
+    "routed_timing.tr": "86334b5f5148ad4c7580cca0f1aed4a0c05effbeacf7dd8b5e95340cb5df380b"
+  }
+}

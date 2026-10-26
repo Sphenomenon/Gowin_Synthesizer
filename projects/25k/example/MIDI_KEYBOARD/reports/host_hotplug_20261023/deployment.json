@@ -1,0 +1,156 @@
+{
+  "started_at": "2026-10-23T03:23:11.931422+08:00",
+  "passed": true,
+  "manifest": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/hotplug_20261023/build_romstream/build.json",
+  "manifest_sha256": "e14cbe6294e514e871dd697de8036f9fc4422c91276c3028da1ec35d7417b642",
+  "validation_sha256": "bc4e9350db80a72a6dbae22ac6b342e38041e47f155d9235cccf6a1bbb15217c",
+  "programmer_script_sha256": "dd80fc531334164cba0182481fe76479026dd4b16dc43f841522f7b52d273926",
+  "bitstream": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/hotplug_20261023/build_romstream/impl/pnr/midi_keyboard.fs",
+  "bitstream_sha256": "809f93e1c548e6700e2721dafd5f44cb0cb54a35f33a3e466603deeeb26383a1",
+  "expected_user_code": "0xC1251031",
+  "steps": [
+    {
+      "name": "device_before",
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "0",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "returncode": 0,
+      "log_sha256": "7c25659e9f290c8a0937c04ab3227e6c9dc688adc4559d520c5abfd5abd741fa"
+    },
+    {
+      "name": "flash_id",
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "51",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "returncode": 0,
+      "log_sha256": "0c04eaa6743efe0312d9af3fcfa661f8a79215ca20c504653f08c97e7afa449f"
+    },
+    {
+      "name": "program_verify",
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "54",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "2.5MHz",
+        "--fsFile",
+        "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/hotplug_20261023/build_romstream/impl/pnr/midi_keyboard.fs",
+        "--spiaddr",
+        "0x000000"
+      ],
+      "returncode": 0,
+      "log_sha256": "bcef9caa168b003728ac8744627e9105700540d26c17314136fbc669e988caac"
+    },
+    {
+      "name": "reload_flash",
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "1",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "returncode": 0,
+      "log_sha256": "4157e5424a7656d3b400e63baaf6bf0274f310e67787913729bb9e1c90803ead"
+    },
+    {
+      "name": "device_after_initial_configuration",
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "0",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "returncode": 0,
+      "log_sha256": "040b0f9f0409df32c01cbad6daf8186fdbb422f93288c07a1f2945a645d2a729",
+      "candidate_ready": false
+    },
+    {
+      "name": "device_after",
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "0",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "returncode": 0,
+      "log_sha256": "acd3b531224bc6e9da46d89e6fca831a0161a349bd07a0b8eda7f82503cb601b",
+      "candidate_ready": true
+    },
+    {
+      "name": "device_after_repeat",
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "0",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "returncode": 0,
+      "log_sha256": "acd3b531224bc6e9da46d89e6fca831a0161a349bd07a0b8eda7f82503cb601b",
+      "candidate_ready": true
+    }
+  ],
+  "flash_programmed_verified": true,
+  "physical_power_cycle_tested": false,
+  "touch_audio_display_hardware_accepted": false,
+  "finished_at": "2026-10-23T03:24:51.246992+08:00",
+  "initial_readback_error": "ValueError('Reloaded UserCode mismatch')",
+  "initial_deployment": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/hotplug_20261023/hardware_c1251031/deployment.json",
+  "initial_deployment_sha256": "eee7eb8bf862589ec59a1f24cde0da5d8fc7b0583c1f6fab3c16d29ff4d4ea50",
+  "verification_script_sha256": "72874fb987f2fee65d85e4a1a3f4cdbdc3234707f642299c540d03feb4ab03ed",
+  "verification_started_at": "2026-10-23T03:24:50.801860+08:00",
+  "configuration_readback_passed": true
+}

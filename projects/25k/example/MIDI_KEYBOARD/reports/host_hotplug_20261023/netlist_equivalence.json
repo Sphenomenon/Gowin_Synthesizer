@@ -1,0 +1,14 @@
+{
+  "scope": "RTL versus Gowin mapped netlist with GW5A primitive simulation models",
+  "cycles": 12000,
+  "trace_equal": true,
+  "sha256": {
+    "input.v": "b77381292d51d80d16cb7f216c9e2206c54635f2cedd52d8bb2f4d0550c8681b",
+    "run.tcl": "32124178bbf853c35b7481d3f20e8e9f25df156ed9bc62039ea201996aa70097",
+    "tb_mapped.v": "11ca2d9b887266567b479e5c79e097062d87390cbffc9630bdf1ac6e4018121b",
+    "impl/gwsynthesis/panel_probe.vg": "ec82fb72428eb72b50aa8aae13710445ad9ce75d38817e352dd176dabcc38f90",
+    "impl/gwsynthesis/panel_probe_syn_rsc.xml": "daf61b20e2cd342f99d526dabf05ed1693831a5734bd9225aa8eeb6e41513974",
+    "reference_trace.log": "b6e6437a1af6249fd6fc96bdde8a2090f7e151fe0cb2c7587f55fce431624d33",
+    "mapped_trace.log": "b6e6437a1af6249fd6fc96bdde8a2090f7e151fe0cb2c7587f55fce431624d33"
+  }
+}

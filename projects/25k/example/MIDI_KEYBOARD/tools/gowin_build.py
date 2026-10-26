@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build in a clean ASCII directory, with separate synthesis/PnR processes."""
 from pathlib import Path
+import argparse
 import datetime
 import fcntl
 import hashlib
@@ -10,45 +11,88 @@ import re
 import shutil
 import subprocess
 import sys
+import platform
 import tempfile
 
 prj = Path(__file__).resolve().parents[1]
-script = Path(sys.argv[1]).resolve()
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('script', type=Path)
+parser.add_argument('--user-code', required=True, help='New candidate identity: eight hexadecimal digits')
+parser.add_argument('--output', type=Path, help='New evidence directory (default results/build_TIMESTAMP)')
+args = parser.parse_args()
+if not re.fullmatch(r'[0-9A-Fa-f]{8}', args.user_code):
+    parser.error('--user-code must contain exactly eight hexadecimal digits')
+script = args.script.resolve()
 relative_script = script.relative_to(prj)
 text = script.read_text()
 if len(re.findall(r'^run all\s*$', text, re.M)) != 1:
     raise SystemExit('Expected exactly one standalone run all in the build script.')
+if re.search(r'^set_option -user_code ', text, re.M):
+    raise SystemExit('Candidate UserCode must be selected explicitly, not embedded in the Tcl source.')
 setup = re.sub(r'^run all\s*$', '', text, flags=re.M)
-ide = Path(os.environ.get('GW25K_IDE_DIR', '/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE'))
-env = dict(os.environ, DYLD_LIBRARY_PATH=str(ide/'lib'), DYLD_FRAMEWORK_PATH=str(ide/'lib'))
+setup += '\nset_option -user_code ' + args.user_code.upper() + '\n'
+env = dict(os.environ)
+ide_setting = os.environ.get('GW25K_IDE_DIR')
+if ide_setting:
+    ide = Path(ide_setting).expanduser().resolve()
+    executable = ide / 'bin/gw_sh'
+    library_variable = 'DYLD_LIBRARY_PATH' if sys.platform == 'darwin' else 'LD_LIBRARY_PATH'
+    env[library_variable] = str(ide / 'lib') + os.pathsep + env.get(library_variable, '')
+elif shutil.which('gw_sh'):
+    executable = Path(shutil.which('gw_sh')).resolve()
+else:
+    ide = Path('/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE')
+    executable = ide / 'bin/gw_sh'
+    env['DYLD_LIBRARY_PATH'] = str(ide / 'lib')
+    env['DYLD_FRAMEWORK_PATH'] = str(ide / 'lib')
+if not executable.is_file() or not os.access(executable, os.X_OK):
+    raise SystemExit('Gowin gw_sh is unavailable; put its wrapper on PATH or set GW25K_IDE_DIR.')
 run_id = datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
-report_dir = script.parent/'reports'
-report_dir.mkdir(exist_ok=True)
+report_dir = args.output.resolve() if args.output else prj / 'results' / ('build_' + run_id)
+report_dir.mkdir(parents=True, exist_ok=False)
 
 # All projects share the same tool installation and license state. Fail fast
 # rather than starting concurrent compiler processes or silently retrying.
-lock = open('/private/tmp/gw25k-build.lock', 'a')
+lock = open(Path(tempfile.gettempdir()) / 'gw25k-build.lock', 'a')
 try:
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
 except BlockingIOError:
     raise SystemExit('Another GW25K build is active; this build was not started.')
 
-stage = Path(tempfile.mkdtemp(prefix='gw25k-build-', dir='/private/tmp'))
+stage = Path(tempfile.mkdtemp(prefix='gw25k-build-'))
 stage_prj = stage/'prj'
 shutil.copytree(prj, stage_prj, ignore=shutil.ignore_patterns(
     'impl', 'reports', 'builds', '__pycache__', '.git', '.venv',
-    'build', 'archive', '.DS_Store', '*.vvp'))
+    'build', 'archive', 'results', '.DS_Store', '*.vvp'))
 stage_project = (stage_prj/relative_script).parent
 result = {'started_at': datetime.datetime.now().astimezone().isoformat(),
           'script': str(relative_script), 'stage_directory': str(stage),
+          'user_code': '0x' + args.user_code.upper(),
+          'configuration': {'top': 'midi_keyboard_top', 'HOST_PANEL_CONTROLS': 1,
+                            'device': 'GW5A-LV25MG121NC1/I0'},
+          'tool': {'executable': str(executable), 'platform': platform.platform()},
+          'hardware_validated': False, 'sram_programmed': False, 'flash_programmed': False,
           'passed': False, 'phases': {}, 'artifacts': [],
           'sha256': {x.relative_to(prj).as_posix(): hashlib.sha256(x.read_bytes()).hexdigest()
-                     for directory in ('rtl', 'constraints', 'config', 'tools')
+                     for directory in ('rtl', 'constraints', 'config', 'tools', 'sim')
                      for x in (prj/directory).rglob('*')
                      if x.is_file() and '__pycache__' not in x.parts}}
 
-for name in ('sources.f', 'build.tcl', 'build.sh'):
+for name in ('sources.f', 'build.tcl', 'build.sh', 'run_sim.sh'):
     result['sha256'][name] = hashlib.sha256((prj/name).read_bytes()).hexdigest()
+
+result['source_identity'] = {
+    'git_head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=prj, text=True).strip(),
+    'input_manifest_sha256': hashlib.sha256(json.dumps(result['sha256'], sort_keys=True).encode()).hexdigest(),
+}
+patch = subprocess.check_output(['git', 'diff', '--binary', '--', str(prj)], cwd=prj)
+(report_dir / 'source_changes.patch').write_bytes(patch)
+result['source_identity']['tracked_diff_sha256'] = hashlib.sha256(patch).hexdigest()
+source_snapshot = report_dir / 'source_snapshot'
+for name in result['sha256']:
+    target = source_snapshot / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(prj / name, target)
 
 def save_result(name):
     (report_dir/name).write_text(json.dumps(result, indent=2)+'\n')
@@ -112,14 +156,14 @@ run pnr
     log = stage/(phase+'.log')
     print('Starting '+phase+' in a fresh gw_sh process.', flush=True)
     with log.open('w') as output:
-        process = subprocess.run([str(ide/'bin/gw_sh'), str(phase_script)],
+        process = subprocess.run([str(executable), str(phase_script)],
                                  cwd=stage_project, env=env, stdout=output,
                                  stderr=subprocess.STDOUT)
     output_text = log.read_text(errors='replace')
     saved_log = report_dir/('build_'+run_id+'_'+phase+'.log')
     shutil.copy2(log, saved_log)
     result['phases'][phase] = {'returncode': process.returncode,
-                               'log': saved_log.relative_to(prj).as_posix()}
+                               'log': str(saved_log)}
     if process.returncode or re.search(r'(^|\n)(?:ERROR\s*\(|Error:)', output_text):
         print('\n'.join(output_text.splitlines()[-12:]), flush=True)
         fail(phase+' failed; existing successful artifacts were preserved.',
@@ -209,11 +253,15 @@ if gao_files:
 
 # Publish each successful run separately. The original impl and previous good
 # builds stay intact; later downloads use the manifest path and SHA256.
-published_impl = script.parent/'builds'/run_id/'impl'
+changed_inputs = [name for name, digest in result['sha256'].items()
+                  if not (prj/name).is_file() or hashlib.sha256((prj/name).read_bytes()).hexdigest() != digest]
+if changed_inputs:
+    fail('Inputs changed during build: '+', '.join(changed_inputs))
+published_impl = report_dir / 'impl'
 shutil.copytree(impl, published_impl)
 for path in bitstreams:
     published = published_impl/path.relative_to(impl)
-    result['artifacts'].append({'path': published.relative_to(prj).as_posix(),
+    result['artifacts'].append({'path': str(published),
                                 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
 changed_inputs = [name for name, digest in result['sha256'].items()
                   if not (prj/name).is_file() or hashlib.sha256((prj/name).read_bytes()).hexdigest() != digest]
@@ -222,9 +270,7 @@ if changed_inputs:
 result['passed'] = True
 result['finished_at'] = datetime.datetime.now().astimezone().isoformat()
 save_result('build_'+run_id+'.json')
-temporary_manifest = report_dir/'.last_build.json.tmp'
-temporary_manifest.write_text(json.dumps(result, indent=2)+'\n')
-temporary_manifest.replace(report_dir/'last_build.json')
+save_result('build.json')
 print('Build completed in separate synthesis/PnR processes.', flush=True)
 for artifact in result['artifacts']:
     print(artifact['path']+' sha256='+artifact['sha256'], flush=True)

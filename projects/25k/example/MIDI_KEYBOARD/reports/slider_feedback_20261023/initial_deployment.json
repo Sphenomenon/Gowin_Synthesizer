@@ -1,0 +1,43 @@
+{
+  "started_at": "2026-10-23T10:29:40.322629+08:00",
+  "passed": false,
+  "manifest": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/slider_fix_20261023/build/build.json",
+  "manifest_sha256": "6ed054241b3b84721d5c0ee90f509289121fe82b000ba609f15b3b630d9952ee",
+  "validation_sha256": "d7dab14be9238c9b72993f583a7bfc441e78e70a195a7bf6ac9a01c3a9cbb55b",
+  "programmer_script_sha256": "1baa1e8acedebbac38fd89cfa227a3ffc211877cb3286743323b70ec10ccd4e0",
+  "preflight_script_sha256": "dd80fc531334164cba0182481fe76479026dd4b16dc43f841522f7b52d273926",
+  "bitstream": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/slider_fix_20261023/build/impl/pnr/midi_keyboard.fs",
+  "bitstream_sha256": "303e1403f67503285e07469bb6c13dd8aa698db77d42054ad102ead622a2e671",
+  "expected_user_code": "0xC1251032",
+  "previous_user_code": "0xC1251031",
+  "rollback_bitstream": {
+    "path": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/hotplug_20261023/build_romstream/impl/pnr/midi_keyboard.fs",
+    "sha256": "809f93e1c548e6700e2721dafd5f44cb0cb54a35f33a3e466603deeeb26383a1"
+  },
+  "steps": [
+    {
+      "name": "device_before",
+      "command": [
+        "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5A-25A",
+        "--operation_index",
+        "0",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "2.5MHz"
+      ],
+      "returncode": 3,
+      "log_sha256": "9bdcdf933c61df5d56a80350d7b86202ab712aac83c218f47a9a020877acd15b"
+    }
+  ],
+  "flash_programmed_verified": false,
+  "configuration_readback_passed": false,
+  "physical_power_cycle_tested": false,
+  "physical_slider_feedback_accepted": false,
+  "error": "RuntimeError('device_before failed')",
+  "finished_at": "2026-10-23T10:29:40.491518+08:00"
+}

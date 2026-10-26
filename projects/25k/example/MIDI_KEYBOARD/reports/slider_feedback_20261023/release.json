@@ -1,0 +1,90 @@
+{
+  "recorded_at": "2026-10-23T10:32:32.213540+08:00",
+  "user_code": "0xC1251032",
+  "source_identity": {
+    "git_head": "f502f28f329c6665e4a6150583e390b2c9611cef",
+    "input_manifest_sha256": "43f56f08547c40bb54506d6eb588292224af37a7a965da7ebbc31ca977fc49a1",
+    "tracked_diff_sha256": "6b4050a281fafeee0eb60721af901ace1e91c36330f148df826431880d2f2e8a"
+  },
+  "configuration": {
+    "top": "midi_keyboard_top",
+    "HOST_PANEL_CONTROLS": 1,
+    "device": "GW5A-LV25MG121NC1/I0"
+  },
+  "bitstream": {
+    "path": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/slider_fix_20261023/build/impl/pnr/midi_keyboard.fs",
+    "sha256": "303e1403f67503285e07469bb6c13dd8aa698db77d42054ad102ead622a2e671"
+  },
+  "timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "setup_worst_slack_ns": 0.348,
+    "hold_worst_slack_ns": 0.247,
+    "recovery_worst_slack_ns": 4.305,
+    "removal_worst_slack_ns": 1.025,
+    "clocks": [
+      {
+        "name": "clk_50mhz",
+        "constraint_mhz": 50.0,
+        "actual_fmax_mhz": 50.885
+      },
+      {
+        "name": "clk_ulpi60",
+        "constraint_mhz": 60.002,
+        "actual_fmax_mhz": 66.794
+      }
+    ],
+    "passed": true
+  },
+  "physical_resources": {
+    "logic": 21388,
+    "logic_capacity": 23040,
+    "lut": 19267,
+    "alu": 2121,
+    "register": 10166,
+    "cls": 11206,
+    "cls_capacity": 11520,
+    "bsram": 54,
+    "bsram_capacity": 56,
+    "dsp": 3,
+    "dsp_capacity": 28
+  },
+  "synthesis_bsram_equivalent": 40,
+  "offline_validation_passed": true,
+  "flash_programmed_verified": true,
+  "configuration_readback_passed": true,
+  "physical_power_cycle_tested": false,
+  "physical_slider_feedback_accepted": false,
+  "rollback_bitstream": {
+    "path": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/hotplug_20261023/build_romstream/impl/pnr/midi_keyboard.fs",
+    "sha256": "809f93e1c548e6700e2721dafd5f44cb0cb54a35f33a3e466603deeeb26383a1"
+  },
+  "backup": {
+    "path": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/slider_fix_20261023/hardware_retry_01/before_flash_c1251031.bin",
+    "bytes": 8388608,
+    "sha256": "a69c1a509626a79994807f01b3de49478b7fce58b30dd30545d0694fa6c05c7c"
+  },
+  "sha256": {
+    "backup.log": "e4d69cdf53c44a3631afbdd8883ba53ecb52be19067b8455c5cb923d49c67538",
+    "backup_detect.log": "0983fca5ce28ecd06ecfb2ee8001857e6e5954d0738fd34ce4be73ea5bfbcf01",
+    "build.json": "6ed054241b3b84721d5c0ee90f509289121fe82b000ba609f15b3b630d9952ee",
+    "candidate.json": "6e931b1f202b0a013559233913ea595f54025317ccb7d368615fb2ca32970dc6",
+    "controls.log": "e4971666d6145746fa444b7521eb24108096e7d0b7d98ca106e39090d5a9b8a5",
+    "deployment.json": "126ab5357b3b0d7b2be898bfa9343b3b4908d5f1efc1378d41667fabc58cbf4b",
+    "device_after.log": "e822d4db385d65bd09de3707addc9fa91787b5d7780208d88d0dd0b8dd369a7d",
+    "device_after_backup.log": "acd3b531224bc6e9da46d89e6fca831a0161a349bd07a0b8eda7f82503cb601b",
+    "device_after_repeat.log": "e822d4db385d65bd09de3707addc9fa91787b5d7780208d88d0dd0b8dd369a7d",
+    "device_before.log": "acd3b531224bc6e9da46d89e6fca831a0161a349bd07a0b8eda7f82503cb601b",
+    "flash_id.log": "0c04eaa6743efe0312d9af3fcfa661f8a79215ca20c504653f08c97e7afa449f",
+    "initial_deployment.json": "6a5623d1e4e919b3eb7e06e8fa2a779d250f548b0adfe6ef896207c7a581f07b",
+    "initial_device_read.log": "9bdcdf933c61df5d56a80350d7b86202ab712aac83c218f47a9a020877acd15b",
+    "initial_slow_read.log": "e9b445e694e2cc4d06b1734bfbaf9f07ab97b3802a3c5958979f04c1e4f717fc",
+    "program_verify.log": "49ba213a2df6c3013bc7b4c4f5ee2783de226176babfb913f7d4c0fc5253ff11",
+    "reload_after_backup.log": "4157e5424a7656d3b400e63baaf6bf0274f310e67787913729bb9e1c90803ead",
+    "reload_flash.log": "4157e5424a7656d3b400e63baaf6bf0274f310e67787913729bb9e1c90803ead",
+    "reproduce.log": "b1a022de0fe9c6bd85c0f878f500c3da7f44d9c0ddd28c7cb17320caefc8484a",
+    "routed_resources.txt": "09c4f597da97e6ac924049e4dac185ad7e48a1193890b67e601299c4ce43d925",
+    "routed_timing.tr": "86334b5f5148ad4c7580cca0f1aed4a0c05effbeacf7dd8b5e95340cb5df380b",
+    "validation.json": "d7dab14be9238c9b72993f583a7bfc441e78e70a195a7bf6ac9a01c3a9cbb55b"
+  }
+}

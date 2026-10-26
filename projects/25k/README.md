@@ -22,6 +22,8 @@ RTL8723DS 业务命令、内置音频录音与二阶无损下载（A25D / Androi
 
 完整16键触摸 MIDI 键盘（USB2 MIDI/独立屏幕接口、BLE MIDI、触摸条、双编码器、PCA9685/WS2812与428×142横屏）：[example/MIDI_KEYBOARD](example/MIDI_KEYBOARD/README.md)
 
+2026-10-23 的 138K 热插拔适配和部署证据见[本轮报告](example/MIDI_KEYBOARD/reports/HOST_HOTPLUG_20261023.md)。该轮重新授权设备端修改；下文保留 2026-10-19 导入和控件续验的历史范围。
+
 
 ## 构建与仿真
 
@@ -29,7 +31,7 @@ RTL8723DS 业务命令、内置音频录音与二阶无损下载（A25D / Androi
 
 ```sh
 sh projects/25k/example/MIDI_KEYBOARD/run_sim.sh
-sh projects/25k/example/MIDI_KEYBOARD/build.sh
+sh projects/25k/example/MIDI_KEYBOARD/build.sh --user-code <新的八位十六进制标识>
 ```
 
 构建需要 Gowin EDA，仿真需要 Python 3、Icarus Verilog 与 vvp。各独立例程的具体依赖与入口见对应 README。旧文档中的 `example/...` 命令以本目录 `projects/25k` 为工作目录。

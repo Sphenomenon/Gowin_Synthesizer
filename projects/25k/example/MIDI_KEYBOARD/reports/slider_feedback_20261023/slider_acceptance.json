@@ -1,0 +1,12 @@
+{
+  "recorded_at": "2026-10-23T10:33:32.832674+08:00",
+  "user_code": "0xC1251032",
+  "scope": "User confirmation of the reported slider feedback fix after Flash deployment",
+  "confirmation_source": "User message in the active session",
+  "user_confirmation": "没问题了",
+  "physical_slider_feedback_accepted": true,
+  "release_manifest_sha256": "98cdc994ce7efe24ab40c76e652420f6548dce687c13a21b6e788ba7e494e3bb",
+  "deployment_manifest_sha256": "126ab5357b3b0d7b2be898bfa9343b3b4908d5f1efc1378d41667fabc58cbf4b",
+  "physical_power_cycle_tested": false,
+  "touch_to_138k_audio_display_accepted": false
+}

@@ -18,12 +18,13 @@ module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
  wire[15:0]raw_keys,keys,touch_errors;wire key_update,keypad_ready,slider_ready,slider_valid,slider_touch;
  wire[7:0]slider_position,slider_raw_position,slider_general_status,slider_sample_count;
  wire slider_overrun;
+ wire[799:0]touch_diagnostics;
  midi_touch_frontend touch(.clk(clk_50mhz),.reset(reset),.change_n(touch_change_n),
   .touch1_scl(touch1_scl),.touch1_sda(touch1_sda),.touch2_scl(touch2_scl),.touch2_sda(touch2_sda),
   .key_bitmap(raw_keys),.key_update(key_update),.slider_valid(slider_valid),.slider_position(slider_position),
   .slider_touch(slider_touch),.keypad_ready(keypad_ready),.slider_ready(slider_ready),.errors(touch_errors),
   .slider_raw_position(slider_raw_position),.slider_general_status(slider_general_status),
-  .slider_overrun(slider_overrun),.slider_sample_count(slider_sample_count));
+  .slider_overrun(slider_overrun),.slider_sample_count(slider_sample_count),.touch_diagnostics(touch_diagnostics));
  midi_key_layout key_layout(.raw_keys(raw_keys),.key_bitmap(keys));
  wire e1step,e1press,e1pressed,e1long,e2step,e2press,e2pressed,e2rawpress;wire signed[1:0]e1dir,e2dir;
  encoder_input #(.DETENTS_PER_STEP(HOST_PANEL_CONTROLS ? 1 : 2)) e1(.clk(clk_50mhz),.reset(reset),.a(sw1_a),.b(sw1_b),.key_n(sw1_key_n),
@@ -85,6 +86,7 @@ module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
  wire[15:0]active_keys,lamp_keys,theme,background;wire panic_busy,screen_update;
  wire[31:0]status_flags,events;
  midi_keyboard_application #(.HOST_PANEL_CONTROLS(HOST_PANEL_CONTROLS)) app(.clk(clk_50mhz),.reset(reset),.control_reset(control_reset||mk_reset),.usb_online(usb_online),.ble_online(ble_online),
+  .touch_diagnostics(touch_diagnostics),
   .key_bitmap(keys),.keypad_ready(keypad_ready),.slider_valid(slider_valid),.slider_touch(slider_touch),.slider_position(slider_position),
   .enc1_step(e1step&&(HOST_PANEL_CONTROLS || !remote_enable)),.enc1_press(e1press&&(HOST_PANEL_CONTROLS || !remote_enable)),.enc1_direction(e1dir),
   .enc2_step(e2step&&(HOST_PANEL_CONTROLS || !remote_enable)),.enc2_press(e2press),.enc2_direction(e2dir),

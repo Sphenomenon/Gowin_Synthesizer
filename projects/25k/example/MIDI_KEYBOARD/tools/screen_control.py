@@ -17,13 +17,14 @@ MAGIC = b"MK"
 VERSION = 1
 FRAME_SIZE = 16
 GET_STATUS = 0x01
+GET_TOUCH = 0x02
 SET_CHANNEL = 0x10
 SET_TRANSPOSE = 0x11
 SET_PAGE = 0x20
 SET_THEME = 0x21
 CLEAR = 0x22
 OPCODES = {
-    GET_STATUS: "status", SET_CHANNEL: "channel", SET_TRANSPOSE: "transpose",
+    GET_STATUS: "status", GET_TOUCH: "touch", SET_CHANNEL: "channel", SET_TRANSPOSE: "transpose",
     SET_PAGE: "page", SET_THEME: "theme", CLEAR: "clear",
 }
 STATUSES = {0: "ok", 1: "bad_opcode", 2: "bad_argument", 3: "bad_crc", 4: "bad_version"}
@@ -66,6 +67,8 @@ def _validate_request(opcode: int, arg0: int, arg1: int) -> None:
         raise ValueError("request arg1 is reserved and must be zero")
     if opcode == GET_STATUS and arg0 != 0:
         raise ValueError("status arg0 must be zero")
+    if opcode == GET_TOUCH and arg0 > 24:
+        raise ValueError("touch word index must be in 0..24")
     if opcode in (SET_CHANNEL, SET_PAGE) and arg0 > 15:
         raise ValueError("channel/page must be in 0..15")
     if opcode in (SET_THEME, CLEAR) and arg0 > 0xFFFF:
@@ -108,7 +111,7 @@ def encode_response(opcode: int, sequence: int, status: int = 0, result: int = 0
     if status == 0:
         if opcode & 0x80:
             raise ValueError("successful response must refer to a valid request opcode")
-        _validate_request(opcode & 0x7F, 0 if (opcode & 0x7F) == GET_STATUS else result, 0)
+        _validate_request(opcode & 0x7F, 0 if (opcode & 0x7F) in (GET_STATUS, GET_TOUCH) else result, 0)
     return _pack(opcode | 0x80, sequence, status, result)
 
 
@@ -157,7 +160,7 @@ def decode_frame(data: bytes) -> Frame:
         if arg0 != 0 and arg1 != 0:
             raise ValueError("error response result must be zero")
         if arg0 == 0:
-            _validate_request(opcode & 0x7F, 0 if (opcode & 0x7F) == GET_STATUS else arg1, 0)
+            _validate_request(opcode & 0x7F, 0 if (opcode & 0x7F) in (GET_STATUS, GET_TOUCH) else arg1, 0)
     else:
         _validate_request(opcode, arg0, arg1)
     return Frame(opcode, sequence, arg0, arg1)

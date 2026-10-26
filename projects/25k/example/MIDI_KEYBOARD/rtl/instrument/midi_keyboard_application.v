@@ -7,6 +7,7 @@ module midi_keyboard_application #(
 )(
  input wire clk,reset,control_reset,
  input wire usb_online,ble_online,
+ input wire [799:0] touch_diagnostics,
  input wire [15:0] key_bitmap,
  input wire keypad_ready,slider_valid,slider_touch,
  input wire [7:0] slider_position,
@@ -38,7 +39,7 @@ module midi_keyboard_application #(
  wire[15:0]control_errors;
  screen_control_endpoint controls(
   .clk(clk),.reset(reset||control_reset),.rx_valid(control_rx_valid),.rx_ready(control_rx_ready),.rx_data(control_rx_data),
-  .tx_valid(control_tx_valid),.tx_ready(control_tx_ready),.tx_data(control_tx_data),.status_flags(status_flags),
+  .tx_valid(control_tx_valid),.tx_ready(control_tx_ready),.tx_data(control_tx_data),.status_flags(status_flags),.touch_diagnostics(touch_diagnostics),
   .midi_channel(),.transpose(),.screen_page(screen_page),.theme_rgb565(theme_rgb565),.clear_rgb565(clear_rgb565),
   .screen_update(screen_update),.protocol_errors(control_errors),
   .config_write(cfg_write),.config_opcode(cfg_opcode),.config_value(cfg_value));

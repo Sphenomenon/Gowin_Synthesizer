@@ -29,6 +29,7 @@ class ScreenControlTest(unittest.TestCase):
     def test_encode_all_command_boundaries(self):
         for opcode, values in (
             (protocol.GET_STATUS, [0]),
+            (protocol.GET_TOUCH, [0, 24]),
             (protocol.SET_CHANNEL, [0, 15]),
             (protocol.SET_TRANSPOSE, [-48, -1, 0, 48]),
             (protocol.SET_PAGE, [0, 15]),
@@ -52,7 +53,7 @@ class ScreenControlTest(unittest.TestCase):
         for _ in range(200):
             opcode = rng.choice(list(protocol.OPCODES))
             value = {
-                0x01: 0, 0x10: rng.randrange(16), 0x11: rng.randrange(-48, 49),
+                0x01: 0, 0x02: rng.randrange(25), 0x10: rng.randrange(16), 0x11: rng.randrange(-48, 49),
                 0x20: rng.randrange(16), 0x21: rng.randrange(65536),
                 0x22: rng.randrange(65536),
             }[opcode]
@@ -65,6 +66,7 @@ class ScreenControlTest(unittest.TestCase):
         bad_calls = [
             (0x80, 0, 0, 0), (0x7F, 0, 0, 0), (0x01, -1, 0, 0),
             (0x01, 65536, 0, 0), (0x01, 0, 1, 0), (0x01, 0, 0, 1),
+            (0x02, 0, 25, 0), (0x02, 0, 0xFFFFFFFF, 0), (0x02, 0, 0, 1),
             (0x10, 0, 16, 0), (0x10, 0, -1, 0),
             (0x11, 0, -49, 0), (0x11, 0, 49, 0),
             (0x11, 0, 0xFFFFFFFF, 0), (0x20, 0, 16, 0),
@@ -109,7 +111,7 @@ class ScreenControlTest(unittest.TestCase):
                 protocol.decode_frame(raw_frame(opcode, arg0, arg1))
 
     def test_response_round_trip_and_signed_result(self):
-        for opcode, result in [(0x01, 0xFEDCBA98), (0x10, 15), (0x11, 0xFFFFFFD0),
+        for opcode, result in [(0x01, 0xFEDCBA98), (0x02, 0xFFFFFFFF), (0x10, 15), (0x11, 0xFFFFFFD0),
                                (0x20, 15), (0x21, 0xFFFF), (0x22, 0x8000)]:
             encoded = protocol.encode_response(opcode, 500, 0, result)
             self.assertEqual(encoded, raw_frame(opcode | 0x80, 0, result, sequence=500))

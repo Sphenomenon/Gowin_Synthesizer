@@ -10,6 +10,7 @@ module tb_screen_control_endpoint;
     reg tx_ready = 0;
     wire [7:0] tx_data;
     reg [31:0] status_flags = 32'h89abcdef;
+    reg [799:0] touch_diagnostics = 0;
     wire [3:0] midi_channel, screen_page;
     wire signed [7:0] transpose;
     wire [15:0] theme_rgb565, clear_rgb565, protocol_errors;
@@ -25,7 +26,7 @@ module tb_screen_control_endpoint;
     screen_control_endpoint dut (
         .clk(clk), .reset(reset), .rx_valid(rx_valid), .rx_ready(rx_ready),
         .rx_data(rx_data), .tx_valid(tx_valid), .tx_ready(tx_ready), .tx_data(tx_data),
-        .status_flags(status_flags), .midi_channel(midi_channel), .transpose(transpose),
+        .status_flags(status_flags), .touch_diagnostics(touch_diagnostics), .midi_channel(midi_channel), .transpose(transpose),
         .screen_page(screen_page), .theme_rgb565(theme_rgb565), .clear_rgb565(clear_rgb565),
         .screen_update(screen_update), .protocol_errors(protocol_errors)
     );

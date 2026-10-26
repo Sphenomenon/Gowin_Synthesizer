@@ -20,7 +20,7 @@
 
 ## 当前138K面板控制
 
-生产顶层和应用默认`HOST_PANEL_CONTROLS=1`，源码已离线验证，尚未为本次改动综合、烧录或板测。上电／USB接入时本地音量127、Program73、滑条中心8192；16键力度100、释放0；138K统一初始化音源，设备不重发48条清理或补播旧持音。主机远端页期间控件继续工作，两编码器长按不触发短按或设置切换。
+生产顶层和应用默认`HOST_PANEL_CONTROLS=1`；2026-10-23热插拔修复、资源实现和各阶段验证／固化状态见[热插拔报告](reports/HOST_HOTPLUG_20261023.md)，后续滑条修复状态见[滑条反馈报告](reports/SLIDER_FEEDBACK_20261023.md)，维护边界见[HOST_HOTPLUG.md](docs/HOST_HOTPLUG.md)。上电／USB接入时本地音量127、Program73、弯音发送缓存中心8192；本地滑条位置和灯条独立于USB／BLE连接更新，接入不重置灯条。16键力度100、释放0；138K统一初始化音源，设备不重发48条清理或补播旧持音。主机远端页期间控件继续工作，两编码器长按不触发短按或设置切换。
 
 | 操作 | 消息 |
 |---|---|
@@ -96,11 +96,11 @@ docs/           实现细节、协议和验收边界
 从仓库根目录执行：
 
 ```sh
-sh example/MIDI_KEYBOARD/run_sim.sh
-sh example/MIDI_KEYBOARD/build.sh
+sh projects/25k/example/MIDI_KEYBOARD/run_sim.sh
+sh projects/25k/example/MIDI_KEYBOARD/build.sh --user-code <新的八位十六进制标识>
 ```
 
-整机入口为 `tools/run_checks.py` 和 `tools/gowin_build.py`，结果记录于 `reports/validation.json` 与 `reports/last_build.json`。`build.sh`使用独立ASCII暂存目录、分别运行综合与布局布线，并在ROM载入、时序或输入校验失败时拒绝发布固件。可选 `build_core.sh` / `tools/synthesize.py` 仅用于旧抽象核心的独立综合回归。ROM默认相对路径以 `example/MIDI_KEYBOARD` 为工作目录；单独编译BLE时需保留 `rtl/ble_board/rtl8723ds_patch.mem`。板级接线见 [board.json](config/board.json)，该JSON不是Gowin约束文件。
+整机入口为 `tools/run_checks.py` 和 `tools/gowin_build.py`，新结果写入独立 `results/` 目录，导入的历史 `reports/validation.json` 与 `reports/last_build.json` 保留。`build.sh`要求显式的新UserCode，支持PATH中的Linux工具包装器，使用系统ASCII暂存目录，分别运行综合与布局布线，并在ROM载入、时序或输入校验失败时拒绝发布固件。维护、构建和热插拔边界见 [HOST_HOTPLUG.md](docs/HOST_HOTPLUG.md)。可选 `build_core.sh` / `tools/synthesize.py` 仅用于旧抽象核心的独立综合回归。ROM默认相对路径以本工程为工作目录；单独编译BLE时需保留 `rtl/ble_board/rtl8723ds_patch.mem`。板级接线见 [board.json](config/board.json)，该JSON不是Gowin约束文件。
 
 屏幕协议工具生成/解析16字节CRC帧，例如：
 
