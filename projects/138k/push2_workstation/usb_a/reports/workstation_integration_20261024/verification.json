@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "date": "2026-10-24",
+  "identity": "custom138k-native-integration-20261024-a17",
+  "git_head": "e528073e2ae8763ecfcf2e10761f88cb9b0ca223",
+  "worktree_dirty": true,
+  "validation_stage": "offline_integrated_not_board_accepted",
+  "source_policy": "explicit_native_board_on_resource_timing",
+  "high_speed_allowed": true,
+  "input_manifest_sha256": "0f426f7035d93f028c0eb2d22f36d85e546efc3afd98e1b1aa2233ea720faf0f",
+  "pinout_sha256": "35b2cc2be1bbb10bd912c96f23d398674deda79a86cbb51704bbb06991c98718",
+  "native_synthesis_audit_sha256": "9e44f8d10c9e7243fd2e81d42e3d4c6b3067a0e37bae909a3e97bc00060668a8",
+  "synthesis_netlist_sha256": "83bb875fc6432cbe1ee5a23eed6779ca0a9efad18cc87d43b8752d0a308612de",
+  "resources": {
+    "Register": 56988,
+    "Lut": 78198,
+    "Alu": 15353,
+    "Bsram": 266,
+    "Ssram": 1459,
+    "MULTALU27X18": 46,
+    "MULT12X12": 42,
+    "MULT27X36": 45,
+    "self_bsram": 0,
+    "subtree_bsram": 266
+  },
+  "source_snapshot_entries": 616,
+  "staged_input_entries": 507,
+  "ble_source_entries": 13,
+  "all_prepared_inputs_unchanged": true,
+  "preliminary_to_final_changed_sources": [
+    "tools/workstation_custom_board_audit.py"
+  ],
+  "preliminary_execution_rtl_and_rom_unchanged": true,
+  "tests": {
+    "final_prepare": {
+      "passed": true,
+      "tests": 2,
+      "seconds": 1.118,
+      "log_sha256": "40e5a26d1a0d4fe13790a0d191f950022f8dd54353bc0d2a9d5746f268391a9d"
+    },
+    "master_volume_i2s": {
+      "passed": true,
+      "tests": 2,
+      "seconds": 10.057,
+      "log_sha256": "b211df6fd241809db92fdabe8bbfe00115476b1511be22bdcc4d7cc584f99727"
+    },
+    "bluetooth_business": {
+      "passed": true,
+      "tests": 6,
+      "seconds": 53.011,
+      "log_sha256": "140e215aea4bfad16a0b3171ae4b98fd7522917699dd5197ad02a7d5d64971ad"
+    },
+    "lcd_and_peripheral_provenance": {
+      "passed": true,
+      "tests": 4,
+      "seconds": 77.612,
+      "log_sha256": "3a966c22c2b1cece118727df44caa6ac39cdd0fa4eec25e9c71966531d9c3b22"
+    },
+    "native_clock_plan": {
+      "passed": true,
+      "tests": 4,
+      "seconds": 25.61,
+      "log_sha256": "400a01a386cd79f3a39624e9424aed50d398c3b8b8bbe47dc0ea74b773231bbd"
+    },
+    "native_board_hs_fs_and_tmds": {
+      "passed": true,
+      "tests": 9,
+      "seconds": 484.707,
+      "log_sha256": "01953f111152a2f0d5f8af6daeba4c723c4acb8dfb9fdcaf37432750c6b9706e"
+    },
+    "production_usb2_audio_hs_fs": {
+      "passed": true,
+      "tests": 2,
+      "seconds": 853.394,
+      "log_sha256": "0a57df552aa24d90d568bf974ebf5b638980772f738fa4f99d231a4bb6b0ce87"
+    },
+    "accepted_input_boundary": {
+      "passed": true,
+      "tests": 10,
+      "seconds": 0.013,
+      "log_sha256": "45629e08d8c41ba474e149425cf4477b6ed2d14afbd48b41a5dea35ddb36ae32"
+    },
+    "firmware": {
+      "passed": true,
+      "tests": 6,
+      "seconds": 0.024,
+      "log_sha256": "c57bdec5f19166a93690118c71d5c3ee68b3bfc2827da2e950a0cdc421d4bd4f"
+    },
+    "clean_baseline_prepare": {
+      "passed": true,
+      "tests": 23,
+      "seconds": 6.642,
+      "log_sha256": "05be118095f9b0f17ccb3370b7cae06c435e6c27802d435f8b8944534bd82bed"
+    },
+    "native_composition": {
+      "passed": true,
+      "tests": 6,
+      "seconds": 0.013,
+      "log_sha256": "3b276704f3e563f93455088f7ce46c6323f4b89f61012ff8ddd99bba729ec60f"
+    },
+    "build_options": {
+      "passed": true,
+      "tests": 12,
+      "seconds": 0.33,
+      "log_sha256": "ea15cdb8b5b47462140d9f13ffe3aeb5f8d56316f4e5d3efd274887a57fabf91"
+    },
+    "full_synthesis_and_corruption_rejection": {
+      "passed": true,
+      "tests": 1,
+      "seconds": 141.342,
+      "log_sha256": "514e73a28ec4356f13acb34fc16eb5618dede98ad6a1679146b868f9447be95d"
+    },
+    "actual_25k_encoder_application": {
+      "passed": true,
+      "log_sha256": "f8bc0c569d39376580cff3c64aab76d486d0ab0ae2b4f48e59ea56dca3215223"
+    }
+  },
+  "test_source_sha256": {
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_fpc_audio.py": "bc0f5e43c196b5e5298baddb604cfad1d532f7203a8d8f79b1ad889cbff5fe11",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_bluetooth.py": "5a0404b51d8aaa148a63511f3906fbb9b6024e2a49e41f7835b33b2bdc4da28e",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_peripherals.py": "e955ae8c3603930a51c4f0761d39c7f9f31e486cf17e9a5197461987a323b9ea",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py": "03f519e4800af840aa2881985a8d7d3474c9748ef698fa7d7e06255a5128b199",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_clocks.py": "72726d23ebf685a78a212186fdbc3954b3c494dbc93e1bd9c49e5a8bf377cb0e",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board_synthesis.py": "1036c9518258a9c70064848e874c8c3442d07baad81a5a4c0d69249d46be3002",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_audio.py": "de72762d6a42d7918d72211a40bd9df142ec7b622d77f43f72d5733fc50b8182",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_baselines.py": "98caf682d563f0b58dfdb7b95b873884547d1e3599b61e2c176ea97463b7653b",
+    "projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py": "a0674152e4a89b8f43393840fd1fc724ee0788fedef0238086022c5146ae759f",
+    "projects/138k/push2_workstation/usb_a/sim/test_stage_usb_firmware.py": "2d74282915b35c754d05819918fe00d877f9889b5cb504d71f7e154a6c5f0725",
+    "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_volume.sv": "06688b6a053d94a6aa9f901c8e70635deac1e4f8e2cb1237105a90d9cb05da2b",
+    "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_fpc_audio.sv": "db59dc1e88746c3f4cfd20da41c2e50b1089670772d1c6074bca278039500c25",
+    "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_lcd.sv": "f774effa935b82687d58c3df5aaa4c664e7629845f457aca34b47c6ddbe9b5c3",
+    "projects/138k/push2_workstation/usb_a/sim/architecture/test_workstation_composition.py": "da3dbf8bf99c7536e1a2ac87273678081a45916961055275703d28b260e08ebb",
+    "projects/138k/push2_workstation/usb_a/sim/architecture/test_workstation_build_options.py": "425e950f3e62383b40d55bc3d7207bbab04abec61998caa041724bad2f5773a0",
+    "projects/25k/example/MIDI_KEYBOARD/sim/tb_gw138k_panel_controls.v": "d12f1fd2ba2d7f87d6222cd570629936fe734aadb5f95df725c861751fb63d0e"
+  },
+  "clean_prepare_temporary_directory_policy": "TMPDIR on disk after clone checkout failed on tmpfs; no test or baseline weakened",
+  "limitations": [
+    "default-volume HS/FS audio regression plus separate final-I2S master-volume execution and netlist audits, not physical board end-to-end",
+    "ideal PLL and USB peer models, bounded delay memory model, not physical IO or DDR controller validation",
+    "BLE capture limited to 16384 stereo frames, boot_id reuse remains",
+    "HDMI waveform tap remains before FPC master gain",
+    "mode D, long DDR recording, Wi-Fi network service and LCD touch excluded"
+  ],
+  "board_operations_performed": false,
+  "sram_deployed": false,
+  "flash_written": false,
+  "bitstream_sha256": null,
+  "place_route_allowed": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "hardware_tested": false,
+  "electrical_blocked": true
+}

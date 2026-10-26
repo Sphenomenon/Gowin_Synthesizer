@@ -4,7 +4,8 @@
 // stable before read_valid_o can assert in the destination domain.
 module music_async_fifo #(
     parameter integer WIDTH=309,
-    parameter integer ADDRESS_BITS=4
+    parameter integer ADDRESS_BITS=4,
+    parameter RAM_STYLE="distributed_ram"
 )(
     input  logic write_clk_i,write_rst_ni,
     input  logic write_valid_i,
@@ -36,8 +37,8 @@ module music_async_fifo #(
         logic full_q;
         logic [WIDTH-1:0] even_q,odd_q;
         logic head_odd;
-        logic [WIDTH-1:0] even_memory[0:(1<<(ADDRESS_BITS-1))-1] /* synthesis syn_ramstyle="distributed_ram" */;
-        logic [WIDTH-1:0] odd_memory[0:(1<<(ADDRESS_BITS-1))-1] /* synthesis syn_ramstyle="distributed_ram" */;
+        (* syn_ramstyle=RAM_STYLE *) logic [WIDTH-1:0] even_memory[0:(1<<(ADDRESS_BITS-1))-1];
+        (* syn_ramstyle=RAM_STYLE *) logic [WIDTH-1:0] odd_memory[0:(1<<(ADDRESS_BITS-1))-1];
         wire [ADDRESS_BITS-2:0] even_address=read_binary[ADDRESS_BITS-1:1]+read_binary[0];
         assign write_ready_o=!full_q;
         assign read_data_o=head_odd ? odd_q : even_q;

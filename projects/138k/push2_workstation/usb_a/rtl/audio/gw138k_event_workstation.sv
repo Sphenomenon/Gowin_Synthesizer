@@ -6,6 +6,7 @@
 module gw138k_event_workstation #(
     parameter integer SAMPLE_RATE_HZ=48000,
     parameter bit TIMING_OPTIMIZED=0,
+    parameter bit EXTERNAL_MASTER_VOLUME=0,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600
 ) (
@@ -35,6 +36,7 @@ module gw138k_event_workstation #(
     output logic [31:0] deadline_miss_o, midi_overflow_o, note_drop_o,
     output logic clip_o,
     output logic [15:0] synth_gain_o, pcm_gain_o,
+    output wire [15:0] master_volume_o,
     output logic [1:0] route_o,
     output wire [2:0] profile_o,
     output wire [2:0] effect_mask_o,
@@ -87,6 +89,7 @@ module gw138k_event_workstation #(
   logic [1:0] requested_mode;
   logic mode_pending, mode_ready, mode_valid;
   logic [15:0] volume, expression_gain;
+  assign master_volume_o=volume;
   logic [21:0] target_ratio;
   logic [15:0] glide_step;
   logic [6:0] vibrato_depth, glide_cc;
@@ -296,7 +299,7 @@ module gw138k_event_workstation #(
       .clk_i,.rst_ni,.clear_i(panic_accept),.valid_i(effects_valid),.synth_i(panic_muted?32'sd0:held_synth),
       .vector_left_i(panic_muted?32'sd0:held_vec_l),.vector_right_i(panic_muted?32'sd0:held_vec_r),
       .pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),
-      .synth_gain_i(synth_gain_o),.pcm_gain_i(pcm_gain_o),.effect_mask_i(effect_mask_o),.effect_order_i(effect_order_o),
+      .synth_gain_i(EXTERNAL_MASTER_VOLUME ? expression_gain : synth_gain_o),.pcm_gain_i(pcm_gain_o),.effect_mask_i(effect_mask_o),.effect_order_i(effect_order_o),
       .ready_o(fx_ready),.valid_o(sample_valid_o),.left_o(effect_left),.right_o(effect_right),.clip_o(fx_clip),
       .mem_clk_i(delay_mem_clk_i),.mem_rst_ni(delay_mem_rst_ni),
       .dwr_valid_o(delay_dwr_valid_o),.dwr_data_o(delay_dwr_data_o),.dwr_pop_i(delay_dwr_pop_i),

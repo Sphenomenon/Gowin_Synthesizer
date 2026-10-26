@@ -1,0 +1,1318 @@
+{
+  "schema_version": 1,
+  "identity": "custom_138k_usb2_20261022_pinout_v2_native_ble_v1_workstation_peripherals_v1",
+  "device": "GW5AST-LV138PG484AC2/I1",
+  "validation_stage": "offline_pinout_only",
+  "source_policy": "explicit_custom_board_pinout",
+  "synthesis_allowed": false,
+  "hardware_accepted": false,
+  "sram_deployed": false,
+  "flash_deployed": false,
+  "bitstream_sha256": null,
+  "ports": {
+    "clk_50m": {
+      "balls": [
+        "V22"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[0]": {
+      "balls": [
+        "M1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[10]": {
+      "balls": [
+        "L1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[11]": {
+      "balls": [
+        "H3"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[12]": {
+      "balls": [
+        "K4"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[13]": {
+      "balls": [
+        "K1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[14]": {
+      "balls": [
+        "D1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[1]": {
+      "balls": [
+        "K2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[2]": {
+      "balls": [
+        "G2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[3]": {
+      "balls": [
+        "J4"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[4]": {
+      "balls": [
+        "J2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[5]": {
+      "balls": [
+        "H2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[6]": {
+      "balls": [
+        "G3"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[7]": {
+      "balls": [
+        "J1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[8]": {
+      "balls": [
+        "J5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_addr[9]": {
+      "balls": [
+        "H5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_bank[0]": {
+      "balls": [
+        "P5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_bank[1]": {
+      "balls": [
+        "P2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_bank[2]": {
+      "balls": [
+        "M6"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_cas": {
+      "balls": [
+        "L4"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_ck": {
+      "balls": [
+        "L3",
+        "K3"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_cke": {
+      "balls": [
+        "K6"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_cs": {
+      "balls": [
+        "P4"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dm[0]": {
+      "balls": [
+        "AA4"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dm[1]": {
+      "balls": [
+        "V7"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dm[2]": {
+      "balls": [
+        "T6"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dm[3]": {
+      "balls": [
+        "W1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[0]": {
+      "balls": [
+        "Y4"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[10]": {
+      "balls": [
+        "AB7"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[11]": {
+      "balls": [
+        "Y7"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[12]": {
+      "balls": [
+        "AB8"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[13]": {
+      "balls": [
+        "W9"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[14]": {
+      "balls": [
+        "AB6"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[15]": {
+      "balls": [
+        "Y9"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[16]": {
+      "balls": [
+        "U5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[17]": {
+      "balls": [
+        "R6"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[18]": {
+      "balls": [
+        "U6"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[19]": {
+      "balls": [
+        "R4"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[1]": {
+      "balls": [
+        "AB3"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[20]": {
+      "balls": [
+        "Y6"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[21]": {
+      "balls": [
+        "T4"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[22]": {
+      "balls": [
+        "V5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[23]": {
+      "balls": [
+        "T5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[24]": {
+      "balls": [
+        "W2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[25]": {
+      "balls": [
+        "Y1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[26]": {
+      "balls": [
+        "T1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[27]": {
+      "balls": [
+        "U3"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[28]": {
+      "balls": [
+        "U2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[29]": {
+      "balls": [
+        "V2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[2]": {
+      "balls": [
+        "AA5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[30]": {
+      "balls": [
+        "U1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[31]": {
+      "balls": [
+        "Y2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[3]": {
+      "balls": [
+        "V4"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[4]": {
+      "balls": [
+        "AA1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[5]": {
+      "balls": [
+        "AB2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[6]": {
+      "balls": [
+        "AB5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[7]": {
+      "balls": [
+        "AB1"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[8]": {
+      "balls": [
+        "AA8"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dq[9]": {
+      "balls": [
+        "Y8"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dqs[0]": {
+      "balls": [
+        "Y3",
+        "AA3"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dqs[1]": {
+      "balls": [
+        "V9",
+        "V8"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dqs[2]": {
+      "balls": [
+        "W6",
+        "W5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_dqs[3]": {
+      "balls": [
+        "R3",
+        "R2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_odt": {
+      "balls": [
+        "M2"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_ras": {
+      "balls": [
+        "L5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_reset_n": {
+      "balls": [
+        "L6"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "ddr_we": {
+      "balls": [
+        "M5"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "debug_uart_tx": {
+      "balls": [
+        "U15"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "pc_uart_rx_i": {
+      "balls": [
+        "V14"
+      ],
+      "origin": "unchanged_locked_core"
+    },
+    "hp_bck": {
+      "balls": [
+        "A13"
+      ],
+      "origin": "reviewed_audio_fpc_reversed_25_minus_n"
+    },
+    "hp_ws": {
+      "balls": [
+        "B15"
+      ],
+      "origin": "reviewed_audio_fpc_reversed_25_minus_n"
+    },
+    "hp_din": {
+      "balls": [
+        "A14"
+      ],
+      "origin": "reviewed_audio_fpc_reversed_25_minus_n"
+    },
+    "dac_mclk": {
+      "balls": [
+        "B13"
+      ],
+      "origin": "reviewed_audio_fpc_reversed_25_minus_n"
+    },
+    "dac_pdn_n": {
+      "balls": [
+        "C13"
+      ],
+      "origin": "reviewed_audio_fpc_reversed_25_minus_n"
+    },
+    "dac_sslow": {
+      "balls": [
+        "B16"
+      ],
+      "origin": "reviewed_audio_fpc_reversed_25_minus_n"
+    },
+    "dac_smute": {
+      "balls": [
+        "A15"
+      ],
+      "origin": "reviewed_audio_fpc_reversed_25_minus_n"
+    },
+    "dac_sd": {
+      "balls": [
+        "A16"
+      ],
+      "origin": "reviewed_audio_fpc_reversed_25_minus_n"
+    },
+    "dac_slow": {
+      "balls": [
+        "D17"
+      ],
+      "origin": "reviewed_audio_fpc_reversed_25_minus_n"
+    },
+    "amp_fpga_det": {
+      "balls": [
+        "C17"
+      ],
+      "origin": "reviewed_audio_fpc_reversed_25_minus_n"
+    },
+    "usb2_ulpi_data[0]": {
+      "balls": [
+        "A21"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_data[1]": {
+      "balls": [
+        "B21"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_data[2]": {
+      "balls": [
+        "A20"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_data[3]": {
+      "balls": [
+        "B20"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_data[4]": {
+      "balls": [
+        "A19"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_data[5]": {
+      "balls": [
+        "A18"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_data[6]": {
+      "balls": [
+        "B18"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_data[7]": {
+      "balls": [
+        "B17"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_clk": {
+      "balls": [
+        "C18"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_dir": {
+      "balls": [
+        "F16"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_nxt": {
+      "balls": [
+        "D16"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "usb2_ulpi_stp": {
+      "balls": [
+        "E17"
+      ],
+      "origin": "usb2_ulpi_level_shifter"
+    },
+    "sd_miso": {
+      "balls": [
+        "AA15"
+      ],
+      "origin": "tf_card_spi"
+    },
+    "sd_mosi": {
+      "balls": [
+        "W14"
+      ],
+      "origin": "tf_card_spi"
+    },
+    "sd_sck": {
+      "balls": [
+        "V15"
+      ],
+      "origin": "tf_card_spi"
+    },
+    "sd_cs_n": {
+      "balls": [
+        "W15"
+      ],
+      "origin": "tf_card_spi"
+    },
+    "tmds_data_p[0]": {
+      "balls": [
+        "J14",
+        "H14"
+      ],
+      "origin": "native_differential_pair"
+    },
+    "tmds_data_p[1]": {
+      "balls": [
+        "J15",
+        "H15"
+      ],
+      "origin": "native_differential_pair"
+    },
+    "tmds_data_p[2]": {
+      "balls": [
+        "K17",
+        "J17"
+      ],
+      "origin": "native_differential_pair"
+    },
+    "tmds_clk_p": {
+      "balls": [
+        "G15",
+        "G16"
+      ],
+      "origin": "native_differential_pair"
+    },
+    "hdmi_hpd": {
+      "balls": [
+        "K13"
+      ],
+      "origin": "carrier_control"
+    },
+    "hdmi_cec": {
+      "balls": [
+        "K14"
+      ],
+      "origin": "carrier_control"
+    },
+    "ble_uart_tx_o": {
+      "balls": [
+        "T14"
+      ],
+      "origin": "reviewed_core_connector_bluetooth"
+    },
+    "ble_uart_rx_i": {
+      "balls": [
+        "W12"
+      ],
+      "origin": "reviewed_core_connector_bluetooth"
+    },
+    "ble_bt_dis_n": {
+      "balls": [
+        "AA9"
+      ],
+      "origin": "reviewed_core_connector_bluetooth"
+    },
+    "ble_wl_dis_n": {
+      "balls": [
+        "AA13"
+      ],
+      "origin": "reviewed_core_connector_bluetooth"
+    },
+    "clk_12m288": {
+      "balls": [
+        "K18"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_r[0]": {
+      "balls": [
+        "N22"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_r[1]": {
+      "balls": [
+        "M22"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_r[2]": {
+      "balls": [
+        "M21"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_r[3]": {
+      "balls": [
+        "L21"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_r[4]": {
+      "balls": [
+        "L19"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_g[0]": {
+      "balls": [
+        "L20"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_g[1]": {
+      "balls": [
+        "K21"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_g[2]": {
+      "balls": [
+        "K22"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_g[3]": {
+      "balls": [
+        "J22"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_g[4]": {
+      "balls": [
+        "H22"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_g[5]": {
+      "balls": [
+        "J20"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_b[0]": {
+      "balls": [
+        "J21"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_b[1]": {
+      "balls": [
+        "G17"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_b[2]": {
+      "balls": [
+        "G18"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_b[3]": {
+      "balls": [
+        "G21"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_b[4]": {
+      "balls": [
+        "G22"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_pclk": {
+      "balls": [
+        "F18"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_hsync": {
+      "balls": [
+        "E18"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_vsync": {
+      "balls": [
+        "C22"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_de": {
+      "balls": [
+        "B22"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    },
+    "lcd_bl": {
+      "balls": [
+        "F21"
+      ],
+      "origin": "reviewed_remote_peripheral"
+    }
+  },
+  "unchanged_core_constraints": [
+    "IO_LOC \"debug_uart_tx\" U15;",
+    "IO_PORT \"debug_uart_tx\" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;",
+    "IO_LOC \"clk_50m\" V22;",
+    "IO_PORT \"clk_50m\" IO_TYPE=LVCMOS33 PULL_MODE=NONE;",
+    "IO_LOC  \"ddr_bank[2]\"   M6;",
+    "IO_PORT \"ddr_bank[2]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_bank[1]\"   P2;",
+    "IO_PORT \"ddr_bank[1]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_bank[0]\"   P5;",
+    "IO_PORT \"ddr_bank[0]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[14]\"  D1;",
+    "IO_PORT \"ddr_addr[14]\"  IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[13]\"  K1;",
+    "IO_PORT \"ddr_addr[13]\"  IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[12]\"  K4;",
+    "IO_PORT \"ddr_addr[12]\"  IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[11]\"  H3;",
+    "IO_PORT \"ddr_addr[11]\"  IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[10]\"  L1;",
+    "IO_PORT \"ddr_addr[10]\"  IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[9]\"   H5;",
+    "IO_PORT \"ddr_addr[9]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[8]\"   J5;",
+    "IO_PORT \"ddr_addr[8]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[7]\"   J1;",
+    "IO_PORT \"ddr_addr[7]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[6]\"   G3;",
+    "IO_PORT \"ddr_addr[6]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[5]\"   H2;",
+    "IO_PORT \"ddr_addr[5]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[4]\"   J2;",
+    "IO_PORT \"ddr_addr[4]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[3]\"   J4;",
+    "IO_PORT \"ddr_addr[3]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[2]\"   G2;",
+    "IO_PORT \"ddr_addr[2]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[1]\"   K2;",
+    "IO_PORT \"ddr_addr[1]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_addr[0]\"   M1;",
+    "IO_PORT \"ddr_addr[0]\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_odt\"       M2;",
+    "IO_PORT \"ddr_odt\"       IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_cke\"       K6;",
+    "IO_PORT \"ddr_cke\"       IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_we\"        M5;",
+    "IO_PORT \"ddr_we\"        IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_cas\"       L4;",
+    "IO_PORT \"ddr_cas\"       IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_ras\"       L5;",
+    "IO_PORT \"ddr_ras\"       IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_cs\"        P4;",
+    "IO_PORT \"ddr_cs\"        IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_reset_n\"   L6;",
+    "IO_PORT \"ddr_reset_n\"   IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_ck\"        L3,K3;",
+    "IO_PORT \"ddr_ck\"        IO_TYPE=SSTL15D PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dm[3]\"     W1;",
+    "IO_PORT \"ddr_dm[3]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dm[2]\"     T6;",
+    "IO_PORT \"ddr_dm[2]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dm[1]\"     V7;",
+    "IO_PORT \"ddr_dm[1]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dm[0]\"     AA4;",
+    "IO_PORT \"ddr_dm[0]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[31]\"    Y2;",
+    "IO_PORT \"ddr_dq[31]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[30]\"    U1;",
+    "IO_PORT \"ddr_dq[30]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[29]\"    V2;",
+    "IO_PORT \"ddr_dq[29]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[28]\"    U2;",
+    "IO_PORT \"ddr_dq[28]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[27]\"    U3;",
+    "IO_PORT \"ddr_dq[27]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[26]\"    T1;",
+    "IO_PORT \"ddr_dq[26]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[25]\"    Y1;",
+    "IO_PORT \"ddr_dq[25]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[24]\"    W2;",
+    "IO_PORT \"ddr_dq[24]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[23]\"    T5;",
+    "IO_PORT \"ddr_dq[23]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[22]\"    V5;",
+    "IO_PORT \"ddr_dq[22]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[21]\"    T4;",
+    "IO_PORT \"ddr_dq[21]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[20]\"    Y6;",
+    "IO_PORT \"ddr_dq[20]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[19]\"    R4;",
+    "IO_PORT \"ddr_dq[19]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[18]\"    U6;",
+    "IO_PORT \"ddr_dq[18]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[17]\"    R6;",
+    "IO_PORT \"ddr_dq[17]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[16]\"    U5;",
+    "IO_PORT \"ddr_dq[16]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[15]\"    Y9;",
+    "IO_PORT \"ddr_dq[15]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[14]\"    AB6;",
+    "IO_PORT \"ddr_dq[14]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[13]\"    W9;",
+    "IO_PORT \"ddr_dq[13]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[12]\"    AB8;",
+    "IO_PORT \"ddr_dq[12]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[11]\"    Y7;",
+    "IO_PORT \"ddr_dq[11]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[10]\"    AB7;",
+    "IO_PORT \"ddr_dq[10]\"    IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[9]\"     Y8;",
+    "IO_PORT \"ddr_dq[9]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[8]\"     AA8;",
+    "IO_PORT \"ddr_dq[8]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[7]\"     AB1;",
+    "IO_PORT \"ddr_dq[7]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[6]\"     AB5;",
+    "IO_PORT \"ddr_dq[6]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[5]\"     AB2;",
+    "IO_PORT \"ddr_dq[5]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[4]\"     AA1;",
+    "IO_PORT \"ddr_dq[4]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[3]\"     V4;",
+    "IO_PORT \"ddr_dq[3]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[2]\"     AA5;",
+    "IO_PORT \"ddr_dq[2]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[1]\"     AB3;",
+    "IO_PORT \"ddr_dq[1]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dq[0]\"     Y4;",
+    "IO_PORT \"ddr_dq[0]\"     IO_TYPE=SSTL15 PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dqs[3]\"    R3,R2;",
+    "IO_PORT \"ddr_dqs[3]\"    IO_TYPE=SSTL15D PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dqs[2]\"    W6,W5;",
+    "IO_PORT \"ddr_dqs[2]\"    IO_TYPE=SSTL15D PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dqs[1]\"    V9,V8;",
+    "IO_PORT \"ddr_dqs[1]\"    IO_TYPE=SSTL15D PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC  \"ddr_dqs[0]\"    Y3,AA3;",
+    "IO_PORT \"ddr_dqs[0]\"    IO_TYPE=SSTL15D PULL_MODE=NONE DRIVE=8 BANK_VCCIO=1.5;",
+    "IO_LOC \"pc_uart_rx_i\" V14;",
+    "IO_PORT \"pc_uart_rx_i\" IO_TYPE=LVCMOS33 PULL_MODE=UP;"
+  ],
+  "hdmi_polarity": [
+    {
+      "port": "tmds_data_p[0]",
+      "native_balls": [
+        "J14",
+        "H14"
+      ],
+      "invert_serialized_lane": true,
+      "implemented": false
+    },
+    {
+      "port": "tmds_data_p[1]",
+      "native_balls": [
+        "J15",
+        "H15"
+      ],
+      "invert_serialized_lane": true,
+      "implemented": false
+    },
+    {
+      "port": "tmds_data_p[2]",
+      "native_balls": [
+        "K17",
+        "J17"
+      ],
+      "invert_serialized_lane": true,
+      "implemented": false
+    },
+    {
+      "port": "tmds_clk_p",
+      "native_balls": [
+        "G15",
+        "G16"
+      ],
+      "invert_serialized_lane": true,
+      "implemented": false
+    }
+  ],
+  "bluetooth_cable": [
+    {
+      "signal": "UART_RX",
+      "carrier_pin": 5,
+      "module_pin": 20,
+      "module_node": "U2.43",
+      "carrier_network": "BANK5_T14"
+    },
+    {
+      "signal": "UART_TX",
+      "carrier_pin": 6,
+      "module_pin": 19,
+      "module_node": "U2.42",
+      "carrier_network": "UART_TX"
+    },
+    {
+      "signal": "BT_DIS#",
+      "carrier_pin": 7,
+      "module_pin": 18,
+      "module_node": "U2.34",
+      "carrier_network": "BT_DIS#"
+    },
+    {
+      "signal": "PCM_SYNC",
+      "carrier_pin": 8,
+      "module_pin": 17,
+      "module_node": "U2.28",
+      "carrier_network": "PCM_SYNC"
+    },
+    {
+      "signal": "PCM_IN",
+      "carrier_pin": 9,
+      "module_pin": 16,
+      "module_node": "U2.27",
+      "carrier_network": "PCM_IN"
+    },
+    {
+      "signal": "PCM_CLK",
+      "carrier_pin": 10,
+      "module_pin": 15,
+      "module_node": "U2.26",
+      "carrier_network": "PCM_CLK"
+    },
+    {
+      "signal": "PCM_OUT",
+      "carrier_pin": 11,
+      "module_pin": 14,
+      "module_node": "U2.25",
+      "carrier_network": "PCM_OUT"
+    },
+    {
+      "signal": "SD_D2",
+      "carrier_pin": 12,
+      "module_pin": 13,
+      "module_node": "U2.14",
+      "carrier_network": "SD_D2"
+    },
+    {
+      "signal": "SD_D3",
+      "carrier_pin": 13,
+      "module_pin": 12,
+      "module_node": "U2.15",
+      "carrier_network": "SD_D3"
+    },
+    {
+      "signal": "SD_CMD",
+      "carrier_pin": 14,
+      "module_pin": 11,
+      "module_node": "U2.16",
+      "carrier_network": "SD_CMD"
+    },
+    {
+      "signal": "SD_CLK",
+      "carrier_pin": 15,
+      "module_pin": 10,
+      "module_node": "U2.17",
+      "carrier_network": "SD_CLK"
+    },
+    {
+      "signal": "SD_D0",
+      "carrier_pin": 16,
+      "module_pin": 9,
+      "module_node": "U2.18",
+      "carrier_network": "SD_D0"
+    },
+    {
+      "signal": "SD_D1",
+      "carrier_pin": 17,
+      "module_pin": 8,
+      "module_node": "U2.19",
+      "carrier_network": "SD_D1"
+    },
+    {
+      "signal": "BT_HOST_WAKE_DEV",
+      "carrier_pin": 18,
+      "module_pin": 7,
+      "module_node": "U2.6",
+      "carrier_network": "BT_HOST_WAKE_DEV"
+    },
+    {
+      "signal": "WL_DIS#",
+      "carrier_pin": 19,
+      "module_pin": 6,
+      "module_node": "U2.12",
+      "carrier_network": "WL_DIS#"
+    }
+  ],
+  "reserved_balls": {
+    "U16.2": "AB15",
+    "U16.3": "Y16",
+    "R24.2": "J19",
+    "SW1.1": "U9",
+    "SW1.2": "U10",
+    "SW1.3": "U11",
+    "SW1.5": "V13",
+    "U13.1": "V12",
+    "U13.3": "U13",
+    "U13.5": "T13",
+    "U13.9": "R13",
+    "J2.38": "U8"
+  },
+  "retired_ports": [
+    "usb1_dp",
+    "usb1_dn",
+    "pa_en",
+    "hdmi_tx_en",
+    "button1_n",
+    "midi_rx_i"
+  ],
+  "assumptions": {
+    "audio_cable": "carrier FPC2.n -> amplifier FPC1.(25-n); remote reviewed bring-up mapping",
+    "audio_resistor_arrays": "RN1/RN2 isolated pairs 1-8, 2-7, 3-6, 4-5; internal pairing not independently confirmed",
+    "bluetooth_cable": "carrier FPC3.n -> bluetooth FPC1.(25-n); required by matching signal names, continuity not measured",
+    "core": "same 30354 core module and voltage configuration as reference; electrical compatibility not accepted"
+  },
+  "electrical_check": {
+    "status": "blocked",
+    "scope": "USB3300 and translator nominal logic voltage domains only",
+    "actual_board_measured": false,
+    "full_electrical_acceptance": false,
+    "translators": [
+      {
+        "part": "U4",
+        "phy_side": "A",
+        "supply_node": "U4.2",
+        "supply_network": "VDD_1V8",
+        "nominal_mv": 1800
+      },
+      {
+        "part": "U5",
+        "phy_side": "A",
+        "supply_node": "U5.1",
+        "supply_network": "VDD_1V8",
+        "nominal_mv": 1800
+      }
+    ],
+    "findings": [
+      {
+        "code": "ULPI_PHY_OUTPUT_DOMAIN",
+        "part": "U4",
+        "node": "U4.2",
+        "translator_input_high_max_mv": 1800,
+        "phy_output_supply_min_mv": 3000,
+        "phy_output_high_min_mv": 2600,
+        "message": "USB3300 output high is outside the translator A-side recommended input range"
+      },
+      {
+        "code": "ULPI_PHY_OUTPUT_DOMAIN",
+        "part": "U5",
+        "node": "U5.1",
+        "translator_input_high_max_mv": 1800,
+        "phy_output_supply_min_mv": 3000,
+        "phy_output_high_min_mv": 2600,
+        "message": "USB3300 output high is outside the translator A-side recommended input range"
+      },
+      {
+        "code": "ULPI_STP_HIGH_LEVEL",
+        "part": "U5",
+        "driver_node": "U5.3",
+        "receiver_node": "U2.13",
+        "driver_supply_mv": 1800,
+        "receiver_vih_min_mv": 2000,
+        "message": "Translator PHY-side supply is below USB3300 minimum valid high input"
+      }
+    ]
+  },
+  "electrical_evidence": {
+    "model_basis": "Existing supplementary schematic, not the netlist package values or an observation of the assembled board",
+    "schematic": "ProPrj_138K（这个有效）_2026-10-16.epro2/138K（这个有效）.epru",
+    "schematic_sha256": "c714cacea6ca2b6dc400c8e22a851f9e0b644303968b76dde492c7f4b043e19b",
+    "component_models": {
+      "U2": "USB3300-EZK",
+      "U4": "TXS0108EPWR",
+      "U5": "TXS0104EPWR"
+    },
+    "datasheets": {
+      "USB3300": {
+        "document": "Microchip DS00001783C, page 12, Table 5-3",
+        "sha256": "33e73e37f5110cb9e3ef66ccf8c7fdd4a16593c7b1afcff0c5df523e41963a9e"
+      },
+      "TXS0108E": {
+        "document": "Texas Instruments SCES642L, section 5.3",
+        "sha256": "a6ddbe03088d291d1a1f8012189086b4b9962d1c878a462a8393c59fe225c883"
+      },
+      "TXS0104E": {
+        "document": "Texas Instruments SCES651K, page 9, section 6.3",
+        "sha256": "88295316d8d520f1b967af2ce9c7dc4b7491c1e647968728b9690c6514fb7b41"
+      }
+    }
+  },
+  "implementation_gaps": [
+    "USB3300 ULPI logic is connected to the 1.8 V A-side of U4/U5: STP cannot meet the 2.0 V VIH minimum and PHY outputs exceed the translator A-side recommended input range; schematic-based deployment blocker, actual assembly not measured",
+    "Native custom-board top-level ports, reset policy and complete IO electrical constraints are not implemented",
+    "USB2 ULPI Host transport, 48/60 MHz domain transfer and PHY recovery are not implemented",
+    "DAC identity, serial format, MCLK and power/mute sequencing are not verified or implemented",
+    "All four serialized TMDS lanes require polarity compensation before their native differential buffers",
+    "K14 is CEC, not the old transmitter-enable output; open-drain handling is not implemented",
+    "Audio cable and resistor-array pairing and Bluetooth cable continuity remain explicit assumptions",
+    "New routed timing, CDC, PLL, functional and physical hardware acceptance are required"
+  ],
+  "source_baseline": {
+    "name": "accepted_full83",
+    "manifest": "projects/138k/push2_workstation/usb_a/baselines/accepted_full83.json",
+    "manifest_sha256": "9bc6482b5885b9bc635d5089589e62aad6adf182a1822e2945a54be024c12717",
+    "origin": {
+      "build": "results/song_guide_full83_20261006_203125_607466",
+      "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/accepted_full83.inputs.json",
+      "input_manifest_sha256": "a8caece577521b28196175f25d468ec7845d12a2f0fe29c6cbadfa246e67de28"
+    },
+    "source_files": 414,
+    "excluded_files": 180
+  },
+  "source_inputs": {
+    "carrier": {
+      "filename": "Netlist_my_138k_2026-10-21.tel",
+      "sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121",
+      "networks": 185,
+      "nodes": 737
+    },
+    "amplifier": {
+      "filename": "功放.tel",
+      "sha256": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75",
+      "networks": 100,
+      "nodes": 492
+    },
+    "bluetooth": {
+      "filename": "蓝牙.tel",
+      "sha256": "832e1eae56a744f8535899f57caea097f51419e2eb210186a492c182e5091eb2",
+      "networks": 21,
+      "nodes": 88
+    }
+  },
+  "core_constraints_sha256": "9004791f6a568dbce950b4a2d55c51c9c88647e6fe333ec3ca51faf2fbac1bc0",
+  "recipe_inputs": {
+    "boards/custom_138k/pinout.json": "2213484d9472d192f877beb6323f13b79bc3b832f6f45f71fb968f8c70f802ae",
+    "tools/workstation_pinout.py": "2a86e6c788d2d38db66f7b5e745a2f67a1a1249f3eab0a6a09f55f93ec33e734",
+    "tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+    "build.py": "5cc87db25de40674899f6af2f7f4cbc192a410490d63a527e3e2ece4a983c14e"
+  },
+  "constraints_sha256": "a47e228ce5b092f24909b82745430100f8a7855b4827b108daff400a2c1e351e",
+  "bluetooth_mapping": {
+    "identity": "custom138k-bluetooth-20261023-v1",
+    "core_schematic": "tang_mega_138k_30354_Schematics..pdf, page 6, C2400",
+    "core_schematic_sha256": "326c45a7ae05e990d5f885fba6ec9b589d966941aa3c00f7d43122d99c068af7",
+    "connector_numbering": "J2.1..50 = C2400.1,3,..99; J2.51..100 = C2400.100,98,..2",
+    "anchors": {
+      "J2.2": "BANK4_Y22",
+      "J2.3": "BANK4_Y21",
+      "J2.56": "BANK5_T14",
+      "J2.57": "DIP_SWITCH_0_BANK5_V13",
+      "J2.77": "BANK5_W14",
+      "J2.78": "BANK5_V15",
+      "J2.79": "BANK5_W15",
+      "J2.100": "BANK4_W22"
+    },
+    "ports": {
+      "ble_uart_tx_o": {
+        "ball": "T14",
+        "carrier_pin": 5,
+        "connector": 56,
+        "core_pin": 90,
+        "module_node": "U2.43",
+        "signal": "UART_RX"
+      },
+      "ble_uart_rx_i": {
+        "ball": "W12",
+        "carrier_pin": 6,
+        "connector": 58,
+        "core_pin": 86,
+        "module_node": "U2.42",
+        "signal": "UART_TX"
+      },
+      "ble_bt_dis_n": {
+        "ball": "AA9",
+        "carrier_pin": 7,
+        "connector": 59,
+        "core_pin": 84,
+        "module_node": "U2.34",
+        "signal": "BT_DIS#"
+      },
+      "ble_wl_dis_n": {
+        "ball": "AA13",
+        "carrier_pin": 19,
+        "connector": 71,
+        "core_pin": 60,
+        "module_node": "U2.12",
+        "signal": "WL_DIS#"
+      }
+    }
+  },
+  "peripherals": {
+    "schema": 1,
+    "identity": "custom138k-workstation-peripherals-20261024-v1",
+    "remote_main_revision": "e528073e2ae8763ecfcf2e10761f88cb9b0ca223",
+    "remote_business_revision": "f2bae2dab3fbeb0ce5f55bbd555a3a29c76bb9c8",
+    "reviewed_sources": {
+      "example/AK4493_AMP/constraints/audio.cst": "4bd27f25a384514303762e6140815e6f192a7088455bc7a36105cef8190d9844",
+      "example/AK4493_AMP/rtl/ak4493_pin_test.v": "d6c73227827cf252e868188a59cc49f9747ffe858ef852e25fb82f2c62bc5f28",
+      "example/LCD_RGB/constraints/lcd.cst": "3503323ae5c6f21ec3b39bf1ca7b0ccd122d8d2ce75aeb85f7b66def4e242c6a",
+      "example/LCD_RGB/rtl/lcd_scan.v": "cbe1e1b73e578b6f2cd3df2071130b6e9b4c449c35c267bdece5341094b06f94",
+      "example/LCD_RGB/rtl/lcd_pll.v": "7ce420aeb5c01a033d14a91137582bf76c49ec6d05d1f9461fe710aeb38ffaf7",
+      "example/CLOCK_MEASURE/reports/measurement.json": "53873dcb8d3161af9b5c79b4805601f338ebe7ce9cf5664a9a7f913703eafff2"
+    },
+    "audio_aliases": {
+      "ak_pdn": "dac_pdn_n",
+      "ak_mclk": "dac_mclk",
+      "ak_bick": "hp_bck",
+      "ak_sdata": "hp_din",
+      "ak_lrck": "hp_ws",
+      "ak_sslow": "dac_sslow",
+      "ak_smute": "dac_smute",
+      "ak_sd": "dac_sd",
+      "ak_slow": "dac_slow",
+      "plug_det": "amp_fpga_det"
+    },
+    "included": [
+      "usb2_push_or_25k",
+      "abc_synthesis",
+      "vector",
+      "effects",
+      "tf_wav",
+      "recognition",
+      "hdmi",
+      "lcd_performance",
+      "ak4493_master_volume",
+      "ble_business_second40"
+    ],
+    "excluded": [
+      "mode_d",
+      "long_ddr_recording",
+      "wifi_network_service",
+      "lcd_touch_input"
+    ],
+    "hardware_acceptance_inherited": false
+  }
+}

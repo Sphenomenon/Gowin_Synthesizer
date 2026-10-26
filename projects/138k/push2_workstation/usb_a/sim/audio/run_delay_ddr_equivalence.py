@@ -22,6 +22,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=BUILD)
     parser.add_argument('--project',type=Path,help='Bind delay DMA and FIFO sources to a staged full workstation')
+    parser.add_argument('--block-fifos',action='store_true',help='Select native banked BSRAM FIFO mapping in the reference comparison')
     args = parser.parse_args()
     project=args.project.resolve() if args.project else ROOT
     build = args.output.resolve()
@@ -47,6 +48,8 @@ def main():
         str(ref),
     ]
     inputs=[Path(x) for x in cmd if x.endswith('.sv')]
+    if args.block_fifos:
+        cmd.insert(1, '-DWORKSTATION_DELAY_BLOCK_FIFOS')
     (build/'inputs_sha256.json').write_text(json.dumps({str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs},indent=2)+'\n')
     result = subprocess.run(cmd)
     if result.returncode:

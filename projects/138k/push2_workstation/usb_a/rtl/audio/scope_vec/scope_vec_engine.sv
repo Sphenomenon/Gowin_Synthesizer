@@ -200,7 +200,7 @@ module scope_vec_engine #(
                             decay[j]<=adsr_rom[{event_profile_i,2'b00}+1];
                             sustain[j]<=adsr_rom[{event_profile_i,2'b00}+2];
                             release_step[j]<=adsr_rom[{event_profile_i,2'b00}+3];
-                            velocity[j]<=event_velocity_i==127 ? 16'd32767 : 16'(event_velocity_i*258+(event_velocity_i>=64));
+                            velocity[j]<={1'b0,event_velocity_i,event_velocity_i,event_velocity_i[6]};
                         end
                     end else for(j=0;j<VOICES;j=j+1) if(release_select[j]) env_state[j]<=RELEASE;
                 end

@@ -1,0 +1,1844 @@
+{
+  "schema": 1,
+  "identity": "custom138k-native-integration-20261024-a17",
+  "validation_stage": "native_full_profile_synthesis_only",
+  "top_module": "workstation_custom_138k_top",
+  "auditor_sha256": "17283438c219ec243ccee0da4eeceacf4f75f38779ab5fbd638c02198b6d3b83",
+  "integration_inputs_sha256": "0f426f7035d93f028c0eb2d22f36d85e546efc3afd98e1b1aa2233ea720faf0f",
+  "synthesis_log_sha256": "c79ef0853461183513f91fccadeb8bcb0e30257022df586a4f7c18ddee43aee4",
+  "netlist_sha256": "83bb875fc6432cbe1ee5a23eed6779ca0a9efad18cc87d43b8752d0a308612de",
+  "resource_report_sha256": "648cb2462f12c0ff4f98070a1b8577e4cf50f1ea288b241358dda19626491bad",
+  "source_snapshot_entries": 616,
+  "staged_inputs": 507,
+  "enabled_inputs": 230,
+  "port_coverage": {
+    "logical_location_entries": 127,
+    "physical_port_bits": 136,
+    "implicit_negative_partners": [
+      "ddr_ck_n",
+      "ddr_dqs_n[0]",
+      "ddr_dqs_n[1]",
+      "ddr_dqs_n[2]",
+      "ddr_dqs_n[3]",
+      "tmds_clk_n",
+      "tmds_data_n[0]",
+      "tmds_data_n[1]",
+      "tmds_data_n[2]"
+    ]
+  },
+  "resources": {
+    "Register": 56988,
+    "Lut": 78198,
+    "Alu": 15353,
+    "Bsram": 266,
+    "Ssram": 1459,
+    "MULTALU27X18": 46,
+    "MULT12X12": 42,
+    "MULT27X36": 45,
+    "self_bsram": 0,
+    "subtree_bsram": 266
+  },
+  "synthesis_bsram_equivalent": 266,
+  "bsram_capacity": 340,
+  "features": {
+    "usb_host": {
+      "instance": "u_native_usb/host",
+      "Register": 1910,
+      "Lut": 4301,
+      "Alu": 386,
+      "Bsram": 38,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 38
+    },
+    "push_surface": {
+      "instance": "u_native_usb/input_owner",
+      "Register": 1844,
+      "Lut": 4178,
+      "Alu": 487,
+      "Bsram": 1,
+      "Ssram": 82,
+      "MULTALU27X18": 0,
+      "MULT12X12": 2,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 1
+    },
+    "synthesizer": {
+      "instance": "u_managed/u_audio/u_workstation/engine",
+      "Register": 3076,
+      "Lut": 4112,
+      "Alu": 848,
+      "Bsram": 17,
+      "Ssram": 4,
+      "MULTALU27X18": 4,
+      "MULT12X12": 0,
+      "MULT27X36": 4,
+      "self_bsram": 8,
+      "subtree_bsram": 17
+    },
+    "vector_voices": {
+      "instance": "u_managed/u_audio/u_workstation/vector_engine",
+      "Register": 1732,
+      "Lut": 2768,
+      "Alu": 1609,
+      "Bsram": 10,
+      "Ssram": 0,
+      "MULTALU27X18": 14,
+      "MULT12X12": 1,
+      "MULT27X36": 9,
+      "self_bsram": 10,
+      "subtree_bsram": 10
+    },
+    "vector_control_events": {
+      "instance": "u_managed/u_audio/u_workstation/cue_player",
+      "Register": 98,
+      "Lut": 145,
+      "Alu": 69,
+      "Bsram": 1,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 1,
+      "subtree_bsram": 1
+    },
+    "scope_dac_selection": {
+      "instance": "u_tf_dac",
+      "Register": 139,
+      "Lut": 176,
+      "Alu": 33,
+      "Bsram": 0,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 1,
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "basic_pitch_pipeline": {
+      "instance": "u_music/u_basic_pitch",
+      "Register": 8147,
+      "Lut": 10260,
+      "Alu": 3137,
+      "Bsram": 23,
+      "Ssram": 152,
+      "MULTALU27X18": 19,
+      "MULT12X12": 36,
+      "MULT27X36": 19,
+      "self_bsram": 3,
+      "subtree_bsram": 23
+    },
+    "basic_pitch_ddr_port": {
+      "instance": "u_music/u_ddr16",
+      "Register": 22,
+      "Lut": 216,
+      "Alu": 0,
+      "Bsram": 0,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "serial_effects": {
+      "instance": "u_managed/u_audio/u_workstation/effects",
+      "Register": 3842,
+      "Lut": 5681,
+      "Alu": 1877,
+      "Bsram": 24,
+      "Ssram": 1088,
+      "MULTALU27X18": 1,
+      "MULT12X12": 0,
+      "MULT27X36": 10,
+      "self_bsram": 0,
+      "subtree_bsram": 24
+    },
+    "tf_spi_fat_reader": {
+      "instance": "u_tf_audio/u_path/u_file_reader",
+      "Register": 1197,
+      "Lut": 2422,
+      "Alu": 503,
+      "Bsram": 1,
+      "Ssram": 16,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 1,
+      "subtree_bsram": 1
+    },
+    "tf_capture_fifo": {
+      "instance": "u_tf_audio/u_path/u_capture_fifo",
+      "Register": 118,
+      "Lut": 157,
+      "Alu": 26,
+      "Bsram": 2,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 2,
+      "subtree_bsram": 2
+    },
+    "tf_playback_fifo": {
+      "instance": "u_tf_audio/u_path/u_playback_fifo",
+      "Register": 116,
+      "Lut": 168,
+      "Alu": 26,
+      "Bsram": 2,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 2,
+      "subtree_bsram": 2
+    },
+    "tf_ddr_dma": {
+      "instance": "u_tf_audio/u_path/u_dma",
+      "Register": 1022,
+      "Lut": 1082,
+      "Alu": 199,
+      "Bsram": 0,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "shared_ddr_controller": {
+      "instance": "u_memory",
+      "Register": 5517,
+      "Lut": 3030,
+      "Alu": 206,
+      "Bsram": 16,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 16
+    },
+    "hdmi_display_analysis": {
+      "instance": "u_video",
+      "Register": 8840,
+      "Lut": 9604,
+      "Alu": 2589,
+      "Bsram": 44,
+      "Ssram": 73,
+      "MULTALU27X18": 5,
+      "MULT12X12": 1,
+      "MULT27X36": 2,
+      "self_bsram": 0,
+      "subtree_bsram": 44
+    },
+    "ae350_boot_memory": {
+      "instance": "u_boot_memory",
+      "Register": 255,
+      "Lut": 151,
+      "Alu": 40,
+      "Bsram": 16,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 16,
+      "subtree_bsram": 16
+    },
+    "playback_service": {
+      "instance": "u_playback_service",
+      "Register": 67,
+      "Lut": 121,
+      "Alu": 0,
+      "Bsram": 0,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "output_router": {
+      "instance": "u_output_router",
+      "Register": 76,
+      "Lut": 85,
+      "Alu": 0,
+      "Bsram": 0,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "delay_ddr_dma": {
+      "instance": "u_delay_ddr_dma",
+      "Register": 657,
+      "Lut": 361,
+      "Alu": 30,
+      "Bsram": 0,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "native_cpu": {
+      "instance": "u_native_usb/host/cpu",
+      "Register": 524,
+      "Lut": 1103,
+      "Alu": 136,
+      "Bsram": 2,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 2,
+      "subtree_bsram": 2
+    },
+    "clock_serializer": {
+      "instance": "u_video/u_dvi/clock_lane",
+      "Register": 0,
+      "Lut": 0,
+      "Alu": 0,
+      "Bsram": 0,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "data_serializer_0": {
+      "instance": "u_video/u_dvi/data_lanes[0].serializer",
+      "Register": 0,
+      "Lut": 10,
+      "Alu": 0,
+      "Bsram": 0,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "data_serializer_1": {
+      "instance": "u_video/u_dvi/data_lanes[1].serializer",
+      "Register": 0,
+      "Lut": 10,
+      "Alu": 0,
+      "Bsram": 0,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    },
+    "data_serializer_2": {
+      "instance": "u_video/u_dvi/data_lanes[2].serializer",
+      "Register": 0,
+      "Lut": 10,
+      "Alu": 0,
+      "Bsram": 0,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0,
+      "self_bsram": 0,
+      "subtree_bsram": 0
+    }
+  },
+  "top_level_bsram": {
+    "u_native_usb": 39,
+    "u_managed": 58,
+    "u_tf_audio": 5,
+    "u_music": 23,
+    "u_bluetooth": 65,
+    "u_memory": 16,
+    "u_video": 44,
+    "u_boot_memory": 16
+  },
+  "verified_rom_words": 16384,
+  "rom_sha256": "31c4d7d58141ef0ec2b33f826a9c22251b7d4f23771cbaa189427b0f1277d457",
+  "high_speed_allowed": true,
+  "explicit_clock_audit": {
+    "plan_source": "boards/custom_138k/clocks.json",
+    "plan_sha256": "5eca8a745376cbe6139b9d0fb1cb8e15be409b2701c693554fef43c19e80ed44",
+    "clocks": {
+      "clk_50m": {
+        "net": "clk_50m",
+        "frequency_hz": 50000000
+      },
+      "ulpi_60m": {
+        "net": "usb2_ulpi_clk",
+        "frequency_hz": 60000000
+      },
+      "dac_ref12m288": {
+        "net": "clk_12m288",
+        "frequency_hz": 12288000
+      },
+      "audio_76m8": {
+        "net": "audio_clk",
+        "frequency_hz": 76800000,
+        "verified": true
+      },
+      "dac_49m152": {
+        "net": "ble_frame_clock",
+        "frequency_hz": 49152000,
+        "verified": true
+      },
+      "lcd_pixel31m5": {
+        "net": "u_lcd/pixel_clk",
+        "frequency_hz": 31500000,
+        "verified": true
+      },
+      "usb_48m": {
+        "net": "usb_clk",
+        "frequency_hz": 48000000,
+        "verified": true
+      },
+      "ddr_mem400": {
+        "net": "u_memory/memory_clk_375",
+        "frequency_hz": 400000000,
+        "verified": true
+      },
+      "ddr_ui100": {
+        "net": "memory_clk",
+        "frequency_hz": 100000000,
+        "verified": false,
+        "source_boundary_verified": true,
+        "wrapper_output_port": "memory_clk_374",
+        "opaque_port": "memory_clk_373",
+        "clock_observer_registers": {
+          "1": "u_memory/ui_reset_sync_1_s0",
+          "0": "u_memory/ui_reset_sync_0_s0",
+          "2": "u_memory/ui_reset_sync_2_s0"
+        }
+      },
+      "video_ref49": {
+        "net": "u_video/u_clock/g_hardware.u_pll/reference_clk",
+        "frequency_hz": 49500000,
+        "verified": true
+      },
+      "video_serial742": {
+        "net": "u_video/serial_clk",
+        "frequency_hz": 742500000,
+        "verified": true
+      },
+      "video_pixel148": {
+        "net": "u_video/pixel_clk",
+        "frequency_hz": 148500000,
+        "verified": true
+      },
+      "cpu_ram50": {
+        "net": "ram_clk",
+        "frequency_hz": 50000000,
+        "verified": true
+      },
+      "cpu_core100": {
+        "net": "core_clk",
+        "frequency_hz": 100000000,
+        "verified": true
+      }
+    },
+    "deferred_opaque_ip_targets": [
+      "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT"
+    ],
+    "source_netlist_verified": false,
+    "routed_timing_verified": false,
+    "constraints_complete": false
+  },
+  "native_receiver_audit": {
+    "bluetooth_uart": {
+      "first": "u_bluetooth/u_core/transport/uart/rx_sync_0_s0",
+      "second": "u_bluetooth/u_core/transport/uart/rx_sync_1_s0",
+      "first_stage_consumers": [
+        [
+          "u_bluetooth/u_core/transport/uart/rx_sync_1_s0",
+          "D"
+        ]
+      ],
+      "clock": "clk_50m",
+      "routed_timing_verified": false
+    },
+    "fpc_pll_reset": {
+      "first": "u_fpc_audio/pll_release_0_s0",
+      "second": "u_fpc_audio/pll_release_1_s0",
+      "first_stage_consumers": [
+        [
+          "u_fpc_audio/pll_release_1_s0",
+          "D"
+        ]
+      ],
+      "clock": "clk_50m",
+      "routed_timing_verified": false
+    }
+  },
+  "shared_cdc_audit": {
+    "parent_sdc_sha256": "cf7c8613444693570a531d6edf7c93dbb7f415b0b3ef5cfc026b6b74a2bf4f43",
+    "constraints": 157,
+    "resolved_selectors": {
+      "get_regs {u_video/u_renderer/u_capture/held_*}": 145,
+      "get_regs {u_video/u_renderer/u_capture/snapshot_* u_video/u_renderer/u_capture/render_bank*}": 146,
+      "get_pins {u_video/u_renderer/u_capture/req_meta_s0/D}": 1,
+      "get_pins {u_video/u_renderer/u_capture/ack_meta_s0/D}": 1,
+      "get_pins {u_video/u_renderer/g_analysis.u_analysis/u_capture/ack_meta_s0/D}": 1,
+      "get_regs {u_video/u_scanout/held_request*}": 20,
+      "get_regs {u_video/u_scanout/request_word*}": 20,
+      "get_regs {u_video/u_scanout/done0_tag* u_video/u_scanout/done1_tag*}": 38,
+      "get_regs {u_video/u_scanout/tag0* u_video/u_scanout/tag1*}": 38,
+      "get_pins {u_video/u_scanout/request_meta_s0/D}": 1,
+      "get_pins {u_video/u_scanout/ack_meta_s0/D}": 1,
+      "get_pins {u_video/u_scanout/done0_meta_s0/D}": 1,
+      "get_pins {u_video/u_scanout/done1_meta_s0/D}": 1,
+      "get_regs {u_video/u_scanout/under_gray*}": 32,
+      "get_regs {u_video/u_scanout/under_meta*}": 32,
+      "get_pins {u_video/flags_meta*/D}": 8,
+      "get_regs {u_video/u_diagnostics/pixel_block_gray*}": 16,
+      "get_regs {u_video/u_diagnostics/pixel_block_meta*}": 16,
+      "get_regs {u_video/u_diagnostics/pixel_frame_gray*}": 32,
+      "get_regs {u_video/u_diagnostics/pixel_frame_meta*}": 32,
+      "get_regs {u_video/u_diagnostics/memory_rendered_gray*}": 32,
+      "get_regs {u_video/u_diagnostics/memory_rendered_meta*}": 32,
+      "get_regs {u_video/u_diagnostics/memory_underrun_gray*}": 32,
+      "get_regs {u_video/u_diagnostics/memory_underrun_meta*}": 32,
+      "get_pins {u_video/u_diagnostics/flags_meta*/D}": 5,
+      "get_pins {u_video/u_diagnostics/pixel_global_reset_pipe*/CLEAR u_video/u_diagnostics/pixel_ready_pipe*/CLEAR u_video/u_diagnostics/memory_ready_pipe*/CLEAR}": 10,
+      "get_pins {u_memory/u_recovery/calibrated_meta*/D}": 1,
+      "get_pins {u_memory/u_recovery/lock_observed*/CLEAR u_memory/u_recovery/health_observed*/CLEAR}": 4,
+      "get_pins {u_video/ui_reset_pipe*/CLEAR u_video/source_reset_pipe*/CLEAR u_video/pixel_reset_pipe*/CLEAR u_video/u_clock/pixel_reset_pipe*/CLEAR u_memory/ui_reset_sync*/CLEAR}": 16,
+      "get_pins {u_video/u_clock/g_hardware.u_pll/u_startup/startup_pipe*/CLEAR u_video/u_clock/g_hardware.u_pll/u_startup/serializer_reset*/PRESET}": 6,
+      "get_pins {u_video/u_clock/g_hardware.u_pll/u_pixel_div/RESETN}": 1,
+      "get_pins {u_video/u_dvi/data_lanes*.serializer/serializer/RESET u_video/u_dvi/clock_lane/serializer/RESET}": 4,
+      "get_pins {u_audio_clock/audio_reset_pipe*/CLEAR}": 4,
+      "get_pins {u_managed/u_audio/reset_50_pipe*/CLEAR u_managed/u_audio/reset_audio_pipe*/CLEAR u_managed/u_midi_drop_cdc/source_release*/CLEAR u_managed/u_midi_drop_cdc/destination_release*/CLEAR}": 6,
+      "get_regs {u_managed/u_audio/u_display_cdc/held_data*}": 32,
+      "get_regs {u_managed/u_audio/u_display_cdc/destination_data*}": 32,
+      "get_pins {u_managed/u_audio/u_display_cdc/req_meta*/D u_managed/u_audio/u_display_cdc/ack_meta*/D}": 2,
+      "get_pins {u_managed/effect_mask_meta*/D u_managed/effect_order_meta*/D}": 9,
+      "get_regs {u_runtime/sample_gray*}": 32,
+      "get_regs {u_runtime/sample_meta*}": 32,
+      "get_pins {u_runtime/flags_meta*/D}": 2,
+      "get_pins {core_reset_pipe*/CLEAR}": 4,
+      "get_pins {u_managed/u_control_cdc/p_release*/CLEAR u_managed/u_control_cdc/a_release*/CLEAR u_runtime/u_cpu_cdc/source_release*/CLEAR u_runtime/u_cpu_cdc/destination_release*/CLEAR}": 12,
+      "get_pins {u_managed/u_control_cdc/req_meta*/D u_managed/u_control_cdc/ack_meta*/D u_runtime/u_cpu_cdc/req_meta*/D u_runtime/u_cpu_cdc/ack_meta*/D}": 4,
+      "get_regs {u_managed/u_control_cdc/request_held*}": 49,
+      "get_regs {u_managed/u_control_cdc/request_local*}": 49,
+      "get_regs {u_managed/u_control_cdc/response_held*}": 33,
+      "get_regs {u_managed/u_control_cdc/response_local*}": 33,
+      "get_regs {u_runtime/u_cpu_cdc/held_data*}": 224,
+      "get_regs {u_runtime/u_cpu_cdc/destination_data*}": 224,
+      "get_regs {u_managed/u_midi_drop_cdc/gray*}": 32,
+      "get_regs {u_managed/u_midi_drop_cdc/meta*}": 32,
+      "get_pins {u_cpu_ddr/h_release*/CLEAR u_cpu_ddr/m_release*/CLEAR}": 6,
+      "get_pins {u_cpu_ddr/req_meta*/D u_cpu_ddr/ack_meta*/D}": 2,
+      "get_regs {u_cpu_ddr/request_held*}": 93,
+      "get_regs {u_cpu_ddr/request_local*}": 93,
+      "get_regs {u_cpu_ddr/response_held*}": 64,
+      "get_regs {u_cpu_ddr/response_local*}": 64,
+      "get_pins {u_ui_control/p_release*/CLEAR u_ui_control/a_release*/CLEAR}": 6,
+      "get_pins {u_ui_control/req_meta*/D u_ui_control/ack_meta*/D}": 2,
+      "get_regs {u_ui_control/request_held*}": 49,
+      "get_regs {u_ui_control/request_local*}": 49,
+      "get_regs {u_ui_control/response_held*}": 33,
+      "get_regs {u_ui_control/response_local*}": 33,
+      "get_pins {u_managed/u_audio/u_pc_rx/rx_sync_0*/D}": 1,
+      "get_pins {u_managed/u_audio/u_pc_cdc/req_meta*/D u_managed/u_audio/u_pc_cdc/ack_meta*/D u_managed/u_audio/pc_health_meta*/D}": 4,
+      "get_regs {u_managed/u_audio/u_pc_cdc/held_data*}": 8,
+      "get_regs {u_managed/u_audio/u_pc_cdc/destination_data*}": 8,
+      "get_pins {u_tf_control_cdc/source_release*/CLEAR u_tf_control_cdc/destination_release*/CLEAR u_runtime/u_performance_cdc/req_meta*/D u_runtime/u_performance_cdc/ack_meta*/D}": 8,
+      "get_regs {u_runtime/u_performance_cdc/held_data*}": 380,
+      "get_regs {u_runtime/u_performance_cdc/destination_data*}": 380,
+      "get_pins {usb_release*/CLEAR}": 4,
+      "get_regs {u_runtime/u_usb_cdc/held_data*}": 194,
+      "get_regs {u_runtime/u_usb_cdc/destination_data*}": 194,
+      "get_pins {u_runtime/u_usb_cdc/req_meta*/D u_runtime/u_usb_cdc/ack_meta*/D}": 2,
+      "get_pins {u_native_usb/input_owner/event_release*/CLEAR u_native_usb/input_owner/events/fifo/unbuffered/rst_cdc/stage*/PRESET}": 5,
+      "get_regs {u_native_usb/input_owner/feedback/held_data*}": 152,
+      "get_regs {u_native_usb/input_owner/feedback/destination_data*}": 152,
+      "get_pins {u_native_usb/input_owner/feedback/req_meta*/D u_native_usb/input_owner/feedback/ack_meta*/D}": 2,
+      "get_regs {u_display_push_cdc/held_data*}": 3,
+      "get_regs {u_display_push_cdc/destination_data*}": 3,
+      "get_pins {u_display_push_cdc/req_meta*/D u_display_push_cdc/ack_meta*/D u_display_push_cdc/source_release*/CLEAR u_display_push_cdc/destination_release*/CLEAR}": 8,
+      "get_regs {u_service_push_cdc/held_data*}": 34,
+      "get_regs {u_service_push_cdc/destination_data*}": 34,
+      "get_pins {u_service_push_cdc/req_meta*/D u_service_push_cdc/ack_meta*/D u_service_push_cdc/source_release*/CLEAR u_service_push_cdc/destination_release*/CLEAR}": 8,
+      "get_regs {u_tf_control_cdc/held_data*}": 24,
+      "get_regs {u_tf_control_cdc/destination_data*}": 24,
+      "get_pins {u_tf_control_cdc/req_meta*/D u_tf_control_cdc/ack_meta*/D}": 2,
+      "get_regs {u_final_output_cdc/held_data*}": 96,
+      "get_regs {u_final_output_cdc/destination_data*}": 96,
+      "get_pins {u_final_output_cdc/req_meta*/D u_final_output_cdc/ack_meta*/D}": 2,
+      "get_pins {tf_run_meta*/D}": 1,
+      "get_pins {u_music/u_trace_cdc/meta*/D}": 7,
+      "get_pins {u_native_usb/input_owner/audio_release*/CLEAR}": 2,
+      "get_pins {tf_format_meta50*/D tf_source_meta50*/D}": 2,
+      "get_pins {u_native_usb/input_owner/queue_release*/CLEAR u_native_usb/input_owner/queue_write_release*/CLEAR u_native_usb/input_owner/online_sync*/CLEAR u_native_usb/input_owner/panic_sync*/CLEAR u_native_usb/input_owner/defaults_sync*/CLEAR}": 14,
+      "get_pins {u_native_usb/input_owner/settled_sync_0*/D u_native_usb/input_owner/queue_write_release_0*/D u_native_usb/input_owner/panic_sync_0*/D u_native_usb/input_owner/defaults_sync_0*/D}": 4,
+      "get_pins {u_tf_audio/rate_meta*/D u_tf_audio/format_meta*/D u_tf_audio/unsupported_meta*/D u_tf_audio/clear_meta*/D u_tf_audio/hold_meta*/D}": 24,
+      "get_regs {u_song_command_cdc/held_data*}": 4,
+      "get_regs {u_song_command_cdc/destination_data*}": 4,
+      "get_pins {u_song_command_cdc/req_meta*/D u_song_command_cdc/ack_meta*/D u_song_command_cdc/source_release*/CLEAR u_song_command_cdc/destination_release*/CLEAR}": 8,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray* u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_binary_9*}": 30,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta*}": 10,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray*}": 29,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta*}": 10,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray* u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_binary_9*}": 30,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta*}": 10,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray*}": 29,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta*}": 10,
+      "get_regs {u_music/u_ddr_req_cdc/read_gray* u_music/u_ddr_req_cdc/read_binary_4*}": 15,
+      "get_regs {u_music/u_ddr_req_cdc/read_gray_meta*}": 5,
+      "get_regs {u_music/u_ddr_req_cdc/write_gray*}": 15,
+      "get_regs {u_music/u_ddr_req_cdc/write_gray_meta*}": 5,
+      "get_regs {u_music/u_ddr_rsp_cdc/read_gray* u_music/u_ddr_rsp_cdc/read_binary_2*}": 9,
+      "get_regs {u_music/u_ddr_rsp_cdc/read_gray_meta*}": 3,
+      "get_regs {u_music/u_ddr_rsp_cdc/write_gray*}": 9,
+      "get_regs {u_music/u_ddr_rsp_cdc/write_gray_meta*}": 3,
+      "get_regs {u_score_push_cdc/read_gray* u_score_push_cdc/read_binary_2*}": 9,
+      "get_regs {u_score_push_cdc/read_gray_meta*}": 3,
+      "get_regs {u_score_push_cdc/write_gray*}": 9,
+      "get_regs {u_score_push_cdc/write_gray_meta*}": 3,
+      "get_regs {u_playlist_bridge/fifo/read_gray* u_playlist_bridge/fifo/read_binary_2*}": 9,
+      "get_regs {u_playlist_bridge/fifo/read_gray_meta*}": 3,
+      "get_regs {u_playlist_bridge/fifo/write_gray*}": 9,
+      "get_regs {u_playlist_bridge/fifo/write_gray_meta*}": 3,
+      "get_regs {u_tf_audio/u_pcm_cdc/rd_gray* u_tf_audio/u_pcm_cdc/rd_bin_4*}": 15,
+      "get_regs {u_tf_audio/u_pcm_cdc/rd_gray_w1*}": 5,
+      "get_regs {u_tf_audio/u_pcm_cdc/wr_gray*}": 15,
+      "get_regs {u_tf_audio/u_pcm_cdc/wr_gray_r1*}": 5,
+      "get_regs {u_tf_audio/u_path/u_capture_fifo/rd_gray* u_tf_audio/u_path/u_capture_fifo/rd_bin_12*}": 39,
+      "get_regs {u_tf_audio/u_path/u_capture_fifo/rd_gray_w1*}": 13,
+      "get_regs {u_tf_audio/u_path/u_capture_fifo/wr_gray*}": 39,
+      "get_regs {u_tf_audio/u_path/u_capture_fifo/wr_gray_r1*}": 13,
+      "get_regs {u_tf_audio/u_path/u_playback_fifo/rd_gray* u_tf_audio/u_path/u_playback_fifo/rd_bin_12*}": 39,
+      "get_regs {u_tf_audio/u_path/u_playback_fifo/rd_gray_w1*}": 13,
+      "get_regs {u_tf_audio/u_path/u_playback_fifo/wr_gray*}": 39,
+      "get_regs {u_tf_audio/u_path/u_playback_fifo/wr_gray_r1*}": 13,
+      "get_pins {u_tf_audio/u_path/u_capture_fifo/clear_rd_meta*/D}": 1,
+      "get_pins {u_tf_audio/u_path/file_size_valid_meta*/D u_tf_audio/u_path/pb_meta*/D u_tf_audio/u_path/pb_done_meta*/D u_native_usb/input_owner/analysis_done_meta*/D}": 4,
+      "get_regs {u_tf_audio/u_path/u_dma/staged_file_size*}": 32,
+      "get_regs {u_tf_audio/u_path/file_size_meta*}": 32,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_binary_9*}": 1,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_9*}": 1,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_binary_9*}": 1,
+      "get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_9*}": 1
+    },
+    "deferred_opaque_ddr_selectors": [
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*/u_ddr_phy_data_io/ides_calib_d*/Q}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*/u_ddr_phy_data_io/*u_ides8_mem/CALIB}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_sync/recalib_s_0_s0/D}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*u_dqs/RESET}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*u_dqs_gen/RESET}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*u_oser8_mem/RESET}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*u_ides8_mem/RESET}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*u_cmd_gen/RESET}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/u_ddr_phy_cmd_lane/u_ddr_phy_cmd_io/u_ck_gen/RESET}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/*rburst_neg*/CLEAR}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/dll_step_base*/D}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/*/Q}",
+      "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*/u_dqs/HOLD}"
+    ],
+    "physical_timing_verified": false
+  },
+  "bridge_reset_audit": {
+    "transaction_reset_topology_verified": true,
+    "bridge_instance": "u_native_usb/host/usb/bridge",
+    "release_chains": {
+      "cpu": {
+        "session": {
+          "clock": "usb_clk",
+          "asynchronous_clear": "n208_5",
+          "asynchronous_clear_net": "u_native_usb/host/usb/bridge/n208_5",
+          "ready": "u_native_usb/host/usb/bridge/cpu_session_q[1]",
+          "stages": [
+            "u_native_usb/host/usb/bridge/cpu_session_q_0_s0",
+            "u_native_usb/host/usb/bridge/cpu_session_q_1_s0"
+          ]
+        },
+        "release": {
+          "clock": "usb_clk",
+          "asynchronous_clear": "n74_6",
+          "asynchronous_clear_net": "n74_6",
+          "ready": "u_native_usb/cpu_release_q[1]",
+          "stages": [
+            "u_native_usb/cpu_release_q_0_s0",
+            "u_native_usb/cpu_release_q_1_s0"
+          ]
+        }
+      },
+      "ulpi": {
+        "session": {
+          "clock": "usb2_ulpi_clk",
+          "asynchronous_clear": "n208_5",
+          "asynchronous_clear_net": "u_native_usb/host/usb/bridge/n208_5",
+          "ready": "u_native_usb/host/usb/ulpi_session_q[1]",
+          "stages": [
+            "u_native_usb/host/usb/bridge/ulpi_session_q_0_s0",
+            "u_native_usb/host/usb/bridge/ulpi_session_q_1_s0"
+          ]
+        },
+        "release": {
+          "clock": "usb2_ulpi_clk",
+          "asynchronous_clear": "n74_6",
+          "asynchronous_clear_net": "n74_6",
+          "ready": "u_native_usb/host/usb/bridge/ulpi_release_q[1]",
+          "stages": [
+            "u_native_usb/host/usb/bridge/ulpi_release_q_0_s0",
+            "u_native_usb/host/usb/bridge/ulpi_release_q_1_s0"
+          ]
+        }
+      }
+    },
+    "transaction_registers": {
+      "cpu": {
+        "transmit_count_q": 10,
+        "receive_index_q": 10,
+        "descriptor_cpu_q": 30,
+        "request_toggle_q": 1,
+        "result_sync_q": 2,
+        "result_cpu_q": 22,
+        "busy_q": 1,
+        "done_q": 1
+      },
+      "ulpi": {
+        "request_sync_q": 2,
+        "result_toggle_q": 1,
+        "result_mailbox_q": 22,
+        "descriptor_ulpi_q": 30,
+        "state_q": 3,
+        "upload_index_q": 10,
+        "receive_count_q": 10,
+        "elapsed_q": 17,
+        "recovery_q": 1
+      }
+    },
+    "locally_reset_registers": {
+      "cpu": 225,
+      "ulpi": 169
+    },
+    "physical_reset_timing_verified": false,
+    "cdc_constraints_complete": false
+  },
+  "usb2_bridge_cdc_audit": {
+    "source": "boards/custom_138k/usb2_cdc.json",
+    "source_sha256": "64d29331247c7c9b76fcb93a200b870aec38645edc3dd7c88f8e6ef6b38826e1",
+    "controls": {
+      "request": {
+        "source_registers": {
+          "0": "u_native_usb/host/usb/bridge/request_toggle_q_s2"
+        },
+        "first_stage": {
+          "0": "u_native_usb/host/usb/bridge/request_sync_q_0_s0"
+        },
+        "second_stage": {
+          "0": "u_native_usb/host/usb/bridge/request_sync_q_1_s0"
+        },
+        "source_clock": "usb_clk",
+        "destination_clock": "usb2_ulpi_clk"
+      },
+      "result": {
+        "source_registers": {
+          "0": "u_native_usb/host/usb/bridge/result_toggle_q_s0"
+        },
+        "first_stage": {
+          "0": "u_native_usb/host/usb/bridge/result_sync_q_0_s0"
+        },
+        "second_stage": {
+          "0": "u_native_usb/host/usb/bridge/result_sync_q_1_s0"
+        },
+        "source_clock": "usb2_ulpi_clk",
+        "destination_clock": "usb_clk"
+      },
+      "reset": {
+        "source_registers": {
+          "0": "u_native_usb/host/usb/bridge/reset_toggle_q_s2"
+        },
+        "first_stage": {
+          "0": "u_native_usb/host/usb/bridge/reset_sync_q_0_s0"
+        },
+        "second_stage": {
+          "0": "u_native_usb/host/usb/bridge/reset_sync_q_1_s0"
+        },
+        "source_clock": "usb_clk",
+        "destination_clock": "usb2_ulpi_clk"
+      },
+      "reset_ack": {
+        "source_registers": {
+          "0": "u_native_usb/host/usb/bridge/reset_ack_q_s0"
+        },
+        "first_stage": {
+          "0": "u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s0"
+        },
+        "second_stage": {
+          "0": "u_native_usb/host/usb/bridge/reset_ack_sync_q_1_s0"
+        },
+        "source_clock": "usb2_ulpi_clk",
+        "destination_clock": "usb_clk"
+      },
+      "high_speed": {
+        "source_registers": {
+          "0": "u_native_usb/host/usb/bridge/hs_cpu_q_s0"
+        },
+        "first_stage": {
+          "0": "u_native_usb/host/usb/bridge/hs_sync_q_0_s0"
+        },
+        "second_stage": {
+          "0": "u_native_usb/host/usb/bridge/hs_sync_q_1_s0"
+        },
+        "source_clock": "usb_clk",
+        "destination_clock": "usb2_ulpi_clk"
+      },
+      "snapshot": {
+        "source_registers": {
+          "0": "u_native_usb/host/usb/bridge/snapshot_toggle_q_s0"
+        },
+        "first_stage": {
+          "0": "u_native_usb/host/usb/bridge/snapshot_sync_q_0_s0"
+        },
+        "second_stage": {
+          "0": "u_native_usb/host/usb/bridge/snapshot_sync_q_1_s0"
+        },
+        "source_clock": "usb2_ulpi_clk",
+        "destination_clock": "usb_clk"
+      },
+      "snapshot_ack": {
+        "source_registers": {
+          "0": "u_native_usb/host/usb/bridge/snapshot_ack_q_s0"
+        },
+        "first_stage": {
+          "0": "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s0"
+        },
+        "second_stage": {
+          "0": "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_1_s0"
+        },
+        "source_clock": "usb_clk",
+        "destination_clock": "usb2_ulpi_clk"
+      },
+      "reference_fault": {
+        "source_registers": {
+          "2": "u_native_usb/host/usb/reference_fault_q_2_s0",
+          "1": "u_native_usb/host/usb/reference_fault_q_1_s0",
+          "0": "u_native_usb/host/usb/reference_fault_q_0_s0"
+        },
+        "first_stage": {
+          "2": "u_native_usb/host/usb/bridge/reference_fault_meta_q_2_s0",
+          "1": "u_native_usb/host/usb/bridge/reference_fault_meta_q_1_s0",
+          "0": "u_native_usb/host/usb/bridge/reference_fault_meta_q_0_s0"
+        },
+        "second_stage": {
+          "2": "u_native_usb/host/usb/bridge/reference_fault_sync_q_2_s0",
+          "1": "u_native_usb/host/usb/bridge/reference_fault_sync_q_1_s0",
+          "0": "u_native_usb/host/usb/bridge/reference_fault_sync_q_0_s0"
+        },
+        "source_clock": "clk_50m",
+        "destination_clock": "usb_clk"
+      }
+    },
+    "mailboxes": {
+      "descriptor": {
+        "source_registers": {
+          "29": "u_native_usb/host/usb/bridge/descriptor_cpu_q_29_s0",
+          "28": "u_native_usb/host/usb/bridge/descriptor_cpu_q_28_s0",
+          "27": "u_native_usb/host/usb/bridge/descriptor_cpu_q_27_s0",
+          "26": "u_native_usb/host/usb/bridge/descriptor_cpu_q_26_s0",
+          "25": "u_native_usb/host/usb/bridge/descriptor_cpu_q_25_s0",
+          "24": "u_native_usb/host/usb/bridge/descriptor_cpu_q_24_s0",
+          "23": "u_native_usb/host/usb/bridge/descriptor_cpu_q_23_s0",
+          "22": "u_native_usb/host/usb/bridge/descriptor_cpu_q_22_s0",
+          "21": "u_native_usb/host/usb/bridge/descriptor_cpu_q_21_s0",
+          "20": "u_native_usb/host/usb/bridge/descriptor_cpu_q_20_s0",
+          "19": "u_native_usb/host/usb/bridge/descriptor_cpu_q_19_s0",
+          "18": "u_native_usb/host/usb/bridge/descriptor_cpu_q_18_s0",
+          "17": "u_native_usb/host/usb/bridge/descriptor_cpu_q_17_s0",
+          "16": "u_native_usb/host/usb/bridge/descriptor_cpu_q_16_s0",
+          "15": "u_native_usb/host/usb/bridge/descriptor_cpu_q_15_s0",
+          "14": "u_native_usb/host/usb/bridge/descriptor_cpu_q_14_s0",
+          "13": "u_native_usb/host/usb/bridge/descriptor_cpu_q_13_s0",
+          "12": "u_native_usb/host/usb/bridge/descriptor_cpu_q_12_s0",
+          "11": "u_native_usb/host/usb/bridge/descriptor_cpu_q_11_s0",
+          "10": "u_native_usb/host/usb/bridge/descriptor_cpu_q_10_s0",
+          "9": "u_native_usb/host/usb/bridge/descriptor_cpu_q_9_s0",
+          "8": "u_native_usb/host/usb/bridge/descriptor_cpu_q_8_s0",
+          "7": "u_native_usb/host/usb/bridge/descriptor_cpu_q_7_s0",
+          "6": "u_native_usb/host/usb/bridge/descriptor_cpu_q_6_s0",
+          "5": "u_native_usb/host/usb/bridge/descriptor_cpu_q_5_s0",
+          "4": "u_native_usb/host/usb/bridge/descriptor_cpu_q_4_s0",
+          "3": "u_native_usb/host/usb/bridge/descriptor_cpu_q_3_s0",
+          "2": "u_native_usb/host/usb/bridge/descriptor_cpu_q_2_s0",
+          "1": "u_native_usb/host/usb/bridge/descriptor_cpu_q_1_s0",
+          "0": "u_native_usb/host/usb/bridge/descriptor_cpu_q_0_s0"
+        },
+        "destination_registers": {
+          "29": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_29_s0",
+          "28": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_28_s0",
+          "27": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_27_s0",
+          "26": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_26_s0",
+          "25": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_25_s0",
+          "24": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_24_s0",
+          "23": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_23_s0",
+          "22": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_22_s0",
+          "21": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_21_s0",
+          "20": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_20_s0",
+          "19": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_19_s0",
+          "18": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_18_s0",
+          "17": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_17_s0",
+          "16": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_16_s0",
+          "15": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_15_s0",
+          "14": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_14_s0",
+          "13": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_13_s0",
+          "12": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_12_s0",
+          "11": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_11_s0",
+          "10": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_10_s0",
+          "9": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_9_s0",
+          "8": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_8_s0",
+          "7": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_7_s0",
+          "6": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_6_s0",
+          "5": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_5_s0",
+          "4": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_4_s0",
+          "3": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_3_s0",
+          "2": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_2_s0",
+          "1": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_1_s0",
+          "0": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_0_s0"
+        },
+        "implemented_bits": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "setup_max_delay_ns": 16.0,
+        "hold_only_false_path": true
+      },
+      "result": {
+        "source_registers": {
+          "21": "u_native_usb/host/usb/bridge/result_mailbox_q_21_s0",
+          "20": "u_native_usb/host/usb/bridge/result_mailbox_q_20_s0",
+          "19": "u_native_usb/host/usb/bridge/result_mailbox_q_19_s0",
+          "18": "u_native_usb/host/usb/bridge/result_mailbox_q_18_s0",
+          "17": "u_native_usb/host/usb/bridge/result_mailbox_q_17_s0",
+          "16": "u_native_usb/host/usb/bridge/result_mailbox_q_16_s0",
+          "15": "u_native_usb/host/usb/bridge/result_mailbox_q_15_s0",
+          "14": "u_native_usb/host/usb/bridge/result_mailbox_q_14_s0",
+          "13": "u_native_usb/host/usb/bridge/result_mailbox_q_13_s0",
+          "12": "u_native_usb/host/usb/bridge/result_mailbox_q_12_s0",
+          "11": "u_native_usb/host/usb/bridge/result_mailbox_q_11_s0",
+          "10": "u_native_usb/host/usb/bridge/result_mailbox_q_10_s0",
+          "9": "u_native_usb/host/usb/bridge/result_mailbox_q_9_s0",
+          "8": "u_native_usb/host/usb/bridge/result_mailbox_q_8_s0",
+          "7": "u_native_usb/host/usb/bridge/result_mailbox_q_7_s0",
+          "6": "u_native_usb/host/usb/bridge/result_mailbox_q_6_s0",
+          "5": "u_native_usb/host/usb/bridge/result_mailbox_q_5_s0",
+          "4": "u_native_usb/host/usb/bridge/result_mailbox_q_4_s0",
+          "3": "u_native_usb/host/usb/bridge/result_mailbox_q_3_s0",
+          "2": "u_native_usb/host/usb/bridge/result_mailbox_q_2_s0",
+          "1": "u_native_usb/host/usb/bridge/result_mailbox_q_1_s0",
+          "0": "u_native_usb/host/usb/bridge/result_mailbox_q_0_s0"
+        },
+        "destination_registers": {
+          "21": "u_native_usb/host/usb/bridge/result_cpu_q_21_s1",
+          "20": "u_native_usb/host/usb/bridge/result_cpu_q_20_s1",
+          "19": "u_native_usb/host/usb/bridge/result_cpu_q_19_s1",
+          "18": "u_native_usb/host/usb/bridge/result_cpu_q_18_s1",
+          "17": "u_native_usb/host/usb/bridge/result_cpu_q_17_s1",
+          "16": "u_native_usb/host/usb/bridge/result_cpu_q_16_s1",
+          "15": "u_native_usb/host/usb/bridge/result_cpu_q_15_s1",
+          "14": "u_native_usb/host/usb/bridge/result_cpu_q_14_s1",
+          "13": "u_native_usb/host/usb/bridge/result_cpu_q_13_s1",
+          "12": "u_native_usb/host/usb/bridge/result_cpu_q_12_s1",
+          "11": "u_native_usb/host/usb/bridge/result_cpu_q_11_s1",
+          "10": "u_native_usb/host/usb/bridge/result_cpu_q_10_s1",
+          "9": "u_native_usb/host/usb/bridge/result_cpu_q_9_s1",
+          "8": "u_native_usb/host/usb/bridge/result_cpu_q_8_s1",
+          "7": "u_native_usb/host/usb/bridge/result_cpu_q_7_s1",
+          "6": "u_native_usb/host/usb/bridge/result_cpu_q_6_s1",
+          "5": "u_native_usb/host/usb/bridge/result_cpu_q_5_s1",
+          "4": "u_native_usb/host/usb/bridge/result_cpu_q_4_s1",
+          "3": "u_native_usb/host/usb/bridge/result_cpu_q_3_s1",
+          "2": "u_native_usb/host/usb/bridge/result_cpu_q_2_s1",
+          "1": "u_native_usb/host/usb/bridge/result_cpu_q_1_s1",
+          "0": "u_native_usb/host/usb/bridge/result_cpu_q_0_s1"
+        },
+        "implemented_bits": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        "setup_max_delay_ns": 16.0,
+        "hold_only_false_path": true
+      },
+      "snapshot": {
+        "source_registers": {
+          "79": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_79_s0",
+          "78": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_78_s0",
+          "77": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_77_s0",
+          "76": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_76_s0",
+          "75": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_75_s0",
+          "74": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_74_s0",
+          "73": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_73_s0",
+          "72": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_72_s0",
+          "71": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_71_s0",
+          "70": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_70_s0",
+          "69": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_69_s0",
+          "68": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_68_s0",
+          "67": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_67_s0",
+          "66": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_66_s0",
+          "65": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_65_s0",
+          "64": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_64_s0",
+          "63": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_63_s0",
+          "62": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_62_s0",
+          "61": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_61_s0",
+          "60": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_60_s0",
+          "59": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_59_s0",
+          "58": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_58_s0",
+          "57": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_57_s0",
+          "56": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_56_s0",
+          "55": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_55_s0",
+          "54": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_54_s0",
+          "53": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_53_s0",
+          "52": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_52_s0",
+          "51": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_51_s0",
+          "50": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_50_s0",
+          "49": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_49_s0",
+          "48": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_48_s0",
+          "40": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_40_s0",
+          "39": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_39_s0",
+          "38": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_38_s0",
+          "37": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_37_s0",
+          "36": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_36_s0",
+          "35": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_35_s0",
+          "34": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_34_s0",
+          "32": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_32_s0",
+          "31": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_31_s0",
+          "30": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_30_s0",
+          "28": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_28_s0",
+          "27": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_27_s0",
+          "26": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_26_s0",
+          "25": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_25_s0",
+          "24": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_24_s0",
+          "23": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_23_s0",
+          "22": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_22_s0",
+          "21": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_21_s0",
+          "20": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_20_s0",
+          "19": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_19_s0",
+          "18": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_18_s0",
+          "17": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_17_s0",
+          "16": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_16_s0",
+          "8": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_8_s0",
+          "7": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_7_s0",
+          "6": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_6_s0",
+          "5": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_5_s0",
+          "4": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_4_s0",
+          "3": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_3_s0",
+          "2": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_2_s0",
+          "1": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_1_s0",
+          "0": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_0_s0"
+        },
+        "destination_registers": {
+          "79": "u_native_usb/host/usb/bridge/snapshot_cpu_q_79_s0",
+          "78": "u_native_usb/host/usb/bridge/snapshot_cpu_q_78_s0",
+          "77": "u_native_usb/host/usb/bridge/snapshot_cpu_q_77_s0",
+          "76": "u_native_usb/host/usb/bridge/snapshot_cpu_q_76_s0",
+          "75": "u_native_usb/host/usb/bridge/snapshot_cpu_q_75_s0",
+          "74": "u_native_usb/host/usb/bridge/snapshot_cpu_q_74_s0",
+          "73": "u_native_usb/host/usb/bridge/snapshot_cpu_q_73_s0",
+          "72": "u_native_usb/host/usb/bridge/snapshot_cpu_q_72_s0",
+          "71": "u_native_usb/host/usb/bridge/snapshot_cpu_q_71_s0",
+          "70": "u_native_usb/host/usb/bridge/snapshot_cpu_q_70_s0",
+          "69": "u_native_usb/host/usb/bridge/snapshot_cpu_q_69_s0",
+          "68": "u_native_usb/host/usb/bridge/snapshot_cpu_q_68_s0",
+          "67": "u_native_usb/host/usb/bridge/snapshot_cpu_q_67_s0",
+          "66": "u_native_usb/host/usb/bridge/snapshot_cpu_q_66_s0",
+          "65": "u_native_usb/host/usb/bridge/snapshot_cpu_q_65_s0",
+          "64": "u_native_usb/host/usb/bridge/snapshot_cpu_q_64_s0",
+          "63": "u_native_usb/host/usb/bridge/snapshot_cpu_q_63_s0",
+          "62": "u_native_usb/host/usb/bridge/snapshot_cpu_q_62_s0",
+          "61": "u_native_usb/host/usb/bridge/snapshot_cpu_q_61_s0",
+          "60": "u_native_usb/host/usb/bridge/snapshot_cpu_q_60_s0",
+          "59": "u_native_usb/host/usb/bridge/snapshot_cpu_q_59_s0",
+          "58": "u_native_usb/host/usb/bridge/snapshot_cpu_q_58_s0",
+          "57": "u_native_usb/host/usb/bridge/snapshot_cpu_q_57_s0",
+          "56": "u_native_usb/host/usb/bridge/snapshot_cpu_q_56_s0",
+          "55": "u_native_usb/host/usb/bridge/snapshot_cpu_q_55_s0",
+          "54": "u_native_usb/host/usb/bridge/snapshot_cpu_q_54_s0",
+          "53": "u_native_usb/host/usb/bridge/snapshot_cpu_q_53_s0",
+          "52": "u_native_usb/host/usb/bridge/snapshot_cpu_q_52_s0",
+          "51": "u_native_usb/host/usb/bridge/snapshot_cpu_q_51_s0",
+          "50": "u_native_usb/host/usb/bridge/snapshot_cpu_q_50_s0",
+          "49": "u_native_usb/host/usb/bridge/snapshot_cpu_q_49_s0",
+          "48": "u_native_usb/host/usb/bridge/snapshot_cpu_q_48_s0",
+          "40": "u_native_usb/host/usb/bridge/snapshot_cpu_q_40_s0",
+          "39": "u_native_usb/host/usb/bridge/snapshot_cpu_q_39_s0",
+          "38": "u_native_usb/host/usb/bridge/snapshot_cpu_q_38_s0",
+          "37": "u_native_usb/host/usb/bridge/snapshot_cpu_q_37_s0",
+          "36": "u_native_usb/host/usb/bridge/snapshot_cpu_q_36_s0",
+          "35": "u_native_usb/host/usb/bridge/snapshot_cpu_q_35_s0",
+          "34": "u_native_usb/host/usb/bridge/snapshot_cpu_q_34_s0",
+          "32": "u_native_usb/host/usb/bridge/snapshot_cpu_q_32_s0",
+          "31": "u_native_usb/host/usb/bridge/snapshot_cpu_q_31_s0",
+          "30": "u_native_usb/host/usb/bridge/snapshot_cpu_q_30_s0",
+          "28": "u_native_usb/host/usb/bridge/snapshot_cpu_q_28_s0",
+          "27": "u_native_usb/host/usb/bridge/snapshot_cpu_q_27_s0",
+          "26": "u_native_usb/host/usb/bridge/snapshot_cpu_q_26_s0",
+          "25": "u_native_usb/host/usb/bridge/snapshot_cpu_q_25_s0",
+          "24": "u_native_usb/host/usb/bridge/snapshot_cpu_q_24_s0",
+          "23": "u_native_usb/host/usb/bridge/snapshot_cpu_q_23_s0",
+          "22": "u_native_usb/host/usb/bridge/snapshot_cpu_q_22_s0",
+          "21": "u_native_usb/host/usb/bridge/snapshot_cpu_q_21_s0",
+          "20": "u_native_usb/host/usb/bridge/snapshot_cpu_q_20_s0",
+          "19": "u_native_usb/host/usb/bridge/snapshot_cpu_q_19_s0",
+          "18": "u_native_usb/host/usb/bridge/snapshot_cpu_q_18_s0",
+          "17": "u_native_usb/host/usb/bridge/snapshot_cpu_q_17_s0",
+          "16": "u_native_usb/host/usb/bridge/snapshot_cpu_q_16_s0",
+          "8": "u_native_usb/host/usb/bridge/snapshot_cpu_q_8_s0",
+          "7": "u_native_usb/host/usb/bridge/snapshot_cpu_q_7_s0",
+          "6": "u_native_usb/host/usb/bridge/snapshot_cpu_q_6_s0",
+          "5": "u_native_usb/host/usb/bridge/snapshot_cpu_q_5_s0",
+          "4": "u_native_usb/host/usb/bridge/snapshot_cpu_q_4_s0",
+          "3": "u_native_usb/host/usb/bridge/snapshot_cpu_q_3_s0",
+          "2": "u_native_usb/host/usb/bridge/snapshot_cpu_q_2_s0",
+          "1": "u_native_usb/host/usb/bridge/snapshot_cpu_q_1_s0",
+          "0": "u_native_usb/host/usb/bridge/snapshot_cpu_q_0_s0"
+        },
+        "implemented_bits": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          30,
+          31,
+          32,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79
+        ],
+        "setup_max_delay_ns": 16.0,
+        "hold_only_false_path": true
+      }
+    },
+    "resolved_pin_selectors": {
+      "u_native_usb/host/usb/bridge/request_toggle_q_s*/Q": [
+        "u_native_usb/host/usb/bridge/request_toggle_q_s2/Q"
+      ],
+      "u_native_usb/host/usb/bridge/request_sync_q_0_s*/D": [
+        "u_native_usb/host/usb/bridge/request_sync_q_0_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/request_sync_q_0_s*/Q": [
+        "u_native_usb/host/usb/bridge/request_sync_q_0_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/request_sync_q_1_s*/D": [
+        "u_native_usb/host/usb/bridge/request_sync_q_1_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/result_toggle_q_s*/Q": [
+        "u_native_usb/host/usb/bridge/result_toggle_q_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/result_sync_q_0_s*/D": [
+        "u_native_usb/host/usb/bridge/result_sync_q_0_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/result_sync_q_0_s*/Q": [
+        "u_native_usb/host/usb/bridge/result_sync_q_0_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/result_sync_q_1_s*/D": [
+        "u_native_usb/host/usb/bridge/result_sync_q_1_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/reset_toggle_q_s*/Q": [
+        "u_native_usb/host/usb/bridge/reset_toggle_q_s2/Q"
+      ],
+      "u_native_usb/host/usb/bridge/reset_sync_q_0_s*/D": [
+        "u_native_usb/host/usb/bridge/reset_sync_q_0_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/reset_sync_q_0_s*/Q": [
+        "u_native_usb/host/usb/bridge/reset_sync_q_0_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/reset_sync_q_1_s*/D": [
+        "u_native_usb/host/usb/bridge/reset_sync_q_1_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/reset_ack_q_s*/Q": [
+        "u_native_usb/host/usb/bridge/reset_ack_q_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s*/D": [
+        "u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s*/Q": [
+        "u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/reset_ack_sync_q_1_s*/D": [
+        "u_native_usb/host/usb/bridge/reset_ack_sync_q_1_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/hs_cpu_q_s*/Q": [
+        "u_native_usb/host/usb/bridge/hs_cpu_q_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/hs_sync_q_0_s*/D": [
+        "u_native_usb/host/usb/bridge/hs_sync_q_0_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/hs_sync_q_0_s*/Q": [
+        "u_native_usb/host/usb/bridge/hs_sync_q_0_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/hs_sync_q_1_s*/D": [
+        "u_native_usb/host/usb/bridge/hs_sync_q_1_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/snapshot_toggle_q_s*/Q": [
+        "u_native_usb/host/usb/bridge/snapshot_toggle_q_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/snapshot_sync_q_0_s*/D": [
+        "u_native_usb/host/usb/bridge/snapshot_sync_q_0_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/snapshot_sync_q_0_s*/Q": [
+        "u_native_usb/host/usb/bridge/snapshot_sync_q_0_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/snapshot_sync_q_1_s*/D": [
+        "u_native_usb/host/usb/bridge/snapshot_sync_q_1_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/snapshot_ack_q_s*/Q": [
+        "u_native_usb/host/usb/bridge/snapshot_ack_q_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s*/D": [
+        "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s*/Q": [
+        "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_1_s*/D": [
+        "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_1_s0/D"
+      ],
+      "u_native_usb/host/usb/reference_fault_q_*_s*/Q": [
+        "u_native_usb/host/usb/reference_fault_q_0_s0/Q",
+        "u_native_usb/host/usb/reference_fault_q_1_s0/Q",
+        "u_native_usb/host/usb/reference_fault_q_2_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/reference_fault_meta_q_*_s*/D": [
+        "u_native_usb/host/usb/bridge/reference_fault_meta_q_0_s0/D",
+        "u_native_usb/host/usb/bridge/reference_fault_meta_q_1_s0/D",
+        "u_native_usb/host/usb/bridge/reference_fault_meta_q_2_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/reference_fault_meta_q_*_s*/Q": [
+        "u_native_usb/host/usb/bridge/reference_fault_meta_q_0_s0/Q",
+        "u_native_usb/host/usb/bridge/reference_fault_meta_q_1_s0/Q",
+        "u_native_usb/host/usb/bridge/reference_fault_meta_q_2_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/reference_fault_sync_q_*_s*/D": [
+        "u_native_usb/host/usb/bridge/reference_fault_sync_q_0_s0/D",
+        "u_native_usb/host/usb/bridge/reference_fault_sync_q_1_s0/D",
+        "u_native_usb/host/usb/bridge/reference_fault_sync_q_2_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/descriptor_cpu_q_*_s*/Q": [
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_0_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_10_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_11_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_12_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_13_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_14_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_15_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_16_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_17_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_18_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_19_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_1_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_20_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_21_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_22_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_23_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_24_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_25_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_26_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_27_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_28_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_29_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_2_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_3_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_4_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_5_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_6_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_7_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_8_s0/Q",
+        "u_native_usb/host/usb/bridge/descriptor_cpu_q_9_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/descriptor_ulpi_q_*_s*/D": [
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_0_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_10_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_11_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_12_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_13_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_14_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_15_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_16_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_17_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_18_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_19_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_1_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_20_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_21_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_22_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_23_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_24_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_25_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_26_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_27_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_28_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_29_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_2_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_3_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_4_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_5_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_6_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_7_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_8_s0/D",
+        "u_native_usb/host/usb/bridge/descriptor_ulpi_q_9_s0/D"
+      ],
+      "u_native_usb/host/usb/bridge/result_mailbox_q_*_s*/Q": [
+        "u_native_usb/host/usb/bridge/result_mailbox_q_0_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_10_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_11_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_12_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_13_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_14_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_15_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_16_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_17_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_18_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_19_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_1_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_20_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_21_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_2_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_3_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_4_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_5_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_6_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_7_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_8_s0/Q",
+        "u_native_usb/host/usb/bridge/result_mailbox_q_9_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/result_cpu_q_*_s*/D": [
+        "u_native_usb/host/usb/bridge/result_cpu_q_0_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_10_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_11_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_12_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_13_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_14_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_15_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_16_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_17_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_18_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_19_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_1_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_20_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_21_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_2_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_3_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_4_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_5_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_6_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_7_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_8_s1/D",
+        "u_native_usb/host/usb/bridge/result_cpu_q_9_s1/D"
+      ],
+      "u_native_usb/host/usb/bridge/snapshot_mailbox_q_*_s*/Q": [
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_0_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_16_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_17_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_18_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_19_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_1_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_20_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_21_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_22_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_23_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_24_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_25_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_26_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_27_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_28_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_2_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_30_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_31_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_32_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_34_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_35_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_36_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_37_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_38_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_39_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_3_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_40_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_48_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_49_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_4_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_50_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_51_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_52_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_53_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_54_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_55_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_56_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_57_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_58_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_59_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_5_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_60_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_61_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_62_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_63_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_64_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_65_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_66_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_67_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_68_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_69_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_6_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_70_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_71_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_72_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_73_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_74_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_75_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_76_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_77_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_78_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_79_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_7_s0/Q",
+        "u_native_usb/host/usb/bridge/snapshot_mailbox_q_8_s0/Q"
+      ],
+      "u_native_usb/host/usb/bridge/snapshot_cpu_q_*_s*/D": [
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_0_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_16_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_17_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_18_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_19_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_1_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_20_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_21_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_22_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_23_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_24_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_25_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_26_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_27_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_28_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_2_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_30_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_31_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_32_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_34_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_35_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_36_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_37_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_38_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_39_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_3_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_40_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_48_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_49_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_4_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_50_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_51_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_52_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_53_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_54_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_55_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_56_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_57_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_58_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_59_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_5_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_60_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_61_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_62_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_63_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_64_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_65_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_66_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_67_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_68_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_69_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_6_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_70_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_71_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_72_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_73_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_74_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_75_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_76_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_77_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_78_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_79_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_7_s0/D",
+        "u_native_usb/host/usb/bridge/snapshot_cpu_q_8_s0/D"
+      ]
+    },
+    "sdc": "set_false_path -from [get_pins {u_native_usb/host/usb/bridge/request_toggle_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/request_sync_q_0_s*/D}]\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/request_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/request_sync_q_1_s*/D}] 2.000\nset_false_path -from [get_pins {u_native_usb/host/usb/bridge/result_toggle_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/result_sync_q_0_s*/D}]\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/result_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/result_sync_q_1_s*/D}] 2.000\nset_false_path -from [get_pins {u_native_usb/host/usb/bridge/reset_toggle_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reset_sync_q_0_s*/D}]\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/reset_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reset_sync_q_1_s*/D}] 2.000\nset_false_path -from [get_pins {u_native_usb/host/usb/bridge/reset_ack_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s*/D}]\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reset_ack_sync_q_1_s*/D}] 2.000\nset_false_path -from [get_pins {u_native_usb/host/usb/bridge/hs_cpu_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/hs_sync_q_0_s*/D}]\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/hs_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/hs_sync_q_1_s*/D}] 2.000\nset_false_path -from [get_pins {u_native_usb/host/usb/bridge/snapshot_toggle_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_sync_q_0_s*/D}]\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/snapshot_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_sync_q_1_s*/D}] 2.000\nset_false_path -from [get_pins {u_native_usb/host/usb/bridge/snapshot_ack_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s*/D}]\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_ack_sync_q_1_s*/D}] 2.000\nset_false_path -from [get_pins {u_native_usb/host/usb/reference_fault_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reference_fault_meta_q_*_s*/D}]\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/reference_fault_meta_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reference_fault_sync_q_*_s*/D}] 2.000\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/descriptor_cpu_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/descriptor_ulpi_q_*_s*/D}] 16.000\nset_false_path -hold -from [get_pins {u_native_usb/host/usb/bridge/descriptor_cpu_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/descriptor_ulpi_q_*_s*/D}]\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/result_mailbox_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/result_cpu_q_*_s*/D}] 16.000\nset_false_path -hold -from [get_pins {u_native_usb/host/usb/bridge/result_mailbox_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/result_cpu_q_*_s*/D}]\nset_max_delay -from [get_pins {u_native_usb/host/usb/bridge/snapshot_mailbox_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_cpu_q_*_s*/D}] 16.000\nset_false_path -hold -from [get_pins {u_native_usb/host/usb/bridge/snapshot_mailbox_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_cpu_q_*_s*/D}]\n",
+    "source_netlist_endpoints_verified": true,
+    "payload_hold_behavior_verified": false,
+    "physical_timing_verified": false,
+    "native_constraints_complete": false
+  },
+  "input_fifo_cdc_audit": {
+    "source": "boards/custom_138k/input_cdc.json",
+    "source_sha256": "8c17fb212c940ee848b587d97066ce44dd041a227300eb6f98bb375da4e4f016",
+    "pointers": {
+      "read": {
+        "source_registers": {
+          "6": "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_6_s1",
+          "5": "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_5_s1",
+          "4": "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_4_s1",
+          "3": "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_3_s1",
+          "2": "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_2_s1",
+          "1": "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_1_s1",
+          "0": "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_0_s1"
+        },
+        "first_stage": {
+          "5": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_5_s0",
+          "4": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_4_s0",
+          "3": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_3_s0",
+          "2": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_2_s0",
+          "1": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_1_s0",
+          "0": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_0_s0",
+          "6": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_6_s0"
+        },
+        "second_stage": {
+          "6": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_6_s0",
+          "5": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_5_s0",
+          "4": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_4_s0",
+          "3": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_3_s0",
+          "2": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_2_s0",
+          "1": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_1_s0",
+          "0": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_0_s0"
+        },
+        "source_clock": "audio_clk",
+        "destination_clock": "usb_clk"
+      },
+      "write": {
+        "source_registers": {
+          "5": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_5_s0",
+          "4": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_4_s0",
+          "3": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_3_s0",
+          "2": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_2_s0",
+          "1": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_1_s0",
+          "0": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_0_s0",
+          "6": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s0"
+        },
+        "first_stage": {
+          "5": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_5_s0",
+          "4": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_4_s0",
+          "3": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_3_s0",
+          "2": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_2_s0",
+          "1": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_1_s0",
+          "0": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_0_s0",
+          "6": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_6_s0"
+        },
+        "second_stage": {
+          "6": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_6_s0",
+          "5": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_5_s0",
+          "4": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_4_s0",
+          "3": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_3_s0",
+          "2": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_2_s0",
+          "1": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_1_s0",
+          "0": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_0_s0"
+        },
+        "source_clock": "usb_clk",
+        "destination_clock": "audio_clk"
+      }
+    },
+    "resolved_pin_selectors": {
+      "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_*_s*/Q": [
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_0_s1/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_1_s1/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_2_s1/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_3_s1/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_4_s1/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_5_s1/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_6_s1/Q"
+      ],
+      "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_*_s*/D": [
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_0_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_1_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_2_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_3_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_4_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_5_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_6_s0/D"
+      ],
+      "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_*_s*/Q": [
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_0_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_1_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_2_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_3_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_4_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_5_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_6_s0/Q"
+      ],
+      "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_*_s*/D": [
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_0_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_1_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_2_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_3_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_4_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_5_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_6_s0/D"
+      ],
+      "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_*_s*/Q": [
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_0_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_1_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_2_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_3_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_4_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_5_s0/Q"
+      ],
+      "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s*/Q": [
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s0/Q"
+      ],
+      "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_*_s*/D": [
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_0_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_1_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_2_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_3_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_4_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_5_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_6_s0/D"
+      ],
+      "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_*_s*/Q": [
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_0_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_1_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_2_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_3_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_4_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_5_s0/Q",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_6_s0/Q"
+      ],
+      "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_*_s*/D": [
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_0_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_1_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_2_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_3_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_4_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_5_s0/D",
+        "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_6_s0/D"
+      ]
+    },
+    "pointer_bits": 14,
+    "memory": "u_native_usb/input_owner/events/fifo/unbuffered/storage_storage_0_0_s",
+    "write_binary_alias_bit": 6,
+    "source_netlist_endpoints_verified": true,
+    "gray_encoding_behavior_verified": false,
+    "physical_timing_verified": false,
+    "native_constraints_complete": false
+  },
+  "master_volume_audit": {
+    "authority": "u_managed/u_audio/u_workstation/parameters",
+    "final_output": "u_fpc_audio",
+    "master_bits": [
+      "performance_words_486[56]",
+      "performance_words_486[57]",
+      "performance_words_486[58]",
+      "performance_words_486[59]",
+      "performance_words_486[60]",
+      "performance_words_486[61]",
+      "performance_words_486[62]",
+      "performance_words_486[63]"
+    ],
+    "authority_ports": [
+      "performance_words_56",
+      "performance_words_57",
+      "performance_words_58",
+      "performance_words_59",
+      "performance_words_60",
+      "performance_words_61",
+      "performance_words_62",
+      "performance_words_63"
+    ],
+    "effect_input_bits": [
+      "u_managed/u_audio/u_workstation/expression_gain[8]",
+      "u_managed/u_audio/u_workstation/expression_gain[9]",
+      "u_managed/u_audio/u_workstation/expression_gain[10]",
+      "u_managed/u_audio/u_workstation/expression_gain[11]",
+      "u_managed/u_audio/u_workstation/expression_gain[12]",
+      "u_managed/u_audio/u_workstation/expression_gain[13]",
+      "u_managed/u_audio/u_workstation/expression_gain[14]",
+      "u_managed/u_audio/u_workstation/expression_gain[15]"
+    ],
+    "double_master_attenuation": false,
+    "physical_audio_verified": false
+  },
+  "synthesis_clock_estimates": [
+    {
+      "clock": "clk_50m",
+      "required_mhz": 50.0,
+      "synthesis_estimated_mhz": 60.858,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "usb2_ulpi_clk",
+      "required_mhz": 100.0,
+      "synthesis_estimated_mhz": 81.251,
+      "estimate_meets_requirement": false
+    },
+    {
+      "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 76.8,
+      "synthesis_estimated_mhz": 68.668,
+      "estimate_meets_requirement": false
+    },
+    {
+      "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 48.0,
+      "synthesis_estimated_mhz": 66.359,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_lcd/u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 31.5,
+      "synthesis_estimated_mhz": 50.543,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+      "required_mhz": 400.0,
+      "synthesis_estimated_mhz": 1487.018,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 50.0,
+      "synthesis_estimated_mhz": 346.464,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+      "required_mhz": 100.0,
+      "synthesis_estimated_mhz": 1617.337,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_fpc_audio/u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+      "required_mhz": 49.152,
+      "synthesis_estimated_mhz": 84.763,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+      "required_mhz": 100.0,
+      "synthesis_estimated_mhz": 223.924,
+      "estimate_meets_requirement": true
+    },
+    {
+      "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+      "required_mhz": 148.5,
+      "synthesis_estimated_mhz": 236.558,
+      "estimate_meets_requirement": true
+    }
+  ],
+  "synthesis_warnings": 354,
+  "electrical_blocked": true,
+  "io_electrical_complete": false,
+  "timing_closed": false,
+  "place_route_verified": false,
+  "hardware_tested": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "bitstream_sha256": null
+}

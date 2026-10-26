@@ -14,6 +14,10 @@
 //                 plateau drains, underrun must occur (wet=0, no hang);
 //                 output comparison stops here (stream shift is expected)
 module tb_delay_ddr_equivalence;
+`ifdef WORKSTATION_DELAY_BLOCK_FIFOS
+    defparam u_dut.u_write_fifo.RAM_STYLE="block_ram";
+    defparam u_dut.u_read_fifo.RAM_STYLE="block_ram";
+`endif
     reg aclk=0; always #7 aclk=~aclk;
     reg mclk=0; always #10 mclk=~mclk;
     reg arst_n=0,mrst_n=0;
