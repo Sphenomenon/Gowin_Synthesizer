@@ -188,7 +188,7 @@ class NativeBoard(unittest.TestCase):
             self.assertEqual((stage / 'constraints/custom_138k.cst').read_text(), combined)
             self.assertEqual((stage / 'constraints/custom_138k.display.cst').read_bytes(),
                              (ROOT / integration.DISPLAY_CST).read_bytes())
-            self.assertEqual(metadata['identity'], 'custom138k-native-integration-20261026-a24')
+            self.assertEqual(metadata['identity'], 'custom138k-native-integration-20261027-a25')
             self.assertEqual((stage / 'constraints/custom_138k.ddr.cst').read_bytes(),
                              (ROOT / integration.DDR_CST).read_bytes())
             for constraint in (

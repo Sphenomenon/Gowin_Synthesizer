@@ -2,6 +2,7 @@
 module bt_verilog_core #(
     parameter [87:0] DEVICE_NAME="GW25K-PROTO",
     parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
+    parameter CACHE_METADATA_RAM_STYLE="block_ram",
     parameter CLK_HZ=50000000,
     parameter AUDIO_FILE="audio/test_tone.mem",
     parameter BAUD=115200,
@@ -111,7 +112,7 @@ module bt_verilog_core #(
         .command_count(command_count),.patch_fragments(patch_fragments),
         .hci_valid_mask(hci_valid_mask),.bd_addr(bd_addr),.boot_id(boot_id),.acl_packet_count(acl_packet_count)
     );
-    bt_gatt #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME(DEVICE_NAME)) application (
+    bt_gatt #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME(DEVICE_NAME),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) application (
         .clk(clk),.resetn(sub_resetn),.enable(enable && initialized && outputs_active),
         .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
         .boot_id(boot_id),.acl_packet_count(acl_packet_count),

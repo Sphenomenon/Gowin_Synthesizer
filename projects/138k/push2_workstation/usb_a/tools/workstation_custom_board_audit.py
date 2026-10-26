@@ -264,14 +264,15 @@ def audit(output):
                                         'custom138k-native-integration-20261025-a21',
                                         'custom138k-native-integration-20261025-a22',
                                         'custom138k-native-integration-20261025-a23',
-                                        'custom138k-native-integration-20261026-a24', IDENTITY_720,
+                                        'custom138k-native-integration-20261026-a24',
+                                        'custom138k-native-integration-20261027-a25', IDENTITY_720,
                                         PROFILES_720['720p60']['identity']) or
             metadata.get('top_module') != TOP or metadata.get('validation_stage') != 'integration_prepare_only' or
             metadata.get('source_policy') != 'explicit_native_board_on_resource_timing' or
             metadata.get('tmds_polarity_inverted') != [True] * 4 or
             metadata.get('native_usb') is not True or metadata.get('synthesis_allowed') is not True or
             metadata.get('audio_pin_behavior') != ('ak4493_i2s32_48k_mclk256fs_final_master_volume'
-                if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) else 'fpc_i2s32_48k_mclk512fs_muted_startup'
+                if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) else 'fpc_i2s32_48k_mclk512fs_muted_startup'
                 if metadata['identity'].endswith(('-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16')) else 'high_impedance_pending_actual_dac_identity') or
             metadata.get('cec_behavior') != 'released_high_impedance' or metadata.get('bitstream_sha256') is not None):
         raise ValueError('native board preparation policy changed')
@@ -308,17 +309,17 @@ def audit(output):
                          'tools/workstation_baselines.py', 'tools/stage_usb_firmware.py',
                          'tools/workstation_usb2_soc.py', 'tools/workstation_usb2_input.py',
                          'tools/workstation_pinout.py', 'baselines/index.json', 'boards/custom_138k/pinout.json'}
-    if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         required_snapshot.update(('boards/custom_138k/peripherals.json', 'tools/workstation_board_peripherals.py'))
         if (metadata.get('volume_application') != 'post_effects_post_source_selection_once_before_I2S_and_BLE' or
                 metadata.get('volume_control') != 'Push_CC71_or_CC79_and_25K_encoder1_to_authoritative_CC7' or
                 metadata.get('bluetooth', {}).get('transport_source') != 'example/RTL8723DS/vendor/rtl8723ds_ble'):
             raise ValueError('native volume or remote Bluetooth integration policy changed')
-    if metadata['identity'].endswith(('-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) and metadata.get('audio_clock_policy') != 'direct_12m288_reference_with_50m_watchdog_no_DAC_PLL':
+    if metadata['identity'].endswith(('-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) and metadata.get('audio_clock_policy') != 'direct_12m288_reference_with_50m_watchdog_no_DAC_PLL':
         raise ValueError('native DAC reference clock policy changed')
-    if metadata['identity'].endswith(('-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) and metadata.get('delay_fifo_storage') != 'two_65x512_banked_BSRAM_FIFOs_same_capacity_latency_and_gray_protocol':
+    if metadata['identity'].endswith(('-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) and metadata.get('delay_fifo_storage') != 'two_65x512_banked_BSRAM_FIFOs_same_capacity_latency_and_gray_protocol':
         raise ValueError('native delay FIFO storage policy changed')
-    if metadata['identity'].endswith(('-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         required_snapshot.add('tools/workstation_custom_timing.py')
         adaptations = metadata.get('native_timing_adaptations', {})
         if set(adaptations) != set(TIMING_INPUTS):
@@ -326,7 +327,7 @@ def audit(output):
         for relative, record in adaptations.items():
             if record['before'] != TIMING_INPUTS[relative] or record['after'] != sha(stage / relative):
                 raise ValueError('native checked timing adaptation identity changed: ' + relative)
-    if metadata['identity'].endswith(('-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a21', '-a22', '-a23', '-a24', '-a25')):
         required_snapshot.update(('tools/workstation_custom_flash.py', MODEL_FLASH_CST))
         reviewed_flash_cst(ROOT)
         if not metadata.get('model_flash', {}).get('use_flash_weights'):
@@ -335,25 +336,25 @@ def audit(output):
         required_snapshot.update((PLAN_SOURCE, 'tools/workstation_custom_clocks.py'))
         if metadata.get('clock_plan_source') != PLAN_SOURCE or metadata.get('clock_plan_sha256') != sha(ROOT / PLAN_SOURCE):
             raise ValueError('native clock plan identity changed')
-    if metadata['identity'].endswith(('-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         required_snapshot.add('tools/audit_clk50_timing.py')
-    if metadata['identity'].endswith(('-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         required_snapshot.add(FPC_AUDIO_CST)
-        if (not metadata['identity'].endswith(('-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) and
+        if (not metadata['identity'].endswith(('-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) and
                 metadata['enabled_inputs'].count('constraints/custom_138k.audio.cst') != 1):
             raise ValueError('native FPC audio electrical constraints not enabled')
         if (stage / 'constraints/custom_138k.audio.cst').read_bytes() != (ROOT / FPC_AUDIO_CST).read_bytes():
             raise ValueError('native FPC audio electrical constraints changed')
-    if metadata['identity'].endswith(('-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         required_snapshot.add(DISPLAY_CST)
-    if metadata['identity'].endswith(('-a4', '-a5', '-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a4', '-a5', '-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         required_snapshot.update(('tools/workstation_usb2_bridge_audit.py', 'tools/workstation_synthesis_netlist.py'))
-    if metadata['identity'].endswith(('-a5', '-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a5', '-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         required_snapshot.update((CDC_PLAN_SOURCE, 'tools/workstation_custom_usb2_cdc.py'))
         if (metadata.get('usb2_cdc_plan_source') != CDC_PLAN_SOURCE or
                 metadata.get('usb2_cdc_plan_sha256') != sha(ROOT / CDC_PLAN_SOURCE)):
             raise ValueError('native USB2 CDC plan identity changed')
-    if metadata['identity'].endswith(('-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         required_snapshot.update((INPUT_CDC_PLAN_SOURCE, 'tools/workstation_custom_input_cdc.py'))
         if (metadata.get('input_cdc_plan_source') != INPUT_CDC_PLAN_SOURCE or
                 metadata.get('input_cdc_plan_sha256') != sha(ROOT / INPUT_CDC_PLAN_SOURCE)):
@@ -361,23 +362,23 @@ def audit(output):
     if not required_snapshot.issubset(metadata['source_snapshot_sha256']):
         raise ValueError('native source snapshot lost required provenance')
     check_files(ROOT, metadata['source_snapshot_sha256'], 'source snapshot')
-    if metadata['identity'].endswith(('-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         check_files(ROOT.parents[3], metadata['bluetooth']['source_snapshot_sha256'], 'BLE business source')
         if metadata['bluetooth']['capacity_frames'] != 16384 or not metadata['bluetooth']['sources']:
             raise ValueError('native BLE source or short recording capacity changed')
         if (stage / 'constraints/custom_138k.bluetooth.cst').read_bytes() != (ROOT / 'boards/custom_138k/bluetooth.cst').read_bytes():
             raise ValueError('native BLE electrical constraints changed')
-    if metadata['identity'].endswith(('-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         if [name for name in metadata['enabled_inputs'] if name.endswith('.cst')] != ['constraints/custom_138k.cst']:
             raise ValueError('native project must select one complete physical constraint file')
         if (stage / 'constraints/custom_138k.display.cst').read_bytes() != (ROOT / DISPLAY_CST).read_bytes():
             raise ValueError('native display electrical constraints changed')
         parts = ('locations', 'audio', 'bluetooth', 'display')
-        if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+        if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
             parts += ('peripherals',)
-        if metadata['identity'].endswith(('-a21', '-a22', '-a23', '-a24')):
+        if metadata['identity'].endswith(('-a21', '-a22', '-a23', '-a24', '-a25')):
             parts += ('model_flash',)
-        if metadata['identity'].endswith('-a24'):
+        if metadata['identity'].endswith('-a24', '-a25'):
             if (stage / 'constraints/custom_138k.ddr.cst').read_bytes() != (ROOT / DDR_CST).read_bytes():
                 raise ValueError('native DDR hard-resource constraints changed')
             parts += ('ddr',)
@@ -398,7 +399,7 @@ def audit(output):
     if sha(parent) != metadata['parent_prepare_metadata_sha256'] or sha(pinout) != metadata['pinout_sha256']:
         raise ValueError('native parent or pinout evidence changed')
     plan = json.loads(pinout.read_text())
-    if metadata['identity'].endswith(('-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) and plan['constraints_sha256'] != sha(output / 'pinout/custom_138k.locations.cst'):
+    if metadata['identity'].endswith(('-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) and plan['constraints_sha256'] != sha(output / 'pinout/custom_138k.locations.cst'):
         raise ValueError('native location constraint identity changed')
     if (metadata['device'] != plan['device'] or metadata['electrical_blocked'] is not True or
             plan['electrical_check']['status'] != 'blocked'):
@@ -436,26 +437,26 @@ def audit(output):
     netlist = base.with_suffix('.vg')
     report = base.with_name(base.name + '_syn_rsc.xml')
     totals, rows = hierarchy(ElementTree.parse(report).getroot())
-    if metadata['identity'].endswith(('-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) and 'u_fpc_audio' not in rows:
+    if metadata['identity'].endswith(('-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) and 'u_fpc_audio' not in rows:
         raise ValueError('native FPC audio output missing from synthesis')
     netlist_text = netlist.read_text()
     if (len(re.findall(r'^module\s+' + TOP + r'\s*\(', netlist_text, re.M)) != 1 or
             re.search(r'^module\s+(iosys2|gw138k_push_workstation_top)\s*\(', netlist_text, re.M)):
         raise ValueError('native synthesized module identity changed')
     rom_words = check_rom(stage, netlist_text, metadata['firmware']['rom_sha256'])
-    if metadata['identity'].endswith(('-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         recorder = 'u_bluetooth/u_core/application/command_endpoint/recording'
         if rows.get(recorder, {}).get('Bsram', 0) < 32:
             raise ValueError('native BLE real PCM recording storage missing')
-    crossing_bundle = cdc_bundle(ROOT) if metadata['identity'].endswith(('-a5', '-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) else None
-    input_bundle = input_cdc_bundle(ROOT) if metadata['identity'].endswith(('-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) else None
+    crossing_bundle = cdc_bundle(ROOT) if metadata['identity'].endswith(('-a5', '-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) else None
+    input_bundle = input_cdc_bundle(ROOT) if metadata['identity'].endswith(('-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) else None
     extra_sdc = (crossing_bundle['sdc'] if crossing_bundle else '') + (input_bundle['sdc'] if input_bundle else '')
-    if metadata['identity'].endswith(('-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         extra_sdc += FPC_AUDIO_SDC
-    if metadata['identity'].endswith(('-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         extra_sdc += BLUETOOTH_SDC
     shared_crossings = None
-    if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         profile = reviewed_profile(ROOT)
         if metadata.get('peripherals') != dict(profile_source='boards/custom_138k/peripherals.json',
                 profile_sha256=sha(ROOT / 'boards/custom_138k/peripherals.json'), **profile):
@@ -463,20 +464,20 @@ def audit(output):
         if 'u_lcd' not in rows:
             raise ValueError('native LCD consumer missing from synthesis')
         extra_sdc += LCD_SDC
-    if metadata['identity'].endswith(('-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         bundle = shared_cdc_bundle(stage)
         if metadata.get('shared_cdc_adaptation') != {key: value for key, value in bundle.items() if key != 'sdc'}:
             raise ValueError('native shared CDC adaptation provenance changed')
         extra_sdc += bundle['sdc']
         shared_crossings = audit_shared_cdc(stage, netlist_text)
-    if metadata['identity'].endswith(('-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         extra_sdc += timing_constraints()
-    if metadata['identity'].endswith(('-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a21', '-a22', '-a23', '-a24', '-a25')):
         extra_sdc += MODEL_FLASH_SDC
     clocks = (audit_clocks(ROOT, stage, netlist_text, extra_sdc=extra_sdc, hdmi_mode=hdmi_mode)
               if not metadata['identity'].endswith('-a2') else None)
-    usb_resets = audit_usb_resets(netlist_text, clocks) if metadata['identity'].endswith(('-a20', '-a21', '-a22', '-a23', '-a24')) else None
-    if metadata['identity'].endswith(('-a21', '-a22', '-a23', '-a24')):
+    usb_resets = audit_usb_resets(netlist_text, clocks) if metadata['identity'].endswith(('-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) else None
+    if metadata['identity'].endswith(('-a21', '-a22', '-a23', '-a24', '-a25')):
         native = SynthesisNetlist(netlist_text, TOP)
         readers = [name for name, cell in native.cells.items()
                    if name.startswith('u_music/') and cell['kind'] == 'basic_pitch_flash_model_loader']
@@ -495,16 +496,16 @@ def audit(output):
             if (len(drivers) != 1 or native.pin(drivers[0], 'OEN') != control or
                     native.pin(drivers[0], 'I') not in data):
                 raise ValueError('native Flash shared-pad guard truth table changed: ' + port)
-    receivers = audit_native_receivers(netlist_text, clocks, metadata['identity'].endswith(('-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24'))) if metadata['identity'].endswith(('-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) else None
+    receivers = audit_native_receivers(netlist_text, clocks, metadata['identity'].endswith(('-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25'))) if metadata['identity'].endswith(('-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) else None
     resets = None
-    if metadata['identity'].endswith(('-a4', '-a5', '-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+    if metadata['identity'].endswith(('-a4', '-a5', '-a6', '-a7', '-a8', '-a9', '-a10', '-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')):
         if rows.get('u_native_usb/host/usb/bridge', {}).get('Bsram') != 2:
             raise ValueError('native bridge instance or dual-clock packet memories missing')
         resets = audit_bridge_resets(netlist_text, TOP)
     crossings = audit_usb2_cdc(ROOT, netlist_text, clocks) if crossing_bundle else None
     input_crossings = audit_input_fifo(ROOT, netlist_text, clocks) if input_bundle else None
-    master_volume = audit_master_volume(netlist_text) if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) else None
-    delay_storage = audit_delay_fifo_storage(netlist_text, rows) if metadata['identity'].endswith(('-a19', '-a20', '-a21', '-a22', '-a23', '-a24')) else None
+    master_volume = audit_master_volume(netlist_text) if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) else None
+    delay_storage = audit_delay_fifo_storage(netlist_text, rows) if metadata['identity'].endswith(('-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25')) else None
     return dict(schema=1, identity=metadata['identity'], validation_stage='native_full_profile_synthesis_only',
                 top_module=TOP, auditor_sha256=sha(Path(__file__)), integration_inputs_sha256=sha(manifest),
                 synthesis_log_sha256=sha(log), netlist_sha256=sha(netlist), resource_report_sha256=sha(report),

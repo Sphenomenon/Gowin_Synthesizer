@@ -52,11 +52,59 @@ class Bluetooth(unittest.TestCase):
             PROTOCOL / 'tests/tb_protocol_recording.sv',PROTOCOL / 'rtl/ble_protocol_command.v',
             PROTOCOL / 'rtl/ble_recording.v'],PROTOCOL,'PASS: recording START/STOP')
 
+    def test_request_cache_replay_eviction_and_expiry_with_both_storage_styles(self):
+        original=(PROTOCOL / 'tests/tb_protocol_command.sv').read_text()
+        original=original.replace('        elapsed=64000;',
+            '''        elapsed=62999;
+        make_request(2,36,64'h1020304050607080,0);send_request();verify_response(0,84);release_response();
+        elapsed=63000;''')
+        for style in ('block_ram','distributed_ram'):
+            with self.subTest(style=style),tempfile.TemporaryDirectory(prefix='ble-cache-time-') as directory:
+                bench=Path(directory) / 'tb_protocol_command.sv'
+                bench.write_text(original.replace('    ble_protocol_command dut(',
+                    f'    defparam dut.CACHE_METADATA_RAM_STYLE="{style}";\n    ble_protocol_command dut('))
+                self.run_simulation('tb_protocol_command',[
+                    bench,PROTOCOL / 'rtl/ble_protocol_command.v',PROTOCOL / 'rtl/ble_recording.v'],
+                    PROTOCOL,'PASS: protocol HELLO')
+
     def test_existing_gatt_database_and_acl_credits(self):
         self.run_simulation('tb_bt_gatt',[
             PROTOCOL / 'tests/tb_gatt_legacy.sv',PROTOCOL / 'adaptations/bt_gatt.v',
             PROTOCOL / 'rtl/ble_protocol_command.v',PROTOCOL / 'rtl/ble_recording.v'],
             PROTOCOL / 'vendor/rtl8723ds_ble','PASS:')
+
+    def test_streamed_completions_cover_full_event_and_reject_malformed_lengths(self):
+        original=(PROTOCOL / 'tests/tb_gatt_credits.sv').read_text()
+        anchor='        $display("PASS: negotiated ACL credits'
+        self.assertEqual(original.count(anchor),1)
+        extension='''        before_count=completed;
+        for(k=0;k<63;k=k+1) begin
+            put_word(3+4*k,k==62 ? 16'hf234 : k%3==0 ? 16'h0234 : 16'h0111);
+            put_word(5+4*k,k==62 ? 16'hffff : k+1);
+        end
+        receive_data[0]=8'h13;receive_data[1]=253;receive_data[2]=63;
+        send_packet(4,255);repeat(8)@(posedge clk);
+        if(completed!=before_count+66186 || dut.tx_credits!=4)
+            $fatal(1,"Full completion event lost matching handles beyond header cache");
+        before_count=completed;
+        receive_data[1]=252;send_packet(4,254);repeat(8)@(posedge clk);
+        if(completed!=before_count)$fatal(1,"Truncated completion event applied");
+        send_packet(4,255);repeat(8)@(posedge clk);
+        if(completed!=before_count)$fatal(1,"Bad HCI length applied");
+        for(k=0;k<63;k=k+1)put_word(3+4*k,16'h0111);
+        receive_data[1]=253;send_packet(4,255);repeat(8)@(posedge clk);
+        if(completed!=before_count)$fatal(1,"Foreign handles applied");
+        receive_data[1]=1;receive_data[2]=0;send_packet(4,3);repeat(8)@(posedge clk);
+        if(completed!=before_count)$fatal(1,"Empty completion event applied");
+        $display("PASS streamed completions: 63 handles, 16-bit counts, malformed lengths and foreign handles");
+'''
+        with tempfile.TemporaryDirectory(prefix='ble-completion-stream-') as directory:
+            bench=Path(directory) / 'tb_gatt_credits.sv'
+            bench.write_text(original.replace(anchor,extension+anchor))
+            self.run_simulation('tb_gatt_credits',[
+                bench,PROTOCOL / 'adaptations/bt_gatt.v',PROTOCOL / 'rtl/ble_protocol_command.v',
+                PROTOCOL / 'rtl/ble_recording.v'],PROTOCOL / 'vendor/rtl8723ds_ble',
+                'PASS streamed completions: 63 handles')
 
     def test_connector_drift_rejected_before_staging(self):
         for node in ('J2.56','J2.58'):

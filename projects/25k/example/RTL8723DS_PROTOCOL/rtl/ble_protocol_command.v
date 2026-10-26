@@ -2,7 +2,8 @@
 // Fragment payloads stream through CRC32; accepted requests fit in 36 bytes.
 // Every byte of longer unsupported requests is still checked before rejection.
 module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="audio/test_tone.mem",
-    parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000) (
+    parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
+    parameter CACHE_METADATA_RAM_STYLE="block_ram") (
     input wire clk, resetn, enable,
     input wire pcm_valid_i, source_ready_i, source_fault_i,
     input wire [31:0] pcm_pair_i,
@@ -47,7 +48,8 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     reg [7:0] reply[0:127];
     (* ram_style="block" *) reg [7:0] request_cache[0:2047];
     (* ram_style="block" *) reg [7:0] reply_cache[0:4095];
-    reg [31:0] cache_id[0:31], cache_time[0:31];
+    (* syn_ramstyle=CACHE_METADATA_RAM_STYLE *) reg [31:0] cache_id[0:31];
+    (* syn_ramstyle=CACHE_METADATA_RAM_STYLE *) reg [31:0] cache_time[0:31];
     reg [5:0] cache_req_length[0:31];
     reg [6:0] cache_reply_length[0:31];
     reg [31:0] cache_valid;

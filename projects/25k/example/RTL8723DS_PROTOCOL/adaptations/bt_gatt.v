@@ -5,6 +5,7 @@
 module bt_gatt #(
     parameter [87:0] DEVICE_NAME="GW25K-PROTO",
     parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
+    parameter CACHE_METADATA_RAM_STYLE="block_ram",
     parameter AUDIO_FILE="audio/test_tone.mem",
     parameter integer CLK_HZ = 50000000,
     parameter integer NOTIFY_MS = 500
@@ -37,7 +38,7 @@ module bt_gatt #(
     reg [2:0] state;
     reg [3:0] captured_type;
     reg [8:0] captured_length;
-    reg [7:0] packet [0:263];
+    reg [7:0] packet [0:31];
     reg [7:0] response [0:159];
     reg [8:0] response_length [0:1];
     reg [7:0] active_tx [0:79];
@@ -47,10 +48,11 @@ module bt_gatt #(
     wire [7:0] credit_limit=acl_packet_count==0 ? 8'd1 : acl_packet_count;
     wire tx_credit=tx_credits!=0;
     reg [31:0] ms_divider, notify_deadline;
-    reg [5:0] completion_index;
+    reg [11:0] completion_handle;
+    reg [7:0] completion_count_low;
     reg [31:0] completion_sum;
     integer i, used, start_handle, end_handle, attribute_type;
-    integer response_base, matching_completed;
+    integer response_base;
     reg [15:0] work_crc;
     reg [7:0] work_byte;
 
@@ -200,7 +202,7 @@ module bt_gatt #(
     wire business_session;
     integer business_handle, business_decl, business_value, uuid_index;
     reg uuid_match;
-    ble_protocol_command #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES)) command_endpoint (
+    ble_protocol_command #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) command_endpoint (
         .clk(clk),.resetn(resetn),.enable(enable && connected),
         .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
         .boot_id(boot_id),.att_value_limit(att_value_limit),.boot_valid(boot_id!=0),
@@ -590,7 +592,7 @@ module bt_gatt #(
             fragment_length<=0; business_token<=1; business_fragment<=0;
             business_offset<=0; business_data_length<=0;business_compact<=0;business_bulk<=0; summary_wait<=0;business_transfer<=0;
             capture_wait<=1; active_hci<=0;active_bulk<=0;att_mtu<=23;mtu_exchanged<=0; fast_link_pending<=0;fast_link_requested<=0;advertise_pending<=0; advertise_wait<=0; advertise_time<=0;
-            completion_index<=0; completion_sum<=0;
+            completion_handle<=0;completion_count_low<=0;completion_sum<=0;
             queued<=0; read_slot<=0; write_slot<=0; tx_busy<=0; tx_credits<=1;
         end else begin
             rx_consume<=0; tx_start<=0;
@@ -613,7 +615,7 @@ module bt_gatt #(
                             state<=WAIT_DROP;
                         end else begin
                             captured_type<=rx_type; captured_length<=rx_length;
-                            rx_payload_addr<=0; capture_wait<=1; state<=CAPTURE;
+                            rx_payload_addr<=0; capture_wait<=1;completion_sum<=0;state<=CAPTURE;
                         end
                     end else if(reply_valid && transfer_direct && response_is_data) begin
                         // OPEN_DIRECT: the unchanged, CRC-protected DATA is the
@@ -692,7 +694,16 @@ module bt_gatt #(
                     if(capture_wait) capture_wait<=0;
                     else begin
                         capture_wait<=1;
-                        packet[rx_payload_addr]<=rx_payload_data;
+                        if(rx_payload_addr<32)packet[rx_payload_addr]<=rx_payload_data;
+                        if(captured_type==4 && packet[0]==8'h13 && rx_payload_addr>=3) begin
+                            case(rx_payload_addr[1:0])
+                                3:completion_handle[7:0]<=rx_payload_data;
+                                0:completion_handle[11:8]<=rx_payload_data[3:0];
+                                1:completion_count_low<=rx_payload_data;
+                                2:if(connected && completion_handle==connection_handle)
+                                    completion_sum<=completion_sum+{rx_payload_data,completion_count_low};
+                            endcase
+                        end
                         if(rx_payload_addr+1'b1==captured_length) begin rx_consume<=1;state<=PARSE;end
                         else rx_payload_addr<=rx_payload_addr+1'b1;
                     end
@@ -724,9 +735,6 @@ module bt_gatt #(
                             if(packet[5]!=0) error_count<=error_count+1'b1;
                         end else if(packet[0]==8'h13 && captured_length>=7 &&
                                     captured_length==3+packet[2]*4) begin
-                            // One handle per clock avoids a long combinational
-                            // chain when an event contains many connections.
-                            completion_index<=0; completion_sum<=0;
                             state<=COMPLETIONS;
                         end
                     end else if(captured_type==2) begin
@@ -769,19 +777,12 @@ module bt_gatt #(
                     end
                 end
                 COMPLETIONS: begin
-                    matching_completed=0;
-                    if(connected &&
-                       (word_at(3+4*completion_index)&16'h0fff)==connection_handle)
-                        matching_completed=word_at(5+4*completion_index);
-                    completion_sum<=completion_sum+matching_completed;
-                    if(completion_index+1'b1==packet[2]) begin
-                        if(completion_sum+matching_completed!=0) begin
-                            completed_packets<=completed_packets+completion_sum+matching_completed;
-                            if(tx_credits+completion_sum+matching_completed>=credit_limit)tx_credits<=credit_limit;
-                            else tx_credits<=tx_credits+completion_sum+matching_completed;
-                        end
-                        state<=IDLE;
-                    end else completion_index<=completion_index+1'b1;
+                    if(connected && completion_sum!=0) begin
+                        completed_packets<=completed_packets+completion_sum;
+                        if(tx_credits+completion_sum>=credit_limit)tx_credits<=credit_limit;
+                        else tx_credits<=tx_credits+completion_sum;
+                    end
+                    state<=IDLE;
                 end
                 BIZ_COPY: begin
                     if(business_index+1==fragment_length) begin

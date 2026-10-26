@@ -29,6 +29,7 @@ module workstation_bluetooth #(
     wire core_active;
     bt_verilog_core #(
         .CLK_HZ(CLK_HZ),.EXTERNAL_PCM(1),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME("GW138K-MAIN"),
+        .CACHE_METADATA_RAM_STYLE("distributed_ram"),
         .DISABLE_MS(DISABLE_MS),.STARTUP_MS(STARTUP_MS),.SESSION_MS(0),
         .PATCH_FILE(`WORKSTATION_BLE_PATCH_FILE)
     ) u_core (
