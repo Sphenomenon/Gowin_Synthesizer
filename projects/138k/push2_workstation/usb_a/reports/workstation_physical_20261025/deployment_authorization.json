@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-25",
+  "physical_identity": "custom138k-native-physical-C1102515",
+  "user_code": "0xC1102515",
+  "physical_inputs_sha256": "8194351ae1421a84bb3e93900a36de6b134aa21aa7d6d25ef66adb6af996559f",
+  "timing_audit_sha256": "cbfc83892dac1ba9ce351a7ef850d739099a567709aa45941b7a55ca90486dc0",
+  "bitstream_sha256": "c5006e8f511fed84ced3cd284dabcb8a47359fadd4f64b4f34fdafc6ec880f68",
+  "sram_and_flash_authorized": false,
+  "authorization_superseded": true,
+  "latest_user_statement": "算了先不急着固化，我先上板验证，烧sram就好",
+  "current_authorization": "SRAM only; no additional Flash writes or automatic restoration.",
+  "setup_only_exception": true,
+  "user_statement": "本项目没有高时序要求的模块，-0.568ns已经完全可以接受了，不要钻牛角尖",
+  "deployment_request": "先不管电气阻断，完成整机位流后烧录固化进去",
+  "scope": "Current bitstream only; retain failed STA and prototype electrical status; preserve Flash partitions, backups and independent verification."
+}
