@@ -1,11 +1,14 @@
 """Generate minimal Gowin storage adaptations without modifying vendor RTL."""
 from pathlib import Path
+import argparse
 import hashlib
 import json
 
 project = Path(__file__).resolve().parent
 vendor = project / 'vendor' / 'rtl8723ds_ble'
-output = project / 'generated' / 'rtl'
+arguments = argparse.ArgumentParser()
+arguments.add_argument('--output', type=Path, default=project / 'generated' / 'rtl')
+output = arguments.parse_args().output.resolve()
 output.mkdir(parents=True, exist_ok=True)
 manifest = json.loads((vendor/'MANIFEST.json').read_text())['files']
 

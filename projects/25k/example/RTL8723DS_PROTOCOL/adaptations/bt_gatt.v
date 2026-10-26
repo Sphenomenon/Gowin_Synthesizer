@@ -3,11 +3,15 @@
 // outside this module. No processor or firmware executes this ATT database.
 // Two response slots keep ACL reception independent of controller TX credit.
 module bt_gatt #(
+    parameter [87:0] DEVICE_NAME="GW25K-PROTO",
+    parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
     parameter AUDIO_FILE="audio/test_tone.mem",
     parameter integer CLK_HZ = 50000000,
     parameter integer NOTIFY_MS = 500
 ) (
     input wire clk, input wire resetn, input wire enable,
+    input wire pcm_valid_i, source_ready_i, source_fault_i,
+    input wire [31:0] pcm_pair_i,
     input wire [63:0] boot_id,
     input wire [7:0] acl_packet_count,
     input wire rx_valid, input wire [3:0] rx_type,
@@ -84,20 +88,7 @@ module bt_gatt #(
     function [7:0] name_byte;
         input integer index;
         begin
-            case(index)
-                0:name_byte=8'h47;
-                1:name_byte=8'h57;
-                2:name_byte=8'h32;
-                3:name_byte=8'h35;
-                4:name_byte=8'h4b;
-                5:name_byte=8'h2d;
-                6:name_byte=8'h50;
-                7:name_byte=8'h52;
-                8:name_byte=8'h4f;
-                9:name_byte=8'h54;
-                10:name_byte=8'h4f;
-                default:name_byte=0;
-            endcase
+            name_byte=index>=0 && index<11 ? DEVICE_NAME >> (8*(10-index)) : 0;
         end
     endfunction
     function [7:0] sample_byte;
@@ -209,8 +200,9 @@ module bt_gatt #(
     wire business_session;
     integer business_handle, business_decl, business_value, uuid_index;
     reg uuid_match;
-    ble_protocol_command #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE)) command_endpoint (
+    ble_protocol_command #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES)) command_endpoint (
         .clk(clk),.resetn(resetn),.enable(enable && connected),
+        .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
         .boot_id(boot_id),.att_value_limit(att_value_limit),.boot_valid(boot_id!=0),
         .response_subscribed(response_subscribed),.control_open(enable),
         .recording_enable(enable),.transfer_subscribed(transfer_subscribed),

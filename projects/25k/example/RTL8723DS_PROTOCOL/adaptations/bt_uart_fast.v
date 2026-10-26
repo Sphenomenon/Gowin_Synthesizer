@@ -27,27 +27,28 @@ module bt_uart_fast #(
     reg [2:0] rx_bit;
     reg [7:0] rx_shift;
     reg rx_bad;
-    assign idle = !tx_busy && rx_state == 0 && rx_sync == 2'b11;
+    assign idle = !enable || (!tx_busy && rx_state == 0 && rx_sync[1]);
 
     assign tx = (enable && tx_busy) ? tx_shift[0] : 1'b1;
     assign tx_ready = enable && !tx_busy;
 
+    always @(posedge clk or negedge resetn)
+        if (!resetn) rx_sync <= 2'b11;
+        else rx_sync <= {rx_sync[0], rx};
+
     always @(posedge clk or negedge resetn) begin
         if (!resetn) begin
-            rx_sync <= 2'b11;
             tx_shift <= 11'h7ff; tx_bits <= 0; tx_count <= 0;
             tx_busy <= 0; tx_done <= 0;
             rx_state <= 0; rx_count <= 0; rx_bit <= 0;
             rx_shift <= 0; rx_data <= 0; rx_valid <= 0;
             rx_bad <= 0; rx_error <= 0;
         end else if (!enable) begin
-            rx_sync <= 2'b11;
             tx_shift <= 11'h7ff; tx_bits <= 0; tx_count <= 0;
             tx_busy <= 0; tx_done <= 0;
             rx_state <= 0; rx_count <= 0; rx_bit <= 0;
             rx_shift <= 0; rx_valid <= 0; rx_error <= 0; rx_bad <= 0;
         end else begin
-            rx_sync <= {rx_sync[0], rx};
             tx_done <= 0; rx_valid <= 0; rx_error <= 0;
             if (!tx_busy) begin
                 if (tx_valid) begin

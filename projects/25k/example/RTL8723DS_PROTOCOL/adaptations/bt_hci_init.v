@@ -6,6 +6,7 @@
 // HCI bootstrap and verified ROM-v2 patch download. All decisions execute in PL.
 // Patch bytes are a vendor RAM image; no ARM code runs this state machine.
 module bt_hci_init #(
+    parameter [87:0] DEVICE_NAME="GW25K-PROTO",
     parameter CLK_HZ = 50000000,
     parameter BAUD = 115200,
     parameter FAST_BAUD = 921600,
@@ -114,17 +115,17 @@ module bt_hci_init #(
                     0:command_parameter=8'h0d;
                     1:command_parameter=8'h0c;
                     2:command_parameter=8'h09;
-                    3:command_parameter=8'h47;
-                    4:command_parameter=8'h57;
-                    5:command_parameter=8'h32;
-                    6:command_parameter=8'h35;
-                    7:command_parameter=8'h4b;
-                    8:command_parameter=8'h2d;
-                    9:command_parameter=8'h50;
-                    10:command_parameter=8'h52;
-                    11:command_parameter=8'h4f;
-                    12:command_parameter=8'h54;
-                    13:command_parameter=8'h4f;
+                    3:command_parameter=DEVICE_NAME[87:80];
+                    4:command_parameter=DEVICE_NAME[79:72];
+                    5:command_parameter=DEVICE_NAME[71:64];
+                    6:command_parameter=DEVICE_NAME[63:56];
+                    7:command_parameter=DEVICE_NAME[55:48];
+                    8:command_parameter=DEVICE_NAME[47:40];
+                    9:command_parameter=DEVICE_NAME[39:32];
+                    10:command_parameter=DEVICE_NAME[31:24];
+                    11:command_parameter=DEVICE_NAME[23:16];
+                    12:command_parameter=DEVICE_NAME[15:8];
+                    13:command_parameter=DEVICE_NAME[7:0];
                 endcase
                 // GATT database revision salt avoids retaining old properties.
                 14: case(at)

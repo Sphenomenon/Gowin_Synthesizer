@@ -1,8 +1,11 @@
 // v1 business endpoint with a built-in-audio recording/download slot.
 // Fragment payloads stream through CRC32; accepted requests fit in 36 bytes.
 // Every byte of longer unsupported requests is still checked before rejection.
-module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="audio/test_tone.mem") (
+module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="audio/test_tone.mem",
+    parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000) (
     input wire clk, resetn, enable,
+    input wire pcm_valid_i, source_ready_i, source_fault_i,
+    input wire [31:0] pcm_pair_i,
     input wire [63:0] boot_id,
     input wire [8:0] att_value_limit,
     input wire boot_valid, response_subscribed, control_open,
@@ -98,8 +101,9 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     reg [31:0] snapshot_recording_id,snapshot_recorded_frames;
     wire [127:0] recording_payload={header[31],header[30],header[29],header[28],header[27],header[26],header[25],header[24],
         header[23],header[22],header[21],header[20],header[19],header[18],header[17],header[16]};
-    ble_recording #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE)) recording (
+    ble_recording #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES)) recording (
         .clk(clk),.resetn(resetn),.enable(recording_enable),.connected(enable),
+        .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
         .transfer_subscribed(transfer_subscribed),.boot_id(boot_id),.att_value_limit(att_value_limit),.elapsed_ms(elapsed_ms),
         .command_start(recording_start),.command_replay(recording_replay),
         .opcode(header[0]),.request_id(request_id),.nonce(request_nonce),

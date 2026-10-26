@@ -3,9 +3,12 @@
 module ble_recording #(
     parameter CLK_HZ=50000000,
     parameter AUDIO_FILE="audio/test_tone.mem",
-    parameter CAPACITY_FRAMES=48000
+    parameter CAPACITY_FRAMES=48000,
+    parameter EXTERNAL_PCM=0
 )(
     input wire clk, resetn, enable, connected, transfer_subscribed,
+    input wire pcm_valid_i, source_ready_i, source_fault_i,
+    input wire [31:0] pcm_pair_i,
     input wire [63:0] boot_id,
     input wire [8:0] att_value_limit,
     input wire [31:0] elapsed_ms,
@@ -50,11 +53,10 @@ module ble_recording #(
     reg [31:0] operation_counter, current_operation;
     reg [31:0] task_id[0:7], task_request[0:7], task_recording[0:7], task_time[0:7];
     reg [7:0] task_opcode[0:7];
-    reg [7:0] task_valid, task_finished;
+    reg [7:0] task_valid, task_finished, task_failed, task_expired;
     reg [2:0] start_task, stop_task;
     wire [2:0] new_task_slot=operation_counter[2:0];
-    wire task_slot_free=!task_valid[new_task_slot] ||
-        (task_finished[new_task_slot] && elapsed_ms-task_time[new_task_slot]>=60000);
+    wire task_slot_free=!task_valid[new_task_slot] || task_expired[new_task_slot];
     wire [2:0] queried_task=(payload[31:0]-1'b1)&7;
     reg transfer_open, block_pending, last_ack_valid, transfer_wide,transfer_long,transfer_extended,transfer_lossless,transfer_second;
     reg [15:0] extended_limit;
@@ -82,12 +84,23 @@ module ble_recording #(
     wire codec_write_valid,codec_done,codec_rice,codec_second;
     wire codec_active=state==C_CODEC_START || state==C_CODEC_WAIT;
     wire [31:0] codec_absolute=data_offset+{19'd0,codec_sample_addr};
-    wire [9:0] rom_addr=codec_active ? codec_absolute[11:2] :(state==C_DATA_PREP || state==C_DATA_BUILD) ? data_absolute[11:2] :
-        (state==C_BLOCK_PREP || state==C_BLOCK_CRC) ? (data_offset+index)>>2 : recorded_frames[9:0];
-    (* ram_style="block" *) reg [31:0] pcm_rom[0:1023];
+    wire [31:0] sample_address=codec_active ? codec_absolute>>2 :(state==C_DATA_PREP || state==C_DATA_BUILD) ? data_absolute>>2 :
+        (state==C_BLOCK_PREP || state==C_BLOCK_CRC) ? (data_offset+index)>>2 : recorded_frames;
     reg [31:0] rom_word;
-    initial $readmemh(AUDIO_FILE,pcm_rom);
-    always @(posedge clk) rom_word<=pcm_rom[rom_addr];
+    generate if(EXTERNAL_PCM) begin: live_capture
+        localparam ADDRESS_BITS=$clog2(CAPACITY_FRAMES);
+        (* ram_style="block" *) reg [31:0] pcm_memory[0:CAPACITY_FRAMES-1];
+        wire capture_write=resetn && enable && source_ready_i && !source_fault_i && pcm_valid_i &&
+            capture_state==0 && !stop_pending && (record_state==1 || record_state==2 || record_state==3);
+        always @(posedge clk) begin
+            if(capture_write) pcm_memory[recorded_frames[ADDRESS_BITS-1:0]]<=pcm_pair_i;
+            rom_word<=pcm_memory[sample_address[ADDRESS_BITS-1:0]];
+        end
+    end else begin: builtin_capture
+        (* ram_style="block" *) reg [31:0] pcm_rom[0:1023];
+        initial $readmemh(AUDIO_FILE,pcm_rom);
+        always @(posedge clk) rom_word<=pcm_rom[sample_address[9:0]];
+    end endgenerate
     ble_rice_encoder encoder(.clk(clk),.resetn(resetn),.enable(enable && connected && codec_active),
         .start(state==C_CODEC_START),.allow_second(data_second),.pcm_length(data_length),.sample_addr(codec_sample_addr),
         .sample_data(codec_sample_addr[1] ? rom_word[31:16] : rom_word[15:0]),
@@ -182,12 +195,13 @@ module ble_recording #(
             task_id[new_task_slot]<=operation_counter+1'b1;
             task_request[new_task_slot]<=request_id; task_recording[new_task_slot]<=rid;
             task_opcode[new_task_slot]<=opcode; task_time[new_task_slot]<=elapsed_ms;
-            task_valid[new_task_slot]<=1; task_finished[new_task_slot]<=0;
+            task_valid[new_task_slot]<=1; task_finished[new_task_slot]<=0;task_failed[new_task_slot]<=0;
+            task_expired[new_task_slot]<=0;
             result_payload<={320'd0,rid,operation_counter+1'b1};
             command_status<=1; command_length<=8; command_done<=1;
         end
     endtask
-    integer i;
+    integer task_index;
     always @(posedge clk) begin
         command_done<=0;
         if(!resetn || !enable) begin
@@ -195,7 +209,7 @@ module ble_recording #(
             record_state<=0; object_counter<=0; recording_id<=0; recorded_frames<=0;
             limit_frames<=0; object_crc<=0; recording_crc<=32'hffffffff;
             stop_reason<=0; sample_phase<=0; capture_state<=0; capture_word<=0; stop_pending<=0;
-            operation_counter<=0; current_operation<=0; task_valid<=0; task_finished<=0;
+            operation_counter<=0; current_operation<=0; task_valid<=0; task_finished<=0;task_failed<=0;task_expired<=0;
             start_task<=0; stop_task<=0;
             transfer_open<=0; block_pending<=0; last_ack_valid<=0; transfer_wide<=0;transfer_long<=0;transfer_extended<=0;transfer_lossless<=0;transfer_second<=0;extended_limit<=0;transfer_compact<=0;transfer_bulk<=0;transfer_direct<=0; transfer_counter<=0;
             transfer_id<=0; confirmed_offset<=0; transfer_time<=0;
@@ -204,6 +218,9 @@ module ble_recording #(
             data_recording<=0; data_nonce<=0; data_offset<=0; data_length<=0;data_wire_length<=0;data_lossless<=0;data_second<=0;data_codec<=0;
             data_crc<=0; crc_work<=0; index<=0; data_replay<=0;
         end else begin
+            for(task_index=0;task_index<8;task_index=task_index+1)
+                if(task_valid[task_index] && task_finished[task_index] &&
+                    elapsed_ms-task_time[task_index]>=60000) task_expired[task_index]<=1;
             if(sample_tick) sample_phase<=sample_phase+32'd48000-CLK_HZ;
             else sample_phase<=sample_phase+32'd48000;
             if(transfer_consume) transfer_valid<=0;
@@ -219,7 +236,10 @@ module ble_recording #(
                         record_state<=4; object_crc<=~recording_crc;
                         task_finished[stop_task]<=1; task_time[stop_task]<=elapsed_ms;
                         stop_pending<=0;
-                    end else if(sample_tick) capture_state<=1;
+                    end else if(EXTERNAL_PCM ? pcm_valid_i && source_ready_i && !source_fault_i : sample_tick) begin
+                        if(EXTERNAL_PCM) begin capture_word<=pcm_pair_i;capture_state<=2;end
+                        else capture_state<=1;
+                    end
                 end
                 1: begin capture_word<=rom_word; capture_state<=2; end
                 2,3,4: begin recording_crc<=crc_byte(recording_crc,capture_word[7:0]);
@@ -238,6 +258,15 @@ module ble_recording #(
                     end
                 end
             endcase
+            if(EXTERNAL_PCM && (record_state==1 || record_state==2 || record_state==3) &&
+                (!source_ready_i || source_fault_i || (pcm_valid_i && capture_state!=0))) begin
+                record_state<=5;stop_reason<=!source_ready_i ? 6 : 3;capture_state<=0;
+                if(!task_finished[start_task]) begin
+                    task_finished[start_task]<=1;task_failed[start_task]<=1;task_time[start_task]<=elapsed_ms;
+                end
+                if(stop_pending) begin task_finished[stop_task]<=1;task_failed[stop_task]<=1;task_time[stop_task]<=elapsed_ms;end
+                stop_pending<=0;
+            end
             if(connected) case(state)
                 C_IDLE: if(connected && command_start) begin
                     command_status<=0; result_payload<=0;
@@ -248,6 +277,7 @@ module ble_recording #(
                         end
                         8'h20: begin
                             if(payload_length!=8 || payload[31:0]!=1) reject(8'h81);
+                            else if(EXTERNAL_PCM && (!source_ready_i || source_fault_i)) reject(8'h83);
                             else if(record_state!=0) reject(8'h83);
                             else if(payload[63:32]>CAPACITY_FRAMES) reject(8'h89);
                             else if(!task_slot_free || operation_counter==32'hffffffff || object_counter==32'hffffffff) reject(8'h82);
@@ -275,7 +305,7 @@ module ble_recording #(
                             else begin
                                 result_payload<={32'd0,current_operation,16'd0,stop_reason,
                                     record_state==4 ? object_crc : 32'd0,CAPACITY,object_bytes,recorded_frames,
-                                    32'd48000,{5'd0,transfer_open,record_state==4,1'b0},8'd2,8'd1,record_state,recording_id,boot_id};
+                                    32'd48000,{5'd0,transfer_open,record_state==4,EXTERNAL_PCM && record_state==5},8'd2,8'd1,record_state,recording_id,boot_id};
                                 success(48);
                             end
                         end
@@ -363,8 +393,8 @@ module ble_recording #(
                 C_OPERATION: begin
                     if(!task_valid[queried_task] || task_id[queried_task]!=payload[31:0]) reject(8'h88);
                     else begin
-                        result_payload<={224'd0,task_recording[queried_task],32'd1,8'd0,8'd0,
-                            task_finished[queried_task] ? 8'd2 : 8'd1,task_opcode[queried_task],task_request[queried_task],task_id[queried_task]};
+                        result_payload<={224'd0,task_recording[queried_task],32'd1,8'd0,task_failed[queried_task] ? 8'h83 : 8'd0,
+                            task_failed[queried_task] ? 8'd3 : task_finished[queried_task] ? 8'd2 : 8'd1,task_opcode[queried_task],task_request[queried_task],task_id[queried_task]};
                         success(20);
                     end
                 end

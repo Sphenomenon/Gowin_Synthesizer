@@ -1,5 +1,7 @@
 // Business test adaptation; vendor remains frozen.
 module bt_verilog_core #(
+    parameter [87:0] DEVICE_NAME="GW25K-PROTO",
+    parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
     parameter CLK_HZ=50000000,
     parameter AUDIO_FILE="audio/test_tone.mem",
     parameter BAUD=115200,
@@ -12,6 +14,8 @@ module bt_verilog_core #(
     parameter NOTIFY_MS=500
 ) (
     input wire clk, resetn, enable, uart_rx,
+    input wire pcm_valid_i, source_ready_i, source_fault_i,
+    input wire [31:0] pcm_pair_i,
     output wire uart_tx, bt_enable, outputs_active,
     output wire initialized, connected, subscribed,
     output reg failed,
@@ -94,7 +98,7 @@ module bt_verilog_core #(
         .debug_state(h5_state),.rx_frames(rx_frames),.tx_frames(tx_frames),.retries(retries),
         .uart_errors(uart_errors),.protocol_errors(protocol_errors)
     );
-    bt_hci_init #(.CLK_HZ(CLK_HZ),.PATCH_BYTES(PATCH_BYTES),.PATCH_FILE(PATCH_FILE),.BAUD(BAUD),.FAST_BAUD(FAST_BAUD)) initializer (
+    bt_hci_init #(.CLK_HZ(CLK_HZ),.PATCH_BYTES(PATCH_BYTES),.PATCH_FILE(PATCH_FILE),.BAUD(BAUD),.FAST_BAUD(FAST_BAUD),.DEVICE_NAME(DEVICE_NAME)) initializer (
         .clk(clk),.resetn(sub_resetn),.enable(start_ready),.link_up(link_up),
         .fast_mode(fast_mode),.baud_idle(baud_idle),
         .tx_start(init_tx_start),.tx_type(init_tx_type),.tx_length(init_tx_length),
@@ -107,8 +111,9 @@ module bt_verilog_core #(
         .command_count(command_count),.patch_fragments(patch_fragments),
         .hci_valid_mask(hci_valid_mask),.bd_addr(bd_addr),.boot_id(boot_id),.acl_packet_count(acl_packet_count)
     );
-    bt_gatt #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS)) application (
+    bt_gatt #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME(DEVICE_NAME)) application (
         .clk(clk),.resetn(sub_resetn),.enable(enable && initialized && outputs_active),
+        .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
         .boot_id(boot_id),.acl_packet_count(acl_packet_count),
         .rx_valid(app_rx_valid),.rx_type(app_rx_type),.rx_length(app_rx_length),
         .rx_payload_addr(app_rx_addr),.rx_payload_data(app_rx_data),.rx_consume(app_rx_consume),
