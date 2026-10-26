@@ -1,6 +1,6 @@
 # 全链路架构与工程收敛
 
-核对日期：2026-10-21。范围：138K 工作站、25K 面板、Android、构建验证与发布。
+核对日期：2026-10-27。范围：138K 工作站、25K 面板、Android、构建验证与发布。
 
 本文基于仓库代码、构建脚本与已有记录。阶段 A 已完成生产输入闭包、prepare 比较和针对性仿真，见[实施记录](../../projects/138k/push2_workstation/usb_a/reports/SOURCE_CLOSURE_20261021.md)；阶段 A 本身未做物理验证。后续控制与装配重整已完成新候选综合、布局布线及授权的 SRAM 核心检查，范围与未完成验收见[边界重整报告](../../projects/138k/push2_workstation/usb_a/reports/ARCHITECTURE_REFACTOR_20261021.md)。标为“目标”的内容仍待实施；冻结来源与历史证据不改。
 
@@ -28,7 +28,10 @@
 | full85／`0x85` | 2026-10-12 有配置 Flash 写入、校验与核心 smoke 记录 | 全板时序、Push 重连、物理断电启动及完整声画验收仍不能视为完成；不能推断此刻 SRAM 内容 | [部署索引](../../projects/138k/push2_workstation/usb_a/LATEST_WORKSTATION.json)、[Flash 证据](../../projects/138k/push2_workstation/usb_a/reports/FLASH85_20261012.json) |
 | T24／`0xC1102024` | 离线整机时序、CDC、PLL 与功能绑定通过；物理 BSRAM 234/340，最小 setup 余量 0.022 ns | 未板测、未部署；不继承 full83 的实体验收 | [候选清单](../../projects/138k/push2_workstation/usb_a/RESOURCE_TIMING_CANDIDATE.json) |
 | 原生装配候选／`0xC110210A` | 新源码整机离线门禁通过；已 SRAM 下载、精确身份读回及 UART 核心 smoke，健康字为零 | 不是 Flash 发布；setup 仅 0.009 ns，SRAM 后自动启动失败标志仍置位，未做冷启动、物理 DAC/HDMI 或 Push/25K 验收 | [本轮证据](../../projects/138k/push2_workstation/usb_a/reports/architecture_refactor_20261021/verification.json) |
-| 25K MIDI 面板 | 已导入设备工程，已接受控件及 MIDI／PL 接口有离线实现和测试 | 不等于板间实测、专有 4×4 效果工作流或完整双向状态同步完成 | [25K 入口](../../projects/25k/README.md)、[接口规划](../../整机接口规划.md) |
+| 新板原生整机（a2～a24） | 显式新板约束、时钟／复位／CDC／DDR 时钟检查与离线综合通过；原生 USB2、音频、LCD 与 BLE 已接入组合根 | 从未时序闭合或上板：最佳物理候选 setup −0.568 ns，720p 候选 −0.705／−1.178 ns；BSRAM 已近上限（321/340）；USB3300 VIH≥2.0 V 却接 1.8 V A 侧，电气门禁仍 blocked | [物理实现](../../projects/138k/push2_workstation/usb_a/reports/WORKSTATION_PHYSICAL_20261025.md)、[BSRAM 明细](../../projects/138k/push2_workstation/usb_a/reports/BSRAM_NATIVE_DETAIL_20261023.md)、[新板说明](../../projects/138k/push2_workstation/usb_a/boards/custom_138k/README.md) |
+| 新板 HDMI | 官方 DDR 时钟约束修复后，1080p60（`0xC11026B3`）可出图且 DDR 校准与 BIST 通过 | 出图后闪烁、DDR 初始化有暖重配置前态依赖；720p30／720p60 已上板否决并回退到 1080p60，根因未证 | [闪烁排查](../../projects/138k/push2_workstation/usb_a/reports/WORKSTATION_HDMI_FLICKER_20261026.md)、[回退记录](../../projects/138k/push2_workstation/usb_a/reports/WORKSTATION_HDMI_ROLLBACK_1080P60_20261027.md) |
+| 138K BLE 业务 | 与独立验证的 `bt_verilog_core` 完成离线集成（GATT／H5／HCI）；独立工程协议与录音下载另有验收 | 板上 H5 链路从未建立（所有探针卡在握手前）；片内短录音仅 16384 帧≈0.341 s，非 DDR 长录音后端 | [原生蓝牙接入](../../projects/138k/push2_workstation/usb_a/reports/CUSTOM_BOARD_NATIVE_BLUETOOTH_20261023.md) |
+| 25K MIDI 面板 | 设备工程已导入并有离线实现与测试；`C1251031`（Host 热插拔）、`C1251032`（滑块 LED 反馈）已 Flash 写入、校验、重载，用户确认可用 | 不等于专有 4×4 效果工作流或完整双向状态同步完成；不代表 138K 侧集成 | [Host 热插拔](../../projects/25k/example/MIDI_KEYBOARD/reports/HOST_HOTPLUG_20261023.md)、[滑块反馈](../../projects/25k/example/MIDI_KEYBOARD/reports/SLIDER_FEEDBACK_20261023.md) |
 | Android＋25K BLE | 有业务协议、内置音频录音与可靠下载实现，另有电脑联调证据 | 不是从 138K 实际音频输出录音；Android 真机链路与 138K 集成仍须独立验收 | [Android](../../clients/android/README.md)、[25K 协议工程](../../projects/25k/example/RTL8723DS_PROTOCOL/README.md) |
 | D 采样器 | 有独立播放、音序器与三项效果后端 | 尚未成为整机音源；不能直接把旧 Push 8×8 映射用于 25K 连续 16 键 | [功能边界](../../整机接口规划.md#25k专有功能的当前完成度) |
 | 138K 触摸诊断 | 有 QT2160 独立工程、接线和调试资料 | 不等于已解决采样异常或已接入工作站 | [独立测试目录](../../projects/138k/push2_workstation/touchboard_test/) |
