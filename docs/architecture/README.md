@@ -92,6 +92,8 @@ HDMI 的分析输入来自最终 DAC 观测，再跨域提交 PCM、参考、声
 
 目标是共享已提交的业务状态和同帧音频分析结果，而非让每块屏幕各推导一套“当前参数”。显示刷新慢、丢旧帧或断开，不能反向阻塞发声；PL ACK 也不是参数已被音频域执行的证明。具体字节布局继续由 [显示数据契约](../../projects/138k/push2_workstation/usb_a/DISPLAY_DATA_LAYOUT_V1.md) 与 [PL 契约](../../projects/138k/push2_workstation/usb_a/GW25K_PANEL.md) 管理。
 
+显式新板开发装配另有 RGB LCD 消费同一性能状态快照，不改变 accepted 配置。该装配把 CC7 主音量放在效果与音源选择之后的 FPC I2S 适配器，只应用一次；公共参数提交仍归 `workstation_parameters`，CC11 表情仍在效果输入。其 BLE 短录音取样于音量／静音处理后的最终 48 kHz 帧，属于独立的有界采集边界，不等于 DDR 长录音或板上验收。来源、容量与门禁见[2026-10-24 整合记录](../../projects/138k/push2_workstation/usb_a/reports/WORKSTATION_INTEGRATION_20261024.md)。
+
 ### 3.5 录音与下载不能跨项目“拼成已完成”
 
 138K 现有 `audio_visual_extensions` 从工作站音频适配器采样，提供有界采集 FIFO／记录包；不是已经实现的“最终 DAC 全来源长录音＋DDR 文件服务”。TF 在最终输出选择处接入，因此不能仅凭存在 recorder 模块就宣称 TF 也已录入。

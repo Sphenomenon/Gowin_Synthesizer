@@ -1,0 +1,1657 @@
+{
+  "date": "2026-10-23",
+  "scope": "Existing full-workstation evidence; no rebuild or board operation",
+  "physical_identity": "custom138k-native-physical-20261023-b6",
+  "physical_acceptance": "Timing failed; not deployed",
+  "physical": {
+    "netlist": "/home/sphenicidition/.cache/fpga-validation-20261023/native-ble-a13-place2-route0/impl/pnr/custom_138k_integration.vo",
+    "netlist_sha256": "1eba2c1c67c774b471269b366e7d21a451ffbd6ab05e2f930112c0b203bd0217",
+    "report": "/home/sphenicidition/.cache/fpga-validation-20261023/native-ble-a13-place2-route0/impl/pnr/custom_138k_integration.rpt.txt",
+    "report_sha256": "fceb2a48e3927c6a626897021393d4bd09ea80d0d1fc06c935f829b1cd831411",
+    "used": 305,
+    "capacity": 340,
+    "primitive_types": {
+      "SDPB": 219,
+      "SDPX9B": 23,
+      "pROM": 51,
+      "SP": 3,
+      "pROMX9": 9
+    },
+    "top_level": {
+      "u_native_usb": 41,
+      "u_managed": 72,
+      "u_tf_audio": 5,
+      "u_music": 26,
+      "u_bluetooth": 67,
+      "u_memory": 32,
+      "u_video": 46,
+      "u_boot_memory": 16
+    },
+    "blocks": [
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/cpu/RegFilePlugin_regFile_RegFilePlugin_regFile_0_0_s",
+        "group": "usb_register_file"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/cpu/RegFilePlugin_regFile_RegFilePlugin_regFile_0_0_s0",
+        "group": "usb_register_file"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/cpu/gowin_add_SDPB_RegFilePlugin_regFile_RegFilePlugin_regFile_0_0_s",
+        "group": "usb_register_file"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/cpu/gowin_add_SDPB_RegFilePlugin_regFile_RegFilePlugin_regFile_0_0_s0",
+        "group": "usb_register_file"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_0_memory_0_0_0_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_0_memory_0_0_1_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_0_memory_0_0_2_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_0_memory_0_0_3_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_0_memory_0_0_4_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_0_memory_0_0_5_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_0_memory_0_0_6_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_0_memory_0_0_7_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_1_memory_1_0_0_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_1_memory_1_0_1_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_1_memory_1_0_2_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_1_memory_1_0_3_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_1_memory_1_0_4_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_1_memory_1_0_5_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_1_memory_1_0_6_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_1_memory_1_0_7_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_2_memory_2_0_0_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_2_memory_2_0_1_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_2_memory_2_0_2_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_2_memory_2_0_3_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_2_memory_2_0_4_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_2_memory_2_0_5_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_2_memory_2_0_6_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_2_memory_2_0_7_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_3_memory_3_0_0_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_3_memory_3_0_1_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_3_memory_3_0_2_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_3_memory_3_0_3_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_3_memory_3_0_4_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_3_memory_3_0_5_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_3_memory_3_0_6_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/bus/memory_3_memory_3_0_7_s",
+        "group": "usb_cpu_ram"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/usb/bridge/receive_memory_receive_memory_0_0_s",
+        "group": "usb_packet_buffers"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/usb/bridge/transmit_memory_transmit_memory_0_0_s",
+        "group": "usb_packet_buffers"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/usb/controller/mac/transmit_buffer_transmit_buffer_0_0_s",
+        "group": "usb_packet_buffers"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_native_usb/host/usb/controller/mac/receive_buffer_receive_buffer_0_0_s",
+        "group": "usb_packet_buffers"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_native_usb/input_owner/events/fifo/unbuffered/storage_storage_0_0_s",
+        "group": "usb_events"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/cue_player/cues_cues_0_0_s",
+        "group": "cue_player"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/cue_player/gowin_add_cues_cues_0_0_s",
+        "group": "cue_player"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/parameters/bend_rom_bend_rom_0_0_s",
+        "group": "parameters"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/parameters/gowin_add_bend_rom_bend_rom_0_0_s",
+        "group": "parameters"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/slot_mem_slot_mem_0_0_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/slot_mem_slot_mem_0_1_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/slot_mem_slot_mem_0_2_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/slot_mem_slot_mem_0_3_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/slot_mem_slot_mem_0_4_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/envelope_update_attack_q24_envelope_update_attack_q24_0_0_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/envelope_update_attack_q24_envelope_update_attack_q24_0_1_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/envelope_update_attack_q24_envelope_update_attack_q24_0_2_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/gowin_add_SDPB_envelope_update_attack_q24_envelope_update_attack_q24_0_0_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/gowin_add_SDPB_envelope_update_attack_q24_envelope_update_attack_q24_0_1_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/engine/gowin_add_SDPB_envelope_update_attack_q24_envelope_update_attack_q24_0_2_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_midi_step_rom/step_rom_step_rom_0_0_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_midi_step_rom/gowin_add_step_rom_step_rom_0_0_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_partial_step_generator_variable/ratio_rom_ratio_rom_0_0_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_partial_step_generator_variable/gowin_add_ratio_rom_ratio_rom_0_0_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_mode_timbre_rom/gain_rom_gain_rom_0_0_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_sine_interp/sine_rom_sine_rom_0_0_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_sine_interp/sine_rom_sine_rom_0_1_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_sine_interp/sine_rom_sine_rom_0_2_s",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_sine_interp/sine_rom_sine_rom_0_0_s0",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_sine_interp/sine_rom_sine_rom_0_1_s0",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/engine/u_sine_interp/sine_rom_sine_rom_0_2_s0",
+        "group": "dds"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/path_rom_path_rom_0_0_s",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/path_rom_path_rom_0_1_s",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/path_rom_path_rom_0_2_s",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/path_rom_path_rom_0_3_s",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/path_rom_path_rom_0_4_s",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/path_rom_path_rom_0_5_s",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/path_rom_path_rom_0_6_s",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/path_rom_path_rom_0_7_s",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/rotation_rom_rotation_rom_0_0_s",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/base_step[0]_0_s22",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/gowin_add_rotation_rom_rotation_rom_0_0_s",
+        "group": "vector"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_managed/u_audio/u_workstation/vector_engine/gowin_add_base_step[0]_0_s22",
+        "group": "vector"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/chorus_stage/memory_l_memory_l_0_0_s",
+        "group": "chorus"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/chorus_stage/memory_l_memory_l_0_1_s",
+        "group": "chorus"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/chorus_stage/memory_r_memory_r_0_0_s",
+        "group": "chorus"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/chorus_stage/memory_r_memory_r_0_1_s",
+        "group": "chorus"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[0].ram/g_bank[0].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[0].ram/g_bank[1].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[0].ram/g_bank[2].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[1].ram/g_bank[0].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[1].ram/g_bank[1].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[1].ram/g_bank[2].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[1].ram/g_bank[3].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[2].ram/g_bank[0].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[2].ram/g_bank[1].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[2].ram/g_bank[2].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[2].ram/g_bank[3].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[3].ram/g_bank[0].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[3].ram/g_bank[1].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[3].ram/g_bank[2].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[3].ram/g_bank[3].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[3].ram/g_bank[4].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/early_ram/g_bank[0].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/early_ram/g_bank[1].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/early_ram/g_bank[2].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_workstation/effects/reverb_stage/early_ram/g_bank[3].ram/ram",
+        "group": "reverb"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_extensions/recorder/g_packet_sdp[0].ram/ram",
+        "group": "recorder_packets"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_extensions/recorder/g_packet_sdp[0].ram/gowin_add_SDPB_ram",
+        "group": "recorder_packets"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_extensions/recorder/g_packet_sdp[1].ram/ram",
+        "group": "recorder_packets"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_extensions/recorder/g_packet_sdp[1].ram/gowin_add_SDPB_ram",
+        "group": "recorder_packets"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_extensions/recorder/g_packet_sdp[2].ram/ram",
+        "group": "recorder_packets"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_extensions/recorder/g_packet_sdp[2].ram/gowin_add_SDPB_ram",
+        "group": "recorder_packets"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_extensions/score/g_cue_sdp[0].ram/ram",
+        "group": "score_cues"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_extensions/score/g_cue_sdp[0].ram/gowin_add_SDPB_ram",
+        "group": "score_cues"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_extensions/score/g_cue_sdp[1].ram/ram",
+        "group": "score_cues"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_managed/u_audio/u_extensions/score/g_cue_sdp[1].ram/gowin_add_SDPB_ram",
+        "group": "score_cues"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_tf_audio/u_path/u_file_reader/name_ram_name_ram_0_0_s",
+        "group": "tf_audio"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_tf_audio/u_path/u_capture_fifo/mem_mem_0_0_s",
+        "group": "tf_audio"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_tf_audio/u_path/u_capture_fifo/mem_mem_0_1_s",
+        "group": "tf_audio"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_tf_audio/u_path/u_playback_fifo/mem_mem_0_0_s",
+        "group": "tf_audio"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_tf_audio/u_path/u_playback_fifo/mem_mem_0_1_s",
+        "group": "tf_audio"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/reduce_mem_reduce_mem_0_0_s",
+        "group": "cnn_intermediate"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/reduce_mem_reduce_mem_0_1_s",
+        "group": "cnn_intermediate"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/note_post_mem_note_post_mem_0_0_s",
+        "group": "cnn_intermediate"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_plane.g_plane_cache.u_plane_cache/cache_cache_0_0_s",
+        "group": "cnn_plane"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_plane.g_plane_cache.u_plane_cache/cache_cache_0_1_s",
+        "group": "cnn_plane"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache_0_0_s",
+        "group": "cnn_weights"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache_0_1_s",
+        "group": "cnn_weights"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache_0_2_s",
+        "group": "cnn_weights"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache_0_3_s",
+        "group": "cnn_weights"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache_0_4_s",
+        "group": "cnn_weights"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache_0_5_s",
+        "group": "cnn_weights"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache_0_6_s",
+        "group": "cnn_weights"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_weights.u_weight_cache/cache_cache_0_7_s",
+        "group": "cnn_weights"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_features.u_feature_ddr/g_tile_bank[0].ram/ram",
+        "group": "cnn_feature"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_features.u_feature_ddr/g_tile_bank[1].ram/ram",
+        "group": "cnn_feature"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_features.u_feature_ddr/g_tile_bank[2].ram/ram",
+        "group": "cnn_feature"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_features.u_feature_ddr/g_tile_bank[3].ram/ram",
+        "group": "cnn_feature"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_ddr_features.u_feature_ddr/g_tile_bank[4].ram/ram",
+        "group": "cnn_feature"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_full_dp.u_cnn_stream/u_viterbi/score_score_0_0_s",
+        "group": "viterbi"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_full_dp.u_cnn_stream/u_viterbi/emission_emission_0_0_s",
+        "group": "viterbi"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_full_dp.u_cnn_stream/u_viterbi/prev_score_prev_score_0_0_s",
+        "group": "viterbi"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_full_dp.u_cnn_stream/u_viterbi/cur_note_cur_note_0_0_s",
+        "group": "viterbi"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_full_dp.u_cnn_stream/u_viterbi/cur_onset_cur_onset_0_0_s",
+        "group": "viterbi"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_full_dp.u_cnn_stream/u_viterbi/gowin_add_SDPB_score_score_0_0_s",
+        "group": "viterbi"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_full_dp.u_cnn_stream/u_viterbi/gowin_add_SDPB_emission_emission_0_0_s",
+        "group": "viterbi"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_music/u_basic_pitch/g_full_dp.u_cnn_stream/u_viterbi/gowin_add_SDPB_prev_score_prev_score_0_0_s",
+        "group": "viterbi"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/acl_bridge/tx_ram_tx_ram_0_0_s",
+        "group": "ble_acl"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/acl_bridge/acl_ram_acl_ram_0_0_s",
+        "group": "ble_acl"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/acl_bridge/event_ram_event_ram_0_0_s",
+        "group": "ble_acl"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/transport/wire_ram_wire_ram_0_0_s",
+        "group": "ble_h5"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/transport/delivered_ram_delivered_ram_0_0_s",
+        "group": "ble_h5"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/transport/pending_ram_pending_ram_0_0_s",
+        "group": "ble_h5"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_0_0_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_0_1_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_0_2_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_0_3_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_0_4_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_0_5_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_0_6_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_0_7_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_1_0_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_1_1_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_1_2_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_1_3_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_1_4_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_1_5_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_1_6_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_bluetooth/u_core/initializer/patch_mem_patch_mem_1_7_s",
+        "group": "ble_patch"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/initializer/parameter_mem_parameter_mem_0_0_s",
+        "group": "ble_parameters"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/bulk_tx_bulk_tx_0_0_s",
+        "group": "ble_gatt"
+      },
+      {
+        "primitive": "SP",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/reply_cache_reply_cache_0_0_s",
+        "group": "ble_command_cache"
+      },
+      {
+        "primitive": "SP",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/reply_cache_reply_cache_0_1_s",
+        "group": "ble_command_cache"
+      },
+      {
+        "primitive": "SP",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/request_cache_request_cache_0_0_s",
+        "group": "ble_command_cache"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/cache_time_cache_time_0_0_s",
+        "group": "ble_command_cache"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/cache_time_cache_time_0_1_s",
+        "group": "ble_command_cache"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/gowin_add_SDPX9B_cache_time_cache_time_0_0_s",
+        "group": "ble_command_cache"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/gowin_add_SDPX9B_cache_time_cache_time_0_1_s",
+        "group": "ble_command_cache"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_0_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_1_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_2_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_3_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_4_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_5_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_6_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_7_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_8_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_9_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_10_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_11_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_12_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_13_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_14_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_15_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_16_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_17_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_18_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_19_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_20_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_21_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_22_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_23_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_24_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_25_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_26_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_27_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_28_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_29_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_30_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/live_capture.pcm_memory_live_capture.pcm_memory_0_31_s",
+        "group": "ble_pcm"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/transfer_bank0_transfer_bank0_0_0_s",
+        "group": "ble_download_buffer"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/transfer_bank1_transfer_bank1_0_0_s",
+        "group": "ble_download_buffer"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/transfer_bank2_transfer_bank2_0_0_s",
+        "group": "ble_download_buffer"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_bluetooth/u_core/application/command_endpoint/recording/transfer_bank3_transfer_bank3_0_0_s",
+        "group": "ble_download_buffer"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/mem_mem_0_0_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/mem_mem_0_1_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/mem_mem_0_2_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/mem_mem_0_3_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/mem_mem_0_4_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/mem_mem_0_5_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/mem_mem_0_6_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/mem_mem_0_7_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/gowin_add_SDPX9B_mem_mem_0_0_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/gowin_add_SDPX9B_mem_mem_0_1_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/gowin_add_SDPX9B_mem_mem_0_2_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/gowin_add_SDPX9B_mem_mem_0_3_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/gowin_add_SDPX9B_mem_mem_0_4_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/gowin_add_SDPX9B_mem_mem_0_5_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/gowin_add_SDPX9B_mem_mem_0_6_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_wr_data0/wr_fifo/gowin_add_SDPX9B_mem_mem_0_7_s",
+        "group": "ddr_write"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[0].u_ddr_phy_data_lane/u_in_fifo/mem0_mem0_0_0_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[0].u_ddr_phy_data_lane/u_in_fifo/mem0_mem0_0_1_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[0].u_ddr_phy_data_lane/u_in_fifo/gowin_add_SDPB_mem0_mem0_0_0_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[0].u_ddr_phy_data_lane/u_in_fifo/gowin_add_SDPB_mem0_mem0_0_1_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[1].u_ddr_phy_data_lane/u_in_fifo/mem0_mem0_0_0_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[1].u_ddr_phy_data_lane/u_in_fifo/mem0_mem0_0_1_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[1].u_ddr_phy_data_lane/u_in_fifo/gowin_add_SDPB_mem0_mem0_0_0_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[1].u_ddr_phy_data_lane/u_in_fifo/gowin_add_SDPB_mem0_mem0_0_1_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[2].u_ddr_phy_data_lane/u_in_fifo/mem0_mem0_0_0_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[2].u_ddr_phy_data_lane/u_in_fifo/mem0_mem0_0_1_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[2].u_ddr_phy_data_lane/u_in_fifo/gowin_add_SDPB_mem0_mem0_0_0_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[2].u_ddr_phy_data_lane/u_in_fifo/gowin_add_SDPB_mem0_mem0_0_1_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_in_fifo/mem0_mem0_0_0_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_in_fifo/mem0_mem0_0_1_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_in_fifo/gowin_add_SDPB_mem0_mem0_0_0_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_in_fifo/gowin_add_SDPB_mem0_mem0_0_1_s",
+        "group": "ddr_read"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/image_pixels_image_pixels_0_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/image_pixels_image_pixels_1_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/image_pixels_image_pixels_2_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/image_pixels_image_pixels_3_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/image_pixels_image_pixels_4_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/image_pixels_image_pixels_5_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/image_pixels_image_pixels_6_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/image_pixels_image_pixels_7_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/real_ram_real_ram_0_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/real_ram_real_ram_0_1_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/real_ram_real_ram_0_2_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/imag_ram_imag_ram_0_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/imag_ram_imag_ram_0_1_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/imag_ram_imag_ram_0_2_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/display_left_display_left_0_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/levels_left_levels_left_0_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/levels_right_levels_right_0_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_capture/samples_samples_0_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_capture/samples_samples_0_1_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_capture/samples_samples_0_2_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_capture/samples_samples_0_3_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_capture/samples_samples_0_4_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_capture/samples_samples_0_5_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_capture/samples_samples_0_6_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_capture/samples_samples_0_7_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "pROMX9",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_rom/twiddle_re_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "pROMX9",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_rom/twiddle_re_0_s0",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "pROMX9",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_columns/bin_column_0_s",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "pROMX9",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_columns/bin_column_0_s0",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "pROMX9",
+        "instance": "u_video/u_renderer/g_analysis.u_analysis/u_columns/bin_column_0_s1",
+        "group": "analysis_display"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_video/u_renderer/u_capture/samples_samples_0_0_s",
+        "group": "renderer"
+      },
+      {
+        "primitive": "SDPX9B",
+        "instance": "u_video/u_renderer/u_align/trace_samples_trace_samples_0_0_s",
+        "group": "renderer"
+      },
+      {
+        "primitive": "pROMX9",
+        "instance": "u_video/u_renderer/u_even/c_glyph_0_s1",
+        "group": "renderer"
+      },
+      {
+        "primitive": "pROMX9",
+        "instance": "u_video/u_renderer/u_even/gowin_add_c_glyph_0_s1",
+        "group": "renderer"
+      },
+      {
+        "primitive": "pROMX9",
+        "instance": "u_video/u_renderer/u_odd/c_glyph_0_s1",
+        "group": "renderer"
+      },
+      {
+        "primitive": "pROMX9",
+        "instance": "u_video/u_renderer/u_odd/gowin_add_c_glyph_0_s1",
+        "group": "renderer"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_data_reader/image_cache_image_cache_0_0_s",
+        "group": "display_data_reader"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_data_reader/image_cache_image_cache_0_1_s",
+        "group": "display_data_reader"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_data_reader/image_cache_image_cache_0_2_s",
+        "group": "display_data_reader"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_data_reader/image_cache_image_cache_0_3_s",
+        "group": "display_data_reader"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_data_reader/spectrum_cache_spectrum_cache_0_0_s",
+        "group": "display_data_reader"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_data_reader/wave_cache_wave_cache_0_0_s",
+        "group": "display_data_reader"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_scanout/g_line_sdp[0].ram/ram",
+        "group": "scanout"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_scanout/g_line_sdp[1].ram/ram",
+        "group": "scanout"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_scanout/g_line_sdp[2].ram/ram",
+        "group": "scanout"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_video/u_scanout/g_line_sdp[3].ram/ram",
+        "group": "scanout"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_boot_memory/rom_rom_0_0_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_boot_memory/rom_rom_0_1_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_boot_memory/rom_rom_0_2_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_boot_memory/rom_rom_0_3_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_boot_memory/rom_rom_0_4_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_boot_memory/rom_rom_0_5_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_boot_memory/rom_rom_0_6_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "pROM",
+        "instance": "u_boot_memory/rom_rom_0_7_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_boot_memory/ram_0_ram_0_0_0_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_boot_memory/ram_1_ram_1_0_0_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_boot_memory/ram_2_ram_2_0_0_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_boot_memory/ram_3_ram_3_0_0_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_boot_memory/ram_4_ram_4_0_0_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_boot_memory/ram_5_ram_5_0_0_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_boot_memory/ram_6_ram_6_0_0_s",
+        "group": "ae350_boot"
+      },
+      {
+        "primitive": "SDPB",
+        "instance": "u_boot_memory/ram_7_ram_7_0_0_s",
+        "group": "ae350_boot"
+      }
+    ],
+    "exclusive_subgroups": {
+      "usb_register_file": 4,
+      "usb_cpu_ram": 32,
+      "usb_packet_buffers": 4,
+      "usb_events": 1,
+      "cue_player": 2,
+      "parameters": 2,
+      "dds": 22,
+      "vector": 12,
+      "chorus": 4,
+      "reverb": 20,
+      "recorder_packets": 6,
+      "score_cues": 4,
+      "tf_audio": 5,
+      "cnn_intermediate": 3,
+      "cnn_plane": 2,
+      "cnn_weights": 8,
+      "cnn_feature": 5,
+      "viterbi": 8,
+      "ble_acl": 3,
+      "ble_h5": 3,
+      "ble_patch": 16,
+      "ble_parameters": 1,
+      "ble_gatt": 1,
+      "ble_command_cache": 7,
+      "ble_pcm": 32,
+      "ble_download_buffer": 4,
+      "ddr_write": 16,
+      "ddr_read": 16,
+      "analysis_display": 30,
+      "renderer": 6,
+      "display_data_reader": 6,
+      "scanout": 4,
+      "ae350_boot": 16
+    }
+  },
+  "current_synthesis": {
+    "identity": "custom138k-native-integration-20261023-a16",
+    "manifest_sha256": "daf4cb916b444b336ae8505bcc625ac032f6da1ba9416d9f4fadfa832d772268",
+    "netlist_sha256": "10af0ed4fe653a3e52f11352a636b3e04bfc4f87ada28b0ae9512e7ad78b1cdf",
+    "resource_report_sha256": "d6d2a3bdae3f1746a934238077191341e911042ed24f4b6d199e8bd09c6d72ab",
+    "equivalent": 266,
+    "top_level": {
+      "u_native_usb": 39,
+      "u_managed": 58,
+      "u_tf_audio": 5,
+      "u_music": 23,
+      "u_bluetooth": 65,
+      "u_memory": 16,
+      "u_video": 44,
+      "u_boot_memory": 16
+    }
+  },
+  "physical_input_synthesis": {
+    "identity": "custom138k-native-integration-20261023-a12",
+    "manifest_sha256": "b98923760982688a971752dc35b1d9e9eea43607deb4568d89c5ba5c235defb4",
+    "netlist_sha256": "d3e122500c1ae380d1605718ec01a7f736433a0c5d7d0512a53f7260cc61fba2",
+    "resource_report_sha256": "69010490224413402681625be5359ca77ffc3b6f24983b5486d8f24a42793542",
+    "equivalent": 266,
+    "top_level": {
+      "u_native_usb": 39,
+      "u_managed": 58,
+      "u_tf_audio": 5,
+      "u_music": 23,
+      "u_bluetooth": 65,
+      "u_memory": 16,
+      "u_video": 44,
+      "u_boot_memory": 16
+    }
+  },
+  "memory_comparison": {
+    "definition_count": 250,
+    "all_primitive_types_and_defparams_equal": true,
+    "top_level_equivalents_equal": true,
+    "scope": "Module-definition comparison including initialization; not netlist formal equivalence or a16 P&R"
+  },
+  "t24_reference": {
+    "netlist": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_124632_064482/Prj1/impl/pnr/Prj1.vo",
+    "netlist_sha256": "66b656f71b828ef35a4ace676effe2361ea5cb72a4b8dfca811697747a0d0039",
+    "report": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/resource_timing_20261020_124632_064482/Prj1/impl/pnr/Prj1.rpt.txt",
+    "report_sha256": "eea3f2a8553f4f5fcecc9a8c46a829a1c75d0e15515fed83669c4de199938892",
+    "used": 234,
+    "capacity": 340,
+    "primitive_types": {
+      "SDPB": 171,
+      "SDPX9B": 19,
+      "pROM": 35,
+      "pROMX9": 9
+    },
+    "top_level": {
+      "u_usb_host": 36,
+      "u_push": 1,
+      "u_managed": 72,
+      "u_tf_audio": 5,
+      "u_music": 26,
+      "u_memory": 32,
+      "u_video": 46,
+      "u_boot_memory": 16
+    }
+  }
+}
