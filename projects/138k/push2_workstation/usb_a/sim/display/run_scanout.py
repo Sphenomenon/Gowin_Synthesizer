@@ -19,7 +19,10 @@ def main():
     parser.add_argument('--native-queues', action='store_true')
     parser.add_argument('--frame-publication', action='store_true')
     parser.add_argument('--hdmi-mode', choices=('1080p60', '720p30', '720p60'), default='1080p60')
+    parser.add_argument('--read-latency-cycles', type=int, default=64)
     arguments = parser.parse_args()
+    if arguments.read_latency_cycles < 1:
+        parser.error('--read-latency-cycles must be positive')
     project = arguments.project.resolve()
     output = arguments.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -45,6 +48,7 @@ def main():
                     native_queues=arguments.native_queues,
                     frame_publication=arguments.frame_publication,
                     hdmi_mode=arguments.hdmi_mode,
+                    read_latency_cycles=arguments.read_latency_cycles,
                     input_sha256={str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in inputs},
                     cases=[])
     for path in inputs:
@@ -52,6 +56,7 @@ def main():
     command = ['iverilog', '-g2012', '-s', top, '-I', str(project),
                '-o', str(output / 'scanout.vvp'), *map(str, sources)]
     if not arguments.frame_publication:
+        command.insert(1, f'-Ptb_video_scanout.READ_LATENCY_CYCLES={arguments.read_latency_cycles}')
         command.insert(1, f'-Ptb_video_scanout.USE_QUEUES={int(arguments.native_queues)}')
         command.insert(1, f'-Ptb_video_scanout.VIDEO_720P30={int(arguments.hdmi_mode == "720p30")}')
         command.insert(1, f'-Ptb_video_scanout.VIDEO_720P60={int(arguments.hdmi_mode == "720p60")}')

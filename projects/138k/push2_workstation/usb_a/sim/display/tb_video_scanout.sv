@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 `include "src/memory/ddr_address_map.vh"
-module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_720P60=0);
+module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_720P60=0,
+                         READ_LATENCY_CYCLES=64);
     localparam integer VIDEO_720=VIDEO_720P30 || VIDEO_720P60;
     localparam integer WIDTH=VIDEO_720 ? 1280 : 1920, HEIGHT=8;
     localparam integer H_TOTAL=VIDEO_720P60 ? 1650 : VIDEO_720P30 ? 3300 : 2200;
@@ -87,7 +88,7 @@ module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_
     integer memory_cycle=0,queue_head=0,queue_tail=0;
     reg [28:0] queued_address[0:16383];
     integer queued_due[0:16383];
-    integer blocked_cycles=0,stall_mode=0,read_latency=64;
+    integer blocked_cycles=0,stall_mode=0,read_latency=READ_LATENCY_CYCLES;
     integer selected_generation=1;
     integer response_position,response_generation;
     reg stall_started=0;

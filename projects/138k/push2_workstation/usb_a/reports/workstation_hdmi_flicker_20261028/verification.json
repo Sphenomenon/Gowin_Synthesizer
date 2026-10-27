@@ -1,0 +1,226 @@
+{
+  "d1": {
+    "identity": "custom138k-hdmi-isolation-C11028D1",
+    "inputs_sha256": "435b9bf3ed321d9fc0eaddb8f2c0c2ed6f44ddded3e5d4cd41271677a8b31c39",
+    "bitstream_sha256": "c317ef331c78cc7adfe9000f9b4249174e491fd090853ece64716d2d32aab1c7",
+    "elapsed_seconds": 239.658366,
+    "global_worst_ns": {
+      "setup": 0.158,
+      "hold": -0.194,
+      "recovery": 2.158,
+      "removal": 0.344
+    },
+    "scanout_sha256": "e0d63b7efac69e0fc024d5e4e701ede88822aa826edaff3a30e01946dc4f642b",
+    "counter_windows": [
+      {
+        "finished_at": "2026-10-28T00:16:12.284372+08:00",
+        "last": {
+          "reset_released": true,
+          "memory_flags_hex": "0xEB",
+          "memory_flags": {
+            "ddr_calibrated": true,
+            "bist_done": true,
+            "bist_failed": false,
+            "front_valid": true,
+            "fetch_arbiter_or_shared_load_fault": false,
+            "underrun_seen": true,
+            "ddr_pll_locked": true,
+            "video_pll_locked": true
+          },
+          "video_flags_hex": "0x2F",
+          "video_flags": {
+            "hpd": true,
+            "video_locked": true,
+            "pixel_reset_released": true,
+            "scanout_reset_released": true,
+            "serializer_reset_asserted": false,
+            "measurement_valid": true
+          },
+          "rendered_frame_bit0": 0,
+          "underrun_lines": 60753,
+          "rendered_frames_mod256": 54,
+          "video_frames_mod256": 118
+        },
+        "csv_sha256": "d11014767022f317600cbc52fa5df846e7b650e7323de5bac7838a214e21434c"
+      },
+      {
+        "finished_at": "2026-10-28T00:16:14.924896+08:00",
+        "last": {
+          "reset_released": true,
+          "memory_flags_hex": "0xEB",
+          "memory_flags": {
+            "ddr_calibrated": true,
+            "bist_done": true,
+            "bist_failed": false,
+            "front_valid": true,
+            "fetch_arbiter_or_shared_load_fault": false,
+            "underrun_seen": true,
+            "ddr_pll_locked": true,
+            "video_pll_locked": true
+          },
+          "video_flags_hex": "0x2F",
+          "video_flags": {
+            "hpd": true,
+            "video_locked": true,
+            "pixel_reset_released": true,
+            "scanout_reset_released": true,
+            "serializer_reset_asserted": false,
+            "measurement_valid": true
+          },
+          "rendered_frame_bit0": 0,
+          "underrun_lines": 154998,
+          "rendered_frames_mod256": 138,
+          "video_frames_mod256": 29
+        },
+        "csv_sha256": "fb8f6719cfc8a73f78a21771786528a40d5f8da7296f49c9915dfd9044dc6110"
+      },
+      {
+        "finished_at": "2026-10-28T00:16:17.611602+08:00",
+        "last": {
+          "reset_released": true,
+          "memory_flags_hex": "0xEB",
+          "memory_flags": {
+            "ddr_calibrated": true,
+            "bist_done": true,
+            "bist_failed": false,
+            "front_valid": true,
+            "fetch_arbiter_or_shared_load_fault": false,
+            "underrun_seen": true,
+            "ddr_pll_locked": true,
+            "video_pll_locked": true
+          },
+          "video_flags_hex": "0x2F",
+          "video_flags": {
+            "hpd": true,
+            "video_locked": true,
+            "pixel_reset_released": true,
+            "scanout_reset_released": true,
+            "serializer_reset_asserted": false,
+            "measurement_valid": true
+          },
+          "rendered_frame_bit0": 0,
+          "underrun_lines": 244324,
+          "rendered_frames_mod256": 216,
+          "video_frames_mod256": 187
+        },
+        "csv_sha256": "f7359a059bd342253fa3625f8620c854f5a752219f3dc2b243ff3ece48e188a6"
+      }
+    ]
+  },
+  "d2": {
+    "identity": "custom138k-hdmi-isolation-C11028D2",
+    "inputs_sha256": "8c6b431f9ed1570997419b2518085cbb67b774f683c3fad08adbfa383face891",
+    "bitstream_sha256": "7047e5378c163303e830971af26d3c9dfe29685dae1090ef85def667e6a2123b",
+    "elapsed_seconds": 223.806169,
+    "global_worst_ns": {
+      "setup": 0.647,
+      "hold": -0.122,
+      "recovery": 2.378,
+      "removal": 0.283
+    },
+    "scanout_sha256": "a22e5f7e39b09b01f672c70062d82a76f22068064c2a7ffedff0c69915a27964",
+    "counter_windows": [
+      {
+        "finished_at": "2026-10-28T00:29:28.372422+08:00",
+        "last": {
+          "reset_released": true,
+          "memory_flags_hex": "0xEB",
+          "memory_flags": {
+            "ddr_calibrated": true,
+            "bist_done": true,
+            "bist_failed": false,
+            "front_valid": true,
+            "fetch_arbiter_or_shared_load_fault": false,
+            "underrun_seen": true,
+            "ddr_pll_locked": true,
+            "video_pll_locked": true
+          },
+          "video_flags_hex": "0x2F",
+          "video_flags": {
+            "hpd": true,
+            "video_locked": true,
+            "pixel_reset_released": true,
+            "scanout_reset_released": true,
+            "serializer_reset_asserted": false,
+            "measurement_valid": true
+          },
+          "rendered_frame_bit0": 1,
+          "underrun_lines": 59124,
+          "rendered_frames_mod256": 53,
+          "video_frames_mod256": 115
+        },
+        "csv_sha256": "7bc522fe23f6aedd83edb119d8902b23bf0fbf8abaf0f89d08b70ec7c2e4a467"
+      },
+      {
+        "finished_at": "2026-10-28T00:29:31.001617+08:00",
+        "last": {
+          "reset_released": true,
+          "memory_flags_hex": "0xEB",
+          "memory_flags": {
+            "ddr_calibrated": true,
+            "bist_done": true,
+            "bist_failed": false,
+            "front_valid": true,
+            "fetch_arbiter_or_shared_load_fault": false,
+            "underrun_seen": true,
+            "ddr_pll_locked": true,
+            "video_pll_locked": true
+          },
+          "video_flags_hex": "0x2F",
+          "video_flags": {
+            "hpd": true,
+            "video_locked": true,
+            "pixel_reset_released": true,
+            "scanout_reset_released": true,
+            "serializer_reset_asserted": false,
+            "measurement_valid": true
+          },
+          "rendered_frame_bit0": 1,
+          "underrun_lines": 150084,
+          "rendered_frames_mod256": 133,
+          "video_frames_mod256": 19
+        },
+        "csv_sha256": "bb43d113507ecd338c011081ad54d7431a570786afbb5b9630139ad878552ab3"
+      },
+      {
+        "finished_at": "2026-10-28T00:29:33.724618+08:00",
+        "last": {
+          "reset_released": true,
+          "memory_flags_hex": "0xEB",
+          "memory_flags": {
+            "ddr_calibrated": true,
+            "bist_done": true,
+            "bist_failed": false,
+            "front_valid": true,
+            "fetch_arbiter_or_shared_load_fault": false,
+            "underrun_seen": true,
+            "ddr_pll_locked": true,
+            "video_pll_locked": true
+          },
+          "video_flags_hex": "0x2F",
+          "video_flags": {
+            "hpd": true,
+            "video_locked": true,
+            "pixel_reset_released": true,
+            "scanout_reset_released": true,
+            "serializer_reset_asserted": false,
+            "measurement_valid": true
+          },
+          "rendered_frame_bit0": 0,
+          "underrun_lines": 239907,
+          "rendered_frames_mod256": 212,
+          "video_frames_mod256": 177
+        },
+        "csv_sha256": "71de2284fd0d8665f2e4ce7eee897c04605c005889a9dfdbdff7e901bc7f4500"
+      }
+    ]
+  },
+  "final_sram_user_code": "0xC11028D1",
+  "final_scope": "counter observer, original 8-credit scanout; flicker unresolved",
+  "credit16_experiment_retired": true,
+  "flash_accessed": false,
+  "hardware_acceptance": false,
+  "release_ready": false,
+  "rollback_result": "out/hdmi_isolation_20261028_d1/rollback_from_d2_20261028_003619/result.json",
+  "rollback_result_sha256": "eb8a5c8cd9d8dc4bd7b8e4e92dbe6dae7210ddb34d671159b953dbf82fc53281"
+}
