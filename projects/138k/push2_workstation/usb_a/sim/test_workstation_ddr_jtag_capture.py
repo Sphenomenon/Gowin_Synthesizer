@@ -13,6 +13,31 @@ SPEC.loader.exec_module(CAPTURE)
 
 
 class DdrCaptureDecode(unittest.TestCase):
+    def test_full_workstation_lane3_wide_raw_controls(self):
+        self.assertEqual(len(CAPTURE.DDR_LANE3_SIGNALS), 64)
+        self.assertEqual(len(set(CAPTURE.DDR_LANE3_SIGNALS)), 64)
+        sample = dict.fromkeys(CAPTURE.DDR_LANE3_SIGNALS, 0)
+        sample.update({'reset_n': 1, 'memory_flags[6]': 1})
+        sample[CAPTURE.DDR_LANE3_SIGNALS[40]] = 1
+        sample[CAPTURE.DDR_LANE3_SIGNALS[-1]] = 1
+        decoded = CAPTURE.snapshot(sample, 'workstation-ddr-lane3-64-v1')
+        self.assertTrue(decoded['ddr_pll_locked'])
+        self.assertFalse(decoded['ddr_calibrated'])
+        self.assertEqual(len(decoded['raw_controls']), 60)
+        self.assertEqual(decoded['raw_controls'][CAPTURE.DDR_LANE3_SIGNALS[40]], 1)
+        self.assertEqual(decoded['raw_controls'][CAPTURE.DDR_LANE3_SIGNALS[-1]], 1)
+        self.assertFalse(decoded['coherent_cross_domain_snapshot'])
+
+    def test_full_workstation_lane3_layout_rejected_before_board_access(self):
+        with tempfile.TemporaryDirectory() as directory:
+            candidate = Path(directory)
+            (candidate / 'inputs.json').write_text(json.dumps({
+                'full_workstation': False, 'signals': CAPTURE.DDR_LANE3_SIGNALS,
+                'signal_schema': 'workstation-ddr-lane3-64-v1'}))
+            with self.assertRaisesRegex(ValueError, 'unexpected full-workstation lane3 observer layout'):
+                CAPTURE.capture(candidate, 1)
+            self.assertFalse((candidate / 'jtag_capture_20261026_01').exists())
+
     def test_full_workstation_training_raw_controls(self):
         self.assertEqual(len(CAPTURE.DDR_TRAINING_SIGNALS), 16)
         sample = dict.fromkeys(CAPTURE.DDR_TRAINING_SIGNALS, 0)

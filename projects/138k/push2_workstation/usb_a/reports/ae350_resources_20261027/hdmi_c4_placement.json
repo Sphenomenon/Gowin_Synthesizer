@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-27",
+  "identity": "custom138k-native-physical-C11027C4",
+  "source_policy": "exact C1 a26 business synthesis netlist and CST/SDC; same C3 16-bit training probes, new identity; B3 placement-only reference, no old routes; disable timing-driven optimization for diagnosis, retain hold correction, final routed STA and all clock constraints",
+  "input_sha256": {
+    "custom_138k_integration.vg": "fc50a05311afeb88e2ce575398e96a2fc4ea6fcf003c35abc1bd43994ff14cf8",
+    "physical.cst": "40e45c93370e077a0442b79cfc0a084949821c2a0a366dc8b4437d99e11277a5",
+    "physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+    "parent_integration_inputs.json": "fe4e3a263bace2d6049a251018d3116fca6565ee88a11dd45c5536cd40605b92",
+    "parent_synthesis_audit.json": "88ae43cec66cb0cfc21c15ade7a3430548939b820681ba34597155d2fe4e6eb4",
+    "reference.p": "a79e13a9b0c81468a1794435cff5dd7d59f45eb6deca8a76315632f7d0ad3936",
+    "run.tcl": "be8b6727b4be10e9e8fb4bc922a79747bb675c5ae0141477c5043dab86f12252",
+    "workstation.gao": "b2e423cf06d07cb1e1d0d789a9c47946b5c8daf5fd2a2520a7d4cd125ac8a7cf"
+  },
+  "build": {
+    "started_at": "2026-10-27T16:28:06.219808+08:00",
+    "identity": "custom138k-native-physical-C11027C4",
+    "synthesis_rerun": false,
+    "incremental_pnr": false,
+    "incremental_place": true,
+    "timing_driven_optimization": false,
+    "final_routed_sta_requested": true,
+    "sram_programmed": false,
+    "flash_accessed": false,
+    "finished_at": "2026-10-27T17:06:11.710057+08:00",
+    "elapsed_seconds": 2285.490249,
+    "returncode": 1
+  },
+  "result": "routing_failed",
+  "unrouted_nets": 1785,
+  "build_log_sha256": "5b435e91e0c79b65dd6b53c29137a0e775a1d1092f563700f62f74ba3ca2acc5",
+  "bitstream_generated": false,
+  "bitstream_sha256": null,
+  "final_routed_timing_available": false,
+  "sram_programmed": false,
+  "flash_accessed": false,
+  "hardware_acceptance": false,
+  "release_ready": false,
+  "conclusion": "Stop reusing whole B3 placement across the changed C1 business netlist; this failed run does not establish a faster valid build."
+}

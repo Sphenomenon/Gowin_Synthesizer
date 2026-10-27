@@ -40,6 +40,27 @@ DDR_TRAINING_SIGNALS = ['reset_n', 'memory_flags[6]', 'memory_flags[0]', 'memory
     for name in ('WRITE_LEVELING', 'READ_CALIBRATION', 'EYE_SCAN')] + [
     DDR_PHY + f'u_ddr_init/read_calibration_logic_gen[{lane}].read_cal_done'
     for lane in range(4)]
+READ_CAL_STATES = ('READ_CAL_WRITE_CMD', 'READ_CAL_READ_CMD', 'READ_CAL_ACTIVE_CMD',
+                   'READ_CAL_PRECHARGE', 'READ_CAL_WAIT', 'READ_CAL_HOLD',
+                   'READ_CAL_READ_CMD_WAIT', 'READ_CAL_WRITE_CMD_WAIT',
+                   'READ_CAL_ACTIVE_CMD_WAIT', 'READ_CAL_RSEL_ADJ_WAIT',
+                   'READ_CAL_PRECHARGE_WAIT', 'READ_CAL_IDLE', 'READ_CAL_RBURST_CHECK',
+                   'READ_CAL_RBURST_CHECK_WAIT', 'READ_CAL_RBURST_CHECK_WAIT1',
+                   'READ_CAL_RSEL_ADJ', 'READ_CAL_DONE')
+DDR_LANE3_SIGNALS = DDR_TRAINING_SIGNALS[:12] + [
+    DDR_PHY + 'u_ddr_init/read_cal_state.' + state for state in READ_CAL_STATES
+] + DDR_TRAINING_SIGNALS[12:] + [
+    DDR_PHY + f'u_ddr_init/read_calibration_logic_gen[{lane}].rburst_{edge}'
+    for lane in range(4) for edge in ('pos', 'neg')] + [
+    DDR_PHY + f'u_ddr_init/read_calibration_logic_gen[3].{name}[{bit}]'
+    for name in ('read_i', 'ides_calib_cnt', 'cal_cnt') for bit in reversed(range(4))] + [
+    DDR_PHY + name for name in (
+        'u_ddr_init/readback_check_3_8', 'phy_rdbk_data_valid[3]',
+        'read_calibration_logic_gen[3].read_adj', 'u_ddr_init/rburst_cnt_check[3]',
+        'u_init_rmove_mod/sys_reset_ch[3]',
+        'u_ddr_init/read_calibration_logic_gen[3].rburst_t_r',
+        'u_ddr_init/read_calibration_logic_gen[3].rburst_neg_r',
+        'rvalid_Z_2[3]', 'u_ddr_init/rburst_reg[3]', 'init_rmove_done_r', 'RBURST_2[3]')]
 
 
 def digest(path):
@@ -63,12 +84,13 @@ def identity(destination, expected):
 
 
 def snapshot(sample, schema=None):
-    if schema == 'workstation-ddr-training-16-v1':
+    if schema in ('workstation-ddr-training-16-v1', 'workstation-ddr-lane3-64-v1'):
+        signals = DDR_LANE3_SIGNALS if schema == 'workstation-ddr-lane3-64-v1' else DDR_TRAINING_SIGNALS
         return dict(reset_released=bool(sample['reset_n']),
                     ddr_pll_locked=bool(sample['memory_flags[6]']),
                     ddr_calibrated=bool(sample['memory_flags[0]']),
                     front_valid=bool(sample['memory_flags[3]']),
-                    raw_controls={name: sample[name] for name in DDR_TRAINING_SIGNALS[4:]},
+                    raw_controls={name: sample[name] for name in signals[4:]},
                     coherent_cross_domain_snapshot=False)
     if schema == 'workstation-display-counters-16-v1':
         return dict(reset_released=bool(sample['reset_n']),
@@ -127,6 +149,9 @@ def capture(output, sequence):
     elif schema == 'workstation-ddr-training-16-v1':
         if manifest.get('full_workstation') is not True or manifest['signals'] != DDR_TRAINING_SIGNALS:
             raise ValueError('unexpected full-workstation training observer layout')
+    elif schema == 'workstation-ddr-lane3-64-v1':
+        if manifest.get('full_workstation') is not True or manifest['signals'] != DDR_LANE3_SIGNALS:
+            raise ValueError('unexpected full-workstation lane3 observer layout')
     elif manifest.get('full_workstation') is not False or width not in (20, 32):
         raise ValueError('expected an explicit 20-bit or 32-bit isolated DDR observer')
     elif schema == 'official-ddr-reference-32-v1':
