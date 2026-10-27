@@ -127,7 +127,7 @@ D5 的视频 PLL_INIT、四路 serializer 与 DDR reset / 配置审计无错误�
 
 ## 验收与回退
 
-本轮尚未操作板卡，没有 SRAM 下载、没有 Flash 写入，也没有新的实际 HDMI 画面验收。
+离线验证结束时尚未操作板卡；随后按用户明确授权完成下述 SRAM 下载，实际 HDMI 画面仍待用户验收。
 独立配置不带其他业务竞争，即使通过也不能替代整机 DDR 负载与屏闪回归。
 整机 HDMI 修复目标仍未完成，不能把这个诊断工程冒充完整工作站修复。
 
@@ -135,3 +135,12 @@ D5 的视频 PLL_INIT、四路 serializer 与 DDR reset / 配置审计无错误�
 `out/official_ddr_ab_20261026_01/c11026b3/impl/pnr/ao_0.fs`，
 SHA256 `a901738a4e07eb777cbc32eb571179e93ebae86e8488e573d4b65696e100011c`。
 它仍有既知屏闪和时序缺口；不能宣称严格 release ready。
+
+## SRAM 下载：2026-10-27 23:57（UTC+08）
+
+- 用户明确要求“烧进sram我来检查”；仅执行 SRAM Program 和独立 Read Device Codes，没有 Flash 操作或断电。
+- 下载 D5 `out/hdmi_isolation_20261027_d5/impl/pnr/ao_0.fs`，SHA256 `ecec68500569c14a24ff1d3558c1ebeb05403e5ba0e5e688d964fad326a5762b`。
+- 下载前独立读取为 B3 `C11026B3`；SRAM 下载完成后，两次独立读取均为 D5 `C11027D5`，器件 ID `0001081B`，状态码 `00022230`。未执行 SRAM 逐位回读。
+- 证据位于 `out/hdmi_isolation_20261027_d5/sram_deployment_20261027_235659/result.json` 及同目录日志。首次日志解析器未识别 `User Code is:`，已修正并额外独立读取确认，没有重复下载。
+- 板上保留 D5 等待用户检查当前 UI、动态内容和屏闪。未进行 GAO 运行状态采样，不能由 UserCode 推断 DDR 就绪或 HDMI 显示正常。
+- D5 已知 hold slack `-0.117 ns` 仍然存在；本次为诊断上板，不构成时序关闭、画面验收或完整工作站验收。
