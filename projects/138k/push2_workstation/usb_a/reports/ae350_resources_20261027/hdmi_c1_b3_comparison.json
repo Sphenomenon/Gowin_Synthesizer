@@ -1,0 +1,314 @@
+{
+  "date": "2026-10-27",
+  "timezone": "Asia/Shanghai",
+  "created_at": "2026-10-27T13:20:31.318884+08:00",
+  "identity": "C11027C1-vs-C11026B3-HDMI-black-screen",
+  "user_observation": "HDMI monitor detects signal but shows black screen on current C1 workstation.",
+  "current_user_code": "0xC11027C1",
+  "current_fs_sha256": "91101332be8d8d5ac3511cc36227d77ab0fe2511f5869efb90c657b55ee1386a",
+  "reference_user_code": "0xC11026B3",
+  "reference_fs_sha256": "a901738a4e07eb777cbc32eb571179e93ebae86e8488e573d4b65696e100011c",
+  "constraints": {
+    "physical.cst": {
+      "equal": true,
+      "sha256": "40e45c93370e077a0442b79cfc0a084949821c2a0a366dc8b4437d99e11277a5"
+    },
+    "physical.sdc": {
+      "equal": true,
+      "sha256": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354"
+    }
+  },
+  "ddr_locations": [
+    {
+      "instance": "u_memory/u_pll/u_pll_0/PLL_inst",
+      "location": "PLL_L[0]",
+      "exactly_once_in_both": true
+    },
+    {
+      "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_dll",
+      "location": "DDRDLLM_BL",
+      "exactly_once_in_both": true
+    },
+    {
+      "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv",
+      "location": "LEFTSIDE[4]",
+      "exactly_once_in_both": true
+    },
+    {
+      "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0",
+      "location": "R[40:50]C[70:90]",
+      "exactly_once_in_both": true
+    }
+  ],
+  "actual_pnr_commands_use_checked_constraints": true,
+  "ddr_fast_clock_resources_in_both": [
+    "BANK6_HCLK0",
+    "BANK7_HCLK0"
+  ],
+  "enabled_input_count": 230,
+  "identical_enabled_inputs": 225,
+  "changed_enabled_inputs": [
+    {
+      "path": "constraints/custom_138k.cst",
+      "type": "file.cst",
+      "B3_sha256": "bbf9ed4c1bc21ed5aaafdddf7971ca4959b0bc59b507852593bcd1c18eb00a8c",
+      "C1_sha256": "13440c753db683b2bcab509068dd5b3d3ffe652f37befc9b9eaf30780ab70920",
+      "equal": false
+    },
+    {
+      "path": "native_bluetooth/ble_protocol_command.v",
+      "type": "file.verilog",
+      "B3_sha256": "45c6d1514b77843f87fd924a3882ffbcbee898c713d508a2f5d32ea0854174a3",
+      "C1_sha256": "241960ea0ffe232905e6537bb4d46f236963bd901a6603f03c7c28c9094bd34e",
+      "equal": false
+    },
+    {
+      "path": "native_bluetooth/bt_gatt.v",
+      "type": "file.verilog",
+      "B3_sha256": "f16381bd2195c10ec7474950af22390c517ea3a46c3bfacbbcae5b7dc8c02f84",
+      "C1_sha256": "bcecc9a137a0982f11084c9b5fe90f82e50a5683024e87d710cab5023f49852c",
+      "equal": false
+    },
+    {
+      "path": "native_bluetooth/bt_verilog_core.v",
+      "type": "file.verilog",
+      "B3_sha256": "7d03991528d4f4a45ed4ce78f70e13568bb94585a5adf37afe98a5c1b874a04c",
+      "C1_sha256": "83fe791a7ff42cbf4d70ae76d0c7f3e6b644c61ba23898608f3be98d38ea5c5b",
+      "equal": false
+    },
+    {
+      "path": "rtl/bluetooth/workstation_bluetooth.sv",
+      "type": "file.verilog",
+      "B3_sha256": "aeb90f0396a61c8f3db8f886d887ebb0a546303a2e6c25e43a209010692bf4d8",
+      "C1_sha256": "0186acdbc61940900a79c83b381dd025e3b87bc25b8ced0a5a0ce092aab5f6c9",
+      "equal": false
+    }
+  ],
+  "ddr_ip_configuration_audit_equal": true,
+  "video_pll_parameters_equal": true,
+  "video_mode_both": "1920x1080@60, 148.5 MHz pixel / 742.5 MHz serial",
+  "pnr_strategy": {
+    "B3": "incremental P&R using E4 routed databases",
+    "C1": "full non-incremental P&R after full synthesis"
+  },
+  "observations": [
+    {
+      "directory": "projects/138k/push2_workstation/usb_a/out/hdmi_c1_b3_compare_20261027/jtag_capture_20261026_01",
+      "started_at": "2026-10-27T13:13:04.673012+08:00",
+      "finished_at": "2026-10-27T13:13:06.641504+08:00",
+      "samples": 1024,
+      "status": {
+        "reset_released": true,
+        "memory_flags_hex": "0xC0",
+        "memory_flags": {
+          "ddr_calibrated": false,
+          "bist_done": false,
+          "bist_failed": false,
+          "front_valid": false,
+          "fetch_arbiter_or_shared_load_fault": false,
+          "underrun_seen": false,
+          "ddr_pll_locked": true,
+          "video_pll_locked": true
+        },
+        "video_flags_hex": "0x26",
+        "video_flags": {
+          "hpd": false,
+          "video_locked": true,
+          "pixel_reset_released": true,
+          "scanout_reset_released": false,
+          "serializer_reset_asserted": false,
+          "measurement_valid": true
+        },
+        "rendered_frame_bit0": 0
+      },
+      "gao_open_and_ram_read_confirmed": true,
+      "identity_after": "0xC11027C1",
+      "summary_sha256": "3aefb00cdea8eefaaf922c936386e415ebbe65affe015b7fb8bedf111c8b9528",
+      "csv_sha256": "2dad6094037da593a99980f226a3160f45f8e0557da7e80a7ef78617399acb34"
+    },
+    {
+      "directory": "projects/138k/push2_workstation/usb_a/out/hdmi_c1_b3_compare_20261027/jtag_capture_20261026_02",
+      "started_at": "2026-10-27T13:13:07.401146+08:00",
+      "finished_at": "2026-10-27T13:13:09.269250+08:00",
+      "samples": 1024,
+      "status": {
+        "reset_released": true,
+        "memory_flags_hex": "0xC0",
+        "memory_flags": {
+          "ddr_calibrated": false,
+          "bist_done": false,
+          "bist_failed": false,
+          "front_valid": false,
+          "fetch_arbiter_or_shared_load_fault": false,
+          "underrun_seen": false,
+          "ddr_pll_locked": true,
+          "video_pll_locked": true
+        },
+        "video_flags_hex": "0x26",
+        "video_flags": {
+          "hpd": false,
+          "video_locked": true,
+          "pixel_reset_released": true,
+          "scanout_reset_released": false,
+          "serializer_reset_asserted": false,
+          "measurement_valid": true
+        },
+        "rendered_frame_bit0": 0
+      },
+      "gao_open_and_ram_read_confirmed": true,
+      "identity_after": "0xC11027C1",
+      "summary_sha256": "a6d0877b7e783d6c3516cadfb15ac4b5c4d46024ffc7872198fbecc4cab57455",
+      "csv_sha256": "2dad6094037da593a99980f226a3160f45f8e0557da7e80a7ef78617399acb34"
+    },
+    {
+      "directory": "projects/138k/push2_workstation/usb_a/out/hdmi_c1_b3_compare_20261027/jtag_capture_20261026_03",
+      "started_at": "2026-10-27T13:13:10.030016+08:00",
+      "finished_at": "2026-10-27T13:13:11.848231+08:00",
+      "samples": 1024,
+      "status": {
+        "reset_released": true,
+        "memory_flags_hex": "0xC0",
+        "memory_flags": {
+          "ddr_calibrated": false,
+          "bist_done": false,
+          "bist_failed": false,
+          "front_valid": false,
+          "fetch_arbiter_or_shared_load_fault": false,
+          "underrun_seen": false,
+          "ddr_pll_locked": true,
+          "video_pll_locked": true
+        },
+        "video_flags_hex": "0x26",
+        "video_flags": {
+          "hpd": false,
+          "video_locked": true,
+          "pixel_reset_released": true,
+          "scanout_reset_released": false,
+          "serializer_reset_asserted": false,
+          "measurement_valid": true
+        },
+        "rendered_frame_bit0": 0
+      },
+      "gao_open_and_ram_read_confirmed": true,
+      "identity_after": "0xC11027C1",
+      "summary_sha256": "81eca22e6839a1b92d6aed537da455c03403adcb44b5f95f303d24348657d690",
+      "csv_sha256": "2dad6094037da593a99980f226a3160f45f8e0557da7e80a7ef78617399acb34"
+    }
+  ],
+  "B3_historical_observations": [
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/jtag_capture_20261026_01/status_summary.json",
+      "started_at": "2026-10-26T10:40:29.572796+08:00",
+      "memory_flags": "0xEB",
+      "video_flags": "0x2E",
+      "sha256": "faee4850bec01e5e41ec1c4fbeb166d4effcac50c46afbe4efbad1d6dfefcfeb"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/jtag_capture_20261026_05/status_summary.json",
+      "started_at": "2026-10-26T11:57:09.352210+08:00",
+      "memory_flags": "0xC0",
+      "video_flags": "0x26",
+      "sha256": "dc9fe45d26a9d5507f06ed77167540b1e59467ba5cf7bed263cf437e8391bb34"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/jtag_capture_20261026_06/status_summary.json",
+      "started_at": "2026-10-26T11:57:11.984011+08:00",
+      "memory_flags": "0xC0",
+      "video_flags": "0x26",
+      "sha256": "594383beec04718fa05d86d41f8dc8918a5112db47811cd7addb495af3cd8070"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/jtag_capture_20261026_07/status_summary.json",
+      "started_at": "2026-10-26T11:59:44.392052+08:00",
+      "memory_flags": "0xEB",
+      "video_flags": "0x2E",
+      "sha256": "39123a46a462b8ca8fbddfa4ff5605c26a9d2d267983d3e3a18f38a6b238b01c"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/physical_inputs.json",
+      "sha256": "28dcbd2829583b3c19d7b93c8c79cc941acd8cb668493bb138a2603123c962b6"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/parent_integration_inputs.json",
+      "sha256": "88af98466644d04b5cd1b70d1e0695571530e3201abf6beb371f258d7dfb7863"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/physical.cst",
+      "sha256": "40e45c93370e077a0442b79cfc0a084949821c2a0a366dc8b4437d99e11277a5"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/physical.sdc",
+      "sha256": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/impl/pnr/cmd.do",
+      "sha256": "02f34800e2ba2d4f10c2ff339bf1c57beaa3ad09332327fc53d83910bf7e6c77"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/impl/pnr/custom_138k_integration.rpt.txt",
+      "sha256": "a4135e019801fa3406771a636dee4630b71a6732bffb5351aa4586bc9ba51eec"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/official_ddr_ab_20261026_01/c11026b3/pll-audit.json",
+      "sha256": "991025e80e35f14b23f42271ac5d84efed65bdbdf7fb105e1d6fdfd23484bcc1"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/physical_inputs.json",
+      "sha256": "fe76cb398179e1b403004729fd7e381e91d58d248ab918049f0548be9d292a71"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/parent_integration_inputs.json",
+      "sha256": "fe4e3a263bace2d6049a251018d3116fca6565ee88a11dd45c5536cd40605b92"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/physical.cst",
+      "sha256": "40e45c93370e077a0442b79cfc0a084949821c2a0a366dc8b4437d99e11277a5"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/physical.sdc",
+      "sha256": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/impl/pnr/cmd.do",
+      "sha256": "ded059407c7b259cf8048dd523aebbcc00088a4df8476117f31e8f303b3af368"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/impl/pnr/custom_138k_integration.rpt.txt",
+      "sha256": "e052d086fdae770627a4abb9ce4dddd15f368d621a205f7f55a42050945bf28c"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/pll-audit.json",
+      "sha256": "ad65d84f95993514b2574df0e135208e710a3a6a6391e31cc2bf06f67ba9968d"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/hdmi_c1_b3_compare_20261027/inputs.json",
+      "sha256": "b24f2dd29a0ac3418db104b305a532d30f436756fbe4b2901ed961c146f7d72e"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/hdmi_c1_b3_compare_20261027/workstation.gao",
+      "sha256": "89041025c432414544d9a2b8ed605aa562e267ede4f8a9ff988549ab57ea3409"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/hdmi_c1_b3_compare_20261027/source_comparison.json",
+      "sha256": "e0dea7ba7eb8976c1049539ef6a79e06beea46ee36b17a975d2571c5a16671a6"
+    }
+  ],
+  "confirmed_blocker": "DDR calibration has not completed. UI/scanout remains in reset, BIST has not run, no front frame is available; video PLL and pixel path are running.",
+  "not_supported": "Omission of the three official DDR hard-resource location constraints in C1.",
+  "root_cause_of_calibration_failure_confirmed": false,
+  "startup_guard_observation": "Existing identical guard handles calibration/lock-loss recovery but has no timeout restart for an initial calibration that never completes while PLL remains locked. This explains lack of automatic recovery, not why initial calibration failed.",
+  "board_actions": {
+    "existing_gao_capture": true,
+    "jtag_identity_read": true,
+    "sram_program": false,
+    "flash_access": false,
+    "power_cycle": false,
+    "reset_assertion": false
+  },
+  "new_synthesis": false,
+  "new_pnr": false,
+  "release_ready": false,
+  "next_bounded_experiment": "With explicit SRAM reconfiguration authorization, run existing B2 then exact C1 and compare against direct C1 reload. No rebuild, no Flash, and do not treat warm priming as a production fix."
+}
