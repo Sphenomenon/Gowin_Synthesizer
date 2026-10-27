@@ -13,6 +13,35 @@ SPEC.loader.exec_module(CAPTURE)
 
 
 class DdrCaptureDecode(unittest.TestCase):
+    def test_full_workstation_training_raw_controls(self):
+        self.assertEqual(len(CAPTURE.DDR_TRAINING_SIGNALS), 16)
+        sample = dict.fromkeys(CAPTURE.DDR_TRAINING_SIGNALS, 0)
+        sample.update({'reset_n': 1, 'memory_flags[6]': 1,
+                       'u_memory/controller_rst_n': 1})
+        phase = CAPTURE.DDR_PHY + 'u_ddr_init/init_state.READ_CALIBRATION'
+        lane = CAPTURE.DDR_PHY + 'u_ddr_init/read_calibration_logic_gen[2].read_cal_done'
+        sample.update({phase: 1, lane: 1})
+        decoded = CAPTURE.snapshot(sample, 'workstation-ddr-training-16-v1')
+        self.assertTrue(decoded['ddr_pll_locked'])
+        self.assertFalse(decoded['ddr_calibrated'])
+        self.assertFalse(decoded['front_valid'])
+        self.assertEqual(decoded['raw_controls'][phase], 1)
+        self.assertEqual(decoded['raw_controls'][lane], 1)
+        self.assertEqual(decoded['raw_controls']['u_memory/controller_reset'], 0)
+        self.assertFalse(decoded['coherent_cross_domain_snapshot'])
+
+    def test_full_workstation_training_layout_rejected_before_board_access(self):
+        with tempfile.TemporaryDirectory() as directory:
+            candidate = Path(directory)
+            signals = CAPTURE.DDR_TRAINING_SIGNALS.copy()
+            signals[-1] = 'unexpected'
+            (candidate / 'inputs.json').write_text(json.dumps({
+                'full_workstation': True, 'signals': signals,
+                'signal_schema': 'workstation-ddr-training-16-v1'}))
+            with self.assertRaisesRegex(ValueError, 'unexpected full-workstation training observer layout'):
+                CAPTURE.capture(candidate, 1)
+            self.assertFalse((candidate / 'jtag_capture_20261026_01').exists())
+
     def test_full_workstation_truncated_display_counters(self):
         sample = dict.fromkeys(CAPTURE.DISPLAY_COUNTER_SIGNALS, 0)
         sample.update({'reset_n': 1, 'memory_flags[0]': 1, 'video_diagnostics[9]': 1,

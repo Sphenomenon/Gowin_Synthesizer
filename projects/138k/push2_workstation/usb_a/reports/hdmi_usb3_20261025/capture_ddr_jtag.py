@@ -32,6 +32,14 @@ DISPLAY_COUNTER_SIGNALS = ['reset_n', 'memory_flags[0]', 'memory_flags[4]', 'vid
                            'video_diagnostics[33]', 'video_diagnostics[32]',
                            'video_diagnostics[65]', 'video_diagnostics[64]'] + [
                                f'video_diagnostics[{bit}]' for bit in reversed(range(96, 104))]
+DDR_PHY = 'u_memory/u_ddr3/gw3_top/u_ddr_phy_top/'
+DDR_TRAINING_SIGNALS = ['reset_n', 'memory_flags[6]', 'memory_flags[0]', 'memory_flags[3]'] + [
+    'u_memory/' + name for name in ('controller_rst_n', 'controller_reset', 'pll_stop_3')] + [
+    DDR_PHY + 'dll_lock', DDR_PHY + 'ddr_sync/ready'] + [
+    DDR_PHY + 'u_ddr_init/init_state.' + name
+    for name in ('WRITE_LEVELING', 'READ_CALIBRATION', 'EYE_SCAN')] + [
+    DDR_PHY + f'u_ddr_init/read_calibration_logic_gen[{lane}].read_cal_done'
+    for lane in range(4)]
 
 
 def digest(path):
@@ -55,6 +63,13 @@ def identity(destination, expected):
 
 
 def snapshot(sample, schema=None):
+    if schema == 'workstation-ddr-training-16-v1':
+        return dict(reset_released=bool(sample['reset_n']),
+                    ddr_pll_locked=bool(sample['memory_flags[6]']),
+                    ddr_calibrated=bool(sample['memory_flags[0]']),
+                    front_valid=bool(sample['memory_flags[3]']),
+                    raw_controls={name: sample[name] for name in DDR_TRAINING_SIGNALS[4:]},
+                    coherent_cross_domain_snapshot=False)
     if schema == 'workstation-display-counters-16-v1':
         return dict(reset_released=bool(sample['reset_n']),
                     ddr_calibrated=bool(sample['memory_flags[0]']),
@@ -109,6 +124,9 @@ def capture(output, sequence):
     elif schema == 'workstation-memory-video-16-v1':
         if manifest.get('full_workstation') is not True or manifest['signals'] != WORKSTATION_SIGNALS:
             raise ValueError('unexpected full-workstation observer layout')
+    elif schema == 'workstation-ddr-training-16-v1':
+        if manifest.get('full_workstation') is not True or manifest['signals'] != DDR_TRAINING_SIGNALS:
+            raise ValueError('unexpected full-workstation training observer layout')
     elif manifest.get('full_workstation') is not False or width not in (20, 32):
         raise ValueError('expected an explicit 20-bit or 32-bit isolated DDR observer')
     elif schema == 'official-ddr-reference-32-v1':
