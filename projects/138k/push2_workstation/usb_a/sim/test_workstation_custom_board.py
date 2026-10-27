@@ -19,6 +19,7 @@ import xml.etree.ElementTree as ElementTree
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools import workstation_custom_board as integration
+from tools.workstation_custom_board_audit import audit as audit_synthesis
 from tools import workstation_pinout as pinout
 from tools.workstation_baselines import load_baseline
 from tools.workstation_usb2_soc import SOC_SOURCE_PATHS
@@ -217,6 +218,8 @@ class NativeBoard(unittest.TestCase):
                 self.assertEqual(digest(stage / relative), expected, relative)
             for relative, expected in metadata['source_snapshot_sha256'].items():
                 self.assertEqual(digest(ROOT / relative), expected, relative)
+            with self.assertRaisesRegex(FileNotFoundError, 'synthesis.log'):
+                audit_synthesis(output)
             for relative in (*integration.REPLACED_INPUTS, *integration.EXCLUDED_INPUTS):
                 self.assertNotIn(relative, metadata['enabled_inputs'])
             for relative in integration.NATIVE_SOURCES:

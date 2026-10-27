@@ -379,7 +379,7 @@ def audit(output):
             parts += ('peripherals',)
         if metadata['identity'].endswith(('-a21', '-a22', '-a23', '-a24', '-a25', '-a26')):
             parts += ('model_flash',)
-        if metadata['identity'].endswith('-a24', '-a25', '-a26'):
+        if metadata['identity'].endswith(('-a24', '-a25', '-a26')):
             if (stage / 'constraints/custom_138k.ddr.cst').read_bytes() != (ROOT / DDR_CST).read_bytes():
                 raise ValueError('native DDR hard-resource constraints changed')
             parts += ('ddr',)
