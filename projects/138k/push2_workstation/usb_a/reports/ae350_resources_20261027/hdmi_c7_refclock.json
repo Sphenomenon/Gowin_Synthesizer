@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "date": "2026-10-27",
+  "identity": "custom138k-native-physical-C11027C7",
+  "user_code": "0xC11027C7",
+  "parent_identity": "custom138k-native-integration-20261027-a26",
+  "source_policy": "exact C1 a26 business and SDC; explicit global 50 MHz reference clock route; no lane3 register locations; same-netlist C1 incremental P&R; unchanged C1 GAO identity and 16-bit observation",
+  "constraint_added": "CLOCK_LOC \"clk_50m_d\" BUFG = CLK;",
+  "input_sha256": {
+    "custom_138k_integration.vg": "fc50a05311afeb88e2ce575398e96a2fc4ea6fcf003c35abc1bd43994ff14cf8",
+    "physical.cst": "772333c1d8e683cc17c96614fcb83df0cc8d8e9371bae1ee51c180b9f0032a44",
+    "physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+    "parent_integration_inputs.json": "fe4e3a263bace2d6049a251018d3116fca6565ee88a11dd45c5536cd40605b92",
+    "parent_synthesis_audit.json": "88ae43cec66cb0cfc21c15ade7a3430548939b820681ba34597155d2fe4e6eb4",
+    "reference.p": "84c62cccc055ec3d994d67485d2d23cda24cb927fc7bb57bef5f06e9d40f173a",
+    "reference.pr": "b99d8f99f222933fd02c03146a993aa5b5d39f541231e82e9cae623414d3ceea",
+    "run.tcl": "681f903f2b160eb231df8b7ec394ecf8396d3f0b85c2446c711054148ba0ed55",
+    "workstation.gao": "89041025c432414544d9a2b8ed605aa562e267ede4f8a9ff988549ab57ea3409"
+  },
+  "build": {
+    "started_at": "2026-10-27T20:48:33.863878+08:00",
+    "identity": "custom138k-native-physical-C11027C7",
+    "synthesis_rerun": false,
+    "incremental_pnr": true,
+    "global_reference_clock": true,
+    "sram_programmed": false,
+    "flash_accessed": false,
+    "pid": 2672911,
+    "returncode": 0,
+    "finished_at": "2026-10-27T21:48:17.203672+08:00",
+    "elapsed_seconds": 3583.339794
+  },
+  "bitstream_sha256": "e1ffbbc81904e588345c7aca3eff90f9591ab71bea741c1aeca2b217f6f73d99",
+  "resources_business": {
+    "Logic": 91903,
+    "Register": 54181,
+    "CLS": 61189,
+    "BSRAM": 317,
+    "DSP": 156.5
+  },
+  "gao_bsram": 1,
+  "physical_bsram_including_gao": 318,
+  "clock_route_class": {
+    "clk_50m_d": {
+      "C1": "LW",
+      "C7": "PRIMARY"
+    },
+    "u_video/u_clock/g_hardware.u_pll/reference_clk": {
+      "C1": "PRIMARY",
+      "C7": "LW"
+    }
+  },
+  "global_worst_ns": {
+    "setup": -0.254,
+    "hold": -0.047,
+    "recovery": 2.627,
+    "removal": 0.25
+  },
+  "checks": {
+    "check_timing": 1,
+    "check_common_cdc": 0,
+    "check_routes": 0,
+    "check_pll": 0
+  },
+  "strict_timing_problems": [
+    "Fmax below requirement: clk_50m",
+    "Fmax below requirement: audio_76m8",
+    "negative endpoints: clk_50m/setup",
+    "negative endpoints: audio_76m8/setup",
+    "negative endpoints: ddr_ui100/setup",
+    "negative detailed timing paths",
+    "clock summary inventory differs from the native plan"
+  ],
+  "hardware": {
+    "started_at": "2026-10-27T22:01:16.991767+08:00",
+    "authorization": "User explicitly authorized subsequent diagnostic SRAM writes",
+    "flash_accessed": false,
+    "power_cycle_performed": false,
+    "completed": true,
+    "hardware_acceptance": false,
+    "release_ready": false,
+    "numeric_timing_passed": false,
+    "strict_timing_passed": false,
+    "final_image": "0xC11026B3",
+    "direct_ready": false,
+    "after_b2_ready": false,
+    "rollback_b2_ready": true,
+    "rollback_b3_ready": true,
+    "finished_at": "2026-10-27T22:02:36.551692+08:00"
+  },
+  "capture_windows_per_phase": 3,
+  "samples_per_window": 1024,
+  "all_sample_readiness_checked": true,
+  "phase_results": [
+    {
+      "phase": "c7_direct",
+      "ready": false,
+      "memory_flags_first_sample": [
+        "0xC0",
+        "0xC0",
+        "0xC0"
+      ],
+      "video_flags_first_sample": [
+        "0x26",
+        "0x26",
+        "0x26"
+      ]
+    },
+    {
+      "phase": "b2_prime",
+      "ready": true,
+      "memory_flags_first_sample": [
+        "0xDF",
+        "0xDF",
+        "0xDF"
+      ],
+      "video_flags_first_sample": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "phase": "c7_after_b2",
+      "ready": false,
+      "memory_flags_first_sample": [
+        "0xC0",
+        "0xC0",
+        "0xC0"
+      ],
+      "video_flags_first_sample": [
+        "0x26",
+        "0x26",
+        "0x26"
+      ]
+    },
+    {
+      "phase": "rollback_b2",
+      "ready": true,
+      "memory_flags_first_sample": [
+        "0xDF",
+        "0xDF",
+        "0xDF"
+      ],
+      "video_flags_first_sample": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "phase": "rollback_b3",
+      "ready": true,
+      "memory_flags_first_sample": [
+        "0xEB",
+        "0xEB",
+        "0xEB"
+      ],
+      "video_flags_first_sample": [
+        "0x2E",
+        "0x2E",
+        "0x2E"
+      ]
+    }
+  ],
+  "optimized_hdmi_fixed": false,
+  "root_cause_confirmed": false,
+  "hardware_acceptance": false,
+  "release_ready": false,
+  "conclusion": "The explicit global reference-clock candidate did not restore optimized DDR calibration, and numeric timing failed. Exact B3 restored. Do not promote this clock constraint or treat the former LW route as a proven cause.",
+  "evidence_sha256": {
+    "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c7_refclock/physical_inputs.json": "dc46aa9625d7bbdf6966607abff5fb9d0ec141e569bc4b2ce2515a9324c1354d",
+    "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c7_refclock/build_result.json": "19903cbe47189c15fa0688147494fc117c9188ea6e86876fd9105d76084f119b",
+    "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c7_refclock/audit_returncodes.json": "ee5feae8c5718879020bc9758e31cf55848161c968d00ba572908bdd0c9d708f",
+    "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c7_refclock/timing-audit.json": "be093f41e246ab5ff7d91ee553060500c7acbcfb012cfd73564086c0f7a0b949",
+    "projects/138k/push2_workstation/usb_a/out/hdmi_startup_ab_20261027/c7_refclock_control/result.json": "bb03fe58dbccdb2351ffc53165418c96c4b0e90a221bece2d9efce46bbb74580",
+    "projects/138k/push2_workstation/usb_a/reports/ae350_resources_20261027/prepare_lane3_floorplan.py": "37bad4b77a4a124a58ae37b797566895f5f52bb3728b87e7bcc6ce3cf9f17a51",
+    "projects/138k/push2_workstation/usb_a/reports/ae350_resources_20261027/run_lane3_floorplan.py": "568228b6c14d96c26f39f51e27401aec4c66fbfc44c242df594b06ff7bacf6ea"
+  }
+}
