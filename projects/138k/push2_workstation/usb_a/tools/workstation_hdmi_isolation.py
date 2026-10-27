@@ -47,7 +47,7 @@ ADAPTATIONS = {
     'src/video/video_timing_1080p.v': raster,
     'rtl/timing/basic_pitch_ddr_client_queues.sv': slot_payload,
 }
-SIGNALS = ('reset_n', *(f'debug_status[{bit}]' for bit in reversed(range(15))))
+SIGNALS = ('reset_n', *(f'debug_status[{bit}]' for bit in reversed(range(63))))
 
 
 def digest(path):
@@ -189,7 +189,7 @@ def prepare(root, netlist_directory, output, user_code, dynamic=True):
                     excluded_subsystems=['AE350', 'USB', 'BLE', 'CNN', 'TF', 'synthesizer', 'LCD'],
                     data_entry='workstation_hdmi_isolation sample/PCM/status/effect and native UI/DDR client ports',
                     gao_file='display.gao', gao_configuration_id=user_code[-4:],
-                    signal_schema='workstation-memory-video-16-v1', signals=SIGNALS,
+                    signal_schema='hdmi-isolation-memory-video-counters-64-v1', signals=SIGNALS,
                     sample_clock='clk_50m_d', storage_depth=1024,
                     validation_stage='prepared', hardware_acceptance=False, sram_programmed=False,
                     flash_accessed=False, release_ready=False, full_workstation=False,

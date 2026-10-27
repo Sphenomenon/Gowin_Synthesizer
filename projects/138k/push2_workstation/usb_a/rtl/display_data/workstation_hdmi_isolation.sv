@@ -100,9 +100,11 @@ module workstation_hdmi_probe_top #(
     wire [5:0] effect_order;
     wire [7:0] memory_flags;
     wire [127:0] video_diagnostics;
-    (* syn_preserve = 1 *) reg [14:0] debug_status = 0;
+    (* syn_preserve = 1 *) reg [62:0] debug_status = 0;
     always @(posedge clk_50m)
-        debug_status <= {memory_flags, video_diagnostics[13:8], video_diagnostics[64]};
+        debug_status <= {video_diagnostics[127:96], video_diagnostics[71:64],
+                         video_diagnostics[39:32], memory_flags,
+                         video_diagnostics[13:8], video_diagnostics[64]};
     reset_release u_reset (.clk(clk_50m), .ext_reset_n(1'b1), .reset_n(reset_n));
     workstation_hdmi_demo #(.DYNAMIC(DYNAMIC)) u_input (
         .clk(clk_50m), .reset_n(reset_n), .sample_valid(sample_valid), .sample_data(sample_data),

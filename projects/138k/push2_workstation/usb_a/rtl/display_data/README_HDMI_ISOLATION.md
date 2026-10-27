@@ -83,6 +83,16 @@ python3 projects/138k/push2_workstation/usb_a/reports/workstation_hdmi_isolation
 它复用锁定的 DDR reset / 配置、PLL_INIT 与 serializer 启动检查，核对实际时钟清单和 CDC 目标，
 并保留全部时序失败。详细候选结果见 `reports/WORKSTATION_HDMI_ISOLATION_20261027.md`。
 
-GAO 16 bit 按顺序为：`reset_n`、同步后的 `memory_flags[7:0]`、
-`video_diagnostics[13:8]`、`video_diagnostics[64]`。后 15 bit 在探针中额外寄存一拍并保留，
-保证没有其他业务消费者时仍可观测。采样时钟 50 MHz，深度 1024。
+GAO 使用 `hdmi-isolation-memory-video-counters-64-v1`：`reset_n` 后跟 `debug_status[62:0]`。
+探针将已同步到 50 MHz 的诊断值额外寄存一拍；采样深度 1024。
+
+| `debug_status` 位 | 内容 |
+|---|---|
+| `[62:31]` | 完整 32-bit 欠载行计数，来自 `video_diagnostics[127:96]` |
+| `[30:23]` | 已渲染帧计数低 8 bit，来自 `video_diagnostics[71:64]` |
+| `[22:15]` | 垂直消隐帧计数低 8 bit，来自 `video_diagnostics[39:32]` |
+| `[14:7]` | `memory_flags[7:0]` |
+| `[6:1]` | `video_diagnostics[13:8]` |
+| `[0]` | `video_diagnostics[64]` |
+
+低 15 bit 保留原 D5 的状态顺序。比较间隔采样的计数增量，不能把启动时的历史欠载标志当成持续欠载。

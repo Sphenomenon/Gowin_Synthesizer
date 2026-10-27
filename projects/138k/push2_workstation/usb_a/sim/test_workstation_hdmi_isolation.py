@@ -4,11 +4,13 @@
 from pathlib import Path
 import hashlib
 import json
+import runpy
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -130,6 +132,34 @@ class Isolation(unittest.TestCase):
         self.assertIn('set_option -bit_security 0', (stage / 'run.tcl').read_text())
         with self.assertRaises(FileExistsError):
             hdmi.prepare(ROOT, self.output, stage, 'C11027D0')
+
+    def test_observer_keeps_status_and_runtime_counters(self):
+        stage, manifest = self.prepare()
+        self.assertEqual(manifest['signal_schema'], 'hdmi-isolation-memory-video-counters-64-v1')
+        expected = ['reset_n'] + [f'debug_status[{bit}]' for bit in reversed(range(63))]
+        self.assertEqual(list(manifest['signals']), expected)
+        configuration = ET.parse(stage / 'display.gao')
+        self.assertEqual([signal.text for signal in configuration.findall('./AoCore/SignalList/Signal')], expected)
+        probe = (stage / 'rtl/display_data/workstation_hdmi_isolation.sv').read_text()
+        self.assertIn('reg [62:0] debug_status', probe)
+        self.assertIn('video_diagnostics[127:96], video_diagnostics[71:64]', probe)
+        self.assertIn('video_diagnostics[39:32], memory_flags,', probe)
+        self.assertIn('video_diagnostics[13:8], video_diagnostics[64]', probe)
+
+    def test_counter_observer_decode(self):
+        decoder = runpy.run_path(str(ROOT / 'reports/workstation_hdmi_flicker_20261028/capture.py'))['decode']
+        word = (0x89abcdef << 31) | (0xab << 23) | (0xcd << 15) | (0xcb << 7) | (0x2f << 1) | 1
+        values = [1] + [int(bit) for bit in f'{word:063b}']
+        sample = decoder(values)
+        self.assertEqual(sample['underrun_lines'], 0x89abcdef)
+        self.assertEqual(sample['rendered_frames_mod256'], 0xab)
+        self.assertEqual(sample['video_frames_mod256'], 0xcd)
+        self.assertEqual(sample['memory_flags_hex'], '0xCB')
+        self.assertEqual(sample['video_flags_hex'], '0x2F')
+        self.assertTrue(sample['memory_flags']['ddr_calibrated'])
+        self.assertFalse(sample['memory_flags']['underrun_seen'])
+        with self.assertRaises(ValueError):
+            decoder(values[:-1])
 
     def test_static_selection_and_input_drift(self):
         stage, manifest = self.prepare(False)
