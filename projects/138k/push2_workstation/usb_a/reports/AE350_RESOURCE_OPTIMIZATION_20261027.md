@@ -99,3 +99,5 @@ python3 projects/138k/push2_workstation/usb_a/tools/synthesize_workstation_bluet
 原生开发输入身份更新为 `custom138k-native-integration-20261027-a26`，两个 720p 派生配置同步更新；现有检查逐项延续，没有改 accepted 锁定源。输入哈希及网表标识见 `ae350_resources_20261027/reply_cache_a26.json`。局部 A/B 产物在忽略目录 `out/ble_storage_20261027/reply84/` 和 `reply_ram84/`，不是生产输入。本次没有全量综合、P&R、位流或板级操作；后续集中一次整机 P&R 才能确认实际 CLS、BSRAM 和时序。
 
 本增量可独立撤回以恢复 a25；已部署 B3 不受影响。
+
+后续已完成 a26 整机综合与 P&R：实测 CLS −1,091、业务 BSRAM −4（317＋GAO 1），setup +0.003 ns。位流 `0xC11027C1` 交由用户验板，非硬件验收；时序清单中的 GAO JTAG 时钟差异单独保留。精确身份、资源、时序与回退见 [整机实现交付](WORKSTATION_RESOURCE_A26_PHYSICAL_20261027.md)。

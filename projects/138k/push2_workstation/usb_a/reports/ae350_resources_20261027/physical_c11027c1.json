@@ -1,0 +1,154 @@
+{
+  "date": "2026-10-27",
+  "identity": "custom138k-native-physical-C11027C1",
+  "user_code": "0xC11027C1",
+  "gao_id": "27C1",
+  "source_identity": "custom138k-native-integration-20261027-a26",
+  "rtl_commit": "42153e9",
+  "validator_fix_commit": "f4b4b76",
+  "source_git_commit": "f4b4b7689d0d7932ef7895e35f208e0bf5475937",
+  "device": "GW5AST-LV138PG484AC2/I1",
+  "device_version": "C",
+  "tool": "Gowin 1.9.12.03",
+  "hdmi_mode": "1080p60",
+  "scope": "offline complete-workstation synthesis once and non-incremental P&R; user will perform board validation",
+  "source_candidate": "out/workstation_resource_a26_20261027_c1_checked",
+  "physical_candidate": "out/workstation_resource_a26_20261027_c1_physical",
+  "bitstream": "out/workstation_resource_a26_20261027_c1_physical/impl/pnr/ao_0.fs",
+  "bitstream_sha256": "91101332be8d8d5ac3511cc36227d77ab0fe2511f5869efb90c657b55ee1386a",
+  "baseline_user_code": "0xC11026B3",
+  "baseline_bitstream_sha256": "a901738a4e07eb777cbc32eb571179e93ebae86e8488e573d4b65696e100011c",
+  "resources_baseline": {
+    "Logic": 94676.0,
+    "Register": 57037.0,
+    "CLS": 62275.0,
+    "BSRAM": 321.0,
+    "DSP": 156.5
+  },
+  "resources_current": {
+    "Logic": 91903.0,
+    "Register": 54181.0,
+    "CLS": 61184.0,
+    "BSRAM": 317.0,
+    "DSP": 156.5
+  },
+  "resource_delta": {
+    "Logic": -2773.0,
+    "Register": -2856.0,
+    "CLS": -1091.0,
+    "BSRAM": -4.0,
+    "DSP": 0.0
+  },
+  "gao_resources": {
+    "BSRAM": 1,
+    "Logic": 418,
+    "Register": 293
+  },
+  "physical_bsram_including_gao": 318,
+  "free_bsram_including_gao": 22,
+  "cls_utilization_percent": 88.5185,
+  "timing_global_worst_ns": {
+    "setup": 0.003,
+    "hold": 0.05,
+    "recovery": 3.016,
+    "removal": 0.25
+  },
+  "pulse_width_worst_ns": 0.791,
+  "numerical_sta_nonnegative": true,
+  "strict_timing_checker_passed": false,
+  "strict_timing_problems": [
+    "clock summary inventory differs from the native plan"
+  ],
+  "extra_clock_summary": {
+    "tck_pad_i": {
+      "period_ns": 50.0,
+      "rise_ns": 0.0,
+      "fall_ns": 25.0,
+      "source": "",
+      "master_clock": "",
+      "target": "tck_ibuf/I"
+    }
+  },
+  "checks": {
+    "timing": {
+      "file": "timing-audit.json",
+      "sha256": "c30067f7c5aa79fbc0495ab96daf71a2f88ddc13a8ea739b5a3175d1e76a1b80",
+      "passed": false
+    },
+    "pll": {
+      "file": "pll-audit.json",
+      "sha256": "ad65d84f95993514b2574df0e135208e710a3a6a6391e31cc2bf06f67ba9968d",
+      "passed": true
+    },
+    "common_cdc": {
+      "file": "common-cdc-audit.json",
+      "sha256": "100958414af0df5539789f0f8daedd6720682303be3648eacb955d96f6498c00",
+      "passed": true
+    },
+    "routes": {
+      "file": "native-routes-audit.json",
+      "sha256": "997d23c15177c8d3eb2432210d01884fac5a6a2f309a0bae38f474fcef5d456a",
+      "passed": true
+    }
+  },
+  "gao_signals": [
+    "reset_n",
+    "memory_flags[7]",
+    "memory_flags[6]",
+    "memory_flags[5]",
+    "memory_flags[4]",
+    "memory_flags[3]",
+    "memory_flags[2]",
+    "memory_flags[1]",
+    "memory_flags[0]",
+    "video_diagnostics[13]",
+    "video_diagnostics[12]",
+    "video_diagnostics[11]",
+    "video_diagnostics[10]",
+    "video_diagnostics[9]",
+    "video_diagnostics[8]",
+    "video_diagnostics[64]"
+  ],
+  "gao_wrapper_sha256": "a801b69d0b9da245a2a2167035b4abac7f65321e600524f4a8b307f13fe0af72",
+  "gao_probe_layout_verified": true,
+  "build": {
+    "started_at": "2026-10-27T11:31:28.915346+08:00",
+    "finished_at": "2026-10-27T12:24:48.004558+08:00",
+    "elapsed_seconds": 3199.089,
+    "returncode": 0,
+    "incremental_pnr": false,
+    "full_workstation_synthesis_performed_once": true,
+    "sram_programmed": false,
+    "flash_accessed": false
+  },
+  "input_sha256": {
+    "physical_inputs.json": "fe76cb398179e1b403004729fd7e381e91d58d248ab918049f0548be9d292a71",
+    "parent_integration_inputs.json": "fe4e3a263bace2d6049a251018d3116fca6565ee88a11dd45c5536cd40605b92",
+    "parent_synthesis_audit.json": "88ae43cec66cb0cfc21c15ade7a3430548939b820681ba34597155d2fe4e6eb4",
+    "custom_138k_integration.vg": "fc50a05311afeb88e2ce575398e96a2fc4ea6fcf003c35abc1bd43994ff14cf8",
+    "physical.cst": "40e45c93370e077a0442b79cfc0a084949821c2a0a366dc8b4437d99e11277a5",
+    "physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+    "run.tcl": "cb5d43892469c6a7ceb36694708d9610b24782b1d60b3b66060f590e28b79a11",
+    "workstation.gao": "89041025c432414544d9a2b8ed605aa562e267ede4f8a9ff988549ab57ea3409",
+    "routes_checker_adapter.json": "6651841d4b2384d30469f107a84856293c2ba2a6f28aac691df4f0f1ae3e01d5"
+  },
+  "synthesis_reuse": {
+    "original_candidate": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1",
+    "original_manifest_sha256": "264ff4cb93d9742ad9085b33747bc187eae72b703f299b1287779edde06cbad0",
+    "checked_manifest_sha256": "fe4e3a263bace2d6049a251018d3116fca6565ee88a11dd45c5536cd40605b92",
+    "all_selected_compiler_inputs_identical": true,
+    "changed_staged_files": [
+      "native_bluetooth/patch_path.vh"
+    ],
+    "only_staged_change": "absolute patch ROM path rebased to byte-identical ROM",
+    "changed_non_compiler_tools": [
+      "tools/workstation_custom_board_audit.py"
+    ],
+    "netlist_sha256": "fc50a05311afeb88e2ce575398e96a2fc4ea6fcf003c35abc1bd43994ff14cf8",
+    "synthesis_rerun": false
+  },
+  "hardware_acceptance": false,
+  "release_ready": false,
+  "sram_programmed": false,
+  "flash_accessed": false
+}
