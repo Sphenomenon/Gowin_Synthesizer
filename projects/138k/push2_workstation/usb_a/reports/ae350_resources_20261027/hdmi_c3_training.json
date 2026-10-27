@@ -1,0 +1,192 @@
+{
+  "date": "2026-10-27",
+  "identity": "custom138k-native-physical-C11027C3",
+  "source_identity": "custom138k-native-integration-20261027-a26",
+  "source_policy": "exact C1 a26 business synthesis netlist and CST/SDC; replace only 16 GAO probes and identity; incremental P&R using C1 routed .p/.pr",
+  "input_sha256": {
+    "custom_138k_integration.vg": "fc50a05311afeb88e2ce575398e96a2fc4ea6fcf003c35abc1bd43994ff14cf8",
+    "physical.cst": "40e45c93370e077a0442b79cfc0a084949821c2a0a366dc8b4437d99e11277a5",
+    "physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+    "parent_integration_inputs.json": "fe4e3a263bace2d6049a251018d3116fca6565ee88a11dd45c5536cd40605b92",
+    "parent_synthesis_audit.json": "88ae43cec66cb0cfc21c15ade7a3430548939b820681ba34597155d2fe4e6eb4",
+    "reference.p": "84c62cccc055ec3d994d67485d2d23cda24cb927fc7bb57bef5f06e9d40f173a",
+    "reference.pr": "b99d8f99f222933fd02c03146a993aa5b5d39f541231e82e9cae623414d3ceea",
+    "run.tcl": "5c329f89ca60717b433d78d8ad7233cd8528fdf6768186d164f8f76025aeddcc",
+    "workstation.gao": "781210e9cb3853aab604b5de9369038a3ca5144d138a05a30266ae31e009a5fb"
+  },
+  "build": {
+    "started_at": "2026-10-27T14:56:40.884840+08:00",
+    "identity": "custom138k-native-physical-C11027C3",
+    "synthesis_rerun": false,
+    "incremental_pnr": true,
+    "sram_programmed": false,
+    "flash_accessed": false,
+    "finished_at": "2026-10-27T16:18:10.512608+08:00",
+    "elapsed_seconds": 4889.627768,
+    "returncode": 0
+  },
+  "bitstream_sha256": "5fc24d7ed7472d94f999c748bd4b877561335ba9d4ab1b7bb68e55c3a49b7def",
+  "resources_business": {
+    "Logic": 91903,
+    "Register": 54181,
+    "CLS": 61181,
+    "BSRAM": 317,
+    "DSP": 156.5
+  },
+  "gao_bsram": 1,
+  "physical_bsram_including_gao": 318,
+  "global_worst_ns": {
+    "setup": 0.005,
+    "hold": 0.042,
+    "recovery": 3.154,
+    "removal": 0.25
+  },
+  "strict_timing_passed": false,
+  "strict_timing_problems": [
+    "clock summary inventory differs from the native plan"
+  ],
+  "checks": {
+    "check_timing": 1,
+    "check_common_cdc": 0,
+    "check_routes": 0,
+    "check_pll": 0
+  },
+  "ddr_c1_c3_structure": {
+    "cell_counts": {
+      "C1": 9131,
+      "C3": 9131
+    },
+    "only_C1": [],
+    "only_C3": [],
+    "changed_common": {}
+  },
+  "experiment_started_at": "2026-10-27T16:21:56.151029+08:00",
+  "experiment_finished_at": "2026-10-27T16:23:15.070321+08:00",
+  "direct_from_b3_ready": false,
+  "after_b2_ready": false,
+  "rollback_b2_ready": true,
+  "rollback_b3_ready": true,
+  "final_sram_user_code": "0xC11026B3",
+  "raw_training_snapshot": {
+    "reset_released": true,
+    "ddr_pll_locked": true,
+    "ddr_calibrated": false,
+    "front_valid": false,
+    "raw_controls": {
+      "u_memory/controller_rst_n": 1,
+      "u_memory/controller_reset": 0,
+      "u_memory/pll_stop_3": 1,
+      "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/dll_lock": 1,
+      "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_sync/ready": 1,
+      "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/init_state.WRITE_LEVELING": 0,
+      "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/init_state.READ_CALIBRATION": 1,
+      "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/init_state.EYE_SCAN": 0,
+      "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[0].read_cal_done": 0,
+      "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[1].read_cal_done": 0,
+      "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[2].read_cal_done": 0,
+      "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[3].read_cal_done": 0
+    },
+    "coherent_cross_domain_snapshot": false
+  },
+  "windows": [
+    {
+      "phase": "c3_direct_from_b3",
+      "sequence": 1,
+      "started_at": "2026-10-27T16:22:04.625121+08:00",
+      "lane_done_high_samples": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "csv_sha256": "12dbdcfc5e2f03c0e8d31a20a0a7a269ac5e5aed6eef28bf7491ff29f0f63640",
+      "summary_sha256": "9cf8249f3501fa1d2816e27a1b8db2b0c6ff6341673b1a90da3d282d2a5dec71"
+    },
+    {
+      "phase": "c3_direct_from_b3",
+      "sequence": 2,
+      "started_at": "2026-10-27T16:22:07.297086+08:00",
+      "lane_done_high_samples": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "csv_sha256": "807c70d57e5bf24f94d9ad0f34b6b4526c8114907b2dbb3f8bdf14ad78636e98",
+      "summary_sha256": "5e4b09ae3106dba4c679e1be1b03e8c4a4be1a1c4debdaed809a726cf7103da0"
+    },
+    {
+      "phase": "c3_direct_from_b3",
+      "sequence": 3,
+      "started_at": "2026-10-27T16:22:10.009330+08:00",
+      "lane_done_high_samples": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "csv_sha256": "6b20fdc3028ef1faa876d2fae972f6fcb3ed8b572d169ed0d7973fab1cbda9a9",
+      "summary_sha256": "ed905f172dc83c2ba5e524920803f0fcb9ad9507a80fb238ee4934bcb5d47b06"
+    },
+    {
+      "phase": "c3_after_b2",
+      "sequence": 1,
+      "started_at": "2026-10-27T16:22:35.950199+08:00",
+      "lane_done_high_samples": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "csv_sha256": "1ecf5818c68404690e43a41c89bfc33ebdb88030cce15b9575085cb583c6615e",
+      "summary_sha256": "a9155bc23fed59b7e4f92bbc0e3ab97e38d6a6e9d39c8e9675fe82b49d52e891"
+    },
+    {
+      "phase": "c3_after_b2",
+      "sequence": 2,
+      "started_at": "2026-10-27T16:22:38.570169+08:00",
+      "lane_done_high_samples": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "csv_sha256": "4f611af58421439ede274414243956b98b510f011cc37440c6944617f50a4b8e",
+      "summary_sha256": "f552acdebe319628fd64ade4af0543dbecdd24348eda396fc843af8a74b6815e"
+    },
+    {
+      "phase": "c3_after_b2",
+      "sequence": 3,
+      "started_at": "2026-10-27T16:22:41.181203+08:00",
+      "lane_done_high_samples": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "csv_sha256": "3dc61e80c9448607247d1734df3bb93881ef993c907b9bb038afd601279e3d92",
+      "summary_sha256": "fdc16d752bfb381970b8908e47d8fd998939ceef83a0a3a8182db0b415ad80e8"
+    }
+  ],
+  "samples_per_window": 1024,
+  "sample_clock_hz": 50000000,
+  "narrow_pulses_may_be_missed": true,
+  "coherent_cross_domain_snapshot": false,
+  "confirmed_stage": "READ_CALIBRATION stays asserted, calibration/front frame remain false",
+  "prioritize": "lane3 DQS/RBURST return and sampling/layout, not proof of a disconnected lane",
+  "root_cause_confirmed": false,
+  "hardware_acceptance": false,
+  "release_ready": false,
+  "sram_programmed": true,
+  "flash_accessed": false,
+  "power_cycle_performed": false,
+  "evidence_sha256": {
+    "out/hdmi_startup_ab_20261027/c3_control/result.json": "e7884bc5cd1c6b60c128c42a95c29560c2c19df3d93a7c55f90ce5ad6d5edb48",
+    "out/workstation_resource_a26_20261027_c3_training/physical_inputs.json": "b77a6b4f2f4a6a3391a25a2778a8032b2f9b5f8bdfb20d71d97c5f5497257155",
+    "out/workstation_resource_a26_20261027_c3_training/build.log": "f1a2676e3fc6d8d6826691f2f28bb3849a423f030de05de1e81462dc9e24e674",
+    "out/workstation_resource_a26_20261027_c3_training/audit_returncodes.json": "3a23656e4d2723c860eb69c42cab05905ae63b5703cf1e93d0d5d76adea5b77b",
+    "out/workstation_resource_a26_20261027_c3_training/router_backtrace_01.log": "29d2bd44615a5c213da6eb70c831f2a5e01852a7ef9dd320bf5d78bec7f72b8a",
+    "out/workstation_resource_a26_20261027_c3_training/rburst_sampling_routes.json": "75d9df8dd4ee6cb34c4043ba5e0c7f770c9bc928ecbf9e1841ef9af3c884f315",
+    "out/workstation_resource_a26_20261027_c3_training/impl/pnr/custom_138k_integration.rpt.txt": "409a0bb171db7cd8dc525eb3a186d8510336150b55d415b493f615ad9f34646b"
+  }
+}
