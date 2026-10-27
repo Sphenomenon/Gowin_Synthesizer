@@ -1,0 +1,179 @@
+{
+  "date": "2026-10-27",
+  "structure": {
+    "scope": "routed functional Verilog u_memory/ instance subtree only; not physical locations, route delay, formal equivalence or board acceptance",
+    "cell_counts": {
+      "B3": 9131,
+      "C1": 9131
+    },
+    "alias_counts": {
+      "B3": 0,
+      "C1": 0
+    },
+    "all_instance_kinds_parameters_ports_identical_after_explicit_renaming": true,
+    "net_renaming_B3_to_C1": {
+      "n32_3_483": "n32_3_485",
+      "u_memory/memory_clk_376": "u_memory/memory_clk_378"
+    },
+    "source_sha256": {
+      "B3": "6f60b68bf20bbb516dd69665fa7dcf2a31788aeabdd6e6d4b37fe2c21e50dfcb",
+      "C1": "5a6aae57f04574ede4416c687d130adcb681a62b454995bcea7d82abfd290431"
+    },
+    "canonical_subtree_sha256": "88b91989d7712565672e0e8bb7b981405366721d48517441093ef97f4b1c265a"
+  },
+  "route_delays": {
+    "scope": "SDF reported DDR-connected interconnect delay comparison, not a training simulation or violation proof",
+    "counts": {
+      "B3": 47678,
+      "C1": 47678
+    },
+    "only_B3": 0,
+    "only_C1": 0,
+    "max_positive_delay_deltas": [
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[1].u_ddr_phy_data_lane/u_ddr_phy_data_io/oserdes_dq_r_18_s0/Q",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[1].u_ddr_phy_data_lane/u_ddr_phy_data_io/oserdes_gen[2].u_oser8_mem/D2",
+        "B3_ns": [
+          1.445,
+          1.948,
+          2.451
+        ],
+        "C1_ns": [
+          2.966,
+          4.142,
+          5.319
+        ],
+        "delta_max_ns": 2.868
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/mux_addr_29_s0/Q",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/u_ddr_phy_cmd_lane/oserdes_d_reg_29_s0/D",
+        "B3_ns": [
+          0.315,
+          0.416,
+          0.517
+        ],
+        "C1_ns": [
+          1.768,
+          2.525,
+          3.283
+        ],
+        "delta_max_ns": 2.766
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/u_ddr_phy_cmd_lane/dqs_reg_s0/Q",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[1].u_ddr_phy_data_lane/n644_s2/I2",
+        "B3_ns": [
+          0.112,
+          0.175,
+          0.238
+        ],
+        "C1_ns": [
+          1.729,
+          2.364,
+          3.0
+        ],
+        "delta_max_ns": 2.762
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/u_ddr_phy_cmd_lane/dqs_reg_s0/Q",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[1].u_ddr_phy_data_lane/n645_s2/I2",
+        "B3_ns": [
+          0.112,
+          0.175,
+          0.238
+        ],
+        "C1_ns": [
+          1.729,
+          2.364,
+          3.0
+        ],
+        "delta_max_ns": 2.762
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_cmd0/raddr_2_s0/Q",
+        "sink": "u_memory/u_ddr3/gw3_top/u_gwmc_top/gw_cmd0/mem_RAMOUT_175_G[0]_s3/I2",
+        "B3_ns": [
+          0.193,
+          0.264,
+          0.336
+        ],
+        "C1_ns": [
+          1.491,
+          2.229,
+          2.966
+        ],
+        "delta_max_ns": 2.63
+      }
+    ],
+    "wloadn_3_fanout": [
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/Q",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[0].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/WLOADN",
+        "B3_ns": [
+          1.937,
+          2.876,
+          3.814
+        ],
+        "C1_ns": [
+          1.632,
+          2.412,
+          3.191
+        ],
+        "delta_max_ns": -0.623
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/Q",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[1].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/WLOADN",
+        "B3_ns": [
+          2.307,
+          3.45,
+          4.594
+        ],
+        "C1_ns": [
+          2.228,
+          3.249,
+          4.27
+        ],
+        "delta_max_ns": -0.324
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/Q",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[2].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/WLOADN",
+        "B3_ns": [
+          1.97,
+          2.953,
+          3.937
+        ],
+        "C1_ns": [
+          1.974,
+          2.916,
+          3.858
+        ],
+        "delta_max_ns": -0.079
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/Q",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/WLOADN",
+        "B3_ns": [
+          1.632,
+          2.464,
+          3.297
+        ],
+        "C1_ns": [
+          1.72,
+          2.531,
+          3.343
+        ],
+        "delta_max_ns": 0.046
+      }
+    ]
+  },
+  "root_cause_confirmed": false,
+  "release_ready": false,
+  "evidence_sha256": {
+    "ddr_all_cells_ports.json": "930f92443739e82f27f75490ee9ca090940ca3b248ddc51572338da7ee3e2cc5",
+    "ddr_structural_comparison.json": "dcba2c650da3211e4c581aab80e860f92a7d7f04f2b15c8f84e3f0263712fe50",
+    "ddr_route_delay_deltas.json": "273ff3e7991933bb99898def0f3f986e8f0860acaa5eac6ab3818bc3e913b698"
+  }
+}
