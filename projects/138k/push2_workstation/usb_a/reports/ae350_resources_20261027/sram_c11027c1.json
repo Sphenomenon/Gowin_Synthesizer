@@ -1,0 +1,100 @@
+{
+  "started_at": "2026-10-27T12:42:21.993719+08:00",
+  "authorization": "用户明确要求：烧进sram。仅 SRAM 下载和独立设备身份读取，不包含 Flash 或断电。",
+  "candidate_identity": "custom138k-native-physical-C11027C1",
+  "user_code": "0xC11027C1",
+  "device": "GW5AST-138C",
+  "device_id_expected": "0x0001081B",
+  "cable_index": 5,
+  "location": 54,
+  "fs": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_a26_C11027C1/C11027C1.fs",
+  "fs_sha256": "91101332be8d8d5ac3511cc36227d77ab0fe2511f5869efb90c657b55ee1386a",
+  "programmer": "/home/sphenicidition/.local/opt/gowin-1.9.12.03/Programmer/bin/programmer_cli",
+  "programmer_sha256": "2c5f29341e5f83a84c1ab7f5ad865eec8492c8e1fc2296cb79b2f8633dd35389",
+  "commands": [
+    {
+      "label": "identity_before",
+      "command": [
+        "/home/sphenicidition/.local/bin/gowin-programmer-cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "started_at": "2026-10-27T12:42:22.021509+08:00",
+      "finished_at": "2026-10-27T12:42:22.182573+08:00",
+      "returncode": 0,
+      "log_sha256": "7f3358c79f2bf043fb06a8db4706413bbc1bf91934713b6766d1195c5f0cf14f",
+      "device_id": "0x0001081B",
+      "user_code": "0xC1102515"
+    },
+    {
+      "label": "sram_program",
+      "command": [
+        "/home/sphenicidition/.local/bin/gowin-programmer-cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "2",
+        "--fsFile",
+        "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/resource_a26_C11027C1/C11027C1.fs"
+      ],
+      "started_at": "2026-10-27T12:42:22.220997+08:00",
+      "finished_at": "2026-10-27T12:42:30.295513+08:00",
+      "returncode": 0,
+      "log_sha256": "96eba5143f5f1c45c2eab79c766a17c1a5608d2bad54cd922c8d7f3e76fa6f4f",
+      "user_code": "0xC11027C1"
+    },
+    {
+      "label": "identity_after",
+      "command": [
+        "/home/sphenicidition/.local/bin/gowin-programmer-cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "5",
+        "--location",
+        "54",
+        "--frequency",
+        "0.9MHz",
+        "--operation_index",
+        "0"
+      ],
+      "started_at": "2026-10-27T12:42:30.295692+08:00",
+      "finished_at": "2026-10-27T12:42:30.444815+08:00",
+      "returncode": 0,
+      "log_sha256": "9298cf9623c2289676a4d6225af88ceff414eb4f50f937bc0f8833dd3b107ffa",
+      "device_id": "0x0001081B",
+      "user_code": "0xC11027C1"
+    }
+  ],
+  "sram_download_attempted": true,
+  "sram_programmed": true,
+  "independent_identity_verified": true,
+  "sram_bitwise_readback_performed": false,
+  "flash_accessed": false,
+  "power_cycle_performed": false,
+  "warm_start_prime_used": false,
+  "hardware_acceptance": false,
+  "release_ready": false,
+  "completed": true,
+  "programming_frequency_updates": [
+    "15MHz"
+  ],
+  "finished_at": "2026-10-27T12:42:30.444905+08:00",
+  "scope": "authorized SRAM programming and independent JTAG device-code readback only; no functional hardware acceptance",
+  "result_path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/sram_deployment_20261027_124221/result.json",
+  "result_sha256": "6ffefa22684e5ccbb376a30676fe89ff6f234bcbfa4d839cec01b1f563ee8c8c"
+}

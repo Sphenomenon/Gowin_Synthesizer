@@ -76,3 +76,21 @@ out/official_ddr_ab_20261026_01/c11026b3/impl/pnr/ao_0.fs
 UserCode: 0xC11026B3
 SHA256: a901738a4e07eb777cbc32eb571179e93ebae86e8488e573d4b65696e100011c
 ```
+
+## 后续授权：SRAM 下载与身份读回
+
+2026-10-27 12:42，用户进一步明确要求“烧进sram”。前述未操作板卡的说明对应此前构建交付阶段；本节单独记录随后发生的部署，不改写原离线证据。
+
+使用相同 C1 位流，下载前再次核对 SHA256；持有 `/tmp/gw138k_20261025.lock` 排他锁，目标为 `GW5AST-138C`、cable-index 5、location 54。仅执行 operation 0／2／0，即独立读身份、SRAM Program、再次独立读身份。
+
+| 阶段 | 返回码 | 实际身份／结果 |
+|---|---:|---|
+| 写前独立读取 | 0 | ID `0x0001081B`，UserCode **`0xC1102515`** |
+| SRAM Program | 0 | 100%，`Finished.` |
+| 写后独立读取 | 0 | ID `0x0001081B`，UserCode **`0xC11027C1`** |
+
+写前读回的是 C1102515，不能因为历史 B3 回退记录而假定本次写前仍是 B3。请求 JTAG 频率为 0.9 MHz，Program 日志记录工具自动更新为 15 MHz；未将请求频率当作整个写入过程的实际频率。
+
+SRAM 下载和独立 UserCode 核对成功，未执行 SRAM 位流逐位回读。**未操作 Flash、未断电、未用其它位流预初始化。** 本次没有采集功能运行结果，声画、DDR、USB／BLE 仍待用户验收；不把身份读回标记为整机硬件通过。
+
+完整命令、时间及日志哈希见 [sram_c11027c1.json](ae350_resources_20261027/sram_c11027c1.json)，原始日志位于 `out/workstation_resource_a26_20261027_c1_physical/sram_deployment_20261027_124221/`。
