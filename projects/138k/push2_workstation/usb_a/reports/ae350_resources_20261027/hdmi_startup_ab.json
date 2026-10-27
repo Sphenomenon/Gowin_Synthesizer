@@ -1,0 +1,128 @@
+{
+  "date": "2026-10-27",
+  "timezone": "Asia/Shanghai",
+  "created_at": "2026-10-27T13:50:37.580319+08:00",
+  "authorization": "User explicitly authorizes subsequent HDMI diagnostic SRAM writes without asking again",
+  "flash_accessed": false,
+  "power_cycle_performed": false,
+  "new_synthesis": false,
+  "new_pnr": false,
+  "monitor_picture_newly_confirmed": false,
+  "hardware_acceptance": false,
+  "release_ready": false,
+  "experiments": [
+    {
+      "raw_result": "out/hdmi_startup_ab_20261027/result.json",
+      "raw_result_sha256": "4a0ffe32b2e5474baee552a86411a736eaa5a05a1d64d3541e60841e9887979c",
+      "started_at": "2026-10-27T13:39:22.873453+08:00",
+      "finished_at": "2026-10-27T13:39:54.388344+08:00",
+      "completed": true,
+      "final_image": "C1",
+      "samples_per_window": 1024,
+      "windows": [
+        {
+          "phase": "c1_before",
+          "sequence": 1,
+          "status_hex": "0xC0",
+          "video_flags_hex": "0x26",
+          "csv_sha256": "2dad6094037da593a99980f226a3160f45f8e0557da7e80a7ef78617399acb34"
+        },
+        {
+          "phase": "b2_prime",
+          "sequence": 1,
+          "status_hex": "0xDF",
+          "video_flags_hex": null,
+          "csv_sha256": "696a1ebe08df458c8025c69e32d3a2cce81afcf2f6696fa0c3552790c4a7fab5"
+        },
+        {
+          "phase": "b2_prime",
+          "sequence": 2,
+          "status_hex": "0xDF",
+          "video_flags_hex": null,
+          "csv_sha256": "3f45064fab122d182443d96e14c80311575176f5b88c5fa3edb922198aeaa182"
+        },
+        {
+          "phase": "c1_after_b2",
+          "sequence": 1,
+          "status_hex": "0xC0",
+          "video_flags_hex": "0x26",
+          "csv_sha256": "2dad6094037da593a99980f226a3160f45f8e0557da7e80a7ef78617399acb34"
+        },
+        {
+          "phase": "c1_after_b2",
+          "sequence": 2,
+          "status_hex": "0xC0",
+          "video_flags_hex": "0x26",
+          "csv_sha256": "2dad6094037da593a99980f226a3160f45f8e0557da7e80a7ef78617399acb34"
+        },
+        {
+          "phase": "c1_after_b2",
+          "sequence": 3,
+          "status_hex": "0xC0",
+          "video_flags_hex": "0x26",
+          "csv_sha256": "2dad6094037da593a99980f226a3160f45f8e0557da7e80a7ef78617399acb34"
+        }
+      ]
+    },
+    {
+      "raw_result": "out/hdmi_startup_ab_20261027/b3_control/result.json",
+      "raw_result_sha256": "877dce07927afd005dc10c2bba236cee6023727bb8c081f1193ea7a84aa84b2f",
+      "started_at": "2026-10-27T13:41:43.384096+08:00",
+      "finished_at": "2026-10-27T13:42:14.960520+08:00",
+      "completed": true,
+      "final_image": "0xC11026B3",
+      "samples_per_window": 1024,
+      "windows": [
+        {
+          "phase": "B2",
+          "sequence": 1,
+          "status_hex": "0xDF",
+          "video_flags_hex": null,
+          "csv_sha256": "7208736e5dc5fb476049ae95743645b0d26b10caf79c541b79bce87f19361d75"
+        },
+        {
+          "phase": "B2",
+          "sequence": 2,
+          "status_hex": "0xDF",
+          "video_flags_hex": null,
+          "csv_sha256": "f98741458d19229a7dedf260744a6157e0abb5c38d431cbb21f5021a1ab8aa31"
+        },
+        {
+          "phase": "B2",
+          "sequence": 3,
+          "status_hex": "0xDF",
+          "video_flags_hex": null,
+          "csv_sha256": "e3bdf486ff3966b4e2a0dd1a06525d4dcbf01cdd5bacd935c8b257a8620fd416"
+        },
+        {
+          "phase": "B3",
+          "sequence": 1,
+          "status_hex": "0xEB",
+          "video_flags_hex": "0x2E",
+          "csv_sha256": "4a37519eb41c174e4a6e7cdb2eb14fd1c1d923ae4d8b03a59a55b2c0602a3b5e"
+        },
+        {
+          "phase": "B3",
+          "sequence": 2,
+          "status_hex": "0xEB",
+          "video_flags_hex": "0x2E",
+          "csv_sha256": "4a37519eb41c174e4a6e7cdb2eb14fd1c1d923ae4d8b03a59a55b2c0602a3b5e"
+        },
+        {
+          "phase": "B3",
+          "sequence": 3,
+          "status_hex": "0xEB",
+          "video_flags_hex": "0x2E",
+          "csv_sha256": "4a37519eb41c174e4a6e7cdb2eb14fd1c1d923ae4d8b03a59a55b2c0602a3b5e"
+        }
+      ]
+    }
+  ],
+  "current_sram_user_code_at_last_verified_operation": "0xC11026B3",
+  "current_sram_verified_at": "2026-10-27T13:42:14.960520+08:00",
+  "c1_recovered_after_b2": false,
+  "b3_calibration_bist_front_ready_after_b2": true,
+  "b3_sticky_underrun_seen": true,
+  "root_cause_confirmed": false,
+  "conclusion": "B2 priming alone does not repair C1. Same-board B2->B3 succeeds while B2->C1 fails. B3 is a temporary control, not a feature-preserving final fix."
+}
