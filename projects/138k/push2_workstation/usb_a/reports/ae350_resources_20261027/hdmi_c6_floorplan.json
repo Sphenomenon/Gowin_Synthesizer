@@ -1,0 +1,188 @@
+{
+  "date": "2026-10-27",
+  "identity": "custom138k-native-physical-C11027C6",
+  "source_identity": "custom138k-native-integration-20261027-a26",
+  "source_policy": "exact C1 a26 business and SDC; two lane3 falling-edge RBURST registers at measured B3 locations; same-netlist C1 incremental P&R; unchanged 16-bit GAO observation",
+  "input_sha256": {
+    "custom_138k_integration.vg": "fc50a05311afeb88e2ce575398e96a2fc4ea6fcf003c35abc1bd43994ff14cf8",
+    "physical.cst": "3c628b6fa194eec508b4ef4b8a8492f210f4aab0ee9fc6fa4bba4f1ec504a43e",
+    "physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+    "parent_integration_inputs.json": "fe4e3a263bace2d6049a251018d3116fca6565ee88a11dd45c5536cd40605b92",
+    "parent_synthesis_audit.json": "88ae43cec66cb0cfc21c15ade7a3430548939b820681ba34597155d2fe4e6eb4",
+    "reference.p": "84c62cccc055ec3d994d67485d2d23cda24cb927fc7bb57bef5f06e9d40f173a",
+    "reference.pr": "b99d8f99f222933fd02c03146a993aa5b5d39f541231e82e9cae623414d3ceea",
+    "run.tcl": "03c4b19b7a94161758b070e4af511fa85439ef42984536cd854b1f66e376ef6b",
+    "workstation.gao": "84e33b052db74f6d3788f15278dcba4687cf5eb2d73d30d639d659c27192c413"
+  },
+  "bitstream_sha256": "4c494fd750ca4995c5ee80c998d73685bf6fe736b89b7e09cc9264f362280b5f",
+  "build_started_at": "2026-10-27T19:40:01.105913+08:00",
+  "build_finished_at": "2026-10-27T20:25:31.870075+08:00",
+  "synthesis_rerun": false,
+  "incremental_pnr": true,
+  "tool_returncode": 0,
+  "resources": {
+    "CLS": 61174,
+    "Logic": 91903,
+    "REG": 54181,
+    "business_BSRAM": 317,
+    "GAO_BSRAM": 1,
+    "physical_BSRAM": 318,
+    "DSP": 156.5
+  },
+  "global_worst_ns": {
+    "setup": -0.408,
+    "hold": -0.032,
+    "recovery": 3.631,
+    "removal": 0.25
+  },
+  "timing_problems": [
+    "Fmax below requirement: clk_50m",
+    "Fmax below requirement: audio_76m8",
+    "negative endpoints: clk_50m/setup",
+    "negative endpoints: audio_76m8/setup",
+    "negative endpoints: ddr_ui100/setup",
+    "negative endpoints: tck_pad_i/hold",
+    "negative detailed timing paths",
+    "clock summary inventory differs from the native plan"
+  ],
+  "audit_returncodes": {
+    "check_timing": 1,
+    "check_common_cdc": 0,
+    "check_routes": 0,
+    "check_pll": 0
+  },
+  "requested_locations": {
+    "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[3].rburst_neg_s0": "R87C174[0][A]",
+    "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[3].rburst_neg_r_s0": "R87C174[2][A]"
+  },
+  "routed_locations_independently_proven": false,
+  "location_limitation": "No lane3 RBURST registers appeared in this candidate top-2000 detailed STA paths; CST accepted without error, but exact final register coordinates not independently exported.",
+  "ddr_structure": {
+    "counts": {
+      "C1": 9131,
+      "C6": 9131
+    },
+    "only_C1": [],
+    "only_C6": [],
+    "changed_instance_count": 0
+  },
+  "lane3_route_measurements": {
+    "B3": [
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/RBURST",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[3].rburst_pos_s0/D",
+        "ns": [
+          3.452,
+          4.87,
+          6.288
+        ]
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/RBURST",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[3].rburst_neg_s0/D",
+        "ns": [
+          3.54,
+          4.99,
+          6.44
+        ]
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[0].u_ddr_phy_data_lane/u_ddr_phy_data_io/n395_6_s0/F",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/RLOADN",
+        "ns": [
+          2.108,
+          2.979,
+          3.851
+        ]
+      }
+    ],
+    "C1": [
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/RBURST",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[3].rburst_pos_s0/D",
+        "ns": [
+          3.374,
+          4.622,
+          5.87
+        ]
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/RBURST",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[3].rburst_neg_s0/D",
+        "ns": [
+          3.372,
+          4.62,
+          5.868
+        ]
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[0].u_ddr_phy_data_lane/u_ddr_phy_data_io/n395_6_s0/F",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/RLOADN",
+        "ns": [
+          2.995,
+          4.07,
+          5.144
+        ]
+      }
+    ],
+    "C6": [
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/RBURST",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[3].rburst_pos_s0/D",
+        "ns": [
+          3.501,
+          4.757,
+          6.013
+        ]
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/RBURST",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/read_calibration_logic_gen[3].rburst_neg_s0/D",
+        "ns": [
+          3.213,
+          4.379,
+          5.546
+        ]
+      },
+      {
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[0].u_ddr_phy_data_lane/u_ddr_phy_data_io/n395_6_s0/F",
+        "sink": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/data_lane_gen[3].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs/RLOADN",
+        "ns": [
+          3.135,
+          4.232,
+          5.33
+        ]
+      }
+    ]
+  },
+  "hardware": {
+    "started_at": "2026-10-27T20:29:12.050316+08:00",
+    "finished_at": "2026-10-27T20:30:35.735028+08:00",
+    "direct_ready": false,
+    "after_b2_ready": false,
+    "rollback_b2_ready": true,
+    "rollback_b3_ready": true,
+    "final_image": "0xC11026B3",
+    "capture_windows_per_phase": 3,
+    "samples_per_window": 1024,
+    "all_sample_readiness_checked": true
+  },
+  "flash_accessed": false,
+  "power_cycle_performed": false,
+  "optimized_hdmi_fixed": false,
+  "root_cause_confirmed": false,
+  "hardware_acceptance": false,
+  "release_ready": false,
+  "conclusion": "Two-register reference-placement candidate did not restore optimized DDR calibration. Do not promote into production constraints. Exact B3 restored with calibration/BIST/front-frame evidence; optimized repair remains active.",
+  "evidence_sha256": {
+    "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c6_floorplan/physical_inputs.json": "8f29f1a13b67a04b4346846fb34492d6f2efc438b16104ce96fdb7d3c7008de8",
+    "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c6_floorplan/build_result.json": "f3ed31e2e319cc6fbf9ae705da3f741177591c8fb54b9c8c668d1d2412d40eea",
+    "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c6_floorplan/audit_returncodes.json": "9cbf66cded9c66cbe1faa08bb55a3629cd230184a5c97d3b2764a40cd0c9a2be",
+    "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c6_floorplan/timing-audit.json": "9d0d72083c8b25103bbdecebe8cc53db8d0e7ec53e7188d88fa666341f57753c",
+    "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c6_floorplan/ddr_structure_and_sampling.json": "ae7a974d1e29ca74636ff754502a122530c58d5f3eceb64cdd14c71d9422c198",
+    "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c6_floorplan/lane3_control_sampling_routes.json": "2e68bf2ec06d30fe5901702a6c3f59ad2092a3525320cd18bfb4196dd7410bad",
+    "projects/138k/push2_workstation/usb_a/out/hdmi_startup_ab_20261027/c6_floorplan_control/result.json": "ceed018a97b35a70736ceb599fcc1129f023eb635a211012eda129d72feaa7e6",
+    "projects/138k/push2_workstation/usb_a/reports/ae350_resources_20261027/prepare_lane3_floorplan.py": "10a490c195c7318b199860b6ba6a7d58ece43904c3048db1d3b0b1ffcfaf5f64",
+    "projects/138k/push2_workstation/usb_a/reports/ae350_resources_20261027/run_lane3_floorplan.py": "cf4ebedc8c864165f84456c05acabe95f5038e46174e8bb1e34984e047c86198"
+  }
+}
