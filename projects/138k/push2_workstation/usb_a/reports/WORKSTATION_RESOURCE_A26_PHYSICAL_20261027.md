@@ -94,3 +94,7 @@ SHA256: a901738a4e07eb777cbc32eb571179e93ebae86e8488e573d4b65696e100011c
 SRAM 下载和独立 UserCode 核对成功，未执行 SRAM 位流逐位回读。**未操作 Flash、未断电、未用其它位流预初始化。** 本次没有采集功能运行结果，声画、DDR、USB／BLE 仍待用户验收；不把身份读回标记为整机硬件通过。
 
 完整命令、时间及日志哈希见 [sram_c11027c1.json](ae350_resources_20261027/sram_c11027c1.json)，原始日志位于 `out/workstation_resource_a26_20261027_c1_physical/sram_deployment_20261027_124221/`。
+
+## 后续授权：蓝牙实板检查
+
+用户随后要求自行测试蓝牙。C1 的业务 GATT、会话重放、错误处理、重连续传、4,800 帧短录音及九种下载模式通过；前后独立 UserCode 均为 `0xC11027C1`。录音 PCM 全零，非静音乐音与物理输出仍未验收，不能提升为整机硬件通过。本次没有重新烧录、操作 Flash 或重跑综合／P&R。详见 [C1 蓝牙实板报告](WORKSTATION_BLE_C11027C1_20261027.md)。

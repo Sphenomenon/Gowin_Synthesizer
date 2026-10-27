@@ -1,0 +1,277 @@
+{
+  "native_passed": true,
+  "profiles_passed": true,
+  "started_at": "2026-10-27T12:56:46.389456+08:00",
+  "finished_at": "2026-10-27T13:01:00.239226+08:00",
+  "address": "D8:30:6D:A1:41:9E",
+  "boot_id": "0x1B6858306DA160C0",
+  "checks": {
+    "protocol_reconnect_replay_errors": true,
+    "live_pcm_recording_capacity_seal": true,
+    "chunk_and_object_crc32": true,
+    "download_replay": true,
+    "invalid_ack_crc_rejected": true,
+    "reconnect_resume": true,
+    "wrong_boot_rejected": true,
+    "referenced_clear_rejected": true,
+    "early_close_rejected": true,
+    "end_offset_rejected": true
+  },
+  "recording_info": {
+    "boot": 1974925401622929600,
+    "id": 1,
+    "state": 4,
+    "format": 1,
+    "channels": 2,
+    "flags": 2,
+    "rate": 48000,
+    "frames": 4800,
+    "bytes": 19200,
+    "capacity": 16384,
+    "crc": 4072116219,
+    "reason": 2,
+    "detail": 0,
+    "operation": 1,
+    "reserved": 0
+  },
+  "pcm": {
+    "bytes": 19200,
+    "frames": 4800,
+    "crc32": "f2b78ffb",
+    "sha256": "17744bb6a4ed1d9d51d85d7eb645cde30352530d494233c434027f9e3193bae4",
+    "nonzero_samples": 0,
+    "absolute_peak": 0,
+    "rms": 0.0
+  },
+  "download_seconds": 22.68127257283777,
+  "native_command_count": 179,
+  "profile_command_count": 48,
+  "profiles": [
+    {
+      "open_opcode": "0x30",
+      "read_opcode": "0x31",
+      "offset": 0,
+      "chunk_bytes": 256,
+      "data_notifications": 22,
+      "marker": "0xb1",
+      "passed": true,
+      "seconds": 0.19287909287959337
+    },
+    {
+      "open_opcode": "0x36",
+      "read_opcode": "0x31",
+      "offset": 4,
+      "chunk_bytes": 460,
+      "data_notifications": 37,
+      "marker": "0xb1",
+      "passed": true,
+      "seconds": 0.22488401783630252
+    },
+    {
+      "open_opcode": "0x37",
+      "read_opcode": "0x31",
+      "offset": 8,
+      "chunk_bytes": 460,
+      "data_notifications": 32,
+      "marker": "0xb2",
+      "passed": true,
+      "seconds": 0.3299355902709067
+    },
+    {
+      "open_opcode": "0x38",
+      "read_opcode": "0x31",
+      "offset": 12,
+      "chunk_bytes": 460,
+      "data_notifications": 3,
+      "marker": "0xb3",
+      "passed": true,
+      "seconds": 0.20987600600346923
+    },
+    {
+      "open_opcode": "0x39",
+      "read_opcode": "0x31",
+      "offset": 16,
+      "chunk_bytes": 460,
+      "data_notifications": 3,
+      "marker": "0xb3",
+      "passed": true,
+      "seconds": 0.21088371705263853
+    },
+    {
+      "open_opcode": "0x3b",
+      "read_opcode": "0x31",
+      "offset": 20,
+      "chunk_bytes": 972,
+      "data_notifications": 5,
+      "marker": "0xb3",
+      "passed": true,
+      "seconds": 0.28397222608327866
+    },
+    {
+      "open_opcode": "0x3c",
+      "read_opcode": "0x31",
+      "offset": 24,
+      "chunk_bytes": 8112,
+      "data_notifications": 34,
+      "marker": "0xb3",
+      "passed": true,
+      "seconds": 1.8597760703414679
+    },
+    {
+      "open_opcode": "0x3d",
+      "read_opcode": "0x3e",
+      "offset": 28,
+      "chunk_bytes": 8112,
+      "data_notifications": 22,
+      "marker": "0xb3",
+      "passed": true,
+      "seconds": 1.2901210021227598
+    },
+    {
+      "open_opcode": "0x40",
+      "read_opcode": "0x41",
+      "offset": 32,
+      "chunk_bytes": 8112,
+      "data_notifications": 13,
+      "marker": "0xb3",
+      "passed": true,
+      "seconds": 0.8710862719453871
+    },
+    {
+      "open_opcode": "0x30",
+      "read_opcode": "0x31",
+      "offset": 36,
+      "chunk_bytes": 256,
+      "data_notifications": 22,
+      "marker": "0xb1",
+      "passed": true,
+      "seconds": 0.17881371779367328
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349/discovery_gatt.json",
+      "sha256": "7c06f368190dc1c73dac310ea6f37635215199b8522cffdd5481d9e029bdf1f8",
+      "bytes": 2604
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349/native_ble.json",
+      "sha256": "091ab1ed599b4d86e1073846afe46528e208d483078b343b8ec0d2f8868069c0",
+      "bytes": 504710
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349/native_ble.log",
+      "sha256": "f320be7dd3db7a592544a0eb2dec0d31636291affe9dc55bf95d8eed25dc3efc",
+      "bytes": 970
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349/profiles.json",
+      "sha256": "c3bac1799230e047a8b0dfa1f27c221309d8315d6b87185ea3d90030254083e5",
+      "bytes": 337251
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349/profiles.log",
+      "sha256": "ba0c548cb351d0945f910630bb8a4ea15df381e5c1de39aa6f5cb327c9a676fa",
+      "bytes": 1878
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349/jtag_before.log",
+      "sha256": "9298cf9623c2289676a4d6225af88ceff414eb4f50f937bc0f8833dd3b107ffa",
+      "bytes": 268
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349/jtag_after.log",
+      "sha256": "9298cf9623c2289676a4d6225af88ceff414eb4f50f937bc0f8833dd3b107ffa",
+      "bytes": 268
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349/check_native_ble.py",
+      "sha256": "9ff9ff4889a10d3585f30fed68b545603490c177b14215f6d4ed114e73ddfe2f",
+      "bytes": 9561
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349/check_profiles.py",
+      "sha256": "c9c2fd2be96bc9e1a63a7a4e269e24209ba09a77e0bdef8b853bb444fa55207e",
+      "bytes": 4334
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349/workstation_live_pcm.wav",
+      "sha256": "3ac1bdf363578593c029ce12bf607ba277901c9c959ad7fed11b05d0edaadb06",
+      "bytes": 19244
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/out/resource_a26_C11027C1/C11027C1.fs",
+      "sha256": "91101332be8d8d5ac3511cc36227d77ab0fe2511f5869efb90c657b55ee1386a",
+      "bytes": 42303568
+    },
+    {
+      "path": "projects/25k/example/RTL8723DS_PROTOCOL/tools/protocol_v1.py",
+      "sha256": "298d1eddd75dbd3cafa5eb200e64897bfaf5a553e792e5830377081b48096a32",
+      "bytes": 5137
+    },
+    {
+      "path": "projects/25k/example/RTL8723DS_PROTOCOL/tools/protocol_check.py",
+      "sha256": "c86430249cfd6a638e4afee6eb27426c846a46ddeb1c9604cb264227d57950d2",
+      "bytes": 8842
+    },
+    {
+      "path": "projects/25k/example/RTL8723DS_PROTOCOL/tools/recording_check.py",
+      "sha256": "91154f8c42af71d9bde5b12acedee600b19474790d1e82863b5dcfbcad6a76a1",
+      "bytes": 14346
+    },
+    {
+      "path": "projects/25k/example/RTL8723DS_PROTOCOL/tools/pcm_lossless.py",
+      "sha256": "071daaedd9bef93a3ca29a8fd0154ed706394868f324398a99f4ea8b347ce0ab",
+      "bytes": 2540
+    }
+  ],
+  "candidate_identity": "custom138k-native-physical-C11027C1",
+  "source_identity": "custom138k-native-integration-20261027-a26",
+  "source_git_commit": "f4b4b7689d0d7932ef7895e35f208e0bf5475937",
+  "test_repository_commit": "da90754",
+  "user_code_before": "0xC11027C1",
+  "user_code_after": "0xC11027C1",
+  "device_id": "0x0001081B",
+  "bitstream_sha256": "91101332be8d8d5ac3511cc36227d77ab0fe2511f5869efb90c657b55ee1386a",
+  "authorization": "用户明确要求：你自己先测试蓝牙。",
+  "host_bleak_version": "3.0.2",
+  "scope": "real GW138K-MAIN GATT, protocol replay/errors, bounded live PCM capture and CRC download, reconnect/resume, negotiated transfer profiles",
+  "hardware_acceptance": {
+    "ble_business_protocol": true,
+    "bounded_capture_and_download_crc": true,
+    "non_silent_audio_content": false,
+    "android_device": false,
+    "ddr_long_recording": false,
+    "whole_workstation": false
+  },
+  "test_actions": {
+    "jtag_identity_read_only": true,
+    "synthesis": false,
+    "place_and_route": false,
+    "sram_program": false,
+    "flash_access": false,
+    "power_cycle": false,
+    "midi_injection": false,
+    "recording_clear": false
+  },
+  "recording_left_ready": true,
+  "serial_observation": {
+    "port": "/dev/serial/by-id/usb-FTDI_Dual_RS232-HS-if01-port0",
+    "baud": 115200,
+    "format": "8N1",
+    "dtr": false,
+    "rts": false,
+    "read_only": true,
+    "duration_seconds": 4,
+    "received_lines": 0
+  },
+  "limitations": [
+    "Captured PCM is all zero; non-silent source, channel order, gain, and effects not verified.",
+    "GET_STATUS valid_mask is 0x04: recording group only; other telemetry groups not validated.",
+    "No internal H5 counter trace; C1 GAO and default UART do not expose BLE1.",
+    "No Android, concurrent stress, physical DAC/HDMI, cold-start, or full-system acceptance.",
+    "Raw artifacts and local test adapters remain in ignored out; source helpers are versioned."
+  ],
+  "initial_probe_host_error": "First discovery probe used struct.unpack for a 20-byte HELLO payload; existing connection_test with unpack_from subsequently passed.",
+  "evidence_directory": "projects/138k/push2_workstation/usb_a/out/workstation_resource_a26_20261027_c1_physical/ble_test_20261027_125349"
+}
