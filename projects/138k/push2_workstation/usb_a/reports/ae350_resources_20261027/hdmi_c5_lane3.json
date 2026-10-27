@@ -1,0 +1,711 @@
+{
+  "date": "2026-10-27",
+  "identity": "custom138k-native-physical-C11027C5",
+  "source_identity": "custom138k-native-integration-20261027-a26",
+  "source_policy": "exact C3/C1 a26 business synthesis netlist and CST/SDC; 64-bit lane3/state/counter GAO at existing 100 MHz UI clock; incremental P&R using same-business C3 .p/.pr; timing-driven optimization off, hold correction and final routed STA retained; diagnostic only",
+  "input_sha256": {
+    "custom_138k_integration.vg": "fc50a05311afeb88e2ce575398e96a2fc4ea6fcf003c35abc1bd43994ff14cf8",
+    "physical.cst": "40e45c93370e077a0442b79cfc0a084949821c2a0a366dc8b4437d99e11277a5",
+    "physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+    "parent_integration_inputs.json": "fe4e3a263bace2d6049a251018d3116fca6565ee88a11dd45c5536cd40605b92",
+    "parent_synthesis_audit.json": "88ae43cec66cb0cfc21c15ade7a3430548939b820681ba34597155d2fe4e6eb4",
+    "reference.p": "e4978e7f0bd0129aa9b6d671106d6795edf7b6883c3597419c8b799c7ee22040",
+    "reference.pr": "e7c33aa29c8f1ee6b4974bbb772d325e5ae205466dc6e62a11cc615c2c21d1a9",
+    "run.tcl": "946e56283f27e5e83f5a8e928632d78c5732b61a1a00e86e573eb646fd9aa6ba",
+    "workstation.gao": "5c89fe9a3368f1fd8218b0fa6fbcb9bb93984adecc2380e274eea3e42c7f1b7b"
+  },
+  "build": {
+    "started_at": "2026-10-27T17:19:26.120512+08:00",
+    "identity": "custom138k-native-physical-C11027C5",
+    "synthesis_rerun": false,
+    "incremental_pnr": true,
+    "timing_driven_optimization": false,
+    "gao_probe_bits": 64,
+    "sample_clock_hz": 100000000,
+    "final_routed_sta_requested": true,
+    "sram_programmed": false,
+    "flash_accessed": false,
+    "finished_at": "2026-10-27T18:07:29.213959+08:00",
+    "elapsed_seconds": 2883.093447,
+    "returncode": 0
+  },
+  "bitstream_sha256": "0ca99d5e907f600335f112e3b0de7eac5c73a29ee02065fc80bb8a13783a74d8",
+  "resources_business": {
+    "Logic": 91903,
+    "Register": 54181,
+    "CLS": 61181,
+    "BSRAM": 317,
+    "DSP": 156.5
+  },
+  "gao_bsram": 4,
+  "physical_bsram_including_gao": 321,
+  "global_worst_ns": {
+    "setup": -6.376,
+    "hold": -0.12,
+    "recovery": 3.154,
+    "removal": 0.25
+  },
+  "strict_timing_passed": false,
+  "strict_timing_problems": [
+    "Fmax below requirement: clk_50m",
+    "Fmax below requirement: audio_76m8",
+    "Fmax below requirement: ddr_ui100",
+    "negative endpoints: clk_50m/setup",
+    "negative endpoints: audio_76m8/setup",
+    "negative endpoints: ddr_ui100/setup",
+    "negative endpoints: tck_pad_i/hold",
+    "negative detailed timing paths",
+    "clock summary inventory differs from the native plan"
+  ],
+  "checks": {
+    "check_timing": 1,
+    "check_common_cdc": 0,
+    "check_routes": 0,
+    "check_pll": 0
+  },
+  "probe_timing_warning": "Negative setup to GAO from falling-edge RBURST registers and readback-check logic; do not treat raw cross-bit phase relationships as timing-correct.",
+  "ddr_c3_c5_comparison": {
+    "cell_counts": {
+      "C3": 9131,
+      "C5": 9131
+    },
+    "cells_equal": true,
+    "internal_interconnect_counts": {
+      "C3": 29905,
+      "C5": 29905
+    },
+    "only_C3_routes": [],
+    "only_C5_routes": [],
+    "changed_internal_route_count": 124,
+    "maximum_absolute_changed_delay_ns": 0.009,
+    "all_404_dqs_connected_interconnect_tuples_equal": true,
+    "dqs_incoming_interconnect_count": 136,
+    "scope": "cell/parameter/port comparison and internal SDF interconnect tuples; not formal or full physical equivalence"
+  },
+  "experiment_started_at": "2026-10-27T18:13:39.855958+08:00",
+  "experiment_finished_at": "2026-10-27T18:17:50.426080+08:00",
+  "user_explained_initial_identity_change": "Brief power interruption loaded Flash identity C1102515; not treated as an unexplained board change.",
+  "after_user_power_cycle_ready": false,
+  "after_b2_ready": false,
+  "rollback_b2_ready": true,
+  "rollback_b3_ready": true,
+  "final_sram_user_code": "0xC11026B3",
+  "windows": [
+    {
+      "phase": "c5_after_b2",
+      "sequence": 1,
+      "started_at": "2026-10-27T18:14:20.626510+08:00",
+      "samples": 1024,
+      "csv_sha256": "cac7a119db8260082d59e492767ffa0ae93cfb71d4ee6eed67625c1de7a0eb27",
+      "summary_sha256": "b4c6f4952e36756460276cafe9337025c3f39ca7d63cc77abbecbbf66f69b4c1",
+      "lane_done_high_samples": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "lane3_counter_samples": {
+        "read_i": {
+          "9": 1024
+        },
+        "ides_calib_cnt": {
+          "7": 1024
+        },
+        "cal_cnt": {
+          "0": 1024
+        }
+      },
+      "lane3_signals": {
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_pos": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_neg": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "phy_rdbk_data_valid[3]": {
+          "values": {
+            "0": 942,
+            "1": 82
+          },
+          "transitions": 136
+        },
+        "u_ddr_init/rburst_cnt_check[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_init_rmove_mod/sys_reset_ch[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "rvalid_Z_2[3]": {
+          "values": {
+            "0": 942,
+            "1": 82
+          },
+          "transitions": 136
+        },
+        "u_ddr_init/rburst_reg[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "RBURST_2[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        }
+      },
+      "read_cal_state_high_samples": {
+        "READ_CAL_WRITE_CMD": 1,
+        "READ_CAL_READ_CMD": 18,
+        "READ_CAL_ACTIVE_CMD": 0,
+        "READ_CAL_PRECHARGE": 0,
+        "READ_CAL_WAIT": 0,
+        "READ_CAL_HOLD": 4,
+        "READ_CAL_READ_CMD_WAIT": 972,
+        "READ_CAL_WRITE_CMD_WAIT": 13,
+        "READ_CAL_ACTIVE_CMD_WAIT": 0,
+        "READ_CAL_RSEL_ADJ_WAIT": 12,
+        "READ_CAL_PRECHARGE_WAIT": 0,
+        "READ_CAL_IDLE": 0,
+        "READ_CAL_RBURST_CHECK": 1,
+        "READ_CAL_RBURST_CHECK_WAIT": 1,
+        "READ_CAL_RBURST_CHECK_WAIT1": 1,
+        "READ_CAL_RSEL_ADJ": 1,
+        "READ_CAL_DONE": 0
+      },
+      "ddr_calibrated_high_samples": 0,
+      "front_valid_high_samples": 0
+    },
+    {
+      "phase": "c5_after_b2",
+      "sequence": 2,
+      "started_at": "2026-10-27T18:14:23.377626+08:00",
+      "samples": 1024,
+      "csv_sha256": "42443e319b96b3af4b22872273f66161fe45ccd184347e8ed074fa4b63946b9e",
+      "summary_sha256": "22d935e84f64389cc50dd837771992b03c254c9cf5879d7bebd981e22e601c8b",
+      "lane_done_high_samples": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "lane3_counter_samples": {
+        "read_i": {
+          "11": 1024
+        },
+        "ides_calib_cnt": {
+          "5": 1024
+        },
+        "cal_cnt": {
+          "0": 1024
+        }
+      },
+      "lane3_signals": {
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_pos": {
+          "values": {
+            "0": 989,
+            "1": 35
+          },
+          "transitions": 70
+        },
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_neg": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "phy_rdbk_data_valid[3]": {
+          "values": {
+            "0": 900,
+            "1": 124
+          },
+          "transitions": 146
+        },
+        "u_ddr_init/rburst_cnt_check[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_init_rmove_mod/sys_reset_ch[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "rvalid_Z_2[3]": {
+          "values": {
+            "1": 124,
+            "0": 900
+          },
+          "transitions": 145
+        },
+        "u_ddr_init/rburst_reg[3]": {
+          "values": {
+            "0": 1023,
+            "1": 1
+          },
+          "transitions": 2
+        },
+        "RBURST_2[3]": {
+          "values": {
+            "0": 989,
+            "1": 35
+          },
+          "transitions": 70
+        }
+      },
+      "read_cal_state_high_samples": {
+        "READ_CAL_WRITE_CMD": 1,
+        "READ_CAL_READ_CMD": 17,
+        "READ_CAL_ACTIVE_CMD": 0,
+        "READ_CAL_PRECHARGE": 0,
+        "READ_CAL_WAIT": 0,
+        "READ_CAL_HOLD": 4,
+        "READ_CAL_READ_CMD_WAIT": 973,
+        "READ_CAL_WRITE_CMD_WAIT": 13,
+        "READ_CAL_ACTIVE_CMD_WAIT": 0,
+        "READ_CAL_RSEL_ADJ_WAIT": 12,
+        "READ_CAL_PRECHARGE_WAIT": 0,
+        "READ_CAL_IDLE": 0,
+        "READ_CAL_RBURST_CHECK": 1,
+        "READ_CAL_RBURST_CHECK_WAIT": 1,
+        "READ_CAL_RBURST_CHECK_WAIT1": 1,
+        "READ_CAL_RSEL_ADJ": 1,
+        "READ_CAL_DONE": 0
+      },
+      "ddr_calibrated_high_samples": 0,
+      "front_valid_high_samples": 0
+    },
+    {
+      "phase": "c5_after_b2",
+      "sequence": 3,
+      "started_at": "2026-10-27T18:14:26.076608+08:00",
+      "samples": 1024,
+      "csv_sha256": "2e1e393c9f04ebaf6e7b85065484f31296f565a9e0e2323d36de00fd453b33c4",
+      "summary_sha256": "26743fe3dcb12bd10c44de34e4c003bb39c18b3c355f3afeb4bead995066c34a",
+      "lane_done_high_samples": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "lane3_counter_samples": {
+        "read_i": {
+          "6": 1024
+        },
+        "ides_calib_cnt": {
+          "2": 1024
+        },
+        "cal_cnt": {
+          "0": 1024
+        }
+      },
+      "lane3_signals": {
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_pos": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_neg": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "phy_rdbk_data_valid[3]": {
+          "values": {
+            "1": 161,
+            "0": 863
+          },
+          "transitions": 178
+        },
+        "u_ddr_init/rburst_cnt_check[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_init_rmove_mod/sys_reset_ch[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "rvalid_Z_2[3]": {
+          "values": {
+            "1": 161,
+            "0": 863
+          },
+          "transitions": 178
+        },
+        "u_ddr_init/rburst_reg[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "RBURST_2[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        }
+      },
+      "read_cal_state_high_samples": {
+        "READ_CAL_WRITE_CMD": 0,
+        "READ_CAL_READ_CMD": 18,
+        "READ_CAL_ACTIVE_CMD": 0,
+        "READ_CAL_PRECHARGE": 0,
+        "READ_CAL_WAIT": 0,
+        "READ_CAL_HOLD": 0,
+        "READ_CAL_READ_CMD_WAIT": 1006,
+        "READ_CAL_WRITE_CMD_WAIT": 0,
+        "READ_CAL_ACTIVE_CMD_WAIT": 0,
+        "READ_CAL_RSEL_ADJ_WAIT": 0,
+        "READ_CAL_PRECHARGE_WAIT": 0,
+        "READ_CAL_IDLE": 0,
+        "READ_CAL_RBURST_CHECK": 0,
+        "READ_CAL_RBURST_CHECK_WAIT": 0,
+        "READ_CAL_RBURST_CHECK_WAIT1": 0,
+        "READ_CAL_RSEL_ADJ": 0,
+        "READ_CAL_DONE": 0
+      },
+      "ddr_calibrated_high_samples": 0,
+      "front_valid_high_samples": 0
+    },
+    {
+      "phase": "c5_after_user_power_cycle",
+      "sequence": 1,
+      "started_at": "2026-10-27T18:13:48.604791+08:00",
+      "samples": 1024,
+      "csv_sha256": "d4133c53bc7ea3a8e7aae6310f556def060f2d0273be71ad7d2263e727d74f2b",
+      "summary_sha256": "d5fc5b36d8db884c95d53d0467fbf0d38460ec283f10c0fda26d23a7c6324979",
+      "lane_done_high_samples": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "lane3_counter_samples": {
+        "read_i": {
+          "0": 1024
+        },
+        "ides_calib_cnt": {
+          "2": 782,
+          "3": 242
+        },
+        "cal_cnt": {
+          "0": 1024
+        }
+      },
+      "lane3_signals": {
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_pos": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_neg": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "phy_rdbk_data_valid[3]": {
+          "values": {
+            "1": 162,
+            "0": 862
+          },
+          "transitions": 144
+        },
+        "u_ddr_init/rburst_cnt_check[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_init_rmove_mod/sys_reset_ch[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "rvalid_Z_2[3]": {
+          "values": {
+            "0": 865,
+            "1": 159
+          },
+          "transitions": 141
+        },
+        "u_ddr_init/rburst_reg[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "RBURST_2[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        }
+      },
+      "read_cal_state_high_samples": {
+        "READ_CAL_WRITE_CMD": 1,
+        "READ_CAL_READ_CMD": 17,
+        "READ_CAL_ACTIVE_CMD": 0,
+        "READ_CAL_PRECHARGE": 0,
+        "READ_CAL_WAIT": 0,
+        "READ_CAL_HOLD": 4,
+        "READ_CAL_READ_CMD_WAIT": 973,
+        "READ_CAL_WRITE_CMD_WAIT": 13,
+        "READ_CAL_ACTIVE_CMD_WAIT": 0,
+        "READ_CAL_RSEL_ADJ_WAIT": 12,
+        "READ_CAL_PRECHARGE_WAIT": 0,
+        "READ_CAL_IDLE": 0,
+        "READ_CAL_RBURST_CHECK": 1,
+        "READ_CAL_RBURST_CHECK_WAIT": 1,
+        "READ_CAL_RBURST_CHECK_WAIT1": 1,
+        "READ_CAL_RSEL_ADJ": 1,
+        "READ_CAL_DONE": 0
+      },
+      "ddr_calibrated_high_samples": 0,
+      "front_valid_high_samples": 0
+    },
+    {
+      "phase": "c5_after_user_power_cycle",
+      "sequence": 2,
+      "started_at": "2026-10-27T18:13:51.417068+08:00",
+      "samples": 1024,
+      "csv_sha256": "27536ecf81a91f72ea214918d4c5887f1f99923bb6439d30c6107bf7b2dfe1d8",
+      "summary_sha256": "dfde67982e7e5eeaffb18d500c141f6e01a1c5604464ec402ced7a4e235431ba",
+      "lane_done_high_samples": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "lane3_counter_samples": {
+        "read_i": {
+          "3": 1024
+        },
+        "ides_calib_cnt": {
+          "4": 1024
+        },
+        "cal_cnt": {
+          "0": 1024
+        }
+      },
+      "lane3_signals": {
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_pos": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_neg": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "phy_rdbk_data_valid[3]": {
+          "values": {
+            "0": 862,
+            "1": 162
+          },
+          "transitions": 144
+        },
+        "u_ddr_init/rburst_cnt_check[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_init_rmove_mod/sys_reset_ch[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "rvalid_Z_2[3]": {
+          "values": {
+            "0": 862,
+            "1": 162
+          },
+          "transitions": 144
+        },
+        "u_ddr_init/rburst_reg[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "RBURST_2[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        }
+      },
+      "read_cal_state_high_samples": {
+        "READ_CAL_WRITE_CMD": 0,
+        "READ_CAL_READ_CMD": 18,
+        "READ_CAL_ACTIVE_CMD": 0,
+        "READ_CAL_PRECHARGE": 0,
+        "READ_CAL_WAIT": 0,
+        "READ_CAL_HOLD": 0,
+        "READ_CAL_READ_CMD_WAIT": 1006,
+        "READ_CAL_WRITE_CMD_WAIT": 0,
+        "READ_CAL_ACTIVE_CMD_WAIT": 0,
+        "READ_CAL_RSEL_ADJ_WAIT": 0,
+        "READ_CAL_PRECHARGE_WAIT": 0,
+        "READ_CAL_IDLE": 0,
+        "READ_CAL_RBURST_CHECK": 0,
+        "READ_CAL_RBURST_CHECK_WAIT": 0,
+        "READ_CAL_RBURST_CHECK_WAIT1": 0,
+        "READ_CAL_RSEL_ADJ": 0,
+        "READ_CAL_DONE": 0
+      },
+      "ddr_calibrated_high_samples": 0,
+      "front_valid_high_samples": 0
+    },
+    {
+      "phase": "c5_after_user_power_cycle",
+      "sequence": 3,
+      "started_at": "2026-10-27T18:13:54.120879+08:00",
+      "samples": 1024,
+      "csv_sha256": "146eb1bc5b38f6ead2f372e89943b7f36fbf12dd792d9d4929f7bde951a8ba24",
+      "summary_sha256": "ae4b84940f3f06eca67223fb417a199c6cd460e6f48f52a478333251f1aa0899",
+      "lane_done_high_samples": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "lane3_counter_samples": {
+        "read_i": {
+          "7": 1024
+        },
+        "ides_calib_cnt": {
+          "7": 1024
+        },
+        "cal_cnt": {
+          "0": 1024
+        }
+      },
+      "lane3_signals": {
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_pos": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_ddr_init/read_calibration_logic_gen[3].rburst_neg": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "phy_rdbk_data_valid[3]": {
+          "values": {
+            "0": 871,
+            "1": 153
+          },
+          "transitions": 170
+        },
+        "u_ddr_init/rburst_cnt_check[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "u_init_rmove_mod/sys_reset_ch[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "rvalid_Z_2[3]": {
+          "values": {
+            "0": 871,
+            "1": 153
+          },
+          "transitions": 170
+        },
+        "u_ddr_init/rburst_reg[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        },
+        "RBURST_2[3]": {
+          "values": {
+            "0": 1024
+          },
+          "transitions": 0
+        }
+      },
+      "read_cal_state_high_samples": {
+        "READ_CAL_WRITE_CMD": 1,
+        "READ_CAL_READ_CMD": 18,
+        "READ_CAL_ACTIVE_CMD": 0,
+        "READ_CAL_PRECHARGE": 0,
+        "READ_CAL_WAIT": 0,
+        "READ_CAL_HOLD": 4,
+        "READ_CAL_READ_CMD_WAIT": 972,
+        "READ_CAL_WRITE_CMD_WAIT": 13,
+        "READ_CAL_ACTIVE_CMD_WAIT": 0,
+        "READ_CAL_RSEL_ADJ_WAIT": 12,
+        "READ_CAL_PRECHARGE_WAIT": 0,
+        "READ_CAL_IDLE": 0,
+        "READ_CAL_RBURST_CHECK": 1,
+        "READ_CAL_RBURST_CHECK_WAIT": 1,
+        "READ_CAL_RBURST_CHECK_WAIT1": 1,
+        "READ_CAL_RSEL_ADJ": 1,
+        "READ_CAL_DONE": 0
+      },
+      "ddr_calibrated_high_samples": 0,
+      "front_valid_high_samples": 0
+    }
+  ],
+  "rollback_driver_error": "Initial rollback checksum literal was mistyped by the local C3-to-C5 runner copy; rejected before any B3 write, corrected and restored exact B3.",
+  "authorization": "User explicitly authorized subsequent diagnostic SRAM writes",
+  "flash_accessed": false,
+  "power_cycle_performed_by_this_experiment": false,
+  "hardware_acceptance": false,
+  "rollback_monitor_confirmation": {
+    "date": "2026-10-27",
+    "source": "explicit user confirmation after B3 SRAM restoration",
+    "sram_user_code": "0xC11026B3",
+    "hdmi_picture_visible": true,
+    "previous_flicker_remains": true,
+    "user_accepts_restored_picture_for_this_round": true,
+    "optimized_candidate_accepted": false,
+    "full_workstation_accepted": false,
+    "further_build_or_sram_write_started_after_confirmation": false
+  },
+  "release_ready": false,
+  "remaining_gaps": [
+    "Root cause of lane3 RBURST/read-calibration failure is not yet fixed.",
+    "Negative GAO sampling paths prevent treating the raw negative-edge/combined-check traces as phase-correct.",
+    "User accepted restored B3 HDMI picture with known flicker; this is not stable-picture, feature-preserving C1 BLE or full-workstation acceptance."
+  ],
+  "raw_evidence": "out/hdmi_startup_ab_20261027/c5_control_02/",
+  "build_evidence": "out/workstation_resource_a26_20261027_c5_lane3/"
+}
