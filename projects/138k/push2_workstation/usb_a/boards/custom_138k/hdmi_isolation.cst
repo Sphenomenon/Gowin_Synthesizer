@@ -1,0 +1,2 @@
+INS_LOC "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0" R52C59[0][B];
+INS_LOC "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0" R17C2[0][A];

@@ -4,15 +4,19 @@ from pathlib import Path
 import argparse
 import hashlib
 import json
-from audit_clk50_timing import TimingTables
+if __package__:
+    from .audit_clk50_timing import TimingTables
+else:
+    from audit_clk50_timing import TimingTables
 
 TARGETS = {'clk_50m': 50.0, 'audio_76m8': 76.8, 'usb_48m': 48.0,
            'ddr_mem400': 400.0, 'ddr_ui100': 100.0, 'video_pixel148': 148.5,
            'cpu_bus50': 50.0, 'cpu_core100': 100.0}
 
 
-def audit(build):
-    path = build / 'Prj1/impl/pnr/Prj1_tr_content.html'
+def audit(build, *, report_path=None, targets=None):
+    path = Path(report_path) if report_path is not None else build / 'Prj1/impl/pnr/Prj1_tr_content.html'
+    targets = TARGETS if targets is None else targets
     text = path.read_text()
     parser = TimingTables()
     parser.feed(text)
@@ -49,7 +53,7 @@ def audit(build):
             if key not in paths or paths[key]['slack_ns'] > record['slack_ns']:
                 paths[key] = record
     problems = []
-    for clock, target in TARGETS.items():
+    for clock, target in targets.items():
         if clock not in frequencies or frequencies[clock]['required_mhz'] != target:
             problems.append('missing/changed clock requirement: ' + clock)
         elif frequencies[clock]['actual_mhz'] < target:

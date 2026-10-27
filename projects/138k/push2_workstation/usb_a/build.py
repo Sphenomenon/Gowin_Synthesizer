@@ -37,10 +37,13 @@ def main():
     ap.add_argument('--prepare-custom-board',action='store_true',help='Prepare native 138K board integration for offline synthesis only; electrical and full physical gates remain blocked')
     ap.add_argument('--custom-board-output',type=Path,help='Required new output directory for --prepare-custom-board')
     ap.add_argument('--hdmi-mode',choices=['1080p60','720p30','720p60'],help='Explicit native-board HDMI mode; never changes accepted workstation profiles')
+    ap.add_argument('--hdmi-isolation',action='store_true',help='Standalone current native UI through shared DDR; no CPU, USB, BLE or recognition')
+    ap.add_argument('--hdmi-output',type=Path,help='New output directory for --hdmi-isolation')
+    ap.add_argument('--hdmi-input',choices=['static','dynamic'],help='Deterministic display inputs; default dynamic')
     ap.add_argument('--prepare-usb2-soc',action='store_true',help='Prepare native CPU/USB2 component with explicit probe or workstation firmware; not an integrated board candidate')
     ap.add_argument('--usb2-soc-output',type=Path,help='Required new output directory for --prepare-usb2-soc')
     ap.add_argument('--usb2-firmware-profile',choices=['probe','workstation'],help='Explicit USB2 CPU firmware; default probe, never changes accepted workstation profiles')
-    ap.add_argument('--usb2-component',choices=['soc','workstation-input','workstation-audio'],help='Explicit component composition; input/audio require workstation firmware')
+    ap.add_argument('--usb2-component',choices=['soc','workstation-input','workstation-audio','workstation-hotplug'],help='Explicit component composition; input/audio/hotplug require workstation firmware')
     ap.add_argument('--usb2-full-speed-only',action='store_true',help='Explicit native workstation diagnostic policy; HS remains enabled by default')
     ap.add_argument('--current-workstation',action='store_true',
                     help='Merge scope into accepted full83; full requires UserCode, never changes board latest')
@@ -57,6 +60,32 @@ def main():
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=ap.parse_args()
+    if args.hdmi_isolation:
+        if args.hdmi_output is None or args.netlist_dir is None or args.user_code is None:
+            ap.error('--hdmi-isolation requires --hdmi-output, --netlist-dir and a new --user-code')
+        if (args.prepare_custom_board or args.prepare_pinout or args.prepare_usb2_soc or args.current_workstation or
+                args.cnn_timing85 or args.resource_rework or args.resource_timing or args.reuse_synthesis or
+                args.hdmi_mode or args.usb2_full_speed_only or args.replicate_resources or
+                args.place_option is not None or args.max_fanout is not None or args.riscv_prefix or
+                args.custom_board_output or args.pinout_output or args.usb2_soc_output or
+                args.usb2_firmware_profile or args.usb2_component or args.tf_audio_kind!='wav' or
+                (args.prepare_only and args.synthesis_only)):
+            ap.error('--hdmi-isolation cannot be mixed with workstation or other component profiles')
+        from tools.workstation_hdmi_isolation import prepare as prepare_hdmi, build as build_hdmi
+        try:
+            output,metadata=prepare_hdmi(ROOT,args.netlist_dir,args.hdmi_output,args.user_code,args.hdmi_input!='static')
+            print(output,flush=True)
+            print(json.dumps(dict(identity=metadata['identity'],sources=len(metadata['enabled_inputs']),full_workstation=False)),flush=True)
+            if not args.prepare_only:
+                result=build_hdmi(output,args.synthesis_only)
+                print(json.dumps(result))
+                if result['returncode']:
+                    raise SystemExit(result['returncode'])
+        except (ValueError,OSError,subprocess.CalledProcessError) as error:
+            ap.error(str(error))
+        return
+    if args.hdmi_output is not None or args.hdmi_input is not None:
+        ap.error('--hdmi-output and --hdmi-input require --hdmi-isolation')
     if args.hdmi_mode is not None and not args.prepare_custom_board:
         ap.error('--hdmi-mode requires --prepare-custom-board')
     if args.usb2_full_speed_only and not (args.prepare_custom_board or
@@ -88,17 +117,25 @@ def main():
     if args.prepare_usb2_soc:
         if args.usb2_soc_output is None:
             ap.error('--prepare-usb2-soc requires --usb2-soc-output')
-        if (args.prepare_pinout or args.netlist_dir is not None or args.pinout_output is not None or
+        hotplug = args.usb2_component == 'workstation-hotplug'
+        if hotplug and args.usb2_firmware_profile != 'workstation':
+            ap.error('workstation-hotplug requires explicit --usb2-firmware-profile workstation')
+        if (args.prepare_pinout or (args.netlist_dir is not None and not hotplug) or args.pinout_output is not None or
                 args.prepare_only or args.synthesis_only or args.reuse_synthesis or args.no_update_latest or
                 args.current_workstation or args.cnn_timing85 or args.resource_rework or args.resource_timing or
                 args.replicate_resources or args.place_option is not None or args.max_fanout is not None or
-                args.user_code is not None or args.tf_audio_kind!='wav'):
+                (args.user_code is not None and not hotplug) or args.tf_audio_kind!='wav'):
             ap.error('--prepare-usb2-soc cannot be mixed with pinout, workstation, synthesis or release options')
         from tools.workstation_usb2_soc import prepare as prepare_usb2_soc
         try:
-            output,metadata=prepare_usb2_soc(ROOT,args.usb2_soc_output,args.riscv_prefix,
-                                           args.usb2_firmware_profile or 'probe',not args.usb2_full_speed_only,
-                                           args.usb2_component or 'soc')
+            if hotplug:
+                from tools.workstation_usb2_hotplug import prepare as prepare_hotplug
+                output,metadata=prepare_hotplug(ROOT,args.usb2_soc_output,args.netlist_dir,args.user_code,
+                                               args.riscv_prefix,not args.usb2_full_speed_only)
+            else:
+                output,metadata=prepare_usb2_soc(ROOT,args.usb2_soc_output,args.riscv_prefix,
+                                               args.usb2_firmware_profile or 'probe',not args.usb2_full_speed_only,
+                                               args.usb2_component or 'soc')
         except (ValueError,OSError,subprocess.CalledProcessError) as error:
             ap.error(str(error))
         print(output)
