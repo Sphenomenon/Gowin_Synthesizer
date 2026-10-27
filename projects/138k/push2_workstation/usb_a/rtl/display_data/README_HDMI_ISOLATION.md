@@ -42,6 +42,8 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 - `inputs.json` 保存基线、适配、配置和输入哈希；`build_result.json` 保存耗时、工具结果和输出哈希。
 - 原生 UI / DDR 来自锁定 `resource_rework_route0` 基线及现有原生时序适配。不能拿 active RTL 中同名但不同版本的文件悄悄替换。
 - 本配置独立使用 `boards/custom_138k/hdmi_isolation.cst` 管理 DDR 初始化两个 FF 的位置，不改整机布局约束或 vendor RTL。
+- 扫描器 `fetch_busy` 期间暂停接受新的 UI/分析页后台写入，取行结束后恢复。`valid` 和返回 `ready` 同时门控，已进入队列的事务正常排空；仍为 8 额度，不增加扫描 BSRAM。此策略只在独立配置中启用，不隐式修改 accepted/full83 或整机仲裁。
+- 写窗口由 `scanout_write_window` 对已校验的显示基线做唯一锚点适配；迁回原生显示组合后退役此适配。迁入整机前须验证音频及其他 DDR 客户端延迟。取行观测与候选证据见 `../../reports/WORKSTATION_HDMI_SCAN_WINDOW_20261028.md`。
 
 ## 保留的真实数据入口
 
@@ -66,12 +68,14 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 ```sh
 python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_hdmi_isolation.py
 python3 projects/138k/push2_workstation/usb_a/sim/display/run_scanout.py \
-  --project <准备目录> --output <新验证目录> --native-queues
+  --project <准备目录> --output <新验证目录> --native-queues --scan-write-window
 ```
 
 第一项覆盖输入节拍、复位重放、静态 / 动态状态、最小源集和真实 UI 的 DDR 导出 / 回读。
 UI 回归逐像素比较 1,036,800 对像素，并覆盖三帧、25 ms 停顿、发布一致性和 FFT 尚未就绪的启动帧。
 第二项使用实际队列仲裁器检查 1080p 行扫描、迟到行与迟到帧恢复。
+默认采用 8 行缩短回归；追加 `--active-lines 1080 --case stable` 覆盖完整高度的四帧及换帧。
+`--write-turnaround-cycles 100` 注入人工读写方向切换开销，不是 DDR 实测参数；用于检查写窗口下仍可连续扫描且后台写入推进。
 追加 `--read-latency-cycles 128`，可复现较长响应延迟下的黑行压力场景；当前 8 额度实现会失败，
 不是默认通过用例，也不是实板 DDR 延迟的测量。16 额度曾通过此用例，但未改善实板欠载，已撤回。
 物理时序、CDC、PLL / serializer 启动检查和上板画面仍是独立阶段。

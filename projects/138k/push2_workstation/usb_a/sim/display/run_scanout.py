@@ -20,9 +20,15 @@ def main():
     parser.add_argument('--frame-publication', action='store_true')
     parser.add_argument('--hdmi-mode', choices=('1080p60', '720p30', '720p60'), default='1080p60')
     parser.add_argument('--read-latency-cycles', type=int, default=64)
+    parser.add_argument('--active-lines', type=int, default=8)
+    parser.add_argument('--case', choices=('stable', 'late-line', 'late-epoch'))
+    parser.add_argument('--write-turnaround-cycles', type=int, default=0)
+    parser.add_argument('--scan-write-window', action='store_true')
     arguments = parser.parse_args()
     if arguments.read_latency_cycles < 1:
         parser.error('--read-latency-cycles must be positive')
+    if not 4 <= arguments.active_lines <= 1080:
+        parser.error('--active-lines must be between 4 and 1080')
     project = arguments.project.resolve()
     output = arguments.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -49,6 +55,9 @@ def main():
                     frame_publication=arguments.frame_publication,
                     hdmi_mode=arguments.hdmi_mode,
                     read_latency_cycles=arguments.read_latency_cycles,
+                    active_lines=arguments.active_lines,
+                    write_turnaround_cycles=arguments.write_turnaround_cycles,
+                    scan_write_window=arguments.scan_write_window,
                     input_sha256={str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in inputs},
                     cases=[])
     for path in inputs:
@@ -56,6 +65,9 @@ def main():
     command = ['iverilog', '-g2012', '-s', top, '-I', str(project),
                '-o', str(output / 'scanout.vvp'), *map(str, sources)]
     if not arguments.frame_publication:
+        command.insert(1, f'-Ptb_video_scanout.ACTIVE_LINES={arguments.active_lines}')
+        command.insert(1, f'-Ptb_video_scanout.WRITE_TURNAROUND_CYCLES={arguments.write_turnaround_cycles}')
+        command.insert(1, f'-Ptb_video_scanout.SCAN_WRITE_WINDOW={int(arguments.scan_write_window)}')
         command.insert(1, f'-Ptb_video_scanout.READ_LATENCY_CYCLES={arguments.read_latency_cycles}')
         command.insert(1, f'-Ptb_video_scanout.USE_QUEUES={int(arguments.native_queues)}')
         command.insert(1, f'-Ptb_video_scanout.VIDEO_720P30={int(arguments.hdmi_mode == "720p30")}')
@@ -66,15 +78,17 @@ def main():
     evidence['compile_returncode'] = compiled.returncode
     if compiled.returncode == 0:
         for mode, label in enumerate(labels):
+            if arguments.case and mode != ('stable', 'late-line', 'late-epoch').index(arguments.case):
+                continue
             command = ['vvp', str(output / 'scanout.vvp'), f'+MODE={mode}']
-            result = subprocess.run(command, cwd=project, capture_output=True, text=True, timeout=120)
+            result = subprocess.run(command, cwd=project, capture_output=True, text=True, timeout=600)
             log = output / f'{label}.log'
             log.write_text(result.stdout + result.stderr)
             passed = result.returncode == 0 and f'PASS mode={mode} ' in result.stdout
             evidence['cases'].append(dict(case=label, command=command, returncode=result.returncode,
                                           passed=passed, log_sha256=hashlib.sha256(log.read_bytes()).hexdigest()))
             print(label, result.stdout.strip(), flush=True)
-    evidence['passed'] = compiled.returncode == 0 and len(evidence['cases']) == len(labels) and all(
+    evidence['passed'] = compiled.returncode == 0 and len(evidence['cases']) == (1 if arguments.case else len(labels)) and all(
         case['passed'] for case in evidence['cases'])
     (output / 'results.json').write_text(json.dumps(evidence, indent=2) + '\n')
     if not evidence['passed']:

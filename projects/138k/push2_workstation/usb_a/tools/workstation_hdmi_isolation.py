@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 from tools.workstation_baselines import load_baseline
 from tools.workstation_custom_clocks import clock_bundle, shared_cdc_bundle
 from tools.workstation_pinout import prepare as prepare_pinout, render_constraints
-from tools.workstation_resource_timing import dashboard, diagnostics, raster, scanout_request, slot_payload
+from tools.workstation_resource_timing import dashboard, diagnostics, once, raster, scanout_request, slot_payload
 from tools.workstation_timing_constraints import gray_write_alias_constraints
 from tools.audit_workstation_timing import audit as audit_timing
 
@@ -41,7 +41,18 @@ LIVE_SOURCES = (
     'rtl/display_data/workstation_custom_dvi.sv', 'rtl/display_data/workstation_hdmi_demo.sv',
     'rtl/display_data/workstation_hdmi_isolation.sv',
 )
+def scanout_write_window(text):
+    text = once(text, '    wire merged_req,merged_ready;',
+                '    wire merged_req,merged_ready,arbiter_writer_ready,scan_fetch_busy;\n'
+                '    assign merged_ready=arbiter_writer_ready && !scan_fetch_busy;')
+    text = once(text, '.fetch_fault(fetch_fault),.underruns(underruns),',
+                '.fetch_fault(fetch_fault),.fetch_busy(scan_fetch_busy),.underruns(underruns),')
+    text = once(text, '.writer_valid(merged_req),', '.writer_valid(merged_req && !scan_fetch_busy),')
+    return once(text, '.writer_ready(merged_ready),', '.writer_ready(arbiter_writer_ready),')
+
+
 ADAPTATIONS = {
+    'src/video/hdmi_display.v': scanout_write_window,
     'src/video/feedback_dashboard.v': dashboard,
     'src/video/video_runtime_diagnostics.v': diagnostics,
     'src/video/video_timing_1080p.v': raster,

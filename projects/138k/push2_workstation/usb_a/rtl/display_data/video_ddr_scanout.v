@@ -25,6 +25,7 @@ module video_ddr_scanout #(
     input wire rsp_valid,
     input wire [255:0] rsp_data,
     output reg fetch_fault,
+    output wire fetch_busy,
     output wire [31:0] underruns,
     input wire pixel_clk, pixel_rst_n,
     input wire [11:0] pixel_x,
@@ -149,6 +150,7 @@ module video_ddr_scanout #(
     wire [255:0] response_word = response_fifo[response_head];
     wire [63:0] response_group = response_word >> {write_quarter,6'b0};
     wire [8:0] outstanding = issued - received;
+    assign fetch_busy=active || request_pending;
     assign req_valid=active && !fetch_fault && issued<LINE_BEATS && outstanding<8;
     assign req_addr=line_base+{17'd0,issued,3'b000};
     generate

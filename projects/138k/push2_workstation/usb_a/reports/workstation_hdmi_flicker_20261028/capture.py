@@ -13,6 +13,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[2]
 HELPER = runpy.run_path(str(ROOT / 'reports/hdmi_usb3_20261025/capture_ddr_jtag.py'))
+TRACE = runpy.run_path(str(Path(__file__).with_name('scan_trace.py')))
 
 
 def decode(values):
@@ -29,9 +30,12 @@ def decode(values):
 def capture(candidate, output):
     manifest = json.loads((candidate / 'inputs.json').read_text())
     expected = ['reset_n'] + [f'debug_status[{bit}]' for bit in reversed(range(63))]
-    if (manifest['signal_schema'] != 'hdmi-isolation-memory-video-counters-64-v1' or
+    trace = manifest['signal_schema'] == TRACE['SCHEMA']
+    if trace:
+        expected += TRACE['TRACE_SIGNALS']
+    if (manifest['signal_schema'] not in ('hdmi-isolation-memory-video-counters-64-v1', TRACE['SCHEMA']) or
             manifest['signals'] != expected or manifest['full_workstation'] is not False):
-        raise ValueError('expected explicit 64-bit HDMI isolation observer')
+        raise ValueError('expected explicit HDMI isolation observer')
     configuration = candidate / 'display.gao'
     if HELPER['digest'](configuration) != manifest['input_sha256']['display.gao']:
         raise ValueError('GAO input changed')
@@ -74,11 +78,14 @@ def capture(candidate, output):
     for row in rows[header + 1:]:
         if not row:
             continue
-        if len(row) != 65 or int(row[0]) != len(samples) or any(value not in ('0', '1') for value in row[1:]):
+        if len(row) != len(expected) + 1 or int(row[0]) != len(samples) or any(value not in ('0', '1') for value in row[1:]):
             raise ValueError('invalid sample row')
         values = list(map(int, row[1:]))
-        samples.append(decode(values))
-    if len(samples) != 1024:
+        sample = decode(values[:64])
+        if trace:
+            sample['scan'] = TRACE['decode_trace'](values[64:])
+        samples.append(sample)
+    if len(samples) != manifest['storage_depth']:
         raise ValueError('incomplete window')
     HELPER['identity'](output / 'identity_after.log', manifest['user_code'])
     result = dict(started_at=started, finished_at=HELPER['timestamp'](), user_code=manifest['user_code'],

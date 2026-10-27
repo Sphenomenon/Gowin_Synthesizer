@@ -1,9 +1,10 @@
 `timescale 1ns/1ps
 `include "src/memory/ddr_address_map.vh"
 module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_720P60=0,
-                         READ_LATENCY_CYCLES=64);
+                         READ_LATENCY_CYCLES=64, ACTIVE_LINES=8,
+                         WRITE_TURNAROUND_CYCLES=0, SCAN_WRITE_WINDOW=0);
     localparam integer VIDEO_720=VIDEO_720P30 || VIDEO_720P60;
-    localparam integer WIDTH=VIDEO_720 ? 1280 : 1920, HEIGHT=8;
+    localparam integer WIDTH=VIDEO_720 ? 1280 : 1920, HEIGHT=ACTIVE_LINES;
     localparam integer H_TOTAL=VIDEO_720P60 ? 1650 : VIDEO_720P30 ? 3300 : 2200;
     localparam integer V_BLANK=VIDEO_720 ? 30 : 45;
     localparam realtime PIXEL_HALF_NS=VIDEO_720 ? 6.734007 : 3.3670035;
@@ -31,6 +32,7 @@ module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_
     wire model_request;
     wire [28:0] model_address;
     wire native_fault,native_write;
+    wire fetch_busy;
     integer background_writes=0;
     generate
         if(USE_QUEUES) begin : g_native
@@ -47,7 +49,7 @@ module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_
                 .audio_valid(1'b0),.audio_write(1'b0),.audio_address(29'd0),.audio_data(256'd0),
                 .music_valid(1'b0),.music_write(1'b0),.music_address(29'd0),.music_data(256'd0),.music_mask(32'd0),
                 .delay_valid(1'b0),.delay_write(1'b0),.delay_address(29'd0),.delay_data(256'd0),
-                .writer_valid(1'b1),.writer_address(29'h08000000),.writer_data(256'h1234),
+                .writer_valid(!SCAN_WRITE_WINDOW || !fetch_busy),.writer_address(29'h08000000),.writer_data(256'h1234),
                 .cpu_valid(1'b0),.cpu_write(1'b0),.cpu_address(29'd0),.cpu_data(256'd0),.cpu_mask(32'd0),
                 .app_cmd(app_command),.app_en(app_enable),.app_wren(app_write_enable),.app_wend(app_write_end),
                 .app_address(model_address),.app_data(app_data),.app_mask(app_mask),
@@ -73,7 +75,7 @@ module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_
         .frame_swap(frame_swap),.front_bank(front_bank),.front_valid(front_valid),
         .req_valid(request_valid),.req_ready(request_ready),.req_addr(request_address),
         .rsp_valid(response_valid),.rsp_data(response_data),
-        .fetch_fault(fetch_fault),.underruns(underruns),
+        .fetch_fault(fetch_fault),.fetch_busy(fetch_busy),.underruns(underruns),
         .pixel_clk(pixel_clk),.pixel_rst_n(reset_n),.pixel_x(pixel_x),.pixel_y(pixel_y),
         .data_enable(data_enable),.hsync(hsync),.vsync(vsync),.vblank_start(vblank_start),
         .rgb(rgb),.out_de(out_de),.out_hsync(out_hsync),.out_vsync(out_vsync));
@@ -89,19 +91,21 @@ module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_
     reg [28:0] queued_address[0:16383];
     integer queued_due[0:16383];
     integer blocked_cycles=0,stall_mode=0,read_latency=READ_LATENCY_CYCLES;
+    integer native_ready_at=0;
+    reg last_command_write=0;
     integer selected_generation=1;
     integer response_position,response_generation;
     reg stall_started=0;
     always @(negedge memory_clk) begin
         if(reset_n) begin
             memory_cycle=memory_cycle+1;
-            model_ready=memory_cycle%11!=0;
+            model_ready=memory_cycle%11!=0 && memory_cycle>=native_ready_at;
             model_response_valid=0;
             if(blocked_cycles>0) blocked_cycles=blocked_cycles-1;
-            else if(queue_head<queue_tail && memory_cycle>=queued_due[queue_head]) begin
+            else if(queue_head<queue_tail && memory_cycle>=queued_due[queue_head%16384]) begin
                 model_response_valid=1;
-                response_generation=queued_address[queue_head]>=`PRJ1_DDR_VIDEO_FRAME1_APP_BASE ? 2 : 1;
-                response_position=((queued_address[queue_head] & 29'h000fffff)>>3)*16;
+                response_generation=queued_address[queue_head%16384]>=`PRJ1_DDR_VIDEO_FRAME1_APP_BASE ? 2 : 1;
+                response_position=((queued_address[queue_head%16384] & 29'h000fffff)>>3)*16;
                 for(integer lane=0;lane<16;lane=lane+1)
                     model_response_data[lane*16+:16]=color565(response_position+lane,response_generation);
                 queue_head=queue_head+1;
@@ -110,10 +114,15 @@ module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_
     end
     always @(posedge memory_clk) begin
         if(reset_n) begin
+            if(USE_QUEUES && (model_request || native_write) && model_ready) begin
+                if(native_write!=last_command_write)
+                    native_ready_at=memory_cycle+WRITE_TURNAROUND_CYCLES;
+                last_command_write=native_write;
+            end
             if(model_request && model_ready) begin
-                if(queue_tail==16384) $fatal(1,"response queue capacity");
-                queued_address[queue_tail]=model_address;
-                queued_due[queue_tail]=memory_cycle+read_latency;
+                if(queue_tail-queue_head==16384) $fatal(1,"response queue capacity");
+                queued_address[queue_tail%16384]=model_address;
+                queued_due[queue_tail%16384]=memory_cycle+read_latency;
                 queue_tail=queue_tail+1;
                 if(stall_mode!=0 && !stall_started && dut.fetch_line==3) begin
                     stall_started=1;
@@ -210,5 +219,5 @@ module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_
         $display("PASS mode=%0d queues=%0d checked_pixels=%0d colored_lines=%0d black_lines=%0d underruns=%0d background_writes=%0d",requested_mode,USE_QUEUES,checked_pixels,colored_lines,black_lines,underruns,background_writes);
         $finish;
     end
-    initial begin #20000000;$fatal(1,"test timeout");end
+    initial begin #(20000000 + ACTIVE_LINES*100000);$fatal(1,"test timeout");end
 endmodule

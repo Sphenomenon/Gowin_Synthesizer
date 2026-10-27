@@ -116,6 +116,11 @@ class Isolation(unittest.TestCase):
                 payload = hdmi.ADAPTATIONS[name](payload.decode()).encode()
             self.assertEqual((stage / name).read_bytes(), payload, name)
         self.assertIn('basic_pitch_ddr_client_queues u_arbiter', (stage / 'src/video/hdmi_display.v').read_text())
+        display = (stage / 'src/video/hdmi_display.v').read_text()
+        self.assertIn('assign merged_ready=arbiter_writer_ready && !scan_fetch_busy;', display)
+        self.assertIn('.writer_valid(merged_req && !scan_fetch_busy)', display)
+        self.assertIn('.writer_ready(arbiter_writer_ready)', display)
+        self.assertIn('.fetch_busy(scan_fetch_busy)', display)
         self.assertEqual((stage / 'src/memory/ddr_address_map.vh').read_bytes(), (ROOT / 'rtl/ddr_address_map.vh').read_bytes())
         sdc = (stage / 'display.sdc').read_text()
         self.assertEqual(sdc.count('create_clock '), 1)
@@ -169,6 +174,41 @@ class Isolation(unittest.TestCase):
         with patch.object(subprocess, 'run') as run, self.assertRaisesRegex(ValueError, 'input changed'):
             hdmi.build(stage)
         run.assert_not_called()
+
+    def test_scan_trace_is_observer_only(self):
+        trace = runpy.run_path(str(ROOT / 'reports/workstation_hdmi_flicker_20261028/scan_trace.py'))
+        self.assertEqual(len(trace['TRACE_SIGNALS']), 64)
+        self.assertEqual(len(set(trace['SIGNALS'])), 128)
+        stage, manifest = self.prepare()
+        before = {name: hdmi.digest(stage / name) for name in manifest['enabled_inputs']}
+        with patch.object(hdmi, 'prepare', return_value=(stage, manifest)):
+            trace['prepare'](stage, self.output, 'C11028D3')
+        after = json.loads((stage / 'inputs.json').read_text())
+        self.assertEqual(after['signal_schema'], trace['SCHEMA'])
+        self.assertEqual(after['storage_depth'], 8192)
+        self.assertEqual(after['sample_clock'], 'u_display/memory_clk')
+        for name, expected in before.items():
+            self.assertEqual(hdmi.digest(stage / name), expected, name)
+        decoded = trace['decode_trace']([1] * 64)
+        self.assertEqual(decoded['fetch_line'], 2047)
+        self.assertEqual(decoded['fetch_epoch'], 255)
+        self.assertEqual(decoded['issued'], 511)
+        self.assertEqual(decoded['received'], 511)
+        self.assertEqual(decoded['front_valid'], 1)
+
+    @unittest.skipUnless(shutil.which('iverilog'), 'requires iverilog')
+    def test_scan_window_under_direction_change_pressure(self):
+        stage, _ = self.prepare()
+        command = [sys.executable, str(ROOT / 'sim/display/run_scanout.py'), '--project', str(stage),
+                   '--native-queues', '--case', 'stable', '--write-turnaround-cycles', '100']
+        unprotected = subprocess.run(command + ['--output', str(self.output / 'unprotected')],
+                                     capture_output=True, text=True, timeout=60)
+        self.assertNotEqual(unprotected.returncode, 0)
+        self.assertIn('unexpected black line', unprotected.stdout)
+        protected = subprocess.run(command + ['--output', str(self.output / 'protected'), '--scan-write-window'],
+                                   capture_output=True, text=True, timeout=60)
+        self.assertEqual(protected.returncode, 0, protected.stdout + protected.stderr)
+        self.assertIn('black_lines=0 underruns=0', protected.stdout)
 
     def test_zero_tool_exit_without_outputs_is_not_success(self):
         stage, _ = self.prepare()
