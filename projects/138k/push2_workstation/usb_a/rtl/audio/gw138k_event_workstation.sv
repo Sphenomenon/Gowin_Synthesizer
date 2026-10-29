@@ -79,6 +79,7 @@ module gw138k_event_workstation #(
   logic event_valid, event_ready;
   logic [17:0] event_data;
   logic fifo_event_valid,fifo_event_ready;
+  logic core_ce; // Declare before cue_player: Gowin otherwise creates an implicit net.
   wire cue_valid,cue_ready,cue_running,cue_done,cue_error;
   wire [17:0] cue_event;
   wire [31:0] cue_late,cue_time;
@@ -123,7 +124,7 @@ module gw138k_event_workstation #(
   logic core_expression_valid, core_expression_ready;
   logic [6:0] core_note, core_velocity;
   logic [6:0] core_expression_note, core_expression_value;
-  logic core_sample_ready, core_ce, load_busy, mix_busy;
+  logic core_sample_ready, load_busy, mix_busy;
   wire runtime_quiescent, runtime_rate_ready,engine_rate;
   wire runtime_config_block,runtime_config_busy,runtime_fault;
   wire engine_rate_commit;

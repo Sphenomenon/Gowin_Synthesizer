@@ -67,6 +67,9 @@ module workstation_runtime_spatial_reverb (
     wire signed [63:0] p2={{31{sum23[32]}},sum23};
     wire signed [63:0] p3={{31{diff23[32]}},diff23};
     logic signed [63:0] h[0:3],loop_gain[0:3],feedback[0:3];
+    wire config_accept=config_valid_i && config_ready_o;
+    wire history_accept=history_clear_i && history_ready_o;
+    wire local_history_clear=clear_i || config_accept || history_accept;
     for(genvar lane=0;lane<4;lane=lane+1) begin : g_fdn
         workstation_sdp_banked #(.WORDS(capacity_length(lane)),.ADDR_WIDTH(12)) ram(
             .rst_ni(rst_ni),.clear_i(local_history_clear),
@@ -94,9 +97,6 @@ module workstation_runtime_spatial_reverb (
     wire [7:0] gain_fraction_sum=gain_remainder+8'd47;
     wire [15:0] gain_delta=applied_rate_44100_o ?
         16'd139+{15'd0,gain_fraction_sum>=8'd147} : 16'd128;
-    wire config_accept=config_valid_i && config_ready_o;
-    wire history_accept=history_clear_i && history_ready_o;
-    wire local_history_clear=clear_i || config_accept || history_accept;
     assign quiescent_o=state==0 && !valid_o && !ram_write_tail && !clear_i;
     assign config_ready_o=quiescent_o && !valid_i;
     assign history_ready_o=config_ready_o && !config_valid_i;

@@ -4,7 +4,7 @@
   "prepared_source_identity": "custom138k-workstation-v1-f5b723250388add5",
   "prepared_relative_path": "rtl/audio/serial_spatial_reverb.sv",
   "prepared_sha256": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
-  "native_sha256": "31ec6580986a0848ca13c80f4fb08759489ee5e49bbaa2fabeeb4c163c241619",
+  "native_sha256": "fc4cacd3acd2c0cd6b73ee496bfa4db30e17be9d8018a9364e51eeff07c0d05d",
   "source_policy": "Independent native module with reversible exact prepared migration;not selected by profile/build/top. Original48k RAM capacities retained.",
   "reverse_instructions": "Reverse exact recorded edits and match prepared_sha256;verifier only,no generated production boundary.",
   "forward_edits": [
@@ -86,6 +86,16 @@
     {
       "before": "                        damping[i]<=sat31(($signed({{32{damping[i][31]}},damping[i]})+\n                            (frames>=delay_length(i) ? $signed({{32{line_data[i][31]}},line_data[i]}) : 64'sd0))>>>1);",
       "after": "                        damping[i]<=rate_damping(damping[i],\n                            frames>=delay_length(i) ? $signed(line_data[i]) : 32'sd0,applied_rate_44100_o);",
+      "count": 1
+    },
+    {
+      "before": "    wire config_accept=config_valid_i && config_ready_o;\n    wire history_accept=history_clear_i && history_ready_o;\n    wire local_history_clear=clear_i || config_accept || history_accept;\n    assign quiescent_o=",
+      "after": "    assign quiescent_o=",
+      "count": 1
+    },
+    {
+      "before": "    for(genvar lane=0;lane<4;lane=lane+1) begin : g_fdn\n",
+      "after": "    wire config_accept=config_valid_i && config_ready_o;\n    wire history_accept=history_clear_i && history_ready_o;\n    wire local_history_clear=clear_i || config_accept || history_accept;\n    for(genvar lane=0;lane<4;lane=lane+1) begin : g_fdn\n",
       "count": 1
     }
   ]

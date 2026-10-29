@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "validation_stage": "source-fix-and-offline-regression",
+  "passed": true,
+  "hardware_tested": false,
+  "profile_changed": false,
+  "bitstream_sha256": null,
+  "problem": "Gowin scope-local implicit nets from use before explicit variable/net declaration; synthesis exit0 did not imply a driven Reverb history clear",
+  "changes": [
+    "Declare core_ce before cue_player",
+    "Declare config_accept, history_accept and local_history_clear before generated FDN RAM instances",
+    "Preserve exact reversible prepared-source provenance"
+  ],
+  "source_sha256": {
+    "rtl/audio/gw138k_event_workstation.sv": "79d37aef1852c206644ebecac796ef7242089c6489fb8e6f1e2f8d3097faa10c",
+    "rtl/audio/workstation_runtime_spatial_reverb.sv": "fc4cacd3acd2c0cd6b73ee496bfa4db30e17be9d8018a9364e51eeff07c0d05d",
+    "rtl/audio/workstation_runtime_spatial_reverb.provenance.json": "3ca4cbf55bb0dea90f67f08388fee5fd2460532ed8a64cc7f64a9d3b8bf01a52"
+  },
+  "regressions": {
+    "reverb": {
+      "log": "/tmp/gw138k-reverb-declaration-parent.log",
+      "sha256": "0d7de91197290a00c6c3416bc0d6d16758851386b75f98da71b9384d92ac12b8",
+      "unittest_result": "Ran 6 tests in 15.773s"
+    },
+    "source_boundary": {
+      "log": "/tmp/gw138k-sources-declaration-parent.log",
+      "sha256": "a468607329533f372ad72d9841e555a17ba2e4ca42d4f58aeeedcb3ef3a62b54",
+      "unittest_result": "Ran 10 tests in 0.083s"
+    },
+    "runtime_render_service": {
+      "verification": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-render-service-declaration-parent/verification.json",
+      "sha256": "e9451f8f620aef51ebcf58da94ffbc02a2e5ca8e94de46eb70cdf51b37f657ea",
+      "metrics": {
+        "requests": 48652,
+        "responses": 48652,
+        "modeled_frames": 48644,
+        "configs": 16,
+        "histories": 25,
+        "cancels": 4,
+        "wet48": 16862179,
+        "wet44": 17758676,
+        "pitch_checks": 49780416,
+        "max_latency": 1598,
+        "max_steady_latency": 1146,
+        "max_auto_config_latency": 1598,
+        "max_loader_latency": 1182,
+        "posted_writes": 12160,
+        "ordered_fences": 27
+      },
+      "source_set_sha256": null
+    },
+    "runtime_audio": {
+      "verification": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-audio-declaration-parent-main/verification.json",
+      "sha256": "92c2d0bc88476ba464aca60f4f6a711fc45a1aeddfcc95d1f03439434f37ee5f",
+      "metrics": {
+        "checked": 20190,
+        "good": 20184,
+        "errors": 6,
+        "nonzero": 20057,
+        "first_slots": 13,
+        "config_acks": 14,
+        "applies": 12,
+        "faults": 5,
+        "mid_frame_switches": 8,
+        "max_render_clocks": 1184,
+        "max_slot_clocks": 1210,
+        "max_config_clocks": 455,
+        "writes": 5036,
+        "fences": 21,
+        "analysis_drops": 6735,
+        "record_drops": 12108,
+        "startup_frames": 3,
+        "epoch": 12,
+        "loader_overlap_slots": 6,
+        "pressure_events": 768,
+        "pressure_noteoffs": 26,
+        "wet48": 7,
+        "wet44": 7,
+        "fdn_seen": 3
+      },
+      "source_set_sha256": "108192b1849b1f81a9b412658e2d027ddd37257375122d2c45d85d887d802eb0"
+    }
+  },
+  "prior_diagnostic": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-audio-component-synth-29d0083e",
+    "manifest_sha256": "26ac3dbdaec2c0b6732d8d2d3fde377e1313447f64604874a4a822122fada137",
+    "log_sha256": "92186af27756bd68a4b1b53c771f6770c60c8b6076da61f52f2a4a750e1e7723",
+    "netlist_sha256": "b3897e46f615082d7294d82031f26f6becd3f6b9278754ef2c618cc8d467de43",
+    "returncode": 0,
+    "accepted": false,
+    "reasons": [
+      "EX3638 core_ce/local_history_clear implicit declaration",
+      "EX1998 local_history_clear and generated scope history_clear undriven"
+    ]
+  },
+  "next_gate": "New immutable synthesis identity must prove EX3638/EX1998 absent and real FDN RAM clear connected; no prior experiment rewritten"
+}
