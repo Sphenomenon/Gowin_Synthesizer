@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "prepared_source_identity": "custom138k-workstation-v1-f5b723250388add5",
+  "prepared_relative_path": "legacy/rtl/audio/stereo_effects.sv",
+  "prepared_source_sha256": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+  "prepared_slice": "module serial_chorus_effect through first following endmodule, inclusive, no trailing newline",
+  "prepared_sha256": "2801a8f9ec570f992bc0e88d9ab6d457c4e17085da810ccf6d9fbaca2b3a5f84",
+  "native_sha256": "8a6fa6ea9158cc983c9d48cc9e92f01da2e10950214d3d2bb2cb7bb0b67b4cf4",
+  "source_policy": "Independent native module, exact prepared slice with reversible checked edits; not selected by profile/build/top.",
+  "reverse_instructions": "Apply forward_edits in reverse order with exact recorded counts; match prepared_sha256. A verifier, not a generated production implementation.",
+  "forward_edits": [
+    {
+      "before": "module serial_chorus_effect #(",
+      "after": "`timescale 1ns/1ps\n// Independent native runtime Chorus; no profile currently selects this module.\n// Config/history requests clear logical history while retaining wet gain and\n// LFO phase. Legacy clear aborts and resets wet gain, preserving legacy phase.\nmodule workstation_runtime_chorus_effect #(",
+      "count": 1
+    },
+    {
+      "before": "    output logic clip_o\n",
+      "after": "    output logic clip_o,\n    input logic config_valid_i,rate_44100_i,history_clear_i,\n    output logic config_ready_o,config_applied_o,history_ready_o,history_done_o,\n    output logic quiescent_o,applied_rate_44100_o\n",
+      "count": 1
+    },
+    {
+      "before": "  assign ready_o=state==0;",
+      "after": "  initial begin\n    if(CHORUS_BITS!=10 || CHORUS_BASE!=480 || CHORUS_DEPTH!=96)\n      $fatal(1,\"runtime Chorus requires the audited1024-slot480+96 baseline\");\n  end\n  logic [7:0] gain_remainder,lfo_remainder;\n  wire [7:0] gain_fraction_sum=gain_remainder+8'd47;\n  wire [8:0] lfo_fraction_sum={1'b0,lfo_remainder}+9'd127;\n  wire [15:0] gain_delta=applied_rate_44100_o ?\n      16'd139+{15'd0,gain_fraction_sum>=8'd147} : 16'd128;\n  wire [23:0] lfo_delta=applied_rate_44100_o ?\n      24'd379+{23'd0,lfo_fraction_sum>=9'd147} : 24'd349;\n  wire config_accept=config_valid_i && config_ready_o;\n  wire history_accept=history_clear_i && history_ready_o;\n  wire local_history_clear=clear_i || config_accept || history_accept;\n  assign quiescent_o=state==0 && !valid_o && !clear_i;\n  assign config_ready_o=quiescent_o && !valid_i;\n  assign history_ready_o=config_ready_o && !config_valid_i;\n  assign ready_o=state==0 && !local_history_clear;\n  function automatic [15:0] wet_slew(input [15:0] value,target,delta);\n    logic [15:0] upper,lower;\n    begin\n      upper=value>16'hffff-delta ? 16'hffff : value+delta;\n      lower=value<delta ? 16'd0 : value-delta;\n      if(target>upper)wet_slew=upper;\n      else if(target<lower)wet_slew=lower;\n      else wet_slew=target;\n    end\n  endfunction\n  function automatic [15:0] rate_delay(input [15:0] tri,input logic rate44);\n    logic [47:0] physical,scaled;\n    begin\n      // Scale the full instantaneous Q16 physical delay before one rounding.\n      //48k keeps the original truncation, including its exact tap sequence.\n      if(rate44)begin\n        physical=(48'(CHORUS_BASE)<<16)+48'(tri)*48'(CHORUS_DEPTH);\n        scaled=(physical*48'd147+48'd5242880)/48'd10485760;\n        rate_delay=scaled[15:0];\n      end else rate_delay=16'(CHORUS_BASE+((tri*CHORUS_DEPTH)>>16));\n    end\n  endfunction\n  always_ff @(posedge clk_i or negedge rst_ni)begin\n    if(!rst_ni)begin\n      applied_rate_44100_o<=0;config_applied_o<=0;history_done_o<=0;\n      gain_remainder<=0;lfo_remainder<=0;\n    end else begin\n      config_applied_o<=config_accept;history_done_o<=config_accept || history_accept;\n      if(config_accept)applied_rate_44100_o<=rate_44100_i;\n      if(clear_i)gain_remainder<=0;\n      else if(state==0 && valid_i && ready_o && applied_rate_44100_o)\n        gain_remainder<=gain_fraction_sum>=8'd147 ? gain_fraction_sum-8'd147 : gain_fraction_sum;\n      if(!local_history_clear && state==4 && applied_rate_44100_o)\n        lfo_remainder<=8'(lfo_fraction_sum>=9'd147 ? lfo_fraction_sum-9'd147 : lfo_fraction_sum);\n    end\n  end",
+      "count": 1
+    },
+    {
+      "before": "  wire [15:0] next_chorus_delay=16'(CHORUS_BASE+((triangle*CHORUS_DEPTH)>>16));",
+      "after": "  wire [15:0] next_chorus_delay=rate_delay(triangle,applied_rate_44100_o);",
+      "count": 1
+    },
+    {
+      "before": "if(!clear_i && state==1) begin",
+      "after": "if(!local_history_clear && state==1) begin",
+      "count": 1
+    },
+    {
+      "before": "if(!clear_i && state==3) begin",
+      "after": "if(!local_history_clear && state==3) begin",
+      "count": 1
+    },
+    {
+      "before": "      if(clear_i) begin\n        pointer<=0;frames<=0;state<=0;gain<=0;valid_o<=0;clip_o<=0;",
+      "after": "      if(local_history_clear) begin\n        pointer<=0;read_address<=0;frames<=0;state<=0;if(clear_i)gain<=0;valid_o<=0;clip_o<=0;",
+      "count": 1
+    },
+    {
+      "before": "        0:if(valid_i) begin",
+      "after": "        0:if(valid_i && ready_o) begin",
+      "count": 1
+    },
+    {
+      "before": "gain<=slew15(gain,enabled_i?16'd8192:16'd0)",
+      "after": "gain<=wet_slew(gain,enabled_i?16'd8192:16'd0,gain_delta)",
+      "count": 1
+    },
+    {
+      "before": "lfo<=lfo+24'd349",
+      "after": "lfo<=lfo+lfo_delta",
+      "count": 1
+    },
+    {
+      "before": "endmodule",
+      "after": "endmodule\n",
+      "count": 1
+    },
+    {
+      "before": "input [15:0] tri,",
+      "after": "input [15:0] triangle_value,",
+      "count": 1
+    },
+    {
+      "before": "48'(tri)",
+      "after": "48'(triangle_value)",
+      "count": 1
+    },
+    {
+      "before": "((tri*CHORUS_DEPTH)",
+      "after": "((triangle_value*CHORUS_DEPTH)",
+      "count": 1
+    }
+  ]
+}

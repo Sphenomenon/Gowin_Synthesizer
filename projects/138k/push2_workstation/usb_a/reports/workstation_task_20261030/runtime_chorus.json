@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "task": "A07 runtime effects stage3 independent Chorus",
+  "status": "source_component_offline_verified_not_selected",
+  "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "reference_source_identity": "custom138k-workstation-v1-f5b723250388add5",
+  "source_policy": "Independent native module, exact prepared slice with reversible checked edits; not selected by profile/build/top.",
+  "input_sha256": {
+    "rtl/audio/workstation_runtime_chorus_effect.sv": "8a6fa6ea9158cc983c9d48cc9e92f01da2e10950214d3d2bb2cb7bb0b67b4cf4",
+    "rtl/audio/workstation_runtime_chorus_effect.provenance.json": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
+    "sim/audio/tb_workstation_runtime_chorus.sv": "ae06cd47c8365fae654a62187aa0d4d9f675bc6b8a3f76da5929e9f208dbecd5",
+    "sim/test_workstation_runtime_chorus.py": "ed02b2e5b380c810792473e26920a5af7b8d669ac9322a0e93989af74a572a21"
+  },
+  "reference_inputs": {
+    "baseline": "resource_rework_route0",
+    "exact_prepared_chorus_slice_sha256": "2801a8f9ec570f992bc0e88d9ab6d457c4e17085da810ccf6d9fbaca2b3a5f84",
+    "math_pkg_sha256": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d"
+  },
+  "test_command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_chorus.py",
+  "validation": {
+    "tests": 6,
+    "passed": 6,
+    "simulator": "Verilator5.0522026-09-05",
+    "compile_warning_counts": {
+      "TIMESCALEMOD": 2,
+      "WIDTHEXPAND": 8,
+      "WIDTHTRUNC": 2
+    },
+    "warning_scope": "Inherited exact native/reference signed arithmetic and CHORUS_BASE reset assignment widths, plus package/reference timescale; counts checked.",
+    "48k_per_cycle": {
+      "frames": 60000,
+      "clip_frames": 3391,
+      "checks": [
+        "ready",
+        "valid",
+        "active",
+        "PCM",
+        "clip",
+        "LFO",
+        "tap"
+      ],
+      "clear": true
+    },
+    "44100_independent_fixed_point": {
+      "frames": 60000,
+      "clip_frames": 3384,
+      "complete_lfo_wraps": 1,
+      "tap_min": 441,
+      "tap_max": 529,
+      "checks": [
+        "PCM",
+        "clip",
+        "wet gain",
+        "phase",
+        "tap",
+        "gain remainder",
+        "LFO remainder"
+      ]
+    },
+    "switch_history": {
+      "frames": 6000,
+      "barriers": 4,
+      "phase_gain_remainders_preserved": true
+    },
+    "clear": "cancel five FSM states;legacy phase and LFO remainder preserved,wet gain reset",
+    "backpressure": "PCM wins while valid_i;held config accepted at true idle;config priority over history"
+  },
+  "physical_time": {
+    "48k_tap_rule": "480+floor(triangle*96/65536),unchanged",
+    "44100_tap_rule": "round((480+triangle*96/65536)*147/160),one rounding",
+    "triangle_values_exhausted": 65536,
+    "maximum_delay_error_44100_samples": 0.49998168945313637,
+    "maximum_delay_error_seconds": 1.1337453275581323e-05,
+    "lfo_48k_increment": 349,
+    "lfo_44100_increment": "379+127/147",
+    "lfo_increment_per147frames": 55840,
+    "lfo_hz_both_rates": 0.9984970092773438,
+    "wet_48k_increment": 128,
+    "wet_44100_increment": "139+47/147"
+  },
+  "storage": {
+    "stereo_slots": 1024,
+    "original_capacity_unchanged": true,
+    "new_ddr_allocation": false
+  },
+  "contract": {
+    "config": "valid/ready at true quiescence;applies rate and logical history clear;preserves wet gain,phase and fractional states;single-clock done at acceptance",
+    "history": "separate valid/ready preserving rate,gain,phase,fractions;config priority",
+    "legacy_clear": "immediate abort+wet reset;preserves originalLFOphase and newly carriedLFOremainder",
+    "quiescence": "state0,no output valid,no legacy clear;configuration readiness also excludes competing PCM input"
+  },
+  "remaining_gaps": [
+    "Independent unselected component only;runtime Reverb/full chain not complete.",
+    "No synthesis/P&R/resource/CDC/board/SRAM/Flash acceptance;constant delay division still requires physical validation.",
+    "Perceptual/acoustic comparison not performed;no whole-workstation dual-rate claim."
+  ],
+  "rollback": "Omit independent module;profile/build/top selection unchanged."
+}
