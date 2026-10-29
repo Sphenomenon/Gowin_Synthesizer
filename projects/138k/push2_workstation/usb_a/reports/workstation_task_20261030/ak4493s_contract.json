@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "date": "2026-10-30T05:42:47.276733+08:00",
+  "scope": "Correct-model document and locked netlist/source contract review only; no board action in this stage",
+  "datasheet": {
+    "path": "/Users/sphenicidition/Downloads/ak4493seq-en-datasheet-myakm.pdf",
+    "sha256": "a8957fd0a955d30d5d80bce1bedb5ecdd27693e8ccb1572f37920888dcb734c7",
+    "pages": 104,
+    "model": "AK4493S",
+    "document": "211100143-E-02",
+    "revision_date": "2022/03",
+    "used_pdf_pages": [
+      7,
+      8,
+      26,
+      27,
+      29,
+      31,
+      39,
+      40,
+      45,
+      46,
+      55,
+      72,
+      74
+    ],
+    "rendered_and_visually_reviewed_pdf_pages": [
+      26,
+      27,
+      40,
+      46,
+      72,
+      74
+    ],
+    "renders_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/ak4493s/page026.png": "efeddbb85fb34aba4f9029812991437e7af4b034db2781edbcd50e53253c5174",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/ak4493s/page027.png": "fcc789aba60b87397633417cb46650ad0ce37c7bc44773de3a923458eb339280",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/ak4493s/page040.png": "e69fd7d8b041a4f5b00f5973e54a31ad976f1a27b5747e0212f4cab1c95ddf94",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/ak4493s/page046.png": "4d4f5f4163453945c5b0f888daf94f10e64574787a5ac5fc8dae8b19a864d786",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/ak4493s/page072.png": "712d8dcfe401878e3e406a8c3143dc3bb77ac798b84bdb126568358e604136b4",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/ak4493s/page074.png": "d8605b1d410fe7d7a6abc73ecf991fe27fb551c683d3f1887f972391ce871ed7"
+    }
+  },
+  "netlist": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists/功放.tel",
+    "sha256": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75",
+    "straps_verified": true,
+    "model_identity_present_in_netlist": false,
+    "pins": {
+      "1": "$1N74",
+      "2": "AK_PDN_BANK2_C13",
+      "3": "AK_BICK_BANK2_A16",
+      "4": "AK_SDATA_BANK2_A15",
+      "5": "AK_LRCK_BANK2_B16",
+      "6": "AK_SSLOW_BANK2_B15",
+      "7": "AK_SMUTE_BANK2_A14",
+      "8": "AK_SD_BANK2_A13",
+      "9": "AK_SLOW_BANK2_B13",
+      "10": "DVDD_3V3",
+      "11": "DVDD_3V3",
+      "12": "DVDD_3V3",
+      "13": "DVDD_3V3",
+      "14": "GND",
+      "15": "DVDD_3V3",
+      "16": "DVDD_3V3",
+      "17": "$1N103",
+      "18": "GND",
+      "44": "AVDD_3V3",
+      "46": "AK_MCLK_BANK2_B17",
+      "48": "DVDD_3V3"
+    },
+    "ACKS": "R10=0ohm to DVDD_3V3; R9=1Mohm to GND; nominal high"
+  },
+  "source_sha256": {
+    "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+    "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+    "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+    "tools/workstation_pinout.py": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
+    "boards/custom_138k/peripherals.json": "ac1b0f47d88875aaa46cfd6a79273c7b416d9041f6386dc8bcc45e5bbdd8a523"
+  },
+  "rates": {
+    "48000": {
+      "sample_rate_hz": 48000,
+      "mclk_hz": 12288000,
+      "mclk_fs_ratio": 256,
+      "bick_hz": 3072000,
+      "mclk_half_period_ns": 40.690104166666664,
+      "bick_half_period_ns": 162.76041666666666,
+      "PDN_four_frames_seconds": 8.333333333333333e-05,
+      "post_PDN_1024_zero_frames_seconds": 0.021333333333333333
+    },
+    "44100": {
+      "sample_rate_hz": 44100,
+      "mclk_hz": 16934400,
+      "mclk_fs_ratio": 384,
+      "bick_hz": 2822400,
+      "mclk_half_period_ns": 29.52569916855631,
+      "bick_half_period_ns": 177.15419501133786,
+      "PDN_four_frames_seconds": 9.070294784580499e-05,
+      "post_PDN_1024_zero_frames_seconds": 0.023219954648526078
+    }
+  },
+  "requirements": {
+    "mclk_change_while_PDN_low": "PDF26 Note36; reset must precede changing to new frequency",
+    "PDN_low_min_ns_exclusive": 150,
+    "internal_LDO_startup_max_seconds": 0.002,
+    "I2S_mode": 7,
+    "DIF2_0": "111",
+    "data_sampling_edge": "BICK rising",
+    "LRCK_SD_setup_hold_min_ns": 5,
+    "MCLK_min_high_low_ns": 9.05,
+    "BICK_min_high_low_ns": 9,
+    "auto_44k_384fs_DRSNR_penalty_dB_approx": 3,
+    "SMUTE_is_digital_soft_mute": true,
+    "PDN_edge_click_possible_even_with_zero_data": true
+  },
+  "status": {
+    "document_contract_reviewed": true,
+    "nominal_straps_cross_checked": true,
+    "source_startup_budget_reviewed": true,
+    "pad_timing_measured": false,
+    "assembled_straps_measured": false,
+    "analog_acceptance": false,
+    "complete_workstation_integrated": false,
+    "F03_complete": false,
+    "A06_complete": false,
+    "sram_programmed": false,
+    "flash_programmed": false
+  }
+}
