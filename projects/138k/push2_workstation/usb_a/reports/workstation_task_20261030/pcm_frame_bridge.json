@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "scope": "Output-paced bounded PCM bridge; real serializer, bounded renderer model only",
+  "passed": true,
+  "input_sha256": {
+    "rtl/audio/workstation_pcm_frame_bridge.sv": "4c9468df3ea3ac50af81c682f09ea9bf732197679a7ec0f765f32256bf8aab79",
+    "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+    "sim/audio/tb_workstation_pcm_frame_bridge.sv": "b226f8c7a2ff27897da722d30ed86c6cd4102ae7d5ec83ae873a27891486cdaa",
+    "sim/test_workstation_pcm_frame_bridge.py": "b34f24b86f81989ed4a21ac26477d1dac672ccfdb04e96fb4427fae82913b5a3"
+  },
+  "normal": [
+    {
+      "mode": "48000",
+      "clock_case": "0",
+      "frames": "160",
+      "min_render_gap_compute": "1600",
+      "max_request_to_sample_ns": "18721.191",
+      "physical_frame_ns": "20837.500"
+    },
+    {
+      "mode": "44100",
+      "clock_case": "0",
+      "frames": "160",
+      "min_render_gap_compute": "1741",
+      "max_request_to_sample_ns": "18664.154",
+      "physical_frame_ns": "22680.490"
+    },
+    {
+      "mode": "48000",
+      "clock_case": "1",
+      "frames": "160",
+      "min_render_gap_compute": "1599",
+      "max_request_to_sample_ns": "18713.704",
+      "physical_frame_ns": "20829.167"
+    },
+    {
+      "mode": "44100",
+      "clock_case": "1",
+      "frames": "160",
+      "min_render_gap_compute": "1741",
+      "max_request_to_sample_ns": "18656.689",
+      "physical_frame_ns": "22671.420"
+    }
+  ],
+  "counters": [
+    {
+      "accepted": 407,
+      "renders": 401,
+      "completed": 401,
+      "delivered": 399,
+      "request_drops": 10,
+      "return_discards": 1,
+      "cancel_requests": 6,
+      "cancel_renders": 1,
+      "unexpected": 1,
+      "good_frames": 388,
+      "error_frames": 20,
+      "max_model_cycles": 8000
+    },
+    {
+      "accepted": 407,
+      "renders": 401,
+      "completed": 401,
+      "delivered": 399,
+      "request_drops": 10,
+      "return_discards": 1,
+      "cancel_requests": 6,
+      "cancel_renders": 1,
+      "unexpected": 1,
+      "good_frames": 388,
+      "error_frames": 20,
+      "max_model_cycles": 8000
+    }
+  ],
+  "clock_offsets_ppm": [
+    -200,
+    200
+  ],
+  "compute_hz": 76800000,
+  "render_model_cycles_normal": [
+    1400,
+    1416
+  ],
+  "validation_command": [
+    "python3",
+    "sim/test_workstation_pcm_frame_bridge.py"
+  ],
+  "stdout": "NORMAL mode=48000 clock_case=0 frames=160 min_render_gap_compute=1600 max_request_to_sample_ns=18721.191 physical_frame_ns=20837.500\nNORMAL mode=44100 clock_case=0 frames=160 min_render_gap_compute=1741 max_request_to_sample_ns=18664.154 physical_frame_ns=22680.490\nCOUNTERS accepted=407 renders=401 completed=401 delivered=399 request_drops=10 return_discards=1 cancel_requests=6 cancel_renders=1 unexpected=1 good_frames=388 error_frames=20 max_model_cycles=8000\nPASS PCM frame bridge: real dual-rate I2S, independent 76.8MHz render, exact identities/ledger, deadline/pressure recovery, quiesce drain, stopped-high/local-reset old reply, unexpected done\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_frame_bridge.sv:300: $finish called at 9686380704276 (1fs)\nNORMAL mode=48000 clock_case=1 frames=160 min_render_gap_compute=1599 max_request_to_sample_ns=18713.704 physical_frame_ns=20829.167\nNORMAL mode=44100 clock_case=1 frames=160 min_render_gap_compute=1741 max_request_to_sample_ns=18656.689 physical_frame_ns=22671.420\nCOUNTERS accepted=407 renders=401 completed=401 delivered=399 request_drops=10 return_discards=1 cancel_requests=6 cancel_renders=1 unexpected=1 good_frames=388 error_frames=20 max_model_cycles=8000\nPASS PCM frame bridge: real dual-rate I2S, independent 76.8MHz render, exact identities/ledger, deadline/pressure recovery, quiesce drain, stopped-high/local-reset old reply, unexpected done\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_frame_bridge.sv:300: $finish called at 9682617683250 (1fs)\nSOURCE sim/audio/tb_workstation_pcm_frame_bridge.sv SHA256=b226f8c7a2ff27897da722d30ed86c6cd4102ae7d5ec83ae873a27891486cdaa\nSOURCE rtl/audio/workstation_pcm_frame_bridge.sv SHA256=4c9468df3ea3ac50af81c682f09ea9bf732197679a7ec0f765f32256bf8aab79\nSOURCE rtl/audio/workstation_i2s_serializer.sv SHA256=5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b\n",
+  "stderr": ".\n----------------------------------------------------------------------\nRan 1 test in 2.992s\n\nOK\n",
+  "source_integrated": false,
+  "real_dsp_tested": false,
+  "routed_cdc_verified": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false
+}

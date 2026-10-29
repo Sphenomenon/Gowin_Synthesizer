@@ -20,6 +20,12 @@
 
 桥需要有界请求／返回缓存、显式溢出计数和单个 render 的身份保持。若旧 render 未完成，新 slot 到期时不得覆盖其 tag；将新 slot 的缺失记录为 deadline／欠载，迟到响应只能丢弃，不得被套上新 tag。没有 backpressure 能推迟物理输出时钟。串行器本地只保存下一帧；`sample_ready_o` 仅表示可检查／接收一条响应，不表示其身份有效。rate／epoch／sequence 不一致的响应被消费并计数，不能占据预填充位置。
 
+`workstation_pcm_frame_bridge` 实现上述有界请求／返回通道：一个尚未接收的请求、一个执行中的 render、一个尚未消费的返回。请求和返回均用保持数据加双向 toggle／ACK 跨域；payload 在 ACK 返回前不变。计算端仅在 render ready 且返回槽空时启动，整个 render 保留同一身份。邮箱满时新请求计入饱和 drop，不覆盖旧请求；物理 slot 仍由串行器按时前进，缺帧与迟到分别计数。
+
+桥的握手、tag 与计数只接受全局复位。串行局部复位或停钟不清除执行中的旧 render；恢复时旧返回在局部 reset／quiesce 条件下被消费并计 discard。`quiescent_o` 属于计算域，须同时满足已同步的串行 quiet、请求双向 ACK 完成、render 结束及返回 ACK 完成，再同步给常开事务。停止高电平的源尚未恢复时，不能伪造此排空确认；常开事务超时负责隔离故障。
+
+`request_drop_count_o`／`return_discard_count_o` 属于串行域；`cancelled_request_count_o`／`cancelled_render_count_o`／`unexpected_render_count_o` 属于计算域，均为全局复位清零的 32-bit 饱和计数。整机不能直接裸采跨域计数。此桥尚未进入生产来源，bundled payload、首级控制同步、复位释放及跨域位间 skew 必须在实际组合的 SDC／routed 审计中逐项约束，独立仿真不能代替该物理证明。
+
 ## 完整帧切换与故障
 
 `quiesce_i`／`resume_i` 必须先同步到 selected-MCLK 域。正常请求 quiesce 后继续完成已经开始的左右声道帧，在最后一个 bit 的 BCK 落沿静音，清除下一帧并应答 `serial_quiescent_o`。该应答只证明串行端；常开事务的 `frame_quiescent_i` 还须合并跨域桥的排空／旧 render 结果清理，不能只接串行 ACK。
