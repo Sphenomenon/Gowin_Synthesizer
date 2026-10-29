@@ -2,6 +2,8 @@
 
 138K Host 与 25K Device 的无 HDMI／DDR 独立探针见 `USB2_HOST_PROBE.md`；直连电脑的 Device 回环探针见 `USB2_DEVICE_PROBE.md`。两者的 USB 角色不同，不自动切换工作站生产配置。
 
+运行时双率的显式原生组合由 `workstation_runtime_audio.sv` 和 `workstation_runtime_controlled.sv` 提供；后者保留 CPU/APB、UART、USB 生命周期仲裁，并将真实物理帧送往 FFT／96-bit 录音／256-cue 乐谱及带上下文的显示观察。唯一事件／会话／公共参数 owner、媒体忙拒切、失败策略和时钟域见[运行时控制组合契约](RUNTIME_CONTROLLED.md)。这些组件尚未由 accepted 顶层或 profile 选用，来源与离线验证不提升部署验收。
+
 自定义底板 a23 物理实验另见 `../../reports/WORKSTATION_PHYSICAL_20261025.md`：原生 USB 的复位／参考故障同步位于 `rtl/usb2/` 所属模块，紧急引脚保护不反馈到同步 UTMI 数据通路；已有只读模型 Flash 加载与 UART 恢复通过 SOM 共享引脚 guard 接入。PLL／算术／声部控制的四份锁定输入适配有哈希、唯一锚点和迁回原生源的退出条件，原生矢量力度计算使用无延迟的精确位映射。它不切换任何已接受生产 profile；生成位流、时序／CDC／PLL 通过和 SRAM／Flash 部署仍是不同阶段。
 
 这里是 `build.py --resource-rework --resource-timing` 开发候选的第一方整机源码入口，不是完整工程副本。锁定基线继续提供 CPU/IP、固件 ROM、约束和尚未迁出的组件；实际输入由生成工程的 `workstation_inputs.json` 和 `workstation_composition.json` 绑定。
