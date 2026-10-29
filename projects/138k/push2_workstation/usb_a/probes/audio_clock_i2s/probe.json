@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "name": "standalone-muted-digital-audio-clock-probe",
+  "top_module": "workstation_audio_probe_top",
+  "source_paths": [
+    "rtl/probe/workstation_audio_probe_top.sv",
+    "rtl/audio/workstation_audio_clock_domain.sv",
+    "rtl/audio/workstation_audio_clock_monitor.sv",
+    "rtl/audio/workstation_sample_rate_switch.sv",
+    "rtl/audio/workstation_i2s_serializer.sv"
+  ],
+  "device": "GW5AST-LV138PG484AC2/I1",
+  "pins": {
+    "clk_50mhz": "V22",
+    "clk_12m288": "K18",
+    "clk_16m9344": "J19",
+    "restart_n": "V13",
+    "ak_pdn": "C13",
+    "ak_mclk": "B13",
+    "ak_bick": "A13",
+    "ak_lrck": "B15",
+    "ak_sdata": "A14",
+    "ak_smute": "A15"
+  },
+  "physical_policy": "All specified IOs use existing audited 3.3V locations; output DRIVE=4. No sslow/sd/slow outputs, USB, HDMI, DDR or CPU in this probe. Physical SMUTE is permanently asserted; PCM is zero.",
+  "sequence": "Boot48k epoch0, hold50ms, switch44.1k epoch1, hold50ms, switch48k epoch2, hold50ms, COMPLETE. Any fault/reject/failure latches ERROR; external restart repeats the experiment.",
+  "sample_clock": "clk_50mhz",
+  "debug_bus": "audio_probe_debug[799:0]",
+  "debug_signature": "0x41504231",
+  "debug_words_low_first": [
+    "signature", "reference_heartbeat", "status", "committed_epoch",
+    "measured_raw48_window_edges", "measured_raw44_window_edges", "measured_selected_window_edges",
+    "completed_probe_cycles", "accepted_requests", "applied_switches", "rejected_requests", "failed_transactions",
+    "snapshot_completed_frames", "snapshot_last_sequence", "snapshot_last_epoch", "snapshot_underruns",
+    "snapshot_rejected_samples", "snapshot_source_flags", "snapshots_completed", "clock_select_fault_reject",
+    "retained_boot48_frames", "retained_rate44_frames", "retained_final48_frames",
+    "retained_selected48_window_edges", "retained_selected44_window_edges"
+  ],
+  "status_bits": {
+    "ready": 0, "busy": 1, "fault": 2, "active_valid": 3, "active44": 4,
+    "quiesce": 5, "transaction_mute": 6, "flush": 7, "audio_reset_released": 8,
+    "raw48_qualified": 9, "raw44_qualified": 10, "raw48_present": 11, "raw44_present": 12,
+    "selected_qualified": 13, "selected_low": 14, "serial_quiet_sync": 15,
+    "prefill_sync": 16, "running_sync": 17, "snapshot_valid": 18, "probe_complete": 19,
+    "probe_error": 20
+  },
+  "probe_state_bits": [27, 24],
+  "snapshot_source_flag_bits": {
+    "quiet": 0, "prefill": 1, "running": 2, "last_frame44": 3,
+    "last_frame_error_or_nonzero_pcm": 4, "has_completed_frame": 5,
+    "serializer_internal_mute": 6, "sample_ready": 7
+  },
+  "snapshot_policy": "Selected-MCLK registers and holds all192 payload bits before ACK; two50MHz payload registers and two ACK registers precede destination capture. Destination issues no further request until capture. Flush resets both transport ends and invalidates snapshots. Decoder must require snapshot_valid and !flush. GAO sees only registered50MHz debug words.",
+  "sdc_capability": {
+    "manual": "doc/EN/SUG940-2.0.1E_Gowin Design Timing Constraints User Guide.pdf",
+    "sha256": "d8609d62fd12bba8b8d9a2fcb4fc9381d2887c8cfdb1a88291e0fd226221499c",
+    "dual_master_generated_clock": "Documented PDF66-69: -source, -master_clock and -add; targets support get_pins.",
+    "selected_clock_exclusivity": "PDF78-79 supports precise set_false_path clock endpoints. Only selected48->selected44 and reverse are impossible. The SDK group form suppressed CDC max-delay report paths in B3/B4, so it is not used.",
+    "parser_exercised": false,
+    "unknown_sdk_policy": "Prepare records an explicit blocker and build refuses if the checked manual is missing or different. Never substitute a combinational mux or broad audio-domain false path."
+  },
+  "retirement": "Experimental digital-only probe. Retire as an integration input after the complete workstation output-paced bridge, dual-rate DSP/final-PCM path, routed gates and board acceptance pass; retain evidence and reusable regression. It must never become a production source profile."
+}

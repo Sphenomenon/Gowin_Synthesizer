@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "all_checks_required_before_sram_candidate": true,
+  "expected_clocks": {"reference50":20.0,"raw48":81.380208,"raw44":59.051398,"selected48":81.380208,"selected44":59.051398},
+  "expected_sdk_diagnostic_clocks": {"tck_pad_i":50.0},
+  "dcs_output_pin": "audio_domain/selector/CLKOUT",
+  "dcs_requirements": ["Exactly one GW5A DCS, FALLING, SELFORCE0, onehot-or-zero select", "Both generated clocks present on the same resolved DCS output, each with its correct master", "Dedicated clock routing and both-mode setup/hold/minimum pulse width; no generic data clock mux"],
+  "gray_first_stage_pairs": [
+    ["audio_domain/reference_48_monitor/source_gray*","audio_domain/reference_48_monitor/gray_meta*"],
+    ["audio_domain/reference_44_monitor/source_gray*","audio_domain/reference_44_monitor/gray_meta*"],
+    ["audio_domain/selected_monitor/source_gray*","audio_domain/selected_monitor/gray_meta*"]
+  ],
+  "gray_bound_ns": 20,
+  "gray_width_each_before_optimization": 32,
+  "gray_gate": "Resolve every surviving bit, prove source-to-first-stage arrival and bus skew below20ns, list optimized bits explicitly. Source Gray registers and second-stage timing must remain. No whole-clock-group exception may override these paths.",
+  "snapshot_gate": "Resolve snapshot_hold to snapshot_payload_meta, bound all surviving payload bits20ns; second payload stage and ACK/request stages remain timed. Verify held-data-before-ACK and one outstanding request in netlist and simulation.",
+  "configuration_gate": "Resolve transaction pending_epoch/pending_44k1 to serializer epoch/mode_44k1 and verify20ns bound. The one-time configuration sample occurs only after full target qualification plus three true local-release edges; prove staging stability over this window. Do not interpret changed staged tags as the still-draining old stream.",
+  "reset_chains": [
+    "power_on_count/power_ready: external assertion, registered release after1024 reference cycles",
+    "audio_domain/control_reset_pre/control_reset_n: three50MHz release edges",
+    "audio_domain/*_monitor/source_reset_pre/source_reset_n: three respective source edges",
+    "audio_domain/reset_release: three selected edges; assertion independent of stopped source",
+    "quiesce/resume and source snapshot registers: local audio reset",
+    "return ACK/payload registers:50MHz global assertion, explicit flush invalidation"
+  ],
+  "reset_gate": "Inspect every async assert path and release endpoint. Report setup/hold/recovery/removal and minimum pulse width separately for both selected modes. Any necessary exception for first reset synchronizer cells must be individually justified and leave released reset-to-consumer checks intact; none is silently inserted by prepare.",
+  "io_gate": "Audited existing3.3V pins only; output SMUTE constant1 and PCM0. External DAC setup/hold,384fs recognition and analog output are NOT accepted by this digital experiment.",
+  "unsupported_constraint_policy": "Stop on missing SDK dual-master support, ignored clock, zero-match object, dropped bound or unsupported report syntax. Do not relax periods, false-path the audio domain, or remove diagnostic/features to make it pass.",
+  "status": "requirements_only_not_routed_verification"
+}

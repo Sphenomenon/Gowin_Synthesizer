@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "identity": "audio-probe-prepare-20261030-v1",
+  "recorded_at": "2026-10-30T05:03:18.574561+08:00",
+  "base_commit": "584e3816d4ab4e7e9e487cddaacdf54dfbf0c569",
+  "candidate_identity": "custom138k-muted-audio-probe-C11030B0",
+  "candidate_user_code": "0xC11030B0",
+  "prepared_directory": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B0",
+  "prepared_manifest_sha256": "defb9626ac1a9cf0c2e268f935f017f653ce07f3f9ef7745f297035fcbef8ee5",
+  "source_hashes_relative_to_usb_a": {
+    "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+    "tools/workstation_audio_probe.py": "f3b40c846d2f47d03073b7971fb99d8a128ef64a70a33e801ddf93d998364d27",
+    "probes/audio_clock_i2s/probe.json": "b542b24ea5a1d7adbe31699a2fe69abbba8846a812e7720ae37a7ea9f140bb20",
+    "probes/audio_clock_i2s/audio_probe.sdc": "529f795f5c0dff96b41f7a2de2bf1abf4eb0470105beef0416ed5ca4ba7716fc",
+    "probes/audio_clock_i2s/physical_checks.json": "1538f3fe8139b14a7f52b5c71ca34d1fd10542ca14c0015a7b3247ad1e0f6c47",
+    "probes/audio_clock_i2s/README.md": "b39d156fed1d10f05a67e86550ab3c4bed29175e578d1336412a77b42c617ac4",
+    "sim/audio/tb_workstation_audio_probe.sv": "a152ee36e73fa648dbe14dd3ba4024a9dde9c2740e6c791ad06491d3df99ff02",
+    "sim/test_workstation_audio_probe.py": "94f6594716d2fd7f635e64b45ab9ad310346d25e28524b4d0d03f5102d6877fd"
+  },
+  "prepared_input_sha256": {
+    "constraints/audio_probe.cst": "653648ed2185d3da327d093d0706f7eeb89c720bde9760fa2db1f2833ad6ed4a",
+    "constraints/audio_probe.sdc": "529f795f5c0dff96b41f7a2de2bf1abf4eb0470105beef0416ed5ca4ba7716fc",
+    "debug/audio_probe.gao": "b61aa5d65fe4cd970987e784bf9c1ab59ccc0684fa286c3d8b0dc11db425314a",
+    "physical_checks.json": "1538f3fe8139b14a7f52b5c71ca34d1fd10542ca14c0015a7b3247ad1e0f6c47",
+    "probe_config.json": "b542b24ea5a1d7adbe31699a2fe69abbba8846a812e7720ae37a7ea9f140bb20",
+    "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+    "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+    "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+    "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+    "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+    "run_gao.tcl": "1e10ec03ef50191c473f9becd2a88f650967bdfb3200519701aaa59cfb33507f"
+  },
+  "source_policy": "explicit_versioned_audio_modules_and_probe_top_byte_snapshot",
+  "sdk_capability": {
+    "ide_directory": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE",
+    "manual": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/doc/EN/SUG940-2.0.1E_Gowin Design Timing Constraints User Guide.pdf",
+    "manual_sha256": "d8609d62fd12bba8b8d9a2fcb4fc9381d2887c8cfdb1a88291e0fd226221499c",
+    "documented_dual_master_supported": true,
+    "parser_exercised": false,
+    "blocker": null
+  },
+  "validation": [
+    {
+      "name": "prepare_closure_simulation_regression",
+      "shell_command": "PATH=/opt/homebrew/bin:$PATH python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_probe.py",
+      "exit_code": 0,
+      "stdout": "PROBE normal complete epoch=2 accepts=2 applies=2 atomic_snapshots=607 physical_frames=17 epochs=111\nPASS standalone muted audio probe: automatic48->44.1->48, atomic frame snapshots, zero physical PCM, permanent SMUTE, stopped-high fault6; loss_cycles=397\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_probe.sv:74: $finish called at 1339111000 (1ps)\nGW5A simulator SHA256=2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5\nPASS audio probe prepare: explicit five-source closure,800-bit50MHz GAO, checked pins, new UserCode/output, tamper/extra-source refusal; no EDA or board access\nPASS audio probe unknown SDK: explicit dual-master support blocker, build refuses before EDA; no false-path fallback\n",
+      "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 1.980s\n\nOK\n"
+    },
+    {
+      "name": "explicit_prepare_only",
+      "shell_command": "python3 projects/138k/push2_workstation/usb_a/tools/workstation_audio_probe.py prepare-only --output /Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B0 --user-code C11030B0",
+      "exit_code": 0,
+      "result_fields": {
+        "identity": "custom138k-muted-audio-probe-C11030B0",
+        "validation_stage": "prepare_only",
+        "build_blocked": false,
+        "sdk_capability": {
+          "ide_directory": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE",
+          "manual": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/doc/EN/SUG940-2.0.1E_Gowin Design Timing Constraints User Guide.pdf",
+          "manual_sha256": "d8609d62fd12bba8b8d9a2fcb4fc9381d2887c8cfdb1a88291e0fd226221499c",
+          "documented_dual_master_supported": true,
+          "parser_exercised": false,
+          "blocker": null
+        },
+        "pending_gates": [
+          "EDA SDC parser/object resolution and five-clock report",
+          "All physical_checks.json gates; setup/hold/recovery/removal/pulse-width",
+          "Explicit SRAM candidate identity/readback and separate digital capture acceptance"
+        ]
+      }
+    },
+    {
+      "name": "prepared_source_verify",
+      "shell_command": "python3 projects/138k/push2_workstation/usb_a/tools/workstation_audio_probe.py verify --output /Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B0",
+      "exit_code": 0,
+      "stdout": "{\n  \"identity\": \"custom138k-muted-audio-probe-C11030B0\",\n  \"source_closure_verified\": true,\n  \"hardware_accepted\": false\n}\n"
+    }
+  ],
+  "simulation_overrides": {
+    "hold_reference_cycles": 5000,
+    "snapshot_reference_cycles": 100,
+    "monitor_window_cycles": 500,
+    "monitor_stable_windows": 3,
+    "serializer_startup_frames": 12
+  },
+  "candidate_defaults": {
+    "hold_reference_cycles": 2500000,
+    "snapshot_reference_cycles": 5000,
+    "monitor_window_cycles": 50000,
+    "monitor_stable_windows": 4,
+    "serializer_startup_frames": 1028,
+    "pdn_hold_frames": 4,
+    "switch_timeout_cycles_per_phase": 2000000
+  },
+  "coverage": [
+    "Actual probe top with official DCS, bidirectional switch, actual serializer zero frames and permanently asserted physical SMUTE including reset.",
+    "607 atomic bundled192-bit frame-statistic snapshots cover epochs0/1/2; count/sequence/epoch/mode/error invariants checked; retained counts and measured values survive to COMPLETE.",
+    "Stopped-high active reference after COMPLETE enters ERROR/fault6 and asynchronously isolates serializer. Accelerated monitor window affects observed fault delay; this is not the production500-cycle loss bound test.",
+    "Prepare rejects output/UserCode reuse, source-byte drift and unlisted RTL; unknown SDK produces an explicit blocker and build refuses before EDA."
+  ],
+  "physical_checks_manifest": "probes/audio_clock_i2s/physical_checks.json",
+  "retirement": "Experimental digital-only probe. Retire as an integration input after the complete workstation output-paced bridge, dual-rate DSP/final-PCM path, routed gates and board acceptance pass; retain evidence and reusable regression. It must never become a production source profile.",
+  "status": {
+    "prepare_passed": true,
+    "source_closure_verified": true,
+    "simulation_passed": true,
+    "eda_started_at_prepare_freeze": false,
+    "synthesized": false,
+    "placed_routed": false,
+    "sdc_parser_exercised": false,
+    "physical_audit_complete": false,
+    "sram_candidate_ready": false,
+    "hardware_accepted": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "full_workstation_integrated": false
+  },
+  "remaining_gates": [
+    "EDA SDC parser/object resolution and five-clock report",
+    "All physical_checks.json gates; setup/hold/recovery/removal/pulse-width",
+    "Explicit SRAM candidate identity/readback and separate digital capture acceptance",
+    "No DAC384fs/ACKS/strap/analog acceptance. Physical SMUTE remains high.",
+    "All A03/A05/A06 full-workstation bridge/DSP/final-PCM/board gates remain separate."
+  ]
+}

@@ -1,0 +1,4731 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-30T05:42:08.315169+08:00",
+  "scope": "Standalone permanently SMUTE-asserted zero-PCM digital probe; offline source/simulation/EDA/routed-check evidence, no board operation by this subagent",
+  "final_candidate": "custom138k-muted-audio-probe-C11030B7",
+  "historical_initial_prepare_record": {
+    "path": "audio_probe_prepare.json",
+    "sha256": "f47d2df7d3de9eafb11ccee9fef5a263c661d4bfbfcdf3ae7bcc7f9a856e24b7",
+    "note": "B0 historical prepare evidence kept unchanged; current tool intentionally cannot verify its older snapshot"
+  },
+  "attempts": [
+    {
+      "identity": "custom138k-muted-audio-probe-C11030B0",
+      "output": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B0",
+      "inputs_sha256": "defb9626ac1a9cf0c2e268f935f017f653ce07f3f9ef7745f297035fcbef8ee5",
+      "source_snapshot_sha256": {
+        "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+        "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+        "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+        "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+        "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+        "probes/audio_clock_i2s/probe.json": "b542b24ea5a1d7adbe31699a2fe69abbba8846a812e7720ae37a7ea9f140bb20",
+        "probes/audio_clock_i2s/audio_probe.sdc": "529f795f5c0dff96b41f7a2de2bf1abf4eb0470105beef0416ed5ca4ba7716fc",
+        "probes/audio_clock_i2s/physical_checks.json": "1538f3fe8139b14a7f52b5c71ca34d1fd10542ca14c0015a7b3247ad1e0f6c47",
+        "tools/workstation_audio_probe.py": "f3b40c846d2f47d03073b7971fb99d8a128ef64a70a33e801ddf93d998364d27"
+      },
+      "reason": "Unsupported historical opt_goal option; failed before synthesis",
+      "final_candidate": false,
+      "build_manifest": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B0/reports/build_20261030_050552_938342.json",
+      "build_manifest_sha256": "80ac34f4556fde891d8bdb77ce7fc68d59a2cfb3a463a49e2f9ca5e4185a7a86",
+      "build_passed": false,
+      "phases": {
+        "syn": {
+          "returncode": 1,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B0/reports/build_20261030_050552_938342_syn.log"
+        }
+      },
+      "artifacts": []
+    },
+    {
+      "identity": "custom138k-muted-audio-probe-C11030B1",
+      "output": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B1",
+      "inputs_sha256": "77df2a8b76dc314ee8d135b63af45a2fee5b6d3d73fe4d874bcc1f0960d47065",
+      "source_snapshot_sha256": {
+        "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+        "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+        "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+        "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+        "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+        "probes/audio_clock_i2s/probe.json": "b542b24ea5a1d7adbe31699a2fe69abbba8846a812e7720ae37a7ea9f140bb20",
+        "probes/audio_clock_i2s/audio_probe.sdc": "529f795f5c0dff96b41f7a2de2bf1abf4eb0470105beef0416ed5ca4ba7716fc",
+        "probes/audio_clock_i2s/physical_checks.json": "1538f3fe8139b14a7f52b5c71ca34d1fd10542ca14c0015a7b3247ad1e0f6c47",
+        "tools/workstation_audio_probe.py": "6abca0be5ba6decf32718ca782e8c28caa814578364cb1c046951e219255878a"
+      },
+      "reason": "Synthesis passed; P&R rejected zero-match source-level SDC object names",
+      "final_candidate": false,
+      "build_manifest": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B1/reports/build_20261030_050638_764550.json",
+      "build_manifest_sha256": "b1075963cdc6a1fe4805fcb7e43e95e0a8c3b90ed6c25521d3f6da672c052f7d",
+      "build_passed": false,
+      "phases": {
+        "syn": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B1/reports/build_20261030_050638_764550_syn.log"
+        },
+        "pnr": {
+          "returncode": 1,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B1/reports/build_20261030_050638_764550_pnr.log"
+        }
+      },
+      "artifacts": []
+    },
+    {
+      "identity": "custom138k-muted-audio-probe-C11030B2",
+      "output": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B2",
+      "inputs_sha256": "f8eecd4a52d162d224dc8727d429db5e88076c598ac4b440d3f891fb10439637",
+      "source_snapshot_sha256": {
+        "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+        "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+        "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+        "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+        "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+        "probes/audio_clock_i2s/probe.json": "b542b24ea5a1d7adbe31699a2fe69abbba8846a812e7720ae37a7ea9f140bb20",
+        "probes/audio_clock_i2s/audio_probe.sdc": "4bea1bf0ae8373d20bed623bdac18af33fb5bc2bfc0d6586e63086dc77a8220f",
+        "probes/audio_clock_i2s/physical_checks.json": "1538f3fe8139b14a7f52b5c71ca34d1fd10542ca14c0015a7b3247ad1e0f6c47",
+        "tools/workstation_audio_probe.py": "6abca0be5ba6decf32718ca782e8c28caa814578364cb1c046951e219255878a"
+      },
+      "reason": "Initial resolved-object route; superseded by D-only first-stage hold exceptions",
+      "final_candidate": false,
+      "build_manifest": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B2/reports/build_20261030_050758_926719.json",
+      "build_manifest_sha256": "3a9c75a20f332f81e10c14309c03bef096882c94600177e79edeff73bff2ad80",
+      "build_passed": true,
+      "phases": {
+        "syn": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B2/reports/build_20261030_050758_926719_syn.log"
+        },
+        "pnr": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B2/reports/build_20261030_050758_926719_pnr.log"
+        }
+      },
+      "artifacts": [
+        {
+          "path": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B2/builds/20261030_050758_926719/impl/pnr/ao_0.fs",
+          "sha256": "c7c387b6a9c71ebaed08360c92f8a5e0daa82c907b19f9d73125e88567622409"
+        }
+      ],
+      "effective_setup_empty_bound_count": 7
+    },
+    {
+      "identity": "custom138k-muted-audio-probe-C11030B3",
+      "output": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B3",
+      "inputs_sha256": "f4adbfcbddf88d218c9795343964ef34ca7c5e299d58026d610718fb46ff3e86",
+      "source_snapshot_sha256": {
+        "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+        "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+        "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+        "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+        "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+        "probes/audio_clock_i2s/probe.json": "b542b24ea5a1d7adbe31699a2fe69abbba8846a812e7720ae37a7ea9f140bb20",
+        "probes/audio_clock_i2s/audio_probe.sdc": "d077d178f4b2e0104d2137c01a5871ed1368988817357cd588078ced625ad935",
+        "probes/audio_clock_i2s/physical_checks.json": "1538f3fe8139b14a7f52b5c71ca34d1fd10542ca14c0015a7b3247ad1e0f6c47",
+        "tools/workstation_audio_probe.py": "6abca0be5ba6decf32718ca782e8c28caa814578364cb1c046951e219255878a"
+      },
+      "reason": "D-only first-stage hold exceptions; no routed VO/SDF requested yet; group form suppresses CDC setup bounds",
+      "final_candidate": false,
+      "build_manifest": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B3/reports/build_20261030_050940_056242.json",
+      "build_manifest_sha256": "04886d87ef01c26456e0ecb25c3252309ffe111d960e21c3687b3e80d433e643",
+      "build_passed": true,
+      "phases": {
+        "syn": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B3/reports/build_20261030_050940_056242_syn.log"
+        },
+        "pnr": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B3/reports/build_20261030_050940_056242_pnr.log"
+        }
+      },
+      "artifacts": [
+        {
+          "path": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B3/builds/20261030_050940_056242/impl/pnr/ao_0.fs",
+          "sha256": "5a61d46787cc4e7204748667ff45fdd143ce334415e49c49e10fe7f3f7159e5c"
+        }
+      ],
+      "effective_setup_empty_bound_count": 7
+    },
+    {
+      "identity": "custom138k-muted-audio-probe-C11030B4",
+      "output": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B4",
+      "inputs_sha256": "c4fc1995be5001cd12f0580f27f719b7ad0f65d4acad8c84d9584b87cb571801",
+      "source_snapshot_sha256": {
+        "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+        "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+        "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+        "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+        "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+        "probes/audio_clock_i2s/probe.json": "b542b24ea5a1d7adbe31699a2fe69abbba8846a812e7720ae37a7ea9f140bb20",
+        "probes/audio_clock_i2s/audio_probe.sdc": "d077d178f4b2e0104d2137c01a5871ed1368988817357cd588078ced625ad935",
+        "probes/audio_clock_i2s/physical_checks.json": "eb9b73120780e44c6ef1e7197d94bdcc870a613eb3ad27540d8faa6375b56548",
+        "tools/workstation_audio_probe.py": "9aa19aca883a6cf308fb97a12f71215d22950bc8defed947fa8e819487cbecfe"
+      },
+      "reason": "Routed VO/SDF requested; setup exceptions show7 empty CDC bounds under selected clock groups",
+      "final_candidate": false,
+      "build_manifest": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B4/reports/build_20261030_051703_474332.json",
+      "build_manifest_sha256": "5e045e5e9058c4debfadee90e179d1745b1d7ef3a232fbe8af64b1a27a966c2b",
+      "build_passed": true,
+      "phases": {
+        "syn": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B4/reports/build_20261030_051703_474332_syn.log"
+        },
+        "pnr": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B4/reports/build_20261030_051703_474332_pnr.log"
+        }
+      },
+      "artifacts": [
+        {
+          "path": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B4/builds/20261030_051703_474332/impl/pnr/ao_0.fs",
+          "sha256": "fb25fe5393c68829d77c38253d4d074a4b3a301bec8d03cc0c7acac9432073c1"
+        }
+      ],
+      "effective_setup_empty_bound_count": 7
+    },
+    {
+      "identity": "custom138k-muted-audio-probe-C11030B5",
+      "output": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B5",
+      "inputs_sha256": "6154739af7baf7a6b001bbf76d2f43472f467875b40c98c6cf2c697c6643cc79",
+      "source_snapshot_sha256": {
+        "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+        "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+        "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+        "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+        "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+        "probes/audio_clock_i2s/probe.json": "d1090c4fd239f13a74f564891018eefe3a03748aab51300202cc119392dc502d",
+        "probes/audio_clock_i2s/audio_probe.sdc": "e440980c9a1582d1858b6b9865873b957742c2ae483bacbf88bba15b462c0b4c",
+        "probes/audio_clock_i2s/physical_checks.json": "eb9b73120780e44c6ef1e7197d94bdcc870a613eb3ad27540d8faa6375b56548",
+        "tools/workstation_audio_probe.py": "9aa19aca883a6cf308fb97a12f71215d22950bc8defed947fa8e819487cbecfe"
+      },
+      "reason": "Exact cross-selected clock false paths restore all8 effective setup CDC bounds; targeted full-bus queries",
+      "final_candidate": false,
+      "build_manifest": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B5/reports/build_20261030_052120_671558.json",
+      "build_manifest_sha256": "c53be831d02c122de1938fe5966885d7d7cf56fcc2aafab78863a792d79ab22c",
+      "build_passed": true,
+      "phases": {
+        "syn": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B5/reports/build_20261030_052120_671558_syn.log"
+        },
+        "pnr": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B5/reports/build_20261030_052120_671558_pnr.log"
+        }
+      },
+      "artifacts": [
+        {
+          "path": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B5/builds/20261030_052120_671558/impl/pnr/ao_0.fs",
+          "sha256": "d3df02fc996de968cf165148ca4cf4b6191ac1a6e5dbfacbee80f0932cacb1fd"
+        }
+      ],
+      "effective_setup_empty_bound_count": 0
+    },
+    {
+      "identity": "custom138k-muted-audio-probe-C11030B6",
+      "output": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B6",
+      "inputs_sha256": "bf9af030283596f34ae65499e47ecff101bcb72c090408a6d1ccd5411c7f6d75",
+      "source_snapshot_sha256": {
+        "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+        "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+        "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+        "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+        "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+        "probes/audio_clock_i2s/probe.json": "d1090c4fd239f13a74f564891018eefe3a03748aab51300202cc119392dc502d",
+        "probes/audio_clock_i2s/audio_probe.sdc": "2090b57844038116f2128655d112a3e5af12ff9003c0fd32240258236af30779",
+        "probes/audio_clock_i2s/physical_checks.json": "eb9b73120780e44c6ef1e7197d94bdcc870a613eb3ad27540d8faa6375b56548",
+        "tools/workstation_audio_probe.py": "9aa19aca883a6cf308fb97a12f71215d22950bc8defed947fa8e819487cbecfe"
+      },
+      "reason": "Additional mode-scoped setup/hold/recovery/removal queries; generic worst200 MPW did not cover selected clocks",
+      "final_candidate": false,
+      "build_manifest": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B6/reports/build_20261030_052950_320100.json",
+      "build_manifest_sha256": "bf73e927147a0fcfe1defac446d4b5fb53428f8188b86ff80ccbb2c37635bb55",
+      "build_passed": true,
+      "phases": {
+        "syn": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B6/reports/build_20261030_052950_320100_syn.log"
+        },
+        "pnr": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B6/reports/build_20261030_052950_320100_pnr.log"
+        }
+      },
+      "artifacts": [
+        {
+          "path": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B6/builds/20261030_052950_320100/impl/pnr/ao_0.fs",
+          "sha256": "2bd225947176d9b424b02866723b5b8fb7598bddf61777a27b30a22448af6c9d"
+        }
+      ],
+      "effective_setup_empty_bound_count": 0
+    },
+    {
+      "identity": "custom138k-muted-audio-probe-C11030B7",
+      "output": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7",
+      "inputs_sha256": "e4e53e8a0c0b77167e92ef9f806d4b3847e2379745f0f53dff43753893aa2408",
+      "source_snapshot_sha256": {
+        "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+        "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+        "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+        "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+        "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+        "probes/audio_clock_i2s/probe.json": "d1090c4fd239f13a74f564891018eefe3a03748aab51300202cc119392dc502d",
+        "probes/audio_clock_i2s/audio_probe.sdc": "d0850aa569159befd38234f248e280b57a89f473ac6818bf0794ef76965f71da",
+        "probes/audio_clock_i2s/physical_checks.json": "eb9b73120780e44c6ef1e7197d94bdcc870a613eb3ad27540d8faa6375b56548",
+        "tools/workstation_audio_probe.py": "9aa19aca883a6cf308fb97a12f71215d22950bc8defed947fa8e819487cbecfe"
+      },
+      "reason": "Targeted serializer MPW includes both selected modes; final quantitative checker and check-only passed",
+      "final_candidate": true,
+      "build_manifest": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/reports/build_20261030_053313_154092.json",
+      "build_manifest_sha256": "5b3ae36d734fd31d99daa1db67a35c0dc0761b44bc1405db7cec00804bbf0db0",
+      "build_passed": true,
+      "phases": {
+        "syn": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/reports/build_20261030_053313_154092_syn.log"
+        },
+        "pnr": {
+          "returncode": 0,
+          "log": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/reports/build_20261030_053313_154092_pnr.log"
+        }
+      },
+      "artifacts": [
+        {
+          "path": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/builds/20261030_053313_154092/impl/pnr/ao_0.fs",
+          "sha256": "2e27afccd217074b8278e5a7ab75bde08060d14484d3d1ff191c53dc8819565f"
+        }
+      ],
+      "effective_setup_empty_bound_count": 0
+    }
+  ],
+  "physical_audit": {
+    "schema": 1,
+    "recorded_at": "2026-10-30T05:39:41.870930+08:00",
+    "candidate": "custom138k-muted-audio-probe-C11030B7",
+    "user_code": "0xC11030B7",
+    "prepared_input_manifest": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/inputs.json",
+    "immutable_build_manifest": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/reports/build_20261030_053313_154092.json",
+    "artifact": {
+      "path": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/builds/20261030_053313_154092/impl/pnr/ao_0.fs",
+      "sha256": "2e27afccd217074b8278e5a7ab75bde08060d14484d3d1ff191c53dc8819565f"
+    },
+    "source_snapshot_sha256": {
+      "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470",
+      "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+      "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+      "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+      "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+      "probes/audio_clock_i2s/probe.json": "d1090c4fd239f13a74f564891018eefe3a03748aab51300202cc119392dc502d",
+      "probes/audio_clock_i2s/audio_probe.sdc": "d0850aa569159befd38234f248e280b57a89f473ac6818bf0794ef76965f71da",
+      "probes/audio_clock_i2s/physical_checks.json": "eb9b73120780e44c6ef1e7197d94bdcc870a613eb3ad27540d8faa6375b56548",
+      "tools/workstation_audio_probe.py": "9aa19aca883a6cf308fb97a12f71215d22950bc8defed947fa8e819487cbecfe"
+    },
+    "evidence_sha256": {
+      "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/reports/build_20261030_053313_154092.json": "5b3ae36d734fd31d99daa1db67a35c0dc0761b44bc1405db7cec00804bbf0db0",
+      "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/builds/20261030_053313_154092/impl/pnr/audio_probe.vo": "107e7c5c5aa255aa568c23ba8999364e2370df511ab08c37eb39283457e93c1f",
+      "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/builds/20261030_053313_154092/impl/pnr/audio_probe.sdf": "a707f36bbac1cf7b5c94e70a95fd7e5f17fd0159b0a89b75fb268d920c34738c",
+      "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/builds/20261030_053313_154092/impl/pnr/audio_probe.tr": "bf2316b5bc28b67959a58f9b96764b33e9c0dd225729bd22fbe43b47cb1133f5",
+      "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/builds/20261030_053313_154092/impl/pnr/audio_probe.rpt.txt": "2160cf786f654730a0d5bb3baff64987cdb5b6cf0c8802ef84030935d4622173"
+    },
+    "checker_sha256": "ff4e0e5bf5ef819858837d61e48e61969914c68860335cd7c335991022abcf86",
+    "sta": {
+      "clocks": {
+        "reference50": {
+          "type": "Base",
+          "period_ns": 20.0,
+          "source": null,
+          "master": null,
+          "object": "clk_50mhz"
+        },
+        "raw48": {
+          "type": "Base",
+          "period_ns": 81.38,
+          "source": null,
+          "master": null,
+          "object": "clk_12m288"
+        },
+        "raw44": {
+          "type": "Base",
+          "period_ns": 59.051,
+          "source": null,
+          "master": null,
+          "object": "clk_16m9344"
+        },
+        "selected48": {
+          "type": "Generated",
+          "period_ns": 81.38,
+          "source": "clk_12m288",
+          "master": "raw48",
+          "object": "audio_domain/selector/CLKOUT"
+        },
+        "selected44": {
+          "type": "Generated",
+          "period_ns": 59.051,
+          "source": "clk_16m9344",
+          "master": "raw44",
+          "object": "audio_domain/selector/CLKOUT"
+        },
+        "tck_pad_i": {
+          "type": "Base",
+          "period_ns": 50.0,
+          "source": null,
+          "master": null,
+          "object": "tck_ibuf/I"
+        }
+      },
+      "timing_reports": [
+        {
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1",
+          "paths": 2000,
+          "min_slack_ns": 10.358,
+          "clock_pairs": [
+            [
+              "reference50:[R]",
+              "reference50:[R]"
+            ],
+            [
+              "reference50:[R]",
+              "selected44:[R]"
+            ],
+            [
+              "reference50:[R]",
+              "selected48:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -setup -from [get_regs {audio_domain/reference_48_monitor/source_gray*}] -to [get_regs {audio_domain/reference_48_monitor/gray_meta*}] -max_paths 10000 -max_common_paths 1",
+          "paths": 32,
+          "min_slack_ns": 20.046,
+          "clock_pairs": [
+            [
+              "raw48:[R]",
+              "reference50:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -setup -from [get_regs {audio_domain/reference_44_monitor/source_gray*}] -to [get_regs {audio_domain/reference_44_monitor/gray_meta*}] -max_paths 10000 -max_common_paths 1",
+          "paths": 32,
+          "min_slack_ns": 19.83,
+          "clock_pairs": [
+            [
+              "raw44:[R]",
+              "reference50:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -setup -from [get_regs {audio_domain/selected_monitor/source_gray*}] -to [get_regs {audio_domain/selected_monitor/gray_meta*}] -max_paths 10000 -max_common_paths 1",
+          "paths": 32,
+          "min_slack_ns": 20.98,
+          "clock_pairs": [
+            [
+              "selected44:[R]",
+              "reference50:[R]"
+            ],
+            [
+              "selected48:[R]",
+              "reference50:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -setup -from [get_regs {snapshot_hold*}] -to [get_regs {snapshot_payload_meta*}] -max_paths 10000 -max_common_paths 1",
+          "paths": 192,
+          "min_slack_ns": 20.048,
+          "clock_pairs": [
+            [
+              "selected44:[R]",
+              "reference50:[R]"
+            ],
+            [
+              "selected48:[R]",
+              "reference50:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -setup -from [get_regs {audio_domain/transaction/pending_epoch* audio_domain/transaction/pending_44k1_s0}] -to [get_regs {serializer/epoch* serializer/mode_44k1*}] -max_paths 10000 -max_common_paths 1",
+          "paths": 66,
+          "min_slack_ns": 15.962,
+          "clock_pairs": [
+            [
+              "reference50:[R]",
+              "selected44:[R]"
+            ],
+            [
+              "reference50:[R]",
+              "selected48:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -setup -to [get_clocks {selected48}] -max_paths 20 -max_common_paths 1",
+          "paths": 20,
+          "min_slack_ns": 14.881,
+          "clock_pairs": [
+            [
+              "reference50:[R]",
+              "selected48:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -setup -to [get_clocks {selected44}] -max_paths 20 -max_common_paths 1",
+          "paths": 20,
+          "min_slack_ns": 50.977,
+          "clock_pairs": [
+            [
+              "selected44:[R]",
+              "selected44:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -hold -max_paths 2000 -max_common_paths 1",
+          "paths": 2000,
+          "min_slack_ns": 0.25,
+          "clock_pairs": [
+            [
+              "raw44:[R]",
+              "raw44:[R]"
+            ],
+            [
+              "raw48:[R]",
+              "raw48:[R]"
+            ],
+            [
+              "reference50:[R]",
+              "reference50:[R]"
+            ],
+            [
+              "selected44:[R]",
+              "selected44:[R]"
+            ],
+            [
+              "tck_pad_i:[F]",
+              "tck_pad_i:[F]"
+            ],
+            [
+              "tck_pad_i:[R]",
+              "tck_pad_i:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -hold -to [get_clocks {selected48}] -max_paths 20 -max_common_paths 1",
+          "paths": 20,
+          "min_slack_ns": 0.275,
+          "clock_pairs": [
+            [
+              "selected44:[R]",
+              "selected44:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -hold -to [get_clocks {selected44}] -max_paths 20 -max_common_paths 1",
+          "paths": 20,
+          "min_slack_ns": 0.275,
+          "clock_pairs": [
+            [
+              "selected44:[R]",
+              "selected44:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -recovery -max_paths 2000 -max_common_paths 1",
+          "paths": 2000,
+          "min_slack_ns": 7.714,
+          "clock_pairs": [
+            [
+              "reference50:[F]",
+              "reference50:[R]"
+            ],
+            [
+              "reference50:[R]",
+              "reference50:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -recovery -to [get_clocks {selected48}] -max_paths 20 -max_common_paths 1",
+          "paths": 20,
+          "min_slack_ns": 54.284,
+          "clock_pairs": [
+            [
+              "selected44:[R]",
+              "selected44:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -recovery -to [get_clocks {selected44}] -max_paths 20 -max_common_paths 1",
+          "paths": 20,
+          "min_slack_ns": 54.284,
+          "clock_pairs": [
+            [
+              "selected44:[R]",
+              "selected44:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -removal -max_paths 2000 -max_common_paths 1",
+          "paths": 2000,
+          "min_slack_ns": 0.373,
+          "clock_pairs": [
+            [
+              "raw44:[R]",
+              "raw44:[R]"
+            ],
+            [
+              "raw48:[R]",
+              "raw48:[R]"
+            ],
+            [
+              "reference50:[R]",
+              "reference50:[R]"
+            ],
+            [
+              "selected44:[R]",
+              "selected44:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -removal -to [get_clocks {selected48}] -max_paths 20 -max_common_paths 1",
+          "paths": 20,
+          "min_slack_ns": 0.387,
+          "clock_pairs": [
+            [
+              "selected44:[R]",
+              "selected44:[R]"
+            ]
+          ]
+        },
+        {
+          "command": "report_timing -removal -to [get_clocks {selected44}] -max_paths 20 -max_common_paths 1",
+          "paths": 20,
+          "min_slack_ns": 0.387,
+          "clock_pairs": [
+            [
+              "selected44:[R]",
+              "selected44:[R]"
+            ]
+          ]
+        }
+      ],
+      "minimum_pulse_width_min_slack_ns": 7.265,
+      "minimum_pulse_width_min_slack_by_clock_ns": {
+        "reference50": 7.265,
+        "selected44": 28.079,
+        "selected48": 39.243
+      },
+      "sdk_mode_query_limitation": "Clock-object hold/recovery/removal queries alias the same physical DCS output and report the faster selected44 relation; identical routed endpoints and conservative faster-clock recovery cover selected48. Setup CDC held paths explicitly list both modes; MPW explicitly lists both modes."
+    },
+    "constraint_resolution": {
+      "object_bindings": [
+        {
+          "kind": "ports",
+          "pattern": "clk_50mhz",
+          "matched_count": 1
+        },
+        {
+          "kind": "ports",
+          "pattern": "clk_12m288",
+          "matched_count": 1
+        },
+        {
+          "kind": "ports",
+          "pattern": "clk_16m9344",
+          "matched_count": 1
+        },
+        {
+          "kind": "ports",
+          "pattern": "clk_12m288",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "audio_domain/selector/CLKOUT",
+          "matched_count": 1
+        },
+        {
+          "kind": "ports",
+          "pattern": "clk_16m9344",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "audio_domain/selector/CLKOUT",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected48",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected44",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected44",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected48",
+          "matched_count": 1
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_48_monitor/source_gray*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_48_monitor/gray_meta*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_48_monitor/source_gray*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_48_monitor/gray_meta*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_44_monitor/source_gray*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_44_monitor/gray_meta*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_44_monitor/source_gray*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_44_monitor/gray_meta*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/selected_monitor/source_gray*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/selected_monitor/gray_meta*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/selected_monitor/source_gray*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/selected_monitor/gray_meta*",
+          "matched_count": 32
+        },
+        {
+          "kind": "pins",
+          "pattern": "quiesce_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "resume_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "snapshot_request_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "quiesce_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "resume_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "snapshot_request_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "quiet_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "prefill_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "running_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "idle_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "snapshot_ack_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "quiet_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "prefill_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "running_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "idle_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "snapshot_ack_sync_0_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "regs",
+          "pattern": "snapshot_hold*",
+          "matched_count": 192
+        },
+        {
+          "kind": "regs",
+          "pattern": "snapshot_payload_meta*",
+          "matched_count": 192
+        },
+        {
+          "kind": "regs",
+          "pattern": "snapshot_hold*",
+          "matched_count": 192
+        },
+        {
+          "kind": "regs",
+          "pattern": "snapshot_payload_meta*",
+          "matched_count": 192
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/transaction/pending_epoch*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/transaction/pending_44k1_s0",
+          "matched_count": 1
+        },
+        {
+          "kind": "regs",
+          "pattern": "serializer/epoch*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "serializer/mode_44k1*",
+          "matched_count": 1
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/transaction/pending_epoch*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/transaction/pending_44k1_s0",
+          "matched_count": 1
+        },
+        {
+          "kind": "regs",
+          "pattern": "serializer/epoch*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "serializer/mode_44k1*",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "audio_domain/reference_48_monitor/level_meta_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "audio_domain/reference_44_monitor/level_meta_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "audio_domain/selected_monitor/level_meta_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "audio_domain/reference_48_monitor/level_meta_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "audio_domain/reference_44_monitor/level_meta_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "pins",
+          "pattern": "audio_domain/selected_monitor/level_meta_s0/D",
+          "matched_count": 1
+        },
+        {
+          "kind": "ports",
+          "pattern": "restart_n",
+          "matched_count": 1
+        },
+        {
+          "kind": "regs",
+          "pattern": "power_on_count*",
+          "matched_count": 10
+        },
+        {
+          "kind": "regs",
+          "pattern": "power_ready_s0",
+          "matched_count": 1
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_48_monitor/source_gray*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_48_monitor/gray_meta*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_44_monitor/source_gray*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/reference_44_monitor/gray_meta*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/selected_monitor/source_gray*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/selected_monitor/gray_meta*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "snapshot_hold*",
+          "matched_count": 192
+        },
+        {
+          "kind": "regs",
+          "pattern": "snapshot_payload_meta*",
+          "matched_count": 192
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/transaction/pending_epoch*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "audio_domain/transaction/pending_44k1_s0",
+          "matched_count": 1
+        },
+        {
+          "kind": "regs",
+          "pattern": "serializer/epoch*",
+          "matched_count": 32
+        },
+        {
+          "kind": "regs",
+          "pattern": "serializer/mode_44k1*",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected48",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected48",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected48",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected48",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected44",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected44",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected44",
+          "matched_count": 1
+        },
+        {
+          "kind": "clocks",
+          "pattern": "selected44",
+          "matched_count": 1
+        },
+        {
+          "kind": "regs",
+          "pattern": "serializer/*",
+          "matched_count": 256
+        }
+      ],
+      "exact_false_paths": [
+        "set_false_path -from [get_clocks {selected48}] -to [get_clocks {selected44}]",
+        "set_false_path -from [get_clocks {selected44}] -to [get_clocks {selected48}]",
+        "set_false_path -hold -from [get_regs {audio_domain/reference_48_monitor/source_gray*}] -to [get_regs {audio_domain/reference_48_monitor/gray_meta*}]",
+        "set_false_path -hold -from [get_regs {audio_domain/reference_44_monitor/source_gray*}] -to [get_regs {audio_domain/reference_44_monitor/gray_meta*}]",
+        "set_false_path -hold -from [get_regs {audio_domain/selected_monitor/source_gray*}] -to [get_regs {audio_domain/selected_monitor/gray_meta*}]",
+        "set_false_path -hold -through [get_pins {quiesce_sync_0_s0/D resume_sync_0_s0/D snapshot_request_sync_0_s0/D}]",
+        "set_false_path -hold -through [get_pins {quiet_sync_0_s0/D prefill_sync_0_s0/D running_sync_0_s0/D idle_sync_0_s0/D snapshot_ack_sync_0_s0/D}]",
+        "set_false_path -hold -from [get_regs {snapshot_hold*}] -to [get_regs {snapshot_payload_meta*}]",
+        "set_false_path -hold -from [get_regs {audio_domain/transaction/pending_epoch* audio_domain/transaction/pending_44k1_s0}] -to [get_regs {serializer/epoch* serializer/mode_44k1*}]",
+        "set_false_path -hold -through [get_pins {audio_domain/reference_48_monitor/level_meta_s0/D audio_domain/reference_44_monitor/level_meta_s0/D audio_domain/selected_monitor/level_meta_s0/D}]",
+        "set_false_path -from [get_ports {restart_n}] -to [get_regs {power_on_count* power_ready_s0}]"
+      ]
+    },
+    "dcs": {
+      "primitive": "audio_domain/selector",
+      "mode": "FALLING",
+      "selected_output_route": "PRIMARY",
+      "source_routes": "PRIMARY",
+      "retained_warnings": [
+        "WARN  (PA1015) : Signal 'clk_50mhz' captured in GAO is replaced by 'clk_50mhz_d'",
+        "WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk_50mhz_d' by the specified constraint. And then it may lead to the excessive delay or skew",
+        "WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk_50mhz_d' by the specified constraint. And then it may lead to the excessive delay or skew"
+      ],
+      "limitation": "PR1014 on50MHz remains visible; external oscillator electrical integrity and analog DAC behavior require hardware measurement"
+    },
+    "gray": {
+      "reference_48_monitor": {
+        "surviving_bits": 32,
+        "optimized_bits": [],
+        "conservative_root_arrival_skew_ns": 2.414,
+        "bits": [
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_0_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_0_s0",
+            "q_to_d_min_ns": 0.379,
+            "q_to_d_max_ns": 0.613,
+            "clock_to_data_min_ns": 0.52,
+            "clock_to_data_max_ns": 0.919,
+            "clock_distribution_min_ns": 2.01,
+            "clock_distribution_max_ns": 3.534,
+            "root_to_data_min_ns": 2.53,
+            "root_to_data_max_ns": 4.453
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_1_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_1_s0",
+            "q_to_d_min_ns": 0.18,
+            "q_to_d_max_ns": 0.316,
+            "clock_to_data_min_ns": 0.321,
+            "clock_to_data_max_ns": 0.622,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.54,
+            "root_to_data_min_ns": 2.336,
+            "root_to_data_max_ns": 4.162
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_2_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_2_s0",
+            "q_to_d_min_ns": 0.322,
+            "q_to_d_max_ns": 0.518,
+            "clock_to_data_min_ns": 0.463,
+            "clock_to_data_max_ns": 0.824,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.54,
+            "root_to_data_min_ns": 2.478,
+            "root_to_data_max_ns": 4.364
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_3_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_3_s0",
+            "q_to_d_min_ns": 0.239,
+            "q_to_d_max_ns": 0.369,
+            "clock_to_data_min_ns": 0.38,
+            "clock_to_data_max_ns": 0.675,
+            "clock_distribution_min_ns": 2.011,
+            "clock_distribution_max_ns": 3.532,
+            "root_to_data_min_ns": 2.391,
+            "root_to_data_max_ns": 4.207
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_4_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_4_s0",
+            "q_to_d_min_ns": 0.219,
+            "q_to_d_max_ns": 0.352,
+            "clock_to_data_min_ns": 0.36,
+            "clock_to_data_max_ns": 0.658,
+            "clock_distribution_min_ns": 2.011,
+            "clock_distribution_max_ns": 3.532,
+            "root_to_data_min_ns": 2.371,
+            "root_to_data_max_ns": 4.19
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_5_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_5_s0",
+            "q_to_d_min_ns": 0.207,
+            "q_to_d_max_ns": 0.38,
+            "clock_to_data_min_ns": 0.348,
+            "clock_to_data_max_ns": 0.686,
+            "clock_distribution_min_ns": 2.021,
+            "clock_distribution_max_ns": 3.549,
+            "root_to_data_min_ns": 2.369,
+            "root_to_data_max_ns": 4.235
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_6_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_6_s0",
+            "q_to_d_min_ns": 0.522,
+            "q_to_d_max_ns": 0.87,
+            "clock_to_data_min_ns": 0.663,
+            "clock_to_data_max_ns": 1.176,
+            "clock_distribution_min_ns": 2.017,
+            "clock_distribution_max_ns": 3.542,
+            "root_to_data_min_ns": 2.68,
+            "root_to_data_max_ns": 4.718
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_7_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_7_s0",
+            "q_to_d_min_ns": 0.321,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.462,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 2.017,
+            "clock_distribution_max_ns": 3.542,
+            "root_to_data_min_ns": 2.479,
+            "root_to_data_max_ns": 4.384
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_8_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_8_s0",
+            "q_to_d_min_ns": 0.387,
+            "q_to_d_max_ns": 0.631,
+            "clock_to_data_min_ns": 0.528,
+            "clock_to_data_max_ns": 0.937,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.54,
+            "root_to_data_min_ns": 2.543,
+            "root_to_data_max_ns": 4.477
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_9_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_9_s0",
+            "q_to_d_min_ns": 0.225,
+            "q_to_d_max_ns": 0.374,
+            "clock_to_data_min_ns": 0.366,
+            "clock_to_data_max_ns": 0.68,
+            "clock_distribution_min_ns": 2.008,
+            "clock_distribution_max_ns": 3.532,
+            "root_to_data_min_ns": 2.374,
+            "root_to_data_max_ns": 4.212
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_10_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_10_s0",
+            "q_to_d_min_ns": 0.461,
+            "q_to_d_max_ns": 0.756,
+            "clock_to_data_min_ns": 0.602,
+            "clock_to_data_max_ns": 1.062,
+            "clock_distribution_min_ns": 2.008,
+            "clock_distribution_max_ns": 3.532,
+            "root_to_data_min_ns": 2.61,
+            "root_to_data_max_ns": 4.594
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_11_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_11_s0",
+            "q_to_d_min_ns": 0.388,
+            "q_to_d_max_ns": 0.65,
+            "clock_to_data_min_ns": 0.529,
+            "clock_to_data_max_ns": 0.956,
+            "clock_distribution_min_ns": 2.008,
+            "clock_distribution_max_ns": 3.532,
+            "root_to_data_min_ns": 2.537,
+            "root_to_data_max_ns": 4.488
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_12_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_12_s0",
+            "q_to_d_min_ns": 0.315,
+            "q_to_d_max_ns": 0.493,
+            "clock_to_data_min_ns": 0.456,
+            "clock_to_data_max_ns": 0.799,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.54,
+            "root_to_data_min_ns": 2.471,
+            "root_to_data_max_ns": 4.339
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_13_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_13_s0",
+            "q_to_d_min_ns": 0.441,
+            "q_to_d_max_ns": 0.723,
+            "clock_to_data_min_ns": 0.582,
+            "clock_to_data_max_ns": 1.029,
+            "clock_distribution_min_ns": 2.019,
+            "clock_distribution_max_ns": 3.547,
+            "root_to_data_min_ns": 2.601,
+            "root_to_data_max_ns": 4.576
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_14_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_14_s0",
+            "q_to_d_min_ns": 0.441,
+            "q_to_d_max_ns": 0.723,
+            "clock_to_data_min_ns": 0.582,
+            "clock_to_data_max_ns": 1.029,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.54,
+            "root_to_data_min_ns": 2.597,
+            "root_to_data_max_ns": 4.569
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_15_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_15_s0",
+            "q_to_d_min_ns": 0.426,
+            "q_to_d_max_ns": 0.703,
+            "clock_to_data_min_ns": 0.567,
+            "clock_to_data_max_ns": 1.009,
+            "clock_distribution_min_ns": 2.019,
+            "clock_distribution_max_ns": 3.547,
+            "root_to_data_min_ns": 2.586,
+            "root_to_data_max_ns": 4.556
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_16_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_16_s0",
+            "q_to_d_min_ns": 0.432,
+            "q_to_d_max_ns": 0.734,
+            "clock_to_data_min_ns": 0.573,
+            "clock_to_data_max_ns": 1.04,
+            "clock_distribution_min_ns": 2.017,
+            "clock_distribution_max_ns": 3.545,
+            "root_to_data_min_ns": 2.59,
+            "root_to_data_max_ns": 4.585
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_17_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_17_s0",
+            "q_to_d_min_ns": 0.42,
+            "q_to_d_max_ns": 0.675,
+            "clock_to_data_min_ns": 0.561,
+            "clock_to_data_max_ns": 0.981,
+            "clock_distribution_min_ns": 2.013,
+            "clock_distribution_max_ns": 3.538,
+            "root_to_data_min_ns": 2.574,
+            "root_to_data_max_ns": 4.519
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_18_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_18_s0",
+            "q_to_d_min_ns": 0.245,
+            "q_to_d_max_ns": 0.4,
+            "clock_to_data_min_ns": 0.386,
+            "clock_to_data_max_ns": 0.706,
+            "clock_distribution_min_ns": 2.009,
+            "clock_distribution_max_ns": 3.53,
+            "root_to_data_min_ns": 2.395,
+            "root_to_data_max_ns": 4.236
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_19_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_19_s0",
+            "q_to_d_min_ns": 0.23,
+            "q_to_d_max_ns": 0.356,
+            "clock_to_data_min_ns": 0.371,
+            "clock_to_data_max_ns": 0.662,
+            "clock_distribution_min_ns": 2.006,
+            "clock_distribution_max_ns": 3.526,
+            "root_to_data_min_ns": 2.377,
+            "root_to_data_max_ns": 4.188
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_20_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_20_s0",
+            "q_to_d_min_ns": 0.27,
+            "q_to_d_max_ns": 0.452,
+            "clock_to_data_min_ns": 0.411,
+            "clock_to_data_max_ns": 0.758,
+            "clock_distribution_min_ns": 2.009,
+            "clock_distribution_max_ns": 3.53,
+            "root_to_data_min_ns": 2.42,
+            "root_to_data_max_ns": 4.288
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_21_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_21_s0",
+            "q_to_d_min_ns": 0.335,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.476,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 2.008,
+            "clock_distribution_max_ns": 3.528,
+            "root_to_data_min_ns": 2.484,
+            "root_to_data_max_ns": 4.37
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_22_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_22_s0",
+            "q_to_d_min_ns": 0.42,
+            "q_to_d_max_ns": 0.675,
+            "clock_to_data_min_ns": 0.561,
+            "clock_to_data_max_ns": 0.981,
+            "clock_distribution_min_ns": 2.013,
+            "clock_distribution_max_ns": 3.538,
+            "root_to_data_min_ns": 2.574,
+            "root_to_data_max_ns": 4.519
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_23_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_23_s0",
+            "q_to_d_min_ns": 0.353,
+            "q_to_d_max_ns": 0.601,
+            "clock_to_data_min_ns": 0.494,
+            "clock_to_data_max_ns": 0.907,
+            "clock_distribution_min_ns": 2.017,
+            "clock_distribution_max_ns": 3.545,
+            "root_to_data_min_ns": 2.511,
+            "root_to_data_max_ns": 4.452
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_24_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_24_s0",
+            "q_to_d_min_ns": 0.24,
+            "q_to_d_max_ns": 0.391,
+            "clock_to_data_min_ns": 0.381,
+            "clock_to_data_max_ns": 0.697,
+            "clock_distribution_min_ns": 2.01,
+            "clock_distribution_max_ns": 3.534,
+            "root_to_data_min_ns": 2.391,
+            "root_to_data_max_ns": 4.231
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_25_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_25_s0",
+            "q_to_d_min_ns": 0.386,
+            "q_to_d_max_ns": 0.605,
+            "clock_to_data_min_ns": 0.527,
+            "clock_to_data_max_ns": 0.911,
+            "clock_distribution_min_ns": 2.012,
+            "clock_distribution_max_ns": 3.536,
+            "root_to_data_min_ns": 2.539,
+            "root_to_data_max_ns": 4.447
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_26_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_26_s0",
+            "q_to_d_min_ns": 0.395,
+            "q_to_d_max_ns": 0.664,
+            "clock_to_data_min_ns": 0.536,
+            "clock_to_data_max_ns": 0.97,
+            "clock_distribution_min_ns": 2.012,
+            "clock_distribution_max_ns": 3.536,
+            "root_to_data_min_ns": 2.548,
+            "root_to_data_max_ns": 4.506
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_27_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_27_s0",
+            "q_to_d_min_ns": 0.528,
+            "q_to_d_max_ns": 0.901,
+            "clock_to_data_min_ns": 0.669,
+            "clock_to_data_max_ns": 1.207,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.543,
+            "root_to_data_min_ns": 2.684,
+            "root_to_data_max_ns": 4.75
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_28_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_28_s0",
+            "q_to_d_min_ns": 0.441,
+            "q_to_d_max_ns": 0.723,
+            "clock_to_data_min_ns": 0.582,
+            "clock_to_data_max_ns": 1.029,
+            "clock_distribution_min_ns": 2.012,
+            "clock_distribution_max_ns": 3.536,
+            "root_to_data_min_ns": 2.594,
+            "root_to_data_max_ns": 4.565
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_29_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_29_s0",
+            "q_to_d_min_ns": 0.335,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.476,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 2.009,
+            "clock_distribution_max_ns": 3.53,
+            "root_to_data_min_ns": 2.485,
+            "root_to_data_max_ns": 4.372
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_30_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_30_s0",
+            "q_to_d_min_ns": 0.32,
+            "q_to_d_max_ns": 0.519,
+            "clock_to_data_min_ns": 0.461,
+            "clock_to_data_max_ns": 0.825,
+            "clock_distribution_min_ns": 2.013,
+            "clock_distribution_max_ns": 3.538,
+            "root_to_data_min_ns": 2.474,
+            "root_to_data_max_ns": 4.363
+          },
+          {
+            "source": "audio_domain/reference_48_monitor/source_gray_31_s0",
+            "target": "audio_domain/reference_48_monitor/gray_meta_31_s0",
+            "q_to_d_min_ns": 0.32,
+            "q_to_d_max_ns": 0.519,
+            "clock_to_data_min_ns": 0.461,
+            "clock_to_data_max_ns": 0.825,
+            "clock_distribution_min_ns": 2.013,
+            "clock_distribution_max_ns": 3.538,
+            "root_to_data_min_ns": 2.474,
+            "root_to_data_max_ns": 4.363
+          }
+        ]
+      },
+      "reference_44_monitor": {
+        "surviving_bits": 32,
+        "optimized_bits": [],
+        "conservative_root_arrival_skew_ns": 2.58,
+        "bits": [
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_0_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_0_s0",
+            "q_to_d_min_ns": 0.416,
+            "q_to_d_max_ns": 0.686,
+            "clock_to_data_min_ns": 0.557,
+            "clock_to_data_max_ns": 0.992,
+            "clock_distribution_min_ns": 2.02,
+            "clock_distribution_max_ns": 3.7,
+            "root_to_data_min_ns": 2.577,
+            "root_to_data_max_ns": 4.692
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_1_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_1_s0",
+            "q_to_d_min_ns": 0.337,
+            "q_to_d_max_ns": 0.541,
+            "clock_to_data_min_ns": 0.478,
+            "clock_to_data_max_ns": 0.847,
+            "clock_distribution_min_ns": 2.007,
+            "clock_distribution_max_ns": 3.679,
+            "root_to_data_min_ns": 2.485,
+            "root_to_data_max_ns": 4.526
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_2_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_2_s0",
+            "q_to_d_min_ns": 0.337,
+            "q_to_d_max_ns": 0.541,
+            "clock_to_data_min_ns": 0.478,
+            "clock_to_data_max_ns": 0.847,
+            "clock_distribution_min_ns": 2.011,
+            "clock_distribution_max_ns": 3.686,
+            "root_to_data_min_ns": 2.489,
+            "root_to_data_max_ns": 4.533
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_3_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_3_s0",
+            "q_to_d_min_ns": 0.245,
+            "q_to_d_max_ns": 0.4,
+            "clock_to_data_min_ns": 0.386,
+            "clock_to_data_max_ns": 0.706,
+            "clock_distribution_min_ns": 2.019,
+            "clock_distribution_max_ns": 3.696,
+            "root_to_data_min_ns": 2.405,
+            "root_to_data_max_ns": 4.402
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_4_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_4_s0",
+            "q_to_d_min_ns": 0.32,
+            "q_to_d_max_ns": 0.519,
+            "clock_to_data_min_ns": 0.461,
+            "clock_to_data_max_ns": 0.825,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.691,
+            "root_to_data_min_ns": 2.476,
+            "root_to_data_max_ns": 4.516
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_5_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_5_s0",
+            "q_to_d_min_ns": 0.508,
+            "q_to_d_max_ns": 0.824,
+            "clock_to_data_min_ns": 0.649,
+            "clock_to_data_max_ns": 1.13,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.691,
+            "root_to_data_min_ns": 2.664,
+            "root_to_data_max_ns": 4.821
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_6_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_6_s0",
+            "q_to_d_min_ns": 0.41,
+            "q_to_d_max_ns": 0.655,
+            "clock_to_data_min_ns": 0.551,
+            "clock_to_data_max_ns": 0.961,
+            "clock_distribution_min_ns": 2.023,
+            "clock_distribution_max_ns": 3.701,
+            "root_to_data_min_ns": 2.574,
+            "root_to_data_max_ns": 4.662
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_7_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_7_s0",
+            "q_to_d_min_ns": 0.41,
+            "q_to_d_max_ns": 0.655,
+            "clock_to_data_min_ns": 0.551,
+            "clock_to_data_max_ns": 0.961,
+            "clock_distribution_min_ns": 2.023,
+            "clock_distribution_max_ns": 3.701,
+            "root_to_data_min_ns": 2.574,
+            "root_to_data_max_ns": 4.662
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_8_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_8_s0",
+            "q_to_d_min_ns": 0.41,
+            "q_to_d_max_ns": 0.655,
+            "clock_to_data_min_ns": 0.551,
+            "clock_to_data_max_ns": 0.961,
+            "clock_distribution_min_ns": 2.011,
+            "clock_distribution_max_ns": 3.686,
+            "root_to_data_min_ns": 2.562,
+            "root_to_data_max_ns": 4.647
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_9_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_9_s0",
+            "q_to_d_min_ns": 0.239,
+            "q_to_d_max_ns": 0.369,
+            "clock_to_data_min_ns": 0.38,
+            "clock_to_data_max_ns": 0.675,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.691,
+            "root_to_data_min_ns": 2.395,
+            "root_to_data_max_ns": 4.366
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_10_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_10_s0",
+            "q_to_d_min_ns": 0.372,
+            "q_to_d_max_ns": 0.624,
+            "clock_to_data_min_ns": 0.513,
+            "clock_to_data_max_ns": 0.93,
+            "clock_distribution_min_ns": 2.024,
+            "clock_distribution_max_ns": 3.707,
+            "root_to_data_min_ns": 2.537,
+            "root_to_data_max_ns": 4.637
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_11_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_11_s0",
+            "q_to_d_min_ns": 0.335,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.476,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 2.019,
+            "clock_distribution_max_ns": 3.699,
+            "root_to_data_min_ns": 2.495,
+            "root_to_data_max_ns": 4.541
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_12_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_12_s0",
+            "q_to_d_min_ns": 0.335,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.476,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 2.019,
+            "clock_distribution_max_ns": 3.699,
+            "root_to_data_min_ns": 2.495,
+            "root_to_data_max_ns": 4.541
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_13_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_13_s0",
+            "q_to_d_min_ns": 0.32,
+            "q_to_d_max_ns": 0.519,
+            "clock_to_data_min_ns": 0.461,
+            "clock_to_data_max_ns": 0.825,
+            "clock_distribution_min_ns": 2.028,
+            "clock_distribution_max_ns": 3.71,
+            "root_to_data_min_ns": 2.489,
+            "root_to_data_max_ns": 4.535
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_14_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_14_s0",
+            "q_to_d_min_ns": 0.392,
+            "q_to_d_max_ns": 0.663,
+            "clock_to_data_min_ns": 0.533,
+            "clock_to_data_max_ns": 0.969,
+            "clock_distribution_min_ns": 2.024,
+            "clock_distribution_max_ns": 3.707,
+            "root_to_data_min_ns": 2.557,
+            "root_to_data_max_ns": 4.676
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_15_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_15_s0",
+            "q_to_d_min_ns": 0.516,
+            "q_to_d_max_ns": 0.842,
+            "clock_to_data_min_ns": 0.657,
+            "clock_to_data_max_ns": 1.148,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.694,
+            "root_to_data_min_ns": 2.672,
+            "root_to_data_max_ns": 4.842
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_16_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_16_s0",
+            "q_to_d_min_ns": 0.32,
+            "q_to_d_max_ns": 0.519,
+            "clock_to_data_min_ns": 0.461,
+            "clock_to_data_max_ns": 0.825,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.694,
+            "root_to_data_min_ns": 2.476,
+            "root_to_data_max_ns": 4.519
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_17_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_17_s0",
+            "q_to_d_min_ns": 0.335,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.476,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 2.011,
+            "clock_distribution_max_ns": 3.686,
+            "root_to_data_min_ns": 2.487,
+            "root_to_data_max_ns": 4.528
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_18_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_18_s0",
+            "q_to_d_min_ns": 0.425,
+            "q_to_d_max_ns": 0.715,
+            "clock_to_data_min_ns": 0.566,
+            "clock_to_data_max_ns": 1.021,
+            "clock_distribution_min_ns": 2.02,
+            "clock_distribution_max_ns": 3.7,
+            "root_to_data_min_ns": 2.586,
+            "root_to_data_max_ns": 4.721
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_19_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_19_s0",
+            "q_to_d_min_ns": 0.426,
+            "q_to_d_max_ns": 0.706,
+            "clock_to_data_min_ns": 0.567,
+            "clock_to_data_max_ns": 1.012,
+            "clock_distribution_min_ns": 2.02,
+            "clock_distribution_max_ns": 3.7,
+            "root_to_data_min_ns": 2.587,
+            "root_to_data_max_ns": 4.712
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_20_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_20_s0",
+            "q_to_d_min_ns": 0.588,
+            "q_to_d_max_ns": 0.965,
+            "clock_to_data_min_ns": 0.729,
+            "clock_to_data_max_ns": 1.271,
+            "clock_distribution_min_ns": 2.016,
+            "clock_distribution_max_ns": 3.692,
+            "root_to_data_min_ns": 2.745,
+            "root_to_data_max_ns": 4.963
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_21_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_21_s0",
+            "q_to_d_min_ns": 0.341,
+            "q_to_d_max_ns": 0.567,
+            "clock_to_data_min_ns": 0.482,
+            "clock_to_data_max_ns": 0.873,
+            "clock_distribution_min_ns": 2.007,
+            "clock_distribution_max_ns": 3.679,
+            "root_to_data_min_ns": 2.489,
+            "root_to_data_max_ns": 4.552
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_22_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_22_s0",
+            "q_to_d_min_ns": 0.4,
+            "q_to_d_max_ns": 0.66,
+            "clock_to_data_min_ns": 0.541,
+            "clock_to_data_max_ns": 0.966,
+            "clock_distribution_min_ns": 2.007,
+            "clock_distribution_max_ns": 3.679,
+            "root_to_data_min_ns": 2.548,
+            "root_to_data_max_ns": 4.645
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_23_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_23_s0",
+            "q_to_d_min_ns": 0.339,
+            "q_to_d_max_ns": 0.584,
+            "clock_to_data_min_ns": 0.48,
+            "clock_to_data_max_ns": 0.89,
+            "clock_distribution_min_ns": 2.007,
+            "clock_distribution_max_ns": 3.679,
+            "root_to_data_min_ns": 2.487,
+            "root_to_data_max_ns": 4.569
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_24_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_24_s0",
+            "q_to_d_min_ns": 0.431,
+            "q_to_d_max_ns": 0.703,
+            "clock_to_data_min_ns": 0.572,
+            "clock_to_data_max_ns": 1.009,
+            "clock_distribution_min_ns": 2.015,
+            "clock_distribution_max_ns": 3.691,
+            "root_to_data_min_ns": 2.587,
+            "root_to_data_max_ns": 4.7
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_25_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_25_s0",
+            "q_to_d_min_ns": 0.245,
+            "q_to_d_max_ns": 0.4,
+            "clock_to_data_min_ns": 0.386,
+            "clock_to_data_max_ns": 0.706,
+            "clock_distribution_min_ns": 2.019,
+            "clock_distribution_max_ns": 3.693,
+            "root_to_data_min_ns": 2.405,
+            "root_to_data_max_ns": 4.399
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_26_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_26_s0",
+            "q_to_d_min_ns": 0.219,
+            "q_to_d_max_ns": 0.352,
+            "clock_to_data_min_ns": 0.36,
+            "clock_to_data_max_ns": 0.658,
+            "clock_distribution_min_ns": 2.024,
+            "clock_distribution_max_ns": 3.702,
+            "root_to_data_min_ns": 2.384,
+            "root_to_data_max_ns": 4.36
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_27_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_27_s0",
+            "q_to_d_min_ns": 0.239,
+            "q_to_d_max_ns": 0.369,
+            "clock_to_data_min_ns": 0.38,
+            "clock_to_data_max_ns": 0.675,
+            "clock_distribution_min_ns": 2.023,
+            "clock_distribution_max_ns": 3.701,
+            "root_to_data_min_ns": 2.403,
+            "root_to_data_max_ns": 4.376
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_28_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_28_s0",
+            "q_to_d_min_ns": 0.416,
+            "q_to_d_max_ns": 0.686,
+            "clock_to_data_min_ns": 0.557,
+            "clock_to_data_max_ns": 0.992,
+            "clock_distribution_min_ns": 2.019,
+            "clock_distribution_max_ns": 3.693,
+            "root_to_data_min_ns": 2.576,
+            "root_to_data_max_ns": 4.685
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_29_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_29_s0",
+            "q_to_d_min_ns": 0.335,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.476,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 2.019,
+            "clock_distribution_max_ns": 3.693,
+            "root_to_data_min_ns": 2.495,
+            "root_to_data_max_ns": 4.535
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_30_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_30_s0",
+            "q_to_d_min_ns": 0.219,
+            "q_to_d_max_ns": 0.352,
+            "clock_to_data_min_ns": 0.36,
+            "clock_to_data_max_ns": 0.658,
+            "clock_distribution_min_ns": 2.023,
+            "clock_distribution_max_ns": 3.701,
+            "root_to_data_min_ns": 2.383,
+            "root_to_data_max_ns": 4.359
+          },
+          {
+            "source": "audio_domain/reference_44_monitor/source_gray_31_s0",
+            "target": "audio_domain/reference_44_monitor/gray_meta_31_s0",
+            "q_to_d_min_ns": 0.219,
+            "q_to_d_max_ns": 0.352,
+            "clock_to_data_min_ns": 0.36,
+            "clock_to_data_max_ns": 0.658,
+            "clock_distribution_min_ns": 2.027,
+            "clock_distribution_max_ns": 3.708,
+            "root_to_data_min_ns": 2.387,
+            "root_to_data_max_ns": 4.366
+          }
+        ]
+      },
+      "selected_monitor": {
+        "surviving_bits": 32,
+        "optimized_bits": [],
+        "conservative_root_arrival_skew_ns": 2.328,
+        "bits": [
+          {
+            "source": "audio_domain/selected_monitor/source_gray_0_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_0_s0",
+            "q_to_d_min_ns": 0.387,
+            "q_to_d_max_ns": 0.67,
+            "clock_to_data_min_ns": 0.528,
+            "clock_to_data_max_ns": 0.976,
+            "clock_distribution_min_ns": 1.145,
+            "clock_distribution_max_ns": 2.633,
+            "root_to_data_min_ns": 1.673,
+            "root_to_data_max_ns": 3.609
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_1_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_1_s0",
+            "q_to_d_min_ns": 0.285,
+            "q_to_d_max_ns": 0.472,
+            "clock_to_data_min_ns": 0.426,
+            "clock_to_data_max_ns": 0.778,
+            "clock_distribution_min_ns": 1.136,
+            "clock_distribution_max_ns": 2.62,
+            "root_to_data_min_ns": 1.562,
+            "root_to_data_max_ns": 3.398
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_2_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_2_s0",
+            "q_to_d_min_ns": 0.23,
+            "q_to_d_max_ns": 0.386,
+            "clock_to_data_min_ns": 0.371,
+            "clock_to_data_max_ns": 0.692,
+            "clock_distribution_min_ns": 1.141,
+            "clock_distribution_max_ns": 2.626,
+            "root_to_data_min_ns": 1.512,
+            "root_to_data_max_ns": 3.318
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_3_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_3_s0",
+            "q_to_d_min_ns": 0.282,
+            "q_to_d_max_ns": 0.454,
+            "clock_to_data_min_ns": 0.423,
+            "clock_to_data_max_ns": 0.76,
+            "clock_distribution_min_ns": 1.141,
+            "clock_distribution_max_ns": 2.626,
+            "root_to_data_min_ns": 1.564,
+            "root_to_data_max_ns": 3.386
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_4_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_4_s0",
+            "q_to_d_min_ns": 0.37,
+            "q_to_d_max_ns": 0.571,
+            "clock_to_data_min_ns": 0.511,
+            "clock_to_data_max_ns": 0.877,
+            "clock_distribution_min_ns": 1.141,
+            "clock_distribution_max_ns": 2.626,
+            "root_to_data_min_ns": 1.652,
+            "root_to_data_max_ns": 3.503
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_5_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_5_s0",
+            "q_to_d_min_ns": 0.311,
+            "q_to_d_max_ns": 0.506,
+            "clock_to_data_min_ns": 0.452,
+            "clock_to_data_max_ns": 0.812,
+            "clock_distribution_min_ns": 1.143,
+            "clock_distribution_max_ns": 2.628,
+            "root_to_data_min_ns": 1.595,
+            "root_to_data_max_ns": 3.44
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_6_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_6_s0",
+            "q_to_d_min_ns": 0.377,
+            "q_to_d_max_ns": 0.611,
+            "clock_to_data_min_ns": 0.518,
+            "clock_to_data_max_ns": 0.917,
+            "clock_distribution_min_ns": 1.148,
+            "clock_distribution_max_ns": 2.638,
+            "root_to_data_min_ns": 1.666,
+            "root_to_data_max_ns": 3.555
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_7_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_7_s0",
+            "q_to_d_min_ns": 0.377,
+            "q_to_d_max_ns": 0.611,
+            "clock_to_data_min_ns": 0.518,
+            "clock_to_data_max_ns": 0.917,
+            "clock_distribution_min_ns": 1.148,
+            "clock_distribution_max_ns": 2.638,
+            "root_to_data_min_ns": 1.666,
+            "root_to_data_max_ns": 3.555
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_8_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_8_s0",
+            "q_to_d_min_ns": 0.239,
+            "q_to_d_max_ns": 0.369,
+            "clock_to_data_min_ns": 0.38,
+            "clock_to_data_max_ns": 0.675,
+            "clock_distribution_min_ns": 1.147,
+            "clock_distribution_max_ns": 2.635,
+            "root_to_data_min_ns": 1.527,
+            "root_to_data_max_ns": 3.31
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_9_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_9_s0",
+            "q_to_d_min_ns": 0.322,
+            "q_to_d_max_ns": 0.521,
+            "clock_to_data_min_ns": 0.463,
+            "clock_to_data_max_ns": 0.827,
+            "clock_distribution_min_ns": 1.143,
+            "clock_distribution_max_ns": 2.628,
+            "root_to_data_min_ns": 1.606,
+            "root_to_data_max_ns": 3.455
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_10_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_10_s0",
+            "q_to_d_min_ns": 0.335,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.476,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 1.143,
+            "clock_distribution_max_ns": 2.628,
+            "root_to_data_min_ns": 1.619,
+            "root_to_data_max_ns": 3.47
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_11_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_11_s0",
+            "q_to_d_min_ns": 0.337,
+            "q_to_d_max_ns": 0.541,
+            "clock_to_data_min_ns": 0.478,
+            "clock_to_data_max_ns": 0.847,
+            "clock_distribution_min_ns": 1.147,
+            "clock_distribution_max_ns": 2.635,
+            "root_to_data_min_ns": 1.625,
+            "root_to_data_max_ns": 3.482
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_12_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_12_s0",
+            "q_to_d_min_ns": 0.335,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.476,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 1.148,
+            "clock_distribution_max_ns": 2.638,
+            "root_to_data_min_ns": 1.624,
+            "root_to_data_max_ns": 3.48
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_13_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_13_s0",
+            "q_to_d_min_ns": 0.431,
+            "q_to_d_max_ns": 0.703,
+            "clock_to_data_min_ns": 0.572,
+            "clock_to_data_max_ns": 1.009,
+            "clock_distribution_min_ns": 1.147,
+            "clock_distribution_max_ns": 2.635,
+            "root_to_data_min_ns": 1.719,
+            "root_to_data_max_ns": 3.644
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_14_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_14_s0",
+            "q_to_d_min_ns": 0.448,
+            "q_to_d_max_ns": 0.735,
+            "clock_to_data_min_ns": 0.589,
+            "clock_to_data_max_ns": 1.041,
+            "clock_distribution_min_ns": 1.147,
+            "clock_distribution_max_ns": 2.635,
+            "root_to_data_min_ns": 1.736,
+            "root_to_data_max_ns": 3.676
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_15_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_15_s0",
+            "q_to_d_min_ns": 0.446,
+            "q_to_d_max_ns": 0.733,
+            "clock_to_data_min_ns": 0.587,
+            "clock_to_data_max_ns": 1.039,
+            "clock_distribution_min_ns": 1.147,
+            "clock_distribution_max_ns": 2.635,
+            "root_to_data_min_ns": 1.734,
+            "root_to_data_max_ns": 3.674
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_16_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_16_s0",
+            "q_to_d_min_ns": 0.189,
+            "q_to_d_max_ns": 0.305,
+            "clock_to_data_min_ns": 0.33,
+            "clock_to_data_max_ns": 0.611,
+            "clock_distribution_min_ns": 1.152,
+            "clock_distribution_max_ns": 2.641,
+            "root_to_data_min_ns": 1.482,
+            "root_to_data_max_ns": 3.252
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_17_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_17_s0",
+            "q_to_d_min_ns": 0.343,
+            "q_to_d_max_ns": 0.581,
+            "clock_to_data_min_ns": 0.484,
+            "clock_to_data_max_ns": 0.887,
+            "clock_distribution_min_ns": 1.15,
+            "clock_distribution_max_ns": 2.639,
+            "root_to_data_min_ns": 1.634,
+            "root_to_data_max_ns": 3.526
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_18_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_18_s0",
+            "q_to_d_min_ns": 0.335,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.476,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 1.145,
+            "clock_distribution_max_ns": 2.63,
+            "root_to_data_min_ns": 1.621,
+            "root_to_data_max_ns": 3.472
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_19_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_19_s0",
+            "q_to_d_min_ns": 0.239,
+            "q_to_d_max_ns": 0.369,
+            "clock_to_data_min_ns": 0.38,
+            "clock_to_data_max_ns": 0.675,
+            "clock_distribution_min_ns": 1.147,
+            "clock_distribution_max_ns": 2.635,
+            "root_to_data_min_ns": 1.527,
+            "root_to_data_max_ns": 3.31
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_20_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_20_s0",
+            "q_to_d_min_ns": 0.292,
+            "q_to_d_max_ns": 0.504,
+            "clock_to_data_min_ns": 0.433,
+            "clock_to_data_max_ns": 0.81,
+            "clock_distribution_min_ns": 1.154,
+            "clock_distribution_max_ns": 2.644,
+            "root_to_data_min_ns": 1.587,
+            "root_to_data_max_ns": 3.454
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_21_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_21_s0",
+            "q_to_d_min_ns": 0.36,
+            "q_to_d_max_ns": 0.591,
+            "clock_to_data_min_ns": 0.501,
+            "clock_to_data_max_ns": 0.897,
+            "clock_distribution_min_ns": 1.148,
+            "clock_distribution_max_ns": 2.638,
+            "root_to_data_min_ns": 1.649,
+            "root_to_data_max_ns": 3.535
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_22_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_22_s0",
+            "q_to_d_min_ns": 0.264,
+            "q_to_d_max_ns": 0.424,
+            "clock_to_data_min_ns": 0.405,
+            "clock_to_data_max_ns": 0.73,
+            "clock_distribution_min_ns": 1.154,
+            "clock_distribution_max_ns": 2.644,
+            "root_to_data_min_ns": 1.559,
+            "root_to_data_max_ns": 3.374
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_23_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_23_s0",
+            "q_to_d_min_ns": 0.454,
+            "q_to_d_max_ns": 0.741,
+            "clock_to_data_min_ns": 0.595,
+            "clock_to_data_max_ns": 1.047,
+            "clock_distribution_min_ns": 1.156,
+            "clock_distribution_max_ns": 2.649,
+            "root_to_data_min_ns": 1.751,
+            "root_to_data_max_ns": 3.696
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_24_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_24_s0",
+            "q_to_d_min_ns": 0.335,
+            "q_to_d_max_ns": 0.536,
+            "clock_to_data_min_ns": 0.476,
+            "clock_to_data_max_ns": 0.842,
+            "clock_distribution_min_ns": 1.145,
+            "clock_distribution_max_ns": 2.63,
+            "root_to_data_min_ns": 1.621,
+            "root_to_data_max_ns": 3.472
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_25_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_25_s0",
+            "q_to_d_min_ns": 0.32,
+            "q_to_d_max_ns": 0.519,
+            "clock_to_data_min_ns": 0.461,
+            "clock_to_data_max_ns": 0.825,
+            "clock_distribution_min_ns": 1.145,
+            "clock_distribution_max_ns": 2.63,
+            "root_to_data_min_ns": 1.606,
+            "root_to_data_max_ns": 3.455
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_26_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_26_s0",
+            "q_to_d_min_ns": 0.27,
+            "q_to_d_max_ns": 0.455,
+            "clock_to_data_min_ns": 0.411,
+            "clock_to_data_max_ns": 0.761,
+            "clock_distribution_min_ns": 1.156,
+            "clock_distribution_max_ns": 2.649,
+            "root_to_data_min_ns": 1.567,
+            "root_to_data_max_ns": 3.41
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_27_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_27_s0",
+            "q_to_d_min_ns": 0.536,
+            "q_to_d_max_ns": 0.855,
+            "clock_to_data_min_ns": 0.677,
+            "clock_to_data_max_ns": 1.161,
+            "clock_distribution_min_ns": 1.156,
+            "clock_distribution_max_ns": 2.649,
+            "root_to_data_min_ns": 1.833,
+            "root_to_data_max_ns": 3.81
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_28_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_28_s0",
+            "q_to_d_min_ns": 0.239,
+            "q_to_d_max_ns": 0.369,
+            "clock_to_data_min_ns": 0.38,
+            "clock_to_data_max_ns": 0.675,
+            "clock_distribution_min_ns": 1.148,
+            "clock_distribution_max_ns": 2.634,
+            "root_to_data_min_ns": 1.528,
+            "root_to_data_max_ns": 3.309
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_29_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_29_s0",
+            "q_to_d_min_ns": 0.362,
+            "q_to_d_max_ns": 0.594,
+            "clock_to_data_min_ns": 0.503,
+            "clock_to_data_max_ns": 0.9,
+            "clock_distribution_min_ns": 1.152,
+            "clock_distribution_max_ns": 2.641,
+            "root_to_data_min_ns": 1.655,
+            "root_to_data_max_ns": 3.541
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_30_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_30_s0",
+            "q_to_d_min_ns": 0.239,
+            "q_to_d_max_ns": 0.369,
+            "clock_to_data_min_ns": 0.38,
+            "clock_to_data_max_ns": 0.675,
+            "clock_distribution_min_ns": 1.152,
+            "clock_distribution_max_ns": 2.641,
+            "root_to_data_min_ns": 1.532,
+            "root_to_data_max_ns": 3.316
+          },
+          {
+            "source": "audio_domain/selected_monitor/source_gray_31_s0",
+            "target": "audio_domain/selected_monitor/gray_meta_31_s0",
+            "q_to_d_min_ns": 0.241,
+            "q_to_d_max_ns": 0.38,
+            "clock_to_data_min_ns": 0.382,
+            "clock_to_data_max_ns": 0.686,
+            "clock_distribution_min_ns": 1.148,
+            "clock_distribution_max_ns": 2.638,
+            "root_to_data_min_ns": 1.53,
+            "root_to_data_max_ns": 3.324
+          }
+        ]
+      }
+    },
+    "payload": [
+      {
+        "source": "snapshot_hold_0_s0",
+        "target": "snapshot_payload_meta_0_s0",
+        "q_to_d_min_ns": 0.848,
+        "q_to_d_max_ns": 1.456,
+        "clock_to_data_min_ns": 0.989,
+        "clock_to_data_max_ns": 1.762
+      },
+      {
+        "source": "snapshot_hold_1_s0",
+        "target": "snapshot_payload_meta_1_s0",
+        "q_to_d_min_ns": 0.746,
+        "q_to_d_max_ns": 1.233,
+        "clock_to_data_min_ns": 0.887,
+        "clock_to_data_max_ns": 1.539
+      },
+      {
+        "source": "snapshot_hold_2_s0",
+        "target": "snapshot_payload_meta_2_s0",
+        "q_to_d_min_ns": 0.746,
+        "q_to_d_max_ns": 1.233,
+        "clock_to_data_min_ns": 0.887,
+        "clock_to_data_max_ns": 1.539
+      },
+      {
+        "source": "snapshot_hold_3_s0",
+        "target": "snapshot_payload_meta_3_s0",
+        "q_to_d_min_ns": 0.848,
+        "q_to_d_max_ns": 1.456,
+        "clock_to_data_min_ns": 0.989,
+        "clock_to_data_max_ns": 1.762
+      },
+      {
+        "source": "snapshot_hold_4_s0",
+        "target": "snapshot_payload_meta_4_s0",
+        "q_to_d_min_ns": 0.502,
+        "q_to_d_max_ns": 0.883,
+        "clock_to_data_min_ns": 0.643,
+        "clock_to_data_max_ns": 1.189
+      },
+      {
+        "source": "snapshot_hold_5_s0",
+        "target": "snapshot_payload_meta_5_s0",
+        "q_to_d_min_ns": 0.604,
+        "q_to_d_max_ns": 1.038,
+        "clock_to_data_min_ns": 0.745,
+        "clock_to_data_max_ns": 1.344
+      },
+      {
+        "source": "snapshot_hold_6_s0",
+        "target": "snapshot_payload_meta_6_s0",
+        "q_to_d_min_ns": 0.453,
+        "q_to_d_max_ns": 0.81,
+        "clock_to_data_min_ns": 0.594,
+        "clock_to_data_max_ns": 1.116
+      },
+      {
+        "source": "snapshot_hold_7_s0",
+        "target": "snapshot_payload_meta_7_s0",
+        "q_to_d_min_ns": 0.602,
+        "q_to_d_max_ns": 0.989,
+        "clock_to_data_min_ns": 0.743,
+        "clock_to_data_max_ns": 1.295
+      },
+      {
+        "source": "snapshot_hold_8_s0",
+        "target": "snapshot_payload_meta_8_s0",
+        "q_to_d_min_ns": 0.553,
+        "q_to_d_max_ns": 0.981,
+        "clock_to_data_min_ns": 0.694,
+        "clock_to_data_max_ns": 1.287
+      },
+      {
+        "source": "snapshot_hold_9_s0",
+        "target": "snapshot_payload_meta_9_s0",
+        "q_to_d_min_ns": 0.454,
+        "q_to_d_max_ns": 0.788,
+        "clock_to_data_min_ns": 0.595,
+        "clock_to_data_max_ns": 1.094
+      },
+      {
+        "source": "snapshot_hold_10_s0",
+        "target": "snapshot_payload_meta_10_s0",
+        "q_to_d_min_ns": 0.533,
+        "q_to_d_max_ns": 0.926,
+        "clock_to_data_min_ns": 0.674,
+        "clock_to_data_max_ns": 1.232
+      },
+      {
+        "source": "snapshot_hold_11_s0",
+        "target": "snapshot_payload_meta_11_s0",
+        "q_to_d_min_ns": 0.61,
+        "q_to_d_max_ns": 1.014,
+        "clock_to_data_min_ns": 0.751,
+        "clock_to_data_max_ns": 1.32
+      },
+      {
+        "source": "snapshot_hold_12_s0",
+        "target": "snapshot_payload_meta_12_s0",
+        "q_to_d_min_ns": 0.593,
+        "q_to_d_max_ns": 0.997,
+        "clock_to_data_min_ns": 0.734,
+        "clock_to_data_max_ns": 1.303
+      },
+      {
+        "source": "snapshot_hold_13_s0",
+        "target": "snapshot_payload_meta_13_s0",
+        "q_to_d_min_ns": 0.363,
+        "q_to_d_max_ns": 0.576,
+        "clock_to_data_min_ns": 0.504,
+        "clock_to_data_max_ns": 0.882
+      },
+      {
+        "source": "snapshot_hold_14_s0",
+        "target": "snapshot_payload_meta_14_s0",
+        "q_to_d_min_ns": 0.668,
+        "q_to_d_max_ns": 1.141,
+        "clock_to_data_min_ns": 0.809,
+        "clock_to_data_max_ns": 1.447
+      },
+      {
+        "source": "snapshot_hold_15_s0",
+        "target": "snapshot_payload_meta_15_s0",
+        "q_to_d_min_ns": 0.718,
+        "q_to_d_max_ns": 1.261,
+        "clock_to_data_min_ns": 0.859,
+        "clock_to_data_max_ns": 1.567
+      },
+      {
+        "source": "snapshot_hold_16_s0",
+        "target": "snapshot_payload_meta_16_s0",
+        "q_to_d_min_ns": 0.503,
+        "q_to_d_max_ns": 0.861,
+        "clock_to_data_min_ns": 0.644,
+        "clock_to_data_max_ns": 1.167
+      },
+      {
+        "source": "snapshot_hold_17_s0",
+        "target": "snapshot_payload_meta_17_s0",
+        "q_to_d_min_ns": 0.529,
+        "q_to_d_max_ns": 0.877,
+        "clock_to_data_min_ns": 0.67,
+        "clock_to_data_max_ns": 1.183
+      },
+      {
+        "source": "snapshot_hold_18_s0",
+        "target": "snapshot_payload_meta_18_s0",
+        "q_to_d_min_ns": 0.41,
+        "q_to_d_max_ns": 0.659,
+        "clock_to_data_min_ns": 0.551,
+        "clock_to_data_max_ns": 0.965
+      },
+      {
+        "source": "snapshot_hold_19_s0",
+        "target": "snapshot_payload_meta_19_s0",
+        "q_to_d_min_ns": 0.696,
+        "q_to_d_max_ns": 1.115,
+        "clock_to_data_min_ns": 0.837,
+        "clock_to_data_max_ns": 1.421
+      },
+      {
+        "source": "snapshot_hold_20_s0",
+        "target": "snapshot_payload_meta_20_s0",
+        "q_to_d_min_ns": 0.556,
+        "q_to_d_max_ns": 0.939,
+        "clock_to_data_min_ns": 0.697,
+        "clock_to_data_max_ns": 1.245
+      },
+      {
+        "source": "snapshot_hold_21_s0",
+        "target": "snapshot_payload_meta_21_s0",
+        "q_to_d_min_ns": 0.522,
+        "q_to_d_max_ns": 0.923,
+        "clock_to_data_min_ns": 0.663,
+        "clock_to_data_max_ns": 1.229
+      },
+      {
+        "source": "snapshot_hold_22_s0",
+        "target": "snapshot_payload_meta_22_s0",
+        "q_to_d_min_ns": 0.763,
+        "q_to_d_max_ns": 1.35,
+        "clock_to_data_min_ns": 0.904,
+        "clock_to_data_max_ns": 1.656
+      },
+      {
+        "source": "snapshot_hold_23_s0",
+        "target": "snapshot_payload_meta_23_s0",
+        "q_to_d_min_ns": 0.598,
+        "q_to_d_max_ns": 1.007,
+        "clock_to_data_min_ns": 0.739,
+        "clock_to_data_max_ns": 1.313
+      },
+      {
+        "source": "snapshot_hold_24_s0",
+        "target": "snapshot_payload_meta_24_s0",
+        "q_to_d_min_ns": 0.544,
+        "q_to_d_max_ns": 0.907,
+        "clock_to_data_min_ns": 0.685,
+        "clock_to_data_max_ns": 1.213
+      },
+      {
+        "source": "snapshot_hold_25_s0",
+        "target": "snapshot_payload_meta_25_s0",
+        "q_to_d_min_ns": 0.489,
+        "q_to_d_max_ns": 0.775,
+        "clock_to_data_min_ns": 0.63,
+        "clock_to_data_max_ns": 1.081
+      },
+      {
+        "source": "snapshot_hold_26_s0",
+        "target": "snapshot_payload_meta_26_s0",
+        "q_to_d_min_ns": 0.679,
+        "q_to_d_max_ns": 1.102,
+        "clock_to_data_min_ns": 0.82,
+        "clock_to_data_max_ns": 1.408
+      },
+      {
+        "source": "snapshot_hold_27_s0",
+        "target": "snapshot_payload_meta_27_s0",
+        "q_to_d_min_ns": 0.854,
+        "q_to_d_max_ns": 1.487,
+        "clock_to_data_min_ns": 0.995,
+        "clock_to_data_max_ns": 1.793
+      },
+      {
+        "source": "snapshot_hold_28_s0",
+        "target": "snapshot_payload_meta_28_s0",
+        "q_to_d_min_ns": 0.245,
+        "q_to_d_max_ns": 0.4,
+        "clock_to_data_min_ns": 0.386,
+        "clock_to_data_max_ns": 0.706
+      },
+      {
+        "source": "snapshot_hold_29_s0",
+        "target": "snapshot_payload_meta_29_s0",
+        "q_to_d_min_ns": 0.448,
+        "q_to_d_max_ns": 0.815,
+        "clock_to_data_min_ns": 0.589,
+        "clock_to_data_max_ns": 1.121
+      },
+      {
+        "source": "snapshot_hold_30_s0",
+        "target": "snapshot_payload_meta_30_s0",
+        "q_to_d_min_ns": 0.861,
+        "q_to_d_max_ns": 1.496,
+        "clock_to_data_min_ns": 1.002,
+        "clock_to_data_max_ns": 1.802
+      },
+      {
+        "source": "snapshot_hold_31_s0",
+        "target": "snapshot_payload_meta_31_s0",
+        "q_to_d_min_ns": 0.661,
+        "q_to_d_max_ns": 1.157,
+        "clock_to_data_min_ns": 0.802,
+        "clock_to_data_max_ns": 1.463
+      },
+      {
+        "source": "snapshot_hold_32_s0",
+        "target": "snapshot_payload_meta_32_s0",
+        "q_to_d_min_ns": 0.717,
+        "q_to_d_max_ns": 1.238,
+        "clock_to_data_min_ns": 0.858,
+        "clock_to_data_max_ns": 1.544
+      },
+      {
+        "source": "snapshot_hold_33_s0",
+        "target": "snapshot_payload_meta_33_s0",
+        "q_to_d_min_ns": 0.769,
+        "q_to_d_max_ns": 1.373,
+        "clock_to_data_min_ns": 0.91,
+        "clock_to_data_max_ns": 1.679
+      },
+      {
+        "source": "snapshot_hold_34_s0",
+        "target": "snapshot_payload_meta_34_s0",
+        "q_to_d_min_ns": 0.77,
+        "q_to_d_max_ns": 1.379,
+        "clock_to_data_min_ns": 0.911,
+        "clock_to_data_max_ns": 1.685
+      },
+      {
+        "source": "snapshot_hold_35_s0",
+        "target": "snapshot_payload_meta_35_s0",
+        "q_to_d_min_ns": 0.708,
+        "q_to_d_max_ns": 1.231,
+        "clock_to_data_min_ns": 0.849,
+        "clock_to_data_max_ns": 1.537
+      },
+      {
+        "source": "snapshot_hold_36_s0",
+        "target": "snapshot_payload_meta_36_s0",
+        "q_to_d_min_ns": 0.764,
+        "q_to_d_max_ns": 1.294,
+        "clock_to_data_min_ns": 0.905,
+        "clock_to_data_max_ns": 1.6
+      },
+      {
+        "source": "snapshot_hold_37_s0",
+        "target": "snapshot_payload_meta_37_s0",
+        "q_to_d_min_ns": 0.583,
+        "q_to_d_max_ns": 0.989,
+        "clock_to_data_min_ns": 0.724,
+        "clock_to_data_max_ns": 1.295
+      },
+      {
+        "source": "snapshot_hold_38_s0",
+        "target": "snapshot_payload_meta_38_s0",
+        "q_to_d_min_ns": 0.598,
+        "q_to_d_max_ns": 1.007,
+        "clock_to_data_min_ns": 0.739,
+        "clock_to_data_max_ns": 1.313
+      },
+      {
+        "source": "snapshot_hold_39_s0",
+        "target": "snapshot_payload_meta_39_s0",
+        "q_to_d_min_ns": 0.54,
+        "q_to_d_max_ns": 0.935,
+        "clock_to_data_min_ns": 0.681,
+        "clock_to_data_max_ns": 1.241
+      },
+      {
+        "source": "snapshot_hold_40_s0",
+        "target": "snapshot_payload_meta_40_s0",
+        "q_to_d_min_ns": 0.431,
+        "q_to_d_max_ns": 0.703,
+        "clock_to_data_min_ns": 0.572,
+        "clock_to_data_max_ns": 1.009
+      },
+      {
+        "source": "snapshot_hold_41_s0",
+        "target": "snapshot_payload_meta_41_s0",
+        "q_to_d_min_ns": 0.399,
+        "q_to_d_max_ns": 0.742,
+        "clock_to_data_min_ns": 0.54,
+        "clock_to_data_max_ns": 1.048
+      },
+      {
+        "source": "snapshot_hold_42_s0",
+        "target": "snapshot_payload_meta_42_s0",
+        "q_to_d_min_ns": 0.489,
+        "q_to_d_max_ns": 0.878,
+        "clock_to_data_min_ns": 0.63,
+        "clock_to_data_max_ns": 1.184
+      },
+      {
+        "source": "snapshot_hold_43_s0",
+        "target": "snapshot_payload_meta_43_s0",
+        "q_to_d_min_ns": 0.495,
+        "q_to_d_max_ns": 0.909,
+        "clock_to_data_min_ns": 0.636,
+        "clock_to_data_max_ns": 1.215
+      },
+      {
+        "source": "snapshot_hold_44_s0",
+        "target": "snapshot_payload_meta_44_s0",
+        "q_to_d_min_ns": 0.402,
+        "q_to_d_max_ns": 0.702,
+        "clock_to_data_min_ns": 0.543,
+        "clock_to_data_max_ns": 1.008
+      },
+      {
+        "source": "snapshot_hold_45_s0",
+        "target": "snapshot_payload_meta_45_s0",
+        "q_to_d_min_ns": 0.638,
+        "q_to_d_max_ns": 1.097,
+        "clock_to_data_min_ns": 0.779,
+        "clock_to_data_max_ns": 1.403
+      },
+      {
+        "source": "snapshot_hold_46_s0",
+        "target": "snapshot_payload_meta_46_s0",
+        "q_to_d_min_ns": 0.588,
+        "q_to_d_max_ns": 0.987,
+        "clock_to_data_min_ns": 0.729,
+        "clock_to_data_max_ns": 1.293
+      },
+      {
+        "source": "snapshot_hold_47_s0",
+        "target": "snapshot_payload_meta_47_s0",
+        "q_to_d_min_ns": 0.752,
+        "q_to_d_max_ns": 1.289,
+        "clock_to_data_min_ns": 0.893,
+        "clock_to_data_max_ns": 1.595
+      },
+      {
+        "source": "snapshot_hold_48_s0",
+        "target": "snapshot_payload_meta_48_s0",
+        "q_to_d_min_ns": 0.599,
+        "q_to_d_max_ns": 1.028,
+        "clock_to_data_min_ns": 0.74,
+        "clock_to_data_max_ns": 1.334
+      },
+      {
+        "source": "snapshot_hold_49_s0",
+        "target": "snapshot_payload_meta_49_s0",
+        "q_to_d_min_ns": 0.546,
+        "q_to_d_max_ns": 0.966,
+        "clock_to_data_min_ns": 0.687,
+        "clock_to_data_max_ns": 1.272
+      },
+      {
+        "source": "snapshot_hold_50_s0",
+        "target": "snapshot_payload_meta_50_s0",
+        "q_to_d_min_ns": 0.586,
+        "q_to_d_max_ns": 0.963,
+        "clock_to_data_min_ns": 0.727,
+        "clock_to_data_max_ns": 1.269
+      },
+      {
+        "source": "snapshot_hold_51_s0",
+        "target": "snapshot_payload_meta_51_s0",
+        "q_to_d_min_ns": 0.341,
+        "q_to_d_max_ns": 0.567,
+        "clock_to_data_min_ns": 0.482,
+        "clock_to_data_max_ns": 0.873
+      },
+      {
+        "source": "snapshot_hold_52_s0",
+        "target": "snapshot_payload_meta_52_s0",
+        "q_to_d_min_ns": 0.662,
+        "q_to_d_max_ns": 1.155,
+        "clock_to_data_min_ns": 0.803,
+        "clock_to_data_max_ns": 1.461
+      },
+      {
+        "source": "snapshot_hold_53_s0",
+        "target": "snapshot_payload_meta_53_s0",
+        "q_to_d_min_ns": 0.612,
+        "q_to_d_max_ns": 1.066,
+        "clock_to_data_min_ns": 0.753,
+        "clock_to_data_max_ns": 1.372
+      },
+      {
+        "source": "snapshot_hold_54_s0",
+        "target": "snapshot_payload_meta_54_s0",
+        "q_to_d_min_ns": 0.562,
+        "q_to_d_max_ns": 0.975,
+        "clock_to_data_min_ns": 0.703,
+        "clock_to_data_max_ns": 1.281
+      },
+      {
+        "source": "snapshot_hold_55_s0",
+        "target": "snapshot_payload_meta_55_s0",
+        "q_to_d_min_ns": 0.684,
+        "q_to_d_max_ns": 1.15,
+        "clock_to_data_min_ns": 0.825,
+        "clock_to_data_max_ns": 1.456
+      },
+      {
+        "source": "snapshot_hold_56_s0",
+        "target": "snapshot_payload_meta_56_s0",
+        "q_to_d_min_ns": 0.614,
+        "q_to_d_max_ns": 1.073,
+        "clock_to_data_min_ns": 0.755,
+        "clock_to_data_max_ns": 1.379
+      },
+      {
+        "source": "snapshot_hold_57_s0",
+        "target": "snapshot_payload_meta_57_s0",
+        "q_to_d_min_ns": 0.57,
+        "q_to_d_max_ns": 1.025,
+        "clock_to_data_min_ns": 0.711,
+        "clock_to_data_max_ns": 1.331
+      },
+      {
+        "source": "snapshot_hold_58_s0",
+        "target": "snapshot_payload_meta_58_s0",
+        "q_to_d_min_ns": 0.87,
+        "q_to_d_max_ns": 1.44,
+        "clock_to_data_min_ns": 1.011,
+        "clock_to_data_max_ns": 1.746
+      },
+      {
+        "source": "snapshot_hold_59_s0",
+        "target": "snapshot_payload_meta_59_s0",
+        "q_to_d_min_ns": 0.855,
+        "q_to_d_max_ns": 1.465,
+        "clock_to_data_min_ns": 0.996,
+        "clock_to_data_max_ns": 1.771
+      },
+      {
+        "source": "snapshot_hold_60_s0",
+        "target": "snapshot_payload_meta_60_s0",
+        "q_to_d_min_ns": 0.652,
+        "q_to_d_max_ns": 1.101,
+        "clock_to_data_min_ns": 0.793,
+        "clock_to_data_max_ns": 1.407
+      },
+      {
+        "source": "snapshot_hold_61_s0",
+        "target": "snapshot_payload_meta_61_s0",
+        "q_to_d_min_ns": 0.718,
+        "q_to_d_max_ns": 1.261,
+        "clock_to_data_min_ns": 0.859,
+        "clock_to_data_max_ns": 1.567
+      },
+      {
+        "source": "snapshot_hold_62_s0",
+        "target": "snapshot_payload_meta_62_s0",
+        "q_to_d_min_ns": 0.693,
+        "q_to_d_max_ns": 1.194,
+        "clock_to_data_min_ns": 0.834,
+        "clock_to_data_max_ns": 1.5
+      },
+      {
+        "source": "snapshot_hold_63_s0",
+        "target": "snapshot_payload_meta_63_s0",
+        "q_to_d_min_ns": 0.53,
+        "q_to_d_max_ns": 0.927,
+        "clock_to_data_min_ns": 0.671,
+        "clock_to_data_max_ns": 1.233
+      },
+      {
+        "source": "snapshot_hold_64_s0",
+        "target": "snapshot_payload_meta_64_s0",
+        "q_to_d_min_ns": 0.737,
+        "q_to_d_max_ns": 1.269,
+        "clock_to_data_min_ns": 0.878,
+        "clock_to_data_max_ns": 1.575
+      },
+      {
+        "source": "snapshot_hold_65_s0",
+        "target": "snapshot_payload_meta_65_s0",
+        "q_to_d_min_ns": 0.693,
+        "q_to_d_max_ns": 1.221,
+        "clock_to_data_min_ns": 0.834,
+        "clock_to_data_max_ns": 1.527
+      },
+      {
+        "source": "snapshot_hold_66_s0",
+        "target": "snapshot_payload_meta_66_s0",
+        "q_to_d_min_ns": 0.798,
+        "q_to_d_max_ns": 1.365,
+        "clock_to_data_min_ns": 0.939,
+        "clock_to_data_max_ns": 1.671
+      },
+      {
+        "source": "snapshot_hold_67_s0",
+        "target": "snapshot_payload_meta_67_s0",
+        "q_to_d_min_ns": 0.64,
+        "q_to_d_max_ns": 1.046,
+        "clock_to_data_min_ns": 0.781,
+        "clock_to_data_max_ns": 1.352
+      },
+      {
+        "source": "snapshot_hold_68_s0",
+        "target": "snapshot_payload_meta_68_s0",
+        "q_to_d_min_ns": 0.656,
+        "q_to_d_max_ns": 1.097,
+        "clock_to_data_min_ns": 0.797,
+        "clock_to_data_max_ns": 1.403
+      },
+      {
+        "source": "snapshot_hold_69_s0",
+        "target": "snapshot_payload_meta_69_s0",
+        "q_to_d_min_ns": 0.897,
+        "q_to_d_max_ns": 1.529,
+        "clock_to_data_min_ns": 1.038,
+        "clock_to_data_max_ns": 1.835
+      },
+      {
+        "source": "snapshot_hold_70_s0",
+        "target": "snapshot_payload_meta_70_s0",
+        "q_to_d_min_ns": 0.897,
+        "q_to_d_max_ns": 1.529,
+        "clock_to_data_min_ns": 1.038,
+        "clock_to_data_max_ns": 1.835
+      },
+      {
+        "source": "snapshot_hold_71_s0",
+        "target": "snapshot_payload_meta_71_s0",
+        "q_to_d_min_ns": 0.474,
+        "q_to_d_max_ns": 0.776,
+        "clock_to_data_min_ns": 0.615,
+        "clock_to_data_max_ns": 1.082
+      },
+      {
+        "source": "snapshot_hold_72_s0",
+        "target": "snapshot_payload_meta_72_s0",
+        "q_to_d_min_ns": 0.559,
+        "q_to_d_max_ns": 1.012,
+        "clock_to_data_min_ns": 0.7,
+        "clock_to_data_max_ns": 1.318
+      },
+      {
+        "source": "snapshot_hold_73_s0",
+        "target": "snapshot_payload_meta_73_s0",
+        "q_to_d_min_ns": 0.603,
+        "q_to_d_max_ns": 1.06,
+        "clock_to_data_min_ns": 0.744,
+        "clock_to_data_max_ns": 1.366
+      },
+      {
+        "source": "snapshot_hold_74_s0",
+        "target": "snapshot_payload_meta_74_s0",
+        "q_to_d_min_ns": 0.638,
+        "q_to_d_max_ns": 1.078,
+        "clock_to_data_min_ns": 0.779,
+        "clock_to_data_max_ns": 1.384
+      },
+      {
+        "source": "snapshot_hold_75_s0",
+        "target": "snapshot_payload_meta_75_s0",
+        "q_to_d_min_ns": 0.594,
+        "q_to_d_max_ns": 1.03,
+        "clock_to_data_min_ns": 0.735,
+        "clock_to_data_max_ns": 1.336
+      },
+      {
+        "source": "snapshot_hold_76_s0",
+        "target": "snapshot_payload_meta_76_s0",
+        "q_to_d_min_ns": 0.632,
+        "q_to_d_max_ns": 1.047,
+        "clock_to_data_min_ns": 0.773,
+        "clock_to_data_max_ns": 1.353
+      },
+      {
+        "source": "snapshot_hold_77_s0",
+        "target": "snapshot_payload_meta_77_s0",
+        "q_to_d_min_ns": 0.649,
+        "q_to_d_max_ns": 1.143,
+        "clock_to_data_min_ns": 0.79,
+        "clock_to_data_max_ns": 1.449
+      },
+      {
+        "source": "snapshot_hold_78_s0",
+        "target": "snapshot_payload_meta_78_s0",
+        "q_to_d_min_ns": 0.928,
+        "q_to_d_max_ns": 1.587,
+        "clock_to_data_min_ns": 1.069,
+        "clock_to_data_max_ns": 1.893
+      },
+      {
+        "source": "snapshot_hold_79_s0",
+        "target": "snapshot_payload_meta_79_s0",
+        "q_to_d_min_ns": 0.756,
+        "q_to_d_max_ns": 1.27,
+        "clock_to_data_min_ns": 0.897,
+        "clock_to_data_max_ns": 1.576
+      },
+      {
+        "source": "snapshot_hold_80_s0",
+        "target": "snapshot_payload_meta_80_s0",
+        "q_to_d_min_ns": 0.744,
+        "q_to_d_max_ns": 1.265,
+        "clock_to_data_min_ns": 0.885,
+        "clock_to_data_max_ns": 1.571
+      },
+      {
+        "source": "snapshot_hold_81_s0",
+        "target": "snapshot_payload_meta_81_s0",
+        "q_to_d_min_ns": 0.498,
+        "q_to_d_max_ns": 0.859,
+        "clock_to_data_min_ns": 0.639,
+        "clock_to_data_max_ns": 1.165
+      },
+      {
+        "source": "snapshot_hold_82_s0",
+        "target": "snapshot_payload_meta_82_s0",
+        "q_to_d_min_ns": 0.644,
+        "q_to_d_max_ns": 1.035,
+        "clock_to_data_min_ns": 0.785,
+        "clock_to_data_max_ns": 1.341
+      },
+      {
+        "source": "snapshot_hold_83_s0",
+        "target": "snapshot_payload_meta_83_s0",
+        "q_to_d_min_ns": 0.849,
+        "q_to_d_max_ns": 1.434,
+        "clock_to_data_min_ns": 0.99,
+        "clock_to_data_max_ns": 1.74
+      },
+      {
+        "source": "snapshot_hold_84_s0",
+        "target": "snapshot_payload_meta_84_s0",
+        "q_to_d_min_ns": 0.638,
+        "q_to_d_max_ns": 1.078,
+        "clock_to_data_min_ns": 0.779,
+        "clock_to_data_max_ns": 1.384
+      },
+      {
+        "source": "snapshot_hold_85_s0",
+        "target": "snapshot_payload_meta_85_s0",
+        "q_to_d_min_ns": 0.666,
+        "q_to_d_max_ns": 1.148,
+        "clock_to_data_min_ns": 0.807,
+        "clock_to_data_max_ns": 1.454
+      },
+      {
+        "source": "snapshot_hold_86_s0",
+        "target": "snapshot_payload_meta_86_s0",
+        "q_to_d_min_ns": 0.651,
+        "q_to_d_max_ns": 1.118,
+        "clock_to_data_min_ns": 0.792,
+        "clock_to_data_max_ns": 1.424
+      },
+      {
+        "source": "snapshot_hold_87_s0",
+        "target": "snapshot_payload_meta_87_s0",
+        "q_to_d_min_ns": 0.554,
+        "q_to_d_max_ns": 0.949,
+        "clock_to_data_min_ns": 0.695,
+        "clock_to_data_max_ns": 1.255
+      },
+      {
+        "source": "snapshot_hold_88_s0",
+        "target": "snapshot_payload_meta_88_s0",
+        "q_to_d_min_ns": 0.604,
+        "q_to_d_max_ns": 1.059,
+        "clock_to_data_min_ns": 0.745,
+        "clock_to_data_max_ns": 1.365
+      },
+      {
+        "source": "snapshot_hold_89_s0",
+        "target": "snapshot_payload_meta_89_s0",
+        "q_to_d_min_ns": 0.74,
+        "q_to_d_max_ns": 1.276,
+        "clock_to_data_min_ns": 0.881,
+        "clock_to_data_max_ns": 1.582
+      },
+      {
+        "source": "snapshot_hold_90_s0",
+        "target": "snapshot_payload_meta_90_s0",
+        "q_to_d_min_ns": 0.759,
+        "q_to_d_max_ns": 1.298,
+        "clock_to_data_min_ns": 0.9,
+        "clock_to_data_max_ns": 1.604
+      },
+      {
+        "source": "snapshot_hold_91_s0",
+        "target": "snapshot_payload_meta_91_s0",
+        "q_to_d_min_ns": 0.564,
+        "q_to_d_max_ns": 0.95,
+        "clock_to_data_min_ns": 0.705,
+        "clock_to_data_max_ns": 1.256
+      },
+      {
+        "source": "snapshot_hold_92_s0",
+        "target": "snapshot_payload_meta_92_s0",
+        "q_to_d_min_ns": 0.732,
+        "q_to_d_max_ns": 1.252,
+        "clock_to_data_min_ns": 0.873,
+        "clock_to_data_max_ns": 1.558
+      },
+      {
+        "source": "snapshot_hold_93_s0",
+        "target": "snapshot_payload_meta_93_s0",
+        "q_to_d_min_ns": 0.862,
+        "q_to_d_max_ns": 1.531,
+        "clock_to_data_min_ns": 1.003,
+        "clock_to_data_max_ns": 1.837
+      },
+      {
+        "source": "snapshot_hold_94_s0",
+        "target": "snapshot_payload_meta_94_s0",
+        "q_to_d_min_ns": 0.959,
+        "q_to_d_max_ns": 1.65,
+        "clock_to_data_min_ns": 1.1,
+        "clock_to_data_max_ns": 1.956
+      },
+      {
+        "source": "snapshot_hold_95_s0",
+        "target": "snapshot_payload_meta_95_s0",
+        "q_to_d_min_ns": 1.054,
+        "q_to_d_max_ns": 1.774,
+        "clock_to_data_min_ns": 1.195,
+        "clock_to_data_max_ns": 2.08
+      },
+      {
+        "source": "snapshot_hold_96_s0",
+        "target": "snapshot_payload_meta_96_s0",
+        "q_to_d_min_ns": 0.399,
+        "q_to_d_max_ns": 0.742,
+        "clock_to_data_min_ns": 0.54,
+        "clock_to_data_max_ns": 1.048
+      },
+      {
+        "source": "snapshot_hold_97_s0",
+        "target": "snapshot_payload_meta_97_s0",
+        "q_to_d_min_ns": 0.341,
+        "q_to_d_max_ns": 0.567,
+        "clock_to_data_min_ns": 0.482,
+        "clock_to_data_max_ns": 0.873
+      },
+      {
+        "source": "snapshot_hold_98_s0",
+        "target": "snapshot_payload_meta_98_s0",
+        "q_to_d_min_ns": 0.804,
+        "q_to_d_max_ns": 1.424,
+        "clock_to_data_min_ns": 0.945,
+        "clock_to_data_max_ns": 1.73
+      },
+      {
+        "source": "snapshot_hold_99_s0",
+        "target": "snapshot_payload_meta_99_s0",
+        "q_to_d_min_ns": 0.444,
+        "q_to_d_max_ns": 0.768,
+        "clock_to_data_min_ns": 0.585,
+        "clock_to_data_max_ns": 1.074
+      },
+      {
+        "source": "snapshot_hold_100_s0",
+        "target": "snapshot_payload_meta_100_s0",
+        "q_to_d_min_ns": 0.387,
+        "q_to_d_max_ns": 0.67,
+        "clock_to_data_min_ns": 0.528,
+        "clock_to_data_max_ns": 0.976
+      },
+      {
+        "source": "snapshot_hold_101_s0",
+        "target": "snapshot_payload_meta_101_s0",
+        "q_to_d_min_ns": 0.533,
+        "q_to_d_max_ns": 0.926,
+        "clock_to_data_min_ns": 0.674,
+        "clock_to_data_max_ns": 1.232
+      },
+      {
+        "source": "snapshot_hold_102_s0",
+        "target": "snapshot_payload_meta_102_s0",
+        "q_to_d_min_ns": 0.434,
+        "q_to_d_max_ns": 0.76,
+        "clock_to_data_min_ns": 0.575,
+        "clock_to_data_max_ns": 1.066
+      },
+      {
+        "source": "snapshot_hold_103_s0",
+        "target": "snapshot_payload_meta_103_s0",
+        "q_to_d_min_ns": 0.393,
+        "q_to_d_max_ns": 0.701,
+        "clock_to_data_min_ns": 0.534,
+        "clock_to_data_max_ns": 1.007
+      },
+      {
+        "source": "snapshot_hold_104_s0",
+        "target": "snapshot_payload_meta_104_s0",
+        "q_to_d_min_ns": 0.539,
+        "q_to_d_max_ns": 0.957,
+        "clock_to_data_min_ns": 0.68,
+        "clock_to_data_max_ns": 1.263
+      },
+      {
+        "source": "snapshot_hold_105_s0",
+        "target": "snapshot_payload_meta_105_s0",
+        "q_to_d_min_ns": 0.297,
+        "q_to_d_max_ns": 0.544,
+        "clock_to_data_min_ns": 0.438,
+        "clock_to_data_max_ns": 0.85
+      },
+      {
+        "source": "snapshot_hold_106_s0",
+        "target": "snapshot_payload_meta_106_s0",
+        "q_to_d_min_ns": 0.649,
+        "q_to_d_max_ns": 1.146,
+        "clock_to_data_min_ns": 0.79,
+        "clock_to_data_max_ns": 1.452
+      },
+      {
+        "source": "snapshot_hold_107_s0",
+        "target": "snapshot_payload_meta_107_s0",
+        "q_to_d_min_ns": 0.357,
+        "q_to_d_max_ns": 0.643,
+        "clock_to_data_min_ns": 0.498,
+        "clock_to_data_max_ns": 0.949
+      },
+      {
+        "source": "snapshot_hold_108_s0",
+        "target": "snapshot_payload_meta_108_s0",
+        "q_to_d_min_ns": 0.431,
+        "q_to_d_max_ns": 0.703,
+        "clock_to_data_min_ns": 0.572,
+        "clock_to_data_max_ns": 1.009
+      },
+      {
+        "source": "snapshot_hold_109_s0",
+        "target": "snapshot_payload_meta_109_s0",
+        "q_to_d_min_ns": 0.553,
+        "q_to_d_max_ns": 0.981,
+        "clock_to_data_min_ns": 0.694,
+        "clock_to_data_max_ns": 1.287
+      },
+      {
+        "source": "snapshot_hold_110_s0",
+        "target": "snapshot_payload_meta_110_s0",
+        "q_to_d_min_ns": 0.345,
+        "q_to_d_max_ns": 0.556,
+        "clock_to_data_min_ns": 0.486,
+        "clock_to_data_max_ns": 0.862
+      },
+      {
+        "source": "snapshot_hold_111_s0",
+        "target": "snapshot_payload_meta_111_s0",
+        "q_to_d_min_ns": 0.443,
+        "q_to_d_max_ns": 0.747,
+        "clock_to_data_min_ns": 0.584,
+        "clock_to_data_max_ns": 1.053
+      },
+      {
+        "source": "snapshot_hold_112_s0",
+        "target": "snapshot_payload_meta_112_s0",
+        "q_to_d_min_ns": 0.561,
+        "q_to_d_max_ns": 0.982,
+        "clock_to_data_min_ns": 0.702,
+        "clock_to_data_max_ns": 1.288
+      },
+      {
+        "source": "snapshot_hold_113_s0",
+        "target": "snapshot_payload_meta_113_s0",
+        "q_to_d_min_ns": 0.603,
+        "q_to_d_max_ns": 1.012,
+        "clock_to_data_min_ns": 0.744,
+        "clock_to_data_max_ns": 1.318
+      },
+      {
+        "source": "snapshot_hold_114_s0",
+        "target": "snapshot_payload_meta_114_s0",
+        "q_to_d_min_ns": 0.793,
+        "q_to_d_max_ns": 1.338,
+        "clock_to_data_min_ns": 0.934,
+        "clock_to_data_max_ns": 1.644
+      },
+      {
+        "source": "snapshot_hold_115_s0",
+        "target": "snapshot_payload_meta_115_s0",
+        "q_to_d_min_ns": 0.793,
+        "q_to_d_max_ns": 1.338,
+        "clock_to_data_min_ns": 0.934,
+        "clock_to_data_max_ns": 1.644
+      },
+      {
+        "source": "snapshot_hold_116_s0",
+        "target": "snapshot_payload_meta_116_s0",
+        "q_to_d_min_ns": 0.749,
+        "q_to_d_max_ns": 1.29,
+        "clock_to_data_min_ns": 0.89,
+        "clock_to_data_max_ns": 1.596
+      },
+      {
+        "source": "snapshot_hold_117_s0",
+        "target": "snapshot_payload_meta_117_s0",
+        "q_to_d_min_ns": 0.749,
+        "q_to_d_max_ns": 1.29,
+        "clock_to_data_min_ns": 0.89,
+        "clock_to_data_max_ns": 1.596
+      },
+      {
+        "source": "snapshot_hold_118_s0",
+        "target": "snapshot_payload_meta_118_s0",
+        "q_to_d_min_ns": 0.805,
+        "q_to_d_max_ns": 1.343,
+        "clock_to_data_min_ns": 0.946,
+        "clock_to_data_max_ns": 1.649
+      },
+      {
+        "source": "snapshot_hold_119_s0",
+        "target": "snapshot_payload_meta_119_s0",
+        "q_to_d_min_ns": 0.74,
+        "q_to_d_max_ns": 1.219,
+        "clock_to_data_min_ns": 0.881,
+        "clock_to_data_max_ns": 1.525
+      },
+      {
+        "source": "snapshot_hold_120_s0",
+        "target": "snapshot_payload_meta_120_s0",
+        "q_to_d_min_ns": 0.821,
+        "q_to_d_max_ns": 1.356,
+        "clock_to_data_min_ns": 0.962,
+        "clock_to_data_max_ns": 1.662
+      },
+      {
+        "source": "snapshot_hold_121_s0",
+        "target": "snapshot_payload_meta_121_s0",
+        "q_to_d_min_ns": 0.895,
+        "q_to_d_max_ns": 1.511,
+        "clock_to_data_min_ns": 1.036,
+        "clock_to_data_max_ns": 1.817
+      },
+      {
+        "source": "snapshot_hold_122_s0",
+        "target": "snapshot_payload_meta_122_s0",
+        "q_to_d_min_ns": 0.548,
+        "q_to_d_max_ns": 0.981,
+        "clock_to_data_min_ns": 0.689,
+        "clock_to_data_max_ns": 1.287
+      },
+      {
+        "source": "snapshot_hold_123_s0",
+        "target": "snapshot_payload_meta_123_s0",
+        "q_to_d_min_ns": 0.594,
+        "q_to_d_max_ns": 1.062,
+        "clock_to_data_min_ns": 0.735,
+        "clock_to_data_max_ns": 1.368
+      },
+      {
+        "source": "snapshot_hold_124_s0",
+        "target": "snapshot_payload_meta_124_s0",
+        "q_to_d_min_ns": 0.446,
+        "q_to_d_max_ns": 0.758,
+        "clock_to_data_min_ns": 0.587,
+        "clock_to_data_max_ns": 1.064
+      },
+      {
+        "source": "snapshot_hold_125_s0",
+        "target": "snapshot_payload_meta_125_s0",
+        "q_to_d_min_ns": 0.446,
+        "q_to_d_max_ns": 0.758,
+        "clock_to_data_min_ns": 0.587,
+        "clock_to_data_max_ns": 1.064
+      },
+      {
+        "source": "snapshot_hold_126_s0",
+        "target": "snapshot_payload_meta_126_s0",
+        "q_to_d_min_ns": 0.793,
+        "q_to_d_max_ns": 1.37,
+        "clock_to_data_min_ns": 0.934,
+        "clock_to_data_max_ns": 1.676
+      },
+      {
+        "source": "snapshot_hold_127_s0",
+        "target": "snapshot_payload_meta_127_s0",
+        "q_to_d_min_ns": 0.697,
+        "q_to_d_max_ns": 1.204,
+        "clock_to_data_min_ns": 0.838,
+        "clock_to_data_max_ns": 1.51
+      },
+      {
+        "source": "snapshot_hold_128_s0",
+        "target": "snapshot_payload_meta_128_s0",
+        "q_to_d_min_ns": 0.564,
+        "q_to_d_max_ns": 0.929,
+        "clock_to_data_min_ns": 0.705,
+        "clock_to_data_max_ns": 1.235
+      },
+      {
+        "source": "snapshot_hold_129_s0",
+        "target": "snapshot_payload_meta_129_s0",
+        "q_to_d_min_ns": 0.533,
+        "q_to_d_max_ns": 0.926,
+        "clock_to_data_min_ns": 0.674,
+        "clock_to_data_max_ns": 1.232
+      },
+      {
+        "source": "snapshot_hold_130_s0",
+        "target": "snapshot_payload_meta_130_s0",
+        "q_to_d_min_ns": 0.431,
+        "q_to_d_max_ns": 0.703,
+        "clock_to_data_min_ns": 0.572,
+        "clock_to_data_max_ns": 1.009
+      },
+      {
+        "source": "snapshot_hold_131_s0",
+        "target": "snapshot_payload_meta_131_s0",
+        "q_to_d_min_ns": 0.337,
+        "q_to_d_max_ns": 0.56,
+        "clock_to_data_min_ns": 0.478,
+        "clock_to_data_max_ns": 0.866
+      },
+      {
+        "source": "snapshot_hold_132_s0",
+        "target": "snapshot_payload_meta_132_s0",
+        "q_to_d_min_ns": 0.459,
+        "q_to_d_max_ns": 0.743,
+        "clock_to_data_min_ns": 0.6,
+        "clock_to_data_max_ns": 1.049
+      },
+      {
+        "source": "snapshot_hold_133_s0",
+        "target": "snapshot_payload_meta_133_s0",
+        "q_to_d_min_ns": 0.41,
+        "q_to_d_max_ns": 0.655,
+        "clock_to_data_min_ns": 0.551,
+        "clock_to_data_max_ns": 0.961
+      },
+      {
+        "source": "snapshot_hold_134_s0",
+        "target": "snapshot_payload_meta_134_s0",
+        "q_to_d_min_ns": 0.783,
+        "q_to_d_max_ns": 1.318,
+        "clock_to_data_min_ns": 0.924,
+        "clock_to_data_max_ns": 1.624
+      },
+      {
+        "source": "snapshot_hold_135_s0",
+        "target": "snapshot_payload_meta_135_s0",
+        "q_to_d_min_ns": 0.681,
+        "q_to_d_max_ns": 1.095,
+        "clock_to_data_min_ns": 0.822,
+        "clock_to_data_max_ns": 1.401
+      },
+      {
+        "source": "snapshot_hold_136_s0",
+        "target": "snapshot_payload_meta_136_s0",
+        "q_to_d_min_ns": 0.944,
+        "q_to_d_max_ns": 1.615,
+        "clock_to_data_min_ns": 1.085,
+        "clock_to_data_max_ns": 1.921
+      },
+      {
+        "source": "snapshot_hold_137_s0",
+        "target": "snapshot_payload_meta_137_s0",
+        "q_to_d_min_ns": 0.945,
+        "q_to_d_max_ns": 1.587,
+        "clock_to_data_min_ns": 1.086,
+        "clock_to_data_max_ns": 1.893
+      },
+      {
+        "source": "snapshot_hold_138_s0",
+        "target": "snapshot_payload_meta_138_s0",
+        "q_to_d_min_ns": 0.811,
+        "q_to_d_max_ns": 1.377,
+        "clock_to_data_min_ns": 0.952,
+        "clock_to_data_max_ns": 1.683
+      },
+      {
+        "source": "snapshot_hold_139_s0",
+        "target": "snapshot_payload_meta_139_s0",
+        "q_to_d_min_ns": 0.811,
+        "q_to_d_max_ns": 1.377,
+        "clock_to_data_min_ns": 0.952,
+        "clock_to_data_max_ns": 1.683
+      },
+      {
+        "source": "snapshot_hold_140_s0",
+        "target": "snapshot_payload_meta_140_s0",
+        "q_to_d_min_ns": 0.349,
+        "q_to_d_max_ns": 0.662,
+        "clock_to_data_min_ns": 0.49,
+        "clock_to_data_max_ns": 0.968
+      },
+      {
+        "source": "snapshot_hold_141_s0",
+        "target": "snapshot_payload_meta_141_s0",
+        "q_to_d_min_ns": 0.395,
+        "q_to_d_max_ns": 0.746,
+        "clock_to_data_min_ns": 0.536,
+        "clock_to_data_max_ns": 1.052
+      },
+      {
+        "source": "snapshot_hold_142_s0",
+        "target": "snapshot_payload_meta_142_s0",
+        "q_to_d_min_ns": 0.337,
+        "q_to_d_max_ns": 0.571,
+        "clock_to_data_min_ns": 0.478,
+        "clock_to_data_max_ns": 0.877
+      },
+      {
+        "source": "snapshot_hold_143_s0",
+        "target": "snapshot_payload_meta_143_s0",
+        "q_to_d_min_ns": 0.439,
+        "q_to_d_max_ns": 0.794,
+        "clock_to_data_min_ns": 0.58,
+        "clock_to_data_max_ns": 1.1
+      },
+      {
+        "source": "snapshot_hold_144_s0",
+        "target": "snapshot_payload_meta_144_s0",
+        "q_to_d_min_ns": 0.535,
+        "q_to_d_max_ns": 0.925,
+        "clock_to_data_min_ns": 0.676,
+        "clock_to_data_max_ns": 1.231
+      },
+      {
+        "source": "snapshot_hold_145_s0",
+        "target": "snapshot_payload_meta_145_s0",
+        "q_to_d_min_ns": 0.393,
+        "q_to_d_max_ns": 0.701,
+        "clock_to_data_min_ns": 0.534,
+        "clock_to_data_max_ns": 1.007
+      },
+      {
+        "source": "snapshot_hold_146_s0",
+        "target": "snapshot_payload_meta_146_s0",
+        "q_to_d_min_ns": 0.431,
+        "q_to_d_max_ns": 0.703,
+        "clock_to_data_min_ns": 0.572,
+        "clock_to_data_max_ns": 1.009
+      },
+      {
+        "source": "snapshot_hold_147_s0",
+        "target": "snapshot_payload_meta_147_s0",
+        "q_to_d_min_ns": 0.585,
+        "q_to_d_max_ns": 0.942,
+        "clock_to_data_min_ns": 0.726,
+        "clock_to_data_max_ns": 1.248
+      },
+      {
+        "source": "snapshot_hold_148_s0",
+        "target": "snapshot_payload_meta_148_s0",
+        "q_to_d_min_ns": 0.758,
+        "q_to_d_max_ns": 1.323,
+        "clock_to_data_min_ns": 0.899,
+        "clock_to_data_max_ns": 1.629
+      },
+      {
+        "source": "snapshot_hold_149_s0",
+        "target": "snapshot_payload_meta_149_s0",
+        "q_to_d_min_ns": 0.611,
+        "q_to_d_max_ns": 1.008,
+        "clock_to_data_min_ns": 0.752,
+        "clock_to_data_max_ns": 1.314
+      },
+      {
+        "source": "snapshot_hold_150_s0",
+        "target": "snapshot_payload_meta_150_s0",
+        "q_to_d_min_ns": 0.718,
+        "q_to_d_max_ns": 1.261,
+        "clock_to_data_min_ns": 0.859,
+        "clock_to_data_max_ns": 1.567
+      },
+      {
+        "source": "snapshot_hold_151_s0",
+        "target": "snapshot_payload_meta_151_s0",
+        "q_to_d_min_ns": 0.645,
+        "q_to_d_max_ns": 1.104,
+        "clock_to_data_min_ns": 0.786,
+        "clock_to_data_max_ns": 1.41
+      },
+      {
+        "source": "snapshot_hold_152_s0",
+        "target": "snapshot_payload_meta_152_s0",
+        "q_to_d_min_ns": 0.495,
+        "q_to_d_max_ns": 0.909,
+        "clock_to_data_min_ns": 0.636,
+        "clock_to_data_max_ns": 1.215
+      },
+      {
+        "source": "snapshot_hold_153_s0",
+        "target": "snapshot_payload_meta_153_s0",
+        "q_to_d_min_ns": 0.538,
+        "q_to_d_max_ns": 0.896,
+        "clock_to_data_min_ns": 0.679,
+        "clock_to_data_max_ns": 1.202
+      },
+      {
+        "source": "snapshot_hold_154_s0",
+        "target": "snapshot_payload_meta_154_s0",
+        "q_to_d_min_ns": 0.664,
+        "q_to_d_max_ns": 1.183,
+        "clock_to_data_min_ns": 0.805,
+        "clock_to_data_max_ns": 1.489
+      },
+      {
+        "source": "snapshot_hold_155_s0",
+        "target": "snapshot_payload_meta_155_s0",
+        "q_to_d_min_ns": 0.877,
+        "q_to_d_max_ns": 1.42,
+        "clock_to_data_min_ns": 1.018,
+        "clock_to_data_max_ns": 1.726
+      },
+      {
+        "source": "snapshot_hold_156_s0",
+        "target": "snapshot_payload_meta_156_s0",
+        "q_to_d_min_ns": 0.564,
+        "q_to_d_max_ns": 0.984,
+        "clock_to_data_min_ns": 0.705,
+        "clock_to_data_max_ns": 1.29
+      },
+      {
+        "source": "snapshot_hold_157_s0",
+        "target": "snapshot_payload_meta_157_s0",
+        "q_to_d_min_ns": 0.332,
+        "q_to_d_max_ns": 0.569,
+        "clock_to_data_min_ns": 0.473,
+        "clock_to_data_max_ns": 0.875
+      },
+      {
+        "source": "snapshot_hold_158_s0",
+        "target": "snapshot_payload_meta_158_s0",
+        "q_to_d_min_ns": 0.344,
+        "q_to_d_max_ns": 0.627,
+        "clock_to_data_min_ns": 0.485,
+        "clock_to_data_max_ns": 0.933
+      },
+      {
+        "source": "snapshot_hold_159_s0",
+        "target": "snapshot_payload_meta_159_s0",
+        "q_to_d_min_ns": 0.463,
+        "q_to_d_max_ns": 0.791,
+        "clock_to_data_min_ns": 0.604,
+        "clock_to_data_max_ns": 1.097
+      },
+      {
+        "source": "snapshot_hold_160_s0",
+        "target": "snapshot_payload_meta_160_s0",
+        "q_to_d_min_ns": 0.683,
+        "q_to_d_max_ns": 1.165,
+        "clock_to_data_min_ns": 0.824,
+        "clock_to_data_max_ns": 1.471
+      },
+      {
+        "source": "snapshot_hold_161_s0",
+        "target": "snapshot_payload_meta_161_s0",
+        "q_to_d_min_ns": 0.654,
+        "q_to_d_max_ns": 1.088,
+        "clock_to_data_min_ns": 0.795,
+        "clock_to_data_max_ns": 1.394
+      },
+      {
+        "source": "snapshot_hold_162_s0",
+        "target": "snapshot_payload_meta_162_s0",
+        "q_to_d_min_ns": 0.785,
+        "q_to_d_max_ns": 1.286,
+        "clock_to_data_min_ns": 0.926,
+        "clock_to_data_max_ns": 1.592
+      },
+      {
+        "source": "snapshot_hold_163_s0",
+        "target": "snapshot_payload_meta_163_s0",
+        "q_to_d_min_ns": 0.521,
+        "q_to_d_max_ns": 0.827,
+        "clock_to_data_min_ns": 0.662,
+        "clock_to_data_max_ns": 1.133
+      },
+      {
+        "source": "snapshot_hold_164_s0",
+        "target": "snapshot_payload_meta_164_s0",
+        "q_to_d_min_ns": 0.521,
+        "q_to_d_max_ns": 0.827,
+        "clock_to_data_min_ns": 0.662,
+        "clock_to_data_max_ns": 1.133
+      },
+      {
+        "source": "snapshot_hold_165_s0",
+        "target": "snapshot_payload_meta_165_s0",
+        "q_to_d_min_ns": 0.707,
+        "q_to_d_max_ns": 1.199,
+        "clock_to_data_min_ns": 0.848,
+        "clock_to_data_max_ns": 1.505
+      },
+      {
+        "source": "snapshot_hold_166_s0",
+        "target": "snapshot_payload_meta_166_s0",
+        "q_to_d_min_ns": 0.652,
+        "q_to_d_max_ns": 1.101,
+        "clock_to_data_min_ns": 0.793,
+        "clock_to_data_max_ns": 1.407
+      },
+      {
+        "source": "snapshot_hold_167_s0",
+        "target": "snapshot_payload_meta_167_s0",
+        "q_to_d_min_ns": 0.676,
+        "q_to_d_max_ns": 1.095,
+        "clock_to_data_min_ns": 0.817,
+        "clock_to_data_max_ns": 1.401
+      },
+      {
+        "source": "snapshot_hold_168_s0",
+        "target": "snapshot_payload_meta_168_s0",
+        "q_to_d_min_ns": 0.542,
+        "q_to_d_max_ns": 0.93,
+        "clock_to_data_min_ns": 0.683,
+        "clock_to_data_max_ns": 1.236
+      },
+      {
+        "source": "snapshot_hold_169_s0",
+        "target": "snapshot_payload_meta_169_s0",
+        "q_to_d_min_ns": 0.604,
+        "q_to_d_max_ns": 1.024,
+        "clock_to_data_min_ns": 0.745,
+        "clock_to_data_max_ns": 1.33
+      },
+      {
+        "source": "snapshot_hold_170_s0",
+        "target": "snapshot_payload_meta_170_s0",
+        "q_to_d_min_ns": 0.548,
+        "q_to_d_max_ns": 0.971,
+        "clock_to_data_min_ns": 0.689,
+        "clock_to_data_max_ns": 1.277
+      },
+      {
+        "source": "snapshot_hold_171_s0",
+        "target": "snapshot_payload_meta_171_s0",
+        "q_to_d_min_ns": 0.496,
+        "q_to_d_max_ns": 0.827,
+        "clock_to_data_min_ns": 0.637,
+        "clock_to_data_max_ns": 1.133
+      },
+      {
+        "source": "snapshot_hold_172_s0",
+        "target": "snapshot_payload_meta_172_s0",
+        "q_to_d_min_ns": 0.653,
+        "q_to_d_max_ns": 1.127,
+        "clock_to_data_min_ns": 0.794,
+        "clock_to_data_max_ns": 1.433
+      },
+      {
+        "source": "snapshot_hold_173_s0",
+        "target": "snapshot_payload_meta_173_s0",
+        "q_to_d_min_ns": 0.822,
+        "q_to_d_max_ns": 1.4,
+        "clock_to_data_min_ns": 0.963,
+        "clock_to_data_max_ns": 1.706
+      },
+      {
+        "source": "snapshot_hold_174_s0",
+        "target": "snapshot_payload_meta_174_s0",
+        "q_to_d_min_ns": 1.056,
+        "q_to_d_max_ns": 1.778,
+        "clock_to_data_min_ns": 1.197,
+        "clock_to_data_max_ns": 2.084
+      },
+      {
+        "source": "snapshot_hold_175_s0",
+        "target": "snapshot_payload_meta_175_s0",
+        "q_to_d_min_ns": 0.625,
+        "q_to_d_max_ns": 1.06,
+        "clock_to_data_min_ns": 0.766,
+        "clock_to_data_max_ns": 1.366
+      },
+      {
+        "source": "snapshot_hold_176_s0",
+        "target": "snapshot_payload_meta_176_s0",
+        "q_to_d_min_ns": 0.829,
+        "q_to_d_max_ns": 1.465,
+        "clock_to_data_min_ns": 0.97,
+        "clock_to_data_max_ns": 1.771
+      },
+      {
+        "source": "snapshot_hold_177_s0",
+        "target": "snapshot_payload_meta_177_s0",
+        "q_to_d_min_ns": 0.656,
+        "q_to_d_max_ns": 1.136,
+        "clock_to_data_min_ns": 0.797,
+        "clock_to_data_max_ns": 1.442
+      },
+      {
+        "source": "snapshot_hold_178_s0",
+        "target": "snapshot_payload_meta_178_s0",
+        "q_to_d_min_ns": 0.627,
+        "q_to_d_max_ns": 1.086,
+        "clock_to_data_min_ns": 0.768,
+        "clock_to_data_max_ns": 1.392
+      },
+      {
+        "source": "snapshot_hold_179_s0",
+        "target": "snapshot_payload_meta_179_s0",
+        "q_to_d_min_ns": 0.652,
+        "q_to_d_max_ns": 1.071,
+        "clock_to_data_min_ns": 0.793,
+        "clock_to_data_max_ns": 1.377
+      },
+      {
+        "source": "snapshot_hold_180_s0",
+        "target": "snapshot_payload_meta_180_s0",
+        "q_to_d_min_ns": 0.537,
+        "q_to_d_max_ns": 0.876,
+        "clock_to_data_min_ns": 0.678,
+        "clock_to_data_max_ns": 1.182
+      },
+      {
+        "source": "snapshot_hold_181_s0",
+        "target": "snapshot_payload_meta_181_s0",
+        "q_to_d_min_ns": 0.704,
+        "q_to_d_max_ns": 1.205,
+        "clock_to_data_min_ns": 0.845,
+        "clock_to_data_max_ns": 1.511
+      },
+      {
+        "source": "snapshot_hold_182_s0",
+        "target": "snapshot_payload_meta_182_s0",
+        "q_to_d_min_ns": 0.957,
+        "q_to_d_max_ns": 1.665,
+        "clock_to_data_min_ns": 1.098,
+        "clock_to_data_max_ns": 1.971
+      },
+      {
+        "source": "snapshot_hold_183_s0",
+        "target": "snapshot_payload_meta_183_s0",
+        "q_to_d_min_ns": 0.861,
+        "q_to_d_max_ns": 1.486,
+        "clock_to_data_min_ns": 1.002,
+        "clock_to_data_max_ns": 1.792
+      },
+      {
+        "source": "snapshot_hold_184_s0",
+        "target": "snapshot_payload_meta_184_s0",
+        "q_to_d_min_ns": 0.583,
+        "q_to_d_max_ns": 1.011,
+        "clock_to_data_min_ns": 0.724,
+        "clock_to_data_max_ns": 1.317
+      },
+      {
+        "source": "snapshot_hold_185_s0",
+        "target": "snapshot_payload_meta_185_s0",
+        "q_to_d_min_ns": 1.044,
+        "q_to_d_max_ns": 1.767,
+        "clock_to_data_min_ns": 1.185,
+        "clock_to_data_max_ns": 2.073
+      },
+      {
+        "source": "snapshot_hold_186_s0",
+        "target": "snapshot_payload_meta_186_s0",
+        "q_to_d_min_ns": 0.946,
+        "q_to_d_max_ns": 1.602,
+        "clock_to_data_min_ns": 1.087,
+        "clock_to_data_max_ns": 1.908
+      },
+      {
+        "source": "snapshot_hold_187_s0",
+        "target": "snapshot_payload_meta_187_s0",
+        "q_to_d_min_ns": 0.692,
+        "q_to_d_max_ns": 1.169,
+        "clock_to_data_min_ns": 0.833,
+        "clock_to_data_max_ns": 1.475
+      },
+      {
+        "source": "snapshot_hold_188_s0",
+        "target": "snapshot_payload_meta_188_s0",
+        "q_to_d_min_ns": 0.684,
+        "q_to_d_max_ns": 1.109,
+        "clock_to_data_min_ns": 0.825,
+        "clock_to_data_max_ns": 1.415
+      },
+      {
+        "source": "snapshot_hold_189_s0",
+        "target": "snapshot_payload_meta_189_s0",
+        "q_to_d_min_ns": 0.472,
+        "q_to_d_max_ns": 0.784,
+        "clock_to_data_min_ns": 0.613,
+        "clock_to_data_max_ns": 1.09
+      },
+      {
+        "source": "snapshot_hold_190_s0",
+        "target": "snapshot_payload_meta_190_s0",
+        "q_to_d_min_ns": 0.574,
+        "q_to_d_max_ns": 0.975,
+        "clock_to_data_min_ns": 0.715,
+        "clock_to_data_max_ns": 1.281
+      },
+      {
+        "source": "snapshot_hold_191_s0",
+        "target": "snapshot_payload_meta_191_s0",
+        "q_to_d_min_ns": 0.775,
+        "q_to_d_max_ns": 1.398,
+        "clock_to_data_min_ns": 0.916,
+        "clock_to_data_max_ns": 1.704
+      }
+    ],
+    "held_configuration": [
+      {
+        "source": "audio_domain/transaction/pending_epoch_0_s0",
+        "target": "serializer/epoch_0_s0",
+        "q_to_d_min_ns": 0.412,
+        "q_to_d_max_ns": 0.657,
+        "clock_to_data_min_ns": 0.553,
+        "clock_to_data_max_ns": 0.963
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_1_s0",
+        "target": "serializer/epoch_1_s0",
+        "q_to_d_min_ns": 0.535,
+        "q_to_d_max_ns": 0.873,
+        "clock_to_data_min_ns": 0.676,
+        "clock_to_data_max_ns": 1.179
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_2_s0",
+        "target": "serializer/epoch_2_s0",
+        "q_to_d_min_ns": 0.499,
+        "q_to_d_max_ns": 0.829,
+        "clock_to_data_min_ns": 0.64,
+        "clock_to_data_max_ns": 1.135
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_3_s0",
+        "target": "serializer/epoch_3_s0",
+        "q_to_d_min_ns": 0.582,
+        "q_to_d_max_ns": 0.934,
+        "clock_to_data_min_ns": 0.723,
+        "clock_to_data_max_ns": 1.24
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_4_s0",
+        "target": "serializer/epoch_4_s0",
+        "q_to_d_min_ns": 0.501,
+        "q_to_d_max_ns": 0.848,
+        "clock_to_data_min_ns": 0.642,
+        "clock_to_data_max_ns": 1.154
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_5_s0",
+        "target": "serializer/epoch_5_s0",
+        "q_to_d_min_ns": 0.591,
+        "q_to_d_max_ns": 0.969,
+        "clock_to_data_min_ns": 0.732,
+        "clock_to_data_max_ns": 1.275
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_6_s0",
+        "target": "serializer/epoch_6_s0",
+        "q_to_d_min_ns": 0.493,
+        "q_to_d_max_ns": 0.798,
+        "clock_to_data_min_ns": 0.634,
+        "clock_to_data_max_ns": 1.104
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_7_s0",
+        "target": "serializer/epoch_7_s0",
+        "q_to_d_min_ns": 0.609,
+        "q_to_d_max_ns": 0.992,
+        "clock_to_data_min_ns": 0.75,
+        "clock_to_data_max_ns": 1.298
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_8_s0",
+        "target": "serializer/epoch_8_s0",
+        "q_to_d_min_ns": 0.594,
+        "q_to_d_max_ns": 0.946,
+        "clock_to_data_min_ns": 0.735,
+        "clock_to_data_max_ns": 1.252
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_9_s0",
+        "target": "serializer/epoch_9_s0",
+        "q_to_d_min_ns": 0.594,
+        "q_to_d_max_ns": 0.946,
+        "clock_to_data_min_ns": 0.735,
+        "clock_to_data_max_ns": 1.252
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_10_s0",
+        "target": "serializer/epoch_10_s0",
+        "q_to_d_min_ns": 0.584,
+        "q_to_d_max_ns": 0.936,
+        "clock_to_data_min_ns": 0.725,
+        "clock_to_data_max_ns": 1.242
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_11_s0",
+        "target": "serializer/epoch_11_s0",
+        "q_to_d_min_ns": 0.775,
+        "q_to_d_max_ns": 1.267,
+        "clock_to_data_min_ns": 0.916,
+        "clock_to_data_max_ns": 1.573
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_12_s0",
+        "target": "serializer/epoch_12_s0",
+        "q_to_d_min_ns": 0.699,
+        "q_to_d_max_ns": 1.102,
+        "clock_to_data_min_ns": 0.84,
+        "clock_to_data_max_ns": 1.408
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_13_s0",
+        "target": "serializer/epoch_13_s0",
+        "q_to_d_min_ns": 0.699,
+        "q_to_d_max_ns": 1.148,
+        "clock_to_data_min_ns": 0.84,
+        "clock_to_data_max_ns": 1.454
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_14_s0",
+        "target": "serializer/epoch_14_s0",
+        "q_to_d_min_ns": 0.775,
+        "q_to_d_max_ns": 1.267,
+        "clock_to_data_min_ns": 0.916,
+        "clock_to_data_max_ns": 1.573
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_15_s0",
+        "target": "serializer/epoch_15_s0",
+        "q_to_d_min_ns": 0.79,
+        "q_to_d_max_ns": 1.297,
+        "clock_to_data_min_ns": 0.931,
+        "clock_to_data_max_ns": 1.603
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_16_s0",
+        "target": "serializer/epoch_16_s0",
+        "q_to_d_min_ns": 0.836,
+        "q_to_d_max_ns": 1.413,
+        "clock_to_data_min_ns": 0.977,
+        "clock_to_data_max_ns": 1.719
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_17_s0",
+        "target": "serializer/epoch_17_s0",
+        "q_to_d_min_ns": 0.702,
+        "q_to_d_max_ns": 1.177,
+        "clock_to_data_min_ns": 0.843,
+        "clock_to_data_max_ns": 1.483
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_18_s0",
+        "target": "serializer/epoch_18_s0",
+        "q_to_d_min_ns": 0.624,
+        "q_to_d_max_ns": 0.983,
+        "clock_to_data_min_ns": 0.765,
+        "clock_to_data_max_ns": 1.289
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_19_s0",
+        "target": "serializer/epoch_19_s0",
+        "q_to_d_min_ns": 0.604,
+        "q_to_d_max_ns": 0.981,
+        "clock_to_data_min_ns": 0.745,
+        "clock_to_data_max_ns": 1.287
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_20_s0",
+        "target": "serializer/epoch_20_s0",
+        "q_to_d_min_ns": 0.603,
+        "q_to_d_max_ns": 0.982,
+        "clock_to_data_min_ns": 0.744,
+        "clock_to_data_max_ns": 1.288
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_21_s0",
+        "target": "serializer/epoch_21_s0",
+        "q_to_d_min_ns": 0.543,
+        "q_to_d_max_ns": 0.906,
+        "clock_to_data_min_ns": 0.684,
+        "clock_to_data_max_ns": 1.212
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_22_s0",
+        "target": "serializer/epoch_22_s0",
+        "q_to_d_min_ns": 0.589,
+        "q_to_d_max_ns": 0.965,
+        "clock_to_data_min_ns": 0.73,
+        "clock_to_data_max_ns": 1.271
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_23_s0",
+        "target": "serializer/epoch_23_s0",
+        "q_to_d_min_ns": 0.588,
+        "q_to_d_max_ns": 0.965,
+        "clock_to_data_min_ns": 0.729,
+        "clock_to_data_max_ns": 1.271
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_24_s0",
+        "target": "serializer/epoch_24_s0",
+        "q_to_d_min_ns": 0.706,
+        "q_to_d_max_ns": 1.159,
+        "clock_to_data_min_ns": 0.847,
+        "clock_to_data_max_ns": 1.465
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_25_s0",
+        "target": "serializer/epoch_25_s0",
+        "q_to_d_min_ns": 0.689,
+        "q_to_d_max_ns": 1.107,
+        "clock_to_data_min_ns": 0.83,
+        "clock_to_data_max_ns": 1.413
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_26_s0",
+        "target": "serializer/epoch_26_s0",
+        "q_to_d_min_ns": 0.701,
+        "q_to_d_max_ns": 1.174,
+        "clock_to_data_min_ns": 0.842,
+        "clock_to_data_max_ns": 1.48
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_27_s0",
+        "target": "serializer/epoch_27_s0",
+        "q_to_d_min_ns": 0.706,
+        "q_to_d_max_ns": 1.159,
+        "clock_to_data_min_ns": 0.847,
+        "clock_to_data_max_ns": 1.465
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_28_s0",
+        "target": "serializer/epoch_28_s0",
+        "q_to_d_min_ns": 0.751,
+        "q_to_d_max_ns": 1.208,
+        "clock_to_data_min_ns": 0.892,
+        "clock_to_data_max_ns": 1.514
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_29_s0",
+        "target": "serializer/epoch_29_s0",
+        "q_to_d_min_ns": 0.742,
+        "q_to_d_max_ns": 1.204,
+        "clock_to_data_min_ns": 0.883,
+        "clock_to_data_max_ns": 1.51
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_30_s0",
+        "target": "serializer/epoch_30_s0",
+        "q_to_d_min_ns": 0.679,
+        "q_to_d_max_ns": 1.101,
+        "clock_to_data_min_ns": 0.82,
+        "clock_to_data_max_ns": 1.407
+      },
+      {
+        "source": "audio_domain/transaction/pending_epoch_31_s0",
+        "target": "serializer/epoch_31_s0",
+        "q_to_d_min_ns": 0.721,
+        "q_to_d_max_ns": 1.19,
+        "clock_to_data_min_ns": 0.862,
+        "clock_to_data_max_ns": 1.496
+      },
+      {
+        "source": "audio_domain/transaction/pending_44k1_s0",
+        "target": "serializer/mode_44k1_s0",
+        "q_to_d_min_ns": 0.758,
+        "q_to_d_max_ns": 1.246,
+        "clock_to_data_min_ns": 0.899,
+        "clock_to_data_max_ns": 1.552
+      }
+    ],
+    "control_and_ack": [
+      {
+        "first_stage": "quiesce_sync_0_s0",
+        "second_stage": "quiesce_sync_1_s0",
+        "data_paths": [
+          {
+            "source": "audio_domain/transaction/state_0_s0",
+            "target": "quiesce_sync_0_s0",
+            "q_to_d_min_ns": 1.457,
+            "q_to_d_max_ns": 2.507,
+            "clock_to_data_min_ns": 1.598,
+            "clock_to_data_max_ns": 2.813
+          },
+          {
+            "source": "audio_domain/transaction/state_1_s0",
+            "target": "quiesce_sync_0_s0",
+            "q_to_d_min_ns": 0.938,
+            "q_to_d_max_ns": 1.618,
+            "clock_to_data_min_ns": 1.079,
+            "clock_to_data_max_ns": 1.924
+          },
+          {
+            "source": "audio_domain/transaction/state_2_s1",
+            "target": "quiesce_sync_0_s0",
+            "q_to_d_min_ns": 1.077,
+            "q_to_d_max_ns": 1.83,
+            "clock_to_data_min_ns": 1.218,
+            "clock_to_data_max_ns": 2.136
+          },
+          {
+            "source": "audio_domain/transaction/state_3_s0",
+            "target": "quiesce_sync_0_s0",
+            "q_to_d_min_ns": 0.895,
+            "q_to_d_max_ns": 1.524,
+            "clock_to_data_min_ns": 1.036,
+            "clock_to_data_max_ns": 1.83
+          }
+        ]
+      },
+      {
+        "first_stage": "resume_sync_0_s0",
+        "second_stage": "resume_sync_1_s0",
+        "data_paths": [
+          {
+            "source": "audio_domain/transaction/state_0_s0",
+            "target": "resume_sync_0_s0",
+            "q_to_d_min_ns": 1.429,
+            "q_to_d_max_ns": 2.482,
+            "clock_to_data_min_ns": 1.57,
+            "clock_to_data_max_ns": 2.788
+          },
+          {
+            "source": "audio_domain/transaction/state_1_s0",
+            "target": "resume_sync_0_s0",
+            "q_to_d_min_ns": 0.718,
+            "q_to_d_max_ns": 1.271,
+            "clock_to_data_min_ns": 0.859,
+            "clock_to_data_max_ns": 1.577
+          },
+          {
+            "source": "audio_domain/transaction/state_2_s1",
+            "target": "resume_sync_0_s0",
+            "q_to_d_min_ns": 0.855,
+            "q_to_d_max_ns": 1.476,
+            "clock_to_data_min_ns": 0.996,
+            "clock_to_data_max_ns": 1.782
+          },
+          {
+            "source": "audio_domain/transaction/state_3_s0",
+            "target": "resume_sync_0_s0",
+            "q_to_d_min_ns": 0.671,
+            "q_to_d_max_ns": 1.163,
+            "clock_to_data_min_ns": 0.812,
+            "clock_to_data_max_ns": 1.469
+          }
+        ]
+      },
+      {
+        "first_stage": "snapshot_request_sync_0_s0",
+        "second_stage": "snapshot_request_sync_1_s0",
+        "data_paths": [
+          {
+            "source": "snapshot_request_s0",
+            "target": "snapshot_request_sync_0_s0",
+            "q_to_d_min_ns": 0.344,
+            "q_to_d_max_ns": 0.569,
+            "clock_to_data_min_ns": 0.485,
+            "clock_to_data_max_ns": 0.875
+          }
+        ]
+      },
+      {
+        "first_stage": "quiet_sync_0_s0",
+        "second_stage": "quiet_sync_1_s0",
+        "data_paths": [
+          {
+            "source": "serializer/serial_quiescent_o_s3",
+            "target": "quiet_sync_0_s0",
+            "q_to_d_min_ns": 0.44,
+            "q_to_d_max_ns": 0.796,
+            "clock_to_data_min_ns": 0.581,
+            "clock_to_data_max_ns": 1.102
+          },
+          {
+            "source": "audio_domain/transaction/state_0_s0",
+            "target": "quiet_sync_0_s0",
+            "q_to_d_min_ns": 1.905,
+            "q_to_d_max_ns": 3.472,
+            "clock_to_data_min_ns": 2.046,
+            "clock_to_data_max_ns": 3.778
+          },
+          {
+            "source": "audio_domain/transaction/state_1_s0",
+            "target": "quiet_sync_0_s0",
+            "q_to_d_min_ns": 1.87,
+            "q_to_d_max_ns": 3.329,
+            "clock_to_data_min_ns": 2.011,
+            "clock_to_data_max_ns": 3.635
+          },
+          {
+            "source": "audio_domain/transaction/state_2_s1",
+            "target": "quiet_sync_0_s0",
+            "q_to_d_min_ns": 1.732,
+            "q_to_d_max_ns": 3.044,
+            "clock_to_data_min_ns": 1.873,
+            "clock_to_data_max_ns": 3.35
+          },
+          {
+            "source": "audio_domain/transaction/state_3_s0",
+            "target": "quiet_sync_0_s0",
+            "q_to_d_min_ns": 1.638,
+            "q_to_d_max_ns": 2.91,
+            "clock_to_data_min_ns": 1.779,
+            "clock_to_data_max_ns": 3.216
+          }
+        ]
+      },
+      {
+        "first_stage": "prefill_sync_0_s0",
+        "second_stage": "prefill_sync_1_s0",
+        "data_paths": [
+          {
+            "source": "quiesce_sync_1_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 0.929,
+            "q_to_d_max_ns": 1.64,
+            "clock_to_data_min_ns": 1.07,
+            "clock_to_data_max_ns": 1.946
+          },
+          {
+            "source": "serializer/configured_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 0.71,
+            "q_to_d_max_ns": 1.277,
+            "clock_to_data_min_ns": 0.851,
+            "clock_to_data_max_ns": 1.583
+          },
+          {
+            "source": "serializer/have_next_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 0.755,
+            "q_to_d_max_ns": 1.293,
+            "clock_to_data_min_ns": 0.896,
+            "clock_to_data_max_ns": 1.599
+          },
+          {
+            "source": "serializer/startup_frames_0_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.592,
+            "q_to_d_max_ns": 2.814,
+            "clock_to_data_min_ns": 1.733,
+            "clock_to_data_max_ns": 3.12
+          },
+          {
+            "source": "serializer/startup_frames_10_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.546,
+            "q_to_d_max_ns": 2.757,
+            "clock_to_data_min_ns": 1.687,
+            "clock_to_data_max_ns": 3.063
+          },
+          {
+            "source": "serializer/startup_frames_1_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.579,
+            "q_to_d_max_ns": 2.832,
+            "clock_to_data_min_ns": 1.72,
+            "clock_to_data_max_ns": 3.138
+          },
+          {
+            "source": "serializer/startup_frames_2_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.624,
+            "q_to_d_max_ns": 2.864,
+            "clock_to_data_min_ns": 1.765,
+            "clock_to_data_max_ns": 3.17
+          },
+          {
+            "source": "serializer/startup_frames_3_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.818,
+            "q_to_d_max_ns": 3.189,
+            "clock_to_data_min_ns": 1.959,
+            "clock_to_data_max_ns": 3.495
+          },
+          {
+            "source": "serializer/startup_frames_4_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.716,
+            "q_to_d_max_ns": 2.966,
+            "clock_to_data_min_ns": 1.857,
+            "clock_to_data_max_ns": 3.272
+          },
+          {
+            "source": "serializer/startup_frames_5_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.75,
+            "q_to_d_max_ns": 3.012,
+            "clock_to_data_min_ns": 1.891,
+            "clock_to_data_max_ns": 3.318
+          },
+          {
+            "source": "serializer/startup_frames_6_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.678,
+            "q_to_d_max_ns": 2.939,
+            "clock_to_data_min_ns": 1.819,
+            "clock_to_data_max_ns": 3.245
+          },
+          {
+            "source": "serializer/startup_frames_7_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 2.028,
+            "q_to_d_max_ns": 3.534,
+            "clock_to_data_min_ns": 2.169,
+            "clock_to_data_max_ns": 3.84
+          },
+          {
+            "source": "serializer/startup_frames_8_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.601,
+            "q_to_d_max_ns": 2.812,
+            "clock_to_data_min_ns": 1.742,
+            "clock_to_data_max_ns": 3.118
+          },
+          {
+            "source": "serializer/startup_frames_9_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.798,
+            "q_to_d_max_ns": 3.181,
+            "clock_to_data_min_ns": 1.939,
+            "clock_to_data_max_ns": 3.487
+          },
+          {
+            "source": "audio_domain/transaction/state_0_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.898,
+            "q_to_d_max_ns": 3.463,
+            "clock_to_data_min_ns": 2.039,
+            "clock_to_data_max_ns": 3.769
+          },
+          {
+            "source": "audio_domain/transaction/state_1_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.863,
+            "q_to_d_max_ns": 3.32,
+            "clock_to_data_min_ns": 2.004,
+            "clock_to_data_max_ns": 3.626
+          },
+          {
+            "source": "audio_domain/transaction/state_2_s1",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.725,
+            "q_to_d_max_ns": 3.035,
+            "clock_to_data_min_ns": 1.866,
+            "clock_to_data_max_ns": 3.341
+          },
+          {
+            "source": "audio_domain/transaction/state_3_s0",
+            "target": "prefill_sync_0_s0",
+            "q_to_d_min_ns": 1.631,
+            "q_to_d_max_ns": 2.901,
+            "clock_to_data_min_ns": 1.772,
+            "clock_to_data_max_ns": 3.207
+          }
+        ]
+      },
+      {
+        "first_stage": "running_sync_0_s0",
+        "second_stage": "running_sync_1_s0",
+        "data_paths": [
+          {
+            "source": "serializer/output_running_o_s3",
+            "target": "running_sync_0_s0",
+            "q_to_d_min_ns": 0.652,
+            "q_to_d_max_ns": 1.081,
+            "clock_to_data_min_ns": 0.793,
+            "clock_to_data_max_ns": 1.387
+          },
+          {
+            "source": "audio_domain/transaction/state_0_s0",
+            "target": "running_sync_0_s0",
+            "q_to_d_min_ns": 2.133,
+            "q_to_d_max_ns": 4.0,
+            "clock_to_data_min_ns": 2.274,
+            "clock_to_data_max_ns": 4.306
+          },
+          {
+            "source": "audio_domain/transaction/state_1_s0",
+            "target": "running_sync_0_s0",
+            "q_to_d_min_ns": 2.098,
+            "q_to_d_max_ns": 3.857,
+            "clock_to_data_min_ns": 2.239,
+            "clock_to_data_max_ns": 4.163
+          },
+          {
+            "source": "audio_domain/transaction/state_2_s1",
+            "target": "running_sync_0_s0",
+            "q_to_d_min_ns": 1.96,
+            "q_to_d_max_ns": 3.572,
+            "clock_to_data_min_ns": 2.101,
+            "clock_to_data_max_ns": 3.878
+          },
+          {
+            "source": "audio_domain/transaction/state_3_s0",
+            "target": "running_sync_0_s0",
+            "q_to_d_min_ns": 1.866,
+            "q_to_d_max_ns": 3.438,
+            "clock_to_data_min_ns": 2.007,
+            "clock_to_data_max_ns": 3.744
+          }
+        ]
+      },
+      {
+        "first_stage": "idle_sync_0_s0",
+        "second_stage": "idle_sync_1_s0",
+        "data_paths": [
+          {
+            "source": "serializer/request_o_s0",
+            "target": "idle_sync_0_s0",
+            "q_to_d_min_ns": 0.68,
+            "q_to_d_max_ns": 1.199,
+            "clock_to_data_min_ns": 0.821,
+            "clock_to_data_max_ns": 1.505
+          },
+          {
+            "source": "response_valid_s0",
+            "target": "idle_sync_0_s0",
+            "q_to_d_min_ns": 0.516,
+            "q_to_d_max_ns": 0.882,
+            "clock_to_data_min_ns": 0.657,
+            "clock_to_data_max_ns": 1.188
+          },
+          {
+            "source": "audio_domain/transaction/state_0_s0",
+            "target": "idle_sync_0_s0",
+            "q_to_d_min_ns": 2.029,
+            "q_to_d_max_ns": 3.806,
+            "clock_to_data_min_ns": 2.17,
+            "clock_to_data_max_ns": 4.112
+          },
+          {
+            "source": "audio_domain/transaction/state_1_s0",
+            "target": "idle_sync_0_s0",
+            "q_to_d_min_ns": 1.994,
+            "q_to_d_max_ns": 3.663,
+            "clock_to_data_min_ns": 2.135,
+            "clock_to_data_max_ns": 3.969
+          },
+          {
+            "source": "audio_domain/transaction/state_2_s1",
+            "target": "idle_sync_0_s0",
+            "q_to_d_min_ns": 1.856,
+            "q_to_d_max_ns": 3.378,
+            "clock_to_data_min_ns": 1.997,
+            "clock_to_data_max_ns": 3.684
+          },
+          {
+            "source": "audio_domain/transaction/state_3_s0",
+            "target": "idle_sync_0_s0",
+            "q_to_d_min_ns": 1.762,
+            "q_to_d_max_ns": 3.244,
+            "clock_to_data_min_ns": 1.903,
+            "clock_to_data_max_ns": 3.55
+          }
+        ]
+      },
+      {
+        "first_stage": "snapshot_ack_sync_0_s0",
+        "second_stage": "snapshot_ack_sync_1_s0",
+        "data_paths": [
+          {
+            "source": "snapshot_ack_s0",
+            "target": "snapshot_ack_sync_0_s0",
+            "q_to_d_min_ns": 0.595,
+            "q_to_d_max_ns": 1.021,
+            "clock_to_data_min_ns": 0.736,
+            "clock_to_data_max_ns": 1.327
+          },
+          {
+            "source": "audio_domain/transaction/state_0_s0",
+            "target": "snapshot_ack_sync_0_s0",
+            "q_to_d_min_ns": 2.135,
+            "q_to_d_max_ns": 3.953,
+            "clock_to_data_min_ns": 2.276,
+            "clock_to_data_max_ns": 4.259
+          },
+          {
+            "source": "audio_domain/transaction/state_1_s0",
+            "target": "snapshot_ack_sync_0_s0",
+            "q_to_d_min_ns": 2.1,
+            "q_to_d_max_ns": 3.81,
+            "clock_to_data_min_ns": 2.241,
+            "clock_to_data_max_ns": 4.116
+          },
+          {
+            "source": "audio_domain/transaction/state_2_s1",
+            "target": "snapshot_ack_sync_0_s0",
+            "q_to_d_min_ns": 1.962,
+            "q_to_d_max_ns": 3.525,
+            "clock_to_data_min_ns": 2.103,
+            "clock_to_data_max_ns": 3.831
+          },
+          {
+            "source": "audio_domain/transaction/state_3_s0",
+            "target": "snapshot_ack_sync_0_s0",
+            "q_to_d_min_ns": 1.868,
+            "q_to_d_max_ns": 3.391,
+            "clock_to_data_min_ns": 2.009,
+            "clock_to_data_max_ns": 3.697
+          }
+        ]
+      },
+      {
+        "first_stage": "audio_domain/reference_48_monitor/level_meta_s0",
+        "second_stage": "audio_domain/reference_48_monitor/level_sync_s0",
+        "root": "clk_12m288_ibuf/I",
+        "max_data_delay_ns": 3.839
+      },
+      {
+        "first_stage": "audio_domain/reference_44_monitor/level_meta_s0",
+        "second_stage": "audio_domain/reference_44_monitor/level_sync_s0",
+        "root": "clk_16m9344_ibuf/I",
+        "max_data_delay_ns": 4.072
+      },
+      {
+        "first_stage": "audio_domain/selected_monitor/level_meta_s0",
+        "second_stage": "audio_domain/selected_monitor/level_sync_s0",
+        "root": "audio_domain/selector/CLKOUT",
+        "max_data_delay_ns": 2.993
+      }
+    ],
+    "resets": {
+      "three_edge_chains": [
+        {
+          "cells": [
+            "audio_domain/control_reset_pre_0_s0",
+            "audio_domain/control_reset_pre_1_s0",
+            "audio_domain/control_reset_n_s0"
+          ],
+          "clock_net": "clk_50mhz_d",
+          "async_roots": [
+            "power_ready",
+            "restart_n"
+          ]
+        },
+        {
+          "cells": [
+            "audio_domain/reset_release_0_s0",
+            "audio_domain/reset_release_1_s0",
+            "audio_domain/reset_release_2_s0"
+          ],
+          "clock_net": "ak_mclk_d",
+          "async_roots": [
+            "audio_domain/requested_audio_reset_n",
+            "power_ready",
+            "restart_n",
+            "selected_qualified"
+          ]
+        },
+        {
+          "cells": [
+            "audio_domain/reference_48_monitor/source_reset_pre_0_s0",
+            "audio_domain/reference_48_monitor/source_reset_pre_1_s0",
+            "audio_domain/reference_48_monitor/source_reset_n_s0"
+          ],
+          "clock_net": "clk_12m288_d",
+          "async_roots": [
+            "audio_domain/control_reset_n"
+          ]
+        },
+        {
+          "cells": [
+            "audio_domain/reference_44_monitor/source_reset_pre_0_s0",
+            "audio_domain/reference_44_monitor/source_reset_pre_1_s0",
+            "audio_domain/reference_44_monitor/source_reset_n_s0"
+          ],
+          "clock_net": "clk_16m9344_d",
+          "async_roots": [
+            "audio_domain/control_reset_n"
+          ]
+        },
+        {
+          "cells": [
+            "audio_domain/selected_monitor/source_reset_pre_0_s0",
+            "audio_domain/selected_monitor/source_reset_pre_1_s0",
+            "audio_domain/selected_monitor/source_reset_n_s0"
+          ],
+          "clock_net": "ak_mclk_d",
+          "async_roots": [
+            "audio_domain/control_reset_n"
+          ]
+        }
+      ],
+      "all_sequential_reset_groups": [
+        {
+          "clock": "ak_mclk_d",
+          "roots": [
+            "audio_domain/control_reset_n"
+          ],
+          "endpoints": 3
+        },
+        {
+          "clock": "ak_mclk_d",
+          "roots": [
+            "audio_domain/requested_audio_reset_n",
+            "power_ready",
+            "restart_n",
+            "selected_qualified"
+          ],
+          "endpoints": 3
+        },
+        {
+          "clock": "ak_mclk_d",
+          "roots": [
+            "audio_domain/selected_monitor/source_reset_n"
+          ],
+          "endpoints": 64
+        },
+        {
+          "clock": "ak_mclk_d",
+          "roots": [
+            "audio_reset_n"
+          ],
+          "endpoints": 619
+        },
+        {
+          "clock": "clk_12m288_d",
+          "roots": [
+            "audio_domain/control_reset_n"
+          ],
+          "endpoints": 3
+        },
+        {
+          "clock": "clk_12m288_d",
+          "roots": [
+            "audio_domain/reference_48_monitor/source_reset_n"
+          ],
+          "endpoints": 64
+        },
+        {
+          "clock": "clk_16m9344_d",
+          "roots": [
+            "audio_domain/control_reset_n"
+          ],
+          "endpoints": 3
+        },
+        {
+          "clock": "clk_16m9344_d",
+          "roots": [
+            "audio_domain/reference_44_monitor/source_reset_n"
+          ],
+          "endpoints": 64
+        },
+        {
+          "clock": "clk_50mhz_d",
+          "roots": [
+            "audio_domain/control_reset_n"
+          ],
+          "endpoints": 697
+        },
+        {
+          "clock": "clk_50mhz_d",
+          "roots": [
+            "power_ready",
+            "restart_n"
+          ],
+          "endpoints": 1846
+        },
+        {
+          "clock": "clk_50mhz_d",
+          "roots": [
+            "restart_n"
+          ],
+          "endpoints": 11
+        }
+      ]
+    },
+    "physical_audit_complete": true,
+    "eligible_for_parent_sram_review": true,
+    "hardware_accepted": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "limitations": [
+      "Independent permanently muted digital experiment; no production profile or analog acceptance",
+      "SDF conservative extrema quantify implemented routes; source protocols require separate simulation",
+      "Source/selected clock reset synchronizer assertion/removal uses metastability containment; first stages retain STA checks",
+      "GAO implementation is verified by SDK timing/CRC; core VO/SDF excludes GAO internals"
+    ],
+    "negative_checks": [
+      "actual_gray_wire_25ns",
+      "missing_actual_second_stage",
+      "zero_match_constraint"
+    ]
+  },
+  "tests": {
+    "command": "PATH=/opt/homebrew/bin:$PATH python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_probe.py",
+    "returncode": 0,
+    "tests": 3,
+    "elapsed_seconds": 1.996,
+    "normal": {
+      "epoch": 2,
+      "accepted": 2,
+      "applied": 2,
+      "atomic_snapshots": 607,
+      "physical_frames": 17,
+      "epochs_observed": "111"
+    },
+    "stopped_high_fault_code": 6,
+    "accelerated_loss_observation_reference_cycles": 397,
+    "simulator_sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+    "limitations": "Accelerated monitor/hold/startup; default1028 startup covered by separate real-combination simulation, not this run"
+  },
+  "decoder": {
+    "path": "tools/decode_workstation_audio_probe.py",
+    "sha256": "9bcac5f279d549145f15b2204bc5b7230c4e83c9254c63ec933b98fd4e15497c",
+    "self_test_passed": true,
+    "rejected": [
+      "flush",
+      "physical_frame_error",
+      "stale_epoch"
+    ],
+    "live_csv_decoded": false
+  },
+  "programmer_check_only": {
+    "command": "python3 example/RTL8723DS/program_sram.py --manifest /Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/reports/build_20261030_053313_154092.json --allow-gao --check-only",
+    "returncode": 0,
+    "verified": true,
+    "user_code": "0xc11030b7",
+    "artifact": {
+      "path": "/Users/sphenicidition/.cache/fpga-audio-probe/20261030-C11030B7/builds/20261030_053313_154092/impl/pnr/ao_0.fs",
+      "sha256": "2e27afccd217074b8278e5a7ab75bde08060d14484d3d1ff191c53dc8819565f"
+    },
+    "hardware_access": false
+  },
+  "latest_parent_read_only_board_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/hardware/pre_probe_read_20261030_053119.json",
+    "sha256": "4467879f637d933f8554172ec8f0be79197bb07a0430af3e14ed7ab30c2318bc",
+    "record": {
+      "time": "2026-10-30T05:31:19.846849+08:00",
+      "operation": "read_only_device_status",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--operation_index",
+        "0",
+        "--cable-index",
+        "1",
+        "--channel",
+        "0"
+      ],
+      "returncode": 0,
+      "stdout": " Target Cable: Gowin USB Cable(FT2CH)/0/None/null@2.5MHz\n Target Device: GW5AST-138C(0x0001081B)\n Operation \"Read Device Codes\" for device#1...\n ID Code is: 0x0001081B\n User Code is: 0xC11028E5\n Status Code is: 0x00022020\n Finished.\n Cost 0.13 second(s)\n  \n",
+      "stderr": ""
+    }
+  },
+  "hardware_accepted": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "analog_limitations": "AK4493S SMUTE is digital soft mute; zero PCM and asserted SMUTE do not prove analog silence or pop-free PDN transitions. External analog mute/straps/clock recognition and electrical board behavior remain separate acceptance.",
+  "rollback": {
+    "expected_user_code": "0xC11028E5",
+    "expected_device_id": "0x0001081B",
+    "expected_status": "0x00022020",
+    "method": "Reload previously verified unchanged configuration Flash via operation1; then independent operation0 until configured and exactE5, allowing historical multi-minute startup. No Flash write or fallback SRAM implied.",
+    "historical_source": "reports/USB2_HDMI_FLASH_20261028.md",
+    "flash_reload_executed": false
+  }
+}
