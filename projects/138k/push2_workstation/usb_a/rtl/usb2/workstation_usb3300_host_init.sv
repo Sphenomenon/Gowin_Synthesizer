@@ -48,7 +48,7 @@ module workstation_usb3300_host_init #(
     assign csr_valid_o = reset_n && !link_fatal_i && state_q == REQUEST;
     assign csr_response_ready_o = reset_n && state_q == RESPONSE;
     (* syn_preserve = 1 *) reg ready_q;
-    assign ready_o = reset_n && !link_fatal_i && ready_q;
+    assign ready_o = !link_fatal_i && ready_q;
     assign failed_o = reset_n && state_q == FAILED;
 
     always @* begin

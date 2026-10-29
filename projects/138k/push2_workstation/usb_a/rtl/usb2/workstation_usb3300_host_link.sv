@@ -86,7 +86,7 @@ module workstation_usb3300_host_link #(
     wire link_rxerror;
     wire safe_stop = !link_reset_n_o || init_failed_o || link_fatal_o;
 
-    assign ready_o = init_ready && !safe_stop;
+    assign ready_o = init_ready;
     assign ulpi_data_oe_o = link_oe && !safe_stop;
     assign ulpi_stp_o = REGISTER_STP != 0 ? link_stp : link_stp || safe_stop;
     assign csr_ready_o = ready_o && link_csr_ready;

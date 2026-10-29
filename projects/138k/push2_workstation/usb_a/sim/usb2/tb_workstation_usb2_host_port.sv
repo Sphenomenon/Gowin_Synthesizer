@@ -404,6 +404,15 @@ module tb_workstation_usb2_host_port;
         expect_failure(1);
         begin_scenario(0);
         attach_device();
+        device_chirp();
+        await_state(12, 100);
+        check(chirp_valid, "HS chirp is active before asynchronous reset");
+        reset_n = 1'b0;
+        #1;
+        check(!chirp_valid && !traffic_enable && !sof_enable && !reset_active,
+              "reset cancels chirp before another ULPI clock edge");
+        begin_scenario(0);
+        attach_device();
         phy_ready = 1'b0;
         @(negedge clk_ulpi);
         #1;

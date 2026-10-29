@@ -31,7 +31,8 @@ module workstation_usb2_hotplug_top #(
     wire [223:0] telemetry;
     wire [3:0] cpu_fault;
     wire [31:0] cpu_fault_address, canceled_requests, sof_count;
-    wire transaction_reset_n, phy_ready, failed, high_speed, traffic_enable;
+    wire transaction_reset_n, phy_ready, failed, high_speed;
+    (* syn_keep = 1 *) wire traffic_enable;
     defparam u_native_usb.host.usb.PORT_OBSERVER = 1;
     reg [31:0] event_count_q, lifecycle_count_q, cancel_count_q;
     reg [17:0] last_event_q;

@@ -97,6 +97,8 @@ module tb_workstation_usb3300_host_init;
             block_requests = 1'b0;
             block_responses = 1'b0;
             force_fatal = 1'b0;
+            #1;
+            check(!ready && !failed && !link_oe && link_stp, "reset safety before the next clock edge");
             repeat (3) @(negedge clk_ulpi);
             check(!ready && !failed && !link_oe && link_stp, "reset safety");
             reset_n = 1'b1;

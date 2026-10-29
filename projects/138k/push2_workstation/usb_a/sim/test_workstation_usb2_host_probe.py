@@ -38,6 +38,8 @@ class HostProbe(unittest.TestCase):
         self.assertEqual(document.findtext('GAO_ID'), '29A1')
         self.assertEqual([entry.text for entry in core.findall('SignalList/Signal')], list(probe.SIGNALS))
         self.assertFalse(any('/cpu/' in signal or 'telemetry' in signal for signal in probe.SIGNALS))
+        native_top = (probe.ROOT / 'rtl/workstation/workstation_usb2_hotplug_top.sv').read_text()
+        self.assertIn('(* syn_keep = 1 *) wire traffic_enable;', native_top)
 
     def test_decoding_retains_failure_and_does_not_invent_enumeration(self):
         with tempfile.TemporaryDirectory() as directory:

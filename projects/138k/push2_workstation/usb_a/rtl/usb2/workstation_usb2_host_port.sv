@@ -118,7 +118,7 @@ module workstation_usb2_host_port #(
     assign csr_data_o = config_data_q;
     assign csr_response_ready_o = reset_n && phy_ready_i &&
                                   (state_q == WRITE_RESPONSE || state_q == READ_RESPONSE || state_q == DEBUG_RESPONSE);
-    assign chirp_valid_o = reset_n && phy_ready_i && !phy_fatal_i &&
+    assign chirp_valid_o = phy_ready_i && !phy_fatal_i &&
                            chirp_active_q;
     assign chirp_data_o = chirp_j_q ? 8'hff : 8'h00;
 
