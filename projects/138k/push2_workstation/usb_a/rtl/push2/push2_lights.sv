@@ -7,13 +7,17 @@ module push2_lights(input wire clk,rst,input wire [63:0] held,input wire [31:0] 
     reg [6:0] scan,selected;
     reg [6:0] cached[0:84];reg [84:0] known;
     reg [6:0] color;
-    reg guide_mode_q,clear_guide;
+    reg guide_mode_q,guide_entered_q,clear_guide;
     reg [63:0] guide_mask_q;
-    wire guide_changed=guide_mode && (!guide_mode_q || guide_mask!=guide_mask_q);
+    reg [7:0] guide_changed_bytes_q;
+    // Snapshot and each byte comparison describe the same sampled input.
+    // Register before the reduction so notes/decode never traverses a64-bit
+    // change comparator and LED cache/control in one48MHz cycle.
+    wire guide_changed=guide_mode_q && (guide_entered_q || |guide_changed_bytes_q);
     always @* begin
         color=0;
-        if(guide_mode) begin
-            if(!clear_guide && !guide_changed && scan<64 && guide_mask[scan]) color=126;
+        if(guide_mode_q) begin
+            if(!clear_guide && !guide_changed && scan<64 && guide_mask_q[scan]) color=126;
         end else if(scan<64)begin
             case(scan[2:0])
                 0:color=126;1:color=15;2:color=125;3:color=22;
@@ -34,11 +38,14 @@ module push2_lights(input wire clk,rst,input wire [63:0] held,input wire [31:0] 
     always @(posedge clk or posedge rst)begin
         if(rst)begin
             startup<=0;scan<=0;selected<=0;known<=0;valid<=0;kind<=0;index<=0;value<=0;
-            guide_mode_q<=0;guide_mask_q<=0;clear_guide<=0;
+            guide_mode_q<=0;guide_mask_q<=0;guide_entered_q<=0;guide_changed_bytes_q<=0;clear_guide<=0;
         end else begin
         guide_mode_q<=guide_mode;guide_mask_q<=guide_mask;
+        guide_entered_q<=guide_mode && !guide_mode_q;
+        for(integer byte_index=0;byte_index<8;byte_index=byte_index+1)
+            guide_changed_bytes_q[byte_index]<=guide_mask[byte_index*8+:8]!=guide_mask_q[byte_index*8+:8];
         if(guide_changed)begin clear_guide<=1;scan<=0;end
-        else if(!guide_mode)clear_guide<=0;
+        else if(!guide_mode_q)clear_guide<=0;
         if(valid)begin
             if(ready)begin
                 valid<=0;
