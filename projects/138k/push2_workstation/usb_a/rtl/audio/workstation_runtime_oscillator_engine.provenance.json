@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "prepared_source_identity": "custom138k-workstation-v1-f5b723250388add5",
+  "prepared_relative_path": "legacy/rtl/audio/unified_oscillator_engine.sv",
+  "prepared_sha256": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+  "native_module": "workstation_runtime_oscillator_engine",
+  "native_sha256": "d5e58e866abd33177d79629a1dcebb2a4fab3d29981bb693424482fcd7129629",
+  "source_policy": "Native standalone source, exact prepared migration with reversible documented edits; no profile/build/top selection changed.",
+  "reverse_instructions": "Apply edits in reverse order, replacing each exact after anchor with before, requiring its recorded count; resulting UTF-8 bytes must match prepared_sha256. This provenance is a verifier, not a text-generated production implementation.",
+  "forward_edits": [
+    {
+      "before": "`timescale 1ns/1ps",
+      "after": "// Native runtime-rate migration from the exact F02 rev2 prepared engine.\n// Provenance and reversible edits are recorded in the adjacent JSON.\n// This independent module is not selected by an accepted or custom profile.\n`timescale 1ns/1ps",
+      "count": 1
+    },
+    {
+      "before": "module unified_oscillator_engine #(",
+      "after": "module workstation_runtime_oscillator_engine #(",
+      "count": 1
+    },
+    {
+      "before": "    parameter bit SEPARATE_OFF_NOTE = 1'b0\n",
+      "after": "    parameter bit SEPARATE_OFF_NOTE = 1'b0,\n    parameter bit RUNTIME_RATE_ENABLE = 1'b0\n",
+      "count": 1
+    },
+    {
+      "before": "    input  logic        [6:0]  event_off_note_i\n",
+      "after": "    input  logic        [6:0]  event_off_note_i,\n    // Commit is an idle-only pulse; this is not a backpressured request.\n    input  logic               rate_commit_i,\n    input  logic               rate_44100_i,\n    output logic               rate_ready_o,\n    output logic               applied_rate_44100_o,\n    // Includes the natural PANIC tail, not just mix_busy/sample_ready.\n    output logic               quiescent_o\n",
+      "count": 1
+    },
+    {
+      "before": "  logic [33:0] pitch_step_rounded;",
+      "after": "  logic [34:0] pitch_step_rounded;",
+      "count": 1
+    },
+    {
+      "before": "  localparam int RATE_SCALE = 192000 / SAMPLE_RATE_HZ;",
+      "after": "  localparam int RATE_SCALE = 192000 / SAMPLE_RATE_HZ;\n  localparam bit PITCH_PATH_ENABLE = EXPRESSION_ENABLE || RUNTIME_RATE_ENABLE;\n  logic frame_rate_44100;\n  logic [3:0] sine_pending_valid;\n  logic quantizer_quiescent;\n  logic [23:0] effective_attack_q24, effective_decay_q24, effective_release_q24;\n\n  initial begin\n    if (RUNTIME_RATE_ENABLE && SAMPLE_RATE_HZ != 48000)\n      $fatal(1, \"runtime oscillator requires canonical 48000 state\");\n  end\n\n  // Round once after the exact rational rate and pitch product. The 48k\n  // branch is the original bit expression. This initial native version keeps\n  // cycle identity; constant division still needs routed timing validation.\n  function automatic logic [34:0] rate_pitch_step(\n      input logic [53:0] product, input logic rate_44);\n    logic [61:0] scaled;\n    begin\n      if (RUNTIME_RATE_ENABLE && rate_44) begin\n        scaled = {8'd0, product} * 62'd160;\n        rate_pitch_step = (scaled + 62'd77070336) / 62'd154140672;\n      end else begin\n        rate_pitch_step = {1'b0, product[53:20]} +\n            {{34{1'b0}}, product[19]};\n      end\n    end\n  endfunction\n\n  function automatic logic [23:0] rate_envelope_step(\n      input logic [23:0] canonical, input logic rate_44);\n    logic [31:0] scaled;\n    begin\n      if (RUNTIME_RATE_ENABLE && rate_44) begin\n        scaled = ({8'd0, canonical} * 32'd160 + 32'd73) / 32'd147;\n        rate_envelope_step = scaled > 32'hffffc0 ? 24'hffffc0 : scaled[23:0];\n      end else rate_envelope_step = canonical;\n    end\n  endfunction\n\n  assign effective_attack_q24 = rate_envelope_step(envelope_update_attack_q24, frame_rate_44100);\n  assign effective_decay_q24 = rate_envelope_step(envelope_update_decay_q24, frame_rate_44100);\n  assign effective_release_q24 = rate_envelope_step(envelope_update_release_q24, frame_rate_44100);\n\n  // sine_interp has four internal valid registers and one valid output.\n  // Track those registers even across PANIC, which does not flush that block.\n  always_ff @(posedge clk_i or negedge rst_ni) begin\n    if (!rst_ni) sine_pending_valid <= '0;\n    else sine_pending_valid <= {sine_pending_valid[2:0], sine_valid_i};\n  end\n\n  assign quiescent_o = load_state == LOAD_IDLE && !partial_busy &&\n      !partial_valid && !gain_valid && !midi_valid && !issue_active &&\n      !slot_read_valid && !pitch_write_valid && !(|sine_pending_valid) &&\n      !sine_valid_o && !gain_product_valid && !envelope_product_valid &&\n      !finalize_valid && quantizer_quiescent && !sample_valid_o &&\n      !envelope_update_active && !envelope_update_valid && !mix_busy_o;\n  assign rate_ready_o = RUNTIME_RATE_ENABLE && quiescent_o && !panic_i &&\n      !sample_ce_i && !event_valid_i && !expression_valid_i && !mode_set_valid_i;\n  always_ff @(posedge clk_i or negedge rst_ni) begin\n    if (!rst_ni) begin\n      applied_rate_44100_o <= 1'b0;\n      frame_rate_44100 <= 1'b0;\n    end else begin\n      if (RUNTIME_RATE_ENABLE && rate_commit_i && rate_ready_o)\n        applied_rate_44100_o <= rate_44100_i;\n      if (accepted_sample)\n        frame_rate_44100 <= RUNTIME_RATE_ENABLE && applied_rate_44100_o;\n    end\n  end\n`ifndef SYNTHESIS\n  always @(posedge clk_i) begin\n    if (rst_ni && RUNTIME_RATE_ENABLE && rate_commit_i && !rate_ready_o)\n      $fatal(1, \"rate commit outside oscillator quiescence\");\n  end\n`endif",
+      "count": 1
+    },
+    {
+      "before": "unified_mix_quantizer",
+      "after": "workstation_runtime_mix_quantizer",
+      "count": 2
+    },
+    {
+      "before": ".valid_o(sample_valid_o),.sample_o(sample_o));",
+      "after": ".valid_o(sample_valid_o),.sample_o(sample_o),.quiescent_o(quantizer_quiescent));",
+      "count": 1
+    },
+    {
+      "before": "      {1'b0, envelope_update_attack_q24};",
+      "after": "      {1'b0, effective_attack_q24};",
+      "count": 1
+    },
+    {
+      "before": "  assign pitch_step_rounded = pitch_product[53:20] + {33'd0,pitch_product[19]};",
+      "after": "  assign pitch_step_rounded = rate_pitch_step(pitch_product, frame_rate_44100);",
+      "count": 1
+    },
+    {
+      "before": "  // One ADSR arithmetic lane services all voices.  Array selection is\n  // registered before the arithmetic so the vendor mapper does not build a\n  // long read-mux/arithmetic/write-demux path through all 32 voices.\n  always @* begin\n    envelope_next_level_q24 = envelope_update_level_q24;\n    envelope_next_state = envelope_update_state;\n    case (envelope_update_state)\n      ENVELOPE_ATTACK: begin\n        if (envelope_update_attack_q24 == 0 ||\n            envelope_update_attack_sum >= {1'b0, MAXIMUM_LEVEL_Q24}) begin\n          envelope_next_level_q24 = MAXIMUM_LEVEL_Q24;\n          envelope_next_state = ENVELOPE_DECAY;\n        end else begin\n          envelope_next_level_q24 = envelope_update_attack_sum[23:0];\n        end\n      end\n      ENVELOPE_DECAY: begin\n        if (envelope_update_decay_q24 == 0 ||\n            envelope_update_level_q24 <= envelope_update_sustain_q24 ||\n            envelope_update_level_q24 - envelope_update_sustain_q24 <=\n                envelope_update_decay_q24) begin\n          envelope_next_level_q24 = envelope_update_sustain_q24;\n          envelope_next_state = ENVELOPE_SUSTAIN;\n        end else begin\n          envelope_next_level_q24 = envelope_update_level_q24 -\n              envelope_update_decay_q24;\n        end\n      end\n      ENVELOPE_SUSTAIN: begin\n        envelope_next_level_q24 = envelope_update_sustain_q24;\n      end\n      ENVELOPE_RELEASE: begin\n        if (envelope_update_release_q24 == 0 ||\n            envelope_update_level_q24 <= envelope_update_release_q24) begin\n          envelope_next_level_q24 = '0;\n          envelope_next_state = ENVELOPE_IDLE;\n        end else begin\n          envelope_next_level_q24 = envelope_update_level_q24 -\n              envelope_update_release_q24;\n        end\n      end\n      default: begin\n        envelope_next_level_q24 = '0;\n        envelope_next_state = ENVELOPE_IDLE;\n      end\n    endcase\n    envelope_next_level_q18 = envelope_next_level_q24[23:6];\n  end\n\n",
+      "after": "  // One ADSR arithmetic lane services all voices.  Array selection is\n  // registered before the arithmetic so the vendor mapper does not build a\n  // long read-mux/arithmetic/write-demux path through all 32 voices.\n  always @* begin\n    envelope_next_level_q24 = envelope_update_level_q24;\n    envelope_next_state = envelope_update_state;\n    case (envelope_update_state)\n      ENVELOPE_ATTACK: begin\n        if (effective_attack_q24 == 0 ||\n            envelope_update_attack_sum >= {1'b0, MAXIMUM_LEVEL_Q24}) begin\n          envelope_next_level_q24 = MAXIMUM_LEVEL_Q24;\n          envelope_next_state = ENVELOPE_DECAY;\n        end else begin\n          envelope_next_level_q24 = envelope_update_attack_sum[23:0];\n        end\n      end\n      ENVELOPE_DECAY: begin\n        if (effective_decay_q24 == 0 ||\n            envelope_update_level_q24 <= envelope_update_sustain_q24 ||\n            envelope_update_level_q24 - envelope_update_sustain_q24 <=\n                effective_decay_q24) begin\n          envelope_next_level_q24 = envelope_update_sustain_q24;\n          envelope_next_state = ENVELOPE_SUSTAIN;\n        end else begin\n          envelope_next_level_q24 = envelope_update_level_q24 -\n              effective_decay_q24;\n        end\n      end\n      ENVELOPE_SUSTAIN: begin\n        envelope_next_level_q24 = envelope_update_sustain_q24;\n      end\n      ENVELOPE_RELEASE: begin\n        if (effective_release_q24 == 0 ||\n            envelope_update_level_q24 <= effective_release_q24) begin\n          envelope_next_level_q24 = '0;\n          envelope_next_state = ENVELOPE_IDLE;\n        end else begin\n          envelope_next_level_q24 = envelope_update_level_q24 -\n              effective_release_q24;\n        end\n      end\n      default: begin\n        envelope_next_level_q24 = '0;\n        envelope_next_state = ENVELOPE_IDLE;\n      end\n    endcase\n    envelope_next_level_q18 = envelope_next_level_q24[23:6];\n  end\n\n",
+      "count": 1
+    },
+    {
+      "before": "if (!EXPRESSION_ENABLE && slot_read_valid)",
+      "after": "if (!PITCH_PATH_ENABLE && slot_read_valid)",
+      "count": 1
+    },
+    {
+      "before": "if (EXPRESSION_ENABLE && pitch_write_valid)",
+      "after": "if (PITCH_PATH_ENABLE && pitch_write_valid)",
+      "count": 1
+    },
+    {
+      "before": "      if (accepted_sample) sample_pitch_q20 <= pitch_ratio_q20_i;",
+      "after": "      if (accepted_sample) sample_pitch_q20 <=\n          RUNTIME_RATE_ENABLE && !EXPRESSION_ENABLE ? 22'd1048576 : pitch_ratio_q20_i;",
+      "count": 1
+    },
+    {
+      "before": "if (EXPRESSION_ENABLE && pitch_step_rounded >= 34'd1932735283)",
+      "after": "if (PITCH_PATH_ENABLE && pitch_step_rounded >= 35'd1932735283)",
+      "count": 1
+    },
+    {
+      "before": "    output logic signed [31:0] sample_o\n",
+      "after": "    output logic signed [31:0] sample_o,\n    output logic quiescent_o\n",
+      "count": 1
+    },
+    {
+      "before": "  always @(posedge clk_i or negedge rst_ni) begin\n    if(!rst_ni) begin\n      magnitude_low_valid",
+      "after": "  assign quiescent_o = !magnitude_low_valid && !magnitude_valid &&\n      !scale_low_valid && !scaled_valid && !rounded_valid && !valid_o;\n  always @(posedge clk_i or negedge rst_ni) begin\n    if(!rst_ni) begin\n      magnitude_low_valid",
+      "count": 1
+    },
+    {
+      "before": "    logic [61:0] scaled;",
+      "after": "    logic [61:0] scaled, divided;",
+      "count": 1
+    },
+    {
+      "before": "        rate_pitch_step = (scaled + 62'd77070336) / 62'd154140672;",
+      "after": "        divided = (scaled + 62'd77070336) / 62'd154140672;\n        // 54-bit product *160/(147*2^20) fits35 bits before cutoff.\n        rate_pitch_step = divided[34:0];",
+      "count": 1
+    }
+  ],
+  "remaining_gaps": [
+    "Main engine DDS/ADSR only; vector/effects/LFO/serial/analysis/controller not integrated.",
+    "Exact constant divisions are synthesizable but not routed timing accepted; no full-workstation latency or resource claim.",
+    "PANIC preserves legacy natural pipeline-tail behavior; consumer must await quiescent_o and reject cancelled output."
+  ],
+  "test_dependencies": {
+    "legacy/rtl/audio/midi_step_rom.sv": {
+      "baseline_sha256": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43"
+    },
+    "legacy/rtl/audio/partial_step_generator_variable.sv": {
+      "baseline_sha256": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f"
+    },
+    "legacy/rtl/audio/mode_timbre_rom.sv": {
+      "baseline_sha256": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056"
+    },
+    "legacy/rtl/audio/sine_interp.sv": {
+      "baseline_sha256": "1085c7ebba307faa6ea7d10d99c6111a253d1f383e13fefef81c595a7d8b2b61",
+      "prepared_sha256": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+      "prepared_exact_edit": {
+        "before": "next_address_s0 <= phase_i[31:21] + 11'd1;",
+        "after": "next_address_s0 <= {(phase_i[31] ^ (&phase_i[30:21])), (phase_i[30] ^ (&phase_i[29:21])), (phase_i[29] ^ (&phase_i[28:21])), (phase_i[28] ^ (&phase_i[27:21])), (phase_i[27] ^ (&phase_i[26:21])), (phase_i[26] ^ (&phase_i[25:21])), (phase_i[25] ^ (&phase_i[24:21])), (phase_i[24] ^ (&phase_i[23:21])), (phase_i[23] ^ (&phase_i[22:21])), (phase_i[22] ^ (&phase_i[21:21])), ~phase_i[21]};"
+      }
+    },
+    "sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": {
+      "baseline_sha256": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c"
+    },
+    "sim/matlab/output/stage3_sine2048x24.mem": {
+      "baseline_sha256": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb"
+    },
+    "sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": {
+      "baseline_sha256": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6"
+    },
+    "sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": {
+      "baseline_sha256": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093"
+    },
+    "sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": {
+      "baseline_sha256": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b"
+    }
+  }
+}

@@ -1,0 +1,266 @@
+{
+  "schema": 1,
+  "date": "2026-10-30T05:22:26.713718+08:00",
+  "scope": "Standalone native main oscillator runtime48/44.1 component; no profile/build/top selection changed. No Gowin synthesis/P&R or hardware acceptance for this new component.",
+  "source_migration": {
+    "prepared_source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+    "prepared_source_identity": "custom138k-workstation-v1-f5b723250388add5",
+    "prepared_relative_path": "legacy/rtl/audio/unified_oscillator_engine.sv",
+    "prepared_sha256": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+    "native_sha256": "d5e58e866abd33177d79629a1dcebb2a4fab3d29981bb693424482fcd7129629",
+    "reverse_provenance_reconstructed_exact_bytes": true,
+    "frozen_baselines_modified": false,
+    "active_engine_used_as_substitute": false,
+    "prepared_vs_active_difference": "Only native voice-control structural adaptation differs: parallel one-hot allocation, distributed expression registers and balanced active count versus priority-loop/shared registers/serial count. ADSR/slot/mix/quantizer pipeline is identical."
+  },
+  "interface": {
+    "module": "workstation_runtime_oscillator_engine",
+    "new_inputs": [
+      "rate_commit_i",
+      "rate_44100_i"
+    ],
+    "new_outputs": [
+      "rate_ready_o",
+      "applied_rate_44100_o",
+      "quiescent_o"
+    ],
+    "default_runtime_enable": false,
+    "runtime_enabled_required_canonical_hz": 48000,
+    "rate_commit": "Idle-only pulse when rate_ready_o; no simultaneous sample/event/expression/mode/PANIC; invalid commit triggers simulation fatal. Backend local applied bit is an acknowledgement, not a second public parameter authority.",
+    "frame_freeze": "frame_rate_44100 sampled only on accepted_sample; pending input toggles cannot change in-flight math.",
+    "quiescence": "Includes load/ROM/partial, issue/slot/pitch, ADSR lane, independently mirrored4 sine internal valid stages plus sine output, gain/envelope/finalize, every quantizer valid stage and output. PANIC keeps original natural-tail behavior."
+  },
+  "arithmetic": {
+    "dds": "exact round(canonical_step*pitch_ratio_q20*160/(147*2^20)) at44.1; exact legacy bit expression at48.",
+    "dds_intermediate_bits": 62,
+    "dds_effective_step_bits": 35,
+    "cutoff": "Final effective step>=1932735283 masks only transient gain pipe; canonical slot phase step and gain remain intact. Runtime enabled without pitch expression uses unity pitch and the same effective-step path.",
+    "ADSR": "Stored canonical48 steps unchanged; nearest step*160/147 per frame, saturated at0xffffc0; level/state/assignment/pressure retained.",
+    "minimum_canonical_nonzero_ADSR_step": 408,
+    "maximum_current_table_relative_step_error": 0.00039999999999995595,
+    "maximum_current_table_absolute_continuous_duration_error_percent": 0.04001600640255454,
+    "boundary_duration_quantization": "At most1 output frame in addition to step quantization; this component has no arbitrary externalADSR step1 API.",
+    "ADSR_quantization": [
+      {
+        "profile": "flute",
+        "stage": "attack",
+        "canonical_48_step": 7768,
+        "ideal_44_step": 8454.965986394558,
+        "rounded_44_step": 8455,
+        "relative_step_error": 4.022914521062404e-06,
+        "continuous_duration_error_percent": -0.0004022898337341374
+      },
+      {
+        "profile": "flute",
+        "stage": "decay",
+        "canonical_48_step": 408,
+        "ideal_44_step": 444.0816326530612,
+        "rounded_44_step": 444,
+        "relative_step_error": -0.00018382352941170854,
+        "continuous_duration_error_percent": 0.018385732671433175
+      },
+      {
+        "profile": "flute",
+        "stage": "release",
+        "canonical_48_step": 1672,
+        "ideal_44_step": 1819.8639455782313,
+        "rounded_44_step": 1820,
+        "relative_step_error": 7.476076555024136e-05,
+        "continuous_duration_error_percent": -0.007475517679600419
+      },
+      {
+        "profile": "strings",
+        "stage": "attack",
+        "canonical_48_step": 9988,
+        "ideal_44_step": 10871.292517006803,
+        "rounded_44_step": 10871,
+        "relative_step_error": -2.690728874654713e-05,
+        "continuous_duration_error_percent": 0.0026908012768167566
+      },
+      {
+        "profile": "strings",
+        "stage": "decay",
+        "canonical_48_step": 428,
+        "ideal_44_step": 465.8503401360544,
+        "rounded_44_step": 466,
+        "relative_step_error": 0.00032126168224300145,
+        "continuous_duration_error_percent": -0.03211585063210842
+      },
+      {
+        "profile": "strings",
+        "stage": "release",
+        "canonical_48_step": 780,
+        "ideal_44_step": 848.9795918367347,
+        "rounded_44_step": 849,
+        "relative_step_error": 2.4038461538422595e-05,
+        "continuous_duration_error_percent": -0.0024037883704752794
+      },
+      {
+        "profile": "brass",
+        "stage": "attack",
+        "canonical_48_step": 29128,
+        "ideal_44_step": 31703.94557823129,
+        "rounded_44_step": 31704,
+        "relative_step_error": 1.7165613843683758e-06,
+        "continuous_duration_error_percent": -0.00017165584377254461
+      },
+      {
+        "profile": "brass",
+        "stage": "decay",
+        "canonical_48_step": 1120,
+        "ideal_44_step": 1219.047619047619,
+        "rounded_44_step": 1219,
+        "relative_step_error": -3.906249999996447e-05,
+        "continuous_duration_error_percent": 0.003906402593845115
+      },
+      {
+        "profile": "brass",
+        "stage": "release",
+        "canonical_48_step": 1488,
+        "ideal_44_step": 1619.591836734694,
+        "rounded_44_step": 1620,
+        "relative_step_error": 0.0002520161290322509,
+        "continuous_duration_error_percent": -0.02519526329050059
+      },
+      {
+        "profile": "marimba",
+        "stage": "attack",
+        "canonical_48_step": 174764,
+        "ideal_44_step": 190219.31972789115,
+        "rounded_44_step": 190219,
+        "relative_step_error": -1.6808381588795385e-06,
+        "continuous_duration_error_percent": 0.00016808409841750915
+      },
+      {
+        "profile": "marimba",
+        "stage": "decay",
+        "canonical_48_step": 700,
+        "ideal_44_step": 761.9047619047619,
+        "rounded_44_step": 762,
+        "relative_step_error": 0.00012499999999993072,
+        "continuous_duration_error_percent": -0.012498437695285247
+      },
+      {
+        "profile": "marimba",
+        "stage": "release",
+        "canonical_48_step": 1000,
+        "ideal_44_step": 1088.4353741496598,
+        "rounded_44_step": 1088,
+        "relative_step_error": -0.00039999999999995595,
+        "continuous_duration_error_percent": 0.04001600640255454
+      },
+      {
+        "profile": "piano",
+        "stage": "attack",
+        "canonical_48_step": 116508,
+        "ideal_44_step": 126811.42857142857,
+        "rounded_44_step": 126811,
+        "relative_step_error": -3.379596250852046e-06,
+        "continuous_duration_error_percent": 0.0003379607672604479
+      },
+      {
+        "profile": "piano",
+        "stage": "decay",
+        "canonical_48_step": 500,
+        "ideal_44_step": 544.2176870748299,
+        "rounded_44_step": 544,
+        "relative_step_error": -0.00039999999999995595,
+        "continuous_duration_error_percent": 0.04001600640255454
+      },
+      {
+        "profile": "piano",
+        "stage": "release",
+        "canonical_48_step": 700,
+        "ideal_44_step": 761.9047619047619,
+        "rounded_44_step": 762,
+        "relative_step_error": 0.00012499999999993072,
+        "continuous_duration_error_percent": -0.012498437695285247
+      }
+    ],
+    "constant_division_timing_accepted": false
+  },
+  "validation": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_oscillator.py",
+    "returncode": 0,
+    "tests_passed": 4,
+    "simulator": "Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905",
+    "compile_warning_counts": {
+      "PINMISSING": 2,
+      "UNSIGNED": 4
+    },
+    "warning_scope": "2 intentional omitted-runtime-input compatibility warnings;4 inherited exact prepared unsigned-priority comparisons; all newly introduced width warnings corrected. Unexpected warning classes fail the test.",
+    "unity": {
+      "clock_cycles": 116883,
+      "rendered_frames": 275,
+      "modes": [
+        "A",
+        "B",
+        "C"
+      ],
+      "timbres": 5,
+      "voices": 32,
+      "per_cycle_outputs_controls_and_envelope_states_compared": true,
+      "pitch_expression_enabled_and_disabled": true,
+      "default_runtime_disabled_legacy_call_compared": true,
+      "ADSR_branch_and_saturation_boundaries_compared": true
+    },
+    "runtime": {
+      "rendered_frames": 38,
+      "switch_sequence": "48→44.1→48; held voice and32 mixed-profile voices",
+      "exact_phase_and_ADSR_delta_checks": true,
+      "all1024_slot_words_and32_voice_state_unchanged_at_commit": true,
+      "pending_rate_input_toggled_without_commit": true,
+      "cutoff_mute_observations": 9,
+      "restored_audible_partial_observations": 16,
+      "canonical_slot_note75_profile0_partial31": {
+        "step": 1781707008,
+        "gain": 1
+      }
+    },
+    "panic_quiescence": {
+      "offsets": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        1020,
+        1023,
+        1024,
+        1025,
+        1028,
+        1032,
+        1040
+      ],
+      "actual_sine_valid_mirror_compared": true,
+      "every_actual_downstream_valid_blocks_quiescence": true,
+      "after_quiescence_no_fresh_output_clocks": 24
+    },
+    "negative_busy_commit_rejected": true,
+    "maximum_observed_component_latency_clocks": 1039,
+    "component_test_limit_clocks": 1600,
+    "deadline_scope": "Testbench counts engine accepted-frame tovalid clocks; sampled cases only, not full workstation/effects/serial worst case or routed timing proof."
+  },
+  "status": {
+    "native_source_implemented": true,
+    "local_verification_passed": true,
+    "profile_selected": false,
+    "workstation_runtime_rate_integrated": false,
+    "gowin_synthesis_verified": false,
+    "physical_timing_verified": false,
+    "hardware_verified": false,
+    "sram_programmed": false,
+    "flash_programmed": false
+  },
+  "remaining_work": [
+    "Vector/effects/cue/analysis/runtime coordinator/serial bridge integration remains separate.",
+    "Physical timing/resource analysis of exact rational divider; possible checked pipeline without changing behavior or hiding deadlines.",
+    "Full workstation runtime switching with held-note/effect histories/generation and finalserial acceptance."
+  ],
+  "source_sha256": {
+    "rtl/audio/workstation_runtime_oscillator_engine.sv": "d5e58e866abd33177d79629a1dcebb2a4fab3d29981bb693424482fcd7129629",
+    "rtl/audio/workstation_runtime_oscillator_engine.provenance.json": "2ed169ba4ade16fe5d8f0eee215f8985f4d667764ea14f38471cb90abe6e74b3",
+    "sim/audio/tb_workstation_runtime_oscillator.sv": "5ae54222484fd4ede8da68ca6b2f7ebffb2185641c2a208dee32a1d93e96479c",
+    "sim/test_workstation_runtime_oscillator.py": "625353501b67ac573be923dd4b20a2cb903d4cffd9deadd4563b5b7341d73a7e"
+  }
+}
