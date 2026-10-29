@@ -1,0 +1,289 @@
+{
+  "schema": 1,
+  "scope": "Read-only F02 owner repair proposals; no business RTL/constraints edited",
+  "original_physical_identity": "custom138k-native-physical-C11030F2",
+  "evidence_sha256": {
+    "timing-audit.json": "7abcae922da4fc6bd6ee3055f136cb9639513e5ef83568c6801e1431942a0629",
+    "native-routes-audit.json": "1702300037a6c8fd8e26e35aad5c651f89b031d208c9a3db7099ecb330a0fca8",
+    "physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+    "impl/pnr/custom_138k_integration.tr": "56192635710571eed041411328049f96b29c0defc03189b640612fc255cd1f5e",
+    "impl/pnr/custom_138k_integration.vo": "e6a486f80003f0e7855844386c134b7313acf5da198d997630630dd10dded74c",
+    "impl/pnr/custom_138k_integration.sdf": "fe21746d8fe822b5f0d7511be8b12436abc8736db6a1a657acd20ed5eb0eea6b"
+  },
+  "clock_groups": {
+    "audio_76m8": {
+      "detailed_negative_rows": 781,
+      "note": "Detailed report rows are not a unique endpoint count",
+      "reported_check": {
+        "setup": {
+          "tns_ns": -285.705,
+          "endpoints": 781
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "reported_frequency": {
+        "required_mhz": 76.8,
+        "actual_mhz": 72.236
+      },
+      "source_groups": [
+        {
+          "source": "u_managed/u_audio/u_workstation/engine/envelope_update_attack_q24_envelope_update_attack_q24_0_2_s/DO[3]",
+          "rows": 560,
+          "worst": {
+            "kind": "setup",
+            "slack_ns": -0.823,
+            "source": "u_managed/u_audio/u_workstation/engine/envelope_update_attack_q24_envelope_update_attack_q24_0_2_s/DO[3]",
+            "destination": "u_managed/u_audio/u_workstation/engine/envelope_level_q24[13]_23_s1/D",
+            "source_clock": "audio_76m8:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 13.021,
+            "skew_ns": 0.01,
+            "data_delay_ns": 13.783,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        },
+        {
+          "source": "u_managed/u_audio/u_workstation/engine/current_mode_o_0_s0/Q",
+          "rows": 4,
+          "worst": {
+            "kind": "setup",
+            "slack_ns": -0.795,
+            "source": "u_managed/u_audio/u_workstation/engine/current_mode_o_0_s0/Q",
+            "destination": "u_managed/u_audio/u_workstation/engine/u_sine_interp/next_address_s0_10_s0/D",
+            "source_clock": "audio_76m8:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 13.021,
+            "skew_ns": -0.008,
+            "data_delay_ns": 13.772,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        },
+        {
+          "source": "u_managed/u_audio/u_workstation/vector_engine/state_4_s1/Q",
+          "rows": 112,
+          "worst": {
+            "kind": "setup",
+            "slack_ns": -0.769,
+            "source": "u_managed/u_audio/u_workstation/vector_engine/state_4_s1/Q",
+            "destination": "u_managed/u_audio/u_workstation/effects/reverb_stage/g_fdn[2].ram/g_bank[2].ram/ram/CEA",
+            "source_clock": "audio_76m8:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 13.021,
+            "skew_ns": -0.059,
+            "data_delay_ns": 13.782,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        },
+        {
+          "source": "u_managed/u_audio/u_workstation/releasing_s0/Q",
+          "rows": 18,
+          "worst": {
+            "kind": "setup",
+            "slack_ns": -0.753,
+            "source": "u_managed/u_audio/u_workstation/releasing_s0/Q",
+            "destination": "u_managed/u_audio/u_workstation/vector_engine/phase[6]_18_s0/CE",
+            "source_clock": "audio_76m8:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 13.021,
+            "skew_ns": 0.018,
+            "data_delay_ns": 13.507,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        },
+        {
+          "source": "u_native_usb/input_owner/online_sync_1_s0/Q",
+          "rows": 53,
+          "worst": {
+            "kind": "setup",
+            "slack_ns": -0.748,
+            "source": "u_native_usb/input_owner/online_sync_1_s0/Q",
+            "destination": "u_managed/u_audio/u_workstation/vector_engine/phase[5]_12_s0/CE",
+            "source_clock": "audio_76m8:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 13.021,
+            "skew_ns": 0.065,
+            "data_delay_ns": 13.455,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        },
+        {
+          "source": "u_managed/u_audio/u_workstation/engine/allocated_mask_o_0_s1/Q",
+          "rows": 27,
+          "worst": {
+            "kind": "setup",
+            "slack_ns": -0.623,
+            "source": "u_managed/u_audio/u_workstation/engine/allocated_mask_o_0_s1/Q",
+            "destination": "u_managed/u_audio/u_workstation/vector_engine/envelope[1]_0_s1/CE",
+            "source_clock": "audio_76m8:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 13.021,
+            "skew_ns": 0.0,
+            "data_delay_ns": 13.395,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        },
+        {
+          "source": "u_managed/u_audio/u_workstation/session/event_o_8_s0/Q",
+          "rows": 3,
+          "worst": {
+            "kind": "setup",
+            "slack_ns": -0.506,
+            "source": "u_managed/u_audio/u_workstation/session/event_o_8_s0/Q",
+            "destination": "u_managed/u_audio/u_workstation/engine/envelope_state[31]_1_s1/CE",
+            "source_clock": "audio_76m8:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 13.021,
+            "skew_ns": 0.042,
+            "data_delay_ns": 13.236,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        },
+        {
+          "source": "u_managed/u_audio/u_workstation/session/event_o_15_s0/Q",
+          "rows": 3,
+          "worst": {
+            "kind": "setup",
+            "slack_ns": -0.341,
+            "source": "u_managed/u_audio/u_workstation/session/event_o_15_s0/Q",
+            "destination": "u_managed/u_audio/u_workstation/vector_engine/env_state[7]_2_s0/D",
+            "source_clock": "audio_76m8:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 13.021,
+            "skew_ns": 0.063,
+            "data_delay_ns": 13.117,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        },
+        {
+          "source": "u_managed/u_audio/u_workstation/engine/u_mode_timbre_rom/gain_rom_gain_rom_0_0_s/DO[3]",
+          "rows": 1,
+          "worst": {
+            "kind": "setup",
+            "slack_ns": -0.145,
+            "source": "u_managed/u_audio/u_workstation/engine/u_mode_timbre_rom/gain_rom_gain_rom_0_0_s/DO[3]",
+            "destination": "u_managed/u_audio/u_workstation/engine/slot_mem_slot_mem_0_0_s/DI[14]",
+            "source_clock": "audio_76m8:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 13.021,
+            "skew_ns": 0.0,
+            "data_delay_ns": 13.229,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        }
+      ]
+    },
+    "usb_48m": {
+      "detailed_negative_rows": 11,
+      "note": "Detailed report rows are not a unique endpoint count",
+      "reported_check": {
+        "setup": {
+          "tns_ns": -3.748,
+          "endpoints": 11
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "reported_frequency": {
+        "required_mhz": 48.0,
+        "actual_mhz": 47.227
+      },
+      "source_groups": [
+        {
+          "source": "u_native_usb/input_owner/u_guide/read_index_0_s1/Q",
+          "rows": 11,
+          "worst": {
+            "kind": "setup",
+            "slack_ns": -0.341,
+            "source": "u_native_usb/input_owner/u_guide/read_index_0_s1/Q",
+            "destination": "u_native_usb/input_owner/lights/value_1_s0/CE",
+            "source_clock": "usb_48m:[R]",
+            "destination_clock": "usb_48m:[R]",
+            "relation_ns": 20.833,
+            "skew_ns": -0.002,
+            "data_delay_ns": 20.927,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        }
+      ]
+    }
+  },
+  "primary_path_details": {
+    "audio": {
+      "path_number": 5,
+      "summary": "Slack             : -0.823\nData Arrival Time : 16.850\nData Required Time: 16.028\nFrom              : u_managed/u_audio/u_workstation/engine/envelope_update_attack_q24_envelope_update_attack_q24_0_2_s\nTo                : u_managed/u_audio/u_workstation/engine/envelope_level_q24[13]_23_s1\nLaunch Clk        : audio_76m8:[R]\nLatch Clk         : audio_76m8:[R]",
+      "statistics": "Clock Skew: -0.010\nSetup Relationship: 13.021\nLogic Level: 20\nArrival Clock Path delay: (cell: 0.000 0.000%, \n                     route: 3.067 100.000%)\nArrival Data Path Delay: (cell: 6.041 43.829%, \n                    route: 6.134 44.504%, \n                    tC2Q: 1.608 11.667%)\nRequired Clock Path Delay: (cell: 0.000 0.000%, \n                     route: 3.058 100.000%)",
+      "carry_COUT_stages": 3,
+      "data_path_final12_lines": [
+        "  12.265   0.290   tNET   RR   1        R76C33[0][B]   u_managed/u_audio/u_workstation/engine/n10626_s10/I2                                                      ",
+        "  12.496   0.231   tINS   RR   1        R76C33[0][B]   u_managed/u_audio/u_workstation/engine/n10626_s10/F                                                       ",
+        "  12.498   0.002   tNET   RR   1        R76C33[3][B]   u_managed/u_audio/u_workstation/engine/n10626_s5/I3                                                       ",
+        "  12.957   0.459   tINS   RR   2        R76C33[3][B]   u_managed/u_audio/u_workstation/engine/n10626_s5/F                                                        ",
+        "  13.689   0.732   tNET   RR   1        R75C27[2][A]   u_managed/u_audio/u_workstation/engine/n9594_s8/I2                                                        ",
+        "  13.920   0.231   tINS   RR   22       R75C27[2][A]   u_managed/u_audio/u_workstation/engine/n9594_s8/F                                                         ",
+        "  14.516   0.596   tNET   RR   1        R77C22[1][B]   u_managed/u_audio/u_workstation/engine/n9573_s4/I2                                                        ",
+        "  14.922   0.406   tINS   RR   32       R77C22[1][B]   u_managed/u_audio/u_workstation/engine/n9573_s4/F                                                         ",
+        "  16.396   1.474   tNET   RR   1        R68C26[1][B]   u_managed/u_audio/u_workstation/engine/n9141_s3/I1                                                        ",
+        "  16.850   0.454   tINS   RR   1        R68C26[1][B]   u_managed/u_audio/u_workstation/engine/n9141_s3/F                                                         ",
+        "  16.850   0.000   tNET   RR   1        R68C26[1][B]   u_managed/u_audio/u_workstation/engine/envelope_level_q24[13]_23_s1/D                                     ",
+        ""
+      ]
+    },
+    "USB": {
+      "path_number": 458,
+      "summary": "Slack             : -0.341\nData Arrival Time : 24.098\nData Required Time: 23.757\nFrom              : u_native_usb/input_owner/u_guide/read_index_0_s1\nTo                : u_native_usb/input_owner/lights/value_1_s0\nLaunch Clk        : usb_48m:[R]\nLatch Clk         : usb_48m:[R]",
+      "statistics": "Clock Skew: 0.002\nSetup Relationship: 20.833\nLogic Level: 27\nArrival Clock Path delay: (cell: 0.000 0.000%, \n                     route: 3.171 100.000%)\nArrival Data Path Delay: (cell: 9.911 47.360%, \n                    route: 10.710 51.178%, \n                    tC2Q: 0.306 1.462%)\nRequired Clock Path Delay: (cell: 0.000 0.000%, \n                     route: 3.173 100.000%)",
+      "carry_COUT_stages": 64,
+      "data_path_final12_lines": [
+        "  19.493   0.309   tNET   RR   2        R25C50[2][B]   u_native_usb/input_owner/lights/n859_s0/I1                 ",
+        "  19.973   0.480   tINS   RF   1        R25C50[2][B]   u_native_usb/input_owner/lights/n859_s0/COUT               ",
+        "  19.973   0.000   tNET   FF   2        R25C51[0][A]   u_native_usb/input_owner/lights/n860_s0/CIN                ",
+        "  20.013   0.040   tINS   FR   1        R25C51[0][A]   u_native_usb/input_owner/lights/n860_s0/COUT               ",
+        "  20.544   0.531   tNET   RR   1        R23C50[2][A]   u_native_usb/input_owner/lights/n1949_s2/I3                ",
+        "  20.998   0.454   tINS   RR   2        R23C50[2][A]   u_native_usb/input_owner/lights/n1949_s2/F                 ",
+        "  21.504   0.506   tNET   RR   1        R17C48[3][B]   u_native_usb/input_owner/lights/valid_s7/I3                ",
+        "  21.869   0.365   tINS   RR   2        R17C48[3][B]   u_native_usb/input_owner/lights/valid_s7/F                 ",
+        "  21.873   0.004   tNET   RR   1        R17C48[3][A]   u_native_usb/input_owner/lights/kind_1_s4/I1               ",
+        "  22.311   0.438   tINS   RR   17       R17C48[3][A]   u_native_usb/input_owner/lights/kind_1_s4/F                ",
+        "  24.098   1.787   tNET   RR   1        R24C50[2][A]   u_native_usb/input_owner/lights/value_1_s0/CE              ",
+        ""
+      ]
+    }
+  },
+  "readiness": {
+    "first": "u_music/model_memory_meta_s0",
+    "second": "u_music/model_memory_ready_s0",
+    "ff_kind": "DFFCE",
+    "clock": "clk_50m_d",
+    "CE": "VCC",
+    "CLEAR": "n3641_6",
+    "INIT": "1'b0",
+    "direct_Q_to_D": true,
+    "first_stage_only_functional_fanout": "second.D",
+    "clock_to_Q_max_ns": 0.306,
+    "route_max_ns": 1.732,
+    "flight_max_ns": 2.038,
+    "bound_ns": 2.0,
+    "excess_ns": 0.038,
+    "RTL_has_ASYNC_REG": true,
+    "SDC_has_only_first_stage_D_false_path": true,
+    "SDC_has_specific_stage_max_delay": false,
+    "owner": "rtl/music/basic_pitch_workstation_link.sv with constraints in tools/workstation_custom_flash.py",
+    "proposal": "In a separate explicit synthesis candidate, preserve the sole two-stage receiver and add an exact stage max_delay2ns physical constraint; optional checked close placement. Keep first.D exception only and routed2ns gate unchanged."
+  },
+  "audio_owner": "rtl/audio/unified_oscillator_engine.sv; apply equivalent fix to versioned runtime owner only under a separate synthesis identity",
+  "audio_proposal": "Pipeline ADSR BRAM read, arithmetic/comparisons and saturated result/writeback; carry voice index/state/valid, drain all stages before ready/sample snapshot, preserve event priorities and flush on PANIC. Never stall serial sample schedule.",
+  "audio_additional_groups": "Mode/lookup predecode and vector/effect request fanout require independent owner-local cuts; fixing ADSR alone does not clear781 rows.",
+  "usb_owner": "rtl/push2/push2_lights.sv (display snapshot consumer); preserve immediate score/played-note semantics in push2_score_guide.sv",
+  "usb_proposal": "Capture an internally coherent guide mode/mask display snapshot before change detection/color/cache/LED CE; split64-bit mask comparison into balanced smaller groups. Keep outgoing valid/index/value stable under backpressure and retain guide clear/full-rescan semantics.",
+  "required_validation": [
+    "Target owner RTL cycle/transaction tests covering32 voices/sample budget/PANIC and display updates whileready0",
+    "Accepted-input changes require test_current_workstation_sources.py and relevant additional regression",
+    "New source/candidate identity and full synthesis/P&R; recheck all domains, CDC/PLL, features, physical resources and serial audio cadence"
+  ],
+  "F03_relation": "F03 changes only placement of original fixed rev2; these repair proposals are not present in F03"
+}

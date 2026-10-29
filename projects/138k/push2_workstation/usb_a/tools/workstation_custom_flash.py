@@ -12,6 +12,10 @@ SOURCE = 'tools/build_workstation_flash_boot.py'
 SOURCE_SHA256 = 'ec7c16106e4039685bd2c3c451e0a1bcb8dbadfeaee0421b1a715a5ac947243c'
 CST = 'boards/custom_138k/model_flash.cst'
 SDC = ('set_false_path -to [get_pins {u_music/model_memory_meta*/D}]\n'
+       # The routed gate already requires CLK->Q + wire <=2ns. Constrain
+       # the real first-to-second stage as well; never false-path stage two.
+       'set_max_delay 2.000 -from [get_regs {u_music/model_memory_meta*}] '
+       '-to [get_regs {u_music/model_memory_ready*}]\n'
        'set_input_delay 15.000 -clock [get_clocks {clk_50m}] [get_ports {flash_miso}]\n')
 PINS = dict(flash_clk=['L12'], flash_cs_n=['T19'], flash_mosi=['P22'],
             flash_miso=['R22'], flash_wp_n=['P21'], flash_hold_n=['R21'])

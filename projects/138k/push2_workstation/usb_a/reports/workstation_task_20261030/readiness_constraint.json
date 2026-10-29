@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "stage": "readiness_interstage_max_delay_source_only",
+  "source_commit_parent": "773144d",
+  "source_sha256": {
+    "tools/workstation_custom_flash.py": "30cc354d1ccd89d43b936e08eb2dea00bfd888708b5728ee8ab0a5e2628545a4",
+    "sim/test_workstation_custom_timing.py": "5bba5234d2cb77bf35306d74ba12411b9f3cf0e57ab70636fffba84bd320d718",
+    "sim/test_current_workstation_sources.py": "a0674152e4a89b8f43393840fd1fc724ee0788fedef0238086022c5146ae759f",
+    "sim/test_workstation_custom_board.py": "388332b2192680e39690ceea16bcb66c693a20d138c2dd42465c803780ab5058"
+  },
+  "constraints": {
+    "max_delay_ns": 2.0,
+    "source": "u_music/model_memory_meta*",
+    "destination": "u_music/model_memory_ready*",
+    "first_stage_false_path_preserved": true,
+    "second_stage_false_path": false
+  },
+  "reason": {
+    "original_clk_to_q_ns": 0.306,
+    "original_route_ns": 1.732,
+    "original_total_ns": 2.038,
+    "existing_routed_gate_ns": 2.0
+  },
+  "verification": {
+    "custom_timing": {
+      "passed": true,
+      "tests": 7
+    },
+    "current_workstation_sources": {
+      "passed": true,
+      "tests": 10
+    },
+    "custom_board": {
+      "passed": true,
+      "tests": 9,
+      "duration_seconds": 255.892,
+      "process": {
+        "command": [
+          "python3",
+          "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py"
+        ],
+        "started_at": "2026-10-30T06:28:46.465764+08:00",
+        "environment": {
+          "GW138K_RISCV_PREFIX": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf",
+          "GOWIN_SIMLIB": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a",
+          "DYLD_LIBRARY_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib",
+          "DYLD_FRAMEWORK_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib"
+        },
+        "scope": "Full custom prepare/TMDS regression; no full-workstation synthesis or board access",
+        "returncode": 0,
+        "finished_at": "2026-10-30T06:33:02.463263+08:00",
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/readiness_constraint_prepare_regression.log"
+      },
+      "process_sha256": "936b3c976f7fcf7be8947110e5dd167d07c3f25091b6f7cb1a01cd0047678865",
+      "log_sha256": "19c7fd67ff12b73ab1075d21f2a2145c79f79683fc9175d1656a3c34cfa13245"
+    }
+  },
+  "source_policy": "Only versioned constraint owner changed; revision3 source locks intentionally not refreshed",
+  "full_workstation_synthesis": false,
+  "place_route": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "remaining_gaps": [
+    "Next explicit candidate must consume this constraint and pass actual CLK-to-Q plus route <=2ns",
+    "Full STA CDC PLL resource and hardware acceptance remain required"
+  ]
+}
