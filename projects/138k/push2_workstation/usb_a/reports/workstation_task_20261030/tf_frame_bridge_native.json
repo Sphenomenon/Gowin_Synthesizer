@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "passed": true,
+  "source_identity": "native-tf-frame-bridge-v1-a879430d988b77dd",
+  "validation_stage": "offline-real-decoder-and-transport-simulation",
+  "hardware_tested": false,
+  "profile_changed": false,
+  "bitstream_sha256": null,
+  "source_clock_hz": 50000000,
+  "compute_clock_hz": 76800000,
+  "input_sha256": {
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv": "a879430d988b77dd367cee604a91a68db56c5b603eff07e8cefc80355448cf65",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_final_pcm_router.sv": "ff2c8612ec9f5ae32f4fb753d1b0cc671a91699ab3a7f55e819d56ce29573d6e",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v": "c71e9860c5e988d97f1dd9840f643a68f60e6efef74d96b216013e816fb86ee1",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v": "ebf34a426e1bb53e1e002fc78723a8e501b5892c5b061b72fc46a14644c1e68a",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_frame_bridge.sv": "7ad5e4c7f0f0dce78c578c8d03b1bed7975a196c30d8766bd41e0b0400e85d3f",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-frame-bridge-v8/wav48.hex": "568d142e2fe771358fa9aa555bb44b5072b2b14b0b529877119420c92d91b3d8",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-frame-bridge-v8/wav44.hex": "1531e12e1d58a9776586e876ef7a522f97305bab369b2905be6ed02e96324f46",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-frame-bridge-v8/wav_gold.hex": "86b7e9e510c311740367c9cfb5126b7dabc81ab757bd1f329a936017ae597074",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_frame_bridge.py": "421351ef9d0da7575d85d6c3ec1620d5854d32b067bcd523e07bc1560320e92b"
+  },
+  "runs": {
+    "default": {
+      "seed": 0,
+      "passed": true,
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_workstation_tf_frame_bridge",
+        "-Ptb_workstation_tf_frame_bridge.START_GENERATION=0",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-frame-bridge-v8/default.vvp",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_final_pcm_router.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_frame_bridge.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-frame-bridge-v8/default.vvp"
+      ],
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log_sha256": "1f60886ec45c16121a04b319920a6d3eb32b1718da67e6f6443eb9df56256413",
+      "metrics": {
+        "seed": 0,
+        "accepted": 47,
+        "delivered": 35,
+        "invalidates": 15,
+        "wav_frames": 16,
+        "source_stalls": 23,
+        "destination_stalls": 76,
+        "stale": 6,
+        "quiesced": 5,
+        "router_mismatch_checks": 1
+      }
+    },
+    "wrap": {
+      "seed": 4294967293,
+      "passed": true,
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_workstation_tf_frame_bridge",
+        "-Ptb_workstation_tf_frame_bridge.START_GENERATION=4294967293",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-frame-bridge-v8/wrap.vvp",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_final_pcm_router.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_frame_bridge.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-frame-bridge-v8/wrap.vvp"
+      ],
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log_sha256": "a30a204b098626a8008ab1b429dcef3cfb48757c832ef26f08c189fa66f7155d",
+      "metrics": {
+        "seed": 4294967293,
+        "accepted": 47,
+        "delivered": 35,
+        "invalidates": 15,
+        "wav_frames": 16,
+        "source_stalls": 23,
+        "destination_stalls": 76,
+        "stale": 6,
+        "quiesced": 5,
+        "router_mismatch_checks": 1
+      }
+    }
+  },
+  "limits": "Real WAV decoder, maintained FIFO and actual final-router mismatch/cancel boundary; no SD/FAT/DDR migration, complete runtime/top/profile selection, physical CDC, synthesis, P&R or board acceptance",
+  "inputs_unchanged_during_run": true,
+  "deliverable_sha256": {
+    "rtl/tf_audio/workstation_tf_frame_bridge.sv": "a879430d988b77dd367cee604a91a68db56c5b603eff07e8cefc80355448cf65",
+    "rtl/tf_audio/WORKSTATION_TF_FRAME_BRIDGE_CONTRACT.md": "47e3b9f2387502abe32e2da354503f88f2f82aa0d1d5e1fd4bfcd5ba45586acd",
+    "sim/tf_audio/run_workstation_tf_frame_bridge.py": "421351ef9d0da7575d85d6c3ec1620d5854d32b067bcd523e07bc1560320e92b",
+    "sim/tf_audio/tb_workstation_tf_frame_bridge.sv": "7ad5e4c7f0f0dce78c578c8d03b1bed7975a196c30d8766bd41e0b0400e85d3f"
+  },
+  "integration_status": "Unselected; legacy TF bridge, top, profile, decoder, DDR and recognition paths unchanged by this component.",
+  "unsupported_rate_policy": "Bridge accepts the true-rate zero/error packet; actual final router does not consume mismatched-rate TF. Caller must fail the file and invalidate/exit explicitly; no automatic rate switch or resampling.",
+  "rollback": "Continue selecting the existing TF path; remove or leave this new owner unselected.",
+  "parent_independent_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-frame-bridge-parent-final/verification.json",
+    "sha256": "8f134965d987bc080a77bcfc1bef1b3f4f93382eba3614fdf55210d394f3b0de",
+    "passed": true,
+    "inputs_unchanged_during_run": true,
+    "runs": {
+      "default": {
+        "seed": 0,
+        "passed": true,
+        "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "run_log_sha256": "1f60886ec45c16121a04b319920a6d3eb32b1718da67e6f6443eb9df56256413",
+        "metrics": {
+          "seed": 0,
+          "accepted": 47,
+          "delivered": 35,
+          "invalidates": 15,
+          "wav_frames": 16,
+          "source_stalls": 23,
+          "destination_stalls": 76,
+          "stale": 6,
+          "quiesced": 5,
+          "router_mismatch_checks": 1
+        }
+      },
+      "wrap": {
+        "seed": 4294967293,
+        "passed": true,
+        "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "run_log_sha256": "a30a204b098626a8008ab1b429dcef3cfb48757c832ef26f08c189fa66f7155d",
+        "metrics": {
+          "seed": 4294967293,
+          "accepted": 47,
+          "delivered": 35,
+          "invalidates": 15,
+          "wav_frames": 16,
+          "source_stalls": 23,
+          "destination_stalls": 76,
+          "stale": 6,
+          "quiesced": 5,
+          "router_mismatch_checks": 1
+        }
+      }
+    }
+  }
+}
