@@ -1,0 +1,942 @@
+{
+  "schema": 1,
+  "date": "2026-10-30T04:53:10.160987+08:00",
+  "scope": "Read-only fixed rev2 enabled-input and synthesized-hierarchy audit; no DSP code or candidate input modified; proposed runtime interfaces are not implemented.",
+  "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "candidate_identity": "custom138k-workstation-v1-f5b723250388add5",
+  "candidate_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate",
+  "profile_revision": 2,
+  "integration_inputs_sha256": "10deb0aa1cd172838c98b1f8d675b0ae41b812641549ba3bde432b355caabd2b",
+  "netlist_sha256": "27b30ac791323f05dc68cd5d9ea6ccaaf14d6a122c5fe2b978cb4714b7fdcf18",
+  "enabled_inputs": [
+    "src/memory/display_data_layout_pkg.sv",
+    "src/audio/pt8211_observer.v",
+    "src/audio/pt8211_tx.v",
+    "src/control/uart_tx.v",
+    "src/memory/ddr3_platform.v",
+    "src/memory/ddr_frame_writer.v",
+    "src/memory/ddr_recovery_guard.v",
+    "src/platform/reset_release.v",
+    "src/platform/video_clock.v",
+    "src/platform/video_clock_1080p.v",
+    "src/video/audio_analysis_rom.v",
+    "src/video/feedback_capture.v",
+    "src/video/feedback_dashboard.v",
+    "src/video/feedback_renderer.v",
+    "src/video/feedback_wave_align.v",
+    "src/video/hdmi_display.v",
+    "src/video/output_audio_analysis.v",
+    "src/video/output_audio_capture.v",
+    "src/video/video_dashboard.v",
+    "src/video/video_ddr_scanout.v",
+    "src/video/video_font_5x7.v",
+    "src/video/video_monitor_cdc.v",
+    "src/video/video_peak_meter.v",
+    "src/video/video_runtime_diagnostics.v",
+    "src/video/video_timing_1080p.v",
+    "src/video/video_timing_640x480.v",
+    "vendor/gowin_ddr3/ddr3_memory_interface.v",
+    "vendor/gowin_ddr3/ddr3_pll.v",
+    "vendor/gowin_ddr3/ddr3_pll_init.v",
+    "vendor/gowin_ddr3/ddr3_pll_primitive.v",
+    "vendor/sipeed_dvi/dvi_tx_tmds_enc.v",
+    "vendor/sipeed_dvi/video_pll_1080p_gw5a.v",
+    "vendor/sipeed_dvi/video_pll_gw5a.v",
+    "vendor/sipeed_dvi/video_pll_init.v",
+    "legacy_audio.sv",
+    "src/migration/gw138k_apb_cdc.sv",
+    "src/migration/gw138k_audio_adapter.sv",
+    "src/migration/gw138k_audio_clock.v",
+    "src/migration/gw138k_audio_display_top.v",
+    "src/migration/gw138k_audio_services.sv",
+    "src/migration/gw138k_counter_cdc.sv",
+    "src/migration/gw138k_managed_audio.sv",
+    "src/migration/gw138k_runtime_uart.sv",
+    "src/migration/gw138k_stream_cdc.sv",
+    "src/ae350/gw138k_ahb_ddr.sv",
+    "src/ae350/gw138k_boot_memory.sv",
+    "src/ae350/gw138k_controlled_adapter.sv",
+    "src/ae350/gw138k_controlled_audio.sv",
+    "src/ae350/gw138k_controlled_services.sv",
+    "src/ae350/gw138k_cpu_pll_cell.v",
+    "src/ae350/gw138k_ddr_arbiter.sv",
+    "src/ae350/gw138k_ddr_workstation_top.v",
+    "src/ae350/gw138k_event_arbiter.sv",
+    "src/ae350/gw138k_event_workstation.sv",
+    "src/ae350/gw138k_performance_uart.sv",
+    "src/ae350/gw138k_three_event_arbiter.sv",
+    "src/ae350/gw138k_ui_services.sv",
+    "src/ae350/gw138k_ui_workstation_top.v",
+    "src/ae350/gw138k_view_select.sv",
+    "src/ae350/gw138k_workstation_top.v",
+    "src/ae350/gw138k_workstation_uart.sv",
+    "src/ae350/riscv_ae350_config.v",
+    "src/ae350/riscv_ae350_soc.v",
+    "src/ae350/riscv_ae350_top.v",
+    "src/usb_host/gw138k_usb_controlled_audio.sv",
+    "src/usb_host/gw138k_usb_event_fifo.v",
+    "src/push2/gw138k_push_performance_uart.sv",
+    "src/push2/push2_midi_rx.sv",
+    "rtl/audio/scope_vec/scope_control_player.sv",
+    "rtl/audio/scope_vec/scope_vec_engine.sv",
+    "src/memory/ddr_address_map_guard.v",
+    "src/audio/tf_rate_pt8211_tx.v",
+    "src/storage/tang_mp3/audio/audio_fifo.v",
+    "src/storage/tang_mp3/audio/pcm_drain.v",
+    "src/storage/tang_mp3/audio/pcm_fifo.v",
+    "src/storage/tang_mp3/audio/wav_parser.v",
+    "src/storage/tang_mp3/common/sync_rom.v",
+    "src/storage/tang_mp3/mp3/huff_tabs_tail.v",
+    "src/storage/tang_mp3/mp3/mp3_antialias.v",
+    "src/storage/tang_mp3/mp3/mp3_bitstream.v",
+    "src/storage/tang_mp3/mp3/mp3_decoder.v",
+    "src/storage/tang_mp3/mp3/mp3_huffman.v",
+    "src/storage/tang_mp3/mp3/mp3_imdct.v",
+    "src/storage/tang_mp3/mp3/mp3_reorder.v",
+    "src/storage/tang_mp3/mp3/mp3_requant.v",
+    "src/storage/tang_mp3/mp3/mp3_reservoir.v",
+    "src/storage/tang_mp3/mp3/mp3_scalefac.v",
+    "src/storage/tang_mp3/mp3/mp3_sfbtab.v",
+    "src/storage/tang_mp3/mp3/mp3_sideinfo.v",
+    "src/storage/tang_mp3/mp3/mp3_spectra.v",
+    "src/storage/tang_mp3/mp3/mp3_stereo.v",
+    "src/storage/tang_mp3/mp3/mp3_synth.v",
+    "src/storage/tang_mp3/sd/tf_sd_file_reader.v",
+    "src/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v",
+    "src/storage/tang_mp3/vendor/tf_spi_session.v",
+    "src/storage/tf_async_byte_fifo.v",
+    "src/storage/tf_async_pcm_fifo.v",
+    "src/storage/tf_audio_ddr_dma.v",
+    "src/storage/tf_audio_ddr_path.v",
+    "src/storage/tf_audio_decoder_ip.v",
+    "src/storage/tf_audio_file_reader.v",
+    "src/storage/tf_flac_pcm_decoder.v",
+    "src/storage/tf_mp3_pcm_decoder.v",
+    "src/storage/tf_pcm_bram_fifo.v",
+    "src/storage/tf_sd_audio_pcm_player.v",
+    "src/storage/tf_wav_chunk_parser.v",
+    "src/storage/tf_wav_pcm_decoder.v",
+    "src/storage/tf_workstation_audio_bridge.v",
+    "src/storage/third_party_sd_spi_file_reader.v",
+    "src/storage/third_party_sd_spi_sector_reader.v",
+    "src/storage/third_party_spi_session.v",
+    "rtl/music/basic_pitch_activation.sv",
+    "rtl/music/basic_pitch_cnn_streaming.sv",
+    "rtl/music/basic_pitch_conv2d.sv",
+    "rtl/music/basic_pitch_cqt_engine.sv",
+    "rtl/music/basic_pitch_cqt_frontend.sv",
+    "rtl/music/basic_pitch_ddr16_port.sv",
+    "rtl/music/basic_pitch_ddr_coeff_pair.sv",
+    "rtl/music/basic_pitch_feature_ddr.sv",
+    "rtl/music/basic_pitch_link_uart.sv",
+    "rtl/music/basic_pitch_model_loader.sv",
+    "rtl/music/basic_pitch_nn_ddr.sv",
+    "rtl/music/basic_pitch_normlog.sv",
+    "rtl/music/basic_pitch_normlog_ddr.sv",
+    "rtl/music/basic_pitch_pcm_pipeline.sv",
+    "rtl/music/basic_pitch_plane_cache.sv",
+    "rtl/music/basic_pitch_requant.sv",
+    "rtl/music/basic_pitch_row_buffer.sv",
+    "rtl/music/basic_pitch_shared_sigmoid.sv",
+    "rtl/music/basic_pitch_uart_model_loader.sv",
+    "rtl/music/basic_pitch_uart_rx.sv",
+    "rtl/music/basic_pitch_viterbi.sv",
+    "rtl/music/basic_pitch_weight_cache.sv",
+    "rtl/music/basic_pitch_workstation_link.sv",
+    "rtl/music/blocking_music_guidance.sv",
+    "rtl/music/blocking_note_search.sv",
+    "rtl/music/blocking_note_trainer.sv",
+    "rtl/music/blocking_note_viterbi.sv",
+    "rtl/music/blocking_pcm_note_detector.sv",
+    "rtl/music/music_async_fifo.sv",
+    "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv",
+    "rtl/audio/delay_ddr/delay_ddr_dma.sv",
+    "rtl/music/music_ddr_engine.sv",
+    "rtl/music/music_upload_parser.sv",
+    "rtl/music/music_upload_uart.sv",
+    "constraints/p11.gsc",
+    "src/memory/display_data_writer.v",
+    "src/memory/display_data_reader.v",
+    "src/usb_a/push2_screen_fifo_streamer.sv",
+    "src/usb_a/push2_screen_packet_loader.sv",
+    "src/usb_a/usb_fs_phy.v",
+    "src/usb_a/usb_transceiver.v",
+    "src/usb_a/usbh_core.sv",
+    "src/usb_a/usbh_crc16.sv",
+    "src/usb_a/usbh_crc5.sv",
+    "src/usb_a/usbh_fifo.sv",
+    "src/usb_a/usbh_host_defs.v",
+    "src/usb_a/usbh_sie.sv",
+    "rtl/music/tf_playlist_bridge.sv",
+    "rtl/music/basic_pitch_44100_to_48000.sv",
+    "src/memory/tf_audio_ddr_command_buffer.sv",
+    "rtl/music/basic_pitch_ddr_command_buffer.sv",
+    "rtl/audio/scope_vec/scope_dac_select.sv",
+    "rtl/audio/scope_vec/scope_tf_control.sv",
+    "rtl/audio/scope_vec/scope_tf_transport.sv",
+    "src/usb_a/gw138k_usb_lifecycle_merge.sv",
+    "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+    "rtl/timing/basic_pitch_ddr_client_queues.sv",
+    "rtl/timing/gw138k_level_cdc.sv",
+    "rtl/timing/gw138k_mmio_pipeline.sv",
+    "rtl/audio/serial_spatial_reverb.sv",
+    "rtl/memory/workstation_sdp.sv",
+    "rtl/memory/workstation_sdp_banked.sv",
+    "rtl/music/basic_pitch_boot_model_loader.sv",
+    "rtl/music/basic_pitch_ddr_boot_gate.sv",
+    "rtl/music/basic_pitch_ddr_read_credit.sv",
+    "rtl/music/basic_pitch_ddr_sync_fifo.sv",
+    "rtl/music/basic_pitch_flash_io_guard.sv",
+    "rtl/music/basic_pitch_flash_model_loader.sv",
+    "rtl/music/basic_pitch_flash_serial_boot.sv",
+    "rtl/music/basic_pitch_startup_panic.sv",
+    "rtl/audio/workstation_output_router.sv",
+    "rtl/audio/workstation_frame_delivery.sv",
+    "rtl/control/workstation_session.sv",
+    "rtl/control/workstation_parameters.sv",
+    "rtl/services/workstation_playback_service.sv",
+    "rtl/usb2/workstation_ulpi_link.sv",
+    "rtl/usb2/workstation_ulpi_supervisor.sv",
+    "rtl/usb2/workstation_usb2_host_controller.sv",
+    "rtl/usb2/workstation_usb2_host_mac.sv",
+    "rtl/usb2/workstation_usb2_host_phy.sv",
+    "rtl/usb2/workstation_usb2_host_port.sv",
+    "rtl/usb2/workstation_usb3300_host_init.sv",
+    "rtl/usb2/workstation_usb3300_host_link.sv",
+    "rtl/usb2/workstation_usb2_cpu_bridge.sv",
+    "rtl/usb2/workstation_usb2_host_mmio.sv",
+    "rtl/usb2/workstation_usb2_cpu_bus.sv",
+    "rtl/usb2/workstation_usb2_soc.sv",
+    "vendor/usb_host_fs_8fc3/src/VexRiscv.v",
+    "vendor/usb_host_fs_8fc3/src/simpleuart.v",
+    "rtl/workstation/workstation_usb2_input.sv",
+    "rtl/workstation/workstation_usb2_service_adapter.sv",
+    "rtl/push2_usb_a_control.sv",
+    "rtl/audio/push2_controls.sv",
+    "rtl/push2/push2_lights.sv",
+    "rtl/push2/push2_led_tx.sv",
+    "rtl/push2/push2_playlist_hold.sv",
+    "rtl/push2/push2_song_menu.sv",
+    "rtl/push2/push2_score_guide.sv",
+    "rtl/push2/push2_song_screen.sv",
+    "rtl/display_data/push2_surface_pixels.sv",
+    "rtl/workstation/workstation_custom_138k_top.sv",
+    "rtl/audio/workstation_fpc_audio.sv",
+    "rtl/display_data/workstation_lcd.sv",
+    "rtl/bluetooth/workstation_bluetooth.sv",
+    "rtl/bluetooth/gw138k_ble_status_uart.v",
+    "rtl/memory/workstation_ddr_bist.v",
+    "rtl/display_data/workstation_custom_dvi.sv",
+    "native_bluetooth/ble_protocol_command.v",
+    "native_bluetooth/ble_recording.v",
+    "native_bluetooth/bt_acl_bridge.v",
+    "native_bluetooth/bt_gatt.v",
+    "native_bluetooth/bt_h5_transport.v",
+    "native_bluetooth/bt_hci_init.v",
+    "native_bluetooth/bt_uart.v",
+    "native_bluetooth/bt_uart_fast.v",
+    "native_bluetooth/bt_verilog_core.v",
+    "native_bluetooth/reset_release_sync.v",
+    "constraints/custom_138k.cst",
+    "constraints/custom_138k.sdc"
+  ],
+  "enabled_count": 230,
+  "audited_stage_inputs": {
+    "legacy_audio.sv": {
+      "sha256": "5794fa7a36265e88855a40ec054b2b3b0d8781f86047318d00f336b93af6652e",
+      "bytes": 734,
+      "explicit_enabled_input": true,
+      "profile_origin": "locked_parent_baseline"
+    },
+    "src/ae350/gw138k_controlled_adapter.sv": {
+      "sha256": "07e14e97c143cb6b0b8cc0e4e70700f3cb2c0ade47f14d9e1fe85ac2985fd202",
+      "bytes": 11052,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "src/ae350/gw138k_event_workstation.sv": {
+      "sha256": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+      "bytes": 18425,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "src/usb_host/gw138k_usb_controlled_audio.sv": {
+      "sha256": "91c9ca975e22716d6bde5e2b54e278fbc32eb5d38d35281196c03c3583efcd39",
+      "bytes": 9255,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "src/migration/gw138k_audio_clock.v": {
+      "sha256": "580554c6a94b18529ac32f76e1a54ac2a2fe568ef24b843b93a025da3dc2ff1a",
+      "bytes": 11032,
+      "explicit_enabled_input": true,
+      "profile_origin": "locked_parent_baseline"
+    },
+    "src/audio/pt8211_tx.v": {
+      "sha256": "82e479874e26cb65a4c5a382f153f5fa0a680f091eb5cba3bf198cddc822d732",
+      "bytes": 6144,
+      "explicit_enabled_input": true,
+      "profile_origin": "locked_parent_baseline"
+    },
+    "src/audio/tf_rate_pt8211_tx.v": {
+      "sha256": "18ff683654d4c836dd924ee008caedcf8f75d02367118f34204aeecec2207a06",
+      "bytes": 7436,
+      "explicit_enabled_input": true,
+      "profile_origin": "locked_parent_baseline"
+    },
+    "legacy/rtl/audio/unified_oscillator_engine.sv": {
+      "sha256": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+      "bytes": 35867,
+      "explicit_enabled_input": false
+    },
+    "legacy/rtl/audio/midi_step_rom.sv": {
+      "sha256": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+      "bytes": 776,
+      "explicit_enabled_input": false
+    },
+    "legacy/rtl/audio/partial_step_generator_variable.sv": {
+      "sha256": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+      "bytes": 3706,
+      "explicit_enabled_input": false
+    },
+    "legacy/rtl/audio/mode_timbre_rom.sv": {
+      "sha256": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+      "bytes": 2184,
+      "explicit_enabled_input": false
+    },
+    "legacy/rtl/audio/pitch_expression.sv": {
+      "sha256": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+      "bytes": 1865,
+      "explicit_enabled_input": false
+    },
+    "legacy/rtl/audio/audio_math_pkg.sv": {
+      "sha256": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+      "bytes": 1263,
+      "explicit_enabled_input": false
+    },
+    "legacy/rtl/audio/stereo_effects.sv": {
+      "sha256": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+      "bytes": 12319,
+      "explicit_enabled_input": false
+    },
+    "rtl/audio/scope_vec/scope_vec_engine.sv": {
+      "sha256": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+      "bytes": 16767,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "rtl/audio/scope_vec/scope_control_player.sv": {
+      "sha256": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+      "bytes": 2945,
+      "explicit_enabled_input": true,
+      "profile_origin": "locked_parent_baseline"
+    },
+    "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": {
+      "sha256": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+      "bytes": 7482,
+      "explicit_enabled_input": true,
+      "profile_origin": "locked_parent_baseline"
+    },
+    "rtl/audio/delay_ddr/delay_ddr_dma.sv": {
+      "sha256": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+      "bytes": 5807,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "rtl/audio/serial_spatial_reverb.sv": {
+      "sha256": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+      "bytes": 8700,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "rtl/audio/spatial_room_preset.svh": {
+      "sha256": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4",
+      "bytes": 1077,
+      "explicit_enabled_input": false
+    },
+    "rtl/control/workstation_parameters.sv": {
+      "sha256": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287",
+      "bytes": 10596,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "rtl/audio/workstation_fpc_audio.sv": {
+      "sha256": "53adaec050a44e9704e9b66c991ae22a76a2b7ea751824bb6ce8d0bc4a65793c",
+      "bytes": 5495,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "src/video/output_audio_analysis.v": {
+      "sha256": "5c4929314c548d0ab97d6274e6ceb3ef59a76be739c5fb0a1d48564aa011dbdc",
+      "bytes": 50126,
+      "explicit_enabled_input": true,
+      "profile_origin": "locked_parent_baseline"
+    },
+    "src/video/output_audio_capture.v": {
+      "sha256": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+      "bytes": 2874,
+      "explicit_enabled_input": true,
+      "profile_origin": "locked_parent_baseline"
+    },
+    "src/video/audio_analysis_rom.v": {
+      "sha256": "439ff9f00ff4d29740b296f2e264eabc19e6cb2ff2195dfb2bd815c9d1286946",
+      "bytes": 130553,
+      "explicit_enabled_input": true,
+      "profile_origin": "locked_parent_baseline"
+    },
+    "rtl/music/basic_pitch_fixed_pkg.svh": {
+      "sha256": "4ac26ded20a26444a3f422909ec38e814e4551ccaaefe21ca040989e73b379c9",
+      "bytes": 2454,
+      "explicit_enabled_input": false
+    },
+    "rtl/music/basic_pitch_workstation_link.sv": {
+      "sha256": "797d81fa12841c60c7010cb75d123a34cdf190d725e8a923ec0f65d57add04b3",
+      "bytes": 11709,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "rtl/music/basic_pitch_44100_to_48000.sv": {
+      "sha256": "cea1bb76b5e6fa18ed606899fc9d821195fb3d25c07a8a92b236de9c73844347",
+      "bytes": 1272,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "rtl/music/basic_pitch_cqt_frontend.sv": {
+      "sha256": "0c92ab77430815c6edad91791479b1f81afe3121a710093f1681b63ed00ed6ae",
+      "bytes": 9785,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "rtl/music/basic_pitch_pcm_pipeline.sv": {
+      "sha256": "1237dda62f16c0ead0bc428a98b11611ece2e1a04bb55f93abe0bdb276aaa265",
+      "bytes": 89808,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "rtl/music/music_upload_parser.sv": {
+      "sha256": "98673646396cfd2d8f306c2158bbef88dde88eb84dee92d345ee07a6a55a6760",
+      "bytes": 11063,
+      "explicit_enabled_input": true,
+      "profile_origin": "versioned_source"
+    },
+    "rtl/workstation/gw138k_push_workstation_top.v": {
+      "sha256": "cf5d89d3a6fd76e0406275500322233c42d8a010290695d8eef50f498716aa6d",
+      "bytes": 37951,
+      "explicit_enabled_input": false
+    },
+    "sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": {
+      "sha256": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+      "bytes": 1152,
+      "explicit_enabled_input": false
+    },
+    "sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": {
+      "sha256": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+      "bytes": 1120,
+      "explicit_enabled_input": false
+    },
+    "sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": {
+      "sha256": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+      "bytes": 140,
+      "explicit_enabled_input": false
+    },
+    "sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": {
+      "sha256": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+      "bytes": 2400,
+      "explicit_enabled_input": false
+    },
+    "rtl/audio/scope_vec/data/note_steps.mem": {
+      "sha256": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+      "bytes": 1152,
+      "explicit_enabled_input": false
+    },
+    "rtl/audio/scope_vec/data/scene_controls.mem": {
+      "sha256": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c",
+      "bytes": 4352,
+      "explicit_enabled_input": false
+    }
+  },
+  "legacy_include_closure": [
+    "legacy/rtl/audio/audio_math_pkg.sv",
+    "legacy/rtl/audio/sine_interp.sv",
+    "legacy/rtl/audio/midi_step_rom.sv",
+    "legacy/rtl/audio/partial_step_generator_variable.sv",
+    "legacy/rtl/audio/mode_timbre_rom.sv",
+    "legacy/rtl/audio/unified_oscillator_engine.sv",
+    "legacy/rtl/audio/pitch_expression.sv",
+    "legacy/rtl/input/uart_rx.sv",
+    "legacy/rtl/input/midi_stream_decoder.sv",
+    "legacy/rtl/audio/stereo_effects.sv",
+    "legacy/rtl/audio/audio_workstation.sv",
+    "legacy/rtl/audio/spectrum_fft256.sv",
+    "legacy/rtl/audio/audio_capture_fifo.sv",
+    "legacy/rtl/input/score_led_player.sv",
+    "legacy/rtl/audio/audio_visual_extensions.sv"
+  ],
+  "synthesized_relevant_frames": {
+    "u_managed/u_audio/u_workstation/pitch": "pitch_expression",
+    "u_managed/u_audio/u_workstation/engine": "unified_oscillator_engine",
+    "u_managed/u_audio/u_workstation/engine/u_midi_step_rom": "midi_step_rom",
+    "u_managed/u_audio/u_workstation/engine/u_partial_step_generator_variable": "partial_step_generator_variable",
+    "u_managed/u_audio/u_workstation/engine/u_mode_timbre_rom": "mode_timbre_rom",
+    "u_managed/u_audio/u_workstation/vector_engine": "scope_vec_engine",
+    "u_managed/u_audio/u_workstation/effects/chorus_stage": "serial_chorus_effect",
+    "u_managed/u_audio/u_workstation/effects/reverb_stage": "serial_spatial_reverb",
+    "u_music/u_basic_pitch/u_frontend": "basic_pitch_cqt_frontend",
+    "u_video/u_renderer/g_analysis.u_analysis": "output_audio_analysis",
+    "u_video/u_renderer/g_analysis.u_analysis/u_rom": "audio_analysis_rom"
+  },
+  "compiled_but_swept": {
+    "spectrum_fft256": "Included by legacy_audio.sv via audio_visual_extensions; USB managed wrapper leaves FFT outputs unused and no spectrum_fft256 module survives this netlist.",
+    "audio_workstation": "Legacy include compiles its definition; the active instance is gw138k_event_workstation."
+  },
+  "source_line_evidence": {
+    "src/ae350/gw138k_controlled_adapter.sv": {
+      "SAMPLE_RATE_HZ(48000)": [
+        110
+      ],
+      "BCK_HALF_CYCLES(25)": [
+        155
+      ],
+      "reset_audio_n": [
+        67,
+        91,
+        92,
+        113,
+        128,
+        140,
+        141,
+        148,
+        156,
+        166
+      ],
+      "u_extensions": [
+        127
+      ]
+    },
+    "src/ae350/gw138k_event_workstation.sv": {
+      "SAMPLE_RATE_HZ!=48000": [
+        57
+      ],
+      "pitch_expression #": [
+        256
+      ],
+      "unified_oscillator_engine #": [
+        259
+      ],
+      "scope_vec_engine #": [
+        272
+      ],
+      "stereo_effects #": [
+        298
+      ],
+      "frame_inflight": [
+        110,
+        293,
+        294,
+        309,
+        319,
+        321,
+        323,
+        326,
+        327
+      ]
+    },
+    "legacy/rtl/audio/unified_oscillator_engine.sv": {
+      "RATE_SCALE =": [
+        122
+      ],
+      "scaled_midi_phase_step =": [
+        282
+      ],
+      "slot_mem [": [
+        106
+      ],
+      "slot_write_data = {": [
+        349,
+        354,
+        361
+      ],
+      "attack_step_q24[load_voice_index]": [
+        696
+      ],
+      "pitch_step_rounded >=": [
+        737
+      ],
+      "if (panic_i)": [
+        544,
+        565,
+        791
+      ]
+    },
+    "legacy/rtl/audio/pitch_expression.sv": {
+      "LFO_STEP =": [
+        11
+      ],
+      "glide_ratio <=": [
+        33,
+        37,
+        39,
+        41
+      ],
+      "phase <= phase +": [
+        36
+      ]
+    },
+    "legacy/rtl/audio/stereo_effects.sv": {
+      "CHORUS_BASE=480": [
+        67,
+        130
+      ],
+      "CHORUS_DEPTH=96": [
+        68,
+        131
+      ],
+      "lfo<=lfo+24'd349": [
+        118
+      ],
+      "serial_delay_effect_ddr #": [
+        176
+      ],
+      "serial_spatial_reverb reverb_stage": [
+        186
+      ]
+    },
+    "rtl/audio/scope_vec/scope_vec_engine.sv": {
+      "MAX_STEP=": [
+        37
+      ],
+      "adsr_rom[0:19]": [
+        48
+      ],
+      "phase[j]<=0;base_step[j]<=note_rom": [
+        196
+      ],
+      "attack[j]<=adsr_rom": [
+        199
+      ],
+      "function automatic [15:0] slew": [
+        123
+      ]
+    },
+    "rtl/audio/serial_spatial_reverb.sv": {
+      "delay_length=1429": [
+        16
+      ],
+      "damping[i]<=sat31": [
+        93
+      ],
+      "loop_gain[i]<=h[i]-(h[i]>>>3)": [
+        122
+      ]
+    },
+    "rtl/control/workstation_parameters.sv": {
+      "glide_step_o <= value_i == 0": [
+        128
+      ]
+    },
+    "rtl/music/basic_pitch_workstation_link.sv": {
+      "rate_48000=": [
+        43
+      ],
+      "rate_44100=": [
+        44
+      ],
+      "basic_pitch_44100_to_48000": [
+        47
+      ],
+      ".WIN_LEN(44100)": [
+        70
+      ]
+    },
+    "rtl/music/basic_pitch_cqt_frontend.sv": {
+      "PHASES  = 147": [
+        20
+      ],
+      "DOWN    = 320": [
+        21
+      ],
+      "DELAY   = 3200": [
+        22
+      ],
+      "Preserve the delay line": [
+        153
+      ]
+    },
+    "rtl/music/basic_pitch_pcm_pipeline.sv": {
+      "run_rst_ni =": [
+        71
+      ],
+      "resampler_poly.mem": [
+        228
+      ],
+      "USE_DDR_FRONT_COEFF": [
+        25,
+        214,
+        241
+      ]
+    },
+    "src/video/output_audio_analysis.v": {
+      "46.875..19992.1875": [
+        157
+      ],
+      "SAMPLE_BITS(11)": [
+        63
+      ]
+    },
+    "rtl/audio/workstation_fpc_audio.sv": {
+      "phase[7]": [
+        83,
+        121
+      ],
+      "stale_frames < 5'd16": [
+        69,
+        107
+      ],
+      "latest_sample <= received_sample": [
+        105
+      ]
+    }
+  },
+  "generators": {
+    "tools/scope_score/compile_scope.py": {
+      "sha256": "012269337db663610daafaac7b7740080588e9c31b0913d23335acbd11c72a51",
+      "role": "source generator, not a currently compiled HDL input"
+    },
+    "tools/generate_room_preset.py": {
+      "sha256": "87da227eb075569db4e80e2537fd224f42f3c3fed3ed7dadf593e244718a63c6",
+      "role": "source generator, not a currently compiled HDL input"
+    },
+    "projects/138k/ae350/scripts/generate_fft2048_rom.py": {
+      "sha256": "ab47fa2d39feaffdff17fffb7f46f394123b93d32505b7a981647141ad74bc46",
+      "current_staged_fft_rom_and_column_map_match": true
+    }
+  },
+  "generator_gaps": [
+    "No tracked stage13 MIDI/ADSR/ratio or stage15 gain-table generator found in this fixed clone. The exact frozen tables and baseline provenance are available; do not invoke a private historical generator.",
+    "basic_pitch_fixed_pkg.svh names music/export_basic_pitch_fixed.py and models/basic_pitch_onnx_manifest.json, neither exists among tracked paths in this clone. Existing resampler_poly.mem is tracked. Re-export/retraining provenance must be supplied before coefficient geometry changes."
+  ],
+  "measurements": {
+    "method": "Numerical evaluation of current locked ROM words and exact RTL constants; no fresh DSP simulation or hardware measurement.",
+    "main_a4_raw_192k_step": 9842633,
+    "main_a4_current_48k_step": 39370532,
+    "main_a4_current_hz": 439.999982714653,
+    "main_a4_if_only_parameter_changed_44100_hz": 404.24998411908746,
+    "vector_a4_48k_step": 39370534,
+    "vector_a4_current_hz": 440.0000050663948,
+    "ideal_44100_a4_step": 42852281,
+    "unadapted_frequency_factor": 0.91875,
+    "unadapted_frequency_cents": -146.70690006119762,
+    "unadapted_duration_increase_percent": 8.843537414965997,
+    "adsr_profiles": [
+      {
+        "profile": 0,
+        "name": "flute",
+        "raw_192k_table": [
+          1942,
+          102,
+          14428352,
+          418
+        ],
+        "main_48k_attack_ms": 45.0,
+        "vector_48k_attack_ms": 180.0
+      },
+      {
+        "profile": 1,
+        "name": "strings",
+        "raw_192k_table": [
+          2497,
+          107,
+          13086208,
+          195
+        ],
+        "main_48k_attack_ms": 35.0,
+        "vector_48k_attack_ms": 139.97916666666666
+      },
+      {
+        "profile": 2,
+        "name": "brass",
+        "raw_192k_table": [
+          7282,
+          280,
+          11408448,
+          372
+        ],
+        "main_48k_attack_ms": 12.0,
+        "vector_48k_attack_ms": 48.0
+      },
+      {
+        "profile": 3,
+        "name": "marimba",
+        "raw_192k_table": [
+          43691,
+          175,
+          0,
+          250
+        ],
+        "main_48k_attack_ms": 2.0,
+        "vector_48k_attack_ms": 8.0
+      },
+      {
+        "profile": 4,
+        "name": "piano",
+        "raw_192k_table": [
+          29127,
+          125,
+          0,
+          175
+        ],
+        "main_48k_attack_ms": 3.0,
+        "vector_48k_attack_ms": 12.020833333333334
+      }
+    ],
+    "echo_samples_48": 9600,
+    "echo_samples_44": 8820,
+    "chorus_base_48": 480,
+    "chorus_base_44": 441,
+    "chorus_depth_48": 96,
+    "chorus_depth_44_nearest": 88,
+    "chorus_lfo_current_hz": 0.9984970092773438,
+    "chorus_lfo_step_44_nearest": 380,
+    "fdn_lengths_48": [
+      1429,
+      1789,
+      1999,
+      2131
+    ],
+    "fdn_lengths_44_nearest_unvalidated": [
+      1313,
+      1644,
+      1837,
+      1958
+    ],
+    "damping_pole_48": 0.5,
+    "equivalent_damping_pole_44": 0.47027111469312016,
+    "fft2048_bin_hz_48": 23.4375,
+    "fft2048_bin_hz_44": 21.533203125,
+    "fft2048_old_bin853_hz_at_44": 18367.822265625
+  },
+  "current_interfaces": {
+    "rate_inputs": "SAMPLE_RATE_HZ is elaboration-time only; vector and effects have no runtime sample-rate input. The active adapter fixes 48000 and BCK_HALF_CYCLES=25.",
+    "dsp_frame": "sample_ce_i plus sample_ready_o; gw138k_event_workstation joins synth/vector and effects, with pending/frame_inflight/deadline_miss. No sample-rate/generation field in PCM or 18-bit MIDI events.",
+    "voice_state": "slot_mem[79:48] phase, [47:16] stored base step, [15:0] gain; per-voice envelope state/level and step arrays. Existing reset/PANIC clears allocation and held/deferred state.",
+    "recognition_input": "TF decoded PCM at file sample_rate, observed in clk_50m; this is not a tap of unified final PCM.",
+    "actual_final_serial": "Synthesis clock 76.8 MHz schedules PT8211 every1600 clocks; FPC independently serializes the latest 49-bit mailbox sample at 12.288MHz/256. This is latest-value holding, not permanent rate conversion."
+  },
+  "minimal_runtime_plan": [
+    {
+      "area": "authoritative rate commit",
+      "change": "One always-on transaction owns requested/applied rate and stream generation; distribute an immutable pending configuration and collect DSP/effect/analysis/serializer acknowledgements. Apply once at a complete-frame boundary while muted. Do not add another parameter authority or pack metadata into 18-bit MIDI events."
+    },
+    {
+      "area": "DDS and five timbres",
+      "change": "Preserve exact current 48k canonical MIDI/ratio/gain tables and existing canonical slot steps. Fuse a unity or160/147 rate factor with the existing per-frame pitch multiplier so held phases, note assignments, velocity and pressure remain. Use full precision/rounding and the existing normalized0.45Fs audible cutoff after effective pitch; do not permanently zero gains solely due to the temporary44.1k mode. Validate high-note/partial clipping and reverse switches."
+    },
+    {
+      "area": "ADSR, glide and LFO",
+      "change": "Keep envelope level/state and canonical48k steps; scale per-frame attack/decay/release, glide delta and gain/morph/scale slew by160/147 for44.1. Sustain level, pitch-bend ratio and shape geometry remain rate-independent. Preserve main and vector distinct current ADSR semantics. Keep LFO phase and select a runtime phase increment. Existing cached voice steps/profile-less state prevents a naive ROM-bank switch from updating held voices."
+    },
+    {
+      "area": "effects",
+      "change": "Select runtime echo/chorus/early-reflection/FDN lengths from versioned48/44 banks inside existing maximum-sized storage. Re-derive damping poles and LFO/slew timing; preserve physical echo time and feedback semantics, verify stability/T60. Reset history through a dedicated rate-history command while retaining musical voices/parameters; do not reuse globalPANIC."
+    },
+    {
+      "area": "DDR history fencing",
+      "change": "Extend the existing ordered flush and return-marker transaction to include/acknowledge the rate configuration or generation before changing ECHO_SAMPLES in both audio consumer and DMA prefetch calculation. Drain/cancel old outstanding reads; do not reinterpret old ring samples at the new rate. Existing65-bit FIFO markers have no general stream generation field."
+    },
+    {
+      "area": "FFT and display",
+      "change": "Hann/twiddle geometry can remain; abort incomplete2048-frame captures/FFT work and prevent old-generation publication. Bind output metadata/frequency labels and bin-to-column choice to actualFs; fixed853-bin upper edge becomes18.367822kHz at44.1. Existing v1 layout fixes48000 and needs explicit version/capability treatment."
+    },
+    {
+      "area": "CNN recognition",
+      "change": "Keep the model/CQT at22050. The lowest-change path keeps the existing44.1-to48 analyzer-only adapter before the fixed147/320 polyphase frontend, with a new-rate restart/generation fence and pending DDR response protection. It is nearest-sample repetition, so validate accuracy; do not use it as the finalaudio resampler. A direct44.1-to22.05 1/2 filtered frontend is a separate coefficient/reproducibility/recognition-validation change."
+    },
+    {
+      "area": "TF and cue time",
+      "change": "TF NCO RATE_MUL=916260 is tied to76.8MHz; recompute when that clock changes and define mismatch SRC/controlled-switch policy. Keep48k control-cue timestamps as a canonical timebase and advance by48000/currentFs, or version timestamp units; do not silently stretch sequences. Closed recordings retain their own sample rate."
+    }
+  ],
+  "state_contract": {
+    "preserve": [
+      "public parameter authority and requested/applied distinction",
+      "held/deferred notes and existing global PANIC semantics",
+      "voice assignment, phase, envelope level/state, velocity/pressure and timbre",
+      "pitch glide position and LFO phase"
+    ],
+    "invalidate": [
+      "in-flight rendered PCM, join flags and final-serial pending frame of the old generation",
+      "delay/chorus/reverb sample histories and old DDR reads",
+      "partial FFT/CQT/resampler windows and results with mismatched generation"
+    ],
+    "missing_hooks": [
+      "separate frame-cancel/history-clear versus voice reset",
+      "runtime rate factor and coefficient bank commit/ack at DSP boundaries",
+      "DDR flush-completion acknowledgement exported to switching control",
+      "rate/generation metadata and stale result rejection",
+      "common always-on timeout/fault path independent of a stopped clock"
+    ]
+  },
+  "deadline": {
+    "current_nominal": {
+      "compute_hz": 76800000,
+      "output_hz": 48000,
+      "clocks_per_frame": 1600,
+      "frame_us": 20.833333333333332
+    },
+    "possible_44100_plans": [
+      {
+        "compute_hz": 70560000,
+        "clocks_per_frame": 1600,
+        "frame_us": 22.675736961451246,
+        "status": "Arithmetic plan only; not selected or constrained by this rev2 profile."
+      },
+      {
+        "compute_hz": 76800000,
+        "clocks_per_frame_exact": 1741.4965986394557,
+        "minimum_whole_cycles": 1741,
+        "frame_us": 22.675736961451246,
+        "status": "Requires output-paced1741/1742 scheduling and bounded CDC delivery; currentPT8211 fixed1600 divider does not implement it."
+      }
+    ],
+    "current_maximum_latency_cycles_measured": null,
+    "historical_only": {
+      "source": "rtl/audio/scope_vec/VERIFICATION.md",
+      "max_cycles": 1067,
+      "frame_budget": 1600,
+      "remaining_cycles": 533,
+      "remaining_us_at_76m8": 6.940104166666667,
+      "warning": "2026-09-30 simulation, different source identity/configuration; not the fixed rev2 allfeatures worst case, nor44.1 proof."
+    },
+    "fixed_rev2_synthesis_audio_estimate_mhz": 60.489,
+    "routed_timing_result": "C11030F2 fixed rev2 routed STA failed: audio72.236MHz<76.8MHz, USB47.227MHz<48MHz; global setup-1.867ns, hold-0.910ns. See F02 physical report; this does not measure frame algorithm latency.",
+    "permanent_frequency_difference": {
+      "producer_fps": 48000,
+      "consumer_fps": 44100,
+      "difference_fps": 3900,
+      "fifo512_time_to_drift_ms": 131.28205128205127,
+      "fifo448_time_to_drift_ms": 114.87179487179488,
+      "relative_oscillator_ppm_measured": null,
+      "formula": "delta_fps=Fs*(producer_relative_error-consumer_relative_error); usable_FIFO_frames/abs(delta_fps) bounds drift time, not a permanent solution.",
+      "illustration_only_relative_100ppm": {
+        "difference_fps": 4.8,
+        "fifo512_seconds": 106.66666666666667
+      }
+    }
+  },
+  "validation_required": [
+    "48k bit-equivalence for allA/B/C modes, five timbres and effect permutations",
+    "Held-note48→44.1→48 switches, pressure/sustain/glide/release and nearNyquist partials",
+    "Per-rate actual pitch and envelope time versus reference, no half-I2S frames or stalegeneration output",
+    "Effect physicaldelay/T60/damping/chorusLFO and flushedDDR outstanding responses under load",
+    "Both frame worstcase latency and routedSTA at actual clocks; bounded FIFO stall/overflow/underflow and measuredclock mismatch",
+    "FFT frequency metadata/window fencing; recognition golden inputs and output accuracy at bothfile/live rates",
+    "Single bitstream runtime switching, not two static builds"
+  ],
+  "status": {
+    "source_audit_completed": true,
+    "dsp_runtime_rate_support_implemented": false,
+    "current_candidate_changed": false,
+    "static_dual_build_counts_as_runtime_support": false,
+    "hardware_verified": false
+  }
+}

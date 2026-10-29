@@ -15,7 +15,9 @@
 
 执行状态（2026-10-30）：已完成[环境与基线保全](push2_workstation/usb_a/reports/WORKSTATION_TASK_ENVIRONMENT_20261030.md)、F01 来源检查点及 F02 维护 AE350 固件接入；[revision 2 综合](push2_workstation/usb_a/reports/WORKSTATION_F02_SYNTHESIS_20261030.md)与完整来源审计通过，尚无本轮完整工作站物理验收。[A06 独立切换事务](push2_workstation/usb_a/reports/WORKSTATION_A06_TRANSACTION_20261030.md)、[双参考资格与 DCS](push2_workstation/usb_a/reports/WORKSTATION_F03_CLOCK_DOMAIN_20261030.md)、[带代次 I2S](push2_workstation/usb_a/reports/WORKSTATION_I2S_TRANSPORT_20261030.md)已离线验证，尚未接真实 DSP。[DDR 预算](push2_workstation/usb_a/reports/WORKSTATION_DDR_BUDGET_20261030.md)及[revision 3 扫描 admission](push2_workstation/usb_a/reports/WORKSTATION_SCAN_ADMISSION_20261030.md)保留期限失败与未覆盖范围，A06／D01／D04 整项未完成。本轮用户另行授权综合、SRAM 与探针迭代；具体操作以各阶段实测记录为准，Flash 尚未获本轮授权。其余任务仍按下表逐项验收。
 
-优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。本轮只维护文档；后续实现仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
+物理检查点：[固定 revision 2 P&R](push2_workstation/usb_a/reports/WORKSTATION_F02_PHYSICAL_20261030.md)完成但门禁失败（setup −1.867 ns、hold −0.910 ns，audio／USB 未达标，PLL 覆盖与就绪路径未通过），未部署；[实际 DSP 来源／采样率审计](push2_workstation/usb_a/reports/WORKSTATION_SAMPLE_RATE_DSP_AUDIT_20261030.md)给出原 48k 实现及逐项适配依据，不将计划视作已实现。
+
+优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
 
