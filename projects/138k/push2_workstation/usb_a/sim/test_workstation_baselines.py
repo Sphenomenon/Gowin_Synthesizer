@@ -234,6 +234,9 @@ class CleanCheckoutPreparation(unittest.TestCase):
             return result.stdout
 
         def prepare(root, flags):
+            # macOS temporary directories may be reached through /var or /tmp
+            # symlinks; builders print their canonical ROOT-derived path.
+            root = root.resolve()
             text = run([sys.executable, str(root / 'build.py'), *flags, '--prepare-only'], root)
             output = Path(next(line for line in text.splitlines() if line.startswith(str(root / 'results/'))))
             inputs = json.loads((output / 'workstation_inputs.json').read_text())

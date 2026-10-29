@@ -1,0 +1,177 @@
+{
+  "schema": 1,
+  "stage": "M0 build environment and baseline preservation",
+  "captured_at": "2026-10-30T03:47:49.265456+08:00",
+  "base_commit": "632888acd2c8c7f5b2a7051689e0127e508e8ba3",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py"
+      ],
+      "returncode": 0,
+      "output": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.027s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_stage_usb_firmware.py"
+      ],
+      "returncode": 0,
+      "output": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.047s\n\nOK\n"
+    }
+  ],
+  "clean_prepare": {
+    "passed": true,
+    "hardware_tested": false,
+    "synthesis_run": false,
+    "private_historical_staging_present": false,
+    "profiles": {
+      "accepted_full83": {
+        "passed": true,
+        "source_files": 424,
+        "changed": [],
+        "inputs_sha256": "3bf3357ff2457c989b6f5890cf16d311609ed315594461b7985b055dcc531657",
+        "source_baselines": [
+          {
+            "name": "accepted_full83",
+            "manifest": "projects/138k/push2_workstation/usb_a/baselines/accepted_full83.json",
+            "manifest_sha256": "9bc6482b5885b9bc635d5089589e62aad6adf182a1822e2945a54be024c12717",
+            "origin": {
+              "build": "results/song_guide_full83_20261006_203125_607466",
+              "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/accepted_full83.inputs.json",
+              "input_manifest_sha256": "a8caece577521b28196175f25d468ec7845d12a2f0fe29c6cbadfa246e67de28"
+            },
+            "source_files": 414,
+            "excluded_files": 180
+          }
+        ]
+      },
+      "timing85": {
+        "passed": true,
+        "source_files": 424,
+        "changed": [],
+        "inputs_sha256": "ba884821d3d2e1431858f32acc947d9180cb35e9f2b4a34c234ceb75b6e58fc8",
+        "source_baselines": [
+          {
+            "name": "accepted_full83",
+            "manifest": "projects/138k/push2_workstation/usb_a/baselines/accepted_full83.json",
+            "manifest_sha256": "9bc6482b5885b9bc635d5089589e62aad6adf182a1822e2945a54be024c12717",
+            "origin": {
+              "build": "results/song_guide_full83_20261006_203125_607466",
+              "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/accepted_full83.inputs.json",
+              "input_manifest_sha256": "a8caece577521b28196175f25d468ec7845d12a2f0fe29c6cbadfa246e67de28"
+            },
+            "source_files": 414,
+            "excluded_files": 180
+          },
+          {
+            "name": "timing85",
+            "manifest": "projects/138k/push2_workstation/usb_a/baselines/timing85.json",
+            "manifest_sha256": "1a12086acbfa39909570e21c704007adfccac5a6a2fbe0b8b552969c97116029",
+            "origin": {
+              "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+              "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/timing85.inputs.json",
+              "input_manifest_sha256": "c5aef03165e18b7f71119e6b563516feb00c88de86a156a2715f32a183ddef2c"
+            },
+            "source_files": 417,
+            "excluded_files": 180
+          }
+        ]
+      },
+      "resource_timing": {
+        "passed": true,
+        "source_files": 442,
+        "changed": [],
+        "inputs_sha256": "9d3b82008f6e06e8bd7e5336999e53cdee495e0e724e8b40a3b93cfa195a58e3",
+        "source_baselines": [
+          {
+            "name": "resource_rework_route0",
+            "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+            "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+            "origin": {
+              "build": "results/resource_rework_final_route0_20261020_041042",
+              "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+              "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+            },
+            "source_files": 437,
+            "excluded_files": 180
+          }
+        ]
+      }
+    },
+    "simulations": {
+      "trace_cdc": {
+        "passed": true,
+        "log": "PASS cnn_trace_cdc: 1338 clock checks, all128 level patterns, unrelated phases, exact UART bit positions, reset\n/private/var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/fpga-source-closure-nr_dzlwj/checkout/projects/138k/push2_workstation/usb_a/results/workstation_scope83_timing85_20261030_034621_810267/cnn_trace_cdc_20261030_034622_700953/tb.sv:47: $finish called at 26780000 (1ps)"
+      },
+      "lifecycle": {
+        "passed": true,
+        "log": "PASS lifecycle scoreboard: 36395 accepted, 36235 played, 160 canceled, 404 direct lifecycle cycles, three sources/stalls/fair rotation\n/private/var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/fpga-source-closure-nr_dzlwj/checkout/projects/138k/push2_workstation/usb_a/results/resource_timing_20261030_034623_256324/lifecycle_scoreboard/tb.sv:36: $finish called at 1000170000 (1ps)"
+      }
+    },
+    "corrupt_source_rejected": {
+      "passed": true,
+      "exit_code": 2
+    }
+  },
+  "clean_prepare_test_output": ".......................\n----------------------------------------------------------------------\nRan 23 tests in 6.232s\n\nOK\n",
+  "initial_board": {
+    "schema": 1,
+    "captured_at": "2026-10-30T03:39:52.054180+08:00",
+    "scope": "read_only_initial_identity",
+    "sram_programmed": false,
+    "flash_written": false,
+    "commands": {
+      "cables": {
+        "command": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+          "--scan-cables"
+        ],
+        "returncode": 0,
+        "output": " Cable found:  Gowin USB Cable(FT2CH)/0/8257/null (USB location:8257)\n Cable found:  Gowin USB Cable(FT2CH)/1/8258/null (USB location:8258)\n Cost 0.07 second(s)\n  \n"
+      },
+      "before": {
+        "command": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--operation_index",
+          "0",
+          "--cable-index",
+          "1",
+          "--channel",
+          "0"
+        ],
+        "returncode": 0,
+        "output": " Target Cable: Gowin USB Cable(FT2CH)/0/None/null@2.5MHz\n Target Device: GW5AST-138C(0x0001081B)\n Operation \"Read Device Codes\" for device#1...\n ID Code is: 0x0001081B\n User Code is: 0xC11028E5\n Status Code is: 0x00022020\n Finished.\n Cost 0.11 second(s)\n  \n"
+      }
+    }
+  },
+  "netlist_inputs": {
+    "carrier": {
+      "filename": "Netlist_my_138k_2026-10-21.tel",
+      "sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121"
+    },
+    "amplifier": {
+      "filename": "功放.tel",
+      "sha256": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75"
+    },
+    "bluetooth": {
+      "filename": "蓝牙.tel",
+      "sha256": "832e1eae56a744f8535899f57caea097f51419e2eb210186a492c182e5091eb2"
+    }
+  },
+  "tools": {
+    "icarus_verilog": "13.0",
+    "verilator": "5.052",
+    "usb_toolchain": "xPack GNU RISC-V 15.2.0-1 darwin-arm64",
+    "toolchain_archive_sha256": "6588e8351455fad8aca37551f0e5a5543f3346bfa9a837cf03cbd3bdd4989f8f",
+    "ae350_compiler_available": "Homebrew riscv64-elf-gcc 16.2.0",
+    "programmer": "Gowin 1.9.12 (64-bit) build(2558)"
+  },
+  "synthesis_run": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "full_workstation_accepted": false
+}

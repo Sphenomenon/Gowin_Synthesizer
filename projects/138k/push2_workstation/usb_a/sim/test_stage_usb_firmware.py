@@ -99,6 +99,17 @@ class UsbFirmwareStagingTest(unittest.TestCase):
             with self.assertRaisesRegex(FileNotFoundError, 'GW138K_RISCV_PREFIX'):
                 staging.compiler_prefix('/missing/riscv')
 
+    def test_homebrew_toolchain_requires_all_four_tools(self):
+        def installed(command):
+            return '/opt/homebrew/bin/' + command if command.startswith('riscv64-elf-') else None
+        with patch.dict(staging.os.environ, {}, clear=True), \
+             patch.object(staging.shutil, 'which', side_effect=installed):
+            self.assertEqual(staging.compiler_prefix(), 'riscv64-elf')
+        with patch.dict(staging.os.environ, {}, clear=True), \
+             patch.object(staging.shutil, 'which', side_effect=lambda command: None if command.endswith('-nm') else installed(command)):
+            with self.assertRaises(FileNotFoundError):
+                staging.compiler_prefix()
+
     def test_bss_overflow_fails_even_when_binary_is_small(self):
         def oversized_bss(command, **kwargs):
             if command[0].endswith('-size'):

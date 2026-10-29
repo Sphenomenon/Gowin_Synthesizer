@@ -109,7 +109,7 @@ def compiler_prefix(value=None):
     explicit = value or os.environ.get('GW138K_RISCV_PREFIX')
     candidates = [explicit] if explicit else [
         str(Path.home() / '.local/opt/amd/2025.2.1/gnu/riscv/lin/bin/riscv64-unknown-elf'),
-        'riscv64-unknown-elf', 'riscv32-unknown-elf', 'riscv-none-elf',
+        'riscv64-unknown-elf', 'riscv32-unknown-elf', 'riscv-none-elf', 'riscv64-elf',
     ]
     for candidate in candidates:
         if candidate and all(shutil.which(candidate + '-' + tool) for tool in ('gcc', 'objcopy', 'size', 'nm')):
