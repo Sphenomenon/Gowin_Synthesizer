@@ -17,7 +17,8 @@ module workstation_sample_rate_switch #(
     output reg accepted_o, applied_o, rejected_o, failed_o,
     output reg [2:0] reject_code_o,
     output reg [3:0] fault_code_o,
-    output wire quiesce_o, dac_mute_o, audio_reset_no, stream_flush_o,
+    output wire quiesce_o, dac_mute_o, stream_flush_o,
+    output reg audio_reset_no,
     output wire clock_monitor_restart_o,
     // Connect to GW5A DCS CLKSEL, DCS_MODE="FALLING", SELFORCE=0.
     output reg [3:0] clock_select_o,
@@ -53,21 +54,10 @@ module workstation_sample_rate_switch #(
     // During QUIESCE the serializer finishes its whole frame and acknowledges
     // its own boundary mute. Direct DAC mute/reset starts only after that ack.
     assign dac_mute_o = state != RUN && state != QUIESCE && state != RESUME;
-    assign audio_reset_no = state == RUN || state == QUIESCE || state == PREFILL || state == RESUME;
     assign stream_flush_o = state != RUN && state != QUIESCE && state != PREFILL && state != RESUME;
     assign clock_monitor_restart_o = state == BOOT_SELECT || state == STOP_START || state == SELECT_TARGET;
     assign staged_44k1_o = pending_44k1;
     assign staged_epoch_o = pending_epoch;
-
-    always @* begin
-        clock_select_o = 4'b0000;
-        case (state)
-            RUN, QUIESCE: clock_select_o = active_44k1_o ? 4'b0010 : 4'b0001;
-            BOOT_SELECT, SELECT_TARGET, QUALIFY, PREFILL, RESUME:
-                clock_select_o = pending_44k1 ? 4'b0010 : 4'b0001;
-            default: clock_select_o = 4'b0000;
-        endcase
-    end
 
     task automatic enter_fault(input [3:0] code);
         begin
@@ -77,6 +67,8 @@ module workstation_sample_rate_switch #(
             active_valid_o <= 0;
             failed_o <= 1;
             booting <= 0;
+            audio_reset_no <= 0;
+            clock_select_o <= 0;
         end
     endtask
 
@@ -93,6 +85,8 @@ module workstation_sample_rate_switch #(
             accepted_o <= 0; applied_o <= 0; rejected_o <= 0; failed_o <= 0;
             reject_code_o <= REJECT_NONE;
             fault_code_o <= FAULT_NONE;
+            audio_reset_no <= 0;
+            clock_select_o <= DEFAULT_44K1 ? 4'b0010 : 4'b0001;
         end else begin
             accepted_o <= 0; applied_o <= 0; rejected_o <= 0; failed_o <= 0;
             reject_code_o <= REJECT_NONE;
@@ -128,21 +122,29 @@ module workstation_sample_rate_switch #(
                     if (!running_qualified) enter_fault(FAULT_RUNNING_LOST);
                     else if (frame_quiescent_i) begin
                         if (!target_qualified) enter_fault(FAULT_TARGET_LOST);
-                        else begin state <= STOP_START; timer <= 0; active_valid_o <= 0; end
+                        else begin
+                            state <= STOP_START; timer <= 0; active_valid_o <= 0;
+                            audio_reset_no <= 0; clock_select_o <= 0;
+                        end
                     end else if (timed_out) enter_fault(FAULT_QUIESCE_TIMEOUT);
                     else timer <= timer + 1'b1;
                 end
                 STOP_START: begin state <= STOP_WAIT; timer <= 0; end
                 STOP_WAIT: begin
                     if (!target_qualified) enter_fault(FAULT_TARGET_LOST);
-                    else if (selected_clock_stopped_low_i) begin state <= SELECT_TARGET; timer <= 0; end
+                    else if (selected_clock_stopped_low_i) begin
+                        state <= SELECT_TARGET; timer <= 0;
+                        clock_select_o <= pending_44k1 ? 4'b0010 : 4'b0001;
+                    end
                     else if (timed_out) enter_fault(FAULT_STOP_TIMEOUT);
                     else timer <= timer + 1'b1;
                 end
                 SELECT_TARGET: begin state <= QUALIFY; timer <= 0; end
                 QUALIFY: begin
                     if (!booting && !target_qualified) enter_fault(FAULT_TARGET_LOST);
-                    else if (target_qualified && selected_clock_qualified_i) begin state <= PREFILL; timer <= 0; end
+                    else if (target_qualified && selected_clock_qualified_i) begin
+                        state <= PREFILL; timer <= 0; audio_reset_no <= 1;
+                    end
                     else if (timed_out) enter_fault(FAULT_QUALIFY_TIMEOUT);
                     else timer <= timer + 1'b1;
                 end

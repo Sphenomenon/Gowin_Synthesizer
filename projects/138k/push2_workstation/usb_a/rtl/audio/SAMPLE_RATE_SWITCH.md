@@ -1,6 +1,6 @@
 # 双采样率切换事务核心（A06 独立实现）
 
-`workstation_sample_rate_switch.sv` 只实现常开 50 MHz 域的有界切换事务，尚未接入当前整机 top、FPC serializer、DSP 或构建 profile。局部仿真通过不构成 A06 整项完成，也不是时序／CDC／实板验收。
+`workstation_sample_rate_switch.sv` 只实现常开 50 MHz 域的有界切换事务。生产监测器及 GW5A DCS 独立组合见 [时钟域组合](AUDIO_CLOCK_DOMAIN.md)，尚未接入当前整机 top、FPC serializer、DSP 或构建 profile。局部仿真通过不构成 A06 整项完成，也不是时序／CDC／实板验收。
 
 ## 时钟来源与器件依据
 
@@ -27,11 +27,11 @@
 | `accepted_o`, `applied_o`, `rejected_o`, `failed_o` | 50 MHz 单周期结果。接受和应用分开；同模式有效请求是 no-op，接受／应用同周期，不增加 epoch。启动成功不算命令应用；显式恢复成功有应用脉冲。 |
 | `source_qualified_i[1:0]` | 板级常开监测器分别证明两个原始参考有效，需包含频率／稳定窗口，不能只判断电平变化。目标在请求前不合格则拒绝。 |
 | `quiesce_o`, `frame_quiescent_i` | serializer 在完整左右声道帧结束后静音并停止接受旧代次，所有交付端排空／作废后再应答。QUIESCE 中核心保留旧时钟和局部复位释放；装配方不应直接把请求当作立即截断 BCK 的信号。 |
-| `clock_select_o[3:0]` | 仅 onehot／全 0，交给硬件 DCS。先撤选，等待真实输出停低，再选目标。核心不产生组合时钟 mux。 |
+| `clock_select_o[3:0]` | 50 MHz 寄存输出，仅 onehot／全 0，交给硬件 DCS。先撤选，等待真实输出停低，再选目标。禁止把组合状态译码直接作为 DCS 选择。 |
 | `clock_monitor_restart_o` | 单个状态周期，通知常开输出监测器重新计数。撤选后和目标选择后分别重新测量，不能复用旧源的有效状态。 |
 | `selected_clock_stopped_low_i` | 常开监测器在 restart 后证明 DCS 输出低且连续无边沿达规定窗口。单次采样为低不够。 |
 | `selected_clock_qualified_i` | 常开监测器在目标选择后证明 DCS 输出有足够数量的有效边沿／周期，并在丢钟后撤销资格；此状态不得由已停止的输出域生成。 |
-| `audio_reset_no`, `stream_flush_o`, `dac_mute_o` | 音频交付／serializer 专用局部控制，禁止连到全局复位、USB、DDR、CPU 或公共参数状态复位。复位在各接收域异步断言、同步释放；flush 必须清除所有旧代次 mailbox／FIFO／在途样本。正常切换的直接静音／局部复位只在完整帧应答后断言；故障进入立即隔离。 |
+| `audio_reset_no`, `stream_flush_o`, `dac_mute_o` | 音频交付／serializer 专用局部控制，禁止连到全局复位、USB、DDR、CPU 或公共参数状态复位。复位请求是 50 MHz 寄存输出，接收域异步断言、同步释放；组合状态译码会产生短脉冲，不能直接驱动异步复位。flush 必须清除所有旧代次 mailbox／FIFO／在途样本；flush／mute 请求按各接收域的约定握手，不直接当异步复位。正常切换的直接静音／局部复位只在完整帧应答后断言；故障进入立即隔离。 |
 | `staged_44k1_o`, `staged_epoch_o` | 当前事务的目标配置。装配方在局部复位中装载 DSP／serializer 配置；新流预填充必须携带该代次。staged 不代表对外已经应用。 |
 | `prefill_ready_i` | 所有目标域已释放局部复位、使用 staged 配置且预填充到约定水位，第一帧可完整输出。此应答只进入 RESUME／解除 mute 请求，不能用一个固定延时替代真实跨域应答。 |
 | `output_running_i` | serializer 对本次请求在完整帧边界解除静音，已输出 staged 模式／代次的第一完整帧后应答。装配方须在每次 quiesce／flush 清除旧应答，不能常接 1 或复用前次状态。直接静音输出必须在 serializer 域按完整帧边界安全释放。 |
@@ -54,4 +54,4 @@ PATH=/opt/homebrew/bin:$PATH python3 projects/138k/push2_workstation/usb_a/sim/t
 
 测试直接编译官方 `gw5a/prim_sim.v` 的 DCS，输出该文件 SHA256。默认使用本机 GowinIDE 路径；其他机器设置 `GOWIN_GW5A_SIMLIB`。缺少官方模型明确失败，不用组合 mux stub 冒充验证。TB 覆盖两向完整事务、正常时钟脉宽、预填充／真实输出应答前不提交、同模式 no-op、连续 busy 请求、目标未就绪／中途失钟、DCS 旧源停高与失败重试、资格／预填充／完整帧／输出恢复超时、启动失败及显式恢复；QUIESCE 中已选源失钟立即隔离，未选目标失钟等待健康旧帧完成。TB 的参考／输出资格监测用于机制验证，尚不是生产频率监测器。
 
-剩余工作：生产原始参考／DCS 输出监测器及 routed DCS 布线；384fs I2S；输出时基驱动的逐帧请求／tagged PCM 与 deadline；48／44.1 的 DDS、包络、LFO、效果、FFT 系数及历史切换；PANIC／Note Off／持音跨切换队列和任务策略；最终 PCM 统一 tap；板级电气、AK4493S 手册、两模式和切换路径的 SDC／CDC／PLL／pulse-width／P&R；SRAM 实测与外部时钟／DAC 检查。当前核心不决定录音／TF 忙时操作规则，不扩大 18-bit MIDI 或旧 BLE／显示格式能力。
+剩余工作：原始参考／DCS 输出监测与事务组合的整机接入、routed DCS 布线及 CDC 约束核验；384fs I2S；输出时基驱动的逐帧请求／tagged PCM 与 deadline；48／44.1 的 DDS、包络、LFO、效果、FFT 系数及历史切换；PANIC／Note Off／持音跨切换队列和任务策略；最终 PCM 统一 tap；板级电气、AK4493S 手册、两模式和切换路径的 SDC／CDC／PLL／pulse-width／P&R；SRAM 实测与外部时钟／DAC 检查。当前核心不决定录音／TF 忙时操作规则，不扩大 18-bit MIDI 或旧 BLE／显示格式能力。

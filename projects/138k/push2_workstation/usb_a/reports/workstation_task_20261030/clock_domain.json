@@ -1,0 +1,173 @@
+{
+  "schema": 1,
+  "identity": "f03-a06-clock-domain-offline-20261030-v1",
+  "recorded_at": "2026-10-30T04:26:26.378433+08:00",
+  "base_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "source_policy": "Explicit standalone first-party clock modules and simulations; not selected by complete workstation profiles. Frozen baselines and vendor bytes unchanged.",
+  "source_hashes_relative_to_usb_a": {
+    "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+    "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+    "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+    "rtl/audio/SAMPLE_RATE_SWITCH.md": "6e49d73f6f8eb2e8cf7041b4d3934dd35c698e4b56a1a644cedb8332418d8b28",
+    "rtl/audio/AUDIO_CLOCK_DOMAIN.md": "ea9c895e594c1a1934a5858663bf2cd333d13d354aa9bcda9978d53af83d4366",
+    "sim/audio/tb_workstation_sample_rate_switch.sv": "764c9a2d8c2466d3e32efcd9dbf33e72daa2861965ce458575f1cb3d6d2d8e1f",
+    "sim/audio/tb_workstation_audio_clock_domain.sv": "7d21e0d3b01a44f6e7d2ad090e499d062ed90d1e8a4b8fb59ca9bfeb47b795fd",
+    "sim/audio/tb_workstation_audio_clock_monitor.sv": "c4dc7788441d633ca997cb1bb4f4be78ee50ed8924835af2c7f8e7c452d5d84f",
+    "sim/test_workstation_sample_rate_switch.py": "0ee938af58835b34cc0e0bfe76288c02770bb5836d8de60d5fc969056a3f2463",
+    "sim/test_workstation_audio_clock_domain.py": "27f9cbf43721573ed7139adc8d5504ecceaca620c9aa6292348e64eccb3320f4"
+  },
+  "tools": {
+    "python": "Python 3.14.7",
+    "iverilog": "Icarus Verilog 13.0 stable",
+    "verilator": "Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905",
+    "gw5a_simlib_path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v",
+    "gw5a_simlib_sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+    "clock_manual_path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/doc/EN/UG306-1.0.6E_Arora V Clock User Guide.pdf",
+    "clock_manual_sha256": "434e77fac49570e716b6a1560bd942683aa3a5bb00ac8f4664d2d49ffe8c36fe"
+  },
+  "validation": [
+    {
+      "name": "transaction_regression",
+      "shell_command": "PATH=/opt/homebrew/bin:$PATH python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_sample_rate_switch.py",
+      "argv": [
+        "python3",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_sample_rate_switch.py"
+      ],
+      "exit_code": 0,
+      "stdout": "GW5A simulator SHA256=2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5\nPASS sample-rate switch: official GW5A DCS, bidirectional switch, atomic epoch/output acknowledgement, busy/missing target, stopped-high timeout, recovery, quiesce/qualification/prefill/resume/running/startup faults; cycles=1375 accepts=11 applies=13 rejects=4 faults=11\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv:204: $finish called at 27651000 (1ps)\n",
+      "stderr": ".\n----------------------------------------------------------------------\nRan 1 test in 0.065s\n\nOK\n"
+    },
+    {
+      "name": "monitor_domain_regression",
+      "shell_command": "PATH=/opt/homebrew/bin:$PATH python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_clock_domain.py",
+      "argv": [
+        "python3",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_clock_domain.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS audio clock domain: phase48=3.700 phase44=17.200, measured Gray windows/wrap, wrong rate, stable qualification, stop-low proof, official DCS bidirectional switching, busy, stopped-high/target/running loss and recovery, reset release; applies=6 faults=4\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_domain.sv:182: $finish called at 890871000 (1ps)\nPASS audio clock domain: phase48=0.001 phase44=29.400, measured Gray windows/wrap, wrong rate, stable qualification, stop-low proof, official DCS bidirectional switching, busy, stopped-high/target/running loss and recovery, reset release; applies=6 faults=4\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_domain.sv:182: $finish called at 890891000 (1ps)\nPASS audio clock domain: phase48=39.800 phase44=0.200, measured Gray windows/wrap, wrong rate, stable qualification, stop-low proof, official DCS bidirectional switching, busy, stopped-high/target/running loss and recovery, reset release; applies=6 faults=4\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_domain.sv:182: $finish called at 890871000 (1ps)\nGW5A simulator SHA256=2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5\nPASS production clock monitor: 50000-cycle windows, four consecutive windows, 12.288/16.9344 MHz counts=12288/16934, 500-cycle missing-clock bound=503, high/low stop and restart\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_monitor.sv:44: $finish called at 4010671000 (1ps)\n",
+      "stderr": "..\n----------------------------------------------------------------------\nRan 2 tests in 4.439s\n\nOK\n"
+    },
+    {
+      "name": "transaction_lint",
+      "shell_command": "PATH=/opt/homebrew/bin:$PATH verilator --lint-only -Wall --top-module workstation_sample_rate_switch projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+      "argv": [
+        "verilator",
+        "--lint-only",
+        "-Wall",
+        "--top-module",
+        "workstation_sample_rate_switch",
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv"
+      ],
+      "exit_code": 0,
+      "stdout": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.042 MB sources in 2 modules, into 0.051 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.022 s (elab=0.005, cvt=0.009, bld=0.000); cpu 0.012 s on 1 threads; allocated 11.203 MB\n",
+      "stderr": ""
+    },
+    {
+      "name": "monitor_lint",
+      "shell_command": "PATH=/opt/homebrew/bin:$PATH verilator --lint-only -Wall --top-module workstation_audio_clock_monitor projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_monitor.sv",
+      "argv": [
+        "verilator",
+        "--lint-only",
+        "-Wall",
+        "--top-module",
+        "workstation_audio_clock_monitor",
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_monitor.sv"
+      ],
+      "exit_code": 0,
+      "stdout": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.041 MB sources in 2 modules, into 0.072 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.007 s (elab=0.001, cvt=0.004, bld=0.000); cpu 0.007 s on 1 threads; allocated 10.891 MB\n",
+      "stderr": ""
+    }
+  ],
+  "negative_control": {
+    "name": "before_fix_combinational_reset_decode",
+    "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+    "source_git_path": "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+    "source_sha256": "11a6615d28ea5c0a41fcd0e469da98e5e27e83d8ca1c35e99131ffaddc8c383b",
+    "compile_argv": [
+      "iverilog",
+      "-g2012",
+      "-s",
+      "tb_workstation_audio_clock_domain",
+      "-o",
+      "/var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/clock-domain-before-fix-ob4kn5dt/simulation",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_domain.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_monitor.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_domain.sv",
+      "/var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/clock-domain-before-fix-ob4kn5dt/workstation_sample_rate_switch.sv",
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v"
+    ],
+    "run_argv": [
+      "vvp",
+      "/var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/clock-domain-before-fix-ob4kn5dt/simulation",
+      "+PHASE48=3.7",
+      "+PHASE44=17.2"
+    ],
+    "observed_exit_code": 1,
+    "expected_exit_code": 1,
+    "expected_failure_observed": true,
+    "stdout": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_domain.sv:129: startup state epoch=0 active44=0 reset=0 state=1\n       Time: 30511000  Scope: tb_workstation_audio_clock_domain\n",
+    "stderr": "",
+    "temporary_paths_removed": true,
+    "note": "Read committed source into a temporary file; no baseline/vendor/current source was modified. Run current TB/domain/monitors with that historical controller. The first completed output handshake enters RUN but decode glitches reassert local reset."
+  },
+  "full_vendor_lint_observation": {
+    "shell_command": "PATH=/opt/homebrew/bin:$PATH verilator --lint-only -Wall --timing --top-module workstation_audio_clock_domain projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_domain.sv projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_monitor.sv projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv -v /Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v",
+    "observed_exit_code": 1,
+    "observed_warning_count": 109,
+    "status": "not_passed",
+    "detail": "Official unmodified simulator library reports deprecated procedural assign/deassign, naming, widths and unused signals; wrapper also has intentionally empty diagnostic output pins. No warnings were suppressed or vendor bytes modified; individual first-party monitor and controller lint pass."
+  },
+  "default_budget": {
+    "reference_hz": 50000000,
+    "raw_reference_hz": [
+      12288000,
+      16934400
+    ],
+    "window_cycles": 50000,
+    "consecutive_windows": 4,
+    "tolerance_ppm": 2000,
+    "quantization_edges": 2,
+    "accepted_window_edges": [
+      [
+        12261,
+        12315
+      ],
+      [
+        16898,
+        16971
+      ]
+    ],
+    "loss_timeout_cycles": 500,
+    "observed_loss_cycles_in_default_test": 503,
+    "stopped_low_cycles": 16,
+    "source_counter_bits": 32,
+    "source_reset_release_edges": 3,
+    "selected_reset_release_edges": 3,
+    "domain_timeout_cycles_per_wait_stage": 2000000
+  },
+  "status": {
+    "offline_standalone_simulation_passed": true,
+    "first_party_monitor_controller_lint_passed": true,
+    "full_vendor_lint_passed": false,
+    "full_workstation_integrated": false,
+    "synthesis_run": false,
+    "place_route_run": false,
+    "routed_cdc_verified": false,
+    "hardware_accepted": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "F03_complete": false,
+    "A06_complete": false
+  },
+  "remaining_gaps": [
+    "Integrate explicit new candidate only; complete top/FPC/DSP/clock manifests remain unchanged.",
+    "Constrain and verify all three source_gray-to-gray_meta buses: tighter 20 ns initial data/skew target, less than fastest normal source period 59.05 ns; preserve second-stage timing.",
+    "Clock/reset/CDC constraints, DCS dedicated routing, all two-mode setup/hold/recovery/removal/pulse-width and physical resource gates remain unverified.",
+    "Actual AK4493S official datasheet/revision and 384fs ACKS/PDN/SMUTE frequency-switch sequence still need review; old AK4493 manual is insufficient.",
+    "384fs I2S, output-paced render/tagged delivery, sample-rate DSP coefficients, final PCM taps, PANIC/Note Off across switching and real queued failures remain integration work.",
+    "Product switch entry and TF/recording/held-note busy policies remain user decisions; no new CC or product behavior implemented.",
+    "F03 board electrical readiness, reference/clock output measurement, warm/cold/fault recovery and authorized SRAM tests remain incomplete."
+  ],
+  "rollback": "Source-only isolated checkpoint; no board operation or accepted/pinned/resource profile switch occurred. Keep prior complete profiles and deployed identity unchanged."
+}
