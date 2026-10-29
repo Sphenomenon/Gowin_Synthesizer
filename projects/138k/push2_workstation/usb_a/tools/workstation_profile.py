@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
 import xml.etree.ElementTree as ElementTree
 
 from tools.workstation_baselines import load_baseline
@@ -18,6 +19,8 @@ from tools.workstation_baselines import load_baseline
 NAME = 'custom138k-workstation-v1'
 CONFIG = 'boards/custom_138k/workstation_profile_v1.json'
 ARTIFACT = 'workstation_profile.json'
+AE350_POLICY = 'maintained_ae350_v1'
+AE350_DIRECTORY = 'ae350_firmware'
 
 
 def sha(path):
@@ -46,7 +49,8 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
             type(profile.get('revision')) is not int or profile['revision'] < 1):
         raise ValueError('workstation profile identity changed')
     if profile.get('configuration') != dict(hdmi_mode=hdmi_mode, high_speed_allowed=bool(allow_high_speed),
-                                          tf_audio_kind='wav', implemented_sample_rates_hz=[48000]):
+                                          tf_audio_kind='wav', implemented_sample_rates_hz=[48000],
+                                          ae350_firmware_policy=AE350_POLICY) or profile['revision'] < 2:
         raise ValueError('workstation profile configuration mismatch')
     if not profile.get('source_sha256') or not profile.get('features') or not profile.get('references'):
         raise ValueError('incomplete workstation profile')
@@ -73,6 +77,60 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
             if len(expected) != 64:
                 raise ValueError('invalid workstation reference hash: ' + relative)
     return profile
+
+
+def prepare_ae350(root, output, stage, riscv_prefix=None):
+    """Install maintained AE350 ROM only for the explicitly selected profile."""
+    from tools.stage_ae350_firmware import stage_ae350_firmware
+    root, output, stage = map(lambda path: Path(path).resolve(), (root, output, stage))
+    baseline = load_baseline(root, 'resource_rework_route0')
+    rom_path = 'firmware/boot.mem'
+    historical = hashlib.sha256(baseline.read_bytes(rom_path)).hexdigest()
+    if sha(stage / rom_path) != historical:
+        raise ValueError('AE350 profile installation requires the unchanged parent ROM')
+    evidence = output / AE350_DIRECTORY
+    build = stage_ae350_firmware(root, evidence, riscv_prefix)
+    if sha(evidence / 'boot.mem') != build['rom_sha256']:
+        raise ValueError('AE350 generated ROM changed before installation')
+    shutil.copyfile(evidence / 'boot.mem', stage / rom_path)
+    if sha(stage / rom_path) != build['rom_sha256']:
+        raise ValueError('AE350 installed ROM identity differs from the build')
+    return dict(policy=AE350_POLICY, project_rom_installed=True, evidence_directory=AE350_DIRECTORY,
+                installed_rom=dict(path=rom_path, sha256=build['rom_sha256'],
+                                   parent_baseline_sha256=historical),
+                build=build, artifacts_sha256={path.relative_to(evidence).as_posix(): sha(path)
+                                               for path in sorted(evidence.rglob('*')) if path.is_file()})
+
+
+def _ae350_evidence(root, output, metadata, profile):
+    selected = metadata.get('ae350_firmware', {})
+    if (selected.get('policy') != profile['configuration']['ae350_firmware_policy'] or
+            selected.get('project_rom_installed') is not True or
+            selected.get('evidence_directory') != AE350_DIRECTORY):
+        raise ValueError('workstation profile AE350 firmware policy changed')
+    evidence = output / AE350_DIRECTORY
+    actual = {source.relative_to(evidence).as_posix() for source in evidence.rglob('*') if source.is_file()}
+    if actual != set(selected['artifacts_sha256']):
+        raise ValueError('workstation profile AE350 evidence inventory changed')
+    for relative, expected in selected['artifacts_sha256'].items():
+        if sha(checked_path(evidence, relative)) != expected:
+            raise ValueError('workstation profile AE350 evidence changed: ' + relative)
+    build = selected['build']
+    if json.loads((evidence / 'build_metadata.json').read_text()) != build:
+        raise ValueError('workstation profile AE350 build metadata changed')
+    prefix = root.relative_to(root.parents[3]).as_posix() + '/'
+    for relative, expected in build['input_sha256'].items():
+        if profile['source_sha256'].get(prefix + relative) != expected:
+            raise ValueError('workstation profile omitted or changed AE350 input: ' + relative)
+    rom = selected['installed_rom']
+    if (rom.get('path') != 'firmware/boot.mem' or rom.get('sha256') != build['rom_sha256'] or
+            sha(checked_path(output / 'workstation/Prj1', rom['path'])) != rom['sha256'] or
+            sha(evidence / 'boot.mem') != rom['sha256']):
+        raise ValueError('workstation profile AE350 installed ROM changed')
+    baseline = load_baseline(root, profile['parent_baseline']['name'])
+    if rom['parent_baseline_sha256'] != hashlib.sha256(baseline.read_bytes(rom['path'])).hexdigest():
+        raise ValueError('workstation profile AE350 historical ROM identity changed')
+    return selected
 
 
 def _artifact(root, output, metadata, profile):
@@ -158,9 +216,10 @@ def _artifact(root, output, metadata, profile):
         reuse[name] = dict(user_code=reference['user_code'], scope=reference['scope'],
                            evidence=reference['evidence'], files=rows)
     config_hash = sha(root / CONFIG)
+    ae350 = _ae350_evidence(root, output, metadata, profile)
     candidate_hash = identity_digest(dict(profile_sha256=config_hash,
                                           staged_input_sha256=metadata['staged_input_sha256'],
-                                          firmware=metadata['firmware']))
+                                          firmware=metadata['firmware'], ae350_firmware=ae350))
     return dict(schema=1, profile=NAME, revision=profile['revision'], profile_source=CONFIG, profile_sha256=config_hash,
                 candidate_identity=NAME + '-' + candidate_hash[:16], candidate_input_sha256=candidate_hash,
                 configuration=profile['configuration'], parent_baseline=profile['parent_baseline'],
@@ -168,6 +227,10 @@ def _artifact(root, output, metadata, profile):
                 staged_input_sha256=metadata['staged_input_sha256'],
                 source_sha256=profile['source_sha256'],
                 firmware=metadata['firmware'],
+                ae350_firmware=ae350,
+                generated_data_inputs={'firmware/boot.mem': dict(origin='maintained_ae350_firmware',
+                    sha256=ae350['installed_rom']['sha256'], source_sha256=ae350['build']['input_sha256'],
+                    tool_versions=ae350['build']['tool_versions'], capacity=ae350['build']['capacity'])},
                 integration_metadata_sha256=identity_digest({key: value for key, value in metadata.items()
                                                              if key != 'workstation_profile'}),
                 resource_overlays_sha256=sha(output / 'workstation/resource_rework_overlays.json'),

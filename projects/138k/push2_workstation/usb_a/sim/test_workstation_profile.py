@@ -16,6 +16,8 @@ import xml.etree.ElementTree as ElementTree
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools import workstation_profile as profile
+from tools import workstation_custom_board as integration
+from tools.workstation_baselines import load_baseline
 
 
 class ProfileSources(unittest.TestCase):
@@ -62,6 +64,18 @@ class ProfileSources(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'source inventory drift'):
                 profile.load(ROOT, profile.NAME)
 
+    def test_missing_maintained_ae350_source_cannot_fall_back_to_locked_rom(self):
+        original = Path.is_file
+        missing = ROOT / 'firmware/ae350/ui_main.c'
+        with tempfile.TemporaryDirectory(prefix='profile-missing-ae350-') as directory, \
+             patch.object(Path, 'is_file', lambda source: False if source == missing else original(source)), \
+             patch.object(integration, 'prepare_pinout') as prepare_pinout:
+            output = Path(directory) / 'candidate'
+            with self.assertRaisesRegex(ValueError, 'missing.*ui_main.c'):
+                integration.prepare(ROOT, Path(directory) / 'netlists', output, workstation_profile=profile.NAME)
+            prepare_pinout.assert_not_called()
+            self.assertFalse(output.exists())
+
 
 @unittest.skipUnless(os.environ.get('GW138K_PROFILE_PREPARED'),
                      'Set GW138K_PROFILE_PREPARED to test an actual prepared native candidate')
@@ -84,6 +98,15 @@ class PreparedClosure(unittest.TestCase):
         firmware = a2['projects/138k/push2_workstation/usb_a/firmware.c']
         self.assertEqual(firmware['selection'], 'usb_firmware_build_input')
         self.assertTrue(firmware['same_bytes_as_reference'])
+        self.assertEqual(artifact['revision'], 2)
+        self.assertEqual(artifact['configuration']['ae350_firmware_policy'], profile.AE350_POLICY)
+        ae350 = artifact['ae350_firmware']
+        self.assertTrue(ae350['project_rom_installed'])
+        self.assertEqual(profile.sha(self.stage / 'firmware/boot.mem'), ae350['build']['rom_sha256'])
+        self.assertGreaterEqual(ae350['build']['capacity']['stack_capacity_bytes'], 4096)
+        self.assertTrue(ae350['build']['tool_versions'])
+        self.assertEqual(artifact['generated_data_inputs']['firmware/boot.mem']['origin'],
+                         'maintained_ae350_firmware')
 
     def test_changed_compiled_input_and_uncompiled_dependency_are_rejected(self):
         metadata = json.loads((self.output / 'integration_inputs.json').read_text())
@@ -135,6 +158,29 @@ class PreparedClosure(unittest.TestCase):
             other = profile._artifact(ROOT, self.output, changed, config)
             with self.subTest(key=key):
                 self.assertNotEqual(initial['candidate_identity'], other['candidate_identity'])
+
+    def test_ae350_evidence_and_installed_rom_are_bound_to_the_candidate(self):
+        for source in (self.output / profile.AE350_DIRECTORY / 'firmware.elf',
+                       self.stage / 'firmware/boot.mem'):
+            original = source.read_bytes()
+            source.write_bytes(original + b'\n')
+            with self.subTest(path=source), self.assertRaisesRegex(ValueError, 'AE350.*changed'):
+                profile.verify(ROOT, self.output)
+            source.write_bytes(original)
+
+
+@unittest.skipUnless(os.environ.get('GW138K_PROFILE_LEGACY_PREPARED'),
+                     'Set GW138K_PROFILE_LEGACY_PREPARED to verify unprofiled native preparation')
+class LegacyPolicy(unittest.TestCase):
+    def test_default_native_profile_keeps_locked_ae350_rom(self):
+        output = Path(os.environ['GW138K_PROFILE_LEGACY_PREPARED']).resolve()
+        metadata = json.loads((output / 'integration_inputs.json').read_text())
+        self.assertNotIn('workstation_profile', metadata)
+        self.assertNotIn('ae350_firmware', metadata)
+        self.assertFalse((output / profile.AE350_DIRECTORY).exists())
+        baseline = load_baseline(ROOT, 'resource_rework_route0')
+        self.assertEqual((output / 'workstation/Prj1/firmware/boot.mem').read_bytes(),
+                         baseline.read_bytes('firmware/boot.mem'))
 
 
 if __name__ == '__main__':

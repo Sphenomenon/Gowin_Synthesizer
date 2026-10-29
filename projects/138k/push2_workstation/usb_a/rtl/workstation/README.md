@@ -6,7 +6,7 @@
 
 这里是 `build.py --resource-rework --resource-timing` 开发候选的第一方整机源码入口，不是完整工程副本。锁定基线继续提供 CPU/IP、固件 ROM、约束和尚未迁出的组件；实际输入由生成工程的 `workstation_inputs.json` 和 `workstation_composition.json` 绑定。
 
-新板任务 F01 的显式来源检查点为 `--prepare-custom-board --workstation-profile custom138k-workstation-v1`，其固定配置、A2／D5／C1 逐文件来源及未完成 feature matrix 见[完整工作站 profile](../../boards/custom_138k/WORKSTATION_PROFILE.md)。它复用现有准备路径，不提升既有硬件验收或改变下面的默认来源策略。
+新板任务的显式来源检查点为 `--prepare-custom-board --workstation-profile custom138k-workstation-v1`；revision 2 在 F01 来源固定的基础上重编译并安装 F02 的维护 AE350 固件。固定配置、A2／D5／C1 逐文件来源及未完成 feature matrix 见[完整工作站 profile](../../boards/custom_138k/WORKSTATION_PROFILE.md)。它复用现有准备路径，不提升既有硬件验收或改变下面的默认来源策略。
 
 accepted full83 和 pinned timing85 保留原来的来源策略与 CNN 保护。它们采用共享事件工作站及控制模块，但不隐式切换为这里的资源候选顶层。历史验收记录和冻结文件不修改。
 

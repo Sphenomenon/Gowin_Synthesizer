@@ -84,6 +84,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if not (root / relative).is_file():
             raise FileNotFoundError('missing native-board source: ' + relative)
         selected.append(root / relative)
+    if workstation_profile is not None:
+        from tools.stage_ae350_firmware import INPUTS as AE350_INPUTS
+        selected += [root / 'firmware/ae350' / name for name in AE350_INPUTS]
     snapshot = {str(source.relative_to(root)): sha(source) for source in selected}
     pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
     sys.path.insert(0, str(root / 'tools'))
@@ -91,6 +94,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if builder.ROOT.resolve() != root:
         raise ValueError('resource builder root does not match explicit custom-board root')
     parent_output, stage, parent_metadata = builder.prepare(timing_fixes=True, output_directory=output / 'workstation')
+    if workstation_profile is not None:
+        from tools.workstation_profile import prepare_ae350
+        ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix)
     native_timing = adapt_timing(stage)
     (stage / 'scripts/build.tcl').write_text(
         'error "This native-board integration stage is synthesis-only; P&R and deployment are not authorized or validated."\n')
@@ -209,6 +215,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     (parent_output / 'workstation_inputs.json').write_text(json.dumps(staged,indent=2)+'\n')
     if workstation_profile is not None:
         from tools.workstation_profile import attach as attach_profile
+        metadata['ae350_firmware'] = ae350_firmware
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     return output, metadata

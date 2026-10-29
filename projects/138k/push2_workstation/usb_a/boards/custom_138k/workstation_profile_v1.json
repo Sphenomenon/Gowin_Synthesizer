@@ -8,7 +8,8 @@
     "tf_audio_kind": "wav",
     "implemented_sample_rates_hz": [
       48000
-    ]
+    ],
+    "ae350_firmware_policy": "maintained_ae350_v1"
   },
   "target_sample_rates_hz": [
     48000,
@@ -85,9 +86,9 @@
     },
     {
       "name": "ae350",
-      "source_state": "locked_ROM_integrated",
-      "selected_behavior": "AE350/APB/UI and locked boot.mem retained from resource baseline",
-      "remaining": "F02/C01-C05: reproducible firmware and bounded business services",
+      "source_state": "maintained_firmware_integrated",
+      "selected_behavior": "AE350 UI/services C, headers, startup and linker script rebuilt into candidate boot.mem with tool, ELF, ROM and capacity evidence",
+      "remaining": "C01-C05: bounded business services, whole-call-chain stack and hardware acceptance",
       "hardware_acceptance": "unverified_for_this_profile"
     },
     {
@@ -333,6 +334,16 @@
     "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_host.c": "5b029d03517893272582f506b07f2ec77f1ac300b9f7f236377a5a90bba6f5ea",
     "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_host.h": "4d7ea3e7374f951d295dfa7acb160ddc1a73b0604394982927b9aa43eea32192",
     "projects/138k/push2_workstation/usb_a/firmware.c": "12b1dd707cb6f0cfe6aeffc994053acc52c10584cce1b0b32337b429c1c65221",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/firmware_checks.h": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/provenance.json": "80f1bf234ecdacd348325c1bff44dcf51e3509978f057349a13004d4e2554485",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/start.S": "5e462091296daa030f22f6f98005471d57dcd46e7e2090aaa2dae7c63aee3783",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_main.c": "9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_model.h": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_render.c": "5188d9777768e6ec6951982f3d2776fb49d20a8d0384aa31b0d742c1653c4c91",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_render.h": "addfde5a99a76edb839175792bf83ec4267928eff150ada82271a213b78a7745",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_runtime.c": "55d5e3e007b1b623efeb17743916bd16145500f5b46d2976917911ea8958bf97",
     "projects/138k/push2_workstation/usb_a/gw25k_panel.h": "6986f631f2c72da58a79ed1b267578c0e9a0c4730933ae7c735cdc7089235d76",
     "projects/138k/push2_workstation/usb_a/reports/USB2_PUSH_HOTPLUG_20261030.md": "0f5468ad315280676c23d86704ee8cd7f2b444bc9343cbedb0142b304d55db1b",
     "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_BLE_C11027C1_20261027.md": "b06dbec0a0fa524813310f53523bac49a0a65b7f057710e8758fe786d5ec7779",
@@ -484,13 +495,14 @@
     "projects/138k/push2_workstation/usb_a/tools/build_full_song_85_clk50_timing.py": "ebffca9eb6eb6d136189098dde3ceebee1bbb6f9392a7fe632038322c7585795",
     "projects/138k/push2_workstation/usb_a/tools/build_resource_rework.py": "d8d8c9e0b5160c3f69ff43b7e9f94a25a25adccb7ff2c6615261025e2b36281f",
     "projects/138k/push2_workstation/usb_a/tools/cnn_ddr_pipeline_patch.py": "47b2086f90abab0b4ec6e058b2f294fde71ae1cfa09a460c629fac0da8bbd400",
+    "projects/138k/push2_workstation/usb_a/tools/stage_ae350_firmware.py": "1eb56dfcd1a3fbcea2af442943387c45e6748f6c41b9b66447c0ea16e5e19c0d",
     "projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": "3aeb1f4e791b5a256fec71d181a18d91b367d0e1583030d504bc7cc8e104c8cb",
     "projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
     "projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth.py": "4395be675399e79c1323b9f8e4fa8919993cb2a8a10ef7286ce9c42628d83b77",
     "projects/138k/push2_workstation/usb_a/tools/workstation_board_peripherals.py": "dd790675dd6598bdc46473a6214f243fbf27ed5eaed22a643caa15116ee4d634",
     "projects/138k/push2_workstation/usb_a/tools/workstation_cnn_cdc.py": "b6abf223750bc701aa34cd6373cb2756c6abd4510f641aa343a0d576391369ef",
     "projects/138k/push2_workstation/usb_a/tools/workstation_composition.py": "8306eddc2d249c4288684b5b23ff929b57a9d57426bed0a3f8c85f84a821514c",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "c1fbf689b8cd2d418aef4030274f60993d1183cbb1b35411e331a11f3413bebb",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "9179f1ac8e55d50ff5c257bdbeed83223f56d35d3afa309dfe81674e7fcff79c",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": "62c7660c9c17d053918aac9023a59503662f1543ee6fbf28948c97152a816fb9",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_flash.py": "a1b95bee2081258854817356f069c3f80cea65d57ca6ddbccde23dfb50999acb",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_input_cdc.py": "cce2c4abdc0d31e81ae077597aa2104a94522986240586273c64be208f2f2f1b",
@@ -499,7 +511,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_hdmi_isolation.py": "55faefab7b3025da21d1ea3638cc34208f07e11a057f36b670a39afcd74a780d",
     "projects/138k/push2_workstation/usb_a/tools/workstation_memory.py": "e413d7bd42d042ee62c615ac37575e6bde38fe7f09784d9617d74c7faef281ef",
     "projects/138k/push2_workstation/usb_a/tools/workstation_pinout.py": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "5e4d840f4e5560fc14b1392c17684ac33a196181f61d63aa75430e7ec5df26b9",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "b7fcd7df6d4414ea2c8aaf508c78c32440ec75e8f3cabb6852f2d49161357b55",
     "projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
     "projects/138k/push2_workstation/usb_a/tools/workstation_sources.py": "e37d1735245b3b82a5d29879dd3a7152bb7a174aad63ff5a0b460828b331181a",
     "projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
@@ -533,5 +545,5 @@
     "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_protocol_command.v": "241960ea0ffe232905e6537bb4d46f236963bd901a6603f03c7c28c9094bd34e",
     "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": "1e71b033a0950fb9985e42e6d0306d88baa70119bdfaf510dcf0f05cf878fc43"
   },
-  "revision": 1
+  "revision": 2
 }
