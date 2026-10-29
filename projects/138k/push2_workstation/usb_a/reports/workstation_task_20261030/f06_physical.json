@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "stage": "F06 LUT-only physical experiment",
+  "physical_identity": "custom138k-native-physical-C11030F6",
+  "user_code": "0xC11030F6",
+  "source_commit_at_preparation": "3bc6ae1",
+  "preparation": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6",
+    "manifest_sha256": "37ce33f6db55f44d850aadcb8c2db9f4bb3644cfe10629b5c4d225e370a1e929",
+    "parent_f03_evidence_sha256": "abf87e360e4a06688a3769edc7270e8322671600b888ad55700eefd83ba877b3",
+    "mode": "LUT_only",
+    "input_hashes_unchanged": true
+  },
+  "process": {
+    "schema": 1,
+    "started_at": "2026-10-30T07:18:59.357067+08:00",
+    "state": "completed",
+    "command": [
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/run.tcl"
+    ],
+    "cwd": "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6",
+    "tool_sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+    "runner_sha256": "203517f02bb36aa889526fc589e46ff64ad5679852e42177d4d7cb845a5b4faf",
+    "environment": {
+      "DYLD_LIBRARY_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib",
+      "DYLD_FRAMEWORK_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib"
+    },
+    "lock": "/private/tmp/gw138k-build.lock",
+    "physical_inputs_sha256": "37ce33f6db55f44d850aadcb8c2db9f4bb3644cfe10629b5c4d225e370a1e929",
+    "options": {
+      "user_code": "0xC11030F6",
+      "place_option": 2,
+      "route_option": 0,
+      "replicate_resources": false,
+      "clocks_or_exceptions_relaxed": false,
+      "features_removed": false
+    },
+    "ulpi_io_type_adaptation": {
+      "scope": "nominal_ULPI_IO_standard_only_not_external_timing_or_electrical_acceptance",
+      "before_sha256": "13440c753db683b2bcab509068dd5b3d3ffe652f37befc9b9eaf30780ab70920",
+      "after_sha256": "3dc6efebc9a004ef71566abb5e17b2d8c3c5d4869a26511b9e3dbf5972b8cb6a",
+      "io_type": "LVCMOS33",
+      "ports": {
+        "usb2_ulpi_data[0]": [
+          "A21"
+        ],
+        "usb2_ulpi_data[1]": [
+          "B21"
+        ],
+        "usb2_ulpi_data[2]": [
+          "A20"
+        ],
+        "usb2_ulpi_data[3]": [
+          "B20"
+        ],
+        "usb2_ulpi_data[4]": [
+          "A19"
+        ],
+        "usb2_ulpi_data[5]": [
+          "A18"
+        ],
+        "usb2_ulpi_data[6]": [
+          "B18"
+        ],
+        "usb2_ulpi_data[7]": [
+          "B17"
+        ],
+        "usb2_ulpi_clk": [
+          "C18"
+        ],
+        "usb2_ulpi_dir": [
+          "F16"
+        ],
+        "usb2_ulpi_nxt": [
+          "D16"
+        ],
+        "usb2_ulpi_stp": [
+          "E17"
+        ]
+      },
+      "locations_unchanged": true,
+      "actual_board_measured": false,
+      "full_electrical_acceptance": false,
+      "external_io_timing_complete": false
+    },
+    "hardware_operated": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "lock_acquired_at": "2026-10-30T07:18:59.357399+08:00",
+    "process_id": 12034,
+    "returncode": 1,
+    "finished_at": "2026-10-30T07:30:59.375457+08:00",
+    "pnr_log_sha256": "0178c375bf8df5b03022a4090952a66a4ca20741f0d1fa6166fa399e322a4b0a",
+    "changed_physical_inputs": []
+  },
+  "status": {
+    "physical_started": true,
+    "physical_completed_successfully": false,
+    "route_failed": true,
+    "unrouted_nets": 302,
+    "timing_closed": false,
+    "physical_gates_passed": false,
+    "hardware_tested": false,
+    "deployment_allowed": false,
+    "release_ready": false,
+    "sram_programmed": false,
+    "flash_programmed": false
+  },
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/physical_inputs.json": "37ce33f6db55f44d850aadcb8c2db9f4bb3644cfe10629b5c4d225e370a1e929",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/pnr_process.json": "172f689bdec21d41f7b81672d49b42849a5d2b446086c9f9c6d474de143c1ae7",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/pnr.log": "0178c375bf8df5b03022a4090952a66a4ca20741f0d1fa6166fa399e322a4b0a",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/run.tcl": "699da809668a861b6a095e8e168050d7750a0aec75afa998b76bf0344f5e6ccf",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/physical.cst": "b04283774f0090df902f248edf66057a499c63221b18e36e2fbac11b7b51ff03",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/custom_138k_integration.vg": "27b30ac791323f05dc68cd5d9ea6ccaaf14d6a122c5fe2b978cb4714b7fdcf18",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/impl/pnr/custom_138k_integration.rpt.txt": "5c707ed5ca7f5cf6ced87a1134cc9969aafa73e19b3555561f7a247c7953d994",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/impl/pnr/custom_138k_integration.rpt.html": "f1694e4a14797ecf3e45e12b06132072c646091b44e2bd164250f75ba42fdb71",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f06-dqs-lut-only-C11030F6/impl/pnr/custom_138k_integration.vo": "f9e1a301292963569b25e21bd302c841fc6ac588cf7a67f545371bfa35eadf61"
+  },
+  "actual_placement": {
+    "available": false,
+    "reason": "Failed placement/routing VO has no usable LOC attributes; report only aggregate unrouted count. Requested CST regions are not measured positions."
+  },
+  "timing": {
+    "available": false,
+    "reason": "Routing failed; no full routed timing report or bitstream was produced; frozen and maintained timing/CDC/PLL gates were not run on this incomplete output."
+  },
+  "comparison": {
+    "F05": {
+      "mode": "FF_and_LUT",
+      "unrouted_nets": 297
+    },
+    "F06": {
+      "mode": "LUT_only",
+      "unrouted_nets": 302
+    },
+    "conclusion": "Removing four configuration-FF placement regions did not make the four left-side HOLD-LUT regions routable. Exact offending nets and a causal placement diagnosis remain unknown."
+  },
+  "limits": [
+    "Same old revision2 synthesis; contains none of the later runtime/audio/ADSR/lights/readiness/scanout source changes",
+    "No clocks or exceptions relaxed, no feature removal or vendor/baseline changes",
+    "F3 remains the last fully routed reference, with setup failure preserved",
+    "Next whole-system source candidate needs a new explicit profile and complete physical acceptance"
+  ]
+}
