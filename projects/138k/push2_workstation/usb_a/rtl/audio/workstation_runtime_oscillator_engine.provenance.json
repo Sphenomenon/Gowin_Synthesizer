@@ -5,7 +5,7 @@
   "prepared_relative_path": "legacy/rtl/audio/unified_oscillator_engine.sv",
   "prepared_sha256": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
   "native_module": "workstation_runtime_oscillator_engine",
-  "native_sha256": "d5e58e866abd33177d79629a1dcebb2a4fab3d29981bb693424482fcd7129629",
+  "native_sha256": "9950b3cd95dc7224158254bff05bfd2c8658b780a86e4cf4faecd3744a026705",
   "source_policy": "Native standalone source, exact prepared migration with reversible documented edits; no profile/build/top selection changed.",
   "reverse_instructions": "Apply edits in reverse order, replacing each exact after anchor with before, requiring its recorded count; resulting UTF-8 bytes must match prepared_sha256. This provenance is a verifier, not a text-generated production implementation.",
   "forward_edits": [
@@ -103,6 +103,36 @@
       "before": "        rate_pitch_step = (scaled + 62'd77070336) / 62'd154140672;",
       "after": "        divided = (scaled + 62'd77070336) / 62'd154140672;\n        // 54-bit product *160/(147*2^20) fits35 bits before cutoff.\n        rate_pitch_step = divided[34:0];",
       "count": 1
+    },
+    {
+      "before": "    parameter bit EXPRESSION_ENABLE = 1'b0,\n    parameter int SAMPLE_RATE_HZ = 192000,\n    parameter bit SEPARATE_OFF_NOTE = 1'b0,\n    parameter bit RUNTIME_RATE_ENABLE = 1'b0\n) (\n    input  logic               clk_i,\n    input  logic               rst_ni,\n",
+      "after": "    parameter bit EXPRESSION_ENABLE = 1'b0,\n    parameter int SAMPLE_RATE_HZ = 192000,\n    parameter bit SEPARATE_OFF_NOTE = 1'b0,\n    parameter bit RUNTIME_RATE_ENABLE = 1'b0,\n    // Explicit physical candidate only; default retains the migrated cycles.\n    parameter bit PIPELINED_ENVELOPE = 1'b0\n) (\n    input  logic               clk_i,\n    input  logic               rst_ni,\n",
+      "count": 1
+    },
+    {
+      "before": "  logic [23:0] envelope_next_level_q24;\n  logic [17:0] envelope_next_level_q18;\n  logic [2:0] envelope_next_state;\n\n  (* syn_ramstyle = \"block_ram\", ram_style = \"block\" *)\n  logic [79:0] slot_mem [0:1023];\n",
+      "after": "  logic [23:0] envelope_next_level_q24;\n  logic [17:0] envelope_next_level_q18;\n  logic [2:0] envelope_next_state;\n  logic envelope_pipeline_busy, envelope_write_valid;\n  logic [4:0] envelope_write_index;\n  logic [23:0] envelope_write_level_q24;\n  logic [2:0] envelope_write_state;\n  wire envelope_lane_busy = envelope_update_active || envelope_update_valid ||\n      envelope_pipeline_busy;\n\n  (* syn_ramstyle = \"block_ram\", ram_style = \"block\" *)\n  logic [79:0] slot_mem [0:1023];\n",
+      "count": 1
+    },
+    {
+      "before": "      !slot_read_valid && !pitch_write_valid && !(|sine_pending_valid) &&\n      !sine_valid_o && !gain_product_valid && !envelope_product_valid &&\n      !finalize_valid && quantizer_quiescent && !sample_valid_o &&\n      !envelope_update_active && !envelope_update_valid && !mix_busy_o;\n  assign rate_ready_o = RUNTIME_RATE_ENABLE && quiescent_o && !panic_i &&\n      !sample_ce_i && !event_valid_i && !expression_valid_i && !mode_set_valid_i;\n  always_ff @(posedge clk_i or negedge rst_ni) begin\n",
+      "after": "      !slot_read_valid && !pitch_write_valid && !(|sine_pending_valid) &&\n      !sine_valid_o && !gain_product_valid && !envelope_product_valid &&\n      !finalize_valid && quantizer_quiescent && !sample_valid_o &&\n      !envelope_lane_busy && !mix_busy_o;\n  assign rate_ready_o = RUNTIME_RATE_ENABLE && quiescent_o && !panic_i &&\n      !sample_ce_i && !event_valid_i && !expression_valid_i && !mode_set_valid_i;\n  always_ff @(posedge clk_i or negedge rst_ni) begin\n",
+      "count": 1
+    },
+    {
+      "before": "    envelope_next_level_q18 = envelope_next_level_q24[23:6];\n  end\n\n  always @* begin\n    slot_write_enable = 1'b0;\n    slot_write_address = '0;\n",
+      "after": "    envelope_next_level_q18 = envelope_next_level_q24[23:6];\n  end\n\n  generate if (!PIPELINED_ENVELOPE) begin: g_envelope_original\n    assign envelope_pipeline_busy = 1'b0;\n    assign envelope_write_valid = envelope_update_valid;\n    assign envelope_write_index = envelope_update_write_index;\n    assign envelope_write_level_q24 = envelope_next_level_q24;\n    assign envelope_write_state = envelope_next_state;\n  end else begin: g_envelope_pipeline\n    // The old mapped path starts at a BSRAM DO and crosses rate scaling,\n    // arithmetic, saturation and the32-voice write selector. These are real\n    // register boundaries: scale -> parallel arithmetic -> select -> write.\n    // One voice enters each clock; no arithmetic is repeated per voice.\n    logic scale_valid, math_valid, result_valid;\n    logic [4:0] scale_index, math_index, result_index;\n    logic [2:0] scale_state, math_state, result_state;\n    logic [23:0] scale_level, scale_sustain, scale_attack, scale_decay, scale_release;\n    logic [23:0] math_level, math_sustain, result_level;\n    logic [24:0] math_attack_sum, math_decay_difference, math_decay_floor;\n    logic [24:0] math_release_difference;\n    logic math_attack_zero, math_decay_zero, math_release_zero;\n    logic [23:0] selected_level;\n    logic [2:0] selected_state;\n\n    assign envelope_pipeline_busy = scale_valid || math_valid || result_valid;\n    assign envelope_write_valid = result_valid && !panic_i;\n    assign envelope_write_index = result_index;\n    assign envelope_write_level_q24 = result_level;\n    assign envelope_write_state = result_state;\n\n    always_ff @(posedge clk_i or negedge rst_ni) begin\n      if (!rst_ni) begin\n        scale_valid <= 1'b0;\n        math_valid <= 1'b0;\n        result_valid <= 1'b0;\n      end else if (panic_i) begin\n        scale_valid <= 1'b0;\n        math_valid <= 1'b0;\n        result_valid <= 1'b0;\n      end else begin\n        scale_valid <= envelope_update_valid;\n        math_valid <= scale_valid;\n        result_valid <= math_valid;\n      end\n    end\n\n    // Data carries a valid tag and needs no global reset/PANIC mux. Rate is\n    // held for the accepted frame, including every tag through voice31.\n    always_ff @(posedge clk_i) begin\n      if (envelope_update_valid && !panic_i) begin\n        scale_index <= envelope_update_write_index;\n        scale_state <= envelope_update_state;\n        scale_level <= envelope_update_level_q24;\n        scale_sustain <= envelope_update_sustain_q24;\n        scale_attack <= rate_envelope_step(envelope_update_attack_q24, frame_rate_44100);\n        scale_decay <= rate_envelope_step(envelope_update_decay_q24, frame_rate_44100);\n        scale_release <= rate_envelope_step(envelope_update_release_q24, frame_rate_44100);\n      end\n      if (scale_valid && !panic_i) begin\n        math_index <= scale_index;\n        math_state <= scale_state;\n        math_level <= scale_level;\n        math_sustain <= scale_sustain;\n        math_attack_sum <= {1'b0, scale_level} + {1'b0, scale_attack};\n        math_decay_difference <= {1'b0, scale_level} - {1'b0, scale_decay};\n        // level<=sustain OR level-sustain<=decay is exactly\n        // {0,level}<={0,sustain}+{0,decay}; this avoids subtract->compare.\n        math_decay_floor <= {1'b0, scale_sustain} + {1'b0, scale_decay};\n        math_release_difference <= {1'b0, scale_level} - {1'b0, scale_release};\n        math_attack_zero <= scale_attack == 0;\n        math_decay_zero <= scale_decay == 0;\n        math_release_zero <= scale_release == 0;\n      end\n      if (math_valid && !panic_i) begin\n        result_index <= math_index;\n        result_level <= selected_level;\n        result_state <= selected_state;\n      end\n    end\n\n    always @* begin\n      selected_level = '0;\n      selected_state = ENVELOPE_IDLE;\n      case (math_state)\n        ENVELOPE_ATTACK: begin\n          if (math_attack_zero || math_attack_sum >= {1'b0, MAXIMUM_LEVEL_Q24}) begin\n            selected_level = MAXIMUM_LEVEL_Q24;\n            selected_state = ENVELOPE_DECAY;\n          end else begin\n            selected_level = math_attack_sum[23:0];\n            selected_state = ENVELOPE_ATTACK;\n          end\n        end\n        ENVELOPE_DECAY: begin\n          if (math_decay_zero || {1'b0, math_level} <= math_decay_floor) begin\n            selected_level = math_sustain;\n            selected_state = ENVELOPE_SUSTAIN;\n          end else begin\n            selected_level = math_decay_difference[23:0];\n            selected_state = ENVELOPE_DECAY;\n          end\n        end\n        ENVELOPE_SUSTAIN: begin\n          selected_level = math_sustain;\n          selected_state = ENVELOPE_SUSTAIN;\n        end\n        ENVELOPE_RELEASE: begin\n          if (!(math_release_zero || math_release_difference[24] ||\n                math_release_difference == 0)) begin\n            selected_level = math_release_difference[23:0];\n            selected_state = ENVELOPE_RELEASE;\n          end\n        end\n        default: begin end\n      endcase\n    end\n  end endgenerate\n\n  always @* begin\n    slot_write_enable = 1'b0;\n    slot_write_address = '0;\n",
+      "count": 1
+    },
+    {
+      "before": "  end\n\n  assign mode_set_ready_o = allocated_mask_o == 32'd0 &&\n      load_state == LOAD_IDLE && !mix_busy_o;\n  assign event_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&\n      !mode_set_valid_i && (event_note_on_i ? allocation_found : 1'b1);\n  assign sample_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&\n      !envelope_update_active && !envelope_update_valid &&\n      !(event_valid_i && event_ready_o) && !mode_set_valid_i;\n  assign expression_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&\n      !envelope_update_active && !envelope_update_valid &&\n      !event_valid_i && !mode_set_valid_i;\n\n  midi_step_rom #(\n",
+      "after": "  end\n\n  assign mode_set_ready_o = allocated_mask_o == 32'd0 &&\n      load_state == LOAD_IDLE && !mix_busy_o &&\n      (!PIPELINED_ENVELOPE || !envelope_lane_busy);\n  assign event_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&\n      !mode_set_valid_i && (event_note_on_i ? allocation_found : 1'b1) &&\n      (!PIPELINED_ENVELOPE || !envelope_lane_busy);\n  assign sample_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&\n      !envelope_lane_busy &&\n      !(event_valid_i && event_ready_o) && !mode_set_valid_i;\n  assign expression_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&\n      !envelope_lane_busy &&\n      !event_valid_i && !mode_set_valid_i;\n\n  midi_step_rom #(\n",
+      "count": 1
+    },
+    {
+      "before": "        end\n      end\n\n      if (envelope_update_valid) begin\n        envelope_level_q24[envelope_update_write_index] <=\n            envelope_next_level_q24;\n        envelope_level_q18[envelope_update_write_index] <=\n            envelope_next_level_q18;\n        envelope_state[envelope_update_write_index] <= envelope_next_state;\n      end\n\n      if (mode_set_valid_i && mode_set_ready_o) begin\n",
+      "after": "        end\n      end\n\n      if (envelope_write_valid) begin\n        envelope_level_q24[envelope_write_index] <= envelope_write_level_q24;\n        envelope_level_q18[envelope_write_index] <= envelope_write_level_q24[23:6];\n        envelope_state[envelope_write_index] <= envelope_write_state;\n      end\n\n      if (mode_set_valid_i && mode_set_ready_o) begin\n",
+      "count": 1
     }
   ],
   "remaining_gaps": [
@@ -143,5 +173,21 @@
     "sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": {
       "baseline_sha256": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b"
     }
+  },
+  "pipeline_revision": {
+    "parameter": "PIPELINED_ENVELOPE",
+    "default": 0,
+    "opt_in": 1,
+    "parent_native_sha256": "d5e58e866abd33177d79629a1dcebb2a4fab3d29981bb693424482fcd7129629",
+    "preservation_scope": "Default0 retains per-cycle behavior; opt-in1 preserves output transactions and drained frame/voice state with3 later ADSR write clocks",
+    "stage_boundaries": [
+      "original synchronous voice read",
+      "rate scaling register",
+      "parallel arithmetic register",
+      "selection register",
+      "array write"
+    ],
+    "no_profile_selection_changed": true,
+    "routed_validation_required": true
   }
 }

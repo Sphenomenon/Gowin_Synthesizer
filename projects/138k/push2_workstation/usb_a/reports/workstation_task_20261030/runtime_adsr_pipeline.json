@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "scope": "Offline native oscillator opt-in ADSR pipeline; no profile change, synthesis, P&R or hardware",
+  "parameter": {
+    "name": "PIPELINED_ENVELOPE",
+    "default": 0,
+    "physical_candidate_must_select": 1
+  },
+  "native_sha256": "9950b3cd95dc7224158254bff05bfd2c8658b780a86e4cf4faecd3744a026705",
+  "source_policy": "Versioned runtime owner only, append6 exact reversible provenance edits; prepared/vendor/baseline bytes untouched",
+  "prior_native_sha256": "d5e58e866abd33177d79629a1dcebb2a4fab3d29981bb693424482fcd7129629",
+  "frozen_prepared_sha256": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+  "original_physical_problem": {
+    "identity": "custom138k-native-physical-C11030F2",
+    "setup_slack_ns": -0.823,
+    "logic_levels": 20,
+    "data_delay_ns": 13.783
+  },
+  "implemented_register_boundaries": [
+    "existing synchronous per-voice RAM read",
+    "rate scaling output register",
+    "parallel25bit add/sub register",
+    "saturation/state selection register",
+    "voice-indexed array write"
+  ],
+  "decay_equivalence": "For unsigned24bit values: level<=sustain OR level-sustain<=decay equals {0,level}<={0,sustain}+{0,decay}. The25bit sum preserves overflow.",
+  "token_contract": {
+    "throughput_voices_per_clock": 1,
+    "voices_per_frame": 32,
+    "writeback_delay_increase_clocks": 3,
+    "fields": "voice index, valid, state, level and sustain carried with arithmetic; all valid stages in quiescent/sample/event/expression/mode admission",
+    "PANIC": "Clear all3 added valid bits; suppress same-edge and later cancelled writes; no reset mux on stage data",
+    "priority": "Shared array write remains before note-off and load-launch assignments; new admission waits for all ADSR tokens"
+  },
+  "tests": [
+    {
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_oscillator.py",
+      "tests": 4,
+      "returncode": 0,
+      "scope": "Default0 unchanged per-clock controls, PCM and per-voice state against exact prepared reference; held44.1 and PANIC"
+    },
+    {
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_adsr_pipeline.py",
+      "tests": 3,
+      "returncode": 0,
+      "scope": "Opt-in1 ordered PCM and drained state against default0;264 normal frames inABC/32voices/fiveprofiles/bothrates;4096 edge/random voice arithmetic;47 PANIC offsets and new-note reuse"
+    },
+    {
+      "command": "git diff --check",
+      "returncode": 0
+    }
+  ],
+  "measured": {
+    "ADSR_finish_old_clocks": 34,
+    "ADSR_finish_new_clocks": 37,
+    "PCM_latency_clocks": {
+      "rate48000": {
+        "A": 47,
+        "B": 143,
+        "C": 1039
+      },
+      "rate44100": {
+        "A": 47,
+        "B": 143,
+        "C": 1039
+      }
+    },
+    "worst_PCM_latency_before_and_after_clocks": 1039,
+    "component_budget_at76m8": {
+      "rate48000_clocks": 1600,
+      "rate44100_min_clocks": 1741,
+      "rate48000_measured_headroom_clocks": 561,
+      "rate44100_measured_headroom_clocks": 702
+    },
+    "scope": "Component sampled tests only; not full effects/serial/whole-workstation schedulability or physical timing closure"
+  },
+  "equivalence": {
+    "default0": "Per-clock equality retained by original regression",
+    "opt_in1": "Per-output PCM and drained frame/voice/canonical-slot state equality; internal ADSR writes intentionally3 clocks later, not per-clock state equivalence",
+    "rate44100": "Original exact160/147 scaling and frame-frozen rate preserved"
+  },
+  "remaining_gaps": [
+    "Actual mapped register cuts, timing and physical resource delta require explicit PIPELINED_ENVELOPE1 synthesis/P&R",
+    "44.1 constant rational scale stage remains a potential separate critical path; this work does not claim it closes timing",
+    "DDS, other audio control paths, USB/display/DDR failures and full-workstation/hardware acceptance remain separate"
+  ],
+  "hardware_operated": false,
+  "source_sha256": {
+    "rtl/audio/workstation_runtime_oscillator_engine.sv": "9950b3cd95dc7224158254bff05bfd2c8658b780a86e4cf4faecd3744a026705",
+    "rtl/audio/workstation_runtime_oscillator_engine.provenance.json": "357e22ed551574c46786838f562d627f8b2305d7b1714022b60610fbb6e373d4",
+    "sim/test_workstation_runtime_adsr_pipeline.py": "2048ef54c530318bdb6c7b4e93b6b076f2c917ecf502f3a6a02916aa08a1a405",
+    "sim/audio/tb_workstation_runtime_adsr_pipeline.sv": "575b9a4ab8d8e32f768326bd8cc5903e4ba034ec92af4448c936ab9e5d342de5"
+  }
+}

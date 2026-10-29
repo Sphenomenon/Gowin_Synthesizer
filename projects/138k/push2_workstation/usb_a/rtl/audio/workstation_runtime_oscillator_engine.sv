@@ -28,7 +28,9 @@ module workstation_runtime_oscillator_engine #(
     parameter bit EXPRESSION_ENABLE = 1'b0,
     parameter int SAMPLE_RATE_HZ = 192000,
     parameter bit SEPARATE_OFF_NOTE = 1'b0,
-    parameter bit RUNTIME_RATE_ENABLE = 1'b0
+    parameter bit RUNTIME_RATE_ENABLE = 1'b0,
+    // Explicit physical candidate only; default retains the migrated cycles.
+    parameter bit PIPELINED_ENVELOPE = 1'b0
 ) (
     input  logic               clk_i,
     input  logic               rst_ni,
@@ -112,6 +114,12 @@ module workstation_runtime_oscillator_engine #(
   logic [23:0] envelope_next_level_q24;
   logic [17:0] envelope_next_level_q18;
   logic [2:0] envelope_next_state;
+  logic envelope_pipeline_busy, envelope_write_valid;
+  logic [4:0] envelope_write_index;
+  logic [23:0] envelope_write_level_q24;
+  logic [2:0] envelope_write_state;
+  wire envelope_lane_busy = envelope_update_active || envelope_update_valid ||
+      envelope_pipeline_busy;
 
   (* syn_ramstyle = "block_ram", ram_style = "block" *)
   logic [79:0] slot_mem [0:1023];
@@ -188,7 +196,7 @@ module workstation_runtime_oscillator_engine #(
       !slot_read_valid && !pitch_write_valid && !(|sine_pending_valid) &&
       !sine_valid_o && !gain_product_valid && !envelope_product_valid &&
       !finalize_valid && quantizer_quiescent && !sample_valid_o &&
-      !envelope_update_active && !envelope_update_valid && !mix_busy_o;
+      !envelope_lane_busy && !mix_busy_o;
   assign rate_ready_o = RUNTIME_RATE_ENABLE && quiescent_o && !panic_i &&
       !sample_ce_i && !event_valid_i && !expression_valid_i && !mode_set_valid_i;
   always_ff @(posedge clk_i or negedge rst_ni) begin
@@ -427,6 +435,122 @@ module workstation_runtime_oscillator_engine #(
     envelope_next_level_q18 = envelope_next_level_q24[23:6];
   end
 
+  generate if (!PIPELINED_ENVELOPE) begin: g_envelope_original
+    assign envelope_pipeline_busy = 1'b0;
+    assign envelope_write_valid = envelope_update_valid;
+    assign envelope_write_index = envelope_update_write_index;
+    assign envelope_write_level_q24 = envelope_next_level_q24;
+    assign envelope_write_state = envelope_next_state;
+  end else begin: g_envelope_pipeline
+    // The old mapped path starts at a BSRAM DO and crosses rate scaling,
+    // arithmetic, saturation and the32-voice write selector. These are real
+    // register boundaries: scale -> parallel arithmetic -> select -> write.
+    // One voice enters each clock; no arithmetic is repeated per voice.
+    logic scale_valid, math_valid, result_valid;
+    logic [4:0] scale_index, math_index, result_index;
+    logic [2:0] scale_state, math_state, result_state;
+    logic [23:0] scale_level, scale_sustain, scale_attack, scale_decay, scale_release;
+    logic [23:0] math_level, math_sustain, result_level;
+    logic [24:0] math_attack_sum, math_decay_difference, math_decay_floor;
+    logic [24:0] math_release_difference;
+    logic math_attack_zero, math_decay_zero, math_release_zero;
+    logic [23:0] selected_level;
+    logic [2:0] selected_state;
+
+    assign envelope_pipeline_busy = scale_valid || math_valid || result_valid;
+    assign envelope_write_valid = result_valid && !panic_i;
+    assign envelope_write_index = result_index;
+    assign envelope_write_level_q24 = result_level;
+    assign envelope_write_state = result_state;
+
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+      if (!rst_ni) begin
+        scale_valid <= 1'b0;
+        math_valid <= 1'b0;
+        result_valid <= 1'b0;
+      end else if (panic_i) begin
+        scale_valid <= 1'b0;
+        math_valid <= 1'b0;
+        result_valid <= 1'b0;
+      end else begin
+        scale_valid <= envelope_update_valid;
+        math_valid <= scale_valid;
+        result_valid <= math_valid;
+      end
+    end
+
+    // Data carries a valid tag and needs no global reset/PANIC mux. Rate is
+    // held for the accepted frame, including every tag through voice31.
+    always_ff @(posedge clk_i) begin
+      if (envelope_update_valid && !panic_i) begin
+        scale_index <= envelope_update_write_index;
+        scale_state <= envelope_update_state;
+        scale_level <= envelope_update_level_q24;
+        scale_sustain <= envelope_update_sustain_q24;
+        scale_attack <= rate_envelope_step(envelope_update_attack_q24, frame_rate_44100);
+        scale_decay <= rate_envelope_step(envelope_update_decay_q24, frame_rate_44100);
+        scale_release <= rate_envelope_step(envelope_update_release_q24, frame_rate_44100);
+      end
+      if (scale_valid && !panic_i) begin
+        math_index <= scale_index;
+        math_state <= scale_state;
+        math_level <= scale_level;
+        math_sustain <= scale_sustain;
+        math_attack_sum <= {1'b0, scale_level} + {1'b0, scale_attack};
+        math_decay_difference <= {1'b0, scale_level} - {1'b0, scale_decay};
+        // level<=sustain OR level-sustain<=decay is exactly
+        // {0,level}<={0,sustain}+{0,decay}; this avoids subtract->compare.
+        math_decay_floor <= {1'b0, scale_sustain} + {1'b0, scale_decay};
+        math_release_difference <= {1'b0, scale_level} - {1'b0, scale_release};
+        math_attack_zero <= scale_attack == 0;
+        math_decay_zero <= scale_decay == 0;
+        math_release_zero <= scale_release == 0;
+      end
+      if (math_valid && !panic_i) begin
+        result_index <= math_index;
+        result_level <= selected_level;
+        result_state <= selected_state;
+      end
+    end
+
+    always @* begin
+      selected_level = '0;
+      selected_state = ENVELOPE_IDLE;
+      case (math_state)
+        ENVELOPE_ATTACK: begin
+          if (math_attack_zero || math_attack_sum >= {1'b0, MAXIMUM_LEVEL_Q24}) begin
+            selected_level = MAXIMUM_LEVEL_Q24;
+            selected_state = ENVELOPE_DECAY;
+          end else begin
+            selected_level = math_attack_sum[23:0];
+            selected_state = ENVELOPE_ATTACK;
+          end
+        end
+        ENVELOPE_DECAY: begin
+          if (math_decay_zero || {1'b0, math_level} <= math_decay_floor) begin
+            selected_level = math_sustain;
+            selected_state = ENVELOPE_SUSTAIN;
+          end else begin
+            selected_level = math_decay_difference[23:0];
+            selected_state = ENVELOPE_DECAY;
+          end
+        end
+        ENVELOPE_SUSTAIN: begin
+          selected_level = math_sustain;
+          selected_state = ENVELOPE_SUSTAIN;
+        end
+        ENVELOPE_RELEASE: begin
+          if (!(math_release_zero || math_release_difference[24] ||
+                math_release_difference == 0)) begin
+            selected_level = math_release_difference[23:0];
+            selected_state = ENVELOPE_RELEASE;
+          end
+        end
+        default: begin end
+      endcase
+    end
+  end endgenerate
+
   always @* begin
     slot_write_enable = 1'b0;
     slot_write_address = '0;
@@ -546,14 +670,16 @@ module workstation_runtime_oscillator_engine #(
   end
 
   assign mode_set_ready_o = allocated_mask_o == 32'd0 &&
-      load_state == LOAD_IDLE && !mix_busy_o;
+      load_state == LOAD_IDLE && !mix_busy_o &&
+      (!PIPELINED_ENVELOPE || !envelope_lane_busy);
   assign event_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
-      !mode_set_valid_i && (event_note_on_i ? allocation_found : 1'b1);
+      !mode_set_valid_i && (event_note_on_i ? allocation_found : 1'b1) &&
+      (!PIPELINED_ENVELOPE || !envelope_lane_busy);
   assign sample_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
-      !envelope_update_active && !envelope_update_valid &&
+      !envelope_lane_busy &&
       !(event_valid_i && event_ready_o) && !mode_set_valid_i;
   assign expression_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
-      !envelope_update_active && !envelope_update_valid &&
+      !envelope_lane_busy &&
       !event_valid_i && !mode_set_valid_i;
 
   midi_step_rom #(
@@ -744,12 +870,10 @@ module workstation_runtime_oscillator_engine #(
         end
       end
 
-      if (envelope_update_valid) begin
-        envelope_level_q24[envelope_update_write_index] <=
-            envelope_next_level_q24;
-        envelope_level_q18[envelope_update_write_index] <=
-            envelope_next_level_q18;
-        envelope_state[envelope_update_write_index] <= envelope_next_state;
+      if (envelope_write_valid) begin
+        envelope_level_q24[envelope_write_index] <= envelope_write_level_q24;
+        envelope_level_q18[envelope_write_index] <= envelope_write_level_q24[23:6];
+        envelope_state[envelope_write_index] <= envelope_write_state;
       end
 
       if (mode_set_valid_i && mode_set_ready_o) begin
