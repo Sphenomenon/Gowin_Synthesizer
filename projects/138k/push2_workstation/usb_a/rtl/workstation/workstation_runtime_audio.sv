@@ -1,0 +1,289 @@
+`timescale 1ns/1ps
+
+// Explicit opt-in native composition. No accepted profile selects this module.
+// Command authorization and TF/record lifecycle policy belong to the caller.
+module workstation_runtime_audio #(
+    parameter integer WINDOW_CYCLES=50000, STABLE_WINDOWS=4,
+    parameter integer TOLERANCE_PPM=2000, LOSS_TIMEOUT_CYCLES=500,
+    parameter integer STOP_LOW_CYCLES=16, COUNTER_BITS=32,
+    parameter integer SWITCH_TIMEOUT_CYCLES=2000000,
+    parameter integer PDN_HOLD_FRAMES=4, STARTUP_MUTE_FRAMES=1028,
+    parameter integer DMA_TIMEOUT_CYCLES=1048576
+) (
+    input wire rst_ni, clk_50m_i, compute_clk_i, memory_clk_i,
+    input wire reference_48_i, reference_44_i,
+    // 50-MHz policy-qualified request; no queue, CPU/CC mapping or busy policy.
+    input wire request_i, request_44k1_i, switch_permit_i, recover_i,
+    input wire media_quiescent_i,
+    output wire request_ready_o, busy_o, fault_o, accepted_o, applied_o,
+    output wire rejected_o, failed_o,
+    output reg policy_rejected_o,
+    output wire [2:0] reject_code_o,
+    output wire [3:0] fault_code_o, clock_select_o,
+    output wire active_44k1_o, active_valid_o,
+    output wire [31:0] stream_epoch_o,
+    output wire [1:0] source_qualified_o,
+    output wire quiesce_o, stream_flush_o,
+    output wire dsp_fault_o, context_ready_o,
+    // Compute-domain event/control boundary, identical existing 18-bit events.
+    input wire midi_byte_valid_i, pc_byte_valid_i, cpu_event_valid_i,
+    input wire [7:0] midi_byte_i, pc_byte_i,
+    input wire [17:0] cpu_event_i,
+    output wire cpu_event_ready_o,
+    input wire signed [31:0] pcm_left_i, pcm_right_i,
+    input wire output_mute_i,
+    output wire [127:0] held_notes_o,
+    output wire [9:0] panic_epoch_o,
+    output wire panic_muted_o,
+    output wire [31:0] active_mask_o, scope_status_o, tf_scope_control_o,
+    output wire [31:0] applied_events_o, control_options_o,
+    output wire [5:0] active_voice_count_o,
+    output wire [1:0] mode_o,
+    output wire [15:0] master_volume_o,
+    output wire [21:0] pitch_q20_o,
+    output wire [31:0] pc_overflow_o,deadline_miss_o,midi_overflow_o,note_drop_o,
+    output wire clip_o,
+    output wire [15:0] synth_gain_o,pcm_gain_o,
+    output wire [1:0] route_o,
+    output wire [2:0] profile_o,effect_mask_o,
+    output wire [5:0] effect_order_o,
+    output wire panel_event_valid_o,
+    output wire [6:0] panel_command_o,
+    // Atomic same-compute-clock TF packet; asynchronous file transport is external.
+    input wire tf_active_i, tf_valid_i, tf_error_i,
+    input wire signed [15:0] tf_left_i, tf_right_i,
+    input wire [19:0] tf_sample_rate_i,
+    input wire [31:0] tf_generation_i, expected_tf_generation_i,
+    output wire tf_ready_o,
+    // Existing owner-6 DDR channel; address units are 32-bit native words.
+    output wire ddr_req_o, ddr_write_o,
+    output wire [28:0] ddr_address_o,
+    output wire [255:0] ddr_data_o,
+    output wire [31:0] ddr_mask_o,
+    input wire ddr_ready_i, ddr_response_i,
+    input wire [255:0] ddr_read_data_i,
+    // Selected-MCLK outputs and selected-MCLK pulse-valid consumer contracts.
+    output wire mclk_o, bck_o, lrck_o, data_o, pdn_no, smute_o,
+    input wire analysis_enable_i, analysis_ready_i, record_enable_i, record_ready_i,
+    output wire analysis_valid_o, record_valid_o,
+    output wire frame_valid_o, frame_error_o, frame_44k1_o,
+    output wire [31:0] frame_epoch_o, frame_sequence_o, frame_pcm_o,
+    output wire stream_change_o, sequence_gap_o, analysis_gap_o, record_fault_o,
+    output wire [31:0] analysis_drop_count_o, record_drop_count_o,
+    output wire [31:0] underrun_count_o, source_error_count_o,
+    output wire [31:0] bridge_request_drop_count_o, bridge_return_discard_count_o
+);
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] control_release,compute_release,memory_release;
+    always @(posedge clk_50m_i or negedge rst_ni)
+        if(!rst_ni)control_release<=0;else control_release<={control_release[1:0],1'b1};
+    always @(posedge compute_clk_i or negedge rst_ni)
+        if(!rst_ni)compute_release<=0;else compute_release<={compute_release[1:0],1'b1};
+    always @(posedge memory_clk_i or negedge rst_ni)
+        if(!rst_ni)memory_release<=0;else memory_release<={memory_release[1:0],1'b1};
+    wire control_reset_n=control_release[2],compute_reset_n=compute_release[2],memory_reset_n=memory_release[2];
+    wire selected_clock,audio_reset_n,clock_ready,clock_fault,clock_applied,clock_failed;
+    wire clock_active_valid,dac_mute,staged_rate,serial_quiet,serial_prefill,serial_running;
+    wire [31:0] staged_epoch;
+    wire service_quiet,service_fault,service_rate,service_ready,service_done,service_error;
+    wire signed [31:0] service_left,service_right;
+    wire bridge_quiet,bridge_busy,router_quiet,router_ready,router_done,router_error;
+    wire [31:0] router_pcm;
+    wire config_ready,config_applied;
+    reg integration_fault;
+    wire compute_fault=service_fault || integration_fault;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] fault_sync,quiet_sync,prefill_sync,running_sync;
+    reg fault_previous;
+    // Register the combined compute-domain proof before synchronizing it;
+    // an AND of independently changing outputs is not itself a CDC register.
+    reg all_quiet;
+    always @(posedge compute_clk_i or negedge compute_reset_n)
+        if(!compute_reset_n)all_quiet<=0;else all_quiet<=bridge_quiet && router_quiet && service_quiet;
+    always @(posedge clk_50m_i or negedge control_reset_n)begin
+        if(!control_reset_n)begin
+            fault_sync<=0;quiet_sync<=0;prefill_sync<=0;running_sync<=0;
+            fault_previous<=0;policy_rejected_o<=0;
+        end else begin
+            fault_sync<={fault_sync[0],compute_fault};quiet_sync<={quiet_sync[0],all_quiet};
+            prefill_sync<={prefill_sync[0],serial_prefill};running_sync<={running_sync[0],serial_running};
+            fault_previous<=fault_sync[1];
+            policy_rejected_o<=request_i && !switch_permit_i;
+        end
+    end
+    assign dsp_fault_o=fault_sync[1];
+    assign request_ready_o=clock_ready && switch_permit_i && !dsp_fault_o;
+    assign fault_o=clock_fault || dsp_fault_o;
+    assign failed_o=clock_failed || (dsp_fault_o && !fault_previous);
+    assign active_valid_o=clock_active_valid && !dsp_fault_o;
+    assign applied_o=clock_applied && !dsp_fault_o;
+    workstation_audio_clock_domain #(
+        .WINDOW_CYCLES(WINDOW_CYCLES),.STABLE_WINDOWS(STABLE_WINDOWS),.TOLERANCE_PPM(TOLERANCE_PPM),
+        .LOSS_TIMEOUT_CYCLES(LOSS_TIMEOUT_CYCLES),.STOP_LOW_CYCLES(STOP_LOW_CYCLES),
+        .COUNTER_BITS(COUNTER_BITS),.SWITCH_TIMEOUT_CYCLES(SWITCH_TIMEOUT_CYCLES)
+    ) clocks(
+        .clk_50m_i,.rst_ni,.reference_48_i,.reference_44_i,
+        .request_i(request_i && switch_permit_i && !dsp_fault_o),.request_44k1_i,.recover_i,
+        .frame_quiescent_i(quiet_sync[1] && media_quiescent_i && !dsp_fault_o),
+        .prefill_ready_i(prefill_sync[1] && context_ready_o && !dsp_fault_o),
+        .output_running_i(running_sync[1] && context_ready_o && !dsp_fault_o),
+        .selected_clock_o(selected_clock),.audio_reset_no(audio_reset_n),.request_ready_o(clock_ready),
+        .busy_o,.fault_o(clock_fault),.accepted_o,.applied_o(clock_applied),.rejected_o,
+        .failed_o(clock_failed),.reject_code_o,.fault_code_o,.clock_select_o,
+        .quiesce_o,.dac_mute_o(dac_mute),.stream_flush_o,
+        .active_44k1_o,.active_valid_o(clock_active_valid),.staged_44k1_o(staged_rate),
+        .stream_epoch_o,.staged_epoch_o(staged_epoch),.source_qualified_o,.source_present_o(),
+        .selected_qualified_o(),.selected_stopped_low_o(),.measured_48_o(),.measured_44_o(),.measured_selected_o());
+
+    // One immutable rate/epoch mailbox. The ACK means ALL DSP/history ACKs,
+    // never merely capture/acceptance. No naked multi-bit two-flop crossing.
+    (* syn_preserve=1 *) reg [32:0] context_payload;
+    reg context_toggle,context_sent,context_ack;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] ack_sync,context_sync;
+    assign context_ready_o=context_sent && ack_sync[1]==context_toggle &&
+        context_payload=={staged_rate,staged_epoch} && !dsp_fault_o;
+    always @(posedge clk_50m_i or negedge control_reset_n)begin
+        if(!control_reset_n)begin context_payload<=0;context_toggle<=0;context_sent<=0;ack_sync<=0;end
+        else begin
+            ack_sync<={ack_sync[0],context_ack};
+            if((!context_sent || context_payload!={staged_rate,staged_epoch}) && ack_sync[1]==context_toggle)begin
+                context_payload<={staged_rate,staged_epoch};context_toggle<=!context_toggle;context_sent<=1;
+            end
+        end
+    end
+    localparam [2:0] CFG_IDLE=0,CFG_SETTLE=1,CFG_DRAIN=2,CFG_ACCEPT=3,CFG_ACK=4;
+    reg [2:0] config_state;
+    reg pending_rate,compute_rate,compute_context_valid;
+    reg [31:0] pending_epoch,compute_epoch;
+    wire config_valid=config_state==CFG_ACCEPT && !compute_fault;
+    always @(posedge compute_clk_i or negedge compute_reset_n)begin
+        if(!compute_reset_n)begin
+            context_sync<=0;context_ack<=0;config_state<=CFG_IDLE;
+            pending_rate<=0;pending_epoch<=0;compute_rate<=0;compute_epoch<=0;
+            compute_context_valid<=0;integration_fault<=0;
+        end else begin
+            context_sync<={context_sync[0],context_toggle};
+            case(config_state)
+                CFG_IDLE:if(context_sync[1]!=context_ack)config_state<=CFG_SETTLE;
+                CFG_SETTLE:begin
+                    {pending_rate,pending_epoch}<=context_payload;config_state<=CFG_DRAIN;
+                end
+                CFG_DRAIN:if(router_quiet && service_quiet && !bridge_busy)config_state<=CFG_ACCEPT;
+                CFG_ACCEPT:if(config_ready)config_state<=CFG_ACK;
+                CFG_ACK:if(config_applied)begin
+                    if(service_rate!=pending_rate)integration_fault<=1;
+                    else begin
+                        compute_rate<=pending_rate;compute_epoch<=pending_epoch;compute_context_valid<=1;
+                        context_ack<=context_sync[1];config_state<=CFG_IDLE;
+                    end
+                end
+                default:integration_fault<=1;
+            endcase
+        end
+    end
+
+    // Local serializer reset is only asserted by the clock transaction/fault.
+    // A new staged context MUST NOT cut the old frame during QUIESCE.
+    // On each restart wait for the atomic config ACK, then eight real selected
+    // edges. This also settles bridge global-release/quiesce synchronizers
+    // BEFORE the serializer can emit its first request (no first-slot loss).
+    wire serial_safe_n=audio_reset_n && !dsp_fault_o;
+    reg [3:0] serial_guard;
+    reg serial_reset_n,serial_rate;
+    reg [31:0] serial_epoch;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] serial_quiesce,serial_resume,serial_context_ready;
+    always @(posedge selected_clock or negedge serial_safe_n)begin
+        if(!serial_safe_n)begin
+            serial_guard<=0;serial_reset_n<=0;serial_quiesce<=3;serial_resume<=0;serial_context_ready<=0;
+            serial_rate<=0;serial_epoch<=0;
+        end
+        else begin
+            serial_quiesce<={serial_quiesce[0],quiesce_o};serial_resume<={serial_resume[0],!dac_mute};
+            serial_context_ready<={serial_context_ready[0],context_ready_o};
+            if(!serial_reset_n)begin
+                if(serial_context_ready[1] && !serial_quiesce[1])begin
+                    // Bundled payload has been immutable throughout config,
+                    // its return ACK, two selected synchronizers and this guard.
+                    if(serial_guard==0)begin serial_rate<=staged_rate;serial_epoch<=staged_epoch;end
+                    if(serial_guard==7)serial_reset_n<=1;else serial_guard<=serial_guard+1'b1;
+                end else serial_guard<=0;
+            end
+        end
+    end
+    wire serial_request,serial_request_rate,sample_valid,sample_ready,sample_rate,sample_error;
+    wire [31:0] serial_request_epoch,serial_request_sequence,sample_epoch,sample_sequence,sample_pcm;
+    wire bridge_request,bridge_rate;
+    wire [31:0] bridge_epoch,bridge_sequence;
+    workstation_pcm_frame_bridge bridge(
+        .reset_ni(rst_ni),.serial_clk_i(selected_clock),.compute_clk_i,
+        .serial_reset_ni(serial_reset_n),.serial_quiet_i(serial_quiet),.quiesce_i(quiesce_o),
+        .request_i(serial_request),.request_44k1_i(serial_request_rate),
+        .request_epoch_i(serial_request_epoch),.request_sequence_i(serial_request_sequence),.request_ready_o(),
+        .sample_valid_o(sample_valid),.sample_ready_i(sample_ready),.sample_44k1_o(sample_rate),.sample_error_o(sample_error),
+        .sample_epoch_o(sample_epoch),.sample_sequence_o(sample_sequence),.sample_pcm_o(sample_pcm),
+        .render_ready_i(router_ready && compute_context_valid && config_state==CFG_IDLE && !compute_fault),
+        .render_done_i(router_done),.rendered_pcm_i(router_pcm),.rendered_error_i(router_error),
+        .render_request_o(bridge_request),.render_44k1_o(bridge_rate),.render_epoch_o(bridge_epoch),
+        .render_sequence_o(bridge_sequence),.render_busy_o(bridge_busy),.quiescent_o(bridge_quiet),
+        .request_drop_count_o(bridge_request_drop_count_o),.return_discard_count_o(bridge_return_discard_count_o),
+        .cancelled_request_count_o(),.cancelled_render_count_o(),.unexpected_render_count_o());
+    wire render_request,render_rate;
+    workstation_final_pcm_router final_pcm(
+        .clk_i(compute_clk_i),.rst_ni(compute_reset_n),.request_i(bridge_request),.request_44k1_i(bridge_rate),
+        .request_epoch_i(bridge_epoch),.request_sequence_i(bridge_sequence),.request_ready_o(router_ready),
+        .active_44k1_i(compute_rate),.active_epoch_i(compute_epoch),.cancel_epoch_i({22'd0,panic_epoch_o}),
+        .scope_enable_i(scope_status_o[8]),.tf_active_i,.master_volume_i(master_volume_o),
+        .mute_i(output_mute_i || panic_muted_o),.tf_valid_i,.tf_error_i,.tf_left_i,.tf_right_i,
+        .tf_sample_rate_i,.tf_generation_i,.expected_tf_generation_i,.tf_ready_o,
+        .render_ready_i(service_ready),.render_done_i(service_done),.render_error_i(service_error),
+        .render_left_i(service_left),.render_right_i(service_right),.render_request_o(render_request),.render_44k1_o(render_rate),
+        .frame_valid_o(router_done),.frame_error_o(router_error),.frame_44k1_o(),.frame_source_tf_o(),
+        .frame_epoch_o(),.frame_sequence_o(),.frame_pcm_o(router_pcm),.frame_error_bits_o(),.frame_gain_o(),
+        .quiescent_o(router_quiet),.rejected_request_count_o(),.tf_underrun_count_o(),.rate_mismatch_count_o(),
+        .stale_source_count_o(),.cancelled_frame_count_o(),.unexpected_render_count_o(),.clipped_frame_count_o());
+    wire dwr_valid,dwr_pop,drd_push,drd_ready,audio_heartbeat,memory_heartbeat,dma_fault;
+    wire [64:0] dwr_data,drd_data;
+    workstation_audio_render_service #(.RUNTIME_RATE_ENABLE(1),.RUNTIME_EFFECTS_ENABLE(1)) service(
+        .clk_i(compute_clk_i),.rst_ni(compute_reset_n),
+        .config_valid_i(config_valid),.config_rate_44100_i(pending_rate),.history_clear_i(1'b0),
+        .config_ready_o(config_ready),.config_applied_o(config_applied),.history_ready_o(),.history_done_o(),
+        .quiescent_o(service_quiet),.fault_o(service_fault),.applied_rate_44100_o(service_rate),
+        .delay_peer_heartbeat_i(memory_heartbeat),.delay_dma_fault_i(dma_fault),.delay_heartbeat_o(audio_heartbeat),
+        .render_request_i(render_request),.render_44k1_i(render_rate),.render_ready_o(service_ready),
+        .render_done_o(service_done),.render_error_o(service_error),.render_left_o(service_left),.render_right_o(service_right),
+        .render_busy_o(),.sample_ce_o(),.rejected_request_count_o(),.unsupported_rate_count_o(),
+        .cancelled_response_count_o(),.drained_result_count_o(),.midi_byte_valid_i,.midi_byte_i,
+        .pc_byte_valid_i,.pc_byte_i,.cpu_event_valid_i,.cpu_event_i,.cpu_event_ready_o,.pcm_left_i,.pcm_right_i,
+        .held_notes_o,.applied_events_o,.pc_overflow_o,.control_options_o,.panic_epoch_o,.panic_muted_o,
+        .active_mask_o,.active_voice_count_o,.mode_o,.pitch_q20_o,.deadline_miss_o,.midi_overflow_o,.note_drop_o,
+        .clip_o,.synth_gain_o,.pcm_gain_o,.master_volume_o,.route_o,.profile_o,.effect_mask_o,.effect_order_o,
+        .panel_event_valid_o,.panel_command_o,.scope_status_o,.tf_scope_control_o,.delivery_duplicate_count_o(),
+        .delay_mem_clk_i(memory_clk_i),.delay_mem_rst_ni(memory_reset_n),.delay_dwr_valid_o(dwr_valid),.delay_dwr_data_o(dwr_data),
+        .delay_dwr_pop_i(dwr_pop),.delay_drd_push_i(drd_push),.delay_drd_data_i(drd_data),.delay_drd_ready_o(drd_ready));
+    workstation_runtime_delay_ddr_dma #(.TRANSACTION_TIMEOUT_CYCLES(DMA_TIMEOUT_CYCLES)) delay_dma(
+        .clk_i(memory_clk_i),.rst_ni(memory_reset_n),.dwr_valid_i(dwr_valid),.dwr_data_i(dwr_data),.dwr_pop_o(dwr_pop),
+        .drd_push_o(drd_push),.drd_data_o(drd_data),.drd_ready_i(drd_ready),
+        .ddr_req_o,.ddr_write_o,.ddr_address_o,.ddr_data_o,.ddr_mask_o,.ddr_ready_i,.ddr_response_i,.ddr_read_data_i,
+        .debug_status_o(),.flush_done_o(),.fault_o(dma_fault),.applied_rate_44100_o(),.applied_transaction_o(),
+        .peer_heartbeat_i(audio_heartbeat),.heartbeat_o(memory_heartbeat));
+    wire serializer_pdn,serializer_mute,physical_error,physical_rate;
+    wire [31:0] physical_epoch,physical_sequence,physical_pcm;
+    workstation_i2s_serializer #(.PDN_HOLD_FRAMES(PDN_HOLD_FRAMES),.STARTUP_MUTE_FRAMES(STARTUP_MUTE_FRAMES),
+        .SAMPLE_ERROR_ENABLE(1)) serializer(
+        .clk_i(selected_clock),.rst_ni(serial_reset_n),.rate_44k1_i(serial_rate),.epoch_i(serial_epoch),
+        .quiesce_i(serial_quiesce[1]),.resume_i(serial_resume[1]),.serial_quiescent_o(serial_quiet),
+        .output_running_o(serial_running),.prefill_ready_o(serial_prefill),.request_o(serial_request),
+        .request_sequence_o(serial_request_sequence),.request_44k1_o(serial_request_rate),.request_epoch_o(serial_request_epoch),
+        .sample_valid_i(sample_valid),.sample_ready_o(sample_ready),.sample_44k1_i(sample_rate),.sample_error_i(sample_error),
+        .sample_epoch_i(sample_epoch),.sample_sequence_i(sample_sequence),.sample_pcm_i(sample_pcm),
+        .mclk_o,.bck_o,.lrck_o,.data_o,.pdn_no(serializer_pdn),.smute_o(serializer_mute),
+        .frame_valid_o,.frame_error_o(physical_error),.frame_pcm_o(physical_pcm),.frame_sequence_o(physical_sequence),
+        .frame_44k1_o(physical_rate),.frame_epoch_o(physical_epoch),.underrun_count_o,.source_error_count_o,.rejected_sample_count_o());
+    assign pdn_no=serializer_pdn && !dsp_fault_o;
+    assign smute_o=serializer_mute || dac_mute || dsp_fault_o;
+    workstation_pcm_frame_fanout taps(
+        .clk_i(selected_clock),.rst_ni,.frame_valid_i(frame_valid_o),.frame_error_i(physical_error),
+        .frame_44k1_i(physical_rate),.frame_epoch_i(physical_epoch),.frame_sequence_i(physical_sequence),.frame_pcm_i(physical_pcm),
+        .analysis_enable_i,.analysis_ready_i,.record_enable_i,.record_ready_i,.analysis_valid_o,.record_valid_o,
+        .frame_error_o,.frame_44k1_o,.frame_epoch_o,.frame_sequence_o,.frame_pcm_o,
+        .stream_change_o,.sequence_gap_o,.analysis_gap_o,.record_fault_o,.analysis_drop_count_o,.record_drop_count_o,
+        .sequence_gap_count_o(),.stream_change_count_o(),.error_frame_count_o());
+endmodule
