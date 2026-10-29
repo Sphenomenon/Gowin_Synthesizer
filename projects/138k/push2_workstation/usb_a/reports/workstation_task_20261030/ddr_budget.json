@@ -1,0 +1,398 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "scope": "M0 allocation and service-budget investigation; diagnostic evidence, not a D01 acceptance gate",
+  "d01_complete": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "candidate_identity": "custom138k-workstation-v1-2ed5155f12a6b585",
+  "profile_revision": 1,
+  "f01_profile_report_sha256": "065737b4d94c2676b1244faeb652d7c5016dd3ad67e7455536ef99b31c86220a",
+  "actual_prepared_project": "/Users/sphenicidition/.cache/gw138k-task-20261030/f01-profile-candidate-final/workstation/Prj1",
+  "unit_contract": {
+    "physical_bytes": 1073741824,
+    "native_word_bytes": 4,
+    "native_beat_bytes": 32,
+    "native_address_step": 8,
+    "ui_clock_nominal_hz": 100000000
+  },
+  "owners": {
+    "0": "startup_bist_only",
+    "1": "scan",
+    "2": "ae350",
+    "3": "raster_and_snapshot_writer",
+    "4": "tf_audio",
+    "5": "basic_pitch_model_and_analysis",
+    "6": "delay",
+    "7": "display_snapshot_reader"
+  },
+  "sources": {
+    "rtl/timing/basic_pitch_ddr_client_queues.sv": {
+      "sha256": "4a1c49cbea79514d68a1d0c567f0cd5dfd6b1bdfad1c9cf5df1e1a9c4443d2ab",
+      "f01_enabled_input_matches": true
+    },
+    "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": {
+      "sha256": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+      "f01_enabled_input_matches": true
+    },
+    "src/memory/ddr_address_map.vh": {
+      "sha256": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+      "f01_enabled_input_matches": null
+    },
+    "src/video/hdmi_display.v": {
+      "sha256": "900914bbcc98cdb563f708eea2bf6edf989917526103d628799930acfba59794",
+      "f01_enabled_input_matches": true
+    },
+    "src/video/video_ddr_scanout.v": {
+      "sha256": "7da444cbd8be7f5e5572c967e73493d673a9d2e7270e590c604b46b0c91ced84",
+      "f01_enabled_input_matches": true
+    },
+    "src/video/video_timing_1080p.v": {
+      "sha256": "2ca5d841f5d3e110e9b85c93898a2c0dc9f0627b3b268ba11e7088d99d08b5db",
+      "f01_enabled_input_matches": true
+    },
+    "src/memory/ddr_frame_writer.v": {
+      "sha256": "84f231c085df1dbfc0931fa622c53d6937491888ee630cdd0865203ee737087a",
+      "f01_enabled_input_matches": true
+    },
+    "src/memory/display_data_layout_pkg.sv": {
+      "sha256": "ba53d96edd01ed1fca72dc8ec4377e66afccd4a8a79e8f113aba3f53151d233b",
+      "f01_enabled_input_matches": true
+    },
+    "src/memory/display_data_writer.v": {
+      "sha256": "d04be5254fa9ee07e497ff9c92a26a959eb394f3c68366faf71de16543e9d8b8",
+      "f01_enabled_input_matches": true
+    },
+    "src/memory/display_data_reader.v": {
+      "sha256": "3079ea0aa9108ec476fbb52ae0814faa41a039c98fba5a486c1ad136c617dd20",
+      "f01_enabled_input_matches": true
+    },
+    "src/ae350/gw138k_ahb_ddr.sv": {
+      "sha256": "3ab2607741d3d0275e764e0ea9b1f204b364a3a27d628d0bac70eecda9bf382b",
+      "f01_enabled_input_matches": true
+    },
+    "src/storage/tf_audio_ddr_path.v": {
+      "sha256": "ebbf714a3e1670378fcdfce7b9eae34b6841ae82be37c0e5d7bccf5dd176291f",
+      "f01_enabled_input_matches": true
+    },
+    "src/storage/tf_audio_ddr_dma.v": {
+      "sha256": "42252d83a5088fd7393557bdd5c4e44b41ef5a52b179606eb4a5332e32793e19",
+      "f01_enabled_input_matches": true
+    },
+    "src/memory/tf_audio_ddr_command_buffer.sv": {
+      "sha256": "97cbec2d6c5123b33a5e7d01276d6e3a7f469684092fbf94583254bcf32cd140",
+      "f01_enabled_input_matches": true
+    },
+    "rtl/music/basic_pitch_workstation_link.sv": {
+      "sha256": "797d81fa12841c60c7010cb75d123a34cdf190d725e8a923ec0f65d57add04b3",
+      "f01_enabled_input_matches": true
+    },
+    "rtl/music/basic_pitch_ddr16_port.sv": {
+      "sha256": "6b0ce974e4081485f24a940e257e5a74daed3b1ce3e80f58b26f7304cae97785",
+      "f01_enabled_input_matches": true
+    },
+    "rtl/music/basic_pitch_pcm_pipeline.sv": {
+      "sha256": "1237dda62f16c0ead0bc428a98b11611ece2e1a04bb55f93abe0bdb276aaa265",
+      "f01_enabled_input_matches": true
+    },
+    "rtl/music/basic_pitch_ddr_map.svh": {
+      "sha256": "49b7b954e3d6b45b305d443e408045889f7a8ce25138f81ccdd859dd39c163af",
+      "f01_enabled_input_matches": null
+    },
+    "rtl/music/music_async_fifo.sv": {
+      "sha256": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+      "f01_enabled_input_matches": true
+    },
+    "rtl/audio/delay_ddr/delay_ddr_dma.sv": {
+      "sha256": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+      "f01_enabled_input_matches": true
+    },
+    "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": {
+      "sha256": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+      "f01_enabled_input_matches": true
+    },
+    "src/memory/ddr3_platform.v": {
+      "sha256": "46a34b9de9e348b17b3f915fbbe84e608caa6b407d616b7386ca5c881bd8a75b",
+      "f01_enabled_input_matches": true
+    },
+    "vendor/gowin_ddr3/ddr3_memory_interface.v": {
+      "sha256": "4a6e26d2ccb8d01221103df4cdf71f3517d2700614020e0c414aafec04a495bc",
+      "f01_enabled_input_matches": true
+    }
+  },
+  "diagnostic": {
+    "bench": "ddr_budget_tb.sv",
+    "bench_sha256": "9337879e950d1c9cc15553ffa9fcbf84702e6405798add3f7af3554842bab64c",
+    "tool": "Icarus Verilog 13.0 (stable) (v13_0)",
+    "run_argv": [
+      "vvp",
+      "simulation"
+    ],
+    "compile_exit_code": 0,
+    "run_exit_code": 0,
+    "controller_model": {
+      "app_ready": "constant 1",
+      "app_write_ready": "constant 1",
+      "ordered_read_response_latency_ui_cycles": 1
+    },
+    "producer_model": "All enabled producers stay valid. Scan/display read; all other producers write. This exceeds real scan 120-beat bursts and real TF arrival bounds.",
+    "checks": [
+      "No unexpected response fault on each sampled cycle",
+      "Native app_en counted by distinct owner addresses",
+      "Repeated 20000/40000-cycle saturation windows"
+    ],
+    "not_checked": [
+      "Real 120-beat scanout consumption",
+      "Actual media arrival bounds",
+      "Variable readiness or read latency",
+      "Arbitrary byte masks",
+      "Tag-depth/queue peaks",
+      "Reset/cancel isolation",
+      "Physical DDR timing",
+      "44.1kHz integration"
+    ],
+    "phases": [
+      {
+        "phase": 1,
+        "producer_valid_mask_hex": "fe",
+        "ui_cycles": 20000,
+        "native_issues_by_owner": [
+          0,
+          5000,
+          0,
+          0,
+          4999,
+          0,
+          0,
+          0
+        ],
+        "observed_max_pending_age_ui_cycles_by_owner": [
+          0,
+          4,
+          20000,
+          20000,
+          6,
+          20000,
+          20000,
+          20000
+        ]
+      },
+      {
+        "phase": 2,
+        "producer_valid_mask_hex": "fc",
+        "ui_cycles": 20000,
+        "native_issues_by_owner": [
+          0,
+          0,
+          0,
+          0,
+          5000,
+          4999,
+          0,
+          0
+        ],
+        "observed_max_pending_age_ui_cycles_by_owner": [
+          0,
+          0,
+          20000,
+          20000,
+          4,
+          6,
+          20000,
+          20000
+        ]
+      },
+      {
+        "phase": 3,
+        "producer_valid_mask_hex": "6c",
+        "ui_cycles": 20000,
+        "native_issues_by_owner": [
+          0,
+          0,
+          1666,
+          1667,
+          0,
+          3333,
+          3333,
+          0
+        ],
+        "observed_max_pending_age_ui_cycles_by_owner": [
+          0,
+          0,
+          14,
+          12,
+          0,
+          6,
+          6,
+          0
+        ]
+      },
+      {
+        "phase": 4,
+        "producer_valid_mask_hex": "68",
+        "ui_cycles": 20000,
+        "native_issues_by_owner": [
+          0,
+          0,
+          0,
+          3333,
+          0,
+          3333,
+          3333,
+          0
+        ],
+        "observed_max_pending_age_ui_cycles_by_owner": [
+          0,
+          0,
+          0,
+          8,
+          0,
+          6,
+          6,
+          0
+        ]
+      },
+      {
+        "phase": 5,
+        "producer_valid_mask_hex": "60",
+        "ui_cycles": 20000,
+        "native_issues_by_owner": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          5000,
+          4999,
+          0
+        ],
+        "observed_max_pending_age_ui_cycles_by_owner": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          6,
+          0
+        ]
+      },
+      {
+        "phase": 6,
+        "producer_valid_mask_hex": "fe",
+        "ui_cycles": 40000,
+        "native_issues_by_owner": [
+          0,
+          10000,
+          0,
+          0,
+          9999,
+          0,
+          0,
+          0
+        ],
+        "observed_max_pending_age_ui_cycles_by_owner": [
+          0,
+          4,
+          40000,
+          40000,
+          6,
+          40000,
+          40000,
+          40000
+        ]
+      },
+      {
+        "phase": 7,
+        "producer_valid_mask_hex": "fc",
+        "ui_cycles": 40000,
+        "native_issues_by_owner": [
+          0,
+          0,
+          0,
+          0,
+          10000,
+          9999,
+          0,
+          0
+        ],
+        "observed_max_pending_age_ui_cycles_by_owner": [
+          0,
+          0,
+          40000,
+          40000,
+          4,
+          6,
+          40000,
+          40000
+        ]
+      }
+    ],
+    "log": "PHASE 1 MASK fe CYCLES 20000 ISSUES 0 5000 0 0 4999 0 0 0 MAXWAIT 0 4 20000 20000 6 20000 20000 20000\nPHASE 2 MASK fc CYCLES 20000 ISSUES 0 0 0 0 5000 4999 0 0 MAXWAIT 0 0 20000 20000 4 6 20000 20000\nPHASE 3 MASK 6c CYCLES 20000 ISSUES 0 0 1666 1667 0 3333 3333 0 MAXWAIT 0 0 14 12 0 6 6 0\nPHASE 4 MASK 68 CYCLES 20000 ISSUES 0 0 0 3333 0 3333 3333 0 MAXWAIT 0 0 0 8 0 6 6 0\nPHASE 5 MASK 60 CYCLES 20000 ISSUES 0 0 0 0 0 5000 4999 0 MAXWAIT 0 0 0 0 0 4 6 0\nPHASE 6 MASK fe CYCLES 40000 ISSUES 0 10000 0 0 9999 0 0 0 MAXWAIT 0 4 40000 40000 6 40000 40000 40000\nPHASE 7 MASK fc CYCLES 40000 ISSUES 0 0 0 0 10000 9999 0 0 MAXWAIT 0 0 40000 40000 4 6 40000 40000\ntb_ddr_budget.sv:54: $finish called at 1800350000 (1ps)\n",
+    "log_sha256": "63587fb42b72bdda19afe35bb690133742538337425b4a8a8104471545760821",
+    "conclusion": "Selected arbiter lacks an unconditional per-owner finite service bound. Finite stress supports the priority-logic argument; it does not establish real-workload infinite starvation.",
+    "replay_with_archived_bench_matches_all_phase_results": true,
+    "compile_argv_replay": [
+      "iverilog",
+      "-g2012",
+      "-s",
+      "tb_ddr_budget",
+      "-o",
+      "simulation",
+      "ddr_budget_tb.sv",
+      "<prepared_project>/rtl/timing/basic_pitch_ddr_client_queues.sv",
+      "<prepared_project>/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv"
+    ]
+  },
+  "demand_bytes_per_second": {
+    "hdmi_1080p60_scan": 248832000,
+    "raster_60_full_frames_with_meta": 248833920,
+    "compact_snapshot_each_direction_at_60hz": 700800,
+    "stereo_pcm16_48000": {
+      "tf_read_write_minimum": 384000,
+      "delay_read_write": 768000,
+      "future_recording_write": 192000,
+      "future_download_read": 192000
+    },
+    "stereo_pcm16_44100_theoretical_not_integrated": {
+      "tf_read_write_minimum": 352800,
+      "delay_read_write": 705600,
+      "future_recording_write": 176400,
+      "future_download_read": 176400
+    }
+  },
+  "scan": {
+    "beats_per_line": 120,
+    "bytes_per_line": 3840,
+    "total_credits": 8,
+    "ui_cycles_to_store_each_beat": 4,
+    "minimum_line_store_ui_cycles_excluding_overheads": 480,
+    "pixel_clock_nominal_hz": 148500000,
+    "horizontal_total_pixels": 2200,
+    "line_period_us": 14.814814814814815,
+    "request_to_target_x0_pixel_clocks_before_cdc": 2481,
+    "request_to_target_x0_us_before_cdc": 16.707070707070706,
+    "inactivity_watchdog_ui_cycles": 100000,
+    "inactivity_watchdog_is_line_deadline": false
+  },
+  "tentative_next_implementation_targets_not_guarantees": {
+    "normal_scan_line_store_ui_cycles_max": 1200,
+    "urgent_tf_delay_pending_to_commit_us_max": 1000,
+    "other_accepted_background_pending_to_native_issue_us_max": 1000,
+    "minimum_tf_effective_pcm_reserve_bytes": 1024,
+    "minimum_delay_wet_reserve_samples": 128,
+    "controller_joint_write_ready_gap_ui_cycles_max": null,
+    "controller_read_ready_gap_ui_cycles_max": null,
+    "controller_issued_read_return_ui_cycles_max": null,
+    "requires_physical_and_system_validation": true
+  },
+  "remaining": [
+    "Freeze controller Gread/Gwrite/Lread under refresh, address conflicts, mixed traffic and maximum outstanding",
+    "Implement scan admission and bounded per-owner fairness without blocking samples",
+    "Instrument consumer watermarks, queue peaks and all five acceptance/completion endpoints",
+    "Validate actual clients, masks, ordered return accounting, reset/cancel and late responses together",
+    "Allocate USB pixel, recording and D clients before adding traffic",
+    "Validate both rates with the same integrated candidate; P&R and physical checks remain separate"
+  ]
+}
