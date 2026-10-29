@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "scope": "Native runtime pitch LFO/glide block only; full DSP adaptation not implemented",
+  "passed": true,
+  "reference": {
+    "baseline": "resource_rework_route0",
+    "path": "legacy/rtl/audio/pitch_expression.sv",
+    "sha256": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591"
+  },
+  "input_sha256": {
+    "rtl/audio/workstation_rate_pitch_expression.sv": "12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2",
+    "sim/audio/tb_workstation_rate_pitch_expression.sv": "273ba60bb7b058c5c535ebf85003b11a1051feb70cd2b88b9a87ea8b10889db3",
+    "sim/test_workstation_rate_pitch_expression.py": "fdffb7c909b54852e4ff673b3e5f061406ec3a13494880d1c278e13772886518"
+  },
+  "validation_command": [
+    "python3",
+    "sim/test_workstation_rate_pitch_expression.py"
+  ],
+  "stdout": "EQUIVALENCE locked48 clocks=16000\nPHYSICAL rate=44100 frames=8820 glide_delta=19200 lfo_modulo_turn=4294960740\nGLIDE frames48=32768 frames44=30106 seconds48=0.682666667 seconds44=0.682675737\nPASS runtime pitch: locked48 bit equivalence, held state,5Hz LFO, fractional glide timing, max increment, reverse switch\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_rate_pitch_expression.sv:82: $finish called at 3239532240 (1ps)\n\nSOURCE rtl/audio/workstation_rate_pitch_expression.sv SHA256=12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2\nSOURCE sim/audio/tb_workstation_rate_pitch_expression.sv SHA256=273ba60bb7b058c5c535ebf85003b11a1051feb70cd2b88b9a87ea8b10889db3\n",
+  "stderr": ".\n----------------------------------------------------------------------\nRan 1 test in 0.624s\n\nOK\n",
+  "equivalent_48k_clocks": 16000,
+  "glide": {
+    "canonical_step_q20": 2,
+    "distance_q20": 65536,
+    "frames_48": 32768,
+    "frames_44": 30106,
+    "seconds_48": 0.6826666666666666,
+    "seconds_44": 0.6826757369614512,
+    "max_allowed_time_error_seconds": 2.2675736961451248e-05
+  },
+  "lfo": {
+    "requested_hz": 5,
+    "step_48": 447392,
+    "step_44": 486957,
+    "physical_hz_48": 4.999995231628418,
+    "physical_hz_44": 4.999992367811501
+  },
+  "integrated_in_profile": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false
+}
