@@ -1,0 +1,216 @@
+{
+  "schema": 1,
+  "passed": true,
+  "hardware_tested": false,
+  "profile_changed": false,
+  "validation_stage": "offline-native-service-real-apb-cdc-and-clock-transaction",
+  "identity": "audio-clock-command-offline-v1-a952e76df86b6553",
+  "source_set_sha256": "a952e76df86b65531cc09a3c805c8659ec3ee616314a15ff250a119eb11ffcbf",
+  "baseline": {
+    "name": "resource_rework_route0",
+    "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+    "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+    "origin": {
+      "build": "results/resource_rework_final_route0_20261020_041042",
+      "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+      "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+    },
+    "source_files": 437,
+    "excluded_files": 180
+  },
+  "apb": {
+    "input": "src/migration/gw138k_apb_cdc.sv",
+    "before_sha256": "61047b3c2be74af1bc96567e2aed37be2d78773cd31364eb6bdb1eb4d9d9409a",
+    "predecoded_sha256": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+    "prepared_reference": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/migration/gw138k_apb_cdc.sv",
+      "sha256": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+      "exact": true
+    }
+  },
+  "input_sha256": {
+    "rtl/services/workstation_audio_clock_service.sv": "15222de53157764a0c6dfc9107b856bc13cb48998fa39e20d1513af71b84376e",
+    "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+    "prepared/gw138k_apb_cdc.sv": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+    "sim/services/tb_workstation_audio_clock_service.sv": "45b2efe3dc2a0face04a0ec994f17f5b9616d81c5fab0a927de7b0e475a9dc7c",
+    "sim/services/run_audio_clock_service.py": "96735fd86be44cb16867bf9b4834873327e581541abb39cdae33cd78dd8483c6",
+    "tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
+    "tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+    "tools/workstation_composition.py": "8306eddc2d249c4288684b5b23ff929b57a9d57426bed0a3f8c85f84a821514c",
+    "rtl/services/AUDIO_CLOCK_SERVICE_CONTRACT.md": "20eee4d009494a208866690127506b42d984a82993bbe1060665a003729b3b47",
+    "boards/custom_138k/workstation_profile_v1.json": "e4064b049a93f537c57b11c3c47ecd3caef6d10a8b5624a179f2323a9f0c6371",
+    "baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948"
+  },
+  "input_paths": {
+    "rtl/services/workstation_audio_clock_service.sv": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_audio_clock_service.sv",
+    "rtl/audio/workstation_sample_rate_switch.sv": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+    "prepared/gw138k_apb_cdc.sv": "/Users/sphenicidition/.cache/gw138k-task-20261030/audio-clock-service-final-v2/gw138k_apb_cdc.sv",
+    "sim/services/tb_workstation_audio_clock_service.sv": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_audio_clock_service.sv",
+    "sim/services/run_audio_clock_service.py": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/run_audio_clock_service.py",
+    "tools/workstation_resource_timing.py": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py",
+    "tools/workstation_baselines.py": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py",
+    "tools/workstation_composition.py": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_composition.py",
+    "rtl/services/AUDIO_CLOCK_SERVICE_CONTRACT.md": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/AUDIO_CLOCK_SERVICE_CONTRACT.md",
+    "boards/custom_138k/workstation_profile_v1.json": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json",
+    "baselines/resource_rework_route0.json": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json"
+  },
+  "configuration": {
+    "control_hz": 50000000,
+    "bus_period_ns": 27.4,
+    "test_accept_timeout_clocks": 16,
+    "test_result_timeout_clocks": 192,
+    "real_switch_state_timeout_clocks": 96,
+    "default_accept_timeout_clocks": 32,
+    "default_result_timeout_clocks": 20000000,
+    "rearm_quiet_clocks": 4
+  },
+  "scope": "Real existing held-word CDC/predecode and real workstation_sample_rate_switch; explicit lost-response and permission/epoch fault injection",
+  "limits": "No new top/profile/firmware/address allocation, DCS/physical clock simulation, EDA, SRAM or hardware acceptance",
+  "lint_argv": [
+    "verilator",
+    "--lint-only",
+    "--top-module",
+    "workstation_audio_clock_service",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_audio_clock_service.sv"
+  ],
+  "lint_log_sha256": "5f461989074fb28057583be3c052950b5f92987999c4edffa953a3930d7a283f",
+  "lint_warning_count": 0,
+  "compile_argv": [
+    "iverilog",
+    "-g2012",
+    "-s",
+    "tb_workstation_audio_clock_service",
+    "-o",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/audio-clock-service-final-v2/clock_service.vvp",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_audio_clock_service.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/audio-clock-service-final-v2/gw138k_apb_cdc.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_audio_clock_service.sv"
+  ],
+  "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "runs": [
+    {
+      "bus_phase_ns": 3.7,
+      "argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/audio-clock-service-final-v2/clock_service.vvp",
+        "+BUS_PHASE=3.7"
+      ],
+      "log": "PASS audio_clock_service: bus_transactions=145 max_bus_cycles=9 request_pulses=11 recover_pulses=1 hardware_accepts=9 hardware_applies=9 hardware_failures=1 held_checks=1 busy_rejects=1 late_rejects=2 recover_accepts=1 ignored_startup=1 timeout_cases=2 cpu_reset_during_hardware=1 context_mismatch_cases=1 dsp_fault_rejects=3 source_bus_stop_checks=1 snapshot_checks=1\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_audio_clock_service.sv:285: $finish called at 47090600 (1ps)\n",
+      "log_sha256": "f90e779a9252d2c280bca918081aa6e862ccd33c49cbaa8927f20169fab4e706",
+      "metrics": {
+        "bus_transactions": 145,
+        "max_bus_cycles": 9,
+        "request_pulses": 11,
+        "recover_pulses": 1,
+        "hardware_accepts": 9,
+        "hardware_applies": 9,
+        "hardware_failures": 1,
+        "held_checks": 1,
+        "busy_rejects": 1,
+        "late_rejects": 2,
+        "recover_accepts": 1,
+        "ignored_startup": 1,
+        "timeout_cases": 2,
+        "cpu_reset_during_hardware": 1,
+        "context_mismatch_cases": 1,
+        "dsp_fault_rejects": 3,
+        "source_bus_stop_checks": 1,
+        "snapshot_checks": 1
+      }
+    },
+    {
+      "bus_phase_ns": 0.1,
+      "argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/audio-clock-service-final-v2/clock_service.vvp",
+        "+BUS_PHASE=0.1"
+      ],
+      "log": "PASS audio_clock_service: bus_transactions=145 max_bus_cycles=9 request_pulses=11 recover_pulses=1 hardware_accepts=9 hardware_applies=9 hardware_failures=1 held_checks=1 busy_rejects=1 late_rejects=2 recover_accepts=1 ignored_startup=1 timeout_cases=2 cpu_reset_during_hardware=1 context_mismatch_cases=1 dsp_fault_rejects=3 source_bus_stop_checks=1 snapshot_checks=1\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_audio_clock_service.sv:285: $finish called at 47251400 (1ps)\n",
+      "log_sha256": "680367602c1c1b25b1f5eaa0105d55f4ae1a47bc31f03cbaa3fb043ebfb1fbea",
+      "metrics": {
+        "bus_transactions": 145,
+        "max_bus_cycles": 9,
+        "request_pulses": 11,
+        "recover_pulses": 1,
+        "hardware_accepts": 9,
+        "hardware_applies": 9,
+        "hardware_failures": 1,
+        "held_checks": 1,
+        "busy_rejects": 1,
+        "late_rejects": 2,
+        "recover_accepts": 1,
+        "ignored_startup": 1,
+        "timeout_cases": 2,
+        "cpu_reset_during_hardware": 1,
+        "context_mismatch_cases": 1,
+        "dsp_fault_rejects": 3,
+        "source_bus_stop_checks": 1,
+        "snapshot_checks": 1
+      }
+    },
+    {
+      "bus_phase_ns": 21.9,
+      "argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/audio-clock-service-final-v2/clock_service.vvp",
+        "+BUS_PHASE=21.9"
+      ],
+      "log": "PASS audio_clock_service: bus_transactions=145 max_bus_cycles=9 request_pulses=11 recover_pulses=1 hardware_accepts=9 hardware_applies=9 hardware_failures=1 held_checks=1 busy_rejects=1 late_rejects=2 recover_accepts=1 ignored_startup=1 timeout_cases=2 cpu_reset_during_hardware=1 context_mismatch_cases=1 dsp_fault_rejects=3 source_bus_stop_checks=1 snapshot_checks=1\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_audio_clock_service.sv:285: $finish called at 47204700 (1ps)\n",
+      "log_sha256": "1e943c21bba4cdfb29f13beb7efec21f5cd1b479bc86b08d146fb62e71c62ec6",
+      "metrics": {
+        "bus_transactions": 145,
+        "max_bus_cycles": 9,
+        "request_pulses": 11,
+        "recover_pulses": 1,
+        "hardware_accepts": 9,
+        "hardware_applies": 9,
+        "hardware_failures": 1,
+        "held_checks": 1,
+        "busy_rejects": 1,
+        "late_rejects": 2,
+        "recover_accepts": 1,
+        "ignored_startup": 1,
+        "timeout_cases": 2,
+        "cpu_reset_during_hardware": 1,
+        "context_mismatch_cases": 1,
+        "dsp_fault_rejects": 3,
+        "source_bus_stop_checks": 1,
+        "snapshot_checks": 1
+      }
+    }
+  ],
+  "inputs_unchanged_during_run": true,
+  "date": "2026-10-30",
+  "stage": "C01/A06 native page-local audio clock command owner, not system integration",
+  "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/audio-clock-service-final-v2/verification.json",
+  "verification_sha256": "b8ae25f2e470ba29fb7c419bed300c22e2e99bd71e9c62e5477835388cafede2",
+  "accepted_input_boundary_regression": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py",
+    "passed": true,
+    "tests": 10,
+    "source_sha256": "a0674152e4a89b8f43393840fd1fc724ee0788fedef0238086022c5146ae759f"
+  },
+  "deployment": {
+    "bitstream_sha256": null,
+    "synthesis_run": false,
+    "pnr_run": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_programmed": false
+  },
+  "rollback": "Do not instantiate the opt-in service; existing profile/top/firmware and absolute APB address allocation remain unchanged.",
+  "remaining_gaps": [
+    "Explicit whole-system composition with sole request owner and independent absolute APB page",
+    "Maintained firmware commands and CPU startup rediscovery",
+    "Whole-runtime qualification/permission/timing budgets and physical CDC/reset constraints",
+    "Full-system synthesis/P&R, physical clocks/I2S and authorized board acceptance"
+  ],
+  "parent_independent_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/audio-clock-service-parent-final/verification.json",
+    "sha256": "d5a406a56d0877ffd7e157a8208d068835d30f206d0d670330362c6e63e93ed1",
+    "source_set_sha256": "a952e76df86b65531cc09a3c805c8659ec3ee616314a15ff250a119eb11ffcbf",
+    "passed": true,
+    "inputs_unchanged_during_run": true
+  }
+}
