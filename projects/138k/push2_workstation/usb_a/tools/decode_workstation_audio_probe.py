@@ -4,6 +4,7 @@ import argparse
 import csv
 import json
 from pathlib import Path
+import tempfile
 
 from workstation_audio_probe import load_config, ROOT, sha
 
@@ -41,22 +42,49 @@ def decode(path, config=None):
     rows = list(csv.reader(Path(path).read_text().splitlines()))
     data = next((i for i, row in enumerate(rows) if row == ['Data:']), None)
     require(data is not None and len(rows) > data + 2, 'No GAO Data section')
-    require(len(rows[data+1]) == 2 and rows[data+1][1].strip() == 'audio_probe_debug[799:0]', 'Unexpected GAO bus')
+    header = [value.strip() for value in rows[data+1]]
+    # This SDK exports both the packed bus and all800 constituent bits,
+    # followed by a trailing comma. Older exports contain only the packed bus.
+    expanded = len(header) == 803
+    if expanded:
+        require(header[2:802] == [f'audio_probe_debug[{bit}]' for bit in reversed(range(800))]
+                and header[-1] == '', 'Unexpected GAO constituent-bit layout')
+    require(len(header) == (803 if expanded else 2)
+            and header[1] == 'audio_probe_debug[799:0]', 'Unexpected GAO bus')
+    raw_samples = [row for row in rows[data+2:] if row]
+    placeholder = False
+    if expanded and len(raw_samples) == 129:
+        first = [value.strip() for value in raw_samples[0]]
+        require(len(first) == 803 and first[0] == '0' and first[-1] == ''
+                and all(value.upper() == 'X' for value in first[1:802]),
+                'Unexpected extra sample; only SDK leading all-X placeholder is allowed')
+        raw_samples = raw_samples[1:]
+        placeholder = True
     samples = []
-    for row in rows[data+2:]:
-        if not row:
-            continue
-        require(len(row) == 2, 'Unexpected GAO sample columns')
+    for row in raw_samples:
+        require(len(row) == len(header), 'Unexpected GAO sample columns')
         value = int(row[1].strip(), 16)
         require(value.bit_length() <= 800, 'GAO sample exceeds800bits')
+        if expanded:
+            require(row[-1].strip() == '' and [bit.strip() for bit in row[2:802]]
+                    == list(f'{value:0800b}'), 'Constituent bits disagree with packed GAO bus')
         samples.append(decode_words([(value >> (32*i)) & 0xffffffff for i in range(25)], config))
     require(len(samples) == 128, 'Expected128 GAO samples')
     heartbeats = [sample['reference_heartbeat'] for sample in samples]
     deltas = [(b-a) & 0xffffffff for a, b in zip(heartbeats, heartbeats[1:])]
-    require(sum(delta == 1 for delta in deltas) >= 126, 'Heartbeat does not prove a live consecutive50MHz capture')
+    seams = [index + 1 for index, delta in enumerate(deltas) if delta != 1]
+    require(len(seams) <= 1, 'Heartbeat does not prove a live consecutive50MHz capture')
+    if seams:
+        cut = seams[0]
+        require(deltas[cut-1] == (1-len(samples)) & 0xffffffff,
+                'GAO circular-buffer seam is not an exact128sample rotation')
+        samples = samples[cut:] + samples[:cut]
+    require(all(((b['reference_heartbeat']-a['reference_heartbeat']) & 0xffffffff) == 1
+                for a, b in zip(samples, samples[1:])), 'Nonconsecutive chronological heartbeat')
     return dict(passed=True, source=str(Path(path).resolve()), sha256=sha(path), sample_count=len(samples),
-                samples_with_consecutive_heartbeat=sum(delta == 1 for delta in deltas),
-                latest=max(samples, key=lambda sample: (sample['snapshot_completed_frames'], sample['reference_heartbeat'])))
+                sdk_leading_unknown_placeholder=placeholder,
+                expanded_bits_cross_checked=expanded, circular_rotation=bool(seams),
+                samples_with_consecutive_heartbeat=127, latest=samples[-1])
 
 
 def self_test():
@@ -79,7 +107,37 @@ def self_test():
     try: decode_words(changed, config)
     except ValueError: rejected.append('stale_epoch')
     require(len(rejected) == 3, 'Decoder failed to reject invalid observation')
-    return dict(passed=True, rejected=rejected)
+    with tempfile.TemporaryDirectory(prefix='audio-probe-csv-') as directory:
+        path = Path(directory) / 'capture.csv'
+        for expanded in (False, True):
+            header = ['time unit: us', 'audio_probe_debug[799:0]']
+            if expanded:
+                header += [f'audio_probe_debug[{bit}]' for bit in reversed(range(800))] + ['']
+            data = []
+            for index in range(128):
+                frame = list(words); frame[1] = 100 + index
+                value = sum(word << (32*bit) for bit, word in enumerate(frame))
+                row = [str(index+1), f'{value:0200X}']
+                if expanded: row += list(f'{value:0800b}') + ['']
+                data.append(row)
+            data = data[3:] + data[:3]
+            if expanded: data.insert(0, ['0'] + ['X']*801 + [''])
+            def save():
+                with path.open('w', newline='') as output:
+                    csv.writer(output).writerows([['Data:'], header, *data])
+            save(); result = decode(path, config)
+            require(result['latest']['reference_heartbeat'] == 227, 'Circular chronology failed')
+            if expanded:
+                data[1][2] = '1' if data[1][2] == '0' else '0'
+                save()
+                try: decode(path, config)
+                except ValueError: rejected.append('packed_bit_disagreement')
+                data[1][2] = '1' if data[1][2] == '0' else '0'
+                data[0][1] = '0'; save()
+                try: decode(path, config)
+                except ValueError: rejected.append('invalid_unknown_placeholder')
+    require(len(rejected) == 5, 'CSV shape negative check failed')
+    return dict(passed=True, layouts=['packed', 'expanded800bits_with_SDK_placeholder'], rejected=rejected)
 
 
 def main():

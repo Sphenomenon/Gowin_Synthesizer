@@ -17,6 +17,8 @@
 
 物理检查点：[固定 revision 2 P&R](push2_workstation/usb_a/reports/WORKSTATION_F02_PHYSICAL_20261030.md)完成但门禁失败（setup −1.867 ns、hold −0.910 ns，audio／USB 未达标，PLL 覆盖与就绪路径未通过），未部署；[实际 DSP 来源／采样率审计](push2_workstation/usb_a/reports/WORKSTATION_SAMPLE_RATE_DSP_AUDIT_20261030.md)给出原 48k 实现及逐项适配依据，不将计划视作已实现。
 
+独立音频阶段：[双时钟零 PCM 探针 B7](push2_workstation/usb_a/reports/WORKSTATION_AUDIO_PROBE_HARDWARE_20261030.md)两次数字采集通过，但完整 SRAM Verify 两次失败，不计硬件验收；已重载原 Flash 并独立读回 `C11028E5`，本轮未写 Flash。[运行时 Delay](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_DELAY_20261030.md)和 [Chorus](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_CHORUS_20261030.md)已分别完成双率离线验证，均尚未由整机 profile 选择，不据此勾选 A02／A07。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
