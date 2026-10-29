@@ -72,6 +72,61 @@ class DQSHoldFloorplan(unittest.TestCase):
         self.assertEqual(result['parent_physical_identity'],f.previous['identity'])
         for name,expected in result['input_sha256'].items():self.assertEqual(sha(f.output/name),expected)
 
+    def test_lut_only_exact_four_targets_regions_and_free_registers(self):
+        f=self.fixture
+        result=physical.derive_ddr_capture_region(f.source,f.output,'C11030F6',f.evidence_path,
+                                                f.evidence_sha,True,dqs_hold_lut_only=True)
+        placement=result['ddr_dqs_hold_regions_adaptation']
+        expected=[f'INS_LOC "{physical.DDR_PHY}/u_ddr_init/hold_Z_{lane}_s" {region};'
+                  for lane,region in enumerate(physical.DDR_DQS_HOLD_REGIONS)]
+        self.assertEqual(placement['mode'],'LUT_only')
+        self.assertEqual(placement['constraints'],expected)
+        self.assertEqual((f.output/'physical.cst').read_bytes(),f.cst+('\n'+'\n'.join(expected)+'\n').encode())
+        self.assertEqual(len(placement['unconstrained_config_registers']),4)
+        for lane in placement['lanes']:
+            self.assertFalse(lane['register_constrained']);self.assertTrue(lane['gate_constrained'])
+        for name in (physical.BASE+'.vg','physical.sdc','parent_physical_inputs.json','parent_physical_evidence.json'):
+            self.assertEqual((f.output/name).read_bytes(),(f.source/name).read_bytes())
+        self.assertIn('LUT_only',result['source_policy'])
+        self.assertEqual(result['parent_physical_manifest_sha256'],sha(f.source/'physical_inputs.json'))
+        self.assertEqual(result['parent_physical_evidence_sha256'],f.evidence_sha)
+        self.assertFalse(result['EDA_started']);self.assertFalse(result['new_synthesis_run'])
+        self.assertFalse(result['current_working_tree_RTL_used']);self.assertFalse(result['release_ready'])
+        for name,expected_hash in result['input_sha256'].items():self.assertEqual(sha(f.output/name),expected_hash)
+
+    def test_lut_only_does_not_accept_constrained_config_parent(self):
+        f=self.fixture
+        target=f'INS_LOC "{physical.DDR_PHY}/u_ddr_init/read_rclksel_conf_0_s0" R2C2;\n'.encode()
+        with self.assertRaisesRegex(ValueError,'already appears'):
+            physical.ddr_dqs_hold_region_constraints(f.cst+target,(physical.DDR_MINIMUM+'\n').encode(),
+                                                    routed_fixture(),lut_only=True)
+
+    def test_lut_only_still_checks_all_four_ff_lut_dqs_topologies(self):
+        f=self.fixture
+        for lane in range(4):
+            changed=routed_fixture().replace(f'.I0(conf{lane})',f'.I0(wrong{lane})')
+            with self.subTest(lane=lane),self.assertRaisesRegex(ValueError,'observed'):
+                physical.ddr_dqs_hold_region_constraints(f.cst,(physical.DDR_MINIMUM+'\n').encode(),changed,lut_only=True)
+
+    def test_lut_only_parent_evidence_identity_and_route_drift_rejected(self):
+        f=self.fixture
+        with self.assertRaisesRegex(ValueError,'evidence identity'):
+            physical.derive_ddr_capture_region(f.source,f.output,'C11030F6',f.evidence_path,
+                                               '0'*64,True,dqs_hold_lut_only=True)
+        for path in (f.route,f.source/'physical.cst',f.source/'parent_physical_inputs.json'):
+            original=path.read_bytes();path.write_bytes(original+b'changed')
+            with self.subTest(path=path.name),self.assertRaisesRegex(ValueError,'drifted'):
+                physical.derive_ddr_capture_region(f.source,f.output,'C11030F6',f.evidence_path,
+                                                   f.evidence_sha,True,dqs_hold_lut_only=True)
+            self.assertFalse(f.output.exists());path.write_bytes(original)
+
+    def test_dqs_modes_are_mutually_exclusive_before_output(self):
+        f=self.fixture
+        with self.assertRaisesRegex(ValueError,'mutually exclusive'):
+            physical.derive_ddr_capture_region(f.source,f.output,'C11030F6',f.evidence_path,
+                                               f.evidence_sha,True,dqs_hold_regions=True,dqs_hold_lut_only=True)
+        self.assertFalse(f.output.exists())
+
     def test_data_reset_clock_configuration_mutations_rejected(self):
         f=self.fixture
         original=routed_fixture()

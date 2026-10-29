@@ -165,7 +165,7 @@ def ddr_capture_region_constraints(payload, sdc, routed_netlist):
         new_route_verified=False, new_hold_slack_ns=None)
 
 
-def ddr_dqs_hold_region_constraints(payload, sdc, routed_netlist):
+def ddr_dqs_hold_region_constraints(payload, sdc, routed_netlist, *, lut_only=False):
     """Keep the vendor logic intact and place four observed HOLD boundaries.
 
     This follows the exact previous-route FF -> LUT2 -> DQS topology. It
@@ -202,13 +202,16 @@ def ddr_dqs_hold_region_constraints(payload, sdc, routed_netlist):
                 netlist.pin(config, 'CLK') != netlist.pin(dqs, 'PCLK') or
                 netlist.pin(config, 'CLK') != netlist.pin(DDR_PHY + '/fclkdiv', 'CLKOUT')):
             raise ValueError('DQS HOLD observed data/reset/UI clock topology changed')
-        constraints += [f'INS_LOC "{name}" {region};' for name in (config, gate)]
+        constraints += [f'INS_LOC "{name}" {region};' for name in ((gate,) if lut_only else (config, gate))]
         lanes.append(dict(lane=lane, register=config, gate=gate, dqs=dqs, region=region,
-                          clock=netlist.pin(config, 'CLK'), observed_FF_LUT_DQS=True))
+                          clock=netlist.pin(config, 'CLK'), observed_FF_LUT_DQS=True,
+                          register_constrained=not lut_only, gate_constrained=True))
     adapted = payload + ('\n' + '\n'.join(constraints) + '\n').encode()
     if parse_locations(adapted.decode()) != parse_locations(text):
         raise ValueError('DQS HOLD placement unexpectedly changed IO locations')
     return adapted, dict(lanes=lanes, constraints=constraints,
+        mode='LUT_only' if lut_only else 'FF_and_LUT',
+        unconstrained_config_registers=[lane['register'] for lane in lanes] if lut_only else [],
         before_sha256=digest(payload), after_sha256=digest(adapted),
         exact_appended_bytes_hex=adapted[len(payload):].hex(), parent_bytes_preserved=True,
         io_locations_unchanged=True, hard_locations_unchanged=True, sdc_unchanged=True,
@@ -219,8 +222,11 @@ def ddr_dqs_hold_region_constraints(payload, sdc, routed_netlist):
 
 def derive_ddr_capture_region(source, output, user_code, parent_evidence,
                               expected_parent_evidence_sha256, acknowledge_electrical_risk=False,
-                              *, dqs_hold_regions=False):
+                              *, dqs_hold_regions=False, dqs_hold_lut_only=False):
     """Prepare only a hash-locked physical child; never audit mutable current RTL."""
+    if dqs_hold_regions and dqs_hold_lut_only:
+        raise ValueError('DQS HOLD FF/LUT and LUT-only modes are mutually exclusive')
+    dqs_regions = dqs_hold_regions or dqs_hold_lut_only
     source, output, parent_evidence = (Path(path).resolve() for path in (source, output, parent_evidence))
     script = implementation_script(user_code)
     if not acknowledge_electrical_risk:
@@ -269,10 +275,12 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
     routed_name = f'impl/pnr/{BASE}.vo'
     if routed_name not in verified_evidence:
         raise ValueError('parent route VO needs original hash-bound physical evidence')
-    adaptation = ddr_dqs_hold_region_constraints if dqs_hold_regions else ddr_capture_region_constraints
-    adapted, placement = adaptation(
-        (source / 'physical.cst').read_bytes(), (source / 'physical.sdc').read_bytes(),
-        (source / routed_name).read_text())
+    arguments = ((source / 'physical.cst').read_bytes(), (source / 'physical.sdc').read_bytes(),
+                 (source / routed_name).read_text())
+    if dqs_regions:
+        adapted, placement = ddr_dqs_hold_region_constraints(*arguments, lut_only=dqs_hold_lut_only)
+    else:
+        adapted, placement = ddr_capture_region_constraints(*arguments)
     placement['observed_route_vo_sha256'] = verified_evidence[routed_name]
     output.mkdir(parents=True)
     for name, expected in inputs.items():
@@ -305,7 +313,9 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
         identity='custom138k-native-physical-' + user_code.upper(), user_code='0x' + user_code.upper(),
         prepared_at=datetime.now().astimezone().isoformat(),
         validation_stage='offline_physical_variant_prepared_no_EDA',
-        source_policy=('hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_DQS_HOLD_regions_CST_append'
+        source_policy=('hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_DQS_HOLD_LUT_only_regions_CST_append'
+                       if dqs_hold_lut_only else
+                       'hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_DQS_HOLD_regions_CST_append'
                        if dqs_hold_regions else
                        'hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_capture_region_CST_append'),
         parent_physical_identity=previous['identity'], parent_physical_directory=str(source),
@@ -325,7 +335,7 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
         physical_gates_passed=False, timing_closed=False, deployment_allowed=False, release_ready=False,
         hardware_tested=False, board_programming_authorized=False, bitstream_sha256=None,
         sram_programmed=False, flash_programmed=False)
-    result['ddr_dqs_hold_regions_adaptation' if dqs_hold_regions else 'ddr_capture_region_adaptation'] = placement
+    result['ddr_dqs_hold_regions_adaptation' if dqs_regions else 'ddr_capture_region_adaptation'] = placement
     (output / 'physical_inputs.json').write_text(json.dumps(result, indent=2) + '\n')
     return result
 
@@ -416,8 +426,11 @@ def main():
                         help='Add only reviewed bypass ULPI IO standards; no electrical or external timing acceptance')
     parser.add_argument('--ddr-capture-region-parent-evidence', '--ddr-floorplan-parent-evidence', type=Path,
                         help='Derive from the hash-bound original physical evidence, keeping the previous VG and SDC')
-    parser.add_argument('--ddr-dqs-hold-regions', action='store_true',
+    dqs_mode = parser.add_mutually_exclusive_group()
+    dqs_mode.add_argument('--ddr-dqs-hold-regions', action='store_true',
                         help='Append only the reviewed four-lane FF/LUT placement regions to a capture-region parent')
+    dqs_mode.add_argument('--ddr-dqs-hold-lut-only', action='store_true',
+                          help='Constrain only the four reviewed HOLD LUTs; leave config registers free')
     parser.add_argument('--expected-parent-evidence-sha256',
                         help='Required explicit identity when deriving the DDR capture-region experiment')
     args = parser.parse_args()
@@ -428,10 +441,11 @@ def main():
                                           args.ddr_capture_region_parent_evidence,
                                           args.expected_parent_evidence_sha256,
                                           args.acknowledge_electrical_risk,
-                                          dqs_hold_regions=args.ddr_dqs_hold_regions)
+                                          dqs_hold_regions=args.ddr_dqs_hold_regions,
+                                          dqs_hold_lut_only=args.ddr_dqs_hold_lut_only)
     else:
-        if args.ddr_dqs_hold_regions:
-            parser.error('--ddr-dqs-hold-regions requires an explicit floorplan parent evidence')
+        if args.ddr_dqs_hold_regions or args.ddr_dqs_hold_lut_only:
+            parser.error('DQS HOLD placement modes require an explicit floorplan parent evidence')
         if args.expected_parent_evidence_sha256:
             parser.error('--expected-parent-evidence-sha256 requires the explicit DDR derivation')
         result = prepare(args.source, args.output, args.user_code, args.acknowledge_electrical_risk,
