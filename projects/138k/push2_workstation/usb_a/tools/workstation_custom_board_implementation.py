@@ -26,7 +26,8 @@ DDR_CAPTURE = DDR_PHY + '/wloadn_3_s0'
 DDR_CAPTURE_REGION = 'R[40:50]C[70:90]'
 DDR_CAPTURE_CONSTRAINT = f'INS_LOC "{DDR_CAPTURE}" {DDR_CAPTURE_REGION};'
 DDR_MINIMUM = f'set_min_delay 0.800 -from [get_pins {{{DDR_LAUNCH}/Q}}] -to [get_pins {{{DDR_CAPTURE}/D}}]'
-DDR_DQS_HOLD_REGIONS = tuple(f'R[{104-10*lane}:{118-10*lane}]C[2:30]' for lane in range(4))
+# DQS hard sites may use border row111; ordinary logic ends at row110.
+DDR_DQS_HOLD_REGIONS = tuple(f'R[{104-10*lane}:{min(110,118-10*lane)}]C[2:30]' for lane in range(4))
 
 
 def implementation_script(user_code, place_option=2, route_option=0, replicate_resources=False):
