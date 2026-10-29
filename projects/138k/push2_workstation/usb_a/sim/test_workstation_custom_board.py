@@ -163,6 +163,12 @@ class NativeBoard(unittest.TestCase):
                 _, metadata = integration.prepare(ROOT, Path(directory) / 'netlists', output)
             stage = output / 'workstation/Prj1'
             self.assertEqual(metadata['identity'], integration.IDENTITY)
+            self.assertIn('.sample_valid_i(final_sample_valid),.enable_i(!pa_en),',
+                          (stage / 'rtl/workstation/gw138k_push_workstation_top.v').read_text())
+            self.assertIn('workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)) u_native_usb',
+                          (stage / 'rtl/workstation/gw138k_push_workstation_top.v').read_text())
+            self.assertIn('.performance_words_i(performance_words),',
+                          (stage / 'rtl/workstation/gw138k_push_workstation_top.v').read_text())
             self.assertEqual((stage / 'constraints/custom_138k.sdc').read_text(),
                              clock_bundle(ROOT)['sdc'] + cdc_bundle(ROOT)['sdc'] + input_cdc_bundle(ROOT)['sdc'] + integration.FPC_AUDIO_SDC + integration.BLUETOOTH_SDC + integration.LCD_SDC + shared_cdc_bundle(stage)['sdc'] + integration.timing_constraints() + integration.MODEL_FLASH_SDC)
             shared_sdc = shared_cdc_bundle(stage)['sdc']
@@ -203,7 +209,10 @@ class NativeBoard(unittest.TestCase):
             self.assertEqual(metadata['input_cdc_plan_sha256'], input_cdc_bundle(ROOT)['source_sha256'])
             self.assertEqual(metadata['usb2_cdc_plan_sha256'], cdc_bundle(ROOT)['source_sha256'])
             self.assertTrue(metadata['native_usb'])
-            self.assertTrue(metadata['electrical_blocked'])
+            self.assertFalse(metadata['electrical_blocked'])
+            self.assertEqual(plan['electrical_check']['status'], 'no_voltage_domain_conflict_detected')
+            self.assertFalse(plan['electrical_check']['actual_board_measured'])
+            self.assertFalse(plan['electrical_check']['full_electrical_acceptance'])
             self.assertFalse(metadata['legacy_usb_host_elaborated'])
             for flag in ('place_route_allowed', 'io_electrical_complete', 'timing_constraints_complete',
                          'hardware_tested', 'deployment_allowed', 'release_ready'):
@@ -232,7 +241,7 @@ class NativeBoard(unittest.TestCase):
             text = preprocess(ROOT / 'rtl/workstation/workstation_custom_138k_top.sv', Path(directory) / 'native.v')
             self.assertNotIn('iosys2 u_usb_host', text)
             self.assertNotIn('push2_usb_a_control u_push', text)
-            for instance in ('workstation_usb2_input u_native_usb', 'gw138k_usb_controlled_audio #(.EXTERNAL_MASTER_VOLUME(1)) u_managed',
+            for instance in ('workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)) u_native_usb', 'gw138k_usb_controlled_audio #(.EXTERNAL_MASTER_VOLUME(1)) u_managed',
                              'ddr3_platform u_memory', 'hdmi_display u_video', "basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1'b1)) u_music",
                              'delay_ddr_dma #', 'workstation_output_router u_output_router',
                              'workstation_fpc_audio u_fpc_audio', 'workstation_bluetooth u_bluetooth', 'workstation_lcd u_lcd'):

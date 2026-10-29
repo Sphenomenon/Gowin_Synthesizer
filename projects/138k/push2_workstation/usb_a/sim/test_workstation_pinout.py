@@ -116,10 +116,38 @@ class NetlistParsing(unittest.TestCase):
 class UlpiElectricalPreflight(unittest.TestCase):
     def setUp(self):
         self.profile, payloads, self.core = fixture()
-        self.carrier = pinout.Netlist(payloads['carrier'])
+        self.netlists = {role: pinout.Netlist(payload) for role, payload in payloads.items()}
+        self.carrier = self.netlists['carrier']
+        self.bypass = self.profile['ulpi_bypass']
 
-    def test_locked_board_reports_stp_and_both_input_domain_conflicts(self):
-        check = pinout.check_ulpi_electrical(self.carrier)
+    def test_declared_bypass_uses_b_side_without_fitted_translator_conflicts(self):
+        check = pinout.check_ulpi_electrical(self.carrier, self.bypass)
+        self.assertEqual(check['status'], 'no_voltage_domain_conflict_detected')
+        self.assertEqual(check['findings'], [])
+        self.assertEqual([entry['nominal_mv'] for entry in check['translators']], [3300, 3300])
+        self.assertEqual([entry['supply_node'] for entry in check['translators']], ['U4.19', 'U5.14'])
+        for entry in check['translators']:
+            self.assertEqual(entry['phy_side'], 'B')
+            self.assertEqual(entry['assembly'], 'not_fitted_short')
+        self.assertFalse(check['actual_board_measured'])
+        self.assertFalse(check['full_electrical_acceptance'])
+
+    def test_same_voltage_domain_does_not_grant_electrical_or_deployment_acceptance(self):
+        plan = pinout.resolve(self.profile, self.netlists, self.core)
+        self.assertEqual(plan['electrical_check']['status'], 'no_voltage_domain_conflict_detected')
+        self.assertFalse(plan['electrical_check']['actual_board_measured'])
+        self.assertFalse(plan['electrical_check']['full_electrical_acceptance'])
+        self.assertEqual(plan['ulpi_bypass'], self.bypass)
+        self.assertFalse(plan['synthesis_allowed'])
+        self.assertFalse(plan['hardware_accepted'])
+        self.assertFalse(plan['sram_deployed'])
+        self.assertFalse(plan['flash_deployed'])
+
+    def test_fitted_translators_still_report_stp_and_both_input_domain_conflicts(self):
+        self.profile.pop('ulpi_bypass')
+        self.profile['electrical_evidence']['component_models'].update(
+            U4='TXS0108EPWR', U5='TXS0104EPWR')
+        check = pinout.resolve(self.profile, self.netlists, self.core)['electrical_check']
         self.assertEqual(check['status'], 'blocked')
         self.assertEqual([entry['code'] for entry in check['findings']],
                          ['ULPI_PHY_OUTPUT_DOMAIN', 'ULPI_PHY_OUTPUT_DOMAIN', 'ULPI_STP_HIGH_LEVEL'])
@@ -127,32 +155,51 @@ class UlpiElectricalPreflight(unittest.TestCase):
         stp = check['findings'][-1]
         self.assertEqual((stp['driver_node'], stp['receiver_node']), ('U5.3', 'U2.13'))
         self.assertLess(stp['driver_supply_mv'], stp['receiver_vih_min_mv'])
-        self.assertFalse(check['actual_board_measured'])
 
-    def test_same_voltage_domain_does_not_grant_electrical_or_deployment_acceptance(self):
-        for node in ('U4.2', 'U5.1'):
-            self.carrier.nodes[node] = '3V3_USB3300'
-        check = pinout.check_ulpi_electrical(self.carrier)
-        self.assertEqual(check['status'], 'no_voltage_domain_conflict_detected')
-        self.assertFalse(check['full_electrical_acceptance'])
-        profile, payloads, core = fixture()
-        with patch.object(pinout, 'check_ulpi_electrical', return_value=check):
-            plan = pinout.resolve(profile, {role: pinout.Netlist(payload) for role, payload in payloads.items()}, core)
-        self.assertFalse(plan['synthesis_allowed'])
-        self.assertFalse(plan['hardware_accepted'])
-        self.assertFalse(plan['flash_deployed'])
+    def test_partial_bypass_does_not_suppress_fitted_translator_findings(self):
+        self.profile['ulpi_bypass'].pop('U5')
+        self.profile['electrical_evidence']['component_models']['U5'] = 'TXS0104EPWR'
+        check = pinout.resolve(self.profile, self.netlists, self.core)['electrical_check']
+        self.assertEqual(check['status'], 'blocked')
+        self.assertEqual([(entry['part'], entry['code']) for entry in check['findings']],
+                         [('U5', 'ULPI_PHY_OUTPUT_DOMAIN'), ('U5', 'ULPI_STP_HIGH_LEVEL')])
+
+    def test_bypassed_a_side_and_oe_are_not_active_supply_requirements(self):
+        for node in ('U4.2', 'U4.10', 'U5.1', 'U5.8'):
+            del self.carrier.nodes[node]
+        plan = pinout.resolve(self.profile, self.netlists, self.core)
+        self.assertEqual(plan['electrical_check']['status'], 'no_voltage_domain_conflict_detected')
+
+    def test_bypassed_b_side_must_remain_in_reviewed_3v3_domain(self):
+        self.carrier.nodes['U5.14'] = 'VDD_1V8'
+        check = pinout.check_ulpi_electrical(self.carrier, self.bypass)
+        self.assertEqual(check['status'], 'blocked')
+        self.assertEqual([entry['code'] for entry in check['findings']], ['ULPI_BYPASS_SUPPLY_DOMAIN'])
+        with self.assertRaisesRegex(ValueError, 'supply/OE changed: U5.14'):
+            pinout.resolve(self.profile, self.netlists, self.core)
 
     def test_unknown_supply_is_not_guessed_from_network_name(self):
-        self.carrier.nodes['U5.1'] = 'UNREVIEWED_3V3'
-        check = pinout.check_ulpi_electrical(self.carrier)
+        self.carrier.nodes['U5.14'] = 'UNREVIEWED_3V3'
+        check = pinout.check_ulpi_electrical(self.carrier, self.bypass)
         self.assertEqual(check['status'], 'blocked')
         self.assertIn('ULPI_UNKNOWN_SUPPLY', [entry['code'] for entry in check['findings']])
         self.assertIsNone(check['translators'][1]['nominal_mv'])
 
     def test_missing_supply_node_is_not_treated_as_compatible(self):
-        del self.carrier.nodes['U5.1']
+        del self.carrier.nodes['U5.14']
         with self.assertRaisesRegex(ValueError, 'missing netlist node'):
-            pinout.check_ulpi_electrical(self.carrier)
+            pinout.check_ulpi_electrical(self.carrier, self.bypass)
+
+    def test_unreviewed_bypass_declarations_fail_closed(self):
+        for bypass in ({'U4': 'fitted'}, {'U2': 'not_fitted_short'}, {'U6': 'not_fitted_short'}, None, []):
+            self.profile['ulpi_bypass'] = bypass
+            with self.subTest(bypass=bypass), self.assertRaisesRegex(ValueError, 'unreviewed ULPI bypass'):
+                pinout.resolve(self.profile, self.netlists, self.core)
+
+    def test_bypass_and_fitted_model_evidence_must_agree(self):
+        self.profile['electrical_evidence']['component_models']['U4'] = 'TXS0108EPWR'
+        with self.assertRaisesRegex(ValueError, 'unreviewed USB2 device models'):
+            pinout.resolve(self.profile, self.netlists, self.core)
 
 
 class BoardResolution(unittest.TestCase):
@@ -188,6 +235,13 @@ class BoardResolution(unittest.TestCase):
         self.assertNotIn('"usb1_dp"', text)
         self.assertNotIn('"hdmi_tx_en"', text)
         self.assertEqual(pinout.parse_locations(text), {port: entry['balls'] for port, entry in plan['ports'].items()})
+
+    def test_all_ulpi_locations_are_rendered_without_new_electrical_constraints(self):
+        plan = self.resolve()
+        text = pinout.render_constraints(plan)
+        lines = [line for line in text.splitlines() if '"usb2_ulpi_' in line]
+        self.assertEqual(lines, ['IO_LOC "' + channel['port'] + '" ' + ball + ';'
+                                 for channel, ball in zip(self.profile['ulpi'], ULPI_BALLS)])
 
     def test_hdmi_keeps_native_legal_pairs_and_reports_four_pending_inversions(self):
         plan = self.resolve()

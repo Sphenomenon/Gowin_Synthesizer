@@ -164,7 +164,7 @@ def static_memory_end(nm_output):
     return matches[0]
 
 
-def stage_usb_firmware(root, stage, output, riscv_prefix=None):
+def stage_usb_firmware(root, stage, output, riscv_prefix=None, *, entry=None):
     """Compile live firmware, bind both ROM paths, return reproducible metadata.
 
     ``stage`` is the copied Prj1 tree. The exact same 64 KiB little-endian
@@ -174,6 +174,8 @@ def stage_usb_firmware(root, stage, output, riscv_prefix=None):
     root, stage, output = map(Path, (root, stage, output))
     prefix = compiler_prefix(riscv_prefix)
     live = [root / 'firmware.c', root / 'gw25k_panel.h']
+    if entry is not None:
+        live.append(root / entry)
     missing = [str(path) for path in live if not path.is_file()]
     if missing:
         raise FileNotFoundError('missing live USB adapter source: ' + ', '.join(missing))
@@ -187,7 +189,7 @@ def stage_usb_firmware(root, stage, output, riscv_prefix=None):
         def run(command):
             subprocess.run(command, cwd=firmware, stdout=log, stderr=subprocess.STDOUT, check=True)
         objects = []
-        for name in ('start.S', 'firmware.c', 'minlibc.c', 'usb/usb_core.c', 'usb/usb_hw.c'):
+        for name in ('start.S', Path(entry).name if entry else 'firmware.c', 'minlibc.c', 'usb/usb_core.c', 'usb/usb_hw.c'):
             obj = str(Path(name).with_suffix('.o'))
             objects.append(obj)
             run([prefix + '-gcc', '-Wall', '-O2', '-g', '-mabi=ilp32', '-march=rv32i',

@@ -13,12 +13,18 @@ import subprocess
 import sys
 import platform
 import tempfile
+from gowin_timing import timing_passed
 
 prj = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('script', type=Path)
 parser.add_argument('--user-code', required=True, help='New candidate identity: eight hexadecimal digits')
 parser.add_argument('--output', type=Path, help='New evidence directory (default results/build_TIMESTAMP)')
+parser.add_argument('--usb2-debug', action='store_true', help='Keep the MIDI application and add the independent 50 MHz USB2 GAO observer')
+parser.add_argument('--usb2-probe', action='store_true', help='Temporary USB-only MIDI echo and event-history probe; not the complete keyboard')
+parser.add_argument('--place-option', type=int, choices=(1, 2), help='Explicit Gowin placement strategy; default remains unchanged')
+parser.add_argument('--route-option', type=int, choices=(1, 2), help='Explicit Gowin routing strategy; default remains unchanged')
+parser.add_argument('--replicate-resources', type=int, choices=(0, 1), help='Explicit Gowin resource replication policy')
 args = parser.parse_args()
 if not re.fullmatch(r'[0-9A-Fa-f]{8}', args.user_code):
     parser.error('--user-code must contain exactly eight hexadecimal digits')
@@ -31,6 +37,23 @@ if re.search(r'^set_option -user_code ', text, re.M):
     raise SystemExit('Candidate UserCode must be selected explicitly, not embedded in the Tcl source.')
 setup = re.sub(r'^run all\s*$', '', text, flags=re.M)
 setup += '\nset_option -user_code ' + args.user_code.upper() + '\n'
+implementation = {name: getattr(args, name) for name in ('place_option', 'route_option', 'replicate_resources')
+                  if getattr(args, name) is not None}
+for name, value in implementation.items():
+    setup += f'set_option -{name} {value}\n'
+if args.usb2_probe and args.usb2_debug:
+    parser.error('--usb2-probe and --usb2-debug select different top-level profiles')
+debug_enabled = args.usb2_debug or args.usb2_probe
+if debug_enabled:
+    if relative_script != Path('build.tcl'):
+        parser.error('--usb2-debug requires the ordinary build.tcl profile')
+    if re.search(r'^\s*`define\s+MIDI_USB1_FS\b', (prj/'usb1_profile.vh').read_text(), re.M):
+        parser.error('--usb2-debug cannot be combined with MIDI_USB1_FS')
+    setup += 'add_file config/' + ('usb2_probe.gao' if args.usb2_probe else 'usb2_debug.gao') + '\n'
+if args.usb2_probe:
+    if setup.count('set_option -top_module midi_keyboard_top') != 1:
+        parser.error('Expected one complete-keyboard top selection before probe adaptation')
+    setup = setup.replace('set_option -top_module midi_keyboard_top', 'set_option -top_module midi_usb2_probe_top')
 env = dict(os.environ)
 ide_setting = os.environ.get('GW25K_IDE_DIR')
 if ide_setting:
@@ -68,7 +91,11 @@ stage_project = (stage_prj/relative_script).parent
 result = {'started_at': datetime.datetime.now().astimezone().isoformat(),
           'script': str(relative_script), 'stage_directory': str(stage),
           'user_code': '0x' + args.user_code.upper(),
-          'configuration': {'top': 'midi_keyboard_top', 'HOST_PANEL_CONTROLS': 1,
+          'configuration': {'top': 'midi_usb2_probe_top' if args.usb2_probe else 'midi_keyboard_top',
+                            'HOST_PANEL_CONTROLS': 0 if args.usb2_probe else 1,
+                            'usb2_debug': args.usb2_debug, 'usb2_probe': args.usb2_probe,
+                            'complete_keyboard': not args.usb2_probe,
+                            'implementation': implementation,
                             'device': 'GW5A-LV25MG121NC1/I0'},
           'tool': {'executable': str(executable), 'platform': platform.platform()},
           'hardware_validated': False, 'sram_programmed': False, 'flash_programmed': False,
@@ -78,7 +105,7 @@ result = {'started_at': datetime.datetime.now().astimezone().isoformat(),
                      for x in (prj/directory).rglob('*')
                      if x.is_file() and '__pycache__' not in x.parts}}
 
-for name in ('sources.f', 'build.tcl', 'build.sh', 'run_sim.sh'):
+for name in ('sources.f', 'build.tcl', 'build.sh', 'run_sim.sh', 'usb1_profile.vh', 'usb2_debug_profile.vh'):
     result['sha256'][name] = hashlib.sha256((prj/name).read_bytes()).hexdigest()
 
 result['source_identity'] = {
@@ -93,6 +120,43 @@ for name in result['sha256']:
     target = source_snapshot / name
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(prj / name, target)
+
+if debug_enabled:
+    profile = stage_project/'usb2_debug_profile.vh'
+    expected = '`ifndef MIDI_USB2_DEBUG_PROFILE_VH\n`define MIDI_USB2_DEBUG_PROFILE_VH\n`endif\n'
+    if profile.read_text() != expected:
+        raise SystemExit('USB2 debug profile header differs from the checked empty configuration.')
+    defines = ['MIDI_USB2_DIAGNOSTICS'] + (['MIDI_USB2_PROBE'] if args.usb2_probe else [])
+    profile.write_text(expected.replace('`endif', ''.join('`define '+name+'\n' for name in defines)+'`endif'))
+    result['usb2_debug_profile'] = {'file': 'usb2_debug_profile.vh',
+        'input_sha256': result['sha256']['usb2_debug_profile.vh'],
+        'staged_sha256': hashlib.sha256(profile.read_bytes()).hexdigest(),
+        'defines': defines}
+    timing_path = stage_project/'constraints/midi_keyboard.sdc'
+    extra_timing = stage_project/'constraints/midi_usb2_debug.sdc'
+    board_timing = timing_path.read_bytes()
+    if args.usb2_probe:
+        anchor = b'# Mechanical contacts:'
+        if board_timing.count(anchor) != 1:
+            raise SystemExit('Probe timing boundary changed.')
+        board_timing = board_timing.split(anchor)[0]
+        board_pins = stage_project/'constraints/midi_keyboard.cst'
+        pin_anchor = b'// Schematic SW1/SW2'
+        if board_pins.read_bytes().count(pin_anchor) != 1:
+            raise SystemExit('Probe physical constraint boundary changed.')
+        board_pins.write_bytes(board_pins.read_bytes().split(pin_anchor)[0])
+        result['usb2_debug_profile']['probe_cst'] = {'input_sha256': result['sha256']['constraints/midi_keyboard.cst'],
+            'staged_sha256': hashlib.sha256(board_pins.read_bytes()).hexdigest(), 'anchor': pin_anchor.decode()}
+    timing_path.write_bytes(board_timing+b'\n'+extra_timing.read_bytes())
+    if args.usb2_probe:
+        probe_timing = stage_project/'constraints/midi_usb2_probe.sdc'
+        timing_path.write_bytes(timing_path.read_bytes()+b'\n'+probe_timing.read_bytes())
+    result['usb2_debug_profile']['timing'] = {
+        'inputs': ['constraints/midi_keyboard.sdc', 'constraints/midi_usb2_debug.sdc'],
+        'staged_file': 'constraints/midi_keyboard.sdc',
+        'staged_sha256': hashlib.sha256(timing_path.read_bytes()).hexdigest()}
+    if args.usb2_probe:
+        result['usb2_debug_profile']['timing']['inputs'].append('constraints/midi_usb2_probe.sdc')
 
 def save_result(name):
     (report_dir/name).write_text(json.dumps(result, indent=2)+'\n')
@@ -177,8 +241,10 @@ run pnr
             fail('Synthesis resource report is missing.')
         resource_tree = ElementTree.parse(resources[0])
         initializer = [node for node in resource_tree.iter('SubModule') if node.get('name') == 'initializer']
-        if len(initializer) != 1 or int(initializer[0].get('Bsram', '0')) < 16:
+        if not args.usb2_probe and (len(initializer) != 1 or int(initializer[0].get('Bsram', '0')) < 16):
             fail('BLE firmware ROM did not map to its required 16 block RAMs.')
+        if args.usb2_probe and initializer:
+            fail('The USB-only probe unexpectedly includes the BLE firmware initializer.')
         result['synthesis_resources'] = resource_tree.getroot().attrib
     if phase == 'pnr' and 'GowinSynthesis start' in output_text:
         fail('PnR unexpectedly repeated synthesis; refusing to publish artifacts.')
@@ -210,9 +276,7 @@ for kind in ('Setup', 'Hold', 'Recovery', 'Removal'):
 frequency = re.search(r'^2\.3 Max Frequency Summary(.*?)(?=\n2\.4)', timing_text, re.S | re.M)
 timing['clocks'] = [{'name': name, 'constraint_mhz': float(target), 'actual_fmax_mhz': float(actual)}
     for name, target, actual in re.findall(r'^\s*\d+\s+(\S+)\s+([\d.]+)\(MHz\)\s+([\d.]+)\(MHz\)', frequency.group(1) if frequency else '', re.M)]
-timing['passed'] = (timing['setup_violated_endpoints'] == 0 and timing['hold_violated_endpoints'] == 0
-    and all(timing[k+'_worst_slack_ns'] >= 0 for k in ('setup','hold','recovery','removal'))
-    and {clock['name'] for clock in timing['clocks']} == {'clk_50mhz','clk_ulpi60'})
+timing['passed'] = timing_passed(timing, usb2_debug=debug_enabled)
 result['timing'] = timing
 if not timing['passed']:
     fail('Timing did not close; generated files remain diagnostic and were not published.')

@@ -147,6 +147,7 @@ module tb_workstation_usb3300_host_init;
 
     always @(posedge clk_ulpi) begin
         if (reset_n) begin
+            check(ready === (!link_fatal && !force_fatal && init.state_q == 3), "registered ready matches the completed state");
             check(!(link_oe && phy_oe), "no physical contention");
             check(!rx_valid, "register response is not a USB packet");
             if (request_stalled && csr_valid)

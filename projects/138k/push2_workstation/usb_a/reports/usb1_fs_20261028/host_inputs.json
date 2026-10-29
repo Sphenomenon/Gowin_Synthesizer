@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "identity": "usb1-fs-138k-C11028F5",
+  "board": "138k",
+  "user_code": "C11028F5",
+  "top_module": "workstation_usb1_identify_top",
+  "device": "GW5AST-LV138PG484AC2/I1",
+  "source_policy": "explicit_native_usb1_and_locked_vendor",
+  "high_speed_allowed": false,
+  "full_workstation": false,
+  "complete_keyboard": false,
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_clock.sv": "f5c66495f2df4000a906c8ae14d7493b975d42d9ec28985c031b56fc438b38e6",
+    "projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_phy.sv": "4ce04c77757e4a1d0aa794e58ef6a2ff894469c505a73e27c625f82bd1389e7a",
+    "projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_host.sv": "8e235665d98c4c1106ba3b8b2b8189f9fc46d3580629108c9b05a1fb7d4a7697",
+    "projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_diagnostics.sv": "088ba36540c26b97f61dfbb002c2f33253ff21fe254f5c123ea0081aabf97e47",
+    "projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_identify_top.sv": "d8e04e3cae6d5e9af217cf8dbd41a7c4498600b37cf6852dfe38cd3154a0f5d9",
+    "projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_cpu_bus.sv": "016fd241557399d2994697e784aae2fb55e5a2d847180ead9f49c31b9b851cba",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/VexRiscv.v": "b4befdee132dbd5d8cf88991f24b69f1eef97cbad8a5656a745f0d69a7a31226",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/simpleuart.v": "26bbed2ad964b75a40a6f7e72f3871cf2cc3457d8b7ac8136a947d5d65fd69fa",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usb_fs_phy.v": "e22c64f2178c844e6155c01111e8f77518edc79f12e6947dce133996eb21ba61",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_core.sv": "7f4e578c5db25f5c0ccd7e32010b96f1f96f9406bfd64753eed8cbfe9c9620a0",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_sie.sv": "1627b027f4f3788e456cfc736864f7db79dff4fd7308fb45a6560628a06699b8",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_fifo.sv": "faa14201152df8adf4aac61deb97ac4432cc90b2770715f02b700f332b2688a8",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc5.sv": "b75ba0b1690ae6cea2c5932ced97a341c7bd7914223ec630ed35f4ebadc766ca",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc16.sv": "5b8770f950ea350e4a2fd556a43cd4f6c931895441ded527ea1514d69eb3e3f9",
+    "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_host_defs.v": "e493984abfc3ca369b3251f0ff6840ceb9f233dba9029f6e1c796f613fe31c88",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_usb1.py": "1f135a4c9690406c878a69fc79f4621fcea4c683a6aa7f35c14815e1c968ed72",
+    "projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": "81272fb673bfb762faae3c61c5cbb71d2c99ac47358de79cf79848abd64c5cb1",
+    "projects/138k/push2_workstation/usb_a/build.py": "4190218584702c9fd203fd5a5e89ca390dc178b57948992ded650b94984081e4",
+    "projects/25k/example/MIDI_KEYBOARD/sources.f": "ad812da171887b1939f1baf557460346ef1d8e53132074a58aef765150e9e48a",
+    "projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_defs.v": "5ea9871d316cea1a9b7f5faf33c0f9b3bb513594aacb33288638c2a64a28f484",
+    "projects/138k/push2_workstation/usb_a/usb1_profile.vh": "6bb17489cf9405ea20fbbafe6e9763373b844fa3a9c68cb49068c511cdfa70aa",
+    "projects/25k/example/MIDI_KEYBOARD/usb1_profile.vh": "6bb17489cf9405ea20fbbafe6e9763373b844fa3a9c68cb49068c511cdfa70aa"
+  },
+  "staged_sha256": {
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_clock.sv": "f5c66495f2df4000a906c8ae14d7493b975d42d9ec28985c031b56fc438b38e6",
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_phy.sv": "4ce04c77757e4a1d0aa794e58ef6a2ff894469c505a73e27c625f82bd1389e7a",
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_host.sv": "8e235665d98c4c1106ba3b8b2b8189f9fc46d3580629108c9b05a1fb7d4a7697",
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_diagnostics.sv": "088ba36540c26b97f61dfbb002c2f33253ff21fe254f5c123ea0081aabf97e47",
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_identify_top.sv": "d8e04e3cae6d5e9af217cf8dbd41a7c4498600b37cf6852dfe38cd3154a0f5d9",
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_cpu_bus.sv": "016fd241557399d2994697e784aae2fb55e5a2d847180ead9f49c31b9b851cba",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/VexRiscv.v": "b4befdee132dbd5d8cf88991f24b69f1eef97cbad8a5656a745f0d69a7a31226",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/simpleuart.v": "26bbed2ad964b75a40a6f7e72f3871cf2cc3457d8b7ac8136a947d5d65fd69fa",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usb_fs_phy.v": "e22c64f2178c844e6155c01111e8f77518edc79f12e6947dce133996eb21ba61",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_core.sv": "7f4e578c5db25f5c0ccd7e32010b96f1f96f9406bfd64753eed8cbfe9c9620a0",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_sie.sv": "1627b027f4f3788e456cfc736864f7db79dff4fd7308fb45a6560628a06699b8",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_fifo.sv": "faa14201152df8adf4aac61deb97ac4432cc90b2770715f02b700f332b2688a8",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc5.sv": "b75ba0b1690ae6cea2c5932ced97a341c7bd7914223ec630ed35f4ebadc766ca",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc16.sv": "5b8770f950ea350e4a2fd556a43cd4f6c931895441ded527ea1514d69eb3e3f9",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_host_defs.v": "e493984abfc3ca369b3251f0ff6840ceb9f233dba9029f6e1c796f613fe31c88",
+    "locked/src/ae350/gw138k_cpu_pll_cell.v": "f926a80a328df0c038af3d86cde9d641f14d8b7b7014ea257544179d33a60e14",
+    "locked/vendor/sipeed_dvi/video_pll_init.v": "ca1e667fe6f5e9c67e566a8acbd215039b027743bd105d32e1bf91ac380e0453",
+    "inputs/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_defs.v": "5ea9871d316cea1a9b7f5faf33c0f9b3bb513594aacb33288638c2a64a28f484",
+    "push2_usb_a.hex": "3745a11136b7ae37106177b0cce817178e9e294b12968ae74c2257706cba2e6d",
+    "usb1.cst": "e40e834e18cdca7edf5ec8b1f1f6e227dd918ef98c2a88dadff68fcd34ad385f",
+    "usb1.sdc": "ece39373e20ada70f6c45055dd998522ce246d664c599d817d3d201f9c29cb02",
+    "synthesis.tcl": "0808d3404726610b7d3b0760c32c438fc3c450e9bcedc5de62a8842c1af9272c",
+    "usb1_profile.vh": "d7a8b7766fc8807bace760b818d9fdce503ee32afcadc5749266082e710cbb6a"
+  },
+  "source_paths": [
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_clock.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_phy.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_host.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_diagnostics.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_identify_top.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_cpu_bus.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/VexRiscv.v",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/simpleuart.v",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usb_fs_phy.v",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_core.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_sie.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_fifo.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc5.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc16.sv",
+    "inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_host_defs.v",
+    "locked/src/ae350/gw138k_cpu_pll_cell.v",
+    "locked/vendor/sipeed_dvi/video_pll_init.v"
+  ],
+  "firmware": {
+    "compiler_prefix": "/home/sphenicidition/.local/opt/amd/2025.2.1/gnu/riscv/lin/bin/riscv64-unknown-elf",
+    "firmware_bytes": 20772,
+    "static_ram_bytes": 26529,
+    "static_ram_end": 26532,
+    "stack_margin_bytes": 39004,
+    "live_sha256": {
+      "firmware.c": "0a2acb8243d67357a4a69c869e3262fc89b624a5cf433feb8a2d12a0b27fc738",
+      "gw25k_panel.h": "6986f631f2c72da58a79ed1b267578c0e9a0c4730933ae7c735cdc7089235d76",
+      "usb1_identify.c": "4b832f0afb5d876cdc12372a002426b15a0f4d9f6b7f5d0f3e166c27ab88b415"
+    },
+    "staged_source_sha256": {
+      "baremetal.ld": "782346f25a8dfffc5bfbb8198c2b12e5166b2d500aa00e626e8187f5a0473da8",
+      "minlibc.c": "67270201c156358943bf01df27fc81da2a97730668174426ee11584a60f607bf",
+      "minlibc.h": "6b69e720d83f1a50d1bb617116cab5a77be69f4bfacbc1bbca41c31889f13e86",
+      "start.S": "922d197b938e653b3a94ef6107303cb828a2be267629bd92899498d429cbb60e",
+      "firmware.c": "0a2acb8243d67357a4a69c869e3262fc89b624a5cf433feb8a2d12a0b27fc738",
+      "gw25k_panel.h": "6986f631f2c72da58a79ed1b267578c0e9a0c4730933ae7c735cdc7089235d76",
+      "usb1_identify.c": "4b832f0afb5d876cdc12372a002426b15a0f4d9f6b7f5d0f3e166c27ab88b415",
+      "usb/usb_core.c": "fbe2b0995c27bf3621e3b32993b2405ff3b018ffe751dfebad14611c2cc50fa5",
+      "usb/usb_core.h": "6b121c052986df83a612db01ade9a7e8524fec80fd8bd718e8b5722c985900c6",
+      "usb/usb_defs.h": "d492a33d57f93d939dac591b5c1f5a70ed71018b1f0310c9d3b51880a677a6f5",
+      "usb/usb_hw.c": "e86373c34b7fce1cb544d9514b0f510a5948515aa0d8ee825fd33ce724d83f50",
+      "usb/usb_hw.h": "2644a4bafe138954a871b69730e9edc472099c438a06fc4e071625367deae954"
+    },
+    "firmware_elf_sha256": "5ff45abede567023c02e9405b1923db44ac8fa7229a486369873011a713a5aa1",
+    "firmware_binary_sha256": "688b6d23a50f91e3bdffad9a7d95b60257299ecde0f5233aaf3c557d52026553",
+    "rom_sha256": {
+      "push2_usb_a.hex": "3745a11136b7ae37106177b0cce817178e9e294b12968ae74c2257706cba2e6d",
+      "src/usb_a/push2_usb_a.hex": "3745a11136b7ae37106177b0cce817178e9e294b12968ae74c2257706cba2e6d"
+    },
+    "hardware_tested": false
+  },
+  "pin_evidence": {
+    "netlists": {
+      "carrier": {
+        "filename": "Netlist_my_138k_2026-10-21.tel",
+        "sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121",
+        "networks": 185,
+        "nodes": 737
+      },
+      "amplifier": {
+        "filename": "\u529f\u653e.tel",
+        "sha256": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75",
+        "networks": 100,
+        "nodes": 492
+      },
+      "bluetooth": {
+        "filename": "\u84dd\u7259.tel",
+        "sha256": "832e1eae56a744f8535899f57caea097f51419e2eb210186a492c182e5091eb2",
+        "networks": 21,
+        "nodes": 88
+      }
+    },
+    "baseline": {
+      "name": "accepted_full83",
+      "manifest": "projects/138k/push2_workstation/usb_a/baselines/accepted_full83.json",
+      "manifest_sha256": "9bc6482b5885b9bc635d5089589e62aad6adf182a1822e2945a54be024c12717",
+      "origin": {
+        "build": "results/song_guide_full83_20261006_203125_607466",
+        "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/accepted_full83.inputs.json",
+        "input_manifest_sha256": "a8caece577521b28196175f25d468ec7845d12a2f0fe29c6cbadfa246e67de28"
+      },
+      "source_files": 414,
+      "excluded_files": 180
+    },
+    "ports": {
+      "clk_50m": [
+        "V22"
+      ],
+      "debug_uart_tx": [
+        "U15"
+      ],
+      "usb1_dp": [
+        "H13"
+      ],
+      "usb1_dn": [
+        "G13"
+      ]
+    },
+    "usb1_connector": "carrier USB1 Type-C, not USB2 USB3300 and not HDMI USB3",
+    "host_data_pulldowns": "R35/R36 15K to GND in locked netlist; actual assembly not measured",
+    "electrical_gaps": [
+      "CC1/CC2 use R1/R2 5.1K to GND (sink Rd), not a verified Type-C host Rp",
+      "VBUS1 is connected to board +5V through F1; no FPGA-controlled VBUS switch",
+      "R37(NC) 1.5K D+ pull-up must remain unpopulated in host role",
+      "25K USB1 requires its physical 1.5K D+ pull-up; FPGA weak pull-up is not a substitute"
+    ],
+    "hardware_measured": false,
+    "electrical_accepted": false
+  },
+  "clock_hz": 48000000,
+  "support_baseline": {
+    "name": "resource_rework_route0",
+    "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+    "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+    "origin": {
+      "build": "results/resource_rework_final_route0_20261020_041042",
+      "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+      "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+    },
+    "source_files": 437,
+    "excluded_files": 180
+  },
+  "prepared_at": "2026-10-28T14:14:42.766042+08:00",
+  "validation_stage": "prepare_only",
+  "hardware_validated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "git_head": "dfb04b077c62d79ebce6e4e36615879627c83424",
+  "input_manifest_sha256": "07a633fa399dfefc6250becc80ae675f51ea7055b0670ea4b62631e95857f14e"
+}

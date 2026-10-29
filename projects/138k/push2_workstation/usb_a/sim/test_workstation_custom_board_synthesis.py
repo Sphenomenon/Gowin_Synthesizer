@@ -27,6 +27,7 @@ from tools.workstation_custom_clocks import audit_clocks, audit_shared_cdc
 from tools.workstation_baselines import load_baseline
 from tools.workstation_resource_timing import event_fifo
 from tools.workstation_custom_timing import audit_resets
+from test_workstation_ddr_bist import synthesized_failure_cone
 
 
 class NativeSynthesis(unittest.TestCase):
@@ -50,9 +51,9 @@ class NativeSynthesis(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, (output / 'synthesis.log').read_text()[-4000:])
             result = verification.audit(output)
             self.assertEqual(result['identity'], integration.IDENTITY)
-            self.assertEqual(result['resources'], dict(Register=57037, Lut=76650, Alu=15325, Bsram=274,
-                                                       Ssram=371, MULTALU27X18=46, MULT12X12=41, MULT27X36=45,
-                                                       self_bsram=0, subtree_bsram=274))
+            self.assertEqual(result['resources'], dict(Register=54219, Lut=73127, Alu=15544, Bsram=272,
+                                                       Ssram=419, MULTALU27X18=46, MULT12X12=41, MULT27X36=45,
+                                                       self_bsram=0, subtree_bsram=272))
             self.assertEqual(set(result['delay_fifo_storage_audit']), {'u_write_fifo', 'u_read_fifo'})
             for storage in result['delay_fifo_storage_audit'].values():
                 self.assertEqual((storage['bsram_blocks'], storage['distributed_ram_blocks'],
@@ -71,6 +72,10 @@ class NativeSynthesis(unittest.TestCase):
             self.assertEqual(result['port_coverage']['physical_port_bits'], 142)
             self.assertFalse(result['release_ready'])
             self.assertFalse(result['deployment_allowed'])
+            self.assertFalse(result['electrical_blocked'])
+            self.assertEqual(result['electrical_check']['status'], 'no_voltage_domain_conflict_detected')
+            self.assertFalse(result['electrical_check']['actual_board_measured'])
+            self.assertFalse(result['electrical_check']['full_electrical_acceptance'])
             clocks = result['explicit_clock_audit']
             self.assertEqual(len(clocks['clocks']), 13)
             self.assertEqual(sum(clock.get('verified', False) for clock in clocks['clocks'].values()), 9)
@@ -110,7 +115,7 @@ class NativeSynthesis(unittest.TestCase):
             for field, value, message in (
                     ('bitstream_sha256', '0' * 64, 'preparation policy'),
                     ('tmds_polarity_inverted', [False] * 4, 'preparation policy'),
-                    ('electrical_blocked', False, 'electrical blocking'),
+                    ('electrical_blocked', True, 'electrical blocking'),
                     ('source_policy', 'accepted_full83', 'preparation policy')):
                 changed = copy.deepcopy(original)
                 changed[field] = value
@@ -135,6 +140,20 @@ class NativeSynthesis(unittest.TestCase):
                     manifest.write_text(json.dumps(changed))
                     with self.assertRaisesRegex(ValueError, message):
                         verification.audit(output)
+            manifest.write_text(json.dumps(original))
+            pinout_path = output / 'pinout/pinout.json'
+            original_pinout = pinout_path.read_bytes()
+            for field, value in (('status', 'accepted'), ('status', 'blocked'),
+                                 ('actual_board_measured', True), ('full_electrical_acceptance', True)):
+                changed_plan = json.loads(original_pinout)
+                changed_plan['electrical_check'][field] = value
+                pinout_path.write_text(json.dumps(changed_plan))
+                changed = copy.deepcopy(original)
+                changed['pinout_sha256'] = verification.sha(pinout_path)
+                manifest.write_text(json.dumps(changed))
+                with self.subTest(field=field, value=value), self.assertRaisesRegex(ValueError, 'electrical blocking'):
+                    verification.audit(output)
+            pinout_path.write_bytes(original_pinout)
             manifest.write_text(json.dumps(original))
             source = stage / 'rtl/display_data/workstation_custom_dvi.sv'
             original_bytes = source.read_bytes()
@@ -164,8 +183,18 @@ class NativeSynthesis(unittest.TestCase):
             report.write_text(original_report)
             netlist = stage / 'impl/gwsynthesis/custom_138k_integration.vg'
             original_netlist = netlist.read_text()
+            bist_cone = synthesized_failure_cone(original_netlist)
+            self.assertFalse(bist_cone['address_sources'])
+            self.assertTrue(bist_cone['expected_sources'])
+            self.assertLessEqual(bist_cone['maximum_alu_depth'], 8)
             self.assertEqual(len(result['native_usb_reset_audit']['resets']), 16)
             self.assertEqual(len(result['native_usb_reset_audit']['levels']), 8)
+            with self.assertRaisesRegex(ValueError, 'two-stage release/level topology changed: .*feedback/source_release'):
+                audit_resets(original_netlist, clocks)
+            with self.assertRaisesRegex(ValueError, 'unreviewed native feedback source clock'):
+                audit_resets(original_netlist, clocks, feedback_source_clock='usb_48m')
+            self.assertEqual(audit_resets(original_netlist, clocks, feedback_source_clock='audio_76m8'),
+                             result['native_usb_reset_audit'])
             controller = re.search(r'^module\s+workstation_usb2_host_controller\s*\(.*?^endmodule\b',
                                    original_netlist, re.M | re.S)
             self.assertIsNotNone(controller)
@@ -175,7 +204,7 @@ class NativeSynthesis(unittest.TestCase):
                 self.assertEqual(count, 1)
                 with self.assertRaisesRegex(ValueError, 'two-stage release/level topology changed'):
                     audit_resets(original_netlist[:controller.start()] + changed +
-                                 original_netlist[controller.end():], clocks)
+                                 original_netlist[controller.end():], clocks, feedback_source_clock='audio_76m8')
             first_stage = re.search(r'DFF\w+\s+fatal_sync_q_0_s\d+\s*\(.*?\.Q\(([^)]*)',
                                     controller[0], re.S)
             self.assertIsNotNone(first_stage)
@@ -184,7 +213,7 @@ class NativeSynthesis(unittest.TestCase):
             self.assertEqual(count, 1)
             with self.assertRaisesRegex(ValueError, 'first synchronizer stage has functional fanout'):
                 audit_resets(original_netlist[:controller.start()] + changed +
-                             original_netlist[controller.end():], clocks)
+                             original_netlist[controller.end():], clocks, feedback_source_clock='audio_76m8')
             unused_totals, resource_rows = verification.hierarchy(ElementTree.fromstring(original_report))
             memory = re.search(r'(?m)^  SDPX9B \\g_large_head\.even_memory[^\s]+\s+\(.*?^\);', original_netlist, re.S)
             self.assertIsNotNone(memory)
@@ -213,7 +242,7 @@ class NativeSynthesis(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'master volume must reach final output once'):
                 verification.audit_master_volume(original_netlist[:effect_audio.start()] + changed +
                                                  original_netlist[effect_audio.end():])
-            if result['identity'].endswith(('-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+            if result['identity'].endswith(('-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')):
                 self.assertEqual(set(result['native_receiver_audit']),
                                  {'bluetooth_uart', 'fpc_pll_reset', 'fpc_reference_monitor'})
                 uart = re.search(r'^module\s+bt_uart_fast\s*\(.*?^endmodule\b', original_netlist, re.M | re.S)
@@ -229,7 +258,7 @@ class NativeSynthesis(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, reason):
                         verification.audit_native_receivers(original_netlist[:uart.start()] + changed +
                                                             original_netlist[uart.end():], clocks)
-            if result['identity'].endswith(('-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+            if result['identity'].endswith(('-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')):
                 self.assertEqual(result['shared_cdc_audit']['constraints'], 157)
                 self.assertEqual(len(result['shared_cdc_audit']['resolved_selectors']), 145)
                 self.assertEqual(len(result['shared_cdc_audit']['deferred_opaque_ddr_selectors']), 13)
@@ -255,12 +284,15 @@ class NativeSynthesis(unittest.TestCase):
                 self.assertIn('defparam ' + name + ' .BIT_WIDTH_0=1;', recorder[0])
                 self.assertIn('defparam ' + name + ' .BIT_WIDTH_1=1;', recorder[0])
             extra_sdc = cdc_bundle(ROOT)['sdc'] + input_cdc_bundle(ROOT)['sdc'] + integration.FPC_AUDIO_SDC + integration.BLUETOOTH_SDC
-            if result['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+            if result['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')):
                 extra_sdc += integration.LCD_SDC
-            if result['identity'].endswith(('-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24')):
+            if result['identity'].endswith(('-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')):
                 extra_sdc += integration.shared_cdc_bundle(stage)['sdc']
-            if result['identity'].endswith(('-a20', '-a21', '-a22', '-a23', '-a24')):
-                extra_sdc += integration.timing_constraints() + integration.MODEL_FLASH_SDC
+            if result['identity'].endswith(('-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')):
+                extra_sdc += integration.timing_constraints()
+            if result['identity'].endswith(('-a21', '-a22', '-a23', '-a24', '-a25', '-a26')):
+                extra_sdc += integration.MODEL_FLASH_SDC
+            self.assertEqual(audit_clocks(ROOT, stage, original_netlist, extra_sdc=extra_sdc), clocks)
             changed, count = re.subn(r'(DFFCE\s+ui_reset_sync_\d+_s\d+\s*\(.*?\.CLK\()[^)]*',
                                     lambda match: match[1] + 'clk_50m_d', original_netlist, count=1, flags=re.S)
             self.assertEqual(count, 1)

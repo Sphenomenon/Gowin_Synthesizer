@@ -239,12 +239,12 @@ module gw138k_push_workstation_top #(
     wire [7:0] native_usb_data;
     wire native_usb_oe;
     assign usb2_ulpi_data=native_usb_oe ? native_usb_data : 8'bz;
-    workstation_usb2_input u_native_usb (
+    workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)) u_native_usb (
         .clk_cpu(usb_clk),.clk_ref(clk_50m),.clk_ulpi(usb2_ulpi_clk),.clk_audio(audio_clk),
         .reset_n(usb_reset_n),.audio_reset_n(audio_reset_n),.uart_rx_i(1'b1),.uart_tx_o(native_usb_uart),
         .ulpi_data_i(usb2_ulpi_data),.ulpi_dir_i(usb2_ulpi_dir),.ulpi_nxt_i(usb2_ulpi_nxt),
         .ulpi_data_o(native_usb_data),.ulpi_data_oe_o(native_usb_oe),.ulpi_stp_o(usb2_ulpi_stp),
-        .performance_words_i(push_snapshot),.display_meta_data_i(display_summary_usb),
+        .performance_words_i(performance_words),.display_meta_data_i(display_summary_usb),
         .display_meta_valid_i(display_summary_usb_valid),.service_state_data_i(service_state_usb),
         .service_state_valid_i(service_state_usb_valid),.score_valid_i(score_usb_valid),
         .analysis_done_i(music_analysis_done),.score_ready_o(score_usb_ready),.score_note_i(score_usb_note),
@@ -457,7 +457,7 @@ module gw138k_push_workstation_top #(
     workstation_fpc_audio u_fpc_audio (
         .clk_50m_i(clk_50m),.dac_reference_clk_i(clk_12m288),.audio_clk_i(audio_clk),
         .rst_ni(reset_n),.audio_rst_ni(audio_reset_n),.master_volume_i(master_volume),
-        .sample_valid_i(final_sample_valid),.enable_i(pa_en),.pcm_pair_i(final_snapshot[127:96]),
+        .sample_valid_i(final_sample_valid),.enable_i(!pa_en),.pcm_pair_i(final_snapshot[127:96]),
         .mclk_o(dac_mclk),.bck_o(hp_bck),.lrck_o(hp_ws),.data_o(hp_din),
         .pdn_no(dac_pdn_n),.smute_o(dac_smute),.sslow_o(dac_sslow),.sd_o(dac_sd),.slow_o(dac_slow),
         .frame_clock_o(ble_frame_clock),.frame_valid_o(ble_frame_valid),.frame_pcm_o(ble_frame_pcm),

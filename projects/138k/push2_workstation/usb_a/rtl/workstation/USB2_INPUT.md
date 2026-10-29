@@ -21,7 +21,7 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 | 接口 | 时钟／契约 |
 |---|---|
 | CPU、工作站服务、telemetry、取消计数 | `clk_cpu`，48 MHz |
-| `performance_words_i[447:0]` | `clk_ref`，50 MHz；原 owner 的完整快照 CDC 搬到 CPU 域 |
+| `performance_words_i[447:0]` | `FEEDBACK_AUDIO_DOMAIN=0` 时为 `clk_ref`，50 MHz；显式选择 1 时为原始 `clk_audio`，76.8 MHz。原 owner 的完整快照 CDC 搬到 CPU 域 |
 | `display_meta_*`、`service_state_*`、score／playlist valid/ready、track launch/index | CPU 域，沿用现有 owner 端口；外部组合根负责必要 CDC，不能直接接另一个域的脉冲或总线 |
 | `analysis_done_i` | 原 owner 内的同步路径保留，不在新顶层再复制业务状态 |
 | USB3300 ULPI | `clk_ulpi`，60 MHz，数据／方向／握手由原生 SoC 管理 |
@@ -31,7 +31,7 @@ CPU 复位两拍释放，与 SoC 内释放对齐。传输会话失效异步置�
 
 音频事件位布局、内部 kind 15 接入／断开／PANIC／屏障以及背压均沿用原 owner；公共参数继续由 `workstation_session.sv` 和 `workstation_parameters.sv` 下游路径执行。本组件末端只有事件接口，不能据此宣称实际参数已经应用或 DSP 已发声。
 
-下一阶段应沿用 `gw138k_usb_controlled_audio.sv` 的现有输入：将本组件的 `audio_valid_o/event_o/ready_i` 对接其 `usb_event_valid/data/ready`，并同时连接 `audio_lifecycle_o/cancel_o` 到 `usb_lifecycle/cancel`，不能只接 MIDI 数据而丢掉取消旁路。显示／服务快照、score／playlist 以及 performance 反馈仍需保留现有组合根的正确域交接；不把音频域的原始 `performance_words_o` 直接当作 50 MHz 输入，也不再实例化第二份 `push2_usb_a_control`。
+整机组合沿用 `gw138k_usb_controlled_audio.sv` 的现有输入：将本组件的 `audio_valid_o/event_o/ready_i` 对接其 `usb_event_valid/data/ready`，并同时连接 `audio_lifecycle_o/cancel_o` 到 `usb_lifecycle/cancel`，不能只接 MIDI 数据而丢掉取消旁路。原生新板显式选择 `FEEDBACK_AUDIO_DOMAIN=1`，原始音频反馈只经过 owner 自身的一次完整快照 CDC；不先经过 UART 遥测快照再把旧副本计作新的音频回报。默认 0 的参考域接口保持兼容；不能把音频总线直接接到默认的 50 MHz 接口。显示／服务快照和 score／playlist 仍需正确域交接，不再实例化第二份 `push2_usb_a_control`。
 
 ## 服务适配与取消
 
@@ -43,6 +43,8 @@ CPU 复位两拍释放，与 SoC 内释放对齐。传输会话失效异步置�
 保留 `0x02000200` 地址窗，表内为低八位；`50` 历史预载、probe 的 `f0` 等不在白名单。未对齐、非法地址及部分写返回总线错误；合法访问只在原 owner 接受时完成，持续 valid 不重复提交。CPU 撤销请求后立即撤销 owner 选择，禁止总线超时后的迟到写入。
 
 传输会话失效而 owner 仍 connected 时，适配器优先向原 owner 提交断开写 `00=0`。connected 直接取原 telemetry 位 1，没有第二份权威连接状态。即使 CPU 正等待 FIFO，旧输入队列也会经原 owner 复位并排空读端缓存，音频侧发出取消生命周期。
+
+断开义务保持到原 owner 接受 `00=0`，不会因传输会话先恢复而撤销。请求捕获或等待期间一旦观察到会话失效，其接入写／原始 MIDI／通用 MIDI 就永久作废，不能在背压解除或下一次会话恢复后重新提交；新会话必须使用新的服务请求。两项锁存只记录待交付的取消义务，不复制 connected 真值，也不扩展 18-bit 事件布局。
 
 会话无效时的连接写，以及无有效会话／owner 尚未连接时的原始 MIDI `04`、通用 MIDI `54`，完成为**已取消、不提交 owner**，不是总线故障；这避免一次正常热拔插永久污染 CPU sticky fault。这个 ACK 只表示请求已结束，不表示参数应用成功。CPU backend 仍须通过真实传输 generation／连接状态识别会话丢失。
 
@@ -56,3 +58,23 @@ GW138K_USB2_INPUT_EVIDENCE=/tmp/usb2_input_evidence_new \
 ```
 
 证据目录必须不存在。完整测试需要 GNU bare-metal RISC-V 工具链、Icarus、Verilator 和 `gw_sh`；缺少 Gowin 时综合用例显式 skip，不能报告完整八项全部通过。测试执行实际业务 CPU、原 owner／FIFO／CDC 和实际 25K MIDI／PL RTL；音频端仍是带背压的事件检查器，LCD 仍是 tile 完成模型。该测试不能替代真实参数提交、DSP／串行输出、LCD 物理驱动、电气门禁、P&R、上板验收或 Flash 冷启动。
+
+Push 的 CPU／ULPI 回归另用仿真专用端点模型，不把 25K 描述符改成 Push，也不修改 vendor PHY／SIE：
+
+```sh
+GW138K_USB2_PUSH_EVIDENCE=/tmp/usb2_push_evidence_new \
+  python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_push.py -v
+```
+
+默认 HS／FS 场景分别保存在新建的 `hs_1`／`hs_0` 子目录，拒绝覆盖已有子目录。模型使用合成的最小设备／配置描述符和 EP1 OUT 屏幕、EP2 IN／OUT MIDI，不是实物 Push 描述符或设备实现。生产 CPU 不复位，验证持音拔线、硬件会话断开、重新枚举、同一 pad 再触发及部分屏幕帧从新 header 恢复；每速率检查 5 个真实 owner／FIFO／CDC 映射事件。另一个 HS 用例保存在 `hs_1_complete_frame`，等待重连后的完整 16 字节 header／327680 字节像素和生产 CPU 的帧完成提交；这里只校验传输的长度、CRC、MPS、toggle 和完成顺序，不核对独立图像参考或真实屏幕。原始部分帧记录见[Push peer 回归记录](../../reports/USB2_HOTPLUG_PUSH_PEER_20261027.md)，完整帧结果另见[交替接入记录](../../reports/USB2_MIXED_HOTPLUG_20261027.md)。
+
+同一个持续运行的 CPU、主机和 USB3300 模型下，25K／Push／25K／Push 的交替回归为独立入口：
+
+```sh
+evidence="$HOME/.cache/fpga-usb2-hotplug/run_new"
+mkdir -p "$evidence/tmp"
+TMPDIR="$evidence/tmp" GW138K_USB2_HOTPLUG_EVIDENCE="$evidence" \
+  python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_hotplug.py -v
+```
+
+每种速度在单次执行内完成四次接入、三次断开，断言 CPU 不复位、设备模式自动切换、两次 25K PL 会话及 tile 坐标重新开始、Push 帧重新发送 header、精确 10 个映射事件及四次默认初始化生命周期／屏障。25K 使用真实 MIDI／PL RTL，Push 仍为上述仿真端点，LCD 完成和音频事件接收仍是模型；不以此宣称实际参数已经提交、DSP／串行音频连续、实物 HS 能力、屏幕恢复或硬件验收。该交替用例只接收 Push 的部分帧，完整帧由独立 HS 用例验证，不能将不同用例的范围混写。

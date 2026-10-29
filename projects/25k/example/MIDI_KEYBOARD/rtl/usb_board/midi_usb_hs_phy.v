@@ -73,6 +73,7 @@ reg       chirp_qualified_q;
 reg [17:0] idle_time_q;
 reg [12:0] fs_settle_q;
 reg fs_suspended_q;
+reg fs_reset_armed_q;
 
 reg [  1:0]  utmi_op_mode_r;
 reg [  1:0]  utmi_xcvrselect_r;
@@ -149,7 +150,7 @@ begin
         utmi_dmpulldown_r = 1'b0;
 
         // USB reset detected...
-        if (se0_reset && line_state == 2'b00)
+        if (fs_reset_armed_q && se0_reset && line_state == 2'b00)
             next_state_r = STATE_WAIT_RST;
     end
     STATE_HIGHSPEED:
@@ -200,6 +201,14 @@ else if (!enable)
 else
     state_q   <= next_state_r;
 
+always @(posedge clk or posedge reset)
+if (reset)
+    fs_reset_armed_q <= 1'b0;
+else if (!enable || state_q != STATE_FULLSPEED)
+    fs_reset_armed_q <= 1'b0;
+else if (line_state == 2'b01)
+    fs_reset_armed_q <= 1'b1;
+
 // The ULPI clock remains running during suspend: no PHY low-power command
 // is issued. Pending endpoint/FIFO payloads and configuration remain intact.
 always @(posedge clk or posedge reset)
@@ -234,7 +243,7 @@ if (reset)
     usb_rst_time_q <= `USB_RST_W'b0;
 // Entering wait for reset state
 else if (next_state_r == STATE_WAIT_RST && state_q != STATE_WAIT_RST)
-    usb_rst_time_q <=  `USB_RST_W'b0;
+    usb_rst_time_q <= state_q == STATE_HS_SUSPEND ? ATTACH_FS_TIME : `USB_RST_W'b0;
 // Waiting for reset, reset count on line state toggle
 else if (state_q == STATE_WAIT_RST && (line_state != 2'b00))
     usb_rst_time_q <=  `USB_RST_W'b0;

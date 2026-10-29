@@ -78,9 +78,9 @@ def cdc_bundle(root):
                 mailboxes=mailboxes, sdc='\n'.join(lines) + '\n')
 
 
-def audit_usb2_cdc(root, netlist_text, clocks):
+def audit_usb2_cdc(root, netlist_text, clocks, *, top='workstation_custom_138k_top'):
     bundle = cdc_bundle(root)
-    netlist = SynthesisNetlist(netlist_text, 'workstation_custom_138k_top')
+    netlist = SynthesisNetlist(netlist_text, top)
     if netlist.frames.get(BRIDGE, {}).get('kind') != 'workstation_usb2_cpu_bridge':
         raise ValueError('native USB2 CDC bridge hierarchy missing')
     domains = {domain: clocks['clocks'][name]['net'] for domain, name in

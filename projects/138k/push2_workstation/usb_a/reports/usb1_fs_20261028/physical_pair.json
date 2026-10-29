@@ -1,0 +1,68 @@
+{
+  "passed": true,
+  "firmware": {
+    "compiler_prefix": "/home/sphenicidition/.local/opt/amd/2025.2.1/gnu/riscv/lin/bin/riscv64-unknown-elf",
+    "firmware_bytes": 20772,
+    "static_ram_bytes": 26529,
+    "static_ram_end": 26532,
+    "stack_margin_bytes": 39004,
+    "live_sha256": {
+      "firmware.c": "0a2acb8243d67357a4a69c869e3262fc89b624a5cf433feb8a2d12a0b27fc738",
+      "gw25k_panel.h": "6986f631f2c72da58a79ed1b267578c0e9a0c4730933ae7c735cdc7089235d76",
+      "usb1_identify.c": "4b832f0afb5d876cdc12372a002426b15a0f4d9f6b7f5d0f3e166c27ab88b415"
+    },
+    "staged_source_sha256": {
+      "baremetal.ld": "782346f25a8dfffc5bfbb8198c2b12e5166b2d500aa00e626e8187f5a0473da8",
+      "minlibc.c": "67270201c156358943bf01df27fc81da2a97730668174426ee11584a60f607bf",
+      "minlibc.h": "6b69e720d83f1a50d1bb617116cab5a77be69f4bfacbc1bbca41c31889f13e86",
+      "start.S": "922d197b938e653b3a94ef6107303cb828a2be267629bd92899498d429cbb60e",
+      "firmware.c": "0a2acb8243d67357a4a69c869e3262fc89b624a5cf433feb8a2d12a0b27fc738",
+      "gw25k_panel.h": "6986f631f2c72da58a79ed1b267578c0e9a0c4730933ae7c735cdc7089235d76",
+      "usb1_identify.c": "4b832f0afb5d876cdc12372a002426b15a0f4d9f6b7f5d0f3e166c27ab88b415",
+      "usb/usb_core.c": "fbe2b0995c27bf3621e3b32993b2405ff3b018ffe751dfebad14611c2cc50fa5",
+      "usb/usb_core.h": "6b121c052986df83a612db01ade9a7e8524fec80fd8bd718e8b5722c985900c6",
+      "usb/usb_defs.h": "d492a33d57f93d939dac591b5c1f5a70ed71018b1f0310c9d3b51880a677a6f5",
+      "usb/usb_hw.c": "e86373c34b7fce1cb544d9514b0f510a5948515aa0d8ee825fd33ce724d83f50",
+      "usb/usb_hw.h": "2644a4bafe138954a871b69730e9edc472099c438a06fc4e071625367deae954"
+    },
+    "firmware_elf_sha256": "65de132c2b1378afc739d1633e7f666ea88be145542ff2f70dd909be14957b58",
+    "firmware_binary_sha256": "688b6d23a50f91e3bdffad9a7d95b60257299ecde0f5233aaf3c557d52026553",
+    "rom_sha256": {
+      "push2_usb_a.hex": "3745a11136b7ae37106177b0cce817178e9e294b12968ae74c2257706cba2e6d",
+      "src/usb_a/push2_usb_a.hex": "3745a11136b7ae37106177b0cce817178e9e294b12968ae74c2257706cba2e6d"
+    },
+    "hardware_tested": false
+  },
+  "source_sha256": {
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_phy.sv": "4ce04c77757e4a1d0aa794e58ef6a2ff894469c505a73e27c625f82bd1389e7a",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_host.sv": "8e235665d98c4c1106ba3b8b2b8189f9fc46d3580629108c9b05a1fb7d4a7697",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/usb1/workstation_usb1_diagnostics.sv": "088ba36540c26b97f61dfbb002c2f33253ff21fe254f5c123ea0081aabf97e47",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/rtl/usb2/workstation_usb2_cpu_bus.sv": "016fd241557399d2994697e784aae2fb55e5a2d847180ead9f49c31b9b851cba",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/VexRiscv.v": "b4befdee132dbd5d8cf88991f24b69f1eef97cbad8a5656a745f0d69a7a31226",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/simpleuart.v": "26bbed2ad964b75a40a6f7e72f3871cf2cc3457d8b7ac8136a947d5d65fd69fa",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usb_fs_phy.v": "e22c64f2178c844e6155c01111e8f77518edc79f12e6947dce133996eb21ba61",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_core.sv": "7f4e578c5db25f5c0ccd7e32010b96f1f96f9406bfd64753eed8cbfe9c9620a0",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_sie.sv": "1627b027f4f3788e456cfc736864f7db79dff4fd7308fb45a6560628a06699b8",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_fifo.sv": "faa14201152df8adf4aac61deb97ac4432cc90b2770715f02b700f332b2688a8",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc5.sv": "b75ba0b1690ae6cea2c5932ced97a341c7bd7914223ec630ed35f4ebadc766ca",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_crc16.sv": "5b8770f950ea350e4a2fd556a43cd4f6c931895441ded527ea1514d69eb3e3f9",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src/usbh_host_defs.v": "e493984abfc3ca369b3251f0ff6840ceb9f233dba9029f6e1c796f613fe31c88",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/generated/usb_composite_desc_rom.v": "e022f0c6f52a97483914c1d2b6a30a4e51b73de8c51a68e8f94791dd848133ee",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/midi_usb1_clock.v": "acabd8b0a484fc5b9c3172d9c77a965ad9d9bb11e2617bfa37a492f3a0112268",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/midi_usb_async_fifo.v": "895eda52772844734f803c7c3ff274d9fb22d47ca80ac29f002f917f9e182188",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/midi_usb_bridge.v": "4597dad131b69b9553ef2b57bc682409d2ba991401e07190ef4417e39c2f4307",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/midi_usb_device.v": "5ce4d692c3dcd579b00e0b1658282ef9c705fbc80b35b08cabbbc24488d2e98f",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/midi_usb_fs_state.v": "f9e75f4c9e9c3613cd4db679205803697dbfd7c56fd9cd8e6175528467b46ca7",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_crc16.v": "fbdf75fc7a24342db71ea9de8c7332b4b4e6074db88e9e41b3e908da133a2033",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_sie_rx.v": "7731842eefa2d5f2513fd240ba70403362ad01033195594cc7699645f641ce87",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_sie_tx.v": "36d6e5c3f926a6aed36ced5f21664635bd5120f5b7d753ad08915a45c3da7621",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/control/panel_display_endpoint.v": "cba754e6d16bb9c998c7e23d23039b60e7ef03867244192f2ac8943b2f7135e8",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/sim/usb1/tb_workstation_usb1_pair.sv": "af0d8b6a35b73e143bc5adaf0e3f3d8cdd09a1848a64559855ab2d733db41414",
+    "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor/usbf_defs.v": "5ea9871d316cea1a9b7f5faf33c0f9b3bb513594aacb33288638c2a64a28f484"
+  },
+  "compilation_log_sha256": "ee27c92276f3197f37b1327da182338942e25bafff2b95d0910618b69ffb6cea",
+  "execution_log_sha256": "df9cd002b897f5fde789bd00ac98f1e01050068157d1a9347a2cc47823c93e25",
+  "physical_boundary": "digital_resolved_dp_dm_not_board_measurement",
+  "application": "actual_25k_bridge_and_pl_endpoint_with_tile_completion_model",
+  "hardware_validated": false
+}

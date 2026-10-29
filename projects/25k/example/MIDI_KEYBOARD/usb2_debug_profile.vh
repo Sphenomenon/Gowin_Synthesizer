@@ -1,0 +1,3 @@
+`ifndef MIDI_USB2_DEBUG_PROFILE_VH
+`define MIDI_USB2_DEBUG_PROFILE_VH
+`endif

@@ -6,12 +6,14 @@ module workstation_usb3300_host_link #(
     parameter integer STARTUP_CYCLES = 600,
     parameter integer TRANSACTION_TIMEOUT_CYCLES = 60000,
     parameter integer NOPID_TIMEOUT_CYCLES = 3600000,
-    parameter integer STAGE_TIMEOUT_CYCLES = 120000
+    parameter integer STAGE_TIMEOUT_CYCLES = 120000,
+    parameter integer REGISTER_STP = 0
 )(
     input wire clk_ref,
     input wire clk_ulpi,
     input wire reset_n,
     input wire enable_i,
+    input wire pad_live_i,
     input wire [7:0] ulpi_data_i,
     input wire ulpi_dir_i,
     input wire ulpi_nxt_i,
@@ -46,6 +48,7 @@ module workstation_usb3300_host_link #(
     output wire [2:0] csr_response_error_o,
     input wire [7:0] utmi_data_i,
     input wire utmi_txvalid_i,
+    input wire utmi_txlast_i,
     input wire utmi_tx_nopid_i,
     output wire utmi_txready_o,
     output wire [7:0] utmi_data_o,
@@ -84,8 +87,8 @@ module workstation_usb3300_host_link #(
     wire safe_stop = !link_reset_n_o || init_failed_o || link_fatal_o;
 
     assign ready_o = init_ready && !safe_stop;
-    assign ulpi_data_oe_o = link_oe && !safe_stop && !force_stp;
-    assign ulpi_stp_o = link_stp || safe_stop || force_stp;
+    assign ulpi_data_oe_o = link_oe && !safe_stop;
+    assign ulpi_stp_o = REGISTER_STP != 0 ? link_stp : link_stp || safe_stop;
     assign csr_ready_o = ready_o && link_csr_ready;
     assign csr_response_valid_o = ready_o && link_response_valid;
     assign csr_response_data_o = link_response_data;
@@ -121,9 +124,11 @@ module workstation_usb3300_host_link #(
     );
 
     workstation_ulpi_link #(
-        .TRANSACTION_TIMEOUT_CYCLES(TRANSACTION_TIMEOUT_CYCLES), .NOPID_TIMEOUT_CYCLES(NOPID_TIMEOUT_CYCLES)
+        .TRANSACTION_TIMEOUT_CYCLES(TRANSACTION_TIMEOUT_CYCLES), .NOPID_TIMEOUT_CYCLES(NOPID_TIMEOUT_CYCLES),
+        .REGISTER_STP(REGISTER_STP)
     ) link (
         .clk_ulpi(clk_ulpi), .reset_n(link_reset_n_o), .ulpi_data_i(ulpi_data_i),
+        .stp_release_n_i(pad_live_i && !safe_stop),
         .ulpi_dir_i(ulpi_dir_i), .ulpi_nxt_i(ulpi_nxt_i), .ulpi_data_o(ulpi_data_o),
         .ulpi_data_oe_o(link_oe), .ulpi_stp_o(link_stp),
         .csr_valid_i(init_ready ? (csr_valid_i && ready_o) : init_valid), .csr_ready_o(link_csr_ready),
@@ -133,7 +138,7 @@ module workstation_usb3300_host_link #(
         .csr_response_valid_o(link_response_valid),
         .csr_response_ready_i(init_ready ? (csr_response_ready_i && ready_o) : init_response_ready),
         .csr_response_data_o(link_response_data), .csr_response_error_o(link_response_error),
-        .utmi_data_i(utmi_data_i), .utmi_txvalid_i(utmi_txvalid_i && ready_o),
+        .utmi_data_i(utmi_data_i), .utmi_txvalid_i(utmi_txvalid_i && ready_o), .utmi_txlast_i(utmi_txlast_i),
         .utmi_tx_nopid_i(utmi_tx_nopid_i), .utmi_txready_o(link_txready), .utmi_data_o(utmi_data_o),
         .utmi_rxvalid_o(link_rxvalid), .utmi_rxactive_o(link_rxactive), .utmi_rxerror_o(link_rxerror),
         .utmi_linestate_o(utmi_linestate_o), .vbus_state_o(vbus_state_o), .id_state_o(id_state_o),

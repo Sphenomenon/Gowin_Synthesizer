@@ -2,6 +2,7 @@
 """Physical experiments preserve audited native inputs and deployment gates."""
 
 from pathlib import Path
+import copy
 import json
 import runpy
 import sys
@@ -12,7 +13,9 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools import workstation_custom_board_implementation as physical
+from tools import workstation_pinout as pinout
 from tools.stage_usb_firmware import sha
+from test_workstation_pinout import fixture
 
 
 class PhysicalPreparation(unittest.TestCase):
@@ -90,6 +93,114 @@ class PhysicalPreparation(unittest.TestCase):
             physical.prepare(self.source, self.output, 'C1102501', True)
         with self.assertRaisesRegex(ValueError, 'parent candidate'):
             physical.prepare(self.source, self.source / 'physical', 'C1102501', True)
+
+    def test_clear_nominal_voltage_domain_does_not_enable_deployment(self):
+        self.audit['electrical_blocked'] = False
+        with self.assertRaisesRegex(ValueError, 'acknowledgement'):
+            physical.prepare(self.source, self.output, 'C1102501')
+        result = physical.prepare(self.source, self.output, 'C1102501', True)
+        self.assertFalse(result['electrical_blocked'])
+        for key in ('deployment_allowed', 'release_ready', 'physical_gates_passed',
+                    'hardware_tested', 'sram_programmed', 'flash_programmed'):
+            self.assertFalse(result[key])
+
+    def test_unknown_electrical_identity_is_rejected(self):
+        for value in (None, 0, 1, 'false'):
+            self.audit['electrical_blocked'] = value
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, 'electrical identity'):
+                physical.prepare(self.source, self.output, 'C1102501', True)
+        self.assertFalse(self.output.exists())
+
+    def bypass_inputs(self):
+        profile, payloads, core = fixture()
+        plan = pinout.resolve(profile, {role: pinout.Netlist(payload) for role, payload in payloads.items()}, core)
+        payload = pinout.render_constraints(plan).replace('\n', '\r\n').encode()
+        constraints = self.source / 'workstation/Prj1/constraints/custom_138k.cst'
+        constraints.write_bytes(payload)
+        plan_path = self.source / 'pinout/pinout.json'
+        plan_path.parent.mkdir()
+        plan_path.write_text(json.dumps(plan))
+        manifest = self.source / 'integration_inputs.json'
+        metadata = json.loads(manifest.read_text())
+        metadata['pinout_sha256'] = sha(plan_path)
+        metadata['staged_input_sha256']['constraints/custom_138k.cst'] = sha(constraints)
+        manifest.write_text(json.dumps(metadata))
+        self.audit['integration_inputs_sha256'] = sha(manifest)
+        self.audit['electrical_blocked'] = False
+        return plan, payload
+
+    def test_ulpi_io_standard_does_not_supply_risk_or_board_authorization(self):
+        self.bypass_inputs()
+        with self.assertRaisesRegex(ValueError, 'acknowledgement'):
+            physical.prepare(self.source, self.output, 'C1102501', ulpi_bypass_lvcmos33=True)
+        self.mock_audit.assert_not_called()
+        self.assertFalse(self.output.exists())
+
+    def test_ulpi_io_standard_preserves_locations_other_ports_sdc_and_source_bytes(self):
+        plan, original = self.bypass_inputs()
+        result = physical.prepare(self.source, self.output, 'C1102501', True, ulpi_bypass_lvcmos33=True)
+        adapted = (self.output / 'physical.cst').read_bytes()
+        expected = ''.join('IO_PORT "' + port + '" IO_TYPE=LVCMOS33;\n'
+                           for port in plan['ports'] if port.startswith('usb2_ulpi_')).encode()
+        self.assertEqual(adapted, original + expected)
+        self.assertEqual(pinout.parse_locations(adapted.decode()), pinout.parse_locations(original.decode()))
+        self.assertEqual((self.source / 'workstation/Prj1/constraints/custom_138k.cst').read_bytes(), original)
+        self.assertEqual((self.output / 'physical.sdc').read_bytes(), b'unchanged sdc\n')
+        self.assertEqual(result['parent_input_sha256']['physical.cst'], pinout.digest(original))
+        self.assertEqual(result['ulpi_io_type_adaptation']['before_sha256'], pinout.digest(original))
+        self.assertEqual(result['ulpi_io_type_adaptation']['after_sha256'], pinout.digest(adapted))
+        self.assertEqual(len(result['ulpi_io_type_adaptation']['ports']), 12)
+        self.assertEqual(sha(self.output / 'parent_pinout.json'), sha(self.source / 'pinout/pinout.json'))
+        self.assertIn('offline physical experiment only', result['acknowledgement_scope'])
+        self.assertNotIn('requested deployment', result['acknowledgement_scope'])
+        for key in ('board_programming_authorized', 'deployment_allowed', 'release_ready',
+                    'hardware_tested', 'sram_programmed', 'flash_programmed'):
+            self.assertFalse(result[key])
+        for key in ('actual_board_measured', 'full_electrical_acceptance', 'external_io_timing_complete'):
+            self.assertFalse(result['ulpi_io_type_adaptation'][key])
+        for name, expected_hash in result['input_sha256'].items():
+            self.assertEqual(sha(self.output / name), expected_hash)
+
+    def test_ulpi_io_standard_rejects_unreviewed_assembly_supply_or_acceptance_claims(self):
+        plan, payload = self.bypass_inputs()
+        variants = []
+        changed = copy.deepcopy(plan)
+        changed['ulpi_bypass'].pop('U4')
+        variants.append(changed)
+        for key, value in (('status', 'blocked'), ('actual_board_measured', True),
+                           ('full_electrical_acceptance', True), ('findings', [{'code': 'unexpected'}])):
+            changed = copy.deepcopy(plan)
+            changed['electrical_check'][key] = value
+            variants.append(changed)
+        for key, value in (('nominal_mv', 1800), ('phy_side', 'A'), ('assembly', 'fitted'),
+                           ('supply_node', 'U4.2'), ('supply_network', 'unreviewed_3V3')):
+            changed = copy.deepcopy(plan)
+            changed['electrical_check']['translators'][0][key] = value
+            variants.append(changed)
+        changed = copy.deepcopy(plan)
+        changed['electrical_check']['translators'].append(copy.deepcopy(changed['electrical_check']['translators'][0]))
+        variants.append(changed)
+        for index, changed in enumerate(variants):
+            with self.subTest(variant=index), self.assertRaisesRegex(ValueError, 'ULPI'):
+                physical.ulpi_bypass_constraints(payload, changed)
+
+    def test_ulpi_io_standard_rejects_location_drift_and_existing_overrides(self):
+        plan, payload = self.bypass_inputs()
+        variants = (payload.replace(b'IO_LOC "usb2_ulpi_stp" E17;\r\n', b''),
+                    payload.replace(b'IO_LOC "usb2_ulpi_stp" E17;', b'IO_LOC "usb2_ulpi_stp" E16;'),
+                    payload + b'IO_LOC "usb2_ulpi_extra" F17;\n',
+                    payload + b'IO_PORT "usb2_ulpi_stp" IO_TYPE=LVCMOS18;\n')
+        for index, changed in enumerate(variants):
+            with self.subTest(variant=index), self.assertRaisesRegex(ValueError, 'ULPI'):
+                physical.ulpi_bypass_constraints(changed, plan)
+
+    def test_ulpi_io_standard_rejects_pinout_drift_before_output_creation(self):
+        self.bypass_inputs()
+        plan_path = self.source / 'pinout/pinout.json'
+        plan_path.write_bytes(plan_path.read_bytes() + b'\n')
+        with self.assertRaisesRegex(ValueError, 'input changed: parent_pinout.json'):
+            physical.prepare(self.source, self.output, 'C1102501', True, ulpi_bypass_lvcmos33=True)
+        self.assertFalse(self.output.exists())
 
     def test_physical_search_does_not_change_clocks_or_enable_protection(self):
         script = physical.implementation_script('C1102503', 1, 1, True)

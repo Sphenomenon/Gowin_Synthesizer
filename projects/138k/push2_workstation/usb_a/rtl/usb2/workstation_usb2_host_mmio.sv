@@ -1,6 +1,7 @@
 module workstation_usb2_host_mmio #(
     parameter integer ATTACH_DEBOUNCE_US = 100000,
-    parameter integer TRANSACTION_TIMEOUT_CYCLES = 120000
+    parameter integer TRANSACTION_TIMEOUT_CYCLES = 120000,
+    parameter integer PORT_OBSERVER = 0
 )(
     input wire clk_cpu,
     input wire clk_ref,
@@ -49,8 +50,133 @@ module workstation_usb2_host_mmio #(
     wire [31:0] unused_received, unused_transmitted;
     wire unused_session_reset;
     (* async_reg = "true", syn_preserve=1 *) reg [1:0] status_release_q;
-    (* async_reg = "true" *) reg [4:0] failure_meta_q, failure_sync_q;
+    (* async_reg = "true", syn_preserve = 1, syn_keep = 1 *) reg [4:0] failure_meta_q, failure_sync_q;
     wire status_reset_n = status_release_q[1];
+    (* syn_preserve = 1 *) reg [18:0] state_history_q;
+    (* syn_preserve = 1 *) reg [15:0] failure_history_q, attempts_q;
+    (* syn_preserve = 1 *) reg [3:0] last_failure_q;
+    (* syn_preserve = 1 *) reg [4:0] last_failure_state_q;
+    (* syn_preserve = 1 *) reg [7:0] last_failure_function_q;
+    (* syn_preserve = 1 *) reg [31:0] received_peak_q, transmitted_peak_q, sof_peak_q;
+    (* syn_preserve = 1 *) reg [15:0] recovery_count_q, active_count_q, recovery_aborts_q, command_count_q;
+    (* syn_preserve = 1 *) reg [31:0] recovery_exit_ticks_q, recovery_exit_sofs_q, last_command_q;
+    (* syn_preserve = 1 *) reg [4:0] recovery_exit_state_q;
+    (* syn_preserve = 1 *) reg [7:0] recovery_exit_flags_q, recovery_exit_rxcmd_q, recovery_exit_function_q;
+    (* syn_preserve = 1 *) reg [15:0] last_sof_token_q;
+    (* syn_preserve = 1 *) reg [23:0] last_result_q;
+    generate if (PORT_OBSERVER != 0) begin : port_observer
+        reg [4:0] previous_state_q;
+        reg previous_ready_q;
+        reg previous_dir_q;
+        reg [7:0] last_rxcmd_q, previous_flags_q, previous_function_q, sof_low_q;
+        reg [31:0] recovery_ticks_q, previous_sofs_q;
+        reg [1:0] sof_bytes_q;
+        always @(posedge clk_ulpi or negedge status_reset_n) begin
+            if (!status_reset_n) begin
+                state_history_q <= 0;
+                failure_history_q <= 0;
+                attempts_q <= 0;
+                last_failure_q <= 0;
+                last_failure_state_q <= 0;
+                last_failure_function_q <= 0;
+                received_peak_q <= 0;
+                transmitted_peak_q <= 0;
+                sof_peak_q <= 0;
+                previous_state_q <= 0;
+                previous_ready_q <= 0;
+                recovery_count_q <= 0;
+                active_count_q <= 0;
+                recovery_aborts_q <= 0;
+                command_count_q <= 0;
+                recovery_exit_ticks_q <= 0;
+                recovery_exit_sofs_q <= 0;
+                recovery_exit_state_q <= 0;
+                recovery_exit_flags_q <= 0;
+                recovery_exit_rxcmd_q <= 0;
+                recovery_exit_function_q <= 0;
+                last_command_q <= 0;
+                last_result_q <= 0;
+                last_sof_token_q <= 0;
+                previous_dir_q <= 0;
+                last_rxcmd_q <= 0;
+                previous_flags_q <= 0;
+                previous_function_q <= 0;
+                previous_sofs_q <= 0;
+                recovery_ticks_q <= 0;
+                sof_low_q <= 0;
+                sof_bytes_q <= 0;
+            end else begin
+                previous_state_q <= port_state;
+                previous_ready_q <= phy_ready_o;
+                previous_dir_q <= ulpi_dir_i;
+                previous_flags_q <= {phy_ready_o, connected, high_speed_o, failure_sync_q[1],
+                                     failure_sync_q[0], failure_sync_q[2], reset_active, sof_enable};
+                previous_function_q <= unused_function;
+                previous_sofs_q <= sof_count_o;
+                if (port_state == 15) begin
+                    if (recovery_ticks_q != 32'hffffffff)
+                        recovery_ticks_q <= recovery_ticks_q + 1'b1;
+                    if (previous_state_q != 15 && recovery_count_q != 16'hffff)
+                        recovery_count_q <= recovery_count_q + 1'b1;
+                end else begin
+                    recovery_ticks_q <= 0;
+                    if (previous_state_q == 15) begin
+                        recovery_exit_ticks_q <= recovery_ticks_q;
+                        recovery_exit_sofs_q <= previous_sofs_q;
+                        recovery_exit_state_q <= port_state;
+                        recovery_exit_flags_q <= previous_flags_q;
+                        recovery_exit_rxcmd_q <= last_rxcmd_q;
+                        recovery_exit_function_q <= previous_function_q;
+                        if (port_state != 16 && recovery_aborts_q != 16'hffff)
+                            recovery_aborts_q <= recovery_aborts_q + 1'b1;
+                    end
+                end
+                if (port_state == 16 && previous_state_q != 16 && active_count_q != 16'hffff)
+                    active_count_q <= active_count_q + 1'b1;
+                if ((port_state == 15 || port_state == 16) && ulpi_dir_i && previous_dir_q && !ulpi_nxt_i)
+                    last_rxcmd_q <= ulpi_data_i;
+                if (ulpi_dir_i || ulpi_stp_o || port_state != 15)
+                    sof_bytes_q <= 0;
+                else if (ulpi_data_oe_o && ulpi_nxt_i) begin
+                    if (sof_bytes_q == 2) begin
+                        sof_low_q <= ulpi_data_o;
+                        sof_bytes_q <= 1;
+                    end else if (sof_bytes_q == 1) begin
+                        last_sof_token_q <= {ulpi_data_o, sof_low_q};
+                        sof_bytes_q <= 0;
+                    end else if (ulpi_data_o == 8'h45)
+                        sof_bytes_q <= 2;
+                end
+                if (command_valid && command_ready) begin
+                    if (command_count_q != 16'hffff) command_count_q <= command_count_q + 1'b1;
+                    last_command_q <= {2'd0, command_pid, command_device, command_endpoint, command_toggle, command_length};
+                end
+                if (result_valid && result_ready)
+                    last_result_q <= {2'd0, result_status, result_pid, result_length};
+                if (port_state <= 18)
+                    state_history_q <= state_history_q | (19'b1 << port_state);
+                if (phy_ready_o && !previous_ready_q && attempts_q != 16'hffff)
+                    attempts_q <= attempts_q + 1'b1;
+                if (port_failure != 0) begin
+                    failure_history_q <= failure_history_q | (16'b1 << port_failure);
+                    last_failure_q <= port_failure;
+                    if (previous_state_q != 18)
+                        last_failure_state_q <= previous_state_q;
+                    last_failure_function_q <= unused_function;
+                end
+                if (unused_received > received_peak_q) received_peak_q <= unused_received;
+                if (unused_transmitted > transmitted_peak_q) transmitted_peak_q <= unused_transmitted;
+                if (sof_count_o > sof_peak_q) sof_peak_q <= sof_count_o;
+            end
+        end
+    end else begin : no_port_observer
+        assign {state_history_q, failure_history_q, attempts_q, last_failure_q, last_failure_state_q,
+                last_failure_function_q, received_peak_q, transmitted_peak_q, sof_peak_q,
+                recovery_count_q, active_count_q, recovery_aborts_q, command_count_q,
+                recovery_exit_ticks_q, recovery_exit_sofs_q, recovery_exit_state_q,
+                recovery_exit_flags_q, recovery_exit_rxcmd_q, recovery_exit_function_q,
+                last_command_q, last_result_q, last_sof_token_q} = '0;
+    end endgenerate
     always @(posedge clk_ulpi or negedge reset_n)
         if (!reset_n) status_release_q <= 0;
         else status_release_q <= {status_release_q[0], 1'b1};

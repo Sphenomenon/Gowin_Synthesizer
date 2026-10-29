@@ -42,8 +42,10 @@ NATIVE_SOURCES = (*SOC_SOURCE_PATHS, *NATIVE_INPUT_SOURCES,
                   'rtl/display_data/workstation_lcd.sv',
                   'rtl/bluetooth/workstation_bluetooth.sv',
                   'rtl/bluetooth/gw138k_ble_status_uart.v',
+                  'rtl/memory/workstation_ddr_bist.v',
                   'rtl/display_data/workstation_custom_dvi.sv')
 REPLACED_INPUTS = {
+    'src/memory/ddr3_bist.v': 'rtl/memory/workstation_ddr_bist.v',
     'src/usb_a/VexRiscv.v': 'vendor/usb_host_fs_8fc3/src/VexRiscv.v',
     'src/usb_a/simpleuart.v': 'vendor/usb_host_fs_8fc3/src/simpleuart.v',
     'src/usb_a/push2_usb_a_control.sv': 'rtl/push2_usb_a_control.sv',

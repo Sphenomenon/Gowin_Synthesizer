@@ -1,10 +1,12 @@
 module workstation_usb2_host_phy #(
-    parameter integer ATTACH_DEBOUNCE_US = 100000
+    parameter integer ATTACH_DEBOUNCE_US = 100000,
+    parameter integer REGISTER_STP = 0
 )(
     input wire clk_ref,
     input wire clk_ulpi,
     input wire reset_n,
     input wire enable_i,
+    input wire pad_live_i,
     input wire hs_enable_i,
     input wire reset_request_i,
     input wire mac_idle_i,
@@ -16,6 +18,7 @@ module workstation_usb2_host_phy #(
     output wire ulpi_stp_o,
     input wire [7:0] mac_data_i,
     input wire mac_txvalid_i,
+    input wire mac_txlast_i,
     output wire mac_txready_o,
     output wire [7:0] mac_data_o,
     output wire mac_rxvalid_o,
@@ -94,7 +97,7 @@ module workstation_usb2_host_phy #(
         else mac_release_q <= {mac_release_q[0], 1'b1};
 
     assign ulpi_data_oe_o = link_oe && !port_failed;
-    assign ulpi_stp_o = link_stp || port_failed;
+    assign ulpi_stp_o = REGISTER_STP != 0 ? link_stp : link_stp || port_failed;
     assign failed_o = port_failed || clock_failed_o || init_failed_o || link_fatal_o;
     assign mac_reset_n_o = mac_release_q[1];
     assign mac_txready_o = mac_reset_n_o && link_txready;
@@ -121,8 +124,9 @@ module workstation_usb2_host_phy #(
         .csr_retries_o(port_csr_retries_o), .chirp_count_o(chirp_count_o)
     );
 
-    workstation_usb3300_host_link physical_link (
+    workstation_usb3300_host_link #(.REGISTER_STP(REGISTER_STP)) physical_link (
         .clk_ref(clk_ref), .clk_ulpi(clk_ulpi), .reset_n(reset_n), .enable_i(enable_i),
+        .pad_live_i(pad_live_i && !port_failed),
         .ulpi_data_i(ulpi_data_i), .ulpi_dir_i(ulpi_dir_i), .ulpi_nxt_i(ulpi_nxt_i),
         .ulpi_data_o(ulpi_data_o), .ulpi_data_oe_o(link_oe), .ulpi_stp_o(link_stp),
         .utmi_txend_o(link_txend),
@@ -136,6 +140,7 @@ module workstation_usb2_host_phy #(
         .csr_address_i(csr_address), .csr_data_i(csr_data), .csr_response_valid_o(response_valid),
         .csr_response_ready_i(response_ready), .csr_response_data_o(response_data), .csr_response_error_o(response_error),
         .utmi_data_i(owns_tx ? chirp_data : mac_data_i), .utmi_txvalid_i(owns_tx ? chirp_valid : mac_txvalid_i),
+        .utmi_txlast_i(owns_tx ? 1'b0 : mac_txlast_i),
         .utmi_tx_nopid_i(owns_tx), .utmi_txready_o(link_txready), .utmi_data_o(mac_data_o),
         .utmi_rxvalid_o(link_rxvalid), .utmi_rxactive_o(link_rxactive), .utmi_rxerror_o(link_rxerror),
         .utmi_linestate_o(linestate_o), .vbus_state_o(vbus_state_o), .id_state_o(id_state_o),

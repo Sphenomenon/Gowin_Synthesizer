@@ -67,7 +67,7 @@ module workstation_usb2_host_controller #(
     wire mac_fatal;
     wire mac_idle;
     wire [7:0] mac_txdata, mac_rxdata;
-    wire mac_txvalid, mac_txready, mac_rxvalid, mac_rxactive, mac_rxerror;
+    wire mac_txvalid, mac_txlast, mac_txready, mac_rxvalid, mac_rxactive, mac_rxerror;
     wire mac_txend, mac_line_valid;
     wire [1:0] line_state;
     wire command_ready, transmit_ready, result_valid, receive_valid;
@@ -84,6 +84,7 @@ module workstation_usb2_host_controller #(
     reg [1:0] fault_release_q;
     wire fault_enable_n = reset_n && enable_i;
     wire transaction_live = phy_reset_n && !mac_fatal;
+    wire pin_live = fault_release_q[1] && !mac_fatal;
 
     always @(posedge clk_ref or negedge fault_enable_n) begin
         if (!fault_enable_n) fatal_sync_q <= 0;
@@ -107,20 +108,21 @@ module workstation_usb2_host_controller #(
     assign failed_o = phy_failed_o || mac_failed_o;
     assign sof_enable_o = phy_sof_enable && transaction_live;
     assign traffic_enable_o = phy_traffic_enable && transaction_live;
-    assign ulpi_data_oe_o = phy_oe && !mac_failed_o;
-    assign ulpi_stp_o = phy_stp || mac_failed_o;
+    assign ulpi_data_oe_o = phy_oe && pin_live;
+    assign ulpi_stp_o = phy_stp;
     assign transaction_reset_n_o = transaction_live;
     assign command_ready_o = command_ready && transaction_live;
     assign transmit_ready_o = transmit_ready && transaction_live;
     assign result_valid_o = result_valid && transaction_live;
     assign receive_valid_o = receive_valid && transaction_live;
 
-    workstation_usb2_host_phy #(.ATTACH_DEBOUNCE_US(ATTACH_DEBOUNCE_US)) phy (
+    workstation_usb2_host_phy #(.ATTACH_DEBOUNCE_US(ATTACH_DEBOUNCE_US), .REGISTER_STP(1)) phy (
         .clk_ref(clk_ref), .clk_ulpi(clk_ulpi), .reset_n(reset_n), .enable_i(enable_i && !fatal_latched_q),
+        .pad_live_i(pin_live),
         .hs_enable_i(hs_enable_i), .reset_request_i(reset_request_i), .mac_idle_i(mac_idle),
         .ulpi_data_i(ulpi_data_i), .ulpi_dir_i(ulpi_dir_i), .ulpi_nxt_i(ulpi_nxt_i),
         .ulpi_data_o(ulpi_data_o), .ulpi_data_oe_o(phy_oe), .ulpi_stp_o(phy_stp),
-        .mac_data_i(mac_txdata), .mac_txvalid_i(mac_txvalid), .mac_txready_o(mac_txready),
+        .mac_data_i(mac_txdata), .mac_txvalid_i(mac_txvalid), .mac_txlast_i(mac_txlast), .mac_txready_o(mac_txready),
         .mac_data_o(mac_rxdata), .mac_rxvalid_o(mac_rxvalid), .mac_rxactive_o(mac_rxactive),
         .mac_rxerror_o(mac_rxerror), .mac_txend_o(mac_txend), .mac_line_valid_o(mac_line_valid),
         .mac_reset_n_o(phy_reset_n), .connected_o(connected_o), .high_speed_o(high_speed_o),
@@ -154,7 +156,7 @@ module workstation_usb2_host_controller #(
         .result_status_o(result_status_o), .result_pid_o(result_pid_o), .result_length_o(result_length_o),
         .receive_data_o(receive_data_o), .receive_valid_o(receive_valid),
         .receive_ready_i(receive_ready_i && transaction_live), .receive_last_o(receive_last_o),
-        .utmi_data_o(mac_txdata), .utmi_txvalid_o(mac_txvalid), .utmi_txready_i(mac_txready),
+        .utmi_data_o(mac_txdata), .utmi_txvalid_o(mac_txvalid), .utmi_txlast_o(mac_txlast), .utmi_txready_i(mac_txready),
         .tx_end_i(mac_txend), .utmi_data_i(mac_rxdata), .utmi_rxvalid_i(mac_rxvalid),
         .utmi_rxactive_i(mac_rxactive), .utmi_rxerror_i(mac_rxerror), .linestate_i(line_state),
         .line_valid_i(mac_line_valid), .idle_o(mac_idle), .fatal_o(mac_fatal), .sof_count_o(sof_count_o),

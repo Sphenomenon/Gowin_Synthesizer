@@ -8,11 +8,14 @@
     "amplifier": {"filename": "功放.tel", "sha256": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75"},
     "bluetooth": {"filename": "蓝牙.tel", "sha256": "832e1eae56a744f8535899f57caea097f51419e2eb210186a492c182e5091eb2"}
   },
+  "ulpi_bypass": {"U4": "not_fitted_short", "U5": "not_fitted_short"},
   "electrical_evidence": {
-    "model_basis": "Existing supplementary schematic, not the netlist package values or an observation of the assembled board",
+    "model_basis": "USB3300 identity from the existing supplementary schematic; U4/U5 are declared by the user as not fitted with corresponding A/B signal pads shorted, not inferred from netlist package values or measured on the assembled board",
+    "assembly_basis": "User-declared U4/U5 not_fitted_short; frozen netlist retained as footprint connectivity evidence, with the FPGA-facing B side on nominal 3V3_USB3300",
     "schematic": "ProPrj_138K（这个有效）_2026-10-16.epro2/138K（这个有效）.epru",
     "schematic_sha256": "c714cacea6ca2b6dc400c8e22a851f9e0b644303968b76dde492c7f4b043e19b",
-    "component_models": {"U2": "USB3300-EZK", "U4": "TXS0108EPWR", "U5": "TXS0104EPWR"},
+    "component_models": {"U2": "USB3300-EZK"},
+    "schematic_only_not_fitted_models": {"U4": "TXS0108EPWR", "U5": "TXS0104EPWR"},
     "datasheets": {
       "USB3300": {"document": "Microchip DS00001783C, page 12, Table 5-3", "sha256": "33e73e37f5110cb9e3ef66ccf8c7fdd4a16593c7b1afcff0c5df523e41963a9e"},
       "TXS0108E": {"document": "Texas Instruments SCES642L, section 5.3", "sha256": "a6ddbe03088d291d1a1f8012189086b4b9962d1c878a462a8393c59fe225c883"},
@@ -83,7 +86,7 @@
   ],
   "reserved_nodes": ["U16.2", "U16.3", "R23.2", "R24.2", "SW1.1", "SW1.2", "SW1.3", "SW1.5", "U13.1", "U13.3", "U13.5", "U13.9", "J2.38"],
   "implementation_gaps": [
-    "USB3300 ULPI logic is connected to the 1.8 V A-side of U4/U5: STP cannot meet the 2.0 V VIH minimum and PHY outputs exceed the translator A-side recommended input range; schematic-based deployment blocker, actual assembly not measured",
+    "U4/U5 are declared not_fitted_short, directly connecting USB3300 ULPI to the FPGA-facing B-side nominal 3.3 V domain; no nominal voltage-domain conflict detected, but whether USB3300 ULPI IO is actually supplied by 3V3 remains to be measured; not full electrical or hardware acceptance",
     "Native custom-board top-level ports, reset policy and complete IO electrical constraints are not implemented",
     "USB2 ULPI Host transport, 48/60 MHz domain transfer and PHY recovery are not implemented",
     "DAC identity, serial format, MCLK and power/mute sequencing are not verified or implemented",

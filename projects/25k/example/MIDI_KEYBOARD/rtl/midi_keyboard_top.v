@@ -1,9 +1,16 @@
 `timescale 1ns/1ps
+`include "usb1_profile.vh"
+`include "usb2_debug_profile.vh"
 `default_nettype none
 // GW25K complete instrument. All board I/O banks are powered at 3.3 V.
 module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
- input wire clk_50mhz,clk_ulpi60,
+ input wire clk_50mhz,
+`ifdef MIDI_USB1_FS
+ inout wire usb1_dp,usb1_dm,
+`else
+ input wire clk_ulpi60,
  inout wire[7:0]ulpi_data,input wire ulpi_dir,ulpi_nxt,output wire ulpi_stp,
+`endif
  input wire sw1_a,sw1_b,sw1_key_n,sw2_a,sw2_b,sw2_key_n,
  input wire module_uart_tx,output wire module_uart_rx,module_bt_dis_n,
  inout wire touch1_scl,touch1_sda,touch2_scl,touch2_sda,pca_scl,pca_sda,
@@ -39,11 +46,28 @@ module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
  assign e2press=HOST_PANEL_CONTROLS ? e2short : e2rawpress;
  wire uv,ur,urv,urr,cv,cr,crv,crr,usb_online,control_reset,hs_active;
  wire[31:0]ud,urd;wire[7:0]cd,crd;
+`ifdef MIDI_USB2_DIAGNOSTICS
+ wire[31:0]usb2_debug_status;
+ reg[31:0]status_50mhz /* synthesis syn_preserve=1 syn_keep=1 */;
+ always @(posedge clk_50mhz)status_50mhz<=usb2_debug_status;
+`endif
+`ifdef MIDI_USB1_FS
+ assign hs_active=1'b0;
+ midi_usb1_link usb(.clk_50mhz(clk_50mhz),.reset(reset),.usb1_dp(usb1_dp),.usb1_dm(usb1_dm),
+`else
  midi_usb2_link usb(.clk_50mhz(clk_50mhz),.reset(reset),.clk_ulpi60(clk_ulpi60),
   .ulpi_data(ulpi_data),.ulpi_dir(ulpi_dir),.ulpi_nxt(ulpi_nxt),.ulpi_stp(ulpi_stp),
+`endif
   .midi_tx_valid(uv),.midi_tx_ready(ur),.midi_tx_data(ud),.midi_rx_valid(urv),.midi_rx_ready(urr),.midi_rx_data(urd),
   .control_tx_valid(cv),.control_tx_ready(cr),.control_tx_data(cd),.control_rx_valid(crv),.control_rx_ready(crr),.control_rx_data(crd),
-  .online(usb_online),.control_reset(control_reset),.hs_active(hs_active));
+  .online(usb_online),.control_reset(control_reset)
+`ifndef MIDI_USB1_FS
+  ,.hs_active(hs_active)
+`ifdef MIDI_USB2_DIAGNOSTICS
+  ,.debug_status(usb2_debug_status)
+`endif
+`endif
+ );
  // Both business protocols share the existing vendor bulk interface. MIDI
  // keeps its own endpoints, queues and clocks while display traffic stalls.
  wire mk_rv,mk_rr,mk_tv,mk_tr,mk_reset,pl_rv,pl_rr,pl_tv,pl_tr,pl_reset;

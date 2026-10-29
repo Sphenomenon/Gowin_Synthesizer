@@ -34,9 +34,15 @@ rtl/transport/ble_midi_codec.v
 rtl/transport/usb_midi_codec.v
 rtl/usb_board/generated/usb_composite_desc_rom.v
 rtl/usb_board/midi_usb2_link.v
+rtl/usb_board/midi_usb2_debug.v
+rtl/usb_board/midi_usb2_events.v
+rtl/usb_board/midi_usb2_probe_top.v
+rtl/usb_board/midi_usb1_link.v
+rtl/usb_board/midi_usb1_clock.v
 rtl/usb_board/midi_usb_async_fifo.v
 rtl/usb_board/midi_usb_bridge.v
 rtl/usb_board/midi_usb_device.v
+rtl/usb_board/midi_usb_fs_state.v
 rtl/usb_board/midi_usb_hs_phy.v
 rtl/usb_board/vendor/midi_ulpi_wrapper.v
 rtl/usb_board/vendor/midi_usb2_boot.v

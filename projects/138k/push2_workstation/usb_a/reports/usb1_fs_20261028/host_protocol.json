@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "hardware_tested": false,
+  "scope": "production firmware PL screen/MIDI output against streaming USB mock",
+  "inputs": {
+    "firmware.c": "0a2acb8243d67357a4a69c869e3262fc89b624a5cf433feb8a2d12a0b27fc738",
+    "gw25k_panel.h": "6986f631f2c72da58a79ed1b267578c0e9a0c4730933ae7c735cdc7089235d76",
+    "sim/test_gw25k_panel.c": "bc925b4741d63cc3decbddaa37015c5a5bd03b0b21d5795dc3ad381d044d4e73",
+    "sim/test_generic_midi.c": "e75667de958c60e80eebfbc2d0d2752180837f9dbaa576f2d6d942d027b5d790",
+    "sim/test_hotplug.c": "ca447b06a45f5ed3072430948bf8e0ae4e97e60f3527407fbcce2b3f00784c09",
+    "sim/run_gw25k_panel.py": "6ad06670505a4788d21ed433aadcaf4d6aaf114610c44b41a1525e7dfc01c3c7",
+    "sim/tb_gw25k_panel_endpoint.v": "16997326d0c8b0cb947bf7af9522b4e5a33123aa5ed06fe6e1d6dd1342f95c45",
+    "vendor/usb_host_fs_8fc3/firmware/minlibc.h": "6b69e720d83f1a50d1bb617116cab5a77be69f4bfacbc1bbca41c31889f13e86",
+    "vendor/usb_host_fs_8fc3/firmware/usb/usb_core.h": "6b121c052986df83a612db01ade9a7e8524fec80fd8bd718e8b5722c985900c6",
+    "vendor/usb_host_fs_8fc3/firmware/usb/usb_defs.h": "d492a33d57f93d939dac591b5c1f5a70ed71018b1f0310c9d3b51880a677a6f5",
+    "vendor/usb_host_fs_8fc3/firmware/usb/usb_hw.h": "3e72e7c5821e5d965c646be4114b6bb691749679ad4eea35ab7149743cf9af08"
+  },
+  "compile_command": [
+    "cc",
+    "-std=c99",
+    "-O1",
+    "-g",
+    "-Wall",
+    "-Wextra",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer",
+    "-I/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/usb1_host_protocol_20261028/source/headers",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/usb1_host_protocol_20261028/source/sim/test_gw25k_panel.c",
+    "-o",
+    "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/results/usb1_host_protocol_20261028/test_gw25k_panel"
+  ],
+  "actual_endpoint_rtl": false,
+  "rtl_request_counts": null,
+  "existing_generic_and_push_hotplug": true
+}

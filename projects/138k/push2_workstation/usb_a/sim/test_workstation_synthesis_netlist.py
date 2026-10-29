@@ -99,10 +99,19 @@ endmodule
                 self.assertEqual(netlist.canonical(scope, 'payload[' + str(index) + ']'),
                                  'data[' + str(11 - index) + ']')
 
-    def test_unsupported_or_invalid_vector_projection_is_not_guessed(self):
+    def test_concatenated_bus_projection_preserves_formal_direction_and_member_order(self):
         netlist = SynthesisNetlist(SOURCE.replace('.payload(data[11:8])', '.payload({data[9:8],data[11:10]})'), 'top')
-        with self.assertRaisesRegex(ValueError, 'unsupported vector port binding'):
-            netlist.canonical('sliced', 'payload[0]')
+        for index, expected in enumerate((9, 8, 11, 10)):
+            self.assertEqual(netlist.canonical('sliced', f'payload[{index}]'), f'data[{expected}]')
+        netlist = SynthesisNetlist(SOURCE.replace('.payload(data[11:8])', ".payload({data[11],1'b0,released})"), 'top')
+        for index, expected in enumerate(('data[11]', "1'b0", 'released[1]', 'released[0]')):
+            self.assertEqual(netlist.canonical('sliced', f'payload[{index}]'), expected)
+
+    def test_unsupported_or_invalid_vector_projection_is_not_guessed(self):
+        for binding in ('{data[9:8]}', '{2{data[9:8]}}', "{2'bxx,data[9:8]}", '{data[11]+1,data[9:8]}'):
+            netlist = SynthesisNetlist(SOURCE.replace('.payload(data[11:8])', '.payload(' + binding + ')'), 'top')
+            with self.subTest(binding=binding), self.assertRaisesRegex(ValueError, 'unsupported vector port binding'):
+                netlist.canonical('sliced', 'payload[0]')
         with self.assertRaisesRegex(ValueError, 'invalid vector port bit'):
             netlist.canonical('sliced', 'ready[0]')
 

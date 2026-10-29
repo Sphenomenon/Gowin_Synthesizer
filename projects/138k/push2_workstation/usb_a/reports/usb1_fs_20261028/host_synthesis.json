@@ -1,0 +1,29 @@
+{
+  "identity": "usb1-fs-138k-C11028F5",
+  "source_manifest_sha256": "70e6044f3d7aaa838f89dda5368a748eaba3e6a96995edf402046106ff0850f1",
+  "validation_stage": "synthesis_only",
+  "synthesis_passed": true,
+  "resources": {
+    "T_Register": 1375,
+    "T_Alu": 340,
+    "T_Lut": 2982,
+    "T_Bsram": 34,
+    "T_Ssram": 130
+  },
+  "pll_48mhz_verified": true,
+  "feature_structure_verified": true,
+  "netlist_rom_sha256": "037cd78f733dddd22d6fbd2f5ba7eb26dde8757fafe9f9ec3b9395a4d61c113e",
+  "synthesis_bsram_is_not_physical_count": true,
+  "audit_recipe_sha256": "1f135a4c9690406c878a69fc79f4621fcea4c683a6aa7f35c14815e1c968ed72",
+  "synthesis_log_sha256": "42f541032c19d09818e299e0e24d80d9c0d64ffcf5240effe32ee5b9b7775f30",
+  "netlist_sha256": "1e01600cd15c7ddacb92ed00b79b23d77db7103ef371771a9d9b4903777d61ba",
+  "resource_sha256": "0bf18209ee7e8dca4ba6eaec15cf385f23b7e726e7a49a7012cd75efcf9b878d",
+  "routed_timing_verified": false,
+  "cdc_verified": false,
+  "pll_physical_verified": false,
+  "bitstream": null,
+  "hardware_validated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}

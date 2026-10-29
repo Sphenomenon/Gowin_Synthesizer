@@ -1,0 +1,20 @@
+{
+  "expected_failure_reproduced": true,
+  "peer_user_code": "0xC12528DA",
+  "source_identity": {
+    "git_head": "dfb04b077c62d79ebce6e4e36615879627c83424",
+    "input_manifest_sha256": "c44ce1fbc732f020e090a6cb02e86eee3d8b102f98cb143edabd6621262e31a0",
+    "tracked_diff_sha256": "7df5ce2727249b346e886c8afbf0b58eace072be7cf2265050821b033257de4a"
+  },
+  "original_manifest_sha256": "e1c2536217f8a15800c828ee6c49949ce81f53dd5d3cfae2081342b0f03bfd36",
+  "verified_snapshot_files": 127,
+  "original_phy_sha256": "00ac7e281990c0fe18e4b2b4d5c590fa6cbaa5b6896c56fe8bfdec0df94e0445",
+  "assertion": "FS fallback survives the remaining host reset",
+  "observed": "same host reset tail re-enters WAIT_RST; no enumeration/MIDI/PL",
+  "evidence_sha256": {
+    "compilation.log": "98901b983e25bc9ada8cdd82c23f61a7cac5d5673db2e7c6bbff6273342070cc",
+    "execution.log": "6fd34c6b244d1d114c372b95d76b46dee958f0e21085046e6c7b78aab624e515",
+    "reset_tail_negative.log": "b8d313a0a225856df850dbbfe8a92dea721e43f0e6967039bbaf716db119895b"
+  },
+  "hardware_validated": false
+}

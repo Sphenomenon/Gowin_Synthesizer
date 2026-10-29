@@ -1,0 +1,171 @@
+{
+  "date": "2026-10-29",
+  "status": "offline_protocol_synthesis_and_routed_timing_passed_not_hardware_acceptance",
+  "host_identity": "usb1-fs-138k-C11029F7",
+  "peer_identity": "0xC12529F2",
+  "host_timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "setup_worst_slack_ns": 6.894,
+    "hold_worst_slack_ns": 0.176,
+    "recovery_worst_slack_ns": 6.804,
+    "removal_worst_slack_ns": 0.349,
+    "clocks": [
+      {
+        "name": "clk_50m",
+        "constraint_mhz": 50.0,
+        "actual_fmax_mhz": 393.801
+      },
+      {
+        "name": "clk_usb48",
+        "constraint_mhz": 48.0,
+        "actual_fmax_mhz": 71.738
+      }
+    ],
+    "passed": true
+  },
+  "peer_timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "setup_worst_slack_ns": 0.02,
+    "hold_worst_slack_ns": 0.184,
+    "recovery_worst_slack_ns": 4.483,
+    "removal_worst_slack_ns": 0.967,
+    "clocks": [
+      {
+        "name": "clk_50mhz",
+        "constraint_mhz": 50.0,
+        "actual_fmax_mhz": 50.051
+      },
+      {
+        "name": "clk_ulpi60",
+        "constraint_mhz": 60.002,
+        "actual_fmax_mhz": 62.083
+      }
+    ],
+    "passed": true
+  },
+  "host_physical_resources": {
+    "Logic": {
+      "used": 4125,
+      "capacity": 138240
+    },
+    "Register": {
+      "used": 1375,
+      "capacity": 139095
+    },
+    "CLS": {
+      "used": 2448,
+      "capacity": 69120
+    },
+    "BSRAM": {
+      "used": 36,
+      "capacity": 340
+    }
+  },
+  "peer_physical_resources": {
+    "Logic": {
+      "used": 21985,
+      "capacity": 23040
+    },
+    "Register": {
+      "used": 10784,
+      "capacity": 23280
+    },
+    "CLS": {
+      "used": 11384,
+      "capacity": 11520
+    },
+    "BSRAM": {
+      "used": 54,
+      "capacity": 56
+    }
+  },
+  "host_bitstream": {
+    "path": "projects/138k/push2_workstation/usb_a/results/usb1_host_C11029F7/impl/pnr/usb1_candidate.fs",
+    "bytes": 36599521,
+    "sha256": "6046b4bc84278137d659572defb1429e172a09de4699b760ce62f9c807bbef0d"
+  },
+  "peer_bitstreams": [
+    {
+      "path": "/home/sphenicidition/Documents/fpga/projects/25k/example/MIDI_KEYBOARD/results/usb2_fs_fallback_C12529F2/impl/pnr/midi_keyboard.fs",
+      "sha256": "ebbb572f7541c1e51917e659f41b2adea659ba1648ca420e2a5ea068e6ab0aef"
+    }
+  ],
+  "checks": [
+    {
+      "name": "USB1 suite",
+      "passed": true,
+      "log_path": "/tmp/usb1_mixed_release.log",
+      "log_sha256": "acc7e0c7eb800b2a440d3394dfd4a8e41105e3e4d338fc4ec13535cbfc074330"
+    },
+    {
+      "name": "frozen C12529F2 pair",
+      "passed": true,
+      "log_path": "/tmp/usb1_mixed_frozen_release.log",
+      "log_sha256": "85753ebaf8fbc04a6917137c7f2be1b3251821f4a393c81d1c1b43580bf9e63c"
+    },
+    {
+      "name": "sampler/reset CDC",
+      "passed": true,
+      "log_path": "/tmp/usb1_constraints_release.log",
+      "log_sha256": "31c1f27dc012f5f78ad01c49be8645f91055b056f1a8b2cbcbbc71eb31f88ba8"
+    },
+    {
+      "name": "final build profiles",
+      "passed": true,
+      "log_path": "/tmp/usb1_profiles_release.log",
+      "log_sha256": "43315031ecdf12b4240d23d04572e6d931008baa7c8942abb871de117aa29f05"
+    },
+    {
+      "name": "accepted sources",
+      "passed": true,
+      "log_path": "/tmp/usb1_mixed_current_sources_release.log",
+      "log_sha256": "45629e08d8c41ba474e149425cf4477b6ed2d14afbd48b41a5dea35ddb36ae32"
+    },
+    {
+      "name": "firmware staging",
+      "passed": true,
+      "log_path": "/tmp/usb1_mixed_firmware_staging_release.log",
+      "log_sha256": "484819fc6115ded4f95980c301dc1cb3bd42b75d97061c070633332d47142c79"
+    },
+    {
+      "name": "complete keyboard",
+      "passed": true,
+      "testbenches": 43,
+      "checks": 100,
+      "python_cases": 50,
+      "validation_sha256": "d0a293a103e03bd038bcaec4ec3858b948cd1cf15f95bde9134af927e975a26a"
+    }
+  ],
+  "verification_context_sha256": {
+    "sim/test_workstation_usb1.py": "66259c953c6934fa58ee675a1ab69f219c327fb77349718e0537f80fa5e80a69",
+    "sim/test_workstation_usb1_constraints.py": "5cecca0980dc28ff5d778eb2279a16e0c32f19db8fe649a556945ca0ca4ce69e",
+    "sim/usb1/tb_workstation_usb1_pair.sv": "cf9b918e73d7da2e99176851602e9aeb9128e18bd132502867b1a3c7147c55fc",
+    "sim/usb1/usb3300_fs_device_model.sv": "61e1d619ee7c8eb1652770db807349a24bc693f4367e1fd61e93812073e86b2f",
+    "sim/usb1/gowin_usb_pad_models.sv": "4ff842b6e901c8e86c000a2a43a04538874207468a6502cb998ca763de09ec39",
+    "sim/usb1/tb_workstation_usb1_clock.sv": "3fbff19ccf97bd1ae1c0a1de5a97e704fe610c2b07ea27c8160e5d301b7fb54d",
+    "tools/workstation_usb1.py": "6362485ca4a16a5977c06b02aad2b3c9df73ab80e52b4fff4e9af34a2cd856a1",
+    "usb1_identify.c": "3dc457c508c7adeda0da4d8dd81e630c4421cbe5837c0c869089bc1b3c220435"
+  },
+  "evidence_sha256": {
+    "host_inputs.json": "60edebd45f4a2fa1298cc461e6091cda822d534ae91b633ec2351c4e067b1b9c",
+    "host_synthesis.json": "be9ae21eb7ca2afe9cf71b6a499b8ea35480103e81eea0c9f942722d0bd64b98",
+    "host_implementation.json": "c7477d9cc8026915d55cfbb1542a1dff94f12d27cefd89678f63d83dcf052862",
+    "peer_build.json": "aac9600e44226088bd0b86c80c0f82ea224720ac64847174d40ff60d16f3587a",
+    "fs_pair.json": "c754b297265f455e671fd581d2248233fe3e576063f1e63af2181284b99f58a2",
+    "mixed_pair.json": "1439a249c92ec54288b519fdd4b0a4a2df43940d998060206711f81585ccb581",
+    "frozen_peer_pair.json": "826e6d476e30f82efe0223a55b17037c3fada9f2443ef22eb3a0a596e7252d53",
+    "keyboard_regression.json": "0cdcb3c1907fbf273b446e464e06a85920d9247eefc552e652d46e04012ec2d2",
+    "old_DA_negative.json": "7445be7090d9cf34d35150df36e409fe41fdcf90c41c2e63c103444ec33782ad"
+  },
+  "input_hashes_rechecked": true,
+  "full_138k_workstation_integrated": false,
+  "complete_25k_keyboard": true,
+  "hardware_validated": false,
+  "pll_physical_verified": false,
+  "electrical_accepted": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}

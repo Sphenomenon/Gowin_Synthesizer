@@ -308,7 +308,9 @@ static void connect(void) {
     while(!usbhw_hub_device_detected())delay(100);
     delay(100);
     if(!usbhw_hub_device_detected())return;
+#ifndef WORKSTATION_USB2_NATIVE
     usbhw_reset();
+#endif
     if(!usb_configure_device(&dev,1)){delay(250);return;}
     // Observed Push 2 FS fallback: PID 9999, zero advertised interfaces,
     // working EP1 OUT display and EP2 IN/OUT MIDI. Do not reject this quirk.

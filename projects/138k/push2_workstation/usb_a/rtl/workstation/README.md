@@ -1,5 +1,7 @@
 # 工作站原生装配边界
 
+138K Host 与 25K Device 的无 HDMI／DDR 独立探针见 `USB2_HOST_PROBE.md`；直连电脑的 Device 回环探针见 `USB2_DEVICE_PROBE.md`。两者的 USB 角色不同，不自动切换工作站生产配置。
+
 自定义底板 a23 物理实验另见 `../../reports/WORKSTATION_PHYSICAL_20261025.md`：原生 USB 的复位／参考故障同步位于 `rtl/usb2/` 所属模块，紧急引脚保护不反馈到同步 UTMI 数据通路；已有只读模型 Flash 加载与 UART 恢复通过 SOM 共享引脚 guard 接入。PLL／算术／声部控制的四份锁定输入适配有哈希、唯一锚点和迁回原生源的退出条件，原生矢量力度计算使用无延迟的精确位映射。它不切换任何已接受生产 profile；生成位流、时序／CDC／PLL 通过和 SRAM／Flash 部署仍是不同阶段。
 
 这里是 `build.py --resource-rework --resource-timing` 开发候选的第一方整机源码入口，不是完整工程副本。锁定基线继续提供 CPU/IP、固件 ROM、约束和尚未迁出的组件；实际输入由生成工程的 `workstation_inputs.json` 和 `workstation_composition.json` 绑定。
@@ -81,13 +83,21 @@ PNR/all 必须显式给新的 `--user-code`，不再默认套用历史编号。�
 
 显式 `workstation-input` 接入原输入 owner；[workstation-audio](USB2_AUDIO.md) 再复用本目录会话／参数／DSP／串行帧交接和原 delay DMA。它们是独立组件验证入口，不是这里完整 resource-timing 配置的新来源，也不自动选择新板 IO 或替换部署。
 
+板级快速迭代选 `--usb2-component workstation-hotplug`，见[高速热插拔独立诊断](USB2_HOTPLUG_DIAGNOSTIC.md)。该配置复用同一生产固件和输入 owner，提供新板时钟／ULPI 引脚及 UART 状态快照；不编入 DSP、DDR、CNN 或 HDMI，USB 与显示各自稳定后再回归完整工作站。
+
+电脑直接连接 138K、验证其 USB 设备侧 480 Mbit/s 收发时，使用[独立设备回环探针](USB2_DEVICE_PROBE.md)，不要混用上述 Host 配置或 25K 设备身份。
+
 ## 显式新板装配
 
 原生工程只启用一个 `constraints/custom_138k.cst`，由位置、音频、蓝牙、HDMI 和原生外设五份可审查约束合并；Gowin 打开工程时会在多份 CST 中选择一份，不能依赖多文件同时生效。`display.cst` 保留参考核心板的 LVCMOS33D 差分标准，与同 Bank 的 3.3 V HPD／CEC 一致。`peripherals.json` 锁定远端已核对的音频排线、振荡器和 LCD 依据，来源漂移必须失败，不修改独立 pinout-only 配置的历史接线假设。
 
 `build.py --prepare-custom-board` 是独立的新板源码组合入口，仅准备工程并允许离线综合，不改变 accepted、timing85 或原 resource-timing 配置。它从锁定的资源时序父配置重建依赖，逐项禁用旧 USB FS CPU／Host、旧装配顶层、旧 DVI 输出 provider 和旧板约束，改选原生 USB2 输入及新板位置规划。禁用的历史文件保留原字节，替换关系与完整编译闭包写入 `integration_inputs.json`。
 
+新板的 DDR 自检由 `../memory/workstation_ddr_bist.v` 提供；锁定父输入 `src/memory/ddr3_bist.v` 保留但禁止编译。读请求被接受时保存对应的完整预期数据，等待响应期间保持，不再在响应比较／失败寄存器路径重新展开当前地址的模式计算；响应按 32 个字节独立比较后归约，避免映射为一条 256-bit ALU 比较链。接口、两遍测试模式、请求／响应节拍、超时与饱和错误计数不变。冻结参考逐拍比较覆盖背压、逐 lane 损坏、计数饱和、命令／响应超时及在途复位，形式归纳和实际综合网表的失败寄存器输入锥检查分别约束功能与映射结构；实际物理改善仍须用各候选的路由后时序证明。
+
 `workstation_custom_138k_top.sv` 只为共享的 `gw138k_push_workstation_top.v` 选择 `WORKSTATION_CUSTOM_138K` 板级分支；不复制 DSP、DDR、TF、识别、播放或显示工作站。未定义该宏时的预处理 token 身份有独立回归保护。新板分支继续只有一个公共参数应用点和最终输出路由，不把 USB 服务 ACK 当成音频命令已经应用。
+
+原生 USB 输入显式选择 `FEEDBACK_AUDIO_DOMAIN=1`，将 `u_managed` 的音频域原始完整反馈接到 owner 自身的快照 CDC。UART 遥测仍独立运行，但其较慢的缓存不能再次作为输入初始化的“新反馈”：两级缓存可能让旧 PANIC epoch 在新 Note On 之后抵达并清除本地 pad latch，随后丢弃 Note Off。默认参考域组件接口和旧板分支不随之改变；综合审计核对该 mailbox 的实际源时钟为音频域、目标为 USB CPU 域，不以此替代物理 CDC／时序验收。
 
 新板 DVI provider 在 OSER10 的十位并行输入处补偿四对反相，OSER10.Q 直接连 ELVDS_OBUF，不能在专用串行输出路径插入 LUT 反相。AUDIO 采用远端 AK4493 链路的反序排线：主板 `FPC2.n` → 功放 `FPC1.(25-n)`；仅原生装配按网表推导并交叉核对远端约束，不能沿用同序排线的位置。`workstation_fpc_audio` 从最终输出路由的完整 PCM 对取数，输出 48 kHz、每声道 32-bit slot 的 I2S，16-bit PCM 左对齐补零。K18 的 12.288 MHz 振荡器直接驱动串行工作域和 MCLK（256fs），分频产生 3.072 MHz BCK 和 48 kHz LRCK；不把低于器件 PFD 下限的参考送入 PLL。50 MHz 域监视参考时钟心跳，停钟后 2 µs 内静音／复位，恢复后重新执行启动序列：PDN 低 4 帧，再静音至启动第 1028 帧。SSLOW／SD／SLOW 固定为零；采用远端 AK4493 的并行引脚控制模式，不虚构 SPI 音量寄存器。
 

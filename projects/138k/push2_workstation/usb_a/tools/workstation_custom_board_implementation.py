@@ -13,6 +13,7 @@ import shutil
 
 from tools.stage_usb_firmware import sha
 from tools.workstation_custom_board_audit import audit as audit_synthesis
+from tools.workstation_pinout import digest, parse_locations
 
 
 BASE = 'custom_138k_integration'
@@ -63,7 +64,45 @@ def checked_copy(source, destination, expected):
         raise ValueError('physical input changed during copy: ' + str(source))
 
 
-def prepare(source, output, user_code, acknowledge_electrical_risk=False):
+def ulpi_bypass_constraints(payload, plan):
+    if plan.get('ulpi_bypass') != {'U4': 'not_fitted_short', 'U5': 'not_fitted_short'}:
+        raise ValueError('ULPI IO standard requires the reviewed complete bypass declaration')
+    electrical = plan.get('electrical_check', {})
+    supplies = {entry['part']: entry for entry in electrical.get('translators', [])}
+    if (electrical.get('status') != 'no_voltage_domain_conflict_detected' or
+            electrical.get('actual_board_measured') is not False or
+            electrical.get('full_electrical_acceptance') is not False or electrical.get('findings') != [] or
+            len(electrical.get('translators', [])) != 2 or set(supplies) != {'U4', 'U5'} or any(
+                entry.get('nominal_mv') != 3300 or entry.get('phy_side') != 'B' or
+                entry.get('assembly') != 'not_fitted_short' or entry.get('supply_network') != '3V3_USB3300' or
+                entry.get('supply_node') != {'U4': 'U4.19', 'U5': 'U5.14'}[part]
+                for part, entry in supplies.items())):
+        raise ValueError('ULPI IO standard requires reviewed nominal 3V3 B-side evidence')
+    text = payload.decode('utf-8')
+    locations = parse_locations(text)
+    ports = tuple('usb2_ulpi_data[' + str(index) + ']' for index in range(8)) + (
+        'usb2_ulpi_clk', 'usb2_ulpi_dir', 'usb2_ulpi_nxt', 'usb2_ulpi_stp')
+    if {port for port in locations if port.startswith('usb2_ulpi_')} != set(ports):
+        raise ValueError('ULPI IO location inventory changed')
+    for port in ports:
+        if plan.get('ports', {}).get(port, {}).get('balls') != locations[port]:
+            raise ValueError('ULPI IO location differs from the audited pinout: ' + port)
+    if re.search(r'^\s*IO_PORT\s+"usb2_ulpi_', text, re.M):
+        raise ValueError('ULPI IO standard already specified; refusing an implicit override')
+    suffix = ('' if text.endswith('\n') else '\n') + ''.join(
+        'IO_PORT "' + port + '" IO_TYPE=LVCMOS33;\n' for port in ports)
+    adapted = payload + suffix.encode('utf-8')
+    if parse_locations(adapted.decode('utf-8')) != locations:
+        raise ValueError('ULPI IO standard adaptation changed locations')
+    evidence = dict(scope='nominal_ULPI_IO_standard_only_not_external_timing_or_electrical_acceptance',
+                    before_sha256=digest(payload), after_sha256=digest(adapted), io_type='LVCMOS33',
+                    ports={port: locations[port] for port in ports}, locations_unchanged=True,
+                    actual_board_measured=False, full_electrical_acceptance=False,
+                    external_io_timing_complete=False)
+    return adapted, evidence
+
+
+def prepare(source, output, user_code, acknowledge_electrical_risk=False, ulpi_bypass_lvcmos33=False):
     source, output = Path(source).resolve(), Path(output).resolve()
     if not acknowledge_electrical_risk:
         raise ValueError('explicit acknowledgement of unresolved electrical risk is required')
@@ -74,7 +113,7 @@ def prepare(source, output, user_code, acknowledge_electrical_risk=False):
     if source in output.parents:
         raise ValueError('physical output must not modify the parent candidate')
     audit = audit_synthesis(source)
-    if audit['top_module'] != TOP or audit['electrical_blocked'] is not True:
+    if audit['top_module'] != TOP or not isinstance(audit['electrical_blocked'], bool):
         raise ValueError('unexpected native synthesis/electrical identity')
     manifest = source / 'integration_inputs.json'
     if sha(manifest) != audit['integration_inputs_sha256']:
@@ -89,28 +128,44 @@ def prepare(source, output, user_code, acknowledge_electrical_risk=False):
                          metadata['staged_input_sha256']['constraints/custom_138k.sdc']),
         'parent_integration_inputs.json': (manifest, audit['integration_inputs_sha256']),
     }
+    if ulpi_bypass_lvcmos33:
+        pinout_identity = metadata.get('pinout_sha256')
+        if not isinstance(pinout_identity, str) or not re.fullmatch(r'[0-9a-f]{64}', pinout_identity):
+            raise ValueError('ULPI IO standard requires an audited pinout identity')
+        inputs['parent_pinout.json'] = (source / 'pinout/pinout.json', pinout_identity)
     for name, (path, expected) in inputs.items():
         if sha(path) != expected:
             raise ValueError('audited physical input changed: ' + name)
+    adapted_cst = None
+    ulpi_adaptation = None
+    if ulpi_bypass_lvcmos33:
+        plan = json.loads(inputs['parent_pinout.json'][0].read_bytes())
+        adapted_cst, ulpi_adaptation = ulpi_bypass_constraints(inputs['physical.cst'][0].read_bytes(), plan)
     output.mkdir(parents=True)
     for name, (path, expected) in inputs.items():
         checked_copy(path, output / name, expected)
+    if adapted_cst is not None:
+        (output / 'physical.cst').write_bytes(adapted_cst)
     (output / 'parent_synthesis_audit.json').write_text(json.dumps(audit, indent=2) + '\n')
     script = implementation_script(user_code)
     (output / 'run.tcl').write_text(script)
     for name, (path, expected) in inputs.items():
-        if sha(path) != expected or sha(output / name) != expected:
+        copied_expected = ulpi_adaptation['after_sha256'] if name == 'physical.cst' and ulpi_adaptation else expected
+        if sha(path) != expected or sha(output / name) != copied_expected:
             raise ValueError('physical input changed after preparation: ' + name)
     result = dict(
         schema=1, identity='custom138k-native-physical-' + user_code.upper(),
         prepared_at=datetime.now().astimezone().isoformat(),
         validation_stage='offline_physical_experiment_prepared',
-        source_policy='audited_native_synthesis_netlist_with_unchanged_CST_and_SDC',
+        source_policy=('audited_native_synthesis_netlist_with_explicit_ULPI_IO_type_only_and_unchanged_SDC'
+                       if ulpi_adaptation else 'audited_native_synthesis_netlist_with_unchanged_CST_and_SDC'),
         parent_candidate=str(source), parent_identity=audit['identity'],
         preparer_sha256=sha(Path(__file__)), user_code='0x' + user_code.upper(),
-        top_module=TOP, device=DEVICE, electrical_blocked=True,
+        top_module=TOP, device=DEVICE, electrical_blocked=audit['electrical_blocked'],
         electrical_risk_explicitly_acknowledged=True,
-        acknowledgement_scope='physical experiment and requested deployment; not electrical acceptance',
+        acknowledgement_scope='offline physical experiment only; not board programming authorization or electrical acceptance',
+        board_programming_authorized=False, ulpi_io_type_adaptation=ulpi_adaptation,
+        parent_input_sha256={name: expected for name, (_, expected) in inputs.items()},
         clocks_or_exceptions_relaxed=False, features_removed=False,
         place_option=2, route_option=0, replicate_resources=False,
         input_sha256={path.name: sha(path) for path in output.iterdir() if path.is_file()},
@@ -129,8 +184,11 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--user-code', required=True)
     parser.add_argument('--acknowledge-electrical-risk', action='store_true')
+    parser.add_argument('--ulpi-bypass-lvcmos33', action='store_true',
+                        help='Add only reviewed bypass ULPI IO standards; no electrical or external timing acceptance')
     args = parser.parse_args()
-    result = prepare(args.source, args.output, args.user_code, args.acknowledge_electrical_risk)
+    result = prepare(args.source, args.output, args.user_code, args.acknowledge_electrical_risk,
+                     args.ulpi_bypass_lvcmos33)
     print(json.dumps(result, indent=2))
 
 

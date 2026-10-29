@@ -4,8 +4,8 @@ module tb_workstation_usb2_mac_25k #(
     parameter integer NATIVE_PORT = 0,
     parameter integer NATIVE_MMIO = 0
 );
-    reg clk = 0;
-    always #8.333 clk = ~clk;
+    reg clk = 0, clock_running = 1;
+    always #8.333 if (clock_running) clk = ~clk;
     reg clk_ref = 0;
     always #10 clk_ref = ~clk_ref;
     reg clk_cpu = 0;
@@ -375,6 +375,21 @@ module tb_workstation_usb2_mac_25k #(
             end else check(!command_ready && !result_valid && !receive_valid, "MAC watchdog closes native API");
             wait_cycles(12000);
             check(mac_fatal && host_failed && !transaction_reset_n, "MAC failure remains latched after PHY resets the MAC");
+            if (NATIVE_MMIO == 0) begin
+                @(negedge clk);
+                clock_running = 0;
+                board_enable = 0;
+                #1;
+                check(!native_channel.host_oe && native_channel.host_stp,
+                      "native pins remain safe when disabled without a ULPI clock");
+                board_enable = 1;
+                #1;
+                check(!native_channel.host_oe && native_channel.host_stp,
+                      "native pin guard cannot release without ULPI edges");
+                board_enable = 0;
+                #100;
+                clock_running = 1;
+            end
             board_enable = 0; wait_cycles(200); stall_phy = 0;
             if (NATIVE_MMIO != 0) begin cpu_access(1, 4, 2, cpu_value); wait_cycles(200); end
             check(!mac_fatal, "explicit disable clears native MAC failure latch");

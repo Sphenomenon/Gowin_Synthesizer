@@ -1,0 +1,344 @@
+{
+  "date": "2026-10-27",
+  "scope": "Existing synthesis/P&R evidence for the a23 business netlist (C1102515 / deployed B3); no rebuild or board operation",
+  "physical_identity": "custom138k-native-a23 / C1102515",
+  "note": "Synthesis gives per-module LUT/ALU/Register; physical CLS is only a device total. 'cls_estimate' apportions the physical CLS by each subsystem's share of total logic units and is a rough indicator, not a measured per-module CLS.",
+  "synthesis": {
+    "identity": "workstation_integration_20261025_a23_v5",
+    "resource_report": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/workstation_integration_20261025_a23_v5/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+    "resource_report_sha256": "84d53efa4912a202ddc142ba0013ecae6b24b90b4dd1d0cf1637a1222a9c662d",
+    "root_total": {
+      "Lut": 76650,
+      "Alu": 15325,
+      "Register": 57037,
+      "Bsram": 274
+    },
+    "root_exclusive": {
+      "Lut": 241,
+      "Alu": 37,
+      "Register": 198
+    },
+    "modules": [
+      {
+        "module": "u_reset",
+        "subsystem": "platform",
+        "lut": 14,
+        "alu": 31,
+        "register": 35,
+        "bsram": 0
+      },
+      {
+        "module": "u_audio_clock",
+        "subsystem": "platform",
+        "lut": 95,
+        "alu": 21,
+        "register": 80,
+        "bsram": 0
+      },
+      {
+        "module": "u_usb_pll",
+        "subsystem": "platform",
+        "lut": 57,
+        "alu": 16,
+        "register": 50,
+        "bsram": 0
+      },
+      {
+        "module": "u_tf_control_cdc",
+        "subsystem": "control_service",
+        "lut": 7,
+        "alu": 0,
+        "register": 62,
+        "bsram": 0
+      },
+      {
+        "module": "u_tf_scope_transport",
+        "subsystem": "control_service",
+        "lut": 60,
+        "alu": 26,
+        "register": 26,
+        "bsram": 0
+      },
+      {
+        "module": "u_final_output_cdc",
+        "subsystem": "control_service",
+        "lut": 4,
+        "alu": 0,
+        "register": 200,
+        "bsram": 0
+      },
+      {
+        "module": "u_playback_service",
+        "subsystem": "control_service",
+        "lut": 123,
+        "alu": 0,
+        "register": 67,
+        "bsram": 0
+      },
+      {
+        "module": "u_ui_control",
+        "subsystem": "control_service",
+        "lut": 14,
+        "alu": 0,
+        "register": 181,
+        "bsram": 0
+      },
+      {
+        "module": "u_ui_services",
+        "subsystem": "control_service",
+        "lut": 127,
+        "alu": 31,
+        "register": 100,
+        "bsram": 0
+      },
+      {
+        "module": "u_playlist_bridge",
+        "subsystem": "control_service",
+        "lut": 79,
+        "alu": 8,
+        "register": 42,
+        "bsram": 0
+      },
+      {
+        "module": "u_song_command_cdc",
+        "subsystem": "control_service",
+        "lut": 6,
+        "alu": 0,
+        "register": 22,
+        "bsram": 0
+      },
+      {
+        "module": "u_score_push_cdc",
+        "subsystem": "control_service",
+        "lut": 26,
+        "alu": 3,
+        "register": 22,
+        "bsram": 0
+      },
+      {
+        "module": "u_service_push_cdc",
+        "subsystem": "control_service",
+        "lut": 6,
+        "alu": 0,
+        "register": 82,
+        "bsram": 0
+      },
+      {
+        "module": "u_display_push_cdc",
+        "subsystem": "control_service",
+        "lut": 6,
+        "alu": 0,
+        "register": 20,
+        "bsram": 0
+      },
+      {
+        "module": "u_native_usb",
+        "subsystem": "usb",
+        "lut": 8516,
+        "alu": 873,
+        "register": 3824,
+        "bsram": 39
+      },
+      {
+        "module": "u_managed",
+        "subsystem": "audio",
+        "lut": 15259,
+        "alu": 5218,
+        "register": 11073,
+        "bsram": 66
+      },
+      {
+        "module": "u_runtime",
+        "subsystem": "cpu_boot",
+        "lut": 1907,
+        "alu": 107,
+        "register": 2392,
+        "bsram": 0
+      },
+      {
+        "module": "u_delay_ddr_dma",
+        "subsystem": "audio",
+        "lut": 361,
+        "alu": 30,
+        "register": 657,
+        "bsram": 0
+      },
+      {
+        "module": "u_audio_command_buffer",
+        "subsystem": "audio",
+        "lut": 3,
+        "alu": 0,
+        "register": 281,
+        "bsram": 0
+      },
+      {
+        "module": "u_tf_audio",
+        "subsystem": "tf",
+        "lut": 5320,
+        "alu": 796,
+        "register": 3212,
+        "bsram": 5
+      },
+      {
+        "module": "u_music",
+        "subsystem": "cnn",
+        "lut": 11638,
+        "alu": 3149,
+        "register": 8965,
+        "bsram": 23
+      },
+      {
+        "module": "u_tf_dac",
+        "subsystem": "audio",
+        "lut": 176,
+        "alu": 33,
+        "register": 139,
+        "bsram": 0
+      },
+      {
+        "module": "u_output_router",
+        "subsystem": "audio",
+        "lut": 85,
+        "alu": 0,
+        "register": 76,
+        "bsram": 0
+      },
+      {
+        "module": "u_lcd",
+        "subsystem": "display",
+        "lut": 1187,
+        "alu": 22,
+        "register": 554,
+        "bsram": 0
+      },
+      {
+        "module": "u_fpc_audio",
+        "subsystem": "audio",
+        "lut": 190,
+        "alu": 64,
+        "register": 285,
+        "bsram": 0
+      },
+      {
+        "module": "u_ble_pcm_cdc",
+        "subsystem": "audio",
+        "lut": 4,
+        "alu": 0,
+        "register": 139,
+        "bsram": 0
+      },
+      {
+        "module": "u_bluetooth",
+        "subsystem": "ble",
+        "lut": 17996,
+        "alu": 2009,
+        "register": 9260,
+        "bsram": 65
+      },
+      {
+        "module": "u_memory",
+        "subsystem": "ddr",
+        "lut": 3030,
+        "alu": 206,
+        "register": 5517,
+        "bsram": 16
+      },
+      {
+        "module": "u_video",
+        "subsystem": "display",
+        "lut": 9600,
+        "alu": 2589,
+        "register": 8840,
+        "bsram": 44
+      },
+      {
+        "module": "u_cpu_pll",
+        "subsystem": "cpu_boot",
+        "lut": 56,
+        "alu": 16,
+        "register": 48,
+        "bsram": 0
+      },
+      {
+        "module": "u_cpu_ddr",
+        "subsystem": "cpu_boot",
+        "lut": 306,
+        "alu": 0,
+        "register": 333,
+        "bsram": 0
+      },
+      {
+        "module": "u_boot_memory",
+        "subsystem": "cpu_boot",
+        "lut": 151,
+        "alu": 40,
+        "register": 255,
+        "bsram": 16
+      },
+      {
+        "module": "u_cpu",
+        "subsystem": "cpu_boot",
+        "lut": 0,
+        "alu": 0,
+        "register": 0,
+        "bsram": 0
+      }
+    ],
+    "subsystem_logic_units": {
+      "platform": 399,
+      "control_service": 1350,
+      "usb": 13213,
+      "audio": 34073,
+      "cpu_boot": 5611,
+      "tf": 9328,
+      "cnn": 23752,
+      "display": 22792,
+      "ble": 29265,
+      "ddr": 8753
+    }
+  },
+  "physical": {
+    "report": "/home/sphenicidition/Documents/fpga/projects/138k/push2_workstation/usb_a/out/workstation_physical_20261025_c1102515/impl/pnr/custom_138k_integration.rpt.txt",
+    "report_sha256": "9130a7cb8ecdc7efee9dcdb70465e94bb04ca31e8649eb42c9e72aa03fea5ec0",
+    "rows": {
+      "Logic": {
+        "used": 94676.0,
+        "capacity": 138240,
+        "percent": 69
+      },
+      "Register": {
+        "used": 57037.0,
+        "capacity": 139095,
+        "percent": 41
+      },
+      "CLS": {
+        "used": 62191.0,
+        "capacity": 69120,
+        "percent": 90
+      },
+      "BSRAM": {
+        "used": 321.0,
+        "capacity": 340,
+        "percent": 95
+      },
+      "DSP": {
+        "used": 156.5,
+        "capacity": 298,
+        "percent": 53
+      }
+    }
+  },
+  "cls_estimate": {
+    "platform": 167,
+    "control_service": 563,
+    "usb": 5515,
+    "audio": 14221,
+    "cpu_boot": 2342,
+    "tf": 3893,
+    "cnn": 9913,
+    "display": 9512,
+    "ble": 12214,
+    "ddr": 3653,
+    "top_glue": 199
+  }
+}

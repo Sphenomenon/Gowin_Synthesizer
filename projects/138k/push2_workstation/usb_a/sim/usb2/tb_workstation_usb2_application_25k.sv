@@ -49,8 +49,8 @@ module tb_workstation_usb2_application_25k #(
         previous_runtime <= transaction_reset_n;
         if (TRACE_LINK != 0) begin
             if (device.phy_state != previous_device_state || transaction_reset_n != previous_runtime)
-                $display("LINK %0t device=%0d timer=%0d line=%b function=%x runtime=%b port=%0d", $time,
-                         device.phy_state, device.phy.usb_rst_time_q, device_line, phy.function_o,
+                $display("LINK %0t device=%0d line=%b function=%x runtime=%b port=%0d", $time,
+                         device.phy_state, device_line, phy.function_o,
                          transaction_reset_n, host.usb.port_state);
             if (host.usb.result_valid && host.usb.result_ready && traced_results < 20) begin
                 $display("RESULT %0t pid=%x status=%0d length=%0d device=%0d", $time,

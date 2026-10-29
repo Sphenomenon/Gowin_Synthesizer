@@ -1,0 +1,2 @@
+set_max_delay 15.000 -from [get_clocks {clk_50mhz clk_ulpi60}] -to [get_pins {*_monitor/gray_meta_*_s0/D *_monitor/request_meta_s0/D *_monitor/ack_meta_s0/D *_monitor/snapshot_50_*_s0/D usb*/attach_delay/ready_sync_0_s0/D}]
+set_false_path -hold -from [get_clocks {clk_50mhz clk_ulpi60}] -to [get_pins {*_monitor/gray_meta_*_s0/D *_monitor/request_meta_s0/D *_monitor/ack_meta_s0/D *_monitor/snapshot_50_*_s0/D usb*/attach_delay/ready_sync_0_s0/D}]

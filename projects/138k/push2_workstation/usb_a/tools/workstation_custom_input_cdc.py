@@ -52,9 +52,9 @@ def input_cdc_bundle(root):
                 sdc='\n'.join(lines) + '\n')
 
 
-def audit_input_fifo(root, netlist_text, clocks):
+def audit_input_fifo(root, netlist_text, clocks, *, top='workstation_custom_138k_top'):
     bundle = input_cdc_bundle(root)
-    netlist = SynthesisNetlist(netlist_text, 'workstation_custom_138k_top')
+    netlist = SynthesisNetlist(netlist_text, top)
     if netlist.frames.get(FIFO, {}).get('kind') != 'gw138k_usb_event_fifo.fifo.unbuffered':
         raise ValueError('native input FIFO hierarchy missing')
     high = {netlist.pin(name, 'V') for name, cell in netlist.cells.items() if cell['kind'] == 'VCC'} | {"1'b1"}

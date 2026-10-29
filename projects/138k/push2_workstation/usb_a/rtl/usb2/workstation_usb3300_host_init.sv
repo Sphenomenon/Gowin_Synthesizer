@@ -47,7 +47,8 @@ module workstation_usb3300_host_init #(
 
     assign csr_valid_o = reset_n && !link_fatal_i && state_q == REQUEST;
     assign csr_response_ready_o = reset_n && state_q == RESPONSE;
-    assign ready_o = reset_n && !link_fatal_i && state_q == DONE;
+    (* syn_preserve = 1 *) reg ready_q;
+    assign ready_o = reset_n && !link_fatal_i && ready_q;
     assign failed_o = reset_n && state_q == FAILED;
 
     always @* begin
@@ -81,6 +82,7 @@ module workstation_usb3300_host_init #(
     always @(posedge clk_ulpi or negedge reset_n) begin
         if (!reset_n) begin
             state_q <= STARTUP;
+            ready_q <= 1'b0;
             startup_q <= {STARTUP_WIDTH{1'b0}};
             elapsed_q <= {TIMEOUT_WIDTH{1'b0}};
             stage_retries_q <= 8'h00;
@@ -101,6 +103,7 @@ module workstation_usb3300_host_init #(
             end
             if (link_fatal_i && state_q != FAILED) begin
                 state_q <= FAILED;
+                ready_q <= 1'b0;
                 failure_code_o <= 4'd1;
             end else begin
                 case (state_q)
@@ -152,9 +155,10 @@ module workstation_usb3300_host_init #(
                                     end else begin
                                         elapsed_q <= {TIMEOUT_WIDTH{1'b0}};
                                         stage_retries_q <= 8'h00;
-                                        if (stage_o == LAST_STAGE)
+                                        if (stage_o == LAST_STAGE) begin
                                             state_q <= DONE;
-                                        else begin
+                                            ready_q <= 1'b1;
+                                        end else begin
                                             stage_o <= stage_o + 1'b1;
                                             state_q <= REQUEST;
                                         end
@@ -166,6 +170,7 @@ module workstation_usb3300_host_init #(
                     DONE, FAILED: begin end
                     default: begin
                         state_q <= FAILED;
+                        ready_q <= 1'b0;
                         failure_code_o <= 4'd7;
                     end
                 endcase

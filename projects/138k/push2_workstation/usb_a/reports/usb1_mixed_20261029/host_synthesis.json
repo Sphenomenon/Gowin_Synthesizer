@@ -1,0 +1,48 @@
+{
+  "identity": "usb1-fs-138k-C11029F7",
+  "source_manifest_sha256": "c03d82617bed731327b13496ad77dc02cddb97bef9e9fb96838bf05f770247bb",
+  "validation_stage": "synthesis_only",
+  "synthesis_passed": true,
+  "resources": {
+    "T_Register": 1375,
+    "T_Alu": 340,
+    "T_Lut": 2991,
+    "T_Bsram": 34,
+    "T_Ssram": 130
+  },
+  "pll_48mhz_verified": true,
+  "feature_structure_verified": true,
+  "netlist_rom_sha256": "9ddc3ebdf333efa2fb32f41e66da1a1526c7221cb34ae1a3d209b8b056dbe0fd",
+  "synthesis_bsram_is_not_physical_count": true,
+  "input_sampler_constraint_pins": {
+    "rx_dp_ms": "host/phy/phy_0/rx_dp_ms_s0/D",
+    "rx_dn_ms": "host/phy/phy_0/rx_dn_ms_s0/D",
+    "rxd_ms": "host/phy/phy_0/rxd_ms_s0/D"
+  },
+  "reset_release_chain": {
+    "stages": [
+      "clock/release_q_0_s0",
+      "clock/release_q_1_s0",
+      "clock/release_q_2_s0"
+    ],
+    "asynchronous_reset_sources": [
+      "clock/pll/u_pll_init/state_0_s0/Q",
+      "clock/pll/u_pll_init/state_1_s0/Q",
+      "clock/pll/u_pll_init/state_2_s0/Q"
+    ],
+    "exception": "set_false_path -to [get_pins {clock/release_q*_s*/CLEAR}]",
+    "release_cycles": 3
+  },
+  "audit_recipe_sha256": "6362485ca4a16a5977c06b02aad2b3c9df73ab80e52b4fff4e9af34a2cd856a1",
+  "synthesis_log_sha256": "af89ae327f9af3a928b22c3d9a99b5ed72830776de069732fcea8ca1f40bc580",
+  "netlist_sha256": "337b04d3c0ecc965d1d0dce73b30612bbd7f231a618b9e450ae96ea245ee8838",
+  "resource_sha256": "efc11fd80289a8f842df187a19c7d38325fb41c49c54ff55e9c78cd0bdb69f4a",
+  "routed_timing_verified": false,
+  "cdc_verified": false,
+  "pll_physical_verified": false,
+  "bitstream": null,
+  "hardware_validated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}

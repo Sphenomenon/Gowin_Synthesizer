@@ -9,13 +9,14 @@ module tb_workstation_usb2_host_port;
     reg reset_request = 1'b0;
     reg mac_idle = 1'b1;
     reg attached = 1'b0;
+    reg retained_high_speed = 1'b0;
     reg low_speed = 1'b0;
     reg device_k = 1'b0;
     reg disconnect = 1'b0;
     reg abort_tx = 1'b0;
     reg [3:0] fault = 0;
     reg [7:0] function_value = 8'h41;
-    wire [1:0] physical_line = function_value == 8'h45 ? (attached ? (low_speed ? 2'b10 : 2'b01) : 2'b00) :
+    wire [1:0] physical_line = function_value == 8'h45 ? (attached && !retained_high_speed ? (low_speed ? 2'b10 : 2'b01) : 2'b00) :
                                function_value == 8'h50 && device_k ? 2'b10 : 2'b00;
     reg [1:0] reported_line = 0;
     reg status_valid = 1'b0;
@@ -231,6 +232,7 @@ module tb_workstation_usb2_host_port;
             reset_request = 1'b0;
             mac_idle = 1'b1;
             attached = 1'b0;
+            retained_high_speed = 1'b0;
             low_speed = 1'b0;
             device_k = 1'b0;
             disconnect = 1'b0;
@@ -295,6 +297,21 @@ module tb_workstation_usb2_host_port;
     endtask
 
     initial begin
+        begin_scenario(0);
+        attached = 1'b1;
+        retained_high_speed = 1'b1;
+        await_state(9, 200100);
+        check(!connected && reset_active && !traffic_enable, "retained HS recovery does not invent an attached device");
+        device_chirp();
+        await_state(16, 10000);
+        check(connected && high_speed && traffic_enable, "powered HS peer recovers without a new FS attach edge");
+        begin_scenario(0);
+        await_state(9, 200100);
+        await_state(7, 10000);
+        repeat (400030) @(negedge clk_ulpi);
+        #1;
+        check(state == 7 && !connected && !traffic_enable && !reset_active && session_count == 2,
+              "absent peer gets one bounded recovery attempt and is never reported connected");
         begin_scenario(0);
         attach_device();
         device_k = 1'b1;
@@ -405,7 +422,7 @@ module tb_workstation_usb2_host_port;
     end
 
     initial begin
-        #3000000;
+        #22000000;
         $fatal(1, "global simulation timeout");
     end
 endmodule

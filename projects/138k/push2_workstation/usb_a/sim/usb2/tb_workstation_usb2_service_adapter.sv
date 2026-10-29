@@ -31,7 +31,7 @@ module tb_workstation_usb2_service_adapter;
             if (valid && ready) acknowledgments <= acknowledgments + 1;
         end
     end
-    task automatic check(input condition, input [255:0] label);
+    task automatic check(input condition, input [767:0] label);
         begin checks = checks + 1; if (!condition) $fatal(1, "adapter %0s", label); end
     endtask
     task automatic start_request(input write_value, input [7:0] address_value,
@@ -54,6 +54,45 @@ module tb_workstation_usb2_service_adapter;
             check(commits == previous_commits + (expected_commit ? 1 : 0), "exactly one owner commit");
             check(acknowledgments == previous_acks + 1, "held valid gets one ACK");
             valid = 0; repeat (3) @(negedge clk);
+        end
+    endtask
+    task automatic interrupted_request(input [7:0] request_address, input [31:0] request_data,
+                                        input owner_was_connected);
+        integer previous_canceled, previous_commits, previous_acknowledgments;
+        begin
+            previous_canceled = canceled_requests;
+            previous_commits = commits;
+            previous_acknowledgments = acknowledgments;
+            owner_ready = 0;
+            if (!owner_was_connected) session_valid = 0;
+            start_request(1, request_address, request_data, 15);
+            if (owner_was_connected) begin
+                repeat (4) @(negedge clk);
+                session_valid = 0;
+                repeat (2) @(negedge clk);
+            end else @(negedge clk);
+            session_valid = 1;
+            repeat (2) @(negedge clk);
+            if (owner_was_connected) begin
+                check(owner_select && owner_write && owner_address == 0 && owner_data == 0,
+                      "lost-session detach remains pending after transport recovers");
+                owner_ready = 1;
+                @(negedge clk);
+                check(!connected && last_address == 0 && last_data == 0,
+                      "old owner detaches before stale request completes");
+            end else begin
+                check(!owner_select, "stale attach cannot revive after transport recovers");
+                owner_ready = 1;
+            end
+            repeat (5) @(negedge clk);
+            check(commits == previous_commits + (owner_was_connected ? 1 : 0),
+                  "only pending detach commits after interrupted request");
+            check(acknowledgments == previous_acknowledgments + 1,
+                  "interrupted request acknowledges exactly once");
+            check(canceled_requests == previous_canceled + 1, "interrupted request counted exactly once");
+            check(!connected, "interrupted request does not attach a new owner");
+            valid = 0;
+            repeat (3) @(negedge clk);
         end
     endtask
     initial begin
@@ -103,7 +142,15 @@ module tb_workstation_usb2_service_adapter;
         start_request(1, 8'h00, 0, 15); complete_request(0, 1);
         start_request(0, 8'h6c, 0, 15); complete_request(0, 1);
         check(canceled_requests == 4, "withdrawal and three stale writes counted");
-        $display("PASS workstation_usb2_service_adapter: %0d checks, exact-once, bounds, withdrawal, hardware detach and reattach", checks);
+        interrupted_request(8'h00, 7, 0);
+        start_request(1, 8'h00, 7, 15); complete_request(0, 1);
+        interrupted_request(8'h54, 32'h00004e64, 1);
+        start_request(1, 8'h00, 1, 15); complete_request(0, 1);
+        interrupted_request(8'h04, 32'h00004f64, 1);
+        start_request(1, 8'h00, 1, 15); complete_request(0, 1);
+        start_request(1, 8'h54, 32'h00005064, 15); complete_request(0, 1);
+        check(connected && canceled_requests == 7, "fresh Push request succeeds after interrupted sessions");
+        $display("PASS workstation_usb2_service_adapter: %0d checks, exact-once, bounds, withdrawal, hardware detach, transient session loss and reattach", checks);
         $finish;
     end
     initial begin #100000; $fatal(1, "adapter timeout"); end

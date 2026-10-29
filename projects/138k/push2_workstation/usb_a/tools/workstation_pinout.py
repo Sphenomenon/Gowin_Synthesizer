@@ -112,32 +112,47 @@ def parse_locations(text):
     return locations
 
 
-def check_ulpi_electrical(carrier):
+def checked_ulpi_bypass(bypass):
+    if not isinstance(bypass, dict) or any(part not in ('U4', 'U5') or mode != 'not_fitted_short'
+                                           for part, mode in bypass.items()):
+        raise ValueError('unreviewed ULPI bypass declaration')
+    return bypass
+
+
+def check_ulpi_electrical(carrier, bypass=None):
+    bypass = checked_ulpi_bypass({} if bypass is None else bypass)
     supplies_mv = {'VDD_1V8': 1800, '3V3_USB3300': 3300}
     translators = []
     findings = []
-    for part, supply_node in (('U4', 'U4.2'), ('U5', 'U5.1')):
+    for part, supply_a, supply_b in (('U4', 'U4.2', 'U4.19'), ('U5', 'U5.1', 'U5.14')):
+        bypassed = part in bypass
+        supply_node = supply_b if bypassed else supply_a
         network = carrier.network(supply_node)
         nominal_mv = supplies_mv.get(network)
-        translators.append(dict(part=part, phy_side='A', supply_node=supply_node,
+        translators.append(dict(part=part, assembly=bypass.get(part, 'fitted'),
+                                phy_side='B' if bypassed else 'A', supply_node=supply_node,
                                 supply_network=network, nominal_mv=nominal_mv))
         if nominal_mv is None:
             findings.append(dict(code='ULPI_UNKNOWN_SUPPLY', part=part, node=supply_node,
                                  message='No reviewed nominal voltage for PHY-side translator supply'))
-        elif nominal_mv < 2600:
+        elif bypassed and nominal_mv != 3300:
+            findings.append(dict(code='ULPI_BYPASS_SUPPLY_DOMAIN', part=part, node=supply_node,
+                                 nominal_mv=nominal_mv,
+                                 message='Direct USB3300 ULPI path requires the reviewed 3.3 V domain'))
+        elif not bypassed and nominal_mv < 2600:
             findings.append(dict(code='ULPI_PHY_OUTPUT_DOMAIN', part=part, node=supply_node,
                                  translator_input_high_max_mv=nominal_mv,
                                  phy_output_supply_min_mv=3000,
                                  phy_output_high_min_mv=2600,
                                  message='USB3300 output high is outside the translator A-side recommended input range'))
     stp_supply = next(entry for entry in translators if entry['part'] == 'U5')
-    if stp_supply['nominal_mv'] is not None and stp_supply['nominal_mv'] < 2000:
+    if 'U5' not in bypass and stp_supply['nominal_mv'] is not None and stp_supply['nominal_mv'] < 2000:
         findings.append(dict(code='ULPI_STP_HIGH_LEVEL', part='U5',
                              driver_node='U5.3', receiver_node='U2.13',
                              driver_supply_mv=stp_supply['nominal_mv'], receiver_vih_min_mv=2000,
                              message='Translator PHY-side supply is below USB3300 minimum valid high input'))
     return dict(status='blocked' if findings else 'no_voltage_domain_conflict_detected',
-                scope='USB3300 and translator nominal logic voltage domains only',
+                scope='USB3300 nominal ULPI voltage domains and declared translator assembly only',
                 actual_board_measured=False, full_electrical_acceptance=False,
                 translators=translators, findings=findings)
 
@@ -145,8 +160,10 @@ def check_ulpi_electrical(carrier):
 def resolve(profile, netlists, core_text):
     if profile.get('schema_version') != 1:
         raise ValueError('unsupported board profile schema')
+    bypass = checked_ulpi_bypass(profile.get('ulpi_bypass', {}))
     models = profile.get('electrical_evidence', {}).get('component_models')
-    if models != {'U2': 'USB3300-EZK', 'U4': 'TXS0108EPWR', 'U5': 'TXS0104EPWR'}:
+    expected_models = {'U2': 'USB3300-EZK', 'U4': 'TXS0108EPWR', 'U5': 'TXS0104EPWR'}
+    if models != {part: model for part, model in expected_models.items() if part not in bypass}:
         raise ValueError('unreviewed USB2 device models')
     carrier, amplifier, bluetooth = [netlists[role] for role in ('carrier', 'amplifier', 'bluetooth')]
     reference = parse_locations(core_text)
@@ -198,9 +215,12 @@ def resolve(profile, netlists, core_text):
         low, high = channel['bridge']
         carrier.same(channel['phy'], low)
         add(channel['port'], carrier.ball(high, 2), 'usb2_ulpi_level_shifter')
-    for node, supply in {'U4.2': 'VDD_1V8', 'U4.19': '3V3_USB3300',
-                         'U4.10': 'VDD_1V8', 'U5.1': 'VDD_1V8',
-                         'U5.14': '3V3_USB3300', 'U5.8': 'VDD_1V8'}.items():
+    supplies = {'U4.19': '3V3_USB3300', 'U5.14': '3V3_USB3300'}
+    if 'U4' not in bypass:
+        supplies.update({'U4.2': 'VDD_1V8', 'U4.10': 'VDD_1V8'})
+    if 'U5' not in bypass:
+        supplies.update({'U5.1': 'VDD_1V8', 'U5.8': 'VDD_1V8'})
+    for node, supply in supplies.items():
         if carrier.network(node) != supply:
             raise ValueError('ULPI level-shifter supply/OE changed: ' + node)
     if carrier.network('U2.9') != 'GND':
@@ -264,7 +284,7 @@ def resolve(profile, netlists, core_text):
                 unchanged_core_constraints=core_lines, hdmi_polarity=hdmi,
                 bluetooth_cable=ble, reserved_balls=reserved,
                 retired_ports=profile['retired_ports'], assumptions=profile['assumptions'],
-                electrical_check=check_ulpi_electrical(carrier),
+                ulpi_bypass=bypass, electrical_check=check_ulpi_electrical(carrier, bypass),
                 electrical_evidence=profile['electrical_evidence'],
                 implementation_gaps=profile['implementation_gaps'])
 

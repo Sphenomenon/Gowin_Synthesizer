@@ -4,7 +4,9 @@
 // Packet storage is transactional: OUT becomes visible only after CRC/PHY
 // validation; IN storage is released only by host ACK, allowing retransmit.
 // EP1 transports whole USB-MIDI events; EP2 transports vendor bytes.
-module midi_usb_device (
+module midi_usb_device #(
+ parameter integer FULL_SPEED_ONLY=0
+)(
  input wire clk,reset,enable,
  input wire[7:0]utmi_rxdata,input wire utmi_rxvalid,utmi_rxactive,utmi_rxerror,
  input wire[1:0]utmi_linestate,input wire utmi_txready,
@@ -25,11 +27,25 @@ module midi_usb_device (
   else if(!se0_count[14])se0_count<=se0_count+1'b1;
  wire usb_reset,usb_suspended;
  wire chirp;
+ generate if(FULL_SPEED_ONLY!=0)begin:fs_only
+  midi_usb_fs_state phy(.clk(clk),.reset(reset),.enable(enable),
+   .bus_active(utmi_rxactive||utmi_txvalid),.line_state(utmi_linestate),
+   .bus_reset(usb_reset),.suspended(usb_suspended));
+  assign utmi_opmode=0;
+  assign utmi_xcvr=1;
+  assign utmi_termsel=1;
+  assign utmi_dppd=0;
+  assign utmi_dmpd=0;
+  assign chirp=0;
+  assign hs_active=0;
+  assign phy_state=3'd4;
+ end else begin:dual_speed
  midi_usb_hs_phy phy(.clk(clk),.reset(reset),.enable(enable),.se0_reset(se0_count[14]),
   .bus_active(utmi_rxactive||utmi_txvalid),.bus_reset(usb_reset),.suspended(usb_suspended),
   .line_state(utmi_linestate),.opmode(utmi_opmode),.xcvr(utmi_xcvr),
   .termsel(utmi_termsel),.dppd(utmi_dppd),.dmpd(utmi_dmpd),
   .chirp(chirp),.high_speed(hs_active),.state(phy_state));
+ end endgenerate
  wire[7:0]pid,rx_byte;wire[3:0]token_ep;
  wire token_valid,handshake_valid,rx_valid,rx_strb,rx_last,rx_crc_error,rx_complete;
  midi_usbf_sie_rx rx(.clk_i(clk),.rst_i(reset),.enable_i(enable&&!usb_reset&&!usb_suspended&&!chirp),
@@ -90,11 +106,12 @@ module midi_usb_device (
  reg[3:0]ctrl_action;
  reg[15:0]ctrl_action_value,ctrl_action_index;
  reg ack_wait;reg[1:0]ack_endpoint;reg[9:0]ack_length;
- wire[7:0]rom_byte;wire[15:0]rom_length;wire rom_supported;
+ wire[7:0]rom_byte;wire[15:0]rom_length;wire rom_supported,rom_available;
  // During decode select directly from SETUP; during reads use the saved type.
  wire[15:0]rom_selector=decode_setup?value:ctrl_selector;
  midi_usb_desc_rom descriptors(.hs(hs_active),.selector(rom_selector),
-  .offset(ctrl_offset+tx_index),.data(rom_byte),.length(rom_length),.supported(rom_supported));
+  .offset(ctrl_offset+tx_index),.data(rom_byte),.length(rom_length),.supported(rom_available));
+ assign rom_supported=rom_available&&(FULL_SPEED_ONLY==0||(rom_selector[15:8]!=6&&rom_selector[15:8]!=7));
  assign tx_byte=tx_endpoint==1?(in1_q>>(tx_index[1:0]*8)):tx_endpoint==2?in2_q:
   ctrl_rom?rom_byte:(tx_index==0?ctrl_fixed[7:0]:ctrl_fixed[15:8]);
 

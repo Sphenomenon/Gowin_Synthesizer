@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-28",
+  "status": "offline_source_simulation_and_synthesis_passed",
+  "host_identity": "usb1-fs-138k-C11028F5",
+  "peer_identity": "usb1-fs-25k-251028F4",
+  "evidence": {
+    "projects/138k/push2_workstation/usb_a/results/usb1_host_C11028F5/usb1_inputs.json": "70e6044f3d7aaa838f89dda5368a748eaba3e6a96995edf402046106ff0850f1",
+    "projects/138k/push2_workstation/usb_a/results/usb1_host_C11028F5/synthesis_verification.json": "8012add6d8e4d0892a6b6673a492b99cba3e40b793627feb9fe9fb9c39fcd338",
+    "projects/25k/example/MIDI_KEYBOARD/results/usb1_251028F4/usb1_inputs.json": "01c6be65bfaf9398aa7dfdbe13ad68f89c88c8f51299b6c8040c0e56514fe955",
+    "projects/25k/example/MIDI_KEYBOARD/results/usb1_251028F4/synthesis_verification.json": "531bc2734d6aafc9607263f69a0adcec5d15b3833fb448aa815e41d64c8261db",
+    "projects/138k/push2_workstation/usb_a/results/usb1_pair_20261028_skew_fenced/verification.json": "8b2d39b402277955aead3e372400b1c384f6bd659c212e6dd7255bb3b2fa2255",
+    "projects/138k/push2_workstation/usb_a/results/usb1_pair_20261028_skew_fenced/compilation.log": "ee27c92276f3197f37b1327da182338942e25bafff2b95d0910618b69ffb6cea",
+    "projects/138k/push2_workstation/usb_a/results/usb1_pair_20261028_skew_fenced/execution.log": "df9cd002b897f5fde789bd00ac98f1e01050068157d1a9347a2cc47823c93e25",
+    "projects/25k/example/MIDI_KEYBOARD/results/usb1_regression_20261028_release/validation.json": "628dc4d7e4f238b60143b20fac33463e1ba2dab2285660045c3900385bb1ea45",
+    "projects/25k/example/MIDI_KEYBOARD/results/usb1_regression_20261028_release/simulation.log": "6d7283d1d1e4fc52516fa2cc868e19b783139a07c54ef6a329291525570f47f4",
+    "projects/138k/push2_workstation/usb_a/results/usb1_host_protocol_20261028/verification.json": "f8cc9d09e9c4e356f05082e4b82dfb19fcc9228b31acc7887cd343ded99f5e10"
+  },
+  "checks": {
+    "usb1_directed_tests": 4,
+    "fs_only_utmi_checks": 386,
+    "physical_pair_midi_events": 256,
+    "physical_pair_sessions": 2,
+    "physical_pair_usb_clock_relative_skew_ppm": 96,
+    "keyboard_testbenches": 39,
+    "keyboard_checks": 90,
+    "accepted_source_tests": 10,
+    "firmware_staging_tests": 6,
+    "production_host_protocol": true,
+    "source_and_staged_hash_recheck": true
+  },
+  "delivery_context_sha256": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/pinout.json": "e03020d6dd67081577b79e4224ff4fdbb569acd26206f4d738bbb2119a35ba75",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_pinout.py": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+    "projects/138k/push2_workstation/usb_a/usb1_identify.c": "4b832f0afb5d876cdc12372a002426b15a0f4d9f6b7f5d0f3e166c27ab88b415",
+    "projects/138k/push2_workstation/usb_a/firmware.c": "0a2acb8243d67357a4a69c869e3262fc89b624a5cf433feb8a2d12a0b27fc738",
+    "projects/138k/push2_workstation/usb_a/gw25k_panel.h": "6986f631f2c72da58a79ed1b267578c0e9a0c4730933ae7c735cdc7089235d76",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_usb1.py": "8cfb332a8a80a2366d32f74ca2d69897854eb9ff16c4da5623941d7d96b8ada1",
+    "projects/138k/push2_workstation/usb_a/sim/usb1/tb_workstation_usb1_pair.sv": "af0d8b6a35b73e143bc5adaf0e3f3d8cdd09a1848a64559855ab2d733db41414"
+  },
+  "bitstream": null,
+  "routed_timing_verified": false,
+  "cdc_physical_verified": false,
+  "pll_physical_verified": false,
+  "electrical_accepted": false,
+  "hardware_validated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "full_138k_workstation_integrated": false,
+  "complete_25k_keyboard_synthesized": true
+}

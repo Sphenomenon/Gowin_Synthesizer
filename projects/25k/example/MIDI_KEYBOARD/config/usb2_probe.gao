@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GAO_CONFIG>
+    <Version>3.0</Version>
+    <Mode>Standard</Mode>
+    <AoCore index="0" sample_clock="clk_50mhz" trig_type="0" storage_depth="128" window_num="1" capture_amount="128" implementation="0" trigger_pos="0" module_name="midi_usb2_probe_top" force_trigger_by_falling_edge="false" capture_init_data_enabled="false">
+        <SignalList>
+            <Bus capture_enable="true" name="status_50mhz[255:0]">
+                <Signal>status_50mhz[255]</Signal>
+                <Signal>status_50mhz[254]</Signal>
+                <Signal>status_50mhz[253]</Signal>
+                <Signal>status_50mhz[252]</Signal>
+                <Signal>status_50mhz[251]</Signal>
+                <Signal>status_50mhz[250]</Signal>
+                <Signal>status_50mhz[249]</Signal>
+                <Signal>status_50mhz[248]</Signal>
+                <Signal>status_50mhz[247]</Signal>
+                <Signal>status_50mhz[246]</Signal>
+                <Signal>status_50mhz[245]</Signal>
+                <Signal>status_50mhz[244]</Signal>
+                <Signal>status_50mhz[243]</Signal>
+                <Signal>status_50mhz[242]</Signal>
+                <Signal>status_50mhz[241]</Signal>
+                <Signal>status_50mhz[240]</Signal>
+                <Signal>status_50mhz[239]</Signal>
+                <Signal>status_50mhz[238]</Signal>
+                <Signal>status_50mhz[237]</Signal>
+                <Signal>status_50mhz[236]</Signal>
+                <Signal>status_50mhz[235]</Signal>
+                <Signal>status_50mhz[234]</Signal>
+                <Signal>status_50mhz[233]</Signal>
+                <Signal>status_50mhz[232]</Signal>
+                <Signal>status_50mhz[231]</Signal>
+                <Signal>status_50mhz[230]</Signal>
+                <Signal>status_50mhz[229]</Signal>
+                <Signal>status_50mhz[228]</Signal>
+                <Signal>status_50mhz[227]</Signal>
+                <Signal>status_50mhz[226]</Signal>
+                <Signal>status_50mhz[225]</Signal>
+                <Signal>status_50mhz[224]</Signal>
+                <Signal>status_50mhz[223]</Signal>
+                <Signal>status_50mhz[222]</Signal>
+                <Signal>status_50mhz[221]</Signal>
+                <Signal>status_50mhz[220]</Signal>
+                <Signal>status_50mhz[219]</Signal>
+                <Signal>status_50mhz[218]</Signal>
+                <Signal>status_50mhz[217]</Signal>
+                <Signal>status_50mhz[216]</Signal>
+                <Signal>status_50mhz[215]</Signal>
+                <Signal>status_50mhz[214]</Signal>
+                <Signal>status_50mhz[213]</Signal>
+                <Signal>status_50mhz[212]</Signal>
+                <Signal>status_50mhz[211]</Signal>
+                <Signal>status_50mhz[210]</Signal>
+                <Signal>status_50mhz[209]</Signal>
+                <Signal>status_50mhz[208]</Signal>
+                <Signal>status_50mhz[207]</Signal>
+                <Signal>status_50mhz[206]</Signal>
+                <Signal>status_50mhz[205]</Signal>
+                <Signal>status_50mhz[204]</Signal>
+                <Signal>status_50mhz[203]</Signal>
+                <Signal>status_50mhz[202]</Signal>
+                <Signal>status_50mhz[201]</Signal>
+                <Signal>status_50mhz[200]</Signal>
+                <Signal>status_50mhz[199]</Signal>
+                <Signal>status_50mhz[198]</Signal>
+                <Signal>status_50mhz[197]</Signal>
+                <Signal>status_50mhz[196]</Signal>
+                <Signal>status_50mhz[195]</Signal>
+                <Signal>status_50mhz[194]</Signal>
+                <Signal>status_50mhz[193]</Signal>
+                <Signal>status_50mhz[192]</Signal>
+                <Signal>status_50mhz[191]</Signal>
+                <Signal>status_50mhz[190]</Signal>
+                <Signal>status_50mhz[189]</Signal>
+                <Signal>status_50mhz[188]</Signal>
+                <Signal>status_50mhz[187]</Signal>
+                <Signal>status_50mhz[186]</Signal>
+                <Signal>status_50mhz[185]</Signal>
+                <Signal>status_50mhz[184]</Signal>
+                <Signal>status_50mhz[183]</Signal>
+                <Signal>status_50mhz[182]</Signal>
+                <Signal>status_50mhz[181]</Signal>
+                <Signal>status_50mhz[180]</Signal>
+                <Signal>status_50mhz[179]</Signal>
+                <Signal>status_50mhz[178]</Signal>
+                <Signal>status_50mhz[177]</Signal>
+                <Signal>status_50mhz[176]</Signal>
+                <Signal>status_50mhz[175]</Signal>
+                <Signal>status_50mhz[174]</Signal>
+                <Signal>status_50mhz[173]</Signal>
+                <Signal>status_50mhz[172]</Signal>
+                <Signal>status_50mhz[171]</Signal>
+                <Signal>status_50mhz[170]</Signal>
+                <Signal>status_50mhz[169]</Signal>
+                <Signal>status_50mhz[168]</Signal>
+                <Signal>status_50mhz[167]</Signal>
+                <Signal>status_50mhz[166]</Signal>
+                <Signal>status_50mhz[165]</Signal>
+                <Signal>status_50mhz[164]</Signal>
+                <Signal>status_50mhz[163]</Signal>
+                <Signal>status_50mhz[162]</Signal>
+                <Signal>status_50mhz[161]</Signal>
+                <Signal>status_50mhz[160]</Signal>
+                <Signal>status_50mhz[159]</Signal>
+                <Signal>status_50mhz[158]</Signal>
+                <Signal>status_50mhz[157]</Signal>
+                <Signal>status_50mhz[156]</Signal>
+                <Signal>status_50mhz[155]</Signal>
+                <Signal>status_50mhz[154]</Signal>
+                <Signal>status_50mhz[153]</Signal>
+                <Signal>status_50mhz[152]</Signal>
+                <Signal>status_50mhz[151]</Signal>
+                <Signal>status_50mhz[150]</Signal>
+                <Signal>status_50mhz[149]</Signal>
+                <Signal>status_50mhz[148]</Signal>
+                <Signal>status_50mhz[147]</Signal>
+                <Signal>status_50mhz[146]</Signal>
+                <Signal>status_50mhz[145]</Signal>
+                <Signal>status_50mhz[144]</Signal>
+                <Signal>status_50mhz[143]</Signal>
+                <Signal>status_50mhz[142]</Signal>
+                <Signal>status_50mhz[141]</Signal>
+                <Signal>status_50mhz[140]</Signal>
+                <Signal>status_50mhz[139]</Signal>
+                <Signal>status_50mhz[138]</Signal>
+                <Signal>status_50mhz[137]</Signal>
+                <Signal>status_50mhz[136]</Signal>
+                <Signal>status_50mhz[135]</Signal>
+                <Signal>status_50mhz[134]</Signal>
+                <Signal>status_50mhz[133]</Signal>
+                <Signal>status_50mhz[132]</Signal>
+                <Signal>status_50mhz[131]</Signal>
+                <Signal>status_50mhz[130]</Signal>
+                <Signal>status_50mhz[129]</Signal>
+                <Signal>status_50mhz[128]</Signal>
+                <Signal>status_50mhz[127]</Signal>
+                <Signal>status_50mhz[126]</Signal>
+                <Signal>status_50mhz[125]</Signal>
+                <Signal>status_50mhz[124]</Signal>
+                <Signal>status_50mhz[123]</Signal>
+                <Signal>status_50mhz[122]</Signal>
+                <Signal>status_50mhz[121]</Signal>
+                <Signal>status_50mhz[120]</Signal>
+                <Signal>status_50mhz[119]</Signal>
+                <Signal>status_50mhz[118]</Signal>
+                <Signal>status_50mhz[117]</Signal>
+                <Signal>status_50mhz[116]</Signal>
+                <Signal>status_50mhz[115]</Signal>
+                <Signal>status_50mhz[114]</Signal>
+                <Signal>status_50mhz[113]</Signal>
+                <Signal>status_50mhz[112]</Signal>
+                <Signal>status_50mhz[111]</Signal>
+                <Signal>status_50mhz[110]</Signal>
+                <Signal>status_50mhz[109]</Signal>
+                <Signal>status_50mhz[108]</Signal>
+                <Signal>status_50mhz[107]</Signal>
+                <Signal>status_50mhz[106]</Signal>
+                <Signal>status_50mhz[105]</Signal>
+                <Signal>status_50mhz[104]</Signal>
+                <Signal>status_50mhz[103]</Signal>
+                <Signal>status_50mhz[102]</Signal>
+                <Signal>status_50mhz[101]</Signal>
+                <Signal>status_50mhz[100]</Signal>
+                <Signal>status_50mhz[99]</Signal>
+                <Signal>status_50mhz[98]</Signal>
+                <Signal>status_50mhz[97]</Signal>
+                <Signal>status_50mhz[96]</Signal>
+                <Signal>status_50mhz[95]</Signal>
+                <Signal>status_50mhz[94]</Signal>
+                <Signal>status_50mhz[93]</Signal>
+                <Signal>status_50mhz[92]</Signal>
+                <Signal>status_50mhz[91]</Signal>
+                <Signal>status_50mhz[90]</Signal>
+                <Signal>status_50mhz[89]</Signal>
+                <Signal>status_50mhz[88]</Signal>
+                <Signal>status_50mhz[87]</Signal>
+                <Signal>status_50mhz[86]</Signal>
+                <Signal>status_50mhz[85]</Signal>
+                <Signal>status_50mhz[84]</Signal>
+                <Signal>status_50mhz[83]</Signal>
+                <Signal>status_50mhz[82]</Signal>
+                <Signal>status_50mhz[81]</Signal>
+                <Signal>status_50mhz[80]</Signal>
+                <Signal>status_50mhz[79]</Signal>
+                <Signal>status_50mhz[78]</Signal>
+                <Signal>status_50mhz[77]</Signal>
+                <Signal>status_50mhz[76]</Signal>
+                <Signal>status_50mhz[75]</Signal>
+                <Signal>status_50mhz[74]</Signal>
+                <Signal>status_50mhz[73]</Signal>
+                <Signal>status_50mhz[72]</Signal>
+                <Signal>status_50mhz[71]</Signal>
+                <Signal>status_50mhz[70]</Signal>
+                <Signal>status_50mhz[69]</Signal>
+                <Signal>status_50mhz[68]</Signal>
+                <Signal>status_50mhz[67]</Signal>
+                <Signal>status_50mhz[66]</Signal>
+                <Signal>status_50mhz[65]</Signal>
+                <Signal>status_50mhz[64]</Signal>
+                <Signal>status_50mhz[63]</Signal>
+                <Signal>status_50mhz[62]</Signal>
+                <Signal>status_50mhz[61]</Signal>
+                <Signal>status_50mhz[60]</Signal>
+                <Signal>status_50mhz[59]</Signal>
+                <Signal>status_50mhz[58]</Signal>
+                <Signal>status_50mhz[57]</Signal>
+                <Signal>status_50mhz[56]</Signal>
+                <Signal>status_50mhz[55]</Signal>
+                <Signal>status_50mhz[54]</Signal>
+                <Signal>status_50mhz[53]</Signal>
+                <Signal>status_50mhz[52]</Signal>
+                <Signal>status_50mhz[51]</Signal>
+                <Signal>status_50mhz[50]</Signal>
+                <Signal>status_50mhz[49]</Signal>
+                <Signal>status_50mhz[48]</Signal>
+                <Signal>status_50mhz[47]</Signal>
+                <Signal>status_50mhz[46]</Signal>
+                <Signal>status_50mhz[45]</Signal>
+                <Signal>status_50mhz[44]</Signal>
+                <Signal>status_50mhz[43]</Signal>
+                <Signal>status_50mhz[42]</Signal>
+                <Signal>status_50mhz[41]</Signal>
+                <Signal>status_50mhz[40]</Signal>
+                <Signal>status_50mhz[39]</Signal>
+                <Signal>status_50mhz[38]</Signal>
+                <Signal>status_50mhz[37]</Signal>
+                <Signal>status_50mhz[36]</Signal>
+                <Signal>status_50mhz[35]</Signal>
+                <Signal>status_50mhz[34]</Signal>
+                <Signal>status_50mhz[33]</Signal>
+                <Signal>status_50mhz[32]</Signal>
+                <Signal>status_50mhz[31]</Signal>
+                <Signal>status_50mhz[30]</Signal>
+                <Signal>status_50mhz[29]</Signal>
+                <Signal>status_50mhz[28]</Signal>
+                <Signal>status_50mhz[27]</Signal>
+                <Signal>status_50mhz[26]</Signal>
+                <Signal>status_50mhz[25]</Signal>
+                <Signal>status_50mhz[24]</Signal>
+                <Signal>status_50mhz[23]</Signal>
+                <Signal>status_50mhz[22]</Signal>
+                <Signal>status_50mhz[21]</Signal>
+                <Signal>status_50mhz[20]</Signal>
+                <Signal>status_50mhz[19]</Signal>
+                <Signal>status_50mhz[18]</Signal>
+                <Signal>status_50mhz[17]</Signal>
+                <Signal>status_50mhz[16]</Signal>
+                <Signal>status_50mhz[15]</Signal>
+                <Signal>status_50mhz[14]</Signal>
+                <Signal>status_50mhz[13]</Signal>
+                <Signal>status_50mhz[12]</Signal>
+                <Signal>status_50mhz[11]</Signal>
+                <Signal>status_50mhz[10]</Signal>
+                <Signal>status_50mhz[9]</Signal>
+                <Signal>status_50mhz[8]</Signal>
+                <Signal>status_50mhz[7]</Signal>
+                <Signal>status_50mhz[6]</Signal>
+                <Signal>status_50mhz[5]</Signal>
+                <Signal>status_50mhz[4]</Signal>
+                <Signal>status_50mhz[3]</Signal>
+                <Signal>status_50mhz[2]</Signal>
+                <Signal>status_50mhz[1]</Signal>
+                <Signal>status_50mhz[0]</Signal>
+            </Bus>
+        </SignalList>
+        <Triggers>
+            <Trigger index="0">
+                <SignalList>
+                    <Signal>status_50mhz[2]</Signal>
+                </SignalList>
+            </Trigger>
+            <Trigger index="1" />
+            <Trigger index="2" />
+            <Trigger index="3" />
+            <Trigger index="4" />
+            <Trigger index="5" />
+            <Trigger index="6" />
+            <Trigger index="7" />
+            <Trigger index="8" />
+            <Trigger index="9" />
+            <Trigger index="10" />
+            <Trigger index="11" />
+            <Trigger index="12" />
+            <Trigger index="13" />
+            <Trigger index="14" />
+            <Trigger index="15" />
+        </Triggers>
+        <MatchUnits>
+            <MatchUnit index="0" enabled="1" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="1" value1="0" trigger="0" />
+            <MatchUnit index="1" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="2" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="3" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="4" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="5" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="6" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="7" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="8" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="9" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="10" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="11" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="12" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="13" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="14" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+            <MatchUnit index="15" enabled="0" match_type="0" counter_enable="0" counter_width="2" counter="2" countinuous="0" func="0" value0="" value1="" />
+        </MatchUnits>
+        <Expressions type="Static">
+            <Expression>M0|!M0</Expression>
+        </Expressions>
+    </AoCore>
+    <GAO_ID>1101001010111101</GAO_ID>
+</GAO_CONFIG>

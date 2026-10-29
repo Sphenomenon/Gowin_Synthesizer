@@ -172,8 +172,10 @@ def constraints():
     return '\n'.join(lines) + '\n'
 
 
-def audit_resets(text, clocks):
-    netlist = SynthesisNetlist(text, 'workstation_custom_138k_top')
+def audit_resets(text, clocks, *, feedback_source_clock='clk_50m', top='workstation_custom_138k_top'):
+    if feedback_source_clock not in ('clk_50m', 'audio_76m8'):
+        raise ValueError('unreviewed native feedback source clock')
+    netlist = SynthesisNetlist(text, top)
     constants = {"1'b1"} | {netlist.pin(name, 'V') for name, cell in netlist.cells.items() if cell['kind'] == 'VCC'}
     evidence = dict(resets={}, levels={})
 
@@ -185,7 +187,9 @@ def audit_resets(text, clocks):
         return matches[0]
 
     chains = [(prefix, prefix + '_0', prefix + '_1', clock, True, True) for prefix, clock in RESET_CHAINS.items()]
-    chains += [(prefix + ':' + str(stage), prefix + '_' + str(stage), prefix + '_' + str(stage+1), clock, True, stage==0)
+    chains += [(prefix + ':' + str(stage), prefix + '_' + str(stage), prefix + '_' + str(stage+1),
+                feedback_source_clock if prefix == 'u_native_usb/input_owner/feedback/source_release' else clock,
+                True, stage==0)
                for prefix, clock in THREE_STAGE_RESET_CHAINS.items() for stage in range(2)]
     chains += [(first, first, second, clock, False, False) for first, second, clock in LEVEL_CHAINS]
     for label, first_stem, second_stem, clock, reset_chain, starts_constant in chains:

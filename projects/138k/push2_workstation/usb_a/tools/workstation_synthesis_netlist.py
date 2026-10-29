@@ -76,7 +76,12 @@ class SynthesisNetlist:
             binding = frame['ports'][selected[1]]
             parent = self.scopes[scope]
             part = re.fullmatch(r'([A-Za-z_$][A-Za-z0-9_$]*)\[(\d+)(?::(\d+))?\]', binding)
-            if part and part[3] is None and width == 1:
+            if binding.startswith('{') and binding.endswith('}'):
+                bits = self.concatenation_bits(parent, binding)
+                if len(bits) != width:
+                    raise ValueError('native unsupported vector port binding: ' + binding)
+                target = bits[offset]
+            elif part and part[3] is None and width == 1:
                 target = binding
             else:
                 actual = ((int(part[2]), int(part[3])) if part and part[3] is not None else
@@ -92,6 +97,29 @@ class SynthesisNetlist:
         if net in self.buffers[frame['kind']]:
             return self.canonical(scope, self.buffers[frame['kind']][net], (*seen, key))
         return (scope + '/' if scope else '') + net
+
+    def concatenation_bits(self, scope, binding):
+        bits = []
+        for member in reversed(binding[1:-1].split(',')):
+            member = member.strip()
+            selected = re.fullmatch(r'([A-Za-z_$][A-Za-z0-9_$]*)\[(\d+)(?::(\d+))?\]', member)
+            literal = re.fullmatch(r"(\d+)'b([01]+)", member)
+            if literal and int(literal[1]) == len(literal[2]):
+                bits.extend("1'b" + bit for bit in reversed(literal[2]))
+            elif selected and selected[3] is None:
+                bits.append(member)
+            else:
+                actual = ((int(selected[2]), int(selected[3])) if selected and selected[3] is not None else
+                          self.ranges[self.frames[scope]['kind']].get(member))
+                if actual:
+                    step = 1 if actual[0] >= actual[1] else -1
+                    stem = selected[1] if selected else member
+                    bits.extend(stem + '[' + str(index) + ']' for index in range(actual[1], actual[0] + step, step))
+                elif re.fullmatch(IDENTIFIER, member):
+                    bits.append(member)
+                else:
+                    raise ValueError('native unsupported vector port binding: ' + binding)
+        return bits
 
     def pin(self, instance_path, port):
         return self.canonical(self.scopes[instance_path], self.cells[instance_path]['ports'][port])

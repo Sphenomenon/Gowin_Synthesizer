@@ -16,12 +16,13 @@ module workstation_usb2_service_adapter (
     localparam [1:0] IDLE = 0, REQUEST = 1, RELEASE = 2;
     reg [1:0] state_q;
     reg write_q, illegal_q;
+    reg session_lost_q, detach_pending_q;
     reg [7:0] address_q;
     reg [31:0] data_q;
-    wire detach = !session_valid_i && owner_connected_i;
+    wire detach = owner_connected_i && (!session_valid_i || detach_pending_q);
     wire needs_session = write_q && (address_q == 8'h04 || address_q == 8'h54 ||
                                     (address_q == 8'h00 && data_q[0]));
-    wire stale_request = needs_session && (!session_valid_i ||
+    wire stale_request = needs_session && (session_lost_q || !session_valid_i ||
                           ((address_q == 8'h04 || address_q == 8'h54) && !owner_connected_i));
     wire request = reset_n && state_q == REQUEST && service_valid_i;
     wire rejected = illegal_q || stale_request;
@@ -54,8 +55,11 @@ module workstation_usb2_service_adapter (
     always @(posedge clk_cpu or negedge reset_n) begin
         if (!reset_n) begin
             state_q <= IDLE; write_q <= 0; address_q <= 0; data_q <= 0; illegal_q <= 0;
+            session_lost_q <= 0; detach_pending_q <= 0;
             canceled_requests_o <= 0;
         end else begin
+            if (!owner_connected_i || (detach && owner_ready_i)) detach_pending_q <= 0;
+            else if (!session_valid_i) detach_pending_q <= 1;
             if (state_q == REQUEST && ((!service_valid_i) ||
                 (service_ready_o && stale_request && !illegal_q)) && canceled_requests_o != 32'hffffffff)
                 canceled_requests_o <= canceled_requests_o + 1'b1;
@@ -64,12 +68,14 @@ module workstation_usb2_service_adapter (
                     write_q <= service_write_i;
                     address_q <= service_address_i;
                     data_q <= service_write_data_i;
+                    session_lost_q <= !session_valid_i;
                     illegal_q <= service_address_i[1:0] != 0 ||
                                  (service_write_i ? service_mask_i != 15 || !valid_write(service_address_i) :
                                                     !valid_read(service_address_i));
                     state_q <= REQUEST;
                 end
                 REQUEST: begin
+                    if (!session_valid_i) session_lost_q <= 1;
                     if (!service_valid_i) state_q <= IDLE;
                     else if (service_ready_o) state_q <= RELEASE;
                 end

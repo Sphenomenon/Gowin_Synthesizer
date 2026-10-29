@@ -29,6 +29,7 @@ module workstation_usb2_host_mac #(
     output wire receive_last_o,
     output wire [7:0] utmi_data_o,
     output wire utmi_txvalid_o,
+    output wire utmi_txlast_o,
     input wire utmi_txready_i,
     input wire tx_end_i,
     input wire [7:0] utmi_data_i,
@@ -87,7 +88,10 @@ module workstation_usb2_host_mac #(
     reg [15:0] frame_elapsed_q;
     reg [10:0] frame_q;
     reg [2:0] microframe_q;
-    reg [7:0] transmit_byte;
+    reg [7:0] transmit_literal_q;
+    reg transmit_payload_q;
+    reg transmit_valid_q;
+    wire [7:0] transmit_byte = transmit_payload_q ? transmit_read_q : transmit_literal_q;
     wire [15:0] frame_period = high_speed_i ? 16'd7500 : 16'd60000;
     wire [15:0] transaction_budget = high_speed_i ? 16'd900 : 16'd5000;
     wire bus_gap_ready = high_speed_i ? high_speed_gap_q >= 10'd15 :
@@ -139,7 +143,8 @@ module workstation_usb2_host_mac #(
     assign receive_valid_o = reset_n && drain_q;
     assign receive_last_o = drain_count_q + 10'd1 == result_length_o;
     assign utmi_data_o = transmit_byte;
-    assign utmi_txvalid_o = reset_n && state_q == SEND;
+    assign utmi_txvalid_o = transmit_valid_q;
+    assign utmi_txlast_o = transmit_index_q + 10'd1 == transmit_length_q;
     assign idle_o = state_q == IDLE && bus_gap_ready && !utmi_rxactive_i;
     assign frame_number_o = frame_q;
     assign microframe_o = microframe_q;
@@ -169,26 +174,37 @@ module workstation_usb2_host_mac #(
             receive_buffer[9'(received_count_q - 10'd3)] <= tail_old_q;
     end
 
-    always @* begin
-        transmit_byte = 8'h00;
-        case (packet_q)
-            PACKET_SOF, PACKET_TOKEN: begin
-                case (transmit_index_q)
-                    10'd0: transmit_byte = token_pid_q;
-                    10'd1: transmit_byte = token_bits_q[7:0];
-                    default: transmit_byte = token_bits_q[15:8];
-                endcase
-            end
-            PACKET_DATA: begin
-                if (transmit_index_q == 0) transmit_byte = command_toggle_q ? 8'h4b : 8'hc3;
-                else if (transmit_index_q <= command_length_q)
-                    transmit_byte = transmit_read_q;
-                else if (transmit_index_q == command_length_q + 10'd1) transmit_byte = ~transmit_crc_q[7:0];
-                else transmit_byte = ~transmit_crc_q[15:8];
-            end
-            PACKET_ACK: transmit_byte = 8'hd2;
-            default: begin end
-        endcase
+    always @(posedge clk_ulpi or negedge reset_n) begin
+        if (!reset_n) begin
+            transmit_literal_q <= 0;
+            transmit_payload_q <= 0;
+        end else begin
+            case (state_q)
+                IDLE: if (launch_sof || launch_transaction) begin
+                    transmit_literal_q <= launch_sof ? 8'ha5 : command_pid_q;
+                    transmit_payload_q <= 0;
+                end
+                SEND: if (utmi_txready_i) begin
+                    if (packet_q == PACKET_SOF || packet_q == PACKET_TOKEN) begin
+                        transmit_literal_q <= transmit_index_q == 0 ? token_bits_q[7:0] : token_bits_q[15:8];
+                        transmit_payload_q <= 0;
+                    end else if (packet_q == PACKET_DATA) begin
+                        transmit_payload_q <= transmit_index_q < command_length_q;
+                        transmit_literal_q <= transmit_index_q == command_length_q ?
+                                              ~transmit_crc_q[7:0] : ~transmit_crc_q[15:8];
+                    end
+                end
+                DATA_GAP: begin
+                    transmit_literal_q <= command_toggle_q ? 8'h4b : 8'hc3;
+                    transmit_payload_q <= 0;
+                end
+                ACK_GAP: begin
+                    transmit_literal_q <= 8'hd2;
+                    transmit_payload_q <= 0;
+                end
+                default: begin end
+            endcase
+        end
     end
 
     always @(posedge clk_ulpi or negedge reset_n) begin
@@ -285,6 +301,7 @@ module workstation_usb2_host_mac #(
     always @(posedge clk_ulpi or negedge reset_n) begin
         if (!reset_n) begin
             state_q <= IDLE; previous_state_q <= IDLE; packet_q <= PACKET_SOF;
+            transmit_valid_q <= 0;
             transmit_index_q <= 0; transmit_length_q <= 0; token_bits_q <= 0; token_pid_q <= 0;
             received_count_q <= 0; receive_crc_q <= 16'hffff; received_pid_q <= 0;
             tail_old_q <= 0; tail_new_q <= 0; receive_error_q <= 0; receive_overflow_q <= 0;
@@ -311,13 +328,17 @@ module workstation_usb2_host_mac #(
                 IDLE: begin
                     if (launch_sof || launch_transaction) begin
                         state_q <= SEND; transmit_index_q <= 0; transmit_length_q <= 3;
+                        transmit_valid_q <= 1;
                         packet_q <= launch_sof ? PACKET_SOF : PACKET_TOKEN;
                         token_bits_q <= token_bits(launch_sof ? frame_q : token_q);
                         token_pid_q <= launch_sof ? 8'ha5 : command_pid_q;
                     end
                 end
                 SEND: if (utmi_txready_i) begin
-                    if (transmit_index_q + 10'd1 == transmit_length_q) state_q <= WAIT_END;
+                    if (transmit_index_q + 10'd1 == transmit_length_q) begin
+                        state_q <= WAIT_END;
+                        transmit_valid_q <= 0;
+                    end
                     else transmit_index_q <= transmit_index_q + 10'd1;
                 end
                 WAIT_END: if (tx_end_i) begin
@@ -344,6 +365,7 @@ module workstation_usb2_host_mac #(
                 end
                 DATA_GAP: if (bus_gap_ready) begin
                     state_q <= SEND; packet_q <= PACKET_DATA;
+                    transmit_valid_q <= 1;
                     transmit_index_q <= 0; transmit_length_q <= command_length_q + 10'd3;
                 end
                 WAIT_RX: begin
@@ -378,12 +400,13 @@ module workstation_usb2_host_mac #(
                 ACK_GAP: begin
                     if (high_speed_i ? high_speed_gap_q >= 10'd1 : full_speed_eop_q && full_speed_gap_q >= 8'd8) begin
                         state_q <= SEND; packet_q <= PACKET_ACK; transmit_index_q <= 0; transmit_length_q <= 1;
+                        transmit_valid_q <= 1;
                     end
                 end
                 FAILED: begin end
-                default: state_q <= FAILED;
+                default: begin state_q <= FAILED; transmit_valid_q <= 0; end
             endcase
-            if (watchdog_expired) state_q <= FAILED;
+            if (watchdog_expired) begin state_q <= FAILED; transmit_valid_q <= 0; end
         end
     end
 endmodule

@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 `default_nettype none
 // Synthesizable application/UTMI integration; also the host-BFM test boundary.
-module midi_usb_bridge(
+module midi_usb_bridge #(parameter integer FULL_SPEED_ONLY=0)(
  input wire clk_50mhz,reset,clk_ulpi60,enable,
  input wire[7:0]utmi_rxdata,input wire utmi_rxvalid,utmi_rxactive,utmi_rxerror,
  input wire[1:0]utmi_linestate,input wire utmi_txready,
@@ -49,7 +49,7 @@ module midi_usb_bridge(
  midi_usb_async_fifo #(.WIDTH(8),.ADDR_BITS(8)) control_from_usb(
   .reset(control_flush),.wr_clk(clk_ulpi60),.wr_valid(cr_valid),.wr_ready(cr_ready),.wr_data(cr_data),
   .rd_clk(clk_50mhz),.rd_valid(cr_available),.rd_ready(control_rx_ready&&control_online),.rd_data(control_rx_data));
- midi_usb_device device(
+ midi_usb_device #(.FULL_SPEED_ONLY(FULL_SPEED_ONLY)) device(
   .clk(clk_ulpi60),.reset(reset),.enable(enable),
   .utmi_rxdata(utmi_rxdata),.utmi_rxvalid(utmi_rxvalid),.utmi_rxactive(utmi_rxactive),.utmi_rxerror(utmi_rxerror),
   .utmi_linestate(utmi_linestate),.utmi_txready(utmi_txready),

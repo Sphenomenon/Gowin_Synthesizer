@@ -132,6 +132,33 @@ def audit_master_volume(netlist_text):
                 physical_audio_verified=False)
 
 
+def audit_native_feedback(netlist_text, clocks):
+    netlist = SynthesisNetlist(netlist_text, TOP)
+    prefix = 'u_native_usb/input_owner/feedback/'
+    source_stems = ('held_data_', 'source_release_', 'ack_meta_', 'ack_sync_', 'request_toggle_')
+    destination_stems = ('destination_data_', 'destination_valid_', 'destination_release_', 'req_meta_', 'req_sync_',
+                         'req_settled_', 'acknowledge_toggle_')
+    selected = {name: cell for name, cell in netlist.cells.items()
+                if name.startswith(prefix) and cell['kind'].startswith('DFF')}
+    source = [name for name in selected if name.removeprefix(prefix).startswith(source_stems)]
+    destination = [name for name in selected if name.removeprefix(prefix).startswith(destination_stems)]
+    if (not any(name.startswith(prefix + 'held_data_') for name in source) or
+            not any(name.startswith(prefix + 'destination_data_') for name in destination) or
+            not any(name.startswith(prefix + 'destination_valid_') for name in destination) or
+            not any(name.startswith(prefix + 'req_meta_') for name in destination) or
+            set(source) | set(destination) != set(selected)):
+        raise ValueError('native feedback mailbox register inventory changed')
+    source_clock = clocks['clocks']['audio_76m8']['net']
+    destination_clock = clocks['clocks']['usb_48m']['net']
+    if any(netlist.pin(name, 'CLK') != source_clock for name in source):
+        raise ValueError('native feedback must capture the original audio-domain state')
+    if any(netlist.pin(name, 'CLK') != destination_clock for name in destination):
+        raise ValueError('native feedback destination must be the input-owner CPU clock')
+    return dict(source_clock=source_clock, destination_clock=destination_clock,
+                source_registers=len(source), destination_registers=len(destination),
+                source_domain_verified=True, physical_timing_verified=False)
+
+
 def check_files(base, identities, label):
     if not identities:
         raise ValueError('native audit empty identity map: ' + label)
@@ -402,8 +429,12 @@ def audit(output):
     plan = json.loads(pinout.read_text())
     if metadata['identity'].endswith(('-a11', '-a12', '-a13', '-a14', '-a15', '-a16', '-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')) and plan['constraints_sha256'] != sha(output / 'pinout/custom_138k.locations.cst'):
         raise ValueError('native location constraint identity changed')
-    if (metadata['device'] != plan['device'] or metadata['electrical_blocked'] is not True or
-            plan['electrical_check']['status'] != 'blocked'):
+    electrical = plan['electrical_check']
+    if (metadata['device'] != plan['device'] or
+            electrical['status'] not in ('blocked', 'no_voltage_domain_conflict_detected') or
+            metadata['electrical_blocked'] is not (electrical['status'] == 'blocked') or
+            electrical['actual_board_measured'] is not False or
+            electrical['full_electrical_acceptance'] is not False):
         raise ValueError('native electrical blocking evidence changed')
     files = ElementTree.parse(stage / 'Prj1.gprj').find('FileList')
     selected = [entry.get('path') for entry in files if entry.get('enable') == '1']
@@ -477,7 +508,9 @@ def audit(output):
         extra_sdc += MODEL_FLASH_SDC
     clocks = (audit_clocks(ROOT, stage, netlist_text, extra_sdc=extra_sdc, hdmi_mode=hdmi_mode)
               if not metadata['identity'].endswith('-a2') else None)
-    usb_resets = audit_usb_resets(netlist_text, clocks) if metadata['identity'].endswith(('-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')) else None
+    usb_resets = (audit_usb_resets(netlist_text, clocks,
+                  feedback_source_clock='audio_76m8' if metadata['identity'].endswith('-a26') else 'clk_50m')
+                  if metadata['identity'].endswith(('-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')) else None)
     if metadata['identity'].endswith(('-a21', '-a22', '-a23', '-a24', '-a25', '-a26')):
         native = SynthesisNetlist(netlist_text, TOP)
         readers = [name for name, cell in native.cells.items()
@@ -505,6 +538,7 @@ def audit(output):
         resets = audit_bridge_resets(netlist_text, TOP)
     crossings = audit_usb2_cdc(ROOT, netlist_text, clocks) if crossing_bundle else None
     input_crossings = audit_input_fifo(ROOT, netlist_text, clocks) if input_bundle else None
+    native_feedback = audit_native_feedback(netlist_text, clocks) if metadata['identity'].endswith('-a26') else None
     master_volume = audit_master_volume(netlist_text) if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')) else None
     delay_storage = audit_delay_fifo_storage(netlist_text, rows) if metadata['identity'].endswith(('-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')) else None
     return dict(schema=1, identity=metadata['identity'], validation_stage='native_full_profile_synthesis_only',
@@ -524,11 +558,12 @@ def audit(output):
                 native_usb_reset_audit=usb_resets,
                 usb2_bridge_cdc_audit=crossings,
                 input_fifo_cdc_audit=input_crossings,
-                master_volume_audit=master_volume,
+                master_volume_audit=master_volume, native_feedback_clock_audit=native_feedback,
                 delay_fifo_storage_audit=delay_storage,
                 synthesis_clock_estimates=clock_estimates(base.with_name(base.name + '_syn.rpt.html')),
                 synthesis_warnings=len(re.findall(r'(?m)^WARN\s+\(', text)),
-                electrical_blocked=True, io_electrical_complete=False, timing_closed=False,
+                electrical_check=electrical, electrical_blocked=metadata['electrical_blocked'],
+                io_electrical_complete=False, timing_closed=False,
                 place_route_verified=False, hardware_tested=False, deployment_allowed=False,
                 release_ready=False, bitstream_sha256=None)
 

@@ -22,6 +22,7 @@ module midi_usb_async_fifo #(
   if(reset)wr_release<=0;else wr_release<={wr_release[0],1'b1};
  always @(posedge rd_clk or posedge reset)
   if(reset)rd_release<=0;else rd_release<={rd_release[0],1'b1};
+ wire wr_reset=!wr_release[1],rd_reset=!rd_release[1];
  wire full=wr_gray=={~rd_gray_w2[ADDR_BITS:ADDR_BITS-1],rd_gray_w2[ADDR_BITS-2:0]};
  assign wr_ready=wr_release[1]&&!full;
  assign rd_valid=rd_release[1]&&(rd_gray!=wr_gray_r2);
@@ -33,8 +34,8 @@ module midi_usb_async_fifo #(
  always @(posedge wr_clk)
   if(wr_valid&&wr_ready)memory[wr_bin[ADDR_BITS-1:0]]<=wr_data;
  always @(posedge rd_clk)rd_data_q<=memory[read_address];
- always @(posedge wr_clk or posedge reset)begin
-  if(reset)begin wr_bin<=0;wr_gray<=0;rd_gray_w1<=0;rd_gray_w2<=0;end
+ always @(posedge wr_clk or posedge wr_reset)begin
+  if(wr_reset)begin wr_bin<=0;wr_gray<=0;rd_gray_w1<=0;rd_gray_w2<=0;end
   else begin
    rd_gray_w1<=rd_gray;rd_gray_w2<=rd_gray_w1;
    if(wr_valid&&wr_ready)begin
@@ -42,8 +43,8 @@ module midi_usb_async_fifo #(
    end
   end
  end
- always @(posedge rd_clk or posedge reset)begin
-  if(reset)begin rd_bin<=0;rd_gray<=0;wr_gray_r1<=0;wr_gray_r2<=0;end
+ always @(posedge rd_clk or posedge rd_reset)begin
+  if(rd_reset)begin rd_bin<=0;rd_gray<=0;wr_gray_r1<=0;wr_gray_r2<=0;end
   else begin
    wr_gray_r1<=wr_gray;wr_gray_r2<=wr_gray_r1;
    if(rd_valid&&rd_ready)begin rd_bin<=rd_next;rd_gray<=(rd_next>>1)^rd_next;end

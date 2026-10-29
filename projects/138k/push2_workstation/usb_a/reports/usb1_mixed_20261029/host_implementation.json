@@ -1,0 +1,101 @@
+{
+  "identity": "usb1-fs-138k-C11029F7",
+  "validation_stage": "offline_standalone_implementation_experiment",
+  "passed": true,
+  "source_manifest_sha256": "c03d82617bed731327b13496ad77dc02cddb97bef9e9fb96838bf05f770247bb",
+  "synthesis_verification_sha256": "be9ae21eb7ca2afe9cf71b6a499b8ea35480103e81eea0c9f942722d0bd64b98",
+  "timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "setup_worst_slack_ns": 6.894,
+    "hold_worst_slack_ns": 0.176,
+    "recovery_worst_slack_ns": 6.804,
+    "removal_worst_slack_ns": 0.349,
+    "clocks": [
+      {
+        "name": "clk_50m",
+        "constraint_mhz": 50.0,
+        "actual_fmax_mhz": 393.801
+      },
+      {
+        "name": "clk_usb48",
+        "constraint_mhz": 48.0,
+        "actual_fmax_mhz": 71.738
+      }
+    ],
+    "passed": true
+  },
+  "physical_resources": {
+    "Logic": {
+      "used": 4125,
+      "capacity": 138240
+    },
+    "Register": {
+      "used": 1375,
+      "capacity": 139095
+    },
+    "CLS": {
+      "used": 2448,
+      "capacity": 69120
+    },
+    "BSRAM": {
+      "used": 36,
+      "capacity": 340
+    }
+  },
+  "bitstream": {
+    "path": "projects/138k/push2_workstation/usb_a/results/usb1_host_C11029F7/impl/pnr/usb1_candidate.fs",
+    "bytes": 36599521,
+    "sha256": "6046b4bc84278137d659572defb1429e172a09de4699b760ce62f9c807bbef0d"
+  },
+  "recipe_text": "cd [file dirname [info script]]\nset_device -name GW5AST-138C GW5AST-LV138PG484AC2/I1\nset_option -top_module workstation_usb1_identify_top\nset_option -output_base_name usb1_candidate\nset_option -verilog_std sysv2017\nset_option -synthesis_tool gowinsynthesis\nset_option -timing_driven 1\nset_option -cst_warn_to_error 1\nset_option -use_cpu_as_gpio 1\nset_option -use_sspi_as_gpio 1\nset_option -use_jtag_as_gpio 0\nset_option -use_ready_as_gpio 1\nset_option -use_done_as_gpio 1\nset_option -bit_security 0\nset_option -gen_text_timing_rpt 1\nset_option -user_code C11029F7\nset_option -include_path {.;inputs/projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/src;inputs/projects/25k/example/MIDI_KEYBOARD/rtl/usb_board/vendor}\nset_option -global_freq 48\nadd_file {impl/gwsynthesis/usb1_candidate.vg}\nadd_file usb1.cst\nadd_file usb1.sdc\nrun pnr\n",
+  "recipe_sha256": "52dc787ad76bbfb684eeedfe3ed020793c9151b24c13cb9606832e6cd49db029",
+  "recipe_source_policy": "device/options copied unchanged from sealed synthesis Tcl; only exact synthesized netlist and original CST/SDC passed to fresh P&R",
+  "recipe_retirement": "non-default experiment; migrate into explicit existing build.py flow with equivalent gates before production use or retire on native full-workstation USB1 integration",
+  "command": [
+    "/home/sphenicidition/.local/bin/gw_sh",
+    "implementation.tcl"
+  ],
+  "evidence_sha256": {
+    "synthesis.tcl": "9bae561d889f5ed209feccf9faa1a9e1272e9e376e48e978bbb9d18fa7baa0b4",
+    "usb1.cst": "e40e834e18cdca7edf5ec8b1f1f6e227dd918ef98c2a88dadff68fcd34ad385f",
+    "usb1.sdc": "ca2b58727788132c5ab2d5e4c83922c043adf512a8dc9ef72b08d6c524499b48",
+    "implementation.tcl": "52dc787ad76bbfb684eeedfe3ed020793c9151b24c13cb9606832e6cd49db029",
+    "implementation.log": "f65cdd3ece24077ed0123835e983c04ff4ade549eb741f6d42f03fff1f996ed0",
+    "impl/gwsynthesis/usb1_candidate.vg": "337b04d3c0ecc965d1d0dce73b30612bbd7f231a618b9e450ae96ea245ee8838",
+    "impl/pnr/usb1_candidate.tr": "4ed3b70259c463645d0d5de496ca930eecb4b5b63eef60b441c3a63fced36dd2",
+    "impl/pnr/usb1_candidate.rpt.txt": "f7f46aebe3118eaf21f0bd302e4c0cdf65642f57e31b6b03a5550cea079c6612",
+    "impl/pnr/cmd.do": "ad8d9eb51a085244a2ec98c47b1336e6421400bad91676cebd257c6259a8e50b"
+  },
+  "warnings": [
+    "WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk_50m_d' by the specified constraint. And then it may lead to the excessive delay or skew"
+  ],
+  "asynchronous_reset_exception": {
+    "stages": [
+      "clock/release_q_0_s0",
+      "clock/release_q_1_s0",
+      "clock/release_q_2_s0"
+    ],
+    "asynchronous_reset_sources": [
+      "clock/pll/u_pll_init/state_0_s0/Q",
+      "clock/pll/u_pll_init/state_1_s0/Q",
+      "clock/pll/u_pll_init/state_2_s0/Q"
+    ],
+    "exception": "set_false_path -to [get_pins {clock/release_q*_s*/CLEAR}]",
+    "release_cycles": 3
+  },
+  "input_sampler_constraint_pins": {
+    "rx_dp_ms": "host/phy/phy_0/rx_dp_ms_s0/D",
+    "rx_dn_ms": "host/phy/phy_0/rx_dn_ms_s0/D",
+    "rxd_ms": "host/phy/phy_0/rxd_ms_s0/D"
+  },
+  "reset_cdc_offline_checked": true,
+  "physical_cdc_accepted": false,
+  "pll_physical_verified": false,
+  "electrical_accepted": false,
+  "hardware_validated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "full_workstation": false
+}

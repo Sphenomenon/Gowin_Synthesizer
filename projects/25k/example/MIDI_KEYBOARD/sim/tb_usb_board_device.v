@@ -1,9 +1,9 @@
 `timescale 1ns/1ps
 // Independent host BFM exercises actual token/PID/CRC paths at UTMI and a
 // distinct 50MHz application clock. No internal state is forced.
-module tb_usb_board_device #(parameter integer HIGH_SPEED=1);
+module tb_usb_board_device #(parameter integer HIGH_SPEED=1,FULL_SPEED_ONLY=0);
  localparam integer BULK_BYTES=HIGH_SPEED?512:64;
- reg clk=0,appclk=0;always #8.333 clk=~clk;always #10 appclk=~appclk;
+ reg clk=0,appclk=0;always #(FULL_SPEED_ONLY?10.417:8.333) clk=~clk;always #10 appclk=~appclk;
  reg reset=1,enable=0;reg[7:0]rxdata=0;reg rxvalid=0,rxactive=0,rxerror=0;
  reg[1:0]linestate=1;wire[7:0]txdata;wire txvalid;reg txready=1;
  wire[1:0]opmode,xcvr;wire term,dpdown,dmdown,online,control_reset,hs;
@@ -12,7 +12,7 @@ module tb_usb_board_device #(parameter integer HIGH_SPEED=1);
  wire midi_rx_valid;reg midi_rx_ready=0;wire[31:0]midi_rx_data;
  reg control_tx_valid=0;wire control_tx_ready;reg[7:0]control_tx_data=0;
  wire control_rx_valid;reg control_rx_ready=0;wire[7:0]control_rx_data;
- midi_usb_bridge dut(.clk_50mhz(appclk),.reset(reset),.clk_ulpi60(clk),.enable(enable),
+ midi_usb_bridge #(.FULL_SPEED_ONLY(FULL_SPEED_ONLY)) dut(.clk_50mhz(appclk),.reset(reset),.clk_ulpi60(clk),.enable(enable),
   .utmi_rxdata(rxdata),.utmi_rxvalid(rxvalid),.utmi_rxactive(rxactive),.utmi_rxerror(rxerror),
   .utmi_linestate(linestate),.utmi_txready(txready),.utmi_txdata(txdata),.utmi_txvalid(txvalid),
   .utmi_opmode(opmode),.utmi_xcvr(xcvr),.utmi_termsel(term),.utmi_dppd(dpdown),.utmi_dmpd(dmdown),
@@ -127,11 +127,18 @@ module tb_usb_board_device #(parameter integer HIGH_SPEED=1);
  endtask
  initial begin
   idle(10);reset=0;enable=1;
+  if(FULL_SPEED_ONLY)begin
+   linestate=0;idle(200);check(!hs&&hsstate==4&&opmode==0&&xcvr==1&&term,"FS-only reset without chirp");
+  end else begin
   wait(hsstate==1);idle(10);linestate=0;wait(hsstate==3);
   if(HIGH_SPEED)begin
    for(i=0;i<6;i=i+1)begin linestate=i[0]?1:2;idle(2400);end
    check(hsstate==5,"high speed negotiation");
-  end else begin wait(hsstate==4);check(!hs,"full speed fallback");end
+  end else begin
+   wait(hsstate==4);check(!hs,"full speed fallback");
+   idle(300000);check(hsstate==4&&!hs,"FS fallback survives the remaining host reset");
+  end
+  end
   linestate=HIGH_SPEED?0:1;idle(20);collecting=1;
   control_get(8'h80,6,16'h0100,0,64,18);
   check(collected[4]==0&&collected[7]==64&&collected[8]==8'h9a&&collected[10]==8'h9b,"composite device descriptor");
@@ -149,8 +156,13 @@ module tb_usb_board_device #(parameter integer HIGH_SPEED=1);
    end check(eps==4&&interfaces==3,"descriptor walk complete");
   end
   control_get(8'h80,6,16'h0200,0,9,9);
-  control_get(8'h80,6,16'h0600,0,255,10);check(collected[7]==64,"qualifier EP0 size64");
-  control_get(8'h80,6,16'h0700,0,255,124);check(collected[1]==7,"other speed config");
+  if(FULL_SPEED_ONLY)begin
+   setup(8'h80,6,16'h0600,0,255);base=response_count;token(4'h9,0);check_handshake(base,8'h1e);
+   setup(8'h80,6,16'h0700,0,255);base=response_count;token(4'h9,0);check_handshake(base,8'h1e);
+  end else begin
+   control_get(8'h80,6,16'h0600,0,255,10);check(collected[7]==64,"qualifier EP0 size64");
+   control_get(8'h80,6,16'h0700,0,255,124);check(collected[1]==7,"other speed config");
+  end
   control_get(8'h80,6,16'h0302,16'h0409,255,36);
   setup(8'h80,6,16'h9900,0,32);base=response_count;token(4'h9,0);check_handshake(base,8'h1e);
   setup(8'h21,8'h22,3,0,0);base=response_count;token(4'h9,0);check_handshake(base,8'h1e);
@@ -269,13 +281,26 @@ module tb_usb_board_device #(parameter integer HIGH_SPEED=1);
   base=response_count;token(4'h9,2);check_handshake(base,8'h5a);
   // Real bus reset and a fresh speed negotiation must clear address,
   // configuration, bulk toggles, both CDC directions, and partial controls.
-  linestate=0;idle(650000);
+  linestate=0;
+  if(HIGH_SPEED&&!FULL_SPEED_ONLY)begin:timed_hs_reset
+   integer reset_wait_cycles;
+   reset_wait_cycles=0;
+   while(hsstate!=3&&reset_wait_cycles<420000)begin
+    idle(1);reset_wait_cycles=reset_wait_cycles+1;
+   end
+   check(hsstate==3&&reset_wait_cycles<420000,"HS warm chirp ends within Host 7ms window");
+  end else idle(650000);
   check(!online&&control_reset&&address==0,"USB bus reset clears the complete session");
-  wait(hsstate==3);
+  if(!FULL_SPEED_ONLY)begin
   if(HIGH_SPEED)begin
+   wait(hsstate==3);
    for(i=0;i<6;i=i+1)begin linestate=i[0]?1:2;idle(2400);end
    check(hsstate==5,"HS renegotiates after reset");
-  end else begin wait(hsstate==4);check(!hs,"FS fallback repeats after reset");end
+  end else begin
+   wait(hsstate==4);check(!hs,"FS fallback repeats after reset");
+   idle(300000);check(hsstate==4&&!hs,"repeated FS fallback survives the remaining host reset");
+  end
+  end
   linestate=HIGH_SPEED?0:1;idle(20);current_address=0;
   control_get(8'h80,6,16'h0100,0,18,18);
   control_set(0,5,9,0);control_set(0,9,1,0);idle(20);

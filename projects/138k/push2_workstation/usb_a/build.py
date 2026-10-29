@@ -43,8 +43,18 @@ def main():
     ap.add_argument('--prepare-usb2-soc',action='store_true',help='Prepare native CPU/USB2 component with explicit probe or workstation firmware; not an integrated board candidate')
     ap.add_argument('--usb2-soc-output',type=Path,help='Required new output directory for --prepare-usb2-soc')
     ap.add_argument('--usb2-firmware-profile',choices=['probe','workstation'],help='Explicit USB2 CPU firmware; default probe, never changes accepted workstation profiles')
-    ap.add_argument('--usb2-component',choices=['soc','workstation-input','workstation-audio'],help='Explicit component composition; input/audio require workstation firmware')
+    ap.add_argument('--usb2-component',choices=['soc','workstation-input','workstation-audio','workstation-hotplug'],help='Explicit component composition; input/audio/hotplug require workstation firmware')
+    ap.add_argument('--usb2-hdmi-baseline',type=Path,help='Compose workstation-hotplug with the explicitly checked accepted C11028D5 HDMI baseline')
+    ap.add_argument('--usb2-observer-profile',choices=['owner','phy','port'],help='Explicit combined HDMI/USB observer; port retains attempt history and packet counters')
+    ap.add_argument('--usb2-observer-trigger',choices=['reset','clock-failure'],help='Combined observer trigger; clock-failure requires the phy profile')
     ap.add_argument('--usb2-full-speed-only',action='store_true',help='Explicit native workstation diagnostic policy; HS remains enabled by default')
+    ap.add_argument('--ulpi-selftest',action='store_true',help='Standalone PHY register/clock test; no CPU, DDR, HDMI or programming')
+    ap.add_argument('--ulpi-output',type=Path,help='New output directory for --ulpi-selftest')
+    ap.add_argument('--ulpi-clock-pull',choices=['NONE','UP','DOWN'],help='Standalone self-test CLK input weak pull experiment only; default unchanged')
+    ap.add_argument('--ulpi-clock-probe',action='store_true',help='Standalone self-test only: receive CLKOUT through FPC2.8/C17; unplug amplifier cable and use a temporary probe wire')
+    ap.add_argument('--usb1-identify',action='store_true',help='Explicit USB1 FS host/keyboard candidate; no accepted profile switch or programming')
+    ap.add_argument('--usb1-board',choices=['138k','25k'],help='USB1 candidate target; default 138k host')
+    ap.add_argument('--usb1-output',type=Path,help='New USB1 candidate output directory')
     ap.add_argument('--current-workstation',action='store_true',
                     help='Merge scope into accepted full83; full requires UserCode, never changes board latest')
     ap.add_argument('--tf-audio-kind',choices=['mp3','wav','flac'],default='wav',
@@ -60,6 +70,58 @@ def main():
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=ap.parse_args()
+    if args.usb1_identify:
+        allowed={'usb1_identify','usb1_board','usb1_output','netlist_dir','user_code','riscv_prefix','prepare_only','synthesis_only','tf_audio_kind'}
+        if args.tf_audio_kind!='wav' or any(value for key,value in vars(args).items() if key not in allowed):
+            ap.error('--usb1-identify cannot be mixed with other build profiles')
+        if args.usb1_output is None or args.user_code is None or args.prepare_only==args.synthesis_only:
+            ap.error('--usb1-identify requires --usb1-output, new --user-code, and exactly one of --prepare-only/--synthesis-only')
+        from tools.workstation_usb1 import prepare as prepare_usb1, build as build_usb1
+        try:
+            output,metadata=prepare_usb1(ROOT,args.usb1_output,args.user_code,args.usb1_board or '138k',args.netlist_dir,args.riscv_prefix)
+            print(output,flush=True)
+            print(json.dumps(build_usb1(output) if args.synthesis_only else metadata),flush=True)
+        except (ValueError,OSError,subprocess.CalledProcessError) as error:
+            ap.error(str(error))
+        return
+    if args.usb1_board is not None or args.usb1_output is not None:
+        ap.error('--usb1-board/--usb1-output requires --usb1-identify')
+    if args.ulpi_selftest:
+        if args.ulpi_output is None or args.netlist_dir is None or args.user_code is None:
+            ap.error('--ulpi-selftest requires --ulpi-output, --netlist-dir and a new --user-code')
+        if (args.prepare_custom_board or args.prepare_pinout or args.prepare_usb2_soc or args.current_workstation or
+                args.cnn_timing85 or args.resource_rework or args.resource_timing or args.reuse_synthesis or
+                args.hdmi_isolation or args.hdmi_output or args.hdmi_input or args.hdmi_mode or
+                args.usb2_hdmi_baseline or args.usb2_observer_profile or args.usb2_observer_trigger or
+                args.usb2_firmware_profile or args.usb2_component or args.usb2_soc_output or
+                args.custom_board_output or args.pinout_output or args.usb2_full_speed_only or
+                args.replicate_resources or args.place_option is not None or args.max_fanout is not None or
+                args.riscv_prefix or args.tf_audio_kind!='wav' or (args.prepare_only and args.synthesis_only)):
+            ap.error('--ulpi-selftest cannot be mixed with other component or workstation profiles')
+        from tools.workstation_ulpi_selftest import prepare as prepare_ulpi, build as build_ulpi
+        try:
+            output,metadata=prepare_ulpi(ROOT,args.netlist_dir,args.ulpi_output,args.user_code,args.ulpi_clock_pull,args.ulpi_clock_probe)
+            print(output,flush=True)
+            print(json.dumps(dict(identity=metadata['identity'],sources=len(metadata['source_paths']),
+                                  full_workstation=False)),flush=True)
+            if not args.prepare_only:
+                result=build_ulpi(output,args.synthesis_only)
+                print(json.dumps(result))
+                if result['returncode']:
+                    raise SystemExit(result['returncode'])
+        except (ValueError,OSError,subprocess.CalledProcessError) as error:
+            ap.error(str(error))
+        return
+    if args.ulpi_output is not None:
+        ap.error('--ulpi-output requires --ulpi-selftest')
+    if args.ulpi_clock_pull is not None:
+        ap.error('--ulpi-clock-pull requires --ulpi-selftest')
+    if args.ulpi_clock_probe:
+        ap.error('--ulpi-clock-probe requires --ulpi-selftest')
+    if (args.usb2_observer_profile is not None or args.usb2_observer_trigger is not None) and args.usb2_hdmi_baseline is None:
+        ap.error('--usb2-observer-profile/--usb2-observer-trigger requires --usb2-hdmi-baseline')
+    if args.usb2_hdmi_baseline is not None and not (args.prepare_usb2_soc and args.usb2_component=='workstation-hotplug'):
+        ap.error('--usb2-hdmi-baseline requires --prepare-usb2-soc --usb2-component workstation-hotplug')
     if args.hdmi_isolation:
         if args.hdmi_output is None or args.netlist_dir is None or args.user_code is None:
             ap.error('--hdmi-isolation requires --hdmi-output, --netlist-dir and a new --user-code')
@@ -117,17 +179,31 @@ def main():
     if args.prepare_usb2_soc:
         if args.usb2_soc_output is None:
             ap.error('--prepare-usb2-soc requires --usb2-soc-output')
-        if (args.prepare_pinout or args.netlist_dir is not None or args.pinout_output is not None or
+        hotplug = args.usb2_component == 'workstation-hotplug'
+        if hotplug and args.usb2_firmware_profile != 'workstation':
+            ap.error('workstation-hotplug requires explicit --usb2-firmware-profile workstation')
+        if (args.prepare_pinout or (args.netlist_dir is not None and not hotplug) or args.pinout_output is not None or
                 args.prepare_only or args.synthesis_only or args.reuse_synthesis or args.no_update_latest or
                 args.current_workstation or args.cnn_timing85 or args.resource_rework or args.resource_timing or
                 args.replicate_resources or args.place_option is not None or args.max_fanout is not None or
-                args.user_code is not None or args.tf_audio_kind!='wav'):
+                (args.user_code is not None and not hotplug) or args.tf_audio_kind!='wav'):
             ap.error('--prepare-usb2-soc cannot be mixed with pinout, workstation, synthesis or release options')
         from tools.workstation_usb2_soc import prepare as prepare_usb2_soc
         try:
-            output,metadata=prepare_usb2_soc(ROOT,args.usb2_soc_output,args.riscv_prefix,
-                                           args.usb2_firmware_profile or 'probe',not args.usb2_full_speed_only,
-                                           args.usb2_component or 'soc')
+            if hotplug:
+                if args.usb2_hdmi_baseline is not None:
+                    from tools.workstation_usb2_hdmi import prepare as prepare_usb2_hdmi
+                    output,metadata=prepare_usb2_hdmi(ROOT,args.usb2_soc_output,args.netlist_dir,args.user_code,
+                                                    args.usb2_hdmi_baseline,args.riscv_prefix,not args.usb2_full_speed_only,
+                                                    args.usb2_observer_profile or 'owner',args.usb2_observer_trigger or 'reset')
+                else:
+                    from tools.workstation_usb2_hotplug import prepare as prepare_hotplug
+                    output,metadata=prepare_hotplug(ROOT,args.usb2_soc_output,args.netlist_dir,args.user_code,
+                                                   args.riscv_prefix,not args.usb2_full_speed_only)
+            else:
+                output,metadata=prepare_usb2_soc(ROOT,args.usb2_soc_output,args.riscv_prefix,
+                                               args.usb2_firmware_profile or 'probe',not args.usb2_full_speed_only,
+                                               args.usb2_component or 'soc')
         except (ValueError,OSError,subprocess.CalledProcessError) as error:
             ap.error(str(error))
         print(output)

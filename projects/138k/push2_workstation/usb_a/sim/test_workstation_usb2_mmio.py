@@ -31,6 +31,11 @@ def mmio_sources():
 class CpuBoundary(unittest.TestCase):
     run_simulation = ulpi_regression.PhysicalLink.run_simulation
 
+    def test_port_observer_retains_evidence_across_host_retries(self):
+        self.run_simulation('tb_workstation_usb2_port_observer', [
+            *mmio_sources(), ROOT / 'sim/usb2/tb_workstation_usb2_port_observer.sv',
+        ], 'PASS workstation_usb2_port_observer:')
+
     def test_live_reference_diagnostics_without_phy_clock(self):
         self.run_simulation('tb_workstation_usb2_mmio_clock', [
             *mmio_sources(), ROOT / 'sim/usb2/usb3300_register_model.sv',

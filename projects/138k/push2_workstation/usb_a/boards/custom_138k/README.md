@@ -2,7 +2,20 @@
 
 本目录维护 USB2 USB-A／USB3300 底板的显式网表级引脚配置，不替代已接受的旧 Dock 整机配置。配置身份为 `custom_138k_usb2_20261022_pinout_v2`；日期化来源和验证见[重定位记录](../../reports/CUSTOM_BOARD_PIN_RELOCATION_20261022.md)及[上板前检查](../../reports/CUSTOM_BOARD_PREFLIGHT_20261022.md)，逐脚来源见[网表候选表](../../reports/CUSTOM_BOARD_PINMAP_20261022.md)。
 
-**已知电气阻断：** 原有工程中 U2 为 USB3300-EZK，U4／U5 为 TXS0108E／TXS0104E；当前网表把 PHY 接在两转换器的 1.8V A 侧，而 USB3300 逻辑输入要求 VIH 至少 2.0V。STP 高电平不满足要求，PHY 返回信号也不在 A 侧推荐输入范围内。生成结果显式报告 `electrical_check.status=blocked`，不是硬件已测结论；不能通过修改 FPGA IO_TYPE 或仅改软件解除，须核对实际装配／供电并审查硬件修正。不得把本位置规划用于新板固化。
+**旁路装配声明与离线电压检查：** 用户声明 U4／U5 均为 `not_fitted_short`：不装 TXS0108E／TXS0104E，将对应 A／B 信号焊盘短接；U2 仍为 USB3300-EZK。锁定网表及其哈希不改，仅用它追踪焊盘连接和 FPGA 球位。ULPI 直接连到 FPGA，电压检查采用 B 侧的名义 `3V3_USB3300`（U4.19／U5.14），不再套用未装转换器的 1.8V A 侧限制，因此不报告 `ULPI_PHY_OUTPUT_DOMAIN`／`ULPI_STP_HIGH_LEVEL`，生成 `electrical_check.status=no_voltage_domain_conflict_detected`。这只是声明装配下未发现名义电压域冲突；本项唯一待实测的是 **USB3300 的 ULPI IO 是否确由 3V3 供电**。`actual_board_measured=false`、`full_electrical_acceptance=false` 和禁止部署的门禁保持，不主张硬件验收。现有生成器已输出全部 ULPI `IO_LOC`，无需新增 CST；日后 P&R 再补 `IO_TYPE=LVCMOS33`，不能据此宣布当前电气约束完整或允许固化。
+
+## 独立离线 P&R 输入
+
+纯引脚生成器仍只为 ULPI 输出 `IO_LOC`，不改变本文的离线位置规划契约。进入独立物理实验时，可在既有准备入口显式选择 `--ulpi-bypass-lvcmos33`：只接受完整的 U4／U5 旁路声明及已审计的 B 侧名义 3V3 证据，在生成的 `physical.cst` 追加 12 条 ULPI `IO_PORT ... IO_TYPE=LVCMOS33`。其余 CST 原字节、全部球位、SDC、时钟和例外不变；输入／输出 CST 哈希及引脚证据写入 `physical_inputs.json`，原 pinout 和综合网表候选不修改。
+
+```sh
+PYTHONPATH=projects/138k/push2_workstation/usb_a python3 \
+  projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_implementation.py \
+  --source "$NATIVE_CANDIDATE" --output "$PHYSICAL_OUTPUT" --user-code "$NEW_USERCODE" \
+  --acknowledge-electrical-risk --ulpi-bypass-lvcmos33
+```
+
+此风险确认只覆盖调用者的离线实现实验，不是板卡操作授权、供电实测或电气验收。重复或已有的 ULPI IO 类型、缺少／漂移的球位、部分旁路和不符的供电证据均拒绝；不自动设置 ULPI 外部输入／输出时序，也不把 IO 类型补齐算作 P&R／CDC／PLL／物理资源通过。SRAM／Flash 仍须另行明确授权。后续电气配置完整并进入正式集成时，应把已核对的 IO 策略收敛到板级电气配置，再退休此显式实验选项，不把实验输出当成唯一生产输入。
 
 ## 准备命令
 
@@ -19,7 +32,7 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 默认新建被忽略的 `usb_a/results/custom_138k_pinout_<时间>/`，也可用 `--pinout-output <不存在的目录>` 指定位置；拒绝覆盖已有目录或把输出放进网表输入目录。产生：
 
 - `custom_138k.locations.cst`：核心板固定约束和新底板端口的 `IO_LOC`；新外设的电气约束尚未实现。
-- `pinout.json`：端口／球位、HDMI 极性、蓝牙排线关系、保留脚、假设、电气阻断及缺口；同时记录输入网表、锁定核心板约束、配置和生成工具哈希。型号与电压要求的来源记录在 `electrical_evidence`，不把网表中 `{Value}` 当成型号，也不把名义电压当作实测。
+- `pinout.json`：端口／球位、HDMI 极性、蓝牙排线关系、保留脚、假设、旁路声明、电气检查及缺口；同时记录输入网表、锁定核心板约束、配置和生成工具哈希。型号与电压要求的来源记录在 `electrical_evidence`，不把网表中 `{Value}` 当成型号，也不把名义电压当作实测。
 
 输出是 **`offline_pinout_only`，`synthesis_allowed=false`** 的位置规划，不生成 `.gprj`、位流或可下载整机，不更新 latest／部署索引。不能与 `--prepare-only`、综合、整机来源或发布选项混用；旧板构建命令保持原义和默认输入。
 
@@ -27,7 +40,7 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 
 - 只从 `accepted_full83` 锁定约束读取同一 30354 核心板的 `clk_50m`、调试 UART 和全部 `ddr_*` 固定约束，保留其 `IO_LOC`／`IO_PORT`；这不表示选择 full83 的整机 RTL。
 - 功放按底板 `FPC2.n → FPC1.n`，RN1／RN2 按 `1↔8、2↔7、3↔6、4↔5` 配对推导。两项均是待验证假设，不是实体导通验收。映射从底板实际端点取得，不能照抄功放网名中的旧球位：MCLK 为 **D17**、PDN 为 **C17**，而 **B17 已属于 ULPI DATA7**。
-- USB2 解析 8 位 DATA 和 CLK／DIR／NXT／STP 的转换器两侧网络，并检查 VCCA／VCCB／OE 和 RESET 的现有连接；不虚构 FPGA 可控 PHY RESET，也不把旧 D+/D− 软 PHY 接口当成 ULPI。
+- USB2 解析 8 位 DATA 和 CLK／DIR／NXT／STP 的转换器焊盘两侧网络，按 `ulpi_bypass` 采用 B 侧名义供电；仅对仍装配的转换器检查 VCCA／OE，RESET 连接检查保持。不虚构 FPGA 可控 PHY RESET，也不把旧 D+/D− 软 PHY 接口当成 ULPI。
 - TF SPI 的 MOSI 为 **W14**；Y16 与 AB15 是保留的其他数据脚。
 - HDMI 保持原生合法差分对顺序；四对均记录串行极性补偿需求，不能用交换 `IO_LOC` 正负球位代替逻辑补偿。K14 是 CEC，不再是旧 `hdmi_tx_en`。
 - 蓝牙按底板 `FPC3.n → FPC1.(25−n)` 核对 15 根信号和八个电源／地触点。本位置规划仍只记录线序；原生装配另用 `bluetooth.json` 核对自定义 J2 与核心板 C2400 的编号转换及周边锚点，接入 T14／W12／AA9／AA13 四根 UART／使能信号，并选择 `bluetooth.cst`。PCM／SDIO／HOST_WAKE 未新增驱动。
@@ -43,7 +56,7 @@ python3 projects/138k/push2_workstation/usb_a/build.py \
 
 外设集成的完整交付清单及 ULPI 开发库进展见 [新板 bring-up 清单](../../reports/CUSTOM_BOARD_BRINGUP_20261022.md)。新库尚未选入整机配置，不能把 PHY 自检 ready 当作 USB High-Speed Host、25K MIDI／PL 或上板验收。
 
-后续 [HS／FS 端口联调](../../reports/CUSTOM_BOARD_USB2_HOST_PORT_20261022.md) 已加入 50 ms 根复位、连续 K/J、FS 回退和实际 25K 核的计时回归。它仍缺 Host MAC／固件与整机接入，不改变本配置的 pinout-only／电气阻断状态。
+后续 [HS／FS 端口联调](../../reports/CUSTOM_BOARD_USB2_HOST_PORT_20261022.md) 已加入 50 ms 根复位、连续 K/J、FS 回退和实际 25K 核的计时回归。该阶段仍缺 Host MAC／固件与整机接入，不改变本配置的 pinout-only／电气验收未完成状态。
 
 更新的 [Host MAC 包级进展](../../reports/CUSTOM_BOARD_USB2_HOST_MAC_20261022.md) 已补独立事务引擎及真实 25K 枚举／HS 512 字节、FS 64 字节回环。[原生控制器进展](../../reports/CUSTOM_BOARD_USB2_CONTROLLER_20261022.md) 已进一步完成 PHY＋MAC 同链路仿真、故障隔离与 Gowin 组件综合；仍须接入 CPU／固件并组成完整新板配置，不能当成 MIDI／PL 或实板完成。
 

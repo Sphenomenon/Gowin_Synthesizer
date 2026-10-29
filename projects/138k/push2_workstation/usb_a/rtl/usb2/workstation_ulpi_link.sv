@@ -1,9 +1,11 @@
 module workstation_ulpi_link #(
     parameter integer TRANSACTION_TIMEOUT_CYCLES = 60000,
-    parameter integer NOPID_TIMEOUT_CYCLES = 3600000
+    parameter integer NOPID_TIMEOUT_CYCLES = 3600000,
+    parameter integer REGISTER_STP = 0
 )(
     input wire clk_ulpi,
     input wire reset_n,
+    input wire stp_release_n_i,
     input wire [7:0] ulpi_data_i,
     input wire ulpi_dir_i,
     input wire ulpi_nxt_i,
@@ -21,6 +23,7 @@ module workstation_ulpi_link #(
     output reg [2:0] csr_response_error_o,
     input wire [7:0] utmi_data_i,
     input wire utmi_txvalid_i,
+    input wire utmi_txlast_i,
     input wire utmi_tx_nopid_i,
     output wire utmi_txready_o,
     output reg [7:0] utmi_data_o,
@@ -60,6 +63,7 @@ module workstation_ulpi_link #(
     reg [7:0] read_data_q;
     reg [3:0] transmit_pid_q;
     reg transmit_nopid_q;
+    reg registered_stop_q;
     reg [TIMER_WIDTH-1:0] elapsed_q;
     wire bus_free = !ulpi_dir_i && !direction_q;
     wire register_active = state_q >= REGISTER_COMMAND && state_q <= READ_RELEASE;
@@ -69,7 +73,8 @@ module workstation_ulpi_link #(
     wire [TIMER_WIDTH-1:0] active_limit = transmit_active && transmit_nopid_q ? NOPID_LIMIT : TIMEOUT_LIMIT;
 
     assign ulpi_data_oe_o = reset_n && bus_free;
-    assign ulpi_stp_o = !reset_n || (bus_free && (state_q == REGISTER_STOP || packet_end));
+    assign ulpi_stp_o = REGISTER_STP != 0 ? registered_stop_q :
+                       !reset_n || bus_free && (state_q == REGISTER_STOP || packet_end);
     assign csr_ready_o = reset_n && bus_free && !fatal_error_o && state_q == IDLE &&
                          !csr_response_valid_o && !utmi_rxactive_o;
     assign utmi_txready_o = reset_n && bus_free && !fatal_error_o && ulpi_nxt_i &&
@@ -85,6 +90,25 @@ module workstation_ulpi_link #(
             TRANSMIT_DATA: ulpi_data_o = utmi_txvalid_i ? utmi_data_i : 8'h00;
             default: begin end
         endcase
+    end
+
+    wire stop_release_n = reset_n && (REGISTER_STP == 0 || stp_release_n_i);
+    always @(posedge clk_ulpi or negedge stop_release_n) begin
+        if (!stop_release_n) registered_stop_q <= 1;
+        else begin
+            registered_stop_q <= 0;
+            if (bus_free) begin
+                if (state_q == REGISTER_DATA && ulpi_nxt_i)
+                    registered_stop_q <= 1;
+                else if (state_q == TRANSMIT_COMMAND && !transmit_nopid_q &&
+                         ulpi_nxt_i && utmi_txvalid_i && utmi_txlast_i)
+                    registered_stop_q <= 1;
+                else if (state_q == TRANSMIT_DATA && !registered_stop_q &&
+                         (transmit_nopid_q ? !utmi_txvalid_i :
+                          ulpi_nxt_i && utmi_txvalid_i && utmi_txlast_i))
+                    registered_stop_q <= 1;
+            end
+        end
     end
 
     always @(posedge clk_ulpi or negedge reset_n) begin
@@ -259,7 +283,7 @@ module workstation_ulpi_link #(
                             state_q <= IDLE;
                             fatal_error_o <= 1'b1;
                             tx_abort_o <= 1'b1;
-                        end else if (bus_free && !utmi_txvalid_i) begin
+                        end else if (bus_free && (REGISTER_STP != 0 ? registered_stop_q : !utmi_txvalid_i)) begin
                             state_q <= IDLE;
                         end
                     end

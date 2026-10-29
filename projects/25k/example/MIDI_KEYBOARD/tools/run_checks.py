@@ -42,7 +42,7 @@ def sha256(path):
 
 def input_names():
     """Hash complete RTL/ROM, constraints, configs, tests and build tooling."""
-    names = {"sources.f", "build.tcl", "build.sh", "run_sim.sh"}
+    names = {"sources.f", "build.tcl", "build.sh", "run_sim.sh", "usb1_profile.vh", "usb2_debug_profile.vh"}
     for directory in ("rtl", "constraints", "config", "sim", "tools", REFERENCE, PANEL_REFERENCE):
         for path in (PROJECT / directory).rglob("*"):
             if path.is_file() and "__pycache__" not in path.parts:
@@ -200,6 +200,12 @@ def main():
             run("Board top elaboration (Verilog-2005)",
                 ["iverilog", "-g2005", "-Wall", *INCLUDE_FLAGS, "-s", "midi_keyboard_top",
                  "-tnull", "-c", "sources.f", IO_MODELS])
+            run("USB2 debug top elaboration (Verilog-2005)",
+                ["iverilog", "-g2005", "-Wall", "-DMIDI_USB2_DIAGNOSTICS", *INCLUDE_FLAGS,
+                 "-s", "midi_keyboard_top", "-tnull", "-c", "sources.f", IO_MODELS])
+            run("USB2 temporary probe top elaboration (Verilog-2005)",
+                ["iverilog", "-g2005", "-Wall", "-DMIDI_USB2_DIAGNOSTICS", "-DMIDI_USB2_PROBE", *INCLUDE_FLAGS,
+                 "-s", "midi_usb2_probe_top", "-tnull", "-c", "sources.f", IO_MODELS])
             for test in tests:
                 executable = str(Path(temporary) / test)
                 command = ["iverilog", "-g2012", "-Wall", *INCLUDE_FLAGS, "-s", test,
