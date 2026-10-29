@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "id": "BLUETOOTH",
+  "board": "custom_138k",
+  "source_commit": "c7e1c596a95b931e0577fc7c535ba65be1493334",
+  "assembly_status": "pending",
+  "purpose": "Native 138K RTL8723DS business transport and existing reliable recording/download protocol",
+  "source_links": {
+    "driver.sv": "projects/138k/push2_workstation/usb_a/rtl/bluetooth/workstation_bluetooth.sv",
+    "assembly.py": "projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth.py",
+    "synthesize.py": "projects/138k/push2_workstation/usb_a/tools/synthesize_workstation_bluetooth.py",
+    "protocol": "projects/25k/example/RTL8723DS_PROTOCOL",
+    "transport": "example/RTL8723DS/vendor/rtl8723ds_ble",
+    "bringup": "example/RTL8723DS",
+    "wiring.json": "projects/138k/push2_workstation/usb_a/boards/custom_138k/bluetooth.json",
+    "verification.md": "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_BLE_C11027C1_20261027.md"
+  },
+  "reference_candidates": [
+    {
+      "user_code": "0xC11027C1",
+      "bitstream_sha256": "91101332be8d8d5ac3511cc36227d77ab0fe2511f5869efb90c657b55ee1386a",
+      "scope": "Business GATT, reconnect, short recording and checked download; non-silent content not checked in this record"
+    }
+  ],
+  "evidence": [
+    "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_BLE_C11027C1_20261027.md",
+    "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_RESOURCE_A26_PHYSICAL_20261027.md"
+  ],
+  "source_sha256": {
+    "example/RTL8723DS/vendor/rtl8723ds_ble/MANIFEST.json": "7151a2ebbc4c1c983b14f233182109c886a7753461b47fa584a9429f1665b3b1",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/bluetooth.json": "783af23520393b6f97be5d512c7d738174adf4e5c5b3ce1bed1df50704a7847a",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/workstation_bluetooth.sv": "0186acdbc61940900a79c83b381dd025e3b87bc25b8ced0a5a0ce092aab5f6c9",
+    "projects/138k/push2_workstation/usb_a/tools/synthesize_workstation_bluetooth.py": "126d3285a6e9fabe9f24b20d2198783ffcd3a8573e8cb091946b7decbcd0bc7b",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth.py": "4395be675399e79c1323b9f8e4fa8919993cb2a8a10ef7286ce9c42628d83b77",
+    "projects/25k/example/RTL8723DS_PROTOCOL/prepare_adapted.py": "bc49ab237f4135b8e4c4289dce7077ceb49350924c4b1d095085dea9422aca50"
+  }
+}

@@ -144,6 +144,15 @@ Imported files disable Git newline conversion to preserve frozen input bytes.
 
 ## Standalone Mega138K hardware examples (2026-10-24)
 
+The current custom-board assembly catalog is `projects/138k/example/`, exposed
+at root `example/CUSTOM_138K` by a relative symlink. USB HS, HDMI, Bluetooth and
+AK4493/amplifier each have a module manifest, source entry links, verification
+commands and candidate identities. Source links reuse the existing authoritative
+implementation; they do not relocate frozen inputs or create a second driver.
+The catalog records module validation separately from pending workstation
+assembly. Bitstreams, P&R checkpoints and raw captures remain outside Git.
+The original import manifests below continue to cover only their original bytes.
+
 At the user's explicit request, root `example/` imports the independent
 Mega138K BLE/Wi-Fi, AK4493/amplifier, and RGB LCD diagnostics. It does not feed
 the complete-workstation build or change its accepted inputs. SOURCE_IMPORT.json

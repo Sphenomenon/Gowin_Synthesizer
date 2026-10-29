@@ -1,5 +1,7 @@
 # GW5AST-138K 音频工作站
 
+自制板上已经跑通、等待装配的驱动例程统一放在 [example/](example/README.md)，根目录 `example/CUSTOM_138K` 是同一目录的兼容入口。先按模块选定候选、来源和验证命令，再进入工作站装配；下文 P28／P29 是历史记录。
+
 本工程现位于 `projects/138k/`，与 [25K 面板](../25k/README.md) 同级；内部目录保持原结构。旧 `migration/gw138k_audio/` 是兼容链接。跨板接口见 [整机接口规划](../../整机接口规划.md)。以下 P28／P29 内容为原有版本记录，当前离线进度以工作站 README 和接口规划为准。
 
 这里是 Gowin Synthesizer 的 138K 主工程。芯片为 GW5AST-LV138PG484AC2/I1，底板为 NEO Dock 31005。Push 2 固定连接 J18 USB-A，D+ 为 H13，D− 为 G13；网口旁 USB-C 和 CH569 不在当前演奏或音频路径中。

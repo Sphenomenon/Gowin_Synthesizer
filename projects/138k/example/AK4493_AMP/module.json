@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "id": "AK4493_AMP",
+  "board": "custom_138k",
+  "source_commit": "c7e1c596a95b931e0577fc7c535ba65be1493334",
+  "assembly_status": "pending",
+  "purpose": "Verified standalone CN speaker bring-up plus native FPC/I2S streaming interface for assembly",
+  "source_links": {
+    "bringup": "example/AK4493_AMP",
+    "driver.sv": "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_fpc_audio.sv",
+    "assembly.py": "projects/138k/push2_workstation/usb_a/tools/workstation_board_peripherals.py",
+    "wiring.json": "projects/138k/push2_workstation/usb_a/boards/custom_138k/peripherals.json",
+    "clock_measure": "example/CLOCK_MEASURE",
+    "speaker_verified.json": "example/AK4493_AMP/reports/speaker_success_after_repair.json"
+  },
+  "reference_candidates": [
+    {
+      "user_code": "0x13802302",
+      "bitstream_sha256": "446f5dbfee8d1771406650eae70135d28840969dd2eabf4aa84c61d0837be8e5",
+      "scope": "User confirmed audible CN speaker output after solder repair; connector/channel separation not independently accepted"
+    }
+  ],
+  "evidence": [
+    "example/AK4493_AMP/reports/speaker_success_after_repair.json",
+    "example/AK4493_AMP/reports/build_20261023_050730_086783.json",
+    "example/AK4493_AMP/reports/jtag_flash_channels_boot.json",
+    "example/CLOCK_MEASURE/reports/measurement.json"
+  ],
+  "source_sha256": {
+    "example/AK4493_AMP/constraints/audio.cst": "4bd27f25a384514303762e6140815e6f192a7088455bc7a36105cef8190d9844",
+    "example/AK4493_AMP/constraints/audio.sdc": "a81397298aa3522d923a6309ca99cc024ea20e86fc58257e596137f5695fe471",
+    "example/AK4493_AMP/rtl/ak4493_amp_top.v": "9b7b0e340cf51c2d08e30112dd58ff9a903c9e9762dc023782dda195c81d9591",
+    "example/AK4493_AMP/rtl/ak4493_pin_test.v": "d6c73227827cf252e868188a59cc49f9747ffe858ef852e25fb82f2c62bc5f28",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/peripherals.json": "ac1b0f47d88875aaa46cfd6a79273c7b416d9041f6386dc8bcc45e5bbdd8a523",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_fpc_audio.sv": "53adaec050a44e9704e9b66c991ae22a76a2b7ea751824bb6ce8d0bc4a65793c",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_board_peripherals.py": "dd790675dd6598bdc46473a6214f243fbf27ed5eaed22a643caa15116ee4d634"
+  }
+}

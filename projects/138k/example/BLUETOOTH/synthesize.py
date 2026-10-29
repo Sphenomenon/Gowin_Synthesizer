@@ -1,0 +1,1 @@
+../../push2_workstation/usb_a/tools/synthesize_workstation_bluetooth.py

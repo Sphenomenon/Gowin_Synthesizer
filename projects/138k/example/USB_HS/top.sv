@@ -1,0 +1,1 @@
+../../push2_workstation/usb_a/rtl/workstation/workstation_usb2_hotplug_top.sv

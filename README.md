@@ -4,6 +4,7 @@
 
 ## 架构与状态入口
 
+- **自制板已跑通、待装配模块**统一从 [example/CUSTOM_138K](projects/138k/example/README.md) 进入：USB HS、HDMI、蓝牙、AK4493／功放；每类都有原始源码入口、验证身份、检查命令和装配依赖。
 - [全链路架构与工程收敛](docs/architecture/README.md)：实际运行链路、模块与状态归属、构建／验证／发布流程、风险与分阶段整改。后续开发先读此文和根目录 [AGENTS.md](AGENTS.md)。
 - 最近记录的工作站配置 Flash 部署为 full85／`0x85`（2026-10-12），仍有全板时序、Push 重连和物理断电启动等验收缺口；见[部署索引](projects/138k/push2_workstation/usb_a/LATEST_WORKSTATION.json)及其证据。这不代表已重新读取当前 SRAM 内容。
 - 最新记录的资源时序离线候选为 T24／`0xC1102024`，尚未板测或部署；见[候选清单](projects/138k/push2_workstation/usb_a/RESOURCE_TIMING_CANDIDATE.json)。离线候选、已验收基线和实际部署不能统称为“最新版”。
