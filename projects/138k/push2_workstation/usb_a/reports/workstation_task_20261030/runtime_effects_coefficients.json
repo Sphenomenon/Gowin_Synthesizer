@@ -1,0 +1,390 @@
+{
+  "schema": 1,
+  "date": "2026-10-30T05:32:50.235555+08:00",
+  "stage": "A07 effects stage1: independent coefficient bank and numerical validation only",
+  "scope": "No runtime effect RTL, DDR transaction or chain implemented in this stage; old profiles/generator/preset untouched.",
+  "source_sha256": {
+    "tools/generate_runtime_room_preset.py": "93cc875f5b337b65dc7762f3faf7234083edcae435bb2edf6edfae0798801fbc",
+    "sim/test_workstation_runtime_room.py": "f3254f2f3c42590b258648ea3f0adb6f4a30b94dc3f162aea122f3d56068b4e5",
+    "rtl/audio/runtime_spatial_room_preset.json": "fd07065308dca9ae65483a8ce9308890790b98934001918baf9ff262f459655e",
+    "rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04"
+  },
+  "legacy_generator_sha256": "87da227eb075569db4e80e2537fd224f42f3c3fed3ed7dadf593e244718a63c6",
+  "coefficients": {
+    "schema": 1,
+    "source_policy": "Versioned independent coefficient bank; old generator/preset unchanged; not selected by any profile.",
+    "legacy_generator_sha256": "87da227eb075569db4e80e2537fd224f42f3c3fed3ed7dadf593e244718a63c6",
+    "source_geometry": {
+      "speed_of_sound": 343,
+      "room_m": [
+        6.0,
+        5.0,
+        3.0
+      ],
+      "source_m": [
+        2.0,
+        1.7,
+        1.2
+      ],
+      "listener_m": [
+        3.6,
+        3.0,
+        1.3
+      ],
+      "ear_spacing_m": 0.18
+    },
+    "storage": {
+      "early_words": 2048,
+      "fdn_words": [
+        1429,
+        1789,
+        1999,
+        2131
+      ]
+    },
+    "fdn_selection": "Minimize squared sample error within +/-2 of nearest; pairwise-coprime; tie by max error then tuple.",
+    "damping_q_fraction": 31,
+    "banks": {
+      "48000": {
+        "sample_rate": 48000,
+        "taps": [
+          {
+            "wall": 0,
+            "ear": 0,
+            "delay": 504,
+            "gain_q15": 2389,
+            "ideal_delay_samples": 503.53639462459273,
+            "quantization_error_seconds": 9.658445320985878e-06
+          },
+          {
+            "wall": 0,
+            "ear": 1,
+            "delay": 528,
+            "gain_q15": 2317,
+            "ideal_delay_samples": 528.0695544661436,
+            "quantization_error_seconds": -1.4490513779909925e-06
+          },
+          {
+            "wall": 1,
+            "ear": 0,
+            "delay": 638,
+            "gain_q15": 2043,
+            "ideal_delay_samples": 637.5321480439534,
+            "quantization_error_seconds": 9.746915750971294e-06
+          },
+          {
+            "wall": 1,
+            "ear": 1,
+            "delay": 613,
+            "gain_q15": 2099,
+            "ideal_delay_samples": 612.8497400090102,
+            "quantization_error_seconds": 3.1304164789542482e-06
+          },
+          {
+            "wall": 2,
+            "ear": 0,
+            "delay": 402,
+            "gain_q15": 2739,
+            "ideal_delay_samples": 402.1426202506516,
+            "quantization_error_seconds": -2.9712552219070265e-06
+          },
+          {
+            "wall": 2,
+            "ear": 1,
+            "delay": 410,
+            "gain_q15": 2708,
+            "ideal_delay_samples": 410.2574451835832,
+            "quantization_error_seconds": -5.363441324649984e-06
+          },
+          {
+            "wall": 3,
+            "ear": 0,
+            "delay": 482,
+            "gain_q15": 2454,
+            "ideal_delay_samples": 482.49625737843735,
+            "quantization_error_seconds": -1.033869538411003e-05
+          },
+          {
+            "wall": 3,
+            "ear": 1,
+            "delay": 490,
+            "gain_q15": 2431,
+            "ideal_delay_samples": 489.77407146711937,
+            "quantization_error_seconds": 4.706844435013388e-06
+          },
+          {
+            "wall": 4,
+            "ear": 0,
+            "delay": 159,
+            "gain_q15": 4231,
+            "ideal_delay_samples": 158.54167260413465,
+            "quantization_error_seconds": 9.54848741386129e-06
+          },
+          {
+            "wall": 4,
+            "ear": 1,
+            "delay": 171,
+            "gain_q15": 4117,
+            "ideal_delay_samples": 170.97588542897574,
+            "quantization_error_seconds": 5.02386896339066e-07
+          },
+          {
+            "wall": 5,
+            "ear": 0,
+            "delay": 275,
+            "gain_q15": 3359,
+            "ideal_delay_samples": 274.76736335649946,
+            "quantization_error_seconds": 4.8465967395936935e-06
+          },
+          {
+            "wall": 5,
+            "ear": 1,
+            "delay": 285,
+            "gain_q15": 3301,
+            "ideal_delay_samples": 284.68726998429986,
+            "quantization_error_seconds": 6.5152086604191445e-06
+          }
+        ],
+        "fdn_lengths": [
+          1429,
+          1789,
+          1999,
+          2131
+        ],
+        "fdn_ideal_samples": [
+          1429.0,
+          1789.0,
+          1999.0,
+          2131.0
+        ],
+        "fdn_time_error_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "damping": {
+          "method": "matched continuous-time pole, preserving half-life; not exact frequency warping",
+          "ideal_alpha": 0.5,
+          "old_q31": 1073741824,
+          "input_q31": 1073741824,
+          "quantized_alpha": 0.5,
+          "coefficient_error": 0.0,
+          "half_life_seconds": 2.0833333333333333e-05,
+          "cutoff_hz": 5521.282947902782
+        },
+        "loop_gain_numerator": 7,
+        "loop_gain_denominator": 8
+      },
+      "44100": {
+        "sample_rate": 44100,
+        "taps": [
+          {
+            "wall": 0,
+            "ear": 0,
+            "delay": 463,
+            "gain_q15": 2389,
+            "ideal_delay_samples": 462.62406256134454,
+            "quantization_error_seconds": 8.524658472912686e-06
+          },
+          {
+            "wall": 0,
+            "ear": 1,
+            "delay": 485,
+            "gain_q15": 2317,
+            "ideal_delay_samples": 485.1639031657694,
+            "quantization_error_seconds": -3.7166250741356432e-06
+          },
+          {
+            "wall": 1,
+            "ear": 0,
+            "delay": 586,
+            "gain_q15": 2043,
+            "ideal_delay_samples": 585.7326610153822,
+            "quantization_error_seconds": 6.062108494735152e-06
+          },
+          {
+            "wall": 1,
+            "ear": 1,
+            "delay": 563,
+            "gain_q15": 2099,
+            "ideal_delay_samples": 563.0556986332781,
+            "quantization_error_seconds": -1.263007557327639e-06
+          },
+          {
+            "wall": 2,
+            "ear": 0,
+            "delay": 369,
+            "gain_q15": 2739,
+            "ideal_delay_samples": 369.46853235528613,
+            "quantization_error_seconds": -1.0624316446397608e-05
+          },
+          {
+            "wall": 2,
+            "ear": 1,
+            "delay": 377,
+            "gain_q15": 2708,
+            "ideal_delay_samples": 376.92402776241704,
+            "quantization_error_seconds": 1.7227264758040012e-06
+          },
+          {
+            "wall": 3,
+            "ear": 0,
+            "delay": 443,
+            "gain_q15": 2454,
+            "ideal_delay_samples": 443.2934364664393,
+            "quantization_error_seconds": -6.6538881278756234e-06
+          },
+          {
+            "wall": 3,
+            "ear": 1,
+            "delay": 450,
+            "gain_q15": 2431,
+            "ideal_delay_samples": 449.9799281604159,
+            "quantization_error_seconds": 4.5514375474065005e-07
+          },
+          {
+            "wall": 4,
+            "ear": 0,
+            "delay": 146,
+            "gain_q15": 4231,
+            "ideal_delay_samples": 145.66016170504872,
+            "quantization_error_seconds": 7.706083785743653e-06
+          },
+          {
+            "wall": 4,
+            "ear": 1,
+            "delay": 157,
+            "gain_q15": 4117,
+            "ideal_delay_samples": 157.08409473787145,
+            "quantization_error_seconds": -1.9069101558151676e-06
+          },
+          {
+            "wall": 5,
+            "ear": 0,
+            "delay": 252,
+            "gain_q15": 3359,
+            "ideal_delay_samples": 252.4425150837839,
+            "quantization_error_seconds": -1.0034355641358288e-05
+          },
+          {
+            "wall": 5,
+            "ear": 1,
+            "delay": 262,
+            "gain_q15": 3301,
+            "ideal_delay_samples": 261.5564292980755,
+            "quantization_error_seconds": 1.0058292560646137e-05
+          }
+        ],
+        "fdn_lengths": [
+          1313,
+          1644,
+          1837,
+          1957
+        ],
+        "fdn_ideal_samples": [
+          1312.89375,
+          1643.64375,
+          1836.58125,
+          1957.85625
+        ],
+        "fdn_time_error_seconds": [
+          2.4092970521555346e-06,
+          8.07823129251456e-06,
+          9.49546485260605e-06,
+          -1.9416099773246487e-05
+        ],
+        "damping": {
+          "method": "matched continuous-time pole, preserving half-life; not exact frequency warping",
+          "ideal_alpha": 0.47027111469312016,
+          "old_q31": 1009899529,
+          "input_q31": 1137584119,
+          "quantized_alpha": 0.47027111472561955,
+          "coefficient_error": 3.2499392066398514e-11,
+          "half_life_seconds": 2.0833333335241678e-05,
+          "cutoff_hz": 5566.4771589899465
+        },
+        "loop_gain_numerator": 7,
+        "loop_gain_denominator": 8
+      }
+    }
+  },
+  "measurements": {
+    "maximum_early_tap_error_seconds": {
+      "48000": 1.033869538411003e-05,
+      "44100": 1.0624316446397608e-05
+    },
+    "maximum_fdn_time_error_seconds": 1.9416099773246487e-05,
+    "damping_cutoff_relative_change": 0.008185454633208078,
+    "float64_tail_impulse": {
+      "48000": {
+        "T20_fit_points": 1437,
+        "final_quarter_second_energy": 2.391286663868194e-12,
+        "initial_quarter_second_energy": 0.010765522766428908,
+        "peak": 0.03125,
+        "rt60_from_T20_seconds": 1.471011603636942,
+        "sample_rate": 48000,
+        "seconds": 3,
+        "total_energy": 0.011119913490119615
+      },
+      "44100": {
+        "T20_fit_points": 1334,
+        "final_quarter_second_energy": 2.557321874276496e-12,
+        "initial_quarter_second_energy": 0.01102949149892256,
+        "peak": 0.03125,
+        "rt60_from_T20_seconds": 1.4702235469728155,
+        "sample_rate": 44100,
+        "seconds": 3,
+        "total_energy": 0.01142088990305797
+      }
+    },
+    "T20_estimated_rt60_relative_change": -0.0005357243016833602
+  },
+  "validation": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_room.py",
+    "tests_passed": 5,
+    "returncode": 0,
+    "regeneration_exact": true,
+    "legacy48_taps_and_lengths_exact": true,
+    "legacy_drift_rejected": true,
+    "tap_quantization_within_half_sample": true,
+    "fdn_pairwise_coprime_and_retained_capacity": true,
+    "Q31_complement_sum_exact": true,
+    "matched_half_life_error_below_seconds": 1e-12,
+    "lowpass_frequency_samples": 1025,
+    "linear_loop_Hinf_upper_bound": 0.875,
+    "linear_model_scope": "Float64 FDN tail only; excludes early reflections/slew/saturation; not actual RTL or acoustic hardwareT60. Fixed-point saturation/limit cycles pending."
+  },
+  "proposed_transaction_contract": {
+    "new_modules": "Independent runtime stereo effects and runtime delay consumer/DMA pair; no shared module-name collision.",
+    "audio_control": [
+      "config_valid_i/config_ready_o/rate_44100_i",
+      "config_applied_o",
+      "history_clear_i/history_ready_o/history_done_o",
+      "quiescent_o/fault_o"
+    ],
+    "ordered_marker": "65bit FIFO private payload carries rate and transaction identity; DMA actually drains/discards outstanding read and resets ring; echo marker only then; consumer applies matching config after stale readFIFO entries discarded.",
+    "same_config_application": "Two-clock barrier: memory config applied before matching return marker, audio applies on marker consumption; no new effect sample accepted until both agree.",
+    "preserved_state": "Public parameters/held notes untouched; native history command preserves wet/sg/pg control ramps and chorusLFO phase. Legacy clear remains separately specified.",
+    "posted_write_limit": "Existing owner6 has request-ready and read-response, no physical write-completion signal. Audit per-owner ordering; do not call accepted posted writes physical completion.",
+    "real_time_behavior": "During controlled history clear effect-frame acceptance closes, but final sample schedule must continue through upstream controlledmute; watchdog/failure must remain externally observable."
+  },
+  "status": {
+    "coefficient_source_implemented": true,
+    "numerical_validation_passed": true,
+    "runtime_effects_implemented": false,
+    "DDR_runtime_transaction_implemented": false,
+    "profile_selected": false,
+    "RTL_bit_equivalence_verified": false,
+    "physical_timing_verified": false,
+    "hardware_verified": false,
+    "sram_programmed": false,
+    "flash_programmed": false
+  },
+  "next_stages": [
+    "RuntimeDDR delay consumer/DMA coordinated config/flush with true completion and fault behavior.",
+    "Runtimechorus preserving48k and physical modulation time.",
+    "Runtime reverb using bank with fixed-point impulse/saturation/limit-cycle tests.",
+    "Runtimechain order/mask/maintenance/sg/pg validation against exactprepared48k source."
+  ]
+}
