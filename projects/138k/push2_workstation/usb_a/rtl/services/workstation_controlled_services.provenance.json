@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "scope": "Unselected native extraction of the existing resource-timing controlled services; no behavior or source-selection change",
+  "source": "rtl/services/workstation_controlled_services.sv",
+  "module": "gw138k_controlled_services",
+  "source_sha256": "bea3a6feb9397537a6e37f36d60f463b11e395178298c40c929f18d166f1a988",
+  "source_bytes": 18852,
+  "parent_baseline": {
+    "name": "resource_rework_route0",
+    "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+    "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+    "origin": {
+      "build": "results/resource_rework_final_route0_20261020_041042",
+      "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+      "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+    },
+    "source_files": 437,
+    "excluded_files": 180
+  },
+  "parent_staged_path": "src/ae350/gw138k_controlled_services.sv",
+  "parent_input": {
+    "source": "projects/138k/push2_workstation/usb_a/baselines/objects/f1e2abeb57c639882089c86e856aa86737468da4c040bb6800e53045a27a361d.sv",
+    "sha256": "f1e2abeb57c639882089c86e856aa86737468da4c040bb6800e53045a27a361d"
+  },
+  "transform": {
+    "path": "tools/workstation_resource_timing.py",
+    "function": "services",
+    "includes": "services_writes",
+    "before_sha256": "f1e2abeb57c639882089c86e856aa86737468da4c040bb6800e53045a27a361d",
+    "after_sha256": "bea3a6feb9397537a6e37f36d60f463b11e395178298c40c929f18d166f1a988"
+  },
+  "prepared_reference": {
+    "profile": "custom138k-workstation-v1",
+    "revision": 2,
+    "candidate_identity": "custom138k-workstation-v1-f5b723250388add5",
+    "staged_path": "src/ae350/gw138k_controlled_services.sv",
+    "sha256": "bea3a6feb9397537a6e37f36d60f463b11e395178298c40c929f18d166f1a988",
+    "exact_bytes": true
+  },
+  "exact_changes": [],
+  "selection": {
+    "selected_by_existing_profile": false,
+    "old_overlay_and_builders_unchanged": true,
+    "requires": "A future explicit source policy must select this module exactly once instead of the staged overlay"
+  },
+  "contracts": {
+    "clock": "Continuous compute clock; the existing audio_clk domain, not selected MCLK",
+    "command": "Held command payload must be stable for one predecode edge before command_valid, as provided by timing.apb",
+    "cpu_event": "Existing 18-bit event; only a legal CPU event write can backpressure the mailbox",
+    "record": "Existing 96-bit {sequence,left32,right32} snapshot and explicit POP/RELEASE ownership",
+    "score": "Existing 256-cue monotonic frame-time upload, start/stop and panel toggle ownership",
+    "parameters": "Only forwards events and observes committed state; does not own common parameters"
+  },
+  "limits": "This exact extraction does not add sample-rate registers, epoch/error record metadata, a new score timebase, runtime integration, synthesis, P&R or hardware acceptance"
+}
