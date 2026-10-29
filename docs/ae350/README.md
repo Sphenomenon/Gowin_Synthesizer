@@ -19,25 +19,35 @@ AE350 是 GW5AST-138 内置的硬核处理器子系统，官方架构图标注�
 
 ## 2. 官方资料与适用版本
 
-本次直接核对的本机资料目录为：
+本目录集中保存汇总说明和 7 份已核对的官方原始 PDF：
+
+```text
+docs/ae350/
+├── README.md          汇总说明与阅读入口
+├── manuals/           官方原始 PDF，文件名与字节保持不变
+├── manifest.json      文件大小、来源和 SHA256
+└── NOTICE.md          来源与版权说明
+```
+
+原始资料复制自以下本机目录：
 
 ```text
 E:\workspace\GW\Mega_138K\Doc\GW官方\AE350
 ```
 
-该目录位于本仓库之外，不是构建输入。另一目录 `Mega_138K_60K/07_Datasheet/CN/AE350/` 中保存了较早的 SUG 版本，并混有 AE250 手册；不可把 AE250 或旧版描述直接当作本次 AE350 规格。复查时按文档编号、版本和第 10 节哈希寻找同一份文件。
+上述路径仅记录采集来源，阅读资料无需访问该外部目录；本目录的 PDF 不是构建输入。另一目录 `Mega_138K_60K/07_Datasheet/CN/AE350/` 中保存了较早的 SUG 版本，并混有 AE250 手册；不可把 AE250 或旧版描述直接当作本次 AE350 规格。复查时按文档编号、版本和第 10 节哈希寻找同一份文件。
 
 | 编号／版本 | 用途 | 本文主要依据的位置 |
 |---|---|---|
-| MUG1031-1.3.1 硬件设计用户手册 | 架构、内核、存储、时钟、总线及硬件端口 | 正文第 3、5–12 页；PDF 第 11、13–20 页 |
-| MUG1029-1.3 软件编程用户手册 | 内存映射、启动、Cache、外设驱动、内建函数 | 正文第 9–10、14–19 页；PDF 第 42–43、47–52 页 |
-| MUG1032-1.1 DSP 软件编程用户手册 | DSP 函数分类、数据类型、编译和链接 | 正文第 2–4 页；PDF 第 12–14 页，以及第 3 章接口说明 |
-| MUG1181-1.1 NN 软件编程用户手册 | NN 函数、DSP 优化和链接选项 | 正文第 2–4 页；PDF 第 13–15 页 |
-| MUG1030-1.3 快速开发用户手册 | IP 配置、FPGA 构建、软件工程和调试流程 | 硬件设计与软件开发章节 |
-| MUG1025-1.3 RDS 软件用户手册 | RDS 工程、工具链、调试器及示例 | 按所用工具链／调试器选择相关章节 |
-| MUG1026-1.3.1 RDS 软件安装指南 | 安装包、环境及调试器驱动 | 安装和驱动配置章节 |
+| [MUG1031-1.3.1](manuals/MUG1031-1.3.1_Gowin_RiscV_AE350_SOC硬件设计用户手册.pdf) 硬件设计用户手册 | 架构、内核、存储、时钟、总线及硬件端口 | 正文第 3、5–12 页；PDF 第 11、13–20 页 |
+| [MUG1029-1.3](manuals/MUG1029-1.3_Gowin_RiscV_AE350_SOC软件编程用户手册.pdf) 软件编程用户手册 | 内存映射、启动、Cache、外设驱动、内建函数 | 正文第 9–10、14–19 页；PDF 第 42–43、47–52 页 |
+| [MUG1032-1.1](manuals/MUG1032-1.1_Gowin_RiscV_AE350_SOC_DSP软件编程用户手册.pdf) DSP 软件编程用户手册 | DSP 函数分类、数据类型、编译和链接 | 正文第 2–4 页；PDF 第 12–14 页，以及第 3 章接口说明 |
+| [MUG1181-1.1](manuals/MUG1181-1.1_Gowin_RiscV_AE350_SOC_NN软件编程用户手册.pdf) NN 软件编程用户手册 | NN 函数、DSP 优化和链接选项 | 正文第 2–4 页；PDF 第 13–15 页 |
+| [MUG1030-1.3](manuals/MUG1030-1.3_Gowin_RiscV_AE350_SOC快速开发用户手册.pdf) 快速开发用户手册 | IP 配置、FPGA 构建、软件工程和调试流程 | 硬件设计与软件开发章节 |
+| [MUG1025-1.3](manuals/MUG1025-1.3_Gowin_RiscV_AE350_SOC_RDS软件用户手册.pdf) RDS 软件用户手册 | RDS 工程、工具链、调试器及示例 | 按所用工具链／调试器选择相关章节 |
+| [MUG1026-1.3.1](manuals/MUG1026-1.3.1_Gowin_RiscV_AE350_SOC_RDS软件安装指南.pdf) RDS 软件安装指南 | 安装包、环境及调试器驱动 | 安装和驱动配置章节 |
 
-这里的“正文页”是页面印刷页码，“PDF 页”是阅读器从封面开始计算的一基页号。本文是工程参考摘要，不复制官方 PDF 或替代其寄存器和指令定义。
+这里的“正文页”是页面印刷页码，“PDF 页”是阅读器从封面开始计算的一基页号。本文是工程参考摘要；原始 PDF 保存在 [manuals/](manuals/)，寄存器和指令细节以原件为准，来源与权利说明见 [NOTICE.md](NOTICE.md)。
 
 ## 3. 内核、主频与性能
 
@@ -166,13 +176,13 @@ MUG1029 第 5 章按配置和 SaG／LD 文件区分三类启动：
 
 | 内容 | 仓库依据 |
 |---|---|
-| 运行边界与状态语义 | [架构入口](architecture/README.md)、[整机接口规划](../整机接口规划.md) |
-| accepted／timing85／资源时序的来源政策 | [基线 README](../projects/138k/push2_workstation/usb_a/baselines/README.md) |
-| 已跟踪的冻结 CPU 配置 | [riscv_ae350_config.v](../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/riscv_ae350_config.v) |
-| 已核对的 CPU PLL／启动存储 | [PLL](../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_cpu_pll_cell.v)、[boot memory](../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_boot_memory.sv) |
-| 链接与启动代码 | [boot.ld](../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/boot.ld)、[start.S](../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/start.S) |
-| 开发候选的原生装配 | [workstation README](../projects/138k/push2_workstation/usb_a/rtl/workstation/README.md)、[组合根](../projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v) |
-| 构建入口与辅助审计 | [build.py](../projects/138k/push2_workstation/usb_a/build.py)、[AE350 scripts](../projects/138k/ae350/scripts) |
+| 运行边界与状态语义 | [架构入口](../architecture/README.md)、[整机接口规划](../../整机接口规划.md) |
+| accepted／timing85／资源时序的来源政策 | [基线 README](../../projects/138k/push2_workstation/usb_a/baselines/README.md) |
+| 已跟踪的冻结 CPU 配置 | [riscv_ae350_config.v](../../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/riscv_ae350_config.v) |
+| 已核对的 CPU PLL／启动存储 | [PLL](../../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_cpu_pll_cell.v)、[boot memory](../../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_boot_memory.sv) |
+| 链接与启动代码 | [boot.ld](../../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/boot.ld)、[start.S](../../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/start.S) |
+| 开发候选的原生装配 | [workstation README](../../projects/138k/push2_workstation/usb_a/rtl/workstation/README.md)、[组合根](../../projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v) |
+| 构建入口与辅助审计 | [build.py](../../projects/138k/push2_workstation/usb_a/build.py)、[AE350 scripts](../../projects/138k/ae350/scripts) |
 
 冻结配置启用了 `AE350_EXT_I_MEM_EN`、`AE350_EXT_D_MEM_EN`、`AE350_EXT_APB_SLAVE_EN`、`AE350_APB_SMU_EN`。这些宏描述已选接口，不是完整 ISA 或 Cache 开启状态查询。
 
@@ -193,13 +203,13 @@ MUG1029 第 5 章按配置和 SaG／LD 文件区分三类启动：
 
 `start.S` 设置异常入口，执行 RAM 字节通道／读回自检，将 `.data` 初值从 ROM 复制到 RAM，清零 `.bss`，再进入服务程序。已核对源文件没有把数据／栈链接到 DLM，也没有把函数放入 ILM；未见显式 Cache 开启代码。对其他 profile 和板上镜像仍应检查其实际输入，而不是扩大这份参考脚本的结论。
 
-DDR 分配唯一依据仍是 [ddr_address_map.vh](../projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh)。它记录物理 DDR 总容量 1 GiB，以及 CPU UI 两页到物理字节区 `0x01000000–0x017FFFFF` 的映射。这里的 CPU `0x10000000` 与物理 DDR 同值地址不是一回事。原生 `app_addr` 以 32-bit 字计数，一次 BL8 为 32 bytes、步进 8；其余客户和预留空间直接查该权威表，不在本文再分配一套地址。
+DDR 分配唯一依据仍是 [ddr_address_map.vh](../../projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh)。它记录物理 DDR 总容量 1 GiB，以及 CPU UI 两页到物理字节区 `0x01000000–0x017FFFFF` 的映射。这里的 CPU `0x10000000` 与物理 DDR 同值地址不是一回事。原生 `app_addr` 以 32-bit 字计数，一次 BL8 为 32 bytes、步进 8；其余客户和预留空间直接查该权威表，不在本文再分配一套地址。
 
-已核对的 [AHB→DDR 桥](../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_ahb_ddr.sv) 仅支持一个 outstanding 事务，检查 UI 地址窗口和访问对齐，通过跨域请求／响应握手完成；不支持的窗口或对齐返回错误。不能将官方 2 GiB 数据窗口解释为当前 CPU 可直接访问全部物理 DDR。
+已核对的 [AHB→DDR 桥](../../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/src/ae350/gw138k_ahb_ddr.sv) 仅支持一个 outstanding 事务，检查 UI 地址窗口和访问对齐，通过跨域请求／响应握手完成；不支持的窗口或对齐返回错误。不能将官方 2 GiB 数据窗口解释为当前 CPU 可直接访问全部物理 DDR。
 
 ### 7.3 服务、工具链与业务边界
 
-已核对的固件使用 `0xF8000000` 诊断、`0xF8010000` 音频服务、`0xF8020000` UI 服务，均处于 Extended APB 窗口。详细字段查已有 [audio_services.h](../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/audio_services.h) 和各服务 RTL，不把这些自定义基址误认作 AE350 固定硬件寄存器。
+已核对的固件使用 `0xF8000000` 诊断、`0xF8010000` 音频服务、`0xF8020000` UI 服务，均处于 Extended APB 窗口。详细字段查已有 [audio_services.h](../../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/audio_services.h) 和各服务 RTL，不把这些自定义基址误认作 AE350 固定硬件寄存器。
 
 构建代码使用 `-march=rv32im_zicsr -mabi=ilp32`，按裸机方式链接自定义启动代码，检查固件大小不超过 16384 bytes，再形成 `boot.mem`。这证明所选固件的指令和 ABI 策略，不是 CPU 全部能力列表，也不证明已经链接官方 DSP／NN 库。`ae350/scripts` 中的早期脚本还保留历史本机依赖，不是默认生产入口。
 
@@ -215,7 +225,7 @@ AE350 的当前职责是 UI、命令／服务和启动自检；USB Host／MIDI �
 4. 若将 BLE 非实时业务迁到 AE350，复用现有 APB，定义有界包交接、满队列背压／溢出、取消与错误行为，测最长服务间隔和 ROM／栈预算；连续 PCM 采样和公共参数应用点仍保持各自归属。
 5. 软件卸载、独立仿真、综合资源、整机 P&R、实体功能和 SRAM／Flash 部署分别记录。内置 RAM／DSP 能力不等于已经释放了相同数量的 fabric BSRAM／CLS。
 
-此前 BLE 资源优化与软件卸载预算见 [AE350 分工报告](../projects/138k/push2_workstation/usb_a/reports/AE350_RESOURCE_OPTIMIZATION_20261027.md)。该报告包含已实施的 RTL 缓存优化及尚未实施的 CPU 业务卸载，不应混成已完成的迁移。
+此前 BLE 资源优化与软件卸载预算见 [AE350 分工报告](../../projects/138k/push2_workstation/usb_a/reports/AE350_RESOURCE_OPTIMIZATION_20261027.md)。该报告包含已实施的 RTL 缓存优化及尚未实施的 CPU 业务卸载，不应混成已完成的迁移。
 
 ## 9. 查阅顺序
 
@@ -223,11 +233,11 @@ AE350 的当前职责是 UI、命令／服务和启动自检；USB Host／MIDI �
 - 完整内存映射、启动和 Cache：查 MUG1029 第 3、5、6 章。
 - DSP／NN API 的参数、缩放和链接：查 MUG1032／MUG1181；以目标工具链和硬件扩展匹配为前提。
 - 本项目实际用了什么：从本文第 7 节进入源码，再核对所选 profile 的生成输入。
-- 板上现在是什么、哪些功能被验收：查[架构入口](architecture/README.md)链接的日期化候选／部署证据，不从官方规格或历史文件名推断。
+- 板上现在是什么、哪些功能被验收：查[架构入口](../architecture/README.md)链接的日期化候选／部署证据，不从官方规格或历史文件名推断。
 
 ## 10. 本次核对的官方 PDF 身份
 
-以下 SHA256 对应第 2 节本机目录中的原始 PDF；不要求其他克隆具有该绝对路径，也不将 PDF 作为构建依赖。文件名中的中文标题与第 2 节对应。
+以下 SHA256 对应本目录 `manuals/` 中的原始 PDF，复制后与第 2 节采集来源逐字节一致。机器可读清单见 [manifest.json](manifest.json)，不将 PDF 作为构建依赖。文件名中的中文标题与第 2 节对应。
 
 | 文件编号／版本 | PDF 总页数 | SHA256 |
 |---|---:|---|

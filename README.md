@@ -39,7 +39,7 @@ fpga/                         Git 根目录
 - [`push2_workstation/usb_a`](projects/138k/push2_workstation/usb_a)：当前 USB-A 工作站源码、仿真、审计和版本记录。
 - [`Prj1`](projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1)：冻结的 Gowin 工程源码基线。该目录名保留了来源，但 `impl`、`build` 和位流不进入 Git。
 - [`ae350/scripts`](projects/138k/ae350/scripts)：AE350 辅助脚本。
-- [AE350 硬件与软件参考](docs/AE350.md)：官方主频、RAM／ROM／Cache、DSP／浮点／NN、启动方式与现有工程配置，含资料版本及来源。
+- [AE350 硬件与软件参考](docs/ae350/README.md)：官方主频、RAM／ROM／Cache、DSP／浮点／NN、启动方式与现有工程配置，含官方原始 PDF、资料版本及校验清单。
 - [`RTL8723DS BLE`](projects/138k/push2_workstation/usb_a/rtl/bluetooth/README.md)：138K 蓝牙驱动、J8 接线、独立/工作站集成构建和验证记录；模组实体测试待完成。
 - [`Android 控制端`](clients/android/README.md)：0.2.10，支持25K业务协议、内置音频录音、可靠PCM/WAV下载及显式协商的二阶无损传输。
 - [`25K蓝牙协议实测工程`](projects/25k/example/RTL8723DS_PROTOCOL/README.md)：已固化A25D，电脑有效PCM吞吐14.1→22.1 KB/s；含协议、RTL、APP适配及验收证据。该结果来自25K，138K主机业务顶层与硬件验收仍独立。
