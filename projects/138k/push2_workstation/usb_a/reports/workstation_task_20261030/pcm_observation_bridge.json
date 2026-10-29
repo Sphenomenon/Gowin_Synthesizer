@@ -1,0 +1,159 @@
+{
+  "schema": 1,
+  "passed": true,
+  "hardware_tested": false,
+  "profile_changed": false,
+  "identity": "pcm-observation-offline-v1-7fd9cf0ee1352f9e",
+  "source_set_sha256": "7fd9cf0ee1352f9ea19ecb183f3607f302b4c674acb354872451443edb8c5123",
+  "prepared_reference_candidate": "custom138k-workstation-v1-d23d498ea824c9f9",
+  "input_sha256": {
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/migration/gw138k_counter_cdc.sv": "1b6ff697ccd951995b7331ac483f3c7672a959a9a767465eb57d92d80f3afa8c",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_observation_bridge.sv": "198dbf39ff6b6cfb6fe308444274849c507f222edcb0ea651abeb8d719f62c17",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_observation_bridge.sv": "641a387f2f08af1c27ebfca08f9323106055b3c0d7cb6cc760c97f5d7836b19b",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_pcm_observation.py": "1f96d51bf74a5ec39f6e7eb3fd9c16f987ebc70ed236f9c5c632e69fbb797754",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation_profile.json": "c063bad206163be55794b43575e76de800dd95bd213041ccda70c892c08dba49"
+  },
+  "scope": "Actual maintained Gray FIFO plus existing registered-Gray counter CDC; atomic98bit frames; no audio backpressure",
+  "configuration": {
+    "test_fifo_depth": 4,
+    "test_counter_max": 7,
+    "default_fifo_depth": 16,
+    "default_counter_max": 4294967295
+  },
+  "limits": "Digital asynchronous functional simulation; requires held-payload/Gray path physical constraints and coordinated peer reset; no profile/top or board selection",
+  "lint_argv": [
+    "verilator",
+    "--lint-only",
+    "-Wno-fatal",
+    "--top-module",
+    "workstation_pcm_observation_bridge",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/migration/gw138k_counter_cdc.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_observation_bridge.sv"
+  ],
+  "lint_warning_count": 0,
+  "lint_log_sha256": "5a05717a84282e9062238765f025690f34933bc102b217829347b3f4dc9c9f9b",
+  "compile_argv": [
+    "iverilog",
+    "-g2012",
+    "-s",
+    "tb_workstation_pcm_observation_bridge",
+    "-o",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-observation-final-identity/observation.vvp",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/migration/gw138k_counter_cdc.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_observation_bridge.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_observation_bridge.sv"
+  ],
+  "runs": [
+    {
+      "source_phase_ns": 7.3,
+      "destination_phase_ns": 1.1,
+      "metrics": {
+        "offered": 72,
+        "accepted": 51,
+        "dropped": 21,
+        "checked": 50,
+        "stream_changes": 8,
+        "sequence_gaps": 2,
+        "errors": 14,
+        "drop_events": 6,
+        "default_checked": 63,
+        "capacity": 4,
+        "saturation": 7
+      },
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-observation-final-identity/observation.vvp",
+        "+SOURCE_PHASE=7.3",
+        "+DESTINATION_PHASE=1.1"
+      ],
+      "log": "PASS pcm_observation: offered=72 accepted=51 dropped=21 checked=50 stream_changes=8 sequence_gaps=2 errors=14 drop_events=6 default_checked=63 capacity=4 saturation=7\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_observation_bridge.sv:184: $finish called at 710763880 (1ps)\n",
+      "run_log_sha256": "2d19692049992af803fd25fa0b50548b80e20fc930fee84549e441052f72b159"
+    },
+    {
+      "source_phase_ns": 0.2,
+      "destination_phase_ns": 12.7,
+      "metrics": {
+        "offered": 72,
+        "accepted": 51,
+        "dropped": 21,
+        "checked": 50,
+        "stream_changes": 8,
+        "sequence_gaps": 2,
+        "errors": 14,
+        "drop_events": 6,
+        "default_checked": 63,
+        "capacity": 4,
+        "saturation": 7
+      },
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-observation-final-identity/observation.vvp",
+        "+SOURCE_PHASE=0.2",
+        "+DESTINATION_PHASE=12.7"
+      ],
+      "log": "PASS pcm_observation: offered=72 accepted=51 dropped=21 checked=50 stream_changes=8 sequence_gaps=2 errors=14 drop_events=6 default_checked=63 capacity=4 saturation=7\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_observation_bridge.sv:184: $finish called at 710788500 (1ps)\n",
+      "run_log_sha256": "801b3f0f8e04b2608cef9afdfb8322aba4f6483dae3358a3ae74b649c190cbc9"
+    },
+    {
+      "source_phase_ns": 58.9,
+      "destination_phase_ns": 4.3,
+      "metrics": {
+        "offered": 72,
+        "accepted": 51,
+        "dropped": 21,
+        "checked": 50,
+        "stream_changes": 8,
+        "sequence_gaps": 2,
+        "errors": 14,
+        "drop_events": 6,
+        "default_checked": 63,
+        "capacity": 4,
+        "saturation": 7
+      },
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-observation-final-identity/observation.vvp",
+        "+SOURCE_PHASE=58.9",
+        "+DESTINATION_PHASE=4.3"
+      ],
+      "log": "PASS pcm_observation: offered=72 accepted=51 dropped=21 checked=50 stream_changes=8 sequence_gaps=2 errors=14 drop_events=6 default_checked=63 capacity=4 saturation=7\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_observation_bridge.sv:184: $finish called at 710924440 (1ps)\n",
+      "run_log_sha256": "8442e2a3b533c91131c755414ea863568d217a30489552f40704f79820db4cd4"
+    }
+  ],
+  "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inputs_unchanged_during_run": true,
+  "date": "2026-10-30",
+  "new_file_sha256": {
+    "rtl/audio/workstation_pcm_observation_bridge.sv": "198dbf39ff6b6cfb6fe308444274849c507f222edcb0ea651abeb8d719f62c17",
+    "rtl/audio/PCM_OBSERVATION_BRIDGE.md": "12d0321d57d5b95ffb4fc94fe730b48dcc1e7d7bb2333f8e64bc79995fc9b40e",
+    "sim/audio/tb_workstation_pcm_observation_bridge.sv": "641a387f2f08af1c27ebfca08f9323106055b3c0d7cb6cc760c97f5d7836b19b",
+    "sim/audio/run_pcm_observation.py": "1f96d51bf74a5ec39f6e7eb3fd9c16f987ebc70ed236f9c5c632e69fbb797754"
+  },
+  "verification_file": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-observation-final-identity/verification.json",
+  "verification_file_sha256": "7f27e94ecfdf6f4675aa9c168f85b2408dd2221f0f6c9555b134b3ab081a3674",
+  "source_boundary_regression": {
+    "passed": true,
+    "tests": 10,
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py"
+  },
+  "python_syntax_passed": true,
+  "status": "source implemented and offline verified; not selected by any profile/top",
+  "synthesis_passed": false,
+  "pnr_passed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "bitstream_sha256": null,
+  "reset_discard_scope": "One accepted small-queue frame is intentionally discarded by common reset; 51 accepted minus one reset-discard equals50 compared per phase",
+  "rollback": "Keep current profile/top selection; new observer can remain unselected or be removed without touching locked accepted inputs",
+  "new_file_whitespace_passed": true,
+  "parent_independent_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-observation-parent-final/verification.json",
+    "sha256": "bbadc69c264ff7de8c44454166caced804bb8432522df85ec3130be42d32a142",
+    "passed": true,
+    "input_hashes_rechecked": true,
+    "three_async_phases_reproduced": true
+  }
+}
