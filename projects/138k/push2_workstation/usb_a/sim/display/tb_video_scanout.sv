@@ -4,7 +4,7 @@ module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_
                          READ_LATENCY_CYCLES=64, ACTIVE_LINES=8,
                          WRITE_TURNAROUND_CYCLES=0, SCAN_WRITE_WINDOW=0,
                          USE_SCAN_ADMISSION_MODULE=0, COMPETING_CLIENTS=0,
-                         SAMPLE_RATE_HZ=48000);
+                         SAMPLE_RATE_HZ=48000, REGISTER_UNDERRUN_EVENT=0);
     localparam integer VIDEO_720=VIDEO_720P30 || VIDEO_720P60;
     localparam integer WIDTH=VIDEO_720 ? 1280 : 1920, HEIGHT=ACTIVE_LINES;
     localparam integer H_TOTAL=VIDEO_720P60 ? 1650 : VIDEO_720P30 ? 3300 : 2200;
@@ -239,7 +239,11 @@ module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_
             assign native_write=1'b0;
         end
     endgenerate
-    video_ddr_scanout #(.WIDTH(WIDTH),.HEIGHT(HEIGHT),.EXPLICIT_BASE(1)) dut (
+    video_ddr_scanout #(.WIDTH(WIDTH),.HEIGHT(HEIGHT),.EXPLICIT_BASE(1)
+`ifdef SCANOUT_DIAGNOSTIC_PIPELINE
+        ,.REGISTER_UNDERRUN_EVENT(REGISTER_UNDERRUN_EVENT)
+`endif
+    ) dut (
         .clk(memory_clk),.rst_n(reset_n),.enabled(1'b1),
         .new_frame_pending(frame_pending),.new_frame_base(frame_base),
         .new_composite(1'b0),.new_analysis_base(29'd0),
@@ -403,6 +407,12 @@ module tb_video_scanout #(parameter integer USE_QUEUES=0, VIDEO_720P30=0, VIDEO_
             if(underruns!=0) $fatal(1,"steady-state underrun count %0d",underruns);
         end
         if(USE_QUEUES && background_writes==0) $fatal(1,"background traffic not exercised");
+        // Count real black scanlines from the checked pixel output, then let
+        // the pixel counter/Gray CDC settle. This is independent of the DUT's
+        // diagnostic predicate and covers missing-line and stale-epoch loss.
+        repeat(12) @(negedge memory_clk);
+        if(underruns!==32'(black_lines))
+            $fatal(1,"diagnostic count differs from actual black output lines count=%0d black=%0d",underruns,black_lines);
         if(COMPETING_CLIENTS)begin
             @(negedge memory_clk);competition_running=0;
             drain_cycles=0;

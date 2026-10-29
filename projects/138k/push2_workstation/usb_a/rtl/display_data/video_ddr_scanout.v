@@ -8,7 +8,8 @@ module video_ddr_scanout #(
     parameter integer EXPLICIT_BASE = 0,
     parameter integer GRAPH_FIRST_LINE=160,GRAPH_END_LINE=832,
     parameter integer FRAME_STRIDE_WORDS = `PRJ1_DDR_VIDEO_FRAME_APP_WORDS,
-    parameter integer TIMEOUT_CYCLES = 100000
+    parameter integer TIMEOUT_CYCLES = 100000,
+    parameter integer REGISTER_UNDERRUN_EVENT = 0
 ) (
     input wire clk, rst_n,
     input wire enabled,
@@ -47,6 +48,7 @@ module video_ddr_scanout #(
     reg ack_meta, ack_sync;
     reg [7:0] pixel_epoch;
     reg [31:0] under_count, under_gray;
+    reg underrun_event_q;
     reg line_good;
     reg done0_toggle, done1_toggle;
     reg [18:0] done0_tag, done1_tag;
@@ -56,6 +58,7 @@ module video_ddr_scanout #(
     reg valid0, valid1, display_started;
     wire current_good = pixel_y[0] ? (valid1 && tag1 == {pixel_epoch,pixel_y}) :
                                               (valid0 && tag0 == {pixel_epoch,pixel_y});
+    wire underrun_event = pixel_x==0 && pixel_y<HEIGHT && !current_good && display_started;
 
     reg [1:0] scan_lane;
     reg scan_de, scan_hs, scan_vs, scan_good;
@@ -64,7 +67,7 @@ module video_ddr_scanout #(
     always @(posedge pixel_clk or negedge pixel_rst_n) begin
         if (!pixel_rst_n) begin
             request_toggle<=0; held_request<=0; ack_meta<=0; ack_sync<=0;
-            pixel_epoch<=0; under_count<=0; under_gray<=0; line_good<=0;
+            pixel_epoch<=0; under_count<=0; under_gray<=0; line_good<=0; underrun_event_q<=0;
             done0_meta<=0; done0_sync<=0; done0_settled<=0; done0_seen<=0;
             done1_meta<=0; done1_sync<=0; done1_settled<=0; done1_seen<=0;
             tag0<=0;tag1<=0;valid0<=0;valid1<=0;display_started<=0;
@@ -75,6 +78,12 @@ module video_ddr_scanout #(
             // Encode the registered count one cycle later. Keep the increment
             // carry chain separate from Gray conversion at 148.5 MHz.
             under_gray<=(under_count>>1)^under_count;
+            // Diagnostic-only opt-in pipeline: preserve the complete scanline
+            // predicate before driving the 32-bit counter's enable fanout.
+            // Pixels, line ownership and fetch admission do not wait for it.
+            underrun_event_q<=underrun_event;
+            if(REGISTER_UNDERRUN_EVENT ? underrun_event_q : underrun_event)
+                under_count<=under_count+1'b1;
             done0_meta<=done0_toggle;done0_sync<=done0_meta;done0_settled<=done0_sync;
             done1_meta<=done1_toggle;done1_sync<=done1_meta;done1_settled<=done1_sync;
             if(done0_settled!=done0_seen) begin
@@ -100,10 +109,6 @@ module video_ddr_scanout #(
             end
             if(pixel_x==0 && pixel_y<HEIGHT) begin
                 line_good<=current_good;
-                // Do not count the black startup before a first tagged frame.
-                if(!current_good && display_started) begin
-                    under_count<=under_count+1'b1;
-                end
             end
             scan_lane<=pixel_x[1:0];scan_de<=data_enable;
             scan_hs<=hsync;scan_vs<=vsync;

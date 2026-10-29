@@ -24,16 +24,25 @@ def main():
     parser.add_argument('--case', choices=('stable', 'late-line', 'late-epoch'))
     parser.add_argument('--write-turnaround-cycles', type=int, default=0)
     parser.add_argument('--scan-write-window', action='store_true')
+    parser.add_argument('--scanout-source', type=Path,
+                        help='Explicit scanout source override; the prepared project remains the default')
+    parser.add_argument('--register-underrun-event', action='store_true',
+                        help='Exercise the diagnostic event pipeline on an explicit source override')
     arguments = parser.parse_args()
     if arguments.read_latency_cycles < 1:
         parser.error('--read-latency-cycles must be positive')
     if not 4 <= arguments.active_lines <= 1080:
         parser.error('--active-lines must be between 4 and 1080')
+    if arguments.register_underrun_event and not arguments.scanout_source:
+        parser.error('--register-underrun-event requires --scanout-source')
+    if arguments.frame_publication and arguments.scanout_source:
+        parser.error('--scanout-source does not apply to --frame-publication')
     project = arguments.project.resolve()
     output = arguments.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
+    scanout_source = arguments.scanout_source.resolve() if arguments.scanout_source else project / 'src/video/video_ddr_scanout.v'
     sources = [project / 'rtl/memory/workstation_sdp.sv',
-               project / 'src/video/video_ddr_scanout.v',
+               scanout_source,
                Path(__file__).with_name('tb_video_scanout.sv')]
     top = 'tb_video_scanout'
     labels = ('stable_and_swapped_frames', 'late_line_recovery', 'late_epoch_recovery')
@@ -58,6 +67,8 @@ def main():
                     active_lines=arguments.active_lines,
                     write_turnaround_cycles=arguments.write_turnaround_cycles,
                     scan_write_window=arguments.scan_write_window,
+                    scanout_source=str(scanout_source),
+                    register_underrun_event=arguments.register_underrun_event,
                     input_sha256={str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in inputs},
                     cases=[])
     for path in inputs:
@@ -72,6 +83,9 @@ def main():
         command.insert(1, f'-Ptb_video_scanout.USE_QUEUES={int(arguments.native_queues)}')
         command.insert(1, f'-Ptb_video_scanout.VIDEO_720P30={int(arguments.hdmi_mode == "720p30")}')
         command.insert(1, f'-Ptb_video_scanout.VIDEO_720P60={int(arguments.hdmi_mode == "720p60")}')
+        if arguments.scanout_source:
+            command.insert(1, '-DSCANOUT_DIAGNOSTIC_PIPELINE')
+            command.insert(1, f'-Ptb_video_scanout.REGISTER_UNDERRUN_EVENT={int(arguments.register_underrun_event)}')
     compiled = subprocess.run(command, cwd=project, capture_output=True, text=True)
     (output / 'compile.log').write_text(compiled.stdout + compiled.stderr)
     evidence['compile_command'] = command
@@ -88,7 +102,9 @@ def main():
             evidence['cases'].append(dict(case=label, command=command, returncode=result.returncode,
                                           passed=passed, log_sha256=hashlib.sha256(log.read_bytes()).hexdigest()))
             print(label, result.stdout.strip(), flush=True)
-    evidence['passed'] = compiled.returncode == 0 and len(evidence['cases']) == (1 if arguments.case else len(labels)) and all(
+    evidence['inputs_unchanged_during_run'] = evidence['input_sha256'] == {
+        str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in inputs}
+    evidence['passed'] = evidence['inputs_unchanged_during_run'] and compiled.returncode == 0 and len(evidence['cases']) == (1 if arguments.case else len(labels)) and all(
         case['passed'] for case in evidence['cases'])
     (output / 'results.json').write_text(json.dumps(evidence, indent=2) + '\n')
     if not evidence['passed']:

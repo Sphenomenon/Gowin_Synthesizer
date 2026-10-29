@@ -1,0 +1,492 @@
+{
+  "schema": 1,
+  "stage": "D04 diagnostic counter event pipeline",
+  "passed": true,
+  "hardware_tested": false,
+  "profile_changed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v": "f15dd0941fa6e6ce44a4f1f5e6faf8f80123b98026c7de069a023218338c64f4",
+    "projects/138k/push2_workstation/usb_a/sim/display/run_scanout.py": "1b46536e895c68c091d13f2bc8da9c525b0c1e81464a66acf1d383d2a97c6336",
+    "projects/138k/push2_workstation/usb_a/sim/display/tb_video_scanout.sv": "bc755f4ac7fea7a2b3fc97ab1be9664821312459411d0bb5d4826cfb8206997f"
+  },
+  "source_policy": "Explicit source override only; parameter REGISTER_UNDERRUN_EVENT defaults to 0; no top/profile/locked inputs changed",
+  "verification": {
+    "prepared": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-parent-prepared/results.json",
+      "sha256": "8497c8ea2769687ff1fda82f795645b317063971c154b8cd686c936f3c2f937b",
+      "verification": {
+        "scope": "staged_scanout_behavioral_not_physical_ddr_or_workstation_acceptance",
+        "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+        "hardware_tested": false,
+        "board_accessed": false,
+        "native_queues": false,
+        "frame_publication": false,
+        "hdmi_mode": "1080p60",
+        "read_latency_cycles": 64,
+        "active_lines": 8,
+        "write_turnaround_cycles": 0,
+        "scan_write_window": false,
+        "scanout_source": "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/video/video_ddr_scanout.v",
+        "register_underrun_event": false,
+        "input_sha256": {
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/video/video_ddr_scanout.v": "7da444cbd8be7f5e5572c967e73493d673a9d2e7270e590c604b46b0c91ced84",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_video_scanout.sv": "bc755f4ac7fea7a2b3fc97ab1be9664821312459411d0bb5d4826cfb8206997f",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/memory/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/run_scanout.py": "1b46536e895c68c091d13f2bc8da9c525b0c1e81464a66acf1d383d2a97c6336"
+        },
+        "cases": [
+          {
+            "case": "stable_and_swapped_frames",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-parent-prepared/scanout.vvp",
+              "+MODE=0"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "b2437b8cbaea84b56108ba2d81d62a7afc963e679651e5deda12136dfe0ffd63"
+          },
+          {
+            "case": "late_line_recovery",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-parent-prepared/scanout.vvp",
+              "+MODE=1"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "ed370b48e050f7449d7a019bc6b689c577b7b4b7932821b986d5317b2ef6a411"
+          },
+          {
+            "case": "late_epoch_recovery",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-parent-prepared/scanout.vvp",
+              "+MODE=2"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "4398affce84e1a3f9a3655d85b79d220bc1c2c06d80414ebcc25922c5937abbd"
+          }
+        ],
+        "compile_command": [
+          "iverilog",
+          "-Ptb_video_scanout.VIDEO_720P60=0",
+          "-Ptb_video_scanout.VIDEO_720P30=0",
+          "-Ptb_video_scanout.USE_QUEUES=0",
+          "-Ptb_video_scanout.READ_LATENCY_CYCLES=64",
+          "-Ptb_video_scanout.SCAN_WRITE_WINDOW=0",
+          "-Ptb_video_scanout.WRITE_TURNAROUND_CYCLES=0",
+          "-Ptb_video_scanout.ACTIVE_LINES=8",
+          "-g2012",
+          "-s",
+          "tb_video_scanout",
+          "-I",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-parent-prepared/scanout.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/memory/workstation_sdp.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/video/video_ddr_scanout.v",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_video_scanout.sv"
+        ],
+        "compile_returncode": 0,
+        "inputs_unchanged_during_run": true,
+        "passed": true
+      }
+    },
+    "default": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-default/results.json",
+      "sha256": "b5406824e0f3b4b25a83d3d33a302aa6012a112d5d9a08aa34d7b2284b10c830",
+      "verification": {
+        "scope": "staged_scanout_behavioral_not_physical_ddr_or_workstation_acceptance",
+        "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+        "hardware_tested": false,
+        "board_accessed": false,
+        "native_queues": false,
+        "frame_publication": false,
+        "hdmi_mode": "1080p60",
+        "read_latency_cycles": 64,
+        "active_lines": 8,
+        "write_turnaround_cycles": 0,
+        "scan_write_window": false,
+        "scanout_source": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v",
+        "register_underrun_event": false,
+        "input_sha256": {
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v": "f15dd0941fa6e6ce44a4f1f5e6faf8f80123b98026c7de069a023218338c64f4",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_video_scanout.sv": "bc755f4ac7fea7a2b3fc97ab1be9664821312459411d0bb5d4826cfb8206997f",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/memory/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/run_scanout.py": "1b46536e895c68c091d13f2bc8da9c525b0c1e81464a66acf1d383d2a97c6336"
+        },
+        "cases": [
+          {
+            "case": "stable_and_swapped_frames",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-default/scanout.vvp",
+              "+MODE=0"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "b2437b8cbaea84b56108ba2d81d62a7afc963e679651e5deda12136dfe0ffd63"
+          },
+          {
+            "case": "late_line_recovery",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-default/scanout.vvp",
+              "+MODE=1"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "ed370b48e050f7449d7a019bc6b689c577b7b4b7932821b986d5317b2ef6a411"
+          },
+          {
+            "case": "late_epoch_recovery",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-default/scanout.vvp",
+              "+MODE=2"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "4398affce84e1a3f9a3655d85b79d220bc1c2c06d80414ebcc25922c5937abbd"
+          }
+        ],
+        "compile_command": [
+          "iverilog",
+          "-Ptb_video_scanout.REGISTER_UNDERRUN_EVENT=0",
+          "-DSCANOUT_DIAGNOSTIC_PIPELINE",
+          "-Ptb_video_scanout.VIDEO_720P60=0",
+          "-Ptb_video_scanout.VIDEO_720P30=0",
+          "-Ptb_video_scanout.USE_QUEUES=0",
+          "-Ptb_video_scanout.READ_LATENCY_CYCLES=64",
+          "-Ptb_video_scanout.SCAN_WRITE_WINDOW=0",
+          "-Ptb_video_scanout.WRITE_TURNAROUND_CYCLES=0",
+          "-Ptb_video_scanout.ACTIVE_LINES=8",
+          "-g2012",
+          "-s",
+          "tb_video_scanout",
+          "-I",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-default/scanout.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/memory/workstation_sdp.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_video_scanout.sv"
+        ],
+        "compile_returncode": 0,
+        "inputs_unchanged_during_run": true,
+        "passed": true
+      }
+    },
+    "pipeline": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-pipeline/results.json",
+      "sha256": "8fd9195a18592d280a48684b224c8712dc8f35d4248f04559f7af1d5e3c502d5",
+      "verification": {
+        "scope": "staged_scanout_behavioral_not_physical_ddr_or_workstation_acceptance",
+        "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+        "hardware_tested": false,
+        "board_accessed": false,
+        "native_queues": false,
+        "frame_publication": false,
+        "hdmi_mode": "1080p60",
+        "read_latency_cycles": 64,
+        "active_lines": 8,
+        "write_turnaround_cycles": 0,
+        "scan_write_window": false,
+        "scanout_source": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v",
+        "register_underrun_event": true,
+        "input_sha256": {
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v": "f15dd0941fa6e6ce44a4f1f5e6faf8f80123b98026c7de069a023218338c64f4",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_video_scanout.sv": "bc755f4ac7fea7a2b3fc97ab1be9664821312459411d0bb5d4826cfb8206997f",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/memory/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/run_scanout.py": "1b46536e895c68c091d13f2bc8da9c525b0c1e81464a66acf1d383d2a97c6336"
+        },
+        "cases": [
+          {
+            "case": "stable_and_swapped_frames",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-pipeline/scanout.vvp",
+              "+MODE=0"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "b2437b8cbaea84b56108ba2d81d62a7afc963e679651e5deda12136dfe0ffd63"
+          },
+          {
+            "case": "late_line_recovery",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-pipeline/scanout.vvp",
+              "+MODE=1"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "ed370b48e050f7449d7a019bc6b689c577b7b4b7932821b986d5317b2ef6a411"
+          },
+          {
+            "case": "late_epoch_recovery",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-pipeline/scanout.vvp",
+              "+MODE=2"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "4398affce84e1a3f9a3655d85b79d220bc1c2c06d80414ebcc25922c5937abbd"
+          }
+        ],
+        "compile_command": [
+          "iverilog",
+          "-Ptb_video_scanout.REGISTER_UNDERRUN_EVENT=1",
+          "-DSCANOUT_DIAGNOSTIC_PIPELINE",
+          "-Ptb_video_scanout.VIDEO_720P60=0",
+          "-Ptb_video_scanout.VIDEO_720P30=0",
+          "-Ptb_video_scanout.USE_QUEUES=0",
+          "-Ptb_video_scanout.READ_LATENCY_CYCLES=64",
+          "-Ptb_video_scanout.SCAN_WRITE_WINDOW=0",
+          "-Ptb_video_scanout.WRITE_TURNAROUND_CYCLES=0",
+          "-Ptb_video_scanout.ACTIVE_LINES=8",
+          "-g2012",
+          "-s",
+          "tb_video_scanout",
+          "-I",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-pipeline/scanout.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/memory/workstation_sdp.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_video_scanout.sv"
+        ],
+        "compile_returncode": 0,
+        "inputs_unchanged_during_run": true,
+        "passed": true
+      }
+    },
+    "pipeline_queues": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-pipeline-queues/results.json",
+      "sha256": "261dec84bdff35bee606cc2108a5b4c0523ebb67a5f12897414567915ae245ed",
+      "verification": {
+        "scope": "staged_scanout_behavioral_not_physical_ddr_or_workstation_acceptance",
+        "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+        "hardware_tested": false,
+        "board_accessed": false,
+        "native_queues": true,
+        "frame_publication": false,
+        "hdmi_mode": "1080p60",
+        "read_latency_cycles": 64,
+        "active_lines": 8,
+        "write_turnaround_cycles": 0,
+        "scan_write_window": false,
+        "scanout_source": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v",
+        "register_underrun_event": true,
+        "input_sha256": {
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v": "f15dd0941fa6e6ce44a4f1f5e6faf8f80123b98026c7de069a023218338c64f4",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_video_scanout.sv": "bc755f4ac7fea7a2b3fc97ab1be9664821312459411d0bb5d4826cfb8206997f",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/timing/basic_pitch_ddr_client_queues.sv": "4a1c49cbea79514d68a1d0c567f0cd5dfd6b1bdfad1c9cf5df1e1a9c4443d2ab",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/src/memory/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/run_scanout.py": "1b46536e895c68c091d13f2bc8da9c525b0c1e81464a66acf1d383d2a97c6336"
+        },
+        "cases": [
+          {
+            "case": "stable_and_swapped_frames",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-pipeline-queues/scanout.vvp",
+              "+MODE=0"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "c52de2c4d280c5f296177affe3c72944ec356b6aa61cd1d0627dfa3e0c677987"
+          },
+          {
+            "case": "late_line_recovery",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-pipeline-queues/scanout.vvp",
+              "+MODE=1"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "0c9e456e88f131d4b4369ae22ccb72d371b7e80f131b4f09b677a20c0e94a59e"
+          },
+          {
+            "case": "late_epoch_recovery",
+            "command": [
+              "vvp",
+              "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-pipeline-queues/scanout.vvp",
+              "+MODE=2"
+            ],
+            "returncode": 0,
+            "passed": true,
+            "log_sha256": "c9c64969a1b8a4f7c33e8cc15545151861664c602695161d63bba82597b8ebd0"
+          }
+        ],
+        "compile_command": [
+          "iverilog",
+          "-Ptb_video_scanout.REGISTER_UNDERRUN_EVENT=1",
+          "-DSCANOUT_DIAGNOSTIC_PIPELINE",
+          "-Ptb_video_scanout.VIDEO_720P60=0",
+          "-Ptb_video_scanout.VIDEO_720P30=0",
+          "-Ptb_video_scanout.USE_QUEUES=1",
+          "-Ptb_video_scanout.READ_LATENCY_CYCLES=64",
+          "-Ptb_video_scanout.SCAN_WRITE_WINDOW=0",
+          "-Ptb_video_scanout.WRITE_TURNAROUND_CYCLES=0",
+          "-Ptb_video_scanout.ACTIVE_LINES=8",
+          "-g2012",
+          "-s",
+          "tb_video_scanout",
+          "-I",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/scanout-diagnostic-final-pipeline-queues/scanout.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/memory/workstation_sdp.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_video_scanout.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/timing/basic_pitch_ddr_client_queues.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv"
+        ],
+        "compile_returncode": 0,
+        "inputs_unchanged_during_run": true,
+        "passed": true
+      }
+    }
+  },
+  "metrics": {
+    "prepared": [
+      {
+        "mode": 0,
+        "queues": 0,
+        "checked_pixels": 61440,
+        "colored_lines": 32,
+        "black_lines": 0,
+        "underruns": 0,
+        "background_writes": 0
+      },
+      {
+        "mode": 1,
+        "queues": 0,
+        "checked_pixels": 61440,
+        "colored_lines": 29,
+        "black_lines": 3,
+        "underruns": 3,
+        "background_writes": 0
+      },
+      {
+        "mode": 2,
+        "queues": 0,
+        "checked_pixels": 76800,
+        "colored_lines": 33,
+        "black_lines": 7,
+        "underruns": 7,
+        "background_writes": 0
+      }
+    ],
+    "default": [
+      {
+        "mode": 0,
+        "queues": 0,
+        "checked_pixels": 61440,
+        "colored_lines": 32,
+        "black_lines": 0,
+        "underruns": 0,
+        "background_writes": 0
+      },
+      {
+        "mode": 1,
+        "queues": 0,
+        "checked_pixels": 61440,
+        "colored_lines": 29,
+        "black_lines": 3,
+        "underruns": 3,
+        "background_writes": 0
+      },
+      {
+        "mode": 2,
+        "queues": 0,
+        "checked_pixels": 76800,
+        "colored_lines": 33,
+        "black_lines": 7,
+        "underruns": 7,
+        "background_writes": 0
+      }
+    ],
+    "pipeline": [
+      {
+        "mode": 0,
+        "queues": 0,
+        "checked_pixels": 61440,
+        "colored_lines": 32,
+        "black_lines": 0,
+        "underruns": 0,
+        "background_writes": 0
+      },
+      {
+        "mode": 1,
+        "queues": 0,
+        "checked_pixels": 61440,
+        "colored_lines": 29,
+        "black_lines": 3,
+        "underruns": 3,
+        "background_writes": 0
+      },
+      {
+        "mode": 2,
+        "queues": 0,
+        "checked_pixels": 76800,
+        "colored_lines": 33,
+        "black_lines": 7,
+        "underruns": 7,
+        "background_writes": 0
+      }
+    ],
+    "pipeline_queues": [
+      {
+        "mode": 0,
+        "queues": 1,
+        "checked_pixels": 61440,
+        "colored_lines": 32,
+        "black_lines": 0,
+        "underruns": 0,
+        "background_writes": 103030
+      },
+      {
+        "mode": 1,
+        "queues": 1,
+        "checked_pixels": 61440,
+        "colored_lines": 29,
+        "black_lines": 3,
+        "underruns": 3,
+        "background_writes": 103134
+      },
+      {
+        "mode": 2,
+        "queues": 1,
+        "checked_pixels": 76800,
+        "colored_lines": 33,
+        "black_lines": 7,
+        "underruns": 7,
+        "background_writes": 129102
+      }
+    ]
+  },
+  "checks": {
+    "all_pixel_oracles_passed": true,
+    "prepared_default_pipeline_metrics_equal": true,
+    "pipeline_background_metrics_equal": true,
+    "underrun_count_equals_real_output_black_lines": true
+  },
+  "limits": [
+    "A modeled DDR response and native-queue fixture; no routed timing or hardware acceptance",
+    "Physical F3 v_counter to under_count CE setup failure motivated the source pipeline; F5 uses old rev2 netlist and contains none of this change",
+    "Diagnostic count/Gray publication gains one pixel-clock latency when explicitly enabled; display and fetch timing unchanged"
+  ]
+}
