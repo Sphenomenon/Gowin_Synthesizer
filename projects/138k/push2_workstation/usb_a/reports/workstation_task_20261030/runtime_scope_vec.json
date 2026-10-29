@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "scope": "Native runtime vector component; no profile or top integration",
+  "passed": true,
+  "input_sha256": {
+    "rtl/audio/workstation_runtime_scope_vec.sv": "14abaaa4e21a94edc16a4661e3756ecb208066321bd39bb8f548335e2298160e",
+    "rtl/audio/workstation_runtime_scope_vec.provenance.json": "a256e6b68d2847bc35e6fffb74ef0ce12c0ea34c1bf8008d1da7e783eef1c87d",
+    "rtl/audio/scope_vec/scope_vec_engine.sv": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+    "sim/audio/tb_workstation_runtime_scope_vec.sv": "6f3b1b753cc5c3683508c798a1ab33a9da98d9b09e72769887a07089ffeca7b5",
+    "sim/test_workstation_runtime_scope_vec.py": "299ee18a77b3714a6c35c3579aafcc747bb91b2d88c8ae96546e343153fce791",
+    "rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+    "rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+    "rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc"
+  },
+  "baseline_adsr": {
+    "name": "sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem",
+    "sha256": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b"
+  },
+  "reference_48k": {
+    "frames": 480,
+    "clocks": 56809,
+    "max_render_cycles": 115,
+    "profiles": 5,
+    "voices": 8
+  },
+  "pcm_frequency": [
+    {
+      "epoch_tag": "48",
+      "sample_rate": "48000",
+      "measured_hz": "440.000184287"
+    },
+    {
+      "epoch_tag": "44",
+      "sample_rate": "44100",
+      "measured_hz": "439.999820471"
+    },
+    {
+      "epoch_tag": "49",
+      "sample_rate": "48000",
+      "measured_hz": "440.000115262"
+    }
+  ],
+  "attack": {
+    "profile": "piano",
+    "frames_48": 577,
+    "frames_44": 530,
+    "seconds_48": 0.012020833333333333,
+    "seconds_44": 0.012018140589569161
+  },
+  "controls": {
+    "canonical_48_frames": 128,
+    "actual_44_frames": 118,
+    "fractional_slew": true
+  },
+  "stdout": "EQUIVALENCE vector48 frames=480 clocks=56809 max_render_cycles=115\nATTACK profile=piano frames48=577 frames44=530\nCONTROLS rate44100 frames=118 canonical48_frames=128\nPASS runtime vector:48k equivalence, held forward/reverse switch, PCM frequency, frame-frozen rate, antialias recovery, envelope time\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_scope_vec.sv:128: $finish called at 8140937280 (1ps)\nPCM_FREQUENCY epoch_tag=48 sample_rate=48000 measured_hz=440.000184287\nPCM_FREQUENCY epoch_tag=44 sample_rate=44100 measured_hz=439.999820471\nPCM_FREQUENCY epoch_tag=49 sample_rate=48000 measured_hz=440.000115262\nSOURCE rtl/audio/scope_vec/scope_vec_engine.sv SHA256=595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf\nSOURCE rtl/audio/workstation_runtime_scope_vec.sv SHA256=14abaaa4e21a94edc16a4661e3756ecb208066321bd39bb8f548335e2298160e\nSOURCE rtl/audio/workstation_runtime_scope_vec.provenance.json SHA256=a256e6b68d2847bc35e6fffb74ef0ce12c0ea34c1bf8008d1da7e783eef1c87d\nSOURCE sim/audio/tb_workstation_runtime_scope_vec.sv SHA256=6f3b1b753cc5c3683508c798a1ab33a9da98d9b09e72769887a07089ffeca7b5\nSOURCE rtl/audio/scope_vec/data/scene_controls.mem SHA256=e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c\nSOURCE rtl/audio/scope_vec/data/note_steps.mem SHA256=0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c\nSOURCE rtl/audio/scope_vec/data/paths.mem SHA256=bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c\nSOURCE rtl/audio/scope_vec/data/rotation.mem SHA256=a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc\n",
+  "stderr": ".\n----------------------------------------------------------------------\nRan 1 test in 6.834s\n\nOK\n",
+  "hardware_tested": false,
+  "routed_timing_verified": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "integrated_in_profile": false
+}

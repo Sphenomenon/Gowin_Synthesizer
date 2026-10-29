@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "parent_path": "rtl/audio/scope_vec/scope_vec_engine.sv",
+  "parent_sha256": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+  "purpose": "Native runtime dual-rate vector variant; parent/default remain untouched",
+  "edits": [
+    {
+      "occurrences": 1,
+      "before": "module scope_vec_engine #(",
+      "after": "module workstation_runtime_scope_vec #("
+    },
+    {
+      "occurrences": 1,
+      "before": "input wire clk_i,rst_ni,panic_i,sample_ce_i,",
+      "after": "input wire clk_i,rst_ni,panic_i,sample_ce_i,rate_44k1_i,"
+    },
+    {
+      "occurrences": 1,
+      "before": "    localparam [2:0] IDLE=0,ATTACK=1,DECAY=2,SUSTAIN=3,RELEASE=4;",
+      "after": "    localparam [31:0] MAX_STEP_44=32'((64'd4294967296*MAX_SCAN_HZ)/44100);\n    localparam [2:0] IDLE=0,ATTACK=1,DECAY=2,SUSTAIN=3,RELEASE=4;"
+    },
+    {
+      "occurrences": 1,
+      "before": "    reg [21:0] frame_pitch;",
+      "after": "    reg [21:0] frame_pitch;\n    reg frame_44k1;\n    reg [7:0] slew_remainder,rotation_remainder;\n    wire [16:0] slew_numerator=17'd40960+{9'd0,slew_remainder};\n    wire [15:0] slew_step=rate_44k1_i ? 16'(slew_numerator/17'd147) : 16'd256;\n    wire [8:0] rotation_numerator=9'd160+{1'b0,rotation_remainder};\n    wire [8:0] rotation_step=rate_44k1_i ? 9'(rotation_numerator/9'd147) : 9'd1;\n    wire signed [8:0] rotation_delta=$signed(9'({rotation_i,2'b00}-rotation));\n    wire [8:0] rotation_distance=rotation_delta[8] ? -9'(rotation_delta) : 9'(rotation_delta);\n    wire [8:0] rotation_increment=rotation_distance>rotation_step ? rotation_step : rotation_distance;"
+    },
+    {
+      "occurrences": 1,
+      "before": "    wire [31:0] effective_step=pitch_product[51:20];",
+      "after": "    // Keep canonical48k note/phase state. Scale the full final pitch product,\n    // then test its35-bit result before truncating a safe phase increment.\n    wire [61:0] rate_step_numerator={8'd0,pitch_product}*62'd160+62'd77070336;\n    wire [34:0] effective_step=frame_44k1 ? 35'(rate_step_numerator/62'd154140672)\n                                                      : {3'd0,pitch_product[51:20]};\n    wire [34:0] step_limit=frame_44k1 ? {3'd0,MAX_STEP_44} : {3'd0,MAX_STEP};"
+    },
+    {
+      "occurrences": 1,
+      "before": "    function automatic [15:0] slew(input [15:0] old_value,target);",
+      "after": "    function automatic [15:0] slew(input [15:0] old_value,target,input [15:0] step);"
+    },
+    {
+      "occurrences": 1,
+      "before": "target-old_value>256 ? old_value+16'd256",
+      "after": "target-old_value>step ? old_value+step"
+    },
+    {
+      "occurrences": 1,
+      "before": "old_value-target>256 ? old_value-16'd256",
+      "after": "old_value-target>step ? old_value-step"
+    },
+    {
+      "occurrences": 1,
+      "before": "    function automatic signed [17:0] interpolate",
+      "after": "    function automatic [23:0] envelope_step(input [23:0] value,input bit rate44);\n        reg [31:0] numerator,scaled;\n        begin\n            numerator={8'd0,value}*32'd160+32'd73;\n            scaled=numerator/32'd147;\n            envelope_step=rate44 ? (scaled>32'hffffff ? 24'hffffff : scaled[23:0]) : value;\n        end\n    endfunction\n    function automatic signed [17:0] interpolate"
+    },
+    {
+      "occurrences": 1,
+      "before": "{1'b0,envelope[e]}+{1'b0,attack[e]}",
+      "after": "{1'b0,envelope[e]}+{1'b0,envelope_step(attack[e],frame_44k1)}"
+    },
+    {
+      "occurrences": 1,
+      "before": "{1'b0,sustain[e]}+{1'b0,decay[e]}",
+      "after": "{1'b0,sustain[e]}+{1'b0,envelope_step(decay[e],frame_44k1)}"
+    },
+    {
+      "occurrences": 1,
+      "before": "            frame_pitch<=22'd1048576;",
+      "after": "            frame_44k1<=0;slew_remainder<=73;rotation_remainder<=73;\n            frame_pitch<=22'd1048576;"
+    },
+    {
+      "occurrences": 2,
+      "before": "slew(scale,scale_q15_i)",
+      "after": "slew(scale,scale_q15_i,slew_step)"
+    },
+    {
+      "occurrences": 2,
+      "before": "slew(morph,morph_q15_i)",
+      "after": "slew(morph,morph_q15_i,slew_step)"
+    },
+    {
+      "occurrences": 1,
+      "before": "                        // Shortest angular path, one 512th turn per frame.\n                        if(rotation!={rotation_i,2'b00}) rotation<=rotation+($signed(9'({rotation_i,2'b00}-rotation))>0 ? 9'd1 : -9'd1);",
+      "after": "                        // Shortest angular path, rate-correct fractional slew.\n                        frame_44k1<=rate_44k1_i;\n                        if(rate_44k1_i)begin\n                            slew_remainder<=8'(slew_numerator%17'd147);\n                            rotation_remainder<=8'(rotation_numerator%9'd147);\n                        end\n                        if(rotation!={rotation_i,2'b00}) rotation<=rotation+(rotation_delta>0 ? rotation_increment : -rotation_increment);"
+    },
+    {
+      "occurrences": 1,
+      "before": "envelope[j]<=envelope[j]-decay[j]",
+      "after": "envelope[j]<=envelope[j]-envelope_step(decay[j],frame_44k1)"
+    },
+    {
+      "occurrences": 1,
+      "before": "envelope[j]<=release_step[j]",
+      "after": "envelope[j]<=envelope_step(release_step[j],frame_44k1)"
+    },
+    {
+      "occurrences": 1,
+      "before": "envelope[j]-release_step[j]",
+      "after": "envelope[j]-envelope_step(release_step[j],frame_44k1)"
+    },
+    {
+      "occurrences": 1,
+      "before": "effective_step>MAX_STEP",
+      "after": "effective_step>step_limit"
+    },
+    {
+      "occurrences": 1,
+      "before": "phase[voice_index]+effective_step",
+      "after": "phase[voice_index]+effective_step[31:0]"
+    },
+    {
+      "occurrences": 1,
+      "before": "if(v==0) begin",
+      "after": "if(v==0) begin: g_first_voice"
+    },
+    {
+      "occurrences": 1,
+      "before": "end else begin\n            assign free_select",
+      "after": "end else begin: g_later_voice\n            assign free_select"
+    },
+    {
+      "occurrences": 1,
+      "before": "if(voice_index==j)",
+      "after": "if(32'(voice_index)==j)"
+    },
+    {
+      "occurrences": 1,
+      "before": "    reg [15:0] morph,scale,frame_morph,frame_scale;",
+      "after": "    // Low phase/product bits are intentionally discarded by interpolation.\n    wire unused_fraction = &{1'b0,scan_phase[6:0],own_product[19:0]};\n    reg [15:0] morph,scale,frame_morph,frame_scale;"
+    }
+  ],
+  "source_policy": "versioned_native_source_not_generated_at_build",
+  "retirement": "Use a single native runtime provider after full48k equivalence and explicit profile migration; retire old provider only after all consumers migrate"
+}
