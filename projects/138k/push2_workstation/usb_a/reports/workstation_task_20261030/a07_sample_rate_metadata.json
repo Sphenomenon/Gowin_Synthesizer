@@ -1,0 +1,446 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-30T07:03:50.056525+08:00",
+  "scope": "A07 maintained protocol/Android metadata and WAV source plus offline JVM validation; display v1.1 contract only; no device backend integration or hardware",
+  "base_commit": "599017c8973ae13015ecd2a39559e19bc4421f9a",
+  "source_sha256": {
+    "BLUETOOTH_PROTOCOL_V1.md": "e97f3938721a4073d622b0ed4a7b9e576dbdec26ea1c973f9ca5a420c81e53aa",
+    "projects/138k/push2_workstation/usb_a/DISPLAY_DATA_LAYOUT_V1.md": "27603c1df24fad8d3c38d0f782d9b24baf5a7b59595a0941ed9b3f4b8a042790",
+    "clients/android/README.md": "3c7f6058980dc3e607865ae1c99489574ed669dee9ce742de18dab34c1809d3c",
+    "clients/android/app/src/main/kotlin/cn/gowin/control/MainActivity.kt": "95ad76b1ec94f27511311dcda22a613ee00b8fb622a65ac49c953c40d7426f97",
+    "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/RecordingFormats.kt": "de7116c21bc62f603b6f3c3067ab164e7e2549fe61c7578096de6b4189c3fe7d",
+    "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/Models.kt": "d9bdb38328e2ad6416f8011c01f5794c2714bd8a923758ec96d67d19a8c80703",
+    "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/Wire.kt": "d115dffdd9fed0625fc0d8649a5eae436f713be4a9282467fffbecd08f114c11",
+    "clients/android/core/ble/src/main/kotlin/cn/gowin/control/ble/ProtocolSession.kt": "83582082de604243296f76ea5aaafbb42329d93160162c4e133c347edbfdba18",
+    "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/Workstation.kt": "055662b44bf8b7096aa4a2d4e27e0dd5fdfa799010bb7c41cbfe5f641d0c2a45",
+    "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/RecordingFiles.kt": "8f9ad2ba2aeb22a7d9948869a05f208ac9f0f860725ff55672e8782d8f43d25d",
+    "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/RecordingFormatsTest.kt": "d06803d8a72bba3c381b80137b0d4e81e71a92d55656197f40678d8c0a813619",
+    "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/RecordingFormatsSessionTest.kt": "56bbbc43b9c8c71e5d5844080f0cbd8aec4d7383018ed1200b1bbe442a97d636",
+    "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/RecordingFilesTest.kt": "d6f7f98641062c04a79b187ecc3eab34c1b468e4f98bc9694df812468c578a54",
+    "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/DemoProtocolTest.kt": "11243cf0f7b693eabc7bf297404ffd958fadd96b8512a26b5f4d30c1aab942a1",
+    "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/NegotiatedRecordingTest.kt": "eb95ea02d2c0525b6585886bc66171f5dd1ea7a22fe3838b487250c80b5e0a4c"
+  },
+  "negotiation": {
+    "opcode": "0x43",
+    "name": "REC_FORMATS",
+    "extension_version": 1,
+    "request_bytes": 8,
+    "response_bytes": 16,
+    "client_mask": 3,
+    "mask_bit0": "format1 PCM16LE stereo48000",
+    "mask_bit1": "format2 PCM16LE stereo44100",
+    "capability_reserved_bits_changed": false,
+    "hello_major": 1,
+    "hello_minor": 0,
+    "recording_info_bytes": 48,
+    "grant_bound_to": [
+      "boot_id",
+      "validated HELLO nonce and current request",
+      "current live connection/control window"
+    ],
+    "grant_cleared_on": [
+      "new HELLO handshake",
+      "disconnect",
+      "close",
+      "validated status reports closed control window",
+      "SESSION_REQUIRED or CONTROL_DISABLED response"
+    ],
+    "fallback_only": "Valid explicit UNSUPPORTED (0x80); all timeout/CRC/nonce/boot/malformed/busy errors fail",
+    "new_rate_start": "Explicit data API startRecording(seconds, format=2); default format=1 preserved; no new UI rate control; device must reject actual-clock mismatch",
+    "recording_info_validation": [
+      "negotiated format",
+      "boot grant",
+      "format-rate exact tuple",
+      "stereo channels",
+      "frames<=capacity",
+      "pcm_bytes=frames*4",
+      "object identity and state",
+      "READY/CRC-valid consistency"
+    ],
+    "resume_identity": [
+      "boot",
+      "recording id",
+      "format",
+      "channels",
+      "sample rate",
+      "frames",
+      "bytes",
+      "capacity",
+      "CRC",
+      "READY"
+    ],
+    "codecs_unchanged": [
+      0,
+      10,
+      11
+    ],
+    "format1_sample_rate": 48000,
+    "format2_sample_rate": 44100,
+    "bytes_per_frame": 4,
+    "byte_rate_48000": 192000,
+    "byte_rate_44100": 176400
+  },
+  "display": {
+    "implemented": false,
+    "proposed_major": 1,
+    "proposed_minor": 1,
+    "legacy_minor0_unchanged": true,
+    "explicit_all_consumers_opt_in_required": true,
+    "rate_epoch_bound_snapshot": true,
+    "descriptor_word14": "nonzero stream_epoch",
+    "metadata_word13": "actual 48000 or44100",
+    "metadata_word14": "same nonzero stream_epoch",
+    "metadata_word15": "reserved0",
+    "current_display_RTL_or_profile_changed": false
+  },
+  "validation": {
+    "kind": "Isolated JVM Gradle harness compiling unchanged maintained source directories directly; real official Android35 API jar; all existing core JUnit classes executed",
+    "full_core_main_sources_compiled": true,
+    "workstation_and_AndroidBleTransport_compiled": true,
+    "ui_Compose_source_compiled": false,
+    "APK_built": false,
+    "Android_AGP_or_lint_run": false,
+    "tests_total": 75,
+    "tests_passed": 73,
+    "tests_skipped": 2,
+    "failures": 0,
+    "errors": 0,
+    "returncode": 0,
+    "skipped_physical_classes": [
+      "cn.gowin.control.ble.RealBoardSessionTest",
+      "cn.gowin.control.data.RealRecordingTest"
+    ],
+    "actual_radio_or_phone_tests": false,
+    "groups": [
+      {
+        "name": "cn.gowin.control.ble.AckReadTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.AckReadTest.xml",
+        "sha256": "1b89ebb47e36892d06add06254c18ace6f226f43d50a4a886476c396a9a1a9ca"
+      },
+      {
+        "name": "cn.gowin.control.ble.BulkTransferTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.BulkTransferTest.xml",
+        "sha256": "7587f0b00a82b8ef7b3fbcfb29d39e3b5a93c242320789053d7feb8ec8e5118f"
+      },
+      {
+        "name": "cn.gowin.control.ble.CompactTransferTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.CompactTransferTest.xml",
+        "sha256": "ad87aafc809342b600d3e712145f684cf11f661a9f98cb7f0afb0050ce3f69c9"
+      },
+      {
+        "name": "cn.gowin.control.ble.DirectTransferTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.DirectTransferTest.xml",
+        "sha256": "75cda2aa98838e8284c7058006289f3847d51da2d8b82e9355fb765465c361fa"
+      },
+      {
+        "name": "cn.gowin.control.ble.ExtendedTransferTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.ExtendedTransferTest.xml",
+        "sha256": "8e2d1527f36d04fdd3ead24b3f6461808dfd6152ed9b698294db129e116c0b0e"
+      },
+      {
+        "name": "cn.gowin.control.ble.LongTransferTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.LongTransferTest.xml",
+        "sha256": "3c51727b0171daec5a75fc99c726e212655d83100db212757b15f61c38f47c3d"
+      },
+      {
+        "name": "cn.gowin.control.ble.LosslessTransferTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.LosslessTransferTest.xml",
+        "sha256": "d449c45f12ac9ffb4d90414cd2237cf25408b2cb48871808142d0fcffcd4bd2b"
+      },
+      {
+        "name": "cn.gowin.control.ble.MinimumProfileTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.MinimumProfileTest.xml",
+        "sha256": "61e43f70507bdb53d658bfdbb060db4751486fdd2837bbf9ce6f9c7593523f42"
+      },
+      {
+        "name": "cn.gowin.control.ble.OpenWideTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.OpenWideTest.xml",
+        "sha256": "741792c5c44c5d6776a10821699537654e4a1e6cfaeaafb36afc2f8eac41b9fa"
+      },
+      {
+        "name": "cn.gowin.control.ble.RealBoardSessionTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.RealBoardSessionTest.xml",
+        "sha256": "c913e7d47a9b052eca13dcf54f34c2b8cb485dbf03932c7a4ac2d91627c9a9d0"
+      },
+      {
+        "name": "cn.gowin.control.ble.RecordingFormatsSessionTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.RecordingFormatsSessionTest.xml",
+        "sha256": "4f8ae44a276ce6cd332b9a6d1c08b9149f74526ca29149f4da42652dae3208f0"
+      },
+      {
+        "name": "cn.gowin.control.ble.SecondTransferTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.ble.SecondTransferTest.xml",
+        "sha256": "cc3799a0b001b8c08d8fb6cd6c97f5bd9f02c3922bc6b8d39e3d7c9c16eeb7d8"
+      },
+      {
+        "name": "cn.gowin.control.data.DemoProtocolTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.data.DemoProtocolTest.xml",
+        "sha256": "b1d5248357c0126f712f16989581b273ebeaf629b77febaeaa5f6209557338d6"
+      },
+      {
+        "name": "cn.gowin.control.data.NegotiatedRecordingTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.data.NegotiatedRecordingTest.xml",
+        "sha256": "9e6f312d6ebafceec6c62371e0e6024e90b5b5274b1887e2d0c322685e226d8b"
+      },
+      {
+        "name": "cn.gowin.control.data.RealRecordingTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.data.RealRecordingTest.xml",
+        "sha256": "503386d24a0ace59948543ea50976007ba6c3af2a9c0574c4fb1e97921304360"
+      },
+      {
+        "name": "cn.gowin.control.data.RecordingFilesTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.data.RecordingFilesTest.xml",
+        "sha256": "c2e6965325a0e1b9c23214d03f5c7a27f544c0f10fdcfb6d3ae34b8300abd23d"
+      },
+      {
+        "name": "cn.gowin.control.protocol.PcmRiceTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.protocol.PcmRiceTest.xml",
+        "sha256": "d5d696efcacc75d3c5d5dc8be454e9af7da02f5e780f9d63be5e670900916679"
+      },
+      {
+        "name": "cn.gowin.control.protocol.PcmSecondTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.protocol.PcmSecondTest.xml",
+        "sha256": "09fc4968514e6a358691d8f3d777556a683f02bce724767f14236dd42bd9d9e5"
+      },
+      {
+        "name": "cn.gowin.control.protocol.RecordingFormatsTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.protocol.RecordingFormatsTest.xml",
+        "sha256": "dd61be44e976325911815e443c52d062d7831e36c2a7ee25ba01a6aa2eded918"
+      },
+      {
+        "name": "cn.gowin.control.protocol.WireTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build/test-results/test/TEST-cn.gowin.control.protocol.WireTest.xml",
+        "sha256": "68834a310fb9cfbc1ea03fab036a295f181df5fe1c3e371053860594e473abf1"
+      }
+    ],
+    "compiled_source_sha256": {
+      "clients/android/core/ble/src/main/kotlin/cn/gowin/control/ble/AndroidBleTransport.kt": "b433b1861375929481cf275308ec37af8e2e5945868524d0cd8f161486fbc64d",
+      "clients/android/core/ble/src/main/kotlin/cn/gowin/control/ble/BleTransport.kt": "3f7775e69d208b37aba999db03f4399fc6860d1a5616f555b3eef73a4337459d",
+      "clients/android/core/ble/src/main/kotlin/cn/gowin/control/ble/ProtocolSession.kt": "83582082de604243296f76ea5aaafbb42329d93160162c4e133c347edbfdba18",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/AckReadTest.kt": "04248fcd21bdd0ba26c860cc01eaa21176d6b2d717232073fe31524aa4316b35",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/BulkTransferTest.kt": "b5ea6a419ded3e98d76a698aa681400ebaea365a8a6be6e5e289922902b796ee",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/CompactTransferTest.kt": "f39fbff60ddb5aaea4145170adec3b42a96dea7e67683b862bb7a4d687daeb3d",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/DirectTransferTest.kt": "e6647852ec9032d5d9dd57522a0fd93e315139b3c9e50e840b2950a19b32531a",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/ExtendedTransferTest.kt": "34c0d8e4e207f4132a5ec70a17b0369d1573e1b254e28f9735c5a7baeb1b5352",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/LongTransferTest.kt": "70a10f67feb8e799576bfdd76503233f1902de1f7bc677aba7fdab333366e8c7",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/LosslessTransferTest.kt": "7c1f37b2f6591bf25e7449d4983c87ff88cae2e933c11aa2d4f42eb34fa95ba2",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/MinimumProfileTest.kt": "6907461be7a5f94966e8e3916266f695adb312e17cd6aaf5eb9a3c0ab560d5bb",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/OpenWideTest.kt": "47684d0a2fa00da2b3f6928f383aeeb67d28108e04a24347988f8a16acaa5e17",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/RealBoardSessionTest.kt": "6e096d6aaa3dcc73a95890eb0b80d99b34bde2c4bd003ee5eb0937e9a7504c08",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/RecordingFormatsSessionTest.kt": "56bbbc43b9c8c71e5d5844080f0cbd8aec4d7383018ed1200b1bbe442a97d636",
+      "clients/android/core/ble/src/test/kotlin/cn/gowin/control/ble/SecondTransferTest.kt": "9c60333abefaaf9274bf07cd0df196c3d6b9ea8da31ae0af8d8dcb2826ddd644",
+      "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/DemoTransport.kt": "71b3aca54b427c4b91abedd89106d956bc46988632b24efdd2d68d5873a97a20",
+      "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/RecordingFiles.kt": "8f9ad2ba2aeb22a7d9948869a05f208ac9f0f860725ff55672e8782d8f43d25d",
+      "clients/android/core/data/src/main/kotlin/cn/gowin/control/data/Workstation.kt": "055662b44bf8b7096aa4a2d4e27e0dd5fdfa799010bb7c41cbfe5f641d0c2a45",
+      "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/DemoProtocolTest.kt": "11243cf0f7b693eabc7bf297404ffd958fadd96b8512a26b5f4d30c1aab942a1",
+      "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/NegotiatedRecordingTest.kt": "eb95ea02d2c0525b6585886bc66171f5dd1ea7a22fe3838b487250c80b5e0a4c",
+      "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/RadioBridge.kt": "71ba816d847e4c02279fe7df467523b7215e54ae9bdb6c26ce41b89772362622",
+      "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/RealRecordingTest.kt": "de92123da870a9c4b58c6cbd1dcc39ce68999aa25704ba34ece5a05191f1e0bc",
+      "clients/android/core/data/src/test/kotlin/cn/gowin/control/data/RecordingFilesTest.kt": "d6f7f98641062c04a79b187ecc3eab34c1b468e4f98bc9694df812468c578a54",
+      "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/Models.kt": "d9bdb38328e2ad6416f8011c01f5794c2714bd8a923758ec96d67d19a8c80703",
+      "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/PcmRice.kt": "a74648f0015b0e69647cd1c0dbacc9c1def367b7ca56dbd8e333fe7923a668af",
+      "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/RecordingFormats.kt": "de7116c21bc62f603b6f3c3067ab164e7e2549fe61c7578096de6b4189c3fe7d",
+      "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/Wire.kt": "d115dffdd9fed0625fc0d8649a5eae436f713be4a9282467fffbecd08f114c11",
+      "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/PcmRiceTest.kt": "b85e28a3f29d00a2e640db0dfd0be75bf4d845b42196e1b8af8321da9d566348",
+      "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/PcmSecondTest.kt": "cd620e4ab8d5d84a07e85573191e4d1943dacd0fa615c2dc263ad9eea2aa504b",
+      "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/RecordingFormatsTest.kt": "d06803d8a72bba3c381b80137b0d4e81e71a92d55656197f40678d8c0a813619",
+      "clients/android/core/protocol/src/test/kotlin/cn/gowin/control/protocol/WireTest.kt": "c91b46f3ff543e264cbe5bd2da45d87f360b3f2bfd3caec736b1634587da3986"
+    },
+    "fixture_44100": {
+      "frames": 882,
+      "pcm_bytes": 3528,
+      "resume_offset": 256,
+      "left_hz": 440,
+      "right_hz": 660,
+      "end_to_end": [
+        "real wire fragments and logical CRC",
+        "ungranted INFO rejected",
+        "grant before INFO",
+        "raw PCM block CRC",
+        "durable checkpoint before ACK",
+        "new HELLO renegotiation",
+        "matching object resume",
+        "exact PCM in WAV",
+        "44100 sample_rate and176400 byte_rate"
+      ]
+    },
+    "legacy_flow": "Existing DemoProtocolTest now probes0x43, receives UNSUPPORTED and completes existing48k record/download; existing WAV checkpoint/header tests unchanged",
+    "initial_compile_issue": "New fixture ExperimentalCoroutinesApi import missing; corrected before all successful runs",
+    "environment": {
+      "JDK": "Temurin17.0.21+9",
+      "JDK_archive_SHA256": "78b08c7f5a0598242d5719c022e19479cb4a3aa45c37c19726a757a469ed1c15",
+      "Gradle": "8.10.2",
+      "Gradle_distribution_SHA256": "31c55713e40233a8303827ceb42ca48a47267a0ad4bab9177123121e71524c26",
+      "Kotlin": "2.0.21",
+      "coroutines": "1.9.0",
+      "JUnit": "4.13.2",
+      "Android_platform_package": "platform-35_r02.zip",
+      "Google_repository_package_SHA1": "0bb560a90a7a2cbd0dd8348224d518b638fe7949",
+      "Android_package_SHA256": "0988cacad01b38a18a47bac14a0695f246bc76c1b06c0eeb8eb0dc825ab0c8e0",
+      "global_JAVA_or_SDK_configuration_changed": false,
+      "cache": "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07"
+    },
+    "harness_evidence": {
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jdk-release.json": "df3281a6c1cca3f67f626922991eab932ca333dcd2d63687bcbb9bd0e789dae5",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/android-repository.xml": "be0bea1fc993ec75ce69c929927ef0b3fb3b67ecb857a95095b34e1fcd7a1312",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/android-35.jar": "4566663c3876e022b4fa4ced8c8697c4ab1688267f090114fd92d027b32e619b",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/settings.gradle.kts": "705329b48e8804e4843777bf18fcd6fdec09f6b21ad2b323ca5d989ab6c28f82",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check/build.gradle.kts": "75dc7b7bcf997a1f6744c08ee68a2e2ad21b6ce9bf9378ad17e85b5b5c195229",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check.log": "a20f97104d117e279f312b41ecb48bff8582e8f1fb0008f67092d1bfb7f0e208",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check-fixed.log": "d137d80afd3f0f8d68fa72623491b45695e98a351daf4011301e1c7bb31ad3b9",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-check-final.log": "5c4e1a5e8c510e9c6043a0248cd86fb3e4d88ed565bcba66c733570b3ed99961"
+    }
+  },
+  "readonly_25k": {
+    "changed": false,
+    "unknown_opcode_path": "ble_protocol_command DISPATCH/RECORD_WAIT validates then delegates; ble_recording default reject80",
+    "source_sha256": {
+      "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_protocol_command.v": "241960ea0ffe232905e6537bb4d46f236963bd901a6603f03c7c28c9094bd34e",
+      "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": "1e71b033a0950fb9985e42e6d0306d88baa70119bdfaf510dcf0f05cf878fc43"
+    }
+  },
+  "status": {
+    "Android_protocol_source_implemented": true,
+    "Android_data_WAV_source_implemented": true,
+    "offline_regression_passed": true,
+    "display_v1_1_RTL_implemented": false,
+    "gw138k_BLE_0x43_backend_integrated": false,
+    "gw138k_real_44100_recording_integrated": false,
+    "gw25k_backend_changed": false,
+    "accepted_profiles_changed": false,
+    "EDA_run": false,
+    "board_operated": false,
+    "hardware_verified": false,
+    "SRAM_programmed": false,
+    "Flash_programmed": false,
+    "APK_published": false,
+    "A07_complete": false,
+    "R01_complete": false,
+    "R03_complete": false,
+    "release_ready": false
+  },
+  "remaining_gaps": [
+    "Implement0x43/session grant and format2 in the owning138K backend, without touching independent25K backend",
+    "Bind real final-PCM rate/stream identity, DMA and immutable object lifecycle; reject or seal before rate changes",
+    "Integrate display minor1 producer/all readers with explicit selection and full cross-epoch tests",
+    "App UI rate selection and actual Android APK/AGP/lint plus phone playback/export verification",
+    "Real48k/44.1k PCM, BLE reconnect/throughput/long recording and full hardware acceptance"
+  ],
+  "rollback": "Revert only listed protocol/Android/docs changes; current device bits, accepted profiles and25K backend unchanged",
+  "parent_independent_verification": {
+    "passed": true,
+    "counts": {
+      "tests": 75,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2
+    },
+    "compiled_scope": "All maintained protocol, ble and data Kotlin sources including AndroidBleTransport and Workstation, against official Android35 android.jar; separate Gradle build directory; no APK/Compose build",
+    "evidence_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/parent-jvm.log": "e3db9c6a8f267a16445b30dcf886f7bf48ab8674e1ee5ed5bbc4c047dc8c10c5",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build.gradle.kts": "75dc7b7bcf997a1f6744c08ee68a2e2ad21b6ce9bf9378ad17e85b5b5c195229",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/settings.gradle.kts": "705329b48e8804e4843777bf18fcd6fdec09f6b21ad2b323ca5d989ab6c28f82",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.AckReadTest.xml": "bfd272835638af80589878e49aa5422bbd949e1b0f789ddfaae851b25c98962a",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.BulkTransferTest.xml": "3b0b58fa5288fc1463f8341364d97cb1d3958b2ed9d1a74a3fce33ab5abd886e",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.CompactTransferTest.xml": "867e450b085d2e4316ab0abb4e48a04152fa1b32beaf08d252e691deb75d3b36",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.DirectTransferTest.xml": "f4fef85ba0950b7a4c1928f263b8ffd9d8ecca6727b05d3551c35c586e076808",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.ExtendedTransferTest.xml": "5c2e063e08fcf507cc7cfb8790ff60a13712bf1bac9f105d05a88930f23ac603",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.LongTransferTest.xml": "37afd45998c6ad5f7c3fba4ba0d833904ed39c19a42f149e75c9daf7cefbdf94",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.LosslessTransferTest.xml": "6548f497fc089e23c3ca8fcade11baaf3a942aba591b2ff4b1f005b23877e67f",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.MinimumProfileTest.xml": "8c62684378918d7dfff1706b9e95a79836e02b237ea13ccd5ed1e1549c6e573b",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.OpenWideTest.xml": "1346ac3863f5a00ffa8fd0833d0cfae84fb82a46b7acefcbc8ebedb917bc603c",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.RealBoardSessionTest.xml": "9e9f7f509d0b4c77e9e6b58a838349041b207c93da522bd1837b284cbd176db9",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.RecordingFormatsSessionTest.xml": "ec34528825b6a13815d0c3468275f3c92a27f59295b06e40accad96b27698dcc",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.ble.SecondTransferTest.xml": "f39f1caf658539db5704a9a2f0543470440f715c0a3a877ecbc620788f651543",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.data.DemoProtocolTest.xml": "73c7cb7527a35481570bfacba587a36cdfe80c6db9f795fad49662e7372c1e19",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.data.NegotiatedRecordingTest.xml": "d5a3a7a4af0177c75efc7c4ce8c22256ab44506b3927a031c0a2af3c1d35630c",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.data.RealRecordingTest.xml": "6b33a173fc5280bd6200a3970e8920e3387436594824383dc80a9c2c4c24b252",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.data.RecordingFilesTest.xml": "158c3aaa7a301b8ee73f4473f5590c17f0ee2fd5fd23c8c67de56434627b8eaf",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.protocol.PcmRiceTest.xml": "23c784aafd3d5e707e644c593baa9c23b8a5a24c5d0cd15b407c5cac7f0b5036",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.protocol.PcmSecondTest.xml": "e28c77e6042e40437bfdb3d25245e6a8b603bbc9b0b8ef59bb229adf29a92c62",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.protocol.RecordingFormatsTest.xml": "cce03f938b74495fb511242588c84ab00d01b4b16a6cd8d031727f514565fcfa",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/android-a07/jvm-parent-check/build/test-results/test/TEST-cn.gowin.control.protocol.WireTest.xml": "31e045dfccde08bff8beb02c9d63810b01537a1296c81de1e493869eeaf04e48"
+    },
+    "source_identity_rechecked": true
+  }
+}

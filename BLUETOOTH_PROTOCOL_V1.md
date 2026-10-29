@@ -146,6 +146,7 @@ FIRST 开始或替换当前未完成消息，精确重复的上一片可忽略�
 | 0x32 | TRANSFER_ACK | `transfer_id:u32, next_offset:u32, block_crc32:u32` | `transfer_id:u32, next_offset:u32` |
 | 0x33 | REC_CLOSE | `transfer_id:u32, object_crc32:u32` | `transfer_id:u32` |
 | 0x34 | TRANSFER_CANCEL | `transfer_id:u32` | `transfer_id:u32` |
+| 0x43 | REC_FORMATS（可选） | `extension_version:u16=1, reserved:u16=0, client_format_mask:u32` | `extension_version:u16=1, reserved:u16=0, accepted_format_mask:u32, boot_id:u64`；仅 OK，见第 6.1 节 |
 
 SUBSCRIBE mask：bit0 周期演奏状态，bit1 周期录音状态，bit2 参数变化事件，bit3 故障变化事件；其他位 0。相应 CCCD 未开启时订阅对应类别返回 INVALID_STATE。周期为 0 表示关闭，否则 status 为 100–1000 ms、record 为 1000–10000 ms；实际周期以响应为准。关键任务完成事件不受 mask 屏蔽，仍要求 Response/Event CCCD。
 
@@ -184,6 +185,24 @@ max_frames＝0 表示以设备当前可用容量为上限；非零值不得超�
 flags：bit0 incomplete，bit1 crc_valid，bit2 transfer_open，其余 0。录音过程中 frames/pcm_bytes 只统计已提交存储的数据，来自一致快照；封存后 pcm_bytes＝frames×4。EMPTY 时 recording_id、长度、CRC、operation_id 均为 0；状态、格式和容量字段仍有效。仅 READY 时 crc_valid＝1。
 
 stop_reason：0 NONE、1 USER_STOP、2 CAPACITY_REACHED、3 FIFO_OVERFLOW、4 STORAGE_TIMEOUT、5 STORAGE_IO_ERROR、6 SOURCE_CHANGED。3–6 置 incomplete，尽可能排空并封存可证明连续的前缀；可完成封存时进入 READY，否则 ERROR 且拒绝下载，等待 CLEAR。
+
+### 6.1 显式协商的双采样率录音扩展（2026-10-30）
+
+本扩展的维护入口是本文。格式 1 **仍严格为 48,000 Hz、立体声 PCM16LE**；新增格式 2 为 **44,100 Hz、立体声 PCM16LE**，顺序均为 L0/R0/L1/R1，每帧 4 byte。格式与 `sample_rate` 必须精确配对；不能把 44.1 kHz 数据标成格式 1。原 HELLO major=1/minor=0、Capability 的全部字段/保留位、REC_INFO 的 48 byte 布局及原下载格式不变。PCM codec 0/10/11 描述块编码，与采样率独立；其启用仍分别遵守已有下载扩展协商。
+
+协商 mask 的 bit0 表示格式 1，bit1 表示格式 2，其余必须为 0。客户端支持两种格式时，在成功 HELLO 后发送 `REC_FORMATS 0x43`：8 byte 请求为 `01 00 00 00 03 00 00 00`。设备只能返回客户端所提集合与自身已实现能力的交集，且必须包含 bit0；成功响应固定 16 byte，回显扩展版本 1、零保留字段、接受集合和当前非零 boot_id。例：boot_id=7、接受两种格式时 payload 为 `01 00 00 00 03 00 00 00 07 00 00 00 00 00 00 00`。不支持的版本、集合或能力返回 UNSUPPORTED；保留位/长度错误返回 INVALID_ARGUMENT。
+
+grant 在完整逻辑报文 CRC、opcode/request_id、已接受 HELLO nonce、成功状态、响应长度、版本、保留位、集合和 boot_id 全部通过后才成立。它仅属于当前 HELLO 会话；断连、控制窗口关闭、重启及会话失效均清除，重连必须重新协商。新客户端只在收到明确且合法的 UNSUPPORTED 后回退到格式 1；超时、CRC 错、nonce/boot 错、其他业务错误或畸形成功响应必须报错，不能据此宣称协商成功或静默降级。
+
+旧客户端不发送 0x43，设备将该会话视为仅允许格式 1。新客户端可以与只返回 UNSUPPORTED 的旧设备继续原 48 kHz 流程。旧独立 25K 后端保持原样：命令层先验证 CRC/nonce，再将未知 opcode 交录音调度，后者 `default: reject(8'h80)`；本次没有改其 wire 合同或实现。Capability 现有保留位也不承载该扩展，避免旧客户端因未知能力位拒绝设备。
+
+格式 2 的 REC_START、REC_INFO 及任何 REC_OPEN 变体必须有当前会话 grant。未协商时返回 UNSUPPORTED，不能发布格式 2 元数据或开放对应 PCM；即使客户端猜中对象 ID 也不能绕过。格式 1 在实际输出非 48 kHz 时仍按原规拒绝；格式 2 在实际输出非 44.1 kHz 时同样返回 INVALID_STATE。协商只授权格式，不切换音频时钟、不创建录音、不证明实时音频路径已接入。
+
+EMPTY 的格式/rate/capacity 描述当前可开始的实际模式；该模式不受当前 grant 支持时应拒绝 REC_INFO，不能伪报 48 kHz。开始后 `(boot_id, recording_id, format, channels, sample_rate)` 固定直到清除；READY 的帧数、PCM 字节数、容量和 CRC 也固定。录音中切换采样率必须 BUSY 拒绝，或先按明确策略封存旧对象再切换，不能在一个对象里混率。48 kHz 为 192,000 B/s，44.1 kHz 为 176,400 B/s；`max_frames`/容量始终按实际采样帧计，不是毫秒。
+
+下载续传仍以 boot_id/recording_id、偏移、PCM CRC 和可靠落盘为依据，同时必须核对格式、声道、sample_rate、frames、bytes 和封存 CRC 未变。WAV 只在封存 PCM 全量 CRC 通过后生成：PCM tag=1、channels=2、bits=16、block_align=4，sample_rate 取已验证对象值，byte_rate=sample_rate×4，data 长度=frames×4。旧作品缺少新增本地 rate 属性时按原 48 kHz 文件解释；新作品持久化真实 rate，播放时长不再固定除以 48000。
+
+当前交付为 Android 协议/会话/文件层与离线兼容回归，**未把 0x43 或格式 2 接入 138K 业务 GATT、录音 DMA 或实际音频路径**，也未改变已独立验收的 25K 后端。设备端宣告/接受此扩展前仍须完成所属后端、原 48 kHz 与 44.1 kHz 真实 PCM、重连和硬件验收。
 
 ## 7. 后台任务与关键事件
 

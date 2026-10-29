@@ -238,7 +238,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     Section(if(s.builtInAudioTest)"内置测试音频录音槽"else"设备录音槽"){
         Text("48 kHz · 双声道 · PCM16",color=MaterialTheme.colorScheme.secondary)
         Text("状态：${listOf("空闲","正在启动","正在录音","正在封存","可下载","错误").getOrElse(rec?.state ?: -1){"等待读取"}}")
-        Text("${duration(rec?.frames ?: 0)} / 容量 ${duration(rec?.capacity ?: 0)}")
+        Text("${duration(rec?.frames ?: 0,rec?.sampleRate ?: 48000)} / 容量 ${duration(rec?.capacity ?: 0,rec?.sampleRate ?: 48000)}")
         if(rec?.incomplete==true)Text("录音曾中断（原因 ${rec.reason}），下载的是已封存片段",color=MaterialTheme.colorScheme.error)
         OutlinedTextField(seconds,{seconds=it.filter(Char::isDigit).take(5)},label={Text("最大时长（秒，0 为容量上限）")},singleLine=true,enabled=rec?.state==0&&!s.busy)
         Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
@@ -274,7 +274,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     var remove by remember{mutableStateOf<SavedRecording?>(null)}
     if(s.library.isEmpty())Section("本地作品"){Text("尚无录音。连接工作站或体验模拟设备后，录音并下载即可在此试听和导出。")}
     s.library.forEach{entry->Section(entry.name){
-        Text("${duration(entry.bytes/4)} · ${entry.bytes/1024} KiB · WAV")
+        Text("${duration(entry.bytes/4,entry.sampleRate)} · ${entry.bytes/1024} KiB · WAV")
         Text(SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.getDefault()).format(Date(entry.savedAt))+" 保存",style=MaterialTheme.typography.bodySmall)
         if(entry.source=="builtin")Text("FPGA 内置测试音频",color=MaterialTheme.colorScheme.secondary)
         if(entry.demo)Text("模拟测试音频",color=MaterialTheme.colorScheme.secondary)
@@ -285,4 +285,4 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     if(rename!=null)AlertDialog(onDismissRequest={rename=null},title={Text("重命名作品")},text={OutlinedTextField(name,{name=it.take(80)},singleLine=true)},confirmButton={TextButton(enabled=name.isNotBlank(),onClick={val e=rename!!;rename=null;vm.action{vm.repo.rename(e,name)}}){Text("保存")}},dismissButton={TextButton(onClick={rename=null}){Text("取消")}})
     if(remove!=null)AlertDialog(onDismissRequest={remove=null},title={Text("删除本地作品？")},text={Text("仅删除手机上的文件，不影响设备录音。")},confirmButton={TextButton(onClick={val e=remove!!;remove=null;vm.action{vm.repo.delete(e)}}){Text("删除")}},dismissButton={TextButton(onClick={remove=null}){Text("取消")}})
 }
-private fun duration(frames:Long):String{val seconds=frames/48000;return "%02d:%02d".format(seconds/60,seconds%60)}
+private fun duration(frames:Long,sampleRate:Long):String{val seconds=frames/sampleRate;return "%02d:%02d".format(seconds/60,seconds%60)}

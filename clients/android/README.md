@@ -38,6 +38,7 @@ APK与签名密钥按仓库规则不进入Git；`artifacts/`链接指本机归�
 
 ## 已实现边界
 
+- 源码新增可选 `REC_FORMATS 0x43`：HELLO 后显式协商，只有合法 UNSUPPORTED 才保持旧格式1/48k；格式2严格对应44.1k，按对象rate封装WAV并绑定续传身份。未占用旧Capability保留位。此源码阶段尚未发布新APK，未接入138K设备后端，也不改变下述0.2.10/25K已验收范围；维护合同见[主协议6.1节](../../BLUETOOTH_PROTOCOL_V1.md#61-显式协商的双采样率录音扩展2026-10-30)。
 - 协议v1.0默认MTU23、20字节特征值、256字节PCM块、窗口1；可选OPEN_WIDE/COMPACT/BULK/DIRECT使用460字节PCM块，OPEN_LONG使用972字节，OPEN_EXTENDED按协商MTU最多8112字节。B3 DATA最多64片；显式LONG/EXTENDED Transfer分别允许逻辑1020/8160字节，其他路径仍512。
 - OPEN_LOSSLESS3d允许RAW/一阶codec10，OPEN_SECOND40允许RAW/一阶codec10/二阶codec11；旧READ31/35始终RAW，3e/3f始终只允许RAW/10。解码后原PCM16通过校验，再本地封装WAV。高速窗口、ADPCM、Wi-Fi/USB文件通道尚无已定义设备契约。
 - 模拟模式使用同样的编解码和下载链，但不启动真实蓝牙前台服务，不承诺模拟模式在系统杀进程后自动继续。

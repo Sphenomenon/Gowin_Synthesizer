@@ -59,6 +59,7 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
             _state.update{it.copy(connection="订阅通知与协议握手…")}
             val s=ProtocolSession(t,scope);session=s
             val cap=s.handshake();_state.update{it.copy(capability=cap)}
+            if(cap.has(3) || cap.has(4) || cap.has(5))s.negotiateRecordingFormats()
             events=scope.launch(start=CoroutineStart.UNDISPATCHED) {
                 s.events.collect { m -> if(m.opcode in 0xe1..0xe3) runCatching{acceptSnapshot(Snapshot.decode(m.payload))} }
             }
@@ -118,7 +119,8 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
     suspend fun refreshStatus() { acceptSnapshot(Snapshot.decode(current().request(Op.STATUS).message.payload)) }
     suspend fun refreshRecord() {
         if(_state.value.capability?.has(3)!=true && _state.value.capability?.has(4)!=true)return
-        val rec=RecordingInfo.decode(current().request(Op.INFO,Writer().u32(0).build()).message.payload)
+        val s=current()
+        val rec=RecordingInfo.decode(s.request(Op.INFO,Writer().u32(0).build()).message.payload,s.recordingFormats)
         checkWire(rec.boot==_state.value.capability?.boot,"录音身份不匹配")
         _state.update{it.copy(record=rec)}
     }
@@ -160,11 +162,15 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
             }
         }
     }
-    suspend fun startRecording(seconds: Int)=mutation.withLock {
+    suspend fun startRecording(seconds: Int,format: Int=1)=mutation.withLock {
         val rec=_state.value.record ?: throw IOException("请先读取录音能力")
-        val frames=if(seconds==0)0L else seconds*48000L
+        current().recordingFormats.validate(rec)
+        require(seconds>=0)
+        // A sealed object's rate does not identify the current DAC clock.
+        // Selection is explicit; the device must reject a clock/format mismatch.
+        val frames=seconds*current().recordingFormats.sampleRate(format)
         require(frames==0L||frames<=rec.capacity){"目标时长超过设备容量"}
-        val m=current().request(Op.START,Writer().u8(1).u8(0).u16(0).u32(frames).build()).message
+        val m=current().request(Op.START,Writer().u8(format).u8(0).u16(0).u32(frames).build()).message
         val r=Reader(m.payload);val id=r.u32();r.u32();r.end();awaitOperation(id);refresh()
     }
     suspend fun stopRecording()=mutation.withLock {
@@ -181,7 +187,7 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
         downloadJob=scope.launch {
             try {
                 refreshRecord();val rec=_state.value.record ?: throw IOException("没有录音")
-                check(rec.ready && rec.format==1 && rec.channels==2 && rec.sampleRate==48000L && rec.frames*4==rec.bytes){"录音未封存或格式不兼容"}
+                current().recordingFormats.validate(rec,requireReady=true)
                 var attempt=0
                 while(true) {
                     try {
@@ -193,7 +199,7 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
                             catch(e:CancellationException){throw e}
                             catch(_:Exception){continue}
                             val current=_state.value.record
-                            check(current!=null && current.boot==rec.boot && current.id==rec.id && current.bytes==rec.bytes && current.crc==rec.crc){"设备端录音已失效，无法续传"}
+                            check(current!=null && rec.samePcmObject(current)){"设备端录音身份或格式已改变，无法续传"}
                         }
                         downloadOnce(rec);break
                     }
@@ -212,6 +218,8 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
     }
     private suspend fun downloadOnce(info: RecordingInfo) {
         val s=current();val t=transport ?: throw IOException("连接已断开")
+        s.recordingFormats.validate(info,requireReady=true)
+        val formats=s.recordingFormats
         t.priority(true)
         if(_state.value.capability?.has(2)==true)subscribe(1000)
         var transfer=0L
@@ -266,7 +274,7 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
             }
             transfer=0
             _state.update{it.copy(download=it.download.copy(phase="生成 WAV 文件"))}
-            withContext(Dispatchers.IO){files.packageWav(info,_state.value.demo,if(_state.value.builtInAudioTest)"builtin"else if(_state.value.demo)"demo"else"workstation")}
+            withContext(Dispatchers.IO){files.packageWav(info,_state.value.demo,if(_state.value.builtInAudioTest)"builtin"else if(_state.value.demo)"demo"else"workstation",formats)}
             _state.update{it.copy(download=it.download.copy(phase="下载完成",active=false),library=files.library(),error=closeWarning)}
         } finally {
             if(transfer!=0L && t.connected.value)withContext(NonCancellable){withTimeoutOrNull(3000){runCatching{s.request(Op.CANCEL,Writer().u32(transfer).build())}}}

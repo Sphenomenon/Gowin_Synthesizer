@@ -19,6 +19,8 @@ class ProtocolSession(val transport: BleTransport, scope: CoroutineScope) {
     private val _events=MutableSharedFlow<Message>(extraBufferCapacity=64)
     val events=_events.asSharedFlow()
     var nonce: ULong = 0uL; private set
+    var recordingFormats: RecordingFormats = RecordingFormats.LEGACY; private set
+    private var recordingBoot=0uL
     private var nextId=1L
     private data class DirectObject(val boot:ULong,val recording:Long,val opened:TransferOpen)
     private var directObject:DirectObject?=null
@@ -44,6 +46,12 @@ class ProtocolSession(val transport: BleTransport, scope: CoroutineScope) {
                 val raw=assemblers.getOrPut(n.characteristic){Reassembler(allowCompact=n.characteristic==GattIds.transfer && compactTransfer,bulkValueLimit=if(n.characteristic==GattIds.transfer)bulkValueLimit else null,longData=n.characteristic==GattIds.transfer && longTransfer,extendedData=n.characteristic==GattIds.transfer && extendedTransfer)}.accept(n.value,System.nanoTime()/1_000_000) ?: return@collect
                 val m=Message.decode(raw,if(n.characteristic==GattIds.transfer && extendedTransfer)8160 else if(n.characteristic==GattIds.transfer && longTransfer)1020 else 512)
                 if(m.nonce!=nonce) return@collect
+                if(m.status==0 && m.opcode in setOf(Op.STATUS,Op.STATUS_EVENT,0xe2,0xe3) &&
+                    n.characteristic in setOf(GattIds.response,GattIds.status)) {
+                    if(Snapshot.decode(m.payload).flags and 8L==0L) {
+                        recordingFormats=RecordingFormats.LEGACY;recordingBoot=0uL
+                    }
+                }
                 if(m.requestId==0L) {
                     if(n.characteristic in setOf(GattIds.response,GattIds.status) && m.opcode in 0xe0..0xe3) _events.emit(m)
                 } else {
@@ -98,11 +106,16 @@ class ProtocolSession(val transport: BleTransport, scope: CoroutineScope) {
         }
     }
     private val connectionJob=scope.launch {
-        transport.connected.collect { live -> if(!live) pending.values.forEach {
-            it.response.completeExceptionally(IOException("蓝牙连接已断开")); it.data?.completeExceptionally(IOException("蓝牙连接已断开"))
+        transport.connected.collect { live -> if(!live) {
+            recordingFormats=RecordingFormats.LEGACY;recordingBoot=0uL
+            pending.values.forEach {
+                it.response.completeExceptionally(IOException("蓝牙连接已断开")); it.data?.completeExceptionally(IOException("蓝牙连接已断开"))
+            }
         } }
     }
     suspend fun handshake(): Capability {
+        recordingFormats=RecordingFormats.LEGACY
+        recordingBoot=0uL
         val cap=Capability.decode(transport.read(GattIds.capability))
         transport.subscribe(GattIds.response)
         if(cap.has(2)) transport.subscribe(GattIds.status)
@@ -113,7 +126,22 @@ class ProtocolSession(val transport: BleTransport, scope: CoroutineScope) {
         val r=Reader(hello.payload)
         checkWire(r.u64()==cap.boot && r.u32()==cap.flags,"设备身份在握手时改变")
         r.u32();r.u32();r.end()
+        recordingBoot=cap.boot
         return cap
+    }
+    /** Only explicit UNSUPPORTED permits legacy fallback; corruption/timeouts fail the connection. */
+    suspend fun negotiateRecordingFormats(): RecordingFormats {
+        checkWire(recordingBoot!=0uL && transport.connected.value, "录音格式协商需要有效会话")
+        val boot=recordingBoot;val sessionNonce=nonce
+        val grant=try {
+            RecordingFormats.decodeResponse(request(Op.RECORDING_FORMATS,RecordingFormats.requestPayload()).message,boot)
+        } catch(e: DeviceError) {
+            if(e.code!=0x80)throw e
+            RecordingFormats.LEGACY
+        }
+        checkWire(transport.connected.value && recordingBoot==boot && nonce==sessionNonce, "录音格式协商会话已失效")
+        recordingFormats=grant
+        return grant
     }
     suspend fun request(opcode: Int,payload: ByteArray=byteArrayOf(),data: Boolean=false): Reply = commandMutex.withLock {
         checkWire(nonce!=0uL,"会话未建立")
@@ -129,7 +157,11 @@ class ProtocolSession(val transport: BleTransport, scope: CoroutineScope) {
                 token=(token+1) and 0xffff
                 for(part in fragments) transport.write(part)
                 try {
-                    val response=withTimeout(3000){ p.response.await() }.checked()
+                    val response=try { withTimeout(3000){ p.response.await() }.checked() }
+                    catch(e:DeviceError) {
+                        if(e.code in setOf(0x85,0x8c)) { recordingFormats=RecordingFormats.LEGACY;recordingBoot=0uL }
+                        throw e
+                    }
                     val body=if(data) withTimeout(3000){p.data!!.await()}.checked() else null
                     return@withLock Reply(response,body)
                 } catch(e: TimeoutCancellationException) {
@@ -237,5 +269,5 @@ class ProtocolSession(val transport: BleTransport, scope: CoroutineScope) {
         val r=Reader(payload)
         checkWire(payload.size==8 && r.u32()==transfer && r.u32()==offset,"ACK 响应不匹配")
     }
-    fun close() { receiveJob.cancel(); connectionJob.cancel(); pending.values.forEach { it.response.cancel(); it.data?.cancel() }; pending.clear() }
+    fun close() { recordingFormats=RecordingFormats.LEGACY;recordingBoot=0uL;receiveJob.cancel(); connectionJob.cancel(); pending.values.forEach { it.response.cancel(); it.data?.cancel() }; pending.clear() }
 }

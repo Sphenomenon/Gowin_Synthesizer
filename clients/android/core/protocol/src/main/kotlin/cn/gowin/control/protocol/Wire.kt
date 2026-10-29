@@ -132,6 +132,7 @@ object Op {
     const val OPEN_COMPACT = 0x37 // Optional B2 DATA framing, 460-byte blocks.
     const val OPEN_SECOND = 0x40 // Opt-in codec0/10/11; best per-block predictor.
     const val READ_SECOND = 0x41; const val ACK_READ_SECOND = 0x42
+    const val RECORDING_FORMATS = 0x43 // Optional session grant; format1 remains 48k, format2 is 44.1k.
     const val OPEN_LOSSLESS = 0x3d // Explicit DATA codec0/10; same PCM limits as3c.
     const val READ_LOSSLESS = 0x3e; const val ACK_READ_LOSSLESS = 0x3f
     const val OPEN_EXTENDED = 0x3c // Explicit MTU-bound DATA, PCM up to8112.

@@ -115,3 +115,24 @@ reader 接口沿用 `read_valid/read_ready/read_addr[28:0]` 与 `read_rsp_valid/
 ## 阶段边界
 
 目前 P12/P13 HDMI 使用共享 DDR 数据块装载到本地显示缓存后重绘，逐像素仿真检查视觉内容与 P10 原本地 RAM 渲染一致。P13 已把 64 位 committed summary 跨到 USB 48 MHz，Push 屏幕在原 frame_capture 时锁存共享 effect mask；USB-A 线协议和现有 448 位反馈邮箱未改。未来自制屏可复用描述符，暂不添加传输层。现有完整 RGB565 framebuffer 仍生成并扫描，因此不宣称已经减少 framebuffer 带宽；P12 为 HDMI reader 缓存增加 6 个 BSRAM，P13 摘要 CDC 不增加 BSRAM。实际刷新节奏、输入到声音/画面的延迟仍须实体测量。
+
+## A07：双采样率 metadata v1.1 合同（未接入当前 writer/reader）
+
+本节定义后续显式选择的 major=1/minor=1，**不是当前 minor=0 RTL 的实现声明**。当前已验 minor=0 的字段、固定 48000、所有保留 word=0 和 payload 布局均保持。不能只改当前 writer 的常量就声称完成 44.1 kHz 接入，也不能让旧 reader 默读新增语义。
+
+v1.1 只能在同一构建/消费者契约中，所有参与该共享 bank 的 reader 明确选择支持 v1.1 后启用；DDR 上的版本号本身不完成能力协商。外部消费者须先通过其原有控制接口明确协商版本，不能从“读到了 minor=1”推断自己支持。reader 必须严格检查已支持的 major/minor；未协商或不支持时保留最近一次有效本地图像并报告不兼容。当前没有这样的协商/集成入口，因此本次不改变默认 build profile 或 display RTL。
+
+| 字段 | v1.0 minor=0 | 计划中的 v1.1 minor=1 |
+|---|---|---|
+| 提交记录/描述符版本 | major=1/minor=0 | 两者均为 major=1/minor=1；同帧四个 descriptor 一致 |
+| waveform/bitmap/spectrum descriptor word 4 | 48000 | 该 payload 实际来源的 48000 或 44100 |
+| metadata descriptor word 4 | 0 | 仍为 0；实际率在 metadata payload word 13 |
+| descriptor word 14 | 保留 0 | `stream_epoch`，非零 u32 |
+| metadata payload word 13 | 48000 | 当前已提交音频流的实际 48000 或 44100 |
+| metadata payload word 14 / 15 | 保留 0 / 0 | `stream_epoch` / 保留 0 |
+
+每个已发布快照的三类音频 payload、四个 descriptor 和 metadata word13/14 必须绑定同一实际 rate/epoch；source_sequence 仍允许 waveform 和 analysis 采用各自序号，但不得跨 epoch 复用旧分析。`stream_epoch` 由音频流的唯一拥有者在实际采样率切换、重新启动或不可连续的流替换时推进，跨过 0 后从 1 继续；不能由各显示端另建权威副本，也不能借用 frame_sequence 冒充流代次。
+
+切换期间先撤销旧分析有效性，刷新观察器/工作缓存，待新 rate/epoch 的完整结果就绪后按现有 seqlock 提交。无效块继续遵守 valid_length=0；不得用旧 48 kHz 频谱配新 44.1 kHz 标签。消费者在 rate/epoch 改变时清空历史频轴/波形缓存；实际频率以输入 bin×sample_rate/2048 及原 bin2～853→512 对数列映射计算，不改变该 format 的列含义。metadata 格式和 BLE 录音 format ID 属于不同编号空间，不能互相替代。
+
+未协商的 minor=0 生产路径只允许实际 48 kHz 有效音频图；实际为 44.1 kHz 时必须拒绝发布有效块并明确标记不可用，不能把 44100 样本写成 48000。显示背压仍只能丢弃/保持观察快照，不能停音频采样。正式集成需覆盖双率频轴、epoch 切换、旧分析丢弃、慢 reader、复位及 generation 校验；本节尚无对应 RTL、P&R 或硬件验收。

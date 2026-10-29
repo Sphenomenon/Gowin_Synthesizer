@@ -15,6 +15,7 @@ class DemoProtocolTest {
         fake.connect("demo")
         val session=ProtocolSession(fake,backgroundScope)
         val cap=session.handshake();assertTrue(cap.has(5));assertFalse(cap.has(4))
+        assertEquals(1,session.negotiateRecordingFormats().mask) // Real legacy command/PCM flow continues after UNSUPPORTED.
         var status=Snapshot.decode(session.request(Op.STATUS).message.payload)
         session.request(Op.SET_PARAM,Writer().u16(1).u16(0).u32(82).u32(status.revision).build())
         status=Snapshot.decode(session.request(Op.STATUS).message.payload);assertEquals(82,status.volume)
