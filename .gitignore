@@ -10,11 +10,12 @@
 /Mega_138K/
 /migration/*
 !/migration/gw138k_audio
-# Re-admit the 138K tree, then admit only these parts of it: README.md,
-# scripts/, ae350/scripts/ and the whole push2_workstation/ workstation.
+# Re-admit the 138K documentation, example index, scripts/, ae350/scripts/
+# and the whole push2_workstation/ workstation.
 !/projects/138k/
 projects/138k/*
 !/projects/138k/README.md
+!/projects/138k/task.md
 !/projects/138k/example/
 !/projects/138k/scripts/
 !/projects/138k/ae350/

@@ -5,7 +5,7 @@
 | 分类 | 已验证程序／候选 | 源码入口 | 下一步 |
 |---|---|---|---|
 | [USB_HS](USB_HS/README.md) | `C11030A2`：原生 Host，Push HS 枚举、热插拔及 MIDI 恢复 | `rtl/`、`firmware/`、`top.sv` | 将同一 Host／业务固件接入整机输入链 |
-| [HDMI](HDMI/README.md) | `C11028D5`：用户接受的 1080p 显示、DDR 数据路径 | `rtl/`、`prepare.py`、`baseline.json` | 保留扫描路径；UI 绘制向 AE350 渐进迁移 |
+| [HDMI](HDMI/README.md) | `C11028D5`：用户接受的 1080p 显示、DDR 数据路径 | `rtl/`、`prepare.py`、`baseline.json` | FPGA 实时绘图写 DDR，保留扫描路径；AE350 负责交互和辅助 UI |
 | [BLUETOOTH](BLUETOOTH/README.md) | `C11027C1`：业务 GATT、重连、短录音、下载校验 | `driver.sv`、`protocol/`、`transport/` | 复用业务协议与最终音频取样接口 |
 | [AK4493_AMP](AK4493_AMP/README.md) | `13802302`：修焊后 CN 扬声器出声；另保留后续声道诊断 | `bringup/`、`driver.sv` | 使用工作站 FPC/I2S 接口接入最终 PCM |
 

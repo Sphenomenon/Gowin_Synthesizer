@@ -30,6 +30,6 @@ python3 example/CUSTOM_138K/HDMI/prepare.py --hdmi-isolation \
 
 ## 装配与后续 UI
 
-D5 独立配置排除了 AE350，当前画面主要由 RTL 绘制。保留已验证的 DDR 取数、取行缓存、换帧和 HDMI 输出；复用整机已有 AE350 软件绘图入口，逐步迁移布局、文字与控件。数据仍读取既有 DDR 快照，DDR 分配以工作站 `rtl/ddr_address_map.vh` 为准，不重复维护业务状态。
+D5 独立配置排除了 AE350，当前画面主要由 RTL 绘制。按 2026-10-30 确认的目标，FFT／频谱、波形、李萨如和空间场图等实时图像继续由 FPGA 计算、绘制并写入 DDR 指定区域；AE350 主要处理交互、布局请求和控件逻辑，普通文字／静态控件可作为辅助层。保留已验证的 DDR 取数、取行缓存、换帧和 HDMI 输出，后续 USB 显示也从已提交的 DDR 图像取数。DDR 分配以工作站 `rtl/ddr_address_map.vh` 为准，不重复维护业务状态；缓冲所有权和双显示集成任务见 [完整任务清单](../../task.md)。
 
 已知本机原 D5 工程：`projects/138k/push2_workstation/usb_a/out/hdmi_isolation_20261028_d5/`，其 `inputs.json`、位流和 `.p/.pr` 不随 Git 提交。新克隆不依赖此目录。
