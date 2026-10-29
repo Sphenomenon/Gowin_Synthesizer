@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "task": "A07 runtime effects stage4 independent Reverb",
+  "status": "source_component_offline_verified_not_selected",
+  "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "reference_source_identity": "custom138k-workstation-v1-f5b723250388add5",
+  "source_policy": "Independent native module with exact prepared reversible provenance; original48k RAM capacities retained; profile/build/top unchanged.",
+  "input_sha256": {
+    "rtl/audio/workstation_runtime_spatial_reverb.sv": "31ec6580986a0848ca13c80f4fb08759489ee5e49bbaa2fabeeb4c163c241619",
+    "rtl/audio/workstation_runtime_spatial_reverb.provenance.json": "bf0316cc229805c854ed871258f21ce1205b2271db199b29224feeb1efdd5fcd",
+    "rtl/audio/runtime_spatial_room_preset.json": "fd07065308dca9ae65483a8ce9308890790b98934001918baf9ff262f459655e",
+    "rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+    "sim/audio/tb_workstation_runtime_reverb.sv": "2761966a3d5cdd3ff75ae980db3e0daf59bcdd24206219793031d6d55fbe6b22",
+    "sim/test_workstation_runtime_reverb.py": "034526d753cb4196b8008c9ab29612b7784b57d6edeaf49bfd97b0edde172796"
+  },
+  "reference_inputs": {
+    "baseline": "resource_rework_route0",
+    "exact_prepared_reverb_sha256": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+    "legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+    "rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c"
+  },
+  "test_command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_reverb.py",
+  "validation": {
+    "tests": 6,
+    "passed": 6,
+    "simulator": "Verilator5.0522026-09-05",
+    "compile_warning_counts": {
+      "TIMESCALEMOD": 1,
+      "WIDTHEXPAND": 26,
+      "WIDTHTRUNC": 8
+    },
+    "warning_scope": "Exact prepared/native signed widening and frozen banked RAM geometry/index widths;counts checked. No new coefficient/config or testbench width warnings.",
+    "48k_random_frames": 30000,
+    "48k_random_clip_frames": 249,
+    "48k_per_cycle_reference_total_frames": 174000,
+    "44100_independent_fixed_point_frames": 132300,
+    "switch_history_frames": 18000,
+    "switch_history_clip_frames": 106,
+    "clear_cancel_boundaries": 16,
+    "component_max_latency_clocks": 80,
+    "config_backpressure_and_write_tail_quiescence": true
+  },
+  "coefficient_contract": {
+    "early": "Generated runtime bank from stage1;actual RTL uses matching rate delay/gain taps.",
+    "fdn_lengths_48": [
+      1429,
+      1789,
+      1999,
+      2131
+    ],
+    "fdn_lengths_44": [
+      1313,
+      1644,
+      1837,
+      1957
+    ],
+    "damping_48": "exact(old+tail)>>>1 branch",
+    "damping_44_q31": {
+      "old": 1009899529,
+      "input": 1137584119,
+      "sum": 2147483648
+    },
+    "damping_44_arithmetic": "signed64bit products,sum,arithmeticshift31,saturation;independent Python integer model matches every IR/random output.",
+    "feedback": "Original Hadamard/2 and h-(h>>>3) rounding retained.",
+    "wet_slew_48": 128,
+    "wet_slew_44": "139+47/147"
+  },
+  "impulse": {
+    "input": "stereo268435456 at frame0,thenzero;wet enabled throughout;3seconds each rate;all RTL PCM and clips compared.",
+    "metric_scope": "Schroeder backward integrated stereo output energy after30ms;fit[-5,-25]dB normalized to energy at30ms;T20 extrapolated to60dB. This is a fixed-point deterministic model/RTL metric,not measured acousticRT60. It differs from stage1 float FDN-only metric.",
+    "metrics": {
+      "48000": {
+        "frames": 144000,
+        "first_wet_frame": 159,
+        "t20_extrapolated_rt60_seconds": 1.5224362906244124,
+        "fit_points": 23022,
+        "fit_slope_db_per_second": -39.41051613752033,
+        "fit_intercept_db": -3.8612637370934966,
+        "final_quarter_second_peak_lsb": 4,
+        "final_quarter_second_energy": 21490,
+        "final_sample": [
+          -1,
+          0
+        ]
+      },
+      "44100": {
+        "frames": 132300,
+        "first_wet_frame": 146,
+        "t20_extrapolated_rt60_seconds": 1.5192864298650535,
+        "fit_points": 21367,
+        "fit_slope_db_per_second": -39.49222399447702,
+        "fit_intercept_db": -3.571895224798265,
+        "final_quarter_second_peak_lsb": 5,
+        "final_quarter_second_energy": 22397,
+        "final_sample": [
+          -1,
+          -1
+        ]
+      }
+    },
+    "rt60_relative_difference_44_to_48": -0.0020689606381276704,
+    "residual_scope": "Nonzero few-LSB output remains after3seconds;not a proof of zero limit cycles or infinite-horizon nonlinear stability."
+  },
+  "storage": {
+    "early_words": 2048,
+    "fdn_capacity_words": [
+      1429,
+      1789,
+      1999,
+      2131
+    ],
+    "runtime_lengths_only": true,
+    "new_ddr_allocation": false,
+    "physical_resource_acceptance": false
+  },
+  "contract": {
+    "config": "valid-ready at true quiescence;apply rate and logical clear while preserving wet gain/remainder;single-domain done at acceptance",
+    "history": "separate valid-ready preserving rate/gain/remainder;clear pointers/damping/tails/frame gates;config priority",
+    "legacy_clear": "abort immediately,reset gain/remainder,drop banked RAM pending writes/reads;logical history gates stale data",
+    "quiescence": "state0,no outputvalid,no tracked high-half RAM write tail,no legacyclear;test asserts all actual banked RAM write_pending signals clear when quiet"
+  },
+  "remaining_gaps": [
+    "Independent unselected module only;complete effect chain order/mask/maintenance and global runtime controller remain.",
+    "No synthesis/P&R/resource/CDC/board/SRAM/Flash or perceptual/acoustic acceptance. Four signed32bit coefficient pairs and combinational delay selection need physical timing/resource validation.",
+    "Finite3second fixed-point response evidence retains nonzero low-LSB residual;no zero-limit-cycle claim."
+  ],
+  "rollback": "Omit independent module;accepted profile/build/top selection unchanged."
+}

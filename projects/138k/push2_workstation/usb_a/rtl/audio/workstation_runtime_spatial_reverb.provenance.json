@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "prepared_source_identity": "custom138k-workstation-v1-f5b723250388add5",
+  "prepared_relative_path": "rtl/audio/serial_spatial_reverb.sv",
+  "prepared_sha256": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+  "native_sha256": "31ec6580986a0848ca13c80f4fb08759489ee5e49bbaa2fabeeb4c163c241619",
+  "source_policy": "Independent native module with reversible exact prepared migration;not selected by profile/build/top. Original48k RAM capacities retained.",
+  "reverse_instructions": "Reverse exact recorded edits and match prepared_sha256;verifier only,no generated production boundary.",
+  "forward_edits": [
+    {
+      "before": "// Six first-order image sources (stereo excess paths) followed by a shared\n// four-line, orthogonal Hadamard FDN. 48 kHz, Q1.31 signal, 7/8 loop loss,\n// low-pass damping and slewed wet mix. Fixed room preset, no HRTF or wave grid.",
+      "after": "// Independent native runtime Reverb. Versioned dual-rate room bank preserves\n// physical early/FDN delays and matched damping pole. Storage keeps original\n//48k capacities; config/history clear logical state while preserving wet gain.\n// This component is not selected by any profile, build or top.",
+      "count": 1
+    },
+    {
+      "before": "module serial_spatial_reverb (",
+      "after": "module workstation_runtime_spatial_reverb (",
+      "count": 1
+    },
+    {
+      "before": "    output logic clip_o\n",
+      "after": "    output logic clip_o,\n    input logic config_valid_i,rate_44100_i,history_clear_i,\n    output logic config_ready_o,config_applied_o,history_ready_o,history_done_o,\n    output logic quiescent_o,applied_rate_44100_o\n",
+      "count": 1
+    },
+    {
+      "before": "    `include \"rtl/audio/spatial_room_preset.svh\"",
+      "after": "    `include \"rtl/audio/runtime_spatial_room_preset.svh\"",
+      "count": 1
+    },
+    {
+      "before": "    function automatic integer delay_length(input integer lane);\n        case(lane) 0:delay_length=1429;1:delay_length=1789;\n                   2:delay_length=1999;default:delay_length=2131;endcase\n    endfunction",
+      "after": "    function automatic integer capacity_length(input integer lane);\n        case(lane) 0:capacity_length=1429;1:capacity_length=1789;\n                   2:capacity_length=1999;default:capacity_length=2131;endcase\n    endfunction\n    function automatic integer delay_length(input integer lane);\n        delay_length=32'(runtime_room_fdn_length(applied_rate_44100_o,2'(lane)));\n    endfunction\n    function automatic logic signed [31:0] rate_damping(\n        input logic signed [31:0] previous_value,tail_value,input logic rate44);\n        logic signed [63:0] previous_product,tail_product,weighted;\n        begin\n            if(rate44)begin\n                previous_product=previous_value*RUNTIME_ROOM_ALPHA_44;\n                tail_product=tail_value*RUNTIME_ROOM_INPUT_44;\n                weighted=previous_product+tail_product;\n                rate_damping=sat31(weighted>>>31);\n            end else rate_damping=sat31(($signed({{32{previous_value[31]}},previous_value})+\n                $signed({{32{tail_value[31]}},tail_value}))>>>1);\n        end\n    endfunction\n    function automatic [15:0] wet_slew(input [15:0] value,target,delta);\n        logic [15:0] upper,lower;\n        begin\n            upper=value>16'hffff-delta ? 16'hffff : value+delta;\n            lower=value<delta ? 16'd0 : value-delta;\n            if(target>upper)wet_slew=upper;\n            else if(target<lower)wet_slew=lower;\n            else wet_slew=target;\n        end\n    endfunction",
+      "count": 1
+    },
+    {
+      "before": ".WORDS(delay_length(lane))",
+      "after": ".WORDS(capacity_length(lane))",
+      "count": 1
+    },
+    {
+      "before": ".clear_i(clear_i)",
+      "after": ".clear_i(local_history_clear)",
+      "count": 2
+    },
+    {
+      "before": "rst_ni && !clear_i && state==10",
+      "after": "rst_ni && !local_history_clear && state==10",
+      "count": 2
+    },
+    {
+      "before": "state==0 && valid_i && !clear_i",
+      "after": "state==0 && valid_i && ready_o",
+      "count": 1
+    },
+    {
+      "before": "early_delay(tap)",
+      "after": "runtime_room_early_delay(applied_rate_44100_o,tap)",
+      "count": 2
+    },
+    {
+      "before": "early_gain(tap)",
+      "after": "runtime_room_early_gain(applied_rate_44100_o,tap)",
+      "count": 1
+    },
+    {
+      "before": "    assign ready_o=state==0;",
+      "after": "    logic [7:0] gain_remainder;\n    logic ram_write_tail;\n    wire [7:0] gain_fraction_sum=gain_remainder+8'd47;\n    wire [15:0] gain_delta=applied_rate_44100_o ?\n        16'd139+{15'd0,gain_fraction_sum>=8'd147} : 16'd128;\n    wire config_accept=config_valid_i && config_ready_o;\n    wire history_accept=history_clear_i && history_ready_o;\n    wire local_history_clear=clear_i || config_accept || history_accept;\n    assign quiescent_o=state==0 && !valid_o && !ram_write_tail && !clear_i;\n    assign config_ready_o=quiescent_o && !valid_i;\n    assign history_ready_o=config_ready_o && !config_valid_i;\n    assign ready_o=state==0 && !local_history_clear;\n    always_ff @(posedge clk_i or negedge rst_ni)begin\n        if(!rst_ni)begin\n            applied_rate_44100_o<=0;config_applied_o<=0;history_done_o<=0;\n            gain_remainder<=0;ram_write_tail<=0;\n        end else begin\n            config_applied_o<=config_accept;history_done_o<=config_accept || history_accept;\n            ram_write_tail<=!local_history_clear && state==10;\n            if(config_accept)applied_rate_44100_o<=rate_44100_i;\n            if(clear_i)gain_remainder<=0;\n            else if(state==0 && valid_i && ready_o && applied_rate_44100_o)\n                gain_remainder<=gain_fraction_sum>=8'd147 ? gain_fraction_sum-8'd147 : gain_fraction_sum;\n        end\n    end",
+      "count": 1
+    },
+    {
+      "before": "            if(clear_i) begin\n                state<=0;tap<=0;frames<=0;gain<=0;early_pointer<=0;early_address<=0;",
+      "after": "            if(local_history_clear) begin\n                state<=0;tap<=0;frames<=0;if(clear_i)gain<=0;early_pointer<=0;early_address<=0;",
+      "count": 1
+    },
+    {
+      "before": "                0: if(valid_i) begin",
+      "after": "                0: if(valid_i && ready_o) begin",
+      "count": 1
+    },
+    {
+      "before": "gain<=slew15(gain,enabled_i ? 16'd8192 : 16'd0);",
+      "after": "gain<=wet_slew(gain,enabled_i ? 16'd8192 : 16'd0,gain_delta);",
+      "count": 1
+    },
+    {
+      "before": "                        damping[i]<=sat31(($signed({{32{damping[i][31]}},damping[i]})+\n                            (frames>=delay_length(i) ? $signed({{32{line_data[i][31]}},line_data[i]}) : 64'sd0))>>>1);",
+      "after": "                        damping[i]<=rate_damping(damping[i],\n                            frames>=delay_length(i) ? $signed(line_data[i]) : 32'sd0,applied_rate_44100_o);",
+      "count": 1
+    }
+  ]
+}
