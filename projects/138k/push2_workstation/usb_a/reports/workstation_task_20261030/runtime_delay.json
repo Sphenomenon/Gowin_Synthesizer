@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "task": "A07 independent runtime effects stage2 Delay",
+  "status": "source_component_offline_verified_not_selected",
+  "reference_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "reference_source_identity": "custom138k-workstation-v1-f5b723250388add5",
+  "source_policy": "Independent versioned native modules, exact prepared migration with reversible checked provenance. Accepted profiles/build/top unchanged.",
+  "input_sha256": {
+    "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "879a5d93fb3ee547cd517344a495452f7cb37f28c0605ceee2cb625f2126c62d",
+    "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.provenance.json": "e19a665b94b99b65616c470ca8b4ad9b3de826f6d329b7da51ce66bf01016886",
+    "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+    "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.provenance.json": "4b52679ff2c129ddd02d1e1e404408251d44dd4f35dbd32d0493f6aed0fe2b83",
+    "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "sim/audio/tb_workstation_runtime_delay.sv": "26ec09e84e28ba2b563e43bb310edc9793873c91625b7aa3760dd09cda0c40b0",
+    "sim/test_workstation_runtime_delay.py": "9d240ad966ade4ac5d1308c43bba352a35fa59862996193fb932ca2e0818edd9"
+  },
+  "reference_inputs": {
+    "consumer_prepared_sha256": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+    "dma_prepared_sha256": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+    "baseline": "resource_rework_route0",
+    "math_pkg_sha256": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+    "exact_serial_delay_effect_module_sha256": "8e9ec829f87fbe31b4979d219939b20cdc72b8af7772e4c2601ff15c4e95ffac"
+  },
+  "test_command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_delay.py",
+  "validation": {
+    "tests": 13,
+    "passed": 13,
+    "simulator": "Verilator 5.052 2026-09-05",
+    "compile_warnings": {
+      "TIMESCALEMOD": 2,
+      "WIDTHEXPAND": 16
+    },
+    "warning_scope": "Exact legacy math/reference package timescale and inherited signed widening arithmetic only; exact counts checked, no testbench or new transaction-logic width warnings.",
+    "clock_periods_ns": {
+      "audio": 14,
+      "memory": 20
+    },
+    "parameter_test_timeouts_cycles": {
+      "transaction": 2048,
+      "peer": 512
+    },
+    "parameter_default_timeouts_cycles": {
+      "transaction": 1048576,
+      "peer": 1048576
+    },
+    "scenarios": {
+      "0": "30000 accepted48k frames compared per clock ready/valid/active/PCM/clip;726clips;128KiB ring wrap;legacy clear ACK",
+      "1": "19000 accepted44.1k frames;independent abs-round/saturate model;first200ms echo exactly8820frames;feedback/wet139+47/147",
+      "2": "outstanding old read,3posted writes,ordered last-write-address fence response before matching ACK;history/config preserve gain/remainder;44.1->48 return;IDs1,2,3",
+      "3": "missing fence response causes both transaction watchdog faults;late response cannot ACK/recover",
+      "4": "memory clock stop causes surviving audio peer fault and no completion",
+      "5": "audio clock stop causes surviving memory peer fault and no completion",
+      "6": "wrong/stale return transaction rejected;later matching ACK cannot heal sticky fault",
+      "7": "nonzero reserved marker payload rejected by DMA;no ACK",
+      "8": "1100 further render outputs during sustained DDR stall;underflow wet zero/overflow drop observable;no render hang",
+      "9": "old read burst preempted by head marker;ACK honors read FIFO backpressure",
+      "10": "old PCM ahead of marker cannot overtake delayed read or ordered fence;cleared pointers after ACK",
+      "11": "legacy clear abort/reset across all five FSM states;held clear coalesces to one transaction",
+      "12": "held config backpressured during accepted frame;config takes priority over history at true quiescence"
+    }
+  },
+  "contract": {
+    "configuration": "valid/ready request at true consumer quiescence; applies rate and logically clears history, preserving wet gain/remainder;audio done only matching transaction ACK",
+    "history": "valid/ready request, same ordered drain/fence/ACK barrier;preserves rate/wet gain/remainder",
+    "legacy_clear": "immediate local abort+gain reset;coalesces while busy;ready waits for actual roundtrip ACK",
+    "memory_fence": "same owner6 ordered native command path;read of last accepted write address after old read drain;ACK only after response and FIFO enqueue. This asserts queue ordering, not an extra electrical DDR write-completion signal.",
+    "private_marker_bits": {
+      "64": "marker",
+      "63:33": "reserved zero",
+      "32:1": "32bit local transaction",
+      "0": "rate44"
+    },
+    "faults": "transaction/protocol/peer fatal sticky until coordinated reset;consumer overflow drops new sample and underflow emitswet0;stream anomaly stickies reset by legacy clear",
+    "schedule": "caller must retain final serial sample schedule through controlled mute while ready closes",
+    "clock_stop": "mandatory divide32 heartbeats and two-stage synchronizers detect one stopped domain from the surviving domain;both clocks stopped requires external always-on monitor"
+  },
+  "ddr_allocation": {
+    "authority": "rtl/ddr_address_map.vh",
+    "byte_base": "0x30000000",
+    "native_word_base": "0x0c000000",
+    "bytes": 131072,
+    "stereo_samples_capacity": 16384,
+    "chunk_bytes": 32,
+    "command_word_stride": 8,
+    "new_storage_allocations": 0
+  },
+  "remaining_gaps": [
+    "Not selected by any profile/build/top;not integrated with playback/serial/controller/recognition.",
+    "Chorus and reverb runtime RTL/full effects chain remain separate stages.",
+    "No synthesis/P&R/resource/CDC/board/SRAM/Flash acceptance. Behavioral queue model assumes actual native owner6 preserves accepted command order.",
+    "Full runtime controller must coordinate resets and provide external detection if all monitored clocks stop.",
+    "Stream underflow shifts delay history until next clear;overflow drops new feedback. Both are observable and never block source render;caller policy still needed."
+  ],
+  "rollback": "Current profile/build/top selection is unchanged;omit these independent modules to retain existing prepared implementation."
+}

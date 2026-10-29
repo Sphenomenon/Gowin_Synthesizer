@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "prepared_path": "rtl/audio/delay_ddr/delay_ddr_dma.sv",
+  "prepared_sha256": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+  "native_sha256": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+  "scope": "Independent unselected runtime DMA; frozen/accepted inputs unchanged.",
+  "forward_edits": [
+    {
+      "before": "// Memory-domain DMA for the DDR delay ring (arbiter owner 6, Plan B).\n//\n// The ring lives at PRJ1_DDR_BULK_POOL (byte 0x3000_0000, first granule):\n// 16384 stereo samples x 8 bytes = 128 KiB, stored as 4-sample 256-bit\n// chunks (app_addr counts 32-bit words, so chunk c sits at RING_APP_BASE\n// + c*8 with the low three bits zero for one aligned BL8).\n//\n// Both pointers count absolute completed samples and never wrap for any\n// practical run time; ring positions are their low DELAY_BITS.  The read\n// pointer trails the write pointer by ECHO_SAMPLES by construction:\n// entry #m is written when sample m completes and is prefetched into the\n// read FIFO only when the audio side is within PREFETCH_KEEP samples of\n// needing it (wptr >= rptr + ECHO_SAMPLES - PREFETCH_KEEP), which caps\n// the read FIFO level near PREFETCH_KEEP and keeps the write path\n// popping at all times.\n//\n// Flush protocol (see serial_delay_effect_ddr): a flush entry popped from\n// the write FIFO makes the DMA drop any in-flight read response, reset\n// both pointers and push one generation marker into the read FIFO; the\n// audio side discards everything below that marker.\n",
+      "after": "// Independent native runtime owner6 delay DMA. Ring allocation remains\n// byte0x30000000,128KiB; app addresses are32bit WORD units.\n// Config marker[64]=1,payload[32:1]=transaction,payload[0]=rate44.\n// On flush, old reads are drained/discarded, then an ordered fence read of\n// last accepted write-address must RETURN before the matching ACK is queued.\n// This isolates old posted commands through the stable owner6 client slot\n// and single-command native queue; write-ready alone is not completion.\n// Mandatory peer heartbeat detects a stopped audio clock while memory runs.\n",
+      "count": 1
+    },
+    {
+      "before": "module delay_ddr_dma #(",
+      "after": "module workstation_runtime_delay_ddr_dma #(",
+      "count": 1
+    },
+    {
+      "before": "    parameter integer FIFO_ADDRESS_BITS=9\n",
+      "after": "    parameter integer FIFO_ADDRESS_BITS=9,\n    parameter integer TRANSACTION_TIMEOUT_CYCLES=1048576,\n    parameter integer PEER_TIMEOUT_CYCLES=1048576\n",
+      "count": 1
+    },
+    {
+      "before": "    output logic [7:0] debug_status_o\n",
+      "after": "    output logic [7:0] debug_status_o,\n    output logic flush_done_o,fault_o,\n    output logic applied_rate_44100_o,\n    output logic [31:0] applied_transaction_o,\n    input logic peer_heartbeat_i,\n    output logic heartbeat_o\n",
+      "count": 1
+    },
+    {
+      "before": "  localparam [2:0] S_IDLE=3'd0,S_WR_REQ=3'd1,S_RD_REQ=3'd2,S_RD_WAIT=3'd3,\n                   S_RD_PUSH=3'd4,S_FLUSH_DRAIN=3'd5,S_RD_MARKER=3'd6,S_PACK=3'd7;\n  logic [2:0] state;\n  logic [31:0] wptr,rptr;\n  logic [255:0] chunk_buf;\n  logic [63:0] popped_sample;\n  logic [255:0] rsp_hold;\n  logic [1:0] push_lane;\n  logic [28:0] req_addr;\n  logic read_outstanding,flush_seen,flush_done;\n\n  wire [11:0] wr_chunk=wptr[13:2];\n  wire [11:0] rd_chunk=rptr[13:2];\n  // Prefetch chunk rd_chunk once the audio side is PREFETCH_KEEP samples\n  // away from consuming its first entry; wptr-rptr>=4 (chunk fully\n  // written) is implied because ECHO_SAMPLES >> PREFETCH_KEEP.\n  wire rd_fetch_due=(wptr-rptr)>=(ECHO_SAMPLES-PREFETCH_KEEP) && !read_outstanding && drd_ready_i;\n  wire pop_data=dwr_valid_i && !dwr_data_i[64] && state==S_IDLE;\n  wire pop_flush=dwr_valid_i && dwr_data_i[64] && state==S_IDLE;\n",
+      "after": "  localparam [3:0] S_IDLE=4'd0,S_WR_REQ=4'd1,S_RD_REQ=4'd2,S_RD_WAIT=4'd3,\n                   S_RD_PUSH=4'd4,S_FLUSH_DRAIN=4'd5,S_RD_MARKER=4'd6,S_PACK=4'd7,\n                   S_FENCE_REQ=4'd8,S_FENCE_WAIT=4'd9;\n  logic [3:0] state;\n  logic [31:0] wptr,rptr;\n  logic [255:0] chunk_buf;\n  logic [63:0] popped_sample;\n  logic [255:0] rsp_hold;\n  logic [1:0] push_lane;\n  logic [28:0] req_addr,last_write_address;\n  logic read_outstanding,flush_seen,flush_done;\n  logic [63:0] pending_marker;\n  logic [31:0] wait_cycles,peer_wait;\n  logic [4:0] heartbeat_counter;\n  (* ASYNC_REG=\"TRUE\" *) logic peer_meta,peer_sync;\n  logic peer_last,watchdog_fault,protocol_fault,peer_fault;\n  wire [31:0] echo_samples=applied_rate_44100_o ? 32'd8820 : 32'(ECHO_SAMPLES);\n  wire [11:0] wr_chunk=wptr[13:2];\n  wire [11:0] rd_chunk=rptr[13:2];\n  wire rd_fetch_due=(wptr-rptr)>=(echo_samples-32'(PREFETCH_KEEP)) && !read_outstanding && drd_ready_i;\n  wire pop_data=dwr_valid_i && !dwr_data_i[64] && state==S_IDLE;\n  wire pop_flush=dwr_valid_i && dwr_data_i[64] &&\n      (state==S_IDLE || state==S_RD_WAIT || state==S_RD_PUSH);\n  wire progress=pop_data||pop_flush||state==S_PACK||\n      ((state==S_WR_REQ||state==S_RD_REQ||state==S_FENCE_REQ)&&ddr_ready_i)||\n      ((state==S_RD_WAIT||state==S_FLUSH_DRAIN||state==S_FENCE_WAIT)&&ddr_response_i)||\n      ((state==S_RD_PUSH||state==S_RD_MARKER)&&drd_ready_i);\n  assign heartbeat_o=heartbeat_counter[4];\n  assign fault_o=watchdog_fault||protocol_fault||peer_fault;\n  initial begin\n    if(DELAY_BITS!=14 || ECHO_SAMPLES!=9600 || FIFO_ADDRESS_BITS<7)\n      $fatal(1,\"runtime delay DMA requires the audited128KiB ring and200ms baseline\");\n  end\n  always_ff @(posedge clk_i or negedge rst_ni) begin\n    if(!rst_ni)begin heartbeat_counter<=0;peer_meta<=0;peer_sync<=0;peer_last<=0;\n      peer_wait<=0;wait_cycles<=0;watchdog_fault<=0;peer_fault<=0;end\n    else begin\n      heartbeat_counter<=heartbeat_counter+1'b1;\n      peer_meta<=peer_heartbeat_i;peer_sync<=peer_meta;\n      if(peer_sync!=peer_last)begin peer_wait<=0;peer_last<=peer_sync;end\n      else if(peer_wait<32'(PEER_TIMEOUT_CYCLES))peer_wait<=peer_wait+1'b1;\n      if(peer_wait>=32'(PEER_TIMEOUT_CYCLES)-1)peer_fault<=1;\n      if(state==S_IDLE || progress)wait_cycles<=0;\n      else begin\n        if(wait_cycles<32'(TRANSACTION_TIMEOUT_CYCLES))wait_cycles<=wait_cycles+1'b1;\n        if(wait_cycles>=32'(TRANSACTION_TIMEOUT_CYCLES)-1)watchdog_fault<=1;\n      end\n    end\n  end",
+      "count": 1
+    },
+    {
+      "before": "  assign ddr_req_o=(state==S_WR_REQ)||(state==S_RD_REQ);",
+      "after": "  assign ddr_req_o=(state==S_WR_REQ)||(state==S_RD_REQ)||(state==S_FENCE_REQ);",
+      "count": 1
+    },
+    {
+      "before": "  assign drd_push_o=(state==S_RD_PUSH)||(state==S_RD_MARKER);",
+      "after": "  assign drd_push_o=(state==S_RD_PUSH && !pop_flush)||(state==S_RD_MARKER && !fault_o);",
+      "count": 1
+    },
+    {
+      "before": "  assign drd_data_o=(state==S_RD_MARKER)?{1'b1,64'd0}:{1'b0,rsp_hold[push_lane*64+:64]};",
+      "after": "  assign drd_data_o=(state==S_RD_MARKER)?{1'b1,pending_marker}:{1'b0,rsp_hold[push_lane*64+:64]};",
+      "count": 1
+    },
+    {
+      "before": "  always_ff @(posedge clk_i or negedge rst_ni) begin\n    if(!rst_ni) begin\n      state<=S_IDLE;wptr<=0;rptr<=0;chunk_buf<=0;rsp_hold<=0;push_lane<=0;\n      popped_sample<=0;req_addr<=0;read_outstanding<=0;flush_seen<=0;flush_done<=0;\n    end else begin\n      case(state)\n        S_IDLE:begin\n          if(pop_flush) begin\n            flush_seen<=1;\n            state<=read_outstanding?S_FLUSH_DRAIN:S_RD_MARKER;\n          end else if(pop_data) begin\n            // Capture the show-ahead FIFO word before the wide write enables.\n            popped_sample<=dwr_data_i[63:0];state<=S_PACK;\n          end else if(rd_fetch_due) begin\n            req_addr<=RING_APP_BASE+{16'd0,rd_chunk,3'b000};\n            read_outstanding<=1;\n            state<=S_RD_REQ;\n          end\n        end\n        S_PACK:begin\n          state<=S_IDLE;\n            chunk_buf[wptr[1:0]*64 +: 64] <= popped_sample;\n            wptr<=wptr+1'b1;\n            if(wptr[1:0]==2'b11) begin\n              req_addr<=RING_APP_BASE+{16'd0,wr_chunk,3'b000};\n              state<=S_WR_REQ;\n            end\n        end\n        S_WR_REQ:if(ddr_ready_i) state<=S_IDLE;\n        S_RD_REQ:if(ddr_ready_i) state<=S_RD_WAIT;\n        S_RD_WAIT:if(ddr_response_i) begin\n          rsp_hold<=ddr_read_data_i;\n          read_outstanding<=0;\n          push_lane<=0;\n          state<=S_RD_PUSH;\n        end\n        // Four pushes per fetched chunk; stall burst if the FIFO backs up.\n        S_RD_PUSH:if(drd_ready_i) begin\n          if(push_lane==2'b11) begin\n            rptr<=rptr+4;\n            state<=S_IDLE;\n          end else push_lane<=push_lane+1'b1;\n        end\n        S_FLUSH_DRAIN:if(ddr_response_i) begin\n          read_outstanding<=0;\n          state<=S_RD_MARKER;\n        end\n        S_RD_MARKER:if(drd_ready_i) begin\n          wptr<=0;rptr<=0;flush_done<=1;\n          state<=S_IDLE;\n        end\n        default:state<=S_IDLE;\n      endcase\n    end\n  end\n",
+      "after": "  always_ff @(posedge clk_i or negedge rst_ni) begin\n    if(!rst_ni) begin\n      state<=S_IDLE;wptr<=0;rptr<=0;chunk_buf<=0;rsp_hold<=0;push_lane<=0;\n      popped_sample<=0;req_addr<=0;last_write_address<=RING_APP_BASE;\n      read_outstanding<=0;flush_seen<=0;flush_done<=0;pending_marker<=0;\n      applied_rate_44100_o<=0;applied_transaction_o<=0;flush_done_o<=0;protocol_fault<=0;\n    end else begin\n      flush_done_o<=0;\n      if(ddr_response_i && !(state==S_RD_WAIT || state==S_FLUSH_DRAIN || state==S_FENCE_WAIT))\n        protocol_fault<=1;\n      // Preempt a pending read burst only at an accepted in-band marker.\n      // Any same-cycle response is discarded, never forwarded past the ACK.\n      if(pop_flush)begin\n        flush_seen<=1;flush_done<=0;pending_marker<=dwr_data_i[63:0];\n        if(dwr_data_i[63:33]!=31'd0)protocol_fault<=1;\n        req_addr<=last_write_address;\n        if(read_outstanding && !ddr_response_i)state<=S_FLUSH_DRAIN;\n        else begin read_outstanding<=0;state<=S_FENCE_REQ;end\n      end else case(state)\n        S_IDLE:begin\n          if(pop_data) begin\n            popped_sample<=dwr_data_i[63:0];state<=S_PACK;\n          end else if(rd_fetch_due)begin\n            req_addr<=RING_APP_BASE+{14'd0,rd_chunk,3'b000};\n            read_outstanding<=1;state<=S_RD_REQ;\n          end\n        end\n        S_PACK:begin\n          state<=S_IDLE;chunk_buf[wptr[1:0]*64+:64]<=popped_sample;\n          wptr<=wptr+1'b1;\n          if(wptr[1:0]==2'b11)begin\n            req_addr<=RING_APP_BASE+{14'd0,wr_chunk,3'b000};state<=S_WR_REQ;\n          end\n        end\n        S_WR_REQ:if(ddr_ready_i)begin last_write_address<=req_addr;state<=S_IDLE;end\n        S_RD_REQ:if(ddr_ready_i)state<=S_RD_WAIT;\n        S_RD_WAIT:if(ddr_response_i)begin\n          rsp_hold<=ddr_read_data_i;read_outstanding<=0;push_lane<=0;state<=S_RD_PUSH;\n        end\n        S_RD_PUSH:if(drd_ready_i)begin\n          if(push_lane==2'b11)begin rptr<=rptr+4;state<=S_IDLE;end\n          else push_lane<=push_lane+1'b1;\n        end\n        S_FLUSH_DRAIN:if(ddr_response_i)begin\n          read_outstanding<=0;state<=S_FENCE_REQ;\n        end\n        S_FENCE_REQ:if(ddr_ready_i)begin read_outstanding<=1;state<=S_FENCE_WAIT;end\n        S_FENCE_WAIT:if(ddr_response_i)begin\n          read_outstanding<=0;state<=S_RD_MARKER;\n        end\n        S_RD_MARKER:if(drd_ready_i && !fault_o)begin\n          wptr<=0;rptr<=0;chunk_buf<=0;rsp_hold<=0;popped_sample<=0;\n          applied_rate_44100_o<=pending_marker[0];applied_transaction_o<=pending_marker[32:1];\n          flush_done<=1;flush_done_o<=1;state<=S_IDLE;\n        end\n        default:state<=S_IDLE;\n      endcase\n    end\n  end\n",
+      "count": 1
+    },
+    {
+      "before": "  assign debug_status_o={3'b0,flush_done,flush_seen,2'b00};",
+      "after": "  assign debug_status_o={4'b0,flush_done,flush_seen,2'b00};",
+      "count": 1
+    },
+    {
+      "before": "    if(DELAY_BITS!=14 || ECHO_SAMPLES!=9600 || FIFO_ADDRESS_BITS<7)",
+      "after": "    if(DELAY_BITS!=14 || ECHO_SAMPLES!=9600 || FIFO_ADDRESS_BITS<7 ||\n       FIFO_ADDRESS_BITS>9 || TRANSACTION_TIMEOUT_CYCLES<2 || PEER_TIMEOUT_CYCLES<128)",
+      "count": 1
+    }
+  ]
+}

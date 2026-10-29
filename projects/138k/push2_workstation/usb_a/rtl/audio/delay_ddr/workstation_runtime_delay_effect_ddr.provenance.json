@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "prepared_path": "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv",
+  "prepared_sha256": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+  "native_sha256": "879a5d93fb3ee547cd517344a495452f7cb37f28c0605ceee2cb625f2126c62d",
+  "scope": "Independent unselected runtime consumer; frozen/accepted inputs unchanged.",
+  "forward_edits": [
+    {
+      "before": "// DDR-backed drop-in replacement for serial_delay_effect (BSRAM migration,\n// Plan B).  The 5-state FSM arithmetic (gain slew, 50% feedback, saturation,\n// clip) is preserved bit-for-bit; only the sample storage moves off-chip:\n// state 1 pops the wet sample from a read FIFO instead of a BRAM read and\n// state 4 pushes the feedback into a write FIFO instead of a BRAM write.\n//\n// Stream discipline (this is what keeps the DDR ring bit-exact):\n//   - Every completed sample pushes exactly one write-FIFO entry\n//     {flush=0, right, left}.  The DMA writes it to ring slot wptr and\n//     later re-reads slot rptr into the read FIFO; read-FIFO entry #m\n//     serves audio sample m+ECHO_SAMPLES, matching the original\n//     read_address = pointer - ECHO_SAMPLES.\n//   - clear_i pushes a flush marker through the SAME write FIFO (in-band,\n//     ordered behind all pre-clear samples).  The DMA answers by dropping\n//     its in-flight read, resetting both ring pointers and pushing a\n//     generation marker into the read FIFO.  Entries pushed before that\n//     marker are stale generations: this side discards them (1/cycle)\n//     and only consumes entries after the marker, so pops stay 1:1 with\n//     the restarted stream.\n//   - Underrun (a warm state-1 with nothing consumable at the read FIFO\n//     head) emits wet=0, matching the frames>=ECHO_SAMPLES gate; the\n//     stream shifts by one sample until the next clear.  Unreachable in\n//     normal operation: the DMA prefetch keeps ~448 entries (9.3 ms)\n//     buffered against a single-outstanding ~us DDR round trip.  Sticky\n//     flag records it if it ever happens.\n//   - Overflow (write FIFO full, i.e. the DMA is >10 ms behind) drops the\n//     new sample and sets a sticky flag rather than backpressuring the\n//     synthesis path, mirroring the original never-blocks contract.\n",
+      "after": "// Independent native runtime delay consumer. PCM and ordered configuration\n// markers share65bit FIFOs. A matching ACK is emitted only after the paired\n// DMA drains old reads and completes an ordered post-write fence read.\n// Payload[32:1] is a private transaction ID, payload[0] is rate44;\n// payload[63:33] must be0. No public event layout is changed.\n// history_clear is a backpressured request preserving wet gain; legacy clear\n// aborts immediately and resets gain. Both wait for an actual roundtrip ACK.\n// During that wait the caller must keep the final sample schedule running\n// through controlled mute. Faults are sticky until coordinated reset.\n",
+      "count": 1
+    },
+    {
+      "before": "module serial_delay_effect_ddr #(",
+      "after": "module workstation_runtime_delay_effect_ddr #(",
+      "count": 1
+    },
+    {
+      "before": "    parameter integer FIFO_ADDRESS_BITS=9\n",
+      "after": "    parameter integer FIFO_ADDRESS_BITS=9,\n    parameter integer TRANSACTION_TIMEOUT_CYCLES=1048576,\n    parameter integer PEER_TIMEOUT_CYCLES=1048576\n",
+      "count": 1
+    },
+    {
+      "before": "    output logic [7:0] debug_status_o\n",
+      "after": "    output logic [7:0] debug_status_o,\n    input logic config_valid_i,rate_44100_i,history_clear_i,\n    output logic config_ready_o,config_applied_o,\n    output logic history_ready_o,history_done_o,quiescent_o,fault_o,\n    output logic applied_rate_44100_o,\n    output logic [31:0] applied_transaction_o,\n    input logic peer_heartbeat_i,\n    output logic heartbeat_o\n",
+      "count": 1
+    },
+    {
+      "before": "  assign ready_o=state==0;",
+      "after": "  logic transaction_busy,transaction_fault,peer_fault;\n  logic pending_rate,pending_is_config;\n  logic [31:0] transaction_id,pending_id,transaction_wait,peer_wait;\n  logic [4:0] heartbeat_counter;\n  (* ASYNC_REG=\"TRUE\" *) logic peer_meta,peer_sync;\n  logic peer_last;\n  logic [7:0] gain_remainder;\n  wire [31:0] echo_samples=applied_rate_44100_o ? 32'd8820 : 32'(ECHO_SAMPLES);\n  wire config_accept=config_valid_i && config_ready_o;\n  wire history_accept=history_clear_i && history_ready_o;\n  wire transaction_start=(clear_i && !transaction_busy)||config_accept||history_accept;\n  wire local_history_clear=clear_i||config_accept||history_accept;\n  assign ready_o=state==0 && !transaction_busy && !transaction_fault && !peer_fault && !clear_i;\n  assign quiescent_o=state==0 && !valid_o && !transaction_busy &&\n      !wr_flush_pending && !transaction_fault && !peer_fault;\n  assign config_ready_o=quiescent_o && !valid_i && !clear_i;\n  assign history_ready_o=config_ready_o && !config_valid_i;\n  assign heartbeat_o=heartbeat_counter[4];\n  assign fault_o=transaction_fault||peer_fault||underflow_sticky||overflow_sticky;\n\n  //128/frame is the actual prepared wet slew. Preserve48k exactly; the\n  //44.1 branch carries47/147 so its average increment is128*160/147.\n  wire [7:0] gain_fraction_sum=gain_remainder+8'd47;\n  wire [15:0] gain_delta=applied_rate_44100_o ?\n      16'd139+{15'd0,gain_fraction_sum>=8'd147} : 16'd128;\n  function automatic [15:0] wet_slew(input [15:0] now_value,target_value,delta);\n    logic [15:0] upper,lower;\n    begin\n      upper=now_value>16'hffff-delta ? 16'hffff : now_value+delta;\n      lower=now_value<delta ? 16'd0 : now_value-delta;\n      if(target_value>upper)wet_slew=upper;\n      else if(target_value<lower)wet_slew=lower;\n      else wet_slew=target_value;\n    end\n  endfunction\n  always_ff @(posedge clk_i or negedge rst_ni) begin\n    if(!rst_ni)begin heartbeat_counter<=0;peer_meta<=0;peer_sync<=0;\n      peer_last<=0;peer_wait<=0;peer_fault<=0;gain_remainder<=0;end\n    else begin\n      heartbeat_counter<=heartbeat_counter+1'b1;\n      peer_meta<=peer_heartbeat_i;peer_sync<=peer_meta;\n      if(peer_sync!=peer_last)begin peer_wait<=0;peer_last<=peer_sync;end\n      else if(peer_wait<32'(PEER_TIMEOUT_CYCLES))peer_wait<=peer_wait+1'b1;\n      if(peer_wait>=32'(PEER_TIMEOUT_CYCLES)-1)peer_fault<=1;\n      if(clear_i)gain_remainder<=0;\n      else if(state==0 && valid_i && ready_o && applied_rate_44100_o)\n        gain_remainder<=gain_fraction_sum>=8'd147 ? gain_fraction_sum-8'd147 : gain_fraction_sum;\n    end\n  end",
+      "count": 1
+    },
+    {
+      "before": "  wire warm=frames>=ECHO_SAMPLES;",
+      "after": "  wire warm=frames>=echo_samples;",
+      "count": 1
+    },
+    {
+      "before": "  wire wr_data_push=!clear_i && state==4 && !wr_flush_pending;",
+      "after": "  wire wr_data_push=!local_history_clear && state==4 && !wr_flush_pending && !transaction_busy;",
+      "count": 1
+    },
+    {
+      "before": "      .write_data_i(wr_flush_push?{1'b1,64'd0}:{1'b0,feedback_r,feedback_l}),",
+      "after": "      .write_data_i(wr_flush_push?{1'b1,31'd0,pending_id,pending_rate}:{1'b0,feedback_r,feedback_l}),",
+      "count": 1
+    },
+    {
+      "before": "  wire marker_pop=!clear_i && rd_head_valid && rd_head[64];",
+      "after": "  wire marker_pop=!local_history_clear && rd_head_valid && rd_head[64];\n  wire matching_marker=marker_pop && transaction_busy &&\n      rd_head[63:33]==31'd0 && rd_head[32:1]==pending_id && rd_head[0]==pending_rate;",
+      "count": 1
+    },
+    {
+      "before": "  wire use_pop=!clear_i && state==1 && warm && marker_seen &&",
+      "after": "  wire use_pop=!local_history_clear && !transaction_busy && state==1 && warm && marker_seen &&",
+      "count": 1
+    },
+    {
+      "before": "  wire discard_pop=!clear_i && rd_head_valid && !marker_seen && !rd_head[64];",
+      "after": "  wire discard_pop=!local_history_clear && rd_head_valid && !marker_seen && !rd_head[64];",
+      "count": 1
+    },
+    {
+      "before": "  always_ff @(posedge clk_i or negedge rst_ni) begin\n    if(!rst_ni) begin\n      marker_seen<=1;underflow_sticky<=0;overflow_sticky<=0;wr_flush_pending<=0;\n    end else if(clear_i) begin\n      marker_seen<=0;underflow_sticky<=0;overflow_sticky<=0;wr_flush_pending<=1;\n    end else begin\n      if(wr_flush_pending && wr_fifo_ready) wr_flush_pending<=0;\n      if(marker_pop) marker_seen<=1;\n      if(state==1 && warm && !use_pop) underflow_sticky<=1;\n      if(wr_data_push && !wr_fifo_ready) overflow_sticky<=1;\n    end\n  end\n",
+      "after": "  always_ff @(posedge clk_i or negedge rst_ni) begin\n    if(!rst_ni) begin\n      marker_seen<=1;underflow_sticky<=0;overflow_sticky<=0;wr_flush_pending<=0;\n      transaction_busy<=0;transaction_fault<=0;transaction_id<=0;pending_id<=0;\n      pending_rate<=0;pending_is_config<=0;applied_rate_44100_o<=0;\n      applied_transaction_o<=0;transaction_wait<=0;history_done_o<=0;config_applied_o<=0;\n    end else begin\n      history_done_o<=0;config_applied_o<=0;\n      if(wr_flush_pending && wr_fifo_ready)wr_flush_pending<=0;\n      if(clear_i)begin underflow_sticky<=0;overflow_sticky<=0;end\n      if(transaction_start)begin\n        marker_seen<=0;wr_flush_pending<=1;transaction_busy<=1;\n        transaction_id<=transaction_id+1'b1;pending_id<=transaction_id+1'b1;\n        pending_rate<=config_accept ? rate_44100_i : applied_rate_44100_o;\n        pending_is_config<=config_accept;transaction_wait<=0;\n      end else if(transaction_busy && !matching_marker)begin\n        if(transaction_wait<32'(TRANSACTION_TIMEOUT_CYCLES))transaction_wait<=transaction_wait+1'b1;\n        if(transaction_wait>=32'(TRANSACTION_TIMEOUT_CYCLES)-1)transaction_fault<=1;\n      end\n      if(marker_pop)begin\n        if(matching_marker && !transaction_fault && !peer_fault)begin\n          marker_seen<=1;transaction_busy<=0;applied_rate_44100_o<=pending_rate;\n          applied_transaction_o<=pending_id;history_done_o<=1;config_applied_o<=pending_is_config;\n        end else transaction_fault<=1;\n      end\n      if(state==1 && warm && !use_pop && !local_history_clear)underflow_sticky<=1;\n      if(wr_data_push && !wr_fifo_ready)overflow_sticky<=1;\n    end\n  end\n",
+      "count": 1
+    },
+    {
+      "before": "    if(!clear_i && state==1) begin",
+      "after": "    if(!local_history_clear && state==1) begin",
+      "count": 1
+    },
+    {
+      "before": "      if(clear_i) begin\n        frames<=0;state<=0;gain<=0;valid_o<=0;clip_o<=0;",
+      "after": "      if(local_history_clear) begin\n        frames<=0;state<=0;if(clear_i)gain<=0;valid_o<=0;clip_o<=0;",
+      "count": 1
+    },
+    {
+      "before": "        0:if(valid_i) begin",
+      "after": "        0:if(valid_i && ready_o) begin",
+      "count": 1
+    },
+    {
+      "before": "          gain<=slew15(gain,enabled_i?16'd8192:16'd0);state<=1;",
+      "after": "          gain<=wet_slew(gain,enabled_i?16'd8192:16'd0,gain_delta);state<=1;",
+      "count": 1
+    },
+    {
+      "before": "frames>=ECHO_SAMPLES?read_l",
+      "after": "frames>=echo_samples?read_l",
+      "count": 2
+    },
+    {
+      "before": "frames>=ECHO_SAMPLES?read_r",
+      "after": "frames>=echo_samples?read_r",
+      "count": 2
+    },
+    {
+      "before": "// through controlled mute. Faults are sticky until coordinated reset.",
+      "after": "// through controlled mute. Transaction/clock faults require coordinated reset;\n// stream under/overflow remains observable and legacy clear can reset it.",
+      "count": 1
+    },
+    {
+      "before": "  import audio_math_pkg::*;",
+      "after": "  import audio_math_pkg::*;\n  initial begin\n    if(DELAY_BITS!=14 || ECHO_SAMPLES!=9600 || FIFO_ADDRESS_BITS<7 ||\n       FIFO_ADDRESS_BITS>9 || TRANSACTION_TIMEOUT_CYCLES<2 || PEER_TIMEOUT_CYCLES<128)\n      $fatal(1,\"runtime delay consumer requires audited ring, FIFO and watchdog limits\");\n  end",
+      "count": 1
+    }
+  ]
+}
