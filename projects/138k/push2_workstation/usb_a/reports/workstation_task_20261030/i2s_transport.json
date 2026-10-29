@@ -1,0 +1,173 @@
+{
+  "schema": 1,
+  "identity": "a03-a05-a06-i2s-transport-offline-20261030-v1",
+  "recorded_at": "2026-10-30T04:37:50.273404+08:00",
+  "base_commit": "f5dc5e0f3c470377ab55cc36a94e5f1afb29037b",
+  "source_policy": "Explicit standalone first-party serializer plus clock modules, independently compiled with official GW5A DCS simulation. No complete profile, top/FPC/DSP/constraint/source selection changed for this checkpoint.",
+  "source_hashes_relative_to_usb_a": {
+    "rtl/audio/workstation_sample_rate_switch.sv": "2d2d017222e782dc459d694c2f35144a3843eac6d4440a3e87890a9df6cb9394",
+    "rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+    "rtl/audio/workstation_audio_clock_domain.sv": "5a589c8c98416a3dbea7a166885df36975b529716da41cfe87493a583fa90732",
+    "rtl/audio/workstation_i2s_serializer.sv": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+    "rtl/audio/PCM_FRAME_CONTRACT.md": "cf37b280bc15031edb634cd482c2292df618536564589ea9bed2f0370b70da64",
+    "sim/audio/tb_workstation_i2s_serializer.sv": "c51479cbf5cd6f8d31291ed85d98f78a483a65a989238d5ccfee82345b678e38",
+    "sim/test_workstation_i2s_serializer.py": "32e945fde6b0f726f27929b4db2f4b5eeb1f63549230576bcb8b8d6d698e51d8",
+    "sim/audio/tb_workstation_audio_clock_i2s.sv": "be30dbaa5708453161f22cf960d68c6a6b98033f506b686830b706913f94b6c4",
+    "sim/test_workstation_audio_clock_i2s.py": "26ae1e1d27704d0b00bc842f26c5df018853edc779353025439602899c38e84a"
+  },
+  "tools": {
+    "python": "Python 3.14.6",
+    "iverilog": "Icarus Verilog 13.0 stable",
+    "verilator": "Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905",
+    "gw5a_simlib_path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v",
+    "gw5a_simlib_sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5"
+  },
+  "validation": [
+    {
+      "name": "serializer_independent_pin_decode",
+      "shell_command": "PATH=/opt/homebrew/bin:$PATH python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_i2s_serializer.py",
+      "argv": [
+        "python3",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_i2s_serializer.py"
+      ],
+      "exit_code": 0,
+      "stdout": "MODE 0 epoch=7 checked=9 physical=15 underruns=1 rejected=3\nMODE 1 epoch=8 checked=9 physical=15 underruns=1 rejected=3\nMODE 0 epoch=9 checked=9 physical=15 underruns=1 rejected=3\nPASS dual-rate I2S exact slots, completed tap, identity, underrun and boundary quiesce\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_i2s_serializer.sv:147: $finish called at 988586536 (1ps)\n",
+      "stderr": ".\n----------------------------------------------------------------------\nRan 1 test in 0.052s\n\nOK\n"
+    },
+    {
+      "name": "serializer_first_party_wall_lint",
+      "shell_command": "PATH=/opt/homebrew/bin:$PATH verilator --lint-only -Wall --top-module workstation_i2s_serializer projects/138k/push2_workstation/usb_a/rtl/audio/workstation_i2s_serializer.sv",
+      "argv": [
+        "verilator",
+        "--lint-only",
+        "-Wall",
+        "--top-module",
+        "workstation_i2s_serializer",
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_i2s_serializer.sv"
+      ],
+      "exit_code": 0,
+      "stdout": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.040 MB sources in 2 modules, into 0.051 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.007 s (elab=0.001, cvt=0.003, bld=0.000); cpu 0.007 s on 1 threads; allocated 10.781 MB\n",
+      "stderr": ""
+    },
+    {
+      "name": "real_clock_domain_serializer_combination",
+      "shell_command": "PATH=/opt/homebrew/bin:$PATH python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_clock_i2s.py",
+      "argv": [
+        "python3",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_clock_i2s.py"
+      ],
+      "exit_code": 0,
+      "stdout": "PREFILL actual rate44=0 epoch=0 ns=21416980.000 timeout_ns=40000000\nPREFILL actual rate44=1 epoch=1 ns=23311120.000 timeout_ns=40000000\nPREFILL actual rate44=0 epoch=2 ns=21416920.000 timeout_ns=40000000\nPREFILL actual rate44=0 epoch=3 ns=21416960.000 timeout_ns=40000000\nDRAIN actual completed/discarded old responses=2 serial-quiet waiting reference_cycles=1424\nPASS clock+I2S actual default PDN=4/startup=1028, 48->44.1->48, real CDC frame/drain/prefill/running handshakes, tagged PCM/physical decode, lost-clock recovery; streams=4 frames=34\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_i2s.sv:215: $finish called at 88554993670 (1ps)\nGW5A simulator SHA256=2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5\n",
+      "stderr": ".\n----------------------------------------------------------------------\nRan 1 test in 69.777s\n\nOK\n"
+    }
+  ],
+  "coverage": {
+    "independent_serializer": {
+      "streams": [
+        "48k epoch7",
+        "44.1k epoch8",
+        "48k epoch9"
+      ],
+      "checked_tagged_frames_per_stream": 9,
+      "decoded_physical_frames_per_stream": 15,
+      "explicit_underruns_per_stream": 1,
+      "rejected_stale_or_wrong_tags_per_stream": 3,
+      "startup_counts_accelerated": true
+    },
+    "real_combination": {
+      "streams": [
+        "48k epoch0 boot",
+        "44.1k epoch1",
+        "48k epoch2",
+        "48k epoch3 recovery"
+      ],
+      "real_completed_frames_total": 34,
+      "simulated_time_ps": 88554993670,
+      "pdn_hold_frames_default": 4,
+      "startup_mute_frames_default": 1028,
+      "per_phase_timeout_cycles_default": 2000000,
+      "per_phase_timeout_ms": 40,
+      "observed_prefill_ns": [
+        21416980,
+        23311120,
+        21416920,
+        21416960
+      ],
+      "reference_hz": 50000000,
+      "raw_reference_hz": [
+        12288000,
+        16934400
+      ],
+      "monitor_acceleration": {
+        "window_cycles": 500,
+        "stable_windows": 3,
+        "loss_timeout_cycles": 25,
+        "stopped_low_cycles": 8,
+        "counter_bits": 12
+      },
+      "cdc_fixture": "Two-stage selected-clock quiesce/resume synchronizers and two-stage 50MHz quiet/drain/prefill/running acknowledgements. Flush clears return ACKs. Production domain reset chain remains real.",
+      "response_fixture": "Ordinary bounded8..12 selected-MCLK-cycle tagged response. Before each normal switch, inject one512-MCLK-cycle in-flight response. Quiesce does not cancel its timer: complete the full latency, explicitly discard the old result, then idle. No acknowledgement tied constant.",
+      "failure_recovery": "Stop active 48k reference high during playback; expect fault code6, local async serializer reset without source edges, then requalify and explicit recover at committed48k, new epoch3.",
+      "pin_decode": "Count true selected MCLK edges for BCK /4 or /6 and LRCK /256 or /384, decode actual BCK rising edges/I2S delay/zero padding, compare physical PCM to completed frame tap and expected identity.",
+      "drain_proof": {
+        "completed_and_discarded_inflight_responses": 2,
+        "serial_quiet_but_transaction_waiting_reference_cycles": 1424,
+        "required_state_during_wait": "QUIESCE with local audio reset released",
+        "limitation": "Fixture models noncancellable finite-latency response; no actual DSP or production CDC bridge is integrated."
+      }
+    }
+  },
+  "test_fixture_correction": {
+    "first_attempt_failed": true,
+    "failure": "BCK divider at 21637440270 ps in the combined fixture",
+    "cause": "Fixture compared the still-draining previous BCK against pending staged next mode. Production serializer correctly keeps its locally sampled mode and epoch.",
+    "correction": "Independently capture expected mode/epoch on the first selected-clock edge after each local reset. Use captured identity for divider/request/tap checks. No RTL behavior was weakened or changed."
+  },
+  "status": {
+    "serializer_implemented": true,
+    "independent_serializer_simulation_passed": true,
+    "serializer_wall_lint_passed": true,
+    "clock_serializer_combination_simulation_passed": true,
+    "full_vendor_lint_passed": false,
+    "full_workstation_integrated": false,
+    "synthesis_run": false,
+    "place_route_run": false,
+    "routed_cdc_verified": false,
+    "hardware_accepted": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "A03_complete": false,
+    "A05_complete": false,
+    "A06_complete": false
+  },
+  "remaining_gaps": [
+    "Real request/response CDC bridge and compute-domain render integration remain unimplemented; test CDC/latency fixtures are not the production bridge.",
+    "Existing free-running engine tick, DSP mode coefficients/history and all existing final-PCM/tap paths are not migrated.",
+    "Production default clock monitor 1ms/4-window coverage remains in separate clock-domain checkpoint; combination accelerates only monitor qualification, retaining real1028-frame serializer startup and40ms per-stage timeout.",
+    "Exact AK4493S official 384fs/ACKS/PDN/SMUTE and board strap/electrical compatibility require separate sourced review and physical verification.",
+    "DCS and Gray/reset/handshake CDC constraints, dedicated routes, dual-mode timing and all P&R gates remain unverified.",
+    "PANIC/Note Off and held-note behavior, TF/recording/analysis formats, busy product policy and full integration remain separate gates.",
+    "No current board state was read, changed or inferred in this checkpoint."
+  ],
+  "related_evidence": [
+    "WORKSTATION_F03_CLOCK_DOMAIN_20261030.md",
+    "workstation_task_20261030/clock_domain.json"
+  ],
+  "rollback": "Source-only standalone checkpoint; no hardware operation and no accepted/pinned/resource/full-workstation profile switch. Existing deployed rollback identities remain separate.",
+  "serializer_comment_only_update_during_evidence_collection": {
+    "executed_source_sha256": "d68557bb8e6ef31a3c37b8715f71ef94493a2d9d43a349589cb8065ed7f3c2b8",
+    "final_source_sha256": "5e779a9384bd4ee26ce6febff2c723c7213e7b6e5cf22cfe0f3b133ae5af6d9b",
+    "executed_comment": "// Stable from before local reset release until the next local reset.",
+    "final_comment": "// Stable before local reset release through the first selected-clock edge.\n    // Later staged changes are ignored while the old frame drains.",
+    "comment_stripped_bytes_equal": true,
+    "method": "Reconstructed source used by earlier independent serializer TB/lint via exact one-occurrence comment replacement; all non-comment lines identical. The final enhanced combination simulation used the final comment version.",
+    "contract_update": "PCM_FRAME_CONTRACT.md now states the same configuration sampling window and distinguishes staged next identity from the old stream.",
+    "runs_using_earlier_comment": [
+      "serializer_independent_pin_decode",
+      "serializer_first_party_wall_lint"
+    ],
+    "runs_using_final_comment": [
+      "real_clock_domain_serializer_combination"
+    ]
+  }
+}
