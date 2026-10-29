@@ -1,0 +1,256 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "scope": "Independent 48k synth/vector render service; no source selection or final master volume",
+  "source_checkpoint_only": true,
+  "profile_selected": false,
+  "hardware_tested": false,
+  "synthesis_passed": false,
+  "pnr_passed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "source_policy": {
+    "service": "Versioned native 48k synth/vector service; one explicit render request slot, no free-running tick",
+    "event_default": "REQUEST_DRIVEN_RENDER defaults to 0; third instance is cycle-compared against unmodified prepared event RTL",
+    "service_opt_in": "REQUEST_DRIVEN_RENDER=1 preserves original sample_ce-to-pending priority and fences core_ce only after cancellation",
+    "public_parameter_owner": "Existing workstation_parameters; no service parameter copies or final source selection/master volume",
+    "reference_candidate": "custom138k-workstation-v1-d23d498ea824c9f9",
+    "reference_profile_revision": 3,
+    "reference_commit": "584e3816d4ab4e7e9e487cddaacdf54dfbf0c569",
+    "reference_event_sha256": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+    "reference_adaptation": "Only the single module declaration is renamed for parallel test instantiation",
+    "new_profile_required": true,
+    "profile_lock_modified": false
+  },
+  "input_sha256": {
+    "prepared/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+    "prepared/legacy/rtl/audio/audio_capture_fifo.sv": "468c3106f72a1a3cd17c1c6e3036c0bd21faadb86ef94f6ca1d2d0b16303255b",
+    "prepared/legacy/rtl/audio/audio_visual_extensions.sv": "0c441be0d63596acdba3d128ba8d8fe3a05fc1c6382cb6b2e98a6d13d0a55c0f",
+    "prepared/legacy/rtl/audio/audio_workstation.sv": "8dea52209b5d9fd9df8a7e4bb79b712ed951509477f759b5bfedc0f4aedcf5ea",
+    "prepared/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+    "prepared/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+    "prepared/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+    "prepared/legacy/rtl/audio/pitch_expression.sv": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+    "prepared/legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+    "prepared/legacy/rtl/audio/spectrum_fft256.sv": "304ad503ed053fc89cdde9372e9065fb13a0fb14f747d8db586ac3093932171a",
+    "prepared/legacy/rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+    "prepared/legacy/rtl/audio/unified_oscillator_engine.sv": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+    "prepared/legacy/rtl/input/midi_stream_decoder.sv": "8eefe9eba6bfb2b8df8842dea9c8948d576d04eeccc1a32cc3a3bf5bfa049fcd",
+    "prepared/src/ae350/gw138k_three_event_arbiter.sv": "c3690947d2b9a0e75ba56cd73982c1291d2a452d4ae3a20adaf753c306f25b7a",
+    "prepared/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "prepared/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+    "prepared/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "prepared/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "prepared/rtl/audio/workstation_frame_delivery.sv": "639fcc1496cc6a8c0f19f0979e4affdcfca34e1770d3b89c318dde3141f715c6",
+    "prepared/rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+    "prepared/rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+    "prepared/rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+    "prepared/rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+    "prepared/rtl/audio/scope_vec/scope_vec_engine.sv": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+    "prepared/rtl/control/workstation_parameters.sv": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287",
+    "prepared/rtl/control/workstation_session.sv": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0",
+    "prepared/rtl/audio/delay_ddr/delay_ddr_dma.sv": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+    "prepared/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+    "versioned/rtl/audio/gw138k_event_workstation.sv": "9cce4d73faacb47d648e11bcc55c56ba4ef482bb14491f0e5c9bca2c15b28bd2",
+    "versioned/rtl/audio/workstation_audio_render_service.sv": "bc50de635f94b8c1b3d3b1f238dd0a87543ed262264799f87aa7a23189da264d",
+    "test_adaptation/prepared_reference_event_workstation.sv": "5a5c716734216e3f3e0aeb31dcecbce733ea521602774eca9e310c789aafc38f",
+    "versioned/sim/audio/tb_workstation_audio_render_service.sv": "2f9f3ec9dd049afd8e0255ac6ffa96c583c86b47be7ea932a53d26d53ce558b9",
+    "prepared/src/ae350/gw138k_event_workstation.sv": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+    "versioned/sim/audio/run_render_service.py": "4824c88fd9c5759bf51a26967f3eceec545ce6db23e6b04f1132914ad18cf80a",
+    "prepared/sim/data/audio_chain/fft_hann.mem": "017ce9c689980891b77704d460387c0ef39b7cd7dcd7a70f72d0924632bf119d",
+    "prepared/sim/data/audio_chain/fft_tw_im.mem": "45c1dd9b30c67e201f05e83027524c29ec1ae4387c861ee819841347f234cf7e",
+    "prepared/sim/data/audio_chain/fft_tw_re.mem": "e80a1bf23a99b194d0d109a8c7d5e3c3a59d30ff54abeefe493b45bebdcfc25a",
+    "prepared/sim/data/audio_chain/pitch_bend_q20.mem": "eb906e4c202a35f84a4c1498aa80c8573743a9e514d61ae819e834bd0f90ab7a",
+    "prepared/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+    "prepared/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+    "prepared/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+    "prepared/sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+    "prepared/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+    "prepared/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4"
+  },
+  "checks": {
+    "full_regression_passed": true,
+    "inputs_unchanged_during_run": true,
+    "current_workstation_source_boundary_tests": {
+      "command": [
+        "python3",
+        "projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py"
+      ],
+      "tests_passed": 10
+    },
+    "combinational_loop_warnings": 0,
+    "service_implementation_compile_warnings": 0,
+    "python_compile_passed": true,
+    "git_diff_check_passed": true
+  },
+  "configuration": {
+    "sample_rate_hz": 48000,
+    "compute_clock_nominal_hz": 76800000,
+    "legacy_request_period_compute_cycles": 1600,
+    "normal_paths": 4,
+    "timbres_per_path": 5,
+    "effect_masks": 8,
+    "effect_orders": 6,
+    "phases_per_source_per_cancel_type": 1600,
+    "production_echo_samples": 9600,
+    "test_echo_samples": 32,
+    "delay_storage_model": "Ordered memory-side FIFO/history/flush marker; not a physical DDR timing model"
+  },
+  "metrics": {
+    "normal_cases": 960,
+    "warm_frames": 4096,
+    "warm_orders": 6,
+    "cc_cases": 6400,
+    "lifecycle_cases": 6400,
+    "load_cancel_cases": 205,
+    "requests": 59378,
+    "responses": 59378,
+    "max_latency_compute_cycles": 1183,
+    "unsafe_unfenced_idle_cycles": 18551,
+    "max_observed_tail_age": 33,
+    "cancel_zeros": 31192,
+    "drained_results": 25636,
+    "unsupported": 1,
+    "rejected": 1,
+    "wet_returns": 7395,
+    "wet_seen": 7,
+    "fdn_seen": 1,
+    "pressure_events": 4096
+  },
+  "per_source_timbre_metrics": [
+    {
+      "source": 0,
+      "timbre": 0,
+      "max_latency_compute_cycles": 222
+    },
+    {
+      "source": 0,
+      "timbre": 1,
+      "max_latency_compute_cycles": 222
+    },
+    {
+      "source": 0,
+      "timbre": 2,
+      "max_latency_compute_cycles": 222
+    },
+    {
+      "source": 0,
+      "timbre": 3,
+      "max_latency_compute_cycles": 222
+    },
+    {
+      "source": 0,
+      "timbre": 4,
+      "max_latency_compute_cycles": 222
+    },
+    {
+      "source": 1,
+      "timbre": 0,
+      "max_latency_compute_cycles": 249
+    },
+    {
+      "source": 1,
+      "timbre": 1,
+      "max_latency_compute_cycles": 249
+    },
+    {
+      "source": 1,
+      "timbre": 2,
+      "max_latency_compute_cycles": 249
+    },
+    {
+      "source": 1,
+      "timbre": 3,
+      "max_latency_compute_cycles": 249
+    },
+    {
+      "source": 1,
+      "timbre": 4,
+      "max_latency_compute_cycles": 249
+    },
+    {
+      "source": 2,
+      "timbre": 0,
+      "max_latency_compute_cycles": 1145
+    },
+    {
+      "source": 2,
+      "timbre": 1,
+      "max_latency_compute_cycles": 1145
+    },
+    {
+      "source": 2,
+      "timbre": 2,
+      "max_latency_compute_cycles": 1145
+    },
+    {
+      "source": 2,
+      "timbre": 3,
+      "max_latency_compute_cycles": 1145
+    },
+    {
+      "source": 2,
+      "timbre": 4,
+      "max_latency_compute_cycles": 1145
+    },
+    {
+      "source": 3,
+      "timbre": 0,
+      "max_latency_compute_cycles": 1145
+    },
+    {
+      "source": 3,
+      "timbre": 1,
+      "max_latency_compute_cycles": 1145
+    },
+    {
+      "source": 3,
+      "timbre": 2,
+      "max_latency_compute_cycles": 1145
+    },
+    {
+      "source": 3,
+      "timbre": 3,
+      "max_latency_compute_cycles": 1145
+    },
+    {
+      "source": 3,
+      "timbre": 4,
+      "max_latency_compute_cycles": 1145
+    }
+  ],
+  "latency": {
+    "normal_a_compute_cycles": 222,
+    "normal_b_compute_cycles": 249,
+    "normal_c_and_vector_compute_cycles": 1145,
+    "observed_with_load_cancel_and_event_pressure_compute_cycles": 1183,
+    "normal_c_us": 14.908854166666668,
+    "observed_max_us": 15.403645833333334,
+    "nominal_frame_us": 20.833333333333336,
+    "remaining_nominal_compute_cycles_before_cdc_and_finalization": 417,
+    "legacy_cancel_tail_fence_compute_cycles": 40,
+    "observed_old_valid_tail_compute_cycles": 33,
+    "bound_scope": "Measured cases and the explicitly derived fixed legacy pipeline; no physical clock/DDR/CDC bound"
+  },
+  "cached_verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/render-service48-full1600/verification.json",
+  "cached_verification_sha256": "bca86ee6209c77b2e4f6b58cf46c4da4c451548011e8ef0de60d09d83126cbc1",
+  "run_log": "NORMAL source=0 timbre=0 max_latency_compute_cycles=222\nNORMAL source=0 timbre=1 max_latency_compute_cycles=222\nNORMAL source=0 timbre=2 max_latency_compute_cycles=222\nNORMAL source=0 timbre=3 max_latency_compute_cycles=222\nNORMAL source=0 timbre=4 max_latency_compute_cycles=222\nNORMAL source=1 timbre=0 max_latency_compute_cycles=249\nNORMAL source=1 timbre=1 max_latency_compute_cycles=249\nNORMAL source=1 timbre=2 max_latency_compute_cycles=249\nNORMAL source=1 timbre=3 max_latency_compute_cycles=249\nNORMAL source=1 timbre=4 max_latency_compute_cycles=249\nNORMAL source=2 timbre=0 max_latency_compute_cycles=1145\nNORMAL source=2 timbre=1 max_latency_compute_cycles=1145\nNORMAL source=2 timbre=2 max_latency_compute_cycles=1145\nNORMAL source=2 timbre=3 max_latency_compute_cycles=1145\nNORMAL source=2 timbre=4 max_latency_compute_cycles=1145\nNORMAL source=3 timbre=0 max_latency_compute_cycles=1145\nNORMAL source=3 timbre=1 max_latency_compute_cycles=1145\nNORMAL source=3 timbre=2 max_latency_compute_cycles=1145\nNORMAL source=3 timbre=3 max_latency_compute_cycles=1145\nNORMAL source=3 timbre=4 max_latency_compute_cycles=1145\nPASS audio_render_service48: normal_cases=960 warm_frames=4096 warm_orders=6 cc_cases=6400 lifecycle_cases=6400 load_cancel_cases=205 requests=59378 responses=59378 max_latency_compute_cycles=1183 unsafe_unfenced_idle_cycles=18551 max_observed_tail_age=33 cancel_zeros=31192 drained_results=25636 unsupported=1 rejected=1 wet_returns=7395 wet_seen=7 fdn_seen=1 pressure_events=4096\n- /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_render_service.sv:315: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 1s; walltime 267.078 s; speed 4.632 ms/s\n- Verilator: cpu 264.442 s on 1 threads; allocated 2 MB\n",
+  "run_log_sha256": "452531b59e89698ce6d1dca8779ee1293f5199fe4e957fb55ebde0a1fc1280e7",
+  "compile_log_sha256": "52dc307ef0a651fca473ca309235271d28055a018d626ed5d6fc98d4aecf6a18",
+  "replay_argv": [
+    "python3",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_render_service.py",
+    "--project",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+    "--output",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/render-service48-full1600-replay",
+    "--phases",
+    "1600"
+  ],
+  "remaining": [
+    "Source selection, final CC7, PCM16 quantization and I2S/recording/analysis taps require the owning final output integration",
+    "44.1 kHz is explicitly unsupported by this service; runtime oscillator/vector/effects integration is separate",
+    "Replace legacy cancellation tail fence with real runtime oscillator quiescent status when its source policy is selected",
+    "Full production 9600-sample DDR ring timing, source CDC budgets, synthesis, physical timing/CDC/PLL and board acceptance remain separate"
+  ]
+}

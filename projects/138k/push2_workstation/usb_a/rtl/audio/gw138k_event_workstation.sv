@@ -7,6 +7,7 @@ module gw138k_event_workstation #(
     parameter integer SAMPLE_RATE_HZ=48000,
     parameter bit TIMING_OPTIMIZED=0,
     parameter bit EXTERNAL_MASTER_VOLUME=0,
+    parameter bit REQUEST_DRIVEN_RENDER=0,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600
 ) (
@@ -20,6 +21,9 @@ module gw138k_event_workstation #(
     output wire [31:0] pc_overflow_o,control_options_o,
     output logic [9:0] panic_epoch_o,
     output wire panic_muted_o,
+    // Read-only render admission status; PANIC clears frame_inflight before
+    // the legacy oscillator's unreset ROM/valid pipelines have drained.
+    output wire render_idle_o,
     input logic cpu_event_valid_i,
     input logic [17:0] cpu_event_i,
     output wire cpu_event_ready_o,
@@ -217,7 +221,30 @@ module gw138k_event_workstation #(
   assign full = scope_enable ? &vec_active : &allocated;
   assign dispatch=!usb_lifecycle && !pending && !sample_ce_i && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);
   wire panic_accept=usb_lifecycle || (event_valid && event_ready && kind==2 && a==120);
-  assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready && fx_ready && !synth_joined && !vec_joined && !panic_accept;
+  // Legacy partial loading can start on the cancellation edge: 32 issues,
+  // three generator-valid stages, one timbre-ROM stage, plus edge margin.
+  // The render tail is shorter: five sine, three mix, six quantizer stages.
+  // This fence is cancellation-only and does not change existing scheduling.
+  // A native oscillator with an actual pipeline-empty output can replace it.
+  localparam integer LEGACY_CANCEL_TAIL_CYCLES=40;
+  logic [5:0] legacy_cancel_tail;
+  always_ff @(posedge clk_i or negedge rst_ni) begin
+    if(!rst_ni) legacy_cancel_tail<=0;
+    else if(panic_accept) legacy_cancel_tail<=6'(LEGACY_CANCEL_TAIL_CYCLES);
+    else if(legacy_cancel_tail!=0) legacy_cancel_tail<=legacy_cancel_tail-1'b1;
+  end
+  // Use stored datapath state, not core_sample_ready/panic_accept: those
+  // depend on this cycle's sample_ce through event dispatch. Feeding them
+  // back to an external request-ready gate would create a combinational loop.
+  // Normal envelope/quantizer tails remain covered by frame_inflight through
+  // the joined effects completion; cancellation uses the explicit tail fence.
+  assign render_idle_o=rst_ni && legacy_cancel_tail==0 &&
+      !pending && !frame_inflight && !synth_joined && !vec_joined &&
+      !load_busy && !mix_busy && vec_ready && fx_ready &&
+      !synth_valid_o && !vec_valid && !sample_valid_o;
+  assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready && fx_ready &&
+      !synth_joined && !vec_joined && !panic_accept &&
+      (!REQUEST_DRIVEN_RENDER || legacy_cancel_tail==0);
   always_comb begin
     core_event_valid=0; core_note_on=0; core_note=a; core_velocity=b;
     core_expression_valid=0; core_expression_note=a; core_expression_value=b;
