@@ -9,7 +9,8 @@
     "implemented_sample_rates_hz": [
       48000
     ],
-    "ae350_firmware_policy": "maintained_ae350_v1"
+    "ae350_firmware_policy": "maintained_ae350_v1",
+    "scan_window_policy": "native_admission_v1"
   },
   "target_sample_rates_hz": [
     48000,
@@ -65,9 +66,9 @@
     },
     {
       "name": "hdmi_ddr",
-      "source_state": "partial_D5_reuse",
-      "selected_behavior": "Shared scanout source and resource-baseline DDR/UI; D5 write-window adapter remains isolated",
-      "remaining": "D01/D04/F04: integrate scanout_write_window and prove shared-client deadlines",
+      "source_state": "native_scan_window_admission_integrated",
+      "selected_behavior": "Shared scanout and versioned HDMI composition with native scan-window admission for new CPU/raster/snapshot writes; accepted tails and realtime clients retained",
+      "remaining": "D01/D03/D04/F04: bounded all-client service, atomic frame ownership, physical deadlines and hardware contention",
       "hardware_acceptance": "unverified_for_this_profile"
     },
     {
@@ -369,6 +370,7 @@
     "projects/138k/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv": "f76d02ed4c9e38c144a063b45e0fe03bb969518af9d2f78b75e320e638f52480",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/video_ddr_scanout.v": "7ade3b70fe9c4541eea7c49b3d6855ab527ccbc4a688238d5fd9b7f8a7351cc8",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_custom_dvi.sv": "141df97a6071b22ef04ed84574671c61d447674782926858e3748396c35a4c69",
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_ddr_scan_window.sv": "34e8ae73aab53472b0ecbadf17c747f90f6ea12ca3cf61bed47a6d758f0a9454",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_hdmi_isolation.sv": "fcdde02ea45a22a1a6b09a54a7ef8ae04fb0e48f454a16317477d5ff72cd26b5",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_lcd.sv": "abfd2da5d124184a43dee483f25688eacb7bb66d854d03f8c80e325ab9322c63",
     "projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv": "720c0642792de97c83135c71899338f42336a5ded674bef518c4f79e1dbbaa71",
@@ -484,6 +486,9 @@
     "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": "cf5d89d3a6fd76e0406275500322233c42d8a010290695d8eef50f498716aa6d",
     "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_usb_controlled_audio.sv": "91c9ca975e22716d6bde5e2b54e278fbc32eb5d38d35281196c03c3583efcd39",
     "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_custom_138k_top.sv": "066561a0173115d12368c5093eb81e8a634a0cae96a21decf1939eb1c1ca5553",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.provenance.json": "4446ca568ac88345ad1c6cfc483b255161806a43451e0dd57903fb2f53a7fa62",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.sv": "607f30dd643b01c4522e5e813745e608749dad141bcc9f09b91876be78749432",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_hdmi.sv": "a2985d66dab49c9f0ecfc3f6d42bbc2a74d9886b54572a1f4a19ee1740888425",
     "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_hotplug_top.sv": "53e23b1431726004afedf4bdf26ccfb0893f4744d1688ca9489297b28a902b89",
     "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv": "8b5617e7e173e7b3c71ecd5ac8deaeaf2620dfecd6f10bf8fe8dacd924b3f206",
     "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_service_adapter.sv": "e79f56c7cf515171aaa537c4dbc0e4cd39d09aceaa82bb36a65e50e1f6f2aaff",
@@ -502,7 +507,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_board_peripherals.py": "dd790675dd6598bdc46473a6214f243fbf27ed5eaed22a643caa15116ee4d634",
     "projects/138k/push2_workstation/usb_a/tools/workstation_cnn_cdc.py": "b6abf223750bc701aa34cd6373cb2756c6abd4510f641aa343a0d576391369ef",
     "projects/138k/push2_workstation/usb_a/tools/workstation_composition.py": "8306eddc2d249c4288684b5b23ff929b57a9d57426bed0a3f8c85f84a821514c",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "9179f1ac8e55d50ff5c257bdbeed83223f56d35d3afa309dfe81674e7fcff79c",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "57721208506f1d0a5f04e8869b4df627e237ae430ce846e0f7315e392a6e24be",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": "62c7660c9c17d053918aac9023a59503662f1543ee6fbf28948c97152a816fb9",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_flash.py": "a1b95bee2081258854817356f069c3f80cea65d57ca6ddbccde23dfb50999acb",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_input_cdc.py": "cce2c4abdc0d31e81ae077597aa2104a94522986240586273c64be208f2f2f1b",
@@ -511,7 +516,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_hdmi_isolation.py": "55faefab7b3025da21d1ea3638cc34208f07e11a057f36b670a39afcd74a780d",
     "projects/138k/push2_workstation/usb_a/tools/workstation_memory.py": "e413d7bd42d042ee62c615ac37575e6bde38fe7f09784d9617d74c7faef281ef",
     "projects/138k/push2_workstation/usb_a/tools/workstation_pinout.py": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "b7fcd7df6d4414ea2c8aaf508c78c32440ec75e8f3cabb6852f2d49161357b55",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "4ccbfeb791ad0e2e6f135a0646062fc8d00ae9392b44f65ed16846581177e3bc",
     "projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
     "projects/138k/push2_workstation/usb_a/tools/workstation_sources.py": "e37d1735245b3b82a5d29879dd3a7152bb7a174aad63ff5a0b460828b331181a",
     "projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
@@ -545,5 +550,5 @@
     "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_protocol_command.v": "241960ea0ffe232905e6537bb4d46f236963bd901a6603f03c7c28c9094bd34e",
     "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": "1e71b033a0950fb9985e42e6d0306d88baa70119bdfaf510dcf0f05cf878fc43"
   },
-  "revision": 2
+  "revision": 3
 }

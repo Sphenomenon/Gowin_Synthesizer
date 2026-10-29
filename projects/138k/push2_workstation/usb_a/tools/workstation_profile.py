@@ -50,7 +50,8 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
         raise ValueError('workstation profile identity changed')
     if profile.get('configuration') != dict(hdmi_mode=hdmi_mode, high_speed_allowed=bool(allow_high_speed),
                                           tf_audio_kind='wav', implemented_sample_rates_hz=[48000],
-                                          ae350_firmware_policy=AE350_POLICY) or profile['revision'] < 2:
+                                          ae350_firmware_policy=AE350_POLICY,
+                                          scan_window_policy='native_admission_v1') or profile['revision'] < 3:
         raise ValueError('workstation profile configuration mismatch')
     if not profile.get('source_sha256') or not profile.get('features') or not profile.get('references'):
         raise ValueError('incomplete workstation profile')
@@ -141,6 +142,13 @@ def _artifact(root, output, metadata, profile):
     parent = json.loads((output / 'parent_prepare_metadata.json').read_text())
     overlays = json.loads((output / 'workstation/resource_rework_overlays.json').read_text())
     bindings = {}
+    if metadata.get('scan_window') != dict(policy='native_admission_v1', enabled=True,
+            provider='rtl/workstation/workstation_profile_hdmi.sv',
+            implementation='rtl/workstation/workstation_hdmi_display.sv',
+            admission='rtl/display_data/workstation_ddr_scan_window.sv',
+            provenance_sha256=sha(stage / 'rtl/workstation/workstation_hdmi_display.provenance.json'),
+            physical_deadlines_verified=False, d01_complete=False, d04_complete=False):
+        raise ValueError('workstation profile scan window source policy changed')
 
     def bind(destination, source):
         if source not in profile['source_sha256']:
@@ -228,6 +236,7 @@ def _artifact(root, output, metadata, profile):
                 source_sha256=profile['source_sha256'],
                 firmware=metadata['firmware'],
                 ae350_firmware=ae350,
+                scan_window=metadata['scan_window'],
                 generated_data_inputs={'firmware/boot.mem': dict(origin='maintained_ae350_firmware',
                     sha256=ae350['installed_rom']['sha256'], source_sha256=ae350['build']['input_sha256'],
                     tool_versions=ae350['build']['tool_versions'], capacity=ae350['build']['capacity'])},

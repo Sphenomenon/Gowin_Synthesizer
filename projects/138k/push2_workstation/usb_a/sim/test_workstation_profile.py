@@ -27,7 +27,8 @@ class ProfileSources(unittest.TestCase):
         self.assertEqual(selected['target_sample_rates_hz'], [48000, 44100])
         self.assertEqual(selected['configuration']['implemented_sample_rates_hz'], [48000])
         self.assertEqual(features['audio_44k1_switch']['source_state'], 'not_implemented')
-        self.assertIn('D5 write-window adapter remains isolated', features['hdmi_ddr']['selected_behavior'])
+        self.assertIn('native scan-window admission', features['hdmi_ddr']['selected_behavior'])
+        self.assertEqual(selected['configuration']['scan_window_policy'], 'native_admission_v1')
         self.assertTrue(all(item['hardware_acceptance'] == 'unverified_for_this_profile'
                             for item in selected['features']))
         self.assertEqual(set(selected['references']), {'A2', 'D5', 'C1'})
@@ -98,7 +99,16 @@ class PreparedClosure(unittest.TestCase):
         firmware = a2['projects/138k/push2_workstation/usb_a/firmware.c']
         self.assertEqual(firmware['selection'], 'usb_firmware_build_input')
         self.assertTrue(firmware['same_bytes_as_reference'])
-        self.assertEqual(artifact['revision'], 2)
+        self.assertEqual(artifact['revision'], 3)
+        self.assertTrue(artifact['scan_window']['enabled'])
+        self.assertFalse(artifact['scan_window']['physical_deadlines_verified'])
+        self.assertNotIn('src/video/hdmi_display.v', artifact['enabled_inputs'])
+        for relative in integration.PROFILE_SOURCES:
+            self.assertIn(relative, artifact['enabled_inputs'])
+        # Retain parent bytes; compile one wrapper over a locked implementation.
+        self.assertTrue((self.stage / 'src/video/hdmi_display.v').is_file())
+        self.assertNotIn('rtl/workstation/workstation_hdmi_display.sv', artifact['enabled_inputs'])
+        self.assertIn('rtl/workstation/workstation_hdmi_display.sv', artifact['staged_input_sha256'])
         self.assertEqual(artifact['configuration']['ae350_firmware_policy'], profile.AE350_POLICY)
         ae350 = artifact['ae350_firmware']
         self.assertTrue(ae350['project_rom_installed'])
@@ -117,6 +127,14 @@ class PreparedClosure(unittest.TestCase):
             with self.subTest(relative=relative), self.assertRaisesRegex(ValueError, 'drift|closure changed'):
                 profile.verify(ROOT, self.output)
             source.write_bytes(original)
+
+    def test_scan_window_policy_cannot_be_silently_disabled(self):
+        manifest = self.output / 'integration_inputs.json'
+        metadata = json.loads(manifest.read_text())
+        metadata['scan_window']['enabled'] = False
+        manifest.write_text(json.dumps(metadata))
+        with self.assertRaisesRegex(ValueError, 'scan window source policy changed'):
+            profile.verify(ROOT, self.output)
 
     def test_new_compilation_entry_and_unlisted_files_are_rejected(self):
         project = self.stage / 'Prj1.gprj'
@@ -177,6 +195,10 @@ class LegacyPolicy(unittest.TestCase):
         metadata = json.loads((output / 'integration_inputs.json').read_text())
         self.assertNotIn('workstation_profile', metadata)
         self.assertNotIn('ae350_firmware', metadata)
+        self.assertNotIn('scan_window', metadata)
+        self.assertIn('src/video/hdmi_display.v', metadata['enabled_inputs'])
+        self.assertTrue(all(relative not in metadata['enabled_inputs']
+                            for relative in integration.PROFILE_SOURCES))
         self.assertFalse((output / profile.AE350_DIRECTORY).exists())
         baseline = load_baseline(ROOT, 'resource_rework_route0')
         self.assertEqual((output / 'workstation/Prj1/firmware/boot.mem').read_bytes(),

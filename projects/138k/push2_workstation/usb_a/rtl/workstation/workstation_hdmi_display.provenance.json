@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "scope": "Versioned native HDMI composition migration; no frozen/vendor input changes",
+  "source": "rtl/workstation/workstation_hdmi_display.sv",
+  "parent_profile_revision": 2,
+  "parent_candidate_identity": "custom138k-workstation-v1-2bce61be83aaff38",
+  "parent_baseline": "resource_rework_route0",
+  "parent_staged_path": "src/video/hdmi_display.v",
+  "parent_sha256": "900914bbcc98cdb563f708eea2bf6edf989917526103d628799930acfba59794",
+  "default_scan_window_enable": false,
+  "explicit_compile_macro": "WORKSTATION_DDR_SCAN_WINDOW_ENABLE",
+  "exact_changes": [
+    {
+      "before": "module hdmi_display (",
+      "after": "// Selected only by an explicit source policy. The legacy/baseline HDMI input\n// stays byte-identical; this native composition defaults to pass-through.\nmodule hdmi_display #(\n`ifdef WORKSTATION_DDR_SCAN_WINDOW_ENABLE\n    parameter bit SCAN_WINDOW_ENABLE=1'b1\n`else\n    parameter bit SCAN_WINDOW_ENABLE=1'b0\n`endif\n) ("
+    },
+    {
+      "before": "    wire merged_req,merged_ready;",
+      "after": "    wire merged_req,merged_ready;\n    wire scan_fetch_busy,arbiter_writer_req,arbiter_writer_ready;\n    wire arbiter_cpu_req,arbiter_cpu_ready;\n    workstation_ddr_scan_window #(.ENABLE(SCAN_WINDOW_ENABLE)) u_scan_window (\n        .scan_fetch_busy_i(scan_fetch_busy),\n        .writer_valid_i(merged_req),.writer_ready_o(merged_ready),\n        .writer_valid_o(arbiter_writer_req),.writer_ready_i(arbiter_writer_ready),\n        .cpu_valid_i(cpu_req),.cpu_write_i(cpu_write),.cpu_ready_o(cpu_ready),\n        .cpu_valid_o(arbiter_cpu_req),.cpu_ready_i(arbiter_cpu_ready)\n    );"
+    },
+    {
+      "before": ".fetch_fault(fetch_fault),.underruns(underruns),",
+      "after": ".fetch_fault(fetch_fault),.fetch_busy(scan_fetch_busy),.underruns(underruns),"
+    },
+    {
+      "before": ".writer_valid(merged_req),",
+      "after": ".writer_valid(arbiter_writer_req),"
+    },
+    {
+      "before": ".writer_ready(merged_ready),",
+      "after": ".writer_ready(arbiter_writer_ready),"
+    },
+    {
+      "before": ".cpu_valid(cpu_req),",
+      "after": ".cpu_valid(arbiter_cpu_req),"
+    },
+    {
+      "before": ".cpu_ready(cpu_ready),",
+      "after": ".cpu_ready(arbiter_cpu_ready),"
+    }
+  ],
+  "reverse_changes_reproduce_parent_bytes": true,
+  "unchanged": "All remaining parent bytes, public ports, display parameters, BIST, renderer, scanout, DDR owner mapping, tag accounting, clocks, resets, audio/TF/delay/CNN wiring and ready policy inside the actual queues/core",
+  "remaining": "Must be explicitly selected and identity-bound by a new profile revision; scan deadline, fairness, physical timing/CDC and board acceptance remain separate"
+}

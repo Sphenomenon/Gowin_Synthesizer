@@ -44,6 +44,13 @@ NATIVE_SOURCES = (*SOC_SOURCE_PATHS, *NATIVE_INPUT_SOURCES,
                   'rtl/bluetooth/gw138k_ble_status_uart.v',
                   'rtl/memory/workstation_ddr_bist.v',
                   'rtl/display_data/workstation_custom_dvi.sv')
+# Only the explicit workstation profile migrates this composition boundary.
+# The included implementation and provenance remain in the staged closure;
+# only its wrapper and admission module are direct compilation entries.
+PROFILE_SOURCES = ('rtl/workstation/workstation_profile_hdmi.sv',
+                   'rtl/display_data/workstation_ddr_scan_window.sv')
+PROFILE_DEPENDENCIES = ('rtl/workstation/workstation_hdmi_display.sv',
+                        'rtl/workstation/workstation_hdmi_display.provenance.json')
 REPLACED_INPUTS = {
     'src/memory/ddr3_bist.v': 'rtl/memory/workstation_ddr_bist.v',
     'src/usb_a/VexRiscv.v': 'vendor/usb_host_fs_8fc3/src/VexRiscv.v',
@@ -72,6 +79,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if workstation_profile is not None:
         from tools.workstation_profile import load as load_profile
         load_profile(root, workstation_profile, allow_high_speed=allow_high_speed, hdmi_mode=hdmi_mode)
+    native_sources = (*NATIVE_SOURCES, *PROFILE_SOURCES) if workstation_profile is not None else NATIVE_SOURCES
+    profile_dependencies = PROFILE_DEPENDENCIES if workstation_profile is not None else ()
     clocks = clock_bundle(root, hdmi_mode)
     crossings = cdc_bundle(root)
     input_crossings = input_cdc_bundle(root)
@@ -80,7 +89,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     for directory in ('rtl', 'tools', 'drivers/usb2', 'boards/custom_138k', 'baselines'):
         selected += [source for source in (root / directory).rglob('*') if source.is_file()
                      and source.suffix in ('.py', '.sv', '.v', '.vh', '.svh', '.mem', '.json', '.c', '.h', '.cst')]
-    for relative in (*NATIVE_SOURCES, 'rtl/workstation/gw138k_push_workstation_top.v'):
+    for relative in (*native_sources, *profile_dependencies, 'rtl/workstation/gw138k_push_workstation_top.v'):
         if not (root / relative).is_file():
             raise FileNotFoundError('missing native-board source: ' + relative)
         selected.append(root / relative)
@@ -113,21 +122,24 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if len(paths) != len(set(paths)):
         raise ValueError('duplicate native-board parent compilation inputs')
     replacements = {}
-    for relative in (*REPLACED_INPUTS, *EXCLUDED_INPUTS):
+    replaced_inputs = dict(REPLACED_INPUTS)
+    if workstation_profile is not None:
+        replaced_inputs['src/video/hdmi_display.v'] = 'rtl/workstation/workstation_profile_hdmi.sv'
+    for relative in (*replaced_inputs, *EXCLUDED_INPUTS):
         entries = [entry for entry in files if entry.get('path') == relative and entry.get('enable') == '1']
         if len(entries) != 1:
             raise ValueError('native-board parent selection drift: ' + relative)
-        replacements[relative] = dict(sha256=sha(stage / relative), replacement=REPLACED_INPUTS.get(relative))
+        replacements[relative] = dict(sha256=sha(stage / relative), replacement=replaced_inputs.get(relative))
         entries[0].set('enable', '0')
     copied = {}
-    for relative in (*NATIVE_SOURCES, 'rtl/workstation/gw138k_push_workstation_top.v'):
+    for relative in (*native_sources, *profile_dependencies, 'rtl/workstation/gw138k_push_workstation_top.v'):
         destination = stage / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(root / relative, destination)
         copied[relative] = sha(destination)
         if copied[relative] != snapshot[relative]:
             raise ValueError('native-board copied source identity changed: ' + relative)
-        if relative in NATIVE_SOURCES:
+        if relative in native_sources:
             if relative in paths:
                 raise ValueError('native-board source already selected by parent: ' + relative)
             ElementTree.SubElement(files, 'File', path=relative, type='file.verilog', enable='1')
@@ -208,6 +220,13 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     remaining_gaps=['USB3300/TXS electrical compatibility', 'physical FPC DAC/audio acceptance',
                                     'physical BLE pairing/recording/download acceptance', 'complete IO/CDC/timing/PLL/P&R gates',
                                     'real external peripheral and hardware acceptance'])
+    if workstation_profile is not None:
+        metadata['scan_window'] = dict(policy='native_admission_v1', enabled=True,
+            provider='rtl/workstation/workstation_profile_hdmi.sv',
+            implementation='rtl/workstation/workstation_hdmi_display.sv',
+            admission='rtl/display_data/workstation_ddr_scan_window.sv',
+            provenance_sha256=sha(stage / 'rtl/workstation/workstation_hdmi_display.provenance.json'),
+            physical_deadlines_verified=False, d01_complete=False, d04_complete=False)
     (parent_output / 'build_metadata.json').write_text(json.dumps(dict(
         candidate=metadata['identity'],source_policy=metadata['source_policy'],
         validation_stage='integration_prepare_only',place_route_allowed=False,deployment_allowed=False,
