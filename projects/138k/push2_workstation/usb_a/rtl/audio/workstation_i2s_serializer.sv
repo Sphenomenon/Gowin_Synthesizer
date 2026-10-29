@@ -4,7 +4,10 @@
 // The renderer bridge must use each request exactly once and preserve its tags.
 module workstation_i2s_serializer #(
     parameter integer PDN_HOLD_FRAMES = 4,
-    parameter integer STARTUP_MUTE_FRAMES = 1028
+    parameter integer STARTUP_MUTE_FRAMES = 1028,
+    // Explicit opt-in keeps existing unconnected/legacy sample interfaces
+    // unchanged. Tagged frame compositions must enable and connect this bit.
+    parameter bit SAMPLE_ERROR_ENABLE = 0
 ) (
     input wire clk_i, rst_ni,
     // Stable before local reset release through the first selected-clock edge.
@@ -22,6 +25,7 @@ module workstation_i2s_serializer #(
     input wire sample_valid_i,
     output wire sample_ready_o,
     input wire sample_44k1_i,
+    input wire sample_error_i,
     input wire [31:0] sample_epoch_i, sample_sequence_i, sample_pcm_i,
     output wire mclk_o,
     output reg bck_o, lrck_o, data_o,
@@ -31,7 +35,8 @@ module workstation_i2s_serializer #(
     output reg [31:0] frame_pcm_o, frame_sequence_o,
     output wire frame_44k1_o,
     output wire [31:0] frame_epoch_o,
-    output reg [31:0] underrun_count_o, rejected_sample_count_o
+    output reg [31:0] underrun_count_o, rejected_sample_count_o,
+    output reg [31:0] source_error_count_o
 );
     localparam integer STARTUP_BITS = $clog2(STARTUP_MUTE_FRAMES+1);
     initial begin
@@ -46,7 +51,7 @@ module workstation_i2s_serializer #(
     reg [STARTUP_BITS-1:0] startup_frames;
     reg playing, current_error;
     reg [31:0] current_pcm, current_sequence;
-    reg requested, have_next;
+    reg requested, have_next, next_error;
     reg [31:0] next_pcm, wanted_sequence;
     wire half_end = half_count == (mode_44k1 ? 2'd2 : 2'd1);
     wire frame_boundary = half_end && bck_o && bit_position == 6'd63;
@@ -57,6 +62,7 @@ module workstation_i2s_serializer #(
         sample_sequence_i == wanted_sequence;
     wire next_available = have_next || incoming_match;
     wire [31:0] available_pcm = have_next ? next_pcm : sample_pcm_i;
+    wire available_error = SAMPLE_ERROR_ENABLE && (have_next ? next_error : sample_error_i);
 
     assign mclk_o = clk_i;
     assign pdn_no = rst_ni && configured && startup_frames >= STARTUP_BITS'(PDN_HOLD_FRAMES);
@@ -79,12 +85,13 @@ module workstation_i2s_serializer #(
             bck_o <= 0; lrck_o <= 0; data_o <= 0;
             startup_frames <= 0;
             playing <= 0; current_error <= 0; current_pcm <= 0; current_sequence <= 0;
-            requested <= 0; have_next <= 0; next_pcm <= 0; wanted_sequence <= 0;
+            requested <= 0; have_next <= 0; next_error <= 0; next_pcm <= 0; wanted_sequence <= 0;
             serial_quiescent_o <= 1; output_running_o <= 0;
             request_o <= 0; request_sequence_o <= 0;
             frame_valid_o <= 0; frame_error_o <= 0;
             frame_pcm_o <= 0; frame_sequence_o <= 0;
             underrun_count_o <= 0; rejected_sample_count_o <= 0;
+            source_error_count_o <= 0;
         end else if (!configured) begin
             // Never change a divider in a running frame.
             configured <= 1;
@@ -106,7 +113,10 @@ module workstation_i2s_serializer #(
                     request_sequence_o <= wanted_sequence;
                 end
                 if (incoming) begin
-                    if (incoming_match) begin have_next <= 1; next_pcm <= sample_pcm_i; end
+                    if (incoming_match) begin
+                        have_next <= 1; next_pcm <= sample_pcm_i;
+                        next_error <= SAMPLE_ERROR_ENABLE && sample_error_i;
+                    end
                     else rejected_sample_count_o <= saturating_increment(rejected_sample_count_o);
                 end
             end
@@ -143,11 +153,13 @@ module workstation_i2s_serializer #(
                             serial_quiescent_o <= 1;
                         end else if (startup_done && resume_i && (playing || next_available)) begin
                             playing <= 1;
-                            current_pcm <= next_available ? available_pcm : 32'd0;
+                            current_pcm <= next_available && !available_error ? available_pcm : 32'd0;
                             current_sequence <= wanted_sequence;
-                            current_error <= !next_available;
+                            current_error <= !next_available || available_error;
                             if (!next_available)
                                 underrun_count_o <= saturating_increment(underrun_count_o);
+                            else if (available_error)
+                                source_error_count_o <= saturating_increment(source_error_count_o);
                             have_next <= 0;
                             wanted_sequence <= wanted_sequence + 1'b1;
                             requested <= 1;

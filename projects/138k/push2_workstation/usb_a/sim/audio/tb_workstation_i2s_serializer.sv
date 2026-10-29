@@ -11,19 +11,23 @@ module tb_workstation_i2s_serializer;
     reg valid=0, sample_mode=0;
     reg [31:0] sample_epoch=0, sample_seq=0, sample_pcm=0;
     wire mclk,bck,lrck,sd,pdn,smute,frame_valid,frame_error,frame_mode;
-    wire [31:0] frame_pcm,frame_seq,frame_epoch,underruns,rejected;
+    wire [31:0] frame_pcm,frame_seq,frame_epoch,underruns,rejected,source_errors;
     workstation_i2s_serializer #(.PDN_HOLD_FRAMES(1),.STARTUP_MUTE_FRAMES(3)) dut(
         .clk_i(clk),.rst_ni(rst_n),.rate_44k1_i(mode),.epoch_i(epoch),
         .quiesce_i(quiesce),.resume_i(resume_output),
         .serial_quiescent_o(quiet),.output_running_o(running),.prefill_ready_o(prefill),
         .request_o(request),.request_sequence_o(request_seq),.request_44k1_o(request_mode),
         .request_epoch_o(request_epoch),.sample_valid_i(valid),.sample_ready_o(ready),
-        .sample_44k1_i(sample_mode),.sample_epoch_i(sample_epoch),
+        // The legacy/default path must ignore the new error input even high.
+        .sample_44k1_i(sample_mode),.sample_error_i(1'b1),.sample_epoch_i(sample_epoch),
         .sample_sequence_i(sample_seq),.sample_pcm_i(sample_pcm),
         .mclk_o(mclk),.bck_o(bck),.lrck_o(lrck),.data_o(sd),.pdn_no(pdn),.smute_o(smute),
         .frame_valid_o(frame_valid),.frame_error_o(frame_error),.frame_pcm_o(frame_pcm),
         .frame_sequence_o(frame_seq),.frame_44k1_o(frame_mode),.frame_epoch_o(frame_epoch),
-        .underrun_count_o(underruns),.rejected_sample_count_o(rejected));
+        .underrun_count_o(underruns),.rejected_sample_count_o(rejected),.source_error_count_o(source_errors));
+
+    always @(posedge clk) if(rst_n && source_errors!==0)
+        $fatal(1,"default-disabled source error input affected legacy output");
 
     function automatic [31:0] pcm(input [31:0] seq,input [31:0] ep);
         pcm={16'h9137 ^ ep[15:0] ^ seq[15:0],16'h35c2 ^ ep[15:0] ^ seq[15:0]};

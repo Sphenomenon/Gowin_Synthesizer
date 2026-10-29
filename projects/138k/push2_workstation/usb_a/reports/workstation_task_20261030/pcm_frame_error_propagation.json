@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-30T06:20:37.367990+08:00",
+  "inputs_sha256": {
+    "rtl/audio/workstation_pcm_frame_bridge.sv": "58752fad08b2476ad59b5427cceaad2894b208291a9b510d0b003475c4f5160e",
+    "rtl/audio/workstation_i2s_serializer.sv": "503799267ca9f4603d13585fa2b18f619c4b3e12dedd3568580255099ba2d245",
+    "sim/audio/tb_workstation_pcm_frame_bridge.sv": "860d4435035fa2f174856267d598f8629201f878db0c0352ff3fe556daca93d7",
+    "sim/test_workstation_pcm_frame_bridge.py": "5c037910985a23a41b07d2e028c2285fc2f631fc73a90bf42cc34532f066bcbe",
+    "sim/audio/tb_workstation_i2s_serializer.sv": "01d08561f8b34378dbeb4db51f7dfe50a675b0bffe7a68827af14e8ea3046cba",
+    "sim/test_workstation_i2s_serializer.py": "32e945fde6b0f726f27929b4db2f4b5eeb1f63549230576bcb8b8d6d698e51d8",
+    "sim/test_workstation_audio_clock_i2s.py": "26ae1e1d27704d0b00bc842f26c5df018853edc779353025439602899c38e84a",
+    "sim/audio/tb_workstation_audio_clock_i2s.sv": "be30dbaa5708453161f22cf960d68c6a6b98033f506b686830b706913f94b6c4",
+    "sim/test_workstation_audio_probe.py": "94f6594716d2fd7f635e64b45ab9ad310346d25e28524b4d0d03f5102d6877fd",
+    "rtl/probe/workstation_audio_probe_top.sv": "89411cfce99f483a001e127660df6a127c54fbcb431cd19f54ae2aef98e87470"
+  },
+  "scope": "Independent tagged PCM bridge and I2S source-error propagation; no profile/physical build or board operation",
+  "passed": true,
+  "configuration": {
+    "bridge_reply_bits": 98,
+    "layout": "rate,epoch32,sequence32,pcm32,error",
+    "serializer_opt_in": "SAMPLE_ERROR_ENABLE=1",
+    "default": 0
+  },
+  "tests": [
+    {
+      "name": "bridge_error_two_clock_offsets",
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_pcm_frame_bridge.py",
+      "returncode": 0,
+      "output": ".\n----------------------------------------------------------------------\nRan 1 test in 3.473s\n\nNORMAL mode=48000 clock_case=0 frames=160 min_render_gap_compute=1600 max_request_to_sample_ns=18721.191 physical_frame_ns=20837.500\nNORMAL mode=44100 clock_case=0 frames=160 min_render_gap_compute=1741 max_request_to_sample_ns=18664.154 physical_frame_ns=22680.490\nCOUNTERS accepted=463 renders=453 completed=453 delivered=451 request_drops=10 return_discards=1 cancel_requests=10 cancel_renders=1 unexpected=1 good_frames=436 error_frames=24 max_model_cycles=8000\nSOURCE_ERRORS physical_zero_frames=4 prefill_and_running_both_rates=1 stopped_old_reply_preserved=1\nPASS PCM frame bridge: real dual-rate I2S, independent 76.8MHz render, exact identities/ledger, source-error propagation, deadline/pressure recovery, quiesce drain, stopped-high/local-reset old reply, unexpected done\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_frame_bridge.sv:326: $finish called at 11168359946820 (1fs)\nNORMAL mode=48000 clock_case=1 frames=160 min_render_gap_compute=1599 max_request_to_sample_ns=18713.704 physical_frame_ns=20829.167\nNORMAL mode=44100 clock_case=1 frames=160 min_render_gap_compute=1741 max_request_to_sample_ns=18656.689 physical_frame_ns=22671.420\nCOUNTERS accepted=463 renders=453 completed=453 delivered=451 request_drops=10 return_discards=1 cancel_requests=10 cancel_renders=1 unexpected=1 good_frames=436 error_frames=24 max_model_cycles=8000\nSOURCE_ERRORS physical_zero_frames=4 prefill_and_running_both_rates=1 stopped_old_reply_preserved=1\nPASS PCM frame bridge: real dual-rate I2S, independent 76.8MHz render, exact identities/ledger, source-error propagation, deadline/pressure recovery, quiesce drain, stopped-high/local-reset old reply, unexpected done\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_frame_bridge.sv:326: $finish called at 11163958904928 (1fs)\nSOURCE sim/audio/tb_workstation_pcm_frame_bridge.sv SHA256=860d4435035fa2f174856267d598f8629201f878db0c0352ff3fe556daca93d7\nSOURCE rtl/audio/workstation_pcm_frame_bridge.sv SHA256=58752fad08b2476ad59b5427cceaad2894b208291a9b510d0b003475c4f5160e\nSOURCE rtl/audio/workstation_i2s_serializer.sv SHA256=503799267ca9f4603d13585fa2b18f619c4b3e12dedd3568580255099ba2d245\nOK\n"
+    },
+    {
+      "name": "real_clock_and_i2s_default_startup",
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_clock_i2s.py",
+      "returncode": 0,
+      "output": ".\n----------------------------------------------------------------------\nRan 1 test in 64.599s\n\nOK\nPREFILL actual rate44=0 epoch=0 ns=21416980.000 timeout_ns=40000000\nPREFILL actual rate44=1 epoch=1 ns=23311120.000 timeout_ns=40000000\nPREFILL actual rate44=0 epoch=2 ns=21416920.000 timeout_ns=40000000\nPREFILL actual rate44=0 epoch=3 ns=21416960.000 timeout_ns=40000000\nDRAIN actual completed/discarded old responses=2 serial-quiet waiting reference_cycles=1424\nPASS clock+I2S actual default PDN=4/startup=1028, 48->44.1->48, real CDC frame/drain/prefill/running handshakes, tagged PCM/physical decode, lost-clock recovery; streams=4 frames=34\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_i2s.sv:215: $finish called at 88554993670 (1ps)\nGW5A simulator SHA256=2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5\n"
+    },
+    {
+      "name": "probe_compatibility",
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_probe.py",
+      "returncode": 0,
+      "output": "...\n----------------------------------------------------------------------\nRan 3 tests in 2.051s\n\nOK\nPROBE normal complete epoch=2 accepts=2 applies=2 atomic_snapshots=607 physical_frames=17 epochs=111\nPASS standalone muted audio probe: automatic48->44.1->48, atomic frame snapshots, zero physical PCM, permanent SMUTE, stopped-high fault6; loss_cycles=397\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_probe.sv:74: $finish called at 1339111000 (1ps)\nGW5A simulator SHA256=2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5\nPASS audio probe prepare: explicit five-source closure,800-bit50MHz GAO, checked pins, new UserCode/output, tamper/extra-source refusal; no EDA or board access\nPASS audio probe unknown SDK: explicit dual-master support blocker, build refuses before EDA; no false-path fallback\n"
+    },
+    {
+      "name": "legacy_default_ignores_high_error_input",
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_i2s_serializer.py",
+      "returncode": 0,
+      "scope": "Existing three-stream physical-slot test passed with new sample_error_i tied high, SAMPLE_ERROR_ENABLE=0, source_error_count asserted zero"
+    }
+  ],
+  "metrics_per_clock_case": {
+    "normal_frames_each_rate": 160,
+    "accepted_requests": 463,
+    "render_starts": 453,
+    "render_completions": 453,
+    "delivered_replies": 451,
+    "request_drops": 10,
+    "return_discards": 1,
+    "cancelled_requests": 10,
+    "cancelled_renders": 1,
+    "unexpected_completions": 1,
+    "physical_source_error_zero_frames": 4,
+    "physical_good_frames": 436,
+    "total_physical_error_frames": 24
+  },
+  "remaining_gaps": [
+    "No real DSP/final router integration in this test; bounded renderer model only",
+    "Actual98-bit CDC placement and routed timing require a new physical candidate",
+    "B7 hardware evidence remains bound to its previous immutable serializer bytes; no acceptance transfer"
+  ],
+  "rollback": "Leave SAMPLE_ERROR_ENABLE=0 for legacy interfaces; no selected production profile changed",
+  "profile_changed": false,
+  "synthesis_run": false,
+  "pnr_run": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false
+}

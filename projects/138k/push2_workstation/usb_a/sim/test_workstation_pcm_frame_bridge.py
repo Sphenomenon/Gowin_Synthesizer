@@ -31,6 +31,8 @@ class PCMFrameBridgeTest(unittest.TestCase):
                 result = subprocess.run(['vvp', str(binary)], capture_output=True, text=True, timeout=60)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 self.assertIn('PASS PCM frame bridge:', result.stdout)
+                self.assertIn('SOURCE_ERRORS physical_zero_frames=4 prefill_and_running_both_rates=1 stopped_old_reply_preserved=1',
+                              result.stdout)
                 print(result.stdout.strip())
         self.assertEqual(before, {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in sources},
                          'bridge/serializer/TB changed during verification')

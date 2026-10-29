@@ -22,6 +22,8 @@
 
 `workstation_pcm_frame_bridge` 实现上述有界请求／返回通道：一个尚未接收的请求、一个执行中的 render、一个尚未消费的返回。请求和返回均用保持数据加双向 toggle／ACK 跨域；payload 在 ACK 返回前不变。计算端仅在 render ready 且返回槽空时启动，整个 render 保留同一身份。邮箱满时新请求计入饱和 drop，不覆盖旧请求；物理 slot 仍由串行器按时前进，缺帧与迟到分别计数。
 
+返回 payload 为 98 bit `{rate, epoch, sequence, pcm, error}`；`rendered_error_i` 与 PCM 一同锁存，经 `sample_error_o` 交给串行器。新的 tagged-frame 装配必须显式设置 `workstation_i2s_serializer.SAMPLE_ERROR_ENABLE=1` 并连接 `sample_error_i`；默认 0 保留既有无此位接口的行为。匹配身份的 error 样本仍占原 slot，物理输出零、完成 tap 的 `frame_error_o=1`，单独累加饱和 `source_error_count_o`；它不增加缺样的 `underrun_count_o`。过期／错代次的 error 样本与其他过期样本一样拒收，不污染下一帧。录音与默认分析应消费串行器的完成帧，不能把计算完成脉冲当成已按期送到物理出口的证明。
+
 桥的握手、tag 与计数只接受全局复位。串行局部复位或停钟不清除执行中的旧 render；恢复时旧返回在局部 reset／quiesce 条件下被消费并计 discard。`quiescent_o` 属于计算域，须同时满足已同步的串行 quiet、请求双向 ACK 完成、render 结束及返回 ACK 完成，再同步给常开事务。停止高电平的源尚未恢复时，不能伪造此排空确认；常开事务超时负责隔离故障。
 
 `request_drop_count_o`／`return_discard_count_o` 属于串行域；`cancelled_request_count_o`／`cancelled_render_count_o`／`unexpected_render_count_o` 属于计算域，均为全局复位清零的 32-bit 饱和计数。整机不能直接裸采跨域计数。此桥尚未进入生产来源，bundled payload、首级控制同步、复位释放及跨域位间 skew 必须在实际组合的 SDC／routed 审计中逐项约束，独立仿真不能代替该物理证明。

@@ -21,36 +21,36 @@ module tb_workstation_pcm_frame_bridge;
         else serial_quiesce_sync<={serial_quiesce_sync[0],quiesce};
     wire serial_quiet,running,prefill,request,request_mode,sample_ready;
     wire [31:0] request_epoch,request_sequence;
-    wire bridge_ready,sample_valid,sample_mode,render_request,render_mode,render_busy,bridge_quiet;
+    wire bridge_ready,sample_valid,sample_mode,sample_error,render_request,render_mode,render_busy,bridge_quiet;
     wire [31:0] sample_epoch,sample_sequence,sample_pcm,render_epoch,render_sequence;
     wire [31:0] request_drops,return_discards,cancel_requests,cancel_renders,unexpected;
-    reg render_ready=1,model_done=0,inject_done=0;
+    reg render_ready=1,model_done=0,inject_done=0,model_error=0;
     reg [31:0] model_pcm=0;
     wire mclk,bck,lrck,sd,pdn,smute,frame_valid,frame_error,frame_mode;
-    wire [31:0] frame_pcm,frame_sequence,frame_epoch,underruns,rejected;
-    workstation_i2s_serializer #(.PDN_HOLD_FRAMES(1),.STARTUP_MUTE_FRAMES(3)) serial(
+    wire [31:0] frame_pcm,frame_sequence,frame_epoch,underruns,rejected,source_errors;
+    workstation_i2s_serializer #(.PDN_HOLD_FRAMES(1),.STARTUP_MUTE_FRAMES(3),.SAMPLE_ERROR_ENABLE(1)) serial(
         .clk_i(serial_clk),.rst_ni(serial_reset_n),.rate_44k1_i(mode),.epoch_i(epoch),
         .quiesce_i(serial_quiesce_sync[1]),.resume_i(resume_output),
         .serial_quiescent_o(serial_quiet),.output_running_o(running),.prefill_ready_o(prefill),
         .request_o(request),.request_sequence_o(request_sequence),
         .request_44k1_o(request_mode),.request_epoch_o(request_epoch),
         .sample_valid_i(sample_valid && permit_reply),.sample_ready_o(sample_ready),
-        .sample_44k1_i(sample_mode),.sample_epoch_i(sample_epoch),
+        .sample_44k1_i(sample_mode),.sample_error_i(sample_error),.sample_epoch_i(sample_epoch),
         .sample_sequence_i(sample_sequence),.sample_pcm_i(sample_pcm),
         .mclk_o(mclk),.bck_o(bck),.lrck_o(lrck),.data_o(sd),.pdn_no(pdn),.smute_o(smute),
         .frame_valid_o(frame_valid),.frame_error_o(frame_error),.frame_pcm_o(frame_pcm),
         .frame_sequence_o(frame_sequence),.frame_44k1_o(frame_mode),.frame_epoch_o(frame_epoch),
-        .underrun_count_o(underruns),.rejected_sample_count_o(rejected));
+        .underrun_count_o(underruns),.rejected_sample_count_o(rejected),.source_error_count_o(source_errors));
     workstation_pcm_frame_bridge dut(
         .reset_ni(global_reset_n),.serial_clk_i(serial_clk),.compute_clk_i(compute_clk),
         .serial_reset_ni(serial_reset_n),.serial_quiet_i(serial_quiet),.quiesce_i(quiesce),
         .request_i(request),.request_44k1_i(request_mode),.request_epoch_i(request_epoch),
         .request_sequence_i(request_sequence),.request_ready_o(bridge_ready),
         .sample_valid_o(sample_valid),.sample_ready_i(sample_ready && permit_reply),
-        .sample_44k1_o(sample_mode),.sample_epoch_o(sample_epoch),
+        .sample_44k1_o(sample_mode),.sample_error_o(sample_error),.sample_epoch_o(sample_epoch),
         .sample_sequence_o(sample_sequence),.sample_pcm_o(sample_pcm),
         .render_ready_i(render_ready),.render_done_i(model_done || inject_done),
-        .rendered_pcm_i(model_pcm),.render_request_o(render_request),
+        .rendered_pcm_i(model_pcm),.rendered_error_i(model_error),.render_request_o(render_request),
         .render_44k1_o(render_mode),.render_epoch_o(render_epoch),.render_sequence_o(render_sequence),
         .render_busy_o(render_busy),.quiescent_o(bridge_quiet),
         .request_drop_count_o(request_drops),.return_discard_count_o(return_discards),
@@ -65,14 +65,14 @@ module tb_workstation_pcm_frame_bridge;
     realtime accepted_at[0:8191];
     integer accepted_read=0;
     reg model_busy=0;
-    integer countdown=0,normal_delay=1400,slow_sequence=-1,slow_delay=3600;
+    integer countdown=0,normal_delay=1400,slow_sequence=-1,slow_delay=3600,model_error_sequence=-1;
     reg [64:0] active_tag=0;
     integer compute_cycles=0,last_start_cycle=0,min_start_gap=1000000;
     integer model_max_cycles=0;
     realtime max_request_to_sample_ns=0,previous_frame_at=0;
     reg measure_normal=0,request_was_pending=0,reply_was_stalled=0;
     reg [64:0] prior_request;
-    reg [96:0] prior_reply;
+    reg [97:0] prior_reply;
     integer sample_index;
     always @(posedge serial_clk) if(global_reset_n) begin
         if(request_was_pending && dut.request_toggle!=dut.request_ack_sync[1] &&
@@ -93,6 +93,8 @@ module tb_workstation_pcm_frame_bridge;
         end
         if(sample_valid && sample_ready && permit_reply) begin
             delivered=delivered+1;
+            if(sample_error!==(sample_sequence==32'(model_error_sequence)))
+                $fatal(1,"render error lost or detached from the atomic reply");
             if(measure_normal) begin
                 sample_index=0;
                 while(sample_index<accepted && accepted_tags[sample_index]!=={sample_mode,sample_epoch,sample_sequence})
@@ -129,12 +131,14 @@ module tb_workstation_pcm_frame_bridge;
             if(countdown>1) countdown=countdown-1;
             else begin
                 model_pcm=pcm(active_tag[31:0],active_tag[63:32],active_tag[64]);
+                // Deliberately nonzero error PCM must be zeroed by serializer.
+                model_error=active_tag[31:0]==32'(model_error_sequence);
                 model_done=1; model_busy=0; countdown=0; completed=completed+1;
             end
         end
     end
 
-    integer serial_position=0,checked=0,good_frames=0,error_frames=0;
+    integer serial_position=0,checked=0,good_frames=0,error_frames=0,source_error_frames=0;
     reg [31:0] decoded=0,last_decoded=0;
     reg allow_errors=0;
     always @(negedge serial_reset_n) begin
@@ -158,6 +162,10 @@ module tb_workstation_pcm_frame_bridge;
             if(frame_epoch!==epoch || frame_mode!==mode || frame_sequence!==32'(checked))
                 $fatal(1,"completed frame identity duplicated/skipped");
             if(frame_pcm!==last_decoded) $fatal(1,"physical I2S differs from completed frame");
+            if(frame_sequence==32'(model_error_sequence)) begin
+                if(!frame_error || frame_pcm!==0) $fatal(1,"source error became normal audible PCM");
+                source_error_frames=source_error_frames+1;
+            end
             if(frame_error) begin
                 if(!allow_errors || frame_pcm!==0) $fatal(1,"hidden/unexpected underrun");
                 error_frames=error_frames+1;
@@ -207,7 +215,7 @@ module tb_workstation_pcm_frame_bridge;
         end
     endtask
     integer before_good,before_error,before_drops,before_starts,before_cancel,before_discard;
-    reg [96:0] saved_reply;
+    reg [97:0] saved_reply;
     reg saved_reply_toggle;
     initial begin
         repeat(5) @(negedge compute_clk); global_reset_n=1;
@@ -267,13 +275,13 @@ module tb_workstation_pcm_frame_bridge;
 
         // Stop MCLK high and reset only the serializer while an old render
         // remains alive. Compute must retain the old tag and the full reply.
-        slow_sequence=1; slow_delay=5000;
+        slow_sequence=1; slow_delay=5000; model_error_sequence=1;
         start_stream(1,16); wait(render_busy && render_sequence==1);
         @(posedge serial_clk); #0.5; serial_clock_run=0; serial_reset_n=0; resume_output=0;
         before_discard=return_discards;
         wait(!model_busy); repeat(12) @(negedge compute_clk);
         if(serial_clk!==1 || bridge_quiet || dut.reply_free ||
-           dut.held_reply!=={1'b1,32'd16,32'd1,pcm(1,16,1)})
+           dut.held_reply!=={1'b1,32'd16,32'd1,pcm(1,16,1),1'b1})
             $fatal(1,"stopped source lost old reply identity");
         saved_reply=dut.held_reply; saved_reply_toggle=dut.reply_toggle;
         repeat(200) @(negedge compute_clk);
@@ -281,10 +289,27 @@ module tb_workstation_pcm_frame_bridge;
             $fatal(1,"stopped-domain handshake was erased");
         serial_clock_run=1; wait(return_discards==before_discard+1);
         @(negedge serial_clk); quiesce=1;
-        wait(bridge_quiet); ledger(); slow_sequence=-1;
+        wait(bridge_quiet); ledger(); slow_sequence=-1; model_error_sequence=-1;
         start_stream(0,17); before_good=good_frames; wait(good_frames>=before_good+16);
         if(underruns || rejected) $fatal(1,"old stream response leaked into new epoch");
         stop_stream();
+
+        // Both prefill and a running slot carry renderer failures in each
+        // rate. Their physical zero/error frames retain sequence and do not
+        // inflate the missing-sample counter or disturb following good PCM.
+        for(integer rate=0;rate<2;rate=rate+1) begin
+            model_error_sequence=0; before_error=source_error_frames;
+            start_stream(1'(rate),32'(18+rate*2)); wait(checked>=8);
+            if(source_error_frames!=before_error+1 || source_errors!=1 || underruns || rejected)
+                $fatal(1,"prefill source error miscounted or broke schedule");
+            stop_stream();
+            model_error_sequence=7; before_error=source_error_frames;
+            start_stream(1'(rate),32'(19+rate*2)); wait(checked>=16);
+            if(source_error_frames!=before_error+1 || source_errors!=1 || underruns || rejected)
+                $fatal(1,"running source error miscounted or broke schedule");
+            stop_stream();
+        end
+        model_error_sequence=-1;
 
         // A done pulse with no render must not manufacture a reply.
         saved_reply=dut.held_reply; saved_reply_toggle=dut.reply_toggle;
@@ -296,7 +321,8 @@ module tb_workstation_pcm_frame_bridge;
         ledger();
         $display("COUNTERS accepted=%0d renders=%0d completed=%0d delivered=%0d request_drops=%0d return_discards=%0d cancel_requests=%0d cancel_renders=%0d unexpected=%0d good_frames=%0d error_frames=%0d max_model_cycles=%0d",
                  accepted,starts,completed,delivered,request_drops,return_discards,cancel_requests,cancel_renders,unexpected,good_frames,error_frames,model_max_cycles);
-        $display("PASS PCM frame bridge: real dual-rate I2S, independent 76.8MHz render, exact identities/ledger, deadline/pressure recovery, quiesce drain, stopped-high/local-reset old reply, unexpected done");
+        $display("SOURCE_ERRORS physical_zero_frames=%0d prefill_and_running_both_rates=1 stopped_old_reply_preserved=1",source_error_frames);
+        $display("PASS PCM frame bridge: real dual-rate I2S, independent 76.8MHz render, exact identities/ledger, source-error propagation, deadline/pressure recovery, quiesce drain, stopped-high/local-reset old reply, unexpected done");
         $finish;
     end
     initial begin #20000000; $fatal(1,"timeout"); end

@@ -11,11 +11,12 @@ module workstation_pcm_frame_bridge (
     output wire request_ready_o,
     output wire sample_valid_o,
     input wire sample_ready_i,
-    output wire sample_44k1_o,
+    output wire sample_44k1_o, sample_error_o,
     output wire [31:0] sample_epoch_o, sample_sequence_o, sample_pcm_o,
     // All render ports and quiescent_o belong to compute_clk_i.
     input wire render_ready_i, render_done_i,
     input wire [31:0] rendered_pcm_i,
+    input wire rendered_error_i,
     output reg render_request_o,
     output reg render_44k1_o,
     output reg [31:0] render_epoch_o, render_sequence_o,
@@ -38,7 +39,7 @@ module workstation_pcm_frame_bridge (
     reg reply_toggle, reply_ack;
     // Bundled data is immutable until its two-way handshake completes.
     (* syn_preserve=1 *) reg [64:0] held_request;
-    (* syn_preserve=1 *) reg [96:0] held_reply;
+    (* syn_preserve=1 *) reg [97:0] held_reply;
     (* ASYNC_REG="TRUE", syn_preserve=1 *) reg [1:0] request_sync, request_ack_sync;
     (* ASYNC_REG="TRUE", syn_preserve=1 *) reg [1:0] reply_sync, reply_ack_sync;
     (* ASYNC_REG="TRUE", syn_preserve=1 *) reg [1:0] serial_quiesce_sync, compute_quiesce_sync;
@@ -51,7 +52,7 @@ module workstation_pcm_frame_bridge (
     assign request_ready_o=serial_reset_n && serial_reset_ni && !serial_quiesce_sync[1] &&
                            request_toggle==request_ack_sync[1];
     assign sample_valid_o=serial_reset_n && serial_reset_ni && !serial_quiesce_sync[1] && reply_pending;
-    assign {sample_44k1_o,sample_epoch_o,sample_sequence_o,sample_pcm_o}=held_reply;
+    assign {sample_44k1_o,sample_epoch_o,sample_sequence_o,sample_pcm_o,sample_error_o}=held_reply;
 
     function automatic [31:0] increment(input [31:0] value);
         increment=&value ? value : value+1'b1;
@@ -117,7 +118,7 @@ module workstation_pcm_frame_bridge (
                     if (compute_quiesce_sync[1])
                         cancelled_render_count_o<=increment(cancelled_render_count_o);
                     else if (reply_free) begin
-                        held_reply<={render_44k1_o,render_epoch_o,render_sequence_o,rendered_pcm_i};
+                        held_reply<={render_44k1_o,render_epoch_o,render_sequence_o,rendered_pcm_i,rendered_error_i};
                         reply_toggle<=!reply_toggle;
                     end else unexpected_render_count_o<=increment(unexpected_render_count_o);
                 end
