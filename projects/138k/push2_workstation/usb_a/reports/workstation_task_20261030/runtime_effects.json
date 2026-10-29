@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "task": "A07 runtime effects stage5 independent full composition",
+  "status": "source_subsystem_offline_verified_not_selected",
+  "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "reference_source_identity": "custom138k-workstation-v1-f5b723250388add5",
+  "source_policy": "Native versioned composition;exact prepared chain policy with reversible provenance,child modules independently validated;no profile/build/top changes.",
+  "prepared_full_effects_sha256": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+  "prepared_chain_slice_sha256": "5fcabe0bb792efb13a791b3e6f91b6d156dd074d8a89421dedde09a124539742",
+  "native_chain_sha256": "d8a0d2c787bc8c222bf4dde74069db41163988a646fd70c32774387bfe23a689",
+  "input_sha256": {
+    "rtl/audio/workstation_runtime_stereo_effects.sv": "d8a0d2c787bc8c222bf4dde74069db41163988a646fd70c32774387bfe23a689",
+    "rtl/audio/workstation_runtime_stereo_effects.provenance.json": "5af689e1adc920524e83d0ae9da87382a75a6bc2868c08fc246abb47814df68c",
+    "sim/audio/tb_workstation_runtime_effects.sv": "1d4192663b52d4690b6a117bc24e23ebfce03a15493c8ca1e8aba797b4f1e56c",
+    "sim/test_workstation_runtime_effects.py": "0376a660e16aa6427f9ebd2fb28b04051b88be181f81fae6468a3071cb84e52c",
+    "rtl/audio/workstation_runtime_chorus_effect.sv": "8a6fa6ea9158cc983c9d48cc9e92f01da2e10950214d3d2bb2cb7bb0b67b4cf4",
+    "rtl/audio/workstation_runtime_chorus_effect.provenance.json": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
+    "rtl/audio/workstation_runtime_spatial_reverb.sv": "31ec6580986a0848ca13c80f4fb08759489ee5e49bbaa2fabeeb4c163c241619",
+    "rtl/audio/workstation_runtime_spatial_reverb.provenance.json": "bf0316cc229805c854ed871258f21ce1205b2271db199b29224feeb1efdd5fcd",
+    "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "879a5d93fb3ee547cd517344a495452f7cb37f28c0605ceee2cb625f2126c62d",
+    "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.provenance.json": "e19a665b94b99b65616c470ca8b4ad9b3de826f6d329b7da51ce66bf01016886",
+    "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+    "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.provenance.json": "4b52679ff2c129ddd02d1e1e404408251d44dd4f35dbd32d0493f6aed0fe2b83",
+    "rtl/audio/runtime_spatial_room_preset.json": "fd07065308dca9ae65483a8ce9308890790b98934001918baf9ff262f459655e",
+    "rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+    "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "sim/test_workstation_runtime_reverb.py": "034526d753cb4196b8008c9ab29612b7784b57d6edeaf49bfd97b0edde172796"
+  },
+  "test_command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_effects.py",
+  "validation": {
+    "tests": 9,
+    "passed": 9,
+    "simulator": "Verilator5.0522026-09-05",
+    "compile_warning_counts": {
+      "TIMESCALEMOD": 1,
+      "WIDTHEXPAND": 65,
+      "WIDTHTRUNC": 16
+    },
+    "warning_scope": "Inherited arithmetic/VECTOR_ENABLE widths,frozen RAM indexing and exact prepared DMA31bit address/debug widths;reviewed exact counts guarded;no new barrier/testbench width warnings.",
+    "clock_periods_ns": {
+      "audio": 14,
+      "memory": 20
+    },
+    "transaction_timeout_test_clocks": 2048,
+    "peer_timeout_test_clocks": 512,
+    "normal_ddr": "Accepted posted-command queue,4memory-clock execution delay,ordered reads;separate DUT/reference DDR memories. Test holds fence read to separate command acceptance from completion.",
+    "48k": {
+      "frames": 36288,
+      "per_cycle_prepared_reference_frames": 36288,
+      "clip_frames": 3503,
+      "six_permutations_times_eight_masks": true,
+      "warm_frames_before_matrix": 12000,
+      "post_clear_frames": 12000,
+      "maintenance_calls": [
+        2687,
+        3455,
+        3712
+      ]
+    },
+    "44100": {
+      "frames": 24288,
+      "independent_integer_full_wet_model": true,
+      "clip_frames": 2341,
+      "six_permutations_times_eight_masks": true,
+      "warm_frames_before_matrix": 12000,
+      "maintenance_calls": [
+        2757,
+        3505,
+        3742
+      ]
+    },
+    "switch_history": {
+      "frames": 44512,
+      "independent_integer_full_wet_model": true,
+      "clip_frames": 4837,
+      "sequence": "48k->44.1k->history-only->48k,11000frames per wet segment then512bypass frames",
+      "maintenance_calls": [
+        448,
+        448,
+        448
+      ]
+    },
+    "max_render_latency_clocks": 105,
+    "per_frame_maintenance": "Every accepted output frame verifies exactly one call to each of the3effects,including dry maintenance;all stages cover apply and maintenance.",
+    "panic_before_delay_ack": "Coalesced history/wet clear preserves accepted config;matching new44.1rate final ACK after one fence;extra busy config/history pulses not accepted.",
+    "panic_after_delay_ack": "PANIC creates second fenced clear;chain stayszero/notready and completes initial accepted config at new44.1rate only after second ACK.",
+    "timeout": "Missing fence stickyfault;late response cannot heal or ACK.",
+    "clock_stop": "Stopped memory causes audio fault/zero/no done;stopped audio detected by surviving DMA and stickyfailure observed after audio resumes.",
+    "legacy_clear": "Nine top/stage WAIT boundaries cancel without leaked output;SCALE drygain update edge remains exact preparedsg/pg."
+  },
+  "contracts": {
+    "rate_authority": "Upstream committed switch remains sole public rate authority. pending_rate is a private transaction snapshot/check,not authoritative public parameter state.",
+    "applied_projection": "applied_rate_44100_o and applied_transaction_o directly project Delay local state;may change before whole chain done. Caller must await chain config_applied/history_done before consuming public commit. Delay transaction can increment again for PANIC;not a public epoch/revision.",
+    "config": "valid-ready onlytruequiescent;broadcast to all3same acceptance edge;stop newrender;complete onlyall childACK,alltruequiescent,allrate==pending;otherwise stickyfailed.",
+    "history": "Same barrier and orderedDDRfence,without rate change,preserving dry/wet gains and fractional states.",
+    "panic": "Never retracts alreadybroadcastconfig. Clears wet/history and coalesces or starts another local Delayclear. Chain awaits finalmatchingACK orstickyfailed. No partialapply ready/falseoldrate done.",
+    "output": "During barriers/faults ready0,valid0,payload0. Caller must keep physical serial sample schedule running through controlled mute.",
+    "fault": "Chain latches child streamfault/DMAfault/timeout/rate mismatch sticky until coordinatedreset. DMAfault input2FFsync;clock heartbeat from pairedDelay component.",
+    "public_parameters": "Existing frame snapshots of mask/order/gains retained,including lastnonzero appliedorder and original work_enabled/active/maintenance semantics.",
+    "dry_slew": "48k exact128;44.1gain139+47/147;fraction preserved across barriers/legacyclear;originalSCALEedge retained."
+  },
+  "normal_vs_barrier_cycle_semantics": "48k normalrender is per-clock exact;newclear/config/history barriers intentionally close ready until realDDRroundtrip;comparison pauses onlyduring that changed clearbarrier.",
+  "storage": "Original ring128KiB,Chorus1024stereo slots,Reverb original48k capacities;no new DDR allocation.",
+  "remaining_gaps": [
+    "No event/render-service integration,full audio sample schedule,recognition/capture or global runtime switch acceptance.",
+    "105clocks is this subsystem with modeled uncongestedDDR;not wholeworkstation latency budget or physical timing.",
+    "No synthesis/P&R/CDC/resource/hardware/SRAM/Flash acceptance;no perceptual/acoustic acceptance.",
+    "Both monitored clocks stopped still needs external always-on monitor;recovery requires coordinateddomain reset."
+  ],
+  "rollback": "All existing profile/build/top selections unchanged;omit independent native composition to retain accepted prepared inputs."
+}

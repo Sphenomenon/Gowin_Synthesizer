@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+  "prepared_source_identity": "custom138k-workstation-v1-f5b723250388add5",
+  "prepared_relative_path": "legacy/rtl/audio/stereo_effects.sv",
+  "prepared_source_sha256": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+  "prepared_slice": "module stereo_effects through following endmodule, inclusive, no trailing newline",
+  "prepared_sha256": "5fcabe0bb792efb13a791b3e6f91b6d156dd074d8a89421dedde09a124539742",
+  "native_sha256": "d8a0d2c787bc8c222bf4dde74069db41163988a646fd70c32774387bfe23a689",
+  "source_policy": "Independent native composition with reversible exact prepared policy migration; profile/build/top unchanged.",
+  "reverse_instructions": "Apply exact edits in reverse order and match prepared_sha256;verifier only,not a generated production implementation.",
+  "forward_edits": [
+    {
+      "before": "module stereo_effects #(",
+      "after": "`timescale 1ns/1ps\n// Native independent runtime composition of exact prepared effects policy.\n// A broadcast rate transaction must finish with matching child ACKs or fail\n// sticky. PANIC coalesces history clearing and cannot retract a partial apply.\n// Caller retains final serial schedule through controlled zero while closed.\nmodule workstation_runtime_stereo_effects #(",
+      "count": 1
+    },
+    {
+      "before": "    parameter integer COMB_B=1877\n",
+      "after": "    parameter integer COMB_B=1877,\n    parameter integer FIFO_ADDRESS_BITS=9,\n    parameter integer TRANSACTION_TIMEOUT_CYCLES=1048576,\n    parameter integer PEER_TIMEOUT_CYCLES=1048576\n",
+      "count": 1
+    },
+    {
+      "before": "    output logic drd_ready_o\n",
+      "after": "    output logic drd_ready_o,\n    input logic config_valid_i,rate_44100_i,history_clear_i,\n    output logic config_ready_o,config_applied_o,history_ready_o,history_done_o,\n    output logic quiescent_o,fault_o,applied_rate_44100_o,\n    output logic [31:0] applied_transaction_o,\n    input logic peer_heartbeat_i,delay_dma_fault_i,\n    output logic heartbeat_o\n",
+      "count": 1
+    },
+    {
+      "before": "  assign ready_o=state==IDLE;",
+      "after": "  logic barrier_busy,barrier_is_config,pending_rate,panic_coalesced,transaction_fault;\n  logic [2:0] barrier_seen;\n  logic [31:0] barrier_wait;\n  logic [7:0] gain_remainder;\n  (* ASYNC_REG=\"TRUE\" *) logic dma_fault_meta,dma_fault_sync;\n  wire [2:0] stage_config_ready,stage_history_ready,stage_done,stage_quiet,stage_rate;\n  wire delay_fault;\n  wire config_accept=config_valid_i && config_ready_o;\n  wire history_accept=history_clear_i && history_ready_o;\n  wire clear_start=clear_i && !barrier_busy;\n  wire [2:0] next_seen=clear_i ? ((barrier_seen|stage_done)&3'b110) : barrier_seen|stage_done;\n  wire all_rates_match=stage_rate=={3{pending_rate}};\n  wire complete_barrier=barrier_busy && !clear_i && (&next_seen) && (&stage_quiet);\n  wire [7:0] gain_fraction_sum=gain_remainder+8'd47;\n  wire [15:0] gain_delta=applied_rate_44100_o ?\n      16'd139+{15'd0,gain_fraction_sum>=8'd147} : 16'd128;\n  function automatic [15:0] runtime_slew(input [15:0] value,target,delta);\n    logic [15:0] upper,lower;\n    begin\n      upper=value>16'hffff-delta ? 16'hffff : value+delta;\n      lower=value<delta ? 16'd0 : value-delta;\n      if(target>upper)runtime_slew=upper;\n      else if(target<lower)runtime_slew=lower;\n      else runtime_slew=target;\n    end\n  endfunction\n  assign applied_rate_44100_o=stage_rate[0];\n  assign fault_o=transaction_fault || delay_fault || dma_fault_sync;\n  assign quiescent_o=state==IDLE && !valid_o && !barrier_busy && (&stage_quiet) && !clear_i && !fault_o;\n  assign config_ready_o=quiescent_o && (&stage_config_ready) && !valid_i;\n  assign history_ready_o=quiescent_o && (&stage_history_ready) && !valid_i && !config_valid_i;\n  assign ready_o=state==IDLE && !barrier_busy && !fault_o && !clear_i && !config_accept && !history_accept;\n  always_ff @(posedge clk_i or negedge rst_ni)begin\n    if(!rst_ni)begin\n      barrier_busy<=0;barrier_is_config<=0;pending_rate<=0;panic_coalesced<=0;\n      transaction_fault<=0;barrier_seen<=0;barrier_wait<=0;\n      config_applied_o<=0;history_done_o<=0;gain_remainder<=0;\n      dma_fault_meta<=0;dma_fault_sync<=0;\n    end else begin\n      dma_fault_meta<=delay_dma_fault_i;dma_fault_sync<=dma_fault_meta;\n      config_applied_o<=0;history_done_o<=0;\n      if(delay_fault || dma_fault_sync)transaction_fault<=1;\n      // Dry synth/PCM gains keep the prepared update edge, even if PANIC\n      // cancels SCALE. Their fractional state is not a public rate authority.\n      if(state==SCALE && applied_rate_44100_o)\n        gain_remainder<=gain_fraction_sum>=8'd147 ? gain_fraction_sum-8'd147 : gain_fraction_sum;\n      if(config_accept || history_accept || clear_start)begin\n        barrier_busy<=1;barrier_is_config<=config_accept;\n        pending_rate<=config_accept ? rate_44100_i : applied_rate_44100_o;\n        barrier_seen<=clear_start ? 3'b110 : 3'b000;\n        panic_coalesced<=clear_i;barrier_wait<=0;\n      end else if(barrier_busy)begin\n        barrier_seen<=next_seen;\n        if(clear_i)panic_coalesced<=1;\n        if(complete_barrier && !fault_o)begin\n          if(all_rates_match)begin\n            barrier_busy<=0;history_done_o<=1;config_applied_o<=barrier_is_config;\n          end else transaction_fault<=1;\n        end else begin\n          if(barrier_wait<32'(TRANSACTION_TIMEOUT_CYCLES))barrier_wait<=barrier_wait+1'b1;\n          if(barrier_wait>=32'(TRANSACTION_TIMEOUT_CYCLES)-1)transaction_fault<=1;\n        end\n      end\n      if(!barrier_busy && stage_rate!={3{stage_rate[0]}})transaction_fault<=1;\n    end\n  end",
+      "count": 1
+    },
+    {
+      "before": "  serial_delay_effect_ddr #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) delay_stage(",
+      "after": "  workstation_runtime_delay_effect_ddr #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES),\n      .FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS),.TRANSACTION_TIMEOUT_CYCLES(TRANSACTION_TIMEOUT_CYCLES),\n      .PEER_TIMEOUT_CYCLES(PEER_TIMEOUT_CYCLES)) delay_stage(",
+      "count": 1
+    },
+    {
+      "before": "      .debug_status_o());",
+      "after": "      .debug_status_o(),.config_valid_i(config_accept),.rate_44100_i(rate_44100_i),\n      .history_clear_i(history_accept),.config_ready_o(stage_config_ready[0]),.config_applied_o(),\n      .history_ready_o(stage_history_ready[0]),.history_done_o(stage_done[0]),\n      .quiescent_o(stage_quiet[0]),.fault_o(delay_fault),.applied_rate_44100_o(stage_rate[0]),\n      .applied_transaction_o(applied_transaction_o),.peer_heartbeat_i,.heartbeat_o);",
+      "count": 1
+    },
+    {
+      "before": "  serial_chorus_effect #(",
+      "after": "  workstation_runtime_chorus_effect #(",
+      "count": 1
+    },
+    {
+      "before": "  serial_spatial_reverb reverb_stage(",
+      "after": "  workstation_runtime_spatial_reverb reverb_stage(",
+      "count": 1
+    },
+    {
+      "before": ".left_o(chorus_l),.right_o(chorus_r),.clip_o(chorus_clip));",
+      "after": ".left_o(chorus_l),.right_o(chorus_r),.clip_o(chorus_clip),\n      .config_valid_i(config_accept),.rate_44100_i(rate_44100_i),.history_clear_i(history_accept),\n      .config_ready_o(stage_config_ready[1]),.config_applied_o(),.history_ready_o(stage_history_ready[1]),\n      .history_done_o(stage_done[1]),.quiescent_o(stage_quiet[1]),.applied_rate_44100_o(stage_rate[1]));",
+      "count": 1
+    },
+    {
+      "before": ".left_o(reverb_l),.right_o(reverb_r),.clip_o(reverb_clip));",
+      "after": ".left_o(reverb_l),.right_o(reverb_r),.clip_o(reverb_clip),\n      .config_valid_i(config_accept),.rate_44100_i(rate_44100_i),.history_clear_i(history_accept),\n      .config_ready_o(stage_config_ready[2]),.config_applied_o(),.history_ready_o(stage_history_ready[2]),\n      .history_done_o(stage_done[2]),.quiescent_o(stage_quiet[2]),.applied_rate_44100_o(stage_rate[2]));",
+      "count": 1
+    },
+    {
+      "before": "      if(state==SCALE)begin sg<=slew15(sg,synth_target);pg<=slew15(pg,pcm_target);end\n      if(clear_i) begin\n        state<=IDLE;valid_o<=0;clip_o<=0;",
+      "after": "      if(state==SCALE)begin\n        sg<=runtime_slew(sg,synth_target,gain_delta);pg<=runtime_slew(pg,pcm_target,gain_delta);\n      end\n      if(clear_i || barrier_busy || config_accept || history_accept || fault_o) begin\n        state<=IDLE;valid_o<=0;clip_o<=0;left_o<=0;right_o<=0;",
+      "count": 1
+    },
+    {
+      "before": "        IDLE:if(valid_i) begin",
+      "after": "        IDLE:if(valid_i && ready_o) begin",
+      "count": 1
+    },
+    {
+      "before": "endmodule",
+      "after": "endmodule\n",
+      "count": 1
+    }
+  ]
+}
