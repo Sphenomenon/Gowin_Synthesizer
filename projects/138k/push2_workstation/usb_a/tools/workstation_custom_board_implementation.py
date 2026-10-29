@@ -14,11 +14,18 @@ import shutil
 from tools.stage_usb_firmware import sha
 from tools.workstation_custom_board_audit import audit as audit_synthesis
 from tools.workstation_pinout import digest, parse_locations
+from tools.workstation_synthesis_netlist import SynthesisNetlist
 
 
 BASE = 'custom_138k_integration'
 TOP = 'workstation_custom_138k_top'
 DEVICE = 'GW5AST-LV138PG484AC2/I1'
+DDR_PHY = 'u_memory/u_ddr3/gw3_top/u_ddr_phy_top'
+DDR_LAUNCH = DDR_PHY + '/ddr_init_internal_r_s0'
+DDR_CAPTURE = DDR_PHY + '/wloadn_3_s0'
+DDR_CAPTURE_REGION = 'R[40:50]C[70:90]'
+DDR_CAPTURE_CONSTRAINT = f'INS_LOC "{DDR_CAPTURE}" {DDR_CAPTURE_REGION};'
+DDR_MINIMUM = f'set_min_delay 0.800 -from [get_pins {{{DDR_LAUNCH}/Q}}] -to [get_pins {{{DDR_CAPTURE}/D}}]'
 
 
 def implementation_script(user_code, place_option=2, route_option=0, replicate_resources=False):
@@ -100,6 +107,158 @@ def ulpi_bypass_constraints(payload, plan):
                     actual_board_measured=False, full_electrical_acceptance=False,
                     external_io_timing_complete=False)
     return adapted, evidence
+
+
+def ddr_capture_region_constraints(payload, sdc, routed_netlist):
+    """Check the observed encrypted-DDR boundary, then append one placement.
+
+    The synthesis VG contains encrypted DDR. Its hash-bound previous route VO
+    supplies structural evidence; this does not claim that a new route passes.
+    """
+    text = payload.decode('utf-8')
+    if DDR_CAPTURE in text:
+        raise ValueError('DDR capture target already appears in the parent CST')
+    required = (
+        'INS_LOC "u_memory/u_pll/u_pll_0/PLL_inst" PLL_L[0];',
+        f'INS_LOC "{DDR_PHY}/u_dll" DDRDLLM_BL;',
+        f'INS_LOC "{DDR_PHY}/fclkdiv" LEFTSIDE[4];')
+    if any(text.splitlines().count(line) != 1 for line in required):
+        raise ValueError('DDR hard-resource locations changed')
+    related = [line for line in sdc.decode('utf-8').splitlines()
+               if re.match(r'\s*set_min_delay\b', line) and
+               (DDR_LAUNCH in line or DDR_CAPTURE in line)]
+    if related != [DDR_MINIMUM]:
+        raise ValueError('DDR capture requires the unique exact 0.800ns minimum-delay constraint')
+    netlist = SynthesisNetlist(routed_netlist, TOP)
+    required_cells = (DDR_LAUNCH, DDR_CAPTURE, DDR_PHY + '/fclkdiv', 'clk_50m_ibuf')
+    if any(name not in netlist.cells for name in required_cells):
+        raise ValueError('DDR capture observed routed boundary is missing')
+    launch, capture, divider, ibuf = (netlist.cells[name] for name in required_cells)
+    if any(cell['kind'] != 'DFFCE' or cell['parameters'].get('INIT') != "1'b0" or
+           set(cell['ports']) != {'D', 'Q', 'CLK', 'CE', 'CLEAR'} for cell in (launch, capture)):
+        raise ValueError('DDR capture observed FF type/INIT/pins changed')
+    power = {netlist.pin(name, 'V') for name, cell in netlist.cells.items() if cell['kind'] == 'VCC'}
+    if (netlist.pin(DDR_LAUNCH, 'Q') != netlist.pin(DDR_CAPTURE, 'D') or
+            netlist.pin(DDR_LAUNCH, 'CLEAR') != netlist.pin(DDR_CAPTURE, 'CLEAR') or
+            any(netlist.pin(name, 'CE') not in power for name in (DDR_LAUNCH, DDR_CAPTURE))):
+        raise ValueError('DDR capture observed direct data/reset/enable topology changed')
+    if (divider['kind'] != 'CLKDIV' or divider['parameters'].get('DIV_MODE') != '"4"' or
+            launch['ports']['CLK'] != divider['ports'].get('CLKOUT') or
+            ibuf['kind'] != 'IBUF' or ibuf['ports'].get('I') != 'clk_50m' or
+            capture['ports']['CLK'] != ibuf['ports'].get('O')):
+        raise ValueError('DDR capture observed UI divide4/direct50MHz clock boundary changed')
+    adapted = payload + ('\n' + DDR_CAPTURE_CONSTRAINT + '\n').encode('utf-8')
+    if not adapted.startswith(payload) or parse_locations(adapted.decode('utf-8')) != parse_locations(text):
+        raise ValueError('DDR capture placement unexpectedly changed parent constraints or IO locations')
+    return adapted, dict(
+        instance=DDR_CAPTURE, region=DDR_CAPTURE_REGION, constraint=DDR_CAPTURE_CONSTRAINT,
+        before_sha256=digest(payload), after_sha256=digest(adapted),
+        exact_appended_bytes_hex=adapted[len(payload):].hex(),
+        parent_bytes_preserved=True, io_locations_unchanged=True, hard_locations_unchanged=True,
+        minimum_delay_ns=0.8, minimum_delay_constraint=DDR_MINIMUM, sdc_unchanged=True,
+        observed_topology=dict(launch=DDR_LAUNCH, capture=DDR_CAPTURE,
+                               launch_clock=launch['ports']['CLK'], capture_clock=capture['ports']['CLK'],
+                               launch_clock_divide=4, capture_clock_mhz=50, direct_Q_to_D=True),
+        topology_evidence_scope='hash_bound_previous_route_VO_of_same_encrypted_synthesis_VG',
+        new_route_verified=False, new_hold_slack_ns=None)
+
+
+def derive_ddr_capture_region(source, output, user_code, parent_evidence,
+                              expected_parent_evidence_sha256, acknowledge_electrical_risk=False):
+    """Prepare only a hash-locked physical child; never audit mutable current RTL."""
+    source, output, parent_evidence = (Path(path).resolve() for path in (source, output, parent_evidence))
+    script = implementation_script(user_code)
+    if not acknowledge_electrical_risk:
+        raise ValueError('explicit acknowledgement of unresolved electrical risk is required')
+    if output.exists() or source in output.parents or output in source.parents:
+        raise ValueError('a new independent physical output is required')
+    if (not re.fullmatch(r'[0-9a-f]{64}', expected_parent_evidence_sha256 or '') or
+            sha(parent_evidence) != expected_parent_evidence_sha256):
+        raise ValueError('parent physical evidence identity changed')
+    evidence = json.loads(parent_evidence.read_bytes())
+    previous = json.loads((source / 'physical_inputs.json').read_bytes())
+    if (previous['user_code'].lower() == ('0x' + user_code).lower() or
+            previous['identity'] != evidence['physical_identity'] or
+            previous != evidence['preparation']):
+        raise ValueError('a new UserCode and matching original parent preparation evidence are required')
+    if (previous.get('top_module') != TOP or previous.get('device') != DEVICE or
+            previous.get('place_option') != 2 or previous.get('route_option') != 0 or
+            previous.get('replicate_resources') is not False or
+            previous.get('electrical_risk_explicitly_acknowledged') is not True or
+            not isinstance(previous.get('electrical_blocked'), bool)):
+        raise ValueError('parent physical options/electrical identity changed')
+    verified_evidence = {}
+    for relative, identity in evidence['evidence'].items():
+        path = source / relative
+        if (Path(relative).is_absolute() or '..' in Path(relative).parts or
+                not path.is_file() or path.stat().st_size != identity['bytes'] or
+                sha(path) != identity['sha256']):
+            raise ValueError('parent physical evidence drifted: ' + relative)
+        verified_evidence[relative] = identity['sha256']
+    inputs = previous['input_sha256']
+    required = {BASE + '.vg', 'physical.cst', 'physical.sdc', 'run.tcl',
+                'parent_synthesis_audit.json', 'parent_integration_inputs.json'}
+    if not required.issubset(inputs) or 'physical_inputs.json' not in verified_evidence:
+        raise ValueError('parent physical input inventory changed')
+    for name, expected in inputs.items():
+        if Path(name).name != name or sha(source / name) != expected:
+            raise ValueError('parent physical input drifted: ' + name)
+        if name in verified_evidence and verified_evidence[name] != expected:
+            raise ValueError('parent physical evidence/input hash disagreement: ' + name)
+    if (source / 'run.tcl').read_text() != implementation_script(previous['user_code'].removeprefix('0x')):
+        raise ValueError('parent physical script changed from automatic hold repair and fixed algorithms')
+    audit = json.loads((source / 'parent_synthesis_audit.json').read_bytes())
+    if (sha(source / 'parent_integration_inputs.json') != audit['integration_inputs_sha256'] or
+            sha(source / (BASE + '.vg')) != audit['netlist_sha256']):
+        raise ValueError('parent synthesis manifest/netlist binding changed')
+    routed_name = f'impl/pnr/{BASE}.vo'
+    if routed_name not in verified_evidence:
+        raise ValueError('parent route VO needs original hash-bound physical evidence')
+    adapted, placement = ddr_capture_region_constraints(
+        (source / 'physical.cst').read_bytes(), (source / 'physical.sdc').read_bytes(),
+        (source / routed_name).read_text())
+    placement['observed_route_vo_sha256'] = verified_evidence[routed_name]
+    output.mkdir(parents=True)
+    for name, expected in inputs.items():
+        if name != 'run.tcl':
+            checked_copy(source / name, output / name, expected)
+    checked_copy(source / 'physical_inputs.json', output / 'parent_physical_inputs.json',
+                 verified_evidence['physical_inputs.json'])
+    checked_copy(parent_evidence, output / 'parent_physical_evidence.json', expected_parent_evidence_sha256)
+    (output / 'physical.cst').write_bytes(adapted)
+    (output / 'run.tcl').write_text(script)
+    for name, expected in inputs.items():
+        copied_expected = (placement['after_sha256'] if name == 'physical.cst' else
+                           digest(script.encode()) if name == 'run.tcl' else expected)
+        if sha(source / name) != expected or sha(output / name) != copied_expected:
+            raise ValueError('physical input changed during floorplan preparation: ' + name)
+    if (sha(parent_evidence) != expected_parent_evidence_sha256 or
+            sha(source / 'physical_inputs.json') != verified_evidence['physical_inputs.json'] or
+            sha(source / routed_name) != verified_evidence[routed_name]):
+        raise ValueError('parent evidence changed during floorplan preparation')
+    result = dict(previous)
+    result.update(
+        identity='custom138k-native-physical-' + user_code.upper(), user_code='0x' + user_code.upper(),
+        prepared_at=datetime.now().astimezone().isoformat(),
+        validation_stage='offline_physical_variant_prepared_no_EDA',
+        source_policy='hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_capture_region_CST_append',
+        parent_physical_identity=previous['identity'], parent_physical_directory=str(source),
+        parent_physical_manifest_sha256=verified_evidence['physical_inputs.json'],
+        parent_physical_evidence_sha256=expected_parent_evidence_sha256,
+        parent_physical_evidence_verified_sha256=verified_evidence,
+        synthesis_parent_identity=audit['identity'],
+        synthesis_source_identity={key: evidence[key] for key in ('source_commit', 'profile_revision', 'profile_identity')},
+        current_working_tree_RTL_used=False, new_synthesis_run=False, EDA_started=False,
+        preparer_sha256=sha(Path(__file__)), parent_input_sha256=dict(inputs),
+        ddr_capture_region_adaptation=placement, automatic_hold_repair=True,
+        full_timing_gates_required=True,
+        parent_failed_physical_status=evidence['status'],
+        input_sha256={path.name: sha(path) for path in output.iterdir() if path.is_file()},
+        physical_gates_passed=False, timing_closed=False, deployment_allowed=False, release_ready=False,
+        hardware_tested=False, board_programming_authorized=False, bitstream_sha256=None,
+        sram_programmed=False, flash_programmed=False)
+    (output / 'physical_inputs.json').write_text(json.dumps(result, indent=2) + '\n')
+    return result
 
 
 def prepare(source, output, user_code, acknowledge_electrical_risk=False, ulpi_bypass_lvcmos33=False):
@@ -186,9 +345,23 @@ def main():
     parser.add_argument('--acknowledge-electrical-risk', action='store_true')
     parser.add_argument('--ulpi-bypass-lvcmos33', action='store_true',
                         help='Add only reviewed bypass ULPI IO standards; no electrical or external timing acceptance')
+    parser.add_argument('--ddr-capture-region-parent-evidence', type=Path,
+                        help='Derive from the hash-bound original physical evidence, keeping the previous VG and SDC')
+    parser.add_argument('--expected-parent-evidence-sha256',
+                        help='Required explicit identity when deriving the DDR capture-region experiment')
     args = parser.parse_args()
-    result = prepare(args.source, args.output, args.user_code, args.acknowledge_electrical_risk,
-                     args.ulpi_bypass_lvcmos33)
+    if args.ddr_capture_region_parent_evidence:
+        if args.ulpi_bypass_lvcmos33:
+            parser.error('the derived parent already fixes ULPI; a second adaptation is not allowed')
+        result = derive_ddr_capture_region(args.source, args.output, args.user_code,
+                                          args.ddr_capture_region_parent_evidence,
+                                          args.expected_parent_evidence_sha256,
+                                          args.acknowledge_electrical_risk)
+    else:
+        if args.expected_parent_evidence_sha256:
+            parser.error('--expected-parent-evidence-sha256 requires the explicit DDR derivation')
+        result = prepare(args.source, args.output, args.user_code, args.acknowledge_electrical_risk,
+                         args.ulpi_bypass_lvcmos33)
     print(json.dumps(result, indent=2))
 
 

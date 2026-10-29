@@ -1,0 +1,241 @@
+{
+  "schema": 1,
+  "scope": "F03 physical-only preparation, no synthesis/P&R or hardware",
+  "candidate": "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-capture-region-C11030F3",
+  "physical_inputs_sha256": "39f97ac143e5b02ce1e85e47a91896c4c2bd4c619758ad7b661564126d947554",
+  "preparation": {
+    "schema": 1,
+    "identity": "custom138k-native-physical-C11030F3",
+    "prepared_at": "2026-10-30T06:07:36.217467+08:00",
+    "validation_stage": "offline_physical_variant_prepared_no_EDA",
+    "source_policy": "hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_capture_region_CST_append",
+    "parent_candidate": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate",
+    "parent_identity": "custom138k-native-integration-20261027-a26",
+    "preparer_sha256": "548fed967831eb01a236d6bd02ff9f7b06ab028f6f84af999d7268dd42a6549b",
+    "user_code": "0xC11030F3",
+    "top_module": "workstation_custom_138k_top",
+    "device": "GW5AST-LV138PG484AC2/I1",
+    "electrical_blocked": false,
+    "electrical_risk_explicitly_acknowledged": true,
+    "acknowledgement_scope": "offline physical experiment only; not board programming authorization or electrical acceptance",
+    "board_programming_authorized": false,
+    "ulpi_io_type_adaptation": {
+      "scope": "nominal_ULPI_IO_standard_only_not_external_timing_or_electrical_acceptance",
+      "before_sha256": "13440c753db683b2bcab509068dd5b3d3ffe652f37befc9b9eaf30780ab70920",
+      "after_sha256": "3dc6efebc9a004ef71566abb5e17b2d8c3c5d4869a26511b9e3dbf5972b8cb6a",
+      "io_type": "LVCMOS33",
+      "ports": {
+        "usb2_ulpi_data[0]": [
+          "A21"
+        ],
+        "usb2_ulpi_data[1]": [
+          "B21"
+        ],
+        "usb2_ulpi_data[2]": [
+          "A20"
+        ],
+        "usb2_ulpi_data[3]": [
+          "B20"
+        ],
+        "usb2_ulpi_data[4]": [
+          "A19"
+        ],
+        "usb2_ulpi_data[5]": [
+          "A18"
+        ],
+        "usb2_ulpi_data[6]": [
+          "B18"
+        ],
+        "usb2_ulpi_data[7]": [
+          "B17"
+        ],
+        "usb2_ulpi_clk": [
+          "C18"
+        ],
+        "usb2_ulpi_dir": [
+          "F16"
+        ],
+        "usb2_ulpi_nxt": [
+          "D16"
+        ],
+        "usb2_ulpi_stp": [
+          "E17"
+        ]
+      },
+      "locations_unchanged": true,
+      "actual_board_measured": false,
+      "full_electrical_acceptance": false,
+      "external_io_timing_complete": false
+    },
+    "parent_input_sha256": {
+      "custom_138k_integration.vg": "27b30ac791323f05dc68cd5d9ea6ccaaf14d6a122c5fe2b978cb4714b7fdcf18",
+      "physical.cst": "3dc6efebc9a004ef71566abb5e17b2d8c3c5d4869a26511b9e3dbf5972b8cb6a",
+      "run.tcl": "9cf8c1b44aae1f00555fe6f7d627b2d790c5b34c14df8947e41f8417b8ff9efa",
+      "parent_synthesis_audit.json": "fa3c8727115dfc841de12220435c4e5c2e87ee1a954d09a265bc07afbf93e377",
+      "parent_pinout.json": "46c1f711fa775d68c643dc73be363911f64bb8dbfcc2d68b96529a5a7ddee529",
+      "physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+      "parent_integration_inputs.json": "10deb0aa1cd172838c98b1f8d675b0ae41b812641549ba3bde432b355caabd2b"
+    },
+    "clocks_or_exceptions_relaxed": false,
+    "features_removed": false,
+    "place_option": 2,
+    "route_option": 0,
+    "replicate_resources": false,
+    "input_sha256": {
+      "custom_138k_integration.vg": "27b30ac791323f05dc68cd5d9ea6ccaaf14d6a122c5fe2b978cb4714b7fdcf18",
+      "physical.cst": "4931317d74a07e7826448c2eea134465fdf813b44504c4e3bdaf6c392f214fef",
+      "run.tcl": "45714dcfaeee9ca6966b2ea9a146aea91101dee2edeaf5b43f1c1f9f5aa00525",
+      "parent_synthesis_audit.json": "fa3c8727115dfc841de12220435c4e5c2e87ee1a954d09a265bc07afbf93e377",
+      "parent_pinout.json": "46c1f711fa775d68c643dc73be363911f64bb8dbfcc2d68b96529a5a7ddee529",
+      "physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+      "parent_physical_evidence.json": "9d4a4bd9cad00deb0d276f2b617d6bd0f5a1a994067a9c1ffb628222fe1f36be",
+      "parent_integration_inputs.json": "10deb0aa1cd172838c98b1f8d675b0ae41b812641549ba3bde432b355caabd2b",
+      "parent_physical_inputs.json": "34d82f780370c2e7b9b8bba071bb59ac77565e800205feca00db6139fa5c026c"
+    },
+    "timing_closed": false,
+    "physical_gates_passed": false,
+    "hardware_tested": false,
+    "deployment_allowed": false,
+    "release_ready": false,
+    "bitstream_sha256": null,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "remaining_gaps": [
+      "USB3300/TXS electrical compatibility",
+      "physical FPC DAC/audio acceptance",
+      "physical BLE pairing/recording/download acceptance",
+      "complete IO/CDC/timing/PLL/P&R gates",
+      "real external peripheral and hardware acceptance"
+    ],
+    "parent_physical_identity": "custom138k-native-physical-C11030F2",
+    "parent_physical_directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/f02-physical-C11030F2",
+    "parent_physical_manifest_sha256": "34d82f780370c2e7b9b8bba071bb59ac77565e800205feca00db6139fa5c026c",
+    "parent_physical_evidence_sha256": "9d4a4bd9cad00deb0d276f2b617d6bd0f5a1a994067a9c1ffb628222fe1f36be",
+    "parent_physical_evidence_verified_sha256": {
+      "physical_inputs.json": "34d82f780370c2e7b9b8bba071bb59ac77565e800205feca00db6139fa5c026c",
+      "parent_integration_inputs.json": "10deb0aa1cd172838c98b1f8d675b0ae41b812641549ba3bde432b355caabd2b",
+      "parent_synthesis_audit.json": "fa3c8727115dfc841de12220435c4e5c2e87ee1a954d09a265bc07afbf93e377",
+      "custom_138k_integration.vg": "27b30ac791323f05dc68cd5d9ea6ccaaf14d6a122c5fe2b978cb4714b7fdcf18",
+      "physical.cst": "3dc6efebc9a004ef71566abb5e17b2d8c3c5d4869a26511b9e3dbf5972b8cb6a",
+      "physical.sdc": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+      "run.tcl": "9cf8c1b44aae1f00555fe6f7d627b2d790c5b34c14df8947e41f8417b8ff9efa",
+      "pnr.log": "8b040cad081e8f52fd55713b79d09a884dc7e21a6c179c2c07481c98884250ac",
+      "pnr_process.json": "f86de4ddadee88a6089c315d0055db81a1779c32c7cec2dcfbe28563c8d66065",
+      "gate_process.json": "2d714e5f54195c6ac0aa028ef46509cc1569663bd0003a6cb96acd05a1c6c44a",
+      "pll_retry_process.json": "33d6c18cdc742f5aacbc78d34c43b8a834602891149c4d319ca6faf5d410a558",
+      "timing-audit.json": "7abcae922da4fc6bd6ee3055f136cb9639513e5ef83568c6801e1431942a0629",
+      "pll-audit.json": "3c9add43ca2531914a84fbf035a02ca9457620e57bd479ffbb79734b60e99175",
+      "common-cdc-audit.json": "28611a93bf1129996333a23da7a11d90d33718f355ab23e90e1806425198b63f",
+      "native-routes-audit.json": "1702300037a6c8fd8e26e35aad5c651f89b031d208c9a3db7099ecb330a0fca8",
+      "ddr-hold-a26-supplement.json": "28fd0e153145c68cecfc2dbc273e070ea97b282e62a82292d35da07e0651d350",
+      "impl/pnr/custom_138k_integration.rpt.txt": "c934ab61b8f92f4d919968ca86299146bcf6d08ffd0e306cf7db734014fe032f",
+      "impl/pnr/custom_138k_integration.sdf": "fe21746d8fe822b5f0d7511be8b12436abc8736db6a1a657acd20ed5eb0eea6b",
+      "impl/pnr/custom_138k_integration.vo": "e6a486f80003f0e7855844386c134b7313acf5da198d997630630dd10dded74c",
+      "impl/pnr/custom_138k_integration.tr": "56192635710571eed041411328049f96b29c0defc03189b640612fc255cd1f5e",
+      "impl/pnr/custom_138k_integration_tr_content.html": "ff636627211797eba8f1e3d3922b6401d68c406c6897fd9dfcef55d18b87f09e",
+      "impl/pnr/custom_138k_integration.fs": "dfb61b2417a5bd9ecd35fce7922c6294bfd78d8d22a32a45c79a3fb673ca429e",
+      "impl/pnr/custom_138k_integration.bin": "f32eed7fad1ca2f51c00ead6e48e112875e1a9c61851c99af0656564dd29f7e3",
+      "impl/pnr/device.cfg": "7df7c7dc2105d05ee8d22f6c46659be4a7300c42613e56c0318d2e8658c77ffe",
+      "check_common_cdc.py.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "check_common_cdc.py.stdout.txt": "5124d34dd2b6b4f287af7a1f15603167f16964c3067b462e33a6fa6b7abb2fab",
+      "check_pll.py.retry.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "check_pll.py.retry.stdout.txt": "e07845be7c4192f92fe001a82293317170e8b574c92f545cb6f91db723e526a4",
+      "check_pll.py.stderr.txt": "cfee75663f7247b95ac01d5f32dbf9465f62d354d2a04b623044f268f04f47e5",
+      "check_pll.py.stdout.txt": "ec47f1748b24b914ed9c97ca48fd579633e8a2120c2acdf27f7339dd7e746a19",
+      "check_routes.py.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "check_routes.py.stdout.txt": "18614dc6e4087cb67036ec04fee887835e35201cbdfee1f7916dc42ed3cb7130",
+      "check_timing.py.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "check_timing.py.stdout.txt": "9fa5ca6e83f877c204f9bfdc6a0632fc2beaa09762cbe5e48e0cffe3a3ccdfa6"
+    },
+    "synthesis_parent_identity": "custom138k-native-integration-20261027-a26",
+    "synthesis_source_identity": {
+      "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+      "profile_revision": 2,
+      "profile_identity": "custom138k-workstation-v1-f5b723250388add5"
+    },
+    "current_working_tree_RTL_used": false,
+    "new_synthesis_run": false,
+    "EDA_started": false,
+    "ddr_capture_region_adaptation": {
+      "instance": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0",
+      "region": "R[40:50]C[70:90]",
+      "constraint": "INS_LOC \"u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0\" R[40:50]C[70:90];",
+      "before_sha256": "3dc6efebc9a004ef71566abb5e17b2d8c3c5d4869a26511b9e3dbf5972b8cb6a",
+      "after_sha256": "4931317d74a07e7826448c2eea134465fdf813b44504c4e3bdaf6c392f214fef",
+      "exact_appended_bytes_hex": "0a494e535f4c4f432022755f6d656d6f72792f755f646472332f6777335f746f702f755f6464725f7068795f746f702f776c6f61646e5f335f73302220525b34303a35305d435b37303a39305d3b0a",
+      "parent_bytes_preserved": true,
+      "io_locations_unchanged": true,
+      "hard_locations_unchanged": true,
+      "minimum_delay_ns": 0.8,
+      "minimum_delay_constraint": "set_min_delay 0.800 -from [get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0/Q}] -to [get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/D}]",
+      "sdc_unchanged": true,
+      "observed_topology": {
+        "launch": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0",
+        "capture": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0",
+        "launch_clock": "memory_clk",
+        "capture_clock": "clk_50m_d",
+        "launch_clock_divide": 4,
+        "capture_clock_mhz": 50,
+        "direct_Q_to_D": true
+      },
+      "topology_evidence_scope": "hash_bound_previous_route_VO_of_same_encrypted_synthesis_VG",
+      "new_route_verified": false,
+      "new_hold_slack_ns": null,
+      "observed_route_vo_sha256": "e6a486f80003f0e7855844386c134b7313acf5da198d997630630dd10dded74c"
+    },
+    "automatic_hold_repair": true,
+    "full_timing_gates_required": true,
+    "parent_failed_physical_status": {
+      "source_synthesis_completed": true,
+      "place_route_completed": true,
+      "timing_closed": false,
+      "pll_gate_passed": false,
+      "common_cdc_gate_passed": true,
+      "route_gate_passed": false,
+      "physical_gates_passed": false,
+      "io_electrical_complete": false,
+      "hardware_verified": false,
+      "sram_programmed": false,
+      "flash_programmed": false,
+      "deployment_allowed": false,
+      "release_ready": false
+    }
+  },
+  "independent_validation": {
+    "all9_manifest_inputs_hash_verified": true,
+    "parent_CST_exact_prefix": true,
+    "only_CST_addition": "\nINS_LOC \"u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0\" R[40:50]C[70:90];\n",
+    "SDC_byte_identical": true,
+    "VG_byte_identical": true,
+    "run_tcl_only_UserCode_changed": true,
+    "no_impl_directory": true,
+    "original_synthesis_parent_path_preserved_for_frozen_gates": true
+  },
+  "tests": [
+    {
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_ddr_capture_floorplan.py",
+      "tests": 7,
+      "returncode": 0
+    },
+    {
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board_implementation.py",
+      "tests": 22,
+      "returncode": 0
+    },
+    {
+      "command": "git diff --check",
+      "returncode": 0
+    }
+  ],
+  "versioned_input_sha256": {
+    "tools/workstation_custom_board_implementation.py": "548fed967831eb01a236d6bd02ff9f7b06ab028f6f84af999d7268dd42a6549b",
+    "sim/test_workstation_ddr_capture_floorplan.py": "7057a944d778b0570e878141c56d99254944f80ff8162f326b34cde821f346cc"
+  },
+  "rollback": "Discard this independent output; F02 parent inputs, failed evidence and accepted profiles unchanged",
+  "remaining_gaps": [
+    "New P&R then target physical region and exact hold including clock skew",
+    "All original setup, readiness2ns and full PLL/CDC/resource/feature gates",
+    "New source changes need another synthesis/deployment identity; F03 contains fixed rev2 only"
+  ],
+  "preparation_metadata_correction": "Before EDA, preserved inherited synthesis parent_candidate/parent_identity for existing frozen gate script lookup; all9 release input files remained byte-identical"
+}
