@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "stage": "A06 standalone always-on transaction core",
+  "source_base_commit": "cbb9687",
+  "source_sha256": {
+    "rtl/audio/workstation_sample_rate_switch.sv": "11a6615d28ea5c0a41fcd0e469da98e5e27e83d8ca1c35e99131ffaddc8c383b",
+    "rtl/audio/SAMPLE_RATE_SWITCH.md": "a0dc12f388461beaae1ee41f9882dc1501ded2c9f1444be383883a2e127acfbd",
+    "sim/audio/tb_workstation_sample_rate_switch.sv": "764c9a2d8c2466d3e32efcd9dbf33e72daa2861965ce458575f1cb3d6d2d8e1f",
+    "sim/test_workstation_sample_rate_switch.py": "0ee938af58835b34cc0e0bfe76288c02770bb5836d8de60d5fc969056a3f2463"
+  },
+  "official_model_sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+  "simulation": ".\n----------------------------------------------------------------------\nRan 1 test in 0.070s\n\nOK\nGW5A simulator SHA256=2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5\nPASS sample-rate switch: official GW5A DCS, bidirectional switch, atomic epoch/output acknowledgement, busy/missing target, stopped-high timeout, recovery, quiesce/qualification/prefill/resume/running/startup faults; cycles=1375 accepts=11 applies=13 rejects=4 faults=11\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv:204: $finish called at 27651000 (1ps)\n",
+  "lint": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.042 MB sources in 2 modules, into 0.055 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.023 s (elab=0.005, cvt=0.010, bld=0.000); cpu 0.012 s on 1 threads; allocated 11.391 MB\n",
+  "independent_review": "QUIESCE current-source loss isolation and first-full-frame RESUME acknowledgement fixed, independently rerun against official DCS model",
+  "integrated_into_workstation": false,
+  "physical_timing_verified": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false
+}
