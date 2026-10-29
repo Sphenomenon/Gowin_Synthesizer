@@ -35,6 +35,7 @@ def main():
     ap.add_argument('--netlist-dir',type=Path,help='Explicit directory containing the three locked custom-board netlists')
     ap.add_argument('--pinout-output',type=Path,help='New output directory for --prepare-pinout; refuses existing paths')
     ap.add_argument('--prepare-custom-board',action='store_true',help='Prepare native 138K board integration for offline synthesis only; electrical and full physical gates remain blocked')
+    ap.add_argument('--workstation-profile',choices=['custom138k-workstation-v1'],help='Explicit locked native workstation source/feature checkpoint; requires --prepare-custom-board')
     ap.add_argument('--custom-board-output',type=Path,help='Required new output directory for --prepare-custom-board')
     ap.add_argument('--hdmi-mode',choices=['1080p60','720p30','720p60'],help='Explicit native-board HDMI mode; never changes accepted workstation profiles')
     ap.add_argument('--hdmi-isolation',action='store_true',help='Standalone current native UI through shared DDR; no CPU, USB, BLE or recognition')
@@ -70,6 +71,8 @@ def main():
     ap.add_argument('--user-code',help='Optional eight hexadecimal digits identifying a release without changing RTL')
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     args=ap.parse_args()
+    if args.workstation_profile is not None and not args.prepare_custom_board:
+        ap.error('--workstation-profile requires --prepare-custom-board')
     if args.usb1_identify:
         allowed={'usb1_identify','usb1_board','usb1_output','netlist_dir','user_code','riscv_prefix','prepare_only','synthesis_only','tf_audio_kind'}
         if args.tf_audio_kind!='wav' or any(value for key,value in vars(args).items() if key not in allowed):
@@ -166,13 +169,14 @@ def main():
         from tools.workstation_custom_board import prepare as prepare_custom_board
         try:
             output,metadata=prepare_custom_board(ROOT,args.netlist_dir,args.custom_board_output,
-                                                 args.riscv_prefix,not args.usb2_full_speed_only,args.hdmi_mode or '1080p60')
+                                                 args.riscv_prefix,not args.usb2_full_speed_only,args.hdmi_mode or '1080p60',
+                                                 workstation_profile=args.workstation_profile)
         except (ValueError,OSError,subprocess.CalledProcessError) as error:
             ap.error(str(error))
         print(output)
         print(json.dumps(dict(identity=metadata['identity'],validation_stage=metadata['validation_stage'],
                               sources=len(metadata['enabled_inputs']),electrical_blocked=metadata['electrical_blocked'],
-                              deployment_allowed=False)))
+                              deployment_allowed=False,workstation_profile=metadata.get('workstation_profile'))))
         return
     if args.custom_board_output is not None:
         ap.error('--custom-board-output requires --prepare-custom-board')

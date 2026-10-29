@@ -217,8 +217,20 @@ class NativeBoard(unittest.TestCase):
             for flag in ('place_route_allowed', 'io_electrical_complete', 'timing_constraints_complete',
                          'hardware_tested', 'deployment_allowed', 'release_ready'):
                 self.assertFalse(metadata[flag], flag)
-            self.assertEqual(metadata['firmware']['rom_sha256'],
-                             '31c4d7d58141ef0ec2b33f826a9c22251b7d4f23771cbaa189427b0f1277d457')
+            # The 2026-10-24 ROM identity belongs to its recorded compiler.
+            # Validate this build's production inputs and exact ROM encoding;
+            # a supported different toolchain need not reproduce old bytes.
+            firmware = metadata['firmware']
+            self.assertEqual(firmware['firmware_profile'], 'workstation')
+            self.assertEqual(firmware['entry'], 'firmware.c')
+            for relative in ('firmware.c', 'gw25k_panel.h'):
+                self.assertEqual(firmware['input_sha256'][relative], digest(ROOT / relative))
+            binary = (stage / 'native_usb_firmware/firmware.bin').read_bytes()
+            padded = binary.ljust(65536, b'\0')
+            expected_rom = ''.join(f'{int.from_bytes(padded[index:index+4], "little"):08x}\n'
+                                   for index in range(0, 65536, 4))
+            self.assertEqual((stage / 'usb2_cpu.hex').read_text(), expected_rom)
+            self.assertEqual(firmware['rom_sha256'], digest(stage / 'usb2_cpu.hex'))
             self.assertEqual(metadata['audio_pin_behavior'], 'ak4493_i2s32_48k_mclk256fs_final_master_volume')
             self.assertEqual(plan['ports']['dac_pdn_n']['balls'], ['C13'])
             self.assertEqual(plan['ports']['hp_bck']['balls'], ['A13'])

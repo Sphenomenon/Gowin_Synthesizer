@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "task": "F01",
+  "source_base_commit": "0ab4d86",
+  "candidate_identity": "custom138k-workstation-v1-2ed5155f12a6b585",
+  "profile_configuration_sha256": "2eaf2aca7eee25e3fd4e0a91883d008a2a368d1b076e296021fab4430b901ba1",
+  "artifact_sha256": "065737b4d94c2676b1244faeb652d7c5016dd3ad67e7455536ef99b31c86220a",
+  "source_files": 233,
+  "compiled_inputs": 230,
+  "prepared_directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/f01-profile-candidate-final",
+  "captured_at": "2026-10-30T03:58:02.349701+08:00",
+  "profile_tests": ".........\n----------------------------------------------------------------------\nRan 9 tests in 2.201s\n\nOK\n",
+  "additional_regression": {
+    "original_full_suite": "......F..\n======================================================================\nFAIL: test_native_full_prepare_ports_closure_and_disabled_release_paths (__main__.NativeBoard.test_native_full_prepare_ports_closure_and_disabled_release_paths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py\", line 220, in test_native_full_prepare_ports_closure_and_disabled_release_paths\n    self.assertEqual(metadata['firmware']['rom_sha256'],\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                     '31c4d7d58141ef0ec2b33f826a9c22251b7d4f23771cbaa189427b0f1277d457')\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '4211ea0f1fc1d5a3dde02979e25652b2cbf5a1329cf109b1206c151c3b4eabc1' != '31c4d7d58141ef0ec2b33f826a9c22251b7d4f23771cbaa189427b0f1277d457'\n- 4211ea0f1fc1d5a3dde02979e25652b2cbf5a1329cf109b1206c151c3b4eabc1\n+ 31c4d7d58141ef0ec2b33f826a9c22251b7d4f23771cbaa189427b0f1277d457\n\n\n----------------------------------------------------------------------\nRan 9 tests in 252.165s\n\nFAILED (failures=1)\n",
+    "failed_case_after_toolchain_independent_ROM_check": ".\n----------------------------------------------------------------------\nRan 1 test in 1.849s\n\nOK\n",
+    "interpretation": "8 unchanged cases passed, including real FS/HS device simulations and official-primitives TMDS synthesis/simulation; only failed historical-ROM assertion replaced with exact current-binary/ROM/input binding and that case rerun passed."
+  },
+  "source_implementation_verified": true,
+  "synthesis_state": "running separately; not part of F01 exit criterion",
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "remaining": [
+    "D5 scanout write-window not yet integrated",
+    "dual sample rate and final PCM contract",
+    "maintained AE350 ROM not yet selected",
+    "physical and real-board acceptance"
+  ]
+}

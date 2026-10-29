@@ -158,7 +158,7 @@ flowchart LR
 
 | 完成 | ID | 任务／维护位置 | 验收与交付 | 依赖 |
 |---|---|---|---|---|
-| [ ] | F01 | 固定新板完整工作站 profile、模块来源和 feature matrix；维护 `usb_a/build.py`、现有 prepare／composition | 明确采用哪些 A2／D5／C1 实现，逐文件身份绑定；accepted、pinned、resource、新板彼此隔离；不新增长期编号 builder | 无 |
+| [x] | F01 | 固定新板完整工作站 profile、模块来源和 feature matrix；维护 `usb_a/build.py`、现有 prepare／composition | 显式 revision 1、233 来源／230 编译输入及真实 prepare／篡改拒绝通过；A2／D5／C1 复用和缺口分别绑定，不转移历史实板验收。见 [F01 证据](push2_workstation/usb_a/reports/WORKSTATION_F01_PROFILE_20261030.md) | 无 |
 | [ ] | F02 | 梳理 AE350 实际固件来源并建立可重编译维护入口 | 从 C／链接脚本到 ELF／boot.mem 的完整来源、工具版本和容量报告；不只替换 ROM，不依赖旧 `ae350/scripts` 的私有历史目录；冻结基线不动 | F01 |
 | [ ] | F03 | 新板时钟、复位、电气、DDR 初始化与就绪门控复核 | 锁定网表／CST／SDC；登记两路音频专用时钟的实际频率／引脚／选择路径及 DAC 时钟比值，ULPI、电平转换与供电匹配；两种音频模式、冷／暖启动及失钟分别检查，不用新增 false path 掩盖切换问题；旧电气疑点逐项关闭 | F01 |
 | [ ] | F04 | 整合已验证模块到 `rtl/workstation/` 原生组合根 | USB→真实音频→FPC I2S 与 FPGA 绘图→DDR→HDMI 同一候选运行；只做连接／CDC／readiness，业务放回所属子系统 | F01、F03、I01、A04、D01 |

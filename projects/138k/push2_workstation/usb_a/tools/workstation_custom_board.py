@@ -64,10 +64,14 @@ EXCLUDED_INPUTS = ('src/push2/gw138k_push_workstation_top.v', 'src/usb_a/iosys2.
                    'constraints/tang_mega_138k.cst', 'constraints/tang_mega_138k.sdc')
 
 
-def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed=True, hdmi_mode='1080p60'):
+def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed=True, hdmi_mode='1080p60',
+            *, workstation_profile=None):
     root, output = Path(root).resolve(), Path(output).resolve()
     if output.exists():
         raise FileExistsError('custom-board output already exists: ' + str(output))
+    if workstation_profile is not None:
+        from tools.workstation_profile import load as load_profile
+        load_profile(root, workstation_profile, allow_high_speed=allow_high_speed, hdmi_mode=hdmi_mode)
     clocks = clock_bundle(root, hdmi_mode)
     crossings = cdc_bundle(root)
     input_crossings = input_cdc_bundle(root)
@@ -203,5 +207,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         validation_stage='integration_prepare_only',place_route_allowed=False,deployment_allowed=False,
         release_ready=False,hardware_tested=False),indent=2)+'\n')
     (parent_output / 'workstation_inputs.json').write_text(json.dumps(staged,indent=2)+'\n')
+    if workstation_profile is not None:
+        from tools.workstation_profile import attach as attach_profile
+        attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     return output, metadata
