@@ -40,10 +40,11 @@ def main():
         'legacy/rtl/input/midi_stream_decoder.sv', 'src/ae350/gw138k_three_event_arbiter.sv',
         'rtl/music/music_async_fifo.sv', 'rtl/audio/serial_spatial_reverb.sv',
         'rtl/memory/workstation_sdp.sv', 'rtl/memory/workstation_sdp_banked.sv',
-        'rtl/audio/workstation_frame_delivery.sv')]
+        )]
     for folder in ('rtl/audio/scope_vec', 'rtl/control', 'rtl/audio/delay_ddr'):
         sources += sorted((project / folder).glob('*.sv'))
-    sources += [ROOT / 'rtl/audio/gw138k_event_workstation.sv',
+    sources += [ROOT / 'rtl/audio/workstation_frame_delivery.sv',
+                ROOT / 'rtl/audio/gw138k_event_workstation.sv',
                 ROOT / 'rtl/audio/workstation_audio_render_service.sv', renamed,
                 Path(__file__).with_name('tb_workstation_audio_render_service.sv')]
     if args.runtime_engines:

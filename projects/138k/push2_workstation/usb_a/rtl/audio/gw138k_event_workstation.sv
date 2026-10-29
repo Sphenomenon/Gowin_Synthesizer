@@ -9,6 +9,7 @@ module gw138k_event_workstation #(
     parameter bit EXTERNAL_MASTER_VOLUME=0,
     parameter bit REQUEST_DRIVEN_RENDER=0,
     parameter bit RUNTIME_RATE_ENABLE=0,
+    parameter bit RUNTIME_EFFECTS_ENABLE=0,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600
 ) (
@@ -25,10 +26,15 @@ module gw138k_event_workstation #(
     // Read-only render admission status; PANIC clears frame_inflight before
     // the legacy oscillator's unreset ROM/valid pipelines have drained.
     output wire render_idle_o,
-    // Native engines are opt-in. Until the complete effects chain supports
-    // runtime rate, this full-chain boundary only acknowledges 48 kHz.
+    // Complete runtime rate changes are an explicit opt-in transaction.
+    // The public rate commits only after engines and all effects acknowledge.
     input logic rate_commit_i, rate_44100_i,
     output wire rate_ready_o, applied_rate_44100_o,
+    output wire rate_applied_o,rate_busy_o,rate_fault_o,
+    input logic history_clear_i,
+    output wire history_ready_o,history_done_o,
+    input logic delay_peer_heartbeat_i,delay_dma_fault_i,
+    output wire delay_heartbeat_o,
     input logic cpu_event_valid_i,
     input logic [17:0] cpu_event_i,
     output wire cpu_event_ready_o,
@@ -64,6 +70,8 @@ module gw138k_event_workstation #(
 );
   initial begin
     if(SAMPLE_RATE_HZ!=48000) $fatal(1,"scope integration requires exact 48 kHz");
+    if(RUNTIME_EFFECTS_ENABLE && !RUNTIME_RATE_ENABLE)
+      $fatal(1,"runtime effects require runtime engines");
   end
   logic [1:0] effect_count;
   logic [2:0] effect_selected;
@@ -116,7 +124,10 @@ module gw138k_event_workstation #(
   logic [6:0] core_note, core_velocity;
   logic [6:0] core_expression_note, core_expression_value;
   logic core_sample_ready, core_ce, load_busy, mix_busy;
-  wire runtime_quiescent, runtime_rate_ready;
+  wire runtime_quiescent, runtime_rate_ready,engine_rate;
+  wire runtime_config_block,runtime_config_busy,runtime_fault;
+  wire engine_rate_commit;
+  wire fx_config_ready,fx_config_applied,fx_history_ready,fx_history_done,fx_quiet,fx_fault,fx_rate;
   logic pending, frame_inflight;
   logic [31:0] allocated;
   wire [31:0] legacy_active_mask;
@@ -223,9 +234,9 @@ module gw138k_event_workstation #(
       .cue_speed_o(cue_speed),
       .rejected_o(control_rejected)
   );
-  assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle;
+  assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle && !runtime_config_block;
   assign full = scope_enable ? &vec_active : &allocated;
-  assign dispatch=!usb_lifecycle && !pending && !sample_ce_i && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);
+  assign dispatch=!usb_lifecycle && (!pending || runtime_config_busy) && !sample_ce_i && !runtime_config_block && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);
   wire panic_accept=usb_lifecycle || (event_valid && event_ready && kind==2 && a==120);
   // Legacy partial loading can start on the cancellation edge: 32 issues,
   // three generator-valid stages, one timbre-ROM stage, plus edge margin.
@@ -247,12 +258,66 @@ module gw138k_event_workstation #(
   assign render_idle_o=rst_ni && (RUNTIME_RATE_ENABLE ? runtime_quiescent : legacy_cancel_tail==0) &&
       !pending && !frame_inflight && !synth_joined && !vec_joined &&
       !load_busy && !mix_busy && vec_ready && fx_ready &&
-      !synth_valid_o && !vec_valid && !sample_valid_o;
+      !synth_valid_o && !vec_valid && !sample_valid_o && !runtime_config_busy && !runtime_fault;
   assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready && fx_ready &&
-      !synth_joined && !vec_joined && !panic_accept &&
+      !synth_joined && !vec_joined && !panic_accept && !runtime_config_block && !runtime_config_busy && !runtime_fault &&
       (!REQUEST_DRIVEN_RENDER || (RUNTIME_RATE_ENABLE ? runtime_quiescent : legacy_cancel_tail==0));
-  assign rate_ready_o=RUNTIME_RATE_ENABLE && !rate_44100_i &&
-      runtime_rate_ready && render_idle_o && !sample_ce_i;
+  generate if(RUNTIME_EFFECTS_ENABLE) begin: runtime_configuration
+    logic busy,is_config,pending_rate,committed_rate,failed;
+    logic applied,history_done;
+    // Pending is a registered, not-yet-started sample. It may keep its identity
+    // while configuration drains, but no started frame may be reconfigured.
+    wire pipeline_quiet=runtime_quiescent && fx_quiet && !load_busy && !mix_busy &&
+        vec_ready && !synth_joined && !vec_joined && !synth_valid_o && !vec_valid &&
+        !sample_valid_o && (!frame_inflight || pending);
+    wire config_accept=rate_commit_i && rate_ready_o;
+    wire history_accept=history_clear_i && history_ready_o;
+    assign runtime_config_busy=busy;
+    assign runtime_fault=failed || fx_fault;
+    // Block event admission on the broadcast edge so engine rate_ready is
+    // independent of a queued NoteOn. During the fenced wait, ordinary event
+    // dispatch resumes, including NoteOff/PANIC and existing loader pressure.
+    assign runtime_config_block=!busy && (rate_commit_i || history_clear_i);
+    assign rate_ready_o=rst_ni && !busy && !runtime_fault && pipeline_quiet &&
+        !panic_accept && !core_event_valid && !core_expression_valid && !mode_valid && fx_config_ready;
+    assign history_ready_o=rst_ni && !busy && !runtime_fault && pipeline_quiet &&
+        fx_history_ready && !rate_commit_i;
+    assign engine_rate_commit=config_accept;
+    assign applied_rate_44100_o=committed_rate;
+    assign rate_applied_o=applied;
+    assign rate_busy_o=busy;
+    assign rate_fault_o=runtime_fault;
+    assign history_done_o=history_done && !runtime_fault;
+    always_ff @(posedge clk_i or negedge rst_ni)begin
+      if(!rst_ni)begin busy<=0;is_config<=0;pending_rate<=0;committed_rate<=0;failed<=0;applied<=0;history_done<=0;end
+      else begin
+        applied<=0;history_done<=0;
+        if(!busy && fx_history_done && !config_accept && !history_accept && !runtime_fault)history_done<=1;
+        if(fx_fault)failed<=1;
+        if(config_accept || history_accept)begin
+          busy<=1;is_config<=config_accept;
+          pending_rate<=config_accept ? rate_44100_i : committed_rate;
+        end else if(busy && fx_history_done && !runtime_fault)begin
+          if(engine_rate==pending_rate && fx_rate==pending_rate && (!is_config || fx_config_applied))begin
+            busy<=0;committed_rate<=pending_rate;applied<=is_config;history_done<=1;
+          end else failed<=1;
+        end
+      end
+    end
+  end else begin: fixed_configuration
+    assign runtime_config_busy=1'b0;
+    assign runtime_config_block=1'b0;
+    assign runtime_fault=1'b0;
+    assign rate_ready_o=RUNTIME_RATE_ENABLE && !rate_44100_i &&
+        runtime_rate_ready && render_idle_o && !sample_ce_i;
+    assign engine_rate_commit=rate_commit_i && rate_ready_o;
+    assign applied_rate_44100_o=engine_rate;
+    assign rate_applied_o=1'b0;
+    assign rate_busy_o=1'b0;
+    assign rate_fault_o=1'b0;
+    assign history_ready_o=1'b0;
+    assign history_done_o=1'b0;
+  end endgenerate
   always_comb begin
     core_event_valid=0; core_note_on=0; core_note=a; core_velocity=b;
     core_expression_valid=0; core_expression_note=a; core_expression_value=b;
@@ -291,8 +356,8 @@ module gw138k_event_workstation #(
   generate if(RUNTIME_RATE_ENABLE) begin: runtime_engines
     workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1)) engines(
       .clk_i,.rst_ni,.panic_i(panic_accept),.sample_ce_i(core_ce),
-      .rate_commit_i(rate_commit_i && rate_ready_o),.rate_44100_i,
-      .rate_ready_o(runtime_rate_ready),.applied_rate_44100_o,
+      .rate_commit_i(engine_rate_commit),.rate_44100_i,
+      .rate_ready_o(runtime_rate_ready),.applied_rate_44100_o(engine_rate),
       .quiescent_o(runtime_quiescent),
       .target_ratio_q20_i(target_ratio),.glide_step_q20_i(glide_step),
       .vibrato_depth_i(vibrato_depth),.pitch_q20_o,
@@ -323,7 +388,7 @@ module gw138k_event_workstation #(
   end else begin: legacy_engines
     assign runtime_quiescent=1'b0;
     assign runtime_rate_ready=1'b0;
-    assign applied_rate_44100_o=1'b0;
+    assign engine_rate=1'b0;
   pitch_expression #(.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) pitch(
       .clk_i,.rst_ni,.sample_ce_i(core_ce),.target_ratio_q20_i(target_ratio),
       .glide_step_q20_i(glide_step),.vibrato_depth_i(vibrato_depth),.ratio_q20_o(pitch_q20_o));
@@ -367,6 +432,28 @@ module gw138k_event_workstation #(
       if(effects_valid && fx_ready) begin synth_joined<=0;vec_joined<=0;end
     end
   end
+  generate if(RUNTIME_EFFECTS_ENABLE) begin: runtime_effects
+    workstation_runtime_stereo_effects #(.VECTOR_ENABLE(1),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+      .clk_i,.rst_ni,.clear_i(panic_accept),.valid_i(effects_valid),.synth_i(panic_muted?32'sd0:held_synth),
+      .vector_left_i(panic_muted?32'sd0:held_vec_l),.vector_right_i(panic_muted?32'sd0:held_vec_r),
+      .pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),
+      .synth_gain_i(EXTERNAL_MASTER_VOLUME ? expression_gain : synth_gain_o),.pcm_gain_i(pcm_gain_o),.effect_mask_i(effect_mask_o),.effect_order_i(effect_order_o),
+      .ready_o(fx_ready),.valid_o(sample_valid_o),.left_o(effect_left),.right_o(effect_right),.clip_o(fx_clip),
+      .mem_clk_i(delay_mem_clk_i),.mem_rst_ni(delay_mem_rst_ni),
+      .dwr_valid_o(delay_dwr_valid_o),.dwr_data_o(delay_dwr_data_o),.dwr_pop_i(delay_dwr_pop_i),
+      .drd_push_i(delay_drd_push_i),.drd_data_i(delay_drd_data_i),.drd_ready_o(delay_drd_ready_o),
+      .config_valid_i(rate_commit_i && rate_ready_o),.rate_44100_i,
+      .history_clear_i(history_clear_i && history_ready_o),
+      .config_ready_o(fx_config_ready),.config_applied_o(fx_config_applied),
+      .history_ready_o(fx_history_ready),.history_done_o(fx_history_done),
+      .quiescent_o(fx_quiet),.fault_o(fx_fault),.applied_rate_44100_o(fx_rate),
+      .applied_transaction_o(),.peer_heartbeat_i(delay_peer_heartbeat_i),
+      .delay_dma_fault_i,.heartbeat_o(delay_heartbeat_o));
+  end else begin: legacy_effects
+    assign fx_config_ready=1'b0;assign fx_config_applied=1'b0;
+    assign fx_history_ready=1'b0;assign fx_history_done=1'b0;
+    assign fx_quiet=1'b0;assign fx_fault=1'b0;assign fx_rate=1'b0;
+    assign delay_heartbeat_o=1'b0;
   stereo_effects #(.VECTOR_ENABLE(1),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
       .clk_i,.rst_ni,.clear_i(panic_accept),.valid_i(effects_valid),.synth_i(panic_muted?32'sd0:held_synth),
       .vector_left_i(panic_muted?32'sd0:held_vec_l),.vector_right_i(panic_muted?32'sd0:held_vec_r),
@@ -376,6 +463,7 @@ module gw138k_event_workstation #(
       .mem_clk_i(delay_mem_clk_i),.mem_rst_ni(delay_mem_rst_ni),
       .dwr_valid_o(delay_dwr_valid_o),.dwr_data_o(delay_dwr_data_o),.dwr_pop_i(delay_dwr_pop_i),
       .drd_push_i(delay_drd_push_i),.drd_data_i(delay_drd_data_i),.drd_ready_o(delay_drd_ready_o));
+  end endgenerate
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin
       applied_events_o<=0;pending<=0;frame_inflight<=0;deadline_miss_o<=0;note_drop_o<=0;

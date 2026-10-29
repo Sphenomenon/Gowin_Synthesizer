@@ -18,7 +18,7 @@ flowchart LR
 
 | 源 | 输入及效果语义 | 最终数值处理 | 当前两率范围 |
 |---|---|---|---|
-| A／B／C | `EXTERNAL_MASTER_VOLUME=1` render service，既有 expression／mix／effects／左右 route 后 Q1.31 stereo；A/B/C 原有复音与 timbre 不变 | 输出选择后，沿用旧 PT8211 的 Q1.31→PCM16 转换，再只乘一次最终主音量 | 整服务目前 48 kHz；44.1 明确返回 error，等待完整 effects 接入 |
+| A／B／C | `EXTERNAL_MASTER_VOLUME=1` render service，既有 expression／mix／effects／左右 route 后 Q1.31 stereo；A/B/C 原有复音与 timbre 不变 | 输出选择后，沿用旧 PT8211 的 Q1.31→PCM16 转换，再只乘一次最终主音量 | 默认 legacy 服务仅 48 kHz；显式同时启用 `RUNTIME_RATE_ENABLE` 与 `RUNTIME_EFFECTS_ENABLE` 可用完整双率 engine/effects，整机 profile 尚未选用 |
 | vector | 同一 render service 的真实 stereo geometry PCM，既有 vector 与 effects 语义 | 同上，不另给 vector 乘 CC7 | 同上 |
 | TF | 真实解码器产出的 PCM16 stereo；保持旧 TF 直接播放、旁路 synth effects 的语义 | 已是 PCM16，选择后只乘一次相同主音量，不再次量化／增益 | 独立组件接受实际 48000 或 44100 且与输出 slot 同率的原子输入 |
 | 未来 D | 尚无已集成最终源接口 | X01 必须明确实时变调／包络／mix／effects 后再接入 | 此组件不假定 D 已完成 |
@@ -51,4 +51,4 @@ fanout 与串行器完成帧同属 selected-MCLK 域；只接受全局复位，�
 
 `sim/audio/run_final_pcm.py --project <实际 prepared Prj1> --output <新目录>` 覆盖独立算术／取消／切源、真实 A/B/C 32 声部及 vector 8 声部和 WAV 解码、旧 PT→选择器／observer→真实 FPC 稳定增益逐帧对照，以及新桥→标准 I2S→physical fanout 的两个方向采样率切换、源错误／迟到欠载、慢 tap 和实际逐 bit PCM。
 
-真实源与物理串行联测是两个独立 fixture；尚未把真实 render、production TF CDC、完整双率 effects、最终桥／I2S、显示与 BLE 录音同时接入同一整机候选。旧 128-bit 诊断格式、BLE 48 kHz 格式 1、显示布局与录音对象协议都没有被暗改为双率。没有综合、P&R、物理 CDC／PLL、DAC／模拟音频、SRAM 或 Flash 接受。
+默认 legacy 服务与显式完整双率 service 均有独立离线回归，后者已组合真实 engines/effects 和生产长度 Delay。真实源与物理串行联测仍是独立 fixture；现有整机 profile 尚未选用这条双率路径，尚未把真实 render、production TF CDC、最终桥／I2S、显示与 BLE 录音同时接入同一整机候选。旧 128-bit 诊断格式、BLE 48 kHz 格式 1、显示布局与录音对象协议都没有被暗改为双率。没有综合、P&R、物理 CDC／PLL、DAC／模拟音频、SRAM 或 Flash 接受。

@@ -16,10 +16,9 @@
 
 `gw138k_event_workstation` 和 `workstation_audio_render_service` 的 `RUNTIME_RATE_ENABLE=0` 默认仍选旧源，旧实例仅移到 `legacy_engines` generate 命名空间。显式设为 1 后复用此组合，而不复制工作站；取消后的 admission 使用实际 engine drain。
 
-完整工作站中的旧 effects 仍按 48 kHz 处理。event 的 `rate_ready_o` 因此对 44.1 恒为 0，service 的 `render_44k1_i` 仍返回显式零／error、不发 sample-ce。独立组合的 44.1 PCM 是 effects 之前的验证端点，不能用于宣称整链两率完成。
+仅启用 engine 参数时，完整工作站中的旧 effects 仍按 48 kHz 处理，event 背压 44.1，service 返回显式零／error。完整两率需额外显式启用 `RUNTIME_EFFECTS_ENABLE=1`，由 event 同时提交 native engines 与 native effects/history，在全部确认后更新公共 applied rate。详细事务、失败和排空合同见 [AUDIO_RENDER_SERVICE.md](AUDIO_RENDER_SERVICE.md)。
 
-后续接入需冻结完整 effects 的 idle/config/history/done/fault API、完成实际旧历史排空，随后才移除 event 的 44.1 背压，并用新 profile 身份显式选源。还需单独完成 bridge、最终输出、CDC／PLL／timing／资源与硬件接受。此阶段不修改任何 profile、top、locks 或冻结来源。
-
+完整 service 的独立回归不构成 profile、clock、bridge、最终输出、CDC／PLL／timing／资源或硬件接受。显式选源仍需新 profile 身份与对应验证；不改变冻结来源。
 ## 校验
 
 ```sh

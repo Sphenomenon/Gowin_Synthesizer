@@ -1,0 +1,1269 @@
+{
+  "schema": 1,
+  "passed": true,
+  "hardware_tested": false,
+  "profile_changed": false,
+  "scope": "Opt-in full native dual-rate render service; real 200ms delay ring and ordered posted DDR model",
+  "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+  "input_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv": "468c3106f72a1a3cd17c1c6e3036c0bd21faadb86ef94f6ca1d2d0b16303255b",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv": "0c441be0d63596acdba3d128ba8d8fe3a05fc1c6382cb6b2e98a6d13d0a55c0f",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv": "8dea52209b5d9fd9df8a7e4bb79b712ed951509477f759b5bfedc0f4aedcf5ea",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv": "304ad503ed053fc89cdde9372e9065fb13a0fb14f747d8db586ac3093932171a",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv": "8eefe9eba6bfb2b8df8842dea9c8948d576d04eeccc1a32cc3a3bf5bfa049fcd",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv": "c3690947d2b9a0e75ba56cd73982c1291d2a452d4ae3a20adaf753c306f25b7a",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_parameters.sv": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_session.sv": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": "b0752dab4986ef4f3853850b4bd6c853d3a8cac38d9d5860a94cd17c457747bb",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": "257abb183a3127aa9f83cacf6e6e807c9d6267be39d2c9a9b2d41178ae279020",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv": "5b38740ef9e073aec64ca45526f97a06d6e7d1c72a44c9599e345785d76534e2",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": "12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": "9950b3cd95dc7224158254bff05bfd2c8658b780a86e4cf4faecd3744a026705",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv": "14abaaa4e21a94edc16a4661e3756ecb208066321bd39bb8f548335e2298160e",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv": "f3cf2a42c49838e0d44e5a00c27b50ceab1d18724ccf0be7d7bc680a98f15931",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv": "d8a0d2c787bc8c222bf4dde74069db41163988a646fd70c32774387bfe23a689",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv": "8a6fa6ea9158cc983c9d48cc9e92f01da2e10950214d3d2bb2cb7bb0b67b4cf4",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_spatial_reverb.sv": "31ec6580986a0848ca13c80f4fb08759489ee5e49bbaa2fabeeb4c163c241619",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "879a5d93fb3ee547cd517344a495452f7cb37f28c0605ceee2cb625f2126c62d",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+    "/private/tmp/runtime-service-full-20261030-v5/ordered_posted_ddr_model.sv": "4ec073117811fdd24a32d9df4b268204ead28c2a320d1ea429b360209b5fbd1a",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_render_service.sv": "71ca79eb4fa88e7678aa820ac242de488a7c244b5541af34ce70897bad7f7423",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_effects.sv": "1d4192663b52d4690b6a117bc24e23ebfce03a15493c8ca1e8aba797b4f1e56c",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_render_service.py": "2ca5488864158718f24c14583a8ba7714bbc70711a5fbde953c50a9a8de00dbd",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/runtime_spatial_room_preset.json": "fd07065308dca9ae65483a8ce9308890790b98934001918baf9ff262f459655e",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_effects.py": "0376a660e16aa6427f9ebd2fb28b04051b88be181f81fae6468a3071cb84e52c",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_reverb.py": "034526d753cb4196b8008c9ab29612b7784b57d6edeaf49bfd97b0edde172796",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_hann.mem": "017ce9c689980891b77704d460387c0ef39b7cd7dcd7a70f72d0924632bf119d",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_tw_im.mem": "45c1dd9b30c67e201f05e83027524c29ec1ae4387c861ee819841347f234cf7e",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_tw_re.mem": "e80a1bf23a99b194d0d109a8c7d5e3c3a59d30ff54abeefe493b45bebdcfc25a",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/pitch_bend_q20.mem": "eb906e4c202a35f84a4c1498aa80c8573743a9e514d61ae819e834bd0f90ab7a",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb"
+  },
+  "memory_model": "Exact leading module extracted from committed effects TB; writes execute after command acceptance, fence ACK follows ordered read response",
+  "compile_argv": [
+    "verilator",
+    "--binary",
+    "--timing",
+    "-j",
+    "4",
+    "-Wno-fatal",
+    "--top-module",
+    "tb_workstation_runtime_render_service",
+    "--Mdir",
+    "/private/tmp/runtime-service-full-20261030-v5/obj",
+    "-I/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+    "-I/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/sine_interp.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_parameters.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_session.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_spatial_reverb.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv",
+    "/private/tmp/runtime-service-full-20261030-v5/ordered_posted_ddr_model.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_render_service.sv"
+  ],
+  "compile_warning_counts": {
+    "PINMISSING": 33,
+    "TIMESCALEMOD": 1,
+    "WIDTHEXPAND": 50,
+    "WIDTHTRUNC": 12,
+    "UNSIGNED": 2
+  },
+  "run_argv": [
+    "/private/tmp/runtime-service-full-20261030-v5/obj/Vtb_workstation_runtime_render_service",
+    "+TRACE=/private/tmp/runtime-service-full-20261030-v5/pcm.txt"
+  ],
+  "metrics": {
+    "requests": 48652,
+    "responses": 48652,
+    "modeled_frames": 48644,
+    "configs": 16,
+    "histories": 25,
+    "cancels": 4,
+    "wet48": 16862179,
+    "wet44": 17758676,
+    "pitch_checks": 49780416,
+    "max_latency": 1598,
+    "max_steady_latency": 1146,
+    "max_auto_config_latency": 1598,
+    "max_loader_latency": 1182,
+    "posted_writes": 12160,
+    "ordered_fences": 27
+  },
+  "independent_fixed_point_compared_frames": {
+    "48000": 24322,
+    "44100": 24322
+  },
+  "trace_sha256": "edaba6cc78a808af881aee45a0c5b29f8b48b45a1e7b70e5ad9e93ea8812a3af",
+  "inputs_unchanged_during_run": true,
+  "stage": "native_event_render_service_dual_rate_20261030",
+  "public_contract": {
+    "opt_in_parameters": {
+      "RUNTIME_RATE_ENABLE": 1,
+      "RUNTIME_EFFECTS_ENABLE": 1
+    },
+    "defaults": {
+      "RUNTIME_RATE_ENABLE": 0,
+      "RUNTIME_EFFECTS_ENABLE": 0,
+      "REQUEST_EPOCH_SNAPSHOT": 0
+    },
+    "configuration_ports": [
+      "config_valid_i",
+      "config_rate_44100_i",
+      "config_ready_o",
+      "config_applied_o",
+      "history_clear_i",
+      "history_ready_o",
+      "history_done_o",
+      "quiescent_o",
+      "fault_o",
+      "applied_rate_44100_o"
+    ],
+    "delay_liveness_ports": [
+      "delay_peer_heartbeat_i",
+      "delay_dma_fault_i",
+      "delay_heartbeat_o"
+    ],
+    "global_epoch": "No new epoch is inferred from Delay private applied_transaction",
+    "commit": "Engine and complete effects ACK with matching rate; Delay partial rate projection is private",
+    "intentional_muted_request": "Accepted-muted snapshot returns deterministic good zero after actual core result; later epoch change cancels with error",
+    "failure": "Sticky closed until coordinated compute/memory/DMA reset; no pseudo-ready"
+  },
+  "changed_source_sha256": {
+    "rtl/audio/gw138k_event_workstation.sv": "b0752dab4986ef4f3853850b4bd6c853d3a8cac38d9d5860a94cd17c457747bb",
+    "rtl/audio/workstation_audio_render_service.sv": "257abb183a3127aa9f83cacf6e6e807c9d6267be39d2c9a9b2d41178ae279020",
+    "rtl/audio/workstation_frame_delivery.sv": "5b38740ef9e073aec64ca45526f97a06d6e7d1c72a44c9599e345785d76534e2",
+    "sim/audio/run_render_service.py": "a95f0b11d25a6a264567f12f2cd7590d876ba8f3592f815a8a8e8ff803db653b",
+    "sim/audio/tb_workstation_audio_render_service.sv": "56ab30da2f0926adde060ce33eb22aeeadae96be1bc1bc7fb200c2cf6e388140",
+    "sim/audio/run_runtime_render_service.py": "2ca5488864158718f24c14583a8ba7714bbc70711a5fbde953c50a9a8de00dbd",
+    "sim/audio/tb_workstation_runtime_render_service.sv": "71ca79eb4fa88e7678aa820ac242de488a7c244b5541af34ce70897bad7f7423",
+    "sim/architecture/tb_workstation_request_epoch_delivery.sv": "219b6ad9eafe2beb340e7cfe7df947726c906343bfb8a845429bbdb8c34eff94",
+    "rtl/audio/AUDIO_RENDER_SERVICE.md": "71fe5c2d3e95339da9f7ad728b1822a6029e2c374f996658901a8f525209ba76",
+    "rtl/audio/RUNTIME_RENDER_ENGINES.md": "2b5457f6c54e333c1b2aa435767afd4d905f5065d64259cb15268cc42c60d62f",
+    "rtl/audio/FINAL_PCM_ROUTING.md": "b93d4c3f801e59c265867ddc6f64f581d9b9dc8100ba313c47f99b0c69090791"
+  },
+  "legacy_regressions": [
+    {
+      "stage": "before_final_native_mute_epoch_and_ack_guard_patch",
+      "verification_json_sha256": "f12c3607edb583dfa49d5e91418821073c7bd5d1013b3b09cc7ac8f30c9a2771",
+      "schema": 1,
+      "scope": "Independent 48k synth/vector render service; no source selection or final master volume",
+      "passed": true,
+      "hardware_tested": false,
+      "profile_changed": false,
+      "runtime_engines": false,
+      "prepared_reference_candidate": "custom138k-workstation-v1-f5b723250388add5",
+      "prepared_reference_sha256": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+      "reference_adaptation": "Only the single module declaration is renamed for parallel test instantiation",
+      "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv": "468c3106f72a1a3cd17c1c6e3036c0bd21faadb86ef94f6ca1d2d0b16303255b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv": "0c441be0d63596acdba3d128ba8d8fe3a05fc1c6382cb6b2e98a6d13d0a55c0f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv": "8dea52209b5d9fd9df8a7e4bb79b712ed951509477f759b5bfedc0f4aedcf5ea",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv": "304ad503ed053fc89cdde9372e9065fb13a0fb14f747d8db586ac3093932171a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv": "8eefe9eba6bfb2b8df8842dea9c8948d576d04eeccc1a32cc3a3bf5bfa049fcd",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv": "c3690947d2b9a0e75ba56cd73982c1291d2a452d4ae3a20adaf753c306f25b7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/workstation_frame_delivery.sv": "639fcc1496cc6a8c0f19f0979e4affdcfca34e1770d3b89c318dde3141f715c6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_parameters.sv": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_session.sv": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": "6ad9d49439b262bf90985b708b4015e045e719e5fb57cb2588d7c4b0dc4f2ba7",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": "23a1f6a594e1390df4343cc0ebba6ac411e3e54ae1cf1a6ac5e5b8615cd43da2",
+        "/private/tmp/runtime-service-default-final-20261030/prepared_reference_event_workstation.sv": "5a5c716734216e3f3e0aeb31dcecbce733ea521602774eca9e310c789aafc38f",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_render_service.sv": "56ab30da2f0926adde060ce33eb22aeeadae96be1bc1bc7fb200c2cf6e388140",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_event_workstation.sv": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_render_service.py": "95f22c4d5066c829e994a221c8ef911925a9b9bc5c9c57860a3385ea16ead9df",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_hann.mem": "017ce9c689980891b77704d460387c0ef39b7cd7dcd7a70f72d0924632bf119d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_tw_im.mem": "45c1dd9b30c67e201f05e83027524c29ec1ae4387c861ee819841347f234cf7e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_tw_re.mem": "e80a1bf23a99b194d0d109a8c7d5e3c3a59d30ff54abeefe493b45bebdcfc25a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/pitch_bend_q20.mem": "eb906e4c202a35f84a4c1498aa80c8573743a9e514d61ae819e834bd0f90ab7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4"
+      },
+      "phases_per_source_per_cancel_type": 1600,
+      "test_echo_samples": 32,
+      "production_default_echo_samples": 9600,
+      "delay_storage_model": "Ordered memory-side FIFO/history/flush marker; not a physical DDR timing model",
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "4",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_workstation_audio_render_service",
+        "--Mdir",
+        "/private/tmp/runtime-service-default-final-20261030/obj",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/sine_interp.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/music/music_async_fifo.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/workstation_frame_delivery.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_parameters.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_session.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv",
+        "/private/tmp/runtime-service-default-final-20261030/prepared_reference_event_workstation.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_render_service.sv"
+      ],
+      "run_argv": [
+        "/private/tmp/runtime-service-default-final-20261030/obj/Vtb_workstation_audio_render_service",
+        "+PHASES=1600"
+      ],
+      "metrics": {
+        "normal_cases": 960,
+        "warm_frames": 4096,
+        "warm_orders": 6,
+        "cc_cases": 6400,
+        "lifecycle_cases": 6400,
+        "load_cancel_cases": 205,
+        "requests": 59378,
+        "responses": 59378,
+        "max_latency_compute_cycles": 1183,
+        "unsafe_unfenced_idle_cycles": 18551,
+        "max_observed_tail_age": 33,
+        "cancel_zeros": 31192,
+        "drained_results": 25636,
+        "unsupported": 1,
+        "rejected": 1,
+        "wet_returns": 7395,
+        "wet_seen": 7,
+        "fdn_seen": 1,
+        "pressure_events": 4096
+      },
+      "per_source_timbre_metrics": [
+        {
+          "source": 0,
+          "timbre": 0,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 1,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 2,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 3,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 4,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 1,
+          "timbre": 0,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 1,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 2,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 3,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 4,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 2,
+          "timbre": 0,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 1,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 2,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 3,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 4,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 0,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 1,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 2,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 3,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 4,
+          "max_latency_compute_cycles": 1145
+        }
+      ],
+      "compile_warning_counts": {
+        "PINMISSING": 92,
+        "TIMESCALEMOD": 1,
+        "WIDTHEXPAND": 58,
+        "WIDTHTRUNC": 22,
+        "UNSIGNED": 2
+      },
+      "run_log_sha256": "dadc372716167acc3c0a8dc38c4662b793b19e7978336f61a3210e32649a2c8f",
+      "inputs_unchanged_during_run": true
+    },
+    {
+      "stage": "before_final_native_mute_epoch_and_ack_guard_patch",
+      "verification_json_sha256": "4f91237898d40fd8c45bab7640bd0245ad789efecee6128abbf1443aa6815f6f",
+      "schema": 1,
+      "scope": "Independent 48k synth/vector render service; no source selection or final master volume",
+      "passed": true,
+      "hardware_tested": false,
+      "profile_changed": false,
+      "runtime_engines": true,
+      "prepared_reference_candidate": "custom138k-workstation-v1-f5b723250388add5",
+      "prepared_reference_sha256": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+      "reference_adaptation": "Only the single module declaration is renamed for parallel test instantiation",
+      "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv": "468c3106f72a1a3cd17c1c6e3036c0bd21faadb86ef94f6ca1d2d0b16303255b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv": "0c441be0d63596acdba3d128ba8d8fe3a05fc1c6382cb6b2e98a6d13d0a55c0f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv": "8dea52209b5d9fd9df8a7e4bb79b712ed951509477f759b5bfedc0f4aedcf5ea",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv": "304ad503ed053fc89cdde9372e9065fb13a0fb14f747d8db586ac3093932171a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv": "8eefe9eba6bfb2b8df8842dea9c8948d576d04eeccc1a32cc3a3bf5bfa049fcd",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv": "c3690947d2b9a0e75ba56cd73982c1291d2a452d4ae3a20adaf753c306f25b7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/workstation_frame_delivery.sv": "639fcc1496cc6a8c0f19f0979e4affdcfca34e1770d3b89c318dde3141f715c6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_parameters.sv": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_session.sv": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": "6ad9d49439b262bf90985b708b4015e045e719e5fb57cb2588d7c4b0dc4f2ba7",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": "23a1f6a594e1390df4343cc0ebba6ac411e3e54ae1cf1a6ac5e5b8615cd43da2",
+        "/private/tmp/runtime-service-engines-final-20261030/prepared_reference_event_workstation.sv": "5a5c716734216e3f3e0aeb31dcecbce733ea521602774eca9e310c789aafc38f",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_render_service.sv": "56ab30da2f0926adde060ce33eb22aeeadae96be1bc1bc7fb200c2cf6e388140",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": "12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": "9950b3cd95dc7224158254bff05bfd2c8658b780a86e4cf4faecd3744a026705",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv": "14abaaa4e21a94edc16a4661e3756ecb208066321bd39bb8f548335e2298160e",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv": "f3cf2a42c49838e0d44e5a00c27b50ceab1d18724ccf0be7d7bc680a98f15931",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_event_workstation.sv": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_render_service.py": "95f22c4d5066c829e994a221c8ef911925a9b9bc5c9c57860a3385ea16ead9df",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_hann.mem": "017ce9c689980891b77704d460387c0ef39b7cd7dcd7a70f72d0924632bf119d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_tw_im.mem": "45c1dd9b30c67e201f05e83027524c29ec1ae4387c861ee819841347f234cf7e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_tw_re.mem": "e80a1bf23a99b194d0d109a8c7d5e3c3a59d30ff54abeefe493b45bebdcfc25a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/pitch_bend_q20.mem": "eb906e4c202a35f84a4c1498aa80c8573743a9e514d61ae819e834bd0f90ab7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4"
+      },
+      "phases_per_source_per_cancel_type": 1600,
+      "test_echo_samples": 32,
+      "production_default_echo_samples": 9600,
+      "delay_storage_model": "Ordered memory-side FIFO/history/flush marker; not a physical DDR timing model",
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "4",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_workstation_audio_render_service",
+        "--Mdir",
+        "/private/tmp/runtime-service-engines-final-20261030/obj",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/sine_interp.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/music/music_async_fifo.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/workstation_frame_delivery.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_parameters.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_session.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv",
+        "/private/tmp/runtime-service-engines-final-20261030/prepared_reference_event_workstation.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_render_service.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv",
+        "-GRUNTIME_ENGINES=1",
+        "-DRUNTIME_RENDER_ENGINES_TEST"
+      ],
+      "run_argv": [
+        "/private/tmp/runtime-service-engines-final-20261030/obj/Vtb_workstation_audio_render_service",
+        "+PHASES=1600"
+      ],
+      "metrics": {
+        "normal_cases": 960,
+        "warm_frames": 4096,
+        "warm_orders": 6,
+        "cc_cases": 6400,
+        "lifecycle_cases": 6400,
+        "load_cancel_cases": 205,
+        "requests": 59360,
+        "responses": 59360,
+        "max_latency_compute_cycles": 1183,
+        "unsafe_unfenced_idle_cycles": 18604,
+        "max_observed_tail_age": 33,
+        "cancel_zeros": 31174,
+        "drained_results": 25621,
+        "unsupported": 1,
+        "rejected": 1,
+        "wet_returns": 7395,
+        "wet_seen": 7,
+        "fdn_seen": 1,
+        "pressure_events": 4096
+      },
+      "per_source_timbre_metrics": [
+        {
+          "source": 0,
+          "timbre": 0,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 1,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 2,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 3,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 4,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 1,
+          "timbre": 0,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 1,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 2,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 3,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 4,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 2,
+          "timbre": 0,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 1,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 2,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 3,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 4,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 0,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 1,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 2,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 3,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 4,
+          "max_latency_compute_cycles": 1145
+        }
+      ],
+      "compile_warning_counts": {
+        "PINMISSING": 92,
+        "TIMESCALEMOD": 1,
+        "WIDTHEXPAND": 58,
+        "WIDTHTRUNC": 22,
+        "UNSIGNED": 4
+      },
+      "run_log_sha256": "a19c15b30bb3163fa15051787b8a18c4c5142b28c81aa7ba36a22f84299d00d9",
+      "inputs_unchanged_during_run": true
+    },
+    {
+      "stage": "final_source",
+      "verification_json_sha256": "ef6dd5f78386fd3422ae72b443af16033f19146c35ef7486a7c6779e1e968a22",
+      "schema": 1,
+      "scope": "Independent 48k synth/vector render service; no source selection or final master volume",
+      "passed": true,
+      "hardware_tested": false,
+      "profile_changed": false,
+      "runtime_engines": false,
+      "prepared_reference_candidate": "custom138k-workstation-v1-f5b723250388add5",
+      "prepared_reference_sha256": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+      "reference_adaptation": "Only the single module declaration is renamed for parallel test instantiation",
+      "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv": "468c3106f72a1a3cd17c1c6e3036c0bd21faadb86ef94f6ca1d2d0b16303255b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv": "0c441be0d63596acdba3d128ba8d8fe3a05fc1c6382cb6b2e98a6d13d0a55c0f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv": "8dea52209b5d9fd9df8a7e4bb79b712ed951509477f759b5bfedc0f4aedcf5ea",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv": "304ad503ed053fc89cdde9372e9065fb13a0fb14f747d8db586ac3093932171a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv": "8eefe9eba6bfb2b8df8842dea9c8948d576d04eeccc1a32cc3a3bf5bfa049fcd",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv": "c3690947d2b9a0e75ba56cd73982c1291d2a452d4ae3a20adaf753c306f25b7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_parameters.sv": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_session.sv": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv": "5b38740ef9e073aec64ca45526f97a06d6e7d1c72a44c9599e345785d76534e2",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": "b0752dab4986ef4f3853850b4bd6c853d3a8cac38d9d5860a94cd17c457747bb",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": "257abb183a3127aa9f83cacf6e6e807c9d6267be39d2c9a9b2d41178ae279020",
+        "/private/tmp/runtime-service-default-mute-final-20261030/prepared_reference_event_workstation.sv": "5a5c716734216e3f3e0aeb31dcecbce733ea521602774eca9e310c789aafc38f",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_render_service.sv": "56ab30da2f0926adde060ce33eb22aeeadae96be1bc1bc7fb200c2cf6e388140",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_event_workstation.sv": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_render_service.py": "a95f0b11d25a6a264567f12f2cd7590d876ba8f3592f815a8a8e8ff803db653b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_hann.mem": "017ce9c689980891b77704d460387c0ef39b7cd7dcd7a70f72d0924632bf119d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_tw_im.mem": "45c1dd9b30c67e201f05e83027524c29ec1ae4387c861ee819841347f234cf7e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_tw_re.mem": "e80a1bf23a99b194d0d109a8c7d5e3c3a59d30ff54abeefe493b45bebdcfc25a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/pitch_bend_q20.mem": "eb906e4c202a35f84a4c1498aa80c8573743a9e514d61ae819e834bd0f90ab7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4"
+      },
+      "phases_per_source_per_cancel_type": 1,
+      "test_echo_samples": 32,
+      "production_default_echo_samples": 9600,
+      "delay_storage_model": "Ordered memory-side FIFO/history/flush marker; not a physical DDR timing model",
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "4",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_workstation_audio_render_service",
+        "--Mdir",
+        "/private/tmp/runtime-service-default-mute-final-20261030/obj",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/sine_interp.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/music/music_async_fifo.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_parameters.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_session.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv",
+        "/private/tmp/runtime-service-default-mute-final-20261030/prepared_reference_event_workstation.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_render_service.sv"
+      ],
+      "run_argv": [
+        "/private/tmp/runtime-service-default-mute-final-20261030/obj/Vtb_workstation_audio_render_service",
+        "+PHASES=1"
+      ],
+      "metrics": {
+        "normal_cases": 960,
+        "warm_frames": 4096,
+        "warm_orders": 6,
+        "cc_cases": 4,
+        "lifecycle_cases": 4,
+        "load_cancel_cases": 205,
+        "requests": 8170,
+        "responses": 8170,
+        "max_latency_compute_cycles": 1183,
+        "unsafe_unfenced_idle_cycles": 2931,
+        "max_observed_tail_age": 33,
+        "cancel_zeros": 78,
+        "drained_results": 36,
+        "unsupported": 1,
+        "rejected": 1,
+        "wet_returns": 7395,
+        "wet_seen": 7,
+        "fdn_seen": 1,
+        "pressure_events": 4096
+      },
+      "per_source_timbre_metrics": [
+        {
+          "source": 0,
+          "timbre": 0,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 1,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 2,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 3,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 4,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 1,
+          "timbre": 0,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 1,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 2,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 3,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 4,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 2,
+          "timbre": 0,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 1,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 2,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 3,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 4,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 0,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 1,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 2,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 3,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 4,
+          "max_latency_compute_cycles": 1145
+        }
+      ],
+      "compile_warning_counts": {
+        "PINMISSING": 92,
+        "TIMESCALEMOD": 1,
+        "WIDTHEXPAND": 58,
+        "WIDTHTRUNC": 22,
+        "UNSIGNED": 2
+      },
+      "run_log_sha256": "e36bc87688700bd247d505f36dba0974beab63fb75bb9af45d2a8688089120bc",
+      "inputs_unchanged_during_run": true
+    },
+    {
+      "stage": "final_source",
+      "verification_json_sha256": "a3ec0514805980d3fc252b6e4a6e56566b9c07e06960f4c85e241ab3fac43c5e",
+      "schema": 1,
+      "scope": "Independent 48k synth/vector render service; no source selection or final master volume",
+      "passed": true,
+      "hardware_tested": false,
+      "profile_changed": false,
+      "runtime_engines": true,
+      "prepared_reference_candidate": "custom138k-workstation-v1-f5b723250388add5",
+      "prepared_reference_sha256": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+      "reference_adaptation": "Only the single module declaration is renamed for parallel test instantiation",
+      "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv": "468c3106f72a1a3cd17c1c6e3036c0bd21faadb86ef94f6ca1d2d0b16303255b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv": "0c441be0d63596acdba3d128ba8d8fe3a05fc1c6382cb6b2e98a6d13d0a55c0f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv": "8dea52209b5d9fd9df8a7e4bb79b712ed951509477f759b5bfedc0f4aedcf5ea",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv": "304ad503ed053fc89cdde9372e9065fb13a0fb14f747d8db586ac3093932171a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv": "8eefe9eba6bfb2b8df8842dea9c8948d576d04eeccc1a32cc3a3bf5bfa049fcd",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv": "c3690947d2b9a0e75ba56cd73982c1291d2a452d4ae3a20adaf753c306f25b7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_parameters.sv": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_session.sv": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv": "5b38740ef9e073aec64ca45526f97a06d6e7d1c72a44c9599e345785d76534e2",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": "b0752dab4986ef4f3853850b4bd6c853d3a8cac38d9d5860a94cd17c457747bb",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": "257abb183a3127aa9f83cacf6e6e807c9d6267be39d2c9a9b2d41178ae279020",
+        "/private/tmp/runtime-service-engines-mute-final-20261030/prepared_reference_event_workstation.sv": "5a5c716734216e3f3e0aeb31dcecbce733ea521602774eca9e310c789aafc38f",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_render_service.sv": "56ab30da2f0926adde060ce33eb22aeeadae96be1bc1bc7fb200c2cf6e388140",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": "12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": "9950b3cd95dc7224158254bff05bfd2c8658b780a86e4cf4faecd3744a026705",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv": "14abaaa4e21a94edc16a4661e3756ecb208066321bd39bb8f548335e2298160e",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv": "f3cf2a42c49838e0d44e5a00c27b50ceab1d18724ccf0be7d7bc680a98f15931",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_event_workstation.sv": "cd1da0ee40b5189b605a6c250618a8b0cc44bdbb4998ce4898a4bbd2ae59fc5f",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_render_service.py": "a95f0b11d25a6a264567f12f2cd7590d876ba8f3592f815a8a8e8ff803db653b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_hann.mem": "017ce9c689980891b77704d460387c0ef39b7cd7dcd7a70f72d0924632bf119d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_tw_im.mem": "45c1dd9b30c67e201f05e83027524c29ec1ae4387c861ee819841347f234cf7e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/fft_tw_re.mem": "e80a1bf23a99b194d0d109a8c7d5e3c3a59d30ff54abeefe493b45bebdcfc25a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/data/audio_chain/pitch_bend_q20.mem": "eb906e4c202a35f84a4c1498aa80c8573743a9e514d61ae819e834bd0f90ab7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4"
+      },
+      "phases_per_source_per_cancel_type": 1,
+      "test_echo_samples": 32,
+      "production_default_echo_samples": 9600,
+      "delay_storage_model": "Ordered memory-side FIFO/history/flush marker; not a physical DDR timing model",
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "4",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_workstation_audio_render_service",
+        "--Mdir",
+        "/private/tmp/runtime-service-engines-mute-final-20261030/obj",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/sine_interp.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/music/music_async_fifo.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_parameters.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/control/workstation_session.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv",
+        "/private/tmp/runtime-service-engines-mute-final-20261030/prepared_reference_event_workstation.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_render_service.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv",
+        "-GRUNTIME_ENGINES=1",
+        "-DRUNTIME_RENDER_ENGINES_TEST"
+      ],
+      "run_argv": [
+        "/private/tmp/runtime-service-engines-mute-final-20261030/obj/Vtb_workstation_audio_render_service",
+        "+PHASES=1"
+      ],
+      "metrics": {
+        "normal_cases": 960,
+        "warm_frames": 4096,
+        "warm_orders": 6,
+        "cc_cases": 4,
+        "lifecycle_cases": 4,
+        "load_cancel_cases": 205,
+        "requests": 8152,
+        "responses": 8152,
+        "max_latency_compute_cycles": 1183,
+        "unsafe_unfenced_idle_cycles": 2984,
+        "max_observed_tail_age": 33,
+        "cancel_zeros": 60,
+        "drained_results": 21,
+        "unsupported": 1,
+        "rejected": 1,
+        "wet_returns": 7395,
+        "wet_seen": 7,
+        "fdn_seen": 1,
+        "pressure_events": 4096
+      },
+      "per_source_timbre_metrics": [
+        {
+          "source": 0,
+          "timbre": 0,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 1,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 2,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 3,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 0,
+          "timbre": 4,
+          "max_latency_compute_cycles": 222
+        },
+        {
+          "source": 1,
+          "timbre": 0,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 1,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 2,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 3,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 1,
+          "timbre": 4,
+          "max_latency_compute_cycles": 249
+        },
+        {
+          "source": 2,
+          "timbre": 0,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 1,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 2,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 3,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 2,
+          "timbre": 4,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 0,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 1,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 2,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 3,
+          "max_latency_compute_cycles": 1145
+        },
+        {
+          "source": 3,
+          "timbre": 4,
+          "max_latency_compute_cycles": 1145
+        }
+      ],
+      "compile_warning_counts": {
+        "PINMISSING": 92,
+        "TIMESCALEMOD": 1,
+        "WIDTHEXPAND": 58,
+        "WIDTHTRUNC": 22,
+        "UNSIGNED": 4
+      },
+      "run_log_sha256": "4568f8fbb1ad80cca68f4a8503738e64eb19ffe18240d72829d779fafbdd47dd",
+      "inputs_unchanged_during_run": true
+    }
+  ],
+  "unit_regressions": {
+    "request_epoch_directed": {
+      "passed": true,
+      "top": "tb_workstation_request_epoch_delivery",
+      "cases": [
+        "old_epoch_on_accept",
+        "new_panic_after_accept",
+        "late_result_suppressed",
+        "consecutive_accept",
+        "epoch_wrap"
+      ]
+    },
+    "default_delivery": {
+      "passed": true,
+      "top": "tb_workstation_frame_delivery",
+      "cycles": 4119,
+      "duplicate_faults": 141
+    },
+    "accepted_source_boundary": {
+      "passed": true,
+      "test": "sim/test_current_workstation_sources.py",
+      "tests": 10
+    }
+  },
+  "validation_limits": [
+    "No top/profile/locked source selection changed in this stage",
+    "No synthesis, place-and-route, physical CDC/PLL, SRAM/Flash or hardware acceptance from this regression",
+    "Posted DDR model checks command ordering and delayed execution, not electrical completion or arbitration bandwidth",
+    "First automatic 44.1k config latency1598 is distinct from steady1146 and loader-wait1182; service-only excludes router/CDC/serializer",
+    "Full1600phase legacy sweep precedes final native-only mute/ACK/epoch patch; final source runs phases1 plus directed/default delivery checks",
+    "44.1 effect results are checked against independent integer model; no measured acoustic response claim",
+    "Warnings include unused prepared module pins and intentionally unobserved TB outputs, inherited arithmetic widths; UNOPTFLAT absent"
+  ],
+  "parent_independent_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-render-service-parent-final-v5/verification.json",
+    "sha256": "eb816dbb3ffe785ed0176a34639f9e292c382a604e8bf3134c7a8c93e4889eb2",
+    "passed": true,
+    "inputs_unchanged_during_run": true,
+    "metrics": {
+      "requests": 48652,
+      "responses": 48652,
+      "modeled_frames": 48644,
+      "configs": 16,
+      "histories": 25,
+      "cancels": 4,
+      "wet48": 16862179,
+      "wet44": 17758676,
+      "pitch_checks": 49780416,
+      "max_latency": 1598,
+      "max_steady_latency": 1146,
+      "max_auto_config_latency": 1598,
+      "max_loader_latency": 1182,
+      "posted_writes": 12160,
+      "ordered_fences": 27
+    },
+    "independent_fixed_point_compared_frames": {
+      "48000": 24322,
+      "44100": 24322
+    },
+    "source_boundary_tests": {
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py",
+      "passed": true,
+      "tests": 10
+    }
+  }
+}

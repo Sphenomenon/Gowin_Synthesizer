@@ -1,6 +1,8 @@
 `timescale 1ns/1ps
 
-module workstation_frame_delivery (
+module workstation_frame_delivery #(
+    parameter bit REQUEST_EPOCH_SNAPSHOT=0
+) (
     input wire clk_i, rst_ni, sample_ce_i, muted_i,
     input wire [9:0] cancel_epoch_i,
     input wire render_valid_i,
@@ -14,7 +16,12 @@ module workstation_frame_delivery (
     logic [9:0] observed_epoch;
     logic frame_offered;
     logic frame_cancelled;
-    wire cancelled = cancel_epoch_i != observed_epoch;
+    // A request-driven caller snapshots the current epoch when accepting a
+    // new slot. A previous slot's pending epoch observation cannot cancel it.
+    // A new PANIC on that edge changes the input epoch on the next cycle and
+    // still cancels the newly accepted request.
+    wire cancelled = cancel_epoch_i != observed_epoch &&
+        !(REQUEST_EPOCH_SNAPSHOT && sample_ce_i);
     wire available = !frame_offered || sample_ce_i;
     wire render_allowed = !frame_cancelled || sample_ce_i;
     wire muted_frame = muted_i && sample_ce_i;

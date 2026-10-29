@@ -129,11 +129,11 @@ module tb_workstation_audio_render_service #(parameter bit RUNTIME_ENGINES=0);
         cycles=cycles+1;
         if(rst_n) begin
             if(full_applied44 || (rate && full_rate_ready))$fatal(1,"full effects chain acknowledged unsupported 44.1 kHz");
-            if(dut.workstation.effects.delay_stage.read_l!=0 || dut.workstation.effects.delay_stage.read_r!=0) wet_seen[0]=1;
-            if(dut.workstation.effects.chorus_stage.read_l!=0 || dut.workstation.effects.chorus_stage.read_r!=0) wet_seen[1]=1;
-            if(dut.workstation.effects.reverb_stage.early_l!=0 || dut.workstation.effects.reverb_stage.early_r!=0) wet_seen[2]=1;
+            if(dut.workstation.legacy_effects.effects.delay_stage.read_l!=0 || dut.workstation.legacy_effects.effects.delay_stage.read_r!=0) wet_seen[0]=1;
+            if(dut.workstation.legacy_effects.effects.chorus_stage.read_l!=0 || dut.workstation.legacy_effects.effects.chorus_stage.read_r!=0) wet_seen[1]=1;
+            if(dut.workstation.legacy_effects.effects.reverb_stage.early_l!=0 || dut.workstation.legacy_effects.effects.reverb_stage.early_r!=0) wet_seen[2]=1;
             for(integer lane=0;lane<4;lane=lane+1)
-                if(dut.workstation.effects.reverb_stage.tail[lane]!=0) fdn_seen=1;
+                if(dut.workstation.legacy_effects.effects.reverb_stage.tail[lane]!=0) fdn_seen=1;
             phase=phase==1599 ? 0 : phase+1;
             if(periodic) begin
                 if(phase==1599) begin
