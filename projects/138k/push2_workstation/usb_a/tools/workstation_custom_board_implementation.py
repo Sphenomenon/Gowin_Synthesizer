@@ -26,6 +26,7 @@ DDR_CAPTURE = DDR_PHY + '/wloadn_3_s0'
 DDR_CAPTURE_REGION = 'R[40:50]C[70:90]'
 DDR_CAPTURE_CONSTRAINT = f'INS_LOC "{DDR_CAPTURE}" {DDR_CAPTURE_REGION};'
 DDR_MINIMUM = f'set_min_delay 0.800 -from [get_pins {{{DDR_LAUNCH}/Q}}] -to [get_pins {{{DDR_CAPTURE}/D}}]'
+DDR_DQS_HOLD_REGIONS = tuple(f'R[{104-10*lane}:{118-10*lane}]C[2:30]' for lane in range(4))
 
 
 def implementation_script(user_code, place_option=2, route_option=0, replicate_resources=False):
@@ -163,8 +164,61 @@ def ddr_capture_region_constraints(payload, sdc, routed_netlist):
         new_route_verified=False, new_hold_slack_ns=None)
 
 
+def ddr_dqs_hold_region_constraints(payload, sdc, routed_netlist):
+    """Keep the vendor logic intact and place four observed HOLD boundaries.
+
+    This follows the exact previous-route FF -> LUT2 -> DQS topology. It
+    neither declares these paths static nor changes their timing exceptions.
+    """
+    text = payload.decode('utf-8')
+    if text.splitlines().count(DDR_CAPTURE_CONSTRAINT) != 1:
+        raise ValueError('DQS HOLD experiment requires the original capture-region constraint')
+    # Reuse the complete hard-resource/min-delay/clock boundary check without
+    # appending another capture constraint or changing the original payload.
+    ddr_capture_region_constraints(text.replace(DDR_CAPTURE_CONSTRAINT, '').encode(), sdc, routed_netlist)
+    netlist = SynthesisNetlist(routed_netlist, TOP)
+    power = {netlist.pin(name, 'V') for name, cell in netlist.cells.items() if cell['kind'] == 'VCC'}
+    lanes, constraints = [], []
+    for lane, region in enumerate(DDR_DQS_HOLD_REGIONS):
+        config = f'{DDR_PHY}/u_ddr_init/read_rclksel_conf_{lane}_s0'
+        gate = f'{DDR_PHY}/u_ddr_init/hold_Z_{lane}_s'
+        dqs = f'{DDR_PHY}/u_ddr_phy_wds/data_lane_gen[{lane}].u_ddr_phy_data_lane/u_ddr_phy_data_io/u_dqs'
+        if any(name in text for name in (config, gate)):
+            raise ValueError('DQS HOLD target already appears in the parent CST')
+        if any(name not in netlist.cells for name in (config, gate, dqs)):
+            raise ValueError('DQS HOLD observed boundary is missing')
+        register, lut, hard = (netlist.cells[name] for name in (config, gate, dqs))
+        if (register['kind'] != 'DFFCE' or register['parameters'].get('INIT') != "1'b0" or
+                set(register['ports']) != {'D', 'Q', 'CLK', 'CE', 'CLEAR'} or
+                netlist.pin(config, 'D') not in power or
+                lut['kind'] != 'LUT2' or lut['parameters'].get('INIT') != "4'h4" or
+                set(lut['ports']) != {'I0', 'I1', 'F'} or hard['kind'] != 'DQS' or
+                hard['parameters'].get('DQS_MODE') != '"X4"'):
+            raise ValueError('DQS HOLD observed FF/LUT/DQS type or configuration changed')
+        if (netlist.pin(config, 'Q') != netlist.pin(gate, 'I0') or
+                netlist.pin(gate, 'F') != netlist.pin(dqs, 'HOLD') or
+                netlist.pin(config, 'CLEAR') != netlist.pin(dqs, 'RESET') or
+                netlist.pin(config, 'CLK') != netlist.pin(dqs, 'PCLK') or
+                netlist.pin(config, 'CLK') != netlist.pin(DDR_PHY + '/fclkdiv', 'CLKOUT')):
+            raise ValueError('DQS HOLD observed data/reset/UI clock topology changed')
+        constraints += [f'INS_LOC "{name}" {region};' for name in (config, gate)]
+        lanes.append(dict(lane=lane, register=config, gate=gate, dqs=dqs, region=region,
+                          clock=netlist.pin(config, 'CLK'), observed_FF_LUT_DQS=True))
+    adapted = payload + ('\n' + '\n'.join(constraints) + '\n').encode()
+    if parse_locations(adapted.decode()) != parse_locations(text):
+        raise ValueError('DQS HOLD placement unexpectedly changed IO locations')
+    return adapted, dict(lanes=lanes, constraints=constraints,
+        before_sha256=digest(payload), after_sha256=digest(adapted),
+        exact_appended_bytes_hex=adapted[len(payload):].hex(), parent_bytes_preserved=True,
+        io_locations_unchanged=True, hard_locations_unchanged=True, sdc_unchanged=True,
+        vendor_logic_unchanged=True, timing_exceptions_unchanged=True,
+        topology_evidence_scope='hash_bound_previous_route_VO_of_same_encrypted_synthesis_VG',
+        new_route_verified=False)
+
+
 def derive_ddr_capture_region(source, output, user_code, parent_evidence,
-                              expected_parent_evidence_sha256, acknowledge_electrical_risk=False):
+                              expected_parent_evidence_sha256, acknowledge_electrical_risk=False,
+                              *, dqs_hold_regions=False):
     """Prepare only a hash-locked physical child; never audit mutable current RTL."""
     source, output, parent_evidence = (Path(path).resolve() for path in (source, output, parent_evidence))
     script = implementation_script(user_code)
@@ -214,7 +268,8 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
     routed_name = f'impl/pnr/{BASE}.vo'
     if routed_name not in verified_evidence:
         raise ValueError('parent route VO needs original hash-bound physical evidence')
-    adapted, placement = ddr_capture_region_constraints(
+    adaptation = ddr_dqs_hold_region_constraints if dqs_hold_regions else ddr_capture_region_constraints
+    adapted, placement = adaptation(
         (source / 'physical.cst').read_bytes(), (source / 'physical.sdc').read_bytes(),
         (source / routed_name).read_text())
     placement['observed_route_vo_sha256'] = verified_evidence[routed_name]
@@ -222,9 +277,17 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
     for name, expected in inputs.items():
         if name != 'run.tcl':
             checked_copy(source / name, output / name, expected)
-    checked_copy(source / 'physical_inputs.json', output / 'parent_physical_inputs.json',
+    # A child may itself carry an older parent's snapshot. Keep every byte of
+    # that closure instead of overwriting it with the immediate parent's file.
+    snapshot_prefix = ('parent_' + previous['user_code'].removeprefix('0x')
+                       if 'parent_physical_inputs.json' in inputs else 'parent_physical')
+    parent_manifest_copy = snapshot_prefix + '_inputs.json'
+    parent_evidence_copy = snapshot_prefix + '_evidence.json'
+    if any(name in inputs for name in (parent_manifest_copy, parent_evidence_copy)):
+        raise ValueError('physical ancestor snapshot name collides with an existing input')
+    checked_copy(source / 'physical_inputs.json', output / parent_manifest_copy,
                  verified_evidence['physical_inputs.json'])
-    checked_copy(parent_evidence, output / 'parent_physical_evidence.json', expected_parent_evidence_sha256)
+    checked_copy(parent_evidence, output / parent_evidence_copy, expected_parent_evidence_sha256)
     (output / 'physical.cst').write_bytes(adapted)
     (output / 'run.tcl').write_text(script)
     for name, expected in inputs.items():
@@ -241,22 +304,27 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
         identity='custom138k-native-physical-' + user_code.upper(), user_code='0x' + user_code.upper(),
         prepared_at=datetime.now().astimezone().isoformat(),
         validation_stage='offline_physical_variant_prepared_no_EDA',
-        source_policy='hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_capture_region_CST_append',
+        source_policy=('hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_DQS_HOLD_regions_CST_append'
+                       if dqs_hold_regions else
+                       'hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_capture_region_CST_append'),
         parent_physical_identity=previous['identity'], parent_physical_directory=str(source),
         parent_physical_manifest_sha256=verified_evidence['physical_inputs.json'],
         parent_physical_evidence_sha256=expected_parent_evidence_sha256,
+        parent_physical_manifest_copy=parent_manifest_copy,
+        parent_physical_evidence_copy=parent_evidence_copy,
         parent_physical_evidence_verified_sha256=verified_evidence,
         synthesis_parent_identity=audit['identity'],
         synthesis_source_identity={key: evidence[key] for key in ('source_commit', 'profile_revision', 'profile_identity')},
         current_working_tree_RTL_used=False, new_synthesis_run=False, EDA_started=False,
         preparer_sha256=sha(Path(__file__)), parent_input_sha256=dict(inputs),
-        ddr_capture_region_adaptation=placement, automatic_hold_repair=True,
+        automatic_hold_repair=True,
         full_timing_gates_required=True,
         parent_failed_physical_status=evidence['status'],
         input_sha256={path.name: sha(path) for path in output.iterdir() if path.is_file()},
         physical_gates_passed=False, timing_closed=False, deployment_allowed=False, release_ready=False,
         hardware_tested=False, board_programming_authorized=False, bitstream_sha256=None,
         sram_programmed=False, flash_programmed=False)
+    result['ddr_dqs_hold_regions_adaptation' if dqs_hold_regions else 'ddr_capture_region_adaptation'] = placement
     (output / 'physical_inputs.json').write_text(json.dumps(result, indent=2) + '\n')
     return result
 
@@ -345,8 +413,10 @@ def main():
     parser.add_argument('--acknowledge-electrical-risk', action='store_true')
     parser.add_argument('--ulpi-bypass-lvcmos33', action='store_true',
                         help='Add only reviewed bypass ULPI IO standards; no electrical or external timing acceptance')
-    parser.add_argument('--ddr-capture-region-parent-evidence', type=Path,
+    parser.add_argument('--ddr-capture-region-parent-evidence', '--ddr-floorplan-parent-evidence', type=Path,
                         help='Derive from the hash-bound original physical evidence, keeping the previous VG and SDC')
+    parser.add_argument('--ddr-dqs-hold-regions', action='store_true',
+                        help='Append only the reviewed four-lane FF/LUT placement regions to a capture-region parent')
     parser.add_argument('--expected-parent-evidence-sha256',
                         help='Required explicit identity when deriving the DDR capture-region experiment')
     args = parser.parse_args()
@@ -356,8 +426,11 @@ def main():
         result = derive_ddr_capture_region(args.source, args.output, args.user_code,
                                           args.ddr_capture_region_parent_evidence,
                                           args.expected_parent_evidence_sha256,
-                                          args.acknowledge_electrical_risk)
+                                          args.acknowledge_electrical_risk,
+                                          dqs_hold_regions=args.ddr_dqs_hold_regions)
     else:
+        if args.ddr_dqs_hold_regions:
+            parser.error('--ddr-dqs-hold-regions requires an explicit floorplan parent evidence')
         if args.expected_parent_evidence_sha256:
             parser.error('--expected-parent-evidence-sha256 requires the explicit DDR derivation')
         result = prepare(args.source, args.output, args.user_code, args.acknowledge_electrical_risk,
