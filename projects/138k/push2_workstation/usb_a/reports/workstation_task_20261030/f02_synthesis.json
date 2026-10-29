@@ -1,0 +1,1382 @@
+{
+  "schema": 1,
+  "date": "2026-10-30T04:31:54.710226+08:00",
+  "validation_stage": "synthesis_and_source_netlist_audit_only_with_post_synthesis_inventory_failure",
+  "source": {
+    "commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+    "clean_clone": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-3d4b317",
+    "git_status_porcelain": "",
+    "all_profile_source_paths_tracked": true,
+    "locked_source_files": 244,
+    "source_lock_mapping_sha256": "10379ff360c0f10bac32a34a8b7b5539626437245da034465e5c065448c1c921",
+    "source_snapshot_entries": 665,
+    "staged_input_files": 510,
+    "compiled_inputs": 230,
+    "source_policy": "explicit_native_board_on_resource_timing"
+  },
+  "candidate": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate",
+    "profile": "custom138k-workstation-v1",
+    "revision": 2,
+    "identity": "custom138k-workstation-v1-f5b723250388add5",
+    "candidate_input_sha256": "f5b723250388add5a84428024daecc90ed214887f7fb1185304bac81d4f41f72",
+    "inherited_native_identity": "custom138k-native-integration-20261027-a26",
+    "configuration": {
+      "hdmi_mode": "1080p60",
+      "high_speed_allowed": true,
+      "tf_audio_kind": "wav",
+      "implemented_sample_rates_hz": [
+        48000
+      ],
+      "ae350_firmware_policy": "maintained_ae350_v1"
+    },
+    "top_module": "workstation_custom_138k_top",
+    "device": "GW5AST-LV138PG484AC2/I1",
+    "parent_baseline": {
+      "name": "resource_rework_route0",
+      "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+      "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+      "origin": {
+        "build": "results/resource_rework_final_route0_20261020_041042",
+        "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+        "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+      },
+      "source_files": 437,
+      "excluded_files": 180
+    },
+    "identity_note": "The explicit profile candidate identity is authoritative for this changed AE350 input. The inherited a26 composition identity is not a deployment identity. Absolute patch_path.vh and build.log source paths make this clean-root candidate identity differ from workspace prepare; ROM/ELF bytes reproduce."
+  },
+  "identities": {
+    "profile_configuration": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-3d4b317/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json",
+      "sha256": "0dc585ff6a1674b0bf6e8b791197ebd507922f820547cd1b04795f632f0aba24",
+      "bytes": 56337
+    },
+    "profile_artifact": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation_profile.json",
+      "sha256": "ea87fd29d07287831073e0b9effa1953d92aa8b8e1300c69f454a9737b091d33",
+      "bytes": 258354
+    },
+    "integration_inputs": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/integration_inputs.json",
+      "sha256": "10deb0aa1cd172838c98b1f8d675b0ae41b812641549ba3bde432b355caabd2b",
+      "bytes": 191526
+    },
+    "parent_prepare_metadata": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/parent_prepare_metadata.json",
+      "sha256": "68e559eb2bdf49537fd6a14ae310ce2d62b0f6b3caf9fa7381f1c595f68e2886",
+      "bytes": 30731
+    },
+    "clock_plan": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-3d4b317/projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json",
+      "sha256": "9fc4ee7b39e45a23bf45f3533d3fcb0e61dbbd4e781dd8447f0196d690497113",
+      "bytes": 1707
+    },
+    "gprj": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/Prj1.gprj",
+      "sha256": "75750504e64fa4bc8ae73222b3b5671aebd60129471a105684cc52f13c66c189",
+      "bytes": 21979
+    },
+    "synthesis_tcl": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/scripts/custom_board_synthesis.tcl",
+      "sha256": "39299bea179c10803f9660c474ee07371b0cc08ff3c58f9121fcf4a3f860578d",
+      "bytes": 275
+    },
+    "cst": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/constraints/custom_138k.cst",
+      "sha256": "13440c753db683b2bcab509068dd5b3d3ffe652f37befc9b9eaf30780ab70920",
+      "bytes": 12453
+    },
+    "sdc": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/constraints/custom_138k.sdc",
+      "sha256": "bfcf675d98f07dbcb51eaedfa554b59e14b3f9efca0c2b66822e774ef5198354",
+      "bytes": 36652
+    },
+    "synthesis_log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/synthesis.log",
+      "sha256": "27647493414af20df7dc63c69d4d91fbeab771b904b93080a7bac856a99a2fc7",
+      "bytes": 224615
+    },
+    "synthesis_netlist": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "sha256": "27b30ac791323f05dc68cd5d9ea6ccaaf14d6a122c5fe2b978cb4714b7fdcf18",
+      "bytes": 28931788
+    },
+    "synthesis_resource_report": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+      "sha256": "d54b5672a8bb5a4f9fa708e26f011933762ed684b312e89c1a6a90e964618b8b",
+      "bytes": 33261
+    },
+    "source_hierarchy_audit": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/source_hierarchy_audit.json",
+      "sha256": "fa3c8727115dfc841de12220435c4e5c2e87ee1a954d09a265bc07afbf93e377",
+      "bytes": 97552
+    },
+    "ae350_rom_verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/ae350_netlist_rom_verification.json",
+      "sha256": "cce7c8cefc90a26c46ffbfaf1ea16e6b27274b8b27ae4f6329bf77fbedfe0d43",
+      "bytes": 3143
+    },
+    "synthesis_timing_report_html": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn.rpt.html",
+      "sha256": "280380760ba73b1b13e45d27f3717ccab7ff0dc665f955f30ecb525557e2e49b",
+      "bytes": 81024
+    }
+  },
+  "prepare_proof": {
+    "date": "2026-10-30T04:12:06.291546+08:00",
+    "source_commit": "3d4b3175d0f20d0b787b61b43e4543739b26bca1",
+    "clean_root": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-3d4b317",
+    "candidate": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate",
+    "git_status_porcelain": "",
+    "locked_source_files": 244,
+    "compiled_inputs": 230,
+    "profile": "custom138k-workstation-v1",
+    "revision": 2,
+    "candidate_identity": "custom138k-workstation-v1-f5b723250388add5",
+    "configuration_sha256": "0dc585ff6a1674b0bf6e8b791197ebd507922f820547cd1b04795f632f0aba24",
+    "artifact_sha256": "ea87fd29d07287831073e0b9effa1953d92aa8b8e1300c69f454a9737b091d33",
+    "usb_rom_sha256": "4211ea0f1fc1d5a3dde02979e25652b2cbf5a1329cf109b1206c151c3b4eabc1",
+    "ae350_rom_sha256": "3ded01f97acaa87a9331038cc490e2dc03f7afbfa7bd4880296dbfad8632435b",
+    "ae350_elf_sha256": "4986d67e445aa593575b76cf17065e4561a315f10b19c43111dee693ef753845",
+    "same_usb_rom_as_workspace": true,
+    "same_ae350_rom_as_workspace": true,
+    "staged_differences_from_workspace": [
+      "native_bluetooth/patch_path.vh",
+      "native_usb_firmware/build.log"
+    ],
+    "note": "Only generated absolute BLE patch_path.vh and compiler warning source paths in build.log differ with source/output root. All versioned sources and both USB/AE350 ROMs reproduce. No synthesis or board operation.",
+    "profile_verify_passed": true,
+    "profile_regressions": {
+      "passed": 12,
+      "skipped": 0
+    },
+    "all_locked_source_paths_tracked": true
+  },
+  "synthesis": {
+    "process": {
+      "started_at": "2026-10-30T04:16:12.744773+08:00",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/scripts/custom_board_synthesis.tcl"
+      ],
+      "cwd": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+      "tool_sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+      "environment": {
+        "DYLD_LIBRARY_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib",
+        "DYLD_FRAMEWORK_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib"
+      },
+      "state": "completed",
+      "process_id": 52061,
+      "returncode": 0,
+      "finished_at": "2026-10-30T04:22:57.903768+08:00",
+      "synthesis_log_sha256": "27647493414af20df7dc63c69d4d91fbeab771b904b93080a7bac856a99a2fc7"
+    },
+    "elapsed_seconds": 405.158995,
+    "returncode": 0,
+    "log_finish_marker": "GowinSynthesis finish",
+    "tool_version": "V1.9.12",
+    "tool_binaries": {
+      "gw_sh": {
+        "path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+        "sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01"
+      },
+      "GowinSynthesis": {
+        "path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/GowinSynthesis",
+        "sha256": "5dbd2b4d47f823c8844d55867eb06c9c0151e5ae79a93e2b61322f5e474f17b2"
+      }
+    },
+    "tool_environment": {
+      "DYLD_LIBRARY_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib",
+      "DYLD_FRAMEWORK_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib"
+    },
+    "options": {
+      "verilog_std": "sysv2017",
+      "timing_driven": true,
+      "output_base_name": "custom_138k_integration"
+    },
+    "serialization_lock": "/private/tmp/gw138k-build.lock",
+    "initial_version_probe": "gw_sh --version failed to load @rpath/libGWTE.dylib before setting IDE lib DYLD paths; the actual synthesis invocation used the recorded environment and returned 0.",
+    "warning_count": 351,
+    "warning_codes": {
+      "CK3000": 3,
+      "CV0016": 1,
+      "EX1998": 9,
+      "EX2478": 1,
+      "EX2526": 1,
+      "EX2565": 108,
+      "EX2598": 16,
+      "EX3073": 13,
+      "EX3638": 41,
+      "EX3670": 1,
+      "EX3780": 3,
+      "EX3791": 141,
+      "NL0002": 13
+    },
+    "clock_relationship_warnings": [
+      "WARN  (CK3000) : Can't calculate clocks' relationship between: \"clk_50m\" and \"u_lcd/u_pll/PLL_inst/CLKOUT0.default_gen_clk\"",
+      "WARN  (CK3000) : Can't calculate clocks' relationship between: \"u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk\" and \"u_lcd/u_pll/PLL_inst/CLKOUT0.default_gen_clk\"",
+      "WARN  (CK3000) : Can't calculate clocks' relationship between: \"u_lcd/u_pll/PLL_inst/CLKOUT0.default_gen_clk\" and \"u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk\""
+    ],
+    "unused_inputs": [
+      "WARN  (CV0016) : Input amp_fpga_det is unused(\"/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/rtl/workstation/gw138k_push_workstation_top.v\":19)"
+    ],
+    "errors": [],
+    "resources": {
+      "Register": 55571,
+      "Lut": 73648,
+      "Alu": 15552,
+      "Bsram": 272,
+      "Ssram": 419,
+      "MULTALU27X18": 46,
+      "MULT12X12": 41,
+      "MULT27X36": 45,
+      "self_bsram": 0,
+      "subtree_bsram": 272
+    },
+    "synthesis_bsram_equivalent": 272,
+    "physical_bsram_count": null,
+    "bsram_device_capacity": 340,
+    "top_level_bsram": {
+      "u_native_usb": 39,
+      "u_managed": 66,
+      "u_tf_audio": 5,
+      "u_music": 23,
+      "u_bluetooth": 63,
+      "u_memory": 16,
+      "u_video": 44,
+      "u_boot_memory": 16
+    },
+    "clock_estimates": [
+      {
+        "clock": "clk_50m",
+        "required_mhz": 50.0,
+        "synthesis_estimated_mhz": 54.944,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "usb2_ulpi_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 72.966,
+        "estimate_meets_requirement": false
+      },
+      {
+        "clock": "clk_12m288",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 76.287,
+        "estimate_meets_requirement": false
+      },
+      {
+        "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 76.8,
+        "synthesis_estimated_mhz": 60.489,
+        "estimate_meets_requirement": false
+      },
+      {
+        "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 48.0,
+        "synthesis_estimated_mhz": 59.723,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_lcd/u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 31.5,
+        "synthesis_estimated_mhz": 42.464,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+        "required_mhz": 400.0,
+        "synthesis_estimated_mhz": 1338.315,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 50.0,
+        "synthesis_estimated_mhz": 311.818,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 1455.604,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 201.532,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+        "required_mhz": 148.5,
+        "synthesis_estimated_mhz": 212.902,
+        "estimate_meets_requirement": true
+      }
+    ],
+    "clock_estimate_interpretation": "Only synthesis estimates. ULPI and clk_12m288 report requirements of 100 MHz are defaults, not board clocks; authoritative board values remain 60 MHz and 12.288 MHz. Audio estimate 60.489 MHz is below its actual 76.8 MHz target. No clock or exception relaxed."
+  },
+  "formal_audit": {
+    "returncode": 0,
+    "command": [
+      "python3",
+      "-m",
+      "tools.workstation_custom_board_audit",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate"
+    ],
+    "cwd": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-3d4b317",
+    "auditor_sha256": "70326edd44c529b51c5fd5ae4cc4add3690d05fe3a86cb4790b06fcd19409a1e",
+    "feature_hierarchy_count": 24,
+    "features": {
+      "usb_host": {
+        "instance": "u_native_usb/host",
+        "Register": 1961,
+        "Lut": 4597,
+        "Alu": 386,
+        "Bsram": 38,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 38
+      },
+      "push_surface": {
+        "instance": "u_native_usb/input_owner",
+        "Register": 1843,
+        "Lut": 4125,
+        "Alu": 487,
+        "Bsram": 1,
+        "Ssram": 82,
+        "MULTALU27X18": 0,
+        "MULT12X12": 2,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 1
+      },
+      "synthesizer": {
+        "instance": "u_managed/u_audio/u_workstation/engine",
+        "Register": 3076,
+        "Lut": 4350,
+        "Alu": 848,
+        "Bsram": 17,
+        "Ssram": 4,
+        "MULTALU27X18": 4,
+        "MULT12X12": 0,
+        "MULT27X36": 4,
+        "self_bsram": 8,
+        "subtree_bsram": 17
+      },
+      "vector_voices": {
+        "instance": "u_managed/u_audio/u_workstation/vector_engine",
+        "Register": 2022,
+        "Lut": 2708,
+        "Alu": 1609,
+        "Bsram": 10,
+        "Ssram": 0,
+        "MULTALU27X18": 14,
+        "MULT12X12": 0,
+        "MULT27X36": 9,
+        "self_bsram": 10,
+        "subtree_bsram": 10
+      },
+      "vector_control_events": {
+        "instance": "u_managed/u_audio/u_workstation/cue_player",
+        "Register": 98,
+        "Lut": 144,
+        "Alu": 69,
+        "Bsram": 1,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 1,
+        "subtree_bsram": 1
+      },
+      "scope_dac_selection": {
+        "instance": "u_tf_dac",
+        "Register": 139,
+        "Lut": 176,
+        "Alu": 33,
+        "Bsram": 0,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 1,
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "basic_pitch_pipeline": {
+        "instance": "u_music/u_basic_pitch",
+        "Register": 8934,
+        "Lut": 10755,
+        "Alu": 3141,
+        "Bsram": 23,
+        "Ssram": 152,
+        "MULTALU27X18": 19,
+        "MULT12X12": 36,
+        "MULT27X36": 19,
+        "self_bsram": 3,
+        "subtree_bsram": 23
+      },
+      "basic_pitch_ddr_port": {
+        "instance": "u_music/u_ddr16",
+        "Register": 22,
+        "Lut": 216,
+        "Alu": 0,
+        "Bsram": 0,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "serial_effects": {
+        "instance": "u_managed/u_audio/u_workstation/effects",
+        "Register": 3846,
+        "Lut": 3545,
+        "Alu": 1876,
+        "Bsram": 32,
+        "Ssram": 0,
+        "MULTALU27X18": 1,
+        "MULT12X12": 0,
+        "MULT27X36": 10,
+        "self_bsram": 0,
+        "subtree_bsram": 32
+      },
+      "tf_spi_fat_reader": {
+        "instance": "u_tf_audio/u_path/u_file_reader",
+        "Register": 1197,
+        "Lut": 2421,
+        "Alu": 503,
+        "Bsram": 1,
+        "Ssram": 16,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 1,
+        "subtree_bsram": 1
+      },
+      "tf_capture_fifo": {
+        "instance": "u_tf_audio/u_path/u_capture_fifo",
+        "Register": 118,
+        "Lut": 157,
+        "Alu": 26,
+        "Bsram": 2,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 2,
+        "subtree_bsram": 2
+      },
+      "tf_playback_fifo": {
+        "instance": "u_tf_audio/u_path/u_playback_fifo",
+        "Register": 116,
+        "Lut": 168,
+        "Alu": 26,
+        "Bsram": 2,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 2,
+        "subtree_bsram": 2
+      },
+      "tf_ddr_dma": {
+        "instance": "u_tf_audio/u_path/u_dma",
+        "Register": 1022,
+        "Lut": 1082,
+        "Alu": 190,
+        "Bsram": 0,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "shared_ddr_controller": {
+        "instance": "u_memory",
+        "Register": 5517,
+        "Lut": 3032,
+        "Alu": 206,
+        "Bsram": 16,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 16
+      },
+      "hdmi_display_analysis": {
+        "instance": "u_video",
+        "Register": 9175,
+        "Lut": 9366,
+        "Alu": 2845,
+        "Bsram": 44,
+        "Ssram": 73,
+        "MULTALU27X18": 5,
+        "MULT12X12": 1,
+        "MULT27X36": 2,
+        "self_bsram": 0,
+        "subtree_bsram": 44
+      },
+      "ae350_boot_memory": {
+        "instance": "u_boot_memory",
+        "Register": 255,
+        "Lut": 151,
+        "Alu": 40,
+        "Bsram": 16,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 16,
+        "subtree_bsram": 16
+      },
+      "playback_service": {
+        "instance": "u_playback_service",
+        "Register": 67,
+        "Lut": 118,
+        "Alu": 0,
+        "Bsram": 0,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "output_router": {
+        "instance": "u_output_router",
+        "Register": 76,
+        "Lut": 82,
+        "Alu": 0,
+        "Bsram": 0,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "delay_ddr_dma": {
+        "instance": "u_delay_ddr_dma",
+        "Register": 657,
+        "Lut": 364,
+        "Alu": 30,
+        "Bsram": 0,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "native_cpu": {
+        "instance": "u_native_usb/host/cpu",
+        "Register": 524,
+        "Lut": 1103,
+        "Alu": 136,
+        "Bsram": 2,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 2,
+        "subtree_bsram": 2
+      },
+      "clock_serializer": {
+        "instance": "u_video/u_dvi/clock_lane",
+        "Register": 0,
+        "Lut": 0,
+        "Alu": 0,
+        "Bsram": 0,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "data_serializer_0": {
+        "instance": "u_video/u_dvi/data_lanes[0].serializer",
+        "Register": 0,
+        "Lut": 10,
+        "Alu": 0,
+        "Bsram": 0,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "data_serializer_1": {
+        "instance": "u_video/u_dvi/data_lanes[1].serializer",
+        "Register": 0,
+        "Lut": 10,
+        "Alu": 0,
+        "Bsram": 0,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      },
+      "data_serializer_2": {
+        "instance": "u_video/u_dvi/data_lanes[2].serializer",
+        "Register": 0,
+        "Lut": 10,
+        "Alu": 0,
+        "Bsram": 0,
+        "Ssram": 0,
+        "MULTALU27X18": 0,
+        "MULT12X12": 0,
+        "MULT27X36": 0,
+        "self_bsram": 0,
+        "subtree_bsram": 0
+      }
+    },
+    "port_coverage": {
+      "logical_location_entries": 133,
+      "physical_port_bits": 142,
+      "implicit_negative_partners": [
+        "ddr_ck_n",
+        "ddr_dqs_n[0]",
+        "ddr_dqs_n[1]",
+        "ddr_dqs_n[2]",
+        "ddr_dqs_n[3]",
+        "tmds_clk_n",
+        "tmds_data_n[0]",
+        "tmds_data_n[1]",
+        "tmds_data_n[2]"
+      ]
+    },
+    "verified_usb_rom_words": 16384,
+    "usb_rom_sha256": "4211ea0f1fc1d5a3dde02979e25652b2cbf5a1329cf109b1206c151c3b4eabc1",
+    "explicit_clock_audit": {
+      "plan_source": "boards/custom_138k/clocks.json",
+      "plan_sha256": "9fc4ee7b39e45a23bf45f3533d3fcb0e61dbbd4e781dd8447f0196d690497113",
+      "clocks": {
+        "clk_50m": {
+          "net": "clk_50m",
+          "frequency_hz": 50000000
+        },
+        "ulpi_60m": {
+          "net": "usb2_ulpi_clk",
+          "frequency_hz": 60000000
+        },
+        "dac_ref12m288": {
+          "net": "clk_12m288",
+          "frequency_hz": 12288000
+        },
+        "audio_76m8": {
+          "net": "audio_clk",
+          "frequency_hz": 76800000,
+          "verified": true
+        },
+        "lcd_pixel31m5": {
+          "net": "u_lcd/pixel_clk",
+          "frequency_hz": 31500000,
+          "verified": true
+        },
+        "usb_48m": {
+          "net": "usb_clk",
+          "frequency_hz": 48000000,
+          "verified": true
+        },
+        "ddr_mem400": {
+          "net": "u_memory/memory_clk_374",
+          "frequency_hz": 400000000,
+          "verified": true
+        },
+        "ddr_ui100": {
+          "net": "memory_clk",
+          "frequency_hz": 100000000,
+          "verified": false,
+          "source_boundary_verified": true,
+          "wrapper_output_port": "memory_clk_373",
+          "opaque_port": "memory_clk_372",
+          "clock_observer_registers": {
+            "1": "u_memory/ui_reset_sync_1_s0",
+            "0": "u_memory/ui_reset_sync_0_s0",
+            "2": "u_memory/ui_reset_sync_2_s0"
+          }
+        },
+        "video_ref49": {
+          "net": "u_video/u_clock/g_hardware.u_pll/reference_clk",
+          "frequency_hz": 49500000,
+          "verified": true
+        },
+        "video_serial742": {
+          "net": "u_video/serial_clk",
+          "frequency_hz": 742500000,
+          "verified": true
+        },
+        "video_pixel148": {
+          "net": "u_video/pixel_clk",
+          "frequency_hz": 148500000,
+          "verified": true
+        },
+        "cpu_ram50": {
+          "net": "ram_clk",
+          "frequency_hz": 50000000,
+          "verified": true
+        },
+        "cpu_core100": {
+          "net": "core_clk",
+          "frequency_hz": 100000000,
+          "verified": true
+        }
+      },
+      "deferred_opaque_ip_targets": [
+        "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT"
+      ],
+      "source_netlist_verified": false,
+      "routed_timing_verified": false,
+      "constraints_complete": false
+    },
+    "source_netlist_checks": {
+      "native_receiver_audit": {
+        "bluetooth_uart": {
+          "first": "u_bluetooth/u_core/transport/uart/rx_sync_0_s0",
+          "second": "u_bluetooth/u_core/transport/uart/rx_sync_1_s0",
+          "first_stage_consumers": [
+            [
+              "u_bluetooth/u_core/transport/uart/rx_sync_1_s0",
+              "D"
+            ]
+          ],
+          "clock": "clk_50m",
+          "routed_timing_verified": false
+        },
+        "fpc_pll_reset": {
+          "first": "u_fpc_audio/pll_release_0_s0",
+          "second": "u_fpc_audio/pll_release_1_s0",
+          "first_stage_consumers": [
+            [
+              "u_fpc_audio/pll_release_1_s0",
+              "D"
+            ]
+          ],
+          "clock": "clk_50m",
+          "routed_timing_verified": false
+        },
+        "fpc_reference_monitor": {
+          "first": "u_fpc_audio/reference_sync_0_s0",
+          "second": "u_fpc_audio/reference_sync_1_s0",
+          "first_stage_consumers": [
+            [
+              "u_fpc_audio/reference_sync_1_s0",
+              "D"
+            ]
+          ],
+          "clock": "clk_50m",
+          "routed_timing_verified": false
+        }
+      },
+      "bridge_reset_audit": {
+        "transaction_reset_topology_verified": true,
+        "bridge_instance": "u_native_usb/host/usb/bridge",
+        "release_chains": {
+          "cpu": {
+            "session": {
+              "clock": "usb_clk",
+              "asynchronous_clear": "n208_7",
+              "asynchronous_clear_net": "u_native_usb/host/usb/bridge/n208_7",
+              "ready": "u_native_usb/host/usb/bridge/cpu_session_q[1]",
+              "stages": [
+                "u_native_usb/host/usb/bridge/cpu_session_q_0_s0",
+                "u_native_usb/host/usb/bridge/cpu_session_q_1_s0"
+              ]
+            },
+            "release": {
+              "clock": "usb_clk",
+              "asynchronous_clear": "n74_6",
+              "asynchronous_clear_net": "n74_6",
+              "ready": "u_native_usb/cpu_release_q_0[1]",
+              "stages": [
+                "u_native_usb/host/cpu_release_q_0_s0",
+                "u_native_usb/host/cpu_release_q_1_s0"
+              ]
+            }
+          },
+          "ulpi": {
+            "session": {
+              "clock": "usb2_ulpi_clk",
+              "asynchronous_clear": "n208_7",
+              "asynchronous_clear_net": "u_native_usb/host/usb/bridge/n208_7",
+              "ready": "u_native_usb/host/usb/ulpi_session_q[1]",
+              "stages": [
+                "u_native_usb/host/usb/bridge/ulpi_session_q_0_s0",
+                "u_native_usb/host/usb/bridge/ulpi_session_q_1_s0"
+              ]
+            },
+            "release": {
+              "clock": "usb2_ulpi_clk",
+              "asynchronous_clear": "n74_6",
+              "asynchronous_clear_net": "n74_6",
+              "ready": "u_native_usb/host/usb/bridge/ulpi_release_q[1]",
+              "stages": [
+                "u_native_usb/host/usb/bridge/ulpi_release_q_0_s0",
+                "u_native_usb/host/usb/bridge/ulpi_release_q_1_s0"
+              ]
+            }
+          }
+        },
+        "transaction_registers": {
+          "cpu": {
+            "transmit_count_q": 10,
+            "receive_index_q": 10,
+            "descriptor_cpu_q": 30,
+            "request_toggle_q": 1,
+            "result_sync_q": 2,
+            "result_cpu_q": 22,
+            "busy_q": 1,
+            "done_q": 1
+          },
+          "ulpi": {
+            "request_sync_q": 2,
+            "result_toggle_q": 1,
+            "result_mailbox_q": 22,
+            "descriptor_ulpi_q": 30,
+            "state_q": 3,
+            "upload_index_q": 10,
+            "receive_count_q": 10,
+            "elapsed_q": 17,
+            "recovery_q": 1
+          }
+        },
+        "locally_reset_registers": {
+          "cpu": 225,
+          "ulpi": 169
+        },
+        "physical_reset_timing_verified": false,
+        "cdc_constraints_complete": false
+      },
+      "master_volume_audit": {
+        "authority": "u_managed/u_audio/u_workstation/parameters",
+        "final_output": "u_fpc_audio",
+        "master_bits": [
+          "performance_words_470[56]",
+          "performance_words_470[57]",
+          "performance_words_470[58]",
+          "performance_words_470[59]",
+          "performance_words_470[60]",
+          "performance_words_470[61]",
+          "performance_words_470[62]",
+          "performance_words_470[63]"
+        ],
+        "authority_ports": [
+          "performance_words_56",
+          "performance_words_57",
+          "performance_words_58",
+          "performance_words_59",
+          "performance_words_60",
+          "performance_words_61",
+          "performance_words_62",
+          "performance_words_63"
+        ],
+        "effect_input_bits": [
+          "u_managed/u_audio/u_workstation/expression_gain[8]",
+          "u_managed/u_audio/u_workstation/expression_gain[9]",
+          "u_managed/u_audio/u_workstation/expression_gain[10]",
+          "u_managed/u_audio/u_workstation/expression_gain[11]",
+          "u_managed/u_audio/u_workstation/expression_gain[12]",
+          "u_managed/u_audio/u_workstation/expression_gain[13]",
+          "u_managed/u_audio/u_workstation/expression_gain[14]",
+          "u_managed/u_audio/u_workstation/expression_gain[15]"
+        ],
+        "double_master_attenuation": false,
+        "physical_audio_verified": false
+      },
+      "native_feedback_clock_audit": {
+        "source_clock": "audio_clk",
+        "destination_clock": "usb_clk",
+        "source_registers": 158,
+        "destination_registers": 160,
+        "source_domain_verified": true,
+        "physical_timing_verified": false
+      },
+      "delay_fifo_storage_audit": {
+        "u_write_fifo": {
+          "bsram_blocks": 4,
+          "distributed_ram_blocks": 0,
+          "entries": 512,
+          "width": 65,
+          "parity_banks": {
+            "even": 2,
+            "odd": 2
+          },
+          "clocks": {
+            "write": "audio_clk",
+            "read": "memory_clk"
+          },
+          "primitive_paths": [
+            "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/g_large_head.even_memory_g_large_head.even_memory_0_0_s",
+            "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/g_large_head.even_memory_g_large_head.even_memory_0_1_s",
+            "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/g_large_head.odd_memory_g_large_head.odd_memory_0_0_s",
+            "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/g_large_head.odd_memory_g_large_head.odd_memory_0_1_s"
+          ]
+        },
+        "u_read_fifo": {
+          "bsram_blocks": 4,
+          "distributed_ram_blocks": 0,
+          "entries": 512,
+          "width": 65,
+          "parity_banks": {
+            "even": 2,
+            "odd": 2
+          },
+          "clocks": {
+            "write": "memory_clk",
+            "read": "audio_clk"
+          },
+          "primitive_paths": [
+            "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/g_large_head.even_memory_g_large_head.even_memory_0_0_s",
+            "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/g_large_head.even_memory_g_large_head.even_memory_0_1_s",
+            "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/g_large_head.odd_memory_g_large_head.odd_memory_0_0_s",
+            "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/g_large_head.odd_memory_g_large_head.odd_memory_0_1_s"
+          ]
+        }
+      }
+    },
+    "shared_cdc": {
+      "constraints": 157,
+      "resolved_selectors": 145,
+      "deferred_opaque_ddr_selectors": [
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*/u_ddr_phy_data_io/ides_calib_d*/Q}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*/u_ddr_phy_data_io/*u_ides8_mem/CALIB}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_sync/recalib_s_0_s0/D}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*u_dqs/RESET}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*u_dqs_gen/RESET}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*u_oser8_mem/RESET}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*u_ides8_mem/RESET}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*u_cmd_gen/RESET}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/u_ddr_phy_cmd_lane/u_ddr_phy_cmd_io/u_ck_gen/RESET}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/*rburst_neg*/CLEAR}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/dll_step_base*/D}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_init/*/Q}",
+        "get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_ddr_phy_wds/*/u_dqs/HOLD}"
+      ],
+      "physical_timing_verified": false
+    },
+    "native_usb_reset_inventory": {
+      "resets": 16,
+      "levels": 8
+    },
+    "electrical_check": {
+      "status": "no_voltage_domain_conflict_detected",
+      "scope": "USB3300 nominal ULPI voltage domains and declared translator assembly only",
+      "actual_board_measured": false,
+      "full_electrical_acceptance": false,
+      "translators": [
+        {
+          "part": "U4",
+          "assembly": "not_fitted_short",
+          "phy_side": "B",
+          "supply_node": "U4.19",
+          "supply_network": "3V3_USB3300",
+          "nominal_mv": 3300
+        },
+        {
+          "part": "U5",
+          "assembly": "not_fitted_short",
+          "phy_side": "B",
+          "supply_node": "U5.14",
+          "supply_network": "3V3_USB3300",
+          "nominal_mv": 3300
+        }
+      ],
+      "findings": []
+    }
+  },
+  "ae350": {
+    "rom_sha256": "3ded01f97acaa87a9331038cc490e2dc03f7afbfa7bd4880296dbfad8632435b",
+    "elf_sha256": "4986d67e445aa593575b76cf17065e4561a315f10b19c43111dee693ef753845",
+    "binary_sha256": "e84235e34230f82b3a9a9b2a53ed5bc92356337e1251c5f8752767c05549d276",
+    "tool_versions": {
+      "gcc": "riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC arm64) 15.2.0",
+      "objcopy": "GNU objcopy (xPack GNU RISC-V Embedded GCC arm64) 2.45",
+      "size": "GNU size (xPack GNU RISC-V Embedded GCC arm64) 2.45",
+      "nm": "GNU nm (xPack GNU RISC-V Embedded GCC arm64) 2.45"
+    },
+    "tool_binaries": {
+      "gcc": {
+        "path": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+        "sha256": "d21f58713e7f2f9a9ef9de8762b2c2d1995cd4cdeda724d5fe4834f3af4737b2"
+      },
+      "objcopy": {
+        "path": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-objcopy",
+        "sha256": "96d0c832bf77a27380eb6a638bfec2ee5df6a732d1fb7141234698472f66aec7"
+      },
+      "size": {
+        "path": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-size",
+        "sha256": "6378363493f271657f4bd4e0558e1272968ada95b53ba09ccffdbc70433dac66"
+      },
+      "nm": {
+        "path": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-nm",
+        "sha256": "45c2086551a3decd7e4fd24a4d25a9710bc7bc665a4ca4dc7e669e5d70b8309f"
+      }
+    },
+    "capacity": {
+      "rom_capacity_bytes": 16384,
+      "binary_bytes": 10840,
+      "text_bytes": 10840,
+      "initialized_data_bytes": 0,
+      "bss_bytes": 60,
+      "physical_ram_bytes": 8192,
+      "ram_reserved_prefix_bytes": 512,
+      "static_ram_span_bytes": 60,
+      "static_ram_end": 572,
+      "stack_top": 8192,
+      "stack_capacity_bytes": 7620,
+      "minimum_stack_bytes": 4096,
+      "symbols": {
+        "_start": 2147483648,
+        "__data_load_start": 2147494488,
+        "__data_start": 512,
+        "__data_end": 512,
+        "__bss_start": 512,
+        "__bss_end": 572
+      },
+      "whole_program_stack_bound_verified": false,
+      "hardware_stack_watermark_verified": false
+    },
+    "stack_validation": "Compiler per-function sizes and reserved capacity; whole-call-chain and runtime high-water mark remain unverified.",
+    "synthesized_rom_verification": {
+      "schema": 1,
+      "check": "fixed_F02_AE350_pROM_initialization_read_only",
+      "passed": true,
+      "candidate_identity": "custom138k-workstation-v1-f5b723250388add5",
+      "netlist_sha256": "27b30ac791323f05dc68cd5d9ea6ccaaf14d6a122c5fe2b978cb4714b7fdcf18",
+      "rom_sha256": "3ded01f97acaa87a9331038cc490e2dc03f7afbfa7bd4880296dbfad8632435b",
+      "verified_words": 4096,
+      "mismatches": 0,
+      "reconstructed_le32_sha256": "e4f37e3c4fa0f0f8f9c7b29cd9cbca37a567514f6b7dc00a99d7c9f1bcdfc1c2",
+      "primitive_source": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v",
+      "primitive_sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+      "primitive_zero_init_defaults_verified": true,
+      "read_mode": 0,
+      "method": "Eight 4-bit pROM planes; INIT_RAM_XX concatenated low index first; byte address [13:2] selects each 32-bit ROM word.",
+      "mappings": [
+        {
+          "instance": "rom_rom_0_0_s",
+          "bit_width": 4,
+          "output_bits": [
+            0,
+            3
+          ],
+          "explicit_init_chunks": 43,
+          "omitted_zero_init_chunks": 21,
+          "clock": "ram_clk",
+          "address": "{rom_address[13:2],GND,GND}"
+        },
+        {
+          "instance": "rom_rom_0_1_s",
+          "bit_width": 4,
+          "output_bits": [
+            4,
+            7
+          ],
+          "explicit_init_chunks": 43,
+          "omitted_zero_init_chunks": 21,
+          "clock": "ram_clk",
+          "address": "{rom_address[13:2],GND,GND}"
+        },
+        {
+          "instance": "rom_rom_0_2_s",
+          "bit_width": 4,
+          "output_bits": [
+            8,
+            11
+          ],
+          "explicit_init_chunks": 43,
+          "omitted_zero_init_chunks": 21,
+          "clock": "ram_clk",
+          "address": "{rom_address[13:2],GND,GND}"
+        },
+        {
+          "instance": "rom_rom_0_3_s",
+          "bit_width": 4,
+          "output_bits": [
+            12,
+            15
+          ],
+          "explicit_init_chunks": 43,
+          "omitted_zero_init_chunks": 21,
+          "clock": "ram_clk",
+          "address": "{rom_address[13:2],GND,GND}"
+        },
+        {
+          "instance": "rom_rom_0_4_s",
+          "bit_width": 4,
+          "output_bits": [
+            16,
+            19
+          ],
+          "explicit_init_chunks": 42,
+          "omitted_zero_init_chunks": 22,
+          "clock": "ram_clk",
+          "address": "{rom_address[13:2],GND,GND}"
+        },
+        {
+          "instance": "rom_rom_0_5_s",
+          "bit_width": 4,
+          "output_bits": [
+            20,
+            23
+          ],
+          "explicit_init_chunks": 42,
+          "omitted_zero_init_chunks": 22,
+          "clock": "ram_clk",
+          "address": "{rom_address[13:2],GND,GND}"
+        },
+        {
+          "instance": "rom_rom_0_6_s",
+          "bit_width": 4,
+          "output_bits": [
+            24,
+            27
+          ],
+          "explicit_init_chunks": 42,
+          "omitted_zero_init_chunks": 22,
+          "clock": "ram_clk",
+          "address": "{rom_address[13:2],GND,GND}"
+        },
+        {
+          "instance": "rom_rom_0_7_s",
+          "bit_width": 4,
+          "output_bits": [
+            28,
+            31
+          ],
+          "explicit_init_chunks": 43,
+          "omitted_zero_init_chunks": 21,
+          "clock": "ram_clk",
+          "address": "{rom_address[13:2],GND,GND}"
+        }
+      ],
+      "verifier_sha256": "7b817fe3518bd7497187a37c75ea47b295de58a4ab3feb53aa6bffeef2574f75",
+      "verifier_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/verify_f02_ae350_netlist.py"
+    }
+  },
+  "post_synthesis_profile_verify": {
+    "command": [
+      "python3",
+      "-m",
+      "tools.workstation_profile",
+      "verify",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate"
+    ],
+    "returncode": 1,
+    "error": "ValueError: workstation profile staged file inventory changed",
+    "stderr_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/profile_after_synthesis.stderr.txt",
+    "stderr_sha256": "0e9d6f9ad805b1de7b027fe6d14a99fd709b3fe274a74affcea2e3e9858b3938",
+    "original_staged_hashes_unchanged": true,
+    "missing": [],
+    "changed": [],
+    "extra": [
+      {
+        "path": "Prj1.gprj.user",
+        "bytes": 830,
+        "sha256": "8d6a69454c001be5ae95ef6ea3407e33c0b395e45c15b392eac39ef7f5bf445b"
+      }
+    ],
+    "extra_classification": "Gowin-generated ProjectUserData XML containing flow status and result paths; not compiled RTL/ROM/constraint input.",
+    "extra_preserved": true,
+    "validator_modified": false,
+    "conclusion": "Strict verify remains failed. All 510 recorded source-closure bytes remain unchanged. Any post-synthesis output allowlist must be separately reviewed with exact semantics and drift rejection."
+  },
+  "pnr_readiness": {
+    "started": false,
+    "gates": {
+      "tools/workstation_custom_board_implementation.py": {
+        "path": "tools/workstation_custom_board_implementation.py",
+        "sha256": "dee28ff086ff6fb079d1ca54cbfc2f6f877fd702f5d25669068eb67458e4033d"
+      },
+      "reports/workstation_physical_20261025/check_timing.py": {
+        "path": "reports/workstation_physical_20261025/check_timing.py",
+        "sha256": "86fe99e9a448fae12a30090ad6c6ee05bb7b8a92462f015596bb3c208a0a7628"
+      },
+      "reports/workstation_physical_20261025/check_pll.py": {
+        "path": "reports/workstation_physical_20261025/check_pll.py",
+        "sha256": "41d0a89a353e3c017b315740f5cd9bed1f73d2d2c0b08e83caea33fc3135e24d"
+      },
+      "reports/workstation_physical_20261025/check_common_cdc.py": {
+        "path": "reports/workstation_physical_20261025/check_common_cdc.py",
+        "sha256": "dc872759ce7968371fcd2b21d6fc281dde0cdc217eff3e6387cc752863f3a328"
+      },
+      "reports/workstation_physical_20261025/check_routes.py": {
+        "path": "reports/workstation_physical_20261025/check_routes.py",
+        "sha256": "d6e334a69d9a4ca357c5141350c03925ddcc96887939dafae1173b49780b1156"
+      }
+    },
+    "preparer_policy": "Requires successful synthesis audit, a fresh 8-hex UserCode and explicit offline electrical-risk acknowledgement; copies netlist/CST/SDC to a separate output. Optional reviewed ULPI adaptation adds only 12 LVCMOS33 declarations; no locations or SDC changes.",
+    "default_options": {
+      "place_option": 2,
+      "route_option": 0,
+      "replicate_resources": false
+    },
+    "known_coverage_gap": "check_routes.py DDR initialization hold-path and optional floorplan checks run only when parent identity ends with -a23; this inherited a26 identity skips that branch. Adapt with checked a26 endpoints/constraints or independently verify the path before claiming routed gate coverage.",
+    "historical_reference": {
+      "source": "reports/WORKSTATION_RESOURCE_A26_PHYSICAL_20261027.md",
+      "business_physical_bsram": 317,
+      "gao_physical_bsram": 1,
+      "total_physical_bsram": 318,
+      "capacity": 340,
+      "cls": 61184,
+      "warning": "Historical candidate only. Current physical counts, timing, CDC, PLL and resources are unmeasured; previous numeric timing did not pass strict GAO clock inventory."
+    },
+    "blockers": [
+      "Strict post-synthesis profile inventory classification is unresolved.",
+      "No current routed STA/CDC/PLL/feature/resource evidence.",
+      "Routed audit must cover a26 DDR initialization hold path explicitly.",
+      "Full electrical and external IO timing acceptance remain incomplete."
+    ]
+  },
+  "status": {
+    "synthesis_passed": true,
+    "formal_source_hierarchy_audit_passed": true,
+    "ae350_netlist_rom_verified": true,
+    "strict_profile_after_synthesis_passed": false,
+    "physical_gates_passed": false,
+    "timing_closed": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "deployment_allowed": false,
+    "release_ready": false,
+    "bitstream_sha256": null
+  },
+  "remaining_scope": {
+    "profile_features": [
+      {
+        "name": "usb_midi",
+        "source_state": "shared_A2_source",
+        "selected_behavior": "A2 HS/FS transport, production firmware and native input owner selected; Push/25K alternate on one port",
+        "remaining": "I01: integrated enumeration, hotplug, session/PANIC and real audio acceptance",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "synthesis_ABC_vector",
+        "source_state": "source_integrated",
+        "selected_behavior": "Native session/parameters/DSP composition; 18-bit events and global PANIC preserved",
+        "remaining": "A01/A05: full load timing and real performance",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "effects",
+        "source_state": "source_integrated",
+        "selected_behavior": "Delay, Chorus and spatial Reverb retained through the resource parent",
+        "remaining": "A02/A07: both sample rates, quality and timing",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "audio_48k_i2s",
+        "source_state": "source_integrated",
+        "selected_behavior": "12.288 MHz reference, I2S 32-bit slots and final master gain in FPC output",
+        "remaining": "A03/A04: common final PCM/taps, real stereo output and clock budgets",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "audio_44k1_switch",
+        "source_state": "not_implemented",
+        "selected_behavior": "Second hardware oscillator is a confirmed premise; this checkpoint has no runtime rate switch",
+        "remaining": "F03/A06/A07: pin/clock qualification, safe selection, DSP and format negotiation",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "hdmi_ddr",
+        "source_state": "partial_D5_reuse",
+        "selected_behavior": "Shared scanout source and resource-baseline DDR/UI; D5 write-window adapter remains isolated",
+        "remaining": "D01/D04/F04: integrate scanout_write_window and prove shared-client deadlines",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "fpga_visuals",
+        "source_state": "source_integrated",
+        "selected_behavior": "Existing FPGA analysis/rendering and DDR scanout preserved",
+        "remaining": "D02/D03: remaining plots, final tap and atomic per-output buffers",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "usb_display",
+        "source_state": "legacy_source_integrated",
+        "selected_behavior": "Existing Push pixels and 25K Host tile rendering retained",
+        "remaining": "D05/D06: committed DDR pixel consumption and slow-end isolation",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "ae350",
+        "source_state": "maintained_firmware_integrated",
+        "selected_behavior": "AE350 UI/services C, headers, startup and linker script rebuilt into candidate boot.mem with tool, ELF, ROM and capacity evidence",
+        "remaining": "C01-C05: bounded business services, whole-call-chain stack and hardware acceptance",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "ble_short_recording",
+        "source_state": "shared_C1_source",
+        "selected_behavior": "Existing business transport and post-FPC 48 kHz PCM16 capture; 16384-frame RAM capacity",
+        "remaining": "B01/R01: nonzero real audio, Android and AE350 business ownership",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "long_recording_ddr",
+        "source_state": "not_implemented",
+        "selected_behavior": "No new DDR recording allocation or capability is claimed",
+        "remaining": "R00/R02-R04: storage, immutable objects, reliable download and device testing",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "tf_playback",
+        "source_state": "legacy_source_integrated",
+        "selected_behavior": "Existing TF WAV/DDR banks and independent audio route preserved",
+        "remaining": "M03/A03: bounded streaming without DDR playback staging and explicit rate policy",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "recognition_guidance",
+        "source_state": "source_integrated",
+        "selected_behavior": "Explicit live CNN resource candidate and existing Push guidance; no accepted CNN promotion",
+        "remaining": "M01/M02: model cold boot, recognition and concurrent playback acceptance",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "D_sampler",
+        "source_state": "not_integrated",
+        "selected_behavior": "Independent sampler source is retained, not selected as a complete-workstation source",
+        "remaining": "X01: DDR/audio/event/display integration and acceptance",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "lcd_touch",
+        "source_state": "partial_source_integrated",
+        "selected_behavior": "LCD consumes shared snapshot; no touch input selected",
+        "remaining": "D07: final product scope and hardware acceptance",
+        "hardware_acceptance": "unverified_for_this_profile"
+      },
+      {
+        "name": "wifi",
+        "source_state": "disabled",
+        "selected_behavior": "Wi-Fi is held disabled in this composition",
+        "remaining": "B03: product scope and vertical integration",
+        "hardware_acceptance": "unverified_for_this_profile"
+      }
+    ],
+    "inherited_remaining_gaps": [
+      "USB3300/TXS electrical compatibility",
+      "physical FPC DAC/audio acceptance",
+      "physical BLE pairing/recording/download acceptance",
+      "complete IO/CDC/timing/PLL/P&R gates",
+      "real external peripheral and hardware acceptance"
+    ],
+    "note": "F02 maintains firmware provenance. It does not complete 44.1 kHz switching, final PCM/tap convergence, D5 scan window integration, DDR USB pixels, AE350 business migration, runtime stack/service bounds, or hardware acceptance."
+  },
+  "rollback": "No board operation occurred. Keep the fixed clean clone/candidate and their hash-locked inputs; reproduce or return to commit 3d4b317. Accepted, pinned and unprofiled candidate policies were not changed by this synthesis."
+}
