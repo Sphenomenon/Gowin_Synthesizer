@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module tb_workstation_audio_render_service;
+module tb_workstation_audio_render_service #(parameter bit RUNTIME_ENGINES=0);
     reg clk=0,rst_n=0;
     always #6.510416 clk=!clk;
     reg request=0,rate=0,event_valid=0;
@@ -21,7 +21,7 @@ module tb_workstation_audio_render_service;
     reg [64:0] memory_return=0;
     // Shorter ring delay exposes actual wet/feedback arithmetic in every
     // case. Production default remains 9600; storage timing stays unchanged.
-    workstation_audio_render_service #(.ECHO_SAMPLES(32)) dut(
+    workstation_audio_render_service #(.ECHO_SAMPLES(32),.RUNTIME_RATE_ENABLE(RUNTIME_ENGINES)) dut(
         .clk_i(clk),.rst_ni(rst_n),.render_request_i(request),.render_44k1_i(rate),
         .render_ready_o(ready),.render_done_o(done),.render_error_o(error),
         .render_left_o(left),.render_right_o(right),.render_busy_o(busy),.sample_ce_o(sample_ce),
@@ -48,9 +48,10 @@ module tb_workstation_audio_render_service;
     wire [1:0] default_mode;
     wire signed [31:0] default_left,default_right;
     wire [64:0] default_dwr_data;
+    wire full_rate_ready,full_applied44;
     // Current event RTL with its default scheduling must remain cycle-exact
     // to the untouched prepared reference, including cancellation phases.
-    gw138k_event_workstation #(.TIMING_OPTIMIZED(1),.EXTERNAL_MASTER_VOLUME(1),.ECHO_SAMPLES(32)) default_core(
+    gw138k_event_workstation #(.TIMING_OPTIMIZED(1),.EXTERNAL_MASTER_VOLUME(1),.ECHO_SAMPLES(32),.RUNTIME_RATE_ENABLE(RUNTIME_ENGINES)) default_core(
         .clk_i(clk),.rst_ni(rst_n),.midi_byte_valid_i(1'b0),.midi_byte_i(8'd0),
         .pc_byte_valid_i(1'b0),.pc_byte_i(8'd0),
         .cpu_event_valid_i(event_valid),.cpu_event_i(event_data),.cpu_event_ready_o(default_event_ready),
@@ -58,6 +59,7 @@ module tb_workstation_audio_render_service;
         .sample_valid_o(default_valid),.left_o(default_left),.right_o(default_right),
         .held_notes_o(default_held),.active_mask_o(default_active),.applied_events_o(default_applied),
         .panic_epoch_o(default_panic),.panic_muted_o(default_muted),.mode_o(default_mode),
+        .rate_commit_i(1'b1),.rate_44100_i(rate),.rate_ready_o(full_rate_ready),.applied_rate_44100_o(full_applied44),
         .delay_mem_clk_i(clk),.delay_mem_rst_ni(rst_n),.delay_dwr_valid_o(default_dwr_valid),
         .delay_dwr_data_o(default_dwr_data),.delay_dwr_pop_i(default_dwr_valid),
         .delay_drd_push_i(marker_push),.delay_drd_data_i(memory_return),.delay_drd_ready_o(default_drd_ready));
@@ -94,15 +96,28 @@ module tb_workstation_audio_render_service;
     reg signed [31:0] expected_left,expected_right;
     reg expected_error;
     reg [9:0] previous_panic=0;
-    wire old_pipeline_live=
-        dut.workstation.engine.u_sine_interp.valid_s0 || dut.workstation.engine.u_sine_interp.valid_s1 ||
-        dut.workstation.engine.u_sine_interp.valid_s2 || dut.workstation.engine.u_sine_interp.valid_s3 ||
-        dut.workstation.engine.sine_valid_o || dut.workstation.engine.gain_product_valid ||
-        dut.workstation.engine.envelope_product_valid || dut.workstation.engine.finalize_valid ||
-        dut.workstation.engine.quantizer.magnitude_low_valid || dut.workstation.engine.quantizer.magnitude_valid ||
-        dut.workstation.engine.quantizer.scale_low_valid || dut.workstation.engine.quantizer.scaled_valid ||
-        dut.workstation.engine.quantizer.rounded_valid || dut.workstation.engine.sample_valid_o ||
-        dut.workstation.engine.partial_busy || dut.workstation.engine.partial_valid || dut.workstation.engine.gain_valid;
+    wire old_pipeline_live;
+`ifdef RUNTIME_RENDER_ENGINES_TEST
+        assign old_pipeline_live=
+        dut.workstation.runtime_engines.engines.oscillator.u_sine_interp.valid_s0 || dut.workstation.runtime_engines.engines.oscillator.u_sine_interp.valid_s1 ||
+        dut.workstation.runtime_engines.engines.oscillator.u_sine_interp.valid_s2 || dut.workstation.runtime_engines.engines.oscillator.u_sine_interp.valid_s3 ||
+        dut.workstation.runtime_engines.engines.oscillator.sine_valid_o || dut.workstation.runtime_engines.engines.oscillator.gain_product_valid ||
+        dut.workstation.runtime_engines.engines.oscillator.envelope_product_valid || dut.workstation.runtime_engines.engines.oscillator.finalize_valid ||
+        dut.workstation.runtime_engines.engines.oscillator.quantizer.magnitude_low_valid || dut.workstation.runtime_engines.engines.oscillator.quantizer.magnitude_valid ||
+        dut.workstation.runtime_engines.engines.oscillator.quantizer.scale_low_valid || dut.workstation.runtime_engines.engines.oscillator.quantizer.scaled_valid ||
+        dut.workstation.runtime_engines.engines.oscillator.quantizer.rounded_valid || dut.workstation.runtime_engines.engines.oscillator.sample_valid_o ||
+        dut.workstation.runtime_engines.engines.oscillator.partial_busy || dut.workstation.runtime_engines.engines.oscillator.partial_valid || dut.workstation.runtime_engines.engines.oscillator.gain_valid;
+`else
+        assign old_pipeline_live=
+        dut.workstation.legacy_engines.engine.u_sine_interp.valid_s0 || dut.workstation.legacy_engines.engine.u_sine_interp.valid_s1 ||
+        dut.workstation.legacy_engines.engine.u_sine_interp.valid_s2 || dut.workstation.legacy_engines.engine.u_sine_interp.valid_s3 ||
+        dut.workstation.legacy_engines.engine.sine_valid_o || dut.workstation.legacy_engines.engine.gain_product_valid ||
+        dut.workstation.legacy_engines.engine.envelope_product_valid || dut.workstation.legacy_engines.engine.finalize_valid ||
+        dut.workstation.legacy_engines.engine.quantizer.magnitude_low_valid || dut.workstation.legacy_engines.engine.quantizer.magnitude_valid ||
+        dut.workstation.legacy_engines.engine.quantizer.scale_low_valid || dut.workstation.legacy_engines.engine.quantizer.scaled_valid ||
+        dut.workstation.legacy_engines.engine.quantizer.rounded_valid || dut.workstation.legacy_engines.engine.sample_valid_o ||
+        dut.workstation.legacy_engines.engine.partial_busy || dut.workstation.legacy_engines.engine.partial_valid || dut.workstation.legacy_engines.engine.gain_valid;
+`endif
     wire unsafe_unfenced_idle=!dut.workstation.pending && !dut.workstation.frame_inflight &&
         !dut.workstation.synth_joined && !dut.workstation.vec_joined && dut.workstation.core_sample_ready &&
         dut.workstation.vec_ready && dut.workstation.fx_ready && !dut.workstation.synth_valid_o &&
@@ -113,6 +128,7 @@ module tb_workstation_audio_render_service;
     always @(negedge clk) begin
         cycles=cycles+1;
         if(rst_n) begin
+            if(full_applied44 || (rate && full_rate_ready))$fatal(1,"full effects chain acknowledged unsupported 44.1 kHz");
             if(dut.workstation.effects.delay_stage.read_l!=0 || dut.workstation.effects.delay_stage.read_r!=0) wet_seen[0]=1;
             if(dut.workstation.effects.chorus_stage.read_l!=0 || dut.workstation.effects.chorus_stage.read_r!=0) wet_seen[1]=1;
             if(dut.workstation.effects.reverb_stage.early_l!=0 || dut.workstation.effects.reverb_stage.early_r!=0) wet_seen[2]=1;

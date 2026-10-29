@@ -4,6 +4,7 @@
 // Source selection and final master-volume processing remain downstream.
 // No output-clock divider, autonomous sample tick, or second parameter owner.
 module workstation_audio_render_service #(
+    parameter bit RUNTIME_RATE_ENABLE=0,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600
 ) (
@@ -67,6 +68,7 @@ module workstation_audio_render_service #(
 
     gw138k_event_workstation #(.SAMPLE_RATE_HZ(48000),.TIMING_OPTIMIZED(1),
         .EXTERNAL_MASTER_VOLUME(1),.REQUEST_DRIVEN_RENDER(1),
+        .RUNTIME_RATE_ENABLE(RUNTIME_RATE_ENABLE),
         .DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) workstation(
         .clk_i,.rst_ni,.midi_byte_valid_i,.midi_byte_i,.pc_byte_valid_i,.pc_byte_i,
         .cpu_event_valid_i,.cpu_event_i,.cpu_event_ready_o,
@@ -77,6 +79,8 @@ module workstation_audio_render_service #(
         .synth_valid_o(),.synth_o(),
         .held_notes_o,.applied_events_o,.pc_overflow_o,.control_options_o,
         .panic_epoch_o,.panic_muted_o,.render_idle_o(core_idle),
+        .rate_commit_i(1'b0),.rate_44100_i(1'b0),
+        .rate_ready_o(),.applied_rate_44100_o(),
         .active_mask_o,.active_voice_count_o,.mode_o,.pitch_q20_o,
         .deadline_miss_o,.midi_overflow_o,.note_drop_o,.clip_o,
         .synth_gain_o,.pcm_gain_o,.master_volume_o,.route_o,.profile_o,

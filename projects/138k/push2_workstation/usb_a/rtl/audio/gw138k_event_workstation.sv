@@ -8,6 +8,7 @@ module gw138k_event_workstation #(
     parameter bit TIMING_OPTIMIZED=0,
     parameter bit EXTERNAL_MASTER_VOLUME=0,
     parameter bit REQUEST_DRIVEN_RENDER=0,
+    parameter bit RUNTIME_RATE_ENABLE=0,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600
 ) (
@@ -24,6 +25,10 @@ module gw138k_event_workstation #(
     // Read-only render admission status; PANIC clears frame_inflight before
     // the legacy oscillator's unreset ROM/valid pipelines have drained.
     output wire render_idle_o,
+    // Native engines are opt-in. Until the complete effects chain supports
+    // runtime rate, this full-chain boundary only acknowledges 48 kHz.
+    input logic rate_commit_i, rate_44100_i,
+    output wire rate_ready_o, applied_rate_44100_o,
     input logic cpu_event_valid_i,
     input logic [17:0] cpu_event_i,
     output wire cpu_event_ready_o,
@@ -111,6 +116,7 @@ module gw138k_event_workstation #(
   logic [6:0] core_note, core_velocity;
   logic [6:0] core_expression_note, core_expression_value;
   logic core_sample_ready, core_ce, load_busy, mix_busy;
+  wire runtime_quiescent, runtime_rate_ready;
   logic pending, frame_inflight;
   logic [31:0] allocated;
   wire [31:0] legacy_active_mask;
@@ -238,13 +244,15 @@ module gw138k_event_workstation #(
   // back to an external request-ready gate would create a combinational loop.
   // Normal envelope/quantizer tails remain covered by frame_inflight through
   // the joined effects completion; cancellation uses the explicit tail fence.
-  assign render_idle_o=rst_ni && legacy_cancel_tail==0 &&
+  assign render_idle_o=rst_ni && (RUNTIME_RATE_ENABLE ? runtime_quiescent : legacy_cancel_tail==0) &&
       !pending && !frame_inflight && !synth_joined && !vec_joined &&
       !load_busy && !mix_busy && vec_ready && fx_ready &&
       !synth_valid_o && !vec_valid && !sample_valid_o;
   assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready && fx_ready &&
       !synth_joined && !vec_joined && !panic_accept &&
-      (!REQUEST_DRIVEN_RENDER || legacy_cancel_tail==0);
+      (!REQUEST_DRIVEN_RENDER || (RUNTIME_RATE_ENABLE ? runtime_quiescent : legacy_cancel_tail==0));
+  assign rate_ready_o=RUNTIME_RATE_ENABLE && !rate_44100_i &&
+      runtime_rate_ready && render_idle_o && !sample_ce_i;
   always_comb begin
     core_event_valid=0; core_note_on=0; core_note=a; core_velocity=b;
     core_expression_valid=0; core_expression_note=a; core_expression_value=b;
@@ -280,6 +288,42 @@ module gw138k_event_workstation #(
   midi_stream_decoder decoder(.clk_i,.rst_ni,.byte_valid_i(midi_byte_valid_i),
       .byte_i(midi_byte_i),.event_valid_o(decoder_valid),.event_ready_i(decoder_ready),
       .event_o(decoder_data),.overflow_count_o(midi_overflow_o));
+  generate if(RUNTIME_RATE_ENABLE) begin: runtime_engines
+    workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1)) engines(
+      .clk_i,.rst_ni,.panic_i(panic_accept),.sample_ce_i(core_ce),
+      .rate_commit_i(rate_commit_i && rate_ready_o),.rate_44100_i,
+      .rate_ready_o(runtime_rate_ready),.applied_rate_44100_o,
+      .quiescent_o(runtime_quiescent),
+      .target_ratio_q20_i(target_ratio),.glide_step_q20_i(glide_step),
+      .vibrato_depth_i(vibrato_depth),.pitch_q20_o,
+      .mode_set_valid_i(mode_valid),.mode_set_ready_o(mode_ready),
+      .mode_i(requested_mode),.current_mode_o(mode_o),
+      .event_valid_i(core_event_valid),.event_note_on_i(core_note_on),
+      .scope_enable_i(scope_enable),.event_profile_i(profile),
+      .event_note_i(a),.event_off_note_i(core_note),.event_velocity_i(core_velocity),
+      .synth_event_ready_o(core_event_ready),.vector_event_ready_o(vec_event_ready),
+      .expression_valid_i(core_expression_valid),.expression_ready_o(core_expression_ready),
+      .expression_note_i(core_expression_note),.expression_value_i(core_expression_value),
+      .synth_sample_ready_o(core_sample_ready),.synth_valid_o,.synth_o,
+      .allocated_mask_o(allocated),.synth_active_mask_o(legacy_active_mask),
+      .synth_active_count_o(legacy_active_count),.load_busy_o(load_busy),.mix_busy_o(mix_busy),
+      .issued_slot_count_o(issued),
+      .vector_shape_i(scope_shape==127 ? a[2:0]-3'd4 : scope_shape[2:0]),
+      .vector_morph_shape_i(scope_morph_shape),.vector_morph_q15_i(scope_morph_q15),
+      .vector_scale_q15_i(scope_scale_q15),.vector_rotation_i(scope_rotation),
+      .vector_cal_x_q14_i(16'sd12288+$signed({7'd0,scope_cal_x,2'd0})*16'sd16),
+      .vector_cal_y_q14_i(16'sd12288+$signed({7'd0,scope_cal_y,2'd0})*16'sd16),
+      .vector_offset_x_i(($signed({25'd0,scope_offset_x})-32'sd64)<<<18),
+      .vector_offset_y_i(($signed({25'd0,scope_offset_y})-32'sd64)<<<18),
+      .vector_sample_ready_o(vec_ready),.vector_valid_o(vec_valid),.vector_busy_o(vec_busy),
+      .vector_left_o(vec_left),.vector_right_o(vec_right),
+      .vector_active_mask_o(vec_active),.vector_active_count_o(vec_count),
+      .vector_rejected_o(vec_rejected),.vector_config_error_o(vec_config_error),
+      .vector_frequency_error_o(vec_frequency_error),.vector_clip_o(vec_clip));
+  end else begin: legacy_engines
+    assign runtime_quiescent=1'b0;
+    assign runtime_rate_ready=1'b0;
+    assign applied_rate_44100_o=1'b0;
   pitch_expression #(.SAMPLE_RATE_HZ(SAMPLE_RATE_HZ)) pitch(
       .clk_i,.rst_ni,.sample_ce_i(core_ce),.target_ratio_q20_i(target_ratio),
       .glide_step_q20_i(glide_step),.vibrato_depth_i(vibrato_depth),.ratio_q20_o(pitch_q20_o));
@@ -310,6 +354,7 @@ module gw138k_event_workstation #(
       .offset_y_i(($signed({25'd0,scope_offset_y})-32'sd64)<<<18),
       .active_mask_o(vec_active),.active_count_o(vec_count),.rejected_events_o(vec_rejected),
       .config_error_o(vec_config_error),.frequency_error_o(vec_frequency_error),.clip_o(vec_clip),.busy_o(vec_busy));
+  end endgenerate
   assign active_mask_o=scope_enable ? {24'd0,vec_active} : legacy_active_mask;
   assign active_voice_count_o=scope_enable ? {2'd0,vec_count} : legacy_active_count;
   // Join independently scheduled engines before the existing P10 input mixer.

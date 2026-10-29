@@ -31,7 +31,9 @@
 
 `REQUEST_DRIVEN_RENDER` 默认 0。只有显式 service 分支在 core-ce 上检查该尾窗；默认事件调度、参数提交、PCM 与 accepted 配置不消费它。不能将组合 `core_sample_ready` 或 `panic_accept` 反馈成服务 ready：这些谓词通过事件 dispatch 依赖本拍 sample-ce，会形成组合环。
 
-退出条件：原生 runtime oscillator 接入其真正覆盖全部 valid 的 `quiescent_o` 后，替换 legacy 尾窗；vector／effects 的切换历史清理和新的整机 profile 必须独立验证。此组件不切换现有 profile，也不改冻结或 vendor 来源。
+`RUNTIME_RATE_ENABLE` 默认 0。显式设为 1 时，event/service 通过 `workstation_runtime_render_engines` 组合原生 pitch／oscillator／vector，render admission 以三者真实 `quiescent_o` 替换 legacy 尾窗；默认分支仍保留上述 40 周期策略。组合模块自身可在真空闲时原子提交 48／44.1 kHz，振荡器的 committed rate 是三者唯一采样率依据，不增加公共参数副本。
+
+完整 event 效果链尚未适配双率，因此它的 `rate_ready_o` 只对 `rate_44100_i=0` 可用；请求 44.1 时始终背压、不修改已提交状态。service 固定该接口为 48 kHz，保留原有显式 44.1 零／error 响应。独立组合的两率 engine PCM 校验不表示完整效果链、源选择或 DAC 已具备两率能力。接口和退出条件见 [RUNTIME_RENDER_ENGINES.md](RUNTIME_RENDER_ENGINES.md)。现有 profile、冻结和 vendor 来源不因这个默认关闭参数而切换。
 
 ## 验证入口与范围
 
@@ -39,6 +41,8 @@
 python3 projects/138k/push2_workstation/usb_a/sim/audio/run_render_service.py \
   --project <实际 prepared Prj1> --output <不存在的新目录>
 ```
+
+增加 `--runtime-engines` 可显式校验原生引擎分支的同一 48 kHz 全效果链；不改变 prepared profile。未加该选项的编译不增加 native engine 源，继续验证默认来源隔离。
 
 测试编译实际 prepared 的 oscillator、vector、effects、存储原语和控制依赖，将未改的 prepared event 模块只做唯一模块名替换，以便和原生 service 并行。第三个 current-default event 实例在整个运行中逐拍对照旧源，保护 `REQUEST_DRIVEN_RENDER=0` 的旧行为。正常 service 对照覆盖 A／B／C 各 32 声部、vector 八声部、五音色、八种效果 mask、六种顺序，以及填满 chorus／reverb FDN 后的真实湿声。取消扫描把默认分支等价与 opt-in 分支的隔离合同分别检查，不要求新取消调度复制旧的不安全尾部。
 

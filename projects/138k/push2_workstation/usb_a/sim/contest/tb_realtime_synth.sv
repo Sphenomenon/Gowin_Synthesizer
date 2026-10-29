@@ -71,23 +71,23 @@ module tb_realtime_synth;
     send(2,80,0);wait(mode==0 && !dut.mode_pending); // one sine component per voice
     for(integer n=60;n<92;n++)send(1,n,100);
     wait(count==32);samples(4800); // allow live envelopes to reach sustained level
-    if(dut.engine.current_partial_count!=1)$fatal(1,"test requires one component per voice");
+    if(dut.legacy_engines.engine.current_partial_count!=1)$fatal(1,"test requires one component per voice");
     for(integer i=0;i<32;i++)begin
-      if(dut.engine.assigned_midi_note[i]!=60+i || dut.engine.envelope_level_q24[i]==0 ||
-         dut.engine.slot_mem[i][47:16]==0 || dut.engine.slot_mem[i][15:0]==0)
+      if(dut.legacy_engines.engine.assigned_midi_note[i]!=60+i || dut.legacy_engines.engine.envelope_level_q24[i]==0 ||
+         dut.legacy_engines.engine.slot_mem[i][47:16]==0 || dut.legacy_engines.engine.slot_mem[i][15:0]==0)
         $fatal(1,"voice lacks independent note, envelope, step or gain: %0d",i);
       for(integer j=0;j<i;j++)
-        if(dut.engine.slot_mem[i][47:16]==dut.engine.slot_mem[j][47:16])$fatal(1,"duplicate frequency");
+        if(dut.legacy_engines.engine.slot_mem[i][47:16]==dut.legacy_engines.engine.slot_mem[j][47:16])$fatal(1,"duplicate frequency");
     end
     base_underruns=underrun;
     @(negedge clk);capture=1;wait(output_samples==32768);@(negedge clk);capture=0;
     $fclose(pcm_file);
     if(underrun!=base_underruns)$fatal(1,"serial underrun during capture");
     // One note release must not change the other 31 envelopes to release.
-    send(0,60,0);wait(dut.engine.envelope_state[0]==4);
+    send(0,60,0);wait(dut.legacy_engines.engine.envelope_state[0]==4);
     samples(2);
     for(integer i=1;i<32;i++)
-      if(dut.engine.envelope_state[i]==4 || dut.engine.assigned_midi_note[i]!=60+i)
+      if(dut.legacy_engines.engine.envelope_state[i]==4 || dut.legacy_engines.engine.assigned_midi_note[i]!=60+i)
         $fatal(1,"per-voice release contaminated another voice");
     $display("METRIC voices=32 samples=%0d frame_cycles=1600 max_render_cycles=%0d capture_underruns=0 independent_release=1",output_samples,max_render);
     $display("PASS realtime_synth");$finish;

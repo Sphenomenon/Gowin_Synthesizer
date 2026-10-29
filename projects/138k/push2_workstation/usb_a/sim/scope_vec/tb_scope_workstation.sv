@@ -60,7 +60,7 @@ module tb_scope_workstation;
         byte_send(8'h90);byte_send(8'd36);byte_send(8'd127);
         repeat(400)frame(1);
         if(count!=1 || active!=1)$fatal(1,"live note must allocate vector only");
-        if(dut.vector_engine.shape[0]!=0)$fatal(1,"pad36 geometry mapping");
+        if(dut.legacy_engines.vector_engine.shape[0]!=0)$fatal(1,"pad36 geometry mapping");
         control(93,0);repeat(256)frame(1);
         if(left!=0 || right!=0)$fatal(1,"live scale mute");
         control(93,127);control(91,6);control(92,80);control(94,32);
