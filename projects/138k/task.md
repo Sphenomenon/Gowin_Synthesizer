@@ -52,6 +52,8 @@
 
 [观察RAM数字审查](push2_workstation/usb_a/reports/WORKSTATION_OBSERVATION_RAM_DIGITAL_AUDIT_20261030.md)已父级复验f1be实际25个RAM／98有效位、178项语义、19个网表负控及14项理想数字安全证明。32个投机转发FF按无效数据隔离单独处理；完整CLK→DO／RAD数据时序、Gray物理相干和复位仍未接受，约束提案未安装，不能升级为全部CDC或硬件通过。
 
+[no-CNN实际整机综合](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_SYNTHESIS_20261030.md)通过，571项输入保持；综合估算Logic102,128／Register51,122／BSRAM245，七PLL及DCS仍在。静态501次约束查询仅17个加密DDR内部空query，可见端点无新增空项；尚非Gowin工具解析或物理收益。新VG的CDC／时钟审查和独立资源P&R准备继续进行，无位流或部署。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
