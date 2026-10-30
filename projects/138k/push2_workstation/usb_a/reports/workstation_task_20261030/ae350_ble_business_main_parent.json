@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "scope": "main_parent_review_actual_first_batch_ble_business",
+  "author_commit": "0e12cfd6d1653fc721c4198e1f1c8325cf8b1f43",
+  "import_commit": "72f5d714667ea2ac15ea72a362bca397937100d6",
+  "author_source_blobs_exact": true,
+  "source_snapshots": 34,
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-business-main-parent-v1",
+  "seal_sha256": "d53c32be7aca0b57179d226cacc92bafef34b8317a99b23f86923347bde287ab",
+  "external_file_count": 834,
+  "candidate_identity": "custom138k-workstation-ae350-business-v1-8f615119768bfbf2",
+  "configuration_sha256": "ed438e9743cea2e9c653248657eec5699567202d45db7bf7c6f3a541045400a3",
+  "staged_inputs": 612,
+  "enabled_inputs": 271,
+  "comparison_to_author_candidate": {
+    "candidate": "custom138k-workstation-ae350-business-v1-9c0f652c977f2323",
+    "changed_staged": [
+      "native_usb_firmware/build.log"
+    ],
+    "only_diagnostic_source_root_path": true,
+    "elf_bin_rom_identical": true
+  },
+  "firmware": {
+    "cold_bytes": 26864,
+    "ilm_runtime_bytes": 26256,
+    "data_bytes": 16,
+    "bss_bytes": 528,
+    "conservative_stack_bytes": 1328,
+    "reserved_stack_bytes": 16384,
+    "actual_indirect_sites": 63,
+    "elf_sha256": "c1f677a37d1607538cb21902348de3087565bac888ceaf5aa2ae85ff0536e49c",
+    "binary_sha256": "876d504030bf67c4f1de984458a87ad821cc3f5dab48b0e5c311896a70d75137",
+    "rom_sha256": "6f3abefcb4fb3d6e5ab813357e62bf0203cf1578f0b791797ba3c2720b5ce2b7"
+  },
+  "checks": {
+    "main_cosim": 794,
+    "full_wire_transcripts": 35,
+    "runtime_c_mutants": 6,
+    "actual_prepared_source_tests": 8,
+    "runtime_source_tests": 12,
+    "profile_sources": 6,
+    "accepted_sources": 17,
+    "firmware": 10,
+    "callback_stack": 4,
+    "actual_rv32_startup_instructions": 229589,
+    "before_business_pcm_tests": 18,
+    "before_business_pcm_negative_controls": 109
+  },
+  "synthesis_result": "pending_separate_evidence",
+  "physical_acceptance": false,
+  "cache_dma_accepted": false,
+  "hardware_tested": false,
+  "deployment_allowed": false
+}
