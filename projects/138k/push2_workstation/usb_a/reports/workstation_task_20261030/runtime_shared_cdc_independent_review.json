@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "review_status": "no_actionable_findings",
+  "snapshot_commit": "395e9dcd41005acdc1666041c9f9cde682b7724e",
+  "reviewed_file_sha256": {
+    "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_shared_cdc.py": "8e6276a96870354aaad12fd8d045a58284b809d9157573874ece4521d0afad1f",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_shared_cdc.py": "b780e84e8953db8de34019f92034d2353e78716c7cc862d48f3b70caab61fda4",
+    "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_SHARED_CDC.md": "3a61b40d94b4f2f84bb1a6d82f46598b721b0c0571000da23d5258c379cf3055"
+  },
+  "reviewed_files_still_equal_current_root": true,
+  "configuration_source": "independent clone of 395e9dc; later root profile changes intentionally excluded",
+  "actual_regression": {
+    "passed": true,
+    "tests": 8,
+    "skips": 0,
+    "seconds": 62.644,
+    "structural_negatives": 14,
+    "separate_function_and_recomputed_metadata_negatives": 2
+  },
+  "supplemental_checks": [
+    {
+      "name": "actual functional FF CLEAR rewired and Graph rebuilt",
+      "rejected": true,
+      "expected": "first Q complete fanout changed",
+      "error": "installed runtime shared CDC review: first Q complete fanout changed: u_runtime/u_cpu_cdc/req_meta_s0"
+    },
+    {
+      "name": "actual functional FF CE rewired and Graph rebuilt",
+      "rejected": true,
+      "expected": "first Q complete fanout changed",
+      "error": "installed runtime shared CDC review: first Q complete fanout changed: u_runtime/u_cpu_cdc/req_meta_s0"
+    },
+    {
+      "name": "mixed opaque-visible-empty union",
+      "rejected": true,
+      "expected": "empty retained selector member",
+      "error": "installed runtime shared CDC review: empty retained selector member: missing_actual_union*/D"
+    },
+    {
+      "name": "near DDR prefix remains visible",
+      "rejected": true,
+      "expected": "empty retained selector member",
+      "error": "installed runtime shared CDC review: empty retained selector member: u_memory/u_ddr3/gw3_top_shadow/internal*/D"
+    },
+    {
+      "name": "opaque DDR prefix changed with retirement metadata recomputed",
+      "rejected": true,
+      "expected": "retained shared constraint not installed exactly once",
+      "error": "installed runtime shared CDC review: retained shared constraint not installed exactly once: set_false_path -to [get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_sync/recalib_s_0_s0/D}]"
+    },
+    {
+      "name": "actual R00 profile name",
+      "rejected": true,
+      "expected": "prepared no-CNN",
+      "error": "installed runtime shared CDC review: precision profile requires the prepared no-CNN v1 profile"
+    },
+    {
+      "name": "actual generic mode retains missing-endpoint refusal",
+      "rejected": true,
+      "expected": "native shared CDC selector is empty",
+      "error": "native shared CDC selector is empty: get_regs {u_video/u_renderer/u_capture/held_*}"
+    }
+  ],
+  "scope_counts": {
+    "installed_commands": 88,
+    "queries": 89,
+    "opaque_ddr_queries": 13,
+    "ordinary_first_bits": 43,
+    "gray_groups": 8,
+    "gray_first_bits": 182,
+    "payload_groups": 14,
+    "payload_bits": 1308,
+    "retained_reset_primitive_pins": 110
+  },
+  "source_closure": {
+    "staged_inputs_independently_hashed": 571,
+    "original_vg_sha256": "37c811ffcc0a0ae2ce55aa66550c95bec8bb04cc7fc92aa69c1cc7c17d6f3f4f",
+    "prepared_profile_and_process_independently_hashed": true,
+    "before_after_seals_equal": true
+  },
+  "historical_profile_identity": {
+    "complete_configuration_equal": true,
+    "current_configuration_source_sha256": "4c541a88e83795e2bb83f95a4482a7bae0922182c6ebaf5b975a6b4f4e59044e",
+    "current_root_profile_bytes_equivalence_claimed": false,
+    "prepared_profile_source_sha256": "8907b17a341351e5284f067e728c6eafa0c00ebe0f604a5b21f0fb93bce0dad4"
+  },
+  "opaque_boundary": "Only pinned shared bundle queries below u_memory/u_ddr3/gw3_top/ deferred; exact installed lines and count checked; modified prefix refused even with recomputed retirement metadata",
+  "default_generic": "Unchanged checker delegated by default; actual no-CNN VG still rejected for missing original generic endpoints",
+  "r00_profile_name": "custom138k-workstation-r00-v1",
+  "r00_refused": true,
+  "physical_cdc_accepted": false,
+  "complete_cdc_accepted": false,
+  "eda_invoked": false,
+  "hardware_operated": false,
+  "root_modified": false,
+  "original_stage_or_vg_modified": false
+}
