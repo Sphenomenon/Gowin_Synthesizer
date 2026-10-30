@@ -1,0 +1,115 @@
+{
+  "EDA_invoked": false,
+  "PCM_capture_implementation_deferred": true,
+  "RTL_modified": false,
+  "SDC_modified": false,
+  "TF_quiesce_first_D_timing_accounting_remains_open": true,
+  "TF_registered_publisher_implementation_separate": true,
+  "TF_same_edge_invalidate_must_be_preserved": true,
+  "VG_sha256": "f621fcbecb79012c0486e248a1cc686437b9d11ab887c22b2c8554a62f8b49af",
+  "actual_reply_sink_pins": 263,
+  "candidate": "custom138k-workstation-r00-no-local-panel-v1-222fb761448fb6c0",
+  "clocks_relaxed": false,
+  "compiled_source_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0",
+  "complete_unfiltered_source_closure_metrics": {
+    "TF_quiesce_first_Q": {
+      "combinational_cells": 0,
+      "domain_counts": {
+        "audio_clk": 1
+      },
+      "ff_pins": 1,
+      "pin_counts": {
+        "D": 1
+      },
+      "primitive_endpoints": 0,
+      "top_output_endpoints": 0
+    },
+    "epoch_reply_bit0": {
+      "combinational_cells": 133,
+      "domain_counts": {
+        "dac_mclk_d": 230
+      },
+      "ff_pins": 230,
+      "pin_counts": {
+        "CE": 140,
+        "D": 90
+      },
+      "primitive_endpoints": 0,
+      "top_output_endpoints": 0
+    },
+    "launched_epoch_bit0": {
+      "combinational_cells": 375,
+      "domain_counts": {
+        "audio_clk": 1,
+        "clk_50m": 758
+      },
+      "ff_pins": 759,
+      "pin_counts": {
+        "CE": 596,
+        "D": 163
+      },
+      "primitive_endpoints": 24,
+      "top_output_endpoints": 0
+    }
+  },
+  "deployment_allowed": false,
+  "earliest_PCM_added_periods_ns": [
+    81.380208,
+    59.051398337
+  ],
+  "earliest_PCM_added_selected_edges": 1,
+  "exact_static_SDC_match_counts": [
+    2,
+    0,
+    2
+  ],
+  "existing_payload_hold_false_path": true,
+  "existing_payload_max_delay_ns": "13.020",
+  "flash_programmed": false,
+  "hardware_accepted": false,
+  "hardware_operated": false,
+  "identity": "runtime-display-load-222fb761-read-only-capture-quiesce-plan-v1",
+  "implemented": false,
+  "new_false_paths_proposed": false,
+  "new_multicycles_proposed": false,
+  "original_reports_modified": false,
+  "path_slack_ns": [
+    -6.906,
+    -6.867,
+    -6.765
+  ],
+  "physical_accepted": false,
+  "physical_frame_deadline_miss_explicitly_possible": true,
+  "plan_directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-display-load-222fb761-capture-plan-v1",
+  "plan_seal_sha256": "0caa72f12e09268bd4ba2578c3771ac7061b79a81a6136c6de4137a3df6388b9",
+  "primary_sha256": "ba320bfce7c43d1405c338e0823c5035fd1401fa37879aab8c0b5fdebfbfc06d",
+  "proposal_PCM_capture_bits": 98,
+  "proposal_PCM_valid_bits": 1,
+  "proposal_TF_source_quiesce_bits": 1,
+  "proposal_optional_token_bits": 1,
+  "reported_setup_relationship_ns": [
+    0.104,
+    0.104,
+    0.104
+  ],
+  "root_replay": {
+    "EDA_invoked": false,
+    "external_inputs": 44,
+    "hardware_operated": false,
+    "implemented": false,
+    "local_files": 13,
+    "passed": true,
+    "replay": true
+  },
+  "root_replay_log_sha256": "2e2f20ed9eb5296782bf78d4bc062b717d59a66d07ce20015a638242f204b56f",
+  "routed_propagation_verified": false,
+  "schema": 1,
+  "selected_reply_destination_pins": 295,
+  "source_candidate_selected": false,
+  "source_implementation_selected_by_this_stage": false,
+  "sram_programmed": false,
+  "synthesis_Fmax_entry_MHz": 57.039,
+  "synthesis_Fmax_is_synchronous_compute_limit_proof": false,
+  "tool_query_resolution_verified": false,
+  "validation_stage": "read-only-source-and-synthesis-estimate-plan"
+}
