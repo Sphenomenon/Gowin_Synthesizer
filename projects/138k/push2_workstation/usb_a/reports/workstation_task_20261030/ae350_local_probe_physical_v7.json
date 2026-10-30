@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "identity": "custom138k-ae350-local-memory-probe-C21031C9",
+  "scope": "isolated same-hard-IP boot64 ILM/DLM probe",
+  "iterations": [
+    {
+      "version": 7,
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031C9-v7",
+      "exit_code": 0,
+      "elapsed_seconds": 89.56759120896459,
+      "process_sha256": "1141c5603d4519b7bddbbe5bfeb9fb48650e8e90a3cd6648dde8cee7e287a069"
+    }
+  ],
+  "prepare_audit": {
+    "manifest_sha256": "67b4a2dff396186bcfde72e32062104c1b0ff20b4b2f81efae57c8b84ae1264c",
+    "verified_inputs": 37,
+    "compiled_sources": 7,
+    "rom_bytes": 65536,
+    "cold_binary_bytes": 36368,
+    "synthesis_verified": false,
+    "physical_timing_verified": false,
+    "hardware_verified": false
+  },
+  "vg_sha256": "26bdae522d15ac18a40d1298e2e814b5ab4b58d3f444a426af4d3b2972526942",
+  "bitstream_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031C9-v7/impl/pnr/ao_0.fs",
+  "bitstream_sha256": "c5e0f843ecff337f4ecdfb241a641879690b1ab862ec08360a30bcdb8ec65017",
+  "timing_slacks": {
+    "setup": {
+      "reported_paths": 2000,
+      "minimum_ns": 7.019
+    },
+    "hold": {
+      "reported_paths": 2000,
+      "minimum_ns": 0.189
+    },
+    "recovery": {
+      "reported_paths": 1370,
+      "minimum_ns": 6.778
+    },
+    "removal": {
+      "reported_paths": 1370,
+      "minimum_ns": 0.299
+    }
+  },
+  "pll_placement": {
+    "instance": "u_cpu_pll/PLL_inst",
+    "site": "PLL_R[0]",
+    "core_output": "CLKOUT1",
+    "reported_rows": 4107,
+    "outputs": [
+      "CLKOUT0",
+      "CLKOUT1"
+    ]
+  },
+  "source_commit": "d10d384",
+  "minimum_reported_pulse_width_slack_ns": 3.557,
+  "synchronizer_first_stages": {
+    "u_uart/request_meta_s0": {
+      "D": "u_uart/request",
+      "Q": "u_uart/request_meta",
+      "CLK": "ram_clk",
+      "CLEAR": "n384_6"
+    },
+    "u_uart/ack_meta_s0": {
+      "D": "u_uart/ack",
+      "Q": "u_uart/ack_meta",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "upper_sync_0_s0": {
+      "D": "upper_seen",
+      "Q": "upper_sync[0]",
+      "CLK": "ram_clk",
+      "CLEAR": "n384_6"
+    },
+    "unmapped_sync_0_s0": {
+      "D": "unmapped_seen",
+      "Q": "unmapped_sync[0]",
+      "CLK": "ram_clk",
+      "CLEAR": "n384_6"
+    },
+    "u_uart/flags_meta_0_s0": {
+      "D": "pll_locked",
+      "Q": "u_uart/flags_meta[0]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "u_uart/flags_meta_1_s0": {
+      "D": "lock_qualified",
+      "Q": "u_uart/flags_meta[1]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "u_uart/flags_meta_2_s0": {
+      "D": "core_reset_pipe[3]",
+      "Q": "u_uart/flags_meta[2]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "u_uart/flags_meta_3_s0": {
+      "D": "preset_n",
+      "Q": "u_uart/flags_meta[3]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "rom_health_sync_0_s0": {
+      "D": "rom_seen",
+      "Q": "rom_health_sync[0]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "upper_health_sync_0_s0": {
+      "D": "upper_seen",
+      "Q": "upper_health_sync[0]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    }
+  },
+  "clocks_hz": {
+    "reference": 50000000,
+    "bus": 50000000,
+    "core": 100000000
+  },
+  "warnings": [
+    "PR1014 reference clock generic routing retained; actual routed timing reviewed",
+    "EX2478 output declaration initialization ignored; explicit reset remains",
+    "Frozen PLL EX3791 truncation diagnostics retained"
+  ],
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "full_workstation": false,
+  "hardware_acceptance": false,
+  "limitations": [
+    "Visible PL clocks/FF chains and actual routed reports reviewed; encrypted hard IP internals are not independently timed by this probe.",
+    "UART and GAO are observations; cache remains disabled; PMACFG without PMAADDR does not establish address-range cache attributes."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-parent-v7",
+  "seal_sha256": "59716b5d3a2e3351f53d28e322f65cd0e60c44479130353e3549fcbd32878c9c",
+  "external_files": 83
+}

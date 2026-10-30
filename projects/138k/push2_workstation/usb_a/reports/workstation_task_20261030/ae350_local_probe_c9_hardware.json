@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "identity": "custom138k-ae350-local-memory-probe-C21031C9",
+  "source_commit": "d10d384",
+  "bitstream_sha256": "c5e0f843ecff337f4ecdfb241a641879690b1ab862ec08360a30bcdb8ec65017",
+  "physical_parent": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-parent-v7",
+  "physical_parent_seal_sha256": "59716b5d3a2e3351f53d28e322f65cd0e60c44479130353e3549fcbd32878c9c",
+  "timing_slacks": {
+    "setup": {
+      "reported_paths": 2000,
+      "minimum_ns": 7.019
+    },
+    "hold": {
+      "reported_paths": 2000,
+      "minimum_ns": 0.189
+    },
+    "recovery": {
+      "reported_paths": 1370,
+      "minimum_ns": 6.778
+    },
+    "removal": {
+      "reported_paths": 1370,
+      "minimum_ns": 0.299
+    }
+  },
+  "minimum_reported_pulse_width_slack_ns": 3.557,
+  "pll_placement": {
+    "instance": "u_cpu_pll/PLL_inst",
+    "site": "PLL_R[0]",
+    "core_output": "CLKOUT1",
+    "reported_rows": 4107,
+    "outputs": [
+      "CLKOUT0",
+      "CLKOUT1"
+    ]
+  },
+  "sram_programmed": true,
+  "sram_program_returncode": 18,
+  "sram_verify_passed": false,
+  "main_configuration_readback": false,
+  "gao": {
+    "valid_rows": 128,
+    "health_words": [
+      "0xffff078f"
+    ],
+    "software_summary_unique": [
+      "0x66ba777d1aba497df44c0cf9a0200001a00000012007f03900439ada00439ada000001ffa020ffc0a0000a640000200000000007000000005041535350415353"
+    ]
+  },
+  "summary_assessment": {
+    "words": {
+      "1": "0x50415353",
+      "6": "0x50415353",
+      "7": "0x0",
+      "8": "0x7",
+      "9": "0x2000",
+      "11": "0xa0000a64",
+      "12": "0xa020ffc0",
+      "14": "0x1ff",
+      "16": "0x439ada",
+      "17": "0x439ada",
+      "18": "0x2007f039",
+      "19": "0xa0000001",
+      "20": "0xa0200001",
+      "32": "0xf44c0cf9",
+      "34": "0x1aba497d",
+      "35": "0x66ba777d"
+    },
+    "checks": {
+      "loader_pass": true,
+      "service_pass": true,
+      "payload_crc": true,
+      "payload_edges": true,
+      "local_geometry": true,
+      "local_enabled": true,
+      "executing_ilm": true,
+      "stack": true
+    },
+    "summary_checks_passed": true,
+    "not_observed": [
+      "cache control register",
+      "memory pattern counts and errors",
+      "counter delta snapshots",
+      "full 64-word frame and CRC"
+    ]
+  },
+  "uart": {
+    "port": "/dev/cu.usbserial-21201",
+    "baud": 115200,
+    "format": "8N1",
+    "duration_seconds": 5.013978417031467,
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "read_only": true
+  },
+  "observed_hard_ip_startup": true,
+  "observed_ilm_execution": true,
+  "observed_dlm_stack": true,
+  "observed_rom_payload_crc": true,
+  "full_64word_diagnostics_observed": false,
+  "counter_deltas_observed": false,
+  "cache_dma_verified": false,
+  "hardware_acceptance": false,
+  "full_workstation": false,
+  "flash_written": false,
+  "comparison": "C8 and C9 have identical RTL and firmware; only explicit PLL placement changes the hardware configuration, with a new UserCode/GAO identity.",
+  "rollback": {
+    "user_code": "C11028E5",
+    "status": "00022020",
+    "independent_read": "/Users/sphenicidition/.cache/gw138k-task-20261030/hardware/ae350_local_memory_c9/rollback_identity_3.json"
+  },
+  "remaining": [
+    "SRAM Verify Failed",
+    "UART no data",
+    "full diagnostic frame not captured",
+    "RTC inherited 50MHz differs from manual 32.768kHz",
+    "cache remains disabled",
+    "no complete workstation validation"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-c9-hardware-parent-v1",
+  "seal_sha256": "7f7fe7da668813328d8c3c902017152ce70496f772a2841485ea3fdc737cdba3",
+  "external_files": 38
+}
