@@ -23,8 +23,13 @@ from tools.workstation_ble_ddr_prefix_cdc_endpoints import (RAW_ENDPOINT_SHA256 
 from tools.workstation_ble_ddr_chorus_cdc_scope import (SCOPE as CHORUS_SCOPE,
     SOURCE_SHA256 as CHORUS_SOURCE_SHA256, validate_profile as validate_chorus_profile,
     AUDIT_SOURCES as CHORUS_AUDIT_SOURCES)
+from tools.workstation_ble_ddr_pitch_fifo_cdc_scope import (SCOPE as PITCH_FIFO_SCOPE,
+    SOURCE_SHA256 as PITCH_FIFO_SOURCE_SHA256, validate_profile as validate_pitch_fifo_profile,
+    AUDIT_SOURCES as PITCH_FIFO_AUDIT_SOURCES)
 from tools.workstation_ble_ddr_chorus_cdc_endpoints import (RAW_ENDPOINT_SHA256 as CHORUS_ENDPOINT_SHA256,
     RAW_PAYLOADS as CHORUS_PAYLOADS, validate_synthesis_binding as validate_chorus_VG)
+from tools.workstation_ble_ddr_pitch_fifo_cdc_endpoints import (RAW_ENDPOINT_SHA256 as PITCH_FIFO_ENDPOINT_SHA256,
+    RAW_PAYLOADS as PITCH_FIFO_PAYLOADS, validate_synthesis_binding as validate_pitch_fifo_VG)
 from tools.workstation_bluetooth_ddr import RAW_STORE_PATH, RAW_STORE_SHA256
 from tools.workstation_usb2_owner_reset import OwnerResetNetlist, _reg
 from tools.workstation_runtime_pcm_cdc import Graph, TOP
@@ -111,11 +116,13 @@ def ff(n, g, path, clock, *, unconditional=False):
 
 
 def audit_netlist(n, *, g=None, scope=SCOPE):
-    require(scope in (SCOPE, PREFIX_SCOPE, CHORUS_SCOPE), 'unknown explicit scope')
+    require(scope in (SCOPE, PREFIX_SCOPE, CHORUS_SCOPE, PITCH_FIFO_SCOPE), 'unknown explicit scope')
     selected_scope = scope
-    endpoint_sha256 = (CHORUS_ENDPOINT_SHA256 if scope == CHORUS_SCOPE else
+    endpoint_sha256 = (PITCH_FIFO_ENDPOINT_SHA256 if scope == PITCH_FIFO_SCOPE else
+                       CHORUS_ENDPOINT_SHA256 if scope == CHORUS_SCOPE else
                        PREFIX_ENDPOINT_SHA256 if scope == PREFIX_SCOPE else ENDPOINT_SHA256)
-    payload_specs = (CHORUS_PAYLOADS if scope == CHORUS_SCOPE else
+    payload_specs = (PITCH_FIFO_PAYLOADS if scope == PITCH_FIFO_SCOPE else
+                       CHORUS_PAYLOADS if scope == CHORUS_SCOPE else
                      PREFIX_PAYLOADS if scope == PREFIX_SCOPE else PAYLOADS)
     require(bool(endpoint_sha256) and isinstance(payload_specs, dict), 'explicit reviewed endpoint/bitmap identities required')
     g = g or Graph(n)
@@ -274,14 +281,17 @@ def audit_netlist(n, *, g=None, scope=SCOPE):
 
 def run_audit(root, stage, evidence, *, scope=SCOPE):
     root, stage = Path(root), Path(stage)
-    require(scope in (SCOPE, PREFIX_SCOPE, CHORUS_SCOPE), 'unknown explicit scope')
+    require(scope in (SCOPE, PREFIX_SCOPE, CHORUS_SCOPE, PITCH_FIFO_SCOPE), 'unknown explicit scope')
     before = verify_synthesis_identity(stage, evidence)
-    if scope == CHORUS_SCOPE:
+    if scope == PITCH_FIFO_SCOPE:
+        validate_pitch_fifo_VG(stage)
+    elif scope == CHORUS_SCOPE:
         validate_chorus_VG(stage)
     elif scope == PREFIX_SCOPE:
         validate_prefix_VG(stage)
     profile = json.loads((stage.parents[1] / 'workstation_profile.json').read_text())
-    source_validator = (validate_chorus_profile if scope == CHORUS_SCOPE else
+    source_validator = (validate_pitch_fifo_profile if scope == PITCH_FIFO_SCOPE else
+                       validate_chorus_profile if scope == CHORUS_SCOPE else
                         validate_prefix_profile if scope == PREFIX_SCOPE else validate_profile)
     source_gate = source_validator(root, profile, stage=stage)
     require(file_sha(root / RAW_STORE_PATH) == RAW_STORE_SHA256
@@ -295,6 +305,8 @@ def run_audit(root, stage, evidence, *, scope=SCOPE):
         helper_names += ('tools/workstation_ble_ddr_prefix_cdc_scope.py',
                          'tools/workstation_ble_ddr_prefix_cdc_endpoints.py', 'tools/workstation_runtime_counter.py',
                          'sim/test_workstation_ble_ddr_prefix_cdc_scope.py')
+    if scope == PITCH_FIFO_SCOPE:
+        helper_names += PITCH_FIFO_AUDIT_SOURCES
     if scope == CHORUS_SCOPE:
         helper_names += CHORUS_AUDIT_SOURCES
     helpers = {p: file_sha(root / p) for p in helper_names}
@@ -303,7 +315,8 @@ def run_audit(root, stage, evidence, *, scope=SCOPE):
     require(before == verify_synthesis_identity(stage, evidence)
             and helpers == {p: file_sha(root / p) for p in helper_names}, 'sealed audit inputs changed')
     result.update(synthesis=before, source_gate=source_gate, audit_source_sha256=helpers,
-        source_sha256=dict(CHORUS_SOURCE_SHA256 if scope == CHORUS_SCOPE else
+        source_sha256=dict(PITCH_FIFO_SOURCE_SHA256 if scope == PITCH_FIFO_SCOPE else
+                       CHORUS_SOURCE_SHA256 if scope == CHORUS_SCOPE else
                            PREFIX_SOURCE_SHA256 if scope == PREFIX_SCOPE else SOURCE_SHA256, **{RAW_STORE_PATH: RAW_STORE_SHA256}),
         source_seal_before_and_after=True, eda_invoked=False, hardware_operated=False,
         constraint_proposal_emitted=False, constraints_installed=False)
@@ -314,7 +327,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--synthesis-evidence', type=Path, required=True)
-    parser.add_argument('--scope', choices=(SCOPE, PREFIX_SCOPE, CHORUS_SCOPE), required=True)
+    parser.add_argument('--scope', choices=(SCOPE, PREFIX_SCOPE, CHORUS_SCOPE, PITCH_FIFO_SCOPE), required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     result = run_audit(ROOT, args.project, args.synthesis_evidence, scope=args.scope)

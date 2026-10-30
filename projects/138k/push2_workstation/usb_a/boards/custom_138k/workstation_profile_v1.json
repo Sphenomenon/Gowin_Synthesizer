@@ -637,7 +637,7 @@
     "projects/138k/push2_workstation/usb_a/tools/stage_ae350_firmware.py": "f545ab6fd56563575290971dec2afcd45b239a3180287c02379ac8f3ee8e5768",
     "projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": "3aeb1f4e791b5a256fec71d181a18d91b367d0e1583030d504bc7cc8e104c8cb",
     "projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_cdc_inventory.py": "e42165a3939a6c2561a63d21f104baf1fe57d3f595d35ac07a96d3a57a5722a8",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_cdc_inventory.py": "664adc0a21369a5708665ac26dd48ab74320e33ae9dfe1d22a0c7f87a54582cb",
     "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_cdc_scope.py": "64740b28a8386f540bde14f459c448d948f6fba96f262e16735f9e6d8c9e7159",
     "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_chorus_cdc_endpoints.py": "fe3a7e380faf07c331d666a6336b3103434edc3cdcbf9e5c68fb2308b852b927",
     "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_chorus_cdc_scope.py": "5c1850889b9745f5686c3086f962ae2c35408e8b80073e8879344e6ef2bc63b8",
@@ -660,7 +660,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_pinout.py": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
     "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "3af8810c6f963ea96dd8292b49a1f67c18e3c7024ecf5a82dad7bff915dad163",
     "projects/138k/push2_workstation/usb_a/tools/workstation_recognition_policy.py": "eea5d1512dff6c016e210adb4090a6794e245e3af91c59c2fa26a8f45287b23f",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_recording_phase1_cdc.py": "b9a44a96243275349240996b8870bef977b533c089b586367f9f65575ac823c6",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_recording_phase1_cdc.py": "228964de1736bacbca648807871d8f64749db3dcd9070e28483737d6c22d75bc",
     "projects/138k/push2_workstation/usb_a/tools/workstation_recording_policy.py": "05c192a4d22232a92ff2b153e336bb5234b25d1651892002c5c33fd38346abc8",
     "projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
     "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_cdc.py": "2784ff8af6b18ab0ef6b22899b9706fea930217f3f1413592d06a61df7aef50b",
@@ -668,7 +668,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_counter.py": "6b04451d0d8753581c93ac6759b8b065fecfd1a9eb4553eb0669aa7539909b02",
     "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py": "159d41337f4bf5e0d7ddcb179b8891faa68a3a4445535deb3fcc2b4260c88b10",
     "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": "096eb9a241a84f2f658939a8e406aa3eb1c6a36f2e7407dafd1a9667abedff57",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_shared_cdc.py": "eaabf82c7823b63d7243a9ba465b9792e4db73d6f6e434af442ec0b017f8b161",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_shared_cdc.py": "a13745cc3e50305fe5dd4cb0a7053618afaf9b407356f6c9790b4d165c636b62",
     "projects/138k/push2_workstation/usb_a/tools/workstation_sources.py": "1f5bbe307f331a0cae42329393aff4735a4688d79debd92ab1390dc6866f4560",
     "projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
     "projects/138k/push2_workstation/usb_a/tools/workstation_timing_constraints.py": "210f5a801c0883cd60900a8023406fd96752dc18471225d1d31763eb31fa6cd5",
@@ -677,7 +677,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_usb2_host_probe.py": "5be61eb18ec886df906ada3d457c76e0196b14804afd7bd0e0ea28db9a3a5f5e",
     "projects/138k/push2_workstation/usb_a/tools/workstation_usb2_hotplug.py": "79d9a1014817f21e0722db0a1afd48771b91e1a50dfbcf2740207605f1ba337a",
     "projects/138k/push2_workstation/usb_a/tools/workstation_usb2_input.py": "8508a9086494723a36fb45fe31585b8239a9cbf3c925d7bada9a0775df44f4c7",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_usb2_owner_reset.py": "ba9158f87065c9c4d8991fbeae0bb6653438dd28bf33c70641206eaca9dfa472",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_usb2_owner_reset.py": "c69aacd33f7aa720cceb68e148050f0132e37dad61f95f9acdddfa816695874c",
     "projects/138k/push2_workstation/usb_a/tools/workstation_usb2_soc.py": "d8bbbea10e8473339e287d7d4fbd508091e1700e9e247c4775228e782003757e",
     "projects/138k/push2_workstation/usb_a/tools/workstation_video_mode.py": "5c3cc1b0eaeccab8863707f45900c350d7dcfc7d9588e7c05c47b8a16b8501d2",
     "projects/138k/push2_workstation/usb_a/vendor/usb_host_fs_8fc3/firmware/baremetal.ld": "782346f25a8dfffc5bfbb8198c2b12e5166b2d500aa00e626e8187f5a0473da8",
@@ -706,7 +706,11 @@
     "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_effects.sv": "d24f326d3f5e5bba356d24f87fe28885f6d241e936aac10f34006e7c346f4d41",
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_delay_fifo_storage.py": "2765bdd3385fd0975a10fd56721e56779c4d26ca9ccd25639b9d0fa9f8d7944f",
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_profile.py": "ef572395a54a29a2691399a85bd2057f8de8774feeb948b0af2529e85616f0dc",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": "45dc11b1284f21f3233be3c63132127d358844d0c80f6febcbec872a06a92cac"
+    "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": "45dc11b1284f21f3233be3c63132127d358844d0c80f6febcbec872a06a92cac",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_ble_ddr_pitch_fifo_cdc_scope.py": "3e699acb313c918c7766f6661c66b9fd8efe26275201ba35de013c44d32a9c83",
+    "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_BLE_DDR_PITCH_FIFO_CDC.md": "f401a36349f0b8443dc523b6f88af44bc5efe21c65ac563f93bb5a29aa008946",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_pitch_fifo_cdc_endpoints.py": "29593e92c35d2fa48047dad5ae26d02d7f3021c072eb1cbda30c03f6194dcc81",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_pitch_fifo_cdc_scope.py": "7f2416a6b2fb30df423bd1fc14cec833a7ac94c5722651df84ed9b3a1f984c4a"
   },
   "revision": 5
 }

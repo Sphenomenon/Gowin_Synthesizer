@@ -24,8 +24,11 @@ from tools.workstation_ble_ddr_prefix_cdc_scope import (SCOPE as BLE_DDR_PREFIX_
 from tools.workstation_ble_ddr_prefix_cdc_endpoints import validate_synthesis_binding as validate_prefix_VG
 from tools.workstation_ble_ddr_chorus_cdc_scope import (SCOPE as BLE_DDR_CHORUS_SCOPE,
     validate_profile as validate_ble_ddr_chorus_profile, AUDIT_SOURCES as CHORUS_AUDIT_SOURCES)
+from tools.workstation_ble_ddr_pitch_fifo_cdc_scope import (SCOPE as BLE_DDR_PITCH_FIFO_SCOPE,
+    validate_profile as validate_ble_ddr_pitch_fifo_profile, AUDIT_SOURCES as PITCH_FIFO_AUDIT_SOURCES)
 from tools.workstation_ble_ddr_chorus_cdc_endpoints import validate_synthesis_binding as validate_chorus_VG
-BLE_DDR_SCOPES = (BLE_DDR_SCOPE, BLE_DDR_PREFIX_SCOPE, BLE_DDR_CHORUS_SCOPE)
+from tools.workstation_ble_ddr_pitch_fifo_cdc_endpoints import validate_synthesis_binding as validate_pitch_fifo_VG
+BLE_DDR_SCOPES = (BLE_DDR_SCOPE, BLE_DDR_PREFIX_SCOPE, BLE_DDR_CHORUS_SCOPE, BLE_DDR_PITCH_FIFO_SCOPE)
 from tools.workstation_runtime_pcm_cdc import COMB, Graph, PcmNetlist, TOP
 
 POLICY = 'usb2-owner-audio-reset-source-v1'
@@ -325,7 +328,8 @@ def validate_profile(root, prepared, explicit_profile, *, scope=LEGACY_SCOPE):
     require(scope in (LEGACY_SCOPE, *BLE_DDR_SCOPES), 'unknown explicit scope')
     if scope in BLE_DDR_SCOPES:
         require(explicit_profile == NO_LOCAL_PANEL_PROFILE, 'revision2 requires no-local-panel profile')
-        (validate_ble_ddr_chorus_profile if scope == BLE_DDR_CHORUS_SCOPE else
+        (validate_ble_ddr_pitch_fifo_profile if scope == BLE_DDR_PITCH_FIFO_SCOPE else
+         validate_ble_ddr_chorus_profile if scope == BLE_DDR_CHORUS_SCOPE else
          validate_ble_ddr_prefix_profile if scope == BLE_DDR_PREFIX_SCOPE else validate_ble_ddr_profile)(root, prepared)
         return
     require(explicit_profile in PROFILES and prepared.get('profile') == explicit_profile,
@@ -358,10 +362,13 @@ def run_audit(root, stage, evidence, *, explicit_profile, scope=LEGACY_SCOPE):
     prepared = json.loads((stage.parents[1] / 'workstation_profile.json').read_text())
     validate_profile(root, prepared, explicit_profile, scope=scope)
     if scope in BLE_DDR_SCOPES:
-        (validate_ble_ddr_chorus_profile if scope == BLE_DDR_CHORUS_SCOPE else
+        (validate_ble_ddr_pitch_fifo_profile if scope == BLE_DDR_PITCH_FIFO_SCOPE else
+         validate_ble_ddr_chorus_profile if scope == BLE_DDR_CHORUS_SCOPE else
          validate_ble_ddr_prefix_profile if scope == BLE_DDR_PREFIX_SCOPE else validate_ble_ddr_profile)(root, prepared, stage=stage)
     before = verify_synthesis_identity(stage, evidence)
-    if scope == BLE_DDR_CHORUS_SCOPE:
+    if scope == BLE_DDR_PITCH_FIFO_SCOPE:
+        validate_pitch_fifo_VG(stage)
+    elif scope == BLE_DDR_CHORUS_SCOPE:
         validate_chorus_VG(stage)
     elif scope == BLE_DDR_PREFIX_SCOPE:
         validate_prefix_VG(stage)
@@ -370,6 +377,8 @@ def run_audit(root, stage, evidence, *, explicit_profile, scope=LEGACY_SCOPE):
         audit_files += ("tools/workstation_ble_ddr_prefix_cdc_scope.py",
                         "tools/workstation_ble_ddr_prefix_cdc_endpoints.py", "tools/workstation_runtime_counter.py",
                         "sim/test_workstation_ble_ddr_prefix_cdc_scope.py")
+    if scope == BLE_DDR_PITCH_FIFO_SCOPE:
+        audit_files += PITCH_FIFO_AUDIT_SOURCES
     if scope == BLE_DDR_CHORUS_SCOPE:
         audit_files += CHORUS_AUDIT_SOURCES
     identities = {p: sha(root / p) for p in audit_files}
@@ -377,7 +386,8 @@ def run_audit(root, stage, evidence, *, explicit_profile, scope=LEGACY_SCOPE):
     n = OwnerResetNetlist((stage / VG_RELATIVE).read_text(), TOP)
     result = audit_reset_structure(n, Graph(n), (stage / 'constraints/custom_138k.sdc').read_text())
     if scope in BLE_DDR_SCOPES:
-        (validate_ble_ddr_chorus_profile if scope == BLE_DDR_CHORUS_SCOPE else
+        (validate_ble_ddr_pitch_fifo_profile if scope == BLE_DDR_PITCH_FIFO_SCOPE else
+         validate_ble_ddr_chorus_profile if scope == BLE_DDR_CHORUS_SCOPE else
          validate_ble_ddr_prefix_profile if scope == BLE_DDR_PREFIX_SCOPE else validate_ble_ddr_profile)(root, prepared, stage=stage)
     require(before == verify_synthesis_identity(stage, evidence) and
             identities == {p: sha(root / p) for p in audit_files}, 'review inputs changed')

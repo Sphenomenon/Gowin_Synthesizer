@@ -56,11 +56,18 @@ from tools.workstation_ble_ddr_chorus_cdc_scope import (
     SCOPE as BLE_DDR_CHORUS_PRECISION, validate_profile as validate_ble_ddr_chorus_profile,
     AUDIT_SOURCES as CHORUS_AUDIT_SOURCES,
 )
+from tools.workstation_ble_ddr_pitch_fifo_cdc_scope import (
+    SCOPE as BLE_DDR_PITCH_FIFO_PRECISION, validate_profile as validate_ble_ddr_pitch_fifo_profile,
+    AUDIT_SOURCES as PITCH_FIFO_AUDIT_SOURCES,
+)
 from tools.workstation_ble_ddr_chorus_cdc_endpoints import (
     validate_synthesis_binding as validate_chorus_VG, VIDEO_STATUS_NETS as CHORUS_VIDEO_STATUS,
 )
+from tools.workstation_ble_ddr_pitch_fifo_cdc_endpoints import (
+    validate_synthesis_binding as validate_pitch_fifo_VG, VIDEO_STATUS_NETS as PITCH_FIFO_VIDEO_STATUS,
+)
 
-BLE_DDR_PRECISIONS = (BLE_DDR_PRECISION, BLE_DDR_PREFIX_PRECISION, BLE_DDR_CHORUS_PRECISION)
+BLE_DDR_PRECISIONS = (BLE_DDR_PRECISION, BLE_DDR_PREFIX_PRECISION, BLE_DDR_CHORUS_PRECISION, BLE_DDR_PITCH_FIFO_PRECISION)
 NO_LOCAL_PANEL_PRECISION = "runtime-r00-no-local-panel-v1"
 NO_LOCAL_PANEL_PRECISIONS = (NO_LOCAL_PANEL_PRECISION, *BLE_DDR_PRECISIONS)
 PRECISION_PROFILES = ("generic", "runtime-no-cnn-v1", "runtime-r00-v1", NO_LOCAL_PANEL_PRECISION, *BLE_DDR_PRECISIONS)
@@ -68,10 +75,10 @@ R00_PRECISIONS = ("runtime-r00-v1", NO_LOCAL_PANEL_PRECISION, *BLE_DDR_PRECISION
 NO_CNN_SOURCE = "boards/custom_138k/workstation_profile_no_cnn_v1.json"
 R00_SOURCE = "boards/custom_138k/workstation_profile_r00_v1.json"
 PROFILE_SOURCES = {"runtime-no-cnn-v1": NO_CNN_SOURCE, "runtime-r00-v1": R00_SOURCE,
-                   NO_LOCAL_PANEL_PRECISION: NO_LOCAL_PANEL_SOURCE, BLE_DDR_PRECISION: NO_LOCAL_PANEL_SOURCE, BLE_DDR_PREFIX_PRECISION: NO_LOCAL_PANEL_SOURCE, BLE_DDR_CHORUS_PRECISION: NO_LOCAL_PANEL_SOURCE}
+                   NO_LOCAL_PANEL_PRECISION: NO_LOCAL_PANEL_SOURCE, BLE_DDR_PRECISION: NO_LOCAL_PANEL_SOURCE, BLE_DDR_PREFIX_PRECISION: NO_LOCAL_PANEL_SOURCE, BLE_DDR_CHORUS_PRECISION: NO_LOCAL_PANEL_SOURCE, BLE_DDR_PITCH_FIFO_PRECISION: NO_LOCAL_PANEL_SOURCE}
 PROFILE_NAMES = {"runtime-no-cnn-v1": "custom138k-workstation-no-cnn-v1",
                  "runtime-r00-v1": "custom138k-workstation-r00-v1",
-                 NO_LOCAL_PANEL_PRECISION: NO_LOCAL_PANEL_PROFILE, BLE_DDR_PRECISION: NO_LOCAL_PANEL_PROFILE, BLE_DDR_PREFIX_PRECISION: NO_LOCAL_PANEL_PROFILE, BLE_DDR_CHORUS_PRECISION: NO_LOCAL_PANEL_PROFILE}
+                 NO_LOCAL_PANEL_PRECISION: NO_LOCAL_PANEL_PROFILE, BLE_DDR_PRECISION: NO_LOCAL_PANEL_PROFILE, BLE_DDR_PREFIX_PRECISION: NO_LOCAL_PANEL_PROFILE, BLE_DDR_CHORUS_PRECISION: NO_LOCAL_PANEL_PROFILE, BLE_DDR_PITCH_FIFO_PRECISION: NO_LOCAL_PANEL_PROFILE}
 # Exact supported R00 configuration, canonical JSON (sorted keys, no spaces).
 # Descriptive profile bytes may evolve, but a future LCD-off configuration
 # needs an explicit retirement/topology review rather than inheriting 88 lines.
@@ -105,7 +112,8 @@ def validate_precision_profile(root, profile, precision_profile):
     if precision_profile == "generic":
         return
     if precision_profile in BLE_DDR_PRECISIONS:
-        (validate_ble_ddr_chorus_profile if precision_profile == BLE_DDR_CHORUS_PRECISION else
+        (validate_ble_ddr_pitch_fifo_profile if precision_profile == BLE_DDR_PITCH_FIFO_PRECISION else
+         validate_ble_ddr_chorus_profile if precision_profile == BLE_DDR_CHORUS_PRECISION else
          validate_ble_ddr_prefix_profile if precision_profile == BLE_DDR_PREFIX_PRECISION else validate_ble_ddr_profile)(root, profile)
     is_r00 = precision_profile in R00_PRECISIONS
     no_panel = precision_profile in NO_LOCAL_PANEL_PRECISIONS
@@ -373,7 +381,8 @@ R00_VIDEO_REGISTERED_STATUS = {
 
 
 def video_status_nets(precision_profile):
-    return (CHORUS_VIDEO_STATUS if precision_profile == BLE_DDR_CHORUS_PRECISION else
+    return (PITCH_FIFO_VIDEO_STATUS if precision_profile == BLE_DDR_PITCH_FIFO_PRECISION else
+            CHORUS_VIDEO_STATUS if precision_profile == BLE_DDR_CHORUS_PRECISION else
             PREFIX_VIDEO_STATUS if precision_profile == BLE_DDR_PREFIX_PRECISION else
             R00_NO_LOCAL_PANEL_VIDEO_STATUS if precision_profile in NO_LOCAL_PANEL_PRECISIONS else R00_VIDEO_STATUS)
 
@@ -1030,7 +1039,9 @@ def audit_selected_shared(
     )
     return dict(
         schema=1,
-        scope=("selected_r00_no_local_panel_ble_ddr_chorus_retained_shared_constraints_source_structure_only"
+        scope=("selected_r00_no_local_panel_ble_ddr_pitch_fifo_retained_shared_constraints_source_structure_only"
+               if precision_profile == BLE_DDR_PITCH_FIFO_PRECISION else
+               "selected_r00_no_local_panel_ble_ddr_chorus_retained_shared_constraints_source_structure_only"
                if precision_profile == BLE_DDR_CHORUS_PRECISION else
                "selected_r00_no_local_panel_ble_ddr_prefix_retained_shared_constraints_source_structure_only"
                if precision_profile == BLE_DDR_PREFIX_PRECISION else
@@ -1130,7 +1141,8 @@ def audit_shared_constraints(root, stage, netlist_text, *, precision_profile="ge
     profile = json.loads((stage.parents[1] / "workstation_profile.json").read_text())
     validate_precision_profile(root, profile, precision_profile)
     if precision_profile in BLE_DDR_PRECISIONS:
-        (validate_ble_ddr_chorus_profile if precision_profile == BLE_DDR_CHORUS_PRECISION else
+        (validate_ble_ddr_pitch_fifo_profile if precision_profile == BLE_DDR_PITCH_FIFO_PRECISION else
+         validate_ble_ddr_chorus_profile if precision_profile == BLE_DDR_CHORUS_PRECISION else
          validate_ble_ddr_prefix_profile if precision_profile == BLE_DDR_PREFIX_PRECISION else validate_ble_ddr_profile)(root, profile, stage=stage)
     n = (OwnerResetNetlist if usb2_owner_reset else PcmNetlist)(netlist_text, TOP)
     g = Graph(n)
@@ -1159,7 +1171,9 @@ def run_audit(root, stage, evidence, *, precision_profile="generic", usb2_owner_
         "unknown precision profile: " + precision_profile,
     )
     before = verify_synthesis_identity(stage, evidence)
-    if precision_profile == BLE_DDR_CHORUS_PRECISION:
+    if precision_profile == BLE_DDR_PITCH_FIFO_PRECISION:
+        validate_pitch_fifo_VG(stage)
+    elif precision_profile == BLE_DDR_CHORUS_PRECISION:
         validate_chorus_VG(stage)
     elif precision_profile == BLE_DDR_PREFIX_PRECISION:
         validate_prefix_VG(stage)
@@ -1168,6 +1182,8 @@ def run_audit(root, stage, evidence, *, precision_profile="generic", usb2_owner_
         audit_sources += ("tools/workstation_ble_ddr_prefix_cdc_scope.py",
                           "tools/workstation_ble_ddr_prefix_cdc_endpoints.py", "tools/workstation_runtime_counter.py",
                           "sim/test_workstation_ble_ddr_prefix_cdc_scope.py")
+    if precision_profile == BLE_DDR_PITCH_FIFO_PRECISION:
+        audit_sources += PITCH_FIFO_AUDIT_SOURCES
     if precision_profile == BLE_DDR_CHORUS_PRECISION:
         audit_sources += CHORUS_AUDIT_SOURCES
     sources = {p: file_sha(root / p) for p in audit_sources}
@@ -1182,7 +1198,8 @@ def run_audit(root, stage, evidence, *, precision_profile="generic", usb2_owner_
                     "no-local-panel precision requires its explicit disabled-panel clock audit")
     if precision_profile in BLE_DDR_PRECISIONS:
         profile = json.loads((stage.parents[1] / "workstation_profile.json").read_text())
-        (validate_ble_ddr_chorus_profile if precision_profile == BLE_DDR_CHORUS_PRECISION else
+        (validate_ble_ddr_pitch_fifo_profile if precision_profile == BLE_DDR_PITCH_FIFO_PRECISION else
+         validate_ble_ddr_chorus_profile if precision_profile == BLE_DDR_CHORUS_PRECISION else
          validate_ble_ddr_prefix_profile if precision_profile == BLE_DDR_PREFIX_PRECISION else validate_ble_ddr_profile)(root, profile, stage=stage)
     after = verify_synthesis_identity(stage, evidence)
     require(
