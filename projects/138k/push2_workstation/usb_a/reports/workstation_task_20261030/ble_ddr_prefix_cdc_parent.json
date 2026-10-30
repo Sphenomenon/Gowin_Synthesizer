@@ -1,0 +1,271 @@
+{
+  "schema": 1,
+  "identity": "prefix-BLE-DDR-CDC-parent-source-20261030-v1",
+  "source_commit_reviewed": "2d1cffe55e5671cdb0eb01d2949ddab676d1da61",
+  "parent_import_commit": "a6a110a042d36125fa2eb2d6f92eaf7d391c3e12",
+  "scope": "runtime-r00-no-local-panel-ble-ddr-prefix-v1",
+  "actual_candidate": "custom138k-workstation-r00-no-local-panel-v1-c7d66b419868f7f4",
+  "actual_VG_sha256": "8c5d1e5a30baad7a7e4cd705cfdcf4fcc301369bcb6c69d78f9a7f47c10acb2c",
+  "independent_relative_files": 81,
+  "independent_absolute_dependencies": 656,
+  "all737_independent_entries_parent_verified": true,
+  "public_audits": {
+    "shared": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-public-v3/shared.json",
+      "sha256": "16e0f77728d6f3eff42cee99d18567f4e9de303ab280c2b74e6104318be8546b",
+      "elapsed_seconds": 17.47448141616769
+    },
+    "usb": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-public-v3/usb.json",
+      "sha256": "48f9098f5129722e704bcca200b273a422b77d38af14a34898fa547fe2187365",
+      "elapsed_seconds": 5.800611000042409
+    },
+    "phase1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-public-v3/phase1.json",
+      "sha256": "8129b480d5b8b107412349f30d99b992ba280a182c7df83148a26cb0cae8e687",
+      "elapsed_seconds": 9.968554000137374
+    },
+    "raw": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-public-v3/raw.json",
+      "sha256": "abab9bc4f8df9eab1d7c91e9dba83b56c19c9c08072c8b2bc43a2dcd19326a39",
+      "elapsed_seconds": 5.361572084017098
+    }
+  },
+  "parent_tests": {
+    "new_scope_tests": 10,
+    "new_actual_negatives": 14,
+    "source_negative_subcases": 28,
+    "accepted_source_tests": 17,
+    "profile_tests": 20,
+    "optional_profile_skips": 1,
+    "each_fresh_prepare_source_tests": 12
+  },
+  "independent_legacy_tests": {
+    "legacy_optional_classes_skipped": 4,
+    "legacy_targeted_tests": 24,
+    "new_actual_negatives": 14,
+    "new_scope_tests": 10,
+    "old_actual_negatives": 12,
+    "old_serial_tests": 5,
+    "source_negative_subcases": 28
+  },
+  "declared_closures": {
+    "phase1": 13,
+    "raw": 42
+  },
+  "endpoint_delta_review": {
+    "changed_phase1_groups": 4,
+    "changed_raw_groups": 7,
+    "logical_FF_sets_and_opaque_endpoints_unchanged": true,
+    "normalization_used_for_acceptance": false,
+    "normalized_backend_memory_CE_added": 96,
+    "normalized_backend_memory_CE_removed": 42,
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-audit-v1/evidence/closure_delta_review.json",
+    "sha256": "f0facfe58d027f173e167db24ae9249177bc057ace539308f162af5270770bc2"
+  },
+  "video_alias": {
+    "new_scope_Q": "u_video/front_valid",
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-audit-v1/evidence/new_video_alias_review.json",
+    "serial_scope_Q": "u_video/front_valid_Z",
+    "sha256": "7b6cfc0f5a5b0a03d92248e482be9f84e49464b339c3b5f3f14af2ccd7bc9459",
+    "unique_declared_memory_FF_Q_verified": true
+  },
+  "fresh_prepares": {
+    "enabled": {
+      "candidate_identity": "custom138k-workstation-v1-0b8c819877ff25be",
+      "staged_files": 573,
+      "enabled_files": 260,
+      "staged_byteidentical_to_previous": true,
+      "enabled_actual_bytes_equal_previous": true,
+      "provenance_only_changes": [
+        "constraints/custom_138k.cst",
+        "constraints/custom_138k.sdc"
+      ],
+      "prepare_log_sha256": "2b3dca3786ea7759b5f4f5a97a3ec3bcea708e1ea8814d395eaa3d95b5c0bf96",
+      "source_test_log_sha256": "85236fc9316deb2be378b51a02a4b32ad550e84d548a99208e47ce01fb329bce",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "no-cnn": {
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-540e40c2219c1fcf",
+      "staged_files": 574,
+      "enabled_files": 260,
+      "staged_byteidentical_to_previous": true,
+      "enabled_actual_bytes_equal_previous": true,
+      "provenance_only_changes": [
+        "constraints/custom_138k.cst",
+        "constraints/custom_138k.sdc"
+      ],
+      "prepare_log_sha256": "53e1f9277403785a5a1ff316520ba070193afa6f1976f0143b365c3a08363b0d",
+      "source_test_log_sha256": "dba6531755f4c92d094e737121dc162bfbf2628b680124389e9802e0c4a6cdb8",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "r00": {
+      "candidate_identity": "custom138k-workstation-r00-v1-2bf5c907b10b3c8e",
+      "staged_files": 586,
+      "enabled_files": 267,
+      "staged_byteidentical_to_previous": true,
+      "enabled_actual_bytes_equal_previous": true,
+      "provenance_only_changes": [
+        "constraints/custom_138k.cst",
+        "constraints/custom_138k.sdc"
+      ],
+      "prepare_log_sha256": "3e85c00e6b7bab91885e910b87be11bb06b1d2d198ad57698ab4610d1e684c57",
+      "source_test_log_sha256": "9806c82d08ce341ab037474ebef26f166432fce0238a4189b059a466d2413093",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "off": {
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-5edcba8696e13308",
+      "staged_files": 593,
+      "enabled_files": 269,
+      "staged_byteidentical_to_previous": true,
+      "enabled_actual_bytes_equal_previous": true,
+      "provenance_only_changes": [
+        "constraints/custom_138k.cst",
+        "constraints/custom_138k.sdc"
+      ],
+      "prepare_log_sha256": "32f6a6198ca4e5344d28683d24b08fbe479ae2829049b3276db01c3278ccd410",
+      "source_test_log_sha256": "cfbe5980d3a951c9d7f1c82bafb98c15443d65a4dd57c58a6dceb86010d39022",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    }
+  },
+  "profile_source_locks": "Only four reviewed existing helper hashes updated and four new helper/test/document inputs added; all other descriptor fields unchanged.",
+  "prepare_validation_notes": [
+    "Initial source-drift rejection preserved before source lock refresh.",
+    "All four v2 build preparations succeeded; the comparison wrapper then referenced nonexistent v2 parents.",
+    "v3 validator correctly refused enabled provenance equality: CST/SDC provenance maps reflect reviewed tool changes.",
+    "v4 explicitly verified only the two constraint provenance maps changed, with exact four updated and three added tool identities; all staged and enabled bytes match fixed v1 parents.",
+    "No synthesis/source/physical acceptance transferred to the four fresh identities."
+  ],
+  "evidence": {
+    "prefix-cdc-audit-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-audit-v1/review.json",
+      "sha256": "0d76ec72a36ad7daed751c9185b7886b6f89240addeb8fb97e6566d7e8bef493"
+    },
+    "prefix-cdc-audit-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-audit-v1/REVIEW_SEAL.json",
+      "sha256": "f6b5b0861ec1fa446b4d866a8c915665c598bacae8370f061f7f943b3a6425ae"
+    },
+    "prefix-cdc-parent-tests-v1.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-tests-v1.json",
+      "sha256": "c04a9eb0091d58c522ea0673768e7fd1319503cbbd234224ac506f33d3bdecfd"
+    },
+    "prefix-cdc-parent-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-tests-v1.log",
+      "sha256": "d91196b22c7a0b0071ad03755e4b8ed4593def5f9988c0539ef34ec98c77499a"
+    },
+    "prefix-cdc-parent-current-sources-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-current-sources-v1.log",
+      "sha256": "32fb7f6166dfa2c14e45d8ada7c15b7af96bfe866c7d95f2b214166fdec3e0fa"
+    },
+    "prefix-cdc-parent-profile-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-profile-v1.log",
+      "sha256": "240a9ec994429e63355e762f17f813cc8700876a9ef80cecc11c6b4adaddcb72"
+    },
+    "prefix-cdc-parent-four-prepare-validation-v4.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-four-prepare-validation-v4.json",
+      "sha256": "22d12ab322bd55c7b74f4aec42d894412f0efa6a66d7bd957db84ba65ca8a89b"
+    },
+    "prefix-cdc-parent-prepare-validation-v4.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-prepare-validation-v4.py",
+      "sha256": "529c4bb0e91f26c55e98ccc54106d961e98b448fce5dda40629a4e58d7876a6c"
+    },
+    "prefix-cdc-parent-four-prepare-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-four-prepare-v1.log",
+      "sha256": "07c4b8dba962ba314b9dbd82375efaf1d30630c2d52911e93d7e54e294ddf9a4"
+    },
+    "prefix-cdc-parent-four-prepare-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-four-prepare-v2.log",
+      "sha256": "4aca0c1e8bc9f6b4ddb3485614871fd76494b80220961f4049d47910005592fe"
+    },
+    "prefix-cdc-parent-prepare-validation-v3.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-prepare-validation-v3.log",
+      "sha256": "cdc0345d7002971afd758cc7fc376b4483b4854f7d4a5c1bba6394d2a41d2867"
+    },
+    "prefix-cdc-parent-public-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-public-v1.log",
+      "sha256": "3c2d91b4ab795489642e25dca50e70c130b78cafb10978e3d7455119856738d4"
+    },
+    "prefix-cdc-parent-enabled-prepare-v2-validation-v4.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-enabled-prepare-v2-validation-v4.json",
+      "sha256": "c4c1b6967675b8b0a9e7107acf9df54764cce89a18a788848ae5a8cc3e110d6b"
+    },
+    "prefix-cdc-parent-enabled-prepare-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-enabled-prepare-v2.log",
+      "sha256": "2b3dca3786ea7759b5f4f5a97a3ec3bcea708e1ea8814d395eaa3d95b5c0bf96"
+    },
+    "prefix-cdc-parent-enabled-prepare-v2-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-enabled-prepare-v2-source-tests.log",
+      "sha256": "85236fc9316deb2be378b51a02a4b32ad550e84d548a99208e47ce01fb329bce"
+    },
+    "prefix-cdc-parent-no-cnn-prepare-v2-validation-v4.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-no-cnn-prepare-v2-validation-v4.json",
+      "sha256": "2f5fc6d1777232135c5e2741d9049e4a89e6af18a4674171a174c8909d5e6bf2"
+    },
+    "prefix-cdc-parent-no-cnn-prepare-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-no-cnn-prepare-v2.log",
+      "sha256": "53e1f9277403785a5a1ff316520ba070193afa6f1976f0143b365c3a08363b0d"
+    },
+    "prefix-cdc-parent-no-cnn-prepare-v2-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-no-cnn-prepare-v2-source-tests.log",
+      "sha256": "dba6531755f4c92d094e737121dc162bfbf2628b680124389e9802e0c4a6cdb8"
+    },
+    "prefix-cdc-parent-r00-prepare-v2-validation-v4.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-r00-prepare-v2-validation-v4.json",
+      "sha256": "04d2bacb51590881b47ebba5d15dbf5370b35e1af4454032d60a5263bef7eddd"
+    },
+    "prefix-cdc-parent-r00-prepare-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-r00-prepare-v2.log",
+      "sha256": "3e85c00e6b7bab91885e910b87be11bb06b1d2d198ad57698ab4610d1e684c57"
+    },
+    "prefix-cdc-parent-r00-prepare-v2-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-r00-prepare-v2-source-tests.log",
+      "sha256": "9806c82d08ce341ab037474ebef26f166432fce0238a4189b059a466d2413093"
+    },
+    "prefix-cdc-parent-off-prepare-v2-validation-v4.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-off-prepare-v2-validation-v4.json",
+      "sha256": "651e99e6ee1ad37e0641027d2f14437757d184dd9fe5d0ea69b2611a951980de"
+    },
+    "prefix-cdc-parent-off-prepare-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-off-prepare-v2.log",
+      "sha256": "32f6a6198ca4e5344d28683d24b08fbe479ae2829049b3276db01c3278ccd410"
+    },
+    "prefix-cdc-parent-off-prepare-v2-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-off-prepare-v2-source-tests.log",
+      "sha256": "cfbe5980d3a951c9d7f1c82bafb98c15443d65a4dd57c58a6dceb86010d39022"
+    },
+    "prefix-cdc-parent-public-v3/shared.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-public-v3/shared.json",
+      "sha256": "16e0f77728d6f3eff42cee99d18567f4e9de303ab280c2b74e6104318be8546b"
+    },
+    "prefix-cdc-parent-public-v3/usb.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-public-v3/usb.json",
+      "sha256": "48f9098f5129722e704bcca200b273a422b77d38af14a34898fa547fe2187365"
+    },
+    "prefix-cdc-parent-public-v3/phase1.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-public-v3/phase1.json",
+      "sha256": "8129b480d5b8b107412349f30d99b992ba280a182c7df83148a26cb0cae8e687"
+    },
+    "prefix-cdc-parent-public-v3/raw.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/prefix-cdc-parent-public-v3/raw.json",
+      "sha256": "abab9bc4f8df9eab1d7c91e9dba83b56c19c9c08072c8b2bc43a2dcd19326a39"
+    }
+  },
+  "constraints_installed": false,
+  "complete_cdc_accepted": false,
+  "full_reset_accepted": false,
+  "physical_cdc_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}

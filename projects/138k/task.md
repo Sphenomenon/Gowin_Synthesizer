@@ -124,6 +124,8 @@
 
 [TF quiet／并行 counter 实际综合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PREFIX_SYNTHESIS_20261030.md)已通过，候选 `c7d66b419868f7f4` 的 593 输入及四输出保持、269 编译来源明确。综合 Logic 106,720／Register 60,912／BSRAM 229，非物理占用；新 VG 的时钟 4／28、部分 CDC 27／75、PCM 18／109 测试及负控通过。前五条估算慢路径均为 Chorus，最差 −18.817 ns；完整 CDC／reset／PLL、P&R 与硬件仍未接受，无部署。
 
+[BLE DDR prefix CDC 父级组合](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_PREFIX_CDC_PARENT_20261030.md)已完成四项公开审计、10 tests／14 实际负控及 28 来源子负控；13 phase1／42 raw 闭包与新视频别名重新审查，旧 serial scope 保持严格。四份新 prepare 各 12 项来源、profile 20 项和 accepted 17 项通过，全部 staged／enabled 字节与前序相同；新来源身份不继承 c7 综合接受。未装新 SDC，完整 CDC／reset／物理和硬件仍未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
