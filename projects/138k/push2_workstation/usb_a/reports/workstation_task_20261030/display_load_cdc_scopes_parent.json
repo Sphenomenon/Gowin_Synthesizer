@@ -1,0 +1,369 @@
+{
+  "schema": 1,
+  "identity": "display-load-222fb761-source-scopes-parent-20261031-v1",
+  "candidate": "custom138k-workstation-r00-no-local-panel-v1-222fb761448fb6c0",
+  "candidate_input_sha256": "222fb761448fb6c087a982f0e000885a0aefc7409605d4a52f46ba8e0ef71633",
+  "VG_sha256": "f621fcbecb79012c0486e248a1cc686437b9d11ab887c22b2c8554a62f8b49af",
+  "compiled_source_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0",
+  "helper_author_commit": "eae4eb6b5e9372a42aa54175d67e91ccbfde8726",
+  "imported_new_files": {
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_display_load_222fb761_scope.py": "b64c47c971e274f4862c84a342a594d99d443b60970b8f15e404f75f6a634fe3",
+    "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_DISPLAY_LOAD_222FB761_SCOPE.md": "d84a5f2f7b13c0a28d701f41cbe971e580e1966c4961c26296a0d49453e407f3",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_endpoints.py": "a998f669a7976299484e9ab8b3e7560b8ecbf4b3fcf8320dbf68fc5c31d059c7",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_owner_reset.py": "4cb9bd28ef89d6127e9075f03e5911f2f80fde086d62a9c4f61c89c4f326844f",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_phase1.py": "9cf98393b0c9b0fbfe675e010dd2e8b8f3edea5ac696fd4e5629a8b8b567549a",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_raw.py": "f4da6b0b29e4bb5081c42bd3ae34d64a8281a836fced4ad6b96af74b78a61056",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_scope.py": "904938d0757484009d7eff8fec9c8a416d7fea9ef9d7152c73ba390600ae5912",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_shared.py": "e984715e00a336446038472c0c7354de35a4da73184082430d0f01239c4ba7a8"
+  },
+  "compiled_source_and_later_review_helpers_are_separate": true,
+  "old_helpers_or_profiles_modified": false,
+  "staged_files": 599,
+  "enabled_files": 269,
+  "SDC_CST_unchanged": true,
+  "root_tests": 17,
+  "root_graph_negatives": 19,
+  "root_accepted_sources_tests": 17,
+  "root_public_CLI_exactly_equals_author": true,
+  "root_complete_phase1_raw_shared_equal_after_checkout_prefix_only": true,
+  "phase1_fanout_groups": 13,
+  "raw_fanout_groups": 42,
+  "shared_constraints": 88,
+  "shared_false_path_first_bits": 43,
+  "shared_Gray_bits": 182,
+  "shared_payload_bits": 1308,
+  "phase1_changed_complete_closures": 4,
+  "raw_changed_complete_closures": 9,
+  "TF_pairs": 8,
+  "TF_held_bits": 36,
+  "TF_closures_unchanged": true,
+  "native_counters": 4,
+  "counter_changed_output_groups": [
+    "u_recording/pcm_cdc/drops",
+    "u_video/u_runtime_display/drops"
+  ],
+  "TF_actual_graph_negatives": 276,
+  "TF_scope_negatives": 5,
+  "parent_independent_positive_shared_and_TF_replay": true,
+  "parent_repeated_TF_276": false,
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-display-load-222fb761-structure-review-v1/REVIEW_SEAL.json",
+    "sha256": "a3fdeb254baeb528dabc91d2c5dc497f0a7f4348b16aa6dfa5f7c136eb19a9dc"
+  },
+  "root_source_captures": {
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json",
+      "sha256": "9fc4ee7b39e45a23bf45f3533d3fcb0e61dbbd4e781dd8447f0196d690497113",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json",
+      "sha256": "2ad7073d2be2ef650d40a15b60e79f1e6d10f3640dc66fa1dea60a9581f8f8d1",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json",
+      "sha256": "194290acbd8d8185368bd20b98f71355bb9ca29a4764107487f7f83841268527",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json",
+      "sha256": "af611d8399dbf5d6495d87b1de60e7a09602e143a90803ba7e1260e0bd236c7c",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/WORKSTATION_RUNTIME_CHORUS_DELAY.md": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/audio/WORKSTATION_RUNTIME_CHORUS_DELAY.md",
+      "sha256": "538a8b16bbeaa9df60d1096cc226b4bc1fe7225b2a601cada8ae0e5349fa60cb",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/stereo_effects.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/audio/stereo_effects.sv",
+      "sha256": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv",
+      "sha256": "c4053635f66995bba38cf7726bff58a74308d7b2c85f4023548f16780f81d6f0",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.provenance.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.provenance.json",
+      "sha256": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json",
+      "sha256": "0f2811bdfa33f04111cc036cace4b986eecf25306cdb13fd297b56d0bcfbadf4",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv",
+      "sha256": "f0d9200a165d40f0b44fc69c3aaae3a8a75ed14420dd91d11ff49136f22e0176",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json",
+      "sha256": "5590b0082117f53247f5d30236d5547ac2f358ee66e7b874c3ce6199ec13fe51",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.provenance.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.provenance.json",
+      "sha256": "5af689e1adc920524e83d0ae9da87382a75a6bc2868c08fc246abb47814df68c",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv",
+      "sha256": "ca9f50cd0c70add7c04fe6230686510dbbd128561aebf7a0920d1eb463c5686f",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_display_runtime.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_display_runtime.sv",
+      "sha256": "1e5bc96dc3c96907f9f83e89be604dc6a846867855844ce984bc8d6a0023952d",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_authority.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_authority.sv",
+      "sha256": "cdef84729cf2f971597fdccfe6b5926eda7242b9d352fc14783059b01f8cc083",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_owner_mux.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_owner_mux.sv",
+      "sha256": "2af5a52d3bf9c67f93eef803e07bd9b9e636c1f65348676289dc13b487e76bf5",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_runtime_memory_guard.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_runtime_memory_guard.sv",
+      "sha256": "c07b1db351c3a2851e5ba9446801a73cad99e90b5155afaed8c2fec6c4b3424d",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/migration/workstation_runtime_counter_cdc.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/migration/workstation_runtime_counter_cdc.sv",
+      "sha256": "c921ff58a2204dee35972d960a98d6820803155b89c090fdcb3d111137521f5c",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+      "sha256": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_recording_seal_bridge.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/services/workstation_recording_seal_bridge.sv",
+      "sha256": "1512a14e01725845350a76d2ea78e521f0a99bc362015f8cf87d3db8d61883f4",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv",
+      "sha256": "eb5895b975dc699178a6e451f2f05d481f63424848ebe153c1402a21a63baf31",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v",
+      "sha256": "08237ed942a27b1f68422b913fa23f0debb3e035b6922f8aacfcc8b077f0869e",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_display_load_222fb761_scope.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/test_workstation_display_load_222fb761_scope.py",
+      "sha256": "b64c47c971e274f4862c84a342a594d99d443b60970b8f15e404f75f6a634fe3",
+      "Git_blob_commit": "eae4eb6b5e9372a42aa54175d67e91ccbfde8726"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_no_local_panel_precision.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/test_workstation_no_local_panel_precision.py",
+      "sha256": "be694ac24dcc8d64bb622a953eecc6cdf3f6b802436ef714a1f3c26de5f129e7",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_clocks.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_clocks.py",
+      "sha256": "ff60e4c1364b9718ac556ace9ec0f6aef1a337f8f23b67de6378f7b13bf0cdfa",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_r00_shared_cdc.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_r00_shared_cdc.py",
+      "sha256": "753b6adae272d7615f1e17bff3abe68b623918c9232ba1d354fef4a56222b714",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_shared_cdc.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_shared_cdc.py",
+      "sha256": "b780e84e8953db8de34019f92034d2353e78716c7cc862d48f3b70caab61fda4",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_owner_reset.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/test_workstation_usb2_owner_reset.py",
+      "sha256": "a82bdfbcf7f7319877aeff225e76d689b6f0398083e3f2e9ec051c9ecb13af77",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/WORKSTATION_BLE_DDR_PITCH_FIFO_CDC.md": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/WORKSTATION_BLE_DDR_PITCH_FIFO_CDC.md",
+      "sha256": "f401a36349f0b8443dc523b6f88af44bc5efe21c65ac563f93bb5a29aa008946",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_SHARED_CDC.md": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_SHARED_CDC.md",
+      "sha256": "c30065e5c89bb8ab171b22e4ddc2889fc2e76ffd5510aaa0841e301140f33096",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py",
+      "sha256": "09ad4cdb5f0eebf3ec86ec6cde4a002b23c9b7750584cbf946cd48aefcfcda33",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py",
+      "sha256": "3aeb1f4e791b5a256fec71d181a18d91b367d0e1583030d504bc7cc8e104c8cb",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py",
+      "sha256": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_cdc_scope.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_cdc_scope.py",
+      "sha256": "64740b28a8386f540bde14f459c448d948f6fba96f262e16735f9e6d8c9e7159",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_chorus_cdc_endpoints.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_chorus_cdc_endpoints.py",
+      "sha256": "fe3a7e380faf07c331d666a6336b3103434edc3cdcbf9e5c68fb2308b852b927",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_chorus_cdc_scope.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_chorus_cdc_scope.py",
+      "sha256": "5c1850889b9745f5686c3086f962ae2c35408e8b80073e8879344e6ef2bc63b8",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_prefix_cdc_endpoints.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_prefix_cdc_endpoints.py",
+      "sha256": "252762edbf544f44c570f1967a5d6a81e8ec95b18c883d62fdc5d2f4a5d282da",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_prefix_cdc_scope.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_prefix_cdc_scope.py",
+      "sha256": "e1f4b0421c2e567cea8c18841e33793593482472d8315709245ae9c32a9004c6",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ble_recording_policy.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_ble_recording_policy.py",
+      "sha256": "fa0a867cdf2006a2d510124c11ece16d4d39f39e91cc768b741711b567b275cf",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth_ddr.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth_ddr.py",
+      "sha256": "5fd412e04e66c96eabb58e94c589cec4853750a24fccc1aeee16a097c314ebce",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_board_peripherals.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_board_peripherals.py",
+      "sha256": "0ea1b704e682923710737632df2b77641c66d17dfddf3c105ec30135f576a349",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_chorus_provenance.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_chorus_provenance.py",
+      "sha256": "d70d41c8a56130b149a5c364f27869dc0202e233cf90a95dc2d4dc4d3823180e",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py",
+      "sha256": "1400a5915fa5139dc9b826835140d4c9b2333a2a57893cba4eb543c70ee061d1",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_usb2_cdc.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_custom_usb2_cdc.py",
+      "sha256": "64f9096d97c1c3fc3b7787375549b584647d6ff9b6663c58d455ed400f5f6b37",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py",
+      "sha256": "45dc11b1284f21f3233be3c63132127d358844d0c80f6febcbec872a06a92cac",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_endpoints.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_endpoints.py",
+      "sha256": "a998f669a7976299484e9ab8b3e7560b8ecbf4b3fcf8320dbf68fc5c31d059c7",
+      "Git_blob_commit": "eae4eb6b5e9372a42aa54175d67e91ccbfde8726"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_owner_reset.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_owner_reset.py",
+      "sha256": "4cb9bd28ef89d6127e9075f03e5911f2f80fde086d62a9c4f61c89c4f326844f",
+      "Git_blob_commit": "eae4eb6b5e9372a42aa54175d67e91ccbfde8726"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_scope.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_scope.py",
+      "sha256": "904938d0757484009d7eff8fec9c8a416d7fea9ef9d7152c73ba390600ae5912",
+      "Git_blob_commit": "eae4eb6b5e9372a42aa54175d67e91ccbfde8726"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_shared.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_shared.py",
+      "sha256": "e984715e00a336446038472c0c7354de35a4da73184082430d0f01239c4ba7a8",
+      "Git_blob_commit": "eae4eb6b5e9372a42aa54175d67e91ccbfde8726"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_profile.py",
+      "sha256": "3af8810c6f963ea96dd8292b49a1f67c18e3c7024ecf5a82dad7bff915dad163",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_recognition_policy.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_recognition_policy.py",
+      "sha256": "eea5d1512dff6c016e210adb4090a6794e245e3af91c59c2fa26a8f45287b23f",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_recording_policy.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_recording_policy.py",
+      "sha256": "05c192a4d22232a92ff2b153e336bb5234b25d1651892002c5c33fd38346abc8",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_cdc.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_cdc.py",
+      "sha256": "2784ff8af6b18ab0ef6b22899b9706fea930217f3f1413592d06a61df7aef50b",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py",
+      "sha256": "ddfea92cc365ca8155bdc82a79cae53e8e21994495c2bbc72488260dbfa534fc",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_counter.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_counter.py",
+      "sha256": "6b04451d0d8753581c93ac6759b8b065fecfd1a9eb4553eb0669aa7539909b02",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py",
+      "sha256": "159d41337f4bf5e0d7ddcb179b8891faa68a3a4445535deb3fcc2b4260c88b10",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py",
+      "sha256": "096eb9a241a84f2f658939a8e406aa3eb1c6a36f2e7407dafd1a9667abedff57",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py",
+      "sha256": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    }
+  },
+  "comparison_failure_preserved": "prefix_shared.log; complete saved JSON comparison then passed",
+  "scope_retirement": "integrate fixed declarations into maintained catalog with equivalent negatives, or retire before another candidate",
+  "full_CDC_accepted": false,
+  "full_reset_accepted": false,
+  "payload_flight_accepted": false,
+  "downstream_business_next_Q_reproved": false,
+  "native_mapping_inherited": false,
+  "clock_PCM_inherited": false,
+  "physical_resources_accepted": false,
+  "routed_timing_accepted": false,
+  "owner4_zero_DDR_accepted": false,
+  "EDA_invoked": false,
+  "pnr_prepared": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/display-load-222-scope-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "d30317be43b5fdca19403f7c1ffe8d515cac6a9d3096fa50285f530f2273812e",
+    "local_files": 74,
+    "external_inputs": 1555
+  },
+  "parent_final_verifier": "hash_only; semantic replay and root targeted tests separately recorded"
+}
