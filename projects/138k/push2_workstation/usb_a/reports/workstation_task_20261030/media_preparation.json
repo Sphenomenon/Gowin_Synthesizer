@@ -1,0 +1,199 @@
+{
+  "schema": 1,
+  "passed": true,
+  "validation_stage": "source-and-offline-interface-tests-only",
+  "validation_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/media-preparation-final-v1/verification.json",
+  "validation_sha256": "31b37b6e96bcff50c4af70c85a29a96c07f39b950678248d56f51a97613b6f84",
+  "validation": {
+    "schema": 1,
+    "passed": true,
+    "input_sha256": {
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_media_preparation.sv": "67709ad5803685835f6646b521b9d8daf6ac7f92cf6f6f3e5d23cf6526f07d2f",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_preparation.sv": "31517d7b5a1393b822829b83801d53c91c31c7d3df912df94382429eab351e6f",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/run_media_preparation.py": "466b6629d7d7434fa711a2d1b20173d41b0c13789a64dc33af73bcf8caeaca7f",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/MEDIA_PREPARATION_CONTRACT.md": "576c844e09f64b9b5ce1de46255a1159f9786084196040aa7a35334a80869cec"
+    },
+    "identity": "native-media-preparation-v1-2b51c99d3f8ca337",
+    "scope": "50MHz result correlation and held lifecycle; backend request/completion fixtures",
+    "hardware_tested": false,
+    "backend_protocols_verified_here": false,
+    "full_workstation_verified": false,
+    "command": [
+      "iverilog",
+      "-g2012",
+      "-Wall",
+      "-s",
+      "tb_workstation_media_preparation",
+      "-o",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/media-preparation-final-v1/positive.vvp",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_media_preparation.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_preparation.sv"
+    ],
+    "metrics": {
+      "cases": 9,
+      "requests": 8,
+      "completions": 5,
+      "failures": 4,
+      "default_checks": 193
+    },
+    "negative": {
+      "rejected": true,
+      "returncode": 1,
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_media_preparation",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/media-preparation-final-v1/negative.vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/media-preparation-final-v1/workstation_media_preparation_early_done_negative.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_preparation.sv"
+      ],
+      "mutant_sha256": "4fb64ca750405b538145a3caec05291212899b6e3e6ed545b4d35bdac3483e0f",
+      "log_sha256": "a81e72946e3ec5aed4f9ae7fbbcf2b25d0cc6ffb82995be46ea95e0d02d74381"
+    },
+    "stale_negative": {
+      "rejected": true,
+      "returncode": 1,
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_media_preparation",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/media-preparation-final-v1/stale_negative.vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/media-preparation-final-v1/workstation_media_preparation_stale_negative.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_preparation.sv"
+      ],
+      "mutant_sha256": "98997e430bddd96ea32c8cfb6abdc6a3299d30f96f6e9b26b75d28b992ed1886",
+      "log_sha256": "a4e6348c2edab066fca483502ebdd43c5c2046e753a53ea8cf9e430e04420439"
+    }
+  },
+  "independent_review_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/media-prepare-review/review.json",
+  "independent_review_sha256": "14658b0cc189ea24882cd8ba30afa975078e2e92176b6f2403e8797aa9116d4c",
+  "independent_review": {
+    "schema": 1,
+    "passed": true,
+    "review": "independent read-only aggregate source and native top wiring review",
+    "product_defects_found": [],
+    "maintained_files_modified": false,
+    "input_sha256": {
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_media_preparation.sv": "67709ad5803685835f6646b521b9d8daf6ac7f92cf6f6f3e5d23cf6526f07d2f",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/MEDIA_PREPARATION_CONTRACT.md": "576c844e09f64b9b5ce1de46255a1159f9786084196040aa7a35334a80869cec",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/run_media_preparation.py": "466b6629d7d7434fa711a2d1b20173d41b0c13789a64dc33af73bcf8caeaca7f",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_preparation.sv": "31517d7b5a1393b822829b83801d53c91c31c7d3df912df94382429eab351e6f",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": "5da6c61a8cef3f6ba44fe6985cf4256f4e9fba817b7b70ef53af191c614aa15d",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/media-prepare-review/tb_independent.sv": "b0259f9691d64c82e9e4f37a4ca2a96b9dc1b31ff292e1169753b26f30d315af"
+    },
+    "inputs_unchanged": true,
+    "baseline_runner_identity": "native-media-preparation-v1-2b51c99d3f8ca337",
+    "baseline_metrics": {
+      "cases": 9,
+      "requests": 8,
+      "completions": 5,
+      "failures": 4,
+      "default_checks": 193
+    },
+    "negative_controls_rejected": {
+      "early_done": true,
+      "stale_delivery_edge": true
+    },
+    "independent_backend_model": {
+      "metrics": {
+        "requests": 100,
+        "results": 100,
+        "successes": 53,
+        "failures": 47,
+        "lost_callers": 25,
+        "drain_checks": 1148
+      },
+      "deterministic": true,
+      "latencies_runtime_cycles": "(transaction*13)%19",
+      "latencies_ble_cycles": "(transaction*7)%23",
+      "post_terminal_drain_runtime_cycles": "15+transaction%9",
+      "post_terminal_drain_ble_cycles": "12+transaction%11",
+      "runtime_failure_transactions": "transaction%3==0",
+      "ble_failure_transactions": "transaction%5==0",
+      "caller_loss_transactions": "transaction%4==0, one edge after request delivery",
+      "assumptions": [
+        "All ports belong to the common always-on clock.",
+        "Each registered backend accepts request only while ready, responds at most once, and cannot legitimately answer on its request delivery edge.",
+        "A backend can report failure before cleanup; ready remains low until actual modeled drain, and runtime additionally waits for hold release.",
+        "The caller submits single-cycle requests only while aggregate ready is high.",
+        "Common reset may abandon all volatile transaction state; CPU observer reset is modeled only by dropping caller hold."
+      ],
+      "checked_invariants": [
+        "No aggregate terminal before both current backend terminals.",
+        "No duplicate terminal or success for either backend failure.",
+        "Runtime failure takes generic code priority; BLE detail survives.",
+        "Hold remains asserted until both terminals, even after caller loss.",
+        "Aggregate ready requires both actual backend readiness values and released holds.",
+        "Both backend request and hold signals have shared ownership."
+      ]
+    },
+    "static_top_review": [
+      "Native media policy and both external protocols explicitly enabled.",
+      "Aggregate uses runtime common reset and clk_50m, separate from CPU command reset.",
+      "TF stop_pending is connected into the runtime bridge.",
+      "BLE readiness/result ports are connected; active source validity is not masked by media hold.",
+      "Aggregate BLE pending is intentionally observed through backend ready, not a separate acceptance flag."
+    ],
+    "limits": [
+      "Backend model is a protocol fixture, not real TF/BLE implementation.",
+      "No full APB command, core switching, clock/DCS, DSP, physical frame or new profile integration is proved.",
+      "Long-lived stale terminal levels that violate the single-cycle backend contract are outside these assumptions.",
+      "No independent aggregate watchdog is expected; upstream timeout and backend cleanup remain external responsibilities.",
+      "No synthesis, P&R, routed timing/CDC, board operation or deployment."
+    ],
+    "commands": [
+      {
+        "command": [
+          "iverilog",
+          "-g2012",
+          "-Wall",
+          "-s",
+          "review",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/media-prepare-review/independent-final.vvp",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_media_preparation.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/media-prepare-review/tb_independent.sv"
+        ],
+        "returncode": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/media-prepare-review/final-0.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "command": [
+          "vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/media-prepare-review/independent-final.vvp"
+        ],
+        "returncode": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/media-prepare-review/final-1.log",
+        "log_sha256": "13a69beac187e9d51338056f877e9e6da35b7ca43352315b4fc3ca9a83b356e9"
+      },
+      {
+        "command": [
+          "python3",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/run_media_preparation.py",
+          "--output",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/media-prepare-review/base-final"
+        ],
+        "returncode": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/media-prepare-review/final-2.log",
+        "log_sha256": "a22e65598842e69997635ae3ce0a1f6fc09c451a1b83c504315b79595c00f5cd"
+      }
+    ],
+    "identity": "media-preparation-independent-review-v1-d166a558e71d20ea"
+  },
+  "verilator_lint": {
+    "exit_code": 0,
+    "warning_count": 0
+  },
+  "hardware_tested": false,
+  "profile_selected": false,
+  "bitstream_sha256": null,
+  "sram_deployed": false,
+  "flash_deployed": false
+}
