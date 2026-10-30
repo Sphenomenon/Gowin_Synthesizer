@@ -148,6 +148,8 @@
 
 [Delay FIFO 存储选择父级复验](push2_workstation/usb_a/reports/WORKSTATION_DELAY_STORAGE_PARENT_20261031.md)已通过 effects13、真实 Gowin 组件／官方模型两项、四份来源各 12 项、profile21（一项旧 prepare 跳过）及 accepted17。仅 owning 层两 defparam，原 FIFO／provenance 与 512 容量保持；单 FIFO 为 4 BSRAM／0 SSRAM。新整机候选尚待综合和实际映射／CDC／物理核验，不预记净资源收益，无板卡或部署接受。
 
+[Pitch＋FIFO 实际整机综合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PITCH_FIFO_SYNTHESIS_20261031.md)通过，固定 18ed 的 599 输入／四输出／两工具保持，Logic94,582／Register60,574／SSRAM309／综合 BSRAM237，未授予物理净资源接受。计算估算57.039MHz仍低于76.8MHz，最慢路径转为显示读取控制。新 VG clock4／28 和 PCM18／109 通过；新 CDC／RAM／TF-counter 与物理准备继续独立推进，完整时序及硬件未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

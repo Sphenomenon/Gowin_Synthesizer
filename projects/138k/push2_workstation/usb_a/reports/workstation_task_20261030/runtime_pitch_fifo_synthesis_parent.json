@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "identity": "pitch-FIFO-actual-synthesis-parent-20261031-v1",
+  "source_commit": "eff1d7d34d243b93d008141b70e032271cf449b4",
+  "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-18ed947312186187",
+  "candidate_input_sha256": "18ed947312186187106b453991cfead196e1ba9c5f52381b33b58d09edbdfc2a",
+  "VG_sha256": "c9f88c71d63478c0e659806f5497ab867e2a5f01e3d924f1bf5938f884a51e7b",
+  "process": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-synthesis-18ed9473/runtime_synthesis_evidence/process.json",
+    "sha256": "c7571733d433bddf7397237abaabb8c7cbca1c71f5815d2ac602aaab6073e335"
+  },
+  "elapsed_seconds": 359.1080932500772,
+  "staged_files": 599,
+  "enabled_files": 269,
+  "synthesis_outputs_verified": 4,
+  "tools_verified": 2,
+  "AG_diagnostics": 0,
+  "final_binding": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pitch-fifo-final-binding-v1.json",
+    "sha256": "5a82293e98e87164585875422852c644aea06d311fbfa2783f09ac86c97e190b"
+  },
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-parent-synthesis-v1/DELIVERY_SEAL.json",
+    "sha256": "e398a471cea99e676b646180f5df8275ba7d553d9cc2a40b423c73d21c3cc90b"
+  },
+  "review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-parent-synthesis-v1/synthesis-review-v3.json",
+    "sha256": "05799e2cd2d921f2ee8f1f52085d39e7a685f4d205363767e6e330e0c787db4e"
+  },
+  "resource_comparison": {
+    "old": {
+      "Logic": 106679,
+      "Register": 60910,
+      "SSRAM": 1397,
+      "synthesis_BSRAM": 229
+    },
+    "new": {
+      "Logic": 94582,
+      "Register": 60574,
+      "SSRAM": 309,
+      "synthesis_BSRAM": 237
+    },
+    "delta": {
+      "Logic": -12097,
+      "Register": -336,
+      "SSRAM": -1088,
+      "synthesis_BSRAM": 8
+    },
+    "physical_packing_inferred": false
+  },
+  "DSP_primitive_counts": {
+    "old": {
+      "MULTALU27X18": 37,
+      "MULT12X12": 3,
+      "MULT27X36": 41
+    },
+    "new": {
+      "MULTALU27X18": 37,
+      "MULT12X12": 4,
+      "MULT27X36": 42
+    }
+  },
+  "source_delta": {
+    "added": [
+      "rtl/audio/WORKSTATION_RUNTIME_DELAY_STORAGE.md",
+      "rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json",
+      "tools/workstation_delay_storage_provenance.py"
+    ],
+    "removed": [],
+    "changed": [
+      "rtl/audio/workstation_rate_pitch_expression.sv",
+      "rtl/audio/workstation_runtime_stereo_effects.sv"
+    ]
+  },
+  "configuration_firmware_features_adaptations_identical": true,
+  "GPRJ_SDC_CST_bytes_identical": true,
+  "warnings": {
+    "old": 150,
+    "new": 150,
+    "normalized_multiset_identical": true
+  },
+  "synthesis_default_compute_Fmax_MHz": {
+    "old": 33.445,
+    "new": 57.039,
+    "required": 76.8,
+    "acceptance": false
+  },
+  "top5_actual_paths": [
+    {
+      "number": 1,
+      "slack_ns": -7.184,
+      "source": "u_video/u_runtime_display/drops/sync_value_12_s0",
+      "destination": "u_video/u_runtime_display/reader/state_3_s0",
+      "logic_levels": 24
+    },
+    {
+      "number": 2,
+      "slack_ns": -6.906,
+      "source": "u_managed/runtime/bridge/held_reply_65_s0",
+      "destination": "u_managed/runtime/serializer/have_next_s0",
+      "logic_levels": 11
+    },
+    {
+      "number": 3,
+      "slack_ns": -6.867,
+      "source": "u_tf_audio/launched_epoch_0_s0",
+      "destination": "u_tf_audio/frames/quiesce_sync_0_s0",
+      "logic_levels": 12
+    },
+    {
+      "number": 4,
+      "slack_ns": -6.765,
+      "source": "u_managed/runtime/bridge/held_reply_65_s0",
+      "destination": "u_managed/runtime/serializer/request_sequence_o_2_s0",
+      "logic_levels": 11
+    },
+    {
+      "number": 5,
+      "slack_ns": -6.765,
+      "source": "u_managed/runtime/bridge/held_reply_65_s0",
+      "destination": "u_managed/runtime/serializer/request_sequence_o_4_s0",
+      "logic_levels": 11
+    }
+  ],
+  "clock": {
+    "public": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-parent-synthesis-v1/clock.json",
+      "sha256": "9e13588b1d74422b8dcff08e5ed9ef077f1059f1f94e154d41e7965c422c133e"
+    },
+    "tests": 4,
+    "negative_controls": 28
+  },
+  "PCM": {
+    "public": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-parent-synthesis-v1/pcm.json",
+      "sha256": "dbeda929f4b0fabd9b01ed54eeaa614e3dc46ddf05d1c937b1178505603842f3"
+    },
+    "tests": 18,
+    "negative_controls": 109,
+    "payload_source_bits": 229,
+    "resolved_selectors": 896,
+    "constraint_revision": "paired-nextq-v2",
+    "acceptance": "partial declared PCM/context contracts only"
+  },
+  "independent_FIFO_implementation_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-storage-implementation-review-v1/REVIEW_SEAL.json",
+    "sha256": "374f6cbda827e51878dcc82ff30a74eeeeb71998710daceb80d2c7cdfa30a506"
+  },
+  "physical_preparation_started": false,
+  "full_CDC_accepted": false,
+  "full_reset_accepted": false,
+  "routed_timing_verified": false,
+  "physical_resource_benefit_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}
