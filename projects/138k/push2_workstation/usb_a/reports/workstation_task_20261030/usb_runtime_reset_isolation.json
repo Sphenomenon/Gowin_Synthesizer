@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "passed": true,
+  "identity": "native-usb-runtime-reset-offline-v1-6fc93c527da53b05",
+  "source_set_sha256": "6fc93c527da53b05deb93fe46488627d76dde548893c4d38c84dd37992feba4f",
+  "input_sha256": {
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2_usb_a_control.sv": "b8af9064b4e658225727e71eb585b2c3b23456eef0c9cf0f9385ef4b16c471ca",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/push2_controls.sv": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_service_adapter.sv": "e79f56c7cf515171aaa537c4dbc0e4cd39d09aceaa82bb36a65e50e1f6f2aaff",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv": "f76d02ed4c9e38c144a063b45e0fe03bb969518af9d2f78b75e320e638f52480",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/control/workstation_session.sv": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_playlist_hold.sv": "f8b4e79c34440c5c5ea0dafea5ed0e767c25c72c2c23bfa1c09437bf381016e5",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_song_menu.sv": "34bdf2edc0cfa53a1fb7d8b7b4ea83666fb54d5de8f4452f3757c18ec179e025",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_score_guide.sv": "aedd96d346a1c3567781c3df54b9e53e464389c5fdde730df127056e69bbbb16",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_lights.sv": "7d720789ccdbcfe66f7c4fdf2d5a3b8116cb12130f034a4a5bd586030c43bfbf",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_led_tx.sv": "add27dec44bb355c748850e5f66b9f04b4908093d8a30c6b16fdd8eb42812cb8",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv": "51638b9ba0e3cfb9a4e8c2a8b4ad330fad4cba3b168179abbf25de437c2c0702",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/migration/gw138k_stream_cdc.sv": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/usb_host/gw138k_usb_event_fifo.v": "2084bead34bf421610fd20489ece66601823b87f72887228be25de5374a956c6",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/push2/push2_midi_rx.sv": "4588f7c614351b113f89f4e967c95657c1f216b0a0328e96f669ced31f55d3e3",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/video/video_font_5x7.v": "f8db5962cd395d8f6d13727a853d4bf2a6994a2ec8b9ac8d880ab11449ee896b",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb_runtime_reset.sv": "9a5a9140290f0d6de04d90c31ec683ac515123d8071cdfcf4936fa1f37a7f730",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": "834d33600b26144d4009b8fc895295747b85ede87ad9152450a7c780e1de6249",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv": "8b5617e7e173e7b3c71ecd5ac8deaeaf2620dfecd6f10bf8fe8dacd924b3f206",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/run_workstation_usb_runtime_reset.py": "e6b62a8b035bbb1ab5309486d0b2bdf766b25ef9fa1aca5952c1764cff9f1024",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation_profile.json": "ea87fd29d07287831073e0b9effa1953d92aa8b8e1300c69f454a9737b091d33",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/integration_inputs.json": "10deb0aa1cd172838c98b1f8d675b0ae41b812641549ba3bde432b355caabd2b"
+  },
+  "hardware_tested": false,
+  "profile_changed": false,
+  "synthesis_tested": false,
+  "sram_deployed": false,
+  "flash_deployed": false,
+  "bitstream_identity": null,
+  "source_policy": "Maintained real MMIO service adapter/input owner/generated prepared FIFO/session, with explicit source-hashed prepared support",
+  "validation_scope": "Adapter/lifecycle regression; real 13-event attach initialization and modeled held-note/volume application",
+  "limits": "No ULPI/device/USB enumeration, production firmware execution, DSP/physical audio retention, physical clocks/CDC/timing/resources or board acceptance",
+  "configuration": {
+    "usb_hz": 48000000,
+    "compute_hz": 76800000,
+    "short_qualification_pulse_ns": 3,
+    "negative_control": "Old PLL-qualified audio_reset_n connection; same actual RTL and stimulus"
+  },
+  "commands": {
+    "preprocess_runtime_top": [
+      "iverilog",
+      "-g2012",
+      "-E",
+      "-DWORKSTATION_CUSTOM_138K",
+      "-DWORKSTATION_RUNTIME_NATIVE",
+      "-o",
+      "/private/tmp/workstation-usb-runtime-reset-20261030-v3/runtime_top.pre.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v"
+    ],
+    "compile": [
+      "verilator",
+      "--binary",
+      "--timing",
+      "--timescale-override",
+      "1ns/1ps",
+      "-j",
+      "4",
+      "-Wno-fatal",
+      "--top-module",
+      "tb_workstation_usb_runtime_reset",
+      "--Mdir",
+      "/private/tmp/workstation-usb-runtime-reset-20261030-v3/obj",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2_usb_a_control.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/push2_controls.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_service_adapter.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/control/workstation_session.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_playlist_hold.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_song_menu.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_score_guide.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_lights.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_led_tx.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/migration/gw138k_stream_cdc.sv",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/usb_host/gw138k_usb_event_fifo.v",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/push2/push2_midi_rx.sv",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/video/video_font_5x7.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb_runtime_reset.sv"
+    ],
+    "run": [
+      "/private/tmp/workstation-usb-runtime-reset-20261030-v3/obj/Vtb_workstation_usb_runtime_reset"
+    ]
+  },
+  "actual_top_binding": {
+    "preprocessed_sha256": "44ed403f10bb278cd4d0e6eeffd201f255699e26984f29dea3a1c745c445c9a8",
+    "audio_reset_n": "runtime_reset_n",
+    "runtime_reset_n": "reset_n && memory_guard_started",
+    "usb_reset_n": "usb_reset_n",
+    "compute_clock": "audio_clk",
+    "feedback_audio_domain": 1,
+    "wrapper_forwards_audio_reset": true,
+    "passed": true
+  },
+  "fixture_warnings": [],
+  "warning_counts": {
+    "WIDTHTRUNC": 34,
+    "WIDTHEXPAND": 27
+  },
+  "metrics": {
+    "current": {
+      "old": 0,
+      "attaches": 2,
+      "barriers": 3,
+      "detaches": 1,
+      "panics": 1,
+      "default_events": 26,
+      "recovery_checks": 2,
+      "resumed_queue_events": 2,
+      "detach_flush_checks": 1,
+      "stores": 14,
+      "notes": 5
+    },
+    "old_connection": {
+      "old": 1,
+      "attaches": 4,
+      "barriers": 5,
+      "detaches": 1,
+      "panics": 1,
+      "default_events": 52,
+      "recovery_checks": 2,
+      "resumed_queue_events": 0,
+      "detach_flush_checks": 1,
+      "stores": 14,
+      "notes": 123
+    },
+    "current_phantom_attaches": 0,
+    "old_phantom_attaches": 2,
+    "old_extra_default_events": 26
+  },
+  "checks": [
+    "actual_preprocessed_native_top_reset_binding",
+    "real_mmio_service_adapter",
+    "real_input_owner_and_generated_event_fifo",
+    "real_13_event_attach_session",
+    "short_qualification_pulse_no_phantom_attach",
+    "stopped_compute_recovery_no_defaults",
+    "queued_events_preserved_and_ordered",
+    "real_mmio_detach_reattach_after_compute_recovery",
+    "pre_detach_queue_flushed",
+    "push_mapping_after_reattach",
+    "panic_once_preserves_modeled_volume",
+    "old_pll_reset_reproduces_two_phantom_attaches"
+  ],
+  "parent_independent_verification": {
+    "passed": true,
+    "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb-runtime-reset-parent-final/verification.json",
+    "verification_sha256": "75f959d47d6476684cf4cfdb3d65e5d4bcad55c46a2922c6c751221c8a98eb08",
+    "identity": "native-usb-runtime-reset-offline-v1-2c9a2ff1cc7002c7",
+    "source_set_sha256": "2c9a2ff1cc7002c7c0eb8fdf4a6fab2df3946163f9a7dca8b931893c42fbfdcc",
+    "maintained_input_count": 15,
+    "normalized_prepared_support_count": 4,
+    "normalized_support_sha256": {
+      "src/migration/gw138k_stream_cdc.sv": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+      "src/usb_host/gw138k_usb_event_fifo.v": "2084bead34bf421610fd20489ece66601823b87f72887228be25de5374a956c6",
+      "src/push2/push2_midi_rx.sv": "4588f7c614351b113f89f4e967c95657c1f216b0a0328e96f669ced31f55d3e3",
+      "src/video/video_font_5x7.v": "f8db5962cd395d8f6d13727a853d4bf2a6994a2ec8b9ac8d880ab11449ee896b"
+    },
+    "maintained_input_hashes_equal": true,
+    "normalized_support_hashes_equal": true,
+    "metrics_equal": true,
+    "actual_top_binding_equal": true,
+    "all_parent_recorded_inputs_match_disk": true,
+    "reference_metadata_comparison": {
+      "workstation_profile.json": {
+        "child_sha256": "ea87fd29d07287831073e0b9effa1953d92aa8b8e1300c69f454a9737b091d33",
+        "parent_sha256": "c063bad206163be55794b43575e76de800dd95bd213041ccda70c892c08dba49",
+        "equal": false
+      },
+      "integration_inputs.json": {
+        "child_sha256": "10deb0aa1cd172838c98b1f8d675b0ae41b812641549ba3bde432b355caabd2b",
+        "parent_sha256": "00861d360a70cac1a21f040ff016facb65330e1060da11c97cf46aa522154326",
+        "equal": false
+      }
+    },
+    "identity_difference": "Absolute prepared support paths and separately prepared reference profile/integration metadata are part of each source identity; equal normalized support bytes and maintained sources were checked independently."
+  }
+}
