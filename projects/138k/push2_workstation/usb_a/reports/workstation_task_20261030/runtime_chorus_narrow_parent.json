@@ -1,0 +1,280 @@
+{
+  "schema": 1,
+  "identity": "runtime-Chorus-narrow-parent-source-20261030-v1",
+  "source_commit_reviewed": "8d73d7584b56a05f0499b6b270280873d6de28b1",
+  "parent_import_commit": "42713e6631037ce3e722580774dc07069cae1601",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": "2222d85348c4d3f9319de258828a597c7c6472dc44e8345536b1d8072db88deb",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json": "558f9b779be2e0e328963cef0b2743a0466b2e6c34e74c37b0f383eb6f4d6a0e",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": "5a0a1565665834ba801c14345afe21de79fb91a099595e401b6e243b97274315",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": "948b63a815397c7fb6a335ff56012d1e7e2d66c9b99249261143df5db74b2790",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/WORKSTATION_RUNTIME_CHORUS_DELAY.md": "538a8b16bbeaa9df60d1096cc226b4bc1fe7225b2a601cada8ae0e5349fa60cb",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json": "0f2811bdfa33f04111cc036cace4b986eecf25306cdb13fd297b56d0bcfbadf4",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv": "f0d9200a165d40f0b44fc69c3aaae3a8a75ed14420dd91d11ff49136f22e0176",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_chorus_delay.py": "6d86a2225ac1b01c59669ecebbc1386eaca0773329b5d2442f1af3013fb97c63",
+    "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_chorus_delay.sv": "6044658b5ce239024fecf402316c48a8922306a9dca62c3ed52dc7564f895b26",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_chorus.py": "60657d87d4013e7c417741c6cd667fe0b1653b0990c1d31b275469a23df47ad6",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_effects.py": "322db81c66cbe7002327bd2219271485a480c0aba514a1f012d6ead800abf8ea",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_chorus_provenance.py": "d70d41c8a56130b149a5c364f27869dc0202e233cf90a95dc2d4dc4d3823180e",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": "ce300d2adba589f48c24045596ed2688969dc63ea8fe7ecc739edfe9ea6b9d24"
+  },
+  "source_policy": {
+    "adaptation_sha256": "0f2811bdfa33f04111cc036cace4b986eecf25306cdb13fd297b56d0bcfbadf4",
+    "added_clock_latency": 0,
+    "current_source_sha256": "f0d9200a165d40f0b44fc69c3aaae3a8a75ed14420dd91d11ff49136f22e0176",
+    "exact_prepared_sha256": "2801a8f9ec570f992bc0e88d9ab6d457c4e17085da810ccf6d9fbaca2b3a5f84",
+    "hardware_acceptance_inherited": false,
+    "original_native_sha256": "8a6fa6ea9158cc983c9d48cc9e92f01da2e10950214d3d2bb2cb7bb0b67b4cf4",
+    "original_provenance_sha256": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
+    "original_provenance_unchanged": true,
+    "physical_timing_verified": false,
+    "policy": "narrow_exact_rate_delay_v1",
+    "source": "rtl/audio/workstation_runtime_chorus_effect.sv"
+  },
+  "original_provenance_sha256": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
+  "all713_independent_seal_entries_parent_verified": true,
+  "exhaustive_actual_RTL_cases": 131072,
+  "actual_RTL_arithmetic_negatives": 4,
+  "provenance_negatives": 8,
+  "sequential_negatives": 2,
+  "all14_negative_controls_reproduced": true,
+  "tests": {
+    "Chorus": 6,
+    "full_effects": 9,
+    "room_coefficients": 5,
+    "accepted_source": 17,
+    "profile": 20,
+    "profile_optional_skips": 1,
+    "each_prepared_source": 12
+  },
+  "room_generator_environment": "Homebrew Python3.14.7 reproduces pinned float JSON; unchanged bank and recorded system3.9 last-digit mismatch retained in independent seal.",
+  "runtime_audio": {
+    "identity": "native-runtime-audio-offline-v1-nonzero-07c527345cf6430b",
+    "metrics": {
+      "checked": 20192,
+      "good": 20186,
+      "errors": 6,
+      "nonzero": 20061,
+      "first_slots": 13,
+      "config_acks": 14,
+      "applies": 12,
+      "faults": 5,
+      "mid_frame_switches": 8,
+      "max_render_clocks": 1204,
+      "max_slot_clocks": 1229,
+      "max_config_clocks": 454,
+      "writes": 5037,
+      "fences": 21,
+      "analysis_drops": 6735,
+      "record_drops": 12108,
+      "startup_frames": 3,
+      "epoch": 13,
+      "loader_overlap_slots": 6,
+      "pressure_events": 768,
+      "pressure_noteoffs": 26,
+      "wet48": 7,
+      "wet44": 7,
+      "fdn_seen": 3
+    },
+    "inputs_unchanged": true,
+    "warning_counts": {
+      "IEEEMAYDEPRECATE": 90,
+      "MODDUP": 2,
+      "PINMISSING": 16,
+      "TIMESCALEMOD": 1,
+      "WIDTHEXPAND": 52,
+      "WIDTHTRUNC": 11,
+      "UNSIGNED": 2
+    },
+    "composition_and_fixture_warning_count": 0,
+    "UNOPTFLAT_present": false
+  },
+  "fresh_prepares": {
+    "enabled": {
+      "candidate_identity": "custom138k-workstation-v1-b35d8b12b34b80d9",
+      "staged_files": 576,
+      "enabled_files": 260,
+      "staged_added": [
+        "rtl/audio/WORKSTATION_RUNTIME_CHORUS_DELAY.md",
+        "rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json",
+        "tools/workstation_chorus_provenance.py"
+      ],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_runtime_chorus_effect.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "84f9406763683e186a9df440baee68d3c6b14b5d8e4d22d9a6bcfe5089ab9379",
+      "source_test_log_sha256": "101cb84d88705ecf089dcd06e158ef82370954af4f00bb8c24e7951ae3210429",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "no-cnn": {
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-4945c0a736f9017b",
+      "staged_files": 577,
+      "enabled_files": 260,
+      "staged_added": [
+        "rtl/audio/WORKSTATION_RUNTIME_CHORUS_DELAY.md",
+        "rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json",
+        "tools/workstation_chorus_provenance.py"
+      ],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_runtime_chorus_effect.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "5ad5dee92f6b41b6d45a7144428e66aca4d3ce86999da1bddfb67d3fd48b3ae9",
+      "source_test_log_sha256": "588836e28e0890f091d39e7e2981a8d6f64b58d3c94f99aee9c2eca0f643c250",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "r00": {
+      "candidate_identity": "custom138k-workstation-r00-v1-11957ce74834b832",
+      "staged_files": 589,
+      "enabled_files": 267,
+      "staged_added": [
+        "rtl/audio/WORKSTATION_RUNTIME_CHORUS_DELAY.md",
+        "rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json",
+        "tools/workstation_chorus_provenance.py"
+      ],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_runtime_chorus_effect.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "1a571b7e0763dbb3985b74e981517c5e6b4559fb037861cca5be38c2e1c3a8b8",
+      "source_test_log_sha256": "8ad137bf3b6fb96f0770b0fc91425f04eafbc90d610906c98f90600fee40c07f",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "off": {
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-6b9610324164f0c9",
+      "staged_files": 596,
+      "enabled_files": 269,
+      "staged_added": [
+        "rtl/audio/WORKSTATION_RUNTIME_CHORUS_DELAY.md",
+        "rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json",
+        "tools/workstation_chorus_provenance.py"
+      ],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_runtime_chorus_effect.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "296ff938949396928538ccbd233b95a067a4baa2f0cac7cad540589642942bbc",
+      "source_test_log_sha256": "b1fbadb9b7332a352bc16ada45aacd70682522a0ebfe89072a7bedb2bd1855dc",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    }
+  },
+  "staged_delta": "Exactly changed native Chorus RTL plus added exact adaptation, source helper and contract; all enabled inventory/order unchanged.",
+  "ports_FSM_storage_config_history_clear_and_coefficients_unchanged": true,
+  "no_added_clock_latency": true,
+  "evidence": {
+    "chorus-delay-width-v1/DELIVERY_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-width-v1/DELIVERY_SEAL.json",
+      "sha256": "09768f870055b81067b5d58d1e55035956bb417465f6a92a10d32120d7bf5339"
+    },
+    "chorus-delay-width-v1/verification_summary.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-width-v1/verification_summary.json",
+      "sha256": "e48a01ab97f3fc0a73a0b1e3ee50f5ffea27529e67971599fda3059f534e78ff"
+    },
+    "chorus-delay-parent-equivalence-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-equivalence-v1/verification.json",
+      "sha256": "39be0f14d931af61f8241ecc95bc9df2e33a2d72be3d077f4824de06ee50eb5b"
+    },
+    "chorus-delay-parent-sequential-v1/sequential-controls-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-sequential-v1/sequential-controls-v1/verification.json",
+      "sha256": "41a00963656853aa7c701e5936913718970d67f68edc2f47b1e902b5716e8447"
+    },
+    "chorus-delay-parent-sequential-v1/ADAPTATION.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-sequential-v1/ADAPTATION.json",
+      "sha256": "c7124f9759a72497f783939c91d32a71c9dc9321926ba01a0bd8c032b86cefa6"
+    },
+    "chorus-delay-parent-chorus-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-chorus-v1.log",
+      "sha256": "a3ab323512c7e0810b85cde6c684226588fd157ded6ba2ad93a3f46a873aac08"
+    },
+    "chorus-delay-parent-effects-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-effects-v1.log",
+      "sha256": "5768ec845c0e3e2348f2414add9bdfe2b123ca2d71651c5a50f841ddb7f7a66f"
+    },
+    "chorus-delay-parent-room-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-room-v1.log",
+      "sha256": "d46055be3e8b5fefefae3847ceeafdc743d50b7676ab137ee2b110a7e6110938"
+    },
+    "chorus-delay-parent-current-sources-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-current-sources-v1.log",
+      "sha256": "2fdd5a8b8a40a5f99d2967b49a34c8ff4e003e4bcef0ce392383f94434783358"
+    },
+    "chorus-delay-parent-profile-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-profile-v1.log",
+      "sha256": "4f2c35f61cc48e31e2bcb82ccce2569e6d9796afe697da48fd4dce6f48ad643d"
+    },
+    "chorus-delay-parent-audio-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-audio-v1/verification.json",
+      "sha256": "6a44f014110e4d36b2074922059a593297bdae3c55ab054a06f8ed38329a1881"
+    },
+    "chorus-delay-parent-audio-v1/compile.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-audio-v1/compile.log",
+      "sha256": "9080dfbc33cbb5f33d18920f0722cc277dca20225b0c85b5224fc96d287f1915"
+    },
+    "chorus-delay-parent-audio-v1/run.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-audio-v1/run.log",
+      "sha256": "87ff006901dee5e5f57f70cc7e93a439d276982191eb752c57e23d3ddbec4231"
+    },
+    "chorus-delay-parent-four-prepare-v1.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-four-prepare-v1.json",
+      "sha256": "1cf17fda71ef9be98c5c5aa7c5242ab25de67c5265123f327d2817a64371d511"
+    },
+    "chorus-delay-parent-enabled-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-enabled-prepare-v1-validation.json",
+      "sha256": "c5e9f57572653050016061113262c8ba0bd06dae4c7981daf8fea2fd715f87d1"
+    },
+    "chorus-delay-parent-enabled-prepare-v1-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-enabled-prepare-v1-source-tests.log",
+      "sha256": "101cb84d88705ecf089dcd06e158ef82370954af4f00bb8c24e7951ae3210429"
+    },
+    "chorus-delay-parent-no-cnn-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-no-cnn-prepare-v1-validation.json",
+      "sha256": "535f1e3bc680f0f6837271bfa261060c0f2ca6023b6f71a582a7c0812a04ccfa"
+    },
+    "chorus-delay-parent-no-cnn-prepare-v1-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-no-cnn-prepare-v1-source-tests.log",
+      "sha256": "588836e28e0890f091d39e7e2981a8d6f64b58d3c94f99aee9c2eca0f643c250"
+    },
+    "chorus-delay-parent-r00-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-r00-prepare-v1-validation.json",
+      "sha256": "81a23de356b8b5db0dd0b65f7f40cd4c206d4d9c4c2451b874e0d8758edf3bfc"
+    },
+    "chorus-delay-parent-r00-prepare-v1-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-r00-prepare-v1-source-tests.log",
+      "sha256": "8ad137bf3b6fb96f0770b0fc91425f04eafbc90d610906c98f90600fee40c07f"
+    },
+    "chorus-delay-parent-off-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-off-prepare-v1-validation.json",
+      "sha256": "b30e37880e15abf5a99a663e88621f3b43e1ac4ea4acf0c0d55aa59e981a8226"
+    },
+    "chorus-delay-parent-off-prepare-v1-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-delay-parent-off-prepare-v1-source-tests.log",
+      "sha256": "b1fbadb9b7332a352bc16ada45aacd70682522a0ebfe89072a7bedb2bd1855dc"
+    }
+  },
+  "synthesis_run": false,
+  "pnr_run": false,
+  "physical_CDC_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}

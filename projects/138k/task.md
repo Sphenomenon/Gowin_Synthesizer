@@ -130,6 +130,8 @@
 
 [C2103001 物理准备](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PREFIX_C2103001_PREPARE_20261030.md)已由父级复现 100 负控、13 seal 与 1,517 物理输入检查，保持名义时钟、原 SDC／CST、place1／route0 和 hold correction 后启动 P&R。源为原 c7／8c5，后续来源身份不回填；此处仅封存启动状态，结果另记。完整 CDC／reset／PLL／物理时序和硬件未接受，无部署。
 
+[Chorus 精确窄化父级复验](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_CHORUS_NARROW_PARENT_20261030.md)已通过 131,072 实际 RTL 等价、14 负控、完整效果及 20,192 帧实际音频仿真；无新增周期延迟，最大 render／slot 为 1,204／1,229 clocks。四份新 prepare 各 12 项来源通过，no-panel 新候选 `6b9610324164f0c9` 为 596 staged／269 enabled；尚无新综合／物理收益证据，不回填 C2103001，完整门禁及硬件仍未完成。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
