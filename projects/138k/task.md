@@ -156,6 +156,8 @@
 
 [18ed TF／counter 父级复核](push2_workstation/usb_a/reports/WORKSTATION_TF_COUNTER_NATIVE_ACTUAL_PARENT_20261031.md)已完成实际图／闭包／真值重放及五 scope 负控；独立 276 图负控封存重哈通过，父级未重跑该276项。三 full32 解码和录音 mapped-absent 有限结论分列，TF八链／36-bit next-Q及取消函数通过。source_seen、generation、完整 CDC／reset／物理与硬件仍未接受；新物理准备可按明确实验门继续，无部署。
 
+[18ed C2103101 物理准备](push2_workstation/usb_a/reports/WORKSTATION_PITCH_FIFO_C2103101_PHYSICAL_PREPARE_20261031.md)已完成：父级17组、actual preflight／prepare与4,278复制输入冻结通过，独立11虚拟负控封存；SDC/CST同C2103001、Tcl仅UserCode，名义时钟／hold／place1-route0保持。66原root引用先捕获，后续source与固定物理输入分开。仅准备接受，P&R及完整CDC／STA／硬件另记，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

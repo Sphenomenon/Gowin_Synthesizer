@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "identity": "custom138k-r00-pitch-fifo-no-local-panel-nominal-experiment-C2103101",
+  "physical": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-no-local-panel-physical-C2103101",
+  "physical_manifest": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-no-local-panel-physical-C2103101/physical_inputs.json",
+    "sha256": "528856e6c344e5ed3ce8f7f09bd52a24aa59ae6f18a39b088b9d44ef1ddd7186"
+  },
+  "copied_inputs": 4278,
+  "source_candidate": "custom138k-workstation-r00-no-local-panel-v1-18ed947312186187",
+  "source_commit": "eff1d7d34d243b93d008141b70e032271cf449b4",
+  "helper_source_commit": "d606b85881b38ec5f60f93a4cb443daf775f08cb",
+  "staged_inputs": 599,
+  "enabled_inputs": 269,
+  "VG_sha256": "c9f88c71d63478c0e659806f5497ab867e2a5f01e3d924f1bf5938f884a51e7b",
+  "SDC_sha256": "06e9739cf9b6dc73352c0dd161095d298dba32c08311c5e233bd29c02fc3f5cc",
+  "CST_sha256": "8c3f8415936623883006f02b6c70ad464f323337d9ed486583fee4349cbead3e",
+  "Tcl_sha256": "38969dd681969ac0f4273b9ac492f5789aee0c309d7c8ee244ccbea0bdcd6e7e",
+  "UserCode": "C2103101",
+  "placement": 1,
+  "route": 0,
+  "replicate_resources": false,
+  "timing_driven": 1,
+  "correct_hold_violation": 1,
+  "SDC_CST_equal_previous_C2103001": true,
+  "Tcl_only_UserCode_changed": true,
+  "nominal_clocks_and_exceptions_unchanged": true,
+  "extra_feature_removal": false,
+  "adapter_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-physical-adapter-18ed-final-v1/DELIVERY_SEAL.json",
+    "sha256": "429b96b2cb7d8e207dbbf123b419e7a2f285e9c0335b482ec412fa1fb3b76682"
+  },
+  "adapter_parent_tests": 17,
+  "actual_preflight_passed": true,
+  "first_actual_prepare_rejected_existing_preflight_directory": true,
+  "preflight_preserved_separately_bytes_unchanged": true,
+  "actual_prepare_passed": true,
+  "independent_actual_prelaunch_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-C2103101-prelaunch-review-v1/REVIEW_SEAL.json",
+    "sha256": "6262648fd4af813b08e63a72acdfe4be765bfd3eb8a7352a2b324b57f7734d7f"
+  },
+  "independent_actual_prelaunch_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-C2103101-prelaunch-review-v1/review.json",
+    "sha256": "62c83151c1e01222de72fb2b4cbd7dcf9c730c2c52f4caac9af6114bdd4cfa09"
+  },
+  "independent_virtual_negative_controls": 11,
+  "parent_prelaunch_review_hash_verifier_only": true,
+  "parent_freeze": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pitch-fifo-physical-preparation-parent-v1/freeze.json",
+    "sha256": "906ebb0df49b54f59eb4e413ff2445fe7b3f0748ec81f801b5b14481ed7febfc"
+  },
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pitch-fifo-physical-preparation-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "03ec288b0052571d39e20ab82119869c9c1ba67bd6ba3581e316d47184beeeab"
+  },
+  "parent_file_count": 8,
+  "parent_input_count": 4917,
+  "captured_root_references": 66,
+  "current_root_source_later_may_change": true,
+  "physical_reverification_uses_frozen_copied_inputs": true,
+  "old_live_root_reference_verifier_not_claimed_after_source_changes": true,
+  "preparation_accepted": true,
+  "synthesis_or_pnr_started_at_freeze": false,
+  "complete_CDC_accepted": false,
+  "complete_reset_accepted": false,
+  "routed_timing_verified": false,
+  "physical_resource_benefit_accepted": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}
