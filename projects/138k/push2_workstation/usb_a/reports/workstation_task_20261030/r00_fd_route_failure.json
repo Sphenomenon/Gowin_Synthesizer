@@ -1,0 +1,360 @@
+{
+  "schema": 1,
+  "identity": "workstation-r00-fd-route-failure-stage-20261030",
+  "date": "2026-10-30",
+  "stage": "completed_physical_route_failure_evidence",
+  "result": "failed_unrouted_2754_no_sta_no_bitstream",
+  "report": "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_R00_FD_ROUTE_FAILURE_20261030.md",
+  "physical_identity": "custom138k-r00-render-reset-resource-experiment-C11030FD",
+  "source_candidate": "custom138k-workstation-r00-v1-b9a2e0fdf36970be",
+  "user_code": "0xC11030FD",
+  "source_synthesis_vg_sha256": "f71d0328da2a5dc2c5487ece298d38ab59761aa97ca76c6bdb80d6bce7f9dc80",
+  "source_synthesis_process_sha256": "46a3ea5d974e78a13352b84befdb1c388f109fec72c933a5768a74ae01dc0326",
+  "configuration": {
+    "source_policy": "sealed R00 synthesis VG and original SDC bytes; maintained nominal ULPI-only CST appendix; maintained P&R Tcl",
+    "place_option": 1,
+    "route_option": 0,
+    "replicate_resources": false,
+    "timing_driven": 1,
+    "correct_hold_violation": 1,
+    "resource_route_exploration_only": true,
+    "clocks_or_exceptions_relaxed": false,
+    "features_removed": false,
+    "ddr_placement_added": false
+  },
+  "process": {
+    "command": [
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+      "run.tcl"
+    ],
+    "started_utc": "2026-10-30T10:22:11.435868+00:00",
+    "finished_utc": "2026-10-30T10:40:23.514427+00:00",
+    "completed": true,
+    "exit_code": 1,
+    "elapsed_seconds": 1092.0787953750696,
+    "inputs_unchanged": true,
+    "tool_sha256": {
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01"
+    }
+  },
+  "failure_diagnosis_evidence_verified": true,
+  "sealed_failure_summary": {
+    "schema": 1,
+    "identity": "r00-render-FD-independent-physical-failure-v1",
+    "source_candidate": "custom138k-workstation-r00-v1-b9a2e0fdf36970be",
+    "physical": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-render-physical-C11030FD",
+    "manifest_sha256": "815100822697a6453c27823d091ede27c3ff49c186ca60397d83ceb47000506d",
+    "process_sha256": "2cff722c0f5b764e01eb4a6b4d832fb3bfec153cfbf0577371dd606b4b35a984",
+    "hash_closure": {
+      "physical_inputs": 25,
+      "frozen_staged": 584,
+      "pnr_outputs": 6,
+      "all_passed": true
+    },
+    "exit_code": 1,
+    "elapsed_seconds": 1092.0787953750696,
+    "unrouted_nets": 2754,
+    "unrouted_owners": null,
+    "unrouted_owner_limitation": "Only aggregate PR0004 is emitted. No per-net list/status in text/html/log/VO; protected P/database not reverse-engineered.",
+    "resources": {
+      "Logic": {
+        "raw_usage": "104774/138240",
+        "used": 104774,
+        "capacity": 138240,
+        "reported_utilization": "76%"
+      },
+      "Register": {
+        "raw_usage": "63006/139095",
+        "used": 63006,
+        "capacity": 139095,
+        "reported_utilization": "46%"
+      },
+      "--Logic Register as FF": {
+        "raw_usage": "63006/138240",
+        "used": 63006,
+        "capacity": 138240,
+        "reported_utilization": "46%"
+      },
+      "CLS": {
+        "raw_usage": "63358/69120",
+        "used": 63358,
+        "capacity": 69120,
+        "reported_utilization": "92%"
+      },
+      "BSRAM": {
+        "raw_usage": "274/340",
+        "used": 274,
+        "capacity": 340,
+        "reported_utilization": "81%"
+      },
+      "DSP": {
+        "raw_usage": "121.5/298",
+        "used": 121.5,
+        "capacity": 298,
+        "reported_utilization": "41%"
+      },
+      "--SSRAM(RAM16)": {
+        "raw_usage": "1397",
+        "used": 1397,
+        "reported_utilization": "-"
+      }
+    },
+    "clock_resources": {
+      "PRIMARY": {
+        "used": 8,
+        "capacity": 8
+      },
+      "LW": {
+        "used": 8,
+        "capacity": 8
+      },
+      "GCLK_PIN": {
+        "used": 15,
+        "capacity": 24
+      },
+      "CLKDIV": {
+        "used": 2,
+        "capacity": 24
+      },
+      "DCS": {
+        "used": 1,
+        "capacity": 20
+      },
+      "DDRDLL": {
+        "used": 1,
+        "capacity": 4
+      },
+      "DQS": {
+        "used": 4,
+        "capacity": 23
+      },
+      "PLL": {
+        "used": 7,
+        "capacity": 12
+      }
+    },
+    "fc_resource_comparison": {
+      "Logic": {
+        "fc": 102593,
+        "fd": 104774,
+        "delta": 2181
+      },
+      "Register": {
+        "fc": 51122,
+        "fd": 63006,
+        "delta": 11884
+      },
+      "CLS": {
+        "fc": 61810,
+        "fd": 63358,
+        "delta": 1548
+      },
+      "BSRAM": {
+        "fc": 272,
+        "fd": 274,
+        "delta": 2
+      },
+      "DSP": {
+        "fc": 126.5,
+        "fd": 121.5,
+        "delta": -5.0
+      },
+      "--SSRAM(RAM16)": {
+        "fc": 1306,
+        "fd": 1397,
+        "delta": 91
+      }
+    },
+    "timing": {
+      "setup": null,
+      "hold": null,
+      "recovery": null,
+      "removal": null,
+      "pulse_width": null
+    },
+    "timing_reason": "Routing failed; no .tr or .sdf was generated.",
+    "old_fc_div147_adsr_critical_path_elimination_proven": null,
+    "bitstream_generated": false,
+    "bitstream_sha256": null,
+    "partial_post_pnr_vo_sha256": "512bf847fae4e7782d561af9e9aaac5b25fa5754e7681836117e1645d2d8286c",
+    "post_pnr_actual_dff_count": 63006,
+    "post_pnr_helper_dff_count": 8413,
+    "post_pnr_helper_tag_dff_count": 4013,
+    "register_accounting": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FD-independent-physical-review-v1/REGISTER_ACCOUNTING.json",
+    "register_accounting_sha256": "e8475d8df300e0d1912cd8f64ad100f7652ab8796447030fe4b08e536704ec61",
+    "next_minimal_experiment": "Replace only the two wide tag shift chains (oscillator pitch and oscillator attack, 3857 concrete DFFs) with a synchronous local tag RAM ring; retain arithmetic stages, valid, 18/13-clock latency, flush and all other features. This is a resource candidate, not a guaranteed route/timing cure.",
+    "complete_clock_reset_accepted": false,
+    "complete_cdc_accepted": false,
+    "full_timing_accepted": false,
+    "physical_gates_passed": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "deployment_allowed": false
+  },
+  "sealed_evidence": {
+    "review_directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FD-independent-physical-review-v1",
+    "seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FD-independent-physical-review-v1/FD_REVIEW_SEAL.json",
+      "sha256": "f422cdf960dac2038b2f8c16f2f350655caea33d420270767c808b43b70d41a5"
+    },
+    "summary": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FD-independent-physical-review-v1/fd-results/SUMMARY.json",
+      "sha256": "0b979acb00180e962920bae8ad0db879bd745a52d9f0d34e2b39fcf53a6c891d"
+    },
+    "register_accounting": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FD-independent-physical-review-v1/REGISTER_ACCOUNTING.json",
+      "sha256": "e8475d8df300e0d1912cd8f64ad100f7652ab8796447030fe4b08e536704ec61"
+    },
+    "physical_manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-render-physical-C11030FD/physical_inputs.json",
+      "sha256": "815100822697a6453c27823d091ede27c3ff49c186ca60397d83ceb47000506d"
+    },
+    "physical_process": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-render-physical-C11030FD/pnr_process.json",
+      "sha256": "2cff722c0f5b764e01eb4a6b4d832fb3bfec153cfbf0577371dd606b4b35a984"
+    },
+    "all_sealed_review_files_rehashed": true,
+    "all_six_recorded_pnr_outputs_rehashed": true,
+    "output_sha256": {
+      "impl/pnr/custom_138k_integration.log": "1347fd49ffb031e9e6328baf46dc0b29ccb1a07b4b05a75f595abb309607e1cf",
+      "impl/pnr/custom_138k_integration.pin.html": "abf6c2b196504d232dd3f9defd796db2483cfe5e6443d9da5152440b7a56897b",
+      "impl/pnr/custom_138k_integration.rpt.html": "05bbdde359ebf7f6b3bbfa391cc5ba86fa81b84892a72946885181df7033b355",
+      "impl/pnr/custom_138k_integration.rpt.txt": "6b1166c73c8e7b050ae7db72645ab7b34a009c14b4189958cd105570576001a6",
+      "impl/pnr/custom_138k_integration.vo": "512bf847fae4e7782d561af9e9aaac5b25fa5754e7681836117e1645d2d8286c",
+      "impl/pnr/device.cfg": "5d469585ae7643db96ab509fc25687df98085268efb83602866e55872c3ff8b5"
+    },
+    "hash_closure_scope": "The archived independent review verified 25 physical inputs, 584 frozen staged inputs and 6 P&R outputs; this documentation stage rehashed the entire review seal and all 6 recorded outputs."
+  },
+  "timing": {
+    "setup": null,
+    "hold": null,
+    "recovery": null,
+    "removal": null,
+    "mpw": null
+  },
+  "timing_reason": "PR0004 routing failure; no .tr, .sdf or .fs exists. Missing results are null, not zero slack or passing timing.",
+  "artifacts": {
+    "tr_generated": false,
+    "sdf_generated": false,
+    "fs_generated": false,
+    "bitstream_sha256": null,
+    "partial_post_pnr_vo_sha256": "512bf847fae4e7782d561af9e9aaac5b25fa5754e7681836117e1645d2d8286c",
+    "partial_vo_is_routed_acceptance": false
+  },
+  "unrouted_owner_attribution": {
+    "owner_counts": null,
+    "reason": "Only aggregate PR0004 is emitted. No per-net list/status in text/html/log/VO; protected P/database not reverse-engineered.",
+    "register_owner_inventory_is_not_routing_failure_attribution": true
+  },
+  "register_accounting_summary": {
+    "comparison": {
+      "old_candidate": "custom138k-workstation-r00-v1-4b1436d83219e765",
+      "new_candidate": "custom138k-workstation-r00-v1-b9a2e0fdf36970be",
+      "synthesis_register_totals": {
+        "old": 53530,
+        "new": 63006,
+        "delta": 9476
+      },
+      "visible_dff_totals": {
+        "old": 48071,
+        "new": 57547,
+        "delta": 9476
+      },
+      "unchanged_opaque_ddr_registers": {
+        "scope": "u_memory/u_ddr3",
+        "old": 5459,
+        "new": 5459,
+        "policy": "Gowin XML attributed count; encrypted DDR internals are not visible DFF instances in VG."
+      }
+    },
+    "helper_ff": 8413,
+    "tag_named_ff": 4013,
+    "arithmetic_and_valid_ff": 4400,
+    "helper_share_of_delta": 0.8878218657661461,
+    "tag_share_of_delta": 0.42349092444069225,
+    "tag_share_of_helper_ff": 0.4769998811363366,
+    "oscillator_pitch_and_attack_tag_ff": 3857,
+    "helpers": [
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider",
+        "ff_count": 3886,
+        "tag_ff": 3059
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider",
+        "ff_count": 1265,
+        "tag_ff": 798
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.decay_divider",
+        "ff_count": 453,
+        "tag_ff": 0
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.release_divider",
+        "ff_count": 453,
+        "tag_ff": 0
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/g_rate_pipeline.phase_divider",
+        "ff_count": 941,
+        "tag_ff": 114
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/g_rate_pipeline.attack_divider",
+        "ff_count": 509,
+        "tag_ff": 42
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/g_rate_pipeline.decay_divider",
+        "ff_count": 453,
+        "tag_ff": 0
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/g_rate_pipeline.release_divider",
+        "ff_count": 453,
+        "tag_ff": 0
+      }
+    ],
+    "method": "Actual primitive DFF instances by exact hierarchy in synthesis VG; partial post-P&R VO independently exposes 63006 total DFFs, 8413 helper DFFs and 4013 helper tag DFFs. This is not a nominal width-times-depth estimate or per-owner unrouted-net list.",
+    "physical_savings_proven": false
+  },
+  "fc_comparison_limit": "FC and FD are different source candidates (571 versus 584 staged inputs), with R00/pipeline/reset/source and placement differences. The copied resource deltas are observed cross-candidate values, not isolated savings or causal route attribution.",
+  "next_candidate_plan": {
+    "status": "planned_followup_not_completed_by_this_stage",
+    "tag_ram": {
+      "plan": "Evaluate synchronous local tag RAM for wide oscillator pitch/attack tags while retaining arithmetic, fixed latency, valid and flush behavior.",
+      "part_of_fd_candidate": false,
+      "integrated_candidate_completed": false,
+      "physical_resource_or_route_improvement_proven": false,
+      "new_source_and_bitstream_identity_required": true
+    },
+    "no_local_panel": {
+      "user_selected": true,
+      "status": "implementation_and_integration_validation_in_progress",
+      "implementation_complete": false,
+      "part_of_fd_candidate": false,
+      "physical_validation_complete": false,
+      "note": "Explicit follow-up profile; no accepted/default profile switch is recorded by this failure report."
+    }
+  },
+  "delivery_scope": {
+    "documentation_only": true,
+    "new_eda_run": false,
+    "new_board_operation": false,
+    "task_md_modified_by_this_stage": false
+  },
+  "complete_clock_reset_accepted": false,
+  "complete_cdc_accepted": false,
+  "feature_preservation_accepted": false,
+  "full_timing_accepted": false,
+  "physical_gates_passed": false,
+  "hardware_operated": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "rollback": "No FD bitstream was generated or programmed. This stage leaves prior deployment evidence unchanged and makes no claim about current SRAM/Flash contents; any future rollback must select and verify a separately dated deployment identity."
+}
