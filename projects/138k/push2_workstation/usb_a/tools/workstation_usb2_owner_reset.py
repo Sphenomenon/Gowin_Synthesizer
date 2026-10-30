@@ -19,6 +19,10 @@ if str(ROOT) not in sys.path:
 from tools.workstation_runtime_clock_audit import VG_RELATIVE, verify_synthesis_identity
 from tools.workstation_ble_ddr_cdc_scope import (SCOPE as BLE_DDR_SCOPE, LEGACY_SCOPE,
     validate_profile as validate_ble_ddr_profile)
+from tools.workstation_ble_ddr_prefix_cdc_scope import (SCOPE as BLE_DDR_PREFIX_SCOPE,
+    validate_profile as validate_ble_ddr_prefix_profile)
+from tools.workstation_ble_ddr_prefix_cdc_endpoints import validate_synthesis_binding as validate_prefix_VG
+BLE_DDR_SCOPES = (BLE_DDR_SCOPE, BLE_DDR_PREFIX_SCOPE)
 from tools.workstation_runtime_pcm_cdc import COMB, Graph, PcmNetlist, TOP
 
 POLICY = 'usb2-owner-audio-reset-source-v1'
@@ -315,10 +319,10 @@ def audit_reset_structure(n, g, sdc):
 
 
 def validate_profile(root, prepared, explicit_profile, *, scope=LEGACY_SCOPE):
-    require(scope in (LEGACY_SCOPE, BLE_DDR_SCOPE), 'unknown explicit scope')
-    if scope == BLE_DDR_SCOPE:
+    require(scope in (LEGACY_SCOPE, *BLE_DDR_SCOPES), 'unknown explicit scope')
+    if scope in BLE_DDR_SCOPES:
         require(explicit_profile == NO_LOCAL_PANEL_PROFILE, 'revision2 requires no-local-panel profile')
-        validate_ble_ddr_profile(root, prepared)
+        (validate_ble_ddr_prefix_profile if scope == BLE_DDR_PREFIX_SCOPE else validate_ble_ddr_profile)(root, prepared)
         return
     require(explicit_profile in PROFILES and prepared.get('profile') == explicit_profile,
             'explicit prepared profile required')
@@ -349,16 +353,22 @@ def run_audit(root, stage, evidence, *, explicit_profile, scope=LEGACY_SCOPE):
     root, stage = Path(root), Path(stage)
     prepared = json.loads((stage.parents[1] / 'workstation_profile.json').read_text())
     validate_profile(root, prepared, explicit_profile, scope=scope)
-    if scope == BLE_DDR_SCOPE:
-        validate_ble_ddr_profile(root, prepared, stage=stage)
+    if scope in BLE_DDR_SCOPES:
+        (validate_ble_ddr_prefix_profile if scope == BLE_DDR_PREFIX_SCOPE else validate_ble_ddr_profile)(root, prepared, stage=stage)
     before = verify_synthesis_identity(stage, evidence)
+    if scope == BLE_DDR_PREFIX_SCOPE:
+        validate_prefix_VG(stage)
     audit_files = tuple(dict.fromkeys((*AUDIT_FILES, 'tools/workstation_ble_ddr_cdc_scope.py', PROFILE_SOURCES[explicit_profile])))
+    if scope == BLE_DDR_PREFIX_SCOPE:
+        audit_files += ("tools/workstation_ble_ddr_prefix_cdc_scope.py",
+                        "tools/workstation_ble_ddr_prefix_cdc_endpoints.py", "tools/workstation_runtime_counter.py",
+                        "sim/test_workstation_ble_ddr_prefix_cdc_scope.py")
     identities = {p: sha(root / p) for p in audit_files}
     sources = installed_sources(root, stage)
     n = OwnerResetNetlist((stage / VG_RELATIVE).read_text(), TOP)
     result = audit_reset_structure(n, Graph(n), (stage / 'constraints/custom_138k.sdc').read_text())
-    if scope == BLE_DDR_SCOPE:
-        validate_ble_ddr_profile(root, prepared, stage=stage)
+    if scope in BLE_DDR_SCOPES:
+        (validate_ble_ddr_prefix_profile if scope == BLE_DDR_PREFIX_SCOPE else validate_ble_ddr_profile)(root, prepared, stage=stage)
     require(before == verify_synthesis_identity(stage, evidence) and
             identities == {p: sha(root / p) for p in audit_files}, 'review inputs changed')
     result.update(schema=1, scope=scope, explicit_profile=explicit_profile, synthesis=before, sources=sources,
@@ -372,7 +382,7 @@ def main():
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--synthesis-evidence', type=Path, required=True)
     parser.add_argument('--profile', choices=PROFILES, required=True)
-    parser.add_argument('--scope', choices=(LEGACY_SCOPE, BLE_DDR_SCOPE), default=LEGACY_SCOPE)
+    parser.add_argument('--scope', choices=(LEGACY_SCOPE, *BLE_DDR_SCOPES), default=LEGACY_SCOPE)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     result = run_audit(ROOT, args.project, args.synthesis_evidence, explicit_profile=args.profile, scope=args.scope)

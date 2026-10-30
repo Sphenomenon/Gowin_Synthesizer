@@ -1,0 +1,120 @@
+"""Mapped identities independently reviewed on the completed c7d66b41 VG.
+
+No serial-candidate endpoint fallback is permitted.
+"""
+from pathlib import Path
+import hashlib
+from tools.workstation_runtime_clock_audit import VG_RELATIVE
+
+VG_SHA256 = '8c5d1e5a30baad7a7e4cd705cfdcf4fcc301369bcb6c69d78f9a7f47c10acb2c'
+# Actual unique scanout FF Q, independently checked against flags_meta[3]/D.
+# The prior serial no-panel candidate used front_valid_Z instead.
+VIDEO_STATUS_NETS = (
+    'memory_calibrated', 'bist_done', 'bist_failed', 'u_video/front_valid',
+    'u_video/memory_status[4]', 'u_video/memory_status[5]', 'memory_pll_locked',
+    'u_video/startup_pipe[4]',
+)
+PHASE1_ENDPOINT_SHA256 = {'command_ack_toggle': '0871caf68cda28a90d553673c48058fbc695637dbcd9ae37497939521b37ae23',
+ 'command_request_payload': '06d6997e79e7e80f67d3fe8a64a1c3ee670bde1c1200692cd4e701e96cd7c9e5',
+ 'command_request_toggle': 'b126366ca92e26dce71ff20046b072b3729ba02a999264728acae2e44b19b049',
+ 'command_response_payload': '4eeb7266f15b47b171866df422bccb242810bc7ede933515a4628cf45a6e7293',
+ 'pcm_drop_gray': 'a9aaf60603102f995b19864f50b05f1a6a22c5c9aff760f8dbc608ff93410888',
+ 'pcm_read_gray': '46974f13f3e90b53c32576800493e4bf32e7afa5265b636ffeef3d88fe4e03cc',
+ 'pcm_write_gray': '29c1f4f16688b4196edf8ec92d014c9f9dd2a7fbe7f14d1a1f3704932c8a6c01',
+ 'release:u_recording/commands/a_release': '68acfc92379ec78ae95a14802e7ea838e7b283d296f71b811c556486bda49c50',
+ 'release:u_recording/commands/p_release': 'b74142414f60a6f22abd3cbf1708cc041db48be317d13105758faa209888fd24',
+ 'release:u_recording/pcm_cdc/destination_release': 'b5f5bfb748bf65edb76ff75eb4ef5683230a413267d6ca2da6ca8f6e1068d584',
+ 'release:u_recording/pcm_cdc/drops/destination_release': 'f4874fbfedf57a4fd378cecd676944f6dee6d3ad9ef5e559944f51b4a08bf687',
+ 'release:u_recording/pcm_cdc/drops/source_release': '864e3b94ec264f1084bfec1bee46f5f33adb3e76fbc8c99c636e3ad2f5ec31f5',
+ 'release:u_recording/pcm_cdc/source_release': '0bc8db4caf1307a685298f1a615899515532d7dd3c645f942fa97e3a1ac39bb4'}
+PHASE1_RESET_ALIAS_SHA256 = '366f05b101f78e31ffad26dfba64ea15c7b6285d1dd4cffab4f753c078d7e70c'
+RAW_ENDPOINT_SHA256 = {'authority:heartbeat': 'fbda00056e5d3d1c2655c5d12da41f585de4551ccfd010efb8b91ac80392f24b',
+ 'authority:open': 'a3267cc9010d0114a42165a545f4a7521eb7f7502da35e8b844842fa4f9f8a68',
+ 'payload:command': 'af74cc779c5c118ec304b8670048c633663887a970cf945352a85781d1986e81',
+ 'payload:completion': '5cd702fbf28e7951c7f263669bfae864ef9a36ab7b7034f730775b6e296d1fbf',
+ 'payload:return': '8fe498ebb1912040fe845e41d8180d07825a2cf6695d819c5f8244b6e148b027',
+ 'payload:status': '86f61f1616777f8cf6af404c17ac5e4938ee71232e841c6f86d2258d9a9e0835',
+ 'raw:cancel': '90f490e4fd471473cc4cecc5f6f49f2e7b27baab7981827d51b798a13768eabd',
+ 'raw:command_ack': '47a2d069818fe9b30679f7f99170dbfda563c6d450551f7d82a65ac1ab3d2227',
+ 'raw:command_request': '79a42e222af354d2717365d34fcc8e31e9d3bb2b4afead59595919eb1b0f5f75',
+ 'raw:memory_up': '64f7cf5662089f5405debb3242bbfb3d52925dba8acdce1f3b2a00bf2adfcc46',
+ 'raw:read_gray': 'a7678023e73555e7c552837abad9eb571da2a6a5fabdc46b5a0bb86d535ef2ee',
+ 'raw:return_ack': 'c4bdc5e338264311518704d9ef4a1dba409bccd041ea2090037a0c460ab02a56',
+ 'raw:return_request': '950b93737d927e6de425fbf8a78a0339ccff8305d2dcc83f3c44bd965dfa1666',
+ 'raw:status_ack': '3240c6bff5049ecf9c8ce4f357b5b4d452640c04b0289c0195ab6eefd7fc3c57',
+ 'raw:status_request': '2a0466ff96fdaef25fcc834edbd9d4c2568f46599d865f81dc1410fc96484df3',
+ 'raw:write_gray': '3749aad8442b4806343b41a9af4d09aa38449d064333b10fbb373d7b99cd8e30',
+ 'release:authority_control:0': 'b48db8aabb9470e22af672897d18ce41af6f984c46bb6040fc73753923368683',
+ 'release:authority_control:1': '1bcd62a1d701ce714d9decf9b75241dcb274ef86ed76e9e67eabf4ff327dc9e8',
+ 'release:authority_control:2': '15ad132703d8dfa61ff06a31e450468011475c7cd630aa190ecfa373d162cc5d',
+ 'release:authority_memory:0': '6e6c301ac48257e04b8428754995140ff8fa8f734c0825ac4e45844ef3d9c53a',
+ 'release:authority_memory:1': '91420c92acfc19de174202e61e9caea21934855c07d516f0c15d2e2937196ecd',
+ 'release:authority_memory:2': '731fffe6a008a25c90552faf2079687c14e3b64784f370ae63f1de17efb50f36',
+ 'release:authority_root:0': '77b8182b6e1d07a88c14e84f74691c2c147ceb593593e3000f84f98f38b68a04',
+ 'release:authority_root:1': '905001a667bff266bbb63450303b1335529b4e03486df01ffa8c6a6d82e809f6',
+ 'release:raw_control:0': '779786366b64026d4ce0460c62c64e171b286653f07d5c2eb5a494a26e49f3f6',
+ 'release:raw_control:1': '255fa09be1932a4d27b4ee0e8c687b10cd21c0990841658390ef24a470c313ff',
+ 'release:raw_memory:0': '68247721cf5fd199c51bcad7a79f0d1a846bc5ae64549cc3ca72ecab8133b2f8',
+ 'release:raw_memory:1': '64f7cf5662089f5405debb3242bbfb3d52925dba8acdce1f3b2a00bf2adfcc46',
+ 'release:seal_destination:0': 'd3dc0501deda9e2f7f1d08d24d96fca184a5bf86bf442ea9eca3f91b7913ced5',
+ 'release:seal_destination:1': 'd9bd4c3836da365f6a7c7360379e80040f411dc7f3691ee552ccc5a7232627d9',
+ 'release:seal_source:0': '0749cb09d14c8a9d33ba40db48634ae701209e0c540f350fcb3819b2f995b725',
+ 'release:seal_source:1': '88ad7fb6b4f02f6e50b06aa8e71f31f39595296522902465820d6c78bf310018',
+ 'safety:authority_availability': '187a83545b2365b47d6ef516e329ab67209b1599e8f3ebf728a0adb0a56b4476',
+ 'safety:authority_boot': '23add66f8d342f4272af56b274fc0df22f988e401cf8c13d312685ba2c5f58cd',
+ 'safety:authority_grant': '539923ae412faeb64249a7db1db8ae4df9ce41458e8af1f90ddc65e2646d123f',
+ 'safety:authority_survival': '1bf3e002361b0eba2caa3fd58f331cf1a232cc0fa89bec0ea825d96c6bb7064d',
+ 'safety:qualified_channel': '35704be466f2fbf7ea22eeb1155245a1495f078410a629376f21f01a85ddc45c',
+ 'seal:hold': '7ed8c74f5b5c8d972a7ce462c3c99777e30e1998fcc5bc8fde61aa3ed35f7df9',
+ 'seal:ready': 'ba0cec0621c383ccdb2cf8c844e1ad6ec0bc1134e27233142f9938790e080ddb',
+ 'seal:request': 'cd12c9bb9a910507cd690e34ff2919800a5373049b41fffe57d28225c4290d48',
+ 'seal:result': 'c12c74ce21d1bf77e29bee32c2cd4593c878c9818af4bda67466692657149e93',
+ 'seal:result_payload': '05036cc5c728e3828323d09db56da36061359b89f43864d6cedee6553543ae7a'}
+RAW_PAYLOADS = {'command': [89, 'clk_50m',
+             [['command_kind', 2, [0, 1]],
+              ['command_generation', 32,
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+                27, 28, 29, 30, 31]],
+              ['command_offset', 32,
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+                27, 28, 29, 30, 31]],
+              ['command_length', 14, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]],
+              ['command_event_target', 9, [0, 1, 2, 3, 4, 5, 6, 7, 8]]]],
+ 'completion': [70, 'memory_clk',
+                [['completion_generation', 32,
+                  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+                   26, 27, 28, 29, 30, 31]],
+                 ['completion_committed', 32,
+                  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+                   26, 27, 28, 29, 30, 31]],
+                 ['completion_kind', 2, [0, 1]], ['completion_code', 4, [0, 1, 2, 3]]]],
+ 'return': [299, 'memory_clk',
+            [['return_data', 256,
+              [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+               27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
+               52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76,
+               77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100,
+               101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
+               121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140,
+               141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160,
+               161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180,
+               181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200,
+               201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
+               221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240,
+               241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255]],
+             ['return_generation', 32,
+              [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+               27, 28, 29, 30, 31]],
+             ['return_word', 11, [3, 4, 5, 6, 7, 8, 9, 10]]]],
+ 'status': [70, 'memory_clk',
+            [['status_payload', 70,
+              [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+               27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
+               52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69]]]]}
+
+
+def validate_synthesis_binding(stage):
+    path = Path(stage) / VG_RELATIVE
+    if VG_SHA256 is None or hashlib.sha256(path.read_bytes()).hexdigest() != VG_SHA256:
+        raise ValueError('prefix CDC scope: actual reviewed VG identity required')
+    return dict(actual_reviewed_VG_sha256=VG_SHA256, serial_candidate_closures_inherited=False)

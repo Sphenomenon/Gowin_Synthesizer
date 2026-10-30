@@ -45,17 +45,25 @@ from tools.workstation_ble_ddr_cdc_scope import (
     validate_profile as validate_ble_ddr_profile,
 )
 
+from tools.workstation_ble_ddr_prefix_cdc_scope import (
+    SCOPE as BLE_DDR_PREFIX_PRECISION, validate_profile as validate_ble_ddr_prefix_profile,
+)
+from tools.workstation_ble_ddr_prefix_cdc_endpoints import (
+    validate_synthesis_binding as validate_prefix_VG, VIDEO_STATUS_NETS as PREFIX_VIDEO_STATUS,
+)
+
+BLE_DDR_PRECISIONS = (BLE_DDR_PRECISION, BLE_DDR_PREFIX_PRECISION)
 NO_LOCAL_PANEL_PRECISION = "runtime-r00-no-local-panel-v1"
-NO_LOCAL_PANEL_PRECISIONS = (NO_LOCAL_PANEL_PRECISION, BLE_DDR_PRECISION)
-PRECISION_PROFILES = ("generic", "runtime-no-cnn-v1", "runtime-r00-v1", NO_LOCAL_PANEL_PRECISION, BLE_DDR_PRECISION)
-R00_PRECISIONS = ("runtime-r00-v1", NO_LOCAL_PANEL_PRECISION, BLE_DDR_PRECISION)
+NO_LOCAL_PANEL_PRECISIONS = (NO_LOCAL_PANEL_PRECISION, *BLE_DDR_PRECISIONS)
+PRECISION_PROFILES = ("generic", "runtime-no-cnn-v1", "runtime-r00-v1", NO_LOCAL_PANEL_PRECISION, *BLE_DDR_PRECISIONS)
+R00_PRECISIONS = ("runtime-r00-v1", NO_LOCAL_PANEL_PRECISION, *BLE_DDR_PRECISIONS)
 NO_CNN_SOURCE = "boards/custom_138k/workstation_profile_no_cnn_v1.json"
 R00_SOURCE = "boards/custom_138k/workstation_profile_r00_v1.json"
 PROFILE_SOURCES = {"runtime-no-cnn-v1": NO_CNN_SOURCE, "runtime-r00-v1": R00_SOURCE,
-                   NO_LOCAL_PANEL_PRECISION: NO_LOCAL_PANEL_SOURCE, BLE_DDR_PRECISION: NO_LOCAL_PANEL_SOURCE}
+                   NO_LOCAL_PANEL_PRECISION: NO_LOCAL_PANEL_SOURCE, BLE_DDR_PRECISION: NO_LOCAL_PANEL_SOURCE, BLE_DDR_PREFIX_PRECISION: NO_LOCAL_PANEL_SOURCE}
 PROFILE_NAMES = {"runtime-no-cnn-v1": "custom138k-workstation-no-cnn-v1",
                  "runtime-r00-v1": "custom138k-workstation-r00-v1",
-                 NO_LOCAL_PANEL_PRECISION: NO_LOCAL_PANEL_PROFILE, BLE_DDR_PRECISION: NO_LOCAL_PANEL_PROFILE}
+                 NO_LOCAL_PANEL_PRECISION: NO_LOCAL_PANEL_PROFILE, BLE_DDR_PRECISION: NO_LOCAL_PANEL_PROFILE, BLE_DDR_PREFIX_PRECISION: NO_LOCAL_PANEL_PROFILE}
 # Exact supported R00 configuration, canonical JSON (sorted keys, no spaces).
 # Descriptive profile bytes may evolve, but a future LCD-off configuration
 # needs an explicit retirement/topology review rather than inheriting 88 lines.
@@ -88,8 +96,8 @@ def validate_precision_profile(root, profile, precision_profile):
     )
     if precision_profile == "generic":
         return
-    if precision_profile == BLE_DDR_PRECISION:
-        validate_ble_ddr_profile(root, profile)
+    if precision_profile in BLE_DDR_PRECISIONS:
+        (validate_ble_ddr_prefix_profile if precision_profile == BLE_DDR_PREFIX_PRECISION else validate_ble_ddr_profile)(root, profile)
     is_r00 = precision_profile in R00_PRECISIONS
     no_panel = precision_profile in NO_LOCAL_PANEL_PRECISIONS
     source_name = PROFILE_SOURCES[precision_profile]
@@ -120,8 +128,8 @@ def validate_precision_profile(root, profile, precision_profile):
     )
     if is_r00:
         recording = profile.get("recording", {})
-        expected = recording_metadata(ble_raw_ddr=precision_profile == BLE_DDR_PRECISION)
-        expected_configuration = (BLE_DDR_CONFIGURATION_SHA256 if precision_profile == BLE_DDR_PRECISION else
+        expected = recording_metadata(ble_raw_ddr=precision_profile in BLE_DDR_PRECISIONS)
+        expected_configuration = (BLE_DDR_CONFIGURATION_SHA256 if precision_profile in BLE_DDR_PRECISIONS else
                                   NO_LOCAL_PANEL_CONFIGURATION_SHA256 if no_panel else R00_CONFIGURATION_SHA256)
         require(sha(json.dumps(profile["configuration"], sort_keys=True, separators=(",", ":")).encode())
                 == expected_configuration, "precision profile R00 supported configuration changed")
@@ -355,6 +363,11 @@ R00_VIDEO_REGISTERED_STATUS = {
 }
 
 
+def video_status_nets(precision_profile):
+    return (PREFIX_VIDEO_STATUS if precision_profile == BLE_DDR_PREFIX_PRECISION else
+            R00_NO_LOCAL_PANEL_VIDEO_STATUS if precision_profile in NO_LOCAL_PANEL_PRECISIONS else R00_VIDEO_STATUS)
+
+
 def audit_r00_status_rtl(stage, *, precision_profile="runtime-r00-v1"):
     relative = "rtl/workstation/workstation_hdmi_display.sv"
     path = Path(stage) / relative
@@ -368,7 +381,7 @@ def audit_r00_status_rtl(stage, *, precision_profile="runtime-r00-v1"):
         "flags_meta<=memory_status[7:0];flags_sync<=flags_meta;",
     )
     require(all(text.count(fragment) == 1 for fragment in fragments), "R00 video status RTL contract changed")
-    nets = R00_NO_LOCAL_PANEL_VIDEO_STATUS if precision_profile in NO_LOCAL_PANEL_PRECISIONS else R00_VIDEO_STATUS
+    nets = video_status_nets(precision_profile)
     return dict(source=relative, sha256=file_sha(path), status_bits_1_2_3="BIST done, BIST failed, scanout front_valid",
                 source_fragment_contract_verified=True, renamed_nets=list(nets[1:4]))
 
@@ -538,7 +551,7 @@ def audit_syncs(n, g, installed_first, *, precision_profile="runtime-no-cnn-v1")
     for s, a, b, width, c, nets in STATUS:
         r00_video = precision_profile in R00_PRECISIONS and s == "u_video"
         if r00_video:
-            nets = R00_NO_LOCAL_PANEL_VIDEO_STATUS if precision_profile in NO_LOCAL_PANEL_PRECISIONS else R00_VIDEO_STATUS
+            nets = video_status_nets(precision_profile)
         for bit in range(width):
             source = None
             if r00_video and bit in R00_VIDEO_REGISTERED_STATUS:
@@ -1007,8 +1020,10 @@ def audit_selected_shared(
     )
     return dict(
         schema=1,
-        scope=("selected_r00_no_local_panel_ble_ddr_revision2_retained_shared_constraints_source_structure_only"
-               if precision_profile == BLE_DDR_PRECISION else
+        scope=("selected_r00_no_local_panel_ble_ddr_prefix_retained_shared_constraints_source_structure_only"
+               if precision_profile == BLE_DDR_PREFIX_PRECISION else
+               "selected_r00_no_local_panel_ble_ddr_revision2_retained_shared_constraints_source_structure_only"
+               if precision_profile in BLE_DDR_PRECISIONS else
                "selected_r00_no_local_panel_runtime_retained_shared_constraints_source_structure_only"
                if no_panel else "selected_r00_runtime_retained_shared_constraints_source_structure_only"
                if precision_profile == "runtime-r00-v1" else
@@ -1020,7 +1035,7 @@ def audit_selected_shared(
             complete_configuration_equal=True,
             current_root_profile_bytes_equivalence_claimed=False,
             supported_r00_configuration_sha256=(R00_CONFIGURATION_SHA256 if precision_profile == "runtime-r00-v1" else None),
-            supported_no_local_panel_configuration_sha256=((BLE_DDR_CONFIGURATION_SHA256 if precision_profile == BLE_DDR_PRECISION
+            supported_no_local_panel_configuration_sha256=((BLE_DDR_CONFIGURATION_SHA256 if precision_profile in BLE_DDR_PRECISIONS
                                                           else NO_LOCAL_PANEL_CONFIGURATION_SHA256) if no_panel else None),
         ),
         reviewed_r00_status_rtl=r00_status_rtl,
@@ -1065,9 +1080,9 @@ def audit_selected_shared(
                  "u_recording/service", "u_recording/native_commit", "u_video/u_arbiter/g_recording/u_core"]
                 if precision_profile in R00_PRECISIONS else []),
             excluded_ble_ddr_scopes=(["recording_ble_store", "recording_authority", "recording_owner8"]
-                if precision_profile == BLE_DDR_PRECISION else []),
+                if precision_profile in BLE_DDR_PRECISIONS else []),
             excluded_ble_ddr_top_level_registers=(["recording_memory_release", "recording_channel_meta",
-                "recording_channel_ready50"] if precision_profile == BLE_DDR_PRECISION else []),
+                "recording_channel_ready50"] if precision_profile in BLE_DDR_PRECISIONS else []),
             source_structure_verified=False, physical_cdc_accepted=False,
         ),
         tool_query_resolution_verified=False,
@@ -1102,8 +1117,8 @@ def audit_shared_constraints(root, stage, netlist_text, *, precision_profile="ge
     stage = Path(stage)
     profile = json.loads((stage.parents[1] / "workstation_profile.json").read_text())
     validate_precision_profile(root, profile, precision_profile)
-    if precision_profile == BLE_DDR_PRECISION:
-        validate_ble_ddr_profile(root, profile, stage=stage)
+    if precision_profile in BLE_DDR_PRECISIONS:
+        (validate_ble_ddr_prefix_profile if precision_profile == BLE_DDR_PREFIX_PRECISION else validate_ble_ddr_profile)(root, profile, stage=stage)
     n = (OwnerResetNetlist if usb2_owner_reset else PcmNetlist)(netlist_text, TOP)
     g = Graph(n)
     sdc = (stage / "constraints/custom_138k.sdc").read_text()
@@ -1131,7 +1146,13 @@ def run_audit(root, stage, evidence, *, precision_profile="generic", usb2_owner_
         "unknown precision profile: " + precision_profile,
     )
     before = verify_synthesis_identity(stage, evidence)
+    if precision_profile == BLE_DDR_PREFIX_PRECISION:
+        validate_prefix_VG(stage)
     audit_sources = (*AUDIT_SOURCES, NO_LOCAL_PANEL_SOURCE) if precision_profile in NO_LOCAL_PANEL_PRECISIONS else AUDIT_SOURCES
+    if precision_profile == BLE_DDR_PREFIX_PRECISION:
+        audit_sources += ("tools/workstation_ble_ddr_prefix_cdc_scope.py",
+                          "tools/workstation_ble_ddr_prefix_cdc_endpoints.py", "tools/workstation_runtime_counter.py",
+                          "sim/test_workstation_ble_ddr_prefix_cdc_scope.py")
     sources = {p: file_sha(root / p) for p in audit_sources}
     text = (stage / VG_RELATIVE).read_text()
     result = audit_shared_constraints(
@@ -1142,9 +1163,9 @@ def run_audit(root, stage, evidence, *, precision_profile="generic", usb2_owner_
         if precision_profile in NO_LOCAL_PANEL_PRECISIONS:
             require(result["clock_audit"].get("local_panel_enabled") is False,
                     "no-local-panel precision requires its explicit disabled-panel clock audit")
-    if precision_profile == BLE_DDR_PRECISION:
+    if precision_profile in BLE_DDR_PRECISIONS:
         profile = json.loads((stage.parents[1] / "workstation_profile.json").read_text())
-        validate_ble_ddr_profile(root, profile, stage=stage)
+        (validate_ble_ddr_prefix_profile if precision_profile == BLE_DDR_PREFIX_PRECISION else validate_ble_ddr_profile)(root, profile, stage=stage)
     after = verify_synthesis_identity(stage, evidence)
     require(
         before == after and sources == {p: file_sha(root / p) for p in audit_sources},

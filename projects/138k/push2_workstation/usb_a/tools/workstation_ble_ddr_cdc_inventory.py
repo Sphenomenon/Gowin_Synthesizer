@@ -16,6 +16,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from tools.workstation_ble_ddr_cdc_scope import SCOPE, SOURCE_SHA256, validate_profile
+from tools.workstation_ble_ddr_prefix_cdc_scope import (SCOPE as PREFIX_SCOPE,
+    SOURCE_SHA256 as PREFIX_SOURCE_SHA256, validate_profile as validate_prefix_profile)
+from tools.workstation_ble_ddr_prefix_cdc_endpoints import (RAW_ENDPOINT_SHA256 as PREFIX_ENDPOINT_SHA256,
+    RAW_PAYLOADS as PREFIX_PAYLOADS, validate_synthesis_binding as validate_prefix_VG)
 from tools.workstation_bluetooth_ddr import RAW_STORE_PATH, RAW_STORE_SHA256
 from tools.workstation_usb2_owner_reset import OwnerResetNetlist, _reg
 from tools.workstation_runtime_pcm_cdc import Graph, TOP
@@ -101,14 +105,19 @@ def ff(n, g, path, clock, *, unconditional=False):
                 d=n.pin(path, 'D'), q=n.pin(path, 'Q'), ce=n.pin(path, 'CE'))
 
 
-def audit_netlist(n, *, g=None):
+def audit_netlist(n, *, g=None, scope=SCOPE):
+    require(scope in (SCOPE, PREFIX_SCOPE), 'unknown explicit scope')
+    selected_scope = scope
+    endpoint_sha256 = PREFIX_ENDPOINT_SHA256 if scope == PREFIX_SCOPE else ENDPOINT_SHA256
+    payload_specs = PREFIX_PAYLOADS if scope == PREFIX_SCOPE else PAYLOADS
+    require(bool(endpoint_sha256) and isinstance(payload_specs, dict), 'explicit reviewed endpoint/bitmap identities required')
     g = g or Graph(n)
     closures = {}
 
     def save(label, sources):
         closure = complete_closure(n, g, sources)
         shape = {key: closure[key] for key in ('ff_endpoints', 'primitive_endpoints', 'top_output_endpoints')}
-        require(digest(shape) == ENDPOINT_SHA256.get(label), 'complete source endpoint identity changed: ' + label)
+        require(digest(shape) == endpoint_sha256.get(label), 'complete source endpoint identity changed: ' + label)
         closures[label] = dict(source_registers=sources, endpoint_sha256=digest(shape), **closure)
 
     def pair(label, scope, first, second, source, source_clock, destination_clock):
@@ -186,7 +195,7 @@ def audit_netlist(n, *, g=None):
             mapped_encoder_equivalence_or_physical_flight_verified=False))
 
     payloads = []
-    for label, (logical_width, clock, fields) in PAYLOADS.items():
+    for label, (logical_width, clock, fields) in payload_specs.items():
         sources, inventory = [], []
         for stem, width, bits in fields:
             bits = list(bits)
@@ -236,7 +245,7 @@ def audit_netlist(n, *, g=None):
         save('safety:' + label, paths)
         safety[label] = dict(registers=[ff(n, g, p, n.pin(p, 'CLK')) for p in paths],
             asynchronous_safety_assertion_cones_require_separate_review=True)
-    return dict(schema=1, policy=POLICY, scope=SCOPE, ordinary_pairs=ordinary,
+    return dict(schema=1, policy=POLICY, scope=selected_scope, ordinary_pairs=ordinary,
         ordinary_pair_count=13, raw_store_ordinary_pair_count=8, seal_ordinary_pair_count=4,
         gray_groups=gray, gray_bits=50, raw_store_gray_bits=18, authority_heartbeat_bits=32,
         raw_payload_groups=payloads, raw_payload_logical_bits=528, raw_payload_mapped_source_FFs=524,
@@ -256,11 +265,15 @@ def audit_netlist(n, *, g=None):
         routed_timing_verified=False, hardware_tested=False, deployment_allowed=False, release_ready=False)
 
 
-def run_audit(root, stage, evidence):
+def run_audit(root, stage, evidence, *, scope=SCOPE):
     root, stage = Path(root), Path(stage)
+    require(scope in (SCOPE, PREFIX_SCOPE), 'unknown explicit scope')
     before = verify_synthesis_identity(stage, evidence)
+    if scope == PREFIX_SCOPE:
+        validate_prefix_VG(stage)
     profile = json.loads((stage.parents[1] / 'workstation_profile.json').read_text())
-    source_gate = validate_profile(root, profile, stage=stage)
+    source_validator = validate_prefix_profile if scope == PREFIX_SCOPE else validate_profile
+    source_gate = source_validator(root, profile, stage=stage)
     require(file_sha(root / RAW_STORE_PATH) == RAW_STORE_SHA256
             and file_sha(stage / RAW_STORE_PATH) == RAW_STORE_SHA256, 'raw store source identity changed')
     helper_names = ('tools/workstation_ble_ddr_cdc_inventory.py', 'tools/workstation_ble_ddr_cdc_scope.py',
@@ -268,13 +281,17 @@ def run_audit(root, stage, evidence):
         'tools/workstation_runtime_pcm_cdc.py', 'tools/workstation_synthesis_netlist.py',
         'tools/workstation_runtime_clock_audit.py', 'tools/workstation_bluetooth_ddr.py',
         'tools/workstation_ble_recording_policy.py', 'tools/workstation_recording_policy.py')
+    if scope == PREFIX_SCOPE:
+        helper_names += ('tools/workstation_ble_ddr_prefix_cdc_scope.py',
+                         'tools/workstation_ble_ddr_prefix_cdc_endpoints.py', 'tools/workstation_runtime_counter.py',
+                         'sim/test_workstation_ble_ddr_prefix_cdc_scope.py')
     helpers = {p: file_sha(root / p) for p in helper_names}
-    result = audit_netlist(OwnerResetNetlist((stage / VG_RELATIVE).read_text(), TOP))
-    require(source_gate == validate_profile(root, profile, stage=stage), 'source contract changed during inventory')
+    result = audit_netlist(OwnerResetNetlist((stage / VG_RELATIVE).read_text(), TOP), scope=scope)
+    require(source_gate == source_validator(root, profile, stage=stage), 'source contract changed during inventory')
     require(before == verify_synthesis_identity(stage, evidence)
             and helpers == {p: file_sha(root / p) for p in helper_names}, 'sealed audit inputs changed')
     result.update(synthesis=before, source_gate=source_gate, audit_source_sha256=helpers,
-        source_sha256=dict(SOURCE_SHA256, **{RAW_STORE_PATH: RAW_STORE_SHA256}),
+        source_sha256=dict(PREFIX_SOURCE_SHA256 if scope == PREFIX_SCOPE else SOURCE_SHA256, **{RAW_STORE_PATH: RAW_STORE_SHA256}),
         source_seal_before_and_after=True, eda_invoked=False, hardware_operated=False,
         constraint_proposal_emitted=False, constraints_installed=False)
     return result
@@ -284,10 +301,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--synthesis-evidence', type=Path, required=True)
-    parser.add_argument('--scope', choices=(SCOPE,), required=True)
+    parser.add_argument('--scope', choices=(SCOPE, PREFIX_SCOPE), required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    result = run_audit(ROOT, args.project, args.synthesis_evidence)
+    result = run_audit(ROOT, args.project, args.synthesis_evidence, scope=args.scope)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
     print(json.dumps({k: result[k] for k in ('policy', 'scope', 'ordinary_pair_count', 'gray_bits',
