@@ -74,3 +74,5 @@ GW138K_PROFILE_PREPARED=/Users/sphenicidition/.cache/gw138k-task-20261030/native
 ```
 
 prepare 原件保持只读，综合应复制全部 560 项 staged 文件并逐哈希复核。源码策略回退可省略显式 profile，恢复未改动的默认 native 准备；硬件回退仍依照架构文档链接的独立已接受部署证据，本阶段不改变板上内容。
+
+父级独立复验：live profile verify 通过；profile 调用 17 项中 16 项通过、仅默认候选 fixture 跳过，随后单独以 legacy-v2 运行该项并通过；源码／端口 7 项全部通过，253 单元／284 module／2 package 的声明与 includes 归属结果与子代理逐项相等。所选顶层端口来源另以最终校验器独立重算并与机器证据相等。已复核最终 top 哈希及 6147／6867 默认分支 tokens；顶层语法检查零诊断，但其 `-i` 忽略子模块，不能当完整 elaboration。父级记录加入 verification JSON。

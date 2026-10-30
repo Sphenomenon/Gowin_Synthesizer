@@ -493,5 +493,79 @@
   "rollback": {
     "source_policy": "Deselect the explicit workstation profile for unchanged default native preparation; accepted/pinned/resource profiles remain separately locked",
     "hardware": "No board operation in this stage; use the separately recorded accepted deployment for any hardware rollback"
+  },
+  "parent_independent_verification": {
+    "candidate_identity": "custom138k-workstation-v1-41e653fe462e5ea3",
+    "live_profile_verify_passed": true,
+    "profile_regression": {
+      "tests": 17,
+      "passed": 16,
+      "skipped": 1,
+      "skip": "Legacy fixture omitted from first invocation and covered separately"
+    },
+    "legacy_policy_regression": {
+      "tests": 1,
+      "passed": 1,
+      "prepared": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-runtime-profile-legacy-v2"
+    },
+    "source_and_port_regression": {
+      "tests": 7,
+      "passed": 7,
+      "compilation_units": 253,
+      "module_count": 284,
+      "package_count": 2,
+      "audit_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev4-source-audit-parent.json",
+      "audit_sha256": "073eb8ec6caf3bb393a364e40c3decfeb7ce659711cca2032b3ddcdfa34ac688",
+      "declarations_and_dependencies_identical_to_child_audit": true,
+      "selected_port_provenance": {
+        "logical_location_entries": 133,
+        "physical_port_bits": 143,
+        "implicit_negative_partners": [
+          "ddr_ck_n",
+          "ddr_dqs_n[0]",
+          "ddr_dqs_n[1]",
+          "ddr_dqs_n[2]",
+          "ddr_dqs_n[3]",
+          "tmds_clk_n",
+          "tmds_data_n[0]",
+          "tmds_data_n[1]",
+          "tmds_data_n[2]"
+        ],
+        "compilation_provider": "rtl/workstation/workstation_profile_runtime.sv",
+        "provider_sha256": "c9e3929533017933c53c53f10898cce7985e14a42d1cc9a2c7a59fcd2dbb44b9",
+        "preprocessed_sha256": "955d1f8b3a2fe56927fe94ea0b2cd8d75965da02cb434b64e4be7737d502aa3f",
+        "supplemental_ports": {
+          "clk_16m9344": [
+            "J19"
+          ]
+        },
+        "scope": "selected_source_ports_only",
+        "runtime_physical_audits_covered": false
+      },
+      "selected_ports_separately_recomputed_and_matched": true
+    },
+    "default_top_tokens": {
+      "reference_commit": "31427d7",
+      "source": "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v",
+      "source_sha256": "834d33600b26144d4009b8fc895295747b85ede87ad9152450a7c780e1de6249",
+      "results": [
+        {
+          "custom": false,
+          "tokens": 6147,
+          "equal": true
+        },
+        {
+          "custom": true,
+          "tokens": 6867,
+          "equal": true
+        }
+      ]
+    },
+    "top_syntax_check": {
+      "tool": "iverilog -g2012 -i -Wall -Wimplicit",
+      "exit_code": 0,
+      "diagnostics": 0,
+      "scope": "Top expressions and declarations; children unresolved and ignored, not full elaboration"
+    }
   }
 }
