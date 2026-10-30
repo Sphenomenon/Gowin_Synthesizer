@@ -54,6 +54,8 @@
 
 [no-CNN实际整机综合](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_SYNTHESIS_20261030.md)通过，571项输入保持；综合估算Logic102,128／Register51,122／BSRAM245，七PLL及DCS仍在。静态501次约束查询仅17个加密DDR内部空query，可见端点无新增空项；尚非Gowin工具解析或物理收益。新VG的CDC／时钟审查和独立资源P&R准备继续进行，无位流或部署。
 
+[no-CNN C11030FA物理准备](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_FA_PHYSICAL_PREPARE_20261030.md)父级／独立18项输入及23负控通过，使用原SDC／maintained ULPI CST与place2／route0启动P&R。新VG时钟4项／23负控和Gray／媒体／USB CDC27项／77负控通过；完整CDC／RAM／复位／PLL与routed时序仍未接受，物理结果另记，无部署。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）

@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "checkpoint": "no-cnn-parent-partial-clock-cdc-v1",
+  "candidate_identity": "custom138k-workstation-no-cnn-v1-525ffff10d622031",
+  "vg_sha256": "37c811ffcc0a0ae2ce55aa66550c95bec8bb04cc7fc92aa69c1cc7c17d6f3f4f",
+  "clock_and_partial_cdc": {
+    "clock": {
+      "identity": "runtime-clock-source-audit-v1-8dc4415c7d525f15",
+      "audit_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-clock-audit.json",
+      "audit_sha256": "015745b7576d5b512651d3fbc2dc350cacf8d2ade4b2dd6c1c170effab9a13f9",
+      "test_count": 4,
+      "negative_count": 23,
+      "test_evidence_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-clock-tests.json",
+      "test_evidence_sha256": "3ea2b4467fa51c326a9b29b3bd2df35c48cb958349ca988bad268fc419e07801",
+      "test_log_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-clock-tests.log",
+      "test_log_sha256": "01d6406b0d1bfe07e832784dea728777ea20a5d68c7cf1f2672149255af08d33",
+      "source_sealed": true,
+      "claims": {
+        "runtime_audio_topology_verified": true,
+        "whole_source_clock_topology_verified": false,
+        "opaque_ddr_clock_verified": false,
+        "physical_clock_tree_verified": false,
+        "sta_verified": false,
+        "routed_timing_verified": false,
+        "constraints_complete": false,
+        "dynamic_dcs_behavior_verified": false,
+        "hardware_tested": false,
+        "release_ready": false,
+        "deployment_allowed": false,
+        "source_seal_before_and_after": true
+      }
+    },
+    "cdc": {
+      "identity": "runtime-cdc-gray-media-fence-source-v2-dae09bcc7fd35519",
+      "audit_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-cdc-audit.json",
+      "audit_sha256": "7a12335581737186d8e6227948276c59dee3e14ed40cfcf550f276e599c040b4",
+      "test_count": 27,
+      "negative_count": 77,
+      "test_evidence_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-cdc-tests.json",
+      "test_evidence_sha256": "0da123a7b89aedd7957ece47a1649538964df5bf6b97168385e32a0bac262451",
+      "test_log_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-cdc-tests.log",
+      "test_log_sha256": "a63ba95127d89ed4ea82a8c2f980ce8fa98b4d7af2727834a1d13721ee657cfc",
+      "source_sealed": true,
+      "claims": {
+        "legacy_tf_run_pruned": true,
+        "reviewed_source_netlist_endpoints_verified": true,
+        "gray_encoding_behavior_verified": false,
+        "remaining_inventory_complete": false,
+        "held_payload_complete": false,
+        "fifo_payload_complete": false,
+        "single_bit_complete": false,
+        "reset_inventory_complete": false,
+        "constraints_complete": false,
+        "routed_propagation_verified": false,
+        "physical_cdc_accepted": false,
+        "sta_verified": false,
+        "tool_query_resolution_verified": false,
+        "hardware_tested": false,
+        "release_ready": false,
+        "deployment_allowed": false,
+        "candidate_constraints_installed": true,
+        "endpoint_development_only": false,
+        "source_seal_before_and_after": true
+      }
+    }
+  },
+  "gray_groups": 21,
+  "gray_bits": 400,
+  "full_cdc_verified": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "deployment_allowed": false
+}
