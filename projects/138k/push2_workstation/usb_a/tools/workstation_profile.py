@@ -35,7 +35,16 @@ NO_CNN_CONFIG = 'boards/custom_138k/workstation_profile_no_cnn_v1.json'
 RUNTIME_PROVIDER = 'rtl/workstation/workstation_profile_runtime.sv'
 from tools.workstation_recognition_policy import PROVIDER as NO_CNN_PROVIDER
 from tools.workstation_recording_policy import NAME as R00_NAME, CONFIG as R00_CONFIG, PROVIDER as R00_PROVIDER, POLICY as R00_POLICY
+R00_NO_LOCAL_PANEL_NAME = 'custom138k-workstation-r00-no-local-panel-v1'
+R00_NO_LOCAL_PANEL_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json'
+R00_NO_LOCAL_PANEL_PROVIDER = 'rtl/workstation/workstation_profile_r00_no_local_panel.sv'
 PROFILE_REGISTRY = {
+    R00_NO_LOCAL_PANEL_NAME: dict(config=R00_NO_LOCAL_PANEL_CONFIG, revision=1,
+        configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
+            recording_policy=R00_POLICY, local_panel_policy='disabled_local_lcd_touch_v1'),
+        provider=R00_NO_LOCAL_PANEL_PROVIDER, recognition_enabled=False, recording_enabled=True,
+        local_panel_enabled=False,
+        integration_identity='custom138k-native-dual-rate-r00-no-local-panel-revision1'),
     R00_NAME: dict(config=R00_CONFIG, revision=1,
         configuration=dict(RUNTIME_CONFIGURATION,recognition_policy='disabled_cnn_and_follow_v1',recording_policy=R00_POLICY),
         provider=R00_PROVIDER,recognition_enabled=False,recording_enabled=True,
@@ -198,6 +207,22 @@ def _artifact(root, output, metadata, profile):
     if metadata.get('runtime_audio', {}).get('bluetooth_cdc_adaptation') != bluetooth['evidence']:
         raise ValueError('workstation profile runtime BLE constraint policy changed')
     staged_sdc = (stage / 'constraints/custom_138k.sdc').read_text().splitlines()
+    local_panel_enabled = spec.get('local_panel_enabled', True)
+    if metadata.get('peripherals', {}).get('local_panel_enabled', True) is not local_panel_enabled:
+        raise ValueError('workstation profile local panel selection changed')
+    if not local_panel_enabled:
+        from tools.workstation_board_peripherals import local_panel_bundle
+        from tools.workstation_custom_clocks import clock_bundle
+        panel = local_panel_bundle(False)
+        if metadata.get('local_panel') != panel:
+            raise ValueError('workstation profile local panel retirement changed')
+        if metadata.get('lcd_behavior') != panel['output_behavior']:
+            raise ValueError('workstation profile retired LCD output behavior changed')
+        if (any('u_lcd' in line or 'lcd_pixel31m5' in line for line in staged_sdc) or
+                'rtl/display_data/workstation_lcd.sv' in metadata['enabled_inputs'] or
+                not (stage / 'constraints/custom_138k.sdc').read_text().startswith(
+                    clock_bundle(root, local_panel_enabled=False)['sdc'])):
+            raise ValueError('workstation profile retired LCD source or clock remains')
     if (any(row['constraint'] in staged_sdc for row in bluetooth['evidence']['omitted']) or
             any(staged_sdc.count(line) != 1 for line in bluetooth['sdc'].splitlines()) or
             staged_sdc.count(bluetooth['evidence']['replacement']['constraint']) != 1):
@@ -209,6 +234,9 @@ def _artifact(root, output, metadata, profile):
         raise ValueError('workstation profile runtime PCM constraint policy changed')
     if any(staged_sdc.count(line) != 1 for line in pcm['sdc'].splitlines()):
         raise ValueError('workstation profile runtime PCM constraint installation changed')
+    from tools.workstation_usb2_owner_reset import validate_installation as verify_usb2_owner_reset
+    verify_usb2_owner_reset(root, metadata.get('runtime_audio', {}).get('usb2_owner_reset'),
+                           (stage / 'constraints/custom_138k.sdc').read_text())
     from tools.workstation_recognition_policy import verify_adaptation
     recognition = dict(metadata.get('recognition', {}))
     constraint_evidence = recognition.pop('constraints', None)

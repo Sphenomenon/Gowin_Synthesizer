@@ -2,8 +2,9 @@
 """Read-only shared-CDC audit with explicit selected runtime scope.
 
 Default `generic` delegates to the unchanged generic 157-line checker. The
-`runtime-no-cnn-v1` precision profile checks its exact retained installed scope;
-it never turns missing generic endpoints into optional selectors. No EDA or
+`runtime-no-cnn-v1` and `runtime-r00-v1` precision profiles check their exact
+retained installed scope; neither turns missing endpoints into optional
+selectors. The latter excludes the additional native recording CDC. No EDA or
 hardware operation is performed, and physical/deployment gates remain false.
 """
 
@@ -23,6 +24,14 @@ from tools.workstation_custom_clocks import shared_cdc_bundle, audit_shared_cdc
 from tools.workstation_runtime_profile import shared_constraints
 from tools.workstation_recognition_policy import RETIRED_LINES, verify_adaptation
 from tools.workstation_runtime_pcm_cdc import PcmNetlist, Graph, TOP, COMB
+from tools.workstation_usb2_owner_reset import (
+    OwnerResetNetlist, audit_reset_structure, installed_sources,
+    NO_LOCAL_PANEL_PROFILE, NO_LOCAL_PANEL_SOURCE, NO_LOCAL_PANEL_CONFIGURATION_SHA256,
+)
+from tools.workstation_recording_policy import (
+    POLICY as R00_RECORDING_POLICY, metadata as recording_metadata,
+    verify_address_map as verify_recording_address_map,
+)
 from tools.workstation_runtime_clock_audit import (
     AUDIT_SOURCES as CLOCK_SOURCES,
     VG_RELATIVE,
@@ -31,8 +40,20 @@ from tools.workstation_runtime_clock_audit import (
     file_sha,
 )
 
-PRECISION_PROFILES = ("generic", "runtime-no-cnn-v1")
+NO_LOCAL_PANEL_PRECISION = "runtime-r00-no-local-panel-v1"
+PRECISION_PROFILES = ("generic", "runtime-no-cnn-v1", "runtime-r00-v1", NO_LOCAL_PANEL_PRECISION)
+R00_PRECISIONS = ("runtime-r00-v1", NO_LOCAL_PANEL_PRECISION)
 NO_CNN_SOURCE = "boards/custom_138k/workstation_profile_no_cnn_v1.json"
+R00_SOURCE = "boards/custom_138k/workstation_profile_r00_v1.json"
+PROFILE_SOURCES = {"runtime-no-cnn-v1": NO_CNN_SOURCE, "runtime-r00-v1": R00_SOURCE,
+                   NO_LOCAL_PANEL_PRECISION: NO_LOCAL_PANEL_SOURCE}
+PROFILE_NAMES = {"runtime-no-cnn-v1": "custom138k-workstation-no-cnn-v1",
+                 "runtime-r00-v1": "custom138k-workstation-r00-v1",
+                 NO_LOCAL_PANEL_PRECISION: NO_LOCAL_PANEL_PROFILE}
+# Exact supported R00 configuration, canonical JSON (sorted keys, no spaces).
+# Descriptive profile bytes may evolve, but a future LCD-off configuration
+# needs an explicit retirement/topology review rather than inheriting 88 lines.
+R00_CONFIGURATION_SHA256 = "b5c30ab0d1d4ec9b3470599f390596f1cf618c52a20b643522b19ed7e3746313"
 AUDIT_SOURCES = (
     *CLOCK_SOURCES,
     "tools/workstation_runtime_shared_cdc.py",
@@ -42,8 +63,14 @@ AUDIT_SOURCES = (
     "tools/workstation_runtime_cdc.py",
     "tools/workstation_custom_usb2_cdc.py",
     NO_CNN_SOURCE,
+    R00_SOURCE,
+    "tools/workstation_recording_policy.py",
     "sim/test_workstation_runtime_shared_cdc.py",
+    "sim/test_workstation_runtime_r00_shared_cdc.py",
+    "sim/test_workstation_no_local_panel_precision.py",
     "tools/WORKSTATION_RUNTIME_SHARED_CDC.md",
+    "tools/workstation_usb2_owner_reset.py",
+    "sim/test_workstation_usb2_owner_reset.py",
 )
 
 
@@ -54,13 +81,16 @@ def validate_precision_profile(root, profile, precision_profile):
     )
     if precision_profile == "generic":
         return
+    is_r00 = precision_profile in R00_PRECISIONS
+    no_panel = precision_profile == NO_LOCAL_PANEL_PRECISION
+    source_name = PROFILE_SOURCES[precision_profile]
     require(
         profile.get("schema") == 1
-        and profile.get("profile") == "custom138k-workstation-no-cnn-v1"
-        and profile.get("profile_source") == NO_CNN_SOURCE,
-        "precision profile requires the prepared no-CNN v1 profile",
+        and profile.get("profile") == PROFILE_NAMES[precision_profile]
+        and profile.get("profile_source") == source_name,
+        "precision profile requires the prepared " + ("R00 no-local-panel" if no_panel else "R00" if is_r00 else "no-CNN") + " v1 profile",
     )
-    source = Path(root) / NO_CNN_SOURCE
+    source = Path(root) / source_name
     config = json.loads(source.read_text())
     require(
         profile.get("configuration") == config.get("configuration")
@@ -79,6 +109,18 @@ def validate_precision_profile(root, profile, precision_profile):
         and recognition.get("constraints", {}).get("enabled") is False,
         "precision profile requires exact disabled recognition policy",
     )
+    if is_r00:
+        recording = profile.get("recording", {})
+        expected = recording_metadata()
+        expected_configuration = NO_LOCAL_PANEL_CONFIGURATION_SHA256 if no_panel else R00_CONFIGURATION_SHA256
+        require(sha(json.dumps(profile["configuration"], sort_keys=True, separators=(",", ":")).encode())
+                == expected_configuration, "precision profile R00 supported configuration changed")
+        require(
+            profile["configuration"].get("recording_policy") == R00_RECORDING_POLICY
+            and {key: value for key, value in recording.items() if key != "address_map"} == expected
+            and isinstance(recording.get("address_map"), dict),
+            "precision profile requires exact R00 owner8 recording policy metadata",
+        )
 
 
 def require(c, m):
@@ -281,6 +323,36 @@ STATUS = (
         ("audio_locked", "audio_reset_n"),
     ),
 )
+# R00 BIST status is exported through the wrapper, and the newer renderer uses
+# front_valid without the old _Z suffix. The RTL producers stay explicit:
+# u_bist.done/failed and u_scanout.front_valid, all in the memory clock domain.
+R00_VIDEO_STATUS = (
+    "memory_calibrated", "bist_done", "bist_failed", "u_video/front_valid",
+    "u_video/memory_status[4]", "u_video/memory_status[5]", "memory_pll_locked",
+    "u_video/startup_pipe[4]",
+)
+R00_VIDEO_REGISTERED_STATUS = {
+    1: ("u_video/u_bist", "done"),
+    2: ("u_video/u_bist", "failed"),
+    3: ("u_video/u_scanout", "front_valid"),
+}
+
+
+def audit_r00_status_rtl(stage):
+    relative = "rtl/workstation/workstation_hdmi_display.sv"
+    path = Path(stage) / relative
+    text = re.sub(r"\s+", "", re.sub(r"/\*.*?\*/|//[^\n]*", "", path.read_text(), flags=re.S))
+    fragments = (
+        "ddr3_bistu_bist(.clk(memory_clk),.rst_n(ui_rst_n)",
+        ".done(bist_done),.failed(bist_failed),.error_count(bist_errors)",
+        ".front_bank(front_bank),.front_valid(front_valid)",
+        "wire[31:0]memory_status={24'd0,video_locked,memory_pll_locked,(underruns!=0),"
+        "(fetch_fault||arbiter_fault||shared_load_fault),front_valid,bist_failed,bist_done,memory_calibrated};",
+        "flags_meta<=memory_status[7:0];flags_sync<=flags_meta;",
+    )
+    require(all(text.count(fragment) == 1 for fragment in fragments), "R00 video status RTL contract changed")
+    return dict(source=relative, sha256=file_sha(path), status_bits_1_2_3="BIST done, BIST failed, scanout front_valid",
+                source_fragment_contract_verified=True, renamed_nets=list(R00_VIDEO_STATUS[1:4]))
 
 
 def producer_cone(n, g, net, active=()):
@@ -379,7 +451,7 @@ def producer_cone(n, g, net, active=()):
     return result
 
 
-def audit_syncs(n, g, installed_first):
+def audit_syncs(n, g, installed_first, *, precision_profile="runtime-no-cnn-v1"):
     records = []
 
     def add(scope, a, b, clock, source_net, source=None):
@@ -446,8 +518,15 @@ def audit_syncs(n, g, installed_first):
             require(n.pin(src, "CLK") == sc, "toggle source clock: " + src)
             add(s, a, b, c, n.pin(src, "Q"), src)
     for s, a, b, width, c, nets in STATUS:
+        r00_video = precision_profile in R00_PRECISIONS and s == "u_video"
+        if r00_video:
+            nets = R00_VIDEO_STATUS
         for bit in range(width):
-            add(s, a + "_" + str(bit), b + "_" + str(bit), c, nets[bit])
+            source = None
+            if r00_video and bit in R00_VIDEO_REGISTERED_STATUS:
+                source = g.register(*R00_VIDEO_REGISTERED_STATUS[bit])
+                require(n.pin(source, "CLK") == "memory_clk", "R00 video status source clock changed")
+            add(s, a + "_" + str(bit), b + "_" + str(bit), c, nets[bit], source)
     add("u_memory/u_recovery", "calibrated_meta", "calibrated_sync", "clk_50m", None)
     add("", "tf_format_meta50", "tf_format_sync50", "clk_50m", "tf_format_ready")
     add("", "tf_source_meta50", "tf_source_sync50", "clk_50m", "tf_busy50")
@@ -795,6 +874,13 @@ def audit_selected_shared(
     root, stage, n, g, sdc, profile, *, precision_profile, selector_index=None
 ):
     validate_precision_profile(root, profile, precision_profile)
+    no_panel = precision_profile == NO_LOCAL_PANEL_PRECISION
+    if no_panel:
+        require(not any("u_lcd/" in line or "lcd_pixel31m5" in line for line in sdc.splitlines()),
+                "no-local-panel SDC retains retired LCD constraints/clock")
+        require(not any(p == "u_lcd" or p.startswith("u_lcd/") for p in n.cells),
+                "no-local-panel netlist retains retired LCD cells")
+    r00_status_rtl = audit_r00_status_rtl(stage) if precision_profile in R00_PRECISIONS else None
     generic = shared_cdc_bundle(stage)
     runtime = shared_constraints(generic["sdc"])
     verify_adaptation(sdc, profile["recognition"]["constraints"], False)
@@ -811,7 +897,7 @@ def audit_selected_shared(
     ]
     require(
         len(retired) == 17 and len(selected) == 88,
-        "no-CNN shared retirement scope changed",
+        "disabled-recognition shared retirement scope changed",
     )
     for line in selected:
         require(
@@ -859,7 +945,7 @@ def audit_selected_shared(
                 for entry in queries["get_regs {" + qs[-1][1] + "}"].values()
                 for p in entry["matches"]
             )
-    syncs = audit_syncs(n, g, installed_first)
+    syncs = audit_syncs(n, g, installed_first, precision_profile=precision_profile)
     gray, gray_targets = audit_gray(n, g)
     payloads, payload_targets = audit_payloads(n, g)
     require(
@@ -903,14 +989,23 @@ def audit_selected_shared(
     )
     return dict(
         schema=1,
-        scope="selected_no_cnn_runtime_retained_shared_constraints_source_structure_only",
+        scope=("selected_r00_no_local_panel_runtime_retained_shared_constraints_source_structure_only"
+               if no_panel else "selected_r00_runtime_retained_shared_constraints_source_structure_only"
+               if precision_profile == "runtime-r00-v1" else
+               "selected_no_cnn_runtime_retained_shared_constraints_source_structure_only"),
         precision_profile=precision_profile,
         profile_policy_evidence=dict(
             prepared_profile_source_sha256=profile["profile_sha256"],
-            current_configuration_source_sha256=file_sha(Path(root) / NO_CNN_SOURCE),
+            current_configuration_source_sha256=file_sha(Path(root) / PROFILE_SOURCES[precision_profile]),
             complete_configuration_equal=True,
             current_root_profile_bytes_equivalence_claimed=False,
+            supported_r00_configuration_sha256=(R00_CONFIGURATION_SHA256 if precision_profile == "runtime-r00-v1" else None),
+            supported_no_local_panel_configuration_sha256=(NO_LOCAL_PANEL_CONFIGURATION_SHA256 if no_panel else None),
         ),
+        reviewed_r00_status_rtl=r00_status_rtl,
+        no_local_panel_policy_evidence=(dict(lcd_constraints_absent=True, lcd_cells_absent=True,
+            lcd_constraints_inside_retained_shared_count=0, touch_retirement_delegated_to_public_clock_audit=True)
+            if no_panel else None),
         generic_constraints=157,
         runtime_selected_constraints=105,
         runtime_omitted=runtime["omitted"],
@@ -937,6 +1032,19 @@ def audit_selected_shared(
         default_generic_checker_modified=False,
         source_waveform_and_held_handshake_behavior_verified=False,
         all_reset_semantics_verified=False,
+        full_reset_accepted=False,
+        whole_workstation_cdc_accepted=False,
+        recording_cdc_accepted=False,
+        recording_cdc_scope=dict(
+            policy=profile.get("configuration", {}).get("recording_policy"),
+            additional_native_recording_present=precision_profile in R00_PRECISIONS,
+            included_in_selected_shared_scope=False,
+            excluded_native_scopes=(
+                ["u_recording/pcm_cdc", "u_recording/commands", "u_recording/seal_cdc",
+                 "u_recording/service", "u_recording/native_commit", "u_video/u_arbiter/g_recording/u_core"]
+                if precision_profile in R00_PRECISIONS else []),
+            source_structure_verified=False, physical_cdc_accepted=False,
+        ),
         tool_query_resolution_verified=False,
         physical_cdc_verified=False,
         physical_cdc_accepted=False,
@@ -951,50 +1059,65 @@ def audit_selected_shared(
             "Full shared reset assertion/release source semantics and physical recovery/removal",
             "Post-route propagation/skew/MTBF and both switched clock modes",
             "Full workstation endpoint inventory and hardware acceptance",
+            "R00 native recording CDC, service/native commit and owner8 arbiter are outside this retained shared scope",
         ],
     )
 
 
-def audit_shared_constraints(root, stage, netlist_text, *, precision_profile="generic"):
+def audit_shared_constraints(root, stage, netlist_text, *, precision_profile="generic", usb2_owner_reset=False):
     """Object-scope entry; default behavior is the unchanged generic checker."""
     require(
         precision_profile in PRECISION_PROFILES,
         "unknown precision profile: " + precision_profile,
     )
+    require(not usb2_owner_reset or precision_profile == "runtime-no-cnn-v1",
+            "USB2 owner reset needs explicit runtime-no-cnn-v1 scope")
     if precision_profile == "generic":
         return dict(audit_shared_cdc(stage, netlist_text), precision_profile="generic")
     stage = Path(stage)
     profile = json.loads((stage.parents[1] / "workstation_profile.json").read_text())
     validate_precision_profile(root, profile, precision_profile)
-    n = PcmNetlist(netlist_text, TOP)
-    return audit_selected_shared(
+    n = (OwnerResetNetlist if usb2_owner_reset else PcmNetlist)(netlist_text, TOP)
+    g = Graph(n)
+    sdc = (stage / "constraints/custom_138k.sdc").read_text()
+    result = audit_selected_shared(
         root,
         stage,
         n,
-        Graph(n),
-        (stage / "constraints/custom_138k.sdc").read_text(),
+        g,
+        sdc,
         profile,
         precision_profile=precision_profile,
     )
+    if precision_profile in R00_PRECISIONS:
+        verify_recording_address_map(root, stage, profile["recording"]["address_map"])
+    if usb2_owner_reset:
+        result["usb2_owner_reset"] = dict(audit_reset_structure(n, g, sdc),
+                                           sources=installed_sources(root, stage))
+    return result
 
 
-def run_audit(root, stage, evidence, *, precision_profile="generic"):
+def run_audit(root, stage, evidence, *, precision_profile="generic", usb2_owner_reset=False):
     root, stage = Path(root), Path(stage)
     require(
         precision_profile in PRECISION_PROFILES,
         "unknown precision profile: " + precision_profile,
     )
     before = verify_synthesis_identity(stage, evidence)
-    sources = {p: file_sha(root / p) for p in AUDIT_SOURCES}
+    audit_sources = (*AUDIT_SOURCES, NO_LOCAL_PANEL_SOURCE) if precision_profile == NO_LOCAL_PANEL_PRECISION else AUDIT_SOURCES
+    sources = {p: file_sha(root / p) for p in audit_sources}
     text = (stage / VG_RELATIVE).read_text()
     result = audit_shared_constraints(
-        root, stage, text, precision_profile=precision_profile
+        root, stage, text, precision_profile=precision_profile, usb2_owner_reset=usb2_owner_reset
     )
     if precision_profile != "generic":
         result["clock_audit"] = audit_runtime_clocks(root, stage, text)
+        if precision_profile == NO_LOCAL_PANEL_PRECISION:
+            require(result["clock_audit"].get("local_panel_enabled") is False,
+                    "no-local-panel precision requires its explicit disabled-panel clock audit")
     after = verify_synthesis_identity(stage, evidence)
     require(
-        before == after and sources == {p: file_sha(root / p) for p in AUDIT_SOURCES},
+        before == after and sources == {p: file_sha(root / p) for p in audit_sources},
         "synthesis or audit inputs drifted during review",
     )
     identity = sha(
@@ -1002,6 +1125,7 @@ def run_audit(root, stage, evidence, *, precision_profile="generic"):
             dict(
                 policy="selected-runtime-shared-cdc-source-v1",
                 precision_profile=precision_profile,
+                usb2_owner_reset=usb2_owner_reset,
                 synthesis=before,
                 audit_sources=sources,
             ),
@@ -1035,14 +1159,17 @@ def main():
         "--precision-profile",
         choices=PRECISION_PROFILES,
         default="generic",
-        help="generic preserves the existing checker; runtime-no-cnn-v1 explicitly selects its exact installed scope",
+        help="generic preserves the existing checker; runtime-no-cnn-v1/runtime-r00-v1/runtime-r00-no-local-panel-v1 explicitly selects the exact retained scope",
     )
+    parser.add_argument("--usb2-owner-reset", action="store_true",
+                        help="Additionally audit the new exact reset chain; only with explicit runtime-no-cnn-v1")
     args = parser.parse_args()
     result = run_audit(
         ROOT,
         args.project,
         args.synthesis_evidence,
         precision_profile=args.precision_profile,
+        usb2_owner_reset=args.usb2_owner_reset,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")

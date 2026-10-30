@@ -4,7 +4,7 @@
 // (odd WIDTH: seven) input bits are already a remainder smaller than147.
 // Every later register consumes two bits with three parallel ten-bit trial
 // subtractions. There is no combinational divider or multiply in a stage.
-// Payload, quotient and valid cross the same registers; flush kills all tags.
+// Payload, quotient and valid retain one fixed clock delay; flush kills all tags.
 module workstation_runtime_div147 #(
     parameter integer WIDTH=42,
     parameter integer TAG_WIDTH=1
@@ -22,13 +22,11 @@ module workstation_runtime_div147 #(
     reg [STAGES:0] valid;
     reg [WIDTH-1:0] dividend[0:STAGES],quotient[0:STAGES];
     reg [7:0] remainder[0:STAGES];
-    reg [TAG_WIDTH-1:0] tag[0:STAGES];
     initial begin
         if(WIDTH<8 || TAG_WIDTH<1)$fatal(1,"div147 unsupported width");
     end
     assign valid_o=valid[STAGES] && !flush_i;
     assign quotient_o=quotient[STAGES];
-    assign tag_o=tag[STAGES];
     assign quiescent_o=!(|valid);
     always @(posedge clk_i or negedge rst_ni) begin
         if(!rst_ni)valid<='0;
@@ -39,7 +37,34 @@ module workstation_runtime_div147 #(
         remainder[0]<={{(8-PREFIX_BITS){1'b0}},dividend_i[WIDTH-1 -: PREFIX_BITS]};
         dividend[0]<=dividend_i<<PREFIX_BITS;
         quotient[0]<='0;
-        tag[0]<=tag_i;
+    end
+    // The tag has the same fixed clock delay even across valid bubbles.
+    // A free-running circular address decouples storage from transaction count.
+    // Depth > STAGES guarantees the read never aliases the current write.
+    if(TAG_WIDTH>=32)begin:g_tag_ram
+        localparam integer ADDRESS_BITS=$clog2(STAGES+1);
+        localparam integer DEPTH=1<<ADDRESS_BITS;
+        localparam [ADDRESS_BITS-1:0] DELAY=ADDRESS_BITS'(STAGES);
+        reg [ADDRESS_BITS-1:0] address;
+        wire [ADDRESS_BITS-1:0] read_address=address-DELAY;
+        (* ram_style="block",syn_ramstyle="block_ram" *)
+        reg [TAG_WIDTH-1:0] memory[0:DEPTH-1];
+        reg [TAG_WIDTH-1:0] read_tag;
+        always @(posedge clk_i or negedge rst_ni)
+            if(!rst_ni)address<='0;
+            else address<=address+1'b1;
+        always @(posedge clk_i) begin
+            if(valid_i && !flush_i)memory[address]<=tag_i;
+            read_tag<=memory[read_address];
+        end
+        assign tag_o=read_tag;
+    end else begin:g_tag_registers
+        reg [TAG_WIDTH-1:0] tag[0:STAGES];
+        always @(posedge clk_i) if(valid_i && !flush_i)tag[0]<=tag_i;
+        for(genvar s=0;s<STAGES;s=s+1)begin:g_delay
+            always @(posedge clk_i) if(valid[s] && !flush_i)tag[s+1]<=tag[s];
+        end
+        assign tag_o=tag[STAGES];
     end
     for(genvar s=0;s<STAGES;s=s+1)begin:g_digit
         wire [9:0] trial={remainder[s],dividend[s][WIDTH-1 -: 2]};
@@ -53,7 +78,6 @@ module workstation_runtime_div147 #(
             remainder[s+1]<=next_remainder;
             dividend[s+1]<=dividend[s]<<2;
             quotient[s+1]<={quotient[s][WIDTH-3:0],digit};
-            tag[s+1]<=tag[s];
         end
 `ifndef SYNTHESIS
         always @(posedge clk_i) if(rst_ni && valid[s] && !flush_i)

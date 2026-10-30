@@ -1,0 +1,877 @@
+{
+  "schema": 1,
+  "identity": "runtime-tag-ram-source-stage-20261030",
+  "date": "2026-10-30",
+  "validation_stage": "maintained_source_simulation_and_isolated_helper_synthesis",
+  "source_stage_passed": true,
+  "complete_workstation_accepted": false,
+  "working_tree_head_at_report": "cb966cdbf88997eef80814df0b40e439e87fcc12",
+  "changed_source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv": "359350552b6aa00a512068bd68a35cda7a15fad52faf5b23a0f91a893eca1d63",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/RUNTIME_ARITHMETIC_PIPELINE_CONTRACT.md": "ab751dd7f8b3c65e0c1b33839a04751867b1908093e0de7382a2bc6a1f269e74",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_arithmetic_pipeline.py": "792044e9e782c8f0779ed7caedca1862d982cbba143c96f1f291868aaa5be2fc",
+    "projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv": "c0caa0bd46cfea4d762d3703210716cc5da739b1f15d82ed9a8c9893bcadc940"
+  },
+  "helper_sha256": "359350552b6aa00a512068bd68a35cda7a15fad52faf5b23a0f91a893eca1d63",
+  "source_policy": "Maintained shared div147 helper; the report binds exact file contents and fixture inputs, not a new complete-workstation build or deployment identity.",
+  "implementation": {
+    "tag_ram_minimum_width": 32,
+    "narrow_tag_register_fallback": true,
+    "address_advances_each_clock": true,
+    "address_bits": "clog2(STAGES+1)",
+    "depth": "1 << ADDRESS_BITS; strictly greater than STAGES",
+    "read_address": "address - STAGES",
+    "synchronous_read": true,
+    "extra_output_tag_register": false,
+    "width42_latency_clocks": 18,
+    "width32_latency_clocks": 13,
+    "arithmetic_and_valid_unchanged": true,
+    "reset_clears_valid_and_cursor": true,
+    "flush_clears_valid": true,
+    "ram_payload_reset_required": false,
+    "invalid_payload_stability_promised": false
+  },
+  "prototype_equivalence": {
+    "prototype_sha256": "e1a87ccf4de3b89594e18a33ca71ba898c3949c432dbb017de6ca494e9904837",
+    "maintained_helper_sha256": "359350552b6aa00a512068bd68a35cda7a15fad52faf5b23a0f91a893eca1d63",
+    "only_difference": {
+      "old": "// Payload, quotient and valid cross the same registers; flush kills all tags.",
+      "new": "// Payload, quotient and valid retain one fixed clock delay; flush kills all tags."
+    },
+    "exact_single_comment_difference_verified": true
+  },
+  "source_inputs": {
+    "portable": {
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_arithmetic_pipeline.py": "792044e9e782c8f0779ed7caedca1862d982cbba143c96f1f291868aaa5be2fc",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": "f78307b44c346a52cc53334b20d3f507684511097c242d9cf1d8aeec866cb2cc",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.provenance.json": "92d3657f9e16f576181f6894b174fae956ba5ee98b9622e3b485c5c141a1f3c9",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv": "b856010542da0ad3e946cbf3e3ead6e3cb974c76deb273140451155302b4ca97",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.provenance.json": "c6ad1cb3d75b71c996399225b136ef91f1090f8e8e70d03064f0dacaeb6580bd",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv": "359350552b6aa00a512068bd68a35cda7a15fad52faf5b23a0f91a893eca1d63",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/sine_interp.sv": "1085c7ebba307faa6ea7d10d99c6111a253d1f383e13fefef81c595a7d8b2b61",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/objects/a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/scene_controls.mem": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv": "c0caa0bd46cfea4d762d3703210716cc5da739b1f15d82ed9a8c9893bcadc940",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv": "b0cf1dc9b4942438d6e4528e9a258b0f44a9dd306450618538c01e5ccb17ae96",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_vector_pipeline_independent.sv": "849fa8767ca7d6ba2a59bfdadb4867321317c10d34fc1e49f041abeb1dd5a22a",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv": "cd4ed71690c7780c047f350ee0c51818643a2768774793a68a0019810ffa2ae3"
+    },
+    "native_audio": {
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv": "3726c4bf769af27d07c5ceb9bbe55cba1f3b29957e37250231712befd7455171",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv": "0c441be0d63596acdba3d128ba8d8fe3a05fc1c6382cb6b2e98a6d13d0a55c0f",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv": "8dea52209b5d9fd9df8a7e4bb79b712ed951509477f759b5bfedc0f4aedcf5ea",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv": "304ad503ed053fc89cdde9372e9065fb13a0fb14f747d8db586ac3093932171a",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv": "8eefe9eba6bfb2b8df8842dea9c8948d576d04eeccc1a32cc3a3bf5bfa049fcd",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv": "c3690947d2b9a0e75ba56cd73982c1291d2a452d4ae3a20adaf753c306f25b7a",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/control/workstation_parameters.sv": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/control/workstation_session.sv": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "879a5d93fb3ee547cd517344a495452f7cb37f28c0605ceee2cb625f2126c62d",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": "292a2fb8b790aa05607d7e9fd03cc12cf0170ad4c2ab0ebd5bd9b310ed1b39ef",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": "257abb183a3127aa9f83cacf6e6e807c9d6267be39d2c9a9b2d41178ae279020",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv": "5b38740ef9e073aec64ca45526f97a06d6e7d1c72a44c9599e345785d76534e2",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv": "359350552b6aa00a512068bd68a35cda7a15fad52faf5b23a0f91a893eca1d63",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": "12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": "f78307b44c346a52cc53334b20d3f507684511097c242d9cf1d8aeec866cb2cc",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv": "b856010542da0ad3e946cbf3e3ead6e3cb974c76deb273140451155302b4ca97",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv": "cd4ed71690c7780c047f350ee0c51818643a2768774793a68a0019810ffa2ae3",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv": "8a6fa6ea9158cc983c9d48cc9e92f01da2e10950214d3d2bb2cb7bb0b67b4cf4",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_spatial_reverb.sv": "fc4cacd3acd2c0cd6b73ee496bfa4db30e17be9d8018a9364e51eeff07c0d05d",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv": "d8a0d2c787bc8c222bf4dde74069db41163988a646fd70c32774387bfe23a689",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "879a5d93fb3ee547cd517344a495452f7cb37f28c0605ceee2cb625f2126c62d",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_domain.sv": "9347ce4e4a7e3ee0ee9259232fdaa5e501f17c3b0cda16ac4424ddfb1ecbcb76",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_frame_bridge.sv": "58752fad08b2476ad59b5427cceaad2894b208291a9b510d0b003475c4f5160e",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_i2s_serializer.sv": "503799267ca9f4603d13585fa2b18f619c4b3e12dedd3568580255099ba2d245",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_final_pcm_router.sv": "ff2c8612ec9f5ae32f4fb753d1b0cc671a91699ab3a7f55e819d56ce29573d6e",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_frame_fanout.sv": "e6f82fd255460e91a0fee6bbdbe1053558f1b50009c3ed384aba1709557c971d",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_audio.sv": "649c7591aec53c6685dc43e6d1b3bd2ec0dc020269910de74f4ecd09ac4d0c39",
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_audio.sv": "64ad8c20b4239a477a1a26241f6fd1fecba759f5208e0d1bd263597c44ec0706",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_audio.py": "edb92a5d69805bfbfdadbedc4b8ec4cbac801325085e4146b708d4b2093ab9bc",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/sim/data/audio_chain/fft_hann.mem": "017ce9c689980891b77704d460387c0ef39b7cd7dcd7a70f72d0924632bf119d",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/sim/data/audio_chain/fft_tw_im.mem": "45c1dd9b30c67e201f05e83027524c29ec1ae4387c861ee819841347f234cf7e",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/sim/data/audio_chain/fft_tw_re.mem": "e80a1bf23a99b194d0d109a8c7d5e3c3a59d30ff54abeefe493b45bebdcfc25a",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/sim/data/audio_chain/pitch_bend_q20.mem": "eb906e4c202a35f84a4c1498aa80c8573743a9e514d61ae819e834bd0f90ab7a",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/scope_vec/data/scene_controls.mem": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation_profile.json": "0718811f401917870236a1c79e5c1cd91cbbcb59e02021d26ea696c34d68d1c5",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/integration_inputs.json": "291178f11907db8ff99a625130aba0a2de1a4a3bba73c64b297c77666eb0b70a"
+    },
+    "startup_and_full_i2s_input_maps_equal": true
+  },
+  "evidence": {
+    "portable": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/div147-tag-ring-root-regression-v1/verification.json",
+      "sha256": "74007becf199a32e362c481860cfceb06b4cf3ce5dc24b6e4609271d14d79f2c"
+    },
+    "startup1028": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/div147-tag-ring-startup1028-v1/verification.json",
+      "sha256": "c1bd6abfb5262a82c08c2d1cffddf7cda458942032642dd2d71783f7990c44c5"
+    },
+    "full_i2s": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/div147-tag-ring-full-i2s-v1/verification.json",
+      "sha256": "794271c5278ed3630ef7dc27d4579de206cdc1c72cd30317bb398c6b5d85b912"
+    },
+    "isolated_mapping": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/div147-tag-ring-mapping-v2/verification.json",
+      "sha256": "6ce458c7b24771c10c09f1bc32aa2a6fc6ae3710e03802381a5bc1bad007b4ae"
+    }
+  },
+  "portable_regression": {
+    "passed": true,
+    "reference_policy": "Reverse only checked arithmetic provenance tail; dependencies from locked versioned baseline; rename reference modules only",
+    "baseline": {
+      "name": "resource_rework_route0",
+      "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+      "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+      "origin": {
+        "build": "results/resource_rework_final_route0_20261020_041042",
+        "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+        "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+      },
+      "source_files": 437,
+      "excluded_files": 180
+    },
+    "selected_parameters": {
+      "oscillator": {
+        "RUNTIME_RATE_ENABLE": 1,
+        "PIPELINED_RATE": 1,
+        "PIPELINED_ENVELOPE": 1
+      },
+      "vector": {
+        "PIPELINED_RATE": 1
+      }
+    },
+    "inputs_unchanged_during_run": true,
+    "helper": {
+      "helper_product": {
+        "compile_exit": 0,
+        "run_exit": 0,
+        "marker": true,
+        "passed": true,
+        "source_sha256": "359350552b6aa00a512068bd68a35cda7a15fad52faf5b23a0f91a893eca1d63",
+        "metrics": [
+          {
+            "width": 8,
+            "stages": 1,
+            "issued": 6888,
+            "checked": 6867,
+            "flushes": 52
+          },
+          {
+            "width": 25,
+            "stages": 9,
+            "issued": 6939,
+            "checked": 6749,
+            "flushes": 52
+          },
+          {
+            "width": 32,
+            "stages": 13,
+            "issued": 6960,
+            "checked": 6687,
+            "flushes": 52
+          },
+          {
+            "width": 32,
+            "stages": 13,
+            "issued": 6960,
+            "checked": 6687,
+            "flushes": 52
+          },
+          {
+            "width": 42,
+            "stages": 18,
+            "issued": 6990,
+            "checked": 6611,
+            "flushes": 52
+          },
+          {
+            "width": 42,
+            "stages": 18,
+            "issued": 6990,
+            "checked": 6611,
+            "flushes": 52
+          },
+          {
+            "width": 43,
+            "stages": 18,
+            "issued": 6993,
+            "checked": 6614,
+            "flushes": 52
+          },
+          {
+            "width": 80,
+            "stages": 37,
+            "issued": 7104,
+            "checked": 6341,
+            "flushes": 52
+          }
+        ],
+        "log_tail": [
+          "DIV147_INDEPENDENT_PASS width=42 stages=18 issued=6990 checked=6611 flushes=52",
+          "DIV147_INDEPENDENT_PASS width=43 stages=18 issued=6993 checked=6614 flushes=52",
+          "DIV147_INDEPENDENT_PASS width=80 stages=37 issued=7104 checked=6341 flushes=52",
+          "RUNTIME_DIV147_INDEPENDENT_PASS",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:152: $finish called at 82950000 (1ps)"
+        ]
+      },
+      "helper_wrong_divisor": {
+        "compile_exit": 0,
+        "run_exit": 1,
+        "marker": false,
+        "passed": true,
+        "source_sha256": "0641a75a79b53e92a3068e9d9ab444bfb9ddaf5758f884b4dc61bc9572cbc9f0",
+        "metrics": [],
+        "log_tail": [
+          "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:52: DIV147_NUMERIC width=8 cycle=8 quotient=01 expected=00",
+          "       Time: 76000  Scope: tb_runtime_div147_independent.minimum_width"
+        ]
+      },
+      "helper_stale_tag": {
+        "compile_exit": 0,
+        "run_exit": 1,
+        "marker": false,
+        "passed": true,
+        "source_sha256": "9d4ac5ddbb96d75e6457e3b3d0420c0a7dd42d1546dce0b006e6818c87476abc",
+        "metrics": [],
+        "log_tail": [
+          "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:54: DIV147_TAG width=25 cycle=14 tag=0101 expected=0000",
+          "       Time: 136000  Scope: tb_runtime_div147_independent.c25"
+        ]
+      },
+      "helper_ring_wrong_address": {
+        "compile_exit": 0,
+        "run_exit": 1,
+        "marker": false,
+        "passed": true,
+        "source_sha256": "2861cce8a9280235ff830ec09b5a66d3e42551c8e1fe3a5cf03c553fbd6733e2",
+        "metrics": [],
+        "log_tail": [
+          "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:54: DIV147_TAG width=8 cycle=6 tag=xxxxxxxxxxxxxxxx expected=270f3a693a0ef4ce",
+          "       Time: 56000  Scope: tb_runtime_div147_independent.minimum_width"
+        ]
+      },
+      "helper_retain_flush": {
+        "compile_exit": 0,
+        "run_exit": 1,
+        "marker": false,
+        "passed": true,
+        "source_sha256": "70c096e0ae0f7f78af95aaa4c35d1923e7038d968b9552f45f5cdfcd97140e71",
+        "metrics": [],
+        "log_tail": [
+          "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:49: DIV147_QUIESCENT width=8 cycle=3073 quiet=0 pipe=00",
+          "       Time: 30726000  Scope: tb_runtime_div147_independent.minimum_width"
+        ]
+      },
+      "helper_skip_digit": {
+        "compile_exit": 0,
+        "run_exit": 1,
+        "marker": false,
+        "passed": true,
+        "source_sha256": "109844bc2991b9635a4f13997e3cb6c61cfebb7be41e67d47a5eb0cc77266f88",
+        "metrics": [],
+        "log_tail": [
+          "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:52: DIV147_NUMERIC width=8 cycle=9 quotient=00 expected=01",
+          "       Time: 86000  Scope: tb_runtime_div147_independent.minimum_width"
+        ]
+      }
+    },
+    "consumers": {
+      "oscillator_product": {
+        "compile_exit": 0,
+        "run_exit": 0,
+        "marker": true,
+        "passed": true,
+        "source_sha256": "f78307b44c346a52cc53334b20d3f507684511097c242d9cf1d8aeec866cb2cc",
+        "metrics": {
+          "rate": 44100,
+          "mode": 2,
+          "frames": 672,
+          "max_cycles": 1061,
+          "audible": 606,
+          "slots": 688128,
+          "panic": 34,
+          "max_latency": 1061
+        },
+        "latency_matrix": [
+          {
+            "rate": 48000,
+            "mode": 0,
+            "frames": 100,
+            "max_cycles": 69
+          },
+          {
+            "rate": 48000,
+            "mode": 1,
+            "frames": 100,
+            "max_cycles": 165
+          },
+          {
+            "rate": 48000,
+            "mode": 2,
+            "frames": 136,
+            "max_cycles": 1061
+          },
+          {
+            "rate": 44100,
+            "mode": 0,
+            "frames": 100,
+            "max_cycles": 69
+          },
+          {
+            "rate": 44100,
+            "mode": 1,
+            "frames": 100,
+            "max_cycles": 165
+          },
+          {
+            "rate": 44100,
+            "mode": 2,
+            "frames": 136,
+            "max_cycles": 1061
+          }
+        ],
+        "compile_warnings": {
+          "UNSIGNED": 4
+        },
+        "log_tail": [
+          "OSC_LATENCY rate=44100 mode=0 frames=100 max_cycles=69",
+          "OSC_LATENCY rate=44100 mode=1 frames=100 max_cycles=165",
+          "OSC_LATENCY rate=44100 mode=2 frames=136 max_cycles=1061",
+          "OSC_PIPELINE_INDEPENDENT_PASS frames=672 audible=606 slots=688128 panic=34 max_latency=1061",
+          "- /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv:200: Verilog $finish",
+          "- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05",
+          "- Verilator: $finish at 4ms; walltime 0.287 s; speed 14.460 ms/s",
+          "- Verilator: cpu 0.286 s on 1 threads; allocated 2 MB"
+        ]
+      },
+      "vector_product": {
+        "compile_exit": 0,
+        "run_exit": 0,
+        "marker": true,
+        "passed": true,
+        "source_sha256": "b856010542da0ad3e946cbf3e3ead6e3cb974c76deb273140451155302b4ca97",
+        "metrics": {
+          "frames": 664,
+          "audible": 524,
+          "voices": 6368,
+          "coeff": 19104,
+          "panic": 40,
+          "max_latency": 284
+        },
+        "latency_matrix": [],
+        "compile_warnings": {},
+        "log_tail": [
+          "VECTOR_PIPELINE_INDEPENDENT_PASS frames=664 audible=524 voices=6368 coeff=19104 panic=40 max_latency=284",
+          "- /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_vector_pipeline_independent.sv:166: Verilog $finish",
+          "- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05",
+          "- Verilator: $finish at 2ms; walltime 0.137 s; speed 14.584 ms/s",
+          "- Verilator: cpu 0.136 s on 1 threads; allocated 2 MB"
+        ]
+      },
+      "oscillator_slot_tag_mutant": {
+        "compile_exit": 0,
+        "run_exit": 1,
+        "marker": false,
+        "passed": true,
+        "source_sha256": "f79eb6cbde41cabb0af0e089ee66495c6405bed7b73a7697e35d42c66ef3375f",
+        "metrics": {
+          "case": 0,
+          "frame": 1,
+          "slot": 0,
+          "dut": 0,
+          "ref": 0
+        },
+        "latency_matrix": [],
+        "compile_warnings": {
+          "UNSIGNED": 4
+        },
+        "log_tail": [
+          "[3730000] %Fatal: tb_runtime_oscillator_pipeline_independent.sv:65: Assertion failed in tb_runtime_oscillator_pipeline_independent.compare_state.unnamedblk1: OSC_SLOT case=0 frame=1 slot=0 dut=0000000000b29a602850 ref=00b29a6000b29a602850",
+          "%Error: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv:65: Verilog $stop",
+          "Aborting..."
+        ]
+      },
+      "oscillator_gain_tag_mutant": {
+        "compile_exit": 0,
+        "run_exit": 1,
+        "marker": false,
+        "passed": true,
+        "source_sha256": "8f07fbf0ff3b5274e33cf704c4759aa20414a05486693a44328d5d7be940548d",
+        "metrics": {
+          "case": 0,
+          "frame": 1,
+          "count": 1,
+          "dut": 0,
+          "ref": 47388
+        },
+        "latency_matrix": [],
+        "compile_warnings": {
+          "UNSIGNED": 4
+        },
+        "log_tail": [
+          "[4440000] %Fatal: tb_runtime_oscillator_pipeline_independent.sv:88: Assertion failed in tb_runtime_oscillator_pipeline_independent.render: OSC_PCM case=0 frame=1 count=1/1 dut=0 ref=47388",
+          "%Error: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv:88: Verilog $stop",
+          "Aborting..."
+        ]
+      },
+      "vector_phase_mutant": {
+        "compile_exit": 0,
+        "run_exit": 1,
+        "marker": false,
+        "passed": true,
+        "source_sha256": "cfd3b3ba10389e88eb522826092b037c29e6accb83e21342c3be6d943f000f12",
+        "metrics": {
+          "case": 0,
+          "frame": 1,
+          "voice": 0,
+          "phase": 16534,
+          "env": 796
+        },
+        "latency_matrix": [],
+        "compile_warnings": {},
+        "log_tail": [
+          "[4310000] %Fatal: tb_runtime_vector_pipeline_independent.sv:56: Assertion failed in tb_runtime_vector_pipeline_independent.compare_state.unnamedblk1: VEC_VOICE case=0 frame=1 voice=0 phase=016534c4/016534c3 env=000796/000796",
+          "%Error: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_vector_pipeline_independent.sv:56: Verilog $stop",
+          "Aborting..."
+        ]
+      },
+      "vector_coefficient_mutant": {
+        "compile_exit": 0,
+        "run_exit": 1,
+        "marker": false,
+        "passed": true,
+        "source_sha256": "a89f4ffda8a289fda2e409387e1d704c70dc2002403d3208cbd6c36bbbc5436f",
+        "metrics": {
+          "case": 0,
+          "voice": 0
+        },
+        "latency_matrix": [],
+        "compile_warnings": {},
+        "log_tail": [
+          "[1450000] %Fatal: tb_runtime_vector_pipeline_independent.sv:59: Assertion failed in tb_runtime_vector_pipeline_independent.compare_state.unnamedblk1: VEC_COEFFICIENT case=0 voice=0",
+          "%Error: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_vector_pipeline_independent.sv:59: Verilog $stop",
+          "Aborting..."
+        ]
+      }
+    }
+  },
+  "startup1028": {
+    "passed": true,
+    "scope": "Opt-in native audio composition; actual DSP, clock transaction/official DCS, owner6 DMA, final PCM, bridge, physical I2S and taps",
+    "limits": "Ordered DDR functional model; coherent TF packet fixture; external policy authorization only; no CPU command integration, top/profile selection, P&R or hardware acceptance",
+    "production_startup": true,
+    "reserve_zero_epoch": true,
+    "expected_negative_control": false,
+    "initial_stream_epoch": 1,
+    "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1",
+    "prepared_reference_candidate": "custom138k-workstation-r00-v1-2030fdf7a01ba140",
+    "prepared_profile": "custom138k-workstation-r00-v1",
+    "prepared_profile_revision": 1,
+    "source_set_sha256": "1404aafd7312401d80487e2867675f3ef2c783e2e972ae6950ade828df8593a0",
+    "composition_identity": "native-runtime-audio-offline-v1-nonzero-1404aafd7312401d",
+    "validation_stage": "offline-physical-interface-simulation",
+    "compute_clock_hz": 76800000,
+    "memory_clock_hz": 100000000,
+    "switch_state_timeout_50mhz_cycles": 2000000,
+    "run_exit": 0,
+    "metrics": {
+      "checked": 211,
+      "good": 211,
+      "errors": 0,
+      "nonzero": 127,
+      "first_slots": 2,
+      "config_acks": 2,
+      "applies": 1,
+      "faults": 0,
+      "mid_frame_switches": 1,
+      "max_render_clocks": 1168,
+      "max_slot_clocks": 1197,
+      "max_config_clocks": 13,
+      "writes": 52,
+      "fences": 2,
+      "analysis_drops": 71,
+      "record_drops": 125,
+      "startup_frames": 1028,
+      "epoch": 2,
+      "loader_overlap_slots": 0,
+      "pressure_events": 0,
+      "pressure_noteoffs": 0,
+      "wet48": 4,
+      "wet44": 0,
+      "fdn_seen": 0
+    },
+    "warning_counts": {
+      "IEEEMAYDEPRECATE": 90,
+      "MODDUP": 2,
+      "PINMISSING": 16,
+      "TIMESCALEMOD": 1,
+      "WIDTHEXPAND": 52,
+      "WIDTHTRUNC": 11,
+      "UNSIGNED": 2
+    },
+    "composition_and_fixture_warning_count": 0,
+    "inputs_unchanged_during_run": true,
+    "compile_log_sha256": "ce90f904a33e69ce8c3cbf29281ee2515e0c7062c902edde06ea786325191233",
+    "run_log_sha256": "fe9898c8eb1fe1be4c9dc1ea7884e0dfea023b742172ad6b56b792510ddbc6df"
+  },
+  "full_i2s": {
+    "passed": true,
+    "scope": "Opt-in native audio composition; actual DSP, clock transaction/official DCS, owner6 DMA, final PCM, bridge, physical I2S and taps",
+    "limits": "Ordered DDR functional model; coherent TF packet fixture; external policy authorization only; no CPU command integration, top/profile selection, P&R or hardware acceptance",
+    "production_startup": false,
+    "reserve_zero_epoch": true,
+    "expected_negative_control": false,
+    "initial_stream_epoch": 1,
+    "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-r00-prepare-v2/workstation/Prj1",
+    "prepared_reference_candidate": "custom138k-workstation-r00-v1-2030fdf7a01ba140",
+    "prepared_profile": "custom138k-workstation-r00-v1",
+    "prepared_profile_revision": 1,
+    "source_set_sha256": "1404aafd7312401d80487e2867675f3ef2c783e2e972ae6950ade828df8593a0",
+    "composition_identity": "native-runtime-audio-offline-v1-nonzero-1404aafd7312401d",
+    "validation_stage": "offline-physical-interface-simulation",
+    "compute_clock_hz": 76800000,
+    "memory_clock_hz": 100000000,
+    "switch_state_timeout_50mhz_cycles": 2000000,
+    "run_exit": 0,
+    "metrics": {
+      "checked": 20192,
+      "good": 20186,
+      "errors": 6,
+      "nonzero": 20061,
+      "first_slots": 13,
+      "config_acks": 14,
+      "applies": 12,
+      "faults": 5,
+      "mid_frame_switches": 8,
+      "max_render_clocks": 1204,
+      "max_slot_clocks": 1229,
+      "max_config_clocks": 454,
+      "writes": 5037,
+      "fences": 21,
+      "analysis_drops": 6735,
+      "record_drops": 12108,
+      "startup_frames": 3,
+      "epoch": 13,
+      "loader_overlap_slots": 6,
+      "pressure_events": 768,
+      "pressure_noteoffs": 26,
+      "wet48": 7,
+      "wet44": 7,
+      "fdn_seen": 3
+    },
+    "warning_counts": {
+      "IEEEMAYDEPRECATE": 90,
+      "MODDUP": 2,
+      "PINMISSING": 16,
+      "TIMESCALEMOD": 1,
+      "WIDTHEXPAND": 52,
+      "WIDTHTRUNC": 11,
+      "UNSIGNED": 2
+    },
+    "composition_and_fixture_warning_count": 0,
+    "inputs_unchanged_during_run": true,
+    "compile_log_sha256": "f9668453c96b621e7c81c796c7c2ae3b3a213e85b109267fcc57ab68a1b4f2d1",
+    "run_log_sha256": "e3a84af3f46fae13d084b9060ec69d879c6859821691914df29f55e8c717e84d"
+  },
+  "full_i2s_counter_interpretation": {
+    "six_error_frames": "Fixture deliberately supplies six TF packets with a mismatched rate; each error frame must be a tagged zero and match the final-PCM oracle.",
+    "five_faults": "Expected stopped-clock, media timeout and sticky owner6/DSP-fence isolation/recovery scenarios; the test fails if invalid output or incomplete isolation is observed.",
+    "analysis_and_record_drops": "Consumers deliberately deassert ready using sequence modulo 3 and modulo 5; loss/error notifications are checked. These are separate from the realtime serial stream.",
+    "asserted_zero_throughout": [
+      "serializer bridge request drops",
+      "pitch-control overflows",
+      "render deadline misses",
+      "MIDI queue overflows",
+      "note drops"
+    ],
+    "no_unoptflat_warning": true
+  },
+  "independent_review": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/div147-tag-ring-independent-review-v1",
+    "seal_sha256": "4d646cce86bcd45cb9a0828a0573ebd996155c9597d20282d1ddfdeb7d1b5f7e",
+    "summary_sha256": "d3e0d5a5288ab1ea05fa2dcb5d7f5c11cca9c92358c7ab575f66ba1215f98bb8",
+    "verification_sha256": "af5b22c341164d8a3d4f9f5d4fc3f7e18d3869003f9c98f1256ad4e81ee969a1",
+    "sealed_files_rehashed": 24,
+    "summary": {
+      "decision": "No actionable functional defect found in reviewed tag-RAM prototype.",
+      "scope": "Source review plus independent Icarus functional simulation only.",
+      "prototype_sha256": "e1a87ccf4de3b89594e18a33ca71ba898c3949c432dbb017de6ca494e9904837",
+      "oracle": "Explicit per-case due-cycle FIFO and behavioral unsigned division by 147; no valid-shift or ring-address model.",
+      "cases": [
+        {
+          "W": 8,
+          "T": 1,
+          "L": 1,
+          "issued": 4668,
+          "checked": 4656,
+          "discarded": 12,
+          "midflush": 7,
+          "midreset": 5,
+          "upper64_inputs": 0
+        },
+        {
+          "W": 8,
+          "T": 64,
+          "L": 1,
+          "issued": 4777,
+          "checked": 4765,
+          "discarded": 12,
+          "midflush": 7,
+          "midreset": 5,
+          "upper64_inputs": 0
+        },
+        {
+          "W": 25,
+          "T": 31,
+          "L": 9,
+          "issued": 4787,
+          "checked": 4679,
+          "discarded": 108,
+          "midflush": 7,
+          "midreset": 5,
+          "upper64_inputs": 0
+        },
+        {
+          "W": 32,
+          "T": 57,
+          "L": 13,
+          "issued": 4969,
+          "checked": 4813,
+          "discarded": 156,
+          "midflush": 7,
+          "midreset": 5,
+          "upper64_inputs": 0
+        },
+        {
+          "W": 43,
+          "T": 33,
+          "L": 18,
+          "issued": 4997,
+          "checked": 4781,
+          "discarded": 216,
+          "midflush": 7,
+          "midreset": 5,
+          "upper64_inputs": 0
+        },
+        {
+          "W": 42,
+          "T": 161,
+          "L": 18,
+          "issued": 5312,
+          "checked": 5096,
+          "discarded": 216,
+          "midflush": 7,
+          "midreset": 5,
+          "upper64_inputs": 0
+        },
+        {
+          "W": 70,
+          "T": 32,
+          "L": 32,
+          "issued": 5329,
+          "checked": 4945,
+          "discarded": 384,
+          "midflush": 7,
+          "midreset": 5,
+          "upper64_inputs": 5039
+        },
+        {
+          "W": 80,
+          "T": 65,
+          "L": 37,
+          "issued": 5503,
+          "checked": 5059,
+          "discarded": 444,
+          "midflush": 7,
+          "midreset": 5,
+          "upper64_inputs": 5299
+        }
+      ],
+      "total_checked_per_good_design": 38794,
+      "total_issued_per_good_design": 40342,
+      "total_discarded_per_good_design": 1548,
+      "midcycle_flush_checks_per_good_design": 56,
+      "midcycle_reset_checks_per_good_design": 40,
+      "both_good_designs_pass": true,
+      "negative_controls_all_detected": true,
+      "input_sources_unchanged": true,
+      "limits": [
+        "No synthesis or physical RAM inference acceptance.",
+        "No P&R, CLK-to-DO/STA, CDC, hardware, SRAM or Flash acceptance.",
+        "No per-owner routing failure attribution from FD aggregate diagnostics."
+      ]
+    },
+    "application_to_maintained_helper": "Independent tests exercised the sealed prototype; exact single-comment difference to maintained helper was checked."
+  },
+  "isolated_mapping": {
+    "scope": "isolated synthesis of WIDTH42 TAG161 helper with full live payload pins; not workstation P&R or net physical savings",
+    "parameters": {
+      "WIDTH": 42,
+      "TAG_WIDTH": 161
+    },
+    "all_payload_bits_live": true,
+    "registers": {
+      "input_sha256": {
+        "wrapper.sv": "6328aa74d7cfdd1dddba0f95f71e0ade00ee28da279bbcee8238ca106fdffd93",
+        "run.tcl": "1b703f6ab3c7a7e87dbcc56c748ad14067f7020b29e67394a5ded6e1869158b5",
+        "helper.sv": "cd45ffd4eb301966956d0acbe233703693ec25e95368679ef0d9ffeb36d17bdc"
+      },
+      "tool_exit": 0,
+      "resources": {
+        "logic": 925,
+        "lut": 925,
+        "alu": 0,
+        "ram16": 0,
+        "logic_capacity": 138240,
+        "register": 3886,
+        "register_capacity": 139095,
+        "bsram": 0,
+        "bsram_capacity": 340
+      },
+      "elapsed_seconds": 3.342831,
+      "outputs": {
+        "impl/gwsynthesis/project.ini": "9c521f8324f4b4359e616a6b17695877dd4906ebacd63c7093cecaed2374278a",
+        "impl/gwsynthesis/tag_mapping_syn.rpt.html": "66f9622a12684345222077374541947b371093ebf681afb5aaad04d284ddbba7",
+        "impl/gwsynthesis/tag_mapping.vg": "d202da233c16f6d0397bf8ba4a747f067a43d8aeea320de5554e4f14b12abfb9",
+        "impl/gwsynthesis/tag_mapping_syn_rsc.xml": "df58db5d6baeab98ebfd2de892c8f5ee6c701f6629e0c6cea6f98abb8d862871",
+        "impl/gwsynthesis/tag_mapping_syn_resource.html": "9f47e0f4a1eaa4d9c2456cdcd69e302d917929da2eac21cc2bee58cffd1db8e7",
+        "impl/gwsynthesis/tag_mapping.prj": "e9455b7760f69a28718cf92cc61e339b0ee030d007cc67479250da8967d1f6f3",
+        "impl/gwsynthesis/tag_mapping.log": "46aeb5a741e0668550147d0e09ff6a561adadee2ace6a2cfc21698c355b12f48"
+      },
+      "log_sha256": "69d0c840caf0ddcdbbf541edeac7bc8caf13f35f68aee40578a6f0f08a5fa4c7"
+    },
+    "ring": {
+      "input_sha256": {
+        "wrapper.sv": "6328aa74d7cfdd1dddba0f95f71e0ade00ee28da279bbcee8238ca106fdffd93",
+        "run.tcl": "1b703f6ab3c7a7e87dbcc56c748ad14067f7020b29e67394a5ded6e1869158b5",
+        "helper.sv": "e1a87ccf4de3b89594e18a33ca71ba898c3949c432dbb017de6ca494e9904837"
+      },
+      "tool_exit": 0,
+      "resources": {
+        "logic": 858,
+        "lut": 854,
+        "alu": 4,
+        "ram16": 0,
+        "logic_capacity": 138240,
+        "register": 832,
+        "register_capacity": 139095,
+        "bsram": 5,
+        "bsram_capacity": 340
+      },
+      "elapsed_seconds": 3.145877,
+      "outputs": {
+        "impl/gwsynthesis/project.ini": "9c521f8324f4b4359e616a6b17695877dd4906ebacd63c7093cecaed2374278a",
+        "impl/gwsynthesis/tag_mapping_syn.rpt.html": "f519b042cf52ec6be985a03b9335063d7707457ebced768ae5192b9a93c76f13",
+        "impl/gwsynthesis/tag_mapping.vg": "b803a73614e4772aee304931e3d410d03bc0ddfef05f6d37ed17b3d7d7e63a01",
+        "impl/gwsynthesis/tag_mapping_syn_rsc.xml": "b47feeac5937441481db94c87bbe223101547a369287555669e1212936c81cfa",
+        "impl/gwsynthesis/tag_mapping_syn_resource.html": "3e585df9127f1196c3f8989118a9d187b70b723ca47f083bec6ddd4ee6dba390",
+        "impl/gwsynthesis/tag_mapping.prj": "452a09dfeea88e8514e5f8cac3322bfb1f7690c9482b95566860d7b69869c266",
+        "impl/gwsynthesis/tag_mapping.log": "89eb54991ffac3b3fcf83d0613f04b29cb467a037871fb0774d0e58b95374e46"
+      },
+      "log_sha256": "2ca69ebb49ac7acebeadca173690970628b27d0aaac4b518d166744abb0d9c04"
+    },
+    "ring_minus_registers": {
+      "logic": -67,
+      "lut": -71,
+      "alu": 4,
+      "ram16": 0,
+      "register": -3054,
+      "bsram": 5
+    },
+    "actual_ring_ram_primitives": {
+      "type": "SDPX9B",
+      "instances": 5,
+      "bit_width_0": 36,
+      "bit_width_1": 36,
+      "read_mode": "1'b0"
+    },
+    "tool_sha256": {
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/GowinSynthesis": "5dbd2b4d47f823c8844d55867eb06c9c0151e5ae79a93e2b61322f5e474f17b2"
+    },
+    "launcher_sha256": "2dabf876c4664e215dda1bfb5b93816e1e9be8eaf02ecd35a8f620968d4bba15",
+    "all_inputs_outputs_and_logs_rehashed": true,
+    "whole_workstation_savings_proven": false,
+    "physical_savings_proven": false,
+    "pnr_run": false,
+    "limits": "Only isolated WIDTH42/TAG161 synthesis. It proves helper mapping, not whole-design physical BSRAM/CLS totals, route improvement or timing; oscillator attack was not independently mapped in this experiment."
+  },
+  "scope_separation": {
+    "no_local_panel": "Separate implementation/integration stage; not included in this tag-RAM source-stage outcome.",
+    "fd_route_failure": "FD remains a separate failed physical identity; this source stage does not resolve its 2754 unrouted nets or provide missing STA."
+  },
+  "remaining_validation": [
+    "New complete-workstation source/profile/prepare identity and final input locks.",
+    "Complete-workstation synthesis resource and actual tag RAM selection.",
+    "P&R routability, RAM data arcs and full setup/hold/recovery/removal/MPW.",
+    "Complete clock/reset/CDC/PLL and feature preservation acceptance.",
+    "Separately identified hardware validation and any authorized programming/readback."
+  ],
+  "whole_workstation_synthesis_run_for_this_source_identity": false,
+  "whole_workstation_pnr_run": false,
+  "routed_timing": {
+    "setup": null,
+    "hold": null,
+    "recovery": null,
+    "removal": null,
+    "mpw": null
+  },
+  "bitstream_sha256": null,
+  "physical_gates_passed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "delivery_scope": {
+    "new_reports_only": true,
+    "eda_run_by_report_writer": false,
+    "board_operated_by_report_writer": false,
+    "task_md_modified_by_report_writer": false
+  },
+  "rollback": "The previous register-tag helper remains identified by SHA cd45ffd4eb301966956d0acbe233703693ec25e95368679ef0d9ffeb36d17bdc in sealed FD source. Reverting source requires refreshed locks and verification; this stage does not change the deployed image."
+}

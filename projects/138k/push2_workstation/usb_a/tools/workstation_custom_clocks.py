@@ -85,7 +85,9 @@ def audit_shared_cdc(stage, netlist_text):
                 physical_timing_verified=False)
 
 
-def clock_bundle(root, hdmi_mode='1080p60'):
+def clock_bundle(root, hdmi_mode='1080p60', local_panel_enabled=True):
+    if type(local_panel_enabled) is not bool:
+        raise ValueError('native local-panel selection must be boolean')
     source = Path(root) / PLAN_SOURCE
     plan = json.loads(source.read_text())
     if plan.get('schema') != 1 or plan.get('identity') != 'custom138k-native-clocks-20261025-v4':
@@ -99,6 +101,10 @@ def clock_bundle(root, hdmi_mode='1080p60'):
         raise ValueError('native primary clock ports changed')
     if hdmi_mode not in ('1080p60', '720p30', '720p60'):
         raise ValueError('unsupported native HDMI clock mode')
+    # Validate the complete reviewed plan before selecting out an absent owner.
+    # The original plan and every surviving clock retain their exact frequency.
+    if not local_panel_enabled:
+        plan['generated'] = [entry for entry in plan['generated'] if entry['name'] != 'lcd_pixel31m5']
     pixel_clock_name = 'video_pixel148'
     if hdmi_mode in ('720p30', '720p60'):
         renames = dict(video_serial742='video_serial371', video_pixel148='video_pixel74')
@@ -134,12 +140,17 @@ def clock_bundle(root, hdmi_mode='1080p60'):
     return dict(source=PLAN_SOURCE, source_sha256=sha(source), plan=plan, sdc='\n'.join(lines) + '\n')
 
 
-def audit_clocks(root, stage, netlist_text, extra_sdc='', hdmi_mode='1080p60'):
-    bundle = clock_bundle(root, hdmi_mode)
+def audit_clocks(root, stage, netlist_text, extra_sdc='', hdmi_mode='1080p60', local_panel_enabled=True):
+    bundle = clock_bundle(root, hdmi_mode, local_panel_enabled)
+    if not local_panel_enabled and ('u_lcd/' in extra_sdc or 'lcd_pixel31m5' in extra_sdc):
+        raise ValueError('disabled native local-panel constraint remains in SDC')
     if (Path(stage) / 'constraints/custom_138k.sdc').read_text() != bundle['sdc'] + extra_sdc:
         raise ValueError('native staged SDC differs from the explicit clock plan')
     netlist = SynthesisNetlist(netlist_text, 'workstation_custom_138k_top')
     cells, canonical = netlist.cells, netlist.canonical
+    if not local_panel_enabled and any(name == 'u_lcd' or name.startswith('u_lcd/')
+                                       for name in (*netlist.frames, *cells)):
+        raise ValueError('disabled native local-panel hierarchy remains in synthesis')
 
     clocks, deferred = {}, []
     for entry in bundle['plan']['primary']:

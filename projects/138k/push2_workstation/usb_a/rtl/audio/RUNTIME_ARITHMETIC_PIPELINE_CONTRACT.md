@@ -10,6 +10,8 @@
 
 共享 `workstation_runtime_div147` 是无符号 radix-4 精确整数除法。最高 6 bit（奇数宽度为 7 bit）先寄存为余数，其值小于 147。每级处理两位；若旧余数 `R<147`，则 `X=4R+b<=587`，以并行减 147／294／441 的借位选择两位商，余数继续小于 147。每级只包含有限宽比较／减法，输出进入实际寄存器。42-bit 输入有 18 个商级，32-bit 有 13 个商级；输入在 edge0 接受，结果分别在 edge18／edge13 后有效。输入 seed 也是一个寄存位置。可每拍接受一个有效输入，支持任意 valid 空泡。
 
+宽度至少 32 bit 的 tag 使用同步读环形 BSRAM；较窄 tag 仍用寄存器。地址每拍推进，读取地址为当前写地址减商级数，深度严格大于商级数，读写地址不别名。数据与 tag 保持原 edge18／edge13 延迟，包括任意空泡；不增加末级 tag 寄存器。reset 清有效位与游标，flush 清有效位，未复位的 RAM 内容仅在对应有效位为真时可消费；复位和 flush 后不会发布旧 tag。原始窄 tag 分支语义不变。
+
 oscillator 的原 pitch product、乘 160、加偏置／右移、每个商级、phase write／sine launch 分别以寄存器交接。161-bit tag 携带帧采样率、48 kHz 舍入步长、slot index、旧 phase 和 slot 尾部、gain、envelope、last；phase 写回和 sine／gain／envelope／last 使用同一返回 tag，不能读取后来变化的索引或帧上下文。截止值仍为 1932735283。
 
 ADSR 的三个 32-bit numerator 先寄存，再经三个 13 级 divider。44.1 kHz 仍为 `floor((canonical*160+73)/147)`；48 kHz 用 `canonical*147` 得到原值。最大 numerator 分别为 2684354473／2466250605，均在 32 bit 内。oscillator 的 44.1 kHz cap 保留 `0xffffc0`，vector cap 保留 `0xffffff`；48 kHz 不额外限幅。oscillator 的后续 scale／parallel math／select／write 寄存级保留，ADSR tag 绑定 index、state、level、sustain 和 rate。
@@ -33,7 +35,7 @@ python3 projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_arithmetic_p
   --output <不存在的新目录>
 ```
 
-它校验 native hash，仅反转 provenance 的 arithmetic 尾部得到精确旧 oracle；依赖和 ROM 从版本化 `resource_rework_route0` 基线及现有 vector ROM 重建。可选 `--reference-project` 逐字核对独立冻结工程，但不作为必要输入。三套独立 fixture 比较整数商、固定延迟、空泡、tag、reset／flush、PCM、slot／phase、ADSR 状态及重用；四个 helper 和四个消费者故障注入必须能编译并被相应 oracle 检出。完整 composition／service／I2S 回归另见日期报告，不能用 helper 通过替代。
+它校验 native hash，仅反转 provenance 的 arithmetic 尾部得到精确旧 oracle；依赖和 ROM 从版本化 `resource_rework_route0` 基线及现有 vector ROM 重建。可选 `--reference-project` 逐字核对独立冻结工程，但不作为必要输入。三套独立 fixture 比较整数商、固定延迟、空泡、tag、reset／flush、PCM、slot／phase、ADSR 状态及重用；helper 覆盖 8～80 bit 输入、16～161 bit tag，含完整高位随机输入、环绕和宽 tag 同步读。五个 helper 和四个消费者故障注入必须能编译并被相应 oracle 检出。完整 composition／service／I2S 回归另见日期报告，不能用 helper 通过替代。
 
 32 声部／五音色／A/B/C 的独立比对，在 48／44.1 kHz 下 A/B/C 最大完成延迟均为 69／165／1061 clocks；8 声部 vector 最大 284 clocks。76.8 MHz 下 48 kHz 间隔为 1600 clocks，44.1 kHz 最短间隔为 1741 clocks。完整 service 的稳定最大延迟为 1168、loader 重叠为 1204；首次自动 44.1 kHz 配置加渲染为 1620，须按 1741 的该率预算核对。上层实际串行槽与配置排空还有独立开销和验证，不能把 engine 预算当成整机时限证明。
 

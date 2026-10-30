@@ -774,6 +774,12 @@ module gw138k_push_workstation_top #(
     wire ble_debug_uart;
 `endif
     wire ble_tx,ble_bt_enable,ble_wl_enable;
+`ifdef WORKSTATION_NO_LOCAL_PANEL
+    // The explicit no-local-panel profile retains the reviewed pin mapping.
+    // No pixel clock, reset chain, raster or feedback mailbox is instantiated.
+    assign lcd_r=5'd0,lcd_g=6'd0,lcd_b=5'd0;
+    assign lcd_pclk=1'b0,lcd_hsync=1'b0,lcd_vsync=1'b0,lcd_de=1'b0,lcd_bl=1'b0;
+`else
     workstation_lcd u_lcd (
         .clk_50m_i(clk_50m),.audio_clk_i(audio_clk),.rst_ni(reset_n),.audio_rst_ni(audio_reset_n),
         .feedback_valid_i(audio_sample_valid),.feedback_i(performance_words[255:0]),
@@ -781,6 +787,7 @@ module gw138k_push_workstation_top #(
         .red_o(lcd_r),.green_o(lcd_g),.blue_o(lcd_b),.pclk_o(lcd_pclk),
         .hsync_o(lcd_hsync),.vsync_o(lcd_vsync),.de_o(lcd_de),.backlight_o(lcd_bl),.snapshot_drop_count_o()
     );
+`endif
 `ifndef WORKSTATION_RUNTIME_NATIVE
     workstation_fpc_audio u_fpc_audio (
         .clk_50m_i(clk_50m),.dac_reference_clk_i(clk_12m288),.audio_clk_i(audio_clk),

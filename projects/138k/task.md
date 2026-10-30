@@ -82,6 +82,8 @@
 
 [R00 FD 路由失败与资源复核](push2_workstation/usb_a/reports/WORKSTATION_R00_FD_ROUTE_FAILURE_20261030.md)已封存：固定 `b9a2e0fdf36970be` 的 584 项来源、25 项物理输入与六项输出保持，2,754 条网络未布通，物理 CLS 63,358／69,120、BSRAM 274／340、Register 63,006。无 FS／TR／SDF，五类时序结果均为 null；失败网络归属未知，不能断言旧关键路径已消除。后续宽 tag RAM 与用户已选的无 LCD／触摸配置正在独立验证，不转移 FD 身份或接受，无板卡操作。
 
+[宽 tag RAM](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_TAG_RAM_SOURCE_20261030.md)通过独立算术／消费者、1028-frame 启动及完整 I2S 回归，helper-only 综合减少 3,054 Register、增加 5 BSRAM，尚非整机净收益。[无本机屏显式配置](push2_workstation/usb_a/reports/WORKSTATION_R00_NO_LOCAL_PANEL_SOURCE_20261030.md)已完成 367 项来源锁与四份真实 prepare，142 项对应检查无跳过；新候选 `e855a1e8a8e6f181` 选择无 LCD／触摸，原 profile 继续保留 LCD。新实际网表的 PCM reply 与 shared 别名审计仍存在独立阻挡，不转移旧 CDC 接受；整机时序／录音与实板验收仍未完成，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

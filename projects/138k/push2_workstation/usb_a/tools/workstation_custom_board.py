@@ -15,7 +15,7 @@ from tools.workstation_custom_clocks import clock_bundle, shared_cdc_bundle
 from tools.workstation_custom_usb2_cdc import cdc_bundle
 from tools.workstation_custom_input_cdc import input_cdc_bundle
 from tools.workstation_bluetooth import prepare as prepare_bluetooth, SDC as BLUETOOTH_SDC
-from tools.workstation_board_peripherals import prepare as prepare_peripherals, reviewed_profile, LCD_SDC
+from tools.workstation_board_peripherals import prepare as prepare_peripherals, reviewed_profile, LCD_SDC, local_panel_bundle
 from tools.workstation_custom_timing import apply as adapt_timing, constraints as timing_constraints
 from tools.workstation_custom_flash import prepare as prepare_model_flash, SDC as MODEL_FLASH_SDC
 from tools.workstation_video_mode import apply as apply_video_mode, PROFILES_720
@@ -99,10 +99,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     else:
         profile = None
     runtime = profile is not None and profile['configuration'].get('audio_policy') == 'native_dual_rate_runtime_v1'
+    local_panel_enabled = True
     if runtime:
         from tools.workstation_profile import specification, recognition_metadata
         selected_provider = specification(profile['name'])['provider']
         recognition = recognition_metadata(profile)
+        local_panel_enabled = specification(profile['name']).get('local_panel_enabled', True)
     native_sources = (*NATIVE_SOURCES, *PROFILE_SOURCES) if workstation_profile is not None else NATIVE_SOURCES
     profile_dependencies = PROFILE_DEPENDENCIES if workstation_profile is not None else ()
     if runtime:
@@ -120,11 +122,17 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_recording_policy import SOURCES as RECORDING_SOURCES, DEPENDENCIES as RECORDING_DEPENDENCIES
         native_sources += RECORDING_SOURCES
         profile_dependencies += RECORDING_DEPENDENCIES
+        from tools.workstation_recording_policy import PROVIDER as RECORDING_PROVIDER
+        if selected_provider != RECORDING_PROVIDER:
+            profile_dependencies += (RECORDING_PROVIDER,)
+    panel = local_panel_bundle(local_panel_enabled)
+    if not local_panel_enabled:
+        native_sources = tuple(source for source in native_sources if source not in panel['retired_sources'])
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
                                      'rtl/workstation/gw138k_push_workstation_top.v')))
-    clocks = clock_bundle(root, hdmi_mode)
+    clocks = clock_bundle(root, hdmi_mode, local_panel_enabled=local_panel_enabled)
     crossings = cdc_bundle(root)
     input_crossings = input_cdc_bundle(root)
     reviewed_profile(root)
@@ -217,7 +225,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                   relative_rom_paths=runtime)
     if runtime:
         bluetooth['capture_source'] = 'runtime_physical_frame_observation_48k_only'
-    peripherals = prepare_peripherals(root, pinout_output, pinout, stage)
+    peripherals = prepare_peripherals(root, pinout_output, pinout, stage, local_panel_enabled=local_panel_enabled)
+    if not local_panel_enabled:
+        peripherals['local_panel_enabled'] = False
     model_flash = prepare_model_flash(root, pinout_output, pinout, stage)
     for relative in bluetooth['sources']:
         ElementTree.SubElement(files, 'File', path=relative, type='file.verilog', enable='1')
@@ -234,9 +244,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     runtime_constraints = None
     if runtime:
         from tools.workstation_runtime_profile import constraints
-        runtime_constraints = constraints(root, shared_crossings)
+        runtime_constraints = constraints(root, shared_crossings, local_panel_enabled=local_panel_enabled)
         combined_cst += runtime_constraints['extra_cst']
-        selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + LCD_SDC + runtime_constraints['shared_sdc'] + timing_constraints() + MODEL_FLASH_SDC
+        selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + panel['sdc'] + runtime_constraints['shared_sdc'] + timing_constraints() + MODEL_FLASH_SDC
     else:
         selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
     if runtime:
@@ -287,7 +297,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     volume_control='Push_CC71_or_CC79_and_25K_encoder1_to_authoritative_CC7',
                     volume_application='post_effects_post_source_selection_once_before_I2S_and_BLE',
                     delay_fifo_storage='two_65x512_banked_BSRAM_FIFOs_same_capacity_latency_and_gray_protocol',
-                    lcd_behavior='800x480_shared_performance_snapshot_no_audio_backpressure',
+                    lcd_behavior=('800x480_shared_performance_snapshot_no_audio_backpressure'
+                                  if local_panel_enabled else panel['output_behavior']),
                     uart_default='existing_workstation_reports',
                     electrical_blocked=pinout['electrical_check']['status']=='blocked',
                     synthesis_allowed=True, place_route_allowed=False, io_electrical_complete=False,
@@ -303,6 +314,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if recording_selected:
         from tools.workstation_recording_policy import metadata as recording_metadata
         metadata['recording']=dict(recording_metadata(),address_map=recording_address_map)
+    if not local_panel_enabled:
+        metadata['local_panel'] = panel
     if workstation_profile is not None:
         metadata['scan_window'] = dict(policy='native_admission_v1', enabled=True,
             provider='rtl/workstation/workstation_profile_hdmi.sv',

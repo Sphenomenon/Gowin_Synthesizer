@@ -5,9 +5,13 @@ import json
 
 from tools.stage_usb_firmware import sha
 from tools.workstation_pinout import parse_locations, render_constraints, digest
+from tools.workstation_synthesis_netlist import SynthesisNetlist
 
 
 PROFILE = 'boards/custom_138k/peripherals.json'
+LOCAL_PANEL_SOURCE = 'rtl/display_data/workstation_lcd.sv'
+LOCAL_PANEL_OUTPUTS = dict(lcd_r=5, lcd_g=6, lcd_b=5, lcd_pclk=1,
+                           lcd_hsync=1, lcd_vsync=1, lcd_de=1, lcd_bl=1)
 LCD_SDC = (
     'set_max_delay 10.000 -from [get_regs {u_lcd/u_feedback/held_data*}] '
     '-to [get_regs {u_lcd/u_feedback/destination_data*}]\n'
@@ -17,6 +21,53 @@ LCD_SDC = (
     'set_false_path -to [get_pins {u_lcd/u_feedback/source_release*/CLEAR '
     'u_lcd/u_feedback/destination_release*/CLEAR u_lcd/release_pipe*/CLEAR}]\n'
 )
+
+
+def local_panel_bundle(local_panel_enabled=True):
+    """Select the LCD owner and its CDC together; retain shared USB renderers."""
+    if type(local_panel_enabled) is not bool:
+        raise ValueError('native local-panel selection must be boolean')
+    return dict(enabled=local_panel_enabled,
+        sources=[LOCAL_PANEL_SOURCE] if local_panel_enabled else [],
+        sdc=LCD_SDC if local_panel_enabled else '',
+        retired_sources=[] if local_panel_enabled else [LOCAL_PANEL_SOURCE],
+        retired_clocks=[] if local_panel_enabled else ['lcd_pixel31m5'],
+        output_behavior='800x480_shared_performance_snapshot' if local_panel_enabled else
+                        'all_21_lcd_output_bits_static_low_backlight_off',
+        touch_input_selected=False)
+
+
+def audit_local_panel(netlist_text, local_panel_enabled=True):
+    """Check actual owner presence, or its absence and static output drivers."""
+    selection = local_panel_bundle(local_panel_enabled)
+    netlist = SynthesisNetlist(netlist_text, 'workstation_custom_138k_top')
+    panel_paths = sorted(name for name in netlist.cells
+                         if name == 'u_lcd' or name.startswith('u_lcd/'))
+    if local_panel_enabled:
+        if ('u_lcd' not in netlist.frames or 'u_lcd/u_feedback' not in netlist.frames or
+                netlist.cells.get('u_lcd/u_pll/PLL_inst', {}).get('kind') != 'PLL'):
+            raise ValueError('native local-panel owner, PLL or feedback mailbox missing')
+        return dict(**selection, hierarchy_present=True, static_output_bits={},
+                    physical_panel_verified=False)
+    if panel_paths or any(name == 'u_lcd' or name.startswith('u_lcd/') for name in netlist.frames):
+        raise ValueError('disabled native local-panel hierarchy remains in synthesis')
+    top = netlist.frames['']['kind']
+    ground = {"1'b0"} | {netlist.pin(name, 'G') for name, cell in netlist.cells.items()
+                             if cell['kind'] == 'GND'}
+    outputs = {}
+    for port, width in LOCAL_PANEL_OUTPUTS.items():
+        if (netlist.directions[top].get(port) != 'output' or
+                netlist.ranges[top].get(port) != ((width-1, 0) if width > 1 else None)):
+            raise ValueError('native local-panel output port changed: ' + port)
+        for index in range(width):
+            bit = f'{port}[{index}]' if width > 1 else port
+            drivers = [name for name, cell in netlist.cells.items()
+                       if cell['kind'] == 'OBUF' and 'O' in cell['ports'] and netlist.pin(name, 'O') == bit]
+            if len(drivers) != 1 or netlist.pin(drivers[0], 'I') not in ground:
+                raise ValueError('disabled native local-panel output is not static low: ' + bit)
+            outputs[bit] = drivers[0]
+    return dict(**selection, hierarchy_present=False, static_output_bits=outputs,
+                physical_panel_verified=False)
 
 
 def reviewed_profile(root):
@@ -32,7 +83,10 @@ def reviewed_profile(root):
     return profile
 
 
-def prepare(root, pinout_output, plan, stage):
+def prepare(root, pinout_output, plan, stage, local_panel_enabled=True):
+    # Even the disabled panel's pins remain physically assigned and constrained;
+    # its reviewed provenance does not imply that the LCD owner is selected.
+    local_panel_bundle(local_panel_enabled)
     root = Path(root).resolve()
     repository = root.parents[3]
     profile = reviewed_profile(root)

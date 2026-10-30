@@ -14,6 +14,7 @@ from tools.workstation_bluetooth import SDC as BLUETOOTH_SDC
 from tools.workstation_custom_usb2_cdc import pattern, query
 from tools.workstation_runtime_cdc import BLE_RELEASE_ALIASES, runtime_cdc_bundle
 from tools.workstation_runtime_pcm_cdc import runtime_pcm_cdc_bundle
+from tools.workstation_usb2_owner_reset import source_bundle as usb2_owner_reset_bundle
 
 POLICY = 'native_dual_rate_runtime_v1'
 SOURCES = (
@@ -202,7 +203,7 @@ def shared_constraints(sdc):
                 omitted=omitted, adapted=adapted)
 
 
-def constraints(root, shared_crossings):
+def constraints(root, shared_crossings, *, local_panel_enabled=True):
     """Keep surviving constraints, inventory removed hierarchy, fail closed.
 
     The new runtime CDC needs a separate endpoint audit after synthesis. No
@@ -210,7 +211,7 @@ def constraints(root, shared_crossings):
     This is a synthesis checkpoint, never a P&R/deployment authorization.
     """
     root = Path(root)
-    clocks = clock_bundle(root)
+    clocks = clock_bundle(root, local_panel_enabled=local_panel_enabled)
     probe_path = root / 'probes/audio_clock_i2s/probe.json'
     probe = json.loads(probe_path.read_text())
     if (probe['pins'].get('clk_16m9344') != 'J19' or
@@ -219,6 +220,7 @@ def constraints(root, shared_crossings):
     shared = shared_constraints(shared_crossings['sdc'])
     runtime_cdc = runtime_cdc_bundle(root)
     runtime_pcm_cdc = runtime_pcm_cdc_bundle(root)
+    owner_reset = usb2_owner_reset_bundle(root)
     bluetooth = bluetooth_constraints(BLUETOOTH_SDC)
     if runtime_cdc['sdc'].splitlines().count(bluetooth['evidence']['replacement']['constraint']) != 1:
         raise ValueError('runtime BLE reset replacement constraint missing or duplicated')
@@ -244,7 +246,8 @@ def constraints(root, shared_crossings):
         'set_false_path -from [get_clocks {selected48}] -to [get_clocks {selected44}]\n'
         'set_false_path -from [get_clocks {selected44}] -to [get_clocks {selected48}]\n'
     )
-    return dict(policy=POLICY, sdc=clocks['sdc'] + audio_sdc + guard_reset_sdc,
+    return dict(policy=POLICY, sdc=clocks['sdc'] + audio_sdc + guard_reset_sdc + owner_reset['sdc'],
+        usb2_owner_reset={key: value for key, value in owner_reset.items() if key != 'sdc'},
         runtime_cdc_sdc=runtime_cdc['sdc'] + runtime_pcm_cdc['sdc'],
         bluetooth_sdc=bluetooth['sdc'], bluetooth_cdc_adaptation=bluetooth['evidence'],
         runtime_cdc={key: value for key, value in runtime_cdc.items() if key != 'sdc'},

@@ -57,9 +57,17 @@ module div147_checker #(parameter integer WIDTH=42, TAG_WIDTH=16)(output reg don
   end
 
   task drive(input [WIDTH-1:0] value,input bit is_valid,input bit do_flush,input [TAG_WIDTH-1:0] input_tag);
+    reg [63:0] tag_random;
     begin
       @(negedge clk);
       dividend=value;valid=is_valid;flush=do_flush;tag=input_tag;
+      if(TAG_WIDTH>16)begin
+        tag_random=random_state ^ 64'(input_tag) ^ 64'(cycle);
+        for(integer tag_bit=0;tag_bit<TAG_WIDTH;tag_bit=tag_bit+1)begin
+          tag_random=next_random(tag_random);
+          tag[tag_bit]=tag_random[tag_bit%64] ^ input_tag[tag_bit];
+        end
+      end
     end
   endtask
 
@@ -68,6 +76,17 @@ module div147_checker #(parameter integer WIDTH=42, TAG_WIDTH=16)(output reg don
     begin
       t=old^(old<<13);t=t^(t>>7);t=t^(t<<17);
       next_random=t;
+    end
+  endfunction
+
+  function [WIDTH-1:0] full_width_random(input [63:0] seed);
+    reg [63:0] state;
+    begin
+      state=seed;
+      for(integer bit_index=0;bit_index<WIDTH;bit_index=bit_index+1)begin
+        state=next_random(state);
+        full_width_random[bit_index]=state[bit_index%64];
+      end
     end
   endfunction
 
@@ -90,7 +109,7 @@ module div147_checker #(parameter integer WIDTH=42, TAG_WIDTH=16)(output reg don
     // Adjacent divisibility boundaries across the full unsigned range.
     for(n=0;n<1000;n=n+1) begin
       random_state=next_random(random_state);
-      x=random_state[WIDTH-1:0];
+      x=full_width_random(random_state);
       x=(x/147)*147;
       drive(x,1,0,n+16'h1000);
       drive(x-1'b1,1,0,n+16'h2000);
@@ -100,7 +119,7 @@ module div147_checker #(parameter integer WIDTH=42, TAG_WIDTH=16)(output reg don
     // post-flush tag reuse, then common-reset recovery while busy.
     for(n=0;n<5000;n=n+1) begin
       random_state=next_random(random_state);
-      drive(random_state[WIDTH-1:0], (n%7)!=2 && (n%11)!=3,
+      drive(full_width_random(random_state), (n%7)!=2 && (n%11)!=3,
             (n%197)==37 || (n%197)==38, n[15:0]^16'ha5a5);
       if(n==1200) begin
         @(negedge clk);rst_n=0;valid=1;flush=0;
@@ -118,13 +137,17 @@ module div147_checker #(parameter integer WIDTH=42, TAG_WIDTH=16)(output reg don
 endmodule
 
 module tb_runtime_div147_independent;
-  wire done42,done32,done43,done25;
+  wire done42,done32,done43,done25,done_wide42,done_wide32,done8,done80;
   div147_checker #(.WIDTH(42)) c42(done42);
   div147_checker #(.WIDTH(32)) c32(done32);
   div147_checker #(.WIDTH(43)) c43(done43);
   div147_checker #(.WIDTH(25)) c25(done25);
+  div147_checker #(.WIDTH(42),.TAG_WIDTH(161)) wide42(done_wide42);
+  div147_checker #(.WIDTH(32),.TAG_WIDTH(57)) wide32(done_wide32);
+  div147_checker #(.WIDTH(8),.TAG_WIDTH(64)) minimum_width(done8);
+  div147_checker #(.WIDTH(80),.TAG_WIDTH(65)) extended_width(done80);
   initial begin
-    wait(done42&&done32&&done43&&done25);
+    wait(done42&&done32&&done43&&done25&&done_wide42&&done_wide32&&done8&&done80);
     $display("RUNTIME_DIV147_INDEPENDENT_PASS");
     $finish;
   end

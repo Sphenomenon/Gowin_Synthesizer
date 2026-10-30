@@ -378,7 +378,7 @@ def audit_runtime_cdc(root, netlist_text, clock_audit):
     """Map every reviewed bit and reset alias; physical gates remain false."""
     bundle = runtime_cdc_bundle(root)
     n = SynthesisNetlist(netlist_text, TOP)
-    clocks = clock_audit['base_13_clock_audit']['clocks']
+    clocks = clock_audit.get('base_clock_audit', clock_audit.get('base_13_clock_audit'))['clocks']
     domains = {k: clocks[v]['net'] for k, v in
                dict(control='clk_50m', compute='audio_76m8', memory='ddr_ui100', reference48='dac_ref12m288').items()}
     domains.update(reference44='clk_16m9344', selected=clock_audit['dcs']['output_net'],

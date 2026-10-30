@@ -45,6 +45,7 @@ AUDIT_SOURCES = (
     'tools/workstation_synthesis_netlist.py', 'tools/stage_usb_firmware.py',
     'tools/workstation_baselines.py', 'tools/audit_clk50_timing.py',
     'boards/custom_138k/clocks.json', 'sim/test_workstation_runtime_clocks.py',
+    'tools/workstation_profile.py', 'tools/workstation_board_peripherals.py',
 )
 
 
@@ -69,23 +70,38 @@ def audit_runtime_clocks(root, stage, netlist_text):
     identity; it does not audit all exceptions or Tcl object resolution.
     """
     root, stage = Path(root), Path(stage)
+    local_panel_enabled = True
+    profile_path = stage.parents[1] / 'workstation_profile.json'
+    if profile_path.is_file():
+        from tools.workstation_profile import R00_NO_LOCAL_PANEL_NAME, specification
+        prepared = json.loads(profile_path.read_text())
+        if prepared.get('profile') == R00_NO_LOCAL_PANEL_NAME:
+            spec = specification(R00_NO_LOCAL_PANEL_NAME)
+            require(prepared.get('configuration') == spec['configuration'] and
+                    prepared.get('profile_source') == spec['config'] and
+                    re.fullmatch(r'[0-9a-f]{64}', prepared.get('profile_sha256', '')) is not None,
+                    'no-local-panel profile configuration or source identity changed')
+            local_panel_enabled = False
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
-    bundle = clock_bundle(root)
-    require(sdc.startswith(bundle['sdc']), 'old 13-clock SDC prefix changed')
+    bundle = clock_bundle(root, local_panel_enabled=local_panel_enabled)
+    require(sdc.startswith(bundle['sdc']), 'selected base-clock SDC prefix changed')
     extra = sdc[len(bundle['sdc']):]
     extra_lines = extra.splitlines()
     declarations = [line for line in extra_lines if line.startswith('create_')]
     require(declarations == list(RUNTIME_CLOCK_SDC), 'runtime clock declarations changed')
     require(all(extra_lines.count(line) == 1 for line in MODE_EXCLUSIONS),
             'selected-mode exclusion declarations changed')
-    base = audit_clocks(root, stage, netlist_text, extra_sdc=extra)
+    base = audit_clocks(root, stage, netlist_text, extra_sdc=extra, local_panel_enabled=local_panel_enabled)
+    from tools.workstation_board_peripherals import audit_local_panel
+    panel = audit_local_panel(netlist_text, local_panel_enabled=local_panel_enabled)
     n = SynthesisNetlist(netlist_text, TOP)
     require(all(n.directions[TOP].get(port) == 'input' for port in
                 ('clk_50m', 'usb2_ulpi_clk', 'clk_12m288', 'clk_16m9344')),
             'primary clock top input inventory changed')
     primitives = {kind: sorted(p for p, c in n.cells.items() if c['kind'] == kind)
                   for kind in ('PLL', 'CLKDIV', 'DCS')}
-    require(set(primitives['PLL']) == PLL_PATHS, 'visible seven-PLL inventory changed')
+    expected_plls = PLL_PATHS if local_panel_enabled else PLL_PATHS - {'u_lcd/u_pll/PLL_inst'}
+    require(set(primitives['PLL']) == expected_plls, 'visible selected PLL inventory changed')
     require(primitives['CLKDIV'] == [DIVIDER_PATH], 'visible CLKDIV inventory changed')
     require(primitives['DCS'] == [SELECTOR], 'single DCS inventory changed')
     dcs = n.cells[SELECTOR]
@@ -148,9 +164,10 @@ def audit_runtime_clocks(root, stage, netlist_text):
                     'I2S output is not a direct selected-clock serializer register: ' + port)
             outputs[port] = dict(buffer=p, input_net=net, register=drivers[0], clock=selected)
     return dict(schema=1, scope='static_source_netlist_clock_and_DCS_topology',
-        base_13_clock_audit=base, visible_clock_primitives=primitives,
-        declaration_scope=dict(old_clock_prefix_count=13, runtime_reference_count=1,
-            selected_mode_count=2, clock_declarations_checked=16, sdc_sha256=digest(sdc.encode()),
+        base_clock_audit=base, **({'base_13_clock_audit': base} if local_panel_enabled else {}),
+        local_panel_enabled=local_panel_enabled, local_panel=panel, visible_clock_primitives=primitives,
+        declaration_scope=dict(old_clock_prefix_count=len(bundle['plan']['primary']) + len(bundle['plan']['generated']), runtime_reference_count=1,
+            selected_mode_count=2, clock_declarations_checked=len(bundle['plan']['primary']) + len(bundle['plan']['generated']) + 3, sdc_sha256=digest(sdc.encode()),
             suffix_sha256=digest(extra.encode()), selected_mode_exclusions=list(MODE_EXCLUSIONS),
             remaining_suffix_lines_not_audited=len(extra_lines) - 5,
             gowin_sta_command_resolution_verified=False,

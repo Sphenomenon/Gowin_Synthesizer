@@ -23,6 +23,8 @@ from tools.workstation_runtime_clock_audit import (
     run_audit, verify_synthesis_identity,
 )
 from tools.workstation_synthesis_netlist import IDENTIFIER, SynthesisNetlist
+from tools.workstation_profile import R00_NO_LOCAL_PANEL_NAME
+from tools.workstation_board_peripherals import LCD_SDC
 
 
 class RuntimeProvenance(unittest.TestCase):
@@ -95,6 +97,8 @@ class ActualRuntimeClocks(unittest.TestCase):
         cls.sdc_path = cls.stage / 'constraints/custom_138k.sdc'
         cls.sdc = cls.sdc_path.read_text()
         cls.netlist = SynthesisNetlist(cls.text, 'workstation_custom_138k_top')
+        cls.panel_off = json.loads((cls.stage.parents[1] / 'workstation_profile.json').read_text()).get(
+            'profile') == R00_NO_LOCAL_PANEL_NAME
         cls.mutation_results = []
 
     @classmethod
@@ -143,14 +147,28 @@ class ActualRuntimeClocks(unittest.TestCase):
 
     def test_actual_source_topology_and_flags(self):
         result = run_audit(ROOT, self.stage, self.process)
-        self.assertEqual(len(result['base_13_clock_audit']['clocks']), 13)
-        self.assertEqual({k: len(v) for k, v in result['visible_clock_primitives'].items()},
-                         dict(PLL=7, CLKDIV=1, DCS=1))
-        self.assertEqual(result['declaration_scope']['clock_declarations_checked'], 16)
+        if result['local_panel_enabled']:
+            self.assertEqual(len(result['base_13_clock_audit']['clocks']), 13)
+            self.assertEqual(result['base_clock_audit'], result['base_13_clock_audit'])
+            self.assertEqual({k: len(v) for k, v in result['visible_clock_primitives'].items()},
+                             dict(PLL=7, CLKDIV=1, DCS=1))
+            self.assertEqual(result['declaration_scope']['clock_declarations_checked'], 16)
+            self.assertIn('lcd_pixel31m5', result['base_clock_audit']['clocks'])
+            self.assertTrue(result['local_panel']['hierarchy_present'])
+        else:
+            self.assertNotIn('base_13_clock_audit', result)
+            self.assertEqual(len(result['base_clock_audit']['clocks']), 12)
+            self.assertEqual({k: len(v) for k, v in result['visible_clock_primitives'].items()},
+                             dict(PLL=6, CLKDIV=1, DCS=1))
+            self.assertEqual(result['declaration_scope']['clock_declarations_checked'], 15)
+            self.assertNotIn('lcd_pixel31m5', result['base_clock_audit']['clocks'])
+            self.assertNotIn('u_lcd/u_pll/PLL_inst', result['visible_clock_primitives']['PLL'])
+            self.assertFalse(result['local_panel']['hierarchy_present'])
+            self.assertEqual(len(result['local_panel']['static_output_bits']), 21)
         self.assertTrue(result['runtime_audio_topology_verified'])
         self.assertTrue(result['source_seal_before_and_after'])
-        self.assertFalse(result['base_13_clock_audit']['source_netlist_verified'])
-        self.assertEqual(result['base_13_clock_audit']['deferred_opaque_ip_targets'],
+        self.assertFalse(result['base_clock_audit']['source_netlist_verified'])
+        self.assertEqual(result['base_clock_audit']['deferred_opaque_ip_targets'],
                          ['u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT'])
         self.assertGreater(len(result['serializer_registers']), 300)
         self.assertTrue(all(p['clock'] == 'clk_50m' for p in result['dcs']['select_registers']))
@@ -162,13 +180,15 @@ class ActualRuntimeClocks(unittest.TestCase):
 
     def test_declaration_mutations_are_rejected(self):
         variants = [
-            ('old_clock_period', self.sdc.replace('-period 20.000000 ', '-period 21.000000 ', 1), '13-clock SDC prefix'),
+            ('old_clock_period', self.sdc.replace('-period 20.000000 ', '-period 21.000000 ', 1), 'selected base-clock SDC prefix'),
             ('new_reference_period', self.sdc.replace('59.051398337', '60.000000000'), 'runtime clock declarations'),
             ('selected44_lost_add', self.sdc.replace('-divide_by 1 -add ', '-divide_by 1 '), 'runtime clock declarations'),
             ('selected44_wrong_master', self.sdc.replace('-master_clock dac_ref16m9344 ', '-master_clock dac_ref12m288 '), 'runtime clock declarations'),
             ('unexpected_clock', self.sdc + 'create_clock -name hidden -period 100 [get_ports {clk_50m}]\n', 'runtime clock declarations'),
             ('missing_mode_exclusion', self.sdc.replace('set_false_path -from [get_clocks {selected44}] -to [get_clocks {selected48}]\n', ''), 'mode exclusion'),
         ]
+        if self.panel_off:
+            variants.append(('retired_LCD_CDC_reintroduced', self.sdc + LCD_SDC, 'local-panel constraint remains'))
         original_read = Path.read_text
         for label, changed, message in variants:
             self.assertNotEqual(changed, self.sdc)
@@ -200,6 +220,15 @@ class ActualRuntimeClocks(unittest.TestCase):
                     'clock target not resolved')
         self.reject('reference_lost_input', self.text.replace('input clk_16m9344;',
                     'wire clk_16m9344;', 1), 'primary clock top input inventory')
+        if self.panel_off:
+            for port in ('lcd_bl', 'lcd_pclk', 'lcd_r[0]'):
+                buffers = [path for path, cell in self.netlist.cells.items()
+                           if cell['kind'] == 'OBUF' and self.netlist.pin(path, 'O') == port]
+                self.assertEqual(len(buffers), 1)
+                self.reject('disabled_panel_pin_' + port, self.change_cell(buffers[0], port='I', value='VCC'),
+                            'local-panel output is not static low')
+            self.reject('retired_LCD_owner_reintroduced', self.change_cell(buffers[0],
+                append='\nPLL u_lcd (\n.CLKOUT0(unused_lcd_clock)\n);'), 'local-panel hierarchy remains')
 
 
 if __name__ == '__main__':

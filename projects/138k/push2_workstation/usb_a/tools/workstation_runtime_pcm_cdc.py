@@ -374,7 +374,7 @@ def audit_runtime_pcm_cdc(root, text, clocks):
 def audit_netlist(root, n, clocks):
     """The object form supports in-memory actual-VG negatives, never sealing."""
     g = Graph(n)
-    base = clocks['base_13_clock_audit']['clocks']
+    base = clocks.get('base_clock_audit', clocks.get('base_13_clock_audit'))['clocks']
     domains = {k: base[v]['net'] for k, v in dict(control='clk_50m', compute='audio_76m8', memory='ddr_ui100').items()}
     domains['selected'] = clocks['dcs']['output_net']
     reg = lambda s, x: g.register(s, x)

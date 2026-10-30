@@ -195,6 +195,7 @@ def main():
             'helper_product': None,
             'helper_wrong_divisor': ("{1'b0,trial}-11'd147", "{1'b0,trial}-11'd146", 'DIV147_NUMERIC'),
             'helper_stale_tag': ('tag[s+1]<=tag[s];', 'tag[s+1]<=tag[0];', 'DIV147_TAG'),
+            'helper_ring_wrong_address': ('read_address=address-DELAY;', "read_address=address-DELAY+1'b1;", 'DIV147_TAG'),
             'helper_retain_flush': ("else if(flush_i)valid<='0;", 'else if(flush_i)valid<=valid;', 'DIV147_QUIESCENT'),
             'helper_skip_digit': ('quotient[s+1]<={quotient[s][WIDTH-3:0],digit};', 'quotient[s+1]<=quotient[s];', 'DIV147_NUMERIC')}
         report['helper'] = dict(map(helper_case, helper_specs.items()))
