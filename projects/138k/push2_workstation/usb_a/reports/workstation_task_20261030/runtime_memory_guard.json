@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "identity": "runtime-memory-guard-offline-v1-87c482b44a9cd5b8",
+  "scope": "Standalone one-time runtime memory startup and permanent loss guard with targeted RTL regression; parent top/profile integration is separate",
+  "passed": true,
+  "source_implementation": true,
+  "offline_verification": true,
+  "synthesis_tested": false,
+  "routed_timing_tested": false,
+  "hardware_tested": false,
+  "sram_deployed": false,
+  "flash_deployed": false,
+  "accepted_profile_changed": false,
+  "common_reset_policy": "Only complete system common reset clears startup grant and permanent fault. Backend/UI/calibration/BIST/compute PLL/CPU-only reset must not be included in this reset.",
+  "availability_policy": "backend_reset_ni && backend_ready_i, with backend_ready optionally including compute PLL qualification; first startup waits, post-grant loss permanently isolates",
+  "fault_codes": {
+    "0": "none",
+    "1": "backend qualification lost",
+    "2": "memory heartbeat expired"
+  },
+  "startup_and_fault": "Fault detection arms before channel release. started_o sets only after actual memory gate acknowledgment and never clears for backend/clock failure. No rearm/replay/epoch input.",
+  "required_runtime_reset": "common_reset_n && started_o",
+  "required_boundary_gates": [
+    "request validity",
+    "upstream ready/acceptance",
+    "returned response validity"
+  ],
+  "required_physical_constraint": {
+    "source": "memory_gray[*]",
+    "destination": "gray_meta[*]",
+    "next_stage": "gray_sync[*]",
+    "maximum_delay_and_bus_skew": "one actual memory clock period",
+    "broad_false_path_alone_sufficient": false
+  },
+  "source_set_sha256": "87c482b44a9cd5b8f698d57ea3cb57a0bd115f1d9cc2bee1ec6e6291bb6da071",
+  "input_sha256": {
+    "rtl/memory/workstation_runtime_memory_guard.sv": "c07b1db351c3a2851e5ba9446801a73cad99e90b5155afaed8c2fec6c4b3424d",
+    "rtl/memory/RUNTIME_MEMORY_GUARD_CONTRACT.md": "4edc8afa7874a5f2be68e2d7ac2be70fb3d54cedeb7fbef9005733cab99ed98e",
+    "sim/memory/tb_workstation_runtime_memory_guard.sv": "9f178c1d84b15479700beed4991222f9fcb972454e17249ecb9e372e937dabf9",
+    "sim/memory/run_runtime_memory_guard.py": "f084e8b8ebdf0f60a17c7918349f6476ac2051275c51a454d533900a920369ac",
+    "reports/WORKSTATION_RUNTIME_MEMORY_GUARD_20261030.md": "e8c07b093cf7999933513108d03d04a2677392222e5b90c421d6fdc2417f16e8"
+  },
+  "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-memory-guard-r5/verification.json",
+  "verification_sha256": "34a1e54530efdd174f7b3cba96d9eb6013835f8c516463e7f1f5c186d537650d",
+  "configuration": {
+    "reference_hz": 50000000,
+    "memory_hz": 100000000,
+    "memory_phase_ns": 7,
+    "fast_timeout_cycles": 12,
+    "fast_heartbeat_bits": 4,
+    "default_timeout_cycles": 500,
+    "default_heartbeat_bits": 32,
+    "maximum_digital_loss_reference_cycles": 505
+  },
+  "metrics": {
+    "phases": 10,
+    "checks": 2270,
+    "wraps": 129,
+    "accepted": 1,
+    "delivered": 0,
+    "high_stop_cycles": 16,
+    "low_stop_cycles": 16,
+    "default_stop_cycles": 504
+  },
+  "independent_event_simulator_metrics": {
+    "phases": 10,
+    "checks": 2270,
+    "wraps": 129,
+    "accepted": 1,
+    "delivered": 0,
+    "high_stop_cycles": 16,
+    "low_stop_cycles": 16,
+    "default_stop_cycles": 504
+  },
+  "verilator_lint_warning_count": 0,
+  "compile_warning_counts": {},
+  "reproduce": [
+    "python3",
+    "projects/138k/push2_workstation/usb_a/sim/memory/run_runtime_memory_guard.py",
+    "--output",
+    "<new-cache-output-directory>"
+  ],
+  "limits": [
+    "Actual guard RTL plus a common transaction-gate model, not real DDR queues, arbiter tags, delay/TF DMA or DSP state.",
+    "Delivered-before-fault data cannot be revoked; owning services must fail/invalidate affected objects.",
+    "Only common reset can permit fresh startup, and top/backend common-reset contracts must also clear retained queue identities.",
+    "Default digital clock-loss bound is 505 continuing 50 MHz reference edges; physical propagation and metastability are not certified by RTL simulation.",
+    "Top must separately prove all client request/ready/response gates, note/parameter/epoch preservation, TF/display/BLE fault handling and compute mute CDC.",
+    "No EDA, board, SRAM or Flash action performed in this phase."
+  ],
+  "rollback": "Separate explicit-runtime composition change with separate source identity; this standalone phase changes no accepted profile selection.",
+  "parent_independent_verification": {
+    "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-memory-guard-parent-final/verification.json",
+    "verification_sha256": "9c99395f9fd7518112e1f6a9336fe1bf08613031fb44d686f8d24f49c8e925c2",
+    "passed": true,
+    "identity": "runtime-memory-guard-offline-v1-87c482b44a9cd5b8",
+    "all_inputs_rechecked": true,
+    "metrics": {
+      "phases": 10,
+      "checks": 2270,
+      "wraps": 129,
+      "accepted": 1,
+      "delivered": 0,
+      "high_stop_cycles": 16,
+      "low_stop_cycles": 16,
+      "default_stop_cycles": 504
+    },
+    "event_metrics": {
+      "phases": 10,
+      "checks": 2270,
+      "wraps": 129,
+      "accepted": 1,
+      "delivered": 0,
+      "high_stop_cycles": 16,
+      "low_stop_cycles": 16,
+      "default_stop_cycles": 504
+    },
+    "lint_warning_count": 0,
+    "compile_warning_counts": {}
+  }
+}
