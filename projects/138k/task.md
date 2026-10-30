@@ -78,6 +78,8 @@
 
 [R00首次生产接线整机综合](push2_workstation/usb_a/reports/WORKSTATION_R00_FIRST_PRODUCTION_SYNTHESIS_20261030.md)已通过，固定`4b1436d83219e765`的583项输入保持、无AG组合环，综合Logic108,298／Reg53,530／BSRAM246。父级实际VG时钟4项／23负控及既有CDC25项／75负控通过（两个可选历史对照跳过），新增录音CDC与完整reset未接受；该输入未含后续USB reset或render流水修复，无物理／部署接受。
 
+[双率render流水线接回整机](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_RENDER_PIPELINE_SYNTHESIS_20261030.md)已完成来源锁、三份prepare各12项、profile20项／R00配置7项和新R00综合。固定`b9a2e0fdf36970be`的584项输入保持，无AG组合环，综合Logic104,321／Reg63,006／BSRAM246；实际VG重新通过时钟拓扑与既有400位Gray CDC子集。完整I2S源码仿真20,192帧／20,061非零／8次切率；物理、完整reset／录音CDC及实板验收仍待完成，不勾选整机任务。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

@@ -111,8 +111,19 @@ class RecordingProfile(unittest.TestCase):
             for index, relative in enumerate(('rtl/workstation/gw138k_push_workstation_top.v',
                                               'rtl/workstation/workstation_hdmi_display.sv')):
                 previous = temp / ('previous' + str(index) + '.sv')
-                previous.write_bytes(subprocess.check_output(['git', 'show', REFERENCE +
-                    ':projects/138k/push2_workstation/usb_a/' + relative], cwd=ROOT.parents[3]))
+                reference = subprocess.check_output(['git', 'show', REFERENCE +
+                    ':projects/138k/push2_workstation/usb_a/' + relative], cwd=ROOT.parents[3])
+                # Keep the frozen pre-R00 reference. 66bb45d independently added
+                # synchronous audio-owner reset release to the runtime USB path.
+                # Apply only that checked follow-up to the expected temp copy;
+                # all unrelated tokens and all four macro paths still compare.
+                if relative == 'rtl/workstation/gw138k_push_workstation_top.v':
+                    old = b',.CNN_FOLLOW_ENABLE(RECOGNITION_ENABLED),.STOP_CLOCK_QUEUE_FENCE(1)'
+                    new = old + b',.AUDIO_OWNER_RESET_SYNC(1)'
+                    self.assertEqual(reference.count(old), 1)
+                    self.assertNotIn(new, reference)
+                    reference = reference.replace(old, new, 1)
+                previous.write_bytes(reference)
                 for mode, macros in enumerate(((), ('WORKSTATION_CUSTOM_138K',),
                         ('WORKSTATION_CUSTOM_138K', 'WORKSTATION_RUNTIME_NATIVE'),
                         ('WORKSTATION_CUSTOM_138K', 'WORKSTATION_RUNTIME_NATIVE', 'WORKSTATION_NO_CNN'))):
