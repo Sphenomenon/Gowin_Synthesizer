@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "sealed_utc": "2026-10-30T14:09:03.089863+00:00",
+  "source_checkpoint": "01a4346",
+  "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-27732817b67e21ac",
+  "passed": true,
+  "validation_stage": "synthesis and explicitly partial source-netlist audits",
+  "synthesis_process": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-no-panel-r2-synthesis-27732817/runtime_synthesis_evidence/process.json",
+    "sha256": "d136ab4c37902bde20a976a6aa687dc224ac50a2d6cb272ba7f30fc9ba70ee7b"
+  },
+  "synthesis_copy": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-no-panel-r2-synthesis-27732817/synthesis_copy.json",
+    "sha256": "b2cc16db633f7d32b01127870d4688b953cd7a15906f74837d7c101ff5576209"
+  },
+  "staged_inputs_verified": 591,
+  "output_sha256": {
+    "impl/gwsynthesis/custom_138k_integration.vg": "3ef23f278d862238a97114d3a09e5cc00ff39426e90f5189fdf0d0d7b9a1ca65",
+    "impl/gwsynthesis/custom_138k_integration.log": "51e79c26ec7a8aa43e0a01aaa7a74db715baf49c58f4cc33d742c0b2dd014f12",
+    "impl/gwsynthesis/custom_138k_integration_syn_resource.html": "91ed85104a0acb6f5295f3c929212f1b2721e9b74f09f8fd230f5707c057d93e",
+    "impl/gwsynthesis/custom_138k_integration_syn.rpt.html": "00aa858c9c971252e6d3f7157f06a927930bb4912e28288783d50f2e99a0b718"
+  },
+  "process": {
+    "completed": true,
+    "exit_code": 0,
+    "elapsed_seconds": 350.5639645829797,
+    "inputs_unchanged": true,
+    "structural_loop_gate_passed": true,
+    "structural_loop_diagnostics": []
+  },
+  "audits": {
+    "clock": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-r2-parent-clock-audit-v1.json",
+      "sha256": "d2c759f81b49f585510b8b35c441f34bbffecc73c4f0358728bf469b1529697c",
+      "identity": "runtime-clock-source-audit-v1-df65da3a2b2f8eb5"
+    },
+    "partial-cdc": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-r2-parent-partial-cdc-audit-v1.json",
+      "sha256": "79a75946371fe87fcff9e171f464cfe4f969375c91205ed7f51a18f6966587c8",
+      "identity": "runtime-cdc-gray-media-fence-source-v2-9b9df7188ccdb98d"
+    },
+    "pcm": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-r2-parent-pcm-audit-v1.json",
+      "sha256": "a64f4f9b5931156048b5f126b27af899be0811f8fd2cab131a6b32299e83fbf1",
+      "identity": "runtime-pcm-context-source-v2-0e3a8d0a525f4fa3"
+    }
+  },
+  "tests": {
+    "clock": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-r2-parent-clock-test-v1.json",
+      "sha256": "d97a993ffa669ebf8c2ec029b185048139427346253a85b20d9cbb12a62fecfc",
+      "negative_controls": 28
+    },
+    "partial-cdc": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-r2-parent-partial-cdc-test-v1.json",
+      "sha256": "4606b726bc764b2100fd8472ba1a63f5ac52d582a8e5e27125c4a73918af0b95",
+      "negative_controls": 75
+    },
+    "pcm": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-r2-parent-pcm-test-v1.json",
+      "sha256": "dff0d19feaa23a090d4a589367437c7d42d1cf0c56ef3300e225abcbd663bbd2",
+      "negative_controls": 109
+    }
+  },
+  "synthesis_resources": {
+    "Register": 60911,
+    "BSRAM": 229,
+    "Logic": 106446
+  },
+  "reference_synthesis": {
+    "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-7d1c3b9b464ff722",
+    "resources": {
+      "Register": 58602,
+      "BSRAM": 253,
+      "Logic": 103147
+    },
+    "report": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-no-panel-synthesis-7d1c3b9b/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn.rpt.html",
+      "sha256": "7981ca8fc934a6ffbdf59e6ae4d3ec2c22aa1078cefc9003685d464332067f83"
+    },
+    "delta": {
+      "Register": 2309,
+      "BSRAM": -24,
+      "Logic": 3299
+    },
+    "qualification": "Inputs differ in later seal release, CPU map binding and BLE DDR composition; this is not a single-change physical experiment."
+  },
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-r2-vg-independent-review-v1/REVIEW_SEAL.json",
+    "sha256": "ac566409d388a67cdd4ed5c7e18aee8bfac397590cd0f9ba395aa0813d56ccdc",
+    "files_verified": 18
+  },
+  "diagnostic_counts": {
+    "EX2478": 1,
+    "EX3638": 21,
+    "EX3073": 3,
+    "EX3791": 94,
+    "EX1998": 2,
+    "EX3670": 1,
+    "EX2526": 1,
+    "EX2488": 9,
+    "EX3780": 1,
+    "CV0016": 2,
+    "NL0002": 15
+  },
+  "physical_resource_saving_proven": false,
+  "complete_cdc_accepted": false,
+  "complete_reset_accepted": false,
+  "opaque_ddr_clock_verified": false,
+  "sta_verified": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "release_ready": false,
+  "deployment_allowed": false,
+  "remaining_gaps": [
+    "Explicit revision2 precision scope review for shared/USB2/CPU recording, including real optimized aliases",
+    "New raw-store/authority/mailbox/Gray/RAM timing and reset inventory and physical closure",
+    "Nominal-clock routed setup/hold/recovery/removal/pulse-width and PLL/resource gates",
+    "Nonzero PCM/I2S/BLE download and actual board/Android acceptance"
+  ]
+}

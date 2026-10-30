@@ -108,6 +108,8 @@
 
 [BLE DDR 原生组合父级检查点](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_NATIVE_PARENT_20261030.md)已在 no-local-panel revision2 选入 raw store／authority／双客户端 owner8，实际 CPU／BLE 子区与已寄存错误聚合通过三场景／119 checks／五负控；CPU runtime 14 场景／五负控、四份来源各 12 项及 BLE／no-panel／R00／enabled profile 回归全过。主候选 `27732817b67e21ac` 的 591 staged／269 enabled 与 767 来源快照已核对并独立启动综合，结果另记；未计物理净资源收益，完整 CDC／reset／STA、BLE 乐音与硬件仍未接受，无部署。
 
+[BLE DDR revision2 新综合](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_R2_SYNTHESIS_20261030.md)已通过，固定 `27732817b67e21ac` 的 591 输入／四输出保持，无 AG 组合环诊断；综合 Logic 106,446／Register 60,911／BSRAM 229。实际旧 BLE raw 32 个 SDPB 退休、新增缓存／FIFO 八个 block 原语，综合净 −24、寄存器 +2,309，尚非物理净收益。父级 clock 四项／28 负控、既有 Gray／media 27 项／75 负控（两个历史可选项跳过）、PCM 18 项／109 负控及三公开 CLI 通过；新增完整 CDC／reset／RAM 时序、物理与硬件仍未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
