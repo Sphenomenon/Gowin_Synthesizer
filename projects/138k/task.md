@@ -64,6 +64,8 @@
 
 [no-CNN FC 同网表 placement 对照](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_FC_PHYSICAL_PREPARE_20261030.md)父级／独立23输入及14负控通过，仅place2→1、UserCodeFA→FC，route0、VG／SDC／CST不变。已启动P&R，物理结果另记；没有重申FA当前root等价，也未扩大CDC或部署接受。
 
+[no-CNN FC 完成路由但STA失败](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_FC_ROUTED_STA_FAILURE_20261030.md)：P&R返回0、生成FS，物理BSRAM272／340、CLS90%，但setup−116.645ns／hold−0.718ns／recovery−8.899ns；深组合音频路径和复位等仍阻断。父级复核23输入、13登记输出及全部20实现文件，HTML／TXT全局最差值一致。继续按实际锥拆分和验证，不以工具成功部署；无板卡操作。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）

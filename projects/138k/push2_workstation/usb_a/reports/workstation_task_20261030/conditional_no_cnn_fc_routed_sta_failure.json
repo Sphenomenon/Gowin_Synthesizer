@@ -1,0 +1,556 @@
+{
+  "schema": 1,
+  "identity": "custom138k-no-cnn-physical-resource-experiment-C11030FC",
+  "stage": "offline_no_cnn_FC_routed_but_STA_failed",
+  "reviewed_utc": "2026-10-30T09:20:41.465089+00:00",
+  "source_candidate": "custom138k-workstation-no-cnn-v1-525ffff10d622031",
+  "physical_directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-physical-C11030FC",
+  "manifest_sha256": "02c89d15b5b9142026a986b6f55f89307dc32020e34a5a7a0f18ce30262d88cf",
+  "process_sha256": "8c57b283db9a025719591cd7151749ba52bce0aa7b36666f85ab3bc85e549348",
+  "process": {
+    "schema": 1,
+    "stage": "offline_runtime_physical_resource_experiment",
+    "identity": "custom138k-no-cnn-physical-resource-experiment-C11030FC",
+    "source_candidate": "custom138k-workstation-no-cnn-v1-525ffff10d622031",
+    "physical": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-physical-C11030FC",
+    "manifest_sha256": "02c89d15b5b9142026a986b6f55f89307dc32020e34a5a7a0f18ce30262d88cf",
+    "launcher_sha256": "4cb742ac2022fae8d046dfc5201bf0eb96560da844142b270bedce08dfd6f1d3",
+    "tool_sha256": {
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01"
+    },
+    "command": [
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+      "run.tcl"
+    ],
+    "cwd": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-physical-C11030FC",
+    "started_utc": "2026-10-30T09:10:04.814116+00:00",
+    "completed": true,
+    "hardware_operated": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "deployment_allowed": false,
+    "release_ready": false,
+    "complete_cdc_accepted": false,
+    "feature_preservation_accepted": false,
+    "physical_gates_passed": false,
+    "bitstream_sha256": null,
+    "exit_code": 0,
+    "tool_exit_success": true,
+    "inputs_unchanged": true,
+    "log_sha256": "ed4d8becde945d1de99b5bd54f4b3c62e0d1ffc028f1976ff78f30a0de4f7c97",
+    "output_sha256": {
+      "impl/pnr/custom_138k_integration.fs": "3186acb21329fba7019fd0440cee9912f5df3a7174310cc45d203e00c96d2cf3",
+      "impl/pnr/custom_138k_integration.log": "d89439589b56ca27c497a3d62abe30458a983e44f2262f9be29c07473d19f6da",
+      "impl/pnr/custom_138k_integration.pin.html": "ae3b7aa2923ab1562b2cfd19029ffb6938b8ff34d2457fadec32526b525153a2",
+      "impl/pnr/custom_138k_integration.power.html": "d5a57fe2a10eab9af23d2f6c165c178eb8674219b98728eed643eacd6d168140",
+      "impl/pnr/custom_138k_integration.rpt.html": "573c0db238a681274748ae0073c0ea991e7991977b6a5ddfc29d60c9ac9e2c7a",
+      "impl/pnr/custom_138k_integration.rpt.txt": "14820cf050d1f4bc54067007ee5206ef95f364a2d1238dc6e96671ddc1637e8d",
+      "impl/pnr/custom_138k_integration.sdf": "b10b98c7cddddc0bc9fdb2e86a22bf37f582143cf05aa7cf13f2b53efd8978da",
+      "impl/pnr/custom_138k_integration.tr": "b067e49508035940b66fa6ab610dfa844611fdec061841c3be5c548126bf3e82",
+      "impl/pnr/custom_138k_integration.tr.html": "6cec34e8cbcb38c7f6f0ba6af30a8299078bf6fb9849fb6ace2d39eec7c0f6f7",
+      "impl/pnr/custom_138k_integration.vo": "883c75ae7138c27556a30a6c0dd38b392d5f4440ff3b86073fc633e67b79f472",
+      "impl/pnr/custom_138k_integration_tr_cata.html": "142de5391574a1f6d6f570384980cf16c36895b1574eb49909381313807901f6",
+      "impl/pnr/custom_138k_integration_tr_content.html": "5316139d0e5bbfe30c823dba048b10b1788665eb02b623231f0fea403983cbea",
+      "impl/pnr/device.cfg": "7718c3df5d834790e5195558f6b4cc13141161de168cd9e7215e15fca6828791"
+    },
+    "bitstreams": {
+      "impl/pnr/custom_138k_integration.fs": "3186acb21329fba7019fd0440cee9912f5df3a7174310cc45d203e00c96d2cf3"
+    },
+    "elapsed_seconds": 355.413754959,
+    "finished_utc": "2026-10-30T09:16:00.228150+00:00"
+  },
+  "parent_recheck": {
+    "all_registered_inputs_hashed": 23,
+    "registered_inputs_unchanged": true,
+    "all_recorded_outputs_hashed": 13,
+    "all_implementation_directory_files_hashed": 20,
+    "tool_and_log_hashed": true,
+    "FS_header_UserCode": "0xc11030fc",
+    "FS_UserCode_hardware_readback": false,
+    "FA_VG_SDC_CST_unchanged": true
+  },
+  "physical_resources": {
+    "Logic": {
+      "used": 102593,
+      "available": 138240,
+      "reported_percent": 75
+    },
+    "Register": {
+      "used": 51122,
+      "available": 139095,
+      "reported_percent": 37
+    },
+    "CLS": {
+      "used": 61810,
+      "available": 69120,
+      "reported_percent": 90
+    },
+    "BSRAM": {
+      "used": 272,
+      "available": 340,
+      "reported_percent": 80
+    },
+    "DSP": {
+      "used": 126.5,
+      "available": 298,
+      "reported_percent": 43
+    },
+    "PRIMARY": {
+      "used": 8,
+      "available": 8,
+      "reported_percent": 100
+    },
+    "LW": {
+      "used": 8,
+      "available": 8,
+      "reported_percent": 100
+    },
+    "PLL": {
+      "used": 7,
+      "available": 12,
+      "reported_percent": 59
+    }
+  },
+  "all_implementation_output_identity": {
+    "impl/pnr/cmd.do": {
+      "bytes": 678,
+      "sha256": "6bb4bc57c6d02ba6665f9495f42a786304f68b56ec1bc40d7eafeec34fd6a780"
+    },
+    "impl/pnr/custom_138k_integration.bin": {
+      "bytes": 5238354,
+      "sha256": "79c4757801f399159d0dc854706a97df1b996d12bf7258067109e708ab609a80"
+    },
+    "impl/pnr/custom_138k_integration.binx": {
+      "bytes": 5238966,
+      "sha256": "a5001a5b738b35c9d78345aadf01235e0fc31abf17451a04a7b16e42b42fe3ee"
+    },
+    "impl/pnr/custom_138k_integration.db": {
+      "bytes": 3054968,
+      "sha256": "85fa569a5b2f2554bbe054889453a83a13545a37fe520e58cdad84051dd26c28"
+    },
+    "impl/pnr/custom_138k_integration.fs": {
+      "bytes": 41943954,
+      "sha256": "3186acb21329fba7019fd0440cee9912f5df3a7174310cc45d203e00c96d2cf3"
+    },
+    "impl/pnr/custom_138k_integration.log": {
+      "bytes": 2461,
+      "sha256": "d89439589b56ca27c497a3d62abe30458a983e44f2262f9be29c07473d19f6da"
+    },
+    "impl/pnr/custom_138k_integration.p": {
+      "bytes": 12662809,
+      "sha256": "6adb2ce057e7d685106d5ebf47203ab80111f8066a7176315e238d15f3b37bf6"
+    },
+    "impl/pnr/custom_138k_integration.pin.html": {
+      "bytes": 130928,
+      "sha256": "ae3b7aa2923ab1562b2cfd19029ffb6938b8ff34d2457fadec32526b525153a2"
+    },
+    "impl/pnr/custom_138k_integration.power.html": {
+      "bytes": 42298,
+      "sha256": "d5a57fe2a10eab9af23d2f6c165c178eb8674219b98728eed643eacd6d168140"
+    },
+    "impl/pnr/custom_138k_integration.pr": {
+      "bytes": 294791176,
+      "sha256": "6ce103736451504dc8469315e902738f7843a50f280969675c0e15f85e5a4867"
+    },
+    "impl/pnr/custom_138k_integration.rpt.html": {
+      "bytes": 137729,
+      "sha256": "573c0db238a681274748ae0073c0ea991e7991977b6a5ddfc29d60c9ac9e2c7a"
+    },
+    "impl/pnr/custom_138k_integration.rpt.txt": {
+      "bytes": 118911,
+      "sha256": "14820cf050d1f4bc54067007ee5206ef95f364a2d1238dc6e96671ddc1637e8d"
+    },
+    "impl/pnr/custom_138k_integration.sdf": {
+      "bytes": 180149259,
+      "sha256": "b10b98c7cddddc0bc9fdb2e86a22bf37f582143cf05aa7cf13f2b53efd8978da"
+    },
+    "impl/pnr/custom_138k_integration.timing_paths": {
+      "bytes": 23560591,
+      "sha256": "2d02fafa34ca0c44756baf8817ecff1da4510962bfd4fcd224770ac29cb7589f"
+    },
+    "impl/pnr/custom_138k_integration.tr": {
+      "bytes": 105690917,
+      "sha256": "b067e49508035940b66fa6ab610dfa844611fdec061841c3be5c548126bf3e82"
+    },
+    "impl/pnr/custom_138k_integration.tr.html": {
+      "bytes": 371,
+      "sha256": "6cec34e8cbcb38c7f6f0ba6af30a8299078bf6fb9849fb6ace2d39eec7c0f6f7"
+    },
+    "impl/pnr/custom_138k_integration.vo": {
+      "bytes": 79464814,
+      "sha256": "883c75ae7138c27556a30a6c0dd38b392d5f4440ff3b86073fc633e67b79f472"
+    },
+    "impl/pnr/custom_138k_integration_tr_cata.html": {
+      "bytes": 8208,
+      "sha256": "142de5391574a1f6d6f570384980cf16c36895b1574eb49909381313807901f6"
+    },
+    "impl/pnr/custom_138k_integration_tr_content.html": {
+      "bytes": 124434348,
+      "sha256": "5316139d0e5bbfe30c823dba048b10b1788665eb02b623231f0fea403983cbea"
+    },
+    "impl/pnr/device.cfg": {
+      "bytes": 608,
+      "sha256": "7718c3df5d834790e5195558f6b4cc13141161de168cd9e7215e15fca6828791"
+    }
+  },
+  "bitstream_sha256": "3186acb21329fba7019fd0440cee9912f5df3a7174310cc45d203e00c96d2cf3",
+  "historical_process_bitstream_sha256_null": "Runner retains null in initial summary field; its completed bitstreams map and this independent FS hash identify the generated bitstream. Original process is unmodified.",
+  "source_manifest_not_rebound": true,
+  "timing_summary": {
+    "timing_closed": false,
+    "problems": [
+      "Fmax below requirement: clk_50m",
+      "Fmax below requirement: ulpi_60m",
+      "Fmax below requirement: audio_76m8",
+      "Fmax below requirement: lcd_pixel31m5",
+      "Fmax below requirement: usb_48m",
+      "Fmax below requirement: ddr_ui100",
+      "negative endpoints: clk_50m/setup",
+      "negative endpoints: ulpi_60m/setup",
+      "negative endpoints: dac_ref12m288/hold",
+      "negative endpoints: audio_76m8/setup",
+      "negative endpoints: lcd_pixel31m5/setup",
+      "negative endpoints: usb_48m/setup",
+      "negative endpoints: ddr_ui100/setup",
+      "negative detailed timing paths"
+    ],
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 30.879
+      },
+      "ulpi_60m": {
+        "required_mhz": 60.0,
+        "actual_mhz": 48.439
+      },
+      "dac_ref12m288": {
+        "required_mhz": 12.288,
+        "actual_mhz": 61.844
+      },
+      "dac_ref16m9344": {
+        "required_mhz": 16.934,
+        "actual_mhz": 52.968
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 7.712
+      },
+      "lcd_pixel31m5": {
+        "required_mhz": 31.5,
+        "actual_mhz": 24.457
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 44.417
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2338.897
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 35.51
+      },
+      "video_pixel148": {
+        "required_mhz": 148.5,
+        "actual_mhz": 158.881
+      },
+      "cpu_ram50": {
+        "required_mhz": 50.0,
+        "actual_mhz": 89.569
+      },
+      "cpu_core100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 1363.327
+      },
+      "selected48": {
+        "required_mhz": 12.288,
+        "actual_mhz": 56.803
+      },
+      "selected44": {
+        "required_mhz": 16.934,
+        "actual_mhz": 56.803
+      }
+    },
+    "global_worst_ns": {
+      "setup": -116.645,
+      "hold": -0.718,
+      "recovery": -8.899,
+      "removal": 0.262
+    },
+    "pulse_width_worst_ns": 0.641,
+    "pulse_width_violations": [],
+    "checks": {
+      "clk_50m": {
+        "setup": {
+          "tns_ns": -4853.881,
+          "endpoints": 1994
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ulpi_60m": {
+        "setup": {
+          "tns_ns": -14.037,
+          "endpoints": 7
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "dac_ref12m288": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": -1.802,
+          "endpoints": 9
+        }
+      },
+      "dac_ref16m9344": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "audio_76m8": {
+        "setup": {
+          "tns_ns": -366788.969,
+          "endpoints": 15955
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "lcd_pixel31m5": {
+        "setup": {
+          "tns_ns": -114.934,
+          "endpoints": 22
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "usb_48m": {
+        "setup": {
+          "tns_ns": -24.463,
+          "endpoints": 33
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_mem400": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_ui100": {
+        "setup": {
+          "tns_ns": -21190.021,
+          "endpoints": 2828
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_ref49": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_serial742": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_pixel148": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_ram50": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_core100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected48": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected44": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "global_reports": {
+      "setup": true,
+      "hold": true,
+      "recovery": true,
+      "removal": true
+    },
+    "reset_reports": {
+      "recovery": true,
+      "removal": true
+    },
+    "report_sha256": "5316139d0e5bbfe30c823dba048b10b1788665eb02b623231f0fea403983cbea",
+    "hardware_tested": false,
+    "identity": "custom138k-no-cnn-FC-routed-timing-audit-20261030",
+    "target_scope": "All 14 actual timing-bearing clocks. Video reference49 and serial742 have no data paths, separately recorded in the full 16-clock table; this is not full PLL/clock-tree acceptance.",
+    "checker_sha256": {
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_workstation_timing.py": "78b20977de69f63ee91eccc1978b49eb377e6b2569898537c6f8033b3f328a6f",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py": "09ad4cdb5f0eebf3ec86ec6cde4a002b23c9b7750584cbf946cd48aefcfcda33"
+    },
+    "precision_profile": "explicit runtime no-CNN",
+    "constraint_or_tool_report_changed": false,
+    "full_modes_accepted": false,
+    "deployment_allowed": false
+  },
+  "independent_text_report_tables": {
+    "setup": {
+      "reported_table_rows": 2000,
+      "minimum_ns": -116.645,
+      "negative_rows": 2000,
+      "worst_path": {
+        "index": 1,
+        "slack_ns": -116.645,
+        "source": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/n39121_0_s/DOUT[28]",
+        "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/slot_mem_slot_mem_0_4_s/DI[13]",
+        "source_clock": "audio_76m8:[R]",
+        "destination_clock": "audio_76m8:[R]",
+        "relation_ns": 13.021,
+        "skew_ns": 0.001,
+        "data_delay_ns": 129.728
+      }
+    },
+    "hold": {
+      "reported_table_rows": 2000,
+      "minimum_ns": -0.718,
+      "negative_rows": 189,
+      "worst_path": {
+        "index": 1,
+        "slack_ns": -0.718,
+        "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0/Q",
+        "destination": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/D",
+        "source_clock": "ddr_ui100:[R]",
+        "destination_clock": "clk_50m:[R]",
+        "relation_ns": 0.8,
+        "skew_ns": -0.454,
+        "data_delay_ns": 0.584
+      }
+    },
+    "recovery": {
+      "reported_table_rows": 2000,
+      "minimum_ns": -8.899,
+      "negative_rows": 353,
+      "worst_path": {
+        "index": 1,
+        "slack_ns": -8.899,
+        "source": "u_reset/started_s0/Q",
+        "destination": "u_native_usb/input_owner/feedback_divider_0_s0/CLEAR",
+        "source_clock": "clk_50m:[R]",
+        "destination_clock": "audio_76m8:[R]",
+        "relation_ns": 0.104,
+        "skew_ns": 0.315,
+        "data_delay_ns": 8.377
+      }
+    },
+    "removal": {
+      "reported_table_rows": 2000,
+      "minimum_ns": 0.262,
+      "negative_rows": 0,
+      "worst_path": {
+        "index": 1,
+        "slack_ns": 0.262,
+        "source": "u_managed/runtime/clocks/reference_48_monitor/source_reset_n_s0/Q",
+        "destination": "u_managed/runtime/clocks/reference_48_monitor/source_gray_4_s0/CLEAR",
+        "source_clock": "dac_ref12m288:[R]",
+        "destination_clock": "dac_ref12m288:[R]",
+        "relation_ns": 0.0,
+        "skew_ns": -0.382,
+        "data_delay_ns": 0.591
+      }
+    }
+  },
+  "timing_audit_sha256": "c9829fe0a4d2dd517dbc324a5014b60d4cea8745649ea1536665cf325eafb2e7",
+  "tool_run_summary": {
+    "paths_analyzed": 342577,
+    "endpoints_analyzed": 176476,
+    "setup_violated_endpoints": 21620,
+    "hold_violated_endpoints": 189
+  },
+  "route_completed": true,
+  "physical_gates_passed": false,
+  "timing_closed": false,
+  "complete_CDC_accepted": false,
+  "whole_reset_accepted": false,
+  "PLL_accepted_for_this_runtime": false,
+  "dual_modes_and_switching_accepted": false,
+  "feature_preservation_accepted": false,
+  "hardware_operated": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}
