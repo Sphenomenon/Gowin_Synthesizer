@@ -49,7 +49,7 @@ READY_FIRST = (ref(R, 'serial_context_ready', 1),)
 # Feedback/comparator endpoints in the source domain are also enumerated. No
 # clock or prefix filter is allowed to hide an extra consumer from the closure.
 LOCAL = (ref(T, 'active_44k1_o', port='CE'), ref(T, 'active_valid_o'), ref(T, 'applied_o'),
-         ref(T, 'audio_reset_no'), ref(T, 'booting'), ref(T, 'clock_select_o', 2),
+         ref(T, 'audio_reset_no'), ref(T, 'booting'), ref(T, 'quiesce_o'), ref(T, 'dac_mute_o'), ref(T, 'clock_select_o', 2),
          ref(T, 'clock_select_o', 2, 'CE'), ref(T, 'failed_o'), ref(T, 'fault_code_o', 3),
          ref(T, 'state', 4), ref(T, 'stream_epoch_o', 32, 'CE'), ref(T, 'timer', 21),
          ref(R, 'context_payload', 33, 'CE'), ref(R, 'context_sent', port='CE'), ref(R, 'context_toggle'))
@@ -482,7 +482,11 @@ def audit_netlist(root, n, clocks):
 
     # Every sync source is predetermined from an owner/boundary; no source=None
     # or unknown-consumer filtering can make a shifted chain appear valid.
-    boundaries = dict(quiesce='u_managed/rate_quiesce', resume='n669_5', ready=R + '/rate_context_ready', fault=fault, prefill=R + '/serial_prefill')
+    mute = q(T, 'dac_mute_o')
+    resume_inverters = [(p, n.pin(p, 'O')) for p, c in n.cells.items()
+                        if n.scopes[p] == R and c['kind'] == 'INV' and n.pin(p, 'I') == mute]
+    require(len(resume_inverters) == 1, 'registered mute must have exactly one reviewed resume inverter')
+    boundaries = dict(quiesce=q(T, 'quiesce_o'), resume=resume_inverters[0][1], ready=R + '/rate_context_ready', fault=fault, prefill=R + '/serial_prefill')
     for scope, stem, domain, source_scope, source_stem in SYNCS:
         regs = g.group(scope, stem, 2)
         source = q(source_scope, source_stem) if source_scope else boundaries[source_stem]
@@ -520,7 +524,11 @@ def audit_netlist(root, n, clocks):
                 todo.extend(n.pin(p, x) for x in n.cells[p]['ports'] if x not in COMB[kind])
 
         if key in ('quiesce', 'resume'):
-            require(leaves == set(g.group(T, 'state', 4)), 'clock transaction level owner changed: ' + key)
+            owner = reg(T, 'quiesce_o' if key == 'quiesce' else 'dac_mute_o')
+            require(leaves == {owner}, 'registered clock transaction level owner changed: ' + key)
+            ff(owner, 'control', clock_clear, preset=True)
+            require(n.pin(owner, 'CE') in g.high, 'registered transaction level conditional CE: ' + key)
+            proofs.append(g.equivalent('registered transaction level ' + key, [boundaries[key], n.pin(owner, 'Q')], lambda x: x[0] == (x[1] if key == 'quiesce' else not x[1])))
         elif key == 'ready':
             owners = set(g.group(R, 'context_payload', 33) + g.group(T, 'pending_epoch', 32) + [reg(T, 'pending_44k1'), reg(R, 'context_sent'), reg(R, 'context_toggle'), g.register(R, 'ack_sync', 1), g.register(R, 'fault_sync', 1)])
             require(leaves == owners, 'context ready source owner changed')
@@ -568,9 +576,18 @@ def audit_netlist(root, n, clocks):
     context_pairs = {frozenset((n.pin(x, 'Q'), n.pin(y, 'Q'))) for x, y in zip(ctx_src, staged)}
     require(g.inequality_chain(equal) == context_pairs, 'context comparison operand identity changed')
     ready_carries = g.carry_frontier(boundaries['ready'])
-    require(len(ready_carries) == 1 and g.inequality_chain(next(iter(ready_carries))) == context_pairs, 'ready context comparison identity changed')
+    ready_rate_pair = frozenset((n.pin(ctx_src[32], 'Q'), q(T, 'pending_44k1')))
+    require(len(ready_carries) == 1, 'ready comparison carry count changed')
     ready_diff = next(iter(ready_carries))
-    proofs.append(g.equivalent('context ready only returned matching tuple', [boundaries['ready'], q(R, 'context_sent'), q(R, 'context_toggle'), bitq(R, 'ack_sync', 1), ready_diff, bitq(R, 'fault_sync', 1)], lambda x: x[0] == (x[1] and x[2] == x[3] and not x[4] and not x[5]), {ready_diff}))
+    ready_pairs = g.inequality_chain(ready_diff)
+    # These two observed synthesis forms have the same complete 33-bit
+    # semantics. The scalar form must prove its missing rate pair in the gate.
+    require(ready_pairs in (context_pairs, context_pairs - {ready_rate_pair}), 'ready comparison operand identity changed')
+    ready_scalar_rate = ready_pairs != context_pairs
+    ready_inputs = [boundaries['ready'], q(R, 'context_sent'), q(R, 'context_toggle'), bitq(R, 'ack_sync', 1), ready_diff, bitq(R, 'fault_sync', 1)]
+    if ready_scalar_rate:
+        ready_inputs += [n.pin(ctx_src[32], 'Q'), q(T, 'pending_44k1')]
+    proofs.append(g.equivalent('context ready only returned matching tuple', ready_inputs, lambda x: x[0] == (x[1] and x[2] == x[3] and not x[4] and not x[5] and (not ready_scalar_rate or x[6] == x[7])), {ready_diff}))
 
     # The reply has no destination mailbox FF: match is a combinational header
     # qualifier shared by next_pcm and the current_pcm frame-boundary bypass.
@@ -584,11 +601,16 @@ def audit_netlist(root, n, clocks):
         header_pairs.update(current)
     expected_pairs = {frozenset((n.pin(reply_src[i + 65], 'Q'), bitq(Z, 'epoch', i))) for i in range(32)}
     expected_pairs |= {frozenset((n.pin(reply_src[i + 33], 'Q'), bitq(Z, 'wanted_sequence', i))) for i in range(32)}
-    scalar_epoch_pair = frozenset((n.pin(reply_src[96], 'Q'), bitq(Z, 'epoch', 31)))
-    require(header_pairs == expected_pairs - {scalar_epoch_pair}, 'reply header bit comparison identity changed')
-    incoming = [q(Z, 'configured'), bitq(R, 'serial_quiesce', 1), q(B, 'serial_reset_n'), q(R, 'serial_reset_n'), bitq(B, 'serial_quiesce_sync', 1), bitq(B, 'reply_sync', 1), q(B, 'reply_ack'), q(Z, 'have_next'), q(Z, 'requested'), n.pin(reply_src[97], 'Q'), q(Z, 'mode_44k1'), n.pin(reply_src[96], 'Q'), bitq(Z, 'epoch', 31)]
+    high_epoch_pair = frozenset((n.pin(reply_src[96], 'Q'), bitq(Z, 'epoch', 31)))
+    require(header_pairs in (expected_pairs, expected_pairs - {high_epoch_pair}), 'reply header bit comparison identity changed')
+    reply_scalar_epoch = header_pairs != expected_pairs
+    incoming = [q(Z, 'configured'), bitq(R, 'serial_quiesce', 1), q(B, 'serial_reset_n'), q(R, 'serial_reset_n'), bitq(B, 'serial_quiesce_sync', 1), bitq(B, 'reply_sync', 1), q(B, 'reply_ack'), q(Z, 'have_next'), q(Z, 'requested'), n.pin(reply_src[97], 'Q'), q(Z, 'mode_44k1')]
     carries = sorted(header_carries)
-    proofs.append(g.equivalent('reply next capture requires live matching header', [next_ce, *incoming, *carries], lambda x: x[0] == (x[1] and not x[2] and x[3] and x[4] and not x[5] and x[6] != x[7] and not x[8] and x[9] and x[10] == x[11] and x[12] == x[13] and not any(x[14:])), set(carries)))
+    reply_inputs = [next_ce, *incoming, *carries]
+    if reply_scalar_epoch:
+        reply_inputs += [n.pin(reply_src[96], 'Q'), bitq(Z, 'epoch', 31)]
+    carry_end = 12 + len(carries)
+    proofs.append(g.equivalent('reply next capture requires live matching header', reply_inputs, lambda x: x[0] == (x[1] and not x[2] and x[3] and x[4] and not x[5] and x[6] != x[7] and not x[8] and x[9] and x[10] == x[11] and not any(x[12:carry_end]) and (not reply_scalar_epoch or x[carry_end] == x[carry_end + 1])), set(carries)))
     for i, p in enumerate(g.group(Z, 'next_pcm', 32)):
         require(n.pin(p, 'D') == n.pin(reply_src[i + 1], 'Q'), 'reply next PCM tuple mapping changed')
     require(n.pin(reg(Z, 'next_error'), 'D') == n.pin(reply_src[0], 'Q'), 'reply next error mapping changed')
@@ -637,6 +659,8 @@ def audit_netlist(root, n, clocks):
         protected_async_pins=protected, candidate_constraints_installed=False,
         static_source_contracts_verified=True, complete_payload_closure_verified=True, selector_static_resolution_verified=True,
         context_comparison_semantics_verified=True, reply_capture_header_gate_verified=True,
+        comparison_topologies=dict(ready_carry_pair_count=len(ready_pairs), ready_scalar_rate=ready_scalar_rate,
+            reply_carry_pair_count=len(header_pairs), reply_scalar_epoch31=reply_scalar_epoch),
         constraints_complete=False, held_payload_complete=False, fifo_payload_complete=False,
         reset_inventory_complete=False, physical_cdc_accepted=False, routed_propagation_verified=False,
         tool_query_resolution_verified=False, hardware_tested=False, release_ready=False, deployment_allowed=False)

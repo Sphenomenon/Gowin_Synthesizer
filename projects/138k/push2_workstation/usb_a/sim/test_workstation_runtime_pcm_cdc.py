@@ -83,6 +83,7 @@ class ActualRuntimePcm(unittest.TestCase):
         if not stage or not process:
             raise unittest.SkipTest('set explicit GW138K_RUNTIME_PCM_CDC_STAGE/PROCESS; no EDA or historical fallback')
         cls.stage, cls.process = Path(stage), Path(process)
+        cls.installed = os.environ.get('GW138K_RUNTIME_PCM_CDC_INSTALLED') == '1'
         cls.text = (cls.stage / VG_RELATIVE).read_text()
         cls.n = PcmNetlist(cls.text, TOP)
         cls.g = Graph(cls.n)
@@ -140,12 +141,12 @@ class ActualRuntimePcm(unittest.TestCase):
         self.negative_cases.append(dict(case=name, rejected=True, error=str(caught.exception)))
 
     def test_01_sealed_source_partial_acceptance(self):
-        r = run_audit(ROOT, self.stage, self.process)
+        r = run_audit(ROOT, self.stage, self.process, installed=self.installed)
         self.assertEqual(r['payload_source_bits'], 229)
-        self.assertEqual([len(x['closure']['endpoints']) for x in r['payload_groups']], [65, 263, 139, 205])
-        self.assertEqual(len(r['resolved_pin_selectors']), 862)
+        self.assertEqual([len(x['closure']['endpoints']) for x in r['payload_groups']], [65, 263, 141, 207])
+        self.assertEqual(len(r['resolved_pin_selectors']), 864)
         self.assertEqual((len(r['synchronization_groups']), len(r['reset_release_groups'])), (16, 5))
-        self.assertEqual(len(r['boolean_contracts']), 17)
+        self.assertEqual(len(r['boolean_contracts']), 19)
         self.assertGreater(r['lexical_connection_audit']['escaped_named_port_count'], 0)
         self.assertFalse(r['lexical_connection_audit']['original_vg_rewritten'])
         levels = {x['id']: x for x in r['level_source_boundaries']}
@@ -153,8 +154,10 @@ class ActualRuntimePcm(unittest.TestCase):
         self.assertEqual(len(levels['prefill']['source_registers']), 14)
         self.assertTrue(any(x.endswith('/runtime_configuration.failed_s0') for x in levels['fault']['source_registers']))
         self.assertTrue(r['source_seal_before_and_after'])
-        self.assertTrue(r['proposal_only'])
-        self.assertFalse(r['candidate_constraints_installed'])
+        self.assertEqual(r['proposal_only'], not self.installed)
+        self.assertEqual(r['candidate_constraints_installed'], self.installed)
+        self.assertEqual(len(levels['quiesce']['source_registers']), 1)
+        self.assertEqual(len(levels['resume']['source_registers']), 1)
         self.assertTrue(r['context_comparison_semantics_verified'])
         self.assertTrue(r['reply_capture_header_gate_verified'])
         for key in ('constraints_complete', 'held_payload_complete', 'fifo_payload_complete',
@@ -163,14 +166,19 @@ class ActualRuntimePcm(unittest.TestCase):
             self.assertFalse(r[key])
 
     def test_02_installed_text_is_distinct_from_sealed_installation(self):
-        text = self.sdc + self.bundle['sdc']
+        original = self.sdc.replace(self.bundle['sdc'], '') if self.installed else self.sdc
+        text = original + self.bundle['sdc']
         result = validate_constraints(ROOT, text, self.result, installed=True)
         self.assertTrue(result['candidate_constraints_installed'])
         self.assertFalse(result['tool_query_resolution_verified'])
         self.reject_sdc('proposal refuses an already-installed text', text, installed=False)
-        self.reject_sdc('old sealed candidate cannot claim installed', self.sdc)
-        with self.assertRaisesRegex(ValueError, 'installed PCM lines'):
-            run_audit(ROOT, self.stage, self.process, installed=True)
+        self.reject_sdc('missing sealed installation cannot claim installed', original)
+        if self.installed:
+            with self.assertRaisesRegex(ValueError, 'proposal audit must not silently accept'):
+                run_audit(ROOT, self.stage, self.process)
+        else:
+            with self.assertRaisesRegex(ValueError, 'installed PCM lines'):
+                run_audit(ROOT, self.stage, self.process, installed=True)
 
     def test_03_original_twenty_eight_structural_negatives(self):
         for scope, stem, width, toggle in [(B, 'held_request', 65, 'request_toggle'),
@@ -263,7 +271,61 @@ class ActualRuntimePcm(unittest.TestCase):
                 target.clear()
                 target.update(cell)
 
-    def test_10_synthesis_seal_cannot_be_replaced_by_ad_hoc_evidence(self):
+    def test_10_registered_level_publication_and_complete_comparisons(self):
+        for stem in ('quiesce_o', 'dac_mute_o'):
+            p = self.reg(T, stem)
+            for port in ('CLK', 'CE', 'PRESET', 'D'):
+                with self.subTest(stem=stem, port=port), self.changed(p, port=port, value="1'b0"):
+                    self.reject('registered ' + stem + ' ' + port)
+        mute = self.n.pin(self.reg(T, 'dac_mute_o'), 'Q')
+        inv = [p for p, c in self.n.cells.items() if self.n.scopes[p] == R and c['kind'] == 'INV'
+               and self.n.pin(p, 'I') == mute]
+        self.assertEqual(len(inv), 1)
+        with self.changed(inv[0], port='I', value="1'b0"):
+            self.reject('resume no longer inverts the registered mute source')
+        with self.added(R + '/rogue_resume', R, 'INV', dict(I='dac_mute', O='rogue_resume')):
+            self.reject('ambiguous resume inverter added')
+        ready_net = R + '/rate_context_ready'
+        ready = self.g.drivers[ready_net][0][0]
+        width = 1 << int(self.n.cells[ready]['kind'][3:])
+        with self.changed(ready, parameter='INIT', value=str(width) + "'h0"):
+            self.reject('ready return qualifier altered')
+
+        def comparison_cell(output, pair):
+            todo, seen, matches = [output], set(), []
+            while todo:
+                net = todo.pop()
+                if net in seen or net in self.g.high | self.g.low:
+                    continue
+                seen.add(net)
+                p, _ = self.g.drivers[net][0]
+                if p in self.g.regs:
+                    continue
+                cell = self.n.cells[p]
+                ports = [x for x in cell['ports'] if x not in ('F', 'O', 'COUT', 'SUM')]
+                if pair <= {self.n.pin(p, x) for x in ports}:
+                    matches.append((p, ports))
+                todo.extend(self.n.pin(p, x) for x in ports)
+            self.assertEqual(len(matches), 1)
+            return matches[0]
+
+        rate_nets = {self.n.pin(self.reg(R, 'context_payload', 32), 'Q'),
+                     self.n.pin(self.reg(T, 'pending_44k1'), 'Q')}
+        p, ports = comparison_cell(ready_net, rate_nets)
+        operands = [x for x in ports if self.n.pin(p, x) in rate_nets]
+        self.assertEqual(len(operands), 2)
+        with self.changed(p, port=operands[0], value=self.n.cells[p]['ports'][operands[1]]):
+            self.reject('ready rate comparison bypassed in carry or scalar gate')
+        next_ce = self.n.pin(self.reg(Z, 'next_pcm', 0), 'CE')
+        epoch_nets = {self.n.pin(self.reg(Z, 'epoch', 31), 'Q'),
+                      self.n.pin(self.reg(B, 'held_reply', 96), 'Q')}
+        p, ports = comparison_cell(next_ce, epoch_nets)
+        operands = [x for x in ports if self.n.pin(p, x) in epoch_nets]
+        self.assertEqual(len(operands), 2)
+        with self.changed(p, port=operands[0], value=self.n.cells[p]['ports'][operands[1]]):
+            self.reject('reply high epoch bit bypassed in carry or scalar gate')
+
+    def test_11_synthesis_seal_cannot_be_replaced_by_ad_hoc_evidence(self):
         original = json.loads(self.process.read_text())
         with tempfile.TemporaryDirectory() as tmp:
             for label, change in [('VG hash', lambda d: d['output_sha256'].update({VG_RELATIVE: '0' * 64})),
@@ -277,7 +339,8 @@ class ActualRuntimePcm(unittest.TestCase):
                 self.negative_cases.append(dict(case='seal ' + label, rejected=True, error=str(caught.exception)))
 
     def test_09_constraint_negatives(self):
-        text = self.sdc + self.bundle['sdc']
+        original = self.sdc.replace(self.bundle['sdc'], '') if self.installed else self.sdc
+        text = original + self.bundle['sdc']
         lines = self.bundle['sdc'].splitlines()
         for index, label in [(0, 'request line missing'), (2, 'reply bypass and CE line missing'),
                              (4, 'context line missing'), (8, 'first D cut missing'), (9, 'resolution line missing')]:

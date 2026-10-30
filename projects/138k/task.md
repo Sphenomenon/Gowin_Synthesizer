@@ -56,6 +56,8 @@
 
 [no-CNN C11030FA物理准备](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_FA_PHYSICAL_PREPARE_20261030.md)父级／独立18项输入及23负控通过，使用原SDC／maintained ULPI CST与place2／route0启动P&R。新VG时钟4项／23负控和Gray／媒体／USB CDC27项／77负控通过；完整CDC／RAM／复位／PLL与routed时序仍未接受，物理结果另记，无部署。
 
+[注册控制／no-CNN PCM检查器适配](push2_workstation/usb_a/reports/WORKSTATION_PCM_REGISTERED_AND_NO_CNN_AUDIT_20261030.md)父级在两份实际VG各完成15项／94负控，并独立复验同沿D锥／十负控；229位、864selector及65／263／141／207完整闭包保持严格，50行SDC不变。新双prepare为`63028f9b77637e25`／`60cae14e43255a2b`，staged与各自前序完全相同；来源回归全过，但新prepare尚未综合，FA不改名继承。完整CDC／reset／RAM物理／PLL／STA及硬件仍未接受，无部署。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
