@@ -164,6 +164,8 @@
 
 [TF 流式入口父级复验](push2_workstation/usb_a/reports/WORKSTATION_TF_DIRECT_INGRESS_PARENT_20261031.md)已在主线完成42场景／11负控／三旧WAV回归和accepted17，完整结果与封存交付一致；独立复现的chunk长度回卷已修复并有行为负控。组件尚未选择，真实file owner／CDC／物理I2S组合、整机owner4零DDR、吞吐／资源／时序／硬件仍待验，M03不勾选，无部署。
 
+[C2103101 实际P&R失败复核](push2_workstation/usb_a/reports/WORKSTATION_PITCH_FIFO_C2103101_PNR_FAILURE_20261031.md)已封存：589条未布通、退出1，4,278复制输入保持；物理CLS61,506／69,120、BSRAM284／340、PRIMARY与LW各8／8。父级完整复验独立报告／24故障控制和实际九输出库存通过，但无位流或完整routed STA，不授物理／硬件接受，无板卡或部署操作。显示修复新候选222fb761另行综合审查。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

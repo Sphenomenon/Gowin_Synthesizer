@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "identity": "pitch-fifo-C2103101-pnr-parent-20261031-v1",
+  "physical_identity": "custom138k-r00-pitch-fifo-no-local-panel-nominal-experiment-C2103101",
+  "source_candidate": "custom138k-workstation-r00-no-local-panel-v1-18ed947312186187",
+  "source_commit": "eff1d7d34d243b93d008141b70e032271cf449b4",
+  "physical_manifest_sha256": "528856e6c344e5ed3ce8f7f09bd52a24aa59ae6f18a39b088b9d44ef1ddd7186",
+  "actual_VG_sha256": "c9f88c71d63478c0e659806f5497ab867e2a5f01e3d924f1bf5938f884a51e7b",
+  "process": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-no-local-panel-physical-C2103101/pnr_process.json",
+    "sha256": "12c97026b168373d2d51869fb9f8edf6089cefa600b7191397097f3627efd28a"
+  },
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pitch-fifo-C2103101-pnr-review-v1/REVIEW_SEAL.json",
+    "sha256": "0d430eec4aa1b6bb5380167ce11d3733a12048ef4c058e6bc8e9b52f9d60ac9c"
+  },
+  "input_files": 4278,
+  "runner_output_files": 6,
+  "independent_actual_impl_files": 9,
+  "actual_physical_inventory_files": 4290,
+  "all_inputs_rehashed_unchanged": true,
+  "independent_review_and_24_guard_faults_root_replayed": true,
+  "exit_code": 1,
+  "elapsed_seconds": 1001.5149890000466,
+  "vendor_reported_unrouted_nets": 589,
+  "unrouted_nets_individually_enumerated": false,
+  "resource_report_observations": {
+    "Logic": {
+      "used": 95078,
+      "available": 138240
+    },
+    "Register": {
+      "used": 60574,
+      "available": 139095
+    },
+    "CLS": {
+      "used": 61506,
+      "available": 69120
+    },
+    "BSRAM": {
+      "used": 284,
+      "available": 340
+    },
+    "PRIMARY": {
+      "used": 8,
+      "available": 8
+    },
+    "LW": {
+      "used": 8,
+      "available": 8
+    },
+    "PLL": {
+      "used": 6,
+      "available": 12
+    }
+  },
+  "resource_savings_accepted": false,
+  "report_version": "V1.9.12",
+  "report_sections": 8,
+  "launch_bound_gw_sh": {
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01"
+  },
+  "dylibs_scope": "independent post-completion observation only; not launch binding",
+  "command_requested_timing_SDF_TR_but_outputs_absent": true,
+  "bitstreams": {},
+  "routed_STA_result_present": false,
+  "preparation_acceptance_preserved": true,
+  "physical_gates_passed": false,
+  "complete_CDC_accepted": false,
+  "feature_preservation_accepted": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "rollback": "original C2103001 and fixed18ed source retained; no board change to roll back",
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pitch-fifo-C2103101-pnr-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "da93bdf08a11dad826b61f579777dfbfafcea5c3f31d1b9174845b6035460f87"
+  },
+  "parent_file_count": 4,
+  "parent_input_count": 4950
+}
