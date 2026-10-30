@@ -20,7 +20,8 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def run(output, prepared_project=None):
+def run(output, prepared_project=None, epoch_policy='legacy'):
+    reserved,seed={'legacy':(0,0),'nonzero':(1,1),'wrap':(1,0xfffffffe)}[epoch_policy]
     baseline = load_baseline(ROOT, 'resource_rework_route0')
     original_apb = baseline.read_bytes('src/migration/gw138k_apb_cdc.sv')
     apb_bytes = timing.apb(original_apb.decode()).encode()
@@ -48,13 +49,14 @@ def run(output, prepared_project=None):
     identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False,
                   validation_stage='offline-native-service-real-apb-cdc-and-clock-transaction',
-                  identity='audio-clock-command-offline-v1-' + identity[:16], source_set_sha256=identity,
+                  identity='audio-clock-command-offline-v1-' + epoch_policy + '-' + identity[:16], source_set_sha256=identity,
                   baseline=baseline.evidence(),
                   apb=dict(input='src/migration/gw138k_apb_cdc.sv',
                            before_sha256=hashlib.sha256(original_apb).hexdigest(),
                            predecoded_sha256=digest(apb), prepared_reference=reference),
                   input_sha256=hashes, input_paths={key: str(path) for key, path in paths.items()},
-                  configuration=dict(control_hz=50000000, bus_period_ns=27.4,
+                  configuration=dict(epoch_policy=epoch_policy,reserve_zero_epoch=bool(reserved),initial_stream_epoch=seed,
+                      control_hz=50000000, bus_period_ns=27.4,
                       test_accept_timeout_clocks=16, test_result_timeout_clocks=192,
                       real_switch_state_timeout_clocks=96, default_accept_timeout_clocks=32,
                       default_result_timeout_clocks=20000000, rearm_quiet_clocks=4),
@@ -71,6 +73,8 @@ def run(output, prepared_project=None):
             raise RuntimeError('Clock service lint failed:\n' + (output / 'lint.log').read_text())
         compile_command = ['iverilog', '-g2012', '-s', 'tb_workstation_audio_clock_service',
                            '-o', str(output / 'clock_service.vvp'), *map(str, sources)]
+        compile_command[1:1]=['-Ptb_workstation_audio_clock_service.RESERVE_ZERO_EPOCH='+str(reserved),
+                              '-Ptb_workstation_audio_clock_service.INITIAL_STREAM_EPOCH='+str(seed)]
         result['compile_argv'] = compile_command
         process = subprocess.run(compile_command, capture_output=True, text=True, timeout=60)
         (output / 'compile.log').write_text(process.stdout + process.stderr)
@@ -101,12 +105,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--prepared-project', type=Path)
+    parser.add_argument('--epoch-policy',choices=('legacy','nonzero','wrap'),default='legacy')
     args = parser.parse_args()
     if args.output is not None:
-        run(args.output.resolve(), args.prepared_project)
+        run(args.output.resolve(), args.prepared_project,args.epoch_policy)
     else:
         with tempfile.TemporaryDirectory(prefix='gw138k-clock-service-') as directory:
-            run(Path(directory) / 'verification', args.prepared_project)
+            run(Path(directory) / 'verification', args.prepared_project,args.epoch_policy)
 
 
 if __name__ == '__main__':

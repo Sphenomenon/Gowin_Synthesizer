@@ -20,6 +20,7 @@ def main():
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--production-startup', action='store_true')
+    parser.add_argument('--nonzero-epoch', action='store_true', help='Explicit stream-owner v1.1 epoch policy; initial1, wrap skips0')
     args = parser.parse_args()
     project, output = args.project.resolve(), args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -57,11 +58,12 @@ def main():
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False,
                   scope='Opt-in native audio composition; actual DSP, clock transaction/official DCS, owner6 DMA, final PCM, bridge, physical I2S and taps',
                   limits='Ordered DDR functional model; coherent TF packet fixture; external policy authorization only; no CPU command integration, top/profile selection, P&R or hardware acceptance',
-                  production_startup=args.production_startup, project=str(project), input_sha256=hashes,
+                  production_startup=args.production_startup, reserve_zero_epoch=args.nonzero_epoch,
+                  initial_stream_epoch=1 if args.nonzero_epoch else 0, project=str(project), input_sha256=hashes,
                   prepared_reference_candidate=profile['candidate_identity'],
                   prepared_profile=profile['profile'], prepared_profile_revision=profile['revision'],
                   source_set_sha256=source_set_sha256,
-                  composition_identity='native-runtime-audio-offline-v1-' + source_set_sha256[:16],
+                  composition_identity='native-runtime-audio-offline-v1-' + ('nonzero-' if args.nonzero_epoch else '') + source_set_sha256[:16],
                   validation_stage='offline-physical-interface-simulation', bitstream_sha256=None,
                   compute_clock_hz=76800000, memory_clock_hz=100000000, switch_state_timeout_50mhz_cycles=2000000)
     try:
@@ -70,6 +72,8 @@ def main():
                    '-I' + str(ROOT), '-I' + str(project), *map(str, sources)]
         if args.production_startup:
             command += ['-GSTARTUP_FRAMES=1028', '-GPDN_FRAMES=4', '-GPRODUCTION_CLOCKS=1']
+        if args.nonzero_epoch:
+            command += ['-GRESERVE_ZERO_EPOCH=1']
         result['compile_argv'] = command
         with (output / 'compile.log').open('w') as stream:
             subprocess.run(command, cwd=project, stdout=stream, stderr=subprocess.STDOUT, check=True, timeout=300)

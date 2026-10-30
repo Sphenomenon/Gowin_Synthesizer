@@ -17,6 +17,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--nonzero-epoch',action='store_true')
     args = parser.parse_args()
     project, output = args.project.resolve(), args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -76,12 +77,13 @@ def main():
     hashes = {str(path): digest(path) for path in inputs}
     source_identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False,
-                  identity='native-runtime-controlled-offline-v1-' + source_identity[:16],
+                  identity='native-runtime-controlled-offline-v1-' + ('nonzero-' if args.nonzero_epoch else '') + source_identity[:16],
                   source_set_sha256=source_identity, input_sha256=hashes,
                   prepared_reference_candidate=profile['candidate_identity'],
                   scope='Real APB/services, UART 31250/115200, fair lifecycle merge, native DSP/DMA/official DCS/I2S, physical PCM CDC and recorder/FFT/256cue consumers',
                   limits='Ordered functional DDR model and coherent TF fixture; shorter clock qualification/startup; no top/profile selection, P&R, hardware or recording-file integration',
-                  configuration=dict(compute_hz=76800000,memory_hz=100000000,control_hz=50000000,
+                  configuration=dict(reserve_zero_epoch=args.nonzero_epoch,initial_stream_epoch=1 if args.nonzero_epoch else 0,
+                                     compute_hz=76800000,memory_hz=100000000,control_hz=50000000,
                                      default_record_depth=256,test_record_depth=16,consumer_test_record_depth=4,
                                      legacy_96bit_record_rate_hz=48000,physical_observation_bits=98))
     try:
@@ -112,6 +114,8 @@ def main():
         command = ['verilator', '--binary', '--timing', '-j', '4', '-Wno-fatal',
                    '--top-module', 'tb_workstation_runtime_controlled', '--Mdir', str(output / 'obj'),
                    '-I' + str(ROOT), '-I' + str(project), *map(str, sources)]
+        if args.nonzero_epoch:
+            command += ['-GRESERVE_ZERO_EPOCH=1']
         result['compile_argv']=command
         with (output / 'compile.log').open('w') as stream:
             subprocess.run(command,cwd=project,stdout=stream,stderr=subprocess.STDOUT,check=True,timeout=300)

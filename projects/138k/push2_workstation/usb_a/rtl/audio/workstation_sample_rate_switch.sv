@@ -4,7 +4,9 @@
 // complete-frame quiescence, local reset distribution and tagged PCM delivery.
 module workstation_sample_rate_switch #(
     parameter integer TIMEOUT_CYCLES = 1000000,
-    parameter bit DEFAULT_44K1 = 0
+    parameter bit DEFAULT_44K1 = 0,
+    parameter bit RESERVE_ZERO_EPOCH = 0,
+    parameter [31:0] INITIAL_STREAM_EPOCH = RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0
 ) (
     input wire clk_i, rst_ni,
     // Single-cycle request strobes; busy requests are rejected, never queued.
@@ -45,7 +47,15 @@ module workstation_sample_rate_switch #(
     wire running_qualified = source_qualified_i[active_44k1_o] && selected_clock_qualified_i;
     wire timed_out = timer == TIMER_BITS'(TIMEOUT_CYCLES-1);
 
-    initial if (TIMEOUT_CYCLES < 4) $fatal(1, "TIMEOUT_CYCLES must be >= 4");
+    // Explicit v1.1 metadata policy. The clock transaction remains the only
+    // stream epoch owner; display and command observers never remap its value.
+    wire [31:0] following_epoch=RESERVE_ZERO_EPOCH && stream_epoch_o==32'hffffffff
+        ? 32'd1 : stream_epoch_o+1'b1;
+    initial begin
+        if (TIMEOUT_CYCLES < 4) $fatal(1, "TIMEOUT_CYCLES must be >= 4");
+        if (RESERVE_ZERO_EPOCH && INITIAL_STREAM_EPOCH==0)
+            $fatal(1, "Reserved-zero epoch requires a nonzero initial identity");
+    end
 
     assign request_ready_o = state == RUN && running_qualified;
     assign busy_o = state != RUN && state != FAULT;
@@ -77,11 +87,11 @@ module workstation_sample_rate_switch #(
             state <= BOOT_SELECT;
             timer <= 0;
             pending_44k1 <= DEFAULT_44K1;
-            pending_epoch <= 0;
+            pending_epoch <= INITIAL_STREAM_EPOCH;
             booting <= 1;
             active_44k1_o <= DEFAULT_44K1;
             active_valid_o <= 0;
-            stream_epoch_o <= 0;
+            stream_epoch_o <= INITIAL_STREAM_EPOCH;
             accepted_o <= 0; applied_o <= 0; rejected_o <= 0; failed_o <= 0;
             reject_code_o <= REJECT_NONE;
             fault_code_o <= FAULT_NONE;
@@ -109,7 +119,7 @@ module workstation_sample_rate_switch #(
                             if (request_44k1_i == active_44k1_o) applied_o <= 1;
                             else begin
                                 pending_44k1 <= request_44k1_i;
-                                pending_epoch <= stream_epoch_o + 1'b1;
+                                pending_epoch <= following_epoch;
                                 booting <= 0;
                                 state <= QUIESCE;
                             end
@@ -176,7 +186,7 @@ module workstation_sample_rate_switch #(
                     // must resume before DCS can acknowledge a safe low stop.
                     if (recover_i && source_qualified_i[active_44k1_o]) begin
                         pending_44k1 <= active_44k1_o;
-                        pending_epoch <= stream_epoch_o + 1'b1;
+                        pending_epoch <= following_epoch;
                         booting <= 0;
                         state <= STOP_START;
                     end

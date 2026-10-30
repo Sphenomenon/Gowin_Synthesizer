@@ -7,7 +7,8 @@
 module workstation_audio_clock_service #(
     parameter integer ACCEPT_TIMEOUT_CYCLES = 32,
     parameter integer RESULT_TIMEOUT_CYCLES = 20000000,
-    parameter integer REARM_QUIET_CYCLES = 4
+    parameter integer REARM_QUIET_CYCLES = 4,
+    parameter bit RESERVE_ZERO_EPOCH = 0
 ) (
     input wire clk_i, reset_ni,
     input wire command_valid_i, command_write_i,
@@ -59,6 +60,8 @@ module workstation_audio_clock_service #(
         core_policy_rejected_i || core_failed_i;
     wire [31:0] next_id=command_id==32'hffffffff ? 32'd1 : command_id+1'b1;
     wire recovering=operation==2;
+    wire [31:0] following_epoch=RESERVE_ZERO_EPOCH && core_stream_epoch_i==32'hffffffff
+        ? 32'd1 : core_stream_epoch_i+1'b1;
     wire context_matches=core_active_valid_i && !core_fault_i && !core_dsp_fault_i &&
         core_active_44k1_i==expected_rate && core_stream_epoch_i==expected_epoch;
     wire [31:0] actual_status={23'b0,core_source_qualified_i,switch_permit_i,
@@ -126,7 +129,7 @@ module workstation_audio_clock_service #(
         response_data_o=0;
         case(word_address)
             6'h00:response_data_o=32'h434c4b01;
-            6'h01:response_data_o=32'h00010007;
+            6'h01:response_data_o=32'h00010007 | (32'(RESERVE_ZERO_EPOCH)<<3);
             6'h02:response_data_o=response_error_o ? {28'b0,admission_error} : next_id;
             6'h03:response_data_o={26'b0,snapshot_valid,correlation_fault,armed,1'b0,phase};
             6'h04:response_data_o=command_id;
@@ -183,7 +186,8 @@ module workstation_audio_clock_service #(
                 command_id<=next_id;operation<=command_data_i[1:0];
                 expected_rate<=command_data_i==2 ? core_active_44k1_i : command_data_i[0];
                 base_epoch<=core_stream_epoch_i;
-                expected_epoch<=core_stream_epoch_i+32'(command_data_i==2 || command_data_i[0]!=core_active_44k1_i);
+                expected_epoch<=command_data_i==2 || command_data_i[0]!=core_active_44k1_i
+                    ? following_epoch : core_stream_epoch_i;
                 submitted_count<=increment_saturated(submitted_count);
                 request_44k1_o<=command_data_i[0];
                 request_o<=command_data_i!=2;recover_o<=command_data_i==2;

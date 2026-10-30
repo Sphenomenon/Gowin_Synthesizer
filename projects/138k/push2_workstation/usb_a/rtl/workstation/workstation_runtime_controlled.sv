@@ -8,7 +8,9 @@ module workstation_runtime_controlled #(
     parameter integer LOSS_TIMEOUT_CYCLES=500,STOP_LOW_CYCLES=16,COUNTER_BITS=32,
     parameter integer SWITCH_TIMEOUT_CYCLES=2000000,
     parameter integer PDN_HOLD_FRAMES=4,STARTUP_MUTE_FRAMES=1028,
-    parameter integer DMA_TIMEOUT_CYCLES=1048576,RECORD_ADDRESS_BITS=8
+    parameter integer DMA_TIMEOUT_CYCLES=1048576,RECORD_ADDRESS_BITS=8,
+    parameter bit RESERVE_ZERO_EPOCH=0,
+    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0
 ) (
     input wire rst_ni,clk_50m_i,compute_clk_i,memory_clk_i,
     input wire reference_48_i,reference_44_i,midi_rx_i,pc_uart_rx_i,
@@ -186,7 +188,8 @@ module workstation_runtime_controlled #(
         .WINDOW_CYCLES(WINDOW_CYCLES),.STABLE_WINDOWS(STABLE_WINDOWS),.TOLERANCE_PPM(TOLERANCE_PPM),
         .LOSS_TIMEOUT_CYCLES(LOSS_TIMEOUT_CYCLES),.STOP_LOW_CYCLES(STOP_LOW_CYCLES),.COUNTER_BITS(COUNTER_BITS),
         .SWITCH_TIMEOUT_CYCLES(SWITCH_TIMEOUT_CYCLES),.PDN_HOLD_FRAMES(PDN_HOLD_FRAMES),
-        .STARTUP_MUTE_FRAMES(STARTUP_MUTE_FRAMES),.DMA_TIMEOUT_CYCLES(DMA_TIMEOUT_CYCLES)
+        .STARTUP_MUTE_FRAMES(STARTUP_MUTE_FRAMES),.DMA_TIMEOUT_CYCLES(DMA_TIMEOUT_CYCLES),
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH)
     ) runtime(
         .rst_ni,.clk_50m_i,.compute_clk_i,.memory_clk_i,.reference_48_i,.reference_44_i,
         .request_i,.request_44k1_i,.switch_permit_i(qualified_permit),.recover_i,.media_quiescent_i,

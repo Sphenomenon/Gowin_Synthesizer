@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 module tb_workstation_runtime_audio #(
     parameter integer STARTUP_FRAMES=3, PDN_FRAMES=1,
-    parameter bit PRODUCTION_CLOCKS=0
+    parameter bit PRODUCTION_CLOCKS=0,RESERVE_ZERO_EPOCH=0
 );
     reg control_clk=0,compute_clk=0,memory_clk=0,reference48=0,reference44=0;
     reg run48=1,run44=1,rst_n=0;
@@ -39,7 +39,8 @@ module tb_workstation_runtime_audio #(
     workstation_runtime_audio #(
         .WINDOW_CYCLES(PRODUCTION_CLOCKS ? 50000:500),.STABLE_WINDOWS(PRODUCTION_CLOCKS ? 4:3),
         .LOSS_TIMEOUT_CYCLES(PRODUCTION_CLOCKS ? 500:25),.STOP_LOW_CYCLES(PRODUCTION_CLOCKS ? 16:8),
-        .COUNTER_BITS(32),.SWITCH_TIMEOUT_CYCLES(2000000),.PDN_HOLD_FRAMES(PDN_FRAMES),.STARTUP_MUTE_FRAMES(STARTUP_FRAMES)
+        .COUNTER_BITS(32),.SWITCH_TIMEOUT_CYCLES(2000000),.PDN_HOLD_FRAMES(PDN_FRAMES),.STARTUP_MUTE_FRAMES(STARTUP_FRAMES),
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH)
     ) dut(
         .rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .reference_48_i(reference48),.reference_44_i(reference44),.request_i(request),.request_44k1_i(request44),

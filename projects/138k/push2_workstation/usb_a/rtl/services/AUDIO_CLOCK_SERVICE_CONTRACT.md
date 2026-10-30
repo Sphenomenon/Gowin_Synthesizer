@@ -146,3 +146,15 @@ fault 与源总线停钟。许可与丢响应注入单列，不把它们当物�
 固件或板测。未来显式 profile 还须绑定唯一 owner、50-MHz inputs、独立
 APB 页与绝对地址、时钟切换业务许可、超时预算和真实 CPU 程序，再完成
 整机 CDC／时序／音频与硬件验收；C01／A06 整项未因此完成。
+
+## Optional reserved-zero epoch policy
+
+`RESERVE_ZERO_EPOCH` defaults to zero and must match the attached stream owner's
+configuration. With value one, feature register bit 3 is set and the command
+observer expects `0xffffffff -> 1` for a real switch or recovery. Same-rate
+requests preserve the actual epoch. The observer still reads the epoch from
+the core; this option never assigns or remaps authoritative stream identity.
+The native owner propagates this option through clock domain/runtime/controlled
+composition. See [STREAM_EPOCH.md](../audio/STREAM_EPOCH.md). A new explicit
+profile must select it for display metadata v1.1; existing profiles retain
+their previous selection.

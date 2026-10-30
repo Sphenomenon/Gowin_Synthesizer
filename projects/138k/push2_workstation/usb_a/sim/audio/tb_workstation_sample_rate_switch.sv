@@ -1,6 +1,18 @@
 `timescale 1ns/1ps
 
-module tb_workstation_sample_rate_switch;
+module tb_workstation_sample_rate_switch #(
+    parameter bit RESERVE_ZERO_EPOCH=0,
+    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0
+);
+    function automatic [31:0] epoch_at(input integer transitions);
+        reg [63:0] ordinal;
+        begin
+            ordinal={32'd0,INITIAL_STREAM_EPOCH}+64'(transitions);
+            if(RESERVE_ZERO_EPOCH)epoch_at=32'((ordinal-1)%64'hffffffff+1);
+            else epoch_at=ordinal[31:0];
+        end
+    endfunction
+
     reg clk=0, rst_n=0, clk48=0, clk44=0, run48=1, run44=1;
     always #10 clk=~clk;
     always #40.690104 if (run48) clk48=~clk48;
@@ -32,7 +44,8 @@ module tb_workstation_sample_rate_switch;
         .CLKIN0(clk48),.CLKIN1(clk44),.CLKIN2(1'b0),.CLKIN3(1'b0),
         .CLKSEL(select),.SELFORCE(1'b0),.CLKOUT(selected_clk)
     );
-    workstation_sample_rate_switch #(.TIMEOUT_CYCLES(96)) dut (
+    workstation_sample_rate_switch #(.TIMEOUT_CYCLES(96),
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH)) dut (
         .clk_i(clk),.rst_ni(rst_n),.request_i(request),.request_44k1_i(request44),.recover_i(recover),
         .source_qualified_i(qualified),.frame_quiescent_i(idle),
         .selected_clock_stopped_low_i(stopped_low),.selected_clock_qualified_i(selected_qualified),
@@ -89,21 +102,23 @@ module tb_workstation_sample_rate_switch;
     endtask
     task complete_switch(input bit rate44,input integer expected_epoch);
         integer n;
+        reg [31:0] previous_epoch;
         begin
+            previous_epoch=epoch;
             prefill=0; idle=0; output_running=0;
             pulse_request(rate44);
             if (!accepted || !quiesce || mute || !audio_reset_n) $fatal(1,"boundary quiesce handshake");
             ticks(4);
-            if (epoch!=expected_epoch-1 || active44==rate44 || !active_valid) $fatal(1,"premature commit");
+            if (epoch!=previous_epoch || active44==rate44 || !active_valid) $fatal(1,"premature commit");
             idle=1; tick(); idle=0;
             n=0;
             while (!audio_reset_n && !fault && n<400) begin tick(); n=n+1; end
             if (fault || !mute || !busy || staged44!=rate44 || staged_epoch!=expected_epoch)
                 $fatal(1,"prefill staging");
             ticks(4);
-            if (epoch!=expected_epoch-1 || !mute) $fatal(1,"commit before prefill");
+            if (epoch!=previous_epoch || !mute) $fatal(1,"commit before prefill");
             prefill=1; tick();
-            if (ready || applied || mute || epoch!=expected_epoch-1) $fatal(1,"apply before actual output");
+            if (ready || applied || mute || epoch!=previous_epoch) $fatal(1,"apply before actual output");
             ticks(3); output_running=1; tick();
             if (!ready || !applied || active44!=rate44 || epoch!=expected_epoch || mute)
                 $fatal(1,"atomic apply");
@@ -114,91 +129,91 @@ module tb_workstation_sample_rate_switch;
         ticks(4); rst_n=1;
         if (!mute || audio_reset_n || !flush) $fatal(1,"startup isolation");
         prefill=1; wait_run();
-        if (epoch!=0 || active44 || !active_valid || applied) $fatal(1,"boot identity");
-        complete_switch(1,1);
-        complete_switch(0,2);
+        if (epoch!=epoch_at(0) || active44 || !active_valid || applied) $fatal(1,"boot identity");
+        complete_switch(1,epoch_at(1));
+        complete_switch(0,epoch_at(2));
         // Idempotent request: reports apply without resetting or adding epoch.
         pulse_request(0);
-        if (!accepted || !applied || epoch!=2 || busy || quiesce) $fatal(1,"same-mode no-op");
+        if (!accepted || !applied || epoch!=epoch_at(2) || busy || quiesce) $fatal(1,"same-mode no-op");
         ticks(2);
         qualified[1]=0;
         pulse_request(1);
-        if (!rejected || rejection!=2 || accepted || epoch!=2 || !ready) $fatal(1,"missing-target refusal");
+        if (!rejected || rejection!=2 || accepted || epoch!=epoch_at(2) || !ready) $fatal(1,"missing-target refusal");
         qualified[1]=1;
         // Busy strobes cannot replace the selected target or pending epoch.
         idle=0; prefill=0; pulse_request(1);
         pulse_request(0);
-        if (!rejected || rejection!=1 || !staged44 || staged_epoch!=3) $fatal(1,"busy replaced pending request");
+        if (!rejected || rejection!=1 || !staged44 || staged_epoch!=epoch_at(3)) $fatal(1,"busy replaced pending request");
         pulse_request(1);
         if (!rejected || rejection!=1) $fatal(1,"second busy strobe");
         idle=1; tick(); idle=0;
         while (!audio_reset_n && !fault) tick();
         qualified[1]=0;
         wait_fault(4);
-        if (epoch!=2 || active44 || active_valid) $fatal(1,"failed target committed");
+        if (epoch!=epoch_at(2) || active44 || active_valid) $fatal(1,"failed target committed");
         pulse_request(1);
         if (!rejected || rejection!=3 || accepted) $fatal(1,"fault request accepted");
         qualified[1]=1; recover_run();
-        if (epoch!=3 || active44) $fatal(1,"recovery identity");
+        if (epoch!=epoch_at(3) || active44) $fatal(1,"recovery identity");
         // A stopped-high active source cannot release a glitchless DCS gate.
         check_pulses=0; idle=0; prefill=0; pulse_request(1);
         wait(clk48===1'b1); run48=0;
         idle=1; tick(); idle=0;
         wait_fault(2);
-        if (selected_clk!==1'b1 || epoch!=3) $fatal(1,"did not exercise stopped-high DCS");
+        if (selected_clk!==1'b1 || epoch!=epoch_at(3)) $fatal(1,"did not exercise stopped-high DCS");
         // A retry cannot invent the missing old-source edge.
         @(negedge clk); recover=1; tick(); recover=0;
         wait_fault(2);
         run48=1; ticks(16); recover_run();
-        if (epoch!=4 || active44) $fatal(1,"old-source recovery");
+        if (epoch!=epoch_at(4) || active44) $fatal(1,"old-source recovery");
         check_pulses=1; last_edge=0;
         // Complete-frame acknowledgement is bounded; no implicit global reset.
         idle=0; pulse_request(1); wait_fault(1);
-        if (epoch!=4 || !rst_n) $fatal(1,"quiesce failure identity");
+        if (epoch!=epoch_at(4) || !rst_n) $fatal(1,"quiesce failure identity");
         recover_run();
         // Bounded prefill failure retains the last committed identity.
         prefill=0; pulse_request(1); idle=1; tick(); idle=0;
         wait_fault(5);
-        if (epoch!=5 || active44) $fatal(1,"prefill failure committed");
+        if (epoch!=epoch_at(5) || active44) $fatal(1,"prefill failure committed");
         recover_run();
         // A stale source qualification cannot bypass a fresh output monitor.
         wait(clk44===1'b0); run44=0;
         prefill=0; pulse_request(1); idle=1; tick(); idle=0;
         wait_fault(3);
-        if (epoch!=6 || active44) $fatal(1,"unqualified output committed");
+        if (epoch!=epoch_at(6) || active44) $fatal(1,"unqualified output committed");
         run44=1; recover_run();
         // Output acknowledgement has its own bound after prefill/unmute.
         output_running=0; prefill=1;
         pulse_request(1); idle=1; tick(); idle=0;
         wait_fault(7);
-        if (epoch!=7 || active44) $fatal(1,"resume timeout committed");
+        if (epoch!=epoch_at(7) || active44) $fatal(1,"resume timeout committed");
         output_running=1; recover_run();
         // Running clock qualification loss asserts local isolation immediately.
         qualified[0]=0; tick(); wait_fault(6);
-        if (!rst_n || epoch!=8) $fatal(1,"running failure/global reset");
+        if (!rst_n || epoch!=epoch_at(8)) $fatal(1,"running failure/global reset");
         qualified[0]=1; recover_run();
-        if (epoch!=9 || active44) $fatal(1,"final recovery");
+        if (epoch!=epoch_at(9) || active44) $fatal(1,"final recovery");
         idle=0; pulse_request(1);
         qualified[0]=0; tick();
         if (!fault || failure!=6 || !mute || audio_reset_n)
             $fatal(1,"current clock loss waited for quiesce timeout");
         qualified[0]=1; recover_run();
-        if (epoch!=10) $fatal(1,"quiesce-loss recovery");
+        if (epoch!=epoch_at(10)) $fatal(1,"quiesce-loss recovery");
         // An unselected target loss keeps the healthy old frame intact.
         idle=0; pulse_request(1); qualified[1]=0; ticks(3);
         if (fault || mute || !audio_reset_n || select!=1)
             $fatal(1,"target loss truncated healthy current frame");
         idle=1; tick(); idle=0; wait_fault(4);
-        if (epoch!=10) $fatal(1,"quiesce target loss committed");
+        if (epoch!=epoch_at(10)) $fatal(1,"quiesce target loss committed");
         qualified[1]=1; recover_run();
-        if (epoch!=11) $fatal(1,"quiesce target recovery");
+        if (epoch!=epoch_at(11)) $fatal(1,"quiesce target recovery");
         ticks(2);
         // Startup never advertises a valid stream without a qualified source.
         rst_n=0; qualified=0; ticks(4); rst_n=1;
         wait_fault(3);
-        if (epoch!=0 || active_valid || !mute || audio_reset_n) $fatal(1,"unqualified startup");
+        if (epoch!=epoch_at(0) || active_valid || !mute || audio_reset_n) $fatal(1,"unqualified startup");
         qualified=2'b11; recover_run();
-        if (epoch!=1 || active44) $fatal(1,"startup recovery");
+        if (epoch!=epoch_at(1) || active44) $fatal(1,"startup recovery");
         ticks(2);
         $display("PASS sample-rate switch: official GW5A DCS, bidirectional switch, atomic epoch/output acknowledgement, busy/missing target, stopped-high timeout, recovery, quiesce/qualification/prefill/resume/running/startup faults; cycles=%0d accepts=%0d applies=%0d rejects=%0d faults=%0d",cycles,accepts,applies,rejects,failures);
         $finish;

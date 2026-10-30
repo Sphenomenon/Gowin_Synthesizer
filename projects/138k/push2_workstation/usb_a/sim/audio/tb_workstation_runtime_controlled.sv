@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module tb_workstation_runtime_controlled;
+module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
     reg control_clk=0,compute_clk=0,memory_clk=0,pclk=0,reference48=0,reference44=0,rst_n=0,preset_n=0;
     always #10 control_clk=!control_clk;
     always #6.510417 compute_clk=!compute_clk;
@@ -44,7 +44,8 @@ module tb_workstation_runtime_controlled;
     wire [31:0] ddr_mask;
     reg ddr_response=0;
     workstation_runtime_controlled #(.WINDOW_CYCLES(500),.STABLE_WINDOWS(3),.LOSS_TIMEOUT_CYCLES(25),
-        .STOP_LOW_CYCLES(8),.STARTUP_MUTE_FRAMES(3),.PDN_HOLD_FRAMES(1),.RECORD_ADDRESS_BITS(4)) dut(
+        .STOP_LOW_CYCLES(8),.STARTUP_MUTE_FRAMES(3),.PDN_HOLD_FRAMES(1),.RECORD_ADDRESS_BITS(4),
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH)) dut(
         .rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .reference_48_i(reference48),.reference_44_i(reference44),.midi_rx_i(midi_rx),.pc_uart_rx_i(pc_rx),
         .usb_event_valid(usb_valid),.usb_lifecycle,.usb_cancel,.usb_event_data(usb_data),.usb_event_ready(usb_ready),
@@ -100,7 +101,7 @@ module tb_workstation_runtime_controlled;
         end
     end
     reg [31:0] physical_pcm[0:3][0:8191];
-    reg physical_error[0:3][0:8191],physical_seen[0:3][0:8191];
+    reg physical_error[0:3][0:8191],physical_seen[0:3][0:8191],physical_rate[0:3][0:8191];
     reg [31:0] decoded=0,last_decoded=0;
     integer physical_position=0,physical_frames=0,observed_frames=0,nonzero=0,display_frames=0;
     integer fft_bins=0,fft_nonzero=0,uart_errors=0,apb_transactions=0,usb_events=0,cpu_events=0,policies=0;
@@ -120,7 +121,8 @@ module tb_workstation_runtime_controlled;
     always @(negedge mclk)if(rst_n && frame_valid)begin
         if(frame_epoch>=4 || frame_sequence>=8192 || frame_pcm!==last_decoded)$fatal(1,"physical serial tap");
         physical_seen[frame_epoch][frame_sequence]=1;physical_pcm[frame_epoch][frame_sequence]=last_decoded;
-        physical_error[frame_epoch][frame_sequence]=frame_error;physical_frames=physical_frames+1;
+        physical_error[frame_epoch][frame_sequence]=frame_error;physical_rate[frame_epoch][frame_sequence]=frame_rate;
+        physical_frames=physical_frames+1;
     end
     always @(negedge compute_clk)if(rst_n && dut.reset_compute_n)begin
         if(performance!=={32'h43545231,dut.snap_sequence,dut.snap_right,dut.snap_left,dut.snap_status,
@@ -129,13 +131,14 @@ module tb_workstation_runtime_controlled;
             if(!physical_seen[dut.observed_epoch][dut.observed_sequence] ||
                {audio_left[31:16],audio_right[31:16]}!==physical_pcm[dut.observed_epoch][dut.observed_sequence] ||
                audio_left[15:0]!=0 || audio_right[15:0]!=0 ||
-               dut.observed_error!==physical_error[dut.observed_epoch][dut.observed_sequence])
+               dut.observed_error!==physical_error[dut.observed_epoch][dut.observed_sequence] ||
+               dut.observed_rate!==physical_rate[dut.observed_epoch][dut.observed_sequence])
                 $fatal(1,"compute observer did not receive actual physical PCM/context");
             observed_frames=observed_frames+1;if(audio_left!=0 || audio_right!=0)nonzero=nonzero+1;
             if(dut.observed_rate)observed44=observed44+1;else observed48=observed48+1;
         end
         if(fft_valid)begin
-            if(!fft_context || fft_epoch!=dut.observed_epoch || fft_rate!==fft_epoch[0])$fatal(1,"FFT context label");
+            if(!fft_context || fft_epoch!=dut.observed_epoch || fft_rate!==dut.observed_rate)$fatal(1,"FFT context label");
             fft_bins=fft_bins+1;if(fft_real!=0 || fft_imag!=0)fft_nonzero=fft_nonzero+1;
             if(fft_rate)fft44=fft44+1;else fft48=fft48+1;
         end
@@ -148,7 +151,7 @@ module tb_workstation_runtime_controlled;
         if(display_valid)begin
             if(!physical_seen[display_epoch][display_sequence] ||
                display_pcm!==physical_pcm[display_epoch][display_sequence] ||
-               display_error!==physical_error[display_epoch][display_sequence] || display_rate!==display_epoch[0])
+               display_error!==physical_error[display_epoch][display_sequence] || display_rate!==physical_rate[display_epoch][display_sequence])
                 $fatal(1,"display lost physical PCM context");
             display_frames=display_frames+1;
         end

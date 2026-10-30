@@ -1,5 +1,17 @@
 `timescale 1ns/1ps
-module tb_workstation_audio_clock_service;
+module tb_workstation_audio_clock_service #(
+    parameter bit RESERVE_ZERO_EPOCH=0,
+    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0
+);
+    function automatic [31:0] epoch_at(input integer transitions);
+        reg [63:0] ordinal;
+        begin
+            ordinal={32'd0,INITIAL_STREAM_EPOCH}+64'(transitions);
+            if(RESERVE_ZERO_EPOCH)epoch_at=32'((ordinal-1)%64'hffffffff+1);
+            else epoch_at=ordinal[31:0];
+        end
+    endfunction
+
     reg clk=0,pclk=0,pclk_run=1;
     always #10 clk=~clk;
     real source_phase;
@@ -40,7 +52,8 @@ module tb_workstation_audio_clock_service;
     always @(posedge clk or negedge board_reset_n)
         if(!board_reset_n)policy_rejected<=0;
         else policy_rejected<=request && !permit;
-    workstation_sample_rate_switch #(.TIMEOUT_CYCLES(96)) core(
+    workstation_sample_rate_switch #(.TIMEOUT_CYCLES(96),
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH)) core(
         .clk_i(clk),.rst_ni(board_reset_n),
         .request_i(request && permit && !dsp_fault),.request_44k1_i(request_rate),.recover_i(recover),
         .source_qualified_i(source_qualified),.frame_quiescent_i(frame_quiet),
@@ -52,7 +65,8 @@ module tb_workstation_audio_clock_service;
         .quiesce_o(),.dac_mute_o(),.stream_flush_o(),.audio_reset_no(),
         .clock_monitor_restart_o(),.clock_select_o(),.active_44k1_o(actual_rate),
         .active_valid_o(actual_valid),.stream_epoch_o(actual_epoch),.staged_44k1_o(),.staged_epoch_o());
-    workstation_audio_clock_service #(.ACCEPT_TIMEOUT_CYCLES(16),.RESULT_TIMEOUT_CYCLES(192)) dut(
+    workstation_audio_clock_service #(.ACCEPT_TIMEOUT_CYCLES(16),.RESULT_TIMEOUT_CYCLES(192),
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH)) dut(
         .clk_i(clk),.reset_ni(command_reset_n),
         .command_valid_i(command_valid || hold_valid),.command_write_i(command_write),
         .command_address_i(command_address),.command_data_i(command_data),.command_strobes_i(command_strobes),
@@ -138,7 +152,7 @@ module tb_workstation_audio_clock_service;
         begin
             apb(0,12'h02c,0,0,0,data);
             if(data[1:0]!=={valid,rate})$fatal(1,"actual status got=%h expected rate=%b valid=%b",data,rate,valid);
-            read_eq(12'h030,epoch);
+            read_eq(12'h030,epoch_at(int'(epoch)));
         end
     endtask
     task automatic cpu_reset;
@@ -164,6 +178,7 @@ module tb_workstation_audio_clock_service;
     initial begin
         common_reset();
         read_eq(12'h000,32'h434c4b01);
+        read_eq(12'h004,32'h00010007 | (32'(RESERVE_ZERO_EPOCH)<<3));
         for(i=0;i<24;i=i+1)if(i!=2)apb(0,12'(i*4),0,0,0,returned);
         requests_before=request_pulses;
         apb(1,12'h000,0,15,1,returned);
@@ -200,7 +215,7 @@ module tb_workstation_audio_clock_service;
         apb(1,12'h008,0,15,1,returned);read_eq(12'h04c,5);busy_rejects=busy_rejects+1;
         apb(0,12'h02c,0,0,0,returned);
         if(returned[1:0]!=2'b10)$fatal(1,"snapshot did not capture old committed rate");
-        frame_quiet=1;wait(core_ready);read_eq(12'h030,0);snapshot_checks=snapshot_checks+1;
+        frame_quiet=1;wait(core_ready);read_eq(12'h030,epoch_at(0));snapshot_checks=snapshot_checks+1;
         result_eq(1,1);actual_eq(1,1,1);
         submit(1,2);result_eq(1,2);actual_eq(1,1,1); // same-rate accepted+applied on one edge
 
@@ -254,7 +269,7 @@ module tb_workstation_audio_clock_service;
         // board reset, stream reset, cancellation or replay is connected here.
         cpu_reset();frame_quiet=0;submit(0,1);wait(core_busy);
         applies_before=hardware_applies;cpu_reset();
-        if(!core_busy || actual_epoch!=1 || actual_rate!=1)$fatal(1,"CPU reset altered hardware transaction");
+        if(!core_busy || actual_epoch!=epoch_at(1) || actual_rate!=1)$fatal(1,"CPU reset altered hardware transaction");
         apb(1,12'h008,1,15,1,returned);read_eq(12'h04c,6);
         frame_quiet=1;wait(core_ready);repeat(8)@(posedge clk);
         if(hardware_applies!=applies_before+1)$fatal(1,"hardware did not continue across CPU reset");
@@ -276,7 +291,7 @@ module tb_workstation_audio_clock_service;
         cpu_reset();frame_quiet=0;submit(0,1);wait(core_busy);
         @(negedge pclk);pclk_run=0;frame_quiet=1;
         wait(core_ready);repeat(12)@(posedge clk);
-        if(dut.result_code!=1 || actual_epoch!=6)$fatal(1,"stopped source bus blocked hardware result");
+        if(dut.result_code!=1 || actual_epoch!=epoch_at(6))$fatal(1,"stopped source bus blocked hardware result");
         pclk_run=1;actual_eq(0,6,1);result_eq(1,1);source_bus_stop_checks=source_bus_stop_checks+1;
         $display("PASS audio_clock_service: bus_transactions=%0d max_bus_cycles=%0d request_pulses=%0d recover_pulses=%0d hardware_accepts=%0d hardware_applies=%0d hardware_failures=%0d held_checks=%0d busy_rejects=%0d late_rejects=%0d recover_accepts=%0d ignored_startup=%0d timeout_cases=%0d cpu_reset_during_hardware=%0d context_mismatch_cases=%0d dsp_fault_rejects=%0d source_bus_stop_checks=%0d snapshot_checks=%0d",
             bus_transactions,max_bus_cycles,request_pulses,recover_pulses,hardware_accepts,hardware_applies,hardware_failures,

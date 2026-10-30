@@ -8,7 +8,9 @@ module workstation_audio_clock_domain #(
     parameter integer LOSS_TIMEOUT_CYCLES=500,
     parameter integer STOP_LOW_CYCLES=16,
     parameter integer COUNTER_BITS=32,
-    parameter integer SWITCH_TIMEOUT_CYCLES=2000000
+    parameter integer SWITCH_TIMEOUT_CYCLES=2000000,
+    parameter bit RESERVE_ZERO_EPOCH=0,
+    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0
 ) (
     input wire clk_50m_i, rst_ni, reference_48_i, reference_44_i,
     input wire request_i, request_44k1_i, recover_i,
@@ -68,7 +70,8 @@ module workstation_audio_clock_domain #(
         .qualified_o(selected_qualified_o),.clock_present_o(),.stopped_low_o(selected_stopped_low_o),
         .window_valid_o(),.window_good_o(),.window_edges_o(measured_selected_o)
     );
-    workstation_sample_rate_switch #(.TIMEOUT_CYCLES(SWITCH_TIMEOUT_CYCLES)) transaction (
+    workstation_sample_rate_switch #(.TIMEOUT_CYCLES(SWITCH_TIMEOUT_CYCLES),
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH)) transaction (
         .clk_i(clk_50m_i),.rst_ni(control_reset_n),.request_i(request_i),.request_44k1_i(request_44k1_i),.recover_i(recover_i),
         .source_qualified_i(source_qualified_o),.frame_quiescent_i(frame_quiescent_i),
         .selected_clock_stopped_low_i(selected_stopped_low_o),.selected_clock_qualified_i(selected_qualified_o),

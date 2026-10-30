@@ -8,7 +8,9 @@ module workstation_runtime_audio #(
     parameter integer STOP_LOW_CYCLES=16, COUNTER_BITS=32,
     parameter integer SWITCH_TIMEOUT_CYCLES=2000000,
     parameter integer PDN_HOLD_FRAMES=4, STARTUP_MUTE_FRAMES=1028,
-    parameter integer DMA_TIMEOUT_CYCLES=1048576
+    parameter integer DMA_TIMEOUT_CYCLES=1048576,
+    parameter bit RESERVE_ZERO_EPOCH=0,
+    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0
 ) (
     input wire rst_ni, clk_50m_i, compute_clk_i, memory_clk_i,
     input wire reference_48_i, reference_44_i,
@@ -118,7 +120,8 @@ module workstation_runtime_audio #(
     workstation_audio_clock_domain #(
         .WINDOW_CYCLES(WINDOW_CYCLES),.STABLE_WINDOWS(STABLE_WINDOWS),.TOLERANCE_PPM(TOLERANCE_PPM),
         .LOSS_TIMEOUT_CYCLES(LOSS_TIMEOUT_CYCLES),.STOP_LOW_CYCLES(STOP_LOW_CYCLES),
-        .COUNTER_BITS(COUNTER_BITS),.SWITCH_TIMEOUT_CYCLES(SWITCH_TIMEOUT_CYCLES)
+        .COUNTER_BITS(COUNTER_BITS),.SWITCH_TIMEOUT_CYCLES(SWITCH_TIMEOUT_CYCLES),
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH)
     ) clocks(
         .clk_50m_i,.rst_ni,.reference_48_i,.reference_44_i,
         .request_i(request_i && switch_permit_i && !dsp_fault_o),.request_44k1_i,.recover_i,
