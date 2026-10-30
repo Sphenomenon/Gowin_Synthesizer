@@ -29,7 +29,11 @@ from tools.workstation_ble_ddr_prefix_cdc_scope import (SCOPE as BLE_DDR_PREFIX_
     COUNTER_SHA256 as PREFIX_COUNTER_SHA256)
 from tools.workstation_ble_ddr_prefix_cdc_endpoints import (PHASE1_ENDPOINT_SHA256 as PREFIX_ENDPOINT_SHA256,
     PHASE1_RESET_ALIAS_SHA256 as PREFIX_RESET_ALIAS_SHA256, validate_synthesis_binding as validate_prefix_VG)
-BLE_DDR_SCOPES = (BLE_DDR_SCOPE, BLE_DDR_PREFIX_SCOPE)
+from tools.workstation_ble_ddr_chorus_cdc_scope import (SCOPE as BLE_DDR_CHORUS_SCOPE,
+    validate_profile as validate_ble_ddr_chorus_profile, AUDIT_SOURCES as CHORUS_AUDIT_SOURCES)
+from tools.workstation_ble_ddr_chorus_cdc_endpoints import (PHASE1_ENDPOINT_SHA256 as CHORUS_ENDPOINT_SHA256,
+    PHASE1_RESET_ALIAS_SHA256 as CHORUS_RESET_ALIAS_SHA256, validate_synthesis_binding as validate_chorus_VG)
+BLE_DDR_SCOPES = (BLE_DDR_SCOPE, BLE_DDR_PREFIX_SCOPE, BLE_DDR_CHORUS_SCOPE)
 
 POLICY = 'owner8-recording-pcm-pointer-and-apb-mailbox-source-v1'
 PROFILE = 'custom138k-workstation-r00-no-local-panel-v1'
@@ -109,8 +113,9 @@ def validate_sources(root, stage, profile, *, scope=LEGACY_SCOPE):
     require(scope in (LEGACY_SCOPE, *BLE_DDR_SCOPES), 'unknown explicit scope')
     v2 = scope in BLE_DDR_SCOPES
     if v2:
-        (validate_ble_ddr_prefix_profile if scope == BLE_DDR_PREFIX_SCOPE else validate_ble_ddr_profile)(root, profile, stage=stage)
-    reviewed_sources = PREFIX_SOURCE_SHA256 if scope == BLE_DDR_PREFIX_SCOPE else V2_SOURCE_SHA256 if v2 else SOURCE_SHA256
+        (validate_ble_ddr_chorus_profile if scope == BLE_DDR_CHORUS_SCOPE else
+         validate_ble_ddr_prefix_profile if scope == BLE_DDR_PREFIX_SCOPE else validate_ble_ddr_profile)(root, profile, stage=stage)
+    reviewed_sources = PREFIX_SOURCE_SHA256 if scope in (BLE_DDR_PREFIX_SCOPE, BLE_DDR_CHORUS_SCOPE) else V2_SOURCE_SHA256 if v2 else SOURCE_SHA256
     require(profile.get('schema') == 1 and profile.get('profile') == PROFILE and
             profile.get('profile_source') == PROFILE_SOURCE and
             re.fullmatch(r'[0-9a-f]{64}', profile.get('profile_sha256', '')) is not None and
@@ -194,7 +199,7 @@ def protocol_basis(*, scope=LEGACY_SCOPE):
         require(gray_xor==1<<trailing_ones,'32-bit Gray increment carry identity changed')
         carry_classes.append(dict(trailing_ones=trailing_ones,changed_bit=trailing_ones))
     return dict(
-        reviewed_source_revisions=(PREFIX_SOURCE_SHA256 if scope == BLE_DDR_PREFIX_SCOPE else
+        reviewed_source_revisions=(PREFIX_SOURCE_SHA256 if scope in (BLE_DDR_PREFIX_SCOPE, BLE_DDR_CHORUS_SCOPE) else
                                   V2_SOURCE_SHA256 if scope in BLE_DDR_SCOPES else SOURCE_SHA256),
         FIFO=dict(pointer_width=5,modulo_increment_cases=pointer_pairs,
             ownership='Only write_fire/read_fire increments its binary/registered-Gray pointer; otherwise both hold',
@@ -221,8 +226,10 @@ def audit_netlist(n, *, g=None, scope=LEGACY_SCOPE):
     require(scope in (LEGACY_SCOPE, *BLE_DDR_SCOPES), 'unknown explicit scope')
     v2 = scope in BLE_DDR_SCOPES
     selected_scope = scope
-    endpoint_sha256 = PREFIX_ENDPOINT_SHA256 if scope == BLE_DDR_PREFIX_SCOPE else V2_ENDPOINT_SHA256 if v2 else ENDPOINT_SHA256
-    reset_alias_sha256 = PREFIX_RESET_ALIAS_SHA256 if scope == BLE_DDR_PREFIX_SCOPE else '366f05b101f78e31ffad26dfba64ea15c7b6285d1dd4cffab4f753c078d7e70c'
+    endpoint_sha256 = (CHORUS_ENDPOINT_SHA256 if scope == BLE_DDR_CHORUS_SCOPE else
+                       PREFIX_ENDPOINT_SHA256 if scope == BLE_DDR_PREFIX_SCOPE else V2_ENDPOINT_SHA256 if v2 else ENDPOINT_SHA256)
+    reset_alias_sha256 = (CHORUS_RESET_ALIAS_SHA256 if scope == BLE_DDR_CHORUS_SCOPE else
+                          PREFIX_RESET_ALIAS_SHA256 if scope == BLE_DDR_PREFIX_SCOPE else '366f05b101f78e31ffad26dfba64ea15c7b6285d1dd4cffab4f753c078d7e70c')
     require(bool(endpoint_sha256) and (not v2 or reset_alias_sha256 is not None), 'explicit reviewed endpoint identities required')
     g = g or Graph(n)
     domains = dict(selected=n.pin('u_managed/runtime/clocks/selector', 'CLKOUT'),
@@ -490,7 +497,9 @@ def audit_proposal_queries(n,result,proposal):
 def run_audit(root,stage,evidence,*,scope=LEGACY_SCOPE):
     root,stage=Path(root),Path(stage)
     before=verify_synthesis_identity(stage,evidence)
-    if scope == BLE_DDR_PREFIX_SCOPE:
+    if scope == BLE_DDR_CHORUS_SCOPE:
+        validate_chorus_VG(stage)
+    elif scope == BLE_DDR_PREFIX_SCOPE:
         validate_prefix_VG(stage)
     profile=json.loads((stage.parents[1]/'workstation_profile.json').read_text())
     helper_paths={Path(__file__).resolve(),*(Path(inspect.getsourcefile(f)).resolve() for f in
@@ -505,6 +514,8 @@ def run_audit(root,stage,evidence,*,scope=LEGACY_SCOPE):
         helper_paths.update(ROOT/p for p in ('tools/workstation_ble_ddr_prefix_cdc_scope.py',
             'tools/workstation_ble_ddr_prefix_cdc_endpoints.py', 'tools/workstation_runtime_counter.py',
             'sim/test_workstation_ble_ddr_prefix_cdc_scope.py'))
+    if scope == BLE_DDR_CHORUS_SCOPE:
+        helper_paths.update(root/p for p in CHORUS_AUDIT_SOURCES)
     helpers={str(p):file_sha(p) for p in sorted(helper_paths)}
     sources=validate_sources(root,stage,profile,scope=scope)
     text=(stage/VG_RELATIVE).read_text()
