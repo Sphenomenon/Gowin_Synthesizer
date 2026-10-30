@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "scope": "main_isolated_local_memory_probe_source_prepare",
+  "author_commit": "3b6fa565e9c401fc56dc63e245eebe6239528028",
+  "import_commit": "697c55775a42e35398e9698e62ada900a3caba46",
+  "source_snapshots": 16,
+  "existing_profile_changes": "build.py source hash only in six profiles",
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-parent-v1",
+  "seal_sha256": "4204acea9709bd10a98b71323f872a77f36fc20aee4a134bd895d7d60fefad3d",
+  "external_files": 725,
+  "identity": "custom138k-ae350-local-memory-probe-C21031C6",
+  "user_code": "0xC21031C6",
+  "prepared": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-prepare-v1",
+  "input_manifest_sha256": "700b7258417b02cd4073d9de7fbfb95b4e730e7206e8c2232efb002ee11b84fc",
+  "prepared_inputs": 37,
+  "compiled_sources": 7,
+  "firmware": {
+    "cold_bytes": 36368,
+    "ilm_bytes": 35760,
+    "conservative_stack_bytes": 96,
+    "elf_sha256": "825cf6713e13be6542579d368388642dfe1cc67c111b7b3cdb56d09186a8df64",
+    "binary_sha256": "d1bbb2cf9347dadd6c013d1bb77a6603c10ee7847c3e0054354a9dfcbdd92907",
+    "rom_sha256": "6afca3a2ceb76d791ab208de8bfd4746ae747674049db82bc5a69b4c9bed8feb",
+    "byte_identical_to_author": true
+  },
+  "checks": {
+    "actual_probe_tests": 6,
+    "accepted_sources": 17,
+    "profile_sources": 6,
+    "registered_profiles_loaded": 6,
+    "prepared_audit": true
+  },
+  "control_candidate": "custom138k-workstation-ae350-business-v1-f2d86364e4ab5ebe",
+  "control_staged_inputs": 612,
+  "control_staged_byte_identical_to": "custom138k-workstation-ae350-business-v1-8f615119768bfbf2",
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "rollback": "Reload independently identified prior configuration; source probe does not touch Flash"
+}
