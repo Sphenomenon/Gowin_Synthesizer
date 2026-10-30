@@ -1,0 +1,102 @@
+{
+  "BSRAM_synthesis": 237,
+  "VG_sha256": "f621fcbecb79012c0486e248a1cc686437b9d11ab887c22b2c8554a62f8b49af",
+  "actual_output_count": 9,
+  "actual_output_sizes": {
+    "impl/pnr/cmd.do": 794,
+    "impl/pnr/custom_138k_integration.db": 3157928,
+    "impl/pnr/custom_138k_integration.log": 1599,
+    "impl/pnr/custom_138k_integration.p": 12903631,
+    "impl/pnr/custom_138k_integration.pin.html": 136659,
+    "impl/pnr/custom_138k_integration.rpt.html": 143518,
+    "impl/pnr/custom_138k_integration.rpt.txt": 119367,
+    "impl/pnr/custom_138k_integration.vo": 77157194,
+    "impl/pnr/device.cfg": 608
+  },
+  "bitstream_available": false,
+  "bound_evidence_sha256": {
+    "impl/pnr/cmd.do": "179d02a677ba1f00c9b25ca1712f5655a78d52e4d297c5697d16bd5cd3e16ef5",
+    "impl/pnr/custom_138k_integration.db": "add128feaf78e8a06a8b17b80c888af5db6b0ecda568afd7105cd60aeca92177",
+    "impl/pnr/custom_138k_integration.log": "800f592e28b413fe2f3df4e8d4f7c7f37614df290d77103f514b6f9325398424",
+    "impl/pnr/custom_138k_integration.p": "0889edf34a290b4c4ab5af1c1475798bcbcc5cd2707def42ef0bc6db1779b2a9",
+    "impl/pnr/custom_138k_integration.pin.html": "53b30f92203a5b4fed628e79729ae75a9c96bb3c800c50ec89cb61ca0ec06d5b",
+    "impl/pnr/custom_138k_integration.rpt.html": "1a9cb6b820b571c13fa50c6ff24c8ee4ff0cffdd27fe26d1288fe59998bc2328",
+    "impl/pnr/custom_138k_integration.rpt.txt": "2b72d265d07dc8454df8eb5d614f4a1a02755a47670e82054919d8a8fe174556",
+    "impl/pnr/custom_138k_integration.vo": "87b98f919793917470fd4c441b7c540a26796975e7656be47f8c8d605aec26af",
+    "impl/pnr/device.cfg": "d5f5225e343c722a96d9bb3396d1267475012a8617bc9b315b321bfa33b2bbe1",
+    "launcher/preparation_tool_inventory.json": "883b661a776ba9155b32e6e92b2ea1009d32816a3d0ef62076a4e40f227558a1",
+    "launcher/source.py": "39822f394f106dbee1fe87140d3cd3ba10873b6438666054a47565571749573f",
+    "physical_inputs.json": "469eb0338cd5fe1ca3204e935155a656f78eeb9a8bd3cdfccd4b1b6086882deb",
+    "pnr_process.json": "cec561dcb9efef19f759df5b9bde22ef53dc285459aefc3a27fe48d1d565f651",
+    "pnr_tool.log": "1b40deac9cfe408110086508f2bb444e7c502d8ccedef78e85881bd6b855a6e3",
+    "run.tcl": "ca53c0c2af97912448bfe6d00ce0cd5ffa4dac0269e4fc3a1b536d7a52ed0ba5"
+  },
+  "candidate": "runtime-r00-no-local-panel-display-load-C2103102-v1",
+  "candidate_usercode": "C2103102",
+  "clock_LW_capacity": 8,
+  "clock_LW_used": 8,
+  "clock_primary_capacity": 8,
+  "clock_primary_used": 8,
+  "completed": true,
+  "elapsed_seconds": 1364.352449333,
+  "exit_code": 1,
+  "flash_programmed": false,
+  "frozen_input_count": 4748,
+  "full_impl_output_inventory_verified": true,
+  "hardware_operated": false,
+  "inputs_unchanged": true,
+  "installed_tool_count": 250,
+  "missing_output_suffixes": [
+    ".fs",
+    ".tr",
+    ".sdf"
+  ],
+  "negative_controls": {
+    "fake_exit_zero": "false exit/result success",
+    "frozen_VG_input_drift": "frozen input drift",
+    "invent_bitstream": "complete impl inventory mismatch",
+    "omit_native_DB": "complete impl inventory mismatch",
+    "omit_postroute_netlist": "complete impl inventory mismatch"
+  },
+  "old_prelaunch_noimpl_gates_rerun": false,
+  "parent_directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/display-load-C2103102-postrun-parent-v1",
+  "parent_seal_sha256": "ec269368a6f9c96b8c0524973cf748a641261afe4af5bd68bbd1d9b1a5a09e93",
+  "physical_gates_passed": false,
+  "release_ready": false,
+  "resources": {
+    "BSRAM": {
+      "capacity": 340,
+      "used": 284
+    },
+    "CLS": {
+      "capacity": 69120,
+      "used": 61440
+    },
+    "DSP": {
+      "capacity": 298,
+      "used": 123
+    },
+    "Logic": {
+      "capacity": 138240,
+      "used": 95255
+    },
+    "Register": {
+      "capacity": 139095,
+      "used": 60576
+    }
+  },
+  "review_passed": true,
+  "review_sha256": "95efd23ffc12bfa57c90fb75cdd76c733b3e3a5d0424a9b936b586c908a5a029",
+  "rollback": "No board operation occurred. Retain frozen 222fb761/C2103102 and earlier accepted identities; new AE350 work receives new candidate inputs.",
+  "root_direct_reports_read": true,
+  "root_independent_reviewer_replayed": true,
+  "routed_STA_available": false,
+  "schema": 1,
+  "scope": "C2103102_actual_PnR_failure",
+  "source_candidate": "custom138k-workstation-r00-no-local-panel-v1-222fb761448fb6c0",
+  "sram_programmed": false,
+  "tool_inventory_scope": "IDE_bin_lib_MachO_and_explicit_Tcl_OpenSSL",
+  "tool_inventory_unchanged": true,
+  "unrouted_nets": 3014,
+  "whole_vendor_installation_or_loaded_image_closure_claimed": false
+}
