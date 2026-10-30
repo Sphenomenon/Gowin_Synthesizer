@@ -49,12 +49,15 @@ module tf_sd_file_reader #(parameter [23:0] EXT="WAV",parameter integer SPI_CLK_
     end
 endmodule
 
-module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=0,RUN_SCENARIOS=1);
+module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=0,RUN_SCENARIOS=1,EXTERNAL_STOP_PROTOCOL=0);
     reg source_clk=0,compute_clk=0,memory_clk=0,source_run=1,compute_run=1,memory_run=1,rst_n=0;
     always begin #10;if(source_run)source_clk=~source_clk;end
     always begin #6.510416667;if(compute_run)compute_clk=~compute_clk;end
     always #5 if(memory_run)memory_clk=~memory_clk;
     reg mode=1,run=1,restart=0,cancel=0,reader_restart=0,transport_error=0;
+    reg stop_request=0;
+    wire stop_pending,stop_done,stop_failed;
+    wire [3:0] stop_failure;
     reg [3:0] track=0;
     reg runtime_valid=1,runtime_rate=0,runtime_fault=0,runtime_busy=0;
     reg [31:0] runtime_epoch=32'd4;
@@ -102,7 +105,7 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
         if(scope_restart && !scope_explicit_restart)scope_auto_count=scope_auto_count+1;
     end
     reg tf_ready=0;
-    workstation_tf_runtime_service #(.FIFO_ADDRESS_BITS(3),.QUIET_TIMEOUT_CYCLES(1000),
+    workstation_tf_runtime_service #(.FIFO_ADDRESS_BITS(3),.QUIET_TIMEOUT_CYCLES(1000),.EXTERNAL_STOP_PROTOCOL(EXTERNAL_STOP_PROTOCOL),
         .HOTPLUG_TIMEOUT_CYCLES(28'd40),.HOTPLUG_STALL_TIMEOUT_CYCLES(28'd70)) dut(
         .rst_ni(rst_n),.clk_50m_i(source_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .memory_reset_ni(rst_n),.memory_ready_i(1'b1),.mode_i(use_scope ? scope_mode:mode),.run_i(use_scope ? scope_run:run),
@@ -125,7 +128,9 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
         .tf_active_o(tf_active),.tf_busy_o(tf_busy),.tf_valid_o(tf_valid),.tf_error_o(tf_error),
         .tf_left_o(tf_left),.tf_right_o(tf_right),.tf_sample_rate_o(tf_rate),.tf_generation_o(generation),
         .expected_generation_o(expected),.tf_ready_i(tf_ready),.media_quiescent_o(quiet),
-        .stale_discard_count_o(stale),.quiesce_discard_count_o(discarded));
+        .stale_discard_count_o(stale),.quiesce_discard_count_o(discarded),
+        .stop_request_i(stop_request),.stop_pending_o(stop_pending),.stop_done_o(stop_done),
+        .stop_failed_o(stop_failed),.stop_failure_code_o(stop_failure));
     localparam [28:0] BASE=29'h0600000;
     reg [255:0] memory[0:127];
     wire downstream_req,downstream_write,downstream_ready;

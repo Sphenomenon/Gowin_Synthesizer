@@ -8,7 +8,8 @@ module workstation_tf_runtime_service #(
     parameter integer FIFO_ADDRESS_BITS=4,
     parameter integer QUIET_TIMEOUT_CYCLES=2000000,
     parameter [27:0] HOTPLUG_TIMEOUT_CYCLES=28'd200000000,
-    parameter [27:0] HOTPLUG_STALL_TIMEOUT_CYCLES=28'd250000000
+    parameter [27:0] HOTPLUG_STALL_TIMEOUT_CYCLES=28'd250000000,
+    parameter integer EXTERNAL_STOP_PROTOCOL=0
 ) (
     input wire rst_ni,clk_50m_i,compute_clk_i,memory_clk_i,memory_reset_ni,memory_ready_i,
     // restart_i is an explicit user TF restart, never a card-return retry.
@@ -49,7 +50,11 @@ module workstation_tf_runtime_service #(
     output wire [31:0] tf_generation_o,expected_generation_o,
     input wire tf_ready_i,
     output wire media_quiescent_o,
-    output wire [31:0] stale_discard_count_o,quiesce_discard_count_o
+    output wire [31:0] stale_discard_count_o,quiesce_discard_count_o,
+    // Optional 50-MHz stop transaction; explicitly enabled by the new owner.
+    input wire stop_request_i,
+    output reg stop_pending_o,stop_done_o,stop_failed_o,
+    output reg [3:0] stop_failure_code_o
 );
     localparam [2:0] IDLE=0,QUIESCE=1,WAIT_FORMAT=2,PLAY=3,RESTART_SETTLE=4;
     localparam [3:0] RATE=1,FORMAT=2,DDR=3,CARD=4,CONTEXT=5,EPOCH=6,
@@ -70,6 +75,16 @@ module workstation_tf_runtime_service #(
     wire explicit_restart=restart_i && !restart_q;
     wire cancel_event=(cancel_i && !cancel_q) || (mode_q && !mode_i);
     wire reader_restart=reader_restart_i && !reader_restart_q;
+    reg stop_request_q,stop_latched,stop_transaction_failed;
+    reg [31:0] stop_wait;
+    wire stop_begin=EXTERNAL_STOP_PROTOCOL && stop_request_i && !stop_request_q && !stop_pending_o;
+    // Stop wins simultaneous restart, and requests during pending coalesce.
+    wire resume_restart=explicit_restart && !stop_pending_o && !stop_begin;
+    wire auto_track_change=track_change && !stop_latched && !stop_begin;
+    wire allowed_reader_restart=reader_restart && !stop_latched && !stop_begin;
+    wire allowed_cancel=cancel_event && !stop_latched;
+    wire stop_cleanup_complete;
+    wire stop_invalidate=stop_begin && !(stop_latched && stop_cleanup_complete);
     wire physical=(state==RESTART_SETTLE && restart_playback) || state==WAIT_FORMAT || state==PLAY;
     wire memory_quiet_50,memory_gate;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] memory_ready_sync;
@@ -90,18 +105,18 @@ module workstation_tf_runtime_service #(
     // Every termination is visible to the generation bridge on THIS edge.
     // A registered invalidate pulse would be lost if source clock stopped now.
     wire new_failure=error_now!=0;
-    wire invalidate=explicit_restart || track_change || cancel_event || new_failure || (!mode_i && reader_restart) ||
-        (card_lost_o && !card_lost_q) || (transport_error_i && !transport_error_q);
+    wire invalidate=resume_restart || auto_track_change || allowed_cancel || new_failure || (!mode_i && allowed_reader_restart) || stop_invalidate ||
+        (!stop_latched && ((card_lost_o && !card_lost_q) || (transport_error_i && !transport_error_q)));
     wire bridge_source_ready,source_quiet,generation_pending;
     wire source_quiesce=state==IDLE || state==QUIESCE || state==RESTART_SETTLE || invalidate;
-    wire playback_accept=state==PLAY && mode_i && run_i && !invalidate;
+    wire playback_accept=state==PLAY && mode_i && run_i && !invalidate && !stop_latched;
     wire path_pcm_valid,path_pcm_ready,path_pcm_end;
     wire signed [15:0] path_left,path_right;
-    wire analysis_accept=state==IDLE && !invalidate && !mode_i && analysis_enable_i &&
+    wire analysis_accept=state==IDLE && !invalidate && !stop_latched && !mode_i && analysis_enable_i &&
         (!analysis_hold_i || analysis_pcm_ready_i);
     assign path_pcm_ready=playback_accept ? bridge_source_ready : analysis_accept;
     assign analysis_pcm_valid_o=!mode_i && analysis_enable_i && path_pcm_valid && path_pcm_ready;
-    assign analysis_pcm_end_o=state==IDLE && !mode_i && path_pcm_end;
+    assign analysis_pcm_end_o=state==IDLE && !stop_latched && !mode_i && path_pcm_end;
     assign analysis_left_o=path_left;
     assign analysis_right_o=path_right;
     assign analysis_sample_rate_o=file_sample_rate_o;
@@ -168,15 +183,47 @@ module workstation_tf_runtime_service #(
             if(invalidate)begin
                 state<=QUIESCE;busy_50_o<=1;quiet_wait<=0;
                 pending_clear<=1;
-                pending_start<=mode_i && (explicit_restart || track_change) && !cancel_event;
-                pending_reader_restart<=!mode_i && (reader_restart || track_change);
-                if(explicit_restart || track_change)begin
+                pending_start<=mode_i && (resume_restart || auto_track_change) && !allowed_cancel && !stop_begin;
+                pending_reader_restart<=!mode_i && (allowed_reader_restart || auto_track_change) && !stop_begin;
+                if(resume_restart || auto_track_change)begin
                     failed_o<=0;cancelled_o<=0;failure_code_o<=0;eof_seen_o<=0;
                 end
-                if(cancel_event)begin pending_start<=0;cancelled_o<=physical || busy_50_o;end
+                if(allowed_cancel)begin pending_start<=0;cancelled_o<=physical || busy_50_o;end
                 if(new_failure)begin
                     pending_start<=0;failed_o<=1;failure_code_o<=error_now;
                     failure_count_o<=increment(failure_count_o);
+                end
+            end
+        end
+    end
+    // This completion is entirely source-domain evidence. The mailbox equality
+    // includes ACK of the final inactive/busy=0 payload, not only busy falling.
+    assign stop_cleanup_complete=state==IDLE && !busy_50_o && source_quiet && path_clear_done &&
+        memory_open_sync[1] && !control_pending_o;
+    always @(posedge clk_50m_i or negedge rst_ni)begin
+        if(!rst_ni)begin
+            stop_request_q<=0;stop_latched<=0;stop_transaction_failed<=0;stop_wait<=0;
+            stop_pending_o<=0;stop_done_o<=0;stop_failed_o<=0;stop_failure_code_o<=0;
+        end else begin
+            stop_request_q<=EXTERNAL_STOP_PROTOCOL && stop_request_i;
+            stop_done_o<=0;stop_failed_o<=0;
+            if(resume_restart)stop_latched<=0;
+            if(stop_begin)begin
+                stop_latched<=1;stop_pending_o<=1;stop_wait<=0;
+                stop_transaction_failed<=new_failure;stop_failure_code_o<=new_failure ? error_now:4'd0;
+                if(new_failure)stop_failed_o<=1;
+            end else if(stop_pending_o)begin
+                if(new_failure && !stop_transaction_failed)begin
+                    stop_transaction_failed<=1;stop_failed_o<=1;stop_failure_code_o<=error_now;
+                end
+                if(stop_cleanup_complete)begin
+                    stop_pending_o<=0;
+                    if(!stop_transaction_failed && !new_failure)stop_done_o<=1;
+                end else begin
+                    if(stop_wait<QUIET_TIMEOUT_CYCLES)stop_wait<=stop_wait+1'b1;
+                    if(stop_wait==QUIET_TIMEOUT_CYCLES-1 && !stop_transaction_failed && !new_failure)begin
+                        stop_transaction_failed<=1;stop_failed_o<=1;stop_failure_code_o<=QUIET_TIMEOUT;
+                    end
                 end
             end
         end
@@ -187,8 +234,8 @@ module workstation_tf_runtime_service #(
         .HOTPLUG_TIMEOUT_CYCLES(HOTPLUG_TIMEOUT_CYCLES),
         .HOTPLUG_STALL_TIMEOUT_CYCLES(HOTPLUG_STALL_TIMEOUT_CYCLES),.NATIVE_RESTART_HOLD(1),.NATIVE_RUNTIME_PROTOCOL(1)) path(
         .clk_50m(clk_50m_i),.reset_n(rst_ni),.restart(path_restart),.track_index(path_track),
-        .capture_enable_i((state==IDLE && !mode_i && analysis_enable_i) ||
-            ((state==WAIT_FORMAT || state==PLAY) && mode_i && run_i && !new_failure)),
+        .capture_enable_i(!stop_latched && !stop_begin && ((state==IDLE && !mode_i && analysis_enable_i) ||
+            ((state==WAIT_FORMAT || state==PLAY) && mode_i && run_i && !new_failure))),
         .memory_clk(memory_clk_i),.memory_reset_n(memory_reset_ni),.memory_ready(memory_ready_i),
         .sample_tick(1'b0),.sd_miso(sd_miso_i),.sd_cs_n(sd_cs_no),.sd_sck(sd_sck_o),.sd_mosi(sd_mosi_o),
         .card_type(),.card_stat(),.filesystem_type(),.filesystem_stat(),.scan_done(),
@@ -204,7 +251,7 @@ module workstation_tf_runtime_service #(
         .app_cmd(path_command),.app_en(path_ddr_valid),.app_addr(ddr_address_o),.app_wdata(ddr_data_o),
         .app_rdy(ddr_ready_i && !memory_gate),.app_wren(path_write),.app_wend(path_end),.app_wrdy(ddr_ready_i && !memory_gate),
         .app_rvalid(ddr_response_i),.app_rdata(ddr_read_data_i),.native_memory_hold_i(memory_gate),
-        .native_source_hold_i(state==QUIESCE || state==RESTART_SETTLE || invalidate || (state==IDLE && mode_i)),
+        .native_source_hold_i(state==QUIESCE || state==RESTART_SETTLE || invalidate || stop_latched || (state==IDLE && mode_i)),
         .runtime_clear_toggle_i(path_clear_toggle),.runtime_clear_done_o(path_clear_done));
     // A file restart must not reinterpret an old accepted DDR response as the
     // new file's first beat. Stop acceptance, drain the one outstanding read,

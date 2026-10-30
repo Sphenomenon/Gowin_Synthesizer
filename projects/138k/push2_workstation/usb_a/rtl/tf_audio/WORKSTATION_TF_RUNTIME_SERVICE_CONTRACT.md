@@ -140,3 +140,39 @@ read_buf、重复 token 请求、选曲快照、reader fault、取消超时及 a
 对首 capture／playback byte、完整 PCM／generation、四端 token ACK 和非 unit
 跳零隔离分别设 oracle。绕过 ACK 的临时副本必须失败；这些理想时钟检查不模拟
 毛刺／亚稳态，也不替代新网表或 routed CDC。
+
+## 外部媒体停止事务（显式 opt-in）
+
+`EXTERNAL_STOP_PROTOCOL` 默认0。新 owner 显式设1后，以下端口全部为50 MHz：
+
+| 端口 | 契约 |
+|---|---|
+| `stop_request_i` | 单拍请求；pending期间的重复请求合并 |
+| `stop_pending_o` | 本事务清理及最终控制确认仍未完成；超时后继续保持到实际清理完成 |
+| `stop_done_o` | 单拍成功，只在实际清理和最终 inactive／busy=0 mailbox ACK 后发出 |
+| `stop_failed_o` | 每个接受事务至多一次单拍失败；该事务恢复后不再补发done |
+| `stop_failure_code_o[3:0]` | 本事务失败码；下一次接受stop时清零，失败时保持 |
+
+stop优先于同沿restart。接受stop后锁存停止，先走已接受DDR read排空、四FIFO及
+DMA clear ACK、frame bridge sourcequiet、memory gate-open返回；进入IDLE且busy
+下降后，还必须等`control_pending_o=0`，确认最终inactive／busy=0控制快照已被
+compute域接收。没有直接把异步compute控制状态拿回50 MHz组合判断。compute停钟
+或memory停钟均不能靠source时间经过获得done。总事务watchdog也覆盖末次控制
+mailbox等待；到期发失败8，继续清理，恢复后只撤pending，不把失败改为成功。
+
+已经停止且全部证据完成时，新的stop可幂等返回done，不重新翻转clear token或
+generation。停止锁存期间，track仅作为下一次显式restart的当前选择；run、mode、
+reader restart、卡恢复、transport状态变化均不自动重臂，也不重启分析读取。
+只有不在pending中的`restart_i`新边沿解除停止；同沿stop仍优先。TF不请求或改变
+采样率，外层owner负责先封口录音、等待本stop结果，再启动时钟事务，并单独维持
+其媒体hold；释放外层hold本身不是TF的restart。
+
+失败码沿用1采样率、2格式、3DDR/readiness、4卡、5context、6epoch/rate、7transport、
+8清理或mailbox超时。与stop同沿或pending中发生的实际physical context故障会失败
+该事务一次；已有停止对象的历史sticky文件故障不妨碍新的幂等清理确认。
+
+`run_workstation_tf_runtime_stop.py`复用真实path、DMA、FIFO、WAV、frame bridge和
+控制mailbox，覆盖direct及实际command buffer；单独覆盖默认0忽略stop请求、
+accepted-read等待、停钟／恢复、在途合并、失败不补done、末次mailbox停钟及
+显式restart恢复。移除最终mailbox ACK条件的临时副本必须被拒绝。本地stop通过
+不等于录音封口、AE350命令、完整时钟切换或板上验收已经完成。

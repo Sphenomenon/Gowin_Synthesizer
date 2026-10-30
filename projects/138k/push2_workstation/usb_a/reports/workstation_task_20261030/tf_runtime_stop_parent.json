@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "passed": true,
+  "identity": "native-tf-runtime-stop-v1-21ab4219477bfeb0",
+  "child_identity": "native-tf-runtime-stop-v1-c278476aa692fe50",
+  "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-runtime-stop-parent-final/verification.json",
+  "evidence_sha256": "7125b6aab48bd27a67771b88bd5b291b55c3457d4ec44c038d015a43da415fb7",
+  "all_input_content_equal_after_output_path_normalization": true,
+  "owned_input_sha256": {
+    "rtl/tf_audio/workstation_tf_runtime_service.sv": "955295b2b7d2c5c0ace0f63194e85606e866ee773fb983432de531933b991332",
+    "rtl/tf_audio/WORKSTATION_TF_RUNTIME_SERVICE_CONTRACT.md": "6a4e3b4957d5b9e627776021f2abbb3723f262ff657b67f3543a2e6728911e20",
+    "sim/tf_audio/workstation_tf_runtime_service_tb.sv": "9b47184e096d5d7cbc255ba186bb465649c6697740bb8cf4698d1b9fd566ca49",
+    "sim/tf_audio/tb_workstation_tf_runtime_stop.sv": "56f65b4f73b4a2924d80e1bc3a37d37dcb24f8971da9739921c44dda196c8f00",
+    "sim/tf_audio/run_workstation_tf_runtime_stop.py": "d612cd7ce5e28dd8a9d3555798035b7d25644907c90e48844bcbc7b8ae1ad27d"
+  },
+  "metrics": {
+    "stop_0": {
+      "buffered": 0,
+      "cases": 10,
+      "done": 10,
+      "failed": 4,
+      "coalesced": 3,
+      "paused_high": 1,
+      "paused_low": 1,
+      "mailbox_wait": 40,
+      "drain_wait": 30,
+      "stopped_checks": 300,
+      "delivered": 88
+    },
+    "stop_1": {
+      "buffered": 1,
+      "cases": 10,
+      "done": 10,
+      "failed": 4,
+      "coalesced": 3,
+      "paused_high": 1,
+      "paused_low": 1,
+      "mailbox_wait": 40,
+      "drain_wait": 30,
+      "stopped_checks": 300,
+      "delivered": 88
+    },
+    "disabled": {
+      "delivered": 64
+    }
+  },
+  "final_ack_bypass_negative_rejected": true,
+  "ordinary_clear_default_and_negative_prerequisites_passed": true,
+  "hardware_tested": false,
+  "physical_cdc_accepted": false
+}
