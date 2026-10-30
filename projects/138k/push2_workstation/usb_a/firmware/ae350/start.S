@@ -1,3 +1,6 @@
+#ifdef A138_ILM64K_DLM64K
+#include "start_ilm_dlm.inc"
+#else
 .option norvc
 .section .text.start,"ax",@progbits
 .global _start
@@ -56,3 +59,4 @@ trap:
     sw t0, 16(s0)
 halt:
     j halt
+#endif

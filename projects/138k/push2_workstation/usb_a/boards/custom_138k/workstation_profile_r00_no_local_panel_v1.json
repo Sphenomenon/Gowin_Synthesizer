@@ -357,10 +357,10 @@
     "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/firmware_checks.h": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b",
-    "projects/138k/push2_workstation/usb_a/firmware/ae350/provenance.json": "b96ae9ab3d3a4f5b15084cdfd42ca4c67317115343e382e20d626588622ff557",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/provenance.json": "e76a535b27df9e3dc7c1334d7d2542a44268275e2b4be34f398136cde831cc1f",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.c": "d94ae0f233f22d3b1cad7021f95f81a0172184cfbb989eaee573bd18a72f1adf",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.h": "be63aa122af831f9dce895a6308b57b4d441341ec9e7e4fb23fa64e01780adcc",
-    "projects/138k/push2_workstation/usb_a/firmware/ae350/start.S": "5e462091296daa030f22f6f98005471d57dcd46e7e2090aaa2dae7c63aee3783",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/start.S": "2de8303a122f6d448c70f2f8398a616d9396e7c4dee61ba2587a069bf0b217f9",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_main.c": "9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_model.h": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_render.c": "4e5fbd9a358f5e32ea9587b18675b169d5fc37f97df6e53c47660a985832f7cd",
@@ -656,7 +656,7 @@
     "projects/138k/push2_workstation/usb_a/tools/build_full_song_85_clk50_timing.py": "ebffca9eb6eb6d136189098dde3ceebee1bbb6f9392a7fe632038322c7585795",
     "projects/138k/push2_workstation/usb_a/tools/build_resource_rework.py": "d8d8c9e0b5160c3f69ff43b7e9f94a25a25adccb7ff2c6615261025e2b36281f",
     "projects/138k/push2_workstation/usb_a/tools/cnn_ddr_pipeline_patch.py": "47b2086f90abab0b4ec6e058b2f294fde71ae1cfa09a460c629fac0da8bbd400",
-    "projects/138k/push2_workstation/usb_a/tools/stage_ae350_firmware.py": "f545ab6fd56563575290971dec2afcd45b239a3180287c02379ac8f3ee8e5768",
+    "projects/138k/push2_workstation/usb_a/tools/stage_ae350_firmware.py": "2ed68cda9af74edfebd8bed30e185a9968ab8043bfb22b7321abe94f3ce908a8",
     "projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": "3aeb1f4e791b5a256fec71d181a18d91b367d0e1583030d504bc7cc8e104c8cb",
     "projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
     "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_cdc_inventory.py": "664adc0a21369a5708665ac26dd48ab74320e33ae9dfe1d22a0c7f87a54582cb",
@@ -734,7 +734,10 @@
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_ble_ddr_pitch_fifo_cdc_scope.py": "3e699acb313c918c7766f6661c66b9fd8efe26275201ba35de013c44d32a9c83",
     "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_BLE_DDR_PITCH_FIFO_CDC.md": "f401a36349f0b8443dc523b6f88af44bc5efe21c65ac563f93bb5a29aa008946",
     "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_pitch_fifo_cdc_endpoints.py": "29593e92c35d2fa48047dad5ae26d02d7f3021c072eb1cbda30c03f6194dcc81",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_pitch_fifo_cdc_scope.py": "7f2416a6b2fb30df423bd1fc14cec833a7ac94c5722651df84ed9b3a1f984c4a"
+    "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_pitch_fifo_cdc_scope.py": "7f2416a6b2fb30df423bd1fc14cec833a7ac94c5722651df84ed9b3a1f984c4a",
+    "projects/138k/push2_workstation/usb_a/tools/ae350_local_memory.py": "48751ba717c00d0a739e040e750b7971d49e667d1827b71ab5a39d31842b3fab",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/start_ilm_dlm.inc": "e8f8f4b202cd2553d7a1a4e76a58895ea43508c061d7ae8d9e7b0ace2ccc3f73",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/boot_ilm_dlm.ld": "5b6f050338b07e2fccb8cdb679d3c5e774844f7f26f940983282d77cbd826df4"
   },
   "revision": 2
 }

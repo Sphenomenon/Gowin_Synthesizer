@@ -14,6 +14,7 @@ if __package__ in (None, ''):
 
 from tools.stage_usb_firmware import compiler_prefix, sha
 from tools.workstation_baselines import load_baseline
+from tools.ae350_local_memory import local_memory_report, verify_elf_image, call_chain_report
 
 
 IMPORTED_SOURCES = ('start.S', 'ui_main.c', 'ui_render.c', 'ui_runtime.c')
@@ -22,6 +23,8 @@ FIRST_PARTY_SOURCES = ('audio_clock_service.c',)
 FIRST_PARTY_HEADERS = ('audio_clock_service.h',)
 RECORDING_SOURCES = ('recording_service.c',)
 RECORDING_HEADERS = ('recording_service.h',)
+LOCAL_MEMORY_INPUTS = ('start_ilm_dlm.inc', 'boot_ilm_dlm.ld')
+MEMORY_PROFILES = ('pl16k_8k', 'ilm64k_dlm64k')
 SOURCES = (*IMPORTED_SOURCES, *FIRST_PARTY_SOURCES)
 HEADERS = (*IMPORTED_HEADERS, *FIRST_PARTY_HEADERS)
 INPUTS = (*SOURCES, *HEADERS, 'boot.ld', 'provenance.json')
@@ -33,8 +36,11 @@ def selected_sources(recording_api=False):
     return (*SOURCES, *RECORDING_SOURCES) if recording_api else SOURCES
 
 
-def selected_inputs(recording_api=False):
-    return (*INPUTS, *RECORDING_SOURCES, *RECORDING_HEADERS) if recording_api else INPUTS
+def selected_inputs(recording_api=False, memory_profile='pl16k_8k'):
+    if memory_profile not in MEMORY_PROFILES:
+        raise ValueError('unknown AE350 memory profile: ' + memory_profile)
+    inputs = (*INPUTS, *RECORDING_SOURCES, *RECORDING_HEADERS) if recording_api else INPUTS
+    return (*inputs, *LOCAL_MEMORY_INPUTS) if memory_profile == 'ilm64k_dlm64k' else inputs
 
 
 def decode_rom(path):
@@ -81,7 +87,8 @@ def memory_report(size_text, symbols_text, start_text, binary_bytes):
                 whole_program_stack_bound_verified=False, hardware_stack_watermark_verified=False)
 
 
-def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None, recording_api=False):
+def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None, recording_api=False,
+                         memory_profile='pl16k_8k'):
     """Build to a new directory and return provenance, capacity and ROM comparison.
 
     The caller explicitly installs output/boot.mem into its new candidate. Accepted
@@ -89,9 +96,10 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
     """
     root, output = Path(root).resolve(), Path(output).resolve()
     source_dir = root / 'firmware/ae350'
-    inputs = selected_inputs(recording_api)
+    inputs = selected_inputs(recording_api, memory_profile)
     sources = selected_sources(recording_api)
-    maintained = (*FIRST_PARTY_SOURCES, *FIRST_PARTY_HEADERS, *RECORDING_SOURCES, *RECORDING_HEADERS)
+    maintained = (*FIRST_PARTY_SOURCES, *FIRST_PARTY_HEADERS, *RECORDING_SOURCES, *RECORDING_HEADERS,
+                  *LOCAL_MEMORY_INPUTS)
     if output.exists():
         raise FileExistsError('AE350 firmware output already exists: ' + str(output))
     for name in dict.fromkeys((*inputs, *maintained)):
@@ -119,7 +127,8 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
     identities = {str((source_dir / name).relative_to(root)): sha(source_dir / name) for name in inputs}
     prefix = compiler_prefix(riscv_prefix)
     versions = {}
-    for tool in ('gcc', 'objcopy', 'size', 'nm'):
+    tool_names = ('gcc', 'objcopy', 'size', 'nm', 'objdump') if memory_profile == 'ilm64k_dlm64k' else ('gcc', 'objcopy', 'size', 'nm')
+    for tool in tool_names:
         versions[tool] = subprocess.run([prefix + '-' + tool, '--version'], capture_output=True,
                                         text=True, check=True).stdout.splitlines()[0]
     reference_bytes = baseline.read_bytes('firmware/boot.mem')
@@ -134,8 +143,13 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
         shutil.copyfile(source_dir / name, output / name)
     (output / 'reference_boot.mem').write_bytes(reference_bytes)
     reference_image = decode_rom(output / 'reference_boot.mem')
-    common = ['-march=rv32im_zicsr', '-mabi=ilp32', '-msmall-data-limit=0', '-O2', '-ffreestanding',
+    isa = 'rv32im_zicsr_zifencei' if memory_profile == 'ilm64k_dlm64k' else 'rv32im_zicsr'
+    common = ['-march=' + isa, '-mabi=ilp32', '-msmall-data-limit=0', '-O2', '-ffreestanding',
               '-Wall', '-Wextra', '-Werror']
+    linker = 'boot.ld'
+    if memory_profile == 'ilm64k_dlm64k':
+        common += ['-DA138_ILM64K_DLM64K', '-fcallgraph-info=su']
+        linker = 'boot_ilm_dlm.ld'
     commands = []
     with (output / 'build.log').open('w') as log:
         def run(command):
@@ -146,8 +160,8 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
             target = Path(name).with_suffix('.o').name
             run([prefix + '-gcc', *common, '-fstack-usage', '-c', name, '-o', target])
             objects.append(target)
-        run([prefix + '-gcc', '-march=rv32im_zicsr', '-mabi=ilp32', '-msmall-data-limit=0',
-             '-nostdlib', '-nostartfiles', '-Wl,--build-id=none,-Map=firmware.map,-T,boot.ld',
+        run([prefix + '-gcc', '-march=' + isa, '-mabi=ilp32', '-msmall-data-limit=0',
+             '-nostdlib', '-nostartfiles', '-Wl,--build-id=none,-Map=firmware.map,-T,' + linker,
              *objects, '-o', 'firmware.elf'])
         run([prefix + '-objcopy', '-O', 'binary', 'firmware.elf', 'firmware.bin'])
     size = subprocess.run([prefix + '-size', 'firmware.elf'], cwd=output, capture_output=True, text=True, check=True)
@@ -155,7 +169,12 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
     (output / 'firmware.size').write_text(size.stdout)
     (output / 'firmware.nm').write_text(symbols.stdout)
     binary = (output / 'firmware.bin').read_bytes()
-    capacity = memory_report(size.stdout, symbols.stdout, (output / 'start.S').read_text(), len(binary))
+    capacity = (local_memory_report(size.stdout, symbols.stdout, len(binary))
+                if memory_profile == 'ilm64k_dlm64k' else
+                memory_report(size.stdout, symbols.stdout, (output / 'start.S').read_text(), len(binary)))
+    image_validation = None
+    if memory_profile == 'ilm64k_dlm64k':
+        image_validation = verify_elf_image(output / 'firmware.elf', binary, capacity['symbols'])
     padded = binary.ljust(ROM_BYTES, b'\0')
     rom = output / 'boot.mem'
     rom.write_text(''.join(f'{int.from_bytes(padded[index:index+4], "little"):08x}\n'
@@ -171,7 +190,14 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
                 stack_frames.append(dict(function=fields[0], bytes=int(fields[1]), kind=fields[2]))
     if any(frame['bytes'] > capacity['stack_capacity_bytes'] for frame in stack_frames):
         raise ValueError('AE350 individual compiler stack frame exceeds stack capacity')
-    result = dict(schema=1, firmware_profile='maintained_ae350_workstation', isa='rv32im_zicsr', abi='ilp32',
+    stack_analysis = None
+    if memory_profile == 'ilm64k_dlm64k':
+        disassembly = subprocess.run([prefix + '-objdump', '-d', 'firmware.elf'], cwd=output,
+                                     capture_output=True, text=True, check=True).stdout
+        (output / 'firmware.dis').write_text(disassembly)
+        stack_analysis = call_chain_report(output, stack_frames, disassembly, capacity['stack_capacity_bytes'])
+        capacity['whole_program_stack_bound_verified'] = stack_analysis['verified']
+    result = dict(schema=1, firmware_profile='maintained_ae350_workstation', isa=isa, abi='ilp32',
                   compiler_prefix=prefix, compiler_version=versions['gcc'], tool_versions=versions,
                   source_provenance=provenance, input_sha256=identities, recording_api_enabled=recording_api,
                   changed_from_import=[name for name in (*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld')
@@ -188,6 +214,30 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
                       differing_words=sum(padded[i:i+4] != reference_image[i:i+4] for i in range(0, ROM_BYTES, 4))),
                   hardware_tested=False, project_rom_installed=False,
                   stack_validation='Compiler per-function sizes and reserved capacity; whole-call-chain and runtime high-water mark remain unverified.')
+    result['memory_profile'] = memory_profile
+    if memory_profile == 'ilm64k_dlm64k':
+        platform_inputs = ('riscv_ae350_config.v', 'src/ae350/riscv_ae350_config.v',
+                           'src/ae350/riscv_ae350_top.v', 'src/ae350/gw138k_boot_memory.sv')
+        platform_evidence = {name: dict(baseline.descriptor['files'][name]) for name in platform_inputs}
+        config_bytes = baseline.read_bytes('src/ae350/riscv_ae350_config.v')
+        macros = re.findall(rb'^\s*`define\s+(\w+)', config_bytes, re.MULTILINE)
+        if b'AE350_EXT_AHB_MASTER_EN' in macros:
+            raise ValueError('reference local-memory cold path unexpectedly has a fabric master port')
+        for name in platform_inputs:
+            baseline.read_bytes(name)  # Revalidate frozen bytes, without altering them.
+        result['reference_platform'] = dict(source_policy='locked_resource_rework_route0_reference_only',
+                                            inputs=platform_evidence,
+                                            macros=[name.decode('ascii') for name in macros],
+                                            caller_must_verify_actual_staged_ip=True)
+        result['cold_boot'] = dict(image_storage='existing_16k_pl_boot_rom', reset_address=ROM_BASE,
+                                  image_capacity_bytes=ROM_BYTES, cpu_copy_to_ilm_dlm=True,
+                                  fabric_extended_ahb_master_required=False,
+                                  actual_ip_writability_hardware_verified=False,
+                                  cache_policy='reject_enabled_i_or_d_cache_on_entry',
+                                  hardware_acceptance=False)
+        result['elf_image_validation'] = image_validation
+        result['call_chain_stack'] = stack_analysis
+        result['stack_validation'] = 'Conservative actual service-entry call graph plus compiler frames; hardware watermark remains unverified.'
     (output / 'build_metadata.json').write_text(json.dumps(result, indent=2) + '\n')
     return result
 
@@ -198,9 +248,12 @@ def main():
     parser.add_argument('--riscv-prefix', help='GNU bare-metal tool prefix, ending before -gcc')
     parser.add_argument('--reference-mem', type=Path, help='optional explicit 4096-word comparison ROM')
     parser.add_argument('--recording-api', action='store_true', help='explicit R00 recording service API selection')
+    parser.add_argument('--memory-profile', choices=MEMORY_PROFILES, default='pl16k_8k',
+                        help='explicit runtime placement; both profiles retain the actual 16 KiB cold ROM limit')
     args = parser.parse_args()
     result = stage_ae350_firmware(Path(__file__).resolve().parents[1], args.output,
-                                args.riscv_prefix, reference_mem=args.reference_mem, recording_api=args.recording_api)
+                                args.riscv_prefix, reference_mem=args.reference_mem, recording_api=args.recording_api,
+                                memory_profile=args.memory_profile)
     print(json.dumps(result, indent=2))
 
 

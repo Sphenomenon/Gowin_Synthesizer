@@ -77,6 +77,16 @@
       "kind": "maintained_first_party",
       "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.h",
       "sha256": "be63aa122af831f9dce895a6308b57b4d441341ec9e7e4fb23fa64e01780adcc"
+    },
+    "start_ilm_dlm.inc": {
+      "kind": "maintained_first_party",
+      "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/start_ilm_dlm.inc",
+      "sha256": "e8f8f4b202cd2553d7a1a4e76a58895ea43508c061d7ae8d9e7b0ace2ccc3f73"
+    },
+    "boot_ilm_dlm.ld": {
+      "kind": "maintained_first_party",
+      "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/boot_ilm_dlm.ld",
+      "sha256": "5b6f050338b07e2fccb8cdb679d3c5e774844f7f26f940983282d77cbd826df4"
     }
   }
 }
