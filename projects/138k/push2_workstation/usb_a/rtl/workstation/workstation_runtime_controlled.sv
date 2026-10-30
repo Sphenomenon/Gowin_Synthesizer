@@ -74,13 +74,17 @@ module workstation_runtime_controlled #(
     output wire [31:0] fft_frame_o,fft_discard_count_o,
     output wire fft_44k1_o,fft_context_valid_o,
     output wire [31:0] fft_epoch_o,
-    // Atomic tuple in 50 MHz; reference/voices/health sampled at observation.
+    // Atomic tuple in 50 MHz; reference/voices/health/effects sampled at
+    // observation. All fields, including effects, are valid only with valid.
     output wire display_valid_o,
     output wire [31:0] display_pcm_o,display_reference_o,display_voices_o,display_status_o,
     output wire display_44k1_o,display_error_o,
     output wire [31:0] display_epoch_o,display_sequence_o,
     output wire [2:0] effect_mask_o,
-    output wire [5:0] effect_order_o
+    output wire [5:0] effect_order_o,
+    // Display-only, 50MHz sticky fault. Only rst_ni clears observation loss;
+    // preset, rate switch and serializer resets never rearm this path.
+    output wire display_observation_fault_o
 );
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] reset_50_pipe,reset_compute_pipe;
     always @(posedge clk_50m_i or negedge rst_ni)
@@ -264,20 +268,44 @@ module workstation_runtime_controlled #(
         else if(midi_valid_compute || pc_valid_compute || (merged_valid && merged_ready))revision<=revision+1'b1;
     wire [31:0] display_drop;
     wire [31:0] core_faults=deadline_miss_o+midi_overflow_o+note_drop_o;
-    gw138k_stream_cdc #(.WIDTH(194)) display(
+    gw138k_stream_cdc #(.WIDTH(203)) display(
         .reset_n(rst_ni),.source_clk(compute_clk_i),.destination_clk(clk_50m_i),
         .source_valid(observed_valid),
         .source_data({observed_rate,observed_epoch,observed_sequence,observed_error,
-            observed_pcm,revision,8'd0,active_mask_o,underrun_compute[15:0],core_faults[15:0]}),
+            observed_pcm,revision,8'd0,active_mask_o,underrun_compute[15:0],core_faults[15:0],
+            effect_mask_compute,effect_order_compute}),
         .drop_count(display_drop),.destination_valid(display_valid_o),
         .destination_data({display_44k1_o,display_epoch_o,display_sequence_o,display_error_o,
-            display_pcm_o,display_reference_o,display_voices_o,display_status_o}));
-    (* ASYNC_REG="TRUE" *) reg [2:0] effect_mask_meta,effect_mask_sync;
-    (* ASYNC_REG="TRUE" *) reg [5:0] effect_order_meta,effect_order_sync;
-    always @(posedge clk_50m_i or negedge reset_50_n)
-        if(!reset_50_n)begin effect_mask_meta<=0;effect_mask_sync<=0;effect_order_meta<=6'b10_01_00;effect_order_sync<=6'b10_01_00;end
-        else begin effect_mask_meta<=effect_mask_compute;effect_mask_sync<=effect_mask_meta;
-            effect_order_meta<=effect_order_compute;effect_order_sync<=effect_order_meta;end
-    assign effect_mask_o=effect_mask_sync;
-    assign effect_order_o=effect_order_sync;
+            display_pcm_o,display_reference_o,display_voices_o,display_status_o,effect_mask_o,effect_order_o}));
+    workstation_display_observation_health display_observation_health(
+        .reset_ni(rst_ni),.compute_clk_i(compute_clk_i),.clk_50m_i(clk_50m_i),
+        .physical_observation_drop_i(observation_drop_o),.display_mailbox_drop_i(display_drop),
+        .fault_50_o(display_observation_fault_o));
+endmodule
+
+// The physical count has ALREADY crossed from selected MCLK into compute and
+// may jump by several drops. Never Gray-encode that decoded count a second time.
+// Each source becomes one sticky bit, independently synchronized to 50MHz.
+module workstation_display_observation_health (
+    input wire reset_ni,compute_clk_i,clk_50m_i,
+    input wire [31:0] physical_observation_drop_i,display_mailbox_drop_i,
+    output reg fault_50_o
+);
+    wire [1:0] nonzero={display_mailbox_drop_i!=0,physical_observation_drop_i!=0};
+    reg [1:0] source_sticky;
+    always @(posedge compute_clk_i or negedge reset_ni)
+        if(!reset_ni)source_sticky<=0;else source_sticky<=source_sticky | nonzero;
+    // On the edge of the first drop, the producer counter changes after this
+    // observer's sampling edge. If compute stops right there, current nonzero
+    // still raises the held level without needing another compute edge. Once
+    // source_sticky is set, later counter wrap cannot lower that level.
+    wire [1:0] loss_level=source_sticky | nonzero;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] loss_meta,loss_sync;
+    always @(posedge clk_50m_i or negedge reset_ni)begin
+        if(!reset_ni)begin loss_meta<=0;loss_sync<=0;fault_50_o<=0;end
+        else begin
+            loss_meta<=loss_level;loss_sync<=loss_meta;
+            if(|loss_sync)fault_50_o<=1;
+        end
+    end
 endmodule

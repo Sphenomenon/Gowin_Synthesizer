@@ -36,8 +36,10 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
     wire running,done,score_failed;
     wire [31:0] leds,score_frame;
     wire display_valid;
-    wire display_rate,display_error;
+    wire display_rate,display_error,display_observation_fault;
     wire [31:0] display_pcm,display_epoch,display_sequence;
+    wire [2:0] display_effect_mask;
+    wire [5:0] display_effect_order;
     wire ddr_req,ddr_write;
     wire [28:0] ddr_address;
     wire [255:0] ddr_data,ddr_read_data;
@@ -75,7 +77,7 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
         .fft_discard_count_o(fft_discards),.fft_44k1_o(fft_rate),.fft_context_valid_o(fft_context),.fft_epoch_o(fft_epoch),
         .display_valid_o(display_valid),.display_pcm_o(display_pcm),.display_reference_o(),.display_voices_o(),.display_status_o(),
         .display_44k1_o(display_rate),.display_error_o(display_error),.display_epoch_o(display_epoch),.display_sequence_o(display_sequence),
-        .effect_mask_o(),.effect_order_o());
+        .effect_mask_o(display_effect_mask),.effect_order_o(display_effect_order),.display_observation_fault_o(display_observation_fault));
     // Ordered owner-6 DDR model with real data, not synthetic DMA completion.
     reg [255:0] memory[0:4095],qdata[0:63],read_data=0;
     reg [28:0] qaddr[0:63];reg qwrite[0:63];
@@ -102,10 +104,14 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
     end
     reg [31:0] physical_pcm[0:3][0:8191];
     reg physical_error[0:3][0:8191],physical_seen[0:3][0:8191],physical_rate[0:3][0:8191];
+    reg [8:0] observed_effect_pair[0:3][0:8191];
+    reg observed_effect_seen[0:3][0:8191];
     reg [31:0] decoded=0,last_decoded=0;
     integer physical_position=0,physical_frames=0,observed_frames=0,nonzero=0,display_frames=0;
     integer fft_bins=0,fft_nonzero=0,uart_errors=0,apb_transactions=0,usb_events=0,cpu_events=0,policies=0;
     integer observed48=0,observed44=0,fft48=0,fft44=0;
+    integer display_effect_tuple_checks=0,display_effect_changes48=0,display_effect_changes44=0;
+    reg [8:0] last_effect48=9'h1ff,last_effect44=9'h1ff;
     always @(negedge dut.runtime.serial_reset_n)begin physical_position=0;decoded=0;last_decoded=0;end
     always @(posedge bck)begin
         #0.1;
@@ -144,6 +150,13 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
         end
     end
     always @(posedge compute_clk)if(rst_n)begin
+        // Independent source-edge oracle keyed by the physical frame context.
+        // Both this oracle and the held-word mailbox sample the old committed
+        // controls on this edge, before any new parameter commit takes effect.
+        if(dut.observed_valid)begin
+            observed_effect_pair[dut.observed_epoch][dut.observed_sequence]={dut.effect_mask_compute,dut.effect_order_compute};
+            observed_effect_seen[dut.observed_epoch][dut.observed_sequence]=1;
+        end
         if(dut.events.g1_valid && dut.events.g1_ready)usb_events=usb_events+1;
         if(dut.events.pc_valid && dut.events.pc_ready)cpu_events=cpu_events+1;
     end
@@ -153,11 +166,23 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
                display_pcm!==physical_pcm[display_epoch][display_sequence] ||
                display_error!==physical_error[display_epoch][display_sequence] || display_rate!==physical_rate[display_epoch][display_sequence])
                 $fatal(1,"display lost physical PCM context");
+            if(!observed_effect_seen[display_epoch][display_sequence] ||
+               {display_effect_mask,display_effect_order}!==observed_effect_pair[display_epoch][display_sequence])
+                $fatal(1,"display effect pair torn or detached from physical frame");
+            display_effect_tuple_checks=display_effect_tuple_checks+1;
+            if(display_rate)begin
+                if({display_effect_mask,display_effect_order}!=last_effect44)display_effect_changes44=display_effect_changes44+1;
+                last_effect44={display_effect_mask,display_effect_order};
+            end else begin
+                if({display_effect_mask,display_effect_order}!=last_effect48)display_effect_changes48=display_effect_changes48+1;
+                last_effect48={display_effect_mask,display_effect_order};
+            end
             display_frames=display_frames+1;
         end
         if(uart_error)uart_errors=uart_errors+1;
         if(policy_rejected)policies=policies+1;
-        if(fault || underruns!=0 || observation_drops!=0 || midi_drops!=0)$fatal(1,"healthy integration fault/drop/underrun");
+        if(fault || display_observation_fault || underruns!=0 || observation_drops!=0 || midi_drops!=0)
+            $fatal(1,"healthy integration fault/drop/underrun");
     end
     task frames(input integer n);integer target;begin target=observed_frames+n;wait(observed_frames>=target);@(negedge compute_clk);end endtask
     task apb(input bit wr,input integer address,input reg [31:0] data,output reg [31:0] value);
@@ -204,11 +229,17 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
     integer before_epoch,before_applied,before_observed;
     reg [31:0] captured_left,captured_right;
     initial begin
-        for(integer e=0;e<4;e=e+1)for(integer s=0;s<8192;s=s+1)physical_seen[e][s]=0;
+        for(integer e=0;e<4;e=e+1)for(integer s=0;s<8192;s=s+1)begin
+            physical_seen[e][s]=0;observed_effect_seen[e][s]=0;
+        end
         repeat(8)@(negedge control_clk);rst_n=1;preset_n=1;
         wait(ready && active_valid);read_reg(0);if(value!=32'h41313338)$fatal(1,"services identity");
         event_cpu(2,7,100);event_cpu(1,60,127);frames(192);
         if(!held[60] || active==0 || nonzero==0)$fatal(1,"APB event failed to reach single real owner");
+        // Change multiple effect bits and order fields at each physical rate.
+        // They must arrive with the same frame tuple, never through naked 2FFs.
+        event_cpu(2,81,1);event_cpu(2,84,2);event_cpu(2,85,0);frames(4);
+        event_cpu(2,81,0);event_cpu(2,86,1);frames(4);
         write_reg('h1a8,32'h10203040);write_reg('h1ac,32'h50607080);write_reg('h1b0,32'h12345678);write_reg('h1b4,32'h87654321);
         if(performance[415:384]!=32'h50607080 || performance[319:288]!=32'h10203040)$fatal(1,"snapshot performance field placement");
         before_held=held;before_applied=integer'(applied_events);
@@ -258,7 +289,9 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
         if(!rate || epoch!=32'(before_epoch+1) || held!==before_held || observed_frames<=before_observed)$fatal(1,"switch lost live state/observations");
         write_reg('h080,0);frames(1);write_reg('h080,1);frames(1);
         if(!rec_failed || rec_code!=5 || dut.record_valid)$fatal(1,"44.1 legacy packet accepted without context");
-        write_reg('h080,0);frames(700);
+        write_reg('h080,0);
+        event_cpu(2,81,1);event_cpu(2,84,1);event_cpu(2,85,2);frames(4);
+        event_cpu(2,81,0);event_cpu(2,86,0);frames(4);frames(692);
         // Actual physical source error terminates score and discards FFT context.
         write_reg('h114,1);wait(running);tf_active=1;tf_rate=44100;tf_error=1;frames(4);
         if(running || !score_failed || fft_discards==0 || done)$fatal(1,"physical error not propagated to consumers");
@@ -275,9 +308,10 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
         // Lifecycle cancellation is still the unbuffered priority path.
         event_usb(15,0,0,1,1);frames(4);if(held!=0 || active!=0)$fatal(1,"USB cancel did not clear real owner");
         if(physical_frames<1000 || observed_frames<1000 || observed48<256 || observed44<256 ||
-           fft48<128 || fft44<128 || fft_nonzero==0 || display_frames<100 || writes==0 || reads==0)
+           fft48<128 || fft44<128 || fft_nonzero==0 || display_frames<100 || writes==0 || reads==0 ||
+           display_effect_tuple_checks!=display_frames || display_effect_changes48<3 || display_effect_changes44<3)
             $fatal(1,"missing integration coverage physical=%0d observed=%0d fft=%0d wet=%0d",physical_frames,observed_frames,fft_bins,fft_nonzero);
-        $display("PASS runtime_controlled: physical_frames=%0d observed_frames=%0d observed48=%0d observed44=%0d nonzero=%0d display_frames=%0d fft_bins=%0d fft48=%0d fft44=%0d fft_nonzero=%0d apb=%0d usb=%0d cpu=%0d policies=%0d writes=%0d reads=%0d fft_discards=%0d switches=2 health_reset_checks=1",physical_frames,observed_frames,observed48,observed44,nonzero,display_frames,fft_bins,fft48,fft44,fft_nonzero,apb_transactions,usb_events,cpu_events,policies,writes,reads,fft_discards);
+        $display("PASS runtime_controlled: physical_frames=%0d observed_frames=%0d observed48=%0d observed44=%0d nonzero=%0d display_frames=%0d fft_bins=%0d fft48=%0d fft44=%0d fft_nonzero=%0d apb=%0d usb=%0d cpu=%0d policies=%0d writes=%0d reads=%0d fft_discards=%0d switches=2 health_reset_checks=1 display_observation_fault_checks=1 display_effect_tuple_checks=%0d display_effect_changes48=%0d display_effect_changes44=%0d",physical_frames,observed_frames,observed48,observed44,nonzero,display_frames,fft_bins,fft48,fft44,fft_nonzero,apb_transactions,usb_events,cpu_events,policies,writes,reads,fft_discards,display_effect_tuple_checks,display_effect_changes48,display_effect_changes44);
         $finish;
     end
     initial begin #200000000;$fatal(1,"controlled integration watchdog");end
