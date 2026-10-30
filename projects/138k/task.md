@@ -36,6 +36,8 @@
 
 [BLE release 维护 composition](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_BLE_RELEASE_COMPOSITION_20261030.md)已精准修复 F7 空查询，默认／accepted 来源隔离保持。新 prepare `bd40620bb1b139bb` 的 profile 19 项、来源 12 项、accepted sources 10 项及 CDC policy 4 项通过，真实 prepare 的三项篡改均被拒绝；570 项 staged 仅 SDC 变化。该阶段没有新综合／物理／硬件接受，完整 CDC／复位门禁仍未完成。
 
+[F8 物理失败及 F9 第二次资源尝试](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_F8_PHYSICAL_F9_PREPARE_20261030.md)：F8 8,083 条未布通网络，物理 CLS 67,110／69,120、BSRAM 298／340、PRIMARY 与 LW 均 8／8，无位流或完整 routed STA；F9 只改为 place4/route1 和独立 UserCode，27 项输入及八个负控通过，已启动运行。当前仅一次有效资源失败，尚未触发用户允许的 CNN／曲谱裁剪；无部署。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
