@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-30T13:06:48.995143+00:00",
+  "agent_handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/handoff_manifest.json",
+    "sha256": "b44d214dff6056ca7fd7f62b81842992e08fa6d2ad4dd4f08698140147326898"
+  },
+  "exact_imported_nonprofile_source_sha256": {
+    "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_RECORDING_SEAL_LOCAL_RELEASE_20261030.md": "8842934438046a2f297f333b9bf97daa12fce0e4d3e2065d1d852cea236ac1d2",
+    "projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/recording_seal_local_release_source.json": "e5c40d2e64a9a181328480d5a888214582cc3480fd975403fd25c2bae5bbaf5b",
+    "projects/138k/push2_workstation/usb_a/rtl/services/RECORDING_SEAL_BRIDGE_CONTRACT.md": "4221f752e07528b9645f4fa88f6bfa5584acf94d3e631105a62ff8b8d3fe6adf",
+    "projects/138k/push2_workstation/usb_a/rtl/services/workstation_recording_seal_bridge.sv": "1512a14e01725845350a76d2ea78e521f0a99bc362015f8cf87d3db8d61883f4",
+    "projects/138k/push2_workstation/usb_a/sim/services/run_workstation_recording_runtime.py": "753d75b2ef9e1e027e74d6d5686e176df99798f9ee0c618a7cc386aff96eee3c",
+    "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_recording_runtime.sv": "7b119ef9e14aee4daa890889bbc6a5f146b3554686262cbaf7147e638aacce80",
+    "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_recording_seal_bridge.sv": "2182b484c86307eec00bbb616ba3cd55fbcf8b4b47e019093baebcc578145721",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_recording_seal_bridge.py": "25162a8b0fa42b7972774aec1ee6df056d83321c0b8683532a88ada13a99d72e"
+  },
+  "profile_merge": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": {
+      "changed_source_locks": [
+        "projects/138k/push2_workstation/usb_a/rtl/services/RECORDING_SEAL_BRIDGE_CONTRACT.md",
+        "projects/138k/push2_workstation/usb_a/rtl/services/workstation_recording_seal_bridge.sv",
+        "projects/138k/push2_workstation/usb_a/sim/services/run_workstation_recording_runtime.py",
+        "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_recording_runtime.sv",
+        "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_recording_seal_bridge.sv",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_recording_seal_bridge.py"
+      ],
+      "sha256": "051e40cd5ebef03da40d58263c749db8ba4f8512f67e816be8f37f4bd7fc2d6a",
+      "pcm_v2_locks_preserved": true,
+      "only_source_hashes_changed": true
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json": {
+      "changed_source_locks": [
+        "projects/138k/push2_workstation/usb_a/rtl/services/RECORDING_SEAL_BRIDGE_CONTRACT.md",
+        "projects/138k/push2_workstation/usb_a/rtl/services/workstation_recording_seal_bridge.sv",
+        "projects/138k/push2_workstation/usb_a/sim/services/run_workstation_recording_runtime.py",
+        "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_recording_runtime.sv",
+        "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_recording_seal_bridge.sv",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_recording_seal_bridge.py"
+      ],
+      "sha256": "b22fe773e44a3bf120ae4f51ddd62343cf524b9fb059d699398eb8048aaf2655",
+      "pcm_v2_locks_preserved": true,
+      "only_source_hashes_changed": true
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": {
+      "changed_source_locks": [
+        "projects/138k/push2_workstation/usb_a/rtl/services/RECORDING_SEAL_BRIDGE_CONTRACT.md",
+        "projects/138k/push2_workstation/usb_a/rtl/services/workstation_recording_seal_bridge.sv",
+        "projects/138k/push2_workstation/usb_a/sim/services/run_workstation_recording_runtime.py",
+        "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_recording_runtime.sv",
+        "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_recording_seal_bridge.sv",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_recording_seal_bridge.py"
+      ],
+      "sha256": "aefd4bd5f64e816ea693b8ee7cac465f20eb7e60f7b60ab05e64d382e1102675",
+      "pcm_v2_locks_preserved": true,
+      "only_source_hashes_changed": true
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": {
+      "changed_source_locks": [
+        "projects/138k/push2_workstation/usb_a/rtl/services/RECORDING_SEAL_BRIDGE_CONTRACT.md",
+        "projects/138k/push2_workstation/usb_a/rtl/services/workstation_recording_seal_bridge.sv",
+        "projects/138k/push2_workstation/usb_a/sim/services/run_workstation_recording_runtime.py",
+        "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_recording_runtime.sv",
+        "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_recording_seal_bridge.sv",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_recording_seal_bridge.py"
+      ],
+      "sha256": "3a536fd3ed12023a55aefe9912ad251b0087b20667d0f0f23ebc682ce9606645",
+      "pcm_v2_locks_preserved": true,
+      "only_source_hashes_changed": true
+    }
+  },
+  "prepares": {
+    "enabled": {
+      "candidate": "custom138k-workstation-v1-d2c211c35c4817a9",
+      "staged_files": 571,
+      "enabled_files": 260,
+      "changed_staged_files": [],
+      "source_tests": 12,
+      "validation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/seal-release-parent-enabled-prepare-v1-validation.json",
+        "sha256": "85925f00ef570b86669eb2ef46cb137c2840682ce058e573fe5018a5b9fd4c24"
+      }
+    },
+    "no-cnn": {
+      "candidate": "custom138k-workstation-no-cnn-v1-dc14ab12fd19353e",
+      "staged_files": 572,
+      "enabled_files": 260,
+      "changed_staged_files": [],
+      "source_tests": 12,
+      "validation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/seal-release-parent-no-cnn-prepare-v1-validation.json",
+        "sha256": "737dcb39b69578a35b8723aa3c535ff65e7dfabe9fd51469bcccce19e4859df9"
+      }
+    },
+    "r00": {
+      "candidate": "custom138k-workstation-r00-v1-c76a67b45b07366f",
+      "staged_files": 584,
+      "enabled_files": 267,
+      "changed_staged_files": [
+        "rtl/services/workstation_recording_seal_bridge.sv"
+      ],
+      "source_tests": 12,
+      "validation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/seal-release-parent-r00-prepare-v1-validation.json",
+        "sha256": "addd5c75d3a21000adc84881e9134c22a9f44d99638d3c1c5517edf16a023de4"
+      }
+    },
+    "off": {
+      "candidate": "custom138k-workstation-r00-no-local-panel-v1-925724eb1ed13487",
+      "staged_files": 584,
+      "enabled_files": 266,
+      "changed_staged_files": [
+        "rtl/services/workstation_recording_seal_bridge.sv"
+      ],
+      "source_tests": 12,
+      "validation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/seal-release-parent-off-prepare-v1-validation.json",
+        "sha256": "b7adb5077068482367a000542398135216071d2b59e6cc396e438b74c74d23cd"
+      }
+    }
+  },
+  "root_validation_logs": {
+    "seal-release-parent-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/seal-release-parent-tests-v1.log",
+      "sha256": "55a5005398b11af79d204e8b3131635edb8769a1fdd22c8d0bb51e7b81f1a69e"
+    },
+    "seal-release-parent-profile-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/seal-release-parent-profile-tests-v1.log",
+      "sha256": "7b6e8c519a0697bd3bda46424ccba3926dcb5aea509c2cd821f56b908eb21444"
+    },
+    "seal-release-parent-accepted-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/seal-release-parent-accepted-tests-v1.log",
+      "sha256": "829039868271c79066fd590bcdd07b250f3e573ee090eb1fa640ccb4b5c9c189"
+    }
+  },
+  "seal_directed_scenarios": 11,
+  "seal_rejected_mutants": 12,
+  "runtime": {
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/seal-release-parent-runtime-cases-v1/verification.json",
+      "sha256": "8b9a557a618e089079fa4ff30ca61d0ac0e7c2e0399cb71597191fc990170a41"
+    },
+    "identity": "r00-runtime-owner8-offline-v1-8e194de198376d8c",
+    "positive_cases": 14,
+    "rejected_mutants": 5
+  },
+  "strict_lint": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/seal-release-parent-lint-v1.log",
+    "sha256": "dbe2a646e62a369129ce77bec844e01ff4468c0a7db27775b7ef369a26ddd92d"
+  },
+  "profile_optional_skip": "LegacyDefaultOff requires separate legacy prepared input; not supplied",
+  "synthesis_run": false,
+  "pnr_run": false,
+  "complete_cdc_accepted": false,
+  "complete_reset_accepted": false,
+  "physical_timing_accepted": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "release_ready": false,
+  "deployment_allowed": false
+}

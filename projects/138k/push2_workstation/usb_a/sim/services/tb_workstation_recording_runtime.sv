@@ -269,6 +269,24 @@ initial begin
   @(negedge memclk);reset_n=0;preset_n=0;wait_mem(10);reset_n=1;preset_n=1;wait_mem(30);
   if(dut.pcm_loss || dut.drop_count!=0 || transport_fault)$fatal(1,"common controller reset did not restore loss channel");
   create_object(9,9);await_state(3);check_memory(9);
+ end else if(CASE==13)begin
+  create_object(64,3);force_stall=1;await_state(1);
+  deadline=cycles+100;while(!seal_ready && cycles<deadline)@(negedge ctlclk);
+  if(!seal_ready)$fatal(1,"observer seal admission not ready");
+  @(negedge ctlclk);seal_hold=1;seal_request=1;@(negedge ctlclk);seal_request=0;
+  deadline=cycles+100;while(!dut.seal_cdc.destination_pending && cycles<deadline)@(negedge memclk);
+  if(!dut.seal_cdc.destination_pending)$fatal(1,"observer seal pending precondition");
+  @(negedge pclk);preset_n=0;seal_hold=0;wait_mem(50);
+  if(!dut.seal_cdc.source_pending || !dut.seal_cdc.destination_pending || !dut.seal_hold ||
+    seal_ready || seal_done || seal_failed || state!=2)
+   $fatal(1,"observer reset abandoned pending seal or its hold");
+  preset_n=1;force_stall=0;
+  deadline=cycles+1000;while(!seal_done && !seal_failed && cycles<deadline)@(negedge ctlclk);
+  if(!seal_done || seal_failed || state!=3 || frames!=3 || committed!=3)
+   $fatal(1,"observer reset lost real seal terminal or immutable object");
+  check_memory(3);deadline=cycles+1000;
+  while(!seal_ready && cycles<deadline)@(negedge ctlclk);
+  if(!seal_ready)$fatal(1,"observer seal channel did not recover readiness");
  end
  $display("PASS runtime independent case=%0d cycles=%0d slots=%0d cores=%0d natives=%0d writes=%0d reads=%0d",CASE,cycles,slots,cores,natives,record_writes,record_reads);$finish;
 end

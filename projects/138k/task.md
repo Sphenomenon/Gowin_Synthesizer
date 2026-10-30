@@ -96,6 +96,8 @@
 
 [PCM v2 父级组合](push2_workstation/usb_a/reports/WORKSTATION_PCM_REPLY_NEXT_Q_MAIN_INTEGRATION_20261030.md)已把 D／CE 配对约束接回四种显式 profile；父级实际 VG 18 项／109 负控、独立 1,048,576 次真值求值／七负控通过。四份新 prepare 各 12 项来源回归通过，staged 仅 SDC 变化；Profile 20 项通过（旧默认配置可选项一项跳过）、accepted 17 项通过。第一轮 inactive mux 快照漂移失败保留，重建后通过。新 no-panel `7d1c3b9b464ff722` 已复制封存并综合返回 0，584 输入保持、无 AG 诊断，实际 VG 安装检查另行运行，不继承旧 e855／FE 身份；完整 CDC／reset／RAM／物理／实板未接受，无部署。
 
+[录音封存桥本地释放](push2_workstation/usb_a/reports/WORKSTATION_RECORDING_SEAL_RELEASE_MAIN_20261030.md)已父级复验：11 场景／12 突变、真实 runtime 14 场景／五负控及严格 lint 通过，CPU observer reset 不撤销真实封存。四种新 prepare 来源各 12 项通过；enabled／no-CNN staged 不变，R00／no-panel 584 项中仅桥源码变化。Profile 20 项（一个旧默认可选项跳过）、accepted 17 项通过，保留 PCM v2 来源锁；新桥尚无综合、完整 CDC／reset／物理或实板接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

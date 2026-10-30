@@ -1,0 +1,257 @@
+{
+  "actual_mapped_cdc_verified": false,
+  "base_commit": "f2f11fc4c088abe6f5eb95b407f042bd01448072",
+  "deployment_allowed": false,
+  "flash_written": false,
+  "full_workstation_verified": false,
+  "hardware_tested": false,
+  "media": {
+    "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/media-v1/verification.json",
+    "metrics": {
+      "cases": 9,
+      "completions": 5,
+      "default_checks": 193,
+      "failures": 4,
+      "requests": 8
+    },
+    "negative_count": 2,
+    "passed": true,
+    "sha256": "99310ad82b0fbdbb2b5abac68d80fa974b0ee0d38b6e8058f801ea022501dce5"
+  },
+  "new_prepare_completed": false,
+  "old_bridge_negative": {
+    "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/old-bridge-case13/verification.json",
+    "expected_failure": "observer reset abandoned pending seal or its hold",
+    "old_sha256": "2323b54f0c11459295b722c20ccafe575a53eef43001be639f10d5791fa11684",
+    "rejected": true,
+    "sha256": "89c75e4251f2b385f52e6bf26990abd345754d55076abe1e692ad4b757e5e96e"
+  },
+  "physical_cdc_accepted": false,
+  "pnr": false,
+  "recording_cdc_complete": false,
+  "release_ready": false,
+  "reset_recovery_removal_verified": false,
+  "runtime": {
+    "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/runtime-final/verification.json",
+    "negative_count": 5,
+    "new_case": "observer_reset_during_media_seal_keeps_fence",
+    "original_13_cases_preserved": true,
+    "passed": true,
+    "positive_count": 14,
+    "sha256": "382c0775c1a11e6fb6e1dca2c6bfe2ebb3c4ebca76eb22125c1520d4f3d46e6d"
+  },
+  "schema": 1,
+  "scope": "R00 recording normal-seal bridge local reset releases, registered memory ready, held transaction and stable terminal payload",
+  "seal_tests": {
+    "cases": [
+      {
+        "description": "common_reset_phase_sweep",
+        "expected_failure": null,
+        "label": "common_reset_phase_sweep",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "common_reset_while_memory_clock_stopped",
+        "expected_failure": null,
+        "label": "common_reset_while_memory_clock_stopped",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "common_reset_while_source_clock_stopped",
+        "expected_failure": null,
+        "label": "common_reset_while_source_clock_stopped",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "delivery_edge_stale_terminal_ignored",
+        "expected_failure": null,
+        "label": "delivery_edge_stale_terminal_ignored",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "common_reset_phase_sweep",
+        "expected_failure": "destination functional FF escaped local release",
+        "label": "destination_one_stage_release",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "common_reset_phase_sweep",
+        "expected_failure": "destination functional FF escaped local release",
+        "label": "destination_raw_release",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "destination_ready_race_reports_11",
+        "expected_failure": null,
+        "label": "destination_ready_race_reports_11",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "exact_edge_reset_release_held_request",
+        "expected_failure": null,
+        "label": "exact_edge_reset_release_held_request",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "same_edge_hold_request_and_real_done",
+        "expected_failure": "pending seal completed before backend terminal",
+        "label": "fabricated_early_result",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "simultaneous_done_failed_priority",
+        "expected_failure": "seal terminal/failure mismatch",
+        "label": "failed_terminal_lost",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "failure_retention_and_rearm",
+        "expected_failure": "seal failure was not retained under hold",
+        "label": "failure_detail_not_retained",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "failure_retention_and_rearm",
+        "expected_failure": null,
+        "label": "failure_retention_and_rearm",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "same_edge_hold_request_and_real_done",
+        "expected_failure": "accepted seal lost backend hold before real terminal",
+        "label": "hold_caller_can_abandon",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "pending_request_ignored_without_result_loss",
+        "expected_failure": null,
+        "label": "pending_request_ignored_without_result_loss",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "failure_retention_and_rearm",
+        "expected_failure": "seal terminal/failure mismatch",
+        "label": "raw_failure_bundle",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "ready_pulse_must_be_memory_registered",
+        "expected_failure": null,
+        "label": "ready_pulse_must_be_memory_registered",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "ready_pulse_must_be_memory_registered",
+        "expected_failure": "unregistered destination ready pulse crossed domains",
+        "label": "ready_raw_combinational_crossing",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "same_edge_hold_request_and_real_done",
+        "expected_failure": "same-edge hold request was not accepted",
+        "label": "same_edge_hold_drops_request",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "same_edge_hold_request_and_real_done",
+        "expected_failure": null,
+        "label": "same_edge_hold_request_and_real_done",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "simultaneous_done_failed_priority",
+        "expected_failure": null,
+        "label": "simultaneous_done_failed_priority",
+        "mutant": false,
+        "passed": true
+      },
+      {
+        "description": "common_reset_phase_sweep",
+        "expected_failure": "source functional FF escaped local release",
+        "label": "source_one_stage_release",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "common_reset_phase_sweep",
+        "expected_failure": "source functional FF escaped local release",
+        "label": "source_raw_release",
+        "mutant": true,
+        "passed": true
+      },
+      {
+        "description": "delivery_edge_stale_terminal_ignored",
+        "expected_failure": "stale delivery-edge terminal completed new seal",
+        "label": "stale_delivery_terminal_consumed",
+        "mutant": true,
+        "passed": true
+      }
+    ],
+    "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/seal-bridge-final.json",
+    "negative_count": 12,
+    "passed": true,
+    "positive_count": 11,
+    "sha256": "4eef40fdb8f52ad456962bdedb2ed8fd237375aad714918113305d6974e84c2d"
+  },
+  "source_implementation_complete": true,
+  "source_only": true,
+  "source_sha256": {
+    "rtl/services/RECORDING_SEAL_BRIDGE_CONTRACT.md": "4221f752e07528b9645f4fa88f6bfa5584acf94d3e631105a62ff8b8d3fe6adf",
+    "rtl/services/workstation_recording_seal_bridge.sv": "1512a14e01725845350a76d2ea78e521f0a99bc362015f8cf87d3db8d61883f4",
+    "sim/services/run_workstation_recording_runtime.py": "753d75b2ef9e1e027e74d6d5686e176df99798f9ee0c618a7cc386aff96eee3c",
+    "sim/services/tb_workstation_recording_runtime.sv": "7b119ef9e14aee4daa890889bbc6a5f146b3554686262cbaf7147e638aacce80",
+    "sim/services/tb_workstation_recording_seal_bridge.sv": "2182b484c86307eec00bbb616ba3cd55fbcf8b4b47e019093baebcc578145721",
+    "sim/test_workstation_recording_seal_bridge.py": "25162a8b0fa42b7972774aec1ee6df056d83321c0b8683532a88ada13a99d72e"
+  },
+  "sram_programmed": false,
+  "synthesis": false,
+  "validation": {
+    "accepted_sources": {
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/accepted-sources-final.log",
+      "passed": true,
+      "sha256": "32fb7f6166dfa2c14e45d8ada7c15b7af96bfe866c7d95f2b214166fdec3e0fa",
+      "tests": 17
+    },
+    "four_source_locks_passed": true,
+    "profile_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/profile-validation-final.json",
+    "profile_sha256": "23aa46cd6b10030d6ba421c89c9cc18b8671efabfcc0bd182c7ca8bba77a50b7",
+    "recording_profile": {
+      "passed": true,
+      "skip_reason": "existing opt-in prepare/frozen-image prerequisites not selected",
+      "skipped": 2,
+      "tests": 7
+    },
+    "verilator_lint": {
+      "argv": [
+        "verilator",
+        "--lint-only",
+        "-Wall",
+        "--top-module",
+        "workstation_recording_seal_bridge",
+        "rtl/services/workstation_recording_seal_bridge.sv"
+      ],
+      "passed": true,
+      "version": "5.052",
+      "warnings": 0
+    }
+  }
+}

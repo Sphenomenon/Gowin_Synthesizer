@@ -38,6 +38,7 @@ CASE_NAMES = (
     'third_media_owner_stale_ack_native_drain', 'fault_fences_snapshot_same_edge',
     'capture_source_gap', 'actual_48k_descriptor_and_bytes',
     'sticky_observation_loss_requires_common_reset',
+    'observer_reset_during_media_seal_keeps_fence',
 )
 MUTANTS = {
     'ungated_error': (0, SOURCES[0], '.source_error_i(pcm_valid_i && pcm_error_i)',
