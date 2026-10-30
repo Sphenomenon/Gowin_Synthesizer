@@ -62,6 +62,26 @@ def require(condition, message):
         raise ValueError('runtime clock audit: ' + message)
 
 
+def prepared_local_panel_enabled(stage):
+    """Select the registered clock policy without changing historical inputs."""
+    profile_path = Path(stage).parents[1] / 'workstation_profile.json'
+    if not profile_path.is_file():
+        return True  # Legacy preparations predate named workstation profiles.
+    from tools.workstation_profile import specification
+    prepared = json.loads(profile_path.read_text())
+    require(isinstance(prepared, dict) and isinstance(prepared.get('profile'), str),
+            'prepared profile identity is missing or malformed')
+    spec = specification(prepared['profile'])  # Unknown names must fail closed.
+    profile_sha = prepared.get('profile_sha256')
+    require(prepared.get('configuration') == spec['configuration'] and
+            prepared.get('profile_source') == spec['config'] and
+            isinstance(profile_sha, str) and re.fullmatch(r'[0-9a-f]{64}', profile_sha) is not None,
+            'registered profile configuration or source identity changed')
+    panel_enabled = spec.get('local_panel_enabled', True)
+    require(type(panel_enabled) is bool, 'registered local-panel selection is malformed')
+    return panel_enabled
+
+
 def audit_runtime_clocks(root, stage, netlist_text):
     """Check static clock declarations/connectivity, leaving physical gates false.
 
@@ -70,18 +90,7 @@ def audit_runtime_clocks(root, stage, netlist_text):
     identity; it does not audit all exceptions or Tcl object resolution.
     """
     root, stage = Path(root), Path(stage)
-    local_panel_enabled = True
-    profile_path = stage.parents[1] / 'workstation_profile.json'
-    if profile_path.is_file():
-        from tools.workstation_profile import R00_NO_LOCAL_PANEL_NAME, specification
-        prepared = json.loads(profile_path.read_text())
-        if prepared.get('profile') == R00_NO_LOCAL_PANEL_NAME:
-            spec = specification(R00_NO_LOCAL_PANEL_NAME)
-            require(prepared.get('configuration') == spec['configuration'] and
-                    prepared.get('profile_source') == spec['config'] and
-                    re.fullmatch(r'[0-9a-f]{64}', prepared.get('profile_sha256', '')) is not None,
-                    'no-local-panel profile configuration or source identity changed')
-            local_panel_enabled = False
+    local_panel_enabled = prepared_local_panel_enabled(stage)
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     bundle = clock_bundle(root, local_panel_enabled=local_panel_enabled)
     require(sdc.startswith(bundle['sdc']), 'selected base-clock SDC prefix changed')

@@ -20,14 +20,41 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_runtime_clock_audit import (
     SELECTOR, SERIALIZER, VG_RELATIVE, audit_runtime_clocks, file_sha,
-    run_audit, verify_synthesis_identity,
+    prepared_local_panel_enabled, run_audit, verify_synthesis_identity,
 )
 from tools.workstation_synthesis_netlist import IDENTIFIER, SynthesisNetlist
-from tools.workstation_profile import R00_NO_LOCAL_PANEL_NAME
+from tools.workstation_profile import PROFILE_REGISTRY
 from tools.workstation_board_peripherals import LCD_SDC
 
 
 class RuntimeProvenance(unittest.TestCase):
+    def test_registered_profile_clock_selection_and_invalid_identity(self):
+        with tempfile.TemporaryDirectory(prefix='runtime-clock-profile-') as directory:
+            stage = Path(directory) / 'candidate/workstation/Prj1'
+            stage.mkdir(parents=True)
+            manifest = stage.parents[1] / 'workstation_profile.json'
+            self.assertTrue(prepared_local_panel_enabled(stage))
+            for name, spec in PROFILE_REGISTRY.items():
+                good = dict(profile=name, configuration=spec['configuration'],
+                            profile_source=spec['config'], profile_sha256='a' * 64)
+                manifest.write_text(json.dumps(good))
+                with self.subTest(profile=name):
+                    self.assertIs(prepared_local_panel_enabled(stage),
+                                  spec.get('local_panel_enabled', True))
+                mutations = [None, [], {}, dict(good, profile=None),
+                             dict(good, profile='unregistered-workstation-profile'),
+                             dict(good, configuration={}),
+                             dict(good, profile_source='wrong-profile.json')]
+                mutations.extend(dict(good, profile_sha256=value)
+                                 for value in (None, 64, '', 'a' * 63, 'A' * 64))
+                for bad in mutations:
+                    manifest.write_text(json.dumps(bad))
+                    with self.subTest(profile=name, bad=bad), self.assertRaises(ValueError):
+                        prepared_local_panel_enabled(stage)
+            manifest.write_text('{invalid JSON')
+            with self.assertRaises(ValueError):
+                prepared_local_panel_enabled(stage)
+
     def test_missing_changed_or_incomplete_synthesis_sources_fail(self):
         with tempfile.TemporaryDirectory(prefix='runtime-clock-seal-') as directory:
             stage = Path(directory) / 'candidate/workstation/Prj1'
@@ -97,8 +124,7 @@ class ActualRuntimeClocks(unittest.TestCase):
         cls.sdc_path = cls.stage / 'constraints/custom_138k.sdc'
         cls.sdc = cls.sdc_path.read_text()
         cls.netlist = SynthesisNetlist(cls.text, 'workstation_custom_138k_top')
-        cls.panel_off = json.loads((cls.stage.parents[1] / 'workstation_profile.json').read_text()).get(
-            'profile') == R00_NO_LOCAL_PANEL_NAME
+        cls.panel_off = not prepared_local_panel_enabled(cls.stage)
         cls.mutation_results = []
 
     @classmethod

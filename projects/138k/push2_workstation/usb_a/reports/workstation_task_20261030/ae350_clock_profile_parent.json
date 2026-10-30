@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "scope": "registered_profile_clock_selection_fix",
+  "source_base_commit": "904b2c6",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": "168ff5bd38d6fc6c5981c4bf8e0f366c5fe4ed4d80d7e85b255bd4c375ba2dcd",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_clocks.py": "62a176d0e27f50869721b2f3614e546f50d0a21c1ecf3d60fb90a89b38bdcad8",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": "3103871c5e5519a319475544202879bccce4fda6f1fe8c0f9b339f12e1eda499",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json": "ae5f29dd899abfcd20ba8e3c1d4be79be8157f98d7e3396231c9aadaa907dd61",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json": "4c8801d29b89c0609c1691ae37dc18255906a54e68343a7d28bfb42c0fdc0850",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": "14757f7340eb3237a79e37edd59d758688bbe36019d540ad1ce95dd03f712b1b",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": "17c3362fe0dd791bb595e8ffa57fcd92165b3aed18fa2a2988d7d216a6d0e28c"
+  },
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-clock-profile-parent-v1",
+  "seal_sha256": "9b617fb7d089a5954dbec5c070dd44c344cf165e5d7df945efe6a55c921a0730",
+  "external_input_count": 667,
+  "candidate_identity": "custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1-4b356270438e20d8",
+  "configuration_sha256": "ae5f29dd899abfcd20ba8e3c1d4be79be8157f98d7e3396231c9aadaa907dd61",
+  "staged_inputs": 600,
+  "staged_inputs_identical_to": "custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1-011fdc9c6697df42",
+  "new_candidate_synthesized": false,
+  "actual_synthesized_candidate": "custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1-011fdc9c6697df42",
+  "actual_synthesis_vg_sha256": "fdc08cad2db2b540a4bf6d99e85a9ac6f3942868dc3db7292281a20ed9e80f3e",
+  "checks": {
+    "actual_runtime_clock_tests": 5,
+    "actual_clock_negative_mutations": 28,
+    "profile_sources": 6,
+    "accepted_sources": 17,
+    "runtime_sources": 12,
+    "registered_profiles_loaded": 5
+  },
+  "pcm_cdc_rerun": "pending_separate_result",
+  "sdc_changed": false,
+  "clocks_relaxed": false,
+  "hardware_operated": false,
+  "physical_timing_accepted": false,
+  "deployment_allowed": false
+}
