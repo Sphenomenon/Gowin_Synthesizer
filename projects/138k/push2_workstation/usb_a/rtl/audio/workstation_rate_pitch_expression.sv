@@ -18,12 +18,22 @@ module workstation_rate_pitch_expression (
     logic signed [16:0] triangle;
     logic signed [24:0] modulation, combined;
     logic [7:0] glide_remainder;
-    wire [23:0] rate_glide_product = {8'd0,glide_step_q20_i} * 24'd160 + {16'd0,glide_remainder};
+    // 160*s+r = 147*s+(13*s+r). The remainder is reachable only in0..146,
+    // so the residual numerator is at most852101 and fits20 bits. For that
+    // entire range floor(t/147) == (t*456523)>>26: 147*456523=2^26+17,
+    // and852101*17<2^26. See the independent exhaustive arithmetic regression.
+    wire [19:0] glide_residual = {4'd0,glide_step_q20_i} * 20'd13 + {12'd0,glide_remainder};
+    wire [38:0] glide_reciprocal_product = glide_residual * 19'd456523;
+    wire [12:0] glide_extra_step = glide_reciprocal_product[38:26];
+    wire [19:0] glide_residual_multiple = {7'd0,glide_extra_step} * 20'd147;
+    wire [19:0] glide_residual_remainder = glide_residual - glide_residual_multiple;
+    wire [7:0] next_glide_remainder = glide_residual_remainder[7:0];
     // Carry the fractional increment, so even small CC5 increments preserve
     // physical glide time. Initial73 rounds the cumulative sum to nearest.
     // Seventeen bits retain the full16-bit API range after160/147.
-    wire [16:0] current_glide_step = rate_44k1_i ? 17'(rate_glide_product / 24'd147)
-                                                               : {1'b0,glide_step_q20_i};
+    wire [16:0] current_glide_step = rate_44k1_i
+        ? {1'b0,glide_step_q20_i} + {4'd0,glide_extra_step}
+        : {1'b0,glide_step_q20_i};
     always_comb begin
         triangle = phase[31] ? $signed({1'b0,~phase[30:15]}) - 17'sd32768
                              : $signed({1'b0,phase[30:15]}) - 17'sd32768;
@@ -45,7 +55,7 @@ module workstation_rate_pitch_expression (
         end else if (sample_ce_i) begin
             phase <= phase + (rate_44k1_i ? LFO_STEP_44 : LFO_STEP_48);
             if (rate_44k1_i && glide_step_q20_i != 0)
-                glide_remainder <= 8'(rate_glide_product % 24'd147);
+                glide_remainder <= next_glide_remainder;
             if (current_glide_step == 0) glide_ratio <= target_ratio_q20_i;
             else if (target_ratio_q20_i > glide_ratio)
                 glide_ratio <= target_ratio_q20_i-glide_ratio > {5'd0,current_glide_step}
