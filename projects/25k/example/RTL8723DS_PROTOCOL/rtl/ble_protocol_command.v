@@ -3,7 +3,7 @@
 // Every byte of longer unsupported requests is still checked before rejection.
 module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="audio/test_tone.mem",
     parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
-    parameter CACHE_METADATA_RAM_STYLE="block_ram") (
+    parameter CACHE_METADATA_RAM_STYLE="block_ram", parameter EXTERNAL_SEAL_PROTOCOL=0) (
     input wire clk, resetn, enable,
     input wire pcm_valid_i, source_ready_i, source_fault_i,
     input wire [31:0] pcm_pair_i,
@@ -38,7 +38,12 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     output reg [159:0] summary,
     output reg session_active,
     output reg [31:0] accepted_count,
-    output reg [31:0] crc_reject_count
+    output reg [31:0] crc_reject_count,
+    input wire seal_hold_i, seal_request_i,
+    output wire seal_ready_o, seal_pending_o, seal_done_o, seal_failed_o,
+    output wire [3:0] seal_failure_code_o,
+    output wire [7:0] seal_record_state_o,
+    output wire [31:0] seal_recording_id_o, seal_frames_o, seal_crc_o
 );
     localparam IDLE=0,CHECK=1,DUP=2,ORDER=3,COPY=4,VALIDATE=5,
         SESSION=6,LOOKUP=7,COMPARE_ADDR=8,COMPARE=9,DISPATCH=10,
@@ -112,8 +117,12 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     reg [31:0] snapshot_recording_id,snapshot_recorded_frames;
     wire [127:0] recording_payload={header[31],header[30],header[29],header[28],header[27],header[26],header[25],header[24],
         header[23],header[22],header[21],header[20],header[19],header[18],header[17],header[16]};
-    ble_recording #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES)) recording (
+    ble_recording #(.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES)) recording (
         .clk(clk),.resetn(resetn),.enable(recording_enable),.connected(enable),
+        .seal_hold_i(seal_hold_i),.seal_request_i(seal_request_i),
+        .seal_ready_o(seal_ready_o),.seal_pending_o(seal_pending_o),.seal_done_o(seal_done_o),.seal_failed_o(seal_failed_o),
+        .seal_failure_code_o(seal_failure_code_o),.seal_record_state_o(seal_record_state_o),
+        .seal_recording_id_o(seal_recording_id_o),.seal_frames_o(seal_frames_o),.seal_crc_o(seal_crc_o),
         .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
         .transfer_subscribed(transfer_subscribed),.boot_id(boot_id),.att_value_limit(att_value_limit),.elapsed_ms(elapsed_ms),
         .command_start(recording_start),.command_replay(recording_replay),

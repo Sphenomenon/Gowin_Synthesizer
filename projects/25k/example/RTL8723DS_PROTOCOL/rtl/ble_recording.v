@@ -4,7 +4,9 @@ module ble_recording #(
     parameter CLK_HZ=50000000,
     parameter AUDIO_FILE="audio/test_tone.mem",
     parameter CAPACITY_FRAMES=48000,
-    parameter EXTERNAL_PCM=0
+    parameter EXTERNAL_PCM=0,
+    parameter EXTERNAL_SEAL_PROTOCOL=0,
+    parameter integer SEAL_TIMEOUT_CYCLES=64
 )(
     input wire clk, resetn, enable, connected, transfer_subscribed,
     input wire pcm_valid_i, source_ready_i, source_fault_i,
@@ -34,7 +36,14 @@ module ble_recording #(
     output reg [12:0] transfer_length,
     input wire [12:0] transfer_addr,
     output reg [7:0] transfer_data,
-    input wire transfer_consume
+    input wire transfer_consume,
+    // Local clock policy only; no new BLE opcode or recording format.
+    input wire seal_hold_i, seal_request_i,
+    output wire seal_ready_o,
+    output reg seal_pending_o, seal_done_o, seal_failed_o,
+    output reg [3:0] seal_failure_code_o,
+    output reg [7:0] seal_record_state_o,
+    output reg [31:0] seal_recording_id_o, seal_frames_o, seal_crc_o
 );
     localparam [31:0] CAPACITY=CAPACITY_FRAMES;
     localparam C_IDLE=0,C_OPERATION=1,C_BLOCK_PREP=2,C_BLOCK_CRC=3,
@@ -50,6 +59,17 @@ module ble_recording #(
     reg [2:0] capture_state;
     reg [31:0] capture_word;
     reg stop_pending;
+    reg seal_request_q,seal_failed_seen,seal_initial_error,seal_requires_source;
+    reg [31:0] seal_wait;
+    assign seal_ready_o=EXTERNAL_SEAL_PROTOCOL && !seal_pending_o && !seal_request_q;
+    wire seal_begin=seal_request_i && seal_ready_o;
+    wire external_mutation_hold=EXTERNAL_SEAL_PROTOCOL && (seal_hold_i || seal_request_i || seal_pending_o);
+    wire external_capture_hold=EXTERNAL_SEAL_PROTOCOL && (seal_request_i || seal_pending_o);
+    wire recording_active=record_state==1 || record_state==2 || record_state==3;
+    wire seal_commit=EXTERNAL_SEAL_PROTOCOL && seal_pending_o &&
+        recording_active && capture_state==0 && recording_id==seal_recording_id_o;
+    wire seal_source_lost=seal_requires_source && (!enable || (EXTERNAL_PCM && (!source_ready_i || source_fault_i)));
+    wire seal_current_error=seal_source_lost || recording_id!=seal_recording_id_o || record_state==5;
     reg [31:0] operation_counter, current_operation;
     reg [31:0] task_id[0:7], task_request[0:7], task_recording[0:7], task_time[0:7];
     reg [7:0] task_opcode[0:7];
@@ -91,7 +111,7 @@ module ble_recording #(
         localparam ADDRESS_BITS=$clog2(CAPACITY_FRAMES);
         (* ram_style="block" *) reg [31:0] pcm_memory[0:CAPACITY_FRAMES-1];
         wire capture_write=resetn && enable && source_ready_i && !source_fault_i && pcm_valid_i &&
-            capture_state==0 && !stop_pending && (record_state==1 || record_state==2 || record_state==3);
+            capture_state==0 && !stop_pending && !external_capture_hold && recording_active;
         always @(posedge clk) begin
             if(capture_write) pcm_memory[recorded_frames[ADDRESS_BITS-1:0]]<=pcm_pair_i;
             rom_word<=pcm_memory[sample_address[ADDRESS_BITS-1:0]];
@@ -201,10 +221,48 @@ module ble_recording #(
             command_status<=1; command_length<=8; command_done<=1;
         end
     endtask
+    initial if(SEAL_TIMEOUT_CYCLES<8)$fatal(1,"BLE seal timeout too short");
+    // The local transaction survives the business endpoint's enable dropping.
+    // EMPTY/READY need no live BLE/audio source; active-object loss is failure.
+    // Snapshot identity belongs to this request and cannot follow a new slot.
+    always @(posedge clk)begin
+        seal_done_o<=0;seal_failed_o<=0;
+        if(!resetn)begin
+            seal_request_q<=0;seal_failed_seen<=0;seal_initial_error<=0;seal_requires_source<=0;seal_wait<=0;seal_pending_o<=0;
+            seal_failure_code_o<=0;seal_record_state_o<=0;seal_recording_id_o<=0;seal_frames_o<=0;seal_crc_o<=0;
+        end else begin
+            seal_request_q<=EXTERNAL_SEAL_PROTOCOL && seal_request_i;
+            if(seal_begin)begin
+                seal_pending_o<=1;seal_failed_seen<=0;seal_wait<=0;seal_failure_code_o<=0;
+                seal_initial_error<=record_state==5;
+                seal_requires_source<=recording_active;
+                seal_record_state_o<=record_state;seal_recording_id_o<=recording_id;
+                seal_frames_o<=recorded_frames;seal_crc_o<=record_state==4 ? object_crc:32'd0;
+            end else if(seal_pending_o)begin
+                if(!seal_failed_seen && seal_current_error)begin
+                    seal_failed_seen<=1;seal_failed_o<=1;
+                    seal_failure_code_o<=seal_source_lost && !enable ? 4'd2:recording_id!=seal_recording_id_o ? 4'd3:seal_initial_error ? 4'd1:4'd4;
+                end
+                if(!recording_active && capture_state==0)begin
+                    seal_pending_o<=0;
+                    if(recording_id==seal_recording_id_o)begin
+                        seal_record_state_o<=record_state;seal_frames_o<=recorded_frames;
+                        seal_crc_o<=record_state==4 ? object_crc:32'd0;
+                    end
+                    if(!seal_failed_seen && !seal_current_error && (record_state==0 || record_state==4))seal_done_o<=1;
+                end else begin
+                    if(seal_wait<SEAL_TIMEOUT_CYCLES)seal_wait<=seal_wait+1'b1;
+                    if(seal_wait==SEAL_TIMEOUT_CYCLES-1 && !seal_failed_seen)begin
+                        seal_failed_seen<=1;seal_failed_o<=1;seal_failure_code_o<=4'd8;
+                    end
+                end
+            end
+        end
+    end
     integer task_index;
     always @(posedge clk) begin
         command_done<=0;
-        if(!resetn || !enable) begin
+        if(!resetn || (!enable && !EXTERNAL_SEAL_PROTOCOL)) begin
             state<=C_IDLE; result_payload<=0; command_status<=0; command_length<=0;
             record_state<=0; object_counter<=0; recording_id<=0; recorded_frames<=0;
             limit_frames<=0; object_crc<=0; recording_crc<=32'hffffffff;
@@ -224,9 +282,9 @@ module ble_recording #(
             if(sample_tick) sample_phase<=sample_phase+32'd48000-CLK_HZ;
             else sample_phase<=sample_phase+32'd48000;
             if(transfer_consume) transfer_valid<=0;
-            if(!connected || (transfer_open && elapsed_ms-transfer_time>=30000)) begin
+            if(!connected || !enable || (transfer_open && elapsed_ms-transfer_time>=30000)) begin
                 transfer_open<=0; block_pending<=0; last_ack_valid<=0;transfer_wide<=0;transfer_long<=0;transfer_extended<=0;transfer_lossless<=0;transfer_second<=0;extended_limit<=0;transfer_compact<=0;transfer_bulk<=0;transfer_direct<=0;
-                if(!connected) begin transfer_valid<=0; if(state!=C_IDLE) state<=C_IDLE; end
+                if(!connected || !enable) begin transfer_valid<=0; if(state!=C_IDLE) state<=C_IDLE; end
             end
             // Only this recorder advances the committed prefix and its CRC.
             // The command processor may inspect it; transfers require READY.
@@ -236,7 +294,7 @@ module ble_recording #(
                         record_state<=4; object_crc<=~recording_crc;
                         task_finished[stop_task]<=1; task_time[stop_task]<=elapsed_ms;
                         stop_pending<=0;
-                    end else if(EXTERNAL_PCM ? pcm_valid_i && source_ready_i && !source_fault_i : sample_tick) begin
+                    end else if(!external_capture_hold && (EXTERNAL_PCM ? pcm_valid_i && source_ready_i && !source_fault_i : sample_tick)) begin
                         if(EXTERNAL_PCM) begin capture_word<=pcm_pair_i;capture_state<=2;end
                         else capture_state<=1;
                     end
@@ -258,16 +316,26 @@ module ble_recording #(
                     end
                 end
             endcase
-            if(EXTERNAL_PCM && (record_state==1 || record_state==2 || record_state==3) &&
-                (!source_ready_i || source_fault_i || (pcm_valid_i && capture_state!=0))) begin
-                record_state<=5;stop_reason<=!source_ready_i ? 6 : 3;capture_state<=0;
+            if(recording_active && ((EXTERNAL_SEAL_PROTOCOL && !enable) || (EXTERNAL_PCM &&
+                (!source_ready_i || source_fault_i || (!external_capture_hold && pcm_valid_i && capture_state!=0))))) begin
+                record_state<=5;stop_reason<=!enable || !source_ready_i ? 6 : 3;capture_state<=0;
                 if(!task_finished[start_task]) begin
                     task_finished[start_task]<=1;task_failed[start_task]<=1;task_time[start_task]<=elapsed_ms;
                 end
                 if(stop_pending) begin task_finished[stop_task]<=1;task_failed[stop_task]<=1;task_time[stop_task]<=elapsed_ms;end
                 stop_pending<=0;
             end
-            if(connected) case(state)
+            // Finish the accepted stereo word and all four CRC bytes first.
+            // An unstarted zero-frame object keeps its ID and empty CRC, but
+            // its START task fails because no first frame ever became real.
+            if(seal_commit && enable && !(EXTERNAL_PCM && (!source_ready_i || source_fault_i)))begin
+                record_state<=4;object_crc<=~recording_crc;stop_reason<=1;stop_pending<=0;
+                if(!task_finished[start_task])begin
+                    task_finished[start_task]<=1;task_failed[start_task]<=1;task_time[start_task]<=elapsed_ms;
+                end
+                if(stop_pending)begin task_finished[stop_task]<=1;task_time[stop_task]<=elapsed_ms;end
+            end
+            if(connected && enable) case(state)
                 C_IDLE: if(connected && command_start) begin
                     command_status<=0; result_payload<=0;
                     case(opcode)
@@ -277,6 +345,7 @@ module ble_recording #(
                         end
                         8'h20: begin
                             if(payload_length!=8 || payload[31:0]!=1) reject(8'h81);
+                            else if(external_mutation_hold) reject(8'h82);
                             else if(EXTERNAL_PCM && (!source_ready_i || source_fault_i)) reject(8'h83);
                             else if(record_state!=0) reject(8'h83);
                             else if(payload[63:32]>CAPACITY_FRAMES) reject(8'h89);
@@ -292,6 +361,7 @@ module ble_recording #(
                         8'h21: begin
                             if(payload_length!=12) reject(8'h81);
                             else if(payload[63:0]!=boot_id || recording_id==0 || payload[95:64]!=recording_id) reject(8'h88);
+                            else if(external_mutation_hold) reject(8'h82);
                             else if(record_state!=2) reject(8'h83);
                             else if(!task_slot_free || operation_counter==32'hffffffff) reject(8'h82);
                             else begin
@@ -312,6 +382,7 @@ module ble_recording #(
                         8'h23: begin
                             if(payload_length!=12) reject(8'h81);
                             else if(payload[63:0]!=boot_id || recording_id==0 || payload[95:64]!=recording_id) reject(8'h88);
+                            else if(external_mutation_hold) reject(8'h82);
                             else if(transfer_open) reject(8'h82);
                             else if(record_state!=4 && record_state!=5) reject(8'h83);
                             else begin

@@ -8,7 +8,8 @@ module bt_gatt #(
     parameter CACHE_METADATA_RAM_STYLE="block_ram",
     parameter AUDIO_FILE="audio/test_tone.mem",
     parameter integer CLK_HZ = 50000000,
-    parameter integer NOTIFY_MS = 500
+    parameter integer NOTIFY_MS = 500,
+    parameter EXTERNAL_SEAL_PROTOCOL=0
 ) (
     input wire clk, input wire resetn, input wire enable,
     input wire pcm_valid_i, source_ready_i, source_fault_i,
@@ -31,7 +32,12 @@ module bt_gatt #(
     output reg [31:0] att_request_count,
     output reg [31:0] completed_packets,
     output wire [7:0] debug_state, output reg [31:0] error_count,
-    output reg [31:0] elapsed_ms
+    output reg [31:0] elapsed_ms,
+    input wire seal_hold_i, seal_request_i,
+    output wire seal_ready_o, seal_pending_o, seal_done_o, seal_failed_o,
+    output wire [3:0] seal_failure_code_o,
+    output wire [7:0] seal_record_state_o,
+    output wire [31:0] seal_recording_id_o, seal_frames_o, seal_crc_o
 );
     localparam integer MS_CYCLES = CLK_HZ / 1000;
     localparam [2:0] IDLE=0, CAPTURE=1, PARSE=2, WAIT_DROP=3, COMPLETIONS=4, BIZ_BUILD=5, BIZ_COPY=6, BIZ_WAIT=7;
@@ -202,8 +208,12 @@ module bt_gatt #(
     wire business_session;
     integer business_handle, business_decl, business_value, uuid_index;
     reg uuid_match;
-    ble_protocol_command #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) command_endpoint (
+    ble_protocol_command #(.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) command_endpoint (
         .clk(clk),.resetn(resetn),.enable(enable && connected),
+        .seal_hold_i(seal_hold_i),.seal_request_i(seal_request_i),
+        .seal_ready_o(seal_ready_o),.seal_pending_o(seal_pending_o),.seal_done_o(seal_done_o),.seal_failed_o(seal_failed_o),
+        .seal_failure_code_o(seal_failure_code_o),.seal_record_state_o(seal_record_state_o),
+        .seal_recording_id_o(seal_recording_id_o),.seal_frames_o(seal_frames_o),.seal_crc_o(seal_crc_o),
         .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
         .boot_id(boot_id),.att_value_limit(att_value_limit),.boot_valid(boot_id!=0),
         .response_subscribed(response_subscribed),.control_open(enable),

@@ -12,7 +12,8 @@ module bt_verilog_core #(
     parameter SESSION_MS=0,
     parameter PATCH_BYTES=30147,
     parameter PATCH_FILE="rtl8723ds_patch.mem",
-    parameter NOTIFY_MS=500
+    parameter NOTIFY_MS=500,
+    parameter EXTERNAL_SEAL_PROTOCOL=0
 ) (
     input wire clk, resetn, enable, uart_rx,
     input wire pcm_valid_i, source_ready_i, source_fault_i,
@@ -20,7 +21,12 @@ module bt_verilog_core #(
     output wire uart_tx, bt_enable, outputs_active,
     output wire initialized, connected, subscribed,
     output reg failed,
-    output wire [767:0] debug
+    output wire [767:0] debug,
+    input wire seal_hold_i, seal_request_i,
+    output wire seal_ready_o, seal_pending_o, seal_done_o, seal_failed_o,
+    output wire [3:0] seal_failure_code_o,
+    output wire [7:0] seal_record_state_o,
+    output wire [31:0] seal_recording_id_o, seal_frames_o, seal_crc_o
 );
     localparam MS_TICKS=CLK_HZ/1000;
     reg [31:0] ms_div, uptime_ms;
@@ -112,8 +118,12 @@ module bt_verilog_core #(
         .command_count(command_count),.patch_fragments(patch_fragments),
         .hci_valid_mask(hci_valid_mask),.bd_addr(bd_addr),.boot_id(boot_id),.acl_packet_count(acl_packet_count)
     );
-    bt_gatt #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME(DEVICE_NAME),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) application (
+    bt_gatt #(.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME(DEVICE_NAME),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) application (
         .clk(clk),.resetn(sub_resetn),.enable(enable && initialized && outputs_active),
+        .seal_hold_i(seal_hold_i),.seal_request_i(seal_request_i),
+        .seal_ready_o(seal_ready_o),.seal_pending_o(seal_pending_o),.seal_done_o(seal_done_o),.seal_failed_o(seal_failed_o),
+        .seal_failure_code_o(seal_failure_code_o),.seal_record_state_o(seal_record_state_o),
+        .seal_recording_id_o(seal_recording_id_o),.seal_frames_o(seal_frames_o),.seal_crc_o(seal_crc_o),
         .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
         .boot_id(boot_id),.acl_packet_count(acl_packet_count),
         .rx_valid(app_rx_valid),.rx_type(app_rx_type),.rx_length(app_rx_length),

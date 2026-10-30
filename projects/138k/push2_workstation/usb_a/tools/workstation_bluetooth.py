@@ -97,4 +97,7 @@ def prepare(root, directory, stage, pinout_output, plan, *, relative_rom_paths=F
                 business_source='projects/25k/example/RTL8723DS_PROTOCOL',
                 source_policy='remote_138k_transport_with_existing_second40_business_adaptations',
                 capture_source='post_fpc_i2s_48k_stereo_pcm16', sources=[str(path.relative_to(stage))
-                    for path in sorted(destination.glob('*.v'))])
+                    for path in sorted(destination.glob('*.v'))],
+                external_seal_protocol=dict(parameter='EXTERNAL_SEAL_PROTOCOL', default=0,
+                    clock='clk_50m', wire_contract_changed=False,
+                    source_policy='shared_first_party_default_off_ports; native_top_must_explicitly_enable'))
