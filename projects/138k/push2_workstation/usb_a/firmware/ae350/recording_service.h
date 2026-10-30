@@ -42,4 +42,31 @@ int a138_record_download(const a138_record_bus *bus,uint32_t offset,uint32_t len
 /* POP_HEAD is explicit. read_head only reads an already captured immutable
  * 32-byte window; it does not consume a backend beat or release the window. */
 int a138_record_read_head(const a138_record_bus *bus,a138_record_head *head);
+/* Opt-in BLE physical primitive v2 at mailbox base+0x100. This is a second
+ * physical store, not an alias of the independent R00 object64. IDs, tasks and
+ * command policy belong to ble_business_owner. Shared PCM stays in hardware. */
+#define A138_BLE_DATA_BASE UINT32_C(0xf8050100)
+enum { A138_DATA_STATUS=0x0c,A138_DATA_OBJECT=0x1c,A138_DATA_FRAMES=0x2c,
+    A138_DATA_COMMITTED=0x30,A138_DATA_CRC=0x34,A138_DATA_REASON=0x38,
+    A138_DATA_TRANSFER=0x40,A138_DATA_OFFSET=0x44,A138_DATA_TIME=0x48,
+    A138_DATA_ACCEPTED=0x4c,A138_DATA_APPLIED=0x50,A138_DATA_GENERATION=0x54,
+    A138_DATA_STAGE_SEQ=0x58,A138_DATA_STAGE_TRANSFER=0x5c,A138_DATA_OPCODE=0x60,
+    A138_DATA_LENGTH=0x64,A138_DATA_REQUEST=0x68,A138_DATA_NONCE_LOW=0x6c,
+    A138_DATA_NONCE_HIGH=0x70,A138_DATA_PAYLOAD=0x74,A138_DATA_RESULT_META=0x84,
+    A138_DATA_RESULT_PAYLOAD=0x90,A138_DATA_FIRST_MS=0xc0,A138_DATA_TERMINAL_MS=0xc4 };
+typedef struct {
+    uint32_t state,object_id,frames,committed,crc,reason,transfer_id,offset,time_ms;
+    uint32_t accepted_seq,applied_seq,generation,first_ms,terminal_ms;
+} a138_record_data_facts;
+typedef struct {
+    uint32_t sequence,object_id,transfer_id,request_id,opcode,length;
+    uint64_t nonce;
+    uint8_t payload[16];
+} a138_record_data_command;
+typedef struct {uint32_t sequence,status,length;uint8_t payload[48];} a138_record_data_result;
+enum {A138_DATA_OK=1,A138_DATA_NONE=0,A138_DATA_IO=-1,A138_DATA_UNCERTAIN=-2};
+int a138_record_data_probe(const a138_record_bus *bus);
+int a138_record_data_poll(const a138_record_bus *bus,a138_record_data_facts *facts);
+int a138_record_data_submit(const a138_record_bus *bus,const a138_record_data_command *command);
+int a138_record_data_result_read(const a138_record_bus *bus,uint32_t sequence,a138_record_data_result *result);
 #endif

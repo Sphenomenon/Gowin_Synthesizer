@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "source_policy": "versioned_138k_cpu_business_owner",
+  "derived_once_from": {
+    "ble_recording.v": "f5e9447a67bb74d5b9dd80ab112a7e4d2422bbeef0f4375faa68f7400489a696",
+    "ble_protocol_command.v": "608c2c818e1b3546d40983f8798a6e8d50ca26d3182870093f3fd18a05cdac00",
+    "bt_gatt.v": "b6e293a9dfc89d09ea2476b12fd38fc2edce7d0337f7be21de91e3dbdb118b1d",
+    "bt_verilog_core.v": "89d47ee7ae8144e39b30743b0c1073aa9757e982fae863590ad74173252579d1",
+    "workstation_bluetooth.sv": "58700059b5d9865d8d3093d65fc9c19b75f3f7c68e86cafaae6a01d1baba70fa"
+  },
+  "raw_adaptation_output": {
+    "ble_recording.v": "9de775e873895153059513bb85eb2e01b2bbcacac9d0f00c3570758c648fabd4",
+    "ble_protocol_command.v": "99ebcd25f801bb502b883a05884207e243e4c1ec5123eb8eb99494b742962798",
+    "bt_gatt.v": "b82f2028f058c5607fcd910eedf5a8b59906781ebc2d83f0750e8d19f42bf3c8",
+    "bt_verilog_core.v": "815f4ebd8be9e6f8525a7c64a03d28404fa9dd9147f1d397425c25a640eb2211",
+    "workstation_bluetooth.sv": "88b7cea5cacdd774ee97b055bc7219043fcdde38d54124c468ba08094c9e247c"
+  },
+  "protected": {
+    "encoder": "d0bf6977f702ea89392e71c3cdbcb20afb767097b17ee78be49869fc05b0168b",
+    "transfer_banks": "bd803dc01b7b9187bd6c4184f7cdf1fd7690097e84d1ac59765e3bc7ff86b78b",
+    "wire_message_bytes": "1ed510ffba23b936f3b891e9d2b92ba2bd5f6cb58395afbe903d27678b1a3ae7"
+  }
+}

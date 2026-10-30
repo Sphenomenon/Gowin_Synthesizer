@@ -1,0 +1,596 @@
+{
+  "schema": 1,
+  "input_sha256": {
+    "firmware/ae350/start.S": "2de8303a122f6d448c70f2f8398a616d9396e7c4dee61ba2587a069bf0b217f9",
+    "firmware/ae350/ui_main.c": "dcbbb89209eaa43ca4cf7a2eb1ac7dcb04853f03c73b2c46263bb5c1b4cb4573",
+    "firmware/ae350/ui_render.c": "4e5fbd9a358f5e32ea9587b18675b169d5fc37f97df6e53c47660a985832f7cd",
+    "firmware/ae350/ui_runtime.c": "55d5e3e007b1b623efeb17743916bd16145500f5b46d2976917911ea8958bf97",
+    "firmware/ae350/audio_clock_service.c": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829",
+    "firmware/ae350/audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
+    "firmware/ae350/firmware_checks.h": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b",
+    "firmware/ae350/ui_model.h": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5",
+    "firmware/ae350/ui_render.h": "72dcc31cf9457ad9d6a7e2f250e9715bf6b0168fdd7830d9f0b9547cbc38ae67",
+    "firmware/ae350/audio_clock_service.h": "0ac43161ae18b7a375096f6e9d5adb5128c23afbbe90c95db5bfa66da9a8e551",
+    "firmware/ae350/boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c",
+    "firmware/ae350/provenance.json": "2b437cdf6f80cdb013e9aa8fdb95dd20bd66db81b1fec279d3d64e4c7cbb2bfc",
+    "firmware/ae350/recording_service.c": "a384488eba527df8d8f5399aeda4bf73f3b9b7df07a76b1294909979367ad165",
+    "firmware/ae350/recording_service.h": "f6f083d77e38ea64f134388e7140a20e2471249fe8ac9081f43f6e02c28b038c",
+    "firmware/ae350/business_mailbox.c": "49f14da2b57d6c826502b9d01ba26c5ff7c5089d6a2f14f4022b685d32054945",
+    "firmware/ae350/ble_business_owner.c": "74ee788667ea24e2e9870c6f34be42cbe92404d0a72b7e0550fbd697cf0eff31",
+    "firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
+    "firmware/ae350/ble_business_owner.h": "1e6895fed3685308a14ccd530e7cc74b7a21ee3fb19c187f478e55ed91dd6dbf",
+    "firmware/ae350/start_ilm_dlm.inc": "e8f8f4b202cd2553d7a1a4e76a58895ea43508c061d7ae8d9e7b0ace2ccc3f73",
+    "firmware/ae350/boot_ilm_dlm.ld": "214011f97811e6e359b068b3d5c758e2297bead1a6acdd31538c9d3f6caa58dc"
+  },
+  "disassembly_sha256": "df4483d7801d58299e0eae5bd8394ea8e227bfba3db1ffe8c268b0c647c900e2",
+  "source_target_review": "Manual source review of every copied C/header: services_main reaches the firmware init/pump wrappers for one static firmware_owner. Its sole initializer calls a138_business_mmio_bus and a138_record_mmio_bus; those constructors bind business_mmio_read/write and record_mmio_read/write. a138_ble_business_init copies both buses once. No source reassigns either callback field after initialization, and the service-root closure has no other bus instance. Each site conservatively includes both read/write targets for its bus type. Interrupts remain disabled. All source inputs and the exact complete disassembly are hash-bound; -fno-jump-tables is an explicit business build option. This review does not authorize arbitrary external callers or future changed inputs. Final v8 source review: a torn STALE observation stays in OBSERVE under the existing1000ms bound; only a complete context session change ends the old publication observation. This adds no callback, bus assignment, or owner entry point. All source hashes and actual machine sites have been regenerated; the same four static MMIO adapters remain the complete target closure.",
+  "sites": [
+    {
+      "caller": "a138_record_data_probe",
+      "address": "0xa0003ae8",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_probe",
+      "address": "0xa0003b04",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003bc0",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003bdc",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003bf8",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003c14",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003c30",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003c4c",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003c68",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003c84",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003ca0",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003cbc",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003cd8",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003cf4",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003d10",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003d2c",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003d48",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_poll",
+      "address": "0xa0003d64",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_submit",
+      "address": "0xa0003f0c",
+      "instruction": "000780e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_submit",
+      "address": "0xa0003f58",
+      "instruction": "000780e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_submit",
+      "address": "0xa0003f78",
+      "instruction": "000780e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_result_read",
+      "address": "0xa0004058",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_result_read",
+      "address": "0xa0004090",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_result_read",
+      "address": "0xa000410c",
+      "instruction": "000680e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_result_read",
+      "address": "0xa0004158",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "read_key",
+      "address": "0xa0004270",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "read_key",
+      "address": "0xa0004288",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "read_key",
+      "address": "0xa00042bc",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "read_key",
+      "address": "0xa00042d4",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "read_key",
+      "address": "0xa00042ec",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "stage_key",
+      "address": "0xa0004374",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_probe",
+      "address": "0xa0004410",
+      "instruction": "000700e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_probe",
+      "address": "0xa000442c",
+      "instruction": "000700e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_context",
+      "address": "0xa00044e4",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_context",
+      "address": "0xa00044fc",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_context",
+      "address": "0xa0004514",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_context",
+      "address": "0xa000452c",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_context",
+      "address": "0xa0004544",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_context",
+      "address": "0xa000455c",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_context",
+      "address": "0xa0004574",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_context",
+      "address": "0xa000458c",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_read_request",
+      "address": "0xa00046c0",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_read_request",
+      "address": "0xa0004704",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_read_request",
+      "address": "0xa000471c",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_read_request",
+      "address": "0xa0004734",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_read_request",
+      "address": "0xa000474c",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_read_request",
+      "address": "0xa00047e4",
+      "instruction": "000700e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_read_request",
+      "address": "0xa0004850",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_read_request",
+      "address": "0xa0004868",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_open",
+      "address": "0xa00049a0",
+      "instruction": "000700e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_claim",
+      "address": "0xa0004a48",
+      "instruction": "000680e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_complete",
+      "address": "0xa0004cac",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_complete",
+      "address": "0xa0004ccc",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_complete",
+      "address": "0xa0004d34",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_complete",
+      "address": "0xa0004d6c",
+      "instruction": "000780e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_observe",
+      "address": "0xa0004e58",
+      "instruction": "000680e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_observe",
+      "address": "0xa0004e88",
+      "instruction": "000700e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_observe",
+      "address": "0xa0004ea4",
+      "instruction": "000700e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_observe",
+      "address": "0xa0004edc",
+      "instruction": "000680e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_observe",
+      "address": "0xa0004ef8",
+      "instruction": "000680e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_observe",
+      "address": "0xa0004fd0",
+      "instruction": "000680e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_observe",
+      "address": "0xa0004fec",
+      "instruction": "000680e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_business_observe",
+      "address": "0xa000501c",
+      "instruction": "000680e7",
+      "targets": [
+        "business_mmio_read",
+        "business_mmio_write"
+      ]
+    }
+  ]
+}

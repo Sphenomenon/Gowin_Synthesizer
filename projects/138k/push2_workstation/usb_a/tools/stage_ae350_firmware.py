@@ -23,6 +23,8 @@ FIRST_PARTY_SOURCES = ('audio_clock_service.c',)
 FIRST_PARTY_HEADERS = ('audio_clock_service.h',)
 RECORDING_SOURCES = ('recording_service.c',)
 RECORDING_HEADERS = ('recording_service.h',)
+BUSINESS_SOURCES = ('business_mailbox.c','ble_business_owner.c')
+BUSINESS_HEADERS = ('business_mailbox.h','ble_business_owner.h')
 LOCAL_MEMORY_INPUTS = ('start_ilm_dlm.inc', 'boot_ilm_dlm.ld')
 MEMORY_PROFILES = ('pl16k_8k', 'ilm64k_dlm64k')
 SOURCES = (*IMPORTED_SOURCES, *FIRST_PARTY_SOURCES)
@@ -32,14 +34,19 @@ ROM_BASE, ROM_BYTES = 0x80000000, 16384
 RAM_START, RAM_END, MIN_STACK_BYTES = 0x200, 0x2000, 4096
 
 
-def selected_sources(recording_api=False):
-    return (*SOURCES, *RECORDING_SOURCES) if recording_api else SOURCES
+def selected_sources(recording_api=False,business_owner=False):
+    if business_owner and not recording_api:raise ValueError('CPU business requires the recording service')
+    sources=(*SOURCES,*RECORDING_SOURCES) if recording_api else SOURCES
+    return (*sources,*BUSINESS_SOURCES) if business_owner else sources
 
 
-def selected_inputs(recording_api=False, memory_profile='pl16k_8k'):
+def selected_inputs(recording_api=False, memory_profile='pl16k_8k', business_owner=False):
     if memory_profile not in MEMORY_PROFILES:
         raise ValueError('unknown AE350 memory profile: ' + memory_profile)
     inputs = (*INPUTS, *RECORDING_SOURCES, *RECORDING_HEADERS) if recording_api else INPUTS
+    if business_owner:
+        if not recording_api:raise ValueError('CPU business requires the recording service')
+        inputs=(*inputs,*BUSINESS_SOURCES,*BUSINESS_HEADERS)
     return (*inputs, *LOCAL_MEMORY_INPUTS) if memory_profile == 'ilm64k_dlm64k' else inputs
 
 
@@ -90,7 +97,7 @@ def memory_report(size_text, symbols_text, start_text, binary_bytes):
 
 
 def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None, recording_api=False,
-                         memory_profile='pl16k_8k', boot_rom_bytes=ROM_BYTES):
+                         memory_profile='pl16k_8k', boot_rom_bytes=ROM_BYTES, business_owner=False):
     """Build to a new directory and return provenance, capacity and ROM comparison.
 
     The caller explicitly installs output/boot.mem into its new candidate. Accepted
@@ -100,9 +107,10 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
     if boot_rom_bytes not in (16384, 65536) or (boot_rom_bytes != ROM_BYTES and memory_profile != 'ilm64k_dlm64k'):
         raise ValueError('expanded AE350 cold ROM requires explicit ILM/DLM placement and 64 KiB physical source')
     source_dir = root / 'firmware/ae350'
-    inputs = selected_inputs(recording_api, memory_profile)
-    sources = selected_sources(recording_api)
+    inputs = selected_inputs(recording_api, memory_profile, business_owner)
+    sources = selected_sources(recording_api,business_owner)
     maintained = (*FIRST_PARTY_SOURCES, *FIRST_PARTY_HEADERS, *RECORDING_SOURCES, *RECORDING_HEADERS,
+                  *BUSINESS_SOURCES,*BUSINESS_HEADERS,
                   *LOCAL_MEMORY_INPUTS)
     if output.exists():
         raise FileExistsError('AE350 firmware output already exists: ' + str(output))
@@ -154,6 +162,7 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
     if memory_profile == 'ilm64k_dlm64k':
         common += ['-DA138_ILM64K_DLM64K', '-fcallgraph-info=su']
         linker = 'boot_ilm_dlm.ld'
+    if business_owner:common += ['-DA138_BLE_BUSINESS','-fno-jump-tables']
     commands = []
     with (output / 'build.log').open('w') as log:
         def run(command):
@@ -200,11 +209,17 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
         disassembly = subprocess.run([prefix + '-objdump', '-d', 'firmware.elf'], cwd=output,
                                      capture_output=True, text=True, check=True).stdout
         (output / 'firmware.dis').write_text(disassembly)
-        stack_analysis = call_chain_report(output, stack_frames, disassembly, capacity['stack_capacity_bytes'])
+        reviewed=None
+        if business_owner:
+            proof=root/'tools/ae350_ble_business_indirect_review.json'
+            reviewed=json.loads(proof.read_text())
+            shutil.copyfile(proof,output/'indirect_call_review.json')
+        stack_analysis = call_chain_report(output, stack_frames, disassembly, capacity['stack_capacity_bytes'],
+            reviewed_indirect_calls=reviewed,input_sha256=identities)
         capacity['whole_program_stack_bound_verified'] = stack_analysis['verified']
     result = dict(schema=1, firmware_profile='maintained_ae350_workstation', isa=isa, abi='ilp32',
                   compiler_prefix=prefix, compiler_version=versions['gcc'], tool_versions=versions,
-                  source_provenance=provenance, input_sha256=identities, recording_api_enabled=recording_api,
+                  source_provenance=provenance, input_sha256=identities, recording_api_enabled=recording_api,business_owner_enabled=business_owner,
                   changed_from_import=[name for name in (*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld')
                                        if sha(source_dir / name) != provenance['files'][name]['sha256']],
                   first_party_inputs={name: sha(source_dir / name)
@@ -221,6 +236,9 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
                       differing_words=sum(padded[i:i+4] != reference_image[i:i+4] for i in range(0, ROM_BYTES, 4))),
                   hardware_tested=False, project_rom_installed=False,
                   stack_validation='Compiler per-function sizes and reserved capacity; whole-call-chain and runtime high-water mark remain unverified.')
+    if business_owner:
+        result['indirect_call_review']=dict(source='tools/ae350_ble_business_indirect_review.json',
+            sha256=sha(output/'indirect_call_review.json'),policy='exact_source_disassembly_and_callsite_targets')
     result['memory_profile'] = memory_profile
     if memory_profile == 'ilm64k_dlm64k':
         platform_inputs = ('riscv_ae350_config.v', 'src/ae350/riscv_ae350_config.v',
@@ -254,6 +272,7 @@ def main():
     parser.add_argument('--output', required=True, type=Path, help='new firmware evidence directory')
     parser.add_argument('--riscv-prefix', help='GNU bare-metal tool prefix, ending before -gcc')
     parser.add_argument('--reference-mem', type=Path, help='optional explicit 4096-word comparison ROM')
+    parser.add_argument('--business-owner', action='store_true', help='Explicit C BLE task and identity owner; requires --recording-api')
     parser.add_argument('--recording-api', action='store_true', help='explicit R00 recording service API selection')
     parser.add_argument('--memory-profile', choices=MEMORY_PROFILES, default='pl16k_8k',
                         help='explicit runtime placement; does not install physical ROM')
@@ -262,7 +281,7 @@ def main():
     args = parser.parse_args()
     result = stage_ae350_firmware(Path(__file__).resolve().parents[1], args.output,
                                 args.riscv_prefix, reference_mem=args.reference_mem, recording_api=args.recording_api,
-                                memory_profile=args.memory_profile, boot_rom_bytes=args.boot_rom_bytes)
+                                memory_profile=args.memory_profile, boot_rom_bytes=args.boot_rom_bytes,business_owner=args.business_owner)
     print(json.dumps(result, indent=2))
 
 

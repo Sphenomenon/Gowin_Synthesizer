@@ -1,13 +1,13 @@
 #include "business_mailbox.h"
 #include "audio_services.h"
-static int mmio_read(void *context,uint32_t offset,uint32_t *value) {
+static int business_mmio_read(void *context,uint32_t offset,uint32_t *value) {
     *value=a138_read((uintptr_t)context,offset);return 1;
 }
-static int mmio_write(void *context,uint32_t offset,uint32_t value) {
+static int business_mmio_write(void *context,uint32_t offset,uint32_t value) {
     a138_write((uintptr_t)context,offset,value);return 1;
 }
 a138_business_bus a138_business_mmio_bus(uintptr_t base) {
-    a138_business_bus bus={(void *)base,mmio_read,mmio_write};return bus;
+    a138_business_bus bus={(void *)base,business_mmio_read,business_mmio_write};return bus;
 }
 static int valid(const a138_business_bus *bus) { return bus && bus->read && bus->write; }
 static int key_valid(const a138_business_key *key) { return key && key->boot_id && key->owner; }

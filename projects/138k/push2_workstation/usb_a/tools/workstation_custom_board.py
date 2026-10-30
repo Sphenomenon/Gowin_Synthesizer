@@ -119,6 +119,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             profile_dependencies += ('rtl/workstation/workstation_profile_runtime.sv',)
     recording_selected=runtime and specification(profile['name']).get('recording_enabled',False)
     ble_raw_selected=runtime and specification(profile['name']).get('ble_recording_storage_enabled',False)
+    business_selected=runtime and specification(profile['name']).get('business_owner_enabled',False)
     from tools.workstation_ae350_memory import selection as memory_selection, SOURCE as BOOT_MEMORY_SOURCE, PARENT as PARENT_BOOT_MEMORY
     ae350_memory = memory_selection(profile['configuration'] if profile is not None else {})
     expanded_boot = ae350_memory['boot_rom_bytes'] == 65536
@@ -135,6 +136,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_ble_recording_policy import SOURCES as BLE_RAW_SOURCES, DEPENDENCIES as BLE_RAW_DEPENDENCIES
         native_sources += BLE_RAW_SOURCES
         profile_dependencies += BLE_RAW_DEPENDENCIES
+    if business_selected:
+        from tools.workstation_cpu_business import SOURCES as CPU_SOURCES,DEPENDENCIES as CPU_DEPENDENCIES
+        native_sources += CPU_SOURCES
+        profile_dependencies += CPU_DEPENDENCIES
     panel = local_panel_bundle(local_panel_enabled)
     if not local_panel_enabled:
         native_sources = tuple(source for source in native_sources if source not in panel['retired_sources'])
@@ -151,7 +156,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise FileNotFoundError('missing native-board source: ' + relative)
     if workstation_profile is not None:
         from tools.stage_ae350_firmware import selected_inputs
-        extra_inputs += ['firmware/ae350/' + name for name in selected_inputs(recording_selected, ae350_memory['memory_profile'])]
+        extra_inputs += ['firmware/ae350/' + name for name in selected_inputs(recording_selected, ae350_memory['memory_profile'], business_selected)]
     snapshot = source_snapshot(root, extra_inputs)
     pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
     sys.path.insert(0, str(root / 'tools'))
@@ -162,7 +167,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if workstation_profile is not None:
         from tools.workstation_profile import prepare_ae350
         ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected,
-                                     **ae350_memory)
+            business_owner=business_selected, **ae350_memory)
     native_timing = adapt_timing(stage)
     (stage / 'scripts/build.tcl').write_text(
         'error "This native-board integration stage is synthesis-only; P&R and deployment are not authorized or validated."\n')
@@ -239,7 +244,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if runtime:
         bluetooth['capture_source'] = 'runtime_physical_frame_observation_48k_only'
     ble_raw_adaptation=None
-    if ble_raw_selected:
+    if business_selected:
+        from tools.workstation_cpu_business import prepare as prepare_cpu_business
+        ble_raw_adaptation=prepare_cpu_business(root,stage)
+        bluetooth['sources'].remove('native_bluetooth/ble_recording.v')
+    elif ble_raw_selected:
         from tools.workstation_bluetooth_ddr import prepare as prepare_ble_raw
         ble_raw_adaptation=prepare_ble_raw(root,stage,enabled=True)
     peripherals = prepare_peripherals(root, pinout_output, pinout, stage, local_panel_enabled=local_panel_enabled)
@@ -333,6 +342,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['recording']=dict(recording_metadata(ble_raw_ddr=ble_raw_selected),address_map=recording_address_map)
     if ble_raw_selected:
         from tools.workstation_ble_recording_policy import metadata as ble_recording_metadata
+        if business_selected:
+            from tools.workstation_cpu_business import metadata as ble_recording_metadata
         metadata['ble_recording_storage']=dict(ble_recording_metadata(),adaptation=ble_raw_adaptation)
     if not local_panel_enabled:
         metadata['local_panel'] = panel

@@ -38,9 +38,20 @@ from tools.workstation_recording_policy import NAME as R00_NAME, CONFIG as R00_C
 R00_NO_LOCAL_PANEL_NAME = 'custom138k-workstation-r00-no-local-panel-v1'
 R00_NO_LOCAL_PANEL_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json'
 R00_NO_LOCAL_PANEL_PROVIDER = 'rtl/workstation/workstation_profile_r00_no_local_panel.sv'
+CPU_BUSINESS_NAME='custom138k-workstation-ae350-business-v1'
+CPU_BUSINESS_CONFIG='boards/custom_138k/workstation_profile_ae350_business_v1.json'
+CPU_BUSINESS_CONFIGURATION=dict(RUNTIME_CONFIGURATION,recognition_policy='disabled_cnn_and_follow_v1',
+    recording_policy=R00_POLICY,local_panel_policy='disabled_local_lcd_touch_v1',
+    ble_recording_storage_policy='native_raw_ddr_ae350_business_v1',business_owner_policy='ae350_ble_business_owner_v1',
+    ae350_memory_profile='ilm64k_dlm64k',ae350_boot_rom_bytes=65536)
 LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1'
 LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
 PROFILE_REGISTRY = {
+    CPU_BUSINESS_NAME:dict(config=CPU_BUSINESS_CONFIG,revision=1,configuration=CPU_BUSINESS_CONFIGURATION,
+        provider='rtl/workstation/workstation_profile_ae350_business_v1.sv',recognition_enabled=False,
+        recording_enabled=True,local_panel_enabled=False,ble_recording_storage_enabled=True,
+        business_owner_enabled=True,
+        integration_identity='custom138k-native-ae350-business-revision1'),
     LOCAL_BOOT64_NAME: dict(config=LOCAL_BOOT64_CONFIG, revision=1,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             recording_policy=R00_POLICY, local_panel_policy='disabled_local_lcd_touch_v1',
@@ -139,7 +150,7 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
 
 
 def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False,
-                  memory_profile='pl16k_8k', boot_rom_bytes=16384):
+                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False):
     """Install maintained AE350 ROM only for the explicitly selected profile."""
     from tools.stage_ae350_firmware import stage_ae350_firmware
     root, output, stage = map(lambda path: Path(path).resolve(), (root, output, stage))
@@ -150,7 +161,7 @@ def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False
         raise ValueError('AE350 profile installation requires the unchanged parent ROM')
     evidence = output / AE350_DIRECTORY
     build = stage_ae350_firmware(root, evidence, riscv_prefix, recording_api=recording_api,
-                                memory_profile=memory_profile, boot_rom_bytes=boot_rom_bytes)
+        memory_profile=memory_profile, boot_rom_bytes=boot_rom_bytes, business_owner=business_owner)
     if sha(evidence / 'boot.mem') != build['rom_sha256']:
         raise ValueError('AE350 generated ROM changed before installation')
     shutil.copyfile(evidence / 'boot.mem', stage / rom_path)
@@ -181,9 +192,18 @@ def _ae350_evidence(root, output, metadata, profile):
     verify_prepared(output / 'workstation/Prj1', build, profile['configuration'], sha)
     from tools.stage_ae350_firmware import selected_sources
     recording_api = specification(profile['name']).get('recording_enabled', False)
+    business_owner=specification(profile['name']).get('business_owner_enabled',False)
     if (build.get('recording_api_enabled') is not recording_api or
-            build.get('compiled_sources') != list(selected_sources(recording_api))):
+            build.get('business_owner_enabled',False) is not business_owner or
+            build.get('compiled_sources') != list(selected_sources(recording_api,business_owner))):
         raise ValueError('workstation profile AE350 recording API selection changed')
+    if business_owner:
+        proof='tools/ae350_ble_business_indirect_review.json'
+        if (build.get('indirect_call_review',{}).get('source')!=proof or
+            build['indirect_call_review'].get('sha256')!=sha(root/proof) or
+            sha(evidence/'indirect_call_review.json')!=sha(root/proof) or
+            'a138_ble_business_firmware_pump' not in build.get('call_chain_stack',{}).get('reachable_functions',[])):
+            raise ValueError('workstation profile omitted actual C business/callback closure')
     if json.loads((evidence / 'build_metadata.json').read_text()) != build:
         raise ValueError('workstation profile AE350 build metadata changed')
     prefix = root.relative_to(root.parents[3]).as_posix() + '/'
@@ -291,10 +311,13 @@ def _artifact(root, output, metadata, profile):
 
     prefix = root.relative_to(repository).as_posix() + '/'
     ble_raw_selected = spec.get('ble_recording_storage_enabled', False)
+    business_selected=spec.get('business_owner_enabled',False)
     ble_raw_adaptation = None
     if ble_raw_selected:
         from tools.workstation_ble_recording_policy import metadata as ble_recording_metadata
         from tools.workstation_bluetooth_ddr import verify_prepared as verify_ble_raw
+        if business_selected:
+            from tools.workstation_cpu_business import metadata as ble_recording_metadata,verify_prepared as verify_ble_raw
         selected = dict(metadata.get('ble_recording_storage', {}))
         ble_raw_adaptation = selected.pop('adaptation', None)
         if selected != ble_recording_metadata():
@@ -323,13 +346,18 @@ def _artifact(root, output, metadata, profile):
     if set(copies) != set(metadata['copied_sources_sha256']) or len(set(copies.values())) != len(copies):
         raise ValueError('workstation profile copied source ownership changed')
     for source, target in copies.items():
-        bind(target, prefix + source)
+        if not (business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv'):
+            bind(target, prefix + source)
         staged_hash = metadata['copied_sources_sha256'][source]
-        if ble_raw_selected and target == 'rtl/bluetooth/workstation_bluetooth.sv':
+        if business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv':
+            staged_hash=ble_raw_adaptation['copied'][target]['sha256']
+        elif ble_raw_selected and target == 'rtl/bluetooth/workstation_bluetooth.sv':
             staged_hash = ble_raw_adaptation['output_sha256']['workstation_bluetooth.sv']
         if (metadata['copied_sources_sha256'][source] != profile['source_sha256'][prefix + source] or
                 sha(checked_path(stage, target)) != staged_hash):
             raise ValueError('workstation profile copied source drift: ' + source)
+    if business_selected:
+        for target,record in ble_raw_adaptation['copied'].items():bind(target,prefix+record['source'])
     usage = {source: 'compiled_source' if target in metadata['enabled_inputs'] else 'staged_dependency'
              for target, source in bindings.items()}
     for source in metadata['firmware']['input_sha256']:

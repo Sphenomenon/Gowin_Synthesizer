@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "scope": "ae350_ble_business_first_batch_real_c_owner",
+  "source_parent_commit": "3f8cf5f74820dbe4f079784537d163d2c241f919",
+  "profile": "custom138k-workstation-ae350-business-v1",
+  "candidate_identity": "custom138k-workstation-ae350-business-v1-9c0f652c977f2323",
+  "configuration_sha256": "ed438e9743cea2e9c653248657eec5699567202d45db7bf7c6f3a541045400a3",
+  "prepared_artifact_sha256": "c928b788d6e52c781d468f3d3560c9c9e5f3857c8ea2b335bf8af833507c664b",
+  "external_evidence_root": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-business-owner-v1",
+  "evidence_sha256": {
+    "evidence/cosim-final-v4/verification.json": "286ea9c538a0588cf21a1c383b798d6789df260718cc07f6d9e6ff6260c89c85",
+    "evidence/prepare-final-v4/prepare_verification.json": "b713423828fbd93efe4ff7c543f6e8510b96f065f00b62a84c5c8b05671fdf14",
+    "evidence/final-regressions-v2/verification.json": "802c12063102f50fd22a07f9f86fba1b17efdc3c7be16445d777a41a124fc572",
+    "evidence/raw-ddr-regression-v1/verification.json": "52e08a39f47cfc0e6596afc5deb8bdf23834fc6bcea21d199f464f07c27ea2ff",
+    "evidence/default-preservation-v2/verification.json": "e785e26f5ee65eb4edaca8fa8761f152a2f02a8d781e23c4f206de0988c93c40"
+  },
+  "prepared_candidate": "evidence/prepare-final-v4",
+  "enabled_inputs": 271,
+  "staged_inputs": 612,
+  "staged_inputs_identical_to": "custom138k-workstation-ae350-business-v1-4760a8140b051220",
+  "firmware": {
+    "firmware.bin": "876d504030bf67c4f1de984458a87ad821cc3f5dab48b0e5c311896a70d75137",
+    "boot.mem": "6f3abefcb4fb3d6e5ab813357e62bf0203cf1578f0b791797ba3c2720b5ce2b7",
+    "firmware.elf": "c1f677a37d1607538cb21902348de3087565bac888ceaf5aa2ae85ff0536e49c",
+    "indirect_call_review.json": "47a532e504c292d501b81a2916053f1f4008211cb561dc4244a1480f26ca3d19"
+  },
+  "checks": {
+    "actual_c_apb_parser_raw_ddr": 794,
+    "full_wire_messages_equal": 35,
+    "runtime_c_negative_controls": 6,
+    "accepted_sources": 17,
+    "default_firmware": 10,
+    "recording_api": 1,
+    "callback_closure": 4,
+    "business_source_and_actual_prepared": 8,
+    "existing_profiles": 6,
+    "clock_profile_provenance": 2,
+    "raw_ddr_fifo8": 94742,
+    "raw_ddr_fifo3": 93244,
+    "raw_ddr_behavior_negative_controls": 5
+  },
+  "implemented": [
+    "eight_slot_operation_task_table",
+    "monotonic_operation_object_transfer_ids",
+    "04_and_20_to_23_recording_commands",
+    "all_open_modes_close_cancel",
+    "actual_f805_apb_s1a_native_glue_and_reachable_firmware_pump"
+  ],
+  "remaining_second_batch": [
+    "READ",
+    "ACK",
+    "combined_ACK",
+    "resume",
+    "30_second_transfer_policy"
+  ],
+  "hardware_retained": [
+    "capture",
+    "CRC",
+    "raw_DDR_native_drain_seal_fetch",
+    "Rice_encoder",
+    "transfer_banks",
+    "wire_framing"
+  ],
+  "independent_r00_preserved": true,
+  "default_firmware_byte_identical": true,
+  "recording_api_firmware_byte_identical": true,
+  "synthesis": false,
+  "pnr": false,
+  "full_cdc_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "deployment_allowed": false,
+  "rollback": "Select prior no-panel profile or independently recorded deployment; no default/accepted/vendor/25K selection change"
+}

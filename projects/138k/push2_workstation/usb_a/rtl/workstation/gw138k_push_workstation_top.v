@@ -285,6 +285,27 @@ module gw138k_push_workstation_top #(
     wire runtime_display_observation_fault;
 `ifdef WORKSTATION_RECORDING_DDR
     wire recording_select=psel && paddr[31:12]==20'hf8040;
+`ifdef WORKSTATION_CPU_BLE_BUSINESS
+    wire business_select=psel && paddr[31:12]==20'hf8050;
+    wire business_bus_ready,business_bus_error,business_owner_reset;
+    wire [31:0] business_bus_data;
+    wire business_command_valid,business_command_ready,business_command_write,business_response_error;
+    wire [11:0] business_command_address;
+    wire [31:0] business_command_data,business_response_data;
+    wire [3:0] business_command_strobes;
+    gw138k_apb_cdc business_commands(
+        .reset_n(preset_n && reset_n),.pclk(pclk),.audio_clk(clk_50m),
+        .psel(business_select),.penable(penable),.pwrite(pwrite),.paddr(paddr[11:0]),
+        .pwdata(pwdata),.pstrb(pstrb),.pready(business_bus_ready),.pslverr(business_bus_error),.prdata(business_bus_data),
+        .command_reset_n(business_owner_reset),.command_valid(business_command_valid),.command_ready(business_command_ready),
+        .command_write(business_command_write),.command_address(business_command_address),
+        .command_data(business_command_data),.command_strobes(business_command_strobes),
+        .response_data(business_response_data),.response_error(business_response_error));
+`else
+    wire business_select=1'b0,business_bus_ready=1'b1,business_bus_error=1'b0;
+    wire [31:0] business_bus_data=0;
+`endif
+
     wire recording_bus_ready,recording_bus_error;
     wire [31:0] recording_bus_data;
     wire recording_req,recording_write,recording_ready,recording_response,recording_native_accept,recording_transport_fault;
@@ -931,6 +952,13 @@ module gw138k_push_workstation_top #(
     workstation_bluetooth u_bluetooth (
 `endif
         .clk_i(clk_50m),.rst_ni(reset_n),.module_uart_tx_i(ble_uart_rx_i),
+`ifdef WORKSTATION_CPU_BLE_BUSINESS
+        .business_owner_reset_ni(business_owner_reset),.business_command_valid_i(business_command_valid),
+        .business_command_write_i(business_command_write),.business_command_address_i(business_command_address),
+        .business_command_data_i(business_command_data),.business_command_strobes_i(business_command_strobes),
+        .business_command_ready_o(business_command_ready),.business_response_error_o(business_response_error),
+        .business_response_data_o(business_response_data),
+`endif
         .pcm_valid_i(ble_pcm_valid),.pcm_pair_i(ble_pcm),.pcm_sequence_i(ble_sequence),
 `ifdef WORKSTATION_RUNTIME_NATIVE
         // Existing BLE format 1 remains 48 kHz. Never relabel 44.1-kHz PCM.
@@ -1107,9 +1135,9 @@ module gw138k_push_workstation_top #(
         .DDR_HBURST(),.DDR_HPROT(),.DDR_HSIZE(ram_size),.DDR_HTRANS(ram_transfer),
         .DDR_HWDATA(ram_write_data),.DDR_HWRITE(ram_write),.DDR_HCLK(ram_clk),.DDR_HRSTN(ram_reset_n),
 `ifdef WORKSTATION_RECORDING_DDR
-        .APB_PRDATA(recording_select?recording_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
-        .APB_PREADY(recording_select?recording_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
-        .APB_PSLVERR(recording_select?recording_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
+        .APB_PRDATA(business_select?business_bus_data:recording_select?recording_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
+        .APB_PREADY(business_select?business_bus_ready:recording_select?recording_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
+        .APB_PSLVERR(business_select?business_bus_error:recording_select?recording_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
 `elsif WORKSTATION_RUNTIME_NATIVE
         .APB_PRDATA(clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
         .APB_PREADY(clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),

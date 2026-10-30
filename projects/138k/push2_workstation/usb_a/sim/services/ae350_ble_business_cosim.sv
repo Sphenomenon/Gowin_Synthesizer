@@ -1,0 +1,195 @@
+`timescale 1ns/1ps
+module ae350_ble_business_cosim(
+ input wire clk,resetn,owner_resetn,enable,pcm_run,
+ input wire psel,penable,pwrite,input wire [11:0] paddr,
+ input wire [31:0] pwdata,input wire [3:0] pstrb,
+ output wire pready,pslverr,output wire [31:0] prdata,
+ input wire fragment_write,input wire [4:0] fragment_addr,input wire [7:0] fragment_data,
+ input wire fragment_start,input wire [4:0] fragment_length,
+ output wire fragment_done,output wire [7:0] fragment_error,
+ output wire response_valid,output wire [6:0] response_length,
+ input wire [6:0] response_addr,output wire [7:0] response_data,input wire response_consume,
+ output wire transfer_valid,output wire [12:0] transfer_length,
+ input wire [12:0] transfer_addr,output wire [7:0] transfer_data,input wire transfer_consume,
+ input wire seal_hold,seal_request,
+ input wire [31:0] test_time_bias,
+ output wire seal_ready,seal_done,seal_failed,
+ output wire [2:0] capture_phase,
+ output wire [31:0] object_id,frames,record_state
+);
+wire raw_start_valid_o;
+wire raw_start_ready_i,raw_start_done_i;
+wire raw_clear_valid_o;
+wire raw_clear_ready_i,raw_clear_done_i;
+wire raw_capture_valid_o;
+wire [31:0] raw_capture_index_o,raw_capture_pcm_o;
+wire raw_capture_ready_i;
+wire raw_close_valid_o;
+wire raw_close_ready_i,raw_drained_i,raw_fault_i;
+wire raw_object_fault_i,raw_channel_fault_i;
+wire [3:0] raw_failure_code_i;
+wire [31:0] raw_accepted_frames_i,raw_committed_frames_i;
+wire raw_fetch_valid_o;
+wire raw_fetch_ready_i;
+wire [31:0] raw_fetch_offset_o;
+wire [13:0] raw_fetch_length_o;
+wire raw_fetch_done_i,raw_fetch_fault_i,raw_cache_valid_i;
+wire [31:0] raw_sample_addr_o;
+wire [31:0] raw_sample_word_i;
+
+wire command_reset,command_valid,command_ready,command_write,response_error;
+wire [11:0] command_address;wire [31:0] command_data,bus_response_data;
+wire [3:0] command_strobes;
+gw138k_apb_cdc bus_bridge(.reset_n(owner_resetn && resetn),.pclk(clk),.audio_clk(clk),
+ .psel(psel),.penable(penable),.pwrite(pwrite),.paddr(paddr),.pwdata(pwdata),.pstrb(pstrb),
+ .pready(pready),.pslverr(pslverr),.prdata(prdata),.command_reset_n(command_reset),
+ .command_valid(command_valid),.command_ready(command_ready),.command_write(command_write),
+ .command_address(command_address),.command_data(command_data),.command_strobes(command_strobes),
+ .response_data(bus_response_data),.response_error(response_error));
+reg [31:0] phase=0,ms_count=0,ms_divider=0;
+wire tick=phase+32'd48000>=32'd50000000;
+always @(posedge clk)if(!resetn)begin phase<=0;ms_count<=0;ms_divider<=0;end
+else begin
+ phase<=tick ? phase+32'd48000-32'd50000000:phase+32'd48000;
+ if(ms_divider==49999)begin ms_divider<=0;ms_count<=ms_count+1'b1;end else ms_divider<=ms_divider+1'b1;
+end
+ble_protocol_command #(.EXTERNAL_PCM(1),.CAPACITY_FRAMES(16384),.EXTERNAL_SEAL_PROTOCOL(1),
+ .EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000)) endpoint(
+ .clk(clk),.resetn(resetn),.enable(enable),
+ .business_owner_reset_ni(command_reset),.business_command_valid_i(command_valid),
+ .business_command_write_i(command_write),.business_command_address_i(command_address),
+ .business_command_data_i(command_data),.business_command_strobes_i(command_strobes),
+ .business_command_ready_o(command_ready),.business_response_error_o(response_error),
+ .business_response_data_o(bus_response_data),
+ .pcm_valid_i(tick && pcm_run),.source_ready_i(1'b1),.source_fault_i(1'b0),.pcm_pair_i(32'h22221111),
+ .boot_id(64'h1122334455667788),.att_value_limit(9'd247),.boot_valid(1'b1),
+ .response_subscribed(1'b1),.control_open(1'b1),.recording_enable(1'b1),.transfer_subscribed(1'b1),
+ .elapsed_ms(ms_count+test_time_bias),.fragment_write(fragment_write),.fragment_addr(fragment_addr),.fragment_data(fragment_data),
+ .fragment_start(fragment_start),.fragment_length(fragment_length),.busy(),.fragment_done(fragment_done),.fragment_error(fragment_error),
+ .response_valid(response_valid),.response_length(response_length),.response_addr(response_addr),.response_data(response_data),
+ .response_consume(response_consume),.transfer_valid(transfer_valid),.transfer_compact(),.transfer_bulk(),.transfer_direct(),
+ .response_is_data(),.transfer_length(transfer_length),.transfer_addr(transfer_addr),.transfer_data(transfer_data),
+ .transfer_consume(transfer_consume),.summary_latch(1'b0),.summary(),.session_active(),.accepted_count(),.crc_reject_count(),
+ .seal_hold_i(seal_hold),.seal_request_i(seal_request),.seal_ready_o(seal_ready),.seal_pending_o(),
+ .seal_done_o(seal_done),.seal_failed_o(seal_failed),.seal_failure_code_o(),
+ .seal_record_state_o(),.seal_recording_id_o(),.seal_frames_o(),.seal_crc_o(),
+        .raw_start_valid_o(raw_start_valid_o),
+        .raw_start_ready_i(raw_start_ready_i),
+        .raw_start_done_i(raw_start_done_i),
+        .raw_clear_valid_o(raw_clear_valid_o),
+        .raw_clear_ready_i(raw_clear_ready_i),
+        .raw_clear_done_i(raw_clear_done_i),
+        .raw_capture_valid_o(raw_capture_valid_o),
+        .raw_capture_index_o(raw_capture_index_o),
+        .raw_capture_pcm_o(raw_capture_pcm_o),
+        .raw_capture_ready_i(raw_capture_ready_i),
+        .raw_close_valid_o(raw_close_valid_o),
+        .raw_close_ready_i(raw_close_ready_i),
+        .raw_drained_i(raw_drained_i),
+        .raw_fault_i(raw_fault_i),
+        .raw_object_fault_i(raw_object_fault_i),
+        .raw_channel_fault_i(raw_channel_fault_i),
+        .raw_failure_code_i(raw_failure_code_i),
+        .raw_accepted_frames_i(raw_accepted_frames_i),
+        .raw_committed_frames_i(raw_committed_frames_i),
+        .raw_fetch_valid_o(raw_fetch_valid_o),
+        .raw_fetch_ready_i(raw_fetch_ready_i),
+        .raw_fetch_offset_o(raw_fetch_offset_o),
+        .raw_fetch_length_o(raw_fetch_length_o),
+        .raw_fetch_done_i(raw_fetch_done_i),
+        .raw_fetch_fault_i(raw_fetch_fault_i),
+        .raw_cache_valid_i(raw_cache_valid_i),
+        .raw_sample_addr_o(raw_sample_addr_o),
+        .raw_sample_word_i(raw_sample_word_i));
+assign capture_phase=endpoint.recording.capture_state;
+assign object_id=endpoint.recording_id,frames=endpoint.recorded_frames,record_state={24'd0,endpoint.record_state};
+ble_raw_ddr_fixture backing(.clk(clk),.resetn(resetn),        .raw_start_valid_o(raw_start_valid_o),
+        .raw_start_ready_i(raw_start_ready_i),
+        .raw_start_done_i(raw_start_done_i),
+        .raw_clear_valid_o(raw_clear_valid_o),
+        .raw_clear_ready_i(raw_clear_ready_i),
+        .raw_clear_done_i(raw_clear_done_i),
+        .raw_capture_valid_o(raw_capture_valid_o),
+        .raw_capture_index_o(raw_capture_index_o),
+        .raw_capture_pcm_o(raw_capture_pcm_o),
+        .raw_capture_ready_i(raw_capture_ready_i),
+        .raw_close_valid_o(raw_close_valid_o),
+        .raw_close_ready_i(raw_close_ready_i),
+        .raw_drained_i(raw_drained_i),
+        .raw_fault_i(raw_fault_i),
+        .raw_object_fault_i(raw_object_fault_i),
+        .raw_channel_fault_i(raw_channel_fault_i),
+        .raw_failure_code_i(raw_failure_code_i),
+        .raw_accepted_frames_i(raw_accepted_frames_i),
+        .raw_committed_frames_i(raw_committed_frames_i),
+        .raw_fetch_valid_o(raw_fetch_valid_o),
+        .raw_fetch_ready_i(raw_fetch_ready_i),
+        .raw_fetch_offset_o(raw_fetch_offset_o),
+        .raw_fetch_length_o(raw_fetch_length_o),
+        .raw_fetch_done_i(raw_fetch_done_i),
+        .raw_fetch_fault_i(raw_fetch_fault_i),
+        .raw_cache_valid_i(raw_cache_valid_i),
+        .raw_sample_addr_o(raw_sample_addr_o),
+        .raw_sample_word_i(raw_sample_word_i));
+endmodule
+`timescale 1ns/1ps
+module ble_raw_ddr_fixture(input wire clk,resetn,
+    // clk / clk_i raw storage only; object/task/CRC/wire ownership stays here.
+    input wire raw_start_valid_o,
+    output wire raw_start_ready_i,raw_start_done_i,
+    input wire raw_clear_valid_o,
+    output wire raw_clear_ready_i,raw_clear_done_i,
+    input wire raw_capture_valid_o,
+    input wire [31:0] raw_capture_index_o,raw_capture_pcm_o,
+    output wire raw_capture_ready_i,
+    input wire raw_close_valid_o,
+    output wire raw_close_ready_i,raw_drained_i,raw_fault_i,
+    output wire raw_object_fault_i,raw_channel_fault_i,
+    output wire [3:0] raw_failure_code_i,
+    output wire [31:0] raw_accepted_frames_i,raw_committed_frames_i,
+    input wire raw_fetch_valid_o,
+    output wire raw_fetch_ready_i,
+    input wire [31:0] raw_fetch_offset_o,
+    input wire [13:0] raw_fetch_length_o,
+    output wire raw_fetch_done_i,raw_fetch_fault_i,raw_cache_valid_i,
+    input wire [31:0] raw_sample_addr_o,
+    output wire [31:0] raw_sample_word_i
+);
+    reg memory_clk=0;always #7 memory_clk=~memory_clk;
+    wire slot_valid,slot_ready,native_accept,write_enable;
+    wire [28:0] address;wire [255:0] write_data;wire [31:0] mask;
+    reg response=0;reg [255:0] response_data=0;
+    workstation_ble_raw_ddr_store #(.CAPACITY_FRAMES(16384)) store(
+        .clk_i(clk),.memory_clk_i(memory_clk),.rst_ni(resetn),.start_valid_i(raw_start_valid_o),.start_ready_o(raw_start_ready_i),.start_done_o(raw_start_done_i),.clear_valid_i(raw_clear_valid_o),.clear_ready_o(raw_clear_ready_i),.clear_done_o(raw_clear_done_i),.capture_valid_i(raw_capture_valid_o),.capture_index_i(raw_capture_index_o),.capture_pcm_i(raw_capture_pcm_o),.capture_ready_o(raw_capture_ready_i),.close_valid_i(raw_close_valid_o),.close_ready_o(raw_close_ready_i),.drained_o(raw_drained_i),.fault_o(raw_fault_i),.object_fault_o(raw_object_fault_i),.channel_fault_o(raw_channel_fault_i),.failure_code_o(raw_failure_code_i),.accepted_frames_o(raw_accepted_frames_i),.committed_frames_o(raw_committed_frames_i),.fetch_valid_i(raw_fetch_valid_o),.fetch_ready_o(raw_fetch_ready_i),.fetch_offset_i(raw_fetch_offset_o),.fetch_length_i(raw_fetch_length_o),.fetch_done_o(raw_fetch_done_i),.fetch_fault_o(raw_fetch_fault_i),.cache_valid_o(raw_cache_valid_i),.sample_addr_i(raw_sample_addr_o),.sample_word_o(raw_sample_word_i),
+        .slot_valid_o(slot_valid),.slot_ready_i(slot_ready),.native_accept_i(native_accept),.ddr_write_o(write_enable),
+        .ddr_address_o(address),.ddr_data_o(write_data),.ddr_mask_o(mask),.read_response_i(response),.read_data_i(response_data),
+        .transport_fault_i(1'b0),.native_protocol_fault_o());
+    reg submitted=0,read_pending=0,write_q=0,native=0;
+    reg [28:0] address_q=0,read_address_q=0;
+    reg [255:0] data_q=0;reg [31:0] mask_q=0;
+    integer delay=0,read_delay=0,i;
+    reg [255:0] memory[0:2047];
+    assign slot_ready=!submitted && !read_pending;
+    assign native_accept=native;
+    always @(negedge memory_clk)begin
+        native=resetn && submitted && delay==0;
+        response=resetn && read_pending && read_delay==0;
+        response_data=memory[read_address_q>>3];
+    end
+    always @(posedge memory_clk or negedge resetn)begin
+        if(!resetn)begin submitted<=0;read_pending<=0;delay<=0;read_delay<=0;end
+        else begin
+            if(slot_valid && slot_ready)begin
+                submitted<=1;address_q<=address;write_q<=write_enable;data_q<=write_data;mask_q<=mask;delay<=2;
+            end
+            if(submitted && delay>0)delay<=delay-1;
+            if(native)begin
+                submitted<=0;
+                if(write_q)begin for(i=0;i<32;i=i+1)if(!mask_q[i])memory[address_q>>3][i*8+:8]<=data_q[i*8+:8];end
+                else begin read_pending<=1;read_address_q<=address_q;read_delay<=3;end
+            end
+            if(read_pending && read_delay>0)read_delay<=read_delay-1;
+            if(response)read_pending<=0;
+        end
+    end
+endmodule
