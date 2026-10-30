@@ -128,6 +128,8 @@
 
 [TF／counter 实际网表父级复现](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PREFIX_VG_REVIEW_20261030.md)已通过实际 FF／时钟／完整扇出、逐位 CLEAR、三组完整 32 位译码矩阵和 20 项负控；TF 发布 D 锥只含计算域 81 个顺序前沿，35 级计算锥仍待物理验证。录音 counter 只有 live affine inventory，不宣称完整输出矩阵；全部 1,482 项独立证据重新哈希通过。未装约束、未操作板卡，完整门禁保持未完成。
 
+[C2103001 物理准备](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PREFIX_C2103001_PREPARE_20261030.md)已由父级复现 100 负控、13 seal 与 1,517 物理输入检查，保持名义时钟、原 SDC／CST、place1／route0 和 hold correction 后启动 P&R。源为原 c7／8c5，后续来源身份不回填；此处仅封存启动状态，结果另记。完整 CDC／reset／PLL／物理时序和硬件未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

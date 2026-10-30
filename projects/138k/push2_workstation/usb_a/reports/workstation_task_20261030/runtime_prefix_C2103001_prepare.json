@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "identity": "runtime-prefix-C2103001-parent-prepare-and-launch-20261030-v1",
+  "source_candidate": "custom138k-workstation-r00-no-local-panel-v1-c7d66b419868f7f4",
+  "physical_identity": "custom138k-r00-prefix-no-local-panel-nominal-experiment-C2103001",
+  "user_code": "0xC2103001",
+  "manifest_sha256": "98a5f5fac4b88efab35d8522dd5199ed5fc7da07fac5107b139ce230fe19aba5",
+  "physical_input_count": 1517,
+  "staged_source_count": 593,
+  "enabled_source_count": 269,
+  "synthesis_output_count": 4,
+  "maintained_dependencies": 45,
+  "root_delivery_closure_files": 15,
+  "independent_review_closures": {
+    "prefix4_scope": {
+      "sealed_files": 81,
+      "external_dependencies": 656
+    },
+    "tf_counter": {
+      "sealed_files": 9,
+      "external_dependencies": 1473
+    }
+  },
+  "parent_exact_prepare_reproduction": true,
+  "parent_negative_controls": 100,
+  "all_negative_controls_rejected": true,
+  "all_physical_inputs_parent_hashed": true,
+  "actual_control_seal_files_parent_hashed": 13,
+  "place_option": 1,
+  "route_option": 0,
+  "replicate_resources": false,
+  "timing_driven": 1,
+  "correct_hold_violation": 1,
+  "nominal_sdc_preserved": true,
+  "physical_CST_identical_FF": true,
+  "tcl_only_usercode_delta_from_FF": true,
+  "clocks_or_exceptions_relaxed": false,
+  "extra_features_removed_by_preparer": [],
+  "initial_generic_launcher_attempt": "Rejected missing top-level source_candidate before process evidence or EDA; exact launcher adaptation now reads sealed source.candidate_identity.",
+  "pnr_launched": true,
+  "pnr_completed_at_checkpoint": false,
+  "pnr_process_live_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-no-local-panel-physical-C2103001/pnr_process.json",
+  "pnr_started_utc": "2026-10-30T15:47:21.211954+00:00",
+  "launch_snapshot_only": true,
+  "board_authorization": "User authorized SRAM/probes earlier; this resource experiment manifest is not a deployment acceptance.",
+  "evidence": {
+    "runtime-prefix-physical-preparer-C2103001-v1/ACTUAL_PREPARE_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-physical-preparer-C2103001-v1/ACTUAL_PREPARE_SEAL.json",
+      "sha256": "21a309b69be6037f1678e5adbedd6301f16181f7bc5aeb1274e354c34f3ecf36"
+    },
+    "runtime-prefix-physical-preparer-C2103001-v1/actual_prepare_verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-physical-preparer-C2103001-v1/actual_prepare_verification.json",
+      "sha256": "e46579cf3ca800e7621f1c33dc59ec377a7bcf1bde6cca17fa2dca85602b0c0a"
+    },
+    "runtime-prefix-physical-preparer-C2103001-v1/verify_actual_prepare.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-physical-preparer-C2103001-v1/verify_actual_prepare.py",
+      "sha256": "4294d18c0363d3de9d47f147ae57c0f47f6b3ff10b9c618c06a7b8c434791b14"
+    },
+    "runtime-prefix-C2103001-parent-prepare-v1/ADAPTATION.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-C2103001-parent-prepare-v1/ADAPTATION.json",
+      "sha256": "1dcefda5ee5df4a0c23a360aeb0dfd8d1ce7dbe582c13f3d1d8e90574bcd7b33"
+    },
+    "runtime-prefix-C2103001-parent-prepare-v1/verify_parent.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-C2103001-parent-prepare-v1/verify_parent.py",
+      "sha256": "6e0bba636f2ab54af72b295c60783bce130c397ef5386107e7ba4e77ce2c1c49"
+    },
+    "runtime-prefix-C2103001-parent-prepare-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-C2103001-parent-prepare-v1/verification.json",
+      "sha256": "8b6d9893b554f116683a690ea2633a491fe17e6920797c05d33cb6cc55358869"
+    },
+    "runtime-prefix-C2103001-parent-prepare-v1/verification.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-C2103001-parent-prepare-v1/verification.log",
+      "sha256": "94cd118d8cad4945d125a27537d77644be7e8f80c6784a5e7c0bf32e6a7583b0"
+    },
+    "runtime-prefix-C2103001-parent-prepare-v1/pnr_launch_snapshot.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-C2103001-parent-prepare-v1/pnr_launch_snapshot.json",
+      "sha256": "84f61ec1e1531e879e28663452d78d68c7f272b85f952b663f1fc7d5ec6f54ca"
+    },
+    "runtime-prefix-no-local-panel-physical-C2103001/physical_inputs.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-no-local-panel-physical-C2103001/physical_inputs.json",
+      "sha256": "98a5f5fac4b88efab35d8522dd5199ed5fc7da07fac5107b139ce230fe19aba5"
+    },
+    "run_prefix_physical_C2103001_v1.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/run_prefix_physical_C2103001_v1.py",
+      "sha256": "f67b286e26f9783a7720d15b7cc5b6664fb5557af9a448aaa73a554af6f0499f"
+    },
+    "run_prefix_physical_C2103001_v1.adaptation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/run_prefix_physical_C2103001_v1.adaptation.json",
+      "sha256": "b37d837991c3f236d93a9cbb4769aa109fa027539b07f5e7518df628ecc2cbf3"
+    }
+  },
+  "complete_source_cdc_accepted": false,
+  "complete_reset_accepted": false,
+  "complete_recording_cdc_accepted": false,
+  "full_timing_accepted": false,
+  "feature_preservation_accepted": false,
+  "whole_clock_reset_accepted": false,
+  "electrical_acceptance": false,
+  "physical_gates_passed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}
