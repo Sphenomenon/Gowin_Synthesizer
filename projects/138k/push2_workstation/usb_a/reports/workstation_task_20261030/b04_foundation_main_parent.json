@@ -1,0 +1,496 @@
+{
+  "schema": 1,
+  "stage": "unselected_source_only",
+  "main_source_checkpoint": "5eed03e25aef3df4525e6857606f94533f1b7122",
+  "deliveries": [
+    {
+      "kind": "hci",
+      "main": "1be86627cd3d945788ae4a772ad1775252f41e0c",
+      "author": "cd34562c31f71a8579a868d6d56844f9eee4a2d7",
+      "package": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-hci-owner-v1",
+      "count": 7,
+      "verify": "verify_seal.py",
+      "imported_files": [
+        "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_HCI_OWNER_SOURCE_20261031.md",
+        "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/README.md",
+        "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_event_decoder.sv",
+        "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv",
+        "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_owner.py",
+        "projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_event_decoder.sv",
+        "projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_flow_owner.sv"
+      ]
+    },
+    {
+      "kind": "classic",
+      "main": "5eed03e25aef3df4525e6857606f94533f1b7122",
+      "author": "beae08d7dd7ddb70a12b217a2b7afd3cea27e039",
+      "package": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1",
+      "count": 9,
+      "verify": "verify_delivery.py",
+      "imported_files": [
+        "projects/138k/push2_workstation/usb_a/firmware/ae350/CLASSIC_SOURCE_STAGE.md",
+        "projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.c",
+        "projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.h",
+        "projects/138k/push2_workstation/usb_a/firmware/ae350/classic_source_provenance.json",
+        "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_B04_CPU_STANDARD_SOURCE_20261030.md",
+        "projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/b04_cpu_standard_source.json",
+        "projects/138k/push2_workstation/usb_a/sim/ae350_classic_decode_fixture.c",
+        "projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "projects/138k/push2_workstation/usb_a/sim/run_ae350_classic_service.py"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_HCI_OWNER_SOURCE_20261031.md": "0add80a3f93bdb3c878a4ea84729f78e35d43cf115b68fbca97792678e5a6336",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/README.md": "01f1595db295f9038b3a6685b8479ddfda456345596c4b112fa186bf84da449f",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_event_decoder.sv": "8b9ae8ec9a9fab9fc2e2313e3199a60b1e1ec3fe957d4497237b28be8dac7792",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": "3a93b7e59752014de83215387afa6b94b136dd341f98a7e3642d6f8bcec9d579",
+    "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_owner.py": "4534bba07d3e30d5f695c2b6e2d92eb42d8f357fbd930c2b6a009c8290e68f4c",
+    "projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_event_decoder.sv": "5b1e1414462d6e6ac4b0319f81e5a68d2fc52e1b5deeb9d1d144b009cc854e1d",
+    "projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_flow_owner.sv": "aa264aa73f761b9f905c764a8874539282bc26be0ecc0a917b71ed41256c2332",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/CLASSIC_SOURCE_STAGE.md": "bf701f808d39913927c81b6fab9494bfd8cb9edc4b8d7c20894397b33e048659",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.c": "c3568015874dbb95e54e63d713ad5bfea0d1baa296edfede76aedb7a6bf0002f",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.h": "183dd0ff36e2575267941cec42264c8fb732e22a420fdb2aace402c1814ad9f0",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/classic_source_provenance.json": "a8ccedec634832f3aca8f42f15ca6a978d34186b6141f609bb066b73e877158e",
+    "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_B04_CPU_STANDARD_SOURCE_20261030.md": "8eac4b26632b3e9fc68bfbba1d2e48ec781d6c02a6b80343f45ecb520ce6f282",
+    "projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/b04_cpu_standard_source.json": "70573b9e67dd0561a5dd2f38fab767cb3b4c4cb6656095a37c38370515fd311d",
+    "projects/138k/push2_workstation/usb_a/sim/ae350_classic_decode_fixture.c": "7a9d24c9ce5bcb20d850171ba9e4d8f055332d01d4ae968d20becadfa9b725a6",
+    "projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c": "6eac0d786c55939315d0bed16103eb84a8d824bca27e062f7bc900558e6119bc",
+    "projects/138k/push2_workstation/usb_a/sim/run_ae350_classic_service.py": "c75998a61f4b802b11eaa020cc2906665df608fc4af7ebfb31fef3fa6263135d",
+    "projects/138k/push2_workstation/usb_a/sim/fixtures/ae350_sbc_reference.json": "68beafb6eb44cb59562fb3856e29946d107f5aad955414b7df109735495a8917",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/sbc_decoder_service.c": "54c9c6d671cd2050c6aba4158037fa17cc6c870887919b3b28fd681dbace2d0d",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/sbc_decoder_service.h": "90bb312346c9976e9a1ca30221ca2dd637887592ebeb3c7e1b638c67ecfeea8a",
+    "projects/138k/push2_workstation/usb_a/tools/prepare_ae350_sbc.py": "430571e1c36696b220283c17fea88c249175f01a0b14b4af1606ce574d512def",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream_manifest.json": "4d41d75700a76dc92cb60f2e35191ffb0d8bf970b2a0a18338fc789f28ea71fe",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/LICENSE.Apache-2.0": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/a138_sbc_arithmetic.h": "8ecdf3a6be3f52f87ef30af8f9dc05a134cc162e32c2e462bc89888c3ad17422",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/README.md": "944e3b7fd5e30c403014020a43eaae37df41899e5f336f369bc2f7bf772ccf94",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/LICENSE": "fcfd08d120e2558dded978b780df4404a221b94372f7d2aa407b7ada7c54ff07",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/README.md": "fc4a3e0140f3ef139b2c71711497ab30ef8e48c171984988f34b4f9cf58aaca0",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/SCR.txt": "438c8687d8ba0a0a5e79db8d0740fdf066c01761d5d1e02ac15fde3e4e118e86",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_time.h": "34d8191ffb70ba0d1037d2a20ec9090caf699bca069ce1654dbddc6907ad49e9",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_bitstream.h": "4791457695031c423cb0efb816c8f11ce3ce6415f2b383eb77f9abae968da7a2",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_osinterface.h": "5c3d463ca1943ab801cb3617e8366559adda7ec2219e93680e9b5b81d5b41d87",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_codec_sbc.h": "5df696eca911afd3a094e99831f2b235f364b5c19157e7c65df1243373f5358f",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_status.h": "5121db37b90e42a7ab4a092b0dbdac894019a02e01961ca4df515b0cd1542075",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_codec_sbc_private.h": "a8ba08775b5b31692fd96f906f9714b6aa569b71e16dee84a7fbcfd4c21491df",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_cpu_dep.h": "51f0999baa4561a894ce6f8b85074b88b9286946d1e509344c201230ef0686a0",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_utils.h": "57d01d2df48d159d25fb04b54e62fc318d4e1ccebca8d0af00dd4d250133af92",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_assert.h": "37e3e1e920dc49461774d940275f806d95e4b0e6d6e9b948cfc527133f14c41c",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_stddefs.h": "511e00ed895ae5bf87ad2f6bddbf474afc9e36e7bf64b71a75e5d1500d2e5049",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_string.h": "c4f0e6192f53f718bdb24bb68977c95097332148ce2eb639c49c13c7a9ea3ef6",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_bt_spec.h": "66ed61ed85aee8eb3f64bef738e6f77813ec6cb9cec997173ed57b7cfa045ac0",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_modules.h": "994bb8580a306e3c4e5f958ceed8e19f6ad623957f6bdd6d6eff23188a398d18",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_common.h": "34e69e3dcdbe106de0c5ff96c02b448f231659fb81e77968b260e7b3fc22a126",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/oi_codec_version.c": "9ba9653eb145853dc8d937a164a25808478dd59a8b5747ba7cc9cdd7a1cae716",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/bitstream-decode.c": "3336d994518fe97c2d240612747800b2bf8423fa4d15c483b02ed3129d32090e",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/synthesis-dct8.c": "1aa444502c50a62a66475e860637044043166a8e55108c20d25cc17feb784073",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/framing.c": "da2f951e4b0722ebec4a0b948e2942e6fdda9f8dcba0e09907060efea3202384",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/decoder-sbc.c": "fd44f3d8ce667df2c7c39aa0fd1c5ca597c5f0ad953d4ccf63ff5a7d6a493aca",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/decoder-private.c": "60d456fddd3839b7aa7f883213205d1be396c94690c4ebeaf8bb7f8784978c8a",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/bitalloc-sbc.c": "38ff6d676669f61c283273a8403727b9ecf44411628c41cbbd2fe243881ed52e",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/synthesis-8-generated.c": "236d897cbce62cb62c76cfd8fe5b3300b303a49be95fab6eb8b2ba681ac86be8",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/dequant.c": "3bdd22415b311138891b6cf651dc952c3c8cdda13dd62580114a5d193e149e47",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/decoder-oina.c": "58b8467da96333d79592478fb9e7bef57400c75ba9aead14cff9258079fe4fb5",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/alloc.c": "86b2b5e653d8c85cda23a9eeb8b37f2bfcbf01e7784c3ec071f63eeb1a2df6ca",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/synthesis-sbc.c": "82bb804881385d1ca10ac15e5ac76cdaef7efc68495dab430b78745538dadb16",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/framing-sbc.c": "f5efa3367155338e3c8088b23c93b6977a0dc6c51377a9c6cb705c408c839ef5",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/bitalloc.c": "6b918bedb1ad766039fe4c87c8091a3578540481bc3f72c0e8a893430cc9ab4a",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/readsamplesjoint.inc": "47ea8500e8191e43e47c00f1a1c2a2febb6839252b27e3f5410aacdcd3a6170a"
+  },
+  "tested_source_bytes_match_author": true,
+  "source_imports_added_only": true,
+  "production_profile_modified": false,
+  "hci": {
+    "flow_checks": 116780,
+    "flow_scenarios": 15,
+    "random_steps": 10000,
+    "event_checks": 9174,
+    "events": 1830,
+    "event_schema_length_negatives": 1806,
+    "rejected_mutants": 11,
+    "strict_Wall": true,
+    "rejected_parameter_guards": 4,
+    "root_verification_sha256": "4534b88b35574c119ad958c93fad3b804da70d1464a914864ff8a214a9250de3"
+  },
+  "classic": {
+    "native_checks": 44612,
+    "sanitized_checks": 44612,
+    "rejected_mutants": 15,
+    "decoder_cases": [
+      {
+        "case": "00",
+        "samples": 4096,
+        "max_abs_error": 5,
+        "pcm_sha256": "b48b91a4835855f277c21feb8133fd3ebba92aea89ab6b5f9aa7675104ee26ed"
+      },
+      {
+        "case": "02",
+        "samples": 8192,
+        "max_abs_error": 6,
+        "pcm_sha256": "f7d0bade97f35b44a4a4593022a1d5e72e55e8ee28f9c2c6db6262962b66d008"
+      },
+      {
+        "case": "12",
+        "samples": 8192,
+        "max_abs_error": 5,
+        "pcm_sha256": "30ccf5ae95849e151f09b1dc3f77607c27c7fb491427bc164971d70f026e4ef3"
+      },
+      {
+        "case": "14",
+        "samples": 16384,
+        "max_abs_error": 6,
+        "pcm_sha256": "cf45616ae288272a40a1721a536b7d6f8d17df57210b98f4c66a2e3506510e77"
+      },
+      {
+        "case": "16",
+        "samples": 4096,
+        "max_abs_error": 5,
+        "pcm_sha256": "f34a0d9eee6ac6d30429d5ae6986092e25a4a4158ce5bfed6635cac74250ded3"
+      },
+      {
+        "case": "18",
+        "samples": 8192,
+        "max_abs_error": 6,
+        "pcm_sha256": "263b03e279644290a6828ceeec239066d26ca2721d89ada90b335915480fd022"
+      },
+      {
+        "case": "28",
+        "samples": 8192,
+        "max_abs_error": 5,
+        "pcm_sha256": "9d8b432f10cccb0374efecbeb5e6dc9346805839771c3f89ce51ca562f014267"
+      },
+      {
+        "case": "30",
+        "samples": 16384,
+        "max_abs_error": 6,
+        "pcm_sha256": "82371cd60231c3148877d6003140b2f89fdfccd4f3a8ad79c66488e708e11864"
+      },
+      {
+        "case": "32",
+        "samples": 16384,
+        "max_abs_error": 4,
+        "pcm_sha256": "d17861408b836edb6d101a1a2c4f4003ddcaa9b5231edb16a27d66c9c8f10483"
+      },
+      {
+        "case": "37",
+        "samples": 16384,
+        "max_abs_error": 5,
+        "pcm_sha256": "9ee4b7e938fef831b18d9db9e91107bd43ac7c83e7531e20ea47bb3ce9702c3a"
+      },
+      {
+        "case": "41",
+        "samples": 12288,
+        "max_abs_error": 5,
+        "pcm_sha256": "e3c3d815fec267b2bca6792eada98cb53fcf3e1e08d348aa58fe941b311ba500"
+      }
+    ],
+    "decoded_scalar_samples": 118784,
+    "max_abs_error_vs_BlueZ": 6,
+    "native_sanitized_pcm_identical": true,
+    "root_verification_sha256": "8c442e5b3a1c6e2b9c0db5fab6abaa93c7c9f810df7115d6b1de9f7a37f228b9",
+    "root_rv32_budget": {
+      "sections": {
+        ".text": 14072,
+        ".data": 0,
+        ".bss": 0,
+        ".rodata": 273,
+        ".comment": 51,
+        ".note.GNU-stack": 0,
+        ".riscv.attributes": 63
+      },
+      "text_rodata_bytes": 14345,
+      "static_data_bytes": 0,
+      "caller_object_bytes": 2848,
+      "required_runtime_symbols": [
+        "memcpy",
+        "memset"
+      ],
+      "max_function_stack_frame": 480,
+      "function_stack_frames": [
+        {
+          "function": "attr_selected",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "codec_format",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "sbc_bytes",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "media_drop",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "drop_channel",
+          "bytes": 16,
+          "kind": "static"
+        },
+        {
+          "function": "sequence.part.0",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "search_pattern.constprop",
+          "bytes": 64,
+          "kind": "static"
+        },
+        {
+          "function": "append",
+          "bytes": 32,
+          "kind": "static"
+        },
+        {
+          "function": "sig.isra",
+          "bytes": 48,
+          "kind": "static"
+        },
+        {
+          "function": "avdtp_reply.isra",
+          "bytes": 48,
+          "kind": "static"
+        },
+        {
+          "function": "avdtp_command.constprop",
+          "bytes": 96,
+          "kind": "static"
+        },
+        {
+          "function": "sdp_error.isra",
+          "bytes": 48,
+          "kind": "static"
+        },
+        {
+          "function": "sdp.constprop",
+          "bytes": 480,
+          "kind": "static"
+        },
+        {
+          "function": "dispatch.part.0",
+          "bytes": 160,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_init",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_begin",
+          "bytes": 48,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_cancel",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_event",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_acl",
+          "bytes": 32,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_tx_peek",
+          "bytes": 16,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_tx_result",
+          "bytes": 32,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_audio_ready",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_frame_pop",
+          "bytes": 0,
+          "kind": "static"
+        }
+      ],
+      "limits": "Incremental RV32 object only. Not linked firmware fit, call-chain stack proof, cycle/service deadline, or hardware acceptance."
+    },
+    "author_rv32_budget": {
+      "sections": {
+        ".text": 14212,
+        ".data": 0,
+        ".bss": 0,
+        ".rodata": 265,
+        ".rodata.cst8": 8,
+        ".comment": 19,
+        ".note.GNU-stack": 0,
+        ".riscv.attributes": 63
+      },
+      "text_rodata_bytes": 14485,
+      "static_data_bytes": 0,
+      "caller_object_bytes": 2848,
+      "required_runtime_symbols": [
+        "memcpy",
+        "memset"
+      ],
+      "max_function_stack_frame": 480,
+      "function_stack_frames": [
+        {
+          "function": "attr_selected",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "codec_format",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "sbc_bytes",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "drop_channel",
+          "bytes": 16,
+          "kind": "static"
+        },
+        {
+          "function": "sequence.part.0",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "search_pattern.constprop",
+          "bytes": 64,
+          "kind": "static"
+        },
+        {
+          "function": "append",
+          "bytes": 32,
+          "kind": "static"
+        },
+        {
+          "function": "sig.isra",
+          "bytes": 48,
+          "kind": "static"
+        },
+        {
+          "function": "avdtp_reply.isra",
+          "bytes": 48,
+          "kind": "static"
+        },
+        {
+          "function": "avdtp_command.constprop",
+          "bytes": 96,
+          "kind": "static"
+        },
+        {
+          "function": "sdp_error.isra",
+          "bytes": 48,
+          "kind": "static"
+        },
+        {
+          "function": "sdp.constprop",
+          "bytes": 480,
+          "kind": "static"
+        },
+        {
+          "function": "dispatch.part.0",
+          "bytes": 160,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_init",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_begin",
+          "bytes": 48,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_cancel",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_event",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_acl",
+          "bytes": 32,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_tx_peek",
+          "bytes": 16,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_tx_result",
+          "bytes": 32,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_audio_ready",
+          "bytes": 0,
+          "kind": "static"
+        },
+        {
+          "function": "a138_classic_frame_pop",
+          "bytes": 0,
+          "kind": "static"
+        }
+      ],
+      "limits": "Incremental RV32 object only. Not linked firmware fit, call-chain stack proof, cycle/service deadline, or hardware acceptance."
+    },
+    "rv32_compilers": {
+      "main": {
+        "compiler": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+        "sha256": "d21f58713e7f2f9a9ef9de8762b2c2d1995cd4cdeda724d5fe4834f3af4737b2",
+        "version": "riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC arm64) 15.2.0"
+      },
+      "author": {
+        "compiler": "/opt/homebrew/bin/riscv64-elf-gcc",
+        "sha256": "38435e3c6da930b24b014c763e904839bc4069aaa14773cbe9bf57dd741ba792",
+        "version": "riscv64-elf-gcc (GCC) 16.2.0"
+      }
+    },
+    "size_difference": "Identical source inputs; root xPack GCC15.2 and author Homebrew GCC16.2 are distinct compilers. Text differs by140 bytes; readonly aggregate273 bytes is equal. Object budgets are not combined firmware fit."
+  },
+  "accepted_input_tests": 17,
+  "synthesis_passed": false,
+  "physical_gates_passed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "phone_interoperability": false,
+  "A2DP14_conformance": false,
+  "remaining_gaps": [
+    "mandatory A2DP1.4 Sink Delay Reporting",
+    "connection/pairing/security/discovery policy",
+    "host RX bootstrap/leases/return payload/router and actual CPU mailbox/native integration",
+    "retire duplicate legacy BLE physical credit authorities with BLE preservation",
+    "complete firmware ILM/DLM and callgraph fit, decode cycles and service deadlines",
+    "bounded PCM queue/audio generation and actual rate grant/long-term clock drift",
+    "combined resources/P&R/CDC/PLL and phone/physical audio acceptance"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/hci-classic-main-parent-v1",
+  "parent_seal_sha256": "337b7c140d1c982f2e7dea95477cae47925dff680b5cc70cc331a66ef757d823",
+  "external_files": 282
+}
