@@ -2,7 +2,7 @@
 module tb_workstation_tf_runtime_stop #(parameter integer USE_COMMAND_BUFFER=0);
     tb_workstation_tf_runtime_service #(.USE_COMMAND_BUFFER(USE_COMMAND_BUFFER),.RUN_SCENARIOS(0),.EXTERNAL_STOP_PROTOCOL(1)) f();
     integer cases=0,done_count=0,failed_count=0,paused_high=0,paused_low=0,coalesced=0;
-    integer mailbox_wait_checks=0,drain_wait_checks=0,stopped_checks=0;
+    integer mailbox_wait_checks=0,drain_wait_checks=0,stopped_checks=0,idempotent_checks=0;
     reg done_q=0,failed_q=0;
     always @(negedge f.source_clk)if(f.rst_n)begin
         if(f.stop_done)begin
@@ -19,7 +19,14 @@ module tb_workstation_tf_runtime_stop #(parameter integer USE_COMMAND_BUFFER=0);
         done_q=f.stop_done;failed_q=f.stop_failed;
     end
     task pulse_stop;
-        begin f.checking=0;@(negedge f.source_clk);f.stop_request=1;@(negedge f.source_clk);f.stop_request=0;end
+        begin
+            f.checking=0;@(negedge f.source_clk);f.stop_request=1;#0.001;
+            if(f.dut.stop_latched && f.dut.stop_begin)begin
+                if(f.dut.stop_invalidate || f.dut.invalidate)$fatal(1,"idempotent stop created another fence");
+                idempotent_checks=idempotent_checks+1;
+            end
+            @(negedge f.source_clk);f.stop_request=0;
+        end
     endtask
     task await_pending_clear;
         integer n;
@@ -171,9 +178,17 @@ module tb_workstation_tf_runtime_stop #(parameter integer USE_COMMAND_BUFFER=0);
         if(failed_count!=before_failed+1 || f.stop_failure!=7 || done_count!=before_done)$fatal(1,"transport failure became stop success");
         @(negedge f.source_clk);f.transport_error=0;
         assert_stays_stopped();begin_track(0);f.await_frames(64);cases=cases+1;
-        if(cases!=10 || done_count!=10 || failed_count!=4 || coalesced!=3 || paused_high!=1 || paused_low!=1 ||
-           mailbox_wait_checks!=40 || drain_wait_checks!=30 || stopped_checks<200)$fatal(1,"missing stop coverage");
-        $display("PASS tf_runtime_stop: buffered=%0d cases=%0d done=%0d failed=%0d coalesced=%0d paused_high=%0d paused_low=%0d mailbox_wait=%0d drain_wait=%0d stopped_checks=%0d delivered=%0d",USE_COMMAND_BUFFER,cases,done_count,failed_count,coalesced,paused_high,paused_low,mailbox_wait_checks,drain_wait_checks,stopped_checks,f.delivered);
+        // Re-request on the first source edge after completion, with no
+        // extra quiet-settle delay. The existing fence/clear token must hold.
+        begin_track(0);before_done=done_count;pulse_stop();wait(f.stop_done);
+        before_generation=f.source_generation;before_restarts=f.path_restarts;
+        token=f.dut.path_clear_toggle;pulse_stop();await_done(before_done+2);
+        if(f.source_generation!=before_generation || f.path_restarts!=before_restarts ||
+           f.dut.path_clear_toggle!=token)$fatal(1,"earliest idempotent stop changed the completed fence");
+        cases=cases+1;
+        if(cases!=11 || done_count!=12 || failed_count!=4 || coalesced!=3 || paused_high!=1 || paused_low!=1 ||
+           mailbox_wait_checks!=40 || drain_wait_checks!=30 || stopped_checks<200 || idempotent_checks!=6)$fatal(1,"missing stop coverage");
+        $display("PASS tf_runtime_stop: buffered=%0d cases=%0d done=%0d failed=%0d coalesced=%0d paused_high=%0d paused_low=%0d mailbox_wait=%0d drain_wait=%0d stopped_checks=%0d idempotent_checks=%0d delivered=%0d",USE_COMMAND_BUFFER,cases,done_count,failed_count,coalesced,paused_high,paused_low,mailbox_wait_checks,drain_wait_checks,stopped_checks,idempotent_checks,f.delivered);
         $finish;
     end
 endmodule

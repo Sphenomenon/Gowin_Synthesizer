@@ -77,14 +77,17 @@ module workstation_tf_runtime_service #(
     wire reader_restart=reader_restart_i && !reader_restart_q;
     reg stop_request_q,stop_latched,stop_transaction_failed;
     reg [31:0] stop_wait;
-    wire stop_begin=EXTERNAL_STOP_PROTOCOL && stop_request_i && !stop_request_q && !stop_pending_o;
+    wire stop_begin=(EXTERNAL_STOP_PROTOCOL!=0) && stop_request_i && !stop_request_q && !stop_pending_o;
     // Stop wins simultaneous restart, and requests during pending coalesce.
     wire resume_restart=explicit_restart && !stop_pending_o && !stop_begin;
     wire auto_track_change=track_change && !stop_latched && !stop_begin;
     wire allowed_reader_restart=reader_restart && !stop_latched && !stop_begin;
     wire allowed_cancel=cancel_event && !stop_latched;
     wire stop_cleanup_complete;
-    wire stop_invalidate=stop_begin && !(stop_latched && stop_cleanup_complete);
+    // A latched stop admits no new media; only an explicit resume clears it.
+    // Repeated stop requests therefore reuse that fence. Completion itself
+    // depends on source_quiet and must never feed back into invalidate.
+    wire stop_invalidate=stop_begin && !stop_latched;
     wire physical=(state==RESTART_SETTLE && restart_playback) || state==WAIT_FORMAT || state==PLAY;
     wire memory_quiet_50,memory_gate;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] memory_ready_sync;
@@ -205,7 +208,7 @@ module workstation_tf_runtime_service #(
             stop_request_q<=0;stop_latched<=0;stop_transaction_failed<=0;stop_wait<=0;
             stop_pending_o<=0;stop_done_o<=0;stop_failed_o<=0;stop_failure_code_o<=0;
         end else begin
-            stop_request_q<=EXTERNAL_STOP_PROTOCOL && stop_request_i;
+            stop_request_q<=(EXTERNAL_STOP_PROTOCOL!=0) && stop_request_i;
             stop_done_o<=0;stop_failed_o<=0;
             if(resume_restart)stop_latched<=0;
             if(stop_begin)begin
