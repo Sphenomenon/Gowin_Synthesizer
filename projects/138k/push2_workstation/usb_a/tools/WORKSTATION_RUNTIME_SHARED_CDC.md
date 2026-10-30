@@ -98,9 +98,14 @@ entry additionally requires the explicit disabled-panel clock audit, which owns
 the 12-clock prefix, six-PLL inventory and LCD/touch retirement checks. The clock
 adapter is a separate prerequisite; this patch does not change it.
 The no-panel mode must pass its own completed synthesis/input/VG seal and every
-retained source structure check. The b9a2 LCD-on result is not inherited. Until
-that new VG exists, policy fixtures and old-candidate refusal tests establish
-only the mode selection and refusal rules, not actual no-panel acceptance.
+retained source structure check. Its declaration requires `u_video/front_valid_Z`
+for status bit 3; the LCD-on R00 declaration still requires `u_video/front_valid`.
+Both require the unique `u_video/u_scanout/front_valid_s0/Q` producer in
+`memory_clk`, together with the exact sealed RTL binding. Neither alias is an
+optional fallback, and no producer is discovered from the receiving D pin.
+The b9a2 LCD-on result is not inherited. Policy fixtures and old-candidate refusal
+tests establish only mode selection/refusal; actual no-panel checks require its
+own sealed VG.
 
 Example (paths must refer to a completed, sealed prepare/synthesis pair):
 
@@ -148,6 +153,13 @@ python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_r00_s
 The no-panel policy/old-candidate refusal regression is separate. Optional
 `GW138K_OLD_R00_STAGE` and `GW138K_OLD_R00_PROCESS` select a sealed old R00 pair
 for identity refusal; the test does not relabel or modify that candidate.
+Optional `GW138K_NO_PANEL_SHARED_CDC_STAGE` and
+`GW138K_NO_PANEL_SHARED_CDC_PROCESS` add the actual no-panel retained-scope
+regression. It verifies all 88 commands and the exact three video status
+producers, then rejects nine actual-object mutations including a substitution
+of the LCD-on alias. `GW138K_NO_PANEL_SHARED_CDC_TEST_EVIDENCE` optionally records
+the negative-control results. These are source-structure checks; use the public
+CLI separately for the full review input seal and disabled-panel clock audit.
 
 ```sh
 python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_no_local_panel_precision.py

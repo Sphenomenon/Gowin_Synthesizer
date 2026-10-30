@@ -1,0 +1,712 @@
+{
+  "schema": 1,
+  "identity": "r00-no-local-panel-e855-synthesis-and-C11030FE-prepare-v1",
+  "generated_utc": "2026-10-30T12:08:28.170228+00:00",
+  "validation_stage": "synthesis_verified_and_resource_physical_experiment_prepared",
+  "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-e855a1e8a8e6f181",
+  "candidate_input_sha256": "e855a1e8a8e6f1816e3fce69baa24fc00aa2988973da792c12779a513920651c",
+  "profile": "custom138k-workstation-r00-no-local-panel-v1",
+  "configuration": {
+    "hdmi_mode": "1080p60",
+    "high_speed_allowed": true,
+    "tf_audio_kind": "wav",
+    "implemented_sample_rates_hz": [
+      48000,
+      44100
+    ],
+    "ae350_firmware_policy": "maintained_ae350_v1",
+    "scan_window_policy": "native_admission_v1",
+    "audio_policy": "native_dual_rate_runtime_v1",
+    "reserve_zero_epoch": true,
+    "display_metadata_minor": 1,
+    "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+    "recognition_policy": "disabled_cnn_and_follow_v1",
+    "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+    "local_panel_policy": "disabled_local_lcd_touch_v1"
+  },
+  "features_removed": {
+    "local_lcd": "disabled_by_explicit_profile",
+    "local_touch": "not_selected_by_explicit_profile",
+    "cnn_recognition": "inherited_authorized_disabled",
+    "cnn_follow_analysis_menu": "inherited_authorized_disabled"
+  },
+  "maintained_div147_sha256": "359350552b6aa00a512068bd68a35cda7a15fad52faf5b23a0f91a893eca1d63",
+  "synthesis": {
+    "completed": true,
+    "exit_code": 0,
+    "elapsed_seconds": 353.6488752500154,
+    "staged_input_count": 584,
+    "enabled_input_count": 266,
+    "inputs_unchanged": true,
+    "output_sha256": {
+      "impl/gwsynthesis/custom_138k_integration.vg": "086d2504f1287e226fd55641a3e68c52f632dd91e87044b849a7a29af38ba02e",
+      "impl/gwsynthesis/custom_138k_integration.log": "a54b2399e9a0ac1cfc7b6bd25362826c5c2eb16c61f8e773f9190af08f7a3af2",
+      "impl/gwsynthesis/custom_138k_integration_syn_resource.html": "499932bd84468c321e7f34dee98284f239a65b609adc11d6f4b29cf4556bf73e",
+      "impl/gwsynthesis/custom_138k_integration_syn.rpt.html": "af532d7fcb7aae56f1a8d040701730466942b83cf77430e875a8cccfbd2ea550"
+    },
+    "structural_loop_gate_passed": true,
+    "structural_loop_diagnostics": [],
+    "structural_loop_gate_scope": "Gowin emitted AG diagnostics only; not complete combinational/lint acceptance"
+  },
+  "synthesis_resource_comparison": {
+    "old_candidate": "custom138k-workstation-r00-v1-b9a2e0fdf36970be",
+    "old": {
+      "logic": 104321,
+      "lut": 79957,
+      "alu": 15982,
+      "register": 63006,
+      "synthesis_bsram": 246,
+      "ram16": 1397
+    },
+    "new": {
+      "logic": 103147,
+      "lut": 78801,
+      "alu": 15964,
+      "register": 58602,
+      "synthesis_bsram": 253,
+      "ram16": 1397
+    },
+    "delta": {
+      "logic": -1174,
+      "lut": -1156,
+      "alu": -18,
+      "register": -4404,
+      "synthesis_bsram": 7,
+      "ram16": 0
+    },
+    "physical_bsram_count_assessed": false,
+    "causality": "The complete synthesis comparison combines tag-RAM and explicit no-local-panel changes; global deltas are not isolated tag-RAM savings."
+  },
+  "actual_dff_comparison": {
+    "old_visible": 57547,
+    "new_visible": 53143,
+    "delta": -4404,
+    "old_xml_total": 63006,
+    "new_xml_total": 58602,
+    "xml_delta": -4404,
+    "old_opaque_ddr_register_difference": 5459,
+    "new_opaque_ddr_register_difference": 5459,
+    "counter_policy": "Actual DFF* primitive instance counts in exact synthesized hierarchy; opaque DDR difference reported separately.",
+    "helper_dff_delta": -3849,
+    "lcd_subtree_dff_delta": -554,
+    "delay_stage_dff_delta": -1,
+    "direct_scope_changes": [
+      {
+        "scope": "u_lcd",
+        "old_ff": 41,
+        "new_ff": 0,
+        "delta": -41
+      },
+      {
+        "scope": "u_lcd/u_feedback",
+        "old_ff": 299,
+        "new_ff": 0,
+        "delta": -299
+      },
+      {
+        "scope": "u_lcd/u_pll",
+        "old_ff": 10,
+        "new_ff": 0,
+        "delta": -10
+      },
+      {
+        "scope": "u_lcd/u_pll/u_pll_init",
+        "old_ff": 37,
+        "new_ff": 0,
+        "delta": -37
+      },
+      {
+        "scope": "u_lcd/u_surface",
+        "old_ff": 167,
+        "new_ff": 0,
+        "delta": -167
+      },
+      {
+        "scope": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage",
+        "old_ff": 666,
+        "new_ff": 665,
+        "delta": -1
+      },
+      {
+        "scope": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider",
+        "old_ff": 1265,
+        "new_ff": 470,
+        "delta": -795
+      },
+      {
+        "scope": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider",
+        "old_ff": 3886,
+        "new_ff": 832,
+        "delta": -3054
+      }
+    ],
+    "helper_delta": [
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider",
+        "old_ff": 1265,
+        "new_ff": 470,
+        "delta": -795,
+        "old_tag_ff": 798,
+        "new_tag_ff": 0,
+        "new_tag_ram_count": 2
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.decay_divider",
+        "old_ff": 453,
+        "new_ff": 453,
+        "delta": 0,
+        "old_tag_ff": 0,
+        "new_tag_ff": 0,
+        "new_tag_ram_count": 0
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.release_divider",
+        "old_ff": 453,
+        "new_ff": 453,
+        "delta": 0,
+        "old_tag_ff": 0,
+        "new_tag_ff": 0,
+        "new_tag_ram_count": 0
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider",
+        "old_ff": 3886,
+        "new_ff": 832,
+        "delta": -3054,
+        "old_tag_ff": 3059,
+        "new_tag_ff": 0,
+        "new_tag_ram_count": 5
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/g_rate_pipeline.attack_divider",
+        "old_ff": 509,
+        "new_ff": 509,
+        "delta": 0,
+        "old_tag_ff": 42,
+        "new_tag_ff": 42,
+        "new_tag_ram_count": 0
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/g_rate_pipeline.decay_divider",
+        "old_ff": 453,
+        "new_ff": 453,
+        "delta": 0,
+        "old_tag_ff": 0,
+        "new_tag_ff": 0,
+        "new_tag_ram_count": 0
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/g_rate_pipeline.phase_divider",
+        "old_ff": 941,
+        "new_ff": 941,
+        "delta": 0,
+        "old_tag_ff": 114,
+        "new_tag_ff": 114,
+        "new_tag_ram_count": 0
+      },
+      {
+        "path": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/g_rate_pipeline.release_divider",
+        "old_ff": 453,
+        "new_ff": 453,
+        "delta": 0,
+        "old_tag_ff": 0,
+        "new_tag_ff": 0,
+        "new_tag_ram_count": 0
+      }
+    ]
+  },
+  "actual_tag_ram_mapping": {
+    "pitch": {
+      "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider",
+      "source_tag_width": 161,
+      "old_actual_dff": 3886,
+      "new_actual_dff": 832,
+      "actual_dff_delta": -3054,
+      "old_tag_named_dff": 3059,
+      "new_tag_named_dff": 0,
+      "new_retained_address_or_control_dff": 5,
+      "ram_count": 5,
+      "rams": [
+        {
+          "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/g_tag_ram.memory_g_tag_ram.memory_0_0_s",
+          "primitive": "SDPX9B",
+          "parameters": {
+            "BIT_WIDTH_0": "36",
+            "BIT_WIDTH_1": "36",
+            "READ_MODE": "1'b0",
+            "RESET_MODE": "\"SYNC\"",
+            "BLK_SEL_0": "3'b000",
+            "BLK_SEL_1": "3'b000"
+          },
+          "clocks": {
+            "CLKA": "audio_clk",
+            "CLKB": "audio_clk"
+          },
+          "clock_enables": {
+            "CEA": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/n93_7",
+            "CEB": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/VCC",
+            "OCE": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/GND"
+          },
+          "resets": {
+            "RESET": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/GND"
+          },
+          "ports": {
+            "DO": "pitched_tag[35:0]",
+            "CLKA": "audio_clk",
+            "CEA": "n93_7",
+            "CLKB": "audio_clk",
+            "CEB": "VCC",
+            "OCE": "GND",
+            "RESET": "GND",
+            "ADA": "{GND,GND,GND,GND,\\g_tag_ram.address_0 [4:1],\\g_tag_ram.address [0],GND,VCC,VCC,VCC,VCC}",
+            "ADB": "{GND,GND,GND,GND,\\g_tag_ram.read_address_0 [4:1],\\g_tag_ram.address [0],GND,GND,GND,GND,GND}",
+            "BLKSELA": "{GND,GND,GND}",
+            "BLKSELB": "{GND,GND,GND}",
+            "DI": "\\g_pitch_pipeline.dividend_tag [35:0]"
+          }
+        },
+        {
+          "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/g_tag_ram.memory_g_tag_ram.memory_0_1_s",
+          "primitive": "SDPX9B",
+          "parameters": {
+            "BIT_WIDTH_0": "36",
+            "BIT_WIDTH_1": "36",
+            "READ_MODE": "1'b0",
+            "RESET_MODE": "\"SYNC\"",
+            "BLK_SEL_0": "3'b000",
+            "BLK_SEL_1": "3'b000"
+          },
+          "clocks": {
+            "CLKA": "audio_clk",
+            "CLKB": "audio_clk"
+          },
+          "clock_enables": {
+            "CEA": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/n93_7",
+            "CEB": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/VCC",
+            "OCE": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/GND"
+          },
+          "resets": {
+            "RESET": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/GND"
+          },
+          "ports": {
+            "DO": "pitched_tag[71:36]",
+            "CLKA": "audio_clk",
+            "CEA": "n93_7",
+            "CLKB": "audio_clk",
+            "CEB": "VCC",
+            "OCE": "GND",
+            "RESET": "GND",
+            "ADA": "{GND,GND,GND,GND,\\g_tag_ram.address_0 [4:1],\\g_tag_ram.address [0],GND,VCC,VCC,VCC,VCC}",
+            "ADB": "{GND,GND,GND,GND,\\g_tag_ram.read_address_0 [4:1],\\g_tag_ram.address [0],GND,GND,GND,GND,GND}",
+            "BLKSELA": "{GND,GND,GND}",
+            "BLKSELB": "{GND,GND,GND}",
+            "DI": "\\g_pitch_pipeline.dividend_tag [71:36]"
+          }
+        },
+        {
+          "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/g_tag_ram.memory_g_tag_ram.memory_0_2_s",
+          "primitive": "SDPX9B",
+          "parameters": {
+            "BIT_WIDTH_0": "36",
+            "BIT_WIDTH_1": "36",
+            "READ_MODE": "1'b0",
+            "RESET_MODE": "\"SYNC\"",
+            "BLK_SEL_0": "3'b000",
+            "BLK_SEL_1": "3'b000"
+          },
+          "clocks": {
+            "CLKA": "audio_clk",
+            "CLKB": "audio_clk"
+          },
+          "clock_enables": {
+            "CEA": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/n93_7",
+            "CEB": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/VCC",
+            "OCE": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/GND"
+          },
+          "resets": {
+            "RESET": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/GND"
+          },
+          "ports": {
+            "DO": "pitched_tag[107:72]",
+            "CLKA": "audio_clk",
+            "CEA": "n93_7",
+            "CLKB": "audio_clk",
+            "CEB": "VCC",
+            "OCE": "GND",
+            "RESET": "GND",
+            "ADA": "{GND,GND,GND,GND,\\g_tag_ram.address_0 [4:1],\\g_tag_ram.address [0],GND,VCC,VCC,VCC,VCC}",
+            "ADB": "{GND,GND,GND,GND,\\g_tag_ram.read_address_0 [4:1],\\g_tag_ram.address [0],GND,GND,GND,GND,GND}",
+            "BLKSELA": "{GND,GND,GND}",
+            "BLKSELB": "{GND,GND,GND}",
+            "DI": "\\g_pitch_pipeline.dividend_tag [107:72]"
+          }
+        },
+        {
+          "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/g_tag_ram.memory_g_tag_ram.memory_0_3_s",
+          "primitive": "SDPX9B",
+          "parameters": {
+            "BIT_WIDTH_0": "36",
+            "BIT_WIDTH_1": "36",
+            "READ_MODE": "1'b0",
+            "RESET_MODE": "\"SYNC\"",
+            "BLK_SEL_0": "3'b000",
+            "BLK_SEL_1": "3'b000"
+          },
+          "clocks": {
+            "CLKA": "audio_clk",
+            "CLKB": "audio_clk"
+          },
+          "clock_enables": {
+            "CEA": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/n93_7",
+            "CEB": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/VCC",
+            "OCE": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/GND"
+          },
+          "resets": {
+            "RESET": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/GND"
+          },
+          "ports": {
+            "DO": "pitched_tag[143:108]",
+            "CLKA": "audio_clk",
+            "CEA": "n93_7",
+            "CLKB": "audio_clk",
+            "CEB": "VCC",
+            "OCE": "GND",
+            "RESET": "GND",
+            "ADA": "{GND,GND,GND,GND,\\g_tag_ram.address_0 [4:1],\\g_tag_ram.address [0],GND,VCC,VCC,VCC,VCC}",
+            "ADB": "{GND,GND,GND,GND,\\g_tag_ram.read_address_0 [4:1],\\g_tag_ram.address [0],GND,GND,GND,GND,GND}",
+            "BLKSELA": "{GND,GND,GND}",
+            "BLKSELB": "{GND,GND,GND}",
+            "DI": "\\g_pitch_pipeline.dividend_tag [143:108]"
+          }
+        },
+        {
+          "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/g_tag_ram.memory_g_tag_ram.memory_0_4_s",
+          "primitive": "SDPX9B",
+          "parameters": {
+            "BIT_WIDTH_0": "36",
+            "BIT_WIDTH_1": "36",
+            "READ_MODE": "1'b0",
+            "RESET_MODE": "\"SYNC\"",
+            "BLK_SEL_0": "3'b000",
+            "BLK_SEL_1": "3'b000"
+          },
+          "clocks": {
+            "CLKA": "audio_clk",
+            "CLKB": "audio_clk"
+          },
+          "clock_enables": {
+            "CEA": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/n93_7",
+            "CEB": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/VCC",
+            "OCE": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/GND"
+          },
+          "resets": {
+            "RESET": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_pitch_pipeline.divider/GND"
+          },
+          "ports": {
+            "DO": "{DO[35:17],pitched_tag[160:144]}",
+            "CLKA": "audio_clk",
+            "CEA": "n93_7",
+            "CLKB": "audio_clk",
+            "CEB": "VCC",
+            "OCE": "GND",
+            "RESET": "GND",
+            "ADA": "{GND,GND,GND,GND,\\g_tag_ram.address_0 [4:1],\\g_tag_ram.address [0],GND,VCC,VCC,VCC,VCC}",
+            "ADB": "{GND,GND,GND,GND,\\g_tag_ram.read_address_0 [4:1],\\g_tag_ram.address [0],GND,GND,GND,GND,GND}",
+            "BLKSELA": "{GND,GND,GND}",
+            "BLKSELB": "{GND,GND,GND}",
+            "DI": "{GND,GND,GND,GND,GND,GND,GND,GND,GND,GND,GND,GND,GND,GND,GND,GND,GND,GND,GND,\\g_pitch_pipeline.dividend_tag [160:144]}"
+          }
+        }
+      ]
+    },
+    "attack": {
+      "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider",
+      "source_tag_width": 57,
+      "old_actual_dff": 1265,
+      "new_actual_dff": 470,
+      "actual_dff_delta": -795,
+      "old_tag_named_dff": 798,
+      "new_tag_named_dff": 0,
+      "new_retained_address_or_control_dff": 3,
+      "ram_count": 2,
+      "rams": [
+        {
+          "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider/g_tag_ram.memory_g_tag_ram.memory_0_0_s",
+          "primitive": "SDPB",
+          "parameters": {
+            "BIT_WIDTH_0": "32",
+            "BIT_WIDTH_1": "32",
+            "READ_MODE": "1'b0",
+            "RESET_MODE": "\"SYNC\"",
+            "BLK_SEL_0": "3'b000",
+            "BLK_SEL_1": "3'b000"
+          },
+          "clocks": {
+            "CLKA": "audio_clk",
+            "CLKB": "audio_clk"
+          },
+          "clock_enables": {
+            "CEA": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/n73_7",
+            "CEB": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider/VCC",
+            "OCE": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider/GND"
+          },
+          "resets": {
+            "RESET": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider/GND"
+          },
+          "ports": {
+            "DO": "\\g_envelope_pipeline.g_coefficients.result_tag [31:0]",
+            "CLKA": "audio_clk",
+            "CEA": "n73_7",
+            "CLKB": "audio_clk",
+            "CEB": "VCC",
+            "OCE": "GND",
+            "RESET": "GND",
+            "ADA": "{GND,GND,GND,GND,GND,\\g_tag_ram.address_0 [3:1],\\g_tag_ram.address [0],GND,VCC,VCC,VCC,VCC}",
+            "ADB": "{GND,GND,GND,GND,GND,\\g_tag_ram.read_address_0 [3:1],\\g_tag_ram.read_address [0],GND,GND,GND,GND,GND}",
+            "DI": "\\g_envelope_pipeline.g_coefficients.numerator_tag [31:0]",
+            "BLKSELA": "{GND,GND,GND}",
+            "BLKSELB": "{GND,GND,GND}"
+          }
+        },
+        {
+          "path": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider/g_tag_ram.memory_g_tag_ram.memory_0_1_s",
+          "primitive": "SDPB",
+          "parameters": {
+            "BIT_WIDTH_0": "32",
+            "BIT_WIDTH_1": "32",
+            "READ_MODE": "1'b0",
+            "RESET_MODE": "\"SYNC\"",
+            "BLK_SEL_0": "3'b000",
+            "BLK_SEL_1": "3'b000"
+          },
+          "clocks": {
+            "CLKA": "audio_clk",
+            "CLKB": "audio_clk"
+          },
+          "clock_enables": {
+            "CEA": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/n73_7",
+            "CEB": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider/VCC",
+            "OCE": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider/GND"
+          },
+          "resets": {
+            "RESET": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/g_envelope_pipeline.g_coefficients.attack_divider/GND"
+          },
+          "ports": {
+            "DO": "{DO[31:25],\\g_envelope_pipeline.g_coefficients.result_tag [56:32]}",
+            "CLKA": "audio_clk",
+            "CEA": "n73_7",
+            "CLKB": "audio_clk",
+            "CEB": "VCC",
+            "OCE": "GND",
+            "RESET": "GND",
+            "ADA": "{GND,GND,GND,GND,GND,\\g_tag_ram.address_0 [3:1],\\g_tag_ram.address [0],GND,VCC,VCC,VCC,VCC}",
+            "ADB": "{GND,GND,GND,GND,GND,\\g_tag_ram.read_address_0 [3:1],\\g_tag_ram.read_address [0],GND,GND,GND,GND,GND}",
+            "DI": "{GND,GND,GND,GND,GND,GND,GND,\\g_envelope_pipeline.g_coefficients.numerator_tag [56:32]}",
+            "BLKSELA": "{GND,GND,GND}",
+            "BLKSELB": "{GND,GND,GND}"
+          }
+        }
+      ]
+    }
+  },
+  "clock_scope": {
+    "identity": "runtime-clock-source-audit-v1-0976e3d730a1b23d",
+    "scope": "static_source_netlist_clock_and_DCS_topology",
+    "runtime_audio_topology_verified": true,
+    "local_panel_enabled": false,
+    "static_low_lcd_output_bits": 21,
+    "visible_pll_count": 6,
+    "clock_declaration_count": 15,
+    "all_seven_tag_ram_CLKA_and_CLKB": "audio_clk",
+    "existing_audio_clock": "audio_76m8",
+    "source_seal_before_and_after": true,
+    "whole_source_clock_topology_verified": false,
+    "ram_data_arc_or_clk_to_do_STA_accepted": false,
+    "physical_clock_tree_verified": false
+  },
+  "static_sdc": {
+    "sha256": "876d01ba2ddcb8f022cc2da9e9c4246bc7bc03014ab3798edd1289fd46e31afb",
+    "counts": {
+      "visible_vg_match": 1775,
+      "opaque_ddr_ip_deferred": 16
+    },
+    "visible_empty_queries": [],
+    "scope": "Raw braced selectors in selected original SDC only; literal square brackets, * and ? wildcards. Not Gowin Tcl evaluation or complete constraint/consumer closure.",
+    "tool_tcl_resolution_performed": false,
+    "constraints_complete": false
+  },
+  "partial_cdc": {
+    "identity": "runtime-cdc-gray-media-fence-source-v2-7f0acf29b4307497",
+    "scope": "reviewed_21_direct_gray_ble_release_media_stop_and_usb_queue_fence",
+    "gray_group_count": 21,
+    "gray_first_stage_bits": 400,
+    "candidate_constraints_installed": true,
+    "reviewed_source_netlist_endpoints_verified": true,
+    "reset_inventory_complete": false,
+    "remaining_inventory_complete": false,
+    "physical_cdc_accepted": false
+  },
+  "limited_owner_audio_reset": {
+    "policy": "usb2-owner-audio-reset-source-v1",
+    "stage_count": 3,
+    "stage_clock": "audio_clk",
+    "source_netlist_endpoints_verified": true,
+    "source_seal_before_and_after": true,
+    "full_reset_accepted": false,
+    "assertion_pulse_and_flight_verified": false,
+    "metastability_margin_verified": false,
+    "routed_recovery_removal_verified": false
+  },
+  "failed_complete_pcm_cdc": {
+    "passed": false,
+    "error": "runtime PCM CDC audit: complete payload consumer closure changed: reply",
+    "expected_endpoint_count": 263,
+    "actual_endpoint_count": 263,
+    "missing_endpoint_count": 29,
+    "extra_endpoint_count": 29,
+    "same_consumer_ff_set": true,
+    "changed_endpoint_semantics": {
+      "underrun_count_o[0]": "expected D, actual CE",
+      "wanted_sequence[1,4..30]": "expected CE, actual D"
+    },
+    "original_selected_sdc_covers_changed_consumer_pins": false,
+    "interpretation": "The original selected 50-line PCM SDC tracks the old D/CE endpoints. Same FF set and nonempty selectors do not prove complete closure. A later source/constraint repair requires separate evidence; not waived by resource P&R."
+  },
+  "failed_installed_shared_cdc": {
+    "passed": false,
+    "installed_helper_sha256": "966d6b4c200fd0e6372a26329c2f3cc013bc1ac007478b468970c94a67f1cb55",
+    "error": "installed runtime shared CDC review: first D producer changed: u_video/flags_meta_3_s0",
+    "phase_binding": "Sealed e855 synthesis-phase installed helper; subsequent source revisions are separate.",
+    "cache_proposal_negative_controls": 9,
+    "proposal_requires_root_import_and_public_audit": true,
+    "original_vg_rewritten": false,
+    "original_sdc_rewritten": false,
+    "physical_cdc_accepted": false
+  },
+  "physical_prepare": {
+    "identity": "custom138k-r00-tag-ram-no-local-panel-resource-experiment-C11030FE",
+    "directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-tag-ram-no-local-panel-physical-C11030FE",
+    "user_code": "0xC11030FE",
+    "place_option": 1,
+    "route_option": 0,
+    "replicate_resources": false,
+    "timing_driven": 1,
+    "correct_hold_violation": 1,
+    "physical_input_count": 27,
+    "source_metadata_count": 5,
+    "source_staged_input_count": 584,
+    "enabled_input_count": 266,
+    "synthesis_output_count": 4,
+    "original_selected_sdc_bytes_preserved": true,
+    "original_vg_bytes_preserved": true,
+    "nominal_ulpi_io_type": "LVCMOS33",
+    "nominal_ulpi_port_count": 12,
+    "locations_unchanged": true,
+    "external_io_timing_or_electrical_accepted": false,
+    "negative_controls_rejected": 34,
+    "independent_prepare_verification_passed": true,
+    "resource_route_exploration_only": true,
+    "clocks_or_exceptions_relaxed": false,
+    "extra_features_removed_by_preparer": [],
+    "pnr_launched_by_parent": true,
+    "pnr_launch_scope": "Parent coordinator launched the already sealed FE experiment; this phase report assesses no physical result.",
+    "pnr_started_utc": "2026-10-30T11:55:47.119238+00:00",
+    "physical_result_assessed": false,
+    "bitstream_sha256": null
+  },
+  "report_evidence_verification": {
+    "schema": 1,
+    "identity": "r00-e855-synthesis-and-fe-prepare-report-evidence-verification-v1",
+    "passed": true,
+    "checks": {
+      "synthesis_inputs": {
+        "count": 584,
+        "all_match": true
+      },
+      "synthesis_outputs": {
+        "count": 4,
+        "all_match": true
+      },
+      "source_metadata": {
+        "count": 5,
+        "all_match": true
+      },
+      "physical_inputs": {
+        "count": 27,
+        "all_match": true
+      },
+      "prepare_seal_files": {
+        "count": 7,
+        "all_match": true
+      },
+      "review_inputs": {
+        "count": 6,
+        "all_match": true
+      }
+    },
+    "actual_ram_mapping": {
+      "pitch_161": {
+        "dff": 832,
+        "ram": 5,
+        "primitive": "SDPX9B",
+        "port_width": 36
+      },
+      "attack_57": {
+        "dff": 470,
+        "ram": 2,
+        "primitive": "SDPB",
+        "port_width": 32
+      }
+    },
+    "all_seven_ram_clock_ports_audio_clk": true,
+    "actual_dff_delta": -4404,
+    "helper_dff_delta": -3849,
+    "no_visible_empty_raw_braced_sdc_selectors": true,
+    "pcm_complete_audit_passed": false,
+    "installed_shared_audit_passed": false,
+    "full_timing_accepted": false,
+    "physical_result_assessed": false,
+    "eda_invoked": false,
+    "hardware_operated": false,
+    "deployment_allowed": false
+  },
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-tag-ram-no-local-panel-synthesis-e855a1e8/workstation_profile.json": "207cd06329a30dd60020836b32f2a10d407c72d61d5245bec6341e74e2684942",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-tag-ram-no-local-panel-synthesis-e855a1e8/integration_inputs.json": "c86318387b0a7d166a4593e5635cc68e11f47201f2ceea86dd5f9d4ed8a5374a",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-tag-ram-no-local-panel-synthesis-e855a1e8/runtime_synthesis_evidence/process.json": "82966b1920714eddfe58be16162a7b8c198dc3fb2350081720d8c12333e8d050",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-tag-ram-no-local-panel-synthesis-e855a1e8/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "086d2504f1287e226fd55641a3e68c52f632dd91e87044b849a7a29af38ba02e",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-tag-ram-no-local-panel-synthesis-e855a1e8/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml": "424665fa72c4909b763fa10ffcf762b75da94d7f5036a4440f1081a88f16f389",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-no-panel-e855-clock-audit-v1.json": "165eeec136804f23c0398fe7afa7a97795997aac7081f7335927e2f5045f3e37",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-no-panel-e855-cdc-audit-v1.json": "69b84a5fc80f49d2dae1b7a3507155255a64790041af2b45b3fe18d2479a4537",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-no-panel-e855-owner-reset-audit-v1.json": "c4b6de0d5c63822a2a1bcfce3689272650ac1dfb626a070c8208b29d2a10d48b",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-no-panel-e855-pcm-cdc-audit-v1.log": "d29df9ac6b4e8fee31abdcff8444dc3a32310e939d26b6e6a0e09dee6bf3f6d1",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-no-panel-e855-pcm-closure-review-v1.json": "e48cd1ed9ffc90fde5f28312783410a50b8e88e264cbe6753788ccf3c34292e6",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-no-panel-e855-alias-review-v1/actual-e855-alias-review.json": "e4686814aae52b71a48760f2ffc349cd43b0e4be7ecfbf9d6cc61ded0029adfc",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-tag-ram-no-local-panel-physical-C11030FE/physical_inputs.json": "ec13652136902e316934fe2650f76fb0db28be3f06e64d5eb058914eb0434c64",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FE-physical-preparer-v1/actual_prepare_verification.json": "75eeaa031247381e6d0d6d9ba619074d45ac839b1fe37cfa4328f85d30853381",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FE-physical-preparer-v1/ACTUAL_PREPARE_SEAL.json": "b95846c103207a976a7067ca20400b9947514355a29c2b8de811e68905a61811",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-e855-tag-ram-vg-review-v1/e855_actual_ff_and_tag_ram_inventory.json": "50ad16583092997e3be3209dd6406c02b8b0db7395a9e4e7ccbb9267cb70dbc3",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-e855-tag-ram-vg-review-v1/e855_actual_tag_ram_review.json": "76303fe131da25b3325761308d18482f191735329a434653c1021a1486b2f28c",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-e855-tag-ram-vg-review-v1/e855_static_sdc_queries.json": "60c0d23616a3fbb43bbaaa76c609bbf4910293c19461f7eb9d2279c48f5a2bad",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-e855-tag-ram-vg-review-v1/verification.json": "46e82d869693b31b86c1018c0de90764dd2bbcf75bda2ecf5be9fd453e08d76e",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-e855-tag-ram-vg-review-v1/REVIEW_SEAL.json": "8f0223d496f6b97ce5a34eb552248c8e2015f3681c517c8e50680b80c0f20297"
+  },
+  "rollback": "Retire this cache-only C11030FE physical experiment if unsuitable. Old b9a2 requires its own complete sealed inputs; never combine old and new inputs or treat either experiment as the deployed board identity.",
+  "remaining_gaps": [
+    "Complete PCM reply consumer D/CE closure and selected SDC repair with exact actual synthesis binding.",
+    "Installed shared CDC alias/source proof and public regression under a separately recorded source revision.",
+    "Complete clock/reset/CDC inventories, physical RAM data arcs and CLK-to-DO, PLL checks, all routed setup/hold and feature preservation.",
+    "Separate board readback and hardware acceptance before any deployment claim."
+  ],
+  "synthesis_passed": true,
+  "complete_source_cdc_accepted": false,
+  "complete_recording_cdc_accepted": false,
+  "complete_reset_accepted": false,
+  "full_timing_accepted": false,
+  "physical_gates_passed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}

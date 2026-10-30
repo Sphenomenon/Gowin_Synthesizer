@@ -84,6 +84,8 @@
 
 [宽 tag RAM](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_TAG_RAM_SOURCE_20261030.md)通过独立算术／消费者、1028-frame 启动及完整 I2S 回归，helper-only 综合减少 3,054 Register、增加 5 BSRAM，尚非整机净收益。[无本机屏显式配置](push2_workstation/usb_a/reports/WORKSTATION_R00_NO_LOCAL_PANEL_SOURCE_20261030.md)已完成 367 项来源锁与四份真实 prepare，142 项对应检查无跳过；新候选 `e855a1e8a8e6f181` 选择无 LCD／触摸，原 profile 继续保留 LCD。新实际网表的 PCM reply 与 shared 别名审计仍存在独立阻挡，不转移旧 CDC 接受；整机时序／录音与实板验收仍未完成，无部署。
 
+[无本地面板整机综合与 FE 准备](push2_workstation/usb_a/reports/WORKSTATION_R00_NO_PANEL_SYNTHESIS_FE_PREPARE_20261030.md)完成：固定 e855 的 584 项输入保持，综合 Register 58,602（较 b9a2 减少 4,404）、BSRAM 253；实际 pitch／attack 宽 tag 均映射 RAM。FE 仅作资源路由实验，结果另记。[front_valid 精确别名适配](push2_workstation/usb_a/reports/WORKSTATION_NO_PANEL_FRONT_VALID_ALIAS_20261030.md)已安装，父级 78 项／9 负控通过；四份新 prepare 的全部 staged 字节与各自前序相同。原 shared 失败保留原版本，PCM reply 29 个 pin 覆盖、owner8 录音 CDC／reset 和完整物理时序仍未接受，无板卡操作或部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

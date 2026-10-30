@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""No-panel policy fixtures and old-candidate refusal; no no-panel VG claim."""
+"""No-panel policy, old-candidate refusal and optional sealed actual-VG checks."""
 
 from pathlib import Path
 from types import SimpleNamespace
@@ -14,7 +14,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_runtime_shared_cdc import (
-    NO_LOCAL_PANEL_PRECISION, audit_selected_shared, audit_shared_constraints,
+    NO_LOCAL_PANEL_PRECISION, SelectorIndex, audit_selected_shared, audit_shared_constraints,
     validate_precision_profile,
 )
 from tools.workstation_usb2_owner_reset import (
@@ -24,6 +24,8 @@ from tools.workstation_usb2_owner_reset import (
 from tools.workstation_recording_policy import metadata as recording_metadata
 from tools.workstation_runtime_clock_audit import verify_synthesis_identity
 from tools.workstation_board_peripherals import LCD_SDC
+from tools.workstation_runtime_pcm_cdc import PcmNetlist, Graph, TOP
+from tools.workstation_runtime_clock_audit import VG_RELATIVE
 
 
 class DeclaredNoPanelPolicy(unittest.TestCase):
@@ -134,6 +136,84 @@ class SealedOldCandidateRefusal(unittest.TestCase):
     def test_old_r00_cannot_be_relabelled_as_no_panel_reset_scope(self):
         with self.assertRaisesRegex(ValueError, "explicit prepared profile required"):
             validate_reset_profile(ROOT, self.profile, NO_LOCAL_PANEL_PROFILE)
+
+
+class ActualNoPanelRetainedShared(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        stage = os.environ.get("GW138K_NO_PANEL_SHARED_CDC_STAGE")
+        process = os.environ.get("GW138K_NO_PANEL_SHARED_CDC_PROCESS")
+        if not stage or not process:
+            raise unittest.SkipTest("select sealed no-panel stage/process; no EDA fallback")
+        cls.stage, cls.process = Path(stage), Path(process)
+        cls.before = verify_synthesis_identity(cls.stage, cls.process)
+        cls.profile = json.loads((cls.stage.parents[1] / "workstation_profile.json").read_text())
+        cls.sdc = (cls.stage / "constraints/custom_138k.sdc").read_text()
+        cls.n = PcmNetlist((cls.stage / VG_RELATIVE).read_text(), TOP)
+        cls.index = SelectorIndex(cls.n, Graph(cls.n))
+        cls.negatives = []
+
+    @classmethod
+    def actual(cls):
+        return audit_selected_shared(ROOT, cls.stage, cls.n, Graph(cls.n), cls.sdc, cls.profile,
+            precision_profile=NO_LOCAL_PANEL_PRECISION, selector_index=cls.index)
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.before != verify_synthesis_identity(cls.stage, cls.process):
+            raise AssertionError("sealed actual no-panel synthesis inputs changed")
+        output = os.environ.get("GW138K_NO_PANEL_SHARED_CDC_TEST_EVIDENCE")
+        if output:
+            Path(output).write_text(json.dumps(dict(schema=1, synthesis=cls.before,
+                mutations=cls.negatives, mutation_count=len(cls.negatives),
+                actual_no_panel_netlist_objects=True, original_vg_rewritten=False,
+                source_seal_before_and_after=True, eda_invoked=False, hardware_operated=False,
+                recording_cdc_accepted=False, physical_cdc_accepted=False, deployment_allowed=False), indent=2) + "\n")
+
+    def test_actual_no_panel_keeps_all_shared_endpoints_and_exact_status_producer(self):
+        result = self.actual()
+        self.assertEqual((result["installed_shared_constraint_count"], result["false_path_first_stage_bits"],
+            result["gray_group_count"], result["gray_first_stage_bits"], result["payload_group_count"],
+            result["payload_bits"]), (88, 43, 8, 182, 14, 1308))
+        self.assertEqual(len(result["query_inventory"]), 89)
+        self.assertEqual(len(result["reset_and_primitive_pin_inventory"]), 110)
+        self.assertEqual(len(result["deferred_opaque_ddr_queries"]), 13)
+        for line in LCD_SDC.splitlines():
+            self.assertNotIn(line, self.sdc.splitlines())
+        self.assertFalse(any(p.startswith("u_lcd/") for p in self.n.cells))
+        for bit, source, net in [(1, "u_video/u_bist/done_s0", "bist_done"),
+                                 (2, "u_video/u_bist/failed_s0", "bist_failed"),
+                                 (3, "u_video/u_scanout/front_valid_s0", "u_video/front_valid_Z")]:
+            record = next(x for x in result["first_stage_pairs"]
+                          if x["first"]["path"] == "u_video/flags_meta_" + str(bit) + "_s0")
+            self.assertEqual(record["registered_source"], source)
+            self.assertEqual(self.n.pin(source, "Q"), net)
+            self.assertEqual(self.n.pin(source, "CLK"), "memory_clk")
+        for key in ("full_reset_accepted", "whole_workstation_cdc_accepted", "recording_cdc_accepted",
+                    "tool_query_resolution_verified", "physical_cdc_accepted", "routed_timing_verified",
+                    "constraints_complete", "hardware_tested", "deployment_allowed", "release_ready"):
+            self.assertFalse(result[key], key)
+
+    def test_actual_no_panel_alias_producer_and_fanout_negatives(self):
+        cases = [("done replaced by failed", "u_video/flags_meta_1_s0", "D", "bist_failed", "first D producer changed"),
+                 ("failed replaced by done", "u_video/flags_meta_2_s0", "D", "bist_done", "first D producer changed"),
+                 ("front-valid replaced by done", "u_video/flags_meta_3_s0", "D", "bist_done", "first D producer changed"),
+                 ("old R00 alias not optional", "u_video/flags_meta_3_s0", "D", "front_valid", "first D producer changed"),
+                 ("front-valid wrong clock", "u_video/u_scanout/front_valid_s0", "CLK", "usb_clk", "R00 video status source clock changed"),
+                 ("front-valid disconnected", "u_video/u_scanout/front_valid_s0", "Q", "negative_disconnected", "producer absent/ambiguous"),
+                 ("BIST wrong clock", "u_video/u_bist/done_s0", "CLK", "usb_clk", "R00 video status source clock changed"),
+                 ("BIST disconnected", "u_video/u_bist/done_s0", "Q", "negative_disconnected", "producer absent/ambiguous"),
+                 ("first Q extra CE consumer", "u_video/flags_meta_7_s0", "CE", self.n.cells["u_video/flags_meta_1_s0"]["ports"]["Q"], "first Q complete fanout changed")]
+        for label, path, pin, value, expected in cases:
+            old = self.n.cells[path]["ports"][pin]
+            self.n.cells[path]["ports"][pin] = value
+            try:
+                with self.subTest(case=label), self.assertRaisesRegex(ValueError, expected) as error:
+                    self.actual()
+                self.negatives.append(dict(case=label, rejected=True, error=str(error.exception)))
+            finally:
+                self.n.cells[path]["ports"][pin] = old
+        self.actual()
 
 
 if __name__ == "__main__":

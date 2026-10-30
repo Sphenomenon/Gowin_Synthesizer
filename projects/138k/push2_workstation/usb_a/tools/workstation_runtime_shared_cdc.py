@@ -331,6 +331,13 @@ R00_VIDEO_STATUS = (
     "u_video/memory_status[4]", "u_video/memory_status[5]", "memory_pll_locked",
     "u_video/startup_pipe[4]",
 )
+# The LCD-off composition retains the original front_valid_Z alias. Keep this
+# spelling confined to its explicit profile; the same source FF Q is required.
+R00_NO_LOCAL_PANEL_VIDEO_STATUS = (
+    "memory_calibrated", "bist_done", "bist_failed", "u_video/front_valid_Z",
+    "u_video/memory_status[4]", "u_video/memory_status[5]", "memory_pll_locked",
+    "u_video/startup_pipe[4]",
+)
 R00_VIDEO_REGISTERED_STATUS = {
     1: ("u_video/u_bist", "done"),
     2: ("u_video/u_bist", "failed"),
@@ -338,7 +345,7 @@ R00_VIDEO_REGISTERED_STATUS = {
 }
 
 
-def audit_r00_status_rtl(stage):
+def audit_r00_status_rtl(stage, *, precision_profile="runtime-r00-v1"):
     relative = "rtl/workstation/workstation_hdmi_display.sv"
     path = Path(stage) / relative
     text = re.sub(r"\s+", "", re.sub(r"/\*.*?\*/|//[^\n]*", "", path.read_text(), flags=re.S))
@@ -351,8 +358,9 @@ def audit_r00_status_rtl(stage):
         "flags_meta<=memory_status[7:0];flags_sync<=flags_meta;",
     )
     require(all(text.count(fragment) == 1 for fragment in fragments), "R00 video status RTL contract changed")
+    nets = R00_NO_LOCAL_PANEL_VIDEO_STATUS if precision_profile == NO_LOCAL_PANEL_PRECISION else R00_VIDEO_STATUS
     return dict(source=relative, sha256=file_sha(path), status_bits_1_2_3="BIST done, BIST failed, scanout front_valid",
-                source_fragment_contract_verified=True, renamed_nets=list(R00_VIDEO_STATUS[1:4]))
+                source_fragment_contract_verified=True, renamed_nets=list(nets[1:4]))
 
 
 def producer_cone(n, g, net, active=()):
@@ -520,7 +528,7 @@ def audit_syncs(n, g, installed_first, *, precision_profile="runtime-no-cnn-v1")
     for s, a, b, width, c, nets in STATUS:
         r00_video = precision_profile in R00_PRECISIONS and s == "u_video"
         if r00_video:
-            nets = R00_VIDEO_STATUS
+            nets = R00_NO_LOCAL_PANEL_VIDEO_STATUS if precision_profile == NO_LOCAL_PANEL_PRECISION else R00_VIDEO_STATUS
         for bit in range(width):
             source = None
             if r00_video and bit in R00_VIDEO_REGISTERED_STATUS:
@@ -880,7 +888,7 @@ def audit_selected_shared(
                 "no-local-panel SDC retains retired LCD constraints/clock")
         require(not any(p == "u_lcd" or p.startswith("u_lcd/") for p in n.cells),
                 "no-local-panel netlist retains retired LCD cells")
-    r00_status_rtl = audit_r00_status_rtl(stage) if precision_profile in R00_PRECISIONS else None
+    r00_status_rtl = audit_r00_status_rtl(stage, precision_profile=precision_profile) if precision_profile in R00_PRECISIONS else None
     generic = shared_cdc_bundle(stage)
     runtime = shared_constraints(generic["sdc"])
     verify_adaptation(sdc, profile["recognition"]["constraints"], False)
