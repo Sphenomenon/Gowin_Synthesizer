@@ -7,7 +7,8 @@ module tf_audio_ddr_path #(
     parameter integer CAPTURE_ON_ANALYSIS = 0,
     parameter [27:0] HOTPLUG_TIMEOUT_CYCLES = 28'd200_000_000,
     parameter [27:0] HOTPLUG_STALL_TIMEOUT_CYCLES = 28'd250_000_000,
-    parameter integer NATIVE_RESTART_HOLD = 0
+    parameter integer NATIVE_RESTART_HOLD = 0,
+    parameter integer NATIVE_RUNTIME_PROTOCOL = 0
 ) (
     input  wire        clk_50m,
     input  wire        reset_n,
@@ -72,7 +73,10 @@ module tf_audio_ddr_path #(
     input  wire [255:0] app_rdata,
     // Opt-in memory-domain held level. Stop new FIFO/DMA work while an
     // accepted read response drains; never reset retained EOF toggles.
-    input  wire        native_memory_hold_i
+    input  wire        native_memory_hold_i,
+    input wire native_source_hold_i,
+    input wire runtime_clear_toggle_i,
+    output wire runtime_clear_done_o
 );
     wire file_valid;
     wire [7:0] file_byte;
@@ -115,7 +119,9 @@ module tf_audio_ddr_path #(
     assign card_lost = reader_fault;
     assign hotplug_debug = {filesystem_stat,card_stat,reader_sector_busy,
                             raw_sector_allow,scan_done,card_lost_seen};
-    wire soft_restart = (restart && !restart_q) | track_change | reader_fault;
+    wire native_source_hold=NATIVE_RUNTIME_PROTOCOL ? native_source_hold_i:1'b0;
+    wire soft_restart = (restart && !restart_q) |
+        (!NATIVE_RUNTIME_PROTOCOL && (track_change | reader_fault));
     assign playlist_ready = scan_done;
 
     // A removed card leaves CMD17 waiting for a data token. Normal sectors
@@ -211,9 +217,9 @@ module tf_audio_ddr_path #(
                     raw_started <= 1'b1;
                     raw_track_start_r <= 1'b1;
                 end
-                if (file_valid && !capture_switch_hold)
+                if (file_valid && !capture_switch_hold && !native_source_hold)
                     captured_bytes <= captured_bytes + 1'b1;
-                if (raw_eof && !capture_switch_hold) begin
+                if (raw_eof && !capture_switch_hold && !native_source_hold) begin
                     file_size_latched <= captured_bytes + (file_valid ? 32'd1 : 32'd0);
                     capture_done_toggle <= ~capture_done_toggle;
                 end
@@ -234,11 +240,34 @@ module tf_audio_ddr_path #(
     wire dma_capacity_error, dma_bank0_valid, dma_bank1_valid;
     wire dma_file_size_valid;
     wire [31:0] dma_file_size;
+    wire native_memory_hold;
+    wire runtime_capture_wr_ack,runtime_capture_rd_ack,runtime_playback_wr_ack,runtime_playback_rd_ack,runtime_dma_ack;
+    generate if(NATIVE_RUNTIME_PROTOCOL)begin: g_runtime_capture
+    workstation_tf_runtime_byte_fifo #(.ADDR_WIDTH(12)) u_capture_fifo (
+        .wr_clk       (clk_50m),
+        .wr_rst_n     (reset_n),
+        .clear_toggle (runtime_clear_toggle_i),
+        .wr_en        (file_valid && !capture_switch_hold && !native_source_hold),
+        .wr_data      (file_byte),
+        .wr_full      (in_full),
+        .wr_count     (in_wr_count),
+        .wr_space_ok  (in_space_ok),
+        .rd_clk       (memory_clk),
+        .rd_rst_n     (memory_reset_n),
+        .rd_en        (in_rd_en),
+        .rd_data      (in_rd_data),
+        .rd_valid     (in_rd_valid),
+        .rd_empty     (in_empty),
+        .rd_count     (in_rd_count),
+        .wr_hold_i(native_source_hold),.rd_hold_i(native_memory_hold),
+        .wr_clear_ack_o(runtime_capture_wr_ack),.rd_clear_ack_o(runtime_capture_rd_ack)
+    );
+    end else begin: g_legacy_capture
     tf_async_byte_fifo #(.ADDR_WIDTH(12)) u_capture_fifo (
         .wr_clk       (clk_50m),
         .wr_rst_n     (reset_n),
         .clear_toggle (restart_toggle),
-        .wr_en        (file_valid && !capture_switch_hold),
+        .wr_en        (file_valid && !capture_switch_hold && !native_source_hold),
         .wr_data      (file_byte),
         .wr_full      (in_full),
         .wr_count     (in_wr_count),
@@ -251,6 +280,8 @@ module tf_audio_ddr_path #(
         .rd_empty     (in_empty),
         .rd_count     (in_rd_count)
     );
+        assign runtime_capture_wr_ack=0,runtime_capture_rd_ack=0;
+    end endgenerate
     assign raw_sector_allow = in_space_ok &&
                               (!CAPTURE_ON_ANALYSIS || capture_enable_i);
 
@@ -260,6 +291,27 @@ module tf_audio_ddr_path #(
     wire playback_start_toggle, playback_done_toggle;
     wire out_wr_en;
     wire [7:0] out_wr_data;
+    generate if(NATIVE_RUNTIME_PROTOCOL)begin: g_runtime_playback
+    workstation_tf_runtime_byte_fifo #(.ADDR_WIDTH(12)) u_playback_fifo (
+        .wr_clk       (memory_clk),
+        .wr_rst_n     (memory_reset_n),
+        .clear_toggle (runtime_clear_toggle_i),
+        .wr_en        (out_wr_en),
+        .wr_data      (out_wr_data),
+        .wr_full      (out_full),
+        .wr_count     (out_wr_count),
+        .wr_space_ok  (),
+        .rd_clk       (clk_50m),
+        .rd_rst_n     (reset_n),
+        .rd_en        (out_rd_en),
+        .rd_data      (out_rd_data),
+        .rd_valid     (out_rd_valid),
+        .rd_empty     (out_empty),
+        .rd_count     (out_rd_count),
+        .wr_hold_i(native_memory_hold),.rd_hold_i(native_source_hold),
+        .wr_clear_ack_o(runtime_playback_wr_ack),.rd_clear_ack_o(runtime_playback_rd_ack)
+    );
+    end else begin: g_legacy_playback
     tf_async_byte_fifo #(.ADDR_WIDTH(12)) u_playback_fifo (
         .wr_clk       (memory_clk),
         .wr_rst_n     (memory_reset_n),
@@ -277,8 +329,45 @@ module tf_audio_ddr_path #(
         .rd_empty     (out_empty),
         .rd_count     (out_rd_count)
     );
+        assign runtime_playback_wr_ack=0,runtime_playback_rd_ack=0;
+    end endgenerate
 
-    wire native_memory_hold=NATIVE_RESTART_HOLD ? native_memory_hold_i:1'b0;
+    assign native_memory_hold=NATIVE_RESTART_HOLD ? native_memory_hold_i:1'b0;
+    generate if(NATIVE_RUNTIME_PROTOCOL)begin: g_runtime_dma
+    workstation_tf_runtime_dma u_dma (
+        .clk                  (memory_clk),
+        .rst_n                (memory_reset_n),
+        .mem_ready            (memory_ready && !native_memory_hold),
+        .capture_done_toggle  (capture_done_toggle),
+        .restart_toggle       (runtime_clear_toggle_i),
+        .file_size_bytes      (file_size_latched),
+        .fifo_in_empty        (in_empty || native_memory_hold),
+        .fifo_in_rd_valid     (in_rd_valid),
+        .fifo_in_rd_data      (in_rd_data),
+        .fifo_in_rd_en        (in_rd_en),
+        .playback_start_toggle(playback_start_toggle),
+        .playback_done_toggle (playback_done_toggle),
+        .fifo_out_full        (out_full || native_memory_hold),
+        .fifo_out_wr_en       (out_wr_en),
+        .fifo_out_wr_data     (out_wr_data),
+        .app_cmd              (app_cmd),
+        .app_en               (app_en),
+        .app_addr             (app_addr),
+        .app_wdata            (app_wdata),
+        .app_rdy              (app_rdy),
+        .app_wren             (app_wren),
+        .app_wend             (app_wend),
+        .app_wrdy             (app_wrdy),
+        .app_rvalid           (app_rvalid),
+        .app_rdata            (app_rdata),
+        .capacity_error       (dma_capacity_error),
+        .bank0_valid           (dma_bank0_valid),
+        .bank1_valid           (dma_bank1_valid),
+        .file_size_valid       (dma_file_size_valid),
+        .staged_file_size      (dma_file_size),
+        .runtime_hold_i(native_memory_hold),.runtime_restart_ack_o(runtime_dma_ack)
+    );
+    end else begin: g_legacy_dma
     tf_audio_ddr_dma u_dma (
         .clk                  (memory_clk),
         .rst_n                (memory_reset_n),
@@ -311,6 +400,18 @@ module tf_audio_ddr_path #(
         .file_size_valid       (dma_file_size_valid),
         .staged_file_size      (dma_file_size)
     );
+        assign runtime_dma_ack=0;
+    end endgenerate
+
+
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [4:0] runtime_ack_meta,runtime_ack_sync;
+    always @(posedge clk_50m or negedge reset_n)
+        if(!reset_n)begin runtime_ack_meta<=0;runtime_ack_sync<=0;end
+        else begin
+            runtime_ack_meta<={runtime_dma_ack,runtime_playback_rd_ack,runtime_playback_wr_ack,runtime_capture_rd_ack,runtime_capture_wr_ack};
+            runtime_ack_sync<=runtime_ack_meta;
+        end
+    assign runtime_clear_done_o=!NATIVE_RUNTIME_PROTOCOL || runtime_ack_sync=={5{runtime_clear_toggle_i}};
 
     // Status is produced in the DDR clock domain and held until the next
     // restart, so a two-flop synchronizer is sufficient for the 50 MHz UI.
@@ -355,7 +456,7 @@ module tf_audio_ddr_path #(
     reg [12:0] capture_count_debug;
     reg [15:0] decoder_first_word;
     wire decoder_ready;
-    wire decoder_valid = playback_active && out_rd_valid;
+    wire decoder_valid = playback_active && out_rd_valid && !native_source_hold;
     assign pcm_end = file_size_latched != 0 &&
                      decoder_byte_count >= file_size_latched &&
                      !playback_active && !pcm_valid;
@@ -435,7 +536,7 @@ module tf_audio_ddr_path #(
     assign debug_spidone = playback_active;
     assign debug_rvalid_session = playback_active;
 
-    assign out_rd_en = playback_active && !out_empty && !out_rd_valid && decoder_ready;
+    assign out_rd_en = playback_active && !out_empty && !out_rd_valid && decoder_ready && !native_source_hold;
     wire decoder_format_ready;
     wire [1:0] decoder_channels;
     wire decoder_unsupported, decoder_error;

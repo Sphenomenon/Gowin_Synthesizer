@@ -49,11 +49,11 @@ module tf_sd_file_reader #(parameter [23:0] EXT="WAV",parameter integer SPI_CLK_
     end
 endmodule
 
-module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=0);
-    reg source_clk=0,compute_clk=0,memory_clk=0,source_run=1,compute_run=1,rst_n=0;
+module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=0,RUN_SCENARIOS=1);
+    reg source_clk=0,compute_clk=0,memory_clk=0,source_run=1,compute_run=1,memory_run=1,rst_n=0;
     always begin #10;if(source_run)source_clk=~source_clk;end
     always begin #6.510416667;if(compute_run)compute_clk=~compute_clk;end
-    always #5 memory_clk=~memory_clk;
+    always #5 if(memory_run)memory_clk=~memory_clk;
     reg mode=1,run=1,restart=0,cancel=0,reader_restart=0,transport_error=0;
     reg [3:0] track=0;
     reg runtime_valid=1,runtime_rate=0,runtime_fault=0,runtime_busy=0;
@@ -248,7 +248,7 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
             count=0;
             while(!tf_active || expected!=target_generation || dut.compute_control[35:4]!=target_generation)begin
                 @(negedge source_clk);count=count+1;
-                if(count>20000)$fatal(1,"start timeout track=%0d state=%0d failed=%b code=%0d format=%b path_rate=%0d pcm=%b path_restart=%b bytes=%0d reader=%b quiet=%b/%b dmaW=%0d dmaR=%0d capture=%b/%b eof=%b playback=%b bytecount=%0d fifo=%0d/%0d",new_track,dut.state,failed,failure,dut.format_ready_o,dut.file_sample_rate_o,dut.path_pcm_valid,dut.path_restart,dut.path.captured_bytes,dut.path.u_file_reader.active,dut.source_quiet,dut.memory_quiet_50,dut.path.u_dma.write_total_bytes,dut.path.u_dma.read_total_bytes,dut.path.capture_done_toggle,dut.path.u_dma.capture_seen,dut.path.u_dma.eof_finalized,dut.path.playback_active,dut.path.decoder_byte_count,dut.path.in_wr_count,dut.path.out_rd_count);
+                if(count>20000)$fatal(1,"start timeout track=%0d state=%0d failed=%b code=%0d format=%b path_rate=%0d pcm=%b path_restart=%b bytes=%0d reader=%b quiet=%b/%b dmaW=%0d dmaR=%0d capture=%b/%b eof=%b playback=%b bytecount=%0d fifo=%0d/%0d",new_track,dut.state,failed,failure,dut.format_ready_o,dut.file_sample_rate_o,dut.path_pcm_valid,dut.path_restart,dut.path.captured_bytes,dut.path.u_file_reader.active,dut.source_quiet,dut.memory_quiet_50,dut.path.g_runtime_dma.u_dma.write_total_bytes,dut.path.g_runtime_dma.u_dma.read_total_bytes,dut.path.capture_done_toggle,dut.path.g_runtime_dma.u_dma.capture_seen,dut.path.g_runtime_dma.u_dma.eof_finalized,dut.path.playback_active,dut.path.decoder_byte_count,dut.path.in_wr_count,dut.path.out_rd_count);
             end
             checking=1;
         end
@@ -275,7 +275,7 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
         integer count;
         begin
             checking=0;count=0;
-            while(!failed)begin @(negedge source_clk);count=count+1;if(count>20000)$fatal(1,"failure timeout expected %0d state=%0d fmt=%b rate=%0d bytes=%0d dmaW=%0d dmaR=%0d inwait=%b rdvalid=%b empty=%b hold=%b reader=%b track=%0d",code,dut.state,dut.format_ready_o,dut.file_sample_rate_o,dut.path.captured_bytes,dut.path.u_dma.write_total_bytes,dut.path.u_dma.read_total_bytes,dut.path.u_dma.in_read_wait,dut.path.in_rd_valid,dut.path.in_empty,dut.path.capture_switch_hold,dut.path.u_file_reader.active,track);end
+            while(!failed)begin @(negedge source_clk);count=count+1;if(count>20000)$fatal(1,"failure timeout expected %0d state=%0d fmt=%b rate=%0d bytes=%0d dmaW=%0d dmaR=%0d inwait=%b rdvalid=%b empty=%b hold=%b reader=%b track=%0d",code,dut.state,dut.format_ready_o,dut.file_sample_rate_o,dut.path.captured_bytes,dut.path.g_runtime_dma.u_dma.write_total_bytes,dut.path.g_runtime_dma.u_dma.read_total_bytes,dut.path.g_runtime_dma.u_dma.in_read_wait,dut.path.in_rd_valid,dut.path.in_empty,dut.path.capture_switch_hold,dut.path.u_file_reader.active,track);end
             if(failure!==code)$fatal(1,"wrong failure expected=%0d got=%0d",code,failure);
             await_quiet();if(tf_active || busy50)$fatal(1,"failed file retained route");tests=tests+1;
         end
@@ -325,7 +325,8 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
             join
             if(cancel_only)begin
                 await_quiet();
-                if(path_restarts!=restarts_before || !cancelled)$fatal(1,"cancel restarted old file");
+                if(path_restarts!=restarts_before+1 || !cancelled || tf_active)
+                    $fatal(1,"cancel did not clear once and remain stopped");
                 cancel_drain_tests=cancel_drain_tests+1;
                 @(negedge source_clk);runtime_rate=1;runtime_epoch=runtime_epoch+1;begin_file(1);
             end
@@ -365,7 +366,7 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
     endtask
     integer accepted_before,frames_before;
     reg [31:0] generation_before;
-    initial begin
+    initial begin if(RUN_SCENARIOS)begin
         repeat(6)@(negedge source_clk);rst_n=1;repeat(30)@(negedge source_clk);
         begin_file(0);await_frames(10);
         @(negedge source_clk);run=0;wait(paused);repeat(5)@(negedge compute_clk);
@@ -389,8 +390,8 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
         @(negedge source_clk);track=2;pulse_restart();fail_expected(1);
         runtime_rate=0;runtime_epoch=9;@(negedge source_clk);track=3;pulse_restart();fail_expected(2);
         begin_file(0);await_frames(5);
-        @(negedge source_clk);force dut.path.u_dma.capacity_error=1'b1;
-        fail_expected(3);release dut.path.u_dma.capacity_error;
+        @(negedge source_clk);force dut.path.g_runtime_dma.u_dma.capacity_error=1'b1;
+        fail_expected(3);release dut.path.g_runtime_dma.u_dma.capacity_error;
         begin_file(0);await_frames(5);@(negedge source_clk);dut.path.u_file_reader.present=0;
         fail_expected(4);dut.path.u_file_reader.present=1;
         repeat(100)@(negedge source_clk);if(!failed || tf_active)$fatal(1,"card return silently rearmed");
@@ -450,6 +451,6 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
             $fatal(1,"missing registered quiet/drain boundary coverage");
         $display("PASS tf_runtime_service: buffered=%0d cases=%0d delivered=%0d pause_zero_frames=%0d analysis_frames=%0d ddr_writes=%0d ddr_reads=%0d failures=%0d invalidates=%0d stopped_source=%0d stale=%0d discarded=%0d read_drain_wait_cycles=%0d queued_accepts=%0d downstream_stalls=%0d scope_compares=%0d scope_explicit=%0d scope_auto=%0d quiet_source_checks=%0d quiet_source_changes=%0d queued_drain_tests=%0d adjacent_drain_tests=%0d cancel_drain_tests=%0d",USE_COMMAND_BUFFER,tests,delivered,pause_zeros,analysis_frames,ddr_writes,ddr_reads,failures,invalidates,stop_checks,stale,discarded,read_drain_wait_cycles,queued_accepts,downstream_stalls,scope_compares,scope_explicit_count,scope_auto_count,quiet_source_checks,quiet_source_changes,queued_drain_tests,adjacent_drain_tests,cancel_drain_tests);
         $finish;
-    end
+    end end
     initial begin #3000000;$fatal(1,"overall TF service timeout state=%0d index=%0d failed=%b code=%0d track=%0d",dut.state,session_index,failed,failure,track);end
 endmodule

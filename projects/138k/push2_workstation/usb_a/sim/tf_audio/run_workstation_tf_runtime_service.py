@@ -16,6 +16,7 @@ import wave
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tools'))
 from workstation_baselines import load_baseline
+from runtime_tf_storage_sources import before_runtime_clear_adapter
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -38,6 +39,7 @@ def run(output):
         fixture.write_text(''.join(f'{value:02x}\n' for value in payload));fixtures.append(fixture)
     sources=[ROOT/name for name in (
         'rtl/tf_audio/workstation_tf_runtime_service.sv','rtl/tf_audio/workstation_tf_frame_bridge.sv',
+        'rtl/tf_audio/workstation_tf_runtime_byte_fifo.sv','rtl/tf_audio/workstation_tf_runtime_dma.sv',
         'rtl/music/music_async_fifo.sv','rtl/tf_audio/storage/tf_audio_ddr_path.v',
         'rtl/tf_audio/storage/tf_audio_ddr_dma.v','rtl/tf_audio/storage/tf_async_byte_fifo.v',
         'rtl/tf_audio/storage/tf_audio_decoder_ip.v','rtl/tf_audio/storage/tf_wav_chunk_parser.v',
@@ -47,7 +49,7 @@ def run(output):
     baseline=load_baseline(ROOT,'resource_rework_route0')
     reference_bytes=baseline.read_bytes('src/storage/tf_audio_ddr_path.v')
     reference=reference_bytes.decode()
-    current=(ROOT/'rtl/tf_audio/storage/tf_audio_ddr_path.v').read_text()
+    current=before_runtime_clear_adapter((ROOT/'rtl/tf_audio/storage/tf_audio_ddr_path.v').read_text())
     # Exact inverse of the bounded opt-in adapter; default constant folds to
     # the immutable original expressions. Drift or extra edits fail closed.
     edits=[('    parameter [27:0] HOTPLUG_STALL_TIMEOUT_CYCLES = 28\'d250_000_000,\n    parameter integer NATIVE_RESTART_HOLD = 0',
@@ -80,7 +82,7 @@ def run(output):
     sources.append(scope_reference)
     reference_tb=Path(__file__).with_name('tf_path_default_reference_tb.sv')
     reference_sources=sources+[legacy_source,reference_tb]
-    inputs=sources+fixtures+[ROOT/'rtl/ddr_address_map.vh',Path(__file__).resolve(),reference_tb,legacy_source,
+    inputs=sources+fixtures+[ROOT/'rtl/ddr_address_map.vh',Path(__file__).resolve(),Path(__file__).with_name('runtime_tf_storage_sources.py'),ROOT/'rtl/tf_audio/workstation_tf_runtime_storage.provenance.json',reference_tb,legacy_source,
         baseline.manifest,ROOT/'baselines/index.json',ROOT/'tools/workstation_baselines.py',
         baseline.repository/baseline.descriptor['files']['src/storage/tf_audio_ddr_path.v']['source'],
         baseline.repository/baseline.descriptor['files'][scope_name]['source']]
@@ -88,7 +90,7 @@ def run(output):
     source_set={str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else 'fixture/'+path.name:digest(path) for path in inputs}
     source_set_sha=hashlib.sha256(json.dumps(source_set,sort_keys=True).encode()).hexdigest()
     result=dict(schema=1,passed=False,hardware_tested=False,profile_changed=False,
-        identity='native-tf-runtime-service-v3-'+source_set_sha[:16],source_set_sha256=source_set_sha,
+        identity='native-tf-runtime-service-v4-'+source_set_sha[:16],source_set_sha256=source_set_sha,
         validation_stage='offline-real-TF-DDR-WAV-policy-and-transport',input_sha256=hashes,
         legacy_reference=baseline.evidence(),legacy_path_sha256=hashlib.sha256(reference_bytes).hexdigest(),
         default_path_exact_reconstruction=True,

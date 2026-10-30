@@ -106,14 +106,37 @@ memory 域寄存器，再经原两级同步器返回 50 MHz；跨域源不再是
 owner 丢失。整机内存守护仍负责 backend readiness／复位故障隔离；本地寄存器不提供
 事务 tag 或独立复位恢复协议。源寄存和两级同步的源码检查也不能替代 routed CDC。
 
-真实联合回归发现旧 byte FIFO 的无 ACK clear 与 DMA restart 存在竞态。新服务仅
-显式启用 path 末尾新增的 `NATIVE_RESTART_HOLD=1`：hold 时禁止新的 DMA/FIFO 工作，
-仍接收已接受的 DDR 响应。排空后重启，hold 保持十二个源时钟边沿，等待源 FIFO clear
-及指针稳定，再经 memory 同步解除与返回证明释放读取。分析重启也走此边界。没有
-局部复位 DMA 来清掉保留的 capture/EOF toggle；这种做法会把旧 toggle 冒认为新 EOF，
-已由调试回归排除。
+runtime 显式启用 path 的 `NATIVE_RESTART_HOLD=1` 和默认 0 的
+`NATIVE_RUNTIME_PROTOCOL=1`，选择唯一命名的 `workstation_tf_runtime_byte_fifo`
+及 `workstation_tf_runtime_dma`。旧两个 storage 模块字节保留，来源 SHA 和
+迁移范围见 `workstation_tf_runtime_storage.provenance.json`；它们不是 vendor。
+
+所有 restart、换曲、取消和故障先停止 source capture／decoder 准入和 memory
+工作，并真实排空已接收的唯一 DDR read。service 只在此前 clear 已完成时发布
+新保持 token；本次四 FIFO ACK 和 DMA restart ACK 都经 50 MHz 两级资格确认后
+才撤 memory hold，再等待实际 gate-open 返回。**不使用固定 source 拍数证明
+memory 工作完成**。memory 停钟不能提前 ACK；超时报告失败并保持 busy／hold，
+恢复后完成清理也不把失败文件自动改为播放成功。
+
+新 FIFO 的 clear 第一级只进入第二级，不扇出功能逻辑。hold 下本地指针归零，
+Gray 接收链持续采样，看到远端第二级指针稳定为零后才为当前 token 回 ACK。
+四端都完成前禁止读写；非 unit 的跳零只发生在这一隔离窗口。新 DMA hold 同时
+关闭 emit、请求和旧 FIFO 回填，accepted 旧 response 可以退休；处理 restart
+且私有缓冲／等待状态稳定归零后才 ACK，不把收到请求当作完成。
+
+service 保留 path_track 快照，只在受控 restart 时提交。native path 的换曲／
+reader_fault 不再直接翻转 clear；先交由 service 关闸、排空和发布 token。
+分析读取共用该握手，保留原 enable／hold／ready。取消／故障可执行内部清理，
+不重臂 TF route；显式 restart 或新 track 的准入语义保持。没有局部 reset DMA
+来清 capture/EOF toggle；新 DMA 在处理 token 时消费旧观察并复位自身事务状态。
 
 path 新参数和端口都追加在末尾，默认参数 0。回归从不可变
 `resource_rework_route0` baseline 读取原 path；移除精确适配后逐字节相同，默认常量
-折叠回原三条表达式，并用双真实 path 对照完整输出逐拍比较。baseline 和 accepted
+折叠回原实例及表达式，并用双真实 path 对照完整输出逐拍比较。baseline 和 accepted
 来源策略未改。新源码 SHA 只能由后续显式候选登记。
+
+专用 `run_workstation_tf_runtime_clear.py` 覆盖 memory stopped-high／low、旧
+read_buf、重复 token 请求、选曲快照、reader fault、取消超时及 analysis 首帧，
+对首 capture／playback byte、完整 PCM／generation、四端 token ACK 和非 unit
+跳零隔离分别设 oracle。绕过 ACK 的临时副本必须失败；这些理想时钟检查不模拟
+毛刺／亚稳态，也不替代新网表或 routed CDC。

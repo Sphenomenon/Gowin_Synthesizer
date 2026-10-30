@@ -55,8 +55,10 @@ module workstation_tf_runtime_service #(
     localparam [3:0] RATE=1,FORMAT=2,DDR=3,CARD=4,CONTEXT=5,EPOCH=6,
         TRANSPORT=7,QUIET_TIMEOUT=8;
     reg [2:0] state;
-    reg [3:0] restart_settle;
     reg restart_playback;
+    reg [3:0] path_track;
+    reg path_clear_toggle,pending_clear;
+    wire path_clear_done;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] memory_open_sync;
     reg restart_q,cancel_q,reader_restart_q,mode_q,run_q,card_lost_q,transport_error_q;
     reg [3:0] track_q;
@@ -91,7 +93,7 @@ module workstation_tf_runtime_service #(
     wire invalidate=explicit_restart || track_change || cancel_event || new_failure || (!mode_i && reader_restart) ||
         (card_lost_o && !card_lost_q) || (transport_error_i && !transport_error_q);
     wire bridge_source_ready,source_quiet,generation_pending;
-    wire source_quiesce=state==IDLE || state==QUIESCE || invalidate;
+    wire source_quiesce=state==IDLE || state==QUIESCE || state==RESTART_SETTLE || invalidate;
     wire playback_accept=state==PLAY && mode_i && run_i && !invalidate;
     wire path_pcm_valid,path_pcm_ready,path_pcm_end;
     wire signed [15:0] path_left,path_right;
@@ -109,7 +111,8 @@ module workstation_tf_runtime_service #(
     initial if(QUIET_TIMEOUT_CYCLES<8)$fatal(1,"TF quiet timeout too short");
     always @(posedge clk_50m_i or negedge rst_ni)begin
         if(!rst_ni)begin
-            state<=IDLE;restart_settle<=0;restart_playback<=0;memory_ready_sync<=0;
+            state<=IDLE;restart_playback<=0;memory_ready_sync<=0;
+            path_track<=0;path_clear_toggle<=0;pending_clear<=0;
             memory_open_sync<=0;
             restart_q<=0;cancel_q<=0;reader_restart_q<=0;mode_q<=0;run_q<=0;
             track_q<=0;card_lost_q<=0;transport_error_q<=0;pending_start<=0;
@@ -124,34 +127,39 @@ module workstation_tf_runtime_service #(
             card_lost_q<=card_lost_o;transport_error_q<=transport_error_i;path_restart<=0;
             if(invalidate)invalidate_count_o<=increment(invalidate_count_o);
             if(physical && path_pcm_end)eof_seen_o<=1;
-            if(state==QUIESCE && !(source_quiet && memory_quiet_50))begin
+            if((state==QUIESCE || state==RESTART_SETTLE) && !(source_quiet && memory_quiet_50 && path_clear_done))begin
                 if(quiet_wait<QUIET_TIMEOUT_CYCLES)quiet_wait<=quiet_wait+1'b1;
                 if(quiet_wait==QUIET_TIMEOUT_CYCLES-1)begin
                     failed_o<=1;failure_code_o<=QUIET_TIMEOUT;pending_start<=0;
+                    restart_playback<=0;
                     failure_count_o<=increment(failure_count_o);
                 end
             end else quiet_wait<=0;
-            if(state==QUIESCE && source_quiet && memory_quiet_50)begin
+            if(state==QUIESCE && source_quiet && memory_quiet_50 && path_clear_done)begin
                 if(pending_start && mode_i)begin
                     if(bad_context)begin
-                        pending_start<=0;busy_50_o<=0;state<=IDLE;failed_o<=1;
+                        pending_start<=0;state<=RESTART_SETTLE;failed_o<=1;restart_playback<=0;
+                        path_restart<=1;path_clear_toggle<=~path_clear_toggle;pending_clear<=0;
                         failure_code_o<=CONTEXT;failure_count_o<=increment(failure_count_o);
                     end else begin
-                        path_restart<=1;pending_start<=0;pending_reader_restart<=0;
+                        path_restart<=1;path_track<=track_index_i;path_clear_toggle<=~path_clear_toggle;pending_clear<=0;
+                        pending_start<=0;pending_reader_restart<=0;
                         launched_rate<=runtime_44k1_i;launched_epoch<=runtime_epoch_i;
-                        state<=RESTART_SETTLE;restart_settle<=12;restart_playback<=1;
+                        state<=RESTART_SETTLE;restart_playback<=1;
                     end
                 end else if(pending_reader_restart && !mode_i)begin
-                    path_restart<=1;pending_reader_restart<=0;restart_playback<=0;
-                    state<=RESTART_SETTLE;restart_settle<=12;
+                    path_restart<=1;path_track<=track_index_i;path_clear_toggle<=~path_clear_toggle;pending_clear<=0;
+                    pending_reader_restart<=0;restart_playback<=0;state<=RESTART_SETTLE;
+                end else if(pending_clear)begin
+                    path_restart<=1;path_clear_toggle<=~path_clear_toggle;pending_clear<=0;
+                    restart_playback<=0;state<=RESTART_SETTLE;
                 end else begin
                     state<=IDLE;busy_50_o<=0;
                     pending_reader_restart<=0;
                 end
             end
             if(state==RESTART_SETTLE)begin
-                if(restart_settle!=0)restart_settle<=restart_settle-1'b1;
-                else if(memory_open_sync[1])begin
+                if(path_clear_done && memory_open_sync[1])begin
                     if(restart_playback)state<=WAIT_FORMAT;
                     else begin state<=IDLE;busy_50_o<=0;end
                 end
@@ -159,6 +167,7 @@ module workstation_tf_runtime_service #(
             if(state==WAIT_FORMAT && format_ready_o && !new_failure)state<=PLAY;
             if(invalidate)begin
                 state<=QUIESCE;busy_50_o<=1;quiet_wait<=0;
+                pending_clear<=1;
                 pending_start<=mode_i && (explicit_restart || track_change) && !cancel_event;
                 pending_reader_restart<=!mode_i && (reader_restart || track_change);
                 if(explicit_restart || track_change)begin
@@ -176,8 +185,8 @@ module workstation_tf_runtime_service #(
     wire path_write,path_end,path_ddr_valid;
     tf_audio_ddr_path #(.FILE_EXT(FILE_EXT),.AUDIO_KIND(AUDIO_KIND),.CAPTURE_ON_ANALYSIS(1),
         .HOTPLUG_TIMEOUT_CYCLES(HOTPLUG_TIMEOUT_CYCLES),
-        .HOTPLUG_STALL_TIMEOUT_CYCLES(HOTPLUG_STALL_TIMEOUT_CYCLES),.NATIVE_RESTART_HOLD(1)) path(
-        .clk_50m(clk_50m_i),.reset_n(rst_ni),.restart(path_restart),.track_index(track_index_i),
+        .HOTPLUG_STALL_TIMEOUT_CYCLES(HOTPLUG_STALL_TIMEOUT_CYCLES),.NATIVE_RESTART_HOLD(1),.NATIVE_RUNTIME_PROTOCOL(1)) path(
+        .clk_50m(clk_50m_i),.reset_n(rst_ni),.restart(path_restart),.track_index(path_track),
         .capture_enable_i((state==IDLE && !mode_i && analysis_enable_i) ||
             ((state==WAIT_FORMAT || state==PLAY) && mode_i && run_i && !new_failure)),
         .memory_clk(memory_clk_i),.memory_reset_n(memory_reset_ni),.memory_ready(memory_ready_i),
@@ -194,7 +203,9 @@ module workstation_tf_runtime_service #(
         .debug_cmdrsp(),.debug_rwrsp(),.debug_cardstate(),.debug_spidone(),.debug_rvalid_session(),
         .app_cmd(path_command),.app_en(path_ddr_valid),.app_addr(ddr_address_o),.app_wdata(ddr_data_o),
         .app_rdy(ddr_ready_i && !memory_gate),.app_wren(path_write),.app_wend(path_end),.app_wrdy(ddr_ready_i && !memory_gate),
-        .app_rvalid(ddr_response_i),.app_rdata(ddr_read_data_i),.native_memory_hold_i(memory_gate));
+        .app_rvalid(ddr_response_i),.app_rdata(ddr_read_data_i),.native_memory_hold_i(memory_gate),
+        .native_source_hold_i(state==QUIESCE || state==RESTART_SETTLE || invalidate || (state==IDLE && mode_i)),
+        .runtime_clear_toggle_i(path_clear_toggle),.runtime_clear_done_o(path_clear_done));
     // A file restart must not reinterpret an old accepted DDR response as the
     // new file's first beat. Stop acceptance, drain the one outstanding read,
     // return a quiet ACK, then pulse the unchanged path's restart.
@@ -202,8 +213,8 @@ module workstation_tf_runtime_service #(
     always @(posedge clk_50m_i or negedge rst_ni)
         if(!rst_ni)memory_stop<=0;
         else if(invalidate)memory_stop<=1;
-        else if(state==RESTART_SETTLE && restart_settle==0)memory_stop<=0;
-        else if(state==QUIESCE && source_quiet && memory_quiet_50 &&
+        else if(state==RESTART_SETTLE && path_clear_done)memory_stop<=0;
+        else if(state==QUIESCE && source_quiet && memory_quiet_50 && path_clear_done && !pending_clear &&
             !(pending_start && mode_i) && !(pending_reader_restart && !mode_i))memory_stop<=0;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] memory_gate_sync;
     always @(posedge memory_clk_i or negedge rst_ni)

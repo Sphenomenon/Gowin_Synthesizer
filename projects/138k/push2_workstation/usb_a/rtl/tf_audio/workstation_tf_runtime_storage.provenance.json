@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "scope": "runtime-only explicit clear/hold/ACK storage; legacy/default modules and frozen bytes unchanged",
+  "sources": {
+    "workstation_tf_runtime_byte_fifo.sv": {
+      "origin": "storage/tf_async_byte_fifo.v",
+      "origin_sha256": "e9a7c01f7e5a13569de361b4615099f56706e4bcb93701005938639b45c28148",
+      "changes": [
+        "two-stage clear token qualification",
+        "local hold and token-bound ACK after zero pointer qualification",
+        "continuous two-stage Gray receivers without functional clear gating"
+      ]
+    },
+    "workstation_tf_runtime_dma.sv": {
+      "origin": "storage/tf_audio_ddr_dma.v",
+      "origin_sha256": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+      "changes": [
+        "unique runtime module name",
+        "hold closes request/emit/refill and only retires accepted old response",
+        "token-bound restart ACK after private-state zero qualification"
+      ]
+    }
+  }
+}
