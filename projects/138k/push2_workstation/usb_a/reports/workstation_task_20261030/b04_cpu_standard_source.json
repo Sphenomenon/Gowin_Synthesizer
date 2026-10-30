@@ -1,0 +1,1105 @@
+{
+  "schema": "ae350-classic-source-stage-v1",
+  "selected_in_production": false,
+  "hardware_tested": false,
+  "wire_results": [
+    {
+      "tag": "native",
+      "summary": "classic source-stage: 44612 checks passed; object=2848 frame=252 tx=296"
+    },
+    {
+      "tag": "sanitized",
+      "summary": "classic source-stage: 44612 checks passed; object=2848 frame=252 tx=296"
+    }
+  ],
+  "killed_behavioral_mutants": [
+    {
+      "tag": "generation-ignored",
+      "returncode": 1,
+      "evidence": "check 412 line 192: a138_classic_tx_result(&s,1,8,tx.token,A138_CLASSIC_ACCEPTED)==A138_CLASSIC_STALE"
+    },
+    {
+      "tag": "uncertain-replayed",
+      "returncode": 1,
+      "evidence": "check 414 line 194: a138_classic_tx_result(&s,1,9,tx.token,A138_CLASSIC_UNCERTAIN)==A138_CLASSIC_FENCED"
+    },
+    {
+      "tag": "start-before-rate",
+      "returncode": 1,
+      "evidence": "check 135 line 101: command(7,&sep,1)==8 && response[4]==0x13 && response[6]==4 && response[7]==0x31 && s.state==A138_CLASSIC_OPEN"
+    },
+    {
+      "tag": "duplicate-media-accepted",
+      "returncode": 1,
+      "evidence": "check 155 line 123: pdu(0x42,b,n,0)==A138_CLASSIC_DROPPED && s.frame_count==0 && s.stream_epoch==epoch"
+    },
+    {
+      "tag": "sbc-fragment-count-ignored",
+      "returncode": 1,
+      "evidence": "check 167 line 137: pdu(0x42,b,n,0)==A138_CLASSIC_DROPPED && !s.frame_count && !s.fragment_active"
+    },
+    {
+      "tag": "config-not-committed",
+      "returncode": 1,
+      "evidence": "check 69 line 94: s.state==A138_CLASSIC_CONFIGURED && s.format.rate_hz==44100 && s.format.mode==3 && s.format.blocks==16 && s.format.subbands==8"
+    },
+    {
+      "tag": "pending-rx-overwritten",
+      "returncode": 1,
+      "evidence": "check 34447 line 300: pdu(1,info,sizeof info,0)==A138_CLASSIC_BUSY && s.rx_complete"
+    },
+    {
+      "tag": "oversize-pdu-accepted",
+      "returncode": 1,
+      "evidence": "check 34442 line 292: a138_classic_acl(&s,1,9,acl,8)==A138_CLASSIC_MALFORMED && !s.rx_bytes"
+    },
+    {
+      "tag": "queue-overflow-accepted",
+      "returncode": 1,
+      "evidence": "check 177 line 145: pdu(0x42,b,n,0)==A138_CLASSIC_DROPPED && !s.frame_count && s.stream_epoch>epoch"
+    },
+    {
+      "tag": "sdp-sequence-add-wrap",
+      "returncode": -6,
+      "evidence": "=================================================================\n==19041==ERROR: AddressSanitizer: use-after-poison on address 0x000100409874 at pc 0x0001003e7a00 bp 0x00016fa24210 sp 0x00016fa24208\nREAD of size 1 at 0x000100409874 thread T0\n    #0 0x0001003e79fc in search_pattern+0xacc (sdp-sequence-add-wrap:arm64+0x10000f9fc)\n    #1 0x0001003e2064 in sdp+0x340 (sdp-sequence-add-wrap:arm64+0x10000a064)\n    #2 0x0001003dace0 in dispatch+0x528 (sdp-sequence-add-wrap:arm64+0x100002ce0)\n    #3 0x0001003f2b90 in pdu+0x294 (sdp-sequence-add-wrap:arm64+0x10001ab90)\n    #4 0x0001003ed72c in main+0x1d20 (sdp-sequence-add-wrap:arm64+0x10001572c)\n    #5 0x00018f3d84e0 in start+0x1b4c (dyld:arm64e+0x204e0)\n\n0x000100409874 is located 148 bytes inside of global variable 's' defined in '/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c' (0x0001004097e0) of size 2848\nSUMMARY: AddressSanitizer: use-after-poison (sdp-sequence-add-wrap:arm64+0x10000f9fc) in search_pattern+0xacc\nShadow bytes around the buggy address:\n  0x000100409580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x000100409600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x000100409680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x000100409700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00\n  0x000100409780: 00 00 00 00 00 00 00 00 04 f9 f9 f9 00 00 00 00\n=>0x000100409800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00[04]f7\n  0x000100409880: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7\n  0x000100409900: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7\n  0x000100409980: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7\n  0x000100409a00: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7\n  0x000100409a80: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7\nShadow byte legend (one shadow byte represents 8 application bytes):\n  Addressable:           00\n  Partially addressable: 01 02 03 04 05 06 07 \n  Heap left redzone:       fa\n  Freed heap region:       fd\n  Stack left redzone:      f1\n  Stack mid redzone:       f2\n  Stack right redzone:     f3\n  Stack after return:      f5\n  Stack use after scope:   f8\n  Global redzone:          f9\n  Global init order:       f6\n  Poisoned by user:        f7\n  Container overflow:      fc\n  Array cookie:            ac\n  Intra object redzone:    bb\n  ASan internal:           fe\n  Left alloca redzone:     ca\n  Right alloca redzone:    cb\n\nNOTE: the stack trace above identifies the code that *accessed* the poisoned memory.\nTo identify the code that *poisoned* the memory, try the experimental setting ASAN_OPTIONS=poison_history_size=<size>.\n==19041==ABORTING"
+    },
+    {
+      "tag": "cross-psm-cid-alias",
+      "returncode": 1,
+      "evidence": "check 34514 line 309: pdu(1,alias,sizeof alias,0)==A138_CLASSIC_OK && drain()==16 && little(response+12)==7 && !s.channel[1].allocated"
+    },
+    {
+      "tag": "rtp-marker-ignored",
+      "returncode": 1,
+      "evidence": "check 169 line 139: pdu(0x42,b,n,0)==A138_CLASSIC_DROPPED"
+    },
+    {
+      "tag": "config-adjustment-ignored",
+      "returncode": 1,
+      "evidence": "check 1121 line 254: r==A138_CLASSIC_OK && !s.channel[0].allocated"
+    },
+    {
+      "tag": "controller-payload-limit-ignored",
+      "returncode": 1,
+      "evidence": "check 745 line 53: tx.bytes<=s.tx_payload_limit+4u && tx.bytes>=5 && tx.link_epoch==1 && tx.generation==9"
+    },
+    {
+      "tag": "sdp-tid-bound-continuation",
+      "returncode": 1,
+      "evidence": "check 275 line 163: drain()>12"
+    }
+  ],
+  "actual_decoder_cases": [
+    {
+      "case": "00",
+      "samples": 4096,
+      "max_abs_error": 5,
+      "pcm_sha256": "b48b91a4835855f277c21feb8133fd3ebba92aea89ab6b5f9aa7675104ee26ed"
+    },
+    {
+      "case": "02",
+      "samples": 8192,
+      "max_abs_error": 6,
+      "pcm_sha256": "f7d0bade97f35b44a4a4593022a1d5e72e55e8ee28f9c2c6db6262962b66d008"
+    },
+    {
+      "case": "12",
+      "samples": 8192,
+      "max_abs_error": 5,
+      "pcm_sha256": "30ccf5ae95849e151f09b1dc3f77607c27c7fb491427bc164971d70f026e4ef3"
+    },
+    {
+      "case": "14",
+      "samples": 16384,
+      "max_abs_error": 6,
+      "pcm_sha256": "cf45616ae288272a40a1721a536b7d6f8d17df57210b98f4c66a2e3506510e77"
+    },
+    {
+      "case": "16",
+      "samples": 4096,
+      "max_abs_error": 5,
+      "pcm_sha256": "f34a0d9eee6ac6d30429d5ae6986092e25a4a4158ce5bfed6635cac74250ded3"
+    },
+    {
+      "case": "18",
+      "samples": 8192,
+      "max_abs_error": 6,
+      "pcm_sha256": "263b03e279644290a6828ceeec239066d26ca2721d89ada90b335915480fd022"
+    },
+    {
+      "case": "28",
+      "samples": 8192,
+      "max_abs_error": 5,
+      "pcm_sha256": "9d8b432f10cccb0374efecbeb5e6dc9346805839771c3f89ce51ca562f014267"
+    },
+    {
+      "case": "30",
+      "samples": 16384,
+      "max_abs_error": 6,
+      "pcm_sha256": "82371cd60231c3148877d6003140b2f89fdfccd4f3a8ad79c66488e708e11864"
+    },
+    {
+      "case": "32",
+      "samples": 16384,
+      "max_abs_error": 4,
+      "pcm_sha256": "d17861408b836edb6d101a1a2c4f4003ddcaa9b5231edb16a27d66c9c8f10483"
+    },
+    {
+      "case": "37",
+      "samples": 16384,
+      "max_abs_error": 5,
+      "pcm_sha256": "9ee4b7e938fef831b18d9db9e91107bd43ac7c83e7531e20ea47bb3ce9702c3a"
+    },
+    {
+      "case": "41",
+      "samples": 12288,
+      "max_abs_error": 5,
+      "pcm_sha256": "e3c3d815fec267b2bca6792eada98cb53fcf3e1e08d348aa58fe941b311ba500"
+    }
+  ],
+  "rv32_budget": {
+    "sections": {
+      ".text": 14212,
+      ".data": 0,
+      ".bss": 0,
+      ".rodata": 265,
+      ".rodata.cst8": 8,
+      ".comment": 19,
+      ".note.GNU-stack": 0,
+      ".riscv.attributes": 63
+    },
+    "text_rodata_bytes": 14485,
+    "static_data_bytes": 0,
+    "caller_object_bytes": 2848,
+    "required_runtime_symbols": [
+      "memcpy",
+      "memset"
+    ],
+    "max_function_stack_frame": 480,
+    "function_stack_frames": [
+      {
+        "function": "attr_selected",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "codec_format",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "sbc_bytes",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "drop_channel",
+        "bytes": 16,
+        "kind": "static"
+      },
+      {
+        "function": "sequence.part.0",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "search_pattern.constprop",
+        "bytes": 64,
+        "kind": "static"
+      },
+      {
+        "function": "append",
+        "bytes": 32,
+        "kind": "static"
+      },
+      {
+        "function": "sig.isra",
+        "bytes": 48,
+        "kind": "static"
+      },
+      {
+        "function": "avdtp_reply.isra",
+        "bytes": 48,
+        "kind": "static"
+      },
+      {
+        "function": "avdtp_command.constprop",
+        "bytes": 96,
+        "kind": "static"
+      },
+      {
+        "function": "sdp_error.isra",
+        "bytes": 48,
+        "kind": "static"
+      },
+      {
+        "function": "sdp.constprop",
+        "bytes": 480,
+        "kind": "static"
+      },
+      {
+        "function": "dispatch.part.0",
+        "bytes": 160,
+        "kind": "static"
+      },
+      {
+        "function": "a138_classic_init",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "a138_classic_begin",
+        "bytes": 48,
+        "kind": "static"
+      },
+      {
+        "function": "a138_classic_cancel",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "a138_classic_event",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "a138_classic_acl",
+        "bytes": 32,
+        "kind": "static"
+      },
+      {
+        "function": "a138_classic_tx_peek",
+        "bytes": 16,
+        "kind": "static"
+      },
+      {
+        "function": "a138_classic_tx_result",
+        "bytes": 32,
+        "kind": "static"
+      },
+      {
+        "function": "a138_classic_audio_ready",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "a138_classic_frame_pop",
+        "bytes": 0,
+        "kind": "static"
+      }
+    ],
+    "limits": "Incremental RV32 object only. Not linked firmware fit, call-chain stack proof, cycle/service deadline, or hardware acceptance."
+  },
+  "adapted_decoder_identity": {
+    "adaptation.json": "d3e073d2791b726cd725e864c3974ebd8b7d216a2a53ff19ef601175c2d67d7b",
+    "decoder/include/oi_time.h": "34d8191ffb70ba0d1037d2a20ec9090caf699bca069ce1654dbddc6907ad49e9",
+    "decoder/include/oi_bitstream.h": "a5213ad5b695d581204d5dba2f0b829357a5148c58c166cedea458313d232a5f",
+    "decoder/include/oi_osinterface.h": "5c3d463ca1943ab801cb3617e8366559adda7ec2219e93680e9b5b81d5b41d87",
+    "decoder/include/oi_codec_sbc.h": "5df696eca911afd3a094e99831f2b235f364b5c19157e7c65df1243373f5358f",
+    "decoder/include/oi_status.h": "5121db37b90e42a7ab4a092b0dbdac894019a02e01961ca4df515b0cd1542075",
+    "decoder/include/oi_codec_sbc_private.h": "1f9512e12f7f36bd2d9f9c1ef5f14e4758e62919ce53247cbfe188d5b09bfb7b",
+    "decoder/include/a138_sbc_arithmetic.h": "8ecdf3a6be3f52f87ef30af8f9dc05a134cc162e32c2e462bc89888c3ad17422",
+    "decoder/include/oi_cpu_dep.h": "51f0999baa4561a894ce6f8b85074b88b9286946d1e509344c201230ef0686a0",
+    "decoder/include/oi_utils.h": "57d01d2df48d159d25fb04b54e62fc318d4e1ccebca8d0af00dd4d250133af92",
+    "decoder/include/oi_assert.h": "37e3e1e920dc49461774d940275f806d95e4b0e6d6e9b948cfc527133f14c41c",
+    "decoder/include/oi_stddefs.h": "511e00ed895ae5bf87ad2f6bddbf474afc9e36e7bf64b71a75e5d1500d2e5049",
+    "decoder/include/oi_string.h": "c4f0e6192f53f718bdb24bb68977c95097332148ce2eb639c49c13c7a9ea3ef6",
+    "decoder/include/oi_bt_spec.h": "66ed61ed85aee8eb3f64bef738e6f77813ec6cb9cec997173ed57b7cfa045ac0",
+    "decoder/include/oi_modules.h": "994bb8580a306e3c4e5f958ceed8e19f6ad623957f6bdd6d6eff23188a398d18",
+    "decoder/include/oi_common.h": "34e69e3dcdbe106de0c5ff96c02b448f231659fb81e77968b260e7b3fc22a126",
+    "decoder/srce/oi_codec_version.c": "9ba9653eb145853dc8d937a164a25808478dd59a8b5747ba7cc9cdd7a1cae716",
+    "decoder/srce/bitstream-decode.c": "3336d994518fe97c2d240612747800b2bf8423fa4d15c483b02ed3129d32090e",
+    "decoder/srce/synthesis-dct8.c": "5961d16794d15d777e84923c30a31d546ca0e81ea393c4a6f2ac93981db9e7ee",
+    "decoder/srce/framing.c": "da2f951e4b0722ebec4a0b948e2942e6fdda9f8dcba0e09907060efea3202384",
+    "decoder/srce/decoder-sbc.c": "fd44f3d8ce667df2c7c39aa0fd1c5ca597c5f0ad953d4ccf63ff5a7d6a493aca",
+    "decoder/srce/decoder-private.c": "98434c9119d1c8d4bcbbe4d7772e5dd485b576f9ba4cc92a7d9fcbdbf45e7c18",
+    "decoder/srce/bitalloc-sbc.c": "38ff6d676669f61c283273a8403727b9ecf44411628c41cbbd2fe243881ed52e",
+    "decoder/srce/synthesis-8-generated.c": "a5c9c5a59002b744a6a30fc8ec54a165d432152b899aa8c9ec6f0826bc030a64",
+    "decoder/srce/dequant.c": "3bdd22415b311138891b6cf651dc952c3c8cdda13dd62580114a5d193e149e47",
+    "decoder/srce/decoder-oina.c": "58b8467da96333d79592478fb9e7bef57400c75ba9aead14cff9258079fe4fb5",
+    "decoder/srce/alloc.c": "86b2b5e653d8c85cda23a9eeb8b37f2bfcbf01e7784c3ec071f63eeb1a2df6ca",
+    "decoder/srce/synthesis-sbc.c": "9e19c59ce4eb68229285bdee637541f0a0015a4a9d1276430ef29c60e7e85333",
+    "decoder/srce/framing-sbc.c": "f5efa3367155338e3c8088b23c93b6977a0dc6c51377a9c6cb705c408c839ef5",
+    "decoder/srce/bitalloc.c": "6b918bedb1ad766039fe4c87c8091a3578540481bc3f72c0e8a893430cc9ab4a",
+    "decoder/srce/readsamplesjoint.inc": "05b1f69d0ea8078ba0a8f3e401834c9dfc18a9a8ccf51b57889ba06e66040a4b"
+  },
+  "tool_identity": {
+    "/usr/bin/cc": "b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9",
+    "/opt/homebrew/bin/riscv64-elf-gcc": "38435e3c6da930b24b014c763e904839bc4069aaa14773cbe9bf57dd741ba792",
+    "/opt/homebrew/bin/riscv64-elf-size": "3b67ea52337cd2d2298ffc573e55241f6cd9e19cdafe60ee93443667047e2225",
+    "/opt/homebrew/bin/riscv64-elf-nm": "ca408804a038d15cd58959a5a4207bccbf59a495e2f56f524b1a87523b6fd1f9"
+  },
+  "inputs": {
+    "firmware/ae350/classic_service.c": "c3568015874dbb95e54e63d713ad5bfea0d1baa296edfede76aedb7a6bf0002f",
+    "firmware/ae350/classic_service.h": "183dd0ff36e2575267941cec42264c8fb732e22a420fdb2aace402c1814ad9f0",
+    "sim/ae350_classic_fixture.c": "6eac0d786c55939315d0bed16103eb84a8d824bca27e062f7bc900558e6119bc",
+    "sim/ae350_classic_decode_fixture.c": "7a9d24c9ce5bcb20d850171ba9e4d8f055332d01d4ae968d20becadfa9b725a6",
+    "sim/run_ae350_classic_service.py": "c75998a61f4b802b11eaa020cc2906665df608fc4af7ebfb31fef3fa6263135d",
+    "sim/fixtures/ae350_sbc_reference.json": "68beafb6eb44cb59562fb3856e29946d107f5aad955414b7df109735495a8917",
+    "firmware/ae350/sbc_decoder_service.c": "54c9c6d671cd2050c6aba4158037fa17cc6c870887919b3b28fd681dbace2d0d",
+    "firmware/ae350/sbc_decoder_service.h": "90bb312346c9976e9a1ca30221ca2dd637887592ebeb3c7e1b638c67ecfeea8a",
+    "tools/prepare_ae350_sbc.py": "430571e1c36696b220283c17fea88c249175f01a0b14b4af1606ce574d512def",
+    "firmware/ae350/third_party/sbc_oi/upstream_manifest.json": "4d41d75700a76dc92cb60f2e35191ffb0d8bf970b2a0a18338fc789f28ea71fe",
+    "firmware/ae350/third_party/sbc_oi/LICENSE.Apache-2.0": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "firmware/ae350/third_party/sbc_oi/a138_sbc_arithmetic.h": "8ecdf3a6be3f52f87ef30af8f9dc05a134cc162e32c2e462bc89888c3ad17422",
+    "firmware/ae350/third_party/sbc_oi/README.md": "944e3b7fd5e30c403014020a43eaae37df41899e5f336f369bc2f7bf772ccf94",
+    "firmware/ae350/third_party/sbc_oi/upstream/LICENSE": "fcfd08d120e2558dded978b780df4404a221b94372f7d2aa407b7ada7c54ff07",
+    "firmware/ae350/third_party/sbc_oi/upstream/README.md": "fc4a3e0140f3ef139b2c71711497ab30ef8e48c171984988f34b4f9cf58aaca0",
+    "firmware/ae350/third_party/sbc_oi/upstream/SCR.txt": "438c8687d8ba0a0a5e79db8d0740fdf066c01761d5d1e02ac15fde3e4e118e86",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_time.h": "34d8191ffb70ba0d1037d2a20ec9090caf699bca069ce1654dbddc6907ad49e9",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_bitstream.h": "4791457695031c423cb0efb816c8f11ce3ce6415f2b383eb77f9abae968da7a2",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_osinterface.h": "5c3d463ca1943ab801cb3617e8366559adda7ec2219e93680e9b5b81d5b41d87",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_codec_sbc.h": "5df696eca911afd3a094e99831f2b235f364b5c19157e7c65df1243373f5358f",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_status.h": "5121db37b90e42a7ab4a092b0dbdac894019a02e01961ca4df515b0cd1542075",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_codec_sbc_private.h": "a8ba08775b5b31692fd96f906f9714b6aa569b71e16dee84a7fbcfd4c21491df",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_cpu_dep.h": "51f0999baa4561a894ce6f8b85074b88b9286946d1e509344c201230ef0686a0",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_utils.h": "57d01d2df48d159d25fb04b54e62fc318d4e1ccebca8d0af00dd4d250133af92",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_assert.h": "37e3e1e920dc49461774d940275f806d95e4b0e6d6e9b948cfc527133f14c41c",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_stddefs.h": "511e00ed895ae5bf87ad2f6bddbf474afc9e36e7bf64b71a75e5d1500d2e5049",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_string.h": "c4f0e6192f53f718bdb24bb68977c95097332148ce2eb639c49c13c7a9ea3ef6",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_bt_spec.h": "66ed61ed85aee8eb3f64bef738e6f77813ec6cb9cec997173ed57b7cfa045ac0",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_modules.h": "994bb8580a306e3c4e5f958ceed8e19f6ad623957f6bdd6d6eff23188a398d18",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_common.h": "34e69e3dcdbe106de0c5ff96c02b448f231659fb81e77968b260e7b3fc22a126",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/oi_codec_version.c": "9ba9653eb145853dc8d937a164a25808478dd59a8b5747ba7cc9cdd7a1cae716",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/bitstream-decode.c": "3336d994518fe97c2d240612747800b2bf8423fa4d15c483b02ed3129d32090e",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/synthesis-dct8.c": "1aa444502c50a62a66475e860637044043166a8e55108c20d25cc17feb784073",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/framing.c": "da2f951e4b0722ebec4a0b948e2942e6fdda9f8dcba0e09907060efea3202384",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/decoder-sbc.c": "fd44f3d8ce667df2c7c39aa0fd1c5ca597c5f0ad953d4ccf63ff5a7d6a493aca",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/decoder-private.c": "60d456fddd3839b7aa7f883213205d1be396c94690c4ebeaf8bb7f8784978c8a",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/bitalloc-sbc.c": "38ff6d676669f61c283273a8403727b9ecf44411628c41cbbd2fe243881ed52e",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/synthesis-8-generated.c": "236d897cbce62cb62c76cfd8fe5b3300b303a49be95fab6eb8b2ba681ac86be8",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/dequant.c": "3bdd22415b311138891b6cf651dc952c3c8cdda13dd62580114a5d193e149e47",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/decoder-oina.c": "58b8467da96333d79592478fb9e7bef57400c75ba9aead14cff9258079fe4fb5",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/alloc.c": "86b2b5e653d8c85cda23a9eeb8b37f2bfcbf01e7784c3ec071f63eeb1a2df6ca",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/synthesis-sbc.c": "82bb804881385d1ca10ac15e5ac76cdaef7efc68495dab430b78745538dadb16",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/framing-sbc.c": "f5efa3367155338e3c8088b23c93b6977a0dc6c51377a9c6cb705c408c839ef5",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/bitalloc.c": "6b918bedb1ad766039fe4c87c8091a3578540481bc3f72c0e8a893430cc9ab4a",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/readsamplesjoint.inc": "47ea8500e8191e43e47c00f1a1c2a2febb6839252b27e3f5410aacdcd3a6170a"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/native"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/native"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sanitized"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sanitized"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/generation-ignored.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/generation-ignored"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/generation-ignored"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/uncertain-replayed.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/uncertain-replayed"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/uncertain-replayed"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/start-before-rate.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/start-before-rate"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/start-before-rate"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/duplicate-media-accepted.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/duplicate-media-accepted"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/duplicate-media-accepted"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sbc-fragment-count-ignored.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sbc-fragment-count-ignored"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sbc-fragment-count-ignored"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/config-not-committed.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/config-not-committed"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/config-not-committed"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/pending-rx-overwritten.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/pending-rx-overwritten"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/pending-rx-overwritten"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/oversize-pdu-accepted.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/oversize-pdu-accepted"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/oversize-pdu-accepted"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/queue-overflow-accepted.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/queue-overflow-accepted"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/queue-overflow-accepted"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sdp-sequence-add-wrap.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sdp-sequence-add-wrap"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sdp-sequence-add-wrap"
+      ],
+      "returncode": -6
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/cross-psm-cid-alias.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/cross-psm-cid-alias"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/cross-psm-cid-alias"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/rtp-marker-ignored.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/rtp-marker-ignored"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/rtp-marker-ignored"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/config-adjustment-ignored.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/config-adjustment-ignored"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/config-adjustment-ignored"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/controller-payload-limit-ignored.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/controller-payload-limit-ignored"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/controller-payload-limit-ignored"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-Wno-unused-but-set-variable",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sdp-tid-bound-continuation.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sdp-tid-bound-continuation"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/sdp-tid-bound-continuation"
+      ],
+      "returncode": 1
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/include",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350/sbc_decoder_service.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/alloc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/bitalloc-sbc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/bitalloc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/bitstream-decode.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/decoder-oina.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/decoder-private.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/decoder-sbc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/dequant.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/framing-sbc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/framing.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/oi_codec_version.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/synthesis-8-generated.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/synthesis-dct8.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/synthesis-sbc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_decode_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-Wno-unused-parameter",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/include",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350/sbc_decoder_service.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/alloc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/bitalloc-sbc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/bitalloc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/bitstream-decode.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/decoder-oina.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/decoder-private.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/decoder-sbc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/dequant.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/framing-sbc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/framing.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/oi_codec_version.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/synthesis-8-generated.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/synthesis-dct8.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/adapted/decoder/srce/synthesis-sbc.c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/sim/ae350_classic_decode_fixture.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/00.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/00-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/00.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/00-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/02.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/02-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/02.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/02-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/12.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/12-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/12.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/12-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/14.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/14-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/14.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/14-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/16.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/16-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/16.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/16-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/18.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/18-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/18.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/18-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/28.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/28-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/28.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/28-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/30.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/30-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/30.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/30-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/32.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/32-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/32.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/32-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/37.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/37-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/37.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/37-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-native",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/41.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/41-decode-native.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/decode-sanitized",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/41.sbc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/41-decode-sanitized.pcm"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/riscv64-elf-gcc",
+        "-march=rv32im_zicsr_zifencei",
+        "-mabi=ilp32",
+        "-msmall-data-limit=0",
+        "-O2",
+        "-ffreestanding",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-builtin",
+        "-fstack-usage",
+        "-fcallgraph-info=su",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/rv32-include",
+        "-c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/classic_service.o"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/riscv64-elf-size",
+        "-A",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/classic_service.o"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/riscv64-elf-nm",
+        "-u",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/classic_service.o"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/riscv64-elf-gcc",
+        "-march=rv32im_zicsr_zifencei",
+        "-mabi=ilp32",
+        "-msmall-data-limit=0",
+        "-O2",
+        "-ffreestanding",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fno-builtin",
+        "-fstack-usage",
+        "-fcallgraph-info=su",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/tree/projects/138k/push2_workstation/usb_a/firmware/ae350",
+        "-I/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/rv32-include",
+        "-c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/object_budget.c",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/object_budget.o"
+      ],
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/riscv64-elf-nm",
+        "-S",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-cpu-standard-v1/evidence-v7/object_budget.o"
+      ],
+      "returncode": 0
+    }
+  ]
+}

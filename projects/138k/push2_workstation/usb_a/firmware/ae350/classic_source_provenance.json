@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "kind": "first-party experimental unselected bounded source-stage",
+  "upstream_implementation_vendored": false,
+  "reference_only": {
+    "repository": "https://github.com/zephyrproject-rtos/zephyr",
+    "commit": "0534e997eacb94bae1df6c9a7dd4a9a6cbf1cecf",
+    "license": "Apache-2.0",
+    "files": {
+      "subsys/bluetooth/host/classic/l2cap_br.c": "8db25296dd21aae03d861df7dc6e7b4e157d88b30bde657f082a18432c035df6",
+      "subsys/bluetooth/host/classic/sdp.c": "2087d6905342b1db6d4072e480b16929d09bcaf7246feb68d6bb6a0fdaecb30b",
+      "subsys/bluetooth/host/classic/avdtp_internal.h": "f643e281dee3c4dbfec9a1773b15da5cd87df9af01152771fac7b4cd8ebf6c4b",
+      "subsys/bluetooth/host/classic/a2dp.c": "da0da88613e50a6a70380c560af3309df95c61f2d0975031ac2ddaafa8c12db4",
+      "include/zephyr/bluetooth/classic/a2dp_codec_sbc.h": "7fca37a8da6f37ded2b9dc3a4ed16303e319b01944d3e95c256274762f75a120",
+      "LICENSE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    }
+  },
+  "normative_receipts": {
+    "hci": {
+      "url": "https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Core-60/out/en/host-controller-interface/host-controller-interface-functional-specification.html",
+      "actual_url": "https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Core-60/out/en/host-controller-interface/host-controller-interface-functional-specification.html",
+      "status": 200,
+      "sha256": "c5015f5f22f255f5672e7794799110f012d799d4dd8b3a1122d49488962f92c7",
+      "retrieved_UTC": "2026-10-30T22:41:31.128638+00:00"
+    },
+    "l2cap": {
+      "url": "https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Core-60/out/en/host/logical-link-control-and-adaptation-protocol-specification.html",
+      "actual_url": "https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Core-60/out/en/host/logical-link-control-and-adaptation-protocol-specification.html",
+      "status": 200,
+      "sha256": "1b796894811a9eb0c23f6d9adb2efba0e30891fec8fa0ec02571cb66263d57b7",
+      "retrieved_UTC": "2026-10-30T22:41:33.996094+00:00"
+    },
+    "a2dp": {
+      "url": "https://www.bluetooth.com/specifications/specs/html/?src=A2DP_v1.4/out/en/index-en.html",
+      "embedded_source": "https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/A2DP_v1.4/out/en/index-en.html",
+      "bytes": 1031991,
+      "sha256": "cb1c8e5e5c2a345c39b9529e28b7ac7ad960f761cc70cb115e62bca914a90dd6",
+      "captured_file_mtime_utc": "2026-10-30T22:51:54.661623+00:00",
+      "note": "Official wrapper contains complete embedded profile. Direct embedded-source request later returned403; not used as successful retrieval."
+    }
+  },
+  "excluded_reference": "BTstack restrictive personal/noncommercial license; no code or HCI owner copied",
+  "existing_decoder": "Existing sbc_decoder_service and pinned Android/OI Apache decoder; runner verifies adapted source hashes and actual reference PCM",
+  "limitations": "Not A2DP1.4 conformance: mandatory Sink Delay Reporting and full connection/security/recovery/transport integration absent"
+}
