@@ -142,6 +142,8 @@
 
 [Chorus CDC 父级组合](push2_workstation/usb_a/reports/WORKSTATION_CHORUS_CDC_PARENT_20261031.md)已重新通过六公开审计、14 项／19 实际负控、四份来源各 12 项、profile20（旧 prepare 跳过一项）及 accepted17。新 scope 严格绑定 6b 实际 VG，旧 serial／c7 保持拒绝；fresh prepare 字节与前序一致，不转移综合／物理接受。完整 CDC／reset／物理与硬件仍未完成，未安装新 SDC，无部署。
 
+[Pitch 精确 /147 父级复验](push2_workstation/usb_a/reports/WORKSTATION_PITCH_DIV147_PARENT_20261031.md)已通过全 16-bit／8-bit 输入、40,017 事务、六负控、旧 pitch 及 20,192 帧完整音频。四份来源各 12 项、profile20（一项旧 prepare 跳过）和 accepted17 通过；仅 pitch RTL staged 改变，无新增周期延迟。综合／物理收益待新候选验证，完整门禁与硬件未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

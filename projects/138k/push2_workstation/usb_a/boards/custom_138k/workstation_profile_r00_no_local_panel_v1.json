@@ -403,7 +403,7 @@
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_frame_bridge.sv": "58752fad08b2476ad59b5427cceaad2894b208291a9b510d0b003475c4f5160e",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_frame_fanout.sv": "e6f82fd255460e91a0fee6bbdbe1053558f1b50009c3ed384aba1709557c971d",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_observation_bridge.sv": "198dbf39ff6b6cfb6fe308444274849c507f222edcb0ea651abeb8d719f62c17",
-    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": "12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": "c4053635f66995bba38cf7726bff58a74308d7b2c85f4023548f16780f81d6f0",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.provenance.json": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json": "0f2811bdfa33f04111cc036cace4b986eecf25306cdb13fd297b56d0bcfbadf4",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv": "f0d9200a165d40f0b44fc69c3aaae3a8a75ed14420dd91d11ff49136f22e0176",

@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "identity": "pitch-div147-exact-parent-source-20261031-v1",
+  "parent_import_commit": "e7aec83",
+  "independent_source_commit": "aa4810c9c87d2dcf0d477a15f47b8d4fc465f0f6",
+  "old_source_sha256": "12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2",
+  "new_source_sha256": "c4053635f66995bba38cf7726bff58a74308d7b2c85f4023548f16780f81d6f0",
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pitch-div147-exact-v1/REVIEW_SEAL.json",
+    "sha256": "e27b156c85d02de42f97532af944f4ee15d3837b597171d8bbd735cd5f6ceb6a"
+  },
+  "independent_relative_files_verified": 15,
+  "independent_absolute_dependencies_verified": 85,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pitch-div147-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "9a8a2513fe82adb7609ad85feb80f165f1f5ed5cd07c8b96f4561d34723fbeff"
+  },
+  "exact_proof": {
+    "residual": "13*s+r",
+    "input_domain": "all 16-bit s and 8-bit r",
+    "max_residual": 852210,
+    "reciprocal": 456523,
+    "shift": 26,
+    "error_numerator_max": 14487570,
+    "scale": 67108864,
+    "rtl_domain_cases": 16777220,
+    "clock_transactions": 40017,
+    "negative_controls": 6
+  },
+  "fresh_prepares": {
+    "enabled": {
+      "candidate_identity": "custom138k-workstation-v1-553ce8fd086b6d44",
+      "staged_files": 576,
+      "enabled_files": 260,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_rate_pitch_expression.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "0bc3dbd2bb33d5a31291c62b2e7075a7c087ac96b8f6a9a03b721355084f6d2b",
+      "source_test_log_sha256": "761bef63637ff7a92813f5eb8cc7577552aaaae1d83a1faf38fb7e27cd3574da",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "no-cnn": {
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-05e596cf2f01b6fa",
+      "staged_files": 577,
+      "enabled_files": 260,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_rate_pitch_expression.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "c38fcbd7f3676ce5f609bf0de5932d035742ac3f6cead74c60abe19dbc4f12cd",
+      "source_test_log_sha256": "7075097c0a4e457e40e7f22f6614e67309b1f77eb3903fa8e4019b518e2b078a",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "r00": {
+      "candidate_identity": "custom138k-workstation-r00-v1-e5a405fbb20ee033",
+      "staged_files": 589,
+      "enabled_files": 267,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_rate_pitch_expression.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "fc3264baa80257aeb9b3a741ce8ad47f7220087023ea155228f351e65d857c64",
+      "source_test_log_sha256": "8907f3b6ff28ae45c2556fba4c3fcbb62c4e0667e3508bdff445def4b68eadfa",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "off": {
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-8b5f6318c06fe98d",
+      "staged_files": 596,
+      "enabled_files": 269,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_rate_pitch_expression.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "830711d3258dce011cd3b8341fdb4597794e8b54c3874a38ba1712a293d570b0",
+      "source_test_log_sha256": "618332ce2bb2d7fab0c0473229ee604051340ba9b8379b17154e5fd5e36163f5",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    }
+  },
+  "parent_tests": {
+    "exact": 3,
+    "legacy_pitch": 1,
+    "profile": 20,
+    "legacy_prepare_skip": 1,
+    "accepted": 17,
+    "each_prepare_sources": 12
+  },
+  "audio": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pitch-div147-parent-v1/audio/verification.json",
+    "sha256": "5b83fc4c41fe0c25db9c5d7bb6543f093775314dab3237b134fda263d6d7129c",
+    "metrics": {
+      "checked": 20192,
+      "good": 20186,
+      "errors": 6,
+      "nonzero": 20061,
+      "first_slots": 13,
+      "config_acks": 14,
+      "applies": 12,
+      "faults": 5,
+      "mid_frame_switches": 8,
+      "max_render_clocks": 1204,
+      "max_slot_clocks": 1229,
+      "max_config_clocks": 454,
+      "writes": 5037,
+      "fences": 21,
+      "analysis_drops": 6735,
+      "record_drops": 12108,
+      "startup_frames": 3,
+      "epoch": 12,
+      "loader_overlap_slots": 6,
+      "pressure_events": 768,
+      "pressure_noteoffs": 26,
+      "wet48": 7,
+      "wet44": 7,
+      "fdn_seen": 3
+    },
+    "expected_fault_observations": true,
+    "source_inputs_verified": 70,
+    "composition_warnings": 0
+  },
+  "runtime_latency_cycles_added": 0,
+  "synthesis_performed": false,
+  "physical_timing_verified": false,
+  "complete_cdc_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}
