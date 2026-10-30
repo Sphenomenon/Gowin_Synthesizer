@@ -76,6 +76,8 @@
 
 [USB2 owner音频域复位修复](push2_workstation/usb_a/reports/WORKSTATION_USB2_OWNER_AUDIO_RESET_20261030.md)已用显式runtime参数接入，父级三相位真实wrapper、六负控、PLL隔离、反馈／默认hotplug及来源回归通过。新R00／enabled／no-CNN prepare各12项来源检查通过，仅wrapper与top两份副本改变，SDC保持；完整reset及物理recovery仍待新网表与路由验证，无部署。
 
+[R00首次生产接线整机综合](push2_workstation/usb_a/reports/WORKSTATION_R00_FIRST_PRODUCTION_SYNTHESIS_20261030.md)已通过，固定`4b1436d83219e765`的583项输入保持、无AG组合环，综合Logic108,298／Reg53,530／BSRAM246。父级实际VG时钟4项／23负控及既有CDC25项／75负控通过（两个可选历史对照跳过），新增录音CDC与完整reset未接受；该输入未含后续USB reset或render流水修复，无物理／部署接受。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
