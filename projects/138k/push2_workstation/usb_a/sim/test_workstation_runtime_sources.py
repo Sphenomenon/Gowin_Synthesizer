@@ -25,6 +25,8 @@ from tools import workstation_custom_board_audit as board_audit
 from tools import workstation_pinout as pinout
 from tools.workstation_board_peripherals import prepare as prepare_peripherals
 from tools.workstation_custom_flash import prepare as prepare_flash
+from tools.workstation_custom_clocks import shared_cdc_bundle
+from tools.workstation_timing_constraints import gray_write_alias_constraints
 from test_workstation_pinout import fixture as pinout_fixture
 
 
@@ -129,6 +131,63 @@ class DeclarationParser(unittest.TestCase):
         self.assertTrue(any(line.startswith('set_max_delay 10.000 ') for line in paths))
         self.assertTrue(any(line.startswith('set_false_path -hold ') for line in paths))
         self.assertFalse(any(line.startswith('set_false_path -to ') for line in paths))
+
+
+class SharedConstraintSelection(unittest.TestCase):
+    def test_mixed_queries_preserve_surviving_endpoints_on_each_side(self):
+        line = ('set_max_delay 10 -from [get_regs {u_managed/old* u_cpu/held*}] '
+                '-to [get_pins {u_tf_audio/old*/D u_runtime/u_cpu_cdc/req_meta*/D}]\n')
+        selected = runtime.shared_constraints(line)
+        self.assertEqual(selected['sdc'], 'set_max_delay 10 -from [get_regs {u_cpu/held*}] '
+                         '-to [get_pins {u_runtime/u_cpu_cdc/req_meta*/D}]\n')
+        self.assertEqual(len(selected['adapted']), 1)
+        self.assertEqual(selected['omitted'], [])
+        self.assertEqual(selected['adapted'][0]['removed_selectors'],
+                         ['u_managed/old*', 'u_tf_audio/old*/D'])
+
+    def test_empty_query_side_omits_whole_command(self):
+        for side in ('-from', '-to'):
+            line = ('set_max_delay 10 ' + side + ' [get_regs {u_managed/old*}] '
+                    + ('-to' if side == '-from' else '-from') + ' [get_regs {u_cpu/held*}]\n')
+            selected = runtime.shared_constraints(line)
+            with self.subTest(side=side):
+                self.assertEqual(selected['sdc'], '')
+                self.assertEqual(selected['adapted'], [])
+                self.assertEqual(len(selected['omitted']), 1)
+                self.assertEqual(selected['omitted'][0]['empty_query_sides'], ['get_regs'])
+
+    def test_unknown_retired_query_format_fails_closed(self):
+        for line in ('set_false_path -to [get_pins u_managed/old*/D]',
+                     'set_false_path -to [unknown_query {u_managed/old*/D}]',
+                     'set_false_path -from [get_regs {u_managed/old*}] '
+                     '-to [get_pins u_tf_audio/old*/D]'):
+            with self.subTest(line=line), self.assertRaisesRegex(ValueError, 'unsupported runtime shared CDC'):
+                runtime.shared_constraints(line)
+
+    def test_locked_parent_recovers_three_mixed_commands(self):
+        baseline = load_baseline(ROOT, 'resource_rework_route0')
+        with tempfile.TemporaryDirectory(prefix='runtime-shared-sdc-') as directory:
+            stage = Path(directory)
+            (stage / 'constraints').mkdir()
+            (stage / 'constraints/tang_mega_138k.sdc').write_bytes(
+                baseline.read_bytes('constraints/tang_mega_138k.sdc')
+                + gray_write_alias_constraints().encode())
+            parent = shared_cdc_bundle(stage)
+        selected = runtime.shared_constraints(parent['sdc'])
+        self.assertEqual(len(parent['sdc'].splitlines()), 157)
+        self.assertEqual(len(selected['sdc'].splitlines()), 106)
+        self.assertEqual(len(selected['omitted']), 51)
+        self.assertEqual([item['selected'] for item in selected['adapted']], [
+            'set_false_path -to [get_pins {u_runtime/u_cpu_cdc/source_release*/CLEAR '
+            'u_runtime/u_cpu_cdc/destination_release*/CLEAR}]',
+            'set_false_path -to [get_pins {u_runtime/u_cpu_cdc/req_meta*/D '
+            'u_runtime/u_cpu_cdc/ack_meta*/D}]',
+            'set_false_path -to [get_pins {u_native_usb/input_owner/analysis_done_meta*/D}]',
+        ])
+        untouched = [line for line in parent['sdc'].splitlines()
+                     if not any(prefix in line for prefix in runtime.REPLACED_CDC_PREFIXES)]
+        self.assertEqual([line for line in selected['sdc'].splitlines()
+                          if line not in {item['selected'] for item in selected['adapted']}], untouched)
 
 
 class SelectedTopPorts(unittest.TestCase):

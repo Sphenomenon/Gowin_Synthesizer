@@ -5,6 +5,7 @@ owners and composes constraints; it never generates RTL or runs implementation.
 """
 from pathlib import Path
 import json
+import re
 
 from tools.stage_usb_firmware import sha
 from tools.workstation_custom_clocks import clock_bundle
@@ -87,6 +88,49 @@ UNCHANGED_PARENT_INPUTS = {
 }
 
 
+REPLACED_CDC_PREFIXES = ('u_managed/', 'u_final_output_cdc/', 'u_ble_pcm_cdc/',
+                         'u_tf_audio/', 'u_delay_ddr_dma/', 'u_video/u_renderer/')
+
+
+def shared_constraints(sdc):
+    """Remove replaced endpoints while preserving unrelated query members.
+
+    A Tcl object list is a union. Dropping a whole command because one member
+    moved also drops valid exceptions for unchanged endpoints. Filter each
+    list independently and drop a command only when one of its query sides
+    becomes empty. The locked parent bundle uses only these simple queries.
+    """
+    retained, omitted, adapted = [], [], []
+    query = re.compile(r'\[(get_regs|get_pins|get_ports|get_clocks) \{([^{}]+)\}\]')
+    for line in sdc.splitlines():
+        if not any(prefix in line for prefix in REPLACED_CDC_PREFIXES):
+            retained.append(line)
+            continue
+        removed, empty = [], []
+
+        def select(match):
+            members = match[2].split()
+            keep = [member for member in members
+                    if not member.startswith(REPLACED_CDC_PREFIXES)]
+            removed.extend(member for member in members if member not in keep)
+            if not keep:
+                empty.append(match[1])
+            return '[' + match[1] + ' {' + ' '.join(keep) + '}]'
+
+        selected = query.sub(select, line)
+        if not removed or any(prefix in selected for prefix in REPLACED_CDC_PREFIXES):
+            raise ValueError('unsupported runtime shared CDC constraint: ' + line)
+        evidence = dict(constraint=line, removed_selectors=removed,
+                        reason='replaced runtime owner or tagged payload; requires separate endpoint audit')
+        if empty:
+            omitted.append(dict(**evidence, empty_query_sides=empty))
+        else:
+            retained.append(selected)
+            adapted.append(dict(**evidence, selected=selected))
+    return dict(sdc='\n'.join(retained) + ('\n' if retained else ''),
+                omitted=omitted, adapted=adapted)
+
+
 def constraints(root, shared_crossings):
     """Keep surviving constraints, inventory removed hierarchy, fail closed.
 
@@ -101,13 +145,7 @@ def constraints(root, shared_crossings):
     if (probe['pins'].get('clk_16m9344') != 'J19' or
             probe['pins'].get('clk_12m288') != 'K18'):
         raise ValueError('reviewed dual-audio reference pins changed')
-    omitted, retained = [], []
-    for line in shared_crossings['sdc'].splitlines():
-        if any(target in line for target in ('u_managed/', 'u_final_output_cdc/', 'u_ble_pcm_cdc/',
-                                            'u_tf_audio/', 'u_delay_ddr_dma/', 'u_video/u_renderer/')):
-            omitted.append(dict(constraint=line, reason='replaced runtime owner or changed tagged payload; requires new endpoint audit'))
-        else:
-            retained.append(line)
+    shared = shared_constraints(shared_crossings['sdc'])
     selected = 'u_managed/runtime/clocks/selector/CLKOUT'
     guard = 'u_runtime_memory_guard/'
     memory_clock = next(entry for entry in clocks['plan']['generated'] if entry['name'] == 'ddr_ui100')
@@ -136,7 +174,8 @@ def constraints(root, shared_crossings):
         'set_false_path -from [get_clocks {selected44}] -to [get_clocks {selected48}]\n'
     )
     return dict(policy=POLICY, sdc=clocks['sdc'] + audio_sdc + guard_gray_sdc,
-        shared_sdc='\n'.join(retained) + '\n', omitted_shared_constraints=omitted,
+        shared_sdc=shared['sdc'], omitted_shared_constraints=shared['omitted'],
+        adapted_shared_constraints=shared['adapted'],
         extra_cst='IO_LOC "clk_16m9344" J19;\nIO_PORT "clk_16m9344" IO_TYPE=LVCMOS33 PULL_MODE=NONE;\n',
         reference_evidence=dict(source='probes/audio_clock_i2s/probe.json', sha256=sha(probe_path)),
         clock_plan_source=clocks['source'], clock_plan_sha256=clocks['source_sha256'],

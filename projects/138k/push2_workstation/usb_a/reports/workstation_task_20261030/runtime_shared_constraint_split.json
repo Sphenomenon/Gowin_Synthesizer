@@ -1,0 +1,753 @@
+{
+  "schema": 1,
+  "scope": "runtime_shared_constraint_list_selection_and_static_surviving_endpoint_mapping",
+  "source_sha256": {
+    "tools/workstation_runtime_profile.py": "f9489c0b0d8aa292a81308c0174c71e016c511645edfc941b76cde0231865b26",
+    "sim/test_workstation_runtime_sources.py": "fcf665d163b049d344da83f2b09ab3708d2fc33fe1474044047bcec82c8757ce",
+    "tools/workstation_custom_clocks.py": "62c7660c9c17d053918aac9023a59503662f1543ee6fbf28948c97152a816fb9",
+    "tools/workstation_runtime_clock_audit.py": "d8e9734eb9a2e5e34c1bdb06b8cae0a5728a71bc5ede346348f035402d0911a2",
+    "tools/workstation_synthesis_netlist.py": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89"
+  },
+  "parent_sdc_sha256": "cf7c8613444693570a531d6edf7c93dbb7f415b0b3ef5cfc026b6b74a2bf4f43",
+  "parent_shared_commands": 157,
+  "retained_commands": 106,
+  "unchanged_retained_commands": 103,
+  "omitted_commands": 51,
+  "adapted_commands": [
+    {
+      "constraint": "set_false_path -to [get_pins {u_managed/u_control_cdc/p_release*/CLEAR u_managed/u_control_cdc/a_release*/CLEAR u_runtime/u_cpu_cdc/source_release*/CLEAR u_runtime/u_cpu_cdc/destination_release*/CLEAR}]",
+      "removed_selectors": [
+        "u_managed/u_control_cdc/p_release*/CLEAR",
+        "u_managed/u_control_cdc/a_release*/CLEAR"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "selected": "set_false_path -to [get_pins {u_runtime/u_cpu_cdc/source_release*/CLEAR u_runtime/u_cpu_cdc/destination_release*/CLEAR}]",
+      "static_netlist_queries": [
+        {
+          "kind": "get_pins",
+          "selector": "u_runtime/u_cpu_cdc/source_release*/CLEAR",
+          "matched_pins": [
+            "u_runtime/u_cpu_cdc/source_release_0_s0/CLEAR",
+            "u_runtime/u_cpu_cdc/source_release_1_s0/CLEAR",
+            "u_runtime/u_cpu_cdc/source_release_2_s0/CLEAR"
+          ],
+          "clocks": {
+            "u_runtime/u_cpu_cdc/source_release_0_s0/CLEAR": "ram_clk",
+            "u_runtime/u_cpu_cdc/source_release_1_s0/CLEAR": "ram_clk",
+            "u_runtime/u_cpu_cdc/source_release_2_s0/CLEAR": "ram_clk"
+          }
+        },
+        {
+          "kind": "get_pins",
+          "selector": "u_runtime/u_cpu_cdc/destination_release*/CLEAR",
+          "matched_pins": [
+            "u_runtime/u_cpu_cdc/destination_release_0_s0/CLEAR",
+            "u_runtime/u_cpu_cdc/destination_release_1_s0/CLEAR",
+            "u_runtime/u_cpu_cdc/destination_release_2_s0/CLEAR"
+          ],
+          "clocks": {
+            "u_runtime/u_cpu_cdc/destination_release_0_s0/CLEAR": "clk_50m",
+            "u_runtime/u_cpu_cdc/destination_release_1_s0/CLEAR": "clk_50m",
+            "u_runtime/u_cpu_cdc/destination_release_2_s0/CLEAR": "clk_50m"
+          }
+        }
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_managed/u_control_cdc/req_meta*/D u_managed/u_control_cdc/ack_meta*/D u_runtime/u_cpu_cdc/req_meta*/D u_runtime/u_cpu_cdc/ack_meta*/D}]",
+      "removed_selectors": [
+        "u_managed/u_control_cdc/req_meta*/D",
+        "u_managed/u_control_cdc/ack_meta*/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "selected": "set_false_path -to [get_pins {u_runtime/u_cpu_cdc/req_meta*/D u_runtime/u_cpu_cdc/ack_meta*/D}]",
+      "static_netlist_queries": [
+        {
+          "kind": "get_pins",
+          "selector": "u_runtime/u_cpu_cdc/req_meta*/D",
+          "matched_pins": [
+            "u_runtime/u_cpu_cdc/req_meta_s0/D"
+          ],
+          "clocks": {
+            "u_runtime/u_cpu_cdc/req_meta_s0/D": "clk_50m"
+          }
+        },
+        {
+          "kind": "get_pins",
+          "selector": "u_runtime/u_cpu_cdc/ack_meta*/D",
+          "matched_pins": [
+            "u_runtime/u_cpu_cdc/ack_meta_s0/D"
+          ],
+          "clocks": {
+            "u_runtime/u_cpu_cdc/ack_meta_s0/D": "ram_clk"
+          }
+        }
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_tf_audio/u_path/file_size_valid_meta*/D u_tf_audio/u_path/pb_meta*/D u_tf_audio/u_path/pb_done_meta*/D u_native_usb/input_owner/analysis_done_meta*/D}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/file_size_valid_meta*/D",
+        "u_tf_audio/u_path/pb_meta*/D",
+        "u_tf_audio/u_path/pb_done_meta*/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "selected": "set_false_path -to [get_pins {u_native_usb/input_owner/analysis_done_meta*/D}]",
+      "static_netlist_queries": [
+        {
+          "kind": "get_pins",
+          "selector": "u_native_usb/input_owner/analysis_done_meta*/D",
+          "matched_pins": [
+            "u_native_usb/input_owner/analysis_done_meta_s0/D"
+          ],
+          "clocks": {
+            "u_native_usb/input_owner/analysis_done_meta_s0/D": "usb_clk"
+          }
+        }
+      ]
+    }
+  ],
+  "omitted_inventory": [
+    {
+      "constraint": "set_max_delay 20.000 -from [get_regs {u_video/u_renderer/u_capture/held_*}] -to [get_regs {u_video/u_renderer/u_capture/snapshot_* u_video/u_renderer/u_capture/render_bank*}]",
+      "removed_selectors": [
+        "u_video/u_renderer/u_capture/held_*",
+        "u_video/u_renderer/u_capture/snapshot_*",
+        "u_video/u_renderer/u_capture/render_bank*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_video/u_renderer/u_capture/held_*}] -to [get_regs {u_video/u_renderer/u_capture/snapshot_* u_video/u_renderer/u_capture/render_bank*}]",
+      "removed_selectors": [
+        "u_video/u_renderer/u_capture/held_*",
+        "u_video/u_renderer/u_capture/snapshot_*",
+        "u_video/u_renderer/u_capture/render_bank*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_video/u_renderer/u_capture/req_meta_s0/D}]",
+      "removed_selectors": [
+        "u_video/u_renderer/u_capture/req_meta_s0/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_video/u_renderer/u_capture/ack_meta_s0/D}]",
+      "removed_selectors": [
+        "u_video/u_renderer/u_capture/ack_meta_s0/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -to [get_pins {u_video/u_renderer/g_analysis.u_analysis/u_capture/ack_meta_s0/D}]",
+      "removed_selectors": [
+        "u_video/u_renderer/g_analysis.u_analysis/u_capture/ack_meta_s0/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_managed/u_audio/reset_50_pipe*/CLEAR u_managed/u_audio/reset_audio_pipe*/CLEAR u_managed/u_midi_drop_cdc/source_release*/CLEAR u_managed/u_midi_drop_cdc/destination_release*/CLEAR}]",
+      "removed_selectors": [
+        "u_managed/u_audio/reset_50_pipe*/CLEAR",
+        "u_managed/u_audio/reset_audio_pipe*/CLEAR",
+        "u_managed/u_midi_drop_cdc/source_release*/CLEAR",
+        "u_managed/u_midi_drop_cdc/destination_release*/CLEAR"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 20.000 -from [get_regs {u_managed/u_audio/u_display_cdc/held_data*}] -to [get_regs {u_managed/u_audio/u_display_cdc/destination_data*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_display_cdc/held_data*",
+        "u_managed/u_audio/u_display_cdc/destination_data*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_audio/u_display_cdc/held_data*}] -to [get_regs {u_managed/u_audio/u_display_cdc/destination_data*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_display_cdc/held_data*",
+        "u_managed/u_audio/u_display_cdc/destination_data*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_managed/u_audio/u_display_cdc/req_meta*/D u_managed/u_audio/u_display_cdc/ack_meta*/D}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_display_cdc/req_meta*/D",
+        "u_managed/u_audio/u_display_cdc/ack_meta*/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_managed/effect_mask_meta*/D u_managed/effect_order_meta*/D}]",
+      "removed_selectors": [
+        "u_managed/effect_mask_meta*/D",
+        "u_managed/effect_order_meta*/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 20.000 -from [get_regs {u_managed/u_control_cdc/request_held*}] -to [get_regs {u_managed/u_control_cdc/request_local*}]",
+      "removed_selectors": [
+        "u_managed/u_control_cdc/request_held*",
+        "u_managed/u_control_cdc/request_local*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_control_cdc/request_held*}] -to [get_regs {u_managed/u_control_cdc/request_local*}]",
+      "removed_selectors": [
+        "u_managed/u_control_cdc/request_held*",
+        "u_managed/u_control_cdc/request_local*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 20.000 -from [get_regs {u_managed/u_control_cdc/response_held*}] -to [get_regs {u_managed/u_control_cdc/response_local*}]",
+      "removed_selectors": [
+        "u_managed/u_control_cdc/response_held*",
+        "u_managed/u_control_cdc/response_local*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_control_cdc/response_held*}] -to [get_regs {u_managed/u_control_cdc/response_local*}]",
+      "removed_selectors": [
+        "u_managed/u_control_cdc/response_held*",
+        "u_managed/u_control_cdc/response_local*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 20.000 -from [get_regs {u_managed/u_midi_drop_cdc/gray*}] -to [get_regs {u_managed/u_midi_drop_cdc/meta*}]",
+      "removed_selectors": [
+        "u_managed/u_midi_drop_cdc/gray*",
+        "u_managed/u_midi_drop_cdc/meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_midi_drop_cdc/gray*}] -to [get_regs {u_managed/u_midi_drop_cdc/meta*}]",
+      "removed_selectors": [
+        "u_managed/u_midi_drop_cdc/gray*",
+        "u_managed/u_midi_drop_cdc/meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_managed/u_audio/u_pc_rx/rx_sync_0*/D}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_pc_rx/rx_sync_0*/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_managed/u_audio/u_pc_cdc/req_meta*/D u_managed/u_audio/u_pc_cdc/ack_meta*/D u_managed/u_audio/pc_health_meta*/D}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_pc_cdc/req_meta*/D",
+        "u_managed/u_audio/u_pc_cdc/ack_meta*/D",
+        "u_managed/u_audio/pc_health_meta*/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 20.000 -from [get_regs {u_managed/u_audio/u_pc_cdc/held_data*}] -to [get_regs {u_managed/u_audio/u_pc_cdc/destination_data*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_pc_cdc/held_data*",
+        "u_managed/u_audio/u_pc_cdc/destination_data*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_audio/u_pc_cdc/held_data*}] -to [get_regs {u_managed/u_audio/u_pc_cdc/destination_data*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_pc_cdc/held_data*",
+        "u_managed/u_audio/u_pc_cdc/destination_data*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 20.000 -from [get_regs {u_final_output_cdc/held_data*}] -to [get_regs {u_final_output_cdc/destination_data*}]",
+      "removed_selectors": [
+        "u_final_output_cdc/held_data*",
+        "u_final_output_cdc/destination_data*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_final_output_cdc/held_data*}] -to [get_regs {u_final_output_cdc/destination_data*}]",
+      "removed_selectors": [
+        "u_final_output_cdc/held_data*",
+        "u_final_output_cdc/destination_data*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_final_output_cdc/req_meta*/D u_final_output_cdc/ack_meta*/D}]",
+      "removed_selectors": [
+        "u_final_output_cdc/req_meta*/D",
+        "u_final_output_cdc/ack_meta*/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_tf_audio/rate_meta*/D u_tf_audio/format_meta*/D u_tf_audio/unsupported_meta*/D u_tf_audio/clear_meta*/D u_tf_audio/hold_meta*/D}]",
+      "removed_selectors": [
+        "u_tf_audio/rate_meta*/D",
+        "u_tf_audio/format_meta*/D",
+        "u_tf_audio/unsupported_meta*/D",
+        "u_tf_audio/clear_meta*/D",
+        "u_tf_audio/hold_meta*/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray* u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_binary_9*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_binary_9*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray* u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_binary_9*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_binary_9*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/read_gray_meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray* u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_binary_9*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_binary_9*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray* u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_binary_9*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_binary_9*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/read_gray_meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_tf_audio/u_pcm_cdc/rd_gray* u_tf_audio/u_pcm_cdc/rd_bin_4*}] -to [get_regs {u_tf_audio/u_pcm_cdc/rd_gray_w1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_pcm_cdc/rd_gray*",
+        "u_tf_audio/u_pcm_cdc/rd_bin_4*",
+        "u_tf_audio/u_pcm_cdc/rd_gray_w1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_tf_audio/u_pcm_cdc/rd_gray* u_tf_audio/u_pcm_cdc/rd_bin_4*}] -to [get_regs {u_tf_audio/u_pcm_cdc/rd_gray_w1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_pcm_cdc/rd_gray*",
+        "u_tf_audio/u_pcm_cdc/rd_bin_4*",
+        "u_tf_audio/u_pcm_cdc/rd_gray_w1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_tf_audio/u_pcm_cdc/wr_gray*}] -to [get_regs {u_tf_audio/u_pcm_cdc/wr_gray_r1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_pcm_cdc/wr_gray*",
+        "u_tf_audio/u_pcm_cdc/wr_gray_r1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_tf_audio/u_pcm_cdc/wr_gray*}] -to [get_regs {u_tf_audio/u_pcm_cdc/wr_gray_r1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_pcm_cdc/wr_gray*",
+        "u_tf_audio/u_pcm_cdc/wr_gray_r1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_tf_audio/u_path/u_capture_fifo/rd_gray* u_tf_audio/u_path/u_capture_fifo/rd_bin_12*}] -to [get_regs {u_tf_audio/u_path/u_capture_fifo/rd_gray_w1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_capture_fifo/rd_gray*",
+        "u_tf_audio/u_path/u_capture_fifo/rd_bin_12*",
+        "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_tf_audio/u_path/u_capture_fifo/rd_gray* u_tf_audio/u_path/u_capture_fifo/rd_bin_12*}] -to [get_regs {u_tf_audio/u_path/u_capture_fifo/rd_gray_w1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_capture_fifo/rd_gray*",
+        "u_tf_audio/u_path/u_capture_fifo/rd_bin_12*",
+        "u_tf_audio/u_path/u_capture_fifo/rd_gray_w1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_tf_audio/u_path/u_capture_fifo/wr_gray*}] -to [get_regs {u_tf_audio/u_path/u_capture_fifo/wr_gray_r1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_capture_fifo/wr_gray*",
+        "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_tf_audio/u_path/u_capture_fifo/wr_gray*}] -to [get_regs {u_tf_audio/u_path/u_capture_fifo/wr_gray_r1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_capture_fifo/wr_gray*",
+        "u_tf_audio/u_path/u_capture_fifo/wr_gray_r1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_tf_audio/u_path/u_playback_fifo/rd_gray* u_tf_audio/u_path/u_playback_fifo/rd_bin_12*}] -to [get_regs {u_tf_audio/u_path/u_playback_fifo/rd_gray_w1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_playback_fifo/rd_gray*",
+        "u_tf_audio/u_path/u_playback_fifo/rd_bin_12*",
+        "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_tf_audio/u_path/u_playback_fifo/rd_gray* u_tf_audio/u_path/u_playback_fifo/rd_bin_12*}] -to [get_regs {u_tf_audio/u_path/u_playback_fifo/rd_gray_w1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_playback_fifo/rd_gray*",
+        "u_tf_audio/u_path/u_playback_fifo/rd_bin_12*",
+        "u_tf_audio/u_path/u_playback_fifo/rd_gray_w1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_tf_audio/u_path/u_playback_fifo/wr_gray*}] -to [get_regs {u_tf_audio/u_path/u_playback_fifo/wr_gray_r1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_playback_fifo/wr_gray*",
+        "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_tf_audio/u_path/u_playback_fifo/wr_gray*}] -to [get_regs {u_tf_audio/u_path/u_playback_fifo/wr_gray_r1*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_playback_fifo/wr_gray*",
+        "u_tf_audio/u_path/u_playback_fifo/wr_gray_r1*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -to [get_pins {u_tf_audio/u_path/u_capture_fifo/clear_rd_meta*/D}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_capture_fifo/clear_rd_meta*/D"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_pins"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_tf_audio/u_path/u_dma/staged_file_size*}] -to [get_regs {u_tf_audio/u_path/file_size_meta*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_dma/staged_file_size*",
+        "u_tf_audio/u_path/file_size_meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_tf_audio/u_path/u_dma/staged_file_size*}] -to [get_regs {u_tf_audio/u_path/file_size_meta*}]",
+      "removed_selectors": [
+        "u_tf_audio/u_path/u_dma/staged_file_size*",
+        "u_tf_audio/u_path/file_size_meta*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_binary_9*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_9*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_binary_9*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_9*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_binary_9*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_9*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_binary_9*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_gray_meta_9*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_max_delay 10.000 -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_binary_9*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_9*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_binary_9*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_9*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    },
+    {
+      "constraint": "set_false_path -hold -from [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_binary_9*}] -to [get_regs {u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_9*}]",
+      "removed_selectors": [
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_binary_9*",
+        "u_managed/u_audio/u_workstation/effects/delay_stage/u_read_fifo/write_gray_meta_9*"
+      ],
+      "reason": "replaced runtime owner or tagged payload; requires separate endpoint audit",
+      "empty_query_sides": [
+        "get_regs",
+        "get_regs"
+      ]
+    }
+  ],
+  "synthesis": {
+    "process_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev4-synthesis-41e653fe/runtime_synthesis_evidence/process.json",
+    "process_sha256": "3265bee262fec902496b483bfdcc9a9fcf328fd7ac98460cb215fd5d914ddb71",
+    "prepared_profile": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev4-synthesis-41e653fe/workstation_profile.json",
+    "prepared_profile_sha256": "5ffbc80a79e132d8e02f8761353b41eaaafd827d62ba8d0f09b8abef5af5bb70",
+    "prepared_profile_input_closure_equal": true,
+    "candidate_identity": "custom138k-workstation-v1-41e653fe462e5ea3",
+    "stage": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev4-synthesis-41e653fe/workstation/Prj1",
+    "full_staged_input_count": 560,
+    "vg": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev4-synthesis-41e653fe/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+    "vg_sha256": "2319746ad8eabba1e19721908402dd0c25bd91aba52b896650d82153e6c4e3da",
+    "validation_stage": "synthesis_only",
+    "inputs_independently_hashed": true
+  },
+  "selected_shared_sdc_sha256": "434e044474e3123ec7d44f774c055b6a1d5ce61937e2aa44f46529223ef38077",
+  "checks": {
+    "targeted_tests_passed": 10,
+    "prepared_source_audit_skipped": true,
+    "accepted_pinned_source_tests_passed": 10,
+    "unrelated_commands_preserved": true
+  },
+  "gowin_query_resolution_verified": false,
+  "constraints_complete": false,
+  "routed_timing_verified": false,
+  "hardware_operated": false,
+  "deployment_allowed": false,
+  "identity": "runtime-shared-constraint-split-v1-e632045a177875e1"
+}
