@@ -20,6 +20,12 @@ module hdmi_display #(
     input wire [31:0] active_voices, status_data,
     input wire [2:0] effect_mask,
     input wire [5:0] effect_order,
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    input wire frame_44k1_i,frame_error_i,observation_trusted_i,
+    input wire [31:0] frame_epoch_i,frame_sequence_i,
+    output wire [31:0] display_observation_drop_o,
+    output wire ddr_client_reset_no,ddr_client_ready_o,
+`endif
     input wire memory_clk, memory_reset_n, memory_calibrated, memory_pll_locked,
     input wire ui_pending,ui_visible,ui_next_visible,
     input wire [28:0] ui_front_base,ui_next_base,
@@ -89,6 +95,12 @@ module hdmi_display #(
     wire [28:0] bist_addr,bist_first_error;
     wire [255:0] bist_data;
     wire [31:0] bist_errors;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    // Observation only: the platform guard owns fail-stop policy. Video/DDR
+    // reset-domain separation requires a later explicitly validated change.
+    assign ddr_client_reset_no=ui_rst_n;
+    assign ddr_client_ready_o=ui_rst_n && memory_calibrated && bist_done && !bist_failed;
+`endif
     ddr3_bist u_bist (
         .clk(memory_clk),.rst_n(ui_rst_n),.req_valid(bist_req),.req_ready(bist_ready),
         .req_write(bist_write),.req_addr(bist_addr),.req_wdata(bist_data),
@@ -130,6 +142,19 @@ module hdmi_display #(
     wire [7:0] shared_render_spectrum_left,shared_render_spectrum_right;
     wire [2:0] shared_render_image_gain;
     wire [255:0] shared_render_meta;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    wire native_raster_allowed,native_current_image,native_summary_publish;
+    reg native_raster_lease;
+    // The cache metadata stays owned through the final legacy P5 write ACK,
+    // including the short renderer_done -> meta_pending gap in frame_writer.
+    always @(posedge memory_clk or negedge ui_rst_n)
+        if(!ui_rst_n)native_raster_lease<=0;
+        else if(renderer_start)native_raster_lease<=1;
+        else if(frame_pending)native_raster_lease<=0;
+    wire [31:0] native_render_rate,native_render_epoch;
+    wire [2:0] native_writer_diagnostic;
+    wire [3:0] native_reader_diagnostic;
+`endif
     video_runtime_diagnostics u_diagnostics (
         .clk_50m(clk_50m),.reset_n(reset_n),.pixel_clk(pixel_clk),
         .pixel_reset_n(pixel_reset_n),.ui_clk(memory_clk),.ui_reset_n(ui_rst_n),
@@ -150,11 +175,26 @@ module hdmi_display #(
     // only after the HDMI reader has published a complete cache.
     reg push_summary_event;
     always @(posedge memory_clk or negedge ui_rst_n)
-        if(!ui_rst_n) push_summary_event<=0; else push_summary_event<=shared_load_done;
+        if(!ui_rst_n) push_summary_event<=0;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        else push_summary_event<=native_summary_publish;
+`else
+        else push_summary_event<=shared_load_done;
+`endif
     assign push_display_summary={shared_render_meta[95:64],shared_render_meta[200:192],
                                  shared_render_meta[175:160],shared_render_meta[30:24]};
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    assign push_display_summary_valid=push_summary_event && native_current_image;
+`else
     assign push_display_summary_valid=push_summary_event;
+`endif
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    // The maintained raster reads only a coherent current local cache. Its
+    // legacy wave capture provides pacing; the native producer owns analysis.
+    feedback_renderer #(.ENABLE_ANALYSIS(0),.SHARED_EXPORT(0),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15)) u_renderer (
+`else
     feedback_renderer #(.ENABLE_ANALYSIS(1),.SHARED_EXPORT(1),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15)) u_renderer (
+`endif
         .clk(memory_clk),.rst_n(ui_rst_n),.start(renderer_start),.frame_ready(renderer_ready),
         .busy(renderer_busy),.frame_done(renderer_done),.pixel_valid(pixel_valid),
         .pixel_ready(pixel_ready),.pixel_data(pixel_data),.display_meta(display_meta),.shared_export_meta(shared_export_meta),.source_clk(clk_50m),
@@ -184,12 +224,39 @@ module hdmi_display #(
         .clk(memory_clk),.rst_n(ui_rst_n),.enabled(display_enabled),
         // A ready waveform must not start a new raster while the previous
         // P5 commit is still waiting for DDR acceptance.
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        .front_bank(analysis_bank),.frame_swap(analysis_commit),.renderer_ready(renderer_ready && shared_initialized && native_raster_allowed && !write_req),
+`else
         .front_bank(analysis_bank),.frame_swap(analysis_commit),.renderer_ready(renderer_ready && shared_initialized && !write_req),
+`endif
         .renderer_done(renderer_done),.renderer_start(renderer_start),.pixel_valid(pixel_valid),
         .pixel_ready(pixel_ready),.pixel_data(pixel_data),.display_meta(display_meta),.req_valid(write_req),
         .req_ready(write_ready),.req_addr(write_addr),.req_wdata(write_data),
         .frame_pending(frame_pending),.rendered_frames(rendered_frames)
     );
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    workstation_display_runtime u_runtime_display(
+        .source_clk_i(clk_50m),.source_reset_ni(source_reset_pipe[2]),.clk_i(memory_clk),.rst_ni(ui_rst_n),
+        .enabled_i(display_enabled),.frame_valid_i(sample_valid),.frame_44k1_i(frame_44k1_i),.frame_error_i(frame_error_i),
+        .observation_trusted_i(observation_trusted_i),.frame_epoch_i(frame_epoch_i),.frame_sequence_i(frame_sequence_i),
+        .frame_pcm_i(output_pcm),.trigger_reference_i(trigger_reference),.active_voices_i(active_voices),.status_i(status_data),
+        .effect_mask_i(effect_mask),.effect_order_i(effect_order),.observation_drop_o(display_observation_drop_o),
+        .memory_status_i(memory_status),.raster_busy_i(native_raster_lease || renderer_busy || write_req),.raster_start_i(renderer_start),
+        .raster_allowed_o(native_raster_allowed),.current_image_o(native_current_image),.summary_publish_o(native_summary_publish),
+        .writer_busy_o(shared_busy),.writer_done_o(shared_write_done),.writer_initialized_o(shared_initialized),
+        .writer_req_o(shared_req),.writer_ready_i(shared_ready),.writer_address_o(shared_addr),.writer_data_o(shared_data),
+        .reader_busy_o(shared_load_busy),.reader_done_o(shared_load_done),.reader_valid_o(shared_load_valid),.reader_fault_o(shared_load_fault),
+        .reader_req_o(shared_load_req),.reader_ready_i(shared_load_ready),.reader_address_o(shared_load_addr),
+        .reader_response_i(shared_load_response),.reader_data_i(client_rdata),.render_read_enable_i(shared_render_read_enable),
+        .render_wave_address_i(shared_render_wave_addr),.render_spectrum_column_i(shared_render_spectrum_column),
+        .render_image_address_i(shared_render_image_addr),.render_wave_data_o(shared_render_wave_data),.render_image_hit_o(shared_render_image_hit),
+        .render_spectrum_left_o(shared_render_spectrum_left),.render_spectrum_right_o(shared_render_spectrum_right),
+        .render_meta_o(shared_render_meta),.render_analysis_sequence_o(shared_render_analysis_sequence),
+        .render_analysis_skipped_o(shared_render_analysis_skipped),.render_stereo_peaks_o(shared_render_stereo_peaks),
+        .render_image_gain_o(shared_render_image_gain),.render_analysis_valid_o(shared_render_analysis_valid),
+        .render_frame_sequence_o(shared_render_frame_sequence),.render_sample_rate_o(native_render_rate),.render_epoch_o(native_render_epoch),
+        .writer_diagnostic_o(native_writer_diagnostic),.reader_diagnostic_o(native_reader_diagnostic));
+`else
     display_data_writer u_data_writer(
         .clk(memory_clk),.rst_n(ui_rst_n),.enabled(display_enabled),.start(shared_start),
         .effect_meta(shared_export_meta),.analysis_sequence(shared_analysis_sequence),
@@ -211,6 +278,7 @@ module hdmi_display #(
         .render_analysis_skipped(shared_render_analysis_skipped),.render_stereo_peaks(shared_render_stereo_peaks),
         .render_image_gain(shared_render_image_gain),.render_analysis_valid(shared_render_analysis_valid),
         .render_frame_sequence(shared_render_frame_sequence));
+`endif
     wire merged_req,merged_ready;
     wire scan_fetch_busy,arbiter_writer_req,arbiter_writer_ready;
     wire arbiter_cpu_req,arbiter_cpu_ready;
