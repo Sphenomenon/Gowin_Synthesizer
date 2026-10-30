@@ -92,6 +92,8 @@
 
 [owner8 PCM／APB 第一批审计](push2_workstation/usb_a/reports/WORKSTATION_RECORDING_PHASE1_CDC_20261030.md)已父级通过真实 e855 的四项／28 负控和公开 CLI：425 FF、42 Gray 首级位、82 保持数据位及六 release 链；35 行 SDC 仍为未安装提案。seal 的 raw reset／混合 ready 锥、RAM 数据、service／native／owner8 与完整物理验收均未接受；后续 BLE DDR 新接线必须重新审查消费者和身份，无部署。
 
+[owner8 双客户端未选择源组件](push2_workstation/usb_a/reports/WORKSTATION_RECORDING_OWNER_MUX_SOURCE_20261030.md)已通过父级 1,937 checks／八突变及独立 496 checks／四突变，保留 native commit 与读归属、轮转和故障隔离。新增外部 channel-ready 资格要求，局部复位后错误重新开放仍可能误认旧无标签返回，未声称物理排空已解决。尚未分配实际 CPU／BLE 子区或选入整机，无综合、资源净收益、完整 CDC／STA 或硬件接受；R00／R01／R02 保持未完成，未部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

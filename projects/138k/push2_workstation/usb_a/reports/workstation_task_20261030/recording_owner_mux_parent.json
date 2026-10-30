@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-30T12:55:15.668616+00:00",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_owner_mux.sv": "2af5a52d3bf9c67f93eef803e07bd9b9e636c1f65348676289dc13b487e76bf5",
+    "projects/138k/push2_workstation/usb_a/rtl/memory/RECORDING_DDR_OWNER_MUX_CONTRACT.md": "4bddf13be754ad644166aa65be4e26bfad3eca2edb43ea623de91792a5b7446b",
+    "projects/138k/push2_workstation/usb_a/sim/memory/tb_recording_ddr_owner_mux.sv": "f0b4e28b28f8dee087eb6b0bcdb75091b1ea0920724eb79f5a245a0948900b28",
+    "projects/138k/push2_workstation/usb_a/sim/test_recording_ddr_owner_mux.py": "87d57f3d8a4e73b087bd9037e288349c48b8e83371895b01a5caeee2aa4715cb",
+    "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+  },
+  "root_tests": {
+    "tests": 2,
+    "checks": 1937,
+    "writes": 88,
+    "reads": 75,
+    "rejected_mutants": 8,
+    "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/owner8-mux-parent-tests-v3.log",
+    "log_sha256": "9f25cd8f60c9c8e9cfbe20c4f6195e90a3a951348667ff811f02d00153450b78"
+  },
+  "independent": {
+    "seal": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-owner-mux-rearm-independent-review-v2/REVIEW_SEAL.json",
+    "seal_sha256": "244d8d3782662785b6fd710a8cfe7b86af811233e979f2ac5598eb7e27835f6c",
+    "all_sealed_files_rechecked": true,
+    "verification": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-owner-mux-rearm-independent-review-v2/verification.json",
+    "verification_sha256": "c5432be40e329c729dd364c36e86d480a47bede56712a2c2bc8b8b02df9690c1",
+    "checks": 496,
+    "rejected_mutants": 4
+  },
+  "rearm_counterexample": {
+    "name": "false external rearm after mux/client-only reset",
+    "result": "old untagged owner0 read response is delivered to new owner1 without local fault",
+    "classification": "documented external-authority trust limitation, not solved by the new port"
+  },
+  "source_selected": false,
+  "production_suballocation_bound": false,
+  "physical_rearm_proven": false,
+  "physical_resource_saving_proven": false,
+  "cdc_complete": false,
+  "physical_timing_accepted": false,
+  "hardware_operated": false,
+  "sram_deployed": false,
+  "flash_written": false,
+  "release_ready": false,
+  "deployment_allowed": false,
+  "lint": {
+    "owner8-mux-parent-lint-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/owner8-mux-parent-lint-v1.log",
+      "sha256": "31eeb199cc309ab3641c061cd5898ae30c39d4bf14101b20c76d1994893584d2",
+      "exit_code": 1
+    },
+    "owner8-mux-parent-lint-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/owner8-mux-parent-lint-v2.log",
+      "sha256": "bbbc0f9e810490cd3982bf14dbac259db266ffdba42728a85e8bad77e7ddf308",
+      "exit_code": 1
+    },
+    "owner8-mux-parent-lint-v3.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/owner8-mux-parent-lint-v3.log",
+      "sha256": "adb4041411cbb2b327e754c9ba5dd09538e14225c8a2307cd9d807a5053d49e2",
+      "exit_code": 0
+    },
+    "accepted_scope": "strict Verilator -Wall with exact 29-bit nonzero disjoint test parameters; no warnings suppressed"
+  }
+}
