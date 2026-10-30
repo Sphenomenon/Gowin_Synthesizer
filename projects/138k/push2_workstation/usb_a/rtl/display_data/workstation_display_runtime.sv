@@ -92,14 +92,20 @@ module workstation_display_runtime (
     wire [1:0] read_kind;
     wire [15:0] read_address;
     wire [31:0] read_data;
-    reg pending,loading,have_image,publish;
+    reg pending,loading,have_image,publish,load_request,export_live;
     reg [31:0] export_rate,export_epoch,export_generation,image_generation;
     wire unavailable;
     wire export_current=source_valid && export_rate==source_rate && export_epoch==source_epoch &&
         export_generation==source_generation;
     wire export_start=enabled_i && source_ready && writer_initialized_o && !writer_busy_o &&
         !reader_busy_o && !pending && !loading;
-    wire load_start=enabled_i && pending && export_current && !raster_busy_i && !raster_start_i;
+    // Context qualification ends at this request register. A context break
+    // on its acceptance edge may start one obsolete private-cache read; the
+    // current-image path revokes immediately and completion must still pass
+    // the live export/current-context guards below. Do not reconnect the long
+    // loss/context comparator cone to the reader state transition.
+    wire load_start=load_request && enabled_i && export_live && !loading &&
+        !reader_busy_o && !raster_busy_i && !raster_start_i;
     display_data_analysis_source producer(
         .clk(clk_i),.rst_ni(common_reset_n),.frame_valid_i(tuple_valid),.frame_error_i(tuple_error),
         .frame_44k1_i(tuple_rate),.frame_epoch_i(tuple_epoch),.frame_sequence_i(tuple_sequence),.frame_pcm_i(tuple_pcm),
@@ -144,25 +150,34 @@ module workstation_display_runtime (
     assign current_image_o=have_image && reader_valid_o && source_valid &&
         image_generation==source_generation && render_sample_rate_o==source_rate && render_epoch_o==source_epoch;
     assign raster_allowed_o=enabled_i && current_image_o && !pending && !loading && !reader_busy_o;
-    assign summary_publish_o=publish && current_image_o;
+    assign summary_publish_o=enabled_i && publish && current_image_o;
     always @(posedge clk_i or negedge common_reset_n)begin
         if(!common_reset_n)begin
-            pending<=0;loading<=0;have_image<=0;publish<=0;
+            pending<=0;loading<=0;have_image<=0;publish<=0;load_request<=0;export_live<=0;
             export_rate<=0;export_epoch<=0;export_generation<=0;image_generation<=0;
         end else begin
             publish<=0;
+            load_request<=enabled_i && pending && export_live && export_current &&
+                !loading && !reader_busy_o;
             if(export_start)begin
                 export_rate<=source_rate;export_epoch<=source_epoch;export_generation<=source_generation;
-            end
-            if(writer_done_o)pending<=!unavailable && export_current;
-            if(pending && !export_current)pending<=0;
+                export_live<=1;
+            end else if(!enabled_i || !export_current)export_live<=0;
+            if(writer_done_o)pending<=enabled_i && export_live && !unavailable && export_current;
+            if(pending && (!export_current || !export_live))pending<=0;
             if(load_start)begin pending<=0;loading<=1;end
             if(reader_done_o)begin
                 loading<=0;
-                if(!reader_fault_o && reader_valid_o && export_current &&
+                if(loading && enabled_i && export_live && !reader_fault_o && reader_valid_o && export_current &&
                    render_sample_rate_o==export_rate && render_epoch_o==export_epoch)begin
                     have_image<=1;image_generation<=export_generation;publish<=1;
                 end
+            end
+            // Disabling revokes the complete export/load transaction, even
+            // if the real writer/reader later drains after re-enable. Their
+            // existing outstanding DDR handshake remains under its owner.
+            if(!enabled_i)begin
+                pending<=0;loading<=0;load_request<=0;have_image<=0;
             end
         end
     end
