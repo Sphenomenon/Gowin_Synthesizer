@@ -18,6 +18,7 @@ module tb_workstation_observation_consumers;
     wire running,done,score_failed;
     wire [31:0] leds,score_frame;
     integer bin_count=0,score_updates=0,failures=0,checks=0;
+    integer switch_score_start_checks=0,switch_score_completion_checks=0;
     reg [31:0] previous_leds=0;
     always #5 clk=!clk;
     workstation_observation_consumers #(.RECORD_ADDRESS_BITS(2)) dut(
@@ -108,7 +109,22 @@ module tb_workstation_observation_consumers;
         score_start=1;clocks(1);score_start=0;clocks(4);gap=1;sample(0);gap=0;clocks(3);
         if(running || !score_failed || done || leds!=0)$fatal(1,"broken timebase did not fail score");
         checks=checks+1;
-        $display("PASS observation_consumers: checks=%0d failures=%0d fft_bins=%0d fft_discards=%0d cues=%0d",checks,failures,bin_count,fft_discards,score_updates);
+        // A switch blocks a same-edge score launch, and also wins over the
+        // exact edge that would otherwise publish the final cue and success.
+        score_length=1;score_addr=0;score_data={32'd0,32'ha5};score_write=1;clocks(1);score_write=0;clocks(2);
+        switch_busy=1;score_start=1;clocks(1);score_start=0;clocks(2);
+        if(running || !score_failed || done)$fatal(1,"switch/start boundary admitted score");
+        switch_score_start_checks=switch_score_start_checks+1;
+        switch_busy=0;score_start=1;clocks(1);score_start=0;
+        wait(dut.score.state==3);@(negedge clk);
+        if(!running || dut.score.cue[63:32]>score_frame)$fatal(1,"final score cue boundary was not armed");
+        switch_busy=1;clocks(1);
+        if(running || !score_failed || done || leds!=0)$fatal(1,"switch/final cue boundary published success");
+        switch_score_completion_checks=switch_score_completion_checks+1;
+        switch_busy=0;score_start=1;clocks(1);score_start=0;clocks(8);
+        if(running || score_failed || leds!=32'ha5)$fatal(1,"score did not recover after switch release");
+        checks=checks+3;
+        $display("PASS observation_consumers: checks=%0d failures=%0d fft_bins=%0d fft_discards=%0d cues=%0d switch_score_start_checks=%0d switch_score_completion_checks=%0d",checks,failures,bin_count,fft_discards,score_updates,switch_score_start_checks,switch_score_completion_checks);
         $finish;
     end
     initial begin #1000000;$fatal(1,"consumer watchdog");end

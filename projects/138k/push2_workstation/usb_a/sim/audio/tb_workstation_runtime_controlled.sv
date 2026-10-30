@@ -1,8 +1,8 @@
 `timescale 1ns/1ps
-module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
-    reg control_clk=0,compute_clk=0,memory_clk=0,pclk=0,reference48=0,reference44=0,rst_n=0,preset_n=0;
+module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,INFLIGHT_SCORE_BOUNDARY=0,CHECK_SWITCH_ASYNC=1);
+    reg control_clk=0,compute_clk=0,memory_clk=0,pclk=0,reference48=0,reference44=0,rst_n=0,preset_n=0,compute_run=1;
     always #10 control_clk=!control_clk;
-    always #6.510417 compute_clk=!compute_clk;
+    always #6.510417 if(compute_run)compute_clk=!compute_clk;
     always #5 memory_clk=!memory_clk;
     always #17 pclk=!pclk;
     initial begin #3.7;forever #40.690104 reference48=!reference48;end
@@ -111,6 +111,64 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
     integer fft_bins=0,fft_nonzero=0,uart_errors=0,apb_transactions=0,usb_events=0,cpu_events=0,policies=0;
     integer observed48=0,observed44=0,fft48=0,fft44=0;
     integer display_effect_tuple_checks=0,display_effect_changes48=0,display_effect_changes44=0;
+    integer source_50_checks=0,source_compute_checks=0,switch_source_changes=0,reason_source_changes=0;
+    integer switch_launch_delay_checks=0,pc_drop_carry_checks=0,tf_reason_handoffs=0,score_switch_rejects=0;
+    integer switch_async_assert_checks=0,switch_release_checks=0;
+    reg expected_switch_source,expected_drop_source,check_50_source,check_compute_source;
+    reg previous_switch_source=1;
+    reg [2:0] expected_reason_source,previous_reason_source=0;
+    realtime last_control_edge=0,last_compute_edge=0;
+    realtime boundary_accept_time=0,boundary_start_time=0,boundary_inhibit_time=0;
+    reg boundary_armed=0;
+    always @(posedge compute_clk)if(INFLIGHT_SCORE_BOUNDARY && boundary_armed && dut.score_start)
+        boundary_start_time=$realtime;
+    always @(posedge dut.switch_busy_compute[1])if(INFLIGHT_SCORE_BOUNDARY && boundary_armed)
+        boundary_inhibit_time=$realtime;
+    // These checks prove source-flop timing, not analog glitch/CDC behavior.
+    // The pre-edge decode must be retained after an owner changes this edge.
+    always @(posedge control_clk)begin
+        last_control_edge=$realtime;check_50_source=dut.reset_50_n;
+        expected_switch_source=busy || dut.quiesce_o;expected_drop_source=dut.pc_drop!=0;
+        #0.001;
+        if(check_50_source)begin
+            if(dut.switch_busy_50!==expected_switch_source || dut.pc_drop_seen_50!==expected_drop_source)
+                $fatal(1,"control CDC aggregate lacks source register");
+            source_50_checks=source_50_checks+1;
+            if(dut.switch_busy_50!=previous_switch_source)switch_source_changes=switch_source_changes+1;
+        end
+        previous_switch_source=dut.switch_busy_50;
+    end
+    always @(posedge compute_clk)begin
+        last_compute_edge=$realtime;check_compute_source=dut.reset_compute_n;
+        expected_reason_source={tf_active || tf_busy,running,rec_enabled};
+        #0.001;
+        if(check_compute_source)begin
+            if(dut.reasons_compute!==expected_reason_source)$fatal(1,"reason CDC aggregate lacks source register");
+            source_compute_checks=source_compute_checks+1;
+            if(dut.reasons_compute!=previous_reason_source)reason_source_changes=reason_source_changes+1;
+        end
+        previous_reason_source=dut.reasons_compute;
+    end
+    always @(dut.switch_busy_50 or dut.pc_drop_seen_50)
+        if(dut.reset_50_n && $realtime!=last_control_edge)$fatal(1,"control CDC source changed between source edges");
+    always @(dut.reasons_compute)
+        if(dut.reset_compute_n && $realtime!=last_compute_edge)$fatal(1,"reason CDC source changed between source edges");
+    always @(posedge dut.switch_busy_50)begin
+        #0.001;
+        if(CHECK_SWITCH_ASYNC && rst_n && dut.reset_compute_n)begin
+            if(dut.switch_busy_compute!==2'b11)$fatal(1,"registered switch source did not assert compute inhibit asynchronously");
+            switch_async_assert_checks=switch_async_assert_checks+1;
+        end
+    end
+    reg [1:0] expected_switch_release;
+    always @(posedge compute_clk)begin
+        expected_switch_release={dut.switch_busy_compute[0],1'b0};
+        #0.001;
+        if(dut.reset_compute_n && !dut.switch_busy_50)begin
+            if(dut.switch_busy_compute!==expected_switch_release)$fatal(1,"switch inhibit release skipped local compute stages");
+            switch_release_checks=switch_release_checks+1;
+        end
+    end
     reg [8:0] last_effect48=9'h1ff,last_effect44=9'h1ff;
     always @(negedge dut.runtime.serial_reset_n)begin physical_position=0;decoded=0;last_decoded=0;end
     always @(posedge bck)begin
@@ -224,6 +282,49 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
             request44=!rate;request=1;@(negedge control_clk);request=0;
             if(!policy_rejected || accepted || busy || epoch!=32'(saved))$fatal(1,"policy rejection changed stream");end
     endtask
+    task inflight_zero_cue_switch;
+        integer attempts;
+        begin
+            frames(2);
+            write_reg('h100,0);write_reg('h104,0);write_reg('h108,32'ha5);write_reg('h10c,1);write_reg('h110,1);
+            attempts=0;
+            while(!boundary_armed && attempts<96)begin
+                attempts=attempts+1;
+                fork
+                    begin write_reg('h114,1);end
+                    begin
+                        // The real APB CDC has captured this command but has
+                        // not yet asserted command_valid. Choose a phase in
+                        // which the next 50-MHz request acceptance falls just
+                        // before the compute edge consuming SCORE_START.
+                        wait(dut.command_address==12'h114 &&
+                             dut.control_cdc.req_settled!=dut.control_cdc.acknowledge_toggle &&
+                             !dut.control_cdc.request_decoded);
+                        if(last_control_edge+20.0-$realtime>19.1)begin
+                            boundary_armed=1;
+                            @(negedge control_clk);request44=1;request=1;
+                            @(posedge control_clk);#0.001;
+                            if(!accepted || dut.switch_busy_50)$fatal(1,"in-flight score request was not accepted from RUN");
+                            boundary_accept_time=$realtime;
+                            @(negedge control_clk);request=0;
+                        end
+                    end
+                join
+                if(!boundary_armed)begin
+                    repeat(6)@(negedge compute_clk);
+                    if(running)$fatal(1,"zero cue did not finish between phase attempts");
+                end
+            end
+            if(!boundary_armed || boundary_start_time<=boundary_accept_time || boundary_start_time-boundary_accept_time>=6.95)
+                $fatal(1,"in-flight score phase not covered accept=%0t start=%0t",boundary_accept_time,boundary_start_time);
+            repeat(6)@(negedge compute_clk);
+            if(running || !score_failed || done)
+                $fatal(1,"in-flight zero-cue score lost explicit failure: failed=%b done=%b running=%b accept=%0t start=%0t inhibit=%0t",
+                    score_failed,done,running,boundary_accept_time,boundary_start_time,boundary_inhibit_time);
+            $display("PASS runtime_controlled_inflight_score: attempts=%0d explicit_failures=1 source_50_checks=%0d source_compute_checks=%0d switch_async_assert_checks=%0d switch_release_checks=%0d accept_ps=%0d start_ps=%0d inhibit_ps=%0d",attempts,source_50_checks,source_compute_checks,switch_async_assert_checks,switch_release_checks,longint'(boundary_accept_time*1000.0),longint'(boundary_start_time*1000.0),longint'(boundary_inhibit_time*1000.0));
+            $finish;
+        end
+    endtask
     reg [127:0] before_held;
     reg [31:0] before_control,before_pitch,before_options;
     integer before_epoch,before_applied,before_observed;
@@ -233,7 +334,15 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
             physical_seen[e][s]=0;observed_effect_seen[e][s]=0;
         end
         repeat(8)@(negedge control_clk);rst_n=1;preset_n=1;
+        // A real stopped byte consumer produces counter transitions 0->1->2,
+        // including a binary carry. Boot waits for DSP context; audio has not
+        // started, so this exercises UART loss without dropping physical PCM.
+        repeat(8)@(negedge control_clk);@(negedge compute_clk);compute_run=0;
+        uart_byte(1,8'hf8,0);uart_byte(1,8'hf8,0);uart_byte(1,8'hf8,0);
+        if(dut.pc_drop!=2 || !dut.pc_drop_seen_50)$fatal(1,"real PC byte drop carry not exercised");
+        compute_run=1;wait(pc_health[1]);pc_drop_carry_checks=pc_drop_carry_checks+1;
         wait(ready && active_valid);read_reg(0);if(value!=32'h41313338)$fatal(1,"services identity");
+        if(INFLIGHT_SCORE_BOUNDARY)inflight_zero_cue_switch();
         event_cpu(2,7,100);event_cpu(1,60,127);frames(192);
         if(!held[60] || active==0 || nonzero==0)$fatal(1,"APB event failed to reach single real owner");
         // Change multiple effect bits and order fields at each physical rate.
@@ -278,13 +387,24 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
         write_reg('h080,1);frames(24);
         if(!rec_failed || rec_code!=6 || record_drops==0 || dut.record_valid)$fatal(1,"capture overflow hidden");
         write_reg('h080,0);frames(2);
-        tf_busy=1;reject_switch(3);tf_busy=0;wait(ready);
+        @(negedge compute_clk);tf_busy=1;reject_switch(3);
+        @(negedge compute_clk);tf_active=1;tf_busy=0;repeat(6)@(negedge control_clk);
+        if(!block_reason[3] || ready)$fatal(1,"TF busy-to-active diagnostic handoff lost inhibit");
+        tf_reason_handoffs=tf_reason_handoffs+1;
+        @(negedge compute_clk);tf_active=0;wait(ready);
         // Mid-frame rate request plus a new recording command: race fails REC.
         before_held=held;before_epoch=integer'(epoch);before_observed=observed_frames;
-        @(negedge control_clk);request44=1;request=1;@(negedge control_clk);request=0;
+        @(negedge control_clk);request44=1;request=1;
+        @(posedge control_clk);#0.001;
+        if(!accepted || dut.switch_busy_50)$fatal(1,"switch source did not retain previous RUN edge");
+        switch_launch_delay_checks=switch_launch_delay_checks+1;
+        @(negedge control_clk);request=0;
         if(!accepted)$fatal(1,"real 44.1 switch not accepted");
         write_reg('h080,1);wait(rec_failed);
         if(rec_code!=7)$fatal(1,"switch/REC race not explicit code=%0d",rec_code);
+        write_reg('h114,1);repeat(3)@(negedge compute_clk);
+        if(running || !score_failed || done)$fatal(1,"switch admitted score start/success");
+        score_switch_rejects=score_switch_rejects+1;
         wait(!busy && active_valid);frames(8);
         if(!rate || epoch!=32'(before_epoch+1) || held!==before_held || observed_frames<=before_observed)$fatal(1,"switch lost live state/observations");
         write_reg('h080,0);frames(1);write_reg('h080,1);frames(1);
@@ -300,7 +420,11 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
         // carries that new epoch and coherent zero, rather than a torn Gray word.
         if(dut.source_errors_compute==0)$fatal(1,"physical error health snapshot missing");
         before_epoch=integer'(epoch);wait(ready);
-        @(negedge control_clk);request44=0;request=1;@(negedge control_clk);request=0;
+        @(negedge control_clk);request44=0;request=1;
+        @(posedge control_clk);#0.001;
+        if(!accepted || dut.switch_busy_50)$fatal(1,"return switch source did not retain previous RUN edge");
+        switch_launch_delay_checks=switch_launch_delay_checks+1;
+        @(negedge control_clk);request=0;
         if(!accepted)$fatal(1,"return switch not accepted");
         wait(!busy && active_valid);frames(8);
         if(rate || epoch!=32'(before_epoch+1) || dut.health_epoch!=epoch || dut.source_errors_compute!=0)
@@ -311,7 +435,11 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0);
            fft48<128 || fft44<128 || fft_nonzero==0 || display_frames<100 || writes==0 || reads==0 ||
            display_effect_tuple_checks!=display_frames || display_effect_changes48<3 || display_effect_changes44<3)
             $fatal(1,"missing integration coverage physical=%0d observed=%0d fft=%0d wet=%0d",physical_frames,observed_frames,fft_bins,fft_nonzero);
-        $display("PASS runtime_controlled: physical_frames=%0d observed_frames=%0d observed48=%0d observed44=%0d nonzero=%0d display_frames=%0d fft_bins=%0d fft48=%0d fft44=%0d fft_nonzero=%0d apb=%0d usb=%0d cpu=%0d policies=%0d writes=%0d reads=%0d fft_discards=%0d switches=2 health_reset_checks=1 display_observation_fault_checks=1 display_effect_tuple_checks=%0d display_effect_changes48=%0d display_effect_changes44=%0d",physical_frames,observed_frames,observed48,observed44,nonzero,display_frames,fft_bins,fft48,fft44,fft_nonzero,apb_transactions,usb_events,cpu_events,policies,writes,reads,fft_discards,display_effect_tuple_checks,display_effect_changes48,display_effect_changes44);
+        if(source_50_checks==0 || source_compute_checks==0 || switch_source_changes<5 || reason_source_changes<8 ||
+           switch_launch_delay_checks!=2 || pc_drop_carry_checks!=1 || tf_reason_handoffs!=1 || score_switch_rejects!=1)
+            $fatal(1,"missing registered source/boundary checks");
+        if(switch_async_assert_checks!=2 || switch_release_checks==0)$fatal(1,"missing switch asynchronous assert/local release checks");
+        $display("PASS runtime_controlled: physical_frames=%0d observed_frames=%0d observed48=%0d observed44=%0d nonzero=%0d display_frames=%0d fft_bins=%0d fft48=%0d fft44=%0d fft_nonzero=%0d apb=%0d usb=%0d cpu=%0d policies=%0d writes=%0d reads=%0d fft_discards=%0d switches=2 health_reset_checks=1 display_observation_fault_checks=1 display_effect_tuple_checks=%0d display_effect_changes48=%0d display_effect_changes44=%0d source_50_checks=%0d source_compute_checks=%0d switch_source_changes=%0d reason_source_changes=%0d switch_launch_delay_checks=%0d pc_drop_carry_checks=%0d tf_reason_handoffs=%0d score_switch_rejects=%0d switch_async_assert_checks=%0d switch_release_checks=%0d",physical_frames,observed_frames,observed48,observed44,nonzero,display_frames,fft_bins,fft48,fft44,fft_nonzero,apb_transactions,usb_events,cpu_events,policies,writes,reads,fft_discards,display_effect_tuple_checks,display_effect_changes48,display_effect_changes44,source_50_checks,source_compute_checks,switch_source_changes,reason_source_changes,switch_launch_delay_checks,pc_drop_carry_checks,tf_reason_handoffs,score_switch_rejects,switch_async_assert_checks,switch_release_checks);
         $finish;
     end
     initial begin #200000000;$fatal(1,"controlled integration watchdog");end

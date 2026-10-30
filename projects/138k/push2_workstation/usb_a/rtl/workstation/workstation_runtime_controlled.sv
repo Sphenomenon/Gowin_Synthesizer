@@ -113,12 +113,17 @@ module workstation_runtime_controlled #(
         .reset_n(rst_ni),.source_clk(clk_50m_i),.destination_clk(compute_clk_i),
         .source_count(midi_cdc_drop_o),.destination_count(midi_drop_compute));
     reg pc_framing_sticky;
+    // A binary drop counter can change several bits on a carry. Register its
+    // diagnostic reduction before crossing; do not synchronize a LUT decode.
+    (* syn_preserve=1 *) reg pc_drop_seen_50;
     always @(posedge clk_50m_i or negedge reset_50_n)
         if(!reset_50_n)pc_framing_sticky<=0;else if(pc_frame_error)pc_framing_sticky<=1;
+    always @(posedge clk_50m_i or negedge reset_50_n)
+        if(!reset_50_n)pc_drop_seen_50<=0;else pc_drop_seen_50<=pc_drop!=0;
     (* ASYNC_REG="TRUE" *) reg [1:0] pc_health_meta,pc_health_sync;
     always @(posedge compute_clk_i or negedge reset_compute_n)
         if(!reset_compute_n)begin pc_health_meta<=0;pc_health_sync<=0;end
-        else begin pc_health_meta<={pc_drop!=0,pc_framing_sticky};pc_health_sync<=pc_health_meta;end
+        else begin pc_health_meta<={pc_drop_seen_50,pc_framing_sticky};pc_health_sync<=pc_health_meta;end
     assign pc_health_o={29'd0,pc_overflow!=0,pc_health_sync};
 
     wire command_reset_n,command_valid,command_ready,command_write,response_error;
@@ -166,18 +171,24 @@ module workstation_runtime_controlled #(
     // Register the combined proof before crossing. Assertion inhibits without
     // waiting for a 50-MHz edge; release requires three destination edges.
     reg media_busy_compute;
+    // Independent diagnostic reasons, sampled together in their source
+    // domain. They never authorize a switch; media_busy_compute does that.
+    (* syn_preserve=1 *) reg [2:0] reasons_compute;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] media_busy_50;
     (* ASYNC_REG="TRUE" *) reg [2:0] reasons_meta,reasons_sync;
     always @(posedge compute_clk_i or negedge reset_compute_n)
         if(!reset_compute_n)media_busy_compute<=1;
         else media_busy_compute<=record_enabled_o || score_running_o || tf_active_i || tf_busy_i;
+    always @(posedge compute_clk_i or negedge reset_compute_n)
+        if(!reset_compute_n)reasons_compute<=0;
+        else reasons_compute<={tf_active_i || tf_busy_i,score_running_o,record_enabled_o};
     always @(posedge clk_50m_i or posedge media_busy_compute or negedge rst_ni)
         if(!rst_ni)media_busy_50<=3'b111;
         else if(media_busy_compute)media_busy_50<=3'b111;
         else media_busy_50<={media_busy_50[1:0],1'b0};
     always @(posedge clk_50m_i or negedge reset_50_n)
         if(!reset_50_n)begin reasons_meta<=0;reasons_sync<=0;end
-        else begin reasons_meta<={tf_active_i || tf_busy_i,score_running_o,record_enabled_o};reasons_sync<=reasons_meta;end
+        else begin reasons_meta<=reasons_compute;reasons_sync<=reasons_meta;end
     assign switch_block_reason_o={reasons_sync,!switch_permit_i};
     wire qualified_permit=switch_permit_i && !media_busy_50[2];
     wire [5:0] voices,effect_order_compute;
@@ -234,10 +245,20 @@ module workstation_runtime_controlled #(
         .left_q31_o(audio_left_o),.right_q31_o(audio_right_o),
         .stream_change_o(observed_change),.sequence_gap_o(observed_gap));
     assign sample_valid_o=observed_valid;
-    (* ASYNC_REG="TRUE" *) reg [1:0] switch_busy_compute;
-    always @(posedge compute_clk_i or negedge reset_compute_n)
+    // Both public levels decode the clock owner's multibit state. Capture
+    // their union on 50 MHz. Assertion from this source flop must inhibit
+    // immediately: another two compute capture edges can let an in-flight
+    // frame-zero score finish before its failure is latched. Release alone
+    // waits for two compute edges. The public clock-owner levels are unchanged.
+    (* syn_preserve=1 *) reg switch_busy_50;
+    always @(posedge clk_50m_i or negedge reset_50_n)
+        if(!reset_50_n)switch_busy_50<=1;
+        else switch_busy_50<=busy_o || quiesce_o;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] switch_busy_compute;
+    always @(posedge compute_clk_i or posedge switch_busy_50 or negedge reset_compute_n)
         if(!reset_compute_n)switch_busy_compute<=2'b11;
-        else switch_busy_compute<={switch_busy_compute[0],busy_o || quiesce_o};
+        else if(switch_busy_50)switch_busy_compute<=2'b11;
+        else switch_busy_compute<={switch_busy_compute[0],1'b0};
     // Serializer counters reset per stream; a jump N->0 is NOT a unit-step
     // Gray counter. Sample the complete epoch-tagged health tuple instead.
     // APB/display see the last completed-frame snapshot, never a torn count.

@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--nonzero-epoch',action='store_true')
+    parser.add_argument('--inflight-score-boundary',action='store_true')
     args = parser.parse_args()
     project, output = args.project.resolve(), args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -77,12 +78,13 @@ def main():
     hashes = {str(path): digest(path) for path in inputs}
     source_identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False,
-                  identity='native-runtime-controlled-offline-v1-' + ('nonzero-' if args.nonzero_epoch else '') + source_identity[:16],
+                  identity='native-runtime-controlled-offline-v2-' + ('inflight-score-' if args.inflight_score_boundary else '') + ('nonzero-' if args.nonzero_epoch else '') + source_identity[:16],
                   source_set_sha256=source_identity, input_sha256=hashes,
                   prepared_reference_candidate=profile['candidate_identity'],
-                  scope='Real APB/services, UART 31250/115200, fair lifecycle merge, native DSP/DMA/official DCS/I2S, physical PCM CDC and recorder/FFT/256cue consumers',
-                  limits='Ordered functional DDR model and coherent TF fixture; shorter clock qualification/startup; no top/profile selection, P&R, hardware or recording-file integration',
+                  scope='Real APB/services, UART 31250/115200 with stopped-consumer drop carry, fair lifecycle merge, native DSP/DMA/official DCS/I2S, physical PCM CDC and recorder/FFT/256cue consumers; registered control/reason sources and REC/score switch boundaries',
+                  limits='Source-flop timing assertions use ideal RTL clocks and do not model analog glitches or metastability. Ordered functional DDR model and coherent TF fixture; shorter clock qualification/startup; no top/profile selection, routed CDC, P&R, hardware or recording-file integration',
                   configuration=dict(reserve_zero_epoch=args.nonzero_epoch,initial_stream_epoch=1 if args.nonzero_epoch else 0,
+                                     inflight_score_boundary=args.inflight_score_boundary,
                                      compute_hz=76800000,memory_hz=100000000,control_hz=50000000,
                                      default_record_depth=256,test_record_depth=16,consumer_test_record_depth=4,
                                      legacy_96bit_record_rate_hz=48000,physical_observation_bits=98))
@@ -116,6 +118,8 @@ def main():
                    '-I' + str(ROOT), '-I' + str(project), *map(str, sources)]
         if args.nonzero_epoch:
             command += ['-GRESERVE_ZERO_EPOCH=1']
+        if args.inflight_score_boundary:
+            command += ['-GINFLIGHT_SCORE_BOUNDARY=1']
         result['compile_argv']=command
         with (output / 'compile.log').open('w') as stream:
             subprocess.run(command,cwd=project,stdout=stream,stderr=subprocess.STDOUT,check=True,timeout=300)
@@ -124,9 +128,43 @@ def main():
         with (output / 'run.log').open('w') as stream:
             subprocess.run(command,cwd=project,stdout=stream,stderr=subprocess.STDOUT,check=True,timeout=240)
         log=(output / 'run.log').read_text()
-        if 'PASS runtime_controlled:' not in log:
+        expected_marker='PASS runtime_controlled_inflight_score:' if args.inflight_score_boundary else 'PASS runtime_controlled:'
+        if expected_marker not in log:
             raise ValueError('Missing controlled integration verification')
         result['metrics']={key:int(value) for key,value in re.findall(r'(\w+)=(\d+)',log)}
+        if args.inflight_score_boundary:
+            # Reproduce the terminal-state race using the same real APB and
+            # score path. Only this temporary copy restores two capture edges
+            # after the source register. This is ideal timing, not a glitch
+            # or metastability model; the expected failure is business state.
+            controlled=ROOT/'rtl/workstation/workstation_runtime_controlled.sv'
+            switch_bridge=('    always @(posedge compute_clk_i or posedge switch_busy_50 or negedge reset_compute_n)\n'
+                '        if(!reset_compute_n)switch_busy_compute<=2\'b11;\n'
+                '        else if(switch_busy_50)switch_busy_compute<=2\'b11;\n'
+                '        else switch_busy_compute<={switch_busy_compute[0],1\'b0};\n')
+            original=controlled.read_text()
+            if original.count(switch_bridge)!=1:raise ValueError('Switch bridge negative-control anchor drift')
+            mutant=output/'workstation_runtime_controlled_capture_negative.sv'
+            mutant.write_text(original.replace(switch_bridge,
+                '    always @(posedge compute_clk_i or negedge reset_compute_n)\n'
+                '        if(!reset_compute_n)switch_busy_compute<=2\'b11;\n'
+                '        else switch_busy_compute<={switch_busy_compute[0],switch_busy_50};\n'))
+            negative_command=[str(mutant) if item==str(controlled) else
+                              str(output/'obj-negative') if item==str(output/'obj') else item
+                              for item in result['compile_argv']]+['-GCHECK_SWITCH_ASYNC=0']
+            with (output/'inflight_negative_compile.log').open('w') as stream:
+                subprocess.run(negative_command,cwd=project,stdout=stream,stderr=subprocess.STDOUT,check=True,timeout=300)
+            with (output/'inflight_negative_run.log').open('w') as stream:
+                negative=subprocess.run([str(output/'obj-negative/Vtb_workstation_runtime_controlled')],cwd=project,
+                                        stdout=stream,stderr=subprocess.STDOUT,timeout=240)
+            negative_log=(output/'inflight_negative_run.log').read_text()
+            result['inflight_capture_negative']={
+                'rejected':negative.returncode!=0 and 'in-flight zero-cue score lost explicit failure' in negative_log,
+                'returncode':negative.returncode,'mutant_sha256':digest(mutant),
+                'compile_argv':negative_command,
+                'compile_log_sha256':digest(output/'inflight_negative_compile.log'),
+                'run_log_sha256':digest(output/'inflight_negative_run.log'),'run_log':negative_log}
+            if not result['inflight_capture_negative']['rejected']:raise ValueError('In-flight capture negative control escaped')
         warnings={}
         for name in re.findall(r'^%Warning-(\w+):',(output/'compile.log').read_text(),re.M):
             warnings[name]=warnings.get(name,0)+1
