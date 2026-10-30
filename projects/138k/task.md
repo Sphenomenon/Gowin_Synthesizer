@@ -144,6 +144,8 @@
 
 [Pitch 精确 /147 父级复验](push2_workstation/usb_a/reports/WORKSTATION_PITCH_DIV147_PARENT_20261031.md)已通过全 16-bit／8-bit 输入、40,017 事务、六负控、旧 pitch 及 20,192 帧完整音频。四份来源各 12 项、profile20（一项旧 prepare 跳过）和 accepted17 通过；仅 pitch RTL staged 改变，无新增周期延迟。综合／物理收益待新候选验证，完整门禁与硬件未接受，无部署。
 
+[c7 TF 控制 CDC 父级复验](push2_workstation/usb_a/reports/WORKSTATION_TF_CONTROL_CDC_PARENT_20261031.md)已通过 10 项／94 实际负控、厂商 ALU16 真值、三快照场景／三负控及真实 frame／CLEAR／STOP。七直连加一补集回程、held36 next-Q 和实际取消门严格绑定 c7／8c5；新候选不继承，source_seen 别名仍未接受。未改生产输入或 SDC，完整物理／硬件门禁未完成，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

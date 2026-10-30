@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "identity": "c7-TF-control-CDC-parent-20261031-v1",
+  "source_commit": "a824d069bda6fd81beb0fe93b69db798f45bc8c4",
+  "parent_import_commit": "9d5afeb",
+  "scope": "runtime-r00-no-local-panel-tf-control-v1",
+  "candidate": "custom138k-workstation-r00-no-local-panel-v1-c7d66b419868f7f4",
+  "VG_sha256": "8c5d1e5a30baad7a7e4cd705cfdcf4fcc301369bcb6c69d78f9a7f47c10acb2c",
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-control-cdc-v1/delivery-v1/DELIVERY_SEAL.json",
+    "sha256": "d9ae17a549d8fa646a621d9a61fe9575b74c8d4f09c79fab6797def86236ef0b"
+  },
+  "independent_relative_files_verified": 86,
+  "independent_external_dependencies_verified": 731,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-control-cdc-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "b6b99067f3e76d4ac5647320631e432af4a11bea11fdc7d35164080f283aa7f3"
+  },
+  "parent_tests": 10,
+  "parent_actual_negative_controls": 94,
+  "all_actual_negative_controls_rejected": true,
+  "registered_direct_pairs": 7,
+  "registered_complement_pairs": 1,
+  "held_payload_bits": 36,
+  "source_next_Q_universally_verified": true,
+  "destination_next_Q_universally_verified": true,
+  "common_CLEAR": "!(reset_n && memory_guard_started)",
+  "generation_gate": "compute_control[2] && expected_valid && compute_control[35:4]==tf_expected_generation[31:0]",
+  "public_audit": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-control-cdc-parent-v1/public/review.json",
+    "sha256": "874e0248f88e1c2c58abe1a27b829ea8b83238c63f754973957014ef073d435f"
+  },
+  "snapshot": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-control-cdc-parent-v1/snapshot/verification.json",
+    "sha256": "4002c82088df798c7aef0e81cb547315c1a20155a3d10b91c1bbd0464d9c9ef2"
+  },
+  "snapshot_positive_scenarios": 3,
+  "snapshot_negative_controls": 3,
+  "frame": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-control-cdc-parent-v1/frame/verification.json",
+    "sha256": "14d90597b25db6a6d6894731392c9eda675d8fd322e62ec3d351e0a3c4f07d93"
+  },
+  "runtime_clear_stop": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-control-cdc-parent-v1/stop/verification.json",
+    "sha256": "0fc76776b7c04c0443626079c4236bc0292cbc6951ae2ccf3b435be84cfeeb39"
+  },
+  "vendor_primitive": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-control-cdc-parent-v1/alu-vendor.json",
+    "sha256": "f3f913e0cd877c07ce187977ac298f5fe51083ed8ece3d0c809f5090d07b1672"
+  },
+  "vendor_truth_vectors": 16,
+  "source_seen_alias_accepted": false,
+  "production_inputs_changed": false,
+  "SDC_changed": false,
+  "complete_cdc_accepted": false,
+  "physical_cdc_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}
