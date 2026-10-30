@@ -72,6 +72,8 @@
 
 [accepted DDR 来源边界修复](push2_workstation/usb_a/reports/WORKSTATION_ACCEPTED_DDR_SOURCE_BOUNDARY_20261030.md)已通过父级17项来源、7项USB固件、23项基线回归（含无私有历史的三条clean prepare）。历史配置继续锁定原map，活动录音分区仅作观察，冻结字节未改；三份custom新prepare各12项来源通过、staged与前序一致。新身份不继承旧综合或物理接受，无板卡操作。
 
+[已选shared CDC维护工具](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_SHARED_CDC_TOOL_20261030.md)已父级通过实际no-CNN网表8项测试及14个结构、2个逻辑／约束负控，默认generic边界保持。88行只证明对应来源结构，R00明确拒绝；三份新prepare来源各12项通过、staged不变，完整CDC／reset／物理接受仍未完成，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
