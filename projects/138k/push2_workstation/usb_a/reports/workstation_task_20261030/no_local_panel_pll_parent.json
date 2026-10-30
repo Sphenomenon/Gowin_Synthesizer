@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "implementation_commit": "61e325d",
+  "agent_commit": "3697d8c3928ca66df0efd3c3f6b6df6465cb30bb",
+  "targeted_tests": 23,
+  "actual_source_inventory_counts": [
+    6,
+    6,
+    7
+  ],
+  "legacy_F03_complete_PLL_startup_passed": true,
+  "legacy_F03_negative_controls": 3,
+  "legacy_F03_PLLs": 7,
+  "legacy_F03_shared_tuples": 4,
+  "shared_tuple_bits": 10,
+  "budget_ns": 10,
+  "F03_inputs_rehashed": 33,
+  "fresh_four_prepares": {
+    "enabled": {
+      "candidate_identity": "custom138k-workstation-v1-60568933ad6331d4",
+      "staged_files": 576,
+      "enabled_files": 260,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "2cf2d352e5b5a95908337147680761bafb69fe27708607b2f0e2196af80a5704",
+      "source_test_log_sha256": "53207a85ddf684d8badfe94b9bd7ed73e630442b2d920ce5d848f618237489f7",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "no-cnn": {
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-b6131efe83fcb5ac",
+      "staged_files": 577,
+      "enabled_files": 260,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "6d4591c2d84c40b1f5f128afb9f7ebd4759261f9add3d2a5286ee6872fa2d9ce",
+      "source_test_log_sha256": "aafcc5c246d077b324aafc763dce8eaef996f1497a7c6c56c8accfcbc6c20228",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "r00": {
+      "candidate_identity": "custom138k-workstation-r00-v1-d5fd64444d600f7a",
+      "staged_files": 589,
+      "enabled_files": 267,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "9c7aeb4c2de6b2ab53875a1d370874601ce9640ce236113378c563876ff13641",
+      "source_test_log_sha256": "06561d56f6e716ea03523cda3439e1a4086bc03e9574f55810bd8d3c8529af6a",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "off": {
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-2c7d2f419b26e289",
+      "staged_files": 596,
+      "enabled_files": 269,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "f89aba7b8231433b43db4c74000d0fc89c6a8dae2cf6b46f89b4af4c2ff3567f",
+      "source_test_log_sha256": "439cdd6291972856fc0f45270f537b52884b46b34f78a705403746b2b1cb9d9c",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    }
+  },
+  "profile_tests": {
+    "methods": 20,
+    "optional_legacy_prepare_skips": 1
+  },
+  "accepted_source_tests": 17,
+  "synthesis_or_PnR_run": false,
+  "no_panel_routed_PLL_accepted": false,
+  "complete_CDC_accepted": false,
+  "complete_reset_accepted": false,
+  "full_timing_accepted": false,
+  "hardware_operated": false,
+  "deployment_allowed": false,
+  "identity": "no-local-panel-PLL-parent-20261031-v1",
+  "stage": "source_and_offline_audit_support_validated",
+  "limits": [
+    "New c7/FF actual source/inventory only: no SDF and no routed PLL acceptance.",
+    "Legacy F03 routed proof is a regression bound to F03; no acceptance transfers.",
+    "The caller must independently verify completed-success P&R and VO/SDF hashes before the PLL subgate."
+  ],
+  "failed_attempts_retained": [
+    "Parent F03 first attempt omitted required GOWIN_SIMLIB; corrected in new v2 output/workspace.",
+    "Stale prior prepare rejected complete source snapshot drift after audit helper change; fresh four prepares and enabled profile regression passed."
+  ],
+  "evidence": {
+    "no-local-panel-pll-parent-v1/DELIVERY_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-local-panel-pll-parent-v1/DELIVERY_SEAL.json",
+      "sha256": "5533ec71fb857384d3022596c9c53713b43c290e3b864685555b3e88d37a731d"
+    },
+    "no-local-panel-pll-parent-v1/final_verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-local-panel-pll-parent-v1/final_verification.json",
+      "sha256": "93502645640bfd4b48d0de60717c7c145e4166d772485122cefa21219540e418"
+    },
+    "no-local-panel-pll-parent-v1/targeted.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-local-panel-pll-parent-v1/targeted.log",
+      "sha256": "98297093fa0e845b74f08ef7c8a091b4941490c6f95d2ddd09145973ee28d596"
+    },
+    "no-local-panel-pll-parent-v1/f03-audit-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-local-panel-pll-parent-v1/f03-audit-v2.json",
+      "sha256": "6005177f85db2b246543883c090b91de0f40f53174dbc538a0adbb1861bfe41f"
+    },
+    "no-local-panel-pll-parent-v1/profile-tests-final.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-local-panel-pll-parent-v1/profile-tests-final.log",
+      "sha256": "25cce7c26a72017c09514405495250fa83b45096769fcb8d6c9b302456a99cc7"
+    },
+    "no-panel-pll-parent-four-prepare-v1.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-four-prepare-v1.json",
+      "sha256": "852a47becb9e3b9930f3ef80c781b4848bb1484c004ef0bd1e1c568d1d87446e"
+    },
+    "no-panel-pll-parent-four-prepare-v1.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-four-prepare-v1.py",
+      "sha256": "9822267e35ed2a11a3eafb65697244823c8fb765918826003d9917b1342faa1e"
+    },
+    "no-local-panel-pll-audit-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-local-panel-pll-audit-v1/REVIEW_SEAL.json",
+      "sha256": "d84b93fcc881c2541d86af1036b913bf0a60b5d1fc1d079d65b85c1b0f431a0d"
+    },
+    "no-local-panel-pll-audit-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-local-panel-pll-audit-v1/review.json",
+      "sha256": "089b2c32f60d07cf3ec82c3299bc4e98710644ab5109ea86751f48d6304f3fbf"
+    },
+    "no-panel-pll-parent-enabled-prepare-v1/workstation_profile.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-enabled-prepare-v1/workstation_profile.json",
+      "sha256": "bd37c1439156740c0e3715b28edbe13939344143713cac159ee0f0c00adcf420"
+    },
+    "no-panel-pll-parent-enabled-prepare-v1/integration_inputs.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-enabled-prepare-v1/integration_inputs.json",
+      "sha256": "d3de30079d16c22f32040d5961ef38c7967ae06b6fdd5b4e45b2d64c1eae5a4e"
+    },
+    "no-panel-pll-parent-enabled-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-enabled-prepare-v1-validation.json",
+      "sha256": "20bb609ba3997a9df79e8ec36d1d72ccfef06c5a7cb940f3ff8e2a4ea02f9d6d"
+    },
+    "no-panel-pll-parent-enabled-prepare-v1-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-enabled-prepare-v1-source-tests.log",
+      "sha256": "53207a85ddf684d8badfe94b9bd7ed73e630442b2d920ce5d848f618237489f7"
+    },
+    "no-panel-pll-parent-no-cnn-prepare-v1/workstation_profile.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-no-cnn-prepare-v1/workstation_profile.json",
+      "sha256": "9a3b016677bce42dc1a0994b4bd1dc4e6e93c7677f59f09c92cf97151ae7f7bd"
+    },
+    "no-panel-pll-parent-no-cnn-prepare-v1/integration_inputs.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-no-cnn-prepare-v1/integration_inputs.json",
+      "sha256": "90d7802f2f5fb8c2c22d335c069958e3a737cdc20b8b48aafecd517a28690e51"
+    },
+    "no-panel-pll-parent-no-cnn-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-no-cnn-prepare-v1-validation.json",
+      "sha256": "6b7dcd1efacc080831f52dd66cb901cb2864b72338964aa032ed760391c2084f"
+    },
+    "no-panel-pll-parent-no-cnn-prepare-v1-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-no-cnn-prepare-v1-source-tests.log",
+      "sha256": "aafcc5c246d077b324aafc763dce8eaef996f1497a7c6c56c8accfcbc6c20228"
+    },
+    "no-panel-pll-parent-r00-prepare-v1/workstation_profile.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-r00-prepare-v1/workstation_profile.json",
+      "sha256": "9cc8427cce4ad8b8a25abcb5ffaf5f7f0e42be6fa7d159a46ac1ae1d889493d2"
+    },
+    "no-panel-pll-parent-r00-prepare-v1/integration_inputs.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-r00-prepare-v1/integration_inputs.json",
+      "sha256": "fee2858cf0c6d7f62ac756a5118c12ab09a46997bcea027c58d20fa7e7a21ced"
+    },
+    "no-panel-pll-parent-r00-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-r00-prepare-v1-validation.json",
+      "sha256": "b8603702e7d60bef5c1fd187108f1b1df2db1279ac462108da0ad3abc624445f"
+    },
+    "no-panel-pll-parent-r00-prepare-v1-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-r00-prepare-v1-source-tests.log",
+      "sha256": "06561d56f6e716ea03523cda3439e1a4086bc03e9574f55810bd8d3c8529af6a"
+    },
+    "no-panel-pll-parent-off-prepare-v1/workstation_profile.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-off-prepare-v1/workstation_profile.json",
+      "sha256": "e35c2d6998a433b58ec8d9e7bd991aec746bcbf773d252f00f9d435c9294ef74"
+    },
+    "no-panel-pll-parent-off-prepare-v1/integration_inputs.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-off-prepare-v1/integration_inputs.json",
+      "sha256": "0f2e479b1e8a76362fdb248354a5b76dcd853006751724ca2da9968ced47b622"
+    },
+    "no-panel-pll-parent-off-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-off-prepare-v1-validation.json",
+      "sha256": "d15de83e3bc559f8d920d33e3ed957622a0d73f5ac667e5b2137af4e96e82922"
+    },
+    "no-panel-pll-parent-off-prepare-v1-source-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-panel-pll-parent-off-prepare-v1-source-tests.log",
+      "sha256": "439cdd6291972856fc0f45270f537b52884b46b34f78a705403746b2b1cb9d9c"
+    }
+  }
+}

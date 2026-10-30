@@ -134,6 +134,8 @@
 
 [C2103001 实际布线失败](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PREFIX_C2103001_ROUTE_FAILURE_20261031.md)已封存：896 条未布通网络、物理 CLS 63,060／69,120、BSRAM 268／340，PRIMARY／LW 各 8／8。父级重验 1,517 输入、593 源闭包及六输出通过，无位流／SDF／完整 STA，无板卡操作。只读边界盘点 6 项／26 负控定位后续 CDC／reset 缺口但未安装约束；Chorus 新候选独立综合中，不继承本次物理接受，整机方框保持未完成。
 
+[No-local-panel PLL 父级复验](push2_workstation/usb_a/reports/WORKSTATION_NO_LOCAL_PANEL_PLL_PARENT_20261031.md)已通过 23 项实际候选定向测试及旧 F03 完整 routed PLL／startup 与三负控；默认七 PLL／四 tuple、no-panel 六 PLL／三 tuple 均保留完整十位和 10 ns 原预算。四份 fresh prepare staged 与前序字节相同，各 12 项来源通过；profile20（一项旧 prepare 跳过）／accepted17 通过。c7／FF 无 SDF，未授予新 routed PLL 或硬件接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
