@@ -154,6 +154,8 @@
 
 [18ed native Delay FIFO 父级复核](push2_workstation/usb_a/reports/WORKSTATION_NATIVE_DELAY_FIFO_ACTUAL_PARENT_20261031.md)已完成：两 65×512 FIFO 各四 SDPX9B／零 SSRAM，完整 DI／64 formatter 真值及 post-pop next-Q 通过；父级 410 图＋66 payload 负控全部拒绝。原 set 顺序导致的比较失败保留，唯一 case／完整内容核对相同。仅局部映射接受，RAM 物理时序、完整 CDC／reset／路由／硬件仍未接受，无部署。
 
+[18ed TF／counter 父级复核](push2_workstation/usb_a/reports/WORKSTATION_TF_COUNTER_NATIVE_ACTUAL_PARENT_20261031.md)已完成实际图／闭包／真值重放及五 scope 负控；独立 276 图负控封存重哈通过，父级未重跑该276项。三 full32 解码和录音 mapped-absent 有限结论分列，TF八链／36-bit next-Q及取消函数通过。source_seen、generation、完整 CDC／reset／物理与硬件仍未接受；新物理准备可按明确实验门继续，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
