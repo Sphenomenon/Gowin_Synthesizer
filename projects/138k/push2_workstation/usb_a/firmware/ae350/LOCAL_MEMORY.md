@@ -140,3 +140,24 @@ python3 projects/138k/push2_workstation/usb_a/sim/test_stage_ae350_firmware.py
 恢复 SP，中断关闭。未从该入口调用的导出 API 单列，不能把它们的未来调用者
 当成已审计；接入新服务、回调或中断后必须重算完整链。
 硬件栈水位、任务周期、最长服务间隔、吞吐和 ECC／Cache 验收仍未完成。
+
+## 显式回调闭包审计
+
+`call_chain_report(..., reviewed_indirect_calls=review, input_sha256=identities)`
+接受单独审阅的 points-to 闭包。默认没有此参数，任何可达未知间接调用仍失败。
+review 必须精确包含 `schema=1`、完整实际编译输入的 `input_sha256`、整份真实
+反汇编的 `disassembly_sha256`、人工源码闭包说明 `source_target_review` 和 `sites`。
+每条 site 指明 `caller`、八位十六进制 `address`（带 `0x`）、32 位
+`instruction` 和完整 `targets` 集合。它是源码目标集合的显式审阅记录，
+不是对任意 C 函数指针的自动别名分析。
+
+helper 将每个已审间接调用的全部目标加入 GCC 图，并计算所有可能分支的最大栈。
+目标必须具有唯一 GCC 节点、实际机器函数体和静态帧；递归、未知或动态帧、
+缺失／重复／不可达 site、caller／地址／指令变化、源码或反汇编漂移均拒绝。
+已审 site 只替换相应 caller 的 GCC `__indirect_call` 占位边，不能豁免该 caller
+中的新增机器间接指令。内部 jump table 没有回调占位边，不能套用本接口绕过；
+其目标表需要另行证明，或在显式编译策略中使用 `-fno-jump-tables`。
+
+`sim/test_ae350_callback_stack.py` 用真实 GCC 生成两个独立的 JALR，验证默认拒绝、
+全部目标纳入 128 字节栈界、缺 site、完整输入／机器漂移、递归及目标帧负例。
+接入业务 owner 时必须为该份实际固件重新审阅并绑定 review，不能沿用旧源码的记录。

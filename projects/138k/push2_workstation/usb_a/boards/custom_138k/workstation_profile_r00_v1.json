@@ -359,7 +359,7 @@
     "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.c": "d94ae0f233f22d3b1cad7021f95f81a0172184cfbb989eaee573bd18a72f1adf",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.h": "be63aa122af831f9dce895a6308b57b4d441341ec9e7e4fb23fa64e01780adcc",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/start.S": "2de8303a122f6d448c70f2f8398a616d9396e7c4dee61ba2587a069bf0b217f9",
-    "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_main.c": "9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_main.c": "dcbbb89209eaa43ca4cf7a2eb1ac7dcb04853f03c73b2c46263bb5c1b4cb4573",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_model.h": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_render.c": "4e5fbd9a358f5e32ea9587b18675b169d5fc37f97df6e53c47660a985832f7cd",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_render.h": "72dcc31cf9457ad9d6a7e2f250e9715bf6b0168fdd7830d9f0b9547cbc38ae67",
@@ -720,7 +720,7 @@
     "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_BLE_DDR_PITCH_FIFO_CDC.md": "f401a36349f0b8443dc523b6f88af44bc5efe21c65ac563f93bb5a29aa008946",
     "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_pitch_fifo_cdc_endpoints.py": "29593e92c35d2fa48047dad5ae26d02d7f3021c072eb1cbda30c03f6194dcc81",
     "projects/138k/push2_workstation/usb_a/tools/workstation_ble_ddr_pitch_fifo_cdc_scope.py": "7f2416a6b2fb30df423bd1fc14cec833a7ac94c5722651df84ed9b3a1f984c4a",
-    "projects/138k/push2_workstation/usb_a/tools/ae350_local_memory.py": "caee8453ac1cf01fcd07f23a85f1384e738ce6979a100beeb1582da1cf9dbb3c",
+    "projects/138k/push2_workstation/usb_a/tools/ae350_local_memory.py": "91e48080ac52025654c41bc74ad31c032558c544bca1482002df418ff34fb0da",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/start_ilm_dlm.inc": "e8f8f4b202cd2553d7a1a4e76a58895ea43508c061d7ae8d9e7b0ace2ccc3f73",
     "projects/138k/push2_workstation/usb_a/firmware/ae350/boot_ilm_dlm.ld": "214011f97811e6e359b068b3d5c758e2297bead1a6acdd31538c9d3f6caa58dc",
     "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_memory.py": "6c5846e273a59dd24fba1a3424a973ca98dbb9c211c63b1d886b000f5e7a97c1"

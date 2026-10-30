@@ -14,6 +14,8 @@ from tools import stage_ae350_firmware as staging
 from tools.ae350_local_memory import local_memory_report, verify_elf_image, call_chain_report
 from ae350_rv32_startup import StartupCpu, ModelError, ROM, ILM, DLM
 
+BOOT_ROM_BYTES = 65536  # The explicit whole-profile cold storage; 16K rejection is tested separately.
+
 
 class LocalMemoryTest(unittest.TestCase):
     @classmethod
@@ -23,9 +25,10 @@ class LocalMemoryTest(unittest.TestCase):
         cls.prefix = staging.compiler_prefix()
         cls.output = cls.directory / 'local'
         cls.result = staging.stage_ae350_firmware(ROOT, cls.output, cls.prefix,
-                                                memory_profile='ilm64k_dlm64k', recording_api=True)
+                                                memory_profile='ilm64k_dlm64k', recording_api=True,
+                                                boot_rom_bytes=BOOT_ROM_BYTES)
         cls.symbols = cls.result['capacity']['symbols']
-        cls.image = staging.decode_rom(cls.output / 'boot.mem')
+        cls.image = staging.decode_rom(cls.output / 'boot.mem', BOOT_ROM_BYTES)
 
     @classmethod
     def tearDownClass(cls):
@@ -138,21 +141,22 @@ class LocalMemoryTest(unittest.TestCase):
     def test_elf_binary_rom_map_and_capacity_agree_and_tampering_fails(self):
         j = self.result
         self.assertTrue(j['elf_image_validation']['binary_reconstructed'])
-        self.assertEqual(self.image, (self.output / 'firmware.bin').read_bytes().ljust(16384, b'\0'))
+        self.assertEqual(self.image, (self.output / 'firmware.bin').read_bytes().ljust(BOOT_ROM_BYTES, b'\0'))
         self.assertEqual(j['capacity']['heap_bytes'], 0)
         self.assertEqual(j['capacity']['stack_capacity_bytes'], 16384)
-        self.assertLess(j['capacity']['binary_bytes'], 16384)
+        self.assertLess(j['capacity']['binary_bytes'], BOOT_ROM_BYTES)
         binary = bytearray((self.output / 'firmware.bin').read_bytes())
         binary[-1] ^= 1
         with self.assertRaisesRegex(ValueError, 'reconstruct'):
-            verify_elf_image(self.output / 'firmware.elf', bytes(binary), self.symbols)
+            verify_elf_image(self.output / 'firmware.elf', bytes(binary), self.symbols, BOOT_ROM_BYTES)
         symbols_text = (self.output / 'firmware.nm').read_text()
         for old, new in (('a0210000', 'a0220000'), ('80000000', '80000004')):
             with self.assertRaises(ValueError):
                 local_memory_report((self.output / 'firmware.size').read_text(),
-                                    symbols_text.replace(old, new), j['capacity']['binary_bytes'])
+                                    symbols_text.replace(old, new), j['capacity']['binary_bytes'], BOOT_ROM_BYTES)
         with self.assertRaises(ValueError):
-            local_memory_report((self.output / 'firmware.size').read_text(), symbols_text, 16385)
+            local_memory_report((self.output / 'firmware.size').read_text(), symbols_text,
+                                BOOT_ROM_BYTES + 1, BOOT_ROM_BYTES)
 
     def test_call_chain_is_conservative_and_rejects_unknown_dynamic_recursive_and_machine_calls(self):
         j = self.result
@@ -175,7 +179,7 @@ class LocalMemoryTest(unittest.TestCase):
                     disassembly += '\na0000000 <services_main>:\na0000000: 000280e7 jalr t0\n'
                 elif case == 'missing_edge':
                     graph.write_text('\n'.join(line for line in graph.read_text().splitlines()
-                                               if 'targetname: "ui_render"' not in line))
+                                               if 'targetname: "ui_render_rows"' not in line))
                 else:
                     child = 'unknown_callback' if case == 'unknown' else 'services_main'
                     graph.write_text(graph.read_text() + '\nedge: { sourcename: "services_main" targetname: "' + child + '" }\n')
@@ -197,7 +201,8 @@ class LocalMemoryTest(unittest.TestCase):
         self.assertNotIn('cold_boot', default)
         self.assertNotIn('firmware/ae350/start_ilm_dlm.inc', default['input_sha256'])
         repeated = staging.stage_ae350_firmware(ROOT, self.directory / 'repeated', self.prefix,
-                                               memory_profile='ilm64k_dlm64k', recording_api=True)
+                                               memory_profile='ilm64k_dlm64k', recording_api=True,
+                                               boot_rom_bytes=BOOT_ROM_BYTES)
         for key in ('elf_sha256', 'binary_sha256', 'rom_sha256'):
             self.assertEqual(self.result[key], repeated[key])
 

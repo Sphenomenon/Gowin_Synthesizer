@@ -4,6 +4,7 @@ These are offline checks. They do not establish actual CSR or bus behavior.
 """
 from pathlib import Path
 import hashlib
+import json
 import re
 import struct
 
@@ -119,11 +120,15 @@ def verify_elf_image(path, binary, symbols, rom_bytes=ROM_BYTES):
                 rom_loader_bytes=result['.boot']['bytes'])
 
 
-def call_chain_report(output, frames, disassembly, capacity):
+def call_chain_report(output, frames, disassembly, capacity, *, reviewed_indirect_calls=None,
+                      input_sha256=None):
     """Conservative sum over GCC's direct graph, rooted at actual services_main.
 
-    Every reachable dynamic/unbounded frame, unknown node, recursion or indirect
-    call fails closed. Unreachable exported callback APIs are listed separately.
+    Every reachable dynamic/unbounded frame, unknown node, recursion or unreviewed
+    indirect call fails closed. A supplied source-target review is a manual
+    points-to proof bound to every build input and the exact disassembly. It must
+    enumerate every reachable JALR site; all reviewed targets enter the graph.
+    Unreachable exported callback APIs are listed separately.
     The ROM loader is stackless; the ILM assembly self-test uses 16 bytes, then
     restores SP before calling services_main. Interrupts stay disabled.
     """
@@ -137,6 +142,65 @@ def call_chain_report(output, frames, disassembly, capacity):
         e = re.search(r'edge: \{ sourcename: "([^"]+)" targetname: "([^"]+)"', line)
         if e:
             edges.setdefault(e[1], set()).add(e[2])
+    def normalized(name):
+        # GCC retains .part.0 in some .ci/.su labels but omits clone numbers
+        # from others. Prefer the exact graph name before trying that alias.
+        return name if name in nodes.values() else re.sub(r'\.(constprop|isra|part)\.\d+', r'.\1', name)
+    machine_sites, machine_functions = {}, set()
+    current = None
+    for line in disassembly.splitlines():
+        header = re.match(r'^[0-9a-f]+ <([^>]+)>:', line)
+        if header:
+            current = normalized(header[1])
+            machine_functions.add(current)
+        insn = re.match(r'^\s*([0-9a-f]+):\s+([0-9a-f]{8})\s+', line)
+        if insn:
+            value = int(insn[2], 16)
+            # JALR x0,0(ra) is a return, all other JALR instructions need closure.
+            if value & 0x7f == 0x67 and value != 0x00008067:
+                address = int(insn[1], 16)
+                if current is None or address in machine_sites:
+                    raise ValueError('ambiguous machine indirect call site')
+                machine_sites[address] = dict(caller=current, instruction=insn[2])
+    reviewed, caller_targets = {}, {}
+    if reviewed_indirect_calls is not None:
+        review = reviewed_indirect_calls
+        if (not isinstance(review, dict) or set(review) != {'schema', 'input_sha256',
+                'disassembly_sha256', 'source_target_review', 'sites'} or type(review['schema']) is not int or review['schema'] != 1 or
+                not isinstance(input_sha256, dict) or not input_sha256 or
+                review['input_sha256'] != input_sha256 or
+                any(not isinstance(value, str) or not re.fullmatch('[0-9a-f]{64}', value)
+                    for value in input_sha256.values()) or
+                review['disassembly_sha256'] != hashlib.sha256(disassembly.encode()).hexdigest() or
+                not isinstance(review['source_target_review'], str) or not review['source_target_review'].strip() or
+                not isinstance(review['sites'], list) or not review['sites']):
+            raise ValueError('indirect call review input/disassembly identity changed')
+        for site in review['sites']:
+            if (not isinstance(site, dict) or set(site) != {'caller', 'address', 'instruction', 'targets'} or
+                    not isinstance(site['address'], str) or not re.fullmatch('0x[0-9a-f]{8}', site['address']) or
+                    not isinstance(site['instruction'], str) or not re.fullmatch('[0-9a-f]{8}', site['instruction']) or
+                    not isinstance(site['caller'], str) or not isinstance(site['targets'], list) or
+                    not site['targets'] or
+                    any(not isinstance(target, str) or target not in machine_functions for target in site['targets']) or
+                    len(set(site['targets'])) != len(site['targets'])):
+                raise ValueError('invalid reviewed indirect call site or target')
+            address = int(site['address'], 16)
+            if (address in reviewed or machine_sites.get(address) !=
+                    dict(caller=site['caller'], instruction=site['instruction'])):
+                raise ValueError('reviewed indirect call site differs from actual machine code')
+            reviewed[address] = site
+            caller_targets.setdefault(site['caller'], set()).update(site['targets'])
+        for caller, targets in caller_targets.items():
+            parents = [node for node, name in nodes.items() if name == caller]
+            if len(parents) != 1 or '__indirect_call' not in edges.get(parents[0], ()):
+                raise ValueError('reviewed indirect caller lacks a unique GCC placeholder: ' + caller)
+            parent = parents[0]
+            edges[parent].remove('__indirect_call')
+            for target in targets:
+                candidates = [node for node, name in nodes.items() if name == target]
+                if len(candidates) != 1:
+                    raise ValueError('reviewed indirect target lacks a unique GCC node: ' + target)
+                edges[parent].add(candidates[0])
     by_name = {}
     for frame in frames:
         name = frame['function'].split(':', 3)[-1]
@@ -170,28 +234,41 @@ def call_chain_report(output, frames, disassembly, capacity):
         raise ValueError('service call chain exceeds reserved DLM stack')
     # Machine code adds a second guard against missed indirect graph edges.
     reachable_names = {nodes[n] for n in seen}
+    if {address for address, site in machine_sites.items() if site['caller'] in reachable_names} != set(reviewed):
+        raise ValueError('unresolved or unreachable machine indirect call sites in service graph')
     verified_edges = {(nodes[parent], nodes[child]) for parent in seen for child in edges.get(parent, ())}
-    def normalized(name):
-        return re.sub(r'\.(constprop|isra|part)\.\d+', r'.\1', name)
     current = None
+    consumed_sites = set()
     for line in disassembly.splitlines():
         header = re.match(r'^[0-9a-f]+ <([^>]+)>:', line)
         if header:
             current = normalized(header[1])
         if current in reachable_names and re.search(r'\b(?:jalr|jr)\b', line) and not re.search(r'\bret\b', line):
-            raise ValueError('unresolved machine indirect call in service graph: ' + current)
+            instruction = re.match(r'^\s*([0-9a-f]+):\s+([0-9a-f]{8})\s+', line)
+            address = int(instruction[1], 16) if instruction else None
+            if address not in reviewed:
+                raise ValueError('unresolved machine indirect call in service graph: ' + current)
+            consumed_sites.add(address)
         if current in reachable_names and re.search(r'\bjal\b', line):
             target = re.search(r'<([^>+]+)(?:\+[^>]*)?>', line)
             if target is None or (current, normalized(target[1])) not in verified_edges:
-                raise ValueError('machine direct call escapes verified service graph: ' + current)
+                raise ValueError('machine direct call escapes verified service graph: ' + current + ' -> ' +
+                                 (target[1] if target else '<unresolved>'))
         if current in reachable_names and re.search(r'\bj\s', line):
             target = re.search(r'<([^>+]+)(?:\+[^>]*)?>', line)
             if target is None or (normalized(target[1]) != current and
                                   (current, normalized(target[1])) not in verified_edges):
                 raise ValueError('machine tail call escapes verified service graph: ' + current)
+    if consumed_sites != set(reviewed):
+        raise ValueError('review includes unreachable or unconsumed indirect call sites')
     return dict(verified=True, scope='cold reset -> local_memory_entry -> services_main; interrupts disabled',
                 conservative_peak_bytes=bound, longest_chain=longest, reachable_functions=sorted(reachable_names),
                 exported_unreachable_functions=sorted(set(by_name) - reachable_names),
                 assembly_loader_stack_bytes=0, assembly_selftest_stack_bytes=16,
                 interrupts_enabled=False, hardware_watermark_verified=False,
-                tail_calls_counted_as_nested=True)
+                tail_calls_counted_as_nested=True,
+                reviewed_indirect_calls=(dict(
+                    manifest_sha256=hashlib.sha256(json.dumps(reviewed_indirect_calls, sort_keys=True,
+                        separators=(',', ':')).encode()).hexdigest(),
+                    input_sha256=input_sha256, source_target_review=reviewed_indirect_calls['source_target_review'],
+                    sites=reviewed_indirect_calls['sites']) if reviewed else None))

@@ -45,13 +45,24 @@ raw MMIO 适配器沿用 `audio_services.h` 的 uncached volatile 访问和前�
 分步服务必须独占 back page，并为整个 job 固定 model／touch 快照；绘制期间
 到来的新提交值留给后续 job，不能让同一页混用两个状态。最后一个 slice 完成并
 执行原 fence 后才请求发布，实际发布确认后才交换 front／back。这些 API 本身
-不持有参数真值、不分配队列或发布页面；当前 `ui_main.c` 尚使用原完整绘制调用，
-实际调度、发布等待和录音采集等待分步在 C02 后续阶段接入。CPU 周期和最长
+不持有参数真值、不分配队列或发布页面。维护 `ui_main.c` 的实际主循环现已
+接入两行绘制 job、单次发布轮询、单帧录音排空和单次声部快照等待。CPU 周期和最长
 无服务间隔仍须实测，不以行数上界代替物理总线等待保证。
 
 `sim/run_ae350_ui_slices.py --output <新目录>` 将维护源码与固定 Git 历史
 renderer 逐像素比较，并用 ASan／UBSan 检查页边界。此处只绘制辅助文字／控件，
 实时分析和动态绘图仍由 FPGA owning 路径完成。
+
+`sim/run_ae350_ui_service.py --output <新目录>` 直接编译维护 `ui_main.c`
+并调用生产 `ui_service_step`，只在临时副本适配低层 MMIO／fence／诊断。
+原生和 ASan／UBSan 检查冻结 model、最新更新保留、两行写边界、发布实际 ACK、
+取消、采集预算、声部释放及 PANIC 顺序；UI 总线转录另在锁定的真实 APB RTL
+回放。它不模拟 CPU 周期、DDR 等待或完整显示扫描。启动 `ddr_checks`／
+`audio_checks` 自检仍保留原等待行为，不能据此宣称全部启动均已变成分步服务。
+可选 `A138_BLE_BUSINESS` hook 在自检后初始化，在每个启动 slice／poll 与每次
+运行迭代调用有界 pump；该宏默认关闭，实际业务 owner 由其集成阶段验证。
+范围、预算及旧 16K ILM 冷镜像失败见
+[C02 分步主循环记录](../../reports/WORKSTATION_AE350_UI_SERVICES_20261031.md)。
 
 执行 checked-MMIO host 模型、ASan／UBSan 和两次完整 RV32 构建：
 
