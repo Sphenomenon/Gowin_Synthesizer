@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "identity": "display-load-request-parent-20261031-v1",
+  "source_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0",
+  "original_delivery_commit": "b70115da543a38e7571dc3a46c579b486f51cc61",
+  "original_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-display-load-request-v1/seal.json",
+    "sha256": "60f8bf273c3ddc8f93a8ce3263a7b858862ed09b9a73749b797796968bcfa73c"
+  },
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/display-load-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "41fb1ddf054a494fb3b2e8a8083a92389fc26d371ff5645ee1d8910d0e239941"
+  },
+  "parent_file_count": 47,
+  "parent_input_count": 3296,
+  "owning_RTL_SHA256": "1e5bc96dc3c96907f9f83e89be604dc6a846867855844ce984bc8d6a0023952d",
+  "production_RTL_changed_files": 1,
+  "profile_delta_each": "one owning display SHA only; eight earlier CDC helper locks retained",
+  "request_latency_added_clocks": 1,
+  "maximum_obsolete_private_cache_jobs": 1,
+  "maximum_obsolete_cache_read_BL8_requests": 365,
+  "immediate_context_revocation_retained": true,
+  "disable_and_stale_completion_gates_verified": true,
+  "parent_simulation_source": "immutable independently sealed delivery clone; imported main RTL/test bytes identical; only merged profile helper locks differ",
+  "runtime": {
+    "publications": 6,
+    "commits": 9,
+    "atomic_tuples": 128702,
+    "HDMI_elaborations": 3,
+    "owned_warnings": 0
+  },
+  "directed": {
+    "cases": 12,
+    "checks": 47,
+    "loads": 10,
+    "reads": 3286,
+    "negative_controls": 4,
+    "all_rejected": true
+  },
+  "four_prepare": {
+    "enabled": {
+      "candidate_identity": "custom138k-workstation-v1-29b3bf9eb75718a1",
+      "staged_files": 579,
+      "enabled_files": 260,
+      "staged_changed": [
+        "rtl/display_data/workstation_display_runtime.sv"
+      ],
+      "enabled_SHA_changed": [
+        "rtl/display_data/workstation_display_runtime.sv"
+      ],
+      "no_other_staged_or_enabled_key_or_SHA_change": true,
+      "GPRJ_bytes_and_compilation_order_unchanged": true,
+      "prepared_bytes_independently_rehashed": true,
+      "source_tests": 12,
+      "source_log_sha256": "225abe02878457c35be5b698ce316c005b766f2515b06aef1ebfecc5a3b960a6",
+      "original_prepare_log_sha256": "aa5f1b2b071c9879b093ad558f6b4655ec48d4509382d8e42f3482f75147d56a",
+      "synthesis_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "no-cnn": {
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-f29de6eebdbfa0fc",
+      "staged_files": 580,
+      "enabled_files": 260,
+      "staged_changed": [
+        "rtl/display_data/workstation_display_runtime.sv"
+      ],
+      "enabled_SHA_changed": [
+        "rtl/display_data/workstation_display_runtime.sv"
+      ],
+      "no_other_staged_or_enabled_key_or_SHA_change": true,
+      "GPRJ_bytes_and_compilation_order_unchanged": true,
+      "prepared_bytes_independently_rehashed": true,
+      "source_tests": 12,
+      "source_log_sha256": "51256e02e609c4498ba727cd19893a32617b5b1a00afede71e63b158f81f7fd5",
+      "original_prepare_log_sha256": "3d52440f6223b5db3429561d79b538fc2842cd974644d4aedb6e023f2e5cdb96",
+      "synthesis_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "r00": {
+      "candidate_identity": "custom138k-workstation-r00-v1-1cc52f75b14e0b81",
+      "staged_files": 592,
+      "enabled_files": 267,
+      "staged_changed": [
+        "rtl/display_data/workstation_display_runtime.sv"
+      ],
+      "enabled_SHA_changed": [
+        "rtl/display_data/workstation_display_runtime.sv"
+      ],
+      "no_other_staged_or_enabled_key_or_SHA_change": true,
+      "GPRJ_bytes_and_compilation_order_unchanged": true,
+      "prepared_bytes_independently_rehashed": true,
+      "source_tests": 12,
+      "source_log_sha256": "5ef56094c688815efd8503976054fc346ca85d1a4a6741368721b5d3d5117380",
+      "original_prepare_log_sha256": "78d25492fd815d95334258cbe43f54d3842a79a1112a8dc38b76e3233a683e25",
+      "synthesis_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "off": {
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-222fb761448fb6c0",
+      "staged_files": 599,
+      "enabled_files": 269,
+      "staged_changed": [
+        "rtl/display_data/workstation_display_runtime.sv"
+      ],
+      "enabled_SHA_changed": [
+        "rtl/display_data/workstation_display_runtime.sv"
+      ],
+      "no_other_staged_or_enabled_key_or_SHA_change": true,
+      "GPRJ_bytes_and_compilation_order_unchanged": true,
+      "prepared_bytes_independently_rehashed": true,
+      "source_tests": 12,
+      "source_log_sha256": "ec75f711cba2f7cc8e078e4d9a1b3d2e5fba7ccfb4124de124e7684a7d083e1a",
+      "original_prepare_log_sha256": "89293942f074cb52538b440fe123d810d27020a39d8f30cd8ab9c3623c6486a3",
+      "synthesis_acceptance_transferred": false,
+      "hardware_operated": false
+    }
+  },
+  "profile": {
+    "tests": 21,
+    "historical_optional_skip": 1
+  },
+  "accepted_source_tests": 17,
+  "original_validation_failures_retained": [
+    "v1 compared whole enabled_inputs objects unchanged",
+    "v2 treated enabled_inputs provenance records as SHA strings"
+  ],
+  "authoritative_validation": "v3 exact staged SHA and nested enabled-source record deltas; GPRJ bytes/order unchanged; original four prepares reused",
+  "fixed_physical_experiment": "C2103101 uses old display source and frozen inputs; no acceptance transferred",
+  "new_no_panel_prepare_identity": "custom138k-workstation-r00-no-local-panel-v1-222fb761448fb6c0",
+  "new_source_synthesized": false,
+  "timing_improvement_verified": false,
+  "full_CDC_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}

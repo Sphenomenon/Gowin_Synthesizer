@@ -158,6 +158,8 @@
 
 [18ed C2103101 物理准备](push2_workstation/usb_a/reports/WORKSTATION_PITCH_FIFO_C2103101_PHYSICAL_PREPARE_20261031.md)已完成：父级17组、actual preflight／prepare与4,278复制输入冻结通过，独立11虚拟负控封存；SDC/CST同C2103001、Tcl仅UserCode，名义时钟／hold／place1-route0保持。66原root引用先捕获，后续source与固定物理输入分开。仅准备接受，P&R及完整CDC／STA／硬件另记，无部署。
 
+[显示 load-request 父级合入](push2_workstation/usb_a/reports/WORKSTATION_DISPLAY_LOAD_REQUEST_PARENT_20261031.md)已通过联合runtime／三HDMI elaboration、12竞争场景／四负控、四prepare各12、profile21（一历史可选跳过）与accepted17。主profile只改owning SHA，staged/编译仅显示源码变化；多一周期请求且即时失效保持。新no-panel prepare222fb761未综合，不授时序改善；正在运行的固定18ed/C2103101不含此修复，无新部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
