@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "identity": "native-delay-FIFO-storage-parent-20261031-v1",
+  "source_commit": "938b18a1d558e5c82a27333d0a5f6a75d2d65c9c",
+  "parent_import_commit": "2f73eec0810c9eb117ae8ac934497f0a2b9a38a2",
+  "independent_source_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-storage-policy-v1/REVIEW_SEAL.json",
+    "sha256": "9f019deeed11daf8d5ed8a12310acf0fe98f81f5bac2ce07ecb11eb0f517028d"
+  },
+  "independent_source_files_verified": 14,
+  "independent_evidence_files_verified": 17,
+  "independent_prepared_files_verified": 644,
+  "independent_external_dependencies_verified": 12,
+  "independent_selection_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-fifo-selection-review-v1/REVIEW_SEAL.json",
+    "sha256": "191d22148c4c87740d521f2cec2fd67410f135119f5c106213a7cf365b92c59f"
+  },
+  "independent_selection_files_verified": 10,
+  "independent_selection_dependencies_verified": 33,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-storage-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "9ec7770a96632032f111fbc6ad26ce244d2c71b101780a39e842de8538757db3"
+  },
+  "production_RTL_changes": "Exactly two owning stereo_effects child RAM_STYLE defparams",
+  "FIFO_sha256": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+  "original_provenance_sha256": "5af689e1adc920524e83d0ae9da87382a75a6bc2868c08fc246abb47814df68c",
+  "new_effects_sha256": "ca9f50cd0c70add7c04fe6230686510dbbd128561aebf7a0920d1eb463c5686f",
+  "four_profile_delta_keys": 10,
+  "pitch_and_Chorus_newer_locks_preserved": true,
+  "parent_tests": {
+    "effects": 13,
+    "component": 2,
+    "component_skips": 0,
+    "component_RTL_depth_clock_cases": 4,
+    "component_mapped_clock_cases": 2,
+    "profile": 21,
+    "legacy_prepare_skip": 1,
+    "accepted": 17,
+    "each_prepare_sources": 12
+  },
+  "component_mapping": {
+    "BSRAM": 4,
+    "SSRAM": 0,
+    "primitive": "SDPX9B",
+    "capacity": 512,
+    "width": 65,
+    "official_model_cycle_equivalence": true,
+    "tool_source_and_model_inputs_verified": 8
+  },
+  "fresh_prepares": {
+    "enabled": {
+      "candidate_identity": "custom138k-workstation-v1-50b1be7b17d7582d",
+      "staged_files": 579,
+      "enabled_files": 260,
+      "staged_added": [
+        "rtl/audio/WORKSTATION_RUNTIME_DELAY_STORAGE.md",
+        "rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json",
+        "tools/workstation_delay_storage_provenance.py"
+      ],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_runtime_stereo_effects.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "2cd4e24468e832d5c7ca420e0b7a9e94cd4c68613f828afa634fb95d98295c81",
+      "source_test_log_sha256": "d196c1496b58f004ec440a11d9628c738988094b7455667604be8dfe399ba8cd",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "no-cnn": {
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-c7df5286b048d47b",
+      "staged_files": 580,
+      "enabled_files": 260,
+      "staged_added": [
+        "rtl/audio/WORKSTATION_RUNTIME_DELAY_STORAGE.md",
+        "rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json",
+        "tools/workstation_delay_storage_provenance.py"
+      ],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_runtime_stereo_effects.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "c4e96619ac5d196b10500feef1c99f6dabc7a467f95977dbb4914f0c9c90b2fe",
+      "source_test_log_sha256": "5cc078ed2cfcab6b846e7988d0f3e6ba7e7c829212ffd97938299183a8850733",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "r00": {
+      "candidate_identity": "custom138k-workstation-r00-v1-e24537dd15244315",
+      "staged_files": 592,
+      "enabled_files": 267,
+      "staged_added": [
+        "rtl/audio/WORKSTATION_RUNTIME_DELAY_STORAGE.md",
+        "rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json",
+        "tools/workstation_delay_storage_provenance.py"
+      ],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_runtime_stereo_effects.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "bed26fb06ef4e7c8307158be1b1ac3bffbae25b952bb16c66fbd11623bb4f7dd",
+      "source_test_log_sha256": "b267f571ec82682b35343c91c4d3809b9cfc0190e0b3865aa0994ea6f6d2967f",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "off": {
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-18ed947312186187",
+      "staged_files": 599,
+      "enabled_files": 269,
+      "staged_added": [
+        "rtl/audio/WORKSTATION_RUNTIME_DELAY_STORAGE.md",
+        "rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json",
+        "tools/workstation_delay_storage_provenance.py"
+      ],
+      "staged_removed": [],
+      "staged_changed": [
+        "rtl/audio/workstation_runtime_stereo_effects.sv"
+      ],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "e019518bbbd92de0ddc59f4560e181b9f5eb092e6ae7d3b80736b05561fe4d87",
+      "source_test_log_sha256": "b22cac3a583ec0ed422b6863d2382739a86004c5add52d93f04654bff66554ed",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    }
+  },
+  "only_changed_staged_RTL": "rtl/audio/workstation_runtime_stereo_effects.sv",
+  "added_noncompiled_inputs": 3,
+  "original_failed_component_macro_order_retained": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-fifo-block-mapping-parent-v1/verification.json",
+    "sha256": "00d080369e4225da2aac6ae65c29d3e8204abb548cff0807b185fd6a1ce91b79"
+  },
+  "original_source_bytes_preserved": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-fifo-block-mapping-parent-v1/original-source-snapshot.json",
+    "sha256": "3dd684ada500269a3a7d82e0172eda6d71eb62c58d8f39f487b9eaebd0be54c2"
+  },
+  "rollback": "Revert the source/policy integration; no board state has changed",
+  "integrated_mapping_verified": false,
+  "integrated_resource_benefit_verified": false,
+  "complete_cdc_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}

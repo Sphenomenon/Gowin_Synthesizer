@@ -146,6 +146,8 @@
 
 [c7 TF 控制 CDC 父级复验](push2_workstation/usb_a/reports/WORKSTATION_TF_CONTROL_CDC_PARENT_20261031.md)已通过 10 项／94 实际负控、厂商 ALU16 真值、三快照场景／三负控及真实 frame／CLEAR／STOP。七直连加一补集回程、held36 next-Q 和实际取消门严格绑定 c7／8c5；新候选不继承，source_seen 别名仍未接受。未改生产输入或 SDC，完整物理／硬件门禁未完成，无部署。
 
+[Delay FIFO 存储选择父级复验](push2_workstation/usb_a/reports/WORKSTATION_DELAY_STORAGE_PARENT_20261031.md)已通过 effects13、真实 Gowin 组件／官方模型两项、四份来源各 12 项、profile21（一项旧 prepare 跳过）及 accepted17。仅 owning 层两 defparam，原 FIFO／provenance 与 512 容量保持；单 FIFO 为 4 BSRAM／0 SSRAM。新整机候选尚待综合和实际映射／CDC／物理核验，不预记净资源收益，无板卡或部署接受。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
