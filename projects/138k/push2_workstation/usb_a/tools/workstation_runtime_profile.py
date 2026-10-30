@@ -13,6 +13,7 @@ from tools.workstation_custom_clocks import clock_bundle
 from tools.workstation_bluetooth import SDC as BLUETOOTH_SDC
 from tools.workstation_custom_usb2_cdc import pattern, query
 from tools.workstation_runtime_cdc import BLE_RELEASE_ALIASES, runtime_cdc_bundle
+from tools.workstation_runtime_pcm_cdc import runtime_pcm_cdc_bundle
 
 POLICY = 'native_dual_rate_runtime_v1'
 SOURCES = (
@@ -216,6 +217,7 @@ def constraints(root, shared_crossings):
         raise ValueError('reviewed dual-audio reference pins changed')
     shared = shared_constraints(shared_crossings['sdc'])
     runtime_cdc = runtime_cdc_bundle(root)
+    runtime_pcm_cdc = runtime_pcm_cdc_bundle(root)
     bluetooth = bluetooth_constraints(BLUETOOTH_SDC)
     if runtime_cdc['sdc'].splitlines().count(bluetooth['evidence']['replacement']['constraint']) != 1:
         raise ValueError('runtime BLE reset replacement constraint missing or duplicated')
@@ -242,9 +244,10 @@ def constraints(root, shared_crossings):
         'set_false_path -from [get_clocks {selected44}] -to [get_clocks {selected48}]\n'
     )
     return dict(policy=POLICY, sdc=clocks['sdc'] + audio_sdc + guard_reset_sdc,
-        runtime_cdc_sdc=runtime_cdc['sdc'],
+        runtime_cdc_sdc=runtime_cdc['sdc'] + runtime_pcm_cdc['sdc'],
         bluetooth_sdc=bluetooth['sdc'], bluetooth_cdc_adaptation=bluetooth['evidence'],
         runtime_cdc={key: value for key, value in runtime_cdc.items() if key != 'sdc'},
+        runtime_pcm_cdc={key: value for key, value in runtime_pcm_cdc.items() if key != 'sdc'},
         shared_sdc=shared['sdc'], omitted_shared_constraints=shared['omitted'],
         adapted_shared_constraints=shared['adapted'],
         extra_cst='IO_LOC "clk_16m9344" J19;\nIO_PORT "clk_16m9344" IO_TYPE=LVCMOS33 PULL_MODE=NONE;\n',

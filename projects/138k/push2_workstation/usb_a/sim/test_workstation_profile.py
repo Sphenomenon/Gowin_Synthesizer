@@ -32,7 +32,10 @@ class ProfileSources(unittest.TestCase):
         self.assertEqual(selected['configuration']['display_metadata_minor'], 1)
         self.assertEqual(selected['configuration']['media_preparation_policy'], 'seal_record_stop_score_tf_ble_v1')
         for dependency in ('tools/workstation_runtime_cdc.py',
-                           'tools/workstation_runtime_clock_audit.py'):
+                           'tools/workstation_runtime_clock_audit.py',
+                           'tools/workstation_runtime_pcm_cdc.py',
+                           'tools/WORKSTATION_RUNTIME_PCM_CDC.md',
+                           'sim/test_workstation_runtime_pcm_cdc.py'):
             self.assertIn('projects/138k/push2_workstation/usb_a/' + dependency,
                           selected['source_sha256'])
         self.assertIn('native scan-window admission', features['hdmi_ddr']['selected_behavior'])
@@ -214,6 +217,32 @@ class PreparedClosure(unittest.TestCase):
         metadata['runtime_audio']['bluetooth_cdc_adaptation']['replacement']['selectors'] = []
         metadata_path.write_text(json.dumps(metadata))
         with self.assertRaisesRegex(ValueError, 'runtime BLE constraint policy changed'):
+            profile.verify(ROOT, self.output)
+
+    def test_runtime_pcm_policy_is_recomputed_and_installed(self):
+        from tools.workstation_runtime_pcm_cdc import runtime_pcm_cdc_bundle
+        bundle = runtime_pcm_cdc_bundle(ROOT)
+        artifact = profile.verify(ROOT, self.output)
+        policy = artifact['runtime_audio']['runtime_pcm_cdc']
+        self.assertEqual(policy, {key: value for key, value in bundle.items() if key != 'sdc'})
+        self.assertFalse(policy['constraints_complete'])
+        self.assertFalse(policy['physical_cdc_accepted'])
+        sdc_path = self.stage / 'constraints/custom_138k.sdc'
+        original = sdc_path.read_text()
+        lines = original.splitlines()
+        self.assertTrue(all(lines.count(line) == 1 for line in bundle['sdc'].splitlines()))
+        flight = bundle['sdc'].splitlines()[0]
+        for replacement in ('', flight.replace('13.020', '59.051'), flight + '\n' + flight):
+            with self.subTest(replacement=replacement):
+                sdc_path.write_text(original.replace(flight + '\n', replacement + '\n', 1))
+                with self.assertRaisesRegex(ValueError, 'runtime PCM constraint installation changed'):
+                    profile.verify(ROOT, self.output)
+                sdc_path.write_text(original)
+        metadata_path = self.output / 'integration_inputs.json'
+        metadata = json.loads(metadata_path.read_text())
+        metadata['runtime_audio']['runtime_pcm_cdc']['physical_cdc_accepted'] = True
+        metadata_path.write_text(json.dumps(metadata))
+        with self.assertRaisesRegex(ValueError, 'runtime PCM constraint policy changed'):
             profile.verify(ROOT, self.output)
 
     def test_media_and_token_storage_owners_are_explicit_profile_inputs(self):

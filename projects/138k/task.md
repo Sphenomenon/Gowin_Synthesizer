@@ -40,6 +40,8 @@
 
 [R00 owner8 主线复验](push2_workstation/usb_a/reports/WORKSTATION_RECORDING_DDR_OWNER8_MAIN_INTEGRATION_20261030.md)已完成原生路径 44 项、后端 41 项及严格 lint；新 prepare `7ffad19cde578d67` 的 profile 19 项／来源 12 项／accepted 10 项通过，570 staged 与 `bd40620bb1b139bb` 逐字节相同。组件仍未由整机选择，生产 owner8／最终 PCM CDC／录音对象业务尚未接入；没有新综合、物理或硬件接受，R00／R01／R02 方框不变。
 
+[PCM/context CDC 维护组合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PCM_CDC_COMPOSITION_20261030.md)已完成父级实际 VG 14 项／81 负控，独立检查 229 位、862 selector、16 同步组与五组 release。新 prepare `9993a3602be582fa` 安装 50 行约束，profile 20 项／来源 12 项／accepted 10 项通过，570 staged 仅 SDC 改变。旧 25／77、f1be 综合及 F8／F9 身份不转移；新候选尚无综合，完整 CDC／功能复位／RAM 数据时序／物理与硬件接受仍未完成，无部署。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）

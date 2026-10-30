@@ -158,6 +158,13 @@ def _artifact(root, output, metadata, profile):
             any(staged_sdc.count(line) != 1 for line in bluetooth['sdc'].splitlines()) or
             staged_sdc.count(bluetooth['evidence']['replacement']['constraint']) != 1):
         raise ValueError('workstation profile runtime BLE constraint installation changed')
+    from tools.workstation_runtime_pcm_cdc import runtime_pcm_cdc_bundle
+    pcm = runtime_pcm_cdc_bundle(root)
+    if metadata.get('runtime_audio', {}).get('runtime_pcm_cdc') != {
+            key: value for key, value in pcm.items() if key != 'sdc'}:
+        raise ValueError('workstation profile runtime PCM constraint policy changed')
+    if any(staged_sdc.count(line) != 1 for line in pcm['sdc'].splitlines()):
+        raise ValueError('workstation profile runtime PCM constraint installation changed')
     bindings = {}
     from tools.workstation_custom_board import source_snapshot
     if source_snapshot(root, metadata['source_snapshot_extra_inputs']) != metadata['source_snapshot_sha256']:
