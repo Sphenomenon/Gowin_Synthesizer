@@ -48,7 +48,9 @@ revision 5 显式启用 AE350 时钟命令的媒体准备：保留持音，正�
 
 只有显式 profile 调用 `stage_ae350_firmware()`，将 [firmware/ae350](../../firmware/ae350/README.md) 的 C／头文件／启动汇编／链接脚本重编译到候选 `ae350_firmware/`，安装其 `boot.mem`。安装前检查父 ROM，安装后核对新 ROM；缺源、工具失败或容量不足均直接停止，不能回退锁定 ROM。未指定 profile 及 accepted／pinned／resource 继续保留原 ROM。
 
-固件证据绑定工具版本、ELF／binary／ROM、16 KiB ROM／8 KiB RAM 容量和至少 4 KiB 栈保留。验证同时检查独立固件证据目录与工程里安装的字节。逐函数栈值仍不能证明完整调用链、运行时栈水位、服务期限或实板执行。
+原配置的固件证据绑定工具版本、ELF／binary／ROM、16 KiB ROM／8 KiB RAM 容量和至少 4 KiB 栈保留。验证同时检查独立固件证据目录与工程里安装的字节。逐函数栈值仍不能证明完整调用链、运行时栈水位、服务期限或实板执行。
+
+`custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1` 是另一个显式开发配置，继承当前 no-panel 的音频、显示、录音和 BLE DDR 组合，选择 ILM／DLM 各 64 KiB 与真实 64 KiB PL 启动 ROM。它从 ROM 冷装载，不依赖调试器；唯一存储 owner、完整 16384-word 镜像、ELF 布局及实际硬核 config／wrapper 均校验。其他四个配置继续原存储策略。使用现有 `build.py --prepare-custom-board --workstation-profile <该名称>` 准备，完整命令沿用本文入口的 netlist／output 参数。Cache 保持关闭；调用链栈分析是当前入口的保守静态上界，硬核、周期、物理与部署验证另行进行，见[存储契约](../../firmware/ae350/LOCAL_MEMORY.md)和[父级准备证据](../../reports/WORKSTATION_AE350_BOOT64_20261031.md)。
 
 配置锁检查所选维护源码与 glob 来源库存；准备和 verify 还重新计算完整源码快照，拒绝内容变化、新增输入、编译列表变化、安装位置歧义、依赖变化、staged 文件增减及固件／feature／硬件状态改写。父基线清单、还原和漂移检查继续由既有 baseline 工具执行。不得为消除失败改写冻结基线、原始网表或历史证据。
 

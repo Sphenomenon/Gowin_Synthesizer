@@ -119,6 +119,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             profile_dependencies += ('rtl/workstation/workstation_profile_runtime.sv',)
     recording_selected=runtime and specification(profile['name']).get('recording_enabled',False)
     ble_raw_selected=runtime and specification(profile['name']).get('ble_recording_storage_enabled',False)
+    from tools.workstation_ae350_memory import selection as memory_selection, SOURCE as BOOT_MEMORY_SOURCE, PARENT as PARENT_BOOT_MEMORY
+    ae350_memory = memory_selection(profile['configuration'] if profile is not None else {})
+    expanded_boot = ae350_memory['boot_rom_bytes'] == 65536
+    if expanded_boot:
+        native_sources += (BOOT_MEMORY_SOURCE,)
     if recording_selected:
         from tools.workstation_recording_policy import SOURCES as RECORDING_SOURCES, DEPENDENCIES as RECORDING_DEPENDENCIES
         native_sources += RECORDING_SOURCES
@@ -146,7 +151,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise FileNotFoundError('missing native-board source: ' + relative)
     if workstation_profile is not None:
         from tools.stage_ae350_firmware import selected_inputs
-        extra_inputs += ['firmware/ae350/' + name for name in selected_inputs(recording_selected)]
+        extra_inputs += ['firmware/ae350/' + name for name in selected_inputs(recording_selected, ae350_memory['memory_profile'])]
     snapshot = source_snapshot(root, extra_inputs)
     pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
     sys.path.insert(0, str(root / 'tools'))
@@ -156,7 +161,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     parent_output, stage, parent_metadata = builder.prepare(timing_fixes=True, output_directory=output / 'workstation')
     if workstation_profile is not None:
         from tools.workstation_profile import prepare_ae350
-        ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected)
+        ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected,
+                                     **ae350_memory)
     native_timing = adapt_timing(stage)
     (stage / 'scripts/build.tcl').write_text(
         'error "This native-board integration stage is synthesis-only; P&R and deployment are not authorized or validated."\n')
@@ -174,6 +180,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         raise ValueError('duplicate native-board parent compilation inputs')
     replacements = {}
     replaced_inputs = dict(REPLACED_INPUTS)
+    if expanded_boot:
+        replaced_inputs[PARENT_BOOT_MEMORY] = BOOT_MEMORY_SOURCE
     install_paths, unchanged_parent_inputs = {}, {}
     if workstation_profile is not None:
         replaced_inputs['src/video/hdmi_display.v'] = 'rtl/workstation/workstation_profile_hdmi.sv'

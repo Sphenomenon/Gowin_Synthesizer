@@ -38,7 +38,17 @@ from tools.workstation_recording_policy import NAME as R00_NAME, CONFIG as R00_C
 R00_NO_LOCAL_PANEL_NAME = 'custom138k-workstation-r00-no-local-panel-v1'
 R00_NO_LOCAL_PANEL_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json'
 R00_NO_LOCAL_PANEL_PROVIDER = 'rtl/workstation/workstation_profile_r00_no_local_panel.sv'
+LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1'
+LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
 PROFILE_REGISTRY = {
+    LOCAL_BOOT64_NAME: dict(config=LOCAL_BOOT64_CONFIG, revision=1,
+        configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
+            recording_policy=R00_POLICY, local_panel_policy='disabled_local_lcd_touch_v1',
+            ble_recording_storage_policy='native_raw_ddr_v1',
+            ae350_memory_profile='ilm64k_dlm64k', ae350_boot_rom_bytes=65536),
+        provider=R00_NO_LOCAL_PANEL_PROVIDER, recognition_enabled=False, recording_enabled=True,
+        local_panel_enabled=False, ble_recording_storage_enabled=True,
+        integration_identity='custom138k-native-dual-rate-r00-no-local-panel-ilm64k-boot64k-revision1'),
     R00_NO_LOCAL_PANEL_NAME: dict(config=R00_NO_LOCAL_PANEL_CONFIG, revision=2,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             recording_policy=R00_POLICY, local_panel_policy='disabled_local_lcd_touch_v1',
@@ -128,7 +138,8 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
     return profile
 
 
-def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False):
+def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False,
+                  memory_profile='pl16k_8k', boot_rom_bytes=16384):
     """Install maintained AE350 ROM only for the explicitly selected profile."""
     from tools.stage_ae350_firmware import stage_ae350_firmware
     root, output, stage = map(lambda path: Path(path).resolve(), (root, output, stage))
@@ -138,7 +149,8 @@ def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False
     if sha(stage / rom_path) != historical:
         raise ValueError('AE350 profile installation requires the unchanged parent ROM')
     evidence = output / AE350_DIRECTORY
-    build = stage_ae350_firmware(root, evidence, riscv_prefix, recording_api=recording_api)
+    build = stage_ae350_firmware(root, evidence, riscv_prefix, recording_api=recording_api,
+                                memory_profile=memory_profile, boot_rom_bytes=boot_rom_bytes)
     if sha(evidence / 'boot.mem') != build['rom_sha256']:
         raise ValueError('AE350 generated ROM changed before installation')
     shutil.copyfile(evidence / 'boot.mem', stage / rom_path)
@@ -165,6 +177,8 @@ def _ae350_evidence(root, output, metadata, profile):
         if sha(checked_path(evidence, relative)) != expected:
             raise ValueError('workstation profile AE350 evidence changed: ' + relative)
     build = selected['build']
+    from tools.workstation_ae350_memory import verify_prepared
+    verify_prepared(output / 'workstation/Prj1', build, profile['configuration'], sha)
     from tools.stage_ae350_firmware import selected_sources
     recording_api = specification(profile['name']).get('recording_enabled', False)
     if (build.get('recording_api_enabled') is not recording_api or

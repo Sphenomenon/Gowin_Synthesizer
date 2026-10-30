@@ -94,9 +94,31 @@ ILM 装载后有指令屏障；APB／已有共享队列没有改地址、所有�
 今后开启 Cache 或引入缓存共享 DDR 时，必须在各所属接口实现并验证维护契约。
 RAM 循环读回也不能作为 ECC 使能、异常配置或纠错覆盖证明。
 
-本批没有替换 RTL 存储或业务 owner，原 PL ROM／RAM 仍保留；没有新的
-综合、物理 CLS／BSRAM 净收益或 CPU 周期结论。C04/C07 应按整合后的同功能
+默认 profile 保留原 PL ROM／RAM；下述显式变体替换 ROM 存储但保留 RAM 行为，
+没有新的综合、物理 CLS／BSRAM 净收益或 CPU 周期结论。C04/C07 应按整合后的同功能
 候选另测。64 KiB 空间、编译代码占用和 CPU 使用率是不同指标。
+
+## 显式 64 KiB 冷存储装配
+
+`custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1` 继承无本地
+LCD／触摸、无 CNN、保留录音及 BLE raw DDR 的运行组合，显式选择
+`ilm64k_dlm64k` 与 `ae350_boot_rom_bytes=65536`。它不替代现有 profile。
+`rtl/memory/workstation_ae350_boot_memory.sv` 替换冻结工程中编译的
+`src/ae350/gw138k_boot_memory.sv`，保留原模块 ABI 和 8 KiB scratch RAM
+的延迟、写掩码、pending-write bypass 与复位行为。ROM 地址窗口是
+`0x80000000..0x8000FFFF`，窗口外仍返回 EBREAK；镜像必须恰为 16384 个
+32 位文本字。新增 48 KiB 是原始 ROM 存储差额，不是物理 BSRAM 颗数结论。
+
+装配校验绑定生成镜像容量、实际编译的唯一 ROM owner、两份硬核配置和 wrapper
+的冻结哈希。地址端口原本就是 32 位，因此不改 vendor 端口或时钟。
+链接器与 ELF 校验同时使用选定的物理容量；ILM 代码／常量与 DLM 数据／栈
+仍各自受 64 KiB 上限约束，不能由更大的冷存储绕过。
+
+`sim/test_ae350_boot_storage.py` 比较新模块的 16 KiB 参数与原冻结实现，
+覆盖全部 4096 ROM 字及 4000 个 RAM 事务；64 KiB 参数覆盖全部 16384 字和
+窗口边界。它还真实编译含额外 32 KiB 常量的固件：旧 16 KiB 物理容量必须
+链接失败，新容量必须通过 ELF／BIN／ROM 重建并实际执行复制至 ILM。
+再次增加 32 KiB 常量须因运行窗口／镜像越界而失败。缓存和硬件验收状态不变。
 
 ## 离线验证
 

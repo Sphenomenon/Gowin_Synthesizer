@@ -17,7 +17,9 @@ def symbol_values(text):
             if len(parts := line.split()) == 3 and re.fullmatch('[0-9a-fA-F]+', parts[0])}
 
 
-def local_memory_report(size_text, symbols_text, binary_bytes):
+def local_memory_report(size_text, symbols_text, binary_bytes, rom_bytes=ROM_BYTES):
+    if rom_bytes not in (16384, 65536):
+        raise ValueError('unsupported physical local-memory cold ROM capacity')
     symbols = symbol_values(symbols_text)
     required = ('_start', 'local_memory_entry', 'local_trap', 'local_halt', 'local_fail', 'services_main',
                 'local_copy_ilm', 'local_copy_data', 'local_clear_bss', 'local_enter_ilm', '__ilm_load_start',
@@ -39,9 +41,9 @@ def local_memory_report(size_text, symbols_text, binary_bytes):
         raise ValueError('DLM data/BSS/stack bounds invalid')
     if s['__stack_top'] - s['__stack_bottom'] != 16384 or s['__heap_start'] != s['__heap_end']:
         raise ValueError('local-memory profile requires 16 KiB stack and zero heap')
-    if not (0 < binary_bytes <= ROM_BYTES and s['__image_end'] == ROM_BASE + binary_bytes and
-            ROM_BASE < s['__ilm_load_start'] < s['__data_load_start'] < s['__image_end'] <= ROM_BASE + ROM_BYTES):
-        raise ValueError('actual 16 KiB cold-image bounds invalid')
+    if not (0 < binary_bytes <= rom_bytes and s['__image_end'] == ROM_BASE + binary_bytes and
+            ROM_BASE < s['__ilm_load_start'] < s['__data_load_start'] < s['__image_end'] <= ROM_BASE + rom_bytes):
+        raise ValueError('selected physical cold-image bounds invalid')
     ilm_bytes = s['__ilm_end'] - s['__ilm_start']
     if s['__ilm_load_start'] + ilm_bytes != s['__data_load_start']:
         raise ValueError('cold ILM and initialized-data load spans are not contiguous')
@@ -54,7 +56,7 @@ def local_memory_report(size_text, symbols_text, binary_bytes):
     text, data, bss = map(int, row[:3])
     if text + data != binary_bytes or data != s['__data_end'] - s['__data_start'] or bss != s['__bss_end'] - s['__bss_start']:
         raise ValueError('GNU size and load/runtime spans disagree')
-    return dict(rom_capacity_bytes=ROM_BYTES, binary_bytes=binary_bytes, text_bytes=text,
+    return dict(rom_capacity_bytes=rom_bytes, binary_bytes=binary_bytes, text_bytes=text,
                 initialized_data_bytes=data, bss_bytes=bss, ilm_capacity_bytes=65536,
                 ilm_runtime_bytes=ilm_bytes, ilm_reserved_final_word_bytes=4, dlm_capacity_bytes=65536,
                 ram_reserved_prefix_bytes=256, static_ram_span_bytes=s['__bss_end'] - s['__data_start'],
@@ -65,7 +67,7 @@ def local_memory_report(size_text, symbols_text, binary_bytes):
                 hardware_stack_watermark_verified=False)
 
 
-def verify_elf_image(path, binary, symbols):
+def verify_elf_image(path, binary, symbols, rom_bytes=ROM_BYTES):
     """Reconstruct objcopy's ROM image from ELF32 PT_LOAD physical addresses."""
     raw = Path(path).read_bytes()
     if len(raw) < 52 or raw[:7] != b'\x7fELF\x01\x01\x01':
@@ -103,7 +105,7 @@ def verify_elf_image(path, binary, symbols):
             continue
         if name not in ('.boot', '.text', '.rodata', '.data', '.bss'):
             raise ValueError('unexpected allocated local-memory ELF section: ' + name)
-        lower, upper = ((ROM_BASE, ROM_BASE + ROM_BYTES) if name == '.boot' else
+        lower, upper = ((ROM_BASE, ROM_BASE + rom_bytes) if name == '.boot' else
                         (ILM_BASE, ILM_END - 4) if name in ('.text', '.rodata') else
                         (DLM_BASE + 256, symbols['__stack_bottom']))
         if not lower <= address < address + size <= upper or (kind == 8) != (name == '.bss'):

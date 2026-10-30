@@ -43,11 +43,13 @@ def selected_inputs(recording_api=False, memory_profile='pl16k_8k'):
     return (*inputs, *LOCAL_MEMORY_INPUTS) if memory_profile == 'ilm64k_dlm64k' else inputs
 
 
-def decode_rom(path):
-    """Read the ROM's exact 4096 little-endian words; reject truncated references."""
+def decode_rom(path, rom_bytes=ROM_BYTES):
+    """Read exactly the selected physical ROM size; locked references stay 16 KiB."""
+    if rom_bytes not in (16384, 65536):
+        raise ValueError('unsupported AE350 ROM capacity')
     words = Path(path).read_text().splitlines()
-    if len(words) != ROM_BYTES // 4 or any(not re.fullmatch('[0-9a-fA-F]{8}', word) for word in words):
-        raise ValueError('AE350 reference ROM must contain exactly 4096 hexadecimal words')
+    if len(words) != rom_bytes // 4 or any(not re.fullmatch('[0-9a-fA-F]{8}', word) for word in words):
+        raise ValueError('AE350 ROM must contain exactly ' + str(rom_bytes // 4) + ' hexadecimal words')
     return b''.join(int(word, 16).to_bytes(4, 'little') for word in words)
 
 
@@ -88,13 +90,15 @@ def memory_report(size_text, symbols_text, start_text, binary_bytes):
 
 
 def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None, recording_api=False,
-                         memory_profile='pl16k_8k'):
+                         memory_profile='pl16k_8k', boot_rom_bytes=ROM_BYTES):
     """Build to a new directory and return provenance, capacity and ROM comparison.
 
     The caller explicitly installs output/boot.mem into its new candidate. Accepted
     and pinned profiles keep their locked ROM unless that caller selects this path.
     """
     root, output = Path(root).resolve(), Path(output).resolve()
+    if boot_rom_bytes not in (16384, 65536) or (boot_rom_bytes != ROM_BYTES and memory_profile != 'ilm64k_dlm64k'):
+        raise ValueError('expanded AE350 cold ROM requires explicit ILM/DLM placement and 64 KiB physical source')
     source_dir = root / 'firmware/ae350'
     inputs = selected_inputs(recording_api, memory_profile)
     sources = selected_sources(recording_api)
@@ -160,7 +164,8 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
             target = Path(name).with_suffix('.o').name
             run([prefix + '-gcc', *common, '-fstack-usage', '-c', name, '-o', target])
             objects.append(target)
-        run([prefix + '-gcc', '-march=' + isa, '-mabi=ilp32', '-msmall-data-limit=0',
+        memory_flags = ['-Wl,--defsym=__boot_rom_bytes=' + str(boot_rom_bytes)] if memory_profile == 'ilm64k_dlm64k' else []
+        run([prefix + '-gcc', '-march=' + isa, '-mabi=ilp32', '-msmall-data-limit=0', *memory_flags,
              '-nostdlib', '-nostartfiles', '-Wl,--build-id=none,-Map=firmware.map,-T,' + linker,
              *objects, '-o', 'firmware.elf'])
         run([prefix + '-objcopy', '-O', 'binary', 'firmware.elf', 'firmware.bin'])
@@ -169,16 +174,16 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
     (output / 'firmware.size').write_text(size.stdout)
     (output / 'firmware.nm').write_text(symbols.stdout)
     binary = (output / 'firmware.bin').read_bytes()
-    capacity = (local_memory_report(size.stdout, symbols.stdout, len(binary))
+    capacity = (local_memory_report(size.stdout, symbols.stdout, len(binary), boot_rom_bytes)
                 if memory_profile == 'ilm64k_dlm64k' else
                 memory_report(size.stdout, symbols.stdout, (output / 'start.S').read_text(), len(binary)))
     image_validation = None
     if memory_profile == 'ilm64k_dlm64k':
-        image_validation = verify_elf_image(output / 'firmware.elf', binary, capacity['symbols'])
-    padded = binary.ljust(ROM_BYTES, b'\0')
+        image_validation = verify_elf_image(output / 'firmware.elf', binary, capacity['symbols'], boot_rom_bytes)
+    padded = binary.ljust(boot_rom_bytes, b'\0')
     rom = output / 'boot.mem'
     rom.write_text(''.join(f'{int.from_bytes(padded[index:index+4], "little"):08x}\n'
-                           for index in range(0, ROM_BYTES, 4)))
+                           for index in range(0, boot_rom_bytes, 4)))
     for relative, expected in identities.items():
         if sha(root / relative) != expected or sha(output / Path(relative).name) != expected:
             raise ValueError('AE350 firmware input changed during compilation: ' + relative)
@@ -211,6 +216,8 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
                   elf_sha256=sha(output / 'firmware.elf'), binary_sha256=sha(output / 'firmware.bin'),
                   rom_sha256=sha(rom), reference_rom=dict(reference_description,
                       byte_identical=rom.read_bytes() == reference_bytes, words_identical=padded == reference_image,
+                      reference_capacity_bytes=ROM_BYTES, selected_capacity_bytes=boot_rom_bytes,
+                      differing_words_scope_bytes=ROM_BYTES,
                       differing_words=sum(padded[i:i+4] != reference_image[i:i+4] for i in range(0, ROM_BYTES, 4))),
                   hardware_tested=False, project_rom_installed=False,
                   stack_validation='Compiler per-function sizes and reserved capacity; whole-call-chain and runtime high-water mark remain unverified.')
@@ -229,8 +236,8 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
                                             inputs=platform_evidence,
                                             macros=[name.decode('ascii') for name in macros],
                                             caller_must_verify_actual_staged_ip=True)
-        result['cold_boot'] = dict(image_storage='existing_16k_pl_boot_rom', reset_address=ROM_BASE,
-                                  image_capacity_bytes=ROM_BYTES, cpu_copy_to_ilm_dlm=True,
+        result['cold_boot'] = dict(image_storage='existing_16k_pl_boot_rom' if boot_rom_bytes == 16384 else 'explicit_64k_pl_boot_rom', reset_address=ROM_BASE,
+                                  image_capacity_bytes=boot_rom_bytes, cpu_copy_to_ilm_dlm=True,
                                   fabric_extended_ahb_master_required=False,
                                   actual_ip_writability_hardware_verified=False,
                                   cache_policy='reject_enabled_i_or_d_cache_on_entry',
@@ -249,11 +256,13 @@ def main():
     parser.add_argument('--reference-mem', type=Path, help='optional explicit 4096-word comparison ROM')
     parser.add_argument('--recording-api', action='store_true', help='explicit R00 recording service API selection')
     parser.add_argument('--memory-profile', choices=MEMORY_PROFILES, default='pl16k_8k',
-                        help='explicit runtime placement; both profiles retain the actual 16 KiB cold ROM limit')
+                        help='explicit runtime placement; does not install physical ROM')
+    parser.add_argument('--boot-rom-bytes', type=int, choices=(16384, 65536), default=16384,
+                        help='explicit physical cold ROM size; expanded storage requires matching native ROM source')
     args = parser.parse_args()
     result = stage_ae350_firmware(Path(__file__).resolve().parents[1], args.output,
                                 args.riscv_prefix, reference_mem=args.reference_mem, recording_api=args.recording_api,
-                                memory_profile=args.memory_profile)
+                                memory_profile=args.memory_profile, boot_rom_bytes=args.boot_rom_bytes)
     print(json.dumps(result, indent=2))
 
 

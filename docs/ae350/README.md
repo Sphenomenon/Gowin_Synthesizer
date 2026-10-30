@@ -9,9 +9,9 @@ AE350 是 GW5AST-138 内置的硬核处理器子系统，官方架构图标注�
 | 项目 | 官方能力 | 本仓库可确认的配置／边界 |
 |---|---|---|
 | 核心时钟 | 最高 800 MHz | 已核对的 CPU PLL 配置为核心 100 MHz、总线 50 MHz；不是 800 MHz 板测记录 |
-| 局部存储 | ILM 64 KiB、DLM 64 KiB | 已核对的固件链接脚本未把程序／数据分配到这两个区域 |
+| 局部存储 | ILM 64 KiB、DLM 64 KiB | 原配置未使用；C06 显式开发 profile 已接入冷启动装载及离线验证，尚未实板接受 |
 | Cache | I-Cache、D-Cache 各 32 KiB | 官方寄存器复位值为关闭；不能仅因硬件支持就认定现有镜像已开启 |
-| 外接／自定义存储 | 指令窗口 256 MiB、数据窗口 2 GiB | 已核对工程在 PL 侧实现 16 KiB 启动 ROM、8 KiB 工作 RAM，并桥接两个 DDR UI 页 |
+| 外接／自定义存储 | 指令窗口 256 MiB、数据窗口 2 GiB | 原配置为 PL 侧 16 KiB ROM／8 KiB RAM；C06 新 profile 显式扩展为 64 KiB 冷启动 ROM，仍桥接两个 DDR UI 页 |
 | 运算 | 整数乘除、单／双精度浮点、DSP 扩展 | AE350 固件使用 `rv32im_zicsr/ilp32` 编译；没有据此启用浮点或专用 DSP 扩展 |
 | 业务 | 可运行控制、DSP 和 NN 软件 | 当前 AE350 承担 UI／服务／启动自检；逐样本音频和识别计算主要在 RTL 中 |
 
@@ -201,7 +201,9 @@ MUG1029 第 5 章按配置和 SaG／LD 文件区分三类启动：
 | UI page 0 | `0x10000000–0x103FFFFF`，4 MiB | 桥接至物理 DDR UI 页 0 |
 | UI page 1 | `0x10400000–0x107FFFFF`，4 MiB | 桥接至物理 DDR UI 页 1 |
 
-`start.S` 设置异常入口，执行 RAM 字节通道／读回自检，将 `.data` 初值从 ROM 复制到 RAM，清零 `.bss`，再进入服务程序。已核对源文件没有把数据／栈链接到 DLM，也没有把函数放入 ILM；未见显式 Cache 开启代码。对其他 profile 和板上镜像仍应检查其实际输入，而不是扩大这份参考脚本的结论。
+上表描述原配置。其 `start.S` 设置异常入口，执行 RAM 字节通道／读回自检，将 `.data` 初值从 ROM 复制到 RAM，清零 `.bss`，再进入服务程序；它没有使用 ILM／DLM，也未显式开启 Cache。
+
+C06 新增 `custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1`：真实 PL ROM 扩为 64 KiB，冷启动自装载代码／常量至 64 KiB ILM，数据／BSS／16 KiB 栈至 64 KiB DLM；原 8 KiB PL scratch RAM 保留。链接、ELF／BIN／ROM、唯一编译存储 owner 和实际硬核配置均纳入来源验证，启动有容量、复制／读回和异常检查。I／D Cache 仍关闭，入口若已开启则失败。详见[维护存储契约](../../projects/138k/push2_workstation/usb_a/firmware/ae350/LOCAL_MEMORY.md)及[整机准备证据](../../projects/138k/push2_workstation/usb_a/reports/WORKSTATION_AE350_BOOT64_20261031.md)。这是源码与离线准备结果，真实硬核访问、Cache 属性／维护、物理资源、时序和 SRAM 验收仍待完成；不能由此推断当前板上镜像。
 
 DDR 分配唯一依据仍是 [ddr_address_map.vh](../../projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh)。它记录物理 DDR 总容量 1 GiB，以及 CPU UI 两页到物理字节区 `0x01000000–0x017FFFFF` 的映射。这里的 CPU `0x10000000` 与物理 DDR 同值地址不是一回事。原生 `app_addr` 以 32-bit 字计数，一次 BL8 为 32 bytes、步进 8；其余客户和预留空间直接查该权威表，不在本文再分配一套地址。
 
@@ -211,13 +213,13 @@ DDR 分配唯一依据仍是 [ddr_address_map.vh](../../projects/138k/push2_work
 
 已核对的固件使用 `0xF8000000` 诊断、`0xF8010000` 音频服务、`0xF8020000` UI 服务，均处于 Extended APB 窗口。详细字段查已有 [audio_services.h](../../projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/audio_services.h) 和各服务 RTL，不把这些自定义基址误认作 AE350 固定硬件寄存器。
 
-构建代码使用 `-march=rv32im_zicsr -mabi=ilp32`，按裸机方式链接自定义启动代码，检查固件大小不超过 16384 bytes，再形成 `boot.mem`。这证明所选固件的指令和 ABI 策略，不是 CPU 全部能力列表，也不证明已经链接官方 DSP／NN 库。`ae350/scripts` 中的早期脚本还保留历史本机依赖，不是默认生产入口。
+原配置使用 `-march=rv32im_zicsr -mabi=ilp32`，按裸机方式链接自定义启动代码，冷镜像上限为 16384 bytes。C06 局部存储变体增加 `zifencei` 并按显式冷存储容量检查；更大的冷镜像不能绕过 ILM／DLM 各自上限。这证明所选固件的指令和 ABI 策略，不是 CPU 全部能力列表，也不证明已经链接官方 DSP／NN 库。`ae350/scripts` 中的早期脚本还保留历史本机依赖，不是默认生产入口。
 
 AE350 的当前职责是 UI、命令／服务和启动自检；USB Host／MIDI 传输继续由相应 USB CPU／适配器承担，音频采样、合成、效果与识别数据通路继续由各 RTL 子系统负责。公共参数必须在现有权威应用点提交，不能在 CPU 软件中建立并行真值。连续采样不等待 CPU、显示、文件或 BLE。
 
 ## 8. 后续利用内置资源时需要补齐的证据
 
-本次只整理资料，没有改变链接、Cache、CPU 时钟或硬件配置。后续实现可按以下边界逐项推进：
+原资料整理与后续 C06 实现分别保留来源。C06 已完成上述显式源码／离线检查点，后续仍按以下边界逐项补齐硬件和系统证据：
 
 1. 从实际准备后的固件、IP 配置与映射文件核对 ILM／DLM、Cache、FPU／DSP 和编译器支持情况；必要时读取对应 CSR／状态，但板卡操作单独授权。
 2. 若迁移到 ILM／DLM，明确代码／只读数据／全局变量／堆／栈容量，补齐复制、清零、异常入口及固件装载方式；不能只改链接地址。

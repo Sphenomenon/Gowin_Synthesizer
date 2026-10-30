@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "scope": "C06_explicit_boot64_ILM_DLM_whole_profile_prepare_only",
+  "passed": true,
+  "author_commit": "277e725fe3abccc11b527a0517d4097f04834c67",
+  "author_exact_blobs": 11,
+  "source_sha256": {
+    "docs/ae350/README.md": "893ecb82afdd05ed1fa7cf3bbbf01a844ca066fc6c79e40495a00acc5d02a5c1",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/WORKSTATION_PROFILE.md": "67acc53c07645adfe95e8668e187881ed61929712bde531fbfe7b23808e30a06",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": "2b2308ea69ea2ad4923602118f1d24c38613659ceb0064e9ec11ae95808bb6cf",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json": "3ef567b7e20a136a1a640037b3d207654516ca02e78dc8868f4dfe8fdb9b3fc1",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json": "9e432b1ce3f9da0bcc3be376e08177ba6c5f0c1c608cbe4ab2c7663178d9f6a8",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": "c26a0c49bc540c6f7ea84ddbb6a15cb7edfa7a4f2e8f2c5e1c935a4f26ea468a",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": "4b7078c15707d68acb6a8a242c6d76423c4ba2a3028297c05655ba758adc5886",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/LOCAL_MEMORY.md": "78bb3ce243355b3ef79e685f1d8a54e9599dd844a05773ed00d028392a738a73",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/boot_ilm_dlm.ld": "214011f97811e6e359b068b3d5c758e2297bead1a6acdd31538c9d3f6caa58dc",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/provenance.json": "bb3dedbe39ca2825ebbe2808d1ed41104affe99c086a00c80fff049fa75ec1b7",
+    "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ae350_boot_memory.sv": "27f94edbb0ca61e0fa764c86167f1bf4542afdd8e40ff4aea76b2ebe116dc8ef",
+    "projects/138k/push2_workstation/usb_a/sim/ae350_rv32_startup.py": "8339959bf7437de323bbe3214cbb9a70dcada1f27fab1394dc2b1d3456ca7c01",
+    "projects/138k/push2_workstation/usb_a/sim/test_ae350_boot_storage.py": "f676b2007ec9f5246bd18b2a6aa7a8b62a67821efd61d89df4a04ab49e0ace20",
+    "projects/138k/push2_workstation/usb_a/tools/ae350_local_memory.py": "caee8453ac1cf01fcd07f23a85f1384e738ce6979a100beeb1582da1cf9dbb3c",
+    "projects/138k/push2_workstation/usb_a/tools/stage_ae350_firmware.py": "16f15d7f7ba043c035e3da8af6ea9b64c3ee592f5d1c0a4f59817a2fbb02e1c9",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_memory.py": "6c5846e273a59dd24fba1a3424a973ca98dbb9c211c63b1d886b000f5e7a97c1",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "4e3f97ad04c2ebe468831a2de9f11d42a831c7d9a93780269b10e0117b4958cd",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "0ced0622909202a42d1da517f803009ff97599635ea2a04d7940756857275cfe"
+  },
+  "tests": {
+    "storage": 4,
+    "local": 12,
+    "firmware": 10,
+    "accepted": 17,
+    "profile": 6,
+    "runtime": 12,
+    "baseline_clean_three_paths": 23
+  },
+  "profile_verification": {
+    "profiles": [
+      {
+        "name": "custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1",
+        "sources": 427
+      },
+      {
+        "name": "custom138k-workstation-r00-no-local-panel-v1",
+        "sources": 422
+      },
+      {
+        "name": "custom138k-workstation-r00-v1",
+        "sources": 409
+      },
+      {
+        "name": "custom138k-workstation-v1",
+        "sources": 409
+      },
+      {
+        "name": "custom138k-workstation-no-cnn-v1",
+        "sources": 409
+      }
+    ],
+    "expanded": {
+      "identity": "custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1-0a5c185263bc43fd",
+      "staged": 600,
+      "enabled": 269,
+      "rom_sha256": "6faa84042bc3695f7ae783168eeb937029f15cc706d80a98101752b2a4ebb68d",
+      "configuration_sha256": "3ef567b7e20a136a1a640037b3d207654516ca02e78dc8868f4dfe8fdb9b3fc1",
+      "artifact_sha256": "448c1a68422b2e9b7dd0e1c79ae27d65bf056035971560e8473239ba2a3861ae"
+    },
+    "default": {
+      "identity": "custom138k-workstation-r00-no-local-panel-v1-b86cfbf730dd8493",
+      "staged": 599,
+      "enabled": 269,
+      "rom_sha256": "1b2e8fac6677508c6f070baa6a4486b372ce79d0a40b9b81a1a8546c47f90766",
+      "configuration_sha256": "9e432b1ce3f9da0bcc3be376e08177ba6c5f0c1c608cbe4ab2c7663178d9f6a8",
+      "artifact_sha256": "0842522d784ec954d14e186e898bcc394cc5fc4fc3b12c6c4473a4cbf6bfe0be"
+    },
+    "default_rom_unchanged_from_C02": true
+  },
+  "startup": {
+    "passed": true,
+    "instructions": 205021,
+    "diagnostics": {
+      "0": 1129338161,
+      "4": 1346458451
+    },
+    "traps": [],
+    "executed_ilm": true,
+    "fenced": true,
+    "hardware_tested": false
+  },
+  "capacity": {
+    "rom_capacity_bytes": 65536,
+    "binary_bytes": 14928,
+    "text_bytes": 14912,
+    "initialized_data_bytes": 16,
+    "bss_bytes": 64,
+    "ilm_capacity_bytes": 65536,
+    "ilm_runtime_bytes": 14320,
+    "ilm_reserved_final_word_bytes": 4,
+    "dlm_capacity_bytes": 65536,
+    "ram_reserved_prefix_bytes": 256,
+    "static_ram_span_bytes": 80,
+    "static_ram_end": 2686452048,
+    "heap_bytes": 0,
+    "stack_top": 2686517248,
+    "stack_bottom": 2686500864,
+    "stack_capacity_bytes": 16384,
+    "minimum_stack_bytes": 16384,
+    "unallocated_dlm_bytes": 48816,
+    "symbols": {
+      "_start": 2147483648,
+      "local_memory_entry": 2684354560,
+      "local_trap": 2147484200,
+      "local_halt": 2147484196,
+      "local_fail": 2147484180,
+      "services_main": 2684357216,
+      "local_copy_ilm": 2147483984,
+      "local_copy_data": 2147484044,
+      "local_clear_bss": 2147484092,
+      "local_enter_ilm": 2147484176,
+      "__ilm_load_start": 2147484240,
+      "__ilm_start": 2684354560,
+      "__ilm_end": 2684368880,
+      "__data_load_start": 2147498560,
+      "__data_start": 2686451968,
+      "__data_end": 2686451984,
+      "__bss_start": 2686451984,
+      "__bss_end": 2686452048,
+      "__stack_bottom": 2686500864,
+      "__stack_top": 2686517248,
+      "__heap_start": 2686452048,
+      "__heap_end": 2686452048,
+      "__image_end": 2147498576,
+      "local_data_probe": 2686451968,
+      "local_bss_probe": 2686451984
+    },
+    "whole_program_stack_bound_verified": true,
+    "hardware_stack_watermark_verified": false
+  },
+  "call_chain_stack": {
+    "verified": true,
+    "scope": "cold reset -> local_memory_entry -> services_main; interrupts disabled",
+    "conservative_peak_bytes": 544,
+    "longest_chain": [
+      "services_main",
+      "ui_patch",
+      "patch",
+      "card",
+      "text",
+      "rect"
+    ],
+    "reachable_functions": [
+      "a138_record_try_read.constprop",
+      "a138_score_load.constprop",
+      "a138_snapshot.constprop",
+      "apply_model",
+      "card",
+      "chain_card.isra",
+      "effect.isra",
+      "headline",
+      "memset",
+      "patch",
+      "present",
+      "rect",
+      "render",
+      "services_main",
+      "text",
+      "ui_patch",
+      "ui_render",
+      "ui_touch"
+    ],
+    "exported_unreachable_functions": [
+      "a138_clock_mmio_bus",
+      "a138_clock_poll",
+      "a138_clock_probe",
+      "a138_clock_submit",
+      "a138_record_acquire",
+      "a138_record_command",
+      "a138_record_create",
+      "a138_record_download",
+      "a138_record_mmio_bus",
+      "a138_record_poll",
+      "a138_record_probe",
+      "a138_record_read_head",
+      "memcpy",
+      "mmio_read",
+      "mmio_write",
+      "rd",
+      "ui_patch_rows",
+      "ui_render_rows",
+      "wr"
+    ],
+    "assembly_loader_stack_bytes": 0,
+    "assembly_selftest_stack_bytes": 16,
+    "interrupts_enabled": false,
+    "hardware_watermark_verified": false,
+    "tail_calls_counted_as_nested": true
+  },
+  "firmware_identity": {
+    "elf_sha256": "6908a9821db2df861d737173ef17ddf94c86aac34522d2a57c94ec70685314ad",
+    "binary_sha256": "a4b64abd9dfab365ab9a0ea9263e3105f28d1a5005f8140a83279eb6d7644629",
+    "rom_sha256": "6faa84042bc3695f7ae783168eeb937029f15cc706d80a98101752b2a4ebb68d"
+  },
+  "default_profiles_retain_pl16k_8k": true,
+  "new_profile_reconstructed_from_current_mainline": true,
+  "runtime_cold_capacity_separate": true,
+  "cache_enabled": false,
+  "synthesis_run": false,
+  "place_route_run": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "release_ready": false,
+  "source_snapshots": 18,
+  "external_inputs": 2127,
+  "rollback": "Select existing no-panel profile, or restore this stage source/config changes from febf274 and rebuild a distinct candidate. Preserve immutable evidence.",
+  "remaining": [
+    "actual_hard_IP_CSR_ILM_DLM_probe",
+    "cache_attributes_and_maintenance",
+    "hardware_stack_watermark_and_cycles",
+    "same_function_resource_PNR_and_hardware_acceptance"
+  ],
+  "parent_directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/c06-boot64-parent-v1",
+  "parent_receipt_sha256": "0133282ad89f9fdfff5de3008e2f776e0efce2571cb45fd25d01b3f28753aff0",
+  "parent_seal_sha256": "f33515abf97c40706ab4c6998ba22c2cfb5c197073fb5aae77c0b37838b394f4"
+}
