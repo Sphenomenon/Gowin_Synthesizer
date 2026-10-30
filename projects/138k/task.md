@@ -90,6 +90,8 @@
 
 [AE350 已解析业务邮箱 S1a](push2_workstation/usb_a/reports/WORKSTATION_AE350_BUSINESS_MAILBOX_S1A_20261030.md)已合入未选择组件：父级三项回归、独立 560 项 RTL／23 同拍竞争和 C API 身份／失败负控通过，补齐跨 reset 读取的完整键复核。尚无 parser／APB／固件生产调用，完整 API 3,976 字节不作为 ROM fit；不代表 C01／C03 或录音迁移完成。用户追加允许将当前短录音迁到 DDR 节省 BSRAM，后续在独立数据存储边界实现并验证，净收益以新同配置物理结果为准。
 
+[owner8 PCM／APB 第一批审计](push2_workstation/usb_a/reports/WORKSTATION_RECORDING_PHASE1_CDC_20261030.md)已父级通过真实 e855 的四项／28 负控和公开 CLI：425 FF、42 Gray 首级位、82 保持数据位及六 release 链；35 行 SDC 仍为未安装提案。seal 的 raw reset／混合 ready 锥、RAM 数据、service／native／owner8 与完整物理验收均未接受；后续 BLE DDR 新接线必须重新审查消费者和身份，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
