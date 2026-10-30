@@ -120,6 +120,8 @@
 
 [并行 Gray counter 父级组合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_COUNTER_PREFIX_PARENT_20261030.md)已通过全 2^32 输入等价、停钟／复位／回卷、三相位观察和完整 controlled／health 回归；四份 prepare 各 12 来源通过，新主候选 `c7d66b419868f7f4` 为 593 staged／269 enabled，明确替代并禁用旧串行来源，旧 CDC scope 正确拒绝。TF 与 FF 独立审 seal 已父级核验；完整 HDMI provenance 仍失败，未改旧门禁。新综合／物理／硬件仍待验证，无部署。
 
+[HDMI owner8 显式来源适配父级复验](push2_workstation/usb_a/reports/WORKSTATION_HDMI_RECORDING_OWNER8_PROVENANCE_PARENT_20261030.md)已通过三种完整 elaboration、真实九槽 owner8 装配及 128,702 显示原子 tuple 回归；八项／三十负控和 17 accepted 来源通过。原 RTL／manifest／默认拒绝与历史失败保留，显式适配不改变生产选择；完整物理、整机 CDC／reset／DDR 期限和硬件仍未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

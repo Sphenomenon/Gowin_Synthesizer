@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "policy": "recording_owner8_v1",
+  "scope": "Verification-only provenance bridge for the versioned native HDMI owner8 composition; no RTL generation or build source selection",
+  "source": "rtl/workstation/workstation_hdmi_display.sv",
+  "source_commit": "524f5335f7cfaaeba24e9ce65c2924039000901a",
+  "parent_source_sha256": "cfa1121ee24fb9cebf95edea03639297d8e63af28d57a5cc32481d702f97980d",
+  "current_source_sha256": "724f23fdbd9f97f1fb16c79f0876eff7e5c317365d737adfc9392b924a515fc4",
+  "original_provenance": "rtl/workstation/workstation_hdmi_display.provenance.json",
+  "original_provenance_sha256": "2da2802f233a7286d7f728d48b62b4bd6327a954ab833b1784ede035e3924426",
+  "exact_changes": [
+    {
+      "before": "`endif\n    input wire memory_clk, memory_reset_n, memory_calibrated, memory_pll_locked,\n",
+      "after": "`endif\n`ifdef WORKSTATION_RECORDING_DDR\n    input wire recording_req,recording_write,\n    input wire [28:0] recording_address,\n    input wire [255:0] recording_data,\n    input wire [31:0] recording_mask,\n    output wire recording_ready,recording_response,recording_native_accept,recording_transport_fault,\n`endif\n    input wire memory_clk, memory_reset_n, memory_calibrated, memory_pll_locked,\n"
+    },
+    {
+      "before": "    basic_pitch_ddr_client_queues u_arbiter(.clk(memory_clk),.reset_n(ui_rst_n),.bist_done(bist_done),\n",
+      "after": "`ifdef WORKSTATION_RECORDING_DDR\n    wire [8:0] recording_native_accepts;\n    assign recording_native_accept=recording_native_accepts[8];\n    workstation_recording_ddr_client_queues #(.RECORDING_ENABLE(1)) u_arbiter(\n        .recording_valid(recording_req),.recording_write(recording_write),.recording_address(recording_address),\n        .recording_data(recording_data),.recording_mask(recording_mask),.recording_ready(recording_ready),\n        .recording_response(recording_response),.native_accept_o(recording_native_accepts),\n        .slot_accept_o(),.core_accept_o(),.transport_fault_o(recording_transport_fault),\n`else\n    basic_pitch_ddr_client_queues u_arbiter(\n`endif\n.clk(memory_clk),.reset_n(ui_rst_n),.bist_done(bist_done),\n"
+    }
+  ],
+  "exit_plan": "Retire this explicit verification bridge after a reviewed canonical native provenance chain owns recording and later changes; retain the original manifest and historical evidence.",
+  "hardware_acceptance_inherited": false
+}

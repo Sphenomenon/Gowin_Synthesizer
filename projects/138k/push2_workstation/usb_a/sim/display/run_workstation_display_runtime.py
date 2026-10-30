@@ -12,6 +12,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_runtime_counter import selected_source, selection_evidence
+from tools import workstation_hdmi_provenance as hdmi_provenance
 
 
 def digest(path):
@@ -26,11 +27,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--hdmi-adaptation', choices=[hdmi_provenance.OWNER8_POLICY],
+                        help='Explicit checked provenance bridge; default retains the original checksum gate')
     args = parser.parse_args()
     project, output = args.project.resolve(), args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     native_hdmi = ROOT / 'rtl/workstation/workstation_hdmi_display.sv'
     provenance_path = native_hdmi.with_suffix('.provenance.json')
+    adaptation_path = ROOT / hdmi_provenance.ADAPTATION if args.hdmi_adaptation else None
     provider = ROOT / 'rtl/workstation/workstation_profile_hdmi.sv'
     package = ROOT / 'rtl/display_data_layout_pkg.svh'
     display = ROOT / 'rtl/display_data'
@@ -55,9 +59,13 @@ def main():
         'rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv', 'rtl/memory/workstation_sdp.sv')]
     hdmi_sources += sorted((project / 'vendor/sipeed_dvi').glob('*.v'))
     hdmi_sources += [simlib, elaboration_tb]
+    owner8_sources = [project / name for name in hdmi_provenance.OWNER8_SOURCES]
     a07_path = ROOT / 'reports/workstation_task_20261030/display_metadata_v11_native.json'
     profile_path = project.parents[1] / 'workstation_profile.json'
-    inputs = list(dict.fromkeys(runtime_sources + hdmi_sources + [ROOT / 'tools/workstation_runtime_counter.py', native_hdmi, provenance_path,
+    inputs = list(dict.fromkeys(runtime_sources + hdmi_sources +
+        (owner8_sources + [ROOT / name for name in hdmi_provenance.OWNER8_SOURCES] +
+         [adaptation_path, project / 'Prj1.gprj', project / hdmi_provenance.SOURCE] if args.hdmi_adaptation else []) +
+        [ROOT / 'tools/workstation_runtime_counter.py', ROOT / 'tools/workstation_hdmi_provenance.py', native_hdmi, provenance_path,
         ROOT / 'rtl/workstation/RUNTIME_DISPLAY.md', a07_path, Path(__file__).resolve(),
         project / 'src/memory/ddr_address_map.vh', profile_path, project.parents[1] / 'integration_inputs.json']))
     hashes = {str(path): digest(path) for path in inputs}
@@ -88,20 +96,10 @@ def main():
             if path in hashes and hashes[path] != value:
                 raise ValueError('Frozen A07 prerequisite changed: ' + path)
         result['a07_prerequisite_identity'] = a07['identity']
-        info = json.loads(provenance_path.read_text())
-        current = native_hdmi.read_text()
-        if digest(native_hdmi) != info['native_sha256']:
-            raise ValueError('Native HDMI provenance checksum changed')
-        restored = current
-        prior_runtime = None
-        for edit in reversed(info['exact_changes']):
-            if restored.count(edit['after']) != 1:
-                raise ValueError('Reverse HDMI provenance anchor drift')
-            restored = restored.replace(edit['after'], edit['before'])
-            if hashlib.sha256(restored.encode()).hexdigest() == info['pre_runtime_native_sha256']:
-                prior_runtime = restored
-        if prior_runtime is None or hashlib.sha256(restored.encode()).hexdigest() != info['parent_sha256']:
-            raise ValueError('Reverse HDMI provenance did not reproduce exact inputs')
+        prior_runtime, result['hdmi_provenance'] = hdmi_provenance.verify(
+            native_hdmi.read_bytes(), provenance_path.read_bytes(),
+            args.hdmi_adaptation or hdmi_provenance.STRICT_POLICY,
+            adaptation_path.read_bytes() if adaptation_path else None)
         result['reverse_provenance_passed'] = True
         before = output / 'pre_runtime_hdmi.sv'
         before.write_text(prior_runtime)
@@ -112,11 +110,17 @@ def main():
             raise ValueError('Default HDMI selection/tokens changed')
         result['default_tokens_equal'] = True
         result['default_token_count'] = len(after_tokens)
-        for runtime in (False, True):
-            name = 'hdmi_native_elaboration' if runtime else 'hdmi_default_elaboration'
+        modes = [('default', False, False), ('runtime', True, False)]
+        if args.hdmi_adaptation:
+            profile = json.loads(profile_path.read_text())
+            result['owner8_prepared_source_bindings'] = hdmi_provenance.prepared_owner8_sources(ROOT, project, profile)
+            modes.append(('runtime_owner8', True, True))
+        for mode, runtime, owner8 in modes:
+            name = 'hdmi_' + mode + '_elaboration'
             run(name, ['iverilog', '-g2012', '-I' + str(ROOT), '-I' + str(project), '-s', 'tb_workstation_hdmi_elaboration',
-                *(['-DWORKSTATION_RUNTIME_NATIVE'] if runtime else []), '-o', str(output / (name + '.vvp')),
-                *map(str, hdmi_sources)], cwd=ROOT)
+                *(['-DWORKSTATION_RUNTIME_NATIVE'] if runtime else []),
+                *(['-DWORKSTATION_RECORDING_DDR'] if owner8 else []), '-o', str(output / (name + '.vvp')),
+                *map(str, hdmi_sources + (owner8_sources if owner8 else []))], cwd=ROOT)
             # Icarus searches its working directory before -I paths. Running
             # in the frozen support tree would silently include its old HDMI
             # composition instead of the live source whose hash we record.
@@ -128,7 +132,7 @@ def main():
                 if len(matching) != 1:
                     raise ValueError('Ambiguous elaborated scope: ' + label)
                 return {key: int(bits, 2) for key, bits in re.findall(
-                    r'\.param/l "(\w+)"[^\n]*\+C4<([01]+)>', matching[0])}
+                    r'\.param/l "(\w+)"[^\n]*\+?C4<([01]+)>', matching[0])}
             renderer_parameters = parameters('u_renderer')
             expected_parameters = dict(ENABLE_ANALYSIS=0 if runtime else 1, RENDER_ANALYSIS=1,
                                        SHARED_EXPORT=0 if runtime else 1, SHARED_RENDER=1)
@@ -141,16 +145,32 @@ def main():
                 raise ValueError('HDMI analysis dashboard disabled')
             if runtime and parameters('reader').get('CACHE_BANKS') != 2:
                 raise ValueError('Runtime reader did not elaborate both local cache banks')
-            result.setdefault('elaborated_analysis', {})['runtime' if runtime else 'default'] = dict(
+            arbiters = [kind for scope, kind, _ in scopes if scope == 'u_arbiter']
+            expected_arbiter = 'workstation_recording_ddr_client_queues' if owner8 else 'basic_pitch_ddr_client_queues'
+            if arbiters != [expected_arbiter]:
+                raise ValueError('Wrong HDMI DDR arbiter elaborated: ' + repr(arbiters))
+            if owner8:
+                if parameters('u_arbiter').get('RECORDING_ENABLE') != 1 or parameters('u_core').get('RECORDING_ENABLE') != 1:
+                    raise ValueError('HDMI owner8 arbitration disabled')
+                cores = [kind for scope, kind, _ in scopes if scope == 'u_core']
+                slots = [scope for scope, kind, _ in scopes if kind == 'basic_pitch_ddr_client_slot']
+                if cores != ['workstation_recording_ddr_arbiter_pipeline'] or len(slots) != 9:
+                    raise ValueError('HDMI owner8 core or nine request slots missing')
+                result['owner8_elaboration'] = dict(arbiter=expected_arbiter,
+                    core=cores[0], recording_enabled=True, request_slots=len(slots),
+                    actual_prepared_sources=True, behavioral_or_hardware_acceptance=False)
+            result.setdefault('elaborated_analysis', {})[mode] = dict(
                 renderer_parameters=expected_parameters, fft_owners=fft_owners,
                 both_dashboard_analysis_enabled=True, reader_cache_banks=2 if runtime else 1,
                 compile_working_directory=str(ROOT), live_provider_selected=True)
-        result['full_hdmi_elaboration'] = dict(default=True, runtime=True, official_gw5a=True)
+        result['full_hdmi_elaboration'] = dict(default=True, runtime=True,
+            runtime_owner8=bool(args.hdmi_adaptation), official_gw5a=True)
         compile_log = run('runtime_compile', ['verilator', '--binary', '--timing', '-j', '4', '-Wno-fatal',
             '--top-module', 'tb_workstation_display_runtime', '--Mdir', str(output / 'obj'),
             '-I' + str(project), *map(str, runtime_sources)], 180)
         warnings = re.findall(r'^%Warning-([^:]+): ([^\n]+)', compile_log, re.M)
-        owned = {pipeline.name, runtime_tb.name, 'display_data_writer.v', 'display_data_reader.v', 'display_data_analysis_source.sv'}
+        owned = {pipeline.name, runtime_tb.name, 'display_data_writer.v', 'display_data_reader.v',
+                 'display_data_analysis_source.sv', 'workstation_runtime_counter_cdc.sv'}
         owned_warnings = [dict(kind=kind, message=message) for kind, message in warnings
             if kind != 'TIMESCALEMOD' and any('/' + name + ':' in message for name in owned)]
         result['verilator_owned_warnings'] = owned_warnings
@@ -170,6 +190,9 @@ def main():
             'epoch_zero_reject', 'default_tokens_equal', 'reverse_exact_parent_bytes', 'full_hdmi_elaboration_both_modes',
             'live_hdmi_provider_not_shadowed', 'native_render_without_local_fft', 'single_fft_owner_both_modes',
             'both_analysis_dashboards_enabled', 'runtime_reader_two_cache_banks']
+        if args.hdmi_adaptation:
+            result['checks'] += ['explicit_owner8_adaptation_reverse_to_original_native',
+                                 'actual_owner8_arbiter_core_nine_slots_elaboration']
         if {str(path): digest(path) for path in inputs} != hashes:
             raise ValueError('Verification source inputs changed during run')
         result['passed'] = True

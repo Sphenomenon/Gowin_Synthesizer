@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "scope": "Explicit verification-only HDMI owner8 provenance bridge; no RTL/build source selection changes",
+  "base_commit": "10118a03928f691e2352c0cb5fcc0acd550e9b4c",
+  "root_cause": {
+    "change_commit": "524f5335f7cfaaeba24e9ce65c2924039000901a",
+    "last_original_provenance_commit": "84206b4",
+    "original_provenance_expected_native_sha256": "cfa1121ee24fb9cebf95edea03639297d8e63af28d57a5cc32481d702f97980d",
+    "current_native_sha256": "724f23fdbd9f97f1fb16c79f0876eff7e5c317365d737adfc9392b924a515fc4",
+    "changed_regions": 2,
+    "explanation": "R00 added conditional recording ports and the real owner8 arbiter branch; the original manifest still describes the earlier native composition and correctly rejects the changed source."
+  },
+  "original_provenance_sha256": "2da2802f233a7286d7f728d48b62b4bd6327a954ab833b1784ede035e3924426",
+  "adaptation_manifest_sha256": "10a442a465bf51b23a332e8deb3742dc392fb347b99ffefd9ca3dd7fc0883ded",
+  "full_display": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-hdmi-owner8-adaptation-v2/verification.json",
+    "sha256": "1fc388b71e41c2360d826bcb52baad29b4ef6a7dd1ae7fc545511b2398101e81",
+    "identity": "native-runtime-display-offline-v1-b99640485f53f966",
+    "source_set_sha256": "b99640485f53f966992b50dd191c178296f006515b4d65984795506282bcd8e1",
+    "input_count": 58,
+    "passed": true,
+    "provenance": {
+      "policy": "recording_owner8_v1",
+      "current_source_sha256": "724f23fdbd9f97f1fb16c79f0876eff7e5c317365d737adfc9392b924a515fc4",
+      "original_provenance_sha256": "2da2802f233a7286d7f728d48b62b4bd6327a954ab833b1784ede035e3924426",
+      "adaptation_applied": true,
+      "original_native_sha256": "cfa1121ee24fb9cebf95edea03639297d8e63af28d57a5cc32481d702f97980d",
+      "hardware_acceptance_inherited": false,
+      "adaptation_sha256": "10a442a465bf51b23a332e8deb3742dc392fb347b99ffefd9ca3dd7fc0883ded",
+      "adaptation_reverse_edits": 2,
+      "source_commit": "524f5335f7cfaaeba24e9ce65c2924039000901a",
+      "original_reverse_edits": 19,
+      "parent_sha256": "900914bbcc98cdb563f708eea2bf6edf989917526103d628799930acfba59794",
+      "pre_runtime_native_sha256": "607f30dd643b01c4522e5e813745e608749dad141bcc9f09b91876be78749432",
+      "reverse_exact_parent_bytes": true
+    },
+    "default_token_count": 3210,
+    "full_hdmi_elaboration": {
+      "default": true,
+      "runtime": true,
+      "runtime_owner8": true,
+      "official_gw5a": true
+    },
+    "owner8_elaboration": {
+      "arbiter": "workstation_recording_ddr_client_queues",
+      "core": "workstation_recording_ddr_arbiter_pipeline",
+      "recording_enabled": true,
+      "request_slots": 9,
+      "actual_prepared_sources": true,
+      "behavioral_or_hardware_acceptance": false
+    },
+    "owner8_source_bindings": {
+      "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+      "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb"
+    },
+    "metrics": {
+      "publications": 6,
+      "commits": 9,
+      "atomic_tuples": 128702,
+      "waveform_samples": 1024,
+      "xy_pixels": 131072,
+      "fft_columns": 1024,
+      "cdc_drops": 60
+    },
+    "warning_counts": {
+      "TIMESCALEMOD": 12,
+      "WIDTHTRUNC": 31,
+      "WIDTHEXPAND": 10
+    },
+    "owned_warnings": []
+  },
+  "strict_default_rejection": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-hdmi-owner8-default-reject-v1/verification.json",
+    "sha256": "2bdc0cf21da4386ad8a737b5d57b01819828b69b6519fdf32522709eba7845b8",
+    "passed": false,
+    "error": "Native HDMI provenance checksum changed",
+    "expected_rejection": true
+  },
+  "unit_tests": {
+    "path": "sim/test_workstation_hdmi_provenance.py",
+    "passed": 8,
+    "negative_control_count": 30,
+    "negative_controls": {
+      "explicit_policy_required": [
+        "strict_current_rejection",
+        "adaptation_bytes_without_policy",
+        "missing_adaptation",
+        "unknown_policy"
+      ],
+      "source_or_original_drift": [
+        "source_whitespace",
+        "source_wrong_owner_accept_bit",
+        "forged_original_native_hash"
+      ],
+      "adapter_manifest_drift": [
+        "policy",
+        "source",
+        "source_commit",
+        "parent_hash",
+        "current_hash",
+        "original_manifest_hash",
+        "first_exact_edit",
+        "second_exact_edit"
+      ],
+      "exact_anchor_drift": [
+        "first_missing",
+        "first_duplicate",
+        "first_forward_duplicate",
+        "second_missing",
+        "second_duplicate",
+        "second_forward_duplicate"
+      ],
+      "prepared_compilation": [
+        "disabled",
+        "missing",
+        "duplicate",
+        "wrong_path"
+      ],
+      "prepared_current_source_identity": [
+        "stage_queue_drift",
+        "current_core_drift",
+        "stage_wrapper_drift",
+        "profile_enabled_hash",
+        "profile_staged_hash"
+      ]
+    }
+  },
+  "original_counter_phase_failure": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-display-v1/verification.json",
+    "sha256": "fc04fc80b669f2c184ef78545d2bdea9c2c5e7253e8923f5fc8959962cd34cfb",
+    "retained": true
+  },
+  "source_policy": "Native versioned RTL is compiled directly. Adaptation reverses source only in memory for provenance and writes the original pre-runtime fixture in the verification output. No adapted production RTL is emitted.",
+  "remaining": [
+    "Independent fixed-commit review",
+    "New complete candidate physical gates and hardware acceptance remain separate",
+    "Other historical provenance consumers are not automatically adapted"
+  ],
+  "exit_plan": "Replace this named verification bridge only with a separately reviewed canonical native provenance chain that owns owner8 and subsequent changes; retain original provenance and historical evidence. Any source or manifest drift fails until that review.",
+  "synthesis_run": false,
+  "pnr_run": false,
+  "physical_timing_verified": false,
+  "physical_cdc_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "bitstream_sha256": null
+}

@@ -12,6 +12,11 @@ module tb_workstation_hdmi_elaboration;
         .frame_epoch_i(32'd1),.frame_sequence_i(32'd0),.display_observation_drop_o(),
         .ddr_client_reset_no(),.ddr_client_ready_o(),
 `endif
+`ifdef WORKSTATION_RECORDING_DDR
+        .recording_req(1'b0),.recording_write(1'b0),.recording_address(29'd0),
+        .recording_data(256'd0),.recording_mask(32'd0),.recording_ready(),
+        .recording_response(),.recording_native_accept(),.recording_transport_fault(),
+`endif
         .memory_clk(1'b0),.memory_reset_n(1'b0),.memory_calibrated(1'b0),.memory_pll_locked(1'b0),
         .ui_pending(1'b0),.ui_visible(1'b0),.ui_next_visible(1'b0),.ui_front_base(29'd0),.ui_next_base(29'd0),.ui_frame_commit(),
         .cpu_req(1'b0),.cpu_write(1'b0),.cpu_address(29'd0),.cpu_data(256'd0),.cpu_mask(32'd0),.cpu_ready(),.cpu_response(),

@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "identity": "runtime-hdmi-owner8-parent-provenance-20261030-v1",
+  "source_commit_reviewed": "fa3b1046a5b57bb85273da26cf0431669f50e596",
+  "test_identity": "native-runtime-display-offline-v1-4ff780c768719354",
+  "prepared_support_candidate": "custom138k-workstation-r00-no-local-panel-v1-c7d66b419868f7f4",
+  "prepared_support_staged_inputs": 593,
+  "prepared_support_hashes_unchanged": true,
+  "explicit_policy": "recording_owner8_v1",
+  "strict_default_still_rejects_current_source": true,
+  "full_hdmi_elaboration": {
+    "default": true,
+    "runtime": true,
+    "runtime_owner8": true,
+    "official_gw5a": true
+  },
+  "owner8_elaboration": {
+    "arbiter": "workstation_recording_ddr_client_queues",
+    "core": "workstation_recording_ddr_arbiter_pipeline",
+    "recording_enabled": true,
+    "request_slots": 9,
+    "actual_prepared_sources": true,
+    "behavioral_or_hardware_acceptance": false
+  },
+  "default_token_count": 3210,
+  "metrics": {
+    "publications": 6,
+    "commits": 9,
+    "atomic_tuples": 128702,
+    "waveform_samples": 1024,
+    "xy_pixels": 131072,
+    "fft_columns": 1024,
+    "cdc_drops": 60
+  },
+  "owned_warning_count": 0,
+  "source_and_cache_seal_entries_verified": 25,
+  "unit_tests": 8,
+  "unit_negative_cases": 30,
+  "current_sources_tests": 17,
+  "hdmi_provenance": {
+    "policy": "recording_owner8_v1",
+    "current_source_sha256": "724f23fdbd9f97f1fb16c79f0876eff7e5c317365d737adfc9392b924a515fc4",
+    "original_provenance_sha256": "2da2802f233a7286d7f728d48b62b4bd6327a954ab833b1784ede035e3924426",
+    "adaptation_applied": true,
+    "original_native_sha256": "cfa1121ee24fb9cebf95edea03639297d8e63af28d57a5cc32481d702f97980d",
+    "hardware_acceptance_inherited": false,
+    "adaptation_sha256": "10a442a465bf51b23a332e8deb3742dc392fb347b99ffefd9ca3dd7fc0883ded",
+    "adaptation_reverse_edits": 2,
+    "source_commit": "524f5335f7cfaaeba24e9ce65c2924039000901a",
+    "original_reverse_edits": 19,
+    "parent_sha256": "900914bbcc98cdb563f708eea2bf6edf989917526103d628799930acfba59794",
+    "pre_runtime_native_sha256": "607f30dd643b01c4522e5e813745e608749dad141bcc9f09b91876be78749432",
+    "reverse_exact_parent_bytes": true
+  },
+  "evidence": {
+    "runtime-hdmi-owner8-delivery-v1/DELIVERY_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-hdmi-owner8-delivery-v1/DELIVERY_SEAL.json",
+      "sha256": "b72671b645f87830d817f1bdc4abeca3ef4e4446f2bc7c82f76304e26f77e66d"
+    },
+    "runtime-hdmi-owner8-parent-adaptation-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-hdmi-owner8-parent-adaptation-v1/verification.json",
+      "sha256": "4861c32398d98a42663cc3e098184af242d6e5b05c7cd6054f0718667d8111f5"
+    },
+    "runtime-hdmi-owner8-parent-adaptation-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-hdmi-owner8-parent-adaptation-v1.log",
+      "sha256": "436f8f46280d3b2e098654cc379e9601496f15d9655c7e43802f88901cfc589a"
+    },
+    "runtime-hdmi-owner8-parent-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-hdmi-owner8-parent-tests-v1.log",
+      "sha256": "6ff8cb6673e52248481ba0fa0eca3657ce430b443dbc93e93c7a3e25938b7877"
+    },
+    "runtime-hdmi-owner8-parent-current-sources-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-hdmi-owner8-parent-current-sources-v1.log",
+      "sha256": "32fb7f6166dfa2c14e45d8ada7c15b7af96bfe866c7d95f2b214166fdec3e0fa"
+    },
+    "runtime-hdmi-owner8-parent-default-rejection-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-hdmi-owner8-parent-default-rejection-v1/verification.json",
+      "sha256": "74f90b969b42ff56eb122618cba21ed436eb8f4051271661c249a66a6d54834c"
+    },
+    "runtime-hdmi-owner8-parent-default-rejection-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-hdmi-owner8-parent-default-rejection-v1.log",
+      "sha256": "14f39c2278baa17e7b8e05f98c304b9c09574ea0d8266fa43afb3ee412dbcaa2"
+    }
+  },
+  "production_source_selection_changed": false,
+  "original_RTL_and_manifest_changed": false,
+  "limits": [
+    "Standalone verification tool/manifest only; c7 staged compilation bytes were not changed or relabeled. Future preparation receives its own source snapshot identity.",
+    "Owner8 elaboration checks actual source/enable/parameter/nine-slot composition; it is not an end-to-end recording or physical timing proof.",
+    "Display simulation does not accept complete DDR deadlines, clock/reset/CDC/PLL or hardware."
+  ],
+  "synthesis_run": false,
+  "pnr_run": false,
+  "physical_cdc_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_operated": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}
