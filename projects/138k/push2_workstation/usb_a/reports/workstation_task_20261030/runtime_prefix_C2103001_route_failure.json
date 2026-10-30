@@ -1,0 +1,431 @@
+{
+  "schema": 1,
+  "identity": "runtime-prefix-C2103001-route-failure-parent-20261031-v1",
+  "stage": "verified_physical_failure_evidence",
+  "physical_identity": "custom138k-r00-prefix-no-local-panel-nominal-experiment-C2103001",
+  "source_candidate": "custom138k-workstation-r00-no-local-panel-v1-c7d66b419868f7f4",
+  "source_vg_sha256": "8c5d1e5a30baad7a7e4cd705cfdcf4fcc301369bcb6c69d78f9a7f47c10acb2c",
+  "user_code": "0xC2103001",
+  "process": {
+    "schema": 1,
+    "stage": "offline_runtime_physical_resource_experiment",
+    "identity": "custom138k-r00-prefix-no-local-panel-nominal-experiment-C2103001",
+    "source_candidate": "custom138k-workstation-r00-no-local-panel-v1-c7d66b419868f7f4",
+    "physical": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-no-local-panel-physical-C2103001",
+    "manifest_sha256": "98a5f5fac4b88efab35d8522dd5199ed5fc7da07fac5107b139ce230fe19aba5",
+    "launcher_sha256": "f67b286e26f9783a7720d15b7cc5b6664fb5557af9a448aaa73a554af6f0499f",
+    "tool_sha256": {
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01"
+    },
+    "command": [
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+      "run.tcl"
+    ],
+    "cwd": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-no-local-panel-physical-C2103001",
+    "started_utc": "2026-10-30T15:47:21.211954+00:00",
+    "completed": true,
+    "hardware_operated": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "deployment_allowed": false,
+    "release_ready": false,
+    "complete_cdc_accepted": false,
+    "feature_preservation_accepted": false,
+    "physical_gates_passed": false,
+    "bitstream_sha256": null,
+    "exit_code": 1,
+    "tool_exit_success": false,
+    "inputs_unchanged": true,
+    "log_sha256": "5dc7260e554f71fb76bd8b6a5d9175e8af1206cf4513f185245428d6702807c4",
+    "output_sha256": {
+      "impl/pnr/custom_138k_integration.log": "2d39d8e05bc3273a1297fd0edd544fc73203df0c0d98dd8563cf107cc7a10b47",
+      "impl/pnr/custom_138k_integration.pin.html": "71dab1b81a0015cf0fe55cc4f896c5a686b21137c3ac2f73c089504f46c9a727",
+      "impl/pnr/custom_138k_integration.rpt.html": "fecbd879d2a10cc6672fced467abaf7e5985dbbf6f11edf75c9ca9e63691514e",
+      "impl/pnr/custom_138k_integration.rpt.txt": "e51d7b158518daf55c065ae1212caa7621a5a24880610119bedde4642655ec33",
+      "impl/pnr/custom_138k_integration.vo": "e35dc3bda60797a6c0106548cdd1f8a23c6055ccc9631bf0bf9930b66e066c03",
+      "impl/pnr/device.cfg": "49d426da6232a8471a5f1f37331107c4ed4de6f5d056b5c3121ce23c6173cc1b"
+    },
+    "bitstreams": {},
+    "elapsed_seconds": 862.77645291714,
+    "finished_utc": "2026-10-30T16:01:43.988282+00:00"
+  },
+  "hash_closure": {
+    "physical_inputs": 1517,
+    "frozen_staged_inputs": 593,
+    "synthesis_outputs": 4,
+    "pnr_outputs": 6,
+    "extra_generated_files_independently_hashed": 3,
+    "passed": true
+  },
+  "unrouted_nets": 896,
+  "resource_usage": [
+    {
+      "name": "Logic",
+      "usage": "107215/138240",
+      "utilization_or_location": "78%"
+    },
+    {
+      "name": "--LUT,ALU,ROM16",
+      "usage": "98833(81391 LUT, 17442 ALU, 0 ROM16)",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "--SSRAM(RAM16)",
+      "usage": "1397",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "Register",
+      "usage": "60912/139095",
+      "utilization_or_location": "44%"
+    },
+    {
+      "name": "--Logic Register as Latch",
+      "usage": "0/138240",
+      "utilization_or_location": "0%"
+    },
+    {
+      "name": "--Logic Register as FF",
+      "usage": "60912/138240",
+      "utilization_or_location": "45%"
+    },
+    {
+      "name": "--I/O Register as Latch",
+      "usage": "0/855",
+      "utilization_or_location": "0%"
+    },
+    {
+      "name": "--I/O Register as FF",
+      "usage": "0/855",
+      "utilization_or_location": "0%"
+    },
+    {
+      "name": "CLS",
+      "usage": "63060/69120",
+      "utilization_or_location": "92%"
+    },
+    {
+      "name": "I/O Port",
+      "usage": "143/297",
+      "utilization_or_location": "49%"
+    },
+    {
+      "name": "I/O Buf",
+      "usage": "132",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "--Input Buf",
+      "usage": "10",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "--Output Buf",
+      "usage": "78",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "--Inout Buf",
+      "usage": "44",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "IOLOGIC",
+      "usage": "105/285",
+      "utilization_or_location": "37%"
+    },
+    {
+      "name": "BSRAM",
+      "usage": "268/340",
+      "utilization_or_location": "79%"
+    },
+    {
+      "name": "DSP",
+      "usage": "120.5/298",
+      "utilization_or_location": "41%"
+    },
+    {
+      "name": "AE350_SOC",
+      "usage": "1/1",
+      "utilization_or_location": "100%"
+    }
+  ],
+  "clock_resources": [
+    {
+      "name": "PRIMARY",
+      "usage": "8/8",
+      "utilization_or_location": "100%"
+    },
+    {
+      "name": "LW",
+      "usage": "8/8",
+      "utilization_or_location": "100%"
+    },
+    {
+      "name": "GCLK_PIN",
+      "usage": "15/24",
+      "utilization_or_location": "63%"
+    },
+    {
+      "name": "CLKDIV",
+      "usage": "2/24",
+      "utilization_or_location": "9%"
+    },
+    {
+      "name": "DCS",
+      "usage": "1/20",
+      "utilization_or_location": "5%"
+    },
+    {
+      "name": "DDRDLL",
+      "usage": "1/4",
+      "utilization_or_location": "25%"
+    },
+    {
+      "name": "DQS",
+      "usage": "4/23",
+      "utilization_or_location": "18%"
+    },
+    {
+      "name": "PLL",
+      "usage": "6/12",
+      "utilization_or_location": "50%"
+    }
+  ],
+  "global_clock_signals": [
+    {
+      "name": "audio_clk",
+      "usage": "PRIMARY",
+      "utilization_or_location": "PTR0 PTR1 PTR2 PBR0 PBR1 PBR2"
+    },
+    {
+      "name": "usb_clk",
+      "usage": "PRIMARY",
+      "utilization_or_location": "PTR0 PTR1 PTR2"
+    },
+    {
+      "name": "dac_mclk_d",
+      "usage": "PRIMARY",
+      "utilization_or_location": "PTR1 PTR3 PBR1"
+    },
+    {
+      "name": "memory_clk",
+      "usage": "PRIMARY",
+      "utilization_or_location": "PTR0 PTR1 PTR2 PTR3 PBR0 PBR1 PBR2 PBR3"
+    },
+    {
+      "name": "ram_clk",
+      "usage": "PRIMARY",
+      "utilization_or_location": "PTR1 PTR2 PTR3 PBR1"
+    },
+    {
+      "name": "core_clk",
+      "usage": "PRIMARY",
+      "utilization_or_location": "PTR2"
+    },
+    {
+      "name": "u_video/pixel_clk",
+      "usage": "PRIMARY",
+      "utilization_or_location": "PTR2 PTR3 PBR2 PBR3"
+    },
+    {
+      "name": "u_video/u_clock/g_hardware.u_pll/reference_clk",
+      "usage": "PRIMARY",
+      "utilization_or_location": "PBR3"
+    },
+    {
+      "name": "clk_50m_d",
+      "usage": "LW",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "clk_16m9344_d",
+      "usage": "LW",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "usb2_ulpi_clk_d",
+      "usage": "LW",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "ddr_client_reset_n",
+      "usage": "LW",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "recording_memory_release[1]",
+      "usage": "LW",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "u_managed/runtime/compute_release_0[2]",
+      "usage": "LW",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "u_memory/controller_reset",
+      "usage": "LW",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "u_video/u_runtime_display/n392_5",
+      "usage": "LW",
+      "utilization_or_location": "-"
+    },
+    {
+      "name": "u_memory/memory_clk_338",
+      "usage": "HCLK",
+      "utilization_or_location": "BANK6_HCLK0 BANK7_HCLK0"
+    },
+    {
+      "name": "u_video/serial_clk",
+      "usage": "HCLK",
+      "utilization_or_location": "BANK3_HCLK0"
+    }
+  ],
+  "timing": {
+    "setup": null,
+    "hold": null,
+    "recovery": null,
+    "removal": null,
+    "pulse_width": null
+  },
+  "timing_reason": "PR0004 / DesRoute failed. No bitstream, SDF or routed STA; missing result is not pass.",
+  "ff_comparison": {
+    "unrouted_nets": {
+      "FF": 1324,
+      "C2103001": 896
+    },
+    "Logic": {
+      "FF": 106935,
+      "C2103001": 107215,
+      "delta": 280
+    },
+    "Register": {
+      "FF": 60911,
+      "C2103001": 60912,
+      "delta": 1
+    },
+    "CLS": {
+      "FF": 63084,
+      "C2103001": 63060,
+      "delta": -24
+    },
+    "BSRAM": {
+      "FF": 268,
+      "C2103001": 268,
+      "delta": 0
+    },
+    "limit": "Different actual VG from TF registered quiet and prefix Gray decoding. Aggregate route counts are observations, not isolated causality or timing improvement."
+  },
+  "unrouted_owner_counts": null,
+  "unrouted_owner_limit": "Only aggregate count is exposed; no failed-net inventory.",
+  "routed_boundary_review": {
+    "scope": "static get_pins/get_regs endpoint selection only; not actual Tcl resolution or claim ordinary STA absent",
+    "tests": {
+      "actual_c7_successful_routed_STA_tested": false,
+      "all_passed": true,
+      "negatives": {
+        "STA_clock_waveform_and_timing": 10,
+        "evidence_path": 5,
+        "identity_and_tool": 9,
+        "new_external_output": 2
+      },
+      "successful_15clock_STA_parser_fixture_is_synthetic": true,
+      "targeted_negative_controls": 26,
+      "test_methods": 6
+    },
+    "missing_explicit_pin_register_SDC": {
+      "TF_direct_two_stage_pairs": 7,
+      "TF_held_payload_bits": 36,
+      "phase1_Gray_bits": 42,
+      "phase1_held_payload_bits": 82,
+      "phase1_ordinary_pairs": 2,
+      "phase1_receiving_CLEAR_pins": 18,
+      "raw_authority_Gray_bits": 50,
+      "raw_seal_authority_pairs": 13,
+      "raw_seal_authority_receiving_CLEAR_pins": 16,
+      "seal_failed_capture_bits": 1,
+      "unique_combined_receiving_CLEAR_pins": 32
+    },
+    "constraints_installed": false,
+    "limit": "Missing explicit selectors do not establish absence of ordinary clock-based STA. Digital protocols, reset and physical budgets remain separate."
+  },
+  "evidence": {
+    "runtime-prefix-C2103001-parent-completed-v1/DELIVERY_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-C2103001-parent-completed-v1/DELIVERY_SEAL.json",
+      "sha256": "74ea2e8c9a7e662639ffd0910aed231c2335d144f337b13654c94fb094c69b9a"
+    },
+    "runtime-prefix-C2103001-parent-completed-v1/input_verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-C2103001-parent-completed-v1/input_verification.json",
+      "sha256": "61e8d9ca19560f2b97d9c59bb156e21233fecb6bc49359d4abdf4cefcd4776af"
+    },
+    "runtime-prefix-C2103001-parent-completed-v1/final_verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-C2103001-parent-completed-v1/final_verification.json",
+      "sha256": "97fc28c09f999d4898b9a3dc6d2e1bc0a42f3c866ca01cd3933aad06aa2a41b0"
+    },
+    "runtime-prefix-C2103001-parent-completed-v1/actual_result_review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-C2103001-parent-completed-v1/actual_result_review.json",
+      "sha256": "aa42701a23133a78cdfa06618d5864a0f19877b0510f5085ac0f4b8344c21084"
+    },
+    "runtime-prefix-no-local-panel-physical-C2103001/physical_inputs.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-no-local-panel-physical-C2103001/physical_inputs.json",
+      "sha256": "98a5f5fac4b88efab35d8522dd5199ed5fc7da07fac5107b139ce230fe19aba5"
+    },
+    "runtime-prefix-no-local-panel-physical-C2103001/pnr_process.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-no-local-panel-physical-C2103001/pnr_process.json",
+      "sha256": "1d120875d9396ce91e3c59915d4ddcebed86e187fb82eaee677c88cbf9055314"
+    },
+    "runtime-prefix-no-local-panel-physical-C2103001/pnr_tool.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-no-local-panel-physical-C2103001/pnr_tool.log",
+      "sha256": "5dc7260e554f71fb76bd8b6a5d9175e8af1206cf4513f185245428d6702807c4"
+    },
+    "routed-boundary-review-plan-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/routed-boundary-review-plan-v1/REVIEW_SEAL.json",
+      "sha256": "23f4607f98a7e60987af55b7ce34e2f3a7ae4282b672361d51fd4ba66f35ddde"
+    },
+    "routed-boundary-review-plan-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/routed-boundary-review-plan-v1/review.json",
+      "sha256": "3faa60cc3e2451aecbadce72877845fd6b4fc938d84e44743ce478d5d499a99e"
+    },
+    "routed-boundary-review-plan-v1/ROUTED_REVIEW_PLAN.md": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/routed-boundary-review-plan-v1/ROUTED_REVIEW_PLAN.md",
+      "sha256": "1ddb4c1beb388bf3f08728916c81ed0ed7678a0966974745e43b2f2c54efeb41"
+    },
+    "c7-completed-independent-review-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/c7-completed-independent-review-v1/REVIEW_SEAL.json",
+      "sha256": "78f3ec4ab86e95996324ea5575b9247e7633567cbe54fee8a41f9ad4a5212e5b"
+    },
+    "c7-completed-independent-review-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/c7-completed-independent-review-v1/review.json",
+      "sha256": "bf98a43862d74abd41114954ffb53033b2a10fe59a819b8420c772c241b6f703"
+    },
+    "c7-completed-independent-review-v1/actual_result_review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/c7-completed-independent-review-v1/actual_result_review.json",
+      "sha256": "45df65bb6635c6dfb60cd26e1a38283fbabeafa18e4d3c7fed5887a044e91234"
+    },
+    "c7-completed-independent-review-v1/REVIEW.md": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/c7-completed-independent-review-v1/REVIEW.md",
+      "sha256": "191e1bd73e3794ce0526e170353bdf82390cabc0b3009749e3b516bf6a0f0b46"
+    }
+  },
+  "rollback": "No C2103001 bitstream exists or was programmed. Existing board state is not inferred from earlier deployment records.",
+  "complete_cdc_accepted": false,
+  "complete_reset_accepted": false,
+  "physical_pll_accepted": false,
+  "physical_gates_passed": false,
+  "full_timing_accepted": false,
+  "hardware_operated": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "independent_completed_review_verified": {
+    "files_sha256": 7,
+    "inputs_sha256": 2229,
+    "actual_matches_parent": true
+  }
+}

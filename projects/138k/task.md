@@ -132,6 +132,8 @@
 
 [Chorus 精确窄化父级复验](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_CHORUS_NARROW_PARENT_20261030.md)已通过 131,072 实际 RTL 等价、14 负控、完整效果及 20,192 帧实际音频仿真；无新增周期延迟，最大 render／slot 为 1,204／1,229 clocks。四份新 prepare 各 12 项来源通过，no-panel 新候选 `6b9610324164f0c9` 为 596 staged／269 enabled；尚无新综合／物理收益证据，不回填 C2103001，完整门禁及硬件仍未完成。
 
+[C2103001 实际布线失败](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PREFIX_C2103001_ROUTE_FAILURE_20261031.md)已封存：896 条未布通网络、物理 CLS 63,060／69,120、BSRAM 268／340，PRIMARY／LW 各 8／8。父级重验 1,517 输入、593 源闭包及六输出通过，无位流／SDF／完整 STA，无板卡操作。只读边界盘点 6 项／26 负控定位后续 CDC／reset 缺口但未安装约束；Chorus 新候选独立综合中，不继承本次物理接受，整机方框保持未完成。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
