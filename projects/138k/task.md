@@ -112,6 +112,8 @@
 
 [BLE DDR FF 物理准备](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_FF_PHYSICAL_PREPARE_20261030.md)已父级核验 51 项物理输入／35 负控，独立另增 27 负控，绑定新 VG 和全部组件闭包；UserCode `C11030FF` 只用于本实验。保持名义时钟、place1／route0、hold correction 和不复制资源，SDC 只含此前维护 PCM v2 的精确目标增补。P&R 已启动，结果另记；尚无物理净收益、完整 CDC／reset／STA 或硬件接受，无部署。
 
+[BLE DDR FF 物理失败](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_FF_ROUTE_FAILURE_20261030.md)已封存：1,324 条未布通网络、实际 CLS 63,084／69,120、BSRAM 268／340，PRIMARY 与 LW 仍各 8／8；父级重验 51 物理输入、591 staged 与六输出保持。没有 FS／TR／SDF，未获得 routed STA、未操作板卡或部署；下一候选将修正实际长组合链，完整门禁与任务方框保持未完成。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

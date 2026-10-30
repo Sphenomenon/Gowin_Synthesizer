@@ -1,0 +1,424 @@
+{
+  "schema": 1,
+  "identity": "ble-ddr-r2-ff-completed-route-failure-parent-20261030-v1",
+  "stage": "verified_physical_failure_evidence",
+  "physical_identity": "custom138k-r00-native-ble-ddr-no-local-panel-resource-experiment-C11030FF",
+  "source_candidate": "custom138k-workstation-r00-no-local-panel-v1-27732817b67e21ac",
+  "user_code": "0xC11030FF",
+  "source_vg_sha256": "3ef23f278d862238a97114d3a09e5cc00ff39426e90f5189fdf0d0d7b9a1ca65",
+  "process": {
+    "schema": 1,
+    "stage": "offline_runtime_physical_resource_experiment",
+    "identity": "custom138k-r00-native-ble-ddr-no-local-panel-resource-experiment-C11030FF",
+    "source_candidate": "custom138k-workstation-r00-no-local-panel-v1-27732817b67e21ac",
+    "physical": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-native-ble-ddr-no-local-panel-physical-C11030FF",
+    "manifest_sha256": "55f91fd222c5a2f04105c18868b918243e5c7d664a84dad56a25c3fcc53d8d7d",
+    "launcher_sha256": "f67b286e26f9783a7720d15b7cc5b6664fb5557af9a448aaa73a554af6f0499f",
+    "tool_sha256": {
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01"
+    },
+    "command": [
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+      "run.tcl"
+    ],
+    "cwd": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-native-ble-ddr-no-local-panel-physical-C11030FF",
+    "started_utc": "2026-10-30T14:20:35.593301+00:00",
+    "completed": true,
+    "hardware_operated": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "deployment_allowed": false,
+    "release_ready": false,
+    "complete_cdc_accepted": false,
+    "feature_preservation_accepted": false,
+    "physical_gates_passed": false,
+    "bitstream_sha256": null,
+    "exit_code": 1,
+    "tool_exit_success": false,
+    "inputs_unchanged": true,
+    "log_sha256": "8af69f723e972d1c38d7deb4fd21d0d0f42717fd9c68bfc8c8f2a01032d8c61d",
+    "output_sha256": {
+      "impl/pnr/custom_138k_integration.log": "bef9d96a2bd3e11979342f6103ef4fa6b5c49e40d40f6c47b60682dfebd51137",
+      "impl/pnr/custom_138k_integration.pin.html": "3ff6165cb6d8a135b47ce7c7e86399d031f51d8b594353d0bc71fa884107a34d",
+      "impl/pnr/custom_138k_integration.rpt.html": "66bfc14707922ee933abf203f528cd83c23661c1c839feec3e34eac57c8e698a",
+      "impl/pnr/custom_138k_integration.rpt.txt": "08a0dc03f02fd8f2bd2c16d517d8c576cf14ec9cf5d12a2ca0d4ed9bdb9319f9",
+      "impl/pnr/custom_138k_integration.vo": "a220db532c21ee0692d5b4e9ae50da49962d220c167ea0dd4f1ae0db48730511",
+      "impl/pnr/device.cfg": "02d2396fdbf0a1a1b234fae59328f40def479199758a56a10406aad4c6c64260"
+    },
+    "bitstreams": {},
+    "elapsed_seconds": 947.1646362498868,
+    "finished_utc": "2026-10-30T14:36:22.757820+00:00"
+  },
+  "hash_closure": {
+    "physical_inputs": 51,
+    "frozen_staged_inputs": 591,
+    "pnr_outputs": 6,
+    "passed": true
+  },
+  "unrouted_nets": 1324,
+  "resources": {
+    "resources": {
+      "Logic": {
+        "raw_usage": "106935/138240",
+        "used": 106935,
+        "capacity": 138240,
+        "reported_utilization": "78%"
+      },
+      "--SSRAM(RAM16)": {
+        "raw_usage": "1397",
+        "used": 1397,
+        "reported_utilization": "-"
+      },
+      "Register": {
+        "raw_usage": "60911/139095",
+        "used": 60911,
+        "capacity": 139095,
+        "reported_utilization": "44%"
+      },
+      "--Logic Register as Latch": {
+        "raw_usage": "0/138240",
+        "used": 0,
+        "capacity": 138240,
+        "reported_utilization": "0%"
+      },
+      "--Logic Register as FF": {
+        "raw_usage": "60911/138240",
+        "used": 60911,
+        "capacity": 138240,
+        "reported_utilization": "45%"
+      },
+      "--I/O Register as Latch": {
+        "raw_usage": "0/855",
+        "used": 0,
+        "capacity": 855,
+        "reported_utilization": "0%"
+      },
+      "--I/O Register as FF": {
+        "raw_usage": "0/855",
+        "used": 0,
+        "capacity": 855,
+        "reported_utilization": "0%"
+      },
+      "CLS": {
+        "raw_usage": "63084/69120",
+        "used": 63084,
+        "capacity": 69120,
+        "reported_utilization": "92%"
+      },
+      "I/O Port": {
+        "raw_usage": "143/297",
+        "used": 143,
+        "capacity": 297,
+        "reported_utilization": "49%"
+      },
+      "I/O Buf": {
+        "raw_usage": "132",
+        "used": 132,
+        "reported_utilization": "-"
+      },
+      "--Input Buf": {
+        "raw_usage": "10",
+        "used": 10,
+        "reported_utilization": "-"
+      },
+      "--Output Buf": {
+        "raw_usage": "78",
+        "used": 78,
+        "reported_utilization": "-"
+      },
+      "--Inout Buf": {
+        "raw_usage": "44",
+        "used": 44,
+        "reported_utilization": "-"
+      },
+      "IOLOGIC": {
+        "raw_usage": "105/285",
+        "used": 105,
+        "capacity": 285,
+        "reported_utilization": "37%"
+      },
+      "--IDES8_MEM": {
+        "raw_usage": "32",
+        "used": 32
+      },
+      "--OSER8": {
+        "raw_usage": "25",
+        "used": 25
+      },
+      "--OSER8_MEM": {
+        "raw_usage": "40",
+        "used": 40
+      },
+      "--OSER10": {
+        "raw_usage": "4",
+        "used": 4
+      },
+      "--IODELAY": {
+        "raw_usage": "32",
+        "used": 32
+      },
+      "BSRAM": {
+        "raw_usage": "268/340",
+        "used": 268,
+        "capacity": 340,
+        "reported_utilization": "79%"
+      },
+      "--SP": {
+        "raw_usage": "3",
+        "used": 3
+      },
+      "--SDPB": {
+        "raw_usage": "177",
+        "used": 177
+      },
+      "--SDPX9B": {
+        "raw_usage": "36",
+        "used": 36
+      },
+      "--pROM": {
+        "raw_usage": "45",
+        "used": 45
+      },
+      "--pROMX9": {
+        "raw_usage": "7",
+        "used": 7
+      },
+      "DSP": {
+        "raw_usage": "120.5/298",
+        "used": 120.5,
+        "capacity": 298,
+        "reported_utilization": "41%"
+      },
+      "--MULT12X12": {
+        "raw_usage": "3",
+        "used": 3
+      },
+      "--MULT27X36": {
+        "raw_usage": "41",
+        "used": 41
+      },
+      "--MULTALU27X18": {
+        "raw_usage": "37",
+        "used": 37
+      },
+      "AE350_SOC": {
+        "raw_usage": "1/1",
+        "used": 1,
+        "capacity": 1,
+        "reported_utilization": "100%"
+      }
+    },
+    "clock_resources": {
+      "PRIMARY": {
+        "used": 8,
+        "capacity": 8
+      },
+      "LW": {
+        "used": 8,
+        "capacity": 8
+      },
+      "GCLK_PIN": {
+        "used": 15,
+        "capacity": 24
+      },
+      "CLKDIV": {
+        "used": 2,
+        "capacity": 24
+      },
+      "DCS": {
+        "used": 1,
+        "capacity": 20
+      },
+      "DDRDLL": {
+        "used": 1,
+        "capacity": 4
+      },
+      "DQS": {
+        "used": 4,
+        "capacity": 23
+      },
+      "PLL": {
+        "used": 6,
+        "capacity": 12
+      }
+    },
+    "clock_routes": [
+      {
+        "net": "audio_clk",
+        "resource": "PRIMARY",
+        "regions": "PTR0 PTR1 PTR2 PBR0 PBR1 PBR2"
+      },
+      {
+        "net": "usb_clk",
+        "resource": "PRIMARY",
+        "regions": "PTR0 PTR1 PTR2"
+      },
+      {
+        "net": "dac_mclk_d",
+        "resource": "PRIMARY",
+        "regions": "PTR1 PTR3 PBR1"
+      },
+      {
+        "net": "memory_clk",
+        "resource": "PRIMARY",
+        "regions": "PTR0 PTR1 PTR2 PTR3 PBR0 PBR1 PBR2 PBR3"
+      },
+      {
+        "net": "ram_clk",
+        "resource": "PRIMARY",
+        "regions": "PTR1 PTR2 PTR3 PBR1"
+      },
+      {
+        "net": "core_clk",
+        "resource": "PRIMARY",
+        "regions": "PTR2"
+      },
+      {
+        "net": "u_video/pixel_clk",
+        "resource": "PRIMARY",
+        "regions": "PTR2 PTR3 PBR3"
+      },
+      {
+        "net": "u_video/u_clock/g_hardware.u_pll/reference_clk",
+        "resource": "PRIMARY",
+        "regions": "PBR3"
+      },
+      {
+        "net": "clk_50m_d",
+        "resource": "LW",
+        "regions": "-"
+      },
+      {
+        "net": "clk_16m9344_d",
+        "resource": "LW",
+        "regions": "-"
+      },
+      {
+        "net": "usb2_ulpi_clk_d",
+        "resource": "LW",
+        "regions": "-"
+      },
+      {
+        "net": "ddr_client_reset_n",
+        "resource": "LW",
+        "regions": "-"
+      },
+      {
+        "net": "recording_memory_release[1]",
+        "resource": "LW",
+        "regions": "-"
+      },
+      {
+        "net": "u_managed/runtime/compute_release_0[2]",
+        "resource": "LW",
+        "regions": "-"
+      },
+      {
+        "net": "u_memory/controller_reset",
+        "resource": "LW",
+        "regions": "-"
+      },
+      {
+        "net": "u_video/u_runtime_display/n392_5",
+        "resource": "LW",
+        "regions": "-"
+      },
+      {
+        "net": "u_memory/memory_clk_338",
+        "resource": "HCLK",
+        "regions": "BANK6_HCLK0 BANK7_HCLK0"
+      },
+      {
+        "net": "u_video/serial_clk",
+        "resource": "HCLK",
+        "regions": "BANK3_HCLK0"
+      }
+    ]
+  },
+  "fe_comparison": {
+    "Logic": {
+      "fe": 103613,
+      "ff": 106935,
+      "delta": 3322
+    },
+    "Register": {
+      "fe": 58602,
+      "ff": 60911,
+      "delta": 2309
+    },
+    "CLS": {
+      "fe": 62068,
+      "ff": 63084,
+      "delta": 1016
+    },
+    "BSRAM": {
+      "fe": 288,
+      "ff": 268,
+      "delta": -20
+    },
+    "DSP": {
+      "fe": 120.5,
+      "ff": 120.5,
+      "delta": 0.0
+    }
+  },
+  "comparison_limit": "Observed cross-candidate totals: FE uses older PCM-v1 and BLE RAM sources; FF uses PCM-v2, recording seal fix, BLE DDR and root-only memory release. Neither RAM migration nor any other single change is causally isolated by this comparison.",
+  "timing": {
+    "setup": null,
+    "hold": null,
+    "recovery": null,
+    "removal": null,
+    "mpw": null
+  },
+  "timing_reason": "PR0004: 1324 unrouted nets; no FS/TR/SDF. Missing timing is null, not pass.",
+  "artifacts": {
+    "fs": [],
+    "tr": [],
+    "sdf": []
+  },
+  "unrouted_owner_counts": null,
+  "unrouted_owner_limit": "Logs and reports expose aggregate PR0004 only, no per-net unrouted inventory.",
+  "evidence": {
+    "r00-FF-parent-completed-review-v1/physical_analysis.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FF-parent-completed-review-v1/physical_analysis.json",
+      "sha256": "4d91e68d177f47aaeff7a1ce8b642e0e3d448628075ecd1a2a6c7a9919501267"
+    },
+    "r00-FF-parent-completed-review-v1/input_verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FF-parent-completed-review-v1/input_verification.json",
+      "sha256": "cb044cd23c3dc197868811de7983475794cfd6631e0c6d949e0201a5d1c75712"
+    },
+    "r00-native-ble-ddr-no-local-panel-physical-C11030FF/physical_inputs.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-native-ble-ddr-no-local-panel-physical-C11030FF/physical_inputs.json",
+      "sha256": "55f91fd222c5a2f04105c18868b918243e5c7d664a84dad56a25c3fcc53d8d7d"
+    },
+    "r00-native-ble-ddr-no-local-panel-physical-C11030FF/pnr_process.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-native-ble-ddr-no-local-panel-physical-C11030FF/pnr_process.json",
+      "sha256": "18901cff10885d1d322054d4e7e2c0f8157c94cadfd9c0fb44117d1ac3007863"
+    },
+    "r00-native-ble-ddr-no-local-panel-physical-C11030FF/pnr_tool.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-native-ble-ddr-no-local-panel-physical-C11030FF/pnr_tool.log",
+      "sha256": "8af69f723e972d1c38d7deb4fd21d0d0f42717fd9c68bfc8c8f2a01032d8c61d"
+    },
+    "r00-FD-independent-physical-review-v1/analyze_completed_physical.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FD-independent-physical-review-v1/analyze_completed_physical.py",
+      "sha256": "1918bfdda4b54e15807ed7459493e827c13b0d859d2f384ac680578cbaeadce9"
+    },
+    "r00-FD-independent-physical-review-v1/gowin_report_parser.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FD-independent-physical-review-v1/gowin_report_parser.py",
+      "sha256": "d6504d7c6b8541a86ca34574f1cdc9ded6de80cbda9650a8a2f0fa45c38bc5f9"
+    }
+  },
+  "rollback": "No FF bitstream was generated or programmed. Earlier dated deployment evidence is unchanged; this report does not infer current board SRAM/Flash contents.",
+  "complete_cdc_accepted": false,
+  "recording_cdc_accepted": false,
+  "whole_reset_accepted": false,
+  "physical_gates_passed": false,
+  "full_timing_accepted": false,
+  "hardware_operated": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}
