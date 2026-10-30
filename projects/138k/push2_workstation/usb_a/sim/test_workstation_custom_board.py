@@ -165,7 +165,9 @@ class NativeBoard(unittest.TestCase):
             self.assertEqual(metadata['identity'], integration.IDENTITY)
             self.assertIn('.sample_valid_i(final_sample_valid),.enable_i(!pa_en),',
                           (stage / 'rtl/workstation/gw138k_push_workstation_top.v').read_text())
-            self.assertIn('workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)) u_native_usb',
+            # The raw source now has a runtime-only parameter between these
+            # tokens. Check the actual non-runtime preprocessed instance below.
+            self.assertIn('workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)',
                           (stage / 'rtl/workstation/gw138k_push_workstation_top.v').read_text())
             self.assertIn('.performance_words_i(performance_words),',
                           (stage / 'rtl/workstation/gw138k_push_workstation_top.v').read_text())
@@ -257,7 +259,7 @@ class NativeBoard(unittest.TestCase):
                              'ddr3_platform u_memory', 'hdmi_display u_video', "basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1'b1)) u_music",
                              'delay_ddr_dma #', 'workstation_output_router u_output_router',
                              'workstation_fpc_audio u_fpc_audio', 'workstation_bluetooth u_bluetooth', 'workstation_lcd u_lcd'):
-                self.assertEqual(text.count(instance), 1, instance)
+                self.assertEqual(re.sub(r'\s+', '', text).count(re.sub(r'\s+', '', instance)), 1, instance)
             header = re.search(r'module\s+workstation_custom_138k_top\s*#\(.*?\)\s*\((.*?)\);', text, re.S)[1]
             parts = re.split(r'\b(input|output|inout)\b', header)
             ports = set()

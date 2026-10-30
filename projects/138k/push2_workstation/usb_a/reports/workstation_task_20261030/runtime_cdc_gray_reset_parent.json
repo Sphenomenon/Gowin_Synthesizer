@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "passed": true,
+  "identity": "runtime-cdc-gray-reset-source-v1-419fd8ea7ec7bfc8",
+  "audit": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-cdc-gray-reset-parent-final/audit.json",
+  "audit_sha256": "b130c05fce6f4fa72e976d4cd4e951f6c881df1a9829c34e01d222736fd188de",
+  "mutations": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-cdc-gray-reset-parent-final/mutations.json",
+  "mutations_sha256": "267ab033be1542a31a8eff482af70ef3596e04c43261d75c4c1f528789b0b0d2",
+  "all_raw_audit_fields_equal_to_child": true,
+  "all_31_mutations_equal_to_child": true,
+  "directed_tests": 14,
+  "shared_constraint_tests": 6,
+  "non_runtime_full_prepare_tests": 1,
+  "non_runtime_exact_sdc_equality_passed": true,
+  "reviewed_gray_groups": 21,
+  "reviewed_gray_bits": 400,
+  "endpoint_development_only": true,
+  "candidate_constraints_installed": false,
+  "hardware_tested": false,
+  "physical_cdc_accepted": false
+}

@@ -126,7 +126,7 @@ class DeclarationParser(unittest.TestCase):
         self.assertEqual(guard['max_delay_ns'], 10)
         self.assertFalse(guard['setup_false_path'])
         self.assertFalse(guard['endpoint_and_routed_bound_verified'])
-        paths = [line for line in selected['sdc'].splitlines() if 'memory_gray' in line]
+        paths = [line for line in selected['runtime_cdc_sdc'].splitlines() if 'memory_gray' in line]
         self.assertEqual(len(paths), 2)
         self.assertTrue(any(line.startswith('set_max_delay 10.000 ') for line in paths))
         self.assertTrue(any(line.startswith('set_false_path -hold ') for line in paths))
@@ -175,8 +175,8 @@ class SharedConstraintSelection(unittest.TestCase):
             parent = shared_cdc_bundle(stage)
         selected = runtime.shared_constraints(parent['sdc'])
         self.assertEqual(len(parent['sdc'].splitlines()), 157)
-        self.assertEqual(len(selected['sdc'].splitlines()), 106)
-        self.assertEqual(len(selected['omitted']), 51)
+        self.assertEqual(len(selected['sdc'].splitlines()), 105)
+        self.assertEqual(len(selected['omitted']), 52)
         self.assertEqual([item['selected'] for item in selected['adapted']], [
             'set_false_path -to [get_pins {u_runtime/u_cpu_cdc/source_release*/CLEAR '
             'u_runtime/u_cpu_cdc/destination_release*/CLEAR}]',
@@ -185,7 +185,8 @@ class SharedConstraintSelection(unittest.TestCase):
             'set_false_path -to [get_pins {u_native_usb/input_owner/analysis_done_meta*/D}]',
         ])
         untouched = [line for line in parent['sdc'].splitlines()
-                     if not any(prefix in line for prefix in runtime.REPLACED_CDC_PREFIXES)]
+                     if not any(prefix in line for prefix in runtime.REPLACED_CDC_PREFIXES)
+                     and 'tf_run_meta' not in line]
         self.assertEqual([line for line in selected['sdc'].splitlines()
                           if line not in {item['selected'] for item in selected['adapted']}], untouched)
 

@@ -9,6 +9,7 @@ import re
 
 from tools.stage_usb_firmware import sha
 from tools.workstation_custom_clocks import clock_bundle
+from tools.workstation_runtime_cdc import runtime_cdc_bundle
 
 POLICY = 'native_dual_rate_runtime_v1'
 SOURCES = (
@@ -103,6 +104,13 @@ def shared_constraints(sdc):
     retained, omitted, adapted = [], [], []
     query = re.compile(r'\[(get_regs|get_pins|get_ports|get_clocks) \{([^{}]+)\}\]')
     for line in sdc.splitlines():
+        if 'tf_run_meta' in line:
+            if line != 'set_false_path -to [get_pins {tf_run_meta*/D}]':
+                raise ValueError('unsupported legacy TF run constraint: ' + line)
+            omitted.append(dict(constraint=line, removed_selectors=['tf_run_meta*/D'],
+                reason='native runtime does not instantiate the legacy TF DAC consumer; verify pruning in synthesized netlist',
+                empty_query_sides=['get_pins']))
+            continue
         if not any(prefix in line for prefix in REPLACED_CDC_PREFIXES):
             retained.append(line)
             continue
@@ -146,18 +154,14 @@ def constraints(root, shared_crossings):
             probe['pins'].get('clk_12m288') != 'K18'):
         raise ValueError('reviewed dual-audio reference pins changed')
     shared = shared_constraints(shared_crossings['sdc'])
+    runtime_cdc = runtime_cdc_bundle(root)
     selected = 'u_managed/runtime/clocks/selector/CLKOUT'
     guard = 'u_runtime_memory_guard/'
     memory_clock = next(entry for entry in clocks['plan']['generated'] if entry['name'] == 'ddr_ui100')
     memory_period = 1_000_000_000 / memory_clock['frequency_hz']
-    # Bound each Gray bit's register-to-first-stage path. Since physical
-    # propagation is nonnegative, this also bounds inter-bit propagation skew
-    # by the same source-clock period. Never false-path these setup paths.
-    guard_gray_sdc = (
-        f'set_max_delay {memory_period:.3f} -from [get_regs {{{guard}memory_gray*}}] '
-        f'-to [get_regs {{{guard}gray_meta*}}]\n'
-        f'set_false_path -hold -from [get_regs {{{guard}memory_gray*}}] '
-        f'-to [get_regs {{{guard}gray_meta*}}]\n'
+    # Gray flight bounds belong to runtime_cdc_sdc. These retained exceptions
+    # target only the guard's existing first stage and local release inputs.
+    guard_reset_sdc = (
         f'set_false_path -to [get_pins {{{guard}open_meta*/D}}]\n'
         f'set_false_path -to [get_pins {{{guard}control_reset_pre*/CLEAR '
         f'{guard}control_reset_n*/CLEAR {guard}memory_reset_pre*/CLEAR '
@@ -173,7 +177,9 @@ def constraints(root, shared_crossings):
         'set_false_path -from [get_clocks {selected48}] -to [get_clocks {selected44}]\n'
         'set_false_path -from [get_clocks {selected44}] -to [get_clocks {selected48}]\n'
     )
-    return dict(policy=POLICY, sdc=clocks['sdc'] + audio_sdc + guard_gray_sdc,
+    return dict(policy=POLICY, sdc=clocks['sdc'] + audio_sdc + guard_reset_sdc,
+        runtime_cdc_sdc=runtime_cdc['sdc'],
+        runtime_cdc={key: value for key, value in runtime_cdc.items() if key != 'sdc'},
         shared_sdc=shared['sdc'], omitted_shared_constraints=shared['omitted'],
         adapted_shared_constraints=shared['adapted'],
         extra_cst='IO_LOC "clk_16m9344" J19;\nIO_PORT "clk_16m9344" IO_TYPE=LVCMOS33 PULL_MODE=NONE;\n',
