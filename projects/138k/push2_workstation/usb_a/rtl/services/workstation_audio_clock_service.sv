@@ -137,7 +137,10 @@ module workstation_audio_clock_service #(
             else if(command_data_i==2)begin
                 if(!core_fault_i)admission_error=BUS_RECOVER_STATE;
                 else if(!core_source_qualified_i[core_active_44k1_i])admission_error=BUS_SOURCE_UNQUALIFIED;
-            end else if(core_fault_i || !core_request_ready_i || !core_active_valid_i)
+            // Public runtime readiness includes active-media gating. An
+            // enabled real change prepares that media before revalidating
+            // readiness at the actual core issue boundary below.
+            end else if(core_fault_i || (!core_request_ready_i && !needs_media_stop) || !core_active_valid_i)
                 admission_error=BUS_NOT_READY;
             else if(!core_source_qualified_i[command_data_i[0]])admission_error=BUS_SOURCE_UNQUALIFIED;
         end
