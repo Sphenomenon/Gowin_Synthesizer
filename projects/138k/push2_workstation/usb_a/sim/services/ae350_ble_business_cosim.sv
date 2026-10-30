@@ -13,10 +13,19 @@ module ae350_ble_business_cosim(
  input wire [12:0] transfer_addr,output wire [7:0] transfer_data,input wire transfer_consume,
  input wire seal_hold,seal_request,
  input wire [31:0] test_time_bias,
+ input wire [8:0] test_att_limit,
+ output wire [31:0] elapsed_ms_o,
+ output wire transfer_compact,transfer_bulk,transfer_direct,
  output wire seal_ready,seal_done,seal_failed,
  output wire [2:0] capture_phase,
+ output wire [3:0] engine_phase,
+ output wire [2:0] codec_phase,
+ output wire [3:0] fetch_debug,
  output wire [31:0] object_id,frames,record_state
 );
+assign engine_phase=endpoint.recording.state;
+assign codec_phase=endpoint.recording.encoder.phase;
+assign fetch_debug={raw_fetch_valid_o,raw_fetch_ready_i,raw_fetch_done_i,raw_cache_valid_i};
 wire raw_start_valid_o;
 wire raw_start_ready_i,raw_start_done_i;
 wire raw_clear_valid_o;
@@ -47,6 +56,7 @@ gw138k_apb_cdc bus_bridge(.reset_n(owner_resetn && resetn),.pclk(clk),.audio_clk
  .command_address(command_address),.command_data(command_data),.command_strobes(command_strobes),
  .response_data(bus_response_data),.response_error(response_error));
 reg [31:0] phase=0,ms_count=0,ms_divider=0;
+assign elapsed_ms_o=ms_count+test_time_bias;
 wire tick=phase+32'd48000>=32'd50000000;
 always @(posedge clk)if(!resetn)begin phase<=0;ms_count<=0;ms_divider<=0;end
 else begin
@@ -62,12 +72,12 @@ ble_protocol_command #(.EXTERNAL_PCM(1),.CAPACITY_FRAMES(16384),.EXTERNAL_SEAL_P
  .business_command_ready_o(command_ready),.business_response_error_o(response_error),
  .business_response_data_o(bus_response_data),
  .pcm_valid_i(tick && pcm_run),.source_ready_i(1'b1),.source_fault_i(1'b0),.pcm_pair_i(32'h22221111),
- .boot_id(64'h1122334455667788),.att_value_limit(9'd247),.boot_valid(1'b1),
+ .boot_id(64'h1122334455667788),.att_value_limit(test_att_limit),.boot_valid(1'b1),
  .response_subscribed(1'b1),.control_open(1'b1),.recording_enable(1'b1),.transfer_subscribed(1'b1),
  .elapsed_ms(ms_count+test_time_bias),.fragment_write(fragment_write),.fragment_addr(fragment_addr),.fragment_data(fragment_data),
  .fragment_start(fragment_start),.fragment_length(fragment_length),.busy(),.fragment_done(fragment_done),.fragment_error(fragment_error),
  .response_valid(response_valid),.response_length(response_length),.response_addr(response_addr),.response_data(response_data),
- .response_consume(response_consume),.transfer_valid(transfer_valid),.transfer_compact(),.transfer_bulk(),.transfer_direct(),
+ .response_consume(response_consume),.transfer_valid(transfer_valid),.transfer_compact(transfer_compact),.transfer_bulk(transfer_bulk),.transfer_direct(transfer_direct),
  .response_is_data(),.transfer_length(transfer_length),.transfer_addr(transfer_addr),.transfer_data(transfer_data),
  .transfer_consume(transfer_consume),.summary_latch(1'b0),.summary(),.session_active(),.accepted_count(),.crc_reject_count(),
  .seal_hold_i(seal_hold),.seal_request_i(seal_request),.seal_ready_o(seal_ready),.seal_pending_o(),

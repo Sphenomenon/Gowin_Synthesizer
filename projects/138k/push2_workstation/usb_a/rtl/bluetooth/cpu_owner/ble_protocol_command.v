@@ -159,7 +159,8 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     wire [7:0] cpu_completion_status,cpu_completion_reason,cpu_completion_phase;
     wire [6:0] cpu_completion_length;
     wire [511:0] cpu_completion_payload;
-    wire cpu_consume=state==RECORD_WAIT && cpu_completion_valid;
+    wire cpu_consume=(state==RECORD_WAIT || state==REPLAY_RECORD_WAIT) && cpu_completion_valid;
+    wire [31:0] cpu_key_ticket,cpu_key_owner,cpu_key_session;wire [63:0] cpu_key_boot;
     wire mb_ready,mb_error,data_ready,data_error,data_observer_fault;
     wire [31:0] mb_read,data_read;
     wire data_select=business_command_address_i[11:8]==1;
@@ -173,12 +174,13 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     wire [63:0] data_engine_nonce;
     wire [127:0] data_engine_payload;
     wire [383:0] data_engine_result;
-    wire [31:0] data_crc_fact,data_reason_fact,data_transfer_fact,data_offset_fact,data_first_ms,data_terminal_ms;
-    wire data_transfer_open,data_block_pending,data_source_good,data_mutation_hold;
-    assign recording_done=recording_replay ? engine_done:cpu_completion_valid;
-    assign recording_result=recording_replay ? engine_status:cpu_completion_status;
-    assign recording_byte=recording_replay ? engine_byte:cpu_reply_payload[(index-7'd16)*8+:8];
-    assign recording_length=recording_replay ? engine_result_length:cpu_completion_length;
+    wire [31:0] data_crc_fact,data_reason_fact,data_first_ms,data_terminal_ms,data_block_crc,data_command_ms;
+    wire [4:0] data_engine_flags;wire data_block_crc_valid,data_read_accepted;
+    wire data_source_good,data_mutation_hold;
+    assign recording_done=cpu_completion_valid;
+    assign recording_result=cpu_completion_status;
+    assign recording_byte=cpu_reply_payload[(index-7'd16)*8+:8];
+    assign recording_length=cpu_completion_length;
     always @(posedge clk or negedge resetn)begin
         if(!resetn)begin business_session<=0;business_session_q<=0;end
         else begin
@@ -200,8 +202,8 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .command_address_i(business_command_address_i),.command_data_i(business_command_data_i),
         .command_strobes_i(business_command_strobes_i),.command_ready_o(mb_ready),
         .response_error_o(mb_error),.response_data_o(mb_read),.completion_valid_o(cpu_completion_valid),
-        .completion_consume_i(cpu_consume),.completion_ticket_o(),.completion_owner_o(),
-        .completion_session_o(),.completion_boot_o(),.completion_phase_o(cpu_completion_phase),
+        .completion_consume_i(cpu_consume),.completion_ticket_o(cpu_key_ticket),.completion_owner_o(cpu_key_owner),
+        .completion_session_o(cpu_key_session),.completion_boot_o(cpu_key_boot),.completion_phase_o(cpu_completion_phase),
         .completion_status_o(cpu_completion_status),.completion_reason_o(cpu_completion_reason),
         .completion_length_o(cpu_completion_length),.completion_operation_o(),.completion_payload_o(cpu_completion_payload));
     workstation_ble_record_data_service cpu_data(
@@ -214,10 +216,13 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .committed_i(raw_committed_frames_i),.crc_i(data_crc_fact),.stop_reason_i(data_reason_fact),
         .first_frame_ms_i(data_first_ms),.terminal_ms_i(data_terminal_ms),
         .source_good_i(data_source_good),.mutation_hold_i(data_mutation_hold),
-        .transfer_open_i(data_transfer_open),.block_pending_i(data_block_pending),
+        .transfer_valid_i(transfer_valid),
+        .request_admitted_i(cpu_admitted),.request_replay_i(recording_replay),.request_object_i(replay_object_id),
+        .request_ticket_i(cpu_key_ticket),.request_owner_i(cpu_key_owner),.request_session_i(cpu_key_session),.request_boot_i(cpu_key_boot),
         .enabled_i(recording_enable),.subscribed_i(transfer_subscribed),.engine_idle_i(data_engine_idle),
-        .transfer_id_i(data_transfer_fact),.confirmed_offset_i(data_offset_fact),.elapsed_ms_i(elapsed_ms),
-        .engine_start_o(data_engine_start),.engine_opcode_o(data_engine_opcode),
+        .att_value_limit_i(att_value_limit),.elapsed_ms_i(elapsed_ms),.engine_time_ms_i(data_command_ms),
+        .engine_block_crc_i(data_block_crc),.engine_block_crc_valid_i(data_block_crc_valid),.engine_read_accepted_i(data_read_accepted),
+        .engine_start_o(data_engine_start),.engine_opcode_o(data_engine_opcode),.engine_flags_o(data_engine_flags),
         .engine_length_o(data_engine_length),.engine_request_o(data_engine_request),
         .engine_object_o(data_engine_object),.engine_transfer_o(data_engine_transfer),
         .engine_nonce_o(data_engine_nonce),.engine_payload_o(data_engine_payload),
@@ -260,19 +265,18 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .raw_sample_word_i(raw_sample_word_i),
         .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
         .transfer_subscribed(transfer_subscribed),.boot_id(boot_id),.att_value_limit(att_value_limit),.elapsed_ms(elapsed_ms),
-        .command_start(recording_replay ? recording_start:data_engine_start),.command_replay(recording_replay),
+        .command_start(data_engine_start),.command_flags_i(data_engine_flags),
         .command_object_id_i(data_engine_object),.command_transfer_id_i(data_engine_transfer),
         .idle_o(data_engine_idle),.command_result_o(data_engine_result),
-        .object_crc_o(data_crc_fact),.stop_reason_o(data_reason_fact),.transfer_id_o(data_transfer_fact),
+        .object_crc_o(data_crc_fact),.stop_reason_o(data_reason_fact),
+        .block_crc_o(data_block_crc),.block_crc_valid_o(data_block_crc_valid),.read_accepted_o(data_read_accepted),.command_time_ms_o(data_command_ms),
         .first_frame_ms_o(data_first_ms),.terminal_ms_o(data_terminal_ms),
-        .confirmed_offset_o(data_offset_fact),.transfer_open_o(data_transfer_open),.block_pending_o(data_block_pending),
         .source_good_o(data_source_good),.mutation_hold_o(data_mutation_hold),
-        .opcode(recording_replay ? header[0]:data_engine_opcode),
-        .request_id(recording_replay ? request_id:data_engine_request),
-        .nonce(recording_replay ? request_nonce:data_engine_nonce),
-        .payload_length(recording_replay ? payload_length:data_engine_length),
-        .payload(recording_replay ? recording_payload:data_engine_payload),
-        .replay_recording_id(replay_object_id),
+        .opcode(data_engine_opcode),
+        .request_id(data_engine_request),
+        .nonce(data_engine_nonce),
+        .payload_length(data_engine_length),
+        .payload(data_engine_payload),
         .command_done(engine_done),.command_status(engine_status),.command_length(engine_result_length),
         .command_addr(index-7'd16),.command_data(engine_byte),
         .record_state(record_state),.recording_id(recording_id),.recorded_frames(recorded_frames),.capacity_frames(capacity_frames),
@@ -487,7 +491,9 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                     end
                 end
                 REPLAY_RECORD_WAIT: if(recording_done) begin
-                    if(recording_result[7]) error_reply(recording_result,0);
+                    if(cpu_completion_reason!=0)begin
+                        if(cpu_completion_phase==5)cpu_uncertain_fence<=1;error_reply(8'h82,0);
+                    end else if(recording_result[7]) error_reply(recording_result,0);
                     else begin index<=0;state<=REPLAY_ADDR;end
                 end
                 STORE_REQ: begin
@@ -515,7 +521,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                 META_ADDR: state<=META_READ;
                 META_READ: begin
                     replay_object_id[8*index+:8]<=reply_cache_data;
-                    if(index==3) begin recording_start<=1;recording_replay<=1;state<=REPLAY_RECORD_WAIT;end
+                    if(index==3) begin cpu_offer<=1;recording_replay<=1;state<=REPLAY_RECORD_WAIT;end
                     else begin index<=index+1'b1;state<=META_ADDR;end
                 end
                 REPLAY_ADDR: state<=REPLAY;

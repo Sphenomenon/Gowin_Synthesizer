@@ -1,129 +1,147 @@
-# AE350 BLE business owner, first batch
+# AE350 BLE business owner, revision 2
 
-Only `custom138k-workstation-ae350-business-v1` selects these versioned 138K
-sources. Its source selector copies bytes and removes the old staged
-`ble_recording.v`; it does not run the legacy recorder text adaptation. The
-unchanged 25K project, vendor, baseline and earlier providers keep their source
-policies. `provenance.json` records the one-time derivation. The retained Rice
-encoder, transfer banks and wire-message function must match their original
-protected hashes. This is the exit from the recorder text overlay for this
-candidate, not a rewrite of the protocol or transport.
+Only the explicit `custom138k-workstation-ae350-business-v1` profile, revision 2,
+selects this native composition and `ae350_ble_business_owner_v2` policy. Its
+selector copies versioned bytes and removes staged `ble_recording.v`; no legacy
+recorder text generation runs. Existing default/accepted profiles, vendor and
+25K bytes retain their selection. The profile has a new source/candidate
+identity; first-batch evidence remains fixed to its recorded source commit.
+`provenance.json` preserves the one-time derivation and protected encoder,
+transfer-bank and wire-message hashes.
 
-`ble_business_owner.c` is the sole owner of the eight operation tasks and
-operation/object/transfer ID allocation. It implements operation query,
-START/STOP/GET/CLEAR and transfer OPEN/CLOSE/CANCEL. The physical engine holds
-borrowed tags with the actual active capture or download lease. Those tags do
-not allocate identities or create another task table. Its state, frames, CRC,
-native commits and physical event timestamps are hardware facts consumed by C.
-The task retention deadline uses the actual physical event timestamp, rather
-than the later CPU observation time.
+## Ownership
 
-The first batch retains the download READ/ACK/combined-ACK/resume policy,
-confirmed/pending offsets, block CRC checks and 30-second transfer timeout in
-the data engine. These are explicit second-batch work. Capture/CRC, normal media
-seal, native drain, fetch cache, Rice encoding, transfer RAM and wire framing
-remain hardware in both batches. This source change alone proves no net CLS,
-physical BSRAM, routed timing, complete CDC or hardware acceptance.
+`ble_business_owner.c` solely owns eight operation tasks, monotonic operation /
+object / transfer IDs, START/STOP/GET/CLEAR, all OPEN modes, READ/ACK/combined
+ACK, explicit resume offsets, CLOSE/CANCEL, pending/confirmed offsets, duplicate
+ACK identity and the 30-second transfer policy. There is no hardware task table,
+ID allocator, confirmed cursor, pending-ACK cursor, last-ACK record or transfer
+timeout. The physical engine holds C-supplied borrowed object/data tags.
 
-## Parsed-command boundary
+The FPGA retains fragment/CRC/nonce/session validation, the original 32-slot
+request/reply cache, exact wire replay detection, S1a transport and link limits.
+It also retains autonomous capture, four-byte PCM CRC, media seal, native drain,
+raw DDR/cache fetch, Rice, transfer RAM and wire framing. C never copies PCM or
+performs a sample/codec loop. The protected codec and frame-byte implementation
+remain byte-identical to the locked legacy data plane. Audio has no CPU-ready
+signal; paused/faulted software cannot stop capture or hardware media sealing.
 
-The existing hardware parser performs fragment checks, complete-message CRC,
-nonce/session checks and exact replay before `DISPATCH`. HELLO and the existing
-state summary remain hardware protocol operations. New business requests use
-the original S1a mailbox ABI and one immutable 16-byte request / 64-byte result
-slot. Admission and CLAIM are transport facts. A C PENDING result requires an
-already-reserved task ID and actual engine command completion. START completion
-means the first accepted PCM frame, STOP completion requires all four CRC bytes
-and native accepted/committed counts matching the captured prefix. CLEAR only
-clears the borrowed identity after actual raw-store completion.
+The independent R00 `f8040000` object64/first 64-KiB window remains separate.
+BLE uses the existing second 64-KiB window from `ddr_address_map.vh`: byte
+`0x30510000..0x3051ffff`, native words `0x0c144000..0x0c147fff`, 16,384 stereo
+frames at the existing format-1 48 kHz. No DDR allocation, external wire opcode,
+18-bit event field, capacity or dual-rate BLE capability changes.
 
-Nondata exact replay uses the unchanged response cache without calling C again.
-Data replay uses its cached object ID and immutable original block descriptor
-to rebuild bytes, without allocating C identities. The original high-water and
-request/reply cache advance only after normal business completion. Local
-mailbox rejection produces the existing BUSY error. An uncertain claimed
-observation also fences further mutating requests for that connection; GET and
-operation query can inspect the actual C owner. A reconnect creates a new
-protocol session but preserves C counters/tasks and the physical object. A
-local observation loss never reports that a task was cancelled.
+## Commands and download lifecycle
 
-Session generations increment on a new established business session and never
-wrap. The existing nonzero HCI boot identity remains the external authority.
-The owner cannot open before the protocol session exists. A new boot or owner
-generation cannot silently reuse C IDs. First-batch firmware has no persisted
-task recovery: observer reset fences future primitive submissions until common
-reset or a separately implemented recovery. It preserves capture/object and
-accepted physical work, while the original hardware media seal remains able to
-finish without CPU service. No lost C task table is reconstructed by clearing
-hardware IDs. Ordinary audio scheduling has no CPU ready signal.
+The unchanged S1a slot transports one already-validated 16-byte command and a
+64-byte result. Admission, CLAIM, application and publication are separate.
+START PENDING requires actual raw START acceptance; its task succeeds only at
+an actual complete first frame. STOP waits for READY and the native committed
+prefix; zero-frame START fails after terminal sealing. Task retention uses
+physical first-frame/terminal timestamps. CLEAR waits for actual raw completion.
 
-## APB and physical descriptor
+OPEN is a C operation: it validates immutable object, subscription, physical
+buffer availability, explicit aligned byte offset, mode and ID exhaustion. Its
+response preserves negotiated limits and flags. CLOSE requires no pending ACK,
+confirmed EOF and the object CRC. CANCEL retires the C lease. Resume uses a new
+monotonic transfer ID and the caller's explicit verified checkpoint offset.
 
-The explicit candidate owns APB `0xf8050000`, through the existing checked
-`gw138k_apb_cdc` to the continuously running 50-MHz control domain. Offsets
-`0x000..0x0ff` are the unchanged S1a mailbox. `0x100..0x1ff` are the physical
-primitive below, addressed through the existing `recording_service` callback
-API's explicitly probed v2 helpers. Unknown/misaligned accesses, partial writes
-and invalid state return an APB error. Every access has an immediate local
-ready; raw work is submitted once and observed by sequence. No bus transaction
-waits for CPU, radio or native DDR.
+READ validates mode, transfer, window-one ownership, confirmed offset,
+alignment, range and the negotiated limit. Combined ACK validates both the old
+block identity/CRC and the next range before submitting anything. A physical
+READ descriptor contains object/tag, request/nonce, offset/length and borrowed
+frame mode bits; the engine checks physical identity and memory bounds. It
+reports actual read admission, actual PCM CRC completion and immutable echoed
+identity. C commits a combined ACK only after read admission. A later physical
+failure can retain the already-committed prior ACK; it cannot fabricate a new
+CRC-complete block. A descriptor accepted by APB but rejected before physical
+read admission cannot commit that ACK.
+
+ACK compares the actual pending block end and PCM CRC. A fresh request with the
+last accepted ACK pair is idempotent. Failed ACK/combined requests do not mutate
+confirmed or pending state. OPEN and accepted READ/ACK refresh the C deadline;
+wire replays do not refresh it. Unsigned subtraction handles elapsed-ms wrap.
+At the first pump observing 30 seconds, C expires the lease and its mode/ACK
+policy. If CPU service pauses, bounded physical data may remain buffered until
+transport consumption/disconnect; the next pump rejects expired lease commands.
+This is not a hardware interrupt or a claim of CPU-independent business service.
+
+Nondata exact replay still returns the hardware cache without calling C. For
+data replay, the parser first compares every original request byte, then offers
+the original command through S1a. On admission, the physical service latches
+only the replay flag and cached object tag. Its read-only mirror exposes the
+current slot's existing full ticket/owner/session/boot key. C's bounded INSPECT
+phase matches that complete key before using the replay metadata. No S1a ABI or
+reserved field is changed. A mismatched/torn key is retried for at most 1000 ms,
+then fenced without a primitive. Data replay rebuilds the original borrowed
+request/tag without changing the current C lease, ACK cursor or ID counters.
+Legacy mode checks, downgrade/reopen behavior and raw replay after timeout are
+preserved. Cleared/replaced objects are rejected by C before physical submission.
+
+## APB physical primitive v3
+
+`f8050000..ff` remains S1a. `f8050100..1ff` is independently probed as physical
+ID `52434403`, caps `00301002` (48-byte result, 16-byte payload, one descriptor).
+It is not R00's API. Misaligned/unknown accesses, partial writes, invalid flags,
+reserved bits, stale/zero sequences and unavailable submissions return APB
+error with immediate local ready. Accepted descriptors remain immutable even
+while later staging registers are written. No bus access waits for radio/DDR.
 
 | Primitive offset | Meaning |
 | --- | --- |
-| 00 / 04 | ID `52434402`, caps `00301001`; 48-byte result, 16-byte request, one descriptor |
-| 08 | Submit command 1; the API stages the complete descriptor |
-| 0c | Physical record state[7:0], busy[8], observer fence[9], source good[10], media hold[11], lease open[12], block pending[13], enabled[14], subscribed[15] |
-| 10 | Staged C object32 tag |
-| 1c / 20 | Current physical object32 tag / zero; distinct from R00 object64 |
-| 24 / 28 | Existing BLE format-1 rate 48000 / no new epoch claim |
-| 2c / 30 / 34 / 38 | Captured frames / native committed frames / object CRC / physical stop reason |
-| 40 / 44 / 48 | Active transfer tag / hardware confirmed byte offset / elapsed ms |
-| 4c / 50 / 54 | Accepted descriptor sequence / completed descriptor sequence / common-reset lifetime 1 |
-| 58 / 5c / 60 / 64 | Staged sequence / C transfer tag / opcode / length |
-| 68 / 6c / 70 | Staged request ID / nonce low / nonce high |
-| 74..80 | Four little-endian payload words |
-| 84 / 90..bc | Completion status[7:0], length[14:8] / immutable 48-byte result |
+| 00 / 04 | Physical v3 ID / caps |
+| 08 | Submit staged descriptor exactly once |
+| 0c | Record state[7:0], descriptor busy[8], observer fence[9], source good[10], media hold[11], physical DATA valid[12], reserved[13], enabled[14], subscribed[15] |
+| 10 / 14 | Staged object32 / five borrowed frame flags: compact, bulk, direct, lossless, second |
+| 1c / 20 | Actual object32 / zero; distinct from R00 object64 |
+| 24 / 28 | Existing rate 48000 / no new epoch claim |
+| 2c / 30 / 34 / 38 | Captured / native committed frames / object CRC / stop reason |
+| 40 / 44 / 48 | Current ATT value limit / physical command admission ms / elapsed ms |
+| 4c / 50 / 54 | Accepted / completed descriptor sequence / common-reset lifetime 1 |
+| 58 / 5c / 60 / 64 | Staged sequence / transfer tag / physical opcode / payload length |
+| 68 / 6c / 70 / 74..80 | Request ID / nonce low/high / four payload words |
+| 84 | Result status[7:0], length[14:8], CRC complete[15], physical READ admitted[16]; remaining bits zero |
+| 88 / 8c / 90..bc | Actual block PCM CRC / physical admission ms / immutable result payload |
 | c0 / c4 | Actual first-frame / terminal event ms |
+| c8 / cc | Admitted parser replay flag / cached object tag |
+| d0 / d4 / d8 / dc / e0 | Existing S1a slot ticket / owner / session / boot low/high mirror |
 
-Sequences are nonzero, strictly increasing within the common-reset lifetime.
-Accepted does not mean the engine completed. The submitted descriptor stays
-immutable until its actual completion; later bus staging cannot alter it. A
-failed final write ACK is observed using that same sequence and never retried.
-If that sequence is still unaccepted after 1000 elapsed milliseconds, C records
-SUBMIT_UNOBSERVED and fences its owner. It neither allocates the candidate IDs
-nor retries an uncertain side effect. Accepted work remains a physical fact.
-A failed final mailbox COMPLETE ACK is likewise observed by its exact request
-key. No RESULT/PUBLISHED fact within 1000 ms records COMPLETE_UNOBSERVED and
-fences C without cancelling the real task or capture. An advisory STALE from
-key/state/meta tearing remains in OBSERVE; it is not proof of retirement. Only
-a separately coherent context showing a new session ends the old publication
-observation. No completion is blindly repeated.
-Direct MMIO bus faults trap/fence firmware; a callback failure does not imply a
-write was uncommitted. Bounded polls may return an unstable advisory snapshot
-when the physical object changes; C retries reading on a later pump, without
-resubmitting work. READY descriptors and completed result slots are immutable.
+Only physical START/STOP/CLEAR and READ are submitted. OPEN/CLOSE/CANCEL/ACK
+are never delegated back to hardware. Disconnect/disable aborts an in-flight
+physical READ with an explicit completion and clears output availability; it
+cannot leave a permanently busy descriptor or publish late data into a new link.
+Actual raw CLEAR remains autonomous once accepted.
 
-The independent R00 APB `0xf8040000`, object64 and first 64-KiB recording window
-are preserved. BLE still uses `PRJ1_DDR_RECORDING_BLE_*`, byte
-`0x30510000..0x3051ffff`, native words `0x0c144000..0x0c147fff`. The existing
-common DDR authority, owner8 mux and native-accept bridge remain authoritative.
-There is no new DDR allocation, CPU PCM polling/copy loop or cacheable DMA area.
+## Failure and reset
 
-## Firmware integration and validation scope
+A failed final submit ACK is observed by the exact sequence, never retried.
+Unaccepted after 1000 ms records SUBMIT_UNOBSERVED. A failed COMPLETE ACK is
+observed by the original full key; no RESULT/PUBLISHED after 1000 ms records
+COMPLETE_UNOBSERVED. Advisory STALE from torn state/key/meta remains OBSERVE;
+only a separate coherent session change retires that observation. Accepted work
+and task facts are preserved. Invalid result identity or transport IO fences C.
 
-The explicit firmware build sets `A138_BLE_BUSINESS`, links the mailbox,
-recording helpers and C owner, and calls `a138_ble_business_firmware_init` once
-after startup, then `a138_ble_business_firmware_pump` once per bounded UI loop.
-Other builds leave the macro undefined. A pump allocates no heap and never
-waits; each helper has a fixed access count and at most one descriptor or result
-is submitted per pump. Full ELF, local-memory image, actual callback targets,
-whole-call-chain stack are bound to actual disassembly and reviewed callback
-targets. Physical service performance remains separate C06/C02 acceptance.
+Observer reset cannot restart same-boot counters: the existing sticky hardware
+fence requires common reset or separately implemented recovery. Capture/object
+and autonomous seal remain physical facts. Reconnect retires the C transfer
+lease while retaining object/tasks/counters. Session generations do not wrap.
 
-The local Verilator regression links the actual maintained C files against the
-actual APB CDC, mailbox, parser, physical engine, raw store and native bridge,
-with a DDR model separating local submission, native acceptance and read return.
-The same packet driver and PCM source exercise the locked old RTL reference for
-wire-byte comparison. Its source identity and cases are recorded by
-`sim/services/run_ae350_ble_business.py`. Synthesis, P&R, full reset/CDC/timing,
-board audio, Android, SRAM and Flash require separate candidate evidence.
+## Build and validation
+
+Only the explicit business firmware sets `A138_BLE_BUSINESS`, uses the 64-KiB
+cold-ROM/ILM/DLM composition and calls the real init/pump. Each pump has fixed
+work, no heap/waits and at most one primitive or publication. New data helpers
+stay under the macro so the default and recording-API 16-KiB binaries remain
+byte-identical to the parent. Actual input/disassembly/callsite-target proof
+binds every reachable indirect call; unknown sites still fail closed.
+
+The regression links maintained C with actual APB CDC, S1a, parser, physical
+engine and native DDR fixture. Its control clock is 20 ns and memory clock
+14 ns; final evidence records timeprecision explicitly. The first-batch test
+used timeInc(1) with 1-ps precision, making control 20 ps versus memory 14 ns.
+That older evidence proves its recorded adverse ratio, not the intended clock
+ratio. Revision 2 reruns the original cases and expanded wire/behavior vectors
+at the corrected ratio; historical outputs are retained unchanged. Routed
+resources/timing/full CDC, CPU performance/watermark, Android and hardware
+acceptance remain separate candidate stages.

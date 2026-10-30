@@ -3,7 +3,7 @@ from pathlib import Path
 import hashlib,json,shutil
 from tools import workstation_bluetooth_ddr as legacy
 from tools.workstation_ble_recording_policy import metadata as raw_metadata
-POLICY='ae350_ble_business_owner_v1'
+POLICY='ae350_ble_business_owner_v2'
 PROVIDER='rtl/workstation/workstation_profile_ae350_business_v1.sv'
 DIRECTORY='rtl/bluetooth/cpu_owner'
 COPIES={
@@ -21,11 +21,11 @@ DEPENDENCIES=(*COPIES.values(),DIRECTORY+'/provenance.json',
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def metadata():
     m=raw_metadata()
-    m.update(policy='native_raw_ddr_ae350_business_v1',
+    m.update(policy='native_raw_ddr_ae350_business_v2',
         business_owner='AE350 ble_business_owner.c',object_ids_tasks_crc_codec_transfer_owned_by_ble=False,
-        software_owned=['task_table','operation_ids','object_id_allocation','transfer_id_allocation','record_commands','open_close_cancel_commands'],
-        hardware_owned=['capture_crc','raw_storage','native_commit','media_seal','block_fetch','rice_codec','wire_bytes','download_ack_resume_policy'],
-        remaining_software_migration=['download_ack_resume_policy','download_timeout_policy'])
+        software_owned=['task_table','operation_ids','object_id_allocation','transfer_id_allocation','record_commands','open_close_cancel_commands','read_ack_combined_policy','resume_offsets','transfer_timeout_policy'],
+        hardware_owned=['capture_crc','raw_storage','native_commit','media_seal','block_fetch','rice_codec','wire_bytes'],
+        remaining_software_migration=[])
     return m
 def prepare(root,stage):
     root,stage=Path(root),Path(stage)
@@ -57,7 +57,9 @@ def verify_prepared(root,stage,evidence):
         if sha(stage/destination)!=sha(root/source):raise ValueError('CPU business staged source drift: '+destination)
     if (stage/'native_bluetooth/ble_recording.v').exists():raise ValueError('retired RTL business owner remains staged')
     engine=(root/SOURCES[0]).read_text()
-    for token in ('operation_counter','object_counter','transfer_counter','task_id[','task_valid','allocate_task'):
+    for token in ('operation_counter','object_counter','transfer_counter','task_id[','task_valid','allocate_task',
+        'transfer_open','confirmed_offset','pending_offset','pending_crc','last_ack',
+        'transfer_time','extended_limit','block_pending'):
         if token in engine:raise ValueError('retired RTL identity/task owner returned: '+token)
     # The codec and wire builder are retained bytes. Banks only differ in the
     # wrapper's new command/result ports, outside these protected regions.

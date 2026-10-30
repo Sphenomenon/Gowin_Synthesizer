@@ -42,16 +42,16 @@ CPU_BUSINESS_NAME='custom138k-workstation-ae350-business-v1'
 CPU_BUSINESS_CONFIG='boards/custom_138k/workstation_profile_ae350_business_v1.json'
 CPU_BUSINESS_CONFIGURATION=dict(RUNTIME_CONFIGURATION,recognition_policy='disabled_cnn_and_follow_v1',
     recording_policy=R00_POLICY,local_panel_policy='disabled_local_lcd_touch_v1',
-    ble_recording_storage_policy='native_raw_ddr_ae350_business_v1',business_owner_policy='ae350_ble_business_owner_v1',
+    ble_recording_storage_policy='native_raw_ddr_ae350_business_v2',business_owner_policy='ae350_ble_business_owner_v2',
     ae350_memory_profile='ilm64k_dlm64k',ae350_boot_rom_bytes=65536)
 LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1'
 LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
 PROFILE_REGISTRY = {
-    CPU_BUSINESS_NAME:dict(config=CPU_BUSINESS_CONFIG,revision=1,configuration=CPU_BUSINESS_CONFIGURATION,
+    CPU_BUSINESS_NAME:dict(config=CPU_BUSINESS_CONFIG,revision=2,configuration=CPU_BUSINESS_CONFIGURATION,
         provider='rtl/workstation/workstation_profile_ae350_business_v1.sv',recognition_enabled=False,
         recording_enabled=True,local_panel_enabled=False,ble_recording_storage_enabled=True,
         business_owner_enabled=True,
-        integration_identity='custom138k-native-ae350-business-revision1'),
+        integration_identity='custom138k-native-ae350-business-revision2'),
     LOCAL_BOOT64_NAME: dict(config=LOCAL_BOOT64_CONFIG, revision=1,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             recording_policy=R00_POLICY, local_panel_policy='disabled_local_lcd_touch_v1',

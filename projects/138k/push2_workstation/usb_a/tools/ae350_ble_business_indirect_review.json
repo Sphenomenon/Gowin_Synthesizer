@@ -12,18 +12,18 @@
     "firmware/ae350/ui_render.h": "72dcc31cf9457ad9d6a7e2f250e9715bf6b0168fdd7830d9f0b9547cbc38ae67",
     "firmware/ae350/audio_clock_service.h": "0ac43161ae18b7a375096f6e9d5adb5128c23afbbe90c95db5bfa66da9a8e551",
     "firmware/ae350/boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c",
-    "firmware/ae350/provenance.json": "2b437cdf6f80cdb013e9aa8fdb95dd20bd66db81b1fec279d3d64e4c7cbb2bfc",
-    "firmware/ae350/recording_service.c": "a384488eba527df8d8f5399aeda4bf73f3b9b7df07a76b1294909979367ad165",
-    "firmware/ae350/recording_service.h": "f6f083d77e38ea64f134388e7140a20e2471249fe8ac9081f43f6e02c28b038c",
+    "firmware/ae350/provenance.json": "3c828231327ff20d89597d9c1d320810403a15f57eb3788ec3c34e954e3c1458",
+    "firmware/ae350/recording_service.c": "f948f9aba50bb039ef36bc610f3694c375a31cc2501df28bbbed20466d860f26",
+    "firmware/ae350/recording_service.h": "7200bc80652be8f0f95a8c1ece393bcab060af2adf6c0bc37d20b2d7a1c9f194",
     "firmware/ae350/business_mailbox.c": "49f14da2b57d6c826502b9d01ba26c5ff7c5089d6a2f14f4022b685d32054945",
-    "firmware/ae350/ble_business_owner.c": "74ee788667ea24e2e9870c6f34be42cbe92404d0a72b7e0550fbd697cf0eff31",
+    "firmware/ae350/ble_business_owner.c": "a2403e8691d70b990ab2e5b97f045f2a7d3abc0d5bd8fc82108e365009a426a7",
     "firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
-    "firmware/ae350/ble_business_owner.h": "1e6895fed3685308a14ccd530e7cc74b7a21ee3fb19c187f478e55ed91dd6dbf",
+    "firmware/ae350/ble_business_owner.h": "c4c87ae7bb23f3d27871dfc5c00fd2e9141f94459135826259bb7ad7858d2f87",
     "firmware/ae350/start_ilm_dlm.inc": "e8f8f4b202cd2553d7a1a4e76a58895ea43508c061d7ae8d9e7b0ace2ccc3f73",
     "firmware/ae350/boot_ilm_dlm.ld": "214011f97811e6e359b068b3d5c758e2297bead1a6acdd31538c9d3f6caa58dc"
   },
-  "disassembly_sha256": "df4483d7801d58299e0eae5bd8394ea8e227bfba3db1ffe8c268b0c647c900e2",
-  "source_target_review": "Manual source review of every copied C/header: services_main reaches the firmware init/pump wrappers for one static firmware_owner. Its sole initializer calls a138_business_mmio_bus and a138_record_mmio_bus; those constructors bind business_mmio_read/write and record_mmio_read/write. a138_ble_business_init copies both buses once. No source reassigns either callback field after initialization, and the service-root closure has no other bus instance. Each site conservatively includes both read/write targets for its bus type. Interrupts remain disabled. All source inputs and the exact complete disassembly are hash-bound; -fno-jump-tables is an explicit business build option. This review does not authorize arbitrary external callers or future changed inputs. Final v8 source review: a torn STALE observation stays in OBSERVE under the existing1000ms bound; only a complete context session change ends the old publication observation. This adds no callback, bus assignment, or owner entry point. All source hashes and actual machine sites have been regenerated; the same four static MMIO adapters remain the complete target closure.",
+  "disassembly_sha256": "4b75454ea9517d560d1c0efef744d5d974965e5060bcffe77ae60318620d8f1c",
+  "source_target_review": "Manual source-target review for second-batch download owner. Unchanged service entry, wrappers, mailbox helpers and bus constructors retain the first-batch proof: services_main reaches one static firmware_owner, initialized only by a138_ble_business_firmware_init using a138_business_mmio_bus and a138_record_mmio_bus. Each constructor binds its own two static MMIO adapters, copied once by a138_ble_business_init; no reachable source reassigns those fields or supplies another bus. Changed owner C/header add one fixed transfer structure, bounded range/ACK/combined/replay/timeout policy and INSPECT. The added a138_record_data_request_facts reads only owner.data, checks the original complete mailbox key before dispatch, and cannot install callbacks. Existing submit stages one additional flags word; result reads add fixed CRC/admission facts. All bus-typed callers conservatively include both static read/write targets for their corresponding type. The only newly reachable indirect caller is a138_record_data_request_facts, explicitly assigned the same record_mmio_read/write closure. There is no PCM copying loop, heap, recursive callback, owner reentry or enabled interrupt. New read policy commits combined ACK only after an actual hardware read-admitted fact; CRC-valid facts bind pending blocks. Every selected C/header/linker/startup/provenance input, the complete actual RV32 disassembly, and every reachable 32-bit JALR site/target set are hash-bound. Unknown callers, changed inputs or missing machine sites still fail closed. This review is specific to these bytes and does not authorize future changes.",
   "sites": [
     {
       "caller": "a138_record_data_probe",
@@ -188,8 +188,80 @@
       ]
     },
     {
+      "caller": "a138_record_data_request_facts",
+      "address": "0xa0003e54",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_request_facts",
+      "address": "0xa0003e70",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_request_facts",
+      "address": "0xa0003e8c",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_request_facts",
+      "address": "0xa0003ea8",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_request_facts",
+      "address": "0xa0003ec4",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_request_facts",
+      "address": "0xa0003ee0",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_request_facts",
+      "address": "0xa0003efc",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_request_facts",
+      "address": "0xa0003f18",
+      "instruction": "000700e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
       "caller": "a138_record_data_submit",
-      "address": "0xa0003f0c",
+      "address": "0xa00040b8",
       "instruction": "000780e7",
       "targets": [
         "record_mmio_read",
@@ -198,7 +270,7 @@
     },
     {
       "caller": "a138_record_data_submit",
-      "address": "0xa0003f58",
+      "address": "0xa0004104",
       "instruction": "000780e7",
       "targets": [
         "record_mmio_read",
@@ -207,7 +279,7 @@
     },
     {
       "caller": "a138_record_data_submit",
-      "address": "0xa0003f78",
+      "address": "0xa0004124",
       "instruction": "000780e7",
       "targets": [
         "record_mmio_read",
@@ -216,7 +288,43 @@
     },
     {
       "caller": "a138_record_data_result_read",
-      "address": "0xa0004058",
+      "address": "0xa00041d8",
+      "instruction": "000780e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_result_read",
+      "address": "0xa0004200",
+      "instruction": "000780e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_result_read",
+      "address": "0xa000427c",
+      "instruction": "000780e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_result_read",
+      "address": "0xa0004294",
+      "instruction": "000780e7",
+      "targets": [
+        "record_mmio_read",
+        "record_mmio_write"
+      ]
+    },
+    {
+      "caller": "a138_record_data_result_read",
+      "address": "0xa00042c4",
       "instruction": "000700e7",
       "targets": [
         "record_mmio_read",
@@ -225,26 +333,8 @@
     },
     {
       "caller": "a138_record_data_result_read",
-      "address": "0xa0004090",
-      "instruction": "000700e7",
-      "targets": [
-        "record_mmio_read",
-        "record_mmio_write"
-      ]
-    },
-    {
-      "caller": "a138_record_data_result_read",
-      "address": "0xa000410c",
-      "instruction": "000680e7",
-      "targets": [
-        "record_mmio_read",
-        "record_mmio_write"
-      ]
-    },
-    {
-      "caller": "a138_record_data_result_read",
-      "address": "0xa0004158",
-      "instruction": "000700e7",
+      "address": "0xa000430c",
+      "instruction": "000780e7",
       "targets": [
         "record_mmio_read",
         "record_mmio_write"
@@ -252,7 +342,7 @@
     },
     {
       "caller": "read_key",
-      "address": "0xa0004270",
+      "address": "0xa00043e4",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -261,7 +351,7 @@
     },
     {
       "caller": "read_key",
-      "address": "0xa0004288",
+      "address": "0xa00043fc",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -270,7 +360,7 @@
     },
     {
       "caller": "read_key",
-      "address": "0xa00042bc",
+      "address": "0xa0004430",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -279,7 +369,7 @@
     },
     {
       "caller": "read_key",
-      "address": "0xa00042d4",
+      "address": "0xa0004448",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -288,7 +378,7 @@
     },
     {
       "caller": "read_key",
-      "address": "0xa00042ec",
+      "address": "0xa0004460",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -297,7 +387,7 @@
     },
     {
       "caller": "stage_key",
-      "address": "0xa0004374",
+      "address": "0xa00044e8",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -306,7 +396,7 @@
     },
     {
       "caller": "a138_business_probe",
-      "address": "0xa0004410",
+      "address": "0xa0004584",
       "instruction": "000700e7",
       "targets": [
         "business_mmio_read",
@@ -315,7 +405,7 @@
     },
     {
       "caller": "a138_business_probe",
-      "address": "0xa000442c",
+      "address": "0xa00045a0",
       "instruction": "000700e7",
       "targets": [
         "business_mmio_read",
@@ -324,7 +414,7 @@
     },
     {
       "caller": "a138_business_context",
-      "address": "0xa00044e4",
+      "address": "0xa0004658",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -333,7 +423,7 @@
     },
     {
       "caller": "a138_business_context",
-      "address": "0xa00044fc",
+      "address": "0xa0004670",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -342,7 +432,7 @@
     },
     {
       "caller": "a138_business_context",
-      "address": "0xa0004514",
+      "address": "0xa0004688",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -351,7 +441,7 @@
     },
     {
       "caller": "a138_business_context",
-      "address": "0xa000452c",
+      "address": "0xa00046a0",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -360,7 +450,7 @@
     },
     {
       "caller": "a138_business_context",
-      "address": "0xa0004544",
+      "address": "0xa00046b8",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -369,7 +459,7 @@
     },
     {
       "caller": "a138_business_context",
-      "address": "0xa000455c",
+      "address": "0xa00046d0",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -378,7 +468,7 @@
     },
     {
       "caller": "a138_business_context",
-      "address": "0xa0004574",
+      "address": "0xa00046e8",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -387,7 +477,7 @@
     },
     {
       "caller": "a138_business_context",
-      "address": "0xa000458c",
+      "address": "0xa0004700",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -396,7 +486,7 @@
     },
     {
       "caller": "a138_business_read_request",
-      "address": "0xa00046c0",
+      "address": "0xa0004834",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -405,7 +495,7 @@
     },
     {
       "caller": "a138_business_read_request",
-      "address": "0xa0004704",
+      "address": "0xa0004878",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -414,7 +504,7 @@
     },
     {
       "caller": "a138_business_read_request",
-      "address": "0xa000471c",
+      "address": "0xa0004890",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -423,7 +513,7 @@
     },
     {
       "caller": "a138_business_read_request",
-      "address": "0xa0004734",
+      "address": "0xa00048a8",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -432,7 +522,7 @@
     },
     {
       "caller": "a138_business_read_request",
-      "address": "0xa000474c",
+      "address": "0xa00048c0",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -441,7 +531,7 @@
     },
     {
       "caller": "a138_business_read_request",
-      "address": "0xa00047e4",
+      "address": "0xa0004958",
       "instruction": "000700e7",
       "targets": [
         "business_mmio_read",
@@ -450,7 +540,7 @@
     },
     {
       "caller": "a138_business_read_request",
-      "address": "0xa0004850",
+      "address": "0xa00049c4",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -459,7 +549,7 @@
     },
     {
       "caller": "a138_business_read_request",
-      "address": "0xa0004868",
+      "address": "0xa00049dc",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -468,7 +558,7 @@
     },
     {
       "caller": "a138_business_open",
-      "address": "0xa00049a0",
+      "address": "0xa0004b14",
       "instruction": "000700e7",
       "targets": [
         "business_mmio_read",
@@ -477,7 +567,7 @@
     },
     {
       "caller": "a138_business_claim",
-      "address": "0xa0004a48",
+      "address": "0xa0004bbc",
       "instruction": "000680e7",
       "targets": [
         "business_mmio_read",
@@ -486,7 +576,7 @@
     },
     {
       "caller": "a138_business_complete",
-      "address": "0xa0004cac",
+      "address": "0xa0004e20",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -495,7 +585,7 @@
     },
     {
       "caller": "a138_business_complete",
-      "address": "0xa0004ccc",
+      "address": "0xa0004e40",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -504,7 +594,7 @@
     },
     {
       "caller": "a138_business_complete",
-      "address": "0xa0004d34",
+      "address": "0xa0004ea8",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -513,7 +603,7 @@
     },
     {
       "caller": "a138_business_complete",
-      "address": "0xa0004d6c",
+      "address": "0xa0004ee0",
       "instruction": "000780e7",
       "targets": [
         "business_mmio_read",
@@ -522,7 +612,7 @@
     },
     {
       "caller": "a138_business_observe",
-      "address": "0xa0004e58",
+      "address": "0xa0004fcc",
       "instruction": "000680e7",
       "targets": [
         "business_mmio_read",
@@ -531,7 +621,7 @@
     },
     {
       "caller": "a138_business_observe",
-      "address": "0xa0004e88",
+      "address": "0xa0004ffc",
       "instruction": "000700e7",
       "targets": [
         "business_mmio_read",
@@ -540,7 +630,7 @@
     },
     {
       "caller": "a138_business_observe",
-      "address": "0xa0004ea4",
+      "address": "0xa0005018",
       "instruction": "000700e7",
       "targets": [
         "business_mmio_read",
@@ -549,7 +639,7 @@
     },
     {
       "caller": "a138_business_observe",
-      "address": "0xa0004edc",
+      "address": "0xa0005050",
       "instruction": "000680e7",
       "targets": [
         "business_mmio_read",
@@ -558,7 +648,7 @@
     },
     {
       "caller": "a138_business_observe",
-      "address": "0xa0004ef8",
+      "address": "0xa000506c",
       "instruction": "000680e7",
       "targets": [
         "business_mmio_read",
@@ -567,7 +657,7 @@
     },
     {
       "caller": "a138_business_observe",
-      "address": "0xa0004fd0",
+      "address": "0xa0005144",
       "instruction": "000680e7",
       "targets": [
         "business_mmio_read",
@@ -576,7 +666,7 @@
     },
     {
       "caller": "a138_business_observe",
-      "address": "0xa0004fec",
+      "address": "0xa0005160",
       "instruction": "000680e7",
       "targets": [
         "business_mmio_read",
@@ -585,7 +675,7 @@
     },
     {
       "caller": "a138_business_observe",
-      "address": "0xa000501c",
+      "address": "0xa0005190",
       "instruction": "000680e7",
       "targets": [
         "business_mmio_read",

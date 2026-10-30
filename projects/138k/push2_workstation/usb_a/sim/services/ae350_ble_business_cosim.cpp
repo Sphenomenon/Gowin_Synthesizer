@@ -20,22 +20,22 @@ struct Harness {
     struct Bus {Harness *h;uint32_t base;};
     Bus mb{this,0},data{this,0x100};
     uint32_t next_id=1;
-    bool service_enabled=true,lose_submit_ack=false,drop_submit=false,lose_complete_ack=false,drop_complete=false,drop_complete_tear=false,completion_dropped=false,inject_observe_tear=false,allow_fault=false,trace=true;
+    bool service_enabled=true,lose_submit_ack=false,drop_submit=false,lose_complete_ack=false,drop_complete=false,drop_complete_tear=false,completion_dropped=false,inject_observe_tear=false,disconnect_read_submit=false,allow_fault=false,trace=true;
     unsigned paused_pumps=0;
     unsigned checks=0;bool fragment_seen=false;
     Harness() {
-        dut.clk=0;dut.resetn=0;dut.owner_resetn=0;dut.enable=1;dut.pcm_run=1;dut.pstrb=15;
+        dut.clk=0;dut.resetn=0;dut.owner_resetn=0;dut.enable=1;dut.pcm_run=1;dut.pstrb=15;dut.test_att_limit=247;
         cycle(20);dut.resetn=1;dut.owner_resetn=1;cycle(40);
         a138_business_bus m{&mb,rd,wr};a138_record_bus d{&data,rd,wr};
         a138_ble_business_init(&owner,m,d);
     }
     void cycle(unsigned count=1) {
         for(unsigned k=0;k<count;k++)for(unsigned ns=0;ns<20;ns++) {
-            dut.clk=(ns>=10);context.timeInc(1);dut.eval();if(dut.fragment_done)fragment_seen=true;
+            dut.clk=(ns>=10);context.timeInc(1000);dut.eval();if(dut.fragment_done)fragment_seen=true;
         }
     }
     void check(bool value,const char *name) {
-        checks++;if(!value){std::fprintf(stderr,"FAIL %s time=%llu owner_fault=%u phase=%u state=%u frames=%u\n",name,(unsigned long long)context.time(),owner.fault,owner.phase,dut.record_state,dut.frames);std::fprintf(stderr,"facts flags=%x id=%u seq=%u accepted=%u applied=%u\n",owner.facts.state,owner.facts.object_id,owner.command_sequence,owner.facts.accepted_seq,owner.facts.applied_seq);std::exit(1);}
+        checks++;if(!value){std::fprintf(stderr,"FAIL %s time=%llu owner_fault=%u phase=%u state=%u frames=%u\n",name,(unsigned long long)context.time(),owner.fault,owner.phase,dut.record_state,dut.frames);std::fprintf(stderr,"engine phase=%u codec=%u fetch=%x\n",dut.engine_phase,dut.codec_phase,dut.fetch_debug);std::fprintf(stderr,"facts flags=%x id=%u seq=%u accepted=%u applied=%u\n",owner.facts.state,owner.facts.object_id,owner.command_sequence,owner.facts.accepted_seq,owner.facts.applied_seq);std::exit(1);}
     }
     bool access(uint32_t address,bool write,uint32_t &value) {
         dut.psel=1;dut.penable=0;dut.pwrite=write;dut.paddr=address;dut.pwdata=value;cycle();
@@ -55,6 +55,10 @@ struct Harness {
         if(b->base==0x100 && offset==8 && b->h->drop_submit){b->h->drop_submit=false;b->h->dut.test_time_bias+=1001;return 0;}
         if(b->base==0 && offset==A138_BM_COMMAND && value==A138_BM_COMPLETE && b->h->drop_complete){b->h->drop_complete=false;b->h->dut.test_time_bias+=1001;return 0;}
         if(b->base==0 && offset==A138_BM_COMMAND && value==A138_BM_COMPLETE && b->h->drop_complete_tear){b->h->drop_complete_tear=false;b->h->completion_dropped=true;return 0;}
+        if(b->base==0x100 && offset==8 && b->h->disconnect_read_submit) {
+            b->h->disconnect_read_submit=false;b->h->dut.enable=0;b->h->cycle(4);
+            bool ok=b->h->access(b->base+offset,true,value);b->h->completion_dropped=true;return ok;
+        }
         bool ok=b->h->access(b->base+offset,true,value);
         if(ok && b->base==0 && offset==A138_BM_COMMAND && value==A138_BM_COMPLETE && b->h->lose_complete_ack){b->h->lose_complete_ack=false;return 0;}
         if(!ok)std::fprintf(stderr,"write error %x value %x\n",b->base+offset,value);
@@ -66,7 +70,7 @@ struct Harness {
         if(service_enabled)a138_ble_business_pump(&owner);
 #endif
     }
-    void until(const std::function<bool()>& predicate,const char *name,unsigned limit=50000) {
+    void until(const std::function<bool()>& predicate,const char *name,unsigned limit=500000) {
         for(unsigned k=0;k<limit;k++) {
             if(predicate()){checks++;return;}
             cycle();if(k%64==0)pump();
@@ -74,7 +78,7 @@ struct Harness {
         }
         check(false,name);
     }
-    std::vector<uint8_t> command(uint8_t opcode,std::vector<uint8_t> payload={},uint32_t id=0,uint64_t nonce=UINT64_C(0x9abcdef012345678),bool corrupt=false) {
+    std::vector<uint8_t> command(uint8_t opcode,std::vector<uint8_t> payload={},uint32_t id=0,uint64_t nonce=UINT64_C(0x9abcdef012345678),bool corrupt=false,unsigned expected_fragment_error=0) {
         if(!id)id=next_id++;
         std::vector<uint8_t> request{opcode,0,uint8_t(payload.size()),0};put(request,id);
         put(request,uint32_t(nonce));put(request,uint32_t(nonce>>32));
@@ -89,6 +93,7 @@ struct Harness {
             dut.fragment_write=0;fragment_seen=false;dut.fragment_length=frag.size();dut.fragment_start=1;cycle();dut.fragment_start=0;
             until([&]{return fragment_seen || completion_dropped || (allow_fault && owner.fault);},"fragment/CPU completion");
             if(completion_dropped || (allow_fault && owner.fault))return {};
+            if(expected_fragment_error){check(dut.fragment_error==expected_fragment_error,"original parser retains bounded DATA backpressure");return {};}
             check(dut.fragment_error==0,"ATT fragment error zero");cycle(2);
         }
         if(corrupt){cycle(4000);check(!dut.response_valid,"CRC reject produces no reply");return {};}
@@ -123,7 +128,7 @@ struct Harness {
         check(crc(pcm)==object_crc,"CRC of actual DDR PCM");
         p=object();put(p,0);auto open=command(0x30,p);check(open[1]==0 && word(open,16)==1,"C transfer ID allocation");
         p.clear();put(p,1);put(p,0);p.push_back(64);p.push_back(0);p.push_back(0);p.push_back(0);
-        auto read=command(0x31,p);check(read[1]==0,"retained download policy read");
+        auto read=command(0x31,p);check(read[1]==0,"C validated download read");
         check(dut.transfer_valid && dut.transfer_length==112,"actual transfer block");
         std::vector<uint8_t> block;for(unsigned i=0;i<dut.transfer_length;i++){dut.transfer_addr=i;cycle(2);block.push_back(dut.transfer_data);}
         check(std::vector<uint8_t>(block.begin()+44,block.end()-4)==pcm,"DDR bytes delivered through real wire engine");
@@ -135,10 +140,10 @@ struct Harness {
         std::vector<uint8_t> replay_block;for(unsigned i=0;i<dut.transfer_length;i++){dut.transfer_addr=i;cycle(2);replay_block.push_back(dut.transfer_data);}
         check(replay_block==block,"READ replay exact PCM block");
 #ifndef GOLDEN
-        check(owner.command_sequence==4,"READ replay bypasses C primitive descriptor");
+        check(owner.command_sequence==4,"READ replay validated by C and rebuilds via fresh physical descriptor");
 #endif
         dut.transfer_consume=1;cycle();dut.transfer_consume=0;cycle(2);
-        p.clear();put(p,1);put(p,64);put(p,object_crc);auto ack=command(0x32,p);check(ack[1]==0,"retained ACK policy");
+        p.clear();put(p,1);put(p,64);put(p,object_crc);auto ack=command(0x32,p);check(ack[1]==0,"C ACK policy");
         p.clear();put(p,1);put(p,object_crc);auto close=command(0x33,p);check(close[1]==0,"C close command");
         const uint8_t modes[]={0x36,0x37,0x38,0x39,0x3b,0x3c,0x3d,0x40};
         uint32_t transfer=1;
@@ -160,9 +165,158 @@ struct Harness {
 #ifndef GOLDEN
         check(owner.object_counter==1 && owner.operation_counter==2 && owner.transfer_counter==9,"C sole identity counters");
 #endif
+        dut.pcm_run=1;p.clear();put(p,1);put(p,1);check(command(0x20,p)[1]==1,"new object after actual CLEAR");
+        until([&]{return dut.record_state==4;},"replacement actual object READY");
+#ifndef GOLDEN
+        uint32_t sequence_before_stale=owner.command_sequence;
+#endif
+        auto stale_replay=command(0x31,read_payload(1,0,64),word(read,4));check(stale_replay[1]==0x88,"cached READ cannot address a replacement object");
+#ifndef GOLDEN
+        check(owner.command_sequence==sequence_before_stale,"C rejects stale replay identity before any physical primitive");
+#endif
         std::printf("PASS real C/APB/parser/raw-DDR owner: %u checks; context bytes=%zu\n",checks,sizeof owner);
     }
+    std::vector<uint8_t> read_payload(uint32_t tid,uint32_t offset,unsigned length,uint32_t previous_crc=0,bool combined=false) {
+        std::vector<uint8_t> p;put(p,tid);put(p,offset);put(p,length);if(combined)put(p,previous_crc);return p;
+    }
+    std::vector<uint8_t> transfer_block(unsigned codec_max=0) {
+        check(dut.transfer_valid,"real physical DATA available");
+        std::vector<uint8_t> block;for(unsigned i=0;i<dut.transfer_length;i++){dut.transfer_addr=i;cycle(2);block.push_back(dut.transfer_data);}
+        check(block.size()>=48 && block[0]==0xd0,"DATA frame header");
+        std::vector<uint8_t> message(block.begin(),block.end()-4);check(crc(message)==word(block,block.size()-4),"DATA complete wire CRC");
+        check(block[38]<=codec_max && block[39]==0,"DATA codec allowed by exact READ opcode");
+        if(trace){std::printf("BLOCK ");for(auto b:block)std::printf("%02x",b);std::printf("\n");}
+        dut.transfer_consume=1;cycle();dut.transfer_consume=0;cycle(2);return block;
+    }
+    void run_download() {
+        std::vector<uint8_t> p;put(p,1);command(1,p);cycle(4096);
 #ifndef GOLDEN
+        for(int k=0;k<8;k++)pump();
+#endif
+        p.clear();put(p,1);put(p,1024);auto started=command(0x20,p);check(started[1]==1,"download fixture real object START");
+        until([&]{return dut.record_state==4;},"1024 actual frames and native drain",1500000);pump();
+        check(dut.frames==1024,"download object exact real capacity");
+        p.clear();put(p,0);auto info=command(0x22,p);uint32_t object_crc=word(info,48);
+        std::vector<uint8_t> pcm;for(unsigned k=0;k<1024;k++){pcm.push_back(0x11);pcm.push_back(0x11);pcm.push_back(0x22);pcm.push_back(0x22);}
+        check(crc(pcm)==object_crc,"download immutable PCM CRC");
+        p=object();put(p,0);auto opened=command(0x30,p);uint32_t tid=word(opened,16);check(opened[1]==0 && tid==1,"narrow OPEN starts C lease");
+        auto bad=command(0x31,read_payload(tid,0,260));check(bad[1]==0x89,"narrow mode limit enforced by C");
+        bad=command(0x31,read_payload(tid+1,0,64));check(bad[1]==0x8d,"READ transfer identity enforced");
+        bad=command(0x31,read_payload(tid,4,64));check(bad[1]==0x89,"READ uses confirmed offset");
+        p=read_payload(tid,0,64);p[10]=1;bad=command(0x31,p);check(bad[1]==0x81,"READ reserved bits rejected");
+        bad=command(0x3e,read_payload(tid,0,64));check(bad[1]==0x8d,"lossless READ requires promised OPEN");
+        auto first=command(0x31,read_payload(tid,0,256));auto first_block=transfer_block();uint32_t first_crc=word(first_block,40);
+        check(word(first_block,32)==0 && first_block.size()==304,"narrow maximum real block");
+        bad=command(0x31,read_payload(tid,0,64));check(bad[1]==0x82,"window one cannot skip pending ACK");
+        p.clear();put(p,tid);put(p,256);put(p,first_crc^1);bad=command(0x32,p);check(bad[1]==0x8d,"ACK wrong CRC does not advance");
+        p.clear();put(p,tid);put(p,252);put(p,first_crc);bad=command(0x32,p);check(bad[1]==0x8d,"ACK wrong next offset does not advance");
+        lose_complete_ack=true;p.clear();put(p,tid);put(p,256);put(p,first_crc);auto ack=command(0x32,p);check(ack[1]==0,"C ACK commits real physical block CRC");
+        auto duplicate=command(0x32,p);check(duplicate[1]==0,"fresh request duplicate ACK accepted idempotently");
+        p.clear();put(p,tid);put(p,object_crc);bad=command(0x33,p);check(bad[1]==0x8d,"CLOSE before complete object rejected");
+        auto read=command(0x31,read_payload(tid,256,64));
+        bad=command(0x35,read_payload(tid,320,64,0,true),0,UINT64_C(0x9abcdef012345678),false,0x11);check(bad.empty(),"parser DATA backpressure prevents unconsumed-frame overwrite before C");
+        auto block=transfer_block();uint32_t block_crc=word(block,40);
+        bad=command(0x35,read_payload(tid,320,64,block_crc^1,true));check(bad[1]==0x8d,"combined ACK CRC checked before either mutation");
+        bad=command(0x35,read_payload(tid,320,0,block_crc,true));check(bad[1]==0x89,"combined invalid next range cannot commit prior ACK");
+#ifndef GOLDEN
+        check(owner.transfer.offset==256 && owner.transfer.pending && owner.transfer.pending_offset==256,"failed combined request leaves C cursor and prior pending block intact");
+#endif
+        lose_submit_ack=true;lose_complete_ack=true;p=read_payload(tid,320,64,block_crc,true);auto combined=command(0x35,p);check(combined[1]==0,"combined ACK plus next READ accepted atomically");
+        auto combined_block=transfer_block();uint32_t combined_crc=word(combined_block,40);
+        auto replay=command(0x35,p,word(combined,4));check(replay==combined,"combined exact replay keeps cached response");
+        check(transfer_block()==combined_block,"combined replay rebuilds exact physical frame");
+        replay=command(0x31,read_payload(tid,0,256),word(first,4));check(replay==first,"older parser cache READ replay enters C with original object");
+        check(transfer_block()==first_block,"older READ rebuild byte identical");
+#ifndef GOLDEN
+        check(owner.transfer.offset==320 && owner.transfer.pending_offset==320 && owner.transfer.pending_length==64,"replayed reads cannot roll back confirmed or pending C cursor");
+#endif
+        p.clear();put(p,tid);put(p,384);put(p,combined_crc);check(command(0x32,p)[1]==0,"ACK after old replay still confirms newest pending block");
+        p.clear();put(p,tid);check(command(0x34,p)[1]==0,"CANCEL retires C policy lease");
+        p=object();put(p,384);opened=command(0x36,p);tid=word(opened,16);check(tid==2,"resume OPEN allocates new monotonic transfer ID");
+        check(command(0x31,read_payload(tid,384,460))[1]==0,"resume reads exact explicit confirmed offset");block=transfer_block();
+        check(word(block,32)==384 && block.size()==508,"wide maximum block at resume offset");
+        p.clear();put(p,tid);check(command(0x34,p)[1]==0,"resume CANCEL");
+        p=object();put(p,4096);opened=command(0x30,p);tid=word(opened,16);p.clear();put(p,tid);put(p,object_crc);check(command(0x33,p)[1]==0,"EOF resume permits verified CLOSE without data");
+        const uint8_t modes[]={0x37,0x38,0x39,0x3b,0x3c,0x3d,0x40};
+        for(uint8_t mode:modes) {
+            dut.test_att_limit=mode==0x3c ? 20:247;
+            p=object();put(p,0);opened=command(mode,p);tid=word(opened,16);check(opened[1]==0,"each download transport mode opens");
+            unsigned length=mode==0x3b ? 972:mode==0x3c ? 976:mode>=0x3d ? 4096:460;
+            unsigned limit=mode==0x3b ? 972:mode==0x3c ? 976:mode>=0x3d ? 8112:460;
+            check((word(opened,32)&65535u)==limit,"OPEN returns actual C-negotiated PCM limit");
+            if(mode==0x3c)check(command(0x31,read_payload(tid,0,980))[1]==0x89,"extended limit uses original negotiated ATT budget");
+            if(mode==0x3d)check(command(0x41,read_payload(tid,0,64))[1]==0x8d,"second-order requires explicit OPEN40");
+            uint8_t rop=mode==0x40 ? 0x41:mode==0x3d ? 0x3e:0x31;
+            p=read_payload(tid,0,length);read=command(rop,p);check(read[1]==0,"all mode READs complete real fetch and codec");
+            check(dut.transfer_compact && dut.transfer_bulk==(mode!=0x37) && dut.transfer_direct==(mode==0x39 || mode>=0x3b),"C borrowed descriptor drives actual transport flags");
+            block=transfer_block(mode==0x40?11:mode==0x3d?10:0);
+            check(word(block,16)==tid && word(block,32)==0 && (word(block,36)&65535u)==length,"DATA borrowed IDs and raw PCM length");
+            if(mode==0x40) {
+                p.clear();put(p,tid);check(command(0x34,p)[1]==0,"close second-order session for downgrade");
+                p=object();put(p,0);auto downgrade=command(0x36,p);uint32_t new_tid=word(downgrade,16);
+                check(command(0x41,read_payload(tid,0,length),word(read,4))[1]==0x8d,"cached second replay rejects downgraded active mode");
+                p.clear();put(p,new_tid);command(0x34,p);p=object();put(p,0);auto restore=command(0x40,p);new_tid=word(restore,16);
+                replay=command(0x41,read_payload(tid,0,length),word(read,4));check(replay==read,"explicit reopen40 restores cached second replay");
+                check(transfer_block(11)==block,"restored replay keeps original transfer identity and encoding");
+#ifndef GOLDEN
+                check(owner.transfer.id==new_tid && owner.transfer.offset==0 && !owner.transfer.pending,"replay of old transfer cannot create pending state in new C lease");
+#endif
+                tid=new_tid;
+                check(command(0x31,read_payload(tid,0,64))[1]==0,"RAW READ remains RAW within OPEN40");block=transfer_block();
+            }
+            p.clear();put(p,tid);check(command(0x34,p)[1]==0,"all mode CANCELs complete without physical-policy state");
+        }
+        for(uint8_t mode:{uint8_t(0x3d),uint8_t(0x40)}) {
+            p=object();put(p,0);opened=command(mode,p);tid=word(opened,16);
+            uint8_t r=mode==0x40?0x41:0x3e,c=mode==0x40?0x42:0x3f;
+            check(command(r,read_payload(tid,0,64))[1]==0,"lossless initial block for combined vector");block=transfer_block(mode==0x40?11:10);
+            check(command(c,read_payload(tid,64,64,word(block,40),true))[1]==0,"lossless combined ACK/read is C managed");block=transfer_block(mode==0x40?11:10);
+            p.clear();put(p,tid);command(0x34,p);
+        }
+        p=object();put(p,0);opened=command(0x30,p);tid=word(opened,16);
+        p=read_payload(tid,0,64);read=command(0x31,p);block=transfer_block();
+        service_enabled=false;dut.test_time_bias+=30001;cycle(64);service_enabled=true;pump();
+        std::vector<uint8_t> q;put(q,tid);put(q,64);put(q,word(block,40));check(command(0x32,q)[1]==0x8d,"slow CPU catches elapsed 30-second transfer expiry");
+        replay=command(0x31,p,word(read,4));check(replay==read,"raw cached READ replay after timeout remains protocol compatible");check(transfer_block()==block,"timeout replay rebuilds exact bytes without reopening");
+#ifndef GOLDEN
+        check(!owner.transfer.open && !owner.transfer.pending,"post-timeout replay cannot resurrect C transfer lease");
+#endif
+        dut.test_time_bias=0xfffff000u;cycle(4);p=object();put(p,0);opened=command(0x30,p);tid=word(opened,16);
+        dut.test_time_bias+=30001u;cycle(4);pump();q.clear();put(q,tid);check(command(0x34,q)[1]==0x8d,"transfer timeout subtraction works across uint32 time wrap");
+        p=object();put(p,0);opened=command(0x30,p);tid=word(opened,16);
+        dut.enable=0;cycle(30);dut.enable=1;cycle(30);
+        // Align the HELLO timestamp stimulus itself; firmware work may take
+        // different elapsed time. No response bytes are normalized/excluded.
+        uint32_t previous_ms=dut.elapsed_ms_o;
+        for(unsigned k=0;k<50001 && dut.elapsed_ms_o==previous_ms;k++)cycle();
+        check(dut.elapsed_ms_o!=previous_ms,"next real elapsed-ms boundary reached");
+        dut.test_time_bias+=65536u-dut.elapsed_ms_o;cycle(2);
+        next_id=1;p.clear();put(p,1);command(1,p);cycle(4096);
+#ifndef GOLDEN
+        for(int k=0;k<8;k++)pump();
+#endif
+        q.clear();put(q,tid);check(command(0x34,q)[1]==0x8d,"new protocol session retires prior C transfer lease");
+        p=object();put(p,384);opened=command(0x30,p);check(opened[1]==0 && word(opened,16)==tid+1,"reconnect resumes immutable object with next C transfer ID");
+        q.clear();put(q,word(opened,16));command(0x34,q);
+        std::printf("PASS real download policy and replay vectors: %u checks\n",checks);
+    }
+
+#ifndef GOLDEN
+    void run_read_disconnect() {
+        trace=false;std::vector<uint8_t> p;put(p,1);command(1,p);cycle(4096);for(int k=0;k<8;k++)pump();
+        p.clear();put(p,1);put(p,64);command(0x20,p);until([&]{return dut.record_state==4;},"disconnect fixture immutable object");
+        p=object();put(p,0);auto opened=command(0x30,p);uint32_t tid=word(opened,16);
+        command(0x31,read_payload(tid,0,64));auto block=transfer_block();
+        check(owner.transfer.offset==0 && owner.transfer.pending && owner.transfer.pending_length==64,"prior block is solely pending in C");
+        uint32_t seq=owner.command_sequence;
+        disconnect_read_submit=true;command(0x35,read_payload(tid,64,64,word(block,40),true));
+        for(int k=0;k<16;k++)pump();
+        check(!owner.fault && owner.phase==0,"disconnect before physical READ admission finishes finitely");
+        check(owner.command_sequence==seq+1 && owner.facts.applied_seq==seq+1,"disconnected primitive has one exact completion");
+        check(owner.transfer.offset==0 && owner.transfer.pending_offset==0 && owner.transfer.pending_length==64,"transport receipt without physical READ admission cannot commit combined ACK");
+        check(!dut.transfer_valid && dut.record_state==4 && dut.object_id==1,"disconnected READ cannot publish data or mutate object");
+        std::printf("PASS read primitive disconnect admission: %u checks\n",checks);
+    }
     void run_torn_completion() {
         trace=false;std::vector<uint8_t> p;put(p,1);command(1,p);cycle(4096);for(int k=0;k<8;k++)pump();
         drop_complete_tear=true;p.clear();put(p,1);put(p,0);command(0x20,p);
@@ -252,9 +406,9 @@ struct Harness {
     }
 #endif
 };
-int main(int argc,char **argv){Verilated::commandArgs(argc,argv);Harness h;h.run();
+int main(int argc,char **argv){Verilated::commandArgs(argc,argv);Harness h;h.run();Harness download;download.run_download();
 #ifndef GOLDEN
-Harness edges;edges.run_edges();Harness uncertain;uncertain.run_uncertain();Harness completion;completion.run_uncertain_completion();Harness torn;torn.run_torn_completion();Harness empty;empty.run_zero_frame();
+Harness cut;cut.run_read_disconnect();Harness edges;edges.run_edges();Harness uncertain;uncertain.run_uncertain();Harness completion;completion.run_uncertain_completion();Harness torn;torn.run_torn_completion();Harness empty;empty.run_zero_frame();
 for(unsigned phase=2;phase<=5;phase++){Harness crcphase;crcphase.run_crc_phase(phase);}
 #endif
 }

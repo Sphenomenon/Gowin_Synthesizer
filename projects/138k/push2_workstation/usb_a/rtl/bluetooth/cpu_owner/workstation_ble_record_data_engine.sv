@@ -1,5 +1,5 @@
 // 138K physical recording/data engine. IDs are supplied by the sole C owner.
-// Capture, CRC, seal/drain and the staged download ACK policy remain hardware.
+// Capture, CRC, seal/drain, fetch, codec and wire bytes only; C owns policy.
 module workstation_ble_record_data_engine #(
     parameter CLK_HZ=50000000,
     parameter AUDIO_FILE="audio/test_tone.mem",
@@ -16,19 +16,22 @@ module workstation_ble_record_data_engine #(
     input wire [63:0] boot_id,
     input wire [8:0] att_value_limit,
     input wire [31:0] elapsed_ms,
-    input wire command_start, command_replay,
+    input wire command_start,
+    input wire [4:0] command_flags_i,
     input wire [31:0] command_object_id_i,command_transfer_id_i,
     output wire idle_o,
     output wire [383:0] command_result_o,
-    output wire [31:0] object_crc_o,stop_reason_o,transfer_id_o,confirmed_offset_o,
+    output wire [31:0] object_crc_o,stop_reason_o,
+    output reg [31:0] command_time_ms_o,
+    output reg block_crc_valid_o,read_accepted_o,
+    output wire [31:0] block_crc_o,
     output reg [31:0] first_frame_ms_o,terminal_ms_o,
-    output wire transfer_open_o,block_pending_o,source_good_o,mutation_hold_o,
+    output wire source_good_o,mutation_hold_o,
     input wire [7:0] opcode,
     input wire [31:0] request_id,
     input wire [63:0] nonce,
     input wire [15:0] payload_length,
     input wire [127:0] payload,
-    input wire [31:0] replay_recording_id,
     output reg command_done,
     output reg [7:0] command_status,
     output reg [6:0] command_length,
@@ -104,23 +107,12 @@ module workstation_ble_record_data_engine #(
         recording_active && capture_state==0 && recording_id==seal_recording_id_o;
     wire seal_source_lost=seal_requires_source && (!enable || (EXTERNAL_PCM && (!source_ready_i || source_fault_i)));
     wire seal_current_error=seal_source_lost || recording_id!=seal_recording_id_o || record_state==5;
-    reg transfer_open, block_pending, last_ack_valid, transfer_wide,transfer_long,transfer_extended,transfer_lossless,transfer_second;
-    reg [15:0] extended_limit;
-    wire [15:0] fragment_pcm_limit=(({7'd0,att_value_limit}-16'd4)<<6)-16'd48;
-    wire [15:0] open_extended_limit=fragment_pcm_limit>8112 ? 16'd8112 : fragment_pcm_limit;
-    reg [31:0] transfer_id, confirmed_offset, transfer_time;
-    reg [31:0] pending_offset, pending_crc, last_ack_offset, last_ack_crc;
-    reg [12:0] pending_length;
     reg [31:0] data_request, data_transfer, data_recording, data_offset, data_crc;
     reg [63:0] data_nonce;
     reg [12:0] data_length, data_wire_length, index;
     reg data_lossless,data_second;
     reg [7:0] data_codec;
-    wire read_second=opcode==8'h41 || opcode==8'h42;
-    wire read_lossless=opcode==8'h3e || opcode==8'h3f || read_second;
-    wire read_combined=opcode==8'h35 || opcode==8'h3f || opcode==8'h42;
     reg [31:0] crc_work;
-    reg data_replay;
     wire [31:0] object_bytes=recorded_frames<<2;
     wire [31:0] read_offset=payload[63:32];
     wire [15:0] read_length=payload[79:64];
@@ -153,8 +145,7 @@ module workstation_ble_record_data_engine #(
     initial if(EXTERNAL_RAW_STORE && (!EXTERNAL_PCM || !EXTERNAL_SEAL_PROTOCOL || CAPACITY_FRAMES>16384 || RAW_DRAIN_TIMEOUT_CYCLES<64))
         $fatal(1,"raw DDR requires external PCM, bounded capacity and explicit drain timeout");
     assign object_crc_o=object_crc,stop_reason_o={16'd0,stop_reason};
-    assign transfer_id_o=transfer_id,confirmed_offset_o=confirmed_offset;
-    assign transfer_open_o=transfer_open,block_pending_o=block_pending;
+    assign block_crc_o=data_crc;
     assign source_good_o=source_ready_i && !source_fault_i;
     assign mutation_hold_o=external_mutation_hold;
     reg [31:0] rom_word;
@@ -323,19 +314,21 @@ module workstation_ble_record_data_engine #(
             record_state<=0; recording_id<=0; recorded_frames<=0;
             limit_frames<=0; object_crc<=0; recording_crc<=32'hffffffff;
             stop_reason<=0; sample_phase<=0; capture_state<=0; capture_word<=0; stop_pending<=0;
-            transfer_open<=0; block_pending<=0; last_ack_valid<=0; transfer_wide<=0;transfer_long<=0;transfer_extended<=0;transfer_lossless<=0;transfer_second<=0;extended_limit<=0;transfer_compact<=0;transfer_bulk<=0;transfer_direct<=0;
-            transfer_id<=0; confirmed_offset<=0; transfer_time<=0;
-            pending_offset<=0; pending_crc<=0; pending_length<=0; last_ack_offset<=0; last_ack_crc<=0;
+            transfer_compact<=0;transfer_bulk<=0;transfer_direct<=0;
+            command_time_ms_o<=0;block_crc_valid_o<=0;read_accepted_o<=0;
             transfer_valid<=0; transfer_length<=0; data_request<=0; data_transfer<=0;
             data_recording<=0; data_nonce<=0; data_offset<=0; data_length<=0;data_wire_length<=0;data_lossless<=0;data_second<=0;data_codec<=0;
-            data_crc<=0; crc_work<=0; index<=0; data_replay<=0;
+            data_crc<=0; crc_work<=0; index<=0;
         end else begin
             if(sample_tick) sample_phase<=sample_phase+32'd48000-CLK_HZ;
             else sample_phase<=sample_phase+32'd48000;
             if(transfer_consume) transfer_valid<=0;
-            if(!connected || !enable || (transfer_open && elapsed_ms-transfer_time>=30000)) begin
-                transfer_open<=0; block_pending<=0; last_ack_valid<=0;transfer_wide<=0;transfer_long<=0;transfer_extended<=0;transfer_lossless<=0;transfer_second<=0;extended_limit<=0;transfer_compact<=0;transfer_bulk<=0;transfer_direct<=0;
-                if(!connected || !enable) begin transfer_valid<=0; if(state!=C_IDLE && (!EXTERNAL_RAW_STORE || state!=C_RAW_CLEAR)) state<=C_IDLE; end
+            if(command_start)begin block_crc_valid_o<=0;read_accepted_o<=0;end
+            if(!connected || !enable) begin
+                transfer_valid<=0;
+                transfer_compact<=0;transfer_bulk<=0;transfer_direct<=0;
+                if(state!=C_IDLE && (!EXTERNAL_RAW_STORE || state!=C_RAW_CLEAR))reject(8'h83);
+                else if(command_start)reject(8'h83);
             end
             // Only this recorder advances the committed prefix and its CRC.
             // The command processor may inspect it; transfers require READY.
@@ -391,7 +384,8 @@ module workstation_ble_record_data_engine #(
             end
             if(connected && enable) case(state)
                 C_IDLE: if(connected && command_start) begin
-                    command_status<=0; result_payload<=0;
+                    command_status<=0; result_payload<=0;command_time_ms_o<=elapsed_ms;
+                    block_crc_valid_o<=0;
                     case(opcode)
 
                         8'h20: begin
@@ -429,7 +423,6 @@ module workstation_ble_record_data_engine #(
                             if(payload_length!=12) reject(8'h81);
                             else if(payload[63:0]!=boot_id || recording_id==0 || payload[95:64]!=recording_id) reject(8'h88);
                             else if(external_mutation_hold) reject(8'h82);
-                            else if(transfer_open) reject(8'h82);
                             else if(record_state!=4 && record_state!=5) reject(8'h83);
                             else begin
                                 if(EXTERNAL_RAW_STORE)begin
@@ -442,74 +435,22 @@ module workstation_ble_record_data_engine #(
                                 end
                             end
                         end
-                        8'h30,8'h36,8'h37,8'h38,8'h39,8'h3b,8'h3c,8'h3d,8'h40: begin
-                            if(payload_length!=16) reject(8'h81);
-                            else if(payload[63:0]!=boot_id || recording_id==0 || payload[95:64]!=recording_id) reject(8'h88);
-                            else if(record_state!=4 || !transfer_subscribed) reject(8'h83);
-                            else if(transfer_open || transfer_valid || command_transfer_id_i==0) reject(8'h82);
-                            else if(payload[97:96]!=0 || payload[127:96]>object_bytes) reject(8'h89);
+                        // Already validated by the sole C transfer owner. The
+                        // physical checks bound memory and borrowed identity.
+                        8'h31: begin
+                            if(payload_length!=12 || payload[95:80]!=0 || command_flags_i[4] && !command_flags_i[3])reject(8'h81);
+                            else if(record_state!=4 || recording_id==0 || command_object_id_i!=recording_id)reject(8'h88);
+                            else if(command_transfer_id_i==0 || payload[31:0]!=command_transfer_id_i)reject(8'h8d);
+                            else if(read_length==0 || read_length>8112 || read_length[1:0]!=0 || read_offset[1:0]!=0 ||
+                                    read_offset>=object_bytes || read_length>object_bytes-read_offset)reject(8'h89);
                             else begin
-                                transfer_id<=command_transfer_id_i;
-                                transfer_open<=1;transfer_wide<=opcode!=8'h30;transfer_compact<=opcode==8'h37 || opcode==8'h38 || opcode==8'h39 || (opcode==8'h3b || opcode==8'h3c || opcode==8'h3d || opcode==8'h40);transfer_bulk<=opcode==8'h38 || opcode==8'h39 || (opcode==8'h3b || opcode==8'h3c || opcode==8'h3d || opcode==8'h40);transfer_direct<=opcode==8'h39 || (opcode==8'h3b || opcode==8'h3c || opcode==8'h3d || opcode==8'h40);transfer_long<=opcode==8'h3b;transfer_extended<=opcode==8'h3c || opcode==8'h3d || opcode==8'h40;transfer_lossless<=opcode==8'h3d || opcode==8'h40;transfer_second<=opcode==8'h40;extended_limit<=open_extended_limit;confirmed_offset<=payload[127:96];transfer_time<=elapsed_ms;
-                                block_pending<=0;last_ack_valid<=0;
-                                if(opcode==8'h38 || opcode==8'h39 || (opcode==8'h3b || opcode==8'h3c || opcode==8'h3d || opcode==8'h40))result_payload<={192'd0,16'd0,7'd0,att_value_limit,8'd0,8'd1,((opcode==8'h3c || opcode==8'h3d || opcode==8'h40) ? open_extended_limit : opcode==8'h3b ? 16'd972 : 16'd460),payload[127:96],object_crc,object_bytes,command_transfer_id_i};
-                                else result_payload<={224'd0,8'd0,8'd1,(opcode!=8'h30 ? 16'd460 : 16'd256),payload[127:96],object_crc,object_bytes,command_transfer_id_i};
-                                success(opcode==8'h38 || opcode==8'h39 || (opcode==8'h3b || opcode==8'h3c || opcode==8'h3d || opcode==8'h40) ? 24 : 20);
+                                read_accepted_o<=1;
+                                data_request<=request_id;data_nonce<=nonce;data_transfer<=command_transfer_id_i;
+                                data_recording<=command_object_id_i;data_offset<=read_offset;data_length<=read_length;
+                                data_lossless<=command_flags_i[3];data_second<=command_flags_i[4];data_codec<=0;
+                                transfer_compact<=command_flags_i[0];transfer_bulk<=command_flags_i[1];transfer_direct<=command_flags_i[2];
+                                crc_work<=32'hffffffff;index<=0;state<=EXTERNAL_RAW_STORE ? C_RAW_FETCH_REQ:C_BLOCK_PREP;
                             end
-                        end
-                        8'h31,8'h35,8'h3e,8'h3f,8'h41,8'h42: begin
-                            // Optional ACK_READ(35): tid, next offset, next len,
-                            // reserved16, preceding block CRC32. All checks precede
-                            // both ACK commit and next-block allocation.
-                            if(payload_length!=(read_combined ? 16 : 12) || payload[95:80]!=0) reject(8'h81);
-                            else if(read_second && (!transfer_open || !transfer_second)) reject(8'h8d);
-                            else if(read_lossless && (!transfer_open || !transfer_lossless)) reject(8'h8d);
-                            else if(command_replay && read_length>(transfer_extended ? extended_limit : transfer_long ? 972 : 460)) reject(8'h8d);
-                            else if(EXTERNAL_RAW_STORE && command_replay &&
-                                    (record_state!=4 || replay_recording_id!=recording_id))reject(8'h88);
-                            else if(command_replay) begin
-                                data_request<=request_id;data_nonce<=nonce;data_transfer<=payload[31:0];
-                                data_recording<=replay_recording_id;data_offset<=read_offset;data_length<=read_length;data_lossless<=read_lossless;data_second<=read_second;data_codec<=0;
-                                crc_work<=32'hffffffff;index<=0;state<=EXTERNAL_RAW_STORE ? C_RAW_FETCH_REQ:C_BLOCK_PREP;data_replay<=1;
-                            end else if(!transfer_open || payload[31:0]!=transfer_id) reject(8'h8d);
-                            else if(transfer_valid || (!read_combined && block_pending)) reject(8'h82);
-                            else if(read_combined && (!block_pending ||
-                                    read_offset!=pending_offset+pending_length || payload[127:96]!=pending_crc)) reject(8'h8d);
-                            else if((!read_combined && read_offset!=confirmed_offset) || read_length==0 || read_length>(transfer_extended ? extended_limit : transfer_long ? 972 : (transfer_wide ? 460 : 256)) ||
-                                     read_offset[1:0]!=0 || read_length[1:0]!=0 ||
-                                     read_offset>=object_bytes || read_length>object_bytes-read_offset) reject(8'h89);
-                            else begin
-                                data_request<=request_id;data_nonce<=nonce;data_transfer<=transfer_id;
-                                data_recording<=recording_id;data_offset<=read_offset;data_length<=read_length;data_lossless<=read_lossless;data_second<=read_second;data_codec<=0;
-                                crc_work<=32'hffffffff;index<=0;state<=EXTERNAL_RAW_STORE ? C_RAW_FETCH_REQ:C_BLOCK_PREP;data_replay<=0;
-                                transfer_time<=elapsed_ms;
-                                if(read_combined) begin
-                                    confirmed_offset<=read_offset;block_pending<=0;
-                                    last_ack_valid<=1;last_ack_offset<=read_offset;last_ack_crc<=payload[127:96];
-                                end
-                            end
-                        end
-                        8'h32: begin
-                            if(payload_length!=12) reject(8'h81);
-                            else if(!transfer_open || payload[31:0]!=transfer_id) reject(8'h8d);
-                            else if(block_pending && payload[63:32]==pending_offset+pending_length && payload[95:64]==pending_crc) begin
-                                confirmed_offset<=payload[63:32];block_pending<=0;
-                                last_ack_valid<=1;last_ack_offset<=payload[63:32];last_ack_crc<=payload[95:64];
-                                transfer_time<=elapsed_ms;result_payload<={320'd0,payload[63:0]};success(8);
-                            end else if(last_ack_valid && payload[63:32]==last_ack_offset && payload[95:64]==last_ack_crc) begin
-                                transfer_time<=elapsed_ms;result_payload<={320'd0,payload[63:0]};success(8);
-                            end else reject(8'h8d);
-                        end
-                        8'h33: begin
-                            if(payload_length!=8) reject(8'h81);
-                            else if(!transfer_open || payload[31:0]!=transfer_id) reject(8'h8d);
-                            else if(block_pending || confirmed_offset!=object_bytes || payload[63:32]!=object_crc) reject(8'h8d);
-                            else begin transfer_open<=0;last_ack_valid<=0;result_payload<={352'd0,transfer_id};success(4);end
-                        end
-                        8'h34: begin
-                            if(payload_length!=4) reject(8'h81);
-                            else if(!transfer_open || payload[31:0]!=transfer_id) reject(8'h8d);
-                            else begin transfer_open<=0;block_pending<=0;last_ack_valid<=0;result_payload<={352'd0,transfer_id};success(4);end
                         end
                         default: reject(8'h80);
                     endcase
@@ -540,10 +481,7 @@ module workstation_ble_record_data_engine #(
                     if(index+1'b1==data_length) begin
                         data_crc<=~crc_byte(crc_work,frame_byte);index<=0;state<=data_lossless ? C_CODEC_START : C_DATA_PREP;
                         data_wire_length<=data_length;transfer_length<=data_length+48;crc_work<=32'hffffffff;
-                        if(!data_replay) begin
-                            pending_offset<=data_offset;pending_length<=data_length;
-                            pending_crc<=~crc_byte(crc_work,frame_byte);block_pending<=1;
-                        end
+                        block_crc_valid_o<=1;
                     end else begin index<=index+1'b1;state<=C_BLOCK_PREP;end
                 end
                 C_CODEC_START: state<=C_CODEC_WAIT;
@@ -568,8 +506,8 @@ module workstation_ble_record_data_engine #(
                 default: state<=C_IDLE;
             endcase
             else begin if(!EXTERNAL_RAW_STORE || state!=C_RAW_CLEAR)state<=C_IDLE;transfer_valid<=0;end
-            // Storage lifetime only; this same always block still owns all
-            // object IDs, task terminals, capture prefix and CRC.
+            // Physical storage lifetime and borrowed capture identity only.
+            // Operation tasks, transfer policy and IDs are owned by C.
             if(EXTERNAL_RAW_STORE)begin
                 if(raw_waiting)begin if(raw_wait<RAW_DRAIN_TIMEOUT_CYCLES)raw_wait<=raw_wait+1'b1;end
                 else raw_wait<=0;
@@ -591,7 +529,6 @@ module workstation_ble_record_data_engine #(
                     end else if(record_state!=0)begin record_state<=5;stop_reason<=!enable || !source_ready_i ? 6:3;end
                 end
                 if(!connected || !enable || transfer_consume || state==C_RAW_FETCH_REQ || state==C_RAW_CLEAR ||
-                   (state==C_IDLE && command_start && opcode==8'h34) ||
                    raw_fault_i || raw_fetch_fault_i)raw_cache_owned<=0;
                 if((raw_fault_i && record_state!=0) || (raw_capture_valid_o && !raw_capture_ready_i) ||
                    (raw_expired && raw_waiting) ||

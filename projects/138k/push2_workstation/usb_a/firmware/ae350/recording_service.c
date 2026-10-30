@@ -56,7 +56,7 @@ int a138_record_read_head(const a138_record_bus *b,a138_record_head *out) {
 int a138_record_data_probe(const a138_record_bus *b) {
     uint32_t id,caps;
     return valid(b) && b->read(b->context,0,&id) && b->read(b->context,4,&caps) &&
-        id==UINT32_C(0x52434402) && caps==UINT32_C(0x00301001);
+        id==UINT32_C(0x52434403) && caps==UINT32_C(0x00301002);
 }
 int a138_record_data_poll(const a138_record_bus *b,a138_record_data_facts *out) {
     a138_record_data_facts f={0};uint32_t again,generation;
@@ -67,8 +67,8 @@ int a138_record_data_poll(const a138_record_bus *b,a138_record_data_facts *out) 
        !b->read(b->context,A138_DATA_COMMITTED,&f.committed) ||
        !b->read(b->context,A138_DATA_CRC,&f.crc) ||
        !b->read(b->context,A138_DATA_REASON,&f.reason) ||
-       !b->read(b->context,A138_DATA_TRANSFER,&f.transfer_id) ||
-       !b->read(b->context,A138_DATA_OFFSET,&f.offset) ||
+       !b->read(b->context,A138_DATA_ATT_LIMIT,&f.att_limit) ||
+       !b->read(b->context,A138_DATA_COMMAND_MS,&f.command_ms) ||
        !b->read(b->context,A138_DATA_TIME,&f.time_ms) ||
        !b->read(b->context,A138_DATA_ACCEPTED,&f.accepted_seq) ||
        !b->read(b->context,A138_DATA_APPLIED,&f.applied_seq) ||
@@ -79,14 +79,27 @@ int a138_record_data_poll(const a138_record_bus *b,a138_record_data_facts *out) 
     if(again!=f.object_id || generation!=f.generation)return A138_DATA_NONE;
     *out=f;return A138_DATA_OK;
 }
+int a138_record_data_request_facts(const a138_record_bus *b,a138_record_request_facts *out) {
+    a138_record_request_facts f={0};uint32_t low,high,again;
+    if(!valid(b) || !out || !b->read(b->context,A138_DATA_KEY_TICKET,&f.ticket) ||
+       !b->read(b->context,A138_DATA_KEY_OWNER,&f.owner) ||
+       !b->read(b->context,A138_DATA_KEY_SESSION,&f.session) ||
+       !b->read(b->context,A138_DATA_KEY_BOOT_LOW,&low) ||
+       !b->read(b->context,A138_DATA_KEY_BOOT_HIGH,&high) ||
+       !b->read(b->context,A138_DATA_REPLAY_FLAGS,&f.flags) ||
+       !b->read(b->context,A138_DATA_REPLAY_OBJECT,&f.object_id) ||
+       !b->read(b->context,A138_DATA_KEY_TICKET,&again))return A138_DATA_IO;
+    if(again!=f.ticket)return A138_DATA_NONE;
+    f.boot_id=((uint64_t)high<<32)|low;*out=f;return A138_DATA_OK;
+}
 int a138_record_data_submit(const a138_record_bus *b,const a138_record_data_command *c) {
     if(!valid(b) || !c || !c->sequence || !c->request_id || !c->nonce ||
-       c->opcode>255 || c->length>16)return A138_DATA_IO;
+       c->opcode>255 || c->length>16 || c->flags>31)return A138_DATA_IO;
     const uint32_t offsets[9]={A138_DATA_STAGE_SEQ,A138_REC_STAGE_ID_LOW,A138_DATA_STAGE_TRANSFER,
-        A138_DATA_OPCODE,A138_DATA_LENGTH,A138_DATA_REQUEST,A138_DATA_NONCE_LOW,A138_DATA_NONCE_HIGH,0};
-    const uint32_t values[8]={c->sequence,c->object_id,c->transfer_id,c->opcode,c->length,
-        c->request_id,(uint32_t)c->nonce,(uint32_t)(c->nonce>>32)};
-    for(unsigned i=0;i<8;i++)if(!b->write(b->context,offsets[i],values[i]))return A138_DATA_IO;
+        A138_DATA_OPCODE,A138_DATA_LENGTH,A138_DATA_REQUEST,A138_DATA_NONCE_LOW,A138_DATA_NONCE_HIGH,A138_DATA_FLAGS};
+    const uint32_t values[9]={c->sequence,c->object_id,c->transfer_id,c->opcode,c->length,
+        c->request_id,(uint32_t)c->nonce,(uint32_t)(c->nonce>>32),c->flags};
+    for(unsigned i=0;i<9;i++)if(!b->write(b->context,offsets[i],values[i]))return A138_DATA_IO;
     for(unsigned i=0;i<4;i++) {
         uint32_t word=0;for(unsigned j=0;j<4;j++)word|=(uint32_t)c->payload[4*i+j]<<(8*j);
         if(!b->write(b->context,A138_DATA_PAYLOAD+4*i,word))return A138_DATA_IO;
@@ -98,8 +111,9 @@ int a138_record_data_result_read(const a138_record_bus *b,uint32_t seq,a138_reco
     if(!valid(b) || !seq || !out || !b->read(b->context,A138_DATA_APPLIED,&applied))return A138_DATA_IO;
     if(applied!=seq)return A138_DATA_NONE;
     if(!b->read(b->context,A138_DATA_RESULT_META,&meta))return A138_DATA_IO;
-    r.sequence=seq;r.status=meta&255u;r.length=(meta>>8)&127u;
-    if((meta>>15)!=0 || r.length>48)return A138_DATA_IO;
+    r.sequence=seq;r.status=meta&255u;r.length=(meta>>8)&127u;r.flags=(meta>>15)&3u;
+    if((meta>>17)!=0 || (r.flags==1u) || r.length>48 || !b->read(b->context,A138_DATA_RESULT_CRC,&r.crc) ||
+       !b->read(b->context,A138_DATA_RESULT_MS,&r.time_ms))return A138_DATA_IO;
     for(unsigned i=0;i<12;i++) {
         if(!b->read(b->context,A138_DATA_RESULT_PAYLOAD+4*i,&word))return A138_DATA_IO;
         for(unsigned j=0;j<4;j++)r.payload[4*i+j]=(uint8_t)(word>>(8*j));

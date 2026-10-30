@@ -21,12 +21,14 @@ def run(output):
     cfiles=[ROOT/'firmware/ae350'/name for name in ('business_mailbox.c','recording_service.c','ble_business_owner.c')]
     tracked=[*files,*cfiles,cpp,Path(__file__),*[ROOT/'firmware/ae350'/n for n in ('business_mailbox.h','recording_service.h','ble_business_owner.h','audio_services.h')],ROOT/'tools/workstation_resource_timing.py',ROOT/'tools/workstation_bluetooth_ddr.py']
     before={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in tracked}
-    objects=[];commands=[]
+    objects=[];commands=[];captured_stderr={}
     def execute(command,name,timeout=180):
         commands.append(command)
-        result=subprocess.run(command,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=timeout)
-        (output/(name+'.log')).write_text(result.stdout)
-        if result.returncode:raise RuntimeError(name+' failed: '+result.stdout[-8000:])
+        result=subprocess.run(command,text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=timeout)
+        captured_stderr[name]=result.stderr
+        combined=result.stdout+('\nSTDERR\n'+result.stderr if result.stderr else '')
+        (output/(name+'.log')).write_text(combined)
+        if result.returncode:raise RuntimeError(name+' failed: '+ '\n'.join(line for line in combined.splitlines() if line.startswith(('FAIL ','facts ','engine ')))+'; log='+str(output/(name+'.log')))
         return result.stdout
     include=ROOT/'firmware/ae350'
     for p in cfiles:
@@ -45,6 +47,15 @@ def run(output):
         'remove_uncertain_deadline':('o->fault=A138_OWNER_SUBMIT_UNOBSERVED;','o->fault=0;'),
         'remove_uncertain_completion_deadline':('o->fault=A138_OWNER_COMPLETE_UNOBSERVED;','o->fault=0;'),
         'retire_torn_observation':('/* STALE is an advisory torn snapshot, not proof this key was retired. */','else if(result==A138_BM_STALE)o->phase=IDLE;'),
+        'ignore_ack_crc':('crc==t->pending_crc','1'),
+        'ignore_combined_crc':('word(p+12)!=t->pending_crc','0'),
+        'commit_combined_before_range':('if((!combined && offset!=t->offset)','if(combined)t->offset=offset;\n            if((!combined && offset!=t->offset)'),
+        'ignore_confirmed_offset':('(!combined && offset!=t->offset)','0'),
+        'remove_transfer_timeout':('>=30000u','>=UINT32_MAX'),
+        'replay_mutates_cursor':('if(!o->active_replay && (r->flags&2u)) {','if(r->flags&2u) {'),
+        'skip_replay_object_identity':('state!=4 || o->request_facts.object_id!=o->facts.object_id','state!=4'),
+        'ignore_extended_limit':('return t->extended_limit;','return 8112;'),
+        'commit_unstarted_read':('if(!o->active_replay && (r->flags&2u)) {','if(!o->active_replay) {'),
     }
     mutation_results={};owner_source=cfiles[-1].read_text()
     link=next(line for line in (output/'compile.log').read_text().splitlines() if line.startswith('c++ ') and line.rstrip().endswith(' -o Vae350_ble_business_cosim'))
@@ -87,10 +98,17 @@ def run(output):
     golden=execute([str(output/'golden-obj/Vae350_ble_business_cosim')],'golden-run',60)
     wire=lambda text:[line for line in text.splitlines() if line.startswith(('WIRE ','BLOCK '))]
     comparison=wire(result)==wire(golden)
+    check_groups=[dict(name=m.group(1),checks=int(m.group(2))) for line in result.splitlines()
+        if (m:=re.fullmatch(r'PASS (.*): (\d+) checks(?:;.*)?',line))]
+    if len(check_groups)!=12:raise RuntimeError('behavioral check summary drift')
     after={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in tracked}
     evidence=dict(schema=1,passed=before==after and 'PASS real C/APB/parser/raw-DDR owner:' in result and comparison,
         input_sha256=before,inputs_unchanged=before==after,commands=commands,stdout=result,mutations=mutation_results,
-        golden_stdout=golden,golden_wire_equal=comparison,compared_messages=len(wire(result)),
+        golden_stdout=golden,stderr=captured_stderr,golden_wire_equal=comparison,compared_messages=len(wire(result)),
+        behavioral_checks=sum(group['checks'] for group in check_groups),check_groups=check_groups,
+        clock_fixture=dict(timeprecision_ps=1,cpp_step_ps=1000,control_period_ns=20,memory_period_ns=14,
+            historical_first_batch_control_period_ps=20,historical_first_batch_memory_period_ns=14,
+            reconnect_hello_input_elapsed_ms=65536,wire_bytes_normalized=False),
         golden_input_sha256={n:hashlib.sha256(data).hexdigest() for n,data in original_inputs.items()},
         synthesis=False,pnr=False,hardware_tested=False,profile_selected=False)
     (output/'verification.json').write_text(json.dumps(evidence,indent=2)+'\n')
