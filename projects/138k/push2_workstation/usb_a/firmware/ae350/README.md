@@ -31,7 +31,7 @@ probe 要求 ID `0x434c4b01`、ABI major 1、能力 bits0/1/2 和 media-policy b
 
 poll 对 command_id／result_id 作前后检查，读取 ACTUAL `+0x2c` 后才读取该次访问捕获的 snapshot_epoch `+0x30`。ID 变化或 I/O 错误不会发布混合 status。只有匹配的完成结果、idle phase、有效且不忙、无 fault 的实际 rate／epoch 才返回 APPLIED；结果成功但实际上下文已变返回 CONTEXT_LOST。status 带回 command_id／result_id，结果字段须结合返回状态和匹配 ID 使用。CPU observer reset 后必须丢弃 ticket；32-bit ID 重用和 wrap 不能充当持久 session fence。
 
-media-policy ABI 保留 `+0x60` bits0 hold／1 pending／2 completed／3 failed／4 enabled／5 backend_ready，`+0x64` timeout 和 `+0x68` failure reason。BUS14 表示 media backend 尚未准备好；RESULT8／9／10 分别为媒体失败、等待超时和停止后 gate 复查失败。failure reason 1..8 保留 TF 原因，9 为普通录音 seal 失败，10 为 BLE 正常 seal 失败；BLE 底层细节由其观察 owner 另行提供。C API 原样提供结果 detail／media flags／reason。backend_ready 用于 PL 防止旧 done 关联，不是 C 侧可以绕开的权限。
+media-policy ABI 保留 `+0x60` bits0 hold／1 pending／2 completed／3 failed／4 enabled／5 backend_ready，`+0x64` timeout 和 `+0x68` failure reason。BUS14 表示 media backend 尚未准备好；RESULT8／9／10 分别为媒体失败、等待超时和停止后 gate 复查失败。failure reason 1..8 保留 TF 原因，9 为普通录音 seal 失败，10 为 BLE 正常 seal 失败，11 为组合器观察 ready 后到实际请求间后端就绪丢失；BLE 底层细节由其观察 owner 另行提供。C API 原样提供结果 detail／media flags／reason。backend_ready 用于 PL 防止旧 done 关联，不是 C 侧可以绕开的权限。失败11也不允许自动重试。
 
 raw MMIO 适配器沿用 `audio_services.h` 的 uncached volatile 访问和前后 `fence iorw,iorw`。物理总线 fault 仍需要平台 trap handler；回调返回错误只能覆盖有错误通道且自身有超时的 checked transport，不能让普通 load/store 自动恢复 APB fault。
 

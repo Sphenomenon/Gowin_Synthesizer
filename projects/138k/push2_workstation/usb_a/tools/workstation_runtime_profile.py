@@ -18,6 +18,7 @@ SOURCES = (
     'rtl/workstation/workstation_runtime_controlled.sv',
     'rtl/services/workstation_audio_clock_service.sv',
     'rtl/services/workstation_controlled_services.sv',
+    'rtl/services/workstation_media_preparation.sv',
     'rtl/audio/workstation_audio_render_service.sv',
     'rtl/audio/workstation_rate_pitch_expression.sv',
     'rtl/audio/workstation_runtime_oscillator_engine.sv',
@@ -39,6 +40,8 @@ SOURCES = (
     'rtl/audio/workstation_observation_consumers.sv',
     'rtl/tf_audio/workstation_tf_frame_bridge.sv',
     'rtl/tf_audio/workstation_tf_runtime_service.sv',
+    'rtl/tf_audio/workstation_tf_runtime_byte_fifo.sv',
+    'rtl/tf_audio/workstation_tf_runtime_dma.sv',
     'rtl/tf_audio/storage/tf_audio_ddr_path.v',
     'rtl/display_data/display_data_analysis_source.sv',
     'rtl/display_data/workstation_display_runtime.sv',
@@ -57,6 +60,13 @@ DEPENDENCIES = (
     'rtl/display_data_layout_pkg.svh',
     'rtl/audio/runtime_spatial_room_preset.svh',
     'rtl/services/workstation_controlled_services.provenance.json',
+    'rtl/services/AUDIO_CLOCK_SERVICE_CONTRACT.md',
+    'rtl/services/MEDIA_STOP_POLICY.md',
+    'rtl/services/MEDIA_PREPARATION_CONTRACT.md',
+    'rtl/bluetooth/WORKSTATION_BLE_SEAL_CONTRACT.md',
+    'rtl/tf_audio/workstation_tf_runtime_storage.provenance.json',
+    'rtl/tf_audio/WORKSTATION_TF_RUNTIME_SERVICE_CONTRACT.md',
+    'rtl/tf_audio/WORKSTATION_TF_FRAME_BRIDGE_CONTRACT.md',
     'rtl/audio/workstation_runtime_oscillator_engine.provenance.json',
     'rtl/audio/workstation_runtime_scope_vec.provenance.json',
     'rtl/audio/workstation_runtime_chorus_effect.provenance.json',
@@ -91,6 +101,11 @@ UNCHANGED_PARENT_INPUTS = {
 
 REPLACED_CDC_PREFIXES = ('u_managed/', 'u_final_output_cdc/', 'u_ble_pcm_cdc/',
                          'u_tf_audio/', 'u_delay_ddr_dma/', 'u_video/u_renderer/')
+USB_WRITE_RELEASE_SETUP_SELECTOR = 'u_native_usb/input_owner/queue_write_release_0*/D'
+LEGACY_USB_FIRST_STAGE_SETUP = (
+    'set_false_path -to [get_pins {u_native_usb/input_owner/settled_sync_0*/D '
+    + USB_WRITE_RELEASE_SETUP_SELECTOR + ' u_native_usb/input_owner/panic_sync_0*/D '
+    'u_native_usb/input_owner/defaults_sync_0*/D}]')
 
 
 def shared_constraints(sdc):
@@ -104,6 +119,15 @@ def shared_constraints(sdc):
     retained, omitted, adapted = [], [], []
     query = re.compile(r'\[(get_regs|get_pins|get_ports|get_clocks) \{([^{}]+)\}\]')
     for line in sdc.splitlines():
+        if 'u_native_usb/input_owner/queue_write_release_0' in line:
+            if line != LEGACY_USB_FIRST_STAGE_SETUP:
+                raise ValueError('unsupported legacy USB write-release setup constraint: ' + line)
+            selected = line.replace(USB_WRITE_RELEASE_SETUP_SELECTOR + ' ', '', 1)
+            retained.append(selected)
+            adapted.append(dict(constraint=line, selected=selected,
+                removed_selectors=[USB_WRITE_RELEASE_SETUP_SELECTOR],
+                reason='native stopped-clock fence requires a bounded setup path to the USB write-release first stage; preserve the other legacy endpoints'))
+            continue
         if 'tf_run_meta' in line:
             if line != 'set_false_path -to [get_pins {tf_run_meta*/D}]':
                 raise ValueError('unsupported legacy TF run constraint: ' + line)

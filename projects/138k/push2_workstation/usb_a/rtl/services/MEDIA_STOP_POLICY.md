@@ -21,7 +21,7 @@
 |---|---|
 | 0x60 | bit0 hold、bit1 stop pending、bit2 combined completed、bit3 media failed、bit4 policy enabled、bit5 backend ready；其余为 0 |
 | 0x64 | `MEDIA_TIMEOUT_CYCLES`，默认 50,000,000 个常开 50 MHz 时钟（1 秒） |
-| 0x68 | 4-bit 最近媒体 failure code；TF 原因沿用 TF 1～8，9=活动受控录音封存失败；超时无后端原因时为 0 |
+| 0x68 | 4-bit 最近媒体 failure code；TF 原因沿用 TF 1～8，9=活动受控录音封存失败，10=BLE 封存失败，11=后端准入竞争失败；超时无后端原因时为 0 |
 
 RESULT_CODE 保留 0～7，追加 8=MEDIA_FAILED、9=MEDIA_TIMEOUT、10=MEDIA_GATE（实际收尾完成，但重新检查平台／时钟资格失败）。8～10 均未向核心发出该命令。媒体 completed／failed／reason 锁存到下一提交；核心事件 detail 的旧布局不挪用。BUS error 14=MEDIA_NOT_READY：需要收尾的命令在旧后端仍排空或 hold 未释放时拒绝，防止把上一事务迟到的完成归给新命令。旧 BUS 0～13 保留。
 
@@ -54,4 +54,6 @@ CPU-only reset 只重置命令 observer／IDs，不重置音频或存储。旧 t
 
 时钟服务的 `switch_permit_i` 是平台许可，不能预先用 TF busy 拒绝需要收尾的请求。受控 runtime 的实际 core permit 仍保留平台许可和 REC／score／TF 的物理 busy inhibit；`media_quiescent_i` 仍来自真实 TF 帧桥。
 
-独立 `workstation_bluetooth`／`ble_recording` 的 48 kHz 短录音不属于这套 APB 96-bit 后端，目前 source_ready 掉低会失败，尚无正常封存确认。完整新板政策使能前必须另接 BLE seal／互锁，不能简单掩码来源许可。此阶段不完成 R00／R01／R02 的长录音、双率 BLE 录音／下载、同候选全链路验收、综合、P&R、SRAM 或 Flash 部署。
+独立 `workstation_bluetooth`／`ble_recording` 的 48 kHz 短录音不属于这套 APB 96-bit 后端。显式 revision 5 profile 通过[媒体准备组合器](MEDIA_PREPARATION_CONTRACT.md)并行请求本 runtime 与[BLE 正常封存](../bluetooth/WORKSTATION_BLE_SEAL_CONTRACT.md)，等待双方真实终态后才回答时钟服务。BLE source_allowed 保留实际采样率／epoch／来源资格，不能用 media hold 掩码伪装来源可用；EMPTY／READY 对象可幂等 seal，活动对象完成已经接受的 stereo word／CRC 后封存。BLE 五层 seal 参数仍默认为关闭，只有 native profile 显式开启。后端 ready 观察与实际接收之间发生竞争时，返回失败 11，调用者重新读取状态，不自动重试。
+
+本契约不完成 R00／R01／R02 的长录音、双率 BLE 录音／下载、同候选全链路验收、综合、P&R、SRAM 或 Flash 部署。

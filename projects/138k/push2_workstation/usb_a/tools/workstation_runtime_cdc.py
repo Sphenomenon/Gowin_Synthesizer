@@ -1,7 +1,8 @@
 """Reviewed runtime CDC constraints and sealed source-netlist checks.
 
-First tranche: 21 Gray groups plus the shared BLE reset release aliases.
-This does not close the other records in the 150-record source inventory.
+Second tranche: 21 direct Gray groups, shared BLE reset release aliases,
+held media-stop request/result and native USB stopped-compute queue fencing.
+This does not close the historical 150-record or newer additive inventories.
 """
 
 from collections import defaultdict
@@ -26,7 +27,14 @@ from tools.workstation_runtime_clock_audit import (
 from tools.workstation_synthesis_netlist import SynthesisNetlist
 
 TOP = 'workstation_custom_138k_top'
-POLICY = 'native-runtime-cdc-gray-reset-v1'
+POLICY = 'native-runtime-cdc-gray-media-fence-v2'
+MEDIA = 'u_managed/media_stop'
+USB_INPUT = 'u_native_usb/input_owner'
+MEDIA_CONTROLS = (
+    ('media-stop-request', 'request_toggle', 'request_compute', 2, 'control', 'compute'),
+    ('media-stop-acknowledge', 'acknowledge_toggle', 'acknowledge_50', 3, 'compute', 'control'),
+    ('media-stop-held-failure', 'compute_failure', 'failed_50', 2, 'compute', 'control'),
+)
 DELAY = 'u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/'
 GRAY = (
     # id, scope, producer, first, second, width, source domain, destination domain
@@ -47,10 +55,10 @@ GRAY = (
     ('tf-frames-rptr', 'u_tf_audio/frames/frames_0', 'read_gray', 'read_gray_meta', 'read_gray_sync', 5, 'compute', 'control'),
     ('tf-generation', 'u_tf_audio/frames', 'source_generation_gray', 'generation_meta', 'generation_sync', 32, 'control', 'compute'),
     ('tf-generation-ack', 'u_tf_audio/frames', 'ack_gray', 'ack_meta', 'ack_sync', 32, 'compute', 'control'),
-    ('tf-byte-capture-wptr', 'u_tf_audio/path/u_capture_fifo', 'wr_gray', 'wr_gray_r1', 'wr_gray_r2', 13, 'control', 'memory'),
-    ('tf-byte-capture-rptr', 'u_tf_audio/path/u_capture_fifo', 'rd_gray', 'rd_gray_w1', 'rd_gray_w2', 13, 'memory', 'control'),
-    ('tf-byte-playback-wptr', 'u_tf_audio/path/u_playback_fifo', 'wr_gray', 'wr_gray_r1', 'wr_gray_r2', 13, 'memory', 'control'),
-    ('tf-byte-playback-rptr', 'u_tf_audio/path/u_playback_fifo', 'rd_gray', 'rd_gray_w1', 'rd_gray_w2', 13, 'control', 'memory'),
+    ('tf-byte-capture-wptr', 'u_tf_audio/path/g_runtime_capture.u_capture_fifo', 'wr_gray', 'wr_gray_r1', 'wr_gray_r2', 13, 'control', 'memory'),
+    ('tf-byte-capture-rptr', 'u_tf_audio/path/g_runtime_capture.u_capture_fifo', 'rd_gray', 'rd_gray_w1', 'rd_gray_w2', 13, 'memory', 'control'),
+    ('tf-byte-playback-wptr', 'u_tf_audio/path/g_runtime_playback.u_playback_fifo', 'wr_gray', 'wr_gray_r1', 'wr_gray_r2', 13, 'memory', 'control'),
+    ('tf-byte-playback-rptr', 'u_tf_audio/path/g_runtime_playback.u_playback_fifo', 'rd_gray', 'rd_gray_w1', 'rd_gray_w2', 13, 'control', 'memory'),
 )
 # Registered binary MSB equals registered Gray MSB; Gowin merged these exact
 # source bits. Do not accept arbitrary missing Gray bits or discover aliases
@@ -91,7 +99,7 @@ def runtime_cdc_bundle(root):
     clocks = clock_bundle(root)['plan']
     frequencies = {x['name']: x['frequency_hz'] for x in (*clocks['primary'], *clocks['generated'])}
     frequencies = dict(control=frequencies['clk_50m'], compute=frequencies['audio_76m8'],
-                       memory=frequencies['ddr_ui100'], reference48=frequencies['dac_ref12m288'],
+                       memory=frequencies['ddr_ui100'], usb=frequencies['usb_48m'], reference48=frequencies['dac_ref12m288'],
                        reference44=16934400, selected=max(frequencies['dac_ref12m288'], 16934400))
     lines, groups = [], []
     for identity, scope, source, first, second, width, origin, destination in GRAY:
@@ -113,29 +121,257 @@ def runtime_cdc_bundle(root):
     reset_selectors = [pattern(scope, stem, 'CLEAR', True)
                        for _, scope, stem, _, _ in BLE_RELEASE_ALIASES]
     lines.append('set_false_path -to ' + query(' '.join(reset_selectors)))
+    media_groups = []
+    for identity, source, receiver, stages, origin, destination in MEDIA_CONTROLS:
+        delay = math.floor(1e12 / frequencies[origin]) / 1000
+        selectors = dict(source=[pattern(MEDIA, source, 'Q')],
+                         first=[pattern(MEDIA, receiver + '_0', 'D')])
+        path = f"-from {query(' '.join(selectors['source']))} -to {query(' '.join(selectors['first']))}"
+        lines += [f'set_max_delay {delay:.3f} {path}', f'set_false_path -hold {path}']
+        media_groups.append(dict(id=identity, source=source, receiver=receiver, stages=stages,
+            source_domain=origin, destination_domain=destination, selectors=selectors,
+            max_delay_ns=delay, source_period_ns=1e9 / frequencies[origin], setup_false_path=False,
+            payload_contract='Held failure uses two stages; ACK uses three and changes on the same producer event.'))
+    hold_selectors = dict(source=[pattern(MEDIA, 'hold_50', 'Q')],
+                          assertion=[pattern(MEDIA, 'hold_compute', 'PRESET', True)])
+    lines.append('set_max_delay 20.000 -from ' + query(' '.join(hold_selectors['source'])) +
+                 ' -to ' + query(' '.join(hold_selectors['assertion'])))
+    return_selectors = dict(source=[pattern(USB_INPUT, 'stopped_clock_queue_fence.drain_release_5', 'Q'),
+                                   pattern(USB_INPUT, 'queue_release_5', 'Q')],
+                            first=[pattern(USB_INPUT, 'queue_write_release_0', 'D')])
+    path = f"-from {query(' '.join(return_selectors['source']))} -to {query(' '.join(return_selectors['first']))}"
+    lines += [f'set_max_delay 13.020 {path}', f'set_false_path -hold {path}']
+    assertion_selectors = dict(source=[pattern(USB_INPUT, 'queue_release_5', 'Q')],
+        assertion=[pattern(USB_INPUT, 'stopped_clock_queue_fence.drain_release', 'CLEAR', True)])
+    lines.append('set_max_delay 13.020 -from ' + query(' '.join(assertion_selectors['source'])) +
+                 ' -to ' + query(' '.join(assertion_selectors['assertion'])))
     return dict(policy=POLICY, source='tools/workstation_runtime_cdc.py',
         source_sha256=file_sha(Path(root) / 'tools/workstation_runtime_cdc.py'),
-        gray_groups=groups, ble_reset_alias_selectors=reset_selectors, sdc='\n'.join(lines) + '\n',
+        gray_groups=groups, ble_reset_alias_selectors=reset_selectors,
+        media_control_groups=media_groups,
+        media_hold_assertion=dict(selectors=hold_selectors, max_delay_ns=20.0, recovery_removal_cut=False),
+        usb_queue_fence=dict(return_selectors=return_selectors, assertion_selectors=assertion_selectors,
+            max_delay_ns=13.020, recovery_removal_cut=False), sdc='\n'.join(lines) + '\n',
         source_inventory_group_count=150, reviewed_gray_group_count=21, reviewed_gray_bits=400,
         reviewed_reset_alias_group='ble-physical-tuple-reset', remaining_inventory_complete=False,
         constraints_complete=False, physical_cdc_accepted=False, routed_propagation_verified=False,
         remaining=['Non-Gray held payload capture, identity comparison and enable endpoints',
                    'FIFO memory ownership/collision and restart clear/drain contracts',
-                   'Remaining level/pulse and local release groups, including new USB fence',
+                   'Other level/pulse and local release groups; USB input-reset source flight/pulse and full reset inventory',
                    'Tool-side selector resolution and routed max flight/skew/reset acceptance'])
 
 
 def _register_bits(n, scope, stem, width):
     require(scope in n.frames, 'Gray or reset scope missing: ' + scope)
     found = {}
+    prefix = scope + '/' + stem + '_'
+    matcher = re.compile(re.escape(scope + '/' + stem) + r'_(\d+)_s\d+')
     for path, c in n.cells.items():
-        m = re.fullmatch(re.escape(scope + '/' + stem) + r'_(\d+)_s\d+', path)
+        if not path.startswith(prefix):
+            continue
+        m = matcher.fullmatch(path)
         if m and c['kind'].startswith('DFF'):
             bit = int(m[1])
             require(bit not in found, 'duplicate register bit: ' + scope + '/' + stem)
             found[bit] = path
     require(set(found) == set(range(width)), 'exact register bit inventory: ' + scope + '/' + stem)
     return found
+
+
+def _register_scalar(n, scope, stem):
+    prefix = scope + '/' + stem + '_s'
+    matcher = re.compile(re.escape(scope + '/' + stem) + r'_s\d+')
+    paths = [p for p, c in n.cells.items() if p.startswith(prefix) and
+             c['kind'].startswith('DFF') and matcher.fullmatch(p)]
+    require(len(paths) == 1, 'exact scalar register inventory: ' + scope + '/' + stem)
+    return paths[0]
+
+
+def _audit_media_and_usb_fence(n, bundle, domains, regs, q_drivers, combinational,
+                             consumers, high, common_clear, resolved):
+    """Strict source topology for held stop result and stopped-compute fence.
+
+    Maximum flights are proposals. No async preset/clear hold/recovery/removal
+    path is cut here; full reset inventory and physical pulse/recovery proof
+    remain separate. Boolean equivalence is exhaustive over the small actual
+    LUT/INV cone, not a permissive source-net or primitive-name guess.
+    """
+    low = {"1'b0"} | {n.pin(p, 'G') for p, c in n.cells.items() if c['kind'] == 'GND'}
+
+    def pins(p):
+        return dict(cell=p, kind=n.cells[p]['kind'],
+                    pins={port: n.pin(p, port) for port in n.cells[p]['ports']})
+
+    def exact_selectors(selectors, expected, port):
+        union = set()
+        for selector in selectors:
+            actual = sorted(p + '/' + port for p, c in regs.items() if port in c['ports'] and
+                            fnmatch.fnmatchcase(p + '/' + port, selector))
+            wanted = sorted(p + '/' + port for p in expected if fnmatch.fnmatchcase(p + '/' + port, selector))
+            require(actual and actual == wanted, 'media/fence selector expansion differs: ' + selector)
+            resolved[selector] = actual
+            union.update(actual)
+        require(union == {p + '/' + port for p in expected}, 'media/fence selector misses endpoints')
+
+    def cone(net, active=()):
+        if net in high or net in low:
+            return set()
+        require(net not in active, 'media/fence combinational cycle: ' + net)
+        drivers = combinational[net]
+        if not drivers:
+            return {net}
+        require(len(drivers) == 1, 'media/fence ambiguous combinational driver: ' + net)
+        p = drivers[0]
+        c = n.cells[p]
+        if c['kind'] == 'INV':
+            return cone(n.pin(p, 'I'), (*active, net))
+        require(re.fullmatch(r'LUT[1-6]', c['kind']) is not None,
+                'media/fence unsupported Boolean cell: ' + p)
+        return set().union(*(cone(n.pin(p, 'I' + str(i)), (*active, net))
+                             for i in range(int(c['kind'][3:]))))
+
+    def value(net, assignment):
+        if net in high:
+            return 1
+        if net in low:
+            return 0
+        if net in assignment:
+            return assignment[net]
+        p = combinational[net][0]
+        c = n.cells[p]
+        if c['kind'] == 'INV':
+            return 1 - value(n.pin(p, 'I'), assignment)
+        count = int(c['kind'][3:])
+        init = re.fullmatch(r"(\d+)'h([0-9a-fA-F]+)", c['parameters'].get('INIT', ''))
+        require(init is not None and int(init[1]) == 1 << count,
+                'media/fence LUT truth table format: ' + p)
+        index = sum(value(n.pin(p, 'I' + str(i)), assignment) << i for i in range(count))
+        return (int(init[2], 16) >> index) & 1
+
+    def equivalent(label, outputs, predicate):
+        support = sorted(set().union(*(cone(net) for net in outputs)))
+        require(len(support) <= 12, 'media/fence Boolean cone exceeds reviewed bound: ' + label)
+        for pattern_bits in range(1 << len(support)):
+            assignment = {net: (pattern_bits >> bit) & 1 for bit, net in enumerate(support)}
+            require(predicate([value(net, assignment) for net in outputs]),
+                    'media/fence Boolean function changed: ' + label)
+        return dict(function=label, support=support, exhaustive_assignments=1 << len(support))
+
+    def shift(scope, stem, width, clock, kind, async_pin, assertion, initial):
+        chain = _register_bits(n, scope, stem, width)
+        for bit, p in chain.items():
+            require(n.cells[p]['kind'] == kind, 'media/fence release primitive kind: ' + p)
+            require(n.pin(p, 'CLK') == clock and n.pin(p, 'CE') in high,
+                    'media/fence release clock or conditional enable: ' + p)
+            require(n.pin(p, async_pin) == assertion,
+                    'media/fence release assertion differs: ' + p)
+            require(n.pin(p, 'D') == (n.pin(chain[bit - 1], 'Q') if bit else initial),
+                    'media/fence release shift: ' + p)
+            if bit < width - 1:
+                require(consumers[n.pin(p, 'Q')] == [(chain[bit + 1], 'D')],
+                        'media/fence release intermediate fanout: ' + p)
+        return chain
+
+    media, usb = 'u_managed/media_stop', 'u_native_usb/input_owner'
+    control_rows = []
+    for group in bundle['media_control_groups']:
+        source = _register_scalar(n, media, group['source'])
+        chain = _register_bits(n, media, group['receiver'], group['stages'])
+        require(n.pin(source, 'CLK') == domains[group['source_domain']],
+                'media source clock: ' + source)
+        for bit, p in chain.items():
+            require(n.cells[p]['kind'] == 'DFFCE' and n.pin(p, 'CLEAR') == common_clear,
+                    'media receiver reset or primitive kind: ' + p)
+            require(n.pin(p, 'CLK') == domains[group['destination_domain']],
+                    'media destination clock: ' + p)
+            require(n.pin(p, 'CE') in high, 'media receiver conditional enable: ' + p)
+            prior = source if bit == 0 else chain[bit - 1]
+            require(n.pin(p, 'D') == n.pin(prior, 'Q') and q_drivers[n.pin(p, 'D')] == [prior],
+                    'media receiver source identity or stage connection: ' + p)
+            if bit < group['stages'] - 1:
+                require(consumers[n.pin(p, 'Q')] == [(chain[bit + 1], 'D')],
+                        'media first/settle stage functional fanout: ' + p)
+        exact_selectors(group['selectors']['source'], [source], 'Q')
+        exact_selectors(group['selectors']['first'], [chain[0]], 'D')
+        control_rows.append(dict(**group, source_register=pins(source),
+                                 receiver_registers=[pins(chain[i]) for i in range(group['stages'])]))
+    failure = _register_scalar(n, media, 'compute_failure')
+    ack = _register_scalar(n, media, 'acknowledge_toggle')
+    require(n.cells[failure]['kind'] == n.cells[ack]['kind'] == 'DFFCE' and
+            n.pin(failure, 'CLEAR') == common_clear and n.pin(ack, 'CLEAR') == common_clear,
+            'media result producer reset or primitive changed')
+    # Gowin can encode the same toggle event in the D cone or in CE. Compare
+    # the actual enabled state transition, not one particular mapped shape.
+    result_correlation = equivalent('held failure changes exactly when ACK toggles',
+        [n.pin(ack, 'D'), n.pin(ack, 'Q'), n.pin(ack, 'CE'), n.pin(failure, 'CE')],
+        lambda values: ((values[0] ^ values[1]) & values[2]) == values[3])
+
+    hold_source = _register_scalar(n, media, 'hold_50')
+    require(n.pin(hold_source, 'CLK') == domains['control'] and
+            n.pin(hold_source, 'CLEAR') == common_clear, 'media hold source identity/reset/clock')
+    hold = _register_bits(n, media, 'hold_compute', 2)
+    require(all(n.cells[p]['kind'] == 'DFFPE' for p in hold.values()),
+            'media hold requires exactly two preset release flops')
+    assertion = n.pin(hold[0], 'PRESET')
+    hold_function = equivalent('common reset OR hold asserts preset',
+        [assertion, common_clear, n.pin(hold_source, 'Q')],
+        lambda values: values[0] == (values[1] | values[2]))
+    hold = shift(media, 'hold_compute', 2, domains['compute'], 'DFFPE', 'PRESET', assertion,
+                 n.pin(hold[0], 'D'))
+    require(n.pin(hold[0], 'D') in low, 'media hold release does not shift zero')
+    hold_selectors = bundle['media_hold_assertion']['selectors']
+    exact_selectors(hold_selectors['source'], [hold_source], 'Q')
+    exact_selectors(hold_selectors['assertion'], list(hold.values()), 'PRESET')
+
+    release = _register_bits(n, usb, 'queue_release', 6)
+    input_reset = n.pin(release[0], 'CLEAR')
+    release = shift(usb, 'queue_release', 6, domains['compute'], 'DFFCE', 'CLEAR', input_reset,
+                    n.pin(release[0], 'D'))
+    require(n.pin(release[0], 'D') in high, 'USB queue release does not shift one')
+    connected = _register_scalar(n, usb, 'connected')
+    panic = _register_scalar(n, usb, 'panic_flush')
+    events = _register_bits(n, usb, 'event_release', 3)
+    require(all(n.pin(p, 'CLK') == domains['usb'] for p in [connected, panic, *events.values()]),
+            'USB input-reset source clocks changed')
+    input_reset_function = equivalent('USB input reset event/connection/panic identity',
+        [input_reset, n.pin(events[2], 'Q'), n.pin(connected, 'Q'), n.pin(panic, 'Q')],
+        lambda values: values[0] == ((1 - values[1]) | (1 - values[2]) | values[3]))
+    drain = _register_bits(n, usb, 'stopped_clock_queue_fence.drain_release', 6)
+    fifo_reset = n.pin(drain[0], 'CLEAR')
+    fifo_reset_function = equivalent('USB FIFO reset held until six real compute edges',
+        [fifo_reset, input_reset, n.pin(release[5], 'Q')],
+        lambda values: values[0] == (values[1] | (1 - values[2])))
+    drain = shift(usb, 'stopped_clock_queue_fence.drain_release', 6, domains['compute'],
+                  'DFFCE', 'CLEAR', fifo_reset, n.pin(drain[0], 'D'))
+    require(n.pin(drain[0], 'D') in high, 'USB drain release does not shift one')
+    writer = _register_bits(n, usb, 'queue_write_release', 2)
+    for bit, p in writer.items():
+        require(n.cells[p]['kind'] == 'DFFCE' and n.pin(p, 'CLK') == domains['usb'] and
+                n.pin(p, 'CE') in high and n.pin(p, 'CLEAR') == input_reset,
+                'USB write-release clock/reset/enable: ' + p)
+    require(n.pin(writer[1], 'D') == n.pin(writer[0], 'Q') and
+            consumers[n.pin(writer[0], 'Q')] == [(writer[1], 'D')],
+            'USB write-release first stage or fanout')
+    ready_function = equivalent('USB queue ready requires actual drain and FIFO reset release',
+        [n.pin(writer[0], 'D'), n.pin(drain[5], 'Q'), fifo_reset],
+        lambda values: values[0] == (values[1] & (1 - values[2])))
+    return_selectors = bundle['usb_queue_fence']['return_selectors']
+    exact_selectors(return_selectors['source'], [drain[5], release[5]], 'Q')
+    exact_selectors(return_selectors['first'], [writer[0]], 'D')
+    assertion_selectors = bundle['usb_queue_fence']['assertion_selectors']
+    exact_selectors(assertion_selectors['source'], [release[5]], 'Q')
+    exact_selectors(assertion_selectors['assertion'], list(drain.values()), 'CLEAR')
+    return dict(media_control_groups=control_rows,
+        media_result_correlation=result_correlation,
+        media_hold=dict(source=pins(hold_source), release=[pins(hold[i]) for i in range(2)],
+                        assertion_function=hold_function, async_recovery_removal_verified=False),
+        usb_queue_fence=dict(queue_release=[pins(release[i]) for i in range(6)],
+            drain_release=[pins(drain[i]) for i in range(6)], write_release=[pins(writer[i]) for i in range(2)],
+            input_reset_function=input_reset_function, fifo_reset_function=fifo_reset_function,
+            queue_ready_function=ready_function, intermediate_first_stage_isolation_verified=True,
+            input_reset_all_source_flight_or_pulse_verified=False, recovery_removal_verified=False),
+        protected_async_pins=sorted([p + '/PRESET' for p in hold.values()] +
+                                    [p + '/CLEAR' for p in drain.values()]))
 
 
 def audit_runtime_cdc(root, netlist_text, clock_audit):
@@ -145,7 +381,8 @@ def audit_runtime_cdc(root, netlist_text, clock_audit):
     clocks = clock_audit['base_13_clock_audit']['clocks']
     domains = {k: clocks[v]['net'] for k, v in
                dict(control='clk_50m', compute='audio_76m8', memory='ddr_ui100', reference48='dac_ref12m288').items()}
-    domains.update(reference44='clk_16m9344', selected=clock_audit['dcs']['output_net'])
+    domains.update(reference44='clk_16m9344', selected=clock_audit['dcs']['output_net'],
+                   usb=clocks['usb_48m']['net'])
     regs = {p: c for p, c in n.cells.items() if c['kind'].startswith('DFF')}
     q_drivers, combinational, consumers = defaultdict(list), defaultdict(list), defaultdict(list)
     high = {"1'b1"}
@@ -163,22 +400,6 @@ def audit_runtime_cdc(root, netlist_text, clock_audit):
             if port not in ('Q', 'F', 'O', 'OF', 'SUM', 'COUT', 'CARRY', 'V', 'G'):
                 consumers[net].append((p, port))
 
-    def clear_gate(destination, clock):
-        drivers = combinational[n.pin(destination, 'D')]
-        require(len(drivers) == 1, 'Gray local-clear LUT driver: ' + destination)
-        lut = drivers[0]
-        require(n.cells[lut]['kind'] == 'LUT3' and n.cells[lut]['parameters'].get('INIT') == "8'h90",
-                'Gray local-clear LUT truth table: ' + destination)
-        local, nets = [], []
-        for port in ('I0', 'I1'):
-            net = n.pin(lut, port)
-            drivers = q_drivers[net]
-            require(len(drivers) == 1 and n.pin(drivers[0], 'CLK') == clock,
-                    'Gray clear input is not a local register: ' + destination)
-            local.append(dict(lut_pin=port, register=drivers[0], clock=clock))
-            nets.append(net)
-        return n.pin(lut, 'I2'), lut, local, nets
-
     rows, resolved = [], {}
     for group in bundle['gray_groups']:
         width, scope = group['width'], group['scope']
@@ -186,7 +407,8 @@ def audit_runtime_cdc(root, netlist_text, clock_audit):
         source = _register_bits(n, scope, group['source'], width - bool(alias))
         if alias:
             paths = [p for p, c in regs.items() if re.fullmatch(
-                re.escape(scope + '/' + alias + '_' + str(width - 1)) + r'_s\d+', p)]
+                re.escape(scope + '/' + alias + '_' + str(width - 1)) + r'_s\d+', p)
+                if p.startswith(scope + '/' + alias + '_')]
             require(len(paths) == 1, 'Gray registered MSB alias missing or ambiguous: ' + group['id'])
             source[width - 1] = paths[0]
         first, second = [_register_bits(n, scope, group[k], width) for k in ('first', 'second')]
@@ -201,13 +423,6 @@ def audit_runtime_cdc(root, netlist_text, clock_audit):
             data = n.pin(f, 'D')
             second_data, fanout = n.pin(t, 'D'), (t, 'D')
             through, second_through, local = [], [], []
-            if group['id'].startswith('tf-byte-'):
-                data, lut, local, clears = clear_gate(f, domains[group['destination_domain']])
-                second_data, second_lut, _, second_clears = clear_gate(t, domains[group['destination_domain']])
-                require(clears == second_clears, 'Gray clear conditions differ between stages: ' + f)
-                fanout = (second_lut, 'I2')
-                through = [dict(cell=lut, kind='LUT3', INIT="8'h90", gray_input='I2')]
-                second_through = [dict(cell=second_lut, kind='LUT3', INIT="8'h90", first_stage_input='I2')]
             require(n.pin(f, 'Q') == second_data, 'Gray second-stage connection: ' + f)
             require(consumers[n.pin(f, 'Q')] == [fanout], 'Gray first-stage fanout: ' + f)
             require(data == n.pin(s, 'Q') and q_drivers[data] == [s], 'Gray bit identity or unique producer: ' + f)
@@ -259,7 +474,10 @@ def audit_runtime_cdc(root, netlist_text, clock_audit):
             'BLE alias common runtime reset assertion changed')
     require(not any('tf_run_meta' in p or 'tf_run_audio' in p for p in regs),
             'legacy TF run synchronizer unexpectedly active in native runtime')
-    return dict(schema=1, policy=POLICY, scope='reviewed_21_gray_groups_and_ble_local_release_aliases',
+    media_fence = _audit_media_and_usb_fence(n, bundle, domains, regs, q_drivers,
+        combinational, consumers, high, common_clear, resolved)
+    return dict(schema=2, policy=POLICY, scope='reviewed_21_direct_gray_ble_release_media_stop_and_usb_queue_fence',
+        **media_fence,
         gray_groups=rows, gray_group_count=len(rows), gray_first_stage_bits=sum(len(x['paths']) for x in rows),
         ble_reset_aliases=aliases, resolved_pin_selectors=resolved,
         legacy_tf_run_pruned=True, reviewed_source_netlist_endpoints_verified=True,
@@ -277,7 +495,7 @@ def validate_installed_constraints(root, sdc, result):
     expected = runtime_cdc_bundle(root)['sdc'].splitlines()
     require(all(lines.count(line) == 1 for line in expected), 'reviewed runtime CDC constraints missing or duplicated')
     first_pins = {path for selector, paths in result['resolved_pin_selectors'].items()
-                  if selector.endswith('/D') for path in paths}
+                  if selector.endswith('/D') for path in paths} | set(result['protected_async_pins'])
     source_pins = {path for selector, paths in result['resolved_pin_selectors'].items()
                    if selector.endswith('/Q') for path in paths}
 
@@ -324,6 +542,12 @@ def validate_installed_constraints(root, sdc, result):
         if 'get_clocks' in line:
             require(line in MODE_EXCLUSIONS, 'whole-clock setup false path is forbidden')
             continue
+        # Recovery/removal endpoints have no false-path allowance. Every
+        # explicit delay to them must be a reviewed exact assertion bound;
+        # an arbitrary source filter cannot bypass this target protection.
+        if matches(line, 'to', set(result['protected_async_pins'])):
+            require(command == 'set_max_delay' and line in expected,
+                    'unreviewed timing exception targets protected asynchronous control: ' + line)
         if line.startswith('set_false_path'):
             require(not ('-hold' in line.split() and '-setup' in line.split()),
                     'combined hold/setup false path is forbidden: ' + line)
@@ -359,7 +583,7 @@ def run_audit(root, stage, evidence, *, endpoint_development=False):
             'synthesis or audit inputs drifted during audit')
     identity = digest(json.dumps(dict(synthesis=before, audit_sources=sources,
                                      endpoint_development=endpoint_development), sort_keys=True).encode())
-    result.update(identity='runtime-cdc-gray-reset-source-v1-' + identity[:16], source_set_sha256=identity,
+    result.update(identity='runtime-cdc-gray-media-fence-source-v2-' + identity[:16], source_set_sha256=identity,
                   synthesis=before, audit_source_sha256=sources, source_seal_before_and_after=True)
     return result
 

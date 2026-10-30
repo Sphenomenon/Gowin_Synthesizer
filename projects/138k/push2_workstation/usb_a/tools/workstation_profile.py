@@ -21,12 +21,13 @@ CONFIG = 'boards/custom_138k/workstation_profile_v1.json'
 ARTIFACT = 'workstation_profile.json'
 AE350_POLICY = 'maintained_ae350_v1'
 AE350_DIRECTORY = 'ae350_firmware'
-REVISION = 4
+REVISION = 5
 RUNTIME_CONFIGURATION = dict(hdmi_mode='1080p60', high_speed_allowed=True,
     tf_audio_kind='wav', implemented_sample_rates_hz=[48000, 44100],
     ae350_firmware_policy=AE350_POLICY, scan_window_policy='native_admission_v1',
     audio_policy='native_dual_rate_runtime_v1', reserve_zero_epoch=True,
-    display_metadata_minor=1)
+    display_metadata_minor=1,
+    media_preparation_policy='seal_record_stop_score_tf_ble_v1')
 
 
 def sha(path):

@@ -243,7 +243,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise ValueError('native-board excluded historical input changed: ' + relative)
     staged = {str(source.relative_to(stage)): sha(source) for source in stage.rglob('*')
               if source.is_file() and 'impl' not in source.relative_to(stage).parts}
-    metadata = dict(schema=1, identity=('custom138k-native-dual-rate-runtime-revision4' if runtime else
+    metadata = dict(schema=1, identity=('custom138k-native-dual-rate-runtime-revision5' if runtime else
                     PROFILES_720[hdmi_mode]['identity'] if hdmi_mode in PROFILES_720 else IDENTITY),
                     hdmi=video_mode,
                     native_timing_adaptations=native_timing,
@@ -297,6 +297,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             common_parameter_owner='u_managed/runtime/service/workstation/parameters',
             clock_service_address='0xf8030000', legacy_capture_rate_hz=48000,
             tf_policy='manual_matching_rate_no_resampling_no_automatic_clock_request',
+            media_preparation_policy='seal_record_stop_score_tf_ble_v1',
+            media_preparation_owner='u_media_preparation',
+            held_notes_policy='preserve; no implicit MIDI/PANIC',
+            media_failure_categories=dict(local_recording=9,ble_seal=10,backend_admission=11),
             display_metadata_minor=1)
         metadata['audio_pin_behavior']='ak4493s_i2s32_dual_rate_output_paced_final_pcm'
         metadata['audio_clock_policy']='qualified_12m288_or_16m9344_native_DCS'

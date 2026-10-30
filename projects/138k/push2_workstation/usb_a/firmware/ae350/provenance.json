@@ -66,7 +66,7 @@
     "audio_clock_service.h": {
       "kind": "maintained_first_party",
       "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_clock_service.h",
-      "sha256": "9d819c334b03c5af5f61f86402c70dd59b9c4902fe4b21e6df545bf73dca169a"
+      "sha256": "8c66aa038f9e141826d81670d3d2818178b2a021e9d0f22b55af03e551317937"
     }
   }
 }

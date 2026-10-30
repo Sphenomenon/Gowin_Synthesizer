@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "command": [
+    "python3",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_clocks.py",
+    "-v"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 54.59141191607341,
+  "finished_utc": "2026-10-30T05:31:48.106519+00:00",
+  "test_source_sha256": "1609d6dd4d8f3fa766da0229e3c829d16fbb5ce161bf41849382de16f3ccb66c",
+  "log_sha256": "72da7e1f283c9c92a7a369bdb160a4846545dd88078d581e45ff2977abb3584e",
+  "mutations_sha256": "198598250520aaf4cc3669a32d0f7f10334342e216050268d257aedbea943a13",
+  "eda_invoked": false,
+  "hardware_operated": false,
+  "sta_verified": false
+}

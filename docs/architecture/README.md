@@ -147,6 +147,8 @@ flowchart LR
 
 AE350 继续承载既有 UI／服务请求，VexRiscv 继续承载 USB Host；不在本轮把全部控制搬到某个 CPU。目标是让它们通过明确接口请求更新，不与音频 RTL 并行维护同一参数的权威副本。25K 保留本地移调等自身职责，Android 的作品库也不迁进 FPGA。
 
+显式双率原生 profile 的采样率命令先由[媒体准备组合器](../../projects/138k/push2_workstation/usb_a/rtl/services/MEDIA_PREPARATION_CONTRACT.md)等待受控 REC／score／TF 与 BLE 各 owner 的实际终态，再调用唯一采样率核心；持音和已提交参数保留。组合器只管理请求与保持，不接管录音对象、TF 清理或 BLE 协议。CPU observer reset 不撤销后台事务，超时／失败不得用迟到结果重启旧命令。首入口及兼容限制见[媒体切换契约](../../projects/138k/push2_workstation/usb_a/rtl/services/MEDIA_STOP_POLICY.md)；这些源码边界不提升硬件验收状态。
+
 ## 5. 需要冻结的接口契约
 
 以下“目标约束”是迁移要求；不得未经版本设计就直接改现有 USB／PL／BLE 报文。

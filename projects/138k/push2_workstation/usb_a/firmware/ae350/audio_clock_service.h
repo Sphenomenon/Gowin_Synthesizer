@@ -30,11 +30,13 @@ enum {
     A138_CLK_MEDIA_COMPLETED=1u<<2, A138_CLK_MEDIA_FAILED=1u<<3,
     A138_CLK_MEDIA_ENABLED=1u<<4, A138_CLK_MEDIA_BACKEND_READY=1u<<5
 };
-/* MEDIA_FAILURE keeps TF reasons 1..8; these additional categories identify
- * failed normal recording seals. Underlying BLE detail has a separate owner. */
+/* MEDIA_FAILURE keeps TF reasons 1..8; additional categories identify local
+ * or BLE seal failure and backend admission failure. BLE detail has its own
+ * owner. Admission failure requires a new caller decision, without retries. */
 enum {
     A138_CLK_MEDIA_REASON_RECORD_SEAL=9,
-    A138_CLK_MEDIA_REASON_BLE_SEAL=10
+    A138_CLK_MEDIA_REASON_BLE_SEAL=10,
+    A138_CLK_MEDIA_REASON_BACKEND_ADMISSION=11
 };
 typedef enum {
     A138_CLK_IO_ERROR=-5, A138_CLK_INVALID=-4, A138_CLK_UNSUPPORTED=-3,

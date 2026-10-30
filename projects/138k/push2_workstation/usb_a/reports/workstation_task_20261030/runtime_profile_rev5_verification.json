@@ -1,0 +1,217 @@
+{
+  "schema": 1,
+  "identity": "runtime-profile-rev5-offline-f1be50e853d3700a",
+  "candidate_identity": "custom138k-workstation-v1-f1be50e853d3700a",
+  "configuration_sha256": "ad36e3cec3f541ae15a66d7b4c179b633cd70dfa145267464a03ddf8c54f0eeb",
+  "verified_utc": "2026-10-30T05:39:56.191001+00:00",
+  "source_counts": {
+    "source_sha256": 313,
+    "source_snapshot_sha256": 734,
+    "staged_input_sha256": 570,
+    "enabled_inputs": 259
+  },
+  "parent_direct_test_runs": [
+    {
+      "command": "sim/test_workstation_profile.py",
+      "tests": 18,
+      "passed": true,
+      "skipped": 0,
+      "fixture": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-runtime-profile-rev5-v3",
+      "legacy_fixture": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-default-after-media-v1"
+    },
+    {
+      "command": "sim/test_workstation_runtime_sources.py",
+      "tests": 12,
+      "passed": true,
+      "skipped": 0,
+      "compilation_units": 256,
+      "modules": 288,
+      "packages": 2
+    },
+    {
+      "command": "sim/test_stage_ae350_firmware.py",
+      "tests": 9,
+      "passed": true,
+      "skipped": 0
+    },
+    {
+      "command": "sim/test_current_workstation_sources.py",
+      "tests": 10,
+      "passed": true,
+      "skipped": 0
+    }
+  ],
+  "parent_direct_run_evidence": "Commands and exit results were observed in the parent tool session; profile/source/firmware/current tests were not redirected to separate raw log files.",
+  "components": {
+    "joint_media": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/real-runtime-TF-BLE-media-parent-holdfix-v1/verification.json",
+      "sha256": "41fb8917f312366b2592f7c722eea2ff5f71be62f6029474ba1899b3ff2776c9",
+      "identity": "real-runtime-TF-BLE-media-offline-v1-8b930fa01216e91d",
+      "full_test_input_count": 136,
+      "inputs_independently_recomputed_now": true,
+      "metrics": {
+        "checks": 10,
+        "core_requests": 5,
+        "stop_requests": 8,
+        "tf_done": 6,
+        "tf_failed": 2,
+        "physical": 140,
+        "observed": 140,
+        "tf_packets": 48,
+        "tf_physical": 45,
+        "mailbox_wait": 12900,
+        "drain_wait": 30,
+        "tf_reads": 925,
+        "audio_reads": 5,
+        "writes": 1509,
+        "ble_captures": 35,
+        "ble_eligible": 35,
+        "ble_done": 7,
+        "ble_failed": 1,
+        "dual_wait": 1
+      }
+    },
+    "default_runtime": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-controlled-holdfix-parent-default-v1/verification.json",
+      "sha256": "b7170ffede09fe195311f17b0821deec5d41f7590223a4d0504626782252ef62",
+      "identity": "native-runtime-controlled-offline-v2-nonzero-64c63ae311fb249d",
+      "full_test_input_count": 83,
+      "inputs_independently_recomputed_now": true,
+      "metrics": {
+        "physical_frames": 1078,
+        "observed_frames": 1078,
+        "observed48": 361,
+        "observed44": 717,
+        "nonzero": 977,
+        "display_frames": 1077,
+        "fft_bins": 384,
+        "fft48": 128,
+        "fft44": 256,
+        "fft_nonzero": 382,
+        "apb": 1077,
+        "usb": 33,
+        "cpu": 28,
+        "policies": 3,
+        "writes": 267,
+        "reads": 4,
+        "fft_discards": 6,
+        "switches": 2,
+        "health_reset_checks": 1,
+        "display_observation_fault_checks": 1,
+        "display_effect_tuple_checks": 1077,
+        "display_effect_changes48": 4,
+        "display_effect_changes44": 3,
+        "source_50_checks": 1219374,
+        "source_compute_checks": 1851077,
+        "switch_source_changes": 5,
+        "reason_source_changes": 16,
+        "switch_launch_delay_checks": 2,
+        "pc_drop_carry_checks": 1,
+        "tf_reason_handoffs": 1,
+        "score_switch_rejects": 1,
+        "switch_async_assert_checks": 2,
+        "switch_release_checks": 1818138
+      }
+    },
+    "ae350_api": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-clock-reason11-v2/verification.json",
+      "sha256": "b27437e581c42ba0a41f8251c787c3ec8df44952dde6ac08ec64987bd4ecb761",
+      "identity": "ae350-clock-client-offline-v1-bbb8487553dacfae",
+      "full_test_input_count": 19,
+      "inputs_independently_recomputed_now": true,
+      "metrics": {
+        "compiler": "/usr/bin/cc",
+        "compiler_version": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "checks": 835,
+        "sanitizer": "address,undefined",
+        "maximum_submit_accesses": 9,
+        "maximum_poll_accesses": 11,
+        "no_retry_loops": true,
+        "checked_mmio_model": true,
+        "physical_mmio_used": false
+      }
+    }
+  },
+  "clock_tests": {
+    "schema": 1,
+    "command": [
+      "python3",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_clocks.py",
+      "-v"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 54.59141191607341,
+    "finished_utc": "2026-10-30T05:31:48.106519+00:00",
+    "test_source_sha256": "1609d6dd4d8f3fa766da0229e3c829d16fbb5ce161bf41849382de16f3ccb66c",
+    "log_sha256": "72da7e1f283c9c92a7a369bdb160a4846545dd88078d581e45ff2977abb3584e",
+    "mutations_sha256": "198598250520aaf4cc3669a32d0f7f10334342e216050268d257aedbea943a13",
+    "eda_invoked": false,
+    "hardware_operated": false,
+    "sta_verified": false
+  },
+  "clock_mutation_count": 23,
+  "cdc_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/media-cdc-inventory/rev5-f1be-final-actual/verification.json",
+    "sha256": "838008d12c7e17e8e4b76877bd46366b10f37d378c55e736d3894be15496ec09",
+    "identity": "runtime-cdc-gray-media-fence-source-v2-9346a1a2eb9ed506",
+    "test_count": 25,
+    "mutations": 77,
+    "passed": true
+  },
+  "lock_changes": [
+    {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/WORKSTATION_PROFILE.md",
+      "before": "67b32f2caa2f28b2577c241cfa23c22671c6d4f78fb1899a824f6e88ca6b9755",
+      "after": "99b6001eed2adee2fe7310747f73033e6ff2f411d93dbb02b994cc8792f2fe47"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_clock_service.h",
+      "before": "8fd98d740893454e214fbd2f62b338bd9ea2ce1a28c4c6640a8fa29699d86d88",
+      "after": "8c66aa038f9e141826d81670d3d2818178b2a021e9d0f22b55af03e551317937"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/firmware/ae350/provenance.json",
+      "before": "eb13cd46fc6737a287b3c71e8558945674f43679777b65dcb8833dabe973c316",
+      "after": "61117df2999fc1674d8e4d894944c5612899addb2c5a3b3094c039b9f10a04f9"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_cdc.py",
+      "before": "794014dd3a753ca4a373a60f2d8a16821089aa5926280da6a7460a63a4cafff9",
+      "after": "c117a35a2a130feda40589af2435bdf704f8c9a75057abcfb19b3e8895ea0fc8"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py",
+      "before": "b17e0339b80dbe7b8ea3a9f7bb428e6de2a3989ea85acf2579a42acb5016c675",
+      "after": "e4dd82b0920fec6bd0f32ff14faf93cf248e1a9d471da0d9f73619fbd0f8fbca"
+    }
+  ],
+  "staged_changes_from_9106": [
+    {
+      "path": "constraints/custom_138k.sdc",
+      "before": "2fb8d7934883e6681ef1b552402c31e154d7f1fe6a897a5de030bdd923db26a1",
+      "after": "8cc24c8963d1cf8c5887a19c53c8cbc423576d78b2cf94fe51a99802ca310a1d"
+    }
+  ],
+  "evidence_sha256": {
+    "runtime_rev5_clock_mutations.json": "198598250520aaf4cc3669a32d0f7f10334342e216050268d257aedbea943a13",
+    "runtime_profile_rev5_source_audit.json": "f0c674ed6789b7902b852d8796101b0acdd8df8eb171144c562ff3c75dcdef58",
+    "runtime_rev5_physical_f7_prepare.json": "76a857d22b313e69d52f3e510131ed3d7dc38c32ae3639b6341744a1183fd497",
+    "runtime_rev5_clock_tests.json": "73f327a30a26b16d841c3753b9bc354cf4d9384abfd97ba93b7db1092b49f515",
+    "runtime_rev5_static_inventory.json": "15148bc0e97f6cb1ced132a9dd252012a00e05600fa866876696c0039a1b0714",
+    "runtime_rev5_clock_audit.json": "bea2f88e4e7e488dd0a729882edc7b60df1eb0ffe7d356fef9c72e79484b9b01",
+    "runtime_profile_rev5.json": "9f453156f669ad5ffc6360a9f18dfda3857854c160ec0501f57d3e0e6655af4d",
+    "runtime_rev5_synthesis.json": "679fdf034e998fa0f69ef7f2806f44f36d8037f51dd5f0689485342d0e81bb66",
+    "runtime_profile_rev5_ae350_api.json": "b27437e581c42ba0a41f8251c787c3ec8df44952dde6ac08ec64987bd4ecb761"
+  },
+  "full_cdc_verified": false,
+  "whole_feature_preservation_verified": false,
+  "place_route_run": false,
+  "physical_resources_verified": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "bitstream_sha256": null
+}

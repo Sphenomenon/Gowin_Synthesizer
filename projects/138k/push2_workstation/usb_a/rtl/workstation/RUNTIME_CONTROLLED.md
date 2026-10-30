@@ -1,7 +1,7 @@
 # Native controlled runtime boundary
 
 `workstation_runtime_controlled.sv` is an explicit opt-in composition above
-`workstation_runtime_audio.sv`. The explicit custom-workstation revision-4
+`workstation_runtime_audio.sv`. The explicit custom-workstation revision-5
 composition selects it; accepted, pinned and unspecified-profile entries keep
 their own sources. Changed inputs require a new source lock and candidate, and
 source composition does not establish deployment acceptance.
@@ -61,7 +61,8 @@ cross it as a snapshot; it is not a monotonic common-reset Gray count.
 
 `request`, requested rate, caller permit, recover and media-quiescent inputs
 remain 50-MHz interfaces. The caller must pulse a request, observe acceptance
-and await `applied` or `failed`; no rate command is invented in CC/APB.
+and await `applied` or `failed`. The AE350 clock-service page owns the command
+entry; the existing 18-bit MIDI event layout and CC meanings are unchanged.
 
 The wrapper registers the compute-domain busy proof (`record_enable`, running
 score, TF active or TF busy). That proof asynchronously asserts a conservative
@@ -77,6 +78,18 @@ The runtime's `rejected/reject_code` describe clock-transaction rejections, whil
 `policy_rejected` describes this pre-transaction policy rejection. Failed REC
 with `record_enable=1` continues to inhibit switching until software disables
 it. TF busy includes file work even when no source sample is currently active.
+
+That core inhibit remains active with `ENABLE_MEDIA_POLICY=1`. The opt-in
+policy prepares an actual rate change before issuing the core request: the
+runtime bridge seals the controlled REC object, cancels score, requests TF
+stop and awaits its final drain/clear/control-ACK fence. Held/deferred notes,
+committed parameters and sealed objects survive this planned interruption.
+The native revision-5 top combines that result with the separate BLE seal
+owner through [media preparation](../services/MEDIA_PREPARATION_CONTRACT.md).
+CPU-only reset does not cancel the held backend transaction; a failed or timed
+out command cannot be restarted by late completion. Same-rate no-op commands
+retain strict readiness admission. Defaults keep the previous busy-reject
+policy; details and failure codes are in [MEDIA_STOP_POLICY.md](../services/MEDIA_STOP_POLICY.md).
 
 The reciprocal race is explicit: a clock transaction already in progress is
 synchronized into the media consumers. The public clock-owner `busy || quiesce`

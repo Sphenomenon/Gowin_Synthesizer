@@ -25,11 +25,16 @@ class ProfileSources(unittest.TestCase):
         selected = profile.load(ROOT, profile.NAME)
         features = {item['name']: item for item in selected['features']}
         self.assertEqual(selected['target_sample_rates_hz'], [48000, 44100])
-        self.assertEqual(selected['revision'], 4)
+        self.assertEqual(selected['revision'], 5)
         self.assertEqual(selected['configuration'], profile.RUNTIME_CONFIGURATION)
         self.assertEqual(features['audio_44k1_switch']['source_state'], 'native_runtime_source_integrated')
         self.assertTrue(selected['configuration']['reserve_zero_epoch'])
         self.assertEqual(selected['configuration']['display_metadata_minor'], 1)
+        self.assertEqual(selected['configuration']['media_preparation_policy'], 'seal_record_stop_score_tf_ble_v1')
+        for dependency in ('tools/workstation_runtime_cdc.py',
+                           'tools/workstation_runtime_clock_audit.py'):
+            self.assertIn('projects/138k/push2_workstation/usb_a/' + dependency,
+                          selected['source_sha256'])
         self.assertIn('native scan-window admission', features['hdmi_ddr']['selected_behavior'])
         self.assertEqual(selected['configuration']['scan_window_policy'], 'native_admission_v1')
         self.assertTrue(all(item['hardware_acceptance'] == 'unverified_for_this_profile'
@@ -71,10 +76,11 @@ class ProfileSources(unittest.TestCase):
     def test_runtime_configuration_and_revision_cannot_be_changed(self):
         original = Path.read_text
         base = json.loads((ROOT / profile.CONFIG).read_text())
-        mutations = [dict(revision=3), dict(revision=5)]
+        mutations = [dict(revision=4), dict(revision=6)]
         for key, value in (('tf_audio_kind', 'mp3'), ('implemented_sample_rates_hz', [48000]),
                            ('audio_policy', 'legacy'), ('reserve_zero_epoch', False),
-                           ('display_metadata_minor', 0), ('high_speed_allowed', False)):
+                           ('display_metadata_minor', 0), ('high_speed_allowed', False),
+                           ('media_preparation_policy', 'reject_busy')):
             changed = copy.deepcopy(base)
             changed['configuration'][key] = value
             mutations.append(changed)
@@ -120,7 +126,7 @@ class PreparedClosure(unittest.TestCase):
         firmware = a2['projects/138k/push2_workstation/usb_a/firmware.c']
         self.assertEqual(firmware['selection'], 'usb_firmware_build_input')
         self.assertTrue(firmware['same_bytes_as_reference'])
-        self.assertEqual(artifact['revision'], 4)
+        self.assertEqual(artifact['revision'], 5)
         self.assertTrue(artifact['scan_window']['enabled'])
         self.assertFalse(artifact['scan_window']['physical_deadlines_verified'])
         self.assertNotIn('src/video/hdmi_display.v', artifact['enabled_inputs'])
@@ -195,6 +201,24 @@ class PreparedClosure(unittest.TestCase):
         self.assertEqual(next(iter(artifact['enabled_inputs'])), 'src/memory/display_data_layout_pkg.sv')
         self.assertFalse(artifact['runtime_audio']['cdc_constraints_complete'])
         self.assertFalse(artifact['runtime_audio']['physical_gates_passed'])
+
+    def test_media_and_token_storage_owners_are_explicit_profile_inputs(self):
+        artifact = profile.verify(ROOT, self.output)
+        for source in ('rtl/services/workstation_media_preparation.sv',
+                       'rtl/tf_audio/workstation_tf_runtime_byte_fifo.sv',
+                       'rtl/tf_audio/workstation_tf_runtime_dma.sv'):
+            self.assertEqual(artifact['enabled_inputs'][source]['origin'], 'versioned_source')
+            self.assertEqual(artifact['enabled_inputs'][source]['sha256'], profile.sha(ROOT/source))
+        # The recorder is already included by legacy_audio.sv; preserve its
+        # maintained overlay owner instead of adding a duplicate compile unit.
+        capture = 'legacy/rtl/audio/audio_capture_fifo.sv'
+        owner = artifact['selected_source_owners'][capture]
+        self.assertTrue(owner['source'].endswith('/rtl/audio/audio_capture_fifo.sv'))
+        self.assertEqual(profile.sha(self.stage/capture), profile.sha(ROOT/'rtl/audio/audio_capture_fifo.sv'))
+        media = artifact['runtime_audio']
+        self.assertEqual(media['media_preparation_policy'], 'seal_record_stop_score_tf_ble_v1')
+        self.assertEqual(media['media_preparation_owner'], 'u_media_preparation')
+        self.assertEqual(media['media_failure_categories'], dict(local_recording=9,ble_seal=10,backend_admission=11))
 
     def test_scan_window_policy_cannot_be_silently_disabled(self):
         manifest = self.output / 'integration_inputs.json'

@@ -15,7 +15,8 @@ _Static_assert(A138_CLK_MEDIA_HOLD==1 && A138_CLK_MEDIA_PENDING==2 &&
                A138_CLK_MEDIA_ENABLED==16 && A138_CLK_MEDIA_BACKEND_READY==32,"media status ABI");
 _Static_assert(A138_CLK_BUS_MEDIA_NOT_READY==14 && A138_CLK_RESULT_MEDIA_FAILED==8 &&
                A138_CLK_RESULT_MEDIA_TIMEOUT==9 && A138_CLK_RESULT_MEDIA_GATE==10,"media result ABI");
-_Static_assert(A138_CLK_MEDIA_REASON_RECORD_SEAL==9 && A138_CLK_MEDIA_REASON_BLE_SEAL==10,"seal reason ABI");
+_Static_assert(A138_CLK_MEDIA_REASON_RECORD_SEAL==9 && A138_CLK_MEDIA_REASON_BLE_SEAL==10 &&
+    A138_CLK_MEDIA_REASON_BACKEND_ADMISSION==11,"seal reason ABI");
 
 enum { REGISTER_WORDS=0x6c/4, MAX_ACCESSES=32 };
 typedef struct {
@@ -203,7 +204,7 @@ static void test_result_and_actual_snapshot(void) {
         CHECK(poll(&m,&t,&s)==A138_CLK_FAILED);
         CHECK(s.result_code==code && s.detail==0x1234 && s.media_failure==9);
     }
-    for(uint32_t reason=0;reason<=10;++reason) {
+    for(uint32_t reason=0;reason<=11;++reason) {
         complete(&m,&t,reason ? A138_CLK_RESULT_MEDIA_FAILED:A138_CLK_RESULT_MEDIA_TIMEOUT);
         m.registers[A138_CLK_MEDIA_FAILURE/4]=reason;
         CHECK(poll(&m,&t,&s)==A138_CLK_FAILED && s.media_failure==reason);

@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "vg_sha256": "8fc53d099ebead55ca3926c8d4b2b45b3504fcb1ac1ed5dbcaa1b6e1a1834535",
+  "mutations": [
+    {
+      "case": "old_clock_period",
+      "rejected": true,
+      "error": "runtime clock audit: old 13-clock SDC prefix changed"
+    },
+    {
+      "case": "new_reference_period",
+      "rejected": true,
+      "error": "runtime clock audit: runtime clock declarations changed"
+    },
+    {
+      "case": "selected44_lost_add",
+      "rejected": true,
+      "error": "runtime clock audit: runtime clock declarations changed"
+    },
+    {
+      "case": "selected44_wrong_master",
+      "rejected": true,
+      "error": "runtime clock audit: runtime clock declarations changed"
+    },
+    {
+      "case": "unexpected_clock",
+      "rejected": true,
+      "error": "runtime clock audit: runtime clock declarations changed"
+    },
+    {
+      "case": "missing_mode_exclusion",
+      "rejected": true,
+      "error": "runtime clock audit: selected-mode exclusion declarations changed"
+    },
+    {
+      "case": "DCS_rising_mode",
+      "rejected": true,
+      "error": "runtime clock audit: DCS mode changed"
+    },
+    {
+      "case": "DCS_force",
+      "rejected": true,
+      "error": "runtime clock audit: DCS unused inputs or SELFORCE are not constant zero"
+    },
+    {
+      "case": "DCS_reference_swap",
+      "rejected": true,
+      "error": "runtime clock audit: DCS reference wiring changed"
+    },
+    {
+      "case": "DCS_unused_clock",
+      "rejected": true,
+      "error": "runtime clock audit: DCS unused inputs or SELFORCE are not constant zero"
+    },
+    {
+      "case": "DCS_select_tie",
+      "rejected": true,
+      "error": "runtime clock audit: DCS select bit is not a direct unique register Q"
+    },
+    {
+      "case": "DCS_select_upper_clock",
+      "rejected": true,
+      "error": "runtime clock audit: DCS select upper bits are not zero"
+    },
+    {
+      "case": "select_register_clock",
+      "rejected": true,
+      "error": "runtime clock audit: DCS select register owner or 50MHz clock changed"
+    },
+    {
+      "case": "serializer_clock",
+      "rejected": true,
+      "error": "runtime clock audit: serializer consumer clock differs from selected MCLK"
+    },
+    {
+      "case": "selected_monitor_clock",
+      "rejected": true,
+      "error": "runtime clock audit: monitor source/control clock changed: selected_monitor"
+    },
+    {
+      "case": "MCLK_bypass",
+      "rejected": true,
+      "error": "runtime clock audit: DAC MCLK is not directly driven by DCS output"
+    },
+    {
+      "case": "I2S_output_swap",
+      "rejected": true,
+      "error": "runtime clock audit: I2S output is not a direct selected-clock serializer register: hp_bck"
+    },
+    {
+      "case": "audio_PLL_ratio",
+      "rejected": true,
+      "error": "native PLL/divider frequency does not match SDC: audio_76m8"
+    },
+    {
+      "case": "audio_PLL_dynamic",
+      "rejected": true,
+      "error": "native unexpected dynamic PLL divider"
+    },
+    {
+      "case": "pixel_divider",
+      "rejected": true,
+      "error": "native pixel divider waveform changed"
+    },
+    {
+      "case": "extra_DCS",
+      "rejected": true,
+      "error": "runtime clock audit: single DCS inventory changed"
+    },
+    {
+      "case": "DDR_PLL_wrong_instance",
+      "rejected": true,
+      "error": "native clock target not resolved: u_memory/u_pll/u_pll_0/PLL_inst/CLKOUT2"
+    },
+    {
+      "case": "reference_lost_input",
+      "rejected": true,
+      "error": "runtime clock audit: primary clock top input inventory changed"
+    }
+  ],
+  "mutation_count": 23,
+  "hardware_operated": false,
+  "eda_invoked": false,
+  "sta_verified": false,
+  "dynamic_dcs_behavior_verified": false
+}

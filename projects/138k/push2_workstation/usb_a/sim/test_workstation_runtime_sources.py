@@ -89,6 +89,8 @@ def audit(output):
                               dependencies={path: dependency_owner(path) for path in includes})
     required = ('workstation_custom_138k_top', 'hdmi_display', 'workstation_runtime_controlled',
                 'workstation_runtime_audio', 'workstation_tf_runtime_service',
+                'workstation_tf_runtime_byte_fifo', 'workstation_tf_runtime_dma',
+                'workstation_media_preparation', 'workstation_runtime_media_stop_bridge',
                 'workstation_display_runtime', 'workstation_runtime_memory_guard',
                 'scope_tf_transport', 'gw138k_controlled_services',
                 'display_data_writer', 'display_data_reader', 'feedback_renderer')
@@ -134,6 +136,21 @@ class DeclarationParser(unittest.TestCase):
 
 
 class SharedConstraintSelection(unittest.TestCase):
+    def test_usb_write_release_keeps_bounded_setup_and_other_first_stages(self):
+        selected = runtime.shared_constraints(runtime.LEGACY_USB_FIRST_STAGE_SETUP + '\n')
+        self.assertEqual(selected['sdc'],
+            'set_false_path -to [get_pins {u_native_usb/input_owner/settled_sync_0*/D '
+            'u_native_usb/input_owner/panic_sync_0*/D u_native_usb/input_owner/defaults_sync_0*/D}]\n')
+        self.assertEqual(selected['omitted'], [])
+        self.assertEqual(selected['adapted'][0]['removed_selectors'],
+                         [runtime.USB_WRITE_RELEASE_SETUP_SELECTOR])
+        for line in (runtime.LEGACY_USB_FIRST_STAGE_SETUP.replace('-to', '-hold -to'),
+                     runtime.LEGACY_USB_FIRST_STAGE_SETUP.replace('get_pins', 'get_regs'),
+                     runtime.LEGACY_USB_FIRST_STAGE_SETUP.replace('settled_sync_0', 'unexpected_0'),
+                     'set_false_path -to [get_pins {' + runtime.USB_WRITE_RELEASE_SETUP_SELECTOR + '}]'):
+            with self.subTest(line=line), self.assertRaisesRegex(ValueError, 'unsupported legacy USB write-release'):
+                runtime.shared_constraints(line + '\n')
+
     def test_mixed_queries_preserve_surviving_endpoints_on_each_side(self):
         line = ('set_max_delay 10 -from [get_regs {u_managed/old* u_cpu/held*}] '
                 '-to [get_pins {u_tf_audio/old*/D u_runtime/u_cpu_cdc/req_meta*/D}]\n')
@@ -164,7 +181,7 @@ class SharedConstraintSelection(unittest.TestCase):
             with self.subTest(line=line), self.assertRaisesRegex(ValueError, 'unsupported runtime shared CDC'):
                 runtime.shared_constraints(line)
 
-    def test_locked_parent_recovers_three_mixed_commands(self):
+    def test_locked_parent_recovers_mixed_commands_and_rebounds_usb_setup(self):
         baseline = load_baseline(ROOT, 'resource_rework_route0')
         with tempfile.TemporaryDirectory(prefix='runtime-shared-sdc-') as directory:
             stage = Path(directory)
@@ -182,11 +199,12 @@ class SharedConstraintSelection(unittest.TestCase):
             'u_runtime/u_cpu_cdc/destination_release*/CLEAR}]',
             'set_false_path -to [get_pins {u_runtime/u_cpu_cdc/req_meta*/D '
             'u_runtime/u_cpu_cdc/ack_meta*/D}]',
+            runtime.LEGACY_USB_FIRST_STAGE_SETUP.replace(runtime.USB_WRITE_RELEASE_SETUP_SELECTOR + ' ', ''),
             'set_false_path -to [get_pins {u_native_usb/input_owner/analysis_done_meta*/D}]',
         ])
         untouched = [line for line in parent['sdc'].splitlines()
                      if not any(prefix in line for prefix in runtime.REPLACED_CDC_PREFIXES)
-                     and 'tf_run_meta' not in line]
+                     and 'tf_run_meta' not in line and line != runtime.LEGACY_USB_FIRST_STAGE_SETUP]
         self.assertEqual([line for line in selected['sdc'].splitlines()
                           if line not in {item['selected'] for item in selected['adapted']}], untouched)
 
