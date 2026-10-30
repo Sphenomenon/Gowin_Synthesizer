@@ -142,13 +142,37 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
     end
     reg response=0,read_pending=0;
     reg [255:0] response_data=0,pending_data;
+    reg stall_reads=0,hold_response=0;
     integer response_delay=0,extra_response_delay=0,memory_cycle=0,ddr_writes=0,ddr_reads=0,read_drain_wait_cycles=0;
     integer queued_accepts=0,downstream_stalls=0;
-    assign downstream_ready=memory_cycle%7!=0 && (!USE_COMMAND_BUFFER || memory_cycle%31<9);
+    integer upstream_reads=0,responses_consumed=0,path_restarts=0;
+    integer quiet_source_checks=0,quiet_source_changes=0,queued_drain_tests=0,adjacent_drain_tests=0,cancel_drain_tests=0;
+    reg expected_memory_quiet,previous_memory_quiet=0;
+    realtime last_memory_edge=0;
+    assign downstream_ready=! (stall_reads && !downstream_write) &&
+        memory_cycle%7!=0 && (!USE_COMMAND_BUFFER || memory_cycle%31<9);
     assign ddr_response=response;
     assign read_data=response_data;
+    // The CDC source must be a flop, including the memory edge on which the
+    // gate closes or the response clears pending. A combinational aggregate
+    // fails these pre-edge-to-post-edge checks even if all PCM still matches.
+    always @(posedge memory_clk)begin
+        last_memory_edge=$realtime;
+        expected_memory_quiet=dut.memory_gate && !dut.memory_read_pending;
+        #0.001;
+        if(rst_n)begin
+            if(dut.memory_quiet!==expected_memory_quiet)$fatal(1,"quiet aggregate was not registered in memory domain");
+            quiet_source_checks=quiet_source_checks+1;
+            if(dut.memory_quiet!=previous_memory_quiet)quiet_source_changes=quiet_source_changes+1;
+        end
+        previous_memory_quiet=dut.memory_quiet;
+    end
+    always @(dut.memory_quiet)if(rst_n && $realtime!=last_memory_edge)
+        $fatal(1,"quiet CDC source changed between memory edges");
     always @(posedge memory_clk)begin
         memory_cycle<=memory_cycle+1;response<=0;
+        if(rst_n && req && ddr_ready && !write_req)upstream_reads=upstream_reads+1;
+        if(rst_n && response)responses_consumed=responses_consumed+1;
         if(rst_n && dut.memory_gate && dut.memory_read_pending)read_drain_wait_cycles=read_drain_wait_cycles+1;
         if(rst_n && req && ddr_ready && !(downstream_req && downstream_ready))queued_accepts=queued_accepts+1;
         if(rst_n && downstream_req && !downstream_ready)downstream_stalls=downstream_stalls+1;
@@ -162,8 +186,8 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
             end
         end
         if(read_pending)begin
-            if(response_delay==0)begin response<=1;response_data<=pending_data;read_pending<=0;end
-            else response_delay<=response_delay-1;
+            if(response_delay==0 && !hold_response)begin response<=1;response_data<=pending_data;read_pending<=0;end
+            else if(response_delay!=0)response_delay<=response_delay-1;
         end
     end
     integer compute_cycle=0,delivered=0,pause_zeros=0,analysis_frames=0,session_index=0;
@@ -194,8 +218,11 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
             $fatal(1,"analysis ownership/payload mismatch %0d",analysis_frames);
         analysis_frames=analysis_frames+1;
     end
-    always @(posedge source_clk)if(rst_n && dut.path_restart &&
-        (dut.memory_read_pending || !dut.memory_gate))$fatal(1,"path restarted before held DDR read drain proof");
+    always @(posedge source_clk)if(rst_n && dut.path_restart)begin
+        path_restarts=path_restarts+1;
+        if(dut.memory_read_pending || !dut.memory_gate || !dut.memory_quiet || !dut.memory_quiet_50)
+            $fatal(1,"path restarted before registered held DDR read drain proof");
+    end
     task pulse_restart;
         begin @(negedge source_clk);restart=1;@(negedge source_clk);restart=0;end
     endtask
@@ -215,19 +242,23 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
             end
         end
     endtask
-    task begin_file(input [3:0] new_track);
+    task await_active(input [3:0] new_track,input [31:0] target_generation);
         integer count;
-        reg [31:0] target_generation;
         begin
-            checking=0;@(negedge source_clk);track=new_track;
-            expected_track=new_track;session_index=0;pulse_restart();
-            target_generation=source_generation;
             count=0;
             while(!tf_active || expected!=target_generation || dut.compute_control[35:4]!=target_generation)begin
                 @(negedge source_clk);count=count+1;
                 if(count>20000)$fatal(1,"start timeout track=%0d state=%0d failed=%b code=%0d format=%b path_rate=%0d pcm=%b path_restart=%b bytes=%0d reader=%b quiet=%b/%b dmaW=%0d dmaR=%0d capture=%b/%b eof=%b playback=%b bytecount=%0d fifo=%0d/%0d",new_track,dut.state,failed,failure,dut.format_ready_o,dut.file_sample_rate_o,dut.path_pcm_valid,dut.path_restart,dut.path.captured_bytes,dut.path.u_file_reader.active,dut.source_quiet,dut.memory_quiet_50,dut.path.u_dma.write_total_bytes,dut.path.u_dma.read_total_bytes,dut.path.capture_done_toggle,dut.path.u_dma.capture_seen,dut.path.u_dma.eof_finalized,dut.path.playback_active,dut.path.decoder_byte_count,dut.path.in_wr_count,dut.path.out_rd_count);
             end
             checking=1;
+        end
+    endtask
+    task begin_file(input [3:0] new_track);
+        reg [31:0] target_generation;
+        begin
+            checking=0;@(negedge source_clk);track=new_track;
+            expected_track=new_track;session_index=0;pulse_restart();
+            target_generation=source_generation;await_active(new_track,target_generation);
         end
     endtask
     task await_frames(input integer target);
@@ -247,6 +278,89 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
             while(!failed)begin @(negedge source_clk);count=count+1;if(count>20000)$fatal(1,"failure timeout expected %0d state=%0d fmt=%b rate=%0d bytes=%0d dmaW=%0d dmaR=%0d inwait=%b rdvalid=%b empty=%b hold=%b reader=%b track=%0d",code,dut.state,dut.format_ready_o,dut.file_sample_rate_o,dut.path.captured_bytes,dut.path.u_dma.write_total_bytes,dut.path.u_dma.read_total_bytes,dut.path.u_dma.in_read_wait,dut.path.in_rd_valid,dut.path.in_empty,dut.path.capture_switch_hold,dut.path.u_file_reader.active,track);end
             if(failure!==code)$fatal(1,"wrong failure expected=%0d got=%0d",code,failure);
             await_quiet();if(tf_active || busy50)$fatal(1,"failed file retained route");tests=tests+1;
+        end
+    endtask
+    // With the real one-entry buffer, the service has accepted the read while
+    // physical DDR has not. Both restart and cancel must wait through queue
+    // residency, physical acceptance and the last old-file response.
+    task queued_read_drain(input bit cancel_only);
+        integer upstream_before,physical_before,response_before,restarts_before;
+        begin
+            checking=0;@(negedge source_clk);cancel=1;@(negedge source_clk);cancel=0;await_quiet();
+            checking=0;hold_response=1;stall_reads=USE_COMMAND_BUFFER;
+            upstream_before=upstream_reads;physical_before=ddr_reads;response_before=responses_consumed;
+            @(negedge source_clk);runtime_rate=0;runtime_epoch=runtime_epoch+1;track=0;pulse_restart();
+            wait(upstream_reads>upstream_before);#1;
+            if(!dut.memory_read_pending)$fatal(1,"service did not retain accepted read");
+            if(USE_COMMAND_BUFFER && (ddr_reads!=physical_before || read_pending || !downstream_req || downstream_write))
+                $fatal(1,"directed read was not queued before physical DDR acceptance");
+            restarts_before=path_restarts;
+            fork
+                begin
+                    if(cancel_only)begin
+                        @(negedge source_clk);cancel=1;@(negedge source_clk);cancel=0;
+                    end else begin_file(1);
+                end
+                begin
+                    wait(dut.memory_gate);
+                    if(!cancel_only)begin runtime_rate=1;runtime_epoch=runtime_epoch+1;end
+                    repeat(12)begin
+                        @(negedge memory_clk);
+                        if(!dut.memory_read_pending || dut.memory_quiet || dut.memory_quiet_50 || path_restarts!=restarts_before)
+                            $fatal(1,"queued old read falsely acknowledged quiet");
+                        if(USE_COMMAND_BUFFER && (ddr_reads!=physical_before || read_pending))
+                            $fatal(1,"queued old read bypassed forced arbiter stall");
+                    end
+                    if(USE_COMMAND_BUFFER)queued_drain_tests=queued_drain_tests+1;
+                    stall_reads=0;wait(read_pending);wait(response_delay==0);
+                    repeat(6)begin
+                        @(negedge memory_clk);
+                        if(!dut.memory_read_pending || dut.memory_quiet || path_restarts!=restarts_before)
+                            $fatal(1,"old response hold falsely completed drain");
+                    end
+                    hold_response=0;wait(responses_consumed>response_before);
+                    wait(dut.memory_quiet);
+                    if(dut.memory_read_pending)$fatal(1,"quiet preceded old response consumption");
+                end
+            join
+            if(cancel_only)begin
+                await_quiet();
+                if(path_restarts!=restarts_before || !cancelled)$fatal(1,"cancel restarted old file");
+                cancel_drain_tests=cancel_drain_tests+1;
+                @(negedge source_clk);runtime_rate=1;runtime_epoch=runtime_epoch+1;begin_file(1);
+            end
+            await_frames(64);tests=tests+1;
+        end
+    endtask
+    // Emit the old response on the same memory edge that closes the gate.
+    // The service consumes it on the adjacent edge, then registers quiet on
+    // the following edge; a combinational or premature ACK fails explicitly.
+    task adjacent_response_restart;
+        integer response_before,restarts_before;
+        begin
+            checking=0;@(negedge source_clk);cancel=1;@(negedge source_clk);cancel=0;await_quiet();
+            checking=0;hold_response=1;stall_reads=0;response_before=responses_consumed;
+            @(negedge source_clk);runtime_rate=0;runtime_epoch=runtime_epoch+1;track=0;pulse_restart();
+            wait(read_pending);wait(response_delay==0);restarts_before=path_restarts;
+            fork
+                begin begin_file(1);end
+                begin
+                    wait(dut.memory_gate_sync[0] && !dut.memory_gate);
+                    @(negedge memory_clk);hold_response=0;
+                    @(posedge memory_clk);#0.001;
+                    if(!dut.memory_gate || !response || !dut.memory_read_pending || dut.memory_quiet)
+                        $fatal(1,"response/gate adjacent boundary was not exercised");
+                    runtime_rate=1;runtime_epoch=runtime_epoch+1;
+                    @(posedge memory_clk);#0.001;
+                    if(dut.memory_read_pending || dut.memory_quiet || responses_consumed!=response_before+1 || path_restarts!=restarts_before)
+                        $fatal(1,"response edge acknowledged quiet before registered aggregate");
+                    @(posedge memory_clk);#0.001;
+                    if(!dut.memory_quiet || path_restarts!=restarts_before)
+                        $fatal(1,"registered quiet did not follow drained response");
+                    adjacent_drain_tests=adjacent_drain_tests+1;
+                end
+            join
+            await_frames(64);tests=tests+1;
         end
     endtask
     integer accepted_before,frames_before;
@@ -287,6 +401,7 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
         extra_response_delay=80;checking=0;@(negedge source_clk);track=0;pulse_restart();wait(read_pending);
         runtime_rate=1;runtime_epoch=10;begin_file(1);extra_response_delay=0;
         await_frames(64);tests=tests+1;
+        queued_read_drain(0);queued_read_drain(1);adjacent_response_restart();
         // A stopped compute clock cannot ACK cancellation. Timeout reports a
         // terminal failure but retains busy until the real quiet proof returns.
         begin_file(1);await_frames(3);checking=0;compute_run=0;
@@ -330,8 +445,10 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
         if(scope_explicit_count!=3 || scope_file_cancel_count!=1)$fatal(1,"scope exit/rearm provenance mismatch");
         tests=tests+3;
         if(ddr_writes==0 || ddr_reads==0 || pause_zeros==0 || failures<7 || stop_checks!=2 || read_drain_wait_cycles==0)$fatal(1,"missing coverage");
-        if(USE_COMMAND_BUFFER && (queued_accepts==0 || downstream_stalls==0))$fatal(1,"buffer was not exercised");
-        $display("PASS tf_runtime_service: buffered=%0d cases=%0d delivered=%0d pause_zero_frames=%0d analysis_frames=%0d ddr_writes=%0d ddr_reads=%0d failures=%0d invalidates=%0d stopped_source=%0d stale=%0d discarded=%0d read_drain_wait_cycles=%0d queued_accepts=%0d downstream_stalls=%0d scope_compares=%0d scope_explicit=%0d scope_auto=%0d",USE_COMMAND_BUFFER,tests,delivered,pause_zeros,analysis_frames,ddr_writes,ddr_reads,failures,invalidates,stop_checks,stale,discarded,read_drain_wait_cycles,queued_accepts,downstream_stalls,scope_compares,scope_explicit_count,scope_auto_count);
+        if(USE_COMMAND_BUFFER && (queued_accepts==0 || downstream_stalls==0 || queued_drain_tests!=2))$fatal(1,"buffer was not exercised");
+        if(quiet_source_checks==0 || quiet_source_changes==0 || adjacent_drain_tests!=1 || cancel_drain_tests!=1)
+            $fatal(1,"missing registered quiet/drain boundary coverage");
+        $display("PASS tf_runtime_service: buffered=%0d cases=%0d delivered=%0d pause_zero_frames=%0d analysis_frames=%0d ddr_writes=%0d ddr_reads=%0d failures=%0d invalidates=%0d stopped_source=%0d stale=%0d discarded=%0d read_drain_wait_cycles=%0d queued_accepts=%0d downstream_stalls=%0d scope_compares=%0d scope_explicit=%0d scope_auto=%0d quiet_source_checks=%0d quiet_source_changes=%0d queued_drain_tests=%0d adjacent_drain_tests=%0d cancel_drain_tests=%0d",USE_COMMAND_BUFFER,tests,delivered,pause_zeros,analysis_frames,ddr_writes,ddr_reads,failures,invalidates,stop_checks,stale,discarded,read_drain_wait_cycles,queued_accepts,downstream_stalls,scope_compares,scope_explicit_count,scope_auto_count,quiet_source_checks,quiet_source_changes,queued_drain_tests,adjacent_drain_tests,cancel_drain_tests);
         $finish;
     end
     initial begin #3000000;$fatal(1,"overall TF service timeout state=%0d index=%0d failed=%b code=%0d track=%0d",dut.state,session_index,failed,failure,track);end

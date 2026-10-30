@@ -1,9 +1,11 @@
-# TF 原生服务（显式选择，尚未接整机）
+# TF 原生服务（显式 profile 选择）
 
 `workstation_tf_runtime_service.sv` 包装真实 `tf_audio_ddr_path`、现有 reader／
-DDR DMA／byte FIFO／WAV decoder，以及已提交的 85-bit 原子帧桥。默认 top、
-profile、旧 `tf_workstation_audio_bridge`、playlist、识别模块与地址分配均未选择
-本服务。没有第二路时钟请求，没有重采样，也不宣告播放数据已经取消 DDR 中转。
+DDR DMA／byte FIFO／WAV decoder，以及已提交的 85-bit 原子帧桥。
+`custom138k-workstation-v1` revision 4 通过原生组合显式选入本服务；accepted、
+pinned 和未指定 profile 的入口维持各自来源。源码组合与离线回归不是整机物理
+验收。playlist、识别 owner 和 DDR 地址分配保持；没有第二路时钟请求，没有
+重采样，也不宣告播放数据已经取消 DDR 中转。
 
 ## 接线与时钟域
 
@@ -25,6 +27,10 @@ profile、旧 `tf_workstation_audio_bridge`、playlist、识别模块与地址�
 `ddr_valid && ddr_ready && !ddr_write` 开始，到实际 `ddr_response` 结束。
 不将写命令接收 ACK 解释为物理写完成。新服务不新增 DDR owner、地址或写掩码。
 真实 buffer 与 direct 两种接线都已有逐帧功能回归；移除 buffer 没有功能上的必要。
+定向用例先将真实 buffer 的下游停住，让服务接收读命令，再发取消或重启；关闸后
+才允许物理接收，并继续扣住旧响应。队列驻留和响应等待期间均不能返回 quiet。
+恢复响应后才重启，新文件完整 64 帧用独立 PCM／rate oracle 核对，不能把旧响应
+解释成新文件首拍。另有响应产生与关闸同沿、响应消费在相邻 memory 沿的用例。
 即使移除它，整机的 `basic_pitch_ddr_client_queues` 仍先以 slot 接收 ACK，再交给
 实际 DDR，不能把上游 ready 描述为物理接受。独立 P&R 才能证明更改时序边界的收益。
 
@@ -89,7 +95,16 @@ invalidate，不丢尾，保持 busy/route 直到显式取消／退出；尾帧�
 发布。源在 ACK 前不覆盖 held payload；慢端可合并尚未发送的状态。compute 还用
 帧桥 expected generation 核对控制快照；旧 active 即使在最后一次取消后源停钟也
 会失效。busy 通过保守异步断言／本地释放后与保持快照合并，不能提前释放。DDR hold
-在 memory 域两级同步置位和解除，quiet 证明返回源域；没有裸跨 busy/quiet 多位值。
+在 memory 域两级同步置位和解除。`memory_gate && !memory_read_pending` 先经
+memory 域寄存器，再经原两级同步器返回 50 MHz；跨域源不再是组合 aggregate。
+该寄存器按 common reset 清零，关闸和末次读响应排空之后保守增加一个 memory
+边沿，随后还有两级接收延迟；超时计数不替代这个 ACK。定向回归检查源只在 memory
+上升沿改变，并用恢复旧组合表达式的临时副本确认会被拒绝。
+
+这里的 quiet 只证明命令入口已关闭且所记录的唯一有序读响应已返回，不证明已确认
+的写命令物理完成，也不覆盖独立 memory reset 后的迟到响应、响应重排或外部 arbiter
+owner 丢失。整机内存守护仍负责 backend readiness／复位故障隔离；本地寄存器不提供
+事务 tag 或独立复位恢复协议。源寄存和两级同步的源码检查也不能替代 routed CDC。
 
 真实联合回归发现旧 byte FIFO 的无 ACK clear 与 DMA restart 存在竞态。新服务仅
 显式启用 path 末尾新增的 `NATIVE_RESTART_HOLD=1`：hold 时禁止新的 DMA/FIFO 工作，

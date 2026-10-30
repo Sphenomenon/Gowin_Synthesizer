@@ -216,7 +216,14 @@ module workstation_tf_runtime_service #(
             if(ddr_valid_o && ddr_ready_i && !ddr_write_o)memory_read_pending<=1;
             if(ddr_response_i)memory_read_pending<=0;
         end
-    wire memory_quiet=memory_gate && !memory_read_pending;
+    // Register the aggregate before crossing it: synchronizing a combinational
+    // AND of independently changing memory flops can capture a transient ACK.
+    // The extra memory edge is conservative: acceptance closes before this
+    // ACK, and the last ordered response clears pending one edge before it.
+    reg memory_quiet;
+    always @(posedge memory_clk_i or negedge rst_ni)
+        if(!rst_ni)memory_quiet<=0;
+        else memory_quiet<=memory_gate && !memory_read_pending;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] memory_quiet_sync;
     always @(posedge clk_50m_i or negedge rst_ni)
         if(!rst_ni)memory_quiet_sync<=0;else memory_quiet_sync<={memory_quiet_sync[0],memory_quiet};

@@ -88,12 +88,13 @@ def run(output):
     source_set={str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else 'fixture/'+path.name:digest(path) for path in inputs}
     source_set_sha=hashlib.sha256(json.dumps(source_set,sort_keys=True).encode()).hexdigest()
     result=dict(schema=1,passed=False,hardware_tested=False,profile_changed=False,
-        identity='native-tf-runtime-service-v2-'+source_set_sha[:16],source_set_sha256=source_set_sha,
+        identity='native-tf-runtime-service-v3-'+source_set_sha[:16],source_set_sha256=source_set_sha,
         validation_stage='offline-real-TF-DDR-WAV-policy-and-transport',input_sha256=hashes,
         legacy_reference=baseline.evidence(),legacy_path_sha256=hashlib.sha256(reference_bytes).hexdigest(),
         default_path_exact_reconstruction=True,
         default_scope_exact_reconstruction=True,legacy_scope_sha256=hashlib.sha256(scope_bytes).hexdigest(),
-        limits='Real maintained path/DDR DMA/byte FIFOs/WAV decoder/85bit bridge. SD/FAT reader is a byte-boundary fixture; DDR is bounded ordered memory. DDR capacity fault is injected at its real producer. No streaming migration, complete top/profile, physical CDC, synthesis, P&R, JTAG or board acceptance.')
+        registered_memory_quiet=True,
+        limits='Real maintained path/DDR DMA/byte FIFOs/WAV decoder/85bit bridge and actual one-entry command buffer. Directed old-read queue/hold/cancel/restart and gate-adjacent response checks use an ordered single-outstanding memory model; independent backend reset/late or reordered responses are outside this local contract. SD/FAT reader is a byte-boundary fixture. DDR capacity fault is injected at its real producer. No streaming migration, complete top/profile, physical CDC, synthesis, P&R, JTAG or board acceptance.')
     try:
         compile_command=['iverilog','-g2012','-Wall','-I',str(output),'-s','tb_workstation_tf_runtime_service',
                          '-o',str(output/'service.vvp'),*map(str,sources)]
@@ -129,6 +130,34 @@ def run(output):
         reference_log=(output/'reference_run.log').read_text()
         if 'PASS tf_path_default_reference:' not in reference_log:raise ValueError('Missing default reference marker')
         result['default_reference_metrics']={key:int(value) for key,value in re.findall(r'(\w+)=(\d+)',reference_log)}
+        # Keep the historical failure reproducible without touching maintained
+        # RTL: removing the source flop must be detected by the real-path TB.
+        quiet_register=('    reg memory_quiet;\n'
+            '    always @(posedge memory_clk_i or negedge rst_ni)\n'
+            '        if(!rst_ni)memory_quiet<=0;\n'
+            '        else memory_quiet<=memory_gate && !memory_read_pending;\n')
+        service=sources[0].read_text()
+        if service.count(quiet_register)!=1:raise ValueError('Registered quiet negative-control anchor drift')
+        mutant=output/'workstation_tf_runtime_service_combinational_negative.sv'
+        mutant.write_text(service.replace(quiet_register,'    wire memory_quiet=memory_gate && !memory_read_pending;\n'))
+        mutant_sources=[mutant,*sources[1:]]
+        command=['iverilog','-g2012','-Wall','-I',str(output),'-s','tb_workstation_tf_runtime_service',
+                 '-o',str(output/'combinational_negative.vvp'),*map(str,mutant_sources)]
+        result['combinational_negative_compile_argv']=command
+        process=subprocess.run(command,cwd=output,text=True,capture_output=True,timeout=90)
+        (output/'combinational_negative_compile.log').write_text(process.stdout+process.stderr)
+        if process.returncode:raise RuntimeError('Negative control failed to compile')
+        process=subprocess.run(['vvp',str(output/'combinational_negative.vvp')],cwd=output,
+                               text=True,capture_output=True,timeout=90)
+        negative_log=process.stdout+process.stderr
+        (output/'combinational_negative_run.log').write_text(negative_log)
+        result['combinational_negative']={
+            'rejected':process.returncode!=0 and ('quiet aggregate was not registered' in negative_log or
+                                                'quiet CDC source changed between memory edges' in negative_log),
+            'returncode':process.returncode,'mutant_sha256':digest(mutant),
+            'compile_log_sha256':digest(output/'combinational_negative_compile.log'),
+            'run_log_sha256':digest(output/'combinational_negative_run.log')}
+        if not result['combinational_negative']['rejected']:raise ValueError('Combinational quiet negative control escaped')
         result['inputs_unchanged_during_run']=hashes=={str(path):digest(path) for path in inputs}
         if not result['inputs_unchanged_during_run']:raise ValueError('Input drift')
         result['passed']=True;print(log,end='');print(buffered_log,end='');print(reference_log,end='')
