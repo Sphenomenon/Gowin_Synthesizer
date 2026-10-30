@@ -123,7 +123,8 @@ class Ae350FirmwareTest(unittest.TestCase):
                 self.assertFalse((self.directory / ('out-' + case)).exists())
 
     def test_missing_first_party_inputs_fail_before_compiler(self):
-        for name in (*staging.FIRST_PARTY_SOURCES, *staging.FIRST_PARTY_HEADERS):
+        for name in (*staging.FIRST_PARTY_SOURCES, *staging.FIRST_PARTY_HEADERS,
+                     *staging.RECORDING_SOURCES, *staging.RECORDING_HEADERS):
             with self.subTest(name=name):
                 root = self.maintained_root(name)
                 (root / 'firmware/ae350' / name).unlink()
@@ -148,11 +149,14 @@ class Ae350FirmwareTest(unittest.TestCase):
                          ['start.S', 'ui_main.c', 'ui_render.c', 'ui_runtime.c', 'audio_clock_service.c'])
         self.assertEqual(set(one['imported_inputs']), set((*staging.IMPORTED_SOURCES, *staging.IMPORTED_HEADERS, 'boot.ld')))
         self.assertEqual(set(one['first_party_inputs']), {'audio_clock_service.c', 'audio_clock_service.h'})
+        self.assertFalse(one['recording_api_enabled'])
+        self.assertFalse(any('recording_service.' in name for name in one['input_sha256']))
         for name, value in one['first_party_inputs'].items():
             self.assertEqual(value, one['source_provenance']['first_party_files'][name]['sha256'])
         symbols = (first / 'firmware.nm').read_text()
         for name in ('a138_clock_mmio_bus', 'a138_clock_probe', 'a138_clock_submit', 'a138_clock_poll'):
             self.assertIn(' T ' + name + '\n', symbols)
+        self.assertNotIn(' T a138_record_', symbols)
         self.assertEqual(staging.decode_rom(first / 'boot.mem'),
                          (first / 'firmware.bin').read_bytes().ljust(16384, b'\0'))
         self.assertEqual(one['capacity']['rom_capacity_bytes'], 16384)
@@ -163,6 +167,24 @@ class Ae350FirmwareTest(unittest.TestCase):
         self.assertEqual(baseline.read_bytes('firmware/boot.mem'), original_rom)
         self.assertEqual((first / 'reference_boot.mem').read_bytes(), original_rom)
         self.assertEqual(json.loads((first / 'build_metadata.json').read_text()), one)
+
+    def test_recording_api_requires_explicit_selection_and_is_in_real_riscv_rom(self):
+        try:
+            prefix = staging.compiler_prefix()
+        except FileNotFoundError as error:
+            self.skipTest(str(error))
+        output = self.directory / 'recording'
+        result = staging.stage_ae350_firmware(ROOT, output, prefix, recording_api=True)
+        self.assertTrue(result['recording_api_enabled'])
+        self.assertEqual(result['compiled_sources'], list(staging.selected_sources(True)))
+        self.assertEqual(set(result['first_party_inputs']),
+                         {'audio_clock_service.c', 'audio_clock_service.h', 'recording_service.c', 'recording_service.h'})
+        self.assertEqual(set(result['input_sha256']), {'firmware/ae350/' + name for name in staging.selected_inputs(True)})
+        symbols = (output / 'firmware.nm').read_text()
+        for name in ('a138_record_create', 'a138_record_command', 'a138_record_poll', 'a138_record_read_head'):
+            self.assertIn(' T ' + name + '\n', symbols)
+        self.assertLessEqual(result['capacity']['binary_bytes'], 16384)
+        self.assertFalse(result['hardware_tested'])
 
 
 if __name__ == '__main__':

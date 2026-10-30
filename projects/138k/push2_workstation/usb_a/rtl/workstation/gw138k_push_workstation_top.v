@@ -280,6 +280,33 @@ module gw138k_push_workstation_top #(
     wire [31:0] display_frame_epoch,display_frame_sequence;
     wire [31:0] runtime_observation_drop;
     wire runtime_display_observation_fault;
+`ifdef WORKSTATION_RECORDING_DDR
+    wire recording_select=psel && paddr[31:12]==20'hf8040;
+    wire recording_bus_ready,recording_bus_error;
+    wire [31:0] recording_bus_data;
+    wire recording_req,recording_write,recording_ready,recording_response,recording_native_accept,recording_transport_fault;
+    wire [28:0] recording_address;
+    wire [255:0] recording_data;
+    wire [31:0] recording_mask;
+    wire recording_seal_request,recording_seal_hold,recording_seal_ready,recording_seal_done,recording_seal_failed;
+    wire [3:0] recording_seal_failure;
+    workstation_recording_runtime u_recording(
+        .reset_ni(reset_n && ddr_client_reset_n),.source_clk_i(dac_mclk),.memory_clk_i(memory_clk),
+        .control_clk_i(clk_50m),.backend_ready_i(ddr_client_ready),
+        .frame_valid_i(physical_frame_valid),.frame_error_i(physical_frame_error),.frame_44k1_i(physical_frame44),
+        .frame_epoch_i(physical_frame_epoch),.frame_sequence_i(physical_frame_sequence),.frame_pcm_i(physical_frame_pcm),
+        .pclk(pclk),.preset_n(preset_n),.psel(recording_select),.penable(penable),.pwrite(pwrite),
+        .paddr(paddr[11:0]),.pwdata(pwdata),.pstrb(pstrb),.pready(recording_bus_ready),
+        .pslverr(recording_bus_error),.prdata(recording_bus_data),
+        .seal_hold_i(recording_seal_hold),.seal_request_i(recording_seal_request),
+        .seal_ready_o(recording_seal_ready),.seal_done_o(recording_seal_done),.seal_failed_o(recording_seal_failed),
+        .seal_failure_code_o(recording_seal_failure),.recording_valid_o(recording_req),.recording_write_o(recording_write),
+        .recording_address_o(recording_address),.recording_data_o(recording_data),.recording_mask_o(recording_mask),
+        .recording_ready_i(recording_ready),.recording_response_i(recording_response),
+        .recording_native_accept_i(recording_native_accept),.recording_read_data_i(client_rdata),
+        .transport_fault_i(recording_transport_fault),.object_state_o(),.object_failure_o(),
+        .object_frames_o(),.committed_frames_o(),.capture_o());
+`endif
     // CPU reset clears command bookkeeping. The independently latched backend
     // fault and runtime identity survive it and remain visible to the service.
     gw138k_apb_cdc u_clock_control(
@@ -308,14 +335,24 @@ module gw138k_push_workstation_top #(
         .media_stop_hold_o(clock_media_hold),.media_stop_ready_i(clock_media_ready),
         .media_stop_done_i(clock_media_done),.media_stop_failed_i(clock_media_failed),
         .media_stop_failure_code_i(clock_media_failure));
-    workstation_media_preparation #(.ENABLE_BLE(1)) u_media_preparation(
+    workstation_media_preparation #(.ENABLE_BLE(1)
+`ifdef WORKSTATION_RECORDING_DDR
+        ,.ENABLE_RECORDING(1)
+`endif
+    ) u_media_preparation(
         .clk_i(clk_50m),.reset_ni(runtime_reset_n),.request_i(clock_media_request),.hold_i(clock_media_hold),
         .ready_o(clock_media_ready),.done_o(clock_media_done),.failed_o(clock_media_failed),
         .failure_code_o(clock_media_failure),.runtime_request_o(runtime_media_request),.runtime_hold_o(runtime_media_hold),
         .runtime_ready_i(runtime_media_ready),.runtime_done_i(runtime_media_done),.runtime_failed_i(runtime_media_failed),
         .runtime_failure_code_i(runtime_media_failure),.ble_request_o(ble_seal_request),.ble_hold_o(ble_seal_hold),
         .ble_ready_i(ble_seal_ready),.ble_done_i(ble_seal_done),.ble_failed_i(ble_seal_failed),
-        .ble_failure_code_i(ble_seal_failure),.ble_failure_code_o());
+        .ble_failure_code_i(ble_seal_failure),.ble_failure_code_o()
+`ifdef WORKSTATION_RECORDING_DDR
+        ,.recording_request_o(recording_seal_request),.recording_hold_o(recording_seal_hold),
+        .recording_ready_i(recording_seal_ready),.recording_done_i(recording_seal_done),
+        .recording_failed_i(recording_seal_failed),.recording_failure_code_i(recording_seal_failure),.recording_failure_code_o()
+`endif
+    );
 `endif
     wire [447:0] performance_words;
     wire all_usb_valid,all_usb_ready;wire [17:0] all_usb_event;
@@ -826,6 +863,12 @@ module gw138k_push_workstation_top #(
     wire [255:0] cpu_mem_data;
     wire [31:0] cpu_mem_mask;
     hdmi_display u_video (
+`ifdef WORKSTATION_RECORDING_DDR
+        .recording_req(recording_req),.recording_write(recording_write),.recording_address(recording_address),
+        .recording_data(recording_data),.recording_mask(recording_mask),.recording_ready(recording_ready),
+        .recording_response(recording_response),.recording_native_accept(recording_native_accept),
+        .recording_transport_fault(recording_transport_fault),
+`endif
 `ifdef WORKSTATION_RUNTIME_NATIVE
         .frame_44k1_i(display_frame44),.frame_error_i(display_frame_error),
         .frame_epoch_i(display_frame_epoch),.frame_sequence_i(display_frame_sequence),
@@ -937,7 +980,11 @@ module gw138k_push_workstation_top #(
         .DDR_HRDATA(local_data_phase?ram_read_data:external_read_data),.DDR_HREADY(cpu_bus_ready),.DDR_HRESP(cpu_bus_error),.DDR_HADDR(ram_address),
         .DDR_HBURST(),.DDR_HPROT(),.DDR_HSIZE(ram_size),.DDR_HTRANS(ram_transfer),
         .DDR_HWDATA(ram_write_data),.DDR_HWRITE(ram_write),.DDR_HCLK(ram_clk),.DDR_HRSTN(ram_reset_n),
-`ifdef WORKSTATION_RUNTIME_NATIVE
+`ifdef WORKSTATION_RECORDING_DDR
+        .APB_PRDATA(recording_select?recording_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
+        .APB_PREADY(recording_select?recording_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
+        .APB_PSLVERR(recording_select?recording_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
+`elsif WORKSTATION_RUNTIME_NATIVE
         .APB_PRDATA(clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
         .APB_PREADY(clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
         .APB_PSLVERR(clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),

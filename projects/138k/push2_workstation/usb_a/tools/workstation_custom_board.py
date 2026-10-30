@@ -115,6 +115,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             native_sources = tuple(selected_provider if source == 'rtl/workstation/workstation_profile_runtime.sv' else source
                                    for source in native_sources)
             profile_dependencies += ('rtl/workstation/workstation_profile_runtime.sv',)
+    recording_selected=runtime and specification(profile['name']).get('recording_enabled',False)
+    if recording_selected:
+        from tools.workstation_recording_policy import SOURCES as RECORDING_SOURCES, DEPENDENCIES as RECORDING_DEPENDENCIES
+        native_sources += RECORDING_SOURCES
+        profile_dependencies += RECORDING_DEPENDENCIES
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
@@ -127,8 +132,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if not (root / relative).is_file():
             raise FileNotFoundError('missing native-board source: ' + relative)
     if workstation_profile is not None:
-        from tools.stage_ae350_firmware import INPUTS as AE350_INPUTS
-        extra_inputs += ['firmware/ae350/' + name for name in AE350_INPUTS]
+        from tools.stage_ae350_firmware import selected_inputs
+        extra_inputs += ['firmware/ae350/' + name for name in selected_inputs(recording_selected)]
     snapshot = source_snapshot(root, extra_inputs)
     pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
     sys.path.insert(0, str(root / 'tools'))
@@ -138,7 +143,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     parent_output, stage, parent_metadata = builder.prepare(timing_fixes=True, output_directory=output / 'workstation')
     if workstation_profile is not None:
         from tools.workstation_profile import prepare_ae350
-        ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix)
+        ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected)
     native_timing = adapt_timing(stage)
     (stage / 'scripts/build.tcl').write_text(
         'error "This native-board integration stage is synthesis-only; P&R and deployment are not authorized or validated."\n')
@@ -196,6 +201,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise ValueError('native-board copied source identity changed: ' + relative)
         if relative in native_sources:
             ElementTree.SubElement(files, 'File', path=target, type='file.verilog', enable='1')
+    recording_address_map=None
+    if recording_selected:
+        from tools.workstation_recording_policy import install_address_map
+        recording_address_map=install_address_map(root,stage)
     support = {}
     for relative in LOCKED_INPUT_SOURCES:
         if sum(entry.get('path') == relative and entry.get('enable') == '1' for entry in files) != 1:
@@ -291,6 +300,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     remaining_gaps=['USB3300/TXS electrical compatibility', 'physical FPC DAC/audio acceptance',
                                     'physical BLE pairing/recording/download acceptance', 'complete IO/CDC/timing/PLL/P&R gates',
                                     'real external peripheral and hardware acceptance'])
+    if recording_selected:
+        from tools.workstation_recording_policy import metadata as recording_metadata
+        metadata['recording']=dict(recording_metadata(),address_map=recording_address_map)
     if workstation_profile is not None:
         metadata['scan_window'] = dict(policy='native_admission_v1', enabled=True,
             provider='rtl/workstation/workstation_profile_hdmi.sv',
@@ -312,7 +324,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             media_preparation_policy='seal_record_stop_score_tf_ble_v1',
             media_preparation_owner='u_media_preparation',
             held_notes_policy='preserve; no implicit MIDI/PANIC',
-            media_failure_categories=dict(local_recording=9,ble_seal=10,backend_admission=11),
+            media_failure_categories=dict(local_recording=9,ble_seal=10,backend_admission=11,
+                **({'ddr_recording_seal':12} if recording_selected else {})),
             display_metadata_minor=1)
         metadata['recognition'] = recognition
         metadata['audio_pin_behavior']='ak4493s_i2s32_dual_rate_output_paced_final_pcm'

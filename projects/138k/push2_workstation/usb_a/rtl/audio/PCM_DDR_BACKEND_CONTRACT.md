@@ -67,3 +67,7 @@ v1/v2的历史竞争fixture借用music口并替代NN，其证据不能代表owne
 `download_valid_o && download_ready_i` 交付一个最多32-byte的片段。只使用data最低 `download_bytes_o` 字节，其余位没有有效性承诺；last只在请求范围最后一个片段为1。两拍预取和最多一个已接受读限定片内占用，慢下载只暂停新读，不改变采样节拍、对象数据或元数据。最后一个片段接受后done单周期。
 
 reference_release立即关闭下载输出／新读，丢本地预取，等待已发布命令及返回排空后released，才放开clear。取消、soft_reset、超时亦关闭引用并排空；旧读返回不得进入新对象、续传或后续预取。协议CRC、下载任务ID、断点／ACK和旧客户端格式协商继续属于原业务owner，本阶段均未迁移。
+
+## 显式 R00 组合
+
+新增 `custom138k-workstation-r00-v1` 显式选择本后端及生产 owner8，连接最终物理 PCM 和内部 AE350 APB 服务；其他入口仍保留原 backend 选择。对象命令、字节顺序、正常切换 seal、下载快照和 CPU observer reset 边界见[生产服务契约](../services/RECORDING_DDR_SERVICE_CONTRACT.md)。组件旧证据不转移为新组合接受，BLE 既有短录音仍未替换。

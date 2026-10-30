@@ -26,6 +26,13 @@ module hdmi_display #(
     output wire [31:0] display_observation_drop_o,
     output wire ddr_client_reset_no,ddr_client_ready_o,
 `endif
+`ifdef WORKSTATION_RECORDING_DDR
+    input wire recording_req,recording_write,
+    input wire [28:0] recording_address,
+    input wire [255:0] recording_data,
+    input wire [31:0] recording_mask,
+    output wire recording_ready,recording_response,recording_native_accept,recording_transport_fault,
+`endif
     input wire memory_clk, memory_reset_n, memory_calibrated, memory_pll_locked,
     input wire ui_pending,ui_visible,ui_next_visible,
     input wire [28:0] ui_front_base,ui_next_base,
@@ -315,7 +322,18 @@ module hdmi_display #(
         .data_enable(de),.hsync(hs),.vsync(vs),.vblank_start(vblank_start),
         .rgb(rgb),.out_de(scan_de),.out_hsync(scan_hs),.out_vsync(scan_vs)
     );
-    basic_pitch_ddr_client_queues u_arbiter(.clk(memory_clk),.reset_n(ui_rst_n),.bist_done(bist_done),
+`ifdef WORKSTATION_RECORDING_DDR
+    wire [8:0] recording_native_accepts;
+    assign recording_native_accept=recording_native_accepts[8];
+    workstation_recording_ddr_client_queues #(.RECORDING_ENABLE(1)) u_arbiter(
+        .recording_valid(recording_req),.recording_write(recording_write),.recording_address(recording_address),
+        .recording_data(recording_data),.recording_mask(recording_mask),.recording_ready(recording_ready),
+        .recording_response(recording_response),.native_accept_o(recording_native_accepts),
+        .slot_accept_o(),.core_accept_o(),.transport_fault_o(recording_transport_fault),
+`else
+    basic_pitch_ddr_client_queues u_arbiter(
+`endif
+.clk(memory_clk),.reset_n(ui_rst_n),.bist_done(bist_done),
         .bist_valid(bist_req),.bist_write(bist_write),.bist_address(bist_addr),.bist_data(bist_data),
         .bist_ready(bist_ready),.bist_response(bist_response),
         .scan_valid(read_req),.scan_address(read_addr),.scan_ready(read_ready),.scan_response(scan_response),

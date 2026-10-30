@@ -1,0 +1,298 @@
+{
+  "schema": 1,
+  "stage": "R00 explicit production source composition and offline actual RTL checkpoint",
+  "source_stage_passed": true,
+  "all_repository_gates_passed": false,
+  "base_commit": "3156993f7659709d6efe73ae0b8385a369d00997",
+  "external_evidence_namespace": "gw138k-task-20261030",
+  "candidate_identity": "custom138k-workstation-r00-v1-5775b90535632253",
+  "candidate_input_sha256": "5775b90535632253e859f4f4bad4e357e4bb138149b0e92a710ac09c1c22a359",
+  "profile_sha256": "2b182e300576095172925207f0bc29f5ab074e305fb93ca129b21c84330b4bf6",
+  "profile_artifact_sha256": "20e5ae31d3d36cfb833e9cd1488b452b8f789269de93d232d5652a352e99b503",
+  "source_inventory": {
+    "locked": 338,
+    "enabled": 266,
+    "staged": 583,
+    "snapshot": 753
+  },
+  "recording": {
+    "policy": "native_owner8_pcm_ddr_r00_v1",
+    "production_owner8_selected": true,
+    "owner_bits": 4,
+    "owner": 8,
+    "final_pcm_source": "u_managed/runtime/serializer completed physical frame",
+    "frame_order": "physical high16=left; backend/download low16=left, high16=right",
+    "sample_rates_hz": [
+      48000,
+      44100
+    ],
+    "stage_capacity_frames": 16384,
+    "stage_capacity_bytes": 65536,
+    "apb_base": "0xf8040000",
+    "backend": "u_recording/service/backend",
+    "pcm_cdc": "u_recording/pcm_cdc",
+    "native_commit": "u_recording/native_commit",
+    "arbiter": "u_video/u_arbiter/g_recording/u_core",
+    "default_ble_backend_replaced": false,
+    "ble_format_extended": false,
+    "normal_seal_before_rate_switch": true,
+    "physical_resource_saving_proven": false,
+    "source_cdc_complete": false,
+    "physical_cdc_accepted": false,
+    "r00_complete": false,
+    "hardware_tested": false,
+    "deployment_allowed": false,
+    "address_map": {
+      "source": "rtl/ddr_address_map.vh",
+      "destination": "src/memory/ddr_address_map.vh",
+      "parent_sha256": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+      "selected_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+      "original_macros_preserved": true,
+      "policy": "versioned_allocation_authority_no_text_overlay"
+    }
+  },
+  "firmware": {
+    "compiled_sources": [
+      "start.S",
+      "ui_main.c",
+      "ui_render.c",
+      "ui_runtime.c",
+      "audio_clock_service.c",
+      "recording_service.c"
+    ],
+    "rom_sha256": "c88468fa4833dbbd625a4c2cefdcbb7855584b43582dc65afc65f8b15bf41dc4",
+    "capacity": {
+      "rom_capacity_bytes": 16384,
+      "binary_bytes": 14052,
+      "text_bytes": 14052,
+      "initialized_data_bytes": 0,
+      "bss_bytes": 60,
+      "physical_ram_bytes": 8192,
+      "ram_reserved_prefix_bytes": 512,
+      "static_ram_span_bytes": 60,
+      "static_ram_end": 572,
+      "stack_top": 8192,
+      "stack_capacity_bytes": 7620,
+      "minimum_stack_bytes": 4096,
+      "symbols": {
+        "_start": 2147483648,
+        "__data_load_start": 2147497700,
+        "__data_start": 512,
+        "__data_end": 512,
+        "__bss_start": 512,
+        "__bss_end": 572
+      },
+      "whole_program_stack_bound_verified": false,
+      "hardware_stack_watermark_verified": false
+    }
+  },
+  "default_rom": {
+    "recording_api_enabled": false,
+    "compiled_sources": [
+      "start.S",
+      "ui_main.c",
+      "ui_render.c",
+      "ui_runtime.c",
+      "audio_clock_service.c"
+    ],
+    "rom_sha256": "c598c50aa0172be1c5644fa50a17c4a18ea304cce7aaeca476cd55b7dba0e752",
+    "byte_identical_to_base_same_compiler": true
+  },
+  "runtime": {
+    "identity": "r00-runtime-owner8-offline-v1-34144ee774b2c86e",
+    "source_sha256": {
+      "rtl/services/workstation_recording_ddr_service.sv": "64be09d16fa9f131a7ac553d633d58eae3b667cfc85a7fad104e90a0e2da8a8b",
+      "rtl/services/workstation_recording_seal_bridge.sv": "2323b54f0c11459295b722c20ccafe575a53eef43001be639f10d5791fa11684",
+      "rtl/services/workstation_media_preparation.sv": "6351b7257633ef2da2d31b5ae131ad4c570d92a67d955258b5660f06f18c4acd",
+      "rtl/workstation/workstation_recording_runtime.sv": "0d9508ab6684bff36b4c83a27911f1df0cc43300afa4500204f3e27eb2e599c0",
+      "rtl/audio/workstation_pcm_observation_bridge.sv": "198dbf39ff6b6cfb6fe308444274849c507f222edcb0ea651abeb8d719f62c17",
+      "rtl/audio/workstation_pcm_ddr_backend.sv": "b79be8a91cbc909aca19846a47ea133845243335caf60508687668433bcce0b2",
+      "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+      "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+      "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+      "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+      "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+      "rtl/timing/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+      "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+      "rtl/ddr_address_map.vh": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+      "locked/gw138k_apb_cdc.sv": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+      "locked/gw138k_counter_cdc.sv": "1b6ff697ccd951995b7331ac483f3c7672a959a9a767465eb57d92d80f3afa8c",
+      "tb_workstation_recording_runtime.sv": "c4fc4c3000219353458ec8c8d2159b250048a28458195346ab4fe080b90c5b38"
+    },
+    "runner_sha256": "6925df023d9b5d6a2d88fac381fd380a77f348120c32f9006eeb1aa42cd8962d",
+    "positive_cases": 13,
+    "negative_controls": 5,
+    "cases": {
+      "pcm_download_bytes_snapshot": {
+        "passed": true,
+        "mutant": null
+      },
+      "normal_seal_registered_hold": {
+        "passed": true,
+        "mutant": null
+      },
+      "cancel_before_native_accept": {
+        "passed": true,
+        "mutant": null
+      },
+      "observer_reset_drains_accepted_read": {
+        "passed": true,
+        "mutant": null
+      },
+      "sticky_owner_ledger_fault": {
+        "passed": true,
+        "mutant": null
+      },
+      "pending_create_media_seal": {
+        "passed": true,
+        "mutant": null
+      },
+      "create_no_source_deadline": {
+        "passed": true,
+        "mutant": null
+      },
+      "immutable_actual_context": {
+        "passed": true,
+        "mutant": null
+      },
+      "third_media_owner_stale_ack_native_drain": {
+        "passed": true,
+        "mutant": null
+      },
+      "fault_fences_snapshot_same_edge": {
+        "passed": true,
+        "mutant": null
+      },
+      "capture_source_gap": {
+        "passed": true,
+        "mutant": null
+      },
+      "actual_48k_descriptor_and_bytes": {
+        "passed": true,
+        "mutant": null
+      },
+      "sticky_observation_loss_requires_common_reset": {
+        "passed": true,
+        "mutant": null
+      },
+      "negative_ungated_error": {
+        "passed": true,
+        "mutant": "ungated_error"
+      },
+      "negative_hold_drops_request": {
+        "passed": true,
+        "mutant": "hold_drops_request"
+      },
+      "negative_stereo_unswapped": {
+        "passed": true,
+        "mutant": "stereo_unswapped"
+      },
+      "negative_observer_reset_clears_loss": {
+        "passed": true,
+        "mutant": "observer_reset_clears_loss"
+      },
+      "negative_local_ack": {
+        "passed": true,
+        "mutant": "local_ack"
+      }
+    }
+  },
+  "checks": {
+    "recording_runtime": {
+      "passed": true,
+      "external_evidence": "r00-maintained-runtime-final-v2/verification.json",
+      "sha256": "a4ea87496b3984ee99db5a2361cb13f018cc4e06927672fa9e926975b3110a11",
+      "cases": 18
+    },
+    "recording_profile_actual_prepare": {
+      "passed": true,
+      "external_evidence": "r00-profile-prepared-tests-final-v2.log",
+      "sha256": "277bea5deadca18b1e43d2eb8b2f5f72afa1176675085f57f1dc24a53497adf3",
+      "cases": 7
+    },
+    "firmware_source_and_real_riscv": {
+      "passed": true,
+      "external_evidence": "r00-firmware-opt-in-tests-v1.log",
+      "sha256": "7ced240da6130426d21f9e017c0522633730a66e86e0b45233c46c3f299fb274",
+      "cases": 10
+    },
+    "recording_c_api_host": {
+      "passed": true,
+      "external_evidence": "r00-c-api-host-final-v2.log",
+      "sha256": "58d7b5cc014dcb921d12bd4915c8a0a3bd2e8354693a7c6ec1c4c055f2407422",
+      "cases": 1
+    },
+    "accepted_input_boundary": {
+      "passed": true,
+      "external_evidence": "r00-accepted-source-tests-final-v1.log",
+      "sha256": "7a8878bee5faee3c6644436b810dc5bc340964cc6ef0cadcb880e7ff05ff7432",
+      "cases": 10
+    },
+    "service_verilator_lint": {
+      "passed": true,
+      "external_evidence": "r00-service-strict-lint-final-v3.log",
+      "sha256": "9c30e6c67e4d09ba0214512847183e2c06c06c0861d18d73f6809d6593e2dac8",
+      "cases": 1,
+      "flags": "--lint-only -Wall -Wno-PINCONNECTEMPTY; all other warnings fatal"
+    },
+    "default_rom_isolation": {
+      "passed": true,
+      "external_evidence": "r00-default-rom-isolation-v1/verification.json",
+      "sha256": "f7fb5378e037e383142bac036a4823ab33e0702a3a78c88ace599435a2730190",
+      "cases": 1
+    },
+    "legacy_media_preparation": {
+      "passed": true,
+      "external_evidence": "r00-legacy-media-preparation-v1/verification.json",
+      "sha256": "fb99040e1dde7a134900304cc1dc71acf88836c681df6aadbbea5a3dbd579691",
+      "cases": null
+    },
+    "owner8_native_component": {
+      "passed": true,
+      "external_evidence": "r00-legacy-owner8-path-v1/verification.json",
+      "sha256": "441c1d803f554517477fa40a85107333de8a7208edd7a78fe5880f55a2717535",
+      "cases": 44
+    },
+    "pcm_ddr_backend": {
+      "passed": true,
+      "external_evidence": "r00-legacy-backend-v1/verification.json",
+      "sha256": "7c9ea98ffeb9bbb4a3c19f4e315fab23ded52aa8bd6fbcdcc4dc8e2e7ab3246b",
+      "cases": 41
+    },
+    "clean_three_complete_workstation_prepare": {
+      "passed": false,
+      "external_evidence": "r00-baselines-clean-final-v2.log",
+      "sha256": "c8cc2ed2e8dcda7c02194737dd0a17bdea9161ba6078b569fe875502a61ba309",
+      "ordinary_baseline_cases_passed": 22,
+      "error": "accepted DDR input drift: rtl/ddr_address_map.vh",
+      "inherited_source_bytes_unchanged": true,
+      "scope": "accepted entry rejects the maintained recording-allocation map already present at base commit; no guard or baseline was changed"
+    }
+  },
+  "independent_review": {
+    "passed": true,
+    "external_evidence": "r00-production-independent-audit-v1/R00_SOURCE_REVIEW_V5.json",
+    "sha256": "739d49b470a3f08cb11658ad8a06810152b2f6d693caceefa4eac8768d396c4f"
+  },
+  "full_top_elaborated": false,
+  "synthesized": false,
+  "pnr": false,
+  "physical_cdc_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "r00_complete": false,
+  "r01_complete": false,
+  "r02_complete": false,
+  "ble_short_ram_replaced": false,
+  "net_bsram_saving_proven": false,
+  "release_ready": false,
+  "deployment_allowed": false,
+  "remaining": [
+    "Refresh enabled/no-CNN/R00 complete locks and fresh candidate identities after parent integration; do not transfer this worktree candidate identity to changed PCM checker inputs",
+    "Resolve inherited accepted-map source gate without modifying frozen baseline or weakening identity checks",
+    "Full production elaboration, synthesis, P&R, resource/timing/CDC/reset/PLL and concurrency audio checks",
+    "BLE immutable object/CRC/Android and real nonzero audio recording acceptance; old BLE short RAM remains",
+    "Long recording, SRAM and Flash are separate validation/deployment work"
+  ]
+}

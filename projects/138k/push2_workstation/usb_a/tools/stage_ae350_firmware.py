@@ -20,11 +20,21 @@ IMPORTED_SOURCES = ('start.S', 'ui_main.c', 'ui_render.c', 'ui_runtime.c')
 IMPORTED_HEADERS = ('audio_services.h', 'firmware_checks.h', 'ui_model.h', 'ui_render.h')
 FIRST_PARTY_SOURCES = ('audio_clock_service.c',)
 FIRST_PARTY_HEADERS = ('audio_clock_service.h',)
+RECORDING_SOURCES = ('recording_service.c',)
+RECORDING_HEADERS = ('recording_service.h',)
 SOURCES = (*IMPORTED_SOURCES, *FIRST_PARTY_SOURCES)
 HEADERS = (*IMPORTED_HEADERS, *FIRST_PARTY_HEADERS)
 INPUTS = (*SOURCES, *HEADERS, 'boot.ld', 'provenance.json')
 ROM_BASE, ROM_BYTES = 0x80000000, 16384
 RAM_START, RAM_END, MIN_STACK_BYTES = 0x200, 0x2000, 4096
+
+
+def selected_sources(recording_api=False):
+    return (*SOURCES, *RECORDING_SOURCES) if recording_api else SOURCES
+
+
+def selected_inputs(recording_api=False):
+    return (*INPUTS, *RECORDING_SOURCES, *RECORDING_HEADERS) if recording_api else INPUTS
 
 
 def decode_rom(path):
@@ -71,7 +81,7 @@ def memory_report(size_text, symbols_text, start_text, binary_bytes):
                 whole_program_stack_bound_verified=False, hardware_stack_watermark_verified=False)
 
 
-def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None):
+def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None, recording_api=False):
     """Build to a new directory and return provenance, capacity and ROM comparison.
 
     The caller explicitly installs output/boot.mem into its new candidate. Accepted
@@ -79,9 +89,12 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None)
     """
     root, output = Path(root).resolve(), Path(output).resolve()
     source_dir = root / 'firmware/ae350'
+    inputs = selected_inputs(recording_api)
+    sources = selected_sources(recording_api)
+    maintained = (*FIRST_PARTY_SOURCES, *FIRST_PARTY_HEADERS, *RECORDING_SOURCES, *RECORDING_HEADERS)
     if output.exists():
         raise FileExistsError('AE350 firmware output already exists: ' + str(output))
-    for name in INPUTS:
+    for name in dict.fromkeys((*inputs, *maintained)):
         if not (source_dir / name).is_file():
             raise FileNotFoundError('missing maintained AE350 firmware input: ' + name)
     provenance = json.loads((source_dir / 'provenance.json').read_text())
@@ -93,9 +106,9 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None)
     for name in (*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld'):
         if provenance['files'].get(name) != baseline.descriptor['files']['firmware/' + name]:
             raise ValueError('AE350 imported source provenance drift: ' + name)
-    if set(provenance.get('first_party_files', {})) != set((*FIRST_PARTY_SOURCES, *FIRST_PARTY_HEADERS)):
+    if set(provenance.get('first_party_files', {})) != set(maintained):
         raise ValueError('AE350 first-party source inventory drift')
-    for name in (*FIRST_PARTY_SOURCES, *FIRST_PARTY_HEADERS):
+    for name in maintained:
         expected = dict(kind='maintained_first_party',
                         source='projects/138k/push2_workstation/usb_a/firmware/ae350/' + name,
                         sha256=sha(source_dir / name))
@@ -103,7 +116,7 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None)
             raise ValueError('AE350 first-party source provenance drift: ' + name)
     if provenance.get('historical_rom') != dict(path='firmware/boot.mem', **baseline.descriptor['files']['firmware/boot.mem']):
         raise ValueError('AE350 historical ROM provenance drift')
-    identities = {str((source_dir / name).relative_to(root)): sha(source_dir / name) for name in INPUTS}
+    identities = {str((source_dir / name).relative_to(root)): sha(source_dir / name) for name in inputs}
     prefix = compiler_prefix(riscv_prefix)
     versions = {}
     for tool in ('gcc', 'objcopy', 'size', 'nm'):
@@ -117,7 +130,7 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None)
         reference_bytes = reference_mem.read_bytes()
         reference_description = dict(policy='explicit_reference', path=str(reference_mem), sha256=sha(reference_mem))
     output.mkdir(parents=True, exist_ok=False)
-    for name in INPUTS:
+    for name in inputs:
         shutil.copyfile(source_dir / name, output / name)
     (output / 'reference_boot.mem').write_bytes(reference_bytes)
     reference_image = decode_rom(output / 'reference_boot.mem')
@@ -129,7 +142,7 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None)
             commands.append(command)
             subprocess.run(command, cwd=output, stdout=log, stderr=subprocess.STDOUT, check=True)
         objects = []
-        for name in SOURCES:
+        for name in sources:
             target = Path(name).with_suffix('.o').name
             run([prefix + '-gcc', *common, '-fstack-usage', '-c', name, '-o', target])
             objects.append(target)
@@ -160,14 +173,14 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None)
         raise ValueError('AE350 individual compiler stack frame exceeds stack capacity')
     result = dict(schema=1, firmware_profile='maintained_ae350_workstation', isa='rv32im_zicsr', abi='ilp32',
                   compiler_prefix=prefix, compiler_version=versions['gcc'], tool_versions=versions,
-                  source_provenance=provenance, input_sha256=identities,
+                  source_provenance=provenance, input_sha256=identities, recording_api_enabled=recording_api,
                   changed_from_import=[name for name in (*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld')
                                        if sha(source_dir / name) != provenance['files'][name]['sha256']],
                   first_party_inputs={name: sha(source_dir / name)
-                                      for name in (*FIRST_PARTY_SOURCES, *FIRST_PARTY_HEADERS)},
+                                      for name in maintained if name in inputs},
                   imported_inputs={name: sha(source_dir / name)
                                    for name in (*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld')},
-                  compiled_sources=list(SOURCES),
+                  compiled_sources=list(sources),
                   commands=commands, capacity=capacity, compiler_stack_frames=stack_frames,
                   elf_sha256=sha(output / 'firmware.elf'), binary_sha256=sha(output / 'firmware.bin'),
                   rom_sha256=sha(rom), reference_rom=dict(reference_description,
@@ -184,9 +197,10 @@ def main():
     parser.add_argument('--output', required=True, type=Path, help='new firmware evidence directory')
     parser.add_argument('--riscv-prefix', help='GNU bare-metal tool prefix, ending before -gcc')
     parser.add_argument('--reference-mem', type=Path, help='optional explicit 4096-word comparison ROM')
+    parser.add_argument('--recording-api', action='store_true', help='explicit R00 recording service API selection')
     args = parser.parse_args()
     result = stage_ae350_firmware(Path(__file__).resolve().parents[1], args.output,
-                                args.riscv_prefix, reference_mem=args.reference_mem)
+                                args.riscv_prefix, reference_mem=args.reference_mem, recording_api=args.recording_api)
     print(json.dumps(result, indent=2))
 
 

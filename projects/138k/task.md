@@ -66,6 +66,8 @@
 
 [no-CNN FC 完成路由但STA失败](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_FC_ROUTED_STA_FAILURE_20261030.md)：P&R返回0、生成FS，物理BSRAM272／340、CLS90%，但setup−116.645ns／hold−0.718ns／recovery−8.899ns；深组合音频路径和复位等仍阻断。父级复核23输入、13登记输出及全部20实现文件，HTML／TXT全局最差值一致。继续按实际锥拆分和验证，不以工具成功部署；无板卡操作。
 
+[R00 生产owner8父级集成](push2_workstation/usb_a/reports/WORKSTATION_R00_PRODUCTION_PARENT_INTEGRATION_20261030.md)已由新显式profile选择，父级13正向＋5负控、三配置来源各12项及profile／固件／API等回归全过；新R00 prepare为`4b1436d83219e765`，实际接物理PCM、AE350 F8040和DDR owner8。默认ROM保持；BLE仍原RAM，16,384帧容量未扩展，没有净BSRAM或长录音接受。accepted clean prepare的既有map边界失败另修；新候选未综合／物理／部署，R00整项仍未完成。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）

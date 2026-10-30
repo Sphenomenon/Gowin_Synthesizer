@@ -141,3 +141,7 @@ PYTHONPATH=projects/138k/push2_workstation/usb_a \
 原生新板装配通过明确的层次参数绑定，将延迟效果两条 65×512 偶／奇预取 FIFO 选择为 BSRAM；`music_async_fifo.RAM_STYLE` 默认仍为分布式 RAM，accepted 配置及其它 FIFO 不随之切换。只改变存储原语选择，不改变容量、ready／valid、头部预取、Gray 指针、PANIC／flush 或 DDR 分区。综合审计必须核对实际原语、容量、双时钟与读模式，防止参数路径漂移导致静默退回。物理拥塞、存储映射等价验证和后续实现结果见[2026-10-25 物理记录](../../reports/WORKSTATION_PHYSICAL_20261025.md)。
 
 原生配置同时保留锁定资源父配置中仍适用的 157 条 CDC／复位约束。旧 Dock 端口、已移除 MIDI 数据和另行审计的事件 FIFO 约束共九条不沿用；共享输入 owner 和 TMDS 串行器按实际新层次改名，处理清单进入 `integration_inputs.json`。父 SDC 字节哈希不符即失败。可见端点必须命中综合网表，DDR 不透明 IP 内部端点留待实现后审计，不能以补齐源约束宣告物理时序通过。
+
+## R00 显式生产组合
+
+`--workstation-profile custom138k-workstation-r00-v1` 单独选择 no-CNN＋owner8 的原生录音源策略，在真实 HDMI DDR 仲裁中新增录音并接实际完成 PCM 和 AE350 `0xf8040000` 服务。默认／其他 profile 的仲裁和 BLE 短录音保持原选择；本路径尚未经过物理资源、完整 CDC、时序或硬件验收。容量、正常切换封存、读引用与回滚边界见[录音服务契约](../services/RECORDING_DDR_SERVICE_CONTRACT.md)。

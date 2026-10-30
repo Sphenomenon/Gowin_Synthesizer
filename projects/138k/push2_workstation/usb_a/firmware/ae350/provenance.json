@@ -66,7 +66,17 @@
     "audio_clock_service.h": {
       "kind": "maintained_first_party",
       "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_clock_service.h",
-      "sha256": "8c66aa038f9e141826d81670d3d2818178b2a021e9d0f22b55af03e551317937"
+      "sha256": "0ac43161ae18b7a375096f6e9d5adb5128c23afbbe90c95db5bfa66da9a8e551"
+    },
+    "recording_service.c": {
+      "kind": "maintained_first_party",
+      "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.c",
+      "sha256": "d94ae0f233f22d3b1cad7021f95f81a0172184cfbb989eaee573bd18a72f1adf"
+    },
+    "recording_service.h": {
+      "kind": "maintained_first_party",
+      "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.h",
+      "sha256": "be63aa122af831f9dce895a6308b57b4d441341ec9e7e4fb23fa64e01780adcc"
     }
   }
 }

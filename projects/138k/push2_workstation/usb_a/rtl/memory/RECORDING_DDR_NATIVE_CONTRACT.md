@@ -44,3 +44,7 @@ sticky fault不撤销已发布native command、不清返回count/tag、不伪造
 scan、music_turn、TF audio、display、delay保持原高优先级结构。背景组recording与原CPU/writer选择交替；recording也计入music的背景竞争条件。recording_valid=0时原仲裁选择和legacy可见行为需逐拍相同。该局部turn防止连续recording把CPU/writer永久挡住，不建立对无界scan/audio/delay的全局公平保证；这些高优先级持续有效仍可阻挡背景请求。
 
 真实集成必须另定各client最大突发/水位/期限和控制器Gread、联合Gwrite、Lread，按实际流量验证D01/D04；native bridge本身不提供服务期限。后端FIFO overflow或命令/返回deadline按既有规则显式失败，音频采样不等待。测试中的并发music/NN是合法有界client流量模型，不是完整CNN算法或任意最坏流量证明。
+
+## 显式 R00 生产选择
+
+`custom138k-workstation-r00-v1` 现在显式把这些机制接到真实生产 top/HDMI、物理 PCM 与 AE350 对象服务，见[服务组合契约](../services/RECORDING_DDR_SERVICE_CONTRACT.md)。上述默认与原组件阶段证据保持原边界；其他 profile 仍未选择本路径。生产选择不提升物理 CDC、时序、资源收益或硬件接受。

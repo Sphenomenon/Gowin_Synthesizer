@@ -34,7 +34,12 @@ NO_CNN_NAME = 'custom138k-workstation-no-cnn-v1'
 NO_CNN_CONFIG = 'boards/custom_138k/workstation_profile_no_cnn_v1.json'
 RUNTIME_PROVIDER = 'rtl/workstation/workstation_profile_runtime.sv'
 from tools.workstation_recognition_policy import PROVIDER as NO_CNN_PROVIDER
+from tools.workstation_recording_policy import NAME as R00_NAME, CONFIG as R00_CONFIG, PROVIDER as R00_PROVIDER, POLICY as R00_POLICY
 PROFILE_REGISTRY = {
+    R00_NAME: dict(config=R00_CONFIG, revision=1,
+        configuration=dict(RUNTIME_CONFIGURATION,recognition_policy='disabled_cnn_and_follow_v1',recording_policy=R00_POLICY),
+        provider=R00_PROVIDER,recognition_enabled=False,recording_enabled=True,
+        integration_identity='custom138k-native-dual-rate-r00-revision1'),
     NAME: dict(config=CONFIG, revision=REVISION, configuration=RUNTIME_CONFIGURATION,
                provider=RUNTIME_PROVIDER, recognition_enabled=True,
                integration_identity='custom138k-native-dual-rate-runtime-revision5'),
@@ -113,7 +118,7 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
     return profile
 
 
-def prepare_ae350(root, output, stage, riscv_prefix=None):
+def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False):
     """Install maintained AE350 ROM only for the explicitly selected profile."""
     from tools.stage_ae350_firmware import stage_ae350_firmware
     root, output, stage = map(lambda path: Path(path).resolve(), (root, output, stage))
@@ -123,7 +128,7 @@ def prepare_ae350(root, output, stage, riscv_prefix=None):
     if sha(stage / rom_path) != historical:
         raise ValueError('AE350 profile installation requires the unchanged parent ROM')
     evidence = output / AE350_DIRECTORY
-    build = stage_ae350_firmware(root, evidence, riscv_prefix)
+    build = stage_ae350_firmware(root, evidence, riscv_prefix, recording_api=recording_api)
     if sha(evidence / 'boot.mem') != build['rom_sha256']:
         raise ValueError('AE350 generated ROM changed before installation')
     shutil.copyfile(evidence / 'boot.mem', stage / rom_path)
@@ -150,6 +155,11 @@ def _ae350_evidence(root, output, metadata, profile):
         if sha(checked_path(evidence, relative)) != expected:
             raise ValueError('workstation profile AE350 evidence changed: ' + relative)
     build = selected['build']
+    from tools.stage_ae350_firmware import selected_sources
+    recording_api = specification(profile['name']).get('recording_enabled', False)
+    if (build.get('recording_api_enabled') is not recording_api or
+            build.get('compiled_sources') != list(selected_sources(recording_api))):
+        raise ValueError('workstation profile AE350 recording API selection changed')
     if json.loads((evidence / 'build_metadata.json').read_text()) != build:
         raise ValueError('workstation profile AE350 build metadata changed')
     prefix = root.relative_to(root.parents[3]).as_posix() + '/'
@@ -231,6 +241,14 @@ def _artifact(root, output, metadata, profile):
         bindings[destination] = source
 
     prefix = root.relative_to(repository).as_posix() + '/'
+    if spec.get('recording_enabled',False):
+        from tools.workstation_recording_policy import metadata as recording_metadata, verify_address_map, MAP_SOURCE, MAP_DESTINATION
+        selected=dict(metadata.get('recording',{}));address_map=selected.pop('address_map',None)
+        if selected!=recording_metadata():raise ValueError('R00 recording selection changed')
+        verify_address_map(root,stage,address_map)
+        bind(MAP_DESTINATION,prefix+MAP_SOURCE)
+    elif 'recording' in metadata:
+        raise ValueError('unselected profile cannot claim recording owner8')
     for source, expected in profile['source_sha256'].items():
         relative = source[len(prefix):] if source.startswith(prefix) else None
         if (relative in metadata['source_snapshot_sha256'] and
@@ -352,6 +370,7 @@ def _artifact(root, output, metadata, profile):
                 ae350_firmware=ae350,
                 scan_window=metadata['scan_window'],
                 runtime_audio=metadata.get('runtime_audio'), recognition=metadata['recognition'],
+                **({'recording':metadata['recording']} if spec.get('recording_enabled',False) else {}),
                 generated_data_inputs={**ble_inputs, 'firmware/boot.mem': dict(origin='maintained_ae350_firmware',
                     sha256=ae350['installed_rom']['sha256'], source_sha256=ae350['build']['input_sha256'],
                     tool_versions=ae350['build']['tool_versions'], capacity=ae350['build']['capacity'])},
