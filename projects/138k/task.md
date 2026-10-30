@@ -166,6 +166,8 @@
 
 [C2103101 实际P&R失败复核](push2_workstation/usb_a/reports/WORKSTATION_PITCH_FIFO_C2103101_PNR_FAILURE_20261031.md)已封存：589条未布通、退出1，4,278复制输入保持；物理CLS61,506／69,120、BSRAM284／340、PRIMARY与LW各8／8。父级完整复验独立报告／24故障控制和实际九输出库存通过，但无位流或完整routed STA，不授物理／硬件接受，无板卡或部署操作。显示修复新候选222fb761另行综合审查。
 
+[显示请求实际综合](push2_workstation/usb_a/reports/WORKSTATION_DISPLAY_LOAD_SYNTHESIS_20261031.md)通过，固定222fb761的599输入／四输出／两工具和原644副本保持；Logic94,749／Register60,576／综合BSRAM237。旧显示路径未在新报告top5出现，计算估算仍57.039MHz，未达76.8；新VG clock4／28、PCM18／109和独立403pin／201tNET／90负控通过。其余新scope及物理准备继续，完整CDC／STA／硬件未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

@@ -1,0 +1,204 @@
+{
+  "schema": 1,
+  "identity": "display-load-actual-synthesis-parent-20261031-v1",
+  "source_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0",
+  "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-222fb761448fb6c0",
+  "candidate_input_sha256": "222fb761448fb6c087a982f0e000885a0aefc7409605d4a52f46ba8e0ef71633",
+  "VG_sha256": "f621fcbecb79012c0486e248a1cc686437b9d11ab887c22b2c8554a62f8b49af",
+  "process_sha256": "2b9a71d6017540307b2bed46ef809d478dbea548ab456375460381c03ebbc25f",
+  "elapsed_seconds": 377.71867570793256,
+  "staged_files": 599,
+  "enabled_files": 269,
+  "original_copy_files": 644,
+  "launcher_outputs": 4,
+  "launcher_tools": 2,
+  "AG_diagnostics": 0,
+  "compiled_delta": {
+    "added": [],
+    "removed": [],
+    "changed": [
+      "rtl/display_data/workstation_display_runtime.sv"
+    ]
+  },
+  "original_four_metadata_retained": true,
+  "no_synthesis_copy_backfilled": true,
+  "resource_comparison": {
+    "old": {
+      "Logic": 94582,
+      "Register": 60574,
+      "SSRAM": 309,
+      "synthesis_BSRAM": 237
+    },
+    "new": {
+      "Logic": 94749,
+      "Register": 60576,
+      "SSRAM": 309,
+      "synthesis_BSRAM": 237
+    },
+    "delta": {
+      "Logic": 167,
+      "Register": 2,
+      "SSRAM": 0,
+      "synthesis_BSRAM": 0
+    }
+  },
+  "warnings": {
+    "old": 150,
+    "new": 150,
+    "normalized_full_multiset_identical": true
+  },
+  "default_compute_synthesis_Fmax_MHz": {
+    "old": 57.039,
+    "new": 57.039,
+    "required": 76.8,
+    "accepted": false
+  },
+  "prior_display_path_absent_from_reported_top5": true,
+  "all_display_timing_paths_eliminated_claimed": false,
+  "top5_actual_paths": [
+    {
+      "number": 1,
+      "slack_ns": -6.906,
+      "source": "u_managed/runtime/bridge/held_reply_65_s0",
+      "destination": "u_managed/runtime/serializer/have_next_s0",
+      "capture_pin": "u_managed/runtime/serializer/have_next_s0/CE",
+      "logic_levels": 11
+    },
+    {
+      "number": 2,
+      "slack_ns": -6.867,
+      "source": "u_tf_audio/launched_epoch_0_s0",
+      "destination": "u_tf_audio/frames/quiesce_sync_0_s0",
+      "capture_pin": "u_tf_audio/frames/quiesce_sync_0_s0/D",
+      "logic_levels": 12
+    },
+    {
+      "number": 3,
+      "slack_ns": -6.765,
+      "source": "u_managed/runtime/bridge/held_reply_65_s0",
+      "destination": "u_managed/runtime/serializer/request_sequence_o_2_s0",
+      "capture_pin": "u_managed/runtime/serializer/request_sequence_o_2_s0/D",
+      "logic_levels": 11
+    },
+    {
+      "number": 4,
+      "slack_ns": -6.765,
+      "source": "u_managed/runtime/bridge/held_reply_65_s0",
+      "destination": "u_managed/runtime/serializer/request_sequence_o_4_s0",
+      "capture_pin": "u_managed/runtime/serializer/request_sequence_o_4_s0/D",
+      "logic_levels": 11
+    },
+    {
+      "number": 5,
+      "slack_ns": -6.765,
+      "source": "u_managed/runtime/bridge/held_reply_65_s0",
+      "destination": "u_managed/runtime/serializer/request_sequence_o_5_s0",
+      "capture_pin": "u_managed/runtime/serializer/request_sequence_o_5_s0/D",
+      "logic_levels": 11
+    }
+  ],
+  "clock": {
+    "tests": 4,
+    "negative_controls": 28,
+    "scope": "static declared runtime clocks only"
+  },
+  "PCM": {
+    "tests": 18,
+    "negative_controls": 109,
+    "payload_source_bits": 229,
+    "resolved_selectors": 896,
+    "constraint_revision": "paired-nextq-v2"
+  },
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-display-load-synthesis-independent-review-v1/REVIEW_SEAL.json",
+    "sha256": "de36561727d55e2c0a0f7c2e6118ae5b475118a1824bd07e7c77939d983caf5f"
+  },
+  "independent_report_pin_and_net_controls_root_replayed": true,
+  "root_source_captures": {
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py",
+      "sha256": "09ad4cdb5f0eebf3ec86ec6cde4a002b23c9b7750584cbf946cd48aefcfcda33",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py",
+      "sha256": "3aeb1f4e791b5a256fec71d181a18d91b367d0e1583030d504bc7cc8e104c8cb",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py",
+      "sha256": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py",
+      "sha256": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py",
+      "sha256": "1400a5915fa5139dc9b826835140d4c9b2333a2a57893cba4eb543c70ee061d1",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py",
+      "sha256": "ddfea92cc365ca8155bdc82a79cae53e8e21994495c2bbc72488260dbfa534fc",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json",
+      "sha256": "9fc4ee7b39e45a23bf45f3533d3fcb0e61dbbd4e781dd8447f0196d690497113",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_clocks.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_clocks.py",
+      "sha256": "ff60e4c1364b9718ac556ace9ec0f6aef1a337f8f23b67de6378f7b13bf0cdfa",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_profile.py",
+      "sha256": "3af8810c6f963ea96dd8292b49a1f67c18e3c7024ecf5a82dad7bff915dad163",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_board_peripherals.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_board_peripherals.py",
+      "sha256": "0ea1b704e682923710737632df2b77641c66d17dfddf3c105ec30135f576a349",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_pcm_cdc.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_pcm_cdc.py",
+      "sha256": "5bbf234658caa9c7ba7dba0e1755e04512987eb47824bda4b5f61016b280d445",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_PCM_CDC.md": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_PCM_CDC.md",
+      "sha256": "b47fd75bec47f85d37c05aa8226925eced17d88e1d9caf63d750ecb1b14b1c70",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_usb2_cdc.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_custom_usb2_cdc.py",
+      "sha256": "64f9096d97c1c3fc3b7787375549b584647d6ff9b6663c58d455ed400f5f6b37",
+      "equals_compiled_prepare_commit_git_blob": true
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py",
+      "sha256": "159d41337f4bf5e0d7ddcb179b8891faa68a3a4445535deb3fcc2b4260c88b10",
+      "equals_compiled_prepare_commit_git_blob": true
+    }
+  },
+  "physical_resource_benefit_accepted": false,
+  "full_CDC_accepted": false,
+  "full_reset_accepted": false,
+  "routed_timing_verified": false,
+  "pnr_started": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-display-load-parent-synthesis-v1/DELIVERY_SEAL.json",
+    "sha256": "65214de435096fe8dc0908859544baaf339101e97cf42d4f433d18012707b520"
+  },
+  "parent_file_count": 30,
+  "parent_input_count": 4058
+}
