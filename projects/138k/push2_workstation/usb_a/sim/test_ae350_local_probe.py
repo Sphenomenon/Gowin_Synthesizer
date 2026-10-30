@@ -7,11 +7,12 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 import zlib
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT),str(Path(__file__).resolve().parent)]
-from tools.workstation_ae350_local_probe import firmware,safe_dac_constraints,SAFE_DAC_PINS
+from tools.workstation_ae350_local_probe import firmware,safe_dac_constraints,SAFE_DAC_PINS,gao,TOP
 from tools.workstation_baselines import load_baseline
 from tools.stage_ae350_firmware import decode_rom
 from tools.decode_ae350_local_probe import decode,frames
@@ -28,6 +29,18 @@ class ProbeTest(unittest.TestCase):
     def tearDownClass(cls):cls.temp.cleanup()
 
     def cpu(self,**kwargs):return ProbeCpu(self.image,self.fw['capacity']['symbols'],**kwargs)
+
+    def test_gao_uses_working_core_expression_and_bus_schema(self):
+        document=ET.fromstring(gao('C21031C7'));core=document.find('AoCore')
+        self.assertEqual(core.get('module_name'),TOP)
+        self.assertEqual(core.get('sample_clock'),'clk_50m_d')
+        self.assertEqual(core.get('storage_depth'),core.get('capture_amount'))
+        self.assertEqual(core.get('storage_depth'),'128')
+        self.assertIsNone(document.find('Expressions'))
+        self.assertEqual(core.find('Expressions/Expression').text,'M0|!M0')
+        self.assertEqual(document.find('GAO_ID').text,'0011000111000111')
+        self.assertEqual([n.text for n in core.findall('SignalList/Bus/Signal')],
+            [f'status_50mhz[{bit}]' for bit in reversed(range(512))])
 
     def test_actual_probe_executes_crc_patterns_and_counter_difference(self):
         cpu=self.cpu();self.assertEqual(cpu.run_probe(),'probe_pass')

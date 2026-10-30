@@ -119,9 +119,15 @@ def constraints(root):
 
 def gao(user_code):
     document=ET.fromstring(base_gao(user_code));core=document.find('AoCore');core.set('module_name',TOP)
+    core.set('storage_depth','128');core.set('capture_amount','128')
+    document.find('GAO_ID').text=format(int(user_code[-4:],16),'016b')
     signals=core.find('SignalList');signals.clear()
-    for bit in reversed(range(512)):ET.SubElement(signals,'Signal',capture_enable='true').text=f'status_50mhz[{bit}]'
+    bus=ET.SubElement(signals,'Bus',capture_enable='true',name='status_50mhz')
+    for bit in reversed(range(512)):ET.SubElement(bus,'Signal').text=f'status_50mhz[{bit}]'
     core.find('Triggers/Trigger/SignalList/Signal').text='status_50mhz[0]'
+    # Match the working B7 schema: expressions belong to the acquisition core.
+    expressions=document.find('Expressions');document.remove(expressions);core.append(expressions)
+    expressions.find('Expression').text='M0|!M0'
     return ET.tostring(document,encoding='unicode')+'\n'
 
 def audit_prepare(output):
@@ -197,7 +203,7 @@ def prepare(root,netlists,output,user_code,prefix=None):
     fw=firmware(root,output/'firmware',prefix)
     common=['set root [file dirname [file normalize [info script]]]','cd $root',f'set_device {plan["device"]} -device_version C',
         'set_option -synthesis_tool gowinsynthesis',f'set_option -top_module {TOP}',f'set_option -output_base_name {BASE}',
-        'set_option -verilog_std sysv2017','set_option -include_path {. src/ae350}',
+        'set_option -verilog_std sysv2017','set_option -include_path $root',
         'set_option -use_jtag_as_gpio 0','set_option -use_cpu_as_gpio 1','set_option -use_mspi_as_gpio 1',
         'set_option -unused_pin default','set_option -cst_warn_to_error 1',
         *[f'add_file -type verilog [file join $root {name}]' for name in selected],

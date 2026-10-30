@@ -81,11 +81,16 @@ module workstation_ae350_local_memory_probe_top(
     genvar w;generate for(w=0;w<64;w=w+1)begin:word_bank
         assign source_words[w*32+:32]=diagnostic[w];
     end endgenerate
-    wire [511:0] status_50mhz /* synthesis syn_preserve=1 syn_keep=1 */;
+    wire [511:0] uart_status_50mhz;
+    // Preserve real top-level registers for GAO; an unused wire alias is swept.
+    (* syn_keep=1,syn_preserve=1 *) reg [511:0] status_50mhz;
+    always @(posedge clk_50m or negedge system_reset_n)
+        if(!system_reset_n)status_50mhz<=0;
+        else status_50mhz<=uart_status_50mhz;
     workstation_ae350_probe_uart #(.USER_CODE(`AE350_PROBE_USER_CODE)) u_uart(
         .clk_50m(clk_50m),.reset_n(system_reset_n),.pclk(pclk),.preset_n(preset_n),
         .source_words(source_words),.platform_flags({preset_n,cpu_reset_n,lock_qualified,pll_locked}),
-        .tx(debug_uart_tx),.status_50mhz(status_50mhz));
+        .tx(debug_uart_tx),.status_50mhz(uart_status_50mhz));
     RiscV_AE350_SOC_Top u_cpu(
         .ROM_HRDATA(rom_data),.ROM_HREADY(1'b1),.ROM_HRESP(1'b0),.ROM_HADDR(rom_address),
         .ROM_HTRANS(rom_transfer),.ROM_HWRITE(rom_write),.ROM_HCLK(rom_clk),.ROM_HRSTN(rom_reset_n),
