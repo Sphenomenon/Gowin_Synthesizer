@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "identity": "native-runtime-memory-integration-offline-v1-b11323ecf9606c66",
+  "passed": true,
+  "source_implementation_changed": false,
+  "offline_verification": true,
+  "synthesis_tested": false,
+  "routed_timing_tested": false,
+  "hardware_tested": false,
+  "sram_deployed": false,
+  "flash_deployed": false,
+  "profile_changed": false,
+  "scope": "Real APB/services, native note/parameter/session authority, default audited owner6 ring/DMA, retained functional backend queue, official DCS, physical I2S decoding and permanent guard/mute composition",
+  "source_set_sha256": "b11323ecf9606c66c7e5bd02c134e6cdc63b0b97fc1d31728b3156d5ce9de319",
+  "input_sha256": {
+    "sim/memory/tb_workstation_runtime_memory_integration.sv": "ed3cfac90569d981c081bcbcb400bea5cc5daaa22b92a0601ede48d8b1478d9b",
+    "sim/memory/run_runtime_memory_integration.py": "3e8f420490faa1220ae1d253fc6f73b53fbfa87e66ad777a1361d93ceb1c78f7",
+    "reports/WORKSTATION_RUNTIME_MEMORY_INTEGRATION_20261030.md": "f1ee606c393fcdc4b1115fee8cae3866ca63519a70e352acf69837f6fa7faaab"
+  },
+  "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-memory-integration-r2/verification.json",
+  "verification_sha256": "94bcefe7d83f1d06218342a4d93200aa5429a5442c9affbdd8cce207e7ecd134",
+  "configuration": {
+    "reserve_zero_epoch": true,
+    "initial_stream_epoch": 1,
+    "compute_hz": 76800000,
+    "memory_hz": 100000000,
+    "control_hz": 50000000,
+    "memory_phase_ns": 7,
+    "ring_samples": 16384,
+    "echo_samples48": 9600,
+    "memory_guard_timeout_cycles": 25,
+    "startup_mute_frames": 3,
+    "pdn_hold_frames": 1
+  },
+  "metrics": {
+    "physical_frames": 10034,
+    "stale_returns": 1,
+    "phases": 4,
+    "checks": 975384,
+    "nonzero_frames": 9436,
+    "silent_fault_frames": 64,
+    "apb": 15,
+    "accepted_reads": 6,
+    "completed_reads": 6,
+    "escaped_returns": 0,
+    "blocked_request_cycles": 114922,
+    "writes": 2488
+  },
+  "warning_counts": {
+    "IEEEMAYDEPRECATE": 90,
+    "PINMISSING": 15,
+    "TIMESCALEMOD": 1,
+    "WIDTHEXPAND": 61,
+    "WIDTHTRUNC": 17,
+    "UNSIGNED": 2
+  },
+  "new_fixture_warning_count": 0,
+  "inputs_unchanged_during_run": true,
+  "prepared_reference_candidate": "custom138k-workstation-v1-d23d498ea824c9f9",
+  "prepared_project": "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+  "fault_cases": [
+    "1ns backend ready loss",
+    "1ns compute PLL qualification loss",
+    "memory clock stopped high",
+    "memory clock stopped low"
+  ],
+  "state_preservation_checks": [
+    "held_notes",
+    "committed control state",
+    "control_pitch including panic identity",
+    "control_options",
+    "stream_epoch=1",
+    "applied_events"
+  ],
+  "state_comparison_points": [
+    "after fault",
+    "after backend recovery and 20 physical frames",
+    "after CPU-only preset reset",
+    "after attempted rate request and recover"
+  ],
+  "actual_queued_read_policy": "Original 16K-sample ring and 9600-sample delay warm normally; first ordinary ring read is accepted and held by the real ordered functional queue. Queue does not reset for backend qualification loss; its delayed old response is blocked.",
+  "physical_output_checks": "Actual I2S pins are decoded and compared with physical frame tap. Hardware SMUTE asserts; after four-frame margin, 16 zero physical frames per fault are required.",
+  "reviewed_top": {
+    "path": "rtl/workstation/gw138k_push_workstation_top.v",
+    "sha256": "834d33600b26144d4009b8fc895295747b85ede87ad9152450a7c780e1de6249",
+    "netlist_mapped": false,
+    "routed_paths_verified": false,
+    "findings": [
+      "Native delay request/ready/response and TF service/command-buffer request/ready/response source gates are present.",
+      "Runtime reset is common reset AND sticky started; availability includes compute PLL qualification without resetting runtime identity.",
+      "Indirect phantom USB attach on compute PLL recovery found and parent fixed explicit native adapter audio_reset_n to runtime_reset_n at snapshot line348; full USB fixture remains unverified.",
+      "Guard fault contributes to clock/TF fault and display/BLE trust, with parent compute mute assertion/release chain."
+    ]
+  },
+  "reproduce": [
+    "python3",
+    "projects/138k/push2_workstation/usb_a/sim/memory/run_runtime_memory_integration.py",
+    "--project",
+    "<prepared-f03-reference-project>",
+    "--output",
+    "<new-cache-output-directory>"
+  ],
+  "limits": [
+    "Functional ordered DDR queue; no actual DDR controller or arbiter netlist.",
+    "No full top, complete USB adapter, TF service or real PLL loss model instantiated.",
+    "Compute clock remains running when its qualification input is pulsed; actual compute clock stoppage is not claimed.",
+    "Finite 20-frame post-recovery interval; later watchdog transitions and unlimited fault operation are not certified.",
+    "Shorter startup/guard qualification is explicit; original ring allocation and delay length remain unchanged.",
+    "No routed CDC/PLL/timing or physical mute latency acceptance.",
+    "Existing vendor/native/legacy compile diagnostics outside new fixture/guard are preserved in evidence."
+  ],
+  "parent_independent_verification": {
+    "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-memory-integration-parent-final/verification.json",
+    "verification_sha256": "45b9e7a2a22d0bbdd8599e163a73b42fb4b0bcbb31f9a9d5cbffe7c5968ae9a5",
+    "passed": true,
+    "identity": "native-runtime-memory-integration-offline-v1-b11323ecf9606c66",
+    "all_inputs_rechecked": true,
+    "metrics": {
+      "physical_frames": 10034,
+      "stale_returns": 1,
+      "phases": 4,
+      "checks": 975384,
+      "nonzero_frames": 9436,
+      "silent_fault_frames": 64,
+      "apb": 15,
+      "accepted_reads": 6,
+      "completed_reads": 6,
+      "escaped_returns": 0,
+      "blocked_request_cycles": 114922,
+      "writes": 2488
+    },
+    "new_fixture_warning_count": 0,
+    "inputs_unchanged_during_run": true
+  }
+}
