@@ -1,0 +1,58 @@
+{
+  "banner": "// Versioned LAST/session extension of the maintained TF transport.\n// Transport generation is the Gray cancellation fence; session generation is\n// caller metadata carried atomically with PCM/LAST, not another parameter owner.\n// The original bridge and profiles remain unchanged; see v2 provenance/contract.\n",
+  "base_commit": "232a3eba6b7af5226ea477976b448c54ee949e4c",
+  "derived": "rtl/tf_audio/workstation_tf_frame_bridge_v2.sv",
+  "derived_sha256": "dcf22db6f1332d4ca8d20be902b45987f037b3b8b6e3aa2f274cc63b0cc129df",
+  "exact_edits": [
+    {
+      "after": "module workstation_tf_frame_bridge_v2 #(",
+      "before": "module workstation_tf_frame_bridge #(",
+      "count": 1
+    },
+    {
+      "after": "    input wire source_valid_i,source_error_i,source_last_i,\n    input wire [31:0] source_session_generation_i,",
+      "before": "    input wire source_valid_i,source_error_i,",
+      "count": 1
+    },
+    {
+      "after": "    output wire tf_error_o,tf_last_o,\n    output wire [31:0] tf_session_generation_o,",
+      "before": "    output wire tf_error_o,",
+      "count": 1
+    },
+    {
+      "after": "[117:0]",
+      "before": "[84:0]",
+      "count": 2
+    },
+    {
+      "after": ".WIDTH(118)",
+      "before": ".WIDTH(85)",
+      "count": 1
+    },
+    {
+      "after": ".write_data_i({source_generation_o,source_session_generation_i,source_sample_rate_i,\n                      source_error_i || unsupported,source_last_i,",
+      "before": ".write_data_i({source_generation_o,source_sample_rate_i,source_error_i || unsupported,",
+      "count": 1
+    },
+    {
+      "after": "read_data[117:86]",
+      "before": "read_data[84:53]",
+      "count": 1
+    },
+    {
+      "after": "assign {tf_generation_o,tf_session_generation_o,tf_sample_rate_o,tf_error_o,\n            tf_last_o,tf_left_o,tf_right_o}=held_packet;",
+      "before": "assign {tf_generation_o,tf_sample_rate_o,tf_error_o,tf_left_o,tf_right_o}=held_packet;",
+      "count": 1
+    }
+  ],
+  "legacy_bridge_unchanged": true,
+  "original": "rtl/tf_audio/workstation_tf_frame_bridge.sv",
+  "original_sha256": "eb5895b975dc699178a6e451f2f05d481f63424848ebe153c1402a21a63baf31",
+  "physical_CDC_verified": false,
+  "physical_EOF_verified": false,
+  "profile_selected": false,
+  "review_diff": "rtl/tf_audio/provenance/workstation_tf_frame_bridge_v2.patch",
+  "review_diff_sha256": "d6e96e07da25e1da532fa996f7bac5d2831f18e27b171b21d58eba12bd79fc3d",
+  "schema": 1,
+  "source_policy": "Versioned unselected RTL is consumed directly; script and patch are derivation audit only."
+}

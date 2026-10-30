@@ -1,0 +1,78 @@
+--- workstation_tf_frame_bridge.sv
++++ workstation_tf_frame_bridge_v2.sv
+@@ -1,4 +1,9 @@
+ `timescale 1ns/1ps
++
++// Versioned LAST/session extension of the maintained TF transport.
++// Transport generation is the Gray cancellation fence; session generation is
++// caller metadata carried atomically with PCM/LAST, not another parameter owner.
++// The original bridge and profiles remain unchanged; see v2 provenance/contract.
+ 
+ // Opt-in decoder50 -> continuous compute transport. No file/DDR/routing policy.
+ // Invalidate advances a registered Gray generation on THAT source edge, so the
+@@ -6,7 +11,7 @@
+ // A separate single-step Gray ACK chases the published generation. New source
+ // PCM is gated until that ACK returns: a new packet cannot precede its cancel
+ // barrier. Stream changes never reset either side of the payload FIFO.
+-module workstation_tf_frame_bridge #(
++module workstation_tf_frame_bridge_v2 #(
+     parameter integer FIFO_ADDRESS_BITS=4,
+     parameter [31:0] INITIAL_GENERATION=32'd0
+ ) (
+@@ -14,7 +19,8 @@
+     // Source-domain pulses/held controls. Each high invalidate edge is one
+     // event; caller combines restart/track/card-lost into this explicit event.
+     input wire invalidate_i,source_quiesce_i,
+-    input wire source_valid_i,source_error_i,
++    input wire source_valid_i,source_error_i,source_last_i,
++    input wire [31:0] source_session_generation_i,
+     input wire [19:0] source_sample_rate_i,
+     input wire signed [15:0] source_left_i,source_right_i,
+     output wire source_ready_o,
+@@ -28,7 +34,8 @@
+     // a stalled packet; ordinary stalls preserve every payload bit.
+     output wire tf_valid_o,
+     input wire tf_ready_i,
+-    output wire tf_error_o,
++    output wire tf_error_o,tf_last_o,
++    output wire [31:0] tf_session_generation_o,
+     output wire [19:0] tf_sample_rate_o,
+     output wire signed [15:0] tf_left_o,tf_right_o,
+     output wire [31:0] tf_generation_o,
+@@ -97,13 +104,14 @@
+     assign source_quiescent_o=source_reset_n && source_quiesce_i && !invalidate_i &&
+         !source_generation_pending_o && quiet_sync[1];
+     wire write_ready,read_valid,read_ready;
+-    wire [84:0] read_data;
++    wire [117:0] read_data;
+     assign source_ready_o=source_reset_n && !invalidate_i && !source_quiesce_i && !quiesce_return_sync[1] &&
+         !source_generation_pending_o && write_ready;
+-    music_async_fifo #(.WIDTH(85),.ADDRESS_BITS(FIFO_ADDRESS_BITS)) frames(
++    music_async_fifo #(.WIDTH(118),.ADDRESS_BITS(FIFO_ADDRESS_BITS)) frames(
+         .write_clk_i(source_clk_i),.write_rst_ni(source_reset_n),
+         .write_valid_i(source_valid_i && source_ready_o),.write_ready_o(write_ready),
+-        .write_data_i({source_generation_o,source_sample_rate_i,source_error_i || unsupported,
++        .write_data_i({source_generation_o,source_session_generation_i,source_sample_rate_i,
++                      source_error_i || unsupported,source_last_i,
+                       unsupported ? 16'd0 : source_left_i,unsupported ? 16'd0 : source_right_i}),
+         .read_clk_i(compute_clk_i),.read_rst_ni(compute_reset_n),
+         .read_valid_o(read_valid),.read_ready_i(read_ready),.read_data_o(read_data));
+@@ -113,14 +121,15 @@
+     // code. Cancellation/quiet guards need not wait for binary decoding.
+     wire cancel_pending=!expected_generation_valid_o || generation_sync!=gray(expected_generation_o);
+     reg held_valid;
+-    reg [84:0] held_packet;
++    reg [117:0] held_packet;
+     reg [2:0] quiet_settle;
+-    wire [31:0] head_generation=read_data[84:53];
++    wire [31:0] head_generation=read_data[117:86];
+     wire read_fire=read_valid && read_ready;
+     wire held_fire=tf_valid_o && tf_ready_i;
+     assign tf_valid_o=compute_reset_n && held_valid && expected_generation_valid_o &&
+         !cancel_pending && !quiesce_sync[1] && tf_generation_o==expected_generation_o;
+-    assign {tf_generation_o,tf_sample_rate_o,tf_error_o,tf_left_o,tf_right_o}=held_packet;
++    assign {tf_generation_o,tf_session_generation_o,tf_sample_rate_o,tf_error_o,
++            tf_last_o,tf_left_o,tf_right_o}=held_packet;
+     assign read_ready=compute_reset_n && expected_generation_valid_o && !cancel_pending &&
+         (quiesce_sync[1] ? !held_valid : (!held_valid || held_fire));
+     assign media_quiescent_o=compute_reset_n && expected_generation_valid_o && !cancel_pending &&
