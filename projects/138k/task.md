@@ -42,6 +42,8 @@
 
 [PCM/context CDC 维护组合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PCM_CDC_COMPOSITION_20261030.md)已完成父级实际 VG 14 项／81 负控，独立检查 229 位、862 selector、16 同步组与五组 release。新 prepare `9993a3602be582fa` 安装 50 行约束，profile 20 项／来源 12 项／accepted 10 项通过，570 staged 仅 SDC 改变。旧 25／77、f1be 综合及 F8／F9 身份不转移；新候选尚无综合，完整 CDC／功能复位／RAM 数据时序／物理与硬件接受仍未完成，无部署。
 
+[F9 第二次有效资源失败](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_F09_RESOURCE_FAILURE_20261030.md)已封存：32,709 条未布通网络、CLS 报告99%、BSRAM 298／340、PRIMARY 与 LW 各8／8，27 项登记输入保持，无位流或完整 routed STA。F8／F9 两次真实资源尝试均失败，现已满足用户允许 CNN／曲谱引导裁剪的条件；独立 no-CNN 候选正在准备，当前主线尚未激活，不宣称资源节省或部署。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
