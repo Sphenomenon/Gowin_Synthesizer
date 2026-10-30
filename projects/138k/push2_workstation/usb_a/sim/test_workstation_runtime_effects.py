@@ -14,6 +14,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from workstation_baselines import load_baseline
 from workstation_chorus_provenance import verify as verify_chorus, NARROW_POLICY, ADAPTATION
+from workstation_delay_storage_provenance import (
+    verify as verify_delay_storage, STORAGE_POLICY, ADAPTATION as DELAY_STORAGE_ADAPTATION,
+    source_bundle as delay_storage_source_bundle, PREPARED_SOURCE as DELAY_PREPARED_SOURCE,
+    REFERENCE as DELAY_STORAGE_REFERENCE,
+)
 from test_workstation_runtime_reverb import FixedRoom, sat, signed
 
 
@@ -143,6 +148,62 @@ class Effects:
         return chain[0], chain[1], clip
 
 
+class DelayStorageProvenance(unittest.TestCase):
+    def setUp(self):
+        import workstation_delay_storage_provenance as storage
+        self.storage=storage
+        self.source=(ROOT/storage.SOURCE).read_bytes()
+        self.provenance=(ROOT/storage.PROVENANCE).read_bytes()
+        self.adaptation=(ROOT/storage.ADAPTATION).read_bytes()
+
+    def test_exact_original_native_and_prepared_chain(self):
+        m=self.storage
+        old=m.restore_native(self.source,self.provenance,STORAGE_POLICY,self.adaptation)
+        self.assertEqual(digest(old.encode()),'d8a0d2c787bc8c222bf4dde74069db41163988a646fd70c32774387bfe23a689')
+        prepared,evidence=m.verify(self.source,self.provenance,STORAGE_POLICY,self.adaptation)
+        self.assertEqual(prepared,m.verify(old.encode(),self.provenance)[0])
+        bundle=m.source_bundle(ROOT)
+        self.assertEqual(bundle['exact_prepared_sha256'],'5fcabe0bb792efb13a791b3e6f91b6d156dd074d8a89421dedde09a124539742')
+        self.assertEqual(bundle['storage_instances'],['delay_stage.u_write_fifo','delay_stage.u_read_fifo'])
+        self.assertTrue(bundle['original_locked_prepared_slice_verified'])
+        self.assertEqual(bundle['added_clock_latency'],0)
+        for key in ('physical_ram_mapping_verified','physical_timing_verified','hardware_acceptance_inherited','accepted_baseline_storage_selection_inherited'):
+            self.assertFalse(bundle[key],key)
+
+    def test_old_policy_and_changed_original_provenance_rejected(self):
+        m=self.storage
+        for source,provenance,policy,adaptation in [
+            (self.source,self.provenance,m.STRICT_POLICY,None),
+            (self.source,self.provenance,m.STRICT_POLICY,self.adaptation),
+            (self.source,self.provenance,STORAGE_POLICY,None),
+            (self.source,self.provenance+b'\n',STORAGE_POLICY,self.adaptation),
+            (self.source,self.provenance,'automatic',self.adaptation),
+        ]:
+            with self.subTest(policy=policy),self.assertRaises(ValueError):m.verify(source,provenance,policy,adaptation)
+
+    def test_changed_source_or_adaptation_rejected(self):
+        m=self.storage
+        for source,adaptation in [
+            (self.source.replace(b'u_write_fifo.RAM_STYLE="block_ram"',b'u_write_fifo.RAM_STYLE="distributed_ram"'),self.adaptation),
+            (self.source.replace(b'u_read_fifo.RAM_STYLE="block_ram"',b'u_write_fifo.RAM_STYLE="block_ram"'),self.adaptation),
+            (self.source+b'//unreviewed change\n',self.adaptation),
+            (self.source,self.adaptation+b'\n'),
+            (self.source,self.adaptation.replace(b'"added_clock_latency": 0',b'"added_clock_latency": 1')),
+        ]:
+            with self.subTest(source=digest(source),adaptation=digest(adaptation)),self.assertRaises(ValueError):
+                m.verify(source,self.provenance,STORAGE_POLICY,adaptation)
+
+    def test_actual_fifo_reference_and_prepared_source_bytes_fail_closed(self):
+        from unittest import mock
+        m=self.storage;original=Path.read_bytes
+        for name in (m.FIFO,m.REFERENCE,m.PREPARED_SOURCE):
+            def changed(path):
+                value=original(path)
+                return value+b'\n' if path==ROOT/name else value
+            with self.subTest(path=name),mock.patch.object(Path,'read_bytes',changed),self.assertRaises(ValueError):
+                m.source_bundle(ROOT)
+
+
 class RuntimeEffectsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -162,7 +223,15 @@ class RuntimeEffectsTest(unittest.TestCase):
             provenance_path = native.with_suffix('.provenance.json')
             provenance = json.loads(provenance_path.read_text())
             payload = native.read_bytes()
-            if name == 'rtl/audio/workstation_runtime_chorus_effect.sv':
+            if name == 'rtl/audio/workstation_runtime_stereo_effects.sv':
+                adaptation_path = ROOT / DELAY_STORAGE_ADAPTATION
+                old, cls.delay_storage_provenance_evidence = verify_delay_storage(
+                    payload, provenance_path.read_bytes(), STORAGE_POLICY, adaptation_path.read_bytes())
+                cls.delay_storage_provenance_evidence = delay_storage_source_bundle(ROOT)
+                for path in (adaptation_path, ROOT / 'tools/workstation_delay_storage_provenance.py',
+                             ROOT / DELAY_PREPARED_SOURCE, ROOT / DELAY_STORAGE_REFERENCE):
+                    cls.source_hashes[str(path.relative_to(ROOT))] = digest(path.read_bytes())
+            elif name == 'rtl/audio/workstation_runtime_chorus_effect.sv':
                 adaptation_path = ROOT / ADAPTATION
                 old, cls.chorus_provenance_evidence = verify_chorus(
                     payload, provenance_path.read_bytes(), NARROW_POLICY, adaptation_path.read_bytes())

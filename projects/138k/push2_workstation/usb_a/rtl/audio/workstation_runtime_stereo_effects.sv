@@ -127,6 +127,8 @@ module workstation_runtime_stereo_effects #(
     end
   end
 
+  defparam delay_stage.u_write_fifo.RAM_STYLE="block_ram";
+  defparam delay_stage.u_read_fifo.RAM_STYLE="block_ram";
   workstation_runtime_delay_effect_ddr #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES),
       .FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS),.TRANSACTION_TIMEOUT_CYCLES(TRANSACTION_TIMEOUT_CYCLES),
       .PEER_TIMEOUT_CYCLES(PEER_TIMEOUT_CYCLES)) delay_stage(

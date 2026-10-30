@@ -101,6 +101,17 @@ module tb_workstation_runtime_effects;
       .ready_o(ref_ready),.valid_o(ref_valid),.left_o(ref_l),.right_o(ref_r),.clip_o(ref_clip),
       .mem_clk_i(mclk),.mem_rst_ni(mrst_n),.dwr_valid_o(rwvalid),.dwr_data_o(rwdata),.dwr_pop_i(rwpop),
       .drd_push_i(rrpush),.drd_data_i(rrdata),.drd_ready_o(rrready));
+  initial begin
+    if(u_dut.delay_stage.u_write_fifo.RAM_STYLE!="block_ram" ||
+       u_dut.delay_stage.u_read_fifo.RAM_STYLE!="block_ram")
+      $fatal(1,"native delay FIFO storage policy was not elaborated");
+    if(u_ref.delay_stage.u_write_fifo.RAM_STYLE!="distributed_ram" ||
+       u_ref.delay_stage.u_read_fifo.RAM_STYLE!="distributed_ram")
+      $fatal(1,"prepared reference storage selection changed");
+    if(u_dut.delay_stage.u_write_fifo.WIDTH!=65 || u_dut.delay_stage.u_read_fifo.WIDTH!=65 ||
+       u_dut.delay_stage.u_write_fifo.ADDRESS_BITS!=9 || u_dut.delay_stage.u_read_fifo.ADDRESS_BITS!=9)
+      $fatal(1,"native delay FIFO capacity changed");
+  end
   delay_ddr_dma u_ref_dma(.clk_i(mclk),.rst_ni(mrst_n),.dwr_valid_i(rwvalid),.dwr_data_i(rwdata),.dwr_pop_o(rwpop),
       .drd_push_o(rrpush),.drd_data_o(rrdata),.drd_ready_i(rrready),.ddr_req_o(rreq),.ddr_write_o(rwrite),
       .ddr_address_o(raddr),.ddr_data_o(rw256),.ddr_mask_o(),.ddr_ready_i(1'b1),.ddr_response_i(rresponse),

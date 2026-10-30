@@ -24,7 +24,7 @@ class DelayFifoStorage(unittest.TestCase):
         binary = directory / ('simulation-' + str(address_bits) + '-' + str(write_half))
         command = ['iverilog', '-g2012', '-s', 'tb', f'-Ptb.ADDRESS_BITS={address_bits}',
                    f'-Ptb.WRITE_HALF={write_half}', f'-Ptb.READ_HALF={read_half}',
-                   '-o', str(binary), str(SOURCE), str(BENCH), *map(str, extra)]
+                   '-o', str(binary), *map(str, extra), str(SOURCE), str(BENCH)]
         compiled = subprocess.run(command, capture_output=True, text=True, timeout=120)
         self.assertEqual(compiled.returncode, 0, compiled.stdout + compiled.stderr)
         executed = subprocess.run(['vvp', str(binary)], capture_output=True, text=True, timeout=120)

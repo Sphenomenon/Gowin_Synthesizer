@@ -16,6 +16,7 @@ from tools.workstation_runtime_cdc import BLE_RELEASE_ALIASES, runtime_cdc_bundl
 from tools.workstation_runtime_pcm_cdc import runtime_pcm_cdc_bundle
 from tools.workstation_usb2_owner_reset import source_bundle as usb2_owner_reset_bundle
 from tools.workstation_chorus_provenance import source_bundle as chorus_source_bundle
+from tools.workstation_delay_storage_provenance import source_bundle as delay_storage_source_bundle
 
 POLICY = 'native_dual_rate_runtime_v1'
 SOURCES = (
@@ -84,6 +85,9 @@ DEPENDENCIES = (
     'rtl/audio/WORKSTATION_RUNTIME_CHORUS_DELAY.md',
     'rtl/audio/workstation_runtime_spatial_reverb.provenance.json',
     'rtl/audio/workstation_runtime_stereo_effects.provenance.json',
+    'rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json',
+    'tools/workstation_delay_storage_provenance.py',
+    'rtl/audio/WORKSTATION_RUNTIME_DELAY_STORAGE.md',
     'rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.provenance.json',
     'rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.provenance.json',
 )
@@ -229,6 +233,7 @@ def constraints(root, shared_crossings, *, local_panel_enabled=True):
     runtime_pcm_cdc = runtime_pcm_cdc_bundle(root)
     owner_reset = usb2_owner_reset_bundle(root)
     chorus_source = chorus_source_bundle(root)
+    delay_fifo_storage = delay_storage_source_bundle(root)
     bluetooth = bluetooth_constraints(BLUETOOTH_SDC)
     if runtime_cdc['sdc'].splitlines().count(bluetooth['evidence']['replacement']['constraint']) != 1:
         raise ValueError('runtime BLE reset replacement constraint missing or duplicated')
@@ -256,6 +261,7 @@ def constraints(root, shared_crossings, *, local_panel_enabled=True):
     )
     return dict(policy=POLICY, sdc=clocks['sdc'] + audio_sdc + guard_reset_sdc + owner_reset['sdc'],
         chorus_source=chorus_source,
+        delay_fifo_storage=delay_fifo_storage,
         usb2_owner_reset={key: value for key, value in owner_reset.items() if key != 'sdc'},
         runtime_cdc_sdc=runtime_cdc['sdc'] + runtime_pcm_cdc['sdc'],
         bluetooth_sdc=bluetooth['sdc'], bluetooth_cdc_adaptation=bluetooth['evidence'],

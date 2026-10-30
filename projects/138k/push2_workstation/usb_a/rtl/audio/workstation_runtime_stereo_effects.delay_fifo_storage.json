@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "policy": "native_delay_fifo_block_ram_v1",
+  "source": "rtl/audio/workstation_runtime_stereo_effects.sv",
+  "original_provenance": "rtl/audio/workstation_runtime_stereo_effects.provenance.json",
+  "original_provenance_sha256": "5af689e1adc920524e83d0ae9da87382a75a6bc2868c08fc246abb47814df68c",
+  "parent_source_sha256": "d8a0d2c787bc8c222bf4dde74069db41163988a646fd70c32774387bfe23a689",
+  "current_source_sha256": "ca9f50cd0c70add7c04fe6230686510dbbd128561aebf7a0920d1eb463c5686f",
+  "base_commit": "e37890c308120c9b373f8ae18034d66af5a61d50",
+  "exact_changes": [
+    {
+      "before": "  workstation_runtime_delay_effect_ddr #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES),",
+      "after": "  defparam delay_stage.u_write_fifo.RAM_STYLE=\"block_ram\";\n  defparam delay_stage.u_read_fifo.RAM_STYLE=\"block_ram\";\n  workstation_runtime_delay_effect_ddr #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES),",
+      "count": 1
+    }
+  ],
+  "source_policy": "Native dual-rate runtime composition only; two explicit storage defparams; original prepared/native provenance remains unchanged; no generated production RTL.",
+  "policy_reference": {
+    "source": "rtl/workstation/gw138k_push_workstation_top.v",
+    "sha256": "08237ed942a27b1f68422b913fa23f0debb3e035b6922f8aacfcc8b077f0869e",
+    "scope": "WORKSTATION_CUSTOM_138K non-runtime maintained composition; not an accepted baseline policy",
+    "selectors": [
+      "u_managed.u_audio.u_workstation.effects.delay_stage.u_write_fifo.RAM_STYLE",
+      "u_managed.u_audio.u_workstation.effects.delay_stage.u_read_fifo.RAM_STYLE"
+    ]
+  },
+  "fifo_source": {
+    "source": "rtl/music/music_async_fifo.sv",
+    "sha256": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "source_modified": false
+  },
+  "storage_contract": {
+    "instances": [
+      "delay_stage.u_write_fifo",
+      "delay_stage.u_read_fifo"
+    ],
+    "RAM_STYLE": "block_ram",
+    "WIDTH": 65,
+    "default_ADDRESS_BITS": 9,
+    "default_depth_per_fifo": 512,
+    "attribute_branch": "WIDTH == 65 && ADDRESS_BITS >= 8, even/odd prefetch banks",
+    "small_depth_behavior": "ADDRESS_BITS 7 keeps the unchanged asynchronous g_small_head branch; no BSRAM inference is claimed",
+    "added_clock_latency": 0,
+    "algorithm_ports_clocks_depths_unchanged": true
+  },
+  "physical_ram_mapping_verified": false,
+  "physical_timing_verified": false,
+  "hardware_acceptance_inherited": false
+}

@@ -219,6 +219,21 @@ class PreparedClosure(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'runtime BLE constraint policy changed'):
             profile.verify(ROOT, self.output)
 
+    def test_runtime_delay_storage_policy_is_recomputed(self):
+        from tools.workstation_delay_storage_provenance import source_bundle
+        artifact = profile.verify(ROOT, self.output)
+        self.assertEqual(artifact['runtime_audio']['delay_fifo_storage'], source_bundle(ROOT))
+        metadata_path = self.output / 'integration_inputs.json'
+        original = metadata_path.read_text()
+        for field, value in [('RAM_STYLE', 'distributed_ram'), ('physical_ram_mapping_verified', True),
+                             ('adaptation_sha256', '0' * 64), ('policy', 'locked_native_v1')]:
+            metadata = json.loads(original)
+            metadata['runtime_audio']['delay_fifo_storage'][field] = value
+            metadata_path.write_text(json.dumps(metadata))
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, 'delay FIFO storage policy changed'):
+                profile.verify(ROOT, self.output)
+        metadata_path.write_text(original)
+
     def test_runtime_pcm_policy_is_recomputed_and_installed(self):
         from tools.workstation_runtime_pcm_cdc import runtime_pcm_cdc_bundle
         bundle = runtime_pcm_cdc_bundle(ROOT)

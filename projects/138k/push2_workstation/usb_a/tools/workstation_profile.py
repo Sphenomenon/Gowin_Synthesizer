@@ -235,6 +235,9 @@ def _artifact(root, output, metadata, profile):
         raise ValueError('workstation profile runtime PCM constraint policy changed')
     if any(staged_sdc.count(line) != 1 for line in pcm['sdc'].splitlines()):
         raise ValueError('workstation profile runtime PCM constraint installation changed')
+    from tools.workstation_delay_storage_provenance import source_bundle as delay_storage_source_bundle
+    if metadata.get('runtime_audio', {}).get('delay_fifo_storage') != delay_storage_source_bundle(root):
+        raise ValueError('workstation profile runtime delay FIFO storage policy changed')
     from tools.workstation_usb2_owner_reset import validate_installation as verify_usb2_owner_reset
     verify_usb2_owner_reset(root, metadata.get('runtime_audio', {}).get('usb2_owner_reset'),
                            (stage / 'constraints/custom_138k.sdc').read_text())
