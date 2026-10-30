@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "identity": "native-tf-byte-clear-parent-reproduction-v1-c4c0d553e3127eeb",
+  "passed": true,
+  "pinned_commit": "26a93f75358176ce5e359c5c8a063a47b56dea4d",
+  "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/verification.json",
+  "evidence_sha256": "cc4c1e2f7de50115fe4210f030975986bc3492edd621baaf10fa7cbd0c64f3da",
+  "reproducer": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/reverify.py",
+  "reproducer_sha256": "3d2250e136fc976a6293897a88a3e53710d2d356d1a6cbbe739e7244767f6b8d",
+  "input_sha256": {
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/tf_byte_clear_protocol_audit.json": "f7eb8d6eec79a0f8fd6033fe6e7f31a1225df1a7d47ff8976b0f2ec8fc57def7",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3/file0.hex": "ead5a553b88a5f72e15c74d72a9e3d4bdc818bff474d6c3fc0ca9f08a7a30097",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3/file1.hex": "816568726105ac0fce50be0a4fb7d41eaa54628aac956579a18b213af491c081",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3/file2.hex": "4f1416e7133a080b58aef5d12411b857740d20ddf0b1c50acd0ffa227fc5ed8c",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3/file3.hex": "5cba2c1afc7d00ddb06f8f02182694d91dcbf02ebbb1b6b5e241a26d6dba4214",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3/src/memory/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv": "c61e4cbdfa1b204cd95cf6d0d282feccb446c272ec716034fe07038ebc2604e2",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv": "a879430d988b77dd367cee604a91a68db56c5b603eff07e8cefc80355448cf65",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_path.v": "19506c0871ad394dcfa7332ec4bbdee410fa6dded26bad607c146f0024cd6030",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_dma.v": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_async_byte_fifo.v": "e9a7c01f7e5a13569de361b4615099f56706e4bcb93701005938639b45c28148",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_decoder_ip.v": "52cc02883361b0d76a35ee1d9d0a1252ed718daf8c60ed83052afb280bc6960a",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v": "c71e9860c5e988d97f1dd9840f643a68f60e6efef74d96b216013e816fb86ee1",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v": "ebf34a426e1bb53e1e002fc78723a8e501b5892c5b061b72fc46a14644c1e68a",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/display_data/tf_audio_ddr_command_buffer.sv": "c4b4a3e2ad17a50e2a59091d9f93f7c368c33c89956cd4d048734a3ef1f1f552",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-parent-audit/snapshot/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/scope_tf_transport.sv": "65aec658fc5b8209555a3ef4b8188112fe399fb100c07c289ff87349e906d337",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_normal_tb.sv": "2ea4c5211e315d87196d037eb0fce3bfe9dbeb2fd56125f3196b51c0215f69d5",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3/scope_tf_transport_legacy_reference.sv": "9a98eb1de27fda949956f99012a546fc6719fc3c879f8dc499aab2cb94d412f9",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_memory_pause_tb.sv": "b284e9c7dd833d1dbfced8843f8f052e479d011a7144cc3033309a4495e9380e"
+  },
+  "source_snapshot": true,
+  "no_live_modified_product_sources_used": true,
+  "all_audit_and_pass_lines_equal_to_child": true,
+  "summaries": {
+    "normal_probe": {
+      "0": "PASS tf_runtime_service: buffered=0 cases=22 delivered=677 pause_zero_frames=6 analysis_frames=128 ddr_writes=270 ddr_reads=234 failures=11 invalidates=58 stopped_source=2 stale=1 discarded=65 read_drain_wait_cycles=121 queued_accepts=0 downstream_stalls=251 scope_compares=58321 scope_explicit=3 scope_auto=1 quiet_source_checks=116900 quiet_source_changes=92 queued_drain_tests=0 adjacent_drain_tests=1 cancel_drain_tests=1",
+      "1": "PASS tf_runtime_service: buffered=1 cases=22 delivered=677 pause_zero_frames=6 analysis_frames=128 ddr_writes=270 ddr_reads=234 failures=11 invalidates=59 stopped_source=2 stale=1 discarded=65 read_drain_wait_cycles=153 queued_accepts=504 downstream_stalls=5771 scope_compares=60092 scope_explicit=3 scope_auto=1 quiet_source_checks=120442 quiet_source_changes=92 queued_drain_tests=2 adjacent_drain_tests=1 cancel_drain_tests=1"
+    },
+    "memory_pause_probe": {
+      "0": "AUDIT_RESULT memory_clears=4 clear_without_gate=0 gate_open_without_restart=1 old_emit_at_restart=1 nonunit_clears=1 source_clear_live_read=0",
+      "1": "AUDIT_RESULT memory_clears=4 clear_without_gate=0 gate_open_without_restart=1 old_emit_at_restart=1 nonunit_clears=2 source_clear_live_read=0"
+    }
+  },
+  "hardware_tested": false,
+  "clear_protocol_accepted": false
+}

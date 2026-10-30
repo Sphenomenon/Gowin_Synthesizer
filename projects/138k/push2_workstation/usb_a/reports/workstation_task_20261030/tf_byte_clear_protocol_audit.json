@@ -1,0 +1,160 @@
+{
+  "schema": 1,
+  "identity": "native-tf-byte-clear-readonly-audit-20261030-v2",
+  "audit_complete": true,
+  "clear_protocol_accepted": false,
+  "product_changed": false,
+  "profile_changed": false,
+  "hardware_tested": false,
+  "validation_stage": "ideal-RTL-passive-protocol-audit-and-memory-pause-functional-reproducer",
+  "known_defects": [
+    "track/fault can trigger clear before controlled hold/drain",
+    "no four-domain clear or DMA restart ACK",
+    "clear first synchronizer stage has functional fanout",
+    "fixed source settle allows gate open before DMA restart on memory resume and old-byte write at new FIFO address zero"
+  ],
+  "limits": "Ordinary 22-case PCM tests and memory-pause full64 PCM oracle still pass; only clear isolation and actual old-byte contamination are demonstrated. No analog glitch, metastability, routed CDC, output PCM error, or hardware acceptance is claimed.",
+  "normal_probe": {
+    "0": {
+      "returncode": 0,
+      "log": "AUDIT capture_mem_clear t=945000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=88845000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=89025000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=106445000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=187745000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=211945000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=294025000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=294205000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=309285000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=309465000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=324585000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=324765000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=345365000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=366445000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=366465000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=368905000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=389045000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=409905000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=419485000 gate=0 rd=01ba request=0 pending=1\nAUDIT capture_mem_clear t=420405000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=510665000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=510845000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=520425000 gate=0 rd=01ba request=0 pending=1\nAUDIT capture_mem_clear t=520705000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=602325000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=602505000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=612445000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=612625000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=693985000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=694165000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=703805000 gate=0 rd=01ba request=0 pending=1\nAUDIT capture_mem_clear t=703985000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=785585000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=825405000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=825605000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=845575000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=865345000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=892465000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=918165000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=1000325000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=1083225000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=1083245000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=1087725000 gate=1 rd=0000 request=0 pending=0\nAUDIT_GROUP group=0 clear_events=43 nonunit=26 live_en_or_valid=0\nAUDIT_GROUP group=1 clear_events=43 nonunit=26 live_en_or_valid=0\nAUDIT_GROUP group=2 clear_events=43 nonunit=23 live_en_or_valid=1\nAUDIT_GROUP group=3 clear_events=43 nonunit=22 live_en_or_valid=0\nAUDIT_RESULT memory_clears=86 clear_without_gate=28 gate_open_without_restart=0 old_emit_at_restart=0 nonunit_clears=71 source_clear_live_read=0\nPASS tf_runtime_service: buffered=0 cases=22 delivered=677 pause_zero_frames=6 analysis_frames=128 ddr_writes=270 ddr_reads=234 failures=11 invalidates=58 stopped_source=2 stale=1 discarded=65 read_drain_wait_cycles=121 queued_accepts=0 downstream_stalls=251 scope_compares=58321 scope_explicit=3 scope_auto=1 quiet_source_checks=116900 quiet_source_changes=92 queued_drain_tests=0 adjacent_drain_tests=1 cancel_drain_tests=1\n/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_normal_tb.sv:496: $finish called at 1169120000 (1ps)\n",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Ptb_workstation_tf_runtime_service.USE_COMMAND_BUFFER=0",
+        "-Wall",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3",
+        "-s",
+        "tb_workstation_tf_runtime_service",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/normal0.vvp",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_path.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_dma.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_async_byte_fifo.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_decoder_ip.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/tf_audio_ddr_command_buffer.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/scope_tf_transport.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_normal_tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3/scope_tf_transport_legacy_reference.sv"
+      ]
+    },
+    "1": {
+      "returncode": 0,
+      "log": "AUDIT capture_mem_clear t=945000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=89865000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=90045000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=108985000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=191885000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=217165000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=300285000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=300485000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=317225000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=317405000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=334645000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=334845000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=356785000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=379985000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=380005000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=382445000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=404665000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=426545000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=436245000 gate=1 rd=01ba request=0 pending=1\nAUDIT capture_mem_clear t=437145000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=527345000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=527525000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=537045000 gate=0 rd=01ba request=0 pending=1\nAUDIT capture_mem_clear t=537465000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=621125000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=621305000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=631465000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=631645000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=714825000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=715005000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=724605000 gate=0 rd=01ba request=0 pending=1\nAUDIT capture_mem_clear t=724805000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=808525000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=850405000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=850605000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=871615000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=893465000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=922265000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=949645000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=1032625000 gate=1 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=1116545000 gate=0 rd=01ba request=0 pending=0\nAUDIT capture_mem_clear t=1116565000 gate=1 rd=0000 request=0 pending=0\nAUDIT capture_mem_clear t=1121045000 gate=1 rd=0000 request=0 pending=0\nAUDIT_GROUP group=0 clear_events=43 nonunit=26 live_en_or_valid=0\nAUDIT_GROUP group=1 clear_events=43 nonunit=26 live_en_or_valid=0\nAUDIT_GROUP group=2 clear_events=43 nonunit=23 live_en_or_valid=1\nAUDIT_GROUP group=3 clear_events=43 nonunit=22 live_en_or_valid=0\nAUDIT_RESULT memory_clears=86 clear_without_gate=26 gate_open_without_restart=0 old_emit_at_restart=0 nonunit_clears=71 source_clear_live_read=0\nPASS tf_runtime_service: buffered=1 cases=22 delivered=677 pause_zero_frames=6 analysis_frames=128 ddr_writes=270 ddr_reads=234 failures=11 invalidates=59 stopped_source=2 stale=1 discarded=65 read_drain_wait_cycles=153 queued_accepts=504 downstream_stalls=5771 scope_compares=60092 scope_explicit=3 scope_auto=1 quiet_source_checks=120442 quiet_source_changes=92 queued_drain_tests=2 adjacent_drain_tests=1 cancel_drain_tests=1\n/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_normal_tb.sv:496: $finish called at 1204540000 (1ps)\n",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Ptb_workstation_tf_runtime_service.USE_COMMAND_BUFFER=1",
+        "-Wall",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3",
+        "-s",
+        "tb_workstation_tf_runtime_service",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/normal1.vvp",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_path.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_dma.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_async_byte_fifo.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_decoder_ip.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/tf_audio_ddr_command_buffer.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/scope_tf_transport.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_normal_tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3/scope_tf_transport_legacy_reference.sv"
+      ]
+    },
+    "input_sha256": {
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_runtime_service_tb.sv": "0f6fe4f6efd1ee110f3878a28deef83c32f5847b8bb811de65fd37825fdfaa7d",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_normal_tb.sv": "2ea4c5211e315d87196d037eb0fce3bfe9dbeb2fd56125f3196b51c0215f69d5",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/run_normal_probe.py": "d38dfd1f649ee5ea877df69b13f30e3287f7ee7586c66d49d2af27be577d774e",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_path.v": "19506c0871ad394dcfa7332ec4bbdee410fa6dded26bad607c146f0024cd6030",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_dma.v": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_async_byte_fifo.v": "e9a7c01f7e5a13569de361b4615099f56706e4bcb93701005938639b45c28148",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv": "c61e4cbdfa1b204cd95cf6d0d282feccb446c272ec716034fe07038ebc2604e2"
+    }
+  },
+  "memory_pause_probe": {
+    "0": {
+      "returncode": 0,
+      "log": "AUDIT capture_mem_clear t=945000 gate=1 rd=0000 request=0 pending=0\nAUDIT pause t=10740000 gate=1 quiet=1 buf=1 bytes=29\nAUDIT capture_mem_clear t=11355000 gate=1 rd=01ba request=0 pending=0\nAUDIT gate_open_before_restart t=11360000 seen=1 request=0 old_buf=1 bytes=29\nAUDIT old_emit_restart t=11365000 byte=46 wr_bin=0000 restart=1 gate=0\nAUDIT_GROUP group=0 clear_events=2 nonunit=1 live_en_or_valid=0\nAUDIT_GROUP group=1 clear_events=2 nonunit=1 live_en_or_valid=0\nAUDIT_GROUP group=2 clear_events=2 nonunit=0 live_en_or_valid=0\nAUDIT_GROUP group=3 clear_events=2 nonunit=0 live_en_or_valid=0\nAUDIT_RESULT memory_clears=4 clear_without_gate=0 gate_open_without_restart=1 old_emit_at_restart=1 nonunit_clears=1 source_clear_live_read=0\n/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_memory_pause_tb.sv:422: $finish called at 92715420 (1ps)\n",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Ptb_workstation_tf_runtime_service.USE_COMMAND_BUFFER=0",
+        "-Wall",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3",
+        "-s",
+        "tb_workstation_tf_runtime_service",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/probe0.vvp",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_path.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_dma.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_async_byte_fifo.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_decoder_ip.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/tf_audio_ddr_command_buffer.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/scope_tf_transport.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_memory_pause_tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3/scope_tf_transport_legacy_reference.sv"
+      ]
+    },
+    "1": {
+      "returncode": 0,
+      "log": "AUDIT capture_mem_clear t=945000 gate=1 rd=0000 request=0 pending=0\nAUDIT pause t=10800000 gate=1 quiet=1 buf=1 bytes=28\nAUDIT capture_mem_clear t=11415000 gate=1 rd=01ba request=0 pending=0\nAUDIT gate_open_before_restart t=11420000 seen=1 request=0 old_buf=1 bytes=28\nAUDIT old_emit_restart t=11425000 byte=24 wr_bin=0000 restart=1 gate=0\nAUDIT_GROUP group=0 clear_events=2 nonunit=1 live_en_or_valid=0\nAUDIT_GROUP group=1 clear_events=2 nonunit=1 live_en_or_valid=0\nAUDIT_GROUP group=2 clear_events=2 nonunit=1 live_en_or_valid=0\nAUDIT_GROUP group=3 clear_events=2 nonunit=0 live_en_or_valid=0\nAUDIT_RESULT memory_clears=4 clear_without_gate=0 gate_open_without_restart=1 old_emit_at_restart=1 nonunit_clears=2 source_clear_live_read=0\n/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_memory_pause_tb.sv:422: $finish called at 93757020 (1ps)\n",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Ptb_workstation_tf_runtime_service.USE_COMMAND_BUFFER=1",
+        "-Wall",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3",
+        "-s",
+        "tb_workstation_tf_runtime_service",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/probe1.vvp",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_path.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_dma.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_async_byte_fifo.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_decoder_ip.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/tf_audio_ddr_command_buffer.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/scope_tf_transport.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_memory_pause_tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-memory-quiet-v3/scope_tf_transport_legacy_reference.sv"
+      ]
+    },
+    "input_sha256": {
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_runtime_service_tb.sv": "0f6fe4f6efd1ee110f3878a28deef83c32f5847b8bb811de65fd37825fdfaa7d",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/tf_byte_clear_memory_pause_tb.sv": "b284e9c7dd833d1dbfced8843f8f052e479d011a7144cc3033309a4495e9380e",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/run_probe.py": "1ef5cac0e2372cff246dabf80b1981df5f21267909a10ada82d775fa6b78cd7a",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_path.v": "19506c0871ad394dcfa7332ec4bbdee410fa6dded26bad607c146f0024cd6030",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_dma.v": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_async_byte_fifo.v": "e9a7c01f7e5a13569de361b4615099f56706e4bcb93701005938639b45c28148",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv": "c61e4cbdfa1b204cd95cf6d0d282feccb446c272ec716034fe07038ebc2604e2"
+    }
+  },
+  "reproducers": {
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/run_probe.py": "1ef5cac0e2372cff246dabf80b1981df5f21267909a10ada82d775fa6b78cd7a",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-byte-clear-audit-v2/run_normal_probe.py": "d38dfd1f649ee5ea877df69b13f30e3287f7ee7586c66d49d2af27be577d774e"
+  },
+  "report": "reports/WORKSTATION_TF_BYTE_CLEAR_PROTOCOL_AUDIT_20261030.md"
+}
