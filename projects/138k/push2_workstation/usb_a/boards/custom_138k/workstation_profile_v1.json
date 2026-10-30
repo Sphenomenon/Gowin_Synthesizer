@@ -106,9 +106,9 @@
     },
     {
       "name": "long_recording_ddr",
-      "source_state": "not_implemented",
-      "selected_behavior": "No new DDR recording allocation or capability is claimed",
-      "remaining": "R00/R02-R04: storage, immutable objects, reliable download and device testing",
+      "source_state": "unselected_storage_component",
+      "selected_behavior": "Runtime recording keeps the existing short on-chip path; an unselected 64 KiB dual-rate PCM DDR backend reserves 0x30500000..0x305fffff but has no production client or PCM CDC",
+      "remaining": "R00/R02-R04: owner8/native commit routing, final PCM CDC, immutable business objects, reliable download, device testing and same-configuration physical resource comparison",
       "hardware_acceptance": "unverified_for_this_profile"
     },
     {
@@ -320,7 +320,7 @@
     "projects/138k/example/USB_HS/module.json": "9d28bdb8a3847eddea2a1dbfc9c295946352b299bff55e515131edf18dda9090",
     "projects/138k/push2_workstation/usb_a/baselines/index.json": "f8f9606b0700ec214563c754a0d00d38668fbb1c376bf7988f9749d07f7ec205",
     "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
-    "projects/138k/push2_workstation/usb_a/boards/custom_138k/WORKSTATION_PROFILE.md": "99b6001eed2adee2fe7310747f73033e6ff2f411d93dbb02b994cc8792f2fe47",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/WORKSTATION_PROFILE.md": "487daff15a910481b61ab145c6aa6190fa482c682d8536e195f4121fee7e0e4c",
     "projects/138k/push2_workstation/usb_a/boards/custom_138k/audio.cst": "2970a63c095171602f0163249f876a4b6cc361dae9f493b6395fba55db67a786",
     "projects/138k/push2_workstation/usb_a/boards/custom_138k/bluetooth.cst": "c4808b5811a1946b4f0a7d5d6f9428f9f0758f46e1d9bc0d49bedac5f0d90d5a",
     "projects/138k/push2_workstation/usb_a/boards/custom_138k/bluetooth.json": "783af23520393b6f97be5d512c7d738174adf4e5c5b3ce1bed1df50704a7847a",
@@ -403,7 +403,7 @@
     "projects/138k/push2_workstation/usb_a/rtl/bluetooth/workstation_bluetooth.sv": "58700059b5d9865d8d3093d65fc9c19b75f3f7c68e86cafaae6a01d1baba70fa",
     "projects/138k/push2_workstation/usb_a/rtl/control/workstation_parameters.sv": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287",
     "projects/138k/push2_workstation/usb_a/rtl/control/workstation_session.sv": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0",
-    "projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+    "projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_analysis_source.sv": "a8f1a948370a464d6ed609d275075e2ff936a01e62bc915074914a1193d9736c",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_reader.v": "c532e6920138204289a1d49a22f7d488f31fa52e0dc4c36b05e9053f7a23fdca",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_writer.v": "3e0393333846a0177def5ddc22b5b1244d8e59f246bf2a7e9c1ad17d104fa98c",

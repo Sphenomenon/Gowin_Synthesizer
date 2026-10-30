@@ -32,6 +32,8 @@
 
 后续 [revision5 媒体准备整机检查点](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PROFILE_REV5_20261030.md)已将保留持音、正常封存 REC／BLE、停止 score／TF 接回显式 profile。最终候选 `f1be50e853d3700a` 的 570 项输入保持，综合无 AG 组合环诊断，Logic 120,981、Register 61,345、综合 BSRAM 268；profile 18 项、来源 12 项、AE350 API 835 checks、时钟 4 项通过。[第二批实际 CDC](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_CDC_MEDIA_FENCE_20261030.md)通过 25 项／77 负控及真实 SDC 安装检查，但只覆盖 21／400 Gray 和 media／hold／USB fence；完整 CDC／PLL／物理时序／功能接受仍未完成。旧 45fe 组合环、9106 旧 USB setup cut 失败均保留原身份；F7 离线 P&R 资源试验已准备，尚未运行。本阶段无位流、SRAM 或 Flash 部署，任务方框不提前勾选。
 
+新增 [R00 未选择存储组件](push2_workstation/usb_a/reports/WORKSTATION_PCM_DDR_BACKEND_MAIN_INTEGRATION_20261030.md)完成父级及独立 24 项回归，覆盖双率、实际仲裁竞争、尾 mask 和同拍命令；新 prepare `60f1c843ad79aa6e` 的 profile 18 项、来源 12 项通过，570 项 staged 字节与 f1be 相同。生产 owner8／最终 PCM CDC／对象业务尚未接入，没有物理净资源收益或真实录音接受，R00／R01／R02 保持未完成；未转移旧候选综合或 CDC 接受，未部署。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）

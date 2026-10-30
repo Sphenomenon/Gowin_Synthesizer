@@ -38,6 +38,8 @@ runtime profile 显式启用 BLE 的 `relative_rom_paths`：生成的 `patch_pat
 - D5：共享 DDR 地址图与 scanout 保留。新 runtime 在真实最终 PCM 上生成四类 minor 1 显示块，带实际 rate／epoch，并显式处理取消、原子缓存与 raster 租用。扫描 admission 保留已接受尾部与实时客户端。D01／D04 的整机服务期限和实板争用尚未验收。
 - C1：现有 BLE business transport 复用。短录音仍限定 48 kHz；44.1 kHz observation 不能伪装为 48 kHz。C1 历史录音 PCM 全零，不能作为新候选真实乐音、Android 或长录音验收。
 
+R00 的 `workstation_pcm_ddr_backend` 是未选择的存储组件，未加入本 profile 的编译列表或现有 BLE 录音路径。地址权威登记 `0x30500000..0x305fffff`，组件当前只使用首 64 KiB；实际 owner8、native 提交通知、最终 PCM CDC 和业务对象接入仍待完成。其离线双率／竞争／命令优先级证据不提升本 profile 的录音容量或物理接受状态。新增预留宏和未选择源码会产生新的来源／prepare 身份，既有 f1be50 综合与物理试验继续绑定原输入，不移用其验收。
+
 revision 5 显式启用 AE350 时钟命令的媒体准备：保留持音，正常封存受控REC／BLE对象、取消score、真实停止TF后才向唯一采样率核心发请求。`workstation_media_preparation`只组合各owner的实际终态和hold；CPU observer reset不撤销后台fence。TF选用token-qualified byte FIFO／DMA clear ACK，重复stop复用既有generation fence，末次inactive控制mailbox仍必须得到目的端ACK。共享BLE五层端口均默认关闭，仅native顶层启用；旧格式录音仍限48 kHz。未初始化的BLE EMPTY／已READY对象可幂等封存，不阻止基础采样率切换。接口见[媒体准备](../../rtl/services/MEDIA_PREPARATION_CONTRACT.md)、[REC／score／clock策略](../../rtl/services/MEDIA_STOP_POLICY.md)与[BLE封存](../../rtl/bluetooth/WORKSTATION_BLE_SEAL_CONTRACT.md)。
 
 统一最终 PCM 在物理串行输出之前应用一次 master gain，并向观察消费者提供实际送出的带标签帧。连续计算时钟仍为 76.8 MHz；DCS 只选择物理音频时钟。TF 只接受当前已应用采样率匹配的 WAV，不请求自动换率或重采样；显式用户重启与文件退出分开处理，已接受 DDR 读先排空。暂停和 EOF／取消语义由 TF 服务合同定义，不能据 prepare 成功宣称完整歌曲已播放成功。

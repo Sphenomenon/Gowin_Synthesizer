@@ -1,0 +1,1551 @@
+{
+  "schema": 1,
+  "identity": "r00-unselected-main-integration-20261030",
+  "recorded_utc": "2026-10-30T05:52:32.512002+00:00",
+  "main_parent_commit": "1c1b56b",
+  "imported_commits": [
+    "06b391e9df1a4aa9328b5e161c7fdc9481f42c5e",
+    "b8db51ea64a94812aeb41f6c185b97ed3dcc3825"
+  ],
+  "parent_module_run": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/verification.json",
+    "sha256": "c4e3512429d7b9c58154e69d5dfeef2cd26988a43ecb45358faaca8eef754501",
+    "verification": {
+      "schema": 1,
+      "passed": true,
+      "identity": "native-pcm-ddr-backend-v2-d92df483e5ebf74b",
+      "source_set_sha256": "d92df483e5ebf74ba44b4b2dd4084ece688cbf9e443779cb538bcba00753649f",
+      "source_sha256": {
+        "rtl/audio/workstation_pcm_ddr_backend.sv": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+        "rtl/audio/PCM_DDR_BACKEND_CONTRACT.md": "e2f2167060a7513abfd64202ff110769967a0ce4de8746648fa017fffc3c5eac",
+        "rtl/ddr_address_map.vh": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+        "sim/tf_audio/workstation_pcm_ddr_backend_tb.sv": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+        "sim/tf_audio/run_workstation_pcm_ddr_backend.py": "f889d5f333baeaf7da5dab6bcbf43af44a7438492f56f08daf96f47b8e972374",
+        "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "rtl/ddr_address_map_guard.v": "ba7bd18eb264342e9530b9128f67d29eb769d63dc13688d2536be33957e4a2a7",
+        "rtl/timing/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+        "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+        "rtl/music/basic_pitch_ddr_map.svh": "49b7b954e3d6b45b305d443e408045889f7a8ce25138f81ccdd859dd39c163af"
+      },
+      "immutable_reference": "728eac7a9888ef617dec0c05a57a8ea24f3ec521",
+      "immutable_dependency_sha256": {
+        "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "rtl/ddr_address_map_guard.v": "ba7bd18eb264342e9530b9128f67d29eb769d63dc13688d2536be33957e4a2a7",
+        "rtl/timing/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+        "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+        "rtl/music/basic_pitch_ddr_map.svh": "49b7b954e3d6b45b305d443e408045889f7a8ce25138f81ccdd859dd39c163af"
+      },
+      "previous_map_sha256": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+      "existing_allocations_unchanged": true,
+      "allocation": {
+        "byte_base": "0x30500000",
+        "byte_last": "0x305fffff",
+        "native_word_base": "0x0c140000",
+        "granule_bytes": 1048576,
+        "stage_capacity_bytes": 65536,
+        "stage_capacity_frames": 16384
+      },
+      "source_policy": "new unselected backend; original actual timing queues/core/SDP/guard untouched; unique parent map only adds reservation",
+      "arbiter_test_boundary": "backend borrows MUSIC owner5 in fixture and receives actual native app_en acceptance; NN absent; no new production owner or default arbitration change",
+      "command_priority_policy": "invalidation blocks all admission; EMPTY clear blocks create; clear blocks reference acquire; release blocks reference acquire/download/output; current held reference is required before download admission",
+      "profile_selected": false,
+      "top_changed": false,
+      "ble_wire_changed": false,
+      "android_changed": false,
+      "final_PCM_CDC_integrated": false,
+      "actual_owner8_integrated": false,
+      "physical_resource_saving_proven": false,
+      "r00_complete": false,
+      "r01_complete": false,
+      "synthesis": false,
+      "pnr": false,
+      "hardware_tested": false,
+      "sram_programmed": false,
+      "flash_written": false,
+      "cases": {
+        "rate0_bounded_0": {
+          "parameters": {
+            "CASE": 0,
+            "RATE_44K1": 0,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_bounded_0",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_bounded_0/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=0",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=0",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=0",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_bounded_0/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "94afec465956ddd818f64b2f4b57f83ec70b0529263212a97f75da5e8dcc54ee",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=0 rate=48000 competition=0 objects=8 failures=0 aborts=0 priorities=0 bytes=2407 writes=79 reads=79 command_wait=12 read_wait=10 cycles=1082872 scan=0 audio=0 display=0 delay=0 cpu=0 writer=0\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 10828720000 (1ps)\n",
+          "metrics": {
+            "case": 0,
+            "rate": 48000,
+            "competition": 0,
+            "objects": 8,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 2407,
+            "writes": 79,
+            "reads": 79,
+            "command_wait": 12,
+            "read_wait": 10,
+            "cycles": 1082872,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0
+          }
+        },
+        "rate0_bounded_1": {
+          "parameters": {
+            "CASE": 0,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_bounded_1",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_bounded_1/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=0",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=0",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=1",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_bounded_1/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "a53bd7b4fd9c7daa760c8d3c67212df06a235fc4f122375769c800ad7532dd91",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=0 rate=48000 competition=1 objects=8 failures=0 aborts=0 priorities=0 bytes=2407 writes=79 reads=79 command_wait=22 read_wait=11 cycles=1083377 scan=67710 audio=57019 display=29280 delay=37357 cpu=34947 writer=47101\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 10833770000 (1ps)\n",
+          "metrics": {
+            "case": 0,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 8,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 2407,
+            "writes": 79,
+            "reads": 79,
+            "command_wait": 22,
+            "read_wait": 11,
+            "cycles": 1083377,
+            "scan": 67710,
+            "audio": 57019,
+            "display": 29280,
+            "delay": 37357,
+            "cpu": 34947,
+            "writer": 47101
+          }
+        },
+        "rate0_64KiB_competition": {
+          "parameters": {
+            "CASE": 1,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_64KiB_competition",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_64KiB_competition/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=1",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=0",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=1",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_64KiB_competition/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "d0563a71e04b4bae50e26baa0e8f056f780440089dc11ad5e4b4ac870c40e260",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=1 rate=48000 competition=1 objects=1 failures=0 aborts=0 priorities=0 bytes=65536 writes=2048 reads=2048 command_wait=12 read_wait=11 cycles=104393 scan=6524 audio=5494 display=2821 delay=3599 cpu=3367 writer=4538\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 1043930000 (1ps)\n",
+          "metrics": {
+            "case": 1,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 1,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 65536,
+            "writes": 2048,
+            "reads": 2048,
+            "command_wait": 12,
+            "read_wait": 11,
+            "cycles": 104393,
+            "scan": 6524,
+            "audio": 5494,
+            "display": 2821,
+            "delay": 3599,
+            "cpu": 3367,
+            "writer": 4538
+          }
+        },
+        "rate0_faults": {
+          "parameters": {
+            "CASE": 2,
+            "RATE_44K1": 0,
+            "FIFO_BITS": 9,
+            "DDR_BUDGET": 2048
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_faults",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_faults/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=2",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=0",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "-Ptb_workstation_pcm_ddr_backend.DDR_BUDGET=2048",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_faults/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "06519fda8c82323e3fa234abc2eeb83308987bd5304b5178b6f60c4ce4002229",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=2 rate=48000 competition=0 objects=1 failures=10 aborts=0 priorities=0 bytes=0 writes=5 reads=1 command_wait=2049 read_wait=2049 cycles=9440 scan=0 audio=0 display=0 delay=0 cpu=0 writer=0\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 94400000 (1ps)\n",
+          "metrics": {
+            "case": 2,
+            "rate": 48000,
+            "competition": 0,
+            "objects": 1,
+            "failures": 10,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 5,
+            "reads": 1,
+            "command_wait": 2049,
+            "read_wait": 2049,
+            "cycles": 9440,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0
+          }
+        },
+        "rate0_cancel_reset": {
+          "parameters": {
+            "CASE": 3,
+            "RATE_44K1": 0,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_cancel_reset",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_cancel_reset/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=3",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=0",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_cancel_reset/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "ae9a5e7d394cce00f6c4e4a09d3a2d18315eeb4dbe07e454ac7b05376e2d70a2",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=3 rate=48000 competition=0 objects=5 failures=1 aborts=4 priorities=0 bytes=142 writes=17 reads=10 command_wait=1 read_wait=10 cycles=674 scan=0 audio=0 display=0 delay=0 cpu=0 writer=0\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 6740000 (1ps)\n",
+          "metrics": {
+            "case": 3,
+            "rate": 48000,
+            "competition": 0,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 4,
+            "priorities": 0,
+            "bytes": 142,
+            "writes": 17,
+            "reads": 10,
+            "command_wait": 1,
+            "read_wait": 10,
+            "cycles": 674,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0
+          }
+        },
+        "rate0_command_collisions_0": {
+          "parameters": {
+            "CASE": 4,
+            "RATE_44K1": 0,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_command_collisions_0",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_command_collisions_0/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=4",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=0",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=0",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_command_collisions_0/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "cf50f2c047bef5b6f79eb130901398185239c7e547e09809d36a97242212312b",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=4 rate=48000 competition=0 objects=5 failures=1 aborts=5 priorities=14 bytes=36 writes=7 reads=3 command_wait=1 read_wait=10 cycles=275 scan=0 audio=0 display=0 delay=0 cpu=0 writer=0\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 2750000 (1ps)\n",
+          "metrics": {
+            "case": 4,
+            "rate": 48000,
+            "competition": 0,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 5,
+            "priorities": 14,
+            "bytes": 36,
+            "writes": 7,
+            "reads": 3,
+            "command_wait": 1,
+            "read_wait": 10,
+            "cycles": 275,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0
+          }
+        },
+        "rate0_command_collisions_1": {
+          "parameters": {
+            "CASE": 4,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_command_collisions_1",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_command_collisions_1/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=4",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=0",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=1",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_command_collisions_1/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "8c00aa23e23f9a196937880267bd825ed27f718810df92523666bd9b2e484e98",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=4 rate=48000 competition=1 objects=5 failures=1 aborts=5 priorities=14 bytes=36 writes=7 reads=3 command_wait=4 read_wait=11 cycles=298 scan=18 audio=15 display=7 delay=10 cpu=9 writer=12\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 2980000 (1ps)\n",
+          "metrics": {
+            "case": 4,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 5,
+            "priorities": 14,
+            "bytes": 36,
+            "writes": 7,
+            "reads": 3,
+            "command_wait": 4,
+            "read_wait": 11,
+            "cycles": 298,
+            "scan": 18,
+            "audio": 15,
+            "display": 7,
+            "delay": 10,
+            "cpu": 9,
+            "writer": 12
+          }
+        },
+        "rate1_bounded_0": {
+          "parameters": {
+            "CASE": 0,
+            "RATE_44K1": 1,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_bounded_0",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_bounded_0/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=0",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=1",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=0",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_bounded_0/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "5cd7b144b2a7121422f95e494f4f5734d2ed3074ce4c039955c099b640eac842",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=0 rate=44100 competition=0 objects=8 failures=0 aborts=0 priorities=0 bytes=2407 writes=79 reads=79 command_wait=12 read_wait=10 cycles=1178487 scan=0 audio=0 display=0 delay=0 cpu=0 writer=0\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 11784870000 (1ps)\n",
+          "metrics": {
+            "case": 0,
+            "rate": 44100,
+            "competition": 0,
+            "objects": 8,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 2407,
+            "writes": 79,
+            "reads": 79,
+            "command_wait": 12,
+            "read_wait": 10,
+            "cycles": 1178487,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0
+          }
+        },
+        "rate1_bounded_1": {
+          "parameters": {
+            "CASE": 0,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_bounded_1",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_bounded_1/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=0",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=1",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=1",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_bounded_1/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "4ebc33b47e3953c95d5d7105d20739b88f990375ef977ace7ffe17f81c053fb7",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=0 rate=44100 competition=1 objects=8 failures=0 aborts=0 priorities=0 bytes=2407 writes=79 reads=79 command_wait=22 read_wait=11 cycles=1178995 scan=73686 audio=62050 display=31864 delay=40654 cpu=38031 writer=51258\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 11789950000 (1ps)\n",
+          "metrics": {
+            "case": 0,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 8,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 2407,
+            "writes": 79,
+            "reads": 79,
+            "command_wait": 22,
+            "read_wait": 11,
+            "cycles": 1178995,
+            "scan": 73686,
+            "audio": 62050,
+            "display": 31864,
+            "delay": 40654,
+            "cpu": 38031,
+            "writer": 51258
+          }
+        },
+        "rate1_64KiB_competition": {
+          "parameters": {
+            "CASE": 1,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_64KiB_competition",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_64KiB_competition/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=1",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=1",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=1",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_64KiB_competition/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "9a40c26dc1b5ab81c4fe630f87da836a6c6262f312fe680adb472c13e4a9f5f3",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=1 rate=44100 competition=1 objects=1 failures=0 aborts=0 priorities=0 bytes=65536 writes=2048 reads=2048 command_wait=12 read_wait=11 cycles=104393 scan=6524 audio=5494 display=2821 delay=3599 cpu=3367 writer=4538\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 1043930000 (1ps)\n",
+          "metrics": {
+            "case": 1,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 1,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 65536,
+            "writes": 2048,
+            "reads": 2048,
+            "command_wait": 12,
+            "read_wait": 11,
+            "cycles": 104393,
+            "scan": 6524,
+            "audio": 5494,
+            "display": 2821,
+            "delay": 3599,
+            "cpu": 3367,
+            "writer": 4538
+          }
+        },
+        "rate1_faults": {
+          "parameters": {
+            "CASE": 2,
+            "RATE_44K1": 1,
+            "FIFO_BITS": 9,
+            "DDR_BUDGET": 2048
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_faults",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_faults/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=2",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=1",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "-Ptb_workstation_pcm_ddr_backend.DDR_BUDGET=2048",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_faults/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "81ca8b01edfd49cd0c3e643c6188ff41dcd1d2f8ae438b545f2e5c6eea7dc9fc",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=2 rate=44100 competition=0 objects=1 failures=10 aborts=0 priorities=0 bytes=0 writes=5 reads=1 command_wait=2049 read_wait=2049 cycles=9440 scan=0 audio=0 display=0 delay=0 cpu=0 writer=0\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 94400000 (1ps)\n",
+          "metrics": {
+            "case": 2,
+            "rate": 44100,
+            "competition": 0,
+            "objects": 1,
+            "failures": 10,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 5,
+            "reads": 1,
+            "command_wait": 2049,
+            "read_wait": 2049,
+            "cycles": 9440,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0
+          }
+        },
+        "rate1_cancel_reset": {
+          "parameters": {
+            "CASE": 3,
+            "RATE_44K1": 1,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_cancel_reset",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_cancel_reset/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=3",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=1",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_cancel_reset/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "8a01245853f1761709d7745c6b39bbe409748605686587e166ed1755619582e2",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=3 rate=44100 competition=0 objects=5 failures=1 aborts=4 priorities=0 bytes=142 writes=17 reads=10 command_wait=1 read_wait=10 cycles=674 scan=0 audio=0 display=0 delay=0 cpu=0 writer=0\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 6740000 (1ps)\n",
+          "metrics": {
+            "case": 3,
+            "rate": 44100,
+            "competition": 0,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 4,
+            "priorities": 0,
+            "bytes": 142,
+            "writes": 17,
+            "reads": 10,
+            "command_wait": 1,
+            "read_wait": 10,
+            "cycles": 674,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0
+          }
+        },
+        "rate1_command_collisions_0": {
+          "parameters": {
+            "CASE": 4,
+            "RATE_44K1": 1,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_command_collisions_0",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_command_collisions_0/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=4",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=1",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=0",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_command_collisions_0/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "2405f81c309ad1058bf9f5c89360d158c53c9aaf5cb3676c133f56dcbfbde9af",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=4 rate=44100 competition=0 objects=5 failures=1 aborts=5 priorities=14 bytes=36 writes=7 reads=3 command_wait=1 read_wait=10 cycles=275 scan=0 audio=0 display=0 delay=0 cpu=0 writer=0\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 2750000 (1ps)\n",
+          "metrics": {
+            "case": 4,
+            "rate": 44100,
+            "competition": 0,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 5,
+            "priorities": 14,
+            "bytes": 36,
+            "writes": 7,
+            "reads": 3,
+            "command_wait": 1,
+            "read_wait": 10,
+            "cycles": 275,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0
+          }
+        },
+        "rate1_command_collisions_1": {
+          "parameters": {
+            "CASE": 4,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_command_collisions_1",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_command_collisions_1/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=4",
+            "-Ptb_workstation_pcm_ddr_backend.RATE_44K1=1",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=1",
+            "-Ptb_workstation_pcm_ddr_backend.FIFO_BITS=9",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate1_command_collisions_1/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 0,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "21c946cd38695a7b1165e3bc58a73a1e620fbedc2298c08932808489c05fd645",
+          "run_log": "PASS workstation_pcm_ddr_backend: case=4 rate=44100 competition=1 objects=5 failures=1 aborts=5 priorities=14 bytes=36 writes=7 reads=3 command_wait=4 read_wait=11 cycles=298 scan=18 audio=15 display=7 delay=10 cpu=9 writer=12\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:525: $finish called at 2980000 (1ps)\n",
+          "metrics": {
+            "case": 4,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 5,
+            "priorities": 14,
+            "bytes": 36,
+            "writes": 7,
+            "reads": 3,
+            "command_wait": 4,
+            "read_wait": 11,
+            "cycles": 298,
+            "scan": 18,
+            "audio": 15,
+            "display": 7,
+            "delay": 10,
+            "cpu": 9,
+            "writer": 12
+          }
+        },
+        "premature_ready": {
+          "parameters": {
+            "CASE": 0
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/premature_ready",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/premature_ready/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=0",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/premature_ready.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/premature_ready/test.vvp"
+          ],
+          "backend_sha256": "d4ce843e8060d598cdb6ba723aa96e7fa953522ddc3dd8d08440d677c78772ef",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 1,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "665c637554f6b30a59e552ffc005186d1d5df7d23676d7c788f8c6bc63638593",
+          "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:228: seal published before real final write acceptance\n       Time: 10812750000  Scope: tb_workstation_pcm_ddr_backend.seal_and_check\n",
+          "metrics": {},
+          "expected_failure": "seal published before real final write acceptance",
+          "rejected": true
+        },
+        "unmasked_tail": {
+          "parameters": {
+            "CASE": 0
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/unmasked_tail",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/unmasked_tail/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=0",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/unmasked_tail.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/unmasked_tail/test.vvp"
+          ],
+          "backend_sha256": "01488ff5bf7cd25c7ba04265163fc915bd016a81af4988d8cbf134d4b0ff3da2",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 1,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "af422d9517208e21a38234ba5bbb95ed032c8bcde716f0123750e26a8ddba695",
+          "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:236: tail mask overwrote byte=2076\n       Time: 10812770000  Scope: tb_workstation_pcm_ddr_backend.seal_and_check\n",
+          "metrics": {
+            "byte": 2076
+          },
+          "expected_failure": "tail mask overwrote",
+          "rejected": true
+        },
+        "clear_held_reference": {
+          "parameters": {
+            "CASE": 0
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/clear_held_reference",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/clear_held_reference/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=0",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/clear_held_reference.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/clear_held_reference/test.vvp"
+          ],
+          "backend_sha256": "3d28682caa6d975c670ee2b0b2b5be86e00e3776adbd2b0b981b7ee945aae72f",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 1,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "d6ccfd2bbfd429fad0ebf3d1bf5efaf93768a3629fa6e0aea9830aec0c8eac7e",
+          "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:319: clear bypassed download reference\n       Time: 10812890000  Scope: tb_workstation_pcm_ddr_backend\n",
+          "metrics": {},
+          "expected_failure": "clear bypassed download reference",
+          "rejected": true
+        },
+        "forget_cancelled_read": {
+          "parameters": {
+            "CASE": 3
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/forget_cancelled_read",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/forget_cancelled_read/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=3",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/forget_cancelled_read.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/forget_cancelled_read/test.vvp"
+          ],
+          "backend_sha256": "c8888808fc6bd483b52bd86a7e2aae0242d2e83453787d0fefaff1e6d169b800",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 1,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "10e7019c43d707e251d9f103d2ca47f94c67000b71f92c861f7effc1aa96ff85",
+          "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:376: old read escaped generation fence\n       Time: 1920000  Scope: tb_workstation_pcm_ddr_backend.$ivl_for_loop16\n",
+          "metrics": {},
+          "expected_failure": "old read escaped generation fence",
+          "rejected": true
+        },
+        "native_word_step": {
+          "parameters": {
+            "CASE": 0
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/native_word_step",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/native_word_step/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=0",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/native_word_step.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/native_word_step/test.vvp"
+          ],
+          "backend_sha256": "fc85e0668f4fe834dc74e23aaa061a6cc49f5b4ae7011cedc3c1e178a4122bb8",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 1,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "b1fbccbef14eda727246de3683b65e4d2b1819f7e284e1e0caed719c4e468b20",
+          "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:136: unaligned native BL8\n       Time: 333465000  Scope: tb_workstation_pcm_ddr_backend\n",
+          "metrics": {},
+          "expected_failure": "unaligned native BL8",
+          "rejected": true
+        },
+        "clear_admits_create": {
+          "parameters": {
+            "CASE": 4
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/clear_admits_create",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/clear_admits_create/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=4",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/clear_admits_create.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/clear_admits_create/test.vvp"
+          ],
+          "backend_sha256": "74f043b4e84ee56c00465040826123471f1a7cae76ff55bdb4065e8139989a9a",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 1,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "132d24fc49e16c6c5bac2f20bbc99fae8b5a9195b3c757712c8d2a934139a7fe",
+          "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:401: clear admitted simultaneous create\n       Time: 91000  Scope: tb_workstation_pcm_ddr_backend\n",
+          "metrics": {},
+          "expected_failure": "clear admitted simultaneous create",
+          "rejected": true
+        },
+        "release_admits_reference": {
+          "parameters": {
+            "CASE": 4
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/release_admits_reference",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/release_admits_reference/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=4",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/release_admits_reference.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/release_admits_reference/test.vvp"
+          ],
+          "backend_sha256": "46f755c75d973f7021a939cafc6d627009620de64c4db119284f56ec1daf2ee8",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 1,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "0cdfce2268660b56e84499007e07a72f0a8e9438f71d4f1bd65ccf526a6505e1",
+          "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:422: release admitted new reference\n       Time: 521000  Scope: tb_workstation_pcm_ddr_backend.$ivl_for_loop23\n",
+          "metrics": {},
+          "expected_failure": "release admitted new reference",
+          "rejected": true
+        },
+        "fault_admits_download": {
+          "parameters": {
+            "CASE": 4
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/fault_admits_download",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/fault_admits_download/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=4",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/fault_admits_download.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/fault_admits_download/test.vvp"
+          ],
+          "backend_sha256": "753990f97900959fe92f7415dc72ed85a780764ac8372de7cfa0d6d1c0241e11",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 1,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "2751bd17f345a81a358c45a949ab62ac1b2bbb703fbe68e364421647242ce3b8",
+          "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv:494: fault admitted simultaneous download\n       Time: 1741000  Scope: tb_workstation_pcm_ddr_backend\n",
+          "metrics": {},
+          "expected_failure": "fault admitted simultaneous download",
+          "rejected": true
+        },
+        "local_slot_is_not_native_acceptance": {
+          "parameters": {
+            "CASE": 0,
+            "COMPETITION": 1
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/local_slot_is_not_native_acceptance",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/local_slot_is_not_native_acceptance/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=0",
+            "-Ptb_workstation_pcm_ddr_backend.COMPETITION=1",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/local_slot_acceptance_fixture.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/local_slot_is_not_native_acceptance/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "67a2645d1603148430d5998787018158dc4fb1e9d95c2ab6e3d611c90f617909",
+          "map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "returncode": 1,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "388edb3915f2aa862df05e45e0f9fe08aabd6873c04b6b79b906830d98da10c2",
+          "run_log": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/local_slot_acceptance_fixture.sv:228: seal published before real final write acceptance\n       Time: 10812750000  Scope: tb_workstation_pcm_ddr_backend.seal_and_check\n",
+          "metrics": {},
+          "expected_failure": "seal published before real final write acceptance",
+          "rejected": true
+        },
+        "overlap_recording_allocation": {
+          "parameters": {
+            "CASE": 0
+          },
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-Wall",
+            "-I",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/overlap_recording_allocation",
+            "-s",
+            "tb_workstation_pcm_ddr_backend",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/overlap_recording_allocation/test.vvp",
+            "-Ptb_workstation_pcm_ddr_backend.CASE=0",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv"
+          ],
+          "run_argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/overlap_recording_allocation/test.vvp"
+          ],
+          "backend_sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7",
+          "fixture_sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13",
+          "map_sha256": "0d97e74f5dfd494682af3843a77ce66ebfee1986cfee5a9942bbeb0c1878e89d",
+          "returncode": 1,
+          "compile_log_sha256": "7a6f02bfc626d4071dd7008779e08c85d76e07ba44e53dbeb92ecc9b62e45a1f",
+          "compile_log": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v:7: warning: timescale for ddr_address_map_guard inherited from another file.\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv:1: ...: The inherited timescale is here.\n",
+          "run_log_sha256": "6402a041d8e2406495261a6c32717a25c9201214ad8b5889096ebef0abb5f93e",
+          "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv:71: PCM recording allocation overlaps/misaligns\n       Time: 0  Scope: tb_workstation_pcm_ddr_backend.dut\n",
+          "metrics": {},
+          "expected_failure": "PCM recording allocation overlaps/misaligns",
+          "rejected": true
+        }
+      },
+      "lint": {
+        "argv": [
+          "verilator",
+          "--lint-only",
+          "--top-module",
+          "workstation_pcm_ddr_backend",
+          "-I/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-parent-final/rate0_bounded_0",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv"
+        ],
+        "returncode": 0,
+        "log": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.085 MB sources in 3 modules, into 0.108 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.013 s (elab=0.002, cvt=0.007, bld=0.000); cpu 0.013 s on 1 threads; allocated 12.438 MB\n"
+      },
+      "source_inputs_unchanged_during_run": true
+    }
+  },
+  "independent_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/review.json",
+    "sha256": "6fdbd3ffba37a069ccc75843f2dd22033c5ec967e4c43761baa0129d176c8e21",
+    "review": {
+      "schema": 1,
+      "reviewed_commit": "b8db51ea64a94812aeb41f6c185b97ed3dcc3825",
+      "limited_module_review_passed": true,
+      "new_actionable_findings": [],
+      "source_edited": false,
+      "eda_run": false,
+      "hardware_operated": false,
+      "merged": false,
+      "pushed": false,
+      "worktree_clean_when_snapshotted": true,
+      "regression": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-run1/verification.json",
+        "sha256": "cffecea32b0998c33ec32d75002932825d9ade885933b274735ffa766f261f46",
+        "identity": "native-pcm-ddr-backend-v2-d92df483e5ebf74b",
+        "passed": true,
+        "positive_configurations": 14,
+        "expected_negative_mutants": 10,
+        "lint_warnings": 0,
+        "metrics": {
+          "objects": 66,
+          "failures": 26,
+          "aborts": 28,
+          "priorities": 56,
+          "bytes": 141128
+        }
+      },
+      "independent_old_collision_stimulus_recheck": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-collisions/observations.json",
+        "sha256": "ef90578caaeb96fc260fe79aa080901270de4da91ae4a18b2bfb8ea6b0f9bbbf",
+        "old_probe_preserved": true,
+        "source_same_stimulus_origin": "r00-independent-review-06b391e-collisions/collisions_tb.sv",
+        "both_findings_fixed": true,
+        "clear_create": "create acceptance0 on clear edge; held retry later CAPTURE id7 frames0",
+        "release_acquire": "no held/grant/error/released on same edge; eightquiet cycles later clear_ready1"
+      },
+      "old_failed_review_preserved": {
+        "commit": "06b391e9df1a4aa9328b5e161c7fdc9481f42c5e",
+        "review": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-06b391e-summary/review.json",
+        "sha256": "48c87e774da8260ba9d497f8226f753dd305b4cbf12f26fedb43cd40fb6a0bda"
+      },
+      "third_gate_review": {
+        "gate": "download_ready_o excludes invalidate",
+        "reason": "unexpected response in quiescent READY blocks admission before the active edge and then invalidates existing reference without native read/done",
+        "new_mutant_rejected": true,
+        "child_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-v2-child-priority-review/review.json",
+        "child_sha256": "561d4e775058851aa78dc57c9abc53baa9a902fccad3b044b2034a2d76d62394"
+      },
+      "frozen_source_snapshot": {
+        "rtl/audio/workstation_pcm_ddr_backend.sv": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/frozen-sources/rtl/audio/workstation_pcm_ddr_backend.sv",
+          "sha256": "54ab0596576de4bc655e6e8f06a42bdabc07c99d2aa2f85c6fef868095de7be7"
+        },
+        "rtl/audio/PCM_DDR_BACKEND_CONTRACT.md": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/frozen-sources/rtl/audio/PCM_DDR_BACKEND_CONTRACT.md",
+          "sha256": "e2f2167060a7513abfd64202ff110769967a0ce4de8746648fa017fffc3c5eac"
+        },
+        "rtl/ddr_address_map.vh": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/frozen-sources/rtl/ddr_address_map.vh",
+          "sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a"
+        },
+        "sim/tf_audio/workstation_pcm_ddr_backend_tb.sv": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/frozen-sources/sim/tf_audio/workstation_pcm_ddr_backend_tb.sv",
+          "sha256": "9e3736354fe42d9580f637ae328c8162c825c7a2d2e151679a63665f68163e13"
+        },
+        "sim/tf_audio/run_workstation_pcm_ddr_backend.py": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/frozen-sources/sim/tf_audio/run_workstation_pcm_ddr_backend.py",
+          "sha256": "f889d5f333baeaf7da5dab6bcbf43af44a7438492f56f08daf96f47b8e972374"
+        },
+        "rtl/memory/workstation_sdp.sv": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/frozen-sources/rtl/memory/workstation_sdp.sv",
+          "sha256": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec"
+        },
+        "rtl/ddr_address_map_guard.v": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/frozen-sources/rtl/ddr_address_map_guard.v",
+          "sha256": "ba7bd18eb264342e9530b9128f67d29eb769d63dc13688d2536be33957e4a2a7"
+        },
+        "rtl/timing/basic_pitch_ddr_client_queues.sv": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/frozen-sources/rtl/timing/basic_pitch_ddr_client_queues.sv",
+          "sha256": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c"
+        },
+        "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/frozen-sources/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+          "sha256": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d"
+        },
+        "rtl/music/basic_pitch_ddr_map.svh": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-independent-review-b8db51-summary/frozen-sources/rtl/music/basic_pitch_ddr_map.svh",
+          "sha256": "49b7b954e3d6b45b305d443e408045889f7a8ce25138f81ccdd859dd39c163af"
+        }
+      },
+      "limitations": [
+        "unselected module, no production owner8/fourbit-owner integration",
+        "fixture borrowsmusic owner5 and replacesNN; noNN+recorder concurrency or worst-case arbitration service proof",
+        "fault injection in competition path bypassesarbiter and directly testsbackend unexpected-response boundary",
+        "56priority checks are14scenarios at2rates x direct/competition, not56distinctlogicalscenarios",
+        "original CASE2fault/CASE3cancel remaindirectpath; added CASE4priority combinations also use realqueues/core competition",
+        "no finalPCM CDC/tap integration, BLE/Android protocol extension, source-profile selection, synthesis/P&R or hardware acceptance"
+      ],
+      "acceptance_state": {
+        "offline_unselected_backend": true,
+        "whole_system_integration": false,
+        "r00_complete": false,
+        "r01_complete": false,
+        "physical_resource_saving": false,
+        "routed_timing": false,
+        "hardware": false,
+        "deployed": false
+      }
+    }
+  },
+  "new_prepare": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-runtime-profile-r00-unselected-v1",
+    "candidate_identity": "custom138k-workstation-v1-60f1c843ad79aa6e",
+    "candidate_input_sha256": "60f1c843ad79aa6e5a2ca53918d75fd6703697c3e4b65b40d6a4ab8749c46c8c",
+    "profile_sha256": "1cd28fabcfda5c5170667a434cc52c14b2cb0ffcbb57e2a4dee1794ccf768f14",
+    "artifact_sha256": "a3b69fac2f4d51cc7108c13052f28f1f0b44792b66d86a43070a788b124cd7dd",
+    "changes_from_synthesized_f1be": {
+      "source_sha256": {
+        "before_count": 313,
+        "after_count": 313,
+        "added": [],
+        "removed": [],
+        "changed": [
+          "projects/138k/push2_workstation/usb_a/boards/custom_138k/WORKSTATION_PROFILE.md",
+          "projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh"
+        ]
+      },
+      "source_snapshot_sha256": {
+        "before_count": 734,
+        "after_count": 735,
+        "added": [
+          "rtl/audio/workstation_pcm_ddr_backend.sv"
+        ],
+        "removed": [],
+        "changed": [
+          "boards/custom_138k/workstation_profile_v1.json",
+          "rtl/ddr_address_map.vh"
+        ]
+      },
+      "staged_input_sha256": {
+        "before_count": 570,
+        "after_count": 570,
+        "added": [],
+        "removed": [],
+        "changed": []
+      },
+      "enabled_inputs": {
+        "before_count": 259,
+        "after_count": 259,
+        "added": [],
+        "removed": [],
+        "changed": [
+          "constraints/custom_138k.cst",
+          "constraints/custom_138k.sdc"
+        ]
+      }
+    },
+    "staged_input_bytes_all_identical_to_f1be": true,
+    "selected_storage_backend": false,
+    "source_counts": {
+      "locked": 313,
+      "snapshot": 735,
+      "staged": 570,
+      "enabled": 259
+    },
+    "source_audit": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-main-source-validation/audit.json",
+      "sha256": "879c62e9acda0ada43904d72cfffc8e31f873ca05642c9e762be1182631cea0a",
+      "compilation_units": 256,
+      "modules": 288,
+      "packages": 2
+    }
+  },
+  "checks": {
+    "profile": {
+      "process": {
+        "command": [
+          "python3",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_profile.py",
+          "-v"
+        ],
+        "returncode": 0,
+        "seconds": 5.9339919090271,
+        "prepared": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-runtime-profile-r00-unselected-v1",
+        "legacy": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-default-after-media-v1",
+        "log_sha256": "54c21911a708162290c7a6383d399bdad767140f35293f487d95dd00440c4c91"
+      },
+      "log": "test_default_native_profile_keeps_locked_ae350_rom (__main__.LegacyPolicy.test_default_native_profile_keeps_locked_ae350_rom) ... ok\ntest_actual_prepare_records_every_input_and_reference_scope (__main__.PreparedClosure.test_actual_prepare_records_every_input_and_reference_scope) ... ok\ntest_ae350_evidence_and_installed_rom_are_bound_to_the_candidate (__main__.PreparedClosure.test_ae350_evidence_and_installed_rom_are_bound_to_the_candidate) ... ok\ntest_all_snapshot_inputs_are_rechecked_and_identity_bound (__main__.PreparedClosure.test_all_snapshot_inputs_are_rechecked_and_identity_bound) ... ok\ntest_changed_compiled_input_and_uncompiled_dependency_are_rejected (__main__.PreparedClosure.test_changed_compiled_input_and_uncompiled_dependency_are_rejected) ... ok\ntest_media_and_token_storage_owners_are_explicit_profile_inputs (__main__.PreparedClosure.test_media_and_token_storage_owners_are_explicit_profile_inputs) ... ok\ntest_metadata_and_feature_claim_changes_are_rejected (__main__.PreparedClosure.test_metadata_and_feature_claim_changes_are_rejected) ... ok\ntest_new_compilation_entry_and_unlisted_files_are_rejected (__main__.PreparedClosure.test_new_compilation_entry_and_unlisted_files_are_rejected) ... ok\ntest_runtime_ble_rom_stays_inside_a_copied_candidate (__main__.PreparedClosure.test_runtime_ble_rom_stays_inside_a_copied_candidate) ... ok\ntest_runtime_replacements_preserve_original_bytes_and_have_one_owner (__main__.PreparedClosure.test_runtime_replacements_preserve_original_bytes_and_have_one_owner) ... ok\ntest_scan_window_policy_cannot_be_silently_disabled (__main__.PreparedClosure.test_scan_window_policy_cannot_be_silently_disabled) ... ok\ntest_toolchain_and_generated_rom_change_candidate_identity (__main__.PreparedClosure.test_toolchain_and_generated_rom_change_candidate_identity) ... ok\ntest_added_source_in_a_globbed_directory_is_rejected (__main__.ProfileSources.test_added_source_in_a_globbed_directory_is_rejected) ... ok\ntest_changed_selected_source_is_rejected_before_preparation (__main__.ProfileSources.test_changed_selected_source_is_rejected_before_preparation) ... ok\ntest_configuration_is_explicit_and_other_profiles_are_isolated (__main__.ProfileSources.test_configuration_is_explicit_and_other_profiles_are_isolated) ... ok\ntest_missing_maintained_ae350_source_cannot_fall_back_to_locked_rom (__main__.ProfileSources.test_missing_maintained_ae350_source_cannot_fall_back_to_locked_rom) ... ok\ntest_real_lock_and_honest_feature_matrix (__main__.ProfileSources.test_real_lock_and_honest_feature_matrix) ... ok\ntest_runtime_configuration_and_revision_cannot_be_changed (__main__.ProfileSources.test_runtime_configuration_and_revision_cannot_be_changed) ... ok\n\n----------------------------------------------------------------------\nRan 18 tests in 5.860s\n\nOK\n",
+      "process_sha256": "3f9cf6499f5011a8356e7f23ece04d0020794de6fc362df1750394a1340480ed"
+    },
+    "source": {
+      "process": {
+        "command": [
+          "python3",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py",
+          "-v"
+        ],
+        "returncode": 0,
+        "seconds": 3.776855707168579,
+        "prepared": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-runtime-profile-r00-unselected-v1",
+        "legacy": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-default-after-media-v1",
+        "log_sha256": "f6700ad56eb22090e64faf48f2994d6646378f1d1e768130a8f3c41c8614764c"
+      },
+      "log": "test_no_duplicate_declaration_or_unowned_dependency (__main__.ActualPreparedSources.test_no_duplicate_declaration_or_unowned_dependency) ... ok\ntest_comments_and_strings_do_not_invent_owners (__main__.DeclarationParser.test_comments_and_strings_do_not_invent_owners) ... ok\ntest_guard_gray_propagation_is_bounded_by_actual_source_period (__main__.DeclarationParser.test_guard_gray_propagation_is_bounded_by_actual_source_period) ... ok\ntest_actual_default_provider_keeps_conditional_runtime_port_absent (__main__.SelectedTopPorts.test_actual_default_provider_keeps_conditional_runtime_port_absent) ... ok\ntest_actual_runtime_provider_requires_reviewed_clock_port_and_location (__main__.SelectedTopPorts.test_actual_runtime_provider_requires_reviewed_clock_port_and_location) ... ok\ntest_missing_or_extra_ports_are_rejected_after_preprocessing (__main__.SelectedTopPorts.test_missing_or_extra_ports_are_rejected_after_preprocessing) ... ok\ntest_two_selected_top_providers_are_rejected (__main__.SelectedTopPorts.test_two_selected_top_providers_are_rejected) ... ok\ntest_empty_query_side_omits_whole_command (__main__.SharedConstraintSelection.test_empty_query_side_omits_whole_command) ... ok\ntest_locked_parent_recovers_mixed_commands_and_rebounds_usb_setup (__main__.SharedConstraintSelection.test_locked_parent_recovers_mixed_commands_and_rebounds_usb_setup) ... ok\ntest_mixed_queries_preserve_surviving_endpoints_on_each_side (__main__.SharedConstraintSelection.test_mixed_queries_preserve_surviving_endpoints_on_each_side) ... ok\ntest_unknown_retired_query_format_fails_closed (__main__.SharedConstraintSelection.test_unknown_retired_query_format_fails_closed) ... ok\ntest_usb_write_release_keeps_bounded_setup_and_other_first_stages (__main__.SharedConstraintSelection.test_usb_write_release_keeps_bounded_setup_and_other_first_stages) ... ok\n\n----------------------------------------------------------------------\nRan 12 tests in 3.700s\n\nOK\n{\"candidate_identity\": \"custom138k-workstation-v1-60f1c843ad79aa6e\", \"compilation_units\": 256, \"module_count\": 288, \"package_count\": 2}\n",
+      "process_sha256": "028211d629d9c097ff5c762fa090b9400390cc450a5374e40db25344aa3cade5"
+    }
+  },
+  "synthesis_transferred": false,
+  "physical_acceptance_transferred": false,
+  "complete_cdc_transferred": false,
+  "resource_saving_proven": false,
+  "r00_complete": false,
+  "r01_complete": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "release_ready": false
+}

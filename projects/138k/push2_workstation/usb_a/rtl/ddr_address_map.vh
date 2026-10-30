@@ -112,4 +112,19 @@
 `define PRJ1_DDR_DELAY_RING_BYTES        32'h0002_0000
 `define PRJ1_DDR_DELAY_RING_APP_BASE     29'h0c00_0000
 
+// Existing Basic Pitch history suballocations, recorded here before adding
+// another bulk client. rtl/music/basic_pitch_ddr_map.svh retains its historical
+// constants; the recording verifier checks that they still fit this range.
+`define PRJ1_DDR_BP_HISTORY_BYTE_BASE    32'h3010_0000
+`define PRJ1_DDR_BP_HISTORY_BYTE_LAST    32'h304f_ffff
+
+// Opt-in recording backing store: one exclusive 1-MiB allocation after all
+// existing delay/Basic Pitch granules. Stage R00 uses only the first 64 KiB;
+// reserving this region does not select a client or extend BLE format 1.
+`define PRJ1_DDR_RECORDING_BYTE_BASE     32'h3050_0000
+`define PRJ1_DDR_RECORDING_BYTE_LAST     32'h305f_ffff
+`define PRJ1_DDR_RECORDING_BYTES         32'h0010_0000
+`define PRJ1_DDR_RECORDING_APP_BASE      29'h0c14_0000
+`define PRJ1_DDR_RECORDING_STAGE_BYTES   32'h0001_0000
+
 `endif
