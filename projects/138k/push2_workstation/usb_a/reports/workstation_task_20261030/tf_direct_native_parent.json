@@ -1,0 +1,238 @@
+{
+  "schema": 1,
+  "identity": "tf-direct-native-main-parent-20261031-v1",
+  "author_commit": "232a3eba6b7af5226ea477976b448c54ee949e4c",
+  "imported_new_files": {
+    "projects/138k/push2_workstation/usb_a/reports/tf_direct_native_v1_source_20261031.md": "679dba50640ee0ef8c0c48bf6f1c06832d16522a9609aed7e41052e5257a7c16",
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_DIRECT_NATIVE_V1_CONTRACT.md": "cdd549c64849e8d875663aa6b45181dcc58a77a823aaaba765fc49df8e980ba3",
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_native_v1.sv": "48c4df2eea55652e1d2a684dd14f42dbdd63bd589fb8ed915a602068fac368c4",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_direct_native_wire.py": "f48a277984e21c5e6a3fe2bc2c97d101136d85099dea6ab9b6231003e3375615",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_direct_native_wire_tb.sv": "7a1733b87f477a971709799e2ad9a82cf1752c18d798564e0a7d281eea2ea6d6"
+  },
+  "selected_profile": false,
+  "owners_and_profiles_unchanged": true,
+  "root_real_wire_cases": 24,
+  "root_behavioral_negatives": 11,
+  "root_elaborated_DDR_negative": 1,
+  "accepted_source_tests": 17,
+  "totals": {
+    "PCM": 47697,
+    "accepts": 50,
+    "applies": 45,
+    "cancels": 12,
+    "checks": 17120,
+    "command_failures": 1,
+    "commands": 1133,
+    "deadlines": 76255,
+    "file_bytes": 265475,
+    "sectors": 526,
+    "stop_completions": 9,
+    "stop_failures": 1
+  },
+  "component_instances": 7,
+  "component_DDR_request_sources": 0,
+  "pause_PCM_peak": 4096,
+  "pause_byte_peak": 4002,
+  "SPI_default_FAST12_realtime_supply_passed": false,
+  "FAST12_actual_frames_before_underflow": 7790,
+  "FAST12_explicit_recovery_PCM_frames": 97,
+  "independent_positive_cases": 12,
+  "independent_actual_wrapper_negative": 1,
+  "original_deadlocks_reproduced": 2,
+  "stop_completion_and_failure_separate_from_raw_reader_cancelled": true,
+  "root_full_semantic_result_and_all_logs_compared": true,
+  "VVP_nondeterministic_digests_separately_verified": true,
+  "legacy_DDR_interface_control_source_omitted_by_author_input_map": true,
+  "legacy_control_source_bound_by_parent": true,
+  "author_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-direct-native-integration-v1/seal.json",
+    "sha256": "fa6d0f5d9ec4a47ad4028ad10af75c37508bded5710cb3e17abc1fc915afe8a3"
+  },
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-direct-native-task-audit-review-v1/REVIEW_SEAL.json",
+    "sha256": "83364c61bf5b7ce472fac434d6d42dbdb64065b407663cf0a675fe1190f904e4"
+  },
+  "root_source_captures": {
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md",
+      "sha256": "7dcfb85337b174d58f7fc61f6ec01f258786c159386ac21e58048266aaeb7433",
+      "Git_blob_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_DIRECT_NATIVE_V1_CONTRACT.md": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_DIRECT_NATIVE_V1_CONTRACT.md",
+      "sha256": "cdd549c64849e8d875663aa6b45181dcc58a77a823aaaba765fc49df8e980ba3",
+      "Git_blob_commit": "232a3eba6b7af5226ea477976b448c54ee949e4c"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/WORKSTATION_TF_FILE_READER_CONTRACT.md": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/WORKSTATION_TF_FILE_READER_CONTRACT.md",
+      "sha256": "639f262fff8b7a42730be1ee2b96f725bc0f8c906abcba0b4bec40fca6b07cc2",
+      "Git_blob_commit": "1972fde9677431fb2419a252986aa3001e3c6f7f"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_file_reader.provenance.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_file_reader.provenance.json",
+      "sha256": "0b9f63d267bba7bfc61f8fda58ad6e49917d5b22d8a8483af210addbb883e471",
+      "Git_blob_commit": "1972fde9677431fb2419a252986aa3001e3c6f7f"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_file_reader.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_file_reader.sv",
+      "sha256": "13495665a2c01dc3b2d129790e570a21122850e8664743efa44fa7d8d36c236b",
+      "Git_blob_commit": "1972fde9677431fb2419a252986aa3001e3c6f7f"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+      "sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+      "sha256": "704e9b62caa4ef79c01f1d2b4c1c61b2e2bd55f93c83ae90bb573c9e71c0a6c8",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_wav_chunk_parser_v1.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_wav_chunk_parser_v1.sv",
+      "sha256": "9dd382d4b5e8af87c02584105733fddf1a5cce38fd6e11d66acf92c75e7dfb8d",
+      "Git_blob_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_wav_pcm_decoder_v1.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_wav_pcm_decoder_v1.sv",
+      "sha256": "49809913fed1fde8eec4716286f9243f60ced4cb82eaee4b45e04e428c015d52",
+      "Git_blob_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_ingress.provenance.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_ingress.provenance.json",
+      "sha256": "7863512a64d535761424b89f928494bd3b4133f7690cb38bad7f11746dbac106",
+      "Git_blob_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_ingress_v1.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_ingress_v1.sv",
+      "sha256": "c9e85a343344e0049bede8653be44c851db72ecc63626d9190e62f058f3c21ec",
+      "Git_blob_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_native_v1.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_native_v1.sv",
+      "sha256": "48c4df2eea55652e1d2a684dd14f42dbdd63bd589fb8ed915a602068fac368c4",
+      "Git_blob_commit": "232a3eba6b7af5226ea477976b448c54ee949e4c"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_direct_ingress.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_direct_ingress.py",
+      "sha256": "0977adbcdd4a54e7b13bed1ae5efb7d6ffd097c64a6ce2b90a9b6d702af9321d",
+      "Git_blob_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_direct_native_wire.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_direct_native_wire.py",
+      "sha256": "f48a277984e21c5e6a3fe2bc2c97d101136d85099dea6ab9b6231003e3375615",
+      "Git_blob_commit": "232a3eba6b7af5226ea477976b448c54ee949e4c"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_direct_native_wire_tb.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_direct_native_wire_tb.sv",
+      "sha256": "7a1733b87f477a971709799e2ad9a82cf1752c18d798564e0a7d281eea2ea6d6",
+      "Git_blob_commit": "232a3eba6b7af5226ea477976b448c54ee949e4c"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_file_wire_card.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_file_wire_card.sv",
+      "sha256": "1aaf9bcc23a6c80d50382504cf89e3154d41c5d5b3a1ebbbba9865304c13119d",
+      "Git_blob_commit": "1972fde9677431fb2419a252986aa3001e3c6f7f"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/tf_direct_native_v1_source_20261031.md": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/reports/tf_direct_native_v1_source_20261031.md",
+      "sha256": "679dba50640ee0ef8c0c48bf6f1c06832d16522a9609aed7e41052e5257a7c16",
+      "Git_blob_commit": "232a3eba6b7af5226ea477976b448c54ee949e4c"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/WORKSTATION_TF_DIRECT_INGRESS_SOURCE_20261031.md": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/reports/WORKSTATION_TF_DIRECT_INGRESS_SOURCE_20261031.md",
+      "sha256": "2462ba9b3ad3dc146d6fd4030c5b5dd35656dd6ee1947d2d81a59c6c5222a6b5",
+      "Git_blob_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/WORKSTATION_TF_FILE_READER_20261031.md": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/reports/WORKSTATION_TF_FILE_READER_20261031.md",
+      "sha256": "b708fe86bed5879f86044538b41f884d0160ca4e23942b176607487addd25ecd",
+      "Git_blob_commit": "1972fde9677431fb2419a252986aa3001e3c6f7f"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/tf_file_owner_native_wire.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/tf_file_owner_native_wire.json",
+      "sha256": "b76fd24ed612e60967ade25c00693aac5b5957f87ba51a7d316af210b92de274",
+      "Git_blob_commit": "1972fde9677431fb2419a252986aa3001e3c6f7f"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/provenance/workstation_tf_wav_chunk_parser_v1.patch": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/provenance/workstation_tf_wav_chunk_parser_v1.patch",
+      "sha256": "00179ae47f532427239d5f7a46639517a4327abfa56277b04a6bf563743038a4",
+      "Git_blob_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/provenance/workstation_tf_wav_pcm_decoder_v1.patch": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/provenance/workstation_tf_wav_pcm_decoder_v1.patch",
+      "sha256": "65f03d0661b062a9b8ac68dfcb369b5f009527cfb40bf551f3568db11df37923",
+      "Git_blob_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_file_reader_wire.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_file_reader_wire.py",
+      "sha256": "a3ec78baebbd0c7bdf658e841029db3dd045736fecda3cff9b2d9af8bffb7234",
+      "Git_blob_commit": "1972fde9677431fb2419a252986aa3001e3c6f7f"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_direct_ingress.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_direct_ingress.sv",
+      "sha256": "8fd45c845b82c9a33c90f525900dbdd5322de544934fc926dd88037f58ed0961",
+      "Git_blob_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_file_reader_wire_tb.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_file_reader_wire_tb.sv",
+      "sha256": "c7119e2eed40bca35d40e66fa5d5fbb145d2fd873ab9726cb9c5c60999d99c17",
+      "Git_blob_commit": "1972fde9677431fb2419a252986aa3001e3c6f7f"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv",
+      "sha256": "debe8ca8c0515ea0ef5b1c7c45c9835373a4720731df0cef97f11daddb467612",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json",
+      "sha256": "2ad7073d2be2ef650d40a15b60e79f1e6d10f3640dc66fa1dea60a9581f8f8d1",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json",
+      "sha256": "194290acbd8d8185368bd20b98f71355bb9ca29a4764107487f7f83841268527",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json",
+      "sha256": "af611d8399dbf5d6495d87b1de60e7a09602e143a90803ba7e1260e0bd236c7c",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json",
+      "sha256": "eed5eb57d55cb9b80f1e83fa5d42d2271d9bcd8745c1f84c2070b98d8f211d4b",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    },
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/build.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/build.py",
+      "sha256": "7172dc42d8b03fa788cc7601502d2d3ede52f5e76d3b4d3cf3789987692d0140",
+      "Git_blob_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0"
+    }
+  },
+  "limitations": [
+    "No profile selects this composition; no whole-workstation owner4 request trace.",
+    "FAST12 with one sector per cluster has a real sustained supply underrun. FAST2 fixture is a digital configuration, not measured card throughput.",
+    "Local decoded EOS and local tail drain do not prove physical serial completion.",
+    "No actual card 50 ms service guarantee; SPI CRC is drained, not validated, and fast card replacement needs reset.",
+    "No sample-rate conversion; WAV rate must match the fixed session snapshot."
+  ],
+  "real_card_50ms_budget_verified": false,
+  "whole_workstation_owner4_trace_verified": false,
+  "physical_EOF_success_verified": false,
+  "full_CDC_accepted": false,
+  "full_reset_accepted": false,
+  "physical_resources_accepted": false,
+  "routed_timing_accepted": false,
+  "implementation_tools_invoked": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-direct-native-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "9a4f0ce20303bdda65510a0fb63d8527e153a4d83e922691165561684c74304d",
+    "local_files": 43,
+    "external_inputs": 1057
+  },
+  "parent_final_verifier": "hash_only; complete main replay and independent replay separately recorded"
+}
