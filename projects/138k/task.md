@@ -150,6 +150,8 @@
 
 [Pitch＋FIFO 实际整机综合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PITCH_FIFO_SYNTHESIS_20261031.md)通过，固定 18ed 的 599 输入／四输出／两工具保持，Logic94,582／Register60,574／SSRAM309／综合 BSRAM237，未授予物理净资源接受。计算估算57.039MHz仍低于76.8MHz，最慢路径转为显示读取控制。新 VG clock4／28 和 PCM18／109 通过；新 CDC／RAM／TF-counter 与物理准备继续独立推进，完整时序及硬件未接受，无部署。
 
+[18ed Pitch＋FIFO CDC 父级复验](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PITCH_FIFO_CDC_PARENT_20261031.md)已完成：四公开入口、17 项／19 实际图负控、四 prepare 各 12 项、profile21（历史可选一项跳过）及 accepted17 均通过。staged 与前序一致，未改生产 RTL／约束，保留综合与后来 helper 分离身份。仅接受声明结构，完整 CDC／reset／RAM／routed STA 与硬件仍未关闭，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
