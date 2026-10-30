@@ -162,6 +162,8 @@
 
 [TF 文件 owner 父级复验](push2_workstation/usb_a/reports/WORKSTATION_TF_FILE_OWNER_PARENT_20261031.md)已通过真实 SPI/FAT 56 场景／八负控、原生 sector21 和主线 accepted17；八个新增文件与导入 Git blob 一致，正反精确派生和全部输入哈希复核通过。组件尚未选择或组合 PCM，CRC 仅排空、吞吐／零 DDR／物理 EOF／硬件仍未接受，M03 保持未完成，无部署。
 
+[TF 流式入口父级复验](push2_workstation/usb_a/reports/WORKSTATION_TF_DIRECT_INGRESS_PARENT_20261031.md)已在主线完成42场景／11负控／三旧WAV回归和accepted17，完整结果与封存交付一致；独立复现的chunk长度回卷已修复并有行为负控。组件尚未选择，真实file owner／CDC／物理I2S组合、整机owner4零DDR、吞吐／资源／时序／硬件仍待验，M03不勾选，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

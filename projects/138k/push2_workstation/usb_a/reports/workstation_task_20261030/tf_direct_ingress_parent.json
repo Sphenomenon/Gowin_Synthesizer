@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "identity": "tf-direct-ingress-parent-20261031-v2",
+  "prior_parent_v1_retained": true,
+  "prior_parent_v1_limitation": "author relative_sha256 dictionary omitted from direct enumeration; independent receipts remained bound",
+  "source_commit": "0855a0d45374f7d1e23862dadc5a4fcb7c644163",
+  "original_commit": "195050ead3f27da69df66584f73009c3b69d2584",
+  "source_files": {
+    "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_TF_DIRECT_INGRESS_SOURCE_20261031.md": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/reports/WORKSTATION_TF_DIRECT_INGRESS_SOURCE_20261031.md",
+      "sha256": "2462ba9b3ad3dc146d6fd4030c5b5dd35656dd6ee1947d2d81a59c6c5222a6b5",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md",
+      "sha256": "7dcfb85337b174d58f7fc61f6ec01f258786c159386ac21e58048266aaeb7433",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/provenance/workstation_tf_wav_chunk_parser_v1.patch": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/provenance/workstation_tf_wav_chunk_parser_v1.patch",
+      "sha256": "00179ae47f532427239d5f7a46639517a4327abfa56277b04a6bf563743038a4",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/provenance/workstation_tf_wav_pcm_decoder_v1.patch": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/provenance/workstation_tf_wav_pcm_decoder_v1.patch",
+      "sha256": "65f03d0661b062a9b8ac68dfcb369b5f009527cfb40bf551f3568db11df37923",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_wav_chunk_parser_v1.sv": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_wav_chunk_parser_v1.sv",
+      "sha256": "9dd382d4b5e8af87c02584105733fddf1a5cce38fd6e11d66acf92c75e7dfb8d",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_wav_pcm_decoder_v1.sv": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_wav_pcm_decoder_v1.sv",
+      "sha256": "49809913fed1fde8eec4716286f9243f60ced4cb82eaee4b45e04e428c015d52",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_ingress.provenance.json": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_ingress.provenance.json",
+      "sha256": "7863512a64d535761424b89f928494bd3b4133f7690cb38bad7f11746dbac106",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_ingress_v1.sv": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_direct_ingress_v1.sv",
+      "sha256": "c9e85a343344e0049bede8653be44c851db72ecc63626d9190e62f058f3c21ec",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_direct_ingress.py": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_direct_ingress.py",
+      "sha256": "0977adbcdd4a54e7b13bed1ae5efb7d6ffd097c64a6ce2b90a9b6d702af9321d",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_direct_ingress.sv": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_direct_ingress.sv",
+      "sha256": "8fd45c845b82c9a33c90f525900dbdd5322de544934fc926dd88037f58ed0961",
+      "equals_imported_git_blob": true
+    }
+  },
+  "receipts": {
+    "tf-direct-ingress-source-v1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-direct-ingress-source-v1/seal.json",
+      "sha256": "225706e4561cdd31c7c6e9c43ecfc3df1bd16bd97eb4c70818f0c33d0c681928"
+    },
+    "tf-direct-ingress-independent-final-review-v1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-direct-ingress-independent-final-review-v1/REVIEW_SEAL.json",
+      "sha256": "e9ac1d316602f179347375f4cfe23b5ecc6e28d0ed7d826611856f54deecbe7c"
+    },
+    "tf-direct-ingress-task-audit-review-v1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-direct-ingress-task-audit-review-v1/REVIEW_SEAL.json",
+      "sha256": "fd3bdfe95a101f239097219bf3097649408b5580f87a08ef16b783cf713bfea2"
+    }
+  },
+  "cases": 42,
+  "behavioral_negatives": 11,
+  "legacy_regressions": 3,
+  "accepted_source_tests": 17,
+  "main_source_full_replay": true,
+  "full_JSON_equal_after_checkout_prefix_normalization": true,
+  "normalization": {
+    "original_checkout": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-direct-ingress-source-v1/tree",
+    "imported_checkout": "/Users/sphenicidition/Documents/Gowin_Synthesizer",
+    "no_other_normalization": true
+  },
+  "totals": {
+    "transfers": 35649,
+    "checks": 154,
+    "sectors": 763,
+    "deadlines": 50682
+  },
+  "independent_extra_session_pin_cases": 3,
+  "independent_chunk_bound_cases": 7,
+  "old_chunk_overflow_incorrect_success_reproduced": true,
+  "default_python_verifier_failure_retained": true,
+  "reason": "tool identity only: Miniforge python versus sealed /usr/bin/python3",
+  "pinned_verifier_path": "/usr/bin/python3",
+  "pinned_PATH": "/usr/bin:/opt/homebrew/bin:/bin:/usr/sbin:/sbin",
+  "source_lint_warnings": [],
+  "original_kernels_or_profiles_modified": false,
+  "file_owner_integration_verified": false,
+  "profile_selected": false,
+  "physical_EOF_verified": false,
+  "selected_TF_owner4_zero_DDR_trace_verified": false,
+  "real_card_50ms_budget_verified": false,
+  "complete_WAV_header_field_validation": false,
+  "m03_complete": false,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "deployment_allowed": false,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-direct-ingress-parent-v2/DELIVERY_SEAL.json",
+    "sha256": "2e37b9fa711089a105c82211c6bd46f7d44c369fda4868ce0093fbed4b4bdcd6"
+  },
+  "parent_file_count": 17,
+  "parent_input_count": 647
+}
