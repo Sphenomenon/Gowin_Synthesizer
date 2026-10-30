@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-business-c04-parent-v1",
+  "seal_sha256": "db76783e90ad679e8e98ad272ae51335be95fc1d7ae246f8b129db0dc20260bd",
+  "external_files": 1355,
+  "comparison": {
+    "schema": 1,
+    "scope": "same_whole_feature_configuration_first_business_batch_synthesis_comparison",
+    "before": {
+      "schema": 1,
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1-011fdc9c6697df42",
+      "elapsed_seconds": 371.46478595910594,
+      "source_commit": "904b2c6",
+      "staged_input_count": 600,
+      "all_original_copy_files_unchanged": true,
+      "original_copy_file_count": 653,
+      "resources": {
+        "LUT": 75967,
+        "ALU": 16802,
+        "Register": 60578,
+        "synthesis_BSRAM": 245,
+        "RAM16": 309,
+        "Logic": 94623,
+        "DSP_primitives": {
+          "MULTALU27X18": 37,
+          "MULT12X12": 4,
+          "MULT27X36": 42
+        }
+      },
+      "AG_diagnostics": [],
+      "output_inventory_sha256": {
+        "impl/gwsynthesis/custom_138k_integration.vg": "fdc08cad2db2b540a4bf6d99e85a9ac6f3942868dc3db7292281a20ed9e80f3e",
+        "impl/gwsynthesis/custom_138k_integration_syn_rsc.xml": "633cdd03d4925cf9c4853fcb07dea18a02cffdef97bac01cacc6028bd3f71e7b",
+        "impl/gwsynthesis/project.ini": "9c521f8324f4b4359e616a6b17695877dd4906ebacd63c7093cecaed2374278a",
+        "impl/gwsynthesis/custom_138k_integration.log": "291e6acec9709d8bf3589119c39aa5a1b2fd20d63e019a3884be07d0bb142fbf",
+        "impl/gwsynthesis/custom_138k_integration.prj": "fab59fdffdacd997a68a2f69ffde0fc07e7db4f5c8a3f399c66ab8552135f8de",
+        "impl/gwsynthesis/custom_138k_integration_syn_resource.html": "f417e07575cdd57b6254f92986a22a48145b7d4d5c7eebca637e051166cb24e6",
+        "impl/gwsynthesis/custom_138k_integration_syn.rpt.html": "77c610c2f3cd84402c62f7f726c75cc1cc0cf1b523dc173a4b04c84bd1d97862"
+      },
+      "VG_sha256": "fdc08cad2db2b540a4bf6d99e85a9ac6f3942868dc3db7292281a20ed9e80f3e",
+      "process_sha256": "35db067322cb996a25e7a1beb3c57bc8c33085933a0c0f8e6fb3d8a11424ba64",
+      "physical_BSRAM_verified": false,
+      "physical_CLS_verified": false,
+      "routed_timing_verified": false,
+      "hardware_operated": false
+    },
+    "after": {
+      "schema": 1,
+      "candidate_identity": "custom138k-workstation-ae350-business-v1-8f615119768bfbf2",
+      "elapsed_seconds": 402.53325845790096,
+      "source_commit": "72f5d714667ea2ac15ea72a362bca397937100d6",
+      "staged_input_count": 612,
+      "all_original_copy_files_unchanged": true,
+      "original_copy_file_count": 676,
+      "resources": {
+        "LUT": 83325,
+        "ALU": 17045,
+        "Register": 63180,
+        "synthesis_BSRAM": 245,
+        "RAM16": 309,
+        "Logic": 102224,
+        "DSP_primitives": {
+          "MULTALU27X18": 37,
+          "MULT12X12": 4,
+          "MULT27X36": 42
+        }
+      },
+      "AG_diagnostics": [],
+      "output_inventory_sha256": {
+        "impl/gwsynthesis/custom_138k_integration.vg": "5ef7455f2189f73fb34ad22216563708081103cd81ace1c937fb2be7139c595b",
+        "impl/gwsynthesis/custom_138k_integration_syn_rsc.xml": "b1bc09042f8d5da845fb17f186a6ee1f1c5734101808e0952d8e170d05a174c6",
+        "impl/gwsynthesis/project.ini": "9c521f8324f4b4359e616a6b17695877dd4906ebacd63c7093cecaed2374278a",
+        "impl/gwsynthesis/custom_138k_integration.log": "b7a8b5b976263198947080f81779b9675b9cc0a79df5d37c9b0a03c531f5f9c8",
+        "impl/gwsynthesis/custom_138k_integration.prj": "eb24a15afd681259e3cf0a7ff7419d5f6409acfaf7bc2793d0cfb138de6e9af2",
+        "impl/gwsynthesis/custom_138k_integration_syn_resource.html": "b1139a33ed6f26ebe3396856635492a790b76fed45cbaa9442c926f03ff6c0b3",
+        "impl/gwsynthesis/custom_138k_integration_syn.rpt.html": "140b4c0f1dcaac243897789c6bb86d40ae034c1059f192fb3c0950df32f989ff"
+      },
+      "VG_sha256": "5ef7455f2189f73fb34ad22216563708081103cd81ace1c937fb2be7139c595b",
+      "process_sha256": "aa9e0382613872c78bc31b46d4ad8213365c8c04fa05495cb2ac591cd88e99ac",
+      "physical_BSRAM_verified": false,
+      "physical_CLS_verified": false,
+      "routed_timing_verified": false,
+      "hardware_operated": false
+    },
+    "delta": {
+      "Logic": 7601,
+      "LUT": 7358,
+      "ALU": 243,
+      "Register": 2602,
+      "synthesis_BSRAM": 0,
+      "RAM16": 0
+    },
+    "net_resource_reduction_demonstrated": false,
+    "physical_resource_comparison_available": false,
+    "full_behavior_equivalence_proved": false,
+    "wire_comparison_scope": "35 complete transcripts; full task/lifecycle acceptance still pending",
+    "no_new_clock_or_false_path_changes": true,
+    "provenance": "both are immutable copied actual preparations; later source checkpoints do not inherit synthesis acceptance"
+  },
+  "actual_after_vg_checks": {
+    "clock_tests": 5,
+    "clock_negative_controls": 28,
+    "pcm_tests": 18,
+    "pcm_negative_controls": 109
+  },
+  "limits": [
+    "Actual first-batch C/APB transcript checks are functional only; harness timeInc scaling is corrected in forthcoming second batch. No CPU deadlines or timing inferred.",
+    "All original copied inputs and actual VG/report outputs rechecked by SHA256; vendor HTML summary independently parsed.",
+    "Synthesis Logic/BSRAM are not physical CLS/BSRAM or routed timing. No bitstream, SRAM or Flash."
+  ]
+}
