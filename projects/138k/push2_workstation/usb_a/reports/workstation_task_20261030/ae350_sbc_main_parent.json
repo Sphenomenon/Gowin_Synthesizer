@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "scope": "main_unselected_sbc_decoder_source_parent_review",
+  "author_commit": "cd0699183cb4193b382fb854f0b48d108b6a4739",
+  "import_commit": "3d3a50e",
+  "source_snapshots": 43,
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-sbc-main-parent-v1",
+  "seal_sha256": "a5f34325e6ab1a8144321ba7b0475c6295dfe9c69d087e2e1b8a10baa82c14fb",
+  "external_files": 1270,
+  "reference_cases": 53,
+  "music_frames": 3392,
+  "scalar_samples": 577536,
+  "checks_per_native_or_sanitizer_run": 62593,
+  "crc_valid_extreme_frames": 6784,
+  "behavior_mutants_rejected": [
+    "upstream-byte-drift",
+    "adaptation-anchor-drift",
+    "history-not-cleared",
+    "stale-accepted",
+    "crc-ignored",
+    "joint4-halfbyte-regression"
+  ],
+  "max_abs_error": 6,
+  "max_rms_error": 1.7346916940590624,
+  "min_snr_db": 75.7623994410385,
+  "rv32": {
+    "text_bytes": 16883,
+    "bss_bytes": 2752,
+    "data_bytes": 0,
+    "largest_single_frame_bytes": 80,
+    "incremental_gc_sections": true,
+    "full_firmware_budget": false,
+    "full_stack_bound": false,
+    "cycles_measured": false
+  },
+  "existing_firmware_tests": 10,
+  "accepted_sources_tests": 17,
+  "production_selected": false,
+  "phone_interoperability": false,
+  "eda_invoked": false,
+  "hardware_operated": false,
+  "remaining": [
+    "unified HCI and standard A2DP interoperability",
+    "full firmware fit and call-chain stack",
+    "actual decode cycles and service deadlines",
+    "bounded queues and output/effects integration",
+    "clock recovery and physical phone playback"
+  ]
+}
