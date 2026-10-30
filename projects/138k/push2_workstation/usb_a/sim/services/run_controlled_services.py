@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Byte-equivalent extraction plus real APB/recorder/score functional regression."""
+"""Reverse-proven native migration plus default ABI APB/recorder/score regression."""
 import argparse
 import hashlib
 import json
@@ -29,20 +29,24 @@ def run(output, prepared_project=None):
     reconstructed = timing.services(original.decode()).encode()
     native = (ROOT / SOURCE).read_bytes()
     provenance = json.loads((ROOT / PROVENANCE).read_text())
-    assert native == reconstructed, 'Maintained services differs from the original timing-prepared bytes'
+    reverse=native.decode()
+    for change in reversed(provenance['exact_changes']):
+        assert reverse.count(change['after'])==1, 'Native media reverse anchor drift'
+        reverse=reverse.replace(change['after'],change['before'])
+    assert reverse.encode()==reconstructed, 'Native changes do not reverse to timing-prepared bytes'
     assert provenance['source'] == SOURCE and provenance['module'] == 'gw138k_controlled_services'
     assert provenance['source_sha256'] == sha(native) and provenance['source_bytes'] == len(native)
     assert provenance['parent_baseline'] == baseline.evidence()
     assert provenance['parent_input'] == baseline.descriptor['files'][STAGED]
     assert provenance['transform']['before_sha256'] == sha(original)
     assert provenance['transform']['after_sha256'] == sha(reconstructed)
-    assert provenance['exact_changes'] == []
-    # Selection remains an explicit future step. This regression compiles only
-    # the maintained services; the legacy overlay is solely its identity oracle.
+    assert provenance['reverse_changes_reproduce_timing_prepared_bytes']
+    # The accepted source policy is unchanged. Runtime selection is explicit;
+    # the locked legacy overlay remains the reverse-identity oracle.
     from tools.workstation_composition import SOURCES
     assert SOURCE not in SOURCES
     profile = json.loads((ROOT / 'boards/custom_138k/workstation_profile_v1.json').read_text())
-    assert not any(path.endswith('/' + SOURCE) for path in profile['source_sha256'])
+    runtime_profile_selected=any(path.endswith('/'+SOURCE) for path in profile['source_sha256'])
     prepared = None
     if prepared_project is not None:
         prepared_path = prepared_project.resolve() / STAGED
@@ -59,14 +63,14 @@ def run(output, prepared_project=None):
                        ROOT / 'tools/workstation_baselines.py', baseline.manifest]
     hashes = {str(path): sha(path.read_bytes()) for path in inputs}
     result = dict(schema=1, passed=False, validation_stage='offline-source-identity-and-functional-simulation',
-                  source_identity='native-controlled-services-v1-' + sha(native)[:16], bitstream_sha256=None,
+                  source_identity='native-controlled-services-v2-' + sha(native)[:16], bitstream_sha256=None,
                   hardware_tested=False, profile_changed=False, legacy_overlay_changed=False,
                   native_source=dict(path=SOURCE, sha256=sha(native), bytes=len(native)),
                   byte_equivalence=dict(baseline=baseline.evidence(), staged_path=STAGED,
                                         before_sha256=sha(original), after_sha256=sha(reconstructed),
-                                        exact=True, prepared_reference=prepared),
-                  input_sha256=hashes,
-                  limits='No runtime top/profile selection, new rate/record metadata, synthesis, P&R or hardware acceptance')
+                                        exact=native==reconstructed, reverse_exact=True, default_media_policy_enabled=False, prepared_reference=prepared),
+                  input_sha256=hashes, runtime_profile_selected=runtime_profile_selected,
+                  limits='Default-disabled ABI regression only; opt-in media policy has a separate regression; no synthesis, P&R or hardware acceptance')
     try:
         commands = [
             ['iverilog', '-g2012', '-s', 'tb_workstation_controlled_services',
@@ -87,7 +91,7 @@ def run(output, prepared_project=None):
         compile_log = (output / 'compile.log').read_text()
         result['compile_diagnostics'] = dict(
             constant_select_sensitivity_notices=compile_log.count('sorry: constant selects'),
-            note='Icarus expands always_* sensitivity to the whole input; native bytes equal the prepared source')
+            note='Icarus expands always_* sensitivity to the whole input; sensitivity expansion notice; reverse identity and default ABI assertions checked')
         result['inputs_unchanged_during_run'] = hashes == {str(path): sha(path.read_bytes()) for path in inputs}
         assert result['inputs_unchanged_during_run'], 'Verification inputs changed during the run'
         result['passed'] = True

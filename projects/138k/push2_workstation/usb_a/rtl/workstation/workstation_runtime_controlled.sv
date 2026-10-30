@@ -10,7 +10,8 @@ module workstation_runtime_controlled #(
     parameter integer PDN_HOLD_FRAMES=4,STARTUP_MUTE_FRAMES=1028,
     parameter integer DMA_TIMEOUT_CYCLES=1048576,RECORD_ADDRESS_BITS=8,
     parameter bit RESERVE_ZERO_EPOCH=0,
-    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0
+    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,
+    parameter bit ENABLE_MEDIA_POLICY=0
 ) (
     input wire rst_ni,clk_50m_i,compute_clk_i,memory_clk_i,
     input wire reference_48_i,reference_44_i,midi_rx_i,pc_uart_rx_i,
@@ -84,7 +85,13 @@ module workstation_runtime_controlled #(
     output wire [5:0] effect_order_o,
     // Display-only, 50MHz sticky fault. Only rst_ni clears observation loss;
     // preset, rate switch and serializer resets never rearm this path.
-    output wire display_observation_fault_o
+    output wire display_observation_fault_o,
+    input wire media_stop_request_i,media_stop_hold_i,
+    output wire media_stop_ready_o,media_stop_done_o,media_stop_failed_o,
+    output wire [3:0] media_stop_failure_code_o,
+    output wire tf_stop_request_o,
+    input wire tf_stop_pending_i,tf_stop_done_i,tf_stop_failed_i,
+    input wire [3:0] tf_stop_failure_code_i
 );
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] reset_50_pipe,reset_compute_pipe;
     always @(posedge clk_50m_i or negedge rst_ni)
@@ -146,10 +153,15 @@ module workstation_runtime_controlled #(
     wire [63:0] score_data;
     wire [8:0] score_length;
     wire [31:0] snap_status,snap_left,snap_right,snap_sequence,underrun_compute;
+    wire local_stop_request,local_stop_hold,local_stop_done,local_stop_failed;
+    wire record_seal_request,record_seal_done,record_seal_failed,record_start_ready,score_cancelled;
+    wire [31:0] record_object_id,record_object_rate,record_object_epoch,record_object_frames,record_seal_count;
+    wire [5:0] record_object_status;
+    wire [2:0] record_object_failure,record_seal_status;
     // Original 448-bit performance layout is byte-for-byte unchanged.
     assign performance_words_o={32'h43545231,snap_sequence,snap_right,snap_left,snap_status,
         control_pitch_o,control_options_o,held_notes_o,pc_health_o,control_state_o,applied_events_o};
-    gw138k_controlled_services services(
+    gw138k_controlled_services #(.ENABLE_MEDIA_POLICY(ENABLE_MEDIA_POLICY)) services(
         .clk(compute_clk_i),.reset_n(command_reset_n),.command_valid,.command_write,.command_address,
         .command_data,.command_strobes,.command_ready,.response_data,.response_error,
         .cpu_event_valid,.cpu_event,.cpu_event_ready,.panel_event_valid,.panel_command,.panel_event_ready,
@@ -160,7 +172,15 @@ module workstation_runtime_controlled #(
         .midi_cdc_drop(midi_drop_compute),.observation_drop(observation_drop_o),.record_drop(record_drop_o),
         .record_enable(record_enabled_o),.snap_status,.snap_left,.snap_right,.snap_sequence,
         .record_valid,.record_packet,.record_ready,.score_write,.score_start,.score_stop,.score_address,.score_data,
-        .score_length,.score_running(score_running_o),.score_done(score_done_o),.led_mask(led_mask_o),.score_frame(score_frame_o));
+        .score_length,.score_running(score_running_o),.score_done(score_done_o),.led_mask(led_mask_o),.score_frame(score_frame_o),
+        .media_stop_request_i(local_stop_request),.media_stop_hold_i(local_stop_hold),
+        .record_storage_reset_ni(reset_compute_n),.record_seal_request_o(record_seal_request),
+        .record_seal_done_i(record_seal_done),.record_seal_failed_i(record_seal_failed),.record_start_ready_i(record_start_ready),
+        .record_object_id_i(record_object_id),.record_object_rate_i(record_object_rate),.record_object_epoch_i(record_object_epoch),
+        .record_object_frames_i(record_object_frames),.record_object_status_i(record_object_status),
+        .record_object_failure_i(record_object_failure),.record_seal_status_i(record_seal_status),.record_seal_count_i(record_seal_count),
+        .score_cancelled_i(score_cancelled),.score_failed_i(score_failed_o),
+        .media_stop_done_o(local_stop_done),.media_stop_failed_o(local_stop_failed));
     gw138k_usb_lifecycle_merge #(.EXPLICIT_LIFECYCLE(1)) events(
         .clk(compute_clk_i),.reset_n(reset_compute_n),.g1_valid(usb_event_valid),
         .g1_lifecycle(usb_lifecycle),.g1_cancel(usb_cancel),.g1_data(usb_event_data),.g1_ready(usb_event_ready),
@@ -191,6 +211,14 @@ module workstation_runtime_controlled #(
         else begin reasons_meta<=reasons_compute;reasons_sync<=reasons_meta;end
     assign switch_block_reason_o={reasons_sync,!switch_permit_i};
     wire qualified_permit=switch_permit_i && !media_busy_50[2];
+    workstation_runtime_media_stop_bridge #(.ENABLE(ENABLE_MEDIA_POLICY)) media_stop(
+        .reset_ni(rst_ni),.clk_50m_i,.compute_clk_i,.owner_reset_ni(command_reset_n),
+        .request_i(media_stop_request_i),.hold_i(media_stop_hold_i),
+        .local_request_o(local_stop_request),.local_hold_o(local_stop_hold),
+        .local_done_i(local_stop_done),.local_failed_i(local_stop_failed),
+        .tf_stop_request_o,.tf_stop_pending_i,.tf_stop_done_i,.tf_stop_failed_i,.tf_stop_failure_code_i,
+        .media_quiet_i(!media_busy_50[2] && media_quiescent_i),
+        .ready_o(media_stop_ready_o),.done_o(media_stop_done_o),.failed_o(media_stop_failed_o),.failure_code_o(media_stop_failure_code_o));
     wire [5:0] voices,effect_order_compute;
     wire [1:0] mode,route;
     wire [2:0] profile,effect_mask_compute;
@@ -269,7 +297,7 @@ module workstation_runtime_controlled #(
         .source_valid(frame_valid_o),.source_data({frame_epoch_o,underrun_count_o,source_errors}),
         .drop_count(health_drop),.destination_valid(health_valid),
         .destination_data({health_epoch,underrun_compute,source_errors_compute}));
-    workstation_observation_consumers #(.RECORD_ADDRESS_BITS(RECORD_ADDRESS_BITS)) consumers(
+    workstation_observation_consumers #(.RECORD_ADDRESS_BITS(RECORD_ADDRESS_BITS),.ENABLE_MEDIA_POLICY(ENABLE_MEDIA_POLICY)) consumers(
         .clk_i(compute_clk_i),.rst_ni(reset_compute_n),.frame_valid_i(observed_valid),
         .frame_44k1_i(observed_rate),.frame_error_i(observed_error),.stream_change_i(observed_change),
         .sequence_gap_i(observed_gap),
@@ -282,7 +310,12 @@ module workstation_runtime_controlled #(
         .fft_44k1_o,.fft_context_valid_o,.fft_epoch_o,
         .score_write_i(score_write),.score_address_i(score_address),.score_data_i(score_data),
         .score_length_i(score_length),.score_start_i(score_start),.score_stop_i(score_stop),
-        .score_running_o,.score_done_o,.led_mask_o,.score_frame_o,.score_failed_o);
+        .score_running_o,.score_done_o,.led_mask_o,.score_frame_o,.score_failed_o,
+        .record_seal_i(record_seal_request),.record_seal_done_o(record_seal_done),.record_seal_failed_o(record_seal_failed),
+        .record_start_ready_o(record_start_ready),.record_object_id_o(record_object_id),.record_object_rate_o(record_object_rate),
+        .record_object_epoch_o(record_object_epoch),.record_object_frames_o(record_object_frames),
+        .record_object_status_o(record_object_status),.record_object_failure_o(record_object_failure),
+        .record_seal_status_o(record_seal_status),.record_seal_count_o(record_seal_count),.score_cancelled_o(score_cancelled));
     reg [23:0] revision;
     always @(posedge compute_clk_i or negedge reset_compute_n)
         if(!reset_compute_n)revision<=0;
@@ -327,6 +360,100 @@ module workstation_display_observation_health (
         else begin
             loss_meta<=loss_level;loss_sync<=loss_meta;
             if(|loss_sync)fault_50_o<=1;
+        end
+    end
+endmodule
+
+// Readiness/CDC composition only. REC_ENABLE and cue stop remain owned by the
+// compute services, TF stop/drain remains owned by the TF service. A request is
+// a four-phase held transaction, never an asynchronous one-cycle pulse crossing.
+module workstation_runtime_media_stop_bridge #(parameter bit ENABLE=0) (
+    input wire reset_ni,clk_50m_i,compute_clk_i,owner_reset_ni,
+    input wire request_i,hold_i,
+    output reg local_request_o,
+    output wire local_hold_o,
+    input wire local_done_i,local_failed_i,
+    output reg tf_stop_request_o,
+    input wire tf_stop_pending_i,tf_stop_done_i,tf_stop_failed_i,
+    input wire [3:0] tf_stop_failure_code_i,
+    input wire media_quiet_i,
+    output wire ready_o,
+    output reg done_o,failed_o,
+    output reg [3:0] failure_code_o
+);
+    localparam [1:0] IDLE=0,LOCAL=1,TF=2,QUIET=3;
+    reg [1:0] state;
+    reg hold_50,request_toggle,acknowledge_seen,local_failure;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] request_compute,hold_compute;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] acknowledge_50;
+    (* ASYNC_REG="TRUE" *) reg [1:0] failed_50;
+    reg request_seen,compute_pending,compute_sent,acknowledge_toggle,compute_failure;
+    assign local_hold_o=ENABLE && hold_compute[1];
+    assign ready_o=ENABLE && state==IDLE && !hold_50 && !tf_stop_pending_i;
+    // Assertion fences new starts immediately. Release waits for two compute
+    // edges and is allowed only after the actual backend transaction ends.
+    always @(posedge compute_clk_i or posedge hold_50 or negedge reset_ni)
+        if(!reset_ni)hold_compute<=0;
+        else if(hold_50)hold_compute<=2'b11;
+        else hold_compute<={hold_compute[0],1'b0};
+    always @(posedge compute_clk_i or negedge reset_ni)begin
+        if(!reset_ni)begin
+            request_compute<=0;request_seen<=0;compute_pending<=0;compute_sent<=0;
+            acknowledge_toggle<=0;compute_failure<=0;local_request_o<=0;
+        end else begin
+            request_compute<={request_compute[0],request_toggle};local_request_o<=0;
+            if(ENABLE && request_compute[1]!=request_seen)begin
+                request_seen<=request_compute[1];compute_pending<=1;compute_sent<=0;
+            end
+            if(compute_pending)begin
+                // A CPU-only reset cannot abandon a request or clear storage.
+                // Reissue to the service after reset; the seal is idempotent.
+                if(!owner_reset_ni)compute_sent<=0;
+                else if(!compute_sent)begin local_request_o<=1;compute_sent<=1;end
+                else if(local_done_i || local_failed_i)begin
+                    compute_pending<=0;compute_failure<=local_failed_i;
+                    acknowledge_toggle<=!acknowledge_toggle;
+                end
+            end
+        end
+    end
+    // Failure payload is held until the next transaction. The acknowledge
+    // gets an extra destination settle edge after its two-flop synchronizer;
+    // parallel per-bit sampling alone would not correlate the result.
+    always @(posedge clk_50m_i or negedge reset_ni)begin
+        if(!reset_ni)begin
+            acknowledge_50<=0;failed_50<=0;
+        end else begin
+            acknowledge_50<={acknowledge_50[1:0],acknowledge_toggle};
+            failed_50<={failed_50[0],compute_failure};
+        end
+    end
+    always @(posedge clk_50m_i or negedge reset_ni)begin
+        if(!reset_ni)begin
+            state<=IDLE;hold_50<=0;request_toggle<=0;acknowledge_seen<=0;local_failure<=0;
+            tf_stop_request_o<=0;done_o<=0;failed_o<=0;failure_code_o<=0;
+        end else begin
+            tf_stop_request_o<=0;done_o<=0;failed_o<=0;
+            if(state==IDLE && !hold_i && (!ENABLE || !tf_stop_pending_i))hold_50<=0;
+            if(ENABLE)case(state)
+                IDLE:if(request_i && ready_o)begin
+                    hold_50<=1;request_toggle<=!request_toggle;state<=LOCAL;local_failure<=0;failure_code_o<=0;
+                end
+                LOCAL:if(acknowledge_50[2]!=acknowledge_seen)begin
+                    acknowledge_seen<=acknowledge_50[2];local_failure<=failed_50[1];
+                    // Even a failed recording is actually stopped before TF.
+                    tf_stop_request_o<=1;state<=TF;
+                end
+                TF:if(tf_stop_failed_i)begin
+                    failure_code_o<=tf_stop_failure_code_i;failed_o<=1;state<=IDLE;
+                end else if(tf_stop_done_i)state<=QUIET;
+                QUIET:if(media_quiet_i)begin
+                    if(local_failure)begin failure_code_o<=4'd9;failed_o<=1;end
+                    else done_o<=1;
+                    state<=IDLE;
+                end
+                default:state<=IDLE;
+            endcase
         end
     end
 endmodule

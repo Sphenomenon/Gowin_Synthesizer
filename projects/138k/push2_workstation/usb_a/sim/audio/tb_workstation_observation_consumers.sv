@@ -31,7 +31,10 @@ module tb_workstation_observation_consumers;
         .fft_44k1_o(fft_rate),.fft_context_valid_o(fft_context),.fft_epoch_o(fft_epoch),
         .score_write_i(score_write),.score_address_i(score_addr),.score_data_i(score_data),
         .score_length_i(score_length),.score_start_i(score_start),.score_stop_i(score_stop),
-        .score_running_o(running),.score_done_o(done),.led_mask_o(leds),.score_frame_o(score_frame),.score_failed_o(score_failed));
+        .score_running_o(running),.score_done_o(done),.led_mask_o(leds),.score_frame_o(score_frame),.score_failed_o(score_failed),
+        .record_seal_i(1'b0),.record_seal_done_o(),.record_seal_failed_o(),.record_start_ready_o(),
+        .record_object_id_o(),.record_object_rate_o(),.record_object_epoch_o(),.record_object_frames_o(),
+        .record_object_status_o(),.record_object_failure_o(),.record_seal_status_o(),.record_seal_count_o(),.score_cancelled_o());
     always @(negedge clk)if(rst_n)begin
         if(fft_valid)begin
             if(!fft_context || fft_epoch!=epoch || fft_rate!=rate44 || fft_real!=0 || fft_imag!=0)

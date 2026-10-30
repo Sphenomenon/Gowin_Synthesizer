@@ -40,7 +40,7 @@ def run(output, prepared_project=None, epoch_policy='legacy'):
     profile = json.loads(profile_path.read_text())
     native_path = 'rtl/services/workstation_audio_clock_service.sv'
     assert native_path not in SOURCES, 'Clock service must remain explicitly unselected at this stage'
-    assert not any(path.endswith('/' + native_path) for path in profile['source_sha256'])
+    runtime_profile_selected=any(path.endswith('/'+native_path) for path in profile['source_sha256'])
     inputs = sources + [Path(__file__).resolve(), ROOT / 'tools/workstation_resource_timing.py',
                        ROOT / 'tools/workstation_baselines.py', ROOT / 'tools/workstation_composition.py',
                        ROOT / 'rtl/services/AUDIO_CLOCK_SERVICE_CONTRACT.md', profile_path, baseline.manifest]
@@ -49,8 +49,8 @@ def run(output, prepared_project=None, epoch_policy='legacy'):
     identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False,
                   validation_stage='offline-native-service-real-apb-cdc-and-clock-transaction',
-                  identity='audio-clock-command-offline-v1-' + epoch_policy + '-' + identity[:16], source_set_sha256=identity,
-                  baseline=baseline.evidence(),
+                  identity='audio-clock-command-offline-v2-' + epoch_policy + '-' + identity[:16], source_set_sha256=identity,
+                  baseline=baseline.evidence(), runtime_profile_selected=runtime_profile_selected,
                   apb=dict(input='src/migration/gw138k_apb_cdc.sv',
                            before_sha256=hashlib.sha256(original_apb).hexdigest(),
                            predecoded_sha256=digest(apb), prepared_reference=reference),

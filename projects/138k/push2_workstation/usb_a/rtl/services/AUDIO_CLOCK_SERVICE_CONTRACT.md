@@ -158,3 +158,10 @@ The native owner propagates this option through clock domain/runtime/controlled
 composition. See [STREAM_EPOCH.md](../audio/STREAM_EPOCH.md). A new explicit
 profile must select it for display metadata v1.1; existing profiles retain
 their previous selection.
+
+
+## 可选媒体收尾策略（2026-10-30）
+
+`ENABLE_MEDIA_POLICY=0` 保留原命令路径和 0x00～0x5c ABI。显式原生运行组合可启用新策略：实际变率／恢复先封存受控录音并计划取消乐谱，再等待 TF 真正停止与物理媒体许可释放，最后才向唯一时钟核心发出请求。同率 no-op 不封存或取消媒体。新增寄存器、错误、超时、CDC 和旧录音范围见 [MEDIA_STOP_POLICY.md](MEDIA_STOP_POLICY.md)。
+
+策略只覆盖受控 APB 96-bit 录音／乐谱与显式 TF 停止接口；独立 BLE 短录音仍须自己的正常封存确认，不能以来源许可掉低替代。完整候选使能和上板验收需先完成该互锁。

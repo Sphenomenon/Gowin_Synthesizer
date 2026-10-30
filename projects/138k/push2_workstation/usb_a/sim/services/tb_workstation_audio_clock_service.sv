@@ -79,7 +79,9 @@ module tb_workstation_audio_clock_service #(
         .core_reject_code_i(reject_code),.core_fault_code_i(fault_code),
         .core_active_44k1_i(actual_rate),.core_active_valid_i(actual_valid && !dsp_fault),
         .core_stream_epoch_i(actual_epoch ^ {31'b0,corrupt_epoch}),.core_source_qualified_i(source_qualified),
-        .request_o(request),.request_44k1_o(request_rate),.recover_o(recover));
+        .request_o(request),.request_44k1_o(request_rate),.recover_o(recover),
+        .media_stop_request_o(),.media_stop_hold_o(),.media_stop_ready_i(1'b1),
+        .media_stop_done_i(1'b0),.media_stop_failed_i(1'b0),.media_stop_failure_code_i(4'd0));
     integer bus_transactions=0,max_bus_cycles=0,request_pulses=0,recover_pulses=0;
     integer hardware_accepts=0,hardware_applies=0,hardware_failures=0;
     integer held_checks=0,busy_rejects=0,late_rejects=0,recover_accepts=0;

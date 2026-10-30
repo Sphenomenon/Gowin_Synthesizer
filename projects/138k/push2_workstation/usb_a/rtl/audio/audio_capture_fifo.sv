@@ -6,7 +6,9 @@ module audio_capture_fifo #(parameter integer ADDRESS_BITS=8) (
     input logic signed[31:0] left_i,right_i,
     output logic valid_o,input logic ready_i,
     output logic[95:0] packet_o,
-    output logic[31:0] drop_count_o
+    output logic[31:0] drop_count_o,
+    // Passive acceptance observation; no payload or buffering policy change.
+    output wire captured_o
 );
   localparam integer DEPTH=1 << ADDRESS_BITS;
   // Synchronous read maps to block RAM on both Xilinx and Gowin. Forward
@@ -20,6 +22,7 @@ module audio_capture_fifo #(parameter integer ADDRESS_BITS=8) (
   logic forward_valid;
   wire pop=valid_o && ready_i;
   wire push=enable_i && sample_valid_i && (count<DEPTH || pop);
+  assign captured_o=rst_ni && push;
   assign valid_o=count!=0;
   wire[ADDRESS_BITS-1:0] next_rd=rd + {{(ADDRESS_BITS-1){1'b0}},pop};
   assign packet_o=forward_valid ? forward_packet : ram_packet;

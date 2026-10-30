@@ -42,7 +42,12 @@ module tb_workstation_controlled_services;
         .observation_drop(32'd7),.record_drop,.record_enable,.record_valid,.record_packet,
         .record_ready,.snap_status,.snap_left,.snap_right,.snap_sequence,
         .score_write,.score_start,.score_stop,.score_address,.score_data,.score_length,
-        .score_running,.score_done,.led_mask,.score_frame);
+        .score_running,.score_done,.led_mask,.score_frame,
+        .media_stop_request_i(1'b0),.media_stop_hold_i(1'b0),.record_storage_reset_ni(reset_n),.record_seal_request_o(),
+        .record_seal_done_i(1'b0),.record_seal_failed_i(1'b0),.record_start_ready_i(1'b1),
+        .record_object_id_i(32'd0),.record_object_rate_i(32'd0),.record_object_epoch_i(32'd0),.record_object_frames_i(32'd0),
+        .record_object_status_i(6'd0),.record_object_failure_i(3'd0),.record_seal_status_i(3'd0),.record_seal_count_i(32'd0),
+        .score_cancelled_i(1'b0),.score_failed_i(1'b0),.media_stop_done_o(),.media_stop_failed_o());
     audio_capture_fifo #(.ADDRESS_BITS(2)) recorder(.clk_i(clk),.rst_ni(command_reset_n),
         .enable_i(record_enable),.sample_valid_i(sample_valid),
         .left_i(32'sh12340000),.right_i(32'sh89ab0000),.valid_o(record_valid),

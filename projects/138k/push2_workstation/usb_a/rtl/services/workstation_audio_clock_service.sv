@@ -8,7 +8,9 @@ module workstation_audio_clock_service #(
     parameter integer ACCEPT_TIMEOUT_CYCLES = 32,
     parameter integer RESULT_TIMEOUT_CYCLES = 20000000,
     parameter integer REARM_QUIET_CYCLES = 4,
-    parameter bit RESERVE_ZERO_EPOCH = 0
+    parameter bit RESERVE_ZERO_EPOCH = 0,
+    parameter bit ENABLE_MEDIA_POLICY = 0,
+    parameter integer MEDIA_TIMEOUT_CYCLES = 50000000
 ) (
     input wire clk_i, reset_ni,
     input wire command_valid_i, command_write_i,
@@ -27,20 +29,30 @@ module workstation_audio_clock_service #(
     input wire core_active_44k1_i, core_active_valid_i,
     input wire [31:0] core_stream_epoch_i,
     input wire [1:0] core_source_qualified_i,
-    output reg request_o, request_44k1_o, recover_o
+    output reg request_o, request_44k1_o, recover_o,
+    // Optional same-domain transaction. Done means local REC/score sealed,
+    // TF actually stopped, and the physical media inhibit has released.
+    output reg media_stop_request_o,media_stop_hold_o,
+    input wire media_stop_ready_i,media_stop_done_i,media_stop_failed_i,
+    input wire [3:0] media_stop_failure_code_i
 );
     localparam [1:0] IDLE=0, ISSUE=1, WAIT_ACCEPT=2, WAIT_APPLY=3;
     localparam [3:0] RESULT_NONE=0, RESULT_APPLIED=1, RESULT_CORE_REJECT=2,
         RESULT_POLICY_REJECT=3, RESULT_FAILED=4, RESULT_ACCEPT_TIMEOUT=5,
-        RESULT_APPLY_TIMEOUT=6, RESULT_CONTEXT_MISMATCH=7;
+        RESULT_APPLY_TIMEOUT=6, RESULT_CONTEXT_MISMATCH=7,
+        RESULT_MEDIA_FAILED=8, RESULT_MEDIA_TIMEOUT=9, RESULT_MEDIA_GATE=10;
     localparam [3:0] BUS_OK=0, BUS_ADDRESS=1, BUS_READ_ONLY=2, BUS_STROBES=3,
         BUS_VALUE=4, BUS_PENDING=5, BUS_UNARMED=6, BUS_DESYNCHRONIZED=7,
         BUS_NO_PERMIT=8, BUS_BUSY=9, BUS_DSP_FAULT=10, BUS_NOT_READY=11,
-        BUS_RECOVER_STATE=12, BUS_SOURCE_UNQUALIFIED=13;
+        BUS_RECOVER_STATE=12, BUS_SOURCE_UNQUALIFIED=13, BUS_MEDIA_NOT_READY=14;
     localparam integer TIMER_BITS=$clog2(RESULT_TIMEOUT_CYCLES+1) > $clog2(ACCEPT_TIMEOUT_CYCLES+1)
         ? $clog2(RESULT_TIMEOUT_CYCLES+1) : $clog2(ACCEPT_TIMEOUT_CYCLES+1);
     localparam integer QUIET_BITS=$clog2(REARM_QUIET_CYCLES+1);
+    localparam integer MEDIA_TIMER_BITS=$clog2(MEDIA_TIMEOUT_CYCLES+1);
     reg [1:0] phase;
+    reg media_pending,media_completed,media_failed;
+    reg [MEDIA_TIMER_BITS-1:0] media_timer;
+    reg [3:0] media_failure_code;
     reg command_seen, armed, correlation_fault;
     reg [QUIET_BITS-1:0] quiet_count;
     reg [TIMER_BITS-1:0] timer;
@@ -48,7 +60,7 @@ module workstation_audio_clock_service #(
     reg address_aligned;
     reg [31:0] command_id, result_id, accepted_id;
     reg [1:0] operation;
-    reg expected_rate;
+    reg expected_rate,base_rate;
     reg [31:0] base_epoch, expected_epoch;
     reg [3:0] result_code, last_bus_reject;
     reg [15:0] result_detail;
@@ -71,10 +83,12 @@ module workstation_audio_clock_service #(
     reg [3:0] admission_error;
     wire bus_fire=command_valid_i && command_ready_o;
     wire submit=bus_fire && command_write_i && !response_error_o;
+    wire needs_media_stop=ENABLE_MEDIA_POLICY &&
+        (command_data_i==2 || command_data_i[0]!=core_active_44k1_i);
     assign command_ready_o=reset_ni && !command_seen;
 
     initial begin
-        if(ACCEPT_TIMEOUT_CYCLES<4 || RESULT_TIMEOUT_CYCLES<4 || REARM_QUIET_CYCLES<3)
+        if(ACCEPT_TIMEOUT_CYCLES<4 || RESULT_TIMEOUT_CYCLES<4 || REARM_QUIET_CYCLES<3 || MEDIA_TIMEOUT_CYCLES<4)
             $fatal(1,"Clock service timeout/rearm configuration invalid");
     end
     function automatic [31:0] increment_saturated(input [31:0] value);
@@ -84,6 +98,7 @@ module workstation_audio_clock_service #(
         begin
             phase<=IDLE;
             timer<=0;
+            media_pending<=0;media_stop_hold_o<=0;
             result_id<=command_id;
             result_code<=code;
             result_detail<={2'b0,core_dsp_fault_i,core_fault_i,core_failed_i,
@@ -104,7 +119,7 @@ module workstation_audio_clock_service #(
         end
     end
     always @* begin
-        known_address=word_address<=6'h17;
+        known_address=word_address<=6'h17 || (ENABLE_MEDIA_POLICY && word_address<=6'h1a);
         admission_error=BUS_OK;
         if(!address_aligned || !known_address)admission_error=BUS_ADDRESS;
         else if(command_write_i && word_address!=6'h02)admission_error=BUS_READ_ONLY;
@@ -118,6 +133,7 @@ module workstation_audio_clock_service #(
             else if(!switch_permit_i)admission_error=BUS_NO_PERMIT;
             else if(core_dsp_fault_i)admission_error=BUS_DSP_FAULT;
             else if(core_busy_i)admission_error=BUS_BUSY;
+            else if(needs_media_stop && !media_stop_ready_i)admission_error=BUS_MEDIA_NOT_READY;
             else if(command_data_i==2)begin
                 if(!core_fault_i)admission_error=BUS_RECOVER_STATE;
                 else if(!core_source_qualified_i[core_active_44k1_i])admission_error=BUS_SOURCE_UNQUALIFIED;
@@ -129,7 +145,7 @@ module workstation_audio_clock_service #(
         response_data_o=0;
         case(word_address)
             6'h00:response_data_o=32'h434c4b01;
-            6'h01:response_data_o=32'h00010007 | (32'(RESERVE_ZERO_EPOCH)<<3);
+            6'h01:response_data_o=32'h00010007 | (32'(RESERVE_ZERO_EPOCH)<<3) | (32'(ENABLE_MEDIA_POLICY)<<4);
             6'h02:response_data_o=response_error_o ? {28'b0,admission_error} : next_id;
             6'h03:response_data_o={26'b0,snapshot_valid,correlation_fault,armed,1'b0,phase};
             6'h04:response_data_o=command_id;
@@ -152,19 +168,25 @@ module workstation_audio_clock_service #(
             6'h15:response_data_o=32'(RESULT_TIMEOUT_CYCLES);
             6'h16:response_data_o={30'b0,recovering,expected_rate};
             6'h17:response_data_o=accepted_id;
+            6'h18:response_data_o={26'b0,media_stop_ready_i,1'(ENABLE_MEDIA_POLICY),media_failed,
+                media_completed,media_pending,media_stop_hold_o};
+            6'h19:response_data_o=32'(MEDIA_TIMEOUT_CYCLES);
+            6'h1a:response_data_o={28'b0,media_failure_code};
             default:response_data_o=0;
         endcase
     end
     always @(posedge clk_i or negedge reset_ni)begin
         if(!reset_ni)begin
             phase<=IDLE;command_seen<=0;armed<=0;correlation_fault<=0;quiet_count<=0;timer<=0;
-            command_id<=0;result_id<=0;accepted_id<=0;operation<=0;expected_rate<=0;
+            command_id<=0;result_id<=0;accepted_id<=0;operation<=0;expected_rate<=0;base_rate<=0;
             base_epoch<=0;expected_epoch<=0;result_code<=RESULT_NONE;result_detail<=0;
             last_bus_reject<=BUS_OK;submitted_count<=0;accepted_count<=0;applied_count<=0;
             failed_count<=0;bus_reject_count<=0;unowned_event_count<=0;
             snapshot_epoch<=0;snapshot_valid<=0;request_o<=0;request_44k1_o<=0;recover_o<=0;
+            media_pending<=0;media_completed<=0;media_failed<=0;media_timer<=0;
+            media_failure_code<=0;media_stop_request_o<=0;media_stop_hold_o<=0;
         end else begin
-            request_o<=0;recover_o<=0;
+            request_o<=0;recover_o<=0;media_stop_request_o<=0;
             if(!command_valid_i)command_seen<=0;
             else if(bus_fire)command_seen<=1;
             if(!armed)begin
@@ -185,16 +207,41 @@ module workstation_audio_clock_service #(
             if(submit)begin
                 command_id<=next_id;operation<=command_data_i[1:0];
                 expected_rate<=command_data_i==2 ? core_active_44k1_i : command_data_i[0];
-                base_epoch<=core_stream_epoch_i;
+                base_epoch<=core_stream_epoch_i;base_rate<=core_active_44k1_i;
                 expected_epoch<=command_data_i==2 || command_data_i[0]!=core_active_44k1_i
                     ? following_epoch : core_stream_epoch_i;
                 submitted_count<=increment_saturated(submitted_count);
                 request_44k1_o<=command_data_i[0];
-                request_o<=command_data_i!=2;recover_o<=command_data_i==2;
+                request_o<=!needs_media_stop && command_data_i!=2;
+                recover_o<=!needs_media_stop && command_data_i==2;
+                media_pending<=needs_media_stop;media_completed<=0;media_failed<=0;
+                media_failure_code<=0;media_timer<=0;
+                media_stop_request_o<=needs_media_stop;media_stop_hold_o<=needs_media_stop;
                 phase<=ISSUE;timer<=0;
             end
             case(phase)
-                ISSUE:begin phase<=WAIT_ACCEPT;timer<=0;end
+                ISSUE:begin
+                    if(media_pending)begin
+                        // No core pulse has been issued. Any unsolicited core
+                        // event/context movement invalidates this command.
+                        if(any_core_event || core_stream_epoch_i!=base_epoch || core_active_44k1_i!=base_rate)finish(RESULT_CONTEXT_MISMATCH,1);
+                        else if(media_stop_failed_i)begin
+                            media_failed<=1;media_failure_code<=media_stop_failure_code_i;
+                            finish(RESULT_MEDIA_FAILED,0);
+                        end else if(media_stop_done_i)begin
+                            media_completed<=1;media_pending<=0;
+                            if(!switch_permit_i || core_busy_i || core_dsp_fault_i || (recovering && !core_fault_i) ||
+                                (!recovering && (core_fault_i || !core_active_valid_i || !core_request_ready_i)) ||
+                                !core_source_qualified_i[expected_rate])finish(RESULT_MEDIA_GATE,0);
+                            else begin
+                                request_o<=!recovering;recover_o<=recovering;
+                                phase<=WAIT_ACCEPT;timer<=0;
+                            end
+                        end else if(media_timer==MEDIA_TIMER_BITS'(MEDIA_TIMEOUT_CYCLES-1))begin
+                            media_failed<=1;finish(RESULT_MEDIA_TIMEOUT,0);
+                        end else media_timer<=media_timer+1'b1;
+                    end else begin phase<=WAIT_ACCEPT;timer<=0;end
+                end
                 WAIT_ACCEPT:begin
                     if(core_policy_rejected_i)finish(RESULT_POLICY_REJECT,0);
                     else if(core_rejected_i)finish(RESULT_CORE_REJECT,0);
