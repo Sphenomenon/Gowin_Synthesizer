@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-30T13:29:26.698206+00:00",
+  "identity": "ae350-S1b-maintained-ROM-public-service-preserving-GC-LTO-budget-v1",
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-mailbox-s1b-rom-budget-v1/REVIEW_SEAL.json",
+    "sha256": "0218e07974ce25705936b93f723061da32ab86a40f562743c82a45aac132f5f2"
+  },
+  "sealed_files_rechecked": 289,
+  "verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-mailbox-s1b-rom-budget-v1/verification.json",
+    "sha256": "f769a4d95f8fa81a9d9b3496f64c6e2106912dfc3add0496c71eeeb5ddafba17"
+  },
+  "final_checks": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-mailbox-s1b-rom-budget-v1/final_checks.json",
+    "sha256": "de4b4985e9dab653c4c09b177450dcc946b262dfc44b0d0090a3f292d58756b5"
+  },
+  "official_baseline": {
+    "rom_capacity_bytes": 16384,
+    "binary_bytes": 14140,
+    "text_bytes": 14140,
+    "initialized_data_bytes": 0,
+    "bss_bytes": 60,
+    "physical_ram_bytes": 8192,
+    "ram_reserved_prefix_bytes": 512,
+    "static_ram_span_bytes": 60,
+    "static_ram_end": 572,
+    "stack_top": 8192,
+    "stack_capacity_bytes": 7620,
+    "minimum_stack_bytes": 4096,
+    "symbols": {
+      "_start": 2147483648,
+      "__data_load_start": 2147497788,
+      "__data_start": 512,
+      "__data_end": 512,
+      "__bss_start": 512,
+      "__bss_end": 572
+    },
+    "whole_program_stack_bound_verified": false,
+    "hardware_stack_watermark_verified": false
+  },
+  "original_public_roots": [
+    "_start",
+    "a138_clock_mmio_bus",
+    "a138_clock_poll",
+    "a138_clock_probe",
+    "a138_clock_submit",
+    "a138_record_acquire",
+    "a138_record_command",
+    "a138_record_create",
+    "a138_record_download",
+    "a138_record_mmio_bus",
+    "a138_record_poll",
+    "a138_record_probe",
+    "a138_record_read_head",
+    "memcpy",
+    "memset",
+    "services_main",
+    "ui_patch",
+    "ui_render"
+  ],
+  "results": [
+    {
+      "name": "baseline_gc_all_public",
+      "exit_code": 0,
+      "binary_bytes": 14156,
+      "remaining_rom_bytes": 2228,
+      "max_single_function_stack_bytes": 368
+    },
+    {
+      "name": "baseline_lto_gc_all_public",
+      "exit_code": 0,
+      "binary_bytes": 14184,
+      "remaining_rom_bytes": 2200,
+      "max_single_function_stack_bytes": null
+    },
+    {
+      "name": "pump_gc_all_public",
+      "exit_code": 1,
+      "binary_bytes": null,
+      "remaining_rom_bytes": null,
+      "max_single_function_stack_bytes": 384
+    },
+    {
+      "name": "pump_lto_gc_all_public",
+      "exit_code": 1,
+      "binary_bytes": null,
+      "remaining_rom_bytes": null,
+      "max_single_function_stack_bytes": null
+    },
+    {
+      "name": "baseline_Os_gc_all_public",
+      "exit_code": 0,
+      "binary_bytes": 12140,
+      "remaining_rom_bytes": 4244,
+      "max_single_function_stack_bytes": 352
+    },
+    {
+      "name": "baseline_Os_lto_gc_all_public",
+      "exit_code": 0,
+      "binary_bytes": 12116,
+      "remaining_rom_bytes": 4268,
+      "max_single_function_stack_bytes": 352
+    },
+    {
+      "name": "pump_Os_gc_all_public",
+      "exit_code": 0,
+      "binary_bytes": 15744,
+      "remaining_rom_bytes": 640,
+      "max_single_function_stack_bytes": 352
+    },
+    {
+      "name": "pump_Os_lto_gc_all_public",
+      "exit_code": 0,
+      "binary_bytes": 15220,
+      "remaining_rom_bytes": 1164,
+      "max_single_function_stack_bytes": 352
+    },
+    {
+      "name": "baseline_O2_lto_link_stack",
+      "exit_code": 0,
+      "binary_bytes": 14184,
+      "remaining_rom_bytes": 2200,
+      "max_single_function_stack_bytes": 368
+    },
+    {
+      "name": "pump_O2_lto_link_stack",
+      "exit_code": 1,
+      "binary_bytes": null,
+      "remaining_rom_bytes": null,
+      "max_single_function_stack_bytes": 384
+    }
+  ],
+  "host_Os_ASan_UBSan_cases": 3,
+  "current_firmware_and_test_hashes_rechecked": true,
+  "deterministic_repeat_ELF_BIN": true,
+  "pump_scope": "Concrete API reachability and capacity wrapper only: owner request exposure/dispatch, actual ACK bridge, parser hook and production startup/configuration remain absent. Remaining ROM is capacity headroom, not proof the completed S1b service fits.",
+  "production_selected": false,
+  "complete_business_owner_integrated": false,
+  "service_interval_verified": false,
+  "whole_call_chain_stack_verified": false,
+  "hardware_tested": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}
