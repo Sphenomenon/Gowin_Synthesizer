@@ -104,6 +104,8 @@
 
 [录音 DDR 存储基础](push2_workstation/usb_a/reports/WORKSTATION_RECORDING_STORAGE_FOUNDATION_20261030.md)已父级复验：CPU／BLE 各 64 KiB 子区显式分开，CPU 实际地址保持；后端 44 cases、真实 runtime 14 场景／五负控通过。最终 raw store 两配置 94,742／93,244 checks、五负控及独立 55,487 checks 通过，保留持有请求在最后 generation 的原版失败；新 authority 通过十相位／六负控并隔离首次 ready 前的 ledger loss。四份最终 prepare 各 12 项来源、Profile 20 项／accepted 17 项通过；raw store／authority 尚未选择，无综合、物理资源节省、硬件或部署接受，R00／R01／R02 保持未完成。
 
+[BLE DDR 五层适配](push2_workstation/usb_a/reports/WORKSTATION_BLE_RAW_ADAPTER_PARENT_20261030.md)已父级完成两时钟各 24 场景、472,541／470,038 checks、各 17,427 wire bytes 与 RAM 原件对照，协议六场景／封存链三场景／27 负控全过；独立增补 10,118 checks 并拒绝 FAILED 复活突变。原 BLE 八项／accepted 17 项通过，checked helper 默认关闭；整机 profile 尚未选择，无综合、物理净收益、硬件或部署接受。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

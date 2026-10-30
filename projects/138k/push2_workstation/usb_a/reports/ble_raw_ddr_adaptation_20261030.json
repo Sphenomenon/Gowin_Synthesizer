@@ -1,0 +1,310 @@
+{
+  "schema": 1,
+  "passed": true,
+  "identity": "native-ble-raw-ddr-adaptation-v1-fcd56b001b5d87c9",
+  "source_set_sha256": "fcd56b001b5d87c9db328b77b4e454247c1cb28f91d2adca77e625513a884c0c",
+  "validation_stage": "offline-real-BLE-object-owner-store-native-DDR-protocol-five-layer-chain",
+  "prepare": {
+    "policy": "native-ble-raw-ddr-store-v1",
+    "enabled": true,
+    "modified_files": [
+      "native_bluetooth/ble_recording.v",
+      "native_bluetooth/ble_protocol_command.v",
+      "native_bluetooth/bt_gatt.v",
+      "native_bluetooth/bt_verilog_core.v",
+      "rtl/bluetooth/workstation_bluetooth.sv"
+    ],
+    "upstream_sha256": {
+      "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": "f5e9447a67bb74d5b9dd80ab112a7e4d2422bbeef0f4375faa68f7400489a696",
+      "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_protocol_command.v": "608c2c818e1b3546d40983f8798a6e8d50ca26d3182870093f3fd18a05cdac00",
+      "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_verilog_core.v": "89d47ee7ae8144e39b30743b0c1073aa9757e982fae863590ad74173252579d1",
+      "projects/138k/push2_workstation/usb_a/rtl/bluetooth/workstation_bluetooth.sv": "58700059b5d9865d8d3093d65fc9c19b75f3f7c68e86cafaae6a01d1baba70fa",
+      "projects/25k/example/RTL8723DS_PROTOCOL/prepare_adapted.py": "bc49ab237f4135b8e4c4289dce7077ceb49350924c4b1d095085dea9422aca50",
+      "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_gatt.v": "5266ea2002a8180b446a467c2cccae5c65d5409bf642319418122f50df4f658b"
+    },
+    "raw_store_sha256": "422a1bb4c3b0cf842b416b65f714d023c65b270d0fa5219f9adec1c72d290ede",
+    "raw_contract_sha256": "86dd2b30edf3772dd637d2766d1b89120c1c4ef2216aa87c744ee76414519763",
+    "generator_sha256": "5fd412e04e66c96eabb58e94c589cec4853750a24fccc1aeee16a097c314ebce",
+    "input_sha256": {
+      "ble_recording.v": "f5e9447a67bb74d5b9dd80ab112a7e4d2422bbeef0f4375faa68f7400489a696",
+      "ble_protocol_command.v": "608c2c818e1b3546d40983f8798a6e8d50ca26d3182870093f3fd18a05cdac00",
+      "bt_gatt.v": "b6e293a9dfc89d09ea2476b12fd38fc2edce7d0337f7be21de91e3dbdb118b1d",
+      "bt_verilog_core.v": "89d47ee7ae8144e39b30743b0c1073aa9757e982fae863590ad74173252579d1",
+      "workstation_bluetooth.sv": "58700059b5d9865d8d3093d65fc9c19b75f3f7c68e86cafaae6a01d1baba70fa"
+    },
+    "output_sha256": {
+      "ble_recording.v": "9de775e873895153059513bb85eb2e01b2bbcacac9d0f00c3570758c648fabd4",
+      "ble_protocol_command.v": "99ebcd25f801bb502b883a05884207e243e4c1ec5123eb8eb99494b742962798",
+      "bt_gatt.v": "b82f2028f058c5607fcd910eedf5a8b59906781ebc2d83f0750e8d19f42bf3c8",
+      "bt_verilog_core.v": "815f4ebd8be9e6f8525a7c64a03d28404fa9dd9147f1d397425c25a640eb2211",
+      "workstation_bluetooth.sv": "88b7cea5cacdd774ee97b055bc7219043fcdde38d54124c468ba08094c9e247c"
+    },
+    "protected_region_sha256": {
+      "encoder": "d0bf6977f702ea89392e71c3cdbcb20afb767097b17ee78be49869fc05b0168b",
+      "transfer_banks": "bd803dc01b7b9187bd6c4184f7cdf1fd7690097e84d1ac59765e3bc7ff86b78b",
+      "wire_message_bytes": "1ed510ffba23b936f3b891e9d2b92ba2bd5f6cb58395afbe903d27678b1a3ae7"
+    },
+    "drain_budget_control_cycles": 5000000,
+    "old_ram_timeout_cycles": 64,
+    "default_parameter_enabled": false,
+    "profile_selected": false,
+    "hardware_tested": false,
+    "physical_cdc_accepted": false,
+    "deployment_allowed": false
+  },
+  "protected_region_sha256": {
+    "encoder": "d0bf6977f702ea89392e71c3cdbcb20afb767097b17ee78be49869fc05b0168b",
+    "transfer_banks": "bd803dc01b7b9187bd6c4184f7cdf1fd7690097e84d1ac59765e3bc7ff86b78b",
+    "wire_message_bytes": "1ed510ffba23b936f3b891e9d2b92ba2bd5f6cb58395afbe903d27678b1a3ae7"
+  },
+  "source_inputs_unchanged_during_run": true,
+  "disabled_prepare_byte_preserved": true,
+  "failed_prepare_published_no_bytes": true,
+  "generated_fixture_sha256": {
+    "raw_ddr_fixture.sv": "3b9e2f593df7431f4b198cadad5be4098f78bfb912a27d2554429f80b87f0f97",
+    "tb_ble_raw_protocol.sv": "a2b06b88060917cebc8deed4b500ca1fd3651540f231722050742e35f18bcf3d",
+    "tb_ble_raw_chain.sv": "34421d8e6ae2817b7a449e6f24dde431985d363233051df10b9e6fd1032ead52"
+  },
+  "synthesis": false,
+  "pnr": false,
+  "physical_cdc_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "deployment_allowed": false,
+  "limits": "Real raw store/native DDR handshake, BLE framing/CRC/cache and five layers; chain forces BLE link initialization/connection and direct command injection only. Native DDR model and shortened endpoint test budget; no physical RAM/CDC/timing, synthesis, P&R, board or deployment acceptance.",
+  "full_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-adaptation-regression-final-v4/verification.json",
+    "sha256": "dd4195a665d13e1416cdb68e5d4db76c0de10180a86ea7af34cffe9b93f1186f"
+  },
+  "cases": {
+    "legacy_live": {
+      "returncode": 0,
+      "run_log_sha256": "86744fb985959662f1492eb658bf34b31ba7211113c9b7ad2c34b3ccb802bc10",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {}
+    },
+    "owner_async_memory": {
+      "returncode": 0,
+      "run_log_sha256": "4e21857bc371b800300ebbb8ac41f3754017e47bfb4a455b44cfeccb1157966e",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {
+        "cases": 24,
+        "checks": 472541,
+        "wire_bytes": 17427,
+        "fetches": 8
+      }
+    },
+    "owner_100mhz_memory": {
+      "returncode": 0,
+      "run_log_sha256": "ffea0186be241a1050e7d4c515064fd4a92ae35dcdc7c2706da729d59108e115",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {
+        "cases": 24,
+        "checks": 470038,
+        "wire_bytes": 17427,
+        "fetches": 8
+      }
+    },
+    "real_protocol": {
+      "returncode": 0,
+      "run_log_sha256": "2ad199d1e647e3ca4876e088a328843d4ec7e068fad6368aad6eeb125c8a54f4",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {
+        "cases": 6,
+        "seals": 3,
+        "failed": 0,
+        "download_bytes": 4
+      }
+    },
+    "staged_five_layer_chain": {
+      "returncode": 0,
+      "run_log_sha256": "93ef8b8aa78bdda07a1ecdadf9ab3b410877f392e3622747ff5b07997bf7e6ac",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {
+        "cases": 3,
+        "done": 3,
+        "failed": 0,
+        "frames": 1
+      }
+    }
+  },
+  "negative_controls": {
+    "early_ready": {
+      "returncode": 1,
+      "run_log_sha256": "ce95a85130a255a6020877b8f8b6cf97f2efe71552bc89282f156bd4ceaf5ec8",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {
+        "t": 574310000,
+        "state": 4,
+        "raw": 2048,
+        "c": 2040,
+        "code": 0
+      },
+      "rejected": true,
+      "expected_failure": "READY requires actual native drain"
+    },
+    "late_ready_after_timeout": {
+      "returncode": 1,
+      "run_log_sha256": "9933ccbd1f6d81e5b87cac34f43b1441aa3972b6274bdd86faa2cf15d87469c7",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {
+        "t": 4339520000,
+        "state": 4,
+        "raw": 1,
+        "c": 1,
+        "code": 0
+      },
+      "rejected": true,
+      "expected_failure": "late native drain cannot resurrect READY"
+    },
+    "source_failure_overwritten": {
+      "returncode": 1,
+      "run_log_sha256": "dfbbb2a61b0d80fe280e51dd9d4f6fb1cb47a0998310de0308ad6e786622abac",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {
+        "t": 3333660000,
+        "state": 4,
+        "raw": 1,
+        "c": 1,
+        "code": 0
+      },
+      "rejected": true,
+      "expected_failure": "same-edge source loss outranks native-drain READY"
+    },
+    "reuse_old_cache": {
+      "returncode": 1,
+      "run_log_sha256": "3a9ce86346482696604e30da58a136e67ed7dc47af2feb4a287181cedd6f65e0",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {
+        "t": 1811860000,
+        "state": 4,
+        "raw": 2048,
+        "c": 2048,
+        "code": 0
+      },
+      "rejected": true,
+      "expected_failure": "command terminal/status"
+    },
+    "clear_caller_lifetime": {
+      "returncode": 1,
+      "run_log_sha256": "300e6fe4d1b424d3f9b242c04d6fac09635096b674d416bc3abf2d2ffd4233f4",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {
+        "t": 4546560000,
+        "state": 4,
+        "raw": 0,
+        "c": 0,
+        "code": 0
+      },
+      "rejected": true,
+      "expected_failure": "accepted CLEAR survives disconnected observer"
+    },
+    "missing_layer_close": {
+      "returncode": 1,
+      "run_log_sha256": "1926db4fe38181821085497f25b6b5967e3ebd21f79d9a1081f2e5d048e309cd",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metrics": {
+        "pending": 1,
+        "failed": 0,
+        "code": 0
+      },
+      "rejected": true,
+      "expected_failure": "staged chain seal timeout"
+    },
+    "input_drift_ble_recording.v": {
+      "rejected": true,
+      "error": "BLE raw DDR original source identity changed: ble_recording.v"
+    },
+    "input_drift_ble_protocol_command.v": {
+      "rejected": true,
+      "error": "BLE raw DDR original source identity changed: ble_protocol_command.v"
+    },
+    "input_drift_bt_gatt.v": {
+      "rejected": true,
+      "error": "BLE raw DDR original source identity changed: bt_gatt.v"
+    },
+    "input_drift_bt_verilog_core.v": {
+      "rejected": true,
+      "error": "BLE raw DDR original source identity changed: bt_verilog_core.v"
+    },
+    "input_drift_workstation_bluetooth.sv": {
+      "rejected": true,
+      "error": "BLE raw DDR original source identity changed: workstation_bluetooth.sv"
+    },
+    "input_inventory": {
+      "rejected": true,
+      "error": "BLE raw DDR input inventory changed"
+    },
+    "anchor_drift": {
+      "rejected": true,
+      "error": "BLE raw DDR adaptation anchor drift:     reg [3:0] state;"
+    },
+    "protected_codec": {
+      "rejected": true,
+      "error": "BLE protected-region anchor drift: encoder"
+    },
+    "output_tamper_ble_recording.v": {
+      "rejected": true,
+      "error": "BLE raw DDR output drift: native_bluetooth/ble_recording.v"
+    },
+    "forged_output_evidence_ble_recording.v": {
+      "rejected": true,
+      "error": "BLE raw DDR preparation evidence drift: output_sha256"
+    },
+    "output_tamper_ble_protocol_command.v": {
+      "rejected": true,
+      "error": "BLE raw DDR output drift: native_bluetooth/ble_protocol_command.v"
+    },
+    "forged_output_evidence_ble_protocol_command.v": {
+      "rejected": true,
+      "error": "BLE raw DDR preparation evidence drift: output_sha256"
+    },
+    "output_tamper_bt_gatt.v": {
+      "rejected": true,
+      "error": "BLE raw DDR output drift: native_bluetooth/bt_gatt.v"
+    },
+    "forged_output_evidence_bt_gatt.v": {
+      "rejected": true,
+      "error": "BLE raw DDR preparation evidence drift: output_sha256"
+    },
+    "output_tamper_bt_verilog_core.v": {
+      "rejected": true,
+      "error": "BLE raw DDR output drift: native_bluetooth/bt_verilog_core.v"
+    },
+    "forged_output_evidence_bt_verilog_core.v": {
+      "rejected": true,
+      "error": "BLE raw DDR preparation evidence drift: output_sha256"
+    },
+    "output_tamper_workstation_bluetooth.sv": {
+      "rejected": true,
+      "error": "BLE raw DDR output drift: rtl/bluetooth/workstation_bluetooth.sv"
+    },
+    "forged_output_evidence_workstation_bluetooth.sv": {
+      "rejected": true,
+      "error": "BLE raw DDR preparation evidence drift: output_sha256"
+    },
+    "raw_store_tamper": {
+      "rejected": true,
+      "error": "BLE raw DDR store/contract drift: rtl/memory/workstation_ble_raw_ddr_store.sv"
+    },
+    "raw_contract_tamper": {
+      "rejected": true,
+      "error": "BLE raw DDR store/contract drift: rtl/memory/WORKSTATION_BLE_RAW_DDR_STORE.md"
+    },
+    "upstream_tamper_before_publication": {
+      "rejected": true,
+      "error": "BLE raw DDR upstream source drift: projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v"
+    }
+  },
+  "additional_regressions": {
+    "current_workstation_sources": {
+      "tests": 17,
+      "passed": true
+    },
+    "unchanged_bluetooth_protocol_uart": {
+      "tests": 8,
+      "passed": true
+    }
+  }
+}

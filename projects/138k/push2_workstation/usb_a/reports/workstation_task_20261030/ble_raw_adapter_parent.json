@@ -1,0 +1,332 @@
+{
+  "schema": 1,
+  "sealed_utc": "2026-10-30T13:46:58.131541+00:00",
+  "passed": true,
+  "parent_identity": "native-ble-raw-ddr-adaptation-v1-cb4ae47e550ca54d",
+  "parent_result": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-adapter-parent-v1/verification.json",
+    "sha256": "53e66f6d546c294dbd7e84945c386158ab68dfa1fabd72e473f75719a7e3e07a"
+  },
+  "source_sha256": {
+    "sim/usb2/run_workstation_ble_raw_ddr.py": "715db730b8115b737d66eb53fa26c03dabedf67fa76501a6d7dd5eb967e47934",
+    "tools/workstation_bluetooth_ddr.py": "5fd412e04e66c96eabb58e94c589cec4853750a24fccc1aeee16a097c314ebce",
+    "sim/usb2/tb_workstation_ble_raw_ddr.sv": "b2341f1a94a43b6b3934506b0b2b1f739b722687bc55f573923c6950aa277ea1",
+    "sim/usb2/ble_seal_protocol_fixture.py": "7a6e6a9c91b2b8d7d80e24135848c429cb093f4fca10d693162bb6d78291f4c6",
+    "sim/usb2/tb_workstation_ble_seal_chain.sv": "55af69583adcdd02d314081b547547fd4218417b2441e70648d38ec7073667bd",
+    "sim/usb2/tb_workstation_ble_recording.sv": "78b1a4840a02529ff10dc2720f2bcfefac2cbb27952fd2d7a102b34aed43f406",
+    "rtl/bluetooth/WORKSTATION_BLE_RAW_DDR_ADAPTATION.md": "b4bb1eff861ac4d92d54fe7a34b7fd03feafa602ff88f29e72ddaad439816c89",
+    "tools/workstation_bluetooth.py": "9044cd97068ce939ae7b2302ae7a7df7e09cfa024e859734006cd1d0719608dc",
+    "tools/workstation_pinout.py": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
+    "sim/test_workstation_pinout.py": "86fb4fac0045903abc3b4522bee05d90dcd0af6a30ee35c416ea050d2f4c8afa",
+    "rtl/memory/workstation_ble_raw_ddr_store.sv": "422a1bb4c3b0cf842b416b65f714d023c65b270d0fa5219f9adec1c72d290ede",
+    "rtl/memory/WORKSTATION_BLE_RAW_DDR_STORE.md": "86dd2b30edf3772dd637d2766d1b89120c1c4ef2216aa87c744ee76414519763",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+    "rtl/bluetooth/workstation_bluetooth.sv": "58700059b5d9865d8d3093d65fc9c19b75f3f7c68e86cafaae6a01d1baba70fa"
+  },
+  "cases": {
+    "legacy_live": {},
+    "owner_async_memory": {
+      "cases": 24,
+      "checks": 472541,
+      "wire_bytes": 17427,
+      "fetches": 8
+    },
+    "owner_100mhz_memory": {
+      "cases": 24,
+      "checks": 470038,
+      "wire_bytes": 17427,
+      "fetches": 8
+    },
+    "real_protocol": {
+      "cases": 6,
+      "seals": 3,
+      "failed": 0,
+      "download_bytes": 4
+    },
+    "staged_five_layer_chain": {
+      "cases": 3,
+      "done": 3,
+      "failed": 0,
+      "frames": 1
+    }
+  },
+  "negative_controls": {
+    "early_ready": true,
+    "late_ready_after_timeout": true,
+    "source_failure_overwritten": true,
+    "reuse_old_cache": true,
+    "clear_caller_lifetime": true,
+    "missing_layer_close": true,
+    "input_drift_ble_recording.v": true,
+    "input_drift_ble_protocol_command.v": true,
+    "input_drift_bt_gatt.v": true,
+    "input_drift_bt_verilog_core.v": true,
+    "input_drift_workstation_bluetooth.sv": true,
+    "input_inventory": true,
+    "anchor_drift": true,
+    "protected_codec": true,
+    "output_tamper_ble_recording.v": true,
+    "forged_output_evidence_ble_recording.v": true,
+    "output_tamper_ble_protocol_command.v": true,
+    "forged_output_evidence_ble_protocol_command.v": true,
+    "output_tamper_bt_gatt.v": true,
+    "forged_output_evidence_bt_gatt.v": true,
+    "output_tamper_bt_verilog_core.v": true,
+    "forged_output_evidence_bt_verilog_core.v": true,
+    "output_tamper_workstation_bluetooth.sv": true,
+    "forged_output_evidence_workstation_bluetooth.sv": true,
+    "raw_store_tamper": true,
+    "raw_contract_tamper": true,
+    "upstream_tamper_before_publication": true
+  },
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-adapter-independent-review-v1/REVIEW_SEAL.json",
+    "sha256": "a3acd5e9184aca1db3b708b3cf0560dbfc130b1a0b718d9457deff2201c4a780",
+    "files_verified": 51
+  },
+  "independent_review": {
+    "schema": 1,
+    "verdict": "no_blocking_source_or_offline_finding",
+    "reviewed_commit": "5e389657a46935eba0c9b4e3d9986560eb07f5d2",
+    "original_verification_sha256": "dd4195a665d13e1416cdb68e5d4db76c0de10180a86ea7af34cffe9b93f1186f",
+    "original_validation_identity": "native-ble-raw-ddr-adaptation-v1-fcd56b001b5d87c9",
+    "input_closure": {
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-ddr-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/memory/WORKSTATION_BLE_RAW_DDR_STORE.md": {
+        "sha256": "86dd2b30edf3772dd637d2766d1b89120c1c4ef2216aa87c744ee76414519763",
+        "snapshot": "source_snapshot/00/WORKSTATION_BLE_RAW_DDR_STORE.md"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-ddr-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ble_raw_ddr_store.sv": {
+        "sha256": "422a1bb4c3b0cf842b416b65f714d023c65b270d0fa5219f9adec1c72d290ede",
+        "snapshot": "source_snapshot/01/workstation_ble_raw_ddr_store.sv"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/example/RTL8723DS/vendor/rtl8723ds_ble/MANIFEST.json": {
+        "sha256": "7151a2ebbc4c1c983b14f233182109c886a7753461b47fa584a9429f1665b3b1",
+        "snapshot": "source_snapshot/02/MANIFEST.json"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/example/RTL8723DS/vendor/rtl8723ds_ble/rtl/bt_uart.v": {
+        "sha256": "004babc4c97502af75d6715a489cf20f31e3003f569fab57504967b1aafa88dc",
+        "snapshot": "source_snapshot/03/bt_uart.v"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/example/RTL8723DS/vendor/rtl8723ds_ble/rtl/reset_release_sync.v": {
+        "sha256": "d5311e4a6141261abe6c699572b3c0053b39c0e631d9d2c1b18b21f87048489d",
+        "snapshot": "source_snapshot/04/reset_release_sync.v"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/example/RTL8723DS/vendor/rtl8723ds_ble/rtl8723ds_patch.mem": {
+        "sha256": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30",
+        "snapshot": "source_snapshot/05/rtl8723ds_patch.mem"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/rtl/bluetooth/WORKSTATION_BLE_RAW_DDR_ADAPTATION.md": {
+        "sha256": "b4bb1eff861ac4d92d54fe7a34b7fd03feafa602ff88f29e72ddaad439816c89",
+        "snapshot": "source_snapshot/06/WORKSTATION_BLE_RAW_DDR_ADAPTATION.md"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/rtl/bluetooth/workstation_bluetooth.sv": {
+        "sha256": "58700059b5d9865d8d3093d65fc9c19b75f3f7c68e86cafaae6a01d1baba70fa",
+        "snapshot": "source_snapshot/07/workstation_bluetooth.sv"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv": {
+        "sha256": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+        "snapshot": "source_snapshot/08/workstation_recording_ddr_native_bridge.sv"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": {
+        "sha256": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "snapshot": "source_snapshot/09/workstation_sdp.sv"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": {
+        "sha256": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+        "snapshot": "source_snapshot/10/music_async_fifo.sv"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/sim/test_workstation_pinout.py": {
+        "sha256": "86fb4fac0045903abc3b4522bee05d90dcd0af6a30ee35c416ea050d2f4c8afa",
+        "snapshot": "source_snapshot/11/test_workstation_pinout.py"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/sim/usb2/ble_seal_protocol_fixture.py": {
+        "sha256": "7a6e6a9c91b2b8d7d80e24135848c429cb093f4fca10d693162bb6d78291f4c6",
+        "snapshot": "source_snapshot/12/ble_seal_protocol_fixture.py"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/sim/usb2/run_workstation_ble_raw_ddr.py": {
+        "sha256": "715db730b8115b737d66eb53fa26c03dabedf67fa76501a6d7dd5eb967e47934",
+        "snapshot": "source_snapshot/13/run_workstation_ble_raw_ddr.py"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_ble_raw_ddr.sv": {
+        "sha256": "b2341f1a94a43b6b3934506b0b2b1f739b722687bc55f573923c6950aa277ea1",
+        "snapshot": "source_snapshot/14/tb_workstation_ble_raw_ddr.sv"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_ble_recording.sv": {
+        "sha256": "78b1a4840a02529ff10dc2720f2bcfefac2cbb27952fd2d7a102b34aed43f406",
+        "snapshot": "source_snapshot/15/tb_workstation_ble_recording.sv"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_ble_seal_chain.sv": {
+        "sha256": "55af69583adcdd02d314081b547547fd4218417b2441e70648d38ec7073667bd",
+        "snapshot": "source_snapshot/16/tb_workstation_ble_seal_chain.sv"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth.py": {
+        "sha256": "9044cd97068ce939ae7b2302ae7a7df7e09cfa024e859734006cd1d0719608dc",
+        "snapshot": "source_snapshot/17/workstation_bluetooth.py"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth_ddr.py": {
+        "sha256": "5fd412e04e66c96eabb58e94c589cec4853750a24fccc1aeee16a097c314ebce",
+        "snapshot": "source_snapshot/18/workstation_bluetooth_ddr.py"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/138k/push2_workstation/usb_a/tools/workstation_pinout.py": {
+        "sha256": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
+        "snapshot": "source_snapshot/19/workstation_pinout.py"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_acl_bridge.v": {
+        "sha256": "4444fdaf4258076b8edf4d0f46624062a1cd9dc75198f17c7e281ba5d385db9a",
+        "snapshot": "source_snapshot/20/bt_acl_bridge.v"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_gatt.v": {
+        "sha256": "5266ea2002a8180b446a467c2cccae5c65d5409bf642319418122f50df4f658b",
+        "snapshot": "source_snapshot/21/bt_gatt.v"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_h5_transport.v": {
+        "sha256": "1e09fb2149d008785ab8b6b203413b6c2dc94f981e3cfb1260c6c1b1f9ccd52f",
+        "snapshot": "source_snapshot/22/bt_h5_transport.v"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_hci_init.v": {
+        "sha256": "e7559d802a3e9b1f6713e70656463ef7eceb3285c9ecfc9ad5474bed961a7bf2",
+        "snapshot": "source_snapshot/23/bt_hci_init.v"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_uart_fast.v": {
+        "sha256": "f17d460523fe9faecf05862de5fcde23d591aab656fc7412bb83ea4a89dbd646",
+        "snapshot": "source_snapshot/24/bt_uart_fast.v"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_verilog_core.v": {
+        "sha256": "89d47ee7ae8144e39b30743b0c1073aa9757e982fae863590ad74173252579d1",
+        "snapshot": "source_snapshot/25/bt_verilog_core.v"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/25k/example/RTL8723DS_PROTOCOL/prepare_adapted.py": {
+        "sha256": "bc49ab237f4135b8e4c4289dce7077ceb49350924c4b1d095085dea9422aca50",
+        "snapshot": "source_snapshot/26/prepare_adapted.py"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_protocol_command.v": {
+        "sha256": "608c2c818e1b3546d40983f8798a6e8d50ca26d3182870093f3fd18a05cdac00",
+        "snapshot": "source_snapshot/27/ble_protocol_command.v"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": {
+        "sha256": "f5e9447a67bb74d5b9dd80ab112a7e4d2422bbeef0f4375faa68f7400489a696",
+        "snapshot": "source_snapshot/28/ble_recording.v"
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-seal-local-release-v1/tree/projects/25k/example/RTL8723DS_PROTOCOL/tests/tb_protocol_recording.sv": {
+        "sha256": "767e8aead9c4be53afb977fb191b862d745a9eb8304a7faa7aedcd9866e539d6",
+        "snapshot": "source_snapshot/29/tb_protocol_recording.sv"
+      }
+    },
+    "reviewed_generated_outputs": {
+      "native_bluetooth/ble_recording.v": "9de775e873895153059513bb85eb2e01b2bbcacac9d0f00c3570758c648fabd4",
+      "native_bluetooth/ble_protocol_command.v": "99ebcd25f801bb502b883a05884207e243e4c1ec5123eb8eb99494b742962798",
+      "native_bluetooth/bt_gatt.v": "b82f2028f058c5607fcd910eedf5a8b59906781ebc2d83f0750e8d19f42bf3c8",
+      "native_bluetooth/bt_verilog_core.v": "815f4ebd8be9e6f8525a7c64a03d28404fa9dd9147f1d397425c25a640eb2211",
+      "rtl/bluetooth/workstation_bluetooth.sv": "88b7cea5cacdd774ee97b055bc7219043fcdde38d54124c468ba08094c9e247c"
+    },
+    "root_key_inputs_matched_at_review": {
+      "tools/workstation_bluetooth_ddr.py": "5fd412e04e66c96eabb58e94c589cec4853750a24fccc1aeee16a097c314ebce",
+      "rtl/memory/workstation_ble_raw_ddr_store.sv": "422a1bb4c3b0cf842b416b65f714d023c65b270d0fa5219f9adec1c72d290ede",
+      "rtl/memory/WORKSTATION_BLE_RAW_DDR_STORE.md": "86dd2b30edf3772dd637d2766d1b89120c1c4ef2216aa87c744ee76414519763"
+    },
+    "provided_regression": {
+      "legacy_live": {},
+      "owner_async_memory": {
+        "cases": 24,
+        "checks": 472541,
+        "wire_bytes": 17427,
+        "fetches": 8
+      },
+      "owner_100mhz_memory": {
+        "cases": 24,
+        "checks": 470038,
+        "wire_bytes": 17427,
+        "fetches": 8
+      },
+      "real_protocol": {
+        "cases": 6,
+        "seals": 3,
+        "failed": 0,
+        "download_bytes": 4
+      },
+      "staged_five_layer_chain": {
+        "cases": 3,
+        "done": 3,
+        "failed": 0,
+        "frames": 1
+      }
+    },
+    "provided_negative_controls": 27,
+    "independent_original_owner_rerun": {
+      "cases": 24,
+      "checks": 472541,
+      "wire_bytes": 17427,
+      "returncode": 0
+    },
+    "independent_failed_owner": {
+      "memory_half_7": {
+        "cases": 21,
+        "checks": 5089,
+        "returncode": 0
+      },
+      "memory_half_5": {
+        "cases": 21,
+        "checks": 5029,
+        "returncode": 0
+      },
+      "total_checks": 10118,
+      "coverage": [
+        "source ready/fault/enable loss across six partial-frame CRC phases",
+        "source recovery plus disconnected/reconnected observer",
+        "late true native drain cannot promote failed owner",
+        "failed owner rejects START/open/replay, new seal fails once",
+        "only actual acknowledged CLEAR retires failed owner",
+        "new owner successful after clear",
+        "pre-first-frame source loss terminates START task"
+      ]
+    },
+    "independent_mutant": {
+      "mutation": "remove record_state!=5 finalizer guard",
+      "expected_rejection": "recovered source and late drain preserve FAILED identity",
+      "observed_state": 4,
+      "accepted_frames": 2,
+      "committed_frames": 2,
+      "returncode": 1
+    },
+    "priority_review": [
+      "source loss gate blocks simultaneous raw_drained finalizer READY",
+      "FAILED guard blocks later recovered source and real drain",
+      "post-finalizer raw fault/overflow/timeout/mismatch fails object on same edge",
+      "clear completion is sole explicit retirement path; reconnect does not clear object",
+      "seal_commit requires active recording, failed state is not active",
+      "wire bytes, codec and transfer banks protected by exact regions",
+      "fixed input/output/store/contract hashes and exact anchor counts; drift fails before publication"
+    ],
+    "limits": [
+      "offline simulation and source review only",
+      "DDR native model does not establish physical IP drain or CDC/timing acceptance",
+      "five-layer fixture forces connection/link initialization and injects commands",
+      "no synthesis, P&R, board, SRAM or Flash validation in this review"
+    ]
+  },
+  "logs": {
+    "ble-raw-adapter-parent-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-adapter-parent-v1.log",
+      "sha256": "f7d3d48df1616c4356634e2f66d7080a60c729b99ba538e5e844f52b49d780b8"
+    },
+    "ble-raw-adapter-parent-legacy-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-adapter-parent-legacy-v1.log",
+      "sha256": "234dbcbb6fbb1f76de1c2f36b2658787dc8b62c5c4a02ff70d6b54379319c154"
+    },
+    "ble-raw-adapter-parent-accepted-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-adapter-parent-accepted-v1.log",
+      "sha256": "9a22aed34227a95277961940beb2850f6d0716696b00f433d07a8cde3915bb00"
+    }
+  },
+  "validation_stage": "default-off checked adaptation and real object/store/protocol/five-layer simulation",
+  "profile_selected": false,
+  "synthesis": false,
+  "pnr": false,
+  "physical_cdc_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "net_bsram_saving_proven": false
+}
