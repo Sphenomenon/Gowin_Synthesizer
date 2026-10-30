@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "passed": true,
+  "identity": "runtime-reverb-functional-gate-v1-e98758acd8f36079",
+  "verification_input_set_sha256": "e98758acd8f36079ad8960f056e0d204f26ffce15e235a4ec69d615e056d0b2f",
+  "source_set_sha256": "81b3325cb84eda7807de3da0300149ee3994f63a0b9160183b6b1227d7166483",
+  "source_commit": "ceade4acba0ee94b100ce4a22b43fb3c54b30fe9",
+  "gate_simulation_inputs_sha256": "b18ae1350811d9bf4f74e0badabda0471eb01f6bfbdcfb6e046674ec753c584b",
+  "synthesis_manifest_sha256": "3903df0b1caa4f94d47feeb70bd1dab71e1affbfff3f64fa9b6482f33c2ab7ec",
+  "synthesis_process_sha256": "27bf91ccfccfa6be4a520bf7b2d5251c2b4b4a26331e6dcd2c2f7ae0f2677c10",
+  "original_vg_sha256": "cf9e25328706d73c23b82257f7178e753c763b0b18f2673dd258aae6aa0777f2",
+  "gate_process": {
+    "argv": [
+      "vvp",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-reverb-gate-81b3325c/gate_sim.vvp",
+      "+TRACE=gate_trace.txt"
+    ],
+    "started": 1793318544.27195,
+    "stage": "actual generated VG plus unmodified full official GW5A prim_sim",
+    "timeout_seconds": 2400,
+    "pid": 24494,
+    "state": "completed",
+    "returncode": 0,
+    "finished": 1793318886.105234,
+    "elapsed_seconds": 341.8332839012146
+  },
+  "metrics": {
+    "frames": 14502,
+    "wet48": 1816,
+    "wet44": 1191,
+    "clips": 1563,
+    "nonzero_l": 4222,
+    "nonzero_r": 4222,
+    "config_acks": 3,
+    "history_acks": 4,
+    "clear_checks": 6,
+    "write_tail_checks": 1,
+    "read_abort_checks": 1,
+    "cycles": 1174682
+  },
+  "identical_trace": {
+    "bytes": 2265338,
+    "lines": 43519,
+    "sha256": "d19579073c69c5a814403e02892112c3eee68e2606f7909cc661d0b74048c1e8"
+  },
+  "actual_sdpb_instances": 20,
+  "input_sha256": {
+    "legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "rtl/audio/workstation_runtime_spatial_reverb.sv": "fc4cacd3acd2c0cd6b73ee496bfa4db30e17be9d8018a9364e51eeff07c0d05d",
+    "rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+    "reverb.sdc": "4ea2d71ddc8fb99bc1ee4f2d8e64d53232ad71ef864e1c7313b27e6a10bae72a",
+    "run.tcl": "0abccc1ccd16f07e2b6f3a50a62483085f30f2398577dea9c8d2d1445f5501ee",
+    "verify_preparation.tcl": "4abc3bb332bdb3731d0ab7374e1eb1c3e5ec0bc690ab63f4f4b17e9647f30f15",
+    "tb_reverb_gate.sv": "a53a533c503e58f82d649fcc2161ba6c9dc42fe57de32aa173b2d1c556a5a3ec",
+    "primitive_write_enables.svh": "b0667d3e1887592d3c1f8db124bb143fcf7b66a6c99f63f246f7a08954ee88fa",
+    "rtl_sim.vvp": "10d4d18f09385d75c1241652aed2cfb78415e00ca99b789b78a221bd63ac7125",
+    "gate_sim.vvp": "4b629d2591cc7d26c96be30fe7b75449a5e80e09316b4621e7d9ba0784060e13",
+    "impl/gwsynthesis/runtime_reverb_component.vg": "cf9e25328706d73c23b82257f7178e753c763b0b18f2673dd258aae6aa0777f2"
+  },
+  "simulation_tool_sha256": {
+    "/opt/homebrew/Cellar/icarus-verilog/13.0/bin/iverilog": "9ef7463c91ae7045fe1a1f93e9a9a57c37bde96b9501ed962e4acad5a923011a",
+    "/opt/homebrew/Cellar/icarus-verilog/13.0/bin/vvp": "b5887b691e5ddacedeb05719e07803b853a8ed98328f540f066179021ec20e6d",
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5"
+  },
+  "artifact_sha256": {
+    "rtl_run.log": "6403f8cc7f629673c73fb10bca6ece554b7fe1e09722e1a2fbbfc0b4e993859b",
+    "gate_run.log": "8a71b5c84a86983f50aa5f3b1ae95a8c639997e9a538a5ff1ecabf8a697b32bb",
+    "rtl_smoke.txt": "e90f43b0c697a069f0dd3601202be463c2d186584ecaf69f4e72c127ed72d9f5",
+    "gate_smoke.txt": "e90f43b0c697a069f0dd3601202be463c2d186584ecaf69f4e72c127ed72d9f5",
+    "rtl_trace.txt": "d19579073c69c5a814403e02892112c3eee68e2606f7909cc661d0b74048c1e8",
+    "gate_trace.txt": "d19579073c69c5a814403e02892112c3eee68e2606f7909cc661d0b74048c1e8",
+    "tb_reverb_gate.sv": "a53a533c503e58f82d649fcc2161ba6c9dc42fe57de32aa173b2d1c556a5a3ec",
+    "primitive_write_enables.svh": "b0667d3e1887592d3c1f8db124bb143fcf7b66a6c99f63f246f7a08954ee88fa",
+    "check_gate_results.py": "5fc0c32df011b0cf8507a6a24c36796f1a5248e9f0a83f0e42910d09e763a8e5",
+    "verilator_gate_lint.log": "f802b9338f2dad1b95d41fd52996607b2dccc70c3be3fdc6db53cc66cfa35b1d"
+  },
+  "synthesis_resources": [
+    {
+      "file": "impl/gwsynthesis/runtime_reverb_component_syn_rsc.xml",
+      "attributes": {
+        "name": "workstation_runtime_spatial_reverb",
+        "Register": "1566",
+        "Alu": "1838",
+        "Lut": "1336",
+        "MULT27X36": "19",
+        "T_Register": "2020(1566)",
+        "T_Alu": "1838(1838)",
+        "T_Lut": "1977(1336)",
+        "T_MULT27X36": "19(19)",
+        "T_Bsram": "20(0)"
+      },
+      "interpretation": "synthesis report only; not physical BSRAM count or routed resources"
+    }
+  ],
+  "verilator_official_model_trial": {
+    "passed": false,
+    "reason": "BLKANDNBLK on unmodified vendor procedural assign/deassign plus nonblocking FF state; no vendor rewrite or disabled errors used"
+  },
+  "scope": "Independent exact reverb synthesis, actual generated gate-level VG functional comparison, no integrated profile or hardware changes",
+  "limits": [
+    "Functional post-synthesis VG without SDF, not routed timing",
+    "No formal equivalence across every possible input",
+    "Gowin official primitive simulator is a functional model, not board acceptance",
+    "RAM contents intentionally not physically reset; tested pending write/read cancellation and logical history invalidation"
+  ],
+  "profile_changed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "date": "2026-10-30",
+  "experiment_directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-reverb-gate-81b3325c",
+  "gate_verification_sha256": "edd19a876bdec56580e116aacc997f49c15e77105507edc803e578802e6ee13e",
+  "synthesis_manifest": {
+    "schema": 1,
+    "identity": "runtime-reverb-component-gate-v1-81b3325cb84eda78",
+    "source_set_sha256": "81b3325cb84eda7807de3da0300149ee3994f63a0b9160183b6b1227d7166483",
+    "source_commit": "ceade4acba0ee94b100ce4a22b43fb3c54b30fe9",
+    "reference_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-audio-component-synth-108192b1",
+    "reference_manifest_sha256": "e1bf193033443c158930f4577cff8fd721470b8299bd2e76e54934b4109be891",
+    "top_module": "workstation_runtime_spatial_reverb",
+    "device": "GW5AST-LV138PG484AC2/I1",
+    "device_version": "C",
+    "verilog_standard": "sysv2017",
+    "clock_period_ns": "13.020833333",
+    "source_files": [
+      "legacy/rtl/audio/audio_math_pkg.sv",
+      "rtl/memory/workstation_sdp.sv",
+      "rtl/memory/workstation_sdp_banked.sv",
+      "rtl/audio/workstation_runtime_spatial_reverb.sv"
+    ],
+    "input_sha256": {
+      "legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+      "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+      "rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+      "rtl/audio/workstation_runtime_spatial_reverb.sv": "fc4cacd3acd2c0cd6b73ee496bfa4db30e17be9d8018a9364e51eeff07c0d05d",
+      "rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+      "reverb.sdc": "4ea2d71ddc8fb99bc1ee4f2d8e64d53232ad71ef864e1c7313b27e6a10bae72a",
+      "run.tcl": "0abccc1ccd16f07e2b6f3a50a62483085f30f2398577dea9c8d2d1445f5501ee",
+      "verify_preparation.tcl": "4abc3bb332bdb3731d0ab7374e1eb1c3e5ec0bc690ab63f4f4b17e9647f30f15"
+    },
+    "tool_sha256": {
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/GowinSynthesis": "5dbd2b4d47f823c8844d55867eb06c9c0151e5ae79a93e2b61322f5e474f17b2",
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/vlg_pp": "9112329b339e8bc8b474ce1c28d8a27b1a9ba462e07491b812185eff499aa188",
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/primitive.xml": "3e2b5d7cda88e770525d5f6107656009bc884b624e2e34b5252c2d065aad6c68",
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/prim_syns/gw5a/prim_syn.v": "51eb30e9356897eb742905ad9584c269a5f703eb2f88bee3e343efd6c9dd25a3",
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/prim_syns/gw5a/primitive.xml": "13fe7383d1574cf9821980d2e393cc1458b51c273afb66e3f7fba3c4d5ee8684",
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5"
+    },
+    "source_policy": "Exact maintained fixed reverb/preset/memory and frozen audio_math package from passed 108192b1 snapshot; no RTL or VG overlays",
+    "lock": "/private/tmp/gw138k-build.lock",
+    "scope": "Standalone synthesis and functional gate-level comparison only; no P&R/physical timing/DCS or board operation",
+    "data_relative_paths": []
+  },
+  "synthesis_runner_sha256": "9e1cae050fec882a8f0435947c1d3c3cc7482b5e692d78fcc81912bbd1e743ab",
+  "source_modified": false,
+  "retirement_criteria": "Retain isolated exact experiment as historical diagnostic evidence; never a production source. Supersede its validation scope only with a new hashed integrated runtime/profile candidate and independent physical acceptance.",
+  "parent_independent_result_audit": {
+    "passed": true,
+    "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-reverb-gate-81b3325c/gate_verification.json",
+    "verification_sha256": "edd19a876bdec56580e116aacc997f49c15e77105507edc803e578802e6ee13e",
+    "original_vg_sha256": "cf9e25328706d73c23b82257f7178e753c763b0b18f2673dd258aae6aa0777f2",
+    "trace_sha256": "d19579073c69c5a814403e02892112c3eee68e2606f7909cc661d0b74048c1e8",
+    "trace_equal": true,
+    "scope": "Rechecked completed manifests, exact source/tool/VG hashes, logs and full bytewise RTL/gate traces; did not rerun the long simulator"
+  }
+}
