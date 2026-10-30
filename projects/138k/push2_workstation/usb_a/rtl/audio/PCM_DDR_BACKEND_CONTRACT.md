@@ -22,6 +22,8 @@
 
 `cancel_i/soft_reset_i` 优先关闭新采样／读，并作废本地 pack、FIFO、预取和下载。首个终态保持至 clear 或整域复位；重复取消不会重新创建对象。已发布的 native 命令保持 valid/address/data/mask 稳定，直到实际接受；已接受读无论超时或取消都必须等返回后丢弃，不能忘记账本后重用同一无标签返回通道。
 
+新增 `TRANSPORT_FAULT_ENABLE` 默认0，默认路径忽略 trailing `transport_fault_i`。显式设1后，core/bridge的transport fault在CAPTURE、SEALING、READY及下载期间都关闭admission和输出，非终态进入failure9/ERROR，已有终态保持；不借用只在CAPTURE生效的source_error。sticky transport fault仍高时，终态也不开放clear/create，soft_reset不能重新arm。共同复位控制器、返回账本、native bridge和backend才恢复；原已发布命令和已接受读仍按下述规则排空。
+
 `clear_i && clear_ready_o` 只在非采集中、无引用且所有 native 命令/读已排空时清除身份和局部缓存，回到 EMPTY。复用同一个 DDR 区域必须经过 clear；RAM 数据本身不擦除，只有描述符范围内已提交字节可下载。cancel/reset/fault 同拍阻止 clear。`quiescent_o` 表示无已发布命令和读，不表示任意旧 DDR 数据已物理擦除。
 
 ### 同拍命令与 admission 优先级
@@ -44,7 +46,7 @@
 
 ## 错误与期限
 
-错误码1=FIFO overflow，2=序号缺口，3=epoch/rate不符，4=source不就绪/显式错误/停帧，5=native命令接受超预算，6=读返回超预算，7=无读账本的返回，8=坏描述符。失败不生成补零、不重复旧样本、不拖停音频。SOURCE_GAP_CYCLES、DDR_BUDGET_CYCLES 是 UI 时钟周期，正式候选必须按实际频率及仲裁上界配置；默认100MHz下分别4 ms和100 µs。它们是失败门限，不能当作已证明的服务保证。
+错误码1=FIFO overflow，2=序号缺口，3=epoch/rate不符，4=source不就绪/显式错误/停帧，5=native命令接受超预算，6=读返回超预算，7=无读账本的返回，8=坏描述符，9=显式启用的transport fault。失败不生成补零、不重复旧样本、不拖停音频。SOURCE_GAP_CYCLES、DDR_BUDGET_CYCLES 是 UI 时钟周期，正式候选必须按实际频率及仲裁上界配置；默认100MHz下分别4 ms和100 µs。它们是失败门限，不能当作已证明的服务保证。
 
 命令／返回等待和 FIFO峰值可观测；等待计数在失败后的实际排空期间仍计时，32-bit饱和。存储 generation 只用来隔离返回，并非另一份业务对象身份或公共参数 revision。
 
@@ -56,7 +58,7 @@
 
 实际已选链为 `rtl/timing/basic_pitch_ddr_client_queues → basic_pitch_ddr_arbiter_pipeline`，display已经占owner7，不能照旧 `gw138k_ddr_arbiter` 复用owner0的映射分配7。正式新增录音client需要独立owner8/4-bit tags、同提交身份的native接受通知，以及默认路径逐拍等价检查。本阶段不改复杂仲裁器、profile或top。
 
-竞争fixture使用真实未修改的上述queues/core，并以测试观察适配器借用music口、在实际app_en时向后端确认；覆盖scan/audio/display/delay/CPU/writer和控制器周期停顿。它替代了测试中的NN client，**不能证明新增owner8或NN同时竞争已经集成，也不能证明任意竞争流量下都不饥饿**。正式新增client仍须重新证明服务期限。
+v1/v2的历史竞争fixture借用music口并替代NN，其证据不能代表owner8。当前v3 fixture显式启用未选择的 `workstation_recording_ddr_client_queues/core`，经native bridge把recording接owner8，music/NN仍在owner5，与scan/audio/display/delay/CPU/writer流量同时竞争。三层ACK、4-bit owner返回、mask和默认兼容见[新组件契约](../memory/RECORDING_DDR_NATIVE_CONTRACT.md)。原timing/music文件不改，当前生产profile也未选择新组件。这里的NN是有界client流量模型，**不能证明完整CNN算法并发、生产owner8／最终PCM已接入或任意竞争流量都不饥饿**；正式新增client仍须重新证明服务期限。
 
 ## 下载引用与预取
 

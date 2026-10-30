@@ -38,6 +38,8 @@
 
 [F8 物理失败及 F9 第二次资源尝试](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_F8_PHYSICAL_F9_PREPARE_20261030.md)：F8 8,083 条未布通网络，物理 CLS 67,110／69,120、BSRAM 298／340、PRIMARY 与 LW 均 8／8，无位流或完整 routed STA；F9 只改为 place4/route1 和独立 UserCode，27 项输入及八个负控通过，已启动运行。当前仅一次有效资源失败，尚未触发用户允许的 CNN／曲谱裁剪；无部署。
 
+[R00 owner8 主线复验](push2_workstation/usb_a/reports/WORKSTATION_RECORDING_DDR_OWNER8_MAIN_INTEGRATION_20261030.md)已完成原生路径 44 项、后端 41 项及严格 lint；新 prepare `7ffad19cde578d67` 的 profile 19 项／来源 12 项／accepted 10 项通过，570 staged 与 `bd40620bb1b139bb` 逐字节相同。组件仍未由整机选择，生产 owner8／最终 PCM CDC／录音对象业务尚未接入；没有新综合、物理或硬件接受，R00／R01／R02 方框不变。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）

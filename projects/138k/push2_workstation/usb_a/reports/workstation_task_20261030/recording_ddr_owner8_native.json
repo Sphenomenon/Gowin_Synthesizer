@@ -1,0 +1,3655 @@
+{
+  "schema": 1,
+  "passed": true,
+  "identity": "native-recording-ddr-owner8-v1-b60a37ef38f7af32",
+  "source_set_sha256": "b60a37ef38f7af324972141c3f071d6a9249873d6e1576001fb252c649f7e26d",
+  "source_sha256": {
+    "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+    "rtl/timing/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+    "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+    "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+    "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+    "sim/tf_audio/workstation_recording_ddr_path_tb.sv": "b8e9d901c0281dd4b3371049386da394f293ecd7786af25fe779420343dc500a",
+    "sim/tf_audio/workstation_recording_ddr_fault_tb.sv": "56a62c8462a3e63b57a1dd8aa148e49eade57faa2f92e43adb546f1d1b35be06",
+    "rtl/memory/RECORDING_DDR_NATIVE_CONTRACT.md": "de9741cc1bc71a8481cebe59003dfd938f0228d32717727aafc36d0048428e0e",
+    "sim/tf_audio/run_workstation_recording_ddr_path.py": "d829e2e79f1cf4dc807701a8ba4dc05048b69693c0c8d07871081f6ff9f93dc1"
+  },
+  "immutable_reference": "728eac7a9888ef617dec0c05a57a8ea24f3ec521",
+  "legacy_bytes_unchanged": true,
+  "default_mode": "literal legacy instance; no recording slot/tag/fairness state",
+  "enabled_mode": "owner8; four-bit owner entries; TAG_BITS remains FIFO depth index; original owners0..7 unchanged",
+  "native_acceptance": "actual app_en and stored command_owner; writes require joint app_ready/app_write_ready",
+  "arbitration_limit": "background recording/CPU-writer turn only; unconstrained scan/audio/delay may still starve; no D01 deadline guarantee",
+  "profile_selected": false,
+  "production_owner8_selected": false,
+  "final_PCM_CDC_integrated": false,
+  "r00_complete": false,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "cases": {
+    "queues_disabled_bits2": {
+      "parameters": {
+        "BITS": 2,
+        "SEED": 7,
+        "RECORDING_ENABLE": 0,
+        "USE_RECORDING": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_disabled_bits2/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=2",
+        "-Ptb_workstation_recording_ddr_path.SEED=7",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=0",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_disabled_bits2/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=7 tags=4 clients=8 commands=5275 reads=3441 full_tag_cycles=322 core_commands=0 native_commands=0 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=151 core=0 native=151\nOWNER index=1 slot=845 core=0 native=845\nOWNER index=2 slot=547 core=0 native=547\nOWNER index=3 slot=574 core=0 native=574\nOWNER index=4 slot=859 core=0 native=859\nOWNER index=5 slot=706 core=0 native=706\nOWNER index=6 slot=789 core=0 native=789\nOWNER index=7 slot=804 core=0 native=804\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "ec7e4357bff630ce3fb63693e18c4784fa1031e98530ad8eb200f624fd93c810",
+      "metrics": {
+        "seed": 7,
+        "tags": 4,
+        "clients": 8,
+        "commands": 5275,
+        "reads": 3441,
+        "full_tag_cycles": 322,
+        "core_commands": 0,
+        "native_commands": 0,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 151,
+          "core": 0,
+          "native": 151
+        },
+        "1": {
+          "slot": 845,
+          "core": 0,
+          "native": 845
+        },
+        "2": {
+          "slot": 547,
+          "core": 0,
+          "native": 547
+        },
+        "3": {
+          "slot": 574,
+          "core": 0,
+          "native": 574
+        },
+        "4": {
+          "slot": 859,
+          "core": 0,
+          "native": 859
+        },
+        "5": {
+          "slot": 706,
+          "core": 0,
+          "native": 706
+        },
+        "6": {
+          "slot": 789,
+          "core": 0,
+          "native": 789
+        },
+        "7": {
+          "slot": 804,
+          "core": 0,
+          "native": 804
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": false
+    },
+    "core_disabled_grants0_bits2": {
+      "parameters": {
+        "BITS": 2,
+        "SEED": 7,
+        "RECORDING_ENABLE": 0,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants0_bits2/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=2",
+        "-Ptb_workstation_recording_ddr_path.SEED=7",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=0",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants0_bits2/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=7 tags=4 clients=8 commands=4693 reads=3164 full_tag_cycles=335 core_commands=0 native_commands=0 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=204 core=0 native=204\nOWNER index=1 slot=901 core=0 native=901\nOWNER index=2 slot=407 core=0 native=407\nOWNER index=3 slot=430 core=0 native=430\nOWNER index=4 slot=603 core=0 native=603\nOWNER index=5 slot=609 core=0 native=609\nOWNER index=6 slot=736 core=0 native=736\nOWNER index=7 slot=803 core=0 native=803\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "4cbba156bb4274727d0683bc3c1884e766d427302ff39e718f2e3543941fdfc0",
+      "metrics": {
+        "seed": 7,
+        "tags": 4,
+        "clients": 8,
+        "commands": 4693,
+        "reads": 3164,
+        "full_tag_cycles": 335,
+        "core_commands": 0,
+        "native_commands": 0,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 204,
+          "core": 0,
+          "native": 204
+        },
+        "1": {
+          "slot": 901,
+          "core": 0,
+          "native": 901
+        },
+        "2": {
+          "slot": 407,
+          "core": 0,
+          "native": 407
+        },
+        "3": {
+          "slot": 430,
+          "core": 0,
+          "native": 430
+        },
+        "4": {
+          "slot": 603,
+          "core": 0,
+          "native": 603
+        },
+        "5": {
+          "slot": 609,
+          "core": 0,
+          "native": 609
+        },
+        "6": {
+          "slot": 736,
+          "core": 0,
+          "native": 736
+        },
+        "7": {
+          "slot": 803,
+          "core": 0,
+          "native": 803
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": false
+    },
+    "core_disabled_grants1_bits2": {
+      "parameters": {
+        "BITS": 2,
+        "SEED": 7,
+        "RECORDING_ENABLE": 0,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants1_bits2/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=2",
+        "-Ptb_workstation_recording_ddr_path.SEED=7",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=0",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants1_bits2/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=7 tags=4 clients=8 commands=4287 reads=2859 full_tag_cycles=335 core_commands=0 native_commands=0 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=204 core=0 native=204\nOWNER index=1 slot=808 core=0 native=808\nOWNER index=2 slot=412 core=0 native=412\nOWNER index=3 slot=436 core=0 native=436\nOWNER index=4 slot=516 core=0 native=516\nOWNER index=5 slot=536 core=0 native=536\nOWNER index=6 slot=685 core=0 native=685\nOWNER index=7 slot=690 core=0 native=690\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "c64e909bddbef5c1b15ef0d2024f07e7b6df4beffd621b97057a66c6f5aea78e",
+      "metrics": {
+        "seed": 7,
+        "tags": 4,
+        "clients": 8,
+        "commands": 4287,
+        "reads": 2859,
+        "full_tag_cycles": 335,
+        "core_commands": 0,
+        "native_commands": 0,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 204,
+          "core": 0,
+          "native": 204
+        },
+        "1": {
+          "slot": 808,
+          "core": 0,
+          "native": 808
+        },
+        "2": {
+          "slot": 412,
+          "core": 0,
+          "native": 412
+        },
+        "3": {
+          "slot": 436,
+          "core": 0,
+          "native": 436
+        },
+        "4": {
+          "slot": 516,
+          "core": 0,
+          "native": 516
+        },
+        "5": {
+          "slot": 536,
+          "core": 0,
+          "native": 536
+        },
+        "6": {
+          "slot": 685,
+          "core": 0,
+          "native": 685
+        },
+        "7": {
+          "slot": 690,
+          "core": 0,
+          "native": 690
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": false
+    },
+    "queues_idle_bits2": {
+      "parameters": {
+        "BITS": 2,
+        "SEED": 7,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_idle_bits2/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=2",
+        "-Ptb_workstation_recording_ddr_path.SEED=7",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_idle_bits2/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=7 tags=4 clients=8 commands=5275 reads=3441 full_tag_cycles=322 core_commands=5275 native_commands=5275 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=151 core=151 native=151\nOWNER index=1 slot=845 core=845 native=845\nOWNER index=2 slot=547 core=547 native=547\nOWNER index=3 slot=574 core=574 native=574\nOWNER index=4 slot=859 core=859 native=859\nOWNER index=5 slot=706 core=706 native=706\nOWNER index=6 slot=789 core=789 native=789\nOWNER index=7 slot=804 core=804 native=804\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "690b80f75425a77d231f72481e1562a4a88063d70c44a93cd0e5d973dc65e8ed",
+      "metrics": {
+        "seed": 7,
+        "tags": 4,
+        "clients": 8,
+        "commands": 5275,
+        "reads": 3441,
+        "full_tag_cycles": 322,
+        "core_commands": 5275,
+        "native_commands": 5275,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 151,
+          "core": 151,
+          "native": 151
+        },
+        "1": {
+          "slot": 845,
+          "core": 845,
+          "native": 845
+        },
+        "2": {
+          "slot": 547,
+          "core": 547,
+          "native": 547
+        },
+        "3": {
+          "slot": 574,
+          "core": 574,
+          "native": 574
+        },
+        "4": {
+          "slot": 859,
+          "core": 859,
+          "native": 859
+        },
+        "5": {
+          "slot": 706,
+          "core": 706,
+          "native": 706
+        },
+        "6": {
+          "slot": 789,
+          "core": 789,
+          "native": 789
+        },
+        "7": {
+          "slot": 804,
+          "core": 804,
+          "native": 804
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_idle_grants0_bits2": {
+      "parameters": {
+        "BITS": 2,
+        "SEED": 7,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants0_bits2/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=2",
+        "-Ptb_workstation_recording_ddr_path.SEED=7",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants0_bits2/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=7 tags=4 clients=8 commands=4693 reads=3164 full_tag_cycles=335 core_commands=4693 native_commands=4693 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=204 core=204 native=204\nOWNER index=1 slot=901 core=901 native=901\nOWNER index=2 slot=407 core=407 native=407\nOWNER index=3 slot=430 core=430 native=430\nOWNER index=4 slot=603 core=603 native=603\nOWNER index=5 slot=609 core=609 native=609\nOWNER index=6 slot=736 core=736 native=736\nOWNER index=7 slot=803 core=803 native=803\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "336d2ab5c7b3feebe136d8e5b2a280b639fbbc0ae3c5c75e3f22b62837a1107e",
+      "metrics": {
+        "seed": 7,
+        "tags": 4,
+        "clients": 8,
+        "commands": 4693,
+        "reads": 3164,
+        "full_tag_cycles": 335,
+        "core_commands": 4693,
+        "native_commands": 4693,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 204,
+          "core": 204,
+          "native": 204
+        },
+        "1": {
+          "slot": 901,
+          "core": 901,
+          "native": 901
+        },
+        "2": {
+          "slot": 407,
+          "core": 407,
+          "native": 407
+        },
+        "3": {
+          "slot": 430,
+          "core": 430,
+          "native": 430
+        },
+        "4": {
+          "slot": 603,
+          "core": 603,
+          "native": 603
+        },
+        "5": {
+          "slot": 609,
+          "core": 609,
+          "native": 609
+        },
+        "6": {
+          "slot": 736,
+          "core": 736,
+          "native": 736
+        },
+        "7": {
+          "slot": 803,
+          "core": 803,
+          "native": 803
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_idle_grants1_bits2": {
+      "parameters": {
+        "BITS": 2,
+        "SEED": 7,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants1_bits2/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=2",
+        "-Ptb_workstation_recording_ddr_path.SEED=7",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants1_bits2/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=7 tags=4 clients=8 commands=4287 reads=2859 full_tag_cycles=335 core_commands=4287 native_commands=4287 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=204 core=204 native=204\nOWNER index=1 slot=808 core=808 native=808\nOWNER index=2 slot=412 core=412 native=412\nOWNER index=3 slot=436 core=436 native=436\nOWNER index=4 slot=516 core=516 native=516\nOWNER index=5 slot=536 core=536 native=536\nOWNER index=6 slot=685 core=685 native=685\nOWNER index=7 slot=690 core=690 native=690\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "219b4ffbbef5d793aa080b53e6d3cfdb3894d6826ab15ebdf188277296862db8",
+      "metrics": {
+        "seed": 7,
+        "tags": 4,
+        "clients": 8,
+        "commands": 4287,
+        "reads": 2859,
+        "full_tag_cycles": 335,
+        "core_commands": 4287,
+        "native_commands": 4287,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 204,
+          "core": 204,
+          "native": 204
+        },
+        "1": {
+          "slot": 808,
+          "core": 808,
+          "native": 808
+        },
+        "2": {
+          "slot": 412,
+          "core": 412,
+          "native": 412
+        },
+        "3": {
+          "slot": 436,
+          "core": 436,
+          "native": 436
+        },
+        "4": {
+          "slot": 516,
+          "core": 516,
+          "native": 516
+        },
+        "5": {
+          "slot": 536,
+          "core": 536,
+          "native": 536
+        },
+        "6": {
+          "slot": 685,
+          "core": 685,
+          "native": 685
+        },
+        "7": {
+          "slot": 690,
+          "core": 690,
+          "native": 690
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": true
+    },
+    "queues_active_bits2": {
+      "parameters": {
+        "BITS": 2,
+        "SEED": 7,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_active_bits2/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=2",
+        "-Ptb_workstation_recording_ddr_path.SEED=7",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_active_bits2/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=7 tags=4 clients=9 commands=5883 reads=3727 full_tag_cycles=316 core_commands=5883 native_commands=5883 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=151 core=151 native=151\nOWNER index=1 slot=850 core=850 native=850\nOWNER index=2 slot=537 core=537 native=537\nOWNER index=3 slot=557 core=557 native=557\nOWNER index=4 slot=862 core=862 native=862\nOWNER index=5 slot=708 core=708 native=708\nOWNER index=6 slot=787 core=787 native=787\nOWNER index=7 slot=801 core=801 native=801\nOWNER index=8 slot=630 core=630 native=630\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 366250000 (1ps)\n",
+      "run_log_sha256": "aba5413790908cad5c974f1ad77a840f309dbbc3d7d52f6804fd8176bd2ad02f",
+      "metrics": {
+        "seed": 7,
+        "tags": 4,
+        "clients": 9,
+        "commands": 5883,
+        "reads": 3727,
+        "full_tag_cycles": 316,
+        "core_commands": 5883,
+        "native_commands": 5883,
+        "index": 8,
+        "slot": 630,
+        "core": 630,
+        "native": 630
+      },
+      "per_owner": {
+        "0": {
+          "slot": 151,
+          "core": 151,
+          "native": 151
+        },
+        "1": {
+          "slot": 850,
+          "core": 850,
+          "native": 850
+        },
+        "2": {
+          "slot": 537,
+          "core": 537,
+          "native": 537
+        },
+        "3": {
+          "slot": 557,
+          "core": 557,
+          "native": 557
+        },
+        "4": {
+          "slot": 862,
+          "core": 862,
+          "native": 862
+        },
+        "5": {
+          "slot": 708,
+          "core": 708,
+          "native": 708
+        },
+        "6": {
+          "slot": 787,
+          "core": 787,
+          "native": 787
+        },
+        "7": {
+          "slot": 801,
+          "core": 801,
+          "native": 801
+        },
+        "8": {
+          "slot": 630,
+          "core": 630,
+          "native": 630
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_active_grants0_bits2": {
+      "parameters": {
+        "BITS": 2,
+        "SEED": 7,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 1,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants0_bits2/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=2",
+        "-Ptb_workstation_recording_ddr_path.SEED=7",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=1",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants0_bits2/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=7 tags=4 clients=9 commands=5223 reads=3413 full_tag_cycles=332 core_commands=5223 native_commands=5223 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=204 core=204 native=204\nOWNER index=1 slot=907 core=907 native=907\nOWNER index=2 slot=403 core=403 native=403\nOWNER index=3 slot=416 core=416 native=416\nOWNER index=4 slot=606 core=606 native=606\nOWNER index=5 slot=611 core=611 native=611\nOWNER index=6 slot=732 core=732 native=732\nOWNER index=7 slot=782 core=782 native=782\nOWNER index=8 slot=562 core=562 native=562\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 366010000 (1ps)\n",
+      "run_log_sha256": "7b0409f63345b5e983d644b8ef8e323c9bf6b74f3075c34980d7b0b9f69bad34",
+      "metrics": {
+        "seed": 7,
+        "tags": 4,
+        "clients": 9,
+        "commands": 5223,
+        "reads": 3413,
+        "full_tag_cycles": 332,
+        "core_commands": 5223,
+        "native_commands": 5223,
+        "index": 8,
+        "slot": 562,
+        "core": 562,
+        "native": 562
+      },
+      "per_owner": {
+        "0": {
+          "slot": 204,
+          "core": 204,
+          "native": 204
+        },
+        "1": {
+          "slot": 907,
+          "core": 907,
+          "native": 907
+        },
+        "2": {
+          "slot": 403,
+          "core": 403,
+          "native": 403
+        },
+        "3": {
+          "slot": 416,
+          "core": 416,
+          "native": 416
+        },
+        "4": {
+          "slot": 606,
+          "core": 606,
+          "native": 606
+        },
+        "5": {
+          "slot": 611,
+          "core": 611,
+          "native": 611
+        },
+        "6": {
+          "slot": 732,
+          "core": 732,
+          "native": 732
+        },
+        "7": {
+          "slot": 782,
+          "core": 782,
+          "native": 782
+        },
+        "8": {
+          "slot": 562,
+          "core": 562,
+          "native": 562
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_active_grants1_bits2": {
+      "parameters": {
+        "BITS": 2,
+        "SEED": 7,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 1,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants1_bits2/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=2",
+        "-Ptb_workstation_recording_ddr_path.SEED=7",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=1",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants1_bits2/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=7 tags=4 clients=9 commands=4748 reads=3077 full_tag_cycles=334 core_commands=4748 native_commands=4748 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=204 core=204 native=204\nOWNER index=1 slot=822 core=822 native=822\nOWNER index=2 slot=402 core=402 native=402\nOWNER index=3 slot=425 core=425 native=425\nOWNER index=4 slot=515 core=515 native=515\nOWNER index=5 slot=539 core=539 native=539\nOWNER index=6 slot=680 core=680 native=680\nOWNER index=7 slot=666 core=666 native=666\nOWNER index=8 slot=495 core=495 native=495\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 366270000 (1ps)\n",
+      "run_log_sha256": "aea6e027cc7ed972902c997c6b1fbfb965d674479afedc4baee2bc457e14ee8d",
+      "metrics": {
+        "seed": 7,
+        "tags": 4,
+        "clients": 9,
+        "commands": 4748,
+        "reads": 3077,
+        "full_tag_cycles": 334,
+        "core_commands": 4748,
+        "native_commands": 4748,
+        "index": 8,
+        "slot": 495,
+        "core": 495,
+        "native": 495
+      },
+      "per_owner": {
+        "0": {
+          "slot": 204,
+          "core": 204,
+          "native": 204
+        },
+        "1": {
+          "slot": 822,
+          "core": 822,
+          "native": 822
+        },
+        "2": {
+          "slot": 402,
+          "core": 402,
+          "native": 402
+        },
+        "3": {
+          "slot": 425,
+          "core": 425,
+          "native": 425
+        },
+        "4": {
+          "slot": 515,
+          "core": 515,
+          "native": 515
+        },
+        "5": {
+          "slot": 539,
+          "core": 539,
+          "native": 539
+        },
+        "6": {
+          "slot": 680,
+          "core": 680,
+          "native": 680
+        },
+        "7": {
+          "slot": 666,
+          "core": 666,
+          "native": 666
+        },
+        "8": {
+          "slot": 495,
+          "core": 495,
+          "native": 495
+        }
+      },
+      "core_trace_available": true
+    },
+    "queues_disabled_bits3": {
+      "parameters": {
+        "BITS": 3,
+        "SEED": 31,
+        "RECORDING_ENABLE": 0,
+        "USE_RECORDING": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_disabled_bits3/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=3",
+        "-Ptb_workstation_recording_ddr_path.SEED=31",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=0",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_disabled_bits3/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=31 tags=8 clients=8 commands=5156 reads=3412 full_tag_cycles=273 core_commands=0 native_commands=0 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=152 core=0 native=152\nOWNER index=1 slot=826 core=0 native=826\nOWNER index=2 slot=549 core=0 native=549\nOWNER index=3 slot=570 core=0 native=570\nOWNER index=4 slot=834 core=0 native=834\nOWNER index=5 slot=678 core=0 native=678\nOWNER index=6 slot=761 core=0 native=761\nOWNER index=7 slot=786 core=0 native=786\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "006a9d59ce24afbb21eb53b45567eb3a9a0f4bc2d2a74b5c9e5b7af49e09e419",
+      "metrics": {
+        "seed": 31,
+        "tags": 8,
+        "clients": 8,
+        "commands": 5156,
+        "reads": 3412,
+        "full_tag_cycles": 273,
+        "core_commands": 0,
+        "native_commands": 0,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 152,
+          "core": 0,
+          "native": 152
+        },
+        "1": {
+          "slot": 826,
+          "core": 0,
+          "native": 826
+        },
+        "2": {
+          "slot": 549,
+          "core": 0,
+          "native": 549
+        },
+        "3": {
+          "slot": 570,
+          "core": 0,
+          "native": 570
+        },
+        "4": {
+          "slot": 834,
+          "core": 0,
+          "native": 834
+        },
+        "5": {
+          "slot": 678,
+          "core": 0,
+          "native": 678
+        },
+        "6": {
+          "slot": 761,
+          "core": 0,
+          "native": 761
+        },
+        "7": {
+          "slot": 786,
+          "core": 0,
+          "native": 786
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": false
+    },
+    "core_disabled_grants0_bits3": {
+      "parameters": {
+        "BITS": 3,
+        "SEED": 31,
+        "RECORDING_ENABLE": 0,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants0_bits3/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=3",
+        "-Ptb_workstation_recording_ddr_path.SEED=31",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=0",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants0_bits3/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=31 tags=8 clients=8 commands=4562 reads=3104 full_tag_cycles=283 core_commands=0 native_commands=0 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=205 core=0 native=205\nOWNER index=1 slot=871 core=0 native=871\nOWNER index=2 slot=416 core=0 native=416\nOWNER index=3 slot=424 core=0 native=424\nOWNER index=4 slot=581 core=0 native=581\nOWNER index=5 slot=596 core=0 native=596\nOWNER index=6 slot=693 core=0 native=693\nOWNER index=7 slot=776 core=0 native=776\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "f0c54b0a6eba6b43d754c78b21d4b7896c7c9470b5e66ee1ccb8bb94265d717d",
+      "metrics": {
+        "seed": 31,
+        "tags": 8,
+        "clients": 8,
+        "commands": 4562,
+        "reads": 3104,
+        "full_tag_cycles": 283,
+        "core_commands": 0,
+        "native_commands": 0,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 205,
+          "core": 0,
+          "native": 205
+        },
+        "1": {
+          "slot": 871,
+          "core": 0,
+          "native": 871
+        },
+        "2": {
+          "slot": 416,
+          "core": 0,
+          "native": 416
+        },
+        "3": {
+          "slot": 424,
+          "core": 0,
+          "native": 424
+        },
+        "4": {
+          "slot": 581,
+          "core": 0,
+          "native": 581
+        },
+        "5": {
+          "slot": 596,
+          "core": 0,
+          "native": 596
+        },
+        "6": {
+          "slot": 693,
+          "core": 0,
+          "native": 693
+        },
+        "7": {
+          "slot": 776,
+          "core": 0,
+          "native": 776
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": false
+    },
+    "core_disabled_grants1_bits3": {
+      "parameters": {
+        "BITS": 3,
+        "SEED": 31,
+        "RECORDING_ENABLE": 0,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants1_bits3/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=3",
+        "-Ptb_workstation_recording_ddr_path.SEED=31",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=0",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants1_bits3/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=31 tags=8 clients=8 commands=4197 reads=2820 full_tag_cycles=283 core_commands=0 native_commands=0 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=204 core=0 native=204\nOWNER index=1 slot=801 core=0 native=801\nOWNER index=2 slot=417 core=0 native=417\nOWNER index=3 slot=447 core=0 native=447\nOWNER index=4 slot=492 core=0 native=492\nOWNER index=5 slot=526 core=0 native=526\nOWNER index=6 slot=640 core=0 native=640\nOWNER index=7 slot=670 core=0 native=670\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "5e8bed4e629c79d63cea7b26668ad5d41681c451065011f85f7bac6da863edc3",
+      "metrics": {
+        "seed": 31,
+        "tags": 8,
+        "clients": 8,
+        "commands": 4197,
+        "reads": 2820,
+        "full_tag_cycles": 283,
+        "core_commands": 0,
+        "native_commands": 0,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 204,
+          "core": 0,
+          "native": 204
+        },
+        "1": {
+          "slot": 801,
+          "core": 0,
+          "native": 801
+        },
+        "2": {
+          "slot": 417,
+          "core": 0,
+          "native": 417
+        },
+        "3": {
+          "slot": 447,
+          "core": 0,
+          "native": 447
+        },
+        "4": {
+          "slot": 492,
+          "core": 0,
+          "native": 492
+        },
+        "5": {
+          "slot": 526,
+          "core": 0,
+          "native": 526
+        },
+        "6": {
+          "slot": 640,
+          "core": 0,
+          "native": 640
+        },
+        "7": {
+          "slot": 670,
+          "core": 0,
+          "native": 670
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": false
+    },
+    "queues_idle_bits3": {
+      "parameters": {
+        "BITS": 3,
+        "SEED": 31,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_idle_bits3/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=3",
+        "-Ptb_workstation_recording_ddr_path.SEED=31",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_idle_bits3/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=31 tags=8 clients=8 commands=5156 reads=3412 full_tag_cycles=273 core_commands=5156 native_commands=5156 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=152 core=152 native=152\nOWNER index=1 slot=826 core=826 native=826\nOWNER index=2 slot=549 core=549 native=549\nOWNER index=3 slot=570 core=570 native=570\nOWNER index=4 slot=834 core=834 native=834\nOWNER index=5 slot=678 core=678 native=678\nOWNER index=6 slot=761 core=761 native=761\nOWNER index=7 slot=786 core=786 native=786\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "1655efae5283843df7d984dc8c5d29fb6fdcd277b7a003ae3ca053263ce57b25",
+      "metrics": {
+        "seed": 31,
+        "tags": 8,
+        "clients": 8,
+        "commands": 5156,
+        "reads": 3412,
+        "full_tag_cycles": 273,
+        "core_commands": 5156,
+        "native_commands": 5156,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 152,
+          "core": 152,
+          "native": 152
+        },
+        "1": {
+          "slot": 826,
+          "core": 826,
+          "native": 826
+        },
+        "2": {
+          "slot": 549,
+          "core": 549,
+          "native": 549
+        },
+        "3": {
+          "slot": 570,
+          "core": 570,
+          "native": 570
+        },
+        "4": {
+          "slot": 834,
+          "core": 834,
+          "native": 834
+        },
+        "5": {
+          "slot": 678,
+          "core": 678,
+          "native": 678
+        },
+        "6": {
+          "slot": 761,
+          "core": 761,
+          "native": 761
+        },
+        "7": {
+          "slot": 786,
+          "core": 786,
+          "native": 786
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_idle_grants0_bits3": {
+      "parameters": {
+        "BITS": 3,
+        "SEED": 31,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants0_bits3/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=3",
+        "-Ptb_workstation_recording_ddr_path.SEED=31",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants0_bits3/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=31 tags=8 clients=8 commands=4562 reads=3104 full_tag_cycles=283 core_commands=4562 native_commands=4562 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=205 core=205 native=205\nOWNER index=1 slot=871 core=871 native=871\nOWNER index=2 slot=416 core=416 native=416\nOWNER index=3 slot=424 core=424 native=424\nOWNER index=4 slot=581 core=581 native=581\nOWNER index=5 slot=596 core=596 native=596\nOWNER index=6 slot=693 core=693 native=693\nOWNER index=7 slot=776 core=776 native=776\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "b52513f57bd39f891bc3bc1a28db646f06d9343bb5ebfeb9fc1915267bab0e04",
+      "metrics": {
+        "seed": 31,
+        "tags": 8,
+        "clients": 8,
+        "commands": 4562,
+        "reads": 3104,
+        "full_tag_cycles": 283,
+        "core_commands": 4562,
+        "native_commands": 4562,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 205,
+          "core": 205,
+          "native": 205
+        },
+        "1": {
+          "slot": 871,
+          "core": 871,
+          "native": 871
+        },
+        "2": {
+          "slot": 416,
+          "core": 416,
+          "native": 416
+        },
+        "3": {
+          "slot": 424,
+          "core": 424,
+          "native": 424
+        },
+        "4": {
+          "slot": 581,
+          "core": 581,
+          "native": 581
+        },
+        "5": {
+          "slot": 596,
+          "core": 596,
+          "native": 596
+        },
+        "6": {
+          "slot": 693,
+          "core": 693,
+          "native": 693
+        },
+        "7": {
+          "slot": 776,
+          "core": 776,
+          "native": 776
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_idle_grants1_bits3": {
+      "parameters": {
+        "BITS": 3,
+        "SEED": 31,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants1_bits3/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=3",
+        "-Ptb_workstation_recording_ddr_path.SEED=31",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants1_bits3/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=31 tags=8 clients=8 commands=4197 reads=2820 full_tag_cycles=283 core_commands=4197 native_commands=4197 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=204 core=204 native=204\nOWNER index=1 slot=801 core=801 native=801\nOWNER index=2 slot=417 core=417 native=417\nOWNER index=3 slot=447 core=447 native=447\nOWNER index=4 slot=492 core=492 native=492\nOWNER index=5 slot=526 core=526 native=526\nOWNER index=6 slot=640 core=640 native=640\nOWNER index=7 slot=670 core=670 native=670\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "eaaa5d45e780c1defce3b2841c9e5499e43b6379a33b0d1671cc8ff3331f2c78",
+      "metrics": {
+        "seed": 31,
+        "tags": 8,
+        "clients": 8,
+        "commands": 4197,
+        "reads": 2820,
+        "full_tag_cycles": 283,
+        "core_commands": 4197,
+        "native_commands": 4197,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 204,
+          "core": 204,
+          "native": 204
+        },
+        "1": {
+          "slot": 801,
+          "core": 801,
+          "native": 801
+        },
+        "2": {
+          "slot": 417,
+          "core": 417,
+          "native": 417
+        },
+        "3": {
+          "slot": 447,
+          "core": 447,
+          "native": 447
+        },
+        "4": {
+          "slot": 492,
+          "core": 492,
+          "native": 492
+        },
+        "5": {
+          "slot": 526,
+          "core": 526,
+          "native": 526
+        },
+        "6": {
+          "slot": 640,
+          "core": 640,
+          "native": 640
+        },
+        "7": {
+          "slot": 670,
+          "core": 670,
+          "native": 670
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": true
+    },
+    "queues_active_bits3": {
+      "parameters": {
+        "BITS": 3,
+        "SEED": 31,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_active_bits3/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=3",
+        "-Ptb_workstation_recording_ddr_path.SEED=31",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_active_bits3/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=31 tags=8 clients=9 commands=5777 reads=3727 full_tag_cycles=272 core_commands=5777 native_commands=5777 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=152 core=152 native=152\nOWNER index=1 slot=827 core=827 native=827\nOWNER index=2 slot=530 core=530 native=530\nOWNER index=3 slot=556 core=556 native=556\nOWNER index=4 slot=834 core=834 native=834\nOWNER index=5 slot=681 core=681 native=681\nOWNER index=6 slot=757 core=757 native=757\nOWNER index=7 slot=783 core=783 native=783\nOWNER index=8 slot=657 core=657 native=657\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 366230000 (1ps)\n",
+      "run_log_sha256": "d0aee5a78b9e5f83b86351cb8fab3c110fd30ead7c21319c34c507e1da26255b",
+      "metrics": {
+        "seed": 31,
+        "tags": 8,
+        "clients": 9,
+        "commands": 5777,
+        "reads": 3727,
+        "full_tag_cycles": 272,
+        "core_commands": 5777,
+        "native_commands": 5777,
+        "index": 8,
+        "slot": 657,
+        "core": 657,
+        "native": 657
+      },
+      "per_owner": {
+        "0": {
+          "slot": 152,
+          "core": 152,
+          "native": 152
+        },
+        "1": {
+          "slot": 827,
+          "core": 827,
+          "native": 827
+        },
+        "2": {
+          "slot": 530,
+          "core": 530,
+          "native": 530
+        },
+        "3": {
+          "slot": 556,
+          "core": 556,
+          "native": 556
+        },
+        "4": {
+          "slot": 834,
+          "core": 834,
+          "native": 834
+        },
+        "5": {
+          "slot": 681,
+          "core": 681,
+          "native": 681
+        },
+        "6": {
+          "slot": 757,
+          "core": 757,
+          "native": 757
+        },
+        "7": {
+          "slot": 783,
+          "core": 783,
+          "native": 783
+        },
+        "8": {
+          "slot": 657,
+          "core": 657,
+          "native": 657
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_active_grants0_bits3": {
+      "parameters": {
+        "BITS": 3,
+        "SEED": 31,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 1,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants0_bits3/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=3",
+        "-Ptb_workstation_recording_ddr_path.SEED=31",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=1",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants0_bits3/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=31 tags=8 clients=9 commands=5090 reads=3354 full_tag_cycles=286 core_commands=5090 native_commands=5090 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=205 core=205 native=205\nOWNER index=1 slot=867 core=867 native=867\nOWNER index=2 slot=401 core=401 native=401\nOWNER index=3 slot=419 core=419 native=419\nOWNER index=4 slot=578 core=578 native=578\nOWNER index=5 slot=591 core=591 native=591\nOWNER index=6 slot=691 core=691 native=691\nOWNER index=7 slot=751 core=751 native=751\nOWNER index=8 slot=587 core=587 native=587\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 366050000 (1ps)\n",
+      "run_log_sha256": "e1b494120ed2e295c8d9ccc9eef47be70d9024dd3aeab7cc3d807c6cc9cb1be1",
+      "metrics": {
+        "seed": 31,
+        "tags": 8,
+        "clients": 9,
+        "commands": 5090,
+        "reads": 3354,
+        "full_tag_cycles": 286,
+        "core_commands": 5090,
+        "native_commands": 5090,
+        "index": 8,
+        "slot": 587,
+        "core": 587,
+        "native": 587
+      },
+      "per_owner": {
+        "0": {
+          "slot": 205,
+          "core": 205,
+          "native": 205
+        },
+        "1": {
+          "slot": 867,
+          "core": 867,
+          "native": 867
+        },
+        "2": {
+          "slot": 401,
+          "core": 401,
+          "native": 401
+        },
+        "3": {
+          "slot": 419,
+          "core": 419,
+          "native": 419
+        },
+        "4": {
+          "slot": 578,
+          "core": 578,
+          "native": 578
+        },
+        "5": {
+          "slot": 591,
+          "core": 591,
+          "native": 591
+        },
+        "6": {
+          "slot": 691,
+          "core": 691,
+          "native": 691
+        },
+        "7": {
+          "slot": 751,
+          "core": 751,
+          "native": 751
+        },
+        "8": {
+          "slot": 587,
+          "core": 587,
+          "native": 587
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_active_grants1_bits3": {
+      "parameters": {
+        "BITS": 3,
+        "SEED": 31,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 1,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants1_bits3/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=3",
+        "-Ptb_workstation_recording_ddr_path.SEED=31",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=1",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants1_bits3/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=31 tags=8 clients=9 commands=4679 reads=3048 full_tag_cycles=282 core_commands=4679 native_commands=4679 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=204 core=204 native=204\nOWNER index=1 slot=803 core=803 native=803\nOWNER index=2 slot=408 core=408 native=408\nOWNER index=3 slot=441 core=441 native=441\nOWNER index=4 slot=492 core=492 native=492\nOWNER index=5 slot=528 core=528 native=528\nOWNER index=6 slot=637 core=637 native=637\nOWNER index=7 slot=643 core=643 native=643\nOWNER index=8 slot=523 core=523 native=523\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 366220000 (1ps)\n",
+      "run_log_sha256": "0a390bd3e1e411d9c40516a14f990df97467d1349732be317ec4d817f4c2fb58",
+      "metrics": {
+        "seed": 31,
+        "tags": 8,
+        "clients": 9,
+        "commands": 4679,
+        "reads": 3048,
+        "full_tag_cycles": 282,
+        "core_commands": 4679,
+        "native_commands": 4679,
+        "index": 8,
+        "slot": 523,
+        "core": 523,
+        "native": 523
+      },
+      "per_owner": {
+        "0": {
+          "slot": 204,
+          "core": 204,
+          "native": 204
+        },
+        "1": {
+          "slot": 803,
+          "core": 803,
+          "native": 803
+        },
+        "2": {
+          "slot": 408,
+          "core": 408,
+          "native": 408
+        },
+        "3": {
+          "slot": 441,
+          "core": 441,
+          "native": 441
+        },
+        "4": {
+          "slot": 492,
+          "core": 492,
+          "native": 492
+        },
+        "5": {
+          "slot": 528,
+          "core": 528,
+          "native": 528
+        },
+        "6": {
+          "slot": 637,
+          "core": 637,
+          "native": 637
+        },
+        "7": {
+          "slot": 643,
+          "core": 643,
+          "native": 643
+        },
+        "8": {
+          "slot": 523,
+          "core": 523,
+          "native": 523
+        }
+      },
+      "core_trace_available": true
+    },
+    "queues_disabled_bits5": {
+      "parameters": {
+        "BITS": 5,
+        "SEED": 127,
+        "RECORDING_ENABLE": 0,
+        "USE_RECORDING": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_disabled_bits5/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=5",
+        "-Ptb_workstation_recording_ddr_path.SEED=127",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=0",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_disabled_bits5/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=127 tags=32 clients=8 commands=5394 reads=3506 full_tag_cycles=207 core_commands=0 native_commands=0 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=151 core=0 native=151\nOWNER index=1 slot=870 core=0 native=870\nOWNER index=2 slot=571 core=0 native=571\nOWNER index=3 slot=598 core=0 native=598\nOWNER index=4 slot=882 core=0 native=882\nOWNER index=5 slot=710 core=0 native=710\nOWNER index=6 slot=824 core=0 native=824\nOWNER index=7 slot=788 core=0 native=788\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "d0886724b3b85011623f4f54e2385071f880e8ad28e7521a55c2a3f550d5779d",
+      "metrics": {
+        "seed": 127,
+        "tags": 32,
+        "clients": 8,
+        "commands": 5394,
+        "reads": 3506,
+        "full_tag_cycles": 207,
+        "core_commands": 0,
+        "native_commands": 0,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 151,
+          "core": 0,
+          "native": 151
+        },
+        "1": {
+          "slot": 870,
+          "core": 0,
+          "native": 870
+        },
+        "2": {
+          "slot": 571,
+          "core": 0,
+          "native": 571
+        },
+        "3": {
+          "slot": 598,
+          "core": 0,
+          "native": 598
+        },
+        "4": {
+          "slot": 882,
+          "core": 0,
+          "native": 882
+        },
+        "5": {
+          "slot": 710,
+          "core": 0,
+          "native": 710
+        },
+        "6": {
+          "slot": 824,
+          "core": 0,
+          "native": 824
+        },
+        "7": {
+          "slot": 788,
+          "core": 0,
+          "native": 788
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": false
+    },
+    "core_disabled_grants0_bits5": {
+      "parameters": {
+        "BITS": 5,
+        "SEED": 127,
+        "RECORDING_ENABLE": 0,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants0_bits5/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=5",
+        "-Ptb_workstation_recording_ddr_path.SEED=127",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=0",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants0_bits5/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=127 tags=32 clients=8 commands=4738 reads=3186 full_tag_cycles=230 core_commands=0 native_commands=0 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=192 core=0 native=192\nOWNER index=1 slot=928 core=0 native=928\nOWNER index=2 slot=414 core=0 native=414\nOWNER index=3 slot=433 core=0 native=433\nOWNER index=4 slot=614 core=0 native=614\nOWNER index=5 slot=623 core=0 native=623\nOWNER index=6 slot=751 core=0 native=751\nOWNER index=7 slot=783 core=0 native=783\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "3d21c49c9acdcaa5d4c0ded5314b5fc306f9b602576411b4de4fe320ae704449",
+      "metrics": {
+        "seed": 127,
+        "tags": 32,
+        "clients": 8,
+        "commands": 4738,
+        "reads": 3186,
+        "full_tag_cycles": 230,
+        "core_commands": 0,
+        "native_commands": 0,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 192,
+          "core": 0,
+          "native": 192
+        },
+        "1": {
+          "slot": 928,
+          "core": 0,
+          "native": 928
+        },
+        "2": {
+          "slot": 414,
+          "core": 0,
+          "native": 414
+        },
+        "3": {
+          "slot": 433,
+          "core": 0,
+          "native": 433
+        },
+        "4": {
+          "slot": 614,
+          "core": 0,
+          "native": 614
+        },
+        "5": {
+          "slot": 623,
+          "core": 0,
+          "native": 623
+        },
+        "6": {
+          "slot": 751,
+          "core": 0,
+          "native": 751
+        },
+        "7": {
+          "slot": 783,
+          "core": 0,
+          "native": 783
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": false
+    },
+    "core_disabled_grants1_bits5": {
+      "parameters": {
+        "BITS": 5,
+        "SEED": 127,
+        "RECORDING_ENABLE": 0,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants1_bits5/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=5",
+        "-Ptb_workstation_recording_ddr_path.SEED=127",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=0",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_disabled_grants1_bits5/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=127 tags=32 clients=8 commands=4343 reads=2912 full_tag_cycles=230 core_commands=0 native_commands=0 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=192 core=0 native=192\nOWNER index=1 slot=841 core=0 native=841\nOWNER index=2 slot=421 core=0 native=421\nOWNER index=3 slot=445 core=0 native=445\nOWNER index=4 slot=522 core=0 native=522\nOWNER index=5 slot=540 core=0 native=540\nOWNER index=6 slot=695 core=0 native=695\nOWNER index=7 slot=687 core=0 native=687\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "a4fa5954715575ab3b839a9e60fb30f2b26b7bb9be93fa5fc353ecc6cedbec33",
+      "metrics": {
+        "seed": 127,
+        "tags": 32,
+        "clients": 8,
+        "commands": 4343,
+        "reads": 2912,
+        "full_tag_cycles": 230,
+        "core_commands": 0,
+        "native_commands": 0,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 192,
+          "core": 0,
+          "native": 192
+        },
+        "1": {
+          "slot": 841,
+          "core": 0,
+          "native": 841
+        },
+        "2": {
+          "slot": 421,
+          "core": 0,
+          "native": 421
+        },
+        "3": {
+          "slot": 445,
+          "core": 0,
+          "native": 445
+        },
+        "4": {
+          "slot": 522,
+          "core": 0,
+          "native": 522
+        },
+        "5": {
+          "slot": 540,
+          "core": 0,
+          "native": 540
+        },
+        "6": {
+          "slot": 695,
+          "core": 0,
+          "native": 695
+        },
+        "7": {
+          "slot": 687,
+          "core": 0,
+          "native": 687
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": false
+    },
+    "queues_idle_bits5": {
+      "parameters": {
+        "BITS": 5,
+        "SEED": 127,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_idle_bits5/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=5",
+        "-Ptb_workstation_recording_ddr_path.SEED=127",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_idle_bits5/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=127 tags=32 clients=8 commands=5394 reads=3506 full_tag_cycles=207 core_commands=5394 native_commands=5394 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=151 core=151 native=151\nOWNER index=1 slot=870 core=870 native=870\nOWNER index=2 slot=571 core=571 native=571\nOWNER index=3 slot=598 core=598 native=598\nOWNER index=4 slot=882 core=882 native=882\nOWNER index=5 slot=710 core=710 native=710\nOWNER index=6 slot=824 core=824 native=824\nOWNER index=7 slot=788 core=788 native=788\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "63be5584ab4e7b353f4528164aa951fcdb61231de1bd682e2482f2124ab4d98c",
+      "metrics": {
+        "seed": 127,
+        "tags": 32,
+        "clients": 8,
+        "commands": 5394,
+        "reads": 3506,
+        "full_tag_cycles": 207,
+        "core_commands": 5394,
+        "native_commands": 5394,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 151,
+          "core": 151,
+          "native": 151
+        },
+        "1": {
+          "slot": 870,
+          "core": 870,
+          "native": 870
+        },
+        "2": {
+          "slot": 571,
+          "core": 571,
+          "native": 571
+        },
+        "3": {
+          "slot": 598,
+          "core": 598,
+          "native": 598
+        },
+        "4": {
+          "slot": 882,
+          "core": 882,
+          "native": 882
+        },
+        "5": {
+          "slot": 710,
+          "core": 710,
+          "native": 710
+        },
+        "6": {
+          "slot": 824,
+          "core": 824,
+          "native": 824
+        },
+        "7": {
+          "slot": 788,
+          "core": 788,
+          "native": 788
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_idle_grants0_bits5": {
+      "parameters": {
+        "BITS": 5,
+        "SEED": 127,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants0_bits5/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=5",
+        "-Ptb_workstation_recording_ddr_path.SEED=127",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants0_bits5/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=127 tags=32 clients=8 commands=4738 reads=3186 full_tag_cycles=230 core_commands=4738 native_commands=4738 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=192 core=192 native=192\nOWNER index=1 slot=928 core=928 native=928\nOWNER index=2 slot=414 core=414 native=414\nOWNER index=3 slot=433 core=433 native=433\nOWNER index=4 slot=614 core=614 native=614\nOWNER index=5 slot=623 core=623 native=623\nOWNER index=6 slot=751 core=751 native=751\nOWNER index=7 slot=783 core=783 native=783\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "0dc2adca090c075fc8d2674c60b77d0764acd9bbcaef3f3924638ce7a9c6fa3c",
+      "metrics": {
+        "seed": 127,
+        "tags": 32,
+        "clients": 8,
+        "commands": 4738,
+        "reads": 3186,
+        "full_tag_cycles": 230,
+        "core_commands": 4738,
+        "native_commands": 4738,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 192,
+          "core": 192,
+          "native": 192
+        },
+        "1": {
+          "slot": 928,
+          "core": 928,
+          "native": 928
+        },
+        "2": {
+          "slot": 414,
+          "core": 414,
+          "native": 414
+        },
+        "3": {
+          "slot": 433,
+          "core": 433,
+          "native": 433
+        },
+        "4": {
+          "slot": 614,
+          "core": 614,
+          "native": 614
+        },
+        "5": {
+          "slot": 623,
+          "core": 623,
+          "native": 623
+        },
+        "6": {
+          "slot": 751,
+          "core": 751,
+          "native": 751
+        },
+        "7": {
+          "slot": 783,
+          "core": 783,
+          "native": 783
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_idle_grants1_bits5": {
+      "parameters": {
+        "BITS": 5,
+        "SEED": 127,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 0,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants1_bits5/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=5",
+        "-Ptb_workstation_recording_ddr_path.SEED=127",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_idle_grants1_bits5/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=127 tags=32 clients=8 commands=4343 reads=2912 full_tag_cycles=230 core_commands=4343 native_commands=4343 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=192 core=192 native=192\nOWNER index=1 slot=841 core=841 native=841\nOWNER index=2 slot=421 core=421 native=421\nOWNER index=3 slot=445 core=445 native=445\nOWNER index=4 slot=522 core=522 native=522\nOWNER index=5 slot=540 core=540 native=540\nOWNER index=6 slot=695 core=695 native=695\nOWNER index=7 slot=687 core=687 native=687\nOWNER index=8 slot=0 core=0 native=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 362650000 (1ps)\n",
+      "run_log_sha256": "ea5b3599ea29f1079ea9a611bfbf66de888e3bbbfef754c4ea387c2e05a57f5a",
+      "metrics": {
+        "seed": 127,
+        "tags": 32,
+        "clients": 8,
+        "commands": 4343,
+        "reads": 2912,
+        "full_tag_cycles": 230,
+        "core_commands": 4343,
+        "native_commands": 4343,
+        "index": 8,
+        "slot": 0,
+        "core": 0,
+        "native": 0
+      },
+      "per_owner": {
+        "0": {
+          "slot": 192,
+          "core": 192,
+          "native": 192
+        },
+        "1": {
+          "slot": 841,
+          "core": 841,
+          "native": 841
+        },
+        "2": {
+          "slot": 421,
+          "core": 421,
+          "native": 421
+        },
+        "3": {
+          "slot": 445,
+          "core": 445,
+          "native": 445
+        },
+        "4": {
+          "slot": 522,
+          "core": 522,
+          "native": 522
+        },
+        "5": {
+          "slot": 540,
+          "core": 540,
+          "native": 540
+        },
+        "6": {
+          "slot": 695,
+          "core": 695,
+          "native": 695
+        },
+        "7": {
+          "slot": 687,
+          "core": 687,
+          "native": 687
+        },
+        "8": {
+          "slot": 0,
+          "core": 0,
+          "native": 0
+        }
+      },
+      "core_trace_available": true
+    },
+    "queues_active_bits5": {
+      "parameters": {
+        "BITS": 5,
+        "SEED": 127,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_active_bits5/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=5",
+        "-Ptb_workstation_recording_ddr_path.SEED=127",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/queues_active_bits5/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=127 tags=32 clients=9 commands=5983 reads=3807 full_tag_cycles=191 core_commands=5983 native_commands=5983 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=151 core=151 native=151\nOWNER index=1 slot=869 core=869 native=869\nOWNER index=2 slot=550 core=550 native=550\nOWNER index=3 slot=573 core=573 native=573\nOWNER index=4 slot=879 core=879 native=879\nOWNER index=5 slot=707 core=707 native=707\nOWNER index=6 slot=816 core=816 native=816\nOWNER index=7 slot=783 core=783 native=783\nOWNER index=8 slot=655 core=655 native=655\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 366220000 (1ps)\n",
+      "run_log_sha256": "fb803329e6e9380fcea62dc90b5c791a1ade08882eaa5972c1cc8bee0313a3db",
+      "metrics": {
+        "seed": 127,
+        "tags": 32,
+        "clients": 9,
+        "commands": 5983,
+        "reads": 3807,
+        "full_tag_cycles": 191,
+        "core_commands": 5983,
+        "native_commands": 5983,
+        "index": 8,
+        "slot": 655,
+        "core": 655,
+        "native": 655
+      },
+      "per_owner": {
+        "0": {
+          "slot": 151,
+          "core": 151,
+          "native": 151
+        },
+        "1": {
+          "slot": 869,
+          "core": 869,
+          "native": 869
+        },
+        "2": {
+          "slot": 550,
+          "core": 550,
+          "native": 550
+        },
+        "3": {
+          "slot": 573,
+          "core": 573,
+          "native": 573
+        },
+        "4": {
+          "slot": 879,
+          "core": 879,
+          "native": 879
+        },
+        "5": {
+          "slot": 707,
+          "core": 707,
+          "native": 707
+        },
+        "6": {
+          "slot": 816,
+          "core": 816,
+          "native": 816
+        },
+        "7": {
+          "slot": 783,
+          "core": 783,
+          "native": 783
+        },
+        "8": {
+          "slot": 655,
+          "core": 655,
+          "native": 655
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_active_grants0_bits5": {
+      "parameters": {
+        "BITS": 5,
+        "SEED": 127,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 1,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants0_bits5/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=5",
+        "-Ptb_workstation_recording_ddr_path.SEED=127",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=1",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants0_bits5/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=127 tags=32 clients=9 commands=5244 reads=3440 full_tag_cycles=232 core_commands=5244 native_commands=5244 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=192 core=192 native=192\nOWNER index=1 slot=925 core=925 native=925\nOWNER index=2 slot=402 core=402 native=402\nOWNER index=3 slot=420 core=420 native=420\nOWNER index=4 slot=605 core=605 native=605\nOWNER index=5 slot=612 core=612 native=612\nOWNER index=6 slot=744 core=744 native=744\nOWNER index=7 slot=769 core=769 native=769\nOWNER index=8 slot=575 core=575 native=575\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 365960000 (1ps)\n",
+      "run_log_sha256": "327cd67930696083b99b553f4db503e1629f6b9318713dd7997b70355e578dc7",
+      "metrics": {
+        "seed": 127,
+        "tags": 32,
+        "clients": 9,
+        "commands": 5244,
+        "reads": 3440,
+        "full_tag_cycles": 232,
+        "core_commands": 5244,
+        "native_commands": 5244,
+        "index": 8,
+        "slot": 575,
+        "core": 575,
+        "native": 575
+      },
+      "per_owner": {
+        "0": {
+          "slot": 192,
+          "core": 192,
+          "native": 192
+        },
+        "1": {
+          "slot": 925,
+          "core": 925,
+          "native": 925
+        },
+        "2": {
+          "slot": 402,
+          "core": 402,
+          "native": 402
+        },
+        "3": {
+          "slot": 420,
+          "core": 420,
+          "native": 420
+        },
+        "4": {
+          "slot": 605,
+          "core": 605,
+          "native": 605
+        },
+        "5": {
+          "slot": 612,
+          "core": 612,
+          "native": 612
+        },
+        "6": {
+          "slot": 744,
+          "core": 744,
+          "native": 744
+        },
+        "7": {
+          "slot": 769,
+          "core": 769,
+          "native": 769
+        },
+        "8": {
+          "slot": 575,
+          "core": 575,
+          "native": 575
+        }
+      },
+      "core_trace_available": true
+    },
+    "core_active_grants1_bits5": {
+      "parameters": {
+        "BITS": 5,
+        "SEED": 127,
+        "RECORDING_ENABLE": 1,
+        "USE_RECORDING": 1,
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 1
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants1_bits5/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.BITS=5",
+        "-Ptb_workstation_recording_ddr_path.SEED=127",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=1",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=1",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_active_grants1_bits5/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS shared DDR pipeline seed=127 tags=32 clients=9 commands=4805 reads=3139 full_tag_cycles=224 core_commands=4805 native_commands=4805 masked memory/native stalls/consecutive returns/BIST epoch/order\nOWNER index=0 slot=192 core=192 native=192\nOWNER index=1 slot=842 core=842 native=842\nOWNER index=2 slot=404 core=404 native=404\nOWNER index=3 slot=432 core=432 native=432\nOWNER index=4 slot=517 core=517 native=517\nOWNER index=5 slot=540 core=540 native=540\nOWNER index=6 slot=690 core=690 native=690\nOWNER index=7 slot=670 core=670 native=670\nOWNER index=8 slot=518 core=518 native=518\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:436: $finish called at 366240000 (1ps)\n",
+      "run_log_sha256": "6d3a6e48cca4210ac6fec94aea92d4a0fa0497b087a079f9d22dc8f5c8b33d9c",
+      "metrics": {
+        "seed": 127,
+        "tags": 32,
+        "clients": 9,
+        "commands": 4805,
+        "reads": 3139,
+        "full_tag_cycles": 224,
+        "core_commands": 4805,
+        "native_commands": 4805,
+        "index": 8,
+        "slot": 518,
+        "core": 518,
+        "native": 518
+      },
+      "per_owner": {
+        "0": {
+          "slot": 192,
+          "core": 192,
+          "native": 192
+        },
+        "1": {
+          "slot": 842,
+          "core": 842,
+          "native": 842
+        },
+        "2": {
+          "slot": 404,
+          "core": 404,
+          "native": 404
+        },
+        "3": {
+          "slot": 432,
+          "core": 432,
+          "native": 432
+        },
+        "4": {
+          "slot": 517,
+          "core": 517,
+          "native": 517
+        },
+        "5": {
+          "slot": 540,
+          "core": 540,
+          "native": 540
+        },
+        "6": {
+          "slot": 690,
+          "core": 690,
+          "native": 690
+        },
+        "7": {
+          "slot": 670,
+          "core": 670,
+          "native": 670
+        },
+        "8": {
+          "slot": 518,
+          "core": 518,
+          "native": 518
+        }
+      },
+      "core_trace_available": true
+    },
+    "fault_bridge_0": {
+      "parameters": {
+        "CASE": 0
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_0/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_0/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS recording DDR fault/bridge case=0\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:78: $finish called at 150000 (1ps)\n",
+      "run_log_sha256": "8e4e6793ff7aecd0f5188f2d4f88794bc721e62c3405a66f71c09fe66f794fe3",
+      "metrics": {
+        "case": 0
+      },
+      "per_owner": {},
+      "core_trace_available": true
+    },
+    "fault_bridge_1": {
+      "parameters": {
+        "CASE": 1
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_1/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_1/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS recording DDR fault/bridge case=1\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:78: $finish called at 170000 (1ps)\n",
+      "run_log_sha256": "f2d995125252c6cb2866b8ff6876a1657da486633a0ef8ecc14c1a358da7dab4",
+      "metrics": {
+        "case": 1
+      },
+      "per_owner": {},
+      "core_trace_available": true
+    },
+    "fault_bridge_2": {
+      "parameters": {
+        "CASE": 2
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_2/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=2",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_2/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS recording DDR fault/bridge case=2\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:78: $finish called at 170000 (1ps)\n",
+      "run_log_sha256": "de16769456c9bff9a7313aa01ac35c8cd2a2325b8471fbc1aef4f38a3fa71083",
+      "metrics": {
+        "case": 2
+      },
+      "per_owner": {},
+      "core_trace_available": true
+    },
+    "fault_bridge_3": {
+      "parameters": {
+        "CASE": 3
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_3/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=3",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_3/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS recording DDR fault/bridge case=3\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:78: $finish called at 120000 (1ps)\n",
+      "run_log_sha256": "c76c11ae0d6851774b6b305ed1e2812bbe643c9e4ae2a21886c27d7ac9fb0dae",
+      "metrics": {
+        "case": 3
+      },
+      "per_owner": {},
+      "core_trace_available": true
+    },
+    "fault_bridge_4": {
+      "parameters": {
+        "CASE": 4
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_4/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=4",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_4/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS recording DDR fault/bridge case=4\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:78: $finish called at 210000 (1ps)\n",
+      "run_log_sha256": "3d05b8cbcb62bdb440c6db439fd55d96f3f2fa201547de60a76ade45879efb5e",
+      "metrics": {
+        "case": 4
+      },
+      "per_owner": {},
+      "core_trace_available": true
+    },
+    "fault_bridge_5": {
+      "parameters": {
+        "CASE": 5
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_5/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=5",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/fault_bridge_5/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "PASS recording DDR fault/bridge case=5\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:78: $finish called at 130000 (1ps)\n",
+      "run_log_sha256": "ec3b849a880186ded666bfe50ec2d84bb4c21a94f38d18f0d0e07f7fdf0b4b34",
+      "metrics": {
+        "case": 5
+      },
+      "per_owner": {},
+      "core_trace_available": true
+    },
+    "owner8_tag_truncated": {
+      "parameters": {},
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/owner8_tag_truncated/test.vvp",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/owner8_tag_truncated/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/owner8_tag_truncated/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "1b92b087f62431f09d7abad5660f5f189e88eac101a71bf03cc4f09a404ec2fd",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:319: response lost/reordered/memory mismatch at82 owner0 wanted8\n       Time: 12165000  Scope: tb_workstation_recording_ddr_path.$ivl_for_loop1\n",
+      "run_log_sha256": "88e61e1f565d9c5112395b10cb1a37325a6d7d15f0cbeb5562618770ac883a7b",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": true,
+      "expected_failure": "response lost/reordered/memory mismatch",
+      "rejected": true
+    },
+    "recording_mask_lost": {
+      "parameters": {},
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/recording_mask_lost/test.vvp",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/recording_mask_lost/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/recording_mask_lost/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "af3b6b4ffaa1d101597cf06ee6f916d90548eaae381cf6a1156ad39f1bc5b4b2",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:332: per-client native command order/data changed owner8 at0\n       Time: 12125000  Scope: tb_workstation_recording_ddr_path\n",
+      "run_log_sha256": "f5a4008c4b4b5bbc60acc55c9851220eec293b110d787eb0738f1412e962fb75",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": true,
+      "expected_failure": "per-client native command order/data changed",
+      "rejected": true
+    },
+    "core_ack_is_not_native": {
+      "parameters": {},
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_ack_is_not_native/test.vvp",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_ack_is_not_native/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/core_ack_is_not_native/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "0e611ec1b8e0b741a9b8e9eae613e0868db8c5a25eaf65afa3d3956417db1ba1",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:344: nonexclusive three-stage acceptance\n       Time: 75000  Scope: tb_workstation_recording_ddr_path\n",
+      "run_log_sha256": "9ac031644eb9edd3f83bcb059ed309ca977dc0b5bf580f67ef9a865834c3088b",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": true,
+      "expected_failure": "nonexclusive three-stage acceptance",
+      "rejected": true
+    },
+    "write_commit_without_write_ready": {
+      "parameters": {},
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/write_commit_without_write_ready/test.vvp",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/write_commit_without_write_ready/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/write_commit_without_write_ready/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "a719ee7a6a46b24ccf658ab1ca36f384c59def883cc1a401488c54028ae057f2",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:323: native command/write data not jointly accepted\n       Time: 1945000  Scope: tb_workstation_recording_ddr_path\n",
+      "run_log_sha256": "410bf95c9c72fd27dcfc1f332fa9416d96eceaa4a53794968ede9dfaeb4e4a12",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": true,
+      "expected_failure": "native command/write data not jointly accepted",
+      "rejected": true
+    },
+    "returned_data_not_paired": {
+      "parameters": {},
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/returned_data_not_paired/test.vvp",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/returned_data_not_paired/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/returned_data_not_paired/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "19e06ac1066b6803ee1236205c8028b43c273f4ac47f9671f97888ee0726d3e7",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:319: response lost/reordered/memory mismatch at0 owner0 wanted0\n       Time: 375000  Scope: tb_workstation_recording_ddr_path.$ivl_for_loop1\n",
+      "run_log_sha256": "09ba98e988331d8b61d2abbcb1c4116a7757d218b25ccc085690131a31b62856",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": true,
+      "expected_failure": "response lost/reordered/memory mismatch",
+      "rejected": true
+    },
+    "invalid_owner_fault_ignored": {
+      "parameters": {
+        "CASE": 1
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/invalid_owner_fault_ignored/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/invalid_owner_fault_ignored/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/invalid_owner_fault_ignored/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "c23a81a6ddfedd1dd6c1b414afd533557eb8e1ba6fff66e62d2da0427d7b70be",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:43: missing same-edge empty/invalid owner fault\n       Time: 81000  Scope: tb_workstation_recording_ddr_fault\n",
+      "run_log_sha256": "078c6eb952ca40b2b28d607a79e92b73b05f62fe241838b90830aa82f637e2fe",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": true,
+      "expected_failure": "missing same-edge empty/invalid owner fault",
+      "rejected": true
+    },
+    "empty_owner_fault_ignored": {
+      "parameters": {
+        "CASE": 0
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/empty_owner_fault_ignored/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/empty_owner_fault_ignored/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/empty_owner_fault_ignored/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "366b7213b471b4f7a3766791aff7cbdab148e1c4f7e43e9d5934128401c059ce",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:43: missing same-edge empty/invalid owner fault\n       Time: 61000  Scope: tb_workstation_recording_ddr_fault\n",
+      "run_log_sha256": "fe8c2cf33163a9898b73bcfc17c7c7ac3f61893792eb42cb9c9792776088164b",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": true,
+      "expected_failure": "missing same-edge empty/invalid owner fault",
+      "rejected": true
+    },
+    "bridge_reenqueues_after_core_ack": {
+      "parameters": {
+        "CASE": 4
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/bridge_reenqueues_after_core_ack/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=4",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/bridge_reenqueues_after_core_ack/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/bridge_reenqueues_after_core_ack/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "3cfebd1c99aa1b9aa1fc628da7065a7a767820ecda8609224aab0ca707a2275b"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:63: core/local ACK duplicated submitted command\n       Time: 80000  Scope: tb_workstation_recording_ddr_fault\n",
+      "run_log_sha256": "fd9561da2a87350feb31d8eeed3ab7314e8407d899e52bbce5434d534fab95ea",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": true,
+      "expected_failure": "core/local ACK duplicated submitted command",
+      "rejected": true
+    },
+    "bridge_acks_local_slot": {
+      "parameters": {
+        "CASE": 4
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/bridge_acks_local_slot/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=4",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/bridge_acks_local_slot/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/bridge_acks_local_slot/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "55380d4c9486be6be58d3fb093d31e6087ccb0682b8171c9924a35237c603f6e"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:57: slot ACK mistaken for native acceptance\n       Time: 61000  Scope: tb_workstation_recording_ddr_fault\n",
+      "run_log_sha256": "bc6235925519fe9e8a5114796e2046cc8085d583ccff4739e68cf20958e85fb7",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": true,
+      "expected_failure": "slot ACK mistaken for native acceptance",
+      "rejected": true
+    },
+    "bridge_fault_delayed_one_edge": {
+      "parameters": {
+        "CASE": 3
+      },
+      "top": "tb_workstation_recording_ddr_fault",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_fault",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/bridge_fault_delayed_one_edge/test.vvp",
+        "-Ptb_workstation_recording_ddr_fault.CASE=3",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/bridge_fault_delayed_one_edge/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/bridge_fault_delayed_one_edge/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "120a1406f4691a45dfec27269b0d0e4ed7cca5c4ce05f18f12e0cc2766a967ee"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_fault_tb.sv:52: bridge protocol fault not visible before edge\n       Time: 61000  Scope: tb_workstation_recording_ddr_fault\n",
+      "run_log_sha256": "c9514918fc262bf91ef310ee02f746bba1d22b180f2b58be6404861efa9012d5",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": true,
+      "expected_failure": "bridge protocol fault not visible before edge",
+      "rejected": true
+    },
+    "default_grant_path_changed": {
+      "parameters": {
+        "CORE_ONLY": 1,
+        "REGISTER_GRANTS": 1,
+        "RECORDING_ENABLE": 0,
+        "USE_RECORDING": 0
+      },
+      "top": "tb_workstation_recording_ddr_path",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_recording_ddr_path",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/default_grant_path_changed/test.vvp",
+        "-Ptb_workstation_recording_ddr_path.CORE_ONLY=1",
+        "-Ptb_workstation_recording_ddr_path.REGISTER_GRANTS=1",
+        "-Ptb_workstation_recording_ddr_path.RECORDING_ENABLE=0",
+        "-Ptb_workstation_recording_ddr_path.USE_RECORDING=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/default_grant_path_changed/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/default_grant_path_changed/test.vvp"
+      ],
+      "returncode": 1,
+      "compiled_source_sha256": {
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "27e224f7ea49b4e42f8d71b639b8cc18d4b43e0a27620ef2cd519c235e4edcb2",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205"
+      },
+      "compile_log": "",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_recording_ddr_path_tb.sv:295: default/idle owner8 legacy cycle miter mismatch\n       Time: 51000  Scope: tb_workstation_recording_ddr_path\n",
+      "run_log_sha256": "d0e061e9fedd75f1d80d57392ac280a0087757678f0ccd5be154098148c89e3f",
+      "metrics": {},
+      "per_owner": {},
+      "core_trace_available": false,
+      "expected_failure": "default/idle owner8 legacy cycle miter mismatch",
+      "rejected": true
+    }
+  },
+  "lint": {
+    "0": {
+      "argv": [
+        "verilator",
+        "--lint-only",
+        "--top-module",
+        "workstation_recording_ddr_client_queues",
+        "-GRECORDING_ENABLE=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv"
+      ],
+      "returncode": 0,
+      "log": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.181 MB sources in 6 modules, into 0.138 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.036 s (elab=0.007, cvt=0.017, bld=0.000); cpu 0.025 s on 1 threads; allocated 14.453 MB\n"
+    },
+    "1": {
+      "argv": [
+        "verilator",
+        "--lint-only",
+        "--top-module",
+        "workstation_recording_ddr_client_queues",
+        "-GRECORDING_ENABLE=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv"
+      ],
+      "returncode": 0,
+      "log": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.181 MB sources in 6 modules, into 0.174 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.024 s (elab=0.003, cvt=0.014, bld=0.000); cpu 0.024 s on 1 threads; allocated 15.156 MB\n"
+    }
+  },
+  "source_inputs_unchanged_during_run": true,
+  "stage_review": {
+    "base_commit": "48a7701016ce62e2d42e9cafa3295564a183d42a",
+    "raw_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-native-seal-final2/verification.json",
+    "raw_evidence_sha256": "07360cf1893da43aa46e8d733fbc7fd9c2c920b6a12e0e3a6545379d5c425e68",
+    "positive_configurations": 33,
+    "negative_mutants_rejected": 11,
+    "source_hashes_verified_after_run": true,
+    "current_sources": {
+      "argv": [
+        "python3",
+        "projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py"
+      ],
+      "returncode": 0,
+      "log": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.034s\n\nOK\n"
+    },
+    "production_selection_changed": false,
+    "legacy_protected_paths_changed": false,
+    "component_only": true,
+    "physical_acceptance_claimed": false
+  }
+}

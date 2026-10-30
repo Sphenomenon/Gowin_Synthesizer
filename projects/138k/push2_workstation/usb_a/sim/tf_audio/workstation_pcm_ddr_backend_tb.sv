@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 `default_nettype none
 module tb_workstation_pcm_ddr_backend #(
-    parameter integer CASE=0,RATE_44K1=0,COMPETITION=0,FIFO_BITS=4,DDR_BUDGET=128
+    parameter integer CASE=0,RATE_44K1=0,COMPETITION=0,FIFO_BITS=4,DDR_BUDGET=128,FAULT_ENABLE=1,FAULT_START_PHASE=0
 );
     reg clk=0;always #5 clk=~clk; // real 100-MHz DDR UI time base
     reg rstn=0,create=0,seal=0,cancel=0,soft_reset=0,clear=0;
@@ -29,7 +29,10 @@ module tb_workstation_pcm_ddr_backend #(
     wire [255:0] write_data,response_data;
     wire [31:0] mask;
     ddr_address_map_guard allocation_guard();
-    workstation_pcm_ddr_backend #(.FIFO_ADDRESS_BITS(FIFO_BITS),.DDR_BUDGET_CYCLES(DDR_BUDGET),.SOURCE_GAP_CYCLES(4096)) dut(
+    reg force_transport_fault=0,inject_bus_response=0,inject_bridge_completion=0,traffic_enable=1,test_cpu_blocker=0;
+    wire transport_fault;
+    workstation_pcm_ddr_backend #(.FIFO_ADDRESS_BITS(FIFO_BITS),.DDR_BUDGET_CYCLES(DDR_BUDGET),.SOURCE_GAP_CYCLES(4096),
+        .TRANSPORT_FAULT_ENABLE(FAULT_ENABLE)) dut(
         .clk_i(clk),.rst_ni(rstn),.create_i(create),.create_ready_o(create_ready),
         .object_id_i(object_id),.rate_44k1_i(rate),.epoch_i(epoch),.first_sequence_i(first_sequence),.limit_frames_i(limit),
         .seal_i(seal),.cancel_i(cancel),.soft_reset_i(soft_reset),.clear_i(clear),.clear_ready_o(clear_ready),
@@ -45,7 +48,7 @@ module tb_workstation_pcm_ddr_backend #(
         .download_valid_o(download_valid),.download_ready_i(download_ready),.download_data_o(download_data),
         .download_bytes_o(download_bytes),.download_last_o(download_last),.download_done_o(download_done),.download_error_o(download_error),
         .ddr_valid_o(request),.ddr_write_o(write_request),.ddr_address_o(address),.ddr_data_o(write_data),.ddr_mask_o(mask),
-        .ddr_ready_i(request_ready),.ddr_response_i(response),.ddr_read_data_i(response_data));
+        .ddr_ready_i(request_ready),.ddr_response_i(response),.ddr_read_data_i(response_data),.transport_fault_i(transport_fault));
 
     reg force_stall=0,hold_response=0,inject_response=0;
     integer cycles=0;
@@ -59,47 +62,55 @@ module tb_workstation_pcm_ddr_backend #(
     reg [255:0] memory_response_data=0;
     wire native_record=native_address>=29'h0c140000 && native_address<29'h0c144000;
     wire native_record_accept=native_en && native_record;
-    integer scan_ops=0,audio_ops=0,display_ops=0,delay_ops=0,cpu_ops=0,writer_ops=0;
+    integer scan_ops=0,audio_ops=0,display_ops=0,delay_ops=0,cpu_ops=0,writer_ops=0,music_ops=0;
+    integer record_slot_count=0,record_core_count=0,record_native_count=0;
+    integer slot_before=0,core_before=0,native_before=0,discard_before=0;
     generate if(COMPETITION)begin:g_real_arbiter
-        // Fixture-only observer adapter. The real queues/core are unchanged;
-        // the backend borrows the MUSIC port, replacing NN for this test.
-        // One local enqueue is followed by actual native app_en completion.
-        // This is not a production owner allocation or an NN-concurrency test.
-        reg submitted;
-        wire local_ready,music_response;
+        // Genuine optional owner8 path; music/NN traffic remains on owner5.
+        // Neither local enqueue nor core-buffer entry acknowledges the backend.
+        wire submitted,bridge_fault,record_native_ready,record_transport_fault;
+        wire local_ready,record_slot_valid,record_response,bus_transport_fault;
+        wire [8:0] slot_accept,core_accept,native_accept;
         wire [255:0] returned;
         wire [2:0] app_cmd;
         wire scan_ready,audio_ready,display_ready,delay_ready,cpu_ready,writer_ready;
         wire app_en,app_wren,app_wend,fault;
-        always @(posedge clk or negedge rstn)begin
-            if(!rstn)submitted<=0;
-            else if(native_record_accept)submitted<=0;
-            else if(request && !submitted && local_ready)submitted<=1;
-        end
-        assign request_ready=native_record_accept;
-        assign response=music_response || inject_response;
+        workstation_recording_ddr_native_bridge u_bridge(
+            .clk_i(clk),.rst_ni(rstn),.published_valid_i(request),.slot_ready_i(local_ready),
+            .native_accept_i(native_accept[8] || inject_bridge_completion),.transport_fault_i(bus_transport_fault),
+            .slot_valid_o(record_slot_valid),.native_ready_o(record_native_ready),
+            .transport_fault_o(record_transport_fault),.submitted_o(submitted),.protocol_fault_o(bridge_fault));
+        assign request_ready=record_native_ready;
+        assign transport_fault=record_transport_fault || force_transport_fault;
+        assign response=record_response || inject_response;
         assign response_data=returned;
         assign native_en=app_en;
         assign native_write=app_wren;
-        basic_pitch_ddr_client_queues #(.TAG_BITS(4)) arbiter(
+        workstation_recording_ddr_client_queues #(.TAG_BITS(5),.RECORDING_ENABLE(1)) arbiter(
             .clk(clk),.reset_n(rstn),.bist_done(1'b1),.bist_valid(1'b0),.bist_write(1'b0),
             .bist_address(29'd0),.bist_data(256'd0),.bist_ready(),.bist_response(),
-            .scan_valid(cycles%16<2),.scan_address(29'h10),.scan_ready(scan_ready),.scan_response(),
-            .display_valid(cycles%37==0),.display_address(29'h200008),.display_ready(display_ready),.display_response(),
-            .audio_valid(cycles%19==0),.audio_write(1'b1),.audio_address(29'h600008),.audio_data(256'h1234),
+            .scan_valid(traffic_enable && cycles%16<2),.scan_address(29'h10),.scan_ready(scan_ready),.scan_response(),
+            .display_valid(traffic_enable && cycles%37==0),.display_address(29'h200008),.display_ready(display_ready),.display_response(),
+            .audio_valid(traffic_enable && cycles%19==0),.audio_write(1'b1),.audio_address(29'h600008),.audio_data(256'h1234),
             .audio_ready(audio_ready),.audio_response(),
-            .music_valid(request && !submitted),.music_write(write_request),.music_address(address),
-            .music_data(write_data),.music_mask(mask),.music_ready(local_ready),.music_response(music_response),
-            .delay_valid(cycles%29==0),.delay_write(1'b1),.delay_address(29'hc000008),.delay_data(256'h5678),
+            .music_valid(traffic_enable && cycles%41==0),.music_write(cycles%82==0),.music_address(29'h08000008),
+            .music_data(256'hdeadbeef),.music_mask(32'h55aa00ff),.music_ready(),.music_response(),
+            .recording_valid(record_slot_valid),.recording_write(write_request),.recording_address(address),
+            .recording_data(write_data),.recording_mask(mask),.recording_ready(local_ready),.recording_response(record_response),
+            .delay_valid(traffic_enable && cycles%29==0),.delay_write(1'b1),.delay_address(29'hc000008),.delay_data(256'h5678),
             .delay_ready(delay_ready),.delay_response(),
-            .writer_valid(cycles%23==0),.writer_address(29'h20),.writer_data(256'habcd),.writer_ready(writer_ready),
-            .cpu_valid(cycles%31==0),.cpu_write(1'b0),.cpu_address(29'h400008),.cpu_data(256'd0),.cpu_mask(32'd0),
+            .writer_valid(traffic_enable && cycles%23==0),.writer_address(29'h20),.writer_data(256'habcd),.writer_ready(writer_ready),
+            .cpu_valid(test_cpu_blocker || (traffic_enable && cycles%31==0)),.cpu_write(1'b0),.cpu_address(29'h400008),.cpu_data(256'd0),.cpu_mask(32'd0),
             .cpu_ready(cpu_ready),.cpu_response(),.app_cmd(app_cmd),.app_en(app_en),.app_wren(app_wren),.app_wend(app_wend),
             .app_address(native_address),.app_data(native_data),.app_mask(native_mask),
-            .app_ready(native_ready),.app_write_ready(native_ready),.app_response(memory_response),
-            .app_response_data(memory_response_data),.response_data(returned),.response_fault(fault));
+            .app_ready(native_ready),.app_write_ready(native_ready),.app_response(memory_response || inject_bus_response),
+            .app_response_data(memory_response_data),.response_data(returned),.response_fault(fault),
+            .slot_accept_o(slot_accept),.core_accept_o(core_accept),.native_accept_o(native_accept),.transport_fault_o(bus_transport_fault));
         always @(posedge clk)if(rstn)begin
-            if(fault)$fatal(1,"actual arbiter response fault");
+            if(slot_accept[8])record_slot_count=record_slot_count+1;
+            if(core_accept[8])record_core_count=record_core_count+1;
+            if(native_accept[8])record_native_count=record_native_count+1;
+            if(fault && CASE!=7)$fatal(1,"actual arbiter response fault");
             if(native_en)case(native_address)
                 29'h10:scan_ops=scan_ops+1;
                 29'h600008:audio_ops=audio_ops+1;
@@ -107,10 +118,12 @@ module tb_workstation_pcm_ddr_backend #(
                 29'hc000008:delay_ops=delay_ops+1;
                 29'h400008:cpu_ops=cpu_ops+1;
                 29'h20:writer_ops=writer_ops+1;
+                29'h08000008:music_ops=music_ops+1;
                 default:begin end
             endcase
         end
     end else begin:g_direct
+        assign transport_fault=force_transport_fault;
         assign request_ready=request && native_ready;
         assign native_en=request && request_ready;
         assign native_write=write_request;
@@ -188,6 +201,7 @@ module tb_workstation_pcm_ddr_backend #(
         begin
             @(negedge clk);rstn=0;create=0;pcm_valid=0;seal=0;cancel=0;soft_reset=0;clear=0;
             ref_acquire=0;ref_release=0;download=0;download_ready=0;force_stall=0;hold_response=0;inject_response=0;
+            force_transport_fault=0;inject_bus_response=0;inject_bridge_completion=0;traffic_enable=1;test_cpu_blocker=0;
             source_ready=1;source_error=0;
             wait_cycles(5);rstn=1;wait_cycles(3);
             if(state!=0 || stored_id!=0 || request || download_valid)$fatal(1,"hard reset ownership");
@@ -516,12 +530,129 @@ module tb_workstation_pcm_ddr_backend #(
                     $fatal(1,"cancel/reset download escaped invalidation");
                 clear_object();aborts_checked=aborts_checked+1;priority_checked=priority_checked+1;
             end
+        end else if(CASE==5)begin
+            if(!FAULT_ENABLE)$fatal(1,"transport fault fixture requires opt-in");
+            for(integer phase=FAULT_START_PHASE;phase<4;phase=phase+1)begin
+                new_object(160+phase,16384);
+                if(phase==0)force_stall=1;
+                for(integer n=0;n<(phase==0 ? 9 : 17);n=n+1)frame(n,4);
+                if(phase!=0)seal_and_check(17,0);
+                if(phase>=2)begin
+                    acquire();
+                    if(phase==2)begin
+                        hold_response=1;reads_before_collision=record_reads;
+                        begin_download(0,68);collision_deadline=cycles+1000;
+                        while(record_reads==reads_before_collision && cycles<collision_deadline)@(negedge clk);
+                        if(record_reads==reads_before_collision || quiet)$fatal(1,"transport accepted-read precondition");
+                    end else begin
+                        begin_download(1,3);collision_deadline=cycles+1000;
+                        while(!download_valid && cycles<collision_deadline)@(negedge clk);
+                        if(!download_valid || !download_last)$fatal(1,"transport final-output precondition");
+                    end
+                end
+                force_transport_fault=1;create=1;clear=1;ref_acquire=1;download=1;download_ready=1;#1;
+                if(create_ready || clear_ready || ref_ready || download_req_ready || download_valid || captured)
+                    $fatal(1,"transport fault left admission/output open");
+                @(negedge clk);create=0;clear=0;ref_acquire=0;download=0;download_ready=0;
+                expect_error(9);
+                if(download_done || clear_ready)$fatal(1,"transport fault falsely completed/rearmed");
+                if(phase==0 && !request)$fatal(1,"transport fault withdrew published write");
+                if(phase==2 && (!ref_held || quiet))$fatal(1,"transport fault forgot accepted read");
+                force_stall=0;hold_response=0;wait_quiet();wait_cycles(5);
+                clear=1;soft_reset=1;wait_cycles(2);clear=0;soft_reset=0;#1;
+                if(state!=4 || failure!=9 || create_ready || clear_ready || ref_held || download_valid)
+                    $fatal(1,"soft reset/clear recovered sticky transport fault");
+                hard_reset(); // paired controller, tag ledger, bridge and backend reset
+                if(!create_ready)$fatal(1,"common reset did not recover transport channel");
+            end
+        end else if(CASE==6)begin
+            if(FAULT_ENABLE)$fatal(1,"legacy transport fixture requires default disabled");
+            force_transport_fault=1;new_object(171,16384);
+            for(integer n=0;n<17;n=n+1)frame(n,4);
+            seal_and_check(17,0);acquire();check_download(0,68);release_reference();clear_object();
+        end else if(CASE==7)begin
+            if(!COMPETITION || !FAULT_ENABLE)$fatal(1,"actual native fault fixture configuration");
+            new_object(176,16384);for(integer n=0;n<17;n=n+1)frame(n,4);
+            seal_and_check(17,0);acquire();traffic_enable=0;wait_cycles(100);
+            if(qin!=qout || memory_response || native_en)$fatal(1,"actual native fault drain precondition");
+            inject_bus_response=1;download=1;offset=0;length=68;clear=1;#1;
+            if(!transport_fault)$fatal(1,"actual empty-ledger fault missing before edge");
+            if(download_req_ready || download_valid || clear_ready)$fatal(1,"actual bus fault admitted download");
+            @(negedge clk);inject_bus_response=0;download=0;clear=0;expect_error(9);wait_quiet();wait_cycles(5);
+            soft_reset=1;clear=1;wait_cycles(2);soft_reset=0;clear=0;#1;
+            if(!transport_fault || clear_ready || create_ready || state!=4 || failure!=9)
+                $fatal(1,"actual bus sticky fault recovered without paired reset");
+            hard_reset();if(!create_ready || transport_fault)$fatal(1,"actual native common reset recovery");
+        end else if(CASE==8)begin
+            if(!COMPETITION)$fatal(1,"stage-cancel fixture requires actual owner8 queues");
+            for(integer phase=0;phase<4;phase=phase+1)begin
+                new_object(180+phase,16384);traffic_enable=0;wait_cycles(100);
+                if(phase>=2)begin
+                    for(integer n=0;n<17;n=n+1)frame(n,4);
+                    seal_and_check(17,0);acquire();hold_response=1;
+                end
+                force_stall=1;
+                if(phase%2==0)begin
+                    test_cpu_blocker=1;wait_cycles(8);test_cpu_blocker=0;
+                end
+                slot_before=record_slot_count;core_before=record_core_count;native_before=record_native_count;
+                discard_before=discarded;
+                if(phase<2)begin for(integer n=0;n<9;n=n+1)frame(n,4);end
+                else begin_download(0,68);
+                collision_deadline=cycles+1000;
+                if(phase%2==0)begin
+                    while(record_slot_count==slot_before && cycles<collision_deadline)@(negedge clk);
+                    if(record_slot_count!=slot_before+1 || record_core_count!=core_before || record_native_count!=native_before)
+                        $fatal(1,"cancel local-slot stage not established");
+                end else begin
+                    while(record_core_count==core_before && cycles<collision_deadline)@(negedge clk);
+                    if(record_slot_count!=slot_before+1 || record_core_count!=core_before+1 || record_native_count!=native_before)
+                        $fatal(1,"cancel core-buffer stage not established");
+                end
+                if(!request || request_ready)$fatal(1,"early ACK retired command before cancel");
+                cancel=1;@(negedge clk);cancel=0;
+                if(state!=5 || !request || clear_ready)$fatal(1,"cancel withdrew queued/core published command");
+                force_stall=0;collision_deadline=cycles+1000;
+                while(record_native_count==native_before && cycles<collision_deadline)@(negedge clk);
+                if(record_native_count!=native_before+1)$fatal(1,"cancel native command lost/duplicated");
+                if(phase>=2)begin
+                    if(quiet || !ref_held || clear_ready)$fatal(1,"cancel forgot read accepted after cancellation");
+                    hold_response=0;
+                end
+                wait_quiet();wait_cycles(64);
+                if(record_slot_count!=slot_before+1 || record_core_count!=core_before+1 || record_native_count!=native_before+1)
+                    $fatal(1,"cancel stage replayed published command");
+                if(phase>=2 && (discarded!=discard_before+1 || ref_held))$fatal(1,"cancel post-native read not drained/discarded");
+                clear_object();aborts_checked=aborts_checked+1;
+            end
+        end else if(CASE==9)begin
+            if(!COMPETITION || !FAULT_ENABLE)$fatal(1,"bridge fault integration fixture configuration");
+            for(integer phase=0;phase<3;phase=phase+1)begin
+                new_object(190+phase,16384);for(integer n=0;n<17;n=n+1)frame(n,4);
+                seal_and_check(17,0);traffic_enable=0;wait_cycles(100);
+                if(phase!=0)acquire();
+                if(phase==2)begin
+                    begin_download(1,3);collision_deadline=cycles+1000;
+                    while(!download_valid && cycles<collision_deadline)@(negedge clk);
+                    if(!download_valid || !download_last)$fatal(1,"bridge fault final-output precondition");
+                end
+                inject_bridge_completion=1;ref_id=64'(active_seed);ref_acquire=1;
+                download=1;offset=0;length=68;download_ready=1;clear=1;#1;
+                if(!transport_fault || ref_ready || download_req_ready || download_valid || clear_ready)
+                    $fatal(1,"bridge protocol fault admitted same-edge owner request/output");
+                @(negedge clk);inject_bridge_completion=0;ref_acquire=0;download=0;download_ready=0;clear=0;
+                expect_error(9);wait_quiet();wait_cycles(5);
+                if(ref_granted || ref_held || download_done || clear_ready || !transport_fault)
+                    $fatal(1,"bridge fault failed sticky fencing/drain");
+                hard_reset();if(!create_ready || transport_fault)$fatal(1,"bridge fault paired reset recovery");
+            end
         end
-        if(COMPETITION && (scan_ops==0 || audio_ops==0 || display_ops==0 || delay_ops==0 || cpu_ops==0 || writer_ops==0))
+        if(COMPETITION && CASE!=8 && (scan_ops==0 || audio_ops==0 || display_ops==0 || delay_ops==0 || cpu_ops==0 || writer_ops==0 || music_ops==0))
             $fatal(1,"competition did not exercise every existing port");
-        $display("PASS workstation_pcm_ddr_backend: case=%0d rate=%0d competition=%0d objects=%0d failures=%0d aborts=%0d priorities=%0d bytes=%0d writes=%0d reads=%0d command_wait=%0d read_wait=%0d cycles=%0d scan=%0d audio=%0d display=%0d delay=%0d cpu=%0d writer=%0d",
+        $display("PASS workstation_pcm_ddr_backend: case=%0d rate=%0d competition=%0d objects=%0d failures=%0d aborts=%0d priorities=%0d bytes=%0d writes=%0d reads=%0d command_wait=%0d read_wait=%0d cycles=%0d scan=%0d audio=%0d display=%0d delay=%0d cpu=%0d writer=%0d music=%0d slots=%0d cores=%0d natives=%0d",
             CASE,RATE_44K1?44100:48000,COMPETITION,objects_checked,failures_checked,aborts_checked,priority_checked,
-            checked_bytes,record_writes,record_reads,max_cmd_wait,max_read_wait,cycles,scan_ops,audio_ops,display_ops,delay_ops,cpu_ops,writer_ops);
+            checked_bytes,record_writes,record_reads,max_cmd_wait,max_read_wait,cycles,scan_ops,audio_ops,display_ops,delay_ops,cpu_ops,writer_ops,music_ops,
+            record_slot_count,record_core_count,record_native_count);
         $finish;
     end
     initial begin #1000000000;$fatal(1,"backend fixture global timeout");end

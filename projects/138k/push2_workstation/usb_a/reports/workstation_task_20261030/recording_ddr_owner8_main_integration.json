@@ -1,0 +1,3463 @@
+{
+  "schema": 1,
+  "identity": "owner8-main-integration-20261030",
+  "base_commit": "28706a8",
+  "imported_component_commit": "d3ddb5142197a8ee1e8dd88841aeee7ca34a9867",
+  "candidate": "custom138k-workstation-v1-7ffad19cde578d67",
+  "candidate_input_sha256": "7ffad19cde578d673e54ca3a9b492f249eef91910fe5512437d4dd77e704d87a",
+  "configuration_sha256": "e1f13c6662772b1855368041e60f7493af2299978f6483f4f3aa8a7bd3f0d84b",
+  "prepared": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-runtime-profile-owner8-unselected-v1",
+  "prepare_artifact_sha256": "6f73af99fcaabd53e61d9614300ddaa0d5a6fdbef9adfa3ada2b2eb4def128a3",
+  "source_counts": {
+    "source_sha256": 313,
+    "source_snapshot_sha256": 738,
+    "staged_input_sha256": 570,
+    "enabled_inputs": 259
+  },
+  "staged_comparison": {
+    "reference": "custom138k-workstation-v1-bd40620bb1b139bb",
+    "all_570_bytes_rechecked": true,
+    "identical_staged": true,
+    "identical_enabled": true,
+    "new_snapshot": [
+      "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+      "rtl/memory/workstation_recording_ddr_client_queues.sv",
+      "rtl/memory/workstation_recording_ddr_native_bridge.sv"
+    ],
+    "changed_snapshot": [
+      "rtl/audio/workstation_pcm_ddr_backend.sv"
+    ]
+  },
+  "component_checks": {
+    "native": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-main-native-parent/verification.json",
+      "verification_sha256": "6435a8d48a0b335c385dca244f6b5a7231313764a3dc4bc87dbed7d256631495",
+      "identity": "native-recording-ddr-owner8-v1-b60a37ef38f7af32",
+      "source_set_sha256": "b60a37ef38f7af324972141c3f071d6a9249873d6e1576001fb252c649f7e26d",
+      "source_sha256": {
+        "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+        "rtl/timing/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+        "sim/tf_audio/workstation_recording_ddr_path_tb.sv": "b8e9d901c0281dd4b3371049386da394f293ecd7786af25fe779420343dc500a",
+        "sim/tf_audio/workstation_recording_ddr_fault_tb.sv": "56a62c8462a3e63b57a1dd8aa148e49eade57faa2f92e43adb546f1d1b35be06",
+        "rtl/memory/RECORDING_DDR_NATIVE_CONTRACT.md": "de9741cc1bc71a8481cebe59003dfd938f0228d32717727aafc36d0048428e0e",
+        "sim/tf_audio/run_workstation_recording_ddr_path.py": "d829e2e79f1cf4dc807701a8ba4dc05048b69693c0c8d07871081f6ff9f93dc1"
+      },
+      "total": 44,
+      "positive": 33,
+      "negative": 11,
+      "all_expected_results": true,
+      "inputs_rechecked": true,
+      "source_inputs_unchanged_during_run": true,
+      "lint": {
+        "0": {
+          "argv": [
+            "verilator",
+            "--lint-only",
+            "--top-module",
+            "workstation_recording_ddr_client_queues",
+            "-GRECORDING_ENABLE=0",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv"
+          ],
+          "returncode": 0,
+          "log": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.180 MB sources in 6 modules, into 0.138 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.041 s (elab=0.007, cvt=0.021, bld=0.000); cpu 0.027 s on 1 threads; allocated 14.406 MB\n"
+        },
+        "1": {
+          "argv": [
+            "verilator",
+            "--lint-only",
+            "--top-module",
+            "workstation_recording_ddr_client_queues",
+            "-GRECORDING_ENABLE=1",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/timing/basic_pitch_ddr_client_queues.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+            "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv"
+          ],
+          "returncode": 0,
+          "log": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.180 MB sources in 6 modules, into 0.174 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.023 s (elab=0.003, cvt=0.013, bld=0.000); cpu 0.023 s on 1 threads; allocated 15.188 MB\n"
+        }
+      },
+      "cases": {
+        "queues_disabled_bits2": {
+          "parameters": {
+            "BITS": 2,
+            "SEED": 7,
+            "RECORDING_ENABLE": 0,
+            "USE_RECORDING": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "36973670686b947ee151f5218f3620433a8acf41be9912bccc61d443fadc334b",
+          "metrics": {
+            "seed": 7,
+            "tags": 4,
+            "clients": 8,
+            "commands": 5275,
+            "reads": 3441,
+            "full_tag_cycles": 322,
+            "core_commands": 0,
+            "native_commands": 0,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 151,
+              "core": 0,
+              "native": 151
+            },
+            "1": {
+              "slot": 845,
+              "core": 0,
+              "native": 845
+            },
+            "2": {
+              "slot": 547,
+              "core": 0,
+              "native": 547
+            },
+            "3": {
+              "slot": 574,
+              "core": 0,
+              "native": 574
+            },
+            "4": {
+              "slot": 859,
+              "core": 0,
+              "native": 859
+            },
+            "5": {
+              "slot": 706,
+              "core": 0,
+              "native": 706
+            },
+            "6": {
+              "slot": 789,
+              "core": 0,
+              "native": 789
+            },
+            "7": {
+              "slot": 804,
+              "core": 0,
+              "native": 804
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": false
+        },
+        "core_disabled_grants0_bits2": {
+          "parameters": {
+            "BITS": 2,
+            "SEED": 7,
+            "RECORDING_ENABLE": 0,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "75b22e356ec634fa5780ef4fb68c2581127980ed5ea922a4fe8639b16459166a",
+          "metrics": {
+            "seed": 7,
+            "tags": 4,
+            "clients": 8,
+            "commands": 4693,
+            "reads": 3164,
+            "full_tag_cycles": 335,
+            "core_commands": 0,
+            "native_commands": 0,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 204,
+              "core": 0,
+              "native": 204
+            },
+            "1": {
+              "slot": 901,
+              "core": 0,
+              "native": 901
+            },
+            "2": {
+              "slot": 407,
+              "core": 0,
+              "native": 407
+            },
+            "3": {
+              "slot": 430,
+              "core": 0,
+              "native": 430
+            },
+            "4": {
+              "slot": 603,
+              "core": 0,
+              "native": 603
+            },
+            "5": {
+              "slot": 609,
+              "core": 0,
+              "native": 609
+            },
+            "6": {
+              "slot": 736,
+              "core": 0,
+              "native": 736
+            },
+            "7": {
+              "slot": 803,
+              "core": 0,
+              "native": 803
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": false
+        },
+        "core_disabled_grants1_bits2": {
+          "parameters": {
+            "BITS": 2,
+            "SEED": 7,
+            "RECORDING_ENABLE": 0,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "1803a9f5e2d3265227d4d015014a9abd0bc1e8ff9c7bd1746acd183b6244a494",
+          "metrics": {
+            "seed": 7,
+            "tags": 4,
+            "clients": 8,
+            "commands": 4287,
+            "reads": 2859,
+            "full_tag_cycles": 335,
+            "core_commands": 0,
+            "native_commands": 0,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 204,
+              "core": 0,
+              "native": 204
+            },
+            "1": {
+              "slot": 808,
+              "core": 0,
+              "native": 808
+            },
+            "2": {
+              "slot": 412,
+              "core": 0,
+              "native": 412
+            },
+            "3": {
+              "slot": 436,
+              "core": 0,
+              "native": 436
+            },
+            "4": {
+              "slot": 516,
+              "core": 0,
+              "native": 516
+            },
+            "5": {
+              "slot": 536,
+              "core": 0,
+              "native": 536
+            },
+            "6": {
+              "slot": 685,
+              "core": 0,
+              "native": 685
+            },
+            "7": {
+              "slot": 690,
+              "core": 0,
+              "native": 690
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": false
+        },
+        "queues_idle_bits2": {
+          "parameters": {
+            "BITS": 2,
+            "SEED": 7,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "05b5d23ffbf124e9e6752a4e5c4e19edada4d0060426d518e1e7624e6c4d8667",
+          "metrics": {
+            "seed": 7,
+            "tags": 4,
+            "clients": 8,
+            "commands": 5275,
+            "reads": 3441,
+            "full_tag_cycles": 322,
+            "core_commands": 5275,
+            "native_commands": 5275,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 151,
+              "core": 151,
+              "native": 151
+            },
+            "1": {
+              "slot": 845,
+              "core": 845,
+              "native": 845
+            },
+            "2": {
+              "slot": 547,
+              "core": 547,
+              "native": 547
+            },
+            "3": {
+              "slot": 574,
+              "core": 574,
+              "native": 574
+            },
+            "4": {
+              "slot": 859,
+              "core": 859,
+              "native": 859
+            },
+            "5": {
+              "slot": 706,
+              "core": 706,
+              "native": 706
+            },
+            "6": {
+              "slot": 789,
+              "core": 789,
+              "native": 789
+            },
+            "7": {
+              "slot": 804,
+              "core": 804,
+              "native": 804
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_idle_grants0_bits2": {
+          "parameters": {
+            "BITS": 2,
+            "SEED": 7,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "ad7e16da00b5b681677041e03231aac061158b08dd898c7e09fb2069ef0afc5f",
+          "metrics": {
+            "seed": 7,
+            "tags": 4,
+            "clients": 8,
+            "commands": 4693,
+            "reads": 3164,
+            "full_tag_cycles": 335,
+            "core_commands": 4693,
+            "native_commands": 4693,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 204,
+              "core": 204,
+              "native": 204
+            },
+            "1": {
+              "slot": 901,
+              "core": 901,
+              "native": 901
+            },
+            "2": {
+              "slot": 407,
+              "core": 407,
+              "native": 407
+            },
+            "3": {
+              "slot": 430,
+              "core": 430,
+              "native": 430
+            },
+            "4": {
+              "slot": 603,
+              "core": 603,
+              "native": 603
+            },
+            "5": {
+              "slot": 609,
+              "core": 609,
+              "native": 609
+            },
+            "6": {
+              "slot": 736,
+              "core": 736,
+              "native": 736
+            },
+            "7": {
+              "slot": 803,
+              "core": 803,
+              "native": 803
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_idle_grants1_bits2": {
+          "parameters": {
+            "BITS": 2,
+            "SEED": 7,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "32d75c0f2a2713fc52cefda78f988d8f13b83ad4d2a2e359d42bee0e70a3608c",
+          "metrics": {
+            "seed": 7,
+            "tags": 4,
+            "clients": 8,
+            "commands": 4287,
+            "reads": 2859,
+            "full_tag_cycles": 335,
+            "core_commands": 4287,
+            "native_commands": 4287,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 204,
+              "core": 204,
+              "native": 204
+            },
+            "1": {
+              "slot": 808,
+              "core": 808,
+              "native": 808
+            },
+            "2": {
+              "slot": 412,
+              "core": 412,
+              "native": 412
+            },
+            "3": {
+              "slot": 436,
+              "core": 436,
+              "native": 436
+            },
+            "4": {
+              "slot": 516,
+              "core": 516,
+              "native": 516
+            },
+            "5": {
+              "slot": 536,
+              "core": 536,
+              "native": 536
+            },
+            "6": {
+              "slot": 685,
+              "core": 685,
+              "native": 685
+            },
+            "7": {
+              "slot": 690,
+              "core": 690,
+              "native": 690
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": true
+        },
+        "queues_active_bits2": {
+          "parameters": {
+            "BITS": 2,
+            "SEED": 7,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "d993808b86a3ae4ad761a4e73a31e91fffc2237dac2fbeb65bb7decffa6178ba",
+          "metrics": {
+            "seed": 7,
+            "tags": 4,
+            "clients": 9,
+            "commands": 5883,
+            "reads": 3727,
+            "full_tag_cycles": 316,
+            "core_commands": 5883,
+            "native_commands": 5883,
+            "index": 8,
+            "slot": 630,
+            "core": 630,
+            "native": 630
+          },
+          "per_owner": {
+            "0": {
+              "slot": 151,
+              "core": 151,
+              "native": 151
+            },
+            "1": {
+              "slot": 850,
+              "core": 850,
+              "native": 850
+            },
+            "2": {
+              "slot": 537,
+              "core": 537,
+              "native": 537
+            },
+            "3": {
+              "slot": 557,
+              "core": 557,
+              "native": 557
+            },
+            "4": {
+              "slot": 862,
+              "core": 862,
+              "native": 862
+            },
+            "5": {
+              "slot": 708,
+              "core": 708,
+              "native": 708
+            },
+            "6": {
+              "slot": 787,
+              "core": 787,
+              "native": 787
+            },
+            "7": {
+              "slot": 801,
+              "core": 801,
+              "native": 801
+            },
+            "8": {
+              "slot": 630,
+              "core": 630,
+              "native": 630
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_active_grants0_bits2": {
+          "parameters": {
+            "BITS": 2,
+            "SEED": 7,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 1,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "13c79e53c7cdaf03f572a19f3b462388d5931e99b9e83433c70ff2f5ae71b814",
+          "metrics": {
+            "seed": 7,
+            "tags": 4,
+            "clients": 9,
+            "commands": 5223,
+            "reads": 3413,
+            "full_tag_cycles": 332,
+            "core_commands": 5223,
+            "native_commands": 5223,
+            "index": 8,
+            "slot": 562,
+            "core": 562,
+            "native": 562
+          },
+          "per_owner": {
+            "0": {
+              "slot": 204,
+              "core": 204,
+              "native": 204
+            },
+            "1": {
+              "slot": 907,
+              "core": 907,
+              "native": 907
+            },
+            "2": {
+              "slot": 403,
+              "core": 403,
+              "native": 403
+            },
+            "3": {
+              "slot": 416,
+              "core": 416,
+              "native": 416
+            },
+            "4": {
+              "slot": 606,
+              "core": 606,
+              "native": 606
+            },
+            "5": {
+              "slot": 611,
+              "core": 611,
+              "native": 611
+            },
+            "6": {
+              "slot": 732,
+              "core": 732,
+              "native": 732
+            },
+            "7": {
+              "slot": 782,
+              "core": 782,
+              "native": 782
+            },
+            "8": {
+              "slot": 562,
+              "core": 562,
+              "native": 562
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_active_grants1_bits2": {
+          "parameters": {
+            "BITS": 2,
+            "SEED": 7,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 1,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "bd2ddbaa816a5ff3cdc30d2b3937be7871c7e77e8ab5c562d72f4ddc6852c961",
+          "metrics": {
+            "seed": 7,
+            "tags": 4,
+            "clients": 9,
+            "commands": 4748,
+            "reads": 3077,
+            "full_tag_cycles": 334,
+            "core_commands": 4748,
+            "native_commands": 4748,
+            "index": 8,
+            "slot": 495,
+            "core": 495,
+            "native": 495
+          },
+          "per_owner": {
+            "0": {
+              "slot": 204,
+              "core": 204,
+              "native": 204
+            },
+            "1": {
+              "slot": 822,
+              "core": 822,
+              "native": 822
+            },
+            "2": {
+              "slot": 402,
+              "core": 402,
+              "native": 402
+            },
+            "3": {
+              "slot": 425,
+              "core": 425,
+              "native": 425
+            },
+            "4": {
+              "slot": 515,
+              "core": 515,
+              "native": 515
+            },
+            "5": {
+              "slot": 539,
+              "core": 539,
+              "native": 539
+            },
+            "6": {
+              "slot": 680,
+              "core": 680,
+              "native": 680
+            },
+            "7": {
+              "slot": 666,
+              "core": 666,
+              "native": 666
+            },
+            "8": {
+              "slot": 495,
+              "core": 495,
+              "native": 495
+            }
+          },
+          "core_trace_available": true
+        },
+        "queues_disabled_bits3": {
+          "parameters": {
+            "BITS": 3,
+            "SEED": 31,
+            "RECORDING_ENABLE": 0,
+            "USE_RECORDING": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "34e330755e94da04845ce4226dd7cda3beabbcaa12da4c43b12f23aecda76cbc",
+          "metrics": {
+            "seed": 31,
+            "tags": 8,
+            "clients": 8,
+            "commands": 5156,
+            "reads": 3412,
+            "full_tag_cycles": 273,
+            "core_commands": 0,
+            "native_commands": 0,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 152,
+              "core": 0,
+              "native": 152
+            },
+            "1": {
+              "slot": 826,
+              "core": 0,
+              "native": 826
+            },
+            "2": {
+              "slot": 549,
+              "core": 0,
+              "native": 549
+            },
+            "3": {
+              "slot": 570,
+              "core": 0,
+              "native": 570
+            },
+            "4": {
+              "slot": 834,
+              "core": 0,
+              "native": 834
+            },
+            "5": {
+              "slot": 678,
+              "core": 0,
+              "native": 678
+            },
+            "6": {
+              "slot": 761,
+              "core": 0,
+              "native": 761
+            },
+            "7": {
+              "slot": 786,
+              "core": 0,
+              "native": 786
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": false
+        },
+        "core_disabled_grants0_bits3": {
+          "parameters": {
+            "BITS": 3,
+            "SEED": 31,
+            "RECORDING_ENABLE": 0,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "f8eb5f65814207c623180dc43c91cc17f43106f3d21ad27444d2baec0577f4d5",
+          "metrics": {
+            "seed": 31,
+            "tags": 8,
+            "clients": 8,
+            "commands": 4562,
+            "reads": 3104,
+            "full_tag_cycles": 283,
+            "core_commands": 0,
+            "native_commands": 0,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 205,
+              "core": 0,
+              "native": 205
+            },
+            "1": {
+              "slot": 871,
+              "core": 0,
+              "native": 871
+            },
+            "2": {
+              "slot": 416,
+              "core": 0,
+              "native": 416
+            },
+            "3": {
+              "slot": 424,
+              "core": 0,
+              "native": 424
+            },
+            "4": {
+              "slot": 581,
+              "core": 0,
+              "native": 581
+            },
+            "5": {
+              "slot": 596,
+              "core": 0,
+              "native": 596
+            },
+            "6": {
+              "slot": 693,
+              "core": 0,
+              "native": 693
+            },
+            "7": {
+              "slot": 776,
+              "core": 0,
+              "native": 776
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": false
+        },
+        "core_disabled_grants1_bits3": {
+          "parameters": {
+            "BITS": 3,
+            "SEED": 31,
+            "RECORDING_ENABLE": 0,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "5261624439bb460f652a966d1e2538fb9075d70e58a5b2d160fdd396c1c90d4d",
+          "metrics": {
+            "seed": 31,
+            "tags": 8,
+            "clients": 8,
+            "commands": 4197,
+            "reads": 2820,
+            "full_tag_cycles": 283,
+            "core_commands": 0,
+            "native_commands": 0,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 204,
+              "core": 0,
+              "native": 204
+            },
+            "1": {
+              "slot": 801,
+              "core": 0,
+              "native": 801
+            },
+            "2": {
+              "slot": 417,
+              "core": 0,
+              "native": 417
+            },
+            "3": {
+              "slot": 447,
+              "core": 0,
+              "native": 447
+            },
+            "4": {
+              "slot": 492,
+              "core": 0,
+              "native": 492
+            },
+            "5": {
+              "slot": 526,
+              "core": 0,
+              "native": 526
+            },
+            "6": {
+              "slot": 640,
+              "core": 0,
+              "native": 640
+            },
+            "7": {
+              "slot": 670,
+              "core": 0,
+              "native": 670
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": false
+        },
+        "queues_idle_bits3": {
+          "parameters": {
+            "BITS": 3,
+            "SEED": 31,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "5d080ce59acc79861788b607f7812437b13b17718e5b27c7e507addca553b19e",
+          "metrics": {
+            "seed": 31,
+            "tags": 8,
+            "clients": 8,
+            "commands": 5156,
+            "reads": 3412,
+            "full_tag_cycles": 273,
+            "core_commands": 5156,
+            "native_commands": 5156,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 152,
+              "core": 152,
+              "native": 152
+            },
+            "1": {
+              "slot": 826,
+              "core": 826,
+              "native": 826
+            },
+            "2": {
+              "slot": 549,
+              "core": 549,
+              "native": 549
+            },
+            "3": {
+              "slot": 570,
+              "core": 570,
+              "native": 570
+            },
+            "4": {
+              "slot": 834,
+              "core": 834,
+              "native": 834
+            },
+            "5": {
+              "slot": 678,
+              "core": 678,
+              "native": 678
+            },
+            "6": {
+              "slot": 761,
+              "core": 761,
+              "native": 761
+            },
+            "7": {
+              "slot": 786,
+              "core": 786,
+              "native": 786
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_idle_grants0_bits3": {
+          "parameters": {
+            "BITS": 3,
+            "SEED": 31,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "d8fd054f058129725742c2c78156e3f300adc04138ec9f2a539770ed5a221e01",
+          "metrics": {
+            "seed": 31,
+            "tags": 8,
+            "clients": 8,
+            "commands": 4562,
+            "reads": 3104,
+            "full_tag_cycles": 283,
+            "core_commands": 4562,
+            "native_commands": 4562,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 205,
+              "core": 205,
+              "native": 205
+            },
+            "1": {
+              "slot": 871,
+              "core": 871,
+              "native": 871
+            },
+            "2": {
+              "slot": 416,
+              "core": 416,
+              "native": 416
+            },
+            "3": {
+              "slot": 424,
+              "core": 424,
+              "native": 424
+            },
+            "4": {
+              "slot": 581,
+              "core": 581,
+              "native": 581
+            },
+            "5": {
+              "slot": 596,
+              "core": 596,
+              "native": 596
+            },
+            "6": {
+              "slot": 693,
+              "core": 693,
+              "native": 693
+            },
+            "7": {
+              "slot": 776,
+              "core": 776,
+              "native": 776
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_idle_grants1_bits3": {
+          "parameters": {
+            "BITS": 3,
+            "SEED": 31,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "ad8339c16ff1cf39bed5a3a26264be4be0663484068e236488d5330a73adf633",
+          "metrics": {
+            "seed": 31,
+            "tags": 8,
+            "clients": 8,
+            "commands": 4197,
+            "reads": 2820,
+            "full_tag_cycles": 283,
+            "core_commands": 4197,
+            "native_commands": 4197,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 204,
+              "core": 204,
+              "native": 204
+            },
+            "1": {
+              "slot": 801,
+              "core": 801,
+              "native": 801
+            },
+            "2": {
+              "slot": 417,
+              "core": 417,
+              "native": 417
+            },
+            "3": {
+              "slot": 447,
+              "core": 447,
+              "native": 447
+            },
+            "4": {
+              "slot": 492,
+              "core": 492,
+              "native": 492
+            },
+            "5": {
+              "slot": 526,
+              "core": 526,
+              "native": 526
+            },
+            "6": {
+              "slot": 640,
+              "core": 640,
+              "native": 640
+            },
+            "7": {
+              "slot": 670,
+              "core": 670,
+              "native": 670
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": true
+        },
+        "queues_active_bits3": {
+          "parameters": {
+            "BITS": 3,
+            "SEED": 31,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "25be9c2f4bd86f746c09af226de3c09d20ce90829a9345f5f744aa1884fcec71",
+          "metrics": {
+            "seed": 31,
+            "tags": 8,
+            "clients": 9,
+            "commands": 5777,
+            "reads": 3727,
+            "full_tag_cycles": 272,
+            "core_commands": 5777,
+            "native_commands": 5777,
+            "index": 8,
+            "slot": 657,
+            "core": 657,
+            "native": 657
+          },
+          "per_owner": {
+            "0": {
+              "slot": 152,
+              "core": 152,
+              "native": 152
+            },
+            "1": {
+              "slot": 827,
+              "core": 827,
+              "native": 827
+            },
+            "2": {
+              "slot": 530,
+              "core": 530,
+              "native": 530
+            },
+            "3": {
+              "slot": 556,
+              "core": 556,
+              "native": 556
+            },
+            "4": {
+              "slot": 834,
+              "core": 834,
+              "native": 834
+            },
+            "5": {
+              "slot": 681,
+              "core": 681,
+              "native": 681
+            },
+            "6": {
+              "slot": 757,
+              "core": 757,
+              "native": 757
+            },
+            "7": {
+              "slot": 783,
+              "core": 783,
+              "native": 783
+            },
+            "8": {
+              "slot": 657,
+              "core": 657,
+              "native": 657
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_active_grants0_bits3": {
+          "parameters": {
+            "BITS": 3,
+            "SEED": 31,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 1,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "dbd36788d7ce6bdcec2b34fb3efecfc95fd641fa9c51d08e654b671a7c56215f",
+          "metrics": {
+            "seed": 31,
+            "tags": 8,
+            "clients": 9,
+            "commands": 5090,
+            "reads": 3354,
+            "full_tag_cycles": 286,
+            "core_commands": 5090,
+            "native_commands": 5090,
+            "index": 8,
+            "slot": 587,
+            "core": 587,
+            "native": 587
+          },
+          "per_owner": {
+            "0": {
+              "slot": 205,
+              "core": 205,
+              "native": 205
+            },
+            "1": {
+              "slot": 867,
+              "core": 867,
+              "native": 867
+            },
+            "2": {
+              "slot": 401,
+              "core": 401,
+              "native": 401
+            },
+            "3": {
+              "slot": 419,
+              "core": 419,
+              "native": 419
+            },
+            "4": {
+              "slot": 578,
+              "core": 578,
+              "native": 578
+            },
+            "5": {
+              "slot": 591,
+              "core": 591,
+              "native": 591
+            },
+            "6": {
+              "slot": 691,
+              "core": 691,
+              "native": 691
+            },
+            "7": {
+              "slot": 751,
+              "core": 751,
+              "native": 751
+            },
+            "8": {
+              "slot": 587,
+              "core": 587,
+              "native": 587
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_active_grants1_bits3": {
+          "parameters": {
+            "BITS": 3,
+            "SEED": 31,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 1,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "fbae63025acd84b2b236c2cfbf0592ae4140c87c39a9c48cd0cf688d9da4f128",
+          "metrics": {
+            "seed": 31,
+            "tags": 8,
+            "clients": 9,
+            "commands": 4679,
+            "reads": 3048,
+            "full_tag_cycles": 282,
+            "core_commands": 4679,
+            "native_commands": 4679,
+            "index": 8,
+            "slot": 523,
+            "core": 523,
+            "native": 523
+          },
+          "per_owner": {
+            "0": {
+              "slot": 204,
+              "core": 204,
+              "native": 204
+            },
+            "1": {
+              "slot": 803,
+              "core": 803,
+              "native": 803
+            },
+            "2": {
+              "slot": 408,
+              "core": 408,
+              "native": 408
+            },
+            "3": {
+              "slot": 441,
+              "core": 441,
+              "native": 441
+            },
+            "4": {
+              "slot": 492,
+              "core": 492,
+              "native": 492
+            },
+            "5": {
+              "slot": 528,
+              "core": 528,
+              "native": 528
+            },
+            "6": {
+              "slot": 637,
+              "core": 637,
+              "native": 637
+            },
+            "7": {
+              "slot": 643,
+              "core": 643,
+              "native": 643
+            },
+            "8": {
+              "slot": 523,
+              "core": 523,
+              "native": 523
+            }
+          },
+          "core_trace_available": true
+        },
+        "queues_disabled_bits5": {
+          "parameters": {
+            "BITS": 5,
+            "SEED": 127,
+            "RECORDING_ENABLE": 0,
+            "USE_RECORDING": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "90a4b34954f84d5192f57530501ce913f37171622b9b2e8cc3bcf99cbac956f9",
+          "metrics": {
+            "seed": 127,
+            "tags": 32,
+            "clients": 8,
+            "commands": 5394,
+            "reads": 3506,
+            "full_tag_cycles": 207,
+            "core_commands": 0,
+            "native_commands": 0,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 151,
+              "core": 0,
+              "native": 151
+            },
+            "1": {
+              "slot": 870,
+              "core": 0,
+              "native": 870
+            },
+            "2": {
+              "slot": 571,
+              "core": 0,
+              "native": 571
+            },
+            "3": {
+              "slot": 598,
+              "core": 0,
+              "native": 598
+            },
+            "4": {
+              "slot": 882,
+              "core": 0,
+              "native": 882
+            },
+            "5": {
+              "slot": 710,
+              "core": 0,
+              "native": 710
+            },
+            "6": {
+              "slot": 824,
+              "core": 0,
+              "native": 824
+            },
+            "7": {
+              "slot": 788,
+              "core": 0,
+              "native": 788
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": false
+        },
+        "core_disabled_grants0_bits5": {
+          "parameters": {
+            "BITS": 5,
+            "SEED": 127,
+            "RECORDING_ENABLE": 0,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "e9fb6204ebcf929b3612ba240f80a95cd7d95e974e47b587bd72209218d4f3a1",
+          "metrics": {
+            "seed": 127,
+            "tags": 32,
+            "clients": 8,
+            "commands": 4738,
+            "reads": 3186,
+            "full_tag_cycles": 230,
+            "core_commands": 0,
+            "native_commands": 0,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 192,
+              "core": 0,
+              "native": 192
+            },
+            "1": {
+              "slot": 928,
+              "core": 0,
+              "native": 928
+            },
+            "2": {
+              "slot": 414,
+              "core": 0,
+              "native": 414
+            },
+            "3": {
+              "slot": 433,
+              "core": 0,
+              "native": 433
+            },
+            "4": {
+              "slot": 614,
+              "core": 0,
+              "native": 614
+            },
+            "5": {
+              "slot": 623,
+              "core": 0,
+              "native": 623
+            },
+            "6": {
+              "slot": 751,
+              "core": 0,
+              "native": 751
+            },
+            "7": {
+              "slot": 783,
+              "core": 0,
+              "native": 783
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": false
+        },
+        "core_disabled_grants1_bits5": {
+          "parameters": {
+            "BITS": 5,
+            "SEED": 127,
+            "RECORDING_ENABLE": 0,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "4442118b8c5b1ac1a93ea06429308fb1b20f6176992c0d0452b665471eec9643",
+          "metrics": {
+            "seed": 127,
+            "tags": 32,
+            "clients": 8,
+            "commands": 4343,
+            "reads": 2912,
+            "full_tag_cycles": 230,
+            "core_commands": 0,
+            "native_commands": 0,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 192,
+              "core": 0,
+              "native": 192
+            },
+            "1": {
+              "slot": 841,
+              "core": 0,
+              "native": 841
+            },
+            "2": {
+              "slot": 421,
+              "core": 0,
+              "native": 421
+            },
+            "3": {
+              "slot": 445,
+              "core": 0,
+              "native": 445
+            },
+            "4": {
+              "slot": 522,
+              "core": 0,
+              "native": 522
+            },
+            "5": {
+              "slot": 540,
+              "core": 0,
+              "native": 540
+            },
+            "6": {
+              "slot": 695,
+              "core": 0,
+              "native": 695
+            },
+            "7": {
+              "slot": 687,
+              "core": 0,
+              "native": 687
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": false
+        },
+        "queues_idle_bits5": {
+          "parameters": {
+            "BITS": 5,
+            "SEED": 127,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "d5f3a74052992ec33253cc6028a4882d83466ed66885dd8c57ad736b4de11738",
+          "metrics": {
+            "seed": 127,
+            "tags": 32,
+            "clients": 8,
+            "commands": 5394,
+            "reads": 3506,
+            "full_tag_cycles": 207,
+            "core_commands": 5394,
+            "native_commands": 5394,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 151,
+              "core": 151,
+              "native": 151
+            },
+            "1": {
+              "slot": 870,
+              "core": 870,
+              "native": 870
+            },
+            "2": {
+              "slot": 571,
+              "core": 571,
+              "native": 571
+            },
+            "3": {
+              "slot": 598,
+              "core": 598,
+              "native": 598
+            },
+            "4": {
+              "slot": 882,
+              "core": 882,
+              "native": 882
+            },
+            "5": {
+              "slot": 710,
+              "core": 710,
+              "native": 710
+            },
+            "6": {
+              "slot": 824,
+              "core": 824,
+              "native": 824
+            },
+            "7": {
+              "slot": 788,
+              "core": 788,
+              "native": 788
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_idle_grants0_bits5": {
+          "parameters": {
+            "BITS": 5,
+            "SEED": 127,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "16aed0f4bfbf0690382b04ed1731388b943c2d57aea784fd6b9131111104cf95",
+          "metrics": {
+            "seed": 127,
+            "tags": 32,
+            "clients": 8,
+            "commands": 4738,
+            "reads": 3186,
+            "full_tag_cycles": 230,
+            "core_commands": 4738,
+            "native_commands": 4738,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 192,
+              "core": 192,
+              "native": 192
+            },
+            "1": {
+              "slot": 928,
+              "core": 928,
+              "native": 928
+            },
+            "2": {
+              "slot": 414,
+              "core": 414,
+              "native": 414
+            },
+            "3": {
+              "slot": 433,
+              "core": 433,
+              "native": 433
+            },
+            "4": {
+              "slot": 614,
+              "core": 614,
+              "native": 614
+            },
+            "5": {
+              "slot": 623,
+              "core": 623,
+              "native": 623
+            },
+            "6": {
+              "slot": 751,
+              "core": 751,
+              "native": 751
+            },
+            "7": {
+              "slot": 783,
+              "core": 783,
+              "native": 783
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_idle_grants1_bits5": {
+          "parameters": {
+            "BITS": 5,
+            "SEED": 127,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 0,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "7013018eb0920c8f12f432dc2e622f18ace518e8b98093b344c43efadbb144f3",
+          "metrics": {
+            "seed": 127,
+            "tags": 32,
+            "clients": 8,
+            "commands": 4343,
+            "reads": 2912,
+            "full_tag_cycles": 230,
+            "core_commands": 4343,
+            "native_commands": 4343,
+            "index": 8,
+            "slot": 0,
+            "core": 0,
+            "native": 0
+          },
+          "per_owner": {
+            "0": {
+              "slot": 192,
+              "core": 192,
+              "native": 192
+            },
+            "1": {
+              "slot": 841,
+              "core": 841,
+              "native": 841
+            },
+            "2": {
+              "slot": 421,
+              "core": 421,
+              "native": 421
+            },
+            "3": {
+              "slot": 445,
+              "core": 445,
+              "native": 445
+            },
+            "4": {
+              "slot": 522,
+              "core": 522,
+              "native": 522
+            },
+            "5": {
+              "slot": 540,
+              "core": 540,
+              "native": 540
+            },
+            "6": {
+              "slot": 695,
+              "core": 695,
+              "native": 695
+            },
+            "7": {
+              "slot": 687,
+              "core": 687,
+              "native": 687
+            },
+            "8": {
+              "slot": 0,
+              "core": 0,
+              "native": 0
+            }
+          },
+          "core_trace_available": true
+        },
+        "queues_active_bits5": {
+          "parameters": {
+            "BITS": 5,
+            "SEED": 127,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "0df6a8b254f77191c7fd236cd1ddcb0e8756affd76a1c120d5cb35f03e0e65ee",
+          "metrics": {
+            "seed": 127,
+            "tags": 32,
+            "clients": 9,
+            "commands": 5983,
+            "reads": 3807,
+            "full_tag_cycles": 191,
+            "core_commands": 5983,
+            "native_commands": 5983,
+            "index": 8,
+            "slot": 655,
+            "core": 655,
+            "native": 655
+          },
+          "per_owner": {
+            "0": {
+              "slot": 151,
+              "core": 151,
+              "native": 151
+            },
+            "1": {
+              "slot": 869,
+              "core": 869,
+              "native": 869
+            },
+            "2": {
+              "slot": 550,
+              "core": 550,
+              "native": 550
+            },
+            "3": {
+              "slot": 573,
+              "core": 573,
+              "native": 573
+            },
+            "4": {
+              "slot": 879,
+              "core": 879,
+              "native": 879
+            },
+            "5": {
+              "slot": 707,
+              "core": 707,
+              "native": 707
+            },
+            "6": {
+              "slot": 816,
+              "core": 816,
+              "native": 816
+            },
+            "7": {
+              "slot": 783,
+              "core": 783,
+              "native": 783
+            },
+            "8": {
+              "slot": 655,
+              "core": 655,
+              "native": 655
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_active_grants0_bits5": {
+          "parameters": {
+            "BITS": 5,
+            "SEED": 127,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 1,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "80d40c6879a171c02887b492e42ca89eca7e85e4eb6c7894dee47b3ca2c507df",
+          "metrics": {
+            "seed": 127,
+            "tags": 32,
+            "clients": 9,
+            "commands": 5244,
+            "reads": 3440,
+            "full_tag_cycles": 232,
+            "core_commands": 5244,
+            "native_commands": 5244,
+            "index": 8,
+            "slot": 575,
+            "core": 575,
+            "native": 575
+          },
+          "per_owner": {
+            "0": {
+              "slot": 192,
+              "core": 192,
+              "native": 192
+            },
+            "1": {
+              "slot": 925,
+              "core": 925,
+              "native": 925
+            },
+            "2": {
+              "slot": 402,
+              "core": 402,
+              "native": 402
+            },
+            "3": {
+              "slot": 420,
+              "core": 420,
+              "native": 420
+            },
+            "4": {
+              "slot": 605,
+              "core": 605,
+              "native": 605
+            },
+            "5": {
+              "slot": 612,
+              "core": 612,
+              "native": 612
+            },
+            "6": {
+              "slot": 744,
+              "core": 744,
+              "native": 744
+            },
+            "7": {
+              "slot": 769,
+              "core": 769,
+              "native": 769
+            },
+            "8": {
+              "slot": 575,
+              "core": 575,
+              "native": 575
+            }
+          },
+          "core_trace_available": true
+        },
+        "core_active_grants1_bits5": {
+          "parameters": {
+            "BITS": 5,
+            "SEED": 127,
+            "RECORDING_ENABLE": 1,
+            "USE_RECORDING": 1,
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "8ea3ae6f329df1154e1ee23878342861a9214f49b1d0a66fa3da519ef0dd8548",
+          "metrics": {
+            "seed": 127,
+            "tags": 32,
+            "clients": 9,
+            "commands": 4805,
+            "reads": 3139,
+            "full_tag_cycles": 224,
+            "core_commands": 4805,
+            "native_commands": 4805,
+            "index": 8,
+            "slot": 518,
+            "core": 518,
+            "native": 518
+          },
+          "per_owner": {
+            "0": {
+              "slot": 192,
+              "core": 192,
+              "native": 192
+            },
+            "1": {
+              "slot": 842,
+              "core": 842,
+              "native": 842
+            },
+            "2": {
+              "slot": 404,
+              "core": 404,
+              "native": 404
+            },
+            "3": {
+              "slot": 432,
+              "core": 432,
+              "native": 432
+            },
+            "4": {
+              "slot": 517,
+              "core": 517,
+              "native": 517
+            },
+            "5": {
+              "slot": 540,
+              "core": 540,
+              "native": 540
+            },
+            "6": {
+              "slot": 690,
+              "core": 690,
+              "native": 690
+            },
+            "7": {
+              "slot": 670,
+              "core": 670,
+              "native": 670
+            },
+            "8": {
+              "slot": 518,
+              "core": 518,
+              "native": 518
+            }
+          },
+          "core_trace_available": true
+        },
+        "fault_bridge_0": {
+          "parameters": {
+            "CASE": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "9ae66fec67cc98d5fabf0e367afa2c6ead4f3dbdc7b7afcedb1807cdeee532b0",
+          "metrics": {
+            "case": 0
+          },
+          "per_owner": {},
+          "core_trace_available": true
+        },
+        "fault_bridge_1": {
+          "parameters": {
+            "CASE": 1
+          },
+          "returncode": 0,
+          "run_log_sha256": "47cff55eb082155a19c092ffc18f4fe44a5f00f909aeeffcb3098d8887367692",
+          "metrics": {
+            "case": 1
+          },
+          "per_owner": {},
+          "core_trace_available": true
+        },
+        "fault_bridge_2": {
+          "parameters": {
+            "CASE": 2
+          },
+          "returncode": 0,
+          "run_log_sha256": "93e607d3033b52460985266568866c829e06390bee1aa27df09d7d2251a70c2c",
+          "metrics": {
+            "case": 2
+          },
+          "per_owner": {},
+          "core_trace_available": true
+        },
+        "fault_bridge_3": {
+          "parameters": {
+            "CASE": 3
+          },
+          "returncode": 0,
+          "run_log_sha256": "87a1ec67170fbbd5cc0a3fef997d04925eb5434145f1f4157320af0cb7c10909",
+          "metrics": {
+            "case": 3
+          },
+          "per_owner": {},
+          "core_trace_available": true
+        },
+        "fault_bridge_4": {
+          "parameters": {
+            "CASE": 4
+          },
+          "returncode": 0,
+          "run_log_sha256": "a6aeefe6f9e6badf737fe57da10ff9d759573c7b4f49ec649fb85742f42d5626",
+          "metrics": {
+            "case": 4
+          },
+          "per_owner": {},
+          "core_trace_available": true
+        },
+        "fault_bridge_5": {
+          "parameters": {
+            "CASE": 5
+          },
+          "returncode": 0,
+          "run_log_sha256": "da8520071a42f3a6d968daad37b9dc100aaa9d30d62348fc8933632ea52cf449",
+          "metrics": {
+            "case": 5
+          },
+          "per_owner": {},
+          "core_trace_available": true
+        },
+        "owner8_tag_truncated": {
+          "parameters": {},
+          "returncode": 1,
+          "run_log_sha256": "d6df669082293e9d4445368ca7ff668450b7a9cdbd8d1677e82c77b1bcd3380b",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": true,
+          "expected_failure": "response lost/reordered/memory mismatch",
+          "rejected": true
+        },
+        "recording_mask_lost": {
+          "parameters": {},
+          "returncode": 1,
+          "run_log_sha256": "6e02252e7c02acc9516356bbdfcda444d07860fc3b04a159a74f9b39697f77f5",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": true,
+          "expected_failure": "per-client native command order/data changed",
+          "rejected": true
+        },
+        "core_ack_is_not_native": {
+          "parameters": {},
+          "returncode": 1,
+          "run_log_sha256": "6922d96bacf18a17b9b9f76c3e6f3767fc3385d41f0d9bf4edf21c93b8ea178d",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": true,
+          "expected_failure": "nonexclusive three-stage acceptance",
+          "rejected": true
+        },
+        "write_commit_without_write_ready": {
+          "parameters": {},
+          "returncode": 1,
+          "run_log_sha256": "1d3bb37af4b5da02b0422d25ca048b4b31d289636d784cf76375ae9e6972316c",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": true,
+          "expected_failure": "native command/write data not jointly accepted",
+          "rejected": true
+        },
+        "returned_data_not_paired": {
+          "parameters": {},
+          "returncode": 1,
+          "run_log_sha256": "fad8a8d72f7b2c97410f5bfc5f28c861ebae730064554b2b659f8c7fd6492c04",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": true,
+          "expected_failure": "response lost/reordered/memory mismatch",
+          "rejected": true
+        },
+        "invalid_owner_fault_ignored": {
+          "parameters": {
+            "CASE": 1
+          },
+          "returncode": 1,
+          "run_log_sha256": "503c8c1f9491d980c412d2f871617ee96f6bdf00ea93c7ef92a0c645f7771937",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": true,
+          "expected_failure": "missing same-edge empty/invalid owner fault",
+          "rejected": true
+        },
+        "empty_owner_fault_ignored": {
+          "parameters": {
+            "CASE": 0
+          },
+          "returncode": 1,
+          "run_log_sha256": "23797a5abb0756abd316a16666585f9243d7d7482a517fbb5a31dd69343da25a",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": true,
+          "expected_failure": "missing same-edge empty/invalid owner fault",
+          "rejected": true
+        },
+        "bridge_reenqueues_after_core_ack": {
+          "parameters": {
+            "CASE": 4
+          },
+          "returncode": 1,
+          "run_log_sha256": "66217e30ccc2feceadbb4249e881be2082eb33fcb00a7c597502702d8490b233",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": true,
+          "expected_failure": "core/local ACK duplicated submitted command",
+          "rejected": true
+        },
+        "bridge_acks_local_slot": {
+          "parameters": {
+            "CASE": 4
+          },
+          "returncode": 1,
+          "run_log_sha256": "a026336c15d6bbaf15d11877dd8708eeb81727ac4967aa4080e50fdbc98c48d4",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": true,
+          "expected_failure": "slot ACK mistaken for native acceptance",
+          "rejected": true
+        },
+        "bridge_fault_delayed_one_edge": {
+          "parameters": {
+            "CASE": 3
+          },
+          "returncode": 1,
+          "run_log_sha256": "409f3d1f9041542a792f98cb61b59f77803079d0e62f62edb25ebce48986fdc3",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": true,
+          "expected_failure": "bridge protocol fault not visible before edge",
+          "rejected": true
+        },
+        "default_grant_path_changed": {
+          "parameters": {
+            "CORE_ONLY": 1,
+            "REGISTER_GRANTS": 1,
+            "RECORDING_ENABLE": 0,
+            "USE_RECORDING": 0
+          },
+          "returncode": 1,
+          "run_log_sha256": "0e9d512228a35722242f6743964f89984b5c7242d37ed7e388eeb44f8e472c52",
+          "metrics": {},
+          "per_owner": {},
+          "core_trace_available": false,
+          "expected_failure": "default/idle owner8 legacy cycle miter mismatch",
+          "rejected": true
+        }
+      }
+    },
+    "backend": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-main-backend-parent/verification.json",
+      "verification_sha256": "76992603bd6ebe909f465bca659188b84a30c99f93a081f7092e8e871f8996b0",
+      "identity": "native-pcm-ddr-backend-v3-756a17b50f33cf44",
+      "source_set_sha256": "756a17b50f33cf4434a07c626f42f584da620447c77ac3ee43509712a8714261",
+      "source_sha256": {
+        "rtl/audio/workstation_pcm_ddr_backend.sv": "b79be8a91cbc909aca19846a47ea133845243335caf60508687668433bcce0b2",
+        "rtl/audio/PCM_DDR_BACKEND_CONTRACT.md": "b162826c1dbef545e990b830ff96a134a08b03f22dbc2f2f92ff827dd494c0e1",
+        "rtl/ddr_address_map.vh": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+        "sim/tf_audio/workstation_pcm_ddr_backend_tb.sv": "053eeed3407f7f8b34b69e394699f6cf25e534b40ea3e21fee29b0772f2b8460",
+        "sim/tf_audio/run_workstation_pcm_ddr_backend.py": "8c40b02b09116c04b51b2a19b7787ce95de2d9260793012cd4efdce8a0375ce9",
+        "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "rtl/ddr_address_map_guard.v": "ba7bd18eb264342e9530b9128f67d29eb769d63dc13688d2536be33957e4a2a7",
+        "rtl/timing/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+        "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+        "rtl/music/basic_pitch_ddr_map.svh": "49b7b954e3d6b45b305d443e408045889f7a8ce25138f81ccdd859dd39c163af",
+        "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+        "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+        "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+        "rtl/memory/RECORDING_DDR_NATIVE_CONTRACT.md": "de9741cc1bc71a8481cebe59003dfd938f0228d32717727aafc36d0048428e0e"
+      },
+      "total": 41,
+      "positive": 28,
+      "negative": 13,
+      "all_expected_results": true,
+      "inputs_rechecked": true,
+      "source_inputs_unchanged_during_run": true,
+      "lint": {
+        "argv": [
+          "verilator",
+          "--lint-only",
+          "--top-module",
+          "workstation_pcm_ddr_backend",
+          "-I/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-main-backend-parent/rate0_bounded_0",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv"
+        ],
+        "returncode": 0,
+        "log": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.086 MB sources in 3 modules, into 0.109 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.013 s (elab=0.002, cvt=0.007, bld=0.000); cpu 0.013 s on 1 threads; allocated 12.391 MB\n"
+      },
+      "cases": {
+        "rate0_bounded_0": {
+          "parameters": {
+            "CASE": 0,
+            "RATE_44K1": 0,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "f3d5b1b722bcf34afed0d3f87b537e9374a15005a6ad000e1deb6fc4f0d7e3a1",
+          "metrics": {
+            "case": 0,
+            "rate": 48000,
+            "competition": 0,
+            "objects": 8,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 2407,
+            "writes": 79,
+            "reads": 79,
+            "command_wait": 12,
+            "read_wait": 10,
+            "cycles": 1082872,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate0_bounded_1": {
+          "parameters": {
+            "CASE": 0,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "291e79cfe4374e96f7a0d053dae081fc362fba401dfb3cefe7857081862448c0",
+          "metrics": {
+            "case": 0,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 8,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 2407,
+            "writes": 79,
+            "reads": 79,
+            "command_wait": 27,
+            "read_wait": 11,
+            "cycles": 1083418,
+            "scan": 67713,
+            "audio": 57021,
+            "display": 29281,
+            "delay": 37359,
+            "cpu": 34948,
+            "writer": 47098,
+            "music": 26424,
+            "slots": 158,
+            "cores": 158,
+            "natives": 158
+          }
+        },
+        "rate0_64KiB_competition": {
+          "parameters": {
+            "CASE": 1,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "e71e88127dc5ac4c01f5bfdb561f98b3295df44103ed13fd15c9a186f61657bd",
+          "metrics": {
+            "case": 1,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 1,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 65536,
+            "writes": 2048,
+            "reads": 2048,
+            "command_wait": 16,
+            "read_wait": 11,
+            "cycles": 104468,
+            "scan": 6528,
+            "audio": 5498,
+            "display": 2823,
+            "delay": 3602,
+            "cpu": 3369,
+            "writer": 4541,
+            "music": 2547,
+            "slots": 4096,
+            "cores": 4096,
+            "natives": 4096
+          }
+        },
+        "rate0_faults": {
+          "parameters": {
+            "CASE": 2,
+            "RATE_44K1": 0,
+            "FIFO_BITS": 9,
+            "DDR_BUDGET": 2048
+          },
+          "returncode": 0,
+          "run_log_sha256": "b6ccb5ec681d1211217f72642675099bae719756d7f3d8416fe0316d78062ba4",
+          "metrics": {
+            "case": 2,
+            "rate": 48000,
+            "competition": 0,
+            "objects": 1,
+            "failures": 10,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 5,
+            "reads": 1,
+            "command_wait": 2049,
+            "read_wait": 2049,
+            "cycles": 9440,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate0_cancel_reset": {
+          "parameters": {
+            "CASE": 3,
+            "RATE_44K1": 0,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "d60935982d9746a1b31977d9044150553eb23a74d92583be9b0fcf99990c279a",
+          "metrics": {
+            "case": 3,
+            "rate": 48000,
+            "competition": 0,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 4,
+            "priorities": 0,
+            "bytes": 142,
+            "writes": 17,
+            "reads": 10,
+            "command_wait": 1,
+            "read_wait": 10,
+            "cycles": 674,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate0_command_collisions_0": {
+          "parameters": {
+            "CASE": 4,
+            "RATE_44K1": 0,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "b4c20990b529054729eb46ced0487a02230efc78c2a49ce9692e2e8f7d228a66",
+          "metrics": {
+            "case": 4,
+            "rate": 48000,
+            "competition": 0,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 5,
+            "priorities": 14,
+            "bytes": 36,
+            "writes": 7,
+            "reads": 3,
+            "command_wait": 1,
+            "read_wait": 10,
+            "cycles": 275,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate0_command_collisions_1": {
+          "parameters": {
+            "CASE": 4,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "19761fb13226fd78da9884c4638fa495423295b65adc49af96541ab2240e04b7",
+          "metrics": {
+            "case": 4,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 5,
+            "priorities": 14,
+            "bytes": 36,
+            "writes": 7,
+            "reads": 3,
+            "command_wait": 8,
+            "read_wait": 11,
+            "cycles": 314,
+            "scan": 19,
+            "audio": 16,
+            "display": 8,
+            "delay": 10,
+            "cpu": 10,
+            "writer": 13,
+            "music": 7,
+            "slots": 10,
+            "cores": 10,
+            "natives": 10
+          }
+        },
+        "rate0_transport_fault_0": {
+          "parameters": {
+            "CASE": 5,
+            "RATE_44K1": 0,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "9ae13c753ff4cd45c8c43eb2ac071200419c9f6734a6683256ddbfd7591bc1bc",
+          "metrics": {
+            "case": 5,
+            "rate": 48000,
+            "competition": 0,
+            "objects": 3,
+            "failures": 4,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 10,
+            "reads": 2,
+            "command_wait": 0,
+            "read_wait": 0,
+            "cycles": 382,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate0_transport_default_disabled_0": {
+          "parameters": {
+            "CASE": 6,
+            "RATE_44K1": 0,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9,
+            "FAULT_ENABLE": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "a8eb9fba5c56d789638b1cf996867204884bff8a03c8009586ea57667245aabb",
+          "metrics": {
+            "case": 6,
+            "rate": 48000,
+            "competition": 0,
+            "objects": 1,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 68,
+            "writes": 3,
+            "reads": 3,
+            "command_wait": 1,
+            "read_wait": 10,
+            "cycles": 132,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate0_transport_fault_1": {
+          "parameters": {
+            "CASE": 5,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "42f6172ee51bac54261f6cac7c41cdb461257c2c7dc884f742a63980e93b3474",
+          "metrics": {
+            "case": 5,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 3,
+            "failures": 4,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 10,
+            "reads": 2,
+            "command_wait": 0,
+            "read_wait": 0,
+            "cycles": 433,
+            "scan": 23,
+            "audio": 19,
+            "display": 11,
+            "delay": 14,
+            "cpu": 12,
+            "writer": 15,
+            "music": 9,
+            "slots": 12,
+            "cores": 12,
+            "natives": 12
+          }
+        },
+        "rate0_transport_default_disabled_1": {
+          "parameters": {
+            "CASE": 6,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9,
+            "FAULT_ENABLE": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "f5576b1153dd69ac0e85b12623f9ff066ebe817d1b6fb569a7239b905c5f9539",
+          "metrics": {
+            "case": 6,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 1,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 68,
+            "writes": 3,
+            "reads": 3,
+            "command_wait": 11,
+            "read_wait": 11,
+            "cycles": 160,
+            "scan": 9,
+            "audio": 8,
+            "display": 4,
+            "delay": 5,
+            "cpu": 5,
+            "writer": 6,
+            "music": 3,
+            "slots": 6,
+            "cores": 6,
+            "natives": 6
+          }
+        },
+        "rate0_actual_native_transport_fault": {
+          "parameters": {
+            "CASE": 7,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "5f135a9dcb051bf024f5e6477b5fe1e6b24276a146ef15ab667feae44d2879c0",
+          "metrics": {
+            "case": 7,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 1,
+            "failures": 1,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 3,
+            "reads": 0,
+            "command_wait": 0,
+            "read_wait": 0,
+            "cycles": 212,
+            "scan": 5,
+            "audio": 4,
+            "display": 2,
+            "delay": 3,
+            "cpu": 2,
+            "writer": 3,
+            "music": 2,
+            "slots": 3,
+            "cores": 3,
+            "natives": 3
+          }
+        },
+        "rate0_cancel_local_core_stages": {
+          "parameters": {
+            "CASE": 8,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "d246128c9d51a7e029dfa7f022fc2afadcaacd0460bec3cfb97edcf867cdaa33",
+          "metrics": {
+            "case": 8,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 2,
+            "failures": 0,
+            "aborts": 4,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 8,
+            "reads": 2,
+            "command_wait": 5,
+            "read_wait": 11,
+            "cycles": 977,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 4,
+            "writer": 0,
+            "music": 0,
+            "slots": 10,
+            "cores": 10,
+            "natives": 10
+          }
+        },
+        "rate0_bridge_fault_admission": {
+          "parameters": {
+            "CASE": 9,
+            "RATE_44K1": 0,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "db82168fece741ee4efd363cdbdb26a56dde48059d19e8cb44d3748e1373f31e",
+          "metrics": {
+            "case": 9,
+            "rate": 48000,
+            "competition": 1,
+            "objects": 3,
+            "failures": 3,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 9,
+            "reads": 1,
+            "command_wait": 0,
+            "read_wait": 0,
+            "cycles": 628,
+            "scan": 16,
+            "audio": 13,
+            "display": 7,
+            "delay": 8,
+            "cpu": 7,
+            "writer": 11,
+            "music": 6,
+            "slots": 10,
+            "cores": 10,
+            "natives": 10
+          }
+        },
+        "rate1_bounded_0": {
+          "parameters": {
+            "CASE": 0,
+            "RATE_44K1": 1,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "be2b5fbf5835ba6172f005d8a43a22a5b9d9881ce11e4b5b94a36472f22f1b16",
+          "metrics": {
+            "case": 0,
+            "rate": 44100,
+            "competition": 0,
+            "objects": 8,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 2407,
+            "writes": 79,
+            "reads": 79,
+            "command_wait": 12,
+            "read_wait": 10,
+            "cycles": 1178487,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate1_bounded_1": {
+          "parameters": {
+            "CASE": 0,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "1ed58c33bf724421052372902bb3f2e043776070e5c916ae4121f2dc1cfc5ff1",
+          "metrics": {
+            "case": 0,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 8,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 2407,
+            "writes": 79,
+            "reads": 79,
+            "command_wait": 30,
+            "read_wait": 11,
+            "cycles": 1179033,
+            "scan": 73689,
+            "audio": 62053,
+            "display": 31865,
+            "delay": 40656,
+            "cpu": 38033,
+            "writer": 51259,
+            "music": 28756,
+            "slots": 158,
+            "cores": 158,
+            "natives": 158
+          }
+        },
+        "rate1_64KiB_competition": {
+          "parameters": {
+            "CASE": 1,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "8a8f181cd0435cf43a4225f9d0e2d9058c070b34ec1d1b2d00388223aff561f8",
+          "metrics": {
+            "case": 1,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 1,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 65536,
+            "writes": 2048,
+            "reads": 2048,
+            "command_wait": 16,
+            "read_wait": 11,
+            "cycles": 104468,
+            "scan": 6528,
+            "audio": 5498,
+            "display": 2823,
+            "delay": 3602,
+            "cpu": 3369,
+            "writer": 4541,
+            "music": 2547,
+            "slots": 4096,
+            "cores": 4096,
+            "natives": 4096
+          }
+        },
+        "rate1_faults": {
+          "parameters": {
+            "CASE": 2,
+            "RATE_44K1": 1,
+            "FIFO_BITS": 9,
+            "DDR_BUDGET": 2048
+          },
+          "returncode": 0,
+          "run_log_sha256": "6bb5d6567a4f0ed8760f8f856d3f9a45c9e0eedbbd5487f120b159bbb976e85d",
+          "metrics": {
+            "case": 2,
+            "rate": 44100,
+            "competition": 0,
+            "objects": 1,
+            "failures": 10,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 5,
+            "reads": 1,
+            "command_wait": 2049,
+            "read_wait": 2049,
+            "cycles": 9440,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate1_cancel_reset": {
+          "parameters": {
+            "CASE": 3,
+            "RATE_44K1": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "5ee53246f4ad9945dc818a4770a0e36adaa9d4b658df7dd559f33756263c6f47",
+          "metrics": {
+            "case": 3,
+            "rate": 44100,
+            "competition": 0,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 4,
+            "priorities": 0,
+            "bytes": 142,
+            "writes": 17,
+            "reads": 10,
+            "command_wait": 1,
+            "read_wait": 10,
+            "cycles": 674,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate1_command_collisions_0": {
+          "parameters": {
+            "CASE": 4,
+            "RATE_44K1": 1,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "67c0dae2fbee51dd01546149c93e24074ee49700035947822d79b8ef33ddb61a",
+          "metrics": {
+            "case": 4,
+            "rate": 44100,
+            "competition": 0,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 5,
+            "priorities": 14,
+            "bytes": 36,
+            "writes": 7,
+            "reads": 3,
+            "command_wait": 1,
+            "read_wait": 10,
+            "cycles": 275,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate1_command_collisions_1": {
+          "parameters": {
+            "CASE": 4,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "5b67974c0c3d268dbb5f9b3c264b4aedb512fefc66d4dbfb20673b6ff94094a2",
+          "metrics": {
+            "case": 4,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 5,
+            "failures": 1,
+            "aborts": 5,
+            "priorities": 14,
+            "bytes": 36,
+            "writes": 7,
+            "reads": 3,
+            "command_wait": 8,
+            "read_wait": 11,
+            "cycles": 314,
+            "scan": 19,
+            "audio": 16,
+            "display": 8,
+            "delay": 10,
+            "cpu": 10,
+            "writer": 13,
+            "music": 7,
+            "slots": 10,
+            "cores": 10,
+            "natives": 10
+          }
+        },
+        "rate1_transport_fault_0": {
+          "parameters": {
+            "CASE": 5,
+            "RATE_44K1": 1,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "cf2bf0f55383c851703342d33b6161d3b74b7998d3eea7698820e5f0b9cbbc94",
+          "metrics": {
+            "case": 5,
+            "rate": 44100,
+            "competition": 0,
+            "objects": 3,
+            "failures": 4,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 10,
+            "reads": 2,
+            "command_wait": 0,
+            "read_wait": 0,
+            "cycles": 382,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate1_transport_default_disabled_0": {
+          "parameters": {
+            "CASE": 6,
+            "RATE_44K1": 1,
+            "COMPETITION": 0,
+            "FIFO_BITS": 9,
+            "FAULT_ENABLE": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "597f1291c931f52e4c4539a87f0845e06a7e223f92b49d1f58694712a883469c",
+          "metrics": {
+            "case": 6,
+            "rate": 44100,
+            "competition": 0,
+            "objects": 1,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 68,
+            "writes": 3,
+            "reads": 3,
+            "command_wait": 1,
+            "read_wait": 10,
+            "cycles": 132,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 0,
+            "writer": 0,
+            "music": 0,
+            "slots": 0,
+            "cores": 0,
+            "natives": 0
+          }
+        },
+        "rate1_transport_fault_1": {
+          "parameters": {
+            "CASE": 5,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "dae94515f2b3d9a4bbac8f822cd47c5645f7d3bb26d781a2814f246fa0be060f",
+          "metrics": {
+            "case": 5,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 3,
+            "failures": 4,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 10,
+            "reads": 2,
+            "command_wait": 0,
+            "read_wait": 0,
+            "cycles": 433,
+            "scan": 23,
+            "audio": 19,
+            "display": 11,
+            "delay": 14,
+            "cpu": 12,
+            "writer": 15,
+            "music": 9,
+            "slots": 12,
+            "cores": 12,
+            "natives": 12
+          }
+        },
+        "rate1_transport_default_disabled_1": {
+          "parameters": {
+            "CASE": 6,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9,
+            "FAULT_ENABLE": 0
+          },
+          "returncode": 0,
+          "run_log_sha256": "2f5a5d52c988e7c1a0d74dbb3a64e937145aef1f8cc549f966574f6236bf8681",
+          "metrics": {
+            "case": 6,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 1,
+            "failures": 0,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 68,
+            "writes": 3,
+            "reads": 3,
+            "command_wait": 11,
+            "read_wait": 11,
+            "cycles": 160,
+            "scan": 9,
+            "audio": 8,
+            "display": 4,
+            "delay": 5,
+            "cpu": 5,
+            "writer": 6,
+            "music": 3,
+            "slots": 6,
+            "cores": 6,
+            "natives": 6
+          }
+        },
+        "rate1_actual_native_transport_fault": {
+          "parameters": {
+            "CASE": 7,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "210348a11d92a44aaecd76d9b4e10407a1763a2c83bc3437e000c4ca47110603",
+          "metrics": {
+            "case": 7,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 1,
+            "failures": 1,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 3,
+            "reads": 0,
+            "command_wait": 0,
+            "read_wait": 0,
+            "cycles": 212,
+            "scan": 5,
+            "audio": 4,
+            "display": 2,
+            "delay": 3,
+            "cpu": 2,
+            "writer": 3,
+            "music": 2,
+            "slots": 3,
+            "cores": 3,
+            "natives": 3
+          }
+        },
+        "rate1_cancel_local_core_stages": {
+          "parameters": {
+            "CASE": 8,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "b9f83b42a53ab06aa0b030603d861580957d5d4cc685633afc11f66a9b24fc93",
+          "metrics": {
+            "case": 8,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 2,
+            "failures": 0,
+            "aborts": 4,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 8,
+            "reads": 2,
+            "command_wait": 5,
+            "read_wait": 11,
+            "cycles": 977,
+            "scan": 0,
+            "audio": 0,
+            "display": 0,
+            "delay": 0,
+            "cpu": 4,
+            "writer": 0,
+            "music": 0,
+            "slots": 10,
+            "cores": 10,
+            "natives": 10
+          }
+        },
+        "rate1_bridge_fault_admission": {
+          "parameters": {
+            "CASE": 9,
+            "RATE_44K1": 1,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 0,
+          "run_log_sha256": "c585a59dd0badffde15fa28d95e05e5451df2c3eabe5ab3cb504efac300a1e2a",
+          "metrics": {
+            "case": 9,
+            "rate": 44100,
+            "competition": 1,
+            "objects": 3,
+            "failures": 3,
+            "aborts": 0,
+            "priorities": 0,
+            "bytes": 0,
+            "writes": 9,
+            "reads": 1,
+            "command_wait": 0,
+            "read_wait": 0,
+            "cycles": 628,
+            "scan": 16,
+            "audio": 13,
+            "display": 7,
+            "delay": 8,
+            "cpu": 7,
+            "writer": 11,
+            "music": 6,
+            "slots": 10,
+            "cores": 10,
+            "natives": 10
+          }
+        },
+        "premature_ready": {
+          "parameters": {
+            "CASE": 0
+          },
+          "returncode": 1,
+          "run_log_sha256": "d327326988142e4381b0fdaab1d47b76ee65a69c651b3b8d8672f3ac4c3b1bea",
+          "metrics": {},
+          "expected_failure": "seal published before real final write acceptance",
+          "rejected": true
+        },
+        "unmasked_tail": {
+          "parameters": {
+            "CASE": 0
+          },
+          "returncode": 1,
+          "run_log_sha256": "1cf3fa68e6741bd7adcf05e90206c5010bbb21862f54b7448e699e52faf669bd",
+          "metrics": {
+            "byte": 2076
+          },
+          "expected_failure": "tail mask overwrote",
+          "rejected": true
+        },
+        "clear_held_reference": {
+          "parameters": {
+            "CASE": 0
+          },
+          "returncode": 1,
+          "run_log_sha256": "30d5c92348ee894c39cfa025a480667e554e38740e48ab79753dcbad6c7f68bb",
+          "metrics": {},
+          "expected_failure": "clear bypassed download reference",
+          "rejected": true
+        },
+        "forget_cancelled_read": {
+          "parameters": {
+            "CASE": 3
+          },
+          "returncode": 1,
+          "run_log_sha256": "ae829f977195af17d6426a7ef2fd9b0742a9704f6d6705e783d36a012002debc",
+          "metrics": {},
+          "expected_failure": "old read escaped generation fence",
+          "rejected": true
+        },
+        "native_word_step": {
+          "parameters": {
+            "CASE": 0
+          },
+          "returncode": 1,
+          "run_log_sha256": "8a161baac7f8c7b33ad9b6d9a55296b8ba8cc0e8a547f9e58ddb8f3797248b50",
+          "metrics": {},
+          "expected_failure": "unaligned native BL8",
+          "rejected": true
+        },
+        "clear_admits_create": {
+          "parameters": {
+            "CASE": 4
+          },
+          "returncode": 1,
+          "run_log_sha256": "d9ca623e17c7d5542a696a8850bf7970654059df0227bcdbcc157f424d0448e1",
+          "metrics": {},
+          "expected_failure": "clear admitted simultaneous create",
+          "rejected": true
+        },
+        "release_admits_reference": {
+          "parameters": {
+            "CASE": 4
+          },
+          "returncode": 1,
+          "run_log_sha256": "4b59c0187ee96d53b862f39d9a529c7ad8b8b19f790300a785d0498b9077b0cf",
+          "metrics": {},
+          "expected_failure": "release admitted new reference",
+          "rejected": true
+        },
+        "fault_admits_download": {
+          "parameters": {
+            "CASE": 4
+          },
+          "returncode": 1,
+          "run_log_sha256": "a16faf5233ec5e6a6dde0b78ed54f308b6326aefd64b3e5de2844d089b513890",
+          "metrics": {},
+          "expected_failure": "fault admitted simultaneous download",
+          "rejected": true
+        },
+        "transport_fault_ignored_in_ready": {
+          "parameters": {
+            "CASE": 5,
+            "FAULT_START_PHASE": 1
+          },
+          "returncode": 1,
+          "run_log_sha256": "fe59e4e0cac4dd0191f4f39ff06ebd78fbadac2d1833c902be64cba2f5fe4863",
+          "metrics": {},
+          "expected_failure": "transport fault left admission/output open",
+          "rejected": true
+        },
+        "terminal_transport_fault_rearms_clear": {
+          "parameters": {
+            "CASE": 5
+          },
+          "returncode": 1,
+          "run_log_sha256": "6a8ddea05c1175ec5a7bacc6f5dca1b235e1905fd3ce5953cd1be49a7445d327",
+          "metrics": {},
+          "expected_failure": "soft reset/clear recovered sticky transport fault",
+          "rejected": true
+        },
+        "local_slot_is_not_native_acceptance": {
+          "parameters": {
+            "CASE": 0,
+            "COMPETITION": 1,
+            "FAULT_ENABLE": 0
+          },
+          "returncode": 1,
+          "run_log_sha256": "d296902d3c889ddfc1a1291059664395c551bed635f93fb72b749bbc4bdc21ee",
+          "metrics": {},
+          "expected_failure": "seal published before real final write acceptance",
+          "rejected": true
+        },
+        "overlap_recording_allocation": {
+          "parameters": {
+            "CASE": 0
+          },
+          "returncode": 1,
+          "run_log_sha256": "0bbe9ab7ad1bf0298e41c35b924e399e8bac1780800f6e42f7eda663ab8c334d",
+          "metrics": {},
+          "expected_failure": "PCM recording allocation overlaps/misaligns",
+          "rejected": true
+        },
+        "bridge_protocol_fault_admits_request": {
+          "parameters": {
+            "CASE": 9,
+            "COMPETITION": 1,
+            "FIFO_BITS": 9
+          },
+          "returncode": 1,
+          "run_log_sha256": "e6ca96072b10191cf956f64649446730b26ffa06abc6d9f8efaf3927db51c1c1",
+          "metrics": {},
+          "expected_failure": "bridge protocol fault admitted same-edge owner request/output",
+          "rejected": true
+        }
+      }
+    }
+  },
+  "profile_checks": {
+    "count": 19,
+    "passed": true,
+    "log": "test_default_native_profile_keeps_locked_ae350_rom (__main__.LegacyPolicy) ... ok\ntest_actual_prepare_records_every_input_and_reference_scope (__main__.PreparedClosure) ... ok\ntest_ae350_evidence_and_installed_rom_are_bound_to_the_candidate (__main__.PreparedClosure) ... ok\ntest_all_snapshot_inputs_are_rechecked_and_identity_bound (__main__.PreparedClosure) ... ok\ntest_changed_compiled_input_and_uncompiled_dependency_are_rejected (__main__.PreparedClosure) ... ok\ntest_media_and_token_storage_owners_are_explicit_profile_inputs (__main__.PreparedClosure) ... ok\ntest_metadata_and_feature_claim_changes_are_rejected (__main__.PreparedClosure) ... ok\ntest_new_compilation_entry_and_unlisted_files_are_rejected (__main__.PreparedClosure) ... ok\ntest_runtime_ble_adaptation_is_recomputed_and_installed (__main__.PreparedClosure) ... ok\ntest_runtime_ble_rom_stays_inside_a_copied_candidate (__main__.PreparedClosure) ... ok\ntest_runtime_replacements_preserve_original_bytes_and_have_one_owner (__main__.PreparedClosure) ... ok\ntest_scan_window_policy_cannot_be_silently_disabled (__main__.PreparedClosure) ... ok\ntest_toolchain_and_generated_rom_change_candidate_identity (__main__.PreparedClosure) ... ok\ntest_added_source_in_a_globbed_directory_is_rejected (__main__.ProfileSources) ... ok\ntest_changed_selected_source_is_rejected_before_preparation (__main__.ProfileSources) ... ok\ntest_configuration_is_explicit_and_other_profiles_are_isolated (__main__.ProfileSources) ... ok\ntest_missing_maintained_ae350_source_cannot_fall_back_to_locked_rom (__main__.ProfileSources) ... ok\ntest_real_lock_and_honest_feature_matrix (__main__.ProfileSources) ... ok\ntest_runtime_configuration_and_revision_cannot_be_changed (__main__.ProfileSources) ... ok\n\n----------------------------------------------------------------------\nRan 19 tests in 6.924s\n\nOK\n"
+  },
+  "source_checks": {
+    "count": 12,
+    "passed": true,
+    "audit_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-owner8-main-runtime-source-audit.json",
+    "audit_sha256": "f8bebf3bda1f80d14345c79b580e8c86bf71d92cb37ac1cad49189684c533b70",
+    "compilation_units": 256,
+    "module_count": 288,
+    "package_count": 2
+  },
+  "accepted_source_checks": {
+    "count": 10,
+    "passed": true
+  },
+  "initial_profile_invocation_error": {
+    "reason": "incorrect non-existent legacy fixture path",
+    "product_failure": false,
+    "resolution": "rerun all 19 using native-default-after-media-v1; all pass"
+  },
+  "production_owner8_selected": false,
+  "final_pcm_cdc_integrated": false,
+  "r00_complete": false,
+  "r01_complete": false,
+  "synthesis_passed": false,
+  "complete_cdc_accepted": false,
+  "physical_gates_passed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}

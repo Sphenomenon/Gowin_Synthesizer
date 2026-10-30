@@ -21,6 +21,11 @@ DEPENDENCIES=(
     'rtl/timing/basic_pitch_ddr_client_queues.sv','rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv',
     'rtl/music/basic_pitch_ddr_map.svh',
 )
+NATIVE=(
+    'rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv',
+    'rtl/memory/workstation_recording_ddr_client_queues.sv',
+    'rtl/memory/workstation_recording_ddr_native_bridge.sv',
+)
 
 def sha(data):return hashlib.sha256(data).hexdigest()
 
@@ -38,7 +43,8 @@ def number(value):
 
 def run(output):
     output.mkdir(parents=True,exist_ok=False)
-    names=[BACKEND,CONTRACT,MAP,FIXTURE,str(Path(__file__).resolve().relative_to(ROOT)),*DEPENDENCIES]
+    names=[BACKEND,CONTRACT,MAP,FIXTURE,str(Path(__file__).resolve().relative_to(ROOT)),*DEPENDENCIES,*NATIVE,
+        'rtl/memory/RECORDING_DDR_NATIVE_CONTRACT.md']
     hashes={name:sha((ROOT/name).read_bytes()) for name in names}
     protected={}
     for name in DEPENDENCIES:
@@ -58,27 +64,29 @@ def run(output):
     if number(new_defines['PRJ1_DDR_RECORDING_BYTE_BASE'])!=0x30500000 or number(new_defines['PRJ1_DDR_RECORDING_BYTE_LAST'])!=0x305fffff:
         raise ValueError('Recording allocation identity mismatch')
     identity=sha(json.dumps(hashes,sort_keys=True).encode())
-    result=dict(schema=1,passed=False,identity='native-pcm-ddr-backend-v2-'+identity[:16],source_set_sha256=identity,
+    result=dict(schema=1,passed=False,identity='native-pcm-ddr-backend-v3-'+identity[:16],source_set_sha256=identity,
         source_sha256=hashes,immutable_reference=REFERENCE,immutable_dependency_sha256=protected,
         previous_map_sha256=sha(original_map.encode()),existing_allocations_unchanged=True,
         allocation=dict(byte_base='0x30500000',byte_last='0x305fffff',native_word_base='0x0c140000',
             granule_bytes=1048576,stage_capacity_bytes=65536,stage_capacity_frames=16384),
         source_policy='new unselected backend; original actual timing queues/core/SDP/guard untouched; unique parent map only adds reservation',
-        arbiter_test_boundary='backend borrows MUSIC owner5 in fixture and receives actual native app_en acceptance; NN absent; no new production owner or default arbitration change',
+        arbiter_test_boundary='unselected native queues/core enabled in fixture; recording owner8 with simultaneous music/NN owner5 and all legacy memory traffic; actual native acceptance bridge; no production/profile integration',
+        owner8_component_tested=True,production_owner8_selected=False,
         command_priority_policy='invalidation blocks all admission; EMPTY clear blocks create; clear blocks reference acquire; release blocks reference acquire/download/output; current held reference is required before download admission',
         profile_selected=False,top_changed=False,ble_wire_changed=False,android_changed=False,
         final_PCM_CDC_integrated=False,actual_owner8_integrated=False,physical_resource_saving_proven=False,
         r00_complete=False,r01_complete=False,synthesis=False,pnr=False,hardware_tested=False,
         sram_programmed=False,flash_written=False,cases={})
 
-    def execute(name,parameters,source=None,fixture=None,map_text=None,expected_failure=None):
+    def execute(name,parameters,source=None,fixture=None,map_text=None,expected_failure=None,bridge_source=None):
         stage=output/name;include=stage/'src/memory';include.mkdir(parents=True)
         (include/'ddr_address_map.vh').write_text(map_text if map_text is not None else (ROOT/MAP).read_text())
         source=source or ROOT/BACKEND;fixture=fixture or ROOT/FIXTURE
         command=['iverilog','-g2012','-Wall','-I',str(stage),'-s','tb_workstation_pcm_ddr_backend',
             '-o',str(stage/'test.vvp')]
         command+=['-Ptb_workstation_pcm_ddr_backend.'+key+'='+str(value) for key,value in parameters.items()]
-        command += [str(source),*[str(ROOT/name) for name in DEPENDENCIES[:-1]],str(fixture)]
+        native_paths={name:(bridge_source if name==NATIVE[2] and bridge_source is not None else ROOT/name) for name in NATIVE}
+        command += [str(source),*[str(ROOT/name) for name in DEPENDENCIES[:-1]],*[str(path) for path in native_paths.values()],str(fixture)]
         compiled=subprocess.run(command,cwd=stage,capture_output=True,text=True,timeout=45)
         compile_log=compiled.stdout+compiled.stderr;(stage/'compile.log').write_text(compile_log)
         if compiled.returncode:raise RuntimeError(name+' compile failed: '+compile_log)
@@ -87,6 +95,7 @@ def run(output):
         log=executed.stdout+executed.stderr;(stage/'run.log').write_text(log)
         case=dict(parameters=parameters,compile_argv=command,run_argv=run_command,
             backend_sha256=sha(source.read_bytes()),fixture_sha256=sha(fixture.read_bytes()),
+            native_inputs_sha256={name:sha(path.read_bytes()) for name,path in native_paths.items()},
             map_sha256=sha((include/'ddr_address_map.vh').read_bytes()),returncode=executed.returncode,
             compile_log_sha256=sha(compile_log.encode()),compile_log=compile_log,
             run_log_sha256=sha(log.encode()),run_log=log,
@@ -111,6 +120,17 @@ def run(output):
             scenarios.append(('rate'+str(rate)+'_cancel_reset',dict(CASE=3,RATE_44K1=rate,FIFO_BITS=9)))
             for competition in (0,1):scenarios.append(('rate'+str(rate)+'_command_collisions_'+str(competition),
                 dict(CASE=4,RATE_44K1=rate,COMPETITION=competition,FIFO_BITS=9)))
+            for competition in (0,1):
+                scenarios.append(('rate'+str(rate)+'_transport_fault_'+str(competition),
+                    dict(CASE=5,RATE_44K1=rate,COMPETITION=competition,FIFO_BITS=9)))
+                scenarios.append(('rate'+str(rate)+'_transport_default_disabled_'+str(competition),
+                    dict(CASE=6,RATE_44K1=rate,COMPETITION=competition,FIFO_BITS=9,FAULT_ENABLE=0)))
+            scenarios.append(('rate'+str(rate)+'_actual_native_transport_fault',
+                dict(CASE=7,RATE_44K1=rate,COMPETITION=1,FIFO_BITS=9)))
+            scenarios.append(('rate'+str(rate)+'_cancel_local_core_stages',
+                dict(CASE=8,RATE_44K1=rate,COMPETITION=1,FIFO_BITS=9)))
+            scenarios.append(('rate'+str(rate)+'_bridge_fault_admission',
+                dict(CASE=9,RATE_44K1=rate,COMPETITION=1,FIFO_BITS=9)))
         with ThreadPoolExecutor(max_workers=3)as pool:
             for name,case in pool.map(lambda args:execute(*args),scenarios):result['cases'][name]=case
         native=(ROOT/BACKEND).read_text()
@@ -142,18 +162,31 @@ def run(output):
                 '!download_active && quiescent_o && !invalidate && !reference_release_i;',
                 '!download_active && quiescent_o && !cancel_i && !soft_reset_i && !reference_release_i;'),
                 'fault admitted simultaneous download'),
+            ('transport_fault_ignored_in_ready',dict(CASE=5,FAULT_START_PHASE=1),replace_once(native,
+                'wire transport_bad=TRANSPORT_FAULT_ENABLE && transport_fault_i;',
+                'wire transport_bad=1\'b0;'),'transport fault left admission/output open'),
+            ('terminal_transport_fault_rearms_clear',dict(CASE=5),replace_once(native,
+                'wire invalidate=cancel_i || soft_reset_i || transport_bad || fault_event;',
+                'wire invalidate=cancel_i || soft_reset_i || fault_event;'),
+                'soft reset/clear recovered sticky transport fault'),
         ]
         for name,parameters,text,expected_failure in negatives:
             source=output/(name+'.sv');source.write_text(text)
             key,case=execute(name,parameters,source=source,expected_failure=expected_failure);result['cases'][key]=case
         fixture=output/'local_slot_acceptance_fixture.sv'
-        fixture.write_text(replace_once((ROOT/FIXTURE).read_text(),'assign request_ready=native_record_accept;',
+        fixture.write_text(replace_once((ROOT/FIXTURE).read_text(),'assign request_ready=record_native_ready;',
             'assign request_ready=request && !submitted && local_ready;'))
-        key,case=execute('local_slot_is_not_native_acceptance',dict(CASE=0,COMPETITION=1),fixture=fixture,
+        key,case=execute('local_slot_is_not_native_acceptance',dict(CASE=0,COMPETITION=1,FAULT_ENABLE=0),fixture=fixture,
             expected_failure='seal published before real final write acceptance');result['cases'][key]=case
         overlapping=replace_once((ROOT/MAP).read_text(),"32'h3050_0000","32'h3040_0000")
         key,case=execute('overlap_recording_allocation',dict(CASE=0),map_text=overlapping,
             expected_failure='PCM recording allocation overlaps/misaligns');result['cases'][key]=case
+        delayed_bridge=output/'delayed_bridge_fault.sv'
+        delayed_bridge.write_text(replace_once((ROOT/NATIVE[2]).read_text(),
+            'assign transport_fault_o=transport_fault_i || protocol_fault_o || protocol_fault_now;',
+            'assign transport_fault_o=transport_fault_i || protocol_fault_o;'))
+        key,case=execute('bridge_protocol_fault_admits_request',dict(CASE=9,COMPETITION=1,FIFO_BITS=9),
+            bridge_source=delayed_bridge,expected_failure='bridge protocol fault admitted same-edge owner request/output');result['cases'][key]=case
         lint=['verilator','--lint-only','--top-module','workstation_pcm_ddr_backend','-I'+str(output/'rate0_bounded_0'),
             str(ROOT/BACKEND),str(ROOT/DEPENDENCIES[0])]
         checked=subprocess.run(lint,capture_output=True,text=True,cwd=output,timeout=45)

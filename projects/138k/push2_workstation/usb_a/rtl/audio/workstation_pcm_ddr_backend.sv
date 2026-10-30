@@ -8,7 +8,8 @@ module workstation_pcm_ddr_backend #(
     parameter integer CAPACITY_FRAMES=16384,
     parameter integer FIFO_ADDRESS_BITS=9,
     parameter integer DDR_BUDGET_CYCLES=10000,
-    parameter integer SOURCE_GAP_CYCLES=400000
+    parameter integer SOURCE_GAP_CYCLES=400000,
+    parameter bit TRANSPORT_FAULT_ENABLE=1'b0
 ) (
     input wire clk_i,rst_ni,
     input wire create_i,
@@ -53,11 +54,12 @@ module workstation_pcm_ddr_backend #(
     output reg [255:0] ddr_data_o,
     output reg [31:0] ddr_mask_o,
     input wire ddr_ready_i,ddr_response_i,
-    input wire [255:0] ddr_read_data_i
+    input wire [255:0] ddr_read_data_i,
+    input wire transport_fault_i
 );
     localparam [3:0] EMPTY=0,CAPTURE=1,SEALING=2,READY=3,ERROR=4,CANCELLED=5,RESET=6;
     localparam [3:0] OVERFLOW=1,GAP=2,CONTEXT=3,SOURCE=4,COMMAND_TIMEOUT=5,
-        READ_TIMEOUT=6,UNEXPECTED_RESPONSE=7,DESCRIPTOR=8;
+        READ_TIMEOUT=6,UNEXPECTED_RESPONSE=7,DESCRIPTOR=8,TRANSPORT=9;
     localparam integer FIFO_DEPTH=1<<FIFO_ADDRESS_BITS;
     initial begin
         if(CAPACITY_FRAMES<1 || CAPACITY_FRAMES*4>`PRJ1_DDR_RECORDING_STAGE_BYTES ||
@@ -102,8 +104,11 @@ module workstation_pcm_ddr_backend #(
     wire fifo_pop=(state_o==CAPTURE || state_o==SEALING) && fifo_count!=0 && pack_frames<8;
     wire overflow=state_o==CAPTURE && pcm_valid_i && !seal_i && fifo_count==(FIFO_ADDRESS_BITS+1)'(FIFO_DEPTH) && !fifo_pop;
     wire bad_response=ddr_response_i && !read_outstanding;
-    wire fault_event=!terminal && (source_bad || context_bad || sequence_bad || overflow || command_expired || read_expired || bad_response);
-    wire invalidate=cancel_i || soft_reset_i || fault_event;
+    wire transport_bad=TRANSPORT_FAULT_ENABLE && transport_fault_i;
+    wire fault_event=!terminal && (transport_bad || source_bad || context_bad || sequence_bad || overflow || command_expired || read_expired || bad_response);
+    // A sticky bus fault blocks reuse even after entering a terminal state.
+    // Only the common controller/ledger/backend reset may rearm this channel.
+    wire invalidate=cancel_i || soft_reset_i || transport_bad || fault_event;
     assign capture_o=rst_ni && state_o==CAPTURE && pcm_valid_i && !seal_i && !invalidate;
     wire pop=fifo_pop && !invalidate;
     wire [FIFO_ADDRESS_BITS-1:0] fifo_next_rd=fifo_rd+FIFO_ADDRESS_BITS'(pop);
@@ -268,7 +273,8 @@ module workstation_pcm_ddr_backend #(
                     else if(cancel_i)state_o<=CANCELLED;
                     else begin
                         state_o<=ERROR;
-                        if(source_bad)failure_code_o<=SOURCE;
+                        if(transport_bad)failure_code_o<=TRANSPORT;
+                        else if(source_bad)failure_code_o<=SOURCE;
                         else if(context_bad)failure_code_o<=CONTEXT;
                         else if(sequence_bad)failure_code_o<=GAP;
                         else if(overflow)failure_code_o<=OVERFLOW;
