@@ -140,6 +140,8 @@
 
 [Chorus 新 VG 的 TF／counter 父级复核](push2_workstation/usb_a/reports/WORKSTATION_CHORUS_TF_COUNTER_VG_PARENT_20261031.md)已重新通过实际映射、17+3 负控和 606 输入 hash；四组 decoder 深度为 4，TF publisher 两级与 81 compute 前沿保持，明细逐对象与 c7 相同。recording 仍仅接受实际存活 affine 子集；不转移旧物理接受，未安装新 SDC，无部署。
 
+[Chorus CDC 父级组合](push2_workstation/usb_a/reports/WORKSTATION_CHORUS_CDC_PARENT_20261031.md)已重新通过六公开审计、14 项／19 实际负控、四份来源各 12 项、profile20（旧 prepare 跳过一项）及 accepted17。新 scope 严格绑定 6b 实际 VG，旧 serial／c7 保持拒绝；fresh prepare 字节与前序一致，不转移综合／物理接受。完整 CDC／reset／物理与硬件仍未完成，未安装新 SDC，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

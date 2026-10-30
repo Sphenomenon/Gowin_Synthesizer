@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "identity": "chorus-prefix-CDC-parent-20261031-v1",
+  "parent_import_commit": "c53471abb52a8c7d92530a55a6f014e9978100c3",
+  "independent_source_commit": "c45e392fb7209707280ae2670439473835b725fa",
+  "scope": "runtime-r00-no-local-panel-ble-ddr-chorus-v1",
+  "actual_candidate": "custom138k-workstation-r00-no-local-panel-v1-6b9610324164f0c9",
+  "actual_VG_sha256": "2cfe81e54a9257d212f4b54cecac56853a50e969dbf532d6857d45ce8fe316c8",
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-prefix-cdc-audit-v1/REVIEW_SEAL.json",
+    "sha256": "8605015403d08b22b1a0d28b3e8db686411589149296f6db3647731d886e37c1"
+  },
+  "independent_files_verified": 101,
+  "root_source_files_verified": 12,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-cdc-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "f9d6b2300599527f5cab3d7444df6315389c011c498f77a643015750cd16fa8a"
+  },
+  "parent_tests": {
+    "new_scope": 14,
+    "actual_mutations": 19,
+    "all_mutations_rejected": true,
+    "enabled_profile": 20,
+    "legacy_prepare_skip": 1,
+    "accepted_sources": 17,
+    "each_fresh_prepare_sources": 12
+  },
+  "public_audits": {
+    "clock": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-cdc-parent-v1/public/clock.json",
+      "sha256": "79996d29457beec816efb213a0ae108b03f06c3402abba4c8e03fab8a8a63a46",
+      "elapsed_seconds": 4.839811000041664
+    },
+    "shared": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-cdc-parent-v1/public/shared.json",
+      "sha256": "991eee1ffb3d155454e4a407dd6a72796a6efaad579483d4497891c8872a6047",
+      "elapsed_seconds": 19.435413957806304
+    },
+    "usb": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-cdc-parent-v1/public/usb.json",
+      "sha256": "c63653202855c397f99ead3c901da32a8200050784b98b2fb166e0a8498f7c0d",
+      "elapsed_seconds": 6.196730958065018
+    },
+    "phase1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-cdc-parent-v1/public/phase1.json",
+      "sha256": "aa52be5a9b88cb45189a6fd99501b6ade63efab8ffa6f7dbc412294041877eb4",
+      "elapsed_seconds": 11.262159500038251
+    },
+    "inventory": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-cdc-parent-v1/public/inventory.json",
+      "sha256": "42a3d38da718a7bafc7379b9638658e1b31aeca3508aa1ba7e1a6fa07498274f",
+      "elapsed_seconds": 6.02898691711016
+    },
+    "pcm": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-cdc-parent-v1/public/pcm.json",
+      "sha256": "173b97b8ce80cb513fabd13c032ca91bbfcb2e2cf23bc25d14e7b3e165f4d187",
+      "elapsed_seconds": 12.110442582983524
+    }
+  },
+  "fresh_prepares": {
+    "enabled": {
+      "candidate_identity": "custom138k-workstation-v1-7bb700193cd38e3c",
+      "staged_files": 576,
+      "enabled_files": 260,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "78e87941da85a2e7a2cb616aa74551d66dda2193762057adf51d8ba7a9b5f8f0",
+      "source_test_log_sha256": "2c9241ab0c0afb85fa431b5f616c2b0851a73f8026af73ace23ad28cafcc6d14",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "no-cnn": {
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-a1b04c71ed0cffeb",
+      "staged_files": 577,
+      "enabled_files": 260,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "c7b1348fa4a70712e277423ef3a5c17af08b4c221b8e129063acd770ca879f74",
+      "source_test_log_sha256": "3948920ad5207e9c0fa7c9ebcd8d1e69b87227ffeada8aa67e6624efeccd1f9b",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "r00": {
+      "candidate_identity": "custom138k-workstation-r00-v1-9a8372c55b9b31a3",
+      "staged_files": 589,
+      "enabled_files": 267,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "c88e6760c1868abb98bd32502a73824e83aa801c642e0ef159777d873330cf9b",
+      "source_test_log_sha256": "c6bb4974c7b0e0047b2b005bbad8a75f274f5b51048f890622856bfaba7a2eb6",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    },
+    "off": {
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-1ae395f109778ee2",
+      "staged_files": 596,
+      "enabled_files": 269,
+      "staged_added": [],
+      "staged_removed": [],
+      "staged_changed": [],
+      "unchanged_compilation_inventory": true,
+      "explicit_chorus_source_policy": true,
+      "prepare_log_sha256": "1989798a8ce3743f65a4497eecdb2fd1a683e9f4adbcff236653261685262e64",
+      "source_test_log_sha256": "39ef3906901defbf2cf694340230b140262d9e9d6b9d92575adb0f1f6715a733",
+      "synthesis_acceptance_transferred": false,
+      "physical_acceptance_transferred": false,
+      "hardware_operated": false
+    }
+  },
+  "old_serial_and_c7_scope_bytes_unchanged": true,
+  "phase1_declared_groups": 13,
+  "raw_declared_groups": 42,
+  "video_alias": "u_video/front_valid_Z",
+  "phase1": {
+    "mapped_FFs": 425,
+    "gray_bits": 42,
+    "payload_bits": 82
+  },
+  "raw": {
+    "ordinary_pairs": 13,
+    "gray_bits": 50,
+    "logical_payload_bits": 528,
+    "mapped_source_FFs": 524
+  },
+  "pcm": {
+    "payload_source_bits": 229,
+    "constraint_revision": "paired-nextq-v2"
+  },
+  "constraints_installed": false,
+  "complete_cdc_accepted": false,
+  "full_reset_accepted": false,
+  "physical_cdc_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}
