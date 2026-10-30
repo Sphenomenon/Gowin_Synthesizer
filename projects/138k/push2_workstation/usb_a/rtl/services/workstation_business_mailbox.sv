@@ -148,18 +148,33 @@ module workstation_business_mailbox #(
             ABANDONED:response_data_o=abandoned_count;LAST_REASON:response_data_o={24'd0,last_reason};
             RESULT_META:response_data_o={result_reason,1'b0,result_length,result_status,result_phase};
             RESULT_OPERATION:response_data_o=result_operation;
+            // Constant word selects preserve the combinational ABI without
+            // synthesizing a wide address-subtract/shift barrel selector.
+            REQUEST_DATA0:response_data_o=slot_payload[0+:32];
+            REQUEST_DATA0+12'd4:response_data_o=slot_payload[32+:32];
+            REQUEST_DATA0+12'd8:response_data_o=slot_payload[64+:32];
+            REQUEST_DATA0+12'd12:response_data_o=slot_payload[96+:32];
+            RESULT_DATA0:response_data_o=result_payload[0+:32];
+            RESULT_DATA0+12'd4:response_data_o=result_payload[32+:32];
+            RESULT_DATA0+12'd8:response_data_o=result_payload[64+:32];
+            RESULT_DATA0+12'd12:response_data_o=result_payload[96+:32];
+            RESULT_DATA0+12'd16:response_data_o=result_payload[128+:32];
+            RESULT_DATA0+12'd20:response_data_o=result_payload[160+:32];
+            RESULT_DATA0+12'd24:response_data_o=result_payload[192+:32];
+            RESULT_DATA0+12'd28:response_data_o=result_payload[224+:32];
+            RESULT_DATA0+12'd32:response_data_o=result_payload[256+:32];
+            RESULT_DATA0+12'd36:response_data_o=result_payload[288+:32];
+            RESULT_DATA0+12'd40:response_data_o=result_payload[320+:32];
+            RESULT_DATA0+12'd44:response_data_o=result_payload[352+:32];
+            RESULT_DATA0+12'd48:response_data_o=result_payload[384+:32];
+            RESULT_DATA0+12'd52:response_data_o=result_payload[416+:32];
+            RESULT_DATA0+12'd56:response_data_o=result_payload[448+:32];
+            RESULT_DATA0+12'd60:response_data_o=result_payload[480+:32];
             LAST_TICKET:response_data_o=last_ticket;LAST_OWNER:response_data_o=last_owner;
             LAST_SESSION:response_data_o=last_session;LAST_BOOT_LOW:response_data_o=last_boot[31:0];
             LAST_BOOT_HIGH:response_data_o=last_boot[63:32];LAST_META:response_data_o=last_meta;
             LAST_OPERATION:response_data_o=last_operation;
-            default:begin
-                if(command_address_i[1:0]!=0)response_error_o=1;
-                else if(command_address_i>=REQUEST_DATA0 && command_address_i<=REQUEST_DATA3)
-                    response_data_o=slot_payload[(command_address_i-REQUEST_DATA0)*8+:32];
-                else if(command_address_i>=RESULT_DATA0 && command_address_i<=RESULT_DATA15)
-                    response_data_o=result_payload[(command_address_i-RESULT_DATA0)*8+:32];
-                else response_error_o=1;
-            end
+            default:response_error_o=1;
         endcase
     end
     integer i;
@@ -232,8 +247,23 @@ module workstation_business_mailbox #(
                         end
                         default:begin end
                     endcase
-                    default:if(command_address_i>=RESULT_DATA0 && command_address_i<=RESULT_DATA15)
-                        staged_payload[(command_address_i-RESULT_DATA0)*8+:32]<=command_data_i;
+                    RESULT_DATA0:staged_payload[0+:32]<=command_data_i;
+                    RESULT_DATA0+12'd4:staged_payload[32+:32]<=command_data_i;
+                    RESULT_DATA0+12'd8:staged_payload[64+:32]<=command_data_i;
+                    RESULT_DATA0+12'd12:staged_payload[96+:32]<=command_data_i;
+                    RESULT_DATA0+12'd16:staged_payload[128+:32]<=command_data_i;
+                    RESULT_DATA0+12'd20:staged_payload[160+:32]<=command_data_i;
+                    RESULT_DATA0+12'd24:staged_payload[192+:32]<=command_data_i;
+                    RESULT_DATA0+12'd28:staged_payload[224+:32]<=command_data_i;
+                    RESULT_DATA0+12'd32:staged_payload[256+:32]<=command_data_i;
+                    RESULT_DATA0+12'd36:staged_payload[288+:32]<=command_data_i;
+                    RESULT_DATA0+12'd40:staged_payload[320+:32]<=command_data_i;
+                    RESULT_DATA0+12'd44:staged_payload[352+:32]<=command_data_i;
+                    RESULT_DATA0+12'd48:staged_payload[384+:32]<=command_data_i;
+                    RESULT_DATA0+12'd52:staged_payload[416+:32]<=command_data_i;
+                    RESULT_DATA0+12'd56:staged_payload[448+:32]<=command_data_i;
+                    RESULT_DATA0+12'd60:staged_payload[480+:32]<=command_data_i;
+                    default:begin end
                 endcase
             end
             if(command_valid_i && command_write_i && command_address_i==COMMAND && response_error_o &&

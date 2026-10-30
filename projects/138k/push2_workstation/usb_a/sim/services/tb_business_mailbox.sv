@@ -28,6 +28,9 @@ module tb_business_mailbox;
         .completion_status_o(status),.completion_reason_o(reason),.completion_length_o(result_length),
         .completion_operation_o(operation),.completion_payload_o(result_payload));
     integer checks=0;reg [31:0] generation,old_generation,old_ticket,word;
+    integer result_bytes,payload_word,payload_byte;
+    reg [127:0] expected_request;
+    reg [511:0] expected_result;
     task check(input condition,input [511:0] message);
         begin checks=checks+1;if(!condition)$fatal(1,"%0s",message);end
     endtask
@@ -124,6 +127,38 @@ module tb_business_mailbox;
         @(negedge clk);bus_valid=1;bus_write=1;address='h0dc;data=5;offer=1;#1;check(!ready,"CLOSE wins new offer");
         @(posedge clk);#1;check(rejected && !admitted,"no request accepted while closing");
         @(negedge clk);bus_valid=0;bus_write=0;offer=0;open_owner();
+        // Exercise every physical payload word and every legal result byte
+        // length, including partial words, zero/full payload and later staging.
+        for(result_bytes=0;result_bytes<=64;result_bytes=result_bytes+1)begin
+            length=result_bytes%17;expected_request=0;
+            for(payload_byte=0;payload_byte<16;payload_byte=payload_byte+1)begin
+                payload[payload_byte*8+:8]=result_bytes*17+payload_byte;
+                if(payload_byte<length)expected_request[payload_byte*8+:8]=payload[payload_byte*8+:8];
+            end
+            send_request(1,0);
+            for(payload_word=0;payload_word<4;payload_word=payload_word+1)begin
+                rd('h040+payload_word*4,word,0);
+                check(word===expected_request[payload_word*32+:32],"all request words retain padded admission snapshot");
+            end
+            claim_current();expected_result=0;
+            for(payload_word=0;payload_word<16;payload_word=payload_word+1)begin
+                word=32'hd1000000^(result_bytes<<16)^(payload_word*32'h00010203);
+                expected_result[payload_word*32+:32]=word;wr('h09c+payload_word*4,word,0);
+            end
+            for(payload_byte=0;payload_byte<64;payload_byte=payload_byte+1)
+                if(payload_byte>=result_bytes)expected_result[payload_byte*8+:8]=0;
+            wr('h094,(result_bytes<<16)|32'h00005a02,0);wr('h098,result_bytes+1,0);wr('h0dc,3,0);
+            check(done && phase==2 && status==8'h5a && result_length==result_bytes,"all legal result lengths complete in one edge");
+            check(result_payload===expected_result,"all completion bytes and zero tail match staged words");
+            for(payload_word=0;payload_word<16;payload_word=payload_word+1)begin
+                rd('h09c+payload_word*4,word,0);
+                check(word===expected_result[payload_word*32+:32],"all result words select the exact byte lane");
+                wr('h09c+payload_word*4,32'hbad00000+payload_word,0);
+                check(result_payload===expected_result,"later staging cannot modify any published result word");
+                rd('h09d+payload_word*4,word,1);wr('h09e+payload_word*4,0,1);
+            end
+            drain();
+        end
         @(negedge clk);dut.next_ticket=32'hffffffff;send_request(1,0);check(ticket==32'hffffffff,"last ticket admitted once");
         @(negedge clk);cancel=1;@(posedge clk);@(negedge clk);cancel=0;drain();send_request(0,13);
         @(negedge clk);dut.rejected_count=32'hffffffff;send_request(0,13);rd('h058,word,0);check(word==32'hffffffff,"counter saturates");
@@ -132,5 +167,5 @@ module tb_business_mailbox;
         wr('h0dc,1,1);
         $display("PASS business mailbox: %0d checks; claim/reset/session/timeout are fenced observation facts",checks);$finish;
     end
-    initial begin #200000;$fatal(1,"mailbox test timeout");end
+    initial begin #500000;$fatal(1,"mailbox test timeout");end
 endmodule
