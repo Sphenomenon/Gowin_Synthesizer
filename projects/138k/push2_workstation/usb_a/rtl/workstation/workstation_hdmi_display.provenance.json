@@ -77,6 +77,10 @@
     {
       "before": ".memory_status_i(memory_status),.raster_busy_i(renderer_busy),.raster_start_i(renderer_start),",
       "after": ".memory_status_i(memory_status),.raster_busy_i(native_raster_lease || renderer_busy || write_req),.raster_start_i(renderer_start),"
+    },
+    {
+      "before": "        .shared_read_enable(shared_read_enable),.shared_read_kind(shared_read_kind),\n        .shared_read_addr(shared_read_addr),.shared_read_data(shared_read_data),",
+      "after": "`ifdef WORKSTATION_RUNTIME_NATIVE\n        .shared_read_enable(1'b0),.shared_read_kind(2'd0),\n        .shared_read_addr(16'd0),.shared_read_data(shared_read_data),\n`else\n        .shared_read_enable(shared_read_enable),.shared_read_kind(shared_read_kind),\n        .shared_read_addr(shared_read_addr),.shared_read_data(shared_read_data),\n`endif"
     }
   ],
   "reverse_changes_reproduce_parent_bytes": true,
@@ -85,7 +89,7 @@
   "runtime_compile_macro": "WORKSTATION_RUNTIME_NATIVE",
   "runtime_metadata_minor": 1,
   "default_runtime_enabled": false,
-  "native_sha256": "7cd1cfa2aff60e2528c2265d0387b168e3de4149ec703877729b40ef354a59fb",
+  "native_sha256": "e159563aa97e4ee74d7ac41e70ba61ebc5a684e8b961aa601c63633e709df2b7",
   "pre_runtime_native_sha256": "607f30dd643b01c4522e5e813745e608749dad141bcc9f09b91876be78749432",
-  "runtime_changes": "Optional atomic completed-frame display pipeline; independent export; raster/P5-commit lease for idle-only cache publication; current-context raster gate; DDR reset/ready observation ports only"
+  "runtime_changes": "Optional atomic completed-frame display pipeline; independent export; raster/P5-commit lease for idle-only cache publication; current-context raster gate; DDR reset/ready observation ports only; unused legacy export read inputs explicitly tied low in native runtime"
 }

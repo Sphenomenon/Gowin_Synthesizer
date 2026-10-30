@@ -204,8 +204,13 @@ module hdmi_display #(
         .active_voices(active_voices),.status_data(status_data),.effect_mask(effect_mask),.effect_order(effect_order),.memory_status(memory_status),
         .underruns(underruns),.frame_count(rendered_frames),
         .shared_start(shared_start),.shared_done(shared_load_done),
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        .shared_read_enable(1'b0),.shared_read_kind(2'd0),
+        .shared_read_addr(16'd0),.shared_read_data(shared_read_data),
+`else
         .shared_read_enable(shared_read_enable),.shared_read_kind(shared_read_kind),
         .shared_read_addr(shared_read_addr),.shared_read_data(shared_read_data),
+`endif
         .shared_analysis_sequence(shared_analysis_sequence),.shared_analysis_skipped(shared_analysis_skipped),
         .shared_analysis_valid(shared_analysis_valid),.shared_image_gain(shared_image_gain),
         .shared_stereo_peaks(shared_stereo_peaks),
