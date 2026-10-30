@@ -1,0 +1,234 @@
+{
+  "schema": 1,
+  "passed": true,
+  "validation_stage": "independent-parent-fixed-revision-offline-audit",
+  "identity": "native-tf-streaming-ingress-audit-v1-1560e63f137e21cc",
+  "all_fixed_inputs_and_budget_derivations_equal_child": true,
+  "raw_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-streaming-ingress-audit-parent-v1/verification.json",
+  "raw_sha256": "7221a8baa988079315576f95521f2d19bdf952537a4dd3c5f10c6817b58a8a02",
+  "result": {
+    "schema": 1,
+    "passed": true,
+    "identity": "native-tf-streaming-ingress-audit-v1-1560e63f137e21cc",
+    "source_set_sha256": "1560e63f137e21cc3898cba09601d0f1d0ae19bd7a1a9e2b12a1cff98647fe7f",
+    "inputs": {
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "fixed_source_sha256": {
+        "rtl/tf_audio/workstation_tf_runtime_service.sv": "debe8ca8c0515ea0ef5b1c7c45c9835373a4720731df0cef97f11daddb467612",
+        "rtl/tf_audio/storage/tf_audio_ddr_path.v": "38a197763e1b567a304ad71576947587d662393626e028f80469e50ac6b66ad0",
+        "rtl/tf_audio/storage/tf_sd_audio_pcm_player.v": "41733261ca506cf3c2f53c23f5b329bd45bbd809a9eb7e888fcaad28eb708f18",
+        "rtl/tf_audio/storage/tang_mp3/sd/tf_sd_file_reader.v": "57ee8873418fe2fa00e40782e1509495c8eb779e11d4175884a79f741fcc0441",
+        "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v": "259bedb80a6a54cf2048ae6cb2f40ec384108ae2743acb49b8acb70abf126504",
+        "rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v": "69af9d24a02f8472b87f114dce58e05d5032daeea21f7aca201ef08ea6ac1cbc",
+        "rtl/tf_audio/storage/tang_mp3/audio/audio_fifo.v": "a1f56463070ab539c2e1cbde9da9dcaad8a06e7edb84d80dc03e9fba3e75c4ed",
+        "rtl/tf_audio/storage/tf_audio_decoder_ip.v": "52cc02883361b0d76a35ee1d9d0a1252ed718daf8c60ed83052afb280bc6960a",
+        "rtl/tf_audio/storage/tf_wav_pcm_decoder.v": "ebf34a426e1bb53e1e002fc78723a8e501b5892c5b061b72fc46a14644c1e68a",
+        "rtl/tf_audio/storage/tf_wav_chunk_parser.v": "c71e9860c5e988d97f1dd9840f643a68f60e6efef74d96b216013e816fb86ee1",
+        "rtl/tf_audio/workstation_tf_frame_bridge.sv": "a879430d988b77dd367cee604a91a68db56c5b603eff07e8cefc80355448cf65",
+        "rtl/audio/workstation_final_pcm_router.sv": "ff2c8612ec9f5ae32f4fb753d1b0cc671a91699ab3a7f55e819d56ce29573d6e",
+        "rtl/workstation/gw138k_push_workstation_top.v": "0237b832b187a4ba681f387f928bbdd6e4c3e8a3057695c2f096b938821b5136",
+        "rtl/workstation/workstation_profile_runtime.sv": "c9e3929533017933c53c53f10898cce7985e14a42d1cc9a2c7a59fcd2dbb44b9",
+        "tools/workstation_runtime_profile.py": "c01a2e41fa75c6e8e9458bcbb25572027a7298d9e109fad0590ad5e126eb62d4",
+        "boards/custom_138k/workstation_profile_v1.json": "cb6a1ed2cf10078afeb08545e329af9b1b772db070382ba5fe7b6ef5db179717",
+        "baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948"
+      },
+      "maintained_test_sha256": {
+        "sim/tf_audio/run_workstation_tf_streaming_ingress_audit.py": "04c065030c2a693d4b3f5f9d7577c40d8d1350223521398f8d7fda4fc9c50155",
+        "sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv": "46d19aa447c90917114d5c3bad82858a1949ec5ae87fe4313c5ef178bfa41996"
+      }
+    },
+    "locked_source_identity": {
+      "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v": {
+        "baseline_entry": "src/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v",
+        "sha256": "259bedb80a6a54cf2048ae6cb2f40ec384108ae2743acb49b8acb70abf126504"
+      },
+      "rtl/tf_audio/storage/tang_mp3/sd/tf_sd_file_reader.v": {
+        "baseline_entry": "src/storage/tang_mp3/sd/tf_sd_file_reader.v",
+        "sha256": "57ee8873418fe2fa00e40782e1509495c8eb779e11d4175884a79f741fcc0441"
+      },
+      "rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v": {
+        "baseline_entry": "src/storage/tang_mp3/vendor/tf_spi_session.v",
+        "sha256": "69af9d24a02f8472b87f114dce58e05d5032daeea21f7aca201ef08ea6ac1cbc"
+      },
+      "rtl/tf_audio/storage/tf_sd_audio_pcm_player.v": {
+        "baseline_entry": "src/storage/tf_sd_audio_pcm_player.v",
+        "sha256": "41733261ca506cf3c2f53c23f5b329bd45bbd809a9eb7e888fcaad28eb708f18"
+      }
+    },
+    "source_policy": "git show of one fixed committed revision; never read live product RTL or staging fallback",
+    "implementation_complete": false,
+    "m03_complete": false,
+    "product_rtl_changed": false,
+    "profile_changed": false,
+    "declared_profile": {
+      "name": "custom138k-workstation-v1",
+      "revision": 4,
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1
+      }
+    },
+    "profile_prepare_executed": false,
+    "profile_input_locks_verified": false,
+    "synthesis": false,
+    "pnr": false,
+    "wire_level_verified": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_written": false,
+    "limits": "Actual historical sector control FSM with initialized SDHC/IDLE deposit and successful SPI-session stub. No card initialization, real SPI session, wire-level timing, SD throughput measurement, or no-DDR product implementation.",
+    "historical_sector": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_tf_sector_duplicate_command_audit",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-streaming-ingress-audit-parent-v1/historical_sector.vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-streaming-ingress-audit-parent-v1/fixed_tf_sd_spi_sector_reader.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-streaming-ingress-audit-parent-v1/historical_sector.vvp"
+      ],
+      "returncode": 0,
+      "source_sha256": "259bedb80a6a54cf2048ae6cb2f40ec384108ae2743acb49b8acb70abf126504",
+      "compile_log_sha256": "992932427e22f8586f452cc773a30a87b46817825756beb34343ea0d5c392287",
+      "compile_log": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module tf_sd_spi_sector_reader declared here: /Users/sphenicidition/.cache/gw138k-task-20261030/tf-streaming-ingress-audit-parent-v1/fixed_tf_sd_spi_sector_reader.v:20\n",
+      "run_log_sha256": "ca2138650754d18a75790425b1ae2bea7b70d920da187fdd40da544d04d76274",
+      "run_log": "PASS tf_sector_duplicate_command_audit: requests=1 starts=3 completed_sessions=2 logical_done=1 raw_bytes=1024 forwarded_bytes=512\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv:45: $finish called at 21960000 (1ps)\n",
+      "metrics": {
+        "requests": 1,
+        "starts": 3,
+        "completed_sessions": 2,
+        "logical_done": 1,
+        "raw_bytes": 1024,
+        "forwarded_bytes": 512
+      }
+    },
+    "forward_both_sessions_negative": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_tf_sector_duplicate_command_audit",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-streaming-ingress-audit-parent-v1/forward_both_sessions_negative.vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-streaming-ingress-audit-parent-v1/forward_both_sessions_negative.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-streaming-ingress-audit-parent-v1/forward_both_sessions_negative.vvp"
+      ],
+      "returncode": 1,
+      "source_sha256": "483c68ee144efbb06fb75d9fdd39e5fdfe10ae78748707e4e621a01a5296701e",
+      "compile_log_sha256": "165deeca2b61045a7f5401be15cb0b8ea335453a3dafd56f905a4039ef620f68",
+      "compile_log": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module tf_sd_spi_sector_reader declared here: /Users/sphenicidition/.cache/gw138k-task-20261030/tf-streaming-ingress-audit-parent-v1/forward_both_sessions_negative.v:20\n",
+      "run_log_sha256": "e8865a18d5ea9284e2a1be006c76e676ad98b7ce1254d6d1d7c981154e76acf5",
+      "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv:41: historical sector audit mismatch requests=1 starts=3 completed=2 done=1 raw=1024 forwarded=1024\n       Time: 21960000  Scope: tb_tf_sector_duplicate_command_audit\n",
+      "metrics": {
+        "requests": 1,
+        "starts": 3,
+        "completed": 2,
+        "done": 1,
+        "raw": 1024,
+        "forwarded": 1024
+      },
+      "rejected": true
+    },
+    "divider_budget": [
+      {
+        "divider": 12,
+        "spi_hz": 1923076.923076923,
+        "raw_Bps": 240384.61538461538,
+        "fixed_40000_token_wait_ms": 166.4,
+        "optimistic_old_transport_payload_Bps": 80232.6747567947,
+        "optimistic_one_sector_cluster_with_FAT_Bps": 40116.33737839735
+      },
+      {
+        "divider": 6,
+        "spi_hz": 3571428.5714285714,
+        "raw_Bps": 446428.5714285714,
+        "fixed_40000_token_wait_ms": 89.6,
+        "optimistic_old_transport_payload_Bps": 149003.5388340473,
+        "optimistic_one_sector_cluster_with_FAT_Bps": 74501.76941702365
+      },
+      {
+        "divider": 3,
+        "spi_hz": 6250000.0,
+        "raw_Bps": 781250.0,
+        "fixed_40000_token_wait_ms": 51.2,
+        "optimistic_old_transport_payload_Bps": 260756.19295958278,
+        "optimistic_one_sector_cluster_with_FAT_Bps": 130378.09647979139
+      },
+      {
+        "divider": 2,
+        "spi_hz": 8333333.333333333,
+        "raw_Bps": 1041666.6666666666,
+        "fixed_40000_token_wait_ms": 38.400000000000006,
+        "optimistic_old_transport_payload_Bps": 347674.92394611036,
+        "optimistic_one_sector_cluster_with_FAT_Bps": 173837.46197305518
+      }
+    ],
+    "throughput_derivation": "R_file <= (f_spi/8)*512/[2*(512+255)]. Ignores commands, response/token waits, CRC and other overhead; one extra FAT sector per one-sector cluster halves this optimistic bound.",
+    "pcm_budget": [
+      {
+        "sample_rate_hz": 48000,
+        "WAV_stereo_input_Bps": {
+          "8": 96000,
+          "16": 192000,
+          "24": 288000,
+          "32": 384000
+        },
+        "decoded_PCM16_Bps": 192000,
+        "proposed_50ms_deficit_frames": 2400,
+        "proposed_50ms_deficit_bytes": 9600,
+        "proposed_3072_frame_prefill_ms": 64.0,
+        "proposed_4096_frame_capacity_ms": 85.33333333333333
+      },
+      {
+        "sample_rate_hz": 44100,
+        "WAV_stereo_input_Bps": {
+          "8": 88200,
+          "16": 176400,
+          "24": 264600,
+          "32": 352800
+        },
+        "decoded_PCM16_Bps": 176400,
+        "proposed_50ms_deficit_frames": 2205,
+        "proposed_50ms_deficit_bytes": 8820,
+        "proposed_3072_frame_prefill_ms": 69.65986394557822,
+        "proposed_4096_frame_capacity_ms": 92.87981859410431
+      }
+    ],
+    "proposed_health_example_not_acceptance": {
+      "max_cumulative_PCM_deficit_ms": 50,
+      "PCM_capacity_frames": 4096,
+      "prefill_frames": 3072,
+      "source_byte_FIFO_bytes": 4096,
+      "FAT_cache_bytes": 512,
+      "shallow_metadata_bridge_frames": 16,
+      "estimated_capacity_BSRAM_blocks": {
+        "old_two_4KiB_byte_FIFOs": 4,
+        "new_4KiB_byte_FIFO_plus_16KiB_PCM_plus_512B_FAT": 11,
+        "net_addition": 7
+      },
+      "assumptions": "50ms is a proposed qualification target for maximum cumulative decoded PCM deficit, with enough sustained recovery throughput. It is not a measured SD guarantee or permission for every sector to stall50ms. BSRAM counts are storage-capacity estimates, not synthesis or physical mapping."
+    },
+    "test_inputs_unchanged_during_run": true
+  }
+}

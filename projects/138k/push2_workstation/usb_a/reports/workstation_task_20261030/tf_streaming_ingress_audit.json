@@ -1,0 +1,439 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "stage": "M03 TF streaming ingress fixed-source audit",
+  "identity": "native-tf-streaming-ingress-audit-v1-1560e63f137e21cc",
+  "source_set_sha256": "1560e63f137e21cc3898cba09601d0f1d0ae19bd7a1a9e2b12a1cff98647fe7f",
+  "passed": true,
+  "source_audit_complete": true,
+  "implementation_complete": false,
+  "m03_complete": false,
+  "fixed_revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+  "fixed_source_references": [
+    {
+      "path": "rtl/workstation/gw138k_push_workstation_top.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 535,
+      "anchor": "    workstation_tf_runtime_service #",
+      "observation": "Native selected owner composes the maintained TF runtime service; runtime branch explicitly supplies FILE_EXT WAV."
+    },
+    {
+      "path": "rtl/tf_audio/workstation_tf_runtime_service.sv",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 236,
+      "anchor": "    tf_audio_ddr_path #",
+      "observation": "Native TF service still instantiates the DDR file path."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tf_audio_ddr_path.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 161,
+      "anchor": "        .SPI_CLK_DIV_FAST (12)",
+      "observation": "Selected file reader hardcodes FAST divider12 at50MHz."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tf_sd_audio_pcm_player.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 131,
+      "anchor": "    localparam [11:0] PREBUFFER_BYTES",
+      "observation": "True no-DDR reference uses2048 byte prefill and4096 byte FIFO."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tang_mp3/audio/audio_fifo.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 26,
+      "anchor": "    assign sector_allow",
+      "observation": "Existing reference reserves640 bytes before accepting one512-byte sector."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 123,
+      "anchor": "                IDLE  :    if(",
+      "observation": "Successful IDLE session changes state to READING; only the subsequent READING session returns done."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 176,
+      "anchor": "        if(cardstate==READING && rvalid_session",
+      "observation": "Only data from READING session is forwarded."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 211,
+      "anchor": "    .stopcycle    ( 8'd255",
+      "observation": "Every SPI session includes255 byte-times of trailing wait."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 159,
+      "anchor": "            end else if(stopc>0)",
+      "observation": "Trailing wait disables sck but still decrements on the SPI byte timebase."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 117,
+      "anchor": "            clkdivreg    <= (clkdiv<2)",
+      "observation": "Effective divider is8bit and clamps values below2; sector FAST0 selects init divider."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 79,
+      "anchor": "localparam [23:0] TOKEN_WAIT_BYTES",
+      "observation": "Token window is40000 SPI bytes, so its wall time decreases when SPI speeds up."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tang_mp3/sd/tf_sd_file_reader.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 544,
+      "anchor": "                                end else begin   // read FAT to get next cluster",
+      "observation": "Playback reads an entire FAT sector on each cluster transition, with no tagged cache."
+    },
+    {
+      "path": "rtl/tf_audio/workstation_tf_runtime_service.sv",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 118,
+      "anchor": "    wire analysis_accept=",
+      "observation": "Native analysis and playback are mutually exclusive; analysis readiness does not qualify playback acceptance."
+    },
+    {
+      "path": "rtl/audio/workstation_final_pcm_router.sv",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 122,
+      "anchor": "                        else if(!tf_valid_i)",
+      "observation": "Missing active TF frame increments TF_UNDERRUN and produces an explicit error zero frame without waiting for the source."
+    },
+    {
+      "path": "rtl/tf_audio/storage/tf_audio_ddr_path.v",
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "line": 460,
+      "anchor": "    assign pcm_end =",
+      "observation": "Old byte/FIFO end condition does not prove final physical I2S frame completion."
+    }
+  ],
+  "findings": [
+    {
+      "id": "actual_ingress",
+      "conclusion": "At the fixed commit the declared profile selects WAV and the native service still routes file bytes through capture4KiB, DDR DMA and playback4KiB before decoding. Direct command-buffer connection is still DDR-backed. The independent tf_sd_audio_pcm_player is a reusable no-DDR structural reference, not a native lifecycle drop-in."
+    },
+    {
+      "id": "source_policy",
+      "conclusion": "The runtime selector replaces tf_audio_ddr_path with the maintained native path. SD/FAT, sector/session transport and direct-player inputs still equal their resource_rework_route0 locked objects. The fixed tree contains later owner changes than some profile locks; this audit does not prepare a candidate or verify its profile lock closure."
+    },
+    {
+      "id": "transport_cost",
+      "conclusion": "The historical control fixture observes2 completed identical CMD17 sessions for1 logical512-byte sector. A third one-source-clock start after req_hold clearing aborts before any data; it is not a third completed sector. Every full session also has255 byte-times trailing wait in the real session source."
+    },
+    {
+      "id": "bandwidth",
+      "conclusion": "The calculated old-transport upper bound ignores additional overhead. Even FAST2 yields at most347675B/s without FAT traffic, below both48k stereo32 input384000B/s and44.1k stereo32 input352800B/s. FAST12 cannot sustain either stereo16 mode; buffering alone cannot fix long-run throughput."
+    },
+    {
+      "id": "token_patience",
+      "conclusion": "The fixed40000-byte token wait represents166.4ms atFAST12,89.6ms atFAST6,51.2ms atFAST3 and38.4ms atFAST2. A speed change must preserve the prior wall-time patience through an explicit native adaptation. The historical approximately100ms rationale is source/history-derived; no SD specification was revalidated in this audit."
+    },
+    {
+      "id": "health_and_failure",
+      "conclusion": "Qualified healthy service must bound long-run throughput and maximum cumulative PCM deficit. The4/5sec reader watchdog is failure/recovery policy, not seamless playback reserve. Proposed50ms deficit and3072-frame prefill are unverified qualification targets. Source exhaustion must remain an observable underrun/failure while the audio schedule continues."
+    },
+    {
+      "id": "EOS",
+      "conclusion": "raw EOF, decoder drain, PCM queue drain, metadata bridge drain and final physical-frame ACK are distinct. Current pcm_end proves none of the final physical completion, so no EOF/drained success may be claimed from this audit."
+    },
+    {
+      "id": "divider_range",
+      "conclusion": "Effective session divider is clamped to2 only when the supplied value is below2; otherwise only low8bits are stored. Parameters above255 truncate and have no range guard, so no supported high-speed behavior is inferred. New native adaptation must reject out-of-range values. FAST0 selects the init divider, FAST1 reaches effective2; legal native candidate range is2..255."
+    }
+  ],
+  "proposed_implementation_stages": [
+    {
+      "stage": "transport owner",
+      "action": "Promote only necessary attributed/GPL native sector-control adaptations; retain original vendor/baseline bytes and before-source provenance. Remove repeated full CMD17 and bound legal trailing clock/CS handling, preserve real request/response semantics and wall-time token patience. Use existing source selection and explicit new candidate."
+    },
+    {
+      "stage": "FAT and speed qualification",
+      "action": "Test native FAST2 effective8.333MHz after transport correction; this is a candidate speed requiring IO/SD board qualification. A512-byte FAT sector cache with tag/valid/reset improves consecutive-chain lookups but cannot guarantee arbitrary fragmentation. Validate continuous-cluster descriptors from FAT; retain one transport owner."
+    },
+    {
+      "stage": "bounded no-DDR ingress",
+      "action": "Add a default-disabled native stream branch around the two byte FIFOs and DDR DMA, reuse the same reader/decoder and checked restart/hold lifecycle, tie file-path DDR request outputs inactive. Use a held-ready skid. Do not create another complete chain or numbered production builder."
+    },
+    {
+      "stage": "PCM prefill and lifecycle",
+      "action": "Place a plain32bit PCM queue after decoder in50MHz source domain; keep metadata/generation CDC shallow. Separate format-ready from prefill-ready and release short files on verified end. Preserve pause exact position, external stop clear/mailbox barriers and discard all old-sector tails after cancellation."
+    },
+    {
+      "stage": "analysis separation",
+      "action": "The current owner selects playback inmode1 and analysis inmode0. Reusing direct ingress for both is the smallest option; analysis may backpressure only its own mode. Retaining DDR-backed analysis would require a larger explicit per-session branch choice after quiesce/restart, never a live combinational FIFO mux."
+    },
+    {
+      "stage": "acceptance",
+      "action": "Record matching-client DDR accepted reads/writes=0, waveform/throughput bounds, both-rate full-format tests, default source preservation, same-configuration synthesis/P&R physical resource/timing/CDC, then separate board acceptance. Keep other DDR clients/address ownership and current candidate rollback; do not reallocate TF banks from this audit."
+    }
+  ],
+  "required_test_matrix": [
+    "actual SPI wire model: initSDHC/SDSC, oneCMD persector, no abort before token wall bound, legal tailclocks, badR1/token/CRC policy explicit",
+    "FAT16/FAT32 fragmented one-sector clusters, FAT-cache hits/misses/tags/reset/reinsert and playlist boundaries",
+    "WAV48/44.1 mono/stereo8/16/24/32, RIFFchunks/oddpad/trailingmetadata/short/truncated/zero-size data",
+    "prefill bothrates, burst/continuous/stochasticbounded stalls and cumulative deficit/recovery, queue full+one inflight sector margin, no silent byte drops",
+    "analysis readyheld arbitrarily long inanalysis mode; playback never waits analysis inplayback mode",
+    "pause retainsexactnextframe; stop/cancel/ratechange/cardloss/clockstops atall phases; oldsector tails discarded and newgeneration never replayed",
+    "healthy-window exhaustion producesexplicit terminal source failure plus accounted zero error frames while sampler/I2Scontinue; no autorestart/repeatlastsample",
+    "naturalEOF shorterthanprefill and trailingmetadata, finaldecodedframe staysunique; physical orderedEOF requires newinternalEOS/last-frame ACK proof, oldpcm_end alone insufficient",
+    "count corresponding playback DDR client accepted reads/writes=0, trace noaddresses; allow otherDDR clients normally",
+    "default/pinned byteidentity, current-source tests, runtimeclear/stop/service/framebridge/finalrouter regressions, negative mutant bypasses FIFOroom/prefill/hold/EOS/generation checks",
+    "sameconfig postroute BSRAM/logic/DSP/timing/CDC and boardSDfault/playback concurrency acceptance separately"
+  ],
+  "verification": {
+    "schema": 1,
+    "passed": true,
+    "identity": "native-tf-streaming-ingress-audit-v1-1560e63f137e21cc",
+    "source_set_sha256": "1560e63f137e21cc3898cba09601d0f1d0ae19bd7a1a9e2b12a1cff98647fe7f",
+    "inputs": {
+      "revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+      "fixed_source_sha256": {
+        "rtl/tf_audio/workstation_tf_runtime_service.sv": "debe8ca8c0515ea0ef5b1c7c45c9835373a4720731df0cef97f11daddb467612",
+        "rtl/tf_audio/storage/tf_audio_ddr_path.v": "38a197763e1b567a304ad71576947587d662393626e028f80469e50ac6b66ad0",
+        "rtl/tf_audio/storage/tf_sd_audio_pcm_player.v": "41733261ca506cf3c2f53c23f5b329bd45bbd809a9eb7e888fcaad28eb708f18",
+        "rtl/tf_audio/storage/tang_mp3/sd/tf_sd_file_reader.v": "57ee8873418fe2fa00e40782e1509495c8eb779e11d4175884a79f741fcc0441",
+        "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v": "259bedb80a6a54cf2048ae6cb2f40ec384108ae2743acb49b8acb70abf126504",
+        "rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v": "69af9d24a02f8472b87f114dce58e05d5032daeea21f7aca201ef08ea6ac1cbc",
+        "rtl/tf_audio/storage/tang_mp3/audio/audio_fifo.v": "a1f56463070ab539c2e1cbde9da9dcaad8a06e7edb84d80dc03e9fba3e75c4ed",
+        "rtl/tf_audio/storage/tf_audio_decoder_ip.v": "52cc02883361b0d76a35ee1d9d0a1252ed718daf8c60ed83052afb280bc6960a",
+        "rtl/tf_audio/storage/tf_wav_pcm_decoder.v": "ebf34a426e1bb53e1e002fc78723a8e501b5892c5b061b72fc46a14644c1e68a",
+        "rtl/tf_audio/storage/tf_wav_chunk_parser.v": "c71e9860c5e988d97f1dd9840f643a68f60e6efef74d96b216013e816fb86ee1",
+        "rtl/tf_audio/workstation_tf_frame_bridge.sv": "a879430d988b77dd367cee604a91a68db56c5b603eff07e8cefc80355448cf65",
+        "rtl/audio/workstation_final_pcm_router.sv": "ff2c8612ec9f5ae32f4fb753d1b0cc671a91699ab3a7f55e819d56ce29573d6e",
+        "rtl/workstation/gw138k_push_workstation_top.v": "0237b832b187a4ba681f387f928bbdd6e4c3e8a3057695c2f096b938821b5136",
+        "rtl/workstation/workstation_profile_runtime.sv": "c9e3929533017933c53c53f10898cce7985e14a42d1cc9a2c7a59fcd2dbb44b9",
+        "tools/workstation_runtime_profile.py": "c01a2e41fa75c6e8e9458bcbb25572027a7298d9e109fad0590ad5e126eb62d4",
+        "boards/custom_138k/workstation_profile_v1.json": "cb6a1ed2cf10078afeb08545e329af9b1b772db070382ba5fe7b6ef5db179717",
+        "baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948"
+      },
+      "maintained_test_sha256": {
+        "sim/tf_audio/run_workstation_tf_streaming_ingress_audit.py": "04c065030c2a693d4b3f5f9d7577c40d8d1350223521398f8d7fda4fc9c50155",
+        "sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv": "46d19aa447c90917114d5c3bad82858a1949ec5ae87fe4313c5ef178bfa41996"
+      }
+    },
+    "locked_source_identity": {
+      "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v": {
+        "baseline_entry": "src/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v",
+        "sha256": "259bedb80a6a54cf2048ae6cb2f40ec384108ae2743acb49b8acb70abf126504"
+      },
+      "rtl/tf_audio/storage/tang_mp3/sd/tf_sd_file_reader.v": {
+        "baseline_entry": "src/storage/tang_mp3/sd/tf_sd_file_reader.v",
+        "sha256": "57ee8873418fe2fa00e40782e1509495c8eb779e11d4175884a79f741fcc0441"
+      },
+      "rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v": {
+        "baseline_entry": "src/storage/tang_mp3/vendor/tf_spi_session.v",
+        "sha256": "69af9d24a02f8472b87f114dce58e05d5032daeea21f7aca201ef08ea6ac1cbc"
+      },
+      "rtl/tf_audio/storage/tf_sd_audio_pcm_player.v": {
+        "baseline_entry": "src/storage/tf_sd_audio_pcm_player.v",
+        "sha256": "41733261ca506cf3c2f53c23f5b329bd45bbd809a9eb7e888fcaad28eb708f18"
+      }
+    },
+    "source_policy": "git show of one fixed committed revision; never read live product RTL or staging fallback",
+    "implementation_complete": false,
+    "m03_complete": false,
+    "product_rtl_changed": false,
+    "profile_changed": false,
+    "declared_profile": {
+      "name": "custom138k-workstation-v1",
+      "revision": 4,
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1
+      }
+    },
+    "profile_prepare_executed": false,
+    "profile_input_locks_verified": false,
+    "synthesis": false,
+    "pnr": false,
+    "wire_level_verified": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_written": false,
+    "limits": "Actual historical sector control FSM with initialized SDHC/IDLE deposit and successful SPI-session stub. No card initialization, real SPI session, wire-level timing, SD throughput measurement, or no-DDR product implementation.",
+    "historical_sector": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_tf_sector_duplicate_command_audit",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-committed-ingress-audit-final-v2/historical_sector.vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-committed-ingress-audit-final-v2/fixed_tf_sd_spi_sector_reader.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-committed-ingress-audit-final-v2/historical_sector.vvp"
+      ],
+      "returncode": 0,
+      "source_sha256": "259bedb80a6a54cf2048ae6cb2f40ec384108ae2743acb49b8acb70abf126504",
+      "compile_log_sha256": "95556ac7ccfc3cdba7175d9638acfaa5188ecdcae7419c4e6e9438444c577b15",
+      "compile_log": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module tf_sd_spi_sector_reader declared here: /Users/sphenicidition/.cache/gw138k-task-20261030/m03-committed-ingress-audit-final-v2/fixed_tf_sd_spi_sector_reader.v:20\n",
+      "run_log_sha256": "ca2138650754d18a75790425b1ae2bea7b70d920da187fdd40da544d04d76274",
+      "run_log": "PASS tf_sector_duplicate_command_audit: requests=1 starts=3 completed_sessions=2 logical_done=1 raw_bytes=1024 forwarded_bytes=512\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv:45: $finish called at 21960000 (1ps)\n",
+      "metrics": {
+        "requests": 1,
+        "starts": 3,
+        "completed_sessions": 2,
+        "logical_done": 1,
+        "raw_bytes": 1024,
+        "forwarded_bytes": 512
+      }
+    },
+    "forward_both_sessions_negative": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_tf_sector_duplicate_command_audit",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-committed-ingress-audit-final-v2/forward_both_sessions_negative.vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-committed-ingress-audit-final-v2/forward_both_sessions_negative.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-committed-ingress-audit-final-v2/forward_both_sessions_negative.vvp"
+      ],
+      "returncode": 1,
+      "source_sha256": "483c68ee144efbb06fb75d9fdd39e5fdfe10ae78748707e4e621a01a5296701e",
+      "compile_log_sha256": "7916b4652ee63a2f8f8fe8357b628dacf0f434d575b39ca345b883eac735d12a",
+      "compile_log": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module tf_sd_spi_sector_reader declared here: /Users/sphenicidition/.cache/gw138k-task-20261030/m03-committed-ingress-audit-final-v2/forward_both_sessions_negative.v:20\n",
+      "run_log_sha256": "e8865a18d5ea9284e2a1be006c76e676ad98b7ce1254d6d1d7c981154e76acf5",
+      "run_log": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv:41: historical sector audit mismatch requests=1 starts=3 completed=2 done=1 raw=1024 forwarded=1024\n       Time: 21960000  Scope: tb_tf_sector_duplicate_command_audit\n",
+      "metrics": {
+        "requests": 1,
+        "starts": 3,
+        "completed": 2,
+        "done": 1,
+        "raw": 1024,
+        "forwarded": 1024
+      },
+      "rejected": true
+    },
+    "divider_budget": [
+      {
+        "divider": 12,
+        "spi_hz": 1923076.923076923,
+        "raw_Bps": 240384.61538461538,
+        "fixed_40000_token_wait_ms": 166.4,
+        "optimistic_old_transport_payload_Bps": 80232.6747567947,
+        "optimistic_one_sector_cluster_with_FAT_Bps": 40116.33737839735
+      },
+      {
+        "divider": 6,
+        "spi_hz": 3571428.5714285714,
+        "raw_Bps": 446428.5714285714,
+        "fixed_40000_token_wait_ms": 89.6,
+        "optimistic_old_transport_payload_Bps": 149003.5388340473,
+        "optimistic_one_sector_cluster_with_FAT_Bps": 74501.76941702365
+      },
+      {
+        "divider": 3,
+        "spi_hz": 6250000.0,
+        "raw_Bps": 781250.0,
+        "fixed_40000_token_wait_ms": 51.2,
+        "optimistic_old_transport_payload_Bps": 260756.19295958278,
+        "optimistic_one_sector_cluster_with_FAT_Bps": 130378.09647979139
+      },
+      {
+        "divider": 2,
+        "spi_hz": 8333333.333333333,
+        "raw_Bps": 1041666.6666666666,
+        "fixed_40000_token_wait_ms": 38.400000000000006,
+        "optimistic_old_transport_payload_Bps": 347674.92394611036,
+        "optimistic_one_sector_cluster_with_FAT_Bps": 173837.46197305518
+      }
+    ],
+    "throughput_derivation": "R_file <= (f_spi/8)*512/[2*(512+255)]. Ignores commands, response/token waits, CRC and other overhead; one extra FAT sector per one-sector cluster halves this optimistic bound.",
+    "pcm_budget": [
+      {
+        "sample_rate_hz": 48000,
+        "WAV_stereo_input_Bps": {
+          "8": 96000,
+          "16": 192000,
+          "24": 288000,
+          "32": 384000
+        },
+        "decoded_PCM16_Bps": 192000,
+        "proposed_50ms_deficit_frames": 2400,
+        "proposed_50ms_deficit_bytes": 9600,
+        "proposed_3072_frame_prefill_ms": 64.0,
+        "proposed_4096_frame_capacity_ms": 85.33333333333333
+      },
+      {
+        "sample_rate_hz": 44100,
+        "WAV_stereo_input_Bps": {
+          "8": 88200,
+          "16": 176400,
+          "24": 264600,
+          "32": 352800
+        },
+        "decoded_PCM16_Bps": 176400,
+        "proposed_50ms_deficit_frames": 2205,
+        "proposed_50ms_deficit_bytes": 8820,
+        "proposed_3072_frame_prefill_ms": 69.65986394557822,
+        "proposed_4096_frame_capacity_ms": 92.87981859410431
+      }
+    ],
+    "proposed_health_example_not_acceptance": {
+      "max_cumulative_PCM_deficit_ms": 50,
+      "PCM_capacity_frames": 4096,
+      "prefill_frames": 3072,
+      "source_byte_FIFO_bytes": 4096,
+      "FAT_cache_bytes": 512,
+      "shallow_metadata_bridge_frames": 16,
+      "estimated_capacity_BSRAM_blocks": {
+        "old_two_4KiB_byte_FIFOs": 4,
+        "new_4KiB_byte_FIFO_plus_16KiB_PCM_plus_512B_FAT": 11,
+        "net_addition": 7
+      },
+      "assumptions": "50ms is a proposed qualification target for maximum cumulative decoded PCM deficit, with enough sustained recovery throughput. It is not a measured SD guarantee or permission for every sector to stall50ms. BSRAM counts are storage-capacity estimates, not synthesis or physical mapping."
+    },
+    "test_inputs_unchanged_during_run": true
+  },
+  "validation_scope": "A fixed-source control-FSM observation and source-grounded analytic budgeting. Not a line-level SPI model, hardware throughput benchmark, completed ingress migration or full-profile preparation.",
+  "additional_checks": {
+    "git_diff_check": true
+  },
+  "changed_files": [
+    "reports/WORKSTATION_TF_STREAMING_INGRESS_AUDIT_20261030.md",
+    "reports/workstation_task_20261030/tf_streaming_ingress_audit.json",
+    "sim/tf_audio/run_workstation_tf_streaming_ingress_audit.py",
+    "sim/tf_audio/tf_sector_duplicate_command_audit_tb.sv"
+  ],
+  "rollback": "Remove/revert these four new audit artifacts. No product or deployment state is changed.",
+  "product_rtl_changed": false,
+  "tools_changed": false,
+  "profile_changed": false,
+  "vendor_changed": false,
+  "baseline_changed": false,
+  "task_completion_boxes_changed": false,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false
+}
