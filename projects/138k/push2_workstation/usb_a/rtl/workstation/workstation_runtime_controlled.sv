@@ -392,9 +392,12 @@ module workstation_runtime_media_stop_bridge #(parameter bit ENABLE=0) (
     assign ready_o=ENABLE && state==IDLE && !hold_50 && !tf_stop_pending_i;
     // Assertion fences new starts immediately. Release waits for two compute
     // edges and is allowed only after the actual backend transaction ends.
-    always @(posedge compute_clk_i or posedge hold_50 or negedge reset_ni)
-        if(!reset_ni)hold_compute<=0;
-        else if(hold_50)hold_compute<=2'b11;
+    // Both safety conditions asynchronously assert the same preset value.
+    // A single async preset maps to real FFs; mixed async clear/preset made
+    // the Gowin mapper infer combinational feedback for these two bits.
+    wire hold_assert=!reset_ni || hold_50;
+    always @(posedge compute_clk_i or posedge hold_assert)
+        if(hold_assert)hold_compute<=2'b11;
         else hold_compute<={hold_compute[0],1'b0};
     always @(posedge compute_clk_i or negedge reset_ni)begin
         if(!reset_ni)begin

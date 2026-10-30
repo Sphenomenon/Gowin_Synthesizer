@@ -1,0 +1,523 @@
+{
+  "schema": 1,
+  "passed": true,
+  "hardware_tested": false,
+  "identity": "runtime-media-hold-fence-offline-v1-66606b57d7d90cc3",
+  "source_set_sha256": "66606b57d7d90cc3d0b8978d84fd0dbdf65f3cac1ba258f3f1eb86fa66bd4266",
+  "input_sha256": {
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv": "a78a29f86e2af6b8a74cef5dd9662d73a6afa5506861e63cb5ab29c9c323ae5b",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv": "f42e7b1aa5b5a753fe88a7f56ab286be4148a854cf2906f137714c4984ea0124",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_hold_fence.sv": "327f1f1dedf5f78c74d916018491005cf4e449396d5ff8409821d826c7ca6c94",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/run_media_hold_fence.py": "5f2ce56fb0c3872b7a0d0883aef9af68a0cda177f8922da5ddf1a74591c12e47",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/MEDIA_STOP_POLICY.md": "6bb99231256b6a5f3f54d74c328b59af26207b44ed236765f8e3a71b0b1d79b5",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5"
+  },
+  "validation_stage": "unit-CDC-fence-with-actual-REC-owner-and-isolated-Gowin-mapping",
+  "limits": "Local completion, TF pending/terminal and physical quiet are unit fixtures. Actual REC_ENABLE owner is real. Attached joint tests cover real backends separately. Mapped simulation uses zero-delay official functional primitives; no recovery/removal, metastability, routed timing/CDC/PLL, full-board synthesis or hardware acceptance.",
+  "tools": {
+    "verilator": {
+      "argv": [
+        "verilator",
+        "--version"
+      ],
+      "returncode": 0,
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/verilator-version.log",
+      "log_sha256": "4fd077848d26dfc3fa7d96d3dbdd46597ce5db86191bba6fce3c9abc3bb6603e"
+    },
+    "iverilog": {
+      "argv": [
+        "iverilog",
+        "-V"
+      ],
+      "returncode": 0,
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/iverilog-version.log",
+      "log_sha256": "ca23091099109d3237b10e6336dbb5b325dda94c3c52cd4111d924bd60227f5d"
+    },
+    "vvp": {
+      "argv": [
+        "vvp",
+        "-V"
+      ],
+      "returncode": 0,
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/vvp-version.log",
+      "log_sha256": "60359f21f36fe47d30e34fd6e00eb24640751c19101c3cc107d31be3e56d46d6"
+    }
+  },
+  "positive": {
+    "compile": {
+      "argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_workstation_media_hold_fence",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/positive/simulation.vvp",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_hold_fence.sv"
+      ],
+      "returncode": 0,
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/positive/compile.log",
+      "log_sha256": "723bf80b8d3e2cd4ff5c716367c38e667ee5b2daa1a947e44ed96e9fe196363c"
+    },
+    "run": {
+      "argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/positive/simulation.vvp"
+      ],
+      "returncode": 0,
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/positive/run.log",
+      "log_sha256": "05f2b72bfc0663e961e6d1128651e0262367951024ea8babac39af358548a16b"
+    },
+    "metrics": {
+      "cases": 8,
+      "compute_edges": 39,
+      "local_requests": 3,
+      "tf_requests": 2,
+      "done": 1,
+      "failed": 1
+    }
+  },
+  "lint": {
+    "argv": [
+      "verilator",
+      "--lint-only",
+      "--timing",
+      "-Wno-fatal",
+      "--top-module",
+      "tb_workstation_media_hold_fence",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_hold_fence.sv"
+    ],
+    "returncode": 0,
+    "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/lint.log",
+    "log_sha256": "11c2f7788e5051629044b4a459c6475938d75203145734fc0c3318bb9df8c007",
+    "warnings": []
+  },
+  "negative_controls": [
+    {
+      "name": "synchronous-only-hold",
+      "mutant_sha256": "a67f2339ebf0af241b886fc6f16286e07ad09b7ec6c05b8f86fceb77d20b8a06",
+      "compile": {
+        "argv": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_media_hold_fence",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/synchronous-only-hold/simulation.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/synchronous-only-hold.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_hold_fence.sv"
+        ],
+        "returncode": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/synchronous-only-hold/compile.log",
+        "log_sha256": "723bf80b8d3e2cd4ff5c716367c38e667ee5b2daa1a947e44ed96e9fe196363c"
+      },
+      "run": {
+        "argv": [
+          "vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/synchronous-only-hold/simulation.vvp"
+        ],
+        "returncode": 1,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/synchronous-only-hold/run.log",
+        "log_sha256": "01979074208116ef23d34e7a5480c724980075c91200d4c4cea72835c50e9cd8"
+      },
+      "expected_failure": "asynchronous media hold waited for a stopped compute clock",
+      "rejected": true
+    },
+    {
+      "name": "one-edge-release",
+      "mutant_sha256": "751cba97801f9f91b0c64a956cf48d1c23480179aa4ad39be565beeede9664c3",
+      "compile": {
+        "argv": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_media_hold_fence",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/one-edge-release/simulation.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/one-edge-release.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_hold_fence.sv"
+        ],
+        "returncode": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/one-edge-release/compile.log",
+        "log_sha256": "723bf80b8d3e2cd4ff5c716367c38e667ee5b2daa1a947e44ed96e9fe196363c"
+      },
+      "run": {
+        "argv": [
+          "vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/one-edge-release/simulation.vvp"
+        ],
+        "returncode": 1,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/one-edge-release/run.log",
+        "log_sha256": "be23362d87dc960ce44176a252fdfebb2620f572b2200e1dd96367ac86c13487"
+      },
+      "expected_failure": "hold release used fewer than two compute edges",
+      "rejected": true
+    },
+    {
+      "name": "cpu-reset-in-hold",
+      "mutant_sha256": "085a4564cf25d52f30cb83ad5c8d0557d99620a25d95cd4c35b8a8f76c126d79",
+      "compile": {
+        "argv": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_media_hold_fence",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/cpu-reset-in-hold/simulation.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/cpu-reset-in-hold.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_hold_fence.sv"
+        ],
+        "returncode": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/cpu-reset-in-hold/compile.log",
+        "log_sha256": "723bf80b8d3e2cd4ff5c716367c38e667ee5b2daa1a947e44ed96e9fe196363c"
+      },
+      "run": {
+        "argv": [
+          "vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/cpu-reset-in-hold/simulation.vvp"
+        ],
+        "returncode": 1,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/cpu-reset-in-hold/run.log",
+        "log_sha256": "ded1a16bfc13d404601226e77cc4aa9c857e75776e635c6e94c1ad4c723018d6"
+      },
+      "expected_failure": "CPU-only reset changed idle hold",
+      "rejected": true
+    },
+    {
+      "name": "old-mixed-clear-preset",
+      "mutant_sha256": "73cae668f9b547dd3ab2ae236fb003f58114911e608663cafd962da69b74d051",
+      "compile": {
+        "argv": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_media_hold_fence",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/old-mixed-clear-preset/simulation.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/old-mixed-clear-preset.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_hold_fence.sv"
+        ],
+        "returncode": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/old-mixed-clear-preset/compile.log",
+        "log_sha256": "723bf80b8d3e2cd4ff5c716367c38e667ee5b2daa1a947e44ed96e9fe196363c"
+      },
+      "run": {
+        "argv": [
+          "vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/old-mixed-clear-preset/simulation.vvp"
+        ],
+        "returncode": 1,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/old-mixed-clear-preset/run.log",
+        "log_sha256": "9da448afb6079dd7036eaf2bf2f61bda8fe7a0eab24377cb81cd24498e2456bc"
+      },
+      "expected_failure": "common reset did not asynchronously assert conservative hold",
+      "rejected": true
+    }
+  ],
+  "bridge_sha256": {
+    "original": "1a4a185af2fb420b23d538098c24fc0805c3080b8c87de75d6dfa6149761b976",
+    "fixed": "7c16ef56ae24812b81f6119d6dfb9823d85343c504be6d454f21390dd670bdf0"
+  },
+  "gowin": {
+    "original": {
+      "directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_original",
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_original/bridge.sv": "1a4a185af2fb420b23d538098c24fc0805c3080b8c87de75d6dfa6149761b976",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_original/probe.sv": "c0d0ae149e8862a10d6126326c50c3a949a89610b7563797c914d42956256355",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_original/run.tcl": "575d6fe55b68f7db1180c107920b0bb10d19e97fd2661abceaea42ae2c8cfd33",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_original/impl/gwsynthesis/workstation_media_hold_probe.log": "d06bac9e87301d956e77c3ec9b00f2ad94d1ff2a645de4df1b2ef27c420ad290",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_original/impl/gwsynthesis/workstation_media_hold_probe.vg": "969944112285db6e32714041dc86dd7aa9990cd6cd621f519f1c0c6bdf2daaea",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_original/run.log": "43c75c8982b479b55c87531d316a15d5a42948402b29233c754e007ff8378a0e"
+      },
+      "synthesis_log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_original/impl/gwsynthesis/workstation_media_hold_probe.log",
+      "synthesis_log_sha256": "d06bac9e87301d956e77c3ec9b00f2ad94d1ff2a645de4df1b2ef27c420ad290",
+      "netlist": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_original/impl/gwsynthesis/workstation_media_hold_probe.vg",
+      "netlist_sha256": "969944112285db6e32714041dc86dd7aa9990cd6cd621f519f1c0c6bdf2daaea",
+      "launch_log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_original/run.log",
+      "launch_log_sha256": "43c75c8982b479b55c87531d316a15d5a42948402b29233c754e007ff8378a0e",
+      "ag_notices": {
+        "AG0100": 6,
+        "AG0101": 2
+      },
+      "lut_cycles": [
+        [
+          "bridge/hold_compute_0_s9"
+        ],
+        [
+          "bridge/hold_compute_1_s8"
+        ]
+      ],
+      "hold_feedback": [
+        {
+          "path": "bridge/hold_compute_1_s8",
+          "cell": {
+            "kind": "LUT3",
+            "ports": {
+              "F": "hold_compute[1]",
+              "I0": "hold_compute[1]",
+              "I1": "hold_50",
+              "I2": "reset_ni_d"
+            },
+            "parameters": {
+              "INIT": "8'hE0"
+            }
+          },
+          "self_feedback_pin": "I0",
+          "reset_high_hold_low": "F=I0"
+        },
+        {
+          "path": "bridge/hold_compute_0_s9",
+          "cell": {
+            "kind": "LUT3",
+            "ports": {
+              "F": "hold_compute_Z[0]",
+              "I0": "hold_compute_Z[0]",
+              "I1": "hold_50",
+              "I2": "reset_ni_d"
+            },
+            "parameters": {
+              "INIT": "8'hE0"
+            }
+          },
+          "self_feedback_pin": "I0",
+          "reset_high_hold_low": "F=I0"
+        }
+      ]
+    },
+    "fixed": {
+      "directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_proposal",
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_proposal/bridge.sv": "7c16ef56ae24812b81f6119d6dfb9823d85343c504be6d454f21390dd670bdf0",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_proposal/probe.sv": "c0d0ae149e8862a10d6126326c50c3a949a89610b7563797c914d42956256355",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_proposal/run.tcl": "0aa3d200ce3cc5f08e6bc6683dd5bba3cf5301bdf200d9cd4a47cfe292bee586",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_proposal/impl/gwsynthesis/workstation_media_hold_probe.log": "67b540413daf6e127473cb6e2cb29dca942cfd5dac1a2f45b0736de4b34d712e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_proposal/impl/gwsynthesis/workstation_media_hold_probe.vg": "bbe65b421f296334878e8c7c1e65d57452e2dceda27564b435e5e094329ab166",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_proposal/run.log": "dfec684847c93827e168c1625f78652b8ca2208998afd66b43b9e9057917ea73"
+      },
+      "synthesis_log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_proposal/impl/gwsynthesis/workstation_media_hold_probe.log",
+      "synthesis_log_sha256": "67b540413daf6e127473cb6e2cb29dca942cfd5dac1a2f45b0736de4b34d712e",
+      "netlist": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_proposal/impl/gwsynthesis/workstation_media_hold_probe.vg",
+      "netlist_sha256": "bbe65b421f296334878e8c7c1e65d57452e2dceda27564b435e5e094329ab166",
+      "launch_log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-proposal-v1/micro4_proposal/run.log",
+      "launch_log_sha256": "dfec684847c93827e168c1625f78652b8ca2208998afd66b43b9e9057917ea73",
+      "ag_notices": {
+        "AG0100": 0,
+        "AG0101": 0
+      },
+      "lut_cycles": [],
+      "hold_endpoints": {
+        "bridge/hold_compute_0_s0": {
+          "kind": "DFFPE",
+          "pins": {
+            "Q": "bridge/hold_compute[0]",
+            "D": "bridge/GND",
+            "CLK": "compute_clk_i",
+            "PRESET": "bridge/hold_assert",
+            "CE": "bridge/VCC"
+          }
+        },
+        "bridge/hold_compute_1_s0": {
+          "kind": "DFFPE",
+          "pins": {
+            "Q": "local_hold_o_d",
+            "D": "bridge/hold_compute[0]",
+            "CLK": "compute_clk_i",
+            "PRESET": "bridge/hold_assert",
+            "CE": "bridge/VCC"
+          }
+        }
+      },
+      "preset_driver": "bridge/hold_assert_s0",
+      "preset_truth_table": [
+        {
+          "reset_n": 0,
+          "hold_50": 0,
+          "preset": 1
+        },
+        {
+          "reset_n": 0,
+          "hold_50": 1,
+          "preset": 1
+        },
+        {
+          "reset_n": 1,
+          "hold_50": 0,
+          "preset": 0
+        },
+        {
+          "reset_n": 1,
+          "hold_50": 1,
+          "preset": 1
+        }
+      ],
+      "official_dffpe_init": 1,
+      "primitive_library_sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5"
+    },
+    "reused_existing_evidence": true,
+    "tool_executable": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+    "tool_sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+    "tool_version": "GowinSynthesis V1.9.12",
+    "device": "GW5AST-LV138PG484AC2/I1",
+    "device_version": "C",
+    "evidence_unchanged_during_audit": true
+  },
+  "mapped_positive": {
+    "mapped_sha256": "a4b10428c879300992be083cbf0d85672d9ff8a30dd35dce09967d3944308247",
+    "compile": {
+      "argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_workstation_media_hold_fence",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/mapped-positive/simulation.vvp",
+        "-DMEDIA_HOLD_MAPPED",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/mapped-fixed.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_hold_fence.sv",
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v"
+      ],
+      "returncode": 0,
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/mapped-positive/compile.log",
+      "log_sha256": "723bf80b8d3e2cd4ff5c716367c38e667ee5b2daa1a947e44ed96e9fe196363c"
+    },
+    "run": {
+      "argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/mapped-positive/simulation.vvp"
+      ],
+      "returncode": 0,
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/mapped-positive/run.log",
+      "log_sha256": "05f2b72bfc0663e961e6d1128651e0262367951024ea8babac39af358548a16b"
+    },
+    "metrics": {
+      "cases": 8,
+      "compute_edges": 39,
+      "local_requests": 3,
+      "tf_requests": 2,
+      "done": 1,
+      "failed": 1
+    }
+  },
+  "mapped_negative": {
+    "mapped_sha256": "8d93a2976fa89e045d053529f8eaa0a66173f7f15c72e028c55452dfce92f24a",
+    "compile": {
+      "argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_workstation_media_hold_fence",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/mapped-one-edge-release/simulation.vvp",
+        "-DMEDIA_HOLD_MAPPED",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/mapped-one-edge.v",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_hold_fence.sv",
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v"
+      ],
+      "returncode": 0,
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/mapped-one-edge-release/compile.log",
+      "log_sha256": "723bf80b8d3e2cd4ff5c716367c38e667ee5b2daa1a947e44ed96e9fe196363c"
+    },
+    "run": {
+      "argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/mapped-one-edge-release/simulation.vvp"
+      ],
+      "returncode": 1,
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-media-hold-fence-parent-final/mapped-one-edge-release/run.log",
+      "log_sha256": "be23362d87dc960ce44176a252fdfebb2620f572b2200e1dd96367ac86c13487"
+    },
+    "expected_failure": "hold release used fewer than two compute edges",
+    "rejected": true
+  },
+  "attached_regressions": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/real-runtime-TF-BLE-media-parent-holdfix-v1/verification.json",
+      "sha256": "41fb8917f312366b2592f7c722eea2ff5f71be62f6029474ba1899b3ff2776c9",
+      "identity": "real-runtime-TF-BLE-media-offline-v1-8b930fa01216e91d",
+      "input_count": 136,
+      "all_inputs_rehashed": true,
+      "runtime_sha256": "a78a29f86e2af6b8a74cef5dd9662d73a6afa5506861e63cb5ab29c9c323ae5b",
+      "metrics": {
+        "checks": 10,
+        "core_requests": 5,
+        "stop_requests": 8,
+        "tf_done": 6,
+        "tf_failed": 2,
+        "physical": 140,
+        "observed": 140,
+        "tf_packets": 48,
+        "tf_physical": 45,
+        "mailbox_wait": 12900,
+        "drain_wait": 30,
+        "tf_reads": 925,
+        "audio_reads": 5,
+        "writes": 1509,
+        "ble_captures": 35,
+        "ble_eligible": 35,
+        "ble_done": 7,
+        "ble_failed": 1,
+        "dual_wait": 1
+      },
+      "negative_controls": 6,
+      "hardware_tested": false
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-controlled-holdfix-parent-default-v1/verification.json",
+      "sha256": "b7170ffede09fe195311f17b0821deec5d41f7590223a4d0504626782252ef62",
+      "identity": "native-runtime-controlled-offline-v2-nonzero-64c63ae311fb249d",
+      "input_count": 83,
+      "all_inputs_rehashed": true,
+      "runtime_sha256": "a78a29f86e2af6b8a74cef5dd9662d73a6afa5506861e63cb5ab29c9c323ae5b",
+      "metrics": {
+        "physical_frames": 1078,
+        "observed_frames": 1078,
+        "observed48": 361,
+        "observed44": 717,
+        "nonzero": 977,
+        "display_frames": 1077,
+        "fft_bins": 384,
+        "fft48": 128,
+        "fft44": 256,
+        "fft_nonzero": 382,
+        "apb": 1077,
+        "usb": 33,
+        "cpu": 28,
+        "policies": 3,
+        "writes": 267,
+        "reads": 4,
+        "fft_discards": 6,
+        "switches": 2,
+        "health_reset_checks": 1,
+        "display_observation_fault_checks": 1,
+        "display_effect_tuple_checks": 1077,
+        "display_effect_changes48": 4,
+        "display_effect_changes44": 3,
+        "source_50_checks": 1219374,
+        "source_compute_checks": 1851077,
+        "switch_source_changes": 5,
+        "reason_source_changes": 16,
+        "switch_launch_delay_checks": 2,
+        "pc_drop_carry_checks": 1,
+        "tf_reason_handoffs": 1,
+        "score_switch_rejects": 1,
+        "switch_async_assert_checks": 2,
+        "switch_release_checks": 1818138
+      },
+      "negative_controls": 0,
+      "hardware_tested": false
+    }
+  ],
+  "inputs_unchanged_during_run": true
+}
