@@ -60,6 +60,8 @@
 
 [no-CNN FA 首轮物理失败](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_FA_RESOURCE_FAILURE_20261030.md)已封存，556 条未布通网络；实际 CLS 61,804／69,120、物理 BSRAM 272／340，PRIMARY／LW 仍各8／8。父级重验18项输入、六输出及日志，无位流或完整 routed STA，未操作板卡。继续独立算法试验，完整门禁及任务方框保持未完成。
 
+[no-CNN 实际 shared CDC 数字复验](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_INSTALLED_SHARED_CDC_REVIEW_20261030.md)在父级独立副本逐字复现，14个网表负控全拒绝；实际88行覆盖43首级位／182 Gray位／1,308保持数据位。generic检查器的旧scope拒绝单独保留；13个DDR内部query、110复位pin语义、状态脉冲、保持协议及物理CDC均未接受，cache审查尚未成为维护工具，无部署。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
