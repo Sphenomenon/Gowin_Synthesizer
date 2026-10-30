@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "policy": "narrow_exact_rate_delay_v1",
+  "source": "rtl/audio/workstation_runtime_chorus_effect.sv",
+  "original_provenance": "rtl/audio/workstation_runtime_chorus_effect.provenance.json",
+  "original_provenance_sha256": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
+  "parent_source_sha256": "8a6fa6ea9158cc983c9d48cc9e92f01da2e10950214d3d2bb2cb7bb0b67b4cf4",
+  "current_source_sha256": "f0d9200a165d40f0b44fc69c3aaae3a8a75ed14420dd91d11ff49136f22e0176",
+  "base_commit": "a6a110a042d36125fa2eb2d6f92eaf7d391c3e12",
+  "exact_changes": [
+    {
+      "before": "  function automatic [15:0] rate_delay(input [15:0] triangle_value,input logic rate44);\n    logic [47:0] physical,scaled;\n    begin\n      // Scale the full instantaneous Q16 physical delay before one rounding.\n      //48k keeps the original truncation, including its exact tap sequence.\n      if(rate44)begin\n        physical=(48'(CHORUS_BASE)<<16)+48'(triangle_value)*48'(CHORUS_DEPTH);\n        scaled=(physical*48'd147+48'd5242880)/48'd10485760;\n        rate_delay=scaled[15:0];\n      end else rate_delay=16'(CHORUS_BASE+((triangle_value*CHORUS_DEPTH)>>16));\n    end\n  endfunction",
+      "after": "  function automatic [15:0] rate_delay(input [15:0] triangle_value,input logic rate44);\n    logic [24:0] triangle_times441;\n    logic [27:0] rounded_numerator44;\n    logic [11:0] scaled_high44;\n    logic [17:0] triangle_times3;\n    begin\n      // Exact fixed-baseline arithmetic; no register or sample latency added.\n      //44.1k: cancel32 from the original nearest-rounded rational, then\n      //floor(N/(5*65536)) == floor(floor(N/65536)/5) for nonnegative N.\n      //N<=173571655 fits28 bits; only its high12 bits reach the divide by5.\n      if(rate44)begin\n        triangle_times441=25'(triangle_value)*25'd441;\n        rounded_numerator44=28'd144670720+{3'd0,triangle_times441};\n        scaled_high44=rounded_numerator44[27:16];\n        rate_delay=16'(scaled_high44/12'd5);\n      end else begin\n        //48k: floor(96*t/65536) == floor(3*t/2048), preserving every tap.\n        triangle_times3=18'(triangle_value)*18'd3;\n        rate_delay=16'd480+16'(triangle_times3>>11);\n      end\n    end\n  endfunction",
+      "count": 1
+    }
+  ],
+  "source_policy": "Native dual-rate runtime profiles only; exact combinational rate_delay narrowing; no generated production RTL.",
+  "mathematical_contract": {
+    "triangle_domain": [
+      0,
+      65535
+    ],
+    "rates_hz": [
+      48000,
+      44100
+    ],
+    "original44": "floor(((480*65536+96*t)*147+5242880)/10485760)",
+    "narrowed44": "floor(floor((144670720+441*t)/65536)/5)",
+    "original48": "480+floor(96*t/65536)",
+    "narrowed48": "480+floor(3*t/2048)",
+    "added_clock_latency": 0
+  },
+  "physical_timing_verified": false,
+  "hardware_acceptance_inherited": false
+}

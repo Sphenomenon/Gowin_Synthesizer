@@ -56,15 +56,25 @@ module workstation_runtime_chorus_effect #(
     end
   endfunction
   function automatic [15:0] rate_delay(input [15:0] triangle_value,input logic rate44);
-    logic [47:0] physical,scaled;
+    logic [24:0] triangle_times441;
+    logic [27:0] rounded_numerator44;
+    logic [11:0] scaled_high44;
+    logic [17:0] triangle_times3;
     begin
-      // Scale the full instantaneous Q16 physical delay before one rounding.
-      //48k keeps the original truncation, including its exact tap sequence.
+      // Exact fixed-baseline arithmetic; no register or sample latency added.
+      //44.1k: cancel32 from the original nearest-rounded rational, then
+      //floor(N/(5*65536)) == floor(floor(N/65536)/5) for nonnegative N.
+      //N<=173571655 fits28 bits; only its high12 bits reach the divide by5.
       if(rate44)begin
-        physical=(48'(CHORUS_BASE)<<16)+48'(triangle_value)*48'(CHORUS_DEPTH);
-        scaled=(physical*48'd147+48'd5242880)/48'd10485760;
-        rate_delay=scaled[15:0];
-      end else rate_delay=16'(CHORUS_BASE+((triangle_value*CHORUS_DEPTH)>>16));
+        triangle_times441=25'(triangle_value)*25'd441;
+        rounded_numerator44=28'd144670720+{3'd0,triangle_times441};
+        scaled_high44=rounded_numerator44[27:16];
+        rate_delay=16'(scaled_high44/12'd5);
+      end else begin
+        //48k: floor(96*t/65536) == floor(3*t/2048), preserving every tap.
+        triangle_times3=18'(triangle_value)*18'd3;
+        rate_delay=16'd480+16'(triangle_times3>>11);
+      end
     end
   endfunction
   always_ff @(posedge clk_i or negedge rst_ni)begin

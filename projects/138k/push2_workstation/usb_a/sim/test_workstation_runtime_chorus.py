@@ -12,6 +12,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from workstation_baselines import load_baseline
+from workstation_chorus_provenance import verify, NARROW_POLICY, ADAPTATION
 
 
 def digest(data):
@@ -27,17 +28,9 @@ class RuntimeChorusTest(unittest.TestCase):
         cls.stage = Path(cls.temp.name)
         native = ROOT / 'rtl/audio/workstation_runtime_chorus_effect.sv'
         provenance_path = native.with_suffix('.provenance.json')
-        provenance = json.loads(provenance_path.read_text())
-        payload = native.read_bytes()
-        if digest(payload) != provenance['native_sha256']:
-            raise ValueError('native Chorus identity drifted')
-        restored = payload.decode()
-        for edit in reversed(provenance['forward_edits']):
-            if restored.count(edit['after']) != edit['count']:
-                raise ValueError('reverse Chorus provenance drifted')
-            restored = restored.replace(edit['after'], edit['before'])
-        if digest(restored.encode()) != provenance['prepared_sha256']:
-            raise ValueError('native Chorus cannot reverse to prepared bytes')
+        adaptation_path = ROOT / ADAPTATION
+        restored, cls.provenance_evidence = verify(native.read_bytes(), provenance_path.read_bytes(),
+                                                  NARROW_POLICY, adaptation_path.read_bytes())
         baseline = load_baseline(ROOT, 'resource_rework_route0')
         effects = baseline.read_bytes('legacy/rtl/audio/stereo_effects.sv').decode()
         start = effects.index('module serial_chorus_effect')
@@ -53,7 +46,7 @@ class RuntimeChorusTest(unittest.TestCase):
         math_path.write_bytes(math_pkg)
         tb = ROOT / 'sim/audio/tb_workstation_runtime_chorus.sv'
         cls.source_hashes = {str(p.relative_to(ROOT)): digest(p.read_bytes())
-                             for p in (native, provenance_path, tb, Path(__file__))}
+                             for p in (native, provenance_path, adaptation_path, ROOT / 'tools/workstation_chorus_provenance.py', tb, Path(__file__))}
         command = ['verilator', '--binary', '--timing', '-j', '2', '-Wno-fatal',
                    '--top-module', 'tb_workstation_runtime_chorus',
                    '--Mdir', str(cls.stage / 'obj'), '-o', 'runtime_chorus',

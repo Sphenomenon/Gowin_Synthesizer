@@ -13,6 +13,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from workstation_baselines import load_baseline
+from workstation_chorus_provenance import verify as verify_chorus, NARROW_POLICY, ADAPTATION
 from test_workstation_runtime_reverb import FixedRoom, sat, signed
 
 
@@ -161,15 +162,22 @@ class RuntimeEffectsTest(unittest.TestCase):
             provenance_path = native.with_suffix('.provenance.json')
             provenance = json.loads(provenance_path.read_text())
             payload = native.read_bytes()
-            if digest(payload) != provenance['native_sha256']:
-                raise ValueError('native identity drifted: ' + name)
-            old = payload.decode()
-            for edit in reversed(provenance['forward_edits']):
-                if old.count(edit['after']) != edit['count']:
-                    raise ValueError('reverse provenance drifted: ' + name)
-                old = old.replace(edit['after'], edit['before'])
-            if digest(old.encode()) != provenance['prepared_sha256']:
-                raise ValueError('prepared identity drifted: ' + name)
+            if name == 'rtl/audio/workstation_runtime_chorus_effect.sv':
+                adaptation_path = ROOT / ADAPTATION
+                old, cls.chorus_provenance_evidence = verify_chorus(
+                    payload, provenance_path.read_bytes(), NARROW_POLICY, adaptation_path.read_bytes())
+                for path in (adaptation_path, ROOT / 'tools/workstation_chorus_provenance.py'):
+                    cls.source_hashes[str(path.relative_to(ROOT))] = digest(path.read_bytes())
+            else:
+                if digest(payload) != provenance['native_sha256']:
+                    raise ValueError('native identity drifted: ' + name)
+                old = payload.decode()
+                for edit in reversed(provenance['forward_edits']):
+                    if old.count(edit['after']) != edit['count']:
+                        raise ValueError('reverse provenance drifted: ' + name)
+                    old = old.replace(edit['after'], edit['before'])
+                if digest(old.encode()) != provenance['prepared_sha256']:
+                    raise ValueError('prepared identity drifted: ' + name)
             restored[name] = old
             sources.append(native)
             for path in (native, provenance_path):
