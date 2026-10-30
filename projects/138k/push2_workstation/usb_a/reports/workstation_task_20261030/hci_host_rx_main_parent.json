@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "source_commit": "753f4e9",
+  "author_commit": "4a7600cb0f83ab3a5c275d789f44cda5e086db93",
+  "author_seal_sha256": "9f7b4aad3d1a98af004cd5942e0e059fd2397e3c5fff22f8b1d1682faa023d5d",
+  "source_sha256": {
+    "sim/run_workstation_hci_owner.py": "4534bba07d3e30d5f695c2b6e2d92eb42d8f357fbd930c2b6a009c8290e68f4c",
+    "rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": "a3d51a2d2c07cb16cfe221a67f1bca82bf3bf5952afa27576ca005358b34f67b",
+    "rtl/bluetooth/hci_owner/workstation_hci_event_decoder.sv": "8b9ae8ec9a9fab9fc2e2313e3199a60b1e1ec3fe957d4497237b28be8dac7792",
+    "sim/tb_workstation_hci_flow_owner.sv": "c1b0059562c3b298f0985e08301144d65579fae9d86140093e632a7e60f67d3c",
+    "sim/tb_workstation_hci_event_decoder.sv": "5b1e1414462d6e6ac4b0319f81e5a68d2fc52e1b5deeb9d1d144b009cc854e1d",
+    "rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv": "82ff377a3516d3be912cb98eedf5ef904d3720a69aedf673644bc63ede6a9105",
+    "sim/tb_workstation_hci_host_rx_owner.sv": "bec13bbfc03e357216716f3634fb73289f0200ac0b1b99c3f42713490ccb274f",
+    "sim/run_workstation_hci_host_rx_owner.py": "b371c76144cd3ad1b96afe6f51cc556086d4ee9aa89915d49417bf640c861874",
+    "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_HCI_HOST_RX_SOURCE_20261031.md": "fb514d8905861dd2182e5c7a7a0125646b6c6c3670e2a5ff642f7d7d11493f70",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/README.md": "4720820294f9a30504fcc76fae95516cbdbb2c1cc159a997e8e2da105a4f815a",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": "a3d51a2d2c07cb16cfe221a67f1bca82bf3bf5952afa27576ca005358b34f67b",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv": "82ff377a3516d3be912cb98eedf5ef904d3720a69aedf673644bc63ede6a9105",
+    "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_host_rx_owner.py": "b371c76144cd3ad1b96afe6f51cc556086d4ee9aa89915d49417bf640c861874",
+    "projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_flow_owner.sv": "c1b0059562c3b298f0985e08301144d65579fae9d86140093e632a7e60f67d3c",
+    "projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_host_rx_owner.sv": "bec13bbfc03e357216716f3634fb73289f0200ac0b1b99c3f42713490ccb274f"
+  },
+  "actual_checks": 160228,
+  "scenarios": 12,
+  "random_steps": 10000,
+  "mutants_rejected": 13,
+  "invalid_parameters_rejected": 8,
+  "prior_shared_owner": {
+    "flow_checks": 116780,
+    "event_checks": 9174,
+    "mutants": 11
+  },
+  "accepted_tests": 17,
+  "strict_lint": "passed_Wall_no_waivers",
+  "independent_review": "Root read exact RX source and flow-only LE observation diff: budget conservation, immutable offer, disconnect/quarantine, release token and fault priorities; no blocker found within unselected component contract.",
+  "selected_in_production": false,
+  "synthesis_passed": false,
+  "hardware_tested": false,
+  "flash_written": false,
+  "limitations": [
+    "no payload RAM/router/bootstrap/native integration",
+    "physical release requires actual reader completion",
+    "inflight 0x0c35/disconnect controller behavior untested",
+    "no complete BLE/A2DP/audio/hardware acceptance"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/hci-host-rx-main-parent-v2",
+  "seal_sha256": "538718d7f7777082d86757e8643c46c1333416f514a2fc13f723e94ef9040c20",
+  "external_files": 157
+}
