@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "passed": true,
+  "source_set_sha256": "1803f046faab7e052ac11c8bcf7c10c96d239a8a8869dbc7c2dec51cdcdc6e85",
+  "source_sha256": {
+    "rtl/memory/workstation_ble_raw_ddr_store.sv": "2c6ebca8e1766c2cd891c690c2717393064e289bfdb45a521e3baea51737cb9e",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+    "sim/memory/tb_ble_raw_ddr_store.sv": "33563a304029ecf305decebe555153f8a3cb368b750252def8344133ebc17fb0",
+    "rtl/memory/WORKSTATION_BLE_RAW_DDR_STORE.md": "c28b9824cf673f437f3f3010e0cbfb9a2ff3c699202c55b1023239aca09ff8e4",
+    "sim/test_ble_raw_ddr_store.py": "b2357eeef9b8142d624c527e833414a6982fba3b87f5465467d6121c05740e20"
+  },
+  "scope": "raw storage component; BLE business owner and owner8 integration are external",
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "source_inputs_unchanged_during_run": true,
+  "full_log_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-ddr-store-v1-sealed/verification.json",
+  "full_log_evidence_sha256": "d69200acd3b26255401366de71354fbb708f750116b99107c724af4bea0b2397",
+  "cases": {
+    "fifo8_async_memory": {
+      "parameters": {
+        "FIFO_BITS": 8,
+        "MEM_HALF": 7
+      },
+      "returncode": 0,
+      "metrics": {
+        "checks": 94609,
+        "full_frames": 16384,
+        "max_fetch_bytes": 8112
+      },
+      "compiled_store_sha256": "2c6ebca8e1766c2cd891c690c2717393064e289bfdb45a521e3baea51737cb9e",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log_sha256": "fc95c91837cf1b64a9c09b4eb16914deb715ea2904fa97519a9dd83fe8e9b593"
+    },
+    "fifo3_100mhz_memory": {
+      "parameters": {
+        "FIFO_BITS": 3,
+        "MEM_HALF": 5
+      },
+      "returncode": 0,
+      "metrics": {
+        "checks": 93114,
+        "full_frames": 16384,
+        "max_fetch_bytes": 8112
+      },
+      "compiled_store_sha256": "2c6ebca8e1766c2cd891c690c2717393064e289bfdb45a521e3baea51737cb9e",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log_sha256": "37089ce337ca621a023fc8a515d57220dfa0efbeba95a33a9133cd8116bafb9e"
+    },
+    "start_rejects_new_epoch_fifo": {
+      "parameters": {},
+      "returncode": 1,
+      "expected_failure": "real transport drain",
+      "rejected": true,
+      "compiled_store_sha256": "3dad5c7a4d4362f2e32edfe3572c3c8c0ce7adab1d3d5e1ade9ab37671508120",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log_sha256": "fdfb1cff6dbc4acbbc298606392023996e04a27ef82b7933e691cb624cf4b214"
+    },
+    "same_edge_response_rejected": {
+      "parameters": {},
+      "returncode": 1,
+      "expected_failure": "complete fetch publishes cache",
+      "rejected": true,
+      "compiled_store_sha256": "49461c37aa2442dd7128025eb5e3d0cd64423077dfa315aba68e23c3956a0970",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log_sha256": "a4bdaceeac7da6af76b23b8f8a27b3a7cb0995e78ebca80ad21522c76db968f0"
+    },
+    "slot_mistaken_for_native_accept": {
+      "parameters": {},
+      "returncode": 1,
+      "expected_failure": "ordered close admission",
+      "rejected": true,
+      "compiled_store_sha256": "912eba1f62b5572cbc9ce87fe73c5c25c6b14e3ebc909330cec685ff35f9b78f",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log_sha256": "38eeeb0f58495927d6cf6af6b512a760594440e4ad503394e4e8ec0e61587fec"
+    },
+    "partial_mask_lost": {
+      "parameters": {},
+      "returncode": 1,
+      "expected_failure": "last partial byte mask preserves unused data",
+      "rejected": true,
+      "compiled_store_sha256": "572164c6c9126f5b8f1c86e99f5c0bb9ac97bdb8d9ade0bfc57fa9dd8fa3e931",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log_sha256": "4f965a1e653904c85f0fffb83a7b5d725d2e60bc50beb4aa1cb39003d591b472"
+    }
+  },
+  "lint": {
+    "returncode": 0,
+    "log_sha256": "e5e60b99a0753c961ab863fa6026d4a89f7e5890ee9e359f4a3bf70d70ca48d0",
+    "reviewed_warnings": [
+      [
+        "UNUSEDPARAM",
+        "rtl/music/music_async_fifo.sv",
+        "Parameter is not used: 'RAM_STYLE'"
+      ],
+      [
+        "UNUSEDSIGNAL",
+        "rtl/music/music_async_fifo.sv",
+        "Signal is not used: 'full'"
+      ],
+      [
+        "SYNCASYNCNET",
+        "rtl/memory/workstation_ble_raw_ddr_store.sv",
+        "Signal flopped as both synchronous and async: 'workstation_ble_raw_ddr_store.control_release'"
+      ],
+      [
+        "SYNCASYNCNET",
+        "rtl/memory/workstation_ble_raw_ddr_store.sv",
+        "Signal flopped as both synchronous and async: 'workstation_ble_raw_ddr_store.memory_release'"
+      ]
+    ]
+  }
+}

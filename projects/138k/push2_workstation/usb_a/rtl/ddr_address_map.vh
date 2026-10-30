@@ -127,4 +127,19 @@
 `define PRJ1_DDR_RECORDING_APP_BASE      29'h0c14_0000
 `define PRJ1_DDR_RECORDING_STAGE_BYTES   32'h0001_0000
 
+// Disjoint owner8 suballocations inside the recording granule. CPU R00 keeps
+// its original first 64 KiB. Opt-in BLE raw storage uses the next 64 KiB and
+// retains the existing 16384-frame format-1 capacity and business owner.
+// The remainder is reserved; these declarations alone select no new client.
+`define PRJ1_DDR_RECORDING_CPU_BYTE_BASE 32'h3050_0000
+`define PRJ1_DDR_RECORDING_CPU_BYTE_LAST 32'h3050_ffff
+`define PRJ1_DDR_RECORDING_CPU_BYTES     32'h0001_0000
+`define PRJ1_DDR_RECORDING_CPU_APP_BASE  29'h0c14_0000
+`define PRJ1_DDR_RECORDING_CPU_APP_LAST  29'h0c14_3fff
+`define PRJ1_DDR_RECORDING_BLE_BYTE_BASE 32'h3051_0000
+`define PRJ1_DDR_RECORDING_BLE_BYTE_LAST 32'h3051_ffff
+`define PRJ1_DDR_RECORDING_BLE_BYTES     32'h0001_0000
+`define PRJ1_DDR_RECORDING_BLE_APP_BASE  29'h0c14_4000
+`define PRJ1_DDR_RECORDING_BLE_APP_LAST  29'h0c14_7fff
+
 `endif

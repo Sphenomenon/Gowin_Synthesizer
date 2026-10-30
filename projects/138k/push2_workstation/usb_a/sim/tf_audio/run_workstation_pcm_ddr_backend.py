@@ -56,6 +56,8 @@ def run(output):
     if any(new_defines.get(key)!=value for key,value in old_defines.items()):raise ValueError('Existing DDR map allocation drift')
     allowed={'PRJ1_DDR_BP_HISTORY_BYTE_BASE','PRJ1_DDR_BP_HISTORY_BYTE_LAST','PRJ1_DDR_RECORDING_BYTE_BASE',
         'PRJ1_DDR_RECORDING_BYTE_LAST','PRJ1_DDR_RECORDING_BYTES','PRJ1_DDR_RECORDING_APP_BASE','PRJ1_DDR_RECORDING_STAGE_BYTES'}
+    allowed.update('PRJ1_DDR_RECORDING_'+owner+'_'+field for owner in ('CPU','BLE')
+        for field in ('BYTE_BASE','BYTE_LAST','BYTES','APP_BASE','APP_LAST'))
     if set(new_defines)-set(old_defines)!=allowed:raise ValueError('Unexpected DDR map additions')
     bp=defines((ROOT/DEPENDENCIES[-1]).read_text())
     bp_history=[number(bp[name]) for name in ('BP_DDR_NOTE_BYTE_BASE','BP_DDR_ONSET_BYTE_BASE','BP_DDR_ANALYSIS_BYTE_BASE','BP_DDR_BPTR_BYTE_BASE')]
@@ -63,13 +65,28 @@ def run(output):
         raise ValueError('Basic Pitch history occupancy changed')
     if number(new_defines['PRJ1_DDR_RECORDING_BYTE_BASE'])!=0x30500000 or number(new_defines['PRJ1_DDR_RECORDING_BYTE_LAST'])!=0x305fffff:
         raise ValueError('Recording allocation identity mismatch')
+    subregions={}
+    for owner in ('CPU','BLE'):
+        region={field.lower():number(new_defines['PRJ1_DDR_RECORDING_'+owner+'_'+field])
+            for field in ('BYTE_BASE','BYTE_LAST','BYTES','APP_BASE','APP_LAST')}
+        if (region['byte_base']%32 or region['byte_last']-region['byte_base']+1!=region['bytes'] or
+            region['bytes']!=65536 or region['app_base']!=region['byte_base']//4 or
+            region['app_last']!=region['byte_last']//4 or
+            not 0x30500000<=region['byte_base']<=region['byte_last']<=0x305fffff):
+            raise ValueError('Recording suballocation geometry mismatch: '+owner)
+        subregions[owner]=region
+    if (subregions['CPU']['byte_base']!=0x30500000 or
+        subregions['CPU']['app_base']!=number(new_defines['PRJ1_DDR_RECORDING_APP_BASE']) or
+        subregions['CPU']['bytes']!=number(new_defines['PRJ1_DDR_RECORDING_STAGE_BYTES']) or
+        subregions['CPU']['byte_last']>=subregions['BLE']['byte_base']):
+        raise ValueError('Recording suballocation identity/overlap mismatch')
     identity=sha(json.dumps(hashes,sort_keys=True).encode())
-    result=dict(schema=1,passed=False,identity='native-pcm-ddr-backend-v3-'+identity[:16],source_set_sha256=identity,
+    result=dict(schema=1,passed=False,identity='native-pcm-ddr-backend-v4-'+identity[:16],source_set_sha256=identity,
         source_sha256=hashes,immutable_reference=REFERENCE,immutable_dependency_sha256=protected,
         previous_map_sha256=sha(original_map.encode()),existing_allocations_unchanged=True,
         allocation=dict(byte_base='0x30500000',byte_last='0x305fffff',native_word_base='0x0c140000',
-            granule_bytes=1048576,stage_capacity_bytes=65536,stage_capacity_frames=16384),
-        source_policy='new unselected backend; original actual timing queues/core/SDP/guard untouched; unique parent map only adds reservation',
+            granule_bytes=1048576,stage_capacity_bytes=65536,stage_capacity_frames=16384,subregions=subregions),
+        source_policy='maintained CPU backend explicitly bound to original suballocation; BLE raw suballocation reserved; original actual timing queues/core/SDP/guard untouched',
         arbiter_test_boundary='unselected native queues/core enabled in fixture; recording owner8 with simultaneous music/NN owner5 and all legacy memory traffic; actual native acceptance bridge; no production/profile integration',
         owner8_component_tested=True,production_owner8_selected=False,
         command_priority_policy='invalidation blocks all admission; EMPTY clear blocks create; clear blocks reference acquire; release blocks reference acquire/download/output; current held reference is required before download admission',
@@ -178,9 +195,21 @@ def run(output):
             'assign request_ready=request && !submitted && local_ready;'))
         key,case=execute('local_slot_is_not_native_acceptance',dict(CASE=0,COMPETITION=1,FAULT_ENABLE=0),fixture=fixture,
             expected_failure='seal published before real final write acceptance');result['cases'][key]=case
-        overlapping=replace_once((ROOT/MAP).read_text(),"32'h3050_0000","32'h3040_0000")
+        overlapping=replace_once((ROOT/MAP).read_text(),
+            "`define PRJ1_DDR_RECORDING_BYTE_BASE     32'h3050_0000",
+            "`define PRJ1_DDR_RECORDING_BYTE_BASE     32'h3040_0000")
         key,case=execute('overlap_recording_allocation',dict(CASE=0),map_text=overlapping,
             expected_failure='PCM recording allocation overlaps/misaligns');result['cases'][key]=case
+        for label,old,new in (
+            ('cpu_suballocation_units',"`define PRJ1_DDR_RECORDING_CPU_APP_BASE  29'h0c14_0000",
+                                       "`define PRJ1_DDR_RECORDING_CPU_APP_BASE  29'h0c14_0008"),
+            ('cpu_suballocation_end',"`define PRJ1_DDR_RECORDING_CPU_BYTE_LAST 32'h3050_ffff",
+                                     "`define PRJ1_DDR_RECORDING_CPU_BYTE_LAST 32'h3050_ffdf"),
+            ('ble_suballocation_overlap',"`define PRJ1_DDR_RECORDING_BLE_BYTE_BASE 32'h3051_0000",
+                                         "`define PRJ1_DDR_RECORDING_BLE_BYTE_BASE 32'h3050_0000")):
+            invalid=replace_once((ROOT/MAP).read_text(),old,new)
+            key,case=execute(label,dict(CASE=0),map_text=invalid,
+                expected_failure='PCM recording allocation overlaps/misaligns');result['cases'][key]=case
         delayed_bridge=output/'delayed_bridge_fault.sv'
         delayed_bridge.write_text(replace_once((ROOT/NATIVE[2]).read_text(),
             'assign transport_fault_o=transport_fault_i || protocol_fault_o || protocol_fault_now;',

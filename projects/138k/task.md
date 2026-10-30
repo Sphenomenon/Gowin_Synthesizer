@@ -102,6 +102,8 @@
 
 [AE350 ROM 预算实验](push2_workstation/usb_a/reports/WORKSTATION_AE350_ROM_BUDGET_20261030.md)保留原 18 个 public 服务及实际 pump 子集入口；默认 recording-API 为 14,140 bytes，Os＋LTO 实验子集为 15,220／16,384 bytes，ELF／BIN 重复一致及三组 sanitizer 回归通过。未切换生产编译参数；完整 owner／ACK／解析、调用期限、调用链栈及硬件仍未验证，不能据此勾选 C01—C05。
 
+[录音 DDR 存储基础](push2_workstation/usb_a/reports/WORKSTATION_RECORDING_STORAGE_FOUNDATION_20261030.md)已父级复验：CPU／BLE 各 64 KiB 子区显式分开，CPU 实际地址保持；后端 44 cases、真实 runtime 14 场景／五负控通过。最终 raw store 两配置 94,742／93,244 checks、五负控及独立 55,487 checks 通过，保留持有请求在最后 generation 的原版失败；新 authority 通过十相位／六负控并隔离首次 ready 前的 ledger loss。四份最终 prepare 各 12 项来源、Profile 20 项／accepted 17 项通过；raw store／authority 尚未选择，无综合、物理资源节省、硬件或部署接受，R00／R01／R02 保持未完成。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

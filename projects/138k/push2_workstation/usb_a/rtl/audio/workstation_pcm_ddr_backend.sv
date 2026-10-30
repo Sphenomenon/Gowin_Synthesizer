@@ -62,10 +62,16 @@ module workstation_pcm_ddr_backend #(
         READ_TIMEOUT=6,UNEXPECTED_RESPONSE=7,DESCRIPTOR=8,TRANSPORT=9;
     localparam integer FIFO_DEPTH=1<<FIFO_ADDRESS_BITS;
     initial begin
-        if(CAPACITY_FRAMES<1 || CAPACITY_FRAMES*4>`PRJ1_DDR_RECORDING_STAGE_BYTES ||
+        if(CAPACITY_FRAMES<1 || CAPACITY_FRAMES*4>`PRJ1_DDR_RECORDING_CPU_BYTES ||
            FIFO_ADDRESS_BITS<2 || FIFO_ADDRESS_BITS>9 || DDR_BUDGET_CYCLES<2 || SOURCE_GAP_CYCLES<2)
             $fatal(1,"invalid PCM DDR backend geometry/budget");
-        if({3'd0,`PRJ1_DDR_RECORDING_APP_BASE}!=(`PRJ1_DDR_RECORDING_BYTE_BASE>>2) ||
+        if({3'd0,`PRJ1_DDR_RECORDING_CPU_APP_BASE}!=(`PRJ1_DDR_RECORDING_CPU_BYTE_BASE>>2) ||
+           `PRJ1_DDR_RECORDING_CPU_BYTE_BASE!=`PRJ1_DDR_RECORDING_BYTE_BASE ||
+           `PRJ1_DDR_RECORDING_CPU_BYTES!=`PRJ1_DDR_RECORDING_STAGE_BYTES ||
+           `PRJ1_DDR_RECORDING_CPU_BYTE_LAST-`PRJ1_DDR_RECORDING_CPU_BYTE_BASE+1!=`PRJ1_DDR_RECORDING_CPU_BYTES ||
+           {3'd0,`PRJ1_DDR_RECORDING_CPU_APP_LAST}!=(`PRJ1_DDR_RECORDING_CPU_BYTE_LAST>>2) ||
+           `PRJ1_DDR_RECORDING_CPU_BYTE_LAST>=`PRJ1_DDR_RECORDING_BLE_BYTE_BASE ||
+           `PRJ1_DDR_RECORDING_BLE_BYTE_LAST>`PRJ1_DDR_RECORDING_BYTE_LAST ||
            (`PRJ1_DDR_RECORDING_BYTE_BASE & 32'h000fffff)!=0 ||
            `PRJ1_DDR_RECORDING_BYTE_BASE<=`PRJ1_DDR_BP_HISTORY_BYTE_LAST ||
            `PRJ1_DDR_RECORDING_BYTE_LAST>`PRJ1_DDR_BULK_POOL_BYTE_LAST ||
@@ -140,7 +146,7 @@ module workstation_pcm_ddr_backend #(
             frames_o<=0;committed_frames_o<=0;frame_limit<=0;expected_sequence<=0;
             generation<=0;read_generation<=0;gap_wait<=0;command_wait<=0;read_wait<=0;
             fifo_wr<=0;fifo_rd<=0;fifo_count<=0;fifo_forward<=0;fifo_forward_data<=0;fifo_peak_o<=0;
-            pack_data<=0;pack_frames<=0;command_frames<=0;write_address<=`PRJ1_DDR_RECORDING_APP_BASE;
+            pack_data<=0;pack_frames<=0;command_frames<=0;write_address<=`PRJ1_DDR_RECORDING_CPU_APP_BASE;
             ddr_valid_o<=0;ddr_write_o<=0;ddr_address_o<=0;ddr_data_o<=0;ddr_mask_o<=0;
             read_outstanding<=0;reference_closing<=0;reference_held_o<=0;
             reference_granted_o<=0;reference_error_o<=0;reference_released_o<=0;
@@ -226,7 +232,7 @@ module workstation_pcm_ddr_backend #(
                     !reference_release_i && download_active && issue_remaining!=0 &&
                     !read_outstanding && prefetch_count<2) begin
                     ddr_valid_o<=1;ddr_write_o<=0;ddr_mask_o<=0;ddr_data_o<=0;
-                    ddr_address_o<=`PRJ1_DDR_RECORDING_APP_BASE+{2'd0,issue_offset[28:5],3'b0};
+                    ddr_address_o<=`PRJ1_DDR_RECORDING_CPU_APP_BASE+{2'd0,issue_offset[28:5],3'b0};
                     command_skip<=issue_offset[4:0];command_bytes<=next_read_bytes;
                     command_last<=issue_remaining=={26'd0,next_read_bytes};
                 end
@@ -264,7 +270,7 @@ module workstation_pcm_ddr_backend #(
                 frames_o<=0;committed_frames_o<=0;generation<=generation+1'b1;
                 fifo_wr<=0;fifo_rd<=0;fifo_count<=0;fifo_forward<=0;pack_frames<=0;pack_data<=0;
                 prefetch_count<=0;download_active<=0;issue_remaining<=0;
-                write_address<=`PRJ1_DDR_RECORDING_APP_BASE;
+                write_address<=`PRJ1_DDR_RECORDING_CPU_APP_BASE;
             end
             if(invalidate)begin
                 if(!terminal)begin

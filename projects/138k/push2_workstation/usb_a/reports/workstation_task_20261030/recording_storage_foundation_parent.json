@@ -1,0 +1,372 @@
+{
+  "schema": 1,
+  "sealed_utc": "2026-10-30T13:40:58.647572+00:00",
+  "base_commit": "889ac6a3736d23fc1a326aad3d4c9cd05a1552a4",
+  "validation_stage": "standalone source foundation and prepare isolation",
+  "passed": true,
+  "source_sha256": {
+    "rtl/memory/workstation_ble_raw_ddr_store.sv": "422a1bb4c3b0cf842b416b65f714d023c65b270d0fa5219f9adec1c72d290ede",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+    "sim/memory/tb_ble_raw_ddr_store.sv": "588c43f0a297cd3c0bf0528aca63d875790ebf188936ea84328a2b7496e794a2",
+    "rtl/memory/WORKSTATION_BLE_RAW_DDR_STORE.md": "86dd2b30edf3772dd637d2766d1b89120c1c4ef2216aa87c744ee76414519763",
+    "sim/test_ble_raw_ddr_store.py": "ba83fe3f87502831a506db0ede690680ada7948210076a19a7cd23e5553b556e",
+    "rtl/memory/workstation_recording_ddr_authority.sv": "cdef84729cf2f971597fdccfe6b5926eda7242b9d352fc14783059b01f8cc083",
+    "rtl/memory/workstation_runtime_memory_guard.sv": "c07b1db351c3a2851e5ba9446801a73cad99e90b5155afaed8c2fec6c4b3424d",
+    "sim/memory/tb_recording_ddr_authority.sv": "e593c3bc031b2962564d226f858f5d4352c1126bf1b7319fb69a9e96bfeaec15",
+    "sim/memory/run_recording_ddr_authority.py": "ec7545bd7e30901da6fcac9852a09fbcaa289530ed2629f023438ea19722c0d4",
+    "rtl/audio/workstation_pcm_ddr_backend.sv": "b5668b4514ee59b672e6ac40b598ee76ddc5d14101ae1ac15c36d9bd66d9be5f",
+    "rtl/audio/PCM_DDR_BACKEND_CONTRACT.md": "709f081bee7154c0b40a40f085ea786cd896b6a43b06191a788fd47dedd40ce5",
+    "rtl/ddr_address_map.vh": "cff09dd9296089f0fd548f2110e02ac980540f231f242e05d317abb3d7337b03",
+    "sim/tf_audio/workstation_pcm_ddr_backend_tb.sv": "053eeed3407f7f8b34b69e394699f6cf25e534b40ea3e21fee29b0772f2b8460",
+    "sim/tf_audio/run_workstation_pcm_ddr_backend.py": "3bbf427e939fe10b9edf671ca9078662970c2d007f26fdcc7a12a431291ab2b1",
+    "rtl/ddr_address_map_guard.v": "ba7bd18eb264342e9530b9128f67d29eb769d63dc13688d2536be33957e4a2a7",
+    "rtl/timing/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+    "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+    "rtl/music/basic_pitch_ddr_map.svh": "49b7b954e3d6b45b305d443e408045889f7a8ce25138f81ccdd859dd39c163af",
+    "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+    "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+    "rtl/memory/RECORDING_DDR_NATIVE_CONTRACT.md": "a265c9273b8cd38b661eae04e8be09aa269fd9fbddf3124e48331a9ced7d92e0",
+    "rtl/services/workstation_recording_ddr_service.sv": "64be09d16fa9f131a7ac553d633d58eae3b667cfc85a7fad104e90a0e2da8a8b",
+    "rtl/services/workstation_recording_seal_bridge.sv": "1512a14e01725845350a76d2ea78e521f0a99bc362015f8cf87d3db8d61883f4",
+    "rtl/services/workstation_media_preparation.sv": "6351b7257633ef2da2d31b5ae131ad4c570d92a67d955258b5660f06f18c4acd",
+    "rtl/workstation/workstation_recording_runtime.sv": "0d9508ab6684bff36b4c83a27911f1df0cc43300afa4500204f3e27eb2e599c0",
+    "rtl/audio/workstation_pcm_observation_bridge.sv": "198dbf39ff6b6cfb6fe308444274849c507f222edcb0ea651abeb8d719f62c17",
+    "boards/custom_138k/workstation_profile_no_cnn_v1.json": "279f4118d16cd444fa77e2477f94c9cc24d9f7b32378e455cbe49d12789e7849",
+    "boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json": "d610a918c358b6c974d6258ee12335f1f55aefdb1fd0ff3dc088bcd07c765ab6",
+    "boards/custom_138k/workstation_profile_r00_v1.json": "e9c6454b36b6118e16bbcc42756c0a034279d9ef0d30ba74df29785eccb86c6c",
+    "boards/custom_138k/workstation_profile_v1.json": "4d71c5c8cd67db8496cb601022d70de454be618d84d67cd11445094b5ca5bb6b",
+    "reports/WORKSTATION_BLE_RAW_DDR_STORE_20261030.md": "e8dc8573d759406ee52904e6bee4247e7e93b7558ac907cbdab9cd9fb7c029cc",
+    "reports/workstation_task_20261030/ble_raw_ddr_store_v1.json": "a4b2bcde4faeb09573b92ebfbded3d605c10477fbb4abf2b51dff26a510c1747",
+    "rtl/memory/RECORDING_DDR_AUTHORITY_CONTRACT.md": "6838f9dba04574e9669bb928e1b2a62f4956d09326485035610bfd6e317eb758"
+  },
+  "suites": {
+    "ble-raw-ddr-store-parent-v2/verification.json": {
+      "artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-ddr-store-parent-v2/verification.json",
+        "sha256": "a373d48268847874c8897bacc179931ff5c63704ad010e2018b4e4d782d7097f"
+      },
+      "passed": true,
+      "identity": null,
+      "source_inputs_verified": 7
+    },
+    "recording-ddr-authority-parent-v1/verification.json": {
+      "artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-ddr-authority-parent-v1/verification.json",
+        "sha256": "bbfe85ed23450de4751bd03e3acb0dd07199f87a9ace5902b0ac4db7f404dbf1"
+      },
+      "passed": true,
+      "identity": null,
+      "source_inputs_verified": 4
+    },
+    "recording-subregions-parent-backend-v2/verification.json": {
+      "artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-subregions-parent-backend-v2/verification.json",
+        "sha256": "9baac9a72dc3757c12199087ed051da9d1d559f265b9e557bdfdaa8adf4b67b6"
+      },
+      "passed": true,
+      "identity": "native-pcm-ddr-backend-v4-1748b929125c88d4",
+      "source_inputs_verified": 14
+    },
+    "recording-storage-foundation-runtime-v1/verification.json": {
+      "artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-runtime-v1/verification.json",
+        "sha256": "0f4583a1683f62f6453a67f35928b1e5406ea6774a2c7b5e5521077d4eefc3d0"
+      },
+      "passed": true,
+      "identity": "r00-runtime-owner8-offline-v1-1b4708b274ab84c7",
+      "source_inputs_verified": 17
+    }
+  },
+  "independent_seals": {
+    "recording-owner8-ddr-authority-review-v1": {
+      "artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-owner8-ddr-authority-review-v1/REVIEW_SEAL.json",
+        "sha256": "9f6f8e62acc5dc7ee2db62020c81facf184ee11ede754919fffa1ffac02b3c7f"
+      },
+      "sealed_files_verified": 234
+    },
+    "ble-raw-ddr-independent-review-v1": {
+      "artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-ddr-independent-review-v1/REVIEW_SEAL.json",
+        "sha256": "d39ffdfc0edc72739f5b40a1b1a737a354d6aa11d2278719b3fe8611622de7a3"
+      },
+      "sealed_files_verified": 141
+    }
+  },
+  "prepares": {
+    "enabled": {
+      "artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-enabled-prepare-v2-validation.json",
+        "sha256": "a8e3fe450b5335e95ad65d8c7f12b10dce70de1a9485fb0a3d6d2f775a31349e"
+      },
+      "candidate_identity": "custom138k-workstation-v1-b4d9fc44cca17532",
+      "staged_files": 571,
+      "enabled_files": 260,
+      "v2_staged_identical_to_v1": true,
+      "changed_from_seal_release_prepare": [],
+      "validation": [
+        {
+          "label": "prepare",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/build.py",
+            "--prepare-custom-board",
+            "--workstation-profile",
+            "custom138k-workstation-v1",
+            "--netlist-dir",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+            "--custom-board-output",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-enabled-prepare-v2",
+            "--riscv-prefix",
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 2.585334040923044,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-enabled-prepare-v2-prepare.log",
+          "log_sha256": "a1501e94438159a02b56bb3011ad657a4fd14e9a252051d6a069885a75f013cc"
+        },
+        {
+          "label": "source-tests",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 3.822225083131343,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-enabled-prepare-v2-source-tests.log",
+          "log_sha256": "3b4a3fde80294c78ba087cf562813a6ba1200ec0fd1160225cf66b6750037810"
+        }
+      ]
+    },
+    "no-cnn": {
+      "artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-no-cnn-prepare-v2-validation.json",
+        "sha256": "88ee5c15b2a351e72a304d0ddc6c2768396bd91af68810e5452af6ce8eb2f107"
+      },
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-e2ff7a5cb3a717c9",
+      "staged_files": 572,
+      "enabled_files": 260,
+      "v2_staged_identical_to_v1": true,
+      "changed_from_seal_release_prepare": [],
+      "validation": [
+        {
+          "label": "prepare",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/build.py",
+            "--prepare-custom-board",
+            "--workstation-profile",
+            "custom138k-workstation-no-cnn-v1",
+            "--netlist-dir",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+            "--custom-board-output",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-no-cnn-prepare-v2",
+            "--riscv-prefix",
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 2.5975224999710917,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-no-cnn-prepare-v2-prepare.log",
+          "log_sha256": "1e4f9f7fd0672e27e5cd03e84698e504a9b2606c6c4b5ff44271dfc05965245e"
+        },
+        {
+          "label": "source-tests",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 3.814869625028223,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-no-cnn-prepare-v2-source-tests.log",
+          "log_sha256": "28f8d53c29500acf3264d4975189062fcee23f5e785b0790b487a9808c239886"
+        }
+      ]
+    },
+    "r00": {
+      "artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-r00-prepare-v2-validation.json",
+        "sha256": "238da044d2d3a4bc2d2df9d3f0cf3cdca8ed98cb14c3ed7f1063c9e66e596e0f"
+      },
+      "candidate_identity": "custom138k-workstation-r00-v1-db8d9c9ddb607fba",
+      "staged_files": 584,
+      "enabled_files": 267,
+      "v2_staged_identical_to_v1": true,
+      "changed_from_seal_release_prepare": [
+        "rtl/audio/workstation_pcm_ddr_backend.sv",
+        "rtl/ddr_address_map.vh",
+        "src/memory/ddr_address_map.vh"
+      ],
+      "validation": [
+        {
+          "label": "prepare",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/build.py",
+            "--prepare-custom-board",
+            "--workstation-profile",
+            "custom138k-workstation-r00-v1",
+            "--netlist-dir",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+            "--custom-board-output",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-r00-prepare-v2",
+            "--riscv-prefix",
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 2.7278226248454303,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-r00-prepare-v2-prepare.log",
+          "log_sha256": "c508267187fe43a1181a377791a5ea1dc0baf1e6e1e15756bffb83e85fcc12b0"
+        },
+        {
+          "label": "source-tests",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 3.8664544578641653,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-r00-prepare-v2-source-tests.log",
+          "log_sha256": "4b2e0fdb3dcaa2b17202a193531959897aa342fbfc743d51cff164c4f34d9d82"
+        }
+      ]
+    },
+    "off": {
+      "artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-off-prepare-v2-validation.json",
+        "sha256": "18b2ee8e70620a59b8f8a042cd0715aac856769540436ace9824930f157e9936"
+      },
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-443063dee260d7cb",
+      "staged_files": 584,
+      "enabled_files": 266,
+      "v2_staged_identical_to_v1": true,
+      "changed_from_seal_release_prepare": [
+        "rtl/audio/workstation_pcm_ddr_backend.sv",
+        "rtl/ddr_address_map.vh",
+        "src/memory/ddr_address_map.vh"
+      ],
+      "validation": [
+        {
+          "label": "prepare",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/build.py",
+            "--prepare-custom-board",
+            "--workstation-profile",
+            "custom138k-workstation-r00-no-local-panel-v1",
+            "--netlist-dir",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+            "--custom-board-output",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-off-prepare-v2",
+            "--riscv-prefix",
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 2.7097267920617014,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-off-prepare-v2-prepare.log",
+          "log_sha256": "08af584f12fc9c178206eff582dc7370de9eef0cb3022ca8cdd055670c447baa"
+        },
+        {
+          "label": "source-tests",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 3.884536375058815,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-off-prepare-v2-source-tests.log",
+          "log_sha256": "dbd78c5ec151e1b1765a0765cd51df9d6449766a3f5010dbcd0755ae15e4ad7e"
+        }
+      ]
+    }
+  },
+  "logs": {
+    "ble-raw-ddr-store-parent-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-ddr-store-parent-v2.log",
+      "sha256": "8387ce887b7b95b8c02f0bae574ad5a11dd660e38bec4fac63a8578ad9ce9c7b"
+    },
+    "recording-storage-foundation-profile-tests-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-profile-tests-v2.log",
+      "sha256": "5804bd0845f78349086926018907c026f706fe0a9f6fe86e5f486becbb15bcab"
+    },
+    "recording-subregions-parent-profile-policy-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-subregions-parent-profile-policy-v1.log",
+      "sha256": "93897a5a3281b1d2ca3dd885dc2b8f690f8f574739b94862ed642523fb059f6a"
+    },
+    "recording-storage-foundation-accepted-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-storage-foundation-accepted-tests-v1.log",
+      "sha256": "f3f04c8ddb7e62891e32dec57a388a3ca37ccf0f995f143a13fa852e569536c3"
+    },
+    "recording-subregions-parent-backend-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/recording-subregions-parent-backend-v1.log",
+      "sha256": "4fca6ae355fbe27182ea298a74d0cc2d7e69464e9112494a3f06238242684d8c"
+    }
+  },
+  "scope": {
+    "cpu_subregion": {
+      "byte_base": "0x30500000",
+      "byte_last": "0x3050ffff",
+      "native_base": "0x0c140000",
+      "native_last": "0x0c143fff",
+      "bytes": 65536
+    },
+    "ble_subregion": {
+      "byte_base": "0x30510000",
+      "byte_last": "0x3051ffff",
+      "native_base": "0x0c144000",
+      "native_last": "0x0c147fff",
+      "bytes": 65536
+    },
+    "existing_allocations_unchanged": true,
+    "cpu_backend_explicit_original_subregion": true,
+    "raw_store_selected": false,
+    "authority_selected": false,
+    "ble_business_owner_changed": false,
+    "raw_capacity_frames": 16384,
+    "raw_cache_bytes": 8192,
+    "raw_max_fetch_bytes": 8112,
+    "registered_bridge_protocol_fault_only": true,
+    "local_reset_not_rearm": true,
+    "raw_parent_checks": [
+      94742,
+      93244
+    ],
+    "raw_parent_negative_controls": 5,
+    "raw_reviewed_lint_warnings": 4,
+    "raw_independent_checks": 55487,
+    "authority_phases": 10,
+    "authority_scenarios_per_phase": 17,
+    "authority_checks_per_phase": 666,
+    "authority_negative_controls": 6,
+    "backend_cases": 44,
+    "runtime_positive_scenarios": 14,
+    "runtime_negative_controls": 5,
+    "profile_tests": 20,
+    "profile_optional_legacy_skips": 1,
+    "recording_policy_tests": 7,
+    "recording_policy_optional_prepare_skips": 2,
+    "accepted_source_tests": 17
+  },
+  "retained_failures": [
+    "Original raw store SHA 2c6ebca8e1766c2cd891c690c2717393064e289bfdb45a521e3baea51737cb9e repeats held START/CLEAR exhaustion; byte-identical original negative control retained in independent seal.",
+    "First backend runner rejected unlisted new map macros; runner now accepts exactly ten named subregion macros with geometry/units/disjoint guards. Original failure log retained."
+  ],
+  "remaining_gaps": [
+    "Production BLE adapter/top/profile selection and actual map binding",
+    "Full controller/PHY response-drain proof and actual BIST sequence",
+    "Bundled-data/Gray/RAM CDC and reset pulse/recovery/removal closure",
+    "Resource mapping/net physical savings and routed timing",
+    "Real BLE PCM/CRC/download and Android/hardware acceptance"
+  ],
+  "synthesis": false,
+  "pnr": false,
+  "physical_resource_saving_proven": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "r00_complete": false,
+  "r01_complete": false,
+  "r02_complete": false,
+  "rollback": "Restore this stage source additions, explicit CPU binding and four source locks together; regenerate a fresh prepare. Prior sealed candidate directories and hardware state were untouched."
+}
