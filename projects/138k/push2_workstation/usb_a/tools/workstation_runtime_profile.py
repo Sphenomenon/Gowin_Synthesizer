@@ -25,6 +25,7 @@ SOURCES = (
     'rtl/services/workstation_media_preparation.sv',
     'rtl/audio/workstation_audio_render_service.sv',
     'rtl/audio/workstation_rate_pitch_expression.sv',
+    'rtl/audio/workstation_runtime_div147.sv',
     'rtl/audio/workstation_runtime_oscillator_engine.sv',
     'rtl/audio/workstation_runtime_scope_vec.sv',
     'rtl/audio/workstation_runtime_render_engines.sv',

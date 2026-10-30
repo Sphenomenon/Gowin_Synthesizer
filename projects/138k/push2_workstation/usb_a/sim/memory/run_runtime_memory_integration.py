@@ -31,6 +31,7 @@ def main():
         sources += sorted((project / folder).glob('*.sv'))
     sources += [ROOT / ('rtl/audio/' + name) for name in (
         'gw138k_event_workstation.sv', 'workstation_audio_render_service.sv', 'workstation_frame_delivery.sv',
+        'workstation_runtime_div147.sv',
         'workstation_rate_pitch_expression.sv', 'workstation_runtime_oscillator_engine.sv',
         'workstation_runtime_scope_vec.sv', 'workstation_runtime_render_engines.sv',
         'workstation_runtime_chorus_effect.sv', 'workstation_runtime_spatial_reverb.sv',

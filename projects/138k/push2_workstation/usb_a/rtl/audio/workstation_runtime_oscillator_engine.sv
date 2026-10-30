@@ -30,7 +30,10 @@ module workstation_runtime_oscillator_engine #(
     parameter bit SEPARATE_OFF_NOTE = 1'b0,
     parameter bit RUNTIME_RATE_ENABLE = 1'b0,
     // Explicit physical candidate only; default retains the migrated cycles.
-    parameter bit PIPELINED_ENVELOPE = 1'b0
+    parameter bit PIPELINED_ENVELOPE = 1'b0,
+    // Selected by the production runtime composition; legacy calls retain
+    // their exact cycle contract. Requires the registered envelope lane.
+    parameter bit PIPELINED_RATE = 1'b0
 ) (
     input  logic               clk_i,
     input  logic               rst_ni,
@@ -137,6 +140,13 @@ module workstation_runtime_oscillator_engine #(
   logic pitch_write_valid;
   logic [9:0] pitch_write_index;
   logic [79:0] pitch_write_data;
+  logic [15:0] pitch_gain;
+  logic [17:0] pitch_envelope;
+  logic pitch_last;
+  wire arithmetic_busy,pitched_valid;
+  wire [34:0] pitched_step;
+  wire [160:0] pitched_tag;
+  logic [4:0] live_sine_tokens;
   logic [31:0] scaled_midi_phase_step;
   localparam int RATE_SCALE = 192000 / SAMPLE_RATE_HZ;
   localparam bit PITCH_PATH_ENABLE = EXPRESSION_ENABLE || RUNTIME_RATE_ENABLE;
@@ -148,6 +158,8 @@ module workstation_runtime_oscillator_engine #(
   initial begin
     if (RUNTIME_RATE_ENABLE && SAMPLE_RATE_HZ != 48000)
       $fatal(1, "runtime oscillator requires canonical 48000 state");
+    if (PIPELINED_RATE && (!RUNTIME_RATE_ENABLE || !PIPELINED_ENVELOPE))
+      $fatal(1, "registered runtime arithmetic requires runtime rate and envelope lane");
   end
 
   // Round once after the exact rational rate and pitch product. The 48k
@@ -193,7 +205,7 @@ module workstation_runtime_oscillator_engine #(
 
   assign quiescent_o = load_state == LOAD_IDLE && !partial_busy &&
       !partial_valid && !gain_valid && !midi_valid && !issue_active &&
-      !slot_read_valid && !pitch_write_valid && !(|sine_pending_valid) &&
+      !slot_read_valid && !pitch_write_valid && !arithmetic_busy && !(|sine_pending_valid) &&
       !sine_valid_o && !gain_product_valid && !envelope_product_valid &&
       !finalize_valid && quantizer_quiescent && !sample_valid_o &&
       !envelope_lane_busy && !mix_busy_o;
@@ -362,11 +374,12 @@ module workstation_runtime_oscillator_engine #(
   assign accepted_sample = sample_ce_i && sample_ready_o;
   assign midi_read = accepted_event && event_note_on_i;
   assign partial_start = load_state == LOAD_WAIT_MIDI && midi_valid && partial_ready;
-  assign sine_valid_i = slot_read_valid;
+  assign sine_valid_i = PIPELINED_RATE ? pitched_valid : slot_read_valid;
   // Unallocated slot RAM is intentionally unreset for BRAM inference. Mask
   // inactive slots before lookup: an unknown RAM value times zero is still X.
-  assign sine_phase_i = sample_envelope_q18[issued_voice_index] == 0
-      ? 32'd0 : slot_read_data[79:48];
+  assign sine_phase_i = PIPELINED_RATE ?
+      (pitched_tag[18:1] == 0 ? 32'd0 : pitched_tag[114:83]) :
+      (sample_envelope_q18[issued_voice_index] == 0 ? 32'd0 : slot_read_data[79:48]);
   assign gain_signed = $signed({1'b0, gain_pipe[4]});
   assign envelope_signed = $signed({1'b0, gain_product_envelope});
   assign product_extended = {{4{envelope_product[59]}}, envelope_product};
@@ -385,6 +398,52 @@ module workstation_runtime_oscillator_engine #(
   assign expression_scaled_gain =
       {8'd0, slot_read_data[15:0]} *
       {16'd0, expression_gain_q8[issued_voice_index]};
+
+  generate if(PIPELINED_RATE)begin:g_pitch_pipeline
+    logic scaled_valid,dividend_valid;
+    logic [61:0] scaled;
+    logic [41:0] dividend;
+    logic [160:0] scaled_tag,dividend_tag;
+    wire [41:0] quotient;
+    wire divider_quiet;
+    // Keep the full62-bit numerator until the rounding carry is included.
+    // floor(floor(N/2^20)/147) == floor(N/(147*2^20)).
+    // 48k keeps its independent round-to-nearest expression in the same tag.
+    always_ff @(posedge clk_i or negedge rst_ni)begin
+      if(!rst_ni)begin scaled_valid<=0;dividend_valid<=0;end
+      else if(panic_i)begin scaled_valid<=0;dividend_valid<=0;end
+      else begin scaled_valid<=pitch_write_valid;dividend_valid<=scaled_valid;end
+    end
+    always_ff @(posedge clk_i)begin
+      if(pitch_write_valid && !panic_i)begin
+        scaled<=({8'd0,pitch_product}<<7)+({8'd0,pitch_product}<<5);
+        scaled_tag<={frame_rate_44100,
+            ({1'b0,pitch_product[53:20]}+{{34{1'b0}},pitch_product[19]}),
+            pitch_write_index,pitch_write_data,pitch_gain,pitch_envelope,pitch_last};
+      end
+      if(scaled_valid && !panic_i)begin
+        dividend<=42'((scaled+62'd77070336)>>20);
+        dividend_tag<=scaled_tag;
+      end
+    end
+    workstation_runtime_div147 #(.WIDTH(42),.TAG_WIDTH(161)) divider(
+        .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(dividend_valid),
+        .dividend_i(dividend),.tag_i(dividend_tag),.valid_o(pitched_valid),
+        .quotient_o(quotient),.tag_o(pitched_tag),.quiescent_o(divider_quiet));
+    assign pitched_step=pitched_tag[160] ? quotient[34:0] : pitched_tag[159:125];
+    assign arithmetic_busy=scaled_valid || dividend_valid || !divider_quiet;
+  end else begin:g_pitch_original
+    assign pitched_valid=1'b0,pitched_step='0,pitched_tag='0,arithmetic_busy=1'b0;
+  end endgenerate
+
+  // sine_interp deliberately drains naturally across PANIC. A separate live
+  // token follows its five valid registers and prevents a cancelled ROM result
+  // from re-entering the accumulator or completing a later frame.
+  always_ff @(posedge clk_i or negedge rst_ni)begin
+    if(!rst_ni)live_sine_tokens<='0;
+    else if(panic_i)live_sine_tokens<='0;
+    else live_sine_tokens<={live_sine_tokens[3:0],sine_valid_i};
+  end
 
   // One ADSR arithmetic lane services all voices.  Array selection is
   // registered before the arithmetic so the vendor mapper does not build a
@@ -456,8 +515,66 @@ module workstation_runtime_oscillator_engine #(
     logic math_attack_zero, math_decay_zero, math_release_zero;
     logic [23:0] selected_level;
     logic [2:0] selected_state;
+    wire coefficient_valid,coefficient_busy;
+    wire [4:0] coefficient_index;
+    wire [2:0] coefficient_state;
+    wire [23:0] coefficient_level,coefficient_sustain,coefficient_attack,coefficient_decay,coefficient_release;
 
-    assign envelope_pipeline_busy = scale_valid || math_valid || result_valid;
+    if(PIPELINED_RATE)begin:g_coefficients
+      logic numerator_valid;
+      logic [31:0] attack_numerator,decay_numerator,release_numerator;
+      logic [56:0] numerator_tag;
+      wire [56:0] result_tag;
+      wire [31:0] attack_result,decay_result,release_result;
+      wire attack_valid,decay_valid,release_valid,attack_quiet,decay_quiet,release_quiet;
+      always_ff @(posedge clk_i or negedge rst_ni)begin
+        if(!rst_ni)numerator_valid<=0;
+        else if(panic_i)numerator_valid<=0;
+        else numerator_valid<=envelope_update_valid;
+      end
+      // Multiplication/addition and every quotient digit terminate at actual
+      // registers. At48k divide(canonical*147) returns canonical exactly,
+      // including values above the44k1 saturation ceiling.
+      always_ff @(posedge clk_i)if(envelope_update_valid && !panic_i)begin
+        attack_numerator<=frame_rate_44100 ? {8'd0,envelope_update_attack_q24}*32'd160+32'd73 :
+            {8'd0,envelope_update_attack_q24}*32'd147;
+        decay_numerator<=frame_rate_44100 ? {8'd0,envelope_update_decay_q24}*32'd160+32'd73 :
+            {8'd0,envelope_update_decay_q24}*32'd147;
+        release_numerator<=frame_rate_44100 ? {8'd0,envelope_update_release_q24}*32'd160+32'd73 :
+            {8'd0,envelope_update_release_q24}*32'd147;
+        numerator_tag<={frame_rate_44100,envelope_update_write_index,envelope_update_state,
+            envelope_update_level_q24,envelope_update_sustain_q24};
+      end
+      workstation_runtime_div147 #(.WIDTH(32),.TAG_WIDTH(57)) attack_divider(
+          .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(numerator_valid),.dividend_i(attack_numerator),
+          .tag_i(numerator_tag),.valid_o(attack_valid),.quotient_o(attack_result),.tag_o(result_tag),.quiescent_o(attack_quiet));
+      workstation_runtime_div147 #(.WIDTH(32)) decay_divider(
+          .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(numerator_valid),.dividend_i(decay_numerator),
+          .tag_i(1'b0),.valid_o(decay_valid),.quotient_o(decay_result),.tag_o(),.quiescent_o(decay_quiet));
+      workstation_runtime_div147 #(.WIDTH(32)) release_divider(
+          .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(numerator_valid),.dividend_i(release_numerator),
+          .tag_i(1'b0),.valid_o(release_valid),.quotient_o(release_result),.tag_o(),.quiescent_o(release_quiet));
+      assign coefficient_valid=attack_valid && decay_valid && release_valid;
+      assign coefficient_busy=numerator_valid || !attack_quiet || !decay_quiet || !release_quiet;
+      assign coefficient_index=result_tag[55:51],coefficient_state=result_tag[50:48];
+      assign coefficient_level=result_tag[47:24],coefficient_sustain=result_tag[23:0];
+      assign coefficient_attack=result_tag[56] && attack_result>32'hffffc0 ? MAXIMUM_LEVEL_Q24 : attack_result[23:0];
+      assign coefficient_decay=result_tag[56] && decay_result>32'hffffc0 ? MAXIMUM_LEVEL_Q24 : decay_result[23:0];
+      assign coefficient_release=result_tag[56] && release_result>32'hffffc0 ? MAXIMUM_LEVEL_Q24 : release_result[23:0];
+`ifndef SYNTHESIS
+      always @(posedge clk_i)if(rst_ni && !panic_i)
+        if(attack_valid!=decay_valid || attack_valid!=release_valid)$fatal(1,"ADSR coefficient valid alignment");
+`endif
+    end else begin:g_coefficients_original
+      assign coefficient_valid=envelope_update_valid,coefficient_busy=1'b0;
+      assign coefficient_index=envelope_update_write_index,coefficient_state=envelope_update_state;
+      assign coefficient_level=envelope_update_level_q24,coefficient_sustain=envelope_update_sustain_q24;
+      assign coefficient_attack=rate_envelope_step(envelope_update_attack_q24,frame_rate_44100);
+      assign coefficient_decay=rate_envelope_step(envelope_update_decay_q24,frame_rate_44100);
+      assign coefficient_release=rate_envelope_step(envelope_update_release_q24,frame_rate_44100);
+    end
+
+    assign envelope_pipeline_busy = coefficient_busy || scale_valid || math_valid || result_valid;
     assign envelope_write_valid = result_valid && !panic_i;
     assign envelope_write_index = result_index;
     assign envelope_write_level_q24 = result_level;
@@ -473,7 +590,7 @@ module workstation_runtime_oscillator_engine #(
         math_valid <= 1'b0;
         result_valid <= 1'b0;
       end else begin
-        scale_valid <= envelope_update_valid;
+        scale_valid <= coefficient_valid;
         math_valid <= scale_valid;
         result_valid <= math_valid;
       end
@@ -482,14 +599,14 @@ module workstation_runtime_oscillator_engine #(
     // Data carries a valid tag and needs no global reset/PANIC mux. Rate is
     // held for the accepted frame, including every tag through voice31.
     always_ff @(posedge clk_i) begin
-      if (envelope_update_valid && !panic_i) begin
-        scale_index <= envelope_update_write_index;
-        scale_state <= envelope_update_state;
-        scale_level <= envelope_update_level_q24;
-        scale_sustain <= envelope_update_sustain_q24;
-        scale_attack <= rate_envelope_step(envelope_update_attack_q24, frame_rate_44100);
-        scale_decay <= rate_envelope_step(envelope_update_decay_q24, frame_rate_44100);
-        scale_release <= rate_envelope_step(envelope_update_release_q24, frame_rate_44100);
+      if (coefficient_valid && !panic_i) begin
+        scale_index <= coefficient_index;
+        scale_state <= coefficient_state;
+        scale_level <= coefficient_level;
+        scale_sustain <= coefficient_sustain;
+        scale_attack <= coefficient_attack;
+        scale_decay <= coefficient_decay;
+        scale_release <= coefficient_release;
       end
       if (scale_valid && !panic_i) begin
         math_index <= scale_index;
@@ -560,12 +677,17 @@ module workstation_runtime_oscillator_engine #(
       slot_write_address = slot_read_index;
       slot_write_data = {updated_slot_phase, slot_read_data[47:0]};
     end
-    if (PITCH_PATH_ENABLE && pitch_write_valid) begin
+    if (PITCH_PATH_ENABLE && !PIPELINED_RATE && pitch_write_valid) begin
       slot_write_enable = 1'b1;
       slot_write_address = pitch_write_index;
       slot_write_data = {
           pitch_write_data[79:48] + pitch_step_rounded[31:0],
           pitch_write_data[47:0]};
+    end
+    if(PIPELINED_RATE && pitched_valid)begin
+      slot_write_enable=1'b1;
+      slot_write_address=pitched_tag[124:115];
+      slot_write_data={pitched_tag[114:83]+pitched_step[31:0],pitched_tag[82:35]};
     end
     if (load_state == LOAD_PARTIALS && gain_valid) begin
       slot_write_enable = 1'b1;
@@ -671,16 +793,16 @@ module workstation_runtime_oscillator_engine #(
 
   assign mode_set_ready_o = allocated_mask_o == 32'd0 &&
       load_state == LOAD_IDLE && !mix_busy_o &&
-      (!PIPELINED_ENVELOPE || !envelope_lane_busy);
+      (!PIPELINED_ENVELOPE || !envelope_lane_busy) && (!PIPELINED_RATE || quiescent_o);
   assign event_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
       !mode_set_valid_i && (event_note_on_i ? allocation_found : 1'b1) &&
-      (!PIPELINED_ENVELOPE || !envelope_lane_busy);
+      (!PIPELINED_ENVELOPE || !envelope_lane_busy) && (!PIPELINED_RATE || quiescent_o);
   assign sample_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
       !envelope_lane_busy &&
-      !(event_valid_i && event_ready_o) && !mode_set_valid_i;
+      !(event_valid_i && event_ready_o) && !mode_set_valid_i && (!PIPELINED_RATE || quiescent_o);
   assign expression_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
       !envelope_lane_busy &&
-      !event_valid_i && !mode_set_valid_i;
+      !event_valid_i && !mode_set_valid_i && (!PIPELINED_RATE || quiescent_o);
 
   midi_step_rom #(
       .MEM_FILE(`UNIFIED_MIDI_STEP_MEM_FILE)
@@ -767,6 +889,9 @@ module workstation_runtime_oscillator_engine #(
         pitch_product <= slot_read_data[47:16] * sample_pitch_q20;
         pitch_write_index <= slot_read_index;
         pitch_write_data <= slot_read_data;
+        pitch_gain <= sample_envelope_q18[issued_voice_index]==0 ? 16'd0 : expression_scaled_gain[22:7];
+        pitch_envelope <= sample_envelope_q18[issued_voice_index];
+        pitch_last <= slot_read_last;
       end
     end
   end
@@ -937,21 +1062,22 @@ module workstation_runtime_oscillator_engine #(
         partial_enable_delay <= partial_enable;
       end
 
-      gain_pipe[0] <= sample_envelope_q18[issued_voice_index] == 0
-          ? 16'd0 : expression_scaled_gain[22:7];
-      envelope_pipe[0] <= sample_envelope_q18[issued_voice_index];
-      last_pipe[0] <= slot_read_valid && slot_read_last;
+      gain_pipe[0] <= PIPELINED_RATE ?
+          (pitched_step>=35'd1932735283 ? 16'd0 : pitched_tag[34:19]) :
+          (sample_envelope_q18[issued_voice_index] == 0 ? 16'd0 : expression_scaled_gain[22:7]);
+      envelope_pipe[0] <= PIPELINED_RATE ? pitched_tag[18:1] : sample_envelope_q18[issued_voice_index];
+      last_pipe[0] <= PIPELINED_RATE ? pitched_valid && pitched_tag[0] : slot_read_valid && slot_read_last;
       for (pipeline_index = 1; pipeline_index < 5;
           pipeline_index = pipeline_index + 1) begin
         gain_pipe[pipeline_index] <= gain_pipe[pipeline_index-1];
         envelope_pipe[pipeline_index] <= envelope_pipe[pipeline_index-1];
         last_pipe[pipeline_index] <= last_pipe[pipeline_index-1];
       end
-      if (PITCH_PATH_ENABLE && pitch_step_rounded >= 35'd1932735283)
+      if (PITCH_PATH_ENABLE && !PIPELINED_RATE && pitch_step_rounded >= 35'd1932735283)
         gain_pipe[1] <= 16'd0;
 
-      gain_product_valid <= sine_valid_o;
-      if (sine_valid_o) begin
+      gain_product_valid <= sine_valid_o && (!PIPELINED_RATE || live_sine_tokens[4]);
+      if (sine_valid_o && (!PIPELINED_RATE || live_sine_tokens[4])) begin
         gain_product <= sine_sample_o * gain_signed;
         gain_product_envelope <= envelope_pipe[4];
         gain_product_last <= last_pipe[4];

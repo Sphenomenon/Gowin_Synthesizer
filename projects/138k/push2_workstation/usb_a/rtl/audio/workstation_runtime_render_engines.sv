@@ -59,7 +59,8 @@ module workstation_runtime_render_engines #(
     );
     workstation_runtime_oscillator_engine #(
         .EXPRESSION_ENABLE(1), .SAMPLE_RATE_HZ(48000),
-        .SEPARATE_OFF_NOTE(1), .RUNTIME_RATE_ENABLE(RUNTIME_RATE_ENABLE)
+        .SEPARATE_OFF_NOTE(1), .RUNTIME_RATE_ENABLE(RUNTIME_RATE_ENABLE),
+        .PIPELINED_ENVELOPE(RUNTIME_RATE_ENABLE), .PIPELINED_RATE(RUNTIME_RATE_ENABLE)
     ) oscillator (
         .clk_i, .rst_ni, .panic_i, .mode_set_valid_i,
         .mode_set_ready_o, .mode_i, .current_mode_o,
@@ -78,7 +79,7 @@ module workstation_runtime_render_engines #(
         .rate_ready_o(oscillator_rate_ready), .applied_rate_44100_o,
         .quiescent_o(oscillator_quiescent)
     );
-    workstation_runtime_scope_vec #(.SEPARATE_OFF_NOTE(1)) vector_engine (
+    workstation_runtime_scope_vec #(.SEPARATE_OFF_NOTE(1),.PIPELINED_RATE(RUNTIME_RATE_ENABLE)) vector_engine (
         .clk_i, .rst_ni, .panic_i, .sample_ce_i,
         .rate_44k1_i(applied_rate_44100_o),
         .sample_ready_o(vector_sample_ready_o), .sample_valid_o(vector_valid_o),

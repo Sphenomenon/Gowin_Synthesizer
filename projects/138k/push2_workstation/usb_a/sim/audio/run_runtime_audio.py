@@ -21,6 +21,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--production-startup', action='store_true')
     parser.add_argument('--nonzero-epoch', action='store_true', help='Explicit stream-owner v1.1 epoch policy; initial1, wrap skips0')
+    parser.add_argument('--negative-legacy-note-admission', action='store_true',
+                        help='Cache-only old ready bypass; must compile then fail real-voice startup')
     args = parser.parse_args()
     project, output = args.project.resolve(), args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -35,6 +37,7 @@ def main():
         sources += sorted((project / folder).glob('*.sv'))
     sources += [ROOT / ('rtl/audio/' + name) for name in (
         'gw138k_event_workstation.sv', 'workstation_audio_render_service.sv', 'workstation_frame_delivery.sv',
+        'workstation_runtime_div147.sv',
         'workstation_rate_pitch_expression.sv', 'workstation_runtime_oscillator_engine.sv',
         'workstation_runtime_scope_vec.sv', 'workstation_runtime_render_engines.sv',
         'workstation_runtime_chorus_effect.sv', 'workstation_runtime_spatial_reverb.sv',
@@ -45,7 +48,18 @@ def main():
         'workstation_final_pcm_router.sv', 'workstation_pcm_frame_fanout.sv')]
     sources += [ROOT / 'rtl/workstation/workstation_runtime_audio.sv', simlib,
                 Path(__file__).with_name('tb_workstation_runtime_audio.sv')]
+    original_event = ROOT / 'rtl/audio/gw138k_event_workstation.sv'
+    if args.negative_legacy_note_admission:
+        text = original_event.read_text()
+        anchor = '((TIMING_OPTIMIZED && !RUNTIME_RATE_ENABLE) ||'
+        if text.count(anchor) != 1:
+            raise ValueError('negative note-admission anchor drifted')
+        mutated = output / original_event.name
+        mutated.write_text(text.replace(anchor, '(TIMING_OPTIMIZED ||'))
+        sources[sources.index(original_event)] = mutated
     inputs = sources + [Path(__file__).resolve(), ROOT / 'rtl/audio/runtime_spatial_room_preset.svh']
+    if args.negative_legacy_note_admission:
+        inputs.append(original_event)
     inputs += sorted((project / 'sim/data').rglob('*.mem'))
     inputs += sorted((project / 'sim/matlab/output').rglob('*.mem'))
     inputs += sorted((project / 'rtl/audio/scope_vec/data').glob('*.mem'))
@@ -59,6 +73,7 @@ def main():
                   scope='Opt-in native audio composition; actual DSP, clock transaction/official DCS, owner6 DMA, final PCM, bridge, physical I2S and taps',
                   limits='Ordered DDR functional model; coherent TF packet fixture; external policy authorization only; no CPU command integration, top/profile selection, P&R or hardware acceptance',
                   production_startup=args.production_startup, reserve_zero_epoch=args.nonzero_epoch,
+                  expected_negative_control=args.negative_legacy_note_admission,
                   initial_stream_epoch=1 if args.nonzero_epoch else 0, project=str(project), input_sha256=hashes,
                   prepared_reference_candidate=profile['candidate_identity'],
                   prepared_profile=profile['profile'], prepared_profile_revision=profile['revision'],
@@ -82,9 +97,15 @@ def main():
             run_command += ['+STARTUP_ONLY']
         result['run_argv'] = run_command
         with (output / 'run.log').open('w') as stream:
-            subprocess.run(run_command, cwd=project, stdout=stream, stderr=subprocess.STDOUT, check=True, timeout=240)
+            process = subprocess.run(run_command, cwd=project, stdout=stream, stderr=subprocess.STDOUT,
+                                     check=not args.negative_legacy_note_admission, timeout=240)
+        result['run_exit'] = process.returncode
         log = (output / 'run.log').read_text()
-        if 'PASS runtime_audio:' not in log:
+        if args.negative_legacy_note_admission:
+            result['negative_control_detected'] = process.returncode != 0 and 'startup real voice is silent' in log
+            if not result['negative_control_detected']:
+                raise ValueError('old admission bypass was not detected by real-voice startup')
+        elif 'PASS runtime_audio:' not in log:
             raise ValueError('Missing integration verification')
         result['log'] = log
         result['metrics'] = {key: int(value) for key, value in re.findall(r'(\w+)=(\d+)', log)}

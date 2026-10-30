@@ -238,7 +238,11 @@ module gw138k_event_workstation #(
   assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle && !runtime_config_block;
   assign full = scope_enable ? &vec_active : &allocated;
   assign dispatch=!usb_lifecycle && (!pending || runtime_config_busy) && !sample_ce_i && !runtime_config_block && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);
-  wire panic_accept=usb_lifecycle || (event_valid && event_ready && kind==2 && a==120);
+  // CC120 uses the control-event dispatch condition directly. It never needs
+  // engine event_ready; keeping that dependency out of cancellation also
+  // avoids a PANIC/configuration/sample-ready combinational cycle.
+  wire panic_accept=usb_lifecycle ||
+      (event_valid && !releasing && dispatch && kind==2 && a==120);
   // Legacy partial loading can start on the cancellation edge: 32 issues,
   // three generator-valid stages, one timbre-ROM stage, plus edge margin.
   // The render tail is shorter: five sine, three mix, six quantizer stages.
@@ -332,7 +336,11 @@ module gw138k_event_workstation #(
       else if(kind==0 || kind==1) begin
         core_note_on=kind==1;
         core_event_valid=dispatch && !(kind==1 && full);
-        event_ready=dispatch && (TIMING_OPTIMIZED || (kind==1 && full) || (scope_enable ? vec_event_ready : core_event_ready));
+        // Runtime arithmetic carries work beyond the legacy busy signals.
+        // A public NoteOn/Off is accepted only with the owning engine's
+        // handshake, so held state cannot advance while its event is rejected.
+        event_ready=dispatch && ((TIMING_OPTIMIZED && !RUNTIME_RATE_ENABLE) ||
+            (kind==1 && full) || (scope_enable ? vec_event_ready : core_event_ready));
       end else if(kind==5) begin
         core_expression_valid=dispatch && core_expression_ready;
         event_ready=dispatch && core_expression_ready;

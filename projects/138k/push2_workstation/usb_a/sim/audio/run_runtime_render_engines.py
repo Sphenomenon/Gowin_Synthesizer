@@ -29,6 +29,7 @@ def main():
         'sine_interp.sv', 'unified_oscillator_engine.sv')]
     sources += [project / 'rtl/audio/scope_vec/scope_vec_engine.sv']
     sources += [ROOT / ('rtl/audio/' + name) for name in (
+        'workstation_runtime_div147.sv',
         'workstation_rate_pitch_expression.sv', 'workstation_runtime_oscillator_engine.sv',
         'workstation_runtime_scope_vec.sv', 'workstation_runtime_render_engines.sv')]
     sources += [Path(__file__).with_name('tb_workstation_runtime_render_engines.sv')]

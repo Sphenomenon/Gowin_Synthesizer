@@ -2,6 +2,8 @@
 
 `workstation_runtime_render_engines.sv` 只组合既有 native pitch、oscillator 和 vector。其输出是合成单声道与矢量立体声 engine PCM，不含 effects、外部 PCM 混音、音源选择、最终 CC7、PCM16 或串行输出。没有自由运行 sample tick、第二份公共参数或工作站业务状态；音符／表达／mode 的原握手直接进入原 owner。
 
+运行时分支显式选择精确常数除法的寄存流水线；数值证明、tag、取消、事件握手与延迟预算见[运行时算术流水线契约](RUNTIME_ARITHMETIC_PIPELINE_CONTRACT.md)。独立模块默认参数保留旧周期行为，运行时组合按有序完成事务及排空后的状态比较。
+
 ## 采样率提交和排空
 
 - `RUNTIME_RATE_ENABLE=1` 显式启用两率；默认 0 固定 48 kHz。`rate_44100_i=0/1` 分别表示 48／44.1 kHz。
@@ -28,6 +30,6 @@ python3 projects/138k/push2_workstation/usb_a/sim/audio/run_render_service.py \
   --project <实际 prepared Prj1> --output <不存在的新目录> --runtime-engines
 ```
 
-第一项把组合的所有公开输出逐拍对照实际 prepared 三个旧引擎，覆盖五音色、A/B/C 32 声部加 8 个 vector held 音符、pitch／glide／vibrato、poly pressure 和 release。随后检查保持状态的正反切换、忙时／事件／采样／PANIC 碰撞拒绝、取消尾部排空，以及从真实 vector PCM 独立拟合 440 Hz。
+第一项把组合的有序完成 PCM 和排空后的状态对照实际 prepared 三个旧引擎，覆盖五音色、A/B/C 32 声部加 8 个 vector held 音符、pitch／glide／vibrato、poly pressure 和 release。帧 ledger 检查无丢失／重复，不要求新增流水级与旧引擎逐拍完成。随后检查保持状态的正反切换、忙时／事件／采样／PANIC 碰撞拒绝、取消尾部排空，以及从真实 vector PCM 独立拟合 440 Hz。默认独立 oscillator 回归继续检查原 48 kHz 逐拍兼容。
 
 第二项运行完整既有效果链、真实 wet/feedback 与取消／load／事件压力，使用原 prepared event 作等价参考，同时确认完整 event 始终不承认 44.1。默认编译仍单独运行；两种编译都禁止 `UNOPTFLAT`。来源与结果见日期报告。

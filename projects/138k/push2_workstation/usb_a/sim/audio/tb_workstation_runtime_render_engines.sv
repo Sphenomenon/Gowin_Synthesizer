@@ -26,6 +26,10 @@ module tb_workstation_runtime_render_engines;
     integer panic_cases=0, max_latency=0, last_latency=0;
     integer audible_synth44=0;
     bit compare48=1;
+    integer synth_received=0,synth_reference_received=0,vector_received=0,vector_reference_received=0;
+    integer synth_paired=0,vector_paired=0;
+    logic signed [31:0] synth_queue[0:4095],synth_reference_queue[0:4095];
+    logic signed [63:0] vector_queue[0:4095],vector_reference_queue[0:4095];
 
     workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1)) dut (
         .clk_i(clk), .rst_ni(rst), .panic_i(panic), .sample_ce_i(ce),
@@ -74,15 +78,26 @@ module tb_workstation_runtime_render_engines;
     always @(negedge clk) begin
         clocks=clocks+1;
         if(rst && compare48) begin
-            if({pitch,mode_ready,current_mode,event_ready,expr_ready,vec_event_ready,synth_ready,vec_ready,
-                synth_valid,vec_valid,synth,left,right,allocated,active,count,vec_active,vec_count,
-                load_busy,mix_busy,vec_busy,issued,rejected,config_error,freq_error,clip} !==
-               {ref_pitch,ref_mode_ready,ref_current_mode,ref_event_ready,ref_expr_ready,ref_vec_event_ready,
-                ref_synth_ready,ref_vec_ready,ref_synth_valid,ref_vec_valid,ref_synth,ref_left,ref_right,
-                ref_allocated,ref_active,ref_count,ref_vec_active,ref_vec_count,ref_load_busy,ref_mix_busy,
-                ref_vec_busy,ref_issued,ref_rejected,ref_config_error,ref_freq_error,ref_clip})
-                $fatal(1,"combined48 reference mismatch clock=%0d",clocks);
-            compared=compared+1;
+            // Runtime arithmetic changes latency. Pair completed frames in
+            // order and compare stored state only after the real tails drain.
+            // The standalone default-call regression retains the original
+            // non-runtime48 per-cycle ready/busy/valid comparison.
+            if(synth_valid)begin synth_queue[synth_received]=synth;synth_received++;end
+            if(ref_synth_valid)begin synth_reference_queue[synth_reference_received]=ref_synth;synth_reference_received++;end
+            if(vec_valid)begin vector_queue[vector_received]={left,right};vector_received++;end
+            if(ref_vec_valid)begin vector_reference_queue[vector_reference_received]={ref_left,ref_right};vector_reference_received++;end
+            while(synth_paired<synth_received && synth_paired<synth_reference_received)begin
+                if(synth_queue[synth_paired]!==synth_reference_queue[synth_paired])$fatal(1,"combined48 synth frame mismatch");
+                synth_paired++;compared++;
+            end
+            while(vector_paired<vector_received && vector_paired<vector_reference_received)begin
+                if(vector_queue[vector_paired]!==vector_reference_queue[vector_paired])$fatal(1,"combined48 vector frame mismatch");
+                vector_paired++;compared++;
+            end
+            if(quiet && (synth_received!=synth_reference_received || vector_received!=vector_reference_received ||
+                {pitch,current_mode,allocated,active,count,vec_active,vec_count,rejected,config_error,freq_error} !==
+                {ref_pitch,ref_current_mode,ref_allocated,ref_active,ref_count,ref_vec_active,ref_vec_count,ref_rejected,ref_config_error,ref_freq_error}))
+                $fatal(1,"combined48 drained control/frame ledger mismatch clock=%0d",clocks);
         end
         if(rst && quiet && (dut.oscillator.u_sine_interp.valid_s0 || dut.oscillator.u_sine_interp.valid_s1 ||
             dut.oscillator.u_sine_interp.valid_s2 || dut.oscillator.u_sine_interp.valid_s3 ||
@@ -170,7 +185,7 @@ module tb_workstation_runtime_render_engines;
             scope=1;for(integer v=0;v<8;v=v+1)send(0,48+v);
             repeat(4)render(-1,0);
         end
-        $display("EQUIVALENCE combined48 clocks=%0d frames=%0d",compared,frames);
+        $display("EQUIVALENCE combined48 ordered_outputs=%0d frames=%0d",compared,frames);
         compare48=0;clear();glide=0;vibrato=0;target=1048576;morph=0;rotation=0;shape=0;profile=0;velocity=127;
         scope=0;send(1,60);scope=1;send(1,69);
         repeat(256)render(-1,0);
@@ -198,7 +213,7 @@ module tb_workstation_runtime_render_engines;
         @(negedge clk);rate_commit=0;busy_rejects=busy_rejects+1;idle();
         if(allocated!=1)$fatal(1,"busy commit destroyed accepted note");
         if(audible_synth44==0)$fatal(1,"native44 synth output never became audible");
-        $display("PASS runtime_render_engines: compared_clocks=%0d frames=%0d switches=%0d busy_rejects=%0d panic_cases=%0d max_latency=%0d audible_synth44=%0d",compared,frames,switches,busy_rejects,panic_cases,max_latency,audible_synth44);
+        $display("PASS runtime_render_engines: compared_outputs=%0d frames=%0d switches=%0d busy_rejects=%0d panic_cases=%0d max_latency=%0d audible_synth44=%0d",compared,frames,switches,busy_rejects,panic_cases,max_latency,audible_synth44);
         $finish;
     end
     initial begin #100000000;$fatal(1,"timeout");end

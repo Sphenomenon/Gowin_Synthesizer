@@ -35,6 +35,7 @@ def main():
     sources += [ROOT / name for name in (
         'rtl/music/music_async_fifo.sv', 'rtl/audio/gw138k_event_workstation.sv',
         'rtl/audio/workstation_audio_render_service.sv', 'rtl/audio/workstation_frame_delivery.sv',
+        'rtl/audio/workstation_runtime_div147.sv',
         'rtl/audio/workstation_rate_pitch_expression.sv', 'rtl/audio/workstation_runtime_oscillator_engine.sv',
         'rtl/audio/workstation_runtime_scope_vec.sv', 'rtl/audio/workstation_runtime_render_engines.sv',
         'rtl/audio/workstation_runtime_stereo_effects.sv', 'rtl/audio/workstation_runtime_chorus_effect.sv',

@@ -11,7 +11,8 @@ module workstation_runtime_scope_vec #(
     parameter ROTATION_FILE="rtl/audio/scope_vec/data/rotation.mem",
     parameter NOTE_FILE="rtl/audio/scope_vec/data/note_steps.mem",
     parameter ADSR_FILE="sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem",
-    parameter bit SEPARATE_OFF_NOTE=1'b0
+    parameter bit SEPARATE_OFF_NOTE=1'b0,
+    parameter bit PIPELINED_RATE=1'b0
 )(
     input wire clk_i,rst_ni,panic_i,sample_ce_i,rate_44k1_i,
     output wire sample_ready_o,
@@ -140,9 +141,89 @@ module workstation_runtime_scope_vec #(
     wire [34:0] effective_step=frame_44k1 ? 35'(rate_step_dividend/42'd147)
                                                       : {3'd0,pitch_product[51:20]};
     wire [34:0] step_limit=frame_44k1 ? {3'd0,MAX_STEP_44} : {3'd0,MAX_STEP};
-    assign sample_ready_o=state==0;
-    assign event_ready_o=state==0 && !sample_ce_i;
+    wire pipeline_quiet,phase_result_valid,coefficient_result_valid;
+    wire [6:0] phase_result_tag;
+    wire [34:0] registered_step;
+    wire registered_step_invalid;
+    wire [2:0] coefficient_index;
+    wire [23:0] registered_attack,registered_decay,registered_release;
+    assign sample_ready_o=state==0 && (!PIPELINED_RATE || pipeline_quiet);
+    assign event_ready_o=sample_ready_o && !sample_ce_i;
     assign busy_o=state!=0;
+    generate if(PIPELINED_RATE)begin:g_rate_pipeline
+        logic phase_scaled_valid,phase_dividend_valid,coefficient_numerator_valid;
+        logic [61:0] phase_scaled;
+        logic [41:0] phase_dividend;
+        logic [6:0] phase_scaled_tag,phase_dividend_tag;
+        wire [41:0] phase_quotient;
+        wire phase_quiet,attack_quiet,decay_quiet,release_quiet;
+        wire attack_valid,decay_valid,release_valid;
+        logic [31:0] attack_numerator,decay_numerator,release_numerator;
+        logic [2:0] numerator_index;
+        wire [31:0] attack_quotient,decay_quotient,release_quotient;
+        wire [2:0] incoming_index={|(free_select&8'hf0),|(free_select&8'hcc),|(free_select&8'haa)};
+        wire accepted_note=event_valid_i && event_ready_o && event_note_on_i && free_found &&
+            32'(event_shape_i)<SHAPES && 32'(event_morph_shape_i)<SHAPES && event_profile_i<5 &&
+            event_pitch_q20_i!=0 && event_velocity_i!=0 && !note_above_limit[event_note_i];
+        always @(posedge clk_i or negedge rst_ni)begin
+            if(!rst_ni)begin phase_scaled_valid<=0;phase_dividend_valid<=0;coefficient_numerator_valid<=0;end
+            else if(panic_i)begin phase_scaled_valid<=0;phase_dividend_valid<=0;coefficient_numerator_valid<=0;end
+            else begin
+                phase_scaled_valid<=state==3;
+                phase_dividend_valid<=phase_scaled_valid;
+                coefficient_numerator_valid<=accepted_note;
+            end
+        end
+        always @(posedge clk_i)begin
+            if(state==3 && !panic_i)begin
+                phase_scaled<=({8'd0,pitch_product}<<7)+({8'd0,pitch_product}<<5);
+                phase_scaled_tag<={frame_44k1,voice_index,own_overflow,pitch_product[53:52]};
+            end
+            if(phase_scaled_valid && !panic_i)begin
+                phase_dividend<=42'((phase_scaled+62'd77070336)>>20);
+                phase_dividend_tag<=phase_scaled_tag;
+            end
+            if(accepted_note && !panic_i)begin
+                attack_numerator<={8'd0,adsr_rom[{event_profile_i,2'b00}]}*32'd160+32'd73;
+                decay_numerator<={8'd0,adsr_rom[{event_profile_i,2'b00}+1]}*32'd160+32'd73;
+                release_numerator<={8'd0,adsr_rom[{event_profile_i,2'b00}+3]}*32'd160+32'd73;
+                numerator_index<=incoming_index;
+            end
+        end
+        workstation_runtime_div147 #(.WIDTH(42),.TAG_WIDTH(7)) phase_divider(
+            .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(phase_dividend_valid),.dividend_i(phase_dividend),
+            .tag_i(phase_dividend_tag),.valid_o(phase_result_valid),.quotient_o(phase_quotient),
+            .tag_o(phase_result_tag),.quiescent_o(phase_quiet));
+        workstation_runtime_div147 #(.WIDTH(32),.TAG_WIDTH(3)) attack_divider(
+            .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(coefficient_numerator_valid),.dividend_i(attack_numerator),
+            .tag_i(numerator_index),.valid_o(attack_valid),.quotient_o(attack_quotient),
+            .tag_o(coefficient_index),.quiescent_o(attack_quiet));
+        workstation_runtime_div147 #(.WIDTH(32)) decay_divider(
+            .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(coefficient_numerator_valid),.dividend_i(decay_numerator),
+            .tag_i(1'b0),.valid_o(decay_valid),.quotient_o(decay_quotient),.tag_o(),.quiescent_o(decay_quiet));
+        workstation_runtime_div147 #(.WIDTH(32)) release_divider(
+            .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(coefficient_numerator_valid),.dividend_i(release_numerator),
+            .tag_i(1'b0),.valid_o(release_valid),.quotient_o(release_quotient),.tag_o(),.quiescent_o(release_quiet));
+        assign registered_step=phase_result_tag[6] ? phase_quotient[34:0] : {3'd0,pitch_product[51:20]};
+        assign registered_step_invalid=(|phase_result_tag[2:0]) || registered_step>step_limit || registered_step==0;
+        assign registered_attack=attack_quotient>32'hffffff ? 24'hffffff : attack_quotient[23:0];
+        assign registered_decay=decay_quotient>32'hffffff ? 24'hffffff : decay_quotient[23:0];
+        assign registered_release=release_quotient>32'hffffff ? 24'hffffff : release_quotient[23:0];
+        assign coefficient_result_valid=attack_valid && decay_valid && release_valid;
+        assign pipeline_quiet=phase_quiet && attack_quiet && decay_quiet && release_quiet &&
+            !phase_scaled_valid && !phase_dividend_valid && !coefficient_numerator_valid;
+`ifndef SYNTHESIS
+        always @(posedge clk_i)if(rst_ni && !panic_i)begin
+            if(phase_result_valid && (state!=19 || phase_result_tag[5:3]!=voice_index))$fatal(1,"vector phase tag/state mismatch");
+            if(attack_valid!=decay_valid || attack_valid!=release_valid)$fatal(1,"vector envelope valid alignment");
+        end
+`endif
+    end else begin:g_rate_original
+        assign pipeline_quiet=1'b1,phase_result_valid=1'b0,coefficient_result_valid=1'b0;
+        assign phase_result_tag='0,registered_step='0,coefficient_index='0;
+        assign registered_step_invalid=1'b0;
+        assign registered_attack='0,registered_decay='0,registered_release='0;
+    end endgenerate
     initial begin
         if(VOICES!=8 || SHAPES<1 || SHAPES>8 || POINT_BITS<7 || POINT_BITS>9 ||
            SHAPES*POINTS*4>16384 || HARMONICS!=8 || MAX_SCAN_HZ!=2000)
@@ -242,9 +323,14 @@ module workstation_runtime_scope_vec #(
                             decay[j]<=adsr_rom[{event_profile_i,2'b00}+1];
                             sustain[j]<=adsr_rom[{event_profile_i,2'b00}+2];
                             release_step[j]<=adsr_rom[{event_profile_i,2'b00}+3];
-                            attack_44[j]<=incoming_attack_44;decay_44[j]<=incoming_decay_44;release_44[j]<=incoming_release_44;
+                            if(!PIPELINED_RATE)begin
+                                attack_44[j]<=incoming_attack_44;decay_44[j]<=incoming_decay_44;release_44[j]<=incoming_release_44;
+                            end
                             velocity[j]<={1'b0,event_velocity_i,event_velocity_i,event_velocity_i[6]};
                         end
+                        if(PIPELINED_RATE && free_found &&
+                            32'(event_shape_i)<SHAPES && 32'(event_morph_shape_i)<SHAPES && event_profile_i<5 &&
+                            event_pitch_q20_i!=0 && event_velocity_i!=0 && !note_above_limit[event_note_i])state<=18;
                     end else for(j=0;j<VOICES;j=j+1) if(release_select[j]) env_state[j]<=RELEASE;
                 end
                 case(state)
@@ -284,11 +370,24 @@ module workstation_runtime_scope_vec #(
                         state<=2;
                     end
                     2:begin pitch_product<=own_product[51:20]*frame_pitch;own_overflow<=|own_product[53:52];state<=3;end
-                    3:begin
+                    3:if(PIPELINED_RATE)state<=19;else begin
                         if(own_overflow || pitch_product[53:52]!=0 || effective_step>step_limit || effective_step==0) begin
                             if(frame_active[voice_index]) begin frequency_error_o<=1;frame_frequency_error<=1;end
                         end else phase[voice_index]<=phase[voice_index]+effective_step[31:0];
                         if(envelope[voice_index]>frame_envelope_max) frame_envelope_max<=envelope[voice_index];
+                        state<=4;
+                    end
+                    18:if(coefficient_result_valid)begin
+                        attack_44[coefficient_index]<=registered_attack;
+                        decay_44[coefficient_index]<=registered_decay;
+                        release_44[coefficient_index]<=registered_release;
+                        state<=0;
+                    end
+                    19:if(phase_result_valid)begin
+                        if(registered_step_invalid)begin
+                            if(frame_active[phase_result_tag[5:3]])begin frequency_error_o<=1;frame_frequency_error<=1;end
+                        end else phase[phase_result_tag[5:3]]<=phase[phase_result_tag[5:3]]+registered_step[31:0];
+                        if(envelope[voice_index]>frame_envelope_max)frame_envelope_max<=envelope[voice_index];
                         state<=4;
                     end
                     4:state<=5;

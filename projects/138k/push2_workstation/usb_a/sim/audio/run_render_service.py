@@ -49,6 +49,7 @@ def main():
                 Path(__file__).with_name('tb_workstation_audio_render_service.sv')]
     if args.runtime_engines:
         sources += [ROOT / ('rtl/audio/' + name) for name in (
+            'workstation_runtime_div147.sv',
             'workstation_rate_pitch_expression.sv', 'workstation_runtime_oscillator_engine.sv',
             'workstation_runtime_scope_vec.sv', 'workstation_runtime_render_engines.sv')]
     inputs = [*sources, reference, Path(__file__).resolve()]
