@@ -94,6 +94,8 @@
 
 [owner8 双客户端未选择源组件](push2_workstation/usb_a/reports/WORKSTATION_RECORDING_OWNER_MUX_SOURCE_20261030.md)已通过父级 1,937 checks／八突变及独立 496 checks／四突变，保留 native commit 与读归属、轮转和故障隔离。新增外部 channel-ready 资格要求，局部复位后错误重新开放仍可能误认旧无标签返回，未声称物理排空已解决。尚未分配实际 CPU／BLE 子区或选入整机，无综合、资源净收益、完整 CDC／STA 或硬件接受；R00／R01／R02 保持未完成，未部署。
 
+[PCM v2 父级组合](push2_workstation/usb_a/reports/WORKSTATION_PCM_REPLY_NEXT_Q_MAIN_INTEGRATION_20261030.md)已把 D／CE 配对约束接回四种显式 profile；父级实际 VG 18 项／109 负控、独立 1,048,576 次真值求值／七负控通过。四份新 prepare 各 12 项来源回归通过，staged 仅 SDC 变化；Profile 20 项通过（旧默认配置可选项一项跳过）、accepted 17 项通过。第一轮 inactive mux 快照漂移失败保留，重建后通过。新 no-panel `7d1c3b9b464ff722` 已复制封存并综合返回 0，584 输入保持、无 AG 诊断，实际 VG 安装检查另行运行，不继承旧 e855／FE 身份；完整 CDC／reset／RAM／物理／实板未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

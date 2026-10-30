@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-30T12:52:22.995985+00:00",
+  "source_sha256": {
+    "tools/workstation_runtime_pcm_cdc.py": "159d41337f4bf5e0d7ddcb179b8891faa68a3a4445535deb3fcc2b4260c88b10",
+    "tools/WORKSTATION_RUNTIME_PCM_CDC.md": "b47fd75bec47f85d37c05aa8226925eced17d88e1d9caf63d750ecb1b14b1c70",
+    "sim/test_workstation_runtime_pcm_cdc.py": "5bbf234658caa9c7ba7dba0e1755e04512987eb47824bda4b5f61016b280d445"
+  },
+  "profile_locks": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": {
+      "sha256": "d735767b54684b6eb0ab2006d2cb780ff98e1282b4883f18719ae82849da6fd2",
+      "changed_source_locks": [
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_pcm_cdc.py",
+        "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_PCM_CDC.md",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py"
+      ],
+      "only_hashes_changed": true
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json": {
+      "sha256": "9a1f3767582190ff7813d0e304c8b1ad48ea603dfef34e5ffbda3a5fde0303a4",
+      "changed_source_locks": [
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_pcm_cdc.py",
+        "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_PCM_CDC.md",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py"
+      ],
+      "only_hashes_changed": true
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": {
+      "sha256": "cc59273713786f57e1c539de70a84d65043c77f93ae975e53e0640c00f7c51e2",
+      "changed_source_locks": [
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_pcm_cdc.py",
+        "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_PCM_CDC.md",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py"
+      ],
+      "only_hashes_changed": true
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": {
+      "sha256": "48164038c47c7edf30ede8abe088257c44d0a1ebc9b24ff79a79c77b6002c294",
+      "changed_source_locks": [
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_pcm_cdc.py",
+        "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_PCM_CDC.md",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py"
+      ],
+      "only_hashes_changed": true
+    }
+  },
+  "prepares": {
+    "enabled": {
+      "candidate": "custom138k-workstation-v1-eb158105fdf2c4e9",
+      "staged_inputs": 571,
+      "enabled_inputs": 260,
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-enabled-prepare-v2/workstation_profile.json",
+        "sha256": "fecafa798b8b848edc225692824aac68a62f56f7d4d5567fd232ddc80863f264"
+      },
+      "validation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-enabled-prepare-v2-validation.json",
+        "sha256": "b131a7581dd91bd04faf6b25f0c2ba86d99e5772a9494a7a50c1f3b49f8a9f9b"
+      },
+      "changed_staged_files_vs_alias": [
+        "constraints/custom_138k.sdc"
+      ],
+      "byte_identical_to_first_pcm_v2_prepare": true,
+      "source_tests": 12
+    },
+    "no-cnn": {
+      "candidate": "custom138k-workstation-no-cnn-v1-42f4d601a5ad18da",
+      "staged_inputs": 572,
+      "enabled_inputs": 260,
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-no-cnn-prepare-v2/workstation_profile.json",
+        "sha256": "bc889ae5638ab880e64266fdba0f1279042f2e3fc0a6fbc2b3cb0a740f6fef33"
+      },
+      "validation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-no-cnn-prepare-v2-validation.json",
+        "sha256": "014bc75877c9fd456a066ebd3ef6d643b532a88a5d63abaf0f00580829292d5c"
+      },
+      "changed_staged_files_vs_alias": [
+        "constraints/custom_138k.sdc"
+      ],
+      "byte_identical_to_first_pcm_v2_prepare": true,
+      "source_tests": 12
+    },
+    "r00": {
+      "candidate": "custom138k-workstation-r00-v1-d0d19715318eb2d9",
+      "staged_inputs": 584,
+      "enabled_inputs": 267,
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-r00-prepare-v2/workstation_profile.json",
+        "sha256": "4dab1309cdef16e60b5ed43392a063e8cf3c4d24b00d2d8d72a7ba252e436256"
+      },
+      "validation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-r00-prepare-v2-validation.json",
+        "sha256": "2e2f9a1f686fc6348a0135fdb9d4c819b8e11e4e4b1b2dc2942c2ce4b5a5e000"
+      },
+      "changed_staged_files_vs_alias": [
+        "constraints/custom_138k.sdc"
+      ],
+      "byte_identical_to_first_pcm_v2_prepare": true,
+      "source_tests": 12
+    },
+    "off": {
+      "candidate": "custom138k-workstation-r00-no-local-panel-v1-7d1c3b9b464ff722",
+      "staged_inputs": 584,
+      "enabled_inputs": 266,
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-off-prepare-v2/workstation_profile.json",
+        "sha256": "c4edbb1b95b3764d7615a6b0840b28d6926356b8eaded92cdc8c03dd19a8c9e4"
+      },
+      "validation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-off-prepare-v2-validation.json",
+        "sha256": "51ac4c9410fee5620a8ddc90b76f960da4b5f0c1dea71d15d44c6d690ebb2c0e"
+      },
+      "changed_staged_files_vs_alias": [
+        "constraints/custom_138k.sdc"
+      ],
+      "byte_identical_to_first_pcm_v2_prepare": true,
+      "source_tests": 12
+    }
+  },
+  "parent_e855": {
+    "actual_tests": 18,
+    "negative_controls": 109,
+    "actual_legacy_reply_uncovered": 29,
+    "audit": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-e855-negatives-v1.json",
+      "sha256": "82f3c62c0974add0db4ebf9c589d50b994cafdf53e4f19760557b2fa72549162"
+    }
+  },
+  "independent": {
+    "manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/independent-pcm-d-ce-review-e855-v1/handoff_manifest.json",
+      "sha256": "15f3d7b78518fbed4c7bf627428098e2d87a311f74d634e5808ea71af8c73582"
+    },
+    "truth_evaluations": 1048576,
+    "additional_negatives": 7
+  },
+  "validation_logs": {
+    "pcm-v2-parent-e855-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-e855-tests-v1.log",
+      "sha256": "ec1771857a5752a358922341ca8bf663788a941ca3895a59c347c8276e28e081"
+    },
+    "pcm-v2-parent-accepted-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-accepted-tests-v1.log",
+      "sha256": "7975fe786ecff8dfbefb7a3e105037467441a465a6796678b041e1570877e083"
+    },
+    "pcm-v2-parent-profile-tests-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-profile-tests-v2.log",
+      "sha256": "c40769bf42eed5e7bb7778aceaa38f6844c2c096bd5d206384d40f09f5d8447a"
+    }
+  },
+  "profile_optional_skip": "LegacyDefaultOff requires GW138K_PROFILE_LEGACY_PREPARED; not supplied",
+  "initial_profile_failure": {
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-parent-profile-tests-v1.log",
+      "sha256": "0506f139a4b6a9d0bf92a7f5fc53c42fc505694a130c6fe4786494a12c21d0eb"
+    },
+    "cause": "inactive maintained owner8 mux changed after prepare; exact snapshot drift rejected",
+    "path": "rtl/memory/workstation_recording_ddr_owner_mux.sv",
+    "old_sha256": "ae487a647e96bc1930a20b21d95b0689e50b29f5530d5476762fed868b4f1f93",
+    "new_sha256": "2af5a52d3bf9c67f93eef803e07bd9b9e636c1f65348676289dc13b487e76bf5",
+    "recovery": "fresh four prepares v2 and profile/source retest; staged bytes identical to v1"
+  },
+  "synthesis": {
+    "started": true,
+    "completed": true,
+    "copy": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-no-panel-synthesis-7d1c3b9b/synthesis_copy.json",
+      "sha256": "14a90649c71b365977dc85905abaf70ec432e94a234308ab4049c02fc9aae5ca"
+    },
+    "directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-no-panel-synthesis-7d1c3b9b",
+    "exit_code": 0,
+    "elapsed_seconds": 364.2680481658317,
+    "inputs_unchanged": true,
+    "structural_AG_diagnostics": [],
+    "process": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-no-panel-synthesis-7d1c3b9b/runtime_synthesis_evidence/process.json",
+      "sha256": "9d90a33c79cc0856c3c07b2932cb819ce8e9bf3931b9001dee143d9423f74a90"
+    },
+    "actual_VG_audit_accepted": false,
+    "place_route_run": false
+  },
+  "constraints_complete": false,
+  "reset_inventory_complete": false,
+  "physical_cdc_accepted": false,
+  "physical_implementation_accepted": false,
+  "hardware_operated": false,
+  "sram_deployed": false,
+  "flash_written": false,
+  "release_ready": false,
+  "deployment_allowed": false
+}

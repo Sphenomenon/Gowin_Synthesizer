@@ -1,0 +1,395 @@
+{
+  "actual_profiles": [
+    {
+      "actual_reply_ce_pins": 160,
+      "actual_reply_d_pins": 103,
+      "audit_file": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/registered-sealed-source-audit-v2.json",
+      "audit_sha256": "ab5b64003af0c0459f14599f8041ee33784480abfa44098fe107e0ede7360623",
+      "candidate_identity": "custom138k-workstation-v1-1aea3c01fa6c1b14",
+      "complete_closure_counts": [
+        65,
+        263,
+        141,
+        207
+      ],
+      "constraint_installation": {
+        "candidate_constraints_installed": false,
+        "constraint_revision": "legacy-v1",
+        "current_paired_constraint_revision": "paired-nextq-v2",
+        "legacy_constraints_installed": true,
+        "proposal_only": false,
+        "reviewed_line_count": 50,
+        "routed_propagation_verified": false,
+        "selected_constraint_bundle_installed": true,
+        "selected_constraint_capture_coverage_verified": true,
+        "static_exception_scan_verified": true,
+        "tool_query_resolution_verified": false,
+        "uncovered_payload_pins": {
+          "context": [],
+          "reply": [],
+          "request": [],
+          "serial-context": []
+        }
+      },
+      "next_q": {
+        "all_assignments": true,
+        "bdd_node_count": 10473,
+        "flexible_consumer_register_count": 32,
+        "named_inputs": 99,
+        "proved_register_count": 33,
+        "sampling_used": false
+      },
+      "prepared_profile_sha256": "b76e2152a26a12420901f21ff3c67c149a56227d39d305aefd31a30ae671ea4e",
+      "process": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-registered-levels-synthesis-1aea3c01/runtime_synthesis_evidence/process.json",
+      "process_sha256": "650f4ac5dad19cdf4ba86e04e87bc6a52e980bd9e9cdc3e33a0c95e7a6b5cecf",
+      "profile": "registered",
+      "regression": {
+        "corrected_closure_test_exit_code": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/registered-tests-v2.json",
+        "evidence_sha256": "31090f76e300f69ae9be6d8f243aace6d92691199053464e92491b6be1b41ff5",
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/registered-tests-v2.log",
+        "log_sha256": "d9e3213022a13488a0b223df895e880aaf30ead1241dc856e68f85524f542385",
+        "negative_control_count": 109,
+        "test_count": 18,
+        "tests_source_sha256": "5bbf234658caa9c7ba7dba0e1755e04512987eb47824bda4b5f61016b280d445"
+      },
+      "reply_consumer_ff_count": 197,
+      "resolved_selector_count": 896,
+      "source_identity": "runtime-pcm-context-source-v2-0c0c88e45cfbb12d",
+      "source_seal_before_and_after": true,
+      "stage": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-registered-levels-synthesis-1aea3c01/workstation/Prj1",
+      "staged_input_count": 570,
+      "staged_input_hashes_sha256": "108a294dd6d7c7ec1ada05b820d683b2ea07b55ebd254a5ea81283d9811fe726",
+      "vg_sha256": "b8bd2a02e7f073593a9c8e5d7ee8cd15379c779acbbe152a1b901664d5f724b3"
+    },
+    {
+      "actual_reply_ce_pins": 160,
+      "actual_reply_d_pins": 103,
+      "audit_file": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/no-cnn-sealed-source-audit-v2.json",
+      "audit_sha256": "cf1f65695e40845463bc7d82ded393cc02f1d2c50e0e592a39d00fa32013b171",
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-525ffff10d622031",
+      "complete_closure_counts": [
+        65,
+        263,
+        141,
+        207
+      ],
+      "constraint_installation": {
+        "candidate_constraints_installed": false,
+        "constraint_revision": "legacy-v1",
+        "current_paired_constraint_revision": "paired-nextq-v2",
+        "legacy_constraints_installed": true,
+        "proposal_only": false,
+        "reviewed_line_count": 50,
+        "routed_propagation_verified": false,
+        "selected_constraint_bundle_installed": true,
+        "selected_constraint_capture_coverage_verified": true,
+        "static_exception_scan_verified": true,
+        "tool_query_resolution_verified": false,
+        "uncovered_payload_pins": {
+          "context": [],
+          "reply": [],
+          "request": [],
+          "serial-context": []
+        }
+      },
+      "next_q": {
+        "all_assignments": true,
+        "bdd_node_count": 13931,
+        "flexible_consumer_register_count": 32,
+        "named_inputs": 101,
+        "proved_register_count": 33,
+        "sampling_used": false
+      },
+      "prepared_profile_sha256": "a199b6ef13d4f5223392a8cf0b162179e9b629095257ec2d8a57c5cbe872b33d",
+      "process": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-synthesis-525ffff1/runtime_synthesis_evidence/process.json",
+      "process_sha256": "f209022bfe86cde0b760e345bde0e405a514025cf98c6de91dd9bd33044cb7ec",
+      "profile": "no-cnn",
+      "regression": {
+        "corrected_closure_test_exit_code": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/no-cnn-tests-v2.json",
+        "evidence_sha256": "01216486f6b209700d794f8e6b02958cc58f0b58c88a7bf6c295b54d771a4e02",
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/no-cnn-tests-v2.log",
+        "log_sha256": "17b543d200c209990006f3b1073579a7cf7b40a2d3742cbabb279e133200eebf",
+        "negative_control_count": 109,
+        "test_count": 18,
+        "tests_source_sha256": "5bbf234658caa9c7ba7dba0e1755e04512987eb47824bda4b5f61016b280d445"
+      },
+      "reply_consumer_ff_count": 197,
+      "resolved_selector_count": 896,
+      "source_identity": "runtime-pcm-context-source-v2-d0037aa8f46a10d3",
+      "source_seal_before_and_after": true,
+      "stage": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-synthesis-525ffff1/workstation/Prj1",
+      "staged_input_count": 571,
+      "staged_input_hashes_sha256": "eaa607a31943ac1dd6553d16579aa655b71b023abdbfe146f1bce23aaab1fcbb",
+      "vg_sha256": "37c811ffcc0a0ae2ce55aa66550c95bec8bb04cc7fc92aa69c1cc7c17d6f3f4f"
+    },
+    {
+      "actual_reply_ce_pins": 133,
+      "actual_reply_d_pins": 130,
+      "audit_file": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/r00-sealed-source-audit-v2.json",
+      "audit_sha256": "f3538bf6b37ee64c695d27957898b05efd991354c6824f9647529ece00cb4645",
+      "candidate_identity": "custom138k-workstation-r00-v1-b9a2e0fdf36970be",
+      "complete_closure_counts": [
+        65,
+        263,
+        141,
+        207
+      ],
+      "constraint_installation": {
+        "candidate_constraints_installed": false,
+        "constraint_revision": "legacy-v1",
+        "current_paired_constraint_revision": "paired-nextq-v2",
+        "legacy_constraints_installed": true,
+        "proposal_only": false,
+        "reviewed_line_count": 50,
+        "routed_propagation_verified": false,
+        "selected_constraint_bundle_installed": true,
+        "selected_constraint_capture_coverage_verified": false,
+        "static_exception_scan_verified": true,
+        "tool_query_resolution_verified": false,
+        "uncovered_payload_pins": {
+          "context": [],
+          "reply": [
+            "u_managed/runtime/serializer/underrun_count_o_0_s0/CE",
+            "u_managed/runtime/serializer/wanted_sequence_10_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_11_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_12_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_13_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_14_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_15_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_16_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_17_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_18_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_19_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_1_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_20_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_21_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_22_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_23_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_24_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_25_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_26_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_27_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_28_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_29_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_30_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_4_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_5_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_6_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_7_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_8_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_9_s1/D"
+          ],
+          "request": [],
+          "serial-context": []
+        }
+      },
+      "next_q": {
+        "all_assignments": true,
+        "bdd_node_count": 10465,
+        "flexible_consumer_register_count": 32,
+        "named_inputs": 99,
+        "proved_register_count": 33,
+        "sampling_used": false
+      },
+      "prepared_profile_sha256": "9f20979726dac1149d263bf6726f1148fec56a05aea954e9ceb9d002db5ac288",
+      "process": "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-synthesis-b9a2e0fd/runtime_synthesis_evidence/process.json",
+      "process_sha256": "46a3ea5d974e78a13352b84befdb1c388f109fec72c933a5768a74ae01dc0326",
+      "profile": "r00",
+      "regression": {
+        "corrected_closure_test_exit_code": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/r00-tests-v2.json",
+        "evidence_sha256": "b97c6de23f3673f039a9d5a6452e654ef88c72aa9d14827a2d62d13d45c404ac",
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/r00-tests-v2.log",
+        "log_sha256": "264e5499bd37083dd27af21ceb8280c42267b69ae319d699f17ad667e45d5561",
+        "negative_control_count": 109,
+        "test_count": 18,
+        "tests_source_sha256": "5bbf234658caa9c7ba7dba0e1755e04512987eb47824bda4b5f61016b280d445"
+      },
+      "reply_consumer_ff_count": 197,
+      "resolved_selector_count": 896,
+      "source_identity": "runtime-pcm-context-source-v2-6af6e2096cf7085a",
+      "source_seal_before_and_after": true,
+      "stage": "/Users/sphenicidition/.cache/gw138k-task-20261030/render-pipeline-parent-synthesis-b9a2e0fd/workstation/Prj1",
+      "staged_input_count": 584,
+      "staged_input_hashes_sha256": "1a5b5c7cac2a8b21a5630432c5db2d3df873a92daca5f0d171b69dab8bc1b51b",
+      "vg_sha256": "f71d0328da2a5dc2c5487ece298d38ab59761aa97ca76c6bdb80d6bce7f9dc80"
+    },
+    {
+      "actual_reply_ce_pins": 133,
+      "actual_reply_d_pins": 130,
+      "audit_file": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/e855-sealed-source-audit-v2.json",
+      "audit_sha256": "666c23f704dc641c5329a6eb9ee25160db61d3bcbeb2d515c8c71c7338b3794f",
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-e855a1e8a8e6f181",
+      "complete_closure_counts": [
+        65,
+        263,
+        141,
+        207
+      ],
+      "constraint_installation": {
+        "candidate_constraints_installed": false,
+        "constraint_revision": "legacy-v1",
+        "current_paired_constraint_revision": "paired-nextq-v2",
+        "legacy_constraints_installed": true,
+        "proposal_only": false,
+        "reviewed_line_count": 50,
+        "routed_propagation_verified": false,
+        "selected_constraint_bundle_installed": true,
+        "selected_constraint_capture_coverage_verified": false,
+        "static_exception_scan_verified": true,
+        "tool_query_resolution_verified": false,
+        "uncovered_payload_pins": {
+          "context": [],
+          "reply": [
+            "u_managed/runtime/serializer/underrun_count_o_0_s0/CE",
+            "u_managed/runtime/serializer/wanted_sequence_10_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_11_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_12_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_13_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_14_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_15_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_16_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_17_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_18_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_19_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_1_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_20_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_21_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_22_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_23_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_24_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_25_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_26_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_27_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_28_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_29_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_30_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_4_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_5_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_6_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_7_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_8_s1/D",
+            "u_managed/runtime/serializer/wanted_sequence_9_s1/D"
+          ],
+          "request": [],
+          "serial-context": []
+        }
+      },
+      "next_q": {
+        "all_assignments": true,
+        "bdd_node_count": 10465,
+        "flexible_consumer_register_count": 32,
+        "named_inputs": 99,
+        "proved_register_count": 33,
+        "sampling_used": false
+      },
+      "prepared_profile_sha256": "207cd06329a30dd60020836b32f2a10d407c72d61d5245bec6341e74e2684942",
+      "process": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-tag-ram-no-local-panel-synthesis-e855a1e8/runtime_synthesis_evidence/process.json",
+      "process_sha256": "82966b1920714eddfe58be16162a7b8c198dc3fb2350081720d8c12333e8d050",
+      "profile": "e855",
+      "regression": {
+        "corrected_closure_test_exit_code": 0,
+        "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/e855-tests-v2.json",
+        "evidence_sha256": "d9316c1db717e6821a6260a36928f97f2eb48b38195de58acaf032d6b82c229d",
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/e855-tests-v2.log",
+        "log_sha256": "18a53421d86b10f210b1eab17e75ac8f0d965ab9b99f49e67fe496e373910fc7",
+        "negative_control_count": 109,
+        "test_count": 18,
+        "tests_source_sha256": "5bbf234658caa9c7ba7dba0e1755e04512987eb47824bda4b5f61016b280d445"
+      },
+      "reply_consumer_ff_count": 197,
+      "resolved_selector_count": 896,
+      "source_identity": "runtime-pcm-context-source-v2-6c03dc52f91285ef",
+      "source_seal_before_and_after": true,
+      "stage": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-tag-ram-no-local-panel-synthesis-e855a1e8/workstation/Prj1",
+      "staged_input_count": 584,
+      "staged_input_hashes_sha256": "8097ea7212dea263a2bf6bd9881796f07413076fc1e1453599b465eddb7601f2",
+      "vg_sha256": "086d2504f1287e226fd55641a3e68c52f632dd91e87044b849a7a29af38ba02e"
+    }
+  ],
+  "audit_sources": {
+    "sim/test_workstation_runtime_pcm_cdc.py": "5bbf234658caa9c7ba7dba0e1755e04512987eb47824bda4b5f61016b280d445",
+    "tools/WORKSTATION_RUNTIME_PCM_CDC.md": "b47fd75bec47f85d37c05aa8226925eced17d88e1d9caf63d750ecb1b14b1c70",
+    "tools/workstation_runtime_pcm_cdc.py": "159d41337f4bf5e0d7ddcb179b8891faa68a3a4445535deb3fcc2b4260c88b10"
+  },
+  "base_git_revision": "f6bf5ec28f8bd86ecac6d76d27a64ec3c5b484a5",
+  "constraints_complete": false,
+  "date": "2026-10-30",
+  "deployment_allowed": false,
+  "eda_invoked": false,
+  "f1be_pre_registered_rejection": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/f1be-pre-registered-rejection.json",
+    "result": {
+      "after": {
+        "accepted": false,
+        "error": "runtime PCM CDC audit: exact register missing/duplicate: u_managed/runtime/clocks/transaction/quiesce_o"
+      },
+      "before": {
+        "accepted": false,
+        "error": "runtime PCM CDC audit: exact register missing/duplicate: u_managed/runtime/clocks/transaction/quiesce_o"
+      },
+      "original_git_revision": "f6bf5ec28f8bd86ecac6d76d27a64ec3c5b484a5",
+      "original_helper_sha256": "71011473aba9cb684b26bdf7c50edbb9ef49d2dfcda980991d319f3999c16c4c",
+      "same_expected_rejection": true,
+      "stage": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1",
+      "vg_sha256": "8fc53d099ebead55ca3926c8d4b2b45b3504fcb1ac1ed5dbcaa1b6e1a1834535"
+    },
+    "sha256": "6615de0ff9133fe4a8a737acc799f4e8321fb57e9aec57a75dd8bf742e6afa25"
+  },
+  "flash_written": false,
+  "hardware_tested": false,
+  "independent_eligibility_negative": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/eligibility-independent-negative.json",
+    "result": {
+      "case": "duplicated fault eligibility gate inverted without changing dependency closure",
+      "changed_init": "8'hBF",
+      "error": "runtime PCM CDC audit: Boolean contract changed: request eligibility actual renderer state",
+      "gate": "u_managed/runtime/bridge/n3019_s5",
+      "original_init": "8'h40",
+      "rejected": true,
+      "vg_sha256": "086d2504f1287e226fd55641a3e68c52f632dd91e87044b849a7a29af38ba02e"
+    },
+    "sha256": "3f027c51956c620549b4f1b1ce0fe0abc887677a1ff710fdabdde57daf5ffa2c"
+  },
+  "initial_fixture_failure": {
+    "auditor_unchanged_during_fixture_repair": true,
+    "cause": "new MEM negative used nonexistent held_reply alias; corrected using actual raw Q bindings; third/both pin tests now use serializer-local verified reply alias and assert exact rejection reason",
+    "preserved_logs": [
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/registered-tests.log",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/no-cnn-tests.log",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/r00-tests.log",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/e855-tests.log"
+    ]
+  },
+  "paired_constraint_proposal": {
+    "changed_legacy_line_indexes_zero_based": [
+      2,
+      3
+    ],
+    "fresh_prepare_performed": false,
+    "line_count": 50,
+    "max_delay_ns": 13.02,
+    "new_async_reset_cuts": false,
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-reply-d-ce-v2-review/paired-nextq-v2.sdc",
+    "production_selected": false,
+    "reply_ce_pins": 161,
+    "reply_constraint_pin_count": 295,
+    "reply_d_pins": 134,
+    "sha256": "59228e6ceca5e10abd69665d5c1d0b65943b1b1e6dcd8c2f8a832b921dcd95c1"
+  },
+  "physical_cdc_accepted": false,
+  "policy": "native-runtime-pcm-context-cdc-v2",
+  "production_profile_or_source_lock_modified": false,
+  "release_ready": false,
+  "reset_inventory_complete": false,
+  "schema": 1,
+  "scope": "partial PCM/context source audit and paired reply constraints proposal; no production selection",
+  "sram_programmed": false,
+  "stage_files_modified": false
+}

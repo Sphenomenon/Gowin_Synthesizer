@@ -24,7 +24,8 @@ from tools.workstation_runtime_clock_audit import (
 from tools.workstation_synthesis_netlist import IDENTIFIER, SynthesisNetlist
 
 TOP = 'workstation_custom_138k_top'
-POLICY = 'native-runtime-pcm-context-cdc-v1'
+POLICY = 'native-runtime-pcm-context-cdc-v2'
+CONSTRAINT_REVISIONS = ('paired-nextq-v2', 'legacy-v1')
 R = 'u_managed/runtime'
 B, Z, T = R + '/bridge', R + '/serializer', R + '/clocks/transaction'
 AUDIT_SOURCES = (*CLOCK_SOURCES, 'tools/workstation_custom_usb2_cdc.py',
@@ -43,6 +44,11 @@ REPLY = (ref(Z, 'current_error'), ref(Z, 'current_pcm', 32), ref(Z, 'current_seq
          ref(Z, 'request_sequence_o', 32, 'CE'), ref(Z, 'underrun_count_o', 1),
          ref(Z, 'underrun_count_o', 31, 'CE', 1), ref(Z, 'wanted_sequence', 1),
          ref(Z, 'wanted_sequence', 31, 'CE', 1))
+# Only these already registered consumers may migrate between D and CE.
+# Their effective next-Q is independently proved below. All other closure pins
+# remain exact, and each flexible FF must still have exactly one actual pin.
+REPLY_FLEX = (ref(Z, 'underrun_count_o', 1), ref(Z, 'wanted_sequence', 31, start=1))
+REPLY_PAIRED = REPLY + (ref(Z, 'underrun_count_o', 1, 'CE'), ref(Z, 'wanted_sequence', 31, start=1))
 CONTEXT = (ref(R, 'pending_rate'), ref(R, 'pending_epoch', 32))
 SERIAL = (ref(R, 'serial_rate'), ref(R, 'serial_epoch', 32))
 READY_FIRST = (ref(R, 'serial_context_ready', 1),)
@@ -55,7 +61,7 @@ LOCAL = (ref(T, 'active_44k1_o', port='CE'), ref(T, 'active_valid_o'), ref(T, 'a
          ref(R, 'context_payload', 33, 'CE'), ref(R, 'context_sent', port='CE'), ref(R, 'context_toggle'))
 PAYLOADS = (
     ('request', (ref(B, 'held_request', 65, 'Q'),), REQUEST, REQUEST, 'selected', 'compute', 13.020, 2),
-    ('reply', (ref(B, 'held_reply', 98, 'Q'),), REPLY, REPLY, 'compute', 'selected', 13.020, 2),
+    ('reply', (ref(B, 'held_reply', 98, 'Q'),), REPLY_PAIRED, REPLY, 'compute', 'selected', 13.020, 2),
     ('context', (ref(R, 'context_payload', 33, 'Q'),), CONTEXT,
      CONTEXT + READY_FIRST + LOCAL, 'control', 'compute', 13.020, 3),
     ('serial-context', (ref(T, 'pending_44k1', port='Q'), ref(T, 'pending_epoch', 32, 'Q')), SERIAL,
@@ -103,13 +109,16 @@ def selectors(refs):
             for scope, stem, bits, pin in refs for bit in (bits if bits is not None else (None,))]
 
 
-def runtime_pcm_cdc_bundle(root):
+def runtime_pcm_cdc_bundle(root, *, constraint_revision=CONSTRAINT_REVISIONS[0]):
+    require(constraint_revision in CONSTRAINT_REVISIONS, 'unknown constraint revision')
     clocks = clock_bundle(root)['plan']
     hz = {x['name']: x['frequency_hz'] for x in (*clocks['primary'], *clocks['generated'])}
     require(hz['audio_76m8'] == 76800000 and hz['clk_50m'] == 50000000,
             'reviewed destination/launch budgets require unchanged clocks')
     lines, groups = [], []
     for name, source, capture, closure, origin, destination, budget, edges in PAYLOADS:
+        if name == 'reply' and constraint_revision == 'legacy-v1':
+            capture = REPLY
         src, dst = selectors(source), selectors(capture)
         path = '-from ' + query(' '.join(src)) + ' -to ' + query(' '.join(dst))
         lines.extend((f'set_max_delay {budget:.3f} {path}', 'set_false_path -hold ' + path))
@@ -128,7 +137,7 @@ def runtime_pcm_cdc_bundle(root):
             lines.append('set_max_delay 2.000 -from ' + query(pattern(s0, f0, 'Q')) +
                          ' -to ' + query(pattern(s1, f1, 'D')))
     require(len(lines) == 50, 'constraint inventory changed')
-    return dict(policy=POLICY, source='tools/workstation_runtime_pcm_cdc.py',
+    return dict(policy=POLICY, constraint_revision=constraint_revision, source='tools/workstation_runtime_pcm_cdc.py',
         source_sha256=file_sha(Path(root) / 'tools/workstation_runtime_pcm_cdc.py'),
         payload_groups=groups, synchronization_groups=16, global_release_groups=5,
         sdc='\n'.join(lines) + '\n', source_policy='native maintained bridge/context/serializer composition; fail on endpoint or contract drift',
@@ -366,6 +375,100 @@ class Graph:
         return outputs
 
 
+class BooleanDiagram:
+    """Reduced ordered BDD, with exact LUT truth tables and named leaf inputs.
+
+    Nodes 0/1 are constants. Shannon expansion and unique (variable, low, high)
+    nodes give a canonical Boolean function for the fixed variable ordering.
+    This avoids enumerating the 32-bit increment/saturation state space. There
+    is no sampling, register abstraction, ALU approximation or unknown leaf.
+    """
+    def __init__(self, inputs):
+        require(len(inputs) == len(set(inputs)) <= 120, 'next-Q named input inventory')
+        self.nodes, self.unique, self.cache = [None, None], {}, {}
+        self.inputs = {net: self.node(i, 0, 1) for i, net in enumerate(inputs)}
+
+    def node(self, variable, low, high):
+        if low == high:
+            return low
+        key = (variable, low, high)
+        if key not in self.unique:
+            require(len(self.nodes) < 200000, 'next-Q BDD exceeds reviewed node bound')
+            self.unique[key] = len(self.nodes)
+            self.nodes.append(key)
+        return self.unique[key]
+
+    def choose(self, condition, yes, no):
+        if condition == 1 or yes == no:
+            return yes
+        if condition == 0:
+            return no
+        if yes == 1 and no == 0:
+            return condition
+        key = (condition, yes, no)
+        if key not in self.cache:
+            variable = min(self.nodes[x][0] for x in key if x > 1)
+            split = lambda x, side: self.nodes[x][side] if x > 1 and self.nodes[x][0] == variable else x
+            self.cache[key] = self.node(variable,
+                self.choose(*(split(x, 1) for x in key)),
+                self.choose(*(split(x, 2) for x in key)))
+        return self.cache[key]
+
+    def invert(self, value):
+        return self.choose(value, 0, 1)
+
+    def both(self, left, right):
+        return self.choose(left, right, 0)
+
+    def either(self, left, right):
+        return self.choose(left, 1, right)
+
+    def different(self, left, right):
+        return self.choose(left, self.invert(right), right)
+
+    def all(self, values):
+        result = 1
+        for value in values:
+            result = self.both(result, value)
+        return result
+
+    def lut(self, inputs, truth):
+        if not inputs:
+            return truth & 1
+        half = 1 << (len(inputs) - 1)
+        return self.choose(inputs[-1], self.lut(inputs[:-1], truth >> half),
+                           self.lut(inputs[:-1], truth & ((1 << half) - 1)))
+
+    def net(self, graph, net, memo=None, active=()):
+        memo = {} if memo is None else memo
+        if net in self.inputs:
+            return self.inputs[net]
+        if net in graph.high | graph.low:
+            return int(net in graph.high)
+        if net in memo:
+            return memo[net]
+        require(net not in active, 'next-Q combinational cycle: ' + net)
+        ds = graph.drivers[net]
+        require(len(ds) == 1, 'next-Q driver absent/ambiguous: ' + net)
+        p, port = ds[0]
+        cell, n = graph.n.cells[p], graph.n
+        require(p not in graph.regs, 'next-Q unexpected register publisher: ' + p)
+        kind = cell['kind']
+        require(kind == 'INV' or re.fullmatch('LUT[1-6]', kind), 'next-Q unsupported primitive: ' + p)
+        if kind == 'INV':
+            require(port == 'O', 'next-Q inverter output changed')
+            value = self.invert(self.net(graph, n.pin(p, 'I'), memo, (*active, net)))
+        else:
+            width = int(kind[3:])
+            init = re.fullmatch(r"(\d+)'h([0-9a-fA-F]+)", cell['parameters'].get('INIT', ''))
+            require(port == 'F' and init is not None and int(init[1]) == 1 << width
+                    and int(init[2], 16) < 1 << (1 << width), 'next-Q LUT truth table format: ' + p)
+            values = [self.net(graph, n.pin(p, 'I' + str(i)), memo, (*active, net)) for i in range(width)]
+            value = self.lut(values, int(init[2], 16))
+        memo[net] = value
+        return value
+
+
 def audit_runtime_pcm_cdc(root, text, clocks):
     n = PcmNetlist(text, TOP)
     return audit_netlist(root, n, clocks)
@@ -465,7 +568,20 @@ def audit_netlist(root, n, clocks):
             ff(p, origin, clear[('bridge' if p.startswith(B + '/') else 'runtime', origin)] if not p.startswith(T + '/') else clock_clear, preset=p == g.register(T, 'pending_epoch', 0))
         expected, capture = exact(closure_refs), exact(capture_refs)
         closure = g.closure(sources)
-        require(set(closure['endpoints']) == expected, 'complete payload consumer closure changed: ' + entry['id'])
+        actual = set(closure['endpoints'])
+        if entry['id'] == 'reply':
+            flexible = {p.rsplit('/', 1)[0] for p in exact(REPLY_FLEX)}
+            fixed = {p for p in expected if p.rsplit('/', 1)[0] not in flexible}
+            require({p for p in actual if p.rsplit('/', 1)[0] not in flexible} == fixed,
+                    'complete payload consumer closure changed: reply')
+            for p in flexible:
+                pins = {ep for ep in actual if ep.rsplit('/', 1)[0] == p}
+                require(len(pins) == 1 and pins <= {p + '/D', p + '/CE'},
+                        'reply fixed next-Q FF must have exactly one D/CE consumer: ' + p)
+            require({p.rsplit('/', 1)[0] for p in actual} == {p.rsplit('/', 1)[0] for p in expected},
+                    'reply complete consumer FF identities changed')
+        else:
+            require(actual == expected, 'complete payload consumer closure changed: ' + entry['id'])
         for endpoint, clock in closure['endpoints'].items():
             if endpoint in capture:
                 domain = destination
@@ -618,6 +734,63 @@ def audit_netlist(root, n, clocks):
     proofs.append(g.equivalent('reply ACK only consume or stream discard', [n.pin(rack, 'CE'), *incoming[:8]], lambda x: x[0] == ((x[6] != x[7]) and (x[5] or not x[4] or (x[1] and not x[8] and not x[2])))))
     require(n.pin(rack, 'D') == bitq(B, 'reply_sync', 1), 'reply ACK token changed')
 
+    # Independent effective-next-Q proof, including both observed D/CE forms.
+    # Leaf identities come from the maintained serializer's named state and
+    # bridge publishers, never by discovering whatever drives a destination D.
+    # The only internal cuts are the header NE predicates just proved above.
+    wanted = g.group(Z, 'wanted_sequence', 32)
+    underrun = g.group(Z, 'underrun_count_o', 32)
+    half = g.group(Z, 'half_count', 2)
+    position = g.group(Z, 'bit_position', 6)
+    startup = g.group(Z, 'startup_frames', 11)
+    playing, bck, resume = reg(Z, 'playing'), reg(Z, 'bck_o'), g.register(R, 'serial_resume', 1)
+    serializer_state = wanted + underrun + half + position + startup + [playing, bck]
+    for p in serializer_state:
+        ff(p, 'selected', serializer_clear)
+    state_q = lambda regs: [n.pin(p, 'Q') for p in regs]
+    named_inputs = list(dict.fromkeys([*carries, *incoming, *state_q(serializer_state), n.pin(resume, 'Q'),
+                                      *([n.pin(reply_src[96], 'Q'), bitq(Z, 'epoch', 31)] if reply_scalar_epoch else [])]))
+    bd = BooleanDiagram(named_inputs)
+    v = bd.inputs.__getitem__
+    inv, both, either, allof = bd.invert, bd.both, bd.either, bd.all
+    # This match equation is independently the complete live reply gate; the
+    # same source/credit/header predicate also passed the exhaustive gate proof.
+    live_match = allof([v(incoming[0]), inv(v(incoming[1])), v(incoming[2]), v(incoming[3]),
+        inv(v(incoming[4])), bd.different(v(incoming[5]), v(incoming[6])), inv(v(incoming[7])),
+        v(incoming[8]), inv(bd.different(v(incoming[9]), v(incoming[10]))),
+        *[inv(v(carry)) for carry in carries],
+        *([inv(bd.different(v(n.pin(reply_src[96], 'Q')), v(bitq(Z, 'epoch', 31))))] if reply_scalar_epoch else [])])
+    half_q = [v(x) for x in state_q(half)]
+    half_end = bd.choose(v(q(Z, 'mode_44k1')), both(inv(half_q[0]), half_q[1]),
+                         both(half_q[0], inv(half_q[1])))
+    startup_done = allof([v(n.pin(p, 'Q')) if (1028 >> i) & 1 else inv(v(n.pin(p, 'Q')))
+                          for i, p in enumerate(startup)])
+    next_available = either(v(q(Z, 'have_next')), live_match)
+    advance = allof([v(q(Z, 'configured')), inv(v(bitq(R, 'serial_quiesce', 1))),
+        half_end, v(n.pin(bck, 'Q')), allof(v(x) for x in state_q(position)), startup_done,
+        v(n.pin(resume, 'Q')), either(v(n.pin(playing, 'Q')), next_available)])
+    memo, next_q_rows = {}, []
+
+    def prove_next(p, expected, contract):
+        actual = bd.choose(bd.net(g, n.pin(p, 'CE'), memo), bd.net(g, n.pin(p, 'D'), memo), v(n.pin(p, 'Q')))
+        require(actual == expected, 'effective next-Q contract changed: ' + contract + ': ' + p)
+        next_q_rows.append(dict(register=p, contract=contract, d_net=n.pin(p, 'D'), ce_net=n.pin(p, 'CE')))
+
+    carry = 1
+    for p in wanted:
+        current = v(n.pin(p, 'Q'))
+        prove_next(p, bd.different(current, both(advance, carry)), 'wanted sequence increments only on admitted frame')
+        carry = both(carry, current)
+    count_q = [v(x) for x in state_q(underrun)]
+    increment_count = allof([advance, inv(next_available), inv(allof(count_q))])
+    prove_next(underrun[0], bd.different(count_q[0], increment_count), 'underrun bit0 saturates and increments only without next frame')
+    next_q_proof = dict(method='canonical reduced ordered Boolean decision diagrams',
+        effective_update='Q_next = CE ? D : Q (outside independently checked async assertion)',
+        named_inputs=named_inputs, header_predicate_cuts=carries, header_operand_pairs_verified=True,
+        startup_frames_constant=1028, registers=next_q_rows, proved_register_count=len(next_q_rows),
+        flexible_consumer_register_count=32, bdd_node_count=len(bd.nodes), all_assignments=True,
+        sampling_used=False, unknown_leaf_inputs_allowed=False, entire_serializer_fsm_proved=False)
+
     # Consumer mappings and enables include all four held payloads.
     for source, destinations in [(req_src, [*g.group(B, 'render_sequence_o', 32), *g.group(B, 'render_epoch_o', 32), reg(B, 'render_44k1_o')]), (ctx_src, [*g.group(R, 'pending_epoch', 32), reg(R, 'pending_rate')]), (staged, [*g.group(R, 'serial_epoch', 32), reg(R, 'serial_rate')])]:
         for s, d in zip(source, destinations):
@@ -644,7 +817,26 @@ def audit_netlist(root, n, clocks):
     eligible = eligibility.pop()
     proofs.append(g.equivalent('request capture/ACK cancellation', [capture, n.pin(reg(B, 'request_ack'), 'CE'), *pending, eligible], lambda x: x[0] == (x[2] != x[3] and not x[4] and x[5]) and x[1] == (x[2] != x[3] and (x[4] or x[5])), {eligible}))
     state = [bitq(R + '/final_pcm', 'state', i) for i in range(2)]
-    proofs.append(g.equivalent('request eligibility actual renderer state', [eligible, fault, *state, local[(R, 'compute')], q(B, 'render_busy_o'), q(B, 'reply_toggle'), bitq(B, 'reply_ack_sync', 1), *cfg, q(R, 'compute_context_valid')], lambda x: x[0] == (not x[1] and not any(x[2:4]) and x[4] and not x[5] and x[6] == x[7] and not any(x[8:11]) and x[11]), {fault}))
+    # A duplicated fault decode need not traverse the named boundary net.
+    # Expand that independently clock-checked owner boundary, rather than
+    # inventing an alias cut or enlarging the exhaustive scalar bound.
+    fault_owners = next(x['source_registers'] for x in levels if x['id'] == 'fault')
+    eligibility_inputs = list(dict.fromkeys([*[n.pin(p, 'Q') for p in fault_owners], *state,
+        local[(R, 'compute')], q(B, 'render_busy_o'), q(B, 'reply_toggle'), bitq(B, 'reply_ack_sync', 1),
+        *cfg, q(R, 'compute_context_valid')]))
+    eligibility_bd = BooleanDiagram(eligibility_inputs)
+    ev = eligibility_bd.inputs.__getitem__
+    actual_eligibility = eligibility_bd.net(g, eligible)
+    expected_eligibility = eligibility_bd.all([eligibility_bd.invert(eligibility_bd.net(g, fault)),
+        *[eligibility_bd.invert(ev(x)) for x in state], ev(local[(R, 'compute')]),
+        eligibility_bd.invert(ev(q(B, 'render_busy_o'))),
+        eligibility_bd.invert(eligibility_bd.different(ev(q(B, 'reply_toggle')), ev(bitq(B, 'reply_ack_sync', 1)))),
+        *[eligibility_bd.invert(ev(x)) for x in cfg], ev(q(R, 'compute_context_valid'))])
+    require(actual_eligibility == expected_eligibility, 'Boolean contract changed: request eligibility actual renderer state')
+    proofs.append(dict(contract='request eligibility actual renderer state', support=eligibility_inputs,
+        cuts=[], method='canonical reduced ordered Boolean decision diagrams', all_assignments=True,
+        named_fault_boundary=fault, fault_owner_registers=fault_owners,
+        bdd_node_count=len(eligibility_bd.nodes)))
     for body in re.findall(r'\[get_pins \{([^}]+)\}\]', bundle['sdc']):
         for selector in body.split():
             stem = selector.rsplit('_s*/', 1)[0]
@@ -659,6 +851,7 @@ def audit_netlist(root, n, clocks):
         protected_async_pins=protected, candidate_constraints_installed=False,
         static_source_contracts_verified=True, complete_payload_closure_verified=True, selector_static_resolution_verified=True,
         context_comparison_semantics_verified=True, reply_capture_header_gate_verified=True,
+        reply_effective_next_q_verified=True, reply_next_q_proof=next_q_proof,
         comparison_topologies=dict(ready_carry_pair_count=len(ready_pairs), ready_scalar_rate=ready_scalar_rate,
             reply_carry_pair_count=len(header_pairs), reply_scalar_epoch31=reply_scalar_epoch),
         constraints_complete=False, held_payload_complete=False, fifo_payload_complete=False,
@@ -666,9 +859,10 @@ def audit_netlist(root, n, clocks):
         tool_query_resolution_verified=False, hardware_tested=False, release_ready=False, deployment_allowed=False)
 
 
-def validate_constraints(root, sdc, result, *, installed=False):
+def validate_constraints(root, sdc, result, *, installed=False, constraint_revision=CONSTRAINT_REVISIONS[0]):
     """Validate installed lines or scan an older SDC without claiming install."""
-    expected = runtime_pcm_cdc_bundle(root)['sdc'].splitlines()
+    bundle = runtime_pcm_cdc_bundle(root, constraint_revision=constraint_revision)
+    expected = bundle['sdc'].splitlines()
     actual = sdc.splitlines()
     counts = [actual.count(line) for line in expected]
     require(all(x == 1 for x in counts) if installed else all(x == 0 for x in counts),
@@ -710,12 +904,25 @@ def validate_constraints(root, sdc, result, *, installed=False):
             require(line in expected, 'synchronizer/release stage path masked/overridden')
         if command == 'set_false_path' and matches(line, 'to', first):
             require(line in expected, 'unreviewed first-stage cut')
-    return dict(candidate_constraints_installed=installed, proposal_only=not installed,
+    selected = {row['id']: {pin for selector in row['selectors']['capture']
+                            for pin in result['resolved_pin_selectors'][selector]}
+                for row in bundle['payload_groups']}
+    uncovered = {row['id']: sorted((set(row['closure']['endpoints']) & set(row['capture_pins'])) - selected[row['id']])
+                 for row in result['payload_groups']}
+    covered = not any(uncovered.values())
+    # Explicit historical audit is never an installation of the new paired
+    # policy. In particular e855 has a valid source closure but its old sealed
+    # reply lines miss actual D/CE paths; record those pins without promoting it.
+    return dict(candidate_constraints_installed=installed and constraint_revision == CONSTRAINT_REVISIONS[0] and covered,
+                legacy_constraints_installed=installed and constraint_revision == 'legacy-v1',
+                selected_constraint_bundle_installed=installed, constraint_revision=constraint_revision,
+                selected_constraint_capture_coverage_verified=covered, uncovered_payload_pins=uncovered,
+                current_paired_constraint_revision=CONSTRAINT_REVISIONS[0], proposal_only=not installed,
                 reviewed_line_count=50, static_exception_scan_verified=True,
                 tool_query_resolution_verified=False, routed_propagation_verified=False)
 
 
-def run_audit(root, stage, evidence, *, installed=False):
+def run_audit(root, stage, evidence, *, installed=False, constraint_revision=CONSTRAINT_REVISIONS[0]):
     root, stage = Path(root), Path(stage)
     before = verify_synthesis_identity(stage, evidence)
     sources = {p: file_sha(root / p) for p in AUDIT_SOURCES}
@@ -723,14 +930,17 @@ def run_audit(root, stage, evidence, *, installed=False):
     clocks = audit_runtime_clocks(root, stage, text)
     result = audit_runtime_pcm_cdc(root, text, clocks)
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
-    result['constraint_installation'] = validate_constraints(root, sdc, result, installed=installed)
+    installation = validate_constraints(root, sdc, result, installed=installed, constraint_revision=constraint_revision)
+    result['constraint_installation'] = installation
     after = verify_synthesis_identity(stage, evidence)
     require(before == after and sources == {p: file_sha(root / p) for p in AUDIT_SOURCES}, 'synthesis or audit inputs changed during audit')
     identity = digest(json.dumps(dict(policy=POLICY, synthesis=before, audit_sources=sources,
-                                      installed=installed), sort_keys=True).encode())
-    result.update(identity='runtime-pcm-context-source-v1-' + identity[:16], source_set_sha256=identity,
+                                      installed=installed, constraint_revision=constraint_revision), sort_keys=True).encode())
+    result.update(identity='runtime-pcm-context-source-v2-' + identity[:16], source_set_sha256=identity,
         synthesis=before, audit_source_sha256=sources, source_seal_before_and_after=True,
-        candidate_constraints_installed=installed, proposal_only=not installed, clock_audit=clocks)
+        candidate_constraints_installed=installation['candidate_constraints_installed'],
+        selected_constraint_capture_coverage_verified=installation['selected_constraint_capture_coverage_verified'],
+        proposal_only=not installed, clock_audit=clocks)
     return result
 
 
@@ -740,8 +950,11 @@ def main():
     parser.add_argument('--synthesis-evidence', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--installed', action='store_true', help='Require the exact bundle in sealed synthesis inputs; default is proposal only')
+    parser.add_argument('--constraint-revision', choices=CONSTRAINT_REVISIONS, default=CONSTRAINT_REVISIONS[0],
+                        help='Explicit historical review only; legacy-v1 never claims paired policy installation')
     args = parser.parse_args()
-    result = run_audit(ROOT, args.project, args.synthesis_evidence, installed=args.installed)
+    result = run_audit(ROOT, args.project, args.synthesis_evidence, installed=args.installed,
+                       constraint_revision=args.constraint_revision)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
     print(json.dumps({key: result[key] for key in ('identity', 'payload_source_bits', 'candidate_constraints_installed', 'proposal_only', 'constraints_complete', 'physical_cdc_accepted')}))

@@ -12,7 +12,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_runtime_pcm_cdc import (
-    B, R, T, Z, TOP, POLICY, PAYLOADS, RESETS, SYNCS, Graph, PcmNetlist,
+    B, R, T, Z, TOP, POLICY, PAYLOADS, RESETS, SYNCS, REPLY_FLEX, CONSTRAINT_REVISIONS,
+    Graph, PcmNetlist, BooleanDiagram,
     audit_netlist, audit_runtime_clocks, file_sha, run_audit,
     runtime_pcm_cdc_bundle, validate_constraints, VG_RELATIVE,
 )
@@ -23,7 +24,12 @@ class RuntimePcmPolicy(unittest.TestCase):
         b = runtime_pcm_cdc_bundle(ROOT)
         self.assertEqual(b['policy'], POLICY)
         self.assertEqual([x['width'] for x in b['payload_groups']], [65, 98, 33, 33])
-        self.assertEqual([x['capture_pin_count'] for x in b['payload_groups']], [65, 263, 33, 33])
+        self.assertEqual([x['capture_pin_count'] for x in b['payload_groups']], [65, 295, 33, 33])
+        old = runtime_pcm_cdc_bundle(ROOT, constraint_revision='legacy-v1')
+        self.assertEqual(old['payload_groups'][1]['capture_pin_count'], 263)
+        self.assertEqual([i for i, (x, y) in enumerate(zip(b['sdc'].splitlines(), old['sdc'].splitlines())) if x != y], [2, 3])
+        with self.assertRaisesRegex(ValueError, 'unknown constraint revision'):
+            runtime_pcm_cdc_bundle(ROOT, constraint_revision='auto')
         self.assertEqual(len(b['sdc'].splitlines()), 50)
         self.assertEqual((len(SYNCS), len(RESETS)), (16, 5))
         request = b['payload_groups'][0]
@@ -35,6 +41,25 @@ class RuntimePcmPolicy(unittest.TestCase):
         self.assertNotIn('/PRESET', b['sdc'])
         for key in ('constraints_complete', 'reset_inventory_complete', 'physical_cdc_accepted', 'release_ready', 'deployment_allowed'):
             self.assertFalse(b[key])
+
+    def test_boolean_diagram_truth_tables_and_canonical_equivalence(self):
+        # Exhaust every 3-input truth table and its complement, evaluated via
+        # independently selected constant assignments. Also check reduction and
+        # distributivity, rather than merely comparing the same constructor.
+        b = BooleanDiagram(['a', 'b', 'c'])
+        inputs = list(b.inputs.values())
+        for truth in range(256):
+            node = b.lut(inputs, truth)
+            self.assertEqual(b.invert(node), b.lut(inputs, truth ^ 255))
+            for assignment in range(8):
+                current = node
+                while current > 1:
+                    variable, low, high = b.nodes[current]
+                    current = high if (assignment >> variable) & 1 else low
+                self.assertEqual(current, (truth >> assignment) & 1)
+        a, c, d = inputs
+        self.assertEqual(b.both(a, b.either(c, d)), b.either(b.both(a, c), b.both(a, d)))
+        self.assertEqual(b.choose(a, c, c), c)
 
     def test_escaped_named_port_lexical_adapter_preserves_connection(self):
         text = r'''
@@ -84,13 +109,14 @@ class ActualRuntimePcm(unittest.TestCase):
             raise unittest.SkipTest('set explicit GW138K_RUNTIME_PCM_CDC_STAGE/PROCESS; no EDA or historical fallback')
         cls.stage, cls.process = Path(stage), Path(process)
         cls.installed = os.environ.get('GW138K_RUNTIME_PCM_CDC_INSTALLED') == '1'
+        cls.constraint_revision = os.environ.get('GW138K_RUNTIME_PCM_CDC_CONSTRAINT_REVISION', CONSTRAINT_REVISIONS[0])
         cls.text = (cls.stage / VG_RELATIVE).read_text()
         cls.n = PcmNetlist(cls.text, TOP)
         cls.g = Graph(cls.n)
         cls.clocks = audit_runtime_clocks(ROOT, cls.stage, cls.text)
         cls.result = audit_netlist(ROOT, cls.n, cls.clocks)
         cls.sdc = (cls.stage / 'constraints/custom_138k.sdc').read_text()
-        cls.bundle = runtime_pcm_cdc_bundle(ROOT)
+        cls.bundle = runtime_pcm_cdc_bundle(ROOT, constraint_revision=cls.constraint_revision)
         cls.negative_cases = []
 
     @classmethod
@@ -101,6 +127,11 @@ class ActualRuntimePcm(unittest.TestCase):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(dict(schema=1, policy=POLICY,
                 vg_sha256=file_sha(cls.stage / VG_RELATIVE), tests_source_sha256=file_sha(Path(__file__)),
+                stage=str(cls.stage), synthesis_process=str(cls.process),
+                constraint_revision=cls.constraint_revision,
+                complete_closure_counts=[len(x['closure']['endpoints']) for x in cls.result['payload_groups']],
+                resolved_selector_count=len(cls.result['resolved_pin_selectors']),
+                reply_next_q_proof=cls.result['reply_next_q_proof'],
                 negative_control_count=len(cls.negative_cases), negative_controls=cls.negative_cases,
                 eda_invoked=False, hardware_operated=False, constraints_complete=False,
                 reset_inventory_complete=False, physical_cdc_accepted=False), indent=2, sort_keys=True) + '\n')
@@ -137,14 +168,14 @@ class ActualRuntimePcm(unittest.TestCase):
 
     def reject_sdc(self, name, text, installed=True):
         with self.assertRaisesRegex(ValueError, 'runtime PCM CDC audit:') as caught:
-            validate_constraints(ROOT, text, self.result, installed=installed)
+            validate_constraints(ROOT, text, self.result, installed=installed, constraint_revision=self.constraint_revision)
         self.negative_cases.append(dict(case=name, rejected=True, error=str(caught.exception)))
 
     def test_01_sealed_source_partial_acceptance(self):
-        r = run_audit(ROOT, self.stage, self.process, installed=self.installed)
+        r = run_audit(ROOT, self.stage, self.process, installed=self.installed, constraint_revision=self.constraint_revision)
         self.assertEqual(r['payload_source_bits'], 229)
         self.assertEqual([len(x['closure']['endpoints']) for x in r['payload_groups']], [65, 263, 141, 207])
-        self.assertEqual(len(r['resolved_pin_selectors']), 864)
+        self.assertEqual(len(r['resolved_pin_selectors']), 896)
         self.assertEqual((len(r['synchronization_groups']), len(r['reset_release_groups'])), (16, 5))
         self.assertEqual(len(r['boolean_contracts']), 19)
         self.assertGreater(r['lexical_connection_audit']['escaped_named_port_count'], 0)
@@ -155,11 +186,22 @@ class ActualRuntimePcm(unittest.TestCase):
         self.assertTrue(any(x.endswith('/runtime_configuration.failed_s0') for x in levels['fault']['source_registers']))
         self.assertTrue(r['source_seal_before_and_after'])
         self.assertEqual(r['proposal_only'], not self.installed)
-        self.assertEqual(r['candidate_constraints_installed'], self.installed)
+        self.assertEqual(r['candidate_constraints_installed'], self.installed and self.constraint_revision == 'paired-nextq-v2')
+        self.assertEqual(r['constraint_installation']['selected_constraint_bundle_installed'], self.installed)
+        self.assertEqual(r['constraint_installation']['legacy_constraints_installed'], self.installed and self.constraint_revision == 'legacy-v1')
         self.assertEqual(len(levels['quiesce']['source_registers']), 1)
         self.assertEqual(len(levels['resume']['source_registers']), 1)
         self.assertTrue(r['context_comparison_semantics_verified'])
         self.assertTrue(r['reply_capture_header_gate_verified'])
+        self.assertTrue(r['reply_effective_next_q_verified'])
+        self.assertEqual(r['reply_next_q_proof']['proved_register_count'], 33)
+        self.assertEqual(r['reply_next_q_proof']['flexible_consumer_register_count'], 32)
+        self.assertFalse(r['reply_next_q_proof']['sampling_used'])
+        current = runtime_pcm_cdc_bundle(ROOT)
+        coverage = validate_constraints(ROOT, self.sdc.replace(self.bundle['sdc'], '') + current['sdc'],
+                                        r, installed=True)
+        self.assertTrue(coverage['selected_constraint_capture_coverage_verified'])
+        self.assertFalse(any(coverage['uncovered_payload_pins'].values()))
         for key in ('constraints_complete', 'held_payload_complete', 'fifo_payload_complete',
                     'reset_inventory_complete', 'physical_cdc_accepted', 'routed_propagation_verified',
                     'tool_query_resolution_verified', 'hardware_tested', 'release_ready', 'deployment_allowed'):
@@ -168,17 +210,18 @@ class ActualRuntimePcm(unittest.TestCase):
     def test_02_installed_text_is_distinct_from_sealed_installation(self):
         original = self.sdc.replace(self.bundle['sdc'], '') if self.installed else self.sdc
         text = original + self.bundle['sdc']
-        result = validate_constraints(ROOT, text, self.result, installed=True)
-        self.assertTrue(result['candidate_constraints_installed'])
+        result = validate_constraints(ROOT, text, self.result, installed=True, constraint_revision=self.constraint_revision)
+        self.assertTrue(result['selected_constraint_bundle_installed'])
+        self.assertEqual(result['candidate_constraints_installed'], self.constraint_revision == 'paired-nextq-v2')
         self.assertFalse(result['tool_query_resolution_verified'])
         self.reject_sdc('proposal refuses an already-installed text', text, installed=False)
         self.reject_sdc('missing sealed installation cannot claim installed', original)
         if self.installed:
             with self.assertRaisesRegex(ValueError, 'proposal audit must not silently accept'):
-                run_audit(ROOT, self.stage, self.process)
+                run_audit(ROOT, self.stage, self.process, constraint_revision=self.constraint_revision)
         else:
             with self.assertRaisesRegex(ValueError, 'installed PCM lines'):
-                run_audit(ROOT, self.stage, self.process, installed=True)
+                run_audit(ROOT, self.stage, self.process, installed=True, constraint_revision=self.constraint_revision)
 
     def test_03_original_twenty_eight_structural_negatives(self):
         for scope, stem, width, toggle in [(B, 'held_request', 65, 'request_toggle'),
@@ -227,6 +270,23 @@ class ActualRuntimePcm(unittest.TestCase):
         sync = self.n.cells[self.reg(B, 'request_sync', 0)]['ports']['Q']
         with self.added(B + '/rogue_meta_consumer', B, 'MYSTERY_RAM', dict(DI=sync)):
             self.reject('first sync Q unclassified fanout')
+        reply = self.n.cells[self.reg(B, 'held_reply', 0)]['ports']['Q']
+        with self.added(B + '/rogue_reply_s0', B, 'DFFCE', dict(Q='rogue_reply', D=reply, CLK='serial_clk', CLEAR="1'b0", CE="1'b1")):
+            self.reject('reply extra FF cannot enter flexible FF projection')
+        reply1 = self.n.cells[self.reg(B, 'held_reply', 1)]['ports']['Q']
+        with self.added(B + '/rogue_reply_ram', B, 'MYSTERY_RAM', dict(DI='{' + reply1 + ',' + reply + '}')):
+            self.reject('reply unknown memory cannot be filtered away')
+            self.assertIn('unsupported primitive', self.negative_cases[-1]['error'])
+        p = self.reg(Z, 'wanted_sequence', 1)
+        source = self.n.cells[self.reg(Z, 'next_error')]['ports']['D']
+        self.assertEqual(self.n.canonical(Z, source), self.n.pin(self.reg(B, 'held_reply', 0), 'Q'))
+        with self.changed(p, port='CLEAR', value=source):
+            self.reject('reply flexible FF third CLEAR endpoint')
+            self.assertIn('exactly one D/CE consumer', self.negative_cases[-1]['error'])
+        missing = 'CE' if p + '/D' in self.result['payload_groups'][1]['closure']['endpoints'] else 'D'
+        with self.changed(p, port=missing, value=source):
+            self.reject('reply flexible FF both D and CE reached')
+            self.assertIn('exactly one D/CE consumer', self.negative_cases[-1]['error'])
 
     def test_07_data_mapping_comparisons_and_capture_truth_tables(self):
         for scope, stem in [(B, 'held_request'), (B, 'held_reply'), (R, 'context_payload')]:
@@ -337,6 +397,72 @@ class ActualRuntimePcm(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'runtime clock audit:') as caught:
                     run_audit(ROOT, self.stage, path)
                 self.negative_cases.append(dict(case='seal ' + label, rejected=True, error=str(caught.exception)))
+
+    def test_12_effective_next_q_d_ce_increment_saturation_and_header_negatives(self):
+        # Inversion preserves every source-to-consumer dependency, so closure
+        # cannot catch these mutations; the independent next-Q proof must fail.
+        for stem, bit in [('wanted_sequence', 1), ('wanted_sequence', 2), ('wanted_sequence', 31), ('underrun_count_o', 0)]:
+            p = self.reg(Z, stem, bit)
+            for port in ('D', 'CE'):
+                original = self.n.cells[p]['ports'][port]
+                with self.added(Z + '/negative_nextq_s0', Z, 'INV', dict(I=original, O='negative_nextq')):
+                    with self.changed(p, port=port, value='negative_nextq'):
+                        self.reject(stem + '[' + str(bit) + '] effective ' + port + ' inverted')
+                        self.assertIn('effective next-Q contract changed', self.negative_cases[-1]['error'])
+
+        def cone_cells(nets):
+            todo, seen, cells = list(nets), set(), []
+            while todo:
+                net = todo.pop()
+                if net in seen or net in self.g.high | self.g.low or net in self.result['reply_next_q_proof']['header_predicate_cuts']:
+                    continue
+                seen.add(net)
+                p, _ = self.g.drivers[net][0]
+                if p in self.g.regs:
+                    continue
+                cells.append(p)
+                todo.extend(self.n.pin(p, pin) for pin in self.n.cells[p]['ports'] if pin not in ('F', 'O', 'COUT', 'SUM'))
+            return cells
+
+        # Change lower-bit carry and high-bit saturation inputs inside their
+        # actual LUT cones; the reply closure remains unchanged in both forms.
+        for target, source, label in [('wanted_sequence', 'wanted_sequence', 'increment propagation'),
+                                       ('underrun_count_o', 'underrun_count_o', 'saturation high bit')]:
+            bit = 31 if target == 'wanted_sequence' else 0
+            target_ff = self.reg(Z, target, bit)
+            source_ff = self.reg(Z, source, 0 if target == 'wanted_sequence' else 31)
+            source_q = self.n.pin(source_ff, 'Q')
+            matches = [(p, pin) for p in cone_cells([self.n.pin(target_ff, 'D'), self.n.pin(target_ff, 'CE')])
+                       for pin in self.n.cells[p]['ports'] if pin.startswith('I') and self.n.pin(p, pin) == source_q
+                       and self.n.cells[p]['kind'].startswith('LUT')]
+            self.assertTrue(matches)
+            p, pin = matches[0]
+            with self.changed(p, port=pin, value="1'b0"):
+                self.reject(label + ' changed')
+                self.assertIn('effective next-Q contract changed', self.negative_cases[-1]['error'])
+
+        # The cuts cannot become arbitrary Boolean inputs: their operands and
+        # ALU truth model are checked independently before the BDD is built.
+        carry = self.result['reply_next_q_proof']['header_predicate_cuts'][0]
+        p = self.g.drivers[carry][0][0]
+        with self.changed(p, port='I1', value="1'b0"):
+            self.reject('next-Q header cut operand changed')
+            self.assertIn('reply header', self.negative_cases[-1]['error'])
+
+    def test_13_explicit_legacy_installation_never_promotes_paired_capture(self):
+        old = runtime_pcm_cdc_bundle(ROOT, constraint_revision='legacy-v1')
+        original = self.sdc.replace(self.bundle['sdc'], '') if self.installed else self.sdc
+        old_text = original + old['sdc']
+        result = validate_constraints(ROOT, old_text, self.result, installed=True, constraint_revision='legacy-v1')
+        self.assertTrue(result['legacy_constraints_installed'])
+        self.assertFalse(result['candidate_constraints_installed'])
+        actual = set(self.result['payload_groups'][1]['closure']['endpoints'])
+        legacy_pins = {pin for selector in old['payload_groups'][1]['selectors']['capture']
+                       for pin in self.result['resolved_pin_selectors'][selector]}
+        self.assertEqual(result['uncovered_payload_pins']['reply'], sorted(actual - legacy_pins))
+        self.assertEqual(result['selected_constraint_capture_coverage_verified'], actual <= legacy_pins)
+        with self.assertRaisesRegex(ValueError, 'installed PCM lines'):
+            validate_constraints(ROOT, old_text, self.result, installed=True)
 
     def test_09_constraint_negatives(self):
         original = self.sdc.replace(self.bundle['sdc'], '') if self.installed else self.sdc
