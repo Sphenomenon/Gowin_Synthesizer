@@ -74,6 +74,8 @@
 
 [已选shared CDC维护工具](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_SHARED_CDC_TOOL_20261030.md)已父级通过实际no-CNN网表8项测试及14个结构、2个逻辑／约束负控，默认generic边界保持。88行只证明对应来源结构，R00明确拒绝；三份新prepare来源各12项通过、staged不变，完整CDC／reset／物理接受仍未完成，无部署。
 
+[USB2 owner音频域复位修复](push2_workstation/usb_a/reports/WORKSTATION_USB2_OWNER_AUDIO_RESET_20261030.md)已用显式runtime参数接入，父级三相位真实wrapper、六负控、PLL隔离、反馈／默认hotplug及来源回归通过。新R00／enabled／no-CNN prepare各12项来源检查通过，仅wrapper与top两份副本改变，SDC保持；完整reset及物理recovery仍待新网表与路由验证，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

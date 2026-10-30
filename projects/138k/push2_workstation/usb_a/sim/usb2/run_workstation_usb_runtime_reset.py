@@ -81,22 +81,25 @@ def main():
         if not all(item in native_usb for item in required) or 'wireruntime_reset_n=reset_n&&memory_guard_started;' not in compact(selected):
             raise ValueError('Native top no longer preserves runtime-owned USB audio reset')
         owner_ports = instance(wrapper.read_text(), 'input_owner')
-        if '.audio_reset_n(audio_reset_n)' not in owner_ports or '.feedback_reset_n(feedback_reset_n)' not in owner_ports:
+        if '.audio_reset_n(owner_audio_reset_n)' not in owner_ports or '.feedback_reset_n(feedback_reset_n)' not in owner_ports:
             raise ValueError('Native USB wrapper does not forward selected reset to input owner/feedback')
-        if 'wirefeedback_reset_n=FEEDBACK_AUDIO_DOMAIN!=0?audio_reset_n:feedback_release_q[1];' not in compact(wrapper.read_text()):
+        if 'wirefeedback_reset_n=FEEDBACK_AUDIO_DOMAIN!=0?owner_audio_reset_n:feedback_release_q[1];' not in compact(wrapper.read_text()):
             raise ValueError('Audio-domain feedback reset source changed')
         prefix = selected[:selected.index('u_native_usb')]
         selection = re.search(r'workstation_usb2_input\s*#\((.*?)\)\s*$', prefix, re.S)
         if not selection or '.FEEDBACK_AUDIO_DOMAIN(1)' not in compact(selection[1]):
             raise ValueError('Actual native USB feedback domain selection changed')
         parameters = compact(selection[1])
+        if '.AUDIO_OWNER_RESET_SYNC(1)' not in parameters:
+            raise ValueError('Runtime USB audio owner local reset release is not selected')
         fence = re.search(r'\.STOP_CLOCK_QUEUE_FENCE\(([^)]+)\)', parameters)
         if fence and fence[1] != '1':
             raise ValueError('Explicit native stop-clock queue fence must be enabled')
         result['actual_top_binding'] = dict(preprocessed_sha256=digest(preprocessed),
             audio_reset_n='runtime_reset_n', runtime_reset_n='reset_n && memory_guard_started',
             usb_reset_n='usb_reset_n', compute_clock='audio_clk', feedback_audio_domain=1,
-            wrapper_forwards_audio_reset=True, stop_clock_queue_fence=1 if fence else 0, passed=True)
+            wrapper_forwards_audio_reset=True, audio_owner_reset_sync=1,
+            stop_clock_queue_fence=1 if fence else 0, passed=True)
         compile_log = run('compile', ['verilator', '--binary', '--timing', '--timescale-override', '1ns/1ps',
             '-j', '4', '-Wno-fatal', '--top-module', 'tb_workstation_usb_runtime_reset',
             '--Mdir', str(output / 'obj'), *map(str, sources)], 180)

@@ -5,7 +5,8 @@ module workstation_usb2_input #(
     parameter integer BUS_TIMEOUT_CYCLES = 480000,
     parameter integer FEEDBACK_AUDIO_DOMAIN = 0,
     parameter integer STOP_CLOCK_QUEUE_FENCE = 0,
-    parameter bit CNN_FOLLOW_ENABLE = 1'b1
+    parameter bit CNN_FOLLOW_ENABLE = 1'b1,
+    parameter integer AUDIO_OWNER_RESET_SYNC = 0
 )(
     input wire clk_cpu, clk_ref, clk_ulpi, clk_audio, reset_n, audio_reset_n,
     input wire uart_rx_i,
@@ -80,11 +81,25 @@ module workstation_usb2_input #(
         .owner_write_data_o(owner_write_data), .owner_ready_i(owner_ready), .owner_read_data_i(owner_read_data),
         .canceled_requests_o(canceled_requests_o)
     );
+    wire owner_audio_reset_n;
+    generate if (AUDIO_OWNER_RESET_SYNC != 0) begin: audio_owner_reset
+        // The runtime reset request belongs to the platform/startup domain.
+        // Assert even with a stopped audio clock; release only after three
+        // real audio edges. Only the final stage may reset functional state.
+        wire qualified_n = reset_n && audio_reset_n;
+        (* ASYNC_REG="TRUE", syn_preserve=1 *) reg [2:0] release_q;
+        always @(posedge clk_audio or negedge qualified_n)
+            if (!qualified_n) release_q <= 0;
+            else release_q <= {release_q[1:0], 1'b1};
+        assign owner_audio_reset_n = release_q[2];
+    end else begin: legacy_audio_owner_reset
+        assign owner_audio_reset_n = audio_reset_n;
+    end endgenerate
     wire feedback_clk = FEEDBACK_AUDIO_DOMAIN != 0 ? clk_audio : clk_ref;
-    wire feedback_reset_n = FEEDBACK_AUDIO_DOMAIN != 0 ? audio_reset_n : feedback_release_q[1];
+    wire feedback_reset_n = FEEDBACK_AUDIO_DOMAIN != 0 ? owner_audio_reset_n : feedback_release_q[1];
     push2_usb_a_control #(.STOP_CLOCK_QUEUE_FENCE(STOP_CLOCK_QUEUE_FENCE),
                          .CNN_FOLLOW_ENABLE(CNN_FOLLOW_ENABLE)) input_owner (
-        .clk(clk_cpu), .reset_n(cpu_reset_n), .audio_clk(clk_audio), .audio_reset_n(audio_reset_n),
+        .clk(clk_cpu), .reset_n(cpu_reset_n), .audio_clk(clk_audio), .audio_reset_n(owner_audio_reset_n),
         .feedback_clk(feedback_clk), .feedback_reset_n(feedback_reset_n), .performance_words(performance_words_i),
         .display_meta_data(display_meta_data_i), .display_meta_valid(display_meta_valid_i),
         .service_state_data(service_state_data_i), .service_state_valid(service_state_valid_i),

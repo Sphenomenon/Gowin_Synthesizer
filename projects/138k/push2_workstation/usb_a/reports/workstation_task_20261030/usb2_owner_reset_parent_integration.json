@@ -1,0 +1,396 @@
+{
+  "schema": 1,
+  "stage": "runtime_usb2_owner_local_audio_reset_parent_integration",
+  "recorded_utc": "2026-10-30T09:54:25.692847+00:00",
+  "base_commit": "4272398da6599a02bd6e549e0982e65b9aadee7a",
+  "sealed_handoff_sha256": "e324a1406a736a3313e741622aeab170b2c1daecedee29812ce928e45cd7aec8",
+  "wrapper_patch_sha256": "f88729bcc26c5a0ff3691212b1fa308e518350c93782a681a3aed6738d1d15f9",
+  "top_opt_in_patch_sha256": "60dc32cdb7c81ed8619753d6c586342c7315b441d74a8230e15a55e14d05d860",
+  "top_integration": "Manually transferred one runtime parameter opt-in into current R00 top; no full top replacement.",
+  "wrapper_regression": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-owner-reset-parent-v1/verification.json",
+    "sha256": "1c8cbd35b1626e871c5cadcad33df341714e592a1621082eb56049653ce18bdc",
+    "metrics": [
+      {
+        "sync": 0,
+        "releases": 5,
+        "assertions": 4,
+        "stopped_fences": 3,
+        "attaches": 2,
+        "detaches": 1,
+        "panics": 1,
+        "defaults": 26,
+        "retained": 2
+      },
+      {
+        "sync": 1,
+        "releases": 5,
+        "assertions": 4,
+        "stopped_fences": 3,
+        "attaches": 2,
+        "detaches": 1,
+        "panics": 1,
+        "defaults": 26,
+        "retained": 2
+      }
+    ],
+    "phase_runs": {
+      "3.7": {
+        "passed": true,
+        "log_sha256": "2d3e1abea86ade91e3753d00f1a201f1b705402ee25fed04c04bce40597495dd"
+      },
+      "9.1": {
+        "passed": true,
+        "log_sha256": "f904e51fc6ed162d759d88d4570051f37733faa1717417e961942ef3b2ec4fee"
+      }
+    },
+    "negative_controls": {
+      "raw_reset_bypass": {
+        "rejected": true,
+        "exit_code": 1,
+        "first_failure": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_owner_reset.sv:78: owner reset release did not wait for three real audio edges: sync=1 edges=0",
+        "mutated_source_sha256": "4b4a8a2302d46d32cb4d1070deb6b5338b08e3c03faefb863b93dfecf58b0a4b"
+      },
+      "first_stage_exported": {
+        "rejected": true,
+        "exit_code": 1,
+        "first_failure": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_owner_reset.sv:78: owner reset release did not wait for three real audio edges: sync=1 edges=1",
+        "mutated_source_sha256": "b2b516df46c3dc10884bbc2af5588c240333e09dc3f8f06365c1c2d43aecb52a"
+      },
+      "wrong_release_clock": {
+        "rejected": true,
+        "exit_code": 1,
+        "first_failure": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_owner_reset.sv:78: owner reset release did not wait for three real audio edges: sync=1 edges=4",
+        "mutated_source_sha256": "f435e3bee85eed6f4383b74a88f89b225d635f7d257ece639800abf2aeab3846"
+      },
+      "missing_async_assertion": {
+        "rejected": true,
+        "exit_code": 1,
+        "first_failure": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_owner_reset.sv:137: owner reset failed asynchronous assertion while stopped",
+        "mutated_source_sha256": "e52b82b97894d7736d8eab72e59080eda22d45d04b3ff2977d882afee2c17320"
+      },
+      "owner_audio_bypass": {
+        "rejected": true,
+        "exit_code": 1,
+        "first_failure": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_owner_reset.sv:84: owner audio reset bypassed the selected local release",
+        "mutated_source_sha256": "8c3ae30989009caa58b3d39a26b21dc3aacbb7098d0d22cd7c102016f4c4c8c9"
+      },
+      "feedback_reset_bypass": {
+        "rejected": true,
+        "exit_code": 1,
+        "first_failure": "FATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_owner_reset.sv:89: feedback functional state released before local reset",
+        "mutated_source_sha256": "3ce34152694b773113c60669f386957b9629f5ebb645d28f07ff20fa358897d9"
+      }
+    },
+    "top_selection": {
+      "runtime": {
+        "audio_owner_reset_sync": 1,
+        "parameters": ".FEEDBACK_AUDIO_DOMAIN(1),.CNN_FOLLOW_ENABLE(RECOGNITION_ENABLED),.STOP_CLOCK_QUEUE_FENCE(1),.AUDIO_OWNER_RESET_SYNC(1)",
+        "preprocessed_sha256": "84ec016e2ac7bd4ce1ca1b3c12b32c3a242748c3206676916a78cf0fb55ed299"
+      },
+      "default": {
+        "audio_owner_reset_sync": 0,
+        "parameters": ".FEEDBACK_AUDIO_DOMAIN(1)",
+        "preprocessed_sha256": "6c588cc6328b53e9e8d2c4d2676a6629fd0399ccf27ea633fd8bc0a1b0f07ffc"
+      }
+    }
+  },
+  "runtime_isolation": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-runtime-reset-parent-v1/verification.json",
+    "sha256": "91cd11ce59e3692d059ef7676b7bd306de05f0a4a0afc5b318e5c6b1b148e3c9",
+    "identity": "native-usb-runtime-reset-offline-v1-08d2f30529ec2767",
+    "passed": true
+  },
+  "source_reset_inventory": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-usb2-owner-reset-fix-v1/source_reset_inventory.json",
+    "sha256": "341f03e9ab9803b9ce241df8726726676f923343c7a70fe812991b98b6023862",
+    "owner_async_blocks": 16
+  },
+  "profile_lock_refresh": {
+    "workstation_profile_no_cnn_v1.json": {
+      "changed_existing": [
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v",
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv"
+      ],
+      "added_locks": [
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/USB2_INPUT_RESET.md",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/run_workstation_usb2_owner_reset.py",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/run_workstation_usb_runtime_reset.py",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_owner_reset.sv"
+      ],
+      "new_count": 345,
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1"
+      }
+    },
+    "workstation_profile_r00_v1.json": {
+      "changed_existing": [
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v",
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv"
+      ],
+      "added_locks": [
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/USB2_INPUT_RESET.md",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/run_workstation_usb2_owner_reset.py",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/run_workstation_usb_runtime_reset.py",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_owner_reset.sv"
+      ],
+      "new_count": 345,
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1"
+      }
+    },
+    "workstation_profile_v1.json": {
+      "changed_existing": [
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v",
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv"
+      ],
+      "added_locks": [
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/USB2_INPUT_RESET.md",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/run_workstation_usb2_owner_reset.py",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/run_workstation_usb_runtime_reset.py",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb2_owner_reset.sv"
+      ],
+      "new_count": 345,
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1"
+      }
+    }
+  },
+  "prepares": {
+    "r00": {
+      "schema": 1,
+      "started_utc": "2026-10-30T09:53:29.867531+00:00",
+      "commands": [
+        {
+          "label": "prepare",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/build.py",
+            "--prepare-custom-board",
+            "--workstation-profile",
+            "custom138k-workstation-r00-v1",
+            "--netlist-dir",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+            "--custom-board-output",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-r00-prepare-v1",
+            "--riscv-prefix",
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 2.3043501670472324,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-r00-prepare-v1-prepare.log",
+          "log_sha256": "6e883f61584e42afb0670a0fb04a4252a0ff634f4a735505a84180c91293af67"
+        },
+        {
+          "label": "source-tests",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 3.6374657498672605,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-r00-prepare-v1-source-tests.log",
+          "log_sha256": "c11c555b309a0ab3f4a891f06b8ccc2020509da8f1cdeea40d06480df83282c5"
+        }
+      ],
+      "synthesis_run": false,
+      "hardware_operated": false,
+      "staged_changed_files": [
+        "rtl/workstation/gw138k_push_workstation_top.v",
+        "rtl/workstation/workstation_usb2_input.sv",
+        "src/push2/gw138k_push_workstation_top.v"
+      ],
+      "candidate_identity": "custom138k-workstation-r00-v1-ea7e74fca1b64f6d",
+      "staged_files": 583,
+      "enabled_files": 266,
+      "previous_prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/shared-cdc-parent-r00-prepare-v1",
+      "staged_byte_identical": false,
+      "profile_sha256": "c9bf9d52c9bb06de142f3a04da13e1388f979ae1ebe8e8b0358b1a854ed525f6",
+      "passed": true,
+      "finished_utc": "2026-10-30T09:53:35.824478+00:00",
+      "source_tests": 12
+    },
+    "enabled": {
+      "schema": 1,
+      "started_utc": "2026-10-30T09:53:29.869989+00:00",
+      "commands": [
+        {
+          "label": "prepare",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/build.py",
+            "--prepare-custom-board",
+            "--workstation-profile",
+            "custom138k-workstation-v1",
+            "--netlist-dir",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+            "--custom-board-output",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-enabled-prepare-v1",
+            "--riscv-prefix",
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 2.1640315828844905,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-enabled-prepare-v1-prepare.log",
+          "log_sha256": "fb48c2e57bc9aa3b63631622d2ea767ad56a06a7897fb8a9f167a3ffeb0675c4"
+        },
+        {
+          "label": "source-tests",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 3.560067499987781,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-enabled-prepare-v1-source-tests.log",
+          "log_sha256": "03168276093527f4727b15219c1c65e5909d4b82d65fc6dca55a650930136aec"
+        }
+      ],
+      "synthesis_run": false,
+      "hardware_operated": false,
+      "staged_changed_files": [
+        "rtl/workstation/gw138k_push_workstation_top.v",
+        "rtl/workstation/workstation_usb2_input.sv",
+        "src/push2/gw138k_push_workstation_top.v"
+      ],
+      "candidate_identity": "custom138k-workstation-v1-2de322ccbd747a19",
+      "staged_files": 570,
+      "enabled_files": 259,
+      "previous_prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/shared-cdc-parent-enabled-prepare-v1",
+      "staged_byte_identical": false,
+      "profile_sha256": "49a4126eee42b9b80417812eb9470c549fee35d9d155e3fe4dac53f59d3d1122",
+      "passed": true,
+      "finished_utc": "2026-10-30T09:53:35.610912+00:00",
+      "source_tests": 12
+    },
+    "no-cnn": {
+      "schema": 1,
+      "started_utc": "2026-10-30T09:53:29.863460+00:00",
+      "commands": [
+        {
+          "label": "prepare",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/build.py",
+            "--prepare-custom-board",
+            "--workstation-profile",
+            "custom138k-workstation-no-cnn-v1",
+            "--netlist-dir",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+            "--custom-board-output",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-no-cnn-prepare-v1",
+            "--riscv-prefix",
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 2.168822000036016,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-no-cnn-prepare-v1-prepare.log",
+          "log_sha256": "cf594772096fb04810025a5318b01307d74939e37ccdb7d8c69bb7308c534cb4"
+        },
+        {
+          "label": "source-tests",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 3.5536210420541465,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-no-cnn-prepare-v1-source-tests.log",
+          "log_sha256": "2369cfcb966e5aaa2d8904a5ecbee4410c5e8d7c45424f0ca4db90af1a334029"
+        }
+      ],
+      "synthesis_run": false,
+      "hardware_operated": false,
+      "staged_changed_files": [
+        "rtl/workstation/gw138k_push_workstation_top.v",
+        "rtl/workstation/workstation_usb2_input.sv",
+        "src/push2/gw138k_push_workstation_top.v"
+      ],
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-7c771ad35c675979",
+      "staged_files": 571,
+      "enabled_files": 259,
+      "previous_prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/shared-cdc-parent-no-cnn-prepare-v1",
+      "staged_byte_identical": false,
+      "profile_sha256": "e46d88a9817e92a8b537bc70a66df77d04df13d4b8749b063472e1c03d1ae15e",
+      "passed": true,
+      "finished_utc": "2026-10-30T09:53:35.603955+00:00",
+      "source_tests": 12
+    }
+  },
+  "test_logs": {
+    "feedback": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-feedback-v1.log",
+      "sha256": "c22a6eac04ec502b3e9aa3bb381b45e0523b6136e0d7345a9eafb285a060db97",
+      "tests": 2,
+      "skips": 0,
+      "log": ".feedback fence DIRECT=1 stores=3 mapped_notes=2 core_held=00000000000000000000000000000000 mapper_held=0000000000000000\nfeedback fence DIRECT=0 stores=3 mapped_notes=1 core_held=00000000000000000000001000000000 mapper_held=0000000000000000\nPASS feedback fence: old chain loses release; direct audio snapshot preserves On/Off; real owner/CDC, modeled audio state\n- /private/var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/workstation-feedback-fence-fozhmygn/fence/tb_workstation_usb2_feedback_fence.sv:96: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 1ms; walltime 0.085 s; speed 13.559 ms/s\n- Verilator: cpu 0.085 s on 1 threads; allocated 2 MB\n.\n----------------------------------------------------------------------\nRan 2 tests in 3.069s\n\nOK"
+    },
+    "hotplug": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-hotplug-v1.log",
+      "sha256": "cb736405e8eed5bf6a7b20cea61baded573505d6d69181ceb3242ae0464ecf3f",
+      "tests": 6,
+      "skips": 0,
+      "log": "......\n----------------------------------------------------------------------\nRan 6 tests in 1.095s\n\nOK"
+    },
+    "accepted-sources": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/usb2-reset-parent-accepted-sources-v1.log",
+      "sha256": "1a5addc67b51c2a66072fe8444affdcf96cfa0860156902b7c56a7a4b9c208bb",
+      "tests": 17,
+      "skips": 0,
+      "log": ".................\n----------------------------------------------------------------------\nRan 17 tests in 0.088s\n\nOK"
+    }
+  },
+  "all_reset_semantics_verified": false,
+  "routed_recovery_removal_verified": false,
+  "synthesis_run": false,
+  "hardware_operated": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "modified_existing_sha256": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": "70675096b3e63829b594dfeb759fb94bb1013d573496f762558b1aa14fa8056c",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": "a875da3285bba1d8f7c0a95f6fd4f9092195ec315f2a78966168459ee1fbe15b",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": "5ce42c1a35bdf5b746153a6223536e2bccae44b4841c3a6b78dadb114e8ff9b0",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": "62c0391f0deefb62deeaebcedf513882d2dc96cc47c2fb6d36be1fc2cba86517",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv": "a929dc1e6b01ff3a490bec9d705cdbd3c74f10f8a3b76f70233f4c8478344542",
+    "projects/138k/push2_workstation/usb_a/sim/usb2/run_workstation_usb_runtime_reset.py": "0250413991f6cf4d858fbd006802d348a56f938c66716a95deae345039b83926"
+  }
+}
