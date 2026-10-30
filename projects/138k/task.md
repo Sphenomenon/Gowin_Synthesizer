@@ -28,6 +28,8 @@
 后续原生阶段：[显示 minor1 与真实 PCM 分析](push2_workstation/usb_a/reports/WORKSTATION_DISPLAY_METADATA_V11_NATIVE_20261030.md)、[双率矢量逐周期等价与独立综合资源对比](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_VECTOR_RESOURCE_20261030.md)、[TF 文件与队列读排空](push2_workstation/usb_a/reports/WORKSTATION_TF_RUNTIME_SERVICE_NATIVE_20261030.md)、[HDMI minor1 组合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_DISPLAY_NATIVE_20261030.md)、[内存故障守护](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_MEMORY_GUARD_20261030.md)及[显示末次丢帧／原子效果快照](push2_workstation/usb_a/reports/WORKSTATION_DISPLAY_OBSERVATION_HEALTH_20261030.md)均已完成各自父级复验并分别 push。TF 仍使用 DDR 文件中转，EOF 未证明物理有序排空；后续[真实 runtime＋内存守护](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_MEMORY_INTEGRATION_20261030.md)父级回归覆盖 10,034 个 I2S 帧、四类故障及旧读返回隔离，仍不是完整板级顶层或实际 PLL 故障验证。[revision 4 来源组合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PROFILE_REV4_20261030.md)已真实准备并通过来源／篡改／宏分支隔离检查，显式选入双率音频、TF 和 minor1 显示；完整时序／CDC／PLL 及板测仍未完成，相关任务方框不提前勾选。
 
 
+当前整机检查点：[revision4 真实综合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_REV4_SYNTHESIS_20261030.md)两次通过，最终候选 `41e653fe462e5ea3` 的 560 项输入前后保持；综合 Logic 119,348、Register 60,853、BSRAM 259（非物理占用）。HDMI 三条无驱动警告已关闭，其余诊断、完整 CDC／PLL／物理时序及功能门禁仍待处理；未 P&R、未生成位流、未部署。TF quiet 跨域与计算停钟内完整 USB 拔插的旧 FIFO 重放分别进入定向修复。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
