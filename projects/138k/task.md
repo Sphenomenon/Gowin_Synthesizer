@@ -160,6 +160,8 @@
 
 [显示 load-request 父级合入](push2_workstation/usb_a/reports/WORKSTATION_DISPLAY_LOAD_REQUEST_PARENT_20261031.md)已通过联合runtime／三HDMI elaboration、12竞争场景／四负控、四prepare各12、profile21（一历史可选跳过）与accepted17。主profile只改owning SHA，staged/编译仅显示源码变化；多一周期请求且即时失效保持。新no-panel prepare222fb761未综合，不授时序改善；正在运行的固定18ed/C2103101不含此修复，无新部署。
 
+[TF 文件 owner 父级复验](push2_workstation/usb_a/reports/WORKSTATION_TF_FILE_OWNER_PARENT_20261031.md)已通过真实 SPI/FAT 56 场景／八负控、原生 sector21 和主线 accepted17；八个新增文件与导入 Git blob 一致，正反精确派生和全部输入哈希复核通过。组件尚未选择或组合 PCM，CRC 仅排空、吞吐／零 DDR／物理 EOF／硬件仍未接受，M03 保持未完成，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

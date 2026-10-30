@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "identity": "tf-file-owner-parent-20261031-v1",
+  "source_commit": "1972fde9677431fb2419a252986aa3001e3c6f7f",
+  "original_commit": "f317bf1fdf1ecb970bf12631e0664304b5a34614",
+  "source_files": {
+    "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_TF_FILE_READER_20261031.md": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/reports/WORKSTATION_TF_FILE_READER_20261031.md",
+      "sha256": "b708fe86bed5879f86044538b41f884d0160ca4e23942b176607487addd25ecd",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/tf_file_owner_native_wire.json": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/tf_file_owner_native_wire.json",
+      "sha256": "b76fd24ed612e60967ade25c00693aac5b5957f87ba51a7d316af210b92de274",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/WORKSTATION_TF_FILE_READER_CONTRACT.md": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/WORKSTATION_TF_FILE_READER_CONTRACT.md",
+      "sha256": "639f262fff8b7a42730be1ee2b96f725bc0f8c906abcba0b4bec40fca6b07cc2",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_file_reader.provenance.json": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_file_reader.provenance.json",
+      "sha256": "0b9f63d267bba7bfc61f8fda58ad6e49917d5b22d8a8483af210addbb883e471",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_file_reader.sv": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_file_reader.sv",
+      "sha256": "13495665a2c01dc3b2d129790e570a21122850e8664743efa44fa7d8d36c236b",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_file_reader_wire.py": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_file_reader_wire.py",
+      "sha256": "a3ec78baebbd0c7bdf658e841029db3dd045736fecda3cff9b2d9af8bffb7234",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_file_reader_wire_tb.sv": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_file_reader_wire_tb.sv",
+      "sha256": "c7119e2eed40bca35d40e66fa5d5fbb145d2fd873ab9726cb9c5c60999d99c17",
+      "equals_imported_git_blob": true
+    },
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_file_wire_card.sv": {
+      "snapshot": "source_snapshot/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_file_wire_card.sv",
+      "sha256": "1aaf9bcc23a6c80d50382504cf89e3154d41c5d5b3a1ebbbba9865304c13119d",
+      "equals_imported_git_blob": true
+    }
+  },
+  "original_seal_sha256": "e8c4e83b89c6fa2aaecafd01d68addccce4b7e7b61aa3c5596b4f4df08da1fec",
+  "wire_cases": 56,
+  "source_fault_controls": 8,
+  "sector_regressions": 21,
+  "accepted_source_tests": 17,
+  "root_wire_and_sector_replayed": true,
+  "replay_source": "sealed immutable delivery sources; imported main source bytes verified equal",
+  "exact_forward_reverse_provenance": true,
+  "original_inputs_or_profiles_changed": false,
+  "profile_selected": false,
+  "CRC_validated": false,
+  "FAT_cache_implemented": false,
+  "PCM_ingress_integrated": false,
+  "no_DDR_workstation_proved": false,
+  "throughput_qualified": false,
+  "physical_EOF_verified": false,
+  "m03_complete": false,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-file-owner-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "7b7c2bbce0729e0e6574125958516461a55ac75f8b8edd7efef9f8cf5e41f3ce"
+  },
+  "parent_file_count": 13,
+  "parent_input_count": 555
+}
