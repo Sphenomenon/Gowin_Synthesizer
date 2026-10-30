@@ -52,6 +52,14 @@ module workstation_runtime_scope_vec #(
     reg [6:0] note[0:VOICES-1];
     reg [2:0] shape[0:VOICES-1],morph_shape[0:VOICES-1],env_state[0:VOICES-1];
     reg [23:0] envelope[0:VOICES-1],attack[0:VOICES-1],decay[0:VOICES-1],sustain[0:VOICES-1],release_step[0:VOICES-1];
+    // Compute the three 44.1 kHz coefficients from the incoming profile once
+    // per Note On, sharing the dividers across voices.
+    // Canonical 48 kHz coefficients remain untouched; held rate changes select
+    // these paired values without reloading the voice or current event profile.
+    reg [23:0] attack_44[0:VOICES-1],decay_44[0:VOICES-1],release_44[0:VOICES-1];
+    wire [23:0] incoming_attack_44=envelope_step(adsr_rom[{event_profile_i,2'b00}],1'b1);
+    wire [23:0] incoming_decay_44=envelope_step(adsr_rom[{event_profile_i,2'b00}+1],1'b1);
+    wire [23:0] incoming_release_44=envelope_step(adsr_rom[{event_profile_i,2'b00}+3],1'b1);
     reg [15:0] velocity[0:VOICES-1];
     reg [4:0] state;
     reg [$clog2(VOICES)-1:0] voice_index;
@@ -110,9 +118,13 @@ module workstation_runtime_scope_vec #(
         end
     end
     wire [24:0] voice_attack_sum[0:VOICES-1],voice_decay_threshold[0:VOICES-1];
+    wire [23:0] frame_attack_step[0:VOICES-1],frame_decay_step[0:VOICES-1],frame_release_step[0:VOICES-1];
     for(genvar e=0;e<VOICES;e=e+1) begin: g_local_envelope
-        assign voice_attack_sum[e]={1'b0,envelope[e]}+{1'b0,envelope_step(attack[e],frame_44k1)};
-        assign voice_decay_threshold[e]={1'b0,sustain[e]}+{1'b0,envelope_step(decay[e],frame_44k1)};
+        assign frame_attack_step[e]=frame_44k1 ? attack_44[e] : attack[e];
+        assign frame_decay_step[e]=frame_44k1 ? decay_44[e] : decay[e];
+        assign frame_release_step[e]=frame_44k1 ? release_44[e] : release_step[e];
+        assign voice_attack_sum[e]={1'b0,envelope[e]}+{1'b0,frame_attack_step[e]};
+        assign voice_decay_threshold[e]={1'b0,sustain[e]}+{1'b0,frame_decay_step[e]};
     end
     reg [VOICES-1:0] frame_active;
     reg frame_frequency_error;
@@ -122,7 +134,10 @@ module workstation_runtime_scope_vec #(
     // Keep canonical48k note/phase state. Scale the full final pitch product,
     // then test its35-bit result before truncating a safe phase increment.
     wire [61:0] rate_step_numerator={8'd0,pitch_product}*62'd160+62'd77070336;
-    wire [34:0] effective_step=frame_44k1 ? 35'(rate_step_numerator/62'd154140672)
+    // For unsigned N, floor(N/(147*2^20))=floor((N>>20)/147).
+    // Retain the complete product and rounding carry before dropping 20 bits.
+    wire [41:0] rate_step_dividend=rate_step_numerator[61:20];
+    wire [34:0] effective_step=frame_44k1 ? 35'(rate_step_dividend/42'd147)
                                                       : {3'd0,pitch_product[51:20]};
     wire [34:0] step_limit=frame_44k1 ? {3'd0,MAX_STEP_44} : {3'd0,MAX_STEP};
     assign sample_ready_o=state==0;
@@ -204,6 +219,7 @@ module workstation_runtime_scope_vec #(
             for(j=0;j<VOICES;j=j+1) begin
                 phase[j]<=0;base_step[j]<=0;own_pitch[j]<=1048576;note[j]<=0;shape[j]<=0;morph_shape[j]<=0;
                 env_state[j]<=IDLE;envelope[j]<=0;attack[j]<=0;decay[j]<=0;sustain[j]<=0;release_step[j]<=0;velocity[j]<=0;
+                attack_44[j]<=0;decay_44[j]<=0;release_44[j]<=0;
             end
         end else begin
             sample_valid_o<=0;clip_o<=0;
@@ -226,6 +242,7 @@ module workstation_runtime_scope_vec #(
                             decay[j]<=adsr_rom[{event_profile_i,2'b00}+1];
                             sustain[j]<=adsr_rom[{event_profile_i,2'b00}+2];
                             release_step[j]<=adsr_rom[{event_profile_i,2'b00}+3];
+                            attack_44[j]<=incoming_attack_44;decay_44[j]<=incoming_decay_44;release_44[j]<=incoming_release_44;
                             velocity[j]<={1'b0,event_velocity_i,event_velocity_i,event_velocity_i[6]};
                         end
                     end else for(j=0;j<VOICES;j=j+1) if(release_select[j]) env_state[j]<=RELEASE;
@@ -257,10 +274,10 @@ module workstation_runtime_scope_vec #(
                                        else envelope[j]<=voice_attack_sum[j][23:0];
                                 DECAY:if(decay[j]==0 || {1'b0,envelope[j]}<=voice_decay_threshold[j]) begin
                                           envelope[j]<=sustain[j];env_state[j]<=SUSTAIN;
-                                      end else envelope[j]<=envelope[j]-envelope_step(decay[j],frame_44k1);
+                                      end else envelope[j]<=envelope[j]-frame_decay_step[j];
                                 SUSTAIN:envelope[j]<=sustain[j];
-                                RELEASE:if(release_step[j]==0 || envelope[j]<=envelope_step(release_step[j],frame_44k1)) begin envelope[j]<=0;env_state[j]<=IDLE;end
-                                        else envelope[j]<=envelope[j]-envelope_step(release_step[j],frame_44k1);
+                                RELEASE:if(release_step[j]==0 || envelope[j]<=frame_release_step[j]) begin envelope[j]<=0;env_state[j]<=IDLE;end
+                                        else envelope[j]<=envelope[j]-frame_release_step[j];
                                 default:envelope[j]<=0;
                             endcase
                         end

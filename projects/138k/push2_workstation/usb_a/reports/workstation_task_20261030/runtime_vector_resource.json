@@ -1,0 +1,503 @@
+{
+  "schema": 1,
+  "passed": true,
+  "hardware_tested": false,
+  "profile_changed": false,
+  "identity": "runtime-vector-resource-offline-v1-2ae6a6d912818a9c",
+  "source_set_sha256": "2ae6a6d912818a9c10fd5cab61e21065876ad892b1811d7042c85c70e5a86f4e",
+  "native_sha256": "7d4e5680200f900c07a1fb708bdfb4b409ca91aeb408a1ec6ce7ca3b97c1a933",
+  "actual_prechange_reference_sha256": "14abaaa4e21a94edc16a4661e3756ecb208066321bd39bb8f548335e2298160e",
+  "reference_policy": "Reverse only appended exact optimization edits to the captured actual native dual-rate provider; one module declaration renamed for independent instance; no behavior/parameters rewritten",
+  "reference_cache": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-ab-14abaaa4",
+  "baseline": {
+    "name": "resource_rework_route0",
+    "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+    "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+    "origin": {
+      "build": "results/resource_rework_final_route0_20261020_041042",
+      "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+      "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+    },
+    "source_files": 437,
+    "excluded_files": 180
+  },
+  "input_sha256": {
+    "derived/prechange_reference.sv": "7d38bf88731dfad7068c026801873e6f77e602a824355d9cee7de7f8dd36e886",
+    "rtl/audio/workstation_runtime_scope_vec.sv": "7d4e5680200f900c07a1fb708bdfb4b409ca91aeb408a1ec6ce7ca3b97c1a933",
+    "sim/audio/tb_workstation_runtime_scope_vec_resource.sv": "5eeb886b3189db26d84cd677808966fc03036dba221ba358e11eb403093338d6",
+    "rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+    "rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc",
+    "rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+    "rtl/audio/workstation_runtime_scope_vec.provenance.json": "00fd933ee1d00757f040075bd4a62e837c2c5766119498233a6b74a2005f3902",
+    "sim/audio/run_runtime_scope_vec_resource.py": "abce358e881c61e3c274e8bcfd5f97fbeddc4c7db9213265338aabf9e6a6e4cd",
+    "tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+    "baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948"
+  },
+  "input_paths": {
+    "derived/prechange_reference.sv": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-r2/workstation_runtime_scope_vec_reference.sv",
+    "rtl/audio/workstation_runtime_scope_vec.sv": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv",
+    "sim/audio/tb_workstation_runtime_scope_vec_resource.sv": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_scope_vec_resource.sv",
+    "rtl/audio/scope_vec/data/paths.mem": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/paths.mem",
+    "rtl/audio/scope_vec/data/rotation.mem": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/rotation.mem",
+    "rtl/audio/scope_vec/data/note_steps.mem": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/note_steps.mem",
+    "rtl/audio/workstation_runtime_scope_vec.provenance.json": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.provenance.json",
+    "sim/audio/run_runtime_scope_vec_resource.py": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_scope_vec_resource.py",
+    "tools/workstation_baselines.py": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py",
+    "baselines/resource_rework_route0.json": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json"
+  },
+  "source_changes": [
+    "Share three event-profile rate44 envelope conversions at Note On and cache paired coefficients per voice; canonical48 values unchanged",
+    "Compute complete unsigned62 phase numerator, then exact42bit high slice divided by147; preserve full rounding carry and35bit overflow policy"
+  ],
+  "extra_state_budget_bits": 576,
+  "configuration": {
+    "rates": [
+      48000,
+      44100
+    ],
+    "voices": 8,
+    "profiles_per_rate": 5,
+    "tests": [
+      "default canonical ADSR_FILE",
+      "override zero/saturation/fast-lifecycle ADSR_FILE"
+    ]
+  },
+  "limits": "RTL simulation only, no EDA A/B or promised LUT/physical timing savings; accepted profiles and production provider unchanged",
+  "lint_argv": [
+    "verilator",
+    "--lint-only",
+    "--top-module",
+    "workstation_runtime_scope_vec",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv"
+  ],
+  "lint_warning_count": 0,
+  "compile_argv": [
+    "verilator",
+    "--binary",
+    "--timing",
+    "-j",
+    "3",
+    "-Wno-fatal",
+    "--top-module",
+    "tb_workstation_runtime_scope_vec_resource",
+    "--Mdir",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-r2/obj",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-r2/workstation_runtime_scope_vec_reference.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_scope_vec_resource.sv"
+  ],
+  "compile_warning_counts": {},
+  "runs": [
+    {
+      "case": "canonical",
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-r2/obj/Vtb_workstation_runtime_scope_vec_resource"
+      ],
+      "metrics": {
+        "compared_clocks": 241512,
+        "frames48": 969,
+        "frames44": 985,
+        "profiles_per_rate": 5,
+        "voices": 8,
+        "max_render_clocks": 115,
+        "held_switches": 20,
+        "panic_inflight": 2,
+        "overflow_frames": 16,
+        "cache_checks": 5796288,
+        "phase_checks": 241512,
+        "envelope_states": 19,
+        "stress": 0
+      },
+      "adsr_sha256": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+      "log": "PASS vector_resource: compared_clocks=241512 frames48=969 frames44=985 profiles_per_rate=5 voices=8 max_render_clocks=115 held_switches=20 panic_inflight=2 overflow_frames=16 cache_checks=5796288 phase_checks=241512 envelope_states=19 stress=0\n- /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_scope_vec_resource.sv:179: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 3ms; walltime 0.146 s; speed 21.532 ms/s\n- Verilator: cpu 0.146 s on 1 threads; allocated 2 MB\n",
+      "log_sha256": "01fee083d36a071df0e06e47fd064658e4f90e094b01ed3cef2b179c70a70a58"
+    },
+    {
+      "case": "stress",
+      "argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-r2/obj/Vtb_workstation_runtime_scope_vec_resource",
+        "+STRESS_ADSR"
+      ],
+      "metrics": {
+        "compared_clocks": 241512,
+        "frames48": 969,
+        "frames44": 985,
+        "profiles_per_rate": 5,
+        "voices": 8,
+        "max_render_clocks": 115,
+        "held_switches": 20,
+        "panic_inflight": 2,
+        "overflow_frames": 16,
+        "cache_checks": 5796288,
+        "phase_checks": 241512,
+        "envelope_states": 31,
+        "stress": 1
+      },
+      "adsr_sha256": "74cd6ad7e7a62bb9f4af66b7f594f43c055426a64a8023817447294ecf9e9a31",
+      "log": "PASS vector_resource: compared_clocks=241512 frames48=969 frames44=985 profiles_per_rate=5 voices=8 max_render_clocks=115 held_switches=20 panic_inflight=2 overflow_frames=16 cache_checks=5796288 phase_checks=241512 envelope_states=31 stress=1\n- /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_scope_vec_resource.sv:179: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 3ms; walltime 0.151 s; speed 20.781 ms/s\n- Verilator: cpu 0.151 s on 1 threads; allocated 2 MB\n",
+      "log_sha256": "3fb0196e707390ff072a013381329ee09aacfe452389f8857ac01e795eae5c48"
+    }
+  ],
+  "inputs_unchanged_during_run": true,
+  "compile_log_sha256": "5ca6a1cd7677aa03e35d9e368398bfd992cce7981ad39037bde32653f311e3c6",
+  "date": "2026-10-30",
+  "validation_stage": "Native vector exact actual-prechange equivalence and existing combined engines; EDA A/B prepared only",
+  "comparison_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-r2/verification.json",
+    "sha256": "5f6ac87693e4b7b6dc03ebf3efef7e995e4251f634453073b25fadd2828df5c5"
+  },
+  "render_engines": {
+    "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-render-engines/verification.json",
+    "verification_sha256": "21905b9e7e320b77aa51042400e557c0156b9a98552bbde2fdc6860282c626f4",
+    "result": {
+      "schema": 1,
+      "passed": true,
+      "hardware_tested": false,
+      "profile_changed": false,
+      "scope": "Independent native pitch, oscillator, vector composition; no effects/source routing/final volume",
+      "project": "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1",
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": "12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": "9950b3cd95dc7224158254bff05bfd2c8658b780a86e4cf4faecd3744a026705",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv": "7d4e5680200f900c07a1fb708bdfb4b409ca91aeb408a1ec6ce7ca3b97c1a933",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv": "f3cf2a42c49838e0d44e5a00c27b50ceab1d18724ccf0be7d7bc680a98f15931",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_render_engines.sv": "917d50908052d1df3c96b89e4314956c144ebd439c6ddc546eee04fb94b813e1",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_render_engines.py": "6a4dc5b4ba88251a8c1700d1e53fd0bca467df4632133e96e0350fb61a59270b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/sim/data/audio_chain/fft_hann.mem": "017ce9c689980891b77704d460387c0ef39b7cd7dcd7a70f72d0924632bf119d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/sim/data/audio_chain/fft_tw_im.mem": "45c1dd9b30c67e201f05e83027524c29ec1ae4387c861ee819841347f234cf7e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/sim/data/audio_chain/fft_tw_re.mem": "e80a1bf23a99b194d0d109a8c7d5e3c3a59d30ff54abeefe493b45bebdcfc25a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/sim/data/audio_chain/pitch_bend_q20.mem": "eb906e4c202a35f84a4c1498aa80c8573743a9e514d61ae819e834bd0f90ab7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/audio/scope_vec/data/scene_controls.mem": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c"
+      },
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "4",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_workstation_runtime_render_engines",
+        "--Mdir",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-render-engines/obj",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/sine_interp.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/f03-scan-window-profile-revision3/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv",
+        "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_render_engines.sv"
+      ],
+      "run_argv": [
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-render-engines/obj/Vtb_workstation_runtime_render_engines"
+      ],
+      "metrics": {
+        "compared_clocks": 181950,
+        "frames": 3718,
+        "switches": 50,
+        "busy_rejects": 1327,
+        "panic_cases": 48,
+        "max_latency": 1039,
+        "audible_synth44": 1024
+      },
+      "pcm_frequency": {
+        "48": {
+          "sample_rate": 48000,
+          "fitted_hz": 439.99998345113744
+        },
+        "44": {
+          "sample_rate": 44100,
+          "fitted_hz": 440.0001773062132
+        },
+        "49": {
+          "sample_rate": 48000,
+          "fitted_hz": 439.9998988315811
+        }
+      },
+      "compile_warning_counts": {
+        "TIMESCALEMOD": 1,
+        "WIDTHEXPAND": 6,
+        "WIDTHTRUNC": 1,
+        "UNSIGNED": 4
+      },
+      "inputs_unchanged_during_run": true,
+      "run_log_sha256": "a7a07eba88d15b7c19b34911fa56c2ddbd3aef0d1c08a6ba326155462ee75aac"
+    }
+  },
+  "targeted_vector": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_scope_vec.py",
+    "passed": true,
+    "tests": 1,
+    "canonical48_frames": 480,
+    "canonical48_compared_clocks": 56809,
+    "max_render_clocks": 115,
+    "piano_attack_frames": {
+      "48k": 577,
+      "44k1": 530
+    },
+    "controls_rate44_frames": 118,
+    "pcm_hz": {
+      "48": 440.000184287,
+      "44": 439.999820471,
+      "49": 440.000115262
+    },
+    "source_sha256": "299ee18a77b3714a6c35c3579aafcc747bb91b2d88c8ae96546e343153fce791"
+  },
+  "accepted_boundary": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py",
+    "passed": true,
+    "tests": 10,
+    "source_sha256": "a0674152e4a89b8f43393840fd1fc724ee0788fedef0238086022c5146ae759f"
+  },
+  "synthesis_ab_preparation": {
+    "seal_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-ab-14abaaa4/synthesis_ab_seal.json",
+    "seal_sha256": "638b19afd0e767099adb7e7940d45618e200ed2b0538e85c48387fcd10e2f12f",
+    "seal": {
+      "schema": 1,
+      "prepared_only": true,
+      "no_eda_launched": true,
+      "before_after_difference_only": [
+        "rtl/audio/workstation_runtime_scope_vec.sv"
+      ],
+      "experiments": [
+        {
+          "variant": "before",
+          "directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-ab-14abaaa4/synthesis-before",
+          "identity": "vector-resource-component-before-v1-bc0d2467dd2ce5f9",
+          "manifest_sha256": "f3464529cafc50303188cd727c12e1c296ec7c1d02bdd981adafa2f0a3106386",
+          "runner_sha256": "a992f081aaff96c4ea4a182e70be51a49972b112eccb4bb79166168a92fdc746",
+          "native_source_sha256": "14abaaa4e21a94edc16a4661e3756ecb208066321bd39bb8f548335e2298160e"
+        },
+        {
+          "variant": "after",
+          "directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-ab-14abaaa4/synthesis-after",
+          "identity": "vector-resource-component-after-v1-3c62ee8598938486",
+          "manifest_sha256": "7ba3eca142ed01c31c55d7ed0967cedf7baddb4470a5749d5ce0a701245893fe",
+          "runner_sha256": "a77386d65cdf836e494f3ecdad40f6a44904e330372d89954e0b67b8780c3212",
+          "native_source_sha256": "7d4e5680200f900c07a1fb708bdfb4b409ca91aeb408a1ec6ce7ca3b97c1a933"
+        }
+      ]
+    },
+    "verify_only_passed": true,
+    "eda_started": false,
+    "lock_attempted": false
+  },
+  "synthesis_run": true,
+  "pnr_run": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "physical_savings_claim": null,
+  "remaining_gates": [
+    "Same-configuration serialized Gowin synthesis A/B after root source freeze",
+    "Actual integrated profile synthesis and routed timing/resource gates",
+    "Whole-system audio/CDC/epoch/hardware validation belongs to the new explicit candidate, not this optimization test"
+  ],
+  "rollback": "Reverse the final resource_optimization edit segment in provenance to restore exact prechange native SHA14abaaa4; previous snapshots and accepted providers remain intact.",
+  "parent_independent_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-parent-final/verification.json",
+    "sha256": "5a0fdc8bee8d91ae535a3c439465e66c796aba82d9c1ea3df62bdf34f981b4be",
+    "identity": "runtime-vector-resource-offline-v1-2ae6a6d912818a9c",
+    "source_set_sha256": "2ae6a6d912818a9c10fd5cab61e21065876ad892b1811d7042c85c70e5a86f4e",
+    "runs": [
+      {
+        "case": "canonical",
+        "argv": [
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-parent-final/obj/Vtb_workstation_runtime_scope_vec_resource"
+        ],
+        "metrics": {
+          "compared_clocks": 241512,
+          "frames48": 969,
+          "frames44": 985,
+          "profiles_per_rate": 5,
+          "voices": 8,
+          "max_render_clocks": 115,
+          "held_switches": 20,
+          "panic_inflight": 2,
+          "overflow_frames": 16,
+          "cache_checks": 5796288,
+          "phase_checks": 241512,
+          "envelope_states": 19,
+          "stress": 0
+        },
+        "adsr_sha256": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+        "log": "PASS vector_resource: compared_clocks=241512 frames48=969 frames44=985 profiles_per_rate=5 voices=8 max_render_clocks=115 held_switches=20 panic_inflight=2 overflow_frames=16 cache_checks=5796288 phase_checks=241512 envelope_states=19 stress=0\n- /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_scope_vec_resource.sv:179: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 3ms; walltime 0.156 s; speed 20.138 ms/s\n- Verilator: cpu 0.156 s on 1 threads; allocated 2 MB\n",
+        "log_sha256": "441ef830e401b60d1ff300806d0b6291d8b57bf54c8d2708defd2ce02f3a7f1e"
+      },
+      {
+        "case": "stress",
+        "argv": [
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-parent-final/obj/Vtb_workstation_runtime_scope_vec_resource",
+          "+STRESS_ADSR"
+        ],
+        "metrics": {
+          "compared_clocks": 241512,
+          "frames48": 969,
+          "frames44": 985,
+          "profiles_per_rate": 5,
+          "voices": 8,
+          "max_render_clocks": 115,
+          "held_switches": 20,
+          "panic_inflight": 2,
+          "overflow_frames": 16,
+          "cache_checks": 5796288,
+          "phase_checks": 241512,
+          "envelope_states": 31,
+          "stress": 1
+        },
+        "adsr_sha256": "74cd6ad7e7a62bb9f4af66b7f594f43c055426a64a8023817447294ecf9e9a31",
+        "log": "PASS vector_resource: compared_clocks=241512 frames48=969 frames44=985 profiles_per_rate=5 voices=8 max_render_clocks=115 held_switches=20 panic_inflight=2 overflow_frames=16 cache_checks=5796288 phase_checks=241512 envelope_states=31 stress=1\n- /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_scope_vec_resource.sv:179: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 3ms; walltime 0.158 s; speed 19.948 ms/s\n- Verilator: cpu 0.156 s on 1 threads; allocated 2 MB\n",
+        "log_sha256": "03b6d8ec72938af47a04c50350e2650e8303eae6f69da99cf23dc63322deef7f"
+      }
+    ]
+  },
+  "synthesis_ab_results": {
+    "before": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-ab-14abaaa4/synthesis-before/synthesis_process.json",
+      "sha256": "535a126cb64be98900601a57b0c35a90d2275d01cb042977e024b5f6537bdd5b",
+      "process": {
+        "schema": 1,
+        "state": "completed",
+        "started_at": "2026-10-30T08:19:34.950133+08:00",
+        "command": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-ab-14abaaa4/synthesis-before/run.tcl"
+        ],
+        "cwd": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-ab-14abaaa4/synthesis-before",
+        "manifest_sha256": "f3464529cafc50303188cd727c12e1c296ec7c1d02bdd981adafa2f0a3106386",
+        "runner_sha256": "a992f081aaff96c4ea4a182e70be51a49972b112eccb4bb79166168a92fdc746",
+        "tool_sha256": {
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/GowinSynthesis": "5dbd2b4d47f823c8844d55867eb06c9c0151e5ae79a93e2b61322f5e474f17b2",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/vlg_pp": "9112329b339e8bc8b474ce1c28d8a27b1a9ba462e07491b812185eff499aa188",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/primitive.xml": "3e2b5d7cda88e770525d5f6107656009bc884b624e2e34b5252c2d065aad6c68",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/prim_syns/gw5a/prim_syn.v": "51eb30e9356897eb742905ad9584c269a5f703eb2f88bee3e343efd6c9dd25a3",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/prim_syns/gw5a/primitive.xml": "13fe7383d1574cf9821980d2e393cc1458b51c273afb66e3f7fba3c4d5ee8684",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5"
+        },
+        "lock": "/private/tmp/gw138k-build.lock",
+        "scope": "Isolated synthesis A/B only; no claim of routed area/timing or full-runtime/board acceptance",
+        "hardware_operated": false,
+        "sram_programmed": false,
+        "flash_programmed": false,
+        "lock_acquired_at": "2026-10-30T08:19:34.950285+08:00",
+        "process_id": 30389,
+        "returncode": 0,
+        "finished_at": "2026-10-30T08:22:07.704444+08:00",
+        "synthesis_log_sha256": "eddf5b14a2b93b4269d5fea69b9061bfa683335f55c081259c9c9b37b5f32dc0",
+        "changed_inputs": [],
+        "artifacts_sha256": {
+          "impl/gwsynthesis/vector_resource_component_syn_resource.html": "8d1e463be91bbfa83479f4b660a4fe8eba23c6b6d1781b911cf0768db636e8c9",
+          "impl/gwsynthesis/vector_resource_component.log": "43a311dfee90f8258b7cb3a8f6c819b857057cbc3d134e97d7e7ab0795f62e90",
+          "impl/gwsynthesis/vector_resource_component.prj": "d0bf296c85a3a8ea5b25b58de154f3f975ba3ad546ffa77571a3a3b353df2274",
+          "impl/gwsynthesis/vector_resource_component_syn_rsc.xml": "c353ad022cbb053ebd17c616fa59f211c06b60413219001f170a2cc741c7d1be",
+          "impl/gwsynthesis/vector_resource_component_syn.rpt.html": "dbf1d6b9096ec1fdb2837bf3fc0cf2d87fa6799c8483eb9f78d36d61d410ecbc",
+          "impl/gwsynthesis/vector_resource_component.vg": "7d5e289a8d1128ac2d8dcb2245038933ec403b1aa13636129182c63c6bebdd6e"
+        },
+        "resources_synthesis_report": [
+          {
+            "file": "impl/gwsynthesis/vector_resource_component_syn_rsc.xml",
+            "attributes": {
+              "name": "vector_resource_synthesis",
+              "T_Register": "1775(0)",
+              "T_Alu": "1533(0)",
+              "T_Lut": "30926(0)",
+              "T_MULTALU27X18": "38(0)",
+              "T_MULT27X36": "12(0)",
+              "T_Bsram": "10(0)"
+            },
+            "interpretation": "synthesis report only; not physical BSRAM count or routed resources"
+          }
+        ]
+      }
+    },
+    "after": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-ab-14abaaa4/synthesis-after/synthesis_process.json",
+      "sha256": "4d960ca6a3d4f0dbf1e1b7dfba486a3b4aaabb0b649c041c8af7020caf2d2e9e",
+      "process": {
+        "schema": 1,
+        "state": "completed",
+        "started_at": "2026-10-30T08:22:43.796282+08:00",
+        "command": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-ab-14abaaa4/synthesis-after/run.tcl"
+        ],
+        "cwd": "/Users/sphenicidition/.cache/gw138k-task-20261030/vector-resource-ab-14abaaa4/synthesis-after",
+        "manifest_sha256": "7ba3eca142ed01c31c55d7ed0967cedf7baddb4470a5749d5ce0a701245893fe",
+        "runner_sha256": "a77386d65cdf836e494f3ecdad40f6a44904e330372d89954e0b67b8780c3212",
+        "tool_sha256": {
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/GowinSynthesis": "5dbd2b4d47f823c8844d55867eb06c9c0151e5ae79a93e2b61322f5e474f17b2",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/vlg_pp": "9112329b339e8bc8b474ce1c28d8a27b1a9ba462e07491b812185eff499aa188",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/primitive.xml": "3e2b5d7cda88e770525d5f6107656009bc884b624e2e34b5252c2d065aad6c68",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/prim_syns/gw5a/prim_syn.v": "51eb30e9356897eb742905ad9584c269a5f703eb2f88bee3e343efd6c9dd25a3",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/prim_syns/gw5a/primitive.xml": "13fe7383d1574cf9821980d2e393cc1458b51c273afb66e3f7fba3c4d5ee8684",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5"
+        },
+        "lock": "/private/tmp/gw138k-build.lock",
+        "scope": "Isolated synthesis A/B only; no claim of routed area/timing or full-runtime/board acceptance",
+        "hardware_operated": false,
+        "sram_programmed": false,
+        "flash_programmed": false,
+        "lock_acquired_at": "2026-10-30T08:22:43.796466+08:00",
+        "process_id": 31090,
+        "returncode": 0,
+        "finished_at": "2026-10-30T08:23:17.381263+08:00",
+        "synthesis_log_sha256": "3811ffdba508c32b7c03aab9642f3d92bd449b85fde617519d334859ea674716",
+        "changed_inputs": [],
+        "artifacts_sha256": {
+          "impl/gwsynthesis/vector_resource_component_syn_resource.html": "00992180cc630bcafc83c90c464785b2f2e15d55d01606f8e6b3f67264b0a8a0",
+          "impl/gwsynthesis/vector_resource_component.log": "f77f08b1ebadf3a474c5a8cc71dde88a0ed5411ff17d2c9db818130eb05b3b77",
+          "impl/gwsynthesis/vector_resource_component.prj": "c0fce85547ae319a991461d37b6ac9cdbc25358e84e30cddf87aa6e25b7c9659",
+          "impl/gwsynthesis/vector_resource_component_syn_rsc.xml": "f6f169828c8384ee97ef5a7f075c01addaff0908f10cabbafcabb66c5882ae23",
+          "impl/gwsynthesis/vector_resource_component_syn.rpt.html": "8b99cd1e6c2e14d672c99e18f0254efc7f0cd4a47f77f8d32427d35a75888522",
+          "impl/gwsynthesis/vector_resource_component.vg": "1e1f074800124c6c5443d8410c179dcf385482f2663b28507fbd950fdc462174"
+        },
+        "resources_synthesis_report": [
+          {
+            "file": "impl/gwsynthesis/vector_resource_component_syn_rsc.xml",
+            "attributes": {
+              "name": "vector_resource_synthesis",
+              "T_Register": "2351(0)",
+              "T_Alu": "1540(0)",
+              "T_Lut": "5714(0)",
+              "T_MULTALU27X18": "17(0)",
+              "T_MULT27X36": "12(0)",
+              "T_Bsram": "10(0)"
+            },
+            "interpretation": "synthesis report only; not physical BSRAM count or routed resources"
+          }
+        ]
+      }
+    }
+  },
+  "synthesis_report_delta": {
+    "lut": -25212,
+    "register": 576,
+    "multalu27x18": -21,
+    "mult27x36": 0,
+    "synthesis_bsram": 0,
+    "interpretation": "Isolated matched synthesis only, not physical resource or timing acceptance"
+  }
+}

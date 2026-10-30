@@ -123,8 +123,54 @@
       "occurrences": 1,
       "before": "    reg [15:0] morph,scale,frame_morph,frame_scale;",
       "after": "    // Low phase/product bits are intentionally discarded by interpolation.\n    wire unused_fraction = &{1'b0,scan_phase[6:0],own_product[19:0]};\n    reg [15:0] morph,scale,frame_morph,frame_scale;"
+    },
+    {
+      "occurrences": 1,
+      "before": "    reg [2:0] shape[0:VOICES-1],morph_shape[0:VOICES-1],env_state[0:VOICES-1];\n    reg [23:0] envelope[0:VOICES-1],attack[0:VOICES-1],decay[0:VOICES-1],sustain[0:VOICES-1],release_step[0:VOICES-1];\n    reg [15:0] velocity[0:VOICES-1];\n    reg [4:0] state;\n",
+      "after": "    reg [2:0] shape[0:VOICES-1],morph_shape[0:VOICES-1],env_state[0:VOICES-1];\n    reg [23:0] envelope[0:VOICES-1],attack[0:VOICES-1],decay[0:VOICES-1],sustain[0:VOICES-1],release_step[0:VOICES-1];\n    // Compute the three 44.1 kHz coefficients from the incoming profile once\n    // per Note On, sharing the dividers across voices.\n    // Canonical 48 kHz coefficients remain untouched; held rate changes select\n    // these paired values without reloading the voice or current event profile.\n    reg [23:0] attack_44[0:VOICES-1],decay_44[0:VOICES-1],release_44[0:VOICES-1];\n    wire [23:0] incoming_attack_44=envelope_step(adsr_rom[{event_profile_i,2'b00}],1'b1);\n    wire [23:0] incoming_decay_44=envelope_step(adsr_rom[{event_profile_i,2'b00}+1],1'b1);\n    wire [23:0] incoming_release_44=envelope_step(adsr_rom[{event_profile_i,2'b00}+3],1'b1);\n    reg [15:0] velocity[0:VOICES-1];\n    reg [4:0] state;\n"
+    },
+    {
+      "occurrences": 1,
+      "before": "    end\n    wire [24:0] voice_attack_sum[0:VOICES-1],voice_decay_threshold[0:VOICES-1];\n    for(genvar e=0;e<VOICES;e=e+1) begin: g_local_envelope\n        assign voice_attack_sum[e]={1'b0,envelope[e]}+{1'b0,envelope_step(attack[e],frame_44k1)};\n        assign voice_decay_threshold[e]={1'b0,sustain[e]}+{1'b0,envelope_step(decay[e],frame_44k1)};\n    end\n    reg [VOICES-1:0] frame_active;\n",
+      "after": "    end\n    wire [24:0] voice_attack_sum[0:VOICES-1],voice_decay_threshold[0:VOICES-1];\n    wire [23:0] frame_attack_step[0:VOICES-1],frame_decay_step[0:VOICES-1],frame_release_step[0:VOICES-1];\n    for(genvar e=0;e<VOICES;e=e+1) begin: g_local_envelope\n        assign frame_attack_step[e]=frame_44k1 ? attack_44[e] : attack[e];\n        assign frame_decay_step[e]=frame_44k1 ? decay_44[e] : decay[e];\n        assign frame_release_step[e]=frame_44k1 ? release_44[e] : release_step[e];\n        assign voice_attack_sum[e]={1'b0,envelope[e]}+{1'b0,frame_attack_step[e]};\n        assign voice_decay_threshold[e]={1'b0,sustain[e]}+{1'b0,frame_decay_step[e]};\n    end\n    reg [VOICES-1:0] frame_active;\n"
+    },
+    {
+      "occurrences": 1,
+      "before": "    // then test its35-bit result before truncating a safe phase increment.\n    wire [61:0] rate_step_numerator={8'd0,pitch_product}*62'd160+62'd77070336;\n    wire [34:0] effective_step=frame_44k1 ? 35'(rate_step_numerator/62'd154140672)\n                                                      : {3'd0,pitch_product[51:20]};\n    wire [34:0] step_limit=frame_44k1 ? {3'd0,MAX_STEP_44} : {3'd0,MAX_STEP};\n",
+      "after": "    // then test its35-bit result before truncating a safe phase increment.\n    wire [61:0] rate_step_numerator={8'd0,pitch_product}*62'd160+62'd77070336;\n    // For unsigned N, floor(N/(147*2^20))=floor((N>>20)/147).\n    // Retain the complete product and rounding carry before dropping 20 bits.\n    wire [41:0] rate_step_dividend=rate_step_numerator[61:20];\n    wire [34:0] effective_step=frame_44k1 ? 35'(rate_step_dividend/42'd147)\n                                                      : {3'd0,pitch_product[51:20]};\n    wire [34:0] step_limit=frame_44k1 ? {3'd0,MAX_STEP_44} : {3'd0,MAX_STEP};\n"
+    },
+    {
+      "occurrences": 1,
+      "before": "                phase[j]<=0;base_step[j]<=0;own_pitch[j]<=1048576;note[j]<=0;shape[j]<=0;morph_shape[j]<=0;\n                env_state[j]<=IDLE;envelope[j]<=0;attack[j]<=0;decay[j]<=0;sustain[j]<=0;release_step[j]<=0;velocity[j]<=0;\n            end\n        end else begin\n",
+      "after": "                phase[j]<=0;base_step[j]<=0;own_pitch[j]<=1048576;note[j]<=0;shape[j]<=0;morph_shape[j]<=0;\n                env_state[j]<=IDLE;envelope[j]<=0;attack[j]<=0;decay[j]<=0;sustain[j]<=0;release_step[j]<=0;velocity[j]<=0;\n                attack_44[j]<=0;decay_44[j]<=0;release_44[j]<=0;\n            end\n        end else begin\n"
+    },
+    {
+      "occurrences": 1,
+      "before": "                            sustain[j]<=adsr_rom[{event_profile_i,2'b00}+2];\n                            release_step[j]<=adsr_rom[{event_profile_i,2'b00}+3];\n                            velocity[j]<={1'b0,event_velocity_i,event_velocity_i,event_velocity_i[6]};\n                        end\n",
+      "after": "                            sustain[j]<=adsr_rom[{event_profile_i,2'b00}+2];\n                            release_step[j]<=adsr_rom[{event_profile_i,2'b00}+3];\n                            attack_44[j]<=incoming_attack_44;decay_44[j]<=incoming_decay_44;release_44[j]<=incoming_release_44;\n                            velocity[j]<={1'b0,event_velocity_i,event_velocity_i,event_velocity_i[6]};\n                        end\n"
+    },
+    {
+      "occurrences": 1,
+      "before": "                                DECAY:if(decay[j]==0 || {1'b0,envelope[j]}<=voice_decay_threshold[j]) begin\n                                          envelope[j]<=sustain[j];env_state[j]<=SUSTAIN;\n                                      end else envelope[j]<=envelope[j]-envelope_step(decay[j],frame_44k1);\n                                SUSTAIN:envelope[j]<=sustain[j];\n                                RELEASE:if(release_step[j]==0 || envelope[j]<=envelope_step(release_step[j],frame_44k1)) begin envelope[j]<=0;env_state[j]<=IDLE;end\n                                        else envelope[j]<=envelope[j]-envelope_step(release_step[j],frame_44k1);\n                                default:envelope[j]<=0;\n                            endcase\n",
+      "after": "                                DECAY:if(decay[j]==0 || {1'b0,envelope[j]}<=voice_decay_threshold[j]) begin\n                                          envelope[j]<=sustain[j];env_state[j]<=SUSTAIN;\n                                      end else envelope[j]<=envelope[j]-frame_decay_step[j];\n                                SUSTAIN:envelope[j]<=sustain[j];\n                                RELEASE:if(release_step[j]==0 || envelope[j]<=frame_release_step[j]) begin envelope[j]<=0;env_state[j]<=IDLE;end\n                                        else envelope[j]<=envelope[j]-frame_release_step[j];\n                                default:envelope[j]<=0;\n                            endcase\n"
     }
   ],
   "source_policy": "versioned_native_source_not_generated_at_build",
-  "retirement": "Use a single native runtime provider after full48k equivalence and explicit profile migration; retire old provider only after all consumers migrate"
+  "retirement": "Use a single native runtime provider after full48k equivalence and explicit profile migration; retire old provider only after all consumers migrate",
+  "resource_optimization": {
+    "schema": 1,
+    "date": "2026-10-30",
+    "prechange_native_sha256": "14abaaa4e21a94edc16a4661e3756ecb208066321bd39bb8f548335e2298160e",
+    "source_sha256": "7d4e5680200f900c07a1fb708bdfb4b409ca91aeb408a1ec6ce7ca3b97c1a933",
+    "reverse_edit_start": 24,
+    "reverse_edit_count": 6,
+    "source_policy": "Maintained native code; appended exact reversible edits reconstruct actual prechange runtime provider, then earlier edits reconstruct canonical48 parent",
+    "changes": [
+      "Share three event-profile rate44 envelope conversions at Note On and cache paired coefficients per voice; canonical48 values unchanged",
+      "Compute complete unsigned62 phase numerator, then exact42bit high slice divided by147; preserve full rounding carry and35bit overflow policy"
+    ],
+    "extra_state_budget_bits": 576,
+    "resource_claim": "No measured resource/timing/physical benefit until exact same-config A/B synthesis and implementation",
+    "integration": "Current explicit opt-in runtime only; no accepted profile/default/provider change"
+  }
 }
