@@ -340,7 +340,11 @@ module gw138k_push_workstation_top #(
     wire [7:0] native_usb_data;
     wire native_usb_oe;
     assign usb2_ulpi_data=native_usb_oe ? native_usb_data : 8'bz;
-    workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)) u_native_usb (
+    workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        ,.STOP_CLOCK_QUEUE_FENCE(1)
+`endif
+    ) u_native_usb (
         .clk_cpu(usb_clk),.clk_ref(clk_50m),.clk_ulpi(usb2_ulpi_clk),.clk_audio(audio_clk),
 `ifdef WORKSTATION_RUNTIME_NATIVE
         // Compute PLL recovery must not manufacture a second USB attach and

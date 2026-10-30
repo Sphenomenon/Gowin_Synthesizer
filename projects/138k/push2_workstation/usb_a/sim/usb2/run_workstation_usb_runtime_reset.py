@@ -86,12 +86,17 @@ def main():
         if 'wirefeedback_reset_n=FEEDBACK_AUDIO_DOMAIN!=0?audio_reset_n:feedback_release_q[1];' not in compact(wrapper.read_text()):
             raise ValueError('Audio-domain feedback reset source changed')
         prefix = selected[:selected.index('u_native_usb')]
-        if not re.search(r'workstation_usb2_input\s*#\(\.FEEDBACK_AUDIO_DOMAIN\(1\)\)\s*$', prefix):
+        selection = re.search(r'workstation_usb2_input\s*#\((.*?)\)\s*$', prefix, re.S)
+        if not selection or '.FEEDBACK_AUDIO_DOMAIN(1)' not in compact(selection[1]):
             raise ValueError('Actual native USB feedback domain selection changed')
+        parameters = compact(selection[1])
+        fence = re.search(r'\.STOP_CLOCK_QUEUE_FENCE\(([^)]+)\)', parameters)
+        if fence and fence[1] != '1':
+            raise ValueError('Explicit native stop-clock queue fence must be enabled')
         result['actual_top_binding'] = dict(preprocessed_sha256=digest(preprocessed),
             audio_reset_n='runtime_reset_n', runtime_reset_n='reset_n && memory_guard_started',
             usb_reset_n='usb_reset_n', compute_clock='audio_clk', feedback_audio_domain=1,
-            wrapper_forwards_audio_reset=True, passed=True)
+            wrapper_forwards_audio_reset=True, stop_clock_queue_fence=1 if fence else 0, passed=True)
         compile_log = run('compile', ['verilator', '--binary', '--timing', '--timescale-override', '1ns/1ps',
             '-j', '4', '-Wno-fatal', '--top-module', 'tb_workstation_usb_runtime_reset',
             '--Mdir', str(output / 'obj'), *map(str, sources)], 180)

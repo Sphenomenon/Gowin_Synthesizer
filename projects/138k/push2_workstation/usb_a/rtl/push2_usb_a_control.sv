@@ -1,6 +1,8 @@
 // USB Host CPU MMIO -> existing Push mapper -> audio event FIFO.
 // USB runs at 48 MHz; sample processing remains in the 76.8 MHz audio domain.
-module push2_usb_a_control(
+module push2_usb_a_control #(
+    parameter integer STOP_CLOCK_QUEUE_FENCE=0
+)(
     input wire clk,reset_n,audio_clk,audio_reset_n,
     output wire audio_lifecycle,audio_cancel,
     input wire feedback_clk,feedback_reset_n,
@@ -72,12 +74,32 @@ module push2_usb_a_control(
     // pointer reset crosses. Hold new writes until this flush is acknowledged.
     (* ASYNC_REG="TRUE" *) reg [5:0] queue_release;
     (* ASYNC_REG="TRUE" *) reg [1:0] queue_write_release;
+    wire queue_fifo_reset,queue_read_ready;
     always @(posedge audio_clk or posedge input_reset)
         if(input_reset) queue_release<=0;else queue_release<={queue_release[4:0],1'b1};
-    assign queue_flushing=!queue_release[5];
+    generate if(STOP_CLOCK_QUEUE_FENCE!=0)begin: stopped_clock_queue_fence
+        // The generated FIFO's producer pointer takes three destination edges
+        // to reach read-side use, longer than its two-edge reset release.
+        // Hold its original reset through six REAL destination edges; a
+        // stopped destination cannot acknowledge this boundary early.
+        assign queue_fifo_reset=input_reset || !queue_release[5];
+        (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [5:0] drain_release;
+        always @(posedge audio_clk or posedge queue_fifo_reset)
+            if(queue_fifo_reset)drain_release<=0;
+            else drain_release<={drain_release[4:0],1'b1};
+        // A further six edges empty the read buffer and settle pointer/consume
+        // feedback before the existing two-USB-edge write release. Normal
+        // events stay fenced; lifecycle cancellation remains independent.
+        assign queue_flushing=queue_fifo_reset || !drain_release[5];
+        assign queue_read_ready=drain_release[5] && !queue_fifo_reset;
+    end else begin: legacy_queue_release
+        assign queue_fifo_reset=input_reset;
+        assign queue_flushing=!queue_release[5];
+        assign queue_read_ready=!queue_flushing;
+    end endgenerate
     always @(posedge clk or posedge input_reset)
         if(input_reset) queue_write_release<=0;
-        else queue_write_release<={queue_write_release[0],!queue_flushing};
+        else queue_write_release<={queue_write_release[0],queue_read_ready};
     wire queue_write_ready=queue_write_release[1];
     assign push_connected=connected && !generic_midi;
     reg [31:0] received,frames,out_errors,in_diagnostics;
@@ -210,7 +232,7 @@ module push2_usb_a_control(
     wire queued_valid;
     // Reset the existing queue on detach/PANIC, including buffered DATA. No
     // second event store or DDR client is needed for initialization.
-    gw138k_usb_event_fifo events(.usb_clk(clk),.audio_clk(audio_clk),.usb_rst(input_reset),
+    gw138k_usb_event_fifo events(.usb_clk(clk),.audio_clk(audio_clk),.usb_rst(queue_fifo_reset),
         .w_data(mapped_valid ? mapped_event : wdata[17:0]),
         .w_en(!input_reset && queue_write_ready && ((mapped_valid && mapped_ready) ||
               (generic_accepted && !generic_guide_command && !generic_panic))),.w_rdy(fifo_ready),
