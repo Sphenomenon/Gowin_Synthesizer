@@ -19,7 +19,7 @@ module workstation_sample_rate_switch #(
     output reg accepted_o, applied_o, rejected_o, failed_o,
     output reg [2:0] reject_code_o,
     output reg [3:0] fault_code_o,
-    output wire quiesce_o, dac_mute_o, stream_flush_o,
+    output reg quiesce_o, dac_mute_o, stream_flush_o,
     output reg audio_reset_no,
     output wire clock_monitor_restart_o,
     // Connect to GW5A DCS CLKSEL, DCS_MODE="FALLING", SELFORCE=0.
@@ -60,18 +60,29 @@ module workstation_sample_rate_switch #(
     assign request_ready_o = state == RUN && running_qualified;
     assign busy_o = state != RUN && state != FAULT;
     assign fault_o = state == FAULT;
-    assign quiesce_o = state != RUN && state != PREFILL && state != RESUME;
-    // During QUIESCE the serializer finishes its whole frame and acknowledges
-    // its own boundary mute. Direct DAC mute/reset starts only after that ack.
-    assign dac_mute_o = state != RUN && state != QUIESCE && state != RESUME;
-    assign stream_flush_o = state != RUN && state != QUIESCE && state != PREFILL && state != RESUME;
     assign clock_monitor_restart_o = state == BOOT_SELECT || state == STOP_START || state == SELECT_TARGET;
     assign staged_44k1_o = pending_44k1;
     assign staged_epoch_o = pending_epoch;
 
+    // Publish crossing control levels from the same target state as the FSM.
+    // Multi-bit state decode must not become an asynchronous CDC source: e.g.
+    // PREFILL 7 -> RESUME 9 may transiently decode STOP/QUALIFY while bits settle.
+    // One transition owner keeps all three outputs aligned without another
+    // state register or a one-control-cycle lag.
+    // During QUIESCE the serializer finishes its whole frame and acknowledges
+    // its own boundary mute. Direct DAC mute/reset starts only after that ack.
+    task automatic transition_to(input [3:0] target_state);
+        begin
+            state <= target_state;
+            quiesce_o <= target_state != RUN && target_state != PREFILL && target_state != RESUME;
+            dac_mute_o <= target_state != RUN && target_state != QUIESCE && target_state != RESUME;
+            stream_flush_o <= target_state != RUN && target_state != QUIESCE && target_state != PREFILL && target_state != RESUME;
+        end
+    endtask
+
     task automatic enter_fault(input [3:0] code);
         begin
-            state <= FAULT;
+            transition_to(FAULT);
             timer <= 0;
             fault_code_o <= code;
             active_valid_o <= 0;
@@ -84,7 +95,7 @@ module workstation_sample_rate_switch #(
 
     always @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin
-            state <= BOOT_SELECT;
+            transition_to(BOOT_SELECT);
             timer <= 0;
             pending_44k1 <= DEFAULT_44K1;
             pending_epoch <= INITIAL_STREAM_EPOCH;
@@ -105,7 +116,7 @@ module workstation_sample_rate_switch #(
                 reject_code_o <= state == FAULT ? REJECT_FAULT : REJECT_BUSY;
             end
             case (state)
-                BOOT_SELECT: begin state <= QUALIFY; timer <= 0; end
+                BOOT_SELECT: begin transition_to(QUALIFY); timer <= 0; end
                 RUN: begin
                     timer <= 0;
                     if (!running_qualified) begin
@@ -121,7 +132,7 @@ module workstation_sample_rate_switch #(
                                 pending_44k1 <= request_44k1_i;
                                 pending_epoch <= following_epoch;
                                 booting <= 0;
-                                state <= QUIESCE;
+                                transition_to(QUIESCE);
                             end
                         end
                     end
@@ -133,27 +144,27 @@ module workstation_sample_rate_switch #(
                     else if (frame_quiescent_i) begin
                         if (!target_qualified) enter_fault(FAULT_TARGET_LOST);
                         else begin
-                            state <= STOP_START; timer <= 0; active_valid_o <= 0;
+                            transition_to(STOP_START); timer <= 0; active_valid_o <= 0;
                             audio_reset_no <= 0; clock_select_o <= 0;
                         end
                     end else if (timed_out) enter_fault(FAULT_QUIESCE_TIMEOUT);
                     else timer <= timer + 1'b1;
                 end
-                STOP_START: begin state <= STOP_WAIT; timer <= 0; end
+                STOP_START: begin transition_to(STOP_WAIT); timer <= 0; end
                 STOP_WAIT: begin
                     if (!target_qualified) enter_fault(FAULT_TARGET_LOST);
                     else if (selected_clock_stopped_low_i) begin
-                        state <= SELECT_TARGET; timer <= 0;
+                        transition_to(SELECT_TARGET); timer <= 0;
                         clock_select_o <= pending_44k1 ? 4'b0010 : 4'b0001;
                     end
                     else if (timed_out) enter_fault(FAULT_STOP_TIMEOUT);
                     else timer <= timer + 1'b1;
                 end
-                SELECT_TARGET: begin state <= QUALIFY; timer <= 0; end
+                SELECT_TARGET: begin transition_to(QUALIFY); timer <= 0; end
                 QUALIFY: begin
                     if (!booting && !target_qualified) enter_fault(FAULT_TARGET_LOST);
                     else if (target_qualified && selected_clock_qualified_i) begin
-                        state <= PREFILL; timer <= 0; audio_reset_no <= 1;
+                        transition_to(PREFILL); timer <= 0; audio_reset_no <= 1;
                     end
                     else if (timed_out) enter_fault(FAULT_QUALIFY_TIMEOUT);
                     else timer <= timer + 1'b1;
@@ -161,7 +172,7 @@ module workstation_sample_rate_switch #(
                 PREFILL: begin
                     if (!target_qualified || !selected_clock_qualified_i) enter_fault(FAULT_TARGET_LOST);
                     else if (prefill_ready_i) begin
-                        state <= RESUME;
+                        transition_to(RESUME);
                         timer <= 0;
                     end else if (timed_out) enter_fault(FAULT_PREFILL_TIMEOUT);
                     else timer <= timer + 1'b1;
@@ -175,7 +186,7 @@ module workstation_sample_rate_switch #(
                         applied_o <= !booting;
                         booting <= 0;
                         fault_code_o <= FAULT_NONE;
-                        state <= RUN;
+                        transition_to(RUN);
                         timer <= 0;
                     end else if (timed_out) enter_fault(FAULT_RESUME_TIMEOUT);
                     else timer <= timer + 1'b1;
@@ -188,7 +199,7 @@ module workstation_sample_rate_switch #(
                         pending_44k1 <= active_44k1_o;
                         pending_epoch <= following_epoch;
                         booting <= 0;
-                        state <= STOP_START;
+                        transition_to(STOP_START);
                     end
                 end
                 default: enter_fault(FAULT_RUNNING_LOST);

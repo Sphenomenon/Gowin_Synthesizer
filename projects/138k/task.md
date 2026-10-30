@@ -44,6 +44,8 @@
 
 [F9 第二次有效资源失败](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_F09_RESOURCE_FAILURE_20261030.md)已封存：32,709 条未布通网络、CLS 报告99%、BSRAM 298／340、PRIMARY 与 LW 各8／8，27 项登记输入保持，无位流或完整 routed STA。F8／F9 两次真实资源尝试均失败，现已满足用户允许 CNN／曲谱引导裁剪的条件；独立 no-CNN 候选正在准备，当前主线尚未激活，不宣称资源节省或部署。
 
+[采样率控制 level 注册修复](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_RATE_CONTROL_LEVELS_20261030.md)关闭了 PREFILL→RESUME 组合译码毛刺在数字模型中导致预填清空／重复请求的问题。双模式长期回归及旧行为负控、真实时钟／I2S、profile20／来源12／accepted10均通过；新 prepare `1aea3c01fa6c1b14` 仅一项RTL输入变化，已独立启动综合，结果另记。新网表的PCM源／完整closure需重新审核，完整物理／硬件接受仍未完成，无部署。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）

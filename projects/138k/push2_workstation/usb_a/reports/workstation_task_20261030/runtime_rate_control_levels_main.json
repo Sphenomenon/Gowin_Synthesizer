@@ -1,0 +1,366 @@
+{
+  "schema": 1,
+  "identity": "runtime-rate-control-levels-main-20261030",
+  "base_commit": "837c501",
+  "product_original_sha256": "bf53ae31a3b2efc8d7039278590906c0cc2b965fe3eef6bcbe5afbc27b521ec1",
+  "product_sha256": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be",
+  "candidate": "custom138k-workstation-v1-1aea3c01fa6c1b14",
+  "candidate_input_sha256": "1aea3c01fa6c1b14d28977f61d8b227786e80f816664e3db336e3b6b642d9f38",
+  "configuration_sha256": "22e5a857a1aa7424a52078212a13f60aadc558d31b8a8f55e21b234f95afd8ea",
+  "prepared": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-runtime-profile-registered-levels-v1",
+  "prepare_artifact_sha256": "b76e2152a26a12420901f21ff3c67c149a56227d39d305aefd31a30ae671ea4e",
+  "source_counts": {
+    "source_sha256": 316,
+    "source_snapshot_sha256": 739,
+    "staged_input_sha256": 570,
+    "enabled_inputs": 259
+  },
+  "staged_changes": [
+    "rtl/audio/workstation_sample_rate_switch.sv"
+  ],
+  "product_patch_manifest": {
+    "actual_route_or_pvt_model": false,
+    "candidate": "custom138k-workstation-v1-f1be50e853d3700a",
+    "deployment_allowed": false,
+    "digital_counterexample_observations": {
+      "original": {
+        "request_count": 2,
+        "sampled_quiesce_cycles": 1,
+        "unexpected_empty_cycles": 3
+      },
+      "registered_comparison": {
+        "request_count": 1,
+        "sampled_quiesce_cycles": 0,
+        "unexpected_empty_cycles": 0
+      }
+    },
+    "digital_skew_model_only": true,
+    "eda_invoked": false,
+    "files": {
+      "REVIEW.md": "0b55459657e0cb920e8b9e6e2411306748a794b756f65eb05c72f0dc7c194678",
+      "actual_state_decode.sv": "63c1a8125533dc69afd47d2c47fdbfd15e4cc4613dfc525b0a5407b3f08a19ee",
+      "inventory.json": "ad22c0264190f472f46012b1a83a5573b5441b6bedf86cee6036fe851587c0e3",
+      "inventory.log": "6c352e03030a32c7e0dfe32e92615504d34e7ca2af8858dd87339f4bb3583b99",
+      "inventory.py": "7dcc6c00852cf780fd8469afefae796dfb3deb99fb8ea2f28dedfba3207f8706",
+      "product_patch/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be",
+      "registered_control_levels.patch": "64b965231c0c8874781c53236aed2caa068b74129833824f1a76e7ce30a5c3ae",
+      "registered_control_levels_base.json": "52510dc9b09a4a56bcfa8907a0b400b4d4fd7017906d72835b88bcf90e53408a",
+      "run_verification.py": "14516563cff35b2011d4562e2caa739c77c52f79cf7ef50b03a9a43751c4aa8c",
+      "tb_state_skew.sv": "a555a49937de10259e82741e1ca3456df4516464cbec842e3141eff6675299cc",
+      "verification.json": "51c75d7950453ba71c7cfd69f508b75445e3e9f8df2082bb49178103b09f2c11",
+      "verification.log": "dccc8bd5e5524b8875297e15f8ca009097bb7ac172bb57f64a8205500bcac524"
+    },
+    "focus_async_pin_counts": {
+      "audio_safe_assertion": 3,
+      "serial_safe_assertion": 44,
+      "serializer_local_reset": 322
+    },
+    "fresh_candidate_required": true,
+    "fresh_pcm_producer_and_closure_review_required": true,
+    "glitch_free_source_accepted": false,
+    "hardware_operated": false,
+    "installed": false,
+    "original_vg_sha256": "8fc53d099ebead55ca3926c8d4b2b45b3504fcb1ac1ed5dbcaa1b6e1a1834535",
+    "patch_apply_check": true,
+    "patch_install_whitelist": [
+      "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv"
+    ],
+    "patch_original_sha256": "bf53ae31a3b2efc8d7039278590906c0cc2b965fe3eef6bcbe5afbc27b521ec1",
+    "patch_proposed_sha256": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be",
+    "pcm_sealed_delivery_unchanged": {
+      "REVIEW.md": true,
+      "actual_pcm_audit.json": true,
+      "copy_source_identity.json": true,
+      "implementation.patch": true,
+      "installation.patch": true,
+      "installation_base.json": true,
+      "installation_smoke.json": true,
+      "integration/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": true,
+      "proposal_equivalence.json": true,
+      "tests.log": true,
+      "tree/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_pcm_cdc.py": true,
+      "tree/projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_PCM_CDC.md": true,
+      "tree/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py": true,
+      "verification.json": true
+    },
+    "pcm_sealed_manifest_sha256": "fdfba0ce56e5e2c45117b334cf55a9c50c24aa331d031b0b919d84cf38784b39",
+    "physical_cdc_accepted": false,
+    "physical_glitch_measured": false,
+    "registered_patch_synthesized": false,
+    "regression_command": "PYTHONDONTWRITEBYTECODE=1 python3 /Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-review-v1/run_verification.py",
+    "release_ready": false,
+    "remaining_gates": [
+      "new source lock/prepare/synthesis identity",
+      "actual registered CDC producer and complete closure review",
+      "prefill/context-ready stability qualification",
+      "full reset assertion/release and FIFO RAM proof",
+      "both selected modes Gowin endpoint queries/routed timing",
+      "separate board acceptance"
+    ],
+    "reset_inventory_complete": false,
+    "root_modified": false,
+    "schema": 1,
+    "seal_identity": "runtime-functional-reset-level-delivery-v1-62d42a6b6030e006",
+    "source_review_only": true,
+    "stage_identity": "runtime-functional-reset-level-review-v1",
+    "state_writers_after_patch": 1,
+    "synthesis": {
+      "candidate_identity": "custom138k-workstation-v1-f1be50e853d3700a",
+      "full_staged_input_count": 570,
+      "inputs_independently_hashed": true,
+      "prepared_profile": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation_profile.json",
+      "prepared_profile_input_closure_equal": true,
+      "prepared_profile_sha256": "9f453156f669ad5ffc6360a9f18dfda3857854c160ec0501f57d3e0e6655af4d",
+      "process_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/runtime_synthesis_evidence/process.json",
+      "process_sha256": "05e585abc5ae1d00b22b1cb00eb162b02cc10ca75a12ecb7b6cadbe51ea3f838",
+      "stage": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1",
+      "validation_stage": "synthesis_only",
+      "vg": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "vg_sha256": "8fc53d099ebead55ca3926c8d4b2b45b3504fcb1ac1ed5dbcaa1b6e1a1834535"
+    },
+    "test_count": 5,
+    "tests_passed": true,
+    "tool_query_resolution_verified": false,
+    "transition_sites": 12
+  },
+  "product_patch_manifest_sha256": "9f7b3138d8a0d33897b533dddef36191a2126712d066d9b64e9fa4941e00be44",
+  "regression_manifest": {
+    "actual_route_or_pvt_model": false,
+    "deployment_allowed": false,
+    "digital_skew_model_only": true,
+    "eda_invoked": false,
+    "exact_original_source_negative_modes_rejected": 2,
+    "existing_seals_verified": {
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-review-v1": {
+        "file_count": 12,
+        "manifest_sha256": "9f7b3138d8a0d33897b533dddef36191a2126712d066d9b64e9fa4941e00be44",
+        "unchanged": true
+      },
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-pcm-cdc-portable-v1": {
+        "file_count": 14,
+        "manifest_sha256": "fdfba0ce56e5e2c45117b334cf55a9c50c24aa331d031b0b919d84cf38784b39",
+        "unchanged": true
+      }
+    },
+    "files": {
+      "REVIEW.md": "6184d310d90b224fc7a2a7913723ef71a6aa29fd121824ceb904378c48e9b38b",
+      "original_rtl_negative.json": "c5c5ab37aa344d2cbed17b7f88ee424919ee12cca85501925741d725df0aebd1",
+      "regression.patch": "b6538210c4a150732adfd414767e1481dfebda3494083eb53ac2ba21815e6784",
+      "tests.log": "3d711e5b5f74a6e891552e25765a14dfec63f1c8256edaac8df3c1a001806e1b",
+      "tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_i2s_serializer.sv": "503799267ca9f4603d13585fa2b18f619c4b3e12dedd3568580255099ba2d245",
+      "tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be",
+      "tree/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_rate_control_levels.sv": "b7c2258050345399edcb32686a71cb9e502ce2d2b75ad9b7642619e5aae137f3",
+      "tree/projects/138k/push2_workstation/usb_a/sim/test_workstation_rate_control_levels.py": "f74e95325a1d76eb32672d658fae13f2aebc7838956ee9988b1011e19e163828"
+    },
+    "full_cdc_accepted": false,
+    "hardware_operated": false,
+    "install_whitelist": [
+      "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_rate_control_levels.sv",
+      "projects/138k/push2_workstation/usb_a/sim/test_workstation_rate_control_levels.py"
+    ],
+    "negative_modes_rejected": [
+      48000,
+      44100
+    ],
+    "old_source_sha256": "bf53ae31a3b2efc8d7039278590906c0cc2b965fe3eef6bcbe5afbc27b521ec1",
+    "patch_apply_check": true,
+    "physical_glitch_measured": false,
+    "positive_modes_passed": [
+      48000,
+      44100
+    ],
+    "private_inputs_required_by_versioned_runner": false,
+    "release_ready": false,
+    "requires_registered_owner_product_patch": true,
+    "root_test_files_modified": false,
+    "run_command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_rate_control_levels.py -v",
+    "schema": 1,
+    "seal_identity": "runtime-control-level-regression-delivery-v1-094bb6bd45bcfc18",
+    "simulation_cases": 4,
+    "stage_identity": "runtime-control-level-regression-v1",
+    "test_methods": 2,
+    "test_seconds": 7.466,
+    "vendor_library_required": false,
+    "vg_required": false
+  },
+  "regression_manifest_sha256": "f381238467caf06e05269254022bc48ca573b7b6faf13388578952041baffcb6",
+  "parent_five_case_verification": {
+    "actual_route_or_pvt_model": false,
+    "digital_skew_model_only": true,
+    "eda_invoked": false,
+    "hardware_operated": false,
+    "passed": true,
+    "physical_glitch_measured": false,
+    "registered_patch_synthesized": false,
+    "schema": 1,
+    "source_sha256": {
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/actual_state_decode.sv": "63c1a8125533dc69afd47d2c47fdbfd15e4cc4613dfc525b0a5407b3f08a19ee",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/product_patch/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/run_verification.py": "14516563cff35b2011d4562e2caa739c77c52f79cf7ef50b03a9a43751c4aa8c",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/tb_state_skew.sv": "a555a49937de10259e82741e1ca3456df4516464cbec842e3141eff6675299cc",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/rtl/audio/workstation_i2s_serializer.sv": "503799267ca9f4603d13585fa2b18f619c4b3e12dedd3568580255099ba2d245",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv": "c4d5a347457fa7453797c6096b8b72eb9b3160af4be5a27baab1737971f6c30b"
+    },
+    "test_count": 5,
+    "tests": [
+      {
+        "compile_args": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_state_skew",
+          "-Ptb_state_skew.REGISTERED_LEVELS=0",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/digital-state-skew-0.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/tb_state_skew.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/actual_state_decode.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/rtl/audio/workstation_i2s_serializer.sv"
+        ],
+        "compiled": true,
+        "diagnostics": "",
+        "label": "digital-state-skew-0",
+        "output": "PASS digital-state-skew registered=0 sampled_quiesce_cycles=1 unexpected_empty_cycles=3 request_count=2\n/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/tb_state_skew.sv:82: $finish called at 15542989342 (1ps)\n",
+        "passed": true
+      },
+      {
+        "compile_args": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_state_skew",
+          "-Ptb_state_skew.REGISTERED_LEVELS=1",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/digital-state-skew-1.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/tb_state_skew.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/actual_state_decode.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/rtl/audio/workstation_i2s_serializer.sv"
+        ],
+        "compiled": true,
+        "diagnostics": "",
+        "label": "digital-state-skew-1",
+        "output": "PASS digital-state-skew registered=1 sampled_quiesce_cycles=0 unexpected_empty_cycles=0 request_count=1\n/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/tb_state_skew.sv:82: $finish called at 15542989342 (1ps)\n",
+        "passed": true
+      },
+      {
+        "compile_args": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_sample_rate_switch",
+          "-Ptb_workstation_sample_rate_switch.RESERVE_ZERO_EPOCH=0",
+          "-Ptb_workstation_sample_rate_switch.INITIAL_STREAM_EPOCH=0",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/patched-transaction-legacy.vvp",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/product_patch/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v"
+        ],
+        "compiled": true,
+        "diagnostics": "",
+        "label": "patched-transaction-legacy",
+        "output": "PASS sample-rate switch: official GW5A DCS, bidirectional switch, atomic epoch/output acknowledgement, busy/missing target, stopped-high timeout, recovery, quiesce/qualification/prefill/resume/running/startup faults; cycles=1375 accepts=11 applies=13 rejects=4 faults=11\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv:219: $finish called at 27651000 (1ps)\n",
+        "passed": true
+      },
+      {
+        "compile_args": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_sample_rate_switch",
+          "-Ptb_workstation_sample_rate_switch.RESERVE_ZERO_EPOCH=1",
+          "-Ptb_workstation_sample_rate_switch.INITIAL_STREAM_EPOCH=1",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/patched-transaction-nonzero.vvp",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/product_patch/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v"
+        ],
+        "compiled": true,
+        "diagnostics": "",
+        "label": "patched-transaction-nonzero",
+        "output": "PASS sample-rate switch: official GW5A DCS, bidirectional switch, atomic epoch/output acknowledgement, busy/missing target, stopped-high timeout, recovery, quiesce/qualification/prefill/resume/running/startup faults; cycles=1375 accepts=11 applies=13 rejects=4 faults=11\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv:219: $finish called at 27651000 (1ps)\n",
+        "passed": true
+      },
+      {
+        "compile_args": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_sample_rate_switch",
+          "-Ptb_workstation_sample_rate_switch.RESERVE_ZERO_EPOCH=1",
+          "-Ptb_workstation_sample_rate_switch.INITIAL_STREAM_EPOCH=4294967294",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/patched-transaction-wrap.vvp",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/product_patch/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v"
+        ],
+        "compiled": true,
+        "diagnostics": "",
+        "label": "patched-transaction-wrap",
+        "output": "PASS sample-rate switch: official GW5A DCS, bidirectional switch, atomic epoch/output acknowledgement, busy/missing target, stopped-high timeout, recovery, quiesce/qualification/prefill/resume/running/startup faults; cycles=1375 accepts=11 applies=13 rejects=4 faults=11\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv:219: $finish called at 27651000 (1ps)\n",
+        "passed": true
+      }
+    ]
+  },
+  "parent_five_case_log": "digital-state-skew-0: PASS digital-state-skew registered=0 sampled_quiesce_cycles=1 unexpected_empty_cycles=3 request_count=2\n/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/tb_state_skew.sv:82: $finish called at 15542989342 (1ps)\ndigital-state-skew-1: PASS digital-state-skew registered=1 sampled_quiesce_cycles=0 unexpected_empty_cycles=0 request_count=1\n/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-main-parent/tb_state_skew.sv:82: $finish called at 15542989342 (1ps)\npatched-transaction-legacy: PASS sample-rate switch: official GW5A DCS, bidirectional switch, atomic epoch/output acknowledgement, busy/missing target, stopped-high timeout, recovery, quiesce/qualification/prefill/resume/running/startup faults; cycles=1375 accepts=11 applies=13 rejects=4 faults=11\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv:219: $finish called at 27651000 (1ps)\npatched-transaction-nonzero: PASS sample-rate switch: official GW5A DCS, bidirectional switch, atomic epoch/output acknowledgement, busy/missing target, stopped-high timeout, recovery, quiesce/qualification/prefill/resume/running/startup faults; cycles=1375 accepts=11 applies=13 rejects=4 faults=11\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv:219: $finish called at 27651000 (1ps)\npatched-transaction-wrap: PASS sample-rate switch: official GW5A DCS, bidirectional switch, atomic epoch/output acknowledgement, busy/missing target, stopped-high timeout, recovery, quiesce/qualification/prefill/resume/running/startup faults; cycles=1375 accepts=11 applies=13 rejects=4 faults=11\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_sample_rate_switch.sv:219: $finish called at 27651000 (1ps)\n",
+  "actual_old_state_decode": "`timescale 1ns/1ps\nmodule actual_state_decode(input wire [3:0] state_i, output wire quiesce_o,resume_o);\n    wire w4;\n    wire w5;\n    assign w4 = (16'hBCFF >> {state_i[0], state_i[2], state_i[1], state_i[3]}) & 1'b1; // u_managed/runtime/clocks/transaction/rate_quiesce_s\n    assign w5 = (16'h0130 >> {state_i[1], state_i[0], state_i[2], state_i[3]}) & 1'b1; // u_managed/runtime/n669_s1\n    assign quiesce_o=w4;\n    assign resume_o=w5;\nendmodule\n",
+  "actual_old_skew_fixture": "`timescale 1ns/1ps\n// A digital counterexample, not a routed/PVT delay model or board measurement.\nmodule tb_state_skew;\n    parameter integer REGISTERED_LEVELS=0;\n    localparam real HALF=29.5255;\n    reg clk=0;\n    always #(HALF) clk=~clk;\n    reg rst_n=0;\n    reg [3:0] target_state=7;\n    wire [3:0] skew_state;\n    assign #0.2 skew_state[0]=target_state[0];\n    assign #1.0 skew_state[1]=target_state[1];\n    assign #3.0 skew_state[2]=target_state[2];\n    assign #5.0 skew_state[3]=target_state[3];\n    wire decoded_quiesce,decoded_resume;\n    actual_state_decode decode(skew_state,decoded_quiesce,decoded_resume);\n    reg registered_quiesce=0,registered_resume=0;\n    // The reviewed product patch writes these values and the actual state\n    // together from transition_to(target_state); no combinational state Q path.\n    always @(target_state) begin\n        registered_quiesce <= target_state!=1 && target_state!=7 && target_state!=9;\n        registered_resume <= target_state==1 || target_state==2 || target_state==9;\n    end\n    wire quiesce=REGISTERED_LEVELS ? registered_quiesce : decoded_quiesce;\n    wire resume=REGISTERED_LEVELS ? registered_resume : decoded_resume;\n    reg [1:0] quiesce_sync=0,resume_sync=0;\n    always @(posedge clk or negedge rst_n) begin\n        if(!rst_n)begin quiesce_sync<=0;resume_sync<=0;end\n        else begin quiesce_sync<={quiesce_sync[0],quiesce};resume_sync<={resume_sync[0],resume};end\n    end\n    wire request,sample_ready;\n    wire [31:0] request_sequence;\n    reg sample_valid=0;\n    reg [31:0] sample_sequence=0;\n    integer requests=0;\n    always @(posedge clk) begin\n        sample_valid<=0;\n        if(rst_n && request)begin\n            requests<=requests+1;\n            sample_sequence<=request_sequence;\n            sample_valid<=1;\n        end\n    end\n    workstation_i2s_serializer #(.PDN_HOLD_FRAMES(4),.STARTUP_MUTE_FRAMES(1028),.SAMPLE_ERROR_ENABLE(1)) dut(\n        .clk_i(clk),.rst_ni(rst_n),.rate_44k1_i(1'b0),.epoch_i(32'd1),\n        .quiesce_i(quiesce_sync[1]),.resume_i(resume_sync[1]),\n        .serial_quiescent_o(),.output_running_o(),.prefill_ready_o(),\n        .request_o(request),.request_sequence_o(request_sequence),.request_44k1_o(),.request_epoch_o(),\n        .sample_valid_i(sample_valid),.sample_ready_o(sample_ready),.sample_44k1_i(1'b0),\n        .sample_error_i(1'b0),.sample_epoch_i(32'd1),.sample_sequence_i(sample_sequence),.sample_pcm_i(32'h12345678),\n        .mclk_o(),.bck_o(),.lrck_o(),.data_o(),.pdn_no(),.smute_o(),\n        .frame_valid_o(),.frame_error_o(),.frame_pcm_o(),.frame_sequence_o(),.frame_44k1_o(),.frame_epoch_o(),\n        .underrun_count_o(),.rejected_sample_count_o(),.source_error_count_o());\n    reg armed=0;\n    integer high_cycles=0,unexpected_empty=0;\n    always @(posedge clk)begin\n        if(armed)begin\n            if(quiesce_sync[1])high_cycles=high_cycles+1;\n            #0.001;\n            if(!dut.have_next)unexpected_empty=unexpected_empty+1;\n        end\n    end\n    initial begin\n        #100;rst_n=1;\n        wait(dut.have_next && dut.startup_frames==1028);\n        wait(dut.bit_position==8 && dut.half_count==0);\n        @(negedge clk);\n        #(HALF-2.0);\n        // Legitimate source transition PREFILL(7) -> RESUME(9), exactly two ns\n        // before a destination edge. Only the explicit state Q skews differ.\n        armed=1;target_state=9;\n        repeat(6)@(posedge clk);\n        #1;\n        if(REGISTERED_LEVELS)begin\n            if(high_cycles!=0 || unexpected_empty!=0 || requests!=1)\n                $fatal(1,\"registered level changed stable prefill: high=%0d empty=%0d requests=%0d\",high_cycles,unexpected_empty,requests);\n        end else begin\n            if(high_cycles==0 || unexpected_empty==0 || requests<2)\n                $fatal(1,\"missing digital counterexample: high=%0d empty=%0d requests=%0d\",high_cycles,unexpected_empty,requests);\n        end\n        $display(\"PASS digital-state-skew registered=%0d sampled_quiesce_cycles=%0d unexpected_empty_cycles=%0d request_count=%0d\",REGISTERED_LEVELS,high_cycles,unexpected_empty,requests);\n        $finish;\n    end\n    initial begin #30000000;$fatal(1,\"timeout\");end\nendmodule\n",
+  "functional_reset_inventory": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-functional-reset-level-review-v1/inventory.json",
+    "sha256": "ad22c0264190f472f46012b1a83a5573b5441b6bedf86cee6036fe851587c0e3",
+    "focus_pin_counts": {
+      "audio_safe_assertion": 3,
+      "serial_safe_assertion": 44,
+      "serializer_local_reset": 322
+    }
+  },
+  "checks": {
+    "persistent_regression": {
+      "count": 2,
+      "log": "test_former_combinational_outputs_are_rejected (__main__.RateControlLevels.test_former_combinational_outputs_are_rejected) ... ok\ntest_registered_owner_survives_legal_state_bit_skew (__main__.RateControlLevels.test_registered_owner_survives_legal_state_bit_skew) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 7.728s\n\nOK\nExpected rejection of former combinational outputs, rate44=0:\nrate-control levels: wrong_target=1 pulses=1 sampled_quiesce_cycles=1 unexpected_empty_cycles=3 request_count=2\nFATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_rate_control_levels.sv:109: FAIL rate-control CDC levels: target-edge publication or prefill preservation\n       Time: 21419501830  Scope: tb_workstation_rate_control_levels\nExpected rejection of former combinational outputs, rate44=1:\nrate-control levels: wrong_target=1 pulses=1 sampled_quiesce_cycles=1 unexpected_empty_cycles=3 request_count=2\nFATAL: /Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_rate_control_levels.sv:109: FAIL rate-control CDC levels: target-edge publication or prefill preservation\n       Time: 23313287710  Scope: tb_workstation_rate_control_levels\nRate44=0\nrate-control levels: wrong_target=0 pulses=0 sampled_quiesce_cycles=0 unexpected_empty_cycles=0 request_count=1\nPASS rate-control CDC levels: real owner/serializer, target-edge outputs, digital state skew\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_rate_control_levels.sv:111: $finish called at 21419501830 (1ps)\nRate44=1\nrate-control levels: wrong_target=0 pulses=0 sampled_quiesce_cycles=0 unexpected_empty_cycles=0 request_count=1\nPASS rate-control CDC levels: real owner/serializer, target-edge outputs, digital state skew\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_rate_control_levels.sv:111: $finish called at 23313287710 (1ps)\n",
+      "log_sha256": "b9c27661f3d70c9fca1e732b7a4b49df3f2d5368c9b9b810e2c70e023f597a59"
+    },
+    "clock_domain": {
+      "count": 2,
+      "log": "..\n----------------------------------------------------------------------\nRan 2 tests in 4.595s\n\nOK\nPASS audio clock domain: phase48=3.700 phase44=17.200, measured Gray windows/wrap, wrong rate, stable qualification, stop-low proof, official DCS bidirectional switching, busy, stopped-high/target/running loss and recovery, reset release; applies=6 faults=4\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_domain.sv:182: $finish called at 890871000 (1ps)\nPASS audio clock domain: phase48=0.001 phase44=29.400, measured Gray windows/wrap, wrong rate, stable qualification, stop-low proof, official DCS bidirectional switching, busy, stopped-high/target/running loss and recovery, reset release; applies=6 faults=4\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_domain.sv:182: $finish called at 890891000 (1ps)\nPASS audio clock domain: phase48=39.800 phase44=0.200, measured Gray windows/wrap, wrong rate, stable qualification, stop-low proof, official DCS bidirectional switching, busy, stopped-high/target/running loss and recovery, reset release; applies=6 faults=4\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_domain.sv:182: $finish called at 890871000 (1ps)\nGW5A simulator SHA256=2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5\nPASS production clock monitor: 50000-cycle windows, four consecutive windows, 12.288/16.9344 MHz counts=12288/16934, 500-cycle missing-clock bound=503, high/low stop and restart\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_monitor.sv:44: $finish called at 4010671000 (1ps)\n",
+      "log_sha256": "219d2de3490bf866b6202ec5706b592d6b4681c8efc439bc170c0e605aeb88f2"
+    },
+    "clock_i2s": {
+      "count": 1,
+      "log": ".\n----------------------------------------------------------------------\nRan 1 test in 64.494s\n\nOK\nPREFILL actual rate44=0 epoch=0 ns=21416980.000 timeout_ns=40000000\nPREFILL actual rate44=1 epoch=1 ns=23311120.000 timeout_ns=40000000\nPREFILL actual rate44=0 epoch=2 ns=21416920.000 timeout_ns=40000000\nPREFILL actual rate44=0 epoch=3 ns=21416960.000 timeout_ns=40000000\nDRAIN actual completed/discarded old responses=2 serial-quiet waiting reference_cycles=1424\nPASS clock+I2S actual default PDN=4/startup=1028, 48->44.1->48, real CDC frame/drain/prefill/running handshakes, tagged PCM/physical decode, lost-clock recovery; streams=4 frames=34\n/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_i2s.sv:215: $finish called at 88554993670 (1ps)\nGW5A simulator SHA256=2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5\n",
+      "log_sha256": "a9bb20414294f5ac77b6eacc24becdcbca57c00070f09d58ee04cc3ac8ec136f"
+    },
+    "profile": {
+      "count": 20,
+      "log": "test_default_native_profile_keeps_locked_ae350_rom (__main__.LegacyPolicy) ... ok\ntest_actual_prepare_records_every_input_and_reference_scope (__main__.PreparedClosure) ... ok\ntest_ae350_evidence_and_installed_rom_are_bound_to_the_candidate (__main__.PreparedClosure) ... ok\ntest_all_snapshot_inputs_are_rechecked_and_identity_bound (__main__.PreparedClosure) ... ok\ntest_changed_compiled_input_and_uncompiled_dependency_are_rejected (__main__.PreparedClosure) ... ok\ntest_media_and_token_storage_owners_are_explicit_profile_inputs (__main__.PreparedClosure) ... ok\ntest_metadata_and_feature_claim_changes_are_rejected (__main__.PreparedClosure) ... ok\ntest_new_compilation_entry_and_unlisted_files_are_rejected (__main__.PreparedClosure) ... ok\ntest_runtime_ble_adaptation_is_recomputed_and_installed (__main__.PreparedClosure) ... ok\ntest_runtime_ble_rom_stays_inside_a_copied_candidate (__main__.PreparedClosure) ... ok\ntest_runtime_pcm_policy_is_recomputed_and_installed (__main__.PreparedClosure) ... ok\ntest_runtime_replacements_preserve_original_bytes_and_have_one_owner (__main__.PreparedClosure) ... ok\ntest_scan_window_policy_cannot_be_silently_disabled (__main__.PreparedClosure) ... ok\ntest_toolchain_and_generated_rom_change_candidate_identity (__main__.PreparedClosure) ... ok\ntest_added_source_in_a_globbed_directory_is_rejected (__main__.ProfileSources) ... ok\ntest_changed_selected_source_is_rejected_before_preparation (__main__.ProfileSources) ... ok\ntest_configuration_is_explicit_and_other_profiles_are_isolated (__main__.ProfileSources) ... ok\ntest_missing_maintained_ae350_source_cannot_fall_back_to_locked_rom (__main__.ProfileSources) ... ok\ntest_real_lock_and_honest_feature_matrix (__main__.ProfileSources) ... ok\ntest_runtime_configuration_and_revision_cannot_be_changed (__main__.ProfileSources) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 7.531s\n\nOK\n",
+      "log_sha256": "5fa76ae21a273b25c659ed5ad8c5db0522bfc58158b92bbf255a2f6e271e8b20"
+    },
+    "source": {
+      "count": 12,
+      "log": "test_no_duplicate_declaration_or_unowned_dependency (__main__.ActualPreparedSources) ... ok\ntest_comments_and_strings_do_not_invent_owners (__main__.DeclarationParser) ... ok\ntest_guard_gray_propagation_is_bounded_by_actual_source_period (__main__.DeclarationParser) ... ok\ntest_actual_default_provider_keeps_conditional_runtime_port_absent (__main__.SelectedTopPorts) ... ok\ntest_actual_runtime_provider_requires_reviewed_clock_port_and_location (__main__.SelectedTopPorts) ... ok\ntest_missing_or_extra_ports_are_rejected_after_preprocessing (__main__.SelectedTopPorts) ... ok\ntest_two_selected_top_providers_are_rejected (__main__.SelectedTopPorts) ... ok\ntest_empty_query_side_omits_whole_command (__main__.SharedConstraintSelection) ... ok\ntest_locked_parent_recovers_mixed_commands_and_rebounds_usb_setup (__main__.SharedConstraintSelection) ... ok\ntest_mixed_queries_preserve_surviving_endpoints_on_each_side (__main__.SharedConstraintSelection) ... ok\ntest_unknown_retired_query_format_fails_closed (__main__.SharedConstraintSelection) ... ok\ntest_usb_write_release_keeps_bounded_setup_and_other_first_stages (__main__.SharedConstraintSelection) ... ok\n\n----------------------------------------------------------------------\nRan 12 tests in 3.811s\n\nOK\n{\"candidate_identity\": \"custom138k-workstation-v1-1aea3c01fa6c1b14\", \"compilation_units\": 256, \"module_count\": 288, \"package_count\": 2}\n",
+      "log_sha256": "811df57cd56ec8d378ce5b69c0d1e1797a2f53e9fd9285df392a82ba10527243"
+    },
+    "accepted": {
+      "count": 10,
+      "log": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.036s\n\nOK\n",
+      "log_sha256": "1173b97f3b4a9b80377ede8e18f44a77ef68eeaa7f7ab530e66e86335111ef8a"
+    }
+  },
+  "digital_skew_model_only": true,
+  "actual_route_or_pvt_model": false,
+  "physical_glitch_measured": false,
+  "synthesis_running": {
+    "candidate": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-registered-levels-synthesis-1aea3c01",
+    "accepted": false
+  },
+  "new_vg_pcm_boundary_review_required": true,
+  "complete_cdc_accepted": false,
+  "reset_inventory_complete": false,
+  "routed_timing_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}

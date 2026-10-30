@@ -397,7 +397,7 @@
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_spatial_reverb.sv": "fc4cacd3acd2c0cd6b73ee496bfa4db30e17be9d8018a9364e51eeff07c0d05d",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.provenance.json": "5af689e1adc920524e83d0ae9da87382a75a6bc2868c08fc246abb47814df68c",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv": "d8a0d2c787bc8c222bf4dde74069db41163988a646fd70c32774387bfe23a689",
-    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv": "bf53ae31a3b2efc8d7039278590906c0cc2b965fe3eef6bcbe5afbc27b521ec1",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be",
     "projects/138k/push2_workstation/usb_a/rtl/bluetooth/WORKSTATION_BLE_SEAL_CONTRACT.md": "466cb4adce85ffc7cd0702f0ae623e3a1193804372af4ae9f9427ed0c3993ff7",
     "projects/138k/push2_workstation/usb_a/rtl/bluetooth/gw138k_ble_status_uart.v": "45170aba11ccf4307c390a5313ccf6775f23d1e6b0c2a8b60b9bc25aebdc850b",
     "projects/138k/push2_workstation/usb_a/rtl/bluetooth/workstation_bluetooth.sv": "58700059b5d9865d8d3093d65fc9c19b75f3f7c68e86cafaae6a01d1baba70fa",
