@@ -86,6 +86,8 @@
 
 [无本地面板整机综合与 FE 准备](push2_workstation/usb_a/reports/WORKSTATION_R00_NO_PANEL_SYNTHESIS_FE_PREPARE_20261030.md)完成：固定 e855 的 584 项输入保持，综合 Register 58,602（较 b9a2 减少 4,404）、BSRAM 253；实际 pitch／attack 宽 tag 均映射 RAM。FE 仅作资源路由实验，结果另记。[front_valid 精确别名适配](push2_workstation/usb_a/reports/WORKSTATION_NO_PANEL_FRONT_VALID_ALIAS_20261030.md)已安装，父级 78 项／9 负控通过；四份新 prepare 的全部 staged 字节与各自前序相同。原 shared 失败保留原版本，PCM reply 29 个 pin 覆盖、owner8 录音 CDC／reset 和完整物理时序仍未接受，无板卡操作或部署。
 
+[FE 路由失败](push2_workstation/usb_a/reports/WORKSTATION_R00_NO_PANEL_FE_ROUTE_FAILURE_20261030.md)已由父级重新核对 27 项物理输入、584 项 staged 和六输出：2,235 条网络未布通，CLS 62,068／69,120、物理 BSRAM 288／340，PRIMARY／LW 仍各 8／8。无 FS／TR／SDF，五类时序均为 null；寄存器减少不代表完整路由或时序通过，未进行板卡操作。继续 PCM 与录音边界修正后另建明确候选，不复用 FE 身份。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
