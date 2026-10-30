@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "source_commit": "564a1b7",
+  "author_commit": "47041a605fb75d2bafd2c6c7391f48c895441308",
+  "author_seal_sha256": "ee7227e58f13b9d997c7e70b371f2ddcd4319d1fba6dbaf5f8937ef6c62bee69",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/sim/services/ae350_ble_business_cosim.sv": "4bebed1f4e562bff45d97c806b48ad2190e23cfd582add16479eb392c3af1613",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/ble_protocol_command.v": "e27e1dea4a07888b205b998be6e3b29141365f64605afaad1799aaeaf7214078",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv": "a8d9abc2976ba205ee58cf068957eba2a370dd0132d2c1122124639a053dfcf2",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv": "f8e1fba8441fe6b6f243950db4b653268ff21442e5fe77dbc963935f62caf3b9",
+    "projects/138k/push2_workstation/usb_a/rtl/services/workstation_business_mailbox.sv": "4473759b3292471119a20bdab6173c8b7ca7cf62c6c163266eca9fbe6c4864fa",
+    "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ble_raw_ddr_store.sv": "422a1bb4c3b0cf842b416b65f714d023c65b270d0fa5219f9adec1c72d290ede",
+    "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+    "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/business_mailbox.c": "49f14da2b57d6c826502b9d01ba26c5ff7c5089d6a2f14f4022b685d32054945",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.c": "f948f9aba50bb039ef36bc610f3694c375a31cc2501df28bbbed20466d860f26",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.c": "a2403e8691d70b990ab2e5b97f045f2a7d3abc0d5bd8fc82108e365009a426a7",
+    "projects/138k/push2_workstation/usb_a/sim/services/ae350_ble_business_cosim.cpp": "5990ccd33e5c4097bee963f691bdacb8c7618e4e072008c6307676670faf42b9",
+    "projects/138k/push2_workstation/usb_a/sim/services/run_ae350_ble_business.py": "0e9c0fff4023fc5905a68867f03eadd7734ed8199317ca03ccf185a5da94ae2b",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.h": "7200bc80652be8f0f95a8c1ece393bcab060af2adf6c0bc37d20b2d7a1c9f194",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.h": "c4c87ae7bb23f3d27871dfc5c00fd2e9141f94459135826259bb7ad7858d2f87",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth_ddr.py": "5fd412e04e66c96eabb58e94c589cec4853750a24fccc1aeee16a097c314ebce",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_ae350_business_v1.json": "7b1e10e64c4b139174c2c2545df08c26c1e10a32080f36c534b30ce45dc7e90b",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": "118a190cad996cf57d9dea88ce0cafe2eb0f10b1bb4f83ccb3c1659d2038f800",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json": "af6c84c334fcc3b72b6b214b0afb220e6d4e2d44c8a81c593acd6f4857f87d76",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json": "efeb7f00ec4b322169c6003c79bcfdb346e945ccb54607d8d8a99cf992230b59",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": "96570bd1c5b8f7279d7d039cb9268be3b1e519d476afa9fc9600991300289361",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": "73d891c6c6ddc325320ad94494b0c17822240c9711de09bf029fa75515737624",
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/provenance.json": "3c828231327ff20d89597d9c1d320810403a15f57eb3788ec3c34e954e3c1458",
+    "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_AE350_BLE_DOWNLOAD_SECOND_BATCH_20261031.md": "cc434b3dadd86c4878114ca1ee21113256baf929b0ecc9abbce3a76d8c967fa7",
+    "projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/ae350_ble_download_parent.json": "7db8aa90af85d003c0bd6ed2975f0a3d513b97d1b6c93f8b398b60fc2b8df7f4",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/CONTRACT.md": "6b196a32ce9b36a26a49041a2e5ab5d1424e717eaab9ea6f36b2eee916328146",
+    "projects/138k/push2_workstation/usb_a/tools/ae350_ble_business_indirect_review.json": "984660e286eca1dc2c01f384bd2211b5056caf6f6aa30927bd74696da9b3ebfa",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_cpu_business.py": "76d927b5cdd31cff705f8fa3486f5f508710ca64d216dd4bf0f1acaef8bbd75f",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "18d64d619247b0af9dea7f0b45fec6766cebad85d303f08be896f779644f8a80"
+  },
+  "candidate_identity": "custom138k-workstation-ae350-business-v1-fa5d45ee77c98b1d",
+  "profile_sha256": "7b1e10e64c4b139174c2c2545df08c26c1e10a32080f36c534b30ce45dc7e90b",
+  "staged_inputs": 612,
+  "enabled_inputs": 271,
+  "author_prepare_identity": "custom138k-workstation-ae350-business-v1-54e6f30a859dc9f7",
+  "staged_differences_from_author": [
+    "native_usb_firmware/build.log"
+  ],
+  "staged_difference_policy": "Only USB build.log compiler diagnostic paths differ; prefix replacement proves all remaining bytes equal.",
+  "firmware": {
+    "elf_sha256": "9edad27e1f602038a63675a86d40cc21f3cbc421d35719373e8551259d61cea1",
+    "binary_sha256": "a56f396fd8bacc8645d8bd51320190950dbb91287df9ef2aa5cfbbfd97d8a8cd",
+    "rom_sha256": "98e8d2880f1109391e43a3e7babafd12e62d3a5b2b10730187294e66d2ed6b1a",
+    "binary_bytes": 29808,
+    "ilm_runtime_bytes": 29200,
+    "dlm_static_bytes": 624,
+    "stack_bound_bytes": 1344,
+    "stack_capacity_bytes": 16384,
+    "actual_indirect_sites": 73
+  },
+  "checks": {
+    "actual_c_apb": 1701,
+    "complete_wire_comparisons": 136,
+    "runtime_C_mutants": 15,
+    "prepared_sources": 8,
+    "accepted_sources": 17,
+    "default_firmware": 10,
+    "callback": 4,
+    "profiles": 6,
+    "runtime_sources": 12
+  },
+  "clock_fixture": {
+    "timeprecision_ps": 1,
+    "cpp_step_ps": 1000,
+    "control_period_ns": 20,
+    "memory_period_ns": 14,
+    "historical_first_batch_control_period_ps": 20,
+    "historical_first_batch_memory_period_ns": 14,
+    "reconnect_hello_input_elapsed_ms": 65536,
+    "wire_bytes_normalized": false
+  },
+  "startup": {
+    "result": "services_main",
+    "actual_instructions": 235597,
+    "hardware": false,
+    "full_runtime": false
+  },
+  "fresh_default_preservation": {
+    "passed": true,
+    "comparisons": {
+      "default": {
+        "firmware.bin": "c96eb5477441042168163b13a1afa2fd3b2f7b4552da8d5a1785f6b1642c1f2c",
+        "boot.mem": "1e033ca53e43280ca2c008587676cd7ccb058050d9d01c9837925bc42a623be1"
+      },
+      "recording": {
+        "firmware.bin": "44b443b0cf28e3606451393f1cbc07e540c656c6b7df238462d6d8c5544d92e2",
+        "boot.mem": "37de3112c022b534107fb062db36bc164172dda1b0cb87dcb93164533f9f5e80"
+      }
+    },
+    "reference_sha256": "70f19fdb637a5aa1f9c76cf1074a6d101ac72107fa5ec1e9ba107be23ea04781"
+  },
+  "synthesis_passed": false,
+  "physical_gates_passed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-download-main-parent-v1",
+  "seal_sha256": "617f3e598d9157faf364b56a90da25493a1f20b77119b2653d59ee5cdef83658",
+  "external_files": 752
+}
