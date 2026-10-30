@@ -35,6 +35,24 @@ media-policy ABI 保留 `+0x60` bits0 hold／1 pending／2 completed／3 failed�
 
 raw MMIO 适配器沿用 `audio_services.h` 的 uncached volatile 访问和前后 `fence iorw,iorw`。物理总线 fault 仍需要平台 trap handler；回调返回错误只能覆盖有错误通道且自身有超时的 checked transport，不能让普通 load/store 自动恢复 APB fault。
 
+## 分步辅助页面绘制
+
+`ui_render_rows` 和 `ui_patch_rows` 仅修改指定的 1080 行物理页面范围，每行
+960 个 RGB565 双像素字；空范围不写，末行截断在页内，超大 count 以剩余行数
+截断，避免 unsigned 加法回卷。原 `ui_render`／`ui_patch` 通过完整行范围调用，
+输出像素保持相同。glyph／矩形代码共享以控制既有 16 KiB 启动镜像容量。
+
+分步服务必须独占 back page，并为整个 job 固定 model／touch 快照；绘制期间
+到来的新提交值留给后续 job，不能让同一页混用两个状态。最后一个 slice 完成并
+执行原 fence 后才请求发布，实际发布确认后才交换 front／back。这些 API 本身
+不持有参数真值、不分配队列或发布页面；当前 `ui_main.c` 尚使用原完整绘制调用，
+实际调度、发布等待和录音采集等待分步在 C02 后续阶段接入。CPU 周期和最长
+无服务间隔仍须实测，不以行数上界代替物理总线等待保证。
+
+`sim/run_ae350_ui_slices.py --output <新目录>` 将维护源码与固定 Git 历史
+renderer 逐像素比较，并用 ASan／UBSan 检查页边界。此处只绘制辅助文字／控件，
+实时分析和动态绘图仍由 FPGA owning 路径完成。
+
 执行 checked-MMIO host 模型、ASan／UBSan 和两次完整 RV32 构建：
 
 ```sh
