@@ -77,6 +77,45 @@ ACCEPTED_DDR_INPUTS = {
 }
 
 
+ACCEPTED_DDR_MAP = 'rtl/ddr_address_map.vh'
+
+
+def accepted_ddr_source_audit(root, baseline):
+    """Bind accepted DDR bytes to the locked baseline, never the live map.
+
+    The live map is the allocation authority for ongoing source development.
+    Accepted profiles retain their historical map and only observe live map
+    differences. The other four live DDR guards remain in force.
+    """
+    selected, live_hashes, live_guarded = {}, {}, []
+    for live, (staged, digest) in ACCEPTED_DDR_INPUTS.items():
+        if staged not in baseline.inputs:
+            raise ValueError('accepted DDR baseline input missing: ' + staged)
+        if hashlib.sha256(baseline.read_bytes(staged)).hexdigest() != digest:
+            raise ValueError('accepted DDR baseline input drift: ' + staged)
+        selected[staged] = digest
+        path = root / live
+        live_hashes[live] = sha(path) if path.is_file() else None
+        if live != ACCEPTED_DDR_MAP:
+            live_guarded.append(live)
+            if live_hashes[live] != digest:
+                raise ValueError('accepted DDR input drift: ' + live)
+    return dict(schema_version=1, policy='accepted_full83_locked_ddr',
+                selected_baseline=baseline.descriptor['name'],
+                selected_sha256=selected, live_sha256=live_hashes,
+                live_to_staged={live: staged for live, (staged, _) in ACCEPTED_DDR_INPUTS.items()},
+                live_guarded=live_guarded, live_observed_only=[ACCEPTED_DDR_MAP],
+                live_ddr_overlay=False)
+
+
+def verify_accepted_ddr_map(project):
+    """Reject overlays that replace or remove the selected historical map."""
+    staged, digest = ACCEPTED_DDR_INPUTS[ACCEPTED_DDR_MAP]
+    path = project / staged
+    if not path.is_file() or sha(path) != digest:
+        raise ValueError('accepted DDR staged map drift: ' + staged)
+
+
 def timing85_cnn_inputs(root, accepted):
     """Select six proven timing patches from a pinned snapshot, never live CNN."""
     snapshot = load_baseline(root, 'timing85')

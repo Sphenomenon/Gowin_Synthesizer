@@ -27,7 +27,7 @@ from workstation_timing_constraints import constraints as timing_constraints,phy
 from workstation_bus_timing import apply as apply_bus_timing
 from workstation_cnn_cdc import select as select_diagnostic_cdc,transform as patch_diagnostic_cdc,LINK as TRACE_LINK
 from stage_usb_firmware import stage_usb_firmware
-from workstation_sources import cnn_source_audit, verify_cnn_inputs, timing85_cnn_inputs, TIMING85_BUILD, TIMING85_OVERLAYS, TIMING85_MANIFEST_SHA256, ACCEPTED_DDR_INPUTS as FROZEN
+from workstation_sources import cnn_source_audit, verify_cnn_inputs, timing85_cnn_inputs, TIMING85_BUILD, TIMING85_OVERLAYS, TIMING85_MANIFEST_SHA256, ACCEPTED_DDR_INPUTS as FROZEN, accepted_ddr_source_audit, verify_accepted_ddr_map
 from workstation_baselines import load_baseline
 ACCEPTED_COMMIT='d0c92a0'
 
@@ -72,9 +72,7 @@ def main():
         raise ValueError('full83 acceptance record does not identify the accepted baseline')
     originals=baseline.inputs
     music=baseline.music
-    for live,(staged,digest) in FROZEN.items():
-        if sha(ROOT/live)!=digest or hashlib.sha256(baseline.read_bytes(staged)).hexdigest()!=digest:
-            raise ValueError('accepted DDR input drift: '+live)
+    ddr_sources=accepted_ddr_source_audit(ROOT,baseline)
     accepted_music=music.copy()
     if args.cnn_timing85:
         music=timing85_cnn_inputs(ROOT,accepted_music)
@@ -304,7 +302,9 @@ def main():
     usb_firmware=stage_usb_firmware(ROOT,stage,output,args.riscv_prefix)
     (output/'usb_firmware_metadata.json').write_text(json.dumps(usb_firmware,indent=2)+'\n')
     verify_cnn_inputs(stage,music)
+    verify_accepted_ddr_map(stage)
     (output/'cnn_source_audit.json').write_text(json.dumps(cnn_sources,indent=2)+'\n')
+    (output/'ddr_source_audit.json').write_text(json.dumps(ddr_sources,indent=2)+'\n')
     inputs={str(p.relative_to(stage)):sha(p) for p in stage.rglob('*') if p.is_file()}
     changed_from_base=sorted(name for name,digest in inputs.items() if originals.get(name)!=digest)
     metadata=dict(baseline=baseline.descriptor['origin']['build'],source_baselines=source_baselines,accepted_commit=ACCEPTED_COMMIT,
@@ -313,8 +313,11 @@ def main():
                   changed_from_base=changed_from_base,music_sha256=music,usb_firmware=usb_firmware,
                   cnn_source_policy=cnn_sources['policy'],bus_timing=bus_timing,
                   cnn_source_audit_sha256=sha(output/'cnn_source_audit.json'),
+                  ddr_source_policy=ddr_sources['policy'],
+                  ddr_source_audit_sha256=sha(output/'ddr_source_audit.json'),
                   live_usb_control_sha256=sha(ROOT/'rtl/push2_usb_a_control.sv'),
                   frozen_sha256={live:digest for live,(_,digest) in FROZEN.items()},
+                  frozen_sha256_scope='selected_locked_baseline',
                   user_code_assigned=args.full,user_code='0x'+args.user_code.upper() if args.full else None,
                   hardware_tested=False)
     (output/'workstation_inputs.json').write_text(json.dumps(inputs,indent=2)+'\n')
@@ -328,6 +331,7 @@ def main():
         result=subprocess.run([str(Path.home()/'.local/bin/gw_sh'),'scripts/build.tcl'],cwd=stage,
                               env=dict(os.environ,PRJ1_FLOW='all' if args.full else 'syn'),stdout=log,stderr=subprocess.STDOUT)
     verify_cnn_inputs(stage,music)
+    verify_accepted_ddr_map(stage)
     changes=[name for name,digest in inputs.items() if sha(stage/name)!=digest]
     (output/'tool_result.json').write_text(json.dumps(dict(exit_code=result.returncode,inputs_unchanged=not changes,
                                                         changed=changes,build_mode=metadata['build_mode'],hardware_tested=False),indent=2)+'\n')

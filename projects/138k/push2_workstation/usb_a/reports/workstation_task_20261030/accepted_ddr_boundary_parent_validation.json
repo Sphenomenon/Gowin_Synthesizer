@@ -1,0 +1,361 @@
+{
+  "schema": 1,
+  "stage": "accepted_ddr_locked_source_boundary_parent_validation",
+  "recorded_utc": "2026-10-30T09:45:04.546182+00:00",
+  "base_commit": "524f5335f7cfaaeba24e9ce65c2924039000901a",
+  "sealed_handoff_manifest_sha256": "ff2315c01c195b2a756c346f7f8925787387689221c5bf017bc7e8df1f37f908",
+  "sealed_patch_sha256": "b01957dcabe50d579185a62b2c4f2e5aa49a55f90465d4809c259cbd538f7287",
+  "tests": {
+    "accepted_sources": {
+      "tests": 17,
+      "skips": 0,
+      "passed": true,
+      "elapsed_seconds": 0.145
+    },
+    "usb_firmware": {
+      "tests": 7,
+      "skips": 0,
+      "passed": true,
+      "elapsed_seconds": 0.107
+    },
+    "baseline_clean_prepare": {
+      "tests": 23,
+      "skips": 0,
+      "passed": true,
+      "elapsed_seconds": 7.091,
+      "GW138K_VERIFY_CLEAN_PREPARE": "1",
+      "clean_workspace_input_maps_equal": true,
+      "private_historical_staging_absent": true,
+      "trace_cdc_passed": true,
+      "lifecycle_passed": true,
+      "corrupt_locked_source_rejected": true
+    }
+  },
+  "historical_prepares": {
+    "accepted_full83": {
+      "output": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/results/workstation_scope83_20261030_174234_889664",
+      "input_files": 424,
+      "input_manifest_sha256": "5c904e3b99b49edd389ec6da85ac87c61875e1edef18dbbb3096a110618f43d4",
+      "staged_map_sha256": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+      "all_inputs_rehashed": true,
+      "build_metadata_sha256": "d034bf343e0391c987f02cda6dfdbb0ba98740e533e101e2c02f064223ce481f",
+      "ddr_audit": {
+        "schema_version": 1,
+        "policy": "accepted_full83_locked_ddr",
+        "selected_baseline": "accepted_full83",
+        "selected_sha256": {
+          "src/ae350/gw138k_ddr_arbiter.sv": "61b0353f72419f0a719f693e121b1aa9ff8b07ed0dbfbdd33ec39f72172ef178",
+          "src/video/hdmi_display.v": "7421e472c9289b1cca0eefe1c428bc03d7f6ea1081e7f8f86a785d6d7ac42dcc",
+          "src/memory/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+          "rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+          "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6"
+        },
+        "live_sha256": {
+          "rtl/display_data/gw138k_ddr_arbiter.sv": "61b0353f72419f0a719f693e121b1aa9ff8b07ed0dbfbdd33ec39f72172ef178",
+          "rtl/display_data/hdmi_display.v": "7421e472c9289b1cca0eefe1c428bc03d7f6ea1081e7f8f86a785d6d7ac42dcc",
+          "rtl/ddr_address_map.vh": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+          "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6"
+        },
+        "live_to_staged": {
+          "rtl/display_data/gw138k_ddr_arbiter.sv": "src/ae350/gw138k_ddr_arbiter.sv",
+          "rtl/display_data/hdmi_display.v": "src/video/hdmi_display.v",
+          "rtl/ddr_address_map.vh": "src/memory/ddr_address_map.vh",
+          "rtl/audio/delay_ddr/delay_ddr_dma.sv": "rtl/audio/delay_ddr/delay_ddr_dma.sv",
+          "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv"
+        },
+        "live_guarded": [
+          "rtl/display_data/gw138k_ddr_arbiter.sv",
+          "rtl/display_data/hdmi_display.v",
+          "rtl/audio/delay_ddr/delay_ddr_dma.sv",
+          "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv"
+        ],
+        "live_observed_only": [
+          "rtl/ddr_address_map.vh"
+        ],
+        "live_ddr_overlay": false
+      }
+    },
+    "timing85": {
+      "output": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/results/workstation_scope83_timing85_20261030_174236_929598",
+      "input_files": 424,
+      "input_manifest_sha256": "d137aa97725aabe5a8f69428252569cde2ffba746d82f3523567a250eff8faad",
+      "staged_map_sha256": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+      "all_inputs_rehashed": true,
+      "build_metadata_sha256": "44d8488d0205fa62496e53c33f4ddb0f44d79dc4e7e39278cf01425b316b03ca",
+      "ddr_audit": {
+        "schema_version": 1,
+        "policy": "accepted_full83_locked_ddr",
+        "selected_baseline": "accepted_full83",
+        "selected_sha256": {
+          "src/ae350/gw138k_ddr_arbiter.sv": "61b0353f72419f0a719f693e121b1aa9ff8b07ed0dbfbdd33ec39f72172ef178",
+          "src/video/hdmi_display.v": "7421e472c9289b1cca0eefe1c428bc03d7f6ea1081e7f8f86a785d6d7ac42dcc",
+          "src/memory/ddr_address_map.vh": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+          "rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+          "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6"
+        },
+        "live_sha256": {
+          "rtl/display_data/gw138k_ddr_arbiter.sv": "61b0353f72419f0a719f693e121b1aa9ff8b07ed0dbfbdd33ec39f72172ef178",
+          "rtl/display_data/hdmi_display.v": "7421e472c9289b1cca0eefe1c428bc03d7f6ea1081e7f8f86a785d6d7ac42dcc",
+          "rtl/ddr_address_map.vh": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+          "rtl/audio/delay_ddr/delay_ddr_dma.sv": "e39fc2672874fad520f1dfab8d945e23600499e7147f9057ed52fdd2561b7301",
+          "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6"
+        },
+        "live_to_staged": {
+          "rtl/display_data/gw138k_ddr_arbiter.sv": "src/ae350/gw138k_ddr_arbiter.sv",
+          "rtl/display_data/hdmi_display.v": "src/video/hdmi_display.v",
+          "rtl/ddr_address_map.vh": "src/memory/ddr_address_map.vh",
+          "rtl/audio/delay_ddr/delay_ddr_dma.sv": "rtl/audio/delay_ddr/delay_ddr_dma.sv",
+          "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv"
+        },
+        "live_guarded": [
+          "rtl/display_data/gw138k_ddr_arbiter.sv",
+          "rtl/display_data/hdmi_display.v",
+          "rtl/audio/delay_ddr/delay_ddr_dma.sv",
+          "rtl/audio/delay_ddr/serial_delay_effect_ddr.sv"
+        ],
+        "live_observed_only": [
+          "rtl/ddr_address_map.vh"
+        ],
+        "live_ddr_overlay": false
+      }
+    },
+    "resource_timing": {
+      "output": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/results/resource_timing_20261030_174239_048923",
+      "input_files": 442,
+      "input_manifest_sha256": "0cc2c58b04ae98e4ab5d1b7a5fb007c2dbaf0f186813b3c7846ddc78a76fde95",
+      "staged_map_sha256": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+      "all_inputs_rehashed": true,
+      "build_metadata_sha256": "04ddfa4f1bb422d164c3af68ed4fee52c0375affa20933832d52f6206cba152a"
+    }
+  },
+  "custom_prepares": {
+    "r00": {
+      "schema": 1,
+      "started_utc": "2026-10-30T09:44:08.428784+00:00",
+      "commands": [
+        {
+          "label": "prepare",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/build.py",
+            "--prepare-custom-board",
+            "--workstation-profile",
+            "custom138k-workstation-r00-v1",
+            "--netlist-dir",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+            "--custom-board-output",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/accepted-ddr-parent-r00-prepare-v1",
+            "--riscv-prefix",
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 2.502470582956448,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/accepted-ddr-parent-r00-prepare-v1-prepare.log",
+          "log_sha256": "0933bf7a4201f5051e5a2768451b6999879e52f8c1b7087696cc0578aa76785d"
+        },
+        {
+          "label": "source-tests",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 3.7285652498248965,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/accepted-ddr-parent-r00-prepare-v1-source-tests.log",
+          "log_sha256": "80572f6c1dd200862737f25b68a6f14eed11802379eb11fdb9ea6cfe776f4b25"
+        }
+      ],
+      "synthesis_run": false,
+      "hardware_operated": false,
+      "candidate_identity": "custom138k-workstation-r00-v1-aced56fa321871ee",
+      "staged_files": 583,
+      "enabled_files": 266,
+      "previous_prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-parent-r00-prepare-v1",
+      "staged_byte_identical": true,
+      "profile_sha256": "6fd413cca0e5c20ab183826baf128115c9d7e2d40eb3a519a090ccf5d4ce41d1",
+      "passed": true,
+      "finished_utc": "2026-10-30T09:44:14.676598+00:00",
+      "source_test_count": 12
+    },
+    "enabled": {
+      "schema": 1,
+      "started_utc": "2026-10-30T09:44:08.428774+00:00",
+      "commands": [
+        {
+          "label": "prepare",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/build.py",
+            "--prepare-custom-board",
+            "--workstation-profile",
+            "custom138k-workstation-v1",
+            "--netlist-dir",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+            "--custom-board-output",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/accepted-ddr-parent-enabled-prepare-v1",
+            "--riscv-prefix",
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 2.3621033332310617,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/accepted-ddr-parent-enabled-prepare-v1-prepare.log",
+          "log_sha256": "32ba75a5901e963953296f56f264d19a8b6ca07b61170a7bb3edd42f2a2fec40"
+        },
+        {
+          "label": "source-tests",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 3.6616000419016927,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/accepted-ddr-parent-enabled-prepare-v1-source-tests.log",
+          "log_sha256": "1a5a5fcb3338e49ef0040d3d57ecdb718d382b014eaaf6d2938c4806482cdd72"
+        }
+      ],
+      "synthesis_run": false,
+      "hardware_operated": false,
+      "candidate_identity": "custom138k-workstation-v1-39ffc0d7eb50dd7d",
+      "staged_files": 570,
+      "enabled_files": 259,
+      "previous_prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-parent-enabled-prepare-v1",
+      "staged_byte_identical": true,
+      "profile_sha256": "407e27ea475af8f9413f9a7f23b796dc0db7cd7a653c62217e9a042ee31c99f0",
+      "passed": true,
+      "finished_utc": "2026-10-30T09:44:14.468948+00:00",
+      "source_test_count": 12
+    },
+    "no-cnn": {
+      "schema": 1,
+      "started_utc": "2026-10-30T09:44:08.428783+00:00",
+      "commands": [
+        {
+          "label": "prepare",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/build.py",
+            "--prepare-custom-board",
+            "--workstation-profile",
+            "custom138k-workstation-no-cnn-v1",
+            "--netlist-dir",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+            "--custom-board-output",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/accepted-ddr-parent-no-cnn-prepare-v1",
+            "--riscv-prefix",
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 2.3598603748250753,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/accepted-ddr-parent-no-cnn-prepare-v1-prepare.log",
+          "log_sha256": "3ad16e0ed621e60f6f5179f637683e285647f306a28ddbe33f50a671f9fc52d5"
+        },
+        {
+          "label": "source-tests",
+          "command": [
+            "/Users/sphenicidition/miniforge3/bin/python3",
+            "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py"
+          ],
+          "exit_code": 0,
+          "elapsed_seconds": 3.6631750829983503,
+          "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/accepted-ddr-parent-no-cnn-prepare-v1-source-tests.log",
+          "log_sha256": "29eb4aef052430ef00ae3fd4ec7132752bf582229477fcb863a51a806c8d23b4"
+        }
+      ],
+      "synthesis_run": false,
+      "hardware_operated": false,
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-c302fcc98ab76b03",
+      "staged_files": 571,
+      "enabled_files": 259,
+      "previous_prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-parent-no-cnn-prepare-v1",
+      "staged_byte_identical": true,
+      "profile_sha256": "21421915babc98e3cbdc53d0738b347e2d49d605c3a4378ef21322743493b600",
+      "passed": true,
+      "finished_utc": "2026-10-30T09:44:14.468978+00:00",
+      "source_test_count": 12
+    }
+  },
+  "synthesis_run_for_this_stage": false,
+  "hardware_operated": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "live_map_sha256": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+  "profile_lock_refresh": {
+    "workstation_profile_no_cnn_v1.json": {
+      "changed": {
+        "projects/138k/push2_workstation/usb_a/tools/workstation_sources.py": "1f5bbe307f331a0cae42329393aff4735a4688d79debd92ab1390dc6866f4560"
+      },
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1"
+      },
+      "source_locks": 338
+    },
+    "workstation_profile_r00_v1.json": {
+      "changed": {
+        "projects/138k/push2_workstation/usb_a/tools/workstation_sources.py": "1f5bbe307f331a0cae42329393aff4735a4688d79debd92ab1390dc6866f4560"
+      },
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1"
+      },
+      "source_locks": 338
+    },
+    "workstation_profile_v1.json": {
+      "changed": {
+        "projects/138k/push2_workstation/usb_a/tools/workstation_sources.py": "1f5bbe307f331a0cae42329393aff4735a4688d79debd92ab1390dc6866f4560"
+      },
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1"
+      },
+      "source_locks": 338
+    }
+  },
+  "changed_source_sha256": {
+    "projects/138k/push2_workstation/usb_a/baselines/README.md": "2a24d032a3b7264ea3967c023249b64df34a83f5aee19f4b65596dcfd7a1f66d",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": "4c541a88e83795e2bb83f95a4482a7bae0922182c6ebaf5b975a6b4f4e59044e",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": "7c005bd7b410a6e94d47a44c269f913f00421d600dcab999e81ae73a0a195eb0",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": "5dbe924c3289ebde590224b3828c200f4fe064041d86dd46ae2478b1f21bfe29",
+    "projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py": "e15aa4a7d8ff5b309dacb8b3c8048bffae6a5710f409a7235a48a89a8b2b0924",
+    "projects/138k/push2_workstation/usb_a/tools/build_current_workstation.py": "71476badc8299d3da16423ca3ffbfe828a8306f5fbbd2629266beb92fe527bce",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_sources.py": "1f5bbe307f331a0cae42329393aff4735a4688d79debd92ab1390dc6866f4560"
+  },
+  "frozen_baselines_or_vendor_modified": false
+}

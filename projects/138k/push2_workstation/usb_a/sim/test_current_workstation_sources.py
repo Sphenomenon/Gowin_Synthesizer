@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard the boundary between accepted CNN inputs and ongoing source work."""
+"""Guard accepted CNN/DDR inputs against ongoing source work and drift."""
 from pathlib import Path
 import shutil
 from unittest.mock import patch
@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 import workstation_sources as sources
 from baseline_fixture import write_baseline
+from workstation_baselines import load_baseline
 from workstation_sources import accepted_cnn_inputs, cnn_source_audit, sha, verify_cnn_inputs
 
 
@@ -131,6 +132,110 @@ class PinnedTimingSources(unittest.TestCase):
             accepted[name] = 'other' if name.endswith('unchanged.sv') else self.inputs[name]
             with self.subTest(name=name), self.assertRaisesRegex(ValueError, 'exceed the six fixed overlays'):
                 sources.timing85_cnn_inputs(self.root, accepted)
+
+
+class AcceptedDdrSources(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name) / 'repository/projects/138k/push2_workstation/usb_a'
+        files = {staged: 'accepted ' + staged + '\n'
+                 for staged, _ in sources.ACCEPTED_DDR_INPUTS.values()}
+        self.fixture = write_baseline(self.root, 'accepted_full83', files)
+        self.selected = {live: (staged, self.fixture.inputs[staged])
+                         for live, (staged, _) in sources.ACCEPTED_DDR_INPUTS.items()}
+        self.input_patch = patch.object(sources, 'ACCEPTED_DDR_INPUTS', self.selected)
+        self.input_patch.start(); self.addCleanup(self.input_patch.stop)
+        for live, (staged, _) in self.selected.items():
+            path = self.root / live
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((self.fixture.project / staged).read_bytes())
+        self.baseline = load_baseline(self.root, 'accepted_full83')
+
+    def test_live_map_evolution_is_observed_without_changing_selected_bytes(self):
+        live_map = self.root / sources.ACCEPTED_DDR_MAP
+        live_map.write_text('new recording allocation\n')
+        audit = sources.accepted_ddr_source_audit(self.root, self.baseline)
+        stage = self.root / 'stage'
+        self.baseline.materialize(stage)
+        sources.verify_accepted_ddr_map(stage)
+        staged, digest = self.selected[sources.ACCEPTED_DDR_MAP]
+        self.assertEqual(sha(stage / staged), digest)
+        self.assertEqual(audit['policy'], 'accepted_full83_locked_ddr')
+        self.assertEqual(audit['selected_baseline'], 'accepted_full83')
+        self.assertEqual(audit['selected_sha256'][staged], digest)
+        self.assertEqual(audit['live_sha256'][sources.ACCEPTED_DDR_MAP], sha(live_map))
+        self.assertNotEqual(audit['live_sha256'][sources.ACCEPTED_DDR_MAP], digest)
+        self.assertEqual(audit['live_to_staged'][sources.ACCEPTED_DDR_MAP], staged)
+        self.assertEqual(audit['live_observed_only'], [sources.ACCEPTED_DDR_MAP])
+        self.assertEqual(set(audit['live_guarded']), self.selected.keys() - {sources.ACCEPTED_DDR_MAP})
+        self.assertFalse(audit['live_ddr_overlay'])
+        self.assertEqual(live_map.read_text(), 'new recording allocation\n')
+
+    def test_missing_unselected_live_map_is_explicitly_observed(self):
+        (self.root / sources.ACCEPTED_DDR_MAP).unlink()
+        audit = sources.accepted_ddr_source_audit(self.root, self.baseline)
+        self.assertIsNone(audit['live_sha256'][sources.ACCEPTED_DDR_MAP])
+
+    def test_other_four_live_ddr_guards_reject_missing_or_changed_inputs(self):
+        for live in self.selected.keys() - {sources.ACCEPTED_DDR_MAP}:
+            path = self.root / live
+            original = path.read_bytes()
+            for action in ('changed', 'missing'):
+                with self.subTest(live=live, action=action):
+                    if action == 'changed':
+                        path.write_text('unaccepted live DDR change\n')
+                    else:
+                        path.unlink()
+                    with self.assertRaisesRegex(ValueError, 'accepted DDR input drift: ' + live):
+                        sources.accepted_ddr_source_audit(self.root, self.baseline)
+                    path.write_bytes(original)
+
+    def test_locked_map_missing_or_corrupt_cannot_fall_back_to_valid_live_map(self):
+        staged, _ = self.selected[sources.ACCEPTED_DDR_MAP]
+        path = self.fixture.project / staged
+        original = path.read_bytes()
+        for action in ('changed', 'missing'):
+            with self.subTest(action=action):
+                if action == 'changed':
+                    path.write_text('wrong locked map\n')
+                else:
+                    path.unlink()
+                with self.assertRaisesRegex(ValueError, 'input tree drifted: ' + staged):
+                    sources.accepted_ddr_source_audit(self.root, self.baseline)
+                path.write_bytes(original)
+
+    def test_rebound_locked_map_still_must_match_the_accepted_digest(self):
+        staged, _ = self.selected[sources.ACCEPTED_DDR_MAP]
+        files = {name: (self.fixture.project / name).read_bytes() for name in self.fixture.inputs}
+        files[staged] = b'rebound locked map\n'
+        write_baseline(self.root, 'accepted_full83', files)
+        rebound = load_baseline(self.root, 'accepted_full83')
+        with self.assertRaisesRegex(ValueError, 'accepted DDR baseline input drift: ' + staged):
+            sources.accepted_ddr_source_audit(self.root, rebound)
+
+    def test_map_omitted_from_locked_inputs_cannot_fall_back_to_live_map(self):
+        staged, _ = self.selected[sources.ACCEPTED_DDR_MAP]
+        files = {name: (self.fixture.project / name).read_bytes()
+                 for name in self.fixture.inputs if name != staged}
+        write_baseline(self.root, 'accepted_full83', files)
+        incomplete = load_baseline(self.root, 'accepted_full83')
+        with self.assertRaisesRegex(ValueError, 'accepted DDR baseline input missing: ' + staged):
+            sources.accepted_ddr_source_audit(self.root, incomplete)
+
+    def test_final_stage_map_cannot_be_changed_or_removed_by_overlays(self):
+        stage = self.root / 'stage'
+        self.baseline.materialize(stage)
+        staged, _ = self.selected[sources.ACCEPTED_DDR_MAP]
+        path = stage / staged
+        for action in ('changed', 'missing'):
+            with self.subTest(action=action):
+                if action == 'changed':
+                    path.write_text('unaccepted map overlay\n')
+                else:
+                    path.unlink()
+                with self.assertRaisesRegex(ValueError, 'accepted DDR staged map drift: ' + staged):
+                    sources.verify_accepted_ddr_map(stage)
 
 
 if __name__ == '__main__':

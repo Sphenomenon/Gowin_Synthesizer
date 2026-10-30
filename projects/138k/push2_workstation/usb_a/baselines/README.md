@@ -33,6 +33,8 @@
 
 USB ROM 与 AE350 `boot.mem` 是已有构建真正使用的文本输入，不能因为“由程序生成”就删除。accepted 整机路径仍用原有工具重新构建活动 USB 固件；资源时序路径保留其锁定参考 ROM，不因此宣称采用了所有活动固件改动。
 
+accepted full83 及其 timing85 整机配置使用基线锁定的 `src/memory/ddr_address_map.vh`，最终 staged map 也必须保持历史哈希。活动 `rtl/ddr_address_map.vh` 继续是新分配的唯一维护入口，但不会覆盖 accepted 配置。`ddr_source_audit.json` 分别记录选中的历史 map 与观察到的活动 map 哈希；其余四项 DDR 活动输入仍执行原有漂移检查。`build_metadata.json` 的 `frozen_sha256` 表示选中的锁定基线身份，`frozen_sha256_scope` 明确其范围，不代表所有活动文件的当前哈希。资源时序配置仍按自己的锁定参考树重建，不改来源策略。
+
 ## 使用与验证
 
 从仓库根目录执行：
