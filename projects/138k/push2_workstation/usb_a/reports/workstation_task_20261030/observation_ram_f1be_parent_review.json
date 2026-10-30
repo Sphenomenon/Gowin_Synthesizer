@@ -1,0 +1,834 @@
+{
+  "schema": 1,
+  "checkpoint": "f1be-observation-ram-parent-offline-review-v1",
+  "date": "2026-10-30",
+  "original_delivery": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-v1",
+    "seal_sha256": "8f0b21b84bddd1fb7f8dc42da9f3e989abcae71b23926797548c8289a84360e4",
+    "all_25_manifest_files_rehashed_unchanged": true
+  },
+  "parent_reproduction": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent",
+    "actual_netlist_inventory_and_semantics_rerun": true,
+    "actual_netlist_19_mutants_rerun": true,
+    "abstract_safety_and_vendor_checks_rerun": true,
+    "proposal_regenerated_and_verifier_passed": true,
+    "rtl_phase_tests_rerun_by_parent": false,
+    "rtl_input_hashes_and_delivered_results_verified": true
+  },
+  "results": {
+    "verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/verification.json",
+      "sha256": "0e108d5860895147dc6f2a37a91f158b6a532703edabf717205588d0b0ccf327",
+      "result": {
+        "schema": 1,
+        "passed": true,
+        "identity": "f1be-observation-ram-offline-audit-v1",
+        "candidate_identity": "custom138k-workstation-v1-f1be50e853d3700a",
+        "vg_sha256": "8fc53d099ebead55ca3926c8d4b2b45b3504fcb1ac1ed5dbcaa1b6e1a1834535",
+        "scope": "actual sealed synthesis mapping, qualified Boolean behavior and assumed-coherent-pointer ideal-digital storage safety; no physical acceptance",
+        "created_at_utc": "2026-10-30T08:23:32.623251+00:00",
+        "script_sha256": "43fdae3e64600f57ae7fa78c4b58ac1ac6b3cd3ff744e88e700340a018cc5d19",
+        "tool_versions": {
+          "python": "Python 3.14.6",
+          "verilator": "Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905",
+          "iverilog": "Icarus Verilog version 13.0 (stable) (v13_0)",
+          "z3": "5.1.0"
+        },
+        "checks": {
+          "ram_instances": 25,
+          "logical_payload_bits": 98,
+          "padding_bits": 2,
+          "direct_MCLK_payload_source_FFs": 98,
+          "first_frontier_endpoints": 696,
+          "first_frontier_cells": 583,
+          "payload_bit_endpoint_relations": 29036,
+          "Boolean_checks": 178,
+          "directly_qualified_first_FFs": 548,
+          "speculative_first_FFs": 32,
+          "isolated_speculative_next_frontier_FFs": 32,
+          "downstream_SDPB_port_checks": 9,
+          "opaque_uninterpreted_DSP_outputs": 16,
+          "opaque_payload_forward_sinks": 0,
+          "inductive_safety_checks": 14,
+          "Gray_flag_cases": 544,
+          "actual_netlist_negative_controls": 19,
+          "abstract_safety_negative_controls": 6,
+          "vendor_evidence_negative_controls": 4,
+          "RTL_phase_runs": 3
+        },
+        "artifact_sha256": {
+          "inventory.py": "9d70e0d8704c846756e55e81deaa9bafbaae0a8be5ba1dcce49b878c0ec3bf6a",
+          "semantic_audit.py": "7b3b5c28e7d6bf7fcfbba48594ad8e8bed7ee50ff52aad2458d94008c9abe780",
+          "negative_controls.py": "0f80c1a89326827ea2cf0a6eeb4daaeacd245f3f9a04715abb7356c2e5840f2c",
+          "fifo_safety.py": "672ca594ae148828665bc1a27703804990e4c1fd69c87f54a03bee581e768b89",
+          "vendor_audit.py": "99a7244d6fa32ddb5a48b5c3863c0c337a64864280883392bd88252fe9892c3d",
+          "make_proposal.py": "5a64ae7f5987f875a660ed821608920cbc08b8c5bd11cdb24e6bf98cf8670766",
+          "verify.py": "43fdae3e64600f57ae7fa78c4b58ac1ac6b3cd3ff744e88e700340a018cc5d19",
+          "workstation_synthesis_netlist.py": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+          "inventory.json": "ff870c3b067d136734697ab7b988e97f878581979bed4cabb851004c835750b4",
+          "semantic_audit.json": "f7885f4f639b45506c42245d83ecdeea08d5ce4a71517a17a025edf7df280e01",
+          "negative_controls.json": "0ab21418997a00ba16e7b2b6febd935a523b612e78ca524b82a3a8f672e50951",
+          "fifo_safety.json": "0cb586ab6c078e48394d7f4a09acbf05ecf2c9855437e274f0d0a1262b174751",
+          "vendor_audit.json": "1bedf10e064c1cc6c639aa6623c2f7427795013357d4dc579ac11f7dd6cc28cd",
+          "constraint_proposal.json": "db0a898df04ff6255dde83506360bc375443ab2b917857c0cd00681e9ed10762",
+          "constraint_targets.json": "f07f8c76860a7c6b2d9f742efca1726ec42a7b167c7fb55aa21eefbec31e7b14",
+          "constraint_sketch.sdc.txt": "85ef8803ea420712c65a372f7076ddd82305d5cc571ea0af90989a614140a6c4",
+          "source_bindings.json": "ee37a102287f0c8c8f1f34d03705a08631fdbbaad60a9e271ae4d8c98f72812c",
+          "REVIEW.md": "9913444a81c31b9a4d0fe995ab70f3207aa64bd7f7ffe6acb7393e8825b182c2",
+          "rtl-simulation/verification.json": "974b2e1921d76e6dcba9ba2ff3924185539eeac5f6bdf3d00e8fe34d3ce077ef",
+          "rtl-simulation/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rtl-simulation/lint.log": "edcb5264388b5806ba8a19c4cdac3d8bb7296da336b8f3fc693d97ab12bec429",
+          "rtl-simulation/run0.log": "2d19692049992af803fd25fa0b50548b80e20fc930fee84549e441052f72b159",
+          "rtl-simulation/run1.log": "801b3f0f8e04b2608cef9afdfb8322aba4f6483dae3358a3ae74b649c190cbc9",
+          "rtl-simulation/run2.log": "8442e2a3b533c91131c755414ea863568d217a30489552f40704f79820db4cd4"
+        },
+        "source_bindings_verified_unchanged": true,
+        "vendor_inputs_verified_unchanged": true,
+        "sealed_input_edited": false,
+        "root_source_edited": false,
+        "proposed_constraint_installed": false,
+        "tool_query_semantics_verified": false,
+        "routed_RAM_propagation_verified": false,
+        "physical_gray_coherence_verified": false,
+        "vendor_PVT_timing_verified": false,
+        "physical_ram_payload_accepted": false,
+        "complete_cdc_accepted": false,
+        "hardware_tested": false,
+        "sram_programmed": false,
+        "flash_programmed": false,
+        "deployment_allowed": false
+      }
+    },
+    "seal.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/seal.json",
+      "sha256": "3ad525ab77badbe96a20e132d820f7e0cd23ca5e734f03b380e78f5ea297bbc5",
+      "result": {
+        "schema": 1,
+        "identity": "f1be-observation-ram-offline-audit-v1",
+        "candidate_identity": "custom138k-workstation-v1-f1be50e853d3700a",
+        "artifact_sha256": {
+          "inventory.py": "9d70e0d8704c846756e55e81deaa9bafbaae0a8be5ba1dcce49b878c0ec3bf6a",
+          "semantic_audit.py": "7b3b5c28e7d6bf7fcfbba48594ad8e8bed7ee50ff52aad2458d94008c9abe780",
+          "negative_controls.py": "0f80c1a89326827ea2cf0a6eeb4daaeacd245f3f9a04715abb7356c2e5840f2c",
+          "fifo_safety.py": "672ca594ae148828665bc1a27703804990e4c1fd69c87f54a03bee581e768b89",
+          "vendor_audit.py": "99a7244d6fa32ddb5a48b5c3863c0c337a64864280883392bd88252fe9892c3d",
+          "make_proposal.py": "5a64ae7f5987f875a660ed821608920cbc08b8c5bd11cdb24e6bf98cf8670766",
+          "verify.py": "43fdae3e64600f57ae7fa78c4b58ac1ac6b3cd3ff744e88e700340a018cc5d19",
+          "workstation_synthesis_netlist.py": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+          "inventory.json": "ff870c3b067d136734697ab7b988e97f878581979bed4cabb851004c835750b4",
+          "semantic_audit.json": "f7885f4f639b45506c42245d83ecdeea08d5ce4a71517a17a025edf7df280e01",
+          "negative_controls.json": "0ab21418997a00ba16e7b2b6febd935a523b612e78ca524b82a3a8f672e50951",
+          "fifo_safety.json": "0cb586ab6c078e48394d7f4a09acbf05ecf2c9855437e274f0d0a1262b174751",
+          "vendor_audit.json": "1bedf10e064c1cc6c639aa6623c2f7427795013357d4dc579ac11f7dd6cc28cd",
+          "constraint_proposal.json": "db0a898df04ff6255dde83506360bc375443ab2b917857c0cd00681e9ed10762",
+          "constraint_targets.json": "f07f8c76860a7c6b2d9f742efca1726ec42a7b167c7fb55aa21eefbec31e7b14",
+          "constraint_sketch.sdc.txt": "85ef8803ea420712c65a372f7076ddd82305d5cc571ea0af90989a614140a6c4",
+          "source_bindings.json": "ee37a102287f0c8c8f1f34d03705a08631fdbbaad60a9e271ae4d8c98f72812c",
+          "REVIEW.md": "9913444a81c31b9a4d0fe995ab70f3207aa64bd7f7ffe6acb7393e8825b182c2",
+          "rtl-simulation/verification.json": "974b2e1921d76e6dcba9ba2ff3924185539eeac5f6bdf3d00e8fe34d3ce077ef",
+          "rtl-simulation/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rtl-simulation/lint.log": "edcb5264388b5806ba8a19c4cdac3d8bb7296da336b8f3fc693d97ab12bec429",
+          "rtl-simulation/run0.log": "2d19692049992af803fd25fa0b50548b80e20fc930fee84549e441052f72b159",
+          "rtl-simulation/run1.log": "801b3f0f8e04b2608cef9afdfb8322aba4f6483dae3358a3ae74b649c190cbc9",
+          "rtl-simulation/run2.log": "8442e2a3b533c91131c755414ea863568d217a30489552f40704f79820db4cd4",
+          "verification.json": "0e108d5860895147dc6f2a37a91f158b6a532703edabf717205588d0b0ccf327"
+        },
+        "physical_ram_payload_accepted": false,
+        "complete_cdc_accepted": false,
+        "deployment_allowed": false
+      }
+    },
+    "negative_controls.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/negative_controls.json",
+      "sha256": "0ab21418997a00ba16e7b2b6febd935a523b612e78ca524b82a3a8f672e50951",
+      "result": {
+        "schema": 1,
+        "passed": true,
+        "scope": "actual parsed f1be netlist mutations in process memory only",
+        "script_sha256": "0f80c1a89326827ea2cf0a6eeb4daaeacd245f3f9a04715abb7356c2e5840f2c",
+        "sealed_vg_sha256_before": "8fc53d099ebead55ca3926c8d4b2b45b3504fcb1ac1ed5dbcaa1b6e1a1834535",
+        "sealed_vg_sha256_after": "8fc53d099ebead55ca3926c8d4b2b45b3504fcb1ac1ed5dbcaa1b6e1a1834535",
+        "baseline_functional_checks": 178,
+        "negative_controls": [
+          {
+            "mutation": "swap DI payload bit0 and bit1",
+            "cell": "u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_0_s",
+            "section": "ports",
+            "field": "DI",
+            "mutated_value": "{physical_frame_pcm[3:2],physical_frame_pcm[0],physical_frame_pcm[1]}",
+            "result": "rejected",
+            "reason": "(0, 'u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_0_s', 'physical_frame_pcm[1]', 'u_managed/audio_right_o[16]', 'physical_frame_pcm[0]', 'u_managed/audio_right_o[16]')"
+          },
+          {
+            "mutation": "swap DO payload bit0 and bit1",
+            "cell": "u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_0_s",
+            "section": "ports",
+            "field": "DO",
+            "mutated_value": "{audio_right_o[19:18],audio_right_o[16],audio_right_o[17]}",
+            "result": "rejected",
+            "reason": "(0, 'u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_0_s', 'physical_frame_pcm[0]', 'u_managed/audio_right_o[17]', 'physical_frame_pcm[0]', 'u_managed/audio_right_o[16]')"
+          },
+          {
+            "mutation": "write address uses read pointer",
+            "cell": "u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_0_s",
+            "section": "ports",
+            "field": "WAD",
+            "mutated_value": "read_binary[3:0]",
+            "result": "rejected",
+            "reason": ""
+          },
+          {
+            "mutation": "read address uses write pointer",
+            "cell": "u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_0_s",
+            "section": "ports",
+            "field": "RAD",
+            "mutated_value": "write_binary[3:0]",
+            "result": "rejected",
+            "reason": ""
+          },
+          {
+            "mutation": "RAM write clock uses compute clock",
+            "cell": "u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_0_s",
+            "section": "ports",
+            "field": "CLK",
+            "mutated_value": "audio_clk",
+            "result": "rejected",
+            "reason": ""
+          },
+          {
+            "mutation": "RAM WRE permanently asserted",
+            "cell": "u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_0_s",
+            "section": "ports",
+            "field": "WRE",
+            "mutated_value": "1'b1",
+            "result": "rejected",
+            "reason": "negative control RAM WRE contract: sat [u_managed/observation/frames/write_gray[2] = False,\n u_managed/observation/frames/read_gray_sync[3] = False,\n u_managed/observation/source_release[2] = False,\n u_managed/observation/frames/read_gray_sync[4] = False,\n u_managed/observation/frames/write_gray[0] = False,\n u_managed/observation/frames/write_gray[1] = False,\n u_managed/observation/frames/write_gray[3] = True,\n u_managed/observation/frames/write_gray[4] = True,\n u_managed/observation/frames/read_gray_sync[2] = False,\n physical_frame_valid = False,\n u_managed/observation/frames/read_gray_sync[0] = False,\n u_managed/observation/frames/read_gray_sync[1] = False]"
+          },
+          {
+            "mutation": "payload producer crosses from compute clock",
+            "cell": "u_managed/runtime/serializer/frame_pcm_o_0_s0",
+            "section": "ports",
+            "field": "CLK",
+            "mutated_value": "audio_clk",
+            "result": "rejected",
+            "reason": "('DI source clock', 0, 'u_managed/runtime/serializer/frame_pcm_o_0_s0', 'u_managed/runtime/serializer/audio_clk')"
+          },
+          {
+            "mutation": "padding bits receive nonzero DI",
+            "cell": "u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_24_s",
+            "section": "ports",
+            "field": "DI",
+            "mutated_value": "{2'b11,physical_frame44,physical_frame_epoch[31]}",
+            "result": "rejected",
+            "reason": ""
+          },
+          {
+            "mutation": "unused padding DO bit gains a consumer alias",
+            "cell": "u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_24_s",
+            "section": "ports",
+            "field": "DO",
+            "mutated_value": "{observed_rate,DO[2],observed_rate,observed_epoch[31]}",
+            "result": "rejected",
+            "reason": ""
+          },
+          {
+            "mutation": "first pointer synchronizer D uses wrong bit",
+            "cell": "u_managed/observation/frames/write_gray_meta_0_s0",
+            "section": "ports",
+            "field": "D",
+            "mutated_value": "write_gray[1]",
+            "result": "rejected",
+            "reason": ""
+          },
+          {
+            "mutation": "second pointer synchronizer CE disabled",
+            "cell": "u_managed/observation/frames/write_gray_sync_0_s0",
+            "section": "ports",
+            "field": "CE",
+            "mutated_value": "1'b0",
+            "result": "rejected",
+            "reason": "unconditional pointer sync CE u_managed/observation/frames/write_gray_sync_0_s0: sat []"
+          },
+          {
+            "mutation": "release shortcut bypasses one stage",
+            "cell": "u_managed/observation/source_release_1_s0",
+            "section": "ports",
+            "field": "D",
+            "mutated_value": "1'b1",
+            "result": "rejected",
+            "reason": ""
+          },
+          {
+            "mutation": "release asynchronous clear removed",
+            "cell": "u_managed/observation/source_release_1_s0",
+            "section": "ports",
+            "field": "CLEAR",
+            "mutated_value": "1'b0",
+            "result": "rejected",
+            "reason": ""
+          },
+          {
+            "mutation": "read pointer D constant one",
+            "cell": "u_managed/observation/frames/read_binary_0_s2",
+            "section": "ports",
+            "field": "D",
+            "mutated_value": "1'b1",
+            "result": "rejected",
+            "reason": "negative control read pointer update: sat [u_managed/observation/frames/read_binary[1] = False,\n u_managed/observation/frames/read_binary[0] = True,\n destination_release[2] = True,\n u_managed/observation/frames/read_binary[2] = True,\n u_managed/observation/frames/read_binary[3] = False,\n u_managed/observation/frames/read_gray[0] = True,\n u_managed/observation/frames/write_gray_sync[4] = False,\n u_managed/observation/frames/read_gray[3] = False,\n u_managed/observation/frames/read_gray[2] = False,\n u_managed/observation/frames/read_gray[1] = False,\n u_managed/observation/frames/read_binary[4] = False,\n u_managed/observation/frames/write_gray_sync[3] = False,\n u_managed/observation/frames/write_gray_sync[2] = False,\n u_managed/observation/frames/write_gray_sync[1] = False,\n u_managed/observation/frames/write_gray_sync[0] = False]"
+          },
+          {
+            "mutation": "read-valid ALU mode changed",
+            "cell": "u_managed/observation/frames/n40_s0",
+            "section": "parameters",
+            "field": "ALU_MODE",
+            "mutated_value": "4",
+            "result": "rejected",
+            "reason": "negative control read-valid comparator: sat [u_managed/observation/frames/write_gray_sync[0] = True,\n u_managed/observation/frames/write_gray_sync[1] = False,\n u_managed/observation/frames/read_gray[0] = True,\n u_managed/observation/frames/write_gray_sync[4] = True,\n u_managed/observation/frames/read_gray[2] = True,\n u_managed/observation/frames/read_gray[3] = False,\n u_managed/observation/frames/write_gray_sync[2] = False,\n u_managed/observation/frames/read_gray[1] = True,\n u_managed/observation/frames/write_gray_sync[3] = False,\n u_managed/observation/frames/read_binary[4] = False]"
+          },
+          {
+            "mutation": "display held-data CE forced high",
+            "cell": "u_managed/display/held_data_105_s0",
+            "section": "ports",
+            "field": "CE",
+            "mutated_value": "1'b1",
+            "result": "rejected",
+            "reason": "unqualified display capture depends on invalid payload"
+          },
+          {
+            "mutation": "recorder forward_valid D forced high",
+            "cell": "u_managed/consumers/recorder/forward_valid_s0",
+            "section": "ports",
+            "field": "D",
+            "mutated_value": "1'b1",
+            "result": "rejected",
+            "reason": "negative control forward valid isolation: sat [u_managed/observation/frames/write_gray_sync[0] = False,\n u_managed/observation/frames/write_gray_sync[1] = False,\n destination_release[2] = False,\n u_managed/observation/frames/read_gray[0] = False,\n u_managed/observation/frames/read_gray[2] = False,\n u_managed/observation/frames/write_gray_sync[4] = False,\n u_managed/observation/frames/read_gray[3] = False,\n u_managed/observation/frames/write_gray_sync[2] = False,\n u_managed/observation/frames/read_gray[1] = False,\n u_managed/recorder_reset_n = True,\n u_managed/observation/frames/write_gray_sync[3] = False,\n u_managed/observation/frames/read_binary[4] = False]"
+          },
+          {
+            "mutation": "recorder forwarding PCM bit D forced zero",
+            "cell": "u_managed/consumers/recorder/forward_packet_16_s0",
+            "section": "ports",
+            "field": "D",
+            "mutated_value": "1'b0",
+            "result": "rejected",
+            "reason": "speculative forwarding captures the exact current PCM bit u_managed/consumers/recorder/forward_packet_16_s0: sat [u_managed/audio_right_o[16] = True]"
+          },
+          {
+            "mutation": "downstream SDPB write enable forced high",
+            "cell": "u_managed/consumers/recorder/g_packet_sdp[0].ram/ram",
+            "section": "ports",
+            "field": "CEA",
+            "mutated_value": "1'b1",
+            "result": "rejected",
+            "reason": "negative downstream write validity: sat [u_managed/observation/frames/write_gray_sync[0] = False,\n u_managed/observation/frames/write_gray_sync[1] = False,\n destination_release[2] = False,\n u_managed/observation/frames/read_gray[0] = True,\n u_managed/observation/frames/read_gray[2] = True,\n u_managed/observation/frames/write_gray_sync[4] = False,\n u_managed/observation/frames/read_gray[3] = True,\n u_managed/observation/frames/write_gray_sync[2] = False,\n u_managed/observation/frames/read_gray[1] = True,\n u_managed/observation/frames/write_gray_sync[3] = False,\n u_managed/observation/frames/read_binary[4] = True]"
+          }
+        ],
+        "negative_count": 19,
+        "all_rejected": true,
+        "sealed_input_edited": false,
+        "physical_ram_payload_accepted": false,
+        "complete_cdc_accepted": false
+      }
+    },
+    "fifo_safety.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/fifo_safety.json",
+      "sha256": "0cb586ab6c078e48394d7f4a09acbf05ecf2c9855437e274f0d0a1262b174751",
+      "result": {
+        "schema": 1,
+        "passed": true,
+        "scope": "inductive depth16 ideal-digital pointer/storage safety",
+        "script_sha256": "672ca594ae148828665bc1a27703804990e4c1fd69c87f54a03bee581e768b89",
+        "z3_version": "5.1.0",
+        "assumptions": [
+          "Common asynchronous reset resets both pointer domains and both release chains; peer-only resets are forbidden.",
+          "Release is monotone within a common-reset epoch; the exact three-FF release wiring is audited in semantic_audit.json.",
+          "Each synchronized remote pointer is a coherent nondecreasing old absolute ordinal, never a future ordinal; first-stage observations may stall or skip, second-stage receives previous first-stage.",
+          "The hardware modulo32 binary/Gray state tracks these ordinals; actual netlist next-state equations and direct two-stage wiring are separately audited.",
+          "RAM writes use one common WRE, source clock, and write address for all98 meaningful bits; asynchronous read uses the read pointer; physical propagation and metastability are not modeled."
+        ],
+        "invariant": "0 <= R <= WS <= WM <= W; 0 <= RS <= RM <= R; W-RS <=16; unreleased local state remains zero",
+        "checks": [
+          {
+            "check": "initial reset invariant",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "one arbitrary source/destination edge pair preserves invariant including stopped domains and staggered release",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "physical occupancy never below zero or above depth16",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "full conservatively blocks accepted writes at physical full",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "qualified valid implies a committed unconsumed head",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "accepted read never underflows",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "accepted write never shares current valid read address",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "accepted write sharing next read address leaves next head invalid",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "write address cannot overwrite any existing unread entry",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "every post-edge unread entry is an old unread entry or new committed entry",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "old unread entries remaining after edge do not alias the write address",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "newly committed entry has the commit ordinal address",
+            "result": "unsat_counterexample"
+          },
+          {
+            "check": "modulo32 Gray full top-two inversion and empty equality for every legal offset",
+            "result": "exhaustive",
+            "cases": 544
+          },
+          {
+            "check": "rejected full write leaves W and RAM write acceptance unchanged",
+            "result": "unsat_counterexample"
+          }
+        ],
+        "negative_controls": [
+          {
+            "mutation": "remove current full guard",
+            "result": "counterexample_detected",
+            "counterexample": "[destination_released = True,\n WM = 1,\n WS = 1,\n RM = 1,\n RS = 1,\n R = 1,\n coherent_read_observation = 1,\n coherent_write_observation = 1,\n W = 17,\n source_valid = True,\n source_released = True,\n source_edge = True]"
+          },
+          {
+            "mutation": "allow a depth17 write threshold",
+            "result": "counterexample_detected",
+            "counterexample": "[destination_released = True,\n WM = 1,\n WS = 1,\n RM = 1,\n RS = 1,\n R = 1,\n coherent_read_observation = 1,\n coherent_write_observation = 1,\n W = 17,\n source_valid = True,\n source_released = True,\n source_edge = True]"
+          },
+          {
+            "mutation": "allow destination pop while empty",
+            "result": "counterexample_detected",
+            "counterexample": "[WM = 1,\n WS = 1,\n RM = 1,\n RS = 1,\n R = 1,\n source_released = True,\n coherent_write_observation = 1,\n W = 1,\n coherent_read_observation = 1,\n destination_released = True,\n destination_edge = True,\n destination_ready = True]"
+          },
+          {
+            "mutation": "sample a future write pointer",
+            "result": "counterexample_detected",
+            "counterexample": "[coherent_write_observation = 2,\n WM = 1,\n WS = 1,\n RM = 1,\n RS = 1,\n R = 1,\n source_released = True,\n W = 1,\n destination_released = True,\n destination_edge = True]"
+          },
+          {
+            "mutation": "independent source reset while unread data remains",
+            "result": "counterexample_detected",
+            "counterexample": "[WM = 1,\n WS = 0,\n RM = 0,\n RS = 0,\n R = 0,\n coherent_read_observation = 0,\n coherent_write_observation = 1,\n W = 1,\n destination_released = True,\n source_released = True]"
+          },
+          {
+            "mutation": "remove destination valid qualification on write/read same address",
+            "result": "counterexample_detected",
+            "counterexample": "[destination_released = True,\n WM = 1,\n WS = 1,\n RM = 0,\n RS = 0,\n R = 1,\n source_edge = True,\n coherent_write_observation = 1,\n coherent_read_observation = 0,\n W = 1,\n source_valid = True,\n source_released = True]"
+          }
+        ],
+        "write_read_collision_isolated": true,
+        "unread_entry_immutability_inductive": true,
+        "common_reset_logically_flushes_queue": true,
+        "epoch_rate_tags_do_not_flush": true,
+        "independent_peer_reset_supported": false,
+        "physical_gray_coherence_verified": false,
+        "vendor_PVT_timing_verified": false,
+        "complete_cdc_accepted": false,
+        "hardware_tested": false
+      }
+    },
+    "vendor_audit.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/vendor_audit.json",
+      "sha256": "1bedf10e064c1cc6c639aa6623c2f7427795013357d4dc579ac11f7dd6cc28cd",
+      "result": {
+        "schema": 1,
+        "passed": true,
+        "scope": "read-only local vendor model evidence, no device/PVT or SDF proof",
+        "script_sha256": "99a7244d6fa32ddb5a48b5c3863c0c337a64864280883392bd88252fe9892c3d",
+        "files": {
+          "prim_sim.v": {
+            "path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v",
+            "sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5"
+          },
+          "prim_tsim.v": {
+            "path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_tsim.v",
+            "sha256": "3501446da045788c0671a159f3ae4e7accdc84dffc0ba9dc6f6d11070ca03a4e"
+          }
+        },
+        "primitive": "RAM16SDP4",
+        "functional_module_start_line": 711,
+        "timing_module_start_line": 1258,
+        "functional_asynchronous_read": true,
+        "functional_common_clocked_WRE_write": true,
+        "clock_to_DO_arcs": 4,
+        "RAD_to_DO_arcs": 16,
+        "arcs": [
+          {
+            "line": 1301,
+            "text": "(CLK => DO[0]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1302,
+            "text": "(RAD[0] => DO[0]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1303,
+            "text": "(RAD[1] => DO[0]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1304,
+            "text": "(RAD[2] => DO[0]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1305,
+            "text": "(RAD[3] => DO[0]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1306,
+            "text": "(CLK => DO[1]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1307,
+            "text": "(RAD[0] => DO[1]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1308,
+            "text": "(RAD[1] => DO[1]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1309,
+            "text": "(RAD[2] => DO[1]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1310,
+            "text": "(RAD[3] => DO[1]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1311,
+            "text": "(CLK => DO[2]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1312,
+            "text": "(RAD[0] => DO[2]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1313,
+            "text": "(RAD[1] => DO[2]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1314,
+            "text": "(RAD[2] => DO[2]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1315,
+            "text": "(RAD[3] => DO[2]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1316,
+            "text": "(CLK => DO[3]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1317,
+            "text": "(RAD[0] => DO[3]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1318,
+            "text": "(RAD[1] => DO[3]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1319,
+            "text": "(RAD[2] => DO[3]) = (0:0:0, 0:0:0);"
+          },
+          {
+            "line": 1320,
+            "text": "(RAD[3] => DO[3]) = (0:0:0, 0:0:0);"
+          }
+        ],
+        "nominal_delays_zero": true,
+        "negative_controls": [
+          {
+            "mutation": "remove CLK to DO0 arc",
+            "result": "rejected",
+            "reason": "('missing CLK to DO arc', 0)"
+          },
+          {
+            "mutation": "remove RAD2 to DO3 arc",
+            "result": "rejected",
+            "reason": "('missing RAD to DO arc', 2, 3)"
+          },
+          {
+            "mutation": "read address becomes WAD",
+            "result": "rejected",
+            "reason": ""
+          },
+          {
+            "mutation": "remove common WRE write condition",
+            "result": "rejected",
+            "reason": ""
+          }
+        ],
+        "proposed_constraint_installed": false,
+        "routed_propagation_verified": false,
+        "physical_ram_payload_accepted": false,
+        "complete_cdc_accepted": false
+      }
+    },
+    "constraint_proposal.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/constraint_proposal.json",
+      "sha256": "db0a898df04ff6255dde83506360bc375443ab2b917857c0cd00681e9ed10762",
+      "result": {
+        "schema": 1,
+        "scope": "proposal only; not installed or tool validated",
+        "script_sha256": "5a64ae7f5987f875a660ed821608920cbc08b8c5bd11cdb24e6bf98cf8670766",
+        "candidate_identity": "custom138k-workstation-v1-f1be50e853d3700a",
+        "vg_sha256": "8fc53d099ebead55ca3926c8d4b2b45b3504fcb1ac1ed5dbcaa1b6e1a1834535",
+        "constraint_targets_sha256": "f07f8c76860a7c6b2d9f742efca1726ec42a7b167c7fb55aa21eefbec31e7b14",
+        "compute_period_ns": 13.020833333333334,
+        "nominal_earliest_write_to_qualified_capture_ns": 26.041666666666668,
+        "candidate_write_flight_budget_ns": 13.02,
+        "candidate_budget_accepted": false,
+        "write_flight": {
+          "launch": "selected48/selected44 clock path including RAM CLK->DO internal arc",
+          "through": "each of98 meaningful RAM DO bits",
+          "capture": "696 conservative first-frontier pin endpoints, including D/CE and downstream SDPB address/data/enable",
+          "earliest_qualified_edge": "destination edge D2, after D0 meta and D1 synchronized pointer; fresh write just before D0 gives an infimum of2 compute periods",
+          "raw_speculative_capture_exception": "32 forward_packet FFs may capture earlier while invalid; only forward_valid-isolated data may become visible",
+          "required_report": "actual launch clock/primitive CLK, nonzero device/PVT CLK->DO arc, all combinational and routed delay, endpoint clock/setup, uncertainty/latency conventions and every meaningful DO lane",
+          "from_DO_only_is_complete": false
+        },
+        "same_compute_read": {
+          "launch": "read_binary[3:0] DFF Q on audio_76m8",
+          "through": "RAM RAD->DO internal arc and combinational routing",
+          "capture": "following compute edge first-frontier D/CE or SDPB pins",
+          "maximum_window": "one compute period minus actual setup and clock uncertainty",
+          "minimum_window": "normal compute hold requirement including RAM address contamination path",
+          "normal_setup_hold_must_remain": true
+        },
+        "source_local_write": {
+          "launch": "98 serializer DFF Q and write pointer/WRE control on selected48/selected44",
+          "capture": "RAM DI/WAD/WRE at same selected clock",
+          "normal_setup_hold_must_remain": true
+        },
+        "hold_policy": "No blanket or clock-group false path is proposed. Any write-leg hold waiver would require separately reviewed qualification/collision/isolation evidence and exact arc-scoped endpoints; it must not cut RAD same-compute hold.",
+        "tool_gaps": [
+          "get_pins RAM CLK/DO and downstream SDPB bit-pin query spelling/counts not verified in Gowin",
+          "Whether RAM CLK is accepted as a -from startpoint and includes device CLK->DO arc is unproved",
+          "Clock-filtered -from selected48/selected44 with -through DO is an alternative query only; completeness/path separation unproved",
+          "Gowin clock latency, max_delay setup conventions, conditional WRE arc treatment and report coverage unproved",
+          "The cited manual has no -datapath_only option for this syntax; do not import another STA dialect",
+          "Nominal-zero simulation specify arcs are not physical delay or PVT proof",
+          "Actual routed Gray skew/metastability and reset recovery/removal are separate unfinished gates"
+        ],
+        "constraints_installed": false,
+        "tool_queries_validated": false,
+        "routed_propagation_verified": false,
+        "physical_ram_payload_accepted": false,
+        "complete_cdc_accepted": false,
+        "hardware_tested": false
+      }
+    },
+    "source_bindings.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/source_bindings.json",
+      "sha256": "ee37a102287f0c8c8f1f34d03705a08631fdbbaad60a9e271ae4d8c98f72812c",
+      "result": {
+        "schema": 1,
+        "candidate_identity": "custom138k-workstation-v1-f1be50e853d3700a",
+        "candidate_input_sha256": "f1be50e853d3700ae0517b8616dd8b0578deb1d872324d0a9e03165efa716cdf",
+        "vg": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+          "sha256": "8fc53d099ebead55ca3926c8d4b2b45b3504fcb1ac1ed5dbcaa1b6e1a1834535"
+        },
+        "sources": {
+          "rtl/music/music_async_fifo.sv": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/rtl/music/music_async_fifo.sv",
+            "sha256": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+            "manifest_identity_verified": true,
+            "origin": "versioned_source"
+          },
+          "rtl/audio/workstation_pcm_observation_bridge.sv": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/rtl/audio/workstation_pcm_observation_bridge.sv",
+            "sha256": "198dbf39ff6b6cfb6fe308444274849c507f222edcb0ea651abeb8d719f62c17",
+            "manifest_identity_verified": true,
+            "origin": "versioned_source"
+          },
+          "rtl/audio/workstation_observation_consumers.sv": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/rtl/audio/workstation_observation_consumers.sv",
+            "sha256": "e2b66fff9088d7684eb3516928eef619f18437d7d44b400e85a29438f6348aff",
+            "manifest_identity_verified": true,
+            "origin": "versioned_source"
+          },
+          "rtl/audio/workstation_i2s_serializer.sv": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/rtl/audio/workstation_i2s_serializer.sv",
+            "sha256": "503799267ca9f4603d13585fa2b18f619c4b3e12dedd3568580255099ba2d245",
+            "manifest_identity_verified": true,
+            "origin": "versioned_source"
+          },
+          "rtl/workstation/workstation_runtime_controlled.sv": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/rtl/workstation/workstation_runtime_controlled.sv",
+            "sha256": "a78a29f86e2af6b8a74cef5dd9662d73a6afa5506861e63cb5ab29c9c323ae5b",
+            "manifest_identity_verified": true,
+            "origin": "versioned_source"
+          },
+          "src/migration/gw138k_counter_cdc.sv": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/src/migration/gw138k_counter_cdc.sv",
+            "sha256": "1b6ff697ccd951995b7331ac483f3c7672a959a9a767465eb57d92d80f3afa8c",
+            "manifest_identity_verified": true,
+            "origin": "locked_parent_baseline"
+          },
+          "src/migration/gw138k_stream_cdc.sv": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/src/migration/gw138k_stream_cdc.sv",
+            "sha256": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+            "manifest_identity_verified": true,
+            "origin": "locked_parent_baseline"
+          },
+          "legacy_audio.sv": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/legacy_audio.sv",
+            "sha256": "5794fa7a36265e88855a40ec054b2b3b0d8781f86047318d00f336b93af6652e",
+            "manifest_identity_verified": true,
+            "origin": "locked_parent_baseline"
+          },
+          "legacy/rtl/audio/audio_capture_fifo.sv": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/legacy/rtl/audio/audio_capture_fifo.sv",
+            "sha256": "3726c4bf769af27d07c5ceb9bbe55cba1f3b29957e37250231712befd7455171",
+            "manifest_identity_verified": false,
+            "include_owner": "legacy_audio.sv",
+            "note": "actual sealed include bytes bound here; full profile include manifest not re-audited"
+          },
+          "constraints/custom_138k.sdc": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation/Prj1/constraints/custom_138k.sdc",
+            "sha256": "8cc24c8963d1cf8c5887a19c53c8cbc423576d78b2cf94fe51a99802ca310a1d",
+            "manifest_identity_verified": true,
+            "origin": "reviewed_board_constraint_composition"
+          },
+          "workstation_profile.json": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-rev5-synthesis-f1be50e8/workstation_profile.json",
+            "sha256": "9f453156f669ad5ffc6360a9f18dfda3857854c160ec0501f57d3e0e6655af4d"
+          },
+          "timing_constraints_manual_text": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/gowin-query-doc-review/SUG940-2.0.1E_Gowin Design Timing Constraints User Guide.txt",
+            "sha256": "beeaa699949dc6dbca3494e8de76e2f4c8e8aa2a01b30f7ce24b041003b9eb4e",
+            "used_line_start": 2363,
+            "used_line_end": 2419,
+            "used_pdf_pages": [
+              79,
+              80
+            ]
+          }
+        }
+      }
+    }
+  },
+  "additional_files": {
+    "inventory.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/inventory.py",
+      "sha256": "9d70e0d8704c846756e55e81deaa9bafbaae0a8be5ba1dcce49b878c0ec3bf6a"
+    },
+    "semantic_audit.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/semantic_audit.py",
+      "sha256": "7b3b5c28e7d6bf7fcfbba48594ad8e8bed7ee50ff52aad2458d94008c9abe780"
+    },
+    "negative_controls.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/negative_controls.py",
+      "sha256": "0f80c1a89326827ea2cf0a6eeb4daaeacd245f3f9a04715abb7356c2e5840f2c"
+    },
+    "fifo_safety.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/fifo_safety.py",
+      "sha256": "672ca594ae148828665bc1a27703804990e4c1fd69c87f54a03bee581e768b89"
+    },
+    "vendor_audit.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/vendor_audit.py",
+      "sha256": "99a7244d6fa32ddb5a48b5c3863c0c337a64864280883392bd88252fe9892c3d"
+    },
+    "make_proposal.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/make_proposal.py",
+      "sha256": "5a64ae7f5987f875a660ed821608920cbc08b8c5bd11cdb24e6bf98cf8670766"
+    },
+    "verify.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/verify.py",
+      "sha256": "43fdae3e64600f57ae7fa78c4b58ac1ac6b3cd3ff744e88e700340a018cc5d19"
+    },
+    "workstation_synthesis_netlist.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/workstation_synthesis_netlist.py",
+      "sha256": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89"
+    },
+    "inventory.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/inventory.json",
+      "sha256": "ff870c3b067d136734697ab7b988e97f878581979bed4cabb851004c835750b4"
+    },
+    "semantic_audit.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/semantic_audit.json",
+      "sha256": "f7885f4f639b45506c42245d83ecdeea08d5ce4a71517a17a025edf7df280e01"
+    },
+    "constraint_targets.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/constraint_targets.json",
+      "sha256": "f07f8c76860a7c6b2d9f742efca1726ec42a7b167c7fb55aa21eefbec31e7b14"
+    },
+    "constraint_sketch.sdc.txt": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/constraint_sketch.sdc.txt",
+      "sha256": "85ef8803ea420712c65a372f7076ddd82305d5cc571ea0af90989a614140a6c4"
+    },
+    "negative_controls-parent.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/negative_controls-parent.log",
+      "sha256": "10e7703eb8f4418a3d73970673dc7879fe8cc83b5e9feb4f6056ef6ee92a6134"
+    },
+    "fifo_safety-parent.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/fifo_safety-parent.log",
+      "sha256": "dba5f89ecab15c10eca37605298b391e3e157ffb81cc9f4bca84d003939f853e"
+    },
+    "vendor_audit-parent.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/vendor_audit-parent.log",
+      "sha256": "db0933cb18318d54377c50d190a2bbb104dc1f88571c4fb15e866841f910a35e"
+    },
+    "make_proposal-parent.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/make_proposal-parent.log",
+      "sha256": "292ae24824aff31150ca8b9108acd4304b1e03191768fee62cfd31bb05ce958a"
+    },
+    "verify-parent.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/observation-ram-audit-f1be-parent/verify-parent.log",
+      "sha256": "0c2cff205d60de8b9131cd6bccb3f5af64ca5fbb62494f1fc52a250d3aeff793"
+    }
+  },
+  "candidate_identity": "custom138k-workstation-v1-f1be50e853d3700a",
+  "vg_sha256": "8fc53d099ebead55ca3926c8d4b2b45b3504fcb1ac1ed5dbcaa1b6e1a1834535",
+  "checks": {
+    "ram_instances": 25,
+    "logical_payload_bits": 98,
+    "padding_bits": 2,
+    "direct_MCLK_payload_source_FFs": 98,
+    "first_frontier_endpoints": 696,
+    "first_frontier_cells": 583,
+    "payload_bit_endpoint_relations": 29036,
+    "Boolean_checks": 178,
+    "directly_qualified_first_FFs": 548,
+    "speculative_first_FFs": 32,
+    "isolated_speculative_next_frontier_FFs": 32,
+    "downstream_SDPB_port_checks": 9,
+    "opaque_uninterpreted_DSP_outputs": 16,
+    "opaque_payload_forward_sinks": 0,
+    "inductive_safety_checks": 14,
+    "Gray_flag_cases": 544,
+    "actual_netlist_negative_controls": 19,
+    "abstract_safety_negative_controls": 6,
+    "vendor_evidence_negative_controls": 4,
+    "RTL_phase_runs": 3
+  },
+  "constraints_installed": false,
+  "complete_cdc_accepted": false,
+  "physical_ram_payload_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}

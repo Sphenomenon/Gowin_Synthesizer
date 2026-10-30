@@ -50,6 +50,8 @@
 
 [注册控制候选整机综合](push2_workstation/usb_a/reports/WORKSTATION_REGISTERED_LEVELS_SYNTHESIS_20261030.md)已通过，570项输入保持、无AG组合环诊断；父级重新完成时钟4项／23负控及既有Gray／媒体／USB CDC27项／77负控。该接受范围仅绑定 `1aea3c01fa6c1b14` 的实际新VG，不转移给no-CNN；PCM精确适配、观察RAM数据弧、完整复位／CDC／PLL、物理与硬件仍未完成，无部署。
 
+[观察RAM数字审查](push2_workstation/usb_a/reports/WORKSTATION_OBSERVATION_RAM_DIGITAL_AUDIT_20261030.md)已父级复验f1be实际25个RAM／98有效位、178项语义、19个网表负控及14项理想数字安全证明。32个投机转发FF按无效数据隔离单独处理；完整CLK→DO／RAD数据时序、Gray物理相干和复位仍未接受，约束提案未安装，不能升级为全部CDC或硬件通过。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
