@@ -69,10 +69,11 @@ def main():
         limits='Functional ordered DDR and accelerated PCM fixture; no live I2S/HDMI pixels, synthesis, P&R, physical CDC/timing/resource or board/deployment acceptance',
         ddr_video_reset_separated=False, bitstream_identity=None, commands={})
 
-    def run(name, command, timeout=90):
+    def run(name, command, timeout=90, cwd=None):
         result['commands'][name] = list(map(str, command))
         with (output / (name + '.log')).open('w') as stream:
-            subprocess.run(command, cwd=project, stdout=stream, stderr=subprocess.STDOUT, check=True, timeout=timeout)
+            subprocess.run(command, cwd=project if cwd is None else cwd,
+                           stdout=stream, stderr=subprocess.STDOUT, check=True, timeout=timeout)
         return (output / (name + '.log')).read_text()
 
     try:
@@ -111,7 +112,35 @@ def main():
             name = 'hdmi_native_elaboration' if runtime else 'hdmi_default_elaboration'
             run(name, ['iverilog', '-g2012', '-I' + str(ROOT), '-I' + str(project), '-s', 'tb_workstation_hdmi_elaboration',
                 *(['-DWORKSTATION_RUNTIME_NATIVE'] if runtime else []), '-o', str(output / (name + '.vvp')),
-                *map(str, hdmi_sources)])
+                *map(str, hdmi_sources)], cwd=ROOT)
+            # Icarus searches its working directory before -I paths. Running
+            # in the frozen support tree would silently include its old HDMI
+            # composition instead of the live source whose hash we record.
+            elaborated = (output / (name + '.vvp')).read_text()
+            scopes = re.findall(r'^\S+ \.scope module, "([^"]+)" "([^"]+)"[^\n]*\n(.*?)(?=^\S+ \.scope |\Z)',
+                                elaborated, re.M | re.S)
+            def parameters(label):
+                matching = [body for scope, _, body in scopes if scope == label]
+                if len(matching) != 1:
+                    raise ValueError('Ambiguous elaborated scope: ' + label)
+                return {key: int(bits, 2) for key, bits in re.findall(
+                    r'\.param/l "(\w+)"[^\n]*\+C4<([01]+)>', matching[0])}
+            renderer_parameters = parameters('u_renderer')
+            expected_parameters = dict(ENABLE_ANALYSIS=0 if runtime else 1, RENDER_ANALYSIS=1,
+                                       SHARED_EXPORT=0 if runtime else 1, SHARED_RENDER=1)
+            if any(renderer_parameters.get(key) != value for key, value in expected_parameters.items()):
+                raise ValueError('Wrong HDMI composition or renderer parameters elaborated')
+            fft_owners = [scope for scope, kind, _ in scopes if kind == 'output_audio_analysis']
+            if fft_owners != (['analysis'] if runtime else ['u_analysis']):
+                raise ValueError('HDMI FFT owner missing or duplicated: ' + repr(fft_owners))
+            if any(parameters(label).get('ENABLE_ANALYSIS') != 1 for label in ('u_even', 'u_odd')):
+                raise ValueError('HDMI analysis dashboard disabled')
+            if runtime and parameters('reader').get('CACHE_BANKS') != 2:
+                raise ValueError('Runtime reader did not elaborate both local cache banks')
+            result.setdefault('elaborated_analysis', {})['runtime' if runtime else 'default'] = dict(
+                renderer_parameters=expected_parameters, fft_owners=fft_owners,
+                both_dashboard_analysis_enabled=True, reader_cache_banks=2 if runtime else 1,
+                compile_working_directory=str(ROOT), live_provider_selected=True)
         result['full_hdmi_elaboration'] = dict(default=True, runtime=True, official_gw5a=True)
         compile_log = run('runtime_compile', ['verilator', '--binary', '--timing', '-j', '4', '-Wno-fatal',
             '--top-module', 'tb_workstation_display_runtime', '--Mdir', str(output / 'obj'),
@@ -134,7 +163,9 @@ def main():
         result['checks'] = ['initial_image_required', 'actual_48_and_44_fft_wave_xy', '204bit_tuple_atomicity',
             'raster_idle_cache_lease', 'pending_old_epoch_cancel', 'stalled_commit_tail_cancel',
             'partial_reader_cancel', 'same_epoch_final_cdc_drop_cancel', 'error_frame_cancel',
-            'epoch_zero_reject', 'default_tokens_equal', 'reverse_exact_parent_bytes', 'full_hdmi_elaboration_both_modes']
+            'epoch_zero_reject', 'default_tokens_equal', 'reverse_exact_parent_bytes', 'full_hdmi_elaboration_both_modes',
+            'live_hdmi_provider_not_shadowed', 'native_render_without_local_fft', 'single_fft_owner_both_modes',
+            'both_analysis_dashboards_enabled', 'runtime_reader_two_cache_banks']
         if {str(path): digest(path) for path in inputs} != hashes:
             raise ValueError('Verification source inputs changed during run')
         result['passed'] = True

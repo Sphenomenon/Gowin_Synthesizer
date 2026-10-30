@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "scope": "Native shared analysis rendering repair, offline functional verification",
+  "problem": "ENABLE_ANALYSIS=0 selected the no-local-FFT branch and also disabled both shared-analysis dashboard pages",
+  "change": {
+    "renderer_parameter": "RENDER_ANALYSIS=ENABLE_ANALYSIS",
+    "parameter_position": "appended, preserving positional compatibility",
+    "native_selection": {
+      "ENABLE_ANALYSIS": 0,
+      "RENDER_ANALYSIS": 1,
+      "SHARED_EXPORT": 0,
+      "SHARED_RENDER": 1
+    },
+    "reader_rtl_changed": false,
+    "duplicate_fft_added": false
+  },
+  "input_sha256": {
+    "rtl/display_data/feedback_renderer.v": "caaa8425d72dcce65a36efbc9bfebace43a289fa22ed674fbdf3403c90f5923b",
+    "rtl/workstation/workstation_hdmi_display.sv": "cfa1121ee24fb9cebf95edea03639297d8e63af28d57a5cc32481d702f97980d",
+    "rtl/workstation/workstation_hdmi_display.provenance.json": "2da2802f233a7286d7f728d48b62b4bd6327a954ab833b1784ede035e3924426",
+    "rtl/workstation/RUNTIME_DISPLAY.md": "5a97db40e3a1eb8fa8b34f616d2003207f39eb50009f585b5e34fd4233e9abc1",
+    "sim/display/run_workstation_display_runtime.py": "5f621a9461e937298650f864d406f4b56303bf0794241e9d552fdbc548695574",
+    "sim/display/run_workstation_shared_analysis_pixels.py": "2b888725d53d49ee04541c642ab3acef19f2a745a065342aa5a4206d45e6bf98",
+    "sim/display/tb_workstation_shared_analysis_pixels.sv": "5f4247e2f86cccef64afbccd53dcfa2ded7f1f3efa4707f22d704d4131e451f8"
+  },
+  "frozen_before_repair": {
+    "report": "reports/WORKSTATION_RUNTIME_FEATURE_PRESERVATION_V2_20261030.md",
+    "report_sha256": "b5870679738992b73f1ecdfe4a7ef21e58c881c12d8b24e506bdfc0a66af03b0",
+    "json": "reports/workstation_task_20261030/runtime_feature_preservation_v2.json",
+    "json_sha256": "653f10d0f84242a3e488b4802aac7270d23929282a8642c20cfeb8514520b9d4",
+    "candidate": "custom138k-workstation-v1-41e653fe462e5ea3",
+    "vg_sha256": "2319746ad8eabba1e19721908402dd0c25bd91aba52b896650d82153e6c4e3da"
+  },
+  "pixel_verification": {
+    "identity": "native-shared-analysis-pixels-v1-4f2e4eddfdaae64f",
+    "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-shared-pixels-fix-v3/verification.json",
+    "sha256": "043ef56e2e64904cf2373283c1a171ab2e600bc8c55aa1010b494634b7d318de",
+    "source_set_sha256": "4f2e4eddfdaae64f09309090cc4d14381fb4e6205ac5034304e07fe21990d434",
+    "passed": true,
+    "source_seal_before_and_after": true,
+    "metrics": {
+      "beats": 1036800,
+      "pixels": 2073600,
+      "known_pixels": 10,
+      "negative_differences": 10,
+      "stalls": 174960,
+      "spectrum_columns": 512,
+      "xy_pixels": 65536,
+      "ddr_writes": 368,
+      "ddr_reads": 365
+    },
+    "owned_warnings": [],
+    "warning_counts": {
+      "TIMESCALEMOD": 14,
+      "WIDTHTRUNC": 56,
+      "WIDTHEXPAND": 22
+    },
+    "inherited_renderer_warnings": [
+      {
+        "kind": "TIMESCALEMOD",
+        "message": "Timescale missing on this module as other modules have it (IEEE 1800-2023 3.14.2.3)"
+      },
+      {
+        "kind": "WIDTHTRUNC",
+        "message": "Logical operator GENIF expects 1 bit on the If, but If's VARREF 'ENABLE_ANALYSIS' generates 32 bits."
+      },
+      {
+        "kind": "WIDTHTRUNC",
+        "message": "Logical operator LOGAND expects 1 bit on the LHS, but LHS's VARREF 'SHARED_EXPORT' generates 32 bits."
+      },
+      {
+        "kind": "WIDTHTRUNC",
+        "message": "Logical operator COND expects 1 bit on the Conditional Test, but Conditional Test's VARREF 'SCALE_THREE_HALVES' generates 32 bits."
+      },
+      {
+        "kind": "WIDTHTRUNC",
+        "message": "Logical operator COND expects 1 bit on the Conditional Test, but Conditional Test's VARREF 'SCALE_THREE_HALVES' generates 32 bits."
+      },
+      {
+        "kind": "WIDTHEXPAND",
+        "message": "Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'issue_x' generates 11 bits."
+      },
+      {
+        "kind": "WIDTHTRUNC",
+        "message": "Logical operator COND expects 1 bit on the Conditional Test, but Conditional Test's VARREF 'SCALE_THREE_HALVES' generates 32 bits."
+      },
+      {
+        "kind": "WIDTHTRUNC",
+        "message": "Logical operator LOGAND expects 1 bit on the LHS, but LHS's VARREF 'SHARED_EXPORT' generates 32 bits."
+      },
+      {
+        "kind": "WIDTHEXPAND",
+        "message": "Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'issue_x' generates 11 bits."
+      },
+      {
+        "kind": "WIDTHEXPAND",
+        "message": "Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'issue_y' generates 11 bits."
+      },
+      {
+        "kind": "WIDTHEXPAND",
+        "message": "Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'issue_y' generates 11 bits."
+      },
+      {
+        "kind": "WIDTHEXPAND",
+        "message": "Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'issue_x' generates 11 bits."
+      }
+    ],
+    "checks": [
+      "real_minor1_writer_to_functional_ddr_to_reader",
+      "all_512_spectrum_columns",
+      "all_65536_XY_bits",
+      "known_spectrum_XY_stereo_meter_colors",
+      "negative_disabled_page",
+      "full_1920x1080_native_vs_old_enabled_pixels",
+      "full_1920x1080_default_enabled_vs_old_enabled_pixels",
+      "full_1920x1080_default_disabled_vs_old_disabled_pixels",
+      "randomized_DDR_and_output_stalls"
+    ],
+    "known_fixture": "two spectrum columns (left/right 224/112 and 32/200), XY point (40,40), peaks 0x4000/0x2000; actual FFT verified separately by runtime regression",
+    "reference_renderer_sha256": "90757d2960779803292f29c660ac0171bad55b8a435dc44db057ae1195f0820c",
+    "raster_configuration": {
+      "SHARED_RENDER": 1,
+      "SHARED_EXPORT": 0,
+      "default_comparison_scope": "RENDER_ANALYSIS inheritance for ENABLE_ANALYSIS 0 and 1; actual default HDMI export1 separately checked in source tokens and elaboration"
+    }
+  },
+  "runtime_verification": {
+    "identity": "native-runtime-display-offline-v1-5fdde4eef1aec561",
+    "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-display-render-fix-regression-v3/verification.json",
+    "sha256": "8aa5a70066907e206a59fb2631ea2f39d3ecec0c9103f1d9ae5523564b9ef6c4",
+    "source_set_sha256": "5fdde4eef1aec561c9a769656ab4a6a06cdaf7747eafd12fdde88d940d09a0e3",
+    "passed": true,
+    "metrics": {
+      "publications": 6,
+      "commits": 9,
+      "atomic_tuples": 128702,
+      "waveform_samples": 1024,
+      "xy_pixels": 131072,
+      "fft_columns": 1024,
+      "cdc_drops": 60
+    },
+    "checks": [
+      "initial_image_required",
+      "actual_48_and_44_fft_wave_xy",
+      "204bit_tuple_atomicity",
+      "raster_idle_cache_lease",
+      "pending_old_epoch_cancel",
+      "stalled_commit_tail_cancel",
+      "partial_reader_cancel",
+      "same_epoch_final_cdc_drop_cancel",
+      "error_frame_cancel",
+      "epoch_zero_reject",
+      "default_tokens_equal",
+      "reverse_exact_parent_bytes",
+      "full_hdmi_elaboration_both_modes",
+      "live_hdmi_provider_not_shadowed",
+      "native_render_without_local_fft",
+      "single_fft_owner_both_modes",
+      "both_analysis_dashboards_enabled",
+      "runtime_reader_two_cache_banks"
+    ],
+    "full_hdmi_elaboration": {
+      "default": true,
+      "runtime": true,
+      "official_gw5a": true
+    },
+    "elaborated_analysis": {
+      "default": {
+        "renderer_parameters": {
+          "ENABLE_ANALYSIS": 1,
+          "RENDER_ANALYSIS": 1,
+          "SHARED_EXPORT": 1,
+          "SHARED_RENDER": 1
+        },
+        "fft_owners": [
+          "u_analysis"
+        ],
+        "both_dashboard_analysis_enabled": true,
+        "reader_cache_banks": 1,
+        "compile_working_directory": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "live_provider_selected": true
+      },
+      "runtime": {
+        "renderer_parameters": {
+          "ENABLE_ANALYSIS": 0,
+          "RENDER_ANALYSIS": 1,
+          "SHARED_EXPORT": 0,
+          "SHARED_RENDER": 1
+        },
+        "fft_owners": [
+          "analysis"
+        ],
+        "both_dashboard_analysis_enabled": true,
+        "reader_cache_banks": 2,
+        "compile_working_directory": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "live_provider_selected": true
+      }
+    },
+    "default_tokens_equal": true,
+    "reverse_provenance_passed": true,
+    "verilator_owned_warnings": [],
+    "include_shadow_prevented": true
+  },
+  "resource_budget": {
+    "image_logical_bits": 131072,
+    "spectrum_logical_bits": 16384,
+    "total_logical_bits": 147456,
+    "total_bytes": 18432,
+    "storage_scope": "Previously unobserved minor1 reader banks become reachable by visible spectrum/XY consumers",
+    "physical_bsram_or_lut_increment": null
+  },
+  "validation": {
+    "source_repair_verified": true,
+    "offline_pixels_verified": true,
+    "default_compatibility_verified": true,
+    "actual_dual_rate_analysis_regression_passed": true,
+    "unique_hdmi_fft_owner_elaborated": true,
+    "new_candidate_synthesis_feature_gate_passed": false,
+    "routed_timing_verified": false,
+    "physical_resources_verified": false,
+    "all_cdc_verified": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "bitstream_sha256": null,
+    "release_ready": false,
+    "deployment_allowed": false
+  },
+  "remaining": [
+    "Prepare a new source-identified candidate and profile locks; do not reuse v2 identity",
+    "Synthesize and inspect restored reader memories and actual sole HDMI FFT",
+    "Measure physical BSRAM/LUT costs and routed clock/CDC/deadline constraints",
+    "Verify live HDMI against physical final PCM and board behavior"
+  ],
+  "rollback": "Deselect WORKSTATION_RUNTIME_NATIVE to keep the inherited default render behavior; do not deploy changed inputs under the frozen v2 candidate identity",
+  "identity": "runtime-shared-analysis-render-repair-v1-006581b293080c3e"
+}

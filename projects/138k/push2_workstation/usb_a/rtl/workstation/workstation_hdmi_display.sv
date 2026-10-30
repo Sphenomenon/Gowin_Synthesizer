@@ -191,7 +191,7 @@ module hdmi_display #(
 `ifdef WORKSTATION_RUNTIME_NATIVE
     // The maintained raster reads only a coherent current local cache. Its
     // legacy wave capture provides pacing; the native producer owns analysis.
-    feedback_renderer #(.ENABLE_ANALYSIS(0),.SHARED_EXPORT(0),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15)) u_renderer (
+    feedback_renderer #(.ENABLE_ANALYSIS(0),.RENDER_ANALYSIS(1),.SHARED_EXPORT(0),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15)) u_renderer (
 `else
     feedback_renderer #(.ENABLE_ANALYSIS(1),.SHARED_EXPORT(1),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15)) u_renderer (
 `endif

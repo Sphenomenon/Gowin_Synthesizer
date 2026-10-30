@@ -11,7 +11,10 @@ module feedback_renderer #(
     parameter integer SHARED_EXPORT = 0,
     parameter integer SHARED_RENDER = 0,
     parameter integer SHARED_WAVE_ZERO_BITS = 0,
-    parameter integer SCALE_THREE_HALVES = 0
+    parameter integer SCALE_THREE_HALVES = 0,
+    // Shared snapshots can render analysis without instantiating a local FFT.
+    // Inherit the historical selection unless a composition opts in explicitly.
+    parameter integer RENDER_ANALYSIS = ENABLE_ANALYSIS
 ) (
     input wire clk,
     input wire rst_n,
@@ -173,7 +176,7 @@ module feedback_renderer #(
     wire [2:0] render_effect_mask=use_shared_render ? shared_render_meta[194:192] : frame_effect_mask;
     wire [5:0] render_effect_order=use_shared_render ? shared_render_meta[200:195] : frame_effect_order;
     wire render_waveform_held=use_shared_render ? 1'b0 : waveform_held;
-    feedback_dashboard #(.ENABLE_ANALYSIS(ENABLE_ANALYSIS)) u_even (
+    feedback_dashboard #(.ENABLE_ANALYSIS(RENDER_ANALYSIS)) u_even (
         .clk(clk), .reset_n(rst_n), .enable(pipeline_enable),
         .frame_start(advance && issue_x==0 && issue_y==0),
         .pixel_x(read_x), .pixel_y(read_y), .wave_sample(render_wave_data), .wave_previous(previous_wave_data),
@@ -186,7 +189,7 @@ module feedback_renderer #(
         .memory_status(render_memory_status), .underruns(frame_underruns),
         .framecount(frame_framecount), .pixel_data(pixel_data[31:0])
     );
-    feedback_dashboard #(.ENABLE_ANALYSIS(ENABLE_ANALYSIS)) u_odd (
+    feedback_dashboard #(.ENABLE_ANALYSIS(RENDER_ANALYSIS)) u_odd (
         .clk(clk), .reset_n(rst_n), .enable(pipeline_enable),
         .frame_start(advance && issue_x==0 && issue_y==0),
         .pixel_x(read_x+11'd1), .pixel_y(read_y), .wave_sample(render_wave_data), .wave_previous(previous_wave_data),

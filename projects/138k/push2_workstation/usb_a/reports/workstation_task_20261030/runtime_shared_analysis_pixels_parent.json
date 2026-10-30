@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "identity": "runtime-shared-analysis-render-repair-parent-v1",
+  "repair_identity": "runtime-shared-analysis-render-repair-v1-006581b293080c3e",
+  "passed": true,
+  "checks": {
+    "pixel_verification": {
+      "identity": "native-shared-analysis-pixels-v1-cc8e0325eb37ecda",
+      "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-shared-pixels-parent-final/verification.json",
+      "sha256": "2bc5d5d861c1a3a2d386b147196fdc9dd29270da9ad0f19de1d62e2609725dc8",
+      "passed": true,
+      "metrics": {
+        "beats": 1036800,
+        "pixels": 2073600,
+        "known_pixels": 10,
+        "negative_differences": 10,
+        "stalls": 174960,
+        "spectrum_columns": 512,
+        "xy_pixels": 65536,
+        "ddr_writes": 368,
+        "ddr_reads": 365
+      },
+      "all_input_content_sha256_equal_to_child": true
+    },
+    "runtime_verification": {
+      "identity": "native-runtime-display-offline-v1-5fdde4eef1aec561",
+      "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-display-render-parent-final/verification.json",
+      "sha256": "bbadaa57a20314b89a1ca9064c71cabffc7df2a8c46a7075ec443aa5f4bd354a",
+      "passed": true,
+      "metrics": {
+        "publications": 6,
+        "commits": 9,
+        "atomic_tuples": 128702,
+        "waveform_samples": 1024,
+        "xy_pixels": 131072,
+        "fft_columns": 1024,
+        "cdc_drops": 60
+      },
+      "all_input_content_sha256_equal_to_child": true
+    }
+  },
+  "input_sha256": {
+    "rtl/display_data/feedback_renderer.v": "caaa8425d72dcce65a36efbc9bfebace43a289fa22ed674fbdf3403c90f5923b",
+    "rtl/workstation/workstation_hdmi_display.sv": "cfa1121ee24fb9cebf95edea03639297d8e63af28d57a5cc32481d702f97980d",
+    "rtl/workstation/workstation_hdmi_display.provenance.json": "2da2802f233a7286d7f728d48b62b4bd6327a954ab833b1784ede035e3924426",
+    "rtl/workstation/RUNTIME_DISPLAY.md": "5a97db40e3a1eb8fa8b34f616d2003207f39eb50009f585b5e34fd4233e9abc1",
+    "sim/display/run_workstation_display_runtime.py": "5f621a9461e937298650f864d406f4b56303bf0794241e9d552fdbc548695574",
+    "sim/display/run_workstation_shared_analysis_pixels.py": "2b888725d53d49ee04541c642ab3acef19f2a745a065342aa5a4206d45e6bf98",
+    "sim/display/tb_workstation_shared_analysis_pixels.sv": "5f4247e2f86cccef64afbccd53dcfa2ded7f1f3efa4707f22d704d4131e451f8"
+  },
+  "accepted_source_tests": {
+    "tests": 10,
+    "passed": true
+  },
+  "identity_note": "Pixel run identities include the output path of the generated renamed reference; parent and child content hashes agree after normalizing only that generated reference path.",
+  "hardware_tested": false,
+  "new_synthesis_passed": false,
+  "physical_timing_passed": false,
+  "release_ready": false
+}
