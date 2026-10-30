@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "base_commit": "4308339185fb3a2e6774a9aebc35c4520255468b",
+  "unselected": true,
+  "legacy_bytes_unchanged": true,
+  "derivations": [
+    {
+      "original": "rtl/tf_audio/storage/tf_wav_chunk_parser.v",
+      "original_sha256": "c71e9860c5e988d97f1dd9840f643a68f60e6efef74d96b216013e816fb86ee1",
+      "derived": "rtl/tf_audio/storage/workstation_tf_wav_chunk_parser_v1.sv",
+      "derived_sha256": "9dd382d4b5e8af87c02584105733fddf1a5cce38fd6e11d66acf92c75e7dfb8d",
+      "review_diff": "rtl/tf_audio/provenance/workstation_tf_wav_chunk_parser_v1.patch",
+      "review_diff_sha256": "00179ae47f532427239d5f7a46639517a4327abfa56277b04a6bf563743038a4"
+    },
+    {
+      "original": "rtl/tf_audio/storage/tf_wav_pcm_decoder.v",
+      "original_sha256": "ebf34a426e1bb53e1e002fc78723a8e501b5892c5b061b72fc46a14644c1e68a",
+      "derived": "rtl/tf_audio/storage/workstation_tf_wav_pcm_decoder_v1.sv",
+      "derived_sha256": "49809913fed1fde8eec4716286f9243f60ced4cb82eaee4b45e04e428c015d52",
+      "review_diff": "rtl/tf_audio/provenance/workstation_tf_wav_pcm_decoder_v1.patch",
+      "review_diff_sha256": "65f03d0661b062a9b8ac68dfcb369b5f009527cfb40bf551f3568db11df37923"
+    }
+  ],
+  "changes": [
+    "strict separate EOF and RIFF size validation",
+    "zero-size data empty",
+    "odd data pad skipped",
+    "per-data-chunk complete frame requirement",
+    "saturating extended fmt index",
+    "exact mono/stereo and 8/16/24/32-bit metadata admission",
+    "same original PCM conversion and held ready/valid"
+  ]
+}

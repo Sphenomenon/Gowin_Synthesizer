@@ -1,0 +1,114 @@
+--- tf_wav_chunk_parser.v
++++ workstation_tf_wav_chunk_parser_v1.sv
+@@ -0,0 +1,3 @@
++// Maintained strict WAV v1 derivative; see workstation_tf_direct_ingress.provenance.json.
++// Legacy kernels/default selection remain byte-identical. EOF is a separate
++// drained file event; zero-size data is empty, and incomplete RIFF/chunks fail.
+@@ -26,2 +29,2 @@
+-// A `data` chunk is streamed only up to its declared size; a size of 0 means
+-// "stream until restart/EOF".  Once the declared bytes have been emitted the
++// A `data` chunk is streamed only up to its declared size; size 0 is
++// empty in this strict v1. Once declared bytes have been emitted the
+@@ -41 +44 @@
+-module tf_wav_chunk_parser (
++module workstation_tf_wav_chunk_parser_v1 (
+@@ -47,0 +51,4 @@
++    input  wire        eof_i, // separate event, only after all accepted bytes
++    output reg         eos_o,
++    output reg         error_o,
++    output wire        payload_end_o,
+@@ -89,0 +97,4 @@
++    reg [32:0] byte_count;
++    reg [31:0] riff_size;
++    reg rate_high,guid_bad;
++    reg data_seen;
+@@ -91,0 +103,9 @@
++    function [7:0] pcm_guid_byte(input [5:0] index);
++        case(index)
++            24:pcm_guid_byte=8'h01;30:pcm_guid_byte=8'h10;
++            32:pcm_guid_byte=8'h80;35:pcm_guid_byte=8'haa;
++            37:pcm_guid_byte=8'h38;38:pcm_guid_byte=8'h9b;39:pcm_guid_byte=8'h71;
++            default:pcm_guid_byte=0;
++        endcase
++    endfunction
++    wire guid_byte_bad=(fcnt>=24 && fcnt<40 && inbyte!=pcm_guid_byte(fcnt));
+@@ -100,0 +121,2 @@
++    wire [33:0] chunk_end={1'b0,byte_count}+34'd1+
++        {2'b0,csize_le}+{33'd0,csize_le[0]};
+@@ -124 +146,2 @@
+-    assign pcm_en   = inen && (st == S_DATA);
++    assign pcm_en   = inen && (st == S_DATA) && !error_o && !eos_o;
++    assign payload_end_o = pcm_en && data_left == 32'd1;
+@@ -128,0 +152 @@
++            eos_o<=0;error_o<=0;byte_count<=0;riff_size<=0;rate_high<=0;guid_bad<=0;data_seen<=0;
+@@ -150,0 +175 @@
++            eos_o<=0;error_o<=0;byte_count<=0;riff_size<=0;rate_high<=0;guid_bad<=0;data_seen<=0;
+@@ -163 +188,11 @@
+-        end else if (inen) begin
++        end else begin
++            if(eof_i)begin
++                if(!error_o && st==S_CID && bc==0 && header_valid &&
++                   !unsupported && data_seen && riff_size>=4 &&
++                   byte_count==({1'b0,riff_size}+33'd8))eos_o<=1;
++                else error_o<=1;
++            end
++            if(inen && !error_o && !eos_o)begin
++            byte_count<=byte_count+1'b1;
++            if(byte_count>=33'd8 && byte_count>=({1'b0,riff_size}+33'd8))error_o<=1;
++
+@@ -167,4 +202,5 @@
+-                if (win_next == MAGIC_RIFF) begin
+-                    st <= S_RSZ;
+-                    bc <= 2'd0;
+-                end
++                if(bc==3)begin
++                    bc<=0;
++                    if(win_next==MAGIC_RIFF)st<=S_RSZ;
++                    else error_o<=1;
++                end else bc<=bc+1'b1;
+@@ -173,0 +210 @@
++                win<=win_next;
+@@ -174,0 +212,2 @@
++                    riff_size<=csize_le;
++                    if(csize_le<4)error_o<=1;
+@@ -190,3 +229 @@
+-                        // "RIFF" was a coincidence; keep hunting.
+-                        st  <= S_HUNT;
+-                        win <= 32'd0;
++                        error_o<=1;
+@@ -212,0 +250 @@
++                    if(chunk_end>({2'b0,riff_size}+34'd8))error_o<=1;
+@@ -218 +256 @@
+-                            fcnt <= 6'd0;
++                            fcnt <= 6'd0;rate_high<=0;guid_bad<=0;
+@@ -235,6 +273,6 @@
+-                            // A zero data size means "stream to EOF"; any other
+-                            // size bounds the PCM so following chunks are not
+-                            // mistaken for audio.
+-                            st          <= S_DATA;
+-                            data_left   <= csize_le;
+-                            data_stream <= (csize_le == 32'd0);
++                            // Strict zero-size data is empty. File EOF is separate;
++                            // tail metadata is never PCM.
++                            data_seen<=1;
++                            st<=(csize_le==0) ? S_CID:S_DATA;
++                            data_left<=csize_le;
++                            data_stream<=0;
+@@ -271,0 +310,3 @@
++                if(fcnt==6 && inbyte[7:4]!=0)rate_high<=1;
++                if(fcnt==7 && inbyte!=0)rate_high<=1;
++                if(fcnt>=24 && fcnt<40 && guid_byte_bad)guid_bad<=1;
+@@ -289 +330,3 @@
+-                    if (is_pcm_final && !rejected) begin
++                    if (is_pcm_final && !rejected && !rate_high && chan_final>=1 && chan_final<=2 &&
++                        (bits_final==8 || bits_final==16 || bits_final==24 || bits_final==32) &&
++                        (fmt_final!=FORMAT_EXTENSIBLE || (csize>=40 && !guid_bad && !guid_byte_bad))) begin
+@@ -308 +351 @@
+-                    fcnt <= fcnt + 6'd1;
++                    if(fcnt!=6'd63)fcnt <= fcnt + 6'd1;
+@@ -330 +373,2 @@
+-                        st        <= S_CID;
++                        st        <= csize[0] ? S_SKIP:S_CID;
++                        left      <= csize[0] ? 32'd1:32'd0;
+@@ -339,0 +384 @@
++            end
