@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "scope": "final_C06_document_source_lock_only",
+  "passed": true,
+  "base_commit": "cb4e8ac",
+  "prepared": "/Users/sphenicidition/.cache/gw138k-task-20261030/c06-doc-lock-fix-prepare-v1",
+  "candidate_identity": "custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1-ef580f60160b1e27",
+  "artifact_sha256": "eae06122def5fbb6ff3093a8260de5338ccf9507d8690c7d52b0b7cfad1f96a3",
+  "configuration_sha256": "285841f3882905c3effe8c6413aca99940a2121c2a21aa57aebcb1be2b946b8c",
+  "staged_inputs": 600,
+  "staged_byte_identical_count": 599,
+  "staged_difference": {
+    "path": "native_usb_firmware/build.log",
+    "only_source_root_diagnostic_path_differs": true
+  },
+  "all_five_profile_locks_loaded": true,
+  "profile_source_tests": 6,
+  "isolated_source": "/Users/sphenicidition/.cache/gw138k-task-20261030/c06-doc-lock-fix-v1",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": "fbbc01eeb3f19ee51f1993dda58567ec0142483809df20a75ac0bc839cc0a1e9",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json": "c5f980ebff9979a8b3d3779038502e3e318a642e34b90b549e715e44e8fc725b",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": "6cd5bc537ab4efd0a1fe5c07a7062992f9f7698ac5ed1186b4d9cf3dae7cb99f",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_v1.json": "72c2720df81b41a3722bdf7838b2f46174588cc82ddf0c818565bd34f80eeabf",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json": "285841f3882905c3effe8c6413aca99940a2121c2a21aa57aebcb1be2b946b8c"
+  },
+  "document_sha256": "67acc53c07645adfe95e8668e187881ed61929712bde531fbfe7b23808e30a06",
+  "final_document_hash_was_missing_from_prior_commit": true,
+  "synthesis_run": false,
+  "hardware_operated": false
+}
