@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "identity": "display-load-222fb761-native-fifo-parent-20261031-v1",
+  "compiled_source_commit": "9bc8fc5063f34c914553e725264a0566eba7cea0",
+  "candidate": "custom138k-workstation-r00-no-local-panel-v1-222fb761448fb6c0",
+  "VG_sha256": "f621fcbecb79012c0486e248a1cc686437b9d11ab887c22b2c8554a62f8b49af",
+  "process_sha256": "2b9a71d6017540307b2bed46ef809d478dbea548ab456375460381c03ebbc25f",
+  "staged_files": 599,
+  "enabled_files": 269,
+  "source_profile_changed": false,
+  "native_FIFOs": 2,
+  "entries_each": 512,
+  "payload_width": 65,
+  "selected_SDPX9B": 8,
+  "selected_SSRAM": 0,
+  "formatter_truth_bits": 64,
+  "Gray_chains": 40,
+  "received_graph_controls": 410,
+  "received_payload_controls": 66,
+  "independent_directed_controls": 9,
+  "parent_replayed_positive_mapping_and_formatter_and_9_controls": true,
+  "complete_476_execution_by": "task_audit",
+  "parent_repeated_full476": false,
+  "complete_case_contents_compared_to_original_method": true,
+  "old_scope_rejected_new_candidate": true,
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-display-load-222fb761-native-independent-review-v1/REVIEW_SEAL.json",
+    "sha256": "b8a4cc2a8ad5518bfa841698af0a172315b5f35bc3c6850ae489c570f43e9066"
+  },
+  "root_source_captures": {
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py": {
+      "snapshot": "root_source_snapshot/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py",
+      "sha256": "159d41337f4bf5e0d7ddcb179b8891faa68a3a4445535deb3fcc2b4260c88b10",
+      "equals_compiled_commit": true
+    }
+  },
+  "limitations": [
+    "Producer D/CE effective next-Q for all Gray bits is not reproved.",
+    "DSP feedback arithmetic is a declared boundary and is not reproved.",
+    "All received case contents are checked, but the full 410+66 execution is from task_audit; this reviewer replays positive mapping, all formatter truth, and nine targeted controls.",
+    "Synthesis primitive mapping does not establish routed BSRAM/resource, complete CDC/reset, timing or hardware acceptance."
+  ],
+  "producer_D_CE_next_Q_reproved": false,
+  "DSP_feedback_arithmetic_reproved": false,
+  "complete_CDC_accepted": false,
+  "complete_reset_accepted": false,
+  "routed_timing_accepted": false,
+  "physical_resources_accepted": false,
+  "EDA_invoked": false,
+  "pnr_prepared": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/display-load-native-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "6f23a756131b1bcd602bd77f767dc624a1dd62da4a79b0096d9a08f91bc0222a",
+    "local_files": 5,
+    "external_inputs": 4125
+  },
+  "parent_final_verifier": "hash_only; independent semantic replay recorded separately"
+}
