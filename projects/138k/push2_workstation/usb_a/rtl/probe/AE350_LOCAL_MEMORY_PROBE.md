@@ -7,6 +7,17 @@
 不依赖 DDR readiness，也不装配 DDR、USB、BLE、音频或显示业务。
 它不能代替完整工作站的资源、时序、CDC、功能或硬件验收。
 
+AE350 的 CORE_CLK 必须来自 `PLL_R[0].clkout1`，并显式约束 PLL_ADV
+位置（MUG1031 v1.3.1 第 7.3 节，PDF 第 56 页／印刷第 48 页）。本入口
+生成 `INS_LOC "u_cpu_pll/PLL_inst" PLL_R[0];`，prepare 审计拒绝遗漏、
+错误及重复约束；P&R 后另用 `audit_cpu_pll_placement(.tr文本)` 检查实际位置，
+仍须独立核查完整 STA。C7／C8 的实际位置为 `PLL_B[2]`，即使可见 PL
+路径 STA 为正，也未满足硬核物理要求，不能视作完整物理接受。
+
+C9 仅修正 PLL 位置，固件及 100／50 MHz 配置不变，便于单变量板测。
+当前 RTC_CLK 仍继承 50 MHz 接线，偏离手册规定的 32.768 kHz，留待后续
+独立修正；不能从探针的离线通过推导硬核启动或缓存可用。
+
 ## 准备与身份
 
 在 `usb_a` 目录执行；必须提供一个未使用的 UserCode 和新输出目录：

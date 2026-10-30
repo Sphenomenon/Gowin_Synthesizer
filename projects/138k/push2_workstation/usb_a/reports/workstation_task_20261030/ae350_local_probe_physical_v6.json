@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "identity": "custom138k-ae350-local-memory-probe-C21031C8",
+  "scope": "isolated same-hard-IP boot64 ILM/DLM probe",
+  "iterations": [
+    {
+      "version": 1,
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031C6-v1",
+      "exit_code": 1,
+      "elapsed_seconds": 0.885026291012764,
+      "process_sha256": "4d5f4f73b2581f0eb17cf01e20440eb7226227fd4823a57b6272c8a0c697de1a"
+    },
+    {
+      "version": 2,
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031C6-v2",
+      "exit_code": 1,
+      "elapsed_seconds": 19.192889540921897,
+      "process_sha256": "ca0435e561741fbb88789c475fd0d70f7e32ee5b2889df3b71eca53a36bdef46"
+    },
+    {
+      "version": 3,
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031C6-v3",
+      "exit_code": 1,
+      "elapsed_seconds": 230.6983862919733,
+      "process_sha256": "c812da2fedd9df3efb873cd2f83473815d95b31f2023f9042b723f6dd017556d"
+    },
+    {
+      "version": 4,
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031C6-v4",
+      "exit_code": 1,
+      "elapsed_seconds": 223.91378712491132,
+      "process_sha256": "909126d3a35939193f5c4966ac7f87abb06ea83a178e2f6487281c8d7b3cbe68"
+    },
+    {
+      "version": 5,
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031C7-v5",
+      "exit_code": 0,
+      "elapsed_seconds": 113.0721758750733,
+      "process_sha256": "c477cf96d5d1b734e3d38df47f37cbb31fd321a2f74f14b3e85691b73b919af6"
+    },
+    {
+      "version": 6,
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031C8-v6",
+      "exit_code": 0,
+      "elapsed_seconds": 120.24071604199708,
+      "process_sha256": "7690c7947315d5ea3e187f316f26de5924ea2b679b74a1c0b1030cded412bcf6"
+    }
+  ],
+  "prepare_audit": {
+    "manifest_sha256": "e1d730676e26bbd5f657b61078820a98bfba7b2c957fc34d147d15eaa1833c70",
+    "verified_inputs": 37,
+    "compiled_sources": 7,
+    "rom_bytes": 65536,
+    "cold_binary_bytes": 36368,
+    "synthesis_verified": false,
+    "physical_timing_verified": false,
+    "hardware_verified": false
+  },
+  "vg_sha256": "784991c521022ae54d99b8f0ab4a64a36e41be5d560ae113af0e609dc1c61afe",
+  "bitstream_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031C8-v6/impl/pnr/ao_0.fs",
+  "bitstream_sha256": "0cd405db75f05a3bdd25f2f05ba722008bf967d640e3d01a9dedcdd428d30d44",
+  "timing_slacks": {
+    "setup": {
+      "reported_paths": 2000,
+      "minimum_ns": 5.842
+    },
+    "hold": {
+      "reported_paths": 2000,
+      "minimum_ns": 0.14
+    },
+    "recovery": {
+      "reported_paths": 1370,
+      "minimum_ns": 6.778
+    },
+    "removal": {
+      "reported_paths": 1370,
+      "minimum_ns": 0.403
+    }
+  },
+  "minimum_reported_pulse_width_slack_ns": 3.931,
+  "synchronizer_first_stages": {
+    "u_uart/request_meta_s0": {
+      "D": "u_uart/request",
+      "Q": "u_uart/request_meta",
+      "CLK": "ram_clk",
+      "CLEAR": "n384_6"
+    },
+    "u_uart/ack_meta_s0": {
+      "D": "u_uart/ack",
+      "Q": "u_uart/ack_meta",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "upper_sync_0_s0": {
+      "D": "upper_seen",
+      "Q": "upper_sync[0]",
+      "CLK": "ram_clk",
+      "CLEAR": "n384_6"
+    },
+    "unmapped_sync_0_s0": {
+      "D": "unmapped_seen",
+      "Q": "unmapped_sync[0]",
+      "CLK": "ram_clk",
+      "CLEAR": "n384_6"
+    },
+    "u_uart/flags_meta_0_s0": {
+      "D": "pll_locked",
+      "Q": "u_uart/flags_meta[0]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "u_uart/flags_meta_1_s0": {
+      "D": "lock_qualified",
+      "Q": "u_uart/flags_meta[1]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "u_uart/flags_meta_2_s0": {
+      "D": "core_reset_pipe[3]",
+      "Q": "u_uart/flags_meta[2]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "u_uart/flags_meta_3_s0": {
+      "D": "preset_n",
+      "Q": "u_uart/flags_meta[3]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "rom_health_sync_0_s0": {
+      "D": "rom_seen",
+      "Q": "rom_health_sync[0]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    },
+    "upper_health_sync_0_s0": {
+      "D": "upper_seen",
+      "Q": "upper_health_sync[0]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8771_7"
+    }
+  },
+  "clocks_hz": {
+    "reference": 50000000,
+    "bus": 50000000,
+    "core": 100000000
+  },
+  "warnings": [
+    "PR1014 reference clock generic routing retained; actual routed timing reviewed",
+    "EX2478 output declaration initialization ignored; explicit reset remains",
+    "Frozen PLL EX3791 truncation diagnostics retained"
+  ],
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "full_workstation": false,
+  "hardware_acceptance": false,
+  "limitations": [
+    "Visible PL clocks/FF chains and actual routed reports reviewed; encrypted hard IP internals are not independently timed by this probe.",
+    "UART and GAO are observations; cache remains disabled; PMACFG without PMAADDR does not establish address-range cache attributes."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-parent-v6",
+  "seal_sha256": "61ccfebb1aab8e867cdbaa5336be48fec33ef0233452efc1881e0a2c5c3f5a5c",
+  "external_files": 414
+}

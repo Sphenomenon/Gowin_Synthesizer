@@ -27,6 +27,27 @@ LOCKED=('riscv_ae350_config.v','src/ae350/riscv_ae350_config.v',
         'src/ae350/riscv_ae350_top.v','src/ae350/riscv_ae350_soc.v',
         'src/ae350/gw138k_cpu_pll_cell.v','vendor/sipeed_dvi/video_pll_init.v')
 SAFE_DAC_PINS=dict(ak_pdn=['C13'],ak_mclk=['B13'],ak_bick=['A13'],ak_lrck=['B15'],ak_sdata=['A14'],ak_smute=['A15'])
+CPU_PLL_INSTANCE='u_cpu_pll/PLL_inst'
+CPU_PLL_SITE='PLL_R[0]'
+CPU_PLL_CONSTRAINT=f'INS_LOC "{CPU_PLL_INSTANCE}" {CPU_PLL_SITE};'
+
+def audit_cpu_pll_constraint(cst):
+    # MUG1031 v1.3.1 section 7.3: CORE_CLK must use PLL_R[0].clkout1;
+    # an explicit PLL_ADV location constraint is mandatory, even with passing STA.
+    locations=[line.strip() for line in cst.splitlines() if line.lstrip().startswith('INS_LOC')]
+    if locations!=[CPU_PLL_CONSTRAINT]:
+        raise ValueError('AE350 CORE_CLK requires one explicit '+CPU_PLL_CONSTRAINT)
+
+def audit_cpu_pll_placement(timing_report):
+    """Fail closed on actual routed PLL location; this is not a complete STA gate."""
+    rows=re.findall(r'\b(PLL_[A-Z]+\[\d+\])\s+'+re.escape(CPU_PLL_INSTANCE)+r'/(CLKOUT\d+)\s*$',
+                    timing_report,re.M)
+    if not rows or not any(pin=='CLKOUT1' for _,pin in rows):
+        raise ValueError('routed AE350 CORE_CLK PLL evidence missing')
+    if any(site!=CPU_PLL_SITE for site,_ in rows):
+        raise ValueError('routed AE350 CORE_CLK PLL violates mandatory '+CPU_PLL_SITE)
+    return dict(instance=CPU_PLL_INSTANCE,site=CPU_PLL_SITE,core_output='CLKOUT1',
+                reported_rows=len(rows),outputs=sorted(set(pin for _,pin in rows)))
 
 def safe_dac_constraints(root):
     text,references=audio_constraints(root,audio_config(root))
@@ -153,7 +174,9 @@ def audit_prepare(output):
         raise ValueError('probe clock declaration changed')
     names=re.findall(r'^create_(?:generated_)?clock -name (\S+)',(output/'probe.sdc').read_text(),re.M)
     if names!=['clk_50m','cpu_ram50','cpu_core100']:raise ValueError('probe SDC clock inventory changed')
-    if parse_locations((output/'probe.cst').read_text())!=record['port_locations']:
+    cst=(output/'probe.cst').read_text()
+    audit_cpu_pll_constraint(cst)
+    if parse_locations(cst)!=record['port_locations']:
         raise ValueError('probe staged pin locations changed')
     if any(record['port_locations'].get(name)!=balls for name,balls in SAFE_DAC_PINS.items()):
         raise ValueError('probe DAC safety pin mapping changed')
@@ -184,7 +207,8 @@ def prepare(root,netlists,output,user_code,prefix=None):
     lines=[line for line in render_constraints(plan).splitlines()
            if (m:=re.match(r'IO_(?:LOC|PORT)\s+"([^"]+)"',line)) and m[1] in ('clk_50m','debug_uart_tx')]
     dac_cst,dac_references=safe_dac_constraints(root)
-    cst='\n'.join(lines)+'\n'+dac_cst
+    cst='\n'.join(lines)+'\n'+dac_cst+CPU_PLL_CONSTRAINT+'\n'
+    audit_cpu_pll_constraint(cst)
     expected={name:plan['ports'][name]['balls'] for name in ('clk_50m','debug_uart_tx')}
     expected.update(SAFE_DAC_PINS)
     if parse_locations(cst)!=expected:raise ValueError('probe pin selection changed')
@@ -217,7 +241,10 @@ def prepare(root,netlists,output,user_code,prefix=None):
         top_module=TOP,source_policy='minimal locked hard-IP/config/PLL plus maintained boot64 and unchanged formal loader',
         parent_baseline=baseline.evidence(),source_paths=selected,locked_sha256={k:baseline.descriptor['files'][k]['sha256'] for k in LOCKED},
         native_sha256={name:sha(root/name) for name in NATIVE},tool_sha256=sha(Path(__file__)),firmware=fw,
-        clocks_hz=dict(core=100000000,bus=50000000,reference=50000000),rtc_use='wired as original; not used as measurement timebase',
+        clocks_hz=dict(core=100000000,bus=50000000,reference=50000000),
+        core_clock_requirement=dict(instance=CPU_PLL_INSTANCE,site=CPU_PLL_SITE,output='CLKOUT1',
+            reference='MUG1031 v1.3.1 section 7.3, PDF page 56 / printed page 48'),
+        rtc_use='50MHz inherited wiring; differs from documented 32.768kHz RTC; separate diagnostic pending; not a measurement timebase',
         uart=dict(baud_divisor=434,reference_hz=50000000,baud=50000000/434,format='8N1',frame_bytes=280,
             header='A138LM01',word_count=64,crc='reflected CRC32/ISO-HDLC over first276bytes, final xor, LE tail'),
         port_locations=expected,electrical_check=plan['electrical_check'],

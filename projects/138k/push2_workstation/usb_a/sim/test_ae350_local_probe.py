@@ -12,7 +12,8 @@ import zlib
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT),str(Path(__file__).resolve().parent)]
-from tools.workstation_ae350_local_probe import firmware,safe_dac_constraints,SAFE_DAC_PINS,gao,TOP
+from tools.workstation_ae350_local_probe import (firmware,safe_dac_constraints,SAFE_DAC_PINS,gao,TOP,
+    audit_cpu_pll_constraint,audit_cpu_pll_placement,CPU_PLL_CONSTRAINT)
 from tools.workstation_baselines import load_baseline
 from tools.stage_ae350_firmware import decode_rom
 from tools.decode_ae350_local_probe import decode,frames
@@ -29,6 +30,24 @@ class ProbeTest(unittest.TestCase):
     def tearDownClass(cls):cls.temp.cleanup()
 
     def cpu(self,**kwargs):return ProbeCpu(self.image,self.fw['capacity']['symbols'],**kwargs)
+
+    def test_required_core_pll_location_in_constraint_and_actual_route(self):
+        audit_cpu_pll_constraint('IO_LOC "clk_50m" A11;\n'+CPU_PLL_CONSTRAINT+'\n')
+        for invalid in ('',CPU_PLL_CONSTRAINT.replace('PLL_R[0]','PLL_B[2]'),
+                CPU_PLL_CONSTRAINT+'\n'+CPU_PLL_CONSTRAINT,
+                CPU_PLL_CONSTRAINT.replace('u_cpu_pll','wrong_pll')):
+            with self.subTest(constraint=invalid),self.assertRaises(ValueError):
+                audit_cpu_pll_constraint(invalid)
+        # Actual .tr row layout: AT, delay, type, edge, fanout, LOC, NODE.
+        row='  0.000  0.000 tCL RR 5 PLL_R[0] u_cpu_pll/PLL_inst/CLKOUT1\n'
+        result=audit_cpu_pll_placement(row+row.replace('CLKOUT1','CLKOUT0'))
+        self.assertEqual(result['reported_rows'],2)
+        self.assertEqual(result['site'],'PLL_R[0]')
+        for invalid in ('',row.replace('PLL_R[0]','PLL_B[2]'),
+                row+row.replace('PLL_R[0]','PLL_B[2]'),row.replace('CLKOUT1','CLKOUT0'),
+                row.replace('u_cpu_pll','wrong_pll')):
+            with self.subTest(route=invalid),self.assertRaises(ValueError):
+                audit_cpu_pll_placement(invalid)
 
     def test_gao_uses_working_core_expression_and_bus_schema(self):
         document=ET.fromstring(gao('C21031C7'));core=document.find('AoCore')

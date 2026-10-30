@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "identity": "custom138k-ae350-local-memory-probe-C21031C8",
+  "source_commit": "a875d15",
+  "bitstream_sha256": "0cd405db75f05a3bdd25f2f05ba722008bf967d640e3d01a9dedcdd428d30d44",
+  "physical_parent": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-parent-v6",
+  "physical_parent_seal_sha256": "61ccfebb1aab8e867cdbaa5336be48fec33ef0233452efc1881e0a2c5c3f5a5c",
+  "official_pll_review": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-c8-pll-review-v1",
+  "official_pll_review_seal_sha256": "bb599a53e90049ca2c0c924504ae8ad483446f9f7e5431973834fbbe1e537fbd",
+  "sram_program_returncode": 18,
+  "sram_verify_passed": false,
+  "main_configuration_readback": false,
+  "captures": [
+    {
+      "valid_rows": 128,
+      "health_words": [
+        "0xffff0197"
+      ],
+      "software_summary_unique": [
+        "0x0"
+      ]
+    },
+    {
+      "valid_rows": 128,
+      "health_words": [
+        "0xffff0187"
+      ],
+      "software_summary_unique": [
+        "0x0"
+      ]
+    }
+  ],
+  "uart_bytes": 0,
+  "core_reset_released": true,
+  "apb_reset_released": false,
+  "mandatory_pll_location": "PLL_R[0]",
+  "actual_pll_location": "PLL_B[2]",
+  "physical_gates_passed": false,
+  "rom_zero_scope": "ROM sticky state resets with hard-IP ROM_HRSTN; zero is not evidence that no HTTRANS ever occurred.",
+  "hardware_acceptance": false,
+  "ilm_dlm_hardware_acceptance": false,
+  "caches_enabled": false,
+  "rollback": {
+    "user_code": "C11028E5",
+    "status": "00022020",
+    "independent_identity_read": "/Users/sphenicidition/.cache/gw138k-task-20261030/hardware/ae350_local_memory_c8/rollback_identity_3.json"
+  },
+  "flash_written": false,
+  "next_candidate": {
+    "user_code": "C21031C9",
+    "prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-prepare-v7",
+    "prepare_audit": {
+      "manifest_sha256": "67b4a2dff396186bcfde72e32062104c1b0ff20b4b2f81efae57c8b84ae1264c",
+      "verified_inputs": 37,
+      "compiled_sources": 7,
+      "rom_bytes": 65536,
+      "cold_binary_bytes": 36368,
+      "synthesis_verified": false,
+      "physical_timing_verified": false,
+      "hardware_verified": false
+    },
+    "hardware_change": "explicit PLL_R[0] location only",
+    "firmware_artifacts_unchanged": true,
+    "remaining_deviation": "RTC still wired at 50MHz; manual specifies 32.768kHz; next separate diagnostic"
+  },
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-c8-hardware-parent-v1",
+  "seal_sha256": "bebc10b4e41244a4fb9a84e5abf6b6c8d363463dd2ef3334281e099393472943",
+  "external_files": 80
+}
