@@ -136,6 +136,8 @@
 
 [No-local-panel PLL 父级复验](push2_workstation/usb_a/reports/WORKSTATION_NO_LOCAL_PANEL_PLL_PARENT_20261031.md)已通过 23 项实际候选定向测试及旧 F03 完整 routed PLL／startup 与三负控；默认七 PLL／四 tuple、no-panel 六 PLL／三 tuple 均保留完整十位和 10 ns 原预算。四份 fresh prepare staged 与前序字节相同，各 12 项来源通过；profile20（一项旧 prepare 跳过）／accepted17 通过。c7／FF 无 SDF，未授予新 routed PLL 或硬件接受，无部署。
 
+[Chorus 窄化实际综合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_CHORUS_NARROW_SYNTHESIS_20261031.md)已通过：596 输入／四输出／两工具重验，Logic 106,679、Register 60,910、综合 BSRAM 229；实际新 VG clock 四项回归通过。最差路径现为 pitch/glide（−16.879 ns、36 级），尚未满足计算时序。新 CDC／PCM／TF／counter scope 与 pitch 精确算术修订继续独立推进；没有新物理、硬件或部署接受。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

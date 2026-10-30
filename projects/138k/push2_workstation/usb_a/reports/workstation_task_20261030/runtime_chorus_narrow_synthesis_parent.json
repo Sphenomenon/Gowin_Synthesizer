@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "identity": "chorus-narrow-parent-synthesis-v1",
+  "completed_utc": "2026-10-30T16:27:48.689118+00:00",
+  "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-6b9610324164f0c9",
+  "VG_sha256": "2cfe81e54a9257d212f4b54cecac56853a50e969dbf532d6857d45ce8fe316c8",
+  "process_sha256": "b437d4b212dff774f32015c66fbb940d0b9c196f526127177dc7ab4a2bfa02aa",
+  "source_commit": "8d59fdd1ee635341a77902038e8574ffd7fc575e",
+  "all_synthesis_input_output_tool_hashes_verified": true,
+  "independent_review_verified": {
+    "seal_sha256": "a080724caf28ba731bdd39ae2b12ff2d7f6693bca7ff32e4faa28504d7357087",
+    "files": 57,
+    "dependencies": 1228
+  },
+  "clock_audit": {
+    "identity": "runtime-clock-source-audit-v1-839ed35d443753a5",
+    "tests": 4,
+    "declared_clocks": 15,
+    "static_no_panel_outputs": 21,
+    "visible_PLLs": 6,
+    "source_topology_only": true
+  },
+  "synthesis_resources": {
+    "new_equivalent_BSRAM": 229,
+    "new_logic": 106679,
+    "new_registers": 60910,
+    "old_equivalent_BSRAM": 229,
+    "old_logic": 106720,
+    "old_registers": 60912,
+    "physical_BSRAM_acceptance": false
+  },
+  "warnings": {
+    "new": 150,
+    "normalized_multiset_identical": true,
+    "old": 150
+  },
+  "actual_top5_new": "pitch/n27_s/DOUT[16] to glide_ratio[21,20,0,1,2]",
+  "top5_slack_ns": [
+    -16.879,
+    -16.831,
+    -16.831,
+    -16.831,
+    -16.831
+  ],
+  "top5_logic_levels": 36,
+  "routed_timing_verified": false,
+  "complete_CDC_accepted": false,
+  "complete_reset_accepted": false,
+  "hardware_operated": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "process": {
+    "schema": 1,
+    "candidate": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-synthesis-6b961032",
+    "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-6b9610324164f0c9",
+    "command": [
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+      "scripts/custom_board_synthesis.tcl"
+    ],
+    "cwd": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-synthesis-6b961032/workstation/Prj1",
+    "tool_sha256": {
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/GowinSynthesis": "5dbd2b4d47f823c8844d55867eb06c9c0151e5ae79a93e2b61322f5e474f17b2"
+    },
+    "started_utc": "2026-10-30T16:05:26.111421+00:00",
+    "stage": "synthesis_only",
+    "place_route_run": false,
+    "hardware_operated": false,
+    "completed": true,
+    "exit_code": 0,
+    "elapsed_seconds": 335.3293490000069,
+    "finished_utc": "2026-10-30T16:11:01.442641+00:00",
+    "inputs_unchanged": true,
+    "output_sha256": {
+      "impl/gwsynthesis/custom_138k_integration.vg": "2cfe81e54a9257d212f4b54cecac56853a50e969dbf532d6857d45ce8fe316c8",
+      "impl/gwsynthesis/custom_138k_integration.log": "05e90cd8ed2bc3db51b646ccfaecaab9522d317837d49165d7a23f2978674d10",
+      "impl/gwsynthesis/custom_138k_integration_syn_resource.html": "935194f64bcbef49b6cca683a0e25937c28067b9488089f0283794f5bbce6a3d",
+      "impl/gwsynthesis/custom_138k_integration_syn.rpt.html": "52e6add270603dab38d31e712a66df4d1f4290a4f9cdd415a492a9d4cec7a81e"
+    },
+    "log_sha256": "41d1b70a2ab08b6ceea277f1f69fd572da40fae46b0cb7108cd0f30116e9de10",
+    "structural_loop_diagnostics": [],
+    "structural_loop_gate_scope": "Gowin emitted AG diagnostics only; not complete combinational/lint acceptance",
+    "structural_loop_gate_passed": true
+  },
+  "complete_staged_input_count": 596,
+  "enabled_input_count": 269,
+  "new_staged_inputs": 3,
+  "sole_compiled_change": "rtl/audio/workstation_runtime_chorus_effect.sv",
+  "SDC_CST_GPRJ_and_compilation_order_identical": true,
+  "physical_prepare_performed": false,
+  "next": "Exact new-scope CDC/PCM and TF/counter actual-VG review; pitch arithmetic source optimization. Physical stage gets new identities and no previous acceptance.",
+  "evidence": {
+    "chorus-narrow-parent-synthesis-v1/DELIVERY_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-parent-synthesis-v1/DELIVERY_SEAL.json",
+      "sha256": "a5a0ff0775038ddc7c0130f7d3f0be2b7e13f9bf3dd049c845ab4d8b02acb74f"
+    },
+    "chorus-narrow-parent-synthesis-v1/input_verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-parent-synthesis-v1/input_verification.json",
+      "sha256": "769aee6713a5a03355f05e96f05a1b46280b8a148320b3e851e3409c82a1bbc1"
+    },
+    "chorus-narrow-parent-synthesis-v1/clock-audit.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-parent-synthesis-v1/clock-audit.json",
+      "sha256": "79996d29457beec816efb213a0ae108b03f06c3402abba4c8e03fab8a8a63a46"
+    },
+    "chorus-narrow-parent-synthesis-v1/clock-1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-parent-synthesis-v1/clock-1.log",
+      "sha256": "5a23427ed8b9c8df4fe0b49ce530651fde4c5837ab1e4fcd6f498f0d5671128e"
+    },
+    "chorus-narrow-synthesis-independent-review-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-synthesis-independent-review-v1/REVIEW_SEAL.json",
+      "sha256": "a080724caf28ba731bdd39ae2b12ff2d7f6693bca7ff32e4faa28504d7357087"
+    },
+    "chorus-narrow-synthesis-independent-review-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-synthesis-independent-review-v1/review.json",
+      "sha256": "fff7299e818d1ab102d819c35366568ebb82eea42916dbd76c9b178e2d6fed74"
+    },
+    "chorus-narrow-synthesis-independent-review-v1/synthesis_review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-synthesis-independent-review-v1/synthesis_review.json",
+      "sha256": "0b97ea0bb7a76735ede672096a68b70bef8fab12a461316dc73bf102c50198a1"
+    },
+    "chorus-narrow-synthesis-independent-review-v1/prepare_compatibility.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-synthesis-independent-review-v1/prepare_compatibility.json",
+      "sha256": "8c49efbf72ca8a3a2beaeeea3ed8bd8b66c657a845dab6e2e5123b83fe0011f8"
+    },
+    "chorus-narrow-synthesis-6b961032/runtime_synthesis_evidence/process.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-synthesis-6b961032/runtime_synthesis_evidence/process.json",
+      "sha256": "b437d4b212dff774f32015c66fbb940d0b9c196f526127177dc7ab4a2bfa02aa"
+    },
+    "chorus-narrow-synthesis-6b961032/runtime_synthesis_evidence/tool.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-synthesis-6b961032/runtime_synthesis_evidence/tool.log",
+      "sha256": "41d1b70a2ab08b6ceea277f1f69fd572da40fae46b0cb7108cd0f30116e9de10"
+    },
+    "chorus-narrow-synthesis-6b961032/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-synthesis-6b961032/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "sha256": "2cfe81e54a9257d212f4b54cecac56853a50e969dbf532d6857d45ce8fe316c8"
+    }
+  }
+}
