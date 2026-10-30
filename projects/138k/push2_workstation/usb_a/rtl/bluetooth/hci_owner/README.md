@@ -37,3 +37,17 @@ python3 -B projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_owner.p
 ```
 
 依据为 Bluetooth Core6.0 HCI §4.1.1／4.2／4.3／4.4，§7.3.39／7.3.40 与各对应 event；A2DP v1.4 §4.3.4／5.2.1。完整规范只保留外部取证，不向仓库复制其版权正文。阶段报告记录 URL／SHA256 和验证范围。
+
+## Host RX lease／return 后续源组件
+
+`workstation_hci_host_rx_owner.sv` 是同样未选择的后续组件，只管理控制器→主机物理 ACL 包账本和外部 RAM 槽租约。上文集成门槛依然有效；它尚不执行实际 Host_Buffer_Size／flow enable，也不含 payload RAM、H5 packet router、DMA 或 CPU邮箱。`activate_i` 只能在外层真实成功完成 Host_Buffer_Size276／实际槽数和 ACL flow enable、尚无任何链路时发出一次。配置来自该组件的只读 `host_data_limit_o/host_packet_count_o`，不能按别的队列容量冒报。CPU observer reset 不接其 reset；共同硬件 reset仍须排空全部真实读者和旧描述符。
+
+默认4个外部槽，其中1个为BLE保留。完整且校验通过的物理包由 `rx_valid_i/rx_take_i/rx_ready_o` 只接收一次；generation／LE分类从发送账本暴露的权威handle表读取，不从CPU猜测。BR只有空闲槽数大于保留数时才取得租约；LE可使用剩余空闲槽。租约分配只授予槽所有权，**不等于payload已复制／可发布**；外层复制完成和消费者发布需要独立屏障。希望存储但队列满的包仍被完整丢弃、登记归还，不等待CPU。`rx_dropped_o` 的reason1=外层政策丢弃，2=无合格空槽，3=lease代次耗尽。外层必须取消／停止受影响流并报告原因，不能把包缺失当作连续媒体。代次耗尽不回绕，需要受控共同恢复；`lease_exhausted_o`不会因重连自行清除。
+
+不变量为 `controller_budget + Σ outstanding == advertised host packet count`。每个实际接收物理包debit一次，完整包丢弃或真实读者完成后增加pending return；后者尚不退款。专用owner3发送实际8字节0x0c35后才扣pending／outstanding并增加budget。使用一handle一batch的稳定snapshot，新完成包不能改写已offer的count；普通command quota为零也能通过唯一发送账本准入。`return_send_i`必须与共享flow owner和H5私有槽的不可撤回接受同拍，并检查 `return_can_send_o`。`return_valid_o`本身不授权发送。payload从offer保持至匹配的 `return_transport_done_i`，包括H5内部重传；接受后的失败或不确定性导致controller fault，不自动重放。外层必须把RX owner fault传入发送账本，且只把此packet的transport_done返回本组件。
+
+Core HCI §4.3允许控制器在Disconnection Complete后假定host已flush对应handle的RX buffers，无须再0x0c35。因此相同handle／generation断连一次回收未归还的controller预算、清pending并撤销尚未接受的return snapshot；已经交给transport的bytes仍保持到真实完成，不能重放到新代次。双向链路中已在途0x0c35可能与控制器断连相遇，若控制器返回0x12错误则现有共享owner进入故障恢复；没有凭源码假定RTL8723DS对该竞争的实际行为。
+
+断连不会把仍被读者持有的RAM槽直接重用，而是标为retired。`release_lease_i`为严格递增的非零32-bit token，只有真实copy／DMA／总线读者全部结束后才可释放；外层不能将未经硬件完成复核的CPU意图直接当作release。retired槽释放只回收内存，不再次退controller credit。重复／旧token拒绝；相同HCI handle的新generation不能覆盖旧槽。连续多次断连导致旧读者占满槽时，连BLE也可能被明确丢弃并停止相应链路；保留槽不承诺绕过未完成的物理读者。BLE reserve只消除本机正常Classic慢端的RAM占满，不证明无线或H5端到端服务时限。
+
+所有账本动作同域、有界，优先级为disconnect→完整RX→consumer release→return accept。controller超预算、坏handle／长度、丢失生命周期导致权威表漂移、非法transport完成或违规send均fail closed；不猜测退款。后续仍需完整H5路由与buffer复制、host-flow bootstrap／能力拒绝、CPU慢端的终止／恢复、原bridge和GATT信用退役，以及真实硬件验证。回归入口为 `sim/run_workstation_hci_host_rx_owner.py`，会复跑原共享发送owner／event回归。

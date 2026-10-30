@@ -11,6 +11,7 @@ module tb_workstation_hci_flow_owner;
     wire handle_open_ready_o,handle_rejected_o;
     wire [31:0] handle_open_generation_o;
     wire [1:0] handle_active_o;
+    wire [1:0] handle_is_le_o;
     wire [23:0] handle_numbers_o;
     wire [63:0] handle_generations_o;
     wire [31:0] handle_outstanding_o;

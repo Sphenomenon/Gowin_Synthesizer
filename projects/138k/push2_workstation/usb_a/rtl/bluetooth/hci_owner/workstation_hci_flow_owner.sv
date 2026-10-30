@@ -22,6 +22,7 @@ module workstation_hci_flow_owner #(
     output wire [31:0] handle_open_generation_o,
     output reg handle_rejected_o,
     output wire [HANDLE_SLOTS-1:0] handle_active_o,
+    output wire [HANDLE_SLOTS-1:0] handle_is_le_o,
     output wire [HANDLE_SLOTS*12-1:0] handle_numbers_o,
     output wire [HANDLE_SLOTS*32-1:0] handle_generations_o,
     output wire [HANDLE_SLOTS*16-1:0] handle_outstanding_o,
@@ -116,6 +117,7 @@ module workstation_hci_flow_owner #(
         last_generation != 32'hffffffff;
     assign handle_open_generation_o = handle_open_ready_o ? last_generation + 1'b1 : 32'd0;
     assign handle_active_o = active;
+    assign handle_is_le_o = is_le;
     for (genvar slot = 0; slot < HANDLE_SLOTS; slot = slot + 1) begin: expose
         assign handle_numbers_o[12*slot+:12] = numbers[slot];
         assign handle_generations_o[32*slot+:32] = generations[slot];
