@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "hardware_identity": "custom138k-ae350-local-memory-probe-C21031C7",
+  "bitstream_sha256": "80761cdbb39980e313f830f955ef54c17335bead5a77fd3e32db7795cb4e307b",
+  "vendor_program_verify_returncode": 18,
+  "vendor_complete_verify_passed": false,
+  "sram_program_command_executed": true,
+  "readback_identity_confirmed": true,
+  "uart": {
+    "port": "/dev/cu.usbserial-21201",
+    "baud": 115200,
+    "format": "8N1",
+    "duration_seconds": 5.093094500014558,
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "read_only": true
+  },
+  "gao_observation": {
+    "valid_rows": 128,
+    "unique_values": [
+      "0x0"
+    ],
+    "all_zero": true,
+    "cpu_memory_acceptance": false
+  },
+  "main_matrix_comparison": {
+    "readback_sha256": "bbcec2d55becb08cf338dc96a8c49b56bb2c434f1de4e62837de4a4a27f3673b",
+    "matrix_rows": 21872,
+    "fs_bits_per_matrix_row": 1584,
+    "readback_bits_per_row": 1513,
+    "fs_compared_slice": "[7:1520]",
+    "compared_bits": 33092336,
+    "differing_bits": 0,
+    "bsram_rows_uncovered": 5889,
+    "bsram_bits_per_row": 496,
+    "full_vendor_verify_passed": false
+  },
+  "hardware_acceptance": false,
+  "local_memory_hardware_pass": false,
+  "original_flash_reloaded": true,
+  "rollback_user_code": "C11028E5",
+  "rollback_status": "00022020",
+  "flash_written": false,
+  "next_prepare_identity": "custom138k-ae350-local-memory-probe-C21031C8",
+  "next_prepare_audit": {
+    "manifest_sha256": "e1d730676e26bbd5f657b61078820a98bfba7b2c957fc34d147d15eaa1833c70",
+    "verified_inputs": 37,
+    "compiled_sources": 7,
+    "rom_bytes": 65536,
+    "cold_binary_bytes": 36368,
+    "synthesis_verified": false,
+    "physical_timing_verified": false,
+    "hardware_verified": false
+  },
+  "next_scope": "Add software-independent 32-bit platform health word and synchronized ROM activity. Same firmware/core/bus and UART wire format.",
+  "next_physical_or_hardware_accepted": false,
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-c7-hardware-parent-v1",
+  "seal_sha256": "4072993d44fd0e37deb08a2a2c64d2f426bbc9be4e662012c0e84d2bce106478",
+  "external_files": 55
+}

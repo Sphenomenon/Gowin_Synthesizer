@@ -74,9 +74,18 @@ UART 以独立 50 MHz 参考时钟、除数 434（约 115207 baud）、8N1 输�
 | 20–275 | 下表 64 diagnostic words |
 | 276–279 | 前 276 bytes 的 reflected CRC32/ISO-HDLC，终异或 |
 
-GAO 采样为 `clk_50m`，512-bit `status_50mhz` 的低 word 到高 word 为
+GAO 采样为 `clk_50m`，`status_50mhz[511:0]` 的低 word 到高 word 为
 diagnostic `[1,6,7,8,9,11,12,14,16,17,18,19,20,32,34,35]`。
 它是同一次参考域 bank 的摘要；完整 counter／trap 结果由 UART 提供。
+
+从 C21031C8 起，GAO 增加 `[543:512]` 平台观察 word，不改变 UART
+280-byte 格式或原低 512 bit。该 word 的 bit31–16 是 reference 域
+power-on 计数器，bit15–11 为 lock qualification 计数器低五位，bit10／9
+为 ROM 任意访问／高地址访问 sticky 的 reference 域两级同步值，
+bit8 为 lock qualified，bit7 为 system reset 释放，bit6–4 为 UART
+状态机（0等待、1等快照、2稳定、3发布、4发送、5排空），bit3–0 为
+已同步的 APB reset／core reset／PLL资格／PLL锁定。
+平台观察不依赖 C 软件写 diagnostic，不能用非零平台值代替软件 PASS。
 
 | Word | 含义 |
 |---|---|

@@ -40,7 +40,7 @@ class ProbeTest(unittest.TestCase):
         self.assertEqual(core.find('Expressions/Expression').text,'M0|!M0')
         self.assertEqual(document.find('GAO_ID').text,'0011000111000111')
         self.assertEqual([n.text for n in core.findall('SignalList/Bus/Signal')],
-            [f'status_50mhz[{bit}]' for bit in reversed(range(512))])
+            [f'status_50mhz[{bit}]' for bit in reversed(range(544))])
 
     def test_actual_probe_executes_crc_patterns_and_counter_difference(self):
         cpu=self.cpu();self.assertEqual(cpu.run_probe(),'probe_pass')

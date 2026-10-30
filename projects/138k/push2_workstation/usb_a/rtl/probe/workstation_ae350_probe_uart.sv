@@ -12,7 +12,8 @@ module workstation_ae350_probe_uart #(
     input wire [2047:0] source_words,
     input wire [3:0] platform_flags,
     output reg tx=1,
-    output reg [511:0] status_50mhz=0
+    output reg [511:0] status_50mhz=0,
+    output wire [6:0] transport_health_50mhz
 );
     reg request=0,ack=0;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg request_meta=0,request_sync=0;
@@ -30,6 +31,7 @@ module workstation_ae350_probe_uart #(
     reg [31:0] next_sequence=0,frame_sequence=0;
     reg [31:0] period=0,wait_count=0;
     reg [2:0] state=0;
+    assign transport_health_50mhz={state,flags_sync};
     reg [1:0] settle=0;
     reg [8:0] byte_index=0;
     reg [31:0] crc=32'hffffffff;

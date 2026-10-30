@@ -108,7 +108,7 @@ def constraints(root):
     lines=[line for line in clock_bundle(root)['sdc'].splitlines() if any('-name '+name+' ' in line for name in selected)]
     if len(lines)!=3:raise ValueError('probe clock policy drift')
     first=('u_uart/request_meta_s0/D u_uart/ack_meta_s0/D u_uart/flags_meta*_s0/D '
-           'upper_sync_0_s0/D unmapped_sync_0_s0/D')
+           'upper_sync_0_s0/D unmapped_sync_0_s0/D rom_health_sync_0_s0/D upper_health_sync_0_s0/D')
     lines += [f'set_max_delay 15.000 -to [get_pins {{{first}}}]',
               f'set_false_path -hold -to [get_pins {{{first}}}]',
               'set_max_delay 20.000 -from [get_regs {u_uart/held_words*}] -to [get_regs {u_uart/words*}]',
@@ -123,7 +123,7 @@ def gao(user_code):
     document.find('GAO_ID').text=format(int(user_code[-4:],16),'016b')
     signals=core.find('SignalList');signals.clear()
     bus=ET.SubElement(signals,'Bus',capture_enable='true',name='status_50mhz')
-    for bit in reversed(range(512)):ET.SubElement(bus,'Signal').text=f'status_50mhz[{bit}]'
+    for bit in reversed(range(544)):ET.SubElement(bus,'Signal').text=f'status_50mhz[{bit}]'
     core.find('Triggers/Trigger/SignalList/Signal').text='status_50mhz[0]'
     # Match the working B7 schema: expressions belong to the acquisition core.
     expressions=document.find('Expressions');document.remove(expressions);core.append(expressions)

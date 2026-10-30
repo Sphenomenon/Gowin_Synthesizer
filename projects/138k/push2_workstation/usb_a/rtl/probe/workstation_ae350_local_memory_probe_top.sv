@@ -49,10 +49,13 @@ module workstation_ae350_local_memory_probe_top(
             data_fault<=ram_transfer[1] && !local_address;error_second<=0;
             if(ram_transfer[1] && !local_address)unmapped_seen<=1;
         end
-    reg upper_seen=0;
+    reg upper_seen=0,rom_seen=0;
     always @(posedge rom_clk or negedge rom_reset_n)
-        if(!rom_reset_n)upper_seen<=0;
-        else if(rom_transfer[1] && rom_address[31:16]==16'h8000 && rom_address[15:14]!=0)upper_seen<=1;
+        if(!rom_reset_n)begin upper_seen<=0;rom_seen<=0;end
+        else if(rom_transfer[1])begin
+            rom_seen<=1;
+            if(rom_address[31:16]==16'h8000 && rom_address[15:14]!=0)upper_seen<=1;
+        end
     gw138k_boot_memory #(.ROM_BYTES(65536),.ROM_FILE("firmware/boot.mem")) u_boot_memory(
         .rom_clk(rom_clk),.rom_reset_n(rom_reset_n),.rom_address(rom_address),
         .rom_transfer(rom_transfer),.rom_data(rom_data),.fetch_count(fetch_count),.last_fetch(last_fetch),
@@ -82,15 +85,21 @@ module workstation_ae350_local_memory_probe_top(
         assign source_words[w*32+:32]=diagnostic[w];
     end endgenerate
     wire [511:0] uart_status_50mhz;
+    wire [6:0] transport_health_50mhz;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] rom_health_sync=0,upper_health_sync=0;
+    always @(posedge clk_50m or negedge system_reset_n)
+        if(!system_reset_n)begin rom_health_sync<=0;upper_health_sync<=0;end
+        else begin rom_health_sync<={rom_health_sync[0],rom_seen};upper_health_sync<={upper_health_sync[0],upper_seen};end
     // Preserve real top-level registers for GAO; an unused wire alias is swept.
-    (* syn_keep=1,syn_preserve=1 *) reg [511:0] status_50mhz;
+    (* syn_keep=1,syn_preserve=1 *) reg [543:0] status_50mhz;
     always @(posedge clk_50m or negedge system_reset_n)
         if(!system_reset_n)status_50mhz<=0;
-        else status_50mhz<=uart_status_50mhz;
+        else status_50mhz<={power_on,lock_count[4:0],rom_health_sync[1],upper_health_sync[1],
+            lock_qualified,system_reset_n,transport_health_50mhz,uart_status_50mhz};
     workstation_ae350_probe_uart #(.USER_CODE(`AE350_PROBE_USER_CODE)) u_uart(
         .clk_50m(clk_50m),.reset_n(system_reset_n),.pclk(pclk),.preset_n(preset_n),
         .source_words(source_words),.platform_flags({preset_n,cpu_reset_n,lock_qualified,pll_locked}),
-        .tx(debug_uart_tx),.status_50mhz(uart_status_50mhz));
+        .tx(debug_uart_tx),.status_50mhz(uart_status_50mhz),.transport_health_50mhz(transport_health_50mhz));
     RiscV_AE350_SOC_Top u_cpu(
         .ROM_HRDATA(rom_data),.ROM_HREADY(1'b1),.ROM_HRESP(1'b0),.ROM_HADDR(rom_address),
         .ROM_HTRANS(rom_transfer),.ROM_HWRITE(rom_write),.ROM_HCLK(rom_clk),.ROM_HRSTN(rom_reset_n),
