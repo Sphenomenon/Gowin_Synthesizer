@@ -9,7 +9,8 @@ module scope_tf_transport (
     input wire [4:0] track_count_i,
     output wire mode_o,run_o,
     output reg [3:0] track_o,
-    output reg restart_o,cancel_analysis_o,error_o
+    output reg restart_o,cancel_analysis_o,error_o,
+    output reg explicit_restart_o,file_cancel_o
 );
     reg mode_q,run_q,wait_card;
     reg [15:0] epoch;
@@ -33,11 +34,14 @@ module scope_tf_transport (
         if(!rst_ni) begin
             mode_q<=0;run_q<=0;epoch<=0;track_o<=0;wait_card<=0;
             restart_o<=0;cancel_analysis_o<=0;error_o<=0;
+            explicit_restart_o<=0;file_cancel_o<=0;
         end else begin
             restart_o<=0;cancel_analysis_o<=0;
+            explicit_restart_o<=0;file_cancel_o<=0;
             if(control_valid_i) begin
                 epoch<=control_i[31:16];mode_q<=mode_request;run_q<=run_request;
                 if(mode_request!=mode_q) cancel_analysis_o<=1;
+                if(!mode_request && mode_request!=mode_q)file_cancel_o<=1;
                 if(!mode_request) begin wait_card<=0;error_o<=0;end
                 else if(new_epoch && mode_q && relative_action && epoch_delta!=1) begin
                     // Held-state CDC can coalesce rapid CPU commands. Never
@@ -51,18 +55,22 @@ module scope_tf_transport (
                         // Restart means the currently selected menu track,
                         // not a stale absolute index from the audio domain.
                         error_o<=0;restart_o<=playlist_ready_i && track_o<track_count_i;
+                        explicit_restart_o<=playlist_ready_i && track_o<track_count_i;
                         wait_card<=!playlist_ready_i;
                         if(playlist_ready_i && track_o>=track_count_i) error_o<=1;
                     end else if(!playlist_ready_i) begin
                         wait_card<=1;error_o<=0;
                     end else if(requested_track>=16 || requested_track>=track_count_i) begin
                         error_o<=1;wait_card<=0;
-                    end else begin restart_o<=1;wait_card<=0;error_o<=0;end
+                    end else begin restart_o<=1;wait_card<=0;error_o<=0;
+                        explicit_restart_o<=1;
+                    end
                 end
             end
             if(mode_q && song_valid_i) begin
                 if(song_track_i<track_count_i && playlist_ready_i) begin
                     track_o<=song_track_i;restart_o<=1;error_o<=0;wait_card<=0;
+                    explicit_restart_o<=1;
                 end else error_o<=1;
             end
             if(mode_q && card_lost_i) begin wait_card<=1;error_o<=0;end

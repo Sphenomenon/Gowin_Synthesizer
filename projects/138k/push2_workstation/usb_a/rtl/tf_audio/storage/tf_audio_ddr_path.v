@@ -6,7 +6,8 @@ module tf_audio_ddr_path #(
     parameter integer AUDIO_KIND = 2,      // 1=MP3, 2=WAV, 3=FLAC
     parameter integer CAPTURE_ON_ANALYSIS = 0,
     parameter [27:0] HOTPLUG_TIMEOUT_CYCLES = 28'd200_000_000,
-    parameter [27:0] HOTPLUG_STALL_TIMEOUT_CYCLES = 28'd250_000_000
+    parameter [27:0] HOTPLUG_STALL_TIMEOUT_CYCLES = 28'd250_000_000,
+    parameter integer NATIVE_RESTART_HOLD = 0
 ) (
     input  wire        clk_50m,
     input  wire        reset_n,
@@ -68,7 +69,10 @@ module tf_audio_ddr_path #(
     output wire        app_wend,
     input  wire        app_wrdy,
     input  wire        app_rvalid,
-    input  wire [255:0] app_rdata
+    input  wire [255:0] app_rdata,
+    // Opt-in memory-domain held level. Stop new FIFO/DMA work while an
+    // accepted read response drains; never reset retained EOF toggles.
+    input  wire        native_memory_hold_i
 );
     wire file_valid;
     wire [7:0] file_byte;
@@ -274,20 +278,21 @@ module tf_audio_ddr_path #(
         .rd_count     (out_rd_count)
     );
 
+    wire native_memory_hold=NATIVE_RESTART_HOLD ? native_memory_hold_i:1'b0;
     tf_audio_ddr_dma u_dma (
         .clk                  (memory_clk),
         .rst_n                (memory_reset_n),
-        .mem_ready            (memory_ready),
+        .mem_ready            (memory_ready && !native_memory_hold),
         .capture_done_toggle  (capture_done_toggle),
         .restart_toggle       (restart_toggle),
         .file_size_bytes      (file_size_latched),
-        .fifo_in_empty        (in_empty),
+        .fifo_in_empty        (in_empty || native_memory_hold),
         .fifo_in_rd_valid     (in_rd_valid),
         .fifo_in_rd_data      (in_rd_data),
         .fifo_in_rd_en        (in_rd_en),
         .playback_start_toggle(playback_start_toggle),
         .playback_done_toggle (playback_done_toggle),
-        .fifo_out_full        (out_full),
+        .fifo_out_full        (out_full || native_memory_hold),
         .fifo_out_wr_en       (out_wr_en),
         .fifo_out_wr_data     (out_wr_data),
         .app_cmd              (app_cmd),
