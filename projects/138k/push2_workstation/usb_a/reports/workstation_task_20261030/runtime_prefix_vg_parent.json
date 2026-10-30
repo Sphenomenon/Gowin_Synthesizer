@@ -1,0 +1,844 @@
+{
+  "Flash_programmed": false,
+  "SRAM_programmed": false,
+  "TF_quiet": {
+    "exact_first_D_for_separate_physical_review": "u_tf_audio/frames/quiet_sync_0_s0/D",
+    "exact_registered_single_bit_strict2FF_and_complete_fanout_verified": true,
+    "first": {
+      "ce": "u_tf_audio/frames/VCC",
+      "clear": "n41_5",
+      "clock": "clk_50m",
+      "d": "u_tf_audio/frames/quiet_published",
+      "kind": "DFFCE",
+      "path": "u_tf_audio/frames/quiet_sync_0_s0",
+      "q": "u_tf_audio/frames/quiet_sync_0[0]"
+    },
+    "producer": {
+      "ce": "u_tf_audio/frames/VCC",
+      "clear": "n41_5",
+      "clock": "audio_clk",
+      "d": "u_tf_audio/frames/bridge_quiet",
+      "kind": "DFFCE",
+      "path": "u_tf_audio/frames/quiet_published_s0",
+      "q": "u_tf_audio/frames/quiet_published"
+    },
+    "publisher_D_combinational_primitive_depth": 35,
+    "publisher_D_frontier_clocks": {
+      "audio_clk": 81
+    },
+    "publisher_D_frontier_count": 81,
+    "runtime_CLEAR_expression": "NOT(reset_n AND memory_guard_started)",
+    "runtime_CLEAR_truth_table_assignments": 4,
+    "second": {
+      "ce": "u_tf_audio/frames/VCC",
+      "clear": "n41_5",
+      "clock": "clk_50m",
+      "d": "u_tf_audio/frames/quiet_sync_0[0]",
+      "kind": "DFFCE",
+      "path": "u_tf_audio/frames/quiet_sync_1_s0",
+      "q": "u_tf_audio/quiet_sync[1]"
+    }
+  },
+  "VG": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-synthesis-c7d66b41/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+  "VG_sha256": "8c5d1e5a30baad7a7e4cd705cfdcf4fcc301369bcb6c69d78f9a7f47c10acb2c",
+  "all_negative_controls_rejected": true,
+  "candidate": "custom138k-workstation-r00-no-local-panel-v1-c7d66b419868f7f4",
+  "complete_CDC_accepted": false,
+  "constraints_installed": false,
+  "counters": {
+    "u_managed/midi_drops": {
+      "complete_producer_and_first_Q_fanout_verified": true,
+      "destination_clock": "audio_clk",
+      "downstream_arithmetic_timing_not_proved": true,
+      "first_count": 32,
+      "full32_decoder_matrix_verified": true,
+      "new_max_pure_affine_primitive_depth": 4,
+      "old_max_pure_affine_primitive_depth": 29,
+      "output_decoder_primitive_depth": 4,
+      "producer_count": 32,
+      "pure_affine_live_node_count": 97,
+      "second_count": 32,
+      "source_D_frontier": {
+        "actual_display_encoder_matrix": null,
+        "all_32_producers_share_local_CLEAR": true,
+        "all_64_receivers_share_local_CLEAR": true,
+        "constant_D_roots": {
+          "u_managed/midi_drops/gray_0_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_10_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_11_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_12_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_13_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_14_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_15_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_16_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_17_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_18_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_19_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_1_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_20_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_21_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_22_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_23_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_24_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_25_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_26_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_27_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_28_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_29_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_2_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_30_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_31_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_3_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_4_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_5_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_6_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_7_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_8_s1": "u_managed/midi_drops/GND",
+          "u_managed/midi_drops/gray_9_s1": "u_managed/midi_drops/GND"
+        },
+        "destination_clock": "audio_clk",
+        "first_count": 32,
+        "other_source_functions_not_falsely_claimed_from_absent_ports": true,
+        "producer_count": 32,
+        "producer_local_CLEAR": "n20_6_457",
+        "receiver_local_CLEAR": "u_managed/n184_6",
+        "second_count": 32,
+        "source_D_frontier_clocks": [],
+        "source_D_max_primitive_depth": 0,
+        "source_D_sequential_frontier_count": 0,
+        "source_clock": "clk_50m"
+      },
+      "source_clock": "clk_50m",
+      "surviving_full32_output": "midi_drop_compute"
+    },
+    "u_managed/observation/drops": {
+      "complete_producer_and_first_Q_fanout_verified": true,
+      "destination_clock": "audio_clk",
+      "downstream_arithmetic_timing_not_proved": true,
+      "first_count": 32,
+      "full32_decoder_matrix_verified": true,
+      "new_max_pure_affine_primitive_depth": 4,
+      "old_max_pure_affine_primitive_depth": 22,
+      "output_decoder_primitive_depth": 4,
+      "producer_count": 32,
+      "pure_affine_live_node_count": 98,
+      "second_count": 32,
+      "source_D_frontier": {
+        "actual_display_encoder_matrix": null,
+        "all_32_producers_share_local_CLEAR": true,
+        "all_64_receivers_share_local_CLEAR": true,
+        "constant_D_roots": {},
+        "destination_clock": "audio_clk",
+        "first_count": 32,
+        "other_source_functions_not_falsely_claimed_from_absent_ports": true,
+        "producer_count": 32,
+        "producer_local_CLEAR": "n20_6_459",
+        "receiver_local_CLEAR": "u_managed/n184_6",
+        "second_count": 32,
+        "source_D_frontier_clocks": [
+          "dac_mclk_d"
+        ],
+        "source_D_max_primitive_depth": 29,
+        "source_D_sequential_frontier_count": 44,
+        "source_clock": "dac_mclk_d"
+      },
+      "source_clock": "dac_mclk_d",
+      "surviving_full32_output": "runtime_observation_drop"
+    },
+    "u_recording/pcm_cdc/drops": {
+      "complete_producer_and_first_Q_fanout_verified": true,
+      "destination_clock": "memory_clk",
+      "downstream_arithmetic_timing_not_proved": true,
+      "first_count": 32,
+      "full32_decoder_matrix_verified": false,
+      "new_max_pure_affine_primitive_depth": 4,
+      "old_max_pure_affine_primitive_depth": 11,
+      "output_decoder_primitive_depth": null,
+      "producer_count": 32,
+      "pure_affine_live_node_count": 97,
+      "second_count": 32,
+      "source_D_frontier": {
+        "actual_display_encoder_matrix": null,
+        "all_32_producers_share_local_CLEAR": true,
+        "all_64_receivers_share_local_CLEAR": true,
+        "constant_D_roots": {},
+        "destination_clock": "memory_clk",
+        "first_count": 32,
+        "other_source_functions_not_falsely_claimed_from_absent_ports": true,
+        "producer_count": 32,
+        "producer_local_CLEAR": "u_recording/pcm_cdc/drops/n20_6",
+        "receiver_local_CLEAR": "u_recording/pcm_cdc/drops/n86_6",
+        "second_count": 32,
+        "source_D_frontier_clocks": [
+          "dac_mclk_d"
+        ],
+        "source_D_max_primitive_depth": 29,
+        "source_D_sequential_frontier_count": 44,
+        "source_clock": "dac_mclk_d"
+      },
+      "source_clock": "dac_mclk_d",
+      "surviving_full32_output": null
+    },
+    "u_video/u_runtime_display/drops": {
+      "complete_producer_and_first_Q_fanout_verified": true,
+      "destination_clock": "memory_clk",
+      "downstream_arithmetic_timing_not_proved": true,
+      "first_count": 32,
+      "full32_decoder_matrix_verified": true,
+      "new_max_pure_affine_primitive_depth": 4,
+      "old_max_pure_affine_primitive_depth": 29,
+      "output_decoder_primitive_depth": 4,
+      "producer_count": 32,
+      "pure_affine_live_node_count": 97,
+      "second_count": 32,
+      "source_D_frontier": {
+        "actual_display_encoder_matrix": {
+          "max_depth": 1,
+          "primitive_count": 31,
+          "primitive_kinds": {
+            "LUT2": 31
+          },
+          "rows": [
+            {
+              "coefficients": 3,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n21_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 6,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n22_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 12,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n23_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 24,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n24_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 48,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n25_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 96,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n26_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 192,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n27_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 384,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n28_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 768,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n29_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 1536,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n30_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 3072,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n31_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 6144,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n32_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 12288,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n33_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 24576,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n34_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 49152,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n35_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 98304,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n36_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 196608,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n37_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 393216,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n38_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 786432,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n39_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 1572864,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n40_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 3145728,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n41_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 6291456,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n42_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 12582912,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n43_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 25165824,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n44_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 50331648,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n45_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 100663296,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n46_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 201326592,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n47_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 402653184,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n48_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 805306368,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n49_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 1610612736,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n50_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 3221225472,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/drops/n51_3",
+              "primitive_depth": 1
+            },
+            {
+              "coefficients": 2147483648,
+              "constant": 0,
+              "net": "u_video/u_runtime_display/display_observation_drop[31]",
+              "primitive_depth": 0
+            }
+          ],
+          "source_formal": {
+            "bits": [
+              "u_video/u_runtime_display/display_observation_drop[0]",
+              "u_video/u_runtime_display/display_observation_drop[1]",
+              "u_video/u_runtime_display/display_observation_drop[2]",
+              "u_video/u_runtime_display/display_observation_drop[3]",
+              "u_video/u_runtime_display/display_observation_drop[4]",
+              "u_video/u_runtime_display/display_observation_drop[5]",
+              "u_video/u_runtime_display/display_observation_drop[6]",
+              "u_video/u_runtime_display/display_observation_drop[7]",
+              "u_video/u_runtime_display/display_observation_drop[8]",
+              "u_video/u_runtime_display/display_observation_drop[9]",
+              "u_video/u_runtime_display/display_observation_drop[10]",
+              "u_video/u_runtime_display/display_observation_drop[11]",
+              "u_video/u_runtime_display/display_observation_drop[12]",
+              "u_video/u_runtime_display/display_observation_drop[13]",
+              "u_video/u_runtime_display/display_observation_drop[14]",
+              "u_video/u_runtime_display/display_observation_drop[15]",
+              "u_video/u_runtime_display/display_observation_drop[16]",
+              "u_video/u_runtime_display/display_observation_drop[17]",
+              "u_video/u_runtime_display/display_observation_drop[18]",
+              "u_video/u_runtime_display/display_observation_drop[19]",
+              "u_video/u_runtime_display/display_observation_drop[20]",
+              "u_video/u_runtime_display/display_observation_drop[21]",
+              "u_video/u_runtime_display/display_observation_drop[22]",
+              "u_video/u_runtime_display/display_observation_drop[23]",
+              "u_video/u_runtime_display/display_observation_drop[24]",
+              "u_video/u_runtime_display/display_observation_drop[25]",
+              "u_video/u_runtime_display/display_observation_drop[26]",
+              "u_video/u_runtime_display/display_observation_drop[27]",
+              "u_video/u_runtime_display/display_observation_drop[28]",
+              "u_video/u_runtime_display/display_observation_drop[29]",
+              "u_video/u_runtime_display/display_observation_drop[30]",
+              "u_video/u_runtime_display/display_observation_drop[31]"
+            ],
+            "name": "display_observation_drop"
+          }
+        },
+        "all_32_producers_share_local_CLEAR": true,
+        "all_64_receivers_share_local_CLEAR": true,
+        "constant_D_roots": {},
+        "destination_clock": "memory_clk",
+        "first_count": 32,
+        "other_source_functions_not_falsely_claimed_from_absent_ports": true,
+        "producer_count": 32,
+        "producer_local_CLEAR": "u_video/u_runtime_display/n20_6",
+        "receiver_local_CLEAR": "u_video/u_runtime_display/n772_6",
+        "second_count": 32,
+        "source_D_frontier_clocks": [
+          "clk_50m"
+        ],
+        "source_D_max_primitive_depth": 1,
+        "source_D_sequential_frontier_count": 32,
+        "source_clock": "clk_50m"
+      },
+      "source_clock": "clk_50m",
+      "surviving_full32_output": "destination_drop"
+    }
+  },
+  "deployment_allowed": false,
+  "eda_invoked": false,
+  "external_dependency_count": 1473,
+  "hardware_tested": false,
+  "historical_source_dependency_relocations": {
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/display_metadata_v11_native.json": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/display_metadata_v11_native.json",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "fc4eef7218eba6a6fed7dbf7833504e29125a085acf038740f07f967a53601a6"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/DISPLAY_OBSERVATION_HEALTH.md": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/DISPLAY_OBSERVATION_HEALTH.md",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "30cd50c7f9ca0350e7422a329c2480fa141eb7c39cc492d43db35b620a8d74ee"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/audio_capture_fifo.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/audio_capture_fifo.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "3726c4bf769af27d07c5ceb9bbe55cba1f3b29957e37250231712befd7455171"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "879a5d93fb3ee547cd517344a495452f7cb37f28c0605ceee2cb625f2126c62d"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "292a2fb8b790aa05607d7e9fd03cc12cf0170ad4c2ab0ebd5bd9b310ed1b39ef"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_usb_lifecycle_merge.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_usb_lifecycle_merge.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "b1f6965afa8a14d1521895cf498530ca0dc3e768b6eaabf3b3a7fefe7c2d3d90"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/runtime_spatial_room_preset.svh": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/runtime_spatial_room_preset.svh",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_domain.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_domain.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "9347ce4e4a7e3ee0ee9259232fdaa5e501f17c3b0cda16ac4424ddfb1ecbcb76"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_monitor.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_monitor.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "257abb183a3127aa9f83cacf6e6e807c9d6267be39d2c9a9b2d41178ae279020"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_final_pcm_router.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_final_pcm_router.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "ff2c8612ec9f5ae32f4fb753d1b0cc671a91699ab3a7f55e819d56ce29573d6e"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "5b38740ef9e073aec64ca45526f97a06d6e7d1c72a44c9599e345785d76534e2"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_i2s_serializer.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_i2s_serializer.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "503799267ca9f4603d13585fa2b18f619c4b3e12dedd3568580255099ba2d245"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_observation_consumers.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_observation_consumers.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "e2b66fff9088d7684eb3516928eef619f18437d7d44b400e85a29438f6348aff"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_frame_bridge.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_frame_bridge.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "58752fad08b2476ad59b5427cceaad2894b208291a9b510d0b003475c4f5160e"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_frame_fanout.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_frame_fanout.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "e6f82fd255460e91a0fee6bbdbe1053558f1b50009c3ed384aba1709557c971d"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_observation_bridge.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_observation_bridge.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "198dbf39ff6b6cfb6fe308444274849c507f222edcb0ea651abeb8d719f62c17"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "8a6fa6ea9158cc983c9d48cc9e92f01da2e10950214d3d2bb2cb7bb0b67b4cf4"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "359350552b6aa00a512068bd68a35cda7a15fad52faf5b23a0f91a893eca1d63"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "f78307b44c346a52cc53334b20d3f507684511097c242d9cf1d8aeec866cb2cc"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "cd4ed71690c7780c047f350ee0c51818643a2768774793a68a0019810ffa2ae3"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "b856010542da0ad3e946cbf3e3ead6e3cb974c76deb273140451155302b4ca97"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_spatial_reverb.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_spatial_reverb.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "fc4cacd3acd2c0cd6b73ee496bfa4db30e17be9d8018a9364e51eeff07c0d05d"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "d8a0d2c787bc8c222bf4dde74069db41163988a646fd70c32774387bfe23a689"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_analysis_source.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_analysis_source.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "a8f1a948370a464d6ed609d275075e2ff936a01e62bc915074914a1193d9736c"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_reader.v": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_reader.v",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "c532e6920138204289a1d49a22f7d488f31fa52e0dc4c36b05e9053f7a23fdca"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_writer.v": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_writer.v",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "3e0393333846a0177def5ddc22b5b1244d8e59f246bf2a7e9c1ad17d104fa98c"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_capture.v": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_capture.v",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "62195a1777f8308f0e20687e6dcae14af932e65eac0cf6ca814b6e40d294bb56"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_renderer.v": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_renderer.v",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "caaa8425d72dcce65a36efbc9bfebace43a289fa22ed674fbdf3403c90f5923b"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/output_audio_analysis.v": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/display_data/output_audio_analysis.v",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "5c4929314c548d0ab97d6274e6ceb3ef59a76be739c5fb0a1d48564aa011dbdc"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_ddr_scan_window.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_ddr_scan_window.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "34e8ae73aab53472b0ecbadf17c747f90f6ea12ca3cf61bed47a6d758f0a9454"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_display_runtime.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_display_runtime.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "2df452ca8789ba882f5011865e877564988d2f478628cef0bc2f5ac8709f2aeb"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data_layout_pkg.svh": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/display_data_layout_pkg.svh",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "ba53d96edd01ed1fca72dc8ec4377e66afccd4a8a79e8f113aba3f53151d233b"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "720c0642792de97c83135c71899338f42336a5ded674bef518c4f79e1dbbaa71"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/migration/workstation_runtime_counter_cdc.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/migration/workstation_runtime_counter_cdc.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "c921ff58a2204dee35972d960a98d6820803155b89c090fdcb3d111137521f5c"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.provenance.json": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.provenance.json",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "f1e5801392316cfb39000ed6b0de1d26914150c319d9131dcd4a2b7447665aba"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "f42e7b1aa5b5a753fe88a7f56ab286be4148a854cf2906f137714c4984ea0124"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/RUNTIME_DISPLAY.md": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/workstation/RUNTIME_DISPLAY.md",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "5a97db40e3a1eb8fa8b34f616d2003207f39eb50009f585b5e34fd4233e9abc1"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.provenance.json": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.provenance.json",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "2da2802f233a7286d7f728d48b62b4bd6327a954ab833b1784ede035e3924426"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "724f23fdbd9f97f1fb16c79f0876eff7e5c317365d737adfc9392b924a515fc4"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_hdmi.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_hdmi.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "540bf918de8211f84e1394eafa60b653cf817c84b6c28a9e17e234562f36aa82"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_audio.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_audio.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "649c7591aec53c6685dc43e6d1b3bd2ec0dc020269910de74f4ecd09ac4d0c39"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "a78a29f86e2af6b8a74cef5dd9662d73a6afa5506861e63cb5ab29c9c323ae5b"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_display_observation_health.py": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/audio/run_display_observation_health.py",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "5c52fbdf2ca2d7c725fbe25449c324220eaff18d57f540ceb432516a67f97ccf"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_pcm_observation.py": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/audio/run_pcm_observation.py",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "3bc53a8c72a4602a0a01baa8797dbb686f56b3a488c6306afd9366ad20e3ab3f"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_controlled.py": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_controlled.py",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "7ca19f0aff744c550a6b07993c310ef8f0e0dd201e5393af08d110d4e1b219be"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_display_observation_health.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_display_observation_health.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "618e776db3fde6c95a19f433bd7740a98058fa12ad2e61fdc1f85e92e4bec53b"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_observation_consumers.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_observation_consumers.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "f2773a6fa310102034ee817a38fb03e3e316244f74b0a09d301f613cd65dc86e"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_observation_bridge.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_pcm_observation_bridge.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "641a387f2f08af1c27ebfca08f9323106055b3c0d7cb6cc760c97f5d7836b19b"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_controlled.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_controlled.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "9b4e29e91f7c17911434c06007993805c042be8db98560c8b9902f585e4c07a0"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/cdc/run_runtime_counter_cdc.py": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/cdc/run_runtime_counter_cdc.py",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "a2331474faaf076708f0d26a812147e10adf92474d3b0a60d8a88384ecdcfd52"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/cdc/tb_runtime_counter_cdc.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/cdc/tb_runtime_counter_cdc.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "4edae9726dfdc32ba4a40fff415039386c45f90851262dabae4c6460c0ba7f6c"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/run_workstation_display_runtime.py": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/display/run_workstation_display_runtime.py",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "14863ecc21e1582c1d0fd5c50c699700d41c1b4419d09fc700c54924c68d78f2"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_display_runtime.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_display_runtime.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "8aae7dca93e9e05195187b1b31d6bbf196c9c6bcc390fac5673f1e848d9c9e94"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_hdmi_elaboration.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_hdmi_elaboration.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "a5e1abb6f0d1435d7e49e9b213c99f3441b9f38a567367e44ef32f0fbce805aa"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_usb_lifecycle_merge.sv": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_usb_lifecycle_merge.sv",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "56ecb93f507fafb5e4166031ffd1fd7f6344b4f124b32ab3b0c6463f941ae42b"
+    },
+    "/Users/sphenicidition/.codex/worktrees/r00-production-owner8/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_counter.py": {
+      "fixed_source_snapshot": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/tree/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_counter.py",
+      "reason": "Exact preserved101 source bytes; original worktree has advanced independently. No historical evidence is changed.",
+      "sha256": "6b04451d0d8753581c93ac6759b8b065fecfd1a9eb4553eb0669aa7539909b02"
+    }
+  },
+  "negative_control_count": 20,
+  "old_mapping_acceptance_inherited": false,
+  "passed": true,
+  "physical_CDC_accepted": false,
+  "prepared_profile": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-synthesis-c7d66b41/workstation_profile.json",
+  "prepared_profile_sha256": "281e15b6b7e0e5bd643faa89dfaef66e66442f06560c77f9ef4e658b228d89bd",
+  "process_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-synthesis-c7d66b41/runtime_synthesis_evidence/process.json",
+  "process_sha256": "05d6fbd316f4adb5563bdb06f695ccccc19c128e9a7a1d20654c1e5aea414897",
+  "proof_limits": [
+    "Three surviving full32 decoder outputs have exact mapped LUT GF2 matrices. Recording PCM has only actual live affine-node/suffix inventory because outputs are factored into consumers.",
+    "Pure affine decoder depth is not complete counter/consumer arithmetic depth or a physical timing bound.",
+    "Only display has an actual full32 surviving source formal for mapped Gray encoder proof; other source functions rely on separately sealed source evidence plus source-clock sequential frontiers.",
+    "This partial TF/counter review does not cover the four additional media CDC scopes or inherit any old mapping/constraint/FF/physical acceptance.",
+    "Gray bus skew/flight, asynchronous reset physical behavior, all clock modes, CDC exception installation, routed timing and hardware behavior require separate evidence."
+  ],
+  "routed_timing_verified": false,
+  "schema": 1,
+  "source_gates": {
+    "GPRJ_native_counter_enabled_and_legacy_disabled": true,
+    "TF_native_sha256": "eb5895b975dc699178a6e451f2f05d481f63424848ebe153c1402a21a63baf31",
+    "TF_source_commit": "075e976a44d5088c4f11810ebd4af832a81458f4",
+    "counter_native_sha256": "c921ff58a2204dee35972d960a98d6820803155b89c090fdcb3d111137521f5c",
+    "counter_source_commit": "10118a03928f691e2352c0cb5fcc0acd550e9b4c",
+    "current_staged_inputs_independently_hashed": 593
+  },
+  "source_or_netlist_modified": false,
+  "source_or_payload_or_second_stage_cut": false,
+  "synthesis_current_worst_scope": "Chorus lfo to read_address",
+  "synthesis_current_worst_slack_ns": -18.817,
+  "synthesis_timing_scope": "Estimates only. Absence from the five reported worst paths does not prove any bound on omitted paths.",
+  "synthesis_worst5_contains_TF_or_counter": false,
+  "identity": "actual-prefix-TF-counter-parent-reproduction-20261030-v1",
+  "independent_relative_sealed_files": 9,
+  "independent_absolute_dependencies": 1473,
+  "all1482_seal_entries_parent_verified": true,
+  "parent_actual_detail_reproduced": true,
+  "parent_20_negative_controls_reproduced": true,
+  "three_full32_decoder_matrices_verified": true,
+  "recording_counter_full32_output_matrix_verified": false,
+  "recording_counter_live_affine_only": true,
+  "evidence": {
+    "runtime-prefix-vg-independent-review-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-vg-independent-review-v1/review.json",
+      "sha256": "68badd25d6f8f0512f9f35bd80ab7fff3f072cdd0a385936c7fea71d03eea2e0"
+    },
+    "runtime-prefix-vg-independent-review-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-vg-independent-review-v1/REVIEW_SEAL.json",
+      "sha256": "fe16bd89d7e7c938ec2db9a4c98d5f82a36f8c93384e3ba565024cdc99d297c9"
+    },
+    "runtime-prefix-vg-parent-review-v1/c7-actual/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-vg-parent-review-v1/c7-actual/review.json",
+      "sha256": "daeb3fe3598b4526521fb24b1bf00d8fac4afe92e9ce94c9c79937e8719269d6"
+    },
+    "runtime-prefix-vg-parent-review-v1/negative_controls.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-vg-parent-review-v1/negative_controls.json",
+      "sha256": "fe96780ff0339c9b8f712b7b31a761ff9d8ce074d5c2bc00838a6b8f3fff0fa7"
+    },
+    "runtime-prefix-vg-parent-review-v1/frontier_checks.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-vg-parent-review-v1/frontier_checks.json",
+      "sha256": "71fd5c95b6f5a1e227dc9cf0bf9421cb234dd3aa86f0e291c46c9b37b1b3994d"
+    },
+    "runtime-prefix-vg-parent-review-v1/inspect_vg.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-vg-parent-review-v1/inspect_vg.py",
+      "sha256": "703ad6c6d42d0aecf8e02fd689baf935ba044f55853279d1cf19b994cd5a78ad"
+    },
+    "runtime-prefix-vg-parent-review-v1/negative_controls.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-vg-parent-review-v1/negative_controls.py",
+      "sha256": "42b5ff3cfcd9909b83894e1dcb4cf3f5953fead9fc655305d558841ae826c2e1"
+    },
+    "runtime-prefix-vg-parent-review-v1/frontier_checks.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-prefix-vg-parent-review-v1/frontier_checks.py",
+      "sha256": "6ce2f410d7b03ef6cbd98db0d9018a420487e27f6286420176b587ed913d5f22"
+    }
+  }
+}
