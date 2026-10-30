@@ -1,0 +1,865 @@
+{
+  "schema": 1,
+  "passed": true,
+  "identity": "native-tf-sd-sector-wire-v1-37cc187fb7b60c93",
+  "source_set_sha256": "37cc187fb7b60c937977fd4630a6319b938266453fb74b508ef9dff17d741916",
+  "source_sha256": {
+    "rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+    "rtl/tf_audio/storage/workstation_tf_spi_session.sv": "704e9b62caa4ef79c01f1d2b4c1c61b2e2bd55f93c83ae90bb573c9e71c0a6c8",
+    "rtl/tf_audio/storage/workstation_tf_sd_sector_reader.provenance.json": "2407cc17218c0d197c910e00ed78a8dcab61b581df47f8c4f7bc26d36e2e91b6",
+    "sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv": "0498aafff0af1ba3b396fc3e8346caeae39a7367e92fbc5a812ea8bd9c15cd65",
+    "sim/tf_audio/run_workstation_tf_sd_sector_wire.py": "c93f9ad82d449c7e53aa82b37b4265cbb9c5584cf644d51ee931de3d09123cfe",
+    "rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v": "69af9d24a02f8472b87f114dce58e05d5032daeea21f7aca201ef08ea6ac1cbc",
+    "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v": "259bedb80a6a54cf2048ae6cb2f40ec384108ae2743acb49b8acb70abf126504",
+    "rtl/tf_audio/storage/tang_mp3/sd/tf_sd_file_reader.v": "57ee8873418fe2fa00e40782e1509495c8eb779e11d4175884a79f741fcc0441",
+    "rtl/tf_audio/storage/tf_sd_audio_pcm_player.v": "41733261ca506cf3c2f53c23f5b329bd45bbd809a9eb7e888fcaad28eb708f18"
+  },
+  "source_policy": "maintained unselected sector/session owners with explicit R1-valid adaptation; original vendor/session/baseline/profile untouched",
+  "wire_model": "SPI edges only, real card initialization; no DUT hierarchy force/deposit or SPI-session stub",
+  "exact_session_provenance_verified": true,
+  "profile_selected": false,
+  "file_reader_integration": false,
+  "no_DDR_playback_implemented": false,
+  "wav_decoder_changed": false,
+  "m03_complete": false,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "cases": {
+    "sdhc_div12": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div12.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=12",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div12.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 12
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 0,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "1d198c333fca44efd7b9f2d742fbc4a38316fe129fd6479b1bc09e7fa2a3552e",
+      "run_log": "PASS workstation_tf_sd_sector_wire: divider=12 kind=0 token_bytes=40 wait_clocks=8320 reads=5 aborts=2 commands=10 cycles=4931196 last_read_clocks=110441\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:289: $finish called at 98623920000 (1ps)\n",
+      "metrics": {
+        "divider": 12,
+        "kind": 0,
+        "token_bytes": 40,
+        "wait_clocks": 8320,
+        "reads": 5,
+        "aborts": 2,
+        "commands": 10,
+        "cycles": 4931196,
+        "last_read_clocks": 110441
+      }
+    },
+    "sdhc_div6": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div6.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=6",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div6.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 6
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 0,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "ff74ccb5619b0146c8b62e6a8eafe864a00215bc54363b54046854b7af0cd6a6",
+      "run_log": "PASS workstation_tf_sd_sector_wire: divider=6 kind=0 token_bytes=75 wait_clocks=8320 reads=5 aborts=2 commands=10 cycles=4500546 last_read_clocks=59471\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:289: $finish called at 90010920000 (1ps)\n",
+      "metrics": {
+        "divider": 6,
+        "kind": 0,
+        "token_bytes": 75,
+        "wait_clocks": 8320,
+        "reads": 5,
+        "aborts": 2,
+        "commands": 10,
+        "cycles": 4500546,
+        "last_read_clocks": 59471
+      }
+    },
+    "sdhc_div3": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div3.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=3",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div3.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 3
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 0,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "d6b47905f36c743f6cc62c75f1da13b5704204a7c75e91e91d6ad09f7b8528f6",
+      "run_log": "PASS workstation_tf_sd_sector_wire: divider=3 kind=0 token_bytes=130 wait_clocks=8320 reads=5 aborts=2 commands=10 cycles=4284861 last_read_clocks=33986\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:289: $finish called at 85697220000 (1ps)\n",
+      "metrics": {
+        "divider": 3,
+        "kind": 0,
+        "token_bytes": 130,
+        "wait_clocks": 8320,
+        "reads": 5,
+        "aborts": 2,
+        "commands": 10,
+        "cycles": 4284861,
+        "last_read_clocks": 33986
+      }
+    },
+    "sdhc_div2": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div2.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=2",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div2.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 2
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 0,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "0621480ec82e5108220083a7ff263c42a42a15e6d400ca788f538c317ee50a7d",
+      "run_log": "PASS workstation_tf_sd_sector_wire: divider=2 kind=0 token_bytes=174 wait_clocks=8320 reads=5 aborts=2 commands=10 cycles=4213142 last_read_clocks=25491\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:289: $finish called at 84262840000 (1ps)\n",
+      "metrics": {
+        "divider": 2,
+        "kind": 0,
+        "token_bytes": 174,
+        "wait_clocks": 8320,
+        "reads": 5,
+        "aborts": 2,
+        "commands": 10,
+        "cycles": 4213142,
+        "last_read_clocks": 25491
+      }
+    },
+    "sdhc_div0": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div0.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div0.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 0
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 0,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "1fd54df890560780f35294ca654ec9ee9b43e46222221cc04ef9ad7aadd244ab",
+      "run_log": "PASS workstation_tf_sd_sector_wire: divider=100 kind=0 token_bytes=6 wait_clocks=8320 reads=5 aborts=2 commands=10 cycles=11250196 last_read_clocks=858001\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:289: $finish called at 225003920000 (1ps)\n",
+      "metrics": {
+        "divider": 100,
+        "kind": 0,
+        "token_bytes": 6,
+        "wait_clocks": 8320,
+        "reads": 5,
+        "aborts": 2,
+        "commands": 10,
+        "cycles": 11250196,
+        "last_read_clocks": 858001
+      }
+    },
+    "sdhc_div255": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div255.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=255",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdhc_div255.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 255
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 0,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "ce91adce7b0ded4c797ee0a1983293db91010278d4ec85efd809e8bbd488df70",
+      "run_log": "PASS workstation_tf_sd_sector_wire: divider=255 kind=0 token_bytes=3 wait_clocks=8320 reads=5 aborts=2 commands=10 cycles=22361377 last_read_clocks=2174726\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:289: $finish called at 447227540000 (1ps)\n",
+      "metrics": {
+        "divider": 255,
+        "kind": 0,
+        "token_bytes": 3,
+        "wait_clocks": 8320,
+        "reads": 5,
+        "aborts": 2,
+        "commands": 10,
+        "cycles": 22361377,
+        "last_read_clocks": 2174726
+      }
+    },
+    "sdv2_byte_addressed": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdv2_byte_addressed.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=2",
+        "-Ptb_workstation_tf_sd_sector_wire.CARD_KIND=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdv2_byte_addressed.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 2,
+        "CARD_KIND": 1
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 0,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "fe6227c553e4728afe62cb81d8d2fe7aa9389e2ca94a2b31e302c175092c5500",
+      "run_log": "PASS workstation_tf_sd_sector_wire: divider=2 kind=1 token_bytes=174 wait_clocks=8320 reads=5 aborts=2 commands=10 cycles=4213142 last_read_clocks=25491\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:289: $finish called at 84262840000 (1ps)\n",
+      "metrics": {
+        "divider": 2,
+        "kind": 1,
+        "token_bytes": 174,
+        "wait_clocks": 8320,
+        "reads": 5,
+        "aborts": 2,
+        "commands": 10,
+        "cycles": 4213142,
+        "last_read_clocks": 25491
+      }
+    },
+    "sdv1_byte_addressed": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdv1_byte_addressed.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=2",
+        "-Ptb_workstation_tf_sd_sector_wire.CARD_KIND=2",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/sdv1_byte_addressed.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 2,
+        "CARD_KIND": 2
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 0,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "f716d2cef1d1331e4c94ee8c65a88d473a30c168a6ef8fd480413d359c707e8a",
+      "run_log": "PASS workstation_tf_sd_sector_wire: divider=2 kind=2 token_bytes=174 wait_clocks=8320 reads=5 aborts=2 commands=10 cycles=3554966 last_read_clocks=25491\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:289: $finish called at 71099320000 (1ps)\n",
+      "metrics": {
+        "divider": 2,
+        "kind": 2,
+        "token_bytes": 174,
+        "wait_clocks": 8320,
+        "reads": 5,
+        "aborts": 2,
+        "commands": 10,
+        "cycles": 3554966,
+        "last_read_clocks": 25491
+      }
+    },
+    "production_patience_div12": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/production_patience_div12.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=12",
+        "-Ptb_workstation_tf_sd_sector_wire.WAIT_CLOCKS=8320000",
+        "-Ptb_workstation_tf_sd_sector_wire.FULL_PATIENCE_ONLY=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/production_patience_div12.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 12,
+        "WAIT_CLOCKS": 8320000,
+        "FULL_PATIENCE_ONLY": 1
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 0,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "1f8ea49fdf6160f3e71c5df8bb7198d45e485d3fb70dbf9011b8a8fea8be16fa",
+      "run_log": "PASS workstation_tf_sd_sector_wire: divider=12 kind=0 token_bytes=40000 wait_clocks=8320000 reads=1 aborts=0 commands=1 cycles=9093786 last_read_clocks=8430025\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:289: $finish called at 181875720000 (1ps)\n",
+      "metrics": {
+        "divider": 12,
+        "kind": 0,
+        "token_bytes": 40000,
+        "wait_clocks": 8320000,
+        "reads": 1,
+        "aborts": 0,
+        "commands": 1,
+        "cycles": 9093786,
+        "last_read_clocks": 8430025
+      }
+    },
+    "production_patience_div2": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/production_patience_div2.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=2",
+        "-Ptb_workstation_tf_sd_sector_wire.WAIT_CLOCKS=8320000",
+        "-Ptb_workstation_tf_sd_sector_wire.FULL_PATIENCE_ONLY=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/production_patience_div2.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 2,
+        "WAIT_CLOCKS": 8320000,
+        "FULL_PATIENCE_ONLY": 1
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 0,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "fbb2e5f9ed0729202c9e05abedb43f54cb899606e4fcd8e847a90fb7aa2b71eb",
+      "run_log": "PASS workstation_tf_sd_sector_wire: divider=2 kind=0 token_bytes=173334 wait_clocks=8320000 reads=1 aborts=0 commands=1 cycles=9007908 last_read_clocks=8345427\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:289: $finish called at 180158160000 (1ps)\n",
+      "metrics": {
+        "divider": 2,
+        "kind": 0,
+        "token_bytes": 173334,
+        "wait_clocks": 8320000,
+        "reads": 1,
+        "aborts": 0,
+        "commands": 1,
+        "cycles": 9007908,
+        "last_read_clocks": 8345427
+      }
+    },
+    "fixed_40000_byte_wait_negative": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/fixed_40000_byte_wait_negative.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=2",
+        "-Ptb_workstation_tf_sd_sector_wire.WAIT_CLOCKS=8320000",
+        "-Ptb_workstation_tf_sd_sector_wire.FULL_PATIENCE_ONLY=1",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/fixed_40000_byte_wait_negative.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/fixed_40000_byte_wait_negative.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 2,
+        "WAIT_CLOCKS": 8320000,
+        "FULL_PATIENCE_ONLY": 1
+      },
+      "source_sha256": "5378791c74bc183975b5a1ad685cff0e5061e4ce99769e066a86e8f89e1b26fb",
+      "returncode": 1,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "68be3db3bd192ccfff04219438bc5b6d318fce6046a868d24e5012489533d6aa",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:216: read completion/error code=1\n       Time: 52150780000  Scope: tb_workstation_tf_sd_sector_wire.finish_success\n",
+      "metrics": {
+        "code": 1
+      },
+      "expected_failure": "read completion/error",
+      "rejected": true
+    },
+    "old_255_byte_tail_negative": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/old_255_byte_tail_negative.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=12",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/old_255_byte_tail_negative.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/old_255_byte_tail_negative.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 12
+      },
+      "source_sha256": "bcaeeb64b4303b05d70cf4f9fcaff477534029e5613134c16726218e1ae7966b",
+      "returncode": 1,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "4eb9fd67df402326f6fce475e3992e5d51c2163040c48acc2f523027e6c63516",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:222: wire transaction mismatch bytes=512 cmd17=1 CRC=2 tail=255 release=1 high=8\n       Time: 16544840000  Scope: tb_workstation_tf_sd_sector_wire.finish_success\n",
+      "metrics": {
+        "bytes": 512,
+        "cmd17": 1,
+        "CRC": 2,
+        "tail": 255,
+        "release": 1,
+        "high": 8
+      },
+      "expected_failure": "wire transaction mismatch",
+      "rejected": true
+    },
+    "payload_address_negative": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/payload_address_negative.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=12",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/payload_address_negative.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/payload_address_negative.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 12
+      },
+      "source_sha256": "d37e0f251d23c235ae77fcc06d359742abdb76a733a8dd3641456e8480c2418e",
+      "returncode": 1,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "888acd33c5d31bb6a0e69715e28b4571e6d523882ad6394d22914b9bfa8bf26a",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:172: payload/address mismatch at 0 addr=511 data=66\n       Time: 13308330000  Scope: tb_workstation_tf_sd_sector_wire\n",
+      "metrics": {
+        "addr": 511,
+        "data": 66
+      },
+      "expected_failure": "payload/address mismatch",
+      "rejected": true
+    },
+    "historical_duplicate_wire_negative": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/historical_duplicate_wire_negative.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=12",
+        "-Ptb_workstation_tf_sd_sector_wire.WAIT_CLOCKS=500000",
+        "-Ptb_workstation_tf_sd_sector_wire.FIRST_TOKEN_DELAY=8",
+        "-Ptb_workstation_tf_sd_sector_wire.HOLD_ARGUMENT=1",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/historical_duplicate_wire_negative.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/historical_duplicate_wire_negative.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 12,
+        "WAIT_CLOCKS": 500000,
+        "FIRST_TOKEN_DELAY": 8,
+        "HOLD_ARGUMENT": 1
+      },
+      "source_sha256": "3b2ef25696304cc78e32b2a5f82d19969a7a465b6476fe09d7704125238996e2",
+      "returncode": 1,
+      "compile_log_sha256": "838091d80f9eacc0746daa4e4c4b97e30f482bfc6f86977d62e7a89e1c7a7fda",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\nwarning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module workstation_tf_sd_sector_reader declared here: /Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/historical_duplicate_wire_negative.sv:20\n",
+      "run_log_sha256": "0e0481f145d27f4902edf40581989e9158753e10670644674477b733420e1bdb",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:222: wire transaction mismatch bytes=512 cmd17=2 CRC=4 tail=510 release=2 high=32\n       Time: 60935720000  Scope: tb_workstation_tf_sd_sector_wire.finish_success\n",
+      "metrics": {
+        "bytes": 512,
+        "cmd17": 2,
+        "CRC": 4,
+        "tail": 510,
+        "release": 2,
+        "high": 32
+      },
+      "expected_failure": "wire transaction mismatch",
+      "rejected": true
+    },
+    "no_R1_valid_guard_negative": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/no_R1_valid_guard_negative.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=2",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/no_R1_valid_guard_negative.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/no_R1_valid_guard_negative.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 2
+      },
+      "source_sha256": "df5914a82075d9755e8fd958dfe643ec0d311d05127c86cb845858b6d3e4ccf2",
+      "returncode": 1,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "97a2667030fe68da055a069ca70e0581c7d69a2efe68b7bd7707859d815a236f",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv:234: terminal failure mismatch code=0 bytes=512\n       Time: 44578560000  Scope: tb_workstation_tf_sd_sector_wire.expect_failure\n",
+      "metrics": {
+        "code": 0,
+        "bytes": 512
+      },
+      "expected_failure": "terminal failure mismatch",
+      "rejected": true
+    },
+    "invalid_init_low": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_init_low.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.INIT_DIV=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_init_low.vvp"
+      ],
+      "parameters": {
+        "INIT_DIV": 1
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 1,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "62f3092f6664c12bb0a4d0a97c9323631933f0877ad6144a6afd156517e3f0c4",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv:46: native SD SPI divider must be in 2..255 (FAST=0 inherits init)\n       Time: 0  Scope: tb_workstation_tf_sd_sector_wire.dut\n",
+      "metrics": {
+        "FAST": 0
+      },
+      "expected_failure": "divider must be",
+      "rejected": true
+    },
+    "invalid_init_high": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_init_high.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.INIT_DIV=256",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_init_high.vvp"
+      ],
+      "parameters": {
+        "INIT_DIV": 256
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 1,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "62f3092f6664c12bb0a4d0a97c9323631933f0877ad6144a6afd156517e3f0c4",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv:46: native SD SPI divider must be in 2..255 (FAST=0 inherits init)\n       Time: 0  Scope: tb_workstation_tf_sd_sector_wire.dut\n",
+      "metrics": {
+        "FAST": 0
+      },
+      "expected_failure": "divider must be",
+      "rejected": true
+    },
+    "invalid_fast_low": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_fast_low.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_fast_low.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 1
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 1,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "62f3092f6664c12bb0a4d0a97c9323631933f0877ad6144a6afd156517e3f0c4",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv:46: native SD SPI divider must be in 2..255 (FAST=0 inherits init)\n       Time: 0  Scope: tb_workstation_tf_sd_sector_wire.dut\n",
+      "metrics": {
+        "FAST": 0
+      },
+      "expected_failure": "divider must be",
+      "rejected": true
+    },
+    "invalid_fast_high": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_fast_high.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=256",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_fast_high.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 256
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 1,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "62f3092f6664c12bb0a4d0a97c9323631933f0877ad6144a6afd156517e3f0c4",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv:46: native SD SPI divider must be in 2..255 (FAST=0 inherits init)\n       Time: 0  Scope: tb_workstation_tf_sd_sector_wire.dut\n",
+      "metrics": {
+        "FAST": 0
+      },
+      "expected_failure": "divider must be",
+      "rejected": true
+    },
+    "invalid_wait_zero": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_wait_zero.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.WAIT_CLOCKS=0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_wait_zero.vvp"
+      ],
+      "parameters": {
+        "WAIT_CLOCKS": 0
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 1,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "44afe0321fa250450eca88f6fbcf8c4d00782b7bf1cb2655ad4f6eba706338a5",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv:48: native SD token wait does not fit session counter\n       Time: 0  Scope: tb_workstation_tf_sd_sector_wire.dut\n",
+      "metrics": {},
+      "expected_failure": "token wait does not fit",
+      "rejected": true
+    },
+    "invalid_wait_overflow": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-Wall",
+        "-s",
+        "tb_workstation_tf_sd_sector_wire",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_wait_overflow.vvp",
+        "-Ptb_workstation_tf_sd_sector_wire.READ_DIV=2",
+        "-Ptb_workstation_tf_sd_sector_wire.WAIT_CLOCKS=2147483647",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_sd_sector_wire_tb.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/m03-native-sd-final-clean/invalid_wait_overflow.vvp"
+      ],
+      "parameters": {
+        "READ_DIV": 2,
+        "WAIT_CLOCKS": 2147483647
+      },
+      "source_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "returncode": 1,
+      "compile_log_sha256": "3b75e4589e03796b5805ebb4f85458d002935b29543c328f135f346bf3d23852",
+      "compile_log": "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v:20: warning: timescale for tf_spi_session inherited from another file.\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_spi_session.sv:1: ...: The inherited timescale is here.\n",
+      "run_log_sha256": "44afe0321fa250450eca88f6fbcf8c4d00782b7bf1cb2655ad4f6eba706338a5",
+      "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv:48: native SD token wait does not fit session counter\n       Time: 0  Scope: tb_workstation_tf_sd_sector_wire.dut\n",
+      "metrics": {},
+      "expected_failure": "token wait does not fit",
+      "rejected": true
+    }
+  },
+  "default_50MHz_token_budget": [
+    {
+      "divider": 12,
+      "token_bytes": 40000,
+      "lower_bound_wait_clocks": 8320000,
+      "configured_wait_ms": 166.4
+    },
+    {
+      "divider": 6,
+      "token_bytes": 74286,
+      "lower_bound_wait_clocks": 8320032,
+      "configured_wait_ms": 166.4
+    },
+    {
+      "divider": 3,
+      "token_bytes": 130000,
+      "lower_bound_wait_clocks": 8320000,
+      "configured_wait_ms": 166.4
+    },
+    {
+      "divider": 2,
+      "token_bytes": 173334,
+      "lower_bound_wait_clocks": 8320032,
+      "configured_wait_ms": 166.4
+    }
+  ],
+  "source_inputs_unchanged_during_run": true
+}

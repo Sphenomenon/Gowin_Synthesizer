@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "source_revision": "4e0dc6cf250896aeb22a4af1f8450b3a20694279",
+  "source_policy": "Maintained opt-in sector/session owners; no build profile selects them; no generated production RTL.",
+  "license": "GPL-3.0-only",
+  "license_path": "rtl/tf_audio/storage/tang_mp3/LICENSE",
+  "sector_origin": "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v",
+  "sector_origin_sha256": "259bedb80a6a54cf2048ae6cb2f40ec384108ae2743acb49b8acb70abf126504",
+  "native_sector": "rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+  "native_sector_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+  "session_origin": "rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v",
+  "session_origin_sha256": "69af9d24a02f8472b87f114dce58e05d5032daeea21f7aca201ef08ea6ac1cbc",
+  "native_session": "rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+  "native_session_sha256": "704e9b62caa4ef79c01f1d2b4c1c61b2e2bd55f93c83ae90bb573c9e71c0a6c8",
+  "session_verifier_policy": "For verification only, apply checked edits to fixed original and compare exact maintained bytes. Never generate selected product RTL.",
+  "session_header": "`timescale 1ns/1ps\n`default_nettype none\n// SPDX-License-Identifier: GPL-3.0-only\n// Maintained opt-in adaptation of tang_mp3/vendor/tf_spi_session.v.\n// All inherited notices below are retained; license: tang_mp3/LICENSE.\n// Added held cmdrsp_valid/acmdrsp_valid flags from actual R1 capture events.\n// The historical zero-initialized response byte alone cannot prove receipt.\n// Origin and input identity: WORKSTATION_TF_SD_SECTOR_NATIVE_20261030.md.\n",
+  "session_suffix": "\n`default_nettype wire\n",
+  "session_forward_edits": [
+    {
+      "before": "module tf_spi_session (",
+      "after": "module workstation_tf_spi_session (",
+      "count": 1
+    },
+    {
+      "before": "output reg   [ 7:0] cmdrsp, acmdrsp, rwrsp,",
+      "after": "output reg   [ 7:0] cmdrsp, acmdrsp, rwrsp,\n    output reg          cmdrsp_valid, acmdrsp_valid,",
+      "count": 1
+    },
+    {
+      "before": "initial {cmdrsp, acmdrsp, rwrsp} = 0;",
+      "after": "initial {cmdrsp, acmdrsp, rwrsp} = 0;\ninitial {cmdrsp_valid, acmdrsp_valid} = 0;",
+      "count": 1
+    },
+    {
+      "before": "\n        {cmdrsp, acmdrsp, rwrsp} <= 0;",
+      "after": "\n        {cmdrsp, acmdrsp, rwrsp} <= 0;\n        {cmdrsp_valid, acmdrsp_valid} <= 0;",
+      "count": 1
+    },
+    {
+      "before": "\n            {cmdrsp, acmdrsp, rwrsp} <= 0;",
+      "after": "\n            {cmdrsp, acmdrsp, rwrsp} <= 0;\n            {cmdrsp_valid, acmdrsp_valid} <= 0;",
+      "count": 2
+    },
+    {
+      "before": "cmdrsp    <= rbyte;",
+      "after": "cmdrsp    <= rbyte;\n                cmdrsp_valid <= 1'b1;",
+      "count": 1
+    },
+    {
+      "before": "acmdrsp   <= rbyte;",
+      "after": "acmdrsp   <= rbyte;\n                acmdrsp_valid <= 1'b1;",
+      "count": 1
+    },
+    {
+      "before": "    input  wire         start, \n",
+      "after": "    input  wire         start,\n",
+      "count": 1
+    }
+  ],
+  "remaining_limits": [
+    "CRC bytes drained but not validated",
+    "No file-reader/profile/no-DDR playback integration",
+    "No EDA, timing, throughput qualification or hardware acceptance"
+  ]
+}
