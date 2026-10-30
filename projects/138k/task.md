@@ -34,6 +34,8 @@
 
 新增 [R00 未选择存储组件](push2_workstation/usb_a/reports/WORKSTATION_PCM_DDR_BACKEND_MAIN_INTEGRATION_20261030.md)完成父级及独立 24 项回归，覆盖双率、实际仲裁竞争、尾 mask 和同拍命令；新 prepare `60f1c843ad79aa6e` 的 profile 18 项、来源 12 项通过，570 项 staged 字节与 f1be 相同。生产 owner8／最终 PCM CDC／对象业务尚未接入，没有物理净资源收益或真实录音接受，R00／R01／R02 保持未完成；未转移旧候选综合或 CDC 接受，未部署。
 
+[BLE release 维护 composition](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_BLE_RELEASE_COMPOSITION_20261030.md)已精准修复 F7 空查询，默认／accepted 来源隔离保持。新 prepare `bd40620bb1b139bb` 的 profile 19 项、来源 12 项、accepted sources 10 项及 CDC policy 4 项通过，真实 prepare 的三项篡改均被拒绝；570 项 staged 仅 SDC 变化。该阶段没有新综合／物理／硬件接受，完整 CDC／复位门禁仍未完成。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）

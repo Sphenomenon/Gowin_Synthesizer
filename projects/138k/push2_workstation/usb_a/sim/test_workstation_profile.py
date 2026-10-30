@@ -202,6 +202,20 @@ class PreparedClosure(unittest.TestCase):
         self.assertFalse(artifact['runtime_audio']['cdc_constraints_complete'])
         self.assertFalse(artifact['runtime_audio']['physical_gates_passed'])
 
+    def test_runtime_ble_adaptation_is_recomputed_and_installed(self):
+        artifact = profile.verify(ROOT, self.output)
+        adaptation = artifact['runtime_audio']['bluetooth_cdc_adaptation']
+        lines = (self.stage / 'constraints/custom_138k.sdc').read_text().splitlines()
+        self.assertEqual(len(adaptation['omitted']), 1)
+        self.assertNotIn(adaptation['omitted'][0]['constraint'], lines)
+        self.assertEqual(lines.count(adaptation['replacement']['constraint']), 1)
+        metadata_path = self.output / 'integration_inputs.json'
+        metadata = json.loads(metadata_path.read_text())
+        metadata['runtime_audio']['bluetooth_cdc_adaptation']['replacement']['selectors'] = []
+        metadata_path.write_text(json.dumps(metadata))
+        with self.assertRaisesRegex(ValueError, 'runtime BLE constraint policy changed'):
+            profile.verify(ROOT, self.output)
+
     def test_media_and_token_storage_owners_are_explicit_profile_inputs(self):
         artifact = profile.verify(ROOT, self.output)
         for source in ('rtl/services/workstation_media_preparation.sv',
@@ -315,6 +329,11 @@ class LegacyPolicy(unittest.TestCase):
                             for relative in integration.PROFILE_SOURCES))
         self.assertFalse((output / profile.AE350_DIRECTORY).exists())
         self.assertEqual(metadata['bluetooth']['rom_path_policy'], 'absolute_original_candidate')
+        from tools.workstation_bluetooth import SDC as bluetooth_sdc
+        self.assertEqual(profile.identity_digest(bluetooth_sdc),
+                         'f011a2643f57f7c80822e358a77593a37c46c223ddc72fe146c13a7eaefebc34')
+        staged_sdc = (output / 'workstation/Prj1/constraints/custom_138k.sdc').read_text()
+        self.assertIn(bluetooth_sdc, staged_sdc)
         stage = output / 'workstation/Prj1'
         header = (stage / 'native_bluetooth/patch_path.vh').read_text()
         expected = '`define WORKSTATION_BLE_PATCH_FILE ' + json.dumps(str(stage / 'native_bluetooth/rtl8723ds_patch.mem')) + '\n'

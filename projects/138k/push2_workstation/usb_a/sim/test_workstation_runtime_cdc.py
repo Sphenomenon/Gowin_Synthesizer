@@ -15,10 +15,32 @@ from tools.workstation_runtime_cdc import (
 )
 from tools.workstation_runtime_clock_audit import VG_RELATIVE, audit_runtime_clocks, file_sha
 from tools.workstation_synthesis_netlist import IDENTIFIER, SynthesisNetlist
-from tools.workstation_runtime_profile import shared_constraints
+from tools.workstation_runtime_profile import shared_constraints, bluetooth_constraints, LEGACY_BLE_RELEASE_RESET
+from tools.workstation_bluetooth import SDC as BLUETOOTH_SDC
 
 
 class RuntimeCdcPolicy(unittest.TestCase):
+    def test_runtime_ble_keeps_payload_and_uart_and_uses_shared_release(self):
+        selected = bluetooth_constraints(BLUETOOTH_SDC)
+        self.assertEqual(selected['sdc'], BLUETOOTH_SDC.replace(LEGACY_BLE_RELEASE_RESET + '\n', '', 1))
+        self.assertEqual(len(selected['sdc'].splitlines()), 6)
+        self.assertIn('u_ble_pcm_cdc/held_data*', selected['sdc'])
+        self.assertIn('u_ble_pcm_cdc/req_meta*/D u_ble_pcm_cdc/ack_meta*/D', selected['sdc'])
+        self.assertIn('ble_uart_rx_i', selected['sdc'])
+        self.assertEqual(selected['evidence']['replacement']['owner'], 'runtime_cdc_bundle')
+        self.assertEqual(runtime_cdc_bundle(ROOT)['sdc'].splitlines().count(
+            selected['evidence']['replacement']['constraint']), 1)
+        self.assertFalse(selected['evidence']['physical_cdc_accepted'])
+
+    def test_runtime_ble_adapter_rejects_anchor_and_input_drift(self):
+        for changed in (BLUETOOTH_SDC.replace(LEGACY_BLE_RELEASE_RESET + '\n', ''),
+                        BLUETOOTH_SDC + LEGACY_BLE_RELEASE_RESET + '\n',
+                        BLUETOOTH_SDC.replace('destination_release*/CLEAR', 'destination_release*/D'),
+                        BLUETOOTH_SDC.replace('held_data*', 'other_held_data*'),
+                        BLUETOOTH_SDC + '# unreviewed source drift\n'):
+            with self.subTest(sdc=changed), self.assertRaisesRegex(ValueError, 'runtime BLE'):
+                bluetooth_constraints(changed)
+
     def test_source_period_limits_and_explicit_partial_scope(self):
         b = runtime_cdc_bundle(ROOT)
         self.assertEqual(len(GRAY), 21)

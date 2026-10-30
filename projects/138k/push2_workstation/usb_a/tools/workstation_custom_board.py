@@ -219,7 +219,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_runtime_profile import constraints
         runtime_constraints = constraints(root, shared_crossings)
         combined_cst += runtime_constraints['extra_cst']
-        selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + BLUETOOTH_SDC + LCD_SDC + runtime_constraints['shared_sdc'] + timing_constraints() + MODEL_FLASH_SDC
+        selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + LCD_SDC + runtime_constraints['shared_sdc'] + timing_constraints() + MODEL_FLASH_SDC
     else:
         selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
     (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
@@ -291,7 +291,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                             provider_selection='included_with_runtime_macro')
     if runtime:
         metadata['runtime_audio'] = {key: value for key, value in runtime_constraints.items()
-                                     if key not in ('sdc', 'runtime_cdc_sdc', 'shared_sdc', 'extra_cst')}
+                                     if key not in ('sdc', 'runtime_cdc_sdc', 'bluetooth_sdc', 'shared_sdc', 'extra_cst')}
         metadata['runtime_audio'].update(reserve_zero_epoch=True, initial_stream_epoch=1,
             top_provider='rtl/workstation/workstation_profile_runtime.sv',
             common_parameter_owner='u_managed/runtime/service/workstation/parameters',

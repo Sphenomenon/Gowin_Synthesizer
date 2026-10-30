@@ -146,6 +146,18 @@ def _artifact(root, output, metadata, profile):
         raise ValueError('workstation profile parent metadata changed')
     parent = json.loads((output / 'parent_prepare_metadata.json').read_text())
     overlays = json.loads((output / 'workstation/resource_rework_overlays.json').read_text())
+    # Recompute the runtime-only BLE adaptation from its source authority.
+    # Metadata cannot promote an omitted live path or erase its replacement.
+    from tools.workstation_bluetooth import SDC as bluetooth_sdc
+    from tools.workstation_runtime_profile import bluetooth_constraints
+    bluetooth = bluetooth_constraints(bluetooth_sdc)
+    if metadata.get('runtime_audio', {}).get('bluetooth_cdc_adaptation') != bluetooth['evidence']:
+        raise ValueError('workstation profile runtime BLE constraint policy changed')
+    staged_sdc = (stage / 'constraints/custom_138k.sdc').read_text().splitlines()
+    if (any(row['constraint'] in staged_sdc for row in bluetooth['evidence']['omitted']) or
+            any(staged_sdc.count(line) != 1 for line in bluetooth['sdc'].splitlines()) or
+            staged_sdc.count(bluetooth['evidence']['replacement']['constraint']) != 1):
+        raise ValueError('workstation profile runtime BLE constraint installation changed')
     bindings = {}
     from tools.workstation_custom_board import source_snapshot
     if source_snapshot(root, metadata['source_snapshot_extra_inputs']) != metadata['source_snapshot_sha256']:
