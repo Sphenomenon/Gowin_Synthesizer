@@ -67,6 +67,7 @@ def build_sources(root, project):
     It deliberately includes no integration TB, fake rate core or fake TF done.
     Call verified_project() before compilation and again after the run.
     """
+    from tools.workstation_runtime_counter import selected_source
     root, project = Path(root).resolve(), Path(project).resolve()
     simlib = Path(os.environ.get('GOWIN_GW5A_SIMLIB',
         '/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v')).resolve()
@@ -98,7 +99,8 @@ def build_sources(root, project):
         'workstation_final_pcm_router.sv', 'workstation_pcm_frame_fanout.sv')]
     sources += [root / 'rtl/workstation/workstation_runtime_audio.sv', simlib]
     sources += [project / ('src/migration/' + name) for name in (
-        'gw138k_apb_cdc.sv', 'gw138k_stream_cdc.sv', 'gw138k_counter_cdc.sv')]
+        'gw138k_apb_cdc.sv', 'gw138k_stream_cdc.sv')]
+    sources += [selected_source(project)]
     sources += [project / 'legacy/rtl/input/uart_rx.sv']
     sources += [root / name for name in (
         'rtl/services/workstation_audio_clock_service.sv', 'rtl/services/workstation_controlled_services.sv',

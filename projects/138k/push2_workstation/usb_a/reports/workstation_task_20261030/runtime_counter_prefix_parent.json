@@ -1,0 +1,313 @@
+{
+  "schema": 1,
+  "identity": "native-balanced-counter-parent-integration-20261030-v1",
+  "source_commit_reviewed": "10118a03928f691e2352c0cb5fcc0acd550e9b4c",
+  "native_counter_sha256": "c921ff58a2204dee35972d960a98d6820803155b89c090fdcb3d111137521f5c",
+  "tf_bridge_sha256": "eb5895b975dc699178a6e451f2f05d481f63424848ebe153c1402a21a63baf31",
+  "source_merge": "Only four profile source_sha256 maps conflicted. Semantic merge retained the union of both reviewed maps; every current hash had to match at least one reviewed side. All other descriptor keys, configurations and business revisions were identical.",
+  "equivalence": {
+    "method": "exact_RTL_symbolic_GF2_basis_matrix",
+    "input_bits": 32,
+    "output_bits": 32,
+    "universal_binary_input_count": 4294967296,
+    "equal_output_rows": 32,
+    "each_suffix_variable_appears_exactly_once": true,
+    "sequential_boundary_tokens_equal": true,
+    "destination_clock_latency_added": 0,
+    "legacy_max_xor_depth": 31,
+    "native_max_xor_depth": 5,
+    "physical_mapping_or_timing_verified": false
+  },
+  "parent_runs": [
+    {
+      "clocks_ns": [
+        3.7,
+        5.1,
+        0.2,
+        1.3
+      ],
+      "checks": 499,
+      "final_deliveries": 4,
+      "stopped_resets": 1,
+      "wraps": 1
+    },
+    {
+      "clocks_ns": [
+        9.3,
+        2.9,
+        1.7,
+        0.1
+      ],
+      "checks": 851,
+      "final_deliveries": 4,
+      "stopped_resets": 1,
+      "wraps": 1
+    },
+    {
+      "clocks_ns": [
+        4.1,
+        4.7,
+        0.0,
+        2.3
+      ],
+      "checks": 520,
+      "final_deliveries": 4,
+      "stopped_resets": 1,
+      "wraps": 1
+    }
+  ],
+  "source_selection_tests": 7,
+  "current_source_tests": 17,
+  "enabled_profile_tests": {
+    "tests": 20,
+    "optional_historical_skips": 1
+  },
+  "prepared_profiles": {
+    "enabled": {
+      "candidate_identity": "custom138k-workstation-v1-fdf9df8a034de035",
+      "staged_files": 573,
+      "enabled_files": 260,
+      "staged_changed_files": [
+        "Prj1.gprj",
+        "rtl/migration/WORKSTATION_RUNTIME_COUNTER_CDC.md",
+        "rtl/migration/workstation_runtime_counter_cdc.sv"
+      ],
+      "passed": true
+    },
+    "no-cnn": {
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-abe2d4dfb482781c",
+      "staged_files": 574,
+      "enabled_files": 260,
+      "staged_changed_files": [
+        "Prj1.gprj",
+        "rtl/migration/WORKSTATION_RUNTIME_COUNTER_CDC.md",
+        "rtl/migration/workstation_runtime_counter_cdc.sv"
+      ],
+      "passed": true
+    },
+    "r00": {
+      "candidate_identity": "custom138k-workstation-r00-v1-52c2626c46974204",
+      "staged_files": 586,
+      "enabled_files": 267,
+      "staged_changed_files": [
+        "Prj1.gprj",
+        "rtl/migration/WORKSTATION_RUNTIME_COUNTER_CDC.md",
+        "rtl/migration/workstation_runtime_counter_cdc.sv"
+      ],
+      "passed": true
+    },
+    "off": {
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-c7d66b419868f7f4",
+      "staged_files": 593,
+      "enabled_files": 269,
+      "staged_changed_files": [
+        "Prj1.gprj",
+        "rtl/migration/WORKSTATION_RUNTIME_COUNTER_CDC.md",
+        "rtl/migration/workstation_runtime_counter_cdc.sv"
+      ],
+      "passed": true
+    }
+  },
+  "observation": {
+    "identity": "pcm-observation-offline-v1-d4b96156d314e338",
+    "runs": [
+      {
+        "offered": 72,
+        "accepted": 51,
+        "dropped": 21,
+        "checked": 50,
+        "stream_changes": 8,
+        "sequence_gaps": 2,
+        "errors": 14,
+        "drop_events": 6,
+        "default_checked": 63,
+        "capacity": 4,
+        "saturation": 7
+      },
+      {
+        "offered": 72,
+        "accepted": 51,
+        "dropped": 21,
+        "checked": 50,
+        "stream_changes": 8,
+        "sequence_gaps": 2,
+        "errors": 14,
+        "drop_events": 6,
+        "default_checked": 63,
+        "capacity": 4,
+        "saturation": 7
+      },
+      {
+        "offered": 72,
+        "accepted": 51,
+        "dropped": 21,
+        "checked": 50,
+        "stream_changes": 8,
+        "sequence_gaps": 2,
+        "errors": 14,
+        "drop_events": 6,
+        "default_checked": 63,
+        "capacity": 4,
+        "saturation": 7
+      }
+    ]
+  },
+  "controlled": {
+    "identity": "native-runtime-controlled-offline-v2-nonzero-0b74d33cef463c79",
+    "metrics": {
+      "physical_frames": 1078,
+      "observed_frames": 1078,
+      "observed48": 361,
+      "observed44": 717,
+      "nonzero": 977,
+      "display_frames": 1077,
+      "fft_bins": 384,
+      "fft48": 128,
+      "fft44": 256,
+      "fft_nonzero": 382,
+      "apb": 1077,
+      "usb": 33,
+      "cpu": 28,
+      "policies": 3,
+      "writes": 267,
+      "reads": 4,
+      "fft_discards": 6,
+      "switches": 2,
+      "health_reset_checks": 1,
+      "display_observation_fault_checks": 1,
+      "display_effect_tuple_checks": 1077,
+      "display_effect_changes48": 4,
+      "display_effect_changes44": 3,
+      "source_50_checks": 1219374,
+      "source_compute_checks": 1851077,
+      "switch_source_changes": 5,
+      "reason_source_changes": 16,
+      "switch_launch_delay_checks": 2,
+      "pc_drop_carry_checks": 1,
+      "tf_reason_handoffs": 1,
+      "score_switch_rejects": 1,
+      "switch_async_assert_checks": 2,
+      "switch_release_checks": 1818138
+    }
+  },
+  "health": {
+    "identity": "native-display-observation-health-v1-e6632e55c912ad5d",
+    "directed": {
+      "physical_final_drop": 1,
+      "display_final_drop": 1,
+      "source_stops": 2,
+      "common_resets": 4,
+      "counter_wrap": true,
+      "no_following_frames": true
+    }
+  },
+  "independent": {
+    "counter_review_passed": true,
+    "extra_proof_controls": 6,
+    "extra_actual_selection_controls": 12,
+    "source_stopped_low_additional_checks": [
+      524,
+      1474
+    ],
+    "tf_review_passed": true,
+    "tf_extra_mutants_rejected": 4,
+    "ff_completed_review_passed": true
+  },
+  "seals_parent_verified_entries": 140,
+  "old_serial_scope_rejects_new_actual_compilation": true,
+  "evidence": {
+    "runtime-counter-prefix-parent-equivalence-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-equivalence-v1/verification.json",
+      "sha256": "52c99250a454f634422bafe53a9b65f0ac193e5ba3b62a72a45680e99247ac36"
+    },
+    "runtime-counter-prefix-parent-observation-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-observation-v1/verification.json",
+      "sha256": "892b2690f65853e9a42f8ac135342030f199a5c9910b0fdf601dbaf0478ee192"
+    },
+    "runtime-counter-prefix-parent-controlled-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-controlled-v1/verification.json",
+      "sha256": "3eef482e1a138e0824b786e6d3d181371ccfcfce704d7c363f90da962d164476"
+    },
+    "runtime-counter-prefix-parent-health-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-health-v1/verification.json",
+      "sha256": "d59209f2ffdd2b451661b9e2d082c4afde1565e3d2571b671c66af6e009e2245"
+    },
+    "runtime-counter-prefix-parent-actual-selection-v1.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-actual-selection-v1.json",
+      "sha256": "39271d1245cb4d63d11a9c6e68ccd8c65763d41f1deb00be6ca57405859cae02"
+    },
+    "runtime-counter-prefix-parent-profile-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-profile-v1.log",
+      "sha256": "e6d190c43c99e3a9a549441079414f0565132d4a8755e148ef93dfa8e067bc04"
+    },
+    "runtime-counter-prefix-parent-selection-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-selection-tests-v1.log",
+      "sha256": "c7ba16e258f7708b053643f29a260efb2cf9442e153caaf9e3fb1e461e0fc716"
+    },
+    "runtime-counter-prefix-parent-current-sources-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-current-sources-v1.log",
+      "sha256": "061df2c0e9c3a55addf476acdff062cb24d3b91ca68df0f7f5996a062624edbc"
+    },
+    "runtime-counter-prefix-independent-review-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/review.json",
+      "sha256": "53576794731c7c3aae1c0d1b6107f41de724abeeb5c1e9e209b0e586ac1f8024"
+    },
+    "runtime-counter-prefix-independent-review-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-independent-review-v1/REVIEW_SEAL.json",
+      "sha256": "5214dc1860b08dd91737b1dfff7b69854e2e0f01322de1dfb82713049fa5fd08"
+    },
+    "runtime-counter-prefix-delivery-v1/DELIVERY_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-delivery-v1/DELIVERY_SEAL.json",
+      "sha256": "3804647558f69a12260d1965234284230091fffeba4453e5ca6804bf590d8c42"
+    },
+    "tf-quiet-prefix-independent-review-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-independent-review-v1/review.json",
+      "sha256": "a3ec1e7f816ad695da88f6bc490ba28d4f40e1ac5328e21a9cd6555544ba05d5"
+    },
+    "tf-quiet-prefix-independent-review-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-independent-review-v1/REVIEW_SEAL.json",
+      "sha256": "1617a12789105954e68b5759ebcfc67a6a19f3915a203dcd0485ea12a347ab60"
+    },
+    "ff-physical-independent-review-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ff-physical-independent-review-v1/review.json",
+      "sha256": "7ed83ea855685371837e8f28477cbbba0d4d099eb7cfb9b11b689ff0497a5f24"
+    },
+    "ff-physical-independent-review-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ff-physical-independent-review-v1/REVIEW_SEAL.json",
+      "sha256": "202b11e198511edd8a227e766bea8d1ee40b3db016226ada8b539f8f65944d21"
+    },
+    "runtime-counter-prefix-parent-enabled-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-enabled-prepare-v1-validation.json",
+      "sha256": "9768ff8b98d716a32c032638084f63ac723755dee06cdf2edf8bad236163d3c5"
+    },
+    "runtime-counter-prefix-parent-no-cnn-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-no-cnn-prepare-v1-validation.json",
+      "sha256": "6fe4562b7233bddbcbf0caca20fad9ec4551fc26b44f34e33909fb6c2c01dffd"
+    },
+    "runtime-counter-prefix-parent-r00-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-r00-prepare-v1-validation.json",
+      "sha256": "bb70f9acb43f672e1f0b9f843fbac5992bdeba415c8f9046b49d2eb13370ad20"
+    },
+    "runtime-counter-prefix-parent-off-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-parent-off-prepare-v1-validation.json",
+      "sha256": "315f5ce60643c7c1f6b1aac81709d0fc33fb329882d4f14ee4fb8edcac57b36b"
+    }
+  },
+  "limitations": [
+    "Source equivalence establishes no physical path/area/routing improvement.",
+    "Full HDMI regression still correctly rejects historical provenance; focused actual pipeline passes but is not full HDMI acceptance.",
+    "c7d66b419868f7f4 combines TF and counter source revisions;277/FF source/physical acceptance is not transferred.",
+    "New actual VG must receive explicit CDC/clock/reset/PLL and full routed timing review."
+  ],
+  "synthesis_run": false,
+  "pnr_run": false,
+  "complete_cdc_accepted": false,
+  "physical_cdc_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_operated": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}

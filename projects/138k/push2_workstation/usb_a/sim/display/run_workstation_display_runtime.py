@@ -7,8 +7,11 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from tools.workstation_runtime_counter import selected_source, selection_evidence
 
 
 def digest(path):
@@ -39,7 +42,7 @@ def main():
         'workstation_display_runtime.sv', 'feedback_capture.v', 'output_audio_analysis.v')]
     common += [project / ('src/video/' + name) for name in (
         'output_audio_capture.v', 'audio_analysis_rom.v', 'feedback_wave_align.v')]
-    common += [project / ('src/migration/' + name) for name in ('gw138k_stream_cdc.sv', 'gw138k_counter_cdc.sv')]
+    common += [project / 'src/migration/gw138k_stream_cdc.sv', selected_source(project)]
     runtime_sources = common + [runtime_tb]
     simlib = Path(os.environ.get('GOWIN_GW5A_SIMLIB', '/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v'))
     excluded = {'hdmi_display.v', 'feedback_capture.v', 'output_audio_analysis.v', 'feedback_renderer.v',
@@ -54,12 +57,13 @@ def main():
     hdmi_sources += [simlib, elaboration_tb]
     a07_path = ROOT / 'reports/workstation_task_20261030/display_metadata_v11_native.json'
     profile_path = project.parents[1] / 'workstation_profile.json'
-    inputs = list(dict.fromkeys(runtime_sources + hdmi_sources + [native_hdmi, provenance_path,
+    inputs = list(dict.fromkeys(runtime_sources + hdmi_sources + [ROOT / 'tools/workstation_runtime_counter.py', native_hdmi, provenance_path,
         ROOT / 'rtl/workstation/RUNTIME_DISPLAY.md', a07_path, Path(__file__).resolve(),
         project / 'src/memory/ddr_address_map.vh', profile_path, project.parents[1] / 'integration_inputs.json']))
     hashes = {str(path): digest(path) for path in inputs}
     source_identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False,
+        counter_source=selection_evidence(project),
         identity='native-runtime-display-offline-v1-' + source_identity[:16], source_set_sha256=source_identity,
         input_sha256=hashes, configuration=dict(explicit_macro='WORKSTATION_RUNTIME_NATIVE', default_enabled=False,
             metadata_minor=1, frame_tuple_bits=204, source_hz=50000000, memory_hz=100000000,

@@ -7,8 +7,11 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from tools.workstation_runtime_counter import selected_source, selection_evidence
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -45,7 +48,8 @@ def main():
     sources += [ROOT / 'rtl/workstation/workstation_runtime_audio.sv', simlib,
                 Path(__file__).with_name('tb_workstation_runtime_controlled.sv')]
     sources += [project / ('src/migration/' + name) for name in (
-        'gw138k_apb_cdc.sv', 'gw138k_stream_cdc.sv', 'gw138k_counter_cdc.sv')]
+        'gw138k_apb_cdc.sv', 'gw138k_stream_cdc.sv')]
+    sources += [selected_source(project)]
     sources += [project / 'legacy/rtl/input/uart_rx.sv']
     sources += [ROOT / name for name in (
         'rtl/services/workstation_controlled_services.sv',
@@ -66,7 +70,7 @@ def main():
                         ROOT / 'rtl/audio/workstation_observation_consumers.sv', consumer_tb]
     lifecycle_sources = [project / 'src/ae350/gw138k_three_event_arbiter.sv',
                          ROOT / 'rtl/audio/gw138k_usb_lifecycle_merge.sv', ROOT / 'sim/tb_usb_lifecycle_merge.sv']
-    inputs = list(dict.fromkeys(sources + consumer_sources + lifecycle_sources + [Path(__file__).resolve(),
+    inputs = list(dict.fromkeys(sources + consumer_sources + lifecycle_sources + [Path(__file__).resolve(), ROOT / 'tools/workstation_runtime_counter.py',
         ROOT / 'rtl/audio/runtime_spatial_room_preset.svh',
         ROOT / 'rtl/services/workstation_controlled_services.provenance.json']))
     inputs += sorted((project / 'sim/data').rglob('*.mem'))
@@ -79,6 +83,7 @@ def main():
     hashes = {str(path): digest(path) for path in inputs}
     source_identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False,
+                  counter_source=selection_evidence(project),
                   identity='native-runtime-controlled-offline-v2-' + ('inflight-score-' if args.inflight_score_boundary else '') + ('nonzero-' if args.nonzero_epoch else '') + source_identity[:16],
                   source_set_sha256=source_identity, input_sha256=hashes,
                   prepared_reference_candidate=profile['candidate_identity'],

@@ -7,8 +7,11 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from tools.workstation_runtime_counter import selected_source
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -43,7 +46,8 @@ def main():
     sources += [ROOT / 'rtl/workstation/workstation_runtime_audio.sv', simlib,
                 ROOT / 'rtl/memory/workstation_runtime_memory_guard.sv', Path(__file__).with_name('tb_workstation_runtime_memory_integration.sv')]
     sources += [project / ('src/migration/' + name) for name in (
-        'gw138k_apb_cdc.sv', 'gw138k_stream_cdc.sv', 'gw138k_counter_cdc.sv')]
+        'gw138k_apb_cdc.sv', 'gw138k_stream_cdc.sv')]
+    sources += [selected_source(project)]
     sources += [project / 'legacy/rtl/input/uart_rx.sv']
     sources += [ROOT / name for name in (
         'rtl/services/workstation_controlled_services.sv',
@@ -56,7 +60,7 @@ def main():
     # exactly the maintained copies in this candidate, never duplicate owners.
     sources = [path for path in sources if not (
         path.parent == project / 'legacy/rtl/audio' and path.name == 'audio_capture_fifo.sv')]
-    inputs = list(dict.fromkeys(sources + [Path(__file__).resolve(),
+    inputs = list(dict.fromkeys(sources + [Path(__file__).resolve(), ROOT / 'tools/workstation_runtime_counter.py',
         ROOT / 'rtl/audio/runtime_spatial_room_preset.svh',
         ROOT / 'rtl/services/workstation_controlled_services.provenance.json']))
     inputs += sorted((project / 'sim/data').rglob('*.mem'))

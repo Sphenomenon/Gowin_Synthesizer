@@ -1,0 +1,310 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "validation_stage": "offline_source_equivalence_and_focused_integration",
+  "source_base_commit": "e46596ac2d4dc0a36fa2a672b1acda996104565a",
+  "source_sha256": {
+    "rtl/migration/workstation_runtime_counter_cdc.sv": "c921ff58a2204dee35972d960a98d6820803155b89c090fdcb3d111137521f5c",
+    "rtl/migration/WORKSTATION_RUNTIME_COUNTER_CDC.md": "8ef93aadec43262e6c98f380255677600221233b003e2b6322b9a0dd74964b13",
+    "tools/workstation_runtime_counter.py": "6b04451d0d8753581c93ac6759b8b065fecfd1a9eb4553eb0669aa7539909b02",
+    "sim/cdc/run_runtime_counter_cdc.py": "a2331474faaf076708f0d26a812147e10adf92474d3b0a60d8a88384ecdcfd52",
+    "sim/cdc/tb_runtime_counter_cdc.sv": "4edae9726dfdc32ba4a40fff415039386c45f90851262dabae4c6460c0ba7f6c",
+    "sim/test_workstation_runtime_counter.py": "ca97c80cc1256110d3fbcbb73ef74a628db2ffecc5b22beee57a4d783499272c"
+  },
+  "native_policy": "native_balanced_gray32_v1",
+  "proof": {
+    "method": "exact_RTL_symbolic_GF2_basis_matrix",
+    "input_bits": 32,
+    "output_bits": 32,
+    "universal_binary_input_count": 4294967296,
+    "equal_output_rows": 32,
+    "each_suffix_variable_appears_exactly_once": true,
+    "sequential_boundary_tokens_equal": true,
+    "destination_clock_latency_added": 0,
+    "legacy_max_xor_depth": 31,
+    "native_max_xor_depth": 5,
+    "physical_mapping_or_timing_verified": false
+  },
+  "negative_controls": [
+    {
+      "name": "missing_high_span",
+      "rejected": true,
+      "reason": "all-input GF2 equivalence failed"
+    },
+    {
+      "name": "source_binary",
+      "rejected": true,
+      "reason": "registered source/synchronizer/reset boundary changed"
+    },
+    {
+      "name": "sync_stage_bypass",
+      "rejected": true,
+      "reason": "registered source/synchronizer/reset boundary changed"
+    },
+    {
+      "name": "added_latency",
+      "rejected": true,
+      "reason": "unreviewed combinational decode structure"
+    }
+  ],
+  "async_runs": [
+    {
+      "clocks_ns": [
+        3.7,
+        5.1,
+        0.2,
+        1.3
+      ],
+      "checks": 499,
+      "final_deliveries": 4,
+      "stopped_resets": 1,
+      "wraps": 1
+    },
+    {
+      "clocks_ns": [
+        9.3,
+        2.9,
+        1.7,
+        0.1
+      ],
+      "checks": 851,
+      "final_deliveries": 4,
+      "stopped_resets": 1,
+      "wraps": 1
+    },
+    {
+      "clocks_ns": [
+        4.1,
+        4.7,
+        0.0,
+        2.3
+      ],
+      "checks": 520,
+      "final_deliveries": 4,
+      "stopped_resets": 1,
+      "wraps": 1
+    }
+  ],
+  "native_profiles": [
+    "custom138k-workstation-v1",
+    "custom138k-workstation-no-cnn-v1",
+    "custom138k-workstation-r00-v1",
+    "custom138k-workstation-r00-no-local-panel-v1"
+  ],
+  "business_configuration_or_revision_changed": false,
+  "original_compiled_source_policies_retained": [
+    "unprofiled_custom_board",
+    "accepted_full83",
+    "pinned_cnn_timing85",
+    "resource_rework_route0_parent"
+  ],
+  "source_selection_checks": [
+    "exactly_one_GPRJ_enabled_owner",
+    "unchanged_disabled_locked_parent",
+    "native_policy_and_hash",
+    "replacement_destination_binding",
+    "copied_native_identity",
+    "enabled_and_staged_input_hashes",
+    "prepared_profile_enabled_and_staged_hashes",
+    "missing_native_fails_without_parent_fallback"
+  ],
+  "unit_validation": [
+    {
+      "test": "sim/test_workstation_runtime_counter.py",
+      "passed": 7
+    },
+    {
+      "test": "sim/test_current_workstation_sources.py",
+      "passed": 17
+    },
+    {
+      "test": "sim/test_workstation_profile.py",
+      "passed": 6,
+      "optional_prepared_skips": 14
+    },
+    {
+      "test": "sim/test_workstation_no_local_panel_profile.py",
+      "passed": 6,
+      "prepared_candidate": "custom138k-workstation-r00-no-local-panel-v1-47fbf548eef54f47"
+    },
+    {
+      "test": "sim/test_workstation_ble_ddr_integration.py",
+      "passed": 5,
+      "prepared_candidate": "custom138k-workstation-r00-no-local-panel-v1-47fbf548eef54f47"
+    }
+  ],
+  "prepared_candidate": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-prepare-v1",
+    "identity": "custom138k-workstation-r00-no-local-panel-v1-47fbf548eef54f47",
+    "input_sha256": "47fbf548eef54f4705934d11e41870425bc6e43453506016129452a16295a253",
+    "profile_sha256": "255d273cbfb6159e58620162adb75fa4d7ef0d478297e5cf105b77116d5e1e68",
+    "integration_sha256": "9dc964c9faeecb2125daafe06d275a3787ff87afd9e1101639681e4abc76e161",
+    "gprj_sha256": "d75d25f669feafe8bf9ef27fd762f099aecaa324a18df8cd98e1c022b8a4c09a",
+    "enabled_inputs": 269,
+    "staged_inputs": 593,
+    "sdc_sha256": "06e9739cf9b6dc73352c0dd161095d298dba32c08311c5e233bd29c02fc3f5cc",
+    "sdc_changed_from_root277_ff": false
+  },
+  "evidence": {
+    "all_input_equivalence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-proof-v3/verification.json",
+      "sha256": "036978457281be58b2f80db4e860ce5f198e375318611e10850869c079a37ab5",
+      "passed": true
+    },
+    "pcm_observation": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-observation-v1/verification.json",
+      "sha256": "0765656f74f8d9b6a79a215579d188935b8b37e3fd0cefad2f6957c14ef6b052",
+      "passed": true
+    },
+    "display_health_and_controlled": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-health-v1/verification.json",
+      "sha256": "11f311496710d821d178fa9adda6c3d15a1cde672a96470a73c6a926dccd3e8b",
+      "passed": true
+    },
+    "controlled_runtime": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-health-v1/controlled/verification.json",
+      "sha256": "0b1d82a926b80d29eb6118c19da0fe5c48ab742a8c874b87eef291b154afe4fc",
+      "passed": true
+    },
+    "focused_display_pipeline": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-display-pipeline-v1/verification.json",
+      "sha256": "49eb8cc7e5bc1821adca062bc71ba7469d19cd17e756e7b02cf7cd5aa6e8cb09",
+      "passed": true
+    },
+    "full_display_existing_failure": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/runtime-counter-prefix-display-v1/verification.json",
+      "sha256": "fc04fc80b669f2c184ef78545d2bdea9c2c5e7253e8923f5fc8959962cd34cfb",
+      "passed": false
+    }
+  },
+  "display_health": {
+    "physical_final_drop": 1,
+    "display_final_drop": 1,
+    "source_stops": 2,
+    "common_resets": 4,
+    "counter_wrap": true,
+    "no_following_frames": true
+  },
+  "controlled_metrics": {
+    "physical_frames": 1078,
+    "observed_frames": 1078,
+    "observed48": 361,
+    "observed44": 717,
+    "nonzero": 977,
+    "display_frames": 1077,
+    "fft_bins": 384,
+    "fft48": 128,
+    "fft44": 256,
+    "fft_nonzero": 382,
+    "apb": 1077,
+    "usb": 33,
+    "cpu": 28,
+    "policies": 3,
+    "writes": 267,
+    "reads": 4,
+    "fft_discards": 6,
+    "switches": 2,
+    "health_reset_checks": 1,
+    "display_observation_fault_checks": 1,
+    "display_effect_tuple_checks": 1077,
+    "display_effect_changes48": 4,
+    "display_effect_changes44": 3,
+    "source_50_checks": 1219374,
+    "source_compute_checks": 1851077,
+    "switch_source_changes": 5,
+    "reason_source_changes": 16,
+    "switch_launch_delay_checks": 2,
+    "pc_drop_carry_checks": 1,
+    "tf_reason_handoffs": 1,
+    "score_switch_rejects": 1,
+    "switch_async_assert_checks": 2,
+    "switch_release_checks": 1818138
+  },
+  "display_metrics": {
+    "publications": 6,
+    "commits": 9,
+    "atomic_tuples": 128702,
+    "waveform_samples": 1024,
+    "xy_pixels": 131072,
+    "fft_columns": 1024,
+    "cdc_drops": 60
+  },
+  "focused_display_warning_counts": {
+    "TIMESCALEMOD": 12,
+    "WIDTHTRUNC": 31,
+    "WIDTHEXPAND": 10
+  },
+  "focused_display_owned_warnings": [],
+  "full_display_error": "Native HDMI provenance checksum changed",
+  "full_hdmi_provenance_or_elaboration_accepted": false,
+  "remaining": [
+    "combined_source_four_profile_prepare",
+    "new_synthesis_mapping_resources_and_CDC_source_review",
+    "new_PnR_setup_hold_reset_recovery_removal_and_full_CDC_PLL_feature_gates",
+    "separate_hardware_acceptance_and_deployment"
+  ],
+  "four_profile_integrated_prepare_argv": [
+    [
+      "python3",
+      "projects/138k/push2_workstation/usb_a/build.py",
+      "--prepare-custom-board",
+      "--workstation-profile",
+      "custom138k-workstation-v1",
+      "--netlist-dir",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+      "--custom-board-output",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/counter-prefix-integrated-prepare-custom138k-workstation-v1",
+      "--riscv-prefix",
+      "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+    ],
+    [
+      "python3",
+      "projects/138k/push2_workstation/usb_a/build.py",
+      "--prepare-custom-board",
+      "--workstation-profile",
+      "custom138k-workstation-no-cnn-v1",
+      "--netlist-dir",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+      "--custom-board-output",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/counter-prefix-integrated-prepare-custom138k-workstation-no-cnn-v1",
+      "--riscv-prefix",
+      "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+    ],
+    [
+      "python3",
+      "projects/138k/push2_workstation/usb_a/build.py",
+      "--prepare-custom-board",
+      "--workstation-profile",
+      "custom138k-workstation-r00-v1",
+      "--netlist-dir",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+      "--custom-board-output",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/counter-prefix-integrated-prepare-custom138k-workstation-r00-v1",
+      "--riscv-prefix",
+      "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+    ],
+    [
+      "python3",
+      "projects/138k/push2_workstation/usb_a/build.py",
+      "--prepare-custom-board",
+      "--workstation-profile",
+      "custom138k-workstation-r00-no-local-panel-v1",
+      "--netlist-dir",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+      "--custom-board-output",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/counter-prefix-integrated-prepare-custom138k-workstation-r00-no-local-panel-v1",
+      "--riscv-prefix",
+      "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+    ]
+  ],
+  "rollback": "Select the earlier pinned serial candidate with its original source hashes and validation scope; restoring disabled legacy bytes alone is not a rollback of compiled ownership.",
+  "synthesis_run": false,
+  "pnr_run": false,
+  "physical_timing_verified": false,
+  "physical_cdc_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "bitstream_sha256": null
+}

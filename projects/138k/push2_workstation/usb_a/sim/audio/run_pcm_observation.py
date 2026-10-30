@@ -6,8 +6,11 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from tools.workstation_runtime_counter import selected_source, selection_evidence
 
 
 def digest(path):
@@ -22,17 +25,18 @@ def main():
     project, output = args.project.resolve(), args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     sources = [ROOT / 'rtl/music/music_async_fifo.sv',
-               project / 'src/migration/gw138k_counter_cdc.sv',
+               selected_source(project),
                ROOT / 'rtl/audio/workstation_pcm_observation_bridge.sv',
                Path(__file__).with_name('tb_workstation_pcm_observation_bridge.sv')]
     profile_path = project.parents[1] / 'workstation_profile.json'
     profile = json.loads(profile_path.read_text())
-    inputs = sources + [Path(__file__).resolve(), profile_path]
+    inputs = sources + [Path(__file__).resolve(), profile_path, ROOT / 'tools/workstation_runtime_counter.py']
     hashes = {str(path): digest(path) for path in inputs}
     identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False,
                   identity='pcm-observation-offline-v1-' + identity[:16], source_set_sha256=identity,
                   prepared_reference_candidate=profile['candidate_identity'], input_sha256=hashes,
+                  counter_source=selection_evidence(project),
                   scope='Actual maintained Gray FIFO plus existing registered-Gray counter CDC; atomic98bit frames; no audio backpressure',
                   configuration=dict(test_fifo_depth=4, test_counter_max=7, default_fifo_depth=16, default_counter_max=4294967295),
                   limits='Digital asynchronous functional simulation; requires held-payload/Gray path physical constraints and coordinated peer reset; no profile/top or board selection')

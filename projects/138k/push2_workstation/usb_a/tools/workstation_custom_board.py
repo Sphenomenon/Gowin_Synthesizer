@@ -339,6 +339,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['scan_window'].update(compilation_provider=selected_provider,
                                             provider_selection='included_with_runtime_macro')
     if runtime:
+        from tools.workstation_runtime_counter import metadata as counter_metadata
         metadata['runtime_audio'] = {key: value for key, value in runtime_constraints.items()
                                      if key not in ('sdc', 'runtime_cdc_sdc', 'bluetooth_sdc', 'shared_sdc', 'extra_cst')}
         metadata['runtime_audio'].update(reserve_zero_epoch=True, initial_stream_epoch=1,
@@ -351,7 +352,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             held_notes_policy='preserve; no implicit MIDI/PANIC',
             media_failure_categories=dict(local_recording=9,ble_seal=10,backend_admission=11,
                 **({'ddr_recording_seal':12} if recording_selected else {})),
-            display_metadata_minor=1)
+            display_metadata_minor=1, counter_cdc=counter_metadata(root))
         metadata['recognition'] = recognition
         metadata['audio_pin_behavior']='ak4493s_i2s32_dual_rate_output_paced_final_pcm'
         metadata['audio_clock_policy']='qualified_12m288_or_16m9344_native_DCS'

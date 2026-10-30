@@ -247,6 +247,9 @@ def _artifact(root, output, metadata, profile):
                       constraint_evidence or {}, spec['recognition_enabled'])
     if metadata.get('runtime_audio', {}).get('top_provider') != spec['provider']:
         raise ValueError('workstation recognition compilation provider changed')
+    from tools.workstation_runtime_counter import selection_evidence
+    if selection_evidence(stage, metadata)['selection'] != 'compiled_native_balanced':
+        raise ValueError('workstation runtime counter source selection changed')
     bindings = {}
     from tools.workstation_custom_board import source_snapshot
     if source_snapshot(root, metadata['source_snapshot_extra_inputs']) != metadata['source_snapshot_sha256']:

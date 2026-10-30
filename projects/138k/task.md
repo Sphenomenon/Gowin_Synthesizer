@@ -118,6 +118,8 @@
 
 [TF quiet 发布与 Gray 长链修正](push2_workstation/usb_a/reports/WORKSTATION_TF_QUIET_PUBLICATION_PREFIX_20261030.md)已父级通过双初值、480 quiet／4,160 解码检查、两负控及完整 STOP／CLEAR／service 链；即时撤销保持，quiet 回程增加 compute 发布 FF，未改 SDC。四新 prepare 各 12 来源通过，仅桥 RTL／契约 staged 改变；实际新 VG、完整 CDC／物理和硬件仍待接受，无部署。
 
+[并行 Gray counter 父级组合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_COUNTER_PREFIX_PARENT_20261030.md)已通过全 2^32 输入等价、停钟／复位／回卷、三相位观察和完整 controlled／health 回归；四份 prepare 各 12 来源通过，新主候选 `c7d66b419868f7f4` 为 593 staged／269 enabled，明确替代并禁用旧串行来源，旧 CDC scope 正确拒绝。TF 与 FF 独立审 seal 已父级核验；完整 HDMI provenance 仍失败，未改旧门禁。新综合／物理／硬件仍待验证，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

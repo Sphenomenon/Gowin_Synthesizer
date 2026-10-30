@@ -18,6 +18,7 @@ from tools.workstation_usb2_owner_reset import source_bundle as usb2_owner_reset
 
 POLICY = 'native_dual_rate_runtime_v1'
 SOURCES = (
+    'rtl/migration/workstation_runtime_counter_cdc.sv',
     'rtl/workstation/workstation_profile_runtime.sv',
     'rtl/workstation/workstation_runtime_audio.sv',
     'rtl/workstation/workstation_runtime_controlled.sv',
@@ -60,6 +61,7 @@ SOURCES = (
     'rtl/memory/workstation_runtime_memory_guard.sv',
 )
 DEPENDENCIES = (
+    'rtl/migration/WORKSTATION_RUNTIME_COUNTER_CDC.md',
     'rtl/memory/RUNTIME_MEMORY_GUARD_CONTRACT.md',
     'probes/audio_clock_i2s/probe.json',
     'rtl/workstation/workstation_profile_hdmi.sv',
@@ -82,6 +84,7 @@ DEPENDENCIES = (
     'rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.provenance.json',
 )
 REPLACEMENTS = {
+    'src/migration/gw138k_counter_cdc.sv': 'rtl/migration/workstation_runtime_counter_cdc.sv',
     'src/ae350/gw138k_controlled_services.sv': 'rtl/services/workstation_controlled_services.sv',
     'src/storage/tf_audio_ddr_path.v': 'rtl/tf_audio/storage/tf_audio_ddr_path.v',
     'src/memory/display_data_writer.v': 'rtl/display_data/display_data_writer.v',

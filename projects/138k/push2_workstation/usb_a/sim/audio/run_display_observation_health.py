@@ -9,6 +9,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from tools.workstation_runtime_counter import selected_source, selection_evidence
 
 
 def digest(path):
@@ -27,12 +29,13 @@ def main():
     sources = [ROOT / name for name in (
         'rtl/workstation/workstation_runtime_controlled.sv', 'rtl/audio/workstation_pcm_observation_bridge.sv',
         'rtl/music/music_async_fifo.sv')]
-    sources += [project / ('src/migration/' + name) for name in ('gw138k_counter_cdc.sv', 'gw138k_stream_cdc.sv')]
+    sources += [selected_source(project), project / 'src/migration/gw138k_stream_cdc.sv']
     sources += [Path(__file__).with_name('tb_workstation_display_observation_health.sv')]
-    inputs = sources + [Path(__file__).resolve(), ROOT / 'rtl/audio/DISPLAY_OBSERVATION_HEALTH.md',
+    inputs = sources + [Path(__file__).resolve(), ROOT / 'tools/workstation_runtime_counter.py', ROOT / 'rtl/audio/DISPLAY_OBSERVATION_HEALTH.md',
                        project.parents[1] / 'workstation_profile.json', project.parents[1] / 'integration_inputs.json']
     initial_hashes = {str(path): digest(path) for path in inputs}
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False, bitstream_identity=None,
+                  counter_source=selection_evidence(project),
                   source_policy='Maintained controlled-runtime source with actual physical observation FIFO and display mailbox; explicit prepared CDC and full-runtime support',
                   scope='50MHz display-only sticky loss fault; audio scheduling/stream owner unchanged',
                   policy='Either upstream loss disables new display publication until common runtime reset',
