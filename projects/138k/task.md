@@ -62,6 +62,8 @@
 
 [no-CNN 实际 shared CDC 数字复验](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_INSTALLED_SHARED_CDC_REVIEW_20261030.md)在父级独立副本逐字复现，14个网表负控全拒绝；实际88行覆盖43首级位／182 Gray位／1,308保持数据位。generic检查器的旧scope拒绝单独保留；13个DDR内部query、110复位pin语义、状态脉冲、保持协议及物理CDC均未接受，cache审查尚未成为维护工具，无部署。
 
+[no-CNN FC 同网表 placement 对照](push2_workstation/usb_a/reports/WORKSTATION_NO_CNN_FC_PHYSICAL_PREPARE_20261030.md)父级／独立23输入及14负控通过，仅place2→1、UserCodeFA→FC，route0、VG／SDC／CST不变。已启动P&R，物理结果另记；没有重申FA当前root等价，也未扩大CDC或部署接受。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
