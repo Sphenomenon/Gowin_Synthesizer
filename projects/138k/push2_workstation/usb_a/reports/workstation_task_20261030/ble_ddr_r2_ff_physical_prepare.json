@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "sealed_utc": "2026-10-30T14:22:42.503815+00:00",
+  "validation_stage": "physical experiment prepare and launch checkpoint; no result acceptance",
+  "passed": true,
+  "source_checkpoint": "2f2ca0a",
+  "physical_manifest": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-native-ble-ddr-no-local-panel-physical-C11030FF/physical_inputs.json",
+    "sha256": "55f91fd222c5a2f04105c18868b918243e5c7d664a84dad56a25c3fcc53d8d7d"
+  },
+  "physical_identity": "custom138k-r00-native-ble-ddr-no-local-panel-resource-experiment-C11030FF",
+  "source_candidate": "custom138k-workstation-r00-no-local-panel-v1-27732817b67e21ac",
+  "user_code": "0xC11030FF",
+  "physical_inputs_verified": 51,
+  "source_staged_inputs": 591,
+  "selected_sdc_sha256": "06e9739cf9b6dc73352c0dd161095d298dba32c08311c5e233bd29c02fc3f5cc",
+  "selected_sdc_delta_from_FE": {
+    "policy": "paired-nextq-v2",
+    "changed_lines_1based": [
+      76,
+      77
+    ],
+    "added_reply_targets": 32,
+    "old_targets": 263,
+    "selected_targets": 295,
+    "max_delay_ns": "13.020",
+    "producer_selectors_unchanged": true,
+    "hold_exception_unchanged": true,
+    "clock_declarations_unchanged": true
+  },
+  "options": {
+    "place_option": 1,
+    "route_option": 0,
+    "replicate_resources": false,
+    "timing_driven": 1,
+    "correct_hold_violation": 1,
+    "clocks_or_exceptions_relaxed": false
+  },
+  "seals": {
+    "r00-FF-physical-preparer-v1/ACTUAL_PREPARE_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FF-physical-preparer-v1/ACTUAL_PREPARE_SEAL.json",
+      "sha256": "ac0c7bf45cce75cb8a5bca480123adc3ed1394253983cba9ee11a7845472d239",
+      "files_verified": 8
+    },
+    "r00-FF-physical-independent-review-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FF-physical-independent-review-v1/REVIEW_SEAL.json",
+      "sha256": "fb70f5906ee1a26245364f065855e99eb928eb2dc02ee5864f19972be640c0ef",
+      "files_verified": 17
+    }
+  },
+  "parent_verification_log": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FF-parent-prepare-verification-v1.log",
+    "sha256": "80b8b698dfede389e69df5193a1ed4c600587e5e4d3e696c195b6d8b0be45aeb"
+  },
+  "parent_negative_controls": 35,
+  "independent_additional_negative_controls": 27,
+  "independent_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FF-physical-independent-review-v1/review.json",
+    "sha256": "653dafde95395c0e94fbcaa6ff8e3c8c94817d18f38b4b401d068e93b948074a"
+  },
+  "initial_guard_rejection": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FF-parent-launch-v1.log",
+    "sha256": "3bfdaafe80d862585b09b4e6fc6328343cf7377712163a8a26bcf5c8e42da47a",
+    "reason": "extra parent pre-launch guard expected bool for manifest int1; rejected before EDA; corrected exact integer guard retained in v2 invocation"
+  },
+  "launcher": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/run_r00_render_physical_FD.py",
+    "sha256": "f67b286e26f9783a7720d15b7cc5b6664fb5557af9a448aaa73a554af6f0499f"
+  },
+  "launch_snapshot": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-FF-parent-launch-snapshot-v1.json",
+    "sha256": "e1ea129d5af99a1c56fef5e1ac650bf934e08ec48b061061d5fa8811bec5ae5e"
+  },
+  "process_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/r00-native-ble-ddr-no-local-panel-physical-C11030FF/pnr_process.json",
+  "started_utc": "2026-10-30T14:20:35.593301+00:00",
+  "result_pending_at_checkpoint": true,
+  "physical_resource_saving_proven": false,
+  "complete_cdc_accepted": false,
+  "complete_reset_accepted": false,
+  "full_timing_accepted": false,
+  "hardware_operated": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "release_ready": false,
+  "deployment_allowed": false
+}

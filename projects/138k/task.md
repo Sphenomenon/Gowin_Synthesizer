@@ -110,6 +110,8 @@
 
 [BLE DDR revision2 新综合](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_R2_SYNTHESIS_20261030.md)已通过，固定 `27732817b67e21ac` 的 591 输入／四输出保持，无 AG 组合环诊断；综合 Logic 106,446／Register 60,911／BSRAM 229。实际旧 BLE raw 32 个 SDPB 退休、新增缓存／FIFO 八个 block 原语，综合净 −24、寄存器 +2,309，尚非物理净收益。父级 clock 四项／28 负控、既有 Gray／media 27 项／75 负控（两个历史可选项跳过）、PCM 18 项／109 负控及三公开 CLI 通过；新增完整 CDC／reset／RAM 时序、物理与硬件仍未接受，无部署。
 
+[BLE DDR FF 物理准备](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_FF_PHYSICAL_PREPARE_20261030.md)已父级核验 51 项物理输入／35 负控，独立另增 27 负控，绑定新 VG 和全部组件闭包；UserCode `C11030FF` 只用于本实验。保持名义时钟、place1／route0、hold correction 和不复制资源，SDC 只含此前维护 PCM v2 的精确目标增补。P&R 已启动，结果另记；尚无物理净收益、完整 CDC／reset／STA 或硬件接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
