@@ -25,8 +25,11 @@ class ProfileSources(unittest.TestCase):
         selected = profile.load(ROOT, profile.NAME)
         features = {item['name']: item for item in selected['features']}
         self.assertEqual(selected['target_sample_rates_hz'], [48000, 44100])
-        self.assertEqual(selected['configuration']['implemented_sample_rates_hz'], [48000])
-        self.assertEqual(features['audio_44k1_switch']['source_state'], 'not_implemented')
+        self.assertEqual(selected['revision'], 4)
+        self.assertEqual(selected['configuration'], profile.RUNTIME_CONFIGURATION)
+        self.assertEqual(features['audio_44k1_switch']['source_state'], 'native_runtime_source_integrated')
+        self.assertTrue(selected['configuration']['reserve_zero_epoch'])
+        self.assertEqual(selected['configuration']['display_metadata_minor'], 1)
         self.assertIn('native scan-window admission', features['hdmi_ddr']['selected_behavior'])
         self.assertEqual(selected['configuration']['scan_window_policy'], 'native_admission_v1')
         self.assertTrue(all(item['hardware_acceptance'] == 'unverified_for_this_profile'
@@ -65,6 +68,24 @@ class ProfileSources(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'source inventory drift'):
                 profile.load(ROOT, profile.NAME)
 
+    def test_runtime_configuration_and_revision_cannot_be_changed(self):
+        original = Path.read_text
+        base = json.loads((ROOT / profile.CONFIG).read_text())
+        mutations = [dict(revision=3), dict(revision=5)]
+        for key, value in (('tf_audio_kind', 'mp3'), ('implemented_sample_rates_hz', [48000]),
+                           ('audio_policy', 'legacy'), ('reserve_zero_epoch', False),
+                           ('display_metadata_minor', 0), ('high_speed_allowed', False)):
+            changed = copy.deepcopy(base)
+            changed['configuration'][key] = value
+            mutations.append(changed)
+        for mutation in mutations:
+            config = dict(base, **mutation) if 'configuration' not in mutation else mutation
+            with self.subTest(mutation=mutation), \
+                 patch.object(Path, 'read_text', lambda source, *args, **kwargs:
+                              json.dumps(config) if source == ROOT / profile.CONFIG else original(source, *args, **kwargs)), \
+                 self.assertRaisesRegex(ValueError, 'identity changed|configuration mismatch'):
+                profile.load(ROOT, profile.NAME)
+
     def test_missing_maintained_ae350_source_cannot_fall_back_to_locked_rom(self):
         original = Path.is_file
         missing = ROOT / 'firmware/ae350/ui_main.c'
@@ -99,12 +120,16 @@ class PreparedClosure(unittest.TestCase):
         firmware = a2['projects/138k/push2_workstation/usb_a/firmware.c']
         self.assertEqual(firmware['selection'], 'usb_firmware_build_input')
         self.assertTrue(firmware['same_bytes_as_reference'])
-        self.assertEqual(artifact['revision'], 3)
+        self.assertEqual(artifact['revision'], 4)
         self.assertTrue(artifact['scan_window']['enabled'])
         self.assertFalse(artifact['scan_window']['physical_deadlines_verified'])
         self.assertNotIn('src/video/hdmi_display.v', artifact['enabled_inputs'])
         for relative in integration.PROFILE_SOURCES:
-            self.assertIn(relative, artifact['enabled_inputs'])
+            self.assertIn(relative, artifact['staged_input_sha256'])
+        self.assertNotIn('rtl/workstation/workstation_profile_hdmi.sv', artifact['enabled_inputs'])
+        self.assertIn('rtl/workstation/workstation_profile_runtime.sv', artifact['enabled_inputs'])
+        self.assertEqual(artifact['scan_window']['compilation_provider'],
+                         'rtl/workstation/workstation_profile_runtime.sv')
         # Retain parent bytes; compile one wrapper over a locked implementation.
         self.assertTrue((self.stage / 'src/video/hdmi_display.v').is_file())
         self.assertNotIn('rtl/workstation/workstation_hdmi_display.sv', artifact['enabled_inputs'])
@@ -127,6 +152,49 @@ class PreparedClosure(unittest.TestCase):
             with self.subTest(relative=relative), self.assertRaisesRegex(ValueError, 'drift|closure changed'):
                 profile.verify(ROOT, self.output)
             source.write_bytes(original)
+
+    def test_all_snapshot_inputs_are_rechecked_and_identity_bound(self):
+        metadata = json.loads((self.output / 'integration_inputs.json').read_text())
+        extra = metadata['source_snapshot_extra_inputs']
+        snapshot = integration.source_snapshot(ROOT, extra)
+        self.assertEqual(snapshot, metadata['source_snapshot_sha256'])
+        # A source need not be directly compiled to affect this preparation.
+        changed = dict(snapshot)
+        changed[next(iter(changed))] = '0' * 64
+        with patch.object(integration, 'source_snapshot', return_value=changed):
+            with self.assertRaisesRegex(ValueError, 'complete source snapshot drift'):
+                profile.verify(ROOT, self.output)
+        added = dict(snapshot, **{'rtl/new_unreviewed_source.sv': '0' * 64})
+        with patch.object(integration, 'source_snapshot', return_value=added):
+            with self.assertRaisesRegex(ValueError, 'complete source snapshot drift'):
+                profile.verify(ROOT, self.output)
+
+    def test_runtime_replacements_preserve_original_bytes_and_have_one_owner(self):
+        from tools import workstation_runtime_profile as runtime
+        metadata = json.loads((self.output / 'integration_inputs.json').read_text())
+        artifact = profile.verify(ROOT, self.output)
+        baseline = load_baseline(ROOT, 'resource_rework_route0')
+        for parent, source in runtime.REPLACEMENTS.items():
+            destination = runtime.INSTALL_PATHS.get(source, source)
+            self.assertNotIn(parent, artifact['enabled_inputs'])
+            record = metadata['replaced_compilation_inputs'][parent]
+            self.assertEqual(profile.sha(self.stage / parent), record['sha256'])
+            if parent != 'src/ae350/gw138k_controlled_services.sv':
+                self.assertEqual((self.stage / parent).read_bytes(), baseline.read_bytes(parent))
+            else:
+                parent_evidence = json.loads((self.output / 'parent_prepare_metadata.json').read_text())
+                self.assertEqual(record['sha256'], parent_evidence['timing_structure'][parent]['after'])
+            self.assertIn(destination, artifact['enabled_inputs'])
+            self.assertEqual((self.stage / destination).read_bytes(), (ROOT / source).read_bytes())
+            row = artifact['enabled_inputs'][destination]
+            self.assertEqual(row['origin'], 'versioned_source')
+            self.assertTrue(row['source'].endswith('/' + source))
+            self.assertEqual(metadata['replaced_compilation_inputs'][parent]['selected_destination'], destination)
+        package = artifact['enabled_inputs']['src/memory/display_data_layout_pkg.sv']
+        self.assertTrue(package['versioned_equivalent']['source'].endswith('/rtl/display_data_layout_pkg.svh'))
+        self.assertEqual(next(iter(artifact['enabled_inputs'])), 'src/memory/display_data_layout_pkg.sv')
+        self.assertFalse(artifact['runtime_audio']['cdc_constraints_complete'])
+        self.assertFalse(artifact['runtime_audio']['physical_gates_passed'])
 
     def test_scan_window_policy_cannot_be_silently_disabled(self):
         manifest = self.output / 'integration_inputs.json'
@@ -186,6 +254,24 @@ class PreparedClosure(unittest.TestCase):
                 profile.verify(ROOT, self.output)
             source.write_bytes(original)
 
+    def test_runtime_ble_rom_stays_inside_a_copied_candidate(self):
+        artifact = profile.verify(ROOT, self.output)
+        metadata = json.loads((self.output / 'integration_inputs.json').read_text())
+        self.assertEqual(metadata['bluetooth']['rom_path_policy'], 'stage_relative')
+        header_path = 'native_bluetooth/patch_path.vh'
+        text = (self.stage / header_path).read_text().strip()
+        target = Path(json.loads(text.removeprefix('`define WORKSTATION_BLE_PATCH_FILE ')))
+        self.assertFalse(target.is_absolute())
+        data = (self.stage / target).resolve()
+        self.assertTrue(data.is_relative_to(self.stage))
+        self.assertEqual(profile.sha(data), artifact['generated_data_inputs'][str(target)]['source_sha256'])
+        self.assertEqual(artifact['generated_data_inputs'][header_path]['generator'], 'tools/workstation_bluetooth.py')
+        original = (self.stage / header_path).read_bytes()
+        (self.stage / header_path).write_text('`define WORKSTATION_BLE_PATCH_FILE "/tmp/unowned.mem"\n')
+        with self.assertRaisesRegex(ValueError, 'BLE generated input changed'):
+            profile.verify(ROOT, self.output)
+        (self.stage / header_path).write_bytes(original)
+
 
 @unittest.skipUnless(os.environ.get('GW138K_PROFILE_LEGACY_PREPARED'),
                      'Set GW138K_PROFILE_LEGACY_PREPARED to verify unprofiled native preparation')
@@ -196,10 +282,19 @@ class LegacyPolicy(unittest.TestCase):
         self.assertNotIn('workstation_profile', metadata)
         self.assertNotIn('ae350_firmware', metadata)
         self.assertNotIn('scan_window', metadata)
+        self.assertNotIn('runtime_audio', metadata)
+        self.assertIn('rtl/workstation/workstation_custom_138k_top.sv', metadata['enabled_inputs'])
+        self.assertIn('rtl/audio/workstation_fpc_audio.sv', metadata['enabled_inputs'])
+        self.assertNotIn('rtl/workstation/workstation_profile_runtime.sv', metadata['enabled_inputs'])
         self.assertIn('src/video/hdmi_display.v', metadata['enabled_inputs'])
         self.assertTrue(all(relative not in metadata['enabled_inputs']
                             for relative in integration.PROFILE_SOURCES))
         self.assertFalse((output / profile.AE350_DIRECTORY).exists())
+        self.assertEqual(metadata['bluetooth']['rom_path_policy'], 'absolute_original_candidate')
+        stage = output / 'workstation/Prj1'
+        header = (stage / 'native_bluetooth/patch_path.vh').read_text()
+        expected = '`define WORKSTATION_BLE_PATCH_FILE ' + json.dumps(str(stage / 'native_bluetooth/rtl8723ds_patch.mem')) + '\n'
+        self.assertEqual(header, expected)
         baseline = load_baseline(ROOT, 'resource_rework_route0')
         self.assertEqual((output / 'workstation/Prj1/firmware/boot.mem').read_bytes(),
                          baseline.read_bytes('firmware/boot.mem'))

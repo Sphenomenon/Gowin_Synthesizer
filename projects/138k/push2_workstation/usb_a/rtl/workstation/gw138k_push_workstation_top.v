@@ -7,6 +7,9 @@ module workstation_custom_138k_top #(
     parameter integer BLUETOOTH_DIAGNOSTIC_UART=0
 ) (
     input wire clk_50m,clk_12m288,pc_uart_rx_i,
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    input wire clk_16m9344,
+`endif
     input wire flash_miso,
     output wire flash_clk,flash_cs_n,flash_mosi,flash_wp_n,flash_hold_n,
     input wire usb2_ulpi_clk,usb2_ulpi_dir,usb2_ulpi_nxt,
@@ -70,6 +73,13 @@ module gw138k_push_workstation_top #(
     inout wire [3:0] ddr_dqs,ddr_dqs_n
 );
 `endif
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    wire ble_debug_uart,song_cmd_valid,playlist_scan_done,tf_card_lost;
+    wire [3:0] song_cmd_index;
+    wire [4:0] tf_track_count;
+    wire [31:0] fetch_count,last_fetch;
+    reg [31:0] signature,ram_result,heartbeat,trap_cause,trap_pc,ui_report;
+`endif
     wire reset_n;
     reset_release u_reset(.clk(clk_50m),.ext_reset_n(button1_n),.reset_n(reset_n));
     wire audio_clk,audio_reset_n,audio_locked;
@@ -107,6 +117,9 @@ module gw138k_push_workstation_top #(
     wire synth_hp_bck,synth_hp_ws,synth_hp_din,synth_pa_en,synth_sample_ce;
     wire [31:0] scope_status_audio,tf_scope_control_audio,tf_scope_control_50;
     wire tf_control_valid,tf_mode_50,tf_run_50,tf_scope_restart,tf_scope_cancel,tf_scope_error;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    wire tf_explicit_restart,tf_file_cancel;
+`endif
     wire [3:0] tf_scope_track;
     reg [4:0] tf_control_divider;
     always @(posedge audio_clk or negedge audio_reset_n)
@@ -120,6 +133,9 @@ module gw138k_push_workstation_top #(
         .song_valid_i(song_cmd_valid),.song_track_i(song_cmd_index),
         .playlist_ready_i(playlist_scan_done),.track_count_i(tf_track_count),.card_lost_i(tf_card_lost),
         .mode_o(tf_mode_50),.run_o(tf_run_50),.track_o(tf_scope_track),
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        .explicit_restart_o(tf_explicit_restart),.file_cancel_o(tf_file_cancel),
+`endif
         .restart_o(tf_scope_restart),.cancel_analysis_o(tf_scope_cancel),.error_o(tf_scope_error));
     reg tf_run_meta,tf_run_audio;
     always @(posedge audio_clk or negedge audio_reset_n)
@@ -130,12 +146,14 @@ module gw138k_push_workstation_top #(
     wire [31:0] synth_dac_reference,synth_dac_voices,synth_dac_health;
     wire synth_display_valid;
     wire [31:0] synth_display_pcm,synth_display_reference,synth_display_voices,synth_display_status;
+`ifndef WORKSTATION_RUNTIME_NATIVE
     gw138k_stream_cdc #(.WIDTH(128)) u_final_output_cdc(
         .reset_n(reset_n && audio_reset_n),.source_clk(audio_clk),.destination_clk(clk_50m),
         .source_valid(final_sample_valid),
         .source_data(final_snapshot),
         .drop_count(),.destination_valid(output_sample_valid),
         .destination_data({output_pcm,output_reference,active_voices,display_status}));
+`endif
     wire [3:0] music_model_status;
     wire music_report_sending,music_report_serial,runtime_serial;
     wire music_pcm_ready;
@@ -193,20 +211,103 @@ module gw138k_push_workstation_top #(
         .response_data(ui_response_data),.response_error(ui_response_error),.frame_commit(ui_frame_commit),
         .pending(ui_pending),.visible(ui_visible),.next_visible(ui_next_visible),.front_base(ui_front_base),.next_base(ui_next_base));
     wire service_select=psel && paddr[31:12]==20'hf8010;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    // This page is distinct from legacy audio F8010, UI F8020 and boot F8000.
+    wire clock_service_select=psel && paddr[31:12]==20'hf8030;
+    wire clock_service_ready,clock_service_error;
+    wire [31:0] clock_service_data;
+    wire clock_command_reset_n,clock_command_valid,clock_command_ready,clock_command_write;
+    wire [11:0] clock_command_address;
+    wire [31:0] clock_command_data,clock_response_data;
+    wire [3:0] clock_command_strobes;
+    wire clock_response_error;
+    wire rate_request,rate_target44,rate_recover,rate_request_ready;
+    wire rate_busy,rate_fault,rate_accepted,rate_applied,rate_rejected,rate_failed,rate_policy_rejected;
+    wire rate44,rate_valid,rate_dsp_fault,rate_quiesce,rate_flush,rate_context_ready;
+    wire [31:0] rate_epoch;
+    wire [1:0] rate_qualified;
+    wire [2:0] rate_reject_code;
+    wire [3:0] rate_fault_code,rate_select,rate_block_reason;
+    wire ddr_client_reset_n,ddr_client_ready;
+    wire memory_guard_started,memory_guard_fault,memory_guard_ready,memory_guard_mute,runtime_channel_open;
+    wire [1:0] memory_guard_code;
+    wire runtime_reset_n=reset_n && memory_guard_started;
+    wire runtime_delay_req;
+    wire runtime_smute;
+    wire [31:0] display_observation_drop;
+    // Backend loss quarantines both directions until common reset. It never
+    // clears held notes, committed parameters or the stream epoch in place.
+    workstation_runtime_memory_guard u_runtime_memory_guard(
+        .reset_ni(reset_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),
+        .backend_reset_ni(ddr_client_reset_n),.backend_ready_i(ddr_client_ready && audio_reset_n),
+        .started_o(memory_guard_started),.fault_o(memory_guard_fault),.start_ready_o(memory_guard_ready),
+        .mute_o(memory_guard_mute),.channel_open_o(runtime_channel_open),.clock_alive_o(),.fault_code_o(memory_guard_code));
+    wire compute_output_safe_n=reset_n && audio_reset_n && !memory_guard_mute;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] output_safe_compute;
+    always @(posedge audio_clk or negedge compute_output_safe_n)
+        if(!compute_output_safe_n)output_safe_compute<=0;
+        else output_safe_compute<={output_safe_compute[1:0],1'b1};
+    wire tf_packet_active,tf_packet_busy,tf_packet_valid,tf_packet_error,tf_packet_ready;
+    wire signed [15:0] tf_packet_left,tf_packet_right;
+    wire [19:0] tf_packet_rate;
+    wire [31:0] tf_packet_generation,tf_expected_generation;
+    wire tf_media_quiet,tf_media_quiet50,tf_busy50,tf_runtime_failed;
+    wire [3:0] tf_runtime_failure;
+    wire delay_ddr_req,delay_ddr_write,delay_ddr_ready,delay_ddr_response;
+    wire [28:0] delay_ddr_address;
+    wire [255:0] delay_ddr_data,client_rdata;
+    wire physical_frame_valid,physical_frame_error,physical_frame44;
+    wire [31:0] physical_frame_epoch,physical_frame_sequence,physical_frame_pcm;
+    wire display_frame44,display_frame_error;
+    wire [31:0] display_frame_epoch,display_frame_sequence;
+    wire [31:0] runtime_observation_drop;
+    wire runtime_display_observation_fault;
+    // CPU reset clears command bookkeeping. The independently latched backend
+    // fault and runtime identity survive it and remain visible to the service.
+    gw138k_apb_cdc u_clock_control(
+        .reset_n(preset_n && runtime_reset_n),.pclk(pclk),.audio_clk(clk_50m),
+        .psel(clock_service_select),.penable(penable),.pwrite(pwrite),.paddr(paddr[11:0]),
+        .pwdata(pwdata),.pstrb(pstrb),.pready(clock_service_ready),.pslverr(clock_service_error),
+        .prdata(clock_service_data),.command_reset_n(clock_command_reset_n),
+        .command_valid(clock_command_valid),.command_ready(clock_command_ready),
+        .command_write(clock_command_write),.command_address(clock_command_address),
+        .command_data(clock_command_data),.command_strobes(clock_command_strobes),
+        .response_data(clock_response_data),.response_error(clock_response_error));
+    workstation_audio_clock_service #(.RESERVE_ZERO_EPOCH(1)) u_clock_service(
+        .clk_i(clk_50m),.reset_ni(clock_command_reset_n),
+        .command_valid_i(clock_command_valid),.command_write_i(clock_command_write),
+        .command_address_i(clock_command_address),.command_data_i(clock_command_data),
+        .command_strobes_i(clock_command_strobes),.command_ready_o(clock_command_ready),
+        .response_data_o(clock_response_data),.response_error_o(clock_response_error),
+        .switch_permit_i(memory_guard_ready && !tf_busy50),.core_request_ready_i(rate_request_ready),
+        .core_busy_i(rate_busy),.core_fault_i(rate_fault),.core_dsp_fault_i(rate_dsp_fault || memory_guard_fault),
+        .core_accepted_i(rate_accepted),.core_applied_i(rate_applied),.core_rejected_i(rate_rejected),
+        .core_policy_rejected_i(rate_policy_rejected),.core_failed_i(rate_failed),
+        .core_reject_code_i(rate_reject_code),.core_fault_code_i(rate_fault_code),
+        .core_active_44k1_i(rate44),.core_active_valid_i(rate_valid),.core_stream_epoch_i(rate_epoch),
+        .core_source_qualified_i(rate_qualified),.request_o(rate_request),.request_44k1_o(rate_target44),
+        .recover_o(rate_recover));
+`endif
     wire [447:0] performance_words;
     wire all_usb_valid,all_usb_ready;wire [17:0] all_usb_event;
     wire [447:0] push_snapshot;
     wire [31:0] score_led_mask;wire score_running,record_enabled;
     wire [33:0] service_state_usb;wire service_state_usb_valid;
     wire music_score_valid,music_score_ready,score_usb_valid,score_usb_ready;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    wire playlist_usb_valid,playlist_usb_ready;
+`else
     wire playlist_scan_done,playlist_usb_valid,playlist_usb_ready;
+`endif
     wire [7:0] playlist_name_addr,playlist_name_data;
     wire [15:0] playlist_usb_word;
     wire push_track_launch;
     wire [3:0] push_track_index;
+`ifndef WORKSTATION_RUNTIME_NATIVE
     wire song_cmd_valid;
     wire [3:0] song_cmd_index;
     wire [4:0] tf_track_count;
+`endif
     tf_playlist_bridge u_playlist_bridge(
         .clk_50m(clk_50m),.reset_n(reset_n),.usb_clk(usb_clk),.usb_reset_n(usb_reset_n),
         .scan_done(playlist_scan_done),.track_count(tf_track_count),
@@ -241,7 +342,13 @@ module gw138k_push_workstation_top #(
     assign usb2_ulpi_data=native_usb_oe ? native_usb_data : 8'bz;
     workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)) u_native_usb (
         .clk_cpu(usb_clk),.clk_ref(clk_50m),.clk_ulpi(usb2_ulpi_clk),.clk_audio(audio_clk),
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        // Compute PLL recovery must not manufacture a second USB attach and
+        // reapply defaults to a runtime whose notes/epoch were retained.
+        .reset_n(usb_reset_n),.audio_reset_n(runtime_reset_n),.uart_rx_i(1'b1),.uart_tx_o(native_usb_uart),
+`else
         .reset_n(usb_reset_n),.audio_reset_n(audio_reset_n),.uart_rx_i(1'b1),.uart_tx_o(native_usb_uart),
+`endif
         .ulpi_data_i(usb2_ulpi_data),.ulpi_dir_i(usb2_ulpi_dir),.ulpi_nxt_i(usb2_ulpi_nxt),
         .ulpi_data_o(native_usb_data),.ulpi_data_oe_o(native_usb_oe),.ulpi_stp_o(usb2_ulpi_stp),
         .performance_words_i(performance_words),.display_meta_data_i(display_summary_usb),
@@ -268,6 +375,59 @@ module gw138k_push_workstation_top #(
         .select(mmio_select),.write(mmio_write),.address(mmio_address),.wdata(mmio_wdata),.ready(mmio_ready),.rdata(mmio_rdata),
         .audio_valid(all_usb_valid),.audio_ready(all_usb_ready),.audio_event(all_usb_event),.audio_lifecycle(usb_lifecycle),.audio_cancel(usb_cancel),.telemetry(usb_words));
 `endif
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    wire [15:0] master_volume;
+    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1)) u_managed(
+        .rst_ni(runtime_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),
+        .reference_48_i(clk_12m288),.reference_44_i(clk_16m9344),.midi_rx_i(midi_rx_i),
+        .pc_uart_rx_i((music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),
+        .usb_event_valid(all_usb_valid),.usb_lifecycle(usb_lifecycle),.usb_cancel(usb_cancel),
+        .usb_event_data(all_usb_event),.usb_event_ready(all_usb_ready),
+        .pclk(pclk),.preset_n(preset_n),.psel(service_select),.penable(penable),.pwrite(pwrite),
+        .paddr(paddr[11:0]),.pwdata(pwdata),.pstrb(pstrb),
+        .pready(service_ready),.pslverr(service_error),.prdata(service_data),.performance_words_o(performance_words),
+        .request_i(rate_request),.request_44k1_i(rate_target44),.switch_permit_i(memory_guard_ready && !tf_busy50),
+        .recover_i(rate_recover),.media_quiescent_i(tf_media_quiet50),
+        .request_ready_o(rate_request_ready),.busy_o(rate_busy),.fault_o(rate_fault),
+        .accepted_o(rate_accepted),.applied_o(rate_applied),.rejected_o(rate_rejected),.failed_o(rate_failed),
+        .policy_rejected_o(rate_policy_rejected),.reject_code_o(rate_reject_code),
+        .fault_code_o(rate_fault_code),.clock_select_o(rate_select),.switch_block_reason_o(rate_block_reason),
+        .active_44k1_o(rate44),.active_valid_o(rate_valid),.stream_epoch_o(rate_epoch),
+        .source_qualified_o(rate_qualified),.quiesce_o(rate_quiesce),.stream_flush_o(rate_flush),
+        .dsp_fault_o(rate_dsp_fault),.context_ready_o(rate_context_ready),
+        .pcm_left_i(32'sd0),.pcm_right_i(32'sd0),.output_mute_i(!output_safe_compute[2]),
+        .tf_active_i(tf_packet_active),.tf_busy_i(tf_packet_busy),.tf_valid_i(tf_packet_valid),
+        .tf_error_i(tf_packet_error),.tf_left_i(tf_packet_left),.tf_right_i(tf_packet_right),
+        .tf_sample_rate_i(tf_packet_rate),.tf_generation_i(tf_packet_generation),
+        .expected_tf_generation_i(tf_expected_generation),.tf_ready_o(tf_packet_ready),
+        .ddr_req_o(runtime_delay_req),.ddr_write_o(delay_ddr_write),.ddr_address_o(delay_ddr_address),
+        .ddr_data_o(delay_ddr_data),.ddr_mask_o(),.ddr_ready_i(delay_ddr_ready && runtime_channel_open),
+        .ddr_response_i(delay_ddr_response && runtime_channel_open),.ddr_read_data_i(client_rdata),
+        .mclk_o(dac_mclk),.bck_o(hp_bck),.lrck_o(hp_ws),.data_o(hp_din),
+        .pdn_no(dac_pdn_n),.smute_o(runtime_smute),
+        .frame_valid_o(physical_frame_valid),.frame_error_o(physical_frame_error),.frame_44k1_o(physical_frame44),
+        .frame_epoch_o(physical_frame_epoch),.frame_sequence_o(physical_frame_sequence),.frame_pcm_o(physical_frame_pcm),
+        .held_notes_o(),.control_state_o(),.control_pitch_o(),.control_options_o(),.applied_events_o(),.pc_health_o(),
+        .master_volume_o(master_volume),.active_mask_o(),.scope_status_o(scope_status_audio),
+        .tf_scope_control_o(tf_scope_control_audio),.deadline_miss_o(),.midi_overflow_o(),.note_drop_o(),
+        .underrun_count_o(),.midi_cdc_drop_o(),.observation_drop_o(runtime_observation_drop),.record_drop_o(),
+        .uart_error_o(),.sample_valid_o(audio_sample_valid),.audio_left_o(),.audio_right_o(),
+        .record_enabled_o(record_enabled),.record_failed_o(),.record_failure_code_o(),
+        .score_running_o(score_running),.score_done_o(),.score_failed_o(),.led_mask_o(score_led_mask),.score_frame_o(),
+        .fft_valid_o(),.fft_bin_o(),.fft_real_o(),.fft_imag_o(),.fft_frame_o(),.fft_discard_count_o(),
+        .fft_44k1_o(),.fft_context_valid_o(),.fft_epoch_o(),
+        .display_valid_o(output_sample_valid),.display_pcm_o(output_pcm),.display_reference_o(output_reference),
+        .display_voices_o(active_voices),.display_status_o(display_status),.display_44k1_o(display_frame44),
+        .display_error_o(display_frame_error),.display_epoch_o(display_frame_epoch),.display_sequence_o(display_frame_sequence),
+        .effect_mask_o(effect_mask),.effect_order_o(effect_order),
+        .display_observation_fault_o(runtime_display_observation_fault));
+    assign dac_sslow=1'b0,dac_sd=1'b0,dac_slow=1'b0;
+    assign dac_smute=runtime_smute || memory_guard_mute;
+    assign synth_display_valid=output_sample_valid;
+    assign synth_display_pcm=output_pcm,synth_display_reference=output_reference;
+    assign synth_display_voices=active_voices,synth_display_status=display_status;
+    assign delay_ddr_req=runtime_delay_req && runtime_channel_open;
+`else
 `ifdef WORKSTATION_CUSTOM_138K
     wire [15:0] master_volume;
     defparam u_managed.u_audio.u_workstation.effects.delay_stage.u_write_fifo.RAM_STYLE="block_ram";
@@ -293,6 +453,7 @@ module gw138k_push_workstation_top #(
         .delay_mem_clk_i(memory_clk),.delay_mem_rst_ni(memory_reset_n),
         .delay_dwr_valid_o(delay_dwr_valid),.delay_dwr_data_o(delay_dwr_data),.delay_dwr_pop_i(delay_dwr_pop),
         .delay_drd_push_i(delay_drd_push),.delay_drd_data_i(delay_drd_data),.delay_drd_ready_o(delay_drd_ready));
+`endif
     wire signed [16:0] output_mid_pcm=$signed({output_pcm[31],output_pcm[31:16]})+
                                             $signed({output_pcm[15],output_pcm[15:0]});
     wire signed [31:0] output_mid={output_mid_pcm,15'd0};
@@ -310,20 +471,27 @@ module gw138k_push_workstation_top #(
     wire [2:0] app_cmd;
     wire app_en,app_rdy,app_wren,app_wend,app_wrdy,app_rvalid;
     wire [28:0] app_addr;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    wire [255:0] app_wdata,app_rdata;
+`else
     wire [255:0] app_wdata,app_rdata,client_rdata;
+`endif
     wire [31:0] app_wmask;
     wire audio_ddr_req,audio_ddr_write,audio_ddr_ready,audio_ddr_response;
     wire audio_queued_req,audio_queued_write,audio_queued_ready;
     wire [28:0] audio_queued_address;
     wire [255:0] audio_queued_data;
     wire [28:0] audio_ddr_address;wire [255:0] audio_ddr_data;
+`ifndef WORKSTATION_RUNTIME_NATIVE
     wire delay_ddr_req,delay_ddr_write,delay_ddr_ready,delay_ddr_response;
     wire [28:0] delay_ddr_address;
     wire [255:0] delay_ddr_data;
+`endif
     wire delay_dwr_valid,delay_dwr_pop,delay_drd_push,delay_drd_ready;
     wire [64:0] delay_dwr_data,delay_drd_data;
     wire [7:0] delay_ddr_debug;
     // P10 delay ring DMA: arbiter owner 6, BULK_POOL first granule (128 KiB).
+`ifndef WORKSTATION_RUNTIME_NATIVE
     delay_ddr_dma #(.DELAY_BITS(14),.ECHO_SAMPLES(9600)) u_delay_ddr_dma(
         .clk_i(memory_clk),.rst_ni(memory_reset_n),
         .dwr_valid_i(delay_dwr_valid),.dwr_data_i(delay_dwr_data),.dwr_pop_o(delay_dwr_pop),
@@ -332,20 +500,63 @@ module gw138k_push_workstation_top #(
         .ddr_data_o(delay_ddr_data),.ddr_mask_o(),
         .ddr_ready_i(delay_ddr_ready),.ddr_response_i(delay_ddr_response),.ddr_read_data_i(client_rdata),
         .debug_status_o(delay_ddr_debug));
+`endif
     tf_audio_ddr_command_buffer u_audio_command_buffer(
         .clk(memory_clk),.rst_n(memory_reset_n),
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        .in_valid(audio_ddr_req && runtime_channel_open),.in_write(audio_ddr_write),
+`else
         .in_valid(audio_ddr_req),.in_write(audio_ddr_write),
+`endif
         .in_address(audio_ddr_address),.in_data(audio_ddr_data),
         .in_ready(audio_ddr_ready),.out_valid(audio_queued_req),
         .out_write(audio_queued_write),.out_address(audio_queued_address),
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        .out_data(audio_queued_data),.out_ready(audio_queued_ready && runtime_channel_open));
+`else
         .out_data(audio_queued_data),.out_ready(audio_queued_ready));
+`endif
     wire signed [31:0] tf_pcm_left,tf_pcm_right;
     wire analysis_pcm_valid,analysis_pcm_end;
     wire signed [15:0] analysis_pcm_left,analysis_pcm_right;
     wire [19:0] analysis_sample_rate;
     wire tf_pcm_valid,tf_source_active,tf_format_ready,tf_unsupported,tf_ddr_error;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    wire [19:0] tf_sample_rate;wire [31:0] tf_file_size;wire [10:0] tf_hotplug_debug;
+`else
     wire [19:0] tf_sample_rate;wire [31:0] tf_file_size;wire tf_card_lost;wire [10:0] tf_hotplug_debug;
+`endif
     wire tf_sample_ce,tf_hp_bck,tf_hp_ws,tf_hp_din,tf_pa_en;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    workstation_tf_runtime_service #(.AUDIO_KIND(TF_AUDIO_KIND),.FILE_EXT("WAV")) u_tf_audio(
+        .rst_ni(runtime_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),
+        .memory_clk_i(memory_clk),.memory_reset_ni(memory_reset_n),
+        .memory_ready_i(memory_calibrated && memory_reset_n),
+        .mode_i(tf_mode_50),.run_i(tf_run_50),.restart_i(tf_explicit_restart),.cancel_i(tf_file_cancel),
+        .reader_restart_i(playback_restart),.transport_error_i(tf_scope_error),.track_index_i(playback_track),
+        .runtime_valid_i(rate_valid && memory_guard_ready),.runtime_44k1_i(rate44),
+        .runtime_fault_i(rate_fault || rate_dsp_fault || memory_guard_fault),
+        .runtime_busy_i(rate_busy),.runtime_epoch_i(rate_epoch),
+        .analysis_enable_i(music_analysis_enable),.analysis_hold_i(music_analysis_hold),.analysis_pcm_ready_i(music_pcm_ready),
+        .analysis_pcm_valid_o(analysis_pcm_valid),.analysis_pcm_end_o(analysis_pcm_end),
+        .analysis_left_o(analysis_pcm_left),.analysis_right_o(analysis_pcm_right),.analysis_sample_rate_o(analysis_sample_rate),
+        .sd_miso_i(sd_miso),.sd_cs_no(sd_cs_n),.sd_sck_o(sd_sck),.sd_mosi_o(sd_mosi),
+        .track_count_o(tf_track_count),.playlist_ready_o(playlist_scan_done),.card_lost_o(tf_card_lost),
+        .hotplug_debug_o(tf_hotplug_debug),.playlist_name_address_i(playlist_name_addr),.playlist_name_data_o(playlist_name_data),
+        .format_ready_o(tf_format_ready),.unsupported_o(tf_unsupported),.ddr_error_o(tf_ddr_error),
+        .file_size_o(tf_file_size),.file_sample_rate_o(tf_sample_rate),
+        .ddr_valid_o(audio_ddr_req),.ddr_write_o(audio_ddr_write),.ddr_address_o(audio_ddr_address),
+        .ddr_data_o(audio_ddr_data),.ddr_ready_i(audio_ddr_ready && runtime_channel_open),
+        .ddr_response_i(audio_ddr_response && runtime_channel_open),.ddr_read_data_i(client_rdata),
+        .busy_50_o(tf_busy50),.failed_o(tf_runtime_failed),.cancelled_o(),.eof_seen_o(),
+        .failure_code_o(tf_runtime_failure),.paused_o(),.control_pending_o(),.media_quiescent_50_o(tf_media_quiet50),
+        .source_generation_o(),.source_accepted_count_o(),.failure_count_o(),.invalidate_count_o(),
+        .tf_active_o(tf_packet_active),.tf_busy_o(tf_packet_busy),.tf_valid_o(tf_packet_valid),.tf_error_o(tf_packet_error),
+        .tf_left_o(tf_packet_left),.tf_right_o(tf_packet_right),.tf_sample_rate_o(tf_packet_rate),
+        .tf_generation_o(tf_packet_generation),.expected_generation_o(tf_expected_generation),.tf_ready_i(tf_packet_ready),
+        .media_quiescent_o(tf_media_quiet),.stale_discard_count_o(),.quiesce_discard_count_o());
+    assign tf_source_active=tf_busy50;
+`else
     tf_workstation_audio_bridge #(
         .AUDIO_KIND(TF_AUDIO_KIND),
         .FILE_EXT(TF_AUDIO_KIND==1 ? "MP3" : (TF_AUDIO_KIND==3 ? "FLA" : "WAV")),.CAPTURE_ON_ANALYSIS(1)
@@ -373,6 +584,7 @@ module gw138k_push_workstation_top #(
         .ddr_valid(audio_ddr_req),.ddr_write(audio_ddr_write),.ddr_address(audio_ddr_address),
         .ddr_data(audio_ddr_data),.ddr_ready(audio_ddr_ready),.ddr_response(audio_ddr_response),
         .ddr_response_data(client_rdata));
+`endif
     wire music_ddr_req,music_ddr_write,music_ddr_ready,music_ddr_response;
     wire [28:0] music_ddr_address;
     wire [255:0] music_ddr_data;
@@ -420,6 +632,7 @@ module gw138k_push_workstation_top #(
         .ddr_address(music_ddr_address),.ddr_data(music_ddr_data),
         .ddr_mask(music_ddr_mask),.ddr_ready(music_ddr_ready),
         .ddr_response(music_ddr_response),.ddr_read_data(client_rdata));
+`ifndef WORKSTATION_RUNTIME_NATIVE
     wire [19:0] tf_dac_rate=(tf_format_ready && !tf_unsupported &&
         tf_sample_rate>=20'd8000 && tf_sample_rate<=20'd96000) ? tf_sample_rate : 20'd0;
     tf_rate_pt8211_tx #(.BCK_HALF_CYCLES(25),.STEREO_ENABLE(1),.RATE_MUL(916260)) u_tf_dac(
@@ -442,10 +655,13 @@ module gw138k_push_workstation_top #(
 `endif
         .tap_valid_o(final_sample_valid),.tap_snapshot_o(final_snapshot)
     );
+`endif
 `ifdef WORKSTATION_CUSTOM_138K
     wire ble_frame_clock,ble_frame_valid,ble_pcm_valid,ble_active;
     wire [31:0] ble_frame_pcm,ble_pcm,ble_frame_sequence,ble_sequence;
+`ifndef WORKSTATION_RUNTIME_NATIVE
     wire ble_debug_uart;
+`endif
     wire ble_tx,ble_bt_enable,ble_wl_enable;
     workstation_lcd u_lcd (
         .clk_50m_i(clk_50m),.audio_clk_i(audio_clk),.rst_ni(reset_n),.audio_rst_ni(audio_reset_n),
@@ -454,6 +670,7 @@ module gw138k_push_workstation_top #(
         .red_o(lcd_r),.green_o(lcd_g),.blue_o(lcd_b),.pclk_o(lcd_pclk),
         .hsync_o(lcd_hsync),.vsync_o(lcd_vsync),.de_o(lcd_de),.backlight_o(lcd_bl),.snapshot_drop_count_o()
     );
+`ifndef WORKSTATION_RUNTIME_NATIVE
     workstation_fpc_audio u_fpc_audio (
         .clk_50m_i(clk_50m),.dac_reference_clk_i(clk_12m288),.audio_clk_i(audio_clk),
         .rst_ni(reset_n),.audio_rst_ni(audio_reset_n),.master_volume_i(master_volume),
@@ -464,16 +681,39 @@ module gw138k_push_workstation_top #(
         .frame_sequence_o(ble_frame_sequence),
         .mailbox_drop_count_o()
     );
+`else
+    assign ble_frame_clock=dac_mclk,ble_frame_valid=physical_frame_valid;
+    assign ble_frame_pcm=physical_frame_pcm,ble_frame_sequence=physical_frame_sequence;
+`endif
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    wire ble_frame44,ble_frame_error;
+    wire [31:0] ble_frame_epoch;
+    gw138k_stream_cdc #(.WIDTH(98)) u_ble_pcm_cdc (
+        .reset_n(runtime_reset_n),.source_clk(ble_frame_clock),.destination_clk(clk_50m),
+        .source_valid(ble_frame_valid),
+        .source_data({physical_frame44,physical_frame_error,physical_frame_epoch,ble_frame_sequence,ble_frame_pcm}),
+        .drop_count(),.destination_valid(ble_pcm_valid),
+        .destination_data({ble_frame44,ble_frame_error,ble_frame_epoch,ble_sequence,ble_pcm})
+    );
+`else
     gw138k_stream_cdc #(.WIDTH(64)) u_ble_pcm_cdc (
         .reset_n(reset_n && audio_reset_n),.source_clk(ble_frame_clock),.destination_clk(clk_50m),
         .source_valid(ble_frame_valid),.source_data({ble_frame_sequence,ble_frame_pcm}),.drop_count(),
         .destination_valid(ble_pcm_valid),.destination_data({ble_sequence,ble_pcm})
     );
+`endif
     wire [767:0] ble_status;
     workstation_bluetooth u_bluetooth (
         .clk_i(clk_50m),.rst_ni(reset_n),.module_uart_tx_i(ble_uart_rx_i),
         .pcm_valid_i(ble_pcm_valid),.pcm_pair_i(ble_pcm),.pcm_sequence_i(ble_sequence),
-        .source_allowed_i(1'b1),.module_uart_rx_o(ble_tx),.module_bt_dis_no(ble_bt_enable),
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        // Existing BLE format 1 remains 48 kHz. Never relabel 44.1-kHz PCM.
+        .source_allowed_i(memory_guard_ready && rate_valid && !rate44 && !rate_busy && !rate_fault && !rate_dsp_fault &&
+            !ble_frame44 && !ble_frame_error && ble_frame_epoch==rate_epoch),
+`else
+        .source_allowed_i(1'b1),
+`endif
+        .module_uart_rx_o(ble_tx),.module_bt_dis_no(ble_bt_enable),
         .module_wl_dis_no(ble_wl_enable),.outputs_active_o(ble_active),
         .initialized_o(),.connected_o(),.subscribed_o(),.failed_o(),.status_o(ble_status)
     );
@@ -503,11 +743,23 @@ module gw138k_push_workstation_top #(
     wire [255:0] cpu_mem_data;
     wire [31:0] cpu_mem_mask;
     hdmi_display u_video (
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        .frame_44k1_i(display_frame44),.frame_error_i(display_frame_error),
+        .frame_epoch_i(display_frame_epoch),.frame_sequence_i(display_frame_sequence),
+        .observation_trusted_i(memory_guard_ready && rate_valid && !rate_busy && !rate_fault && !rate_dsp_fault &&
+            !runtime_display_observation_fault),
+        .display_observation_drop_o(display_observation_drop),
+        .ddr_client_reset_no(ddr_client_reset_n),.ddr_client_ready_o(ddr_client_ready),
+`endif
         .ui_pending(ui_pending),.ui_visible(ui_visible),.ui_next_visible(ui_next_visible),
         .ui_front_base(ui_front_base),.ui_next_base(ui_next_base),.ui_frame_commit(ui_frame_commit),
         .cpu_req(cpu_mem_req),.cpu_write(cpu_mem_write),.cpu_address(cpu_mem_address),
         .cpu_data(cpu_mem_data),.cpu_mask(cpu_mem_mask),.cpu_ready(cpu_mem_ready),.cpu_response(cpu_mem_response),
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        .audio_req(audio_queued_req && runtime_channel_open),.audio_write(audio_queued_write),.audio_address(audio_queued_address),
+`else
         .audio_req(audio_queued_req),.audio_write(audio_queued_write),.audio_address(audio_queued_address),
+`endif
         .audio_data(audio_queued_data),.audio_ready(audio_queued_ready),.audio_response(audio_ddr_response),
         .music_req(music_ddr_req),.music_write(music_ddr_write),.music_address(music_ddr_address),
         .music_data(music_ddr_data),.music_mask(music_ddr_mask),
@@ -550,7 +802,11 @@ module gw138k_push_workstation_top #(
         else core_reset_pipe<={core_reset_pipe[2:0],1'b1};
     wire cpu_reset_n=core_reset_pipe[3];
     wire rom_clk,rom_reset_n,rom_write;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    wire [31:0] rom_address,rom_read_data;
+`else
     wire [31:0] rom_address,rom_read_data,fetch_count,last_fetch;
+`endif
     wire [1:0] rom_transfer;
     wire ram_clk,ram_reset_n,ram_write;
     wire [31:0] ram_address;
@@ -572,7 +828,9 @@ module gw138k_push_workstation_top #(
         .req_valid(cpu_mem_req),.req_write(cpu_mem_write),.req_address(cpu_mem_address),
         .req_data(cpu_mem_data),.req_mask(cpu_mem_mask),.req_ready(cpu_mem_ready),
         .rsp_valid(cpu_mem_response),.rsp_data(client_rdata));
+`ifndef WORKSTATION_RUNTIME_NATIVE
     reg [31:0] signature,ram_result,heartbeat,trap_cause,trap_pc,ui_report;
+`endif
     wire valid_word=paddr[31:12]==20'hf8000 && paddr[1:0]==0 && pstrb==4'hf;
     always @(posedge pclk or negedge preset_n) begin
         if(!preset_n) begin signature<=0;ram_result<=0;heartbeat<=0;trap_cause<=0;trap_pc<=0;ui_report<=3;end
@@ -596,7 +854,13 @@ module gw138k_push_workstation_top #(
         .DDR_HRDATA(local_data_phase?ram_read_data:external_read_data),.DDR_HREADY(cpu_bus_ready),.DDR_HRESP(cpu_bus_error),.DDR_HADDR(ram_address),
         .DDR_HBURST(),.DDR_HPROT(),.DDR_HSIZE(ram_size),.DDR_HTRANS(ram_transfer),
         .DDR_HWDATA(ram_write_data),.DDR_HWRITE(ram_write),.DDR_HCLK(ram_clk),.DDR_HRSTN(ram_reset_n),
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        .APB_PRDATA(clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
+        .APB_PREADY(clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
+        .APB_PSLVERR(clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
+`else
         .APB_PRDATA(service_select?service_data:ui_select?ui_read_data:32'h41313338),.APB_PREADY(service_select?service_ready:ui_select?ui_ready:1'b1),.APB_PSLVERR(service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
+`endif
         .APB_PENABLE(penable),.APB_PSEL(psel),.APB_PWDATA(pwdata),.APB_PWRITE(pwrite),
         .APB_PPROT(),.APB_PSTRB(pstrb),.APB_PCLK(pclk),.APB_PRSTN(preset_n),
         .TCK_IN(1'b0),.TMS_IN(1'b1),.TRST_IN(1'b1),.TDI_IN(1'b0),.TDO_OUT(),.TDO_OE(),

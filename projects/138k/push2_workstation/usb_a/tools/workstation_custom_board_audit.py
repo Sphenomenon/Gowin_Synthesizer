@@ -4,6 +4,8 @@ from pathlib import Path
 import argparse
 import json
 import re
+import hashlib
+import subprocess
 import xml.etree.ElementTree as ElementTree
 
 from tools.stage_usb_firmware import sha
@@ -212,29 +214,70 @@ def hierarchy(root):
 
 
 def check_ports(stage, plan):
-    text = (stage / SHARED_TOP).read_text()
-    header = re.search(r'module\s+' + TOP + r'\s*#\(.*?\)\s*\((.*?)\);', text, re.S)
-    if not header:
-        raise ValueError('native top source header missing')
+    """Check the exact selected provider, including conditional port macros.
+
+    Runtime support here certifies source/port provenance only. The existing
+    receiver, hierarchy and physical audits retain their separate scope.
+    """
+    stage = Path(stage).resolve()
+    providers = ('rtl/workstation/workstation_custom_138k_top.sv',
+                 'rtl/workstation/workstation_profile_runtime.sv')
+    selected = [entry.get('path') for entry in ElementTree.parse(stage / 'Prj1.gprj').find('FileList')
+                if entry.get('enable') == '1' and entry.get('type') == 'file.verilog'
+                and entry.get('path') in providers]
+    if len(selected) != 1:
+        raise ValueError('native top requires exactly one selected compilation provider')
+    provider = selected[0]
+    checked_file(stage, provider)
+    result = subprocess.run(['iverilog', '-g2012', '-DSYNTHESIS', '-E', '-I', str(stage),
+                             '-o', '-', provider], cwd=stage, capture_output=True, text=True, timeout=30)
+    if result.returncode:
+        raise ValueError('native selected top preprocessing failed: ' + result.stderr)
+    text = re.sub(r'//[^\n]*|/\*.*?\*/', '', result.stdout, flags=re.S)
+    headers = re.findall(r'module\s+' + TOP + r'\s*#\(.*?\)\s*\((.*?)\);', text, re.S)
+    if len(headers) != 1:
+        raise ValueError('native selected top source header missing or duplicated')
     ports = set()
-    for declaration in re.split(r'\b(input|output|inout)\b', header[1])[2::2]:
+    for declaration in re.split(r'\b(input|output|inout)\b', headers[0])[2::2]:
         declaration = declaration.strip().removeprefix('wire').strip()
         width = re.match(r'\[(\d+):(\d+)\]', declaration)
         indices = range(int(width[2]), int(width[1]) + 1) if width else None
         names = declaration[width.end():] if width else declaration
         for name in re.findall(r'[A-Za-z_][A-Za-z_0-9]*', names):
-            ports.update(name + f'[{index}]' for index in indices) if indices is not None else ports.add(name)
+            bits = {name + f'[{index}]' for index in indices} if indices is not None else {name}
+            if ports.intersection(bits):
+                raise ValueError('native top duplicate port declaration: ' + name)
+            ports.update(bits)
     implicit_negative = {'tmds_clk_n', 'ddr_ck_n', *(f'tmds_data_n[{index}]' for index in range(3)),
                          *(f'ddr_dqs_n[{index}]' for index in range(4))}
-    if not implicit_negative.issubset(ports) or ports - implicit_negative != set(plan['ports']):
+    extra = {}
+    runtime = provider == providers[1]
+    if runtime:
+        probe = json.loads(checked_file(stage, 'probes/audio_clock_i2s/probe.json').read_text())
+        if (probe['pins'].get('clk_16m9344') != 'J19' or probe['pins'].get('clk_12m288') != 'K18'):
+            raise ValueError('native runtime clock port evidence changed')
+        extra = {'clk_16m9344': ['J19']}
+    expected = {name: value['balls'] for name, value in plan['ports'].items()}
+    if set(extra).intersection(expected):
+        raise ValueError('native supplemental port duplicates pinout authority')
+    if not implicit_negative.issubset(ports) or ports - implicit_negative != set(expected) | set(extra):
         raise ValueError('native top and pinout port coverage mismatch')
     locations = re.findall(r'IO_LOC\s+"([^"]+)"\s+([^;]+);',
                            (stage / 'constraints/custom_138k.locations.cst').read_text())
     actual = {name: [ball.strip() for ball in balls.split(',')] for name, balls in locations}
     if len(actual) != len(locations) or actual != {name: value['balls'] for name, value in plan['ports'].items()}:
         raise ValueError('native CST locations differ from authoritative pinout')
+    combined = re.findall(r'^\s*IO_LOC\s+"([^"]+)"\s+([^;]+);',
+                          (stage / 'constraints/custom_138k.cst').read_text(), re.M)
+    combined_actual = {name: [ball.strip() for ball in balls.split(',')] for name, balls in combined}
+    if len(combined_actual) != len(combined) or combined_actual != dict(expected, **extra):
+        raise ValueError('native combined CST locations differ from selected port authority')
     return dict(logical_location_entries=len(actual), physical_port_bits=len(ports),
-                implicit_negative_partners=sorted(implicit_negative))
+                implicit_negative_partners=sorted(implicit_negative), compilation_provider=provider,
+                provider_sha256=sha(stage / provider),
+                preprocessed_sha256=hashlib.sha256(result.stdout.encode()).hexdigest(),
+                supplemental_ports=extra, scope='selected_source_ports_only',
+                runtime_physical_audits_covered=False)
 
 
 def check_rom(stage, netlist_text, expected_sha256):

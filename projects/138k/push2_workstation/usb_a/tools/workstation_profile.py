@@ -21,6 +21,12 @@ CONFIG = 'boards/custom_138k/workstation_profile_v1.json'
 ARTIFACT = 'workstation_profile.json'
 AE350_POLICY = 'maintained_ae350_v1'
 AE350_DIRECTORY = 'ae350_firmware'
+REVISION = 4
+RUNTIME_CONFIGURATION = dict(hdmi_mode='1080p60', high_speed_allowed=True,
+    tf_audio_kind='wav', implemented_sample_rates_hz=[48000, 44100],
+    ae350_firmware_policy=AE350_POLICY, scan_window_policy='native_admission_v1',
+    audio_policy='native_dual_rate_runtime_v1', reserve_zero_epoch=True,
+    display_metadata_minor=1)
 
 
 def sha(path):
@@ -46,12 +52,10 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
     config = checked_path(root, CONFIG)
     profile = json.loads(config.read_text())
     if (profile.get('schema') != 1 or profile.get('name') != name or
-            type(profile.get('revision')) is not int or profile['revision'] < 1):
+            type(profile.get('revision')) is not int or profile['revision'] != REVISION):
         raise ValueError('workstation profile identity changed')
-    if profile.get('configuration') != dict(hdmi_mode=hdmi_mode, high_speed_allowed=bool(allow_high_speed),
-                                          tf_audio_kind='wav', implemented_sample_rates_hz=[48000],
-                                          ae350_firmware_policy=AE350_POLICY,
-                                          scan_window_policy='native_admission_v1') or profile['revision'] < 3:
+    if (profile.get('configuration') != RUNTIME_CONFIGURATION or
+            hdmi_mode != '1080p60' or allow_high_speed is not True):
         raise ValueError('workstation profile configuration mismatch')
     if not profile.get('source_sha256') or not profile.get('features') or not profile.get('references'):
         raise ValueError('incomplete workstation profile')
@@ -142,8 +146,13 @@ def _artifact(root, output, metadata, profile):
     parent = json.loads((output / 'parent_prepare_metadata.json').read_text())
     overlays = json.loads((output / 'workstation/resource_rework_overlays.json').read_text())
     bindings = {}
+    from tools.workstation_custom_board import source_snapshot
+    if source_snapshot(root, metadata['source_snapshot_extra_inputs']) != metadata['source_snapshot_sha256']:
+        raise ValueError('workstation profile complete source snapshot drift')
     if metadata.get('scan_window') != dict(policy='native_admission_v1', enabled=True,
             provider='rtl/workstation/workstation_profile_hdmi.sv',
+            compilation_provider='rtl/workstation/workstation_profile_runtime.sv',
+            provider_selection='included_with_runtime_macro',
             implementation='rtl/workstation/workstation_hdmi_display.sv',
             admission='rtl/display_data/workstation_ddr_scan_window.sv',
             provenance_sha256=sha(stage / 'rtl/workstation/workstation_hdmi_display.provenance.json'),
@@ -168,9 +177,16 @@ def _artifact(root, output, metadata, profile):
         bind(record['destination'], prefix + source)
     for source, record in parent['composition']['sources'].items():
         bind(record['destination'], prefix + source)
-    for source in metadata['copied_sources_sha256']:
-        bind(source, prefix + source)
-    usage = {source: 'compiled_source' for source in bindings.values()}
+    copies = metadata['copied_source_destinations']
+    if set(copies) != set(metadata['copied_sources_sha256']) or len(set(copies.values())) != len(copies):
+        raise ValueError('workstation profile copied source ownership changed')
+    for source, target in copies.items():
+        bind(target, prefix + source)
+        if (metadata['copied_sources_sha256'][source] != profile['source_sha256'][prefix + source] or
+                sha(checked_path(stage, target)) != metadata['copied_sources_sha256'][source]):
+            raise ValueError('workstation profile copied source drift: ' + source)
+    usage = {source: 'compiled_source' if target in metadata['enabled_inputs'] else 'staged_dependency'
+             for target, source in bindings.items()}
     for source in metadata['firmware']['input_sha256']:
         if prefix + source not in profile['source_sha256']:
             raise ValueError('workstation profile omitted firmware source: ' + source)
@@ -200,6 +216,13 @@ def _artifact(root, output, metadata, profile):
             original = hashlib.sha256(baseline.read_bytes(relative)).hexdigest()
             record.update(origin='locked_parent_baseline', source=relative,
                           source_sha256=original, adapted=expected != original)
+            equivalent = metadata['unchanged_parent_inputs'].get(relative)
+            if equivalent:
+                owner = prefix + equivalent['source']
+                if (profile['source_sha256'].get(owner) != original or
+                        equivalent['sha256'] != original or expected != original):
+                    raise ValueError('workstation profile unchanged parent equivalence drift: ' + relative)
+                record['versioned_equivalent'] = dict(source=owner, sha256=original)
         elif relative in metadata['bluetooth']['sources']:
             record.update(origin='checked_ble_adaptation',
                           source_sha256=metadata['bluetooth']['source_snapshot_sha256'])
@@ -225,8 +248,31 @@ def _artifact(root, output, metadata, profile):
                            evidence=reference['evidence'], files=rows)
     config_hash = sha(root / CONFIG)
     ae350 = _ae350_evidence(root, output, metadata, profile)
+    bluetooth = metadata['bluetooth']
+    if bluetooth.get('rom_path_policy') != 'stage_relative':
+        raise ValueError('workstation runtime BLE ROM path policy changed')
+    ble_inputs = bluetooth.get('generated_input_provenance', {})
+    header_path, patch_path = 'native_bluetooth/patch_path.vh', 'native_bluetooth/rtl8723ds_patch.mem'
+    if set(ble_inputs) != {header_path, patch_path}:
+        raise ValueError('workstation runtime BLE generated input inventory changed')
+    for relative, record in ble_inputs.items():
+        if sha(checked_path(stage, relative)) != record['sha256']:
+            raise ValueError('workstation runtime BLE generated input changed: ' + relative)
+    header, patch = ble_inputs[header_path], ble_inputs[patch_path]
+    if (header.get('origin') != 'checked_ble_rom_path_header' or
+            header.get('generator') != 'tools/workstation_bluetooth.py' or
+            header.get('generator_sha256') != profile['source_sha256'][prefix + header['generator']] or
+            header.get('target') != patch_path or header.get('target_path') != patch_path or
+            (stage / header_path).read_text() != '`define WORKSTATION_BLE_PATCH_FILE ' + json.dumps(patch_path) + '\n'):
+        raise ValueError('workstation runtime BLE header provenance changed')
+    if (patch.get('origin') != 'locked_ble_vendor_patch' or
+            patch.get('source') != 'example/RTL8723DS/vendor/rtl8723ds_ble/rtl8723ds_patch.mem' or
+            profile['source_sha256'].get(patch['source']) != patch.get('source_sha256') or
+            patch['sha256'] != patch['source_sha256']):
+        raise ValueError('workstation runtime BLE patch provenance changed')
     candidate_hash = identity_digest(dict(profile_sha256=config_hash,
                                           staged_input_sha256=metadata['staged_input_sha256'],
+                                          source_snapshot_sha256=metadata['source_snapshot_sha256'],
                                           firmware=metadata['firmware'], ae350_firmware=ae350))
     return dict(schema=1, profile=NAME, revision=profile['revision'], profile_source=CONFIG, profile_sha256=config_hash,
                 candidate_identity=NAME + '-' + candidate_hash[:16], candidate_input_sha256=candidate_hash,
@@ -234,10 +280,16 @@ def _artifact(root, output, metadata, profile):
                 enabled_inputs=inputs, reference_reuse=reuse, features=profile['features'],
                 staged_input_sha256=metadata['staged_input_sha256'],
                 source_sha256=profile['source_sha256'],
+                source_snapshot_sha256=metadata['source_snapshot_sha256'],
+                selected_source_owners={target: dict(source=owner,
+                    sha256=profile['source_sha256'][owner],
+                    selection='compiled_source' if target in inputs else 'staged_dependency')
+                    for target, owner in bindings.items()},
                 firmware=metadata['firmware'],
                 ae350_firmware=ae350,
                 scan_window=metadata['scan_window'],
-                generated_data_inputs={'firmware/boot.mem': dict(origin='maintained_ae350_firmware',
+                runtime_audio=metadata.get('runtime_audio'),
+                generated_data_inputs={**ble_inputs, 'firmware/boot.mem': dict(origin='maintained_ae350_firmware',
                     sha256=ae350['installed_rom']['sha256'], source_sha256=ae350['build']['input_sha256'],
                     tool_versions=ae350['build']['tool_versions'], capacity=ae350['build']['capacity'])},
                 integration_metadata_sha256=identity_digest({key: value for key, value in metadata.items()

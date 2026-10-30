@@ -71,6 +71,23 @@ EXCLUDED_INPUTS = ('src/push2/gw138k_push_workstation_top.v', 'src/usb_a/iosys2.
                    'constraints/tang_mega_138k.cst', 'constraints/tang_mega_138k.sdc')
 
 
+def source_snapshot(root, extra_inputs=()):
+    """Inventory the preparation inputs, including inactive maintained RTL.
+
+    This captures drift during preparation and verification. The reviewed
+    profile separately locks every actual source owner and build dependency.
+    """
+    root = Path(root).resolve()
+    selected = [root / name for name in ('build.py', 'firmware.c', 'gw25k_panel.h', *extra_inputs)]
+    for directory in ('rtl', 'tools', 'drivers/usb2', 'boards/custom_138k', 'baselines'):
+        selected += [source for source in (root / directory).rglob('*') if source.is_file()
+                     and source.suffix in ('.py', '.sv', '.v', '.vh', '.svh', '.mem', '.json', '.c', '.h', '.cst')]
+    for source in selected:
+        if not source.is_file() or not source.resolve().is_relative_to(root):
+            raise FileNotFoundError('missing or escaping native-board snapshot input: ' + str(source))
+    return {source.relative_to(root).as_posix(): sha(source) for source in sorted(set(selected))}
+
+
 def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed=True, hdmi_mode='1080p60',
             *, workstation_profile=None):
     root, output = Path(root).resolve(), Path(output).resolve()
@@ -78,25 +95,33 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         raise FileExistsError('custom-board output already exists: ' + str(output))
     if workstation_profile is not None:
         from tools.workstation_profile import load as load_profile
-        load_profile(root, workstation_profile, allow_high_speed=allow_high_speed, hdmi_mode=hdmi_mode)
+        profile = load_profile(root, workstation_profile, allow_high_speed=allow_high_speed, hdmi_mode=hdmi_mode)
+    else:
+        profile = None
+    runtime = profile is not None and profile['configuration'].get('audio_policy') == 'native_dual_rate_runtime_v1'
     native_sources = (*NATIVE_SOURCES, *PROFILE_SOURCES) if workstation_profile is not None else NATIVE_SOURCES
     profile_dependencies = PROFILE_DEPENDENCIES if workstation_profile is not None else ()
+    if runtime:
+        from tools.workstation_runtime_profile import SOURCES, DEPENDENCIES
+        native_sources = tuple(source for source in native_sources if source not in (
+            'rtl/workstation/workstation_custom_138k_top.sv', 'rtl/audio/workstation_fpc_audio.sv',
+            'rtl/workstation/workstation_profile_hdmi.sv')) + SOURCES
+        profile_dependencies += DEPENDENCIES
+    if len(native_sources) != len(set(native_sources)):
+        raise ValueError('duplicate native-board selected source owner')
+    extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
+                                     'rtl/workstation/gw138k_push_workstation_top.v')))
     clocks = clock_bundle(root, hdmi_mode)
     crossings = cdc_bundle(root)
     input_crossings = input_cdc_bundle(root)
     reviewed_profile(root)
-    selected = [root / name for name in ('build.py', 'firmware.c', 'gw25k_panel.h')]
-    for directory in ('rtl', 'tools', 'drivers/usb2', 'boards/custom_138k', 'baselines'):
-        selected += [source for source in (root / directory).rglob('*') if source.is_file()
-                     and source.suffix in ('.py', '.sv', '.v', '.vh', '.svh', '.mem', '.json', '.c', '.h', '.cst')]
-    for relative in (*native_sources, *profile_dependencies, 'rtl/workstation/gw138k_push_workstation_top.v'):
+    for relative in extra_inputs:
         if not (root / relative).is_file():
             raise FileNotFoundError('missing native-board source: ' + relative)
-        selected.append(root / relative)
     if workstation_profile is not None:
         from tools.stage_ae350_firmware import INPUTS as AE350_INPUTS
-        selected += [root / 'firmware/ae350' / name for name in AE350_INPUTS]
-    snapshot = {str(source.relative_to(root)): sha(source) for source in selected}
+        extra_inputs += ['firmware/ae350/' + name for name in AE350_INPUTS]
+    snapshot = source_snapshot(root, extra_inputs)
     pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
     sys.path.insert(0, str(root / 'tools'))
     builder = importlib.import_module('build_resource_rework')
@@ -123,26 +148,46 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         raise ValueError('duplicate native-board parent compilation inputs')
     replacements = {}
     replaced_inputs = dict(REPLACED_INPUTS)
+    install_paths, unchanged_parent_inputs = {}, {}
     if workstation_profile is not None:
         replaced_inputs['src/video/hdmi_display.v'] = 'rtl/workstation/workstation_profile_hdmi.sv'
+    if runtime:
+        from tools.workstation_runtime_profile import REPLACEMENTS, INSTALL_PATHS, UNCHANGED_PARENT_INPUTS
+        replaced_inputs.update(REPLACEMENTS)
+        install_paths.update(INSTALL_PATHS)
+        unchanged_parent_inputs.update(UNCHANGED_PARENT_INPUTS)
+    checked_parent_inputs = {}
+    for relative, owner in unchanged_parent_inputs.items():
+        if paths.count(relative) != 1 or not any(entry.get('path') == relative and entry.get('enable') == '1' for entry in files):
+            raise ValueError('native-board unchanged parent selection drift: ' + relative)
+        if sha(stage / relative) != snapshot[owner]:
+            raise ValueError('native-board unchanged parent differs from maintained dependency: ' + relative)
+        checked_parent_inputs[relative] = dict(source=owner, sha256=snapshot[owner])
     for relative in (*replaced_inputs, *EXCLUDED_INPUTS):
         entries = [entry for entry in files if entry.get('path') == relative and entry.get('enable') == '1']
         if len(entries) != 1:
             raise ValueError('native-board parent selection drift: ' + relative)
-        replacements[relative] = dict(sha256=sha(stage / relative), replacement=replaced_inputs.get(relative))
+        owner = replaced_inputs.get(relative)
+        replacements[relative] = dict(sha256=sha(stage / relative), replacement=owner,
+                                     selected_destination=install_paths.get(owner, owner))
         entries[0].set('enable', '0')
     copied = {}
-    for relative in (*native_sources, *profile_dependencies, 'rtl/workstation/gw138k_push_workstation_top.v'):
-        destination = stage / relative
+    copied_destinations = {}
+    for relative in dict.fromkeys((*native_sources, *profile_dependencies, 'rtl/workstation/gw138k_push_workstation_top.v')):
+        target = install_paths.get(relative, relative)
+        if target in copied_destinations.values():
+            raise ValueError('native-board ambiguous copied destination: ' + target)
+        if target in paths:
+            raise ValueError('native-board copied source would overwrite parent input: ' + target)
+        destination = stage / target
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(root / relative, destination)
         copied[relative] = sha(destination)
+        copied_destinations[relative] = target
         if copied[relative] != snapshot[relative]:
             raise ValueError('native-board copied source identity changed: ' + relative)
         if relative in native_sources:
-            if relative in paths:
-                raise ValueError('native-board source already selected by parent: ' + relative)
-            ElementTree.SubElement(files, 'File', path=relative, type='file.verilog', enable='1')
+            ElementTree.SubElement(files, 'File', path=target, type='file.verilog', enable='1')
     support = {}
     for relative in LOCKED_INPUT_SOURCES:
         if sum(entry.get('path') == relative and entry.get('enable') == '1' for entry in files) != 1:
@@ -151,7 +196,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     firmware = stage_usb2_cpu_firmware(root, stage / 'native_usb_firmware', root / 'firmware.c', riscv_prefix,
                                        workstation=True, allow_high_speed=allow_high_speed)
     shutil.copyfile(stage / 'native_usb_firmware/usb2_cpu.hex', stage / 'usb2_cpu.hex')
-    bluetooth = prepare_bluetooth(root, netlist_directory, stage, pinout_output, pinout)
+    bluetooth = prepare_bluetooth(root, netlist_directory, stage, pinout_output, pinout,
+                                  relative_rom_paths=runtime)
+    if runtime:
+        bluetooth['capture_source'] = 'runtime_physical_frame_observation_48k_only'
     peripherals = prepare_peripherals(root, pinout_output, pinout, stage)
     model_flash = prepare_model_flash(root, pinout_output, pinout, stage)
     for relative in bluetooth['sources']:
@@ -165,9 +213,17 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     # reviewed components as evidence, but select only their complete union.
     combined_cst = ''.join((stage / ('constraints/custom_138k.' + part + '.cst')).read_text() + '\n'
                            for part in ('locations', 'audio', 'bluetooth', 'display', 'peripherals', 'model_flash', 'ddr'))
-    (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
     shared_crossings = shared_cdc_bundle(stage)
-    (stage / 'constraints/custom_138k.sdc').write_text(clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC)
+    runtime_constraints = None
+    if runtime:
+        from tools.workstation_runtime_profile import constraints
+        runtime_constraints = constraints(root, shared_crossings)
+        combined_cst += runtime_constraints['extra_cst']
+        selected_sdc = runtime_constraints['sdc'] + crossings['sdc'] + input_crossings['sdc'] + BLUETOOTH_SDC + LCD_SDC + runtime_constraints['shared_sdc'] + timing_constraints() + MODEL_FLASH_SDC
+    else:
+        selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
+    (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
+    (stage / 'constraints/custom_138k.sdc').write_text(selected_sdc)
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.cst', type='file.cst', enable='1')
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.sdc', type='file.sdc', enable='1')
     tree.write(project, encoding='UTF-8', xml_declaration=True)
@@ -180,15 +236,15 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     enabled = [entry.get('path') for entry in files if entry.get('enable') == '1']
     if len(enabled) != len(set(enabled)):
         raise ValueError('native-board duplicate selected input')
-    for relative, expected in snapshot.items():
-        if sha(root / relative) != expected:
-            raise ValueError('native-board source snapshot changed during preparation: ' + relative)
+    if source_snapshot(root, extra_inputs) != snapshot:
+        raise ValueError('native-board source snapshot changed during preparation')
     for relative, record in replacements.items():
         if sha(stage / relative) != record['sha256']:
             raise ValueError('native-board excluded historical input changed: ' + relative)
     staged = {str(source.relative_to(stage)): sha(source) for source in stage.rglob('*')
               if source.is_file() and 'impl' not in source.relative_to(stage).parts}
-    metadata = dict(schema=1, identity=PROFILES_720[hdmi_mode]['identity'] if hdmi_mode in PROFILES_720 else IDENTITY,
+    metadata = dict(schema=1, identity=('custom138k-native-dual-rate-runtime-revision4' if runtime else
+                    PROFILES_720[hdmi_mode]['identity'] if hdmi_mode in PROFILES_720 else IDENTITY),
                     hdmi=video_mode,
                     native_timing_adaptations=native_timing,
                     model_flash=model_flash,
@@ -197,6 +253,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     firmware=firmware, high_speed_allowed=bool(allow_high_speed),
                     bluetooth=bluetooth, peripherals=peripherals,
                     source_snapshot_sha256=snapshot, copied_sources_sha256=copied,
+                    source_snapshot_extra_inputs=extra_inputs,
+                    copied_source_destinations=copied_destinations,
+                    unchanged_parent_inputs=checked_parent_inputs,
                     replaced_compilation_inputs=replacements, shared_resource_support_sha256=support,
                     parent_prepare_metadata_sha256=sha(output / 'parent_prepare_metadata.json'),
                     pinout_sha256=sha(pinout_output / 'pinout.json'), enabled_inputs=enabled,
@@ -227,6 +286,21 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             admission='rtl/display_data/workstation_ddr_scan_window.sv',
             provenance_sha256=sha(stage / 'rtl/workstation/workstation_hdmi_display.provenance.json'),
             physical_deadlines_verified=False, d01_complete=False, d04_complete=False)
+        if runtime:
+            metadata['scan_window'].update(compilation_provider='rtl/workstation/workstation_profile_runtime.sv',
+                                            provider_selection='included_with_runtime_macro')
+    if runtime:
+        metadata['runtime_audio'] = {key: value for key, value in runtime_constraints.items()
+                                     if key not in ('sdc', 'shared_sdc', 'extra_cst')}
+        metadata['runtime_audio'].update(reserve_zero_epoch=True, initial_stream_epoch=1,
+            top_provider='rtl/workstation/workstation_profile_runtime.sv',
+            common_parameter_owner='u_managed/runtime/service/workstation/parameters',
+            clock_service_address='0xf8030000', legacy_capture_rate_hz=48000,
+            tf_policy='manual_matching_rate_no_resampling_no_automatic_clock_request',
+            display_metadata_minor=1)
+        metadata['audio_pin_behavior']='ak4493s_i2s32_dual_rate_output_paced_final_pcm'
+        metadata['audio_clock_policy']='qualified_12m288_or_16m9344_native_DCS'
+        metadata['volume_application']='once_in_runtime_final_pcm_before_I2S_display_and_BLE'
     (parent_output / 'build_metadata.json').write_text(json.dumps(dict(
         candidate=metadata['identity'],source_policy=metadata['source_policy'],
         validation_stage='integration_prepare_only',place_route_allowed=False,deployment_allowed=False,

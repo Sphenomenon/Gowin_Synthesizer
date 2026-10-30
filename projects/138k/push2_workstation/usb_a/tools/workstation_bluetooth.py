@@ -22,7 +22,7 @@ SDC = (
 )
 
 
-def prepare(root, directory, stage, pinout_output, plan):
+def prepare(root, directory, stage, pinout_output, plan, *, relative_rom_paths=False):
     repository = root.parents[3]
     protocol = repository / 'projects/25k/example/RTL8723DS_PROTOCOL'
     vendor = repository / 'example/RTL8723DS/vendor/rtl8723ds_ble'
@@ -76,12 +76,23 @@ def prepare(root, directory, stage, pinout_output, plan):
     for source in sources:
         if source.suffix in ('.v', '.mem') and source.name not in ('bt_gatt.v', 'bt_h5_transport.v'):
             shutil.copyfile(source, destination / source.name)
-    patch_path = (destination / 'rtl8723ds_patch.mem').as_posix()
+    patch_relative = 'native_bluetooth/rtl8723ds_patch.mem'
+    patch_path = patch_relative if relative_rom_paths else (destination / 'rtl8723ds_patch.mem').as_posix()
     (destination / 'patch_path.vh').write_text('`define WORKSTATION_BLE_PATCH_FILE '+json.dumps(patch_path)+'\n')
+    patch_source = (vendor / 'rtl8723ds_patch.mem').relative_to(repository).as_posix()
+    generated_inputs = {
+        'native_bluetooth/patch_path.vh': dict(origin='checked_ble_rom_path_header',
+            generator='tools/workstation_bluetooth.py', generator_sha256=sha(Path(__file__)),
+            sha256=sha(destination / 'patch_path.vh'), target=patch_relative, target_path=patch_path),
+        patch_relative: dict(origin='locked_ble_vendor_patch', source=patch_source,
+            source_sha256=identities[patch_source], sha256=sha(destination / 'rtl8723ds_patch.mem')),
+    }
     for relative, expected in identities.items():
         if sha(repository / relative) != expected:
             raise ValueError('BLE source changed during preparation: ' + relative)
     return dict(source_snapshot_sha256=identities, mapping=mapping, capacity_frames=16384,
+                rom_path_policy='stage_relative' if relative_rom_paths else 'absolute_original_candidate',
+                generated_input_provenance=generated_inputs,
                 transport_source='example/RTL8723DS/vendor/rtl8723ds_ble',
                 business_source='projects/25k/example/RTL8723DS_PROTOCOL',
                 source_policy='remote_138k_transport_with_existing_second40_business_adaptations',

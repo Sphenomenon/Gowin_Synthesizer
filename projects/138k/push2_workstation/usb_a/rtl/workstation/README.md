@@ -2,13 +2,17 @@
 
 138K Host 与 25K Device 的无 HDMI／DDR 独立探针见 `USB2_HOST_PROBE.md`；直连电脑的 Device 回环探针见 `USB2_DEVICE_PROBE.md`。两者的 USB 角色不同，不自动切换工作站生产配置。
 
-运行时双率的显式原生组合由 `workstation_runtime_audio.sv` 和 `workstation_runtime_controlled.sv` 提供；后者保留 CPU/APB、UART、USB 生命周期仲裁，并将真实物理帧送往 FFT／96-bit 录音／256-cue 乐谱及带上下文的显示观察。唯一事件／会话／公共参数 owner、媒体忙拒切、失败策略和时钟域见[运行时控制组合契约](RUNTIME_CONTROLLED.md)。这些组件尚未由 accepted 顶层或 profile 选用，来源与离线验证不提升部署验收。
+运行时双率的显式原生组合由 `workstation_runtime_audio.sv` 和 `workstation_runtime_controlled.sv` 提供；后者保留 CPU/APB、UART、USB 生命周期仲裁，并将真实物理帧送往 FFT／96-bit 录音／256-cue 乐谱及带上下文的显示观察。唯一事件／会话／公共参数 owner、媒体忙拒切、失败策略和时钟域见[运行时控制组合契约](RUNTIME_CONTROLLED.md)。完整工作站 profile revision 4 通过 `workstation_profile_runtime.sv` 显式选用这些组件及同一宏作用域内的 HDMI provider；accepted、pinned 和未指定 profile 的新板入口继续使用各自的来源。来源实现及离线验证不提升部署验收。
 
 自定义底板 a23 物理实验另见 `../../reports/WORKSTATION_PHYSICAL_20261025.md`：原生 USB 的复位／参考故障同步位于 `rtl/usb2/` 所属模块，紧急引脚保护不反馈到同步 UTMI 数据通路；已有只读模型 Flash 加载与 UART 恢复通过 SOM 共享引脚 guard 接入。PLL／算术／声部控制的四份锁定输入适配有哈希、唯一锚点和迁回原生源的退出条件，原生矢量力度计算使用无延迟的精确位映射。它不切换任何已接受生产 profile；生成位流、时序／CDC／PLL 通过和 SRAM／Flash 部署仍是不同阶段。
 
 这里是 `build.py --resource-rework --resource-timing` 开发候选的第一方整机源码入口，不是完整工程副本。锁定基线继续提供 CPU/IP、固件 ROM、约束和尚未迁出的组件；实际输入由生成工程的 `workstation_inputs.json` 和 `workstation_composition.json` 绑定。
 
-新板任务的显式来源检查点为 `--prepare-custom-board --workstation-profile custom138k-workstation-v1`；revision 3 保留 F02 的维护 AE350 固件，并以版本化 HDMI 组合接入扫描窗口后台写 admission。固定配置、A2／D5／C1 逐文件来源及未完成 feature matrix 见[完整工作站 profile](../../boards/custom_138k/WORKSTATION_PROFILE.md)。它复用现有准备路径，不提升既有硬件验收或改变下面的默认来源策略。独立双参考时钟与 I2S 串行器仍按[帧契约](../audio/PCM_FRAME_CONTRACT.md)继续集成，尚不代表此 profile 已支持运行时双率。
+新板任务的显式来源检查点为 `--prepare-custom-board --workstation-profile custom138k-workstation-v1`；revision 4 保留 F02 的维护 AE350 固件及扫描窗口后台写 admission，新增双率原生音频、TF 原子帧服务和显示 minor1 组合。固定配置、逐文件来源及未完成 feature matrix 见[完整工作站 profile](../../boards/custom_138k/WORKSTATION_PROFILE.md)。它复用现有准备路径；支持的源码配置为 48 kHz／44.1 kHz，仍须重新完成整机综合、物理时序／CDC／PLL 和实板验收。
+
+revision 4 的时钟请求使用独立 APB 页 `0xf8030000`；音频 `0xf8010000`、UI `0xf8020000` 和启动状态 `0xf8000000` 保留。顶层只组合、传递元数据、隔离存储事务并控制就绪，DSP、切换事务、TF 文件及显示发布分别保留所属 owner。首次启动须由[内存守护](../memory/RUNTIME_MEMORY_GUARD_CONTRACT.md)确认实际客户端就绪和时钟进展；之后 DDR／视频关联复位或计算 PLL 资格丢失会永久静音并隔离请求、接受和返回，直到 common reset。`started` 保持，不能以局部故障重置持音、公共参数或 stream epoch。DDR／视频复位尚未解耦。
+
+minor1 显示消费带实际采样率、epoch 和序号的最终物理帧，见[显示组合契约](RUNTIME_DISPLAY.md)。上游观察丢帧单独撤销新图发布的可信资格，直到 common reset；音频不等待显示。TF 仍使用原 DDR 文件中转，其 EOF 尚无有序物理排空成功语义；即时播放去 DDR 属 M03。BLE format 1 仍仅接收合法 48 kHz 帧，44.1 kHz 设备后端及外置 BLE 录音忙切换互锁尚待实现，不能宣告整机双率录音已完成。
 
 accepted full83 和 pinned timing85 保留原来的来源策略与 CNN 保护。它们采用共享事件工作站及控制模块，但不隐式切换为这里的资源候选顶层。历史验收记录和冻结文件不修改。
 
