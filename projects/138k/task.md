@@ -152,6 +152,8 @@
 
 [18ed Pitch＋FIFO CDC 父级复验](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_PITCH_FIFO_CDC_PARENT_20261031.md)已完成：四公开入口、17 项／19 实际图负控、四 prepare 各 12 项、profile21（历史可选一项跳过）及 accepted17 均通过。staged 与前序一致，未改生产 RTL／约束，保留综合与后来 helper 分离身份。仅接受声明结构，完整 CDC／reset／RAM／routed STA 与硬件仍未关闭，无部署。
 
+[18ed native Delay FIFO 父级复核](push2_workstation/usb_a/reports/WORKSTATION_NATIVE_DELAY_FIFO_ACTUAL_PARENT_20261031.md)已完成：两 65×512 FIFO 各四 SDPX9B／零 SSRAM，完整 DI／64 formatter 真值及 post-pop next-Q 通过；父级 410 图＋66 payload 负控全部拒绝。原 set 顺序导致的比较失败保留，唯一 case／完整内容核对相同。仅局部映射接受，RAM 物理时序、完整 CDC／reset／路由／硬件仍未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "identity": "actual18ed-native-delay-fifo-parent-20261031-v1",
+  "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-18ed947312186187",
+  "candidate_input_sha256": "18ed947312186187106b453991cfead196e1ba9c5f52381b33b58d09edbdfc2a",
+  "VG_sha256": "c9f88c71d63478c0e659806f5497ab867e2a5f01e3d924f1bf5938f884a51e7b",
+  "process_sha256": "c7571733d433bddf7397237abaabb8c7cbca1c71f5815d2ac602aaab6073e335",
+  "staged_files": 599,
+  "enabled_files": 269,
+  "independent_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-fifo-native-18ed9473-review-v1/review.json",
+    "sha256": "701b4a123e568816b6d0cc7dc53b093b588cf5ee2a3220378737662b0a284992"
+  },
+  "independent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-fifo-native-18ed9473-review-v1/REVIEW_SEAL.json",
+    "sha256": "5393a62bd87adf2e5c29315d05c82267f61caad0952cb7afe1cb50344cca9214"
+  },
+  "independent_files_verified": 30,
+  "independent_external_dependencies_verified": 611,
+  "parent_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-fifo-native-parent-v1/DELIVERY_SEAL.json",
+    "sha256": "2cd0955404cf8256790d3c60f6efe33946a7c200e32d656b175742a0d91cd680"
+  },
+  "parent_file_count": 8,
+  "parent_input_count": 643,
+  "native_FIFOs": 2,
+  "per_FIFO": {
+    "payload_bits": 65,
+    "capacity": 512,
+    "SDPX9B": 4,
+    "SSRAM": 0,
+    "physical_address_bits": 14
+  },
+  "declared_payload_DI_and_64_write_formatter_truth_verified": true,
+  "postpop_next_Q_verified": true,
+  "Gray_first_bits": 40,
+  "actual_graph_negative_controls": 410,
+  "payload_formatter_negative_controls": 66,
+  "parent_negative_control_total": 476,
+  "all_parent_negative_controls_rejected": true,
+  "original_ordering_failure_retained": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-fifo-native-parent-v1/replay.log",
+    "sha256": "b6a93d76e758461451aede58677905901119ae94123d2d631bfd63b4426e2e58"
+  },
+  "full_case_comparison": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/delay-fifo-native-parent-v1/comparison.json",
+    "sha256": "54ab53c372393bd6b15b71a8546daa999c9800ea783db6c9f644522ba0805e66"
+  },
+  "external_comparison_only_changed": true,
+  "original_sealed_sources_modified": false,
+  "lexical_escaped_named_ports": 729,
+  "review_parser_objects_equal_maintained_strict_PCM_parser": true,
+  "partial_mapping_only": true,
+  "full_CDC_accepted": false,
+  "full_reset_accepted": false,
+  "RAM_physical_timing_accepted": false,
+  "physical_resource_benefit_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false
+}
