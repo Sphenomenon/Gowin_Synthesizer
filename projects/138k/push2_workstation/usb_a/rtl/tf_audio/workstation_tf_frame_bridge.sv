@@ -45,11 +45,14 @@ module workstation_tf_frame_bridge #(
         gray=(value>>1)^value;
     endfunction
     function automatic [31:0] binary(input [31:0] value);
-        integer bit_index;
+        reg [31:0] prefix1,prefix2,prefix4,prefix8;
         begin
-            binary[31]=value[31];
-            for(bit_index=30;bit_index>=0;bit_index=bit_index-1)
-                binary[bit_index]=binary[bit_index+1]^value[bit_index];
+            // Parallel suffix XOR: five levels instead of a 31-bit ripple.
+            prefix1=value^(value>>1);
+            prefix2=prefix1^(prefix1>>2);
+            prefix4=prefix2^(prefix2>>4);
+            prefix8=prefix4^(prefix4>>8);
+            binary=prefix8^(prefix8>>16);
         end
     endfunction
     function automatic [31:0] increment(input [31:0] value);
@@ -63,7 +66,7 @@ module workstation_tf_frame_bridge #(
         if(!rst_ni)compute_release<=0;else compute_release<={compute_release[1:0],1'b1};
     wire source_reset_n=source_release[2],compute_reset_n=compute_release[2];
     reg [31:0] source_generation_gray,ack_binary,ack_gray;
-    reg source_seen_edge;
+    reg source_seen_edge,quiet_published;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [31:0] generation_meta,generation_sync,ack_meta,ack_sync;
     (* ASYNC_REG="TRUE" *) reg [1:0] source_alive_sync,expected_valid_sync,quiesce_sync,quiet_sync,quiesce_return_sync;
     wire [31:0] next_generation=source_generation_o+1'b1;
@@ -80,7 +83,7 @@ module workstation_tf_frame_bridge #(
             source_seen_edge<=1;
             ack_meta<=ack_gray;ack_sync<=ack_meta;
             expected_valid_sync<={expected_valid_sync[0],expected_generation_valid_o};
-            quiet_sync<={quiet_sync[0],media_quiescent_o};
+            quiet_sync<={quiet_sync[0],quiet_published};
             quiesce_return_sync<={quiesce_return_sync[0],quiesce_sync[1]};
             if(invalidate_i)begin source_generation_o<=next_generation;source_generation_gray<=gray(next_generation);end
             if(source_valid_i && source_ready_o)begin
@@ -106,7 +109,9 @@ module workstation_tf_frame_bridge #(
         .read_valid_o(read_valid),.read_ready_i(read_ready),.read_data_o(read_data));
 
     wire [31:0] synchronized_generation=binary(generation_sync);
-    wire cancel_pending=!expected_generation_valid_o || synchronized_generation!=expected_generation_o;
+    // Gray is bijective, so compare the synchronized identity in its native
+    // code. Cancellation/quiet guards need not wait for binary decoding.
+    wire cancel_pending=!expected_generation_valid_o || generation_sync!=gray(expected_generation_o);
     reg held_valid;
     reg [84:0] held_packet;
     reg [2:0] quiet_settle;
@@ -129,12 +134,17 @@ module workstation_tf_frame_bridge #(
             generation_meta<=INITIAL_GRAY;generation_sync<=INITIAL_GRAY;source_alive_sync<=0;quiesce_sync<=0;
             expected_generation_o<=INITIAL_GENERATION;expected_generation_valid_o<=0;generation_change_o<=0;
             ack_binary<=INITIAL_GENERATION;ack_gray<=INITIAL_GRAY;
-            held_valid<=0;held_packet<=0;quiet_settle<=0;
+            held_valid<=0;held_packet<=0;quiet_settle<=0;quiet_published<=0;
             stale_discard_count_o<=0;quiesce_discard_count_o<=0;
         end else begin
             generation_meta<=source_generation_gray;generation_sync<=generation_meta;
             source_alive_sync<={source_alive_sync[0],source_seen_edge};
             quiesce_sync<={quiesce_sync[0],source_quiesce_i};
+            // Publish the compute-domain proof from a register before its
+            // two-stage return crossing. The public compute proof above keeps
+            // its immediate cancellation/withdrawal guards. Source ACK still
+            // requires the matching generation and a held quiesce request.
+            quiet_published<=media_quiescent_o;
             generation_change_o<=0;
             if(compute_reset_n && source_alive_sync[1])begin
                 expected_generation_valid_o<=1;

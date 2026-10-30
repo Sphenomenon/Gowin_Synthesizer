@@ -116,6 +116,8 @@
 
 [BLE DDR revision2 实际 CDC 来源](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_REVISION2_CDC_SOURCE_20261030.md)已父级完成四项公开审计、五项／12 实际负控及独立复验；13 普通对、50 Gray、528／524 payload 和 42 闭包显式锁定，seal code 消除仍未接受。四份新 prepare 各 12 项来源通过且 staged 与前序相同；新 balanced 来源不能继承本 scope，未装新 SDC，完整 CDC／reset／物理与硬件仍未接受，无部署。
 
+[TF quiet 发布与 Gray 长链修正](push2_workstation/usb_a/reports/WORKSTATION_TF_QUIET_PUBLICATION_PREFIX_20261030.md)已父级通过双初值、480 quiet／4,160 解码检查、两负控及完整 STOP／CLEAR／service 链；即时撤销保持，quiet 回程增加 compute 发布 FF，未改 SDC。四新 prepare 各 12 来源通过，仅桥 RTL／契约 staged 改变；实际新 VG、完整 CDC／物理和硬件仍待接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

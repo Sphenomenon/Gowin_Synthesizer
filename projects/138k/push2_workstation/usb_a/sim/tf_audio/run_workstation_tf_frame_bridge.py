@@ -18,6 +18,36 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def gray_bijection_proof():
+    # g(x) = x XOR (x >> 1) is linear over GF(2). Full column rank proves
+    # injectivity on every 32-bit input, hence bijectivity on this finite set.
+    # Its inverse satisfies b[i] = XOR(g[31:i]); the complete 32-column inverse
+    # identity proves binary(G) == E iff G == gray(E) for all 2**64 (G,E) pairs.
+    columns = [(1 << bit) ^ ((1 << bit) >> 1) for bit in range(32)]
+    pivots = {}
+    for column in columns:
+        value = column
+        while value:
+            bit = value.bit_length() - 1
+            if bit in pivots:
+                value ^= pivots[bit]
+            else:
+                pivots[bit] = value
+                break
+    inverse_columns = []
+    for column in columns:
+        binary = 0
+        for bit in range(31, -1, -1):
+            binary |= (((column >> bit) & 1) ^ ((binary >> (bit + 1)) & 1)) << bit
+        inverse_columns.append(binary)
+    assert len(pivots) == 32 and inverse_columns == [1 << bit for bit in range(32)]
+    return dict(field='GF(2)', width=32, rank=len(pivots), gray_columns=columns,
+                inverse_product_columns=inverse_columns, bijective=True,
+                equality_equivalent_for_all_two_state_input_pairs=True,
+                input_pair_count=2**64, four_state_metastability_proof=False,
+                basis='linear full-rank Gray map and complete inverse-matrix identity')
+
+
 def run(output):
     output.mkdir(parents=True, exist_ok=False)
     pcm = [(0x1234, -0x2345), (-1, 1), (32767, -32768), (0x4567, -0x5678),
@@ -46,11 +76,12 @@ def run(output):
     inputs = sources + fixtures + [Path(__file__).resolve()]
     hashes = {str(path): digest(path) for path in inputs}
     result = dict(schema=1, passed=False,
-                  source_identity='native-tf-frame-bridge-v1-' + digest(sources[0])[:16],
+                  source_identity='native-tf-frame-bridge-v2-' + digest(sources[0])[:16],
                   validation_stage='offline-real-decoder-and-transport-simulation',
                   hardware_tested=False, profile_changed=False, bitstream_sha256=None,
                   source_clock_hz=50000000, compute_clock_hz=76800000,
-                  input_sha256=hashes, runs={},
+                  input_sha256=hashes, runs={}, negative_controls={},
+                  gray_bijection_proof=gray_bijection_proof(),
                   limits='Real WAV decoder, maintained FIFO and actual final-router mismatch/cancel boundary; no SD/FAT/DDR migration, complete runtime/top/profile selection, physical CDC, synthesis, P&R or board acceptance')
     try:
         for name, seed in (('default', 0), ('wrap', 0xfffffffd)):
@@ -74,6 +105,38 @@ def run(output):
             record['metrics'] = {key: int(value) for key, value in re.findall(r'(\w+)=(\d+)', log)}
             record['passed'] = True
             print(log, end='')
+        original = sources[0].read_text()
+        for name, anchor, replacement, expected in (
+            ('stale_quiet_publication', 'quiet_published<=media_quiescent_o;',
+             "quiet_published<=1'b1;", 'stale published quiet ACK preceded'),
+            ('incomplete_gray_prefix', 'binary=prefix8^(prefix8>>16);',
+             'binary=prefix8;', 'Gray decode failed'),
+        ):
+            assert original.count(anchor) == 1, 'Negative control anchor changed: ' + name
+            mutant = output / (name + '.sv')
+            mutant.write_text(original.replace(anchor, replacement))
+            binary = output / (name + '.vvp')
+            commands = (
+                ('compile', ['iverilog', '-g2012', '-s', 'tb_workstation_tf_frame_bridge',
+                             '-o', str(binary), str(mutant), *map(str, sources[1:])]),
+                ('run', ['vvp', str(binary)]),
+            )
+            record = dict(mutant_sha256=digest(mutant), rejected=False)
+            result['negative_controls'][name] = record
+            for stage, command in commands:
+                process = subprocess.run(command, cwd=output, text=True, capture_output=True, timeout=60)
+                log = process.stdout + process.stderr
+                path = output / (name + '_' + stage + '.log')
+                path.write_text(log)
+                record[stage + '_argv'] = command
+                record[stage + '_returncode'] = process.returncode
+                record[stage + '_log_sha256'] = digest(path)
+                if stage == 'compile':
+                    assert process.returncode == 0, 'Negative control compile failed: ' + log[-6000:]
+                else:
+                    assert process.returncode != 0 and expected in log, 'Negative control escaped: ' + name + '\n' + log[-6000:]
+                    record['rejected'] = True
+                    print('PASS negative control: ' + name)
         result['inputs_unchanged_during_run'] = hashes == {str(path): digest(path) for path in inputs}
         assert result['inputs_unchanged_during_run'], 'Inputs changed during verification'
         result['passed'] = True

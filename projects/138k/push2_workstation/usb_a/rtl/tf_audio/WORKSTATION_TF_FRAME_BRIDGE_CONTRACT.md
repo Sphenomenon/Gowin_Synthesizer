@@ -85,6 +85,15 @@ FIFO 和 held 均为空。它能在 source 停钟后完成；该输出不能裸�
 quiesce 状态的回程解除，避免第一帧到达时 compute 仍在排空。快速未握手的
 quiesce 脉冲不构成受支持的媒体事务。
 
+quiet 回程从 compute 域的独立发布寄存器进入两级 source 同步器，不把 Gray 解码、
+身份比较和 FIFO 排空的组合锥直接送到异步首级。发布寄存器使回程 ACK 至少多一拍
+compute 延迟；compute 域的 `media_quiescent_o` 仍保留当前身份和 quiesce 的组合
+撤销条件。source 在 invalidate 当拍及 generation ACK 尚未追上期间禁止确认 quiet，
+因此旧的 quiet 发布值不能为新 generation 提前确认排空。取消判断直接比较已经过
+两级同步的 Gray generation 与已提交 expected generation 的 Gray 编码；Gray 映射
+为双射，这与先解码后二进制比较在全部 32 位二值输入上等价。输出 expected 身份的
+32 位解码使用五级并行前缀 XOR，身份、ACK 的单步 Gray 跨域协议保持不变。
+
 取消丢弃与 quiesce 丢弃分别饱和计数，单帧不会同时计入两者。
 global reset 丢弃独立于这些 session 计数。桥不会背压物理音频 sample schedule；
 缺帧／错误／不匹配由 runtime final router 和 serializer 按已有零／error 契约处理。

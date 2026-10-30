@@ -61,7 +61,7 @@ module tb_workstation_tf_frame_bridge #(
     reg [84:0] expected_packets[0:4095];
     integer expected_write=0,expected_read=0,total_accepted=0,total_delivered=0;
     integer total_invalidates=0,stalled_source_cycles=0,stalled_destination_cycles=0;
-    integer wav_index=0,wav_frames=0,router_mismatch_checks=0;
+    integer wav_index=0,wav_frames=0,router_mismatch_checks=0,quiet_invalidation_checks=0,decode_checks=0;
     reg [19:0] wav_rate=0;
     reg [31:0] wav_gold[0:7];
     reg [7:0] wav48[0:75],wav44[0:75];
@@ -180,11 +180,52 @@ module tb_workstation_tf_frame_bridge #(
             wait(source_ready);
         end
     endtask
+    task invalidate_while_quiet(input integer invalidates);
+        bit saw_withdrawal;
+        reg [31:0] target_generation;
+        begin
+            @(negedge source_clk);quiesce=1;wait(source_quiet);
+            @(negedge source_clk);invalidate=1;
+            #1;if(source_quiet)$fatal(1,"invalidate did not suppress source quiet immediately");
+            repeat(invalidates)@(posedge source_clk);
+            #1;invalidate=0;target_generation=source_generation;saw_withdrawal=0;
+            if(source_quiet || !pending)$fatal(1,"old quiet ACK survived a new source generation");
+            // Keep both clocks running. The generation ACK can return before
+            // the five-cycle drain proof; an old published quiet level must
+            // not turn that earlier generation ACK into a false quiet ACK.
+            repeat(80)begin
+                @(negedge compute_clk);
+                if(!media_quiet)saw_withdrawal=1;
+                if(source_quiet && (!media_quiet || expected_generation!==target_generation))
+                    $fatal(1,"stale published quiet ACK preceded the new generation drain proof");
+                quiet_invalidation_checks=quiet_invalidation_checks+1;
+            end
+            if(!saw_withdrawal || !source_quiet || expected_generation!==target_generation)
+                $fatal(1,"quiet invalidation did not withdraw and republish its proof");
+            @(negedge source_clk);quiesce=0;wait(source_ready);
+        end
+    endtask
     integer target,before_accepted;
-    reg [31:0] final_stale,final_quiet;
+    integer decode_seed=32'h51874b39;
+    reg [31:0] final_stale,final_quiet,decode_value;
     initial begin
         $readmemh("wav48.hex",wav48);$readmemh("wav44.hex",wav44);$readmemh("wav_gold.hex",wav_gold);
+        // Exercise every bit of the parallel decode, plus mixed values that
+        // never need to occur as consecutive live generation transitions.
+        for(integer bit_index=0;bit_index<32;bit_index=bit_index+1)begin
+            decode_value=32'd1<<bit_index;
+            if(dut.binary((decode_value>>1)^decode_value)!==decode_value)
+                $fatal(1,"Gray decode failed binary basis bit %0d",bit_index);
+            decode_checks=decode_checks+1;
+        end
+        for(integer index=0;index<2048;index=index+1)begin
+            decode_value=$random(decode_seed);
+            if(dut.binary((decode_value>>1)^decode_value)!==decode_value)
+                $fatal(1,"Gray decode failed mixed binary value %h",decode_value);
+            decode_checks=decode_checks+1;
+        end
         first_clear_reset(1);
+        invalidate_while_quiet(1);invalidate_while_quiet(3);invalidate_while_quiet(7);
         play_wav(0);play_wav(1);
         // FIFO depth4 plus one held slot; decoder must stall the sixth packet.
         tf_ready=0;before_accepted=total_accepted;target=total_delivered+12;
@@ -238,7 +279,7 @@ module tb_workstation_tf_frame_bridge #(
         first_clear_reset(0);target=total_delivered+1;
         send_frame(48000,16'sh7001,16'sh8ffe,0);await_delivery(target);
         if(wav_frames!=16 || stalled_source_cycles==0 || stalled_destination_cycles==0)$fatal(1,"coverage missing");
-        $display("PASS tf_frame_bridge: seed=%0d accepted=%0d delivered=%0d invalidates=%0d wav_frames=%0d source_stalls=%0d destination_stalls=%0d stale=%0d quiesced=%0d router_mismatch_checks=%0d",START_GENERATION,total_accepted,total_delivered,total_invalidates,wav_frames,stalled_source_cycles,stalled_destination_cycles,final_stale,final_quiet,router_mismatch_checks);
+        $display("PASS tf_frame_bridge: seed=%0d accepted=%0d delivered=%0d invalidates=%0d wav_frames=%0d source_stalls=%0d destination_stalls=%0d stale=%0d quiesced=%0d router_mismatch_checks=%0d quiet_invalidation_checks=%0d decode_checks=%0d",START_GENERATION,total_accepted,total_delivered,total_invalidates,wav_frames,stalled_source_cycles,stalled_destination_cycles,final_stale,final_quiet,router_mismatch_checks,quiet_invalidation_checks,decode_checks);
         $finish;
     end
     initial begin #20000000;$fatal(1,"global timeout");end

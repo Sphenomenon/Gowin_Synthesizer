@@ -1,0 +1,251 @@
+{
+  "schema": 1,
+  "identity": "native-tf-quiet-publication-prefix-parent-20261030-v1",
+  "source_commit_reviewed": "075e976a44d5088c4f11810ebd4af832a81458f4",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_FRAME_BRIDGE_CONTRACT.md": "d3ec4bec86903ee54dd5cb2fcb6a6a01537e4321d62fc6bc189166e1bf4d23ad",
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv": "eb5895b975dc699178a6e451f2f05d481f63424848ebe153c1402a21a63baf31",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_frame_bridge.py": "d72549b2ced83583ee87e876c1220a04f268fdcba1eb7e8f9e8e2465c8a858cd",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_frame_bridge.sv": "edded649630ef30d34066b7aa8f2793d09b8604e24ff509924eb741e5ec49fa0"
+  },
+  "measured_original_synthesis_path": {
+    "source_candidate": "27732817b67e21ac",
+    "start": "u_tf_audio/frames/generation_sync_28_s0",
+    "end": "u_tf_audio/frames/quiet_sync_0_s0",
+    "levels": 37,
+    "slack_ns": -27.245,
+    "routed_result": false
+  },
+  "implementation": {
+    "binary_decode": "five-level suffix XOR",
+    "cancel_pending": "generation_sync != gray(expected_generation_o)",
+    "quiet_return": "compute quiet_published FF -> source quiet_sync[0] -> quiet_sync[1]",
+    "public_media_quiescent": "immediate generation/quiesce invalidation guards retained",
+    "return_ack_additional_compute_cycles": 1,
+    "source_ack_generation_and_quiesce_guards_retained": true
+  },
+  "parent_verification": {
+    "frame_runs": {
+      "default": {
+        "seed": 0,
+        "accepted": 47,
+        "delivered": 35,
+        "invalidates": 26,
+        "wav_frames": 16,
+        "source_stalls": 22,
+        "destination_stalls": 74,
+        "stale": 6,
+        "quiesced": 5,
+        "router_mismatch_checks": 1,
+        "quiet_invalidation_checks": 240,
+        "decode_checks": 2080
+      },
+      "wrap": {
+        "seed": 4294967293,
+        "accepted": 47,
+        "delivered": 35,
+        "invalidates": 26,
+        "wav_frames": 16,
+        "source_stalls": 22,
+        "destination_stalls": 74,
+        "stale": 6,
+        "quiesced": 5,
+        "router_mismatch_checks": 1,
+        "quiet_invalidation_checks": 240,
+        "decode_checks": 2080
+      }
+    },
+    "frame_negatives": {
+      "stale_quiet_publication": true,
+      "incomplete_gray_prefix": true
+    },
+    "gray_bijection": {
+      "field": "GF(2)",
+      "width": 32,
+      "rank": 32,
+      "gray_columns": [
+        1,
+        3,
+        6,
+        12,
+        24,
+        48,
+        96,
+        192,
+        384,
+        768,
+        1536,
+        3072,
+        6144,
+        12288,
+        24576,
+        49152,
+        98304,
+        196608,
+        393216,
+        786432,
+        1572864,
+        3145728,
+        6291456,
+        12582912,
+        25165824,
+        50331648,
+        100663296,
+        201326592,
+        402653184,
+        805306368,
+        1610612736,
+        3221225472
+      ],
+      "inverse_product_columns": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64,
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096,
+        8192,
+        16384,
+        32768,
+        65536,
+        131072,
+        262144,
+        524288,
+        1048576,
+        2097152,
+        4194304,
+        8388608,
+        16777216,
+        33554432,
+        67108864,
+        134217728,
+        268435456,
+        536870912,
+        1073741824,
+        2147483648
+      ],
+      "bijective": true,
+      "equality_equivalent_for_all_two_state_input_pairs": true,
+      "input_pair_count": 18446744073709551616,
+      "four_state_metastability_proof": false,
+      "basis": "linear full-rank Gray map and complete inverse-matrix identity"
+    },
+    "runtime_stop_identity": "native-tf-runtime-stop-v2-a5a3c215529f3f12",
+    "runtime_stop_passed": true,
+    "service_cases_each": 22,
+    "clear_cases_each": 6,
+    "stop_cases_each": 11,
+    "buffer_configurations": 2,
+    "legacy_cycle_compares": 12531,
+    "final_ack_bypass_negative": true,
+    "original_loop_negative": true,
+    "current_sources_tests": 17,
+    "enabled_profile_tests": 20,
+    "enabled_profile_optional_historical_skips": 1
+  },
+  "prepared_profiles": {
+    "enabled": {
+      "candidate_identity": "custom138k-workstation-v1-ade82500f8f67057",
+      "staged_files": 571,
+      "enabled_files": 260,
+      "staged_changed_files": [
+        "rtl/tf_audio/WORKSTATION_TF_FRAME_BRIDGE_CONTRACT.md",
+        "rtl/tf_audio/workstation_tf_frame_bridge.sv"
+      ],
+      "passed": true
+    },
+    "no-cnn": {
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-24658db0674e60a0",
+      "staged_files": 572,
+      "enabled_files": 260,
+      "staged_changed_files": [
+        "rtl/tf_audio/WORKSTATION_TF_FRAME_BRIDGE_CONTRACT.md",
+        "rtl/tf_audio/workstation_tf_frame_bridge.sv"
+      ],
+      "passed": true
+    },
+    "r00": {
+      "candidate_identity": "custom138k-workstation-r00-v1-b5ad09e4ab5fb5da",
+      "staged_files": 584,
+      "enabled_files": 267,
+      "staged_changed_files": [
+        "rtl/tf_audio/WORKSTATION_TF_FRAME_BRIDGE_CONTRACT.md",
+        "rtl/tf_audio/workstation_tf_frame_bridge.sv"
+      ],
+      "passed": true
+    },
+    "off": {
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-9784c6656070774a",
+      "staged_files": 591,
+      "enabled_files": 269,
+      "staged_changed_files": [
+        "rtl/tf_audio/WORKSTATION_TF_FRAME_BRIDGE_CONTRACT.md",
+        "rtl/tf_audio/workstation_tf_frame_bridge.sv"
+      ],
+      "passed": true
+    }
+  },
+  "prepare_guard_v1_retained": "Initial v1 validation expected only RTL; actual copied contract markdown also changed. Actual preparation succeeded; v2 independently verifies exactly both changes and runs all12 source tests without rewriting v1 evidence.",
+  "evidence": {
+    "tf-quiet-prefix-parent-frame-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-parent-frame-v1/verification.json",
+      "sha256": "fc83f92e261217233f99219a4f63fb45d69c10ec2aaf73b6e32ae8e690cc4997"
+    },
+    "tf-quiet-prefix-parent-runtime-stop-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-parent-runtime-stop-v1/verification.json",
+      "sha256": "ea123ffe2f50fd444fbea3a8198719acaf9ec5bc6a8c8504deeab82626fcf2d4"
+    },
+    "tf-quiet-prefix-v1/DELIVERY_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-v1/DELIVERY_SEAL.json",
+      "sha256": "7c87b898726275aea655262e9166edfde825b60add8318bd1315c4c20b61bd9c"
+    },
+    "tf-quiet-prefix-parent-current-sources-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-parent-current-sources-v1.log",
+      "sha256": "6129439b7072309fa701cf46f9dc2d6633a33b8dc56047e910fc01f9942d6507"
+    },
+    "tf-quiet-prefix-parent-profile-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-parent-profile-v1.log",
+      "sha256": "e46de11657227050149986f5b19b5c23273060e4fe988c7296ced44de094dfd6"
+    },
+    "tf-quiet-prefix-parent-enabled-prepare-validation-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-parent-enabled-prepare-validation-v2.json",
+      "sha256": "a5f27d8e819a01701c0e16e3e766f4adc3dcb9f9ab2b5eb80b6ee2f15b0aeecc"
+    },
+    "tf-quiet-prefix-parent-no-cnn-prepare-validation-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-parent-no-cnn-prepare-validation-v2.json",
+      "sha256": "e39019556707841aa3619d3787d36ff82a38ca85201eb2565a1d08d91e77f27c"
+    },
+    "tf-quiet-prefix-parent-r00-prepare-validation-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-parent-r00-prepare-validation-v2.json",
+      "sha256": "aa8f28371fd88cba0eda8f03d0fc6a504f627aac1b6e33d12e3567d20f175613"
+    },
+    "tf-quiet-prefix-parent-off-prepare-validation-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/tf-quiet-prefix-parent-off-prepare-validation-v2.json",
+      "sha256": "35a742a25bad93fe92f397677bc0036b3f30e9b6f6a017ee2e25b9cfdb1d6578"
+    }
+  },
+  "constraints_changed": false,
+  "limits": [
+    "New source does not inherit277/FF physical or CDC identity.",
+    "Fresh synthesis must verify quiet publisher registered producer, strict two receiving stages, reset/complete fanout and compute D cone.",
+    "No first-D timing exception installed; full physical timing and reset remain unaccepted."
+  ],
+  "synthesis_run": false,
+  "pnr_run": false,
+  "complete_cdc_accepted": false,
+  "physical_cdc_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_operated": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}
