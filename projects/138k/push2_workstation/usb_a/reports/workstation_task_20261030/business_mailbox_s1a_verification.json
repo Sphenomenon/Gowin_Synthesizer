@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "scope": "unselected_internal_parsed_business_mailbox_S1a_source_and_offline_component_verification",
+  "stage": "source_component_only",
+  "source_sha256": {
+    "rtl/services/workstation_business_mailbox.sv": "6871b511721f9ff1988de0bfa22f9e9bd830efdead9cabbf16406fab509238ed",
+    "rtl/services/BUSINESS_MAILBOX_CONTRACT.md": "e5837a9e8ede4ce4434b07da0bb8bfdbc5f783d9e52554d389cfd749396ce33e",
+    "firmware/ae350/business_mailbox.h": "0805c9118673210332adc25cbf61d230afb5644216dbff588c88655c3d2c40ee",
+    "firmware/ae350/business_mailbox.c": "dafb249e7c8f47c5b7424e44754e206f20098101f6d0833c0dcc72b0774f02a9",
+    "sim/services/tb_business_mailbox.sv": "656987f2feee55512b35e3b772133f8aefaba89d858a59006d9c1e0e92067941",
+    "sim/ae350_business_mailbox_host.c": "57d971c3c192bb71d6ba9b4c9d9e3cba6e34f32de92e9ad7325035591964d171",
+    "sim/test_business_mailbox.py": "c25952753339a8ab3070eebe6582b622f5588dfcea994a4d44c6d1be48137efb"
+  },
+  "shared_wire_parser": {
+    "source": "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_protocol_command.v",
+    "sha256": "608c2c818e1b3546d40983f8798a6e8d50ca26d3182870093f3fd18a05cdac00",
+    "same_bytes_as_base_commit": true,
+    "full_wire_vectors_rerun": false
+  },
+  "verification": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_business_mailbox.py",
+    "tests": 3,
+    "result": "pass",
+    "rtl": [
+      "bounded immutable request and result slots",
+      "full/tail/reserved/length/strobe/offset rejection",
+      "claim does not imply business acceptance; explicit PENDING/APPLIED/FAILED",
+      "cancel/reset/session/control/timeout observation fences",
+      "same-cycle cancel beats claim; close blocks new offer",
+      "ticket and owner-generation exhaustion; saturating counters",
+      "stale completion rejection and retained known operation ID"
+    ],
+    "host_C": [
+      "ASan and UBSan with warnings as errors",
+      "all callback failure positions for context/request/observe/key commands/complete",
+      "24-write complete bound; 17-read request; 8-read context; 20-read observe",
+      "failed final command callback can commit once; no retry",
+      "NONE/IO/STALE output preservation; stale snapshot checks; little-endian zero tails"
+    ],
+    "production_selection_test": true,
+    "diff_check": "pass"
+  },
+  "rv32_object_budget": {
+    "tool": "riscv64-elf-gcc (GCC) 16.2.0",
+    "configuration": "existing rv32im_zicsr ilp32 -O2 -ffreestanding -msmall-data-limit=0",
+    "text_bytes": 3844,
+    "data_bytes": 0,
+    "bss_bytes": 0,
+    "deterministic_repeated_object": true,
+    "object_sha256": "a403facf11f97d3c2cbc48e875c61de35d6c9caba19bb721be3d2e8d03c2147d",
+    "single_function_stack_bytes": {
+      "mmio_read": 0,
+      "mmio_write": 0,
+      "stage_key": 64,
+      "read_key": 32,
+      "a138_business_mmio_bus": 0,
+      "a138_business_probe": 48,
+      "a138_business_context": 64,
+      "a138_business_read_request": 128,
+      "a138_business_open": 32,
+      "a138_business_claim": 32,
+      "a138_business_abandon": 32,
+      "a138_business_close": 32,
+      "a138_business_complete": 32,
+      "a138_business_observe": 96
+    },
+    "max_single_function_stack_bytes": 128,
+    "undefined_symbols": [
+      "memset"
+    ],
+    "existing_memset_source": "firmware/ae350/ui_runtime.c",
+    "whole_program_stack_bound_verified": false,
+    "production_firmware_linked": false,
+    "production_ROM_fit_verified": false,
+    "historical_comparison": {
+      "candidate": "custom138k-workstation-r00-v1-b9a2e0fdf36970be",
+      "ROM_capacity_bytes": 16384,
+      "binary_bytes": 14052,
+      "free_ROM_bytes": 2332,
+      "driver_object_exceeds_historical_free_bytes": 1512
+    }
+  },
+  "integration_limits": [
+    "no APB page allocation",
+    "no shared parser hook or wire/nonce/replay change",
+    "no CPU task/object/transfer owner implemented",
+    "no PCM data plane or legacy recorder/RAM retirement",
+    "OPEN after observer reset requires actual task/ID reconciliation or explicitly new business boot after real drain",
+    "full firmware ROM, stack and service latency remain blocking before S1b enablement",
+    "no synthesis, P&R, CDC hardware or board acceptance"
+  ],
+  "production_selected": false,
+  "hardware_operated": false,
+  "eda_invoked": false,
+  "release_ready": false,
+  "deployment_allowed": false
+}

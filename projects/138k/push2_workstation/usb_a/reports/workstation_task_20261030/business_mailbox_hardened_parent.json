@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "identity": "ae350-business-mailbox-hardened-parent-s1a-20261030-v1",
+  "stage": "unselected_component_source",
+  "source_sha256": {
+    "rtl/services/workstation_business_mailbox.sv": "6871b511721f9ff1988de0bfa22f9e9bd830efdead9cabbf16406fab509238ed",
+    "rtl/services/BUSINESS_MAILBOX_CONTRACT.md": "1d9dca45654b6694eac8805e759427833950a3b21f6b26847b9c57e705c80b03",
+    "firmware/ae350/business_mailbox.c": "6dd823136fc3c57d62e684aa6ee5ef6c0274120062219be6ad0c4805cdce4dc4",
+    "firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
+    "sim/test_business_mailbox.py": "c25952753339a8ab3070eebe6582b622f5588dfcea994a4d44c6d1be48137efb",
+    "sim/services/tb_business_mailbox.sv": "656987f2feee55512b35e3b772133f8aefaba89d858a59006d9c1e0e92067941",
+    "sim/ae350_business_mailbox_host.c": "ad44e23c1507df78255b1e0285717897bd1b3fad0a3b9ea4e895a31b442c3d6d"
+  },
+  "parent_regression": {
+    "tests": 3,
+    "passed": true,
+    "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/business-mailbox-hardened-parent-v1.log",
+    "sha256": "a78c16f84d918c9d18cd91a264a36943c40de7eced0cabe9aea747eead7727cc"
+  },
+  "independent_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-mailbox-s1a-independent-review-v1/verification.json",
+    "sha256": "3b64c4d8e7f078c3c1a00d8302f82613302b9b87590813d6b1d6982fc4444a01",
+    "seal_sha256": "39827cdf0f7ac8b08f40b3d5bbb7a1d6637d296430d23a657fd53eecd7ab494c",
+    "all_sealed_files_rehashed": true,
+    "source_bytes_match_review": true,
+    "rtl_checks": 560,
+    "same_cycle_races": 23,
+    "rtl_mutants_rejected": 3,
+    "c_api_mutants_rejected": 3,
+    "identity_field_regressions": 15
+  },
+  "review_details": {
+    "schema": 1,
+    "identity": "ae350-mailbox-s1a-independent-review-and-complete-key-hardening-v1",
+    "base_commit": "f7c831b986c3dad5d12a3dd677700329da6adc79",
+    "root_modified_by_reviewer": false,
+    "isolated_tree": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-mailbox-s1a-independent-review-v1/tree",
+    "changed_files_sha256": {
+      "projects/138k/push2_workstation/usb_a/firmware/ae350/business_mailbox.c": "6dd823136fc3c57d62e684aa6ee5ef6c0274120062219be6ad0c4805cdce4dc4",
+      "projects/138k/push2_workstation/usb_a/firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
+      "projects/138k/push2_workstation/usb_a/rtl/services/BUSINESS_MAILBOX_CONTRACT.md": "1d9dca45654b6694eac8805e759427833950a3b21f6b26847b9c57e705c80b03",
+      "projects/138k/push2_workstation/usb_a/sim/ae350_business_mailbox_host.c": "ad44e23c1507df78255b1e0285717897bd1b3fad0a3b9ea4e895a31b442c3d6d"
+    },
+    "unchanged_rtl_sha256": "6871b511721f9ff1988de0bfa22f9e9bd830efdead9cabbf16406fab509238ed",
+    "original_component_tests_passed": 3,
+    "fixed_component_tests_passed": 3,
+    "independent_rtl": {
+      "checks": 560,
+      "same_cycle_fence_command_consume_cases": 23,
+      "targeted_mutants_rejected": 3,
+      "no_backend_cancel_output": true,
+      "queued_observation_phase": "LOCAL_REJECTED",
+      "claimed_or_published_observation_phase": "UNCERTAIN",
+      "known_operation_id_retained": true
+    },
+    "finding": {
+      "scope": "Reset boundary snapshot consistency under a bus/API call that survives mailbox common reset",
+      "severity": "P2 for isolated S1a; blocks enabling such a production bus/reset topology",
+      "original_request_mixed_old_key_id_and_new_nonce_payload_reproduced": true,
+      "original_current_and_historical_observe_misattributed_new_operation_to_old_key_reproduced": true,
+      "fresh_external_boot_id_used": true,
+      "hardening": "Full boot/owner/session/ticket keys reread for request, current result, and historical publication; only commit output after equality checks.",
+      "fixed_three_counterexamples": "STALE with byte-identical untouched outputs",
+      "new_source_regression_identity_mutations": 15,
+      "common_reset_bus_discontinuity_must_abort_api_call": true,
+      "arbitrary_multiple_reset_snapshot_proven": false
+    },
+    "api_independent": {
+      "ACK_loss_before_and_after_command_commit": "COMMIT_UNCERTAIN",
+      "automatic_retry": false,
+      "commands_per_attempt": 1,
+      "partial_staging_failure_after_write": "IO and no COMMAND",
+      "explicit_next_attempt_restages_all_fields": true,
+      "original_key_check_negative_rejected": true,
+      "atomic_output_mutant_rejected": true,
+      "automatic_command_retry_mutant_rejected": true,
+      "maximum_context_reads": 8,
+      "maximum_request_reads": 21,
+      "maximum_observe_reads": 28,
+      "maximum_complete_writes": 24,
+      "direct_volatile_mmio_slave_error_or_reset_recovery_supported": false
+    },
+    "rv32_budget": {
+      "original_text_bytes": 3844,
+      "hardened_text_bytes": 3976,
+      "data_bytes": 0,
+      "bss_bytes": 0,
+      "original_historical_rom_free_bytes": 2332,
+      "hardened_object_exceeds_historical_free_bytes": 1644,
+      "max_single_function_stack_bytes": 160,
+      "whole_call_chain_stack_proven": false,
+      "whole_firmware_linked_with_fix": false,
+      "production_rom_fit_verified": false,
+      "undefined_symbols": [
+        "memset"
+      ]
+    },
+    "integration_limits": [
+      "No APB page allocation or parser/BLE hook.",
+      "No business task/ID owner implemented or restored; OPEN cannot establish that recovery.",
+      "No PCM data-plane migration, legacy recording RAM retirement, or physical resource saving demonstrated.",
+      "Actual ACK/error propagation, CPU fault policy, common-reset call abortion and task recovery remain required before enablement.",
+      "No production profile or firmware source selection changed."
+    ],
+    "patch": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-mailbox-s1a-independent-review-v1/mailbox_complete_key_hardening.patch",
+    "patch_sha256": "8b57dfe652b69b6cf2415d838245c39a54360f7ae3abb2b26a63ebf73381e7a7",
+    "eda_invoked": false,
+    "hardware_operated": false,
+    "production_selected": false,
+    "release_ready": false,
+    "deployment_allowed": false
+  },
+  "rom_fit_verified": false,
+  "whole_call_chain_stack_verified": false,
+  "production_selected": false,
+  "parser_hook_integrated": false,
+  "pcm_migrated": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}
