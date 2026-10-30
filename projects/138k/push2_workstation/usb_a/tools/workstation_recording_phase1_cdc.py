@@ -17,11 +17,13 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from tools.workstation_runtime_pcm_cdc import Graph, TOP, COMB
-from tools.workstation_usb2_owner_reset import OwnerResetNetlist, NO_LOCAL_PANEL_CONFIGURATION_SHA256
+from tools.workstation_usb2_owner_reset import OwnerResetNetlist, NO_LOCAL_PANEL_CONFIGURATION_SHA256, _reg
 from tools.workstation_runtime_clock_audit import (
     verify_synthesis_identity, VG_RELATIVE, file_sha, audit_runtime_clocks, AUDIT_SOURCES as CLOCK_SOURCES,
 )
 from tools.workstation_recording_policy import metadata, verify_address_map
+from tools.workstation_ble_ddr_cdc_scope import (SCOPE as BLE_DDR_SCOPE, LEGACY_SCOPE,
+    validate_profile as validate_ble_ddr_profile)
 
 POLICY = 'owner8-recording-pcm-pointer-and-apb-mailbox-source-v1'
 PROFILE = 'custom138k-workstation-r00-no-local-panel-v1'
@@ -37,6 +39,24 @@ SOURCE_SHA256 = {
     'src/migration/gw138k_apb_cdc.sv': '99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7',
     'src/migration/gw138k_counter_cdc.sv': '1b6ff697ccd951995b7331ac483f3c7672a959a9a767465eb57d92d80f3afa8c',
 }
+V2_SOURCE_SHA256 = dict(SOURCE_SHA256, **{
+    'rtl/workstation/workstation_recording_runtime.sv': 'cc784aa3d63899136d11f4cc53ec4c84cdc48de8d382212cf3194f17961036c9',
+    'rtl/services/workstation_recording_seal_bridge.sv': '1512a14e01725845350a76d2ea78e521f0a99bc362015f8cf87d3db8d61883f4',
+})
+# Populated only from explicitly reviewed revision2 complete endpoint identities.
+V2_ENDPOINT_SHA256 = {'command_ack_toggle': '9fbba2f426dba4f6580191631d7fb8f3bb785503eceeaf6b41ee2cb0e61f3d02',
+ 'command_request_payload': '06d6997e79e7e80f67d3fe8a64a1c3ee670bde1c1200692cd4e701e96cd7c9e5',
+ 'command_request_toggle': 'b126366ca92e26dce71ff20046b072b3729ba02a999264728acae2e44b19b049',
+ 'command_response_payload': '4eeb7266f15b47b171866df422bccb242810bc7ede933515a4628cf45a6e7293',
+ 'pcm_drop_gray': 'a9aaf60603102f995b19864f50b05f1a6a22c5c9aff760f8dbc608ff93410888',
+ 'pcm_read_gray': '8b96c660b57e8c13c91270430ccc159eba53043d90dd637e5437b290659d9767',
+ 'pcm_write_gray': '29c1f4f16688b4196edf8ec92d014c9f9dd2a7fbe7f14d1a1f3704932c8a6c01',
+ 'release:u_recording/commands/a_release': '405c113dd4022e83c28cd85e72d8fd8fc5d02179b27c9213f14eb198267bc20e',
+ 'release:u_recording/commands/p_release': 'b74142414f60a6f22abd3cbf1708cc041db48be317d13105758faa209888fd24',
+ 'release:u_recording/pcm_cdc/destination_release': 'd219fd4e80243a2fcf282bb634b584ec542421550c3b62e3d2d9d86e2534bbfe',
+ 'release:u_recording/pcm_cdc/drops/destination_release': 'f4874fbfedf57a4fd378cecd676944f6dee6d3ad9ef5e559944f51b4a08bf687',
+ 'release:u_recording/pcm_cdc/drops/source_release': '864e3b94ec264f1084bfec1bee46f5f33adb3e76fbc8c99c636e3ad2f5ec31f5',
+ 'release:u_recording/pcm_cdc/source_release': '0bc8db4caf1307a685298f1a615899515532d7dd3c645f942fa97e3a1ac39bb4'}
 # Complete endpoint identities, including every same-domain FF and primitive
 # consumer. Canonical JSON is documented below. Never replace these with a
 # prefix/clock filter or rediscover an accepted producer from first-stage D.
@@ -75,30 +95,38 @@ def compact(text):
     return re.sub(r'\s+', '', re.sub(r'/\*.*?\*/|//[^\n]*', '', text, flags=re.S))
 
 
-def validate_sources(root, stage, profile):
+def validate_sources(root, stage, profile, *, scope=LEGACY_SCOPE):
+    require(scope in (LEGACY_SCOPE, BLE_DDR_SCOPE), 'unknown explicit scope')
+    v2 = scope == BLE_DDR_SCOPE
+    if v2:
+        validate_ble_ddr_profile(root, profile, stage=stage)
+    reviewed_sources = V2_SOURCE_SHA256 if v2 else SOURCE_SHA256
     require(profile.get('schema') == 1 and profile.get('profile') == PROFILE and
             profile.get('profile_source') == PROFILE_SOURCE and
             re.fullmatch(r'[0-9a-f]{64}', profile.get('profile_sha256', '')) is not None and
-            digest(profile.get('configuration')) == NO_LOCAL_PANEL_CONFIGURATION_SHA256,
+            (v2 or digest(profile.get('configuration')) == NO_LOCAL_PANEL_CONFIGURATION_SHA256),
             'explicit supported no-local-panel configuration required')
     recording = profile.get('recording', {})
-    require({k:v for k,v in recording.items() if k != 'address_map'} == metadata(),
+    require({k:v for k,v in recording.items() if k != 'address_map'} == metadata(ble_raw_ddr=v2),
             'exact owner8 recording metadata required')
     verify_address_map(root, stage, recording.get('address_map'))
-    for path, expected in SOURCE_SHA256.items():
+    for path, expected in reviewed_sources.items():
         require(file_sha(Path(stage) / path) == expected, 'reviewed staged source changed: ' + path)
         if path.startswith('rtl/'):
             require(file_sha(Path(root) / path) == expected, 'reviewed maintained source changed: ' + path)
     top = compact((Path(stage) / 'src/push2/gw138k_push_workstation_top.v').read_text())
     fragments = (
-        'workstation_recording_runtimeu_recording(.reset_ni(reset_n&&ddr_client_reset_n),'
-        '.source_clk_i(dac_mclk),.memory_clk_i(memory_clk),.control_clk_i(clk_50m)',
+        ('workstation_recording_runtimeu_recording(`ifdefWORKSTATION_BLE_RAW_DDR'
+         '.reset_ni(recording_memory_reset_n),.source_clk_i(dac_mclk),.memory_clk_i(memory_clk),'
+         '.control_clk_i(clk_50m),.backend_ready_i(recording_channel_ready),' if v2 else
+         'workstation_recording_runtimeu_recording(.reset_ni(reset_n&&ddr_client_reset_n),'
+         '.source_clk_i(dac_mclk),.memory_clk_i(memory_clk),.control_clk_i(clk_50m)'),
         '.frame_epoch_i(physical_frame_epoch),.frame_sequence_i(physical_frame_sequence),.frame_pcm_i(physical_frame_pcm)',
         '.pclk(pclk),.preset_n(preset_n),.psel(recording_select),.penable(penable),.pwrite(pwrite)',
         '.APB_PPROT(),.APB_PSTRB(pstrb),.APB_PCLK(pclk),.APB_PRSTN(preset_n)',
     )
     require(all(top.count(x) == 1 for x in fragments), 'recording top source composition changed')
-    return dict(input_sha256=SOURCE_SHA256, top_composition_source='src/push2/gw138k_push_workstation_top.v',
+    return dict(scope=scope, input_sha256=reviewed_sources, top_composition_source='src/push2/gw138k_push_workstation_top.v',
                 top_composition_sha256=file_sha(Path(stage) / 'src/push2/gw138k_push_workstation_top.v'),
                 source_contract_verified=True, source_behavioral_simulation_verified=False)
 
@@ -139,7 +167,7 @@ def source_groups(g):
         **{'release:' + s + '/' + t:[g.register(s, t, 2)] for s,t,_ in RELEASES})
 
 
-def protocol_basis():
+def protocol_basis(*, scope=LEGACY_SCOPE):
     # This checks the code property of the exact reviewed RTL equations. It is
     # not a gate-level encoder-equivalence, formal FIFO or metastability proof.
     pointer_pairs=[]
@@ -147,7 +175,7 @@ def protocol_basis():
         following=(current+1)&31
         gray=lambda b:b^(b>>1)
         changed=gray(current)^gray(following)
-        require(changed.bit_count()==1,'5-bit Gray modulo arithmetic property changed')
+        require(bin(changed).count('1')==1,'5-bit Gray modulo arithmetic property changed')
         pointer_pairs.append(dict(current=current,following=following,changed_bit=changed.bit_length()-1))
     carry_classes=[]
     for trailing_ones in range(32):
@@ -156,7 +184,7 @@ def protocol_basis():
         require(gray_xor==1<<trailing_ones,'32-bit Gray increment carry identity changed')
         carry_classes.append(dict(trailing_ones=trailing_ones,changed_bit=trailing_ones))
     return dict(
-        reviewed_source_revisions=SOURCE_SHA256,
+        reviewed_source_revisions=V2_SOURCE_SHA256 if scope == BLE_DDR_SCOPE else SOURCE_SHA256,
         FIFO=dict(pointer_width=5,modulo_increment_cases=pointer_pairs,
             ownership='Only write_fire/read_fire increments its binary/registered-Gray pointer; otherwise both hold',
             payload='Write slot is immutable until synchronized read pointer returns ownership; destination waits for synchronized write pointer',
@@ -178,7 +206,10 @@ def protocol_basis():
         physical_held_stability_or_Gray_flight_verified=False)
 
 
-def audit_netlist(n, *, g=None):
+def audit_netlist(n, *, g=None, scope=LEGACY_SCOPE):
+    require(scope in (LEGACY_SCOPE, BLE_DDR_SCOPE), 'unknown explicit scope')
+    v2 = scope == BLE_DDR_SCOPE
+    endpoint_sha256 = V2_ENDPOINT_SHA256 if v2 else ENDPOINT_SHA256
     g = g or Graph(n)
     domains = dict(selected=n.pin('u_managed/runtime/clocks/selector', 'CLKOUT'),
                    apb=n.pin('u_cpu_pll/PLL_inst', 'CLKOUT0'), memory='memory_clk')
@@ -189,13 +220,28 @@ def audit_netlist(n, *, g=None):
     raw = n.pin(g.register(P, 'source_release', 0), 'CLEAR')
     raw_apb = n.pin(g.register(A, 'p_release', 0), 'CLEAR')
     require(n.pin('u_reset/started_s0', 'Q') == 'reset_n' and
-            n.pin('u_reset/started_s0', 'CLK') == 'clk_50m' and
-            n.pin('u_video/ui_reset_pipe_2_s0', 'Q') == 'ddr_client_reset_n' and
-            n.pin('u_video/ui_reset_pipe_2_s0', 'CLK') == 'memory_clk', 'raw reset producer owner changed')
-    proofs = [g.equivalent('recording common assertion', [raw, 'reset_n', 'ddr_client_reset_n'],
-                          lambda v:v[0] == int(not(v[1] and v[2]))),
-              g.equivalent('recording APB assertion', [raw_apb, 'reset_n', 'ddr_client_reset_n', 'preset_n'],
-                          lambda v:v[0] == int(not all(v[1:])), cuts=('preset_n',))]
+            n.pin('u_reset/started_s0', 'CLK') == 'clk_50m', 'common root reset producer changed')
+    if v2:
+        releases = [_reg(n, g, 'recording_memory_release_' + str(i)) for i in range(2)]
+        root_clear = n.pin(releases[0], 'CLEAR')
+        for i, p in enumerate(releases):
+            require(n.cells[p]['kind'] == 'DFFCE' and n.pin(p, 'CLK') == 'memory_clk'
+                    and n.pin(p, 'CE') in g.high and n.pin(p, 'CLEAR') == root_clear
+                    and (n.pin(p, 'D') in g.high if i == 0 else n.pin(p, 'D') == n.pin(releases[0], 'Q')),
+                    'declared root-only memory release changed: ' + p)
+        proofs = [g.equivalent('root-only memory release assertion', [root_clear, 'reset_n'],
+                              lambda v:v[0] == 1-v[1]),
+                  g.equivalent('recording common assertion', [raw, n.pin(releases[1], 'Q')],
+                              lambda v:v[0] == 1-v[1]),
+                  g.equivalent('recording APB assertion', [raw_apb, n.pin(releases[1], 'Q'), 'preset_n'],
+                              lambda v:v[0] == int(not all(v[1:])), cuts=('preset_n',))]
+    else:
+        require(n.pin('u_video/ui_reset_pipe_2_s0', 'Q') == 'ddr_client_reset_n' and
+                n.pin('u_video/ui_reset_pipe_2_s0', 'CLK') == 'memory_clk', 'raw reset producer owner changed')
+        proofs = [g.equivalent('recording common assertion', [raw, 'reset_n', 'ddr_client_reset_n'],
+                              lambda v:v[0] == int(not(v[1] and v[2]))),
+                  g.equivalent('recording APB assertion', [raw_apb, 'reset_n', 'ddr_client_reset_n', 'preset_n'],
+                              lambda v:v[0] == int(not all(v[1:])), cuts=('preset_n',))]
     expected_regs, reset_chains, local_clear = set(), [], {}
 
     def ff(p, domain, clear):
@@ -214,9 +260,17 @@ def audit_netlist(n, *, g=None):
                     n.pin(p,'D') == n.pin(rs[i-1],'Q')), 'receiving reset release shift/CE changed: ' + p)
             if i < 2:
                 c = complete_closure(n,g,[p])
-                require(c['ff_endpoints'] == {rs[i+1]+'/D':domains[domain]} and
-                        not c['primitive_endpoints'] and not c['top_output_endpoints'] and
-                        not c['combinational_cells'], 'reset intermediate Q complete fanout changed: ' + p)
+                if v2 and (scope, stem, i) == (D, 'destination_release', 1):
+                    # Exact observed merge: the seal's two-edge local release
+                    # shares these first two common-root memory-clock stages.
+                    # Pin the complete combined closure, including every seal
+                    # functional CLEAR, rather than waiving intermediate fanout.
+                    require(digest(c) == '366f05b101f78e31ffad26dfba64ea15c7b6285d1dd4cffab4f753c078d7e70c',
+                            'revision2 seal/reset alias complete closure changed')
+                else:
+                    require(c['ff_endpoints'] == {rs[i+1]+'/D':domains[domain]} and
+                            not c['primitive_endpoints'] and not c['top_output_endpoints'] and
+                            not c['combinational_cells'], 'reset intermediate Q complete fanout changed: ' + p)
         inverses = [n.pin(p,'O') for p,c in n.cells.items() if c['kind'] == 'INV' and
                     n.pin(p,'I') == n.pin(rs[2],'Q')]
         require(len(inverses) == 1, 'local reset final-Q inverse absent/ambiguous: ' + scope + '/' + stem)
@@ -310,7 +364,7 @@ def audit_netlist(n, *, g=None):
         c=complete_closure(n,g,sources)
         require(not c['top_output_endpoints'],'reviewed source exported to top output: '+label)
         shape={k:c[k] for k in ('ff_endpoints','primitive_endpoints')}
-        require(digest(shape)==ENDPOINT_SHA256[label],'complete source endpoint shape changed: '+label)
+        require(digest(shape)==endpoint_sha256.get(label),'complete source endpoint shape changed: '+label)
         closures[label]=dict(source_registers=sources,endpoint_sha256=digest(shape),**c,
             endpoint_clock_counts=dict(Counter(c['ff_endpoints'].values())),
             primitive_semantics_accepted=False)
@@ -318,11 +372,18 @@ def audit_netlist(n, *, g=None):
         and not c['kind'].startswith('DFF') and c['kind'] not in COMB}
     require(len(storage)==25 and all(c['kind']=='RAM16SDP4' and n.pin(p,'CLK')==domains['selected']
             for p,c in storage.items()),'PCM 16x98 distributed storage primitive/clock inventory changed')
-    return dict(policy=POLICY,clock_domains=domains,complete_reviewed_FF_count=425,
+    return dict(policy=POLICY,scope=(BLE_DDR_SCOPE if v2 else LEGACY_SCOPE),clock_domains=domains,complete_reviewed_FF_count=425,
         reset_receiving_chains=reset_chains,ordinary_first_stage_pairs=syncs[:2],
         gray_first_stage_pairs=syncs[2:],gray_groups=gray_groups,
         gray_first_stage_bits=42,payload_groups=payloads,payload_bits=82,
-        complete_source_fanout=closures,boolean_proofs=proofs,source_protocol_basis=protocol_basis(),
+        complete_source_fanout=closures,boolean_proofs=proofs,
+        source_protocol_basis=protocol_basis(scope=BLE_DDR_SCOPE if v2 else LEGACY_SCOPE),
+        reviewed_reset_aliases=([dict(logical_scope='u_recording/seal_cdc',
+            logical_stages=['destination_release_meta','destination_release_sync'],
+            physical_stages=g.group(D,'destination_release',3)[:2],
+            basis='same pinned common reset, memory clock, zero assertion and constant-one shift',
+            combined_intermediate_complete_closure_sha256='366f05b101f78e31ffad26dfba64ea15c7b6285d1dd4cffab4f753c078d7e70c',
+            physical_reset_acceptance=False)] if v2 else []),
         first_D_producers_are_declared_unique_registered_Qs=True,
         response_illegal_state_11_behavior_accepted=False,
         storage_inventory={p:dict(kind=c['kind'],clock=n.pin(p,'CLK')) for p,c in storage.items()},
@@ -412,25 +473,30 @@ def audit_proposal_queries(n,result,proposal):
         Gowin_Tcl_command_resolution_verified=False,proposal_installed=False)
 
 
-def run_audit(root,stage,evidence):
+def run_audit(root,stage,evidence,*,scope=LEGACY_SCOPE):
     root,stage=Path(root),Path(stage)
     before=verify_synthesis_identity(stage,evidence)
     profile=json.loads((stage.parents[1]/'workstation_profile.json').read_text())
     helper_paths={Path(__file__).resolve(),*(Path(inspect.getsourcefile(f)).resolve() for f in
-        (Graph,OwnerResetNetlist,verify_synthesis_identity,audit_runtime_clocks,metadata,verify_address_map))}
+        (Graph,OwnerResetNetlist,verify_synthesis_identity,audit_runtime_clocks,metadata,verify_address_map,
+         validate_ble_ddr_profile))}
     helper_paths.update(root/p for p in CLOCK_SOURCES)
     helper_paths.update((ROOT/'sim/test_workstation_recording_phase1_cdc.py',
                          ROOT/'tools/WORKSTATION_RECORDING_PHASE1_CDC.md'))
+    if scope == BLE_DDR_SCOPE:
+        helper_paths.add(ROOT/'sim/test_workstation_ble_ddr_cdc_scope.py')
     helpers={str(p):file_sha(p) for p in sorted(helper_paths)}
-    sources=validate_sources(root,stage,profile)
+    sources=validate_sources(root,stage,profile,scope=scope)
     text=(stage/VG_RELATIVE).read_text()
     n=OwnerResetNetlist(text,TOP)
-    result=audit_netlist(n)
+    result=audit_netlist(n,scope=scope)
     proposal=constraint_proposal(result)
     result.update(schema=1,synthesis=before,sources=sources,clock_audit=audit_runtime_clocks(root,stage,text),
         constraint_proposal=proposal,proposal_query_audit=audit_proposal_queries(n,result,proposal),
         audit_source_sha256=helpers,implementation_path=str(Path(__file__).resolve()),
         source_seal_before_and_after=True,eda_invoked=False,hardware_operated=False)
+    if scope == BLE_DDR_SCOPE:
+        require(sources == validate_sources(root,stage,profile,scope=scope), 'revision2 source contract changed during audit')
     require(before==verify_synthesis_identity(stage,evidence) and
             helpers=={str(p):file_sha(p) for p in sorted(helper_paths)},'synthesis/audit inputs changed')
     return result
@@ -440,10 +506,11 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project',type=Path,required=True)
     parser.add_argument('--synthesis-evidence',type=Path,required=True)
+    parser.add_argument('--scope',choices=(LEGACY_SCOPE,BLE_DDR_SCOPE),default=LEGACY_SCOPE)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--proposal-output',type=Path,required=True)
     args=parser.parse_args()
-    result=run_audit(ROOT,args.project,args.synthesis_evidence)
+    result=run_audit(ROOT,args.project,args.synthesis_evidence,scope=args.scope)
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
     args.proposal_output.parent.mkdir(parents=True,exist_ok=True)

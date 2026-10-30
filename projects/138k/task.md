@@ -114,6 +114,8 @@
 
 [BLE DDR FF 物理失败](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_FF_ROUTE_FAILURE_20261030.md)已封存：1,324 条未布通网络、实际 CLS 63,084／69,120、BSRAM 268／340，PRIMARY 与 LW 仍各 8／8；父级重验 51 物理输入、591 staged 与六输出保持。没有 FS／TR／SDF，未获得 routed STA、未操作板卡或部署；下一候选将修正实际长组合链，完整门禁与任务方框保持未完成。
 
+[BLE DDR revision2 实际 CDC 来源](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_REVISION2_CDC_SOURCE_20261030.md)已父级完成四项公开审计、五项／12 实际负控及独立复验；13 普通对、50 Gray、528／524 payload 和 42 闭包显式锁定，seal code 消除仍未接受。四份新 prepare 各 12 项来源通过且 staged 与前序相同；新 balanced 来源不能继承本 scope，未装新 SDC，完整 CDC／reset／物理与硬件仍未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

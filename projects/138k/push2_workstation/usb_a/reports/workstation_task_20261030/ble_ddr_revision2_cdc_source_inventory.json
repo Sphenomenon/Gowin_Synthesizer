@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "identity": "ble-ddr-revision2-parent-cdc-source-inventory-20261030-v1",
+  "source_commit_reviewed": "416b1fbec0ea81ce002438dc5849a6e7ee025248",
+  "scope": "runtime-r00-no-local-panel-ble-ddr-v2",
+  "source_candidate": "custom138k-workstation-r00-no-local-panel-v1-27732817b67e21ac",
+  "source_vg_sha256": "3ef23f278d862238a97114d3a09e5cc00ff39426e90f5189fdf0d0d7b9a1ca65",
+  "compiled_inputs": {
+    "count": 269,
+    "map_sha256": "2079bd030f6011aa74592f5916b60998e00ec007d3346fd3220346584b473d40",
+    "ordered_paths_sha256": "8aa696190fcc15a6a8019c07e7221ae1f9f35df31e2d0865c275071e3d5e967f",
+    "serial_counter_required": true,
+    "balanced_counter_inherits_acceptance": false
+  },
+  "audits": {
+    "shared": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-review-v2/shared_final.json",
+      "sha256": "13f3ead39d4d1c56fc185d5d36c071c427ef8141feed0783a088b7a7cc019809"
+    },
+    "usb": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-review-v2/usb_final.json",
+      "sha256": "b960011aba768c7658e579c1339ebc4a774c36a128e7e8deef2e086f39627213"
+    },
+    "phase1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-review-v2/phase1_final.json",
+      "sha256": "f9092ac38e6c5562a77b084e236591852d5f3d61742a1948f320413e74a7f608"
+    },
+    "inventory": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-review-v2/inventory_final.json",
+      "sha256": "faafd06522894a159201856b2eb87e41f2c7548d9f384b9f8e69b3e194d1b91e"
+    }
+  },
+  "parent_tests": {
+    "tests": 5,
+    "elapsed_seconds": 41.346,
+    "actual_mutations_rejected": 12,
+    "synthetic_selection_negatives": 4,
+    "profile_configuration_metadata_negatives": 9
+  },
+  "independent_tests": {
+    "tests": 5,
+    "elapsed_seconds": 66.571,
+    "actual_mutations": 12,
+    "selection_mutations": 4,
+    "extra_controls": 13,
+    "extra_actual_compile_selection_controls": 7
+  },
+  "inventory": {
+    "ordinary_pairs": 13,
+    "raw_pairs": 8,
+    "seal_pairs": 4,
+    "authority_pairs": 1,
+    "gray_bits": 50,
+    "payload_logical_bits": 528,
+    "payload_mapped_FFs": 524,
+    "source_reset_safety_closures": 42,
+    "seal_result_code_elimination_accepted": false
+  },
+  "retained_phase1": {
+    "reviewed_FFs": 425,
+    "gray_bits": 42,
+    "payload_bits": 82,
+    "proposal_only_raw_receiving_clear_cuts": 18
+  },
+  "retained_shared_constraint_lines": 88,
+  "prepared_profiles": {
+    "enabled": {
+      "candidate_identity": "custom138k-workstation-v1-0a32736104874154",
+      "staged_files": 571,
+      "enabled_files": 260,
+      "staged_byte_identical": true,
+      "passed": true
+    },
+    "no-cnn": {
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-9b8ec5ce9631c2b1",
+      "staged_files": 572,
+      "enabled_files": 260,
+      "staged_byte_identical": true,
+      "passed": true
+    },
+    "r00": {
+      "candidate_identity": "custom138k-workstation-r00-v1-c1f321fffd0697f0",
+      "staged_files": 584,
+      "enabled_files": 267,
+      "staged_byte_identical": true,
+      "passed": true
+    },
+    "off": {
+      "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-28bba443b6c95e29",
+      "staged_files": 591,
+      "enabled_files": 269,
+      "staged_byte_identical": true,
+      "passed": true
+    }
+  },
+  "prepare_limits": "These are fresh prepare identities with unchanged staged bytes; no synthesis or physical acceptance is transferred from277/FF.",
+  "regression": {
+    "current_sources": {
+      "tests": 17,
+      "passed": true
+    },
+    "enabled_profile": {
+      "tests": 20,
+      "skipped": 1,
+      "passed": true
+    },
+    "no_panel_profile": {
+      "tests": 6,
+      "passed": true
+    },
+    "legacy_r00": {
+      "tests": 5,
+      "skipped": 1,
+      "passed": true
+    },
+    "legacy_usb": {
+      "tests": 9,
+      "passed": true
+    },
+    "legacy_shared": {
+      "tests": 4,
+      "skipped": 1,
+      "passed": true
+    },
+    "legacy_phase1": {
+      "tests": 0,
+      "skipped_class": 1,
+      "passed": true
+    }
+  },
+  "evidence": {
+    "ble-ddr-cdc-v2-parent-review-v2/shared_final.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-review-v2/shared_final.json",
+      "sha256": "13f3ead39d4d1c56fc185d5d36c071c427ef8141feed0783a088b7a7cc019809"
+    },
+    "ble-ddr-cdc-v2-parent-review-v2/usb_final.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-review-v2/usb_final.json",
+      "sha256": "b960011aba768c7658e579c1339ebc4a774c36a128e7e8deef2e086f39627213"
+    },
+    "ble-ddr-cdc-v2-parent-review-v2/phase1_final.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-review-v2/phase1_final.json",
+      "sha256": "f9092ac38e6c5562a77b084e236591852d5f3d61742a1948f320413e74a7f608"
+    },
+    "ble-ddr-cdc-v2-parent-review-v2/inventory_final.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-review-v2/inventory_final.json",
+      "sha256": "faafd06522894a159201856b2eb87e41f2c7548d9f384b9f8e69b3e194d1b91e"
+    },
+    "ble-ddr-cdc-v2-parent-negative-tests-v1.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-negative-tests-v1.json",
+      "sha256": "6a8a23fbb76257bc14be6c1ec480e36cab9f26706edce8dde1797b6cf636999b"
+    },
+    "ble-ddr-cdc-v2-parent-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-tests-v1.log",
+      "sha256": "14e1bdcfec1d95e3b5f4308c517fe8e9990fdfe6e102bb902aef88f56475732c"
+    },
+    "ble-ddr-cdc-v2-independent-review-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-independent-review-v1/REVIEW_SEAL.json",
+      "sha256": "0fa64569f9c8ad95aa3e4f74c4b2a1f41f95a9044c29d56d5797011813d79d3c"
+    },
+    "ble-ddr-cdc-v2-independent-review-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-independent-review-v1/review.json",
+      "sha256": "8266019309add21c74f8fdd5598342e4d34e061fb328f049aece53f0c6b38bb4"
+    },
+    "ble-ddr-cdc-v2-review/HANDOFF.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-review/HANDOFF.json",
+      "sha256": "90a1ae3aa2fbde8914515ee54a30db904fd499199f371859756aa26eebc60b76"
+    },
+    "ble-ddr-cdc-v2-review/HANDOFF_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-review/HANDOFF_SEAL.json",
+      "sha256": "fe16611e9392032ee235a88d17734879a254c1b1ffc7ddac3edd7e9b946456d3"
+    },
+    "ble-ddr-cdc-v2-review/compile_selection_actual_negatives.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-review/compile_selection_actual_negatives.json",
+      "sha256": "17bb09560f83e5e8f57d097313aab12b37109f9f42eb97653db42d5886ea4c4f"
+    },
+    "ble-ddr-cdc-v2-parent-enabled-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-enabled-prepare-v1-validation.json",
+      "sha256": "0e5295f9fa95b9a97735da395902d54aa28e2339211f691d69411d930992d117"
+    },
+    "ble-ddr-cdc-v2-parent-no-cnn-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-no-cnn-prepare-v1-validation.json",
+      "sha256": "f4e56742788ff146271638e469556252add9f8670ea2ee0af203b1662007cb14"
+    },
+    "ble-ddr-cdc-v2-parent-r00-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-r00-prepare-v1-validation.json",
+      "sha256": "d1644cd360b11e12dd7e688a72159c89b2ae534add57fe41a9976c30df99e4c9"
+    },
+    "ble-ddr-cdc-v2-parent-off-prepare-v1-validation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-off-prepare-v1-validation.json",
+      "sha256": "c0e6fc78a96e5bfc6e39d4b18bd283a7162d314f44653ea35c296fd568711726"
+    },
+    "ble-ddr-cdc-v2-parent-legacy-r00-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-legacy-r00-tests.log",
+      "sha256": "c711227faeb38ef80ed5725089c69afeb143f87bb630ab583ce18c13e2fbaa6d"
+    },
+    "ble-ddr-cdc-v2-parent-legacy-usb-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-legacy-usb-tests.log",
+      "sha256": "1393ebb7eebf7e2622afc9e4e459701f4bbc92ac47f6c4b5e6911c4e0137e7c1"
+    },
+    "ble-ddr-cdc-v2-parent-legacy-shared-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-legacy-shared-tests.log",
+      "sha256": "dad37406698150718699121d5750b824b00513a1aa5b2b2737d06a42e13d2923"
+    },
+    "ble-ddr-cdc-v2-parent-legacy-phase1-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-legacy-phase1-tests.log",
+      "sha256": "4c350ffe66d91d3f8d5db6340c5269edf447da0dc018371bf8227efb71ce81ae"
+    },
+    "ble-ddr-cdc-v2-parent-current-sources.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-current-sources.log",
+      "sha256": "e9f7e37c2e702f5ef2c2fb3d354e6c4a70789f5c866db3ab8574fa89541c4ac1"
+    },
+    "ble-ddr-cdc-v2-parent-profile-prepared-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-profile-prepared-tests.log",
+      "sha256": "55ffc60bbc921eb0bfd69e2ef38fbf8754b051df1ae4eda5add6fefcb542973c"
+    },
+    "ble-ddr-cdc-v2-parent-no-panel-prepared-tests.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cdc-v2-parent-no-panel-prepared-tests.log",
+      "sha256": "0cb0e2d23c1d2065ba1a1eaf21219c7cdf4c498ffdfd95f15ef27338df87711c"
+    }
+  },
+  "limits": [
+    "Original serial-counter compilation is pinned; later balanced-counter/TF source revisions require new review.",
+    "Held-payload timing, RAM ownership/data arcs, reset pulse/recovery/removal, Gray flight and whole-workstation CDC remain unaccepted.",
+    "No new SDC was installed. Phase1 emits proposal only; raw-store inventory emits no proposal."
+  ],
+  "complete_cdc_accepted": false,
+  "recording_cdc_complete": false,
+  "full_reset_accepted": false,
+  "physical_cdc_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_operated": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}
