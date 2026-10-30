@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "identity": "chorus-narrow-TF-counter-parent-review-v1",
+  "reviewed_utc": "2026-10-30T16:29:07.414845+00:00",
+  "actual_VG_sha256": "2cfe81e54a9257d212f4b54cecac56853a50e969dbf532d6857d45ce8fe316c8",
+  "candidate_identity": "custom138k-workstation-r00-no-local-panel-v1-6b9610324164f0c9",
+  "actual_mapping_review_passed": true,
+  "counter_count": 4,
+  "TF_quiet_mapped_detail_matches_c7": true,
+  "counter_mapped_detail_matches_c7": true,
+  "quiet_compute_frontier": 81,
+  "quiet_primitive_depth": 35,
+  "negative_controls": 20,
+  "counter_affine_decoder_depths": {
+    "u_managed/midi_drops": 4,
+    "u_managed/observation/drops": 4,
+    "u_recording/pcm_cdc/drops": 4,
+    "u_video/u_runtime_display/drops": 4
+  },
+  "recording_full_32bit_decoder_claimed": false,
+  "no_current_root_source_adaptation": true,
+  "old_sealed_evidence_modified": false,
+  "complete_CDC_accepted": false,
+  "physical_CDC_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_operated": false,
+  "deployment_allowed": false,
+  "stage": "actual_VG_TF_quiet_and_counter_source_mapping_review",
+  "limits": [
+    "No physical flight/MTBF or complete reset accepted. No SDC installed.",
+    "Recording counter has no surviving full32 decoder formal; only live affine inventory is claimed.",
+    "Primitive depth35 mostly ALU carry comparisons is not a physical delay.",
+    "TF ordinary handshake/held36 protocol and unregistered boundaries are separate work."
+  ],
+  "evidence": {
+    "chorus-narrow-TF-counter-parent-review-v1/REVIEW_SEAL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-TF-counter-parent-review-v1/REVIEW_SEAL.json",
+      "sha256": "1debc3b9fa8edb094ac14498543ba2a0806f6513893135abea35e26e822ea471"
+    },
+    "chorus-narrow-TF-counter-parent-review-v1/ADAPTATION.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-TF-counter-parent-review-v1/ADAPTATION.json",
+      "sha256": "c9a3766e510fde5232d888f62efc7fd3fdf5ff4e00baa4d25babb6c8707f4f16"
+    },
+    "chorus-narrow-TF-counter-parent-review-v1/actual/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-TF-counter-parent-review-v1/actual/review.json",
+      "sha256": "fd1e519b140d1f8abf63934797f6903020b57844943bf9b41f51854ff3a14a11"
+    },
+    "chorus-narrow-TF-counter-parent-review-v1/negative_controls.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-TF-counter-parent-review-v1/negative_controls.json",
+      "sha256": "f00dda0c2a0eae761025e2fbfee8d72d7681000928a2188e64e56991d2d08abd"
+    },
+    "chorus-narrow-TF-counter-parent-review-v1/frontier_checks.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-TF-counter-parent-review-v1/frontier_checks.json",
+      "sha256": "6fe2a556d04f37ce9470d7fb8012b28ae86eb287a154d44b31de3707e0b21177"
+    },
+    "chorus-narrow-TF-counter-parent-review-v1/final_verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/chorus-narrow-TF-counter-parent-review-v1/final_verification.json",
+      "sha256": "83a9581b1be7e908b4d254fd1365ca6e55ee9b9a72e7fda1211bbac9935816b1"
+    }
+  }
+}

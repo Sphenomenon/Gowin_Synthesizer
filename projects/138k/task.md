@@ -138,6 +138,8 @@
 
 [Chorus 窄化实际综合](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_CHORUS_NARROW_SYNTHESIS_20261031.md)已通过：596 输入／四输出／两工具重验，Logic 106,679、Register 60,910、综合 BSRAM 229；实际新 VG clock 四项回归通过。最差路径现为 pitch/glide（−16.879 ns、36 级），尚未满足计算时序。新 CDC／PCM／TF／counter scope 与 pitch 精确算术修订继续独立推进；没有新物理、硬件或部署接受。
 
+[Chorus 新 VG 的 TF／counter 父级复核](push2_workstation/usb_a/reports/WORKSTATION_CHORUS_TF_COUNTER_VG_PARENT_20261031.md)已重新通过实际映射、17+3 负控和 606 输入 hash；四组 decoder 深度为 4，TF publisher 两级与 81 compute 前沿保持，明细逐对象与 c7 相同。recording 仍仅接受实际存活 affine 子集；不转移旧物理接受，未安装新 SDC，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频
