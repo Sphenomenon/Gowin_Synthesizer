@@ -1,0 +1,271 @@
+{
+  "schema": 1,
+  "passed": true,
+  "hardware_tested": false,
+  "profile_changed": false,
+  "identity": "native-display-metadata-v11-offline-v1-21f343cc7e281403",
+  "source_set_sha256": "21f343cc7e281403a693724cffb5c0422d48c8dfe2605ba3f55a7f2b72b07127",
+  "input_sha256": {
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data_layout_pkg.svh": "ba53d96edd01ed1fca72dc8ec4377e66afccd4a8a79e8f113aba3f53151d233b",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_writer.v": "3e0393333846a0177def5ddc22b5b1244d8e59f246bf2a7e9c1ad17d104fa98c",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_reader.v": "c532e6920138204289a1d49a22f7d488f31fa52e0dc4c36b05e9053f7a23fdca",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_analysis_source.sv": "a8f1a948370a464d6ed609d275075e2ff936a01e62bc915074914a1193d9736c",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_capture.v": "62195a1777f8308f0e20687e6dcae14af932e65eac0cf6ca814b6e40d294bb56",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/output_audio_analysis.v": "5c4929314c548d0ab97d6274e6ceb3ef59a76be739c5fb0a1d48564aa011dbdc",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/video/output_audio_capture.v": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/video/audio_analysis_rom.v": "439ff9f00ff4d29740b296f2e264eabc19e6cb2ff2195dfb2bd815c9d1286946",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/video/feedback_wave_align.v": "4cc6e5bb6c065266185236ee6dcb6acf9403872096d912cf096ce07b66848d4a",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_display_analysis_context.sv": "e528f08262810a57aebe416fdc8515242851be3cec672ad263a898d32f68dd7c",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_display_metadata_v11.sv": "3d09512c7e463f1db82552e8aae9372645da01331ee896957320126f6aecd611",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_display_metadata_v10_compat.sv": "200d90f37eaa9495c8012ee358f6d9121f18c465d6cdf40ab25c1fbb597794cf",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/p11/tb_display_data_reader.sv": "47c5e4952aa838a6783419c7738f3699a470fc14898bad819cc0027e88ffd9e2",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/run_display_metadata_v11.py": "c3ad0ca54870fefdc0d2fa1fc7ba8fb162e58083e6e8973b13c4966650f9e63a",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/DISPLAY_DATA_LAYOUT_V1.md": "ac203ccd5a3d9959f483cfd9d6556a134907e7700368c2d55275c35a28452306",
+    "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/DISPLAY_METADATA_CONTEXT.md": "05ffc4800972f040941f19a32742c228642e1dbefc8c614261424bd0562b639b",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation_profile.json": "ea87fd29d07287831073e0b9effa1953d92aa8b8e1300c69f454a9737b091d33",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/integration_inputs.json": "10deb0aa1cd172838c98b1f8d675b0ae41b812641549ba3bde432b355caabd2b",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/memory/display_data_writer.v": "d04be5254fa9ee07e497ff9c92a26a959eb394f3c68366faf71de16543e9d8b8",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/memory/display_data_reader.v": "3079ea0aa9108ec476fbb52ae0814faa41a039c98fba5a486c1ad136c617dd20"
+  },
+  "prepared_reference_candidate": "custom138k-workstation-v1-f5b723250388add5",
+  "source_policy": "Maintained native display writer/reader/optional producer; explicit prepared original capture/alignment/ROM and byte-pinned minor0 writer reference; no top/profile selection",
+  "configuration": {
+    "default_minor": 0,
+    "explicit_test_minor": 1,
+    "supported_hz": [
+      48000,
+      44100
+    ],
+    "stream_epoch_zero_allowed": false,
+    "display_local_cache_banks_minor0": 1,
+    "display_local_cache_banks_minor1": 2,
+    "extra_logical_cache_bits_minor1": 90112,
+    "real_analysis_input_strobe_every_ui_clocks": 16
+  },
+  "validation_scope": "RTL offline DDR, 512-point unfiltered waveform, actual 2048-point stereo Hann FFT/XY, cancellation and exact legacy cycle/bytes",
+  "limitations": "Accelerated functional PCM source and ordered functional DDR; no live I2S, DCS, P&R, physical BSRAM count, HDMI pixels, board or deployment acceptance",
+  "bitstream_identity": null,
+  "commands": {
+    "tb_display_metadata_v10_compat_compile": [
+      "iverilog",
+      "-g2012",
+      "-I/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+      "-s",
+      "tb_display_metadata_v10_compat",
+      "-o",
+      "/private/tmp/display-metadata-v11-20261030-v1/tb_display_metadata_v10_compat.vvp",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data_layout_pkg.svh",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_writer.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_reader.v",
+      "/private/tmp/display-metadata-v11-20261030-v1/reference_display_data_writer.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_display_metadata_v10_compat.sv"
+    ],
+    "tb_display_metadata_v10_compat_run": [
+      "vvp",
+      "/private/tmp/display-metadata-v11-20261030-v1/tb_display_metadata_v10_compat.vvp"
+    ],
+    "tb_display_data_reader_compile": [
+      "iverilog",
+      "-g2012",
+      "-I/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+      "-s",
+      "tb_display_data_reader",
+      "-o",
+      "/private/tmp/display-metadata-v11-20261030-v1/tb_display_data_reader.vvp",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data_layout_pkg.svh",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_reader.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/p11/tb_display_data_reader.sv"
+    ],
+    "tb_display_data_reader_run": [
+      "vvp",
+      "/private/tmp/display-metadata-v11-20261030-v1/tb_display_data_reader.vvp"
+    ],
+    "tb_display_metadata_v11_compile": [
+      "iverilog",
+      "-g2012",
+      "-I/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+      "-s",
+      "tb_display_metadata_v11",
+      "-o",
+      "/private/tmp/display-metadata-v11-20261030-v1/tb_display_metadata_v11.vvp",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data_layout_pkg.svh",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_writer.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_reader.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_display_metadata_v11.sv"
+    ],
+    "tb_display_metadata_v11_run": [
+      "vvp",
+      "/private/tmp/display-metadata-v11-20261030-v1/tb_display_metadata_v11.vvp"
+    ],
+    "analysis_compile": [
+      "verilator",
+      "--binary",
+      "--timing",
+      "-j",
+      "4",
+      "-Wno-fatal",
+      "--top-module",
+      "tb_display_analysis_context",
+      "--Mdir",
+      "/private/tmp/display-metadata-v11-20261030-v1/obj",
+      "-I/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data_layout_pkg.svh",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_writer.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_reader.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_analysis_source.sv",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_capture.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/output_audio_analysis.v",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/video/output_audio_capture.v",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/video/audio_analysis_rom.v",
+      "/Users/sphenicidition/.cache/gw138k-task-20261030/clean-rev2-profile-candidate/workstation/Prj1/src/video/feedback_wave_align.v",
+      "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_display_analysis_context.sv"
+    ],
+    "analysis_run": [
+      "/private/tmp/display-metadata-v11-20261030-v1/obj/Vtb_display_analysis_context"
+    ]
+  },
+  "pinned_reference_sha256": {
+    "src/memory/display_data_writer.v": "d04be5254fa9ee07e497ff9c92a26a959eb394f3c68366faf71de16543e9d8b8",
+    "src/memory/display_data_reader.v": "3079ea0aa9108ec476fbb52ae0814faa41a039c98fba5a486c1ad136c617dd20",
+    "src/video/feedback_wave_align.v": "4cc6e5bb6c065266185236ee6dcb6acf9403872096d912cf096ce07b66848d4a",
+    "src/video/output_audio_capture.v": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+    "src/video/audio_analysis_rom.v": "439ff9f00ff4d29740b296f2e264eabc19e6cb2ff2195dfb2bd815c9d1286946"
+  },
+  "temporary_renamed_reference_sha256": "625ac94f7b48e3b489d6a125623a383210d2191d6f44cd7830dfa96c47bcfdf0",
+  "minor0_compatibility": {
+    "compared_cycles": 615641,
+    "default_beats": 1098,
+    "context44_rejected": true,
+    "reader_minor1_rejected": true
+  },
+  "legacy_reader_regression_passed": true,
+  "minor1_transport": {
+    "full_cache_checks": 12,
+    "writes": 2198,
+    "commits": 6,
+    "reads": 3712,
+    "rejected": 5,
+    "aborted": 1,
+    "first_publish_reads": 6
+  },
+  "verilator_owned_warnings": [],
+  "verilator_warning_counts": {
+    "TIMESCALEMOD": 11,
+    "WIDTHTRUNC": 31,
+    "WIDTHEXPAND": 10
+  },
+  "real_analysis": {
+    "published": 3,
+    "wave_samples": 1536,
+    "xy_pixels": 196608,
+    "fft_columns": 1536,
+    "discarded_contexts": 4,
+    "early_rejected": 1
+  },
+  "rate_results": [
+    {
+      "rate_hz": 48000,
+      "epoch": 1,
+      "left_bin": 32,
+      "right_bin": 64,
+      "left_hz_q16": 49152000,
+      "right_hz_q16": 98304000,
+      "commit_generation": 2
+    },
+    {
+      "rate_hz": 44100,
+      "epoch": 2,
+      "left_bin": 32,
+      "right_bin": 64,
+      "left_hz_q16": 45158400,
+      "right_hz_q16": 90316800,
+      "commit_generation": 8
+    },
+    {
+      "rate_hz": 44100,
+      "epoch": 2,
+      "left_bin": 32,
+      "right_bin": 64,
+      "left_hz_q16": 45158400,
+      "right_hz_q16": 90316800,
+      "commit_generation": 10
+    }
+  ],
+  "checks": [
+    "48_to_44_to_48",
+    "same_epoch_observation_loss",
+    "epoch_zero_rejection",
+    "mixed_wave_analysis_generation_rejection",
+    "all_descriptor_versions_epochs",
+    "late_metadata_corruption_last_image",
+    "final_seqlock_corruption_last_image",
+    "slow_reader_bank_reuse",
+    "stalled_writer_context_abort_stability",
+    "sealed_snapshot_keeps_old_tags",
+    "first_synchronous_publish_read",
+    "reset",
+    "default_writer_exact_cycle_bytes",
+    "default_reader_unselected_minor1",
+    "context_aware_minor0_refuses_44100",
+    "untrusted_source_rejected",
+    "actual_fft_and_xy"
+  ],
+  "parent_independent_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/display-metadata-v11-parent-final/verification.json",
+    "sha256": "5f3c8402f91afa470da9f8b1bee2ec2172dd8f7f69bd1aa024f621a2815d3967",
+    "identity": "native-display-metadata-v11-offline-v1-47c1c8fa0db88a17",
+    "source_set_sha256": "47c1c8fa0db88a1789c8c1e5de2b0d7a32e175160b0b7076119c577ae7b4235f",
+    "minor0_compatibility": {
+      "compared_cycles": 615641,
+      "default_beats": 1098,
+      "context44_rejected": true,
+      "reader_minor1_rejected": true
+    },
+    "minor1_transport": {
+      "full_cache_checks": 12,
+      "writes": 2198,
+      "commits": 6,
+      "reads": 3712,
+      "rejected": 5,
+      "aborted": 1,
+      "first_publish_reads": 6
+    },
+    "real_analysis": {
+      "published": 3,
+      "wave_samples": 1536,
+      "xy_pixels": 196608,
+      "fft_columns": 1536,
+      "discarded_contexts": 4,
+      "early_rejected": 1
+    },
+    "rate_results": [
+      {
+        "rate_hz": 48000,
+        "epoch": 1,
+        "left_bin": 32,
+        "right_bin": 64,
+        "left_hz_q16": 49152000,
+        "right_hz_q16": 98304000,
+        "commit_generation": 2
+      },
+      {
+        "rate_hz": 44100,
+        "epoch": 2,
+        "left_bin": 32,
+        "right_bin": 64,
+        "left_hz_q16": 45158400,
+        "right_hz_q16": 90316800,
+        "commit_generation": 8
+      },
+      {
+        "rate_hz": 44100,
+        "epoch": 2,
+        "left_bin": 32,
+        "right_bin": 64,
+        "left_hz_q16": 45158400,
+        "right_hz_q16": 90316800,
+        "commit_generation": 10
+      }
+    ]
+  }
+}
