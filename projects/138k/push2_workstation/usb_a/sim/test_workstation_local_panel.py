@@ -82,14 +82,15 @@ class LocalPanel(unittest.TestCase):
             with self.subTest(provider=provider):
                 self.assertEqual(hashlib.sha256(tokens(preprocess(provider)).encode()).hexdigest(), expected)
 
-    def test_new_provider_replaces_only_lcd_instance_and_does_not_leak_macro(self):
+    def test_revision2_provider_parks_lcd_and_does_not_leak_selection_macros(self):
         original = preprocess('workstation_profile_r00_runtime.sv')
         selected = preprocess('workstation_profile_r00_no_local_panel.sv')
         parked = "assign lcd_r=5'd0,lcd_g=6'd0,lcd_b=5'd0;\n" + \
                  "assign lcd_pclk=1'b0,lcd_hsync=1'b0,lcd_vsync=1'b0,lcd_de=1'b0,lcd_bl=1'b0;"
-        expected, count = re.subn(r'workstation_lcd\s+u_lcd\s*\(.*?\);', parked, original, flags=re.S)
-        self.assertEqual(count, 1)
-        self.assertEqual(tokens(selected), tokens(expected))
+        self.assertEqual(len(re.findall(r'workstation_lcd\s+u_lcd\s*\(.*?\);', original, flags=re.S)), 1)
+        self.assertEqual(tokens(selected).count(tokens(parked)), 1)
+        self.assertIn('workstation_recording_ddr_authority recording_authority', selected)
+        self.assertIn('workstation_ble_raw_ddr_store #', selected)
         self.assertNotIn('u_lcd', selected)
         self.assertIn(".input_attached(1'b0)", selected)
         with tempfile.TemporaryDirectory(prefix='local-panel-macro-') as directory:
@@ -97,9 +98,12 @@ class LocalPanel(unittest.TestCase):
             output = Path(directory) / 'scope.preprocessed.sv'
             source.write_text('`include "rtl/workstation/workstation_profile_r00_no_local_panel.sv"\n'
                 '`ifdef WORKSTATION_NO_LOCAL_PANEL\nmodule leaked_local_panel_macro(); endmodule\n`endif\n')
+            source.write_text(source.read_text() +
+                '`ifdef WORKSTATION_BLE_RAW_DDR\nmodule leaked_ble_storage_macro(); endmodule\n`endif\n')
             subprocess.run(['iverilog', '-g2012', '-E', '-I', str(ROOT), '-o', str(output), str(source)],
                            capture_output=True, text=True, check=True, timeout=30)
             self.assertNotIn('leaked_local_panel_macro', output.read_text())
+            self.assertNotIn('leaked_ble_storage_macro', output.read_text())
 
     def test_actual_selected_top_keeps_all_lcd_pins_low_while_reference_clocks_run(self):
         # Unresolved owners are black boxes for this composition-only test.

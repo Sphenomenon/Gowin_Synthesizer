@@ -106,6 +106,8 @@
 
 [BLE DDR 五层适配](push2_workstation/usb_a/reports/WORKSTATION_BLE_RAW_ADAPTER_PARENT_20261030.md)已父级完成两时钟各 24 场景、472,541／470,038 checks、各 17,427 wire bytes 与 RAM 原件对照，协议六场景／封存链三场景／27 负控全过；独立增补 10,118 checks 并拒绝 FAILED 复活突变。原 BLE 八项／accepted 17 项通过，checked helper 默认关闭；整机 profile 尚未选择，无综合、物理净收益、硬件或部署接受。
 
+[BLE DDR 原生组合父级检查点](push2_workstation/usb_a/reports/WORKSTATION_BLE_DDR_NATIVE_PARENT_20261030.md)已在 no-local-panel revision2 选入 raw store／authority／双客户端 owner8，实际 CPU／BLE 子区与已寄存错误聚合通过三场景／119 checks／五负控；CPU runtime 14 场景／五负控、四份来源各 12 项及 BLE／no-panel／R00／enabled profile 回归全过。主候选 `27732817b67e21ac` 的 591 staged／269 enabled 与 767 来源快照已核对并独立启动综合，结果另记；未计物理净资源收益，完整 CDC／reset／STA、BLE 乐音与硬件仍未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

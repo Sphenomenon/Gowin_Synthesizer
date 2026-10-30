@@ -25,6 +25,7 @@ module workstation_recording_runtime #(
     input wire recording_ready_i,recording_response_i,recording_native_accept_i,
     input wire [255:0] recording_read_data_i,
     input wire transport_fault_i,
+    output wire native_protocol_fault_o,
     output wire [3:0] object_state_o,object_failure_o,
     output wire [31:0] object_frames_o,committed_frames_o,
     output wire capture_o
@@ -70,7 +71,7 @@ module workstation_recording_runtime #(
         .clk_i(memory_clk_i),.rst_ni(reset_ni),.published_valid_i(ddr_valid),
         .slot_ready_i(recording_ready_i),.native_accept_i(recording_native_accept_i),
         .transport_fault_i(transport_fault_i),.slot_valid_o(recording_valid_o),
-        .native_ready_o(ddr_ready),.transport_fault_o(bridge_fault),.submitted_o(),.protocol_fault_o());
+        .native_ready_o(ddr_ready),.transport_fault_o(bridge_fault),.submitted_o(),.protocol_fault_o(native_protocol_fault_o));
     workstation_recording_ddr_service #(.CAPACITY_FRAMES(CAPACITY_FRAMES),.FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS),
         .DDR_BUDGET_CYCLES(DDR_BUDGET_CYCLES),.SOURCE_GAP_CYCLES(SOURCE_GAP_CYCLES)) service(
         .clk_i(memory_clk_i),.reset_ni(reset_ni),.command_reset_ni(command_reset),.backend_ready_i(backend_ready_i),

@@ -39,12 +39,13 @@ R00_NO_LOCAL_PANEL_NAME = 'custom138k-workstation-r00-no-local-panel-v1'
 R00_NO_LOCAL_PANEL_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_v1.json'
 R00_NO_LOCAL_PANEL_PROVIDER = 'rtl/workstation/workstation_profile_r00_no_local_panel.sv'
 PROFILE_REGISTRY = {
-    R00_NO_LOCAL_PANEL_NAME: dict(config=R00_NO_LOCAL_PANEL_CONFIG, revision=1,
+    R00_NO_LOCAL_PANEL_NAME: dict(config=R00_NO_LOCAL_PANEL_CONFIG, revision=2,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
-            recording_policy=R00_POLICY, local_panel_policy='disabled_local_lcd_touch_v1'),
+            recording_policy=R00_POLICY, local_panel_policy='disabled_local_lcd_touch_v1',
+            ble_recording_storage_policy='native_raw_ddr_v1'),
         provider=R00_NO_LOCAL_PANEL_PROVIDER, recognition_enabled=False, recording_enabled=True,
-        local_panel_enabled=False,
-        integration_identity='custom138k-native-dual-rate-r00-no-local-panel-revision1'),
+        local_panel_enabled=False, ble_recording_storage_enabled=True,
+        integration_identity='custom138k-native-dual-rate-r00-no-local-panel-revision2'),
     R00_NAME: dict(config=R00_CONFIG, revision=1,
         configuration=dict(RUNTIME_CONFIGURATION,recognition_policy='disabled_cnn_and_follow_v1',recording_policy=R00_POLICY),
         provider=R00_PROVIDER,recognition_enabled=False,recording_enabled=True,
@@ -269,10 +270,22 @@ def _artifact(root, output, metadata, profile):
         bindings[destination] = source
 
     prefix = root.relative_to(repository).as_posix() + '/'
+    ble_raw_selected = spec.get('ble_recording_storage_enabled', False)
+    ble_raw_adaptation = None
+    if ble_raw_selected:
+        from tools.workstation_ble_recording_policy import metadata as ble_recording_metadata
+        from tools.workstation_bluetooth_ddr import verify_prepared as verify_ble_raw
+        selected = dict(metadata.get('ble_recording_storage', {}))
+        ble_raw_adaptation = selected.pop('adaptation', None)
+        if selected != ble_recording_metadata():
+            raise ValueError('BLE raw DDR storage selection changed')
+        verify_ble_raw(root, stage, ble_raw_adaptation)
+    elif 'ble_recording_storage' in metadata:
+        raise ValueError('unselected profile cannot claim raw BLE DDR storage')
     if spec.get('recording_enabled',False):
         from tools.workstation_recording_policy import metadata as recording_metadata, verify_address_map, MAP_SOURCE, MAP_DESTINATION
         selected=dict(metadata.get('recording',{}));address_map=selected.pop('address_map',None)
-        if selected!=recording_metadata():raise ValueError('R00 recording selection changed')
+        if selected!=recording_metadata(ble_raw_ddr=ble_raw_selected):raise ValueError('R00 recording selection changed')
         verify_address_map(root,stage,address_map)
         bind(MAP_DESTINATION,prefix+MAP_SOURCE)
     elif 'recording' in metadata:
@@ -291,8 +304,11 @@ def _artifact(root, output, metadata, profile):
         raise ValueError('workstation profile copied source ownership changed')
     for source, target in copies.items():
         bind(target, prefix + source)
+        staged_hash = metadata['copied_sources_sha256'][source]
+        if ble_raw_selected and target == 'rtl/bluetooth/workstation_bluetooth.sv':
+            staged_hash = ble_raw_adaptation['output_sha256']['workstation_bluetooth.sv']
         if (metadata['copied_sources_sha256'][source] != profile['source_sha256'][prefix + source] or
-                sha(checked_path(stage, target)) != metadata['copied_sources_sha256'][source]):
+                sha(checked_path(stage, target)) != staged_hash):
             raise ValueError('workstation profile copied source drift: ' + source)
     usage = {source: 'compiled_source' if target in metadata['enabled_inputs'] else 'staged_dependency'
              for target, source in bindings.items()}
@@ -399,6 +415,7 @@ def _artifact(root, output, metadata, profile):
                 scan_window=metadata['scan_window'],
                 runtime_audio=metadata.get('runtime_audio'), recognition=metadata['recognition'],
                 **({'recording':metadata['recording']} if spec.get('recording_enabled',False) else {}),
+                **({'ble_recording_storage':metadata['ble_recording_storage']} if ble_raw_selected else {}),
                 generated_data_inputs={**ble_inputs, 'firmware/boot.mem': dict(origin='maintained_ae350_firmware',
                     sha256=ae350['installed_rom']['sha256'], source_sha256=ae350['build']['input_sha256'],
                     tool_versions=ae350['build']['tool_versions'], capacity=ae350['build']['capacity'])},

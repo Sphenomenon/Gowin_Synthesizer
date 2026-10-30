@@ -1,5 +1,8 @@
 // Independent C-revision migration candidate. Original Prj1 top is retained.
 // G1 MIDI is on a separate expansion pin; BL616 V14 is not reused.
+`ifdef WORKSTATION_BLE_RAW_DDR
+`include "rtl/ddr_address_map.vh"
+`endif
 `ifdef WORKSTATION_CUSTOM_138K
 module workstation_custom_138k_top #(
     parameter integer TF_AUDIO_KIND=2,
@@ -290,9 +293,96 @@ module gw138k_push_workstation_top #(
     wire [31:0] recording_mask;
     wire recording_seal_request,recording_seal_hold,recording_seal_ready,recording_seal_done,recording_seal_failed;
     wire [3:0] recording_seal_failure;
+`ifdef WORKSTATION_BLE_RAW_DDR
+    wire recording_channel_ready,recording_authority_fault;
+    wire [1:0] recording_subclient_valid,recording_subclient_write,recording_subclient_ready;
+    wire [1:0] recording_subclient_native,recording_subclient_response,recording_bridge_protocol_fault;
+    wire [28:0] recording_cpu_address,recording_ble_address;
+    wire [255:0] recording_cpu_data,recording_ble_data;
+    wire [31:0] recording_cpu_mask,recording_ble_mask;
+    wire recording_mux_fault;
+    wire raw_start_valid,raw_start_ready,raw_start_done,raw_clear_valid,raw_clear_ready,raw_clear_done;
+    wire raw_capture_valid,raw_capture_ready,raw_close_valid,raw_close_ready,raw_drained;
+    wire raw_fault,raw_object_fault,raw_channel_fault;
+    wire [3:0] raw_failure;
+    wire [31:0] raw_capture_index,raw_capture_pcm,raw_accepted,raw_committed;
+    wire raw_fetch_valid,raw_fetch_ready,raw_fetch_done,raw_fetch_fault,raw_cache_valid;
+    wire [31:0] raw_fetch_offset,raw_sample_addr,raw_sample_word;
+    wire [13:0] raw_fetch_length;
+    (* ASYNC_REG="TRUE" *) reg [1:0] recording_memory_release;
+    always @(posedge memory_clk or negedge reset_n)
+        if(!reset_n)recording_memory_release<=0;
+        else recording_memory_release<={recording_memory_release[0],1'b1};
+    wire recording_memory_reset_n=recording_memory_release[1];
+    initial begin
+        if(`PRJ1_DDR_RECORDING_BLE_BYTES!=65536 ||
+           `PRJ1_DDR_RECORDING_BLE_BYTE_LAST-`PRJ1_DDR_RECORDING_BLE_BYTE_BASE+1!=65536 ||
+           (32'(`PRJ1_DDR_RECORDING_BLE_APP_BASE)<<2)!=`PRJ1_DDR_RECORDING_BLE_BYTE_BASE ||
+           (32'(`PRJ1_DDR_RECORDING_BLE_APP_LAST)<<2)+3!=`PRJ1_DDR_RECORDING_BLE_BYTE_LAST ||
+           `PRJ1_DDR_RECORDING_BLE_APP_LAST-`PRJ1_DDR_RECORDING_BLE_APP_BASE+1!=16384 ||
+           `PRJ1_DDR_RECORDING_BLE_APP_BASE%8!=0 || `PRJ1_DDR_RECORDING_BLE_APP_LAST%8!=7 ||
+           `PRJ1_DDR_RECORDING_BLE_BYTE_BASE<`PRJ1_DDR_RECORDING_BYTE_BASE ||
+           `PRJ1_DDR_RECORDING_BLE_BYTE_LAST>`PRJ1_DDR_RECORDING_BYTE_LAST ||
+           !(`PRJ1_DDR_RECORDING_CPU_BYTE_LAST<`PRJ1_DDR_RECORDING_BLE_BYTE_BASE ||
+             `PRJ1_DDR_RECORDING_BLE_BYTE_LAST<`PRJ1_DDR_RECORDING_CPU_BYTE_BASE) ||
+           !(`PRJ1_DDR_RECORDING_CPU_APP_LAST<`PRJ1_DDR_RECORDING_BLE_APP_BASE ||
+             `PRJ1_DDR_RECORDING_BLE_APP_LAST<`PRJ1_DDR_RECORDING_CPU_APP_BASE))
+            $fatal(1,"invalid top BLE DDR byte/native allocation, capacity or complete BL8 window");
+    end
+    (* ASYNC_REG="TRUE" *) reg recording_channel_meta,recording_channel_ready50;
+    always @(posedge clk_50m or negedge reset_n)
+        if(!reset_n)begin recording_channel_meta<=0;recording_channel_ready50<=0;end
+        else begin recording_channel_meta<=recording_channel_ready;recording_channel_ready50<=recording_channel_meta;end
+    // Only a true root/controller reset can establish a fresh untagged epoch.
+    // The real ledger reset is observed by authority; it never resets owners.
+    workstation_recording_ddr_authority recording_authority(
+        .root_reset_ni(reset_n),.control_clk_i(clk_50m),.memory_clk_i(memory_clk),
+        .ledger_reset_ni(ddr_client_reset_n),.backend_ready_i(ddr_client_ready),
+        .channel_ready_o(recording_channel_ready),.started_o(),.fault_o(recording_authority_fault),
+        .epoch_lost_o(),.boot_seen_o(),.epoch_survived_o());
+    workstation_recording_ddr_owner_mux #(
+        .FIRST0(`PRJ1_DDR_RECORDING_CPU_APP_BASE),.LAST0(`PRJ1_DDR_RECORDING_CPU_APP_LAST),
+        .FIRST1(`PRJ1_DDR_RECORDING_BLE_APP_BASE),.LAST1(`PRJ1_DDR_RECORDING_BLE_APP_LAST),
+        .BUDGET_CYCLES(10000)) recording_owner8(
+        .clk_i(memory_clk),.rst_ni(recording_memory_reset_n),.channel_ready_i(recording_channel_ready),
+        .valid_i(recording_subclient_valid),.write_i(recording_subclient_write),
+        .address0_i(recording_cpu_address),.address1_i(recording_ble_address),
+        .data0_i(recording_cpu_data),.data1_i(recording_ble_data),
+        .mask0_i(recording_cpu_mask),.mask1_i(recording_ble_mask),
+        .ready_o(recording_subclient_ready),.native_accept_o(recording_subclient_native),.response_o(recording_subclient_response),
+        .valid_o(recording_req),.write_o(recording_write),.address_o(recording_address),
+        .data_o(recording_data),.mask_o(recording_mask),.ready_i(recording_ready),
+        .native_accept_i(recording_native_accept),.response_i(recording_response),
+        // The two bridge contributions are registered protocol faults. Feeding
+        // their inclusive transport faults here would create a logic loop.
+        .transport_fault_i(recording_transport_fault || recording_authority_fault || |recording_bridge_protocol_fault),
+        .transport_fault_o(recording_mux_fault),.fault_o(),.busy_o());
+    workstation_ble_raw_ddr_store #(.BASE_APP(`PRJ1_DDR_RECORDING_BLE_APP_BASE),.CAPACITY_FRAMES(16384),.FIFO_ADDRESS_BITS(8),
+        .COMMAND_TIMEOUT_CYCLES(10000),.READ_TIMEOUT_CYCLES(10000)) recording_ble_store(
+        .clk_i(clk_50m),.memory_clk_i(memory_clk),.rst_ni(reset_n),
+        .start_valid_i(raw_start_valid && recording_channel_ready50),.start_ready_o(raw_start_ready),.start_done_o(raw_start_done),
+        .clear_valid_i(raw_clear_valid),.clear_ready_o(raw_clear_ready),.clear_done_o(raw_clear_done),
+        .capture_valid_i(raw_capture_valid),.capture_index_i(raw_capture_index),.capture_pcm_i(raw_capture_pcm),
+        .capture_ready_o(raw_capture_ready),.close_valid_i(raw_close_valid),.close_ready_o(raw_close_ready),
+        .drained_o(raw_drained),.fault_o(raw_fault),.object_fault_o(raw_object_fault),.channel_fault_o(raw_channel_fault),
+        .failure_code_o(raw_failure),.accepted_frames_o(raw_accepted),.committed_frames_o(raw_committed),
+        .fetch_valid_i(raw_fetch_valid),.fetch_ready_o(raw_fetch_ready),.fetch_offset_i(raw_fetch_offset),.fetch_length_i(raw_fetch_length),
+        .fetch_done_o(raw_fetch_done),.fetch_fault_o(raw_fetch_fault),.cache_valid_o(raw_cache_valid),
+        .sample_addr_i(raw_sample_addr),.sample_word_o(raw_sample_word),
+        .slot_valid_o(recording_subclient_valid[1]),.slot_ready_i(recording_subclient_ready[1]),
+        .native_accept_i(recording_subclient_native[1]),.ddr_write_o(recording_subclient_write[1]),
+        .ddr_address_o(recording_ble_address),.ddr_data_o(recording_ble_data),.ddr_mask_o(recording_ble_mask),
+        .read_response_i(recording_subclient_response[1]),.read_data_i(client_rdata),
+        .transport_fault_i(recording_mux_fault),.native_protocol_fault_o(recording_bridge_protocol_fault[1]));
+`endif
     workstation_recording_runtime u_recording(
+`ifdef WORKSTATION_BLE_RAW_DDR
+        .reset_ni(recording_memory_reset_n),.source_clk_i(dac_mclk),.memory_clk_i(memory_clk),
+        .control_clk_i(clk_50m),.backend_ready_i(recording_channel_ready),
+`else
         .reset_ni(reset_n && ddr_client_reset_n),.source_clk_i(dac_mclk),.memory_clk_i(memory_clk),
         .control_clk_i(clk_50m),.backend_ready_i(ddr_client_ready),
+`endif
         .frame_valid_i(physical_frame_valid),.frame_error_i(physical_frame_error),.frame_44k1_i(physical_frame44),
         .frame_epoch_i(physical_frame_epoch),.frame_sequence_i(physical_frame_sequence),.frame_pcm_i(physical_frame_pcm),
         .pclk(pclk),.preset_n(preset_n),.psel(recording_select),.penable(penable),.pwrite(pwrite),
@@ -300,11 +390,21 @@ module gw138k_push_workstation_top #(
         .pslverr(recording_bus_error),.prdata(recording_bus_data),
         .seal_hold_i(recording_seal_hold),.seal_request_i(recording_seal_request),
         .seal_ready_o(recording_seal_ready),.seal_done_o(recording_seal_done),.seal_failed_o(recording_seal_failed),
-        .seal_failure_code_o(recording_seal_failure),.recording_valid_o(recording_req),.recording_write_o(recording_write),
+        .seal_failure_code_o(recording_seal_failure),
+`ifdef WORKSTATION_BLE_RAW_DDR
+        .recording_valid_o(recording_subclient_valid[0]),.recording_write_o(recording_subclient_write[0]),
+        .recording_address_o(recording_cpu_address),.recording_data_o(recording_cpu_data),.recording_mask_o(recording_cpu_mask),
+        .recording_ready_i(recording_subclient_ready[0]),.recording_response_i(recording_subclient_response[0]),
+        .recording_native_accept_i(recording_subclient_native[0]),.recording_read_data_i(client_rdata),
+        .transport_fault_i(recording_mux_fault),.native_protocol_fault_o(recording_bridge_protocol_fault[0]),
+`else
+        .recording_valid_o(recording_req),.recording_write_o(recording_write),
         .recording_address_o(recording_address),.recording_data_o(recording_data),.recording_mask_o(recording_mask),
         .recording_ready_i(recording_ready),.recording_response_i(recording_response),
         .recording_native_accept_i(recording_native_accept),.recording_read_data_i(client_rdata),
-        .transport_fault_i(recording_transport_fault),.object_state_o(),.object_failure_o(),
+        .transport_fault_i(recording_transport_fault),
+`endif
+        .object_state_o(),.object_failure_o(),
         .object_frames_o(),.committed_frames_o(),.capture_o());
 `endif
     // CPU reset clears command bookkeeping. The independently latched backend
@@ -822,7 +922,11 @@ module gw138k_push_workstation_top #(
 `endif
     wire [767:0] ble_status;
 `ifdef WORKSTATION_RUNTIME_NATIVE
+`ifdef WORKSTATION_BLE_RAW_DDR
+    workstation_bluetooth #(.EXTERNAL_SEAL_PROTOCOL(1),.EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000)) u_bluetooth (
+`else
     workstation_bluetooth #(.EXTERNAL_SEAL_PROTOCOL(1)) u_bluetooth (
+`endif
 `else
     workstation_bluetooth u_bluetooth (
 `endif
@@ -830,7 +934,11 @@ module gw138k_push_workstation_top #(
         .pcm_valid_i(ble_pcm_valid),.pcm_pair_i(ble_pcm),.pcm_sequence_i(ble_sequence),
 `ifdef WORKSTATION_RUNTIME_NATIVE
         // Existing BLE format 1 remains 48 kHz. Never relabel 44.1-kHz PCM.
-        .source_allowed_i(memory_guard_ready && rate_valid && !rate44 && !rate_busy && !rate_fault && !rate_dsp_fault &&
+        .source_allowed_i(
+`ifdef WORKSTATION_BLE_RAW_DDR
+            recording_channel_ready50 &&
+`endif
+            memory_guard_ready && rate_valid && !rate44 && !rate_busy && !rate_fault && !rate_dsp_fault &&
             !ble_frame44 && !ble_frame_error && ble_frame_epoch==rate_epoch),
 `else
         .source_allowed_i(1'b1),
@@ -842,6 +950,17 @@ module gw138k_push_workstation_top #(
         ,.seal_hold_i(ble_seal_hold),.seal_request_i(ble_seal_request),.seal_ready_o(ble_seal_ready),
         .seal_pending_o(),.seal_done_o(ble_seal_done),.seal_failed_o(ble_seal_failed),.seal_failure_code_o(ble_seal_failure),
         .seal_record_state_o(),.seal_recording_id_o(),.seal_frames_o(),.seal_crc_o()
+`endif
+`ifdef WORKSTATION_BLE_RAW_DDR
+        ,.raw_start_valid_o(raw_start_valid),.raw_start_ready_i(raw_start_ready && recording_channel_ready50),.raw_start_done_i(raw_start_done),
+        .raw_clear_valid_o(raw_clear_valid),.raw_clear_ready_i(raw_clear_ready),.raw_clear_done_i(raw_clear_done),
+        .raw_capture_valid_o(raw_capture_valid),.raw_capture_index_o(raw_capture_index),.raw_capture_pcm_o(raw_capture_pcm),
+        .raw_capture_ready_i(raw_capture_ready),.raw_close_valid_o(raw_close_valid),.raw_close_ready_i(raw_close_ready),
+        .raw_drained_i(raw_drained),.raw_fault_i(raw_fault),.raw_object_fault_i(raw_object_fault),.raw_channel_fault_i(raw_channel_fault),
+        .raw_failure_code_i(raw_failure),.raw_accepted_frames_i(raw_accepted),.raw_committed_frames_i(raw_committed),
+        .raw_fetch_valid_o(raw_fetch_valid),.raw_fetch_ready_i(raw_fetch_ready),.raw_fetch_offset_o(raw_fetch_offset),.raw_fetch_length_o(raw_fetch_length),
+        .raw_fetch_done_i(raw_fetch_done),.raw_fetch_fault_i(raw_fetch_fault),.raw_cache_valid_i(raw_cache_valid),
+        .raw_sample_addr_o(raw_sample_addr),.raw_sample_word_i(raw_sample_word)
 `endif
     );
     assign ble_uart_tx_o=ble_active ? ble_tx : 1'bz;

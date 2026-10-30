@@ -145,3 +145,12 @@ PYTHONPATH=projects/138k/push2_workstation/usb_a \
 ## R00 显式生产组合
 
 `--workstation-profile custom138k-workstation-r00-v1` 单独选择 no-CNN＋owner8 的原生录音源策略，在真实 HDMI DDR 仲裁中新增录音并接实际完成 PCM 和 AE350 `0xf8040000` 服务。默认／其他 profile 的仲裁和 BLE 短录音保持原选择；本路径尚未经过物理资源、完整 CDC、时序或硬件验收。容量、正常切换封存、读引用与回滚边界见[录音服务契约](../services/RECORDING_DDR_SERVICE_CONTRACT.md)。
+
+`custom138k-workstation-r00-no-local-panel-v1` 的 revision2 显式选择
+`ble_recording_storage_policy=native_raw_ddr_v1`。CPU 原 64 KiB 与 BLE 次个
+64 KiB 分区继续由 `ddr_address_map.vh` 单独维护；两个 native-commit bridge
+经 owner8 mux 接入真实仲裁。BLE endpoint 仍拥有对象、CRC、任务和下载协议，
+raw store 仅采集、写入和提供单周期读取缓存；原格式继续只允许 48 kHz。
+DDR authority 观察真实 ledger reset，旧 epoch 丢失后持续隔离到真正共同
+root/controller reset，CPU observer reset、BLE clear 或恢复 ready 均不重开。
+此 revision 有独立候选身份，完整新 CDC／时序、资源与硬件门禁仍未完成。

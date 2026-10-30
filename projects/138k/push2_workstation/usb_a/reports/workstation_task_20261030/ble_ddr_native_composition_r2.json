@@ -1,0 +1,427 @@
+{
+  "schema": 1,
+  "passed": true,
+  "scope": "explicit no-local-panel revision2 source/prepare and owned recording composition",
+  "dependencies": {
+    "root_foundation_commit": "3080579",
+    "raw_store_sha256": "422a1bb4c3b0cf842b416b65f714d023c65b270d0fa5219f9adec1c72d290ede",
+    "ble_adaptation_commit": "5e389657a46935eba0c9b4e3d9986560eb07f5d2"
+  },
+  "prepare": {
+    "output": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-native-r2-prepare-v1",
+    "identity": "custom138k-workstation-r00-no-local-panel-v1-cd44adf6419fcc0c",
+    "profile_revision": 2,
+    "profile_sha256": "744975c2aff1fda3d6db089608d664532f54e3c7c8b02bafd77fdd22a6743696",
+    "candidate_input_sha256": "cd44adf6419fcc0c6674ace330fbb36aeece666ac85036a3635d711af140c8ab",
+    "enabled_inputs": 269,
+    "artifact_sha256": "d0e099be6223c9f99d73f9005cd76a0c91e9a57e2944a5cf6520335b636da57a"
+  },
+  "synthesis": false,
+  "pnr": false,
+  "physical_cdc_accepted": false,
+  "net_resource_saving_proven": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "regressions": {
+    "selected_top": {
+      "passed": true,
+      "case_count": 8,
+      "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-top-r2-v4/verification.json",
+      "evidence_sha256": "2af67b1c8a3bcc2bff1f21f8898e4b2743167df1bcf44e2527206a0a280f1c6a",
+      "cases": {
+        "concurrent_windows_download_and_late_return": {
+          "metrics": {
+            "case": 0,
+            "checks": 110,
+            "cpu_writes": 3,
+            "ble_writes": 3,
+            "cpu_reads": 1,
+            "ble_reads": 4
+          },
+          "run_returncode": 0,
+          "log_sha256": "59b600aed35887c5cad59ae7ea6e1f8bafd0e4432ad2cd952f40eb300d7b0202"
+        },
+        "pre_ready_ledger_epoch_loss": {
+          "metrics": {
+            "case": 1,
+            "checks": 4,
+            "cpu_writes": 0,
+            "ble_writes": 0,
+            "cpu_reads": 0,
+            "ble_reads": 0
+          },
+          "run_returncode": 0,
+          "log_sha256": "00310b7bcb9b1f455c99bf294748adc16f1169d2cfb94d0247b66212bad55a3f"
+        },
+        "root_release_waits_for_memory_clock": {
+          "metrics": {
+            "case": 2,
+            "checks": 5,
+            "cpu_writes": 0,
+            "ble_writes": 0,
+            "cpu_reads": 0,
+            "ble_reads": 0
+          },
+          "run_returncode": 0,
+          "log_sha256": "ed9b7dd412fb3cf70ef6d04039c59beed1e0b6f2464c2e8739fdfe470511c3e1"
+        },
+        "bad_capacity_bytes": {
+          "rejected": true,
+          "expected_failure": "invalid top BLE DDR byte/native allocation, capacity or complete BL8 window",
+          "run_returncode": 1,
+          "log_sha256": "3599009f86337a94ef566d99568a4a28efe41e432513caa0032d52d7fe03a026"
+        },
+        "bad_byte_native_units": {
+          "rejected": true,
+          "expected_failure": "invalid top BLE DDR byte/native allocation, capacity or complete BL8 window",
+          "run_returncode": 1,
+          "log_sha256": "3599009f86337a94ef566d99568a4a28efe41e432513caa0032d52d7fe03a026"
+        },
+        "truncated_final_bl8": {
+          "rejected": true,
+          "expected_failure": "invalid top BLE DDR byte/native allocation, capacity or complete BL8 window",
+          "run_returncode": 1,
+          "log_sha256": "3599009f86337a94ef566d99568a4a28efe41e432513caa0032d52d7fe03a026"
+        },
+        "overlap_cpu": {
+          "rejected": true,
+          "expected_failure": "invalid top BLE DDR byte/native allocation, capacity or complete BL8 window",
+          "run_returncode": 1,
+          "log_sha256": "551d5838173cf51f7cf43bf9f005f067bf28fe1c6db96075fed69b9befdbf7e3"
+        },
+        "outside_recording_pool": {
+          "rejected": true,
+          "expected_failure": "invalid top BLE DDR byte/native allocation, capacity or complete BL8 window",
+          "run_returncode": 1,
+          "log_sha256": "6addfacb72e585c3b860b5f005576d7b715e1ec96ca5c57e86b0df57f5fceb7e"
+        }
+      }
+    },
+    "raw_store": {
+      "passed": true,
+      "case_count": 7,
+      "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-raw-ddr-store-top-final-v2/verification.json",
+      "evidence_sha256": "72df34eb1ca46938529716da54747e039c48c4e2c969bb12d0eccb0218b56058",
+      "cases": {
+        "fifo8_async_memory": {
+          "metrics": {
+            "checks": 94742,
+            "full_frames": 16384,
+            "max_fetch_bytes": 8112
+          },
+          "returncode": 0,
+          "run_log_sha256": "445a4a43679d9b81535ba14fb82bb869f189949a0f8177c31769ab49d6d99af8"
+        },
+        "fifo3_100mhz_memory": {
+          "metrics": {
+            "checks": 93244,
+            "full_frames": 16384,
+            "max_fetch_bytes": 8112
+          },
+          "returncode": 0,
+          "run_log_sha256": "4179dad98f43c647044c3500d2c23a95c069a72ee2e3ecbc76d97f446e1b0efd"
+        },
+        "held_valid_generation_recounted": {
+          "rejected": true,
+          "expected_failure": "held CLEAR at final generation completes once",
+          "returncode": 1,
+          "run_log_sha256": "c83c13534ed592c494ce3b223dde819403f9260d8f564f5abbcee65631f705de"
+        },
+        "start_rejects_new_epoch_fifo": {
+          "rejected": true,
+          "expected_failure": "real transport drain",
+          "returncode": 1,
+          "run_log_sha256": "fdfb1cff6dbc4acbbc298606392023996e04a27ef82b7933e691cb624cf4b214"
+        },
+        "same_edge_response_rejected": {
+          "rejected": true,
+          "expected_failure": "complete fetch publishes cache",
+          "returncode": 1,
+          "run_log_sha256": "a4bdaceeac7da6af76b23b8f8a27b3a7cb0995e78ebca80ad21522c76db968f0"
+        },
+        "slot_mistaken_for_native_accept": {
+          "rejected": true,
+          "expected_failure": "ordered close admission",
+          "returncode": 1,
+          "run_log_sha256": "38eeeb0f58495927d6cf6af6b512a760594440e4ad503394e4e8ec0e61587fec"
+        },
+        "partial_mask_lost": {
+          "rejected": true,
+          "expected_failure": "last partial byte mask preserves unused data",
+          "returncode": 1,
+          "run_log_sha256": "4f965a1e653904c85f0fffb83a7b5d725d2e60bc50beb4aa1cb39003d591b472"
+        }
+      }
+    },
+    "cpu_runtime": {
+      "passed": true,
+      "case_count": 19,
+      "evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ble-ddr-cpu-runtime-additive-v1/verification.json",
+      "evidence_sha256": "b8b764c9dfd9ab6745398fd18091c0acdb8658ff6c86ebcda0730165c4129412",
+      "cases": {
+        "pcm_download_bytes_snapshot": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "67740e4fa670e0c6076abb2d7c6f677490502f745e938bc102cc4593be8ebad4"
+        },
+        "normal_seal_registered_hold": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "d754dd48f27e0a5a45b67f9ac592c2c79f5526a903d182a1f58f7ec66d9c95f1"
+        },
+        "cancel_before_native_accept": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "7494f895c2c9a3ef72dd710a7e5df44b5f2d3a760c0c1b97d35e54c707849b80"
+        },
+        "observer_reset_drains_accepted_read": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "49ca490e3a9fffb71796b43cb51da94257f189e5fbeee113dd46bb92b1443b79"
+        },
+        "sticky_owner_ledger_fault": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "4d28c6ca9ad2147555d9f0cbcfa820aef5b878f2d059bb24856ff7885478f124"
+        },
+        "pending_create_media_seal": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "4bf034e30ca7b3da69e4ecdd60ea1b3839277dfbea8e6ae59d027558c3ca81b2"
+        },
+        "create_no_source_deadline": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "863714f13e02b3fb52250a9df9d83d3717fac31b3f39a736cdacbf717b777dc7"
+        },
+        "immutable_actual_context": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "fd4c7af35a63c5f94e9192103b3d1ead60e707f1da6ab53a7a4bb6dff319b188"
+        },
+        "third_media_owner_stale_ack_native_drain": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "14fdd513fdcdc6d4a18a29f76b30f4ff1e0ac241c50bc71a8a19cf060a821444"
+        },
+        "fault_fences_snapshot_same_edge": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "f2c10dfdb1406c54ea211131695a31d9a857d40d1aaa262b2f56029c790d7f50"
+        },
+        "capture_source_gap": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "a5fa2a563a462da811232aac3e43eb9c0260211774a1f5e393c4479686c7d29e"
+        },
+        "actual_48k_descriptor_and_bytes": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "0762b0d553648c293434c2355e3f3bd4fe0582ac4a1bc282e4fdbd5f491b6bb5"
+        },
+        "sticky_observation_loss_requires_common_reset": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "5306909035f90173d77be19a0efb7ae50ba22247886d87a253e8ffd7fc3411c2"
+        },
+        "observer_reset_during_media_seal_keeps_fence": {
+          "passed": true,
+          "rejected": false,
+          "expected_failure": null,
+          "run_returncode": 0,
+          "log_sha256": "7e67caa01cbec15ff34d04ec018388fb4e01770553c6ac175ebb1b59ac84c925"
+        },
+        "negative_ungated_error": {
+          "passed": true,
+          "rejected": true,
+          "expected_failure": "PCM stereo/sequence byte mismatch",
+          "run_returncode": 1,
+          "log_sha256": "7c9495edc8328fe40b7548ab54f96d57d514acc609bd5cfa7737dc796da9de66"
+        },
+        "negative_hold_drops_request": {
+          "passed": true,
+          "rejected": true,
+          "expected_failure": "seal request lost when hold asserted",
+          "run_returncode": 1,
+          "log_sha256": "a01025f9d22f1f279ed44645270392ed4364bc1bc6491819518c304da49a94da"
+        },
+        "negative_stereo_unswapped": {
+          "passed": true,
+          "rejected": true,
+          "expected_failure": "PCM stereo/sequence byte mismatch",
+          "run_returncode": 1,
+          "log_sha256": "c131358845f79adafece0076b3be5e4b42cba39076b48980def09305e4b0c4d8"
+        },
+        "negative_observer_reset_clears_loss": {
+          "passed": true,
+          "rejected": true,
+          "expected_failure": "CPU observer reset rearmed observation loss",
+          "run_returncode": 1,
+          "log_sha256": "13e765dfe8ac2e38ad1d598f50541abfd1ec1bc796351eb17dd3053f47640dfc"
+        },
+        "negative_local_ack": {
+          "passed": true,
+          "rejected": true,
+          "expected_failure": "state deadline got= 4 failure= 9",
+          "run_returncode": 1,
+          "log_sha256": "bffb56e654d956241d492ed4ef8439ebdd045ff9a09cd7e98d9c3521da97fd06"
+        }
+      }
+    }
+  },
+  "source_and_prepare_checks": {
+    "ble_integration_tests": {
+      "tests": 5,
+      "skipped": 0,
+      "passed": true
+    },
+    "no_local_panel_profile_tests": {
+      "tests": 6,
+      "skipped": 0,
+      "passed": true
+    },
+    "local_panel_and_legacy_token_tests": {
+      "tests": 8,
+      "skipped": 0,
+      "passed": true
+    },
+    "recording_profile_tests": {
+      "tests": 7,
+      "skipped": 2,
+      "passed": true,
+      "skip_reason": "existing original R00 prepare/hardware prerequisite not supplied; no fallback"
+    },
+    "current_workstation_sources": {
+      "tests": 17,
+      "skipped": 0,
+      "passed": true
+    },
+    "profile_verify": true
+  },
+  "ble_recording_storage": {
+    "policy": "native_raw_ddr_v1",
+    "raw_store": "recording_ble_store",
+    "business_owner": "u_bluetooth/u_core/application/command_endpoint/recording",
+    "object_ids_tasks_crc_codec_transfer_owned_by_ble": true,
+    "capacity_frames": 16384,
+    "capacity_bytes": 65536,
+    "sample_rates_hz": [
+      48000
+    ],
+    "format_extended": false,
+    "sample_word_latency_control_cycles": 1,
+    "byte_base": "PRJ1_DDR_RECORDING_BLE_BYTE_BASE",
+    "native_base": "PRJ1_DDR_RECORDING_BLE_APP_BASE",
+    "address_authority": "rtl/ddr_address_map.vh",
+    "cpu_window_disjoint": true,
+    "control_clock": "clk_50m",
+    "native_clock": "memory_clk",
+    "cache_bytes": 8192,
+    "max_fetch_bytes": 8112,
+    "fifo_address_bits": 8,
+    "command_timeout_memory_cycles": 10000,
+    "read_timeout_memory_cycles": 10000,
+    "raw_drain_timeout_control_cycles": 5000000,
+    "owner8_mux": "recording_owner8",
+    "channel_authority": "recording_authority",
+    "root_reset": "reset_n",
+    "observed_ledger_reset": "ddr_client_reset_n",
+    "memory_reset": "recording_memory_reset_n_root_only_two_edge_local_release",
+    "local_reset_rearms_channel": false,
+    "registered_bridge_faults_only": true,
+    "net_resource_saving_proven": false,
+    "physical_cdc_accepted": false,
+    "synthesis": false,
+    "pnr": false,
+    "hardware_tested": false,
+    "deployment_allowed": false,
+    "adaptation": {
+      "policy": "native-ble-raw-ddr-store-v1",
+      "enabled": true,
+      "modified_files": [
+        "native_bluetooth/ble_recording.v",
+        "native_bluetooth/ble_protocol_command.v",
+        "native_bluetooth/bt_gatt.v",
+        "native_bluetooth/bt_verilog_core.v",
+        "rtl/bluetooth/workstation_bluetooth.sv"
+      ],
+      "upstream_sha256": {
+        "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": "f5e9447a67bb74d5b9dd80ab112a7e4d2422bbeef0f4375faa68f7400489a696",
+        "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_protocol_command.v": "608c2c818e1b3546d40983f8798a6e8d50ca26d3182870093f3fd18a05cdac00",
+        "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_verilog_core.v": "89d47ee7ae8144e39b30743b0c1073aa9757e982fae863590ad74173252579d1",
+        "projects/138k/push2_workstation/usb_a/rtl/bluetooth/workstation_bluetooth.sv": "58700059b5d9865d8d3093d65fc9c19b75f3f7c68e86cafaae6a01d1baba70fa",
+        "projects/25k/example/RTL8723DS_PROTOCOL/prepare_adapted.py": "bc49ab237f4135b8e4c4289dce7077ceb49350924c4b1d095085dea9422aca50",
+        "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_gatt.v": "5266ea2002a8180b446a467c2cccae5c65d5409bf642319418122f50df4f658b"
+      },
+      "raw_store_sha256": "422a1bb4c3b0cf842b416b65f714d023c65b270d0fa5219f9adec1c72d290ede",
+      "raw_contract_sha256": "86dd2b30edf3772dd637d2766d1b89120c1c4ef2216aa87c744ee76414519763",
+      "generator_sha256": "5fd412e04e66c96eabb58e94c589cec4853750a24fccc1aeee16a097c314ebce",
+      "input_sha256": {
+        "ble_recording.v": "f5e9447a67bb74d5b9dd80ab112a7e4d2422bbeef0f4375faa68f7400489a696",
+        "ble_protocol_command.v": "608c2c818e1b3546d40983f8798a6e8d50ca26d3182870093f3fd18a05cdac00",
+        "bt_gatt.v": "b6e293a9dfc89d09ea2476b12fd38fc2edce7d0337f7be21de91e3dbdb118b1d",
+        "bt_verilog_core.v": "89d47ee7ae8144e39b30743b0c1073aa9757e982fae863590ad74173252579d1",
+        "workstation_bluetooth.sv": "58700059b5d9865d8d3093d65fc9c19b75f3f7c68e86cafaae6a01d1baba70fa"
+      },
+      "output_sha256": {
+        "ble_recording.v": "9de775e873895153059513bb85eb2e01b2bbcacac9d0f00c3570758c648fabd4",
+        "ble_protocol_command.v": "99ebcd25f801bb502b883a05884207e243e4c1ec5123eb8eb99494b742962798",
+        "bt_gatt.v": "b82f2028f058c5607fcd910eedf5a8b59906781ebc2d83f0750e8d19f42bf3c8",
+        "bt_verilog_core.v": "815f4ebd8be9e6f8525a7c64a03d28404fa9dd9147f1d397425c25a640eb2211",
+        "workstation_bluetooth.sv": "88b7cea5cacdd774ee97b055bc7219043fcdde38d54124c468ba08094c9e247c"
+      },
+      "protected_region_sha256": {
+        "encoder": "d0bf6977f702ea89392e71c3cdbcb20afb767097b17ee78be49869fc05b0168b",
+        "transfer_banks": "bd803dc01b7b9187bd6c4184f7cdf1fd7690097e84d1ac59765e3bc7ff86b78b",
+        "wire_message_bytes": "1ed510ffba23b936f3b891e9d2b92ba2bd5f6cb58395afbe903d27678b1a3ae7"
+      },
+      "drain_budget_control_cycles": 5000000,
+      "old_ram_timeout_cycles": 64,
+      "default_parameter_enabled": false,
+      "profile_selected": false,
+      "hardware_tested": false,
+      "physical_cdc_accepted": false,
+      "deployment_allowed": false
+    }
+  },
+  "integration_source_sha256": {
+    "rtl/workstation/gw138k_push_workstation_top.v": "08237ed942a27b1f68422b913fa23f0debb3e035b6922f8aacfcc8b077f0869e",
+    "rtl/workstation/workstation_profile_r00_no_local_panel.sv": "43586880d23cffbf5f83cf136281e7bdd5e36a55bd91683124b9de98d3e50eb3",
+    "rtl/workstation/workstation_recording_runtime.sv": "cc784aa3d63899136d11f4cc53ec4c84cdc48de8d382212cf3194f17961036c9",
+    "tools/workstation_profile.py": "20a7db0a732aaa23ea408ad367bf6879a2ad040c52e22a468c151c5ace5611f7",
+    "tools/workstation_custom_board.py": "0388fa696ee644ec6f9d113187272713e77e9676562c5e30dcccfadab971d2bc",
+    "tools/workstation_recording_policy.py": "05c192a4d22232a92ff2b153e336bb5234b25d1651892002c5c33fd38346abc8",
+    "tools/workstation_ble_recording_policy.py": "fa0a867cdf2006a2d510124c11ece16d4d39f39e91cc768b741711b567b275cf",
+    "sim/test_workstation_ble_ddr_integration.py": "e744b78466eeb7506622502a699a72201598c31d18ea73963aeb01ce29d2c28c",
+    "sim/test_workstation_local_panel.py": "9e2f604ba986c5f0a872fb66489c49898ec77eabb7cc6bb2a9d5eb0cdf9acdbe",
+    "sim/memory/tb_ble_ddr_top_composition.sv": "fb286dea83b69250619799afd2eb8bf0f64604780e0f69147e65ea8191ddd0ba",
+    "sim/memory/run_ble_ddr_top_composition.py": "703958798809cf5cbc67c537668587d0a9a30466c8dcaa7f64332cb3cdf9bb05"
+  }
+}

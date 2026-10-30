@@ -118,6 +118,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                    for source in native_sources)
             profile_dependencies += ('rtl/workstation/workstation_profile_runtime.sv',)
     recording_selected=runtime and specification(profile['name']).get('recording_enabled',False)
+    ble_raw_selected=runtime and specification(profile['name']).get('ble_recording_storage_enabled',False)
     if recording_selected:
         from tools.workstation_recording_policy import SOURCES as RECORDING_SOURCES, DEPENDENCIES as RECORDING_DEPENDENCIES
         native_sources += RECORDING_SOURCES
@@ -125,6 +126,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_recording_policy import PROVIDER as RECORDING_PROVIDER
         if selected_provider != RECORDING_PROVIDER:
             profile_dependencies += (RECORDING_PROVIDER,)
+    if ble_raw_selected:
+        from tools.workstation_ble_recording_policy import SOURCES as BLE_RAW_SOURCES, DEPENDENCIES as BLE_RAW_DEPENDENCIES
+        native_sources += BLE_RAW_SOURCES
+        profile_dependencies += BLE_RAW_DEPENDENCIES
     panel = local_panel_bundle(local_panel_enabled)
     if not local_panel_enabled:
         native_sources = tuple(source for source in native_sources if source not in panel['retired_sources'])
@@ -225,6 +230,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                   relative_rom_paths=runtime)
     if runtime:
         bluetooth['capture_source'] = 'runtime_physical_frame_observation_48k_only'
+    ble_raw_adaptation=None
+    if ble_raw_selected:
+        from tools.workstation_bluetooth_ddr import prepare as prepare_ble_raw
+        ble_raw_adaptation=prepare_ble_raw(root,stage,enabled=True)
     peripherals = prepare_peripherals(root, pinout_output, pinout, stage, local_panel_enabled=local_panel_enabled)
     if not local_panel_enabled:
         peripherals['local_panel_enabled'] = False
@@ -313,7 +322,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                     'real external peripheral and hardware acceptance'])
     if recording_selected:
         from tools.workstation_recording_policy import metadata as recording_metadata
-        metadata['recording']=dict(recording_metadata(),address_map=recording_address_map)
+        metadata['recording']=dict(recording_metadata(ble_raw_ddr=ble_raw_selected),address_map=recording_address_map)
+    if ble_raw_selected:
+        from tools.workstation_ble_recording_policy import metadata as ble_recording_metadata
+        metadata['ble_recording_storage']=dict(ble_recording_metadata(),adaptation=ble_raw_adaptation)
     if not local_panel_enabled:
         metadata['local_panel'] = panel
     if workstation_profile is not None:

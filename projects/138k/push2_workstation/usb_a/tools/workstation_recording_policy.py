@@ -55,7 +55,7 @@ def verify_address_map(root,stage,evidence):
     if evidence!=expected or (Path(stage)/MAP_DESTINATION).read_bytes()!=selected:
         raise ValueError('R00 selected address-map provenance changed')
 
-def metadata():
+def metadata(*,ble_raw_ddr=False):
     return dict(policy=POLICY,production_owner8_selected=True,owner_bits=4,owner=8,
         final_pcm_source='u_managed/runtime/serializer completed physical frame',
         frame_order='physical high16=left; backend/download low16=left, high16=right',
@@ -63,7 +63,7 @@ def metadata():
         apb_base='0xf8040000',backend='u_recording/service/backend',
         pcm_cdc='u_recording/pcm_cdc',native_commit='u_recording/native_commit',
         arbiter='u_video/u_arbiter/g_recording/u_core',
-        default_ble_backend_replaced=False,ble_format_extended=False,
+        default_ble_backend_replaced=ble_raw_ddr,ble_format_extended=False,
         normal_seal_before_rate_switch=True,physical_resource_saving_proven=False,
         source_cdc_complete=False,physical_cdc_accepted=False,r00_complete=False,
         hardware_tested=False,deployment_allowed=False)
